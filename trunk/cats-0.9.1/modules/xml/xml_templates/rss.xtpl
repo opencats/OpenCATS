@@ -1,0 +1,24 @@
+# RSS format for job export
+
+>>header
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+<channel>
+<title>New Job Orders</title>
+<description>CATS RSS Feed</description>
+<link>$[siteURL]</link>
+<pubDate>$[date]</pubDate>
+<<header
+
+>>job
+<item>
+<title>$[jobTitle]</title>
+<description>$[jobDescription]</description>
+<link>$[jobURL]</link>
+</item>
+<<job
+
+>>footer
+</channel>
+</rss>
+<<footer

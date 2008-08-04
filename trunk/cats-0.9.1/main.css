@@ -1,0 +1,1373 @@
+/*
+ * CATS
+ * Main CSS Library
+ *
+ * Portions Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
+ *
+ *
+ * The contents of this file are subject to the CATS Public License
+ * Version 1.1a (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.catsone.com/.
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Original Code is "CATS Standard Edition".
+ *
+ * The Initial Developer of the Original Code is Cognizo Technologies, Inc.
+ * Portions created by the Initial Developer are Copyright (C) 2005 - 2007
+ * (or from the year in which this file was created to the year 2007) by
+ * Cognizo Technologies, Inc. All Rights Reserved.
+ *
+ *
+ * $Id: main.css 1054 2006-02-06 18:14:19Z austin $
+ */
+
+/* padding / margin: top left bottom right; */
+
+/*** Begin Generic Tag Rules ***/
+body
+{
+    padding: 8px 18px 8px 18px;
+    margin: 0px;
+}
+
+p, li, blockquote
+{
+    /*line-height: 140%;*/
+    color: #333;
+    font: normal normal normal 12px/130% Arial, Tahoma, sans-serif;
+}
+
+/* Forms shouldn't have any added "side-effects". */
+form
+{
+    margin: 0px;
+    padding: 0px;
+}
+
+h2
+{
+    color: #666;
+    font: normal normal bold 18px Arial, Tahoma, sans-serif;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+.h2BreadCrumb:link,
+.h2BreadCrumb:visited
+{
+    color: #666;
+    font: normal normal bold 18px Arial, Tahoma, sans-serif;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+td
+{
+    font: normal normal normal 10pt/130% Arial, Tahoma, sans-serif;
+}
+
+pre
+{
+    font-size: 12px;
+}
+
+a:link,
+a:visited
+{
+    color: #00008b;
+    text-decoration: none;
+    font: normal normal normal 12px/130% Arial, Tahoma, sans-serif;
+}
+
+a:hover
+{
+    text-decoration: underline;
+    font: normal normal normal 12px/130% Arial, Tahoma, sans-serif;
+}
+/*** End Generic Tag Rules ***/
+
+
+/*** Tabs / Panel Code ***/
+/* This div is "behind" contents, *all the way down*. */
+#main
+{
+    border: 1px solid #666;
+    background: #6c94eb;
+    color: #fff;
+    clear: both;
+    padding-top: 1.6em; /* Affects the height of the sub-tab bar; was 2em. */
+    width: 955px;
+    min-height: 400px;
+    height: auto !important;
+    height: 400px;
+}
+
+/* Main page body / tab contents div. */
+#contents
+{
+    background: #fff;
+    color: #000;
+    padding: 0px 15px 10px 15px;
+    min-height: 400px;
+    height: auto !important;
+    height: 400px;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+    margin-bottom: 0px;
+}
+
+#bottomShadow
+{
+    background: url('images/bottom_shadow.jpg') no-repeat top center;
+    width: 955px;
+    height: 50px;
+    /*border-style: solid;*/
+    border-width: 1px;
+}
+
+/* Modal dialog contents div. */
+#modalContents
+{
+    background: #eee;
+    color: #000;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+    margin: 0px;
+    height: 100%;
+    width: 100%;
+}
+
+#header
+{
+    position: relative;
+    height: 2em;
+    width: 955px;
+}
+
+#header ul#primary
+{
+    margin: 0px;
+    padding: 0px;
+    position: absolute;
+    bottom: -1px;
+    width: 80em;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+}
+
+#header ul#primary li
+{
+    display: inline;
+    list-style: none;
+}
+
+/* Inactive Tab */
+#header ul#primary a.inactive
+{
+    background: #E2E2E2 url(images/tabs/inactive.jpg) no-repeat;
+    height: 21px;
+    width: 81px;
+    margin: 3px 3px 0px 0px; /* 1px more margin-left than a.active. */
+    text-align: center;
+    text-decoration: none;
+    float: left;
+    line-height: 22px;
+    color: #000;
+    display: block;
+}
+
+/* Inactive Tab Hover */
+#header ul#primary a.inactive:hover
+{
+    margin-top: 1px;
+    border-color: #666;
+    padding-bottom: 2px;
+}
+
+/* Active Tab */
+#header ul#primary a.active
+{
+    background: #E2E2E2 url(images/tabs/active.jpg) no-repeat;
+    height: 24px;
+    width: 81px;
+    margin: 1px 2px 0px 0px;
+    text-align: center;
+    text-decoration: none;
+    float: left;
+    color: #fff;
+    display: block;
+    line-height: 28px;
+}
+
+/* Active Tab Hover */
+#header ul#primary a.active:hover
+{
+    text-decoration: none;
+}
+
+/* Secondary "Tab" Row*/
+#header ul#secondary
+{
+    position: absolute;
+    margin: 0px;
+    padding: 0px;
+    bottom: -1.9em;
+    left: 1px;
+    width: 65em;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+}
+
+/* Inactive Secondary "Tab" */
+#header ul#secondary li a
+{
+    text-align: center;
+    display: block;
+    border: none;
+    float: left;
+    width: auto;
+    padding: 0px 10px 0px 10px;
+    margin: 6px 0px 0px 0px;
+    border-right: 1px dotted #aaa;
+    color: #f4f4f4;
+    text-decoration: underline;
+}
+
+/* Inactive Secondary "Tab" Hover */
+#header ul#secondary li a:hover
+{
+    color: #ccc;
+    text-decoration: underline;
+}
+
+/* Active Secondary "Tab"  */
+#header ul#secondary li span
+{
+    width: auto;
+    display: block;
+    border: none;
+    float: left;
+    padding: 1px 10px 0px 10px; /* Needs 1px more padding-top than inactive tab. */
+    margin: 6px 0px 0px 0px;
+    border-right: 1px dotted #aaa;
+    color: #ccc;
+}
+
+/* The last secondary "tab". */
+#header ul#secondary li:last-child a,
+#header ul#secondary li:last-child span
+{
+    border: none;
+}
+
+/*** Header / Footer ***/
+#quickSearchBlock
+{
+    margin: 0px 0px 0px 0px;
+    padding: 5px 10px 5px 0px;
+    background: #fff;
+    background-image: url('images/mru_background.gif');
+    background-repeat: repeat-x;
+    text-align: right;
+}
+
+#quickSearchBlock span.quickSearchLabel
+{
+    color: #000;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+}
+
+#MRUPanel
+{
+    padding: 0px;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+    background: #fff;
+    border-bottom: 1px #bbb solid;
+    /*width: 955px; */
+    width: 100%;
+}
+
+#MRUBlock
+{
+    position: absolute;
+    padding: 5px 0px 0px 10px;
+    margin: 0px 0px 0px 0px;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+    color: #000;
+    background: #fff;
+    background-image: url('images/mru_background.gif');
+    background-repeat: repeat-x;
+
+}
+
+#MRUBlock span.MRUTitle
+{
+    color: #ff6600;
+    font: normal normal bold 11px Arial, Tahoma, sans-serif;
+    text-align: left;
+}
+
+#MRUBlock a
+{
+    color: #000;
+    text-decoration: underline;
+    font: normal normal normal 11px Arial, Tahoma, sans-serif;
+}
+
+#headerBlock
+{
+    margin: 0px;
+    padding: 0px;
+    width: 955px;
+    height: 45px;
+}
+
+#headerBlock div#topRight
+{
+    color: #3e4754;
+    margin-bottom: -5px;
+    padding: 2px 3px 0px 5px;
+    font: normal normal normal 11px Arial, Tahoma, sans-serif;
+    float: right;
+    text-align: right;
+    background-color: transparent;
+    width: 650px;
+    height: 46px;
+}
+
+#headerBlock div#mainLogo
+{
+    padding: 0px 0px 0px 0px;
+    float: left;
+    background-color: transparent;
+    background: url('images/cats_icon.gif') no-repeat center;
+    width: 55px;
+    height: 55px;
+}
+
+#headerBlock span#mainLogoText
+{
+    color: #2f4f88;
+    margin-bottom: 0px;
+    padding: 0px 5px 0px 5px;
+    font: normal normal bold 30px Verdana, Tahoma, sans-serif;
+    float: left;
+}
+
+#headerBlock span#subLogoText
+{
+    color: #6084C8;
+    margin-bottom: 0px;
+    padding: 0px 5px 0px 5px;
+    font: normal normal bold 14px Verdana, Tahoma, sans-serif;
+}
+
+.footerBlock
+{
+    margin-top: 10px;
+    width: 955px;
+    text-align: center;
+}
+
+.footerBlock p#footerQuotation
+{
+    font: italic normal normal 8pt/130% Tahoma, sans-serif;
+}
+
+.footerBlock p#footerText
+{
+    font: normal normal normal 8pt/130% Tahoma, sans-serif;
+}
+
+.footerBlock span#footerCopyright
+{
+    font: normal normal normal 8pt/130% Tahoma, sans-serif;
+}
+
+.footerBlock span#footerResponse
+{
+    font: normal normal normal 8pt/130% Tahoma, sans-serif;
+}
+
+.footerBlock span#footerPrivacy
+{
+    font: normal normal normal 8pt/130% Tahoma, sans-serif;
+}
+
+p.note
+{
+    background-image: url('images/bgBlue.gif');
+    background-repeat: repeat-x;
+    padding: 4px;
+    margin-top: 0px;
+    margin-bottom: 8px;
+    width: 916px;
+    font: normal normal bold  12px/120% Verdana, Tahoma, sans-serif;
+    border-top: 1px solid #9999cc;
+    /*border-bottom: 1px solid #009900;*/
+    color: #666666;
+}
+
+p.noteUnsized
+{
+    background-image: url('images/bgBlue.gif');
+    background-repeat: repeat-x;
+    padding: 4px;
+    margin-top: 0px;
+    margin-bottom: 8px;
+    border-top: 1px solid #9999cc;
+    /*border-bottom: 1px solid #bbb;*/
+    font: normal normal bold  12px/120% Verdana, Tahoma, sans-serif;
+    color: #666666;
+}
+
+.noteUnsizedSpan
+{
+    background-image: url('images/bgBlue.gif');
+    background-repeat: repeat-x;
+    padding: 4px;
+    margin-top: 0px;
+    margin-bottom: 8px;
+    font: normal normal bold  12px/120% Verdana, Tahoma, sans-serif;
+    border-top: 1px solid #9999cc;
+    /*border-bottom: 1px solid #bbb;*/
+    color: #666666;
+}
+
+p.warning
+{
+    background-image: url('images/orange_gradient.jpg');
+    background-repeat: repeat-x;
+    padding: 4px;
+    margin-top: 0px;
+    margin-bottom: 8px;
+    width: 916px;
+    font: normal normal bold  12px/120% Verdana, Tahoma, sans-serif;
+    border-top: 1px solid #bbb;
+    border-bottom: 1px solid #bbb;
+    color: #f4f4f4;
+}
+
+p.perror
+{
+    background-image: url('images/red_gradient.jpg');
+    background-repeat: repeat-x;
+    padding: 4px;
+    margin-top: 0px;
+    margin-bottom: 8px;
+    font: normal normal bold  12px/120% Verdana, Tahoma, sans-serif;
+    border-top: 1px solid #bbb;
+    border-bottom: 1px solid #bbb;
+    color: #f4f4f4;
+}
+
+p.fatalError
+{
+    background: #ec3737;
+    padding: 4px;
+    margin-top: 0;
+    font: normal normal bold 12px/130% Arial, Tahoma, sans-serif;
+}
+
+.bold
+{
+    font-weight: bold;
+}
+
+.inputbox
+{
+    border: #999 1px solid;
+    background-color: #fff;
+    font: normal normal 12px Arial, Tahoma, sans-serif;
+    -moz-user-select:normal; -khtml-user-select:normal; user-select:normal;
+}
+
+.quickSearchBox
+{
+    border: #999 1px solid;
+    background-color: #fff;
+    width: 150px;
+    -moz-user-select:normal; -khtml-user-select:normal; user-select:normal;
+}
+
+.selectBox
+{
+    border: #999 1px solid;
+    background-color: #fff;
+    -moz-user-select:normal; -khtml-user-select:normal; user-select:normal;
+}
+
+.inputbox:focus
+{
+    border: #999 1px solid;
+    background-color: #f9f9d9;
+    -moz-user-select:normal; -khtml-user-select:normal; user-select:normal;
+}
+
+table.sortable,
+table.sortablepair,
+table.notsortable
+{
+    margin: 2px 0px 5px 0px;
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    empty-cells: show;
+}
+
+table.sortable th,
+table.sortablepair th,
+table.notsortable th
+{
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-left: none;
+    border-right: none;
+    padding: 2px 4px 2px 4px;
+    background-image: url('images/sort_table_bg.gif');
+    color: #000080;
+    font: normal normal bold 12px Arial, Tahoma, sans-serif;
+}
+
+table.sortable td,
+table.sortablepair td,
+table.notsortable td
+{
+    border: none;
+    padding: 3px 4px 3px 4px;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+    vertical-align: top;
+}
+
+table.sortablepaira:hover,
+table.sortable th a:link,
+table.sortable th a:visited,
+table.sortablepair th a:hover,
+table.sortablepair th a:link,
+table.sortablepair th a:visited,
+table.notsortable th a:hover,
+table.notsortable th a:link,
+table.notsortable th a:visited
+{
+    font: normal normal bold 12px Arial, Tahoma, sans-serif;
+}
+
+a.sortheader:hover,
+a.sortheader:link,
+a.sortheader:visited
+{
+    font: normal normal bold 12px Arial, Tahoma, sans-serif;
+    text-decoration: none;
+}
+
+
+table.attachmentsTable
+{
+    border-collapse: collapse;
+    empty-cells: show;
+    border: none;
+}
+
+table.attachmentsTable td
+{
+    border: none;
+    padding: 3px 4px 3px 4px;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+}
+
+table.statisticsTable
+{
+    margin: 2px 0px 5px 0px;
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    empty-cells: show;
+}
+
+table.statisticsTable th
+{
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #009900;
+    border-left: none;
+    border-right: none;
+    padding: 2px 4px 2px 4px;
+    background-image: url('images/sort_table_bg.gif');
+    color: #000080;
+    font: normal normal bold 12px Arial, Tahoma, sans-serif;
+}
+
+table.statisticsTable td
+{
+    border: none;
+    padding: 3px 4px 3px 4px;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+}
+
+table.searchTable
+{
+    padding: 5px;
+    border: 1px solid #ccc;
+    empty-cells: show;
+}
+
+tr.oddTableRow
+{
+    background: #fff;
+}
+
+tr.evenTableRow
+{
+    background: #f4f4f4;
+}
+
+tr.oddTableRow-onmouseover
+{
+    background: #aeaeff;
+}
+
+tr.evenTableRow-onmouseover
+{
+    background: #aeaeff;
+}
+
+.editTable
+{
+    background: url('images/bgGrayForm.gif');
+    background-repeat: repeat-x;
+    background-position: top;
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    margin: 2px 0px 5px 0px;
+}
+
+.editTable td
+{
+    border: none;
+    padding: 3px 4px 3px 4px;
+}
+
+.editTableMini
+{
+    border-collapse: collapse;
+    margin: 2px 0px 5px 0px;
+}
+
+.editTableMini td
+{
+    border: none;
+    padding: 3px 4px 3px 4px;
+}
+
+img.absmiddle
+{
+    vertical-align: middle;
+}
+
+img.abstop
+{
+    vertical-align: top;
+}
+
+table.detailsOutside
+{
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+}
+
+table.detailsOutside td
+{
+    margin: 0px;
+    padding: 0px;
+}
+
+table.detailsInside
+{
+    padding: 2px 0px 5px 0px;
+    border-collapse: collapse;
+}
+
+table.detailsInside td
+{
+    border: none;
+    padding: 3px 4px 3px 4px;
+    margin: 0px;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+}
+
+table.detailsInside td.vertical
+{
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+    background: #f4f4f4;
+    color: #000;
+    text-align: left;
+    vertical-align: top;
+    width: 120px;
+}
+
+table.detailsInside td.data
+{
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+    color: #333;
+    text-align: left;
+    vertical-align: top;
+}
+
+.selectView
+{
+    margin: 2px 0px 5px 0px;
+    border-collapse: collapse;
+    border: 1px solid #bbb;
+}
+
+.selectView td
+{
+    border: none;
+    padding: 3px 4px 3px 4px;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+}
+
+td.tdVertical
+{
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+    color: #000;
+    text-align: left;
+    vertical-align: top;
+    width: 120px;
+}
+
+td.tdData
+{
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+    color: #000;
+    text-align: left;
+    vertical-align: top;
+}
+
+p.freeformtop
+{
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+}
+
+p.freeformbottom
+{
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+    visibility: hidden;
+}
+
+.button
+{
+  height: 20px;
+  color: #333;
+  font-size: 12px;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: url('images/button_bg.gif') repeat-x #f0f0f0;
+  border: 1px solid #a4a4a4;
+}
+
+.buttonDown
+{
+  height: 20px;
+  color: #333;
+  font-size: 12px;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: url('images/button_bg_down.gif') repeat-x #f0f0f0;
+  border: 1px solid #a4a4a4;
+}
+
+.buttonCalendar
+{
+  height: 20px;
+  color: #333;
+  font-size: 12px;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: url('images/button_bg.gif') repeat-x #f0f0f0;
+  border: 1px solid #a4a4a4;
+}
+
+.buttonDownCalendar
+{
+  height: 20px;
+  color: #333;
+  font-size: 12px;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: url('images/button_bg_down.gif') repeat-x #f0f0f0;
+  border: 1px solid #a4a4a4;
+}
+
+.arrowButton
+{
+    text-align: center;
+    font-stretch: narrower;
+    font-size: 12px;
+    color: #444;
+    font-weight: bold;
+    font-family: tahoma;
+}
+
+table.viewSelector
+{
+    margin: 2px 0px 5px 0px;
+    border-collapse: collapse;
+    /*border: 1px solid #ccc;*/
+}
+
+table.viewSelector td
+{
+    border: none;
+    padding: 4px;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+}
+
+table.viewSelector td#vertical
+{
+    background: #ccc;
+    color: #000;
+    padding: 0px;
+    font: normal normal bold 12px Arial, Tahoma, sans-serif;
+    text-align: left;
+    width: 50px;
+}
+
+a.jobLinkDead:link, a.jobLinkDead:visited
+{
+    color: #323232;
+    text-decoration: line-through;
+}
+
+a.jobLinkDead:hover
+{
+    text-decoration: underline;
+}
+
+a.jobLinkCold:link, a.jobLinkCold:visited
+{
+    color: #00008b;
+    text-decoration: none;
+}
+
+a.jobLinkCold:hover
+{
+    text-decoration: underline;
+}
+
+a.jobLinkHot:link, a.jobLinkHot:visited
+{
+    color: #ff0000;
+    text-decoration: none;
+}
+
+span.jobLinkHot
+{
+    color: #ff0000;
+}
+
+a.jobLinkHot:hover
+{
+    text-decoration: underline;
+}
+
+a.jobLinkSubmitted:link, a.jobLinkSubmitted:visited
+{
+    color: #ff6c00;
+    text-decoration: none;
+}
+
+span.jobLinkSubmitted
+{
+    color: #ff6c00;
+}
+
+a.jobLinkSubmitted:hover
+{
+    text-decoration: underline;
+}
+
+a.jobLinkPlaced:link, a.jobLinkPlaced:visited
+{
+    color: #00ff00;
+    text-decoration: none;
+}
+
+a.jobLinkPlaced:hover
+{
+    text-decoration: underline;
+}
+
+span.jobLinkPlaced
+{
+    color: #00ff00;
+}
+
+span.jobTitleHot
+{
+    color: #ff0000;
+    font-weight: bold;
+}
+
+span.jobLinkCold
+{
+    color: #000;
+}
+
+span.jobTitleCold
+{
+    color: #000;
+    font-weight: bold;
+}
+
+span.validationError
+{
+    color: #ff0000;
+}
+
+/**
+ * POPUP CONTAINER STYLES
+ */
+#popupMask
+{
+    position: absolute;
+    z-index: 200;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    opacity: .40;
+    -moz-opacity: .40;
+    filter: alpha(opacity=40);
+    /* this hack is so it works in IE
+     * I find setting the color in the css gives me more flexibility
+     * than the PNG solution.
+     */
+    background-color: transparent !important;
+    background-color: #333;
+    /* background-image\**\: url('images/maskBG.gif') !important; */
+    background-image: none;
+    background-repeat: repeat;
+    display: none;
+}
+
+#popupContainer
+{
+    position: absolute;
+    z-index: 201;
+    top: 0px;
+    left: 0px;
+    display: none;
+    padding: 0px;
+}
+
+#popupInner
+{
+    border: 1px solid #000;
+    background-color: #eee;
+}
+
+#popupFrame
+{
+    margin: 0px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 202;
+}
+
+#popupTitleBar
+{
+    background-color: #486cae;
+    color: #fff;
+    font-weight: bold;
+    height: 1.3em;
+    padding: 5px;
+    border-bottom: 1px solid #000;
+    border-top: 1px solid #78a3f2;
+    border-left: 1px solid #78a3f2;
+    border-right: 1px solid #204095;
+    position: relative;
+    z-index: 203;
+}
+
+#popupTitle
+{
+    float: left;
+    font: normal normal bold 17px Arial, Tahoma, sans-serif;
+}
+
+#popupControls
+{
+    float: right;
+    cursor: pointer;
+    /*cursor: hand;*/
+}
+
+span.moreText
+{
+    color: orange;
+    font-weight: bold;
+}
+
+a.moreText:link, a.moreText:visited
+{
+    color: #ff0000;
+    text-decoration: none;
+}
+
+a.moreText:hover
+{
+    text-decoration: underline;
+}
+
+span.currentPage
+{
+    font-weight: bold;
+}
+
+/* Fading Tooltips By Dustin Diaz */
+body div#toolTip
+{
+    position: absolute;
+    z-index: 1000;
+    width: 300px;
+    background: #3366cc;
+    border: 1px double #fff;
+    text-align: left;
+    padding: 5px;
+    min-height: 10px;
+    -moz-border-radius: 5px;
+}
+
+body div#toolTip p
+{
+    margin: 0;
+    padding: 0;
+    color: #fff;
+    font: normal normal normal 10px/120% Arial, Tahoma, sans-serif;
+}
+
+body div#toolTip p em
+{
+    display: block;
+    margin-top: 3px;
+    color: #f60;
+    font-style: normal;
+    font-weight: bold;
+}
+
+body div#toolTip p em span
+{
+    font-weight: bold;
+    color: #fff;
+}
+
+.exportPopup
+{
+    position: absolute;
+    display: none;
+    padding: 5px;
+    width: 150px;
+    border: 1px solid #000;
+    margin-top: -1px;
+    z-index: 99;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+input.selectAll
+{
+    width: 12px;
+    height: 12px;
+}
+
+.recentSearchResultsHidden
+{
+    position: relative;
+    width: 250px;
+    padding: 5px;
+    border: 1px solid #aaa;
+    margin-top:-1px;
+    z-index: 99;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+.savedSearchResultsHidden
+{
+    position: relative;
+    width: 250px;
+    padding: 5px;
+    border: 1px solid #aaa;
+    margin-top: -1px;
+    z-index: 99;
+    cursor: pointer;
+    background-color: #fff;
+    text-decoration: none;
+}
+
+.recentSearchResults
+{
+    font-size: 11px;
+    color: #000;
+    text-decoration: none;
+}
+
+.recentSearchResults a,
+.recentSearchResults a:visited,
+.recentSearchResults a:link,
+.recentSearchResults a:hover
+{
+    color: #000;
+    text-decoration: none;
+    font: normal normal normal 11px Arial, Tahoma, sans-serif;
+}
+
+.recentSearchResultsHighlight
+{
+    background-color: #cccc88;
+}
+
+.itemCell
+{
+    border: 1px solid #000;
+    background-color: #fff;
+}
+
+.passedText
+{
+    color: green;
+    font-weight: bold;
+}
+
+.ajaxSearchResults
+{
+    position: absolute;
+    float: left;
+    display: none;
+    width: 150px;
+    padding: 5px;
+    border: 1px solid #000;
+    margin-top: -1px;
+    z-index: 99999;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+.ajaxTextEntryHover
+{
+    background-color: #cccc88;
+}
+
+.filterArea
+{
+    white-space: nowrap;
+    padding-top: 0pt;
+    padding-right: 0.3em;
+    padding-bottom: 0pt;
+    padding-left: 0.5em;
+}
+
+.filterAreaLegend
+{
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-top-color: #000000;
+    border-right-color: #000000;
+    border-bottom-color: #000000;
+    border-left-color: #000000;
+    font-family: Helvetica,Verdana,sans-serif;
+    font-variant: normal;
+    font-weight: bold;
+    line-height: normal;
+    font-size-adjust: none;
+    font-stretch: normal;
+    background-image: url('images/lightblue_gradient_15.jpg');
+    background-repeat: repeat;
+    background-attachment: scroll;
+    color: white;
+    margin-right: 5px;
+    margin-bottom: 0px;
+    margin-left: 5px;
+    padding-top: 4px;
+    padding-right: 4px;
+    padding-bottom: 2px;
+    padding-left: 4px;
+    font-size: 11px;
+    font-style: normal;
+}
+
+.filterAreaFieldSet
+{
+margin-bottom: 7px;
+}
+
+/* Control Panel Style Sheets */
+table.cpListView {
+    border: 1px solid #c0c0c0;
+    margin: 0px;
+    padding: 1px;
+}
+
+td.cpFieldHeader {
+    font: normal normal normal 11px Arial, Tahoma, sans-serif;
+    font-weight: bold;
+    padding: 5px;
+    background-color: #e0e0e0;
+    border-bottom: 1px solid #666666;
+}
+
+td.cpFieldHeaderSorted {
+    font: normal normal normal 11px Arial, Tahoma, sans-serif;
+    font-weight: bold;
+    padding: 5px;
+    background-color: #c0c0c0;
+    border-bottom: 1px solid #666666;
+}
+
+a.cpFieldHeader {
+    font: normal normal normal 11px Arial, Tahoma, sans-serif;
+    font-weight: bold;
+    text-decoration: none;
+    color: #666666;
+}
+
+td.cpField1 {
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+    font-weight: normal;
+    padding: 0px 10px 3px 0px;
+}
+
+td.cpField2 {
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+    font-weight: normal;
+    padding: 0px 10px 3px 0px;
+    background-color: #f0f0f0;
+}
+
+td.cpFieldSum {
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+    font-weight: bold;
+    padding: 0px 10px 3px 0px;
+    background-color: #e0e0e0;
+}
+
+td.cpFieldSumRows {
+    font: normal normal normal 11px Arial, Tahoma, sans-serif;
+    font-weight: normal;
+    padding: 0px 0px 0px 0px;
+    color: #ffffff;
+    background-color: #666666;
+}
+
+div.cpSection {
+    padding: 5px;
+    border: 1px solid #666666;
+}
+
+span.cpSectionTitle {
+    font: normal normal normal 16px Arial, Tahoma, sans-serif;
+    font-weight: bold;
+}
+
+div.cpInfo {
+    padding: 25px;
+    border: 1px solid #c0c0c0;
+    margin: 10px 0px 25px 0px;
+    text-align: center;
+}
+
+span.cpInfoHeaderText {
+    font: normal normal normal 18px Arial, Tahoma, sans-serif;
+    color: #000099;
+    font-weight: bold;
+}
+
+div.cpPager {
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+    text-align: center;
+    width: 100%;
+    margin: 10px 0px 10px 0px;
+}
+
+div.cpSearch {
+    padding: 0px 0px 10px 0px;
+    text-align: right;
+    width: 100%;
+}
+
+span.cpSearchResultsText {
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+}
+
+a.cpExternalLink:hover {
+    background-color: blue;
+    color: white;
+    text-decoration: none;
+}
+
+td.contentContainer {
+    border: 1px solid #e0e0e0;
+    background-color: #ffffff;
+    padding: 1px;
+}
+
+td.contentContainerOld {
+    border: 1px solid #ff0000;
+    background-color: #ffffff;
+    padding: 1px;
+}
+
+.downloadSpan {
+    border: 1px solid #999;
+    background-color: #FFFFFF;
+    margin: 2px;
+    padding: 3px;
+    font-weight:bold;
+}
+
+.addToListListBox {
+    overflow: auto;
+    border: 1px solid #000;
+    width: 410px;
+    height: 260px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding:0px;
+    background-color: #FFFFFF;
+}
+
+.evenDivRow {
+    padding-top:2px;
+    padding-left:7px;
+    padding-bottom:8px;
+    width: 395px;
+    height: 15px;
+    background-color: #fff;
+    border: 1px solid #999;
+    font: normal normal normal 12px/130% Arial, Tahoma, sans-serif;
+}
+
+.oddDivRow {
+    padding-top:2px;
+    padding-left:7px;
+    padding-bottom:8px;
+    width: 395px;
+    height: 15px;
+    background-color: #E5EAF0;
+    font: normal normal normal 12px/130% Arial, Tahoma, sans-serif;
+}
+
