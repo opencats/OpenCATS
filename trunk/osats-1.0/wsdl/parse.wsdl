@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<definitions name="CATSDocumentParse"
+        targetNamespace="urn:CATSDocumentParse"
+        xmlns:typens="urn:CATSDocumentParse"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+        xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+        xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <!-- Types for results -->
+    <types>
+        <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CATSDocumentParse">
+            <xsd:complexType name="DocumentParseResult">
+                <xsd:all>
+                    <xsd:element name="message"             type="xsd:string"/>
+                    <xsd:element name="firstName"           type="xsd:string"/>
+                    <xsd:element name="lastName"            type="xsd:string"/>
+                    <xsd:element name="address"             type="xsd:string"/>
+                    <xsd:element name="city"                type="xsd:string"/>
+                    <xsd:element name="state"               type="xsd:string"/>
+                    <xsd:element name="zip"                 type="xsd:string"/>
+                    <xsd:element name="email"               type="xsd:string"/>
+                    <xsd:element name="phone"               type="xsd:string"/>
+                    <xsd:element name="skills"              type="xsd:string"/>
+                    <xsd:element name="education"           type="xsd:string"/>
+                    <xsd:element name="experience"          type="xsd:string"/>
+                </xsd:all>
+            </xsd:complexType>
+        </xsd:schema>
+    </types>
+
+    <!-- Messages -->
+    <message name="DocumentParseMessage">
+        <part name="key"                                    type="xsd:string"/>
+        <part name="name"                                   type="xsd:string"/>
+        <part name="size"                                   type="xsd:string"/>
+        <part name="mimeType"                               type="xsd:string"/>
+        <part name="contents"                               type="xsd:string"/>
+    </message>
+
+    <message name="DocumentParseResponse">
+        <part name="return"                                 type="typens:DocumentParseResult"/>
+    </message>
+
+    <!-- Port -->
+    <portType name="CATSDocumentParsePort">
+        <operation name="DocumentParse">
+            <input message="typens:DocumentParseMessage"/>
+            <output message="typens:DocumentParseResponse"/>
+        </operation>
+    </portType>
+
+  <!-- Bindings for each operation -->
+
+    <binding name="CATSDocumentParseBinding"                type="typens:CATSDocumentParsePort">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+        <operation name="DocumentParse">
+            <soap:operation soapAction="urn:CATSDocumentParseAction"/>
+
+            <input>
+                <soap:body use="encoded"
+                namespace="urn:CATSDocumentParse"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded"
+                namespace="urn:CATSDocumentParse"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+
+    <!-- Endpoint -->
+    <service name="CATSDocumentParseService">
+        <port name="CATSDocumentParsePort" binding="typens:CATSDocumentParseBinding">
+            <soap:address location="http://soap.resfly.com/parse.php"/>
+        </port>
+    </service>
+
+</definitions>

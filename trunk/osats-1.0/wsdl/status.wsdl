@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<definitions name="Status"
+        targetNamespace="urn:Status"
+        xmlns:typens="urn:Status"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+        xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+        xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <!-- Types for results -->
+    <types>
+        <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:Status">
+            <xsd:complexType name="StatusResult">
+                <xsd:all>
+                    <xsd:element name="message"             type="xsd:string"/>
+                    <xsd:element name="version"             type="xsd:string"/>
+                    <xsd:element name="name"                type="xsd:string"/>
+                    <xsd:element name="lastUse"             type="xsd:string"/>
+                    <xsd:element name="parseUsed"           type="xsd:string"/>
+                    <xsd:element name="parseLimit"          type="xsd:string"/>
+                    <xsd:element name="parseLimitReset"     type="xsd:string"/>
+                </xsd:all>
+            </xsd:complexType>
+        </xsd:schema>
+    </types>
+
+    <!-- Messages -->
+    <message name="StatusMessage">
+        <part name="key"                                    type="xsd:string"/>
+    </message>
+
+    <message name="StatusResponse">
+        <part name="return"                                 type="typens:StatusResult"/>
+    </message>
+
+    <!-- Port -->
+    <portType name="StatusPort">
+        <operation name="Status">
+            <input message="typens:StatusMessage"/>
+            <output message="typens:StatusResponse"/>
+        </operation>
+    </portType>
+
+  <!-- Bindings for each operation -->
+
+    <binding name="StatusBinding"                type="typens:StatusPort">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+        <operation name="Status">
+            <soap:operation soapAction="urn:StatusAction"/>
+
+            <input>
+                <soap:body use="encoded"
+                namespace="urn:Status"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded"
+                namespace="urn:Status"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+
+    <!-- Endpoint -->
+    <service name="StatusService">
+        <port name="StatusPort" binding="typens:StatusBinding">
+            <soap:address location="http://soap.resfly.com/status.php"/>
+        </port>
+    </service>
+
+</definitions>
