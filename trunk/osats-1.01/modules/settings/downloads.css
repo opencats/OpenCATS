@@ -1,0 +1,9 @@
+/* Downloads Supported Types > Settings tab > Downloads */
+
+#settingsDownloads {  clear: both; width: 600px; }
+#settingsDownloads h4 { margin: 15px 0 0 0;font: bold 14px Arial, sans-serif; color: #000; }
+table.downloadSupportedGrid { margin: 0 0 15px 0; padding: 0; border: 1px solid #ccc; border-left: none; text-align: left; width: 600px; }
+table.downloadSupportedGrid tr.headers { background: #f3e1d2; }
+table.downloadSupportedGrid tr.headers span { vertical-align: super;  }
+table.downloadSupportedGrid td { padding: 0 0 0 10px; border-left: 1px solid #ccc; height: 25px; }
+table.downloadSupportedGrid td.category { width: 125px; font: normal 14px Arial, sans-serif; text-align: left; }

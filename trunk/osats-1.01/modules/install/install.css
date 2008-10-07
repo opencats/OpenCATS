@@ -1,0 +1,259 @@
+/*
+ * CATS
+ * Install CSS Library
+ *
+ * Portions Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
+ *
+ * $Id: main.css 742 2005-10-24 22:08:19Z will $
+ */
+
+p, li, blockquote, td, th
+{
+    font: normal normal normal 12px/130% Arial, Tahoma, sans-serif;
+}
+
+table.test_output
+{
+    margin-top: 5px;
+    border: 1px solid #000;
+    border-collapse: collapse;
+    border-spacing: 0px;
+    width: 425px;
+}
+
+table.test_output td
+{
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    border-collapse: collapse;
+    border-spacing: 0px;
+    padding: 2px 5px 2px 5px;
+    font: normal normal normal 9pt Arial, Tahoma, sans-serif;
+}
+
+table.test_output tr.pass
+{
+    border-spacing: 0px;
+    font-weight: bold;
+    background: #419933;
+}
+
+table.test_output tr.fail
+{
+    border-spacing: 0px;
+    font-weight: bold;
+    background: #ec3737;
+}
+
+table.test_output tr.warning
+{
+    border-spacing: 0px;
+    font-weight: bold;
+    background: orange;
+}
+
+table.footer_pass
+{
+    margin-top: 5px;
+    border: 1px solid #000;
+    border-collapse: collapse;
+    border-spacing: 0px;
+    width: 425px;
+}
+
+table.footer_pass td
+{
+    padding: 6px;
+    background: #419933;
+    font-weight: bold;
+    color: #000;
+}
+
+table.footer_fail
+{
+    margin-top: 5px;
+    border: 1px solid #000;
+    border-collapse: collapse;
+    border-spacing: 0px;
+    width: 425px;
+}
+
+table.footer_fail td
+{
+    padding: 6px;
+    background: #ec3737;
+    font-weight: bold;
+    color: #000;
+}
+
+table.footer_warning
+{
+    margin-top: 5px;
+    border: 1px solid #000;
+    border-collapse: collapse;
+    border-spacing: 0px;
+    width: 425px;
+}
+
+table.footer_warning td
+{
+    padding: 6px;
+    background: orange;
+    font-weight: bold;
+    color: #000;
+}
+
+div#headerBlock
+{
+    position: relative;
+    margin: 0 auto;
+    text-align: center;
+}
+
+div#headerBlock span#mainLogo
+{
+    color: #2f4f88;
+    position: relative;
+    margin: 0 auto -5 auto;
+    text-align: center;
+    font: normal normal bold 48px veranda, Tahoma, sans-serif;
+}
+
+div#headerBlock span#subMainLogo
+{
+    color: #6084c8;
+    position: relative;
+    margin: 0 auto -5 auto;
+    text-align: center;
+    font: normal normal bold 18px veranda, Tahoma, sans-serif;
+}
+
+div#login
+{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5em;
+    padding: 15px;
+    border: 1px solid #ccc;
+    width: 770px;
+    background: #f1f3f5;
+}
+
+div#subFormBlock
+{
+    border: 1px solid #ccc;
+    background: #e9ecef;
+    padding: 10px 10px 10px 10px;
+}
+
+div#contents
+{
+    text-align: center;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+}
+
+input.input-box
+{
+    width: 150px;
+    margin: 0px 0px 1em 0px;
+    border: 1px solid #ccc;
+}
+
+.input-box:focus
+{
+    background-color: #f9f9d9;
+}
+
+p.failure
+{
+    background: #ec3737;
+    padding: 4px;
+    margin-top: 0;
+    font: normal normal bold 12px/130% Arial, Tahoma, sans-serif;
+}
+
+p.success
+{
+    background: #419933;
+    padding: 4px;
+    margin-top: 0;
+    font: normal normal bold 12px/130% Arial, Tahoma, sans-serif;
+}
+/**
+ * POPUP CONTAINER STYLES
+ */
+#popupMask
+{
+    position: absolute;
+    z-index: 200;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    opacity: .40;
+    -moz-opacity: .40;
+    filter: alpha(opacity=40);
+    /* this hack is so it works in IE
+     * I find setting the color in the css gives me more flexibility
+     * than the PNG solution.
+     */
+    background-color: transparent !important;
+    background-color: #333;
+    /* background-image\**\: url('images/maskBG.gif') !important; */
+    background-image: none;
+    background-repeat: repeat;
+    display: none;
+}
+
+#popupContainer
+{
+    position: absolute;
+    z-index: 201;
+    top: 0px;
+    left: 0px;
+    display: none;
+    padding: 0px;
+}
+
+#popupInner
+{
+    border: 1px solid #000;
+    background-color: #eee;
+}
+
+#popupFrame
+{
+    margin: 0px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 202;
+}
+
+#popupTitleBar
+{
+    background-color: #486cae;
+    color: #fff;
+    font-weight: bold;
+    height: 1.3em;
+    padding: 5px;
+    border-bottom: 1px solid #000;
+    border-top: 1px solid #78a3f2;
+    border-left: 1px solid #78a3f2;
+    border-right: 1px solid #204095;
+    position: relative;
+    z-index: 203;
+}
+
+#popupTitle
+{
+    float: left;
+    font: normal normal bold 17px Arial, Tahoma, sans-serif;
+}
+
+#popupControls
+{
+    float: right;
+    cursor: pointer;
+    /*cursor: hand;*/
+}

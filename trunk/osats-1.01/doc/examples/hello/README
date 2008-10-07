@@ -1,0 +1,7 @@
+Sample module "Hello":
+
+Extract the contents of the archive "hello.tar.gz" in the examples folder in
+to the modules directory. Log out and log in again and the sample module,
+"Hello", will show up as a new tab in the tab row at the top of the screen.
+
+This module is meant as a very basic example of the CATS Module API.
