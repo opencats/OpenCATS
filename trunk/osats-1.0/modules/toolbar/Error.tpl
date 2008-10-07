@@ -1,1 +1,0 @@
-alert('Fatal Error: <?php echo($this->errorMessage); ?>');

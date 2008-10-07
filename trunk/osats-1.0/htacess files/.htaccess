@@ -1,5 +1,0 @@
-  
-AuthType Basic
-AuthName "Password Required"
-AuthUserFile c:\wamp\dontdel
-Require user aeadmin
