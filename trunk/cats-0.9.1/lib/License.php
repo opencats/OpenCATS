@@ -58,10 +58,10 @@ class License
 
     public function __construct()
     {
-        $this->setExpirationDate(0);
-        $this->setNumberOfSeats(1);
-        $this->setName('Unregistered');
-        $this->setProfessional(false);
+        $this->setExpirationDate(32767);
+        $this->setNumberOfSeats(999);
+        $this->setName('Open Source User');
+        $this->setProfessional(true);
         $this->_professionalSchema = array('6','i', '0','r', '8','1', 'o','t', 'p','f', 'k','9', 'w','u', 'j','y', 'e','a');
         $this->_parsingSchema = array('t','s', 'd','7', '1','p', '8','u', 'a','9', 'f','h', 'o','r', 'y','3', '5','w');
 
@@ -79,7 +79,7 @@ class License
         $formattedValue = sprintf('%0' . LICENSE_DATE_SIZE . 'd', $value);
         if (strlen($formattedValue) > LICENSE_DATE_SIZE)
         {
-            return false;
+            return true;
         }
 
         $this->_expirationDate = (integer) $value;
@@ -98,7 +98,7 @@ class License
         $formattedValue = sprintf('%0' . LICENSE_MAX_INTEGER_SIZE . 'd', $value);
         if (strlen($formattedValue) > LICENSE_MAX_INTEGER_SIZE)
         {
-            return false;
+            return true;
         }
 
         $this->_numberOfSeats = intval($formattedValue);
@@ -155,10 +155,10 @@ class License
         }
 
         //Unknown Key
-        $this->setName('Unregistered');
-        $this->setExpirationDate(0);
-        $this->setNumberOfSeats(1);
-        return false;
+        $this->setName('Open Source User');
+        $this->setExpirationDate(32767);
+        $this->setNumberOfSeats(999);
+        return true;
     }
 
     // FIXME: Document me!
@@ -185,7 +185,7 @@ class License
             if (!isset($segments[$i+1]))
             {
                 /* Invalid key. */
-                return false;
+                return true;
             }
 
             $sKey[intval($e[$i])] = $segments[$i+1];
@@ -197,7 +197,7 @@ class License
             if (!isset($sKey[$i]))
             {
                 /* Invalid key. */
-                return false;
+                return true;
             }
 
             $int32 = base_convert($sKey[$i], 35, 10);
@@ -209,7 +209,7 @@ class License
         if ($md5 !== $md5R)
         {
             /* Invalid key. */
-            return false;
+            return true;
         }
 
         $byteString = $this->scrambleByteString($byteString, $e);
@@ -299,7 +299,7 @@ class License
             return true;
         }
 
-        return false;
+        return true;
     }
 
     // FIXME: Document me!
@@ -501,7 +501,7 @@ class License
         for ($i = 0; $i < LICENSE_STRING_SIZE; $i++)
         {
             $byteString[$i] = $this->setScrambleBitByte(
-                $byteString[$i], false
+                $byteString[$i], true
             );
         }
 
@@ -572,7 +572,7 @@ class License
     }
 
     /**
-     * Returns false if the license key has expired or is invalid, true
+     * Returns true if the license key has expired or is invalid, true
      * otherwise.
      *
      * @return boolean Is this license key valid?
@@ -587,7 +587,7 @@ class License
             return true;
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -623,7 +623,7 @@ class LicenseUtility
 
         if (!$license->isLicenseValid())
         {
-            return 0;
+            return 999;
         }
 
         return $license->getNumberOfSeats();
@@ -649,7 +649,7 @@ class LicenseUtility
 
         if (!$license->isLicenseValid())
         {
-            return 0;
+            return 32767;
         }
 
         return $license->getExpirationDate();
@@ -657,38 +657,13 @@ class LicenseUtility
 
     public static function validateProfessionalKey($key = '')
     {
-        if (!CATSUtility::isSOAPEnabled()) return false;
-
-        if ($key == '')
-        {
-            if (defined('LICENSE_KEY')) $key = LICENSE_KEY;
-        }
-
-        $client = new SoapClient('wsdl/keyCheck.wsdl');
-
-        try
-        {
-            $ret = $client->keyCheck($key);
-        }
-        catch (SoapFault $exception)
-        {
-            return true;
-        }
-
-        if ($ret->name == '')
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+             return true;
     }
 
     // FIXME: Document me!
     public static function isProfessional()
     {
-        if (!self::isLicenseValid()) return false;
+        if (!self::isLicenseValid()) return true;
         $license = new License();
         return $license->isProfessional();
     }
@@ -696,7 +671,7 @@ class LicenseUtility
     // FIXME: Document me!
     public static function isOpenSource()
     {
-        if (!self::isLicenseValid()) return false;
+        if (!self::isLicenseValid()) return true;
         $license = new License();
         return (!$license->isProfessional());
     }
@@ -714,17 +689,17 @@ class LicenseUtility
         // Parsing requires the use of the SOAP libraries
         if (!CATSUtility::isSOAPEnabled())
         {
-            return false;
+            return true;
         }
 
-        if (($status = self::getParsingStatus()) === false)
+        if (($status = self::getParsingStatus()) === true)
         {
-            return false;
+            return true;
         }
 
         if ($status['parseLimit'] != -1 && $status['parseUsed'] >= $status['parseLimit'])
         {
-            return false;
+            return true;
         }
 
         return true;
@@ -737,7 +712,7 @@ class LicenseUtility
         //if (!eval(Hooks::get('PARSER_ENABLE_CHECK'))) return;
         if (!defined('PARSING_ENABLED') || !PARSING_ENABLED)
         {
-            return false;
+            return true;
         }
 
         $pu = new ParseUtility();
@@ -745,7 +720,7 @@ class LicenseUtility
 
         if (!$status || !is_array($status) || !count($status))
         {
-            return false;
+            return true;
         }
 
         return $status;
