@@ -2,17 +2,23 @@
 
 /*
  * OSATS
- * Index (Delegation Module)
  *
- *
- * $Id: index.php 3807 2007-12-05 01:47:41Z will $
  */
 
-/* Do we need to run the installer? */
-if (!file_exists('INSTALL_BLOCK') && !isset($_POST['performMaintenence']))
+/* Retrieve all the value from the System table to check if OSATS has been installed yet.
+   * If the value is null then its false, if the value is 1 then its true.
+*/
+include_once('./config.php');
+
+mysql_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS) or die(mysql_error("Check your mySQL user info and DB name!"));
+mysql_select_db(DATABASE_NAME) or die(mysql_error("Oops. No DB by the name: ".DATABASE_NAME));
+$result = mysql_query("SELECT Installed FROM system")
+or die(mysql_error("I cant find info in the DB called ".DATABASE_NAME));
+$row = mysql_result( $result,'Installed' );
+if ($row==null)//if the table does not have a 1 in it, then run the setup wizard.
 {
-    include('modules/install/notinstalled.php');
-    die();
+    include('installation.php');
+	die();
 }
 
 // FIXME: Config file setting.
@@ -35,8 +41,6 @@ if (file_exists('modules/asp/lib/ErrorHandler.php') &&
     include_once('modules/asp/lib/ErrorHandler.php');
     $errorHandler = new ErrorHandler();
 }
-
-include_once('./config.php');
 include_once('./constants.php');
 include_once('./lib/CommonErrors.php');
 include_once('./lib/osatutil.php');
@@ -52,7 +56,7 @@ include_once('./lib/TemplateUtility.php'); /* Depends: ModuleUtility, Hooks */
 
 
 /* Give the session a unique name to avoid conflicts and start the session. */
-@session_name(CATS_SESSION_NAME);
+@session_name(SESSIONNAME);
 session_start();
 
 /* Try to prevent caching. */

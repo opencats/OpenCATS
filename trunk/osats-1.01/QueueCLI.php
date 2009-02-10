@@ -26,7 +26,7 @@ include_once('./lib/QueueProcessor.php');
 include_once('./modules/queue/constants.php');
 
 /* Give the session a unique name to avoid conflicts and start the session. */
-@session_name(CATS_SESSION_NAME);
+@session_name(SESSIONNAME);
 session_start();
 
 /* Make sure we aren't getting screwed over by magic quotes. */

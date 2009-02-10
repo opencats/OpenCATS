@@ -26,7 +26,7 @@ include_once('./lib/ModuleUtility.php'); /* Depends: UserInterface */
 include_once('./lib/TemplateUtility.php'); /* Depends: ModuleUtility, Hooks */
 
 /* Give the session a unique name to avoid conflicts and start the session. */
-@session_name(CATS_SESSION_NAME);
+@session_name(SESSIONNAME);
 session_start();
 
 /* Make sure we aren't getting screwed over by magic quotes. */

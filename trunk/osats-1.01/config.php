@@ -7,7 +7,7 @@
 */
 
 /* License key. */
-define('LICENSE_KEY', '3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
+ define('LICENSE_KEY', '3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
 
 /* Database configuration. */
 define('DATABASE_USER', 'root');
@@ -105,7 +105,7 @@ define('MODULES_PATH', './modules/');
 
 /* Unique session name. The only reason you might want to modify this is
  * for multiple installations on one server. A-Z, 0-9 only! */
-define('CATS_SESSION_NAME', 'OSATS');
+define('SESSIONNAME', 'OSATS');
 
 /* Subject line of e-mails sent to candidates via the career portal when they
  * apply for a job order.
@@ -134,7 +134,7 @@ define('FORGOT_PASSWORD_BODY',      'You recently requested that your OSATS: App
 define('ENABLE_DEMO_MODE', false);
 
 /* Offset to GMT Time. */
-define('OFFSET_GMT', -6);
+define('OFFSET_GMT', -7);
 
 /* Should we enforce only one session per user (excluding demo)? */
 define('ENABLE_SINGLE_SESSION', false);
@@ -152,11 +152,11 @@ define('MAIL_MAILER', 3);
 define('MAIL_SENDMAIL_PATH', "/usr/sbin/sendmail");
 
 /* SMTP Settings. Define if you chose SMTP Above. */
-define('MAIL_SMTP_HOST', "");
+define('MAIL_SMTP_HOST', "myhost");
 define('MAIL_SMTP_PORT', 25);
 define('MAIL_SMTP_AUTH', true);
-define('MAIL_SMTP_USER', "");
-define('MAIL_SMTP_PASS', "");
+define('MAIL_SMTP_USER', "myusername");
+define('MAIL_SMTP_PASS', "test");
 
 /* Event reminder E-Mail Template. */
 $GLOBALS['eventReminderEmail'] = <<<EOF
