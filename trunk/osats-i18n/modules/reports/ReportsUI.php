@@ -31,6 +31,7 @@ include_once('./lib/Statistics.php');
 include_once('./lib/DateUtility.php');
 include_once('./lib/Candidates.php');
 include_once('./lib/CommonErrors.php');
+include_once('./lib/i18n.php');
 
 class ReportsUI extends UserInterface
 {
@@ -41,7 +42,7 @@ class ReportsUI extends UserInterface
         $this->_authenticationRequired = true;
         $this->_moduleDirectory = 'reports';
         $this->_moduleName = 'reports';
-        $this->_moduleTabText = 'Reports';
+        $this->_moduleTabText = __('Reports');
         $this->_subTabs = array(
                 'EEO Reports' => osatutil::getIndexName() . '?m=reports&amp;a=customizeEEOReport'
             );
@@ -202,48 +203,48 @@ class ReportsUI extends UserInterface
         {
             case 'yesterday':
                 $period = TIME_PERIOD_YESTERDAY;
-                $reportTitle = 'Yesterday\'s Report';
+                $reportTitle = __("Yesterday's Report");
                 break;
 
             case 'thisWeek':
                 $period = TIME_PERIOD_THISWEEK;
-                $reportTitle = 'This Week\'s Report';
+                $reportTitle = __("This Week's Report");
                 break;
 
             case 'lastWeek':
                 $period = TIME_PERIOD_LASTWEEK;
-                $reportTitle = 'Last Week\'s Report';
+                $reportTitle = __("Last Week's Report");
                 break;
 
             case 'thisMonth':
                 $period = TIME_PERIOD_THISMONTH;
-                $reportTitle = 'This Month\'s Report';
+                $reportTitle = __("This Month's Report");
                 break;
 
             case 'lastMonth':
                 $period = TIME_PERIOD_LASTMONTH;
-                $reportTitle = 'Last Month\'s Report';
+                $reportTitle = __("Last Month's Report");
                 break;
 
             case 'thisYear':
                 $period = TIME_PERIOD_THISYEAR;
-                $reportTitle = 'This Year\'s Report';
+                $reportTitle = __("This Year's Report");
                 break;
 
             case 'lastYear':
                 $period = TIME_PERIOD_LASTYEAR;
-                $reportTitle = 'Last Year\'s Report';
+                $reportTitle = __("Last Year's Report");
                 break;
 
             case 'toDate':
                 $period = TIME_PERIOD_TODATE;
-                $reportTitle = 'To Date Report';
+                $reportTitle = __("To Date Report");
                 break;
 
             case 'today':
             default:
                 $period = TIME_PERIOD_TODAY;
-                $reportTitle = 'Today\'s Report';
+                $reportTitle = __("Today's Report");
                 break;
         }
 
@@ -282,17 +283,17 @@ class ReportsUI extends UserInterface
         {
             case 'yesterday':
                 $period = TIME_PERIOD_YESTERDAY;
-                $reportTitle = 'Yesterday\'s Report';
+                $reportTitle = __("Yesterday's Report");
                 break;
 
             case 'thisWeek':
                 $period = TIME_PERIOD_THISWEEK;
-                $reportTitle = 'This Week\'s Report';
+                $reportTitle = __("This Week's Report");
                 break;
 
             case 'lastWeek':
                 $period = TIME_PERIOD_LASTWEEK;
-                $reportTitle = 'Last Week\'s Report';
+                $reportTitle = __("Last Week's Report");
                 break;
 
             case 'thisMonth':
@@ -302,28 +303,28 @@ class ReportsUI extends UserInterface
 
             case 'lastMonth':
                 $period = TIME_PERIOD_LASTMONTH;
-                $reportTitle = 'Last Month\'s Report';
+                $reportTitle = __("Last Month's Report");
                 break;
 
             case 'thisYear':
                 $period = TIME_PERIOD_THISYEAR;
-                $reportTitle = 'This Year\'s Report';
+                $reportTitle = __("This Year's Report");
                 break;
 
             case 'lastYear':
                 $period = TIME_PERIOD_LASTYEAR;
-                $reportTitle = 'Last Year\'s Report';
+                $reportTitle = __("Last Year's Report");
                 break;
 
             case 'toDate':
                 $period = TIME_PERIOD_TODATE;
-                $reportTitle = 'To Date Report';
+                $reportTitle = __("To Date Report");
                 break;
 
             case 'today':
             default:
                 $period = TIME_PERIOD_TODAY;
-                $reportTitle = 'Today\'s Report';
+                $reportTitle = __("Today's Report");
                 break;
         }
 
@@ -350,7 +351,7 @@ class ReportsUI extends UserInterface
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         $jobOrderID = $_GET['jobOrderID'];
@@ -364,7 +365,7 @@ class ReportsUI extends UserInterface
         /* Bail out if we got an empty result set. */
         if (empty($data))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified job order ID could not be found.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('The specified job order ID could not be found.'));
         }
 
         $reportParameters['siteName'] = $siteName;
@@ -458,7 +459,7 @@ class ReportsUI extends UserInterface
 
         $pdf->SetXY(25, 35);
         $pdf->SetFont($fontFace, 'BU', 14);
-        $pdf->Write(5, "Recruiting Summary Report\n");
+        $pdf->Write(5, __('Recruiting Summary Report'). "\n");
 
         $pdf->SetFont($fontFace, '', 10);
         $pdf->SetX(25);
@@ -466,23 +467,23 @@ class ReportsUI extends UserInterface
 
         $pdf->SetFont($fontFace, 'B', 10);
         $pdf->SetX(25);
-        $pdf->Write(5, 'Company: '. $companyName . "\n");
+        $pdf->Write(5, __('Company').': '. $companyName . "\n");
 
         $pdf->SetFont($fontFace, '', 10);
         $pdf->SetX(25);
-        $pdf->Write(5, 'Position: ' . $jobOrderName . "\n\n");
+        $pdf->Write(5, __('Position'). ': ' . $jobOrderName . "\n\n");
 
         $pdf->SetFont($fontFace, '', 10);
         $pdf->SetX(25);
-        $pdf->Write(5, 'Period: ' . $periodLine . "\n\n");
+        $pdf->Write(5, __('Period'). ': ' . $periodLine . "\n\n");
 
         $pdf->SetFont($fontFace, '', 10);
         $pdf->SetX(25);
-        $pdf->Write(5, 'Account Manager: ' . $accountManager . "\n");
+        $pdf->Write(5, __('Account Manager'). ': ' . $accountManager . "\n");
 
         $pdf->SetFont($fontFace, '', 10);
         $pdf->SetX(25);
-        $pdf->Write(5, 'Recruiter: ' . $recruiter . "\n");
+        $pdf->Write(5, __('Recruiter'). ': ' . $recruiter . "\n");
 
         /* Note that the server is not logged in when getting this file from
          * itself.
@@ -501,41 +502,41 @@ class ReportsUI extends UserInterface
 
         $pdf->SetXY(25,180);
         $pdf->SetFont($fontFace, '', 10);
-        $pdf->Write(5, 'Total Candidates ');
+        $pdf->Write(5, __('Total Candidates'). ' ');
         $pdf->SetTextColor(255, 0, 0);
-        $pdf->Write(5, 'Screened');
+        $pdf->Write(5, __('Screened'));
         $pdf->SetTextColor(0, 0, 0);
-        $pdf->Write(5, ' by ' . $siteName . ": \n\n");
+        $pdf->Write(5, ' '. __('by'). ' ' . $siteName . ": \n\n");
 
         $pdf->SetX(25);
         $pdf->SetFont($fontFace, '', 10);
-        $pdf->Write(5, 'Total Candidates ');
+        $pdf->Write(5, __('Total Candidates'). ' ');
         $pdf->SetTextColor(0, 125, 0);
-        $pdf->Write(5, 'Submitted');
+        $pdf->Write(5, __('Submitted'));
         $pdf->SetTextColor(0, 0, 0);
-        $pdf->Write(5, ' to ' . $companyName . ": \n\n");
+        $pdf->Write(5, __('to'). ' ' . $companyName . ": \n\n");
 
         $pdf->SetX(25);
         $pdf->SetFont($fontFace, '', 10);
-        $pdf->Write(5, 'Total Candidates ');
+        $pdf->Write(5, __('Total Candidates'). ' ');
         $pdf->SetTextColor(0, 0, 255);
-        $pdf->Write(5, 'Interviewed');
+        $pdf->Write(5, __('Interviewed'));
         $pdf->SetTextColor(0, 0, 0);
-        $pdf->Write(5, ' by ' . $companyName . ": \n\n");
+        $pdf->Write(5, ' '. __('by'). ' ' . $companyName . ": \n\n");
 
         $pdf->SetX(25);
         $pdf->SetFont($fontFace, '', 10);
-        $pdf->Write(5, 'Total Candidates ');
+        $pdf->Write(5, __('Total Candidates'). ' ');
         $pdf->SetTextColor(255, 75, 0);
-        $pdf->Write(5, 'Placed');
+        $pdf->Write(5, __('Placed'));
         $pdf->SetTextColor(0, 0, 0);
-        $pdf->Write(5, ' at ' . $companyName . ": \n\n\n");
+        $pdf->Write(5, ' '. __('at'). ' ' . $companyName . ": \n\n\n");
 
         if ($notes != '')
         {
             $pdf->SetX(25);
             $pdf->SetFont($fontFace, '', 10);
-            $pdf->Write(5, "Notes:\n");
+            $pdf->Write(5, __('Notes'). ":\n");
 
             $len = strlen($notes);
             $maxChars = 70;
@@ -577,11 +578,11 @@ class ReportsUI extends UserInterface
         switch ($modePeriod)
         {
             case 'week':
-                $labelPeriod = ' Last Week';
+                $labelPeriod = ' '.__('Last Week');
                 break;
 
             case 'month':
-                $labelPeriod = ' Last Month';
+                $labelPeriod = ' '.__('Last Month');
                 break;
 
             default:
@@ -592,11 +593,11 @@ class ReportsUI extends UserInterface
         switch ($modeStatus)
         {
             case 'rejected':
-                $labelStatus = ' Rejected';
+                $labelStatus = ' '.__('Rejected');
                 break;
 
             case 'placed':
-                $labelStatus = ' Placed';
+                $labelStatus = ' '.__('Placed');
                 break;
 
             default:
@@ -619,7 +620,7 @@ class ReportsUI extends UserInterface
         $urlEthnicGraph = osatutil::getAbsoluteURI(
             sprintf("%s?m=graphs&a=generic&title=%s&labels=%s&data=%s&width=%s&height=%s",
                 osatutil::getIndexName(),
-                urlencode('Number of Candidates'.$labelStatus.' by Ethnic Type'.$labelPeriod),
+                urlencode(__('Number of Candidates').$labelStatus.' '. __('by Ethnic Type').$labelPeriod),
                 urlencode(implode(',', $labels)),
                 urlencode(implode(',', $data)),
                 400,
@@ -642,7 +643,7 @@ class ReportsUI extends UserInterface
         $urlVeteranGraph = osatutil::getAbsoluteURI(
             sprintf("%s?m=graphs&a=generic&title=%s&labels=%s&data=%s&width=%s&height=%s",
                 osatutil::getIndexName(),
-                urlencode('Number of Candidates'.$labelStatus.' by Veteran Status'.$labelPeriod),
+                urlencode(__('Number of Candidates').$labelStatus.' '. __('by Veteran Status').$labelPeriod),
                 urlencode(implode(',', $labels)),
                 urlencode(implode(',', $data)),
                 400,
@@ -655,16 +656,16 @@ class ReportsUI extends UserInterface
 
         $rsGenderStatistics = $EEOReportStatistics['rsGenderStatistics'];
 
-        $labels[] = 'Male ('.$rsGenderStatistics['numberOfCandidatesMale'].')';
+        $labels[] = __('Male'). ' ('.$rsGenderStatistics['numberOfCandidatesMale'].')';
         $data[] = $rsGenderStatistics['numberOfCandidatesMale'];
 
-        $labels[] = 'Female ('.$rsGenderStatistics['numberOfCandidatesFemale'].')';
+        $labels[] = __('Female'). ' ('.$rsGenderStatistics['numberOfCandidatesFemale'].')';
         $data[] = $rsGenderStatistics['numberOfCandidatesFemale'];
 
         $urlGenderGraph = osatutil::getAbsoluteURI(
             sprintf("%s?m=graphs&a=genericPie&title=%s&labels=%s&data=%s&width=%s&height=%s&legendOffset=%s",
                 osatutil::getIndexName(),
-                urlencode('Number of Candidates by Gender'),
+                urlencode(__('Number of Candidates by Gender')),
                 urlencode(implode(',', $labels)),
                 urlencode(implode(',', $data)),
                 320,
@@ -692,7 +693,7 @@ class ReportsUI extends UserInterface
         $urlDisabilityGraph = osatutil::getAbsoluteURI(
             sprintf("%s?m=graphs&a=genericPie&title=%s&labels=%s&data=%s&width=%s&height=%s&legendOffset=%s",
                 osatutil::getIndexName(),
-                urlencode('Number of Candidates by Disability Status'),
+                urlencode(__('Number of Candidates by Disability Status')),
                 urlencode(implode(',', $labels)),
                 urlencode(implode(',', $data)),
                 320,
@@ -721,5 +722,3 @@ class ReportsUI extends UserInterface
         $this->_template->display('./modules/reports/EEOReport.tpl');
     }
 }
-
-?>

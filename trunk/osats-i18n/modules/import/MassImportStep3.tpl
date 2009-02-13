@@ -3,11 +3,10 @@
         <table cellpadding="0" cellspacing="0" border="0" width="100%">
             <tr>
                 <td align="left" valign="middle" class="infoBarText">
-                    Review
+                    <?php _e('Review') ?>
                 </td>
                 <td align="right" valign="middle" class="infoFileText">
-                    <b><?php echo LicenseUtility::isParsingEnabled() ? 'Parsed and ' : ''; ?>Ready to Import</b> <?php echo number_format($cnt = count($this->documents), 0); ?>
-                    resume document<?php echo $cnt != 1 ? 's' : ''; ?>
+                    <b><?php echo LicenseUtility::isParsingEnabled() ? __('Parsed and ') : ''; ?>Ready to Import</b> <?php echo number_format($cnt = count($this->documents), 0); ?> resume document<?php echo $cnt != 1 ? 's' : ''; ?>
                 </td>
             </tr>
         </table>
@@ -16,10 +15,10 @@
     <div class="resultsScroller">
         <table cellpadding="0" cellspacing="0" border="0" width="100%">
             <tr>
-                <td class="dataColumnTitle" width="30%">File</td>
-                <td class="dataColumnTitle" width="20%">Name</td>
-                <td class="dataColumnTitle" width="23%">Location</td>
-                <td class="dataColumnTitle" width="27%">E-mail</td>
+                <td class="dataColumnTitle" width="30%"><?php _e('File') ?></td>
+                <td class="dataColumnTitle" width="20%"><?php _e('Name') ?></td>
+                <td class="dataColumnTitle" width="23%"><?php _e('Location') ?></td>
+                <td class="dataColumnTitle" width="27%"><?php _e('E-Mail') ?></td>
                 <td align="middle" width="16" style="background-color: #DDECFE;"><img src="images/scrollTop.jpg" border="0" width="16" height="16" onmousedown="startGridScrollUp();" onmouseup="endScrolling();" style="cursor: pointer;" /></td>
             </tr>
         <?php for($row=0; $row<8; $row++): ?>

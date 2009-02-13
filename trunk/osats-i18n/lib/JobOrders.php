@@ -31,6 +31,8 @@ class JobOrders
 {
     public $_db;
     public $_siteID;
+    private $dateformat;
+    private $dateformatLong;
 
     public $extraFields;
 
@@ -39,6 +41,8 @@ class JobOrders
     {
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
+        $this->dateformatLong = __('DATEFORMAT_SQL_LONG');
+        $this->dateformat     = __('DATEFORMAT_SQL_DATE');
         $this->extraFields = new ExtraFields($siteID, DATA_ITEM_JOBORDER);
     }
 
@@ -454,16 +458,16 @@ class JobOrders
                 owner_user.email AS owner_email,
                 recruiter_user.email AS recruiter_email,
                 DATE_FORMAT(
-                    joborder.start_date, '%%m-%%d-%%y'
+                    joborder.start_date, '%s'
                 ) AS startDate,
                 DATEDIFF(
                     NOW(), joborder.date_created
                 ) AS daysOld,
                 DATE_FORMAT(
-                    joborder.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    joborder.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    joborder.date_modified, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    joborder.date_modified, '%s'
                 ) AS dateModified,
                 COUNT(
                     candidate_joborder.joborder_id
@@ -503,6 +507,9 @@ class JobOrders
                 joborder.site_id = %s
             GROUP BY
                 joborder.joborder_id",
+            $this->dateformat,
+            $this->dateformatLong,
+            $this->dateformatLong,
             $this->_db->makeQueryInteger($jobOrderID),
             PIPELINE_STATUS_SUBMITTED,
             $this->_siteID,
@@ -551,7 +558,7 @@ class JobOrders
                 joborder.questionnaire_id as questionnaireID,
                 joborder.company_department_id AS departmentID,
                 DATE_FORMAT(
-                    joborder.start_date, '%%m-%%d-%%y'
+                    joborder.start_date, '%s'
                 ) AS startDate
             FROM
                 joborder
@@ -563,6 +570,7 @@ class JobOrders
                 joborder.joborder_id = %s
             AND
                 joborder.site_id = %s",
+            '%m-%d-%y', // fixme: this is because the js-datepicker supports only a bunch of formats...
             $jobOrderID,
             $this->_siteID
         );
@@ -700,13 +708,13 @@ class JobOrders
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName,
                 DATE_FORMAT(
-                    joborder.start_date, '%%m-%%d-%%y'
+                    joborder.start_date, '%s'
                 ) AS startDate,
                 DATE_FORMAT(
-                    joborder.date_created, '%%m-%%d-%%y'
+                    joborder.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    joborder.date_modified, '%%m-%%d-%%y'
+                    joborder.date_modified, '%s'
                 ) AS dateModified,
                 DATEDIFF(
                     NOW(), joborder.date_created
@@ -762,6 +770,9 @@ class JobOrders
             ORDER BY
                 daysOld ASC,
                 dateCreatedSort DESC",
+            $this->dateformat,
+            $this->dateformat,
+            $this->dateformat,
             PIPELINE_STATUS_SUBMITTED,
             $this->_siteID,
             $this->_siteID,
@@ -895,6 +906,7 @@ class JobOrders
 class JobOrdersDataGrid extends DataGrid
 {
     protected $_siteID;
+    private $dateformat;
 
 
     // FIXME: Fix ugly indenting - ~400 character lines = bad.
@@ -904,9 +916,11 @@ class JobOrdersDataGrid extends DataGrid
         $this->_siteID = $siteID;
         $this->_assignedCriterion = "";
         $this->_dataItemIDColumn = 'joborder.joborder_id';
+        $this->dateformat     = __('DATEFORMAT_SQL_LONG');
+
 
         $this->_classColumns = array(
-            'Attachments' => array(  'select'   => 'IF(attachment_id, 1, 0) AS attachmentPresent',
+            __('Attachments') => array(  'select'   => 'IF(attachment_id, 1, 0) AS attachmentPresent',
                                      'pagerRender' => '
                                                     if ($rsData[\'attachmentPresent\'] == 1)
                                                     {
@@ -927,7 +941,7 @@ class JobOrdersDataGrid extends DataGrid
                                      'exportable' => false,
                                      'filterable' => false),
 
-            'ID' =>        array(     'pagerRender'    => 'return $rsData[\'jobOrderID\'];',
+            __('ID') =>        array(     'pagerRender'    => 'return $rsData[\'jobOrderID\'];',
                                       'sortableColumn' => 'jobOrderID',
                                       'pagerWidth'     => 33,
                                       'pagerOptional'  => true,
@@ -936,7 +950,7 @@ class JobOrdersDataGrid extends DataGrid
                                       'filter'         => 'joborder.joborder_id',
                                       'filterTypes'   => '===>=<'),
 
-            'Company Job ID'  => array ('select' => 'joborder.client_job_id AS cpyJobID',
+            __('Company Job ID')  => array ('select' => 'joborder.client_job_id AS cpyJobID',
                                         'sortableColumn' => 'cpyJobID',
                                         'pagerWidth'     => 65,
                                         'pagerOptional'  => true,
@@ -946,7 +960,7 @@ class JobOrdersDataGrid extends DataGrid
                                         'filter'         => 'joborder.client_job_id',
                                         'filterTypes'   => '===>=<'),
 
-            'Title' =>       array('select'         => 'joborder.title AS title',
+            __('Title') =>       array('select'         => 'joborder.title AS title',
                                       'pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.osatutil::getIndexName().'?m=joborders&amp;a=show&amp;jobOrderID=\'.$rsData[\'jobOrderID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'title\']).\'</a>\';',
                                       'sortableColumn' => 'title',
                                       'pagerWidth'     => 165,
@@ -954,7 +968,7 @@ class JobOrdersDataGrid extends DataGrid
                                       'alphaNavigation'=> true,
                                       'filter'         => 'joborder.title'),
 
-            'Company' =>       array('select'         => 'company.name AS companyName,
+            __('Company') =>       array('select'         => 'company.name AS companyName,
                                                           company.company_id AS companyID',
                                       'pagerRender'    => 'return \'<a href="'.osatutil::getIndexName().'?m=companies&amp;a=show&amp;companyID=\'.$rsData[\'companyID\'].\'">\'.htmlspecialchars($rsData[\'companyName\']).\'</a>\';',
                                       'sortableColumn' => 'companyName',
@@ -963,7 +977,7 @@ class JobOrdersDataGrid extends DataGrid
                                       'alphaNavigation'=> true,
                                       'filter'         => 'company.name'),
 
-            'Department' =>           array('select'   => 'company_department.name AS department',
+            __('Department') =>           array('select'   => 'company_department.name AS department',
                                       'join'           => 'LEFT JOIN company_department ON company_department.company_department_id = joborder.company_department_id',
                                       'pagerRender'    => 'return $rsData[\'department\'];',
                                       'sortableColumn' => 'department',
@@ -972,7 +986,7 @@ class JobOrdersDataGrid extends DataGrid
                                       'alphaNavigation'=> true,
                                       'filter'         => 'company_department.name'),
 
-            'Type' =>           array('select'         => 'joborder.type AS type',
+            __('Type') =>           array('select'         => 'joborder.type AS type',
                                       'pagerRender'    => 'return $rsData[\'type\'];',
                                       'sortableColumn' => 'type',
                                       'pagerWidth'     => 45,
@@ -981,7 +995,7 @@ class JobOrdersDataGrid extends DataGrid
                                       'exportRender'   => 'return $rsData[\'type\'];',
                                       'filter'         => 'joborder.type'),
 
-            'Status' =>         array('select'         => 'joborder.status AS status',
+            __('Status') =>         array('select'         => 'joborder.status AS status',
                                       'pagerRender'    => 'return $rsData[\'status\'];',
                                       'exportRender'   => 'return $rsData[\'status\'];',
                                       'sortableColumn' => 'status',
@@ -990,7 +1004,7 @@ class JobOrdersDataGrid extends DataGrid
                                       'alphaNavigation'=> false,
                                       'filter'         => 'joborder.status'),
 
-            'Age' =>            array('select'         => 'DATEDIFF(NOW(), joborder.date_created) AS daysOld',
+            __('Age') =>            array('select'         => 'DATEDIFF(NOW(), joborder.date_created) AS daysOld',
                                       'pagerRender'    => 'return $rsData[\'daysOld\'];',
                                       'sortableColumn' => 'daysOld',
                                       'pagerWidth'     => 45,
@@ -999,20 +1013,20 @@ class JobOrdersDataGrid extends DataGrid
                                       'filterHaving'  => 'daysOld',
                                       'filterTypes'   => '===>=<'),
 
-            'Created' =>       array('select'   => 'DATE_FORMAT(joborder.date_created, \'%m-%d-%y\') AS dateCreated',
+            __('Created') =>       array('select'   => 'DATE_FORMAT(joborder.date_created, \''.$this->dateformat.'\') AS dateCreated',
                                      'pagerRender'      => 'return $rsData[\'dateCreated\'];',
                                      'sortableColumn'     => 'dateCreatedSort',
                                      'pagerWidth'    => 60,
-                                     'filterHaving' => 'DATE_FORMAT(joborder.date_created, \'%m-%d-%y\')'),
+                                     'filterHaving' => 'DATE_FORMAT(joborder.date_created, \''.$this->dateformat.'\')'),
 
-            'Modified' =>      array('select'   => 'DATE_FORMAT(joborder.date_modified, \'%m-%d-%y\') AS dateModified',
+            __('Modified') =>      array('select'   => 'DATE_FORMAT(joborder.date_modified, \''.$this->dateformat.'\') AS dateModified',
                                      'pagerRender'      => 'return $rsData[\'dateModified\'];',
                                      'sortableColumn'     => 'dateModifiedSort',
                                      'pagerWidth'    => 60,
                                      'pagerOptional' => true,
-                                     'filterHaving' => 'DATE_FORMAT(joborder.date_modified, \'%m-%d-%y\')'),
+                                     'filterHaving' => 'DATE_FORMAT(joborder.date_modified, \''.$this->dateformat.'\')'),
 
-            'Not Contacted' => array('select'   => '(
+            __('Not Contacted') => array('select'   => '(
                                                               SELECT
                                                                   COUNT(*)
                                                               FROM
@@ -1031,7 +1045,7 @@ class JobOrdersDataGrid extends DataGrid
                                        'filterHaving'  => 'notContacted',
                                        'filterTypes'   => '===>=<'),
 
-            'Submitted' =>       array('select'   => '(
+            __('Submitted') =>       array('select'   => '(
                                                             SELECT
                                                                 COUNT(*)
                                                             FROM
@@ -1050,7 +1064,7 @@ class JobOrdersDataGrid extends DataGrid
                                      'filterHaving'  => 'submitted',
                                      'filterTypes'   => '===>=<'),
 
-            'Pipeline' =>       array('select'   => '(
+            __('Pipeline') =>       array('select'   => '(
                                                             SELECT
                                                                 COUNT(*)
                                                             FROM
@@ -1067,7 +1081,7 @@ class JobOrdersDataGrid extends DataGrid
                                      'filterHaving'  => 'pipeline',
                                      'filterTypes'   => '===>=<'),
 
-             'Interviews' =>       array('select'   => '(
+             __('Interviews') =>       array('select'   => '(
                                                              SELECT
                                                                  COUNT(*)
                                                              FROM
@@ -1086,7 +1100,7 @@ class JobOrdersDataGrid extends DataGrid
                                       'filterHaving'  => 'interviewingCount',
                                       'filterTypes'   => '===>=<'),
 
-            'Owner' =>         array('select'   => 'owner_user.first_name AS ownerFirstName,' .
+            __('Owner') =>         array('select'   => 'owner_user.first_name AS ownerFirstName,' .
                                                    'owner_user.last_name AS ownerLastName,' .
                                                    'CONCAT(owner_user.last_name, owner_user.first_name) AS ownerSort',
                                      'join'     => 'LEFT JOIN user AS owner_user ON joborder.owner = owner_user.user_id',
@@ -1097,7 +1111,7 @@ class JobOrdersDataGrid extends DataGrid
                                      'alphaNavigation' => true,
                                      'filter'         => 'CONCAT(owner_user.first_name, owner_user.last_name)'),
 
-            'Recruiter' =>     array('select'   => 'recruiter_user.first_name AS recruiterFirstName,' .
+            __('Recruiter') =>     array('select'   => 'recruiter_user.first_name AS recruiterFirstName,' .
                                                    'recruiter_user.last_name AS recruiterLastName,' .
                                                    'CONCAT(recruiter_user.last_name, recruiter_user.first_name) AS recruiterSort',
                                      'join'     => 'LEFT JOIN user AS recruiter_user ON joborder.recruiter = recruiter_user.user_id',
@@ -1108,7 +1122,7 @@ class JobOrdersDataGrid extends DataGrid
                                      'alphaNavigation' => true,
                                      'filter'         => 'CONCAT(recruiter_user.first_name, recruiter_user.last_name)'),
 
-            'Contact' =>       array('select'   => 'contact.first_name AS contactFirstName,' .
+            __('Contact') =>       array('select'   => 'contact.first_name AS contactFirstName,' .
                                                    'contact.last_name AS contactLastName,' .
                                                    'CONCAT(contact.last_name, contact.first_name) AS contactSort,' .
                                                    'contact.contact_id AS contactID',
@@ -1119,7 +1133,7 @@ class JobOrdersDataGrid extends DataGrid
                                      'alphaNavigation' => true,
                                      'filter'         => 'CONCAT(contact.first_name, contact.last_name)'),
 
-            'Contact Phone' => array('select'   => 'contact.phone_work AS contactPhone',
+            __('Contact Phone') => array('select'   => 'contact.phone_work AS contactPhone',
                                      'pagerRender'      => 'return $rsData[\'contactPhone\'];',
                                      'exportRender'     => 'return $rsData[\'contactPhone\'];',
                                      'sortableColumn'     => 'contactPhone',
@@ -1127,7 +1141,7 @@ class JobOrdersDataGrid extends DataGrid
                                      'alphaNavigation' => false,
                                      'filter'         => 'contact.phone_work'),
 
-            'City'          => array('select'   => 'joborder.city AS locationCity',
+            __('City')          => array('select'   => 'joborder.city AS locationCity',
                                      'pagerRender'      => 'return $rsData[\'locationCity\'];',
                                      'exportRender'     => 'return $rsData[\'locationCity\'];',
                                      'sortableColumn'     => 'locationCity',
@@ -1135,7 +1149,7 @@ class JobOrdersDataGrid extends DataGrid
                                      'alphaNavigation' => true,
                                      'filter'         => 'joborder.city'),
 
-            'State'          => array('select'   => 'joborder.state AS locationState',
+            __('State')          => array('select'   => 'joborder.state AS locationState',
                                      'pagerRender'      => 'return $rsData[\'locationState\'];',
                                      'exportRender'     => 'return $rsData[\'locationState\'];',
                                      'sortableColumn'     => 'locationState',
@@ -1143,7 +1157,7 @@ class JobOrdersDataGrid extends DataGrid
                                      'alphaNavigation' => true,
                                      'filter'         => 'joborder.state'),
 
-            'Max Rate'          => array('select'   => 'joborder.rate_max AS maxRate',
+            __('Max Rate')          => array('select'   => 'joborder.rate_max AS maxRate',
                                      'pagerRender'      => 'return $rsData[\'maxRate\'];',
                                      'exportRender'     => 'return $rsData[\'maxRate\'];',
                                      'sortableColumn'     => 'maxRate',
@@ -1152,7 +1166,7 @@ class JobOrdersDataGrid extends DataGrid
                                      'filter'         => 'joborder.rate_max',
                                      'filterTypes'   => '===>=<'),
 
-            'Salary'          => array('select'   => 'joborder.salary AS salary',
+            __('Salary')          => array('select'   => 'joborder.salary AS salary',
                                      'pagerRender'      => 'return $rsData[\'salary\'];',
                                      'exportRender'     => 'return $rsData[\'salary\'];',
                                      'sortableColumn'     => 'salary',
@@ -1161,7 +1175,7 @@ class JobOrdersDataGrid extends DataGrid
                                      'filter'         => 'joborder.salary',
                                      'filterTypes'   => '===>=<'),
 
-            'Duration'          => array('select'   => 'joborder.duration AS duration',
+            __('Duration')          => array('select'   => 'joborder.duration AS duration',
                                      'pagerRender'      => 'return $rsData[\'duration\'];',
                                      'exportRender'     => 'return $rsData[\'duration\'];',
                                      'sortableColumn'     => 'duration',
@@ -1170,7 +1184,7 @@ class JobOrdersDataGrid extends DataGrid
                                      'filter'         => 'joborder.duration',
                                      'filterTypes'   => '===>=<'),
 
-            'Openings'      => array('select'   => 'joborder.openings_available AS openingsAvailable',
+            __('Openings')      => array('select'   => 'joborder.openings_available AS openingsAvailable',
                                      'pagerRender'      => 'return $rsData[\'openingsAvailable\'];',
                                      'exportRender'     => 'return $rsData[\'openingsAvailable\'];',
                                      'sortableColumn'     => 'openingsAvailable',
@@ -1179,19 +1193,19 @@ class JobOrdersDataGrid extends DataGrid
                                      'filter'         => 'joborder.openings_available',
                                      'filterTypes'   => '===>=<'),
 
-            'Misc Notes' =>    array('select'  => 'joborder.notes AS notes',
+            __('Misc. Notes') =>    array('select'  => 'joborder.notes AS notes',
                                      'sortableColumn'    => 'notes',
                                      'pagerWidth'   => 300,
                                      'filter'         => 'joborder.notes'),
 
-            'OwnerID' =>       array('select'    => '',
+            __('OwnerID') =>       array('select'    => '',
                                      'filter'    => 'joborder.owner, joborder.recruiter',
                                      'filterInList' => true,
                                      'pagerOptional' => false,
                                      'filterable' => false,
                                      'filterDescription' => 'Only My Job Orders'),
 
-            'IsHot' =>         array('select'    => '',
+            __('IsHot') =>         array('select'    => '',
                                      'filter'    => 'joborder.is_hot',
                                      'pagerOptional' => false,
                                      'filterable' => false,
@@ -1301,5 +1315,3 @@ class JobOrdersDataGrid extends DataGrid
         return $sql;
     }
 }
-
-?>

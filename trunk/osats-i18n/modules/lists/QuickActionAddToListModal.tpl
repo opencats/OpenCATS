@@ -1,8 +1,8 @@
 <?php /* $Id: QuickActionAddToListModal.tpl 3198 2007-10-14 23:36:43Z will $ */ ?>
-<?php TemplateUtility::printModalHeader('Candidates', array('js/lists.js'), 'Add to '.$this->dataItemDesc.' Static Lists'); ?>
+<?php TemplateUtility::printModalHeader(__('Candidates'), array('js/lists.js'), __('Add to %s Static Lists', $this->dataItemDesc)); ?>
     <table>
         <tr>
-            <td><!--Add to Static Lists-->Select the lists you want to add the item<?php if (count($this->dataItemIDArray) > 1): ?>s<?php endif; ?> too.</td>
+            <td><!--Add to Static Lists--><?php _e('Select the lists you want to add the item too.') ?></td>
        </tr>
     </table>
             <div class="addToListListBox" id="addToListBox">
@@ -15,7 +15,7 @@
                             <span id="savedListRowDescriptionArea<?php echo($data['savedListID']); ?>"><?php $this->_($data['description']); ?></span>&nbsp;(<?php echo($data['numberEntries']); ?>)
                         </span>
                         <span style="float:right; padding-right:25px;">
-                            <a href="javascript:void(0);" onclick="editListRow(<?php echo($data['savedListID']); ?>);" style="text-decoration:none;"><img src="images/actions/edit.gif" border="0">&nbsp;Edit</a>
+                            <a href="javascript:void(0);" onclick="editListRow(<?php echo($data['savedListID']); ?>);" style="text-decoration:none;"><img src="images/actions/edit.gif" border="0">&nbsp;<?php _e('Edit') ?></a>
                         </span>
                     </div>
                     <div class="<?php TemplateUtility::printAlternatingDivClass($index); ?>" style="display:none;" id="savedListRowEditing<?php echo($data['savedListID']); ?>">
@@ -23,12 +23,12 @@
                             <input class="inputbox" style="width:220px; padding-left:5px; margin-top:2px;" value="<?php $this->_($data['description']); ?>" id="savedListRowInput<?php echo($data['savedListID']); ?>">
                         </span>
                         <span style="float:right; padding-right:25px;">
-                            <a href="javascript:void(0);" onclick="deleteListRow(<?php echo($data['savedListID']); ?>, '<?php echo($this->sessionCookie); ?>', <?php echo($data['numberEntries']); ?>);" style="text-decoration:none;"><img src="images/actions/delete.gif" border="0">&nbsp;Delete</a>&nbsp;
-                            <a href="javascript:void(0);" onclick="saveListRow(<?php echo($data['savedListID']); ?>, '<?php echo($this->sessionCookie); ?>');" style="text-decoration:none;"><img src="images/actions/screen.gif" border="0">&nbsp;Save</a>
+                            <a href="javascript:void(0);" onclick="deleteListRow(<?php echo($data['savedListID']); ?>, '<?php echo($this->sessionCookie); ?>', <?php echo($data['numberEntries']); ?>);" style="text-decoration:none;"><img src="images/actions/delete.gif" border="0">&nbsp;<?php _e('Delete') ?></a>&nbsp;
+                            <a href="javascript:void(0);" onclick="saveListRow(<?php echo($data['savedListID']); ?>, '<?php echo($this->sessionCookie); ?>');" style="text-decoration:none;"><img src="images/actions/screen.gif" border="0">&nbsp;<?php _e('Save') ?></a>
                         </span>
                     </div>
                     <div class="<?php TemplateUtility::printAlternatingDivClass($index); ?>" style="display:none;" id="savedListRowAjaxing<?php echo($data['savedListID']); ?>">
-                        <img src="images/indicator.gif">&nbsp;Saving Changes, Please Wait...
+                        <img src="images/indicator.gif">&nbsp;Saving Changes, <?php _e('Please Wait') ?>...
                     </div>
                 <?php endforeach; ?>
                 <div class="<?php TemplateUtility::printAlternatingDivClass(count($this->savedListsRS)); ?>" style="display:none;" id="savedListNew">
@@ -36,25 +36,25 @@
                         <input class="inputbox" style="width:220px; padding-left:5px; margin-top:2px;" value="" id="savedListNewInput">
                     </span>
                     <span style="float:right; padding-right:25px;">
-                        <a href="javascript:void(0);" onclick="document.getElementById('savedListNew').style.display='none';" style="text-decoration:none;"><img src="images/actions/delete.gif" border="0">&nbsp;Delete</a>&nbsp;
-                        <a href="javascript:void(0);" onclick="commitNewList('<?php echo($this->sessionCookie); ?>', <?php echo($this->dataItemType); ?>);" style="text-decoration:none;"><img src="images/actions/screen.gif" border="0">&nbsp;Save</a>
+                        <a href="javascript:void(0);" onclick="document.getElementById('savedListNew').style.display='none';" style="text-decoration:none;"><img src="images/actions/delete.gif" border="0">&nbsp;<?php _e('Delete') ?></a>&nbsp;
+                        <a href="javascript:void(0);" onclick="commitNewList('<?php echo($this->sessionCookie); ?>', <?php echo($this->dataItemType); ?>);" style="text-decoration:none;"><img src="images/actions/screen.gif" border="0">&nbsp;<?php _e('Save') ?></a>
                     </span>
                 </div>
                 <div class="<?php TemplateUtility::printAlternatingDivClass(count($this->savedListsRS)); ?>" style="display:none;" id="savedListNewAjaxing">
-                    <img src="images/indicator.gif">&nbsp;Saving Changes...
+                    <img src="images/indicator.gif">&nbsp;<?php _e('Saving Changes') ?>...
                 </div>
             </div>
             <br />
             <div style="float:right;" id="actionArea">
-                <input type="button" class="button" value="New List" onclick="addListRow();">&nbsp;
-                <input type="button" class="button" value="Add To Lists" onclick="addItemsToList('<?php echo($this->sessionCookie); ?>', <?php echo($this->dataItemType); ?>);">&nbsp;
-                <input type="button" class="button" value="Cancel" onclick="parentHidePopWin();">&nbsp;
+                <input type="button" class="button" value="<?php _e('New List') ?>" onclick="addListRow();">&nbsp;
+                <input type="button" class="button" value="<?php _e('Add To Lists') ?>" onclick="addItemsToList('<?php echo($this->sessionCookie); ?>', <?php echo($this->dataItemType); ?>);">&nbsp;
+                <input type="button" class="button" value="<?php _e('Cancel') ?>" onclick="parentHidePopWin();">&nbsp;
             </div>
             <div style="display:none; font: normal normal normal 12px/130% Arial, Tahoma, sans-serif;" id="addingToListAjaxing">
-                <img src="images/indicator.gif">&nbsp;Adding to Lists, Please Wait <?php if (count($this->dataItemIDArray) > 20): ?>(This could take awhile)<?php endif; ?>...
+                <img src="images/indicator.gif">&nbsp;<?php _e('Adding to Lists') ?>, <?php _e('Please Wait') ?> <?php if (count($this->dataItemIDArray) > 20): ?>(<?php _e('This could take awhile') ?>)<?php endif; ?>...
             </div>
             <div style="display:none; font: normal normal normal 12px/130% Arial, Tahoma, sans-serif;" id="addingToListAjaxingComplete">
-                <img src="images/indicator.gif">&nbsp;Items have been added to lists successfully.
+                <img src="images/indicator.gif">&nbsp;<?php _e('Items have been added to lists successfully.') ?>
             </div>
             <script type="text/javascript">
                 function relabelEvenOdd()

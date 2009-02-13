@@ -220,7 +220,7 @@ switch ($action)
             osatutil::changeConfigSetting('MAIL_SMTP_USER', '"' . $mailSmtpUsername . '"');
             osatutil::changeConfigSetting('MAIL_SMTP_PASS', '"' . $mailSmtpPassword . '"');
 
-            @session_name(CATS_SESSION_NAME);
+            @session_name(SESSION_NAME);
             session_start();
 
             $_SESSION['fromAddressInstaller'] = $fromAddress;
@@ -500,7 +500,7 @@ switch ($action)
         MySQLConnect();
         initializeOptionalComponents();
 
-        @session_name(CATS_SESSION_NAME);
+        @session_name(SESSION_NAME);
         session_start();
 
         // FIXME: Input validation.
@@ -905,7 +905,7 @@ switch ($action)
         break;
 
     case 'maint':
-        @session_name(CATS_SESSION_NAME);
+        @session_name(SESSION_NAME);
         session_start();
 
         if (isset($_SESSION['CATS']))
@@ -953,7 +953,7 @@ switch ($action)
 		mysql_select_db(DATABASE_NAME) or die(mysql_error("Oops. No DB by the name: ".DATABASE_NAME)); */
 		MySQLQuery("UPDATE system SET Installed = 1");
 
-        @session_name(CATS_SESSION_NAME);
+        @session_name(SESSION_NAME);
         session_start();
 
 

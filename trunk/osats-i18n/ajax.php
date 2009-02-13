@@ -10,6 +10,7 @@ include_once('./lib/Session.php'); /* Depends: MRU, Users, DatabaseConnection. *
 include_once('./lib/AJAXInterface.php');
 include_once('./lib/osatutil.php');
 
+// MK: TODO: Fix missing session_start()...
 
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
@@ -99,6 +100,3 @@ else
 {
     include($filename);
 }
-
-
-?>

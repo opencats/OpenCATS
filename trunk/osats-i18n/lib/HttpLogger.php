@@ -101,5 +101,3 @@ class HTTPLogger
         return $result;
     }
 }
-
-?>

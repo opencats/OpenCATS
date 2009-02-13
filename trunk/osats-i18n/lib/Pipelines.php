@@ -14,12 +14,16 @@ class Pipelines
 {
     private $_db;
     private $_siteID;
+    private $dateformatLong;
+    private $dateformat;
 
 
     public function __construct($siteID)
     {
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
+        $this->dateformatLong = __('DATEFORMAT_SQL_LONG');
+        $this->dateformat     = __('DATEFORMAT_SQL_DATE');
     }
 
 
@@ -185,10 +189,10 @@ class Pipelines
                 joborder.openings AS openings,
                 joborder.openings_available AS openingsAvailable,
                 DATE_FORMAT(
-                    joborder.start_date, '%%m-%%d-%%y'
+                    joborder.start_date, '%s'
                 ) AS start_date,
                 DATE_FORMAT(
-                    joborder.date_created, '%%m-%%d-%%y'
+                    joborder.date_created, '%s'
                 ) AS dateCreated,
                 candidate.candidate_id AS candidateID,
                 candidate.email1 AS candidateEmail,
@@ -218,6 +222,8 @@ class Pipelines
                 joborder.site_id = %s
             AND
                 company.site_id = %s",
+            $this->dateformat,
+            $this->dateformat,
             $this->_db->makeQueryInteger($candidateID),
             $this->_db->makeQueryInteger($jobOrderID),
             $this->_siteID,
@@ -454,10 +460,10 @@ class Pipelines
                 joborder.salary AS salary,
                 joborder.is_hot AS isHot,
                 DATE_FORMAT(
-                    joborder.start_date, '%%m-%%d-%%y'
+                    joborder.start_date, '%s'
                 ) AS start_date,
                 DATE_FORMAT(
-                    joborder.date_created, '%%m-%%d-%%y'
+                    joborder.date_created, '%s'
                 ) AS dateCreated,
                 candidate.candidate_id AS candidateID,
                 candidate.email1 AS candidateEmail,
@@ -491,6 +497,8 @@ class Pipelines
                 joborder.site_id = %s
             AND
                 company.site_id = %s",
+            $this->dateformat,
+            $this->dateformat,
             $this->_db->makeQueryInteger($candidateID),
             $this->_siteID,
             $this->_siteID,
@@ -521,7 +529,7 @@ class Pipelines
                 candidate.email1 AS candidateEmail,
                 candidate_joborder.status AS jobOrderStatus,
                 DATE_FORMAT(
-                    candidate_joborder.date_created, '%%m-%%d-%%y'
+                    candidate_joborder.date_created, '%s'
                 ) AS dateCreated,
                 UNIX_TIMESTAMP(candidate_joborder.date_created) AS dateCreatedInt,
                 candidate_joborder_status.short_description AS status,
@@ -533,7 +541,7 @@ class Pipelines
                     SELECT
                         CONCAT(
                             '<strong>',
-                            DATE_FORMAT(activity.date_created, '%%m-%%d-%%y'),
+                            DATE_FORMAT(activity.date_created, '%s'),
                             ' (',
                             entered_by_user.first_name,
                             ' ',
@@ -598,6 +606,8 @@ class Pipelines
             GROUP BY
                 candidate_joborder.candidate_id
             %s",
+            $this->dateformat,
+            $this->dateformat,
             DATA_ITEM_CANDIDATE,
             $this->_db->makeQueryInteger($jobOrderID),
             $this->_db->makeQueryInteger($jobOrderID),
@@ -672,13 +682,13 @@ class Pipelines
                 candidate_joborder.status AS jobOrderStatus,
                 activity.notes AS notes,
                 DATE_FORMAT(
-                    candidate_joborder.date_created, '%%m-%%d-%%y'
+                    candidate_joborder.date_created, '%s'
                 ) AS dateCreated,
                 candidate_joborder.candidate_joborder_id AS candidateJobOrderID,
                 candidate_joborder.rating_value AS ratingValue,
                 entered_by_user.first_name AS enteredByFirstName,
                 entered_by_user.last_name AS enteredByLastName,
-                DATE_FORMAT(activity.date_modified, '%%m-%%d-%%y (%%h:%%i:%%s %%p)') AS dateModified
+                DATE_FORMAT(activity.date_modified, '%s') AS dateModified
             FROM
                 candidate_joborder
             LEFT JOIN candidate
@@ -696,6 +706,8 @@ class Pipelines
             AND
                 candidate_joborder.site_id = %s
             ",
+            $this->dateformat,
+            $this->dateformatLong,
             $this->_db->makeQueryInteger($candidateJobOrderID),
             DATA_ITEM_CANDIDATE,
             $this->_siteID
@@ -705,5 +717,3 @@ class Pipelines
     }
 
 }
-
-?>

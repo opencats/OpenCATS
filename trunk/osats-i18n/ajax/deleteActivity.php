@@ -27,5 +27,3 @@ $activityEntries->delete($activityID);
 
 /* Send back the XML data. */
 $interface->outputXMLSuccessPage();
-
-?>

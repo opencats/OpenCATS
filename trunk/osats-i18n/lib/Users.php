@@ -28,12 +28,17 @@ class Users
 {
     private $_db;
     private $_siteID;
-
+    private $dateformatLong;
+    private $dateformatTime;
+    private $dateformat;
 
     public function __construct($siteID)
     {
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
+        $this->dateformatLong = __('DATEFORMAT_SQL_LONG');
+        $this->dateformatTime = __('DATEFORMAT_SQL_TIME');
+        $this->dateformat     = __('DATEFORMAT_SQL_DATE');
     }
 
 
@@ -265,13 +270,13 @@ class Users
                     MAX(
                         IF(user_login.successful = 1, user_login.date, NULL)
                     ),
-                    '%%m-%%d-%%y (%%h:%%i %%p)'
+                    '%s'
                 ) AS successfulDate,
                 DATE_FORMAT(
                     MAX(
                         IF(user_login.successful = 0, user_login.date, NULL)
                     ),
-                    '%%m-%%d-%%y (%%h:%%i %%p)'
+                    '%s'
                 ) AS unsuccessfulDate,
                 force_logout as forceLogout
             FROM
@@ -286,6 +291,8 @@ class Users
                 user.user_id = %s
             GROUP BY
                 user.user_id",
+            $this->dateformatLong,
+            $this->dateformatLong,
             $this->_siteID,
             $this->_db->makeQueryInteger($userID)
         );
@@ -333,13 +340,13 @@ class Users
                     MAX(
                         IF(user_login.successful = 1, user_login.date, NULL)
                     ),
-                    '%%m-%%d-%%y (%%h:%%i %%p)'
+                    '%s'
                 ) AS successfulDate,
                 DATE_FORMAT(
                     MAX(
                         IF(user_login.successful = 0, user_login.date, NULL)
                     ),
-                    '%%m-%%d-%%y (%%h:%%i %%p)'
+                    '%s'
                 ) AS unsuccessfulDate,
                 force_logout as forceLogout
             FROM
@@ -356,6 +363,8 @@ class Users
                 user.user_id = %s
             GROUP BY
                 user.user_id",
+            $this->dateformatLong,
+            $this->dateformatLong,
             $aspSiteRule,
             $this->_db->makeQueryInteger($userID)
         );
@@ -454,13 +463,13 @@ class Users
                     MAX(
                         IF(user_login.successful = 1, user_login.date, NULL)
                     ),
-                    '%%m-%%d-%%y (%%h:%%i %%p)'
+                    '%s'
                 ) AS successfulDate,
                 DATE_FORMAT(
                     MAX(
                         IF(user_login.successful = 0, user_login.date, NULL)
                     ),
-                    '%%m-%%d-%%y (%%h:%%i %%p)'
+                    '%s'
                 ) AS unsuccessfulDate
             FROM
                 user
@@ -476,6 +485,8 @@ class Users
                 user.access_level DESC,
                 user.last_name ASC,
                 user.first_name ASC",
+            $this->dateformatLong,
+            $this->dateformatLong,
             $this->_siteID
         );
 
@@ -1080,7 +1091,7 @@ class Users
                 user.last_name AS lastName,
                 site.name AS siteName,
                 DATE_FORMAT(
-                    user_login.date_refreshed, '%%h:%%i %%p'
+                    user_login.date_refreshed, '%s'
                 ) AS lastRefresh,
                 IF(
                     user_login.date_refreshed > DATE_SUB(NOW(), INTERVAL 20 SECOND),
@@ -1101,6 +1112,7 @@ class Users
             ORDER BY
                 user_login.date_refreshed DESC
             %s",
+            $this->dateformatTime,
             $siteCriterion,
             $limitSQL
         );
@@ -1164,5 +1176,3 @@ class Users
         return $rs;
     }
 }
-
-?>

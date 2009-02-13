@@ -25,6 +25,8 @@ include_once('./lib/WebForm.php');
 include_once('./lib/CommonErrors.php');
 include_once('./lib/Import.php');
 include_once('./lib/Questionnaire.php');
+include_once('./lib/i18n.php');
+
 eval(Hooks::get('XML_FEED_SUBMISSION_SETTINGS_HEADERS'));
 
 /* Users.php is included by index.php already. */
@@ -44,7 +46,7 @@ class SettingsUI extends UserInterface
         $this->_authenticationRequired = true;
         $this->_moduleDirectory = 'settings';
         $this->_moduleName = 'settings';
-        $this->_moduleTabText = 'Settings';
+        $this->_moduleTabText = __('Settings');
 
         /* Only CATS professional on site gets to make career portal customizer users. */
         if (!file_exists('modules/asp') && LicenseUtility::isProfessional())
@@ -541,11 +543,11 @@ class SettingsUI extends UserInterface
 
                 if ($loginAttempts[$rowIndex]['successful'] == 0)
                 {
-                    $loginAttempts[$rowIndex]['successful'] = 'No';
+                    $loginAttempts[$rowIndex]['successful'] = __('_No');
                 }
                 else
                 {
-                    $loginAttempts[$rowIndex]['successful'] = 'Yes';
+                    $loginAttempts[$rowIndex]['successful'] = __('_Yes');
                 }
             }
         }

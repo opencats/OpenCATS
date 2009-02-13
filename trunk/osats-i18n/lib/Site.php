@@ -209,5 +209,3 @@ class Site
         return true;
     }
 }
-
-?>

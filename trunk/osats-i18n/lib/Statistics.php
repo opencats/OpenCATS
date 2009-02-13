@@ -15,12 +15,16 @@ class Statistics
     private $_db;
     private $_siteID;
     private $_timeZoneOffset;
+    private $dateformatLong;
+    private $dateformat;
 
 
     public function __construct($siteID)
     {
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
+        $this->dateformatLong = __('DATEFORMAT_SQL_LONG');
+        $this->dateformat     = __('DATEFORMAT_SQL_DATE');
 
         // FIXME: Session coupling...
         $this->_timeZoneOffset = $_SESSION['CATS']->getTimeZoneOffset();
@@ -260,7 +264,7 @@ class Statistics
                     owner_user.first_name, ' ', owner_user.last_name
                 ) AS ownerFullName,
                 DATE_FORMAT(
-                    candidate_joborder_status_history.date, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    candidate_joborder_status_history.date, '%s'
                 ) AS dateSubmitted
             FROM
                 candidate_joborder_status_history
@@ -286,6 +290,7 @@ class Statistics
             ORDER BY
                 candidate.last_name ASC,
                 candidate.first_name ASC",
+            $this->dateformatLong,
             $jobOrderID,
             $criterion,
             $this->_siteID,
@@ -369,7 +374,7 @@ class Statistics
                     owner_user.first_name, ' ', owner_user.last_name
                 ) AS ownerFullName,
                 DATE_FORMAT(
-                    candidate_joborder_status_history.date, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    candidate_joborder_status_history.date, '%s'
                 ) AS dateSubmitted
             FROM
                 candidate_joborder_status_history
@@ -395,6 +400,7 @@ class Statistics
             ORDER BY
                 candidate.last_name ASC,
                 candidate.first_name ASC",
+            $this->dateformatLong,
             $jobOrderID,
             $criterion,
             $this->_siteID,
@@ -581,7 +587,7 @@ class Statistics
                     owner_user.first_name, ' ', owner_user.last_name
                 ) AS ownerFullName,
                 DATE_FORMAT(
-                    joborder.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    joborder.date_created, '%s'
                 ) AS dateCreated,
                 COUNT(
                     candidate_joborder.joborder_id
@@ -640,6 +646,7 @@ class Statistics
                 joborder.site_id = %s
             GROUP BY
                 joborder.joborder_id",
+            $this->dateformatLong,
             $this->_db->makeQueryInteger($jobOrderID),
             PIPELINE_STATUS_SUBMITTED,
             $this->_siteID,
@@ -1019,5 +1026,3 @@ class Statistics
         return $criteria;
     }
 }
-
-?>

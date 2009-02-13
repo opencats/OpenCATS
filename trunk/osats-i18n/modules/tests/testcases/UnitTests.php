@@ -18,6 +18,7 @@ include_once('./lib/AJAXInterface.php');
 include_once('./lib/BrowserDetection.php');
 include_once('./lib/FileUtility.php');
 include_once('./lib/HashUtility.php');
+include_once('./lib/i18n.php');
 
 
 

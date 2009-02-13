@@ -1,1 +1,1 @@
-alert('Fatal Error: <?php echo($this->errorMessage); ?>');
+alert('<?php _e('Fatal Error') ?>: <?php echo($this->errorMessage); ?>');

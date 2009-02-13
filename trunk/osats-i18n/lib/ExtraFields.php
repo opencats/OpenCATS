@@ -517,7 +517,7 @@ class ExtraFields
                 case EXTRA_FIELD_CHECKBOX:
                     if ($extraFields[$index]['value'] == '')
                     {
-                        $extraFields[$index]['display'] = 'No';
+                        $extraFields[$index]['display'] = __('_No');
                     }
                     else
                     {
@@ -710,11 +710,11 @@ class ExtraFields
                                             'ON '.$column.' = extra_field' . $uniqueIndex . '.data_item_id '.
                                             'AND extra_field' . $uniqueIndex . '.field_name = ' . $db->makeQueryString($data['fieldName']) . ' '.
                                             'AND extra_field' . $uniqueIndex . '.data_item_type = ' . $this->_dataItemType,
-                          'pagerRender'          => 'return ($rsData[\'extra_field_value' . $uniqueIndex . '\'] == \'Yes\' ? \'Yes\' : \'No\');',
-                          'exportRender'          => 'return ($rsData[\'extra_field_value' . $uniqueIndex . '\'] == \'Yes\' ? \'Yes\' : \'No\');',
+                          'pagerRender'          => 'return ($rsData[\'extra_field_value' . $uniqueIndex . '\'] == \'Yes\' ? \''.__('_Yes').'\' : \''.__('_No').'\');',
+                          'exportRender'          => 'return ($rsData[\'extra_field_value' . $uniqueIndex . '\'] == \'Yes\' ? \''.__('_Yes').'\' : \''.__('_No').'\');',
                           'sortableColumn'         => 'extra_field_value' . $uniqueIndex,
                           'pagerWidth'  => 45,
-                          'filter' => 'IF (extra_field'.$uniqueIndex.'.value = "Yes", "Yes", "No")');
+                          'filter' => 'IF (extra_field'.$uniqueIndex.'.value = "Yes", "'.__('_Yes').'", "'.__('_No').'")');
             break;
 
             case EXTRA_FIELD_DATE:

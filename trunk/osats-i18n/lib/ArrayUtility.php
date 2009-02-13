@@ -84,5 +84,3 @@ class ArrayUtility
         return $returnArray;
     }
 }
-
-?>

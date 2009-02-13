@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
     <head>
-        <title>CATS - Login</title>
+        <title>CATS - <?php _e('Login') ?></title>
         <meta http-equiv="Content-Type" content="text/html; charset=<?php echo(HTML_ENCODING); ?>">
         <style type="text/css" media="all">@import "modules/login/login.css";</style>
         <script type="text/javascript" src="js/lib.js"></script>
@@ -34,24 +34,24 @@
                     <form name="loginForm" id="loginForm" action="<?php echo(osatutil::getIndexName()); ?>?m=login&amp;a=forgotPassword" method="post" autocomplete="off">
                         <input type="hidden" name="postback" value="true" />
                         <div id="subFormBlock">
-                            <label id="usernameLabel" for="username">Username</label><br />
+                            <label id="usernameLabel" for="username"><?php _e('Username') ?></label><br />
                             <input name="username" id="username" class="login-input-box" />
                             <br />
 
-                            <input type="submit" id="submit" name="submit" class="login-submit-button" value="Email my Password" />
+                            <input type="submit" id="submit" name="submit" class="login-submit-button" value="<?php _e('Email my Password') ?>" />
                         </div>
                     </form>
                 <?php else: ?>
                     <p>
-                        An email has been sent to <?php $this->_($this->username); ?> containing your password.<br /><br />
-                        <a href="<?php echo(osatutil::getIndexName()); ?>?m=login">Return to login page</a>
+                        <?php echo __('An email has been sent to %s containing your password.', $this->_($this->username)) ?><br /><br />
+                        <a href="<?php echo(osatutil::getIndexName()); ?>?m=login"><?php _e('Return to login page') ?></a>
                     </p>
                 <?php endif; ?>
             </div>
 
             <div id="loginText">
                 <div class="ctr"><img src="images/security.gif" width="64" height="64" alt="security" /></div>
-                <p>Welcome to CATS!</p>
+                <p><?php _e('Welcome to CATS') ?>!</p>
             </div>
 
             <div style="clear: both;"></div>

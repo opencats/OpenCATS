@@ -39,6 +39,7 @@ include_once('./lib/ListEditor.php');
 include_once('./lib/FileUtility.php');
 include_once('./lib/SavedLists.php');
 include_once('./lib/ExtraFields.php');
+include_once('./lib/i18n.php');
 
 
 class ListsUI extends UserInterface
@@ -51,9 +52,9 @@ class ListsUI extends UserInterface
         $this->_authenticationRequired = true;
         $this->_moduleDirectory = 'lists';
         $this->_moduleName = 'lists';
-        $this->_moduleTabText = 'Lists';
+        $this->_moduleTabText = __('Lists');
         $this->_subTabs = array(
-            'Show Lists'     => osatutil::getIndexName() . '?m=lists'
+            __('Show Lists')     => osatutil::getIndexName() . '?m=lists'
            /* 'New Static List' => osatutil::getIndexName() . '?m=lists&a=newListStatic*al=' . ACCESS_LEVEL_EDIT, */
            /* 'New Dynamic List' => osatutil::getIndexName() . '?m=lists&a=newListDynamic*al=' . ACCESS_LEVEL_EDIT */
         );
@@ -265,7 +266,7 @@ class ListsUI extends UserInterface
         {
             if (!$this->isRequiredIDValid($index, $dataItemIDArray))
             {
-                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid data item ID.');
+                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid data item ID.'));
                 return;
             }
         }
@@ -308,7 +309,7 @@ class ListsUI extends UserInterface
         {
             if (!$this->isRequiredIDValid($index, $dataItemIDArray))
             {
-                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid data item ID.');
+                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid data item ID.'));
                 return;
             }
         }
@@ -319,7 +320,7 @@ class ListsUI extends UserInterface
 
         if (!$this->isRequiredIDValid('savedListID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid saved list ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid saved list ID.'));
             return;
         }
 
@@ -372,5 +373,3 @@ class ListsUI extends UserInterface
         osatutil::transferRelativeURI('m=lists');
     }
 }
-
-?>

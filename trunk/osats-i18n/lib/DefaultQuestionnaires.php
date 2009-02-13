@@ -22,7 +22,7 @@ class DefaultQuestionnaireUtility {
                         'questionPosition' => 1,
                         'answers' => array(
                             array(
-                                'answerText' => 'Yes',
+                                'answerText' => __('_Yes'),
                                 'answerPosition' => 1
                             ),
                             array(
@@ -38,7 +38,7 @@ class DefaultQuestionnaireUtility {
                         'questionPosition' => 2,
                         'answers' => array(
                             array(
-                                'answerText' => 'Yes',
+                                'answerText' => __('_Yes'),
                                 'answerPosition' => 1,
                                 'actionNotes' => 'Authorized to work in the U.S.',
                             ),
@@ -151,7 +151,7 @@ class DefaultQuestionnaireUtility {
                         'questionPosition' => 6,
                         'answers' => array(
                             array(
-                                'answerText' => 'Yes',
+                                'answerText' => __('_Yes'),
                                 'answerPosition' => 1,
                                 'actionCanRelocate' => 1
                             ),

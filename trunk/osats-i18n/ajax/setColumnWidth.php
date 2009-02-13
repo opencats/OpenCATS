@@ -32,5 +32,3 @@ $output =
 
 /* Send back the XML data. */
 $interface->outputXMLPage($output);
-
-?>

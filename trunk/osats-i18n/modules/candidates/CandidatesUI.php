@@ -23,6 +23,7 @@ include_once('./lib/CommonErrors.php');
 include_once('./lib/License.php');
 include_once('./lib/ParseUtility.php');
 include_once('./lib/Questionnaire.php');
+include_once('./lib/i18n.php');
 
 class CandidatesUI extends UserInterface
 {
@@ -44,10 +45,10 @@ class CandidatesUI extends UserInterface
         $this->_authenticationRequired = true;
         $this->_moduleDirectory = 'candidates';
         $this->_moduleName = 'candidates';
-        $this->_moduleTabText = 'Candidates';
+        $this->_moduleTabText = __('Candidates');
         $this->_subTabs = array(
-            'Add Candidate'     => osatutil::getIndexName() . '?m=candidates&amp;a=add*al=' . ACCESS_LEVEL_EDIT,
-            'Search Candidates' => osatutil::getIndexName() . '?m=candidates&amp;a=search'
+            __('Add Candidate')     => osatutil::getIndexName() . '?m=candidates&amp;a=add*al=' . ACCESS_LEVEL_EDIT,
+            __('Search Candidates') => osatutil::getIndexName() . '?m=candidates&amp;a=search'
         );
     }
 
@@ -213,7 +214,7 @@ class CandidatesUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid user level for action.'));
             return;
         }
 
@@ -221,7 +222,7 @@ class CandidatesUI extends UserInterface
 
         if ($candidateID <= 0)
         {
-            CommonErrors::fatalModal(COMMONERROR_RECORDERROR, $this, 'Failed to add candidate.');
+            CommonErrors::fatalModal(COMMONERROR_RECORDERROR, $this, __('Failed to add candidate.'));
         }
 
         $transferURI = str_replace(
@@ -238,7 +239,7 @@ class CandidatesUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         $this->_AddActivityChangeStatus(
@@ -299,7 +300,7 @@ class CandidatesUI extends UserInterface
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET) && !isset($_GET['email']))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
         }
 
         $candidates = new Candidates($this->_siteID);
@@ -318,13 +319,13 @@ class CandidatesUI extends UserInterface
         /* Bail out if we got an empty result set. */
         if (empty($data))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified candidate ID could not be found.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('The specified candidate ID could not be found.'));
             return;
         }
 
         if ($data['isAdminHidden'] == 1 && $this->_accessLevel < ACCESS_LEVEL_MULTI_SA)
         {
-            $this->listByView('This candidate is hidden - only a CATS Administrator can unlock the candidate.');
+            $this->listByView(__('This candidate is hidden - only a CATS Administrator can unlock the candidate.'));
             return;
         }
 
@@ -358,23 +359,11 @@ class CandidatesUI extends UserInterface
         }
 
         /* Format "can relocate" status. */
-        if ($data['canRelocate'] == 1)
-        {
-            $data['canRelocate'] = 'Yes';
-        }
-        else
-        {
-            $data['canRelocate'] = 'No';
-        }
+        $data['canRelocate'] = ($data['canRelocate'] == 1) ? __('_Yes')    : __('_No');
 
-        if ($data['isHot'] == 1)
-        {
-            $data['titleClass'] = 'jobTitleHot';
-        }
-        else
-        {
-            $data['titleClass'] = 'jobTitleCold';
-        }
+        $data['eeoGender'] = ($data['eeoGender'] == 'm') ? __('Male')    : __('Female');
+
+        $data['titleClass']  = ($data['isHot'] == 1)       ? 'jobTitleHot' : 'jobTitleCold';
 
         $attachments = new Attachments($this->_siteID);
         $attachmentsRS = $attachments->getAll(
@@ -512,9 +501,9 @@ class CandidatesUI extends UserInterface
             $privledgedUser = true;
         }
 
-        $EEOSettings = new EEOSettings($this->_siteID);
+        $EEOSettings   = new EEOSettings($this->_siteID);
         $EEOSettingsRS = $EEOSettings->getAll();
-        $EEOValues = array();
+        $EEOValues     = array();
 
         /* Make a list of all EEO related values so they can be positioned by index
          * rather than static positioning (like extra fields). */
@@ -522,19 +511,19 @@ class CandidatesUI extends UserInterface
         {
             if ($EEOSettingsRS['genderTracking'] == 1)
             {
-                $EEOValues[] = array('fieldName' => 'Gender', 'fieldValue' => $data['eeoGenderText']);
+                $EEOValues[] = array('fieldName' => __('Gender'), 'fieldValue' => $data['eeoGender']);
             }
             if ($EEOSettingsRS['ethnicTracking'] == 1)
             {
-                $EEOValues[] = array('fieldName' => 'Ethnicity', 'fieldValue' => $data['eeoEthnicType']);
+                $EEOValues[] = array('fieldName' => __('Ethnicity'), 'fieldValue' => $data['eeoEthnicType']);
             }
             if ($EEOSettingsRS['veteranTracking'] == 1)
             {
-                $EEOValues[] = array('fieldName' => 'Veteran Status', 'fieldValue' => $data['eeoVeteranType']);
+                $EEOValues[] = array('fieldName' => __('Veteran Status'), 'fieldValue' => $data['eeoVeteranType']);
             }
             if ($EEOSettingsRS['disabilityTracking'] == 1)
             {
-                $EEOValues[] = array('fieldName' => 'Disability Status', 'fieldValue' => $data['eeoDisabilityStatus']);
+                $EEOValues[] = array('fieldName' => __('Disability Status'), 'fieldValue' => $data['eeoDisabilityStatus']);
             }
         }
 
@@ -856,7 +845,7 @@ class CandidatesUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         if (is_array($mp = $this->checkParsingFunctions()))
@@ -868,7 +857,7 @@ class CandidatesUI extends UserInterface
 
         if ($candidateID <= 0)
         {
-            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add candidate.');
+            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, __('Failed to add candidate.'));
         }
 
         osatutil::transferRelativeURI(
@@ -884,7 +873,7 @@ class CandidatesUI extends UserInterface
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
         }
 
         $candidateID = $_GET['candidateID'];
@@ -895,12 +884,12 @@ class CandidatesUI extends UserInterface
         /* Bail out if we got an empty result set. */
         if (empty($data))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified candidate ID could not be found.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('The specified candidate ID could not be found.'));
         }
 
         if ($data['isAdminHidden'] == 1 && $this->_accessLevel < ACCESS_LEVEL_MULTI_SA)
         {
-            $this->listByView('This candidate is hidden - only a CATS Administrator can unlock the candidate.');
+            $this->listByView(__('This candidate is hidden - only a CATS Administrator can unlock the candidate.'));
             return;
         }
 
@@ -990,7 +979,7 @@ class CandidatesUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         $candidates = new Candidates($this->_siteID);
@@ -998,14 +987,14 @@ class CandidatesUI extends UserInterface
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_POST))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
             return;
         }
 
         /* Bail out if we don't have a valid owner user ID. */
         if (!$this->isOptionalIDValid('owner', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid owner user ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid owner user ID.'));
         }
 
         /* Bail out if we received an invalid availability date; if not, go
@@ -1016,7 +1005,7 @@ class CandidatesUI extends UserInterface
         {
             if (!DateUtility::validate('-', $dateAvailable, DATE_FORMAT_MMDDYY))
             {
-                CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid availability date.');
+                CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, __('Invalid availability date.'));
             }
 
             /* Convert start_date to something MySQL can understand. */
@@ -1159,7 +1148,7 @@ class CandidatesUI extends UserInterface
         /* Bail out if any of the required fields are empty. */
         if (empty($firstName) || empty($lastName))
         {
-            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
+            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, __('Required fields are missing.'));
         }
 
         if (!eval(Hooks::get('CANDIDATE_ON_EDIT_PRE'))) return;
@@ -1201,7 +1190,7 @@ class CandidatesUI extends UserInterface
         );
         if (!$updateSuccess)
         {
-            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update candidate.');
+            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, __('Failed to update candidate.'));
         }
 
         /* Update extra fields. */
@@ -1229,13 +1218,13 @@ class CandidatesUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_DELETE)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
         }
 
         $candidateID = $_GET['candidateID'];
@@ -1278,7 +1267,7 @@ class CandidatesUI extends UserInterface
 
         if (!is_array($candidateIDArray))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid variable type.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid variable type.'));
             return;
         }
 
@@ -1289,7 +1278,7 @@ class CandidatesUI extends UserInterface
             {
                 echo('&'.$candidateID.'>');
 
-                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
                 return;
             }
         }
@@ -1299,7 +1288,7 @@ class CandidatesUI extends UserInterface
          */
         if (!isset($_POST['wildCardString']) && isset($_POST['mode']))
         {
-            CommonErrors::fatal(COMMONERROR_WILDCARDSTRING, $this, 'No wild card string specified.');
+            CommonErrors::fatal(COMMONERROR_WILDCARDSTRING, $this, __('No wild card string specified.'));
         }
 
         $query = $this->getTrimmedInput('wildCardString', $_POST);
@@ -1387,13 +1376,13 @@ class CandidatesUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         if (isset($_GET['candidateID']))
@@ -1401,7 +1390,7 @@ class CandidatesUI extends UserInterface
             /* Bail out if we don't have a valid candidate ID. */
             if (!$this->isRequiredIDValid('candidateID', $_GET))
             {
-                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
             }
 
             $candidateIDArray = array($_GET['candidateID']);
@@ -1410,7 +1399,7 @@ class CandidatesUI extends UserInterface
         {
             if (!isset($_REQUEST['candidateIDArrayStored']) || !$this->isRequiredIDValid('candidateIDArrayStored', $_REQUEST, true))
             {
-                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidateIDArrayStored parameter.');
+                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid candidateIDArrayStored parameter.'));
                 return;
             }
 
@@ -1418,7 +1407,7 @@ class CandidatesUI extends UserInterface
 
             if (!is_array($candidateIDArray))
             {
-                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid variable type.');
+                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid variable type.'));
                 return;
             }
 
@@ -1429,7 +1418,7 @@ class CandidatesUI extends UserInterface
                 {
                     echo ($dataItemID);
 
-                    CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+                    CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
                     return;
                 }
             }
@@ -1460,14 +1449,14 @@ class CandidatesUI extends UserInterface
         {
             if (!$pipelines->add($candidateID, $jobOrderID, $this->_userID))
             {
-                CommonErrors::fatalModal(COMMONERROR_RECORDERROR, $this, 'Failed to add candidate to pipeline.');
+                CommonErrors::fatalModal(COMMONERROR_RECORDERROR, $this, __('Failed to add candidate to pipeline.'));
             }
 
             $activityID = $activityEntries->add(
                 $candidateID,
                 DATA_ITEM_CANDIDATE,
                 400,
-                'Added candidate to pipeline.',
+                __('Added candidate to pipeline.'),
                 $this->_userID,
                 $jobOrderID
             );
@@ -1490,13 +1479,13 @@ class CandidatesUI extends UserInterface
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
         }
 
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isOptionalIDValid('jobOrderID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         $selectedJobOrderID = $_GET['jobOrderID'];
@@ -1608,13 +1597,13 @@ class CandidatesUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid regardingjob order ID. */
         if (!$this->isOptionalIDValid('regardingID', $_POST))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         $regardingID = $_POST['regardingID'];
@@ -1630,19 +1619,19 @@ class CandidatesUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_DELETE)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
         }
 
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         $candidateID = $_GET['candidateID'];
@@ -1694,7 +1683,7 @@ class CandidatesUI extends UserInterface
          */
         if (!isset($_GET['wildCardString']))
         {
-            $this->listByView('No wild card string specified.');
+            $this->listByView(__('No wild card string specified.'));
             return;
         }
 
@@ -1768,7 +1757,7 @@ class CandidatesUI extends UserInterface
                     }
                     else
                     {
-                        $rs[$rowIndex]['ownerAbbrName'] = 'None';
+                        $rs[$rowIndex]['ownerAbbrName'] = '_None';
                     }
 
                     $rsResume = $candidates->getResumes($row['candidateID']);
@@ -1799,7 +1788,7 @@ class CandidatesUI extends UserInterface
                     }
                     else
                     {
-                        $rs[$rowIndex]['ownerAbbrName'] = 'None';
+                        $rs[$rowIndex]['ownerAbbrName'] = '_None';
                     }
 
                     $rsResume = $candidates->getResumes($row['candidateID']);
@@ -1866,7 +1855,7 @@ class CandidatesUI extends UserInterface
                     }
                     else
                     {
-                        $rs[$rowIndex]['ownerAbbrName'] = 'None';
+                        $rs[$rowIndex]['ownerAbbrName'] = '_None';
                     }
                 }
 
@@ -1898,7 +1887,7 @@ class CandidatesUI extends UserInterface
                     }
                     else
                     {
-                        $rs[$rowIndex]['ownerAbbrName'] = 'None';
+                        $rs[$rowIndex]['ownerAbbrName'] = '_None';
                     }
 
                     $rsResume = $candidates->getResumes($row['candidateID']);
@@ -1914,7 +1903,7 @@ class CandidatesUI extends UserInterface
                 break;
 
             default:
-                $this->listByView('Invalid search mode.');
+                $this->listByView(__('Invalid search mode.'));
                 return;
                 break;
         }
@@ -1960,7 +1949,7 @@ class CandidatesUI extends UserInterface
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('attachmentID', $_GET))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid attachment ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid attachment ID.'));
         }
 
         $attachmentID = $_GET['attachmentID'];
@@ -1990,7 +1979,7 @@ class CandidatesUI extends UserInterface
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
         }
 
         $candidateID = $_GET['candidateID'];
@@ -2017,13 +2006,13 @@ class CandidatesUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatalModal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatalModal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_POST))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
         }
 
         $candidateID = $_POST['candidateID'];
@@ -2060,7 +2049,7 @@ class CandidatesUI extends UserInterface
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
         }
 
         $candidateID = $_GET['candidateID'];
@@ -2081,20 +2070,20 @@ class CandidatesUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_POST))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
         }
 
         /* Bail out if we don't have a valid resume status. */
         if (!$this->isRequiredIDValid('resume', $_POST, true) ||
             $_POST['resume'] < 0 || $_POST['resume'] > 1)
         {
-            CommonErrors::fatalModal(COMMONERROR_RECORDERROR, $this, 'Invalid resume status.');
+            CommonErrors::fatalModal(COMMONERROR_RECORDERROR, $this, __('Invalid resume status.'));
         }
 
         $candidateID = $_POST['candidateID'];
@@ -2125,7 +2114,7 @@ class CandidatesUI extends UserInterface
         if ($attachmentCreator->duplicatesOccurred())
         {
             $this->fatalModal(
-                'This attachment has already been added to this candidate.'
+                __('This attachment has already been added to this candidate.')
             );
         }
 
@@ -2150,19 +2139,19 @@ class CandidatesUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_DELETE)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid attachment ID. */
         if (!$this->isRequiredIDValid('attachmentID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid attachment ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid attachment ID.'));
         }
 
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
         }
 
         $candidateID  = $_GET['candidateID'];
@@ -2186,19 +2175,19 @@ class CandidatesUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_MULTI_SA)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid joborder ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid Job Order ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         /* Bail out if we don't have a valid status ID. */
         if (!$this->isRequiredIDValid('state', $_GET, true))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid state ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid state ID.'));
         }
 
         $candidateID = $_GET['candidateID'];
@@ -2248,7 +2237,7 @@ class CandidatesUI extends UserInterface
             }
             else
             {
-                $resultSet[$rowIndex]['ownerAbbrName'] = 'None';
+                $resultSet[$rowIndex]['ownerAbbrName'] = '_None';
             }
 
             if ($resultSet[$rowIndex]['submitted'] == 1)
@@ -2332,7 +2321,7 @@ class CandidatesUI extends UserInterface
         {
             if (!DateUtility::validate('-', $dateAvailable, DATE_FORMAT_MMDDYY))
             {
-                $this->$fatal('Invalid availability date.', $moduleDirectory);
+                $this->$fatal(__('Invalid availability date.'), $moduleDirectory);
             }
 
             /* Convert start_date to something MySQL can understand. */
@@ -2496,7 +2485,7 @@ class CandidatesUI extends UserInterface
             if ($attachmentCreator->duplicatesOccurred())
             {
                 $this->listByView(
-                    'This attachment has already been added to this candidate.'
+                    __('This attachment has already been added to this candidate.')
                 );
                 return;
             }
@@ -2571,7 +2560,7 @@ class CandidatesUI extends UserInterface
                 if ($attachmentCreator->duplicatesOccurred())
                 {
                     $this->listByView(
-                        'This attachment has already been added to this candidate.'
+                        __('This attachment has already been added to this candidate.')
                     );
                     return;
                 }
@@ -2606,7 +2595,7 @@ class CandidatesUI extends UserInterface
                 if ($attachmentCreator->duplicatesOccurred())
                 {
                     $this->listByView(
-                        'This attachment has already been added to this candidate.'
+                        __('This attachment has already been added to this candidate.')
                     );
                     return;
                 }
@@ -2672,7 +2661,7 @@ class CandidatesUI extends UserInterface
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_POST))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
         }
 
         /* Do we have a valid status ID. */
@@ -2694,7 +2683,7 @@ class CandidatesUI extends UserInterface
             /* Bail out if we don't have a valid job order ID. */
             if (!$this->isOptionalIDValid('activityTypeID', $_POST))
             {
-                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid activity type ID.');
+                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid activity type ID.'));
             }
 
             $activityTypeID = $_POST['activityTypeID'];
@@ -2704,7 +2693,7 @@ class CandidatesUI extends UserInterface
             $activityNote = htmlspecialchars($activityNote);
 
             // FIXME: Move this to a highlighter-method? */
-            if (strpos($activityNote, 'Status change: ') === 0)
+            if (strpos($activityNote, __('Status change') . ': ') === 0)
             {
                 foreach ($statusRS as $data)
                 {
@@ -2754,7 +2743,7 @@ class CandidatesUI extends UserInterface
             if (empty($data))
             {
                 $this->fatalModal(
-                    'The specified pipeline entry could not be found.'
+                    __('The specified pipeline entry could not be found.')
                 );
             }
 
@@ -2794,33 +2783,43 @@ class CandidatesUI extends UserInterface
                 if (empty($data['candidateEmail']))
                 {
                     $email = '';
-                    $notificationHTML = '<p><span class="bold">Error:</span> An e-mail notification'
-                        . ' could not be sent to the candidate because the candidate'
-                        . ' does not have a valid e-mail address.</p>';
+                    $notificationHTML = '<p><span class="bold">'
+						. __('Error') 
+						. ':</span> ' 
+						. __('An e-mail notification could not be sent to the candidate because the candidate does not have a valid e-mail address.') 
+						. '</p>';
                 }
                 else if (empty($customMessage))
                 {
                     $email = '';
-                    $notificationHTML = '<p><span class="bold">Error:</span> An e-mail notification'
-                        . ' will not be sent because the message text specified was blank.</p>';
+                    $notificationHTML = '<p><span class="bold">' 
+						. __('Error') 
+						. ':</span> ' 
+						. __('An e-mail notification will not be sent because the message text specified was blank.') 
+						. '</p>';
                 }
                 else if ($this->_accessLevel == ACCESS_LEVEL_DEMO)
                 {
                     $email = '';
-                    $notificationHTML = '<p><span class="bold">Error:</span> Demo users can not send'
-                        . ' E-Mails.  No E-Mail was sent.</p>';
+                    $notificationHTML = '<p><span class="bold">' 
+						. __('Error') 
+						. ':</span> ' 
+						. __('Demo users can not send E-Mails. No E-Mail was sent.') 
+						. '</p>';
                 }
                 else
                 {
                     $email = $data['candidateEmail'];
-                    $notificationHTML = '<p>An e-mail notification has been sent to the candidate.</p>';
+                    $notificationHTML = '<p>' 
+						. __('An e-mail notification has been sent to the candidate.') 
+						. '</p>';
                 }
             }
             else
             {
                 $email = '';
                 $customMessage = '';
-                $notificationHTML = '<p>No e-mail notification has been sent to the candidate.</p>';
+                $notificationHTML = '<p>' . __('No e-mail notification has been sent to the candidate.') . '</p>';
             }
 
             /* Set the pipeline entry's status, but don't send e-mails for now. */
@@ -2843,20 +2842,20 @@ class CandidatesUI extends UserInterface
             if (empty($trimmedDate) ||
                 !DateUtility::validate('-', $trimmedDate, DATE_FORMAT_MMDDYY))
             {
-                CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid date.');
+                CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, __('Invalid date.'));
             }
 
             /* Bail out if we don't have a valid event type. */
             if (!$this->isRequiredIDValid('eventTypeID', $_POST))
             {
-                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid event type ID.');
+                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid event type ID.'));
             }
 
             /* Bail out if we don't have a valid time format ID. */
             if (!isset($_POST['allDay']) ||
                 ($_POST['allDay'] != '0' && $_POST['allDay'] != '1'))
             {
-                CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid time format ID.');
+                CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, __('Invalid time format ID.'));
             }
 
             $eventTypeID = $_POST['eventTypeID'];
@@ -2893,13 +2892,13 @@ class CandidatesUI extends UserInterface
                 /* Bail out if we don't have a valid hour. */
                 if (!isset($_POST['hour']))
                 {
-                    CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid hour.');
+                    CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, __('Invalid hour.'));
                 }
 
                 /* Bail out if we don't have a valid minute. */
                 if (!isset($_POST['minute']))
                 {
-                    CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid minute.');
+                    CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, __('Invalid minute.'));
                 }
 
                 /* Bail out if we don't have a valid meridiem value. */
@@ -2942,7 +2941,7 @@ class CandidatesUI extends UserInterface
                 CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this);
                 return;
                 /*$this->fatalModal(
-                    'Required fields are missing.', $moduleDirectory
+                    __('Required fields are missing.'), $moduleDirectory
                 );*/
             }
 
@@ -2966,7 +2965,7 @@ class CandidatesUI extends UserInterface
             if ($eventID <= 0)
             {
                 $this->fatalModal(
-                    'Failed to add calendar event.', $moduleDirectory
+                    __('Failed to add calendar event.'), $moduleDirectory
                 );
             }
 
@@ -2982,7 +2981,11 @@ class CandidatesUI extends UserInterface
             );
 
             $eventHTML = sprintf(
-                '<p>An event of type <span class="bold">%s</span> has been scheduled on <span class="bold">%s</span>.</p>',
+                '<p>' 
+				. __('An event of type') 
+				. '<span class="bold">%s</span> '
+				. __('has been scheduled on') 
+				. '<span class="bold">%s</span>.</p>',
                 htmlspecialchars($eventTypeDescription),
                 htmlspecialchars($formattedDate)
 
@@ -2991,7 +2994,9 @@ class CandidatesUI extends UserInterface
         }
         else
         {
-            $eventHTML = '<p>No event has been scheduled.</p>';
+            $eventHTML = '<p>' 
+				. __('No event has been scheduled.') 
+				. '</p>';
             $eventScheduled = false;
         }
 
@@ -3042,7 +3047,7 @@ class CandidatesUI extends UserInterface
     {
         if ($this->_accessLevel == ACCESS_LEVEL_DEMO)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Sorry, but demo accounts are not allowed to send e-mails.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Sorry, but demo accounts are not allowed to send e-mails.'));
         }
 
         if (isset($_POST['postback']))
@@ -3085,7 +3090,7 @@ class CandidatesUI extends UserInterface
             {
                 if (!$this->isRequiredIDValid($index, $candidateIDs))
                 {
-                    CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+                    CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
                     return;
                 }
             }
@@ -3147,4 +3152,3 @@ class CandidatesUI extends UserInterface
     }
 }
 
-?>

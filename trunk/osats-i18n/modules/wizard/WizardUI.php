@@ -12,6 +12,7 @@ include_once('./lib/DateUtility.php');
 include_once('./lib/JobOrders.php');
 include_once('./lib/Site.php');
 include_once('./lib/CareerPortal.php');
+include_once('./lib/i18n.php');
 
 class WizardUI extends UserInterface
 {
@@ -111,7 +112,7 @@ class WizardUI extends UserInterface
         if (!isset($_SESSION['CATS_WIZARD']) || !is_array($_SESSION['CATS_WIZARD']) ||
             !count($_SESSION['CATS_WIZARD']))
         {
-            echo 'This wizard has no pages.';
+            echo __('This wizard has no pages.');
             return;
         }
 
@@ -160,5 +161,3 @@ class WizardUI extends UserInterface
         $this->_template->display($template);
     }
 }
-
-?>

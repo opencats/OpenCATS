@@ -39,6 +39,7 @@ include_once('./lib/StringUtility.php');
 include_once('./lib/DateUtility.php');
 include_once('./lib/JobOrders.php');
 include_once('./lib/Site.php');
+include_once('./lib/i18n.php');
 
 class RssUI extends UserInterface
 {
@@ -82,7 +83,7 @@ class RssUI extends UserInterface
             . "<link>%s</link>\n"
             . "<pubDate>%s</pubDate>\n\n"
             . "<item>\n"
-            . "<title>Error</title>\n"
+            . "<title>". __('Error'). "</title>\n"
             . "<description>%s</description>\n"
             . "<link>%s</link>\n"
             . "</item>\n"
@@ -116,7 +117,7 @@ class RssUI extends UserInterface
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
             . "<rss version=\"2.0\">\n"
             . "<channel>\n"
-            . "<title>New Job Orders</title>\n"
+            . "<title>". __('New Job Orders'). "</title>\n"
             . "<description>CATS RSS Feed</description>\n"
             . "<link>%s</link>\n"
             . "<pubDate>%s</pubDate>\n",

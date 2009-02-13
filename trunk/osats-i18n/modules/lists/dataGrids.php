@@ -33,9 +33,12 @@
  
 include_once('./lib/Companies.php');
 include_once('./lib/Hooks.php');
+include_once('./lib/i18n.php');
 
 class ListsDataGrid extends DataGrid
 {   
+    private   $dateformat;
+
     // FIXME: Fix ugly indenting - ~400 character lines = bad.
     public function __construct($siteID, $parameters, $misc)
     {
@@ -47,24 +50,25 @@ class ListsDataGrid extends DataGrid
         $this->showActionArea = true;
         $this->showChooseColumnsBox = true;
         $this->allowResizing = true;
+        $this->dateformat = __('DATEFORMAT_SQL_DATE');
 
         $this->defaultSortBy = 'description';
         $this->defaultSortDirection = 'DESC';
    
         $this->_defaultColumns = array( 
-            array('name' => 'Attachments', 'width' => 10),
-            array('name' => 'Name', 'width' => 255),
-            array('name' => 'Jobs', 'width' => 40),
-            array('name' => 'City', 'width' => 90),
-            array('name' => 'State', 'width' => 50),
-            array('name' => 'Phone', 'width' => 85),
-            array('name' => 'Owner', 'width' => 65),
-            array('name' => 'Created', 'width' => 60),
-            array('name' => 'Modified', 'width' => 60),
+            array('name' => __('Attachments'), 'width' => 10),
+            array('name' => __('Name'), 'width' => 255),
+            array('name' => __('Jobs'), 'width' => 40),
+            array('name' => __('City'), 'width' => 90),
+            array('name' => __('State'), 'width' => 50),
+            array('name' => __('Phone'), 'width' => 85),
+            array('name' => __('Owner'), 'width' => 65),
+            array('name' => __('Created'), 'width' => 60),
+            array('name' => __('Modified'), 'width' => 60),
         );
    
         $this->_classColumns = array(
-            'Count' =>         array ('select'          => 'number_entries as numberEntries',
+            __('Count') =>         array ('select'          => 'number_entries as numberEntries',
                                       'pagerRender'     => 'return $rsData[\'numberEntries\'];',
                                       'pagerWidth'      => 45,
                                       'alphaNavigation' => false,
@@ -72,25 +76,25 @@ class ListsDataGrid extends DataGrid
                                       'sortableColumn'  => 'number_entries',
                                       'filter'          => 'number_entries',
                                       'filterTypes'     => '===>=<'),
-            'Description' =>   array('select'         => '', 
+            __('Description') =>   array('select'         => '', 
                                       'pagerRender'    => 'return \'<a href="'.osatutil::getIndexName().'?m=lists&amp;a=showList&amp;savedListID=\'.$rsData[\'savedListID\'].\'">\'.htmlspecialchars($rsData[\'description\']).\'</a>\';',
                                       'sortableColumn' => 'description',
                                       'pagerWidth'     => 355,
                                       'pagerOptional'  => false,
                                       'filter'         => 'saved_list.description'),
-            'List Type' =>      array('pagerRender'    => 'return ($rsData[\'isDynamic\']==1?\'Dynamic\':\'Static\');',
+            __('List Type') =>      array('pagerRender'    => 'return ($rsData[\'isDynamic\']==1?\'Dynamic\':\'Static\');',
                                       'sortableColumn' => 'isDynamic',
                                       'pagerWidth'     => 75,
                                       'pagerOptional'  => true,
                                       'filter'         => 'data_item_type.short_description'),
-            'Data Type' =>      array('select'         => 'data_item_type.short_description AS dataItemTypeSortDesc', 
+            __('Data Type') =>      array('select'         => 'data_item_type.short_description AS dataItemTypeSortDesc', 
                                       'join'           => 'LEFT JOIN data_item_type on data_item_type.data_item_type_id = saved_list.data_item_type',
                                       'pagerRender'    => 'return ($rsData[\'dataItemTypeSortDesc\']);',
                                       'sortableColumn' => 'dataItemTypeSortDesc',
                                       'pagerWidth'     => 75,
                                       'pagerOptional'  => true,
                                       'filter'         => 'data_item_type.short_description'),
-            'Owner' =>          array('select'   => 'owner_user.first_name AS ownerFirstName,' .
+            __('Owner') =>          array('select'   => 'owner_user.first_name AS ownerFirstName,' .
                                                     'owner_user.last_name AS ownerLastName,' .
                                                     'CONCAT(owner_user.last_name, owner_user.first_name) AS ownerSort',
                                       'join'     => 'LEFT JOIN user AS owner_user ON saved_list.created_by = owner_user.user_id',
@@ -100,27 +104,27 @@ class ListsDataGrid extends DataGrid
                                       'pagerWidth'    => 75,
                                       'alphaNavigation' => true,
                                       'filter'         => 'CONCAT(owner_user.first_name, owner_user.last_name)'),
-            'Created' =>        array('select'   => 'DATE_FORMAT(saved_list.date_created, \'%m-%d-%y\') AS dateCreated',
+            __('Created') =>        array('select'   => 'DATE_FORMAT(saved_list.date_created, \''.$this->dateformat.'\') AS dateCreated',
                                       'pagerRender'      => 'return $rsData[\'dateCreated\'];',
                                       'sortableColumn'     => 'dateCreatedSort',
                                       'pagerWidth'    => 60,
-                                      'filterHaving' => 'DATE_FORMAT(saved_list.date_created, \'%m-%d-%y\')'),
-            'Modified' =>       array('select'   => 'DATE_FORMAT(saved_list.date_modified, \'%m-%d-%y\') AS dateModified',
+                                      'filterHaving' => 'DATE_FORMAT(saved_list.date_created, \''.$this->dateformat.'\')'),
+            __('Modified') =>       array('select'   => 'DATE_FORMAT(saved_list.date_modified, \''.$this->dateformat.'\') AS dateModified',
                                       'pagerRender'      => 'return $rsData[\'dateModified\'];',
                                       'sortableColumn'     => 'dateModifiedSort',
                                       'pagerWidth'    => 60,
                                       'pagerOptional' => true,
-                                      'filterHaving' => 'DATE_FORMAT(saved_list.date_modified, \'%m-%d-%y\')')
+                                      'filterHaving' => 'DATE_FORMAT(saved_list.date_modified, \''.$this->dateformat.'\')')
         );
 
         $this->_defaultColumns = array(
-            array('name' => 'Count', 'width' => 45),
-            array('name' => 'Description', 'width' => 355),
-            array('name' => 'Data Type', 'width' => 75),
-            array('name' => 'List Type', 'width' => 75),
-            array('name' => 'Owner', 'width' => 75),
-            array('name' => 'Created', 'width' => 60),
-            array('name' => 'Modified', 'width' => 60),
+            array('name' => __('Count'), 'width' => 45),
+            array('name' => __('Description'), 'width' => 355),
+            array('name' => __('Data Type'), 'width' => 75),
+            array('name' => __('List Type'), 'width' => 75),
+            array('name' => __('Owner'), 'width' => 75),
+            array('name' => __('Created'), 'width' => 60),
+            array('name' => __('Modified'), 'width' => 60),
         );
    
         parent::__construct("lists:ListsDataGrid", $parameters, $misc);
@@ -198,5 +202,3 @@ class ListsDataGrid extends DataGrid
         return $html;
     }
 }
-
-?>

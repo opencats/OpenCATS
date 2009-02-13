@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
     <head>
-        <title>CATS - Reports</title>
+        <title>CATS - <?php _e('Reports') ?></title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
@@ -28,11 +28,11 @@
         <div class="outer">
             <p align="center" style="font-size:36px;"><?php echo($_SESSION['CATS']->getSiteName()); ?></p>
 
-            <p align="center">Graph refreshes every 5 minutes. Press F11 to toggle fullscreen mode in most browsers.</p>
+            <p align="center"><?php _e('Graph refreshes every 5 minutes. Press F11 to toggle fullscreen mode in most browsers.') ?></p>
 
             <p align="center"><img src="<?php $this->_($this->theImage); ?>" alt="Graph" /></p>
 
-            <p align="center"><a href="#" onclick="window.close('fs'); return false;">Close Window</a></p>
+            <p align="center"><a href="#" onclick="window.close('fs'); return false;"><?php _e('Close Window') ?></a></p>
 
             <script type="text/javascript">
             if (document.images)

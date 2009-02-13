@@ -33,6 +33,7 @@
  
 include_once('lib/JobOrders.php');
 include_once('./lib/Hooks.php');
+include_once('./lib/i18n.php');
 
 class JobOrdersListByViewDataGrid extends JobOrdersDataGrid
 {
@@ -51,18 +52,18 @@ class JobOrdersListByViewDataGrid extends JobOrdersDataGrid
         $this->defaultSortDirection = 'DESC';
    
         $this->_defaultColumns = array(
-            array('name' => 'Attachments', 'width' => 10),
-            array('name' => 'ID', 'width' => 26),   
-            array('name' => 'Title', 'width' => 170),
-            array('name' => 'Company', 'width' => 135),
-            array('name' => 'Type', 'width' => 30),
-            array('name' => 'Status', 'width' => 40),
-            array('name' => 'Created', 'width' => 55),
-            array('name' => 'Age', 'width' => 30),
-            array('name' => 'Submitted', 'width' => 18),
-            array('name' => 'Pipeline', 'width' => 18),
-            array('name' => 'Recruiter', 'width' => 65),
-            array('name' => 'Owner', 'width' => 55),
+            array('name' => __('Attachments'), 'width' => 10),
+            array('name' => __('ID'), 'width' => 26),   
+            array('name' => __('Title'), 'width' => 170),
+            array('name' => __('Company'), 'width' => 135),
+            array('name' => __('Type'), 'width' => 30),
+            array('name' => __('Status'), 'width' => 40),
+            array('name' => __('Created'), 'width' => 55),
+            array('name' => __('Age'), 'width' => 30),
+            array('name' => __('Submitted'), 'width' => 18),
+            array('name' => __('Pipeline'), 'width' => 18),
+            array('name' => __('Recruiter'), 'width' => 65),
+            array('name' => __('Owner'), 'width' => 55),
         );
    
         if (!eval(Hooks::get('JOBORDERS_DATAGRID_DEFAULTS'))) return;
@@ -83,7 +84,7 @@ class JobOrdersListByViewDataGrid extends JobOrdersDataGrid
     {
         $html = '';
 
-        $html .= $this->getInnerActionAreaItemPopup('Add To List', osatutil::getIndexName().'?m=lists&amp;a=addToListFromDatagridModal&amp;dataItemType='.DATA_ITEM_JOBORDER, 450, 350);
+        $html .= $this->getInnerActionAreaItemPopup(__('Add To List'), osatutil::getIndexName().'?m=lists&amp;a=addToListFromDatagridModal&amp;dataItemType='.DATA_ITEM_JOBORDER, 450, 350);
         $html .= $this->getInnerActionAreaItem('Export', osatutil::getIndexName().'?m=export&amp;a=exportByDataGrid');
 
         $html .= parent::getInnerActionArea();
@@ -110,18 +111,18 @@ class joborderSavedListByViewDataGrid extends JobOrdersDataGrid
         $this->defaultSortDirection = 'DESC';
    
         $this->_defaultColumns = array(
-            array('name' => 'Attachments', 'width' => 10),
-            array('name' => 'ID', 'width' => 26),   
-            array('name' => 'Title', 'width' => 170),
-            array('name' => 'Company', 'width' => 135),
-            array('name' => 'Type', 'width' => 30),
-            array('name' => 'Status', 'width' => 40),
-            array('name' => 'Created', 'width' => 55),
-            array('name' => 'Age', 'width' => 30),
-            array('name' => 'Submitted', 'width' => 18),
-            array('name' => 'Pipeline', 'width' => 18),
-            array('name' => 'Recruiter', 'width' => 65),
-            array('name' => 'Owner', 'width' => 55),
+            array('name' => __('Attachments'), 'width' => 10),
+            array('name' => __('ID'), 'width' => 26),   
+            array('name' => __('Title'), 'width' => 170),
+            array('name' => __('Company'), 'width' => 135),
+            array('name' => __('Type'), 'width' => 30),
+            array('name' => __('Status'), 'width' => 40),
+            array('name' => __('Created'), 'width' => 55),
+            array('name' => __('Age'), 'width' => 30),
+            array('name' => __('Submitted'), 'width' => 18),
+            array('name' => __('Pipeline'), 'width' => 18),
+            array('name' => __('Recruiter'), 'width' => 65),
+            array('name' => __('Owner'), 'width' => 55),
         );
    
         if (!eval(Hooks::get('JOBORDERS_DATAGRID_DEFAULTS'))) return;
@@ -142,7 +143,7 @@ class joborderSavedListByViewDataGrid extends JobOrdersDataGrid
     {
         $html = '';
 
-        $html .= $this->getInnerActionAreaItem('Remove From This List', osatutil::getIndexName().'?m=lists&amp;a=removeFromListDatagrid&amp;dataItemType='.DATA_ITEM_JOBORDER.'&amp;savedListID='.$this->getMiscArgument(), false);
+        $html .= $this->getInnerActionAreaItem(__('Remove From This List'), osatutil::getIndexName().'?m=lists&amp;a=removeFromListDatagrid&amp;dataItemType='.DATA_ITEM_JOBORDER.'&amp;savedListID='.$this->getMiscArgument(), false);
         $html .= $this->getInnerActionAreaItem('Export', osatutil::getIndexName().'?m=export&amp;a=exportByDataGrid');
 
         $html .= parent::getInnerActionArea();
@@ -151,6 +152,3 @@ class joborderSavedListByViewDataGrid extends JobOrdersDataGrid
 
     }
 }
-
-
-?>

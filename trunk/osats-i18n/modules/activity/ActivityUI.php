@@ -9,7 +9,7 @@ include_once('./lib/Contacts.php');
 include_once('./lib/Candidates.php');
 include_once('./lib/DateUtility.php');
 include_once('./lib/InfoString.php');
-
+include_once('./lib/i18n.php');
 
 class ActivityUI extends UserInterface
 {
@@ -29,7 +29,7 @@ class ActivityUI extends UserInterface
         $this->_authenticationRequired = true;
         $this->_moduleDirectory = 'activity';
         $this->_moduleName = 'activity';
-        $this->_moduleTabText = 'Activities';
+        $this->_moduleTabText = __('Activities');
     }
 
     public function handleRequest()
@@ -159,7 +159,7 @@ class ActivityUI extends UserInterface
                 !$this->isRequiredIDValid('startMonth', $_GET) ||
                 !$this->isRequiredIDValid('startYear', $_GET))
             {
-                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid starting date.');
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('Invalid starting date.'));
             }
 
             /* Do we have a valid ending date? */
@@ -167,17 +167,17 @@ class ActivityUI extends UserInterface
                 !$this->isRequiredIDValid('endMonth', $_GET) ||
                 !$this->isRequiredIDValid('endYear', $_GET))
             {
-                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid ending date.');
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('Invalid ending date.'));
             }
 
             if (!checkdate($_GET['startMonth'], $_GET['startDay'], $_GET['startYear']))
             {
-                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid starting date.');
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('Invalid starting date.'));
             }
 
             if (!checkdate($_GET['endMonth'], $_GET['endDay'], $_GET['endYear']))
             {
-                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid ending date.');
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('Invalid ending date.'));
             }
 
             /* formats start and end date for searching */
@@ -217,9 +217,9 @@ class ActivityUI extends UserInterface
         if ($dataGridProperties == array())
         {
             $dataGridProperties = array(
-                'rangeStart'    => 0,
-                'maxResults'    => 15,
-                'filterVisible' => false
+              'rangeStart'    => 0,
+              'maxResults'    => 15,
+              'filterVisible' => false
             );
         }
 
@@ -253,66 +253,71 @@ class ActivityUI extends UserInterface
     private function getQuickLinks()
     {
         $today = array(
-            'month' => date('n'),
-            'day'   => date('j'),
-            'year'  => date('Y')
+          'month' => date('n'),
+          'day'   => date('j'),
+          'year'  => date('Y')
         );
 
         $yesterdayTimeStamp = DateUtility::subtractDaysFromDate(time(), 1);
         $yesterday = array(
-            'month' => date('n', $yesterdayTimeStamp),
-            'day'   => date('j', $yesterdayTimeStamp),
-            'year'  => date('Y', $yesterdayTimeStamp)
+          'month' => date('n', $yesterdayTimeStamp),
+          'day'   => date('j', $yesterdayTimeStamp),
+          'year'  => date('Y', $yesterdayTimeStamp)
         );
 
         $baseURL = sprintf(
-            '%s?m=activity&amp;a=viewByDate&amp;getback=getback',
-            osatutil::getIndexName()
+          '%s?m=activity&amp;a=viewByDate&amp;getback=getback',
+          osatutil::getIndexName()
         );
 
         $quickLinks[0] = sprintf(
-            '<a href="%s&amp;startMonth=%s&amp;startDay=%s&amp;startYear=%s&amp;endMonth=%s&amp;endDay=%s&amp;endYear=%s">Today</a>',
-            $baseURL,
-            $today['month'],
-            $today['day'],
-            $today['year'],
-            $today['month'],
-            $today['day'],
-            $today['year']
+          '<a href="%s&amp;startMonth=%s&amp;startDay=%s&amp;startYear=%s&amp;endMonth=%s&amp;endDay=%s&amp;endYear=%s">%s</a>',
+          $baseURL,
+          $today['month'],
+          $today['day'],
+          $today['year'],
+          $today['month'],
+          $today['day'],
+          $today['year'],
+          __('Today')
         );
 
         $quickLinks[1] = sprintf(
-            '<a href="%s&amp;startMonth=%s&amp;startDay=%s&amp;startYear=%s&amp;endMonth=%s&amp;endDay=%s&amp;endYear=%s">Yesterday</a>',
-            $baseURL,
-            $yesterday['month'],
-            $yesterday['day'],
-            $yesterday['year'],
-            $yesterday['month'],
-            $yesterday['day'],
-            $yesterday['year']
+          '<a href="%s&amp;startMonth=%s&amp;startDay=%s&amp;startYear=%s&amp;endMonth=%s&amp;endDay=%s&amp;endYear=%s">%s</a>',
+          $baseURL,
+          $yesterday['month'],
+          $yesterday['day'],
+          $yesterday['year'],
+          $yesterday['month'],
+          $yesterday['day'],
+          $yesterday['year'],
+          __('Yesterday')
         );
 
         $quickLinks[2] = sprintf(
-            '<a href="%s&amp;period=lastweek">Last Week</a>',
-            $baseURL
+          '<a href="%s&amp;period=lastweek">%s</a>',
+          $baseURL,
+          __('Last Week')
         );
 
         $quickLinks[3] = sprintf(
-            '<a href="%s&amp;period=lastmonth">Last Month</a>',
-            $baseURL
+          '<a href="%s&amp;period=lastmonth">%s</a>',
+          $baseURL,
+          __('Last Month')
         );
 
         $quickLinks[4] = sprintf(
-            '<a href="%s&amp;period=lastsixmonths">Last 6 Months</a>',
-            $baseURL
+          '<a href="%s&amp;period=lastsixmonths">%s</a>',
+          $baseURL,
+          __('Last 6 Months')
         );
 
         $quickLinks[5] = sprintf(
-            '<a href="%s&amp;period=all">All</a>',
-            $baseURL
+            '<a href="%s&amp;period=all">%s</a>',
+            $baseURL,
+            __('All')
         );
 
         return implode(' | ', $quickLinks);
     }
 }
-?>

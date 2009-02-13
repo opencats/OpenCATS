@@ -60,5 +60,3 @@ class SystemUtility
         return QueueProcessor::isActive();
     }
 }
-
-?>

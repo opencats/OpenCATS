@@ -424,5 +424,3 @@ class WordVerify
         $object->draw();
     }
 }
-
-?>

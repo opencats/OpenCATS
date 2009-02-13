@@ -177,5 +177,3 @@ class ParseUtility
     public function setWSDL($wsdl) { return ($this->_wsdl = $wsdl); }
     public function getWSDL() { return $this->_wsdl; }
 }
-
-?>

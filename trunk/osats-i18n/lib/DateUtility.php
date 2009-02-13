@@ -52,7 +52,7 @@ class DateUtility
      */
     public static function getMonthName($month)
     {
-        return date('F', mktime(0, 0, 0, $month, 1, 2000));
+        return __(date('F', mktime(0, 0, 0, $month, 1, 2000)));
     }
 
     /**
@@ -717,4 +717,3 @@ class DateUtility
         return $array;
     }
 }
-?>

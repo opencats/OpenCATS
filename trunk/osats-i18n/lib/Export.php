@@ -142,5 +142,3 @@ class Export
         return $outputString;
     }
 }
-
-?>

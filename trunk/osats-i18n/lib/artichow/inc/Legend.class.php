@@ -648,35 +648,35 @@ class awLegend implements awPositionable {
 
 
 		$text1 = new awText(
-			'Weekly',
+			__('Weekly'),
 			new Tuffy(8),
 			new Color(0, 0, 0, 0),
 			0);
 
 		$text2 = new awText(
-			'Monthly',
+			__('Monthly'),
 			new Tuffy(8),
 			new Color(0, 0, 0, 0),
 			0);
 			
 		$text3 = new awText(
-			'Yearly',
+			__('Yearly'),
 			new Tuffy(8),
 			new Color(0, 0, 0, 0),
 			0);
 
 		$point1 = new awPoint(
-			412,
+			402,
 			7
 		);	 
 		
 		$point2 = new awPoint(
-			412,
+			402,
 			30
 		);	
 		
 		$point3 = new awPoint(
-			412,
+			402,
 			54
 		);	
 		   
@@ -755,4 +755,3 @@ interface awLegendable {
 }
 
 registerInterface('Legendable');
-?>

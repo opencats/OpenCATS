@@ -1,5 +1,5 @@
 <?php /* $Id: Candidates.tpl 3445 2007-11-06 23:17:04Z will $ */ ?>
-<?php TemplateUtility::printHeader('Candidates', array( 'js/highlightrows.js', 'js/export.js', 'js/dataGrid.js')); ?>
+<?php TemplateUtility::printHeader(__('Candidates'), array( 'js/highlightrows.js', 'js/export.js', 'js/dataGrid.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <style type="text/css">
@@ -18,7 +18,7 @@
                     <td width="3%">
                         <img src="images/candidate.gif" width="24" height="24" alt="Candidates" style="border: none; margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Candidates: Home</h2></td>
+                    <td><h2><?php _e('Candidates: Home');?></h2></td>
                     <td align="right">
                         <form name="candidatesViewSelectorForm" id="candidatesViewSelectorForm" action="<?php echo(osatutil::getIndexName()); ?>" method="get">
                             <input type="hidden" name="m" value="candidates" />
@@ -31,11 +31,11 @@
                                     </td>
                                     <td valign="top" align="right" nowrap="nowrap">
                                         <input type="checkbox" name="onlyMyCandidates" id="onlyMyCandidates" <?php if ($this->dataGrid->getFilterValue('OwnerID') ==  $this->userID): ?>checked<?php endif; ?> onclick="<?php echo $this->dataGrid->getJSAddRemoveFilterFromCheckbox('OwnerID', '==',  $this->userID); ?>" />
-                                        Only My Candidates&nbsp;
+                                        <?php _e('Only My Candidates');?>&nbsp;
                                     </td>
                                     <td valign="top" align="right" nowrap="nowrap">
                                         <input type="checkbox" name="onlyHotCandidates" id="onlyHotCandidates" <?php if ($this->dataGrid->getFilterValue('IsHot') == '1'): ?>checked<?php endif; ?> onclick="<?php echo $this->dataGrid->getJSAddRemoveFilterFromCheckbox('IsHot', '==', '\'1\''); ?>" />
-                                        <label for="onlyHotCandidates">Only Hot Candidates</label>&nbsp;
+                                        <label for="onlyHotCandidates"><?php _e('Only Hot Candidates');?></label>&nbsp;
                                     </td>
                                 </tr>
                             </table>
@@ -58,7 +58,7 @@
                         <img src="images/large_error.gif" align="left">
                     </td>
                     <td align="left" valign="center">
-                        <span style="font-size: 12pt; font-weight: bold; color: #800000; line-height: 12pt;">There was a problem with your request:</span>
+                        <span style="font-size: 12pt; font-weight: bold; color: #800000; line-height: 12pt;"><?php _e('There was a problem with your request');?>:</span>
                         <div style="font-size: 10pt; font-weight: bold; padding: 3px 0px 0px 0px;"><?php echo $this->errMessage; ?></div>
                     </td>
                 </tr>
@@ -67,7 +67,12 @@
             <?php endif; ?>
 
             <p class="note">
-                <span style="float:left;">Candidates - Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?> (<?php echo($this->dataGrid->getNumberOfRows()); ?> Items)</span>
+                <span style="float:left;"><?php
+                  echo __('Candidates').' - '.__('Page').' '.$this->dataGrid->getCurrentPageHTML();
+                  echo ' ('; 
+                  echo format_number_choice('countItems', array($this->dataGrid->getNumberOfRows()), $this->dataGrid->getNumberOfRows());
+                  echo ') ';
+                ?></span>
                 <span style="float:right;">
                     <?php $this->dataGrid->drawRowsPerPageSelector(); ?>
                     <?php $this->dataGrid->drawShowFilterControl(); ?>
@@ -98,7 +103,7 @@
                 <td style="padding-left: 62px;" align="center" valign="center">
 
                     <div style="text-align: center; width: 600px; line-height: 22px; font-size: 18px; font-weight: bold; color: #666666; padding-bottom: 20px;">
-                    Add candidates to keep track of possible applicants you can consider for your job orders.
+                    <?php _e('Add candidates to keep track of possible applicants you can consider for your job orders.');?>
                     </div>
 
                     <table cellpadding="10" cellspacing="0" border="0">

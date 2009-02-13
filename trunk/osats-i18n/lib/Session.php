@@ -523,7 +523,7 @@ class CATSSession
     // FIXME: Document me!
     public function getCookie()
     {
-        return CATS_SESSION_NAME . '=' . session_id();
+        return SESSION_NAME . '=' . session_id();
     }
 
     // FIXME: Document me!
@@ -1199,5 +1199,3 @@ class CATSSession
         $this->_dataGridColumnPreferences[md5($instance)] = $parameters;
     }
 }
-
-?>

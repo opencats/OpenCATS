@@ -27,6 +27,8 @@
  * $Id: Import.php 3785 2007-12-03 21:59:23Z brian $
  */
 
+include_once('./lib/i18n.php');
+
 class Import
 {
     private $_db;

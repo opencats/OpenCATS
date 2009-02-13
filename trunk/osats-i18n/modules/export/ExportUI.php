@@ -36,6 +36,7 @@
 
 include_once('./lib/Export.php');
 include_once('./lib/CommonErrors.php');
+include_once('./lib/i18n.php');
 
 
 class ExportUI extends UserInterface
@@ -81,7 +82,7 @@ class ExportUI extends UserInterface
         /* Bail out if we don't have a valid data item type. */
         if (!$this->isRequiredIDValid('dataItemType', $_GET))
         {
-            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid data item type.');
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('Invalid data item type.'));
         }
 
         $dataItemType = $_GET['dataItemType'];
@@ -148,7 +149,7 @@ class ExportUI extends UserInterface
      */
     protected function fatal($error, $directoryOverride = '')
     {
-        die("Fatal Error\n\n" . $error);
+        die(__('Fatal Error'). "\n\n" . $error);
     }
 }
 

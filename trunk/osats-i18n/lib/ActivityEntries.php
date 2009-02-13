@@ -4,7 +4,7 @@
    * GNU License
 *
  *
- * @package    CATS
+ * @package    OSATS
  * @subpackage Library
  * @copyright Open Source
  * @version    1.0
@@ -43,12 +43,13 @@ class ActivityEntries
 {
     private $_db;
     private $_siteID;
-
+    private $dateformat;
 
     public function __construct($siteID)
     {
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
+        $this->dateformat = __('DATEFORMAT_SQL_LONG');
     }
 
 
@@ -383,7 +384,7 @@ class ActivityEntries
                 activity_type.short_description AS typeDescription,
                 activity.notes AS notes,
                 DATE_FORMAT(
-                    activity.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    activity.date_created, '%s'
                 ) AS dateCreated,
                 entered_by_user.first_name AS enteredByFirstName,
                 entered_by_user.last_name AS enteredByLastName,
@@ -408,6 +409,7 @@ class ActivityEntries
                 activity.activity_id = %s
             AND
                 activity.site_id = %s",
+            $this->dateformat,
             $this->_db->makeQueryInteger($activityID),
             $this->_siteID
         );
@@ -431,7 +433,7 @@ class ActivityEntries
                 activity.joborder_id AS jobOrderID,
                 activity.notes AS notes,
                 DATE_FORMAT(
-                    activity.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    activity.date_created, '%s'
                 ) AS dateCreated,
                 activity.date_created AS dateCreatedSort,
                 activity.type AS type,
@@ -464,6 +466,7 @@ class ActivityEntries
                 activity.site_id = %s
             ORDER BY
                 dateCreatedSort ASC",
+            $this->dateformat,
             $this->_db->makeQueryInteger($dataItemID),
             $this->_db->makeQueryInteger($dataItemType),
             $this->_siteID
@@ -529,5 +532,3 @@ class ActivityEntries
         $dataItem->updateModified($dataItemID);
     }
 }
-
-?>

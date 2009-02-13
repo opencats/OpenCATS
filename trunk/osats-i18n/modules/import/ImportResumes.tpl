@@ -1,5 +1,5 @@
 <?php /* $Id: ImportResumes.tpl 3584 2007-11-12 23:20:53Z will $ */ ?>
-<?php TemplateUtility::printHeader('Import', array('modules/import/import.js')); ?>
+<?php TemplateUtility::printHeader(__('Import'), array('modules/import/import.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, ''); ?>
     <div id="main">
@@ -11,15 +11,15 @@
                     <td width="3%">
                         <img src="images/reports.gif" width="24" height="24" border="0" alt="Import" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Import Data</h2></td>
+                    <td><h2><?php _e('Import Data') ?></h2></td>
                 </tr>
             </table>
 
-            <p class="note" id="importHide2">Import Data - Step 2</p>
+            <p class="note" id="importHide2"><?php _e('Import Data') ?> - <?php _e('Step') ?> 2</p>
 
             <?php if (isset($this->errorMessage)): ?>
 
-                <p class="warning" id="importHide0">Error!</p>
+                <p class="warning" id="importHide0"><?php _e('Error') ?>!</p>
 
                 <table class="searchTable" id="importHide1" width="100%">
                     <tr>
@@ -33,7 +33,7 @@
 
             <?php elseif (isset($this->successMessage)): ?>
 
-                <p class="note" id="importHide0">Success</p>
+                <p class="note" id="importHide0"><?php _e('Success') ?></p>
 
                 <table class="searchTable" id="importHide1" width="100%">
                     <tr>
@@ -48,8 +48,7 @@
            <?php endif; ?>
             <table class="searchTable" id="importTable1" width="100%">
                 <tr>
-                    <td>CATS may discard or fail to read some of the submitted data which it does not
-                    understand how to use. Do not discard the original data!
+                    <td><?php _e('CATS may discard or fail to read some of the submitted data which it does not understand how to use. Do not discard the original data') ?>!
                     </td>
                 </tr>
 
@@ -61,10 +60,10 @@
                 <table class="searchTable" width="100%" id="importHide3">
                     <tr>
                         <td class="tdVertical">
-                            <label id="fileLabel" for="file">Import:</label>
+                            <label id="fileLabel" for="file"><?php _e('Import') ?>:</label>
                         </td>
                         <td class="tdData">
-                            <img src="images/file/doc.gif">&nbsp;Resume&nbsp;<a href="javascript:void(0);" onclick="showPopWin('index.php?m=import&a=whatIsBulkResumes', 420, 275, null);">(How do I use bulk resumes?)</a>
+                            <img src="images/file/doc.gif">&nbsp;<?php _e('Resume') ?>&nbsp;<a href="javascript:void(0);" onclick="showPopWin('index.php?m=import&a=whatIsBulkResumes', 420, 275, null);">(<?php _e('How do I use bulk resumes?') ?>)</a>
                         </td>
                     </tr>
 
@@ -72,14 +71,16 @@
                         <td class="tdVertical">
                             <label id="fileLabel" for="file">
                                 <br />
-                                Multiple File Import:
+                                <?php _e('Multiple File Import') ?>:
                             </label>
                         </td>
                         <td class="tdData">
                             <?php if($this->allowAspFlashUploader == true): ?>
                                 <br />
-                                Step 1:<br />
-                                Upload resumes you wish to parse to the CATS server.  CATS can parse doc, pdf, txt, and <br />rtf format resumes, and can also accept zip format archives of resumes.
+                                <?php _e('Step') ?> 1:<br />
+                                <?php _e('Upload resumes you wish to parse to the CATS server.') ?><br />
+								<?php _e('CATS can parse doc, pdf, txt, and rtf format resumes.') ?><br />
+								<?php _e('Zip format archives of resumes are alos accepted.') ?>
                                 <OBJECT id="FlashFilesUpload" codeBase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0"
                                 		width="450" height="350" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" VIEWASTEXT>
                                 		<!-- Replace symbols " with the &quot; at all parameters values and
@@ -115,20 +116,17 @@
                                 	</embed>
                                   </OBJECT>
                                   <br />
-                                  When you are finishing uploading your resumes, press the below button to continue.<br />
-                                <input type="button" class="button" value="Step 2: Parse Resumes" onclick="document.location.href='?m=import&a=showMassImport';" />
+                                  <?php _e('When you are finishing uploading your resumes, press the below button to continue.') ?><br />
+                                <input type="button" class="button" value="<?php _e('Step') ?> 2: <?php _e('Parse Resumes') ?>" onclick="document.location.href='?m=import&a=showMassImport';" />
                             <?php elseif($this->allowMultipleFiles == true): ?>
                                 <br />
-                                To import multiple files, add the files you would like to import to the 'upload' directory on your
-                                CATS web server, and press the button below to have CATS scan for uploaded documents.  If you need
-                                assistance in uploading files to your web server, contact your system administrator.<br />
+                                <?php _e('To import multiple files, add the files you would like to import to the \'upload\' directory on your CATS web server, and press the button below to have CATS scan for uploaded documents. If you need assistance in uploading files to your web server, contact your system administrator.') ?><br />
                                 <br />
-                                <input type="button" class="button" value="Scan /upload/ folder for resumes" onclick="document.location.href='?m=import&a=showMassImport';" />
+                                <input type="button" class="button" value="<?php _e('Scan /upload/ folder for resumes') ?>" onclick="document.location.href='?m=import&a=showMassImport';" />
                             <?php else: ?>
                                 <br />
-                                The automated bulk resume import feature has been temporarily disabled.<br /><br />
-                                To import resumes into the bulk resume pool, please contact <a href="mailto:support@catsone.com">support@catsone.com</a>
-                                for assistance from the CATS team.
+                                <?php _e('The automated bulk resume import feature has been temporarily disabled.') ?><br /><br />
+                                <?php _e('To import resumes into the bulk resume pool, please contact %s for assistance from the CATS team.', '<a href="mailto:support@catsone.com">support@catsone.com</a>') ?>
                                 <br />
                             <?php endif; ?>
                         </td>

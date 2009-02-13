@@ -33,6 +33,7 @@ include_once('./lib/GraphGenerator.php');
 include_once('./lib/DateUtility.php');
 include_once('./lib/CommonErrors.php');
 include_once('./lib/Dashboard.php');
+include_once('./lib/i18n.php');
 
 
 class GraphsUI extends UserInterface
@@ -127,7 +128,7 @@ class GraphsUI extends UserInterface
                     return;
 
                 default:
-                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'No graph specified.');
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('No graph specified.'));
                     return;
             }
         }
@@ -139,7 +140,7 @@ class GraphsUI extends UserInterface
         /* I am used for development purposes and intentionally empty. */
         $x = array(1, 2, 3, 4);
         $y = array(1, 2, 3, 4);
-        $graph = new GraphSimple($x, $y, 'DarkGreen', 'Test Graph', $this->width, $this->height);
+        $graph = new GraphSimple($x, $y, 'DarkGreen', __('Test Graph'), $this->width, $this->height);
 
         if (!eval(Hooks::get('GRAPH_TEST'))) return;
 
@@ -174,7 +175,7 @@ class GraphsUI extends UserInterface
             $x = array(0, 0, 0, 0);
         }
 
-        $y = array('Screened', 'Submitted', 'Interviewed', 'Placed');
+        $y = array(__('Screened'), __('Submitted'), __('Interviewed'), __('Placed'));
 
         $colorArray[] = new LinearGradient(new Red, new White, 0);
         $colorArray[] = new LinearGradient(new DarkGreen, new White, 0);
@@ -237,7 +238,7 @@ class GraphsUI extends UserInterface
             }
         }
 
-        $graph = new GraphSimple($y, $x, 'DarkGreen', 'Activity', $this->width, $this->height);
+        $graph = new GraphSimple($y, $x, 'DarkGreen', __('Activity'), $this->width, $this->height);
 
         if (!eval(Hooks::get('GRAPH_WEEKLY_ACTIVITY'))) return;
 
@@ -292,7 +293,7 @@ class GraphsUI extends UserInterface
             }
         }
 
-        $graph = new GraphSimple($y, $x, 'Blue', 'New Candidates', $this->width, $this->height);
+        $graph = new GraphSimple($y, $x, 'Blue', __('New Candidates'), $this->width, $this->height);
 
         if (!eval(Hooks::get('GRAPH_NEW_CANDIDATES'))) return;
 
@@ -346,7 +347,7 @@ class GraphsUI extends UserInterface
             }
         }
 
-        $graph = new GraphSimple($y, $x, 'Red', 'New Job Orders', $this->width, $this->height);
+        $graph = new GraphSimple($y, $x, 'Red', __('New Job Orders'), $this->width, $this->height);
 
         if (!eval(Hooks::get('GRAPH_NEW_JOB_ORDERS'))) return;
 
@@ -454,7 +455,7 @@ class GraphsUI extends UserInterface
         }
         
         $graph = new pipelineStatisticsGraph(
-            $y, $x, $colorArray, $this->width, $this->height, "Submissions", "Interviews", "Hires", $view, $noData
+            $y, $x, $colorArray, $this->width, $this->height, __('Submissions'), __('Interviews'), __('Hires'), $view, $noData
         );
         
         $graph->draw();
@@ -476,29 +477,29 @@ class GraphsUI extends UserInterface
         if ($this->width > 600)
         {
             $y = array(
-                "Total Pipeline",
-                "Contacted",
-                "Cand Replied",
-                "Qualifying",
-                "Submitted",
-                "Interviewing",
-                "Offered",
-                "Declined",
-                "Placed"
+                __('Total Pipeline'),
+                __('Contacted'),
+                __('Cand Replied'),
+                __('Qualifying'),
+                __('Submitted'),
+                __('Interviewing'),
+                __('Offered'),
+                __('Declined'),
+                __('Placed')
             );
         }
         else
         {
             $y = array(
-                "Total Pipeline",
-                "|Contacted",
-                "Cand Replied",
-                "|Qualifying",
-                "Submitted",
-                "|Interviewing",
-                "Offered",
-                "|Declined",
-                "Placed"
+                __('Total Pipeline'),
+                "|". __('Contacted'),
+                __('Cand Replied'),
+                "|". __('Qualifying'),
+                __('Submitted'),
+                "|". __('Interviewing'),
+                __('Offered'),
+                "|". __('Declined'),
+                __('Placed')
             );
         }
 
@@ -523,7 +524,7 @@ class GraphsUI extends UserInterface
         $colorArray[7] = new LinearGradient(new AlmostBlack, new White, 0);
 
         $graph = new GraphComparisonChart(
-            $y, $x, $colorArray, 'Job Order Pipeline', $this->width,
+            $y, $x, $colorArray, __('Job Order'). '-'. __('Pipeline'), $this->width,
             $this->height, $statisticsData['totalPipeline']
         );
 
@@ -580,7 +581,7 @@ class GraphsUI extends UserInterface
             }
         }
 
-        $graph = new GraphSimple($y, $x, 'Orange', 'New Submissions', $this->width, $this->height);
+        $graph = new GraphSimple($y, $x, 'Orange', __('New Submissions'), $this->width, $this->height);
 
         if (!eval(Hooks::get('GRAPH_NEW_SUBMISSIONS'))) return;
 
@@ -593,7 +594,7 @@ class GraphsUI extends UserInterface
         if (!$this->isRequiredIDValid('wordVerifyID', $_GET) &&
             !isset($_GET['wordVerifyString']))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid word verification ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid word verification ID.'));
         }
 
         if (isset($_GET['wordVerifyID']))
@@ -629,4 +630,3 @@ class GraphsUI extends UserInterface
     }
 }
 
-?>

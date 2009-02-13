@@ -723,5 +723,3 @@ class LicenseUtility
         return $status;
     }
 }
-
-?>

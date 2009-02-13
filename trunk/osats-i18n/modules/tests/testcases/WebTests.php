@@ -13,7 +13,7 @@ class LoginWebTest extends CATSWebTestCase
         /* Attempt to spoof a session and make sure that when we try to request
          * the Job Orders page, that we are taken back to the Login page.
          */
-        $this->setCookie(CATS_SESSION_NAME, 'o964p0pr602975o0671qo50n1208r6nn');
+        $this->setCookie(SESSION_NAME, 'o964p0pr602975o0671qo50n1208r6nn');
         $this->assertGET(osatutil::getAbsoluteURI('index.php?m=joborders'));
         $this->runPageLoadAssertions(false, true);
         $this->assertTitle('CATS - Login');
@@ -57,7 +57,7 @@ class LoginWebTest extends CATSWebTestCase
 
         /* We should be at Home now. */
         $this->assertEqual(
-            CATS_SESSION_NAME . '=' . session_id(),
+            SESSION_NAME . '=' . session_id(),
             $_SESSION['CATS']->getCookie(),
             'Session::getCookie() should return session ID'
         );
@@ -1353,6 +1353,3 @@ class SettingsWebTest extends CATSWebTestCase
         $this->logout();
     }
 }
-
-
-?>

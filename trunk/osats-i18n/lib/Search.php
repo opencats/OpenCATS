@@ -338,6 +338,8 @@ class SearchCandidates
     private $_db;
     private $_siteID;
     protected $_userID = -1;
+    private $dateformatLong;
+    private $dateformat;
 
 
     public function __construct($siteID)
@@ -346,6 +348,8 @@ class SearchCandidates
         $this->_db = DatabaseConnection::getInstance();
         //FIXME: Library code Session dependencies suck.
         $this->_userID = $_SESSION['CATS']->getUserID();
+        $this->dateformatLong = __('DATEFORMAT_SQL_LONG');
+        $this->dateformat     = __('DATEFORMAT_SQL_DATE');
     }
 
 
@@ -374,10 +378,10 @@ class SearchCandidates
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName,
                 DATE_FORMAT(
-                    candidate.date_created, '%%m-%%d-%%y'
+                    candidate.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    candidate.date_modified, '%%m-%%d-%%y'
+                    candidate.date_modified, '%s'
                 ) AS dateModified
             FROM
                 candidate
@@ -395,6 +399,8 @@ class SearchCandidates
                 candidate.site_id = %s
             ORDER BY
                 %s %s",
+            $this->dateformat,
+            $this->dateformat,
             $wildCardString,
             $wildCardString,
             $wildCardString,
@@ -432,10 +438,10 @@ class SearchCandidates
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName,
                 DATE_FORMAT(
-                    candidate.date_created, '%%m-%%d-%%y'
+                    candidate.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    candidate.date_modified, '%%m-%%d-%%y'
+                    candidate.date_modified, '%s'
                 ) AS dateModified
             FROM
                 candidate
@@ -451,6 +457,8 @@ class SearchCandidates
                 candidate.is_active = 1
             ORDER BY
                 %s %s",
+            $this->dateformat,
+            $this->dateformat,
             $WHERE,
             $this->_siteID,
             $sortBy,
@@ -485,10 +493,10 @@ class SearchCandidates
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName,
                 DATE_FORMAT(
-                    candidate.date_created, '%%m-%%d-%%y'
+                    candidate.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    candidate.date_modified, '%%m-%%d-%%y'
+                    candidate.date_modified, '%s'
                 ) AS dateModified
             FROM
                 candidate
@@ -502,6 +510,8 @@ class SearchCandidates
                 candidate.site_id = %s
             ORDER BY
                 %s %s",
+            $this->dateformat,
+            $this->dateformat,
             $wildCardString,
             $this->_siteID,
             $sortBy,
@@ -540,10 +550,10 @@ class SearchCandidates
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName,
                 DATE_FORMAT(
-                    candidate.date_created, '%%m-%%d-%%y'
+                    candidate.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    candidate.date_modified, '%%m-%%d-%%y'
+                    candidate.date_modified, '%s'
                 ) AS dateModified
             FROM
                 candidate
@@ -572,6 +582,8 @@ class SearchCandidates
                 candidate.site_id = %s
             ORDER BY
                 %s %s",
+            $this->dateformat,
+            $this->dateformat,
             $wildCardString,
             $wildCardString,
             $this->_siteID,
@@ -594,6 +606,8 @@ class SearchCompanies
     private $_db;
     private $_siteID;
     protected $_userID = -1;
+    private $dateformatLong;
+    private $dateformat;
 
 
     public function __construct($siteID)
@@ -602,6 +616,8 @@ class SearchCompanies
         $this->_db = DatabaseConnection::getInstance();
         //FIXME: Library code Session dependencies suck.
         $this->_userID = $_SESSION['CATS']->getUserID();
+        $this->dateformatLong = __('DATEFORMAT_SQL_LONG');
+        $this->dateformat     = __('DATEFORMAT_SQL_DATE');
     }
 
 
@@ -627,10 +643,10 @@ class SearchCompanies
                 company.key_technologies AS keyTechnologies,
                 company.is_hot AS isHot,
                 DATE_FORMAT(
-                    company.date_created, '%%m-%%d-%%y'
+                    company.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    company.date_modified, '%%m-%%d-%%y'
+                    company.date_modified, '%s'
                 ) AS dateModified,
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName
@@ -644,6 +660,8 @@ class SearchCompanies
                 company.site_id = %s
             ORDER BY
                 %s %s",
+            $this->dateformat,
+            $this->dateformat,
             $wildCardString,
             $this->_siteID,
             $sortBy,
@@ -676,10 +694,10 @@ class SearchCompanies
                 company.key_technologies AS keyTechnologies,
                 company.is_hot AS isHot,
                 DATE_FORMAT(
-                    company.date_created, '%%m-%%d-%%y'
+                    company.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    company.date_modified, '%%m-%%d-%%y'
+                    company.date_modified, '%s'
                 ) AS dateModified,
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName
@@ -693,6 +711,8 @@ class SearchCompanies
                 company.site_id = %s
             ORDER BY
                 company.name ASC",
+            $this->dateformat,
+            $this->dateformat,
             $WHERE,
             $this->_siteID
         );
@@ -711,6 +731,8 @@ class SearchJobOrders
     private $_db;
     private $_siteID;
     protected $_userID = -1;
+    private $dateformatLong;
+    private $dateformat;
 
 
     public function __construct($siteID)
@@ -719,6 +741,8 @@ class SearchJobOrders
         $this->_db = DatabaseConnection::getInstance();
         //FIXME: Library code Session dependencies suck.
         $this->_userID = $_SESSION['CATS']->getUserID();
+        $this->dateformatLong = __('DATEFORMAT_SQL_LONG');
+        $this->dateformat     = __('DATEFORMAT_SQL_DATE');
     }
 
 
@@ -771,13 +795,13 @@ class SearchJobOrders
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName,
                 DATE_FORMAT(
-                    joborder.start_date, '%%m-%%d-%%y'
+                    joborder.start_date, '%s'
                 ) AS startDate,
                 DATE_FORMAT(
-                    joborder.date_created, '%%m-%%d-%%y'
+                    joborder.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    joborder.date_modified, '%%m-%%d-%%y'
+                    joborder.date_modified, '%s'
                 ) AS dateModified
             FROM
                 company
@@ -796,6 +820,9 @@ class SearchJobOrders
                 joborder.site_id = %s
             ORDER BY
                 %s %s",
+            $this->dateformat,
+            $this->dateformat,
+            $this->dateformat,
             $WHERE,
             $activeCriterion,
             $this->_siteID,
@@ -856,13 +883,13 @@ class SearchJobOrders
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName,
                 DATE_FORMAT(
-                    joborder.start_date, '%%m-%%d-%%y'
+                    joborder.start_date, '%s'
                 ) AS startDate,
                 DATE_FORMAT(
-                    joborder.date_created, '%%m-%%d-%%y'
+                    joborder.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    joborder.date_modified, '%%m-%%d-%%y'
+                    joborder.date_modified, '%s'
                 ) AS dateModified
             FROM
                 company
@@ -883,6 +910,9 @@ class SearchJobOrders
                 company.site_id = %s
             ORDER BY
                 %s %s",
+            $this->dateformat,
+            $this->dateformat,
+            $this->dateformat,
             $wildCardString,
             $activeCriterion,
             $this->_siteID,
@@ -940,13 +970,13 @@ class SearchJobOrders
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName,
                 DATE_FORMAT(
-                    joborder.start_date, '%%m-%%d-%%y'
+                    joborder.start_date, '%s'
                 ) AS startDate,
                 DATE_FORMAT(
-                    joborder.date_created, '%%m-%%d-%%y'
+                    joborder.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    joborder.date_modified, '%%m-%%d-%%y'
+                    joborder.date_modified, '%s'
                 ) AS dateModified,
                 joborder.date_modified AS dateModifiedSort
             FROM
@@ -967,6 +997,9 @@ class SearchJobOrders
             ORDER BY
                 dateModifiedSort %s
             LIMIT 0, %s",
+            $this->dateformat,
+            $this->dateformat,
+            $this->dateformat,
             $this->_siteID,
             $activeCriterion,
             $this->_siteID,
@@ -991,6 +1024,8 @@ class ContactsSearch
     private $_db;
     private $_siteID;
     protected $_userID = -1;
+    private $dateformatLong;
+    private $dateformat;
 
 
     public function __construct($siteID)
@@ -999,6 +1034,8 @@ class ContactsSearch
         $this->_db = DatabaseConnection::getInstance();
         //FIXME: Library code Session dependencies suck.
         $this->_userID = $_SESSION['CATS']->getUserID();
+        $this->dateformatLong = __('DATEFORMAT_SQL_LONG');
+        $this->dateformat     = __('DATEFORMAT_SQL_DATE');
     }
 
 
@@ -1028,10 +1065,10 @@ class ContactsSearch
                 contact.is_hot AS isHotContact,
                 contact.left_company AS leftCompany,
                 DATE_FORMAT(
-                    contact.date_created, '%%m-%%d-%%y'
+                    contact.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    contact.date_modified, '%%m-%%d-%%y'
+                    contact.date_modified, '%s'
                 ) AS dateModified,
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName,
@@ -1055,6 +1092,8 @@ class ContactsSearch
                 company.site_id = %s
             ORDER BY
                 %s %s",
+            $this->dateformat,
+            $this->dateformat,
             $wildCardString,
             $wildCardString,
             $wildCardString,
@@ -1094,10 +1133,10 @@ class ContactsSearch
                 contact.is_hot AS isHotContact,
                 contact.left_company AS leftCompany,
                 DATE_FORMAT(
-                    contact.date_created, '%%m-%%d-%%y'
+                    contact.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    contact.date_modified, '%%m-%%d-%%y'
+                    contact.date_modified, '%s'
                 ) AS dateModified,
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName,
@@ -1117,6 +1156,8 @@ class ContactsSearch
                 company.site_id = %s
             ORDER BY
                 %s %s",
+            $this->dateformat,
+            $this->dateformat,
             $wildCardString,
             $this->_siteID,
             $this->_siteID,
@@ -1153,10 +1194,10 @@ class ContactsSearch
                 contact.is_hot AS isHotContact,
                 contact.left_company AS leftCompany,
                 DATE_FORMAT(
-                    contact.date_created, '%%m-%%d-%%y'
+                    contact.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    contact.date_modified, '%%m-%%d-%%y'
+                    contact.date_modified, '%s'
                 ) AS dateModified,
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName,
@@ -1176,6 +1217,8 @@ class ContactsSearch
                 company.site_id = %s
             ORDER BY
                 %s %s",
+            $this->dateformat,
+            $this->dateformat,
             $wildCardString,
             $this->_siteID,
             $this->_siteID,
@@ -1198,6 +1241,7 @@ class QuickSearch
     private $_db;
     private $_siteID;
     protected $_userID = -1;
+    private $dateformat;
 
 
     public function __construct($siteID)
@@ -1206,6 +1250,7 @@ class QuickSearch
         $this->_db = DatabaseConnection::getInstance();
         //FIXME: Library code Session dependencies suck.
         $this->_userID = $_SESSION['CATS']->getUserID();
+        $this->dateformat     = __('DATEFORMAT_SQL_DATE');
     }
 
 
@@ -1233,10 +1278,10 @@ class QuickSearch
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName,
                 DATE_FORMAT(
-                    candidate.date_created, '%%m-%%d-%%y'
+                    candidate.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    candidate.date_modified, '%%m-%%d-%%y'
+                    candidate.date_modified, '%s'
                 ) AS dateModified
             FROM
                 candidate
@@ -1271,6 +1316,8 @@ class QuickSearch
                 candidate.date_modified DESC,
                 candidate.first_name ASC,
                 candidate.last_name ASC",
+            $this->dateformat,
+            $this->dateformat,
             $wildCardString,
             $wildCardString,
             $wildCardString,
@@ -1306,10 +1353,10 @@ class QuickSearch
                 company.key_technologies AS keyTechnologies,
                 company.is_hot AS isHot,
                 DATE_FORMAT(
-                    company.date_created, '%%m-%%d-%%y'
+                    company.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    company.date_modified, '%%m-%%d-%%y'
+                    company.date_modified, '%s'
                 ) AS dateModified,
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName
@@ -1328,6 +1375,8 @@ class QuickSearch
                 company.site_id = %s
             ORDER BY
                 company.name ASC",
+            $this->dateformat,
+            $this->dateformat,
             $wildCardString,
             $wildCardString,
             $wildCardString,
@@ -1365,10 +1414,10 @@ class QuickSearch
                 contact.is_hot AS isHotContact,
                 contact.left_company AS leftCompany,
                 DATE_FORMAT(
-                    contact.date_created, '%%m-%%d-%%y'
+                    contact.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    contact.date_modified, '%%m-%%d-%%y'
+                    contact.date_modified, '%s'
                 ) AS dateModified,
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName,
@@ -1410,6 +1459,8 @@ class QuickSearch
                 company.site_id = %s
             ORDER BY
                 name ASC",
+            $this->dateformat,
+            $this->dateformat,
             $wildCardString,
             $wildCardString,
             $wildCardString,
@@ -1457,13 +1508,13 @@ class QuickSearch
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName,
                 DATE_FORMAT(
-                    joborder.start_date, '%%m-%%d-%%y'
+                    joborder.start_date, '%s'
                 ) AS startDate,
                 DATE_FORMAT(
-                    joborder.date_created, '%%m-%%d-%%y'
+                    joborder.date_created, '%s'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    joborder.date_modified, '%%m-%%d-%%y'
+                    joborder.date_modified, '%s'
                 ) AS dateModified
             FROM
                 joborder
@@ -1486,6 +1537,9 @@ class QuickSearch
                 company.site_id = %s
             ORDER BY
                 name ASC",
+            $this->dateformat,
+            $this->dateformat,
+            $this->dateformat,
             $wildCardString,
             $wildCardString,
             $this->_siteID,
@@ -1732,6 +1786,7 @@ class SearchByResumePager extends Pager
     private $_siteID;
     private $_db;
     private $_WHERE;
+    private $dateformat;
 
 
     public function __construct($rowsPerPage, $currentPage, $siteID,
@@ -1739,6 +1794,7 @@ class SearchByResumePager extends Pager
     {
         $this->_db = DatabaseConnection::getInstance();
         $this->_siteID = $siteID;
+        $this->dateformat     = __('DATEFORMAT_SQL_DATE');
 
         $this->_sortByFields = array(
             'firstName',
@@ -1877,11 +1933,11 @@ class SearchByResumePager extends Pager
                 candidate.city AS city,
                 candidate.state AS state,
                 DATE_FORMAT(
-                    candidate.date_created, '%%m-%%d-%%y'
+                    candidate.date_created, '%s'
                 ) AS dateCreated,
                 candidate.date_created AS dateCreatedSort,
                 DATE_FORMAT(
-                    candidate.date_modified, '%%m-%%d-%%y'
+                    candidate.date_modified, '%s'
                 ) AS dateModified,
                 candidate.date_modified AS dateModifiedSort,
                 owner_user.first_name AS ownerFirstName,
@@ -1909,7 +1965,8 @@ class SearchByResumePager extends Pager
             ORDER BY
                 %s %s
             LIMIT %s, %s",
-
+            $this->dateformat,
+            $this->dateformat,
             $this->_WHERE,
             DATA_ITEM_CANDIDATE,
             DATA_ITEM_BULKRESUME,
@@ -1979,5 +2036,3 @@ class SearchPager extends Pager
         parent::__construct(count($this->_rs), $rowsPerPage, $currentPage);
     }
 }
-
-?>

@@ -15,11 +15,13 @@ class Dashboard
 
     private $_db;
     private $_siteID;
+    private $dateformat;
 
     public function __construct($siteID)
     {
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
+        $this->dateformat     = __('DATEFORMAT_SQL_DATE');
     }
 
     /**
@@ -41,7 +43,7 @@ class Dashboard
                 IF (company.is_hot = 1, 'jobLinkHot', 'jobLinkCold') as companyClassName,
                 IF (candidate.is_hot = 1, 'jobLinkHot', 'jobLinkCold') as candidateClassName,
                 DATE_FORMAT(
-                    candidate_joborder_status_history.date, '%%m-%%d-%%y'
+                    candidate_joborder_status_history.date, '%s'
                 ) AS date,
                 candidate_joborder_status_history.date AS datesort
             FROM
@@ -62,6 +64,7 @@ class Dashboard
                 datesort DESC
             LIMIT
                 10",
+            $this->dateformat,
             $this->_siteID
         );
 

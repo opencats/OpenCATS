@@ -418,5 +418,3 @@ class osatutil
         return false;
     }
 }
-
-?>

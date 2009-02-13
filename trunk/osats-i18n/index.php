@@ -17,7 +17,7 @@ or die(mysql_error("I cant find info in the DB called ".DATABASE_NAME));
 $row = mysql_result( $result,'Installed' );
 if ($row==null)//if the table does not have a 1 in it, then run the setup wizard.
 {
-    include('installation.php');
+  include('installation.php');
 	die();
 }
 
@@ -250,5 +250,3 @@ if (isset($errorHandler))
 {
     $errorHandler->reportErrors();
 }
-
-?>

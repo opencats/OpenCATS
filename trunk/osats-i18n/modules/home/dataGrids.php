@@ -34,6 +34,7 @@
 include_once('./lib/Hooks.php');
 include_once('./lib/InfoString.php');
 include_once('./lib/Pipelines.php');
+include_once('./lib/i18n.php');
 
 class ImportantPipelineDashboard extends DataGrid
 {
@@ -60,12 +61,12 @@ class ImportantPipelineDashboard extends DataGrid
         $this->defaultSortDirection = 'DESC';
 
         $this->_defaultColumns = array(
-            array('name' => 'First Name', 'width' => 85),
-            array('name' => 'Last Name', 'width' => 75),
-            array('name' => 'Status', 'width' => 75),
-            array('name' => 'Position', 'width' => 275),
-            array('name' => 'Company', 'width' => 210),
-            array('name' => 'Modified', 'width' => 80),
+            array('name' => __('First Name'), 'width' => 85),
+            array('name' => __('Last Name'), 'width' => 75),
+            array('name' => __('Status'), 'width' => 75),
+            array('name' => __('Position'), 'width' => 275),
+            array('name' => __('Company'), 'width' => 210),
+            array('name' => __('Modified'), 'width' => 80),
         );
 
 
@@ -76,43 +77,43 @@ class ImportantPipelineDashboard extends DataGrid
 
         $this->_classColumns = array(
 
-            'First Name' =>     array('pagerRender'    => '$ret = \'<img src="images/mru/candidate.gif" height="12" alt="" />\'; if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return $ret.\'&nbsp;<a href="'.osatutil::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'candidateID\'].\'" style="font-size:11px;" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make(DATA_ITEM_CANDIDATE,$rsData[\'candidateID\'],$rsData[\'siteID\'])).\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';',
+            __('First Name') =>     array('pagerRender'    => '$ret = \'<img src="images/mru/candidate.gif" height="12" alt="" />\'; if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return $ret.\'&nbsp;<a href="'.osatutil::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'candidateID\'].\'" style="font-size:11px;" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make(DATA_ITEM_CANDIDATE,$rsData[\'candidateID\'],$rsData[\'siteID\'])).\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';',
                                      'sortableColumn'  => 'firstName',
                                      'pagerWidth'      => 85,
                                      'pagerOptional'   => false,
                                      'alphaNavigation' => true,
                                      'filterHaving'    => 'firstName'),
 
-            'Last Name' =>      array('pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.osatutil::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'candidateID\'].\'"  style="font-size:11px;" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make(DATA_ITEM_CANDIDATE,$rsData[\'candidateID\'],$rsData[\'siteID\'])).\'"> \'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';',
+            __('Last Name') =>      array('pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.osatutil::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'candidateID\'].\'"  style="font-size:11px;" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make(DATA_ITEM_CANDIDATE,$rsData[\'candidateID\'],$rsData[\'siteID\'])).\'"> \'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';',
                                      'sortableColumn'  => 'lastName',
                                      'pagerWidth'      => 75,
                                      'pagerOptional'   => false,
                                      'alphaNavigation' => true,
                                      'filterHaving'    => 'lastName'),
 
-            'Status'    =>      array('pagerRender'    => 'return $rsData[\'status\'];',
+            __('Status')    =>      array('pagerRender'    => 'return $rsData[\'status\'];',
                                      'sortableColumn'  => 'statusSort',
                                      'pagerWidth'      => 75,
                                      'alphaNavigation' => true,
                                      'filterHaving'    => 'status'),
 
-            'Position'    =>    array('pagerRender'    => 'if ($rsData[\'jobOrderIsHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.osatutil::getIndexName().'?m=joborders&amp;a=show&amp;jobOrderID=\'.$rsData[\'joborderID\'].\'"  style="font-size:11px;" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'jobOrderTitle\']).\'</a>\';',
+            __('Position')    =>    array('pagerRender'    => 'if ($rsData[\'jobOrderIsHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.osatutil::getIndexName().'?m=joborders&amp;a=show&amp;jobOrderID=\'.$rsData[\'joborderID\'].\'"  style="font-size:11px;" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'jobOrderTitle\']).\'</a>\';',
                                      'sortableColumn'  => 'jobOrderTitle',
                                      'pagerWidth'      => 220,
                                      'alphaNavigation' => true,
                                      'filterHaving'    => 'jobOrderTitle'),
 
-            'Company'    =>    array('pagerRender'    => 'if ($rsData[\'companyIsHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.osatutil::getIndexName().'?m=companies&amp;a=show&amp;companyID=\'.$rsData[\'companyID\'].\'"  style="font-size:11px;" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'companyName\']).\'</a>\';',
+            __('Company')    =>    array('pagerRender'    => 'if ($rsData[\'companyIsHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.osatutil::getIndexName().'?m=companies&amp;a=show&amp;companyID=\'.$rsData[\'companyID\'].\'"  style="font-size:11px;" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'companyName\']).\'</a>\';',
                                      'sortableColumn'  => 'companyName',
                                      'pagerWidth'      => 180,
                                      'alphaNavigation' => true,
                                      'filterHaving'    => 'companyName'),
 
-            'Modified' =>      array('pagerRender'     => 'return $rsData[\'dateModified\'];',
+            __('Modified') =>      array('pagerRender'     => 'return $rsData[\'dateModified\'];',
                                      'sortableColumn'  => 'dateModifiedSort',
                                      'pagerWidth'      => 70,
                                      'pagerOptional'   => true,
-                                     'filterHaving'    => 'DATE_FORMAT(candidate_joborder.date_modified, \'%m-%d-%y (%%h:%%i %%p)\')'),
+                                     'filterHaving'    => "DATE_FORMAT(candidate_joborder.date_modified, '".__('DATEFORMAT_SQL_LONG')."')"),
          );
 
         parent::__construct("home:ImportantPipelineDashboard", $parameters);
@@ -141,7 +142,7 @@ class ImportantPipelineDashboard extends DataGrid
                 joborder.joborder_id as joborderID,
                 user.first_name as userFirstName,
                 user.last_name as userLastName,
-                DATE_FORMAT(candidate_joborder.date_modified, '%%m-%%d-%%y ') as dateModified,
+                DATE_FORMAT(candidate_joborder.date_modified, '%s ') as dateModified,
                 candidate_joborder.date_modified as dateModifiedSort,
                 IF(candidate_joborder.status = %s, 1, IF(candidate_joborder.status = %s, 2, 3)) as statusSort,
                 candidate_joborder_status.short_description as status
@@ -179,6 +180,7 @@ class ImportantPipelineDashboard extends DataGrid
             %s
             %s",
             $distinct,
+            __('DATEFORMAT_SQL_DATE'),
             PIPELINE_STATUS_SUBMITTED,
             PIPELINE_STATUS_INTERVIEWING,
             $this->_siteID,
@@ -245,8 +247,8 @@ class CallsDataGrid extends DataGrid
         $this->defaultSortDirection = 'DESC';
 
         $this->_defaultColumns = array(
-            array('name' => 'Time', 'width' => 90),
-            array('name' => 'Name', 'width' => 175)
+            array('name' => __('Time'), 'width' => 90),
+            array('name' => __('Name'), 'width' => 175)
         );
 
 
@@ -257,14 +259,14 @@ class CallsDataGrid extends DataGrid
         $this->_dataItemIDColumn = 'company.company_id';
 
         $this->_classColumns = array(
-            'Time' =>          array('pagerRender'    => 'return $rsData[\'dateCreated\'].\':\';',
+            __('Time') =>   array( 'pagerRender'    => 'return $rsData[\'dateCreated\'].\':\';',
                                       'sortableColumn' => 'dateCreatedSort',
                                       'pagerWidth'     => 90,
                                       'pagerOptional'  => false,
                                       'alphaNavigation'=> true,
                                       'filterHaving'   => 'dateCreated'),
 
-            'Name' =>          array('pagerRender'    => 'if ($rsData[\'dataItemType\']=='.DATA_ITEM_CANDIDATE.') {$ret = \'<img src="images/mru/candidate.gif" height="12" alt="" />\';} else if ($rsData[\'dataItemType\']=='.DATA_ITEM_CONTACT.') {$ret = \'<img src="images/mru/contact.gif" height="12">\';} else {$ret = \'<img src="images/mru/blank.gif">\';} if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; if ($rsData[\'dataItemType\']=='.DATA_ITEM_CANDIDATE.') {$ret = $ret.\'&nbsp;<a style="font-size:11px;" href="'.osatutil::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';} else {$ret = $ret.\'&nbsp;<a style="font-size:11px;" href="'.osatutil::getIndexName().'?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';} if ($rsData[\'dataItemType\']=='.DATA_ITEM_CANDIDATE.') {return $ret . \'<a style="font-size:11px;" href="'.osatutil::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'"> \'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';} else {return $ret . \'<a style="font-size:11px;" href="'.osatutil::getIndexName().'?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'"> \'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';}',
+            __('Name') =>   array('pagerRender'    => 'if ($rsData[\'dataItemType\']=='.DATA_ITEM_CANDIDATE.') {$ret = \'<img src="images/mru/candidate.gif" height="12" alt="" />\';} else if ($rsData[\'dataItemType\']=='.DATA_ITEM_CONTACT.') {$ret = \'<img src="images/mru/contact.gif" height="12">\';} else {$ret = \'<img src="images/mru/blank.gif">\';} if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; if ($rsData[\'dataItemType\']=='.DATA_ITEM_CANDIDATE.') {$ret = $ret.\'&nbsp;<a style="font-size:11px;" href="'.osatutil::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';} else {$ret = $ret.\'&nbsp;<a style="font-size:11px;" href="'.osatutil::getIndexName().'?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';} if ($rsData[\'dataItemType\']=='.DATA_ITEM_CANDIDATE.') {return $ret . \'<a style="font-size:11px;" href="'.osatutil::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'"> \'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';} else {return $ret . \'<a style="font-size:11px;" href="'.osatutil::getIndexName().'?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'"> \'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';}',
                                      'sortableColumn'  => 'firstName',
                                      'pagerWidth'      => 120,
                                      'pagerOptional'   => false,
@@ -302,9 +304,7 @@ class CallsDataGrid extends DataGrid
                 activity.joborder_id AS jobOrderID,
                 activity.notes AS notes,
                 activity_type.short_description AS typeDescription,
-                DATE_FORMAT(
-                    activity.date_created, '%%m-%%d-%%y %%h:%%i %%p'
-                ) AS dateCreated,
+                DATE_FORMAT(activity.date_created, '%s') AS dateCreated,
                 activity.date_created AS dateCreatedSort,
                 entered_by_user.first_name AS enteredByFirstName,
                 entered_by_user.last_name AS enteredByLastName,
@@ -356,9 +356,7 @@ class CallsDataGrid extends DataGrid
                 activity.joborder_id AS jobOrderID,
                 activity.notes AS notes,
                 activity_type.short_description AS typeDescription,
-                DATE_FORMAT(
-                    activity.date_created, '%%m-%%d-%%y %%h:%%i %%p'
-                ) AS dateCreated,
+                DATE_FORMAT(activity.date_created, '%s') AS dateCreated,
                 activity.date_created AS dateCreatedSort,
                 entered_by_user.first_name AS enteredByFirstName,
                 entered_by_user.last_name AS enteredByLastName,
@@ -395,12 +393,14 @@ class CallsDataGrid extends DataGrid
             ORDER BY dateCreatedSort DESC
             LIMIT 6",
             $distinct,
+            __('DATEFORMAT_SQL_LONG'),
             DATA_ITEM_CANDIDATE,
             $this->_userID,
             $this->_siteID,
             $this->dateCriterion,
             (strlen($whereSQL) > 0) ? ' AND ' . $whereSQL : '',
             $distinct,
+            __('DATEFORMAT_SQL_LONG'),
             DATA_ITEM_CONTACT,
             $this->_userID,
             $this->_siteID,
@@ -412,5 +412,3 @@ class CallsDataGrid extends DataGrid
         return $sql;
     }
 }
-
-?>

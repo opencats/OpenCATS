@@ -272,5 +272,3 @@ class MRU
         return $URL;
     }
 }
-
-?>

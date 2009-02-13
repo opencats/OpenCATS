@@ -101,5 +101,3 @@ class Template
         echo($html);
     }
 }
-
-?>

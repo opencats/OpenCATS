@@ -537,5 +537,3 @@ class ModuleUtility
         }
     }
 }
-
-?>

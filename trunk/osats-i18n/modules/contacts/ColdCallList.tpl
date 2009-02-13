@@ -1,25 +1,25 @@
 <?php /* $Id: ColdCallList.tpl 1948 2007-02-23 09:49:27Z will $ */ ?>
-<?php TemplateUtility::printHeader('Contacts', array('js/sorttable.js', 'js/highlightrows.js')); ?>
+<?php TemplateUtility::printHeader(__('Contacts'), array('js/sorttable.js', 'js/highlightrows.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
     <table>
         <tr>
             <td width="3%">
                 <img src="images/contact.gif" width="24" height="24" border="0" alt="Contacts" style="margin-top: 3px;" />&nbsp;
             </td>
-            <td><h2>Contacts: Cold Call List</h2></td>
+            <td><h2><?php _e('Contacts')?>: <?php _e('Cold Call List')?></h2></td>
         </tr>
     </table>
 
-    <p class="note">Cold Call List (Only Contacts with Phone Numbers)</p>
+    <p class="note"><?php _e('Cold Call List')?> (<?php _e('Only Contacts with Phone Numbers')?>)</p>
 
     <?php if (!empty($this->rs)): ?>
         <table class="sortable" width="925" rules="all" onmouseover="javascript:trackTableHighlight(event)">
             <tr>
-                <th align="left">Company</th>
-                <th align="left" nowrap="nowrap">First Name</th>
-                <th align="left" nowrap="nowrap">Last Name</th>
-                <th align="left">Title</th>
-                <th align="left" nowrap="nowrap">Work Phone</th>
+                <th align="left"><?php _e('Company')?></th>
+                <th align="left" nowrap="nowrap"><?php _e('First Name')?></th>
+                <th align="left" nowrap="nowrap"><?php _e('Last Name')?></th>
+                <th align="left"><?php _e('Title')?></th>
+                <th align="left" nowrap="nowrap"><?php _e('Work Phone')?></th>
             </tr>
 
             <?php foreach ($this->rs as $rowNumber => $data): ?>

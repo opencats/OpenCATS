@@ -3,14 +3,14 @@
     <body>
     <table>
         <tr>
-            <td><h2>Careers: Error</h2></td>
+            <td><h2><?php _e('Careers');?>: <?php _e('Error');?></h2></td>
         </tr>
     </table>
 
     <p class="fatalError">
-        A fatal error has occurred.<br />
+        <?php _e('A fatal error has occurred.');?><br />
         <br />
-        Error: <?php echo($this->errorMessage); ?>
+        <?php _e('Error');?>: <?php echo($this->errorMessage); ?>
     </p>
     </body>
 </html>

@@ -1,5 +1,5 @@
 <?php /* $Id: Contacts.tpl 3430 2007-11-06 20:44:51Z will $ */ ?>
-<?php TemplateUtility::printHeader('Contacts', array('js/highlightrows.js', 'js/export.js', 'js/dataGrid.js')); ?>
+<?php TemplateUtility::printHeader(__('Contacts'), array('js/highlightrows.js', 'js/export.js', 'js/dataGrid.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <style type="text/css">
@@ -16,7 +16,7 @@
                     <td width="3%">
                         <img src="images/contact.gif" width="24" height="24" border="0" alt="Contacts" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Contacts: Home</h2></td>
+                    <td><h2><?php echo __('Contacts').': '.__('Home')?></h2></td>
                     <td align="right">
                         <form name="contactsViewSelectorForm" id="contactsViewSelectorForm" action="<?php echo(osatutil::getIndexName()); ?>" method="get">
                             <input type="hidden" name="m" value="contacts" />
@@ -29,11 +29,11 @@
                                     </td>
                                     <td valign="top" align="right" nowrap="nowrap">
                                         <input type="checkbox" name="onlyMyCompanies" id="onlyMyContacts" <?php if ($this->dataGrid->getFilterValue('OwnerID') ==  $this->userID): ?>checked<?php endif; ?> onclick="<?php echo $this->dataGrid->getJSAddRemoveFilterFromCheckbox('OwnerID', '==',  $this->userID); ?>" />
-                                        <label for="onlyMyContacts">Only My Contacts</label>&nbsp;
+                                        <label for="onlyMyContacts"><?php _e('Only My Contacts')?></label>&nbsp;
                                     </td>
                                     <td valign="top" align="right" nowrap="nowrap">
                                         <input type="checkbox" name="onlyHotCompanies" id="onlyHotContacts" <?php if ($this->dataGrid->getFilterValue('IsHot') == '1'): ?>checked<?php endif; ?> onclick="<?php echo $this->dataGrid->getJSAddRemoveFilterFromCheckbox('IsHot', '==', '\'1\''); ?>" />
-                                        <label for="onlyHotContacts">Only Hot Contacts</label>&nbsp;
+                                        <label for="onlyHotContacts"><?php _e('Only Hot Contacts')?></label>&nbsp;
                                     </td>
                                 </tr>
                             </table>
@@ -50,7 +50,7 @@
                         <img src="images/large_error.gif" align="left">
                     </td>
                     <td align="left" valign="center">
-                        <span style="font-size: 12pt; font-weight: bold; color: #800000; line-height: 12pt;">There was a problem with your request:</span>
+                        <span style="font-size: 12pt; font-weight: bold; color: #800000; line-height: 12pt;"><?php _e('There was a problem with your request')?>:</span>
                         <div style="font-size: 10pt; font-weight: bold; padding: 3px 0px 0px 0px;"><?php echo $this->errMessage; ?></div>
                     </td>
                 </tr>
@@ -59,12 +59,18 @@
             <?php endif; ?>
 
             <p class="note">
-                <span style="float:left;">
-                    Contacts - Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?>
-                    (<?php echo($this->dataGrid->getNumberOfRows()); ?> Items)
-                    <?php if ($this->dataGrid->getFilterValue('OwnerID') ==  $this->userID): ?>(Only My Contacts)<?php endif; ?>
-                    <?php if ($this->dataGrid->getFilterValue('IsHot') == '1'): ?>(Only Hot Contacts)<?php endif; ?>
-                </span>
+                <span style="float:left;"><?php 
+                  echo __('Contacts').' - '.__('Page').$this->dataGrid->getCurrentPageHTML();
+                  echo ' ('; 
+                  echo format_number_choice('countItems', array($this->dataGrid->getNumberOfRows()), $this->dataGrid->getNumberOfRows());
+                  echo ') ';
+
+                  if ($this->dataGrid->getFilterValue('OwnerID') ==  $this->userID)
+                    echo '('.__('Only My Contacts').')';
+
+                  if ($this->dataGrid->getFilterValue('IsHot') == '1')
+                    echo '('.__('Only Hot Contacts').')';
+                ?></span>
                 <span style="float:right;">
                     <?php $this->dataGrid->drawRowsPerPageSelector(); ?>
                     <?php $this->dataGrid->drawShowFilterControl(); ?>
@@ -75,12 +81,8 @@
             <?php $this->dataGrid->draw();  ?>
 
             <div style="display:block;">
-                <span style="float:left;">
-                    <?php $this->dataGrid->printActionArea(); ?>
-                </span>
-                <span style="float:right;">
-                    <?php $this->dataGrid->printNavigation(true); ?>
-                </span>&nbsp;
+                <span style="float:left;"><?php $this->dataGrid->printActionArea(); ?></span>
+                <span style="float:right;"><?php $this->dataGrid->printNavigation(true); ?></span>&nbsp;
             </div>
 
             <?php else: ?>
@@ -95,7 +97,7 @@
                 <td style="padding-left: 62px;" align="center" valign="center">
 
                     <div style="text-align: center; width: 600px; line-height: 22px; font-size: 18px; font-weight: bold; color: #666666; padding-bottom: 20px;">
-                    Add contacts to keep track of people you work with.
+                    <?php _e('Add contacts to keep track of people you work with.')?>
                     </div>
 
                     <a href="<?php echo osatutil::getIndexName(); ?>?m=contacts&amp;a=add">

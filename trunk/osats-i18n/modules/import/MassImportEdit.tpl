@@ -1,5 +1,5 @@
 <?php /* $Id: MassImportEdit.tpl 3781 2007-12-03 21:30:23Z andrew $ */ ?>
-<?php TemplateUtility::printHeader('Settings', array('js/massImport.js')); ?>
+<?php TemplateUtility::printHeader(__('Settings'), array('js/massImport.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
 <script src='http://resfly.com/js/resumeParserValidation.js' type='text/javascript' language='javascript'></script>
@@ -12,7 +12,7 @@
                         <table cellpadding="0" cellspacing="0" border="0" width="100%">
                             <tr>
                                 <td align="left" valign="middle" class="infoBarText">
-                                    Candidate Details
+                                    <?php _e('Candidate Details') ?>
                                 </td>
                                 <td align="right" valign="middle" class="infoFileText">
                                     &nbsp;
@@ -26,10 +26,10 @@
                     <table cellpadding="0" cellspacing="0" border="0" width="100%" style="padding-top: 10px;">
                         <tr>
                             <td style="font-size: 14px; padding-top: 10px;">
-                                <b>* - Fields that are required for this document to be converted into a candidate.</b>
+                                <b>* - <?php _e('Fields that are required for this document to be converted into a candidate.') ?></b>
                             </td>
                             <td align="right" valign="bottom">
-                                <input type="submit" value="Save ->" style="cursor: pointer;" />
+                                <input type="submit" value="<?php _e('Save') ?> ->" style="cursor: pointer;" />
                             </td>
                         </tr>
                     </table>
@@ -40,7 +40,7 @@
                                 <div class="parsedData">
                                     <table cellpadding="0" cellpadding="0">
                                         <tr>
-                                            <td class="fieldCell fieldTitle">First Name:</td>
+                                            <td class="fieldCell fieldTitle"><?php _e('First Name') ?>:</td>
                                             <td class="fieldCell">
                                                 <table cellpadding="0" cellspacing="0" border="0">
                                                     <tr>
@@ -57,7 +57,7 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="fieldCell fieldTitle">Last Name: *</td>
+                                            <td class="fieldCell fieldTitle"><?php _e('Last Name') ?>: *</td>
                                             <td class="fieldCell">
                                                 <table cellpadding="0" cellspacing="0" border="0">
                                                     <tr>
@@ -74,7 +74,7 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="fieldCell fieldTitle">Address:</td>
+                                            <td class="fieldCell fieldTitle"><?php _e('Address') ?>:</td>
                                             <td class="fieldCell">
                                                 <table cellpadding="0" cellspacing="0" border="0">
                                                     <tr>
@@ -91,7 +91,7 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="fieldCell fieldTitle">City:</td>
+                                            <td class="fieldCell fieldTitle"><?php _e('City') ?>:</td>
                                             <td class="fieldCell">
                                                 <table cellpadding="0" cellspacing="0" border="0">
                                                     <tr>
@@ -108,7 +108,7 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="fieldCell fieldTitle">State:</td>
+                                            <td class="fieldCell fieldTitle"><?php _e('State') ?>:</td>
                                             <td class="fieldCell">
                                                 <table cellpadding="0" cellspacing="0" border="0">
                                                     <tr>
@@ -125,7 +125,7 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="fieldCell fieldTitle">Zip Code:</td>
+                                            <td class="fieldCell fieldTitle"><?php _e('Postal Code') ?>:</td>
                                             <td class="fieldCell">
                                                 <table cellpadding="0" cellspacing="0" border="0">
                                                     <tr>
@@ -142,7 +142,7 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="fieldCell fieldTitle">E-mail: *</td>
+                                            <td class="fieldCell fieldTitle"><?php _e('E-Mail') ?>: *</td>
                                             <td class="fieldCell">
                                                 <table cellpadding="0" cellspacing="0" border="0">
                                                     <tr>
@@ -159,7 +159,7 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="fieldCell fieldTitle">Phone:</td>
+                                            <td class="fieldCell fieldTitle"><?php _e('Phone') ?>:</td>
                                             <td class="fieldCell">
                                                 <table cellpadding="0" cellspacing="0" border="0">
                                                     <tr>
@@ -177,7 +177,7 @@
                                         </tr>
                                         <tr>
                                             <td class="fieldCell fieldTitle" colspan="2">
-                                                Skills:
+                                                <?php _e('Key Skills') ?>:
                                                 <br />
                                                 <table cellpadding="0" cellspacing="0" border="0">
                                                     <tr>
@@ -195,7 +195,7 @@
                                         </tr>
                                         <tr>
                                             <td class="fieldCell fieldTitle" colspan="2">
-                                                Education:
+                                                <?php _e('Education') ?>:
                                                 <br />
                                                 <table cellpadding="0" cellspacing="0" border="0">
                                                     <tr>
@@ -213,7 +213,7 @@
                                         </tr>
                                         <tr>
                                             <td class="fieldCell fieldTitle" colspan="2">
-                                                Experience:
+                                                <?php _e('Experience') ?>:
                                                 <br />
                                                 <table cellpadding="0" cellspacing="0" border="0">
                                                     <tr>
@@ -233,14 +233,14 @@
                                 </div>
                             </td>
                             <td align="left" valign="top" width="600">
-                                File: <b><?php echo $this->document['realName']; ?></b> (<?php echo number_format(filesize($this->document['name'])/1024,0); ?>k)
+                                <?php _e('File') ?>: <b><?php echo $this->document['realName']; ?></b> (<?php echo number_format(filesize($this->document['name'])/1024,0); ?>k)
                                 <textarea name="document" id="document" class="documentViewer" rows="25" cols="40" onmouseup="documentMouseUp(this);" readonly><?php echo $this->document['contents']; ?></textarea>
                             </td>
                         </tr>
                     </table>
 
                     <div style="text-align: center; padding: 20px 0 20px 0">
-                        <input type="submit" value="Save Changes" style="cursor: pointer;" />
+                        <input type="submit" value="<?php _e('Save Changes') ?>" style="cursor: pointer;" />
                     </div>
 
                     </form>

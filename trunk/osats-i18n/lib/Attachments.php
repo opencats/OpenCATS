@@ -25,12 +25,14 @@ class Attachments
 {
     private $_db;
     private $_siteID;
+    private $dateformat;
 
 
     public function __construct($siteID)
     {
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
+        $this->dateformat = __('DATEFORMAT_SQL_LONG');
     }
 
     /**
@@ -506,7 +508,7 @@ class Attachments
                 directory_name AS directoryName,
                 md5_sum AS md5sum,
                 file_size_kb AS fileSizeKB,
-                DATE_FORMAT(date_created, '%%m-%%d-%%y (%%h:%%i:%%s %%p)') AS dateCreated
+                DATE_FORMAT(date_created, '%s') AS dateCreated
             FROM
                 attachment
             WHERE
@@ -515,6 +517,7 @@ class Attachments
                 data_item_type = %s
             AND
                 site_id = %s",
+            $this->dateformat,
             $this->_db->makeQueryInteger($dataItemID),
             $this->_db->makeQueryInteger($dataItemType),
             $this->_siteID
@@ -572,13 +575,14 @@ class Attachments
                 directory_name AS directoryName,
                 md5_sum AS md5sum,
                 file_size_kb AS fileSizeKB,
-                DATE_FORMAT(date_created, '%%m-%%d-%%y (%%h:%%i:%%s %%p)') AS dateCreated
+                DATE_FORMAT(date_created, '%s') AS dateCreated
             FROM
                 attachment
             WHERE
                 attachment_id = %s
             AND
                 (site_id = %s || content_type = 'catsbackup' || %s)",
+            $this->dateformat,
             $this->_db->makeQueryInteger($attachmentID),
             $this->_siteID,
             ($verifySiteID ? 'false' : 'true')
@@ -1362,5 +1366,3 @@ class AttachmentCreator
         @chmod('./attachments/', 0777);
     }
 }
-
-?>

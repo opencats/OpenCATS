@@ -4,7 +4,7 @@
    * GNU License
    *
    *
-   * @package    CATS
+   * @package    OSATS
    * @subpackage Library
    * @copyright Open Source
    * @version    1.0
@@ -38,6 +38,9 @@ class Calendar
     private $_db;
     private $_siteID;
     private $_userID;
+    private $dateformatLong;
+    private $dateformatTime;
+    private $dateformat;
 
 
     public function __construct($siteID)
@@ -47,6 +50,9 @@ class Calendar
 
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
+        $this->dateformatLong = __('DATEFORMAT_SQL_LONG');
+        $this->dateformatTime = __('DATEFORMAT_SQL_TIME');
+        $this->dateformat     = __('DATEFORMAT_SQL_DATE');
     }
 
 
@@ -88,10 +94,10 @@ class Calendar
                     calendar_event.date, '%%y'
                 ) AS year,
                 DATE_FORMAT(
-                    calendar_event.date, '%%m-%%d-%%y'
+                    calendar_event.date, '%s'
                 ) AS date,
                 DATE_FORMAT(
-                    calendar_event.date, '%%h:%%i %%p'
+                    calendar_event.date, '%s'
                 ) AS time,
                 DATE_FORMAT(
                     calendar_event.date, '%%H'
@@ -101,7 +107,7 @@ class Calendar
                 ) AS minute,
                 calendar_event.date AS dateSort,
                 DATE_FORMAT(
-                    calendar_event.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    calendar_event.date_created, '%s'
                 ) AS dateCreated,
                 calendar_event_type.calendar_event_type_id AS eventType,
                 calendar_event_type.short_description AS eventTypeDescription,
@@ -122,6 +128,9 @@ class Calendar
                 calendar_event.site_id = %s
             ORDER BY
                 dateSort ASC",
+            $this->dateformat,
+            $this->dateformatTime,
+            $this->dateformatLong,
             $month,
             $year,
             $this->_siteID
@@ -562,7 +571,7 @@ class Calendar
                 calendar_event.description AS description,
                 calendar_event.public AS public,
                 DATE_FORMAT(
-                    calendar_event.date, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    calendar_event.date, '%s'
                 ) AS dateShow,
                 DATE_FORMAT(
                     calendar_event.date, '%%d'
@@ -600,6 +609,7 @@ class Calendar
                 calendar_event.data_item_id = %s
             ORDER BY
                 dateSort ASC",
+            $this->dateformatLong,
             $this->_siteID,
             $this->_db->makeQueryString($currentDateForMySQL),
             $this->_userID,
@@ -623,19 +633,19 @@ class Calendar
         switch ($flag)
         {
             case UPCOMING_FOR_CALENDAR:
-                $HTML = '<div class="noteUnsizedSpan">My Upcoming Events / Calls</div>';
+                $HTML = '<div class="noteUnsizedSpan">'.__('My Upcoming Events / Calls').'</div>';
                 $style = '';
                 $criteria = '';
                 break;
 
             case UPCOMING_FOR_DASHBOARD:
-                $HTML = '<div class="noteUnsizedSpan" style="width:100%;">My Upcoming Events</div>';
+                $HTML = '<div class="noteUnsizedSpan" style="width:100%;">'.__('My Upcoming Events').'</div>';
                 $style = 'font-size:11px;';
                 $criteria = 'AND NOT TYPE = 100';
                 break;
 
             case UPCOMING_FOR_DASHBOARD_FUP:
-                $HTML = '<div class="noteUnsizedSpan">My Upcoming Calls</div>';
+                $HTML = '<div class="noteUnsizedSpan">'.__('My Upcoming Calls').'</div>';
                 $style = 'font-size:11px;';
                 $criteria = 'AND TYPE = 100';
                 break;
@@ -659,10 +669,10 @@ class Calendar
                     calendar_event.date, '%%y'
                 ) AS year,
                 DATE_FORMAT(
-                    calendar_event.date, '%%m-%%d-%%y'
+                    calendar_event.date, '%s'
                 ) AS date,
                 DATE_FORMAT(
-                    calendar_event.date, '%%h:%%i %%p'
+                    calendar_event.date, '%s'
                 ) AS time,
                 calendar_event.date AS dateSort,
                 entered_by_user.user_id AS userID,
@@ -684,6 +694,8 @@ class Calendar
             %s
             ORDER BY
                 dateSort ASC",
+            __('DATEFORMAT_SQL_DATE'),
+            __('DATEFORMAT_SQL_TIME'),
             $this->_siteID,
             ($flag == UPCOMING_FOR_CALENDAR ? 'calendar_event.public = 1' : 'false'),
             $this->_userID,
@@ -709,10 +721,10 @@ class Calendar
                     calendar_event.date, '%%y'
                 ) AS year,
                 DATE_FORMAT(
-                    calendar_event.date, '%%m-%%d-%%y'
+                    calendar_event.date, '%s'
                 ) AS date,
                 DATE_FORMAT(
-                    calendar_event.date, '%%h:%%i %%p'
+                    calendar_event.date, '%s'
                 ) AS time,
                 calendar_event.date AS dateSort,
                 entered_by_user.user_id AS userID,
@@ -738,6 +750,8 @@ class Calendar
                 dateSort ASC
             LIMIT
                 0, %s",
+            __('DATEFORMAT_SQL_DATE'),
+            __('DATEFORMAT_SQL_TIME'),
             $this->_siteID,
             $this->_userID,
             $criteria,
@@ -751,7 +765,7 @@ class Calendar
         {
             if ($row['allDay'] == '1')
             {
-                $time = 'All Day';
+                $time = __('All Day');
             }
             else
             {
@@ -782,7 +796,7 @@ class Calendar
         {
             if ($row['allDay'] == '1')
             {
-                $time = 'All Day';
+                $time = __('All Day');
             }
             else
             {
@@ -830,13 +844,13 @@ class Calendar
             case DATA_ITEM_CANDIDATE:
                 $candidates = new Candidates($this->_siteID);
                 $string .= '?m=candidates&amp;a=show&amp;candidateID=' . $dataItemID . '">';
-                $string .= '<img src="images/mru/candidate.gif" alt="" style="border: none;" title="Candidate" />';
+                $string .= '<img src="images/mru/candidate.gif" alt="" style="border: none;" title="'.__('Candidate').'" />';
                 if ($showTitle)
                 {
                     $data = $candidates->get($dataItemID);
                     if (!isset($data['firstName']))
                     {
-                        $string = '<img src="images/mru/company.gif" alt="" style="border: none;" /> (Candidate Deleted)<a>';
+                        $string = '<img src="images/mru/company.gif" alt="" style="border: none;" /> ('.__('Candidate Deleted').')<a>';
                     }
                     else
                     {
@@ -867,13 +881,13 @@ class Calendar
             case DATA_ITEM_CONTACT:
                 $contacts = new Contacts($this->_siteID);
                 $string .= '?m=contacts&amp;a=show&amp;contactID=' . $dataItemID . '">';
-                $string .= '<img src="images/mru/contact.gif" alt="" style="border: none;" title="Contact" />';
+                $string .= '<img src="images/mru/contact.gif" alt="" style="border: none;" title="'.__('Contact').'" />';
                 if ($showTitle)
                 {
                     $data = $contacts->get($dataItemID);
                     if (!isset($data['firstName']))
                     {
-                        $string = '<img src="images/mru/contact.gif" alt="" style="border: none;" /> (Contact Deleted)<a>';
+                        $string = '<img src="images/mru/contact.gif" alt="" style="border: none;" /> ('.__('Contact Deleted').')<a>';
                     }
                     else
                     {
@@ -885,7 +899,7 @@ class Calendar
             case DATA_ITEM_JOBORDER:
                 $jobOrders = new JobOrders($this->_siteID);
                 $string .= '?m=joborders&amp;a=show&amp;jobOrderID=' . $dataItemID . '">';
-                $string .= '<img src="images/mru/job_order.gif" alt="" style="border: none;" title="Job Order" />';
+                $string .= '<img src="images/mru/job_order.gif" alt="" style="border: none;" title="'.__('Job Order').'" />';
                 if ($showTitle)
                 {
                     $data = $jobOrders->get($dataItemID);
@@ -1060,5 +1074,3 @@ class CalendarSettings
          $this->_db->query($sql);
     }
 }
-
-?>

@@ -18,6 +18,7 @@ include_once('./lib/ListEditor.php');
 include_once('./lib/FileUtility.php');
 include_once('./lib/ExtraFields.php');
 include_once('./lib/CommonErrors.php');
+include_once('./lib/i18n.php');
 
 class CompaniesUI extends UserInterface
 {
@@ -34,11 +35,11 @@ class CompaniesUI extends UserInterface
         $this->_authenticationRequired = true;
         $this->_moduleDirectory = 'companies';
         $this->_moduleName = 'companies';
-        $this->_moduleTabText = 'Companies';
+        $this->_moduleTabText = __('Companies');
         $this->_subTabs = array(
-            'Add Company'     => osatutil::getIndexName() . '?m=companies&amp;a=add*al='.ACCESS_LEVEL_EDIT.'*hrmode=0',
-            'Search Companies' => osatutil::getIndexName() . '?m=companies&amp;a=search*hrmode=0',
-            'Go To My Company' => osatutil::getIndexName() . '?m=companies&amp;a=internalPostings*hrmode=0'
+            __('Add Company')     => osatutil::getIndexName() . '?m=companies&amp;a=add*al='.ACCESS_LEVEL_EDIT.'*hrmode=0',
+            __('Search Companies') => osatutil::getIndexName() . '?m=companies&amp;a=search*hrmode=0',
+            __('Go To My Company') => osatutil::getIndexName() . '?m=companies&amp;a=internalPostings*hrmode=0'
         );
     }
 
@@ -175,7 +176,7 @@ class CompaniesUI extends UserInterface
         /* Bail out if we don't have a valid company ID. */
         if (!$this->isRequiredIDValid('companyID', $_GET))
         {
-            $this->listByView('Invalid company ID.');
+            $this->listByView(__('Invalid company ID.'));
             return;
         }
 
@@ -187,7 +188,7 @@ class CompaniesUI extends UserInterface
         /* Bail out if we got an empty result set. */
         if (empty($data))
         {
-            $this->listByView('The specified company ID could not be found.');
+            $this->listByView(__('The specified company ID could not be found.'));
             return;
         }
 
@@ -343,7 +344,7 @@ class CompaniesUI extends UserInterface
                 }
                 else
                 {
-                    $contactsRS[$rowIndex]['ownerAbbrName'] = 'None';
+                    $contactsRS[$rowIndex]['ownerAbbrName'] = __('None');
                 }
 
                 if ($contactsRS[$rowIndex]['leftCompany'] == 0)
@@ -433,7 +434,7 @@ class CompaniesUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            $this->listByView('Invalid user level for action.');
+            $this->listByView(__('Invalid user level for action.'));
             return;
         }
 
@@ -501,7 +502,7 @@ class CompaniesUI extends UserInterface
         /* Bail out if any of the required fields are empty. */
         if (empty($name))
         {
-            $this->listByView('Required fields are missing.');
+            $this->listByView(__('Required fields are missing.'));
             return;
         }
 
@@ -516,7 +517,7 @@ class CompaniesUI extends UserInterface
 
         if ($companyID <= 0)
         {
-            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add company.');
+            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, __('Failed to add company.'));
         }
 
         if (!eval(Hooks::get('CLIENTS_ON_ADD_POST'))) return;
@@ -545,7 +546,7 @@ class CompaniesUI extends UserInterface
         /* Bail out if we don't have a valid company ID. */
         if (!$this->isRequiredIDValid('companyID', $_GET))
         {
-            $this->listByView('Invalid company ID.');
+            $this->listByView(__('Invalid company ID.'));
             return;
         }
 
@@ -557,7 +558,7 @@ class CompaniesUI extends UserInterface
         /* Bail out if we got an empty result set. */
         if (empty($data))
         {
-            $this->listByView('The specified company ID could not be found.');
+            $this->listByView(__('The specified company ID could not be found.'));
             return;
         }
 
@@ -624,7 +625,7 @@ class CompaniesUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            $this->listByView('Invalid user level for action.');
+            $this->listByView(__('Invalid user level for action.'));
             return;
         }
 
@@ -633,21 +634,21 @@ class CompaniesUI extends UserInterface
         /* Bail out if we don't have a valid company ID. */
         if (!$this->isRequiredIDValid('companyID', $_POST))
         {
-            $this->listByView('Invalid company ID.');
+            $this->listByView(__('Invalid company ID.'));
             return;
         }
 
         /* Bail out if we don't have a valid owner user ID. */
         if (!$this->isOptionalIDValid('owner', $_POST))
         {
-            $this->listByView('Invalid owner user ID.');
+            $this->listByView(__('Invalid owner user ID.'));
             return;
         }
 
         /* Bail out if we don't have a valid billing contact ID. */
         if (!$this->isOptionalIDValid('billingContact', $_POST))
         {
-            $this->listByView('Invalid billing contact ID.');
+            $this->listByView(__('Invalid billing contact ID.'));
             return;
         }
 
@@ -778,7 +779,7 @@ class CompaniesUI extends UserInterface
         /* Bail out if any of the required fields are empty. */
         if (empty($name))
         {
-            $this->listByView('Required fields are missing.');
+            $this->listByView(__('Required fields are missing.'));
             return;
         }
 
@@ -794,7 +795,7 @@ class CompaniesUI extends UserInterface
             $zip, $phone1, $phone2, $faxNumber, $url, $keyTechnologies,
             $isHot, $notes, $owner, $billingContact, $email, $emailAddress))
         {
-            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update company.');
+            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, __('Failed to update company.'));
         }
 
        if (!eval(Hooks::get('CLIENTS_ON_EDIT_POST'))) return;
@@ -825,14 +826,14 @@ class CompaniesUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_DELETE)
         {
-            $this->listByView('Invalid user level for action.');
+            $this->listByView(__('Invalid user level for action.'));
             return;
         }
 
         /* Bail out if we don't have a valid company ID. */
         if (!$this->isRequiredIDValid('companyID', $_GET))
         {
-            $this->listByView('Invalid company ID.');
+            $this->listByView(__('Invalid company ID.'));
             return;
         }
 
@@ -843,13 +844,13 @@ class CompaniesUI extends UserInterface
 
         if (empty($rs))
         {
-            $this->listByView('The specified company ID could not be found.');
+            $this->listByView(__('The specified company ID could not be found.'));
             return;
         }
 
         if ($rs['defaultCompany'] == 1)
         {
-            $this->listByView('Cannot delete internal postings company.');
+            $this->listByView(__('Cannot delete internal postings company.'));
             return;
         }
 
@@ -901,7 +902,7 @@ class CompaniesUI extends UserInterface
          */
         if (!isset($_GET['wildCardString']))
         {
-            $this->listByView('No wild card string specified.');
+            $this->listByView(__('No wild card string specified.'));
             return;
         }
 
@@ -964,7 +965,7 @@ class CompaniesUI extends UserInterface
                 break;
 
             default:
-                $this->listByView('Invalid search mode.');
+                $this->listByView(__('Invalid search mode.'));
                 return;
                 break;
         }
@@ -991,7 +992,7 @@ class CompaniesUI extends UserInterface
             }
             else
             {
-                $rs[$rowIndex]['ownerAbbrName'] = 'None';
+                $rs[$rowIndex]['ownerAbbrName'] = __('None');
             }
         }
 
@@ -1037,7 +1038,7 @@ class CompaniesUI extends UserInterface
         /* Bail out if we don't have a valid joborder ID. */
         if (!$this->isRequiredIDValid('companyID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         $companyID = $_GET['companyID'];
@@ -1058,14 +1059,14 @@ class CompaniesUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            $this->listByView('Invalid user level for action.');
+            $this->listByView(__('Invalid user level for action.'));
             return;
         }
 
         /* Bail out if we don't have a valid joborder ID. */
         if (!$this->isRequiredIDValid('companyID', $_POST))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid company ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid company ID.'));
         }
 
         $companyID = $_POST['companyID'];
@@ -1105,13 +1106,13 @@ class CompaniesUI extends UserInterface
         /* Bail out if we don't have a valid attachment ID. */
         if (!$this->isRequiredIDValid('attachmentID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid attachment ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid attachment ID.'));
         }
 
         /* Bail out if we don't have a valid joborder ID. */
         if (!$this->isRequiredIDValid('companyID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid company ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid company ID.'));
         }
 
         $companyID  = $_GET['companyID'];
@@ -1169,7 +1170,7 @@ class CompaniesUI extends UserInterface
             }
             else
             {
-                $resultSet[$rowIndex]['ownerAbbrName'] = 'None';
+                $resultSet[$rowIndex]['ownerAbbrName'] = __('None');
             }
 
             if ($resultSet[$rowIndex]['attachmentPresent'] == 1)
@@ -1193,5 +1194,3 @@ class CompaniesUI extends UserInterface
         return $resultSet;
     }
 }
-
-?>

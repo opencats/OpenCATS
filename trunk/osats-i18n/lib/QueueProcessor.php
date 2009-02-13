@@ -619,7 +619,3 @@ class QueueProcessor
         return intval(date('i'));
     }
 }
-
-
-
-?>

@@ -330,5 +330,3 @@ class CommonErrors
         if (!eval(Hooks::get('EXCEPTION_NOTIFY_DEV'))) return;
     }
 };
-
-?>

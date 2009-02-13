@@ -1,0 +1,51 @@
+CHANGES BY ALQUANTO
+
+2009-02-11
+  * UPD smallpadlock.jpg replaced by lock.png in lib/TemplateUtility.php -> looks better and it's free (famfamfam)
+  * UPD removed some spaces around upper right box
+  * UPD i18n in lib/TemplateUtility.php
+  * DEL "not-ie.css" removed and one line in main.css added instead
+  * UPD lib/TemplateUtility.php: removed inline-css (line 98)
+  * ADD small icon for update-notice in right box
+  * ADD css-rule for 16x16px icons: class="ico"
+  * UPD new tab and subtab design, lib/TemplateUtility.php updated for that
+  * ADD new constants in config.php: I18N_PATH: path to language-files
+  * ADD new constants in config.php: I18N_DEFAULT: default-Language, eg. "en_US" or "de_DE"
+  
+2009-02-12
+  * UPD ajax/getPipelineJobOrder.php: th-stuff rewritten
+  * UPD SESSIONNAME replaced in various files (was: CATS_SESSION_NAME)
+  * ADD new option to localize dateformats in queries/html: DATEFORMAT_SQL_LONG, DATEFORMAT_SQL_DATE, DATEFORMAT_SQL_TIME and DATEFORMAT are terms, that are used for that
+  * UPD YES/No-stuff in lib/Candidates.php
+  * UPD finished i18n of module "activity"
+  * UPD finished i18n of module "attachments"
+  * UPD finished i18n of module "calendar"
+  * UPD finished i18n of module "candidates"
+  * UPD finished i18n of module "careers"
+  * UPD finished i18n of module "companies"
+  * UPD finished i18n of module "contacts"
+  * UPD updated lib/artichow/inc/Legend.class.php to support i18n-legends
+
+2009-02-13
+  * DEL unnecessary StringUtility::cardinal() from lib/StringUtility.php (impossible for i18n)
+  * UPD finished i18n of module "export"
+  * UPD finished i18n of module "graphs"
+  * UPD finished i18n of module "home"
+  * UPD finished i18n of module "import"
+  * UPD finished i18n of module "joborders"
+  * UPD finished i18n of module "lists"
+  * UPD finished i18n of module "login"
+  * UPD finished i18n of module "queue"
+  * UPD finished i18n of module "reports"
+  * UPD finished i18n of module "rss"
+  * UPD finished i18n of module "toolbar"
+  * UPD finished i18n of module "wizard
+  * ADD english language file: i18n/en.system.ini
+  * UPD most files in lib/
+  * FIX small typos regarding inconsistencies in translation
+  * FINISHED translation of OSATS (90%)
+
+TODO
+  * Find solution for images/graphNoData.jpg (used if no data for dashboard available...
+  * Find generic i18n-solution in lib/EmailTemplates.php for replaceVariables()
+  * translate settings (boring!)

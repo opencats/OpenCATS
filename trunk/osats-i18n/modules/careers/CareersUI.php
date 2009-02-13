@@ -23,6 +23,7 @@ include_once('./lib/Questionnaire.php');
 include_once('./lib/DocumentToText.php');
 include_once('./lib/FileUtility.php');
 include_once('./lib/ParseUtility.php');
+include_once('./lib/i18n.php');
 
 class CareersUI extends UserInterface
 {
@@ -72,7 +73,7 @@ class CareersUI extends UserInterface
 
         if (!isset($siteRS['name']))
         {
-            die('An error has occurred:  No site exists with this site name.');
+            die(__('An error has occurred: No site exists with this site name.'));
         }
 
         $siteName = $siteRS['name'];
@@ -88,7 +89,7 @@ class CareersUI extends UserInterface
         if ($enabled == 0)
         {
             // FIXME: Generate valid XHTML error pages. Create an error/fatal method!
-            die('<html><body><!-- Job Board Disabled --></body></html>');
+            die('<html><body><!-- ' . __('Job Board Disabled') . ' --></body></html>');
         }
 
         if (isset($_GET['templateName']))
@@ -162,7 +163,7 @@ class CareersUI extends UserInterface
             }
             else
             {
-                $template['Content'] = str_replace('<searchResultsTable>', 'Sorry, Job Listings have been disabled by the '.$siteName.' administrator.', $template['Content']);
+                $template['Content'] = str_replace('<searchResultsTable>', __('Sorry, Job Listings have been disabled by the %s administrator.', $siteName), $template['Content']);
             }
         }
         else if ($p == 'search')
@@ -177,7 +178,7 @@ class CareersUI extends UserInterface
             $candidate = $this->ProcessCandidateRegistration($siteID, $template['Content - Candidate Registration'], $fields);
             if ($candidate === false)
             {
-                echo '<html><body>You have not registered yet.  Please wait while we direct you to the job list...<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
+                echo '<html><body>'. __('You have not registered yet. Please wait while we direct you to the job list...') . '<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
                 die();
             }
 
@@ -225,14 +226,14 @@ class CareersUI extends UserInterface
             $content = str_replace('<input-source>', '<input name="source" id="source" class="inputBoxNormal" value="' . $candidate['source'] . '" />', $content);
             $content = str_replace('<input-currentEmployer>', '<input name="currentEmployer" id="currentEmployer" class="inputBoxNormal" value="' . $candidate['currentEmployer'] . '" />', $content);
             $content = str_replace('<input-resume>',
-                '<strong>My Resume</strong><br />'
+                '<strong>'. __('My Resume') . '</strong><br />'
                 . '<textarea name="resumeContents" class="inputBoxArea" style="width: 400px; height: 200px;" readonly>'
                 . ($latestAttachment !== false ? DatabaseSearch::fulltextDecode($myResume['text']) : '') .'</textarea>'
-                . '<br /><br /><strong>Upload new resume:</strong><br /> '
+                . '<br /><br /><strong>'. __('Upload new resume') . ':</strong><br /> '
                 . '<input type="file" name="file" id="file" type="file" class="inputBoxFile" size="45" />',
                 $content
             );
-            $content = str_replace('<input-submit>', '<input type="submit" name="submitButton" id="submitButton" class="submitButton" onclick="document.getElementById(\'submitButton\').disabled=true;" value="Save Profile" style="width: 150px;" />', $content);
+            $content = str_replace('<input-submit>', '<input type="submit" name="submitButton" id="submitButton" class="submitButton" onclick="document.getElementById(\'submitButton\').disabled=true;" value="'. __('Save Profile') . '" style="width: 150px;" />', $content);
 
             $content = sprintf(
                 '<form name="updateForm" id="updateForm" enctype="multipart/form-data" method="post" '
@@ -240,7 +241,7 @@ class CareersUI extends UserInterface
                 osatutil::getIndexName(),
                 $latestAttachment ? $latestAttachment : -1
             ) . $content . '</form>'
-            . (isset($_GET[$id='isPostBack']) && !strcmp($_GET[$id], 'yes') ? '<script language="javascript" type="text/javascript">setTimeout(\'alert("Your changes have been saved!")\',25);</script>' : '');
+            . (isset($_GET[$id='isPostBack']) && !strcmp($_GET[$id], 'yes') ? '<script language="javascript" type="text/javascript">setTimeout(\'alert("'. __('Your changes have been saved!') . '")\',25);</script>' : '');
 
             $template['Content'] = $content;
         }
@@ -251,7 +252,7 @@ class CareersUI extends UserInterface
             $candidate = $this->ProcessCandidateRegistration($siteID, $template['Content - Candidate Registration'], $fields, true);
             if ($candidate === false)
             {
-                echo '<html><body>You have not registered yet.  Please wait while we direct you to the job list...<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
+                echo '<html><body>'. __('You have not registered yet. Please wait while we direct you to the job list...') . '<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
                 die();
             }
 
@@ -341,7 +342,7 @@ class CareersUI extends UserInterface
             }
             @setcookie($this->getCareerPortalCookieName($siteID), $storedVal, time()+60*60*24*7*2);
 
-            $template['Content'] = '<div id="careerContent"><br /><br /><h1>Please wait while you are redirected to your updated profile...</h1></div>';
+            $template['Content'] = '<div id="careerContent"><br /><br /><h1>'. __('Please wait while you are redirected to your updated profile...') . '</h1></div>';
             osatutil::transferRelativeURI('m=careers&p=showAll&pa=updateProfile&isPostBack=yes');
         }
         else if ($p == 'candidateRegistration' && $isRegistrationEnabled)
@@ -354,7 +355,7 @@ class CareersUI extends UserInterface
 
             $content = str_replace(array('<applyContent>','</applyContent>'), '', $content);
 
-            $content = str_replace('<input-submit>', '<input type="submit" id="submitButton" name="submitButton" value="Continue to Application" />', $content);
+            $content = str_replace('<input-submit>', '<input type="submit" id="submitButton" name="submitButton" value="'. __('Continue to Application') . '" />', $content);
             $content = str_replace('<input-new>', '<input type="radio" id="isNewYes" name="isNew" value="yes" onchange="isCandidateRegisteredChange();" checked />', $content);
             $content = str_replace('<input-registered>', '<input type="radio" id="isNewNo" name="isNew" value="no" onchange="isCandidateRegisteredChange();" />', $content);
             $content = str_replace('<input-rememberMe>', '<input type="checkbox" id="rememberMe" name="rememberMe" value="yes" checked />', $content);
@@ -499,8 +500,7 @@ class CareersUI extends UserInterface
                         }
                         else
                         {
-                            $resumeContents = 'Unable to load your resume contents. Your resume will '
-                                . 'still be uploaded and attached to your application.';
+                            $resumeContents = __('Unable to load your resume contents. Your resume will still be uploaded and attached to your application.');
                         }
                         $resumeFileLocation = $uploadFile;
                     }
@@ -540,7 +540,7 @@ class CareersUI extends UserInterface
             if (!isset($jobOrderData['public']) || $jobOrderData['public'] == 0)
             {
                 // FIXME: Generate valid XHTML error pages. Create an error/fatal method!
-                echo '<html><body>This position is no longer available.  Please wait while we direct you to the job list...<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
+                echo '<html><body>' . __('This position is no longer available. Please wait while we direct you to the job list...') . '<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
                 die();
             }
 
@@ -556,7 +556,7 @@ class CareersUI extends UserInterface
                 $attachmentHTML = '<div style="height: 20px; background-color: #e0e0e0; margin: 5px 0 0px 0; '
                     . 'padding: 0 3px 0 5px; font-size: 11px;"> '
                     . '<img src="images/parser/attachment.gif" border="0" style="padding-top: 3px;" /> '
-                    . 'Attachment: <span style="font-weight: bold;">'.$resumeFileLocation.'</span> '
+                    . __('Attachment') . ': <span style="font-weight: bold;">'.$resumeFileLocation.'</span> '
                     . '</div> ';
             }
             else
@@ -597,7 +597,7 @@ class CareersUI extends UserInterface
                 // If parsing is enabled, add the image link for it
                 LicenseUtility::isParsingEnabled() ?
                     '<br /><div style="text-align: right;">'
-                    . '<input type="button" value="Populate Fields ->" id="resumePopulate" onclick="resumeParse();" '.(strlen($resumeContents)?'':'disabled').' />'
+                    . '<input type="button" value="' . __('Populate Fields') . ' ->" id="resumePopulate" onclick="resumeParse();" '.(strlen($resumeContents)?'':'disabled').' />'
                 :
                     ''
                 ),
@@ -608,30 +608,30 @@ class CareersUI extends UserInterface
             /* EEO inputs. */
             $template['Content'] = str_replace('<input-eeo-race>', '<select name="eeorace" id="eeorace" class="inputBoxNormal" />
                                                                         <option value="">----</option>
-                                                                        <option value="1">American Indian</option>
-                                                                        <option value="2">Asian or Pacific Islander</option>
-                                                                        <option value="3">Hispanic or Latino</option>
-                                                                        <option value="4">Non-Hispanic Black</option>
-                                                                        <option value="5">Non-Hispanic White</option>
+                                                                        <option value="1">' . __('European') . '</option>
+                                                                        <option value="2">' . __('Asian or Pacific Islander') . '</option>
+                                                                        <option value="3">' . __('African') . '</option>
+                                                                        <option value="4">' . __('North American or Australian') . '</option>
+                                                                        <option value="5">' . __('South American') . '</option>
                                                                     </select>', $template['Content']);
 
             $template['Content'] = str_replace('<input-eeo-gender>', '<select name="eeogender" id="eeogender" class="inputBoxNormal" />
                                                                         <option value="">----</option>
-                                                                        <option value="m">Male</option>
-                                                                        <option value="f">Female</option>
+                                                                        <option value="m">' . __('Male') . '</option>
+                                                                        <option value="f">' . __('Female') . '</option>
                                                                     </select>', $template['Content']);
 
             $template['Content'] = str_replace('<input-eeo-veteran>', '<select name="eeoveteran" id="eeoveteran" class="inputBoxNormal" />
                                                                         <option value="">----</option>
-                                                                        <option value="1">Eligible Veteran</option>
-                                                                        <option value="2">Disabled Veteran</option>
-                                                                        <option value="3">Eligible and Disabled</option>
+                                                                        <option value="1">' . __('Eligible Veteran') . '</option>
+                                                                        <option value="2">' . __('Disabled Veteran') . '</option>
+                                                                        <option value="3">' . __('Eligible and Disabled') . '</option>
                                                                     </select>', $template['Content']);
 
             $template['Content'] = str_replace('<input-eeo-disability>', '<select name="eeodisability" id="eeodisability" class="inputBoxNormal" />
                                                                         <option value="">----</option>
-                                                                        <option value="No">No</option>
-                                                                        <option value="Yes">Yes</option>
+                                                                        <option value="No">' . __('_No') . '</option>
+                                                                        <option value="Yes">' . __('_Yes') . '</option>
                                                                     </select>', $template['Content']);
 
             /* Extra field inputs. */
@@ -704,7 +704,7 @@ class CareersUI extends UserInterface
             if (!$this->isRequiredIDValid('ID', $_POST))
             {
                 // FIXME: Generate valid XHTML error pages. Create an error/fatal method!
-                echo '<html><body>This position is invalid or no longer available. Please wait while we direct you to the job list...<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
+                echo '<html><body>' . __('This position is invalid or no longer available. Please wait while we direct you to the job list...') . '<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
                 die();
             }
 
@@ -740,7 +740,7 @@ class CareersUI extends UserInterface
                 if (!isset($jobOrderData['public']) || $jobOrderData['public'] == 0)
                 {
                     // FIXME: Generate valid XHTML error pages. Create an error/fatal method!
-                    echo '<html><body>This position is no longer available.  Please wait while we direct you to the job list...<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
+                    echo '<html><body>' . __('This position is no longer available. Please wait while we direct you to the job list...') . '<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
                     die();
                 }
 
@@ -799,7 +799,7 @@ class CareersUI extends UserInterface
             $jobOrderData = $jobOrders->get($jobID);
             if (!isset($jobOrderData['public']) || $jobOrderData['public'] == 0)
             {
-                echo '<html><body>This position is no longer available.  Please wait while we direct you to the job list...<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
+                echo '<html><body>' . __('This position is no longer available. Please wait while we direct you to the job list...') . '<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
                 die ();
             }
 
@@ -861,9 +861,9 @@ class CareersUI extends UserInterface
                     {
                         $isRegistered = false;
                         // Error Message
-                        $template['Content'] = str_replace('<registeredLoginTitle>', '<h1 style="color: #800000;">No applicants were '
-                            . 'found matching your criteria.</h1><h3>Once you apply to any of our positions, you will automatically '
-                            . 'be registered.<br /><br />', $template['Content']
+                        $template['Content'] = str_replace('<registeredLoginTitle>', '<h1 style="color: #800000;">' 
+							. __('No applicants were found matching your criteria.') . '</h1><h3>' 
+							. __('Once you apply to any of our positions, you will automatically be registered.') . '<br /><br />', $template['Content']
                         );
                     }
                     else
@@ -966,7 +966,7 @@ class CareersUI extends UserInterface
             $validator .= '
                 if (document.getElementById(\'firstName\').value == \'\')
                 {
-                    alert(\'Please enter a first name.\');
+                    alert(\'' . __('Please enter a first name.') . '\');
                     document.getElementById(\'firstName\').focus();
                     return false;
                 }';
@@ -977,7 +977,7 @@ class CareersUI extends UserInterface
             $validator .= '
                 if (document.getElementById(\'lastName\').value == \'\')
                 {
-                    alert(\'Please enter a last name.\');
+                    alert(\'' . __('Please enter a last name.') . '\');
                     document.getElementById(\'lastName\').focus();
                     return false;
                 }';
@@ -988,7 +988,7 @@ class CareersUI extends UserInterface
             $validator .= '
                 if (document.getElementById(\'emailconfirm\').value != document.getElementById(\'email\').value)
                 {
-                    alert(\'Your E-Mail address doesn\\\'t match the retyped E-Mail address.\');
+                    alert(\'' . __('Your E-Mail address doesn\'t match the retyped E-Mail address.') . '\');
                     document.getElementById(\'emailconfirm\').focus();
                     return false;
                 }';
@@ -999,14 +999,14 @@ class CareersUI extends UserInterface
             $validator .= '
                 if (document.getElementById(\'email\').value == \'\')
                 {
-                    alert(\'Please enter an E-Mail address.\');
+                    alert(\'' . __('Please enter an E-Mail address.') . '\');
                     document.getElementById(\'email\').focus();
                     return false;
                 }
                 if (document.getElementById(\'email\').value.indexOf(\'@\') == -1 ||
                     document.getElementById(\'email\').value.indexOf(\'.\') == -1)
                 {
-                    alert(\'Please enter a valid E-Mail address.\');
+                    alert(\'' . __('Please enter a valid E-Mail address.') . '\');
                     document.getElementById(\'email\').focus();
                     return false;
                 }';
@@ -1017,7 +1017,7 @@ class CareersUI extends UserInterface
             $validator .= '
                 if (document.getElementById(\'address\').value == \'\')
                 {
-                    alert(\'Please enter an address.\');
+                    alert(\'' . __('Please enter an address.') . '\');
                     document.getElementById(\'address\').focus();
                     return false;
                 }';
@@ -1028,7 +1028,7 @@ class CareersUI extends UserInterface
             $validator .= '
                 if (document.getElementById(\'city\').value == \'\')
                 {
-                    alert(\'Please enter a city.\');
+                    alert(\'' . __('Please enter a city.') . '\');
                     document.getElementById(\'city\').focus();
                     return false;
                 }';
@@ -1039,7 +1039,7 @@ class CareersUI extends UserInterface
             $validator .= '
                 if (document.getElementById(\'state\').value == \'\')
                 {
-                    alert(\'Please enter a state.\');
+                    alert(\'' . __('Please enter a state.') . '\');
                     document.getElementById(\'state\').focus();
                     return false;
                 }';
@@ -1050,7 +1050,7 @@ class CareersUI extends UserInterface
             $validator .= '
                 if (document.getElementById(\'zip\').value == \'\')
                 {
-                    alert(\'Please enter a zip code.\');
+                    alert(\'' . __('Please enter a zip code.') . '\');
                     document.getElementById(\'zip\').focus();
                     return false;
                 }';
@@ -1061,7 +1061,7 @@ class CareersUI extends UserInterface
             $validator .= '
                 if (document.getElementById(\'phone\').value == \'\')
                 {
-                    alert(\'Please enter a phone number.\');
+                    alert(\'' . __('Please enter a phone number.') . '\');
                     document.getElementById(\'phone\').focus();
                     return false;
                 }';
@@ -1072,7 +1072,7 @@ class CareersUI extends UserInterface
             $validator .= '
                 if (document.getElementById(\'keySkills\').value == \'\')
                 {
-                    alert(\'Please enter some key skills.\');
+                    alert(\'' . __('Please enter some key skills.') . '\');
                     document.getElementById(\'keySkills\').focus();
                     return false;
                 }';
@@ -1083,7 +1083,7 @@ class CareersUI extends UserInterface
             $validator .= '
                 if (document.getElementById(\'extraNotes\').value == \'\')
                 {
-                    alert(\'Please enter some extra notes.\');
+                    alert(\'' . __('Please enter some extra notes.') . '\');
                     document.getElementById(\'extraNotes\').focus();
                     return false;
                 }';
@@ -1112,14 +1112,14 @@ class CareersUI extends UserInterface
         $html .= '<tr class="rowHeading" align="left">'."\n";
         if ($settings['showCompany'] == 1)
         {
-            $html .= '<th nowrap="nowrap">Company</th>';
+            $html .= '<th nowrap="nowrap">' . __('Company') . '</th>';
         }
         if ($settings['showDepartment'] == 1)
         {
-            $html .= '<th nowrap="nowrap" align="left">Department</th>';
+            $html .= '<th nowrap="nowrap" align="left">' . __('Department') . '</th>';
         }
-        $html .= '<th nowrap="nowrap" align="left">Position Title</th>';
-        $html .= '<th nowrap="nowrap" align="left">Location</th>';
+        $html .= '<th nowrap="nowrap" align="left">' . __('Position Title') . '</th>';
+        $html .= '<th nowrap="nowrap" align="left">' . __('Location') . '</th>';
         $html .= '</tr>'."\n";
 
         $rowIsEven = false;
@@ -1147,7 +1147,7 @@ class CareersUI extends UserInterface
                 $html .= '<td>';
                 if ($line['departmentID'] == 0)
                 {
-                    $html .= 'General';
+                    $html .= __('General');
                 }
                 else
                 {
@@ -1181,7 +1181,7 @@ class CareersUI extends UserInterface
 
         if (!$this->isRequiredIDValid('ID', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
             return;
         }
 
@@ -1190,7 +1190,7 @@ class CareersUI extends UserInterface
         $jobOrderData = $jobOrders->get($jobOrderID);
         if (!isset($jobOrderData['public']) || $jobOrderData['public'] == 0)
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified job order could not be found.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('The specified job order could not be found.'));
             return;
         }
 
@@ -1218,17 +1218,17 @@ class CareersUI extends UserInterface
 
         if (empty($firstName))
         {
-            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'First Name is a required field - please have your administrator edit your templates to include the first name field.');
+            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, __('First Name is a required field - please have your administrator edit your templates to include the first name field.'));
         }
 
         if (empty($lastName))
         {
-            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Last Name is a required field - please have your administrator edit your templates to include the last name field.');
+            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, __('Last Name is a required field - please have your administrator edit your templates to include the last name field.'));
         }
 
         if (empty($email))
         {
-            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'E-Mail address is a required field - please have your administrator edit your templates to include the email field.');
+            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, __('E-Mail address is a required field - please have your administrator edit your templates to include the email field.'));
         }
 
         if (empty($source))
@@ -1306,7 +1306,7 @@ class CareersUI extends UserInterface
                 '',
                 '',
                 '',
-                'Candidate submitted these notes with first application: '
+                __('Candidate submitted these notes with first application: ')
                 . "\n\n" . $extraNotes,
                 '',
                 $bestTimeToCall,
@@ -1398,7 +1398,7 @@ class CareersUI extends UserInterface
             /* Attempt to add the candidate to the pipeline. */
             if (!$pipelines->add($candidateID, $jobOrderID))
             {
-                CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add candidate to pipeline.');
+                CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, __('Failed to add candidate to pipeline.'));
             }
 
             // FIXME: For some reason, pipeline entries like to disappear between
@@ -1417,31 +1417,32 @@ class CareersUI extends UserInterface
         /* Build activity note. */
         if (!$newApplication)
         {
-            $activityNote = 'User re-applied through candidate portal';
+            $activityNote = __('User re-applied through candidate portal');
         }
         else
         {
-            $activityNote = 'User applied through candidate portal';
+            $activityNote = __('User applied through candidate portal');
         }
 
         if ($fileUploaded)
         {
             if (!$duplicatesOccurred)
             {
-                $activityNote .= ' <span style="font-weight: bold;">and'
-                    . ' attached a new resume (<a href="' . $resumePath
-                    . '">Download</a>)</span>';
+                $activityNote .= ' <span style="font-weight: bold;"> '
+					. __('and attached a new resume') . ' (<a href="' . $resumePath . '">' 
+					. __('Download') . '</a>)</span>';
             }
             else
             {
-                $activityNote .= ' and attached an existing resume (<a href="'
-                    . $resumePath . '">Download</a>)';
+                $activityNote .= ' ' . __('and attached an existing resume') . ' (<a href="'
+                    . $resumePath . '">' 
+					. __('Download') . '</a>)';
             }
         }
 
 		if (!empty($extraNotes))
 		{
-        	$activityNote .= '; added these notes: ' . $extraNotes;
+        	$activityNote .= '; ' . __('added these notes') . ': ' . $extraNotes;
 		}
 
         /* Add the activity note. */
@@ -1758,11 +1759,12 @@ class CareersUI extends UserInterface
                 '<form style="padding:0;margin:0;border:0;" name="logout" id="logout" method="post" '
                 . 'action="%s%s"><input type="hidden" id="pa" name="pa" value="" />%s<div style="margin: 20px 0 20px 0; '
                 . 'line-height: 18px;"> '
-                . '<h3 style="font-weight: normal;"><b>Welcome back %s.</b>&nbsp;&nbsp;Not %s? '
+                . '<h3 style="font-weight: normal;"><b>'
+				. __('Welcome back') . ' %s.</b>&nbsp;&nbsp;' . __('Not') . ' %s? '
                 . '<a href="javascript:void(0);" onclick="document.getElementById(\'pa\').value=\'logout\'; '
-                . 'document.logout.submit();">Log Out</a>.'
-                . '&nbsp;&nbsp;Need to update your information? <a href="javascript:void(0);" onclick="document.getElementById(\'pa\').value=\'updateProfile\'; '
-                . 'document.logout.submit();">Update Profile</a>.'
+                . 'document.logout.submit();">Logout</a>.'
+                . '&nbsp;&nbsp;' . __('Need to update your information?') . ' <a href="javascript:void(0);" onclick="document.getElementById(\'pa\').value=\'updateProfile\'; '
+                . 'document.logout.submit();">' . __('Update Profile') . '</a>.'
                 . '</h3></div>',
                 osatutil::getIndexName(),
                 $_SERVER['QUERY_STRING'] != '' ? '?' . $_SERVER['QUERY_STRING'] : '',

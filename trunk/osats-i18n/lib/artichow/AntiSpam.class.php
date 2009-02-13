@@ -213,7 +213,7 @@ class awAntiSpam extends awImage {
 		// Start session if needed
 		if(!session_id()) {
 			/* Ensure session uses proper name. */
-			@session_name(CATS_SESSION_NAME);
+			@session_name(SESSION_NAME);
 			session_start();
 		}
 	}

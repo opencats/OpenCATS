@@ -38,5 +38,3 @@ $dataGrid = DataGrid::get($indentifier, $parameters);
 
 $dataGrid->draw(true);
 $dataGrid->drawUpdatedNavigation(true);
-
-?>

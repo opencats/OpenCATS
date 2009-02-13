@@ -10,7 +10,7 @@ include_once('./lib/Statistics.php');
 
 /**
  *	Graph Interface Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class Graphs
@@ -273,5 +273,3 @@ class Graphs
         $db->query($sql);
     }
 }
-
-?>

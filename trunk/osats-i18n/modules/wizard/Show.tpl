@@ -18,7 +18,7 @@
 <body onload="current();">
 
 <div id="loadingBar">
-    Loading <span id="loading1Dot">.</span><span id="loading2Dot">.</span><span id="loading3Dot">.</span>
+    <?php _e('Loading') ?> <span id="loading1Dot">.</span><span id="loading2Dot">.</span><span id="loading3Dot">.</span>
 </div>
 
 <div id="pageContainer">
@@ -78,12 +78,12 @@
 
     <div id="wizardNavigator">
         <?php if ($this->enableSkip): ?>
-            <input type="button" class="button" id="skip" value="Skip this Wizard" onclick="skip();" />
+            <input type="button" class="button" id="skip" value="<?php _e('Skip this Wizard') ?>" onclick="skip();" />
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <?php endif; ?>
-            <input type="button" class="button" id="previous" value="Previous" onclick="previous();" />
+            <input type="button" class="button" id="previous" value="<?php _e('Previous') ?>" onclick="previous();" />
         <?php if ($this->enableNext): ?>
-            <input type="button" class="button" id="next" value="Next" onclick="next();" />
+            <input type="button" class="button" id="next" value="<?php _e('Next') ?>" onclick="next();" />
         <?php endif; ?>
     </div>
     </center>

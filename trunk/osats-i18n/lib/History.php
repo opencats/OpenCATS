@@ -13,6 +13,7 @@ class History
     private $_db;
     private $_siteID;
     private $_userID;
+    private $dateformatLong;
 
 
     public function __construct($siteID)
@@ -21,6 +22,7 @@ class History
         // FIXME: Remove dependency on Session here.
         $this->_userID = $_SESSION['CATS']->getUserID();
         $this->_db = DatabaseConnection::getInstance();
+        $this->dateformatLong = __('DATEFORMAT_SQL_LONG');
     }
 
 
@@ -246,7 +248,7 @@ class History
                     entered_by_user.first_name, ' ', entered_by_user.last_name
                 ) AS enteredByFullName,
                 DATE_FORMAT(
-                    set_date, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    set_date, '%s'
                 ) AS dateModified
             FROM
                 history
@@ -260,6 +262,7 @@ class History
                 data_item_id = %s
             ORDER BY
                 history.history_id DESC",
+            $this->dateformatLong,
             $this->_siteID,
             $this->_db->makeQueryInteger($dataItemType),
             $this->_db->makeQueryInteger($dataItemID)
@@ -268,5 +271,3 @@ class History
         return $this->_db->getAllAssoc($sql);
     }
 }
-
-?>

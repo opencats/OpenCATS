@@ -10,10 +10,10 @@
  define('LICENSE_KEY', '3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
 
 /* Database configuration. */
-define('DATABASE_USER', 'root');
-define('DATABASE_PASS', '');
+define('DATABASE_USER', 'catsdev');
+define('DATABASE_PASS', 'catsdev');
 define('DATABASE_HOST', 'localhost');
-define('DATABASE_NAME', 'osats');
+define('DATABASE_NAME', 'catsdev');
 
 /* Resfly.com Resume Import Services Enabled */
 define('PARSING_ENABLED', true);
@@ -102,6 +102,12 @@ define('AJAX_ENCODING', 'UTF-8');
 
 /* Path to modules. */
 define('MODULES_PATH', './modules/');
+
+/* Path to language files. */
+define('I18N_PATH', './i18n/');
+
+/* Default locale (ISO639-1). Use "en_US" or "de_DE" */
+define('I18N_DEFAULT', 'en_US');
 
 /* Unique session name. The only reason you might want to modify this is
  * for multiple installations on one server. A-Z, 0-9 only! */
@@ -196,4 +202,8 @@ define('CACHE_MODULES', false);
 
 define('US_ZIPS_ENABLED', false);
 
-?>
+// just for development:
+define('TESTER_LOGIN', 'admin');
+define('TESTER_PASSWORD', 'admin');
+
+

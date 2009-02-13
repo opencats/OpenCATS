@@ -1,5 +1,5 @@
 <?php /* $Id: Add.tpl 3810 2007-12-05 19:13:25Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Job Orders', array('modules/joborders/validator.js',  'js/company.js', 'js/sweetTitles.js', 'js/suggest.js', 'js/joborder.js', 'js/lib.js', 'js/listEditor.js', 'tinymce')); ?>
+<?php TemplateUtility::printHeader(__('Job Orders'), array('modules/joborders/validator.js',  'js/company.js', 'js/sweetTitles.js', 'js/suggest.js', 'js/joborder.js', 'js/lib.js', 'js/listEditor.js', 'tinymce')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">
@@ -11,19 +11,17 @@
                     <td width="3%">
                         <img src="images/job_orders.gif" width="24" height="24" border="0" alt="Job Orders" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Job Orders: Add Job Order</h2></td>
+                    <td><h2><?php _e('Job Orders') ?>: <?php _e('Add Job Order') ?></h2></td>
                 </tr>
             </table>
 
-            <p class="note">Add a new job order to the system.</p>
+            <p class="note"><?php _e('Add a new job order to the system.') ?></p>
 
             <?php if ($this->noCompanies): ?>
                 <table style="margin-top: 8px; width: 50%;" class="selectView">
                     <tr>
                         <td>
-                            <span><span class="bold">You have not added any companies yet.</span> You can't add a job order until
-                            you add at least one company. Please go to the <a href="<?php echo(osatutil::getIndexName()); ?>?m=companies">Companies</a>
-                            module and add a company.</span>
+                            <span><span class="bold"><?php _e('You have not added any companies yet.') ?></span> <?php echo __('You can\'t add a job order until you add at least one company. Please go to the %s%s%sCompanies%s module and add a company.', array('<a href="',(osatutil::getIndexName()),'?m=companies">', '</a>')) ?></span>
                         </td>
                     </tr>
                 </table>
@@ -34,14 +32,14 @@
                     <table class="editTable" width="700">
                         <tr>
                             <td class="tdVertical">
-                                <label id="titleLabel" for="title">Title:</label>
+                                <label id="titleLabel" for="title"><?php _e('Title') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <input type="text" tabindex="1" class="inputbox" id="title" name="title" style="width: 150px;" <?php if(isset($this->jobOrderSourceRS['title'])): ?>value="<?php $this->_($this->jobOrderSourceRS['title']); ?>"<?php endif; ?> />&nbsp;*
                             </td>
 
                             <td class="tdVertical">
-                                <label id="startDateLabel" for="startDate">Start Date:</label>
+                                <label id="startDateLabel" for="startDate"><?php _e('Start Date') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <script type="text/javascript">DateInput('startDate', false, 'MM-DD-YY', '', 8);</script>
@@ -50,7 +48,7 @@
 
                         <tr>
                             <td class="tdVertical">
-                                <label id="companyIDLabel" for="companyID">Company:</label>
+                                <label id="companyIDLabel" for="companyID"><?php _e('Company') ?>:</label>
                             </td>
 
                             <td class="tdData">
@@ -74,7 +72,7 @@
                             </td>
 
                             <td class="tdVertical">
-                                <label id="durationLabel" for="duration">Duration:</label>
+                                <label id="durationLabel" for="duration"><?php _e('Duration') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <input type="text" tabindex="11" class="inputbox" id="duration" name="duration" style="width: 150px;" <?php if(isset($this->jobOrderSourceRS['duration'])): ?>value="<?php $this->_($this->jobOrderSourceRS['duration']); ?>"<?php endif; ?> />
@@ -83,11 +81,11 @@
 
                         <tr>
                             <td class="tdVertical">
-                                <label id="departmentLabel" for="department">Department:</label>
+                                <label id="departmentLabel" for="department"><?php _e('Department') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <select id="departmentSelect" name="department" class="inputbox" style="width: 150px;" onchange="if (this.value == 'edit') { listEditor('Departments', 'departmentSelect', 'departmentsCSV', false); this.value = '(none)'; } if (this.value == 'nullline') { this.value = '(none)'; }">
-                                    <option value="(none)" selected="selected">None</option>
+                                    <option value="(none)" selected="selected"><?php _e('_None') ?></option>
                                 </select>
                                 <input type="hidden" id="departmentsCSV" name="departmentsCSV" value="<?php if ($this->selectedCompanyID !== false): $this->_($this->selectedDepartmentsString); endif; ?>" />
                                 <?php if ($this->selectedCompanyID !== false): ?>
@@ -96,7 +94,7 @@
                             </td>
 
                             <td class="tdVertical">
-                                <label id="maxRateLabel" for="maxRate">Maximum Rate:</label>
+                                <label id="maxRateLabel" for="maxRate"><?php _e('Maximum Rate') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <input type="text" tabindex="12" class="inputbox" id="maxRate" name="maxRate" style="width: 150px;" <?php if(isset($this->jobOrderSourceRS['maxRate'])): ?>value="<?php $this->_($this->jobOrderSourceRS['maxRate']); ?>"<?php endif; ?>/>
@@ -105,11 +103,11 @@
 
                         <tr>
                             <td class="tdVertical">
-                                <label id="contactIDLabel" for="contactID">Contact:</label>
+                                <label id="contactIDLabel" for="contactID"><?php _e('Contact') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <select tabindex="3" id="contactID" name="contactID" class="inputbox" style="width: 150px;">
-                                    <option value="-1">None</option>
+                                    <option value="-1"><?php _e('_None') ?></option>
 
                                     <?php if ($this->selectedCompanyID !== false): ?>
                                         <?php foreach ($this->selectedCompanyContacts as $rowNumber => $contactsData): ?>
@@ -121,21 +119,21 @@
                             </td>
 
                             <td class="tdVertical">
-                                <label id="typeLabel" for="type">Type:</label>
+                                <label id="typeLabel" for="type"><?php _e('Type') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <select tabindex="7" id="type" name="type" class="inputbox" style="width: 150px;">
-                                    <option value="H"   <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == 'H') echo('selected'); ?>>H (Hire)</option>
-                                    <option value="C2H" <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == 'C2H') echo('selected'); ?>>C2H (Contract to Hire)</option>
-                                    <option value="C"   <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == 'C') echo('selected'); ?>>C (Contract)</option>
-                                    <option value="FL"  <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == 'FL') echo('selected'); ?>>FL (Freelance)</option>
+                                    <option value="H"   <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == 'H') echo('selected'); ?>><?php _e('Hire') ?></option>
+                                    <option value="C2H" <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == 'C2H') echo('selected'); ?>><?php _e('Contract to Hire') ?></option>
+                                    <option value="C"   <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == 'C') echo('selected'); ?>><?php _e('Contract') ?></option>
+                                    <option value="FL"  <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == 'FL') echo('selected'); ?>><?php _e('Freelance') ?></option>
                                 </select>&nbsp;*
                             </td>
                         </tr>
 
                         <tr>
                             <td class="tdVertical">
-                                <label id="cityLabel" for="city">City:</label>
+                                <label id="cityLabel" for="city"><?php _e('City') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <?php if ($this->selectedCompanyID !== false): ?>
@@ -146,7 +144,7 @@
                             </td>
 
                                                         <td class="tdVertical">
-                                <label id="salaryLabel" for="salary">Salary:</label>
+                                <label id="salaryLabel" for="salary"><?php _e('Salary') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <input type="text" tabindex="13" class="inputbox" id="salary" name="salary" style="width: 150px;" <?php if(isset($this->jobOrderSourceRS['salary'])): ?>value="<?php $this->_($this->jobOrderSourceRS['salary']); ?>"<?php endif; ?>/>
@@ -155,7 +153,7 @@
 
                         <tr>
                             <td class="tdVertical">
-                                <label id="stateLabel" for="state">State:</label>
+                                <label id="stateLabel" for="state"><?php _e('State') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <?php if ($this->selectedCompanyID !== false): ?>
@@ -166,7 +164,7 @@
                             </td>
 
                             <td class="tdVertical">
-                                <label id="openingsLabel" for="openings">Openings:</label>
+                                <label id="openingsLabel" for="openings"><?php _e('Openings') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <input type="text" tabindex="14" class="inputbox" id="openings" name="openings" style="width: 150px;" <?php if(isset($this->jobOrderSourceRS['openings'])): ?>value="<?php $this->_($this->jobOrderSourceRS['openings']); ?>"<?php else: ?>value="1"<?php endif; ?>/>&nbsp;*
@@ -175,11 +173,11 @@
 
                         <tr>
                             <td class="tdVertical">
-                                <label id="recruiterLabel" for="recruiter">Recruiter:</label>
+                                <label id="recruiterLabel" for="recruiter"><?php _e('Recruiter') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <select tabindex="6" id="recruiter" name="recruiter" class="inputbox" style="width: 150px;">
-                                    <option value="">(Select a User)</option>
+                                    <option value="">(<?php _e('Select a User') ?>)</option>
 
                                     <?php foreach ($this->usersRS as $rowNumber => $usersData): ?>
                                         <?php if ($usersData['userID'] == $this->userID): ?>
@@ -192,7 +190,7 @@
                             </td>
 
                             <td class="tdVertical">
-                                <label id="companyJobIDLabel" for="companyJobID">Company Job ID:</label>
+                                <label id="companyJobIDLabel" for="companyJobID"><?php _e('Company Job ID') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <input type="text" tabindex="15" class="inputbox" id="companyJobID" name="companyJobID" style="width: 150px;" />
@@ -201,11 +199,11 @@
 
                         <tr>
                             <td class="tdVertical">
-                                <label id="ownerLabel" for="owner">Owner:</label>
+                                <label id="ownerLabel" for="owner"><?php _e('Owner') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <select tabindex="6" id="owner" name="owner" class="inputbox" style="width: 150px;">
-                                    <option value="">(Select a User)</option>
+                                    <option value="">(<?php _e('Select a User') ?>)</option>
 
                                     <?php foreach ($this->usersRS as $rowNumber => $usersData): ?>
                                         <?php if ($usersData['userID'] == $this->userID): ?>
@@ -218,7 +216,7 @@
                             </td>
 
                             <td class="tdVertical">
-                                <label id="isHotLabel" for="isHot">Hot:</label>
+                                <label id="isHotLabel" for="isHot"><?php _e('Hot') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <input type="checkbox" tabindex="16" id="isHot" name="isHot" />&nbsp;
@@ -235,7 +233,7 @@
                             </td>
 
                             <td class="tdVertical">
-                                <label id="publicLabel" for="public">Public:</label>
+                                <label id="publicLabel" for="public"><?php _e('Public') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <input type="checkbox" tabindex="17" id="public" name="public" onchange="checkPublic(this);" onclick="checkPublic(this);" onkeydown="checkPublic(this);" />&nbsp;
@@ -261,7 +259,7 @@
 
                         <tr>
                             <td class="tdVertical">
-                                <label id="descriptionLabel" for="description">Description:</label>
+                                <label id="descriptionLabel" for="description"><?php _e('Description') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <textarea tabindex="18" class="mceEditor" name="description" id="description" rows="15" style="width: 500px;"><?php if(isset($this->jobOrderSourceRS['description'])): ?><?php $this->_($this->jobOrderSourceRS['description']); ?><?php endif; ?></textarea>
@@ -270,7 +268,7 @@
 
                         <tr>
                             <td class="tdVertical">
-                                <label id="notesLabel" for="notes">Internal Notes:</label>
+                                <label id="notesLabel" for="notes"><?php _e('Internal Notes') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <textarea tabindex="19" class="mceEditor" name="notes" id="notes" rows="5" style="width: 500px;"><?php if(isset($this->jobOrderSourceRS['notes'])): ?><?php $this->_($this->jobOrderSourceRS['notes']); ?><?php endif; ?></textarea>
@@ -280,11 +278,11 @@
                         <tr id="displayQuestionnaires" style="display: none;">
                             <?php if ($this->careerPortalEnabled): ?>
                             <td class="tdVertical">
-                                <label id="notesLabel" for="notes">Questionnaire:</label>
+                                <label id="notesLabel" for="notes"><?php _e('Questionnaire') ?>:</label>
                             </td>
                             <td class="tdData">
                                 <select id="questionnaire" name="questionnaire" class="inputbox" style="width: 500px;">
-                                <option value="none" selected>None</option>
+                                <option value="none" selected><?php _e('_None') ?></option>
                                 <?php foreach ($this->questionnaires as $questionnaire): ?>
                                     <option value="<?php echo $questionnaire['questionnaireID']; ?>"><?php echo $questionnaire['title']; ?></option>
                                 <?php endforeach; ?>
@@ -297,9 +295,9 @@
                             <?php endif; ?>
                         </tr>
                     </table>
-                    <input type="submit" tabindex="20" class="button" name="submit" value="Add Job Order" />&nbsp;
-                    <input type="reset"  tabindex="21" class="button" name="reset"  value="Reset" />&nbsp;
-                    <input type="button" tabindex="22" class="button" name="back"   value="Back to Job Orders" onclick="javascript:goToURL('<?php echo(osatutil::getIndexName()); ?>?m=joborders&amp;a=listByView');" />
+                    <input type="submit" tabindex="20" class="button" name="submit" value="<?php _e('Add Job Order') ?>" />&nbsp;
+                    <input type="reset"  tabindex="21" class="button" name="reset"  value="<?php _e('Reset') ?>" />&nbsp;
+                    <input type="button" tabindex="22" class="button" name="back"   value="<?php _e('Back to Job Orders') ?>" onclick="javascript:goToURL('<?php echo(osatutil::getIndexName()); ?>?m=joborders&amp;a=listByView');" />
                 </form>
 
                 <script type="text/javascript">

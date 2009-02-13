@@ -12,6 +12,7 @@ include_once('./lib/Site.php');
 include_once('./lib/NewVersionCheck.php');
 include_once('./lib/Wizard.php');
 include_once('./lib/License.php');
+include_once('./lib/i18n.php');
 
 class LoginUI extends UserInterface
 {
@@ -465,13 +466,13 @@ class LoginUI extends UserInterface
             }
             else
             {
-                $this->_template->assign('message',' Unable to send password to address specified.');
+                $this->_template->assign('message',__('Unable to send password to address specified.'));
                 $this->_template->assign('complete', false);
             }
         }
         else
         {
-            $this->_template->assign('message', 'No such username found.');
+            $this->_template->assign('message', __('No such username found.'));
             $this->_template->assign('complete', false);
         }
 

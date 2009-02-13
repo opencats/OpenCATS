@@ -33,6 +33,7 @@
  
 include_once('./lib/Companies.php');
 include_once('./lib/Hooks.php');
+include_once('./lib/i18n.php');
 
 class CompaniesListByViewDataGrid extends CompaniesDataGrid
 {
@@ -51,15 +52,15 @@ class CompaniesListByViewDataGrid extends CompaniesDataGrid
         $this->defaultSortDirection = 'DESC';
    
         $this->_defaultColumns = array( 
-            array('name' => 'Attachments', 'width' => 10),
-            array('name' => 'Name', 'width' => 255),
-            array('name' => 'Jobs', 'width' => 40),
-            array('name' => 'City', 'width' => 90),
-            array('name' => 'State', 'width' => 50),
-            array('name' => 'Phone', 'width' => 85),
-            array('name' => 'Owner', 'width' => 65),
-            array('name' => 'Created', 'width' => 60),
-            array('name' => 'Modified', 'width' => 60),
+            array('name' => __('Attachments'), 'width' => 10),
+            array('name' => __('Name'), 'width' => 255),
+            array('name' => __('Jobs'), 'width' => 40),
+            array('name' => __('City'), 'width' => 90),
+            array('name' => __('State'), 'width' => 50),
+            array('name' => __('Phone'), 'width' => 85),
+            array('name' => __('Owner'), 'width' => 65),
+            array('name' => __('Created'), 'width' => 60),
+            array('name' => __('Modified'), 'width' => 60),
         );
    
         parent::__construct("companies:CompaniesListByViewDataGrid", 
@@ -82,8 +83,8 @@ class CompaniesListByViewDataGrid extends CompaniesDataGrid
         //  - Mass set rank (depends on each candidate having their own personal rank - are we going to do this?)
         $html = '';
 
-        $html .= $this->getInnerActionAreaItemPopup('Add To List', osatutil::getIndexName().'?m=lists&amp;a=addToListFromDatagridModal&amp;dataItemType='.DATA_ITEM_COMPANY, 450, 350);
-        $html .= $this->getInnerActionAreaItem('Export', osatutil::getIndexName().'?m=export&amp;a=exportByDataGrid');
+        $html .= $this->getInnerActionAreaItemPopup(__('Add To List'), osatutil::getIndexName().'?m=lists&amp;a=addToListFromDatagridModal&amp;dataItemType='.DATA_ITEM_COMPANY, 450, 350);
+        $html .= $this->getInnerActionAreaItem(__('Export'), osatutil::getIndexName().'?m=export&amp;a=exportByDataGrid');
 
         $html .= parent::getInnerActionArea();
 
@@ -108,15 +109,15 @@ class companiesSavedListByViewDataGrid extends CompaniesDataGrid
         $this->defaultSortDirection = 'DESC';
    
         $this->_defaultColumns = array( 
-            array('name' => 'Attachments', 'width' => 10),
-            array('name' => 'Name', 'width' => 255),
-            array('name' => 'Jobs', 'width' => 40),
-            array('name' => 'City', 'width' => 90),
-            array('name' => 'State', 'width' => 50),
-            array('name' => 'Phone', 'width' => 85),
-            array('name' => 'Owner', 'width' => 65),
-            array('name' => 'Created', 'width' => 60),
-            array('name' => 'Modified', 'width' => 60),
+            array('name' => __('Attachments'), 'width' => 10),
+            array('name' => __('Name'), 'width' => 255),
+            array('name' => __('Jobs'), 'width' => 40),
+            array('name' => __('City'), 'width' => 90),
+            array('name' => __('State'), 'width' => 50),
+            array('name' => __('Phone'), 'width' => 85),
+            array('name' => __('Owner'), 'width' => 65),
+            array('name' => __('Created'), 'width' => 60),
+            array('name' => __('Modified'), 'width' => 60),
         );
    
         parent::__construct("companies:companiesSavedListByViewDataGrid", 
@@ -139,7 +140,7 @@ class companiesSavedListByViewDataGrid extends CompaniesDataGrid
         //  - Mass set rank (depends on each candidate having their own personal rank - are we going to do this?)
         $html = '';
 
-        $html .= $this->getInnerActionAreaItem('Remove From This List', osatutil::getIndexName().'?m=lists&amp;a=removeFromListDatagrid&amp;dataItemType='.DATA_ITEM_COMPANY.'&amp;savedListID='.$this->getMiscArgument(), false);
+        $html .= $this->getInnerActionAreaItem(__('Remove From This List'), osatutil::getIndexName().'?m=lists&amp;a=removeFromListDatagrid&amp;dataItemType='.DATA_ITEM_COMPANY.'&amp;savedListID='.$this->getMiscArgument(), false);
         $html .= $this->getInnerActionAreaItem('Export', osatutil::getIndexName().'?m=export&amp;a=exportByDataGrid');
 
         $html .= parent::getInnerActionArea();
@@ -147,5 +148,3 @@ class companiesSavedListByViewDataGrid extends CompaniesDataGrid
         return $html;
     }
 }
-
-?>

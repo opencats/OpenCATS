@@ -44,5 +44,3 @@ class Hooks
         return $hookCommands . ' return true;';
     }
 }
-
-?>

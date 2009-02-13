@@ -1,9 +1,8 @@
 <?php /* $Id: ConsiderSearchModal.tpl 3093 2007-09-24 21:09:45Z brian $ */ ?>
-<?php TemplateUtility::printModalHeader('Candidates', array(), 'Add Candidates to Job Order Pipeline'); ?>
+<?php TemplateUtility::printModalHeader(__('Candidates'), array(), __('Add Candidates to Job Order Pipeline')); ?>
 
     <?php if (!$this->isFinishedMode): ?>
-        <p>Search for a job order below, and then click on the job title to add
-        the candidate to the selected job order pipeline.</p>
+        <p><?php _e('Search for a job order below, and then click on the job title to add the candidate to the selected job order pipeline.');?></p>
 
         <table class="searchTable">
             <form id="searchByJobTitleForm" name="searchByJobTitleForm" action="<?php echo(osatutil::getIndexName()); ?>?m=candidates&amp;a=considerForJobSearch" method="post">
@@ -12,11 +11,11 @@
                 <input type="hidden" id="candidateID_jobtitle" name="candidateIDArrayStored" value="<?php echo($this->candidateIDArrayStored); ?>" />
 
                 <tr>
-                    <td>Search by Job Title:&nbsp;</td>
+                    <td><?php _e('Search by Job Title');?>:&nbsp;</td>
                     <td><input type="text" class="inputbox" id="wildCardString_jobTitle" name="wildCardString"style="width:200px;" />&nbsp;*</td>
                 </tr>
                 <tr>
-                    <td><input type="submit" class="button" id="searchByJobTitle" name="searchByJobTitle" value="Search by Job Title" /></td>
+                    <td><input type="submit" class="button" id="searchByJobTitle" name="searchByJobTitle" value="<?php _e('Search by Job Title');?>" /></td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
@@ -29,11 +28,11 @@
                 <input type="hidden" id="candidateID_companyname" name="candidateIDArrayStored" value="<?php echo($this->candidateIDArrayStored); ?>" />
 
                 <tr>
-                    <td>Search by Company Name:&nbsp;</td>
+                    <td><?php _e('Search by Company Name');?>:&nbsp;</td>
                     <td><input type="text" class="inputbox" id="wildCardString_companyname" name="wildCardString" style="width:200px;" />&nbsp;*</td>
                 </tr>
                 <tr>
-                    <td><input type="submit" class="button" id="searchByCompanyName" name="searchByCompanyName" value="Search by Company Name" /></td>
+                    <td><input type="submit" class="button" id="searchByCompanyName" name="searchByCompanyName" value="<?php _e('Search by Company Name');?>" /></td>
                 </tr>
             </form>
         </table>
@@ -50,20 +49,20 @@
 
         <?php if ($this->isResultsMode): ?>
             <br />
-            <p class="noteUnsized">Search Results</p>
+            <p class="noteUnsized"><?php _e('Search Results');?></p>
 
             <?php if (!empty($this->rs)): ?>
                 <table class="sortable" width="100%">
                     <tr>
-                        <th align="left">Title</th>
-                        <th align="left">Company</th>
-                        <th align="left">Type</th>
-                        <th align="left">Status</th>
-                        <th align="left">Created</th>
-                        <th align="left">Start</th>
-                        <th align="left">Recruiter</th>
-                        <th align="left">Owner</th>
-                        <th align="center">Action</th>
+                        <th align="left"><?php _e('Title');?></th>
+                        <th align="left"><?php _e('Company');?></th>
+                        <th align="left"><?php _e('Type');?></th>
+                        <th align="left"><?php _e('Status');?></th>
+                        <th align="left"><?php _e('Created');?></th>
+                        <th align="left"><?php _e('Start');?></th>
+                        <th align="left"><?php _e('Recruiter');?></th>
+                        <th align="left"><?php _e('Owner');?></th>
+                        <th align="center"><?php _e('Action');?></th>
                     </tr>
 
                     <?php foreach ($this->rs as $rowNumber => $data): ?>
@@ -93,25 +92,25 @@
                     <?php endforeach; ?>
                 </table>
             <?php else: ?>
-                <p>No matching entries found.</p>
+                <p><?php _e('No matching entries found.');?></p>
             <?php endif; ?>
             <input type="button" class="button" id="showRecentJobOrders" name="showRecentJobOrders" value="Show Recently Modified Job Orders" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=candidates&amp;a=considerForJobSearch&amp;candidateIDArrayStored=<?php echo($this->candidateIDArrayStored); ?>';" />
         <?php else: ?>
             <br />
-            <p class="noteUnsized">Recently Modified Job Orders</p>
+            <p class="noteUnsized"><?php _e('Recently Modified Job Orders');?></p>
 
             <?php if (!empty($this->rs)): ?>
                 <table class="sortable" width="100%">
                     <tr>
-                        <th align="left">Title</th>
-                        <th align="left">Company</th>
-                        <th align="left">Type</th>
-                        <th align="left">Status</th>
-                        <th align="left">Modified</th>
-                        <th align="left">Start</th>
-                        <th align="left">Recruiter</th>
-                        <th align="left">Owner</th>
-                        <th align="center">Action</th>
+                        <th align="left"><?php _e('Title');?></th>
+                        <th align="left"><?php _e('Company');?></th>
+                        <th align="left"><?php _e('Type');?></th>
+                        <th align="left"><?php _e('Status');?></th>
+                        <th align="left"><?php _e('Modified');?></th>
+                        <th align="left"><?php _e('Start');?></th>
+                        <th align="left"><?php _e('Recruiter');?></th>
+                        <th align="left"><?php _e('Owner');?></th>
+                        <th align="center"><?php _e('Action');?></th>
                     </tr>
 
                     <?php foreach ($this->rs as $rowNumber => $data): ?>
@@ -141,11 +140,11 @@
                     <?php endforeach; ?>
                 </table>
             <?php else: ?>
-                <p>No recent job orders found.</p>
+                <p><?php _e('No recent job orders found.');?></p>
             <?php endif; ?>
         <?php endif; ?>
     <?php else: ?>
-        <p>The <?php if(count($this->candidateIDArray)>1): ?> <?php echo(count($this->candidateIDArray)); ?> candidates have<?php else: ?>candidate has<?php endif; ?> been successfully added to the pipeline for the selected job order.</p>
+        <p><?php if(count($this->candidateIDArray)>1): echo(count($this->candidateIDArray)); _e('candidates have'); else: _e('candidate has'); endif;;?> <?php _e('been successfully added to the pipeline for the selected job order.');?></p>
 
         <form method="get" action="<?php echo(osatutil::getIndexName()); ?>">
             <input type="button" name="close" value="Close" onclick="parentHidePopWinRefresh();" />

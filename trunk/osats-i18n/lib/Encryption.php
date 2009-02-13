@@ -83,5 +83,3 @@ class Encryption
         mcrypt_module_close($this->_td);
     }
 }
-
-?>

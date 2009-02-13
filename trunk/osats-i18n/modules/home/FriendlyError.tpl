@@ -1,5 +1,5 @@
 <?php /* $Id: FriendlyError.tpl 3718 2007-11-27 20:48:00Z will $ */ ?>
-<?php if (!$this->modal) TemplateUtility::printHeader('Support'); ?>
+<?php if (!$this->modal) TemplateUtility::printHeader(__('Support')); ?>
 <?php if (!$this->modal) TemplateUtility::printHeaderBlock(); ?>
 <style type="text/css">
 div.friendlyErrorTitle {

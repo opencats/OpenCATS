@@ -1,5 +1,5 @@
 <?php /* $Id: MassImport.tpl 3548 2007-11-09 23:54:52Z andrew $ */ ?>
-<?php TemplateUtility::printHeader('Settings', array('js/massImport.js')); ?>
+<?php TemplateUtility::printHeader(__('Settings'), array('js/massImport.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, '', 'settings'); ?>
 <link rel="stylesheet" type="text/css" href="modules/import/MassImport.css" />
@@ -9,24 +9,24 @@
                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
                         <td class="stepColumn<?php if ($this->step == 1): ?>Selected<?php endif; ?>">
-                            <span style="font-size: 18px; font-weight: bold;">Step 1</span>
+                            <span style="font-size: 18px; font-weight: bold;"><?php _e('Step') ?> 1</span>
                             <br />
-                            Upload resume documents
+                            <?php _e('Upload resume documents') ?>
                         </td>
                         <td class="stepColumn<?php if ($this->step == 2): ?>Selected<?php endif; ?>">
-                            <span style="font-size: 18px; font-weight: bold;">Step 2</span>
+                            <span style="font-size: 18px; font-weight: bold;"><?php _e('Step') ?> 2</span>
                             <br />
-                            Process Documents
+                            <?php _e('Process Documents') ?>
                         </td>
                         <td class="stepColumn<?php if ($this->step == 3): ?>Selected<?php endif; ?>">
-                            <span style="font-size: 18px; font-weight: bold;">Step 3</span>
+                            <span style="font-size: 18px; font-weight: bold;"><?php _e('Step') ?> 3</span>
                             <br />
-                            Review
+                            <?php _e('Review') ?>
                         </td>
                         <td class="stepColumn<?php if ($this->step == 4): ?>Selected<?php endif; ?>">
-                            <span style="font-size: 18px; font-weight: bold;">Step 4</span>
+                            <span style="font-size: 18px; font-weight: bold;"><?php _e('Step') ?> 4</span>
                             <br />
-                            Finish Up
+                            <?php _e('Finish Up') ?>
                         </td>
                     </tr>
                 </table>

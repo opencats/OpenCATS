@@ -196,5 +196,3 @@ class NewVersionCheck
         return $buffer;
     }
 }
-
-?>

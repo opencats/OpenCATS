@@ -279,18 +279,19 @@ class Pager
         if ($this->_currentPage != 1)
         {
             echo sprintf(
-                '<a class="pagerPrevNext" href="%s?%s&amp;page=%s&amp;sortBy=%s&amp;sortDirection=%s">&lt;&lt; Previous</a>%s',
+                '<a class="pagerPrevNext" href="%s?%s&amp;page=%s&amp;sortBy=%s&amp;sortDirection=%s">&lt;&lt; %s</a>%s',
                 $indexName,
                 $this->_baseURL,
                 ($this->_currentPage - 1),
                 $this->_sortBy,
                 $this->_sortDirection,
+                __('Previous'),
                 "\n"
             );
         }
         else
         {
-            echo '<span class="pagerPrevNext">&lt;&lt; Previous</span>', "\n";
+            echo '<span class="pagerPrevNext">&lt;&lt; '.__('Previous').'</span>', "\n";
         }
 
         /* Selection drop down menu JavaScript. */
@@ -347,15 +348,15 @@ class Pager
             if ($i == $this->_currentPage)
             {
                 echo sprintf(
-                    '<option selected="selected" value="">Page %s%s</option>',
-                    $i, $navText
+                    '<option selected="selected" value="">%s %s%s</option>',
+                    __('Page'), $i, $navText
                 );
             }
             else
             {
                 echo sprintf(
-                    '<option value="%s">Page %s%s</option>',
-                    $i, $i, $navText
+                    '<option value="%s">$s %s%s</option>',
+                    $i, __('Page'), $i, $navText
                 );
             }
         }
@@ -369,12 +370,13 @@ class Pager
         if ($this->_currentPage != $this->_totalPages)
         {
             echo sprintf(
-                '<a class="pagerPrevNext" href="%s?%s&amp;page=%s&amp;sortBy=%s&amp;sortDirection=%s">Next &gt;&gt;</a>%s',
+                '<a class="pagerPrevNext" href="%s?%s&amp;page=%s&amp;sortBy=%s&amp;sortDirection=%s">%s &gt;&gt;</a>%s',
                 $indexName,
                 $this->_baseURL,
                 ($this->_currentPage + 1),
                 $this->_sortBy,
                 $this->_sortDirection,
+                __('Next'),
                 "\n"
             );
         }
@@ -478,5 +480,3 @@ class Pager
         }
     }
 }
-
-?>

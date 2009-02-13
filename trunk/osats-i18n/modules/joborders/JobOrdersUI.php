@@ -45,6 +45,7 @@ include_once('./lib/ExtraFields.php');
 include_once('./lib/Graphs.php');
 include_once('./lib/Questionnaire.php');
 include_once('./lib/CommonErrors.php');
+include_once('./lib/i18n.php');
 
 
 class JobOrdersUI extends UserInterface
@@ -78,11 +79,11 @@ class JobOrdersUI extends UserInterface
         $this->_authenticationRequired = true;
         $this->_moduleDirectory = 'joborders';
         $this->_moduleName = 'joborders';
-        $this->_moduleTabText = 'Job Orders';
+        $this->_moduleTabText = __('Job Orders');
         $this->_subTabs = array(
             //'Add Job Order'     => osatutil::getIndexName() . '?m=joborders&amp;a=add*al='.ACCESS_LEVEL_EDIT,
-            'Add Job Order' => 'javascript:void(0);*js=showPopWin(\''.osatutil::getIndexName().'?m=joborders&amp;a=addJobOrderPopup\', 400, 250, null);*al='.ACCESS_LEVEL_EDIT,
-            'Search Job Orders' => osatutil::getIndexName() . '?m=joborders&amp;a=search'
+            __('Add Job Order') => 'javascript:void(0);*js=showPopWin(\''.osatutil::getIndexName().'?m=joborders&amp;a=addJobOrderPopup\', 400, 250, null);*al='.ACCESS_LEVEL_EDIT,
+            __('Search Job Orders') => osatutil::getIndexName() . '?m=joborders&amp;a=search'
         );
     }
 
@@ -297,7 +298,7 @@ class JobOrdersUI extends UserInterface
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
             /* FIXME: fatalPopup()? */
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         $jobOrderID = $_GET['jobOrderID'];
@@ -309,12 +310,12 @@ class JobOrdersUI extends UserInterface
         /* Bail out if we got an empty result set. */
         if (empty($data))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified job order ID could not be found.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('The specified job order ID could not be found.'));
         }
 
         if ($data['isAdminHidden'] == 1 && $this->_accessLevel < ACCESS_LEVEL_MULTI_SA)
         {
-            $this->listByView('This Job Order is hidden - only a CATS Administrator can unlock the Job Order.');
+            $this->listByView(__('This Job Order is hidden - only a CATS Administrator can unlock the Job Order.'));
             return;
         }
 
@@ -616,43 +617,43 @@ class JobOrdersUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid company ID. */
         if (!$this->isRequiredIDValid('companyID', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid company ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid company ID.'));
         }
 
         /* Bail out if we don't have a valid recruiter user ID. */
         if (!$this->isRequiredIDValid('recruiter', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid recruiter user ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid recruiter user ID.'));
         }
 
         /* Bail out if we don't have a valid owner user ID. */
         if (!$this->isRequiredIDValid('owner', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid owner user ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid owner user ID.'));
         }
 
         /* Bail out if we don't have a valid number of openings. */
         if (!$this->isRequiredIDValid('openings', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid number of openings.');
+            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, __('Invalid number of openings.'));
         }
 
         /* Bail out if we don't have a valid contact ID. */
         if (!$this->isOptionalIDValid('contactID', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid contact ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid contact ID.'));
         }
 
         if (isset($_POST['openings']) && !empty($_POST['openings']) &&
             !ctype_digit((string) $_POST['openings']))
         {
-            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid number of openings.');
+            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, __('Invalid number of openings.'));
         }
 
         /* Bail out if we received an invalid start date; if not, go ahead and
@@ -663,7 +664,7 @@ class JobOrdersUI extends UserInterface
         {
             if (!DateUtility::validate('-', $startDate, DATE_FORMAT_MMDDYY))
             {
-                CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid start date.');
+                CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, __('Invalid start date.'));
             }
 
             /* Convert start_date to something MySQL can understand. */
@@ -709,7 +710,7 @@ class JobOrdersUI extends UserInterface
         /* Bail out if any of the required fields are empty. */
         if (empty($title) || empty($type) || empty($city) || empty($state))
         {
-            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
+            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, __('Required fields are missing.'));
         }
 
         if (!eval(Hooks::get('JO_ON_ADD'))) return;
@@ -724,7 +725,7 @@ class JobOrdersUI extends UserInterface
 
         if ($jobOrderID <= 0)
         {
-            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add job order.');
+            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, __('Failed to add job order.'));
         }
 
         /* Update extra fields. */
@@ -745,7 +746,7 @@ class JobOrdersUI extends UserInterface
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         $jobOrderID = $_GET['jobOrderID'];
@@ -757,7 +758,7 @@ class JobOrdersUI extends UserInterface
         /* Bail out if we got an empty result set. */
         if (empty($data))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified job order ID could not be found.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('The specified job order ID could not be found.'));
         }
 
         $users = new Users($this->_siteID);
@@ -885,7 +886,7 @@ class JobOrdersUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         $jobOrders = new JobOrders($this->_siteID);
@@ -893,7 +894,7 @@ class JobOrdersUI extends UserInterface
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         $jobOrderID = $_POST['jobOrderID'];
@@ -901,25 +902,25 @@ class JobOrdersUI extends UserInterface
         /* Bail out if we don't have a valid company ID. */
         if (!$this->isRequiredIDValid('companyID', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid company ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid company ID.'));
         }
 
         /* Bail out if we don't have a valid contact ID. */
         if (!$this->isOptionalIDValid('contactID', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid contact ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid contact ID.'));
         }
 
         /* Bail out if we don't have a valid recruiter user ID. */
         if (!$this->isRequiredIDValid('recruiter', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid recruiter user ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid recruiter user ID.'));
         }
 
         /* Bail out if we don't have a valid owner user ID. */
         if (!$this->isOptionalIDValid('owner', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid owner user ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid owner user ID.'));
         }
 
         /* Bail out if we received an invalid start date; if not, go ahead and
@@ -930,7 +931,7 @@ class JobOrdersUI extends UserInterface
         {
             if (!DateUtility::validate('-', $startDate, DATE_FORMAT_MMDDYY))
             {
-                CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid start date.');
+                CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, __('Invalid start date.'));
                 return;
             }
 
@@ -944,13 +945,13 @@ class JobOrdersUI extends UserInterface
         /* FIXME: Check actual status codes. */
         if (!isset($_POST['status']) || empty($_POST['status']))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid status.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid status.'));
         }
 
         if (isset($_POST['openings']) && !empty($_POST['openings']) &&
             !ctype_digit((string) $_POST['openings']))
         {
-            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid number of openings.');
+            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, __('Invalid number of openings.'));
         }
 
         /* Hot job? */
@@ -1056,7 +1057,7 @@ class JobOrdersUI extends UserInterface
         /* Bail out if any of the required fields are empty. */
         if (empty($title) || empty($type) || empty($city) || empty($state))
         {
-            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
+            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, __('Required fields are missing.'));
         }
 
         if (!eval(Hooks::get('JO_ON_EDIT_PRE'))) return;
@@ -1066,7 +1067,7 @@ class JobOrdersUI extends UserInterface
             $openings, $openingsAvailable, $salary, $city, $state, $startDate, $status, $recruiter,
             $owner, $public, $email, $emailAddress, $department, $questionnaireID))
         {
-            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update job order.');
+            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, __('Failed to update job order.'));
         }
 
         /* Update extra fields. */
@@ -1086,13 +1087,13 @@ class JobOrdersUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_DELETE)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         $jobOrderID = $_GET['jobOrderID'];
@@ -1121,7 +1122,7 @@ class JobOrdersUI extends UserInterface
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         $jobOrderID = $_GET['jobOrderID'];
@@ -1144,7 +1145,7 @@ class JobOrdersUI extends UserInterface
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_POST))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         /* Bail out to prevent an error if the POST string doesn't even contain
@@ -1152,7 +1153,7 @@ class JobOrdersUI extends UserInterface
          */
         if (!isset($_POST['wildCardString']))
         {
-            CommonErrors::fatal(COMMONERROR_WILDCARDSTRING, $this, 'No wild card string specified.');
+            CommonErrors::fatal(COMMONERROR_WILDCARDSTRING, $this, __('No wild card string specified.'));
         }
 
         $jobOrderID = $_POST['jobOrderID'];
@@ -1217,19 +1218,19 @@ class JobOrdersUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
         }
 
         $jobOrderID  = $_GET['jobOrderID'];
@@ -1240,7 +1241,7 @@ class JobOrdersUI extends UserInterface
         $pipelines = new Pipelines($this->_siteID);
         if (!$pipelines->add($candidateID, $jobOrderID, $this->_userID))
         {
-            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add candidate to pipeline.');
+            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, __('Failed to add candidate to pipeline.'));
         }
 
         $activityEntries = new ActivityEntries($this->_siteID);
@@ -1273,7 +1274,7 @@ class JobOrdersUI extends UserInterface
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         $jobOrderID = $_GET['jobOrderID'];
@@ -1338,13 +1339,13 @@ class JobOrdersUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_POST))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         $jobOrderID = $_POST['jobOrderID'];
@@ -1376,13 +1377,13 @@ class JobOrdersUI extends UserInterface
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
         }
 
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         $candidateID = $_GET['candidateID'];
@@ -1394,7 +1395,7 @@ class JobOrdersUI extends UserInterface
         /* Bail out if we got an empty result set. */
         if (empty($candidateData))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified candidate ID could not be found.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('The specified candidate ID could not be found.'));
         }
 
         $pipelines = new Pipelines($this->_siteID);
@@ -1403,7 +1404,7 @@ class JobOrdersUI extends UserInterface
         /* Bail out if we got an empty result set. */
         if (empty($pipelineData))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified pipeline entry could not be found.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('The specified pipeline entry could not be found.'));
         }
 
         $statusRS = $pipelines->getStatusesForPicking();
@@ -1494,13 +1495,13 @@ class JobOrdersUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid regarding job order ID. */
         if (!$this->isRequiredIDValid('regardingID', $_POST))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         $regardingID = $_POST['regardingID'];
@@ -1522,19 +1523,19 @@ class JobOrdersUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_DELETE)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid candidate ID.'));
         }
 
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         $candidateID = $_GET['candidateID'];
@@ -1587,7 +1588,7 @@ class JobOrdersUI extends UserInterface
          */
         if (!isset($_GET['wildCardString']))
         {
-            $this->listByView('No wild card string specified.');
+            $this->listByView(__('No wild card string specified.'));
             return;
         }
 
@@ -1648,7 +1649,7 @@ class JobOrdersUI extends UserInterface
                 break;
 
             default:
-                $this->listByView('Invalid search mode.');
+                $this->listByView(__('Invalid search mode.'));
                 return;
                 break;
         }
@@ -1703,7 +1704,7 @@ class JobOrdersUI extends UserInterface
         );
 
         $this->_template->assign('active', $this);
-        $this->_template->assign('subActive', 'Search Job Orders');
+        $this->_template->assign('subActive', __('Search Job Orders'));
         $this->_template->assign('pager', $searchPager);
         $this->_template->assign('exportForm', $exportForm);
 
@@ -1729,7 +1730,7 @@ class JobOrdersUI extends UserInterface
         /* Bail out if we don't have a valid joborder ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid joborder ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid joborder ID.'));
         }
 
         $jobOrderID = $_GET['jobOrderID'];
@@ -1751,13 +1752,13 @@ class JobOrdersUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid joborder ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_POST))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid joborder ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid joborder ID.'));
         }
 
         $jobOrderID = $_POST['jobOrderID'];
@@ -1791,19 +1792,19 @@ class JobOrdersUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_DELETE)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid attachment ID. */
         if (!$this->isRequiredIDValid('attachmentID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid attachment ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid attachment ID.'));
         }
 
         /* Bail out if we don't have a valid joborder ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid Job Order ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid Job Order ID.'));
         }
 
         $jobOrderID  = $_GET['jobOrderID'];
@@ -1827,19 +1828,19 @@ class JobOrdersUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_MULTI_SA)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid joborder ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid Job Order ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid Job Order ID.'));
         }
 
         /* Bail out if we don't have a valid status ID. */
         if (!$this->isRequiredIDValid('state', $_GET, true))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid state ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid state ID.'));
         }
 
         $jobOrderID = $_GET['jobOrderID'];
@@ -1947,5 +1948,3 @@ class JobOrdersUI extends UserInterface
         return $resultSet;
     }
 }
-
-?>

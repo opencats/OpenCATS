@@ -5,7 +5,7 @@
 
 /**
  *	User Interface Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class UserInterface
@@ -389,5 +389,3 @@ class UserInterface
         return $ret;
     }
 }
-
-?>

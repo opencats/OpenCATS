@@ -12,6 +12,7 @@ include_once('./lib/Site.php');
 include_once('./lib/Candidates.php');
 include_once('./lib/DocumentToText.php');
 include_once('./lib/License.php');
+include_once('./lib/i18n.php');
 
 /* Toolbar library version. Increment to notify toolbars of an update. */
 define('TOOLBAR_LIB_VERSION', 32);
@@ -95,9 +96,8 @@ class ToolbarUI extends UserInterface
         {
             if (!LicenseUtility::isProfessional())
             {
-                echo 'cats_authenticationFailed(); Message:The FireFox toolbar extension '
-                    . 'is only available to CATS Professional users. See catsone.com/Professional for '
-                    . 'more information.';
+                echo "cats_authenticationFailed(); ";
+				echo __("Message: The FireFox toolbar extension is only available to CATS Professional users. See catsone.com/Professional for more information.");
                 die();
             }
         }
@@ -147,7 +147,7 @@ class ToolbarUI extends UserInterface
         $email = $this->getTrimmedInput('email', $_GET);
         if (empty($email))
         {
-            $this->fatal('No e-mail address.');
+            $this->fatal(__('No e-mail address.'));
         }
 
         echo $email;
@@ -172,7 +172,7 @@ class ToolbarUI extends UserInterface
 
         if (!isset($_POST['resumeText']))
         {
-            $this->fatal('No resume.');
+            $this->fatal(__('No resume.'));
         }
 
         $resumeText = $_POST['resumeText'];
@@ -184,7 +184,7 @@ class ToolbarUI extends UserInterface
 
         if (file_put_contents($temporaryFile, $resumeText) === false)
         {
-            $this->fatal('Failed to save data for parsing.');
+            $this->fatal(__('Failed to save data for parsing.'));
         }
 
         $documentToText = new DocumentToText();

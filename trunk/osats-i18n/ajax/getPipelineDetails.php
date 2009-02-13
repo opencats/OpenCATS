@@ -63,5 +63,3 @@ else
 }
 
 echo '</table>';
-
-?>

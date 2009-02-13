@@ -1,5 +1,5 @@
 <?php /* $Id: Companies.tpl 3460 2007-11-07 03:50:34Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Companies', array('js/highlightrows.js', 'js/export.js', 'js/dataGrid.js')); ?>
+<?php TemplateUtility::printHeader(__('Companies'), array('js/highlightrows.js', 'js/export.js', 'js/dataGrid.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <style type="text/css">
@@ -15,7 +15,7 @@
                     <td width="3%">
                         <img src="images/companies.gif" width="24" height="24" border="0" alt="Companies" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Companies: Home</h2></td>
+                    <td><h2><?php echo __('Companies').': '.__('Home')?></h2></td>
                     <td align="right">
                         <form name="companiesViewSelectorForm" id="companiesViewSelectorForm" action="<?php echo(osatutil::getIndexName()); ?>" method="get">
                             <input type="hidden" name="m" value="companies" />
@@ -27,11 +27,11 @@
                                     </td>
                                     <td valign="top" align="right" nowrap="nowrap">
                                         <input type="checkbox" name="onlyMyCompanies" id="onlyMyCompanies" <?php if ($this->dataGrid->getFilterValue('OwnerID') ==  $this->userID): ?>checked<?php endif; ?> onclick="<?php echo $this->dataGrid->getJSAddRemoveFilterFromCheckbox('OwnerID', '==',  $this->userID); ?>" />
-                                        <label for="onlyMyCompanies">Only My Companies</label>&nbsp;
+                                        <label for="onlyMyCompanies"><?php _e('Only My Companies')?></label>&nbsp;
                                     </td>
                                     <td valign="top" align="right" nowrap="nowrap">
                                         <input type="checkbox" name="onlyHotCompanies" id="onlyHotCompanies" <?php if ($this->dataGrid->getFilterValue('IsHot') == '1'): ?>checked<?php endif; ?> onclick="<?php echo $this->dataGrid->getJSAddRemoveFilterFromCheckbox('IsHot', '==', '\'1\''); ?>" />
-                                        <label for="onlyHotCompanies">Only Hot Companies</label>&nbsp;
+                                        <label for="onlyHotCompanies"><?php _e('Only Hot Companies')?></label>&nbsp;
                                     </td>
                                 </tr>
                             </table>
@@ -48,7 +48,7 @@
                         <img src="images/large_error.gif" align="left">
                     </td>
                     <td align="left" valign="center">
-                        <span style="font-size: 12pt; font-weight: bold; color: #800000; line-height: 12pt;">There was a problem with your request:</span>
+                        <span style="font-size: 12pt; font-weight: bold; color: #800000; line-height: 12pt;"><?php _e('There was a problem with your request')?>:</span>
                         <div style="font-size: 10pt; font-weight: bold; padding: 3px 0px 0px 0px;"><?php echo $this->errMessage; ?></div>
                     </td>
                 </tr>
@@ -57,12 +57,20 @@
             <?php endif; ?>
 
             <p class="note">
-                <span style="float:left;">Companies  -
-                    Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?>
-                    (<?php echo($this->dataGrid->getNumberOfRows()); ?> Items)
-                    <?php if ($this->dataGrid->getFilterValue('OwnerID') ==  $this->userID): ?>(Only My Companies)<?php endif; ?>
-                    <?php if ($this->dataGrid->getFilterValue('IsHot') == '1'): ?>(Only Hot Companies)<?php endif; ?>
-                </span>
+                <span style="float:left;"><?php
+                  
+                  echo __('Companies').' - '.__('Page').' '.$this->dataGrid->getCurrentPageHTML();
+                  echo ' ('; 
+                  echo format_number_choice('countItems', array($this->dataGrid->getNumberOfRows()), $this->dataGrid->getNumberOfRows());
+                  echo ') ';
+                  
+                  if ($this->dataGrid->getFilterValue('OwnerID') ==  $this->userID)
+                    echo ' ('.__('Only My Companies').')';
+                    
+                  if ($this->dataGrid->getFilterValue('IsHot') == '1')
+                    echo ' ('.__('Only Hot Companies').')';
+                    
+                ?></span>
                 <span style="float:right;">
                     <?php $this->dataGrid->drawRowsPerPageSelector(); ?>
                     <?php $this->dataGrid->drawShowFilterControl(); ?>

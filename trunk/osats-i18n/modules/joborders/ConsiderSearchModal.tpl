@@ -1,10 +1,8 @@
 <?php /* $Id: ConsiderSearchModal.tpl 3093 2007-09-24 21:09:45Z brian $ */ ?>
-<?php TemplateUtility::printModalHeader('Job Orders', 'js/sorttable.js', 'Add Candidate to This Job Order Pipeline'); ?>
+<?php TemplateUtility::printModalHeader(__('Job Orders'), 'js/sorttable.js', __('Add Candidate to This Job Order Pipeline')); ?>
 
     <?php if (!$this->isFinishedMode): ?>
-        <p>Search for a candidate below, and then click on the candidate's
-        first or last name to add the selected candidate to the job order
-        pipeline.</p>
+        <p><?php _e('Search for a candidate below, and then click on the candidate\'s first or last name to add the selected candidate to the job order pipeline.') ?></p>
 
         <table class="searchTable">
             <form id="searchByFullNameForm" name="searchByFullNameForm" action="<?php echo(osatutil::getIndexName()); ?>?m=joborders&amp;a=considerCandidateSearch" method="post">
@@ -13,11 +11,11 @@
                 <input type="hidden" id="jobOrderID_fullName" name="jobOrderID" value="<?php echo($this->jobOrderID); ?>" />
 
                 <tr>
-                    <td>Search by Full Name:&nbsp;</td>
+                    <td><?php _e('Search by Full Name') ?>:&nbsp;</td>
                     <td><input type="text" class="inputbox" id="wildCardString_fullname" name="wildCardString" />&nbsp;*</td>
                 </tr>
                 <tr>
-                    <td><input type="submit" class="button" id="searchByFullName" name="searchByFullName" value="Search by Full Name" /></td>
+                    <td><input type="submit" class="button" id="searchByFullName" name="searchByFullName" value="<?php _e('Search by Full Name') ?>" /></td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
@@ -27,7 +25,7 @@
         <br />
 
         <a href="<?php echo(osatutil::getIndexName()); ?>?m=joborders&amp;a=addCandidateModal&amp;jobOrderID=<?php echo($this->jobOrderID); ?>">
-            <img src="images/candidate_inline.gif" width="16" height="16" class="absmiddle" alt="add" border="0" />&nbsp;Add Candidate
+            <img src="images/candidate_inline.gif" width="16" height="16" class="absmiddle" alt="add" border="0" />&nbsp;<?php _e('Add Candidate') ?>
         </a>
         <br />
 
@@ -43,17 +41,17 @@
 
         <?php if ($this->isResultsMode): ?>
             <br />
-            <p class="noteUnsized">Search Results</p>
+            <p class="noteUnsized"><?php _e('Search Results') ?></p>
 
             <?php if (!empty($this->rs)): ?>
                 <table class="sortable" width="100%">
                     <tr>
-                        <th align="left" nowrap="nowrap">First Name</th>
-                        <th align="left" nowrap="nowrap">Last Name</th>
-                        <th align="left" nowrap="nowrap">Key Skills</th>
-                        <th align="left">Created</th>
-                        <th align="left">Owner</th>
-                        <th align="center">Action</th>
+                        <th align="left" nowrap="nowrap"><?php _e('First Name') ?></th>
+                        <th align="left" nowrap="nowrap"><?php _e('Last Name') ?></th>
+                        <th align="left" nowrap="nowrap"><?php _e('Key Skills') ?></th>
+                        <th align="left"><?php _e('Created') ?></th>
+                        <th align="left"><?php _e('Owner') ?></th>
+                        <th align="center"><?php _e('Action') ?></th>
                     </tr>
 
                     <?php foreach ($this->rs as $rowNumber => $data): ?>
@@ -87,14 +85,14 @@
                     <?php endforeach; ?>
                 </table>
             <?php else: ?>
-                <p>No matching entries found.</p>
+                <p><?php _e('No matching entries found.') ?></p>
             <?php endif; ?>
         <?php endif; ?>
     <?php else: ?>
-        <p>The selected candidate has been successfully added to the pipeline for this job order.</p>
+        <p><?php _e('The selected candidate has been successfully added to the pipeline for this job order.') ?></p>
 
         <form method="get" action="<?php echo(osatutil::getIndexName()); ?>">
-            <input type="button" name="close" value="Close" onclick="parentGoToURL('<?php echo(osatutil::getIndexName()); ?>?m=joborders&amp;a=show&amp;jobOrderID=<?php echo($this->jobOrderID); ?>');" />
+            <input type="button" name="close" value="<?php _e('Close') ?>" onclick="parentGoToURL('<?php echo(osatutil::getIndexName()); ?>?m=joborders&amp;a=show&amp;jobOrderID=<?php echo($this->jobOrderID); ?>');" />
         </form>
     <?php endif; ?>
     </body>

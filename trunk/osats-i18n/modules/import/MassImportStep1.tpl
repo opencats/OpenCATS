@@ -2,10 +2,10 @@
 
 <?php if (isset($this->documents)): ?>
 <div id="uploadQueue" style="background-color: #f0f0f0; color: #800000; border: 1px solid #800000; text-align: center; font-size: 14px; padding: 10px; margin: 0 0 15px 0; font-weight: bold;">
-You have <?php echo number_format(count($this->documents), 0); ?> document<?php echo count($this->documents) != 1 ? 's' : ''; ?> in your upload queue.
+<?php echo __('You have %s document%s in your upload queue.', array(number_format(count($this->documents), 0), (count($this->documents) != 1 ? __('xxx') : ''))) ?>
 <br /><br />
 <input type="button" value="Delete File<?php echo count($this->documents) != 1 ? 's' : ''; ?>" onclick="deleteUploadFiles();" class="button" />
-<input type="button" class="button" value="Import File<?php echo count($this->documents) != 1 ? 's' : ''; ?>" onclick="document.location.href='<?php echo osatutil::getIndexName(); ?>?m=import&a=massImport&step=2';" />
+<input type="button" class="button" value="<?php _e('Import Filex') ?>" onclick="document.location.href='<?php echo osatutil::getIndexName(); ?>?m=import&a=massImport&step=2';" />
 </div>
 <?php endif; ?>
 
@@ -18,19 +18,19 @@ You have <?php echo number_format(count($this->documents), 0); ?> document<?php 
                 <img src="images/massImport.jpg" border="0" />
 
                 <p />
-                <b>Supported File Types</b>:
+                <b><?php _e('Supported File Types') ?></b>:
                 <table cellpadding="2" cellspacing="0" border="0" style="padding-left: 80px;">
-                    <tr><td><img src="images/fileTypeDoc.jpg" border="0" /> Microsoft Word Documents (.doc)</td></tr>
+                    <tr><td><img src="images/fileTypeDoc.jpg" border="0" /> Microsoft Word <?php _e('Documents') ?> (.doc)</td></tr>
                     <tr><td><img src="images/fileTypePdf.jpg" border="0" /> Adobe Portable Document Format (.pdf)</td></tr>
                     <tr><td><img src="images/fileTypeRtf.jpg" border="0" /> Rich Text Format (.rtf)</td></tr>
-                    <tr><td><img src="images/fileTypeHtml.jpg" border="0" /> HTML Web Pages (.html)</td></tr>
-                    <tr><td><img src="images/fileTypeTxt.jpg" border="0" /> Plain Text Files (.txt)</td></tr>
+                    <tr><td><img src="images/fileTypeHtml.jpg" border="0" /> HTML <?php _e('Web Pages') ?> (.html)</td></tr>
+                    <tr><td><img src="images/fileTypeTxt.jpg" border="0" /> Plain Text <?php _e('Files') ?> (.txt)</td></tr>
                 </table>
                 <br />
                 <b>Supported File Archives</b>:
                 <table cellpadding="2" cellspacing="0" border="0" style="padding-left: 80px; padding-top: 10px;">
-                    <tr><td><img src="images/fileTypeZip.jpg" border="0" /> Zip Archives (.zip)</td></tr>
-                    <tr><td><img src="images/fileTypeGz.jpg" border="0" /> GNU Zip Archives (.gz)</td></tr>
+                    <tr><td><img src="images/fileTypeZip.jpg" border="0" /> Zip <?php _e('Archives') ?> (.zip)</td></tr>
+                    <tr><td><img src="images/fileTypeGz.jpg" border="0" /> GNU Zip <?php _e('Archives') ?> (.gz)</td></tr>
                 </table>
             </td>
 
@@ -73,29 +73,27 @@ You have <?php echo number_format(count($this->documents), 0); ?> document<?php 
     </table>
 
     <div style="text-align: right;">
-    <input type="button" class="button" value="Continue ->" onclick="document.location.href='<?php echo osatutil::getIndexName(); ?>?m=import&a=massImport&step=2';" />
+    <input type="button" class="button" value="<?php _e('Continue') ?> ->" onclick="document.location.href='<?php echo osatutil::getIndexName(); ?>?m=import&a=massImport&step=2';" />
     </div>
 
 
 <?php elseif ($this->multipleFilesEnabled): ?>
     <span style="font-size: 16px;">
     <?php if ($this->uploadPath !== false): ?>
-        To import multiple files, move or copy your resume documents to the following directory on the computer
-        that hosts CATS:
+        <?php _e('To import multiple files, move or copy your resume documents to the following directory on the computer that hosts CATS') ?>:
         <br /><br />
 
         <b><?php echo $this->uploadPath; ?></b>
 
         <br /><br />
-        Once you have resumes in this folder, <a href="<?php echo osatutil::getIndexName(); ?>?m=import&a=importSelectType&typeOfImport=resume">
-        reload</a> this page to start the import process.
+        <?php echo __('Once you have resumes in this folder, %s%s%sreload%s this page to start the import process.', array('<a href="', osatutil::getIndexName(), '?m=import&a=importSelectType&typeOfImport=resume">', '</a>')) ?>
 
         <br /><br />
 
         <?php if (LicenseUtility::isProfessional()): ?>
-        If you need any assistance, please contact the CATS support team.</br >
+        <?php _e('If you need any assistance, please contact the CATS support team.') ?></br >
         <?php else: ?>
-        If you need assistance in uploading files to your web server, contact your system administrator.<br />
+        <?php _e('If you need assistance in uploading files to your web server, contact your system administrator.') ?><br />
         <?php endif; ?>
     <?php else: ?>
         In order to import resume documents into CATS, you need to create a directory named "<b>upload</b>" on the computer
@@ -120,9 +118,8 @@ You have <?php echo number_format(count($this->documents), 0); ?> document<?php 
 
 
 <?php else: ?>
-    The automated bulk resume import feature has been temporarily disabled.<br /><br />
-    To import resumes into the bulk resume pool, please contact <a href="mailto:support@catsone.com">support@catsone.com</a>
-    for assistance from the CATS team.
+    <?php _e('The automated bulk resume import feature has been temporarily disabled.') ?><br /><br />
+    <?php _e('To import resumes into the bulk resume pool, please contact %s for assistance from the CATS team.', '<a href="mailto:support@catsone.com">support@catsone.com</a>') ?>
     <br />
 
 
@@ -154,14 +151,11 @@ You have <?php echo number_format(count($this->documents), 0); ?> document<?php 
                     </span>
                 <?php else: ?>
                     <span style="font-size: 14px; color: #333333;">
-                    Your resume documents will be imported as searchable documents but <b>not</b> as candidates unless
-                    you manually complete the required fields for each document (first and last names).
+                    Your resume documents will be imported as searchable documents but <b>not</b> as candidates unless you manually complete the required fields for each document (first and last names).
                     <br /><br />
-                    With the
-                    Resfly parsing service, much of the candidate's information can be imported automatically.
+                    With the Resfly parsing service, much of the candidate's information can be imported automatically.
                     <br />
-                    Consider <a href="http://www.catsone.com/?a=getcats" style="font-size: 14px;" target="_blank">upgrading to CATS Professional</a>
-                    for unlimited use of this service.
+                    Consider <a href="http://www.catsone.com/?a=getcats" style="font-size: 14px;" target="_blank">upgrading to CATS Professional</a> for unlimited use of this service.
                     </span>
                 <?php endif; ?>
             </td>

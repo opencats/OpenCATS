@@ -42,5 +42,3 @@ $interface->outputXMLPage(
     "    <zip>"     . $locationArray['zip'] . "</zip>\n" .
     "</data>\n"
 );
-
-?>

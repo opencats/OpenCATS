@@ -1,5 +1,5 @@
 <?php /* $Id: ImportResumesBulk.tpl 3093 2007-09-24 21:09:45Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Import', array('modules/import/import.js')); ?>
+<?php TemplateUtility::printHeader(__('Import'), array('modules/import/import.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, ''); ?>
     <div id="main">
@@ -11,15 +11,15 @@
                     <td width="3%">
                         <img src="images/reports.gif" width="24" height="24" border="0" alt="Import" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Import Data</h2></td>
+                    <td><h2><?php _e('Import Data') ?></h2></td>
                 </tr>
             </table>
 
-            <p class="note" id="importHide2">Import Data - Step 2</p>
+            <p class="note" id="importHide2"><?php _e('Import Data ') ?>- <?php _e('Step') ?> 2</p>
 
             <?php if (isset($this->errorMessage)): ?>
 
-                <p class="warning" id="importHide0">Error!</p>
+                <p class="warning" id="importHide0"><?php _e('Error') ?>!</p>
 
                 <table class="searchTable" id="importHide1" width="100%">
                     <tr>
@@ -33,7 +33,7 @@
 
             <?php elseif (isset($this->successMessage)): ?>
 
-                <p class="note" id="importHide0">Success</p>
+                <p class="note" id="importHide0"><?php _e('Success') ?></p>
 
                 <table class="searchTable" id="importHide1" width="100%">
                     <tr>
@@ -48,8 +48,7 @@
            <?php endif; ?>
             <table class="searchTable" id="importTable1" width="100%">
                 <tr>
-                    <td>CATS may discard or fail to read some of the submitted data which it does not
-                    understand how to use. Do not discard the original data!
+                    <td><?php _e('CATS may discard or fail to read some of the submitted data which it does not understand how to use. Do not discard the original data') ?>!
                     </td>
                 </tr>
                 
@@ -61,11 +60,11 @@
                 <table class="searchTable" width="100%" id="importHide3">
                     <tr>
                         <td class="tdVertical">
-                            <label id="fileLabel" for="file">Import:</label>
+                            <label id="fileLabel" for="file"><?php _e('Import') ?>:</label>
                         </td>
                         <td class="tdData">
-                            <img src="images/file/doc.gif">&nbsp;Resume&nbsp;<a href="javascript:void(0);" onclick="showPopWin('index.php?m=import&a=whatIsBulkResumes', 420, 275, null);">(How do I use bulk resumes?)</a><br />
-                            <span style="font-style: italic;">This will not create candidates, it will only add resumes to the <a href="<?php echo(osatutil::getIndexName()); ?>?m=candidates&a=search">resume search</a>!</span>
+                            <img src="images/file/doc.gif">&nbsp;<?php _e('Resume') ?>&nbsp;<a href="javascript:void(0);" onclick="showPopWin('index.php?m=import&a=whatIsBulkResumes', 420, 275, null);">(<?php _e('How do I use bulk resumes?') ?>)</a><br />
+                            <span style="font-style: italic;"><?php echo __('This will not create candidates, it will only add resumes to the %s%s%sresume search%s', array('<a href="', (osatutil::getIndexName()), ' ?m=candidates&a=search">', '</a>')) ?>!</span>
                         </td>
                     </tr>
                     
@@ -73,28 +72,28 @@
                         <td class="tdVertical">
                             <label id="fileLabel" for="file">
                                 <br />
-                                Files:
+                                <?php _e('Files') ?>:
                             </label>
                         </td>
                         <td class="tdData">
                             <br />
                             <?php if (count($this->foundFiles) == 0): ?>
-                                CATS has not found any files to import in /upload/.<br />
+                                <?php _e('CATS has not found any files to import in \'upload\'.') ?><br />
                                 <br />
                             <?php else: ?>
                                 <span id="foundFilesSpan">
-                                    CATS has found <?php echo(count($this->foundFiles)); ?> files to import.<br />
+                                    <?php echo __('CATS has found %s files to import.', (count($this->foundFiles))) ?><br />
                                     <br />
                                 </span>
                             <?php endif; ?>
-                            <input class="button" type="button" value="Back" id="back" onclick="document.location.href='?m=import';">&nbsp;
+                            <input class="button" type="button" value="<?php _e('Back') ?>" id="back" onclick="document.location.href='?m=import';">&nbsp;
                             <span id="nextScreenButton" style="display:none; font-weight:bold;">
                             </span>
                             <?php if (count($this->foundFiles) != 0): ?>
-                                <input type="button" class="button" id="startImport" value="Start import" onclick="startMassImport();" />
+                                <input type="button" class="button" id="startImport" value="<?php _e('Start Import') ?>" onclick="startMassImport();" />
                                 <span id="pleaseWaitImport" style="display:none;">
                                     <br /><br/>
-                                    Please wait, importing resumes...
+                                    <?php _e('Please wait, importing resumes') ?>...
                                     <span id="progressBar">
                                         <br /><br />
                                         <div id="empty" style="background-color:#eeeeee;border:1px solid black;height:20px;width:300px;padding:0px;" align="left">
@@ -106,8 +105,8 @@
                                     </span>
                                     <br />
                                     <br />
-                                    Processing resume <span id="processingResumeNumber"></span> / <?php echo(count($this->foundFiles)); ?>...<br /><br />
-                                    <input class="button" type="button" value="Abort" id="back" onclick="abortImport=true;">&nbsp;
+                                    <?php _e('Processing resume') ?> <span id="processingResumeNumber"></span> / <?php echo(count($this->foundFiles)); ?>...<br /><br />
+                                    <input class="button" type="button" value="<?php _e('Abort') ?>" id="back" onclick="abortImport=true;">&nbsp;
                                 </span>
                             <?php endif; ?>
                             <br />

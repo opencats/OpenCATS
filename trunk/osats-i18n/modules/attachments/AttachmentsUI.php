@@ -5,6 +5,7 @@
 
 include_once('./lib/CommonErrors.php');
 include_once('./lib/Attachments.php');
+include_once('./lib/i18n.php');
 
 class AttachmentsUI extends UserInterface
 {
@@ -50,7 +51,7 @@ class AttachmentsUI extends UserInterface
         if (!$this->isRequiredIDValid('id', $_GET))
         {
             CommonErrors::fatal(
-                COMMONERROR_BADINDEX, $this, 'No attachment ID specified.'
+                COMMONERROR_BADINDEX, $this, __('No attachment ID specified.')
             );
         }
 
@@ -64,7 +65,7 @@ class AttachmentsUI extends UserInterface
             CommonErrors::fatal(
                 COMMONERROR_BADFIELDS,
                 $this,
-                'Invalid id / directory / filename, or you do not have permission to access this attachment.'
+                __('Invalid id / directory / filename, or you do not have permission to access this attachment.')
             );
         }
 
@@ -78,7 +79,7 @@ class AttachmentsUI extends UserInterface
             CommonErrors::fatal(
                 COMMONERROR_FILENOTFOUND,
                 $this,
-                'The specified backup file no longer exists. Please go back and regenerate the backup before downloading. We are sorry for the inconvenience.'
+                __('The specified backup file no longer exists. Please go back and regenerate the backup before downloading. We are sorry for the inconvenience.')
             );
         }
 
@@ -95,7 +96,7 @@ class AttachmentsUI extends UserInterface
             CommonErrors::fatal(
                 COMMONERROR_BADFIELDS,
                 $this,
-                'This attachment is momentarily offline, please try again later. The support staff has been notified.'
+                __('This attachment is momentarily offline, please try again later. The support staff has been notified.')
             );
         }
 
@@ -121,5 +122,3 @@ class AttachmentsUI extends UserInterface
     }
 
 }
-
-?>

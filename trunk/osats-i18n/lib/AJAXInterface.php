@@ -183,7 +183,7 @@ class SecureAJAXInterface extends AJAXInterface
     {
         /* Give the session a unique name to avoid conflicts and start the
          * session. */
-        @session_name(CATS_SESSION_NAME);
+        @session_name(SESSION_NAME);
         session_start();
 
         /* Validate the session. */
@@ -239,5 +239,3 @@ class SecureAJAXInterface extends AJAXInterface
         return true;
     }
 }
-
-?>

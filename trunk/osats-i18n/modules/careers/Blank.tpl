@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=<?php echo(HTML_ENCODING); ?>" />
-        <title><?php $this->_($this->siteName); ?> - Careers</title>
+        <title><?php $this->_($this->siteName); ?> - <?php _e('Careers');?></title>
             <script type="text/javascript" src="../js/careerPortalApply.js"></script>
         <?php global $careerPage; if (isset($careerPage) && $careerPage == true): ?>
             <script type="text/javascript" src="../js/lib.js"></script>
@@ -23,13 +23,13 @@
     </head>
     <body>
     <!-- TOP -->
-    <?php echo($this->template['Header']); ?>
+    <?php echo($this->template[__('Header')]); ?>
 
     <!-- CONTENT -->
-    <?php echo($this->template['Content']); ?>
+    <?php echo($this->template[__('Content')]); ?>
 
     <!-- FOOTER -->
-    <?php echo($this->template['Footer']); ?>
+    <?php echo($this->template[__('Footer')]); ?>
     <div style="font-size:9px;">
         <br /><br /><br /><br />
     </div>

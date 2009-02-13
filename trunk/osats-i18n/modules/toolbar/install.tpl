@@ -1,5 +1,5 @@
 <?php /* $Id: install.tpl 3225 2007-10-17 23:26:21Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Install Toolbar'); ?>
+<?php TemplateUtility::printHeader(__('Install Toolbar')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">

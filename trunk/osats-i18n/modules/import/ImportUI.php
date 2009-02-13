@@ -39,6 +39,7 @@ include_once('./lib/ExtraFields.php');
 include_once('./lib/Attachments.php');
 include_once('./lib/ParseUtility.php');
 include_once('./lib/Import.php');
+include_once('./lib/i18n.php');
 
 
 class ImportUI extends UserInterface
@@ -222,53 +223,53 @@ class ImportUI extends UserInterface
     private function setImportTypes()
     {
         $this->candidatesTypes = array(
-            'Full Name',        'name',
-            'First Name',       'first_name',
-            'Last Name',        'last_name',
-            'Address',          'address',
-            'City',             'city',
-            'State',            'state',
-            'Zip',              'zip',
-            'Home Phone',       'phone_home',
-            'Cell Phone',       'phone_cell',
-            'Work Phone',       'phone_work',
-            'Notes',            'notes',
-            'Current Employer', 'current_employer',
-            'Email',            'email1',
-            'Email 2',          'email2',
-            'Web Site',         'web_site',
-            'Key Skills',       'key_skills'
+            __('Full Name'),        'name',
+            __('First Name'),       'first_name',
+            __('Last Name'),        'last_name',
+            __('Address'),          'address',
+            __('City'),             'city',
+            __('State'),            'state',
+            __('Zip'),              'zip',
+            __('Home Phone'),       'phone_home',
+            __('Cell Phone'),       'phone_cell',
+            __('Work Phone'),       'phone_work',
+            __('Notes'),            'notes',
+            __('Current Employer'), 'current_employer',
+            __('E-Mail'),            'email1',
+            __('2nd E-Mail'),          'email2',
+            __('Web Site'),         'web_site',
+            __('Key Skills'),       'key_skills'
         );
         $this->contactsTypes = array(
-            'Company',      'company_id',
-            'Full Name',   'name',
-            'First Name',  'first_name',
-            'Last Name',   'last_name',
-            'Address',     'address',
-            'City',        'city',
-            'State',       'state',
-            'Zip',         'zip',
-            'Cell Phone',  'phone_cell',
-            'Work Phone',  'phone_work',
-            'Other Phone', 'phone_other',
-            'Notes',       'notes',
-            'Email',       'email1',
-            'Email 2',     'email2',
-            'Title',       'title'
+            __('Company'),      'company_id',
+            __('Full Name'),   'name',
+            __('First Name'),  'first_name',
+            __('Last Name'),   'last_name',
+            __('Address'),     'address',
+            __('City'),        'city',
+            __('State'),       'state',
+            __('Zip'),         'zip',
+            __('Cell Phone'),  'phone_cell',
+            __('Work Phone'),  'phone_work',
+            __('Other Phone'), 'phone_other',
+            __('Notes'),       'notes',
+            __('Email'),       'email1',
+            __('2nd E-Mail'),     'email2',
+            __('Title'),       'title'
         );
         $this->companiesTypes = array(
-            'Name',             'name',
-            'Billing Contact',  'billing_contact',
-            'Address',          'address',
-            'City',             'city',
-            'State',            'state',
-            'Zip',              'zip',
-            'Phone',            'phone1',
-            'Phone 2',          'phone2',
-            'URL',              'url',
-            'Key Technologies', 'key_technologies',
-            'Notes',            'notes',
-            'Fax Number',       'fax_number'
+            __('Name'),             'name',
+            __('Billing Contact'),  'billing_contact',
+            __('Address'),          'address',
+            __('City'),             'city',
+            __('State'),            'state',
+            __('Zip'),              'zip',
+            __('Phone'),            'phone1',
+            __('Other Phone'),          'phone2',
+            __('URL'),              'url',
+            __('Key Technologies'), 'key_technologies',
+            __('Notes'),            'notes',
+            __('Fax Number'),       'fax_number'
         );
 
         if (!eval(Hooks::get('IMPORT_TYPES_2'))) return;
@@ -399,7 +400,7 @@ class ImportUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         set_time_limit(500);
@@ -411,14 +412,14 @@ class ImportUI extends UserInterface
 
         if (empty($dataType))
         {
-            $this->_template->assign('errorMessage', 'No data type was specified.');
+            $this->_template->assign('errorMessage', __('No data type was specified.'));
             $this->importSelectType();
             return;
         }
 
         if (empty($importInto) && $dataType != 'Resume')
         {
-            $this->_template->assign('errorMessage', 'No destination was specified.');
+            $this->_template->assign('errorMessage', __('No destination was specified.'));
             $this->importSelectType();
             return;
         }
@@ -428,7 +429,7 @@ class ImportUI extends UserInterface
         {
             if ($_SESSION['CATS']->isDemo())
             {
-                CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Demo user can not import data.');
+                CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Demo user can not import data.'));
             }
 
             if (!eval(Hooks::get('IMPORT_ON_IMPORT_1'))) return;
@@ -442,7 +443,7 @@ class ImportUI extends UserInterface
                 default:
                     $this->_template->assign(
                         'errorMessage',
-                        'No 2nd parser has been included for the specified data type.'
+                        __('No 2nd parser has been included for the specified data type.')
                     );
                     $this->import();
                     return;
@@ -456,7 +457,7 @@ class ImportUI extends UserInterface
         if (!isset($_FILES['file']) || empty($_FILES['file']['name']))
         {
             $errorMessage = sprintf(
-                'No file was uploaded.'
+                __('No file was uploaded.')
             );
             $this->_template->assign('errorMessage', $errorMessage);
             $this->importSelectType();
@@ -491,7 +492,7 @@ class ImportUI extends UserInterface
         if ($fileSize <= 0)
         {
             $this->_template->assign(
-                'errorMessage', 'File size is less than 1 byte.'
+                'errorMessage', __('File size is less than 1 byte.')
             );
             $this->importSelectType();
             return;
@@ -501,7 +502,7 @@ class ImportUI extends UserInterface
         if (!is_dir(CATS_TEMP_DIR))
         {
             $errorMessage = sprintf(
-                'Directory \'%s\' does not exist. CATS is not configured correctly.',
+                __('Directory \'%s\' does not exist. CATS is not configured correctly.'),
                 CATS_TEMP_DIR
             );
             $this->_template->assign('errorMessage', $errorMessage);
@@ -528,7 +529,7 @@ class ImportUI extends UserInterface
         if (!@copy($tempFilename, $newFileFullPath))
         {
             $errorMessage = sprintf(
-                'Cannot copy temporary file from %s to %s.',
+                __('Cannot copy temporary file from %s to %s.'),
                 $tempFilename,
                 $newFileFullPath
             );
@@ -555,7 +556,7 @@ class ImportUI extends UserInterface
             default:
                 $this->_template->assign(
                     'errorMessage',
-                    'No parser exists for the specified data type.'
+                    __('No parser exists for the specified data type.')
                 );
                 $this->importSelectType();
                 break;
@@ -585,7 +586,7 @@ class ImportUI extends UserInterface
         $theFile = fopen($filePath, 'r');
         if (!$theFile)
         {
-            $this->_template->assign('errorMessage', 'Cannot open the copied file (Internal error).');
+            $this->_template->assign('errorMessage', __('Cannot open the copied file - Internal error.'));
             $this->import();
             return;
         }
@@ -604,7 +605,7 @@ class ImportUI extends UserInterface
 
             default:
                 $this->_template->assign(
-                    'errorMessage', 'Cannot handle that data type.'
+                    'errorMessage', __('Cannot handle that data type.')
                 );
                 $this->import();
                 return;
@@ -629,7 +630,7 @@ class ImportUI extends UserInterface
 
             default:
                 $this->_template->assign(
-                    'errorMessage', 'Cannot handle that destination.'
+                    'errorMessage', __('Cannot handle that destination.')
                 );
                 $this->import();
                 return;
@@ -678,7 +679,7 @@ class ImportUI extends UserInterface
                     break;
 
                 default:
-                    $this->_template->assign('errorMessage', 'Cannot handle that data type for sample data.');
+                    $this->_template->assign('errorMessage', __('Cannot handle that data type for sample data.'));
                     $this->import();
                     return;
             }
@@ -715,13 +716,13 @@ class ImportUI extends UserInterface
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         $filePath = CATS_TEMP_DIR . '/' . $_POST['fileName'];
         if (!is_file($filePath))
         {
-            $this->_template->assign('errorMessage', 'Invalid filename. (Internal error)');
+            $this->_template->assign('errorMessage', __('Invalid filename - Internal error.'));
             $this->import();
         }
 
@@ -741,7 +742,7 @@ class ImportUI extends UserInterface
         $theFile = fopen($filePath, 'r');
         if (!$theFile)
         {
-            $this->_template->assign('errorMessage', 'Cannot open the copied file (Internal error).');
+            $this->_template->assign('errorMessage', __('Cannot open the copied file - Internal error.'));
             $this->import();
             return;
         }
@@ -759,7 +760,7 @@ class ImportUI extends UserInterface
                 break;
 
             default:
-                $this->_template->assign('errorMessage', 'Cannot handle that data type.');
+                $this->_template->assign('errorMessage', __('Cannot handle that data type.'));
                 $this->import();
                 return;
         }
@@ -787,7 +788,7 @@ class ImportUI extends UserInterface
 
             default:
                 $this->_template->assign(
-                    'errorMessage', 'Cannot handle the specified destination.'
+                    'errorMessage', __('Cannot handle the specified destination.')
                 );
                 $this->import();
                 return;
@@ -818,7 +819,7 @@ class ImportUI extends UserInterface
                     break;
 
                 default:
-                    $this->_template->assign('errorMessage', 'Cannot read that data type.');
+                    $this->_template->assign('errorMessage', __('Cannot read that data type.'));
                     $this->import();
                     return;
             }
@@ -873,7 +874,7 @@ class ImportUI extends UserInterface
                                     break;
 
                                 default:
-                                    $this->_template->assign('errorMessage', 'Cannot handle that destination for new foreign entry setting.');
+                                    $this->_template->assign('errorMessage', __('Cannot handle that destination for new foreign entry setting.'));
                                     $this->import();
                                     return;
                             }
@@ -907,7 +908,7 @@ class ImportUI extends UserInterface
                     break;
 
                 default:
-                    $this->_template->assign('errorMessage', 'Cannot handle that destination.');
+                    $this->_template->assign('errorMessage', __('Cannot handle that destination.'));
                     $this->import();
                     return;
             }
@@ -942,17 +943,17 @@ class ImportUI extends UserInterface
         /* Put a header on the error output, then update the import record with our errors. */
         if ($totalRows - $totalImported <= self::MAX_ERRORS)
         {
-            $errorHtml = '<span class="bold">' . ($totalRows - $totalImported) . ' errors:</span><br /><br />' . $errorHtml;
+            $errorHtml = '<span class="bold">' . ($totalRows - $totalImported) . ' '.__('Errors'). '</span><br /><br />' . $errorHtml;
         }
         else
         {
-            $errorHtml = '<span class="bold">First ' . self::MAX_ERRORS . ' errors (of ' . ($totalRows - $totalImported) . '):</span><br /><br />' . $errorHtml;
+            $errorHtml = '<span class="bold">'.__('First') . self::MAX_ERRORS . ' '.__('Errors'). ' ('.__('of') . ($totalRows - $totalImported) . '):</span><br /><br />' . $errorHtml;
         }
 
         $import->updateErrors($importID, $errorHtml, $totalImported);
 
         /* Generate a response. */
-        $message =  'The import was successful.  Of a total ' . $totalRows;
+        $message =  'The import was successful. Of a total ' . $totalRows;
         $message .= ' rows of data, ' . $totalImported . ' were imported into ' . $importInto . '.';
 
         if ($totalImportedCompany > 0)
@@ -968,12 +969,12 @@ class ImportUI extends UserInterface
         $message .= 'You will have 1 week to review the import before the changes become permanent.<br /><br />';
 
         $message .= '<input type="button" onclick="document.location.href=\'';
-        $message .= osatutil::getIndexName() . '?m=import&amp;a=revert&amp;importID=' . $importID . '\';" value="Revert Import" class="button">';
+        $message .= osatutil::getIndexName() . '?m=import&amp;a=revert&amp;importID=' . $importID . '\';" value="' .__('Revert Import'). '" class="button">';
 
         if ($totalRows != $totalImported)
         {
             $message .= '<input type="button" onclick="document.location.href=\'';
-            $message .= osatutil::getIndexName() . '?m=import&amp;a=viewerrors&amp;importID=' . $importID . '\';" value="View Import Errors" class="button">';
+            $message .= osatutil::getIndexName() . '?m=import&amp;a=viewerrors&amp;importID=' . $importID . '\';" value="' . __('View Import Errors' ). ' class="button">';
         }
 
         if (!eval(Hooks::get('IMPORT_ON_IMPORT_DELIMITED_10'))) return;
@@ -1015,7 +1016,7 @@ class ImportUI extends UserInterface
             !isset($dataNamed['last_name']) &&
             !isset($dataNamed['company_id']))
         {
-            return 'Required fields (first name, last name) are missing.';
+            return __('Required fields are missing.');
         }
 
         if (!eval(Hooks::get('IMPORT_ADD_CANDIDATE'))) return;
@@ -1025,7 +1026,7 @@ class ImportUI extends UserInterface
 
         if ($candidateID <= 0)
         {
-            return 'Failed to add candidate.';
+            return __('Failed to add candidate.');
         }
 
         $this->addForeign(DATA_ITEM_CANDIDATE, $dataForeign, $candidateID, $importID);
@@ -1046,7 +1047,7 @@ class ImportUI extends UserInterface
 
         if (!isset($dataNamed['name']))
         {
-            return 'Required fields (Company Name) are missing.';
+            return __('Required fields are missing.');
         }
 
         /* check for duplicates */
@@ -1054,7 +1055,7 @@ class ImportUI extends UserInterface
         $cID = $companiesImport->companyByName($dataNamed['name']);
         if ($cID != -1)
         {
-            return 'Duplicate entry.';
+            return __('Duplicate entry.');
         }
 
         if (!eval(Hooks::get('IMPORT_ADD_CLIENT'))) return;
@@ -1063,7 +1064,7 @@ class ImportUI extends UserInterface
 
         if ($companyID <= 0)
         {
-            return 'Failed to add candidate.';
+            return __('Failed to add candidate.');
         }
 
         $this->addForeign(DATA_ITEM_COMPANY, $dataForeign, $companyID, $importID);
@@ -1083,7 +1084,7 @@ class ImportUI extends UserInterface
         /* Try to find the company. */
         if (!isset($dataNamed['company_id']))
         {
-            return 'Unable to add company - no company name.';
+            return __('Unable to add company - no company name.');
         }
 
         $companyID = $contactImport->companyByName($dataNamed['company_id']);
@@ -1126,7 +1127,7 @@ class ImportUI extends UserInterface
             else
             {
                 /* Bail out of add - no company. */
-                return 'Invalid company name.';
+                return __('Invalid company name.');
             }
         }
 
@@ -1150,10 +1151,10 @@ class ImportUI extends UserInterface
             }
             else
             {
-                $error = 'Required fields (first name, last name) are missing.';
+                $error = __('Required fields are missing.');
                 if ($genCompany)
                 {
-                    $error .= '  However, the company was generated.';
+                    $error .= ' '. __('However, the company was generated.');
                 }
                 return $error;
             }
@@ -1166,7 +1167,7 @@ class ImportUI extends UserInterface
 
         if ($contactID <= 0)
         {
-            return 'Failed to add candidate.';
+            return __('Failed to add candidate.');
         }
 
         $this->addForeign(DATA_ITEM_CONTACT, $dataForeign, $contactID, $importID);
@@ -1424,8 +1425,7 @@ class ImportUI extends UserInterface
 
         if ($_SESSION['CATS']->getAccessLevel() < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You do not have permission to import '
-                . 'mass resume documents.'
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('You do not have permission to import mass resume documents.')
             );
         }
 
@@ -1506,8 +1506,7 @@ class ImportUI extends UserInterface
             list($documents, $success, $failed) = $this->getMassImportDocuments();
             if (!count($documents))
             {
-                $this->_template->assign('errorMessage', 'None of the files you uploaded were able '
-                    . 'to be imported!'
+                $this->_template->assign('errorMessage', __('None of the files you uploaded were able to be imported.'). '!'
                 );
             }
 
@@ -1704,7 +1703,7 @@ class ImportUI extends UserInterface
                             false,
                             '',
                             '',
-                            'This resume was parsed automatically. You should review it for errors.',
+                            __('This resume was parsed automatically. You should review it for errors.'),
                             '',
                             '',
                             $userID,

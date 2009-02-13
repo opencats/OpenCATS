@@ -1,5 +1,5 @@
 <?php /* $Id: Calendar.tpl 3221 2007-10-17 17:13:22Z will $ */ ?>
-<?php TemplateUtility::printHeader('Calendar', array('modules/calendar/Calendar.css', 'js/highlightrows.js', 'modules/calendar/Calendar.js', 'modules/calendar/CalendarUI.js', 'modules/calendar/validator.js')); ?>
+<?php TemplateUtility::printHeader(__('Calendar'), array('modules/calendar/Calendar.css', 'js/highlightrows.js', 'modules/calendar/Calendar.js', 'modules/calendar/CalendarUI.js', 'modules/calendar/validator.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">
@@ -11,10 +11,10 @@
                     <td width="3%">
                         <img src="images/calendar.gif" width="24" height="24"alt="Calendar" style="border: none; margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Calendar</h2></td>
+                    <td><h2><?php _e('Calendar');?></h2></td>
                     <td align="right" nowrap="nowrap">
                         <?php if ($this->userIsSuperUser == 1): ?>
-                            <input type="checkbox" name="hideNonPublic" id="hideNonPublic" onclick="refreshView();" <?php if ($this->superUserActive): ?>checked<?php endif; ?>/>Show Entries from Other Users
+                            <input type="checkbox" name="hideNonPublic" id="hideNonPublic" onclick="refreshView();" <?php if ($this->superUserActive): ?>checked<?php endif; ?>/><?php _e('Show Entries from Other Users');?>
                         <?php else: ?>
                             <input type="checkbox" style="display:none;" name="hideNonPublic" id="hideNonPublic" onclick="" />
                         <?php endif; ?>
@@ -22,7 +22,7 @@
                 </tr>
             </table>
 
-            <p class="note" id="calendarTitle">Calendar</p>
+            <p class="note" id="calendarTitle"><?php _e('Calendar');?></p>
 
             <table style="border-collapse: collapse;">
                 <tr style="vertical-align: top;">
@@ -42,14 +42,14 @@
                                     <?php echo($this->summaryHTML); ?>
                                 </td>
                                 <td id="addEventTD" style="display:none;">
-                                    <p class="noteUnsized">Add Event</p>
+                                    <p class="noteUnsized"><?php _e('Add Event');?></p>
                                     <form name="addEventForm" id="addEventForm" action="<?php echo(osatutil::getIndexName()); ?>?m=calendar&amp;a=addEvent" method="post" onsubmit="return checkAddForm(document.addEventForm);" autocomplete="off">
                                         <input type="hidden" name="postback" id="postbackA" value="postback" />
 
                                         <table class="editTableMini" width="235">
                                             <tr>
                                                 <td class="tdVertical">
-                                                    <label id="titleLabel" for="title">Title:</label>
+                                                    <label id="titleLabel" for="title"><?php _e('Title');?>:</label>
                                                 </td>
                                                 <td class="tdData">
                                                     <input type="text" class="inputbox" name="title" id="title" style="width: 150px" />&nbsp;*
@@ -58,11 +58,11 @@
 
                                             <tr>
                                                 <td class="tdVertical">
-                                                    <label id="eventTypeLabel" for="type">Type:</label>
+                                                    <label id="eventTypeLabel" for="type"><?php _e('Type');?>:</label>
                                                 </td>
                                                 <td class="tdData">
                                                     <select id="type" name="type" class="inputbox" style="width: 150px;">
-                                                        <option value="">(Select a Type)</option>
+                                                        <option value="">(<?php _e('Select a Type');?>)</option>
                                                         <?php foreach ($this->calendarEventTypes as $type): ?>
                                                             <option value="<?php echo($type['typeID']); ?>"><?php echo($type['description']); ?></option>
                                                         <?php endforeach; ?>
@@ -72,16 +72,16 @@
 
                                             <tr>
                                                 <td class="tdVertical">
-                                                    <label id="dateLabel" for="date">Public:</label>
+                                                    <label id="dateLabel" for="date"><?php _e('Public');?>:</label>
                                                 </td>
                                                 <td class="tdData">
-                                                    <input type="checkBox" name="publicEntry" id="publicEntry" <?php if ($this->defaultPublic == 'true'): ?>checked<?php endif; ?> />Public Entry
+                                                    <input type="checkBox" name="publicEntry" id="publicEntry" <?php if ($this->defaultPublic == 'true'): ?>checked<?php endif; ?> /><?php _e('Public Entry');?>
                                                 </td>
                                             </tr>
 
                                             <tr>
                                                 <td class="tdVertical">
-                                                    <label id="dateLabel" for="date">Date:</label>
+                                                    <label id="dateLabel" for="date"><?php _e('Date');?>:</label>
                                                 </td>
                                                 <td nowrap="nowrap" class="tdData">
                                                     <script type="text/javascript">DateInput('dateAdd', true, 'MM-DD-YY', '<?php echo($this->currentDateMDY); ?>', -1);</script>
@@ -90,7 +90,7 @@
 
                                             <tr>
                                                 <td class="tdVertical">
-                                                    <label id="timeLabel" for="time">Time:</label>
+                                                    <label id="timeLabel" for="time"><?php _e('Time');?>:</label>
                                                 </td>
                                                 <td class="tdData">
                                                     <input type="radio" name="allDay" id="allDay0" value="0" checked onchange="setAddAllDayEnabled();" />
@@ -112,23 +112,23 @@
                                                     </select>
                                                     <br />
 
-                                                    <input type="radio" name="allDay" id="allDay1" value="1" onchange="setAddAllDayEnabled();" />All Day / No Specific Time<br />
+                                                    <input type="radio" name="allDay" id="allDay1" value="1" onchange="setAddAllDayEnabled();" /><?php _e('All Day / No Specific Time');?><br />
                                                     <!-- FIXME: Remove hide style. -->
                                                     <span style="<?php if(!$this->allowEventReminders): ?>display:none;<?php endif; ?>">
-                                                        <input type="checkBox" name="reminderToggle" id="reminderToggle" onclick="considerCheckBox('reminderToggle', 'sendEmailTD');">Send e-mail reminder
+                                                        <input type="checkBox" name="reminderToggle" id="reminderToggle" onclick="considerCheckBox('reminderToggle', 'sendEmailTD');"><?php _e('Send e-mail reminder');?>
                                                     </span>
                                                 </td>
                                             </tr>
 
                                              <tr id="sendEmailTD" style="display:none;">
                                                 <td class="tdVertical">
-                                                    E-Mail:
+                                                    <?php _e('E-Mail');?>:
                                                 </td>
                                                 <td class="tdData">
                                                     <table style="border-collapse: collapse;">
                                                         <tr>
                                                             <td>
-                                                                To:
+                                                                <?php _e('To');?>:
                                                             </td>
                                                             <td>
                                                                 <input type="text" id="sendEmail" name="sendEmail" class="inputbox" style="width:115px;" value="<?php $this->_($this->userEmail); ?>" />
@@ -136,16 +136,16 @@
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                Time:
+                                                                <?php _e('Time');?>:
                                                             </td>
                                                             <td>
                                                                 <select id="reminderTime" name="reminderTime" style="width:115px;">
-                                                                    <option value="15">15 min early</option>
-                                                                    <option value="30">30 min early</option>
-                                                                    <option value="45">45 min early</option>
-                                                                    <option value="60">1 hour early</option>
-                                                                    <option value="120">2 hours early</option>
-                                                                    <option value="1440">1 day early</option>
+                                                                    <option value="15">15 <?php _e('min early');?></option>
+                                                                    <option value="30">30 <?php _e('min early');?></option>
+                                                                    <option value="45">45 <?php _e('min early');?></option>
+                                                                    <option value="60">1 <?php _e('hour early');?></option>
+                                                                    <option value="120">2 <?php _e('hours early');?></option>
+                                                                    <option value="1440">1 <?php _e('day early');?></option>
                                                                 </select>
                                                             </td>
                                                         </tr>
@@ -155,26 +155,26 @@
 
                                             <tr>
                                                 <td class="tdVertical">
-                                                    <label id="durationLabel" for="duration">Length:</label>
+                                                    <label id="durationLabel" for="duration"><?php _e('Length');?>:</label>
                                                 </td>
                                                 <td class="tdData">
                                                     <select id="duration" name="duration" class="inputbox" style="width: 150px;">
-                                                        <option value="15">15 minutes</option>
-                                                        <option value="30">30 minutes</option>
-                                                        <option value="45">45 minutes</option>
-                                                        <option value="60" selected="selected">1 hour</option>
-                                                        <option value="90">1.5 hours</option>
-                                                        <option value="120">2 hours</option>
-                                                        <option value="180">3 hours</option>
-                                                        <option value="240">4 hours</option>
-                                                        <option value="300">More than 4 hours</option>
+                                                        <option value="15">15 <?php _e('minutes');?></option>
+                                                        <option value="30">30 <?php _e('minutes');?></option>
+                                                        <option value="45">45 <?php _e('minutes');?></option>
+                                                        <option value="60" selected="selected">1 <?php _e('hour');?></option>
+                                                        <option value="90">1.5 <?php _e('hours');?></option>
+                                                        <option value="120">2 <?php _e('hours');?></option>
+                                                        <option value="180">3 <?php _e('hours');?></option>
+                                                        <option value="240">4 <?php _e('hours');?></option>
+                                                        <option value="300"><?php _e('More than 4 hours');?></option>
                                                     </select>
                                                 </td>
                                              </tr>
 
                                             <tr>
                                                 <td class="tdVertical">
-                                                    <label id="descriptionLabel" for="description">Desc:</label>
+                                                    <label id="descriptionLabel" for="description"><?php _e('Desc');?>:</label>
                                                 </td>
                                                 <td class="tdData">
                                                     <textarea id="description" name="description" style="width:150px; height:180px;"></textarea>
@@ -188,7 +188,7 @@
                                     </form>
                                 </td>
                                 <td style="display:none" id="editEventTD">
-                                    <p class="noteUnsized">Edit Event</p>
+                                    <p class="noteUnsized"><?php _e('Edit Event');?></p>
                                     <form name="editEventForm" id="editEventForm" action="<?php echo(osatutil::getIndexName()); ?>?m=calendar&amp;a=editEvent" method="post" onsubmit="return checkEditForm(document.editEventForm);" autocomplete="off">
                                         <input type="hidden" name="postback" id="postbackB" value="postback" />
                                         <input type="hidden" name="eventID" id="eventIDEdit" />
@@ -199,7 +199,7 @@
                                         <table class="editTableMini" width="235">
                                             <tr>
                                                 <td class="tdVertical">
-                                                    <label id="titleLabelEdit" for="title">Title:</label>
+                                                    <label id="titleLabelEdit" for="title"><?php _e('Title');?>:</label>
                                                 </td>
                                                 <td class="tdData">
                                                     <input type="text" class="inputbox" name="title" id="titleEdit" style="width: 150px" />&nbsp;*
@@ -208,11 +208,11 @@
 
                                             <tr>
                                                 <td class="tdVertical">
-                                                    <label id="eventTypeLabelEdit" for="type">Type:</label>
+                                                    <label id="eventTypeLabelEdit" for="type"><?php _e('Type');?>:</label>
                                                 </td>
                                                 <td class="tdData">
                                                     <select id="typeEdit" name="type" class="inputbox" style="width: 150px;">
-                                                        <option value="">(Select a Type)</option>
+                                                        <option value="">(<?php _e('Select a Type');?>)</option>
                                                         <?php foreach ($this->calendarEventTypes as $type): ?>
                                                             <option value="<?php echo($type['typeID']); ?>"><?php echo($type['description']); ?></option>
                                                         <?php endforeach; ?>
@@ -222,16 +222,16 @@
 
                                              <tr>
                                                 <td class="tdVertical">
-                                                    <label id="dateLabel" for="date">Public:</label>
+                                                    <label id="dateLabel" for="date"><?php _e('Public');?>:</label>
                                                 </td>
                                                 <td class="tdData">
-                                                    <input type="checkBox" name="publicEntry" id="publicEntryEdit" />Public Entry
+                                                    <input type="checkBox" name="publicEntry" id="publicEntryEdit" /><?php _e('Public Entry');?>
                                                 </td>
                                             </tr>
 
                                            <tr>
                                                 <td class="tdVertical">
-                                                    <label id="dateLabel" for="date">Date:</label>
+                                                    <label id="dateLabel" for="date"><?php _e('Date');?>:</label>
                                                 </td>
                                                 <td nowrap="nowrap" class="tdData">
                                                     <script type="text/javascript">DateInput('dateEdit', true, 'MM-DD-YY', '<?php echo($this->currentDateMDY); ?>', -1);</script>
@@ -240,7 +240,7 @@
 
                                             <tr>
                                                 <td class="tdVertical">
-                                                    <label id="timeLabel" for="time">Time:</label>
+                                                    <label id="timeLabel" for="time"><?php _e('Time');?>:</label>
                                                 </td>
                                                 <td class="tdData">
                                                     <input type="radio" name="allDay" id="allDayEdit0" value="0" checked onchange="setEditAllDayEnabled();" />
@@ -262,23 +262,23 @@
                                                     </select>
                                                     <br />
 
-                                                    <input type="radio" name="allDay" id="allDayEdit1" value="1" onchange="setEditAllDayEnabled();" />All Day / No Specific Time<br />
+                                                    <input type="radio" name="allDay" id="allDayEdit1" value="1" onchange="setEditAllDayEnabled();" /><?php _e('All Day / No Specific Time');?><br />
                                                      <!-- FIXME: Remove hide style. -->
                                                     <span style="<?php if(!$this->allowEventReminders): ?>display:none;<?php endif; ?>">
-                                                       <input type="checkBox" name="reminderToggle" id="reminderToggleEdit" onclick="considerCheckBox('reminderToggleEdit', 'sendEmailTDEdit');">Send e-mail reminder
+                                                       <input type="checkBox" name="reminderToggle" id="reminderToggleEdit" onclick="considerCheckBox('reminderToggleEdit', 'sendEmailTDEdit');"><?php _e('Send e-mail reminder');?>
                                                     </span>
                                                 </td>
                                             </tr>
 
                                             <tr id="sendEmailTDEdit" style="display: none;">
                                                 <td class="tdVertical">
-                                                    E-Mail:
+                                                    <?php _e('E-Mail');?>:
                                                 </td>
                                                 <td class="tdData">
                                                     <table style="border-collapse: collapse;">
                                                         <tr>
                                                             <td>
-                                                                To:
+                                                                <?php _e('To');?>:
                                                             </td>
                                                             <td>
                                                                 <input type="text" id="sendEmailEdit" name="sendEmail" class="inputbox" style="width:115px;" value="<?php $this->_($this->userEmail); ?>" />
@@ -286,16 +286,16 @@
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                Time:
+                                                                <?php _e('Time');?>:
                                                             </td>
                                                             <td>
                                                                 <select id="reminderTimeEdit" name="reminderTime" style="width:115px;">
-                                                                    <option value="15">15 min early</option>
-                                                                    <option value="30">30 min early</option>
-                                                                    <option value="45">45 min early</option>
-                                                                    <option value="60">1 hour early</option>
-                                                                    <option value="120">2 hours early</option>
-                                                                    <option value="1440">1 day early</option>
+                                                                    <option value="15">15 <?php _e('min early');?></option>
+                                                                    <option value="30">30 <?php _e('min early');?></option>
+                                                                    <option value="45">45 <?php _e('min early');?></option>
+                                                                    <option value="60">1 <?php _e('hour early');?></option>
+                                                                    <option value="120">2 <?php _e('hours early');?></option>
+                                                                    <option value="1440">1 <?php _e('day early');?></option>
                                                                 </select>
                                                             </td>
                                                         </tr>
@@ -305,26 +305,26 @@
 
                                             <tr>
                                                 <td class="tdVertical">
-                                                    <label id="durationLabel" for="durationEdit">Length:</label>
+                                                    <label id="durationLabel" for="durationEdit"><?php _e('Length');?>:</label>
                                                 </td>
                                                 <td class="tdData">
                                                     <select id="durationEdit" name="duration" class="inputbox" style="width: 150px;">
-                                                        <option value="15">15 minutes</option>
-                                                        <option value="30">30 minutes</option>
-                                                        <option value="45">45 minutes</option>
-                                                        <option value="60" selected="selected">1 hour</option>
-                                                        <option value="90">1.5 hours</option>
-                                                        <option value="120">2 hours</option>
-                                                        <option value="180">3 hours</option>
-                                                        <option value="240">4 hours</option>
-                                                        <option value="300">More than 4 hours</option>
+                                                        <option value="15">15 <?php _e('minutes');?></option>
+                                                        <option value="30">30 <?php _e('minutes');?></option>
+                                                        <option value="45">45 <?php _e('minutes');?></option>
+                                                        <option value="60" selected="selected">1 <?php _e('hour');?></option>
+                                                        <option value="90">1.5 <?php _e('hours');?></option>
+                                                        <option value="120">2 <?php _e('hours');?></option>
+                                                        <option value="180">3 <?php _e('hours');?></option>
+                                                        <option value="240">4 <?php _e('hours');?></option>
+                                                        <option value="300"><?php _e('More than 4 hours');?></option>
                                                     </select>
                                                 </td>
                                              </tr>
 
                                             <tr>
                                                 <td class="tdVertical">
-                                                    <label id="descriptionLabel" for="descriptionEdit">Desc:</label>
+                                                    <label id="descriptionLabel" for="descriptionEdit"><?php _e('Desc');?>:</label>
                                                 </td>
                                                 <td class="tdData">
                                                     <textarea id="descriptionEdit" name="description" style="width: 150px; height: 180px;"></textarea>
@@ -344,18 +344,18 @@
                                     <table width="235">
                                     <tr>
                                     <td>
-                                    <p class="noteUnsized">View Event</p>
+                                    <p class="noteUnsized"><?php _e('View Event');?></p>
                                     <span id="viewEventTitle" style="font-weight:bold"></span><br />
-                                    Entered By: <span id="viewEventOwner"></span><br />
-                                    Event Type: <span id="viewEventType"></span><br />
+                                    <?php _e('Entered By');?>: <span id="viewEventOwner"></span><br />
+                                    <?php _e('Event Type');?>: <span id="viewEventType"></span><br />
                                     <span id="viewEventLink"></span><br />
                                     <br />
-                                    Date: <span id="viewEventDate"></span><br />
-                                    Time: <span id="viewEventTime"></span><br />
-                                    Duration: <span id="viewEventDuration"></span><br />
-                                    Reminder: <span id="viewEventReminder"></span><br />
+                                    <?php _e('Date');?>: <span id="viewEventDate"></span><br />
+                                    <?php _e('Time');?>: <span id="viewEventTime"></span><br />
+                                    <?php _e('Duration');?>: <span id="viewEventDuration"></span><br />
+                                    <?php _e('Reminder');?>: <span id="viewEventReminder"></span><br />
                                     <br />
-                                    Description:<br />
+                                    <?php _e('Description');?>:<br />
                                     <span id="viewEventDescription"></span><br />
                                     <br />
                                     <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
@@ -397,14 +397,14 @@
                                 <td>
                                     <table id="calendarMonth" style="width:675px;" onmouseup="javascript:trackTableSelect(event);">
                                         <tr >
-                                            <?php if ($this->firstDayMonday != '1'): ?><th height="1%">Sunday</th><?php endif; ?>
-                                            <th height="1%">Monday</th>
-                                            <th height="1%">Tuesday</th>
-                                            <th height="1%">Wednsday</th>
-                                            <th height="1%">Thursday</th>
-                                            <th height="1%">Friday</th>
-                                            <th height="1%">Saturday</th>
-                                            <?php if ($this->firstDayMonday == '1'): ?><th height="1%">Sunday</th><?php endif; ?>
+                                            <?php if ($this->firstDayMonday != '1'): ?><th height="1%"><?php _e('Sunday');?></th><?php endif; ?>
+                                            <th height="1%"><?php _e('Monday');?></th>
+                                            <th height="1%"><?php _e('Tuesday');?></th>
+                                            <th height="1%"><?php _e('Wednesday');?></th>
+                                            <th height="1%"><?php _e('Thursday');?></th>
+                                            <th height="1%"><?php _e('Friday');?></th>
+                                            <th height="1%"><?php _e('Saturday');?></th>
+                                            <?php if ($this->firstDayMonday == '1'): ?><th height="1%"><?php _e('Sunday');?></th><?php endif; ?>
                                         </tr>
 
                                         <?php $calendarPosition = 0; ?>
@@ -450,62 +450,62 @@
                                     <table id="calendarWeek" style="width:675px;" onmouseup="javascript:trackTableSelect(event, '#e9e9e9');">
                                         <?php if ($this->firstDayMonday != '1'): ?>
                                             <tr>
-                                                <th>Sunday <br /><span id="weekDay0"></span></th>
+                                                <th><?php _e('Sunday');?> <br /><span id="weekDay0"></span></th>
                                                 <td class="empty" id="calendarWeekCell0"></td>
                                             </tr>
                                             <?php if ($this->firstDayMonday == '1'): ?></span><?php endif; ?>
                                             <tr>
-                                                <th>Monday <br /><span id="weekDay1"></span></th>
+                                                <th><?php _e('Monday');?> <br /><span id="weekDay1"></span></th>
                                                 <td class="empty" id="calendarWeekCell1"></td>
                                             </tr>
                                             <tr>
-                                                <th>Tuesday <br /><span id="weekDay2"></span></th>
+                                                <th><?php _e('Tuesday');?> <br /><span id="weekDay2"></span></th>
                                                 <td class="empty" id="calendarWeekCell2"></td>
                                             </tr>
                                             <tr>
-                                                <th>Wednesday <br /><span id="weekDay3"></span></th>
+                                                <th><?php _e('Wednesday');?> <br /><span id="weekDay3"></span></th>
                                                 <td class="empty" id="calendarWeekCell3"></td>
                                             </tr>
                                             <tr>
-                                                <th>Thursday <br /><span id="weekDay4"></span></th>
+                                                <th><?php _e('Thursday');?> <br /><span id="weekDay4"></span></th>
                                                 <td class="empty" id="calendarWeekCell4"></td>
                                             </tr>
                                             <tr>
-                                                <th>Friday <br /><span id="weekDay5"></span></th>
+                                                <th><?php _e('Friday');?> <br /><span id="weekDay5"></span></th>
                                                 <td class="empty" id="calendarWeekCell5"></td>
                                             </tr>
                                             <tr>
-                                                <th>Saturday <br /><span id="weekDay6"></span></th>
+                                                <th><?php _e('Saturday');?> <br /><span id="weekDay6"></span></th>
                                                 <td class="empty" id="calendarWeekCell6"></td>
                                             </tr>
                                         <?php else: ?>
                                             <tr>
-                                                <th>Monday <br /><span id="weekDay0"></span></th>
+                                                <th><?php _e('Monday');?> <br /><span id="weekDay0"></span></th>
                                                 <td class="empty" id="calendarWeekCell0"></td>
                                             </tr>
                                             <?php if ($this->firstDayMonday == '1'): ?></span><?php endif; ?>
                                             <tr>
-                                                <th>Tuesday <br /><span id="weekDay1"></span></th>
+                                                <th><?php _e('Tuesday');?> <br /><span id="weekDay1"></span></th>
                                                 <td class="empty" id="calendarWeekCell1"></td>
                                             </tr>
                                             <tr>
-                                                <th>Wednesday <br /><span id="weekDay2"></span></th>
+                                                <th><?php _e('Wednesday');?> <br /><span id="weekDay2"></span></th>
                                                 <td class="empty" id="calendarWeekCell2"></td>
                                             </tr>
                                             <tr>
-                                                <th>Thursday <br /><span id="weekDay3"></span></th>
+                                                <th><?php _e('Thursday');?> <br /><span id="weekDay3"></span></th>
                                                 <td class="empty" id="calendarWeekCell3"></td>
                                             </tr>
                                             <tr>
-                                                <th>Friday <br /><span id="weekDay4"></span></th>
+                                                <th><?php _e('Friday');?> <br /><span id="weekDay4"></span></th>
                                                 <td class="empty" id="calendarWeekCell4"></td>
                                             </tr>
                                             <tr>
-                                                <th>Saturday <br /><span id="weekDay5"></span></th>
+                                                <th><?php _e('Saturday');?> <br /><span id="weekDay5"></span></th>
                                                 <td class="empty" id="calendarWeekCell5"></td>
                                             </tr>
                                             <tr>
-                                                <th>Sunday <br /><span id="weekDay6"></span></th>
+                                                <th><?php _e('Sunday');?> <br /><span id="weekDay6"></span></th>
                                                 <td class="empty" id="calendarWeekCell6"></td>
                                             </tr>
                                         <?php endif; ?>
@@ -542,7 +542,7 @@
                                 <td>
                                     <table id="calendarDay" style="width:675px;" onmouseup="javascript:trackTableSelect(event, '#e9e9e9');">
                                         <tr>
-                                            <th>Morning</th>
+                                            <th><?php _e('Morning');?></th>
                                             <td class="empty" id="calendarDayCell0"></td>
                                         </tr>
                                             <?php for ($i = $this->dayHourStart; $i <= $this->dayHourEnd; $i++): ?>
@@ -552,7 +552,7 @@
                                             </tr>
                                             <?php endfor; ?>
                                         <tr>
-                                            <th>Evening<br /><span id="weekDay2"></span></th>
+                                            <th><?php _e('Evening');?><br /><span id="weekDay2"></span></th>
                                             <td class="empty" id="calendarDayCell<?php echo($this->dayHourEnd - $this->dayHourStart + 2); ?>"></td>
                                         </tr>
                                     </table>

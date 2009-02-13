@@ -1,5 +1,5 @@
 <?php /* $Id: Search.tpl 3676 2007-11-21 21:02:15Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Companies', array('modules/companies/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js')); ?>
+<?php TemplateUtility::printHeader(__('Companies'), array('modules/companies/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">
@@ -11,11 +11,11 @@
                     <td width="3%">
                         <img src="images/companies.gif" width="24" height="24" border="0" alt="Companies" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Companies: Search Companies</h2></td>
+                    <td><h2><?php echo __('Companies').': '.__('Search Companies');?></h2></td>
                 </tr>
             </table>
 
-            <p class="note">Search Companies</p>
+            <p class="note"><?php _e('Search Companies')?></p>
 
             <table class="searchTable" id="searchTable">
                 <tr>
@@ -27,13 +27,13 @@
 
                             <?php TemplateUtility::printSavedSearch($this->savedSearchRS); ?>
 
-                            <label id="searchModeLabel" for="searchMode">Search By:</label>&nbsp;
+                            <label id="searchModeLabel" for="searchMode"><?php _e('Search By')?>:</label>&nbsp;
                             <select id="searchMode" name="mode" onclick="advancedSearchConsider();" class="selectBox">
-                                <option value="searchByName"<?php if ($this->mode == "searchByName"): ?> selected<?php endif; ?>>Name</option>
-                                <option value="searchByKeyTechnologies"<?php if ($this->mode == "searchByKeyTechnologies"): ?> selected<?php endif; ?>>Key Technologies</option>
+                                <option value="searchByName"<?php if ($this->mode == "searchByName"): ?> selected<?php endif; ?>><?php _e('Name')?></option>
+                                <option value="searchByKeyTechnologies"<?php if ($this->mode == "searchByKeyTechnologies"): ?> selected<?php endif; ?>><?php _e('Key Technologies')?></option>
                             </select>&nbsp;
                             <input type="text" class="inputbox" id="searchText" name="wildCardString" value="<?php if (!empty($this->wildCardString)) echo(urldecode($this->wildCardString)); ?>" style="width:250px" />&nbsp;*&nbsp;
-                            <input type="submit" class="button" id="searchCompanies" name="searchCompanies" value="Search" />
+                            <input type="submit" class="button" id="searchCompanies" name="searchCompanies" value="<?php _e('Search')?>" />
                             <?php TemplateUtility::printAdvancedSearch('searchByKeyTechnologies'); ?>
                         </form>
                     </td>
@@ -46,7 +46,7 @@
 
             <?php if ($this->isResultsMode): ?>
                 <br />
-                <p class="note">Search Results (<?php echo(count($this->rs)); ?>)</p>
+                <p class="note"><?php _e('Search Results')?> (<?php echo(count($this->rs)); ?>)</p>
 
                 <?php if (!empty($this->rs)): ?>
                     <?php echo($this->exportForm['header']); ?>
@@ -55,17 +55,17 @@
                             <th>
                             </th>
                             <th align="left" nowrap="nowrap">
-                                <?php $this->pager->printSortLink('name', 'Name'); ?>
+                                <?php $this->pager->printSortLink('name', __('Name')); ?>
                             </th>
                             <th align="left" nowrap="nowrap">
-                                <?php $this->pager->printSortLink('phone1', 'Primary Phone'); ?>
+                                <?php $this->pager->printSortLink('phone1', __('Primary Phone')); ?>
                             </th>
-                            <th align="left" nowrap="nowrap">Key Technologies</th>
+                            <th align="left" nowrap="nowrap"><?php _e('Key Technologies')?></th>
                             <th align="left" nowrap="nowrap">
-                                <?php $this->pager->printSortLink('city', 'Created'); ?>
+                                <?php $this->pager->printSortLink('city', __('Created')); ?>
                             </th>
                             <th align="left" nowrap="nowrap">
-                                <?php $this->pager->printSortLink('owner_user.last_name', 'Owner'); ?>
+                                <?php $this->pager->printSortLink('owner_user.last_name', __('Owner')); ?>
                             </th>
                         </tr>
 
@@ -73,7 +73,7 @@
                             <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
                                 <td valign="top" nowrap="nowrap">
                                     <input type="checkbox" id="checked_<?php echo($data['companyID']); ?>" name="checked_<?php echo($data['companyID']); ?>" />
-                                    <a href="javascript:void(0);" onclick="window.open('<?php echo(osatutil::getIndexName()); ?>?m=companies&amp;a=show&amp;companyID=<?php $this->_($data['companyID']); ?>')" title="View in New Window">
+                                    <a href="javascript:void(0);" onclick="window.open('<?php echo(osatutil::getIndexName()); ?>?m=companies&amp;a=show&amp;companyID=<?php $this->_($data['companyID']); ?>')" title="<?php _e('View in New Window')?>">
                                         <img src="images/new_window.gif" alt="(Preview)" border="0" width="15" height="15" />
                                     </a>
                                 </td>
@@ -93,7 +93,7 @@
                     <div style="float: right"><?php $this->pager->printNavigation('name'); ?></div>
                     <?php echo($this->exportForm['menu']); ?>
                 <?php else: ?>
-                    <p>No matching entries found.</p>
+                    <p><?php _e('No matching entries found.')?></p>
                 <?php endif; ?>
             <?php endif; ?>
         </div>

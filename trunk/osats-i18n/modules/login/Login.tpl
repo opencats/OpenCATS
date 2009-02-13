@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
     <head>
-        <title>** Authorized Logins Only ** OSATS</title>
+        <title>** <?php _e('Authorized Logins Only') ?> ** OSATS</title>
         <meta http-equiv="Content-Type" content="text/html; charset=<?php echo(HTML_ENCODING); ?>" />
         <style type="text/css" media="all">@import "modules/login/login.css";</style>
         <script type="text/javascript" src="js/lib.js"></script>
@@ -34,14 +34,14 @@
                 <div id="loginText">
                     <div class="ctr">
 						<img src="images/login2.jpg" alt="Login Now" />
-                        <center><img src="images/folder1_locked.jpg" width="64" height="64" alt="You Must Login with a Valid Username and Password!" /></center>
+                        <center><img src="images/folder1_locked.jpg" width="64" height="64" alt="<?php _e('You Must Login with a Valid Username and Password') ?>!" /></center>
                     </div>
                     <br />
                     <form name="loginForm" id="loginForm" action="<?php echo(osatutil::getIndexName()); ?>?m=login&amp;a=attemptLogin<?php if ($this->reloginVars != ''): ?>&amp;reloginVars=<?php echo($this->reloginVars); ?><?php endif; ?>" method="post" onsubmit="return checkLoginForm(document.loginForm);" autocomplete="off">
                         <div id="subFormBlock">
                             <?php if ($this->siteName != '' && $this->siteName != 'choose'): ?>
                                 <?php if ($this->siteNameFull == 'error'): ?>
-                                    <label>OOPS! This site does not exist. Please check the URL and try again.</label>
+                                    <label><?php _e('OOPS - This site does not exist. Please check the URL and try again.') ?></label>
                                     <br />
                                     <br />
                                 <?php else: ?>
@@ -52,21 +52,21 @@
                             <?php endif; ?>
 
 							<?php if ($this->siteNameFull != 'error'): ?>
-                                <label id="usernameLabel" for="username">Login Name:</label><br />
+                                <label id="usernameLabel" for="username"><?php _e('Login Name') ?>:</label><br />
                                 <input name="username" id="username" class="login-input-box" value="<?php if (isset($this->username)) $this->_($this->username); ?>" />
                                 <br />
 
-                                <label id="passwordLabel" for="password">Password:</label><br />
+                                <label id="passwordLabel" for="password"><?php _e('Password') ?>:</label><br />
                                 <input type="password" name="password" id="password" class="login-input-box" />
                                 <br />
 
-                                <input type="submit" class="button" value="Login" />
+                                <input type="submit" class="button" value="<?php _e('Login') ?>" />
                                 <!-- Do we really need a Clear button? Its wasted code... -Jamin
 								<input type="reset"  id="reset" name="reset"  class="button" value="Clear" />
 								-->
 
 							<!-- I want to make this work - Jamin. Remmed out for now
-							<a href="<?php echo(osatutil::getIndexName()); ?>?m=asp&amp;a=forgotLogin&amp;p=0">Forgot Login Information</a>
+							<a href="<?php echo(osatutil::getIndexName()); ?>?m=asp&amp;a=forgotLogin&amp;p=0"><?php _e('Forgot Login Information') ?></a>
 							-->
                             <?php endif; ?>
                             <br /><br />
@@ -105,7 +105,7 @@
                    */
                 ?>
                 <span class="footerCopyright">
-				<font color="#FFFFFF">Put your own message here by modifying the modules/login.tpl file and look for this message and change it!</font>
+				<font color="#FFFFFF"><?php _e('Please Login.') ?></font>
 
 				</span>
 

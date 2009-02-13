@@ -1,5 +1,5 @@
 <?php /* $Id: Home.tpl 3563 2007-11-12 07:41:54Z will $ */ ?>
-<?php TemplateUtility::printHeader('Home', array('js/sweetTitles.js', 'js/dataGrid.js', 'js/home.js')); ?>
+<?php TemplateUtility::printHeader(__('Home'), array('js/sweetTitles.js', 'js/dataGrid.js', 'js/home.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">
@@ -10,7 +10,7 @@
             <table>
                 <tr>
                     <td align="left" valign="top" style="text-align: left; width: 305px; height:50px;">
-                        <div class="noteUnsizedSpan" style="width:306px;">My Recent Calls</div>
+                        <div class="noteUnsizedSpan" style="width:306px;"><?php _e('My Recent Calls')?></div>
                         <?php $this->dataGrid2->drawHTML();  ?>
                     </td>
 
@@ -27,14 +27,14 @@
             <table>
                 <tr>
                     <td align="left" valign="top" style="text-align: left; width: 50%; height: 240px;">
-                        <div class="noteUnsizedSpan" style="width:410px;">Recent Hires</div>
+                        <div class="noteUnsizedSpan" style="width:410px;"><?php _e('Recent Hires')?></div>
 
                         <table class="sortable" width="410" style="margin: 0 0 4px 0;">
                             <tr>
-                                <th align="left" style="font-size:11px;">Name</th>
-                                <th align="left" style="font-size:11px;">Company</th>
-                                <th align="left" style="font-size:11px;">Recruiter</th>
-                                <th align="left" style="font-size:11px;">Date</th>
+                                <th align="left" style="font-size:11px;"><?php _e('Name')?></th>
+                                <th align="left" style="font-size:11px;"><?php _e('Company')?></th>
+                                <th align="left" style="font-size:11px;"><?php _e('Recruiter')?></th>
+                                <th align="left" style="font-size:11px;"><?php _e('Date')?></th>
                             </tr>
                             <?php foreach($this->placedRS as $index => $data): ?>
                             <tr class="<?php TemplateUtility::printAlternatingRowClass($index); ?>">
@@ -54,13 +54,13 @@
                     </td>
 
                     <td align="center" valign="top" style="text-align: left; width: 50%; height: 240px;">
-                        <div class="noteUnsizedSpan" style="width:495px;">Hiring Overview</div>
+                        <div class="noteUnsizedSpan" style="width:495px;"><?php _e('Hiring Overview')?></div>
                         <map name="dashboardmap" id="dashboardmap">
-                           <area href="#" alt="Weekly" title="Weekly"
+                           <area href="#" alt="<?php _e('Weekly')?>" title="<?php _e('Weekly')?>"
                                  shape="rect" coords="398,0,461,24" onclick="swapHomeGraph(<?php echo(DASHBOARD_GRAPH_WEEKLY); ?>);" />
-                           <area href="#" alt="Monthly" title="Monthly"
+                           <area href="#" alt="<?php _e('Monthly')?>" title="<?php _e('Monthly')?>"
                                  shape="rect" coords="398,25,461,48" onclick="swapHomeGraph(<?php echo(DASHBOARD_GRAPH_MONTHLY); ?>);" />
-                            <area href="#" alt="Yearly" title="Yearly"
+                            <area href="#" alt="<?php _e('Yearly')?>" title="<?php _e('Yearly')?>"
                                  shape="rect" coords="398,49,461,74" onclick="swapHomeGraph(<?php echo(DASHBOARD_GRAPH_YEARLY); ?>);" />
                         </map>
                         <img src="<?php echo(osatutil::getIndexName()); ?>?m=graphs&amp;a=miniPlacementStatistics&amp;width=495&amp;height=230" id="homeGraph" onclick="" alt="Hiring Overview" usemap="#dashboardmap" border="0" />
@@ -71,7 +71,13 @@
             <table>
                 <tr>
                     <td align="left" valign="top" style="text-align: left; width: 50%; height: 260px;">
-                        <div class="noteUnsizedSpan" style="width: 920px;">Important Candidates (Submitted, Interviewing, Offered in Active Job Orders) - Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?> (<?php echo($this->dataGrid->getNumberOfRows()); ?> Items)</div>
+                        <div class="noteUnsizedSpan" style="width: 920px;"><?php
+                        echo __('Important Candidates'). ' ('. __('Submitted, Interviewing, Offered in Active Job Orders'). ')';
+                        echo ' - '.__('Page').' '.$this->dataGrid->getCurrentPageHTML();
+                        echo ' (';
+                        echo format_number_choice('countItems', array($this->dataGrid->getNumberOfRows()), $this->dataGrid->getNumberOfRows());
+                        echo ')';
+                        ?></div>
                         <?php $this->dataGrid->draw(); ?>
                         <div style="float:right;"><?php $this->dataGrid->printNavigation(false); ?>&nbsp;&nbsp;&nbsp;&nbsp;<?php $this->dataGrid->printShowAll(); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
 

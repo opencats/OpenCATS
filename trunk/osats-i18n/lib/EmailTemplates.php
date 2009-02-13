@@ -285,5 +285,3 @@ class EmailTemplates
         return $this->_db->getAllAssoc($sql);
     }
 }
-
-?>

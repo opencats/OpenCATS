@@ -6,10 +6,11 @@
 include_once('Candidates.php');
 include_once('DateUtility.php');
 include_once('SystemInfo.php');
+include_once('./lib/i18n.php');
 
 /**
  *	Template Utility Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class TemplateUtility
@@ -92,32 +93,25 @@ class TemplateUtility
             if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_1'))) return;
 
             /* Top Right Corner */
-            echo '<div id="topRight">', "\n";
+            echo '<div id="topRight">';
 
-            echo '<div style="padding-bottom: 8px;">';
             // Begin top-right action block
+            echo '<div>';
             if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_UPGRADE'))) return;
-			echo '<a href="', $indexName, '?m=logout">';
-            echo 'Logout</a>', "\n";
-            echo '<img src="images/smallpadlock.jpg" border="0" /> ';
-			echo '</div>', "\n";
+            echo '<a href="', $indexName, '?m=logout">' . __('Logout') . ' <img src="images/lock.png" alt="" class="ico" /></a>';
+            echo '</div>';
             // End top-right action block
 
             if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_EXTENDED_SITE_NAME'))) return;
 
-            echo '<span>You are Currently Logged on as: <span style="font-weight:bold;">', $fullName, '&nbsp;','</span>', "\n";
+            
+                        
+   
+            
+            echo '<span>'.__('You are Currently Logged on as:').' <span style="font-weight:bold;">', $fullName, '</span></span><br />';
 
-            /* Do we really need these extra lines ?  It only adds the word Adminisrator to the 'who is logged in area' - Jamin
-               if ($_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA)
-                        {
-                echo '&nbsp;<span style="font-weight:bold;">Administrator</span>', "\n";
-            }
-			*/
-
-            echo '<br />';
-
-        	/*  If we plan to make a place where people can get an updated version, then we will want to modify this below.. Otherwise... get rid of it
-        	   Starting from HERE... */
+            /*  If we plan to make a place where people can get an updated version, then we will want to modify this below.. Otherwise... get rid of it
+                Starting from HERE... */
             $systemInfo = new SystemInfo();
             $systemInfoData = $systemInfo->getSystemInfo();
 
@@ -127,29 +121,27 @@ class TemplateUtility
                 !$systemInfoData['disable_version_check'] &&
                 $_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA)
             {
-                echo '<a href="http://www.a-website-where-users-can-get-updates.com/download.php" target="UpgradeVer">You can get an upgrade of OSATS here!</a><br />';
+                echo '<img src="images/actions/add.gif" alt="" class="ico" /><a href="http://www.a-website-where-users-can-get-updates.com/download.php" target="UpgradeVer">You can get an upgrade of OSATS here!</a><br />';
             }
-			/* and ENDING here!... JAMIN */
+            /* and ENDING here!... JAMIN */
 
 
             /* Disabled notice */
             if (!$_SESSION['CATS']->accountActive())
             {
-                echo '<span style="font-weight:bold;">Account Inactive</span><br />', "\n";
+                echo '<span style="font-weight:bold;">'.__('Account Inactive').'</span><br />', "\n";
             }
             else if ($_SESSION['CATS']->getAccessLevel() == ACCESS_LEVEL_READ)
             {
-                echo '<span>Read Only Access</span><br />', "\n";
+                echo '<span>'.__('Read Only Access').'</span><br />';
             }
             else
             {
                 if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_2_ELSE'))) return;
             }
-
-            echo '</div>', "\n";
+            echo '</div>';
         }
-
-        echo '</div>', "\n";
+        echo '</div>';
     }
 
     /**
@@ -226,7 +218,7 @@ class TemplateUtility
         }
 REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
 
-		echo '</div>', "\n\n";
+        echo '</div>', "\n\n";
 
         /* Quick Search */
         echo '<form id="quickSearchForm" action="', $indexName,
@@ -238,18 +230,18 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
         {
             echo '<input type="hidden" name="m" value="asp" />', "\n";
             echo '<input type="hidden" name="a" value="aspSearch" />', "\n";
-            echo '<span class="quickSearchLabel" id="quickSearchLabel">Search Site:</span>&nbsp;', "\n";
+            echo '<span class="quickSearchLabel" id="quickSearchLabel">'.__('Search Site').':</span>&nbsp;', "\n";
         }
         else
         {
             echo '<input type="hidden" name="m" value="home" />', "\n";
             echo '<input type="hidden" name="a" value="quickSearch" />', "\n";
-            echo '<span class="quickSearchLabel" id="quickSearchLabel">Search Site:</span>&nbsp;', "\n";
+            echo '<span class="quickSearchLabel" id="quickSearchLabel">'.__('Search Site').':</span>&nbsp;', "\n";
         }
 
         echo '<input name="quickSearchFor" id="quickSearchFor" class="quickSearchBox" value="',
              $wildCardString, '" />&nbsp;', "\n";
-        echo '<input type="submit" name="quickSearch" class="button" value="Go" />&nbsp;', "\n";
+        echo '<input type="submit" name="quickSearch" class="button" value="'.__('Go').'" />&nbsp;', "\n";
         echo '</div>', "\n";
         echo '</form>', "\n";
         echo '</div>', "\n";
@@ -262,7 +254,7 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
      */
     public static function printAdvancedSearch($considerFields)
     {
-        echo '<input type="button" class="button" name="advancedSearch" id="advancedSearch" value="Advanced"',
+        echo '<input type="button" class="button" name="advancedSearch" id="advancedSearch" value="'.__('Advanced').'"',
              ' onclick="document.getElementById(\'advancedSearchField\').style.display=\'block\'; ',
              'advancedSearchReset();" style="display:none;">', "\n";
         echo '<input type="hidden" id="advancedSearchParser" name="advancedSearchParser" value="">', "\n";
@@ -350,7 +342,7 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
         echo '<div class="recentSearchResults">';
         echo '<table style="vertical-align: top; border-collapse: collapse;"><tr style="vertical-align: top;"><td>';
 
-        echo 'Recent Searches&nbsp;&nbsp;';
+        echo __('Recent Searches') . '&nbsp;&nbsp;';
         echo '<img title="To save a recent search, press the + button below."',
              ' src="images/information.gif" alt="" width="16" height="16" />';
 
@@ -359,7 +351,7 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
         /* Recent Search Results */
         if (count($savedSearchRecent) == 0)
         {
-           echo '(None)';
+           echo '('.__('_None').')';
         }
         else
         {
@@ -406,8 +398,8 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
         echo '</div>';
         echo '</td><td>&nbsp;</td><td>';
 
-        echo 'Saved Searches&nbsp;&nbsp;';
-        echo '<img title="To delete a recent search, press the - button."',
+        echo __('Saved Searches') . '&nbsp;&nbsp;';
+        echo '<img title="'.__('To delete a recent search, press the - button.').'"',
              ' src="images/information.gif" alt="" width="16" height="16" />';
 
         echo '<div id="searchSaved" class="savedSearchResultsHidden">';
@@ -415,7 +407,7 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
         /* Saved Search Results */
         if (count($savedSearchSaved) == 0)
         {
-           echo '(None)';
+           echo '('.__('_None').')';
         }
         else
         {
@@ -556,7 +548,7 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
             }
 
             /* If name = Companies and HR mode is on, change tab name to My Company. */
-            if ($_SESSION['CATS']->isHrMode() && $tabText == 'Companies')
+            if ($_SESSION['CATS']->isHrMode() && $tabText == __('Companies'))
             {
                 $tabText = 'My Company';
             }
@@ -574,19 +566,12 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
             /* Inactive Tab? */
             if ($active === null || $moduleName != $active->getModuleName())
             {
-                if ($moduleName == $forceHighlight)
-                {
-                    $className = 'active';
-                }
-                else
-                {
-                    $className = 'inactive';
-                }
+                $className = $moduleName == $forceHighlight ? ' class="active"' : '';
 
                 $alPosition = strpos($tabText, "*al=");
                 if ($alPosition === false)
                 {
-                    echo '<li><a class="', $className, '" href="', $indexName,
+                    echo '<li'.$className.'><a href="', $indexName,
                          '?m=', $moduleName, '">', $tabText, '</a></li>', "\n";
                 }
                 else
@@ -595,7 +580,7 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
                      if ($_SESSION['CATS']->getAccessLevel() >= $al ||
                          $_SESSION['CATS']->isDemo())
                      {
-                        echo '<li><a class="', $className, '" href="', $indexName, '?m=', $moduleName, '">',
+                        echo '<li'.$className.'><a href="', $indexName, '?m=', $moduleName, '">',
                              substr($tabText, 0, $alPosition), '</a></li>', "\n";
                     }
                 }
@@ -612,112 +597,86 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
             /* Start the <li> block for the active tab. The secondary <ul>
              * for subtabs MUST be contained within this block. It is
              * closed after subtabs are printed. */
-            echo '<li>';
-
-            echo '<a class="active" href="', $indexName, '?m=', $moduleName,
-                 '">', $tabText, '</a>', "\n";
+            echo '<li class="active"><a href="'.$indexName.'?m='.$moduleName.'">'.$tabText.'</a>';
 
             $subTabs = $active->getSubTabs($modules);
             if ($subTabs)
             {
                 echo '<ul id="secondary">';
 
-                foreach ($subTabs as $subTabText => $link)
-                {
-                    if ($subTabText == $subActive)
-                    {
-                        $style = "color:#cccccc;";
-                    }
-                    else
-                    {
-                        $style = "";
-                    }
+                foreach ($subTabs as $subTabText => $link) {
 
-                    /* Check HR mode for displaying tab. */
-                    $hrmodePosition = strpos($link, "*hrmode=");
-                    if ($hrmodePosition !== false)
-                    {
-                        /* Access level restricted subtab. */
-                        $hrmode = substr($link, $hrmodePosition + 8);
-                        if ((!$_SESSION['CATS']->isHrMode() && $hrmode == 0) ||
-                            ($_SESSION['CATS']->isHrMode() && $hrmode == 1))
-                        {
-                            $link =  substr($link, 0, $hrmodePosition);
-                        }
-                        else
-                        {
-                            $link = '';
-                        }
-                    }
+                  $style = $subTabText == $subActive ? ' class="active"' : '';
 
-                    /* Check access level for displaying tab. */
-                    $alPosition = strpos($link, "*al=");
-                    if ($alPosition !== false)
-                    {
-                        /* Access level restricted subtab. */
-                        $al = substr($link, $alPosition + 4);
-                        if ($_SESSION['CATS']->getAccessLevel() >= $al ||
-                            $_SESSION['CATS']->isDemo())
-                        {
-                            $link =  substr($link, 0, $alPosition);
-                        }
-                        else
-                        {
-                            $link = '';
-                        }
+                  /* Check HR mode for displaying tab. */
+                  $hrmodePosition = strpos($link, "*hrmode=");
+                  if ($hrmodePosition !== false) {
+                    /* Access level restricted subtab. */
+                    $hrmode = substr($link, $hrmodePosition + 8);
+                    if ((!$_SESSION['CATS']->isHrMode() && $hrmode == 0) ||
+                        ($_SESSION['CATS']->isHrMode() && $hrmode == 1)) {
+                      $link =  substr($link, 0, $hrmodePosition);
+                    } else {
+                      $link = '';
                     }
+                  }
 
-                    $jsPosition = strpos($link, "*js=");
-                    if ($jsPosition !== false)
-                    {
-                        /* Javascript subtab. */
-                        echo '<li><a href="', substr($link, 0, $jsPosition), '" onclick="',
-                             substr($link, $jsPosition + 4), '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
+                  /* Check access level for displaying tab. */
+                  $alPosition = strpos($link, "*al=");
+                  if ($alPosition !== false) {
+                    /* Access level restricted subtab. */
+                    $al = substr($link, $alPosition + 4);
+                    if ($_SESSION['CATS']->getAccessLevel() >= $al ||
+                        $_SESSION['CATS']->isDemo()) {
+                      $link =  substr($link, 0, $alPosition);
+                    } else {
+                      $link = '';
                     }
+                  }
 
-                    /* A few subtabs have special logic to decide if they display or not. */
-                    /* FIXME:  Put the logic for these somewhere else.  Perhaps the definitions of the subtabs
-                               themselves should have an eval()uatable rule?
-                               Brian 6-14-07:  Second.  */
-                    else if (strpos($link, 'a=internalPostings') !== false)
-                    {
-                        /* Default company subtab. */
-                        include_once('./lib/Companies.php');
+                  $jsPosition = strpos($link, "*js=");
+                  if ($jsPosition !== false) {
+                    /* Javascript subtab. */
+                    echo '<li><a href="', substr($link, 0, $jsPosition), '" onclick="',
+                         substr($link, $jsPosition + 4), '"'.$style.'>', $subTabText, '</a></li>', "\n";
+                  }
 
-                        $companies = new Companies($_SESSION['CATS']->getSiteID());
-                        $defaultCompanyID = $companies->getDefaultCompany();
-                        if ($defaultCompanyID !== false)
-                        {
-                            echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
-                        }
+                  /* A few subtabs have special logic to decide if they display or not. */
+                  /* FIXME:  Put the logic for these somewhere else.  Perhaps the definitions of the subtabs
+                             themselves should have an eval()uatable rule?
+                             Brian 6-14-07:  Second.  */
+                  else if (strpos($link, 'a=internalPostings') !== false) {
+                    /* Default company subtab. */
+                    include_once('./lib/Companies.php');
+
+                    $companies = new Companies($_SESSION['CATS']->getSiteID());
+                    $defaultCompanyID = $companies->getDefaultCompany();
+                    if ($defaultCompanyID !== false) {
+                      echo '<li'.$style.'><a href="', $link, '">', $subTabText, '</a></li>', "\n";
                     }
-                    else if (strpos($link, 'a=administration') !== false)
+                  }
+                  else if (strpos($link, 'a=administration') !== false) {
+                    /* Administration subtab. */
+                    if ($_SESSION['CATS']->getRealAccessLevel() >= ACCESS_LEVEL_DEMO)
                     {
-                        /* Administration subtab. */
-                        if ($_SESSION['CATS']->getRealAccessLevel() >= ACCESS_LEVEL_DEMO)
-                        {
-                            echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
-                        }
+                      echo '<li'.$style.'><a href="', $link, '">', $subTabText, '</a></li>', "\n";
                     }
-                    else if (strpos($link, 'a=customizeEEOReport') !== false)
-                    {
-                        /* EEO Report subtab.  Shouldn't be visible if EEO tracking is disabled. */
-                        $EEOSettings = new EEOSettings($_SESSION['CATS']->getSiteID());
-                        $EEOSettingsRS = $EEOSettings->getAll();
+                  }
+                  else if (strpos($link, 'a=customizeEEOReport') !== false) {
+                    /* EEO Report subtab.  Shouldn't be visible if EEO tracking is disabled. */
+                    $EEOSettings = new EEOSettings($_SESSION['CATS']->getSiteID());
+                    $EEOSettingsRS = $EEOSettings->getAll();
 
-                        if ($EEOSettingsRS['enabled'] == 1)
-                        {
-                            echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
-                        }
+                    if ($EEOSettingsRS['enabled'] == 1) {
+                      echo '<li'.$style.'><a href="', $link, '">', $subTabText, '</a></li>', "\n";
                     }
+                  }
 
-
-                    /* Tab is ok to draw. */
-                    else if ($link != '')
-                    {
-                        /* Normal subtab. */
-                        echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
-                    }
+                  /* Tab is ok to draw. */
+                  else if ($link != '') {
+                      /* Normal subtab. */
+                      echo '<li'.$style.'><a href="', $link, '">', $subTabText, '</a></li>', "\n";
+                  }
                 }
 
                 if (!eval(Hooks::get('TEMPLATE_UTILITY_DRAW_SUBTABS'))) return;
@@ -896,19 +855,19 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
         switch ($dataItemType)
         {
             case DATA_ITEM_CANDIDATE:
-                return 'Candidate';
+                return __('Candidate');
                 break;
 
             case DATA_ITEM_COMPANY:
-                return 'Company';
+                return __('Company');
                 break;
 
             case DATA_ITEM_CONTACT:
-                return 'Contact';
+                return __('Contact');
                 break;
 
             case DATA_ITEM_JOBORDER:
-                return 'Joborder';
+                return __('Joborder');
                 break;
 
             default:
@@ -1124,25 +1083,25 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
                             mode : "specific_textareas",
                             editor_selector : "mceEditor",
                             width : "100%",
-                        	theme : "advanced",
-                        	theme_advanced_buttons1 : "bold,italic,strikethrough,separator,bullist,numlist,outdent,indent,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,link,unlink,separator,underline,forecolor,separator,removeformat,cleanup,separator,charmap,separator,undo,redo",
-                        	theme_advanced_buttons2 : "",
-                        	theme_advanced_buttons3 : "",
-                        	language : "en",
-                        	theme_advanced_toolbar_location : "top",
-                        	theme_advanced_toolbar_align : "left",
-                        	theme_advanced_resizing : true,
-                        	browsers : "msie,gecko,opera,safari",
-                        	dialog_type : "modal",
-                        	theme_advanced_resize_horizontal : false,
-                        	convert_urls : false,
-                        	relative_urls : false,
-                        	remove_script_host : false,
-                        	force_p_newlines : false,
-                        	force_br_newlines : true,
-                        	convert_newlines_to_brs : false,
-                        	remove_linebreaks : false,
-                        	fix_list_elements : true
+                            theme : "advanced",
+                            theme_advanced_buttons1 : "bold,italic,strikethrough,separator,bullist,numlist,outdent,indent,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,link,unlink,separator,underline,forecolor,separator,removeformat,cleanup,separator,charmap,separator,undo,redo",
+                            theme_advanced_buttons2 : "",
+                            theme_advanced_buttons3 : "",
+                            language : "en",
+                            theme_advanced_toolbar_location : "top",
+                            theme_advanced_toolbar_align : "left",
+                            theme_advanced_resizing : true,
+                            browsers : "msie,gecko,opera,safari",
+                            dialog_type : "modal",
+                            theme_advanced_resize_horizontal : false,
+                            convert_urls : false,
+                            relative_urls : false,
+                            remove_script_host : false,
+                            force_p_newlines : false,
+                            force_br_newlines : true,
+                            convert_newlines_to_brs : false,
+                            remove_linebreaks : false,
+                            fix_list_elements : true
                         });</script>'."\n");
             }
             else
@@ -1164,7 +1123,6 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
         }
 
         echo '<!--[if IE]><link rel="stylesheet" type="text/css" href="ie.css" /><![endif]-->', "\n";
-        echo '<![if !IE]><link rel="stylesheet" type="text/css" href="not-ie.css" /><![endif]>', "\n";
         echo '</head>', "\n\n";
     }
 
@@ -1192,5 +1150,3 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
         );
     }
 }
-
-?>
