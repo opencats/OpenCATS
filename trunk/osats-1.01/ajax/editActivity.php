@@ -112,5 +112,3 @@ $interface->outputXMLPage(
     "    <date>"            . htmlspecialchars($activityEntry['dateCreated']) . "</date>\n" .
     "</data>\n"
 );
-
-?>

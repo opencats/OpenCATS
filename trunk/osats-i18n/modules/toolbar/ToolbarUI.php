@@ -11,7 +11,6 @@ include_once('./lib/Mailer.php');
 include_once('./lib/Site.php');
 include_once('./lib/Candidates.php');
 include_once('./lib/DocumentToText.php');
-include_once('./lib/License.php');
 include_once('./lib/i18n.php');
 
 /* Toolbar library version. Increment to notify toolbars of an update. */
@@ -60,10 +59,6 @@ class ToolbarUI extends UserInterface
             case 'storeMonsterResumeText':
                 $this->storeMonsterResumeText();
                 break;
-
-            case 'getLicenseKey':
-                $this->getLicenseKey();
-                break;
         }
     }
 
@@ -94,12 +89,9 @@ class ToolbarUI extends UserInterface
 
         if (!ModuleUtility::moduleExists('asp'))
         {
-            if (!LicenseUtility::isProfessional())
-            {
-                echo "cats_authenticationFailed(); ";
-				echo __("Message: The FireFox toolbar extension is only available to CATS Professional users. See catsone.com/Professional for more information.");
-                die();
-            }
+          echo "cats_authenticationFailed(); ";
+          echo __("Message: The FireFox toolbar extension is only available to CATS Professional users. See catsone.com/Professional for more information.");
+          die();
         }
 
         return true;
@@ -262,10 +254,9 @@ class ToolbarUI extends UserInterface
         flush();
     }
 
-    public function getLicenseKey()
+   /* public function getLicenseKey()
     {
         echo (defined('LICENSE_KEY') ? LICENSE_KEY : '');
     }
+    -Jamin - ripping license out. */
 }
-
-?>

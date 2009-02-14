@@ -877,5 +877,3 @@ class AddressParser
         return $line;
     }
 }
-
-?>

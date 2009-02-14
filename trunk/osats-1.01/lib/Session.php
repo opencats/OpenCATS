@@ -1174,5 +1174,3 @@ class CATSSession
         $this->_dataGridColumnPreferences[md5($instance)] = $parameters;
     }
 }
-
-?>

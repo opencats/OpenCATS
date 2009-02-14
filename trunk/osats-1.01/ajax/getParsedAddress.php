@@ -134,5 +134,3 @@ $interface->outputXMLPage(
     "    </phonenumbers>\n" .
     "</data>\n"
 );
-
-?>

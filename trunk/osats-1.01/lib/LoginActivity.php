@@ -163,4 +163,3 @@ class LoginActivityPager extends Pager
         return $rs;
     }
 }
-?>

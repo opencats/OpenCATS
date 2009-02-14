@@ -49,5 +49,3 @@ $interface->outputXMLPage(
     "    <departments>" . $departmentsString . "</departments>\n" .
     "</data>\n"
 );
-
-?>

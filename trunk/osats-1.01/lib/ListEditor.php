@@ -261,5 +261,3 @@ class ListEditor
         return $arrayDiff;
     }
 }
-
-?>

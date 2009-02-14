@@ -448,5 +448,3 @@ class CareerPortalSettings
         );
     }
 }
-
-?>

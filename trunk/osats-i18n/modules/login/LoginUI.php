@@ -9,9 +9,7 @@
 include_once('./lib/SystemInfo.php');
 include_once('./lib/Mailer.php');
 include_once('./lib/Site.php');
-include_once('./lib/NewVersionCheck.php');
 include_once('./lib/Wizard.php');
-include_once('./lib/License.php');
 include_once('./lib/i18n.php');
 
 class LoginUI extends UserInterface
@@ -309,6 +307,8 @@ class LoginUI extends UserInterface
         if (!file_exists('modules/asp') || (defined('CATS_TEST_MODE') && CATS_TEST_MODE))
         {
             // On-site wizard pages
+            /*
+            MK: do something reasonable like "install this software"
             if (!LicenseUtility::isLicenseValid())
             {
                 if (defined('LICENSE_KEY') && LICENSE_KEY == '')
@@ -323,6 +323,7 @@ class LoginUI extends UserInterface
                 }
                 $wizard->addPage($templateName, './modules/login/wizard/' . $template, '', false, true);
             }
+            */
         }
 
         // if logged in for the first time, change password

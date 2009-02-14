@@ -90,5 +90,3 @@ class JavaScriptCompressor
         return $string;
     }
 }
-
-?>

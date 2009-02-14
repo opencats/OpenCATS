@@ -20,7 +20,6 @@ include_once('./lib/EmailTemplates.php');
 include_once('./lib/DocumentToText.php');
 include_once('./lib/DatabaseSearch.php');
 include_once('./lib/CommonErrors.php');
-include_once('./lib/License.php');
 include_once('./lib/ParseUtility.php');
 include_once('./lib/Questionnaire.php');
 include_once('./lib/i18n.php');

@@ -265,5 +265,3 @@ class HashUtility
         return $buffer;
     }
 }
-
-?>

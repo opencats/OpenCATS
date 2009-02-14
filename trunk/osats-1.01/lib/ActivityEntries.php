@@ -4,7 +4,7 @@
    * GNU License
 *
  *
- * @package    CATS
+ * @package    OSATS
  * @subpackage Library
  * @copyright Open Source
  * @version    1.0
@@ -529,5 +529,3 @@ class ActivityEntries
         $dataItem->updateModified($dataItemID);
     }
 }
-
-?>

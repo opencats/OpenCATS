@@ -569,5 +569,3 @@ class FileUtility
         return false;
     }
 }
-
-?>

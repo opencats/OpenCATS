@@ -36,5 +36,3 @@ $interface->outputXMLPage(
     "    <state>"  . $state . "</state>\n" .
     "</data>\n"
 );
-
-?>

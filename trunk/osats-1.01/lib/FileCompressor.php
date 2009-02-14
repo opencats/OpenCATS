@@ -1552,4 +1552,3 @@ class FileCompressorUtility
         return mktime($hour, $minute, $second, $month, $day, $year);
     }
 }
-?>

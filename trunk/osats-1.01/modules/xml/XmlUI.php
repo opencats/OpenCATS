@@ -56,7 +56,7 @@ class XmlUI extends UserInterface
             . "<rss version=\"2.0\">\n"
             . "<channel>\n"
             . "<title>%s</title>\n"
-            . "<description>CATS XML Output</description>\n"
+            . "<description>OSATS XML Output</description>\n"
             . "<link>%s</link>\n"
             . "<pubDate>%s</pubDate>\n\n"
             . "<item>\n"
@@ -272,5 +272,3 @@ class XmlUI extends UserInterface
         echo $stream;
     }
 }
-
-?>

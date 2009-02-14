@@ -7,7 +7,7 @@
 */
 
 /* License key. */
- define('LICENSE_KEY', '3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
+/* define('LICENSE_KEY', 'boo'); */
 
 /* Database configuration. */
 define('DATABASE_USER', 'root');

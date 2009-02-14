@@ -480,5 +480,3 @@ class MailerSettings
          $this->_db->query($sql);
     }
 }
-
-?>

@@ -71,5 +71,3 @@ class Wizard
         return true;
     }
 }
-
-?>

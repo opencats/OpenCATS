@@ -267,5 +267,3 @@ class ToolbarUI extends UserInterface
     }
     -Jamin - ripping license out. */
 }
-
-?>

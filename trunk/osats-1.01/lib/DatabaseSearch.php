@@ -437,5 +437,3 @@ class DatabaseSearch
         return str_replace('_rDOTr', '.', $text);
     }
 }
-
-?>

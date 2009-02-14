@@ -1,36 +1,15 @@
-Changes: 10-9-2008:
-Index.php 
-- the code to detect whether osats has been setup will point to www/installation.php
+2-13-2009
+---
+Removed the license issue.  No need to register or put the license key in the Config.php.
+I have remarked out various license functions from files. I have not deleted them yet as I am still testing functionality.
+If you have any comments.. please notify me!
 
-AttachmentsReindex.php 
-- Changed the code from looking for a file (Install_block) to doing the db lookup for Installed.
-
-UI.php
-- Changed the code from looking for a file (Install_block) to doing the db lookup for Installed.
-AND when the setup is complete it now updates the Installed value to 1 in the db.
+Benjamin
 
 
-Changes: 10-8-2008
-In the index.php file. I changed the way the site checks to see if it has been installed. Instead of looking for a file, I created a row in the db in the system table called 'Installed'. Then wrote the code to check. I include the config.php first so that the variables load.
-
-/* Retrieve all the value from the System table to check if OSATS has been installed yet.
-   * If the value is null then its false, if the value is 1 then its true.
-*/
-include_once('./config.php');
-mysql_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS) or die(mysql_error("No such mySQL server or incorrect username and password!"));
-mysql_select_db(DATABASE_NAME) or die(mysql_error("Oops. No DB by the name: ".DATABASE_NAME));
-$result = mysql_query("SELECT Installed FROM system")
-or die(mysql_error("Error trying to retreive data from the System table in ".DATABASE_NAME));
-$row = mysql_result( $result,'Installed' );
-if ($row==null)//if the table does not have a 1 in it, then run the setup wizard.
-{
-    include('modules/install/notinstalled.php');
-	die();
-}
-
-
-
-The following changes have been done: 10-7-2008
+Previous mods:
+---------------
+The following changes have been done.
 1. Login Page is totally different than the original CATS.
 2. The CatsUtility no longer exists! I have changed the utility to OSATUTIL.php. All files now call the new utility. 
 3. Cats_Version constant in Contstants.php has been changed to OSATVER. Changed Copyright_html to Company_html (this is for the footer where Cats said we couldnt change...now that its being rewritten, I made it a place for companies to put their company name and it displays it on all the footers of the pages.)

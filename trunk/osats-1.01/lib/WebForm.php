@@ -1588,5 +1588,3 @@ class WebForm
         return $js;
     }
 }
-
-?>

@@ -180,7 +180,7 @@
                             echo 'This version of CATS is licensed to:<br /><center>';
                             echo '<b>' . LicenseUtility::getName() . '</b><br />';
                             $seats = LicenseUtility::getNumberOfSeats();
-                            echo ucfirst(StringUtility::cardinal($seats)) . ' ('.$seats.') user license'.($seats!=1?'s':'').'<br />';
+                            echo ' '.$seats.' user license'.($seats!=1?'s':'').'<br />';
                             echo 'Valid until ' . date('m/d/Y', LicenseUtility::getExpirationDate()) . '<br />';
                             echo '</center>';
 

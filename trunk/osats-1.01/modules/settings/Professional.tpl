@@ -61,7 +61,7 @@ span.titleText {
                         <br /><br />
                         <b>All the professional features in CATS have been unlocked and are ready-to-use.</b>
                         <br /><br />
-                        <b>Number of seats/user licenses: </b><?php echo ucfirst(StringUtility::cardinal($this->license->getNumberOfSeats())); ?>
+                        <b>Number of seats/user licenses: </b><?php echo $this->license->getNumberOfSeats(); ?>
                         <br />
                         <b>Service valid until:</b> <?php echo date('F dS, Y', $this->license->getExpirationDate()); ?>
 
@@ -100,7 +100,7 @@ span.titleText {
                         <p />
                         <b>User licenses/seats:</b>
                         <br />
-                        <?php echo ucfirst(StringUtility::cardinal(LicenseUtility::getNumberOfSeats())); ?> (<?php echo LicenseUtility::getNumberOfSeats(); ?>)
+                        <?php echo LicenseUtility::getNumberOfSeats(); ?>
                         </span>
                     </td>
                 </tr>

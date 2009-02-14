@@ -17,7 +17,7 @@ or die(mysql_error("I cant find info in the DB called ".DATABASE_NAME));
 $row = mysql_result( $result,'Installed' );
 if ($row==null)//if the table does not have a 1 in it, then run the setup wizard.
 {
-  include('installation.php');
+    include('installation.php');
 	die();
 }
 
@@ -105,7 +105,7 @@ $_SESSION['CATS']->startTimer();
 /* Check to see if the server went through a SVN update while the session
  * was active.
  */
-$_SESSION['CATS']->checkForcedUpdate();
+// $_SESSION['CATS']->checkForcedUpdate();
 
 
 /* Check to see if the user level suddenly changed. If the user was changed to disabled,

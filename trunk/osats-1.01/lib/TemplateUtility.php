@@ -9,7 +9,7 @@ include_once('SystemInfo.php');
 
 /**
  *	Template Utility Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class TemplateUtility
@@ -92,7 +92,7 @@ class TemplateUtility
             if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_1'))) return;
 
             /* Top Right Corner */
-            echo '<div id="topRight">', "\n";
+            echo '<div id="topRight">';
 
             echo '<div style="padding-bottom: 8px;">';
             // Begin top-right action block
@@ -127,7 +127,7 @@ class TemplateUtility
                 !$systemInfoData['disable_version_check'] &&
                 $_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA)
             {
-                echo '<a href="http://www.a-website-where-users-can-get-updates.com/download.php" target="UpgradeVer">You can get an upgrade of OSATS here!</a><br />';
+                echo '<img src="images/actions/add.gif" alt="" class="ico" /><a href="http://www.a-website-where-users-can-get-updates.com/download.php" target="UpgradeVer">You can get an upgrade of OSATS here!</a><br />';
             }
 			/* and ENDING here!... JAMIN */
 
@@ -145,11 +145,9 @@ class TemplateUtility
             {
                 if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_2_ELSE'))) return;
             }
-
-            echo '</div>', "\n";
+            echo '</div>';
         }
-
-        echo '</div>', "\n";
+        echo '</div>';
     }
 
     /**
@@ -562,14 +560,7 @@ class TemplateUtility
             /* Inactive Tab? */
             if ($active === null || $moduleName != $active->getModuleName())
             {
-                if ($moduleName == $forceHighlight)
-                {
-                    $className = 'active';
-                }
-                else
-                {
-                    $className = 'inactive';
-                }
+                $className = $moduleName == $forceHighlight ? ' class="active"' : '';
 
                 $alPosition = strpos($tabText, "*al=");
                 if ($alPosition === false)
@@ -1174,5 +1165,3 @@ class TemplateUtility
         );
     }
 }
-
-?>

@@ -52,7 +52,7 @@ input.userAddField:focus { background-color: #D7E0F5; border: 1px solid #666666;
 
 <?php if ($this->userLicenses != 0 && $this->totalUsers >= $this->userLicenses): ?>
 <div style="font-size: 14px; margin-top: 10px;">
-You have <b><?php echo StringUtility::cardinal($this->userLicenses); ?></b> user licenses and they have all been used.
+You have <b><?php echo $this->userLicenses); ?></b> user licenses and they have all been used.
 You can get more by clicking <b>Settings</b>-><b>Administration</b>-><b>User Management</b> once you finish this wizard.
 </div>
 <?php else: ?>
@@ -60,7 +60,7 @@ You can get more by clicking <b>Settings</b>-><b>Administration</b>-><b>User Man
     <tr>
         <td align="left" valign="top" class="informativeColumn">
             <?php if ($this->userLicenses != 0): ?>
-            You are using <b><?php echo StringUtility::cardinal($this->totalUsers); ?></b> of your <b><?php echo StringUtility::cardinal($this->userLicenses); ?></b> user licenses.
+            You are using <b><?php echo $this->totalUsers; ?></b> of your <b><?php echo $this->userLicenses; ?></b> user licenses.
             <?php endif; ?>
         </td>
         <td align="right" valign="top">

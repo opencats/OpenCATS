@@ -821,5 +821,3 @@ class InstallationTests
         return $proceed;
     }
 }
-
-?>

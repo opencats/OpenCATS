@@ -1353,6 +1353,3 @@ class SettingsWebTest extends CATSWebTestCase
         $this->logout();
     }
 }
-
-
-?>

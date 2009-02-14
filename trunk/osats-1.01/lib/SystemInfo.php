@@ -105,5 +105,3 @@ class SystemInfo
         $this->_db->query($sql);
     }
 }
-
-?>

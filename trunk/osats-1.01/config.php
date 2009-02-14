@@ -29,6 +29,7 @@ define('SSL_ENABLED', false);
  */
 define('ANTIWORD_PATH', "c:\\antiword\\antiword.exe");
 define('ANTIWORD_MAP', '8859-1.txt');
+
 /* XPDF / pdftotext settings. Remember to use double backslashes (\) to represent
  * one backslash (\).
  * http://www.foolabs.com/xpdf/
@@ -101,6 +102,12 @@ define('AJAX_ENCODING', 'UTF-8');
 
 /* Path to modules. */
 define('MODULES_PATH', './modules/');
+
+/* Path to language files. */
+define('I18N_PATH', './i18n/');
+
+/* Default locale (ISO639-1). Use "en_US" or "de_DE" */
+define('I18N_DEFAULT', 'en_US');
 
 /* Unique session name. The only reason you might want to modify this is
  * for multiple installations on one server. A-Z, 0-9 only! */
@@ -195,4 +202,8 @@ define('CACHE_MODULES', false);
 
 define('US_ZIPS_ENABLED', false);
 
-?>
+// just for development:
+define('TESTER_LOGIN', 'admin');
+define('TESTER_PASSWORD', 'admin');
+
+

@@ -12,7 +12,7 @@ define('PARSE_CODE_NOAUTH',  'noauth');
 
 /**
  *  SOAP Resume Parser Interface Library
- *  @package    CATS
+ *  @package    OSATS BABY!
  *  @subpackage Library
  */
 class ParseUtility
@@ -62,7 +62,8 @@ class ParseUtility
         {
             try
             {
-                $res = $this->_client->DocumentParse(LICENSE_KEY, $name, $size, $mimeType, self::cleanText($contents));
+                /*$res = $this->_client->DocumentParse(LICENSE_KEY, $name, $size, $mimeType, self::cleanText($contents)); */
+                   $res = $this->_client->DocumentParse($name, $size, $mimeType, self::cleanText($contents));
             }
             catch (SoapFault $exception)
             {
@@ -71,8 +72,9 @@ class ParseUtility
         }
         else
         {
-            $res = $this->_client->DocumentParse(LICENSE_KEY, $name, $size, $mimeType, self::cleanText($contents));
-        }
+            $res = $this->_client->DocumentParse($name, $size, $mimeType, self::cleanText($contents));
+            /* $res = $this->_client->DocumentParse(LICENSE_KEY, $name, $size, $mimeType, self::cleanText($contents)); */
+        } 
 
         switch($res->message)
         {

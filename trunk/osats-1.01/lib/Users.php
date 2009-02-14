@@ -1162,5 +1162,3 @@ class Users
         return $rs;
     }
 }
-
-?>

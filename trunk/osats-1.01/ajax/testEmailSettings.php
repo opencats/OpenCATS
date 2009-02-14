@@ -91,5 +91,3 @@ if (!empty($errorMessage))
 
 /* Send back the XML data. */
 $interface->outputXMLSuccessPage();
-
-?>

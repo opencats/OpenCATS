@@ -239,5 +239,3 @@ class SecureAJAXInterface extends AJAXInterface
         return true;
     }
 }
-
-?>

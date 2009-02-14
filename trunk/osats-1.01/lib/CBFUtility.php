@@ -711,5 +711,3 @@ class CBFUtility
         return $restoredRows;
     }
 }
-
-?>

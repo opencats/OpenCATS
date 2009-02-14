@@ -3,8 +3,6 @@
  * OSATS
  */
 
-include_once('./lib/License.php');
-
 /* Login status flags. */
 define('LOGIN_SUCCESS',               1);
 define('LOGIN_INVALID_USER',         -1);

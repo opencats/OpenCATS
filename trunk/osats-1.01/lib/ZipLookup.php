@@ -83,5 +83,3 @@ class ZipLookup
         return array("select" => $select, "join" => $join);
     }
 }
-
-?>

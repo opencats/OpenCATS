@@ -61,5 +61,3 @@ class ImportUtility
         return $files;
     }
 }
-
-?>

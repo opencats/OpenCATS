@@ -509,23 +509,20 @@ class CareersUI extends UserInterface
                 if (!strcmp($subAction, 'resumeParse'))
                 {
                     // Check if the resume contents need to be parsed (user clicked parse contents button)
-                    if (LicenseUtility::isParsingEnabled())
+                    $pu = new ParseUtility();
+                    $fileName = isset($uploadFile) ? $uploadFile : '';
+                    $res = $pu->documentParse($fileName, strlen($resumeContents), '', $resumeContents);
+                    if (is_array($res) && !empty($res))
                     {
-                        $pu = new ParseUtility();
-                        $fileName = isset($uploadFile) ? $uploadFile : '';
-                        $res = $pu->documentParse($fileName, strlen($resumeContents), '', $resumeContents);
-                        if (is_array($res) && !empty($res))
-                        {
-                            if (isset($res[$id='first_name']) && $res[$id] != '' && $firstName == '') $firstName = $res[$id];
-                            if (isset($res[$id='last_name']) && $res[$id] != '' && $lastName == '') $lastName = $res[$id];
-                            if (isset($res[$id='us_address']) && $res[$id] != '' && $address == '') $address = $res[$id];
-                            if (isset($res[$id='city']) && $res[$id] != '' && $city == '') $city = $res[$id];
-                            if (isset($res[$id='state']) && $res[$id] != '' && $state == '') $state = $res[$id];
-                            if (isset($res[$id='zip_code']) && $res[$id] != '' && $zip == '') $zip = $res[$id];
-                            if (isset($res[$id='email_address']) && $res[$id] != '' && $email == '') { $email = $res[$id]; $email2 = $res[$id]; $emailconfirm = $res[$id]; }
-                            if (isset($res[$id='phone_number']) && $res[$id] != '' && $phone == '') $phone = $res[$id];
-                            if (isset($res[$id='skills']) && $res[$id] != '' && $keySkills == '') $keySkills = $res[$id];
-                        }
+                        if (isset($res[$id='first_name']) && $res[$id] != '' && $firstName == '') $firstName = $res[$id];
+                        if (isset($res[$id='last_name']) && $res[$id] != '' && $lastName == '') $lastName = $res[$id];
+                        if (isset($res[$id='us_address']) && $res[$id] != '' && $address == '') $address = $res[$id];
+                        if (isset($res[$id='city']) && $res[$id] != '' && $city == '') $city = $res[$id];
+                        if (isset($res[$id='state']) && $res[$id] != '' && $state == '') $state = $res[$id];
+                        if (isset($res[$id='zip_code']) && $res[$id] != '' && $zip == '') $zip = $res[$id];
+                        if (isset($res[$id='email_address']) && $res[$id] != '' && $email == '') { $email = $res[$id]; $email2 = $res[$id]; $emailconfirm = $res[$id]; }
+                        if (isset($res[$id='phone_number']) && $res[$id] != '' && $phone == '') $phone = $res[$id];
+                        if (isset($res[$id='skills']) && $res[$id] != '' && $keySkills == '') $keySkills = $res[$id];
                     }
                 }
             }
@@ -593,14 +590,9 @@ class CareersUI extends UserInterface
                 . '<textarea id="resumeContents" name="resumeContents" class="inputBoxArea" onmousemove="resumeContentsChange(this);" '
                 . 'onchange="resumeContentsChange(this);" onmousedown="resumeContentsChange(this);" '
                 . 'style="width: 410px; height: 150px;">' . $resumeContents . '</textarea><br /> '
-                . (
-                // If parsing is enabled, add the image link for it
-                LicenseUtility::isParsingEnabled() ?
-                    '<br /><div style="text-align: right;">'
-                    . '<input type="button" value="' . __('Populate Fields') . ' ->" id="resumePopulate" onclick="resumeParse();" '.(strlen($resumeContents)?'':'disabled').' />'
-                :
-                    ''
-                ),
+                . '<br /><div style="text-align: right;">'
+                . '<input type="button" value="' . __('Populate Fields') . ' ->" id="resumePopulate" onclick="resumeParse();" '.(strlen($resumeContents)?'':'disabled').' />'
+                ,
                 $template['Content']);
             $template['Content'] = str_replace('<input-extraNotes>', '<textarea name="extraNotes" id="extraNotes" class="inputBoxArea" maxlength="450" onkeyup="mlength=this.getAttribute ? parseInt(this.getAttribute(\'maxlength\')) : \'\'; if (this.getAttribute && this.value.length>(mlength+7)) { alert(\'Sorry, you may only enter \'+mlength+\' characters into the extra notes.\');} if (this.getAttribute && this.value.length>mlength) {this.value=this.value.substring(0,mlength); this.scrollTop = this.scrollHeight;}">'.(isset($_POST[$id='extraNotes'])?$_POST[$id]:'').'</textarea>', $template['Content']);
             $template['Content'] = str_replace('<submit', '<input type="submit" class="submitButton"', $template['Content']);

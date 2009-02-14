@@ -1543,4 +1543,3 @@ class ControlPanel
         return ($this->_linkField = $field);
     }
 }
-?>
