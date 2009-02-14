@@ -10,6 +10,7 @@ include_once('./lib/EmailTemplates.php');
 include_once('./lib/Attachments.php');
 include_once('./lib/JobOrders.php');
 include_once('./lib/Contacts.php');
+include_once('./lib/i18n.php');
 
 
 /**

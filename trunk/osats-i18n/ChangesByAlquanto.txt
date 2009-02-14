@@ -44,6 +44,11 @@ CHANGES BY ALQUANTO
   * UPD most files in lib/
   * FIX small typos regarding inconsistencies in translation
   * FINISHED translation of OSATS (90%)
+  
+2009-02-14
+  * UPD TinyMCE from Version 2.1.3 to 3.2.1.1
+  * ADD i18n for TinyMCE
+  * UPD lib/Companies.php: missing i18n-include when using without template "engine"
 
 TODO
   * Find solution for images/graphNoData.jpg (used if no data for dashboard available...

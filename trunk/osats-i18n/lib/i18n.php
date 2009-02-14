@@ -90,6 +90,10 @@ class i18n {
       return $a;
     }
   }
+  
+  public static function getLanguageToken() {                   // returns 'en' or 'de' from locale-string 'en_US' or 'de_DE'
+    return substr(self::$lg, 0, 2);
+  }
 }
 
 

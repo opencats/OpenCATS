@@ -6,7 +6,7 @@
 include_once('Candidates.php');
 include_once('DateUtility.php');
 include_once('SystemInfo.php');
-include_once('./lib/i18n.php');
+include_once('i18n.php');
 
 /**
  *	Template Utility Library
@@ -1087,7 +1087,7 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
                             theme_advanced_buttons1 : "bold,italic,strikethrough,separator,bullist,numlist,outdent,indent,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,link,unlink,separator,underline,forecolor,separator,removeformat,cleanup,separator,charmap,separator,undo,redo",
                             theme_advanced_buttons2 : "",
                             theme_advanced_buttons3 : "",
-                            language : "en",
+                            language : "'.i18n::getLanguageToken().'",
                             theme_advanced_toolbar_location : "top",
                             theme_advanced_toolbar_align : "left",
                             theme_advanced_resizing : true,
