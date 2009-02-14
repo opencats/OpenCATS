@@ -7,7 +7,7 @@
 */
 
 include_once('./lib/LoginActivity.php');
-include_once('./lib/NewVersionCheck.php');
+/*include_once('./lib/NewVersionCheck.php');   - do we want auto update checks? - Jamin */
 include_once('./lib/Candidates.php');
 include_once('./lib/Companies.php');
 include_once('./lib/Contacts.php');
@@ -17,7 +17,6 @@ include_once('./lib/ListEditor.php');
 include_once('./lib/SystemUtility.php');
 include_once('./lib/Mailer.php');
 include_once('./lib/EmailTemplates.php');
-include_once('./lib/License.php');
 include_once('./lib/History.php');
 include_once('./lib/Pipelines.php');
 include_once('./lib/CareerPortal.php');
@@ -47,20 +46,20 @@ class SettingsUI extends UserInterface
         $this->_moduleTabText = 'Settings';
 
         /* Only CATS professional on site gets to make career portal customizer users. */
-        if (!file_exists('modules/asp') && LicenseUtility::isProfessional())
-        {
-            $this->_settingsUserCategories = array(
-                array('Career Portal Customizer', 'careerportal', 'This user can\'t do anything but modify the career portal settings.  It is intended to be used by the CATS Professional Support Team.  This user does not count against your maximum users.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
+        /*if (!file_exists('modules/asp') && LicenseUtility::isProfessional())
+        { */
+        	
+            $this->_settingsUserCategories = array(array('Career Portal Customizer', 'careerportal', 'This user can\'t do anything but modify the career portal settings.  It is intended to be used by the Professional Support Team.  This user does not count against your maximum users.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
             );
-        }
+		/* } */
 
         $mp = array(
             'Administration' => osatutil::getIndexName() . '?m=settings&amp;a=administration',
             'My Profile'     => osatutil::getIndexName() . '?m=settings'
         );
 
-        /* Only CATS professional can download addons. */
-        if (file_exists('modules/asp') || LicenseUtility::isProfessional())
+        /* Only CATS professional can download addons. 
+        if (file_exists('modules/asp') || LicenseUtility::isProfessional())*/
         {
             $mp['Downloads'] = osatutil::getIndexName() . '?m=settings&amp;a=downloads';
         }
@@ -2212,7 +2211,7 @@ class SettingsUI extends UserInterface
     {
         //FIXME: This needs to give an appropriate error message to both Open Source and ASP Free users.
         //       The current message is geared toward Open Source users.
-        if (!file_exists('modules/asp') && !LicenseUtility::isProfessional())
+      /*  if (!file_exists('modules/asp') && !LicenseUtility::isProfessional())
         {
             CommonErrors::fatal(COMMONERROR_RESTRICTEDEXTENSION, $this);
         }
@@ -2221,7 +2220,8 @@ class SettingsUI extends UserInterface
         if ($_SESSION['CATS']->isFree() || $_SESSION['CATS']->isDemo())
         {
             CommonErrors::fatal(COMMONERROR_RESTRICTEDEXTENSION, $this);
-        }
+        } 
+        */
 
         // FIXME: 's' isn't a good variable name.
         if (isset($_GET['s']))
@@ -2443,9 +2443,9 @@ class SettingsUI extends UserInterface
         $this->_template->display('./modules/settings/Users.tpl');
     }
 
-    private function manageProfessional()
+     private function manageProfessional()
     {
-        /* Bail out if the user doesn't have SA permissions. */
+        /*
         if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
@@ -2459,14 +2459,15 @@ class SettingsUI extends UserInterface
         $wf->addField('licenseKey', 'License Key', WFT_TEXT, true, 60, 30, 190, '', '/[A-Za-z0-9 ]+/',
             'That is not a valid license key!');
         $message = '';
-        $license = new License();
+        $license = new License(); 
 
         $upgradeStatus = false;
 
         if (isset($_GET['webFormPostBack']))
         {
             list ($fields, $errors) = $wf->getValidatedFields();
-            if (count($errors) > 0) $message = 'Please enter a license key in order to continue.';
+            /*  - removing license checks. -Jamin
+			if (count($errors) > 0) $message = 'Please enter a license key in order to continue.';
 
             $key = trim($fields['licenseKey']);
 
@@ -2478,7 +2479,8 @@ class SettingsUI extends UserInterface
             }
             else if ($license->isProfessional())
             {
-                if (!osatutil::isSOAPEnabled())
+        
+				if (!osatutil::isSOAPEnabled())
                 {
                     $message = 'CATS Professional requires the PHP SOAP library which isn\'t currently installed.<br /><br />'
                         . 'Installation Instructions:<br /><br />'
@@ -2489,37 +2491,40 @@ class SettingsUI extends UserInterface
                         . '<li>Check the "php_soap" option.</li>'
                         . '<li>Restart WAMP.</li></dl>'
                         . 'Linux Users:<br /><br />'
-                        . 'Re-install PHP with the --enable-soap configuration option.<br /><br />'
-                        . 'Please visit http://www.catsone.com for more support options.';
+                        . 'Re-install PHP with the --enable-soap configuration option.<br /><br />';
                 }
-                if (!LicenseUtility::validateProfessionalKey($key))
+                /*  - removing license checks. -Jamin  
+				if (!LicenseUtility::validateProfessionalKey($key))
                 {
                     $message = 'That is not a valid Professional membership key<br /><span style="font-size: 16px; color: #000000;">Please verify that you have the correct key and try again.</span>';
                 }
-                else if (!osatutil::changeConfigSetting('LICENSE_KEY', "'" . $key . "'"))
+              else if (!osatutil::changeConfigSetting('LICENSE_KEY', "'" . $key . "'"))
                 {
                     $message = 'Internal Permissions Error<br /><span style="font-size: 12px; color: #000000;">CATS is unable '
                         . 'to write changes to your <b>config.php</b> file. Please change the file permissions or contact us '
                         . 'for support. Our support e-mail is <a href="mailto:support@catsone.com">support@catsone.com</a> '
                         . 'and our office number if (952) 417-0067.</span>';
-                }
+                } 
+                 
                 else
                 {
                     $upgradeStatus = true;
                 }
+                
             }
             else
             {
                 $message = 'That is not a valid Professional membership key<br /><span style="font-size: 16px; color: #000000;">Please verify that you have the correct key and try again.</span>';
             }
+            
         }
-
+		*/
         $this->_template->assign('active', $this);
         $this->_template->assign('subActive', 'Professional Membership');
         $this->_template->assign('message', $message);
         $this->_template->assign('upgradeStatus', $upgradeStatus);
         $this->_template->assign('webForm', $wf);
-        $this->_template->assign('license', $license);
+       /* $this->_template->assign('license', $license); */
         $this->_template->display('./modules/settings/Professional.tpl');
     }
 
@@ -2892,6 +2897,8 @@ class SettingsUI extends UserInterface
 
     public function wizard_checkKey()
     {
+  	}
+  /*
         $fileError = false;
 
         if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
@@ -2899,7 +2906,7 @@ class SettingsUI extends UserInterface
             echo 'CATS has lost your session!';
             return;
         }
-        /* Bail out if the user doesn't have SA permissions. */
+    
         if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
         {
             echo 'You do not have access to set the key.';
@@ -2979,7 +2986,7 @@ class SettingsUI extends UserInterface
             . 'at http://www.catsone.com or a professional key to unlock all of the available features at '
             . 'http://www.catsone.com/professional';
     }
-
+*/
     public function wizard_localization()
     {
         if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))

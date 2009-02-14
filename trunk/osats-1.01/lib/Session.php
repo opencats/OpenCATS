@@ -5,7 +5,7 @@
 
 /**
  *  OSATS Session Object
- *  @package    CATS
+ *  @package    
  *  @subpackage Library
  */
 class CATSSession
@@ -70,31 +70,10 @@ class CATSSession
         return $this->_MRU;
     }
 
-    /**
-     * Returns the current CATS development build number, or 0 for
-     * non-development CATS builds. The build number is cached on the
-     * first call and returned from cache on subsequent calls.
-     *
-     * @return integer CATS development build number.
-     */
-    public function getCachedBuild()
-    {
-        if ($this->_storedBuild == -1)
-        {
-            $this->_storedBuild = osatutil::getBuild();
-        }
 
-        return (integer) $this->_storedBuild;
-    }
-
-    /**
-     * Forces all modules to be reloaded if the development build number
-     * has changed since the last call. The build number is then cached in
-     * $this->_storedBuild so that multiple filesystem accesses are not
-     * required.
-     *
-     * @return void
-     */
+    /*
+      @return void
+    
     public function checkForcedUpdate()
     {
        $build = osatutil::getBuild();
@@ -102,7 +81,7 @@ class CATSSession
        /* We don't want to force an update on the first check (when the stored
         * build -1), because we just reloaded all of the modules anyway.
         * osatutil::getBuild() should never return -1, but just in case...
-        */
+      
        if ($this->_storedBuild != -1 && $this->_storedBuild != $build)
        {
            $this->forceUpdate();
@@ -110,21 +89,17 @@ class CATSSession
 
        $this->_storedBuild = $build;
     }
-
-    /**
-     * Forces all modules, hooks, filters, etc. to be reloaded. This is called
-     * by checkForcedUpdate() whenever the development build number changes.
-     *
-     * @return void
-     */
+ 	*/
+    
+     /*
     public function forceUpdate()
     {
-        /* Force the current session to reload everything (hooks, etc). */
+       
         if (isset($_SESSION['modules']))
         {
              unset($_SESSION['modules']);
         }
-    }
+    } */
 
     /**
      * If ENABLE_SINGLE_SESSION is turned on and this is not a demo account or
@@ -523,7 +498,7 @@ class CATSSession
     // FIXME: Document me!
     public function getCookie()
     {
-        return CATS_SESSION_NAME . '=' . session_id();
+        return SESSIONNAME . '=' . session_id();
     }
 
     // FIXME: Document me!

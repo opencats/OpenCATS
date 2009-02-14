@@ -11,7 +11,6 @@ include_once('./lib/Mailer.php');
 include_once('./lib/Site.php');
 include_once('./lib/Candidates.php');
 include_once('./lib/DocumentToText.php');
-include_once('./lib/License.php');
 
 /* Toolbar library version. Increment to notify toolbars of an update. */
 define('TOOLBAR_LIB_VERSION', 32);
@@ -60,9 +59,9 @@ class ToolbarUI extends UserInterface
                 $this->storeMonsterResumeText();
                 break;
 
-            case 'getLicenseKey':
+            /*case 'getLicenseKey':
                 $this->getLicenseKey();
-                break;
+                break; */
         }
     }
 
@@ -262,10 +261,11 @@ class ToolbarUI extends UserInterface
         flush();
     }
 
-    public function getLicenseKey()
+   /* public function getLicenseKey()
     {
         echo (defined('LICENSE_KEY') ? LICENSE_KEY : '');
     }
+    -Jamin - ripping license out. */
 }
 
 ?>

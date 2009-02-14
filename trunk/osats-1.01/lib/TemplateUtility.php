@@ -214,18 +214,6 @@ class TemplateUtility
 
         echo '<div id="MRUPanel">', "\n";
         echo '<div id="MRUBlock">', "\n";
-
- /* REMOVE THIS WHOLE LINE TO USE THE FUNCTION BELOW
-        if (!empty($MRU))
-        {
-            echo '<span class="MRUTitle">Recent:&nbsp;</span>&nbsp;', $MRU, "\n";
-        }
-        else
-        {
-            echo '<span class="MRUTitle"></span>&nbsp;', "\n";
-        }
-REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
-
 		echo '</div>', "\n\n";
 
         /* Quick Search */
@@ -738,7 +726,7 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
      */
     public static function printFooter()
     {
-        $build    = $_SESSION['CATS']->getCachedBuild();
+        $build    = OSATSVER;
         $loadTime = $_SESSION['CATS']->getExecutionTime();
 
         if ($build > 0)
@@ -775,7 +763,7 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
      */
     public static function printReportFooter()
     {
-        $build = $_SESSION['CATS']->getCachedBuild();
+        $build = OSATSVER;
 
         // FIXME: LOCAL TIME ZONE!
         $date  = date('l, F jS, Y \a\t h:i:s A T');
@@ -1083,13 +1071,7 @@ REMOVEE THIS WHOLE LINE TO USE THE FUNCTION ABOVE */
         }
 
         $siteID = $_SESSION['CATS']->getSiteID();
-
-        /* This prevents caching problems when SVN updates are preformed. */
-        if ($_SESSION['CATS']->getCachedBuild() > 0)
-        {
-            $javascriptAntiCache = '?b=' . $_SESSION['CATS']->getCachedBuild();
-        }
-        else
+        
         {
             $javascriptAntiCache = '?v=' . osatutil::getVersionAsInteger();
         }
