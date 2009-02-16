@@ -6,9 +6,6 @@
    * Open Source GNU License will apply
 */
 
-/* License key. */
-/* define('LICENSE_KEY', 'boo'); */
-
 /* Database configuration. */
 define('DATABASE_USER', 'root');
 define('DATABASE_PASS', '');
