@@ -17,11 +17,6 @@ define('ADD_USER_BAD_PASS',          -1);
 define('ADD_USER_EXISTS',            -2);
 define('ADD_USER_DB_ERROR',          -3);
 
-/**
- *	Users Library
- *	@package    CATS
- *	@subpackage Library
- */
 class Users
 {
     private $_db;
@@ -1134,37 +1129,16 @@ class Users
             WHERE
                 user.site_id = %s
             AND
-                user.user_name = 'cats@rootadmin'",
-            CATS_ADMIN_SITE
+                user.user_name = 'autouser'",
+            ADMIN_SITE
         );
         $rs = $this->_db->getAssoc($sql);
 
         if (!isset($rs['userID']))
         {
-            $sql = sprintf(
-                "INSERT INTO user (
-                    user_name,
-                    password,
-                    access_level,
-                    can_change_password,
-                    is_test_user,
-                    email,
-                    first_name,
-                    last_name,
-                    site_id
-                )
-                VALUES (
-                    'cats@rootadmin',
-                    '',
-                    0,
-                    0,
-                    0,
-                    '',
-                    'CATS',
-                    'Automated',
-                    %s
-                )",
-                CATS_ADMIN_SITE
+            $sql = sprintf("INSERT INTO user (user_name,password,access_level,can_change_password,is_test_user,email,first_name,last_name,site_id)
+                VALUES ('autouser','',0,0,0,'','OSATS','AutoUser',%s)", 
+				ADMIN_SITE
             );
             $this->_db->query($sql);
 

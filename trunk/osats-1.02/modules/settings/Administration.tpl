@@ -150,17 +150,6 @@
                                 </td>
                                 <td width="230">
                                     <img src="images/2dot1c.gif" alt="" />
-                                        <a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration&amp;s=newVersionCheck">
-                                            New Version Check
-                                        </a>
-                                    <br>
-                                        Change how CATS checks periodically for new versions.
-                                    <br>
-									<i>(Do we even need this now? - Jamin)</i></td>
-                            </tr>
-                            <tr <?php if (!$this->totalCandidates): ?>style="background-color: #DAE3F7;"<?php endif; ?>>
-                                <td width="230">
-                                    <img src="images/2dot1c.gif" alt="" />
                                         <a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration&amp;s=systemInformation">
                                             System Information
                                         </a>
@@ -168,6 +157,9 @@
                                         View information about this Open Source
 									Applicant Tracking System installation.
                                 </td>
+                            </tr>
+                            <tr <?php if (!$this->totalCandidates): ?>style="background-color: #DAE3F7;"<?php endif; ?>>
+                                
                                 <td width="230">
                                         <img src="images/2dot1c.gif" alt="" border="0" />
                                         Scheduler

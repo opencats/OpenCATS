@@ -3062,7 +3062,7 @@ class CandidatesUI extends UserInterface
                 $destination[] = array($emailDest, $emailDest);
             }
 
-            $mailer = new Mailer(CATS_ADMIN_SITE);
+            $mailer = new Mailer(ADMIN_SITE);
             // FIXME: Use sendToOne()?
             $mailerStatus = $mailer->send(
                 array($_SESSION['CATS']->getEmail(), $_SESSION['CATS']->getEmail()),
@@ -3150,4 +3150,3 @@ class CandidatesUI extends UserInterface
         $this->_template->display('./modules/candidates/Questionnaire.tpl');
     }
 }
-

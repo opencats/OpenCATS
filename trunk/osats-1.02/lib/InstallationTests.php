@@ -7,11 +7,6 @@
 
 include_once('./lib/FileUtility.php');
 
-/**
- *	Installation Tests Library
- *	@package    CATS
- *	@subpackage Library
- */
 class InstallationTests
 {
     /* Set this to true to force all tests to fail for debugging. */
@@ -21,7 +16,7 @@ class InstallationTests
     {
         $proceed = true;
 
-        $proceed = $proceed && self::printCATSVersion();
+        $proceed = $proceed && self::printOSATSVersion();
         $proceed = $proceed && self::checkPHPVersion();
         $proceed = $proceed && self::checkMagicQuotes();
         $proceed = $proceed && self::checkRegisterGlobals();
@@ -109,13 +104,9 @@ class InstallationTests
     /* Print the CATS version information just for informational purposes, for
      * example when someone posts installtest output to the CATS Forums.
      */
-    public static function printCATSVersion()
+    public static function printOSATSVersion()
     {
-        echo sprintf(
-            '<tr class="pass"><td>CATS version is %s.</td></tr>',
-            OSATSVER
-        );
-
+        echo sprintf('<tr class="pass"><td>Open Source Applicant Tracking System (OSATS) version is %s.</td></tr>', OSATSVER);
         return true;
     }
 
@@ -124,19 +115,12 @@ class InstallationTests
     {
         if (!self::DEBUG_FAIL && version_compare(PHP_VERSION, '5.0.0', '>='))
         {
-            echo sprintf(
-                '<tr class="pass"><td>PHP version is %s.</td></tr>',
-                PHP_VERSION
-            );
-
+            echo sprintf('<tr class="pass"><td>PHP version is %s.</td></tr>',PHP_VERSION);
             return true;
         }
 
-        echo sprintf(
-            '<tr class="fail"><td><strong>PHP 5.0.0 or greater is required to run CATS.</strong><br />'
-            . 'Found version: %s.</td></tr>',
-            PHP_VERSION
-        );
+        echo sprintf('<tr class="fail"><td><strong>PHP 5.0.0 or greater is required.</strong><br />'
+            . 'The current version: %s.</td></tr>',PHP_VERSION);
         return false;
     }
 
@@ -149,7 +133,7 @@ class InstallationTests
             return true;
         }
 
-        echo '<tr class="fail"><td><strong>PHP.ini: magic_quotes_runtime must be set to Off in php.ini.</strong><br />'
+        echo '<tr class="fail"><td><strong>PHP.ini: magic_quotes_runtime has to be set to off in php.ini.</strong><br />'
             . 'Check your settings in php.ini.</td></tr>';
         return false;
     }

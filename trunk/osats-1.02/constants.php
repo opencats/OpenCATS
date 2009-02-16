@@ -19,7 +19,7 @@ $coreModules = array(
 );
 
 /* OSATS Version */
-define('OSATSVER', '1.0');
+define('OSATSVER', '1.0.2');
 
 /* Your company name information at bottom of pages.
  * Change the line below to your company name
@@ -146,13 +146,10 @@ define('MILES_PER_LATLNG', 70);
 define('SECONDS_IN_A_DAY', 86400); /* 60 * 60 * 24 */
 
 /* Error messages. */
-define(
-    'ERROR_NO_PERMISSION',
-    'You do not have permission to access the requested resource.'
-);
+define('ERROR_NO_PERMISSION','You do not have permission to access the requested resource.');
 
 /* Constants for the login module. */
-define('DEFAULT_ADMIN_PASSWORD', 'cats');
+define('DEFAULT_ADMIN_PASSWORD', 'OSATS');
 define('DEFAULT_MAIL_FROM_ADDRESS', 'noreply@yourdomain.com');
 
 /* Module data array offsets. */
@@ -161,7 +158,7 @@ define('MODULE_SETTINGS_ENTRIES_USER_LEVEL', 2);
 define('MODULE_SETTINGS_USER_CATEGORIES', 4);
 
 /* Site ID under which to store OSATS system administrative data, etc. */
-define('CATS_ADMIN_SITE', 180);
+define('ADMIN_SITE', 180);
 
 /* Location of the XML export templates directory */
 define('XML_EXPORT_TEMPLATES_DIR', './modules/xml/xml_templates');

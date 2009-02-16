@@ -51,7 +51,7 @@ if ($action == 'start')
 {
     $companyID = $_SESSION['CATS']->getSiteCompanyID();
 
-    $attachments = new Attachments(CATS_ADMIN_SITE);
+    $attachments = new Attachments(ADMIN_SITE);
 
     /* Delete any old backups. */
     $attachments->deleteAll(
@@ -60,7 +60,7 @@ if ($action == 'start')
         "AND content_type = 'catsbackup'"
     );
 
-    $attachmentCreator = new AttachmentCreator(CATS_ADMIN_SITE);
+    $attachmentCreator = new AttachmentCreator(ADMIN_SITE);
     $attachmentCreator->createFromFile(
         DATA_ITEM_COMPANY, $companyID, 'catsattachments.zip',
         'CATS Attachments Backup', 'catsbackup', false, false
@@ -160,7 +160,7 @@ if ($action == 'backup')
     $fileSize = (int) @filesize($newFileFullPath) / 1024;
     @file_put_contents('blah.hi', $attachmentID);
 
-    $attachments = new Attachments(CATS_ADMIN_SITE);
+    $attachments = new Attachments(ADMIN_SITE);
     $attachments->setSizeMD5($attachmentID, $fileSize, $md5sum);
 
     echo '<html><head>',

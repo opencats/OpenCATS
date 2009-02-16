@@ -41,7 +41,7 @@ include_once('./modules/queue/lib/Task.php');
  *
  * Call your task by inheriting the QueueProcessor library (in /lib) and calling:
  * QueueProcessor::addAsynchronousTask(
- *      $siteID,        // CATS_ADMIN_SITE or site_id if applicable
+ *      $siteID,        // ADMIN_SITE or site_id if applicable
  *      $taskPath,      // relative path to the task handler php file
  *                      //    (i.e.: ./modules/MODULE_NAME/tasks/TASKNAME.php)
  *      $args,          // Mixed variable type

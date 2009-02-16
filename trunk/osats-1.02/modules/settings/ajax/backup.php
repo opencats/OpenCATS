@@ -73,7 +73,7 @@ if ($action == 'start')
     $attachmentsOnly = $interface->isChecked('attachmentsOnly');
 
     /* Delete any old backups. */
-    $attachments = new Attachments(CATS_ADMIN_SITE);
+    $attachments = new Attachments(ADMIN_SITE);
     $attachments->deleteAll(
         DATA_ITEM_COMPANY,
         $companyID,
@@ -90,7 +90,7 @@ if ($action == 'start')
         $title = 'CATS Backup';
     }
 
-    $attachmentCreator = new AttachmentCreator(CATS_ADMIN_SITE);
+    $attachmentCreator = new AttachmentCreator(ADMIN_SITE);
     $attachmentCreator->createFromFile(
         DATA_ITEM_COMPANY, $companyID, 'catsbackup.bak', $title, 'catsbackup',
         false, false
@@ -278,7 +278,7 @@ if ($action == 'backup')
     $md5sum   = @md5_file($zipFilePath);
     $fileSize = (int) @filesize($zipFilePath) / 1024;
 
-    $attachments = new Attachments(CATS_ADMIN_SITE);
+    $attachments = new Attachments(ADMIN_SITE);
     $attachments->setSizeMD5($attachmentID, $fileSize, $md5sum);
 
     echo '<html><head>',

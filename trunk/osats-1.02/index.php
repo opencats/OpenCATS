@@ -102,11 +102,6 @@ if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
 /* Start timer for measuring server response time. Displayed in footer. */
 $_SESSION['CATS']->startTimer();
 
-/* Check to see if the server went through a SVN update while the session
- * was active.
- */
-// $_SESSION['CATS']->checkForcedUpdate();
-
 
 /* Check to see if the user level suddenly changed. If the user was changed to disabled,
  * also log the user out.

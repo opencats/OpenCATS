@@ -254,9 +254,5 @@ class ToolbarUI extends UserInterface
         flush();
     }
 
-   /* public function getLicenseKey()
-    {
-        echo (defined('LICENSE_KEY') ? LICENSE_KEY : '');
-    }
-    -Jamin - ripping license out. */
+   
 }

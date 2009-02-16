@@ -6,11 +6,6 @@
 include_once('./modules/queue/constants.php');
 include_once('./lib/Mailer.php');
 
-/**
- *	Asynchroneous Queue Processor Library
- *	@package    CATS
- *	@subpackage Library
- */
 class QueueProcessor
 {
     /* Prevent this class from being instantiated. */
@@ -120,8 +115,8 @@ class QueueProcessor
             return;
         }
 
-        $taskID = self::addAsynchronousTask(CATS_ADMIN_SITE, $taskName, 0, 5);
-        self::startTask(CATS_ADMIN_SITE, $taskPath, 0, 5, $taskID);
+        $taskID = self::addAsynchronousTask(ADMIN_SITE, $taskName, 0, 5);
+        self::startTask(ADMIN_SITE, $taskPath, 0, 5, $taskID);
     }
 
     /**

@@ -1228,7 +1228,7 @@ class CareersUI extends UserInterface
             $source = 'Online Careers Website';
         }
 
-        $users = new Users(CATS_ADMIN_SITE);
+        $users = new Users(ADMIN_SITE);
         $automatedUser = $users->getAutomatedUser();
 
         /* Find if another user with same e-mail exists. If so, update the user

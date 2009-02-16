@@ -3,11 +3,6 @@
  * OSATS
  */
 
-/**
- *	Site Library
- *	@package    CATS
- *	@subpackage Library
- */
 class Site
 {
     private $_db;
@@ -146,7 +141,7 @@ class Site
                 site_id ASC
             LIMIT 1
         ",
-            CATS_ADMIN_SITE
+            ADMIN_SITE
        );
 
        $rs = $this->_db->getAssoc($sql);

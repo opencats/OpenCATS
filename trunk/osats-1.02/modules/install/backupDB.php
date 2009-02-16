@@ -160,7 +160,7 @@ function dumpDB($db, $file, $useStatus = false, $splitFiles = true, $siteID = -1
             {
                 if ($recordSet['site_id'] != $siteID)
                 {
-                    if ($table == 'site' && $recordSet['site_id'] == CATS_ADMIN_SITE)
+                    if ($table == 'site' && $recordSet['site_id'] == ADMIN_SITE)
                     {
                         $continue = true;
                     }
@@ -168,7 +168,7 @@ function dumpDB($db, $file, $useStatus = false, $splitFiles = true, $siteID = -1
                      * user has user level 0 (disabled) preventing a client from logging into
                      * the user. */
                     else if ($table == 'user' && $recordSet['password'] == 'cantlogin' &&
-                             $recordSet['site_id'] == CATS_ADMIN_SITE)
+                             $recordSet['site_id'] == ADMIN_SITE)
                     {
                         $continue = true;
                     }

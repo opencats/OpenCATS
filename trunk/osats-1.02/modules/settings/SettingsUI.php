@@ -1827,7 +1827,7 @@ class SettingsUI extends UserInterface
         }
 
         /* Attachments */
-        $attachments = new Attachments(CATS_ADMIN_SITE);
+        $attachments = new Attachments(ADMIN_SITE);
         $attachmentsRS = $attachments->getAll(
             DATA_ITEM_COMPANY, $_SESSION['CATS']->getSiteCompanyID()
         );
@@ -1854,7 +1854,7 @@ class SettingsUI extends UserInterface
             //$this->fatal(ERROR_NO_PERMISSION);
         }
 
-        $attachments = new Attachments(CATS_ADMIN_SITE);
+        $attachments = new Attachments(ADMIN_SITE);
         $attachments->deleteAll(
             DATA_ITEM_COMPANY,
             $_SESSION['CATS']->getSiteCompanyID(),
