@@ -10,16 +10,18 @@
 */
 include_once('./config.php');
 
-mysql_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS) or die(mysql_error("Check your mySQL user info and DB name!"));
-mysql_select_db(DATABASE_NAME) or die(mysql_error("Oops. No DB by the name: ".DATABASE_NAME));
-$result = mysql_query("SELECT Installed FROM system")
-or die(mysql_error("I cant find info in the DB called ".DATABASE_NAME));
-$row = mysql_result( $result,'Installed' );
-if ($row==null)//if the table does not have a 1 in it, then run the setup wizard.
-{
-    include('installation.php');
-	die();
-}
+mysql_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS) or die("Check your DATABASE_HOST, DATABASE_USER, DATABASE_PASS, in the config.php then retry!");
+mysql_select_db(DATABASE_NAME) or die("You must ensure you created the database called OSATS before proceeding!");
+
+$result = mysql_query("SELECT Installed FROM system");
+
+if (!$result==null)
+	$row = mysql_result( $result,'Installed');
+	if ($row==null)//if the table does not have a 1 in it, then run the setup wizard.
+	{
+    	include('installation.php');
+		die();
+	}
 
 // FIXME: Config file setting.
 @ini_set('memory_limit', '64M');

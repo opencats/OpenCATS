@@ -149,7 +149,7 @@ define('SECONDS_IN_A_DAY', 86400); /* 60 * 60 * 24 */
 define('ERROR_NO_PERMISSION','You do not have permission to access the requested resource.');
 
 /* Constants for the login module. */
-define('DEFAULT_ADMIN_PASSWORD', 'OSATS');
+define('DEFAULT_ADMIN_PASSWORD', 'osats');
 define('DEFAULT_MAIL_FROM_ADDRESS', 'noreply@yourdomain.com');
 
 /* Module data array offsets. */

@@ -409,7 +409,7 @@
                                             You may now login to OSATS. <br />
 											IF it is a new installation, use the following logon information:<br /><br />
                                             Username: admin<br />
-                                            Password: cats<br />
+                                            Password: osats<br />
                                             <br />
                                             <br />
 
@@ -422,8 +422,8 @@
                                             The installer has finished installing OSATS! If you need to reinstall, change the Install value from 1 to Null in the System table.<br /><br />
                                             <br />
                                             You may now login to OSATS. To login, either click "Login to Demo Account" on the logon screen or use the following logon information:<br /><br />
-                                            Username: john@mycompany.net<br />
-                                            Password: john99<br />
+                                            Username: admin<br />
+                                            Password: osats<br />
                                             <br />
                                             <input type="button" class="button" value="Start CATS" onclick="window.location.href='index.php';" />
                                         </div>

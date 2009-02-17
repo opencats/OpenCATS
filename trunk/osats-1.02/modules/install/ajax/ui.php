@@ -19,32 +19,20 @@ if (!isset($_REQUEST['a']) || empty($_REQUEST['a']))
 
 $action = $_REQUEST['a'];
 
-/* Changed to code to do a db lookup to see if the install is complete
-if (file_exists('NSTALL_BLOCK'))
-{
-    echo '
-        <script type="text/javascript">
-            setActiveStep(1);
-            showTextBlock(\'installLocked\');
-        </script>';
-    die();
-}
-*/
-
-mysql_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS) or die(mysql_error("No such mySQL server or incorrect username and password!"));
-mysql_select_db(DATABASE_NAME) or die(mysql_error("Oops. No DB by the name: ".DATABASE_NAME));
-$result = mysql_query("SELECT Installed FROM system")
-or die(mysql_error("Error trying to retreive data from the System table in ".DATABASE_NAME));
-$row = mysql_result( $result,'Installed' );
-if ($row=="1")//if the install is completed then do ....
-{
+mysql_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS) or die("Check your DATABASE_HOST, DATABASE_USER, DATABASE_PASS, in the config.php then retry!");
+mysql_select_db(DATABASE_NAME) or die("You must ensure you created the database called OSATS before proceeding!");
+$result = mysql_query("SELECT Installed FROM system");
+if (!$result==null)
+	$row = mysql_result( $result,'Installed' );
+	if ($row=="1")//if the install is completed then do ....
+	{
 	echo '
 			<script type="text/javascript">
 			setActiveStep(1);
 			showTextBlock(\'installLocked\');
 			</script>';
 	die();
-}
+	}
 
 switch ($action)
 {
@@ -741,7 +729,7 @@ switch ($action)
 
         osatutil::changeConfigSetting('ENABLE_DEMO_MODE', 'false');
 
-        $schema = file_get_contents('db/cats_schema.sql');
+        $schema = file_get_contents('db/osatsdb.sql');
         MySQLQueryMultiple($schema, ";\n");
 
         //Check if we need to update from 0.6.0 to 0.7.0
@@ -752,17 +740,21 @@ switch ($action)
             $tables[$row[0]] = true;
         }
 
-        if (!isset($tables['history']))
+        /* Should we REMOVE THIS? - JAMIN
+		 * 
+		if (!isset($tables['history'])) 
         {
             // FIXME: File exists?!
             $schema = file_get_contents('db/upgrade-0.6.x-0.7.0.sql');
             MySQLQueryMultiple($schema);
         }
-
+		*/
+		
         echo '<script type="text/javascript">Installpage_populate(\'a=resumeParsing\');</script>';
         break;
 
-    case 'onLoadDemoData':
+    /* - do we want a demo still? - Jamin 
+	case 'onLoadDemoData':
         osatutil::changeConfigSetting('ENABLE_DEMO_MODE', 'true');
 
         include_once('lib/FileCompressor.php');
@@ -780,7 +772,7 @@ switch ($action)
             }
         */
 
-        if (!$extractor->open())
+        /* if (!$extractor->open())
         {
             echo($extractor->getErrorMessage());
         }
@@ -791,13 +783,13 @@ switch ($action)
         {
             $fileName = $data['filename'];
 
-            /* Execute all sql files */
+            
             if (strpos($fileName, 'db/catsbackup.sql.') === 0)
             {
                 $fileContents = $extractor->getFile($index);
                 MySQLQueryMultiple($fileContents, '((ENDOFQUERY))');
             }
-            /* Extract everything else but ./database */
+           
             else if ($fileName != 'database')
             {
                 if (strpos($fileName, '/') !== false)
@@ -812,7 +804,7 @@ switch ($action)
 
                 if ($fileContents === false)
                 {
-                    /* Report error? */
+                    
                 }
 
                 file_put_contents ($fileName, $fileContents);
@@ -825,11 +817,13 @@ switch ($action)
                 Installpage_populate(\'a=upgradeCats\');
             </script>';
         break;
-
+	End block out by Jamin */ 
+	
+	/* we can mess with Upgrade options later. - Jamin
     case 'upgradeCats':
         MySQLConnect();
 
-        /* This shouldn't be possible - there is no option to upgrade CATS if no tables are in the database. */
+      
         if (count($tables) == 0)
         {
             echo 'Error - no schema present.<br /><br /> ';
@@ -845,30 +839,30 @@ switch ($action)
             $fields[$meta->name] = true;
         }
 
-        /* Look for more versions here. */
+       
         if (!isset($fields['date_available']))
         {
-            /* 0.5.0 */
+            
             $revision = 50;
         }
         else if (!isset($tables['candidate_joborder_status']))
         {
-            /* 0.5.2 */
+          
             $revision = 52;
         }
         else if (!isset($tables['candidate_foreign']) && !isset($tables['extra_field']))
         {
-            /* 0.5.5 */
+           
             $revision = 55;
         }
         else if (!isset($tables['history']))
         {
-            /* 0.6.0 */
+          
             $revision = 60;
         }
         else if (isset($tables['history']))
         {
-            /* 0.7.0 */
+            
             $revision = 70;
         }
 
@@ -903,7 +897,8 @@ switch ($action)
 
         echo '<script type="text/javascript">Installpage_populate(\'a=resumeParsing\');</script>';
         break;
-
+	End block out by Jamin */
+	
     case 'maint':
         @session_name(SESSION_NAME);
         session_start();
@@ -943,19 +938,8 @@ switch ($action)
     case 'maintComplete':
         MySQLConnect();
 
-        /* Changed code to add the 1 to the Install value in the db
-        file_put_contents(
-            'NSTALL_BLOCK',
-            'This file prevents the installer from running. Remove this file to edit or reset your CATS installation.'
-        );
-        */
-	/*	mysql_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS) or die(mysql_error("No such mySQL server or incorrect username and password!"));
-		mysql_select_db(DATABASE_NAME) or die(mysql_error("Oops. No DB by the name: ".DATABASE_NAME)); */
-		MySQLQuery("UPDATE system SET Installed = 1");
-
         @session_name(SESSION_NAME);
         session_start();
-
 
         $fromAddress = $_SESSION['fromAddressInstaller'];
 
@@ -1008,21 +992,26 @@ switch ($action)
 
         echo '<script type="text/javascript">setActiveStep(7);</script>';
 
-        if (ENABLE_DEMO_MODE)
+        /* if (ENABLE_DEMO_MODE)
         {
             echo '<script type="text/javascript">showTextBlock("installCompleteDemo");</script>';
         }
         else
         {
-            echo '<script type="text/javascript">showTextBlock("installCompleteProd");</script>';
-        }
+        */
+			echo '<script type="text/javascript">showTextBlock("installCompleteProd");</script>';
+			MySQLQuery("UPDATE system SET Installed = 1");
+        // }
+        /* Changed code to add the 1 to the Install value in the db
+        */
+		
         break;
 
     case 'loginCATS':
         MySQLConnect();
 
         /* Determine if a default user is set. */
-        $rs = MySQLQuery("SELECT * FROM user WHERE user_name = 'admin' AND password = 'cats'");
+        $rs = MySQLQuery("SELECT * FROM user WHERE user_name = 'admin' AND password = 'osats'");
         if ($rs && mysql_fetch_row($rs))
         {
             //Default user set

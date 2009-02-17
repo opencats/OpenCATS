@@ -157,7 +157,7 @@ define('MAIL_SENDMAIL_PATH', "/usr/sbin/sendmail");
 /* SMTP Settings. Define if you chose SMTP Above. */
 define('MAIL_SMTP_HOST', "myhost");
 define('MAIL_SMTP_PORT', 25);
-define('MAIL_SMTP_AUTH', true);
+define('MAIL_SMTP_AUTH', false);
 define('MAIL_SMTP_USER', "myusername");
 define('MAIL_SMTP_PASS', "test");
 
@@ -197,7 +197,7 @@ define('CACHE_MODULES', false);
  * by distance from a zipcode.
  */
 
-define('US_ZIPS_ENABLED', false);
+define('US_ZIPS_ENABLED', true);
 
 // just for development:
 define('TESTER_LOGIN', 'admin');
