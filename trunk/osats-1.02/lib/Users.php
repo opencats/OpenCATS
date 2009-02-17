@@ -829,20 +829,8 @@ class Users
             $license['canAdd'] = 1;
         }
 
-        if (LicenseUtility::isProfessional() && !file_exists('modules/asp'))
-        {
-            $license['unlimited'] = 0;
-            $license['userLicenses'] = LicenseUtility::getNumberOfSeats();
-            $license['diff'] = $license['userLicenses'] - $license['totalUsers'];
-            if ($license['diff'] > 0)
-            {
-                $license['canAdd'] = 1;
-            }
-            else
-            {
-                $license['canAdd'] = 0;
-            }
-        }
+        $license['unlimited'] = 1;
+        $license['canAdd'] = 1;
 
         return $license;
     }
