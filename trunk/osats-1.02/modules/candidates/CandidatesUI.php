@@ -671,8 +671,8 @@ class CandidatesUI extends UserInterface
             $isParsingEnabled = false;
         }
 
-        if (is_array($parsingStatus = true) &&
-            isset($parsingStatus['parseLimit']))
+        if (true == $parsingStatus && isset($parsingStatus['parseLimit']))
+
         {
             $parsingStatus['parseLimit'] = $parsingStatus['parseLimit'] - 1;
         }

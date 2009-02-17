@@ -50,7 +50,7 @@
                 <input type="hidden" name="postback" id="postback" value="postback" />
 
                 <table class="editTable" width="<?php if ($this->isModal): ?>100%<?php else: ?>925<?php endif; ?>">
-                    <?php if ($this->isParsingEnabled): ?>
+                    
                     <tr>
                         <td class="tdVertical" colspan="2">
                             <img src="images/parser/manual.gif" border="0" />
@@ -66,7 +66,7 @@
                             </table>
                         </td>
                     </tr>
-                    <?php endif; ?>
+                    
                     <tr>
                         <td class="tdVertical">
                             <label id="firstNameLabel" for="firstName"><?php _e('First Name');?>:</label>
@@ -76,7 +76,7 @@
                         </td>
 
                         <td rowspan="12" align="center" valign="top">
-                            <?php if ($this->isParsingEnabled): ?>
+                            
                                 <input type="hidden" name="loadDocument" id="loadDocument" value="" />
                                 <input type="hidden" name="parseDocument" id="parseDocument" value="" />
                                 <input type="hidden" name="documentTempFile" id="documentTempFile" value="<?php echo (isset($this->preassignedFields['documentTempFile']) ? $this->preassignedFields['documentTempFile'] : ''); ?>" />
@@ -86,7 +86,7 @@
                                             <img src="images/parser/arrow.gif" border="0" />
                                             <input type="hidden" name="MAX_FILE_SIZE" VALUE="10000000" />
                                             <input type="file" id="documentFile" name="documentFile" onchange="documentFileChange();" size="<?php if ($this->isModal): ?>20<?php else: ?>40<?php endif; ?>" />
-                                            <input type="button" id="documentLoad" value="<?php _e('Upload');?>" onclick="loadDocumentFileContents();" disabled />
+                                            <input type="button" id="documentLoad" value="<?php _e('Upload');?>" onclick="loadDocumentFileContents();" enabled />
                                             &nbsp;
                                         </td>
                                     </tr>
@@ -102,7 +102,8 @@
                                                         </td>
                                                         <td align="right" valign="top" nowrap="nowrap" style="font-size: 11px;">
                                                             <a href="javascript:void(0);" onclick="removeDocumentFile();">(<?php _e('remove');?>)</a>
-                                                        </td>
+                                                        
+														</td>
                                                     </tr>
                                                 </table>
                                             </div>
@@ -113,29 +114,14 @@
                                             (<b><?php _e('hint');?>:</b> <?php _e('you may also paste the resume contents');?>)
                                             <br /><br />
                                             <?php /* if (file_!exists('modules/asp')):*/ ?>
-                                            <?php _e('Need to upload multiple resumes?');?> <a href="<?php echo osatutil::getIndexName(); ?>?m=import&a=massImport"><?php _e('Click here!');?></a>
+                                            <?php _e('Need to upload multiple resumes?');?> <a href="<?php echo osatutil::getIndexName(); ?>?m=import&a=massImport"><?php _e('Click here!');?>
+											</a>
                                            
                                             </div>
                                         </td>
                                     </tr>
                                 </table>
-                            <?php else: ?>
-                                <?php if (PARSING_ENABLED &&
-                                    count($this->parsingStatus) &&
-                                    $this->parsingStatus['parseUsed'] >= $this->parsingStatus['parseLimit'] &&
-                                    $this->parsingStatus['parseLimit'] >= 0): ?>
-                                <a href="http://www.catsone.com/professional" target="_blank"><?php _e('All daily resume imports used. For more, upgrade to CATS professional');?></a>.
-                                <?php endif; ?>
-                                <?php $freeformTop = '<p class="freeformtop">' . __('Cut and paste freeform address here.') . '</p>'; ?>
-                                <?php eval(Hooks::get('CANDIDATE_TEMPLATE_ABOVE_FREEFORM')); ?>
-                                <?php echo($freeformTop); ?>
-
-                                <textarea class="inputbox" tabindex="90" name="addressBlock" id="addressBlock" rows="5" cols="40" style="width: 500px; height: 250px;"></textarea>
-
-                                <?php $freeformBottom = '<p class="freeformbottom">' . __('Cut and paste freeform address here.') . '</p>'; ?>
-                                <?php eval(Hooks::get('CANDIDATE_TEMPLATE_BELOW_FREEFORM')); ?>
-                                <?php echo($freeformBottom); ?>
-                            <?php endif; ?>
+                            
                         </td>
                     </tr>
 
@@ -190,16 +176,9 @@
                         </td>
                         <td class="tdData">
                             <input type="text" tabindex="6" name="phoneHome" id="phoneHome" class="inputbox" style="width: 150px;" value="<?php if (isset($this->preassignedFields['phoneHome'])) $this->_($this->preassignedFields['phoneHome']); ?>" />
-                            <?php if ($this->isParsingEnabled): ?>
-                                <?php if ($this->parsingStatus['parseLimit'] >= 0 && $this->parsingStatus['parseUsed'] >= $this->parsingStatus['parseLimit']): ?>
-                                    &nbsp;
-                                <?php else: ?>
-                                    <?php if ($this->isModal): ?>&nbsp;&nbsp;<?php else: ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php endif; ?>
-                                    <img id="transfer" src="images/parser/transfer<?php echo ($this->contents != '' ? '' : '_grey'); ?>.gif" <?php echo ($this->contents != '' ? 'style="cursor: pointer;"' : ''); ?> border="0" alt="Import Resume" onclick="parseDocumentFileContents();" />
-                                <?php endif; ?>
-                            <?php else: ?>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="arrowButton" tabindex="91" align="middle" type="button" value="&lt;--" class="arrowbutton" onclick="AddressParser_parse('addressBlock', 'person', 'addressParserIndicator', 'arrowButton'); document.addCandidateForm.firstName.focus();" />
-                            <?php endif; ?>
+                            
+                                <?php if ($this->isModal): ?>&nbsp;&nbsp;<?php else: ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php endif; ?>
+                                    <img id="transfer" src="images/parser/transfer<?php echo ($this->contents != '' ? '' : '_grey'); ?>.gif" <?php echo ($this->contents != '' ? 'style="cursor: pointer;"' : ''); ?> border="0" alt="Import Resume" class="arrowbutton" onclick="AddressParser_parse('documentText', 'person', 'addressParserIndicator', 'transfer'); document.addCandidateForm.firstName.focus();" />                           
                         </td>
                     </tr>
 
@@ -272,7 +251,7 @@
                     <?php $tabIndex = 15; ?>
                 </table>
 
-                <?php if (!$this->isParsingEnabled || $this->associatedAttachment != 0): ?>
+                <?php if (!$this->isParsingEnabled || $this->associatedAttachment != 10): ?>
                 <p class="note<?php if ($this->isModal): ?>Unsized<?php endif; ?>" style="margin-top: 5px;"><?php _e('Resume');?></p>
 
                 <table class="editTable" width="<?php if ($this->isModal): ?>100%<?php else: ?>925<?php endif; ?>">
@@ -280,12 +259,8 @@
                         <td class="tdVertical"><?php _e('Resume');?>:</td>
                         <td class="tdData" style="width:320px;">
                             <?php if ($this->associatedAttachment == 0): ?>
-                                <nobr> <?php /* FIXME:  remove nobr stuff */ ?>
-                                    <?php if (isset($this->overAttachmentQuota)): ?>
-                                        <span style="font-size:10px;">(<?php _e('You have already reached your limit of '); echo(FREE_ACCOUNT_SIZE/1024); _e('MB of attachments, and cannot add additional file attachments without upgrading to CATS Professional Hosted.');?>)<br /></font><?php _e('Copy and Paste Resume');?>:&nbsp;
-                                    <?php else: ?>
-                                        <input type="file" id="file" name="file" size="21" tabindex="<?php echo($tabIndex++); ?>" <?php if($this->associatedTextResume !== false): ?>disabled<?php endif; ?> /> &nbsp;
-                                    <?php endif; ?>
+                                </font><?php _e('Copy and Paste Resume');?>:&nbsp;
+                                       <input type="file" id="file" name="file" size="21" tabindex="<?php echo($tabIndex++); ?>" <?php if($this->associatedTextResume !== false): ?>disabled<?php endif; ?> /> &nbsp;
                                     <a href="javascript:void(0);" onclick="if (document.getElementById('textResumeTD').style.display != '') { document.getElementById('textResumeTD').style.display = ''; document.getElementById('file').disabled=true; } else { document.getElementById('textResumeTD').style.display='none'; document.getElementById('file').disabled = false; }">
                                         <img src="images/package_editors.gif" style="margin:0px; padding:0px;"  class="absmiddle" alt="" border="0" title="Copy / Paste Resume" />
                                     </a>
