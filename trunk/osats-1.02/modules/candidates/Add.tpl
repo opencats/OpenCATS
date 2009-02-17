@@ -112,20 +112,9 @@
                                             <div style="color: #666666; text-align: center;">
                                             (<b><?php _e('hint');?>:</b> <?php _e('you may also paste the resume contents');?>)
                                             <br /><br />
-                                            <?php if (LicenseUtility::isProfessional() || file_exists('modules/asp')): ?>
+                                            <?php /* if (file_!exists('modules/asp')):*/ ?>
                                             <?php _e('Need to upload multiple resumes?');?> <a href="<?php echo osatutil::getIndexName(); ?>?m=import&a=massImport"><?php _e('Click here!');?></a>
-                                            <?php else: ?>
-                                                <?php if ($this->parsingStatus['parseLimit'] >= 0 && (($used = $this->parsingStatus['parseUsed']) / ($limit = $this->parsingStatus['parseLimit']) * 100) > 50): ?>
-                                                    <?php if ($used == $limit): ?><span style="color: #800000;"><?php endif; ?>
-                                                    <?php _e('Used');?> <b><?php echo number_format($this->parsingStatus['parseUsed'],0); ?> / <?php echo number_format($this->parsingStatus['parseLimit'],0); ?></b> <?php _e('daily');?> <a href="http://www.resfly.com" target="_blank">Resfly&trade;</a> <?php _e('automatic resume imports');?>
-                                                    <?php if ($used == $limit): ?>
-                                                        </span>
-                                                        <br />
-                                                        <?php _e('Enter resume information manually or');?>
-                                                        <a href="http://www.catsone.com/?a=getcats"><?php _e('upgrade to CATS Professional');?></a>.
-                                                    <?php endif; ?>
-                                                <?php endif; ?>
-                                            <?php endif; ?>
+                                           
                                             </div>
                                         </td>
                                     </tr>

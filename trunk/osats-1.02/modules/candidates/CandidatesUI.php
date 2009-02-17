@@ -647,14 +647,14 @@ class CandidatesUI extends UserInterface
         if (!eval(Hooks::get('CANDIDATE_ADD'))) return;
 
         /* If parsing is not enabled server-wide, say so. */
-        if (!LicenseUtility::isParsingEnabled())
-        {
+        /*if (!LicenseUtility::isParsingEnabled())*/
+       /* {
             $isParsingEnabled = false;
         }
-        /* For CATS Toolbar, if e-mail has been sent and it wasn't set by
+*/        /* For CATS Toolbar, if e-mail has been sent and it wasn't set by
          * parser, it's toolbar and it needs the old format.
          */
-        else if (!isset($preassignedFields['email']))
+        if (!isset($preassignedFields['email']))
         {
             $isParsingEnabled = true;
         }
@@ -671,7 +671,7 @@ class CandidatesUI extends UserInterface
             $isParsingEnabled = false;
         }
 
-        if (is_array($parsingStatus = LicenseUtility::getParsingStatus()) &&
+        if (is_array($parsingStatus = true) &&
             isset($parsingStatus['parseLimit']))
         {
             $parsingStatus['parseLimit'] = $parsingStatus['parseLimit'] - 1;
@@ -701,7 +701,7 @@ class CandidatesUI extends UserInterface
 
     public function checkParsingFunctions()
     {
-        if (LicenseUtility::isParsingEnabled())
+        /*if (isParsingEnabled = true)*/
         {
             if (isset($_POST['documentText'])) $contents = $_POST['documentText'];
             else $contents = '';
@@ -2502,18 +2502,15 @@ class CandidatesUI extends UserInterface
          * file already and just needs to be attached. The attachment has also successfully
          * been DocumentToText converted, so we know it's a good file.
          */
-        else if (LicenseUtility::isParsingEnabled())
-        {
+         
+/*
+        else if ($newFile !== true)
+        /*{*/
             /**
-             * Description: User clicks "browse" and selects a resume file. User doesn't click
-             * upload. The resume file is STILL uploaded.
-             * Controversial: User uploads a resume, parses, etc. User selects a new file with
-             * "Browse" but doesn't click "Upload". New file is accepted.
-             * It's technically correct either way, I'm opting for the "use whats in "file"
-             * box over what's already uploaded method to avoid losing resumes on candidate
-             * additions.
+             * Need to change this so that it will allow uploads on the ADD Candidate. Removed until License Utility is fully out. - Jamin
              */
-            $newFile = FileUtility::getUploadFileFromPost($this->_siteID, 'addcandidate', 'documentFile');
+  
+  /*          $newFile = FileUtility::getUploadFileFromPost($this->_siteID, 'addcandidate', 'documentFile');
 
             if ($newFile !== false)
             {
@@ -2602,6 +2599,7 @@ class CandidatesUI extends UserInterface
                 if (!eval(Hooks::get('CANDIDATE_ON_CREATE_ATTACHMENT_POST'))) return;
             }
         }
+*/
 
         /* Create a text resume if the user posted one. (automated tool) */
         else if (!empty($textResumeBlock))
