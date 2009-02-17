@@ -29,7 +29,7 @@
             <table>
                 <tr>
                     <td>
-                        OSATS came about because of a Applicant Tracking System application was made open source at first... then the creator decided to go greedy!<br/>
+                        OSATS came about because of a Applicant Tracking System application was made open source at first... then the creator decided to go commercial!<br/>
 						So... a community of real open source heros came together to bring about the worlds TRULY open source applicant tracking system. <br/>
 						Visit ------ for more info. 
                     </td>
