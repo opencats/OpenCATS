@@ -44,8 +44,8 @@ class SettingsUI extends UserInterface
         $this->_realAccessLevel = $_SESSION['CATS']->getRealAccessLevel();
         $this->_authenticationRequired = true;
         $this->_moduleDirectory = 'settings';
-        $this->_moduleName = 'settings';
-        $this->_moduleTabText = __('Settings');
+        $this->_moduleName      = 'settings';
+        $this->_moduleTabText   = __('Settings');
 
         /* Only CATS professional on site gets to make career portal customizer users. */
         /*if (!file_exists('modules/asp') && LicenseUtility::isProfessional())

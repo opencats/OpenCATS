@@ -13,7 +13,7 @@
     <body>
 
     <div id="headerBlock">
-        <span id="mainLogo">C&nbsp;A&nbsp;T&nbsp;S</span>
+        <span id="mainLogo">OSATS</span>
     </div>
 
     <div id="contents">

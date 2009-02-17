@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
     <head>
-        <title>** <?php _e('Authorized Logins Only') ?> ** OSATS</title>
+        <title><?php _e('Authorized Logins Only') ?> - OSATS</title>
         <meta http-equiv="Content-Type" content="text/html; charset=<?php echo(HTML_ENCODING); ?>" />
         <style type="text/css" media="all">@import "modules/login/login.css";</style>
         <script type="text/javascript" src="js/lib.js"></script>
@@ -52,6 +52,7 @@
                             <?php endif; ?>
 
 							<?php if ($this->siteNameFull != 'error'): ?>
+								<label id="intro"><?php _e('You Must Login with a Valid Username and Password') ?>!</label><br />&nbsp;<br />
                                 <label id="usernameLabel" for="username"><?php _e('Login Name') ?>:</label><br />
                                 <input name="username" id="username" class="login-input-box" value="<?php if (isset($this->username)) $this->_($this->username); ?>" />
                                 <br />
