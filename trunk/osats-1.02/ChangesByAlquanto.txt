@@ -1,5 +1,8 @@
 CHANGES BY ALQUANTO
 
+2009-02-18
+  * UPD phpmailer from version 1.73 to 2.3
+  
 2009-02-11
   * UPD smallpadlock.jpg replaced by lock.png in lib/TemplateUtility.php -> looks better and it's free (famfamfam)
   * UPD removed some spaces around upper right box
