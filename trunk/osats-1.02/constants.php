@@ -26,6 +26,9 @@ define('OSATSVER', '1.0.2');
 */
 define('COMPANYNAME_HTML', 'Go to constants.php and define your company name');
 
+/* MK define your session name here to cooperate with other apps on this site... */
+define('SESSION_NAME', 'OSATS');
+
 /* HTTP response codes. */
 define('HTTP_OK',             200);
 define('HTTP_FILE_NOT_FOUND', 404);
@@ -267,5 +270,3 @@ $badFileExtensions = array(
     'pl',
     'py'
 );
-
-?>
