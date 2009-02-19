@@ -327,7 +327,7 @@ class LoginUI extends UserInterface
                 $wizard->addPage($templateName, './modules/login/wizard/' . $template, '', false, true);
             }
             */
-        } */
+       
 
         // if logged in for the first time, change password
         if (strtolower($username) == 'admin' && $password === DEFAULT_ADMIN_PASSWORD)
