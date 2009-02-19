@@ -6,7 +6,7 @@
                     <?php _e('Review') ?>
                 </td>
                 <td align="right" valign="middle" class="infoFileText">
-                    <b><?php echo LicenseUtility::isParsingEnabled() ? __('Parsed and ') : ''; ?>Ready to Import</b> <?php echo number_format($cnt = count($this->documents), 0); ?> resume document<?php echo $cnt != 1 ? 's' : ''; ?>
+                    <b>Ready to Import</b> <?php echo number_format($cnt = count($this->documents), 0); ?> resume document<?php echo $cnt != 1 ? 's' : ''; ?>
                 </td>
             </tr>
         </table>
@@ -36,23 +36,14 @@
         </table>
     </div>
 
-    <div style="font-size: 14px;">
-        <?php if (LicenseUtility::isParsingEnabled()): ?>
-            CATS has attempted to extract relevant information like contact data, education and skill sets automatically.
-            This process is <b>not</b> an exact science and can sometimes guess incorrectly (or not at all). Click on a
-            row above to find out more information.
-            <br />
-            <b>Please review these results carefully and make any necessary changes before importing them!</b>
-        <?php else: ?>
-            By default, these documents will be imported as <u>searchable</u> resume files and <b>not</b> as candidates.
-            <br /><br />
-            <b>To import candidates: </b>Click on a document and manually enter information like name and
-            e-mail address. The document will then be imported as a candidate.
-        <?php endif; ?>
+    <div style="font-size: 18px;">
+        
+            OSATS - This is where the document gets uploaded. Still trying to get the parsing utility to work.
+        
     </div>
 
     <div style="text-align: right; margin-top: 20px;">
-        <input type="button" name="nextStep" id="nextStep" onclick="goStep4();" value="Import <?php if (LicenseUtility::isParsingEnabled()): ?>Candidates<?php else: ?>Resumes<?php endif; ?> ->" style="cursor: pointer;" />
+        <input type="button" name="nextStep" id="nextStep" onclick="goStep4();" value="Import Resumes ->" style="cursor: pointer;" />
     </div>
 
     <?php

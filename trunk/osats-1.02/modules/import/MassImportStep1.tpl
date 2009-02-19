@@ -80,7 +80,7 @@
 <?php elseif ($this->multipleFilesEnabled): ?>
     <span style="font-size: 16px;">
     <?php if ($this->uploadPath !== false): ?>
-        <?php _e('To import multiple files, move or copy your resume documents to the following directory on the computer that hosts CATS') ?>:
+        <?php _e('To import multiple files, move or copy your resume documents to the following directory on the computer that hosts OSATS') ?>:
         <br /><br />
 
         <b><?php echo $this->uploadPath; ?></b>
@@ -90,21 +90,19 @@
 
         <br /><br />
 
-        <?php if (LicenseUtility::isProfessional()): ?>
-        <?php _e('If you need any assistance, please contact the CATS support team.') ?></br >
-        <?php else: ?>
+        
         <?php _e('If you need assistance in uploading files to your web server, contact your system administrator.') ?><br />
-        <?php endif; ?>
+        
     <?php else: ?>
-        In order to import resume documents into CATS, you need to create a directory named "<b>upload</b>" on the computer
+        In order to import resume documents into OSATS, you need to create a directory named "<b>upload</b>" on the computer
         that hosts cats. This directory needs to have its permissions set to allow files to be created by your
         web server.
         <br /><br />
         <b>Linux Instructions:</b>
         <br />
         <blockquote>
-        <span style="color: #c0c0c0;">&gt;</span> mkdir /PATH/TO/CATS/upload<br />
-        <span style="color: #c0c0c0;">&gt;</span> chmod -R 777 /PATH/TO/CATS/upload
+        <span style="color: #c0c0c0;">&gt;</span> mkdir /PATH/TO/OSATS/upload<br />
+        <span style="color: #c0c0c0;">&gt;</span> chmod -R 777 /PATH/TO/OSAT/upload
         </blockquote>
         <br />
         <b>Windows Instructions:</b>
@@ -115,53 +113,25 @@
         </blockquote>
     <?php endif; ?>
     </span>
-
-
-<?php else: ?>
-    <?php _e('The automated bulk resume import feature has been temporarily disabled.') ?><br /><br />
-    <?php _e('To import resumes into the bulk resume pool, please contact %s for assistance from the CATS team.', '<a href="mailto:support@catsone.com">support@catsone.com</a>') ?>
-    <br />
-
-
 <?php endif; ?>
 
-<?php if (LicenseUtility::isParsingEnabled()): ?>
 <div style="padding: 10px; margin-top: 15px; text-align: left;">
     <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-            <td align="left" valign="top" style="padding-right: 20px;">
-                <a href="http://www.resfly.com" target="_blank">
-                    <img src="images/poweredByResfly.jpg" border="0" style="border: 1px solid #c0c0c0;" />
-                </a>
-            </td>
             <td align="left" valign="top">
-                <span style="font-size: 16px;">
-                <?php if (LicenseUtility::isProfessional()): ?>
-                You are a registered CATS Professional user <b><?php echo LicenseUtility::getName(); ?></b>.
-                <?php elseif (LicenseUtility::isOpenSource()): ?>
-                <b>You are a registered open source user of CATS.</b>
-                <?php endif; ?>
-                </span>
 
                 <p />
-                <?php if (file_exists('modules/asp') || (is_array($status = LicenseUtility::getParsingStatus()) && $status['parseLimit'] == -1)): ?>
-                    <span style="font-size: 14px; color: #333333;">
-                    You have unlimited use of the Resfly parsing service, which searches your resume files for contact
-                    and resume information. CATS will import all applicable resume documents as candidates.
-                    </span>
-                <?php else: ?>
+                
                     <span style="font-size: 14px; color: #333333;">
                     Your resume documents will be imported as searchable documents but <b>not</b> as candidates unless you manually complete the required fields for each document (first and last names).
                     <br /><br />
-                    With the Resfly parsing service, much of the candidate's information can be imported automatically.
-                    <br />
-                    Consider <a href="http://www.catsone.com/?a=getcats" style="font-size: 14px;" target="_blank">upgrading to CATS Professional</a> for unlimited use of this service.
+                    DEVELOPOER NOTE!!!!!   WE NEED TO FIND A RESUME PARSER ASIDE FROM RESFLY (its owned by catsone)
+                
                     </span>
-                <?php endif; ?>
+                
             </td>
         </tr>
     </table>
 </div>
-<?php endif; ?>
 
 </div>
