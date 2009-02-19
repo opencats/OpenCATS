@@ -1,8 +1,7 @@
 <b>Please enter your e-mail address.</b>
 <p />
-This will be set as your default CATS e-mail address for notifications.
-<br />It will also be where
-receipients you e-mail internally from CATS should reply to.
+Please setup your email address for OSATS communications. This will be the REPLY TO address that users will see.
+
 <p />
 <div id="emailBeacon" style="display: none;">&nbsp;</div>
 <table cellpadding="0" cellspacing="0" border="0">
