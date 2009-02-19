@@ -12,11 +12,6 @@
 
     <body>
 
-    <div id="headerBlock">
-        <span id="mainLogo">C&nbsp;A&nbsp;T&nbsp;S</span><br />
-        <span id="subMainLogo">Applicant Tracking System</span>
-    </div>
-
     <div id="contents">
         <div id="login" style="width: 500px;">
             <?php if (!empty($this->message)): ?>
@@ -39,7 +34,7 @@
                 <div id="subFormBlock" style="text-align: left;">
                     <form name="configurationForm" id="configurationForm" action="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=<?php echo($this->action); ?>" method="post" autocomplete="off">
                         <input type="hidden" name="postback" value="postback" />
-                        <label id="passwordLabel1" for="password1">New Password</label><br />
+                        <label id="passwordLabel1" for="password1">Enter New Password</label><br />
                         <input type="password" name="password1" id="password1" class="input-box" />
                         <br />
 
@@ -127,7 +122,7 @@
            <?php if ($this->inputType == 'conclusion'): ?>
                 <div id="subFormBlock" style="text-align: center;">
                     <form name="configurationForm" id="configurationForm" action="<?php echo(osatutil::getIndexName()); ?>?m=<?php echo($this->home); ?>" method="post" autocomplete="off">
-                        <input type="submit" id="submit" name="submit" class="button" value="Continue Using CATS" />
+                        <input type="submit" id="submit" name="submit" class="button" value="Begin the OSATS adventure!" />
                     </form>
                 </div>
            <?php endif; ?>

@@ -330,11 +330,11 @@ class LoginUI extends UserInterface
        
 
         // if logged in for the first time, change password
-        if (strtolower($username) == 'admin' && $password === DEFAULT_ADMIN_PASSWORD)
+       /* if (strtolower($username) == 'admin' && $password === DEFAULT_ADMIN_PASSWORD)
         {
             $wizard->addPage('Password', './modules/login/wizard/Password.tpl', '', false, true);
         }
-
+ */
         // make user set an e-mail address
         if (trim($_SESSION['CATS']->getEmail()) == '')
         {
@@ -347,10 +347,10 @@ class LoginUI extends UserInterface
             $wizard->addPage('Site', './modules/login/wizard/SiteName.tpl', '', false, true);
         }
 
-        // CATS Hosted Wizard Pages
+        // Wizard Pages
         if (!eval(Hooks::get('ASP_WIZARD_PAGES'))) return;
 
-        if ($_SESSION['CATS']->isFirstTimeSetup())
+        /*if ($_SESSION['CATS']->isFirstTimeSetup())
         {
             $wizard->addPage('Setup Users', './modules/login/wizard/Users.tpl', '
                 $users = new Users($siteID);
@@ -365,6 +365,7 @@ class LoginUI extends UserInterface
 
             if (!eval(Hooks::get('ASP_WIZARD_IMPORT'))) return;
         }
+	*/
 
         // The wizard will not display if no pages have been added.
         $wizard->doModal();

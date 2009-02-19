@@ -1776,8 +1776,8 @@ class SettingsUI extends UserInterface
     private function newInstallPassword()
     {
         $this->_template->assign('inputType', 'password');
-        $this->_template->assign('title', 'Create Administrator Password');
-        $this->_template->assign('prompt', 'Congratulations! You have successfully logged onto CATS for the first time. Please create a new administrator password. Note that you cannot use \'cats\' as a password.');
+        $this->_template->assign('title', 'Change default Administrator Password');
+        $this->_template->assign('prompt', 'For Security Reasons - Please create a new administrator password. You cannot reuse the default "osats" password.');
         $this->_template->assign('action', $this->getAction());
         $this->_template->assign('home', 'home');
         $this->_template->display('./modules/settings/NewInstallWizard.tpl');
@@ -1811,7 +1811,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('inputType', 'siteName');
         $this->_template->assign('inputTypeTextParam', 'Site Name');
         $this->_template->assign('title', 'Site Name');
-        $this->_template->assign('prompt', 'You have no site name defined. Please create a name for your CATS installation (for example, MyCompany, Inc.). This will be displayed in the top right corner of all CATS pages.');
+        $this->_template->assign('prompt', 'You have no site name defined. Please create a name for your OSATS installation (for example, MyCompany, Inc.). This will be displayed in the top right corner of all CATS pages.');
         $this->_template->assign('action', $this->getAction());
         $this->_template->assign('home', 'home');
         $this->_template->display('./modules/settings/NewInstallWizard.tpl');
@@ -1869,7 +1869,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('inputType', 'siteName');
         $this->_template->assign('inputTypeTextParam', 'E-Mail Address');
         $this->_template->assign('title', 'E-Mail Address');
-        $this->_template->assign('prompt', 'CATS does not know what your e-mail address is for sending notifications. Please type your e-mail address in the box below.');
+        $this->_template->assign('prompt', 'OSATS does not know what your e-mail address is for sending notifications. Please type your e-mail address in the box below.');
         $this->_template->assign('action', $this->getAction());
         $this->_template->assign('home', 'home');
         $this->_template->display('./modules/settings/NewInstallWizard.tpl');
@@ -1901,7 +1901,6 @@ class SettingsUI extends UserInterface
 
     private function newInstallFinished()
     {
-        NewVersionCheck::checkForUpdate();
 
         $accessLevel = $_SESSION['CATS']->getAccessLevel();
 
@@ -1914,11 +1913,11 @@ class SettingsUI extends UserInterface
         if ($mailerSettingsRS['configured'] == '0' &&
             $accessLevel >= ACCESS_LEVEL_SA)
         {
-            $this->_template->assign('prompt', 'Your site name has been saved. This concludes the required CATS configuration wizard.<BR><BR><span style="font-weight: bold;">Warning:</span><BR><BR> E-mail features are disabled. In order to enable e-mail features (such as e-mail notifications), please configure your e-mail settings by clicking on the Settings tab and then clicking on Administration.');
+            $this->_template->assign('prompt', 'Your site name has been saved. This concludes the required OSATS configuration wizard.<BR><BR><span style="font-weight: bold;">Warning:</span><BR><BR> E-mail features are disabled. In order to enable e-mail features (such as e-mail notifications), please configure your e-mail settings by clicking on the Settings tab and then clicking on Administration.');
         }
         else
         {
-            $this->_template->assign('prompt', 'Your site name has been saved. This concludes the required CATS configuration wizard.');
+            $this->_template->assign('prompt', 'Your site name has been saved. This concludes the required OSATS configuration wizard.');
         }
 
         $this->_template->assign('action', $this->getAction());
@@ -1949,16 +1948,16 @@ class SettingsUI extends UserInterface
         }
 
         /* Bail out if the password is 'cats'. */
-        if ($newPassword == 'cats')
+        if ($newPassword == 'osats')
         {
-            $error = 'New password cannot equal \'cats\'.';
+            $error = 'New password cannot equal \'osats\'.';
         }
 
         /* Attempt to change the user's password. */
         if (!$error)
         {
             $users = new Users($this->_siteID);
-            if ($users->changePassword($this->_userID, 'cats', $newPassword) != LOGIN_SUCCESS)
+            if ($users->changePassword($this->_userID, 'osats', $newPassword) != LOGIN_SUCCESS)
             {
                 $error = 'Unable to reset password.';
             }
