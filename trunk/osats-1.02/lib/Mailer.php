@@ -13,6 +13,7 @@
 $errorReporting = error_reporting();
 error_reporting($errorReporting & ~ E_STRICT);
 include_once('./lib/phpmailer/class.phpmailer.php');
+include_once('./lib/i18n.php');
 error_reporting($errorReporting);
 
 // FIXME: Remove this dependency! Bad bad bad!
@@ -53,7 +54,7 @@ class Mailer
         /* Configure PHPMailer based on CATS configuration settings. */
         $this->refreshSettings();
 
-        $this->_mailer->SetLanguage('en', './lib/phpmailer/language/');
+        $this->_mailer->SetLanguage(i18n::getLanguageToken(), './lib/phpmailer/language/');
 
         /* Stuff for E-Mail logging. */
         // FIXME: Do this in the UserInterface. Session dependencied in
