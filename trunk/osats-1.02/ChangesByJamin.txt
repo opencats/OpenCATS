@@ -1,3 +1,23 @@
+2-23-2009
+---
+Full rewrite of the installation.
+This installation is called when a few items do not exist.
+1. The INSTALLED value in the DB under the SYSTEM table is set to NULL
+or
+2. The index.php cannot get access to the mySQL db (it assumes the db is not there)
+
+This new installation wizard is not pretty by any means (we can pretty it up later)
+The purpose of the wizard is to literally have the user setup their server and then drop the entire folder into their web root and browse to the index.php page. The wizard will take over from there.
+
+If the DB is installed, the wizard will DROP and RECREATE the database (no upgrade path just yet)
+
+If you want to reinstall, you can set the INSTALLED bit in the DB through Settings -> Administration menu in the OSATS program. A new link has been added called Reset Installation.
+
+
+* As always... this is a total rewrite in progress. Please send comments as you see fit!
+
+
+
 2-13-2009
 ---
 Removed the license issue.  No need to register or put the license key in the Config.php.

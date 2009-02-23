@@ -8,10 +8,24 @@
 /* Retrieve all the value from the System table to check if OSATS has been installed yet.
    * If the value is null then its false, if the value is 1 then its true.
 */
-include_once('./config.php');
+include_once('./dbconfig.php');
 
-mysql_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS) or die("Check your DATABASE_HOST, DATABASE_USER, DATABASE_PASS, in the config.php then retry!");
-mysql_select_db(DATABASE_NAME) or die("You must ensure you created the database called OSATS before proceeding!");
+$myServer = mysql_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS);
+	if (!$myServer)
+		{
+		/* dbserver does not exist or is incorrect. Run installation process*/
+			include('_install/install.php');
+			die();
+		}
+	else
+		{
+			$myDB = mysql_select_db(DATABASE_NAME);
+			if (!$myDB)
+				{/* dbserver exists but no db found.. Run installation process*/
+				include('_install/install.php');
+				die();
+				}
+		}
 
 $result = mysql_query("SELECT Installed FROM system");
 
@@ -19,7 +33,7 @@ if (!$result==null)
 	$row = mysql_result( $result,'Installed');
 	if ($row==null)//if the table does not have a 1 in it, then run the setup wizard.
 	{
-    	include('installation.php');
+    	include('_install/install.php');
 		die();
 	}
 

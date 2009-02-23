@@ -168,6 +168,14 @@
 									</b>
                                         <i>Change how OSATS interacts with the server to schedule tasks.</i>
                                 </td>
+                                <td width="230">
+                                    <img src="images/2dot1c.gif" alt="" />
+                                        <a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration&amp;s=resetbit">
+                                            Reset Installation
+                                        </a>
+                                    <br>
+                                        This will allow you to change the Installed value in the database in the event you wish to reinstall OSATS.
+                                </td>
                             </tr>
                             </table>
                         <br />

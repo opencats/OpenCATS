@@ -5,13 +5,6 @@
    *
    * Open Source GNU License will apply
 */
-
-/* Database configuration. */
-define('DATABASE_USER', 'root');
-define('DATABASE_PASS', '');
-define('DATABASE_HOST', 'localhost');
-define('DATABASE_NAME', 'osats');
-
 /* Resfly.com Resume Import Services Enabled */
 define('PARSING_ENABLED', true);
 

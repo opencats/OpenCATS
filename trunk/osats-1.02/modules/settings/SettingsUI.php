@@ -2073,8 +2073,12 @@ class SettingsUI extends UserInterface
                 case 'siteName':
                     $templateFile = './modules/settings/SiteName.tpl';
                     break;
-
-                case 'newVersionCheck':
+				
+				case 'resetbit':
+                    $templateFile = './modules/settings/resetbit.tpl';
+                    break;
+                
+				case 'newVersionCheck':
                     if (!$systemAdministration)
                     {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
@@ -2192,12 +2196,8 @@ class SettingsUI extends UserInterface
         $careerPortalUnlock = false;
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
         $cpData = $careerPortalSettings->getAll();
-        if (intval($cpData['enabled']) || (file_exists('modules/asp') && !$_SESSION['CATS']->isFree()) ||
-            LicenseUtility::isProfessional())
-        {
-            $careerPortalUnlock = true;
-        }
-
+        $careerPortalUnlock = true;
+        
         $this->_template->assign('careerPortalUnlock', $careerPortalUnlock);
         $this->_template->assign('subActive', 'Administration');
         $this->_template->assign('systemAdministration', $systemAdministration);
