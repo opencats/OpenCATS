@@ -15,7 +15,7 @@ input.userAddField:focus { background-color: #D7E0F5; border: 1px solid #666666;
 
 #contentAddUser { position: absolute; left: 150px; top: 75px; margin: 5px 0 5px 0; padding: 20px; visibility: hidden; }
 </style>
-<b>Setup users who can access your CATS site.</b>
+<b>Setup users who can access your OSATS site.</b>
 <br />
 <br />
 <table cellpadding="0" cellspacing="0" border="0" width="100%" class="userTable">
@@ -71,7 +71,7 @@ You can get more by clicking <b>Settings</b>-><b>Administration</b>-><b>User Man
 <?php endif; ?>
 
 <?php if (count($this->users) == 1): ?>
-We strongly suggest adding another user to help you utilize the "team" features of CATS.
+We strongly suggest adding another user to help you utilize the "team" features of OSATS.
 <?php endif; ?>
 
 <div id="contentAddUser">

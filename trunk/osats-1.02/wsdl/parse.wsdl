@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<definitions name="CATSDocumentParse"
-        targetNamespace="urn:CATSDocumentParse"
-        xmlns:typens="urn:CATSDocumentParse"
+<definitions name="OSATSDocumentParse"
+        targetNamespace="urn:OSATSDocumentParse"
+        xmlns:typens="urn:OSATSDocumentParse"
         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
         xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
         xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
@@ -10,7 +10,7 @@
 
     <!-- Types for results -->
     <types>
-        <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CATSDocumentParse">
+        <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:OSATSDocumentParse">
             <xsd:complexType name="DocumentParseResult">
                 <xsd:all>
                     <xsd:element name="message"             type="xsd:string"/>
@@ -44,7 +44,7 @@
     </message>
 
     <!-- Port -->
-    <portType name="CATSDocumentParsePort">
+    <portType name="OSATSDocumentParsePort">
         <operation name="DocumentParse">
             <input message="typens:DocumentParseMessage"/>
             <output message="typens:DocumentParseResponse"/>
@@ -53,28 +53,28 @@
 
   <!-- Bindings for each operation -->
 
-    <binding name="CATSDocumentParseBinding"                type="typens:CATSDocumentParsePort">
+    <binding name="OSATSDocumentParseBinding"                type="typens:OSATSDocumentParsePort">
         <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
 
         <operation name="DocumentParse">
-            <soap:operation soapAction="urn:CATSDocumentParseAction"/>
+            <soap:operation soapAction="urn:OSATSDocumentParseAction"/>
 
             <input>
                 <soap:body use="encoded"
-                namespace="urn:CATSDocumentParse"
+                namespace="urn:OSATSDocumentParse"
                 encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </input>
             <output>
                 <soap:body use="encoded"
-                namespace="urn:CATSDocumentParse"
+                namespace="urn:OSATSDocumentParse"
                 encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </output>
         </operation>
     </binding>
 
     <!-- Endpoint -->
-    <service name="CATSDocumentParseService">
-        <port name="CATSDocumentParsePort" binding="typens:CATSDocumentParseBinding">
+    <service name="OSATSDocumentParseService">
+        <port name="OSATSDocumentParsePort" binding="typens:OSATSDocumentParseBinding">
             <soap:address location="http://soap.resfly.com/parse.php"/>
         </port>
     </service>

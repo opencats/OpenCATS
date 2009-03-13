@@ -5,9 +5,9 @@ REMOVAL_FILE='scripts/removeWebsiteSymLinks.sh'
 RELEASE_REMOVAL_FILE='scripts/makeReleaseRmSymLinks.sh'
 ASP_WEBSITE_PATH='modules/asp/website'
 
-# Change path if user isn't in CATS root
+# Change path if user isn't in OSATS root
 while [ ! -d "${ASP_WEBSITE_PATH}" ] && [ `pwd` != "/" ]; do
-    echo -n "CATS not found in `pwd`... trying "
+    echo -n "OSATS not found in `pwd`... trying "
     cd ..
     echo -n "`pwd`"
     if [ -d "${ASP_WEBSITE_PATH}" ];
@@ -19,14 +19,14 @@ while [ ! -d "${ASP_WEBSITE_PATH}" ] && [ `pwd` != "/" ]; do
 done
 if [ ! -d "${ASP_WEBSITE_PATH}" ];
 then
-    echo "Cannot find CATS. Please run this script "
-    echo "from a path within a CATS installation."
+    echo "Cannot find OSATS. Please run this script "
+    echo "from a path within a OSATS installation."
     exit 1
 fi
 
 if [ $# -eq 0 ];
 then
-    echo "This script will automatically create symbolic links for the CATS root "
+    echo "This script will automatically create symbolic links for the OSATS root "
     echo "folder to the website in the ASP module."
     echo
     echo "If you need a log, please re-run this command as:"
@@ -36,10 +36,10 @@ then
     read
 fi
 
-echo "# Automated symbolic link removal for the CATS ASP website module" > $REMOVAL_FILE
+echo "# Automated symbolic link removal for the OSATS ASP website module" > $REMOVAL_FILE
 echo "# This script should be remove all ASP specific sym-links." >> $REMOVAL_FILE
 echo "" >> $REMOVAL_FILE
-echo "# Automated symbolic link removal for the CATS ASP website module" > $RELEASE_REMOVAL_FILE
+echo "# Automated symbolic link removal for the OSATS ASP website module" > $RELEASE_REMOVAL_FILE
 echo "# This script should be remove all ASP specific sym-links." >> $RELEASE_REMOVAL_FILE
 echo "" >> $RELEASE_REMOVAL_FILE
 
@@ -59,7 +59,7 @@ function createSymLink {
 
     # Add a line to a sym links removal script for makeRelease.sh
     echo "echo -en \"Removing the ASP website \\\"${SYM_NAME}\\\" symbolic link... \"" >> $RELEASE_REMOVAL_FILE
-    echo "rm -f \"~/catsRC/cats/${SYM_NAME}\" 2>/dev/null && echo \"Success\" || echo \"Not Found!\"" >> $RELEASE_REMOVAL_FILE
+    echo "rm -f \"~/OSATSRC/OSATS/${SYM_NAME}\" 2>/dev/null && echo \"Success\" || echo \"Not Found!\"" >> $RELEASE_REMOVAL_FILE
 }
 
 # Add new Symbolic Links below, just copy and change the name
@@ -67,7 +67,7 @@ function createSymLink {
 SYM_NAME='blog'
 createSymLink
 
-SYM_NAME='catsnewversion.php'
+SYM_NAME='OSATSnewversion.php'
 createSymLink
 
 SYM_NAME='cpl'

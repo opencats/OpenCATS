@@ -91,7 +91,7 @@
                     function defaultLogin()
                     {
                         document.getElementById('username').value = 'admin';
-                        document.getElementById('password').value = 'cats';
+                        document.getElementById('password').value = 'OSATS';
                         document.getElementById('loginForm').submit();
                     }
                 <?php endif; ?>

@@ -1,11 +1,11 @@
 # This is Indeed.com's XML export template to be used when automatically
-# adding jobs to their database from CATS' career portal site.
+# adding jobs to their database from OSATS' career portal site.
 
 >>header
 <?xml version="1.0"?>
 <source>
-<publisher>CATS Applicant Tracking System</publisher>
-<publisherurl>http://www.catsone.com</publisherurl>
+<publisher>OSATS Applicant Tracking System</publisher>
+<publisherurl>http://www.OSATSone.com</publisherurl>
 <lastBuildDate>$[date]</lastBuildDate>
 <<header
 

@@ -20,7 +20,7 @@
             <table class="searchTable" width="100%">
                 <tr>
                     <td>
-                        <div style="width: 700px;">These options affect how CATS formats numbers, dates, and time. <span style="font-weight:bold;">You (and your other site users) will need to log out and log back in for these settings to take effect.</span></div>
+                        <div style="width: 700px;">These options affect how OSATS formats numbers, dates, and time. <span style="font-weight:bold;">You (and your other site users) will need to log out and log back in for these settings to take effect.</span></div>
                         <br />
                         <form action="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration" id="localizationForm" method="post">
                             <input type="hidden" name="postback" value="postback" />

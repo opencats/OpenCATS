@@ -5,18 +5,7 @@
  * $Id: constants.php 3785 2007-12-03 21:59:23Z brian $
  */
 
-$coreModules = array(
-    'home'       => '1',
-    'activity'   => '2',
-    'joborders'  => '3',
-    'candidates' => '4',
-    'companies'  => '5',
-    'contacts'   => '6',
-    'lists'      => '7',
-    'calendar'   => '8',
-    'reports'    => '9',
-    'settings'   => '10',
-);
+//include ('modulesList.php'); //Dont need anymore. Jamin
 
 /* OSATS Version */
 define('OSATSVER', '1.0.2');
@@ -126,7 +115,7 @@ define('DATE_FORMAT_SECONDS',  0x8);
 /* Automated backup types (ASP). */
 define('BACKUP_TAR', 1);
 define('BACKUP_ZIP', 2);
-define('BACKUP_CATS', 3);
+define('BACKUP_OSATS', 3);
 
 /* Saved lists getAll flags. */
 define('ALL_LISTS',     0);

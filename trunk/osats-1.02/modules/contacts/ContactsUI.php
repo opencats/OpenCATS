@@ -1,22 +1,22 @@
 <?php
 /*
- * CATS
+ * OSATS
  * Contacts Module
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
  *
- * The contents of this file are subject to the CATS Public License
+ * The contents of this file are subject to the OSATS Public License
  * Version 1.1a (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- * http://www.catsone.com/.
+ * http://www.OSATSone.com/.
  *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  * License for the specific language governing rights and limitations
  * under the License.
  *
- * The Original Code is "CATS Standard Edition".
+ * The Original Code is "OSATS Standard Edition".
  *
  * The Initial Developer of the Original Code is Cognizo Technologies, Inc.
  * Portions created by the Initial Developer are Copyright (C) 2005 - 2007
@@ -181,7 +181,7 @@ class ContactsUI extends UserInterface
 
         $this->_template->assign('active', $this);
         $this->_template->assign('dataGrid', $dataGrid);
-        $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
+        $this->_template->assign('userID', $_SESSION['OSATS']->getUserID());
         $this->_template->assign('errMessage', $errMessage);
 
         $contacts = new Contacts($this->_siteID);
@@ -346,7 +346,7 @@ class ContactsUI extends UserInterface
         }
 
         /* Add an MRU entry. */
-        $_SESSION['CATS']->getMRU()->addEntry(
+        $_SESSION['OSATS']->getMRU()->addEntry(
             DATA_ITEM_CONTACT, $contactID, $data['firstName'] . ' ' . $data['lastName']
         );
 
@@ -372,7 +372,7 @@ class ContactsUI extends UserInterface
         $this->_template->assign('activityRS', $activityRS);
         $this->_template->assign('contactID', $contactID);
         $this->_template->assign('privledgedUser', $privledgedUser);
-        $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('sessionCookie', $_SESSION['OSATS']->getCookie());
 
         if (!eval(Hooks::get('CONTACTS_SHOW'))) return;
 
@@ -388,7 +388,7 @@ class ContactsUI extends UserInterface
         $contacts = new Contacts($this->_siteID);
 
         /* Do we have a selected_company_id? */
-        if ($_SESSION['CATS']->isHrMode())
+        if ($_SESSION['OSATS']->isHrMode())
         {
             $selectedCompanyID = $companies->getDefaultCompany();
             $companyRS = $companies->get($selectedCompanyID);
@@ -430,7 +430,7 @@ class ContactsUI extends UserInterface
         $this->_template->assign('companyRS', $companyRS);
         $this->_template->assign('reportsToRS', $reportsToRS);
         $this->_template->assign('selectedCompanyID', $selectedCompanyID);
-        $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('sessionCookie', $_SESSION['OSATS']->getCookie());
         $this->_template->display('./modules/contacts/Add.tpl');
     }
 
@@ -584,7 +584,7 @@ class ContactsUI extends UserInterface
         $usersRS = $users->getSelectList();
 
         /* Add an MRU entry. */
-        $_SESSION['CATS']->getMRU()->addEntry(
+        $_SESSION['OSATS']->getMRU()->addEntry(
             DATA_ITEM_CONTACT, $contactID, $data['firstName'] . ' ' . $data['lastName']
         );
 
@@ -646,7 +646,7 @@ class ContactsUI extends UserInterface
         $this->_template->assign('usersRS', $usersRS);
         $this->_template->assign('reportsToRS', $reportsToRS);
         $this->_template->assign('contactID', $contactID);
-        $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('sessionCookie', $_SESSION['OSATS']->getCookie());
         $this->_template->display('./modules/contacts/Edit.tpl');
     }
 
@@ -752,7 +752,7 @@ class ContactsUI extends UserInterface
                     '%CONTFIRSTNAME%',
                     '%CONTFULLNAME%',
                     '%CONTCLIENTNAME%',
-                    '%CONTCATSURL%'
+                    '%CONTOSATSURL%'
                 );
                 $replacementStrings = array(
                     $ownerDetails['fullName'],
@@ -859,7 +859,7 @@ class ContactsUI extends UserInterface
         $contacts->delete($contactID);
 
         /* Delete the MRU entry if present. */
-        $_SESSION['CATS']->getMRU()->removeEntry(
+        $_SESSION['OSATS']->getMRU()->removeEntry(
             DATA_ITEM_CONTACT, $contactID
         );
 
@@ -1086,7 +1086,7 @@ class ContactsUI extends UserInterface
 
         if (!eval(Hooks::get('CONTACTS_ADD_ACTIVITY_SCHEDULE_EVENT'))) return;
 
-        if (SystemUtility::isSchedulerEnabled() && !$_SESSION['CATS']->isDemo())
+        if (SystemUtility::isSchedulerEnabled() && !$_SESSION['OSATS']->isDemo())
         {
             $allowEventReminders = true;
         }
@@ -1098,7 +1098,7 @@ class ContactsUI extends UserInterface
         $this->_template->assign('contactID', $contactID);
         $this->_template->assign('regardingRS', $regardingRS);
         $this->_template->assign('allowEventReminders', $allowEventReminders);
-        $this->_template->assign('userEmail', $_SESSION['CATS']->getEmail());
+        $this->_template->assign('userEmail', $_SESSION['OSATS']->getEmail());
         $this->_template->assign('onlyScheduleEvent', $onlyScheduleEvent);
         $this->_template->assign('calendarEventTypes', $calendarEventTypes);
         $this->_template->assign('isFinishedMode', false);
@@ -1475,7 +1475,7 @@ class ContactsUI extends UserInterface
                 $eventTypeID, $date, $description, $allDay, $this->_userID,
                 $contactID, DATA_ITEM_CONTACT, $eventJobOrderID, $title,
                 $duration, $reminderEnabled, $reminderEmail, $reminderTime,
-                $publicEntry, $_SESSION['CATS']->getTimeZoneOffset()
+                $publicEntry, $_SESSION['OSATS']->getTimeZoneOffset()
             );
 
             if ($eventID <= 0)

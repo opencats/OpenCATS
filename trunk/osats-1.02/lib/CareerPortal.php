@@ -4,7 +4,7 @@
    * GNU License
    *
    *
-   * @package    CATS
+   * @package    OSATS
    * @subpackage Library
    * @copyright Open Source
    * @version    1.0
@@ -14,7 +14,7 @@ include_once('./lib/Mailer.php');
 
 /**
  *	Career Portal Settings Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class CareerPortalSettings
@@ -60,9 +60,9 @@ class CareerPortalSettings
             'candidateRegistration' => '0', /* false */
             'showDepartment'        => '1', /* true */
             'showCompany'           => '0', /* false */
-            'activeBoard'           => 'CATS 2.0',
+            'activeBoard'           => 'OSATS 2.0',
             'allowXMLSubmit'        => '1', /* true */
-            'useCATSTemplate'       => ''
+            'useOSATSTemplate'       => ''
         );
 
         /* Get all career portal settings for this site from the database. */

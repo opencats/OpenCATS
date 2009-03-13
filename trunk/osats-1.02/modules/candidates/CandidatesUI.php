@@ -272,7 +272,7 @@ class CandidatesUI extends UserInterface
 
         $this->_template->assign('active', $this);
         $this->_template->assign('dataGrid', $dataGrid);
-        $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
+        $this->_template->assign('userID', $_SESSION['OSATS']->getUserID());
         $this->_template->assign('errMessage', $errMessage);
         $this->_template->assign('topLog', $topLog);
 
@@ -324,7 +324,7 @@ class CandidatesUI extends UserInterface
 
         if ($data['isAdminHidden'] == 1 && $this->_accessLevel < ACCESS_LEVEL_MULTI_SA)
         {
-            $this->listByView(__('This candidate is hidden - only a CATS Administrator can unlock the candidate.'));
+            $this->listByView(__('This candidate is hidden - only a OSATS Administrator can unlock the candidate.'));
             return;
         }
 
@@ -403,7 +403,7 @@ class CandidatesUI extends UserInterface
         $pipelines = new Pipelines($this->_siteID);
         $pipelinesRS = $pipelines->getCandidatePipeline($candidateID);
 
-        $sessionCookie = $_SESSION['CATS']->getCookie();
+        $sessionCookie = $_SESSION['OSATS']->getCookie();
 
         /* Format pipeline data. */
         foreach ($pipelinesRS as $rowIndex => $row)
@@ -486,7 +486,7 @@ class CandidatesUI extends UserInterface
         $extraFieldRS = $candidates->extraFields->getValuesForShow($candidateID);
 
         /* Add an MRU entry. */
-        $_SESSION['CATS']->getMRU()->addEntry(
+        $_SESSION['OSATS']->getMRU()->addEntry(
             DATA_ITEM_CANDIDATE, $candidateID, $data['firstName'] . ' ' . $data['lastName']
         );
 
@@ -543,7 +543,7 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('EEOSettingsRS', $EEOSettingsRS);
         $this->_template->assign('EEOValues', $EEOValues);
         $this->_template->assign('privledgedUser', $privledgedUser);
-        $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('sessionCookie', $_SESSION['OSATS']->getCookie());
 
         if (!eval(Hooks::get('CANDIDATE_SHOW'))) return;
 
@@ -617,7 +617,7 @@ class CandidatesUI extends UserInterface
         /* Get preuploaded resume text, if any */
         if ($this->isRequiredIDValid('resumeTextID', $_GET, true))
         {
-            $associatedTextResume = $_SESSION['CATS']->retrieveData($_GET['resumeTextID']);
+            $associatedTextResume = $_SESSION['OSATS']->retrieveData($_GET['resumeTextID']);
         }
         else
         {
@@ -627,7 +627,7 @@ class CandidatesUI extends UserInterface
         /* Get preuploaded resume file (unattached), if any */
         if ($this->isRequiredIDValid('resumeFileID', $_GET, true))
         {
-            $associatedFileResume = $_SESSION['CATS']->retrieveData($_GET['resumeFileID']);
+            $associatedFileResume = $_SESSION['OSATS']->retrieveData($_GET['resumeFileID']);
             $associatedFileResume['id'] = $_GET['resumeFileID'];
             $associatedFileResume['attachmentIcon'] = strtolower(
                 FileUtility::getAttachmentIcon(
@@ -651,7 +651,7 @@ class CandidatesUI extends UserInterface
        /* {
             $isParsingEnabled = false;
         }
-*/        /* For CATS Toolbar, if e-mail has been sent and it wasn't set by
+*/        /* For OSATS Toolbar, if e-mail has been sent and it wasn't set by
          * parser, it's toolbar and it needs the old format.
          */
         if (!isset($preassignedFields['email']))
@@ -782,7 +782,7 @@ class CandidatesUI extends UserInterface
                     // Save the short (un-pathed) name
                     $fields['documentTempFile'] = $newFileName;
 
-                    if (isset($_COOKIE['CATS_SP_TEMP_FILE']) && ($oldFile = $_COOKIE['CATS_SP_TEMP_FILE']) != '' &&
+                    if (isset($_COOKIE['OSATS_SP_TEMP_FILE']) && ($oldFile = $_COOKIE['OSATS_SP_TEMP_FILE']) != '' &&
                         strcasecmp($oldFile, $newFileName))
                     {
                         // Get the safe, old file they uploaded and didn't use (if exists) and delete
@@ -795,7 +795,7 @@ class CandidatesUI extends UserInterface
                     }
 
                     // Prevent users from creating more than 1 temp file for single parsing (sp)
-                    setcookie('CATS_SP_TEMP_FILE', $newFileName, time() + (60*60*24*7));
+                    setcookie('OSATS_SP_TEMP_FILE', $newFileName, time() + (60*60*24*7));
                 }
 
                 if (isset($_POST['parseDocument']) && $_POST['parseDocument'] == 'true' && $contents != '')
@@ -888,7 +888,7 @@ class CandidatesUI extends UserInterface
 
         if ($data['isAdminHidden'] == 1 && $this->_accessLevel < ACCESS_LEVEL_MULTI_SA)
         {
-            $this->listByView(__('This candidate is hidden - only a CATS Administrator can unlock the candidate.'));
+            $this->listByView(__('This candidate is hidden - only a OSATS Administrator can unlock the candidate.'));
             return;
         }
 
@@ -896,7 +896,7 @@ class CandidatesUI extends UserInterface
         $usersRS = $users->getSelectList();
 
         /* Add an MRU entry. */
-        $_SESSION['CATS']->getMRU()->addEntry(
+        $_SESSION['OSATS']->getMRU()->addEntry(
             DATA_ITEM_CANDIDATE, $candidateID, $data['firstName'] . ' ' . $data['lastName']
         );
 
@@ -941,7 +941,7 @@ class CandidatesUI extends UserInterface
         }
 
         /* Date format for DateInput()s. */
-        if ($_SESSION['CATS']->isDateDMY())
+        if ($_SESSION['OSATS']->isDateDMY())
         {
             $data['dateAvailableMDY'] = DateUtility::convert(
                 '-', $data['dateAvailable'], DATE_FORMAT_DDMMYY, DATE_FORMAT_MMDDYY
@@ -1089,7 +1089,7 @@ class CandidatesUI extends UserInterface
                     '%CANDOWNER%',
                     '%CANDFIRSTNAME%',
                     '%CANDFULLNAME%',
-                    '%CANDCATSURL%'
+                    '%CANDOSATSURL%'
                 );
                 $replacementStrings = array(
                     $ownerDetails['fullName'],
@@ -1234,7 +1234,7 @@ class CandidatesUI extends UserInterface
         $candidates->delete($candidateID);
 
         /* Delete the MRU entry if present. */
-        $_SESSION['CATS']->getMRU()->removeEntry(
+        $_SESSION['OSATS']->getMRU()->removeEntry(
             DATA_ITEM_CANDIDATE, $candidateID
         );
 
@@ -1251,7 +1251,7 @@ class CandidatesUI extends UserInterface
         /* Get list of candidates. */
         if (isset($_REQUEST['candidateIDArrayStored']) && $this->isRequiredIDValid('candidateIDArrayStored', $_REQUEST, true))
         {
-            $candidateIDArray = $_SESSION['CATS']->retrieveData($_REQUEST['candidateIDArrayStored']);
+            $candidateIDArray = $_SESSION['OSATS']->retrieveData($_REQUEST['candidateIDArrayStored']);
         }
         else if($this->isRequiredIDValid('candidateID', $_REQUEST))
         {
@@ -1363,7 +1363,7 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('isFinishedMode', false);
         $this->_template->assign('isResultsMode', $resultsMode);
         $this->_template->assign('candidateIDArray', $candidateIDArray);
-        $this->_template->assign('candidateIDArrayStored', $_SESSION['CATS']->storeData($candidateIDArray));
+        $this->_template->assign('candidateIDArrayStored', $_SESSION['OSATS']->storeData($candidateIDArray));
         $this->_template->display('./modules/candidates/ConsiderSearchModal.tpl');
     }
 
@@ -1402,7 +1402,7 @@ class CandidatesUI extends UserInterface
                 return;
             }
 
-            $candidateIDArray = $_SESSION['CATS']->retrieveData($_REQUEST['candidateIDArrayStored']);
+            $candidateIDArray = $_SESSION['OSATS']->retrieveData($_REQUEST['candidateIDArrayStored']);
 
             if (!is_array($candidateIDArray))
             {
@@ -1565,7 +1565,7 @@ class CandidatesUI extends UserInterface
 
         if (!eval(Hooks::get('CANDIDATE_ADD_ACTIVITY_CHANGE_STATUS'))) return;
 
-        if (SystemUtility::isSchedulerEnabled() && !$_SESSION['CATS']->isDemo())
+        if (SystemUtility::isSchedulerEnabled() && !$_SESSION['OSATS']->isDemo())
         {
             $allowEventReminders = true;
         }
@@ -1580,7 +1580,7 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('selectedJobOrderID', $selectedJobOrderID);
         $this->_template->assign('selectedStatusID', $selectedStatusID);
         $this->_template->assign('allowEventReminders', $allowEventReminders);
-        $this->_template->assign('userEmail', $_SESSION['CATS']->getEmail());
+        $this->_template->assign('userEmail', $_SESSION['OSATS']->getEmail());
         $this->_template->assign('calendarEventTypes', $calendarEventTypes);
         $this->_template->assign('statusChangeTemplate', $statusChangeTemplate);
         $this->_template->assign('onlyScheduleEvent', $onlyScheduleEvent);
@@ -2567,7 +2567,7 @@ class CandidatesUI extends UserInterface
                 if (!eval(Hooks::get('CANDIDATE_ON_CREATE_ATTACHMENT_POST'))) return;
 
                 // Remove the cleanup cookie since the file no longer exists
-                setcookie('CATS_SP_TEMP_FILE', '');
+                setcookie('OSATS_SP_TEMP_FILE', '');
 
                 $attachmentCreated = true;
             }
@@ -2956,7 +2956,7 @@ class CandidatesUI extends UserInterface
                 $eventTypeID, $date, $description, $allDay, $this->_userID,
                 $candidateID, DATA_ITEM_CANDIDATE, $eventJobOrderID, $title,
                 $duration, $reminderEnabled, $reminderEmail, $reminderTime,
-                $publicEntry, $_SESSION['CATS']->getTimeZoneOffset()
+                $publicEntry, $_SESSION['OSATS']->getTimeZoneOffset()
             );
 
             if ($eventID <= 0)
@@ -3063,7 +3063,7 @@ class CandidatesUI extends UserInterface
             $mailer = new Mailer(ADMIN_SITE);
             // FIXME: Use sendToOne()?
             $mailerStatus = $mailer->send(
-                array($_SESSION['CATS']->getEmail(), $_SESSION['CATS']->getEmail()),
+                array($_SESSION['OSATS']->getEmail(), $_SESSION['OSATS']->getEmail()),
                 $destination,
                 $emailSubject,
                 $emailBody,

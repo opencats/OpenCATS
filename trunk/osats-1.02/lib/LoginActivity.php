@@ -8,7 +8,7 @@ include_once('./lib/BrowserDetection.php');
 
 /**
  *	Login Activity Pager
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class LoginActivityPager extends Pager

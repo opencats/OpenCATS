@@ -1,5 +1,5 @@
 <?php /* $Id: EditUser.tpl 2881 2007-08-14 07:47:26Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'js/sorttable.js')); ?>
+<?php TemplateUtility::printHeader('Settings', array('modules/settings/validateme.js', 'js/sorttable.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">
@@ -20,7 +20,7 @@
                 <span style="float: right;"><a href='<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=manageUsers'>Back to User Management</a></span>&nbsp;
             </p>
 
-            <form name="editUserForm" id="editUserForm" action="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=editUser" method="post" onsubmit="return checkEditUserForm(document.editUserForm);" autocomplete="off">
+            <form name="UserForm" id="UserForm" action="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=editUser" method="post" onsubmit="return CheckMyForm(document.UserForm);" autocomplete="off">
                 <input type="hidden" name="postback" id="postback" value="postback" />
                 <input type="hidden" id="userID" name="userID" value="<?php $this->_($this->data['userID']); ?>" />
 
@@ -30,7 +30,7 @@
                             <label id="firstNameLabel" for="firstName">First Name:</label>
                         </td>
                         <td class="tdData">
-                            <input type="text" class="inputbox" id="firstName" name="firstName" value="<?php $this->_($this->data['firstName']); ?>" style="width: 150px;" />&nbsp;*
+                            <input type="text" class="inputbox" id="First" name="First" value="<?php $this->_($this->data['firstName']); ?>" style="width: 150px;" />&nbsp;*
                         </td>
                     </tr>
 
@@ -39,7 +39,7 @@
                             <label id="lastNameLabel" for="lastName">Last Name:</label>
                         </td>
                         <td class="tdData">
-                            <input type="text" class="inputbox" id="lastName" name="lastName" value="<?php $this->_($this->data['lastName']); ?>" style="width: 150px;" />&nbsp;*
+                            <input type="text" class="inputbox" id="Last" name="Last" value="<?php $this->_($this->data['lastName']); ?>" style="width: 150px;" />&nbsp;*
                         </td>
                     </tr>
 
@@ -48,7 +48,7 @@
                             <label id="emailLabel" for="email">E-Mail:</label>
                         </td>
                         <td class="tdData">
-                            <input type="text" class="inputbox" id="email" name="email" value="<?php $this->_($this->data['email']); ?>" style="width: 150px;" />
+                            <input type="text" class="inputbox" id="EmailAddress" name="EmailAddress" value="<?php $this->_($this->data['email']); ?>" style="width: 150px;" />
                         </td>
                     </tr>
 
@@ -57,7 +57,7 @@
                             <label id="usernameLabel" for="username">Username:</label>
                         </td>
                         <td class="tdData">
-                            <input type="text" class="inputbox" id="username" name="username" value="<?php $this->_($this->data['username']); ?>" style="width: 150px;" />&nbsp;*
+                            <input type="text" class="inputbox" id="UserName" name="UserName" value="<?php $this->_($this->data['username']); ?>" style="width: 150px;" />&nbsp;*
                         </td>
                     </tr>
 
@@ -85,9 +85,7 @@
                         <td class="tdVertical">Access Description:</td>
                         <td class="tdData">
                             <span id="userAccessStatus" style='font-size: smaller'>
-                                <?php if ($this->cannotEnableMessage): ?>
-                                    You cannot make this account active  without disabling another account or upgrading your license, as doing so would cause you to exceed your allowable number of active accounts.
-                                <?php elseif ($this->currentUser == $this->data['userID']): ?>
+                                <?php if ($this->currentUser == $this->data['userID']): ?>
                                     You are a <?php $this->_($this->data['accessLevelLongDescription']); ?> You cannot edit your own access level.
                                 <?php else: ?>
                                     <?php $this->_($this->data['accessLevelLongDescription']); ?>
@@ -105,10 +103,6 @@
                                <input type="radio" name="role" value="none" title="" <?php if ($this->data['categories'] == ''): ?>checked<?php endif; ?> onclick="document.getElementById('userRoleDesc').innerHTML='This user is a normal user.';"/> Normal User
                                <?php $roleDesc = "This user is a normal user."; ?>
                                <br />
-                               <?php foreach ($this->categories as $category): ?>
-                                   <input type="radio" name="role" value="<?php $this->_($category[1]); ?>"  <?php if ($this->data['categories'] == $category[1]): ?>checked<?php $roleDesc = $category[2]; ?><?php endif; ?> onclick="document.getElementById('userRoleDesc').innerHTML='<?php echo($category[2]); ?>';" /> <?php $this->_($category[0]); ?>
-                                   <br />
-                               <?php endforeach; ?>
                             </td>
                         </tr>
                         <tr>
@@ -125,12 +119,12 @@
                     
                     <?php if($this->EEOSettingsRS['enabled'] == 1): ?>                    
                          <tr>
-                            <td class="tdVertical">Allowed to view EEO Information:</td>
+                            <td class="tdVertical">Can view EEO Information:</td>
                             <td class="tdData">
                                 <span id="eeoIsVisibleCheckSpan">
-                                    <input type="checkbox" name="eeoIsVisible" id="eeoIsVisible" <?php if ($this->data['canSeeEEOInfo'] == 1): ?>checked <?php endif; ?>onclick="if (this.checked) document.getElementById('eeoVisibleSpan').style.display='none'; else document.getElementById('eeoVisibleSpan').style.display='';">
-                                    &nbsp;This user is <span id="eeoVisibleSpan">not </span>allowed to edit and view candidate's EEO information.
-                                </span>
+                                                <input type="checkbox" name="eeoIsVisible" id="eeoIsVisible">
+                                                <span id="eeoVisibleSpan"> </span>Check for YES, uncheck for NO.
+                                            </span>
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -140,17 +134,17 @@
                             <label id="PasswordResetLabel" for="username">Password Reset:</label>
                         </td>
                         <td class="tdData">
-                            <input type="button" class="button" name="passwordreset" id="passwordreset" value="Reset Password" onclick="javascript:document.getElementById('passwordResetElement1').style.display = 'none'; document.getElementById('passwordResetElement2').style.display = ''; document.getElementById('passwordResetElement3').style.display = ''; document.getElementById('password1').value=''; document.getElementById('passwordIsReset').value='1';" />
-                            <input type="hidden" id="passwordIsReset" name="passwordIsReset" value="0" />
+                            <input type="button" class="button" name="passwordreset" id="passwordreset" value="Reset Password" onclick="javascript:document.getElementById('passwordResetElement1').style.display = 'none'; document.getElementById('passwordResetElement2').style.display = ''; document.getElementById('passwordResetElement3').style.display = ''; document.getElementById('Password').value=''; document.getElementById('SetPass').value='1';" />
+                            <input type="hidden" id="SetPass" name="SetPass" value="0" />
                         </td>
                     </tr>
 
                     <tr id="passwordResetElement2" style="display:none;">
                         <td class="tdVertical">
-                            <label id="password1Label" for="password1">New Password:</label>
+                            <label id="password1Label" for="Password">New Password:</label>
                         </td>
                         <td class="tdData">
-                                <input type="password" class="inputbox" id="password1" name="password1" style="width: 150px;" />&nbsp;*
+                                <input type="password" class="inputbox" id="Password" name="Password" style="width: 150px;" />&nbsp;*
                         </td>
                     </tr>
 
@@ -159,7 +153,7 @@
                             <label id="password2Label" for="password2">Retype Password:</label>
                         </td>
                         <td class="tdData">
-                                <input type="password" class="inputbox" id="password2" name="password2" style="width: 150px;" />&nbsp;*
+                                <input type="password" class="inputbox" id="Password2" name="Password2" style="width: 150px;" />&nbsp;*
                         </td>
                     </tr>
 

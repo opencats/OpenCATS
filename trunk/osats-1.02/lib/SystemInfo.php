@@ -5,7 +5,7 @@
 
 /**
  *	OSATS System Information Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class SystemInfo

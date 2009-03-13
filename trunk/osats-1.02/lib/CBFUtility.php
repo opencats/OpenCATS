@@ -37,7 +37,7 @@ class CBFUtility
 
     public function __construct($siteID = 1, $dataOverwrite = true)
     {
-        $siteID = $_SESSION['CATS']->getSiteID();
+        $siteID = $_SESSION['OSATS']->getSiteID();
         $this->_db = DatabaseConnection::getInstance();
         $this->_structure = array();
         $this->_keys = array();

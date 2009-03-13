@@ -314,7 +314,7 @@ a:hover
   padding: 0px 0px 0px 0px;
   float: left;
   background-color: transparent;
-  background: url('images/cats_icon.gif') no-repeat center;
+  background: url('images/OSATS_icon.gif') no-repeat center;
   width: 55px;
   height: 55px;
 }
@@ -533,6 +533,12 @@ a.sortheader:visited
   text-decoration: none;
 }
 
+table.adminTable
+{
+  padding: 5px;
+  border: 1px solid #ccc;
+  empty-cells: show;
+}
 
 table.attachmentsTable
 {

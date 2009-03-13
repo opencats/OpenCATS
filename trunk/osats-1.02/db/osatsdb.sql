@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 22, 2009 at 08:10 AM
+-- Generation Time: Mar 12, 2009 at 05:58 PM
 -- Server version: 5.0.51
 -- PHP Version: 5.2.6
 
@@ -261,12 +261,14 @@ CREATE TABLE `candidate` (
   KEY `IDX_date_modified` (`date_modified`),
   KEY `IDX_site_first_last_modified` (`site_id`,`first_name`,`last_name`,`date_modified`),
   KEY `IDX_site_id_email_1_2` (`site_id`,`email1`(8),`email2`(8))
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `candidate`
 --
 
+INSERT INTO `candidate` (`candidate_id`, `site_id`, `last_name`, `first_name`, `middle_name`, `phone_home`, `phone_cell`, `phone_work`, `address`, `city`, `state`, `zip`, `source`, `date_available`, `can_relocate`, `notes`, `key_skills`, `current_employer`, `entered_by`, `owner`, `date_created`, `date_modified`, `email1`, `email2`, `web_site`, `import_id`, `is_hot`, `eeo_ethnic_type_id`, `eeo_veteran_type_id`, `eeo_disability_status`, `eeo_gender`, `desired_pay`, `current_pay`, `is_active`, `is_admin_hidden`, `best_time_to_call`) VALUES
+(1, 1, 'Pen', 'Ben', '', '', '', '', '', '', '', '', '(none)', NULL, 0, '', '', '', 1261, 1261, '2009-03-03 10:00:03', '2009-03-03 10:00:03', '', '', '', 0, 0, 0, 0, '', '', '', '', 1, 0, '');
 
 -- --------------------------------------------------------
 
@@ -834,7 +836,7 @@ CREATE TABLE `extra_field_settings` (
   `extra_field_options` text collate utf8_unicode_ci,
   `position` int(4) NOT NULL default '0',
   PRIMARY KEY  (`extra_field_settings_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
 
 --
 -- Dumping data for table `extra_field_settings`
@@ -890,7 +892,7 @@ CREATE TABLE `history` (
   PRIMARY KEY  (`history_id`),
   KEY `IDX_DATA_ENTERED_BY` (`entered_by`),
   KEY `IDX_data_item_id_type_site` (`data_item_id`,`data_item_type`,`site_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `history`
@@ -898,7 +900,8 @@ CREATE TABLE `history` (
 
 INSERT INTO `history` (`history_id`, `data_item_type`, `data_item_id`, `the_field`, `previous_value`, `new_value`, `description`, `set_date`, `entered_by`, `site_id`) VALUES
 (1, 200, 1, '!newEntry!', NULL, NULL, '(USER) created entry.', '2009-02-17 14:46:39', 1, 1),
-(2, 200, 1, 'defaultCompany', NULL, '1', '(USER) changed field(s): defaultCompany.', '2009-02-17 14:46:39', 1, 1);
+(2, 200, 1, 'defaultCompany', NULL, '1', '(USER) changed field(s): defaultCompany.', '2009-02-17 14:46:39', 1, 1),
+(3, 100, 1, '!newEntry!', NULL, NULL, '(USER) created entry.', '2009-03-03 10:00:03', 1261, 1);
 
 -- --------------------------------------------------------
 
@@ -919,12 +922,14 @@ CREATE TABLE `http_log` (
   `log_type` int(11) NOT NULL,
   `date` datetime default '0000-00-00 00:00:00',
   PRIMARY KEY  (`log_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `http_log`
 --
 
+INSERT INTO `http_log` (`log_id`, `site_id`, `remote_addr`, `http_user_agent`, `script_filename`, `request_method`, `query_string`, `request_uri`, `script_name`, `log_type`, `date`) VALUES
+(1, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', 'C:/wamp/www/test/xml/index.php', 'GET', '', '/test/xml/index.php', '/test/xml/index.php', 1, '2009-03-03 08:18:34');
 
 -- --------------------------------------------------------
 
@@ -1043,6 +1048,50 @@ CREATE TABLE `joborder` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `moduleinfo`
+--
+
+CREATE TABLE `moduleinfo` (
+  `name` varchar(50) NOT NULL,
+  `ordernum` int(2) NOT NULL default '1',
+  `visible` int(1) NOT NULL default '1',
+  `class` varchar(25) NOT NULL,
+  `tabtext` varchar(25) NOT NULL,
+  `subtabs` varchar(50) NOT NULL,
+  `setentries` varchar(25) NOT NULL,
+  `usercatagories` varchar(25) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `moduleinfo`
+--
+
+INSERT INTO `moduleinfo` (`name`, `ordernum`, `visible`, `class`, `tabtext`, `subtabs`, `setentries`, `usercatagories`) VALUES
+('About', 1, 1, 'AboutUI', 'About', '', '', ''),
+('Candidates', 4, 1, 'CandidatesUI', 'Candidates', '', '', ''),
+('Settings', 11, 1, 'SettingsUI', 'Settings', '', '', ''),
+('Companies', 5, 1, 'CompaniesUI', 'Companies', '', '', ''),
+('Home', 12, 1, 'HomeUI', 'Dashboard', '', '', ''),
+('Activity', 2, 1, 'ActivityUI', 'Activity', '', '', ''),
+('JobOrders', 9, 1, 'JobOrdersUI', 'JobOrders', '', '', ''),
+('Contacts', 6, 1, 'ContactsUI', 'Contacts', '', '', ''),
+('Calendar', 3, 1, 'CalendarUI', 'Calendar', '', '', ''),
+('Reports', 8, 1, 'ReportsUI', 'Reports', '', '', ''),
+('Lists', 10, 1, 'ListsUI', 'Lists', '', '', ''),
+('Graphs', 7, 2, 'GraphsUI', '', '', '', ''),
+('Import', 11, 2, 'ImportUI', '', '', '', ''),
+('Attachments', 3, 2, 'AttachmentsUI', '', '', '', ''),
+('Careers', 5, 2, 'CareersUI', '', '', '', ''),
+('Export', 8, 2, 'ExportUI', '', '', '', ''),
+('Login', 14, 2, 'LoginUI', '', '', '', ''),
+('Queue', 15, 2, 'QueueUI', '', '', '', ''),
+('Toolbar', 19, 2, 'ToolbarUI', '', '', '', ''),
+('Rss', 17, 2, 'RssUI', '', '', '', ''),
+('Xml', 20, 2, 'XmlUI', '', '', '', '');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `module_schema`
 --
 
@@ -1050,39 +1099,41 @@ CREATE TABLE `module_schema` (
   `module_schema_id` int(11) NOT NULL auto_increment,
   `name` varchar(64) collate utf8_unicode_ci default NULL,
   `version` int(11) default NULL,
+  `Enabled` varchar(1) collate utf8_unicode_ci NOT NULL default '1',
   PRIMARY KEY  (`module_schema_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=26 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=29 ;
 
 --
 -- Dumping data for table `module_schema`
 --
 
-INSERT INTO `module_schema` (`module_schema_id`, `name`, `version`) VALUES
-(1, 'activity', 0),
-(2, 'attachments', 0),
-(3, 'calendar', 0),
-(4, 'candidates', 0),
-(5, 'careers', 0),
-(6, 'companies', 0),
-(7, 'contacts', 0),
-(8, 'export', 0),
-(9, 'extension-statistics', 1),
-(10, 'graphs', 0),
-(11, 'home', 0),
-(12, 'import', 0),
-(13, 'install', 363),
-(14, 'joborders', 0),
-(15, 'lists', 0),
-(16, 'login', 0),
-(17, 'queue', 0),
-(18, 'reports', 0),
-(19, 'rss', 0),
-(20, 'settings', 0),
-(21, 'tests', 0),
-(22, 'toolbar', 0),
-(23, 'wizard', 0),
-(24, 'xml', 0),
-(25, 'about', 0);
+INSERT INTO `module_schema` (`module_schema_id`, `name`, `version`, `Enabled`) VALUES
+(1, 'activity', 0, '1'),
+(2, 'attachments', 0, '1'),
+(3, 'calendar', 0, '1'),
+(4, 'candidates', 0, '1'),
+(5, 'careers', 0, '1'),
+(6, 'companies', 0, '1'),
+(7, 'contacts', 0, '1'),
+(8, 'export', 0, '1'),
+(9, 'extension-statistics', 1, '1'),
+(10, 'graphs', 0, '1'),
+(11, 'home', 0, '1'),
+(12, 'import', 0, '1'),
+(13, 'install', 363, '1'),
+(14, 'joborders', 0, '1'),
+(15, 'lists', 0, '1'),
+(16, 'login', 0, '1'),
+(17, 'queue', 0, '1'),
+(18, 'reports', 0, '1'),
+(19, 'rss', 0, '1'),
+(20, 'settings', 0, '1'),
+(21, 'tests', 0, '1'),
+(22, 'toolbar', 0, '1'),
+(23, 'wizard', 0, '1'),
+(24, 'xml', 0, '1'),
+(25, 'about', 0, '1'),
+(28, NULL, NULL, '1');
 
 -- --------------------------------------------------------
 
@@ -1100,12 +1151,14 @@ CREATE TABLE `mru` (
   `date_created` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`mru_id`),
   KEY `IDX_user_site` (`user_id`,`site_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `mru`
 --
 
+INSERT INTO `mru` (`mru_id`, `user_id`, `site_id`, `data_item_type`, `data_item_text`, `url`, `date_created`) VALUES
+(2, 1261, 1, 100, 'Ben Pen', 'index.php?m=candidates&amp;a=show&amp;candidateID=1', '2009-03-09 09:17:32');
 
 -- --------------------------------------------------------
 
@@ -1223,7 +1276,7 @@ CREATE TABLE `settings` (
   `site_id` int(11) NOT NULL default '0',
   `settings_type` int(11) default '0',
   PRIMARY KEY  (`settings_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=19 ;
 
 --
 -- Dumping data for table `settings`
@@ -1233,7 +1286,21 @@ INSERT INTO `settings` (`settings_id`, `setting`, `value`, `site_id`, `settings_
 (1, 'fromAddress', '', 1, 1),
 (2, 'fromAddress', '', 180, 1),
 (3, 'configured', '1', 1, 1),
-(4, 'configured', '1', 180, 1);
+(4, 'configured', '1', 180, 1),
+(5, 'enabled', '1', 1, 4),
+(6, 'enabled', '1', 1, 4),
+(7, 'allowBrowse', '1', 1, 4),
+(8, 'candidateRegistration', '0', 1, 4),
+(9, 'showDepartment', '1', 1, 4),
+(10, 'showCompany', '0', 1, 4),
+(11, 'enabled', '0', 1, 4),
+(12, 'enabled', '1', 1, 4),
+(13, 'enabled', '1', 1, 3),
+(14, 'genderTracking', '1', 1, 3),
+(15, 'ethnicTracking', '1', 1, 3),
+(16, 'veteranTracking', '1', 1, 3),
+(17, 'disabilityTracking', '1', 1, 3),
+(18, 'canSeeEEOInfo', NULL, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -1275,7 +1342,7 @@ CREATE TABLE `site` (
 --
 
 INSERT INTO `site` (`site_id`, `name`, `is_demo`, `user_licenses`, `entered_by`, `date_created`, `unix_name`, `company_id`, `is_free`, `account_active`, `account_deleted`, `reason_disabled`, `time_zone`, `time_format_24`, `date_format_ddmmyy`, `is_hr_mode`, `file_size_kb`, `page_views`, `page_view_days`, `last_viewed_day`, `first_time_setup`, `localization_configured`, `agreed_to_license`, `limit_warning`) VALUES
-(1, 'default_site', 0, 0, 0, '2005-06-01 00:00:00', NULL, NULL, 0, 1, 0, NULL, -6, 0, 0, 0, 0, 10, 1, '2009-02-17', 0, 0, 1, 0),
+(1, 'Cheeseball', 0, 0, 0, '2005-06-01 00:00:00', NULL, NULL, 0, 1, 0, NULL, -7, 0, 0, 0, 0, 1604, 6, '2009-03-12', 0, 0, 1, 0),
 (180, 'CATS_ADMIN', 0, 0, 0, '2005-06-01 00:00:00', 'catsadmin', NULL, 0, 1, 0, NULL, -6, 0, 0, 0, 0, 0, 0, NULL, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
@@ -1317,7 +1384,7 @@ CREATE TABLE `system` (
 --
 
 INSERT INTO `system` (`system_id`, `uid`, `available_version`, `date_version_checked`, `available_version_description`, `disable_version_check`, `Installed`) VALUES
-(0, 0, NULL, '0000-00-00 00:00:00', NULL, 0, '');
+(0, 0, NULL, '0000-00-00 00:00:00', NULL, 0, '1');
 
 -- --------------------------------------------------------
 
@@ -1359,12 +1426,24 @@ CREATE TABLE `user` (
   KEY `IDX_first_name` (`first_name`),
   KEY `IDX_last_name` (`last_name`),
   KEY `IDX_access_level` (`access_level`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1261 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1272 ;
 
 --
 -- Dumping data for table `user`
 --
 
+INSERT INTO `user` (`user_id`, `site_id`, `user_name`, `email`, `password`, `access_level`, `can_change_password`, `is_test_user`, `last_name`, `first_name`, `is_demo`, `categories`, `session_cookie`, `pipeline_entries_per_page`, `column_preferences`, `force_logout`, `title`, `phone_work`, `phone_cell`, `phone_other`, `address`, `notes`, `company`, `city`, `state`, `zip_code`, `country`, `can_see_eeo_info`) VALUES
+(1261, 1, 'admin', 'blue@here.com', 'admin', 500, 1, 0, 'Admin', 'OSATS', 0, '', 'OSATS=hs9rjj5396fk2ve0amf37spv83', 15, 'a:8:{s:31:"home:ImportantPipelineDashboard";a:6:{i:0;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:85;}i:1;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:75;}i:2;a:2:{s:4:"name";s:6:"Status";s:5:"width";i:75;}i:3;a:2:{s:4:"name";s:8:"Position";s:5:"width";i:275;}i:4;a:2:{s:4:"name";s:7:"Company";s:5:"width";i:210;}i:5;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:80;}}s:18:"home:CallsDataGrid";a:2:{i:0;a:2:{s:4:"name";s:4:"Time";s:5:"width";i:90;}i:1;a:2:{s:4:"name";s:4:"Name";s:5:"width";i:175;}}s:19:"lists:ListsDataGrid";a:7:{i:0;a:2:{s:4:"name";s:5:"Count";s:5:"width";i:45;}i:1;a:2:{s:4:"name";s:11:"Description";s:5:"width";i:355;}i:2;a:2:{s:4:"name";s:9:"Data Type";s:5:"width";i:75;}i:3;a:2:{s:4:"name";s:9:"List Type";s:5:"width";i:75;}i:4;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:75;}i:5;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:60;}i:6;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:60;}}s:39:"candidates:candidatesListByViewDataGrid";a:9:{i:0;a:2:{s:4:"name";s:11:"Attachments";s:5:"width";i:31;}i:1;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:75;}i:2;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:85;}i:3;a:2:{s:4:"name";s:4:"City";s:5:"width";i:75;}i:4;a:2:{s:4:"name";s:5:"State";s:5:"width";i:50;}i:5;a:2:{s:4:"name";s:10:"Key Skills";s:5:"width";i:215;}i:6;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:65;}i:7;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:60;}i:8;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:60;}}s:37:"joborders:JobOrdersListByViewDataGrid";a:12:{i:0;a:2:{s:4:"name";s:11:"Attachments";s:5:"width";i:10;}i:1;a:2:{s:4:"name";s:2:"ID";s:5:"width";i:26;}i:2;a:2:{s:4:"name";s:5:"Title";s:5:"width";i:170;}i:3;a:2:{s:4:"name";s:7:"Company";s:5:"width";i:135;}i:4;a:2:{s:4:"name";s:4:"Type";s:5:"width";i:30;}i:5;a:2:{s:4:"name";s:6:"Status";s:5:"width";i:40;}i:6;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:55;}i:7;a:2:{s:4:"name";s:3:"Age";s:5:"width";i:30;}i:8;a:2:{s:4:"name";s:9:"Submitted";s:5:"width";i:18;}i:9;a:2:{s:4:"name";s:8:"Pipeline";s:5:"width";i:18;}i:10;a:2:{s:4:"name";s:9:"Recruiter";s:5:"width";i:65;}i:11;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:55;}}s:25:"activity:ActivityDataGrid";a:7:{i:0;a:2:{s:4:"name";s:4:"Date";s:5:"width";i:110;}i:1;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:85;}i:2;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:75;}i:3;a:2:{s:4:"name";s:9:"Regarding";s:5:"width";i:125;}i:4;a:2:{s:4:"name";s:8:"Activity";s:5:"width";i:65;}i:5;a:2:{s:4:"name";s:5:"Notes";s:5:"width";i:240;}i:6;a:2:{s:4:"name";s:10:"Entered By";s:5:"width";i:60;}}s:37:"companies:CompaniesListByViewDataGrid";a:9:{i:0;a:2:{s:4:"name";s:11:"Attachments";s:5:"width";i:10;}i:1;a:2:{s:4:"name";s:4:"Name";s:5:"width";i:255;}i:2;a:2:{s:4:"name";s:4:"Jobs";s:5:"width";i:40;}i:3;a:2:{s:4:"name";s:4:"City";s:5:"width";i:90;}i:4;a:2:{s:4:"name";s:5:"State";s:5:"width";i:50;}i:5;a:2:{s:4:"name";s:5:"Phone";s:5:"width";i:85;}i:6;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:65;}i:7;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:60;}i:8;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:60;}}s:35:"contacts:ContactsListByViewDataGrid";a:9:{i:0;a:2:{s:4:"name";s:11:"Attachments";s:5:"width";i:10;}i:1;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:80;}i:2;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:80;}i:3;a:2:{s:4:"name";s:7:"Company";s:5:"width";i:135;}i:4;a:2:{s:4:"name";s:5:"Title";s:5:"width";i:135;}i:5;a:2:{s:4:"name";s:10:"Work Phone";s:5:"width";i:85;}i:6;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:85;}i:7;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:60;}i:8;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:60;}}}', 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(1262, 1, 'Test', 'test @here.com', 'test', 400, 1, 0, 'Test', 'Test', 0, '', 'OSATS=hs9rjj5396fk2ve0amf37spv83', 15, 'a:5:{s:31:"home:ImportantPipelineDashboard";a:6:{i:0;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:85;}i:1;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:75;}i:2;a:2:{s:4:"name";s:6:"Status";s:5:"width";i:75;}i:3;a:2:{s:4:"name";s:8:"Position";s:5:"width";i:275;}i:4;a:2:{s:4:"name";s:7:"Company";s:5:"width";i:210;}i:5;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:80;}}s:18:"home:CallsDataGrid";a:2:{i:0;a:2:{s:4:"name";s:4:"Time";s:5:"width";i:90;}i:1;a:2:{s:4:"name";s:4:"Name";s:5:"width";i:175;}}s:25:"activity:ActivityDataGrid";a:7:{i:0;a:2:{s:4:"name";s:4:"Date";s:5:"width";i:110;}i:1;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:85;}i:2;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:75;}i:3;a:2:{s:4:"name";s:9:"Regarding";s:5:"width";i:125;}i:4;a:2:{s:4:"name";s:8:"Activity";s:5:"width";i:65;}i:5;a:2:{s:4:"name";s:5:"Notes";s:5:"width";i:240;}i:6;a:2:{s:4:"name";s:10:"Entered By";s:5:"width";i:60;}}s:39:"candidates:candidatesListByViewDataGrid";a:9:{i:0;a:2:{s:4:"name";s:11:"Attachments";s:5:"width";i:31;}i:1;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:75;}i:2;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:85;}i:3;a:2:{s:4:"name";s:4:"City";s:5:"width";i:75;}i:4;a:2:{s:4:"name";s:5:"State";s:5:"width";i:50;}i:5;a:2:{s:4:"name";s:10:"Key Skills";s:5:"width";i:215;}i:6;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:65;}i:7;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:60;}i:8;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:60;}}s:19:"lists:ListsDataGrid";a:7:{i:0;a:2:{s:4:"name";s:5:"Count";s:5:"width";i:45;}i:1;a:2:{s:4:"name";s:11:"Description";s:5:"width";i:355;}i:2;a:2:{s:4:"name";s:9:"Data Type";s:5:"width";i:75;}i:3;a:2:{s:4:"name";s:9:"List Type";s:5:"width";i:75;}i:4;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:75;}i:5;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:60;}i:6;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:60;}}}', 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+(1263, 1, 'ben', 'b@ben.com', 'ben', 300, 1, 0, 'ten', 'ben', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+(1264, 1, 'blue', 'mike', 'bob', 300, 1, 0, 'steve', 'Bob', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+(1265, 1, 'out', 'me', 'cool', 300, 1, 0, 'test', 'Just', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+(1266, 1, 'myusergo', 'Over@here.com', 'blue', 300, 1, 0, 'Bent', 'Get', 0, '', 'OSATS=hs9rjj5396fk2ve0amf37spv83', 15, 'a:5:{s:31:"home:ImportantPipelineDashboard";a:6:{i:0;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:85;}i:1;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:75;}i:2;a:2:{s:4:"name";s:6:"Status";s:5:"width";i:75;}i:3;a:2:{s:4:"name";s:8:"Position";s:5:"width";i:275;}i:4;a:2:{s:4:"name";s:7:"Company";s:5:"width";i:210;}i:5;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:80;}}s:18:"home:CallsDataGrid";a:2:{i:0;a:2:{s:4:"name";s:4:"Time";s:5:"width";i:90;}i:1;a:2:{s:4:"name";s:4:"Name";s:5:"width";i:175;}}s:25:"activity:ActivityDataGrid";a:7:{i:0;a:2:{s:4:"name";s:4:"Date";s:5:"width";i:110;}i:1;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:85;}i:2;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:75;}i:3;a:2:{s:4:"name";s:9:"Regarding";s:5:"width";i:125;}i:4;a:2:{s:4:"name";s:8:"Activity";s:5:"width";i:65;}i:5;a:2:{s:4:"name";s:5:"Notes";s:5:"width";i:240;}i:6;a:2:{s:4:"name";s:10:"Entered By";s:5:"width";i:60;}}s:39:"candidates:candidatesListByViewDataGrid";a:9:{i:0;a:2:{s:4:"name";s:11:"Attachments";s:5:"width";i:31;}i:1;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:75;}i:2;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:85;}i:3;a:2:{s:4:"name";s:4:"City";s:5:"width";i:75;}i:4;a:2:{s:4:"name";s:5:"State";s:5:"width";i:50;}i:5;a:2:{s:4:"name";s:10:"Key Skills";s:5:"width";i:215;}i:6;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:65;}i:7;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:60;}i:8;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:60;}}s:37:"companies:CompaniesListByViewDataGrid";a:9:{i:0;a:2:{s:4:"name";s:11:"Attachments";s:5:"width";i:10;}i:1;a:2:{s:4:"name";s:4:"Name";s:5:"width";i:255;}i:2;a:2:{s:4:"name";s:4:"Jobs";s:5:"width";i:40;}i:3;a:2:{s:4:"name";s:4:"City";s:5:"width";i:90;}i:4;a:2:{s:4:"name";s:5:"State";s:5:"width";i:50;}i:5;a:2:{s:4:"name";s:5:"Phone";s:5:"width";i:85;}i:6;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:65;}i:7;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:60;}i:8;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:60;}}}', 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+(1267, 1, 'myusername', 'myemail', 'mypass', 300, 1, 0, 'Pen', 'Ben', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+(1268, 1, 'afafafaf', 'eded', 'dfg', 300, 1, 0, 'ab', 'dd', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+(1269, 1, 'myusername', 'myemail', 'pass', 300, 1, 0, 'nuts', 'beer', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+(1270, 1, 'myname', 'myemail', 'mypass', 300, 1, 0, 'good', 'be', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+(1271, 1, 'fd', 'fd', 'fd', 100, 1, 0, 'dd', 'berd', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -1389,12 +1468,165 @@ CREATE TABLE `user_login` (
   KEY `IDX_date_refreshed` (`date_refreshed`),
   KEY `IDX_site_id_date` (`site_id`,`date`),
   KEY `IDX_successful_site_id` (`successful`,`site_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=158 ;
 
 --
 -- Dumping data for table `user_login`
 --
 
+INSERT INTO `user_login` (`user_login_id`, `user_id`, `site_id`, `ip`, `user_agent`, `date`, `successful`, `host`, `date_refreshed`) VALUES
+(6, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 09:58:39', 0, '192.168.21.25', '2009-03-03 09:58:39'),
+(7, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 09:58:48', 0, '192.168.21.25', '2009-03-03 09:58:48'),
+(8, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 09:58:52', 0, '192.168.21.25', '2009-03-03 09:58:52'),
+(9, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 09:59:40', 1, '192.168.21.25', '2009-03-03 10:45:58'),
+(10, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 10:47:19', 1, '192.168.21.25', '2009-03-03 10:47:22'),
+(11, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 10:48:00', 1, '192.168.21.25', '2009-03-03 10:48:07'),
+(12, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 10:48:46', 1, '192.168.21.25', '2009-03-03 10:49:17'),
+(13, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 10:50:54', 1, '192.168.21.25', '2009-03-03 10:50:54'),
+(14, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 10:51:08', 1, '192.168.21.25', '2009-03-03 11:54:49'),
+(15, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 11:54:57', 1, '192.168.21.25', '2009-03-03 11:55:18'),
+(16, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 11:55:44', 1, '192.168.21.25', '2009-03-03 11:55:44'),
+(17, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 11:55:51', 1, '192.168.21.25', '2009-03-03 11:56:00'),
+(18, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 11:57:11', 1, '192.168.21.25', '2009-03-03 11:57:18'),
+(19, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 11:58:02', 1, '192.168.21.25', '2009-03-03 11:58:15'),
+(20, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 11:58:20', 1, '192.168.21.25', '2009-03-03 11:58:43'),
+(21, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 11:58:48', 1, '192.168.21.25', '2009-03-03 12:27:22'),
+(22, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 12:39:23', 1, '192.168.21.25', '2009-03-03 12:41:26'),
+(23, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 12:46:08', 1, '192.168.21.25', '2009-03-03 12:46:27'),
+(24, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 12:49:20', 1, '192.168.21.25', '2009-03-03 13:00:06'),
+(25, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 13:06:37', 1, '192.168.21.25', '2009-03-03 13:06:37'),
+(26, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 13:21:36', 1, '192.168.21.25', '2009-03-03 13:21:36'),
+(27, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 13:28:44', 1, '192.168.21.25', '2009-03-03 13:29:29'),
+(28, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 13:29:38', 1, '192.168.21.25', '2009-03-03 13:29:38'),
+(29, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 13:30:12', 1, '192.168.21.25', '2009-03-03 13:30:12'),
+(30, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 13:30:27', 1, '192.168.21.25', '2009-03-03 13:30:27'),
+(31, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 13:31:26', 1, '192.168.21.25', '2009-03-03 13:31:34'),
+(32, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 13:33:22', 1, '192.168.21.25', '2009-03-03 13:33:29'),
+(33, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 13:43:30', 1, '192.168.21.25', '2009-03-03 13:43:30'),
+(34, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 13:45:30', 1, '192.168.21.25', '2009-03-03 13:45:31'),
+(35, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 13:47:41', 1, '192.168.21.25', '2009-03-03 13:47:52'),
+(36, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 13:51:28', 1, '192.168.21.25', '2009-03-03 13:51:28'),
+(37, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 13:54:56', 1, '192.168.21.25', '2009-03-03 13:55:00'),
+(38, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 13:55:15', 1, '192.168.21.25', '2009-03-03 13:55:15'),
+(39, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 13:55:32', 1, '192.168.21.25', '2009-03-03 14:00:53'),
+(40, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 14:01:16', 1, '192.168.21.25', '2009-03-03 14:01:16'),
+(41, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 14:01:51', 1, '192.168.21.25', '2009-03-03 14:01:51'),
+(42, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 14:04:22', 1, '192.168.21.25', '2009-03-03 14:04:22'),
+(43, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 14:09:24', 1, '192.168.21.25', '2009-03-03 14:09:24'),
+(44, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 14:30:37', 1, '192.168.21.25', '2009-03-03 14:38:05'),
+(45, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 14:41:47', 1, '192.168.21.25', '2009-03-03 14:49:26'),
+(46, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 14:49:49', 1, '192.168.21.25', '2009-03-03 15:03:15'),
+(47, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 15:04:09', 1, '192.168.21.25', '2009-03-03 15:04:09'),
+(48, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 15:05:01', 1, '192.168.21.25', '2009-03-03 15:05:08'),
+(49, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 15:06:04', 1, '192.168.21.25', '2009-03-03 15:06:09'),
+(50, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 15:10:09', 1, '192.168.21.25', '2009-03-03 15:10:15'),
+(51, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 15:11:05', 1, '192.168.21.25', '2009-03-03 15:11:11'),
+(52, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 15:13:17', 1, '192.168.21.25', '2009-03-03 15:13:22'),
+(53, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 15:16:32', 1, '192.168.21.25', '2009-03-03 15:16:32'),
+(54, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 15:17:19', 1, '192.168.21.25', '2009-03-03 15:17:19'),
+(55, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 15:18:01', 1, '192.168.21.25', '2009-03-03 15:18:02'),
+(56, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 15:18:21', 1, '192.168.21.25', '2009-03-03 15:18:21'),
+(57, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-03 15:18:35', 1, '192.168.21.25', '2009-03-04 16:32:57'),
+(58, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 10:10:18', 1, '192.168.21.25', '2009-03-06 10:54:28'),
+(59, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 10:11:39', 1, '192.168.21.25', '2009-03-09 15:44:16'),
+(60, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 10:54:40', 1, '192.168.21.25', '2009-03-06 10:54:40'),
+(61, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 10:54:48', 1, '192.168.21.25', '2009-03-06 12:08:27'),
+(62, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 12:08:38', 1, '192.168.21.25', '2009-03-06 12:08:58'),
+(63, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 12:09:06', 1, '192.168.21.25', '2009-03-06 12:09:06'),
+(64, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 12:09:14', 1, '192.168.21.25', '2009-03-06 12:09:14'),
+(65, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 12:10:37', 1, '192.168.21.25', '2009-03-06 12:27:28'),
+(66, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 12:27:39', 1, '192.168.21.25', '2009-03-06 12:51:23'),
+(67, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 12:51:31', 1, '192.168.21.25', '2009-03-06 12:51:41'),
+(68, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 12:53:01', 1, '192.168.21.25', '2009-03-06 12:56:16'),
+(69, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 12:56:27', 1, '192.168.21.25', '2009-03-06 12:59:45'),
+(70, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 12:59:57', 1, '192.168.21.25', '2009-03-06 12:59:57'),
+(71, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 13:01:07', 1, '192.168.21.25', '2009-03-06 13:15:38'),
+(72, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 13:17:11', 1, '192.168.21.25', '2009-03-06 13:20:28'),
+(73, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 13:21:38', 1, '192.168.21.25', '2009-03-06 13:21:38'),
+(74, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 13:24:16', 1, '192.168.21.25', '2009-03-06 13:25:17'),
+(75, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 13:25:24', 1, '192.168.21.25', '2009-03-06 13:25:24'),
+(76, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 13:33:21', 1, '192.168.21.25', '2009-03-06 14:35:21'),
+(77, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 14:36:00', 1, '192.168.21.25', '2009-03-06 14:36:00'),
+(78, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 14:39:18', 1, '192.168.21.25', '2009-03-06 14:39:18'),
+(79, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 14:47:21', 0, '192.168.21.25', '2009-03-06 14:47:21'),
+(80, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 14:47:27', 1, '192.168.21.25', '2009-03-06 14:47:27'),
+(81, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 14:49:00', 1, '192.168.21.25', '2009-03-06 14:49:00'),
+(82, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-06 15:02:34', 1, '192.168.21.25', '2009-03-06 15:02:35'),
+(83, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 08:02:23', 1, '192.168.21.25', '2009-03-09 08:08:51'),
+(84, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 08:08:59', 1, '192.168.21.25', '2009-03-09 08:09:40'),
+(85, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 08:09:49', 1, '192.168.21.25', '2009-03-09 08:32:08'),
+(86, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 08:32:14', 1, '192.168.21.25', '2009-03-09 08:32:41'),
+(87, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 08:34:23', 1, '192.168.21.25', '2009-03-09 08:37:23'),
+(88, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 08:37:30', 1, '192.168.21.25', '2009-03-09 09:34:40'),
+(89, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 09:34:46', 1, '192.168.21.25', '2009-03-09 09:40:06'),
+(90, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 09:40:13', 1, '192.168.21.25', '2009-03-09 09:50:23'),
+(91, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 09:50:34', 1, '192.168.21.25', '2009-03-09 10:52:11'),
+(92, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 10:52:18', 1, '192.168.21.25', '2009-03-09 10:52:24'),
+(93, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 10:52:37', 1, '192.168.21.25', '2009-03-09 10:52:38'),
+(94, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 10:56:05', 1, '192.168.21.25', '2009-03-09 11:13:53'),
+(95, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 11:14:33', 1, '192.168.21.25', '2009-03-09 11:58:41'),
+(96, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 12:02:37', 1, '192.168.21.25', '2009-03-09 12:07:16'),
+(97, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 12:07:39', 1, '192.168.21.25', '2009-03-09 12:07:47'),
+(98, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 12:26:48', 1, '192.168.21.25', '2009-03-09 13:33:55'),
+(99, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 14:20:46', 1, '192.168.21.25', '2009-03-09 14:29:37'),
+(100, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 14:35:14', 1, '192.168.21.25', '2009-03-09 14:35:14'),
+(101, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 14:35:50', 1, '192.168.21.25', '2009-03-09 14:35:50'),
+(102, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 14:35:56', 1, '192.168.21.25', '2009-03-09 14:53:28'),
+(103, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 14:53:38', 1, '192.168.21.25', '2009-03-09 14:53:40'),
+(104, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 15:00:29', 1, '192.168.21.25', '2009-03-09 15:00:36'),
+(105, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 15:01:47', 1, '192.168.21.25', '2009-03-09 15:10:25'),
+(106, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 15:10:31', 1, '192.168.21.25', '2009-03-09 15:24:48'),
+(107, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 15:44:27', 1, '192.168.21.25', '2009-03-09 15:46:57'),
+(108, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 15:48:22', 1, '192.168.21.25', '2009-03-09 15:49:30'),
+(109, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 15:49:40', 1, '192.168.21.25', '2009-03-09 15:58:45'),
+(110, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 15:58:51', 1, '192.168.21.25', '2009-03-09 16:00:08'),
+(111, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 16:00:22', 1, '192.168.21.25', '2009-03-09 16:00:22'),
+(112, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 16:03:14', 1, '192.168.21.25', '2009-03-09 16:06:44'),
+(113, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 16:09:49', 1, '192.168.21.25', '2009-03-09 16:43:32'),
+(114, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 16:43:40', 1, '192.168.21.25', '2009-03-09 16:48:20'),
+(115, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 16:48:27', 1, '192.168.21.25', '2009-03-09 16:49:46'),
+(116, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 16:55:15', 1, '192.168.21.25', '2009-03-09 16:57:28'),
+(117, 1262, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 16:57:35', 1, '192.168.21.25', '2009-03-09 16:58:09'),
+(118, 1262, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-09 16:58:16', 1, '192.168.21.25', '2009-03-09 16:58:16'),
+(119, 1262, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-10 07:05:33', 1, '192.168.21.25', '2009-03-10 07:05:33'),
+(120, 1262, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-10 07:07:27', 1, '192.168.21.25', '2009-03-10 07:07:27'),
+(121, 1262, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-10 07:08:35', 1, '192.168.21.25', '2009-03-10 07:08:35'),
+(122, 1262, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-10 07:08:52', 1, '192.168.21.25', '2009-03-10 07:09:06'),
+(123, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-10 07:09:16', 1, '192.168.21.25', '2009-03-10 07:53:12'),
+(124, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-10 07:53:59', 1, '192.168.21.25', '2009-03-10 07:54:19'),
+(125, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-10 07:54:26', 1, '192.168.21.25', '2009-03-10 07:55:32'),
+(126, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-10 07:55:38', 1, '192.168.21.25', '2009-03-10 07:59:37'),
+(127, 1262, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-10 07:59:45', 1, '192.168.21.25', '2009-03-10 07:59:47'),
+(128, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-10 07:59:58', 1, '192.168.21.25', '2009-03-10 08:00:26'),
+(129, 1262, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-10 08:00:33', 1, '192.168.21.25', '2009-03-10 08:00:35'),
+(130, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-10 08:00:45', 1, '192.168.21.25', '2009-03-10 08:03:34'),
+(131, 1262, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-10 08:03:44', 1, '192.168.21.25', '2009-03-10 08:03:55'),
+(132, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-10 08:04:56', 0, '192.168.21.25', '2009-03-10 08:04:56'),
+(133, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-10 08:04:59', 1, '192.168.21.25', '2009-03-12 11:06:59'),
+(134, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 11:07:12', 1, '192.168.21.25', '2009-03-12 11:07:19'),
+(135, 1266, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 11:07:30', 1, '192.168.21.25', '2009-03-12 11:11:30'),
+(136, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 11:12:00', 1, '192.168.21.25', '2009-03-12 11:12:09'),
+(137, 1266, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 11:12:23', 0, '192.168.21.25', '2009-03-12 11:12:23'),
+(138, 1266, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 11:12:39', 1, '192.168.21.25', '2009-03-12 14:24:23'),
+(139, 1266, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 14:24:37', 0, '192.168.21.25', '2009-03-12 14:24:37'),
+(140, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 14:24:41', 0, '192.168.21.25', '2009-03-12 14:24:41'),
+(141, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 14:24:44', 1, '192.168.21.25', '2009-03-12 14:24:44'),
+(142, 1266, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 14:27:49', 0, '192.168.21.25', '2009-03-12 14:27:49'),
+(143, 1266, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 14:27:56', 0, '192.168.21.25', '2009-03-12 14:27:56'),
+(144, 1266, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 14:28:15', 1, '192.168.21.25', '2009-03-12 14:30:21'),
+(145, 1266, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 14:30:32', 0, '192.168.21.25', '2009-03-12 14:30:32'),
+(146, 1266, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 14:30:39', 0, '192.168.21.25', '2009-03-12 14:30:39'),
+(147, 1266, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 14:30:46', 0, '192.168.21.25', '2009-03-12 14:30:46'),
+(148, 1266, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 14:32:14', 1, '192.168.21.25', '2009-03-12 14:32:26'),
+(149, 1266, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 14:32:31', 0, '192.168.21.25', '2009-03-12 14:32:31'),
+(150, 1266, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 14:34:01', 0, '192.168.21.25', '2009-03-12 14:34:01'),
+(151, 1266, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 14:34:19', 1, '192.168.21.25', '2009-03-12 14:34:30'),
+(152, 1266, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 14:34:36', 1, '192.168.21.25', '2009-03-12 15:24:38'),
+(153, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 15:24:52', 1, '192.168.21.25', '2009-03-12 15:28:23'),
+(154, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 15:28:36', 1, '192.168.21.25', '2009-03-12 15:29:42'),
+(155, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 15:31:54', 1, '192.168.21.25', '2009-03-12 15:43:18'),
+(156, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 15:43:52', 1, '192.168.21.25', '2009-03-12 16:17:48'),
+(157, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 16:17:52', 1, '192.168.21.25', '2009-03-12 16:31:05');
 
 -- --------------------------------------------------------
 

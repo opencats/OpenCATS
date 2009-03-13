@@ -13,7 +13,7 @@ define('QUESTIONNAIRE_QUESTION_TYPE_RADIO', 4);
 
 /**
  *  Questionnaire Library
- *  @package    CATS
+ *  @package    OSATS
  *  @subpackage Library
  */
 class Questionnaire
@@ -545,7 +545,7 @@ class Questionnaire
 
     /**
      * It is assumed the applicant has completed a questionnaire using the Career
-     * Portal and has been added to CATS as a candidate. Based on their responses
+     * Portal and has been added to OSATS as a candidate. Based on their responses
      * to the questionnaire, perform any actions provided by the questionnaire
      * based on their responses (which should be in post provided by postData);
      *

@@ -8,7 +8,7 @@ include_once('./lib/Site.php');
 
 /**
  *	E-Mail Templates Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class EmailTemplates
@@ -141,11 +141,11 @@ class EmailTemplates
      */
     public function replaceVariables($text)
     {
-        $email    = $_SESSION['CATS']->getEmail();
-        $siteName = $_SESSION['CATS']->getSiteName();
-        $fullName = $_SESSION['CATS']->getFullName();
+        $email    = $_SESSION['OSATS']->getEmail();
+        $siteName = $_SESSION['OSATS']->getSiteName();
+        $fullName = $_SESSION['OSATS']->getFullName();
 
-        if ($_SESSION['CATS']->isDateDMY())
+        if ($_SESSION['OSATS']->isDateDMY())
         {
             $dateFormat = 'd-m-y';
         }
@@ -154,9 +154,9 @@ class EmailTemplates
             $dateFormat = 'm-d-y';
         }
 
-        if (isset($_SESSION['CATS']))
+        if (isset($_SESSION['OSATS']))
         {
-            $isLoggedIn = $_SESSION['CATS']->isLoggedIn();
+            $isLoggedIn = $_SESSION['OSATS']->isLoggedIn();
         }
         else
         {

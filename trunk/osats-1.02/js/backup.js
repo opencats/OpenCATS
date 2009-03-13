@@ -45,7 +45,7 @@ function startBackup(AJAXFunction, extraPOSTData)
         execJS(response);
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         AJAXFunction,
         POSTData,
@@ -91,7 +91,7 @@ function watchBackup(directoryName, extraPOSTData, AJAXFunction)
 
     backingUp = true;
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         AJAXFunction,
         POSTData,
@@ -187,5 +187,4 @@ function backupFinished()
 
     setTimeout('alert("Backup Complete!"); document.location.href = document.location.href+" ";', 500);
 }
-
 

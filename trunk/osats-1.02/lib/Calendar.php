@@ -30,7 +30,7 @@ include_once('./lib/Mailer.php');
 
 /**
  *	Calendar Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class Calendar
@@ -46,7 +46,7 @@ class Calendar
     public function __construct($siteID)
     {
         // FIXME: Factor out Session dependency.
-        $this->_userID = $_SESSION['CATS']->getUserID();
+        $this->_userID = $_SESSION['OSATS']->getUserID();
 
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
@@ -962,7 +962,7 @@ class Calendar
 
 /**
  *	Calendar Settings Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class CalendarSettings
@@ -976,7 +976,7 @@ class CalendarSettings
     {
         $this->_siteID = $siteID;
         // FIXME: Factor out Session dependency.
-        $this->_userID = $_SESSION['CATS']->getUserID();
+        $this->_userID = $_SESSION['OSATS']->getUserID();
         $this->_db = DatabaseConnection::getInstance();
     }
 

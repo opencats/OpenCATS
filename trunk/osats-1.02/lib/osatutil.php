@@ -2,12 +2,6 @@
 /*
    * OSATS
    * GNU License
-   *
-   *
-   * @package    CATS
-   * @subpackage Library
-   * @copyright Open Source
-   * @version    1.0
 */
 
 // FIXME: Why is this being reincluded here?
@@ -16,7 +10,7 @@ include_once('./lib/FileUtility.php');
 
 /**
  *	General Utility Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class osatutil
@@ -63,6 +57,7 @@ class osatutil
      *
      *
      */
+     //Remove this. Come up with new process if required. Jamin
     public static function getBuild()
     {
         if (!file_exists('.svn/entries'))
@@ -177,7 +172,7 @@ class osatutil
     }
 
     /**
-     * Returns the "absolute" version of a URI that is relative to the CATS
+     * Returns the "absolute" version of a URI that is relative to the OSATS
      * root directory.
      *
      * FIXME: Allow configuration override of HTTP_HOST.
@@ -201,8 +196,8 @@ class osatutil
         $absoluteURI .= $_SERVER['HTTP_HOST']
             . str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])) . '/';
 
-        // This breaks stuff. FIXME http://www.catsone.com/bugs/?do=details&task_id=72
-        // if (!eval(Hooks::get('CATS_UTILITY_GET_INDEX_URL'))) return;
+        // This breaks stuff. FIXME http://www.OSATSone.com/bugs/?do=details&task_id=72
+        // if (!eval(Hooks::get('OSATS_UTILITY_GET_INDEX_URL'))) return;
 
         $absoluteURI .= $relativePath;
 
@@ -246,7 +241,7 @@ class osatutil
     }
 
     /**
-     * Returns the full public URL to the CATS root directory.
+     * Returns the full public URL to the OSATS root directory.
      *
      * @return string URL.
      */
@@ -264,7 +259,7 @@ class osatutil
     }
 
     /**
-     * Returns the name of the PHP file that is being used as CATS's delegation
+     * Returns the name of the PHP file that is being used as OSATS's delegation
      * module. Usually index.php, but can be index.php5, or anything really.
      *
      * @return string Filename of index.php.
@@ -292,12 +287,11 @@ class osatutil
         {
             return 'index.php';
         }
-
         return $index;
     }
 
     /**
-     * Returns the directory CATS is being executed from,
+     * Returns the directory OSATS is being executed from,
      *
      * @return string directory containing index.php.
      */
@@ -312,7 +306,7 @@ class osatutil
     }
 
     /**
-     * Returns the full URL of the PHP file that is being used as CATS's
+     * Returns the full URL of the PHP file that is being used as OSATS's
      * delegation module. Usually index.php, but can be index.php5, or
      * anything really. This forces 'http://' even if we are really using
      * HTTPS.
@@ -329,15 +323,15 @@ class osatutil
 
         $url = sprintf('http://%s%s', $_SERVER['HTTP_HOST'], $path);
 
-        /* Fixes for CATS production server. */
-        $url = str_replace('catsone.net', 'catsone.com', $url);
-        $url = str_replace('http://catsone.com', 'http://www.catsone.com', $url);
+        /* Fixes for OSATS production server. */
+        $url = str_replace('OSATSone.net', 'OSATSone.com', $url);
+        $url = str_replace('http://OSATSone.com', 'http://www.OSATSone.com', $url);
 
         return $url;
     }
 
     /**
-     * Returns the full URL of the PHP file that is being used as CATS's
+     * Returns the full URL of the PHP file that is being used as OSATS's
      * delegation module. Usually index.php, but can be index.php5, or
      * anything really. This will use 'https://' if enabled.
      *
@@ -364,9 +358,9 @@ class osatutil
 
         $url = sprintf('https://%s%s', $_SERVER['HTTP_HOST'], $path);
 
-        /* Fixes for CATS production server. */
-        $url = str_replace('catsone.net', 'catsone.com', $url);
-        $url = str_replace('https://catsone.com', 'https://www.catsone.com', $url);
+        /* Fixes for OSATS production server. */
+        $url = str_replace('OSATSone.net', 'OSATSone.com', $url);
+        $url = str_replace('https://OSATSone.com', 'https://www.OSATSone.com', $url);
 
         return $url;
     }

@@ -102,7 +102,7 @@ function setRating(candidateJobOrderID, rating, imageID, sessionCookie)
         starElement.src = getImageByIndex(newRatingValue);
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'setCandidateJobOrderRating',
         POSTData,

@@ -74,7 +74,7 @@ class AttachmentsUI extends UserInterface
         $filePath      = sprintf('attachments/%s/%s', $directoryName, $fileName);
 
         /* Check for the existence of the backup.  If it is gone, send the user to a page informing them to press back and generate the backup again. */
-        if ($rs['contentType'] == 'catsbackup' && !file_exists($filePath))
+        if ($rs['contentType'] == 'OSATSbackup' && !file_exists($filePath))
         {
             CommonErrors::fatal(
                 COMMONERROR_FILENOTFOUND,

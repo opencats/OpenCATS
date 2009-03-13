@@ -10,7 +10,7 @@ include_once('./lib/Calendar.php');
 
 /**
  *	Contacts Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class Contacts
@@ -261,7 +261,7 @@ class Contacts
             $mailer = new Mailer($this->_siteID);
             $mailerStatus = $mailer->sendToOne(
                 array($emailAddress, ''),
-                'CATS Notification: Contact Ownership Change',
+                'OSATS Notification: Contact Ownership Change',
                 $email,
                 true
             );

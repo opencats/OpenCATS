@@ -5,7 +5,7 @@
 
 /**
  *  Module Utility Library
- *  @package    CATS
+ *  @package    OSATS
  *  @subpackage Library
  */
 class ModuleUtility
@@ -40,11 +40,9 @@ class ModuleUtility
         }
 
         $moduleClass = $modules[$moduleName][0];
-
-        include_once(
-            'modules/' . $moduleName . '/'
-            . $moduleClass . '.php'
-        );
+		
+		//get $moduleName and $moduleClass from the db now.... and replace this code Jamin
+        include_once('modules/' . $moduleName . '/' . $moduleClass . '.php');
 
         if (!eval(Hooks::get('LOAD_MODULE'))) return;
 
@@ -92,16 +90,13 @@ class ModuleUtility
             return true;
         }
 
-        $moduleClass = $modules[$moduleName][0];
+        $moduleClass = $modules[$moduleName][0];//rewritten by Jamin
 
-        include_once(
-            'modules/' . $moduleName . '/'
-            . $moduleClass . '.php'
-        );
+        include_once('modules/' . $moduleName . '/' . $moduleClass . '.php');
 
         $module = new $moduleClass();
-
-        if (!method_exists($module, 'requiresAuthentication'))
+//change this to be called out of the db. using $modules[$moduleName[# in array that is same as db row]] - Jamin
+        if (!method_exists($module, 'requiresAuthentication'))  
         {
             /* If the module doesn't specify, assume it requires
              * authentication.
@@ -158,107 +153,55 @@ class ModuleUtility
         return false;
     }
 
-    /*
-     * Rescans module directory
+    /* Rewritten by Jamin.  Using DB instead of searching filesystem, etc.
      *
      * @return array modules array (indexed by module name)
      */
     private static function _refreshModuleList()
     {
-        /* Modules array looks like this:
-         *
-         * $modules = array(
-         *     'login'    => array('LoginUI',    ''),
-         *     'home'     => array('HomeUI',     'Home'),
-         *     ...
-         *     'calendar' => array('CalendarUI', 'Calendar'),
-         *     'settings' => array('SettingsUI', 'Settings'),
-         *     'tests'    => array('TestsUI',    '')
-         * );
-         */
-
-         /* Attempt to load the list of modules from a temporary file. */
-        if (file_exists('modules.cache') && !isset($_POST['performMaintenence']) && CACHE_MODULES)
-        {
-            $modulesCache = unserialize(file_get_contents('modules.cache'));
-
-            $_SESSION['hooks'] = $modulesCache->hooks;
-
-            return $modulesCache->modules;
-        }
-
         $modules = array();
-        $moduleDirectories = array();
         $hooks = array();
-
-        $directory = @opendir(MODULES_PATH) or self::_fatal(
-            sprintf("Unable to open '%s'.", MODULES_PATH)
-        );
-
-        /* Loop through files / directories inside MODULES_PATH. */
-        while ($filename = readdir($directory))
-        {
-            $fullModulePath = MODULES_PATH . $filename;
-
-            /* Ignore files / directories that begin with '.', and any
-             * non-directories.
-             */
-            if ($filename[0] !== '.' && is_dir($fullModulePath))
-            {
-                $moduleDirectories[] = $fullModulePath;
-            }
-        }
-
-        closedir($directory);
-
         /* Get a blocking advisory lock on the database. */
         $db = DatabaseConnection::getInstance();
-        $db->getAdvisoryLock('CATSUpdateLock', 120);
-
-        /* FIXME: There has to be a better way to locate the UI filename. */
-        foreach ($moduleDirectories as $directoryName)
-        {
-            $directory = @opendir($directoryName) or self::_fatal(
-                sprintf("Unable to open '%s'.", $directoryName)
-            );
-
-            while ($filename = readdir($directory))
-            {
-                $fullFilePath = $directoryName . '/' . $filename;
-
-                /* Search for UI file. */
-                if (substr($filename, -6) !== 'UI.php')
+        $db->getAdvisoryLock('OSATSUpdateLock', 120);
+      	
+      	//this is only until I finish the entire rewrite, then I will pair things up. Jamin
+		include('./dbconfig.php');
+		$myServer = mysql_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS);
+		$myDB = mysql_select_db(DATABASE_NAME);
+		$sql = mysql_query("SELECT * FROM moduleInfo ORDER BY ordernum ASC");
+		$num_rows = mysql_num_rows($sql);
+		
+		while ($myrow = mysql_fetch_array($sql))
+		{ 
+			$moduleName = strtolower($myrow['name']);
+			$moduleClass = $myrow['class'];
+			//echo $moduleClass;
+			include ('./modules/' . $moduleName . "/" . $moduleClass . ".php");
+			$module = new $moduleClass();
+			//$modules[] = $myrow['class']; 
+			$modules[$moduleName] = array(
+				$moduleClass,
+				$myrow['tabtext'],
+				//$myrow['subtabs'],
+				$module->getSubTabsExternal(),
+                $module->getSettingsEntries(),
+                $module->getSettingsUserCategories(),
+				//$myrow['setentries'],
+				//$myrow['usercatagories'],
+				$myrow['visible']);	
+				
+			$moduleHooks = $module->getHooks();
+            foreach ($moduleHooks as $name => $data)
                 {
-                    continue;
+                    	$hooks[$name][] = $data;
                 }
 
-                include_once($fullFilePath);
+             //self::processModuleSchema($moduleName, $module->getSchema());
 
-                $moduleName = basename($directoryName);
-                $moduleClass = basename(substr($fullFilePath, 0, -4));
+		} 		
 
-                $module = new $moduleClass();
-                $modules[$moduleName] = array(
-                    $moduleClass,
-                    $module->getModuleTabText(),
-                    $module->getSubTabsExternal(),
-                    $module->getSettingsEntries(),
-                    $module->getSettingsUserCategories()
-                );
-
-                $moduleHooks = $module->getHooks();
-                foreach ($moduleHooks as $name => $data)
-                {
-                    $hooks[$name][] = $data;
-                }
-
-                self::processModuleSchema($moduleName, $module->getSchema());
-            }
-
-            closedir($directory);
-        }
-
-        $db->releaseAdvisoryLock('CATSUpdateLock');
+        $db->releaseAdvisoryLock('OSATSUpdateLock');
 
         /* Is called by installer? */
         if (isset($_POST['performMaintenence']))
@@ -267,55 +210,10 @@ class ModuleUtility
         }
 
         $_SESSION['hooks'] = $hooks;
-
-        /* Sort the modules. */
-        uksort($modules , array('self', '_sortModules'));
-
-        /* Verify that core modules are present. */
-        self::_checkCoreModules($modules);
-
-        /* Try to store the modules for future use. */
-        if (CACHE_MODULES)
-        {
-            $modulesCache->modules = $modules;
-            $modulesCache->hooks = $hooks;
-            @file_put_contents('modules.cache', serialize($modulesCache));
-        }
-
         return $modules;
     }
-
-    /**
-     * Verifies that core modules are installed and fatal()s out if not.
-     *
-     * @param array detected modules
-     * @return void
-     */
-    private static function _checkCoreModules($modules)
-    {
-        $missing = array();
-
-        foreach ($GLOBALS['coreModules'] as $key => $value)
-        {
-            if (!isset($modules[$key]))
-            {
-                $missing[] = $key;
-            }
-        }
-
-        if (count($missing) > 0)
-        {
-            $error = 'One or more of CATS\' core modules is missing.<br />';
-
-            foreach ($missing as $module)
-            {
-                $error .= 'Module "' . $module . '" not found.<br />';
-            }
-
-            self::_fatal($error);
-        }
-    }
-
+	
+   
     /**
      * Print a fatal error and die.
      *
@@ -339,7 +237,7 @@ class ModuleUtility
     }
 
     /**
-     * Sorts modules based on the order specified in constants.php.
+     * 
      *
      * If both modules are part of the core module list, do a comparison
      * based on order defined in constants file. If only one of them is

@@ -10,7 +10,7 @@ find_whitespace_files() {
 }
 
 if [ ! -f "modules/login/LoginUI.php" ]; then
-	echo "Error: You are not in the CATS directory."
+	echo "Error: You are not in the OSATS directory."
 	exit 1
 fi
 

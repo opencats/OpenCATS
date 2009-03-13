@@ -6,7 +6,7 @@
                     <td style="text-align:center;">
                         <br />
                         <br />
-                        The CATS Toolbar is designed for Mozilla Firefox. Please download and use Mozilla Firefox to install the CATS Toolbar.
+                        The OSATS Toolbar is designed for Mozilla Firefox. Please download and use Mozilla Firefox to install the OSATS Toolbar.
                         <br />
                         <br />
                         <br />

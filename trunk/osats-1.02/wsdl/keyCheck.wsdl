@@ -63,7 +63,7 @@
     <!-- Endpoint WE MAY GET RID OF THIS GARBAGE - Jamin -->
     <service name="KeyCheckService">
         <port name="KeyCheckPort" binding="typens:KeyCheckBinding">
-            <soap:address location="http://catsone.com/keyCheck.php"/>
+            <soap:address location="http://OSATSone.com/keyCheck.php"/>
         </port>
     </service>
 

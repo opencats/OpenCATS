@@ -51,15 +51,15 @@ span.titleText {
                         <p />
                         <span style="font-size: 14px; color: #000000;">
                         Welcome <span style="font-size: 12px; font-weight: bold;"><?php echo $this->license->getName(); ?></span>!
-                        As a Professional member, you're entitled to the latest features and releases of CATS,
+                        As a Professional member, you're entitled to the latest features and releases of OSATS,
                         helpful support services, and plug-ins to make finding and managing talent easier than ever.
                         <br /><br />
-                        For more information on getting started and your Professional membership, please visit the CATS official
-                        Professional membership website at <a href="http://www.catsone.com/professional" target="_blank">www.catsone.com/<b>professional</b></a>.
+                        For more information on getting started and your Professional membership, please visit the OSATS official
+                        Professional membership website at <a href="http://www.OSATSone.com/professional" target="_blank">www.OSATSone.com/<b>professional</b></a>.
                         From there, you'll find information about the latest new releases and all the tools and resources
                         available to you.
                         <br /><br />
-                        <b>All the professional features in CATS have been unlocked and are ready-to-use.</b>
+                        <b>All the professional features in OSATS have been unlocked and are ready-to-use.</b>
                         <br /><br />
                         <b>Number of seats/user licenses: </b><?php echo $this->license->getNumberOfSeats(); ?>
                         <br />
@@ -80,14 +80,14 @@ span.titleText {
                     </td>
                     <td valign="top" align="left" style="padding-left: 20px;">
                         <span style="font-size: 22px; font-weight: bold;">
-                        You are a registered CATS Professional user
+                        You are a registered OSATS Professional user
                         </span>
                         <br /><br />
                         <span style="font-size: 14px; color: #000000;">
                         All the features available to you have been unlocked are are ready-to-use. To download
                         plug-ins, get the latest information about Professional or to upgrade or renew your
-                        Professional account, visit our CATS Professional website at
-                        <a href="http://www.catsone.com/professional">http://www.catsone.com/<b>professional</b></a>.
+                        Professional account, visit our OSATS Professional website at
+                        <a href="http://www.OSATSone.com/professional">http://www.OSATSone.com/<b>professional</b></a>.
                         </span>
                         <p />
                         <b>Registered to:</b>
@@ -115,7 +115,7 @@ span.titleText {
                         UPGRADING / RENEWAL
                         </div>
                         <div style="font-size: 12px; color: #000000; text-align: justify;">
-                        Need to renew or upgrade your licenses? Visit our official <a href="http://www.catsone.com/professional" target="_blank">Professional</a>
+                        Need to renew or upgrade your licenses? Visit our official <a href="http://www.OSATSone.com/professional" target="_blank">Professional</a>
                         membership site to get a new license key and enter it here:
                         <table>
                             <tr>
@@ -138,8 +138,8 @@ span.titleText {
                         PROFESSIONAL LINKS & RESOURCES
                         </div>
                         <div style="font-size: 12px; color: #000000; text-align: justify;">
-                        For more information on getting started and your Professional membership, please visit the CATS official
-                        Professional membership website at <a href="http://www.catsone.com/professional" target="_blank">www.catsone.com/<b>Professional</b></a>.
+                        For more information on getting started and your Professional membership, please visit the OSATS official
+                        Professional membership website at <a href="http://www.OSATSone.com/professional" target="_blank">www.OSATSone.com/<b>Professional</b></a>.
                         From there, you'll find information about the latest new releases and all the tools and resources
                         available to you.
                         </div>
@@ -175,7 +175,7 @@ span.titleText {
                                     <b>No Hassles</b>
                                     <br />
                                     <span style="font-size: 12px; line-height: 14px; color: #666666;">
-                                    Run CATS on your server. We'll support and manage it, keeping it up to date
+                                    Run OSATS on your server. We'll support and manage it, keeping it up to date
                                     with the latest patches and features available.
                                     </span>
                                 </div>
@@ -187,7 +187,7 @@ span.titleText {
                                     <b>CD-ROM</b>
                                     <br />
                                     <span style="font-size: 12px; line-height: 14px; color: #666666;">
-                                    Turn any ordinary computer into a CATS server with our optional CD-ROM installer.
+                                    Turn any ordinary computer into a OSATS server with our optional CD-ROM installer.
                                     Available as a download or we'll mail it.
                                     </span>
                                 </div>
@@ -197,8 +197,8 @@ span.titleText {
                                     <b>Custom Servers</b>
                                     <br />
                                     <span style="font-size: 12px; line-height: 14px; color: #666666;">
-                                    Purchase an optional custom server pre-loaded with CATS Professinal. Just plug it
-                                    into your network. CATS is already installed!
+                                    Purchase an optional custom server pre-loaded with OSATS Professinal. Just plug it
+                                    into your network. OSATS is already installed!
                                     </span>
                                 </div>
                             </td>
@@ -244,7 +244,7 @@ span.titleText {
                         <img src="images/recruitingEasy.jpg" border="0" />
                     </td>
                     <td align="right" valign="bottom">
-                        <a href="https://www.catsone.com/professional/">
+                        <a href="https://www.OSATSone.com/professional/">
                         <img src="images/signUp.jpg" border="0" />
                         </a>
                     </td>
@@ -265,7 +265,7 @@ span.titleText {
                 <td width="33%" align="center" valign="bottom">
                     <div style="width: 280px;">
                         <center>
-                        <a href="http://www.catsone.com/?a=addons">
+                        <a href="http://www.OSATSone.com/?a=addons">
                         <img src="images/toolbarImport.jpg" border="0" />
                         </a>
                         <br />
@@ -280,7 +280,7 @@ span.titleText {
                     <img src="images/serverSystem.jpg" border="0" />
                     <br />
                     <div style="width: 240px; text-align: left; font-size: 13px; font-weight: bold;">
-                        Setup is included. We'll install and support CATS for you.
+                        Setup is included. We'll install and support OSATS for you.
                     </div>
                 </td>
             </tr>
@@ -293,12 +293,12 @@ span.titleText {
             <table cellpadding="0" cellspacing="0" border="0">
                 <tr>
                     <td align="left" valign="top" colspan="2" style="font-size: 22px; font-weight: bold;">
-                        Activate CATS Professional
+                        Activate OSATS Professional
                         <br />
                         <span style="font-size: 13px; font-weight: normal; line-height: 18px;">
-                        Need a license key? Go to the CATS Professional website at <a href="http://www.catsone.com/professional" target="_blank">
-                        http://www.catsone.com/professional</a> to get one. Once you enter your key, all the features
-                        available to CATS Professional users will become available to you -- immediately.
+                        Need a license key? Go to the OSATS Professional website at <a href="http://www.OSATSone.com/professional" target="_blank">
+                        http://www.OSATSone.com/professional</a> to get one. Once you enter your key, all the features
+                        available to OSATS Professional users will become available to you -- immediately.
                         </span>
                         <br /><br />
                     </td>

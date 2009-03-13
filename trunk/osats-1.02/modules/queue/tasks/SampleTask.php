@@ -1,22 +1,22 @@
 <?php
 /*
- * CATS
+ * OSATS
  * Asynchroneous Queue Processor
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
  *
- * The contents of this file are subject to the CATS Public License
+ * The contents of this file are subject to the OSATS Public License
  * Version 1.1a (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- * http://www.catsone.com/.
+ * http://www.OSATSone.com/.
  *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  * License for the specific language governing rights and limitations
  * under the License.
  *
- * The Original Code is "CATS Standard Edition".
+ * The Original Code is "OSATS Standard Edition".
  *
  * The Initial Developer of the Original Code is Cognizo Technologies, Inc.
  * Portions created by the Initial Developer are Copyright (C) 2005 - 2007
@@ -34,7 +34,7 @@
 include_once('./modules/queue/lib/Task.php');
 
 /**
- * This is a SAMPLE file for setting up a NON-recurring task with the CATS
+ * This is a SAMPLE file for setting up a NON-recurring task with the OSATS
  * asynchroneous queue processor. Create a task with the class name
  * that inherits the Task library (included above). The class name
  * must match the file name of the php script.

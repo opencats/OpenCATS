@@ -374,7 +374,7 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
         notesTextArea.focus();
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'getDataItemJobOrders',
         POSTData,
@@ -476,7 +476,7 @@ function Activity_submitEditedEntry(notes, date, hour, minute, ampm,
         deleteAction.style.visibility = 'visible';
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'editActivity',
         POSTData,
@@ -540,7 +540,7 @@ function Activity_deleteEntry(activityID, sessionCookie)
         typeRow.parentNode.removeChild(typeRow);
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'deleteActivity',
         POSTData,

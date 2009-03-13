@@ -64,7 +64,7 @@ function Installpage_populate(postData, message)
 
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'install:ui',
         '&' + postData,
@@ -106,7 +106,7 @@ function Installpage_maint()
         }
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'install:maint',
         '&performMaintenence=yes',
@@ -144,7 +144,7 @@ function Installpage_append(postData, message)
         execJS(response);
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'install:ui',
         '&' + postData,

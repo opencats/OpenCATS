@@ -3,10 +3,10 @@
 # Information about the server where the deleted attachments will be stored
 STORE_SERVER="fs1.cognizo.com"
 STORE_PATH="/var/www/html/andrew-test/temp"
-STORE_USERNAME="cats"
+STORE_USERNAME="OSATS"
 STORE_PASSWORD="password"
 
-DELETED_ATTACHMENTS_PATH="/usr/local/www/catsone.com/data/attachments/deleted"
+DELETED_ATTACHMENTS_PATH="/usr/local/www/OSATSone.com/data/attachments/deleted"
 DELETED_ATTACHMENTS_PATH="/home/andrew/test/deleted"
 SCP_PATH="/usr/bin/scp"
  

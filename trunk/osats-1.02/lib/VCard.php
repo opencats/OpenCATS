@@ -5,7 +5,7 @@
 
 /**
  *	vCard Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class VCard
@@ -305,7 +305,7 @@ class VCard
          *      REV:1995-10-31T22:27:10Z
          */
         $vCard .= sprintf(
-            "REV:%s\r\nMAILER:CATS\r\nEND:VCARD\r\n",
+            "REV:%s\r\nMAILER:OSATS\r\nEND:VCARD\r\n",
             date('Ymd\THis')
         );
 

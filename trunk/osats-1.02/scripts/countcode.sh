@@ -3,27 +3,27 @@
 # Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
 #
 # $Id: countcode.sh 3052 2007-09-19 20:48:36Z andrew $
-CATS_ROOT_PATH_CHECK="modules/login/LoginUI.php"
+OSATS_ROOT_PATH_CHECK="modules/login/LoginUI.php"
 SYM_LINKS_EXIST=1
 REMOVE_SYM_LINKS_SCRIPT="./scripts/removeWebsiteSymLinks.sh"
 CREATE_SYM_LINKS_SCRIPT="./scripts/makeWebsiteSymLinks.sh"
 
-# Change path if user isn't in CATS root
-while [ ! -f "${CATS_ROOT_PATH_CHECK}" ] && [ `pwd` != "/" ]; do
-    echo -n "CATS not found in `pwd`... trying "
+# Change path if user isn't in OSATS root
+while [ ! -f "${OSATS_ROOT_PATH_CHECK}" ] && [ `pwd` != "/" ]; do
+    echo -n "OSATS not found in `pwd`... trying "
     cd ..
     echo -n "`pwd`"
-    if [ -d "${CATS_ROOT_PATH_CHECK}" ];
+    if [ -d "${OSATS_ROOT_PATH_CHECK}" ];
     then
         echo " [OK]"
     else
         echo ", Nope..."
     fi
 done
-if [ ! -f "${CATS_ROOT_PATH_CHECK}" ];
+if [ ! -f "${OSATS_ROOT_PATH_CHECK}" ];
 then
-    echo "Cannot find CATS. Please run this script "
-    echo "from a path within a CATS installation."
+    echo "Cannot find OSATS. Please run this script "
+    echo "from a path within a OSATS installation."
     exit 1
 fi
 

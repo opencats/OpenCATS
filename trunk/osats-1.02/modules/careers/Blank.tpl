@@ -17,8 +17,8 @@
         <?php endif; ?>
         <style type="text/css" media="all">
             <?php echo($this->template['CSS']); ?>
-			#poweredCATS { clear: both; margin: 30px auto; clear: both; width: 140px; height: 40px; border: none;}
-			#poweredCATS img { border: none; }
+			#poweredOSATS { clear: both; margin: 30px auto; clear: both; width: 140px; height: 40px; border: none;}
+			#poweredOSATS img { border: none; }
         </style>
     </head>
     <body>
@@ -36,7 +36,7 @@
     <div style="text-align:center;">
 
         <?php /*  */ ?>
-        <div id="poweredCATS">
+        <div id="poweredOSATS">
 		<a href="http://www.google.com" target="_blank"><img src="/images/contact.gif" alt="Powered by: OSATS - Open Source Applicant Tracking System" title="Powered by: OSATS - Open Source Applicant Tracking System" /></a>
 		</div>
     </div>

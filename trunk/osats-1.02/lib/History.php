@@ -5,7 +5,7 @@
 
 /**
  *	Data Item History Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class History
@@ -20,7 +20,7 @@ class History
     {
         $this->_siteID = $siteID;
         // FIXME: Remove dependency on Session here.
-        $this->_userID = $_SESSION['CATS']->getUserID();
+        $this->_userID = $_SESSION['OSATS']->getUserID();
         $this->_db = DatabaseConnection::getInstance();
         $this->dateformatLong = __('DATEFORMAT_SQL_LONG');
     }

@@ -12,7 +12,7 @@ var DATA_ITEM_CONTACT   = 300;
 var DATA_ITEM_JOBORDER  = 400;
 
 /* Set by TemplateUtility drawing headers. */
-var CATSIndexName;
+var OSATSIndexName;
 
 /* Default timeout for AJAX requests; 15 seconds. */
 var AJAX_TIMEOUT = 15000;
@@ -361,11 +361,11 @@ function AJAX_POST(http, url, POSTData, callBack, timeout, sessionCookie,
 }
 
 /**
- * Sends an AJAX HTTP POST request to the CATS AJAX Delegation Module.
+ * Sends an AJAX HTTP POST request to the OSATS AJAX Delegation Module.
  *
  * @return void
  */
-function AJAX_callCATSFunction(http, funcName, POSTData, callBack,
+function AJAX_callOSATSFunction(http, funcName, POSTData, callBack,
     extraTimeout, sessionCookie, silentTimeout, disableBuffering)
 {
     /* Prepend the function name to the postdata. */
@@ -559,7 +559,7 @@ function CityState_populate(zipEditID, indicatorID)
         indicator.style.visibility = 'hidden';
     }
 
-    AJAX_callCATSFunction(http, 'zipLookup', POSTData, callBack, 0, null, false, false);
+    AJAX_callOSATSFunction(http, 'zipLookup', POSTData, callBack, 0, null, false, false);
 }
 
 /* Returns the value of the radio button that is selected from a radio button
@@ -1092,4 +1092,3 @@ function decode64(input)
 
    return output;
 }
-

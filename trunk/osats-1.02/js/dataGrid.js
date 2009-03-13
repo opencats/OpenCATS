@@ -275,7 +275,7 @@ function saveColumnSize()
         }
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'setColumnWidth',
         POSTData,
@@ -546,7 +546,7 @@ function populateAjaxPager(instance, parameters, sessionCookie, dynamicArgument,
         execJS(http.responseText);
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'getDataGridPager',
         POSTData,

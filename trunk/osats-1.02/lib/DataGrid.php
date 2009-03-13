@@ -6,7 +6,7 @@ include_once('./lib/StringUtility.php');
 
 /**
  *  Data Grid Library
- *  @package    CATS
+ *  @package    OSATS
  *  @subpackage Library
  */
 class DataGrid
@@ -249,7 +249,7 @@ class DataGrid
 
         include_once (sprintf('modules/%s/dataGrids.php', $module));
 
-        $dg = new $class($_SESSION['CATS']->getSiteID(), $parameters, $misc);
+        $dg = new $class($_SESSION['OSATS']->getSiteID(), $parameters, $misc);
 
         return $dg;
     }
@@ -287,7 +287,7 @@ class DataGrid
             $indentifier .= ':' . serialize($misc);
         }
 
-        return $_SESSION['CATS']->getDataGridParameters($indentifier);
+        return $_SESSION['OSATS']->getDataGridParameters($indentifier);
     }
 
     // TODO:  Document me.
@@ -525,7 +525,7 @@ class DataGrid
          /* Save current parameter array to session. */
          if (!isset($this->_parameters['noSaveParameters']))
          {
-             $_SESSION['CATS']->setDataGridParameters($this->_instanceName, $this->_parameters);
+             $_SESSION['OSATS']->setDataGridParameters($this->_instanceName, $this->_parameters);
          }
 
          /* If no globalStyle set, set one. */
@@ -886,7 +886,7 @@ class DataGrid
         /* Get the current preferences from SESSION. */
         if (!isset($this->ignoreSavedColumnLayouts) || $this->ignoreSavedColumnLayouts == false)
         {
-            $this->_currentColumns = $_SESSION['CATS']->getColumnPreferences($this->_instanceName);
+            $this->_currentColumns = $_SESSION['OSATS']->getColumnPreferences($this->_instanceName);
         }
         else
         {
@@ -1005,7 +1005,7 @@ class DataGrid
      */
     protected function saveColumns()
     {
-        $_SESSION['CATS']->setColumnPreferences($this->_instanceName, $this->_currentColumns);
+        $_SESSION['OSATS']->setColumnPreferences($this->_instanceName, $this->_currentColumns);
     }
 
     /**
@@ -1678,7 +1678,7 @@ class DataGrid
                     $md5InstanceName,
                     $md5InstanceName, end(array_keys($this->_currentColumns)),
                     urlencode($this->_instanceName),
-                    $_SESSION['CATS']->getCookie(),
+                    $_SESSION['OSATS']->getCookie(),
                     $data['name'],
                     $md5InstanceName,
                     $md5InstanceName,
@@ -1798,7 +1798,7 @@ class DataGrid
                     $md5InstanceName, end(array_keys($this->_currentColumns)),
                     $this->_tableWidth,
                     urlencode($this->_instanceName),
-                    $_SESSION['CATS']->getCookie(),
+                    $_SESSION['OSATS']->getCookie(),
                     $data['name'],
                     implode(',', $cellIndexes)
                 );
@@ -2129,7 +2129,7 @@ class DataGrid
                     $ID, $md5InstanceName,      //Select Box ID
                     urlencode($this->_instanceName),           //Instance name for ajax function itself
                     urlencode(serialize($newParameterArray)),  //New parameter array
-                    $_SESSION['CATS']->getCookie(),            //Cookie
+                    $_SESSION['OSATS']->getCookie(),            //Cookie
                     $newParameterArray['maxResults'],          //Used to help determine how many rows per page when changing pages
                     $this->_currentPage,
                     $this->_totalPages,
@@ -2349,7 +2349,7 @@ class DataGrid
                 $javascript,
                 urlencode($this->_instanceName),
                 urlencode(serialize($newParameterArray)),
-                $_SESSION['CATS']->getCookie(),
+                $_SESSION['OSATS']->getCookie(),
                 ($className != '' ? 'class="'.$className.'"' : ''),
                 ($id != '' ? 'id="'.$id.'"' : '')
             );
@@ -2496,7 +2496,7 @@ class DataGrid
                 'populateAjaxPager(\'%s\', \'%s\', \'%s\', document.getElementById(\'filterArea%s\').value);',
                 urlencode($this->_instanceName),
                 urlencode(serialize($newParameterArray)),  //New parameter array
-                $_SESSION['CATS']->getCookie(),            //Cookie
+                $_SESSION['OSATS']->getCookie(),            //Cookie
                 $md5InstanceName
             );
         }
@@ -2587,7 +2587,3 @@ class DataGrid
         echo '}';
     }
  }
-
-
-
-

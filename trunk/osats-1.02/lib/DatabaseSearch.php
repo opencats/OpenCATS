@@ -5,7 +5,7 @@
 
 /**
  *	Database Search Utility Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class DatabaseSearch

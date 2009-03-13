@@ -64,7 +64,7 @@
 
             <table class="searchTable" id="importTable1" width="100%">
                 <tr>
-                    <td><?php _e('CATS may discard or fail to read some of the submitted data which it does not understand how to use. Do not discard the original data')?>!
+                    <td><?php _e('OSATS may discard or fail to read some of the submitted data which it does not understand how to use. Do not discard the original data')?>!
                     </td>
                 </tr>
             </table>
@@ -90,7 +90,7 @@
                 </tr>
             </table>
 
-            <?php if ($this->bulk['numBulkAttachments'] > 0 && $_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA): ?>
+            <?php if ($this->bulk['numBulkAttachments'] > 0 && $_SESSION['OSATS']->getAccessLevel() >= ACCESS_LEVEL_SA): ?>
             <br />
             <div style="background-color: #f0f0f0; color: #000000; border: 1px solid #000000; text-align: left; font-size: 14px; padding: 10px; margin: 0 0 15px 0; font-weight: normal;">
                 <?php echo __('You have uploaded %s unclassified resume documents. You can search these documents, but they are not attached to candidates because candidate information - like their name, address, etc. - was not available when they were uploaded.', number_format($this->bulk['numBulkAttachments'], 0))?>

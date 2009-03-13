@@ -132,7 +132,7 @@ function ContactDepartments_populate(companyID, sessionCookie)
         document.getElementById('departmentSelect').disabled = false;
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'getCompanyLocationAndDepartments',
         POSTData,

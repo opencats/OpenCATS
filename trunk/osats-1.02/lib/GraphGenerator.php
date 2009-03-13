@@ -19,7 +19,7 @@ if (function_exists('ImageCreateFromJpeg'))
 
 /**
  *	Simple Graph Generator
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class GraphSimple
@@ -93,7 +93,7 @@ class GraphSimple
 
 /**
  *	Simple Pie Graph Generator
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class GraphPie
@@ -158,7 +158,7 @@ class GraphPie
 
 /**
  *	Comparison Chart Generator
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class GraphComparisonChart
@@ -237,7 +237,7 @@ class GraphComparisonChart
 
 /**
  *	Pipeline Report Graph Generator
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class pipelineStatisticsGraph
@@ -333,7 +333,7 @@ class pipelineStatisticsGraph
 
 /**
  *	Job Order Report Graph Generator
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class jobOrderReportGraph
@@ -403,7 +403,7 @@ class jobOrderReportGraph
 
 /**
  *	Word Verification / CAPTCHA Generator
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class WordVerify

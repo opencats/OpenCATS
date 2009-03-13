@@ -20,21 +20,21 @@ else
     $stdout = fopen('php://output', 'w');
 }
 
-    fwrite($stdout, "CATS Site Backup Utility\n");
+    fwrite($stdout, "OSATS Site Backup Utility\n");
     fwrite($stdout, "2007 Cognizo Technologies\n\n");
 
 
 if (isset($_SERVER['argv'][1]))
 {
-    $CATSHome = realpath(dirname(__FILE__) . '/../');
-    chdir($CATSHome);
+    $OSATSHome = realpath(dirname(__FILE__) . '/../');
+    chdir($OSATSHome);
 
     include_once('./config.php');
     include_once('./constants.php');
     include_once('./lib/DatabaseConnection.php');
     include_once('modules/install/backupDB.php');
 
-    makeBackup((int) $_SERVER['argv'][1], BACKUP_CATS);
+    makeBackup((int) $_SERVER['argv'][1], BACKUP_OSATS);
 }
 else if(php_sapi_name() == 'cli')
 {
@@ -99,7 +99,7 @@ function makeBackup($siteID, $backupType = BACKUP_TAR, $logFile = null)
         @mkdir('scripts/backup/'.$random.'/'.$siteID);
         @mkdir('scripts/backup/'.$random.'/'.$siteID.'/db');
 
-        dumpDB($db, 'scripts/backup/'.$random.'/'.$siteID.'/db/catsbackup.sql', false, true, $siteID);
+        dumpDB($db, 'scripts/backup/'.$random.'/'.$siteID.'/db/OSATSbackup.sql', false, true, $siteID);
 
         fwrite($stdout, "(attachments)... ");
 
@@ -143,7 +143,7 @@ function makeBackup($siteID, $backupType = BACKUP_TAR, $logFile = null)
         }
         else
         {
-            //CATS Format backup
+            //OSATS Format backup
             fwrite($stdout, "(bak)... ");;
 
             chdir('scripts/backup/'.$random.'/'.$siteID.'');
@@ -192,8 +192,8 @@ function makeBackup($siteID, $backupType = BACKUP_TAR, $logFile = null)
     {
         fwrite($stdout, "Moving file to scripts\backup...  \n\n");
 
-        //CATS Backup
-        exec('mv scripts/backup/'.$random.'/'.$primarySiteID.'.zip scripts/backup/catsbackup.bak');
+        //OSATS Backup
+        exec('mv scripts/backup/'.$random.'/'.$primarySiteID.'.zip scripts/backup/OSATSbackup.bak');
         exec('rm -rf scripts/backup/'.$random);
     }
 

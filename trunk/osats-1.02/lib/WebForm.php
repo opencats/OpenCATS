@@ -49,7 +49,7 @@ define('WF_CARD_TYPE_DISCOVER',        400);
 
 /**
  *	Form Generation/Validation Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class WebForm

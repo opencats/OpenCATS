@@ -10,7 +10,7 @@ include_once('./lib/JobOrders.php');
 
 /**
  *	Data Export Utility Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class ExportUtility
@@ -74,7 +74,7 @@ class ExportUtility
 
 /**
  *	Data Export Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class Export

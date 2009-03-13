@@ -64,7 +64,7 @@
 
                 <table class="searchTable" id="importTable1" width="100%">
                     <tr>
-                        <td><?php _e('CATS may discard or fail to read some of the submitted data which it does not understand how to use. Do not discard the original data')?>!
+                        <td><?php _e('OSATS may discard or fail to read some of the submitted data which it does not understand how to use. Do not discard the original data')?>!
                         </td>
                     </tr>
 
@@ -140,11 +140,11 @@
                 <tr>
                     <td>
                         <?php _e('You are importing data into Contacts. Each contact is required to have an associated Company.')?><br /><br />
-                        <?php _e('If you wish, CATS can create the companies for each company who is not in the database. The company\'s contact information will be identical to the first contacts contact information.')?>
+                        <?php _e('If you wish, OSATS can create the companies for each company who is not in the database. The company\'s contact information will be identical to the first contacts contact information.')?>
                         <br /><br />
-                        <?php _e('For example, if adding John Smith listed as being associated to Fun Industries, and John Smith is listed as having work address \'1234 Fun St.\', then CATS can create the company Fun Industries with address \'1234 Fun St.\'.')?><br /><br />
+                        <?php _e('For example, if adding John Smith listed as being associated to Fun Industries, and John Smith is listed as having work address \'1234 Fun St.\', then OSATS can create the company Fun Industries with address \'1234 Fun St.\'.')?><br /><br />
                         <?php _e('If you choose not to generate company data, then contacts with unknown companies will not be imported.')?><br /><br />
-                        <span class="bold"><?php _e('Should CATS generate the company data automatically?')?></span><br />
+                        <span class="bold"><?php _e('Should OSATS generate the company data automatically?')?></span><br />
                         <select id="generateCompanies" name="generateCompanies" class ="inputBox" style="width: 260px;" onchange="evaluateUnnamedContacts();">
                             <option value="yes" selected="selected"><?php _e('_Yes, generate associated company data.')?></option>
                             <option value="no"><?php _e('_No, just import the contacts.')?></option>
@@ -152,7 +152,7 @@
                         <br />
                         <span id='unnamedContactsSpan'>
                         <br />
-                        <span class="bold"><?php _e('If there is no name for the companies contact, should CATS name the contact \'nobody\' and add it to the company?')?></span><br />
+                        <span class="bold"><?php _e('If there is no name for the companies contact, should OSATS name the contact \'nobody\' and add it to the company?')?></span><br />
                         <select id="unnamedContacts" name="unnamedContacts" class ="inputBox" style="width: 260px;">
                             <option value="yes" selected="selected"><?php _e('_Yes, add a name as necessary.')?></option>
                             <option value="no"><?php _e('_No, throw out these records.')?></option>
@@ -191,7 +191,7 @@
                             &nbsp;
                             <select id="importType<?php echo($fieldIndex); ?>" name="importType<?php echo($fieldIndex); ?>" class="inputbox" style="width: 230px;" onchange="evaluateFieldSelection(<?php echo($fieldIndex); ?>);">
                                 <option value=""><?php _e('Do not import.')?></option>
-                                <option value="cats" <?php if ($match): ?>selected<?php endif; ?>><?php _e('Import as')?>: <?php echo($this->importInto); ?></option>
+                                <option value="OSATS" <?php if ($match): ?>selected<?php endif; ?>><?php _e('Import as')?>: <?php echo($this->importInto); ?></option>
                                 <?php if ($this->isSA): ?><option value="foreign"><?php _e('Add field to Extra Fields and Import.')?></option><?php endif; ?>
                             </select>
                             <span <?php if (!$match): ?>style="display:none;"<?php endif; ?> id="importIntoSpan<?php echo($fieldIndex); ?>">

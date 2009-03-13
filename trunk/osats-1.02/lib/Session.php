@@ -8,7 +8,7 @@
  *  @package    
  *  @subpackage Library
  */
-class CATSSession
+class WebSession
 {
     private $_siteID = -1;
     private $_userID = -1;
@@ -141,22 +141,24 @@ class CATSSession
         /* Don't force logout for certain kinds of accounts
          * account.
          */
-        if ($this->isDemo() ||
+        /*
+		if ($this->isDemo() ||
             $this->_accessLevel == ACCESS_LEVEL_READ ||
             $this->_accessLevel >= ACCESS_LEVEL_ROOT ||
             $this->_unixName == 'cognizo')
         {
             return false;
         }
-
+	*/
         /* Don't force logout for site 200.
          * TODO:  Remove me.
          */
-        if ($this->getSiteID() == 200)
+        /*
+		if ($this->getSiteID() == 200)
         {
             return false;
         }
-
+	*/
         /* Get the current user's session cookie from the database. */
         $users = new Users($this->_siteID);
         $userRS = $users->get($this->_userID);
@@ -849,7 +851,7 @@ class CATSSession
 
     /**
      * Forces the session to make the current user "transparently" login to
-     * another site. This is used only to support the CATS administrative
+     * another site. This is used only to support the OSATS administrative
      * console, but must remain part of Session.
      *
      * @param integer New Site ID to login to.
@@ -1027,8 +1029,8 @@ class CATSSession
      * the contents of any ID number and submit an ID with associated text that
      * has not been validated.
      *
-     * Practical example:  The browser sends a 300 kb file to CATS via AJAX.
-     * CATS remembers the contents of the file and sends back an ID number (0).
+     * Practical example:  The browser sends a 300 kb file to OSATS via AJAX.
+     * OSATS remembers the contents of the file and sends back an ID number (0).
      * Now the browser can refer to ID 0 (being the entire file).
      *
      * @param mixed data to store

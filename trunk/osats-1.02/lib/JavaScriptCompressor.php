@@ -7,7 +7,7 @@ include_once('./lib/StringUtility.php');
 
 /**
  *	JavaScript Compression Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class JavaScriptCompressor

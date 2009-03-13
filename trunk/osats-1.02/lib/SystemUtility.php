@@ -7,7 +7,7 @@ include_once('./lib/QueueProcessor.php');
 
 /**
  *	System Utility Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class SystemUtility

@@ -41,8 +41,8 @@ class WizardUI extends UserInterface
             $this->_template->assign(\'accessLevels\', $users->getAccessLevels());
         ');
         $this->addPage('Localization', './modules/wizard/WizardIntroLocalization.tpl', '
-            $this->_template->assign(\'timeZone\', $_SESSION[\'CATS\']->getTimeZone());
-            $this->_template->assign(\'isDateDMY\', $_SESSION[\'CATS\']->isDateDMY());
+            $this->_template->assign(\'timeZone\', $_SESSION[\'OSATS\']->getTimeZone());
+            $this->_template->assign(\'isDateDMY\', $_SESSION[\'OSATS\']->isDateDMY());
         ');
 
         $this->addJsInclude('./js/wizardIntro.js');
@@ -68,8 +68,8 @@ class WizardUI extends UserInterface
 
     public function show()
     {
-        if (!isset($_SESSION['CATS_WIZARD']) || empty($_SESSION['CATS_WIZARD']) ||
-            !is_array($_SESSION['CATS_WIZARD']))
+        if (!isset($_SESSION['OSATS_WIZARD']) || empty($_SESSION['OSATS_WIZARD']) ||
+            !is_array($_SESSION['OSATS_WIZARD']))
         {
             // The user has removed or the session for the wizard has been lost,
             // redirect to rebuild it
@@ -79,29 +79,29 @@ class WizardUI extends UserInterface
 
         // Build the javascript for navigation
         $js = '';
-        for ($i=0; $i<count($_SESSION['CATS_WIZARD']['pages']); $i++)
+        for ($i=0; $i<count($_SESSION['OSATS_WIZARD']['pages']); $i++)
         {
             $js .= sprintf('addWizardPage("%s", %s, %s);%s',
-                addslashes($_SESSION['CATS_WIZARD']['pages'][$i]['title']),
-                $_SESSION['CATS_WIZARD']['pages'][$i]['disableNext'] ? 'true' : 'false',
-                $_SESSION['CATS_WIZARD']['pages'][$i]['disableSkip'] ? 'true' : 'false',
+                addslashes($_SESSION['OSATS_WIZARD']['pages'][$i]['title']),
+                $_SESSION['OSATS_WIZARD']['pages'][$i]['disableNext'] ? 'true' : 'false',
+                $_SESSION['OSATS_WIZARD']['pages'][$i]['disableSkip'] ? 'true' : 'false',
                 "\n"
             );
         }
-        $js .= sprintf('var finishURL = \'%s\';', $_SESSION['CATS_WIZARD']['finishURL'], "\n");
-        $js .= sprintf('var currentPage = %d;%s', $_SESSION['CATS_WIZARD']['curPage'], "\n");
+        $js .= sprintf('var finishURL = \'%s\';', $_SESSION['OSATS_WIZARD']['finishURL'], "\n");
+        $js .= sprintf('var currentPage = %d;%s', $_SESSION['OSATS_WIZARD']['curPage'], "\n");
         $this->_template->assign('js', $js);
 
-        if (isset($_SESSION['CATS_WIZARD']['js'])) $jsInclude = $_SESSION['CATS_WIZARD']['js'];
+        if (isset($_SESSION['OSATS_WIZARD']['js'])) $jsInclude = $_SESSION['OSATS_WIZARD']['js'];
         else $jsInclude = '';
 
         $this->_template->assign('jsInclude', $jsInclude);
-        $this->_template->assign('pages', $_SESSION['CATS_WIZARD']['pages']);
-        $this->_template->assign('currentPage', $_SESSION['CATS_WIZARD']['pages'][$_SESSION['CATS_WIZARD']['curPage']-1]);
-        $this->_template->assign('currentPageIndex', $_SESSION['CATS_WIZARD']['curPage']-1);
+        $this->_template->assign('pages', $_SESSION['OSATS_WIZARD']['pages']);
+        $this->_template->assign('currentPage', $_SESSION['OSATS_WIZARD']['pages'][$_SESSION['OSATS_WIZARD']['curPage']-1]);
+        $this->_template->assign('currentPageIndex', $_SESSION['OSATS_WIZARD']['curPage']-1);
         $this->_template->assign('active', $this);
         $this->_template->assign('enableSkip', true);
-        $this->_template->assign('enablePrevious', $_SESSION['CATS_WIZARD']['curPage']==1 ? false : true);
+        $this->_template->assign('enablePrevious', $_SESSION['OSATS_WIZARD']['curPage']==1 ? false : true);
         $this->_template->assign('enableNext', true);
 
         $this->_template->display('./modules/wizard/Show.tpl');
@@ -109,8 +109,8 @@ class WizardUI extends UserInterface
 
     public function ajax_getPage()
     {
-        if (!isset($_SESSION['CATS_WIZARD']) || !is_array($_SESSION['CATS_WIZARD']) ||
-            !count($_SESSION['CATS_WIZARD']))
+        if (!isset($_SESSION['OSATS_WIZARD']) || !is_array($_SESSION['OSATS_WIZARD']) ||
+            !count($_SESSION['OSATS_WIZARD']))
         {
             echo __('This wizard has no pages.');
             return;
@@ -118,7 +118,7 @@ class WizardUI extends UserInterface
 
         // Get the current page of the wizard
         if (isset($_GET['currentPage'])) $currentPage = intval($_GET['currentPage']); else $currentPage = 1;
-        if ($currentPage < 1 || $currentPage > count($_SESSION['CATS_WIZARD']['pages'])) $currentPage = 1;
+        if ($currentPage < 1 || $currentPage > count($_SESSION['OSATS_WIZARD']['pages'])) $currentPage = 1;
 
         if (isset($_GET['requestAction'])) $requestAction = $_GET['requestAction']; else $requestAction = '';
         switch ($requestAction)
@@ -130,7 +130,7 @@ class WizardUI extends UserInterface
                 $requestPage = $currentPage - 1;
                 break;
             case 'skip':
-                $requestPage = count($_SESSION['CATS_WIZARD']);
+                $requestPage = count($_SESSION['OSATS_WIZARD']);
                 break;
             case 'current':
             default:
@@ -139,9 +139,9 @@ class WizardUI extends UserInterface
         }
 
         // Set session variables (if they exist)
-        if (isset($_SESSION['CATS']) && !empty($_SESSION['CATS']))
+        if (isset($_SESSION['OSATS']) && !empty($_SESSION['OSATS']))
         {
-            $session = $_SESSION['CATS'];
+            $session = $_SESSION['OSATS'];
             $this->_template->assign('userID', $userID = $session->getUserID());
             $this->_template->assign('userName', $userName = $session->getUserName());
             $this->_template->assign('siteID', $siteID = $session->getSiteID());
@@ -149,11 +149,11 @@ class WizardUI extends UserInterface
         }
 
         // Figure out which template to display
-        if (!isset($_SESSION['CATS_WIZARD']['pages'][$requestPage -= 1])) $requestPage = 0;
-        $template = $_SESSION['CATS_WIZARD']['pages'][$requestPage]['template'];
-        $_SESSION['CATS_WIZARD']['curPage'] = $requestPage + 1;
+        if (!isset($_SESSION['OSATS_WIZARD']['pages'][$requestPage -= 1])) $requestPage = 0;
+        $template = $_SESSION['OSATS_WIZARD']['pages'][$requestPage]['template'];
+        $_SESSION['OSATS_WIZARD']['curPage'] = $requestPage + 1;
 
-        if (($php = $_SESSION['CATS_WIZARD']['pages'][$requestPage]['php']) != '')
+        if (($php = $_SESSION['OSATS_WIZARD']['pages'][$requestPage]['php']) != '')
         {
             eval($php);
         }

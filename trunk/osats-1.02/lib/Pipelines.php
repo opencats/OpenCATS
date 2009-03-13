@@ -7,7 +7,7 @@ include_once('./lib/History.php');
 
 /**
  *	Pipelines Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class Pipelines

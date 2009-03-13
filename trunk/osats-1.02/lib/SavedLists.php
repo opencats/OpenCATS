@@ -4,7 +4,7 @@
  */
 /**
  *	Data Item Saved Lists Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class SavedLists
@@ -190,7 +190,7 @@ class SavedLists
             $this->_db->makeQueryString($description),
             $dataItemType,
             $this->_siteID,
-            $_SESSION['CATS']->getUserID()
+            $_SESSION['OSATS']->getUserID()
         );
         $rs = $this->_db->query($sql);
     }
@@ -297,7 +297,7 @@ class SavedLists
                         $this->_db->makeQueryString($update[0]),
                         $this->_siteID,
                         $this->_db->makeQueryInteger($dataItemType),
-                        $_SESSION['CATS']->getUserID()
+                        $_SESSION['OSATS']->getUserID()
                     );
                     $this->_db->query($sql);
 
@@ -573,8 +573,8 @@ class SavedLists
                 case LIST_EDITOR_MODIFY:
                     $this->fatal(
                         'Tried to modify left side of double list. This '
-                        . 'shouldn\'t have happened; please notify the CATS '
-                        . 'Development Team at http://www.catsone.com/forum/ '
+                        . 'shouldn\'t have happened; please notify the OSATS '
+                        . 'Development Team at http://www.OSATSone.com/forum/ '
                         . 'of what you did to trigger this.'
                     );
                     break;

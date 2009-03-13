@@ -1,22 +1,22 @@
 <?php
 /*
- * CATS
+ * OSATS
  * Import Module
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
  *
- * The contents of this file are subject to the CATS Public License
+ * The contents of this file are subject to the OSATS Public License
  * Version 1.1a (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- * http://www.catsone.com/.
+ * http://www.OSATSone.com/.
  *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  * License for the specific language governing rights and limitations
  * under the License.
  *
- * The Original Code is "CATS Standard Edition".
+ * The Original Code is "OSATS Standard Edition".
  *
  * The Initial Developer of the Original Code is Cognizo Technologies, Inc.
  * Portions created by the Initial Developer are Copyright (C) 2005 - 2007
@@ -427,7 +427,7 @@ class ImportUI extends UserInterface
         /* If a file was submitted, then the user sent what colums he wanted to use already. */
         if (isset($_POST['fileName']))
         {
-            if ($_SESSION['CATS']->isDemo())
+            if ($_SESSION['OSATS']->isDemo())
             {
                 CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Demo user can not import data.'));
             }
@@ -499,11 +499,11 @@ class ImportUI extends UserInterface
         }
 
         /* Make sure the attachments directory exists and create it if not. */
-        if (!is_dir(CATS_TEMP_DIR))
+        if (!is_dir(OSATS_TEMP_DIR))
         {
             $errorMessage = sprintf(
-                __('Directory \'%s\' does not exist. CATS is not configured correctly.'),
-                CATS_TEMP_DIR
+                __('Directory \'%s\' does not exist. OSATS is not configured correctly.'),
+                OSATS_TEMP_DIR
             );
             $this->_template->assign('errorMessage', $errorMessage);
             $this->importSelectType();
@@ -511,7 +511,7 @@ class ImportUI extends UserInterface
         }
 
         /* Make a blind attempt to recover from invalid permissions. */
-        @chmod(CATS_TEMP_DIR, 0777);
+        @chmod(OSATS_TEMP_DIR, 0777);
 
         /* Make a random file name for the file. */
         if ($dataType != 'Resume')
@@ -524,7 +524,7 @@ class ImportUI extends UserInterface
         }
 
         /* Build new path information for the file. */
-        $newFileFullPath  = CATS_TEMP_DIR . '/' . $randomFile;
+        $newFileFullPath  = OSATS_TEMP_DIR . '/' . $randomFile;
 
         if (!@copy($tempFilename, $newFileFullPath))
         {
@@ -543,7 +543,7 @@ class ImportUI extends UserInterface
 
         /* Store the file ID as a valid file ID (so users can't inject other file ids to read
            files they shouldn't be reading. */
-        $_SESSION['CATS']->validImportFileIDs[] = $randomFile;
+        $_SESSION['OSATS']->validImportFileIDs[] = $randomFile;
 
         if (!eval(Hooks::get('IMPORT_ON_IMPORT_3'))) return;
 
@@ -569,7 +569,7 @@ class ImportUI extends UserInterface
      */
     private function onImportDelimited($fileID)
     {
-        $filePath = CATS_TEMP_DIR . '/'. $fileID;
+        $filePath = OSATS_TEMP_DIR . '/'. $fileID;
 
         $dataContaining = $this->getTrimmedInput('delimitedType', $_POST);
         $importInto     = $this->getTrimmedInput('importInto', $_POST);
@@ -719,7 +719,7 @@ class ImportUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
-        $filePath = CATS_TEMP_DIR . '/' . $_POST['fileName'];
+        $filePath = OSATS_TEMP_DIR . '/' . $_POST['fileName'];
         if (!is_file($filePath))
         {
             $this->_template->assign('errorMessage', __('Invalid filename - Internal error.'));
@@ -824,8 +824,8 @@ class ImportUI extends UserInterface
                     return;
             }
 
-            $catsEntriesRows = array();
-            $catsEntriesValuesNamed = array();
+            $OSATSEntriesRows = array();
+            $OSATSEntriesValuesNamed = array();
             $foreignEntries = array();
 
             /* Put the data where the user picked for it to go. */
@@ -836,7 +836,7 @@ class ImportUI extends UserInterface
                     continue;
                 }
 
-                if ($theFieldPreferenceValue == 'cats')
+                if ($theFieldPreferenceValue == 'OSATS')
                 {
                     if (substr($_POST['importIntoField' . $fieldID], 0, 1) == '#')
                     {
@@ -845,8 +845,8 @@ class ImportUI extends UserInterface
                     }
                     else
                     {
-                        $catsEntriesRows[] = $_POST['importIntoField' .$fieldID];
-                        $catsEntriesValuesNamed[$_POST['importIntoField' . $fieldID]] = trim($theData[$fieldID]);
+                        $OSATSEntriesRows[] = $_POST['importIntoField' .$fieldID];
+                        $OSATSEntriesValuesNamed[$_POST['importIntoField' . $fieldID]] = trim($theData[$fieldID]);
                     }
                 }
                 else if ($theFieldPreferenceValue == 'foreign' || $theFieldPreferenceValue == 'foreignAdded')
@@ -896,15 +896,15 @@ class ImportUI extends UserInterface
             switch ($importInto)
             {
                 case 'Candidates':
-                    $result = $this->addToCandidates($catsEntriesRows, $catsEntriesValuesNamed, $foreignEntries, $importID);
+                    $result = $this->addToCandidates($OSATSEntriesRows, $OSATSEntriesValuesNamed, $foreignEntries, $importID);
                     break;
 
                 case 'Contacts':
-                    $result = $this->addToContacts($catsEntriesRows, $catsEntriesValuesNamed, $foreignEntries, $importID);
+                    $result = $this->addToContacts($OSATSEntriesRows, $OSATSEntriesValuesNamed, $foreignEntries, $importID);
                     break;
 
                 case 'Companies':
-                    $result = $this->addToCompanies($catsEntriesRows, $catsEntriesValuesNamed, $foreignEntries, $importID);
+                    $result = $this->addToCompanies($OSATSEntriesRows, $OSATSEntriesValuesNamed, $foreignEntries, $importID);
                     break;
 
                 default:
@@ -1201,7 +1201,7 @@ class ImportUI extends UserInterface
 
         if (ModuleUtility::moduleExists('asp'))
         {
-           $siteID = $_SESSION['CATS']->getSiteID();
+           $siteID = $_SESSION['OSATS']->getSiteID();
            $directoryRoot = './upload/'.$siteID.'/';
            if (!file_exists($directoryRoot))
            {
@@ -1242,8 +1242,8 @@ class ImportUI extends UserInterface
 
         sort($foundFiles);
 
-        $_SESSION['CATS']->massImportFiles = $foundFiles;
-        $_SESSION['CATS']->massImportDirectory = $directoryRoot;
+        $_SESSION['OSATS']->massImportFiles = $foundFiles;
+        $_SESSION['OSATS']->massImportDirectory = $directoryRoot;
 
         $this->_template->assign('active', $this);
         $this->_template->assign('foundFiles', $foundFiles);
@@ -1259,9 +1259,9 @@ class ImportUI extends UserInterface
     public function massImportDocument()
     {
         // Find the files the user has uploaded and put them in an array
-        if (isset($_SESSION['CATS']) && !empty($_SESSION['CATS']))
+        if (isset($_SESSION['OSATS']) && !empty($_SESSION['OSATS']))
         {
-            $siteID = $_SESSION['CATS']->getSiteID();
+            $siteID = $_SESSION['OSATS']->getSiteID();
         }
         else
         {
@@ -1275,9 +1275,9 @@ class ImportUI extends UserInterface
         if (isset($_GET['cTime'])) $cTime = intval($_GET['cTime']); else { echo 'Fail'; return; }
         if (isset($_GET['type'])) $type = intval($_GET['type']); else { echo 'Fail'; return; }
 
-        if (!isset($_SESSION['CATS_PARSE_TEMP']))
+        if (!isset($_SESSION['OSATS_PARSE_TEMP']))
         {
-            $_SESSION['CATS_PARSE_TEMP'] = array();
+            $_SESSION['OSATS_PARSE_TEMP'] = array();
         }
 
         $mp = array(
@@ -1302,7 +1302,7 @@ class ImportUI extends UserInterface
         if ($doc2text->convert($name, $type) === false)
         {
             $mp['success'] = false;
-            $_SESSION['CATS_PARSE_TEMP'][] = $mp;
+            $_SESSION['OSATS_PARSE_TEMP'][] = $mp;
             echo 'Fail';
             return;
         }
@@ -1337,7 +1337,7 @@ class ImportUI extends UserInterface
         }
 
         $mp['success'] = true;
-        $_SESSION['CATS_PARSE_TEMP'][] = $mp;
+        $_SESSION['OSATS_PARSE_TEMP'][] = $mp;
 
         echo 'Ok';
         return;
@@ -1363,34 +1363,34 @@ class ImportUI extends UserInterface
         if (isset($_GET['postback']) && $_GET['postback'] == '1')
         {
             // User is saving changes
-            if (!isset($_SESSION['CATS_PARSE_TEMP'][$documentID]['parse']))
-                $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse'] = array(
+            if (!isset($_SESSION['OSATS_PARSE_TEMP'][$documentID]['parse']))
+                $_SESSION['OSATS_PARSE_TEMP'][$documentID]['parse'] = array(
                     'firstName' => '', 'lastName' => '', 'address' => '', 'city' => '', 'state' => '',
                     'zipCode' => '', 'email' => '', 'phone' => '', 'skills' => '', 'education' => '',
                     'experience' => ''
             );
             if (isset($_POST['firstName']))
-                $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse']['first_name'] = $_POST['firstName'];
+                $_SESSION['OSATS_PARSE_TEMP'][$documentID]['parse']['first_name'] = $_POST['firstName'];
             if (isset($_POST['lastName']))
-                $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse']['last_name'] = $_POST['lastName'];
+                $_SESSION['OSATS_PARSE_TEMP'][$documentID]['parse']['last_name'] = $_POST['lastName'];
             if (isset($_POST['address']))
-                $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse']['us_address'] = $_POST['address'];
+                $_SESSION['OSATS_PARSE_TEMP'][$documentID]['parse']['us_address'] = $_POST['address'];
             if (isset($_POST['city']))
-                $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse']['city'] = $_POST['city'];
+                $_SESSION['OSATS_PARSE_TEMP'][$documentID]['parse']['city'] = $_POST['city'];
             if (isset($_POST['state']))
-                $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse']['state'] = $_POST['state'];
+                $_SESSION['OSATS_PARSE_TEMP'][$documentID]['parse']['state'] = $_POST['state'];
             if (isset($_POST['zipCode']))
-                $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse']['zip_code'] = $_POST['zipCode'];
+                $_SESSION['OSATS_PARSE_TEMP'][$documentID]['parse']['zip_code'] = $_POST['zipCode'];
             if (isset($_POST['homePhone']))
-                $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse']['phone_number'] = $_POST['homePhone'];
+                $_SESSION['OSATS_PARSE_TEMP'][$documentID]['parse']['phone_number'] = $_POST['homePhone'];
             if (isset($_POST['email']))
-                $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse']['email_address'] = $_POST['email'];
+                $_SESSION['OSATS_PARSE_TEMP'][$documentID]['parse']['email_address'] = $_POST['email'];
             if (isset($_POST['skills']))
-                $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse']['skills'] = $_POST['skills'];
+                $_SESSION['OSATS_PARSE_TEMP'][$documentID]['parse']['skills'] = $_POST['skills'];
             if (isset($_POST['education']))
-                $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse']['education'] = $_POST['education'];
+                $_SESSION['OSATS_PARSE_TEMP'][$documentID]['parse']['education'] = $_POST['education'];
             if (isset($_POST['experience']))
-                $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse']['experience'] = $_POST['experience'];
+                $_SESSION['OSATS_PARSE_TEMP'][$documentID]['parse']['experience'] = $_POST['experience'];
 
             // Step 3 is the review step
             $this->massImport(3);
@@ -1414,16 +1414,16 @@ class ImportUI extends UserInterface
 
     public function massImport($step = 1)
     {
-        if (isset($_SESSION['CATS']) && !empty($_SESSION['CATS']))
+        if (isset($_SESSION['OSATS']) && !empty($_SESSION['OSATS']))
         {
-            $siteID = $_SESSION['CATS']->getSiteID();
+            $siteID = $_SESSION['OSATS']->getSiteID();
         }
         else
         {
             CommonErrors::fatal(COMMONERROR_NOTLOGGEDIN, $this);
         }
 
-        if ($_SESSION['CATS']->getAccessLevel() < ACCESS_LEVEL_EDIT)
+        if ($_SESSION['OSATS']->getAccessLevel() < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('You do not have permission to import mass resume documents.')
             );
@@ -1436,7 +1436,7 @@ class ImportUI extends UserInterface
 
         if ($step == 1)
         {
-            if (isset($_SESSION['CATS_PARSE_TEMP'])) unset($_SESSION['CATS_PARSE_TEMP']);
+            if (isset($_SESSION['OSATS_PARSE_TEMP'])) unset($_SESSION['OSATS_PARSE_TEMP']);
             $uploadDir = FileUtility::getUploadPath($siteID, 'massimport');
             $files = ImportUtility::getDirectoryFiles($uploadDir);
             if (is_array($files) && count($files))
@@ -1468,7 +1468,7 @@ class ImportUI extends UserInterface
             /**
              * Step 1: Find any uploaded files and get them into an array.
              */
-            if (isset($_SESSION['CATS_PARSE_TEMP'])) unset($_SESSION['CATS_PARSE_TEMP']);
+            if (isset($_SESSION['OSATS_PARSE_TEMP'])) unset($_SESSION['OSATS_PARSE_TEMP']);
             $uploadDir = FileUtility::getUploadPath($siteID, 'massimport');
             $files = ImportUtility::getDirectoryFiles($uploadDir);
             if ($files === -1 || !is_array($files) || !count($files))
@@ -1538,7 +1538,7 @@ class ImportUI extends UserInterface
             $this->_template->assign('importedFailed', $importedFailed);
             $this->_template->assign('importedDuplicates', $importedDuplicates);
 
-            unset($_SESSION['CATS_PARSE_TEMP']);
+            unset($_SESSION['OSATS_PARSE_TEMP']);
         }
         else if ($step == 99)
         {
@@ -1558,7 +1558,7 @@ class ImportUI extends UserInterface
 
         $this->_template->assign('active', $this);
         // ->isDemo() doesn't work here... oddly.
-        $this->_template->assign('isDemo', $_SESSION['CATS']->getSiteID() == 201);
+        $this->_template->assign('isDemo', $_SESSION['OSATS']->getSiteID() == 201);
 
         // Build the sub-template to pass to the container
         ob_start();
@@ -1576,10 +1576,10 @@ class ImportUI extends UserInterface
         $db = DatabaseConnection::getInstance();
 
         // Find the files the user has uploaded and put them in an array
-        if (isset($_SESSION['CATS']) && !empty($_SESSION['CATS']))
+        if (isset($_SESSION['OSATS']) && !empty($_SESSION['OSATS']))
         {
-            $siteID = $_SESSION['CATS']->getSiteID();
-            $userID = $_SESSION['CATS']->getUserID();
+            $siteID = $_SESSION['OSATS']->getSiteID();
+            $userID = $_SESSION['OSATS']->getUserID();
         }
         else
         {
@@ -1597,9 +1597,9 @@ class ImportUI extends UserInterface
         $importedFailed = array();
         $importedDuplicates = array();
 
-        for ($ind=0; $ind<count($_SESSION['CATS_PARSE_TEMP']); $ind++)
+        for ($ind=0; $ind<count($_SESSION['OSATS_PARSE_TEMP']); $ind++)
         {
-            $doc = $_SESSION['CATS_PARSE_TEMP'][$ind];
+            $doc = $_SESSION['OSATS_PARSE_TEMP'][$ind];
 
             // Get parsed information instead (if available)
             for ($ind2=0; $ind2<count($documents); $ind2++)
@@ -1620,7 +1620,7 @@ class ImportUI extends UserInterface
 
                     /**
                      * We need to check for duplicate candidate entries before adding a new
-                     * candidate into CATS. The criteria is as follows:
+                     * candidate into OSATS. The criteria is as follows:
                      * - if email is present, does it match an existing e-mail
                      * - if last name and zip code or last name and phone numbers are present, do they match likewise
                      */
@@ -1876,13 +1876,13 @@ class ImportUI extends UserInterface
 
     private function getMassImportDocuments()
     {
-        if (!isset($_SESSION['CATS_PARSE_TEMP']) || empty($_SESSION['CATS_PARSE_TEMP']) ||
-            !is_array($_SESSION['CATS_PARSE_TEMP']))
+        if (!isset($_SESSION['OSATS_PARSE_TEMP']) || empty($_SESSION['OSATS_PARSE_TEMP']) ||
+            !is_array($_SESSION['OSATS_PARSE_TEMP']))
         {
             return array(array(), 0, 0);
         }
 
-        $mp = $_SESSION['CATS_PARSE_TEMP'];
+        $mp = $_SESSION['OSATS_PARSE_TEMP'];
 
         // Clean up the documents for the next stage
         $documents = array();
@@ -1938,11 +1938,11 @@ class ImportUI extends UserInterface
 
     private function deleteBulkResumes()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+        if (!isset($_SESSION['OSATS']) || empty($_SESSION['OSATS']))
         {
             CommonErrors::fatal(COMMONERROR_NOTLOGGEDIN, $this);
         }
-        if ($_SESSION['CATS']->getAccessLevel() < ACCESS_LEVEL_SA)
+        if ($_SESSION['OSATS']->getAccessLevel() < ACCESS_LEVEL_SA)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
         }
@@ -1971,11 +1971,11 @@ class ImportUI extends UserInterface
 
     private function importBulkResumes()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+        if (!isset($_SESSION['OSATS']) || empty($_SESSION['OSATS']))
         {
             CommonErrors::fatal(COMMONERROR_NOTLOGGEDIN, $this);
         }
-        if ($_SESSION['CATS']->getAccessLevel() < ACCESS_LEVEL_SA)
+        if ($_SESSION['OSATS']->getAccessLevel() < ACCESS_LEVEL_SA)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
         }

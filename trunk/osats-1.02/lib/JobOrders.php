@@ -24,7 +24,7 @@ include_once('./lib/DataGrid.php');
 
 /**
  *	Job Orders Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class JobOrders
@@ -297,7 +297,7 @@ class JobOrders
             $mailer = new Mailer($this->_siteID);
             $mailerStatus = $mailer->sendToOne(
                 array($emailAddress, ''),
-                'CATS Notification: Job Order Ownership Change',
+                'OSATS Notification: Job Order Ownership Change',
                 $email,
                 true
             );
@@ -1244,7 +1244,7 @@ class JobOrdersDataGrid extends DataGrid
     public function getSQL($selectSQL, $joinSQL, $whereSQL, $havingSQL, $orderSQL, $limitSQL, $distinct = '')
     {
         // FIXME: Factor out Session dependency.
-        if ($_SESSION['CATS']->isLoggedIn() && $_SESSION['CATS']->getAccessLevel() < ACCESS_LEVEL_MULTI_SA)
+        if ($_SESSION['OSATS']->isLoggedIn() && $_SESSION['OSATS']->getAccessLevel() < ACCESS_LEVEL_MULTI_SA)
         {
             $adminHiddenCriterion = 'AND joborder.is_admin_hidden = 0';
         }

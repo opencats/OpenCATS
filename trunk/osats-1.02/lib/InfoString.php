@@ -5,7 +5,7 @@
 
 /**
  *	Data Item Info String Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class InfoString

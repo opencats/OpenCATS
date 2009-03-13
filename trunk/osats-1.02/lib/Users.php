@@ -205,7 +205,7 @@ class Users
     /**
      * Removes a user from the system.
      * NOTE: Associated records are not deleted! THIS WILL BREAK THINGS!
-     * This is only here for use by the CATS Automated Testing Framework,
+     * This is only here for use by the OSATS Automated Testing Framework,
      * which will clean up after itself before calling this.
      *
      * @param integer user ID
@@ -610,9 +610,10 @@ class Users
      * @param string new password
      * @return flag status
      */
-    public function changePassword($userID, $currentPassword, $newPassword)
+    public function changePassword($userID, $newPassword)
     {
-        $sql = sprintf(
+        
+		$sql = sprintf(
             "SELECT
                 user.password AS password,
                 user.access_level AS accessLevel,
@@ -628,17 +629,19 @@ class Users
         /* No results? Shouldn't happen, but it could if the user just got
          * deleted or something.
          */
-        if (!$rs || $this->_db->isEOF())
+        
+		if (!$rs || $this->_db->isEOF())
         {
             return LOGIN_INVALID_USER;
         }
 
         /* Is the user's supplied password correct? */
-        if ($rs['password'] !== $currentPassword)
+/*
+		if ($rs['password'] !== $currentPassword)
         {
             return LOGIN_INVALID_PASSWORD;
         }
-
+*/
         /* Is the user's account disabled? */
         if ($rs['accessLevel'] <= ACCESS_LEVEL_DISABLED)
         {
@@ -774,7 +777,7 @@ class Users
         }
 
         /* If in slave mode, only allow root login. */
-        if (CATS_SLAVE && $rs['accessLevel'] < ACCESS_LEVEL_ROOT)
+        if (OSATS_SLAVE && $rs['accessLevel'] < ACCESS_LEVEL_ROOT)
         {
             return LOGIN_ROOT_ONLY;
         }
@@ -1004,7 +1007,7 @@ class Users
     }
 
     /**
-     * Get information about all users that have logged into CATS
+     * Get information about all users that have logged into OSATS
      * and performed an action in the last 14 days.
      *
      * @return array

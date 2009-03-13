@@ -38,14 +38,14 @@ function showHideSingleQuickActionMenu(dataItemType, dataItemID, menuX, menuY)
 function showQuickActionAddToList()
 {
     /* Create a popup window for adding this data item type to a list (content loaded from server) */
-    showPopWin(CATSIndexName + '?m=lists&a=quickActionAddToListModal&dataItemType='+_singleQuickActionMenuDataItemType+'&dataItemID='+_singleQuickActionMenuDataItemID, 450, 350, null);
+    showPopWin(OSATSIndexName + '?m=lists&a=quickActionAddToListModal&dataItemType='+_singleQuickActionMenuDataItemType+'&dataItemID='+_singleQuickActionMenuDataItemID, 450, 350, null);
 }
 
 /* Shows a popup for adding a item to a list. */
 function showQuickActionAddToPipeline()
 {
     /* Create a popup window for adding this candidate to the pipeline */
-    showPopWin(CATSIndexName + '?m=candidates&a=considerForJobSearch&candidateID='+_singleQuickActionMenuDataItemID, 750, 390, null);
+    showPopWin(OSATSIndexName + '?m=candidates&a=considerForJobSearch&candidateID='+_singleQuickActionMenuDataItemID, 750, 390, null);
 }
 
 function addItemToPopupMenu(itemTitle, itemAction)

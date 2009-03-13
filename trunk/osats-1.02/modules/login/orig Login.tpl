@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
     <head>
-        <title>CATS - Login</title>
+        <title>OSATS - Login</title>
         <meta http-equiv="Content-Type" content="text/html; charset=<?php echo(HTML_ENCODING); ?>" />
         <style type="text/css" media="all">@import "modules/login/login.css";</style>
         <script type="text/javascript" src="js/lib.js"></script>
@@ -12,7 +12,7 @@
     </head>
 
     <body>
-    <!-- CATS_LOGIN -->
+    <!-- OSATS_LOGIN -->
     <?php TemplateUtility::printPopupContainer(); ?>
         <div id="headerBlock">
             <span id="mainLogo">C&nbsp;A&nbsp;T&nbsp;S</span><br />
@@ -36,7 +36,7 @@
                         <img src="images/folder1_locked.jpg" width="64" height="64" alt="security" />
                     </div>
                     <br />
-                    <span>Welcome to CATS!</span><br />
+                    <span>Welcome to OSATS!</span><br />
                     <span style="font-size: 10px;">Version <?php echo(osatutil::getVersion()); ?></span>
 
                     <?php if (ENABLE_DEMO_MODE && !($this->siteName != '' && $this->siteName != 'choose') || ($this->siteName == 'demo')): ?>
@@ -121,7 +121,7 @@
                     function defaultLogin()
                     {
                         document.getElementById('username').value = 'admin';
-                        document.getElementById('password').value = 'cats';
+                        document.getElementById('password').value = 'OSATS';
                         document.getElementById('loginForm').submit();
                     }
                 <?php endif; ?>
@@ -132,21 +132,21 @@
 
             <div id="footerBlock">
                 <?php 
-                    /* THE MODIFICATION OF THE COPYRIGHT AND 'Powered by CATS' LINES IS NOT ALLOWED
-                       BY THE TERMS OF THE CPL FOR CATS OPEN SOURCE EDITION.
+                    /* THE MODIFICATION OF THE COPYRIGHT AND 'Powered by OSATS' LINES IS NOT ALLOWED
+                       BY THE TERMS OF THE CPL FOR OSATS OPEN SOURCE EDITION.
                     
                          II) The following copyright notice must be retained and clearly legible
                          at the bottom of every rendered HTML document: Copyright (C) 2005 - 2007
                          Cognizo Technologies, Inc. All rights reserved.
                     
-                         III) The "Powered by CATS" text or logo must be retained and clearly
+                         III) The "Powered by OSATS" text or logo must be retained and clearly
                          legible on every rendered HTML document. The logo, or the text
-                         "CATS", must be a hyperlink to the CATS Project website, currently
-                         http://www.catsone.com/.
+                         "OSATS", must be a hyperlink to the OSATS Project website, currently
+                         http://www.OSATSone.com/.
                    */
                 ?>
                 <span class="footerCopyright"><?php echo(COMPANYNAME_HTML); ?></span>
-                <div>Powered by <a href="http://www.catsone.com/"><strong>CATS</strong></a>.</div>
+                <div>Powered by <a href="http://www.OSATSone.com/"><strong>OSATS</strong></a>.</div>
             </div>
         </div>
         <script type="text/javascript">

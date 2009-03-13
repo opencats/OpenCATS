@@ -13,7 +13,7 @@ if (ENABLE_SPHINX)
 
 /**
  *	Search Utility Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class SearchUtility
@@ -27,7 +27,7 @@ class SearchUtility
      */
     public static function searchExcerpt($keywords, $text)
     {
-        /* CATS fulltext encode the search string. */
+        /* OSATS fulltext encode the search string. */
         $keywords = DatabaseSearch::fulltextEncode($keywords);
 
         /* Create an array of keywords to highlight. */
@@ -236,7 +236,7 @@ class SearchUtility
     }
 
     /**
-     * Highlights keywords in text for a resume preview and preforms CATS
+     * Highlights keywords in text for a resume preview and preforms OSATS
      * fulltext decoding.
      *
      * @param array keywords to highlight
@@ -250,7 +250,7 @@ class SearchUtility
             return DatabaseSearch::fulltextDecode($text);
         }
 
-        /* CATS fulltext encode the search string. */
+        /* OSATS fulltext encode the search string. */
         $keywords = DatabaseSearch::fulltextEncode($keywords);
 
         /* Create an array of keywords to highlight. */
@@ -330,7 +330,7 @@ class SearchUtility
 
 /**
  *	Candidates Search Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class SearchCandidates
@@ -347,7 +347,7 @@ class SearchCandidates
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
         //FIXME: Library code Session dependencies suck.
-        $this->_userID = $_SESSION['CATS']->getUserID();
+        $this->_userID = $_SESSION['OSATS']->getUserID();
         $this->dateformatLong = __('DATEFORMAT_SQL_LONG');
         $this->dateformat     = __('DATEFORMAT_SQL_DATE');
     }
@@ -598,7 +598,7 @@ class SearchCandidates
 
 /**
  *	Companies Search Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class SearchCompanies
@@ -615,7 +615,7 @@ class SearchCompanies
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
         //FIXME: Library code Session dependencies suck.
-        $this->_userID = $_SESSION['CATS']->getUserID();
+        $this->_userID = $_SESSION['OSATS']->getUserID();
         $this->dateformatLong = __('DATEFORMAT_SQL_LONG');
         $this->dateformat     = __('DATEFORMAT_SQL_DATE');
     }
@@ -723,7 +723,7 @@ class SearchCompanies
 
 /**
  *	Job Orders Search Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class SearchJobOrders
@@ -740,7 +740,7 @@ class SearchJobOrders
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
         //FIXME: Library code Session dependencies suck.
-        $this->_userID = $_SESSION['CATS']->getUserID();
+        $this->_userID = $_SESSION['OSATS']->getUserID();
         $this->dateformatLong = __('DATEFORMAT_SQL_LONG');
         $this->dateformat     = __('DATEFORMAT_SQL_DATE');
     }
@@ -760,7 +760,7 @@ class SearchJobOrders
         if ($activeOnly)
         {
             //FIXME:  Remove session dependancy.
-            if ($_SESSION['CATS']->isFree())
+            if ($_SESSION['OSATS']->isFree())
             {
                 $activeCriterion = "AND joborder.status = 'Active'";
             }
@@ -852,7 +852,7 @@ class SearchJobOrders
         if ($activeOnly)
         {
             //FIXME:  Remove session dependancy.
-            if ($_SESSION['CATS']->isFree())
+            if ($_SESSION['OSATS']->isFree())
             {
                 $activeCriterion = "AND joborder.status = 'Active'";
             }
@@ -939,7 +939,7 @@ class SearchJobOrders
         if ($activeOnly)
         {
             //FIXME:  Remove session dependancy.
-            if ($_SESSION['CATS']->isFree())
+            if ($_SESSION['OSATS']->isFree())
             {
                 $activeCriterion = "AND joborder.status = 'Active'";
             }
@@ -1016,7 +1016,7 @@ class SearchJobOrders
 
 /**
  *	Contacts Search Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class ContactsSearch
@@ -1033,7 +1033,7 @@ class ContactsSearch
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
         //FIXME: Library code Session dependencies suck.
-        $this->_userID = $_SESSION['CATS']->getUserID();
+        $this->_userID = $_SESSION['OSATS']->getUserID();
         $this->dateformatLong = __('DATEFORMAT_SQL_LONG');
         $this->dateformat     = __('DATEFORMAT_SQL_DATE');
     }
@@ -1233,7 +1233,7 @@ class ContactsSearch
 
 /**
  *	Quick Search Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class QuickSearch
@@ -1249,7 +1249,7 @@ class QuickSearch
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
         //FIXME: Library code Session dependencies suck.
-        $this->_userID = $_SESSION['CATS']->getUserID();
+        $this->_userID = $_SESSION['OSATS']->getUserID();
         $this->dateformat     = __('DATEFORMAT_SQL_DATE');
     }
 
@@ -1555,7 +1555,7 @@ class QuickSearch
 
 /**
  *	Saved Searches Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class SavedSearches
@@ -1570,7 +1570,7 @@ class SavedSearches
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
         //FIXME: Library code Session dependencies suck.
-        $this->_userID = $_SESSION['CATS']->getUserID();
+        $this->_userID = $_SESSION['OSATS']->getUserID();
     }
 
 
@@ -1778,7 +1778,7 @@ class SavedSearches
 
 /**
  *	Search by Resume Pager
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class SearchByResumePager extends Pager
@@ -1998,7 +1998,7 @@ class SearchByResumePager extends Pager
 
 /**
  *	Search Results Pager
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class SearchPager extends Pager

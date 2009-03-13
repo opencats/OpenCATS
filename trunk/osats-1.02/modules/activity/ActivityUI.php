@@ -91,7 +91,7 @@ class ActivityUI extends UserInterface
         $this->_template->assign('quickLinks', $quickLinks);
         $this->_template->assign('active', $this);
         $this->_template->assign('dataGrid', $dataGrid);
-        $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
+        $this->_template->assign('userID', $_SESSION['OSATS']->getUserID());
 
         $activityEntries = new ActivityEntries($this->_siteID);
         $this->_template->assign('numActivities', $activityEntries->getCount());
@@ -236,7 +236,7 @@ class ActivityUI extends UserInterface
         $this->_template->assign('quickLinks', $quickLinks);
         $this->_template->assign('active', $this);
         $this->_template->assign('dataGrid', $dataGrid);
-        $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
+        $this->_template->assign('userID', $_SESSION['OSATS']->getUserID());
 
         $activityEntries = new ActivityEntries($this->_siteID);
         $this->_template->assign('numActivities', $activityEntries->getCount());

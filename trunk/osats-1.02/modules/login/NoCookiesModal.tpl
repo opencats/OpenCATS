@@ -2,13 +2,13 @@
 <?php TemplateUtility::printModalHeader(__('Login')); ?>
         <div style="text-align: center;">
             <p style="background-image: url('images/orange_gradient.jpg'); background-repeat: repeat-x; padding: 4px; margin-top: 0px; margin-bottom: 8px; width: 100%; font: normal normal bold  12px/120% Verdana, Tahoma, sans-serif; color: #F6F6F6;">
-                 CATS <?php _e('Warning') ?>
+                 OSATS <?php _e('Warning') ?>
             </p>
             <br />
             <div style="font: normal normal 12px Arial, Tahoma, sans-serif">
-                <?php _e('Cookies are not enabled on your browser.') ?> <br /><?php _e('CATS requires cookies in order to login.') ?><br />
+                <?php _e('Cookies are not enabled on your browser.') ?> <br /><?php _e('OSATS requires cookies in order to login.') ?><br />
                 <br />
-                <?php _e('Please enable cookies within your web browser, then revisit the CATS page.') ?><br />
+                <?php _e('Please enable cookies within your web browser, then revisit the OSATS page.') ?><br />
             </div>
             <br />
             <br />

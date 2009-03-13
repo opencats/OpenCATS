@@ -5,7 +5,7 @@
 
 /**
  *	File Import Utility Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class ImportUtility

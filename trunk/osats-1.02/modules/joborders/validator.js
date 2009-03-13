@@ -1,5 +1,5 @@
 /*
- * CATS
+ * OSATS
  * Job Orders Form Validation
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -336,6 +336,5 @@ function checkFilename()
 
     return errorMessage;
 }
-
 
 

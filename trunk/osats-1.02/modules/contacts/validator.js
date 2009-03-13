@@ -1,5 +1,5 @@
 /*
- * CATS
+ * OSATS
  * Candidates Form Validation
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.

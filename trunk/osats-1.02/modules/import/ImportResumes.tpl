@@ -48,7 +48,7 @@
            <?php endif; ?>
             <table class="searchTable" id="importTable1" width="100%">
                 <tr>
-                    <td><?php _e('CATS may discard or fail to read some of the submitted data which it does not understand how to use. Do not discard the original data') ?>!
+                    <td><?php _e('OSATS may discard or fail to read some of the submitted data which it does not understand how to use. Do not discard the original data') ?>!
                     </td>
                 </tr>
 
@@ -78,8 +78,8 @@
                             <?php if($this->allowAspFlashUploader == true): ?>
                                 <br />
                                 <?php _e('Step') ?> 1:<br />
-                                <?php _e('Upload resumes you wish to parse to the CATS server.') ?><br />
-								<?php _e('CATS can parse doc, pdf, txt, and rtf format resumes.') ?><br />
+                                <?php _e('Upload resumes you wish to parse to the OSATS server.') ?><br />
+								<?php _e('OSATS can parse doc, pdf, txt, and rtf format resumes.') ?><br />
 								<?php _e('Zip format archives of resumes are alos accepted.') ?>
                                 <OBJECT id="FlashFilesUpload" codeBase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0"
                                 		width="450" height="350" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" VIEWASTEXT>
@@ -120,13 +120,13 @@
                                 <input type="button" class="button" value="<?php _e('Step') ?> 2: <?php _e('Parse Resumes') ?>" onclick="document.location.href='?m=import&a=showMassImport';" />
                             <?php elseif($this->allowMultipleFiles == true): ?>
                                 <br />
-                                <?php _e('To import multiple files, add the files you would like to import to the \'upload\' directory on your CATS web server, and press the button below to have CATS scan for uploaded documents. If you need assistance in uploading files to your web server, contact your system administrator.') ?><br />
+                                <?php _e('To import multiple files, add the files you would like to import to the \'upload\' directory on your OSATS web server, and press the button below to have OSATS scan for uploaded documents. If you need assistance in uploading files to your web server, contact your system administrator.') ?><br />
                                 <br />
                                 <input type="button" class="button" value="<?php _e('Scan /upload/ folder for resumes') ?>" onclick="document.location.href='?m=import&a=showMassImport';" />
                             <?php else: ?>
                                 <br />
                                 <?php _e('The automated bulk resume import feature has been temporarily disabled.') ?><br /><br />
-                                <?php _e('To import resumes into the bulk resume pool, please contact %s for assistance from the CATS team.', '<a href="mailto:support@catsone.com">support@catsone.com</a>') ?>
+                                <?php _e('To import resumes into the bulk resume pool, please contact %s for assistance from the OSATS team.', '<a href="mailto:support@OSATSone.com">support@OSATSone.com</a>') ?>
                                 <br />
                             <?php endif; ?>
                         </td>

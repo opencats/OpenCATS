@@ -68,29 +68,29 @@ class ToolbarUI extends UserInterface
         $siteID = 1;
         $siteName = '';
 
-        $username = $this->getTrimmedInput('CATSUser', $_GET);
-        $password = $this->getTrimmedInput('CATSPassword', $_GET);
+        $username = $this->getTrimmedInput('OSATSUser', $_GET);
+        $password = $this->getTrimmedInput('OSATSPassword', $_GET);
 
         if (!eval(Hooks::get('TOOLBAR_AUTHENTICATE_PRE'))) return;
 
-        if(!$_SESSION['CATS']->isLoggedIn())
+        if(!$_SESSION['OSATS']->isLoggedIn())
         {
-            $_SESSION['CATS']->processLogin($username, $password);
+            $_SESSION['OSATS']->processLogin($username, $password);
         }
 
         if (!eval(Hooks::get('TOOLBAR_AUTHENTICATE_POST'))) return;
 
-        if (!$_SESSION['CATS']->isLoggedIn())
+        if (!$_SESSION['OSATS']->isLoggedIn())
         {
-            //echo 'cats_authenticationFailed(); Message:You do not have permision to use the toolbar.';
-            echo 'cats_authenticationFailed(); Message:'.$_SESSION['CATS']->getLoginError();
+            //echo 'OSATS_authenticationFailed(); Message:You do not have permision to use the toolbar.';
+            echo 'OSATS_authenticationFailed(); Message:'.$_SESSION['OSATS']->getLoginError();
             die();
         }
 
         if (!ModuleUtility::moduleExists('asp'))
         {
-          echo "cats_authenticationFailed(); ";
-          echo __("Message: The FireFox toolbar extension is only available to CATS Professional users. See catsone.com/Professional for more information.");
+          echo "OSATS_authenticationFailed(); ";
+          echo __("Message: The FireFox toolbar extension is only available to OSATS Professional users. See OSATSone.com/Professional for more information.");
           die();
         }
 
@@ -105,7 +105,7 @@ class ToolbarUI extends UserInterface
         }
 
         // FIXME: Make protocol less bandwidth-intensive.
-        echo 'cats_connected = true';
+        echo 'OSATS_connected = true';
         if (isset($_GET['callback']))
         {
             echo ' EVAL=', $_GET['callback'];
@@ -247,7 +247,7 @@ class ToolbarUI extends UserInterface
         /* Remember the output in the session and return to the toolbar
          * the ID number of the data.
          */
-        $storedID = $_SESSION['CATS']->storeData($parsedText);
+        $storedID = $_SESSION['OSATS']->storeData($parsedText);
 
         echo $storedID;
 

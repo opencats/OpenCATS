@@ -5,7 +5,7 @@
 
 /**
  *	Most Recently Used List Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class MRU

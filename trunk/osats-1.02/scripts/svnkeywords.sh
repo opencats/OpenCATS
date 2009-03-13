@@ -5,7 +5,7 @@
 # $Id: svnkeywords.sh 3552 2007-11-11 21:56:02Z will $
 
 if [ ! -f "modules/login/LoginUI.php" ]; then
-	echo "Error: You are not in the CATS directory."
+	echo "Error: You are not in the OSATS directory."
 	exit 1
 fi
 

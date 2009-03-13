@@ -24,7 +24,7 @@ function PipelineDetails_populate(candidateJobOrderID, htmlObjectID, sessionCook
         document.getElementById(htmlObjectID).innerHTML = http.responseText;
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'getPipelineDetails',
         POSTData,
@@ -78,7 +78,7 @@ function PipelineJobOrder_populate(joborderID, page, entriesPerPage, sortBy,
         execJS(http.responseText);
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'getPipelineJobOrder',
         POSTData,

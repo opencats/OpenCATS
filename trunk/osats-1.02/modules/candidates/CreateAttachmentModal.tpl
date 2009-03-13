@@ -24,7 +24,7 @@
         </form>
     <?php else: ?>
         <?php if(isset($this->resumeText) && $this->resumeText == ''): ?>
-            <p><?php _e('The file has been successfully attached, but OSATS was unable to index the resume keywords to make the document searchable. The file format may be unsupported by CATS.');?></p>
+            <p><?php _e('The file has been successfully attached, but OSATS was unable to index the resume keywords to make the document searchable. The file format may be unsupported by OSATS.');?></p>
         <?php else: ?>
             <p><?php _e('The file has been successfully attached.');?></p>
         <?php endif; ?>

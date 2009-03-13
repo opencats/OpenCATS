@@ -53,7 +53,7 @@ function checkEmailAlreadyInSystem(email, sessionCookie)
         }
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'getCandidateIdByEmail',
         POSTData,

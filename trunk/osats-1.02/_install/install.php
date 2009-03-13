@@ -7,6 +7,15 @@
 ob_start();
 include_once ('include/functions.php');
 //---------------------------------------------------------------------------------------//
+
+/* check to see if the php.ini is set for auto.start on the sessions. */
+if (ini_get('session.auto_start') !== '0' &&
+    ini_get('session.auto_start') !== 'Off')
+{
+    die('We cant have session.auto_start running. Please set it to 0 in php.ini.');
+}
+
+
 function dbdata() 
 {
 	//get db user and password first!

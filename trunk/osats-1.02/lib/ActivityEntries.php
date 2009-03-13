@@ -36,7 +36,7 @@ include_once('./lib/JobOrders.php');
 
 /**
  *  Activity Entries Library
- *  @package    CATS
+ *  @package    OSATS
  *  @subpackage Library
  */
 class ActivityEntries

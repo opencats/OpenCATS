@@ -337,7 +337,7 @@
                                 <option value="<?php echo $questionnaire['questionnaireID']; ?>"<?php if ($this->questionnaireID == $questionnaire['questionnaireID']) echo ' selected'; ?>><?php echo $questionnaire['title']; ?></option>
                             <?php endforeach; ?>
                             </select>
-                            <?php if ($_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA): ?>
+                            <?php if ($_SESSION['OSATS']->getAccessLevel() >= ACCESS_LEVEL_SA): ?>
                             <br />
                             <a href="<?php echo osatutil::getIndexName(); ?>?m=settings&a=careerPortalSettings" target="_blank"><?php _e('Questionnaires') ?>: <?php _e('Add') ?> / <?php _e('Edit') ?> / <?php _e('Delete') ?></a>
                             <?php endif; ?>

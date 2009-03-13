@@ -256,7 +256,7 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
         indicator.style.visibility = 'hidden';
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'getParsedAddress',
         POSTData,

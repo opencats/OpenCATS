@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
     <head>
-        <title>CATS - <?php _e('Reports') ?></title>
+        <title>OSATS - <?php _e('Reports') ?></title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="<?php echo(osatutil::getIndexName()); ?>?m=rss&amp;siteID=<?php echo($_SESSION['CATS']->getSiteID()); ?>" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="<?php echo(osatutil::getIndexName()); ?>?m=rss&amp;siteID=<?php echo($_SESSION['OSATS']->getSiteID()); ?>" />
         <style type="text/css" media="all">@import "main.css";</style>
         <script type="text/javascript" src="js/lib.js"></script>
         <style type="text/css">
@@ -26,7 +26,7 @@
 
     <body style="background: #fff;">
         <div class="outer">
-            <p align="center" style="font-size:36px;"><?php echo($_SESSION['CATS']->getSiteName()); ?></p>
+            <p align="center" style="font-size:36px;"><?php echo($_SESSION['OSATS']->getSiteName()); ?></p>
 
             <p align="center"><?php _e('Graph refreshes every 5 minutes. Press F11 to toggle fullscreen mode in most browsers.') ?></p>
 
@@ -45,7 +45,7 @@
             }
             </script>
 
-            <p id="footerText" align="center">CATS Version <?php echo(osatutil::getVersion()); ?> build <?php echo(osatutil::getBuild()); ?>. Powered by <a href="http://www.catsone.com/"><strong>CATS</strong></a>.<br />
+            <p id="footerText" align="center">OSATS Version <?php echo(osatutil::getVersion()); ?> build <?php echo(osatutil::getBuild()); ?>. Powered by <a href="http://www.OSATSone.com/"><strong>OSATS</strong></a>.<br />
             <span id="footerCopyright">&copy;2005 - 2007 Cognizo Technologies, Inc. All rights reserved.</span></p>
         </div>
     </body>

@@ -5,7 +5,7 @@
 
 /**
  *	Template Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class Template

@@ -13,7 +13,7 @@ include_once('./lib/StringUtility.php');
 
 /**
  *	DHTML List Editor Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class ListEditor

@@ -18,6 +18,24 @@
 
                         <table class="searchTable" width="100%">
                             <tr>
+                                
+                                <td width="230">
+                                        
+                                        <h2>These are the main settings for your OSATS site!</h2> 
+                                    
+									</b>
+                                        
+                                </td>
+                                <td width="230">
+                                    <img src="images/2dot1c.gif" alt="" />
+                                        <a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration&amp;s=mytabs">
+                                            Hide/Show Tabs
+                                        </a>
+                                    <br>
+                                        Choose which TABS you wish to see and interact with.
+                                </td>
+                            </tr>
+							<tr>
                                 <td width="230">
                                     <img src="images/2dot1c.gif" alt="" />
                                     <a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration&amp;s=siteName">
@@ -150,21 +168,19 @@
                                 </td>
                                 <td width="230">
                                     <img src="images/2dot1c.gif" alt="" />
-                                        <a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration&amp;s=systemInformation">
-                                            System Information
+                                        <a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration&amp;s= NONE ">
+                                            Empty Spot - Jamin
                                         </a>
                                     <br>
-                                        View information about this Open Source
-									Applicant Tracking System installation.
+                                        blah blah blah.
                                 </td>
                             </tr>
-                            <tr <?php if (!$this->totalCandidates): ?>style="background-color: #DAE3F7;"<?php endif; ?>>
+                            <tr>
                                 
                                 <td width="230">
                                         <img src="images/2dot1c.gif" alt="" border="0" />
                                         Scheduler
-                                    <?php if (!$this->totalCandidates): ?><b><?php endif; ?>(Being
-									Fixed - Jamin)<br>
+                                    <b>(Being Fixed - Jamin)<br>
 									</b>
                                         <i>Change how OSATS interacts with the server to schedule tasks.</i>
                                 </td>

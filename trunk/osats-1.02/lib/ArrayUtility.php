@@ -4,7 +4,7 @@
    * GNU License
    *
    *
-   * @package    CATS
+   * @package    OSATS
    * @subpackage Library
    * @copyright Open Source
    * @version    1.0
@@ -12,7 +12,7 @@
 
 /**
  *	Array Utility Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class ArrayUtility

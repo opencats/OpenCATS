@@ -14,7 +14,7 @@ define('DOCUMENT_TYPE_TEXT',    700);
 
 /**
  *	File Utility Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class FileUtility
@@ -166,7 +166,7 @@ class FileUtility
     }
 
     /**
-     * Returns a unused filename in CATS_TEMP_DIR.
+     * Returns a unused filename in OSATS_TEMP_DIR.
      * // FIXME: Merge me with makeRandomFilename().
      *
      * @return string filename
@@ -178,7 +178,7 @@ class FileUtility
          */
         do
         {
-            $filePath = CATS_TEMP_DIR . '/' . FileUtility::makeRandomFilename();
+            $filePath = OSATS_TEMP_DIR . '/' . FileUtility::makeRandomFilename();
         }
         while (file_exists($filePath));
 

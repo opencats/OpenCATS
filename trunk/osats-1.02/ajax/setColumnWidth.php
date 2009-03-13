@@ -12,7 +12,7 @@ $instance = $_REQUEST['instance'];
 $columnName = $_REQUEST['columnName'];
 $columnWidth = $_REQUEST['columnWidth'];
 
-$columnPreferences = $_SESSION['CATS']->getColumnPreferences($instance);
+$columnPreferences = $_SESSION['OSATS']->getColumnPreferences($instance);
 
 foreach ($columnPreferences as $index => $data)
 {
@@ -22,7 +22,7 @@ foreach ($columnPreferences as $index => $data)
     }
 }
 
-$_SESSION['CATS']->setColumnPreferences($instance, $columnPreferences);
+$_SESSION['OSATS']->setColumnPreferences($instance, $columnPreferences);
 
 $output =
     "<data>\n" .

@@ -36,7 +36,7 @@ $sortDirection  = $_REQUEST['sortDirection'];
 $indexFile      = $_REQUEST['indexFile'];
 $isPopup        = $_REQUEST['isPopup'] == 1 ? true : false;
 
-$_SESSION['CATS']->setPipelineEntriesPerPage($entriesPerPage);
+$_SESSION['OSATS']->setPipelineEntriesPerPage($entriesPerPage);
 
 $jobOrders = new JobOrders($siteID);
 $jobOrdersData = $jobOrders->get($jobOrderID);
@@ -68,7 +68,7 @@ foreach ($pipelinesRS as $rowIndex => $row) {
   $pipelinesRS[$rowIndex]['ratingLine'] = TemplateUtility::getRatingObject(
     $pipelinesRS[$rowIndex]['ratingValue'],
     $pipelinesRS[$rowIndex]['candidateJobOrderID'],
-    $_SESSION['CATS']->getCookie()
+    $_SESSION['OSATS']->getCookie()
   );
 }
 
@@ -128,7 +128,7 @@ function printTH($field, $fieldLabel, $width) {
        .getSortLink($field).', '
        . ($isPopup ? 1 :0).', '
        ."'ajaxPipelineTable', "
-       ."'".$_SESSION['CATS']->getCookie()."', "
+       ."'".$_SESSION['OSATS']->getCookie()."', "
        ."'ajaxPipelineTableIndicator', "
        ."'".$indexFile."'"
        .');">'
@@ -149,10 +149,10 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
     var s = '';
     s += 'Showing entries <?php echo($minEntry + 1); ?> through <?php echo($maxEntry); ?> of <?php echo(count($pipelinesRS)) ?>: ';
     <?php if ($minEntry != 0): ?>
-        s += '&nbsp;&nbsp;<a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page - 1); ?>, <?php echo($entriesPerPage); ?>, <?php echo getSortLink($sortBy, "\'", false); ?>, <?php if ($isPopup) echo(1); else echo(0); ?>, \'ajaxPipelineTable\', \'<?php echo($_SESSION['CATS']->getCookie()); ?>\', \'ajaxPipelineTableIndicator\', \'<?php echo($indexFile); ?>\');">&lt; Previous Page</a>';
+        s += '&nbsp;&nbsp;<a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page - 1); ?>, <?php echo($entriesPerPage); ?>, <?php echo getSortLink($sortBy, "\'", false); ?>, <?php if ($isPopup) echo(1); else echo(0); ?>, \'ajaxPipelineTable\', \'<?php echo($_SESSION['OSATS']->getCookie()); ?>\', \'ajaxPipelineTableIndicator\', \'<?php echo($indexFile); ?>\');">&lt; Previous Page</a>';
     <?php endif; ?>
     <?php if ($maxEntry < count($pipelinesRS)): ?>
-        s += '&nbsp;&nbsp;<a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page + 1); ?>, <?php echo($entriesPerPage); ?>, <?php echo getSortLink($sortBy, "\'", false); ?>, <?php if ($isPopup) echo(1); else echo(0); ?>, \'ajaxPipelineTable\', \'<?php echo($_SESSION['CATS']->getCookie()); ?>\', \'ajaxPipelineTableIndicator\', \'<?php echo($indexFile); ?>\');">Next Page &gt;</a>';
+        s += '&nbsp;&nbsp;<a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page + 1); ?>, <?php echo($entriesPerPage); ?>, <?php echo getSortLink($sortBy, "\'", false); ?>, <?php if ($isPopup) echo(1); else echo(0); ?>, \'ajaxPipelineTable\', \'<?php echo($_SESSION['OSATS']->getCookie()); ?>\', \'ajaxPipelineTableIndicator\', \'<?php echo($indexFile); ?>\');">Next Page &gt;</a>';
     <?php endif; ?>
     <?php if (count($pipelinesRS) <= 15): ?>
         document.getElementById('ajaxPipelineControl').style.display='none';
@@ -185,7 +185,7 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
         <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>" id="pipelineRow<?php echo($rowNumber); ?>">
             <td valign="top">
                 <span id="pipelineEntryOpen<?php echo($rowNumber); ?>">
-                    <a href="javascript:void(0);" onclick="document.getElementById('pipelineDetails<?php echo($rowNumber); ?>').style.display = ''; document.getElementById('pipelineEntryClose<?php echo($rowNumber); ?>').style.display = ''; document.getElementById('pipelineEntryOpen<?php echo($rowNumber); ?>').style.display = 'none'; PipelineDetails_populate(<?php echo($pipelinesData['candidateJobOrderID']); ?>, 'pipelineEntryInner<?php echo($rowNumber); ?>', '<?php echo($_SESSION['CATS']->getCookie()); ?>');">
+                    <a href="javascript:void(0);" onclick="document.getElementById('pipelineDetails<?php echo($rowNumber); ?>').style.display = ''; document.getElementById('pipelineEntryClose<?php echo($rowNumber); ?>').style.display = ''; document.getElementById('pipelineEntryOpen<?php echo($rowNumber); ?>').style.display = 'none'; PipelineDetails_populate(<?php echo($pipelinesData['candidateJobOrderID']); ?>, 'pipelineEntryInner<?php echo($rowNumber); ?>', '<?php echo($_SESSION['OSATS']->getCookie()); ?>');">
                         <img src="images/arrow_next.png" alt="" border="0" title="Show History" />
                     </a>
                 </span>
@@ -218,9 +218,9 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
             <td valign="top"><?php echo($pipelinesData['lastActivity']); ?></td>
 <?php if (!$isPopup): ?>
             <td align="center" nowrap="nowrap">
-                <?php if ($_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_EDIT && !$_SESSION['CATS']->hasUserCategory('sourcer')): ?>
+                <?php if ($_SESSION['OSATS']->getAccessLevel() >= ACCESS_LEVEL_EDIT && !$_SESSION['OSATS']->hasUserCategory('sourcer')): ?>
                     <?php if ($pipelinesData['ratingValue'] < 0): ?>
-                        <a href="#" id="screenLink<?php echo($pipelinesData['candidateJobOrderID']); ?>" onclick="moImageValue<?php echo($pipelinesData['candidateJobOrderID']); ?> = 0; setRating(<?php echo($pipelinesData['candidateJobOrderID']); ?>, 0, 'moImage<?php echo($pipelinesData['candidateJobOrderID']); ?>', '<?php echo($_SESSION['CATS']->getCookie()); ?> '); return false;" >
+                        <a href="#" id="screenLink<?php echo($pipelinesData['candidateJobOrderID']); ?>" onclick="moImageValue<?php echo($pipelinesData['candidateJobOrderID']); ?> = 0; setRating(<?php echo($pipelinesData['candidateJobOrderID']); ?>, 0, 'moImage<?php echo($pipelinesData['candidateJobOrderID']); ?>', '<?php echo($_SESSION['OSATS']->getCookie()); ?> '); return false;" >
                             <img id="screenImage<?php echo($pipelinesData['candidateJobOrderID']); ?>" src="images/actions/screen.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Mark as Screened"/>
                         </a>
                     <?php else: ?>
@@ -228,12 +228,12 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
                     <?php endif; ?>
                 <?php endif; ?>
                 <?php if (!isset($frozen)): ?>
-                    <?php if ($_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_EDIT): ?>
+                    <?php if ($_SESSION['OSATS']->getAccessLevel() >= ACCESS_LEVEL_EDIT): ?>
                         <a href="#" onclick="showPopWin('<?php echo($indexFile); ?>?m=joborders&amp;a=addActivityChangeStatus&amp;jobOrderID=<?php echo($jobOrderID); ?>&amp;candidateID=<?php echo($pipelinesData['candidateID']); ?>', 600, 550, null); return false;">
                             <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="" style="border: none;"  title="Log an Activity / Change Status" />
                         </a>
                     <?php endif; ?>
-                    <?php if ($_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_DELETE): ?>
+                    <?php if ($_SESSION['OSATS']->getAccessLevel() >= ACCESS_LEVEL_DELETE): ?>
                         <a href="<?php echo($indexFile); ?>?m=joborders&amp;a=removeFromPipeline&amp;jobOrderID=<?php echo($jobOrderID); ?>&amp;candidateID=<?php echo($pipelinesData['candidateID']); ?>" onclick="javascript:return confirm('Remove <?php echo(str_replace('\'', '\\\'', htmlspecialchars($pipelinesData['firstName']))); ?> <?php echo(str_replace('\'', '\\\'', htmlspecialchars($pipelinesData['lastName']))); ?> from the pipeline?')">
                             <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="remove" style="border: none;" title="Remove from Pipeline"  />
                         </a>

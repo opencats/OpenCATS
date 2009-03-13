@@ -7,7 +7,7 @@ include_once('./lib/FileUtility.php');
 
 /**
  *	Document to Text Conversion Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class DocumentToText
@@ -142,18 +142,18 @@ class DocumentToText
                 break;
 
             case DOCUMENT_TYPE_ODT:
-                $this->_setError('The ODT format is not yet supported by CATS.');
+                $this->_setError('The ODT format is not yet supported by OSATS.');
                 return false;
                 break;
 
             case DOCUMENT_TYPE_DOCX:
-                $this->_setError('The DOCX format is not yet supported by CATS.');
+                $this->_setError('The DOCX format is not yet supported by OSATS.');
                 return false;
                 break;
 
             case DOCUMENT_TYPE_UNKNOWN:
             default:
-                $this->_setError('This file format is unknown format and is not yet supported by CATS.');
+                $this->_setError('This file format is unknown format and is not yet supported by OSATS.');
                 return false;
                 break;
         }
@@ -319,7 +319,7 @@ class DocumentToText
             /* Generate a random temp file name. */
             $tempFile = sprintf(
                 '%s/%s.txt',
-                realpath(CATS_TEMP_DIR),
+                realpath(OSATS_TEMP_DIR),
                 FileUtility::makeRandomFilename()
             );
 

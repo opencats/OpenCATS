@@ -15,7 +15,7 @@ include_once('./lib/i18n.php');
 
 /**
  *  Companies Library
- *  @package    CATS
+ *  @package    OSATS
  *  @subpackage Library
  */
 class Companies
@@ -214,7 +214,7 @@ class Companies
             $mailer = new Mailer($this->_siteID);
             $mailerStatus = $mailer->sendToOne(
                 array($emailAddress, ''),
-                'CATS Notification: Company Ownership Change',
+                'OSATS Notification: Company Ownership Change',
                 $email,
                 true
             );

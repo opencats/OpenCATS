@@ -208,7 +208,7 @@ public function zl_index_file($file, $executeSQL = false) {
 					$temp[$file_count]['lasterror'] = "CRC did not match, possibly this zipfile is damaged";
 				}
 			}
-			if($executeSQL == true && strpos($temp[$file_count]['filename'], 'db/catsbackup.sql.') === 0)
+			if($executeSQL == true && strpos($temp[$file_count]['filename'], 'db/OSATSbackup.sql.') === 0)
 			{
     		    $this->queryMultiple($temp[$file_count]['content']);
 			}

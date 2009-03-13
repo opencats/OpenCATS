@@ -24,25 +24,25 @@ define('ANTIWORD_MAP', '8859-1.txt');
  * one backslash (\).
  * http://www.foolabs.com/xpdf/
  */
-define('PDFTOTEXT_PATH', "c:\\catsbin\\pdftotext.exe");
+define('PDFTOTEXT_PATH', "c:\\OSATSbin\\pdftotext.exe");
 
 /* html2text settings. Remember to use double backslashes (\) to represent
  * one backslash (\). 'html2text' can be found at:
  * http://www.mbayer.de/html2text/
  */
-define('HTML2TEXT_PATH', "c:\\catsbin\\html2text.exe");
+define('HTML2TEXT_PATH', "c:\\OSATSbin\\html2text.exe");
 
 /* UnRTF settings. Remember to use double backslashes (\) to represent
  * one backslash (\). 'unrtf' can be found at:
  * http://www.gnu.org/software/unrtf/unrtf.html
  */
-define('UNRTF_PATH', "c:\\catsbin\\unrtf.exe");
+define('UNRTF_PATH', "c:\\OSATSbin\\unrtf.exe");
 
 /* Temporary directory. Set this to a directory that is writable by the
  * web server. The default should be fine for most systems. Remember to
  * use double backslashes (\) to represent one backslash (\) on Windows.
  */
-define('CATS_TEMP_DIR', './temp');
+define('OSATS_TEMP_DIR', './temp');
 
 /* If User Details and Login Activity pages in the settings module are
  * unbearably slow, set this to false.
@@ -56,7 +56,7 @@ define('ENABLE_SPHINX', false);
 define('SPHINX_API', './lib/sphinx/sphinxapi.php');
 define('SPHINX_HOST', 'localhost');
 define('SPHINX_PORT', 3312);
-define('SPHINX_INDEX', 'cats catsdelta');
+define('SPHINX_INDEX', 'OSATS OSATSdelta');
 
 /* Probably no need to edit anything below this line. */
 
@@ -172,11 +172,11 @@ Description:
 OSATS Applicant Tracking System - DO NOT REPLY
 EOF;
 
-/* Enable replication slave mode? This is probably only useful for the CATS
+/* Enable replication slave mode? This is probably only useful for the OSATS
  * core team. If this setting is enabled, no writing to the database will
  * occur, and only ROOT users can login.
  */
-define('CATS_SLAVE', false);
+define('OSATS_SLAVE', false);
 
 /* If enabled, it will only scans the modules folder once and stores the results
  * in modules.cache.  When enabled, a performance boost is obtained, but
@@ -195,5 +195,4 @@ define('US_ZIPS_ENABLED', true);
 // just for development:
 define('TESTER_LOGIN', 'admin');
 define('TESTER_PASSWORD', 'admin');
-
 

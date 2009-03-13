@@ -5,7 +5,7 @@
 
 /**
  *	Encryption Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class Encryption

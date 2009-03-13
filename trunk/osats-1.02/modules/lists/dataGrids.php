@@ -1,17 +1,17 @@
 <?php 
 /*
- * CATS
+ * OSATS
  * Companies Datagrid
  *
- * CATS Version: 0.8.0 (Jhelum)
+ * OSATS Version: 0.8.0 (Jhelum)
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
  *
- * The contents of this file are subject to the CATS Public License
+ * The contents of this file are subject to the OSATS Public License
  * Version 1.1a (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- * http://www.catsone.com/. Software distributed under the License is
+ * http://www.OSATSone.com/. Software distributed under the License is
  * distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
  * express or implied. See the License for the specific language governing
  * rights and limitations under the License.
@@ -21,7 +21,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  *
- * The Original Code is "CATS Standard Edition".
+ * The Original Code is "OSATS Standard Edition".
  *
  * The Initial Developer of the Original Code is Cognizo Technologies, Inc.
  * Portions created by the Initial Developer are Copyright (C) 2005 - 2007
@@ -162,7 +162,7 @@ class ListsDataGrid extends DataGrid
             $distinct,
             $selectSQL,
             $joinSQL,
-            $_SESSION['CATS']->getSiteID(),
+            $_SESSION['OSATS']->getSiteID(),
             (strlen($whereSQL) > 0) ? ' AND ' . $whereSQL : '',
             (strlen($havingSQL) > 0) ? ' HAVING ' . $havingSQL : '',
             $orderSQL,

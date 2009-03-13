@@ -139,7 +139,7 @@ class CompaniesUI extends UserInterface
         /* First, if we are operating in HR mode we will never see the
            companies pager.  Immediantly forward to My Company. */
 
-        if ($_SESSION['CATS']->isHrMode())
+        if ($_SESSION['OSATS']->isHrMode())
         {
             $this->internalPostings();
             die();
@@ -160,7 +160,7 @@ class CompaniesUI extends UserInterface
 
         $this->_template->assign('active', $this);
         $this->_template->assign('dataGrid', $dataGrid);
-        $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
+        $this->_template->assign('userID', $_SESSION['OSATS']->getUserID());
         $this->_template->assign('errMessage', $errMessage);
 
         if (!eval(Hooks::get('CLIENTS_LIST_BY_VIEW'))) return;
@@ -359,7 +359,7 @@ class CompaniesUI extends UserInterface
         }
 
         /* Add an MRU entry. */
-        $_SESSION['CATS']->getMRU()->addEntry(
+        $_SESSION['OSATS']->getMRU()->addEntry(
             DATA_ITEM_COMPANY, $companyID, $data['name']
         );
 
@@ -569,7 +569,7 @@ class CompaniesUI extends UserInterface
         $usersRS = $users->getSelectList();
 
         /* Add an MRU entry. */
-        $_SESSION['CATS']->getMRU()->addEntry(
+        $_SESSION['OSATS']->getMRU()->addEntry(
             DATA_ITEM_COMPANY, $companyID, $data['name']
         );
 
@@ -737,7 +737,7 @@ class CompaniesUI extends UserInterface
                 $stringsToFind = array(
                     '%CLNTOWNER%',
                     '%CLNTNAME%',
-                    '%CLNTCATSURL%'
+                    '%CLNTOSATSURL%'
                 );
                 $replacementStrings = array(
                     $ownerDetails['fullName'],
@@ -859,7 +859,7 @@ class CompaniesUI extends UserInterface
         $companies->delete($companyID);
 
         /* Delete the MRU entry if present. */
-        $_SESSION['CATS']->getMRU()->removeEntry(
+        $_SESSION['OSATS']->getMRU()->removeEntry(
             DATA_ITEM_COMPANY, $companyID
         );
 

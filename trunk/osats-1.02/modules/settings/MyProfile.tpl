@@ -1,12 +1,12 @@
 <?php /* $Id: MyProfile.tpl 2452 2007-05-11 17:47:55Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'js/sorttable.js')); ?>
+<?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'js/sorttable.js')); //why is the validator.js here? Jamin.  ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
         <div id="contents">
-            <p class="note">Adjust and Manage Your Profilet</p>
+            <p class="note">Adjust and Manage Your Profile</p>
 
             <table width="100%">
                 <tr>
@@ -14,7 +14,17 @@
                         <table class="searchTable" width="100%">
                             <tr>
                                 <td width="33%">
-                                    <a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=showUser&amp;userID=<?php echo($this->userID); ?>&amp;privledged=false">
+    <?php //I want to allow the admin to change their own settings. Jamin 
+	if ($_SESSION['OSATS']->getAccessLevel() >= ACCESS_LEVEL_SA)
+    {
+	?><a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=showUser&amp;userID=<?php echo($this->userID); ?>&amp;privledged=true"><?php
+    }
+	else
+	{
+	?><a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=showUser&amp;userID=<?php echo($this->userID); ?>&amp;privledged=false"><?php	
+	}
+	?>
+									
                                         <img src="images/2dot1c.gif" alt="" border="0" /> View Profile
                                     </a>
                                 	<br>
@@ -29,10 +39,10 @@
                                 </td>
                                 <td width="34%">
                                     <a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=myProfile&amp;s=notificationOptions">
-                                        <img src="images/2dot1c.gif" alt="" border="0" /> Change Notification Options
+                                        <img src="images/2dot1c.gif" alt="" border="0" /> Turn Notification Options - On or Off.
                                     </a>
                                 	<br>
-                                    Change how OSATS notifies you of new events.
+                                    Change how OSATS notifies you of new events. (needs to be fixed. Jamin)
                                 </td>
                             </tr>
                             </table>

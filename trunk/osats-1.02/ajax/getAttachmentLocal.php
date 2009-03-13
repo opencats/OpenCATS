@@ -38,7 +38,7 @@ $directoryName = $rs['directoryName'];
 $fileName = $rs['storedFilename'];
 
 /* Check for the existence of the backup.  If it is gone, send the user to a page informing them to press back and generate the backup again. */
-if ($rs['contentType'] == 'catsbackup')
+if ($rs['contentType'] == 'OSATSbackup')
 {
     if (!file_exists('attachments/'.$directoryName.'/'.$fileName))
     {

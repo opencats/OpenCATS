@@ -5,9 +5,9 @@
    *
    *
 */
-$CATSHome = realpath(dirname(__FILE__) . '/');
+$OSATSHome = realpath(dirname(__FILE__) . '/');
 
-chdir($CATSHome);
+chdir($OSATSHome);
 
 include_once('./config.php');
 include_once('./constants.php');
@@ -41,9 +41,9 @@ if (get_magic_quotes_gpc())
     $_REQUEST = array_map('stripslashes', $_REQUEST);
 }
 
-if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+if (!isset($_SESSION['OSATS']) || empty($_SESSION['OSATS']))
 {
-    $_SESSION['CATS'] = new CATSSession();
+    $_SESSION['OSATS'] = new OSATSSession();
 }
 
 // Register module specific tasks
@@ -72,7 +72,7 @@ if( ((time() - $lastCleanupTime) > QUEUE_CLEANUP_HOURS*60*60) || !$lastCleanupTi
     QueueProcessor::cleanUpOldQueues();
 }
 
-echo "CATS Queue Processor status: ";
+echo "OSATS Queue Processor status: ";
 switch($retVal)
 {
     case TASKRET_ERROR:

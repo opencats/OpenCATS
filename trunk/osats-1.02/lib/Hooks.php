@@ -3,11 +3,6 @@
  * OSATS
  */
 
-/**
- *	Hooks Library
- *	@package    CATS
- *	@subpackage Library
- */
 class Hooks
 {
     /* Prevent this class from being instantiated. */

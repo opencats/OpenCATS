@@ -7,7 +7,7 @@ include_once('./lib/Pipelines.php');
 
 /**
  *	Statistics Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class Statistics
@@ -27,7 +27,7 @@ class Statistics
         $this->dateformat     = __('DATEFORMAT_SQL_DATE');
 
         // FIXME: Session coupling...
-        $this->_timeZoneOffset = $_SESSION['CATS']->getTimeZoneOffset();
+        $this->_timeZoneOffset = $_SESSION['OSATS']->getTimeZoneOffset();
     }
 
 

@@ -7,7 +7,7 @@
 */
 
 /* Each module can contain its own database schema updates. The schema is
- * returned to CATS as an array of keys and values through SkypeSchema's
+ * returned to OSATS as an array of keys and values through SkypeSchema's
  * constructor. For more details on the module schema updater, read the
  * comments in the included Schema.php.
  *
@@ -30,7 +30,7 @@ class SkypeUI extends UserInterface
     public function __construct()
     {
         /* This line MUST ALWAYS be present in your module's constructor.
-         * This allows the CATS Module API to perform its own internal
+         * This allows the OSATS Module API to perform its own internal
          * initialization whenever your module is initialized or passed-by.
          */
         parent::__construct();
@@ -93,13 +93,13 @@ class SkypeUI extends UserInterface
         $this->_schema = SkypeSchema::get();
     }
 
-    /* This method is called by __construct() and is not specific to the CATS
+    /* This method is called by __construct() and is not specific to the OSATS
      * API. It is the recommended way to define any hooks or filters that your
      * module will provide.
      */
     public function defineHooks()
     {
-        /* We need to decide what parts of CATS the Skype module will modify.
+        /* We need to decide what parts of OSATS the Skype module will modify.
          * In modules/candidates/CandidatesUI.php, prior to the candidate
          * details being displayed, the hook CANDIDATE_SHOW is evaluated by
          * this line:
@@ -260,7 +260,7 @@ class SkypeUI extends UserInterface
         if ($skypePreference['skypeEnabled'] == 1 &&
             StringUtility::containsPhoneNumber($html))
         {
-            /* Use the CATS String Utility library to extract all of the phone
+            /* Use the OSATS String Utility library to extract all of the phone
              * numbers from the template output.
              */
             $phoneNumbers = StringUtility::extractAllPhoneNumbers($html);
@@ -281,7 +281,7 @@ class SkypeUI extends UserInterface
 
 /* This class contains all the database functionality required for this
  * module. These functions could be placed in an outside file (such as
- * Library.php) without disrupting the CATS API. We HIGHLY recommend that
+ * Library.php) without disrupting the OSATS API. We HIGHLY recommend that
  * database functionality is kept separate from the main module code (as
  * is shown in this example module).
  */
@@ -293,7 +293,7 @@ class SkypeLibrary
     public static function getSkypePreference()
     {
         /* Get an instance of DatabaseConnection. This is how we interface
-         * with the CATS database.
+         * with the OSATS database.
          */
         $db = DatabaseConnection::getInstance();
 
@@ -305,7 +305,7 @@ class SkypeLibrary
                 site
             WHERE
                 site_id = %s",
-            $_SESSION['CATS']->getSiteID()
+            $_SESSION['OSATS']->getSiteID()
         );
 
         /* This method executes the SQL query and returns an associative
@@ -318,7 +318,7 @@ class SkypeLibrary
     public static function setSkypePreference($value)
     {
         /* Get an instance of DatabaseConnection. This is how we interface
-         * with the CATS database.
+         * with the OSATS database.
          */
         $db = DatabaseConnection::getInstance();
 
@@ -331,7 +331,7 @@ class SkypeLibrary
             WHERE
                 site_id = %s",
             $db->makeQueryID($value),
-            $_SESSION['CATS']->getSiteID()
+            $_SESSION['OSATS']->getSiteID()
         );
 
         /* This method executes the SQL query. */

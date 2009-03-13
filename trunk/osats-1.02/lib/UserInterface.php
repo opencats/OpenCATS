@@ -30,16 +30,16 @@ class UserInterface
     {
         $this->_template = new Template();
 
-        if (isset($_SESSION['CATS']) && !empty($_SESSION['CATS']))
+        if (isset($_SESSION['OSATS']) && !empty($_SESSION['OSATS']))
         {
             /* Get the current user's user ID. */
-            $this->_userID = $_SESSION['CATS']->getUserID();
+            $this->_userID = $_SESSION['OSATS']->getUserID();
 
             /* Get the current user's site ID. */
-            $this->_siteID = $_SESSION['CATS']->getSiteID();
+            $this->_siteID = $_SESSION['OSATS']->getSiteID();
 
             /* Get the current user's access level. */
-            $this->_accessLevel = $_SESSION['CATS']->getAccessLevel();
+            $this->_accessLevel = $_SESSION['OSATS']->getAccessLevel();
 
             /* All templates have an access level if we have a session. */
             $this->_template->assign('accessLevel', $this->_accessLevel);
@@ -93,14 +93,16 @@ class UserInterface
      */
     public function getSubTabs($modules = array())
     {
-        if (empty($modules))
+        
+		if (empty($modules))
         {
             return $this->_subTabs;
         }
 
         $subTabsExternal = $this->getThisSubTabsExternal($modules);
         return array_merge($this->_subTabs, $subTabsExternal);
-    }
+    	
+	}
 
     /**
      * Returns subtabs for this module as an array of strings.
@@ -366,26 +368,32 @@ class UserInterface
      *
      * @return array subtab items for this module
      */
-    public function getThisSubTabsExternal($modules)
+    public function getThisSubTabsExternal($hasSubtabs)
     {
-        $ret = array();
+        // Either get rid of subtabs or add to db and pull from there. Jamin
+		$ret = array();
 
-        foreach ($modules as $moduleName => $parameters)
+        
+		foreach ($hasSubtabs as $moduleName => $parameters)
         {
             $subTabsExternal = $parameters[2];
 
             if ($subTabsExternal != false)
             {
-                foreach ($subTabsExternal as $moduleNameTab => $theSubTab)
+                
+				foreach ($subTabsExternal as $moduleNameTab => $theSubTab)
                 {
                     if ($moduleNameTab === $this->_moduleName)
                     {
                         $ret = array_merge($ret, $theSubTab);
                     }
+                    
                 }
+                
             }
         }
 
         return $ret;
-    }
+    
+	}
 }

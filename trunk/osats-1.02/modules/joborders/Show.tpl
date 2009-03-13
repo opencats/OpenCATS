@@ -22,7 +22,7 @@
             <p class="note"><?php _e('Job Order Details') ?></p>
 
             <?php if ($this->data['isAdminHidden'] == 1): ?>
-                <p class="warning"><?php _e('This Job Order is hidden. Only CATS Administrators can view it or search for it. To make it visible by the site users') ?> click <a href="<?php echo(osatutil::getIndexName()); ?>?m=joborders&amp;a=administrativeHideShow&amp;jobOrderID=<?php echo($this->jobOrderID); ?>&amp;state=0" style="font-weight:bold;"><?php _e('Click here.') ?></a></p>
+                <p class="warning"><?php _e('This Job Order is hidden. Only OSATS Administrators can view it or search for it. To make it visible by the site users') ?> click <a href="<?php echo(osatutil::getIndexName()); ?>?m=joborders&amp;a=administrativeHideShow&amp;jobOrderID=<?php echo($this->jobOrderID); ?>&amp;state=0" style="font-weight:bold;"><?php _e('Click here.') ?></a></p>
             <?php endif; ?>
 
             <?php if (isset($this->frozen)): ?>
@@ -71,7 +71,7 @@
                             </tr>
 
                             <tr>
-                                <td class="vertical"><?php _e('CATS Job ID') ?>:</td>
+                                <td class="vertical"><?php _e('OSATS Job ID') ?>:</td>
                                 <td class="data" width="300"><?php $this->_($this->data['jobOrderID']); ?></td>
                             </tr>
 
@@ -204,7 +204,7 @@
             <div style="background-color: #E6EEFE; padding: 10px; margin: 5px 0 12px 0; border: 1px solid #728CC8;">
                 <b>This job order is public<?php if ($this->careerPortalURL === false): ?>.</b><?php else: ?>
                     and will be shown on your
-                    <?php if ($_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA): ?>
+                    <?php if ($_SESSION['OSATS']->getAccessLevel() >= ACCESS_LEVEL_SA): ?>
                         <a style="font-weight: bold;" href="<?php $this->_($this->careerPortalURL); ?>">Careers Website</a>.
                     <?php else: ?>
                         Careers Website.
@@ -215,7 +215,7 @@
                     <br />Applicants must complete the "<i><?php echo $this->questionnaireData['title']; ?></i>" (<a href="<?php echo osatutil::getIndexName(); ?>?m=settings&a=careerPortalQuestionnaire&questionnaireID=<?php echo $this->questionnaireID; ?>">edit</a>) questionnaire when applying.
                 <?php else: ?>
                     <br />You have not attached any
-                    <?php if ($_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA): ?>
+                    <?php if ($_SESSION['OSATS']->getAccessLevel() >= ACCESS_LEVEL_SA): ?>
                         <a href="<?php echo osatutil::getIndexName(); ?>?m=settings&a=careerPortalSettings">Questionnaires</a>.
                     <?php else: ?>
                         Questionnaires.

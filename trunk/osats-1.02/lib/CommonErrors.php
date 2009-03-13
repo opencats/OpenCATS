@@ -1,22 +1,22 @@
 <?php
 /**
- * CATS
+ * OSATS
  * Common Errors Friendly Display
  *
  * Copyright (C) 2006 - 2007 Cognizo Technologies, Inc.
  *
  *
- * The contents of this file are subject to the CATS Public License
+ * The contents of this file are subject to the OSATS Public License
  * Version 1.1a (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- * http://www.catsone.com/.
+ * http://www.OSATSone.com/.
  *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  * License for the specific language governing rights and limitations
  * under the License.
  *
- * The Original Code is "CATS Standard Edition".
+ * The Original Code is "OSATS Standard Edition".
  *
  * The Initial Developer of the Original Code is Cognizo Technologies, Inc.
  * Portions created by the Initial Developer are Copyright (C) 2005 - 2007
@@ -24,7 +24,7 @@
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
  *
- * @package    CATS
+ * @package    OSATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  * @version    $Id: CommonErrors.php 3784 2007-12-03 21:57:10Z brian $
@@ -47,7 +47,7 @@ define('COMMONERROR_FILENOTFOUND',                          12);
 
 /**
  *	Common Errors Friendly Display Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class CommonErrors
@@ -58,7 +58,7 @@ class CommonErrors
 
     public static function isDemo()
     {
-        $isDemo = $_SESSION['CATS']->isDemo();
+        $isDemo = $_SESSION['OSATS']->isDemo();
         return $isDemo;
     }
 
@@ -76,33 +76,33 @@ class CommonErrors
             case COMMONERROR_RESTRICTEDEXTENSION:
                 $errorTitle = 'Upgrade to Professional for Plug-ins';
                 $internalErrorTitle = 'Unauthorized Use of an Extension';
-                $errorMessage = '<b>' . $customMessage . '</b><p />CATS is free software and is available to anyone free '
+                $errorMessage = '<b>' . $customMessage . '</b><p />OSATS is free software and is available to anyone free '
                     . 'of charge. To support the development of this software, we\'ve released several plug-ins and '
-                    . 'extensions which allow CATS to work with software like Outlook and websites like Monster.<p />Designed '
+                    . 'extensions which allow OSATS to work with software like Outlook and websites like Monster.<p />Designed '
                     . 'by recruiters, for recruits, they\'re purpose is to make recruiting faster and easier.<p />'
-                    . '<b>At this time, these plug-ins are only available to CATS Professional users.</b><p /><ul>';
+                    . '<b>At this time, these plug-ins are only available to OSATS Professional users.</b><p /><ul>';
                 if (file_exists('modules/asp'))
                 {
-                    $errorMessage .= '<li>To upgrade your account to a CATS Professional account with ' . number_format(PAID_ACCOUNT_SIZE/1024,0)
+                    $errorMessage .= '<li>To upgrade your account to a OSATS Professional account with ' . number_format(PAID_ACCOUNT_SIZE/1024,0)
                         . ' MB of storage space, unlimited job orders and the ability to use all of our plug-ins, '
                         . '<a href="' . osatutil::getIndexName() . '?m=asp&a=purchaseinfo' . '">click here</a>.<p /></li>';
                 }
                 else
                 {
-                    $errorMessage .= '<li>For more information about the CATS Professional hosted version where we take care of '
+                    $errorMessage .= '<li>For more information about the OSATS Professional hosted version where we take care of '
                         . 'backups and the hassles of running a web server and you have access to all of our plug-ins, '
-                        . '<a href="http://www.catsone.com/getcats.php" style="font-weight: bold;">click here</a>.<p /></li>';
+                        . '<a href="http://www.OSATSone.com/getOSATS.php" style="font-weight: bold;">click here</a>.<p /></li>';
                 }
-                $errorMessage .= '<li>For more information about CATS Professional services where you host CATS on your '
+                $errorMessage .= '<li>For more information about OSATS Professional services where you host OSATS on your '
                     . 'own server with our support and plug-ins, please visit '
-                    . '<a href="http://www.catsone.com/Professional">http://www.catsone.com/Professional</a>.</li></ul>';
+                    . '<a href="http://www.OSATSone.com/Professional">http://www.OSATSone.com/Professional</a>.</li></ul>';
                 break;
 
             case COMMONERROR_BADFIELDS:
                 $errorTitle = 'Invalid Information';
                 $internalErrorTitle = 'Bad Input';
                 $errorMessage = 'Some of the information you provided doesn\'t follow the correct format and '
-                    . 'CATS can\'t interpret what it is. Please <a href="javascript:back()">go back</a> and '
+                    . 'OSATS can\'t interpret what it is. Please <a href="javascript:back()">go back</a> and '
                     . 'complete each field paying close attention to any instructions provided. '
                     . '<p><b>' . $customMessage . '</b>';
                 break;
@@ -110,7 +110,7 @@ class CommonErrors
             case COMMONERROR_RECORDERROR:
                 $errorTitle = 'Internal Record Error';
                 $internalErrorTitle = 'Insert, Delete or Update Error';
-                $errorMessage = 'The internal mechanics CATS uses to add and edit records like candidates, companies, job '
+                $errorMessage = 'The internal mechanics OSATS uses to add and edit records like candidates, companies, job '
                     . 'orders, etc. failed on your last operation. You may have entered incorrect data that it\'s not used '
                     . 'to handling or there is an internal issue.<p>The administrators have been notified and will '
                     . 'resolve the issue as soon as possible. We apologize for the inconvenience.';
@@ -120,7 +120,7 @@ class CommonErrors
                 $errorTitle = 'That Module is not Installed';
                 $internalErrorTitle = 'Bad Module';
                 $errorMessage = 'The module you requested, "<b>' . htmlentities($customMessage) . '</b>", doesn\'t exist or we haven\'t created it yet!<p>'
-                    . 'One of the most amazing things about CATS is that through modules, you add new features '
+                    . 'One of the most amazing things about OSATS is that through modules, you add new features '
                     . 'in the blink of an eye. Modules are like plug-ins, and perform specific tasks like integrating with '
                     . 'job boards or keeping your calendar up to date. You\'re getting this message because you followed '
                     . 'an old link, a bad link, or the module you\'re asking for no longer exists.<p>'
@@ -130,7 +130,7 @@ class CommonErrors
             case COMMONERROR_FILEERROR:
                 $errorTitle = 'A File Error has Occurred';
                 $internalErrorTitle = 'File Error';
-                $errorMessage = 'There was a problem when CATS attempted to process the file you selected. '
+                $errorMessage = 'There was a problem when OSATS attempted to process the file you selected. '
                     . '<b>' . $customMessage . '</b> File errors are sometimes caused by high Internet '
                     . 'traffic or older web browsers. The latest version of the <a href="http://www.getfirefox.com"> '
                     . 'Mozilla Firefox&copy;</a> browser '
@@ -140,16 +140,16 @@ class CommonErrors
             case COMMONERROR_BADINDEX:
                 $errorTitle = 'Bad Server Information';
                 $internalErrorTitle = 'Invalid ID';
-                $errorMessage = 'When you perform actions in CATS like editting a candidate or a job order, '
-                    . 'CATS assigns numbers to each record that uniquely identifies it. '
+                $errorMessage = 'When you perform actions in OSATS like editting a candidate or a job order, '
+                    . 'OSATS assigns numbers to each record that uniquely identifies it. '
                     . 'For example, a candidate "Steve Smith" may be identified by the number <b>101</b>. '
                     . '<br /><br />'
                     . 'The action you\'re attempting to perform has a unique number like this '
-                    . 'attached to it. CATS cannot find a record with the number you provided. The record '
+                    . 'attached to it. OSATS cannot find a record with the number you provided. The record '
                     . 'may have been deleted, you may have inadvertently logged off or an incorrect number '
                     . 'may have been provided to you.'
                     . '<br /><br />'
-                    . '<b>It\'s ok!</b> CATS can\'t complete whatever action you requested; but chances are, '
+                    . '<b>It\'s ok!</b> OSATS can\'t complete whatever action you requested; but chances are, '
                     . 'if you click the <a href="javascript:back()">back button</a> and <b>refresh</b> the page '
                     . 'and try again it will work just fine.';
                 break;
@@ -166,13 +166,13 @@ class CommonErrors
             case COMMONERROR_NOTLOGGEDIN:
                 $errorTitle = 'You are not logged in';
                 $internalErrorTitle = 'Not Logged In';
-                $errorMessage = 'You followed a link from an account logged into CATS but are no longer logged '
-                    . 'in and CATS cannot allow you to continue. <b>It\'s Ok!</b> This sort of thing can happen '
-                    . 'if you have CATS open in another window and log off from that window, if you timeout and your '
-                    . 'login expires, if you delete your cookies or personal inforation while logged into CATS, '
+                $errorMessage = 'You followed a link from an account logged into OSATS but are no longer logged '
+                    . 'in and OSATS cannot allow you to continue. <b>It\'s Ok!</b> This sort of thing can happen '
+                    . 'if you have OSATS open in another window and log off from that window, if you timeout and your '
+                    . 'login expires, if you delete your cookies or personal inforation while logged into OSATS, '
                     . 'or because of a handful of other trivial circumstances.'
                     . '<br /><br />'
-                    . 'The solution is simple: <a href="/?m=login">click here</a> to login to CATS.';
+                    . 'The solution is simple: <a href="/?m=login">click here</a> to login to OSATS.';
                 break;
 
             case COMMONERROR_MISSINGFIELDS:
@@ -248,19 +248,19 @@ class CommonErrors
 
         //self::sendEmail($internalErrorTitle, $customMessage);
 
-        if (isset($_SESSION['CATS']) && !empty($_SESSION['CATS']))
+        if (isset($_SESSION['OSATS']) && !empty($_SESSION['OSATS']))
         {
             /* Get the current user's user ID. */
-            $userID = $_SESSION['CATS']->getUserID();
+            $userID = $_SESSION['OSATS']->getUserID();
 
             /* Get the current user's site ID. */
-            $siteID = $_SESSION['CATS']->getSiteID();
+            $siteID = $_SESSION['OSATS']->getSiteID();
 
             /* Get the current user's access level. */
-            $accessLevel = $_SESSION['CATS']->getAccessLevel();
+            $accessLevel = $_SESSION['OSATS']->getAccessLevel();
 
             /* Is it a demo */
-            $isDemo = $_SESSION['CATS']->isDemo();
+            $isDemo = $_SESSION['OSATS']->isDemo();
 
             // Save log if a session is present and it's not a demo, and exceptions are logged
             if (!$isDemo && self::isExceptionLoggingEnabled())

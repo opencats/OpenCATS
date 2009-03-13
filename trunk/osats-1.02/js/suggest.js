@@ -251,7 +251,7 @@ function suggestListPopulate(focusID, sessionCookie, lookupText, maxResults, def
         }
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         lookupFunction,
         POSTData,

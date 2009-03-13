@@ -4,7 +4,7 @@
    * GNU License
    *
    *
-   * @package    CATS
+   * @package    OSATS
    * @subpackage Library
    * @copyright Open Source
    * @version    1.0
@@ -18,7 +18,7 @@ include_once('./lib/Hooks.php');
 
 /**
  *	Attachments Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class Attachments
@@ -164,7 +164,7 @@ class Attachments
      * Would generally be used by a matienence script that uses forceAttachmentLocal
      * to make an attachment local, then must release the space used by that
      * attachment so a new attachment can be downloaded.  This is not
-     * necessary to be used generally in CATS because cron will slowly
+     * necessary to be used generally in OSATS because cron will slowly
      * move local files to their remote location on its own.
      *
      * @param integer Attachment ID.
@@ -581,7 +581,7 @@ class Attachments
             WHERE
                 attachment_id = %s
             AND
-                (site_id = %s || content_type = 'catsbackup' || %s)",
+                (site_id = %s || content_type = 'OSATSbackup' || %s)",
             $this->dateformat,
             $this->_db->makeQueryInteger($attachmentID),
             $this->_siteID,
@@ -679,7 +679,7 @@ class Attachments
     private static function makeRetrievalLink($getVars, $url)
     {
         // FIXME:  Make attachment download preparer work in IE7.
-        //return '<a href="'.$url.'" onclick="return doPrepareAndDownload(\''.$getVars.'\', \''.$url.'\', document.getElementById(\'download'.md5($url).'\'), \''.$_SESSION['CATS']->getCookie().'\');">';
+        //return '<a href="'.$url.'" onclick="return doPrepareAndDownload(\''.$getVars.'\', \''.$url.'\', document.getElementById(\'download'.md5($url).'\'), \''.$_SESSION['OSATS']->getCookie().'\');">';
         return '<a href="' . $url . '">';
     }
 
@@ -771,7 +771,7 @@ class Attachments
 
 /**
  *	Attachment Creator
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class AttachmentCreator
@@ -955,7 +955,7 @@ class AttachmentCreator
 
     /**
      * Creates an attachment to the specified data item from a file that
-     * currently exists on the system where CATS is located. This will
+     * currently exists on the system where OSATS is located. This will
      * also pass the attachment along for text extraction and indexing if
      * requested. Note that the file will be moved out of its current location
      * and into the attachments/ directory.
@@ -963,7 +963,7 @@ class AttachmentCreator
      * @param flag Data Item type flag.
      * @param integer Data Item ID.
      * @param string The temporary location where the file is currently stored
-     *               on the system where CATS is located.
+     *               on the system where OSATS is located.
      * @param string Attachment title, or boolean false to create a title
      *               automatically from the attachment's filename.
      * @param string MIME content type (or '' if unknown).
@@ -1024,7 +1024,7 @@ class AttachmentCreator
      *               automatically from the attachment's filename.
      * @param string The filename an attachment originally before any renaming.
      * @param string The temporary location where the file is currently stored
-     *               on the system where CATS is located.
+     *               on the system where OSATS is located.
      * @param string MIME content type (or '' if unknown).
      * @param string File's contents if a file is being created from text /
      *               contents. Specify false if not creating a file by its
@@ -1358,7 +1358,7 @@ class AttachmentCreator
         {
             $this->_isError = true;
             $this->_error = 'Directory \'./attachments/\' does not '
-                . 'exist. CATS is not configured correctly.';
+                . 'exist. OSATS is not configured correctly.';
             return false;
         }
 

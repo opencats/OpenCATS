@@ -10,14 +10,14 @@ input.licenseKey { border: 1px solid #0C519D; padding: 5px; width: 500px; }
         <td align="left" valign="top">
             Your license key has expired.
             <br /><br />
-            Please enter your new CATS Professional or Open Source license key to continue
+            Please enter your new OSATS Professional or Open Source license key to continue
             using this software.
             <br /><br />
-            Consider purchasing a CATS Professional license key to unlock all the features of
-            CATS like our Monster toolbar, resume import, careers website, and more!
+            Consider purchasing a OSATS Professional license key to unlock all the features of
+            OSATS like our Monster toolbar, resume import, careers website, and more!
             <br /><br />
 
-            <b>Need a license key?</b> <a href="http://www.catsone.com/?a=license_key" target="_blank">Register here</a>.
+            <b>Need a license key?</b> <a href="http://www.OSATSone.com/?a=license_key" target="_blank">Register here</a>.
 
             <p />
 

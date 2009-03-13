@@ -74,7 +74,7 @@ function doPrepareAndDownload(getVars, url, spanObject, sessionCookie)
 
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'getAttachmentLocal',
         POSTData,

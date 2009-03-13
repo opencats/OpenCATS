@@ -20,7 +20,6 @@ include_once('./lib/DatabaseConnection.php');
 include_once('./lib/DatabaseSearch.php');
 include_once('./lib/CommonErrors.php');
 include_once('./lib/Questionnaire.php');
-include_once('./lib/DocumentToText.php');
 include_once('./lib/FileUtility.php');
 include_once('./lib/ParseUtility.php');
 include_once('./lib/i18n.php');
@@ -667,7 +666,7 @@ class CareersUI extends UserInterface
                 $endTD = '';
             }
 
-            if (strpos($template['Content'], '<catsform>') === false)
+            if (strpos($template['Content'], '<OSATSform>') === false)
             {
                 $template['Content'] = $startTD . "\n" . $validator . "\n"
                     . '<form name="applyToJobForm" id="applyToJobForm" action="'
@@ -681,7 +680,7 @@ class CareersUI extends UserInterface
             else
             {
                 $template['Content'] = $startTD . "\n" . $validator . "\n" .
-                    str_replace('<catsform>', '<form name="applyToJobForm" id="applyToJobForm" action="'
+                    str_replace('<OSATSform>', '<form name="applyToJobForm" id="applyToJobForm" action="'
                         . osatutil::getIndexName()
                         . '?m=careers&amp;p=onApplyToJobOrder" '
                         . 'enctype="multipart/form-data" method="post" onsubmit="return applyValidate();">'
@@ -938,9 +937,9 @@ class CareersUI extends UserInterface
 
         if (!eval(Hooks::get('CAREERS_PAGE_BOTTOM'))) return;
 
-        if ($careerPortalSettingsRS['useCATSTemplate'] != '')
+        if ($careerPortalSettingsRS['useOSATSTemplate'] != '')
         {
-            $this->_template->display($careerPortalSettingsRS['useCATSTemplate']);
+            $this->_template->display($careerPortalSettingsRS['useOSATSTemplate']);
         }
         else
         {
@@ -1533,9 +1532,9 @@ class CareersUI extends UserInterface
             '%CANDOWNER%',     // Because the candidate was just added, we assume
             '%JBODTITLE%',     // the candidate owner = job order owner.
             '%JBODCLIENT%',
-            '%CANDCATSURL%',
+            '%CANDOSATSURL%',
             '%JBODID%',
-            '%JBODCATSURL%'
+            '%JBODOSATSURL%'
         );
         $replacementStrings = array(
             $firstName,
@@ -1714,7 +1713,7 @@ class CareersUI extends UserInterface
 
     private function getCareerPortalCookieName($siteID)
     {
-        return sprintf('cats%dcw', $siteID);
+        return sprintf('OSATS%dcw', $siteID);
     }
 
     private function getCookieFields($siteID)

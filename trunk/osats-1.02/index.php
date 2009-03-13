@@ -5,11 +5,21 @@
  *
  */
 
+include_once('./dbconfig.php');
+
+//check on timezone setting.
+if (function_exists('date_default_timezone_set'))
+{
+	@date_default_timezone_set(date_default_timezone_get());
+} 
+else 
+{
+	echo "date function doesnt exist!";
+}
+
 /* Retrieve all the value from the System table to check if OSATS has been installed yet.
    * If the value is null then its false, if the value is 1 then its true.
 */
-include_once('./dbconfig.php');
-
 $myServer = mysql_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS);
 	if (!$myServer)
 		{
@@ -36,27 +46,11 @@ if (!$result==null)
     	include('_install/install.php');
 		die();
 	}
+/* do not allow for caching */
+header("Expires: 0"); header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); header("cache-control: no-store, no-cache, must-revalidate"); header("Pragma: no-cache");
+//@ini_set('memory_limit', '64M');
 
-// FIXME: Config file setting.
-@ini_set('memory_limit', '64M');
-
-/* Hack to make OSATS work with E_STRICT. */
-if (function_exists('date_default_timezone_set'))
-{
-    @date_default_timezone_set(date_default_timezone_get());
-}
-
-/* Start error handler if ASP error handler exists and this isn't a localhost
- * connection.
- */
-if (file_exists('modules/asp/lib/ErrorHandler.php') &&
-    @$_SERVER['REMOTE_ADDR'] !== '127.0.0.1' &&
-    @$_SERVER['REMOTE_ADDR'] !== '::1' &&
-    substr(@$_SERVER['REMOTE_ADDR'], 0, 3) !== '10.')
-{
-    include_once('modules/asp/lib/ErrorHandler.php');
-    $errorHandler = new ErrorHandler();
-}
+/* If all went well above we can continue to load the rest of the items. */
 include_once('./constants.php');
 include_once('./lib/CommonErrors.php');
 include_once('./lib/osatutil.php');
@@ -65,28 +59,31 @@ include_once('./lib/Template.php');
 include_once('./lib/Users.php');
 include_once('./lib/MRU.php');
 include_once('./lib/Hooks.php');
-include_once('./lib/Session.php'); /* Depends: MRU, Users, DatabaseConnection. */
-include_once('./lib/UserInterface.php'); /* Depends: Template, Session. */
-include_once('./lib/ModuleUtility.php'); /* Depends: UserInterface */
-include_once('./lib/TemplateUtility.php'); /* Depends: ModuleUtility, Hooks */
+include_once('./lib/Session.php'); 
+include_once('./lib/UserInterface.php'); 
+include_once('./lib/ModuleUtility.php'); 
+include_once('./lib/TemplateUtility.php');
 
-
-/* Give the session a unique name to avoid conflicts and start the session. */
+/* Creates a session or resumes the current one based on the current session id that's being passed via a request, such as GET, POST, or a cookie and give the session a unique name to avoid conflicts and start the session. */
 @session_name(SESSIONNAME);
 session_start();
 
-/* Try to prevent caching. */
-header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+/* if you are programming and get stuck on errors... make sure you didnt bust the session. Simply un-remark this next line and hit refresh, then remark this line again. */
+//session_destroy();
 
-/* Make sure we aren't getting screwed over by magic quotes. */
-if (get_magic_quotes_runtime())
+
+// Check if magic_quotes_runtime is active
+if(get_magic_quotes_runtime())
 {
-    set_magic_quotes_runtime(0);
+    // if active, then Deactive
+    set_magic_quotes_runtime(false);
 }
+
+/* Isnt there a better way to do this? - Jamin */
 if (get_magic_quotes_gpc())
 {
-    include_once('./lib/ArrayUtility.php');
+    echo "magic quotes gpc is true";
+	include_once('./lib/ArrayUtility.php');
 
     $_GET     = array_map('stripslashes', $_GET);
     $_POST    = array_map('stripslashes', $_POST);
@@ -96,51 +93,41 @@ if (get_magic_quotes_gpc())
     $_REQUEST = ArrayUtility::arrayMapKeys('stripslashes', $_REQUEST);
 }
 
-/* Objects can't be stored in the session if session.auto_start is enabled. */
-if (ini_get('session.auto_start') !== '0' &&
-    ini_get('session.auto_start') !== 'Off')
-{
-    die('OSATS Error: session.auto_start must be set to 0 in php.ini.');
-}
 
-/* Proper extensions loaded?! */
-if (!function_exists('mysql_connect') || !function_exists('session_start'))
-{
-    die('OSATS Error: All required PHP extensions are not loaded.');
-}
 
-/* Make sure we have a Session object stored in the user's session. */
-if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+if (!isset($_SESSION['OSATS']) || empty($_SESSION['OSATS']))
 {
-    $_SESSION['CATS'] = new CATSSession();
+    //start a new session.
+	$_SESSION['OSATS'] = new WebSession();
 }
 
 /* Start timer for measuring server response time. Displayed in footer. */
-$_SESSION['CATS']->startTimer();
+//$_SESSION['OSATS']->startTimer();
 
 
 /* Check to see if the user level suddenly changed. If the user was changed to disabled,
  * also log the user out.
  */
-// FIXME: This is slow!
-if ($_SESSION['CATS']->isLoggedIn())
+// DO WE REALLY CARE?  A better way is to expire the session at certain times!
+/*
+if ($_SESSION['OSATS']->isLoggedIn())
 {
-    $users = new Users($_SESSION['CATS']->getSiteID());
-    $forceLogoutData = $users->getForceLogoutData($_SESSION['CATS']->getUserID());
+    $users = new Users($_SESSION['OSATS']->getSiteID());
+    $forceLogoutData = $users->getForceLogoutData($_SESSION['OSATS']->getUserID());
 
     if (!empty($forceLogoutData) && ($forceLogoutData['forceLogout'] == 1 ||
-        $_SESSION['CATS']->getRealAccessLevel() != $forceLogoutData['accessLevel']))
+        $_SESSION['OSATS']->getRealAccessLevel() != $forceLogoutData['accessLevel']))
     {
-        $_SESSION['CATS']->setRealAccessLevel($forceLogoutData['accessLevel']);
+        $_SESSION['OSATS']->setRealAccessLevel($forceLogoutData['accessLevel']);
 
         if ($forceLogoutData['accessLevel'] == ACCESS_LEVEL_DISABLED ||
             $forceLogoutData['forceLogout'] == 1)
         {
-            /* Log the user out. */
-            $unixName = $_SESSION['CATS']->getUnixName();
+            //Log the user out.
+            $unixName = $_SESSION['OSATS']->getUnixName();
 
-            $_SESSION['CATS']->logout();
-            unset($_SESSION['CATS']);
+            $_SESSION['OSATS']->logout();
+            unset($_SESSION['OSATS']);
             unset($_SESSION['modules']);
 
             $URI = 'm=login';
@@ -157,10 +144,13 @@ if ($_SESSION['CATS']->isLoggedIn())
 }
 
 /* Check to see if we are supposed to display the career page. */
-if (((isset($careerPage) && $careerPage) ||
-    (isset($_GET['showCareerPortal']) && $_GET['showCareerPortal'] == '1')))
+//I would like to break away from this and have it seperated so its not called each freaking time we do something in the main app!
+// I will come up with something later. - Jamin
+
+if (((isset($careerPage) && $careerPage) || (isset($_GET['showCareerPortal'])) && $_GET['showCareerPortal'] == '1'))
+//if (isset($_GET['showCareerPortal']))
 {
-    ModuleUtility::loadModule('careers');
+	ModuleUtility::loadModule('careers');
 }
 
 /* Check to see if we are supposed to display an rss page. */
@@ -169,15 +159,14 @@ else if (isset($rssPage) && $rssPage)
     ModuleUtility::loadModule('rss');
 }
 
-else if (isset($xmlPage) && $xmlPage)
-{
-    ModuleUtility::loadModule('xml');
-}
+//else if (isset($xmlPage) && $xmlPage)
+//{
+ //   ModuleUtility::loadModule('xml');
+//}
 
 /* Check to see if the user was forcibly logged out (logged in from another browser). */
-else if ($_SESSION['CATS']->isLoggedIn() &&
-    (!isset($_GET['m']) || ModuleUtility::moduleRequiresAuthentication($_GET['m'])) &&
-    $_SESSION['CATS']->checkForceLogout())
+
+else if ($_SESSION['OSATS']->isLoggedIn() && (!isset($_GET['m']) || ModuleUtility::moduleRequiresAuthentication($_GET['m'])) && $_SESSION['OSATS']->checkForceLogout())
 {
     // FIXME: Unset session / etc.?
     ModuleUtility::loadModule('login');
@@ -186,13 +175,14 @@ else if ($_SESSION['CATS']->isLoggedIn() &&
 /* If user specified a module, load it; otherwise, load the home module. */
 else if (!isset($_GET['m']) || empty($_GET['m']))
 {
-    if ($_SESSION['CATS']->isLoggedIn())
+    if ($_SESSION['OSATS']->isLoggedIn())
     {
-        $_SESSION['CATS']->logPageView();
+        $_SESSION['OSATS']->logPageView();
 
         if (!eval(Hooks::get('INDEX_LOAD_HOME'))) return;
 
         ModuleUtility::loadModule('home');
+        
     }
     else
     {
@@ -204,10 +194,10 @@ else
     if ($_GET['m'] == 'logout')
     {
         /* There isn't really a logout module. It's just a few lines. */
-        $unixName = $_SESSION['CATS']->getUnixName();
+        $unixName = $_SESSION['OSATS']->getUnixName();
 
-        $_SESSION['CATS']->logout();
-        unset($_SESSION['CATS']);
+        $_SESSION['OSATS']->logout();
+        unset($_SESSION['OSATS']);
         unset($_SESSION['modules']);
 
         $URI = 'm=login';
@@ -242,7 +232,7 @@ else
         /* No authentication required; load the module. */
         ModuleUtility::loadModule($_GET['m']);
     }
-    else if (!$_SESSION['CATS']->isLoggedIn())
+    else if (!$_SESSION['OSATS']->isLoggedIn())
     {
         /* User isn't logged in and authentication is required; send the user
          * to the login page.
@@ -252,7 +242,7 @@ else
     else
     {
         /* Everything's good; load the requested module. */
-        $_SESSION['CATS']->logPageView();
+        $_SESSION['OSATS']->logPageView();
         ModuleUtility::loadModule($_GET['m']);
     }
 }

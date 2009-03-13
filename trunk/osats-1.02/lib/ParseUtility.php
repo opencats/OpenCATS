@@ -58,7 +58,7 @@ class ParseUtility
     public function documentParse($name, $size, $mimeType, $contents)
     {
         if (!$this->_client) $this->startClient();
-        if (!defined('CATS_TEST_MODE') || !CATS_TEST_MODE)
+        if (!defined('OSATS_TEST_MODE') || !OSATS_TEST_MODE)
         {
             try
             {
@@ -108,7 +108,7 @@ class ParseUtility
     {
         if (!osatutil::isSOAPEnabled()) return false;
         $client = new SoapClient('wsdl/status.wsdl');
-        if (!defined('CATS_TEST_MODE') || !CATS_TEST_MODE)
+        if (!defined('OSATS_TEST_MODE') || !OSATS_TEST_MODE)
         {
             try
             {

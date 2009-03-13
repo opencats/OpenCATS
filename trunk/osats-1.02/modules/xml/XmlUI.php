@@ -215,7 +215,7 @@ class XmlUI extends UserInterface
                         case 'hiringCompany':
                             $txtJobPosting = XmlTemplate::replaceTemplateTags(
                                 $tag,
-                                'CATS (www.catsone.com)',
+                                'OSATS (www.OSATSone.com)',
                                 $txtJobPosting
                             );
                             break;

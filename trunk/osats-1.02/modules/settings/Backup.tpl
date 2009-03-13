@@ -20,7 +20,7 @@
             <table class="searchTable" width="100%">
                 <tr>
                     <td>
-                        Create a backup of your entire CATS database (including all of your attachments).<br />
+                        Create a backup of your entire OSATS database (including all of your attachments).<br />
                         Note: Only one backup of your database can be stored on the server at a time.  Creating a new backup will
                         delete the previous backup.<br />
                         <br />

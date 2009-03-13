@@ -21,8 +21,8 @@
             <br />
             <br />
             <div id="queryInstall">
-                <!--<a href="javascript:void(0);" onclick="tryInstall();" style="font-weight: bold; font-size: 16px;">Install CATS Toolbar</a>-->
-                <span style="font-weight: bold;">To upgrade the toolbar, you must first uninstall the existing toolbar and restart Firefox.  Press tools, Add-ons, pick CATS Toolbar, and press Uninstall.</span>
+                <!--<a href="javascript:void(0);" onclick="tryInstall();" style="font-weight: bold; font-size: 16px;">Install OSATS Toolbar</a>-->
+                <span style="font-weight: bold;">To upgrade the toolbar, you must first uninstall the existing toolbar and restart Firefox.  Press tools, Add-ons, pick OSATS Toolbar, and press Uninstall.</span>
             </div>
 
             <div id="divInstalling" style="display:none;">
@@ -33,7 +33,7 @@
             </div>
 
             <div id="badBrowser" style="display:none;">
-                CATS Toolbar is designed for Mozilla Firefox. Please download Mozilla Firefox to use the toolbar.
+                OSATS Toolbar is designed for Mozilla Firefox. Please download Mozilla Firefox to use the toolbar.
                 <br />
                 <br />
                 <a href="http://www.mozilla.com/en-US/firefox/features.html">
@@ -45,7 +45,7 @@
             </div>
 
             <div id="toolbarInstalled" style="display:none;">
-                <span style="font-weight: bold;">To upgrade the toolbar, you must first uninstall the existing toolbar and restart Firefox.  Press tools, Add-ons, pick CATS Toolbar, and press Uninstall.  Once uninstalled, you can find the new toolbar installer under the settings tab of CATS.</span>
+                <span style="font-weight: bold;">To upgrade the toolbar, you must first uninstall the existing toolbar and restart Firefox.  Press tools, Add-ons, pick OSATS Toolbar, and press Uninstall.  Once uninstalled, you can find the new toolbar installer under the settings tab of OSATS.</span>
             </div>
 
             <script type="text/javascript">
@@ -59,7 +59,7 @@
                     document.getElementById('divInstalling').style.display = '';
                     document.getElementById('queryInstall').style.display = 'none';
                     xpi = new Object();
-                    xpi['CATS ToolBar'] = 'modules/toolbar/catstoolbar.xpi';
+                    xpi['OSATS ToolBar'] = 'modules/toolbar/OSATStoolbar.xpi';
                     setTimeout('InstallTrigger.install(xpi)', '1000');
                 }
 

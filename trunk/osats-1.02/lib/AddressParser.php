@@ -4,7 +4,7 @@
    * GNU License
    *
    *
-   * @package    CATS
+   * @package    OSATS
    * @subpackage Library
    * @copyright Open Source
    * @version    1.0
@@ -28,7 +28,7 @@ include_once('./lib/ResultSetUtility.php');
 
 /**
  *  Address Parser
- *  @package    CATS
+ *  @package    OSATS
  *  @subpackage Library
  */
 class AddressParser

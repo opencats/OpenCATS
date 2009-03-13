@@ -7,7 +7,7 @@ include_once('lib/Calendar.php');
 
 /**
  *	Dashboard Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class Dashboard
@@ -205,7 +205,7 @@ class Dashboard
             case DASHBOARD_GRAPH_WEEKLY:
 		    default:
               // TODO:   Localization d/m, week starts on monday
-                if ($_SESSION['CATS']->isDateDMY())
+                if ($_SESSION['OSATS']->isDateDMY())
                 {
                     $pattern = "d/m";
                 }

@@ -12,8 +12,8 @@ error_reporting(E_ERROR);
 /* This is probably getting called from cron, so we have to figure out
  * where we are and where this program is.
  */
-$CATSHome = realpath(dirname(__FILE__) . '/../');
-include(realpath($CATSHome . '/config.php'));
+$OSATSHome = realpath(dirname(__FILE__) . '/../');
+include(realpath($OSATSHome . '/config.php'));
 
 if (php_sapi_name() == 'cli')
 {
@@ -38,7 +38,7 @@ if (!ENABLE_SPHINX)
     exit(0);
 }
 
-$SphinxAPI = realpath($CATSHome . '/' . SPHINX_API);
+$SphinxAPI = realpath($OSATSHome . '/' . SPHINX_API);
 if (!file_exists($SphinxAPI))
 {
     fwrite($stderr, "Config Error: SPHINX_API could not be found.\n");

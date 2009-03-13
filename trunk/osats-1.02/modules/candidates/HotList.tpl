@@ -37,7 +37,7 @@
                                         </select>
                                     </td>
                                     <td valign="top" align="right" nowrap>
-                                        <?php if ($_SESSION['CATS']->getCheckBox('onlyMyCandidates')) : ?>
+                                        <?php if ($_SESSION['OSATS']->getCheckBox('onlyMyCandidates')) : ?>
                                             <input type="hidden" name="myCandidates" value="off" />
                                             <input type="checkbox" name="onlyMyCandidates" id="onlyMyCandidates" onclick="document.candidatesViewSelectorForm.submit();" checked /><?php _e('Only My Candidates');?>&nbsp;
                                         <?php else: ?>

@@ -15,7 +15,7 @@ show_usage() {
 }
 
 if [ ! -f "modules/login/LoginUI.php" ]; then
-	echo "Error: You are not in the CATS directory."
+	echo "Error: You are not in the OSATS directory."
 	exit 1
 fi
 
@@ -28,29 +28,29 @@ fi
 umask 022
 
 echo -n 'Finding existing version number... '
-OLD_CATSVERSION=$(grep 'CATS Version' index.php | sed -e 's!^.*CATS Version: !!g')
+OLD_OSATSVERSION=$(grep 'OSATS Version' index.php | sed -e 's!^.*OSATS Version: !!g')
 
-if test "x${OLD_CATSVERSION}" = "x"; then
+if test "x${OLD_OSATSVERSION}" = "x"; then
 	echo "Error: Could not detect current version number."
 	exit 1
 fi
 
-echo $OLD_CATSVERSION
+echo $OLD_OSATSVERSION
 
-NEW_CATSVERSION=$(echo $1)
+NEW_OSATSVERSION=$(echo $1)
 
-echo ${OLD_CATSVERSION} \-\> ${NEW_CATSVERSION}... 
+echo ${OLD_OSATSVERSION} \-\> ${NEW_OSATSVERSION}... 
 echo ""
 
 # Update constants.php
 echo constants.php
-sed -r "s/define\('CATS_VERSION', .+\);/define('CATS_VERSION', '${NEW_CATSVERSION}');/g" constants.php > constants.php_
+sed -r "s/define\('OSATS_VERSION', .+\);/define('OSATS_VERSION', '${NEW_OSATSVERSION}');/g" constants.php > constants.php_
 mv constants.php_ constants.php
 
-# Update all files that contain CATS Version: in the comments.
-for i in $(grep -r 'CATS Version:' * | grep -vE '\.svn|newversion' | cut -d':' -f1); do
+# Update all files that contain OSATS Version: in the comments.
+for i in $(grep -r 'OSATS Version:' * | grep -vE '\.svn|newversion' | cut -d':' -f1); do
     echo $i
-    sed -r "s/CATS Version: .+/CATS Version: ${NEW_CATSVERSION}/g" $i > ${i}_
+    sed -r "s/OSATS Version: .+/OSATS Version: ${NEW_OSATSVERSION}/g" $i > ${i}_
     mv ${i}_ $i
 done
 

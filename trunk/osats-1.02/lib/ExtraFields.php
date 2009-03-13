@@ -6,7 +6,7 @@ include_once('lib/Site.php');
 
 /**
  *	Extra Fields Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 
@@ -532,9 +532,9 @@ class ExtraFields
                 case EXTRA_FIELD_DATE:
                     $dmy = false;
 
-                    if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn())
+                    if (isset($_SESSION['OSATS']) && $_SESSION['OSATS']->isLoggedIn())
                     {
-                        if ($_SESSION['CATS']->isDateDMY())
+                        if ($_SESSION['OSATS']->isDateDMY())
                         {
                             $dmy = true;
                         }
@@ -723,7 +723,7 @@ class ExtraFields
                                        'ON '.$column.' = extra_field' . $uniqueIndex . '.data_item_id '.
                                        'AND extra_field' . $uniqueIndex . '.field_name = ' . $db->makeQueryString($data['fieldName']) . ' '.
                                        'AND extra_field' . $uniqueIndex . '.data_item_type = ' . $this->_dataItemType,
-                          'pagerRender'     => 'if (isset($_SESSION[\'CATS\']) && $_SESSION[\'CATS\']->isLoggedIn() && $_SESSION[\'CATS\']->isDateDMY())
+                          'pagerRender'     => 'if (isset($_SESSION[\'OSATS\']) && $_SESSION[\'OSATS\']->isLoggedIn() && $_SESSION[\'OSATS\']->isDateDMY())
                                         {
                                               $dateParts = explode(\'-\',  $rsData[\'extra_field_value' . $uniqueIndex . '\']);
                                               if (count($dateParts) > 2)
@@ -739,7 +739,7 @@ class ExtraFields
                                         {
                                              return $rsData[\'extra_field_value' . $uniqueIndex . '\'];
                                         }',
-                          'exportRender'     => 'if (isset($_SESSION[\'CATS\']) && $_SESSION[\'CATS\']->isLoggedIn() && $_SESSION[\'CATS\']->isDateDMY())
+                          'exportRender'     => 'if (isset($_SESSION[\'OSATS\']) && $_SESSION[\'OSATS\']->isLoggedIn() && $_SESSION[\'OSATS\']->isDateDMY())
                                         {
                                               $dateParts = explode(\'-\',  $rsData[\'extra_field_value' . $uniqueIndex . '\']);
                                               if (count($dateParts) > 2)

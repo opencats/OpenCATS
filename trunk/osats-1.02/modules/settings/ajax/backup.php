@@ -1,22 +1,22 @@
 <?php
 /*
- * CATS
+ * OSATS
  * AJAX Backup interface
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
  *
- * The contents of this file are subject to the CATS Public License
+ * The contents of this file are subject to the OSATS Public License
  * Version 1.1 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- * http://www.catsone.com/.
+ * http://www.OSATSone.com/.
  *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  * License for the specific language governing rights and limitations
  * under the License.
  *
- * The Original Code is "CATS Standard Edition".
+ * The Original Code is "OSATS Standard Edition".
  *
  * The Initial Developer of the Original Code is Cognizo Technologies, Inc.
  * Portions created by the Initial Developer are Copyright (C) 2005 - 2007
@@ -33,7 +33,7 @@ include_once('lib/Attachments.php');
 
 $interface = new SecureAJAXInterface();
 
-if ($_SESSION['CATS']->getAccessLevel() < ACCESS_LEVEL_SA)
+if ($_SESSION['OSATS']->getAccessLevel() < ACCESS_LEVEL_SA)
 {
     die('No permision.');
 }
@@ -62,14 +62,14 @@ function setStatusBackup($status, $progress)
         . ' setProgress(' . $progress . ');'
         . ' progressComplete(\'' . $completedTasks.'\');</script>';
 
-    $directory = $_SESSION['CATS']->retrieveValueByName('backupDirectory');
+    $directory = $_SESSION['OSATS']->retrieveValueByName('backupDirectory');
     @file_put_contents($directory . 'progress.txt', $command);
 }
 
 
 if ($action == 'start')
 {
-    $companyID = $_SESSION['CATS']->getSiteCompanyID();
+    $companyID = $_SESSION['OSATS']->getSiteCompanyID();
     $attachmentsOnly = $interface->isChecked('attachmentsOnly');
 
     /* Delete any old backups. */
@@ -77,22 +77,22 @@ if ($action == 'start')
     $attachments->deleteAll(
         DATA_ITEM_COMPANY,
         $companyID,
-        "AND content_type = 'catsbackup'"
+        "AND content_type = 'OSATSbackup'"
     );
     
     /* Build title string. */
     if ($attachmentsOnly)
     {
-        $title = 'CATS Attachments Backup';
+        $title = 'OSATS Attachments Backup';
     }
     else
     {
-        $title = 'CATS Backup';
+        $title = 'OSATS Backup';
     }
 
     $attachmentCreator = new AttachmentCreator(ADMIN_SITE);
     $attachmentCreator->createFromFile(
-        DATA_ITEM_COMPANY, $companyID, 'catsbackup.bak', $title, 'catsbackup',
+        DATA_ITEM_COMPANY, $companyID, 'OSATSbackup.bak', $title, 'OSATSbackup',
         false, false
     );
     if ($attachmentCreator->isError())
@@ -103,7 +103,7 @@ if ($action == 'start')
     $attachmentID = $attachmentCreator->getAttachmentID();
     $directory = $attachmentCreator->getContainingDirectory();
 
-    $_SESSION['CATS']->storeValueByName('backupDirectory', $directory);
+    $_SESSION['OSATS']->storeValueByName('backupDirectory', $directory);
 
     /* Build request parameters. */
     $extraPOSTData = '&attachmentID=' . $attachmentID;
@@ -135,19 +135,19 @@ if ($action == 'backup')
     $attachmentID    = $_REQUEST['attachmentID'];
     $attachmentsOnly = $interface->isChecked('attachmentsOnly');
     
-    $siteID = $_SESSION['CATS']->getSiteID();
+    $siteID = $_SESSION['OSATS']->getSiteID();
     $db = DatabaseConnection::getInstance();
 
     /* Our "temp" path, as well as the path where the final zip file will be
      * saved.
      */
-    $directory = $_SESSION['CATS']->retrieveValueByName('backupDirectory');
+    $directory = $_SESSION['OSATS']->retrieveValueByName('backupDirectory');
 
     // FIXME: Show progress.
 
     /* Create a new zip file. */
-    $zipFilePath = $directory . 'catsbackup.bak';
-    $zipFileCreator = new ZipFileCreator($directory . 'catsbackup.bak', true);
+    $zipFilePath = $directory . 'OSATSbackup.bak';
+    $zipFileCreator = new ZipFileCreator($directory . 'OSATSbackup.bak', true);
     if (!$zipFileCreator->open())
     {
         setStatusBackup('Error: Failed to open zip file.', 0);
@@ -159,10 +159,10 @@ if ($action == 'backup')
     {
         include_once('modules/install/backupDB.php');
         
-        $SQLDumpPath = $directory . 'catsbackup.sql';
+        $SQLDumpPath = $directory . 'OSATSbackup.sql';
     
         /* Dump SQL tables to the filesystem. This will dump both a complete
-         * schema and special CATS restore files split into ~1MB chunks.
+         * schema and special OSATS restore files split into ~1MB chunks.
          */
         $totalFiles = dumpDB($db, $SQLDumpPath, true);
         markCompleted('Dumping tables...');
@@ -184,7 +184,7 @@ if ($action == 'backup')
         }
         markCompleted('Compressing SQL dump...');
 
-        /* Add the CATS restore files to the zip file. */
+        /* Add the OSATS restore files to the zip file. */
         for ($i = 0; $i < $totalFiles; ++$i)
         {
             $fileNumber = $i + 1;
@@ -199,7 +199,7 @@ if ($action == 'backup')
             );
 
             $status = $zipFileCreator->addFileFromDisk(
-                'db/catsbackup.sql.' . $i,
+                'db/OSATSbackup.sql.' . $i,
                 $SQLDumpPath . '.' . $i
             );
             if (!$status)
@@ -213,7 +213,7 @@ if ($action == 'backup')
         
             @unlink($SQLDumpPath . '.' . $i);
         }
-        markCompleted('Compressing database for CATS restore...');
+        markCompleted('Compressing database for OSATS restore...');
     }
 
     /* Add all attachments to the archive. */

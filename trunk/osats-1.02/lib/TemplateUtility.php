@@ -33,6 +33,7 @@ class TemplateUtility
         echo '<body style="background: #fff; width: 955px;">', "\n";
         self::_printQuickActionMenuHolder();
         self::printPopupContainer();
+        
     }
 
     /**
@@ -61,9 +62,9 @@ class TemplateUtility
      */
     public static function printHeaderBlock($showTopRight = true)
     {
-        $username     = $_SESSION['CATS']->getUsername();
-        $siteName     = $_SESSION['CATS']->getSiteName();
-        $fullName     = $_SESSION['CATS']->getFullName();
+        $username     = $_SESSION['OSATS']->getUsername();
+        $siteName     = $_SESSION['OSATS']->getSiteName();
+        $fullName     = $_SESSION['OSATS']->getFullName();
         $indexName    = osatutil::getIndexName();
 
         echo '<div id="headerBlock">', "\n";
@@ -83,11 +84,11 @@ class TemplateUtility
         {
             // FIXME: Use common functions.
             // FIXME: Isn't the UNIX-name stuff ASP specific? Hook?
-            if (strpos($username, '@'.$_SESSION['CATS']->getSiteID()) !== false &&
-                substr($username, strpos($username, '@'.$_SESSION['CATS']->getSiteID())) ==
-                '@'.$_SESSION['CATS']->getSiteID() )
+            if (strpos($username, '@'.$_SESSION['OSATS']->getSiteID()) !== false &&
+                substr($username, strpos($username, '@'.$_SESSION['OSATS']->getSiteID())) ==
+                '@'.$_SESSION['OSATS']->getSiteID() )
             {
-               $username = str_replace('@'.$_SESSION['CATS']->getSiteID(), '', $username);
+               $username = str_replace('@'.$_SESSION['OSATS']->getSiteID(), '', $username);
             }
 
             if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_1'))) return;
@@ -119,7 +120,7 @@ class TemplateUtility
                 $systemInfoData['available_version'] > osatutil::getVersionAsInteger() &&
                 isset($systemInfoData['disable_version_check']) &&
                 !$systemInfoData['disable_version_check'] &&
-                $_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA)
+                $_SESSION['OSATS']->getAccessLevel() >= ACCESS_LEVEL_SA)
             {
                 echo '<img src="images/actions/add.gif" alt="" class="ico" /><a href="http://www.a-website-where-users-can-get-updates.com/download.php" target="UpgradeVer">You can get an upgrade of OSATS here!</a><br />';
             }
@@ -127,11 +128,11 @@ class TemplateUtility
 
 
             /* Disabled notice */
-            if (!$_SESSION['CATS']->accountActive())
+            if (!$_SESSION['OSATS']->accountActive())
             {
                 echo '<span style="font-weight:bold;">'.__('Account Inactive').'</span><br />', "\n";
             }
-            else if ($_SESSION['CATS']->getAccessLevel() == ACCESS_LEVEL_READ)
+            else if ($_SESSION['OSATS']->getAccessLevel() == ACCESS_LEVEL_READ)
             {
                 echo '<span>'.__('Read Only Access').'</span><br />';
             }
@@ -201,7 +202,7 @@ class TemplateUtility
 	public static function printQuickSearch($wildCardString = '')
     {
 
-        $MRU = $_SESSION['CATS']->getMRU()->getFormatted();
+        $MRU = $_SESSION['OSATS']->getMRU()->getFormatted();
         $indexName = osatutil::getIndexName();
 
         echo '<div id="MRUPanel">', "\n";
@@ -214,7 +215,7 @@ class TemplateUtility
         echo '<div id="quickSearchBlock">', "\n";
 
         //FIXME:  Abstract into a hook.
-        if ($_SESSION['CATS']->hasUserCategory('msa'))
+        if ($_SESSION['OSATS']->hasUserCategory('msa'))
         {
             echo '<input type="hidden" name="m" value="asp" />', "\n";
             echo '<input type="hidden" name="a" value="aspSearch" />', "\n";
@@ -504,54 +505,39 @@ class TemplateUtility
      */
     public static function printTabs($active, $subActive = '', $forceHighlight = '')
     {
-        /* Special tab behaviors:
-         *
-         * Tab text = 'something*al=somenumber' where somenumber is an access level -
-         *      Only display tab if current user userlevel >= somenumber.
-         *
-         * Subtab url = 'url*al=somenumber' where somenumber is an access level -
-         *      Only display subtab if current user userlevel >= somenumber.
-         *
-         * Subtab url = 'url*js=javascript code' where javascript code is JS commands -
-         *      JS code to execute for button OnClick event.
-         */
-
-         /* FIXME:  There is too much logic going on here, there should be something that loads settings or evaluates what tabs
-                    shouldn't be drawn. */
-
         echo '<div id="header">', "\n";
         echo '<ul id="primary">', "\n";
 
         $indexName = osatutil::getIndexName();
-
-        $modules = ModuleUtility::getModules();
+		$modules = ModuleUtility::getModules(); 	
         foreach ($modules as $moduleName => $parameters)
         {
-            $tabText = $parameters[1];
-
-            /* Don't display a module's tab if $tabText is empty. */
-            if (empty($tabText))
+            // get the name of the tab from the array which was saved in the db under moduleinfo - Jamin
+			$tabText = $parameters[1];
+			$tabVisible = $parameters[5];
+		
+           //print_r($tabVisible . "<br />");
+           // Don't display a module's tab if $tabText is empty.
+			if (empty($tabText))
             {
                 continue;
             }
-
+            
             /* If name = Companies and HR mode is on, change tab name to My Company. */
-            if ($_SESSION['CATS']->isHrMode() && $tabText == __('Companies'))
+            if ($_SESSION['OSATS']->isHrMode() && $tabText == __('Companies'))
             {
                 $tabText = 'My Company';
             }
 
             /* Allow a hook to prevent a module from being displayed. */
             $displayTab = true;
-
-            if (!eval(Hooks::get('TEMPLATE_UTILITY_EVALUATE_TAB_VISIBLE'))) return;
-
-            if (!$displayTab)
-            {
-                continue;
-            }
-
+			if ($tabVisible == '0')
+			{
+				continue;
+			}
+			
             /* Inactive Tab? */
+            
             if ($active === null || $moduleName != $active->getModuleName())
             {
                 $className = $moduleName == $forceHighlight ? ' class="active"' : '';
@@ -565,8 +551,8 @@ class TemplateUtility
                 else
                 {
                      $al = substr($tabText, $alPosition + 4);
-                     if ($_SESSION['CATS']->getAccessLevel() >= $al ||
-                         $_SESSION['CATS']->isDemo())
+                     if ($_SESSION['OSATS']->getAccessLevel() >= $al ||
+                         $_SESSION['OSATS']->isDemo())
                      {
                         echo '<li'.$className.'><a href="', $indexName, '?m=', $moduleName, '">',
                              substr($tabText, 0, $alPosition), '</a></li>', "\n";
@@ -601,8 +587,8 @@ class TemplateUtility
                   if ($hrmodePosition !== false) {
                     /* Access level restricted subtab. */
                     $hrmode = substr($link, $hrmodePosition + 8);
-                    if ((!$_SESSION['CATS']->isHrMode() && $hrmode == 0) ||
-                        ($_SESSION['CATS']->isHrMode() && $hrmode == 1)) {
+                    if ((!$_SESSION['OSATS']->isHrMode() && $hrmode == 0) ||
+                        ($_SESSION['OSATS']->isHrMode() && $hrmode == 1)) {
                       $link =  substr($link, 0, $hrmodePosition);
                     } else {
                       $link = '';
@@ -614,8 +600,8 @@ class TemplateUtility
                   if ($alPosition !== false) {
                     /* Access level restricted subtab. */
                     $al = substr($link, $alPosition + 4);
-                    if ($_SESSION['CATS']->getAccessLevel() >= $al ||
-                        $_SESSION['CATS']->isDemo()) {
+                    if ($_SESSION['OSATS']->getAccessLevel() >= $al ||
+                        $_SESSION['OSATS']->isDemo()) {
                       $link =  substr($link, 0, $alPosition);
                     } else {
                       $link = '';
@@ -637,7 +623,7 @@ class TemplateUtility
                     /* Default company subtab. */
                     include_once('./lib/Companies.php');
 
-                    $companies = new Companies($_SESSION['CATS']->getSiteID());
+                    $companies = new Companies($_SESSION['OSATS']->getSiteID());
                     $defaultCompanyID = $companies->getDefaultCompany();
                     if ($defaultCompanyID !== false) {
                       echo '<li'.$style.'><a href="', $link, '">', $subTabText, '</a></li>', "\n";
@@ -645,14 +631,14 @@ class TemplateUtility
                   }
                   else if (strpos($link, 'a=administration') !== false) {
                     /* Administration subtab. */
-                    if ($_SESSION['CATS']->getRealAccessLevel() >= ACCESS_LEVEL_DEMO)
+                    if ($_SESSION['OSATS']->getRealAccessLevel() >= ACCESS_LEVEL_DEMO)
                     {
                       echo '<li'.$style.'><a href="', $link, '">', $subTabText, '</a></li>', "\n";
                     }
                   }
                   else if (strpos($link, 'a=customizeEEOReport') !== false) {
                     /* EEO Report subtab.  Shouldn't be visible if EEO tracking is disabled. */
-                    $EEOSettings = new EEOSettings($_SESSION['CATS']->getSiteID());
+                    $EEOSettings = new EEOSettings($_SESSION['OSATS']->getSiteID());
                     $EEOSettingsRS = $EEOSettings->getAll();
 
                     if ($EEOSettingsRS['enabled'] == 1) {
@@ -677,6 +663,7 @@ class TemplateUtility
         echo '</ul>', "\n";
         echo '</div>', "\n";
     }
+        
 
     /**
      * Prints footer HTML for non-report pages.
@@ -686,7 +673,7 @@ class TemplateUtility
     public static function printFooter()
     {
         $build    = OSATSVER;
-        $loadTime = $_SESSION['CATS']->getExecutionTime();
+        $loadTime = $_SESSION['OSATS']->getExecutionTime();
 
         if ($build > 0)
         {
@@ -766,7 +753,7 @@ class TemplateUtility
         $ratings = self::_getRatingImages();
         $indexName = osatutil::getIndexName();
 
-        if ($_SESSION['CATS']->getAccessLevel() < ACCESS_LEVEL_EDIT)
+        if ($_SESSION['OSATS']->getAccessLevel() < ACCESS_LEVEL_EDIT)
         {
             $HTML = '<img src="' . $ratings[$rating] . '" style="border: none;" alt="" id="moImage' . $candidateJobOrderID . '" />';
             return $HTML;
@@ -1029,7 +1016,7 @@ class TemplateUtility
             $headIncludes = array($headIncludes);
         }
 
-        $siteID = $_SESSION['CATS']->getSiteID();
+        $siteID = $_SESSION['OSATS']->getSiteID();
         
         {
             $javascriptAntiCache = '?v=' . osatutil::getVersionAsInteger();
@@ -1051,7 +1038,7 @@ class TemplateUtility
         echo '<script type="text/javascript" src="js/quickAction.js'.$javascriptAntiCache.'"></script>', "\n";
         echo '<script type="text/javascript" src="js/calendarDateInput.js'.$javascriptAntiCache.'"></script>', "\n";
         echo '<script type="text/javascript" src="js/submodal/subModal.js'.$javascriptAntiCache.'"></script>', "\n";
-        echo '<script type="text/javascript">CATSIndexName = "'.osatutil::getIndexName().'";</script>', "\n";
+        echo '<script type="text/javascript">OSATSIndexName = "'.osatutil::getIndexName().'";</script>', "\n";
 
        $headIncludes[] = 'main.css';
 

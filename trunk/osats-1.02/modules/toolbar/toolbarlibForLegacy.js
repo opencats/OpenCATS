@@ -5,65 +5,65 @@
  *
  */
 
-cats_quickSearchLabel = '';
-cats_storedString = Array();
-cats_quickSearchHistory = Array();
-cats_emailInDatabase = Array();
+OSATS_quickSearchLabel = '';
+OSATS_storedString = Array();
+OSATS_quickSearchHistory = Array();
+OSATS_emailInDatabase = Array();
 
 /* Candidate-in-System Status Flags */
 EMAIL_NOT_IN_SYSTEM  = 0;
 EMAIL_IN_SYSTEM      = 1;
 EMAIL_STATUS_UNKNOWN = 2;
 
-if (typeof(cats_getAutomaticUpdatePreferences) == 'undefined')
+if (typeof(OSATS_getAutomaticUpdatePreferences) == 'undefined')
 {
-    cats_getAutomaticUpdatePreferences = function() { return true; }
+    OSATS_getAutomaticUpdatePreferences = function() { return true; }
 }
 
-/* This replaces the toolbar function defined in catstoolbar.js.  For backwards compatability. */
-cats_debug = function (msg)
+/* This replaces the toolbar function defined in OSATStoolbar.js.  For backwards compatability. */
+OSATS_debug = function (msg)
 {
 	const prefs = Components.classes[
         '@mozilla.org/preferences-service;1'
     ].getService(Components.interfaces.nsIPrefService);
 
-    const catsToolbarBranch = prefs.getBranch('extensions.catstoolbar.');
+    const OSATSToolbarBranch = prefs.getBranch('extensions.OSATStoolbar.');
 
-    if (catsToolbarBranch.prefHasUserValue('debug'))
+    if (OSATSToolbarBranch.prefHasUserValue('debug'))
     {
-        if (catsToolbarBranch.getCharPref('debug') == 1)
+        if (OSATSToolbarBranch.getCharPref('debug') == 1)
 		{
 			var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
 				.getService(Components.interfaces.nsIConsoleService);
 
-			consoleService.logStringMessage('CATS: ' + msg);
+			consoleService.logStringMessage('OSATS: ' + msg);
 		}
     }
     else
     {
-        catsToolbarBranch.setCharPref('debug', '0');
+        OSATSToolbarBranch.setCharPref('debug', '0');
     }
 }
 
 /* Remove all buttons from the toolbar. */
-cats_toolbarClear = function()
+OSATS_toolbarClear = function()
 {
-    var container = document.getElementById('catsToolBarItem');
+    var container = document.getElementById('OSATSToolBarItem');
     for (var i = container.childNodes.length; i > 0; i--)
     {
         container.removeChild(container.childNodes[0]);
     }
 };
 
-cats_toolbarAddGeneric = function(objectType)
+OSATS_toolbarAddGeneric = function(objectType)
 {
     var temp = document.createElement(objectType);
-    var container = document.getElementById('catsToolBarItem');
+    var container = document.getElementById('OSATSToolBarItem');
     container.appendChild(temp);
 }
 
 /* Add a button to the toolbar. */
-cats_toolbarAddButton = function(buttonLabel, toolTip, buttonAction,
+OSATS_toolbarAddButton = function(buttonLabel, toolTip, buttonAction,
     buttonClass, id)
 {
     var tempButton = document.createElement('toolbarbutton');
@@ -76,7 +76,7 @@ cats_toolbarAddButton = function(buttonLabel, toolTip, buttonAction,
     tempButton.setAttribute('id', id);
     tempButton.setAttribute('class', buttonClass);
 
-    var container = document.getElementById('catsToolBarItem');
+    var container = document.getElementById('OSATSToolBarItem');
     container.appendChild(tempButton);
 }
 
@@ -84,71 +84,71 @@ cats_toolbarAddButton = function(buttonLabel, toolTip, buttonAction,
 /* Called whenever the browser needs the toolbar to return to standard
  * (page navigation changed, for example).
  */
-cats_makeDefaultEnvironment = function()
+OSATS_makeDefaultEnvironment = function()
 {
-	cats_debug ('cats_makeDefaultEnvironment()');
+	OSATS_debug ('OSATS_makeDefaultEnvironment()');
 
-    cats_toolbarClear();
+    OSATS_toolbarClear();
 
-    document.getElementById('CATSTB-Options').setAttribute('hidden', true);
+    document.getElementById('OSATSTB-Options').setAttribute('hidden', true);
 
-    if (cats_connected)
+    if (OSATS_connected)
     {
-        var button = 'cats-buttonLeft';
+        var button = 'OSATS-buttonLeft';
     }
     else
     {
-        var button = 'cats-buttonLeftDisc';
+        var button = 'OSATS-buttonLeftDisc';
     }
 
-    cats_toolbarAddButton(
-        'Your version of the CATS Toolbar is out of date.  Please click here to get the newest copy.',
-        'Your version of the CATS Toolbar is out of date.  Please click here to get the newest copy.',
-        'cats_doAuthenticated(\'content.document.location.href = cats_getBaseURL()+\\\'?m=toolbar&a=install\\\';\');',
+    OSATS_toolbarAddButton(
+        'Your version of the OSATS Toolbar is out of date.  Please click here to get the newest copy.',
+        'Your version of the OSATS Toolbar is out of date.  Please click here to get the newest copy.',
+        'OSATS_doAuthenticated(\'content.document.location.href = OSATS_getBaseURL()+\\\'?m=toolbar&a=install\\\';\');',
         button,
-        'cats_mainButton'
+        'OSATS_mainButton'
     );
 }
 
-/* Called whenever CATS hits the logout button. */
+/* Called whenever OSATS hits the logout button. */
 
 /* Call to run jsCode as a logged in user, or fail if login fails. */
-cats_doAuthenticated = function(jsCode)
+OSATS_doAuthenticated = function(jsCode)
 {
-	cats_debug ('cats_doAuthenticated("'+jsCode+'");');
+	OSATS_debug ('OSATS_doAuthenticated("'+jsCode+'");');
 
-    if (cats_connected)
+    if (OSATS_connected)
     {
         outerEval(jsCode);
     }
     else
     {
-        cats_changePictureLoading();
+        OSATS_changePictureLoading();
 
-        var newIndex = cats_storedString.length;
-        cats_storedString[newIndex] = jsCode;
+        var newIndex = OSATS_storedString.length;
+        OSATS_storedString[newIndex] = jsCode;
 
-        /* cats_makeRequest(
+        /* OSATS_makeRequest(
             '?m=toolbar&a=authenticate&callback='
-            + encodeURIComponent('outerEval(cats_storedString[' + newIndex + ']);')
+            + encodeURIComponent('outerEval(OSATS_storedString[' + newIndex + ']);')
         );
         */
-        cats_makeRequest(
+        OSATS_makeRequest(
             '?m=toolbar&a=authenticate&callback=' + encodeURIComponent(newIndex),
-            cats_responseAuthenticate
+            OSATS_responseAuthenticate
         );
     }
 }
 
 /* AJAX response. */
-cats_responseAuthenticate = function()
+OSATS_responseAuthenticate = function()
 {
-   if (cats_http_request.readyState != 4)
+   if (OSATS_http_request.readyState != 4)
    {
        return;
    }
 
-    var response = cats_http_request.responseText;
+    var response = OSATS_http_request.responseText;
 
     /* PHP Errors? */
     if (response.indexOf('</b> on line <b>') != -1)
@@ -158,7 +158,7 @@ cats_responseAuthenticate = function()
     }
 
     /* FIXME: Can't we simplify our protocol here a little bit? Lets make a
-     *        real protocol that's consistent. 'cats_connected = true' is
+     *        real protocol that's consistent. 'OSATS_connected = true' is
      *        kindof high-bandwidth just to indicate whether or not we're
      *        connected. What about a simple binary protocol with commands
      *        and arguments?
@@ -186,26 +186,26 @@ cats_responseAuthenticate = function()
      *
      * Just an idea... Slickness...
      */
-    if (response.indexOf('cats_connected = true') == -1)
+    if (response.indexOf('OSATS_connected = true') == -1)
     {
         if(response.indexOf('Message:') != -1)
         {
             var message = response.substring(response.indexOf('Message:') + 8, response.length - 1);
-            cats_authenticationFailed(message);
+            OSATS_authenticationFailed(message);
         }
         else
         {
-            cats_authenticationFailed();
+            OSATS_authenticationFailed();
         }
         return;
     }
 
-    cats_connected = true;
-    cats_changePictureAuthenticated();
+    OSATS_connected = true;
+    OSATS_changePictureAuthenticated();
 
     if (response.indexOf('EVAL=') != -1)
     {
-        outerEval(cats_storedString[response.substring(
+        outerEval(OSATS_storedString[response.substring(
             response.indexOf('EVAL=') + 6,
             response.length - 1
         ) * 1]);
@@ -215,43 +215,43 @@ cats_responseAuthenticate = function()
 /* Adds whatever the us
 
 /* Called when the toolbar could not authenticate. */
-cats_authenticationFailed = function(message)
+OSATS_authenticationFailed = function(message)
 {
-    cats_toolbarClear();
+    OSATS_toolbarClear();
 
     if (typeof(message) != 'undefined')
     {
-        cats_toolbarAddButton(
+        OSATS_toolbarAddButton(
             message,
             '',
-            'cats_showOptionsDialog();',
-            'cats-buttonLeftDisc',
-            'cats_mainButton'
+            'OSATS_showOptionsDialog();',
+            'OSATS-buttonLeftDisc',
+            'OSATS_mainButton'
         );
     }
     else
     {
-        cats_toolbarAddButton(
-            'CATS could not login: invalid username or password. Click here to configure the CATS toolbar.',
+        OSATS_toolbarAddButton(
+            'OSATS could not login: invalid username or password. Click here to configure the OSATS toolbar.',
             '',
-            'cats_showOptionsDialog();',
-            'cats-buttonLeftDisc',
-            'cats_mainButton'
+            'OSATS_showOptionsDialog();',
+            'OSATS-buttonLeftDisc',
+            'OSATS_mainButton'
         );
 
-        document.getElementById('CATSTB-Options').setAttribute('hidden', false);
+        document.getElementById('OSATSTB-Options').setAttribute('hidden', false);
     }
 
 }
 
 /* Show the "Authenticated" main button image. */
-cats_changePictureAuthenticated = function()
+OSATS_changePictureAuthenticated = function()
 {
-    document.getElementById('cats_mainButton').setAttribute('class', 'cats-buttonLeft');
+    document.getElementById('OSATS_mainButton').setAttribute('class', 'OSATS-buttonLeft');
 }
 
 /* Show the "Loading" main button image. */
-cats_changePictureLoading = function()
+OSATS_changePictureLoading = function()
 {
-    document.getElementById('cats_mainButton').setAttribute('class', 'cats-buttonLoading');
+    document.getElementById('OSATS_mainButton').setAttribute('class', 'OSATS-buttonLoading');
 }

@@ -45,11 +45,11 @@ div.friendlyErrorMessage {
                             <br /><br />
                             You are logged in as a <b>demo account.</b> Demo accounts
                             have several restrictions in place because of their inherent anonymity.
-                            You may wish to sign up for a CATS Hosted account -- it's free,
-                            and none of the demo restrictions are in place. To sign up, <a href="?a=getcats">click here</a>!
+                            You may wish to sign up for a OSATS Hosted account -- it's free,
+                            and none of the demo restrictions are in place. To sign up, <a href="?a=getOSATS">click here</a>!
                             <?php endif; ?>
                             <?php
-                            eval(Hooks::get('FRIENDLYERRORS_CONTACTCATS'));
+                            eval(Hooks::get('FRIENDLYERRORS_CONTACTOSATS'));
                             ?>
                         </div>
                     </td>

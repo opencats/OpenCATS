@@ -89,7 +89,7 @@ if (strpos($activityNote, 'Status change: ') === 0)
 
 /* Save the new activity entry. */
 $activityEntries = new ActivityEntries($siteID);
-$activityEntries->update($activityID, $type, $activityNote, $jobOrderID, $date, $_SESSION['CATS']->getTimeZoneOffset());
+$activityEntries->update($activityID, $type, $activityNote, $jobOrderID, $date, $_SESSION['OSATS']->getTimeZoneOffset());
 
 /* Grab the current activity entry. */
 $activityEntry = $activityEntries->get($activityID);

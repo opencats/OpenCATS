@@ -5,7 +5,7 @@
 
 /**
  *	Database Connector / Database Abstraction Layer
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class DatabaseConnection
@@ -33,10 +33,10 @@ class DatabaseConnection
         }
 
         // FIXME: Remove Session tight-coupling here.
-        if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn())
+        if (isset($_SESSION['OSATS']) && $_SESSION['OSATS']->isLoggedIn())
         {
-            self::$_instance->_timeZone = $_SESSION['CATS']->getTimeZoneOffset();
-            self::$_instance->_dateDMY = $_SESSION['CATS']->isDateDMY();
+            self::$_instance->_timeZone = $_SESSION['OSATS']->getTimeZoneOffset();
+            self::$_instance->_dateDMY = $_SESSION['OSATS']->isDateDMY();
         }
         else
         {
@@ -561,14 +561,14 @@ class DatabaseConnection
 
     /**
      * Returns true if the specified query is allowed by the filter. Currently
-     * this is only used to prevent database writes when CATS_SLAVE is enabled.
+     * this is only used to prevent database writes when OSATS_SLAVE is enabled.
      *
      * @param string Query to check.
      * @return boolean Is this query allowed by the current configuration?
      */
     public function allowQuery($query)
     {
-        if (CATS_SLAVE &&
+        if (OSATS_SLAVE &&
             preg_match('/^\s*(?:UPDATE|INSERT|DELETE)\s/i', trim($query)))
         {
             return false;

@@ -4,7 +4,7 @@
    * GNU License
    *
    *
-   * @package    CATS
+   * @package    OSATS
    * @subpackage Library
    * @copyright Open Source
    * @version    1.0
@@ -20,7 +20,7 @@ include_once('./lib/DataGrid.php');
 
 /**
  *  Candidates Library
- *  @package    CATS
+ *  @package    OSATS
  *  @subpackage Library
  */
 class Candidates
@@ -329,7 +329,7 @@ class Candidates
             $mailer = new Mailer($this->_siteID);
             $mailerStatus = $mailer->sendToOne(
                 array($emailAddress, ''),
-                'CATS Notification: Candidate Ownership Change',
+                'OSATS Notification: Candidate Ownership Change',
                 $email,
                 true
             );
@@ -1379,7 +1379,7 @@ class CandidatesDataGrid extends DataGrid
     public function getSQL($selectSQL, $joinSQL, $whereSQL, $havingSQL, $orderSQL, $limitSQL, $distinct = '')
     {
         // FIXME: Factor out Session dependency.
-        if ($_SESSION['CATS']->isLoggedIn() && $_SESSION['CATS']->getAccessLevel() < ACCESS_LEVEL_MULTI_SA)
+        if ($_SESSION['OSATS']->isLoggedIn() && $_SESSION['OSATS']->getAccessLevel() < ACCESS_LEVEL_MULTI_SA)
         {
             $adminHiddenCriterion = 'AND candidate.is_admin_hidden = 0';
         }
@@ -1457,7 +1457,7 @@ class EEOSettings
     {
         $this->_siteID = $siteID;
         // FIXME: Factor out Session dependency.
-        $this->_userID = $_SESSION['CATS']->getUserID();
+        $this->_userID = $_SESSION['OSATS']->getUserID();
         $this->_db = DatabaseConnection::getInstance();
     }
 
@@ -1508,7 +1508,7 @@ class EEOSettings
             }
         }
 
-        $settings['canSeeEEOInfo'] = $_SESSION['CATS']->canSeeEEOInfo();
+        $settings['canSeeEEOInfo'] = $_SESSION['OSATS']->canSeeEEOInfo();
 
         return $settings;
     }

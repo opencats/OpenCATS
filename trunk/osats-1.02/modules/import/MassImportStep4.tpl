@@ -75,8 +75,8 @@
                 <font color="red"><?php echo count($this->importedFailed); ?></font> Document<?php echo count($this->importedFailed) != 1 ? 's' : ''; ?> Failed to be Imported
                 </span>
                 <p />
-                A document fails to import because it's either corrupt or CATS doesn't know how to open it. You
-                could try to convert these files to CATS-friendly formats like Microsoft Word, Adobe PDF or as
+                A document fails to import because it's either corrupt or OSATS doesn't know how to open it. You
+                could try to convert these files to OSATS-friendly formats like Microsoft Word, Adobe PDF or as
                 plain text files using the appropriate application.
                 <p />
                 <b><?php _e('Failed Documents') ?>:</b>

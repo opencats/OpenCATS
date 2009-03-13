@@ -36,8 +36,32 @@
                 </tr>
             </table>
             <br />
+			<?php 
+					$db = DatabaseConnection::getInstance();
+                    $databaseVersion = $db->getRDBMSVersion();
 
-            
+                    $installationDirectory = realpath('./');
+
+                    if (SystemUtility::isWindows())
+                    {
+                        $OSType = 'Windows';
+                    }
+                    else if (SystemUtility::isMacOSX())
+                    {
+                        $OSType = 'Mac OS X';
+                    }
+                    else
+                    {
+                        $OSType = 'UNIX';
+                    }
+
+                    $schemaVersions = ModuleUtility::getModuleSchemaVersions();
+
+                    echo "* You are running " . $databaseVersion;
+                    echo "<br/>* OSATS is installed in " . $installationDirectory;
+                    echo "<br/>* Your OS is " . $OSType . "(" . php_uname() . ")";
+                    echo "<br /> * The awesome PHP version " . PHP_VERSION . " is running.";
+                    ?>
         </div>
     </div>
     <?php /* Show the shadow at the bottom of the OSATS "window". */ ?>

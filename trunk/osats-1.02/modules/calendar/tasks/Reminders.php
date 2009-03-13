@@ -27,7 +27,7 @@ class Reminders extends Task
     public function run($siteID, $args)
     {
         Task::setName('Calendar Reminders');
-        Task::setDescription('Send out reminder e-mails from the CATS calendar.');
+        Task::setDescription('Send out reminder e-mails from the OSATS calendar.');
 
         $calendar = new Calendar(0);
 
@@ -42,7 +42,7 @@ class Reminders extends Task
 
         foreach ($dueEvents as $index => $data)
         {
-            $emailSubject = 'CATS Event Reminder: ' . $data['title'];
+            $emailSubject = 'OSATS Event Reminder: ' . $data['title'];
 
             $emailContents = $GLOBALS['eventReminderEmail'];
 

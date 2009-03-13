@@ -5,7 +5,7 @@
 
 /**
  *	XML Job Export Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class XmlTemplate

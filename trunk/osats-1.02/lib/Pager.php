@@ -5,7 +5,7 @@
 
 /**
  *	Pager
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class Pager

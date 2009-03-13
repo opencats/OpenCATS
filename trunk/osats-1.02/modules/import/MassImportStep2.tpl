@@ -1,11 +1,11 @@
 <?php //FIXME: This goes in the UI. ?>
-<?php if (isset($_SESSION['CATS_PARSE_TEMP']) && is_array($_SESSION['CATS_PARSE_TEMP'])): ?>
-    <?php $currentDocument = count($_SESSION['CATS_PARSE_TEMP']); ?>
+<?php if (isset($_SESSION['OSATS_PARSE_TEMP']) && is_array($_SESSION['OSATS_PARSE_TEMP'])): ?>
+    <?php $currentDocument = count($_SESSION['OSATS_PARSE_TEMP']); ?>
 <?php else: ?>
     <?php $currentDocument = 0; ?>
 <?php endif; ?>
 <div style="font-size: 22px; font-weight: bold; text-align: center; margin: 60px 0 60px 0; color: #666666;">
-<?php _e('Please wait while CATS processes your resume documents') ?>...
+<?php _e('Please wait while OSATS processes your resume documents') ?>...
 <br />
 <span style="font-size: 14px; color: #666666;" id="timeWait">&nbsp;</span>
 </div>

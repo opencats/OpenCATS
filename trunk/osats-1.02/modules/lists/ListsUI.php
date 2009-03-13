@@ -1,22 +1,22 @@
 <?php
 /*
- * CATS
+ * OSATS
  * Lists Module
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
  *
- * The contents of this file are subject to the CATS Public License
+ * The contents of this file are subject to the OSATS Public License
  * Version 1.1a (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- * http://www.catsone.com/.
+ * http://www.OSATSone.com/.
  *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  * License for the specific language governing rights and limitations
  * under the License.
  *
- * The Original Code is "CATS Standard Edition".
+ * The Original Code is "OSATS Standard Edition".
  *
  * The Initial Developer of the Original Code is Cognizo Technologies, Inc.
  * Portions created by the Initial Developer are Copyright (C) 2005 - 2007
@@ -126,7 +126,7 @@ class ListsUI extends UserInterface
 
         $this->_template->assign('active', $this);
         $this->_template->assign('dataGrid', $dataGrid);
-        $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
+        $this->_template->assign('userID', $_SESSION['OSATS']->getUserID());
 
         if (!eval(Hooks::get('LISTS_LIST_BY_VIEW'))) return;
 
@@ -192,7 +192,7 @@ class ListsUI extends UserInterface
         }
 
         /* Add an MRU entry. */
-        $_SESSION['CATS']->getMRU()->addEntry(
+        $_SESSION['OSATS']->getMRU()->addEntry(
             DATA_ITEM_LIST, $savedListID, $listRS['description']
         );
 
@@ -201,7 +201,7 @@ class ListsUI extends UserInterface
         $this->_template->assign('active', $this);
         $this->_template->assign('dataGrid', $dataGrid);
         $this->_template->assign('listRS', $listRS);
-        $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
+        $this->_template->assign('userID', $_SESSION['OSATS']->getUserID());
 
         $this->_template->display('./modules/lists/List.tpl');
 
@@ -240,7 +240,7 @@ class ListsUI extends UserInterface
         $this->_template->assign('savedListsRS', $savedListsRS);
         $this->_template->assign('dataItemType', $dataItemType);
         $this->_template->assign('dataItemIDArray', $dataItemIDArray);
-        $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('sessionCookie', $_SESSION['OSATS']->getCookie());
 
         $this->_template->display('./modules/lists/QuickActionAddToListModal.tpl');
     }
@@ -283,7 +283,7 @@ class ListsUI extends UserInterface
         $this->_template->assign('savedListsRS', $savedListsRS);
         $this->_template->assign('dataItemType', $dataItemType);
         $this->_template->assign('dataItemIDArray', $dataItemIDArray);
-        $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('sessionCookie', $_SESSION['OSATS']->getCookie());
 
         $this->_template->display('./modules/lists/QuickActionAddToListModal.tpl');
     }

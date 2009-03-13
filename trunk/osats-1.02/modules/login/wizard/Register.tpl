@@ -8,7 +8,7 @@ input.licenseKey { border: 1px solid #0C519D; padding: 5px; width: 500px; }
         </td>
 
         <td align="left" valign="top">
-            <b>CATS Professional</b> users get everything CATS has to offer.</b>
+            <b>OSATS Professional</b> users get everything OSATS has to offer.</b>
             <ul>
                 <li>Import candidates from websites using your web browser.</li>
                 <li>A careers website where applicants can view public jobs and apply.</li>
@@ -17,7 +17,7 @@ input.licenseKey { border: 1px solid #0C519D; padding: 5px; width: 500px; }
                 <li>Complete telephone and e-mail support.</li>
             </ul>
 
-            <b>Need a license key?</b> <a href="http://www.catsone.com/?a=license_key" target="_blank">Register here</a>.
+            <b>Need a license key?</b> <a href="http://www.OSATSone.com/?a=license_key" target="_blank">Register here</a>.
 
             <p />
 

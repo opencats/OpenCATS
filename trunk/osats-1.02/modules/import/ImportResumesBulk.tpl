@@ -48,7 +48,7 @@
            <?php endif; ?>
             <table class="searchTable" id="importTable1" width="100%">
                 <tr>
-                    <td><?php _e('CATS may discard or fail to read some of the submitted data which it does not understand how to use. Do not discard the original data') ?>!
+                    <td><?php _e('OSATS may discard or fail to read some of the submitted data which it does not understand how to use. Do not discard the original data') ?>!
                     </td>
                 </tr>
                 
@@ -78,11 +78,11 @@
                         <td class="tdData">
                             <br />
                             <?php if (count($this->foundFiles) == 0): ?>
-                                <?php _e('CATS has not found any files to import in \'upload\'.') ?><br />
+                                <?php _e('OSATS has not found any files to import in \'upload\'.') ?><br />
                                 <br />
                             <?php else: ?>
                                 <span id="foundFilesSpan">
-                                    <?php echo __('CATS has found %s files to import.', (count($this->foundFiles))) ?><br />
+                                    <?php echo __('OSATS has found %s files to import.', (count($this->foundFiles))) ?><br />
                                     <br />
                                 </span>
                             <?php endif; ?>

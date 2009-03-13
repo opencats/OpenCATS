@@ -119,7 +119,7 @@ function CompanyLocation_populate(companySelectID, sessionCookie)
         }
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'getCompanyLocation',
         POSTData,
@@ -132,7 +132,7 @@ function CompanyLocation_populate(companySelectID, sessionCookie)
 }
 
 /**
- * Populates a company's contacts information from a CATS AJAX function by
+ * Populates a company's contacts information from a OSATS AJAX function by
  * company ID.
  *
  * @return void
@@ -240,7 +240,7 @@ function CompanyContacts_populate_byCompanyID(companyID, contactSelectID, indica
         contactIndicator.style.visibility = 'hidden';
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'getCompanyContacts',
         POSTData,

@@ -8,9 +8,9 @@
  * where we are and where the application is.
  */
 
-$CATSHome = realpath(dirname(__FILE__) . '/');
+$OSATSHome = realpath(dirname(__FILE__) . '/');
 
-chdir($CATSHome);
+chdir($OSATSHome);
 
 include_once('./config.php');
 include_once('./constants.php');
@@ -41,20 +41,20 @@ if (get_magic_quotes_gpc())
     $_REQUEST = array_map('stripslashes', $_REQUEST);
 }
 
-if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+if (!isset($_SESSION['OSATS']) || empty($_SESSION['OSATS']))
 {
-    $_SESSION['CATS'] = new CATSSession();
+    $_SESSION['OSATS'] = new WebSession();
 }
 
 /* Only 1 instance of cron.php can run at a time. */
 $db = DatabaseConnection::getInstance();
 
-if (!$db->isAdvisoryLockFree('CATSCronLock'))
+if (!$db->isAdvisoryLockFree('OSATSCronLock'))
 {
     die();
 }
 
-$db->getAdvisoryLock('CATSCronLock', 610);
+$db->getAdvisoryLock('OSATSCronLock', 610);
 set_time_limit(600);
 
 /* Get the cron timer array, or make a new one. */
@@ -96,6 +96,6 @@ foreach ($GLOBALS['cronSettings']->schedulerLoops as $interval => $time)
 
 @file_put_contents(('./cron.cache'), serialize($GLOBALS['cronSettings']));
 
-$db->releaseAdvisoryLock('CATSCronLock');
+$db->releaseAdvisoryLock('OSATSCronLock');
 
 ?>

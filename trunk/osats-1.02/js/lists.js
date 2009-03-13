@@ -79,7 +79,7 @@ function saveListRow(rowNumber, sessionCookie)
         }
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'lists:editListName',
         POSTData,
@@ -164,7 +164,7 @@ function commitNewList(sessionCookie, dataItemType)
         }
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'lists:newList',
         POSTData,
@@ -183,7 +183,7 @@ function deleteListFromListView(savedListID, numberEntries)
          return;
     }
 
-    document.location.href = CATSIndexName + '?m=lists&a=deleteStaticList&savedListID=' + savedListID;
+    document.location.href = OSATSIndexName + '?m=lists&a=deleteStaticList&savedListID=' + savedListID;
 }
 
 function deleteListRow(savedListID, sessionCookie, numberEntries)
@@ -245,7 +245,7 @@ function deleteListRow(savedListID, sessionCookie, numberEntries)
         }
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'lists:deleteList',
         POSTData,
@@ -317,7 +317,7 @@ function addItemsToList(sessionCookie, dataItemType)
         }
     }
 
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'lists:addToLists',
         POSTData,

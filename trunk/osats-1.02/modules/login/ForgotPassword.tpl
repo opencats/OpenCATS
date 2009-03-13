@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
     <head>
-        <title>CATS - <?php _e('Login') ?></title>
+        <title>OSATS - <?php _e('Login') ?></title>
         <meta http-equiv="Content-Type" content="text/html; charset=<?php echo(HTML_ENCODING); ?>">
         <style type="text/css" media="all">@import "modules/login/login.css";</style>
         <script type="text/javascript" src="js/lib.js"></script>
@@ -51,7 +51,7 @@
 
             <div id="loginText">
                 <div class="ctr"><img src="images/security.gif" width="64" height="64" alt="security" /></div>
-                <p><?php _e('Welcome to CATS') ?>!</p>
+                <p><?php _e('Welcome to OSATS') ?>!</p>
             </div>
 
             <div style="clear: both;"></div>

@@ -3,7 +3,7 @@
 <p />
 Supported file formats: doc, pdf, rft, html, txt, zip, gz
 <p />
-CATS will process each file and attempt to extract relevant information to import.
+OSATS will process each file and attempt to extract relevant information to import.
 
 <br /><br />
 

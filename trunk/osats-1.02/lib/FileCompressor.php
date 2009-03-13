@@ -14,7 +14,7 @@
 
 /**
  *	File Compression Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 
@@ -27,7 +27,7 @@ define('END_CENTRAL_DIRECTORY',         0x06054b50);
 
 /**
  *	Zip File Creator
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class ZipFileCreator
@@ -934,7 +934,7 @@ class ZipFileCreator
 
 /**
  *	Zip File Extractor
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class ZipFileExtractor
@@ -1448,7 +1448,7 @@ class ZipFileExtractor
 
 /**
  *	File Compression Utility Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class FileCompressorUtility

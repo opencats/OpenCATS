@@ -5,7 +5,7 @@
 
 /**
  *	Zip Code Lookup Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class ZipLookup

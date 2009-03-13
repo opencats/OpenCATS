@@ -5,7 +5,7 @@
 
 /**
  *	E-Mail Abstraction Layer
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 
@@ -26,7 +26,7 @@ define('MAILER_MODE_SMTP',     3);
 
 /**
  *	E-Mail Abstraction Layer
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class Mailer
@@ -50,7 +50,7 @@ class Mailer
         $settings = new MailerSettings($this->_siteID);
         $this->_settings = $settings->getAll();
 
-        /* Configure PHPMailer based on CATS configuration settings. */
+        /* Configure PHPMailer based on OSATS configuration settings. */
         $this->refreshSettings();
 
         $this->_mailer->SetLanguage('en', './lib/phpmailer/language/');
@@ -64,7 +64,7 @@ class Mailer
         }
         else
         {
-            $this->_userID = $_SESSION['CATS']->getUserID();
+            $this->_userID = $_SESSION['OSATS']->getUserID();
         }
 
         $this->_db = DatabaseConnection::getInstance();
@@ -72,7 +72,7 @@ class Mailer
 
 
     /**
-     * Sends an e-mail message from the CATS system to one recipient. The
+     * Sends an e-mail message from the OSATS system to one recipient. The
      * recipient's address is specified as a one-dimensional array of
      * "Recipient Name", "recipient@email.address". Lines will be wrapped at
      * 78 characters by default, but you may specify your own limit. If any
@@ -107,7 +107,7 @@ class Mailer
     }
 
     /**
-     * Sends an e-mail message from the CATS system to one or more recipients.
+     * Sends an e-mail message from the OSATS system to one or more recipients.
      * The recipient addresses are specified as a multi-dimensional array of
      * "Recipient Name", "recipient@email.address". Lines will be wrapped at
      * 78 characters by default, but you may specify your own limit. If any
@@ -158,7 +158,7 @@ class Mailer
      * @param boolean Log message in the message log?
      * @param array Reply-to address (0 => address, 1 => name).
      * @param integer Wrap lines at X characters.
-     * @param boolean Include CATS e-mail signature?
+     * @param boolean Include OSATS e-mail signature?
      * @return boolean Was the message successfully sent to all recipients?
      */
     public function send($from, $recipients, $subject, $body, $isHTML = false,
@@ -179,8 +179,8 @@ class Mailer
 
             if ($signature)
             {
-                $body .= "\n<br />\n<br /><span style=\"font-size: 10pt;\">Powered by <a href=\"http://www.catsone.com\" alt=\"CATS "
-                    . "Applicant Tracking System\">CATS</a> (Free ATS)</span>";
+                $body .= "\n<br />\n<br /><span style=\"font-size: 10pt;\">Powered by <a href=\"http://www.OSATSone.com\" alt=\"OSATS "
+                    . "Applicant Tracking System\">OSATS</a> (Free ATS)</span>";
             }
 
             $this->_mailer->Body = '<div style="font: normal normal 12px Arial, Tahoma, sans-serif">'
@@ -275,7 +275,7 @@ class Mailer
     }
 
     /**
-     * (Re)configures PHPMailer settings based on CATS settings (from the
+     * (Re)configures PHPMailer settings based on OSATS settings (from the
      * config file and any other sources).
      *
      * @return void
@@ -361,7 +361,7 @@ class Mailer
 
 /**
  *	Mailer / E-Mail Settings Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class MailerSettings

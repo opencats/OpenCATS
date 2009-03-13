@@ -43,21 +43,21 @@ function sendNotificationEmail()
 </script>
 <?php
 if (isset($_GET['sendDevEmail']) && !strcmp($_GET['sendDevEmail'], 'true') && file_exists('modules/asp') &&
-    $_SESSION['CATS'] && $_SESSION['CATS']->isLoggedIn())
+    $_SESSION['OSATS'] && $_SESSION['OSATS']->isLoggedIn())
 {
-    if (isset($_COOKIE['CATS_firefoxToolbar']) && !strcmp($_COOKIE['CATS_firefoxToolbar'], 'true')) exit(0);
+    if (isset($_COOKIE['OSATS_firefoxToolbar']) && !strcmp($_COOKIE['OSATS_firefoxToolbar'], 'true')) exit(0);
 
     include_once('./modules/asp/lib/ASPUtility.php');
     ASPUtility::sendDevEmail(
         'Firefox Download',
         sprintf(
             'User(<b>%s</b>) @ Site(<b>%s</b>) has clicked to download the Firefox toolbar.',
-            ucwords($_SESSION['CATS']->getUsername()),
-            ucwords($_SESSION['CATS']->getSiteName())
+            ucwords($_SESSION['OSATS']->getUsername()),
+            ucwords($_SESSION['OSATS']->getSiteName())
         )
     );
     // Set a cookie so we don't get multiple e-mails from the same computer
-    setcookie('CATS_firefoxToolbar', 'true', time()+(60*60*24*7*15), null, null, null, null);
+    setcookie('OSATS_firefoxToolbar', 'true', time()+(60*60*24*7*15), null, null, null, null);
     exit(0);
 }
 // End Move to Asp Hook ---------------------------------->
@@ -87,11 +87,11 @@ if (isset($_GET['sendDevEmail']) && !strcmp($_GET['sendDevEmail'], 'true') && fi
                                 <td width="230" valign="top">
                                     <img src="images/i-firefox-small.gif" class="absmiddle" alt="" />
                                     <a href="javascript:void(0);" onclick="tryInstall();">
-                                        Install CATS Firefox Toolbar
+                                        Install OSATS Firefox Toolbar
                                     </a>
                                 </td>
                                 <td>
-                                    Integrate CATS with Monster, Hotjobs and more through the Firefox Web Browser.&nbsp;&nbsp;<a href="index.php?a=addons">Learn More</a>
+                                    Integrate OSATS with Monster, Hotjobs and more through the Firefox Web Browser.&nbsp;&nbsp;<a href="index.php?a=addons">Learn More</a>
                                     <div id="settingsDownloads">
                                         <h4>Internet Browsers</h4>
                                         <table class="downloadSupportedGrid" cellpadding="0" cellspacing="0">
@@ -103,7 +103,7 @@ if (isset($_GET['sendDevEmail']) && !strcmp($_GET['sendDevEmail'], 'true') && fi
                                                 <td><img src="images/i-safari-grayed.gif" /> <span>Safari</span></td>
                                             </tr>
                                             <tr>
-                                                <td class="category">CATS Toolbar</td>
+                                                <td class="category">OSATS Toolbar</td>
                                                 <td><img src="images/blue_check.gif" /></td>
                                                 <td>coming soon</td>
                                                 <td><img src="images/gray_x.gif" /></td>
@@ -119,7 +119,7 @@ if (isset($_GET['sendDevEmail']) && !strcmp($_GET['sendDevEmail'], 'true') && fi
                                                 <td colspan="2"><img src="images/i-outlook.gif" /> <span>Outlook</span></td>
                                             </tr>
                                             <tr>
-                                                <td class="category">CATS Plug-in</td>
+                                                <td class="category">OSATS Plug-in</td>
                                                 <td colspan="2">coming soon</td>
                                                 <td colspan="2">coming soon</td>
                                             </tr>
@@ -155,12 +155,12 @@ if (isset($_GET['sendDevEmail']) && !strcmp($_GET['sendDevEmail'], 'true') && fi
                                                     xpi = new Object();
                                                     <?php if(ModuleUtility::moduleExists('asp') && false): ?>
 														<?php /* TODO:  Toolbar generated automatically with username and password. */ ?>
-                                                        xpi["CATS ToolBar"] = "http://www.catsone.com/extensions/firefox/catstoolbargenerator.php?" +
-                                                            "username=<?php echo(urlencode($_SESSION['CATS']->getUsername())); ?>&" +
-                                                            "password="+rot13("<?php echo(str_rot13(urlencode($_SESSION['CATS']->getPassword()))); ?>")+"&" +
-                                                            "url=<?php echo(urlencode('https://'.$_SESSION['CATS']->getUnixName())); ?>.catsone.com/";
+                                                        xpi["OSATS ToolBar"] = "http://www.OSATSone.com/extensions/firefox/OSATStoolbargenerator.php?" +
+                                                            "username=<?php echo(urlencode($_SESSION['OSATS']->getUsername())); ?>&" +
+                                                            "password="+rot13("<?php echo(str_rot13(urlencode($_SESSION['OSATS']->getPassword()))); ?>")+"&" +
+                                                            "url=<?php echo(urlencode('https://'.$_SESSION['OSATS']->getUnixName())); ?>.OSATSone.com/";
                                                     <?php else: ?>
-                                                        xpi["CATS ToolBar"] = "http://www.catsone.com/extensions/firefox/catstoolbar.xpi";
+                                                        xpi["OSATS ToolBar"] = "http://www.OSATSone.com/extensions/firefox/OSATStoolbar.xpi";
                                                     <?php endif; ?>
                                                     InstallTrigger.install(xpi);
                                                     if (typeof sendNotificationEmail == 'function') sendNotificationEmail();

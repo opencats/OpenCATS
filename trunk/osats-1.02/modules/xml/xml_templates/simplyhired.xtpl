@@ -1,5 +1,5 @@
 # This is SimplyHired.com's XML export template to be used when automatically
-# adding jobs to their database from CATS' career portal site.
+# adding jobs to their database from OSATS' career portal site.
 
 >>header
 <jobs>
@@ -9,9 +9,9 @@
 <job>
 <title>$[jobTitle]</title>
 <job-code>$[jobID]</job-code>
-<job-board-name>CATS Applicant Tracking System</job-board-name>
+<job-board-name>OSATS Applicant Tracking System</job-board-name>
 
-<job-board-url>http://www.catsone.com</job-board-url>
+<job-board-url>http://www.OSATSone.com</job-board-url>
 <detail-url>$[jobURL]</detail-url>
 <apply-url>$[jobURL]</apply-url>
 

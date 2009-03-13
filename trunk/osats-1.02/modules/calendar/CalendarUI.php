@@ -205,7 +205,7 @@ class CalendarUI extends UserInterface
         /* Textual representation of the month and year. */
         $dateString = date(
             'F Y',
-            mktime($_SESSION['CATS']->getTimeZoneOffset(), 0, 0, $month, 1, $year)
+            mktime($_SESSION['OSATS']->getTimeZoneOffset(), 0, 0, $month, 1, $year)
         );
 
         /* The offset is the number of days after the first Sunday on a given
@@ -214,7 +214,7 @@ class CalendarUI extends UserInterface
          */
         $startingOffset = $startingWeekday - 1;
 
-        $userEmail = $_SESSION['CATS']->getEmail();
+        $userEmail = $_SESSION['OSATS']->getEmail();
 
         $calendarEventTypes = $calendar->getAllEventTypes();
 
@@ -230,7 +230,7 @@ class CalendarUI extends UserInterface
 
         if (!eval(Hooks::get('CALENDAR_SHOW'))) return;
 
-        if (SystemUtility::isSchedulerEnabled() && !$_SESSION['CATS']->isDemo())
+        if (SystemUtility::isSchedulerEnabled() && !$_SESSION['OSATS']->isDemo())
         {
             $allowEventReminders = true;
         }
@@ -258,7 +258,7 @@ class CalendarUI extends UserInterface
         $this->_template->assign('startingOffset', $startingOffset);
         $this->_template->assign('userEmail', $userEmail);
         $this->_template->assign('userID', $this->_userID);
-        $this->_template->assign('userEmail', $_SESSION['CATS']->getEmail());
+        $this->_template->assign('userEmail', $_SESSION['OSATS']->getEmail());
         $this->_template->assign('summaryHTML', $summaryHTML);
         $this->_template->assign('userIsSuperUser', $userIsSuperUser);
         $this->_template->assign('superUserActive', $superUserActive);
@@ -434,7 +434,7 @@ class CalendarUI extends UserInterface
             );
         }
 
-        $timeZoneOffset = $_SESSION['CATS']->getTimeZoneOffset();
+        $timeZoneOffset = $_SESSION['OSATS']->getTimeZoneOffset();
 
         if (!eval(Hooks::get('CALENDAR_ADD_PRE'))) return;
 
@@ -631,7 +631,7 @@ class CalendarUI extends UserInterface
         if (!$calendar->updateEvent($eventID, $type, $date, $description,
             $allDay, $dataItemID, $dataItemType, 'NULL', $title, $duration,
             $reminderEnabled, $reminderEmail, $reminderTime, $publicEntry,
-            $_SESSION['CATS']->getTimeZoneOffset()))
+            $_SESSION['OSATS']->getTimeZoneOffset()))
         {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, __('Failed to update calendar event.'));
         }

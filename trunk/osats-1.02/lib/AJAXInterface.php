@@ -4,7 +4,7 @@
    * GNU License
    *
    *
-   * @package    CATS
+   * @package    OSATS
    * @subpackage Library
    * @copyright Open Source
    * @version    1.0
@@ -12,7 +12,7 @@
 
 /**
  *	Standard AJAX Interface
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class AJAXInterface
@@ -170,7 +170,7 @@ class AJAXInterface
 
 /**
  *	Secure AJAX Interface
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class SecureAJAXInterface extends AJAXInterface
@@ -196,10 +196,10 @@ class SecureAJAXInterface extends AJAXInterface
         }
 
         /* Grab the current user's site ID. */
-        $this->_siteID = $_SESSION['CATS']->getSiteID();
+        $this->_siteID = $_SESSION['OSATS']->getSiteID();
 
         /* Grab the current user's user ID. */
-        $this->_userID = $_SESSION['CATS']->getUserID();
+        $this->_userID = $_SESSION['OSATS']->getUserID();
     }
 
 
@@ -230,8 +230,8 @@ class SecureAJAXInterface extends AJAXInterface
      */
     public function isSessionLoggedIn()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']) ||
-            !$_SESSION['CATS']->isLoggedIn())
+        if (!isset($_SESSION['OSATS']) || empty($_SESSION['OSATS']) ||
+            !$_SESSION['OSATS']->isLoggedIn())
         {
             return false;
         }

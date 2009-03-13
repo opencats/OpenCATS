@@ -9,7 +9,7 @@
 include_once('./lib/SystemInfo.php');
 include_once('./lib/Mailer.php');
 include_once('./lib/Site.php');
-include_once('./lib/Wizard.php');
+//include_once('./lib/Wizard.php');
 include_once('./lib/i18n.php');
 
 class LoginUI extends UserInterface
@@ -99,10 +99,10 @@ class LoginUI extends UserInterface
         /* Only allow one user to be logged into a single account at the same
          * time.
          */
-        if ($_SESSION['CATS']->isLoggedIn() &&
-            $_SESSION['CATS']->checkForceLogout())
+        if ($_SESSION['OSATS']->isLoggedIn() &&
+            $_SESSION['OSATS']->checkForceLogout())
         {
-            $siteName = $_SESSION['CATS']->getUnixName();
+            $siteName = $_SESSION['OSATS']->getUnixName();
         }
 
         $this->_template->assign('aspMode', false);
@@ -234,12 +234,12 @@ class LoginUI extends UserInterface
         }
 
         /* Make a blind attempt at logging the user in. */
-        $_SESSION['CATS']->processLogin($username, $password);
+        $_SESSION['OSATS']->processLogin($username, $password);
 
         /* If unsuccessful, take the user back to the login page. */
-        if (!$_SESSION['CATS']->isLoggedIn())
+        if (!$_SESSION['OSATS']->isLoggedIn())
         {
-            $message = $_SESSION['CATS']->getLoginError();
+            $message = $_SESSION['OSATS']->getLoginError();
 
             if (isset($_GET['reloginVars']))
             {
@@ -280,9 +280,9 @@ class LoginUI extends UserInterface
 
         $systemInfoDb = new SystemInfo();
 
-        $accessLevel = $_SESSION['CATS']->getAccessLevel();
+        $accessLevel = $_SESSION['OSATS']->getAccessLevel();
 
-        $mailerSettings = new MailerSettings($_SESSION['CATS']->getSiteID());
+        $mailerSettings = new MailerSettings($_SESSION['OSATS']->getSiteID());
         $mailerSettingsRS = $mailerSettings->getAll();
 
         /***************************** BEGIN NEW WIZARD *****************************************/
@@ -291,14 +291,14 @@ class LoginUI extends UserInterface
          * all old-style wizards will no longer be shown.
          */
 
-        $wizard = new Wizard(osatutil::getIndexName() . '?m=home', './js/wizardIntro.js');
-        if ($_SESSION['CATS']->isFirstTimeSetup())
-        {
-            $wizard->addPage('Welcome!', './modules/login/wizard/Intro.tpl', '', false, true);
-        }
+       // $wizard = new Wizard(osatutil::getIndexName() . '?m=home', './js/wizardIntro.js');
+       // if ($_SESSION['OSATS']->isFirstTimeSetup())
+        //{
+       //     $wizard->addPage('Welcome!', './modules/login/wizard/Intro.tpl', '', false, true);
+       // }
 
         /* change for our own GPL license - Jamin 
-		if (!$_SESSION['CATS']->isAgreedToLicense())
+		if (!$_SESSION['OSATS']->isAgreedToLicense())
         {
             $phpeval = '';
             if (!eval(Hooks::get('LICENSE_TERMS'))) return;
@@ -307,7 +307,7 @@ class LoginUI extends UserInterface
 
 		*/
         
-		/* if (!file_exists('modules/asp') || (defined('CATS_TEST_MODE') && CATS_TEST_MODE))
+		/* if (!file_exists('modules/asp') || (defined('OSATS_TEST_MODE') && OSATS_TEST_MODE))
         {
             // On-site wizard pages
             /*
@@ -336,13 +336,14 @@ class LoginUI extends UserInterface
         }
  */
         // make user set an e-mail address
-        if (trim($_SESSION['CATS']->getEmail()) == '')
+        if (trim($_SESSION['OSATS']->getEmail()) == '')
         {
-            $wizard->addPage('E-mail', './modules/login/wizard/Email.tpl', '', false, true);
+            // change this to something different or MAKE it so the person who created the account must add the email.
+			//$wizard->addPage('E-mail', './modules/login/wizard/Email.tpl', '', false, true);
         }
 
         // if no site name set, make user set site name
-        if ($accessLevel >= ACCESS_LEVEL_SA && $_SESSION['CATS']->getSiteName() === 'default_site')
+        if ($accessLevel >= ACCESS_LEVEL_SA && $_SESSION['OSATS']->getSiteName() === 'default_site')
         {
             $wizard->addPage('Site', './modules/login/wizard/SiteName.tpl', '', false, true);
         }
@@ -350,7 +351,7 @@ class LoginUI extends UserInterface
         // Wizard Pages
         if (!eval(Hooks::get('ASP_WIZARD_PAGES'))) return;
 
-        /*if ($_SESSION['CATS']->isFirstTimeSetup())
+        /*if ($_SESSION['OSATS']->isFirstTimeSetup())
         {
             $wizard->addPage('Setup Users', './modules/login/wizard/Users.tpl', '
                 $users = new Users($siteID);
@@ -368,7 +369,7 @@ class LoginUI extends UserInterface
 	*/
 
         // The wizard will not display if no pages have been added.
-        $wizard->doModal();
+        //$wizard->doModal();
 
         /******************************* END NEW WIZARD *******************************************/
 
@@ -399,7 +400,7 @@ class LoginUI extends UserInterface
 
         /* If no site name set, make user set site name. * /
         else if ($accessLevel >= ACCESS_LEVEL_SA &&
-                 $_SESSION['CATS']->getSiteName() === 'default_site')
+                 $_SESSION['OSATS']->getSiteName() === 'default_site')
         {
             osatutil::transferRelativeURI('m=settings&a=upgradeSiteName');
         }
@@ -419,7 +420,7 @@ class LoginUI extends UserInterface
         }
 
         /* If no E-Mail set for current user, make user set E-Mail address. * /
-        else if (trim($_SESSION['CATS']->getEmail()) == '')
+        else if (trim($_SESSION['OSATS']->getEmail()) == '')
         {
             osatutil::transferRelativeURI('m=settings&a=forceEmail');
         }

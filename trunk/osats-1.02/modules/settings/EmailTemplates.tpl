@@ -139,23 +139,23 @@
                                                         <?php generateInsertAtCursorLinkConditional($data, 'Candidate Owner', '%CANDOWNER%'); ?>
                                                         <?php generateInsertAtCursorLinkConditional($data, 'Candidate First Name', '%CANDFIRSTNAME%'); ?>
                                                         <?php generateInsertAtCursorLinkConditional($data, 'Candidate Full Name', '%CANDFULLNAME%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'CATS Candidate URL', '%CANDCATSURL%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, 'OSATS Candidate URL', '%CANDOSATSURL%'); ?>
 
                                                         <?php generateInsertAtCursorLinkConditional($data, 'Company Owner', '%CLNTOWNER%'); ?>
                                                         <?php generateInsertAtCursorLinkConditional($data, 'Company Name', '%CLNTNAME%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'CATS Company URL', '%CLNTCATSURL%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, 'OSATS Company URL', '%CLNTOSATSURL%'); ?>
 
                                                         <?php generateInsertAtCursorLinkConditional($data, 'Contact Owner', '%CONTOWNER%'); ?>
                                                         <?php generateInsertAtCursorLinkConditional($data, 'Contact First Name', '%CONTFIRSTNAME%'); ?>
                                                         <?php generateInsertAtCursorLinkConditional($data, 'Contact Full Name', '%CONTFULLNAME%'); ?>
                                                         <?php generateInsertAtCursorLinkConditional($data, 'Contacts Company Name', '%CONTCLIENTNAME%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'CATS Contact URL', '%CONTCATSURL%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, 'OSATS Contact URL', '%CONTOSATSURL%'); ?>
 
                                                         <?php generateInsertAtCursorLinkConditional($data, 'Job Order Owner', '%JBODOWNER%'); ?>
                                                         <?php generateInsertAtCursorLinkConditional($data, 'Job Order Title', '%JBODTITLE%'); ?>
                                                         <?php generateInsertAtCursorLinkConditional($data, 'Job Order Company', '%JBODCLIENT%'); ?>
                                                         <?php generateInsertAtCursorLinkConditional($data, 'Job Order ID', '%JBODID%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'CATS Job Order URL', '%JBODCATSURL%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, 'OSATS Job Order URL', '%JBODOSATSURL%'); ?>
                                                     </td>
                                                  </tr>
                                              </table>

@@ -1,5 +1,5 @@
 <?php /* $Id: AddUser.tpl 3810 2007-12-05 19:13:25Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'js/sorttable.js')); ?>
+<?php TemplateUtility::printHeader('Settings', array('modules/settings/validateme.js', 'js/sorttable.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
 <div id="main">
@@ -8,21 +8,13 @@
         <div id="contents">
             <table>
                 <tr>
-                    <td width="3%" valign="bottom">
-                        <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td valign="bottom"><h2>Settings: Add Site User</h2></td>
+                    <td valign="bottom"><h2>Create a User</h2></td>
                 </tr>
             </table>
 
-            <p class="note">
-                <span style="float: left;">Add Site User</span>
-                <span style="float: right;"><a href='<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=manageUsers'>Back to User Management</a></span>&nbsp;
-            </p>
-
-            <form name="addUserForm" id="addUserForm" action="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=addUser" method="post" onsubmit="return checkAddUserForm(document.addUserForm);" autocomplete="off">
+            <form name="UserForm" id="UserForm" action="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=addUser" method="post" onsubmit="return CheckMyForm(document.UserForm);" autocomplete="off">
                 <input type="hidden" name="postback" id="postback" value="postback" />
-
+				<input type="hidden" name="SetPass" id="SetPass" value="1" />
                 <table width="930">
                     <tr>
                         <td align="left" valign="top">
@@ -32,7 +24,7 @@
                                         <label id="firstNameLabel" for="firstName">First Name:</label>
                                     </td>
                                     <td class="tdData">
-                                        <input type="text" class="inputbox" id="firstName" name="firstName" style="width: 150px;" />&nbsp;*
+                                        <input type="text" class="inputbox" id="First" name="First" style="width: 150px;" />&nbsp;*
                                     </td>
                                 </tr>
 
@@ -41,7 +33,7 @@
                                         <label id="lastNameLabel" for="lastName">Last Name:</label>
                                     </td>
                                     <td class="tdData">
-                                        <input type="text" class="inputbox" id="lastName" name="lastName" style="width: 150px;" />&nbsp;*
+                                        <input type="text" class="inputbox" id="Last" name="Last" style="width: 150px;" />&nbsp;*
                                     </td>
                                 </tr>
 
@@ -50,7 +42,7 @@
                                         <label id="emailLabel" for="username">E-Mail:</label>
                                     </td>
                                     <td class="tdData">
-                                        <input type="text" class="inputbox" id="email" name="email" style="width: 150px;" />
+                                        <input type="text" class="inputbox" id="EmailAddress" name="EmailAddress" style="width: 150px;" />&nbsp;*
                                     </td>
                                 </tr>
 
@@ -59,7 +51,7 @@
                                         <label id="usernameLabel" for="username">Username:</label>
                                     </td>
                                     <td class="tdData">
-                                        <input type="text" class="inputbox" id="username" name="username" style="width: 150px;" />&nbsp;*
+                                        <input type="text" class="inputbox" id="UserName" name="UserName" style="width: 150px;" />&nbsp;*
                                     </td>
                                 </tr>
 
@@ -68,7 +60,7 @@
                                         <label id="passwordLabel" for="password">Password:</label>
                                     </td>
                                     <td class="tdData">
-                                        <input type="password" class="inputbox" id="password" name="password" style="width: 150px;" />&nbsp;*
+                                        <input type="password" class="inputbox" id="Password" name="Password" style="width: 150px;" />&nbsp;*
                                     </td>
                                 </tr>
 
@@ -77,7 +69,7 @@
                                         <label id="retypePasswordLabel" for="retypePassword">Retype Password:</label>
                                     </td>
                                     <td class="tdData">
-                                        <input type="password" class="inputbox" id="retypePassword" name="retypePassword" style="width: 150px;" />&nbsp;*
+                                        <input type="password" class="inputbox" id="Password2" name="Password2" style="width: 150px;" />&nbsp;*
                                     </td>
                                 </tr>
 
@@ -89,10 +81,7 @@
                                         <span id="accessLevelsSpan">
                                             <?php foreach ($this->accessLevels as $accessLevel): ?>
                                                 <?php if ($accessLevel['accessID'] > $this->accessLevel): continue; endif; ?>
-                                                <?php if (!$this->license['canAdd'] && !$this->license['unlimited'] && $accessLevel['accessID'] > ACCESS_LEVEL_READ): continue; endif; ?>
-
                                                 <?php $radioButtonID = 'access' . $accessLevel['accessID']; ?>
-
                                                 <input type="radio" name="accessLevel" id="<?php echo($radioButtonID); ?>" value="<?php $this->_($accessLevel['accessID']); ?>" title="<?php $this->_($accessLevel['longDescription']); ?>" <?php if ($accessLevel['accessID'] == $this->defaultAccessLevel): ?>checked<?php endif; ?> onclick="document.getElementById('userAccessStatus').innerHTML='<?php $this->_($accessLevel['longDescription']); ?>'; <?php if($accessLevel['accessID'] >= ACCESS_LEVEL_SA): ?>document.getElementById('eeoIsVisible').checked=true; document.getElementById('eeoIsVisible').disabled=true;  document.getElementById('eeoVisibleSpan').style.display='none';<?php else: ?>document.getElementById('eeoIsVisible').disabled=false;<?php endif; ?>" />
                                                 <label for="<?php echo($radioButtonID); ?>" title="<?php $this->_(str_replace('\'', '\\\'', $accessLevel['longDescription'])); ?>">
                                                     <?php $this->_($accessLevel['shortDescription']); ?>
@@ -119,14 +108,6 @@
                                         <td class="tdData">
                                            <input type="radio" name="role" value="none" title="" checked onclick="document.getElementById('userRoleDesc').innerHTML='This user is a normal user.';  document.getElementById('accessLevelsSpan').style.display='';" /> Normal User
                                            <br />
-                                           <?php foreach ($this->categories as $category): ?>
-                                               <?php if (isset($category[4])): ?>
-                                                   <input type="radio" name="role" value="<?php $this->_($category[1]); ?>" onclick="document.getElementById('userRoleDesc').innerHTML='<?php echo(str_replace('\'', '\\\'', $category[2])); ?>'; document.getElementById('access<?php echo($category[4]); ?>').checked=true; document.getElementById('accessLevelsSpan').style.display='none';" /> <?php $this->_($category[0]); ?>
-                                               <?php else: ?>
-                                                   <input type="radio" name="role" value="<?php $this->_($category[1]); ?>" onclick="document.getElementById('userRoleDesc').innerHTML='<?php echo(str_replace('\'', '\\\'', $category[2])); ?>'; document.getElementById('accessLevelsSpan').style.display='';" /> <?php $this->_($category[0]); ?>
-                                               <?php endif; ?>
-                                               <br />
-                                           <?php endforeach; ?>
                                         </td>
                                     </tr>
                                     <tr>
@@ -142,54 +123,19 @@
                                 <?php endif; ?>
                                 <?php if($this->EEOSettingsRS['enabled'] == 1): ?>
                                      <tr>
-                                        <td class="tdVertical">Allowed to view EEO Information:</td>
+                                        <td class="tdVertical">Can view EEO Information:</td>
                                         <td class="tdData">
                                             <span id="eeoIsVisibleCheckSpan">
-                                                <input type="checkbox" name="eeoIsVisible" id="eeoIsVisible" onclick="if (this.checked) document.getElementById('eeoVisibleSpan').style.display='none'; else document.getElementById('eeoVisibleSpan').style.display='';">
-                                                &nbsp;This user is <span id="eeoVisibleSpan">not </span>allowed to edit and view candidate's EEO information.
+                                                <input type="checkbox" name="eeoIsVisible" id="eeoIsVisible">
+                                                <span id="eeoVisibleSpan"> </span>Check for YES, uncheck for NO.
                                             </span>
                                         </td>
                                     </tr>
                                 <?php endif; ?>
-                                <?php if (!$this->license['canAdd'] && !$this->license['unlimited']): ?>
-                                    <tr>
-                                        <td class="tdVertical">Notice:</td>
-                                        <td class="tdData" style="color: #800000;">
-                                            <b>You are currently using your full allotment of active user accounts. Disable an existing account or upgrade your license to add another active user.</b>
-                                        </td>
-                                    </tr>
-                                <?php endif; ?>
+                                
                             </table>
                         </td>
-                        <?php
-                        eval(Hooks::get('SETTINGS_USERS_FULLQUOTALICENSES'));
-                        if (!$this->license['canAdd'] && !$this->license['unlimited'] && LicenseUtility::isProfessional() && !file_exists('modules/asp'))
-                        {
-                            echo '<td valign="top" align="center">';
-                            $link = 'http://www.catsone.com/professional';
-                            $image = 'images/add_licenses.jpg';
-
-                            echo '<a href="' . $link . '">';
-                            echo '<img src="' . $image . '" border="0" alt="Click here to add more user licenses"/>';
-                            echo '</a>';
-                            echo '<div style="text-align: left; padding: 10px 25px 0px 25px;">';
-                            echo 'A <i>user license</i>, or <i>seat</i>, is the limit of full-access users you can have. You may ';
-                            echo 'have unlimited read only users.';
-                            echo '<p>';
-
-                            echo 'This version of CATS is licensed to:<br /><center>';
-                            echo '<b>' . LicenseUtility::getName() . '</b><br />';
-                            $seats = LicenseUtility::getNumberOfSeats();
-                            echo ' '.$seats.' user license'.($seats!=1?'s':'').'<br />';
-                            echo 'Valid until ' . date('m/d/Y', LicenseUtility::getExpirationDate()) . '<br />';
-                            echo '</center>';
-
-
-                            echo '<p>';
-                            echo 'Click <a href="<?php echo $link; ?>">here</a> to purchase additional user seats.';
-                            echo '</div></td>';
-                        }
-                        ?>
+                        
                     </tr>
                 </table>
 

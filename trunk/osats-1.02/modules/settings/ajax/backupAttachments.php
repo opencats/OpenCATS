@@ -1,22 +1,22 @@
 <?php
 /*
- * CATS
+ * OSATS
  * AJAX Backup interface
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
  *
- * The contents of this file are subject to the CATS Public License
+ * The contents of this file are subject to the OSATS Public License
  * Version 1.1 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- * http://www.catsone.com/.
+ * http://www.OSATSone.com/.
  *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  * License for the specific language governing rights and limitations
  * under the License.
  *
- * The Original Code is "CATS Standard Edition".
+ * The Original Code is "OSATS Standard Edition".
  *
  * The Initial Developer of the Original Code is Cognizo Technologies, Inc.
  * Portions created by the Initial Developer are Copyright (C) 2005 - 2007
@@ -32,7 +32,7 @@ include_once('lib/Attachments.php');
 
 $interface = new SecureAJAXInterface();
 
-if ($_SESSION['CATS']->getAccessLevel() < ACCESS_LEVEL_SA)
+if ($_SESSION['OSATS']->getAccessLevel() < ACCESS_LEVEL_SA)
 {
     die('No permision.');
 }
@@ -49,7 +49,7 @@ $completedTasks = '';
 
 if ($action == 'start')
 {
-    $companyID = $_SESSION['CATS']->getSiteCompanyID();
+    $companyID = $_SESSION['OSATS']->getSiteCompanyID();
 
     $attachments = new Attachments(ADMIN_SITE);
 
@@ -57,13 +57,13 @@ if ($action == 'start')
     $attachments->deleteAll(
         DATA_ITEM_COMPANY,
         $companyID,
-        "AND content_type = 'catsbackup'"
+        "AND content_type = 'OSATSbackup'"
     );
 
     $attachmentCreator = new AttachmentCreator(ADMIN_SITE);
     $attachmentCreator->createFromFile(
-        DATA_ITEM_COMPANY, $companyID, 'catsattachments.zip',
-        'CATS Attachments Backup', 'catsbackup', false, false
+        DATA_ITEM_COMPANY, $companyID, 'OSATSattachments.zip',
+        'OSATS Attachments Backup', 'OSATSbackup', false, false
     );
     if ($attachmentCreator->isError())
     {
@@ -73,7 +73,7 @@ if ($action == 'start')
     $attachmentID = $attachmentCreator->getAttachmentID();
     $directory = $attachmentCreator->getContainingDirectory();
 
-    $_SESSION['CATS']->storeValueByName('backupDirectory', $directory);
+    $_SESSION['OSATS']->storeValueByName('backupDirectory', $directory);
 
     echo '<script type="text/javascript">watchBackup(\'',
          $directory, '\', ' . $attachmentID . ', \'settings:backupAttachments\');</script>';
@@ -88,7 +88,7 @@ function setStatusBackup($status, $progress)
         . ' setProgress(' . $progress . ');'
         . ' progressComplete(\'' . $completedTasks.'\');</script>';
 
-    $directory = $_SESSION['CATS']->retrieveValueByName('backupDirectory');
+    $directory = $_SESSION['OSATS']->retrieveValueByName('backupDirectory');
     @file_put_contents($directory . 'progress.txt', $command);
 }
 
@@ -116,9 +116,9 @@ if ($action == 'backup')
     }
 
     $attachmentID = $_REQUEST['attachmentID'];
-    $siteID = $_SESSION['CATS']->getSiteID();
+    $siteID = $_SESSION['OSATS']->getSiteID();
 
-    $directory = $_SESSION['CATS']->retrieveValueByName('backupDirectory');
+    $directory = $_SESSION['OSATS']->retrieveValueByName('backupDirectory');
 
     include_once('lib/zip/ziplib.php');
     $zipfile = new Ziplib();
@@ -152,7 +152,7 @@ if ($action == 'backup')
     setStatusBackup('Writing backup...', 1);
 
     // FIXME: Did we write the file successfully? Error handling.
-    $newFileFullPath = $directory . 'catsattachments.zip';
+    $newFileFullPath = $directory . 'OSATSattachments.zip';
     $status = @file_put_contents($newFileFullPath, $zipfile->zl_pack(''));
 
     // FIXME: Remove this after AttachmentsCreator refactoring is complete.

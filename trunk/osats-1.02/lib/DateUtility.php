@@ -5,7 +5,7 @@
 
 /**
  *	Date Utility Library
- *	@package    CATS
+ *	@package    OSATS
  *	@subpackage Library
  */
 class DateUtility
@@ -286,9 +286,9 @@ class DateUtility
     {
         if ($date === false)
         {
-            if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn())
+            if (isset($_SESSION['OSATS']) && $_SESSION['OSATS']->isLoggedIn())
             {
-                $timeZoneOffset = $_SESSION['CATS']->getTimeZoneOffset();
+                $timeZoneOffset = $_SESSION['OSATS']->getTimeZoneOffset();
                 $date = mktime(
                     date('H') + $timeZoneOffset,
                     date('i'),
@@ -350,7 +350,7 @@ class DateUtility
         }
 
         $unixTime = mktime(
-            date('H', $date) + $_SESSION['CATS']->getTimeZoneOffset(),
+            date('H', $date) + $_SESSION['OSATS']->getTimeZoneOffset(),
             date('i', $date),
             date('s', $date),
             date('m', $date),

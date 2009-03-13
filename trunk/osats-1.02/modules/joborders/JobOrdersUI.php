@@ -1,22 +1,22 @@
 <?php
 /*
- * CATS
+ * OSATS
  * Job Orders Module
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
  *
- * The contents of this file are subject to the CATS Public License
+ * The contents of this file are subject to the OSATS Public License
  * Version 1.1a (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- * http://www.catsone.com/.
+ * http://www.OSATSone.com/.
  *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  * License for the specific language governing rights and limitations
  * under the License.
  *
- * The Original Code is "CATS Standard Edition".
+ * The Original Code is "OSATS Standard Edition".
  *
  * The Initial Developer of the Original Code is Cognizo Technologies, Inc.
  * Portions created by the Initial Developer are Copyright (C) 2005 - 2007
@@ -268,7 +268,7 @@ class JobOrdersUI extends UserInterface
 
         $this->_template->assign('active', $this);
         $this->_template->assign('dataGrid', $dataGrid);
-        $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
+        $this->_template->assign('userID', $_SESSION['OSATS']->getUserID());
         $this->_template->assign('errMessage', $errMessage);
 
         if (!eval(Hooks::get('JO_LIST_BY_VIEW'))) return;
@@ -315,7 +315,7 @@ class JobOrdersUI extends UserInterface
 
         if ($data['isAdminHidden'] == 1 && $this->_accessLevel < ACCESS_LEVEL_MULTI_SA)
         {
-            $this->listByView(__('This Job Order is hidden - only a CATS Administrator can unlock the Job Order.'));
+            $this->listByView(__('This Job Order is hidden - only a OSATS Administrator can unlock the Job Order.'));
             return;
         }
 
@@ -387,7 +387,7 @@ class JobOrdersUI extends UserInterface
         }
 
         /* Add an MRU entry. */
-        $_SESSION['CATS']->getMRU()->addEntry(
+        $_SESSION['OSATS']->getMRU()->addEntry(
             DATA_ITEM_JOBORDER, $jobOrderID, $data['title']
         );
 
@@ -403,9 +403,9 @@ class JobOrdersUI extends UserInterface
         /* Get extra fields. */
         $extraFieldRS = $jobOrders->extraFields->getValuesForShow($jobOrderID);
 
-        $pipelineEntriesPerPage = $_SESSION['CATS']->getPipelineEntriesPerPage();
+        $pipelineEntriesPerPage = $_SESSION['OSATS']->getPipelineEntriesPerPage();
 
-        $sessionCookie = $_SESSION['CATS']->getCookie();
+        $sessionCookie = $_SESSION['OSATS']->getCookie();
 
         /* Get pipeline graph. */
         $graphs = new graphs();
@@ -455,7 +455,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('isPopup', $isPopup);
         $this->_template->assign('careerPortalEnabled', $careerPortalEnabled);
         $this->_template->assign('privledgedUser', $privledgedUser);
-        $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('sessionCookie', $_SESSION['OSATS']->getCookie());
 
         if (!eval(Hooks::get('JO_SHOW'))) return;
 
@@ -511,7 +511,7 @@ class JobOrdersUI extends UserInterface
             $selectedCompanyID = $_GET['selected_company_id'];
         }
 
-        if ($_SESSION['CATS']->isHrMode())
+        if ($_SESSION['OSATS']->isHrMode())
         {
             $companies = new Companies($this->_siteID);
             $selectedCompanyID = $companies->getDefaultCompany();
@@ -602,8 +602,8 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('selectedCompanyContacts', $selectedCompanyContacts);
         $this->_template->assign('selectedCompanyLocation', $selectedCompanyLocation);
         $this->_template->assign('selectedDepartmentsString', $selectedDepartmentsString);
-        $this->_template->assign('isHrMode', $_SESSION['CATS']->isHrMode());
-        $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('isHrMode', $_SESSION['OSATS']->isHrMode());
+        $this->_template->assign('sessionCookie', $_SESSION['OSATS']->getCookie());
 
         if (!eval(Hooks::get('JO_ADD'))) return;
 
@@ -769,7 +769,7 @@ class JobOrdersUI extends UserInterface
         $contactsRS = $companies->getContactsArray($data['companyID']);
 
         /* Add an MRU entry. */
-        $_SESSION['CATS']->getMRU()->addEntry(
+        $_SESSION['OSATS']->getMRU()->addEntry(
             DATA_ITEM_JOBORDER, $jobOrderID, $data['title']
         );
 
@@ -811,7 +811,7 @@ class JobOrdersUI extends UserInterface
         $departmentsString = ListEditor::getStringFromList($departmentsRS, 'name');
 
         /* Date format for DateInput()s. */
-        if ($_SESSION['CATS']->isDateDMY())
+        if ($_SESSION['OSATS']->isDateDMY())
         {
             $data['startDateMDY'] = DateUtility::convert(
                 '-', $data['startDate'], DATE_FORMAT_DDMMYY, DATE_FORMAT_MMDDYY
@@ -871,8 +871,8 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('departmentsString', $departmentsString);
         $this->_template->assign('contactsRS', $contactsRS);
         $this->_template->assign('jobOrderID', $jobOrderID);
-        $this->_template->assign('isHrMode', $_SESSION['CATS']->isHrMode());
-        $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('isHrMode', $_SESSION['OSATS']->isHrMode());
+        $this->_template->assign('sessionCookie', $_SESSION['OSATS']->getCookie());
 
         if (!eval(Hooks::get('JO_EDIT'))) return;
 
@@ -1011,7 +1011,7 @@ class JobOrdersUI extends UserInterface
                     '%JBODTITLE%',
                     '%JBODCLIENT%',
                     '%JBODID%',
-                    '%JBODCATSURL%'
+                    '%JBODOSATSURL%'
                 );
                 $replacementStrings = array(
                     $ownerDetails['fullName'],
@@ -1104,7 +1104,7 @@ class JobOrdersUI extends UserInterface
         $joborders->delete($jobOrderID);
 
         /* Delete the MRU entry if present. */
-        $_SESSION['CATS']->getMRU()->removeEntry(
+        $_SESSION['OSATS']->getMRU()->removeEntry(
             DATA_ITEM_JOBORDER, $jobOrderID
         );
 
@@ -1461,7 +1461,7 @@ class JobOrdersUI extends UserInterface
         $calendar = new Calendar($this->_siteID);
         $calendarEventTypes = $calendar->getAllEventTypes();
 
-        if (SystemUtility::isSchedulerEnabled() && !$_SESSION['CATS']->isDemo())
+        if (SystemUtility::isSchedulerEnabled() && !$_SESSION['OSATS']->isDemo())
         {
             $allowEventReminders = true;
         }
@@ -1477,7 +1477,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('selectedStatusID', $selectedStatusID);
         $this->_template->assign('calendarEventTypes', $calendarEventTypes);
         $this->_template->assign('allowEventReminders', $allowEventReminders);
-        $this->_template->assign('userEmail', $_SESSION['CATS']->getEmail());
+        $this->_template->assign('userEmail', $_SESSION['OSATS']->getEmail());
         $this->_template->assign('onlyScheduleEvent', false);
         $this->_template->assign('statusChangeTemplate', $statusChangeTemplate);
         $this->_template->assign('emailDisabled', $emailDisabled);

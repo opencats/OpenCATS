@@ -41,42 +41,32 @@ class SettingsUI extends UserInterface
     {
         parent::__construct();
 
-        $this->_realAccessLevel = $_SESSION['CATS']->getRealAccessLevel();
-        $this->_authenticationRequired = true;
-        $this->_moduleDirectory = 'settings';
-        $this->_moduleName      = 'settings';
-        $this->_moduleTabText   = __('Settings');
-
-        /* Only CATS professional on site gets to make career portal customizer users. */
-        /*if (!file_exists('modules/asp') && LicenseUtility::isProfessional())
-        { */
+        $this->_realAccessLevel = $_SESSION['OSATS']->getRealAccessLevel(); //coordinate with DB. Jamin
+        $this->_authenticationRequired = true; //need to move to DB.  Jamin
+        //$this->_moduleDirectory = 'settings'; //being called from DB now! Jamin
+        $this->_moduleName      = 'settings'; //being called from DB now! Jamin, but still needed for subtabs at the moment..
+        //$this->_moduleTabText   = __('Settings');  //being called from DB now! Jamin
         	
             $this->_settingsUserCategories = array(array('Career Portal Customizer', 'careerportal', 'This user can\'t do anything but modify the career portal settings.  It is intended to be used by the Professional Support Team.  This user does not count against your maximum users.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
             );
-		/* } */
-
+	
+			//this gets passed to the module(tab) load process for SUBTABS.  Need to move to DB. Jamin
         $mp = array(
             'Administration' => osatutil::getIndexName() . '?m=settings&amp;a=administration',
-            'My Profile'     => osatutil::getIndexName() . '?m=settings'
+            'My Profile'     => osatutil::getIndexName() . '?m=settings',
+            'Downloads' => osatutil::getIndexName() . '?m=settings&amp;a=downloads'
         );
 
-        /* Only CATS professional can download addons. 
-        if (file_exists('modules/asp') || LicenseUtility::isProfessional())*/
-        {
-            $mp['Downloads'] = osatutil::getIndexName() . '?m=settings&amp;a=downloads';
-        }
-
         $this->_subTabs = $mp;
-
         $this->_hooks = $this->defineHooks();
     }
 
-    public function defineHooks()
+    public function defineHooks()  //Want to move to DB as well. Jamin.
     {
         return array(
             /* Hide all tabs in career portal mode. */
             'TEMPLATE_UTILITY_EVALUATE_TAB_VISIBLE' => '
-                if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\'))
+                if ($_SESSION[\'OSATS\']->hasUserCategory(\'careerportal\'))
                 {
                     if (!in_array($moduleName, array(\'settings\')))
                     {
@@ -87,7 +77,7 @@ class SettingsUI extends UserInterface
 
             /* Home goes to settings in career portal mode. */
             'HOME' => '
-                if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\'))
+                if ($_SESSION[\'OSATS\']->hasUserCategory(\'careerportal\'))
                 {
                     osatutil::transferRelativeURI(\'m=settings\');
                     return false;
@@ -96,7 +86,7 @@ class SettingsUI extends UserInterface
 
             /* My Profile goes to administration in career portal mode. */
             'SETTINGS_DISPLAY_PROFILE_SETTINGS' => '
-                if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\'))
+                if ($_SESSION[\'OSATS\']->hasUserCategory(\'careerportal\'))
                 {
                     osatutil::transferRelativeURI(\'m=settings&a=administration\');
                     return false;
@@ -104,13 +94,13 @@ class SettingsUI extends UserInterface
             ',
 
             /* Deny access to all modules in career portal mode but settings. */
-            'CLIENTS_HANDLE_REQUEST' =>    'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
-            'CONTACTS_HANDLE_REQUEST' =>   'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
-            'CALENDAR_HANDLE_REQUEST' =>   'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
-            'JO_HANDLE_REQUEST' =>         'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
-            'CANDIDATES_HANDLE_REQUEST' => 'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
-            'ACTIVITY_HANDLE_REQUEST' =>   'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
-            'REPORTS_HANDLE_REQUEST' =>    'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");'
+            'CLIENTS_HANDLE_REQUEST' =>    'if ($_SESSION[\'OSATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
+            'CONTACTS_HANDLE_REQUEST' =>   'if ($_SESSION[\'OSATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
+            'CALENDAR_HANDLE_REQUEST' =>   'if ($_SESSION[\'OSATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
+            'JO_HANDLE_REQUEST' =>         'if ($_SESSION[\'OSATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
+            'CANDIDATES_HANDLE_REQUEST' => 'if ($_SESSION[\'OSATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
+            'ACTIVITY_HANDLE_REQUEST' =>   'if ($_SESSION[\'OSATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
+            'REPORTS_HANDLE_REQUEST' =>    'if ($_SESSION[\'OSATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");'
         );
     }
 
@@ -129,7 +119,7 @@ class SettingsUI extends UserInterface
                 }
                 break;
 
-            case 'newInstallPassword':
+            case 'newInstallPassword':  //I think we can get rid of this safely. Will be on my to do list. Jamin
                 if ($this->isPostBack())
                 {
                     $this->onNewInstallPassword();
@@ -140,7 +130,7 @@ class SettingsUI extends UserInterface
                 }
                 break;
 
-            case 'forceEmail':
+            case 'forceEmail': //I think we can get rid of this safely. Will be on my to do list. Jamin
                 if ($this->isPostBack())
                 {
                     $this->onForceEmail();
@@ -151,7 +141,7 @@ class SettingsUI extends UserInterface
                 }
                 break;
 
-            case 'newSiteName':
+            case 'newSiteName': //I think we can get rid of this safely. Will be on my to do list. Function done in Setup now. Jamin
                 if ($this->isPostBack())
                 {
                     $this->onNewSiteName();
@@ -173,7 +163,7 @@ class SettingsUI extends UserInterface
                 }
                 break;
 
-            case 'newInstallFinished':
+            case 'newInstallFinished'://I think we can get rid of this safely. Will be on my to do list.  Function done in Setup now. Jamin
                 if ($this->isPostBack())
                 {
                     $this->onNewInstallFinished();
@@ -228,11 +218,11 @@ class SettingsUI extends UserInterface
 
                 break;
 
-            case 'createBackup':
+            case 'createBackup':  //needs to be fixed. Either here or on the tpl. On my Todo list. Jamin.
                 $this->createBackup();
                 break;
 
-            case 'deleteBackup':
+            case 'deleteBackup': //needs to be fixed. Either here or on the tpl. On my Todo list. Jamin.
                 $this->deleteBackup();
                 break;
 
@@ -247,7 +237,7 @@ class SettingsUI extends UserInterface
                 }
                 break;
 
-            case 'customizeCalendar':
+            case 'customizeCalendar': 
                 if ($this->isPostBack())
                 {
                     $this->onCustomizeCalendar();
@@ -258,7 +248,7 @@ class SettingsUI extends UserInterface
                 }
                 break;
 
-            case 'reports':
+            case 'reports': //needs to be fixed. Either here or on the tpl. On my Todo list. Jamin.
                 if ($this->isPostBack())
                 {
 
@@ -336,8 +326,7 @@ class SettingsUI extends UserInterface
                 $this->onCareerPortalTweak();
                 break;
 
-            /* This really only exists for automated testing at this point. */
-            case 'deleteUser':
+            case 'deleteUser': //needs to be fixed. Currently not setup fully from original version. On my Todo list. Jamin.
                 $this->onDeleteUser();
                 break;
 
@@ -435,7 +424,7 @@ class SettingsUI extends UserInterface
             /* Main settings page. */
             case 'myProfile':
                 default:
-                $this->myProfile();
+				$this->myProfile();
                 break;
         }
     }
@@ -452,10 +441,11 @@ class SettingsUI extends UserInterface
 
     /*
      * Called by handleRequest() to process loading the my profile page.
+     * NEED TO CLEAN THIS UP - JAMIN
      */
     private function myProfile()
     {
-        $isDemoUser = $_SESSION['CATS']->isDemo();
+        //$isDemoUser = $_SESSION['OSATS']->isDemo();
 
         if (isset($_GET['s']))
         {
@@ -477,10 +467,12 @@ class SettingsUI extends UserInterface
 
         if (!eval(Hooks::get('SETTINGS_DISPLAY_PROFILE_SETTINGS'))) return;
 
-        $this->_template->assign('isDemoUser', $isDemoUser);
+        //$this->_template->assign('isDemoUser', $isDemoUser);
+        //this needs to pull from a variable that loads once. Stop the repeats. Jamin
         $this->_template->assign('userID', $this->_userID);
         $this->_template->assign('active', $this);
-        $this->_template->assign('subActive', 'My Profile');
+        //change this to check if user is an admin. If so, make their page the Administration page. On my todo list. Jamin
+		$this->_template->assign('subActive', 'My Profile');
         $this->_template->display($templateFile);
     }
 
@@ -551,14 +543,14 @@ class SettingsUI extends UserInterface
             }
         }
 
-        $siteIDPosition = strpos($data['username'], '@' . $_SESSION['CATS']->getSiteID());
+        $siteIDPosition = strpos($data['username'], '@' . $_SESSION['OSATS']->getSiteID());
 
-        // FIXME: The last test here might be redundant.
+        // CLEAN UP THIS. ITS A REPEAT.
         if ($siteIDPosition !== false &&
-            substr($data['username'], $siteIDPosition) == '@' . $_SESSION['CATS']->getSiteID())
+            substr($data['username'], $siteIDPosition) == '@' . $_SESSION['OSATS']->getSiteID())
         {
            $data['username'] = str_replace(
-               '@' . $_SESSION['CATS']->getSiteID(), '', $data['username']
+               '@' . $_SESSION['OSATS']->getSiteID(), '', $data['username']
            );
         }
 
@@ -599,13 +591,14 @@ class SettingsUI extends UserInterface
      */
     private function addUser()
     {
-        /* Bail out if the user doesn't have SA permissions. */
+        /* Bail out if the user doesn't have SA permissions.
         if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
             return;
             //$this->fatal(ERROR_NO_PERMISSION);
         }
+         */
 
         $users = new Users($this->_siteID);
         $accessLevels = $users->getAccessLevels();
@@ -662,55 +655,51 @@ class SettingsUI extends UserInterface
             return;
             //$this->fatal(ERROR_NO_PERMISSION);
         }
-
-        $firstName      = $this->getTrimmedInput('firstName', $_POST);
-        $lastName       = $this->getTrimmedInput('lastName', $_POST);
-        $email          = $this->getTrimmedInput('email', $_POST);
-        $username       = $this->getTrimmedInput('username', $_POST);
-        $accessLevel    = $this->getTrimmedInput('accessLevel', $_POST);
-        $password       = $this->getTrimmedInput('password', $_POST);
-        $retypePassword = $this->getTrimmedInput('retypePassword', $_POST);
-        $role           = $this->getTrimmedInput('role', $_POST);
-        $eeoIsVisible   = $this->isChecked('eeoIsVisible', $_POST);
-
+		
+		$firstName      = $_POST['First'];
+        $lastName       = $_POST['Last'];
+		$email          = $_POST['EmailAddress'];
+		$username       = $_POST['UserName'];
+		$accessLevel    = $_POST['accessLevel'];
+		$password       = $_POST['Password'];
+		$retypePassword = $_POST['Password2'];
+		$role           = $_POST['role'];
+		$eeoIsVisible   = $_POST['eeoIsVisible'];
         $users = new Users($this->_siteID);
         $license = $users->getLicenseData();
 
-        if (!$license['canAdd'] && $accessLevel > ACCESS_LEVEL_READ)
-        {
-            // FIXME: Shouldn't be a fatal, should go to ugprade
-            $this->fatal(
-                'You have no remaining user account allotments. Please upgrade your license or disable another user.'
-            );
-        }
 
-        /* Bail out if any of the required fields are empty. */
-        if (empty($firstName) || empty($lastName) || empty($username) ||
-            empty($accessLevel) || empty($password) || empty($retypePassword))
+        /* Bail out if any of the required fields are empty.
+		I wrote an entirely different js routine file called validateme.js to handle trimming and validation of the add user form! JAMIN
+		 */
+        /* if (empty($firstName) || empty($lastName) || empty($username) ||
+            empty($email) || empty($password) || empty($retypePassword))
         {
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
         }
 
-        /* Bail out if the two passwords don't match. */
+        
         if ($password !== $retypePassword)
         {
             CommonErrors::fatal(COMMONERROR_NOPASSWORDMATCH, $this, 'Passwords do not match.');
         }
 
-        /* If adding an e-mail username, verify it is a valid e-mail. */
+        
         if (strpos($username, '@') !== false && !eregi("^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$", $username))
         {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Username is in improper format for an E-Mail address.');
         }
 
         /* Make it a multisite user name if the user is part of a hosted site. */
-        $unixName = $_SESSION['CATS']->getUnixName();
+        $unixName = $_SESSION['OSATS']->getUnixName();
         if (strpos($username, '@') === false && !empty($unixName))
         {
-           $username .= '@' . $_SESSION['CATS']->getSiteID();
+           $username .= '@' . $_SESSION['OSATS']->getSiteID();
         }
 
-        /* Bail out if the specified username already exists. */
+        /* Bail out if the specified username already exists. 
+		Need to create a function that checks for usernames while still in the form. Jamin
+		*/
         if ($users->usernameExists($username))
         {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'The specified username already exists.');
@@ -805,13 +794,13 @@ class SettingsUI extends UserInterface
         /* Change multisite usernames into single site usernames. */
         // FIXME: The last test here might be redundant.
         // FIXME: Put this in a private method. It is duplicated twice so far.
-        $siteIDPosition = strpos($data['username'], '@' . $_SESSION['CATS']->getSiteID());
+        $siteIDPosition = strpos($data['username'], '@' . $_SESSION['OSATS']->getSiteID());
 
         if ($siteIDPosition !== false &&
-            substr($data['username'], $siteIDPosition) == '@' . $_SESSION['CATS']->getSiteID())
+            substr($data['username'], $siteIDPosition) == '@' . $_SESSION['OSATS']->getSiteID())
         {
            $data['username'] = str_replace(
-               '@' . $_SESSION['CATS']->getSiteID(), '', $data['username']
+               '@' . $_SESSION['OSATS']->getSiteID(), '', $data['username']
            );
         }
 
@@ -882,34 +871,17 @@ class SettingsUI extends UserInterface
 
         $userID = $_POST['userID'];
 
-        $firstName   = $this->getTrimmedInput('firstName', $_POST);
-        $lastName    = $this->getTrimmedInput('lastName', $_POST);
-        $email       = $this->getTrimmedInput('email', $_POST);
-        $username    = $this->getTrimmedInput('username', $_POST);
-        $password1   = $this->getTrimmedInput('password1', $_POST);
-        $password2   = $this->getTrimmedInput('password2', $_POST);
-        $passwordRst = $this->getTrimmedInput('passwordIsReset', $_POST);
-        $role        = $this->getTrimmedInput('role', $_POST);
+        $firstName      = $_POST['First'];
+        $lastName       = $_POST['Last'];
+		$email          = $_POST['EmailAddress'];
+		$username       = $_POST['UserName'];
+		$accessLevel    = $_POST['accessLevel'];
+		$password       = $_POST['Password'];
+        $users 			= new Users($this->_siteID);
+        $license 		= $users->getLicenseData();
+		$role    		= $this->getTrimmedInput('role', $_POST);
         $eeoIsVisible   = $this->isChecked('eeoIsVisible', $_POST);
-
-        /* Bail out if any of the required fields are empty. */
-        if (empty($firstName) || empty($lastName) || empty($username))
-        {
-            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'First name, last name and username are required.');
-        }
-
-        /* Bail out if reseting password to null. */
-        if (trim($password1) == '' && $passwordRst == 1)
-        {
-            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Cannot set a blank password.');
-        }
-
-        /* Bail out if the two passwords don't match. */
-        if ($password1 !== $password2)
-        {
-            CommonErrors::fatal(COMMONERROR_NOPASSWORDMATCH, $this, 'Passwords do not match.');
-        }
-
+        
         /* Don't allow access level changes to the currently logged-in user's
          * account.
          */
@@ -920,16 +892,17 @@ class SettingsUI extends UserInterface
 
         /* If adding an e-mail username, verify it is a valid e-mail. */
         // FIXME: PREG!
-        if (strpos($username, '@') !== false && !eregi("^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$", $username))
+/*
+		if (strpos($username, '@') !== false && !eregi("^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$", $username))
         {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Username is in improper format for an E-Mail address.');
         }
-
+*/
         /* Make it a multisite user name if the user is part of a hosted site. */
-        $unixName = $_SESSION['CATS']->getUnixName();
+        $unixName = $_SESSION['OSATS']->getUnixName();
         if (strpos($username, '@') === false && !empty($unixName))
         {
-           $username .= '@' . $_SESSION['CATS']->getSiteID();
+           $username .= '@' . $_SESSION['OSATS']->getSiteID();
         }
 
         $users = new Users($this->_siteID);
@@ -940,15 +913,16 @@ class SettingsUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update user.');
         }
 
-        if (trim($password1) !== '')
+		//if password is blank, it was not chosen to reset it. If there is a value, process the new value.
+        if (trim($password) !== '')
         {
-            /* Bail out if the password is 'cats'. */
-            if ($password1 == 'cats')
+            /* Bail out if the password is 'OSATS'. */
+            if ($password1 == 'OSATS')
             {
-                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'New password can not equal \'cats\'.');
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'New password can not equal \'OSATS\'.');
             }
 
-            if (!$users->resetPassword($userID, $password1))
+            if (!$users->resetPassword($userID, $password))
             {
                 CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to reset password.');
             }
@@ -1133,7 +1107,7 @@ class SettingsUI extends UserInterface
     //FIXME: Document me.
     private function emailTemplates()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['OSATS']->hasUserCategory('careerportal'))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
             return;
@@ -1154,7 +1128,7 @@ class SettingsUI extends UserInterface
     //FIXME: Document me.
     private function onEmailTemplates()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+        if ($this->_realAccessLevel < ACCESS_LEVEL_SA && !$_SESSION['OSATS']->hasUserCategory('careerportal'))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
             return;
@@ -1225,7 +1199,7 @@ class SettingsUI extends UserInterface
      */
     private function careerPortalTemplateEdit()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['OSATS']->hasUserCategory('careerportal'))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
             return;
@@ -1292,7 +1266,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('templateName', $templateName);
         $this->_template->assign('eeoEnabled', $EEOSettingsRS['enabled']);
         $this->_template->assign('EEOSettingsRS', $EEOSettingsRS);
-        $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('sessionCookie', $_SESSION['OSATS']->getCookie());
         $this->_template->assign('extraFieldsForJobOrders', $extraFieldsForJobOrders);
         $this->_template->assign('extraFieldsForCandidates', $extraFieldsForCandidates);
         $this->_template->display('./modules/settings/CareerPortalTemplateEdit.tpl');
@@ -1301,7 +1275,7 @@ class SettingsUI extends UserInterface
     //FIXME: Document me.
     private function onCareerPortalTemplateEdit()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+        if ($this->_realAccessLevel < ACCESS_LEVEL_SA && !$_SESSION['OSATS']->hasUserCategory('careerportal'))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
             return;
@@ -1363,7 +1337,7 @@ class SettingsUI extends UserInterface
      */
     private function careerPortalSettings()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['OSATS']->hasUserCategory('careerportal'))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
             return;
@@ -1388,14 +1362,14 @@ class SettingsUI extends UserInterface
         $this->_template->assign('careerPortalTemplateNames', $careerPortalTemplateNames);
         $this->_template->assign('careerPortalTemplateCustomNames', $careerPortalTemplateCustomNames);
         $this->_template->assign('careerPortalURL', $careerPortalURL);
-        $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('sessionCookie', $_SESSION['OSATS']->getCookie());
         $this->_template->display('./modules/settings/CareerPortalSettings.tpl');
     }
 
     //FIXME: Document me.
     private function onCareerPortalSettings()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+        if ($this->_realAccessLevel < ACCESS_LEVEL_SA && !$_SESSION['OSATS']->hasUserCategory('careerportal'))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
             return;
@@ -1484,7 +1458,7 @@ class SettingsUI extends UserInterface
 
     private function onCareerPortalTweak()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+        if ($this->_realAccessLevel < ACCESS_LEVEL_SA && !$_SESSION['OSATS']->hasUserCategory('careerportal'))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
             return;
@@ -1581,7 +1555,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('active', $this);
         $this->_template->assign('subActive', 'Administration');
         $this->_template->assign('EEOSettingsRS', $EEOSettingsRS);
-        $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('sessionCookie', $_SESSION['OSATS']->getCookie());
         $this->_template->display('./modules/settings/EEOEOCSettings.tpl');
     }
 
@@ -1638,7 +1612,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('active', $this);
         $this->_template->assign('subActive', 'Administration');
         $this->_template->assign('mailerSettingsRS', $mailerSettingsRS);
-        $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('sessionCookie', $_SESSION['OSATS']->getCookie());
         $this->_template->display('./modules/settings/EmailSettings.tpl');
     }
 
@@ -1772,6 +1746,7 @@ class SettingsUI extends UserInterface
 
     /*
      * Called by handleRequest() to process loading new site pages.
+     GET RID OF THIS. THE INSTALLATION ROUTINE FROM THE _INSTALL FOLDER WILL GET THE NEW PASSWORD. JAMIN
      */
     private function newInstallPassword()
     {
@@ -1783,9 +1758,13 @@ class SettingsUI extends UserInterface
         $this->_template->display('./modules/settings/NewInstallWizard.tpl');
     }
 
+
+// Change this section to be ONLY for changing the site name. FROM HERE.
     private function newSiteName()
     {
-        /* Bail out if the user doesn't have SA permissions. */
+        /* Bail out if the user doesn't have SA permissions. 
+		
+		*/
         if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
         {
             osatutil::transferRelativeURI('m=settings&a=newInstallFinished');
@@ -1794,7 +1773,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('inputType', 'siteName');
         $this->_template->assign('inputTypeTextParam', 'Please choose your site name.');
         $this->_template->assign('title', 'Site Name');
-        $this->_template->assign('prompt', 'Your administrator password has been changed.<br /><br />Next, please create a name for your CATS installation (for example, MyCompany, Inc.). This will be displayed in the top right corner of all CATS pages.');
+        $this->_template->assign('prompt', 'Your administrator password has been changed.<br /><br />Next, please create a name for your OSATS installation (for example, MyCompany, Inc.). This will be displayed in the top right corner of all OSATS pages.');
         $this->_template->assign('action', $this->getAction());
         $this->_template->assign('home', 'home');
         $this->_template->display('./modules/settings/NewInstallWizard.tpl');
@@ -1811,11 +1790,13 @@ class SettingsUI extends UserInterface
         $this->_template->assign('inputType', 'siteName');
         $this->_template->assign('inputTypeTextParam', 'Site Name');
         $this->_template->assign('title', 'Site Name');
-        $this->_template->assign('prompt', 'You have no site name defined. Please create a name for your OSATS installation (for example, MyCompany, Inc.). This will be displayed in the top right corner of all CATS pages.');
+        $this->_template->assign('prompt', 'You have no site name defined. Please create a name for your OSATS installation (for example, MyCompany, Inc.). This will be displayed in the top right corner of all OSATS pages.');
         $this->_template->assign('action', $this->getAction());
         $this->_template->assign('home', 'home');
         $this->_template->display('./modules/settings/NewInstallWizard.tpl');
     }
+// Change this section to be ONLY for changing the site name. TO HERE.
+
 
     private function createBackup()
     {
@@ -1829,7 +1810,7 @@ class SettingsUI extends UserInterface
         /* Attachments */
         $attachments = new Attachments(ADMIN_SITE);
         $attachmentsRS = $attachments->getAll(
-            DATA_ITEM_COMPANY, $_SESSION['CATS']->getSiteCompanyID()
+            DATA_ITEM_COMPANY, $_SESSION['OSATS']->getSiteCompanyID()
         );
 
         foreach ($attachmentsRS as $index => $data)
@@ -1857,8 +1838,8 @@ class SettingsUI extends UserInterface
         $attachments = new Attachments(ADMIN_SITE);
         $attachments->deleteAll(
             DATA_ITEM_COMPANY,
-            $_SESSION['CATS']->getSiteCompanyID(),
-            "AND content_type = 'catsbackup'"
+            $_SESSION['OSATS']->getSiteCompanyID(),
+            "AND content_type = 'OSATSbackup'"
         );
 
         osatutil::transferRelativeURI('m=settings&a=createBackup');
@@ -1892,7 +1873,7 @@ class SettingsUI extends UserInterface
 
             $this->_template->assign('inputType', 'conclusion');
             $this->_template->assign('title', "E-Mail Address");
-            $this->_template->assign('prompt', "Your e-mail settings have been saved. This concludes the CATS initial configuration wizard.");
+            $this->_template->assign('prompt', "Your e-mail settings have been saved. ");
             $this->_template->assign('action', $this->getAction());
             $this->_template->assign('home', 'home');
             $this->_template->display('./modules/settings/NewInstallWizard.tpl');
@@ -1902,7 +1883,7 @@ class SettingsUI extends UserInterface
     private function newInstallFinished()
     {
 
-        $accessLevel = $_SESSION['CATS']->getAccessLevel();
+        $accessLevel = $_SESSION['OSATS']->getAccessLevel();
 
         $mailerSettings = new MailerSettings($this->_siteID);
         $mailerSettingsRS = $mailerSettings->getAll();
@@ -1947,7 +1928,7 @@ class SettingsUI extends UserInterface
             $error = 'New passwords do not match.';
         }
 
-        /* Bail out if the password is 'cats'. */
+        /* Bail out if the password is 'OSATS'. */
         if ($newPassword == 'osats')
         {
             $error = 'New password cannot equal \'osats\'.';
@@ -2005,10 +1986,10 @@ class SettingsUI extends UserInterface
 
             $companies->setCompanyDefault($companyIDInternal);
 
-            $_SESSION['CATS']->setSiteName($newSiteName);
+            $_SESSION['OSATS']->setSiteName($newSiteName);
 
             /* If no E-Mail set for current user, make user set E-Mail address. */
-            if (trim($_SESSION['CATS']->getEmail()) == '')
+            if (trim($_SESSION['OSATS']->getEmail()) == '')
             {
                 osatutil::transferRelativeURI('m=settings&a=forceEmail');
             }
@@ -2030,15 +2011,17 @@ class SettingsUI extends UserInterface
     private function administration()
     {
         /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['OSATS']->hasUserCategory('careerportal'))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
         }
 
         $systemInfo = new SystemInfo();
         $systemInfoData = $systemInfo->getSystemInfo();
+		$systemAdministration = true;
 
-        if (isset($systemInfoData['available_version']) && $systemInfoData['available_version'] > osatutil::getVersionAsInteger())
+/* No version checks anymore...
+		if (isset($systemInfoData['available_version']) && $systemInfoData['available_version'] > osatutil::getVersionAsInteger())
         {
             $newVersion = true;
         }
@@ -2064,7 +2047,7 @@ class SettingsUI extends UserInterface
         {
             $systemAdministration = false;
         }
-
+*/
         // FIXME: 's' isn't a good variable name.
         if (isset($_GET['s']))
         {
@@ -2074,23 +2057,12 @@ class SettingsUI extends UserInterface
                     $templateFile = './modules/settings/SiteName.tpl';
                     break;
 				
+				case 'mytabs':
+                    $templateFile = './modules/settings/myTabs.tpl';
+                    break;
+                    
 				case 'resetbit':
                     $templateFile = './modules/settings/resetbit.tpl';
-                    break;
-                
-				case 'newVersionCheck':
-                    if (!$systemAdministration)
-                    {
-                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-                        return;
-                        //$this->fatal(ERROR_NO_PERMISSION);
-                    }
-
-                    $this->_template->assign('versionCheckPref', $versionCheckPref);
-                    $this->_template->assign('availableVersion', $systemInfoData['available_version']);
-                    $this->_template->assign('newVersion', $newVersion);
-                    $this->_template->assign('newVersionNews', NewVersionCheck::getNews());
-                    $templateFile = './modules/settings/NewVersionCheck.tpl';
                     break;
 
                 case 'passwords':
@@ -2112,46 +2084,11 @@ class SettingsUI extends UserInterface
                         //$this->fatal(ERROR_NO_PERMISSION);
                     }
 
-                    $this->_template->assign('timeZone', $_SESSION['CATS']->getTimeZone());
-                    $this->_template->assign('isDateDMY', $_SESSION['CATS']->isDateDMY());
+                    $this->_template->assign('timeZone', $_SESSION['OSATS']->getTimeZone());
+                    $this->_template->assign('isDateDMY', $_SESSION['OSATS']->isDateDMY());
                     $templateFile = './modules/settings/Localization.tpl';
                     break;
-
-                case 'systemInformation':
-                    if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-                    {
-                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-                        return;
-                        //$this->fatal(ERROR_NO_PERMISSION);
-                    }
-
-                    $db = DatabaseConnection::getInstance();
-                    $databaseVersion = $db->getRDBMSVersion();
-
-                    $installationDirectory = realpath('./');
-
-                    if (SystemUtility::isWindows())
-                    {
-                        $OSType = 'Windows';
-                    }
-                    else if (SystemUtility::isMacOSX())
-                    {
-                        $OSType = 'Mac OS X';
-                    }
-                    else
-                    {
-                        $OSType = 'UNIX';
-                    }
-
-                    $schemaVersions = ModuleUtility::getModuleSchemaVersions();
-
-                    $this->_template->assign('databaseVersion', $databaseVersion);
-                    $this->_template->assign('installationDirectory', $installationDirectory);
-                    $this->_template->assign('OSType', $OSType);
-                    $this->_template->assign('schemaVersions', $schemaVersions);
-                    $templateFile = './modules/settings/SystemInformation.tpl';
-                    break;
-
+				
                 default:
                     $templateFile = './modules/settings/Administration.tpl';
                     break;
@@ -2210,20 +2147,6 @@ class SettingsUI extends UserInterface
      */
     private function downloads()
     {
-        //FIXME: This needs to give an appropriate error message to both Open Source and ASP Free users.
-        //       The current message is geared toward Open Source users.
-      /*  if (!file_exists('modules/asp') && !LicenseUtility::isProfessional())
-        {
-            CommonErrors::fatal(COMMONERROR_RESTRICTEDEXTENSION, $this);
-        }
-
-        // FIXME: Temporary! We need a better error message.
-        if ($_SESSION['CATS']->isFree() || $_SESSION['CATS']->isDemo())
-        {
-            CommonErrors::fatal(COMMONERROR_RESTRICTEDEXTENSION, $this);
-        } 
-        */
-
         // FIXME: 's' isn't a good variable name.
         if (isset($_GET['s']))
         {
@@ -2243,7 +2166,7 @@ class SettingsUI extends UserInterface
             $templateFile = './modules/settings/AspDownloads.tpl';
         }
 
-        $this->_template->assign('isFree', $_SESSION['CATS']->isFree());
+        $this->_template->assign('isFree', $_SESSION['OSATS']->isFree());
         $this->_template->assign('subActive', 'Extras');
         $this->_template->assign('active', $this);
         $this->_template->display($templateFile);
@@ -2261,10 +2184,7 @@ class SettingsUI extends UserInterface
             //$this->fatal(ERROR_NO_PERMISSION);
         }
 
-        $administrationMode = $this->getTrimmedInput(
-            'administrationMode',
-            $_POST
-        );
+        $administrationMode = $this->getTrimmedInput('administrationMode',$_POST);
 
         switch ($administrationMode)
         {
@@ -2282,33 +2202,31 @@ class SettingsUI extends UserInterface
                 $this->changeSiteName($siteName);
                 osatutil::transferRelativeURI('m=settings&a=administration');
                 break;
-
-            case 'changeVersionCheck':
-                if ($this->_realAccessLevel < ACCESS_LEVEL_ROOT)
-                {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-                    return;
-                    //$this->fatal(ERROR_NO_PERMISSION);
-                }
-
-                $this->changeNewVersionCheck(
-                    $this->isChecked('versionCheck', $_POST)
-                );
-
-                $versionCheckPref = $this->isChecked('versionCheck', $_POST);
-                osatutil::transferRelativeURI('m=settings&a=administration');
-                break;
-
-            case 'localization':
+			
+			case 'myTabs':
                 if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
                     return;
-                    //$this->fatal(ERROR_NO_PERMISSION);
                 }
 
+                //get the tab order and set it in the db
+                
+				
+				//now force the logout so the settings take effect
+                $_SESSION['OSATS']->logout();
+                unset($_SESSION['OSATS']);
 
-                //FIXME: Validation (escaped at lib level anyway)
+
+                break;
+            
+			case 'localization':
+                if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
+                    return;
+                }
+
                 $timeZone = $_POST['timeZone'];
                 $dateFormat = $_POST['dateFormat'];
                 if ($dateFormat == 'mdy')
@@ -2322,11 +2240,11 @@ class SettingsUI extends UserInterface
 
                 $site = new Site($this->_siteID);
                 $site->setLocalization($timeZone, $isDMY);
-
-                $_SESSION['CATS']->logout();
-                unset($_SESSION['CATS']);
-
-                osatutil::transferRelativeURI('?m=settings&a=administration&messageSuccess=true&message='.urlencode('Localization settings saved!  Please log back in for the settings to take effect.'));
+				
+				//now force the logout so the settings take effect
+                $_SESSION['OSATS']->logout();
+                unset($_SESSION['OSATS']);
+                osatutil::transferRelativeURI('?m=settings&a=administration&messageSuccess=true&message='.urlencode());
                 break;
 
             default:
@@ -2364,11 +2282,11 @@ class SettingsUI extends UserInterface
         $site->setLocalization($timeZone, $dateFormat);
 
         /* Reload the new data for the session. */
-        $_SESSION['CATS']->setTimeDateLocalization($timeZone, $isDMY);
+        $_SESSION['OSATS']->setTimeDateLocalization($timeZone, $isDMY);
 
         $this->_template->assign('inputType', 'conclusion');
         $this->_template->assign('title', 'Localization Settings Saved!');
-        $this->_template->assign('prompt', 'Your localization settings have been saved. This concludes the CATS initial configuration wizard.');
+        $this->_template->assign('prompt', 'Your localization settings have been saved. This concludes the OSATS initial configuration wizard.');
         $this->_template->assign('action', $this->getAction());
         $this->_template->assign('home', 'home');
         $this->_template->display('./modules/settings/NewInstallWizard.tpl');
@@ -2382,21 +2300,10 @@ class SettingsUI extends UserInterface
         $site = new Site($this->_siteID);
         $site->setName($newSiteName);
 
-        $_SESSION['CATS']->setSiteName($newSiteName);
-        NewVersionCheck::checkForUpdate();
+        $_SESSION['OSATS']->setSiteName($newSiteName);
     }
 
-    /*
-     *  Called by Administration to change new version preferences.
-     */
-    private function changeNewVersionCheck($enableNewVersionCheck)
-    {
-        $systemInfo = new SystemInfo();
-        $systemInfo->updateVersionCheckPrefs($enableNewVersionCheck);
-
-        NewVersionCheck::checkForUpdate();
-    }
-
+    
     /*
      * Called by handleRequest() to process loading the site users page.
      */
@@ -2426,13 +2333,13 @@ class SettingsUI extends UserInterface
 
             // FIXME: The last test here might be redundant.
             // FIXME: Put this in a private method. It is duplicated twice so far.
-            $siteIDPosition = strpos($row['username'], '@' .  $_SESSION['CATS']->getSiteID());
+            $siteIDPosition = strpos($row['username'], '@' .  $_SESSION['OSATS']->getSiteID());
 
             if ($siteIDPosition !== false &&
-                substr($row['username'], $siteIDPosition) == '@' . $_SESSION['CATS']->getSiteID())
+                substr($row['username'], $siteIDPosition) == '@' . $_SESSION['OSATS']->getSiteID())
             {
                $rs[$rowIndex]['username'] = str_replace(
-                   '@' . $_SESSION['CATS']->getSiteID(), '', $row['username']
+                   '@' . $_SESSION['OSATS']->getSiteID(), '', $row['username']
                );
             }
         }
@@ -2451,7 +2358,7 @@ class SettingsUI extends UserInterface
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
         }
-        if (ModuleUtility::moduleExists('asp') && (!defined('CATS_TEST_MODE') || !CATS_TEST_MODE))
+        if (ModuleUtility::moduleExists('asp') && (!defined('OSATS_TEST_MODE') || !OSATS_TEST_MODE))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
         }
@@ -2483,7 +2390,7 @@ class SettingsUI extends UserInterface
         
 				if (!osatutil::isSOAPEnabled())
                 {
-                    $message = 'CATS Professional requires the PHP SOAP library which isn\'t currently installed.<br /><br />'
+                    $message = 'OSATS Professional requires the PHP SOAP library which isn\'t currently installed.<br /><br />'
                         . 'Installation Instructions:<br /><br />'
                         . 'WAMP/Windows Users:<dl>'
                         . '<li>Left click on the wamp icon.</li>'
@@ -2501,9 +2408,9 @@ class SettingsUI extends UserInterface
                 }
               else if (!osatutil::changeConfigSetting('LICENSE_KEY', "'" . $key . "'"))
                 {
-                    $message = 'Internal Permissions Error<br /><span style="font-size: 12px; color: #000000;">CATS is unable '
+                    $message = 'Internal Permissions Error<br /><span style="font-size: 12px; color: #000000;">OSATS is unable '
                         . 'to write changes to your <b>config.php</b> file. Please change the file permissions or contact us '
-                        . 'for support. Our support e-mail is <a href="mailto:support@catsone.com">support@catsone.com</a> '
+                        . 'for support. Our support e-mail is <a href="mailto:support@OSATSone.com">support@OSATSone.com</a> '
                         . 'and our office number if (952) 417-0067.</span>';
                 } 
                  
@@ -2534,68 +2441,15 @@ class SettingsUI extends UserInterface
      */
     private function onChangePassword()
     {
-        /* Bail out if the user is demo. */
-        if ($this->_realAccessLevel == ACCESS_LEVEL_DEMO)
-        {
-            $this->fatal(
-                'You are not allowed to change your password.'
-            );
-        }
-
         $logout = false;
-
-        $currentPassword = $this->getTrimmedInput(
-            'currentPassword', $_POST
-        );
-        $newPassword = $this->getTrimmedInput(
-            'newPassword', $_POST
-        );
-        $retypeNewPassword = $this->getTrimmedInput(
-            'retypeNewPassword', $_POST
-        );
-
-        /* Bail out if we don't have a current password. */
-        if (empty($currentPassword))
-        {
-            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid current password.');
-        }
-
-        /* Bail out if we don't have a new password. */
-        if (empty($newPassword))
-        {
-            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid new password.');
-        }
-
-        /* Bail out if we don't have a retyped new password. */
-        if (empty($retypeNewPassword))
-        {
-            CommonErrors::fatal(COMMONERROR_NOPASSWORDMATCH, $this, 'Invalid retyped new password.');
-        }
-
-        /* Bail out if the two passwords don't match. */
-        if ($retypeNewPassword !== $newPassword)
-        {
-            CommonErrors::fatal(COMMONERROR_NOPASSWORDMATCH, $this, 'Passwords do not match.');
-        }
+        $newPassword = $_POST['Password'];
 
         /* Attempt to change the user's password. */
         $users = new Users($this->_siteID);
-        $status = $users->changePassword(
-            $this->_userID, $currentPassword, $newPassword
-        );
+        $status = $users->changePassword($this->_userID, $newPassword);
 
         switch ($status)
         {
-            case LOGIN_INVALID_PASSWORD:
-                /* FIXME: No fatal()... we need a back button. */
-                $error[] = 'The password that you specified for "Current Password" is incorrect.';
-                break;
-
-            case LOGIN_CANT_CHANGE_PASSWORD:
-                /* FIXME: No fatal()... we need a back button. */
-                $error[] = 'You are not allowed to change your password.';
-                break;
-
             case LOGIN_INVALID_USER:
                 $error[] = 'Your username appears to be invalid. Your password has not been changed and you have been logged out.';
                 $messageSuccess = 'false';
@@ -2630,7 +2484,7 @@ class SettingsUI extends UserInterface
         }
         else
         {
-            $isDemoUser = $_SESSION['CATS']->isDemo();
+            $isDemoUser = $_SESSION['OSATS']->isDemo();
             $this->_template->assign('userID', $this->_userID);
             $this->_template->assign('isDemoUser', $isDemoUser);
 
@@ -2795,9 +2649,9 @@ class SettingsUI extends UserInterface
 
     public function wizard_addUser()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+        if (!isset($_SESSION['OSATS']) || empty($_SESSION['OSATS']))
         {
-            echo 'CATS has lost your session data!';
+            echo 'OSATS has lost your session data!';
             return;
         }
 
@@ -2832,10 +2686,10 @@ class SettingsUI extends UserInterface
         }
 
         /* Make it a multisite user name if the user is part of a hosted site. */
-        $unixName = $_SESSION['CATS']->getUnixName();
+        $unixName = $_SESSION['OSATS']->getUnixName();
         if (strpos($loginName, '@') === false && !empty($unixName))
         {
-           $loginName .= '@' . $_SESSION['CATS']->getSiteID();
+           $loginName .= '@' . $_SESSION['OSATS']->getSiteID();
         }
 
         /* Bail out if the specified username already exists. */
@@ -2866,9 +2720,9 @@ class SettingsUI extends UserInterface
 
     public function wizard_deleteUser()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+        if (!isset($_SESSION['OSATS']) || empty($_SESSION['OSATS']))
         {
-            echo 'CATS has lost your session!';
+            echo 'OSATS has lost your session!';
             return;
         }
         /* Bail out if the user doesn't have SA permissions. */
@@ -2885,7 +2739,7 @@ class SettingsUI extends UserInterface
             return;
         }
 
-        if ($userID == $_SESSION['CATS']->getUserID())
+        if ($userID == $_SESSION['OSATS']->getUserID())
         {
             echo 'You cannot delete yourself!';
             return;
@@ -2902,9 +2756,9 @@ class SettingsUI extends UserInterface
   /*
         $fileError = false;
 
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+        if (!isset($_SESSION['OSATS']) || empty($_SESSION['OSATS']))
         {
-            echo 'CATS has lost your session!';
+            echo 'OSATS has lost your session!';
             return;
         }
     
@@ -2927,7 +2781,7 @@ class SettingsUI extends UserInterface
                 {
                     if (!osatutil::isSOAPEnabled())
                     {
-                        echo "CATS Professional requires the PHP SOAP library which isn't currently installed.\n\n"
+                        echo "OSATS Professional requires the PHP SOAP library which isn't currently installed.\n\n"
                             . "Installation Instructions:\n\n"
                             . "WAMP/Windows Users:\n"
                             . "1) Left click on the wamp icon.\n"
@@ -2937,16 +2791,16 @@ class SettingsUI extends UserInterface
                             . "5) Restart WAMP.\n\n"
                             . "Linux Users:\n"
                             . "Re-install PHP with the --enable-soap configuration option.\n\n"
-                            . "Please visit http://www.catsone.com for more support options.";
+                            . "Please visit http://www.OSATSone.com for more support options.";
                         return;
                     }
                     else
                     {
                         if (!LicenseUtility::validateProfessionalKey($key))
                         {
-                            echo "That is not a valid CATS Professional license key. Please visit "
-                                . "http://www.catsone.com/professional for more information about CATS Professional.\n\n"
-                                . "For a free open-source key, please visit http://www.catsone.com/ and "
+                            echo "That is not a valid OSATS Professional license key. Please visit "
+                                . "http://www.OSATSone.com/professional for more information about OSATS Professional.\n\n"
+                                . "For a free open-source key, please visit http://www.OSATSone.com/ and "
                                 . "click on \"Downloads\".";
                             return;
                         }
@@ -2980,19 +2834,19 @@ class SettingsUI extends UserInterface
                 . '1) Change the file permissions of your config.php file.'."\n".'If you\'re using unix, try:' . "\n" . 'chmod 777 config.php' . "\n\n"
                 . '2) Edit your config.php file manually and enter your valid key near this line: ' . "\n"
                 . 'define(\'LICENSE_KEY\', \'ENTER YOUR KEY HERE\');' . "\n" . 'Once you\'ve done this, refresh your browser.' . "\n\n"
-                . 'For more help, visit our website at http://www.catsone.com for support options.';
+                . 'For more help, visit our website at http://www.OSATSone.com for support options.';
         }
 
         echo 'That is not a valid key. You can register for a free open source license key on our website '
-            . 'at http://www.catsone.com or a professional key to unlock all of the available features at '
-            . 'http://www.catsone.com/professional';
+            . 'at http://www.OSATSone.com or a professional key to unlock all of the available features at '
+            . 'http://www.OSATSone.com/professional';
     }
 */
     public function wizard_localization()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+        if (!isset($_SESSION['OSATS']) || empty($_SESSION['OSATS']))
         {
-            echo 'CATS has lost your session!';
+            echo 'OSATS has lost your session!';
             return;
         }
         /* Bail out if the user doesn't have SA permissions. */
@@ -3028,9 +2882,9 @@ class SettingsUI extends UserInterface
 
     public function wizard_license()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+        if (!isset($_SESSION['OSATS']) || empty($_SESSION['OSATS']))
         {
-            echo 'CATS has lost your session!';
+            echo 'OSATS has lost your session!';
             return;
         }
         /* Bail out if the user doesn't have SA permissions. */
@@ -3048,9 +2902,9 @@ class SettingsUI extends UserInterface
 
     public function wizard_firstTimeSetup()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+        if (!isset($_SESSION['OSATS']) || empty($_SESSION['OSATS']))
         {
-            echo 'CATS has lost your session!';
+            echo 'OSATS has lost your session!';
             return;
         }
         /* Bail out if the user doesn't have SA permissions. */
@@ -3068,9 +2922,9 @@ class SettingsUI extends UserInterface
 
     public function wizard_password()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+        if (!isset($_SESSION['OSATS']) || empty($_SESSION['OSATS']))
         {
-            echo 'CATS has lost your session!';
+            echo 'OSATS has lost your session!';
             return;
         }
         /* Bail out if the user doesn't have SA permissions. */
@@ -3090,7 +2944,7 @@ class SettingsUI extends UserInterface
         }
 
         $users = new Users($this->_siteID);
-        if ($users->changePassword($this->_userID, 'cats', $password) != LOGIN_SUCCESS)
+        if ($users->changePassword($this->_userID, 'OSATS', $password) != LOGIN_SUCCESS)
         {
             echo 'Cannot change your site password!';
             return;
@@ -3101,9 +2955,9 @@ class SettingsUI extends UserInterface
 
     public function wizard_email()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+        if (!isset($_SESSION['OSATS']) || empty($_SESSION['OSATS']))
         {
-            echo 'CATS has lost your session!';
+            echo 'OSATS has lost your session!';
             return;
         }
 
@@ -3124,9 +2978,9 @@ class SettingsUI extends UserInterface
 
     public function wizard_siteName()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+        if (!isset($_SESSION['OSATS']) || empty($_SESSION['OSATS']))
         {
-            echo 'CATS has lost your session!';
+            echo 'OSATS has lost your session!';
             return;
         }
         /* Bail out if the user doesn't have SA permissions. */
@@ -3156,20 +3010,20 @@ class SettingsUI extends UserInterface
 
         $companies->setCompanyDefault($companyIDInternal);
 
-        $_SESSION['CATS']->setSiteName($siteName);
+        $_SESSION['OSATS']->setSiteName($siteName);
 
         echo 'Ok';
     }
 
     public function wizard_import()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+        if (!isset($_SESSION['OSATS']) || empty($_SESSION['OSATS']))
         {
-            echo 'CATS has lost your session!';
+            echo 'OSATS has lost your session!';
             return;
         }
 
-        $siteID = $_SESSION['CATS']->getSiteID();
+        $siteID = $_SESSION['OSATS']->getSiteID();
 
         // Echos Ok to redirect to the import stage, or Fail to go to home module
         $files = ImportUtility::getDirectoryFiles(FileUtility::getUploadPath($siteID, 'massimport'));
@@ -3180,9 +3034,9 @@ class SettingsUI extends UserInterface
 
     public function wizard_website()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+        if (!isset($_SESSION['OSATS']) || empty($_SESSION['OSATS']))
         {
-            echo 'CATS has lost your session!';
+            echo 'OSATS has lost your session!';
             return;
         }
 
@@ -3242,8 +3096,8 @@ class SettingsUI extends UserInterface
             // Store the questionnaire in a sesssion. That way we can make post changes
             // without changing the database data. Only save the session to the DB if the
             // user requests it.
-            if (isset($_SESSION['CATS_QUESTIONNAIRE'])) unset($_SESSION['CATS_QUESTIONNAIRE']);
-            $_SESSION['CATS_QUESTIONNAIRE'] = array(
+            if (isset($_SESSION['OSATS_QUESTIONNAIRE'])) unset($_SESSION['OSATS_QUESTIONNAIRE']);
+            $_SESSION['OSATS_QUESTIONNAIRE'] = array(
                 'id' => $questionnaireID,
                 'title' => $title,
                 'description' => $description,
@@ -3255,7 +3109,7 @@ class SettingsUI extends UserInterface
         {
             // This is being called from a postback, so we're actively working out of the
             // session. Postback will handle saves.
-            if (!isset($_SESSION['CATS_QUESTIONNAIRE']) || empty($_SESSION['CATS_QUESTIONNAIRE']))
+            if (!isset($_SESSION['OSATS_QUESTIONNAIRE']) || empty($_SESSION['OSATS_QUESTIONNAIRE']))
             {
                 CommonErrors::fatal(COMMONERROR_BADINDEX, 'Please return to your careers website '
                     . 'and load the questionnaire a second time as your session has '
@@ -3266,14 +3120,14 @@ class SettingsUI extends UserInterface
             $scrollX = isset($_POST[$id = 'scrollX']) ? $_POST[$id] : '';
             $scrollY = isset($_POST[$id = 'scrollY']) ? $_POST[$id] : '';
 
-            $questions = $_SESSION['CATS_QUESTIONNAIRE']['questions'];
-            $questionnaireID = $_SESSION['CATS_QUESTIONNAIRE']['id'];
+            $questions = $_SESSION['OSATS_QUESTIONNAIRE']['questions'];
+            $questionnaireID = $_SESSION['OSATS_QUESTIONNAIRE']['id'];
 
             $this->_template->assign('scrollX', $scrollX);
             $this->_template->assign('scrollY', $scrollY);
-            $this->_template->assign('title', $_SESSION['CATS_QUESTIONNAIRE']['title']);
-            $this->_template->assign('description', $_SESSION['CATS_QUESTIONNAIRE']['description']);
-            $this->_template->assign('isActive', $_SESSION['CATS_QUESTIONNAIRE']['isActive']);
+            $this->_template->assign('title', $_SESSION['OSATS_QUESTIONNAIRE']['title']);
+            $this->_template->assign('description', $_SESSION['OSATS_QUESTIONNAIRE']['description']);
+            $this->_template->assign('isActive', $_SESSION['OSATS_QUESTIONNAIRE']['isActive']);
             $this->_template->assign('questions', $questions);
         }
 
@@ -3291,7 +3145,7 @@ class SettingsUI extends UserInterface
             return;
         }
 
-        if (!isset($_SESSION['CATS_QUESTIONNAIRE']) || empty($_SESSION['CATS_QUESTIONNAIRE']))
+        if (!isset($_SESSION['OSATS_QUESTIONNAIRE']) || empty($_SESSION['OSATS_QUESTIONNAIRE']))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, 'Please return to your careers website '
                 . 'and load the questionnaire a second time as your session has '
@@ -3309,12 +3163,12 @@ class SettingsUI extends UserInterface
         // Is this active?
         $active = isset($_POST[$id = 'isActive']) ? !strcasecmp($_POST[$id], 'yes') : 0;
 
-        $_SESSION['CATS_QUESTIONNAIRE']['title'] = $title;
-        $_SESSION['CATS_QUESTIONNAIRE']['description'] = $description;
-        $_SESSION['CATS_QUESTIONNAIRE']['isActive'] = $active ? true : false;
+        $_SESSION['OSATS_QUESTIONNAIRE']['title'] = $title;
+        $_SESSION['OSATS_QUESTIONNAIRE']['description'] = $description;
+        $_SESSION['OSATS_QUESTIONNAIRE']['isActive'] = $active ? true : false;
 
         $questionnaire = new Questionnaire($this->_siteID);
-        $questions = $_SESSION['CATS_QUESTIONNAIRE']['questions'];
+        $questions = $_SESSION['OSATS_QUESTIONNAIRE']['questions'];
 
         /**
          * STEP 1
@@ -3667,27 +3521,27 @@ class SettingsUI extends UserInterface
         if (isset($_POST[$id = 'startOver']) && !strcasecmp($_POST[$id], 'yes'))
         {
             // User wants to start over
-            $_SESSION['CATS_QUESTIONNAIRE']['questions'] = array();
+            $_SESSION['OSATS_QUESTIONNAIRE']['questions'] = array();
         }
         else if (isset($_POST[$id = 'saveChanges']) && !strcasecmp($_POST[$id], 'yes'))
         {
             // User wants to add the new questionnaire
-            if (($id = intval($_SESSION['CATS_QUESTIONNAIRE']['id'])) != 0)
+            if (($id = intval($_SESSION['OSATS_QUESTIONNAIRE']['id'])) != 0)
             {
                 $questionnaire->update(
                     $id, // the questionnaire id to update
-                    $_SESSION['CATS_QUESTIONNAIRE']['title'],
-                    $_SESSION['CATS_QUESTIONNAIRE']['description'],
-                    $_SESSION['CATS_QUESTIONNAIRE']['isActive']
+                    $_SESSION['OSATS_QUESTIONNAIRE']['title'],
+                    $_SESSION['OSATS_QUESTIONNAIRE']['description'],
+                    $_SESSION['OSATS_QUESTIONNAIRE']['isActive']
                 );
             }
             // User is editting an existing questionnaire
             else
             {
                 $id = $questionnaire->add(
-                    $_SESSION['CATS_QUESTIONNAIRE']['title'],
-                    $_SESSION['CATS_QUESTIONNAIRE']['description'],
-                    $_SESSION['CATS_QUESTIONNAIRE']['isActive']
+                    $_SESSION['OSATS_QUESTIONNAIRE']['title'],
+                    $_SESSION['OSATS_QUESTIONNAIRE']['description'],
+                    $_SESSION['OSATS_QUESTIONNAIRE']['isActive']
                 );
             }
 
@@ -3699,7 +3553,7 @@ class SettingsUI extends UserInterface
                 // Save the questions to the new or old questionnaire
                 $questionnaire->addQuestions(
                     $id,
-                    $_SESSION['CATS_QUESTIONNAIRE']['questions']
+                    $_SESSION['OSATS_QUESTIONNAIRE']['questions']
                 );
 
                 osatutil::transferRelativeURI('m=settings&a=careerPortalSettings');
@@ -3709,7 +3563,7 @@ class SettingsUI extends UserInterface
         else
         {
             // Now save changes to the session
-            $_SESSION['CATS_QUESTIONNAIRE']['questions'] = $questions;
+            $_SESSION['OSATS_QUESTIONNAIRE']['questions'] = $questions;
         }
 
         // Now view the page as if we've just loaded it from the database

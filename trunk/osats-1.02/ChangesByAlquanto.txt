@@ -17,7 +17,7 @@ CHANGES BY ALQUANTO
   
 2009-02-12
   * UPD ajax/getPipelineJobOrder.php: th-stuff rewritten
-  * UPD SESSIONNAME replaced in various files (was: CATS_SESSION_NAME)
+  * UPD SESSIONNAME replaced in various files (was: OSATS_SESSION_NAME)
   * ADD new option to localize dateformats in queries/html: DATEFORMAT_SQL_LONG, DATEFORMAT_SQL_DATE, DATEFORMAT_SQL_TIME and DATEFORMAT are terms, that are used for that
   * UPD YES/No-stuff in lib/Candidates.php
   * UPD finished i18n of module "activity"

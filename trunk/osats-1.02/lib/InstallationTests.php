@@ -101,8 +101,8 @@ class InstallationTests
         }
     }
 
-    /* Print the CATS version information just for informational purposes, for
-     * example when someone posts installtest output to the CATS Forums.
+    /* Print the OSATS version information just for informational purposes, for
+     * example when someone posts installtest output to the OSATS Forums.
      */
     public static function printOSATSVersion()
     {
@@ -201,7 +201,7 @@ class InstallationTests
             . '<strong>Debian:</strong> Run "apt-get install php5-session" and restart your webserver.<br /><br />'
             . '<strong>FreeBSD:</strong> Install the php5-session session port, or configure session support in the'
             . ' php-extensions port and restart your webserver.<br /><br />'
-            . '<strong>See also:</strong> <a target="_blank" href="http://www.catsone.com/forum/viewtopic.php?id=282">CATS Forum Post #282</a></td></tr>';
+            . '<strong>See also:</strong> <a target="_blank" href="http://www.OSATSone.com/forum/viewtopic.php?id=282">OSATS Forum Post #282</a></td></tr>';
         return false;
     }
 
@@ -219,7 +219,7 @@ class InstallationTests
             . 'Under certain Linux / BSD distributions, the PHP CType extension is a separate package.<br /><br />'
             . '<strong>Debian:</strong> Run "apt-get install php5-ctype" and restart your webserver.<br /><br />'
             . '<strong>FreeBSD:</strong> Install the php5-ctype port, or configure CType support in the php-extensions port and restart your webserver.<br /><br />'
-            . '<strong>See also:</strong> <a target="_blank" href="http://www.catsone.com/forum/viewtopic.php?id=102">CATS Forum Post #102</a><br />'
+            . '<strong>See also:</strong> <a target="_blank" href="http://www.OSATSone.com/forum/viewtopic.php?id=102">OSATS Forum Post #102</a><br />'
             . '<strong>See also:</strong> <a target="_blank" href="http://www.google.com/search?q=%22Call+to+undefined+function+ctype_digit%28%29%22">Google: "Call to undefined function ctype_digit()"</a></td></tr>';
 
         return false;
@@ -255,7 +255,7 @@ class InstallationTests
 
         // FIXME: More information.
         echo '<tr class="warning"><td><strong>PHP GD image manipulation library extension (gd) is not loaded.</strong><br />'
-            . 'Check your settings in php.ini.<br /><br />CATS will function without GD, but no graphs will load.<br /><br />'
+            . 'Check your settings in php.ini.<br /><br />OSATS will function without GD, but no graphs will load.<br /><br />'
             . 'Under certain Linux / BSD distributions, the PHP GD extension is a separate package.<br /><br />'
             . '<strong>Ubuntu:</strong> Run "apt-get install php5-gd" and restart your webserver.<br /><br />'
             . '<strong>Debian:</strong> Run "apt-get install php5-gd" and restart your webserver.<br /><br />'
@@ -279,8 +279,8 @@ class InstallationTests
 
         echo '<tr class="warning"><td><strong>PHP SOAP extension (soap) is not loaded.</strong><br />'
             . 'Check your settings in php.ini.<br /><br />'
-            . 'CATS Open Source will function without SOAP, but '
-            . 'CATS Professional functionality will not be supported.<br /><br />'
+            . 'OSATS Open Source will function without SOAP, but '
+            . 'OSATS Professional functionality will not be supported.<br /><br />'
             . 'Under certain Linux / BSD distributions, the PHP SOAP extension is a separate package.<br /><br />'
             . '<strong>Ubuntu:</strong> Run "apt-get install php-soap" and restart your webserver.<br /><br />'
             . '<strong>Debian:</strong> Run "apt-get install php5-soap" and restart your webserver.<br /><br />'
@@ -311,7 +311,7 @@ class InstallationTests
             return false;
         }
 
-        /* Try to switch to the CATS database. */
+        /* Try to switch to the OSATS database. */
         if (!@mysql_select_db($name))
         {
             echo sprintf(
@@ -692,7 +692,7 @@ class InstallationTests
         }
 
         echo sprintf(
-            '<tr class="fail"><td>MySQL 4.1.0 or greater is required to run CATS. Found version: %s.</td></tr>',
+            '<tr class="fail"><td>MySQL 4.1.0 or greater is required to run OSATS. Found version: %s.</td></tr>',
             $version
         );
 

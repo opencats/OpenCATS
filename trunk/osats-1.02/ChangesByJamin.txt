@@ -1,3 +1,41 @@
+3-11-2009
+---
+WARNING.. THIS SYSTEM IS NOT FULLY FUNCTIONAL! YOU WILL RUN INTO ISSUES. THANKS!
+
+Rewrote javascript file to perform the folowing functions:
+ Validate New User form, Edit User form, Site Name change, Password Change.
+ New file is called validateme.js
+
+Deleted validator.js 
+
+Forced email address to be required on New User form.
+
+Cleaned up the wizard code (mainly removed) that would check for users email upon first login. Since it is forced by the New User form, this was not needed.
+
+Rewrote how the Modules load entirely. Currently called from the DB. I know there are many db refs currently that I have constructed. This will be consolidated when completion of the rewrite has fully completed.
+
+Wrote in the ability to rearrange the tab order and visibility of normally visible tabs. A new tpl file was created to perform this function. You can access this feature in the Administration area. I have removed references (ie: coremodules) of the old way of ordering and the method of scanning the filesystem.
+
+Moved the System Info to the About tab.
+
+Removed the Portal User option (for now) on the Add/Edit User areas. Needs tweaking.
+
+Added a session_destroy(); line in the index.php. This is currently commented out, but is used for destroying the session during coding.
+
+Removed all references to the word cats (well almost)...
+
+Change code in the Add User and Edit User forms to format the js file. 
+
+Change the CSS code to make the login back ground white again. Its easier to setup debugging messages to appear on white. :-)  You can modify the css to any color you wish.
+
+Added new db called moduleinfo. It stores the data of the modules and their parameters..still updating though. 
+
+Current db that gets installed is going to be full of testing junk. Sorry.. I will clean it up when the project is fully rewritten from ground up.
+
+Allowed SA levels and above access to modify their profile.
+
+
+
 2-23-2009
 ---
 Full rewrite of the installation.
@@ -30,21 +68,21 @@ Benjamin
 Previous mods:
 ---------------
 The following changes have been done.
-1. Login Page is totally different than the original CATS.
-2. The CatsUtility no longer exists! I have changed the utility to OSATUTIL.php. All files now call the new utility. 
-3. Cats_Version constant in Contstants.php has been changed to OSATVER. Changed Copyright_html to Company_html (this is for the footer where Cats said we couldnt change...now that its being rewritten, I made it a place for companies to put their company name and it displays it on all the footers of the pages.)
+1. Login Page is totally different than the original OSATS.
+2. The OSATSUtility no longer exists! I have changed the utility to OSATUTIL.php. All files now call the new utility. 
+3. OSATS_Version constant in Contstants.php has been changed to OSATVER. Changed Copyright_html to Company_html (this is for the footer where OSATS said we couldnt change...now that its being rewritten, I made it a place for companies to put their company name and it displays it on all the footers of the pages.)
 4. Removed various 'Demo' function checks. Since this is going to be Open Source, its not needed. 
-5. Removed 85% of the 'CATS' remarked headings to say something along the lines of OSATS
+5. Removed 85% of the 'OSATS' remarked headings to say something along the lines of OSATS
 6. Created new images and linked them up in the system. The toolbar at top has been changed by color and shape. The icon next to the links in the Administration section has been changed. The tables have been modified on the Administration section.
 7. There is no need for the ASP file. I have removed all instances of it checking for the file to make it professional, it automatically loads the entire pro series items now. 
 8. Removed the MRU's.  They were annoying. The code is still there, but remarked out. If you want to use it, just unremark the code.
-9. Did a 85% change of instances of the name CATS and changed it to OSATS. In the code and in the DB. There are more that needs to be done though. I will continue to work on it.
+9. Did a 85% change of instances of the name OSATS and changed it to OSATS. In the code and in the DB. There are more that needs to be done though. I will continue to work on it.
 10. Removed Readme from /lib/tinymce  - Not needed
     Removed changelog from /lib/tinymce  - Not needed
     Removed the entire Examples folder from /lib/tinymce
 11. Changed various 'wording' in the code that gets displayed on the web pages. 
 12. In areas where the Constants.php needs to be updated, I put a line that tells you where it is and displayed it on the webpage in which it belongs. (example: the footer has a blob...)
 
-I will continue to change the code and rework it so that it is no longer considered CATSONE code. 
+I will continue to change the code and rework it so that it is no longer considered OSATSONE code. 
 
-** If you dont like the colors, mess with the CSS files and use a graphics program to change the scheme..Later I will worry about themes, but for now.. its just getting the code out from under the license of Catsone!
+** If you dont like the colors, mess with the CSS files and use a graphics program to change the scheme..Later I will worry about themes, but for now.. its just getting the code out from under the license of OSATSone!

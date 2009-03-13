@@ -54,7 +54,7 @@ function customizeDashboard_moveComponent(componentID, position, columnID)
 }
 
 /**
- * Populates a company's location information from a CATS AJAX function by
+ * Populates a company's location information from a OSATS AJAX function by
  * company ID.
  *
  * @return void
@@ -114,7 +114,7 @@ function testEmailSettings(sessionCookie)
 
     testButton.disabled = true;
     testButton.style.color = '#aaa';
-    AJAX_callCATSFunction(
+    AJAX_callOSATSFunction(
         http,
         'testEmailSettings',
         POSTData,

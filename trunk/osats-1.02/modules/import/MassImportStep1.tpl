@@ -95,7 +95,7 @@
         
     <?php else: ?>
         In order to import resume documents into OSATS, you need to create a directory named "<b>upload</b>" on the computer
-        that hosts cats. This directory needs to have its permissions set to allow files to be created by your
+        that hosts OSATS. This directory needs to have its permissions set to allow files to be created by your
         web server.
         <br /><br />
         <b>Linux Instructions:</b>
@@ -107,7 +107,7 @@
         <br />
         <b>Windows Instructions:</b>
         <blockquote>
-        <span style="color: #c0c0c0;">&gt;</span> Create a folder named <b>upload</b> in the directory you installed CATS.<br />
+        <span style="color: #c0c0c0;">&gt;</span> Create a folder named <b>upload</b> in the directory you installed OSATS.<br />
         <span style="color: #c0c0c0;">&gt;</span> Set the appropriate permissions by right clicking the file and selecting <b>Properties</b>, then <b>Security</b>.<br />
         <span style="color: #c0c0c0;">&gt;</span> Make sure all users have access to read, write and delete files and directories.
         </blockquote>
@@ -125,7 +125,7 @@
                     <span style="font-size: 14px; color: #333333;">
                     Your resume documents will be imported as searchable documents but <b>not</b> as candidates unless you manually complete the required fields for each document (first and last names).
                     <br /><br />
-                    DEVELOPOER NOTE!!!!!   WE NEED TO FIND A RESUME PARSER ASIDE FROM RESFLY (its owned by catsone)
+                    DEVELOPOER NOTE!!!!!   WE NEED TO FIND A RESUME PARSER ASIDE FROM RESFLY (its owned by OSATSone)
                 
                     </span>
                 
