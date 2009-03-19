@@ -57,6 +57,7 @@ if (MYTABPOS == 'top') {
             <a id="add_link" href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=addUser" title="You have <?php $this->_($this->license['diff']); ?> user accounts remaining.">
                 <img src="images/candidate_inline.gif" width="16" height="16" class="absmiddle" alt="add" style="border: none;" />&nbsp;Add User
             </a>
+            <br /><br />&nbsp;<input type="button" name="back" class = "button" value="Back" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings';" />
         </div>
 <?php
 if (MYTABPOS == 'bottom') 

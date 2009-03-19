@@ -536,8 +536,9 @@ if (MYTABPOS == 'top') {
                     <?php endforeach; ?>
                     
                 </table>
-                <input type="submit" class="button" value="Save" style="display:none;" id="buttonSave" />
-                <input type="button" name="back" class = "button" value="Done" id="buttonDone"  onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration';" />
+                <input type="button" name="back" class = "button" value="Back" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings';" />&nbsp;
+				<input type="submit" class="button" value="Save" style="display:none;" id="buttonSave" />
+                <input type="button" name="back" class = "button" value="Done" id="buttonDone"  onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings';" />
             </form>
         </div>
 <?php

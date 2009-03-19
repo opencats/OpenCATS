@@ -53,17 +53,7 @@ if (MYTABPOS == 'top') {
 									
                                 </td>
                                 <td width="33%">
-                                    <?php if ($_SESSION['OSATS']->getAccessLevel() >= ACCESS_LEVEL_SA)
-                                    {
-										//has the rights to see this link.
-										?><a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration">
-                                        <img src="images/2dot1c.gif" alt="" border="0" /> Administration
-                                    </a>
-									<br />
-									Administer various functions of the OSATS application.	
-									<?php
-									}
-                                    ?>
+                                    
                             </tr>
                             </table>
                             

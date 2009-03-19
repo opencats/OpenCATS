@@ -57,7 +57,7 @@ if (MYTABPOS == 'top') {
                             </tr>
                         </table>
                         <input type="button" name="install" class = "button" value="Re-Install" onclick="document.location.href='<?php echo $installpath;?>'"/>
-                        <input type="button" name="back" class = "button" value="Back" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration';" />
+                        <input type="button" name="back" class = "button" value="Back" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings';" />
                     </td>
                 </tr>
             </table>

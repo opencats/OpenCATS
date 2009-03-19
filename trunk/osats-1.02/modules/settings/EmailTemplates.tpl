@@ -179,6 +179,7 @@ if (MYTABPOS == 'top') {
                     </td>
                 </tr>
             </table>
+            <input type="button" name="back" class = "button" value="Back" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings';" />
         </div>
 <?php
 if (MYTABPOS == 'bottom') 

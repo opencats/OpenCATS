@@ -33,7 +33,7 @@ if (MYTABPOS == 'top') {
                             <br />
                             <input type="text" name="MySiteName" id="MySiteName" value="" style="width:250px;" /><br /><br />
                             <input type="submit" name="save" id="submit" class = "button" value="Save" />
-                            <input type="button" name="back" class = "button" value="Back" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration';" />
+                            <input type="button" name="back" class = "button" value="Back" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings';" />
                         </form>
                     </td>
                 </tr>

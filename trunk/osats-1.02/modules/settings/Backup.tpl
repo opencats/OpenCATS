@@ -70,7 +70,8 @@ if (MYTABPOS == 'top') {
                         <?php endif; ?>
 
                     <br />
-                    <input type="button" class="button" value="Create Full System Backup" onclick="startBackup('settings:backup', '');" style="margin:3px; width:200px;"><br />
+                    &nbsp;<input type="button" name="back" class = "button" value="Back" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings';" /><br />
+					<input type="button" class="button" value="Create Full System Backup" onclick="startBackup('settings:backup', '');" style="margin:3px; width:200px;"><br />
                     <input type="button" class="button" value="Create Attachments Backup" onclick="startBackup('settings:backup', '&attachmentsOnly=true');" style="margin:3px; width:200px;">
                     </span>
                     <span id="progressBar" style="display:none;">

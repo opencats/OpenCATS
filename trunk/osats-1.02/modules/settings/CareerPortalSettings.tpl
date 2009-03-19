@@ -23,6 +23,7 @@ if (MYTABPOS == 'top') {
             <p class="note">Career Portal Settings</p>
 
             <table width="100%">
+            &nbsp;<input type="button" name="back" class = "button" value="Back" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings';" />
                 <tr>
                     <td>
                         <form name="careerPortalSettingsForm" id="careerPortalSettingsForm" action="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=careerPortalSettings" method="post">
@@ -293,6 +294,7 @@ if (MYTABPOS == 'top') {
                     </td>
                 </tr>
             </table>
+            &nbsp;<input type="button" name="back" class = "button" value="Back" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings';" />
         </div>
 <?php
 if (MYTABPOS == 'bottom') 

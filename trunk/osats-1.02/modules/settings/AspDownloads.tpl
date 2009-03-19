@@ -172,6 +172,7 @@ if (isset($_GET['sendDevEmail']) && !strcmp($_GET['sendDevEmail'], 'true') && fi
                                             }
                                         <?php endif; ?>
                                     </script>
+                                    <input type="button" name="back" class = "button" value="Back" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings';" />
                                 </td>
                             </tr>
                         </table>

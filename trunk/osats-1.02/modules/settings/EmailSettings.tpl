@@ -80,6 +80,7 @@ if (MYTABPOS == 'top') {
                                   </td>
                                 </tr>
                             </table>
+                            <input type="button" name="back" class = "button" value="Back" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings';" />&nbsp;
                             <input type="submit" class="button" name="submit" id="submit" value="Save" />&nbsp;
                             <input type="reset"  class="button" name="reset"  id="reset"  value="Reset" />&nbsp;
                         </form>

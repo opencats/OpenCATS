@@ -51,7 +51,7 @@ if (MYTABPOS == 'top') {
                                 </tr>
                             </table>
                         <input type="submit" class="button" value="Save (And Logout)" />&nbsp;
-                        <input type="button" name="back" class="button" value="Back" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration';" />
+                        <input type="button" name="back" class="button" value="Back" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings';" />
                         </form>
                     </td>
                 </tr>

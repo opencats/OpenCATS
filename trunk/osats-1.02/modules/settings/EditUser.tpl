@@ -162,10 +162,11 @@ if (MYTABPOS == 'top') {
                     </tr>
 
                 </table>
-                <input type="submit" class="button" name="submit" id="submit" value="Save" />&nbsp;
+				<input type="submit" class="button" name="submit" id="submit" value="Save" />&nbsp;
                 <input type="reset"  class="button" name="reset"  id="reset"  value="Reset" onclick="document.getElementById('userAccessStatus').innerHTML='<?php $this->_($this->data['accessLevelLongDescription']); ?>'" />&nbsp;
                 <input type="button" class="button" name="back"   id="back"   value="Cancel" onclick="javascript:goToURL('<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=showUser&amp;userID=<?php $this->_($this->data['userID']); ?>');" />
             </form>
+            
         </div>
 <?php
 if (MYTABPOS == 'bottom') 

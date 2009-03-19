@@ -93,6 +93,8 @@ if (MYTABPOS == 'top') {
                 </table>
                 <?php $this->pager->printNavigation('', true, 20); ?>
             <?php endif; ?>
+            <br />
+            <input type="button" name="back" class = "button" value="Back" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings';" />
         </div>
 <?php
 if (MYTABPOS == 'bottom') 

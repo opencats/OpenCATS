@@ -46,16 +46,6 @@ class SettingsUI extends UserInterface
             $this->_settingsUserCategories = array(array('Career Portal Customizer', 'careerportal', 'This user can\'t do anything but modify the career portal settings.  It is intended to be used by the Professional Support Team.  This user does not count against your maximum users.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
             );
 	
-			//this gets passed to the module(tab) load process for SUBTABS.  Need to move to DB. Jamin
-        /* moved to the myprofile.tpl page where it checks to see if the user has the rights then shows the link. Jamin
-		$mp = array(
-            'Administration' => osatutil::getIndexName() . '?m=settings&amp;a=administration',
-            //'My Profile'     => osatutil::getIndexName() . '?m=settings',
-            'Downloads' => osatutil::getIndexName() . '?m=settings&amp;a=downloads'
-        );
-
-        $this->_subTabs = $mp;
-        */
         $this->_hooks = $this->defineHooks();
     }
 
@@ -86,7 +76,7 @@ class SettingsUI extends UserInterface
             'SETTINGS_DISPLAY_PROFILE_SETTINGS' => '
                 if ($_SESSION[\'OSATS\']->hasUserCategory(\'careerportal\'))
                 {
-                    osatutil::transferRelativeURI(\'m=settings&a=administration\');
+                    osatutil::transferRelativeURI(\'m=settings\');
                     return false;
                 }
             ',
@@ -408,7 +398,8 @@ class SettingsUI extends UserInterface
                 $this->wizard_website();
                 break;
 
-            case 'administration':
+            
+			case 'administration':
                 if ($this->isPostBack())
                 {
                     $this->onAdministration();
@@ -418,7 +409,8 @@ class SettingsUI extends UserInterface
                     $this->administration();
                 }
                 break;
-
+			
+			
             /* Main settings page. */
             case 'myProfile':
                 default:
@@ -469,8 +461,7 @@ class SettingsUI extends UserInterface
         //this needs to pull from a variable that loads once. Stop the repeats. Jamin
         $this->_template->assign('userID', $this->_userID);
         $this->_template->assign('active', $this);
-        //change this to check if user is an admin. If so, make their page the Administration page. On my todo list. Jamin
-		$this->_template->assign('subActive', 'My Profile');
+		//$this->_template->assign('subActive', 'My Profile');
         $this->_template->display($templateFile);
     }
 
@@ -1118,7 +1109,7 @@ class SettingsUI extends UserInterface
         if (!eval(Hooks::get('SETTINGS_EMAIL_TEMPLATES'))) return;
 
         $this->_template->assign('active', $this);
-        $this->_template->assign('subActive', 'Administration');
+        //$this->_template->assign('subActive', 'Administration');
         $this->_template->assign('emailTemplatesRS', $emailTemplatesRS);
         $this->_template->display('./modules/settings/EmailTemplates.tpl');
     }
@@ -1259,7 +1250,7 @@ class SettingsUI extends UserInterface
         $EEOSettingsRS = $EEOSettings->getAll();
 
         $this->_template->assign('active', $this);
-        $this->_template->assign('subActive', 'Administration');
+        //$this->_template->assign('subActive', 'Administration');
         $this->_template->assign('template', $template);
         $this->_template->assign('templateName', $templateName);
         $this->_template->assign('eeoEnabled', $EEOSettingsRS['enabled']);
@@ -1355,7 +1346,7 @@ class SettingsUI extends UserInterface
 
         $this->_template->assign('active', $this);
         $this->_template->assign('questionnaires', $data);
-        $this->_template->assign('subActive', 'Administration');
+        //$this->_template->assign('subActive', 'Administration');
         $this->_template->assign('careerPortalSettingsRS', $careerPortalSettingsRS);
         $this->_template->assign('careerPortalTemplateNames', $careerPortalTemplateNames);
         $this->_template->assign('careerPortalTemplateCustomNames', $careerPortalTemplateCustomNames);
@@ -1451,7 +1442,7 @@ class SettingsUI extends UserInterface
             }
         }
 
-        osatutil::transferRelativeURI('m=settings&a=administration');
+        osatutil::transferRelativeURI('m=settings');
     }
 
     private function onCareerPortalTweak()
@@ -1551,7 +1542,7 @@ class SettingsUI extends UserInterface
         $EEOSettingsRS = $EEOSettings->getAll();
 
         $this->_template->assign('active', $this);
-        $this->_template->assign('subActive', 'Administration');
+        //$this->_template->assign('subActive', 'Administration');
         $this->_template->assign('EEOSettingsRS', $EEOSettingsRS);
         $this->_template->assign('sessionCookie', $_SESSION['OSATS']->getCookie());
         $this->_template->display('./modules/settings/EEOEOCSettings.tpl');
@@ -1582,7 +1573,7 @@ class SettingsUI extends UserInterface
             }
         }
 
-        osatutil::transferRelativeURI('m=settings&a=administration');
+        osatutil::transferRelativeURI('m=settings');
     }
 
     /*
@@ -1608,7 +1599,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('emailTemplatesRS', $emailTemplatesRS);
         $this->_template->assign('candidateJoborderStatusSendsMessage', $candidateJoborderStatusSendsMessage);
         $this->_template->assign('active', $this);
-        $this->_template->assign('subActive', 'Administration');
+        //$this->_template->assign('subActive', 'Administration');
         $this->_template->assign('mailerSettingsRS', $mailerSettingsRS);
         $this->_template->assign('sessionCookie', $_SESSION['OSATS']->getCookie());
         $this->_template->display('./modules/settings/EmailSettings.tpl');
@@ -1659,7 +1650,7 @@ class SettingsUI extends UserInterface
         }
 
         $this->_template->assign('active', $this);
-        osatutil::transferRelativeURI('m=settings&a=administration');
+        osatutil::transferRelativeURI('m=settings');
     }
 
     /*
@@ -1679,7 +1670,7 @@ class SettingsUI extends UserInterface
 
         $this->_template->assign('calendarSettingsRS', $calendarSettingsRS);
         $this->_template->assign('active', $this);
-        $this->_template->assign('subActive', 'Administration');
+        //$this->_template->assign('subActive', 'Administration');
         $this->_template->display('./modules/settings/CustomizeCalendar.tpl');
     }
 
@@ -1722,7 +1713,7 @@ class SettingsUI extends UserInterface
         }
 
         $this->_template->assign('active', $this);
-        osatutil::transferRelativeURI('m=settings&a=administration');
+        osatutil::transferRelativeURI('m=settings');
     }
 
     /*
@@ -1738,7 +1729,7 @@ class SettingsUI extends UserInterface
         }
 
         $this->_template->assign('active', $this);
-        $this->_template->assign('subActive', 'Administration');
+        //$this->_template->assign('subActive', 'Administration');
         $this->_template->display('./modules/settings/CustomizeReports.tpl');
     }
 
@@ -1819,7 +1810,7 @@ class SettingsUI extends UserInterface
         }
 
         $this->_template->assign('active', $this);
-        $this->_template->assign('subActive', 'Administration');
+        //$this->_template->assign('subActive', 'Administration');
         $this->_template->assign('attachmentsRS', $attachmentsRS);
         $this->_template->display('./modules/settings/Backup.tpl');
     }
@@ -1892,7 +1883,7 @@ class SettingsUI extends UserInterface
         if ($mailerSettingsRS['configured'] == '0' &&
             $accessLevel >= ACCESS_LEVEL_SA)
         {
-            $this->_template->assign('prompt', 'Your site name has been saved. This concludes the required OSATS configuration wizard.<BR><BR><span style="font-weight: bold;">Warning:</span><BR><BR> E-mail features are disabled. In order to enable e-mail features (such as e-mail notifications), please configure your e-mail settings by clicking on the Settings tab and then clicking on Administration.');
+            $this->_template->assign('prompt', 'Your site name has been saved. This concludes the required OSATS configuration wizard.<BR><BR><span style="font-weight: bold;">Warning:</span><BR><BR> E-mail features are disabled. In order to enable e-mail features (such as e-mail notifications), please configure your e-mail settings by clicking on the Settings tab');
         }
         else
         {
@@ -2008,7 +1999,7 @@ class SettingsUI extends UserInterface
      */
     private function administration()
     {
-        /* Bail out if the user doesn't have SA permissions. */
+        /* Bail out if the user doesn't have SA permissions. I need to clean this up. Jamin */
         if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['OSATS']->hasUserCategory('careerportal'))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
