@@ -1,7 +1,11 @@
 <?php /* $Id: Search.tpl 3813 2007-12-05 23:16:22Z brian $ */ ?>
 <?php TemplateUtility::printHeader(__('Candidates'), array('modules/candidates/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -214,6 +218,24 @@
                 <?php endif; ?>
             <?php endif; ?>
         </div>
-    </div>
+<?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
-<?php TemplateUtility::printFooter(); ?>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>

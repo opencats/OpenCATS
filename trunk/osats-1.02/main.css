@@ -121,7 +121,7 @@ a:hover
   width:957px;
   /*font-size:93%;*/
   line-height:normal;
-  height:25px;
+  height:26px;
   border-bottom: 1px solid #999;
 }
 #header ul#primary {
@@ -176,7 +176,8 @@ a:hover
 
 
 
-/* Secondary "Tab" Row*/
+/* Secondary "Tab" Row ---Removing after done with moving secondary tabs. Jamin*/
+
 #header ul#secondary {
   position: absolute;
   margin: 0;
@@ -200,24 +201,25 @@ a:hover
 	color: #00008b;
 	background: #e6e6fa url(images/tabs/bg-active.gif) repeat-x;
 }
-/* Inactive Secondary "Tab" */
+
+/*Inactive Secondary "Tab"*/ 
 #header ul#secondary li a
 {
   text-align: center;
-  display: block;
+  /* display: block;*/
   border: none;
   float: left;
   width: auto;
   padding: 5px 10px;
   margin: 0;
-  border-right: 1px dotted #aaa;
+  /* border-right: 1px dotted #aaa;*/
   color: #f4f4f4;
   text-decoration: none;
   background: none;
   border-bottom: none;
 }
 
-/* Inactive Secondary "Tab" Hover */
+/* Inactive Secondary "Tab" Hover */ 
 #header ul#secondary li a:hover {
   color: #00008b;
   text-decoration: underline;
@@ -279,9 +281,36 @@ a:hover
 
 #MRUBlock a
 {
+  color: #333;
+  text-decoration: ;
+  font: bold normal normal 12px Arial, Tahoma, sans-serif;
+}
+
+#Leftofsearch
+{
+  position: absolute;
+  padding: 5px 0px 0px 10px;
+  margin: 0px 0px 0px 0px;
+  font: normal normal normal 12px Arial, Tahoma, sans-serif;
   color: #000;
-  text-decoration: underline;
-  font: normal normal normal 11px Arial, Tahoma, sans-serif;
+  background: #fff;
+  background-image: url('images/mru_background.gif');
+  background-repeat: repeat-x;
+
+}
+
+
+#Leftofsearch span.LeftofsearchP
+{
+  color: #ff6600;
+  font: normal normal bold 11px Arial, Tahoma, sans-serif;
+  text-align: left;
+}
+#Leftofsearch a
+{
+  color: #333;
+  text-decoration: ;
+  font: bold normal normal 12px Arial, Tahoma, sans-serif;
 }
 
 #headerBlock

@@ -1,7 +1,11 @@
 <?php /* $Id: SearchEverything.tpl 1948 2007-02-23 09:49:27Z will $ */ ?>
 <?php TemplateUtility::printHeader(__('Quick Search'), array('js/sorttable.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch($this->wildCardQuickSearch); ?>
         <div id="contents">
@@ -183,6 +187,24 @@
             <?php endif; ?>
             <!-- /Contacts -->
         </div>
-    </div>
+<?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
-<?php TemplateUtility::printFooter(); ?>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>

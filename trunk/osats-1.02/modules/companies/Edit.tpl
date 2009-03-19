@@ -1,7 +1,11 @@
 <?php /* $Id: Edit.tpl 3093 2007-09-24 21:09:45Z brian $ */ ?>
 <?php TemplateUtility::printHeader(__('Companies'), array('modules/companies/validator.js', 'js/sweetTitles.js', 'js/listEditor.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -251,6 +255,24 @@
                 document.editCompanyForm.name.focus();
             </script>
         </div>
-    </div>
+<?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
-<?php TemplateUtility::printFooter(); ?>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>

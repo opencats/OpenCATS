@@ -1,7 +1,11 @@
 <?php /* $Id: Backup.tpl 3582 2007-11-12 22:58:48Z brian $ */ ?>
 <?php TemplateUtility::printHeader('Settings', array('js/backup.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -85,6 +89,24 @@
             </table>
 
         </div>
-    </div>
+<?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
-<?php TemplateUtility::printFooter(); ?>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>

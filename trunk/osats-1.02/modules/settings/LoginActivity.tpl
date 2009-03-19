@@ -1,7 +1,11 @@
 <?php /* $Id: LoginActivity.tpl 2452 2007-05-11 17:47:55Z brian $ */ ?>
 <?php TemplateUtility::printHeader('Settings'); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -90,6 +94,24 @@
                 <?php $this->pager->printNavigation('', true, 20); ?>
             <?php endif; ?>
         </div>
-    </div>
+<?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
-<?php TemplateUtility::printFooter(); ?>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>

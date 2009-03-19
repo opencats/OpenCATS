@@ -1,7 +1,11 @@
 <?php /* $Id: Calendar.tpl 3221 2007-10-17 17:13:22Z will $ */ ?>
 <?php TemplateUtility::printHeader(__('Calendar'), array('modules/calendar/Calendar.css', 'js/highlightrows.js', 'modules/calendar/Calendar.js', 'modules/calendar/CalendarUI.js', 'modules/calendar/validator.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -563,10 +567,29 @@
                 </tr>
             </table>
         </div>
-    </div>
+    <?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>
 
-    <script type="text/javascript">
+<script type="text/javascript">
         /* Settings */
         indexName = '<?php echo(osatutil::getIndexName()); ?>';
         todayDay = <?php echo($this->currentDay); ?>;
@@ -617,4 +640,3 @@
             handleClickEntryByID(<?php echo($this->showEvent); ?>);
         <?php endif; ?>
     </script>
-<?php TemplateUtility::printFooter(); ?>

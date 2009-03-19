@@ -1,7 +1,11 @@
 <?php /* $Id: CareerPortalSettings.tpl 3806 2007-12-05 00:39:15Z andrew $ */ ?>
 <?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'modules/settings/Settings.js', 'js/careerportal.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
 <?php $careerPortalEnabledId = 0; ?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
@@ -290,7 +294,27 @@
                 </tr>
             </table>
         </div>
-    </div>
+<?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>
 
     <script type="text/javascript">
         setVisibility(<?php if ($this->careerPortalSettingsRS['enabled'] == '1'): ?>''<?php else: ?>'none'<?php endif; ?>);
@@ -306,5 +330,3 @@
             <?php endif; ?>
         <?php endforeach; ?>
     </script>
-    <div id="bottomShadow"></div>
-<?php TemplateUtility::printFooter(); ?>

@@ -18,89 +18,8 @@ class osatutil
     /* Prevent this class from being instantiated. */
     private function __construct() {}
     private function __clone() {}
-
-
-    /* Gets version of OSATS from the Constants.php file */
-    public static function getVersion()
-    {
-        return OSATSVER;
-    }
-
-    /* Converts version number as an integer*/
-    public static function getVersionAsInteger()
-    {
-        $versionString = OSATSVER;
-
-        /* Remove anything after (and including) the first space from the
-         * version data.
-         */
-        $spacePosition = strpos($versionString, ' ');
-        if ($spacePosition !== false)
-        {
-            $versionString = substr($versionString, 0, $spacePosition);
-        }
-
-        /* Multiply each version part (Major.Minor.Patchlevel) by a constant
-         * to create an integer in which newer versions are always greater
-         * mathematically than older versions.
-         */
-        $versionIntegers = explode('.', $versionString);
-        $versionInteger =  $versionIntegers[0] * 10000;
-        $versionInteger += $versionIntegers[1] * 100;
-        $versionInteger += $versionIntegers[2] * 1;
-
-        return $versionInteger;
-    }
-
     /**
-     * Returns the current OSATS revision number from SVN metadata.
-     *
-     *
-     */
-     //Remove this. Come up with new process if required. Jamin
-    public static function getBuild()
-    {
-        if (!file_exists('.svn/entries'))
-        {
-            return 0;
-        }
-
-        $data = @file_get_contents('.svn/entries');
-
-        /* XML Data? */
-        if ($data{0} === '<')
-        {
-            $xml = @simplexml_load_string($data);
-            if (!$xml || !isset($xml->entry[0]['committed-rev']))
-            {
-                return 0;
-            }
-
-            return (int) $xml->entry[0]['committed-rev'];
-        }
-
-        /* If the data is not XML, there is a version number at the first
-         * character of the string. We can handle versions 7 and 8.
-         */
-        if ((int) $data{0} > 6 && (int) $data{0} < 9)
-        {
-            /* Return the text between the end of the first "dir" line and
-             * the next linefeed.
-             */
-            $data = substr($data, strpos($data, "dir\n") + 4);
-            $data = substr($data, 0, strpos($data, "\n"));
-
-            return (integer) $data;
-        }
-    }
-
-    /**
-     * Modifies a setting in config.php (actually modifies the file). String
-     * settings need to actually be enclosed in quotes.
-     *
-     * @param string Name of setting to modify.
-     * @param string New value to assign to setting.
-     * @return boolean Was the setting changed successfully?
+     * modify the config file. -can we put more configs in the db? Jamin 
      */
     public static function changeConfigSetting($name, $value)
     {
@@ -294,6 +213,7 @@ class osatutil
      * Returns the directory OSATS is being executed from,
      *
      * @return string directory containing index.php.
+     * whats calling this?  I think on the old module routine used it. Jamin 
      */
     public static function getDirectoryName()
     {
@@ -411,4 +331,61 @@ class osatutil
 
         return false;
     }
+public static function TabsAtTop($showTopRight = true)
+    {      	
+        	
+        
+    }
+    
+    public static function TabsAtBottom($showTopRight = true)
+    {
+        /*
+		$username     = $_SESSION['OSATS']->getUsername();
+        $siteName     = $_SESSION['OSATS']->getSiteName();
+        $fullName     = $_SESSION['OSATS']->getFullName();
+        $indexName    = osatutil::getIndexName();
+
+        echo '<div id="footerBlock">', "\n";
+        //echo in logo here.
+		echo '<table cellpadding="0" style="margin: 0px; padding: 0px; float: left;" width="100%">
+				<tr>
+					<td rowspan="2" width="303">
+						
+					</td>
+					<td width="282">
+				
+					</td>
+					<td width="278" align="right">
+						<a href="', $indexName, '?m=logout">' . __('Logout') . ' <img src="images/lock.png" alt="" class="ico" /></a><br />
+						<br />
+						<span>You are Currently Logged on as: <span style="font-weight:bold;">', "\n";
+					echo $fullName; 
+					
+			         echo '</span></span><br /></td>
+				</tr>
+				
+				</table>', "\n";
+        
+            /* Disabled notice */
+/*
+            if (!$_SESSION['OSATS']->accountActive())
+            {
+                echo '<span style="font-weight:bold;">'.__('Account Inactive').'</span><br />', "\n";
+            }
+            else if ($_SESSION['OSATS']->getAccessLevel() == ACCESS_LEVEL_READ)
+            {
+                echo '<span>'.__('Read Only Access').'</span><br />';
+            }
+            else
+            {
+                if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_2_ELSE'))) return;
+            }
+            echo '</div>';
+        
+        echo '</div>';
+        echo '<br />';
+    */
+	}
+    
 }
+

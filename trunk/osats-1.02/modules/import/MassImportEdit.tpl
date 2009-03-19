@@ -1,7 +1,11 @@
 <?php /* $Id: MassImportEdit.tpl 3781 2007-12-03 21:30:23Z andrew $ */ ?>
 <?php TemplateUtility::printHeader(__('Settings'), array('js/massImport.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
 <script src='http://resfly.com/js/resumeParserValidation.js' type='text/javascript' language='javascript'></script>
 <link rel="stylesheet" type="text/css" href="modules/import/MassImport.css" />
     <div id="main">
@@ -283,8 +287,27 @@
                 </div>
             </div>
         </div>
-    </div>
+    <?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>
     <script>
     validation();
 
@@ -302,4 +325,3 @@
     addCopyBlock('experience', 1);
     setTimeout('checkCopyBlocks()', 1);
     </script>
-<?php TemplateUtility::printFooter(); ?>

@@ -3,9 +3,12 @@
     <?php TemplateUtility::printModalHeader(__('Candidates'), array('modules/candidates/validator.js', 'js/addressParser.js', 'js/listEditor.js',  'js/candidate.js', 'js/candidateParser.js'), __('Add New Candidate to This Job Order Pipeline')); ?>
 <?php else: ?>
     <?php TemplateUtility::printHeader(__('Candidates'), array('modules/candidates/validator.js', 'js/addressParser.js', 'js/listEditor.js',  'js/candidate.js', 'js/candidateParser.js')); ?>
-    <?php TemplateUtility::printHeaderBlock(); ?>
-    <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
-
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -491,7 +494,26 @@
 </html>
 <?php else: ?>
         </div>
-    </div>
+<?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
-<?php TemplateUtility::printFooter(); ?>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>
+
 <?php endif; ?>

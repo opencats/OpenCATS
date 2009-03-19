@@ -1,15 +1,16 @@
 <?php
 /*
  * OSATS
- *
- * $Id: constants.php 3785 2007-12-03 21:59:23Z brian $
  */
-
-//include ('modulesList.php'); //Dont need anymore. Jamin
 
 /* OSATS Version */
 define('OSATSVER', '1.0.2');
 
+/*defines where your tabs show up.
+on the top of the window = top
+on the bottom = bottom */
+define ('MYTABPOS', 'bottom');
+ 
 /* Your company name information at bottom of pages.
  * Change the line below to your company name
 */
@@ -18,7 +19,8 @@ define('COMPANYNAME_HTML', 'Go to constants.php and define your company name');
 /* MK define your session name here to cooperate with other apps on this site... */
 define('SESSION_NAME', 'OSATS');
 
-/* HTTP response codes. */
+/* HTTP response codes.
+I want to put these in the db. maybe. Jamin */
 define('HTTP_OK',             200);
 define('HTTP_FILE_NOT_FOUND', 404);
 define('HTTP_SERVER_ERROR',   500);

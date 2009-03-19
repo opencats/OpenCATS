@@ -1,7 +1,11 @@
 <?php /* $Id: CustomizeDashboard.tpl 2424 2007-05-03 07:15:02Z will $ */ ?>
 <?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'modules/settings/Settings.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -227,8 +231,28 @@
                 <input type="button" class="button" value="Finished" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=home';" />
             </div>
         </div>
-    </div>
+<?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>
+
     
     <form action="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=customizeDashboard&amp;command=removeComponent" id="removeComponentForm" method="post" autocomplete="off">
          <input type="hidden" name="postback" value="postback" />
@@ -254,4 +278,3 @@
             <?php endforeach; ?>
         }
     </script>
-<?php TemplateUtility::printFooter(); ?>

@@ -1,7 +1,11 @@
 <?php /* $Id: Show.tpl 3582 2007-11-12 22:58:48Z brian $ */ ?>
 <?php TemplateUtility::printHeader(__('Company'). ' - '.$this->data['name'], array( 'js/sorttable.js', 'js/attachment.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -400,7 +404,24 @@
             <?php endif; ?>
             <!-- /CONTACT INFO -->
         </div>
-    </div>
-
+<?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
-<?php TemplateUtility::printFooter(); ?>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>

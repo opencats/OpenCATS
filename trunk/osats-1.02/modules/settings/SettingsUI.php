@@ -7,7 +7,6 @@
 */
 
 include_once('./lib/LoginActivity.php');
-/*include_once('./lib/NewVersionCheck.php');   - do we want auto update checks? - Jamin */
 include_once('./lib/Candidates.php');
 include_once('./lib/Companies.php');
 include_once('./lib/Contacts.php');
@@ -27,9 +26,6 @@ include_once('./lib/Questionnaire.php');
 include_once('./lib/i18n.php');
 
 eval(Hooks::get('XML_FEED_SUBMISSION_SETTINGS_HEADERS'));
-
-/* Users.php is included by index.php already. */
-
 
 class SettingsUI extends UserInterface
 {
@@ -51,13 +47,15 @@ class SettingsUI extends UserInterface
             );
 	
 			//this gets passed to the module(tab) load process for SUBTABS.  Need to move to DB. Jamin
-        $mp = array(
+        /* moved to the myprofile.tpl page where it checks to see if the user has the rights then shows the link. Jamin
+		$mp = array(
             'Administration' => osatutil::getIndexName() . '?m=settings&amp;a=administration',
-            'My Profile'     => osatutil::getIndexName() . '?m=settings',
+            //'My Profile'     => osatutil::getIndexName() . '?m=settings',
             'Downloads' => osatutil::getIndexName() . '?m=settings&amp;a=downloads'
         );
 
         $this->_subTabs = $mp;
+        */
         $this->_hooks = $this->defineHooks();
     }
 
@@ -2020,34 +2018,6 @@ class SettingsUI extends UserInterface
         $systemInfoData = $systemInfo->getSystemInfo();
 		$systemAdministration = true;
 
-/* No version checks anymore...
-		if (isset($systemInfoData['available_version']) && $systemInfoData['available_version'] > osatutil::getVersionAsInteger())
-        {
-            $newVersion = true;
-        }
-        else
-        {
-            $newVersion = false;
-        }
-
-        if (isset($systemInfoData['disable_version_check']) && $systemInfoData['disable_version_check'])
-        {
-            $versionCheckPref = false;
-        }
-        else
-        {
-            $versionCheckPref = true;
-        }
-
-        if ($this->_realAccessLevel >= ACCESS_LEVEL_ROOT || $this->_realAccessLevel == ACCESS_LEVEL_DEMO)
-        {
-            $systemAdministration = true;
-        }
-        else
-        {
-            $systemAdministration = false;
-        }
-*/
         // FIXME: 's' isn't a good variable name.
         if (isset($_GET['s']))
         {

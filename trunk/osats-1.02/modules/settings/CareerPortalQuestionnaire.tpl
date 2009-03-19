@@ -1,7 +1,11 @@
 <?php /* $Id: CareerPortalQuestionnaire.tpl 3736 2007-11-28 01:19:24Z andrew $ */ ?>
 <?php TemplateUtility::printHeader('Settings', array('js/questionnaire.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
 
 <style>
 div.questionContainer { }
@@ -372,10 +376,24 @@ div.questionContainerPlainJane { }
 
             </form>
         </div>
-    </div>
+<?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
-
-    <script type="text/javascript">
-    restoreScrollPosition();
-    </script>
-<?php TemplateUtility::printFooter(); ?>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>

@@ -1,6 +1,5 @@
 <?php /* $Id: FriendlyError.tpl 3718 2007-11-27 20:48:00Z will $ */ ?>
 <?php if (!$this->modal) TemplateUtility::printHeader(__('Support')); ?>
-<?php if (!$this->modal) TemplateUtility::printHeaderBlock(); ?>
 <style type="text/css">
 div.friendlyErrorTitle {
     font-size: 16pt;
@@ -20,7 +19,12 @@ div.friendlyErrorMessage {
     <?php if (!$this->modal): ?>
     <div id="header">
         <ul id="primary">
-            <?php TemplateUtility::printTabs($this->active); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	if (!$this->modal) TemplateUtility::printTabs($this->active);
+}
+?>
         </ul>
     </div>
     <?php endif; ?>
@@ -56,8 +60,30 @@ div.friendlyErrorMessage {
                 </tr>
             </table>
         </div>
-    </div>
-<?php if (!$this->modal): ?>
+<?php
+if (!$this->modal)
+{
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
+	<div id="bottomShadow"></div>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
     <div id="bottomShadow"></div>
-<?php TemplateUtility::printFooter(); ?>
-<?php endif; ?>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+}
+else
+{
+	echo '</div>';
+}?>

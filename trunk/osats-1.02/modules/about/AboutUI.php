@@ -4,10 +4,6 @@
    * Open Source License Applies
 */
 
-/* The module's class name must always have the same name as the file it is
- * contained in, and it must always end in UI. We recommend "ModuleNameUI",
- * (in camel-caps) for example, JobOrdersUI or CandidatesUI.
- */
 class AboutUI extends UserInterface
 {
     

@@ -1,7 +1,11 @@
 <?php /* $Id: MyProfile.tpl 2452 2007-05-11 17:47:55Z brian $ */ ?>
 <?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'js/sorttable.js')); //why is the validator.js here? Jamin.  ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -34,22 +38,68 @@
                                     <a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=myProfile&amp;s=changePassword">
                                         <img src="images/2dot1c.gif" alt="" border="0" /> Change Password
                                     </a>
-                                	<br>
+                                	<br />
                                     Change your OSATS login password.
-                                </td>
-                                <td width="34%">
-                                    <a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=myProfile&amp;s=notificationOptions">
+                                    <br />
+                            </tr>
+							<tr>
+                                <td width="33%">
+    							<br />
+								<a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=myProfile&amp;s=notificationOptions">
                                         <img src="images/2dot1c.gif" alt="" border="0" /> Turn Notification Options - On or Off.
                                     </a>
                                 	<br>
                                     Change how OSATS notifies you of new events. (needs to be fixed. Jamin)
+									
                                 </td>
+                                <td width="33%">
+                                    <?php if ($_SESSION['OSATS']->getAccessLevel() >= ACCESS_LEVEL_SA)
+                                    {
+										//has the rights to see this link.
+										?><a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration">
+                                        <img src="images/2dot1c.gif" alt="" border="0" /> Administration
+                                    </a>
+									<br />
+									Administer various functions of the OSATS application.	
+									<?php
+									}
+                                    ?>
                             </tr>
                             </table>
+                            
+                            
                     </td>
                 </tr>
             </table>
+            <br />
+            <br />
+           
+<?php //check to see if admin. if so... load admin portion. Jamin 
+if ($_SESSION['OSATS']->getAccessLevel() >= ACCESS_LEVEL_SA)
+{
+	include ('./modules/settings/adminsonly.php');
+}
+?>
+		    
         </div>
-    </div>
+<?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
-<?php TemplateUtility::printFooter(); ?>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>

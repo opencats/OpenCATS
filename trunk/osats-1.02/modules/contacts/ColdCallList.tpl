@@ -1,6 +1,11 @@
 <?php /* $Id: ColdCallList.tpl 1948 2007-02-23 09:49:27Z will $ */ ?>
 <?php TemplateUtility::printHeader(__('Contacts'), array('js/sorttable.js', 'js/highlightrows.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
     <table>
         <tr>
             <td width="3%">
@@ -33,4 +38,24 @@
             <?php endforeach; ?>
         </table>
     <?php endif; ?>
-<?php TemplateUtility::printFooter(); ?>
+<?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>

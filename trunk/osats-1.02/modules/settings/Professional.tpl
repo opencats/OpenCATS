@@ -1,7 +1,11 @@
 <?php /* $Id: Professional.tpl 3678 2007-11-21 23:10:42Z andrew $ */ ?>
 <?php TemplateUtility::printHeader('Settings', 'js/sorttable.js'); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
 <script>
 <?php echo $this->webForm->getJavaScript(); ?>
 </script>
@@ -323,6 +327,24 @@ span.titleText {
 
 
         </div>
-    </div>
+<?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
-<?php TemplateUtility::printFooter(); ?>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>

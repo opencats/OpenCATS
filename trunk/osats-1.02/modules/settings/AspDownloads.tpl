@@ -1,7 +1,11 @@
 <?php /* $Id: AspDownloads.tpl 3367 2007-10-31 22:24:34Z brian $ */ ?>
 <?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'modules/settings/downloads.css')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
 
 <?php // <---------------------------------- FIXME: Move to ASP Hook? ?>
 <script>
@@ -176,6 +180,24 @@ if (isset($_GET['sendDevEmail']) && !strcmp($_GET['sendDevEmail'], 'true') && fi
                 </tr>
             </table>
         </div>
-    </div>
+<?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
-<?php TemplateUtility::printFooter(); ?>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>

@@ -1,7 +1,17 @@
 <?php /* $Id: Activity.tpl 1948 2007-02-23 09:49:27Z will $ */ ?>
 <?php TemplateUtility::printHeader(__('Activities'), array('js/highlightrows.js', 'js/sweetTitles.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active); ?>
+
+ <?php 
+	if (MYTABPOS == 'top')
+	{		
+		TemplateUtility::printHeaderBlock();
+		TemplateUtility::printTabs($this->active); 
+	}
+	else
+	{
+	 	//need to close the box. Jamin
+    }
+	?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
         <div id="contents">
@@ -89,7 +99,24 @@
             </table>
             <?php $this->pager->printNavigation(); ?>
         </div>
-    </div>
+     <?php 
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
-
-<?php TemplateUtility::printFooter(); ?>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>

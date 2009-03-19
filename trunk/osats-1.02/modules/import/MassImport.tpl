@@ -1,7 +1,11 @@
 <?php /* $Id: MassImport.tpl 3548 2007-11-09 23:54:52Z andrew $ */ ?>
 <?php TemplateUtility::printHeader(__('Settings'), array('js/massImport.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active, '', 'settings'); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
 <link rel="stylesheet" type="text/css" href="modules/import/MassImport.css" />
     <div id="main">
         <div id="contents">
@@ -55,6 +59,24 @@
 
 
         </div>
-    </div>
+<?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
-<?php TemplateUtility::printFooter(); ?>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>

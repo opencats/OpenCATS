@@ -1,7 +1,11 @@
 <?php /* $Id: ActivityDataGrid.tpl 3355 2007-10-31 16:11:56Z andrew $ */ ?>
 <?php TemplateUtility::printHeader(__('Activities'), array('js/highlightrows.js', 'js/sweetTitles.js', 'js/dataGrid.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
         <div id="contents"<?php echo !$this->numActivities ? ' style="background-color: #E6EEFF; padding: 0px;"' : ''; ?>>
@@ -61,7 +65,24 @@
 
             <?php endif; ?>
         </div>
-    </div>
+<?php 
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
-
-<?php TemplateUtility::printFooter(); ?>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>

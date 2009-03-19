@@ -30,6 +30,7 @@ class TemplateUtility
     public static function printHeader($pageTitle, $headIncludes = array())
     {
         self::_printCommonHeader($pageTitle, $headIncludes);
+        //below changes the main background color and body style
         echo '<body style="background: #fff; width: 955px;">', "\n";
         self::_printQuickActionMenuHolder();
         self::printPopupContainer();
@@ -60,6 +61,7 @@ class TemplateUtility
      *
      * @return void
      */
+     /*remove this function when done with new functions in osatutil called tabsattop and tabsatbottom - Jamin */
     public static function printHeaderBlock($showTopRight = true)
     {
         $username     = $_SESSION['OSATS']->getUsername();
@@ -69,12 +71,12 @@ class TemplateUtility
 
         echo '<div id="headerBlock">', "\n";
 
-        /* OSATS Logo */
-        echo '<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; float: left;">', "\n";
-        echo '<tr>', "\n";
-        echo '<td rowspan="2"><img src="images/applicationLogo.jpg" border="0" alt="OSATS Open Source Applicant Tracking System" /></td>', "\n";
-        echo '</tr>', "\n";
-        echo '</table>', "\n";
+        /* OSATS Logo - uncomment if you want the logo on top.. I moved it to the bottom. Jamin*/
+        //echo '<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; float: left;">', "\n";
+        //echo '<tr>', "\n";
+        //echo '<td rowspan="2"><img src="images/applicationLogo.jpg" border="0" alt="OSATS Open Source Applicant Tracking System" /></td>', "\n";
+        //echo '</tr>', "\n";
+        //echo '</table>', "\n";
 
         if (!eval(Hooks::get('TEMPLATE_LIVE_CHAT'))) return;
 
@@ -111,22 +113,7 @@ class TemplateUtility
             
             echo '<span>'.__('You are Currently Logged on as:').' <span style="font-weight:bold;">', $fullName, '</span></span><br />';
 
-        	/*  If we plan to make a place where people can get an updated version, then we will want to modify this below.. Otherwise... get rid of it
-        	   Starting from HERE... */
-            $systemInfo = new SystemInfo();
-            $systemInfoData = $systemInfo->getSystemInfo();
-
-            if (isset($systemInfoData['available_version']) &&
-                $systemInfoData['available_version'] > osatutil::getVersionAsInteger() &&
-                isset($systemInfoData['disable_version_check']) &&
-                !$systemInfoData['disable_version_check'] &&
-                $_SESSION['OSATS']->getAccessLevel() >= ACCESS_LEVEL_SA)
-            {
-                echo '<img src="images/actions/add.gif" alt="" class="ico" /><a href="http://www.a-website-where-users-can-get-updates.com/download.php" target="UpgradeVer">You can get an upgrade of OSATS here!</a><br />';
-            }
-			/* and ENDING here!... JAMIN */
-
-
+        	
             /* Disabled notice */
             if (!$_SESSION['OSATS']->accountActive())
             {
@@ -144,6 +131,7 @@ class TemplateUtility
         }
         echo '</div>';
     }
+    
 
     /**
      * Prints the time zone selection dropdown list.
@@ -204,9 +192,18 @@ class TemplateUtility
 
         $MRU = $_SESSION['OSATS']->getMRU()->getFormatted();
         $indexName = osatutil::getIndexName();
+		$fullName     = $_SESSION['OSATS']->getFullName();
+		
+		//need to change the div id to something else. Jamin
+        echo '<div id="LeftofsearchP">', "\n";
+        echo '<div id="Leftofsearch">', "\n";
+        // get logged in user and logout option
+        echo '<a href="', $indexName, '?m=logout"><img src="images/lock.png" alt="" class="ico" /> LOGOUT </a>';
+        //if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_EXTENDED_SITE_NAME'))) return;
+        echo '<span>     Hi there <span style="font-weight:bold;">', $fullName, '!</span></span><br />';
 
-        echo '<div id="MRUPanel">', "\n";
-        echo '<div id="MRUBlock">', "\n";
+            
+            
 		echo '</div>', "\n\n";
 
         /* Quick Search */
@@ -529,14 +526,14 @@ class TemplateUtility
                 $tabText = 'My Company';
             }
 
-            /* Allow a hook to prevent a module from being displayed. */
+            /* we looked at the db and found parameters[5]. if its a 0 then tab is not visible. Jamin */
             $displayTab = true;
 			if ($tabVisible == '0')
 			{
 				continue;
 			}
 			
-            /* Inactive Tab? */
+            /* Inactive Tab? need to clean this up. Jamin*/
             
             if ($active === null || $moduleName != $active->getModuleName())
             {
@@ -570,8 +567,9 @@ class TemplateUtility
 
             /* Start the <li> block for the active tab. The secondary <ul>
              * for subtabs MUST be contained within this block. It is
-             * closed after subtabs are printed. */
-            echo '<li class="active"><a href="'.$indexName.'?m='.$moduleName.'">'.$tabText.'</a>';
+             * closed after subtabs are printed. You can adjust the conversion to uppercase if you want
+			 * I set it to make the active tab upper case to stand out more. */
+            echo '<li class="active"><a href="'.$indexName.'?m='.$moduleName.'">'.strtoupper($tabText).'</a>';
 
             $subTabs = $active->getSubTabs($modules);
             if ($subTabs)
@@ -600,10 +598,11 @@ class TemplateUtility
                   if ($alPosition !== false) {
                     /* Access level restricted subtab. */
                     $al = substr($link, $alPosition + 4);
-                    if ($_SESSION['OSATS']->getAccessLevel() >= $al ||
-                        $_SESSION['OSATS']->isDemo()) {
+                    if ($_SESSION['OSATS']->getAccessLevel() >= $al) {
                       $link =  substr($link, 0, $alPosition);
+                      
                     } else {
+                    
                       $link = '';
                     }
                   }
@@ -615,10 +614,10 @@ class TemplateUtility
                          substr($link, $jsPosition + 4), '"'.$style.'>', $subTabText, '</a></li>', "\n";
                   }
 
-                  /* A few subtabs have special logic to decide if they display or not. */
-                  /* FIXME:  Put the logic for these somewhere else.  Perhaps the definitions of the subtabs
+                  /* A few subtabs have special logic to decide if they display or not.
+                  FIXME:  Put the logic for these somewhere else.  Perhaps the definitions of the subtabs
                              themselves should have an eval()uatable rule?
-                             Brian 6-14-07:  Second.  */
+                  */
                   else if (strpos($link, 'a=internalPostings') !== false) {
                     /* Default company subtab. */
                     include_once('./lib/Companies.php');
@@ -672,34 +671,11 @@ class TemplateUtility
      */
     public static function printFooter()
     {
-        $build    = OSATSVER;
-        $loadTime = $_SESSION['OSATS']->getExecutionTime();
-
-        if ($build > 0)
-        {
-            $buildString = ' build ' . $build;
-        }
-        else
-        {
-            $buildString = '';
-        }
-
-        /* This is the footer portion
-       */
-
-        echo '<div class="footerBlock">', "\n";
-
-
-        echo '<span id="footerCopyright">', COMPANYNAME_HTML, '</span>', "\n";
-        if (!eval(Hooks::get('TEMPLATEUTILITY_SHOWPRIVACYPOLICY'))) return;
-        echo '</div>', "\n";
-
-        eval(Hooks::get('TEMPLATE_UTILITY_PRINT_FOOTER'));
-
-        echo '</body>', "\n";
-        echo '</html>', "\n";
-
-
+    	//the constants.php has the companyname_html that needs to be defined to show the name in the footer. Jamin
+        echo '<div class="footerBlock"><span id="footerCopyright">', COMPANYNAME_HTML, '</span><br /><table cellpadding="0" style="margin: 0px; padding: 0px; float: left;" width="100%"></div></body></html>',"\n"; 
+		//echo in logo here.
+		echo '<td rowspan="2" width="303"><img src="images/applicationLogo.jpg" border="0" alt="OSATS Open Source Applicant Tracking System" /></td>',"\n";
+        
     }
 
     /**
@@ -709,28 +685,9 @@ class TemplateUtility
      */
     public static function printReportFooter()
     {
-        $build = OSATSVER;
-
-        // FIXME: LOCAL TIME ZONE!
         $date  = date('l, F jS, Y \a\t h:i:s A T');
-
-        if ($build > 0)
-        {
-            $buildString = ' build ' . $build;
-        }
-        else
-        {
-            $buildString = '';
-        }
-
-        echo '<div class="footerBlock">', "\n";
-        echo '<p id="footerText">Report generated on ', $date, '.<br />', "\n";
-
-        echo '<span id="footerCopyright">', COMPANYNAME_HTML, '</span>', "\n";
-        echo '</div>', "\n";
-
-        echo '</body>', "\n";
-        echo '</html>', "\n";
+        echo '<div class="footerBlock"><p id="footerText">Report generated on ', $date, '.<br />', "\n";
+        echo '<span id="footerCopyright">', COMPANYNAME_HTML, '</span></div></body></html>', "\n";
     }
 
     /**
@@ -1018,9 +975,7 @@ class TemplateUtility
 
         $siteID = $_SESSION['OSATS']->getSiteID();
         
-        {
-            $javascriptAntiCache = '?v=' . osatutil::getVersionAsInteger();
-        }
+        
 
         echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"', "\n";
         echo '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">', "\n";

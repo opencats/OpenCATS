@@ -1,7 +1,6 @@
 <?php /* $Id: Error.tpl 3078 2007-09-21 20:25:28Z will $ */ ?>
 <?php TemplateUtility::printHeader(__('Reports')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active); ?>
 
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
@@ -22,6 +21,7 @@
                 <?php echo($this->errorMessage); ?>
             </p>
         </div>
-    </div>
+
+	</div>
     <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

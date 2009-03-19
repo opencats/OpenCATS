@@ -3,8 +3,12 @@
     <?php TemplateUtility::printHeader(__('Job Order'). ' - '.$this->data['title'], array('js/sorttable.js', 'js/match.js', 'js/pipeline.js', 'js/attachment.js')); ?>
 <?php else: ?>
     <?php TemplateUtility::printHeader(__('Job Order'). ' - '.$this->data['title'], array( 'js/sorttable.js', 'js/match.js', 'js/pipeline.js', 'js/attachment.js')); ?>
-    <?php TemplateUtility::printHeaderBlock(); ?>
-    <?php TemplateUtility::printTabs($this->active); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
         <div id="main">
             <?php TemplateUtility::printQuickSearch(); ?>
 <?php endif; ?>
@@ -380,8 +384,26 @@
                 </a>
             <?php endif; ?>
         </div>
-    </div>
+    <?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>
 
 <?php endif; ?>
-    <div id="bottomShadow"></div>
-<?php TemplateUtility::printFooter(); ?>

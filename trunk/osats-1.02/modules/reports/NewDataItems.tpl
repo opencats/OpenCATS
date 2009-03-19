@@ -1,7 +1,7 @@
 <?php /* $Id: NewDataItems.tpl 3548 2007-11-09 23:54:52Z andrew $ */ ?>
 <?php TemplateUtility::printHeader(__('Reports')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active); ?>
+
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -385,6 +385,7 @@
                 </tr>
             </table>
         </div>
-    </div>
+    
+	</div>
     <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

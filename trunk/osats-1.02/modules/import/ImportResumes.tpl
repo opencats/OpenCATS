@@ -1,7 +1,11 @@
 <?php /* $Id: ImportResumes.tpl 3584 2007-11-12 23:20:53Z will $ */ ?>
 <?php TemplateUtility::printHeader(__('Import'), array('modules/import/import.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active, ''); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -134,11 +138,28 @@
                 </table>
             </form>
         </div>
-    </div>
+    <?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
-
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>
     <script type="text/javascript">
         initPopUp();
     </script>
 
-<?php TemplateUtility::printFooter(); ?>

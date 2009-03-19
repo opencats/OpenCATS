@@ -1,7 +1,6 @@
 <?php /* $Id: JobOrderReport.tpl 2441 2007-05-04 20:42:02Z brian $ */ ?>
 <?php TemplateUtility::printHeader(__('Job Orders'), array('modules/joborders/validator.js', 'js/company.js', 'js/sweetTitles.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -151,6 +150,12 @@
                 document.jobOrderReportForm.siteName.focus();
             </script>
         </div>
-    </div>
+    <?php 
+	if (MYTABPOS == 'bottom')
+	{
+		TemplateUtility::printTabs($this->active); 
+	}
+?>
+	</div>
     <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

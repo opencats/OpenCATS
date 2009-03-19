@@ -63,7 +63,6 @@ include_once('./lib/Session.php');
 include_once('./lib/UserInterface.php'); 
 include_once('./lib/ModuleUtility.php'); 
 include_once('./lib/TemplateUtility.php');
-
 /* Creates a session or resumes the current one based on the current session id that's being passed via a request, such as GET, POST, or a cookie and give the session a unique name to avoid conflicts and start the session. */
 @session_name(SESSIONNAME);
 session_start();

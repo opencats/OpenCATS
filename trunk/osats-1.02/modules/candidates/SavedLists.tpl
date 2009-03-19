@@ -1,7 +1,11 @@
 <?php /* $Id: SavedLists.tpl 2571 2007-06-20 20:39:38Z brian $ */ ?>
 <?php TemplateUtility::printHeader(__('Candidates'), array('js/submodal/subModal.js', 'js/highlightrows.js', 'js/export.js', 'js/listEditor.js', 'js/dataGrid.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -62,7 +66,24 @@
             </div>
 
         </div>
-    </div>
-
+<?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
-<?php TemplateUtility::printFooter(); ?>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>

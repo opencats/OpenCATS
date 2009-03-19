@@ -1,22 +1,18 @@
 <?php /* OSATS ABOUT TAB */ ?>
 
-<?php TemplateUtility::printHeader('Hello (Sample Module)', array('modules/hello/validator.js', 'modules/hello/hello.css')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-    <?php /* Print the tab bar with the Hello tab selected. */ ?>
-    <div id="header">
-        <ul id="primary">
-            <?php TemplateUtility::printTabs($this->active); ?>
-        </ul>
-    </div>
+<?php TemplateUtility::printHeader(' - About OSATS', array('main.css')); ?>
+<?php 
+if (MYTABPOS == 'top') {
+	osatutil::TabsAtTop();
+	TemplateUtility::printTabs($this->active);
+}
+?>
 
     <?php /* <div id="main"> is the main page area. */ ?>
     <div id="main">
         <?php /* Print the quick search / MRU bar. */ ?>
         <?php TemplateUtility::printQuickSearch(); ?>
-
-        <?php /* <div id="contents"> is where the main content is contained. */ ?>
         <div id="contents">
-            <?php /* <div id="contents"> is where the main content is contained. */ ?>
             <table>
                 <tr>
                     <td><img src="images/home.gif" width="24" height="24" border="0" alt="house" style="margin-top: 3px;" />&nbsp;</td>
@@ -36,35 +32,47 @@
                 </tr>
             </table>
             <br />
-			<?php 
-					$db = DatabaseConnection::getInstance();
-                    $databaseVersion = $db->getRDBMSVersion();
+			<?php
+$db = DatabaseConnection::getInstance();
+$databaseVersion = $db->getRDBMSVersion();
 
-                    $installationDirectory = realpath('./');
+$installationDirectory = realpath('./');
 
-                    if (SystemUtility::isWindows())
-                    {
-                        $OSType = 'Windows';
-                    }
-                    else if (SystemUtility::isMacOSX())
-                    {
-                        $OSType = 'Mac OS X';
-                    }
-                    else
-                    {
-                        $OSType = 'UNIX';
-                    }
+if (SystemUtility::isWindows()) {
+    $OSType = 'Windows';
+} else
+    if (SystemUtility::isMacOSX()) {
+        $OSType = 'Mac OS X';
+    } else {
+        $OSType = 'UNIX';
+    }
 
-                    $schemaVersions = ModuleUtility::getModuleSchemaVersions();
+    $schemaVersions = ModuleUtility::getModuleSchemaVersions();
 
-                    echo "* You are running " . $databaseVersion;
-                    echo "<br/>* OSATS is installed in " . $installationDirectory;
-                    echo "<br/>* Your OS is " . $OSType . "(" . php_uname() . ")";
-                    echo "<br /> * The awesome PHP version " . PHP_VERSION . " is running.";
-                    ?>
+echo "* You are running " . $databaseVersion;
+echo "<br/>* OSATS is installed in " . $installationDirectory;
+echo "<br/>* Your OS is " . $OSType . "(" . php_uname() . ")";
+echo "<br /> * The awesome PHP version " . PHP_VERSION . " is running.";
+?>
         </div>
-    </div>
-    <?php /* Show the shadow at the bottom of the OSATS "window". */ ?>
+<?php
+if (MYTABPOS == 'bottom') 
+{
+    
+	TemplateUtility::printTabs($this->active);
+	?>
+	</div>
     <div id="bottomShadow"></div>
-<?php /* Print the common footer. */ ?>
-<?php TemplateUtility::printFooter(); ?>
+    
+    <?php 
+	osatutil::TabsAtBottom();
+}else{
+	?>
+	</div>
+    <div id="bottomShadow"></div>
+    <?php 
+}
+?>
+<?php TemplateUtility::printFooter(); 
+		
+?>
