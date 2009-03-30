@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 17, 2009 at 09:34 AM
+-- Generation Time: Mar 30, 2009 at 10:37 AM
 -- Server version: 5.0.51
 -- PHP Version: 5.2.6
 
@@ -267,8 +267,6 @@ CREATE TABLE `candidate` (
 -- Dumping data for table `candidate`
 --
 
-INSERT INTO `candidate` (`candidate_id`, `site_id`, `last_name`, `first_name`, `middle_name`, `phone_home`, `phone_cell`, `phone_work`, `address`, `city`, `state`, `zip`, `source`, `date_available`, `can_relocate`, `notes`, `key_skills`, `current_employer`, `entered_by`, `owner`, `date_created`, `date_modified`, `email1`, `email2`, `web_site`, `import_id`, `is_hot`, `eeo_ethnic_type_id`, `eeo_veteran_type_id`, `eeo_disability_status`, `eeo_gender`, `desired_pay`, `current_pay`, `is_active`, `is_admin_hidden`, `best_time_to_call`) VALUES
-(1, 1, 'Pen', 'Ben', '', '', '', '', '', '', '', '', '(none)', NULL, 0, '', '', '', 1261, 1261, '2009-03-03 10:00:03', '2009-03-03 10:00:03', '', '', '', 0, 0, 0, 0, '', '', '', '', 1, 0, '');
 
 -- --------------------------------------------------------
 
@@ -509,7 +507,7 @@ CREATE TABLE `career_portal_template` (
   `setting` varchar(128) NOT NULL default '',
   `value` text,
   PRIMARY KEY  (`career_portal_template_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=78 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `career_portal_template`
@@ -836,7 +834,7 @@ CREATE TABLE `extra_field_settings` (
   `extra_field_options` text collate utf8_unicode_ci,
   `position` int(4) NOT NULL default '0',
   PRIMARY KEY  (`extra_field_settings_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `extra_field_settings`
@@ -892,7 +890,7 @@ CREATE TABLE `history` (
   PRIMARY KEY  (`history_id`),
   KEY `IDX_DATA_ENTERED_BY` (`entered_by`),
   KEY `IDX_data_item_id_type_site` (`data_item_id`,`data_item_type`,`site_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `history`
@@ -901,7 +899,8 @@ CREATE TABLE `history` (
 INSERT INTO `history` (`history_id`, `data_item_type`, `data_item_id`, `the_field`, `previous_value`, `new_value`, `description`, `set_date`, `entered_by`, `site_id`) VALUES
 (1, 200, 1, '!newEntry!', NULL, NULL, '(USER) created entry.', '2009-02-17 14:46:39', 1, 1),
 (2, 200, 1, 'defaultCompany', NULL, '1', '(USER) changed field(s): defaultCompany.', '2009-02-17 14:46:39', 1, 1),
-(3, 100, 1, '!newEntry!', NULL, NULL, '(USER) created entry.', '2009-03-03 10:00:03', 1261, 1);
+(3, 100, 1, '!newEntry!', NULL, NULL, '(USER) created entry.', '2009-03-03 10:00:03', 1261, 1),
+(4, 100, 1, '(DELETED)', NULL, NULL, '(USER) deleted entry.', '2009-03-30 09:35:28', 1261, 1);
 
 -- --------------------------------------------------------
 
@@ -1059,7 +1058,8 @@ CREATE TABLE `moduleinfo` (
   `tabtext` varchar(25) NOT NULL,
   `subtabs` varchar(50) NOT NULL,
   `setentries` varchar(25) NOT NULL,
-  `usercatagories` varchar(25) NOT NULL
+  `usercatagories` varchar(25) NOT NULL,
+  PRIMARY KEY  (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -1068,25 +1068,25 @@ CREATE TABLE `moduleinfo` (
 
 INSERT INTO `moduleinfo` (`name`, `ordernum`, `visible`, `class`, `tabtext`, `subtabs`, `setentries`, `usercatagories`) VALUES
 ('About', 1, 1, 'AboutUI', 'About', '', '', ''),
-('Candidates', 4, 1, 'CandidatesUI', 'Candidates', '', '', ''),
-('Settings', 11, 1, 'SettingsUI', 'Settings', '', '', ''),
-('Companies', 5, 1, 'CompaniesUI', 'Companies', '', '', ''),
-('Home', 12, 1, 'HomeUI', 'Dashboard', '', '', ''),
-('Activity', 2, 1, 'ActivityUI', 'Activity', '', '', ''),
-('JobOrders', 9, 1, 'JobOrdersUI', 'JobOrders', '', '', ''),
-('Contacts', 6, 1, 'ContactsUI', 'Contacts', '', '', ''),
-('Calendar', 3, 1, 'CalendarUI', 'Calendar', '', '', ''),
-('Reports', 8, 1, 'ReportsUI', 'Reports', '', '', ''),
-('Lists', 10, 1, 'ListsUI', 'Lists', '', '', ''),
-('Graphs', 7, 2, 'GraphsUI', '', '', '', ''),
-('Import', 11, 2, 'ImportUI', '', '', '', ''),
+('Activity', 6, 1, 'ActivityUI', 'Activity', '', '', ''),
 ('Attachments', 3, 2, 'AttachmentsUI', '', '', '', ''),
+('Calendar', 3, 1, 'CalendarUI', 'Calendar', '', '', ''),
+('Candidates', 4, 1, 'CandidatesUI', 'Candidates', '', '', ''),
 ('Careers', 5, 2, 'CareersUI', '', '', '', ''),
+('Companies', 5, 1, 'CompaniesUI', 'Companies', '', '', ''),
+('Contacts', 2, 1, 'ContactsUI', 'Contacts', '', '', ''),
 ('Export', 8, 2, 'ExportUI', '', '', '', ''),
+('Graphs', 7, 2, 'GraphsUI', '', '', '', ''),
+('Home', 12, 1, 'HomeUI', 'Dashboard', '', '', ''),
+('Import', 11, 2, 'ImportUI', '', '', '', ''),
+('JobOrders', 9, 1, 'JobOrdersUI', 'JobOrders', '', '', ''),
+('Lists', 10, 1, 'ListsUI', 'Lists', '', '', ''),
 ('Login', 14, 2, 'LoginUI', '', '', '', ''),
 ('Queue', 15, 2, 'QueueUI', '', '', '', ''),
-('Toolbar', 19, 2, 'ToolbarUI', '', '', '', ''),
+('Reports', 8, 1, 'ReportsUI', 'Reports', '', '', ''),
 ('Rss', 17, 2, 'RssUI', '', '', '', ''),
+('Settings', 11, 1, 'SettingsUI', 'Settings', '', '', ''),
+('Toolbar', 19, 2, 'ToolbarUI', '', '', '', ''),
 ('Xml', 20, 2, 'XmlUI', '', '', '', '');
 
 -- --------------------------------------------------------
@@ -1151,14 +1151,14 @@ CREATE TABLE `mru` (
   `date_created` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`mru_id`),
   KEY `IDX_user_site` (`user_id`,`site_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `mru`
 --
 
 INSERT INTO `mru` (`mru_id`, `user_id`, `site_id`, `data_item_type`, `data_item_text`, `url`, `date_created`) VALUES
-(2, 1261, 1, 100, 'Ben Pen', 'index.php?m=candidates&amp;a=show&amp;candidateID=1', '2009-03-09 09:17:32');
+(3, 1261, 1, 200, 'Internal Postings', 'index.php?m=companies&amp;a=show&amp;companyID=1', '2009-03-17 08:51:33');
 
 -- --------------------------------------------------------
 
@@ -1276,7 +1276,7 @@ CREATE TABLE `settings` (
   `site_id` int(11) NOT NULL default '0',
   `settings_type` int(11) default '0',
   PRIMARY KEY  (`settings_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=19 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=27 ;
 
 --
 -- Dumping data for table `settings`
@@ -1300,7 +1300,15 @@ INSERT INTO `settings` (`settings_id`, `setting`, `value`, `site_id`, `settings_
 (15, 'ethnicTracking', '1', 1, 3),
 (16, 'veteranTracking', '1', 1, 3),
 (17, 'disabilityTracking', '1', 1, 3),
-(18, 'canSeeEEOInfo', NULL, 1, 3);
+(18, 'canSeeEEOInfo', NULL, 1, 3),
+(19, 'enabled', '1', 1, 4),
+(20, 'allowBrowse', '1', 1, 4),
+(21, 'candidateRegistration', '0', 1, 4),
+(22, 'showDepartment', '1', 1, 4),
+(23, 'showCompany', '0', 1, 4),
+(24, 'noAjax', NULL, 1, 2),
+(25, 'defaultPublic', NULL, 1, 2),
+(26, 'firstDayMonday', NULL, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -1342,7 +1350,7 @@ CREATE TABLE `site` (
 --
 
 INSERT INTO `site` (`site_id`, `name`, `is_demo`, `user_licenses`, `entered_by`, `date_created`, `unix_name`, `company_id`, `is_free`, `account_active`, `account_deleted`, `reason_disabled`, `time_zone`, `time_format_24`, `date_format_ddmmyy`, `is_hr_mode`, `file_size_kb`, `page_views`, `page_view_days`, `last_viewed_day`, `first_time_setup`, `localization_configured`, `agreed_to_license`, `limit_warning`) VALUES
-(1, 'Cheeseball', 0, 0, 0, '2005-06-01 00:00:00', NULL, NULL, 0, 1, 0, NULL, -7, 0, 0, 0, 0, 1653, 7, '2009-03-17', 0, 0, 1, 0),
+(1, 'Test', 0, 0, 0, '2005-06-01 00:00:00', NULL, NULL, 0, 1, 0, NULL, -7, 0, 0, 0, 0, 2577, 12, '2009-03-30', 0, 0, 1, 0),
 (180, 'CATS_ADMIN', 0, 0, 0, '2005-06-01 00:00:00', 'catsadmin', NULL, 0, 1, 0, NULL, -6, 0, 0, 0, 0, 0, 0, NULL, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
@@ -1384,7 +1392,7 @@ CREATE TABLE `system` (
 --
 
 INSERT INTO `system` (`system_id`, `uid`, `available_version`, `date_version_checked`, `available_version_description`, `disable_version_check`, `Installed`) VALUES
-(0, 0, NULL, '0000-00-00 00:00:00', NULL, 0, '1');
+(0, 0, NULL, '0000-00-00 00:00:00', NULL, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -1426,24 +1434,12 @@ CREATE TABLE `user` (
   KEY `IDX_first_name` (`first_name`),
   KEY `IDX_last_name` (`last_name`),
   KEY `IDX_access_level` (`access_level`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1272 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1262 ;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`user_id`, `site_id`, `user_name`, `email`, `password`, `access_level`, `can_change_password`, `is_test_user`, `last_name`, `first_name`, `is_demo`, `categories`, `session_cookie`, `pipeline_entries_per_page`, `column_preferences`, `force_logout`, `title`, `phone_work`, `phone_cell`, `phone_other`, `address`, `notes`, `company`, `city`, `state`, `zip_code`, `country`, `can_see_eeo_info`) VALUES
-(1261, 1, 'admin', 'blue@here.com', 'admin', 500, 1, 0, 'Admin', 'OSATS', 0, '', 'OSATS=2qojp60jvqrbv399gm553gcoh1', 15, 'a:8:{s:31:"home:ImportantPipelineDashboard";a:6:{i:0;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:85;}i:1;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:75;}i:2;a:2:{s:4:"name";s:6:"Status";s:5:"width";i:75;}i:3;a:2:{s:4:"name";s:8:"Position";s:5:"width";i:275;}i:4;a:2:{s:4:"name";s:7:"Company";s:5:"width";i:210;}i:5;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:80;}}s:18:"home:CallsDataGrid";a:2:{i:0;a:2:{s:4:"name";s:4:"Time";s:5:"width";i:90;}i:1;a:2:{s:4:"name";s:4:"Name";s:5:"width";i:175;}}s:19:"lists:ListsDataGrid";a:7:{i:0;a:2:{s:4:"name";s:5:"Count";s:5:"width";i:45;}i:1;a:2:{s:4:"name";s:11:"Description";s:5:"width";i:355;}i:2;a:2:{s:4:"name";s:9:"Data Type";s:5:"width";i:75;}i:3;a:2:{s:4:"name";s:9:"List Type";s:5:"width";i:75;}i:4;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:75;}i:5;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:60;}i:6;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:60;}}s:39:"candidates:candidatesListByViewDataGrid";a:9:{i:0;a:2:{s:4:"name";s:11:"Attachments";s:5:"width";i:31;}i:1;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:75;}i:2;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:85;}i:3;a:2:{s:4:"name";s:4:"City";s:5:"width";i:75;}i:4;a:2:{s:4:"name";s:5:"State";s:5:"width";i:50;}i:5;a:2:{s:4:"name";s:10:"Key Skills";s:5:"width";i:215;}i:6;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:65;}i:7;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:60;}i:8;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:60;}}s:37:"joborders:JobOrdersListByViewDataGrid";a:12:{i:0;a:2:{s:4:"name";s:11:"Attachments";s:5:"width";i:10;}i:1;a:2:{s:4:"name";s:2:"ID";s:5:"width";i:26;}i:2;a:2:{s:4:"name";s:5:"Title";s:5:"width";i:170;}i:3;a:2:{s:4:"name";s:7:"Company";s:5:"width";i:135;}i:4;a:2:{s:4:"name";s:4:"Type";s:5:"width";i:30;}i:5;a:2:{s:4:"name";s:6:"Status";s:5:"width";i:40;}i:6;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:55;}i:7;a:2:{s:4:"name";s:3:"Age";s:5:"width";i:30;}i:8;a:2:{s:4:"name";s:9:"Submitted";s:5:"width";i:18;}i:9;a:2:{s:4:"name";s:8:"Pipeline";s:5:"width";i:18;}i:10;a:2:{s:4:"name";s:9:"Recruiter";s:5:"width";i:65;}i:11;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:55;}}s:25:"activity:ActivityDataGrid";a:7:{i:0;a:2:{s:4:"name";s:4:"Date";s:5:"width";i:110;}i:1;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:85;}i:2;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:75;}i:3;a:2:{s:4:"name";s:9:"Regarding";s:5:"width";i:125;}i:4;a:2:{s:4:"name";s:8:"Activity";s:5:"width";i:65;}i:5;a:2:{s:4:"name";s:5:"Notes";s:5:"width";i:240;}i:6;a:2:{s:4:"name";s:10:"Entered By";s:5:"width";i:60;}}s:37:"companies:CompaniesListByViewDataGrid";a:9:{i:0;a:2:{s:4:"name";s:11:"Attachments";s:5:"width";i:10;}i:1;a:2:{s:4:"name";s:4:"Name";s:5:"width";i:255;}i:2;a:2:{s:4:"name";s:4:"Jobs";s:5:"width";i:40;}i:3;a:2:{s:4:"name";s:4:"City";s:5:"width";i:90;}i:4;a:2:{s:4:"name";s:5:"State";s:5:"width";i:50;}i:5;a:2:{s:4:"name";s:5:"Phone";s:5:"width";i:85;}i:6;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:65;}i:7;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:60;}i:8;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:60;}}s:35:"contacts:ContactsListByViewDataGrid";a:9:{i:0;a:2:{s:4:"name";s:11:"Attachments";s:5:"width";i:10;}i:1;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:80;}i:2;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:80;}i:3;a:2:{s:4:"name";s:7:"Company";s:5:"width";i:135;}i:4;a:2:{s:4:"name";s:5:"Title";s:5:"width";i:135;}i:5;a:2:{s:4:"name";s:10:"Work Phone";s:5:"width";i:85;}i:6;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:85;}i:7;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:60;}i:8;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:60;}}}', 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(1262, 1, 'Test', 'test @here.com', 'test', 400, 1, 0, 'Test', 'Test', 0, '', 'OSATS=hs9rjj5396fk2ve0amf37spv83', 15, 'a:5:{s:31:"home:ImportantPipelineDashboard";a:6:{i:0;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:85;}i:1;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:75;}i:2;a:2:{s:4:"name";s:6:"Status";s:5:"width";i:75;}i:3;a:2:{s:4:"name";s:8:"Position";s:5:"width";i:275;}i:4;a:2:{s:4:"name";s:7:"Company";s:5:"width";i:210;}i:5;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:80;}}s:18:"home:CallsDataGrid";a:2:{i:0;a:2:{s:4:"name";s:4:"Time";s:5:"width";i:90;}i:1;a:2:{s:4:"name";s:4:"Name";s:5:"width";i:175;}}s:25:"activity:ActivityDataGrid";a:7:{i:0;a:2:{s:4:"name";s:4:"Date";s:5:"width";i:110;}i:1;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:85;}i:2;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:75;}i:3;a:2:{s:4:"name";s:9:"Regarding";s:5:"width";i:125;}i:4;a:2:{s:4:"name";s:8:"Activity";s:5:"width";i:65;}i:5;a:2:{s:4:"name";s:5:"Notes";s:5:"width";i:240;}i:6;a:2:{s:4:"name";s:10:"Entered By";s:5:"width";i:60;}}s:39:"candidates:candidatesListByViewDataGrid";a:9:{i:0;a:2:{s:4:"name";s:11:"Attachments";s:5:"width";i:31;}i:1;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:75;}i:2;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:85;}i:3;a:2:{s:4:"name";s:4:"City";s:5:"width";i:75;}i:4;a:2:{s:4:"name";s:5:"State";s:5:"width";i:50;}i:5;a:2:{s:4:"name";s:10:"Key Skills";s:5:"width";i:215;}i:6;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:65;}i:7;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:60;}i:8;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:60;}}s:19:"lists:ListsDataGrid";a:7:{i:0;a:2:{s:4:"name";s:5:"Count";s:5:"width";i:45;}i:1;a:2:{s:4:"name";s:11:"Description";s:5:"width";i:355;}i:2;a:2:{s:4:"name";s:9:"Data Type";s:5:"width";i:75;}i:3;a:2:{s:4:"name";s:9:"List Type";s:5:"width";i:75;}i:4;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:75;}i:5;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:60;}i:6;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:60;}}}', 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
-(1263, 1, 'ben', 'b@ben.com', 'ben', 300, 1, 0, 'ten', 'ben', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
-(1264, 1, 'blue', 'mike', 'bob', 300, 1, 0, 'steve', 'Bob', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
-(1265, 1, 'out', 'me', 'cool', 300, 1, 0, 'test', 'Just', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
-(1266, 1, 'myusergo', 'Over@here.com', 'blue', 300, 1, 0, 'Bent', 'Get', 0, '', 'OSATS=hs9rjj5396fk2ve0amf37spv83', 15, 'a:5:{s:31:"home:ImportantPipelineDashboard";a:6:{i:0;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:85;}i:1;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:75;}i:2;a:2:{s:4:"name";s:6:"Status";s:5:"width";i:75;}i:3;a:2:{s:4:"name";s:8:"Position";s:5:"width";i:275;}i:4;a:2:{s:4:"name";s:7:"Company";s:5:"width";i:210;}i:5;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:80;}}s:18:"home:CallsDataGrid";a:2:{i:0;a:2:{s:4:"name";s:4:"Time";s:5:"width";i:90;}i:1;a:2:{s:4:"name";s:4:"Name";s:5:"width";i:175;}}s:25:"activity:ActivityDataGrid";a:7:{i:0;a:2:{s:4:"name";s:4:"Date";s:5:"width";i:110;}i:1;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:85;}i:2;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:75;}i:3;a:2:{s:4:"name";s:9:"Regarding";s:5:"width";i:125;}i:4;a:2:{s:4:"name";s:8:"Activity";s:5:"width";i:65;}i:5;a:2:{s:4:"name";s:5:"Notes";s:5:"width";i:240;}i:6;a:2:{s:4:"name";s:10:"Entered By";s:5:"width";i:60;}}s:39:"candidates:candidatesListByViewDataGrid";a:9:{i:0;a:2:{s:4:"name";s:11:"Attachments";s:5:"width";i:31;}i:1;a:2:{s:4:"name";s:10:"First Name";s:5:"width";i:75;}i:2;a:2:{s:4:"name";s:9:"Last Name";s:5:"width";i:85;}i:3;a:2:{s:4:"name";s:4:"City";s:5:"width";i:75;}i:4;a:2:{s:4:"name";s:5:"State";s:5:"width";i:50;}i:5;a:2:{s:4:"name";s:10:"Key Skills";s:5:"width";i:215;}i:6;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:65;}i:7;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:60;}i:8;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:60;}}s:37:"companies:CompaniesListByViewDataGrid";a:9:{i:0;a:2:{s:4:"name";s:11:"Attachments";s:5:"width";i:10;}i:1;a:2:{s:4:"name";s:4:"Name";s:5:"width";i:255;}i:2;a:2:{s:4:"name";s:4:"Jobs";s:5:"width";i:40;}i:3;a:2:{s:4:"name";s:4:"City";s:5:"width";i:90;}i:4;a:2:{s:4:"name";s:5:"State";s:5:"width";i:50;}i:5;a:2:{s:4:"name";s:5:"Phone";s:5:"width";i:85;}i:6;a:2:{s:4:"name";s:5:"Owner";s:5:"width";i:65;}i:7;a:2:{s:4:"name";s:7:"Created";s:5:"width";i:60;}i:8;a:2:{s:4:"name";s:8:"Modified";s:5:"width";i:60;}}}', 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
-(1267, 1, 'myusername', 'myemail', 'mypass', 300, 1, 0, 'Pen', 'Ben', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
-(1268, 1, 'afafafaf', 'eded', 'dfg', 300, 1, 0, 'ab', 'dd', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
-(1269, 1, 'myusername', 'myemail', 'pass', 300, 1, 0, 'nuts', 'beer', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
-(1270, 1, 'myname', 'myemail', 'mypass', 300, 1, 0, 'good', 'be', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
-(1271, 1, 'fd', 'fd', 'fd', 100, 1, 0, 'dd', 'berd', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -1468,7 +1464,7 @@ CREATE TABLE `user_login` (
   KEY `IDX_date_refreshed` (`date_refreshed`),
   KEY `IDX_site_id_date` (`site_id`,`date`),
   KEY `IDX_successful_site_id` (`successful`,`site_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=161 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=187 ;
 
 --
 -- Dumping data for table `user_login`
@@ -1628,8 +1624,34 @@ INSERT INTO `user_login` (`user_login_id`, `user_id`, `site_id`, `ip`, `user_age
 (156, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 15:43:52', 1, '192.168.21.25', '2009-03-12 16:17:48'),
 (157, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-12 16:17:52', 1, '192.168.21.25', '2009-03-12 16:31:05'),
 (158, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-17 07:48:36', 0, '192.168.21.25', '2009-03-17 07:48:36'),
-(159, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-17 07:48:38', 1, '192.168.21.25', '2009-03-17 08:23:43'),
-(160, 1261, 1, '192.168.21.26', 'Mozilla/5.0 (Macintosh; U; PPC Mac OS X 10_5_5; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1', '2009-03-17 08:02:12', 1, '192.168.21.26', '2009-03-17 08:02:27');
+(159, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-17 07:48:38', 1, '192.168.21.25', '2009-03-17 14:56:58'),
+(160, 1261, 1, '192.168.21.26', 'Mozilla/5.0 (Macintosh; U; PPC Mac OS X 10_5_5; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1', '2009-03-17 08:02:12', 1, '192.168.21.26', '2009-03-17 08:02:27'),
+(161, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-17 14:57:26', 1, '192.168.21.25', '2009-03-18 09:00:26'),
+(162, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-17 15:17:13', 1, '192.168.21.25', '2009-03-17 15:17:14'),
+(163, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-18 09:00:52', 1, '192.168.21.25', '2009-03-18 09:03:36'),
+(164, 1261, 1, '192.168.21.25', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.19 (KHTML, like Gecko) Chrome/1.0.154.48 Safari/525.19', '2009-03-18 13:05:18', 1, '192.168.21.25', '2009-03-18 13:38:54'),
+(165, 1262, 1, '192.168.21.25', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.19 (KHTML, like Gecko) Chrome/1.0.154.48 Safari/525.19', '2009-03-18 13:39:03', 1, '192.168.21.25', '2009-03-18 13:39:47'),
+(166, 1261, 1, '192.168.21.25', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.19 (KHTML, like Gecko) Chrome/1.0.154.48 Safari/525.19', '2009-03-18 13:40:06', 1, '192.168.21.25', '2009-03-18 13:40:57'),
+(167, 1262, 1, '192.168.21.25', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.19 (KHTML, like Gecko) Chrome/1.0.154.48 Safari/525.19', '2009-03-18 13:41:06', 1, '192.168.21.25', '2009-03-18 13:50:50'),
+(168, 1262, 1, '192.168.21.25', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.19 (KHTML, like Gecko) Chrome/1.0.154.48 Safari/525.19', '2009-03-18 13:53:28', 1, '192.168.21.25', '2009-03-18 13:55:11'),
+(169, 1261, 1, '192.168.21.25', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.19 (KHTML, like Gecko) Chrome/1.0.154.48 Safari/525.19', '2009-03-18 13:55:24', 1, '192.168.21.25', '2009-03-18 13:58:39'),
+(170, 1262, 1, '192.168.21.25', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.19 (KHTML, like Gecko) Chrome/1.0.154.48 Safari/525.19', '2009-03-18 13:58:46', 1, '192.168.21.25', '2009-03-18 14:11:41'),
+(171, 1261, 1, '192.168.21.25', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.19 (KHTML, like Gecko) Chrome/1.0.154.48 Safari/525.19', '2009-03-18 14:11:53', 1, '192.168.21.25', '2009-03-18 15:19:34'),
+(172, 1261, 1, '192.168.21.26', 'Mozilla/5.0 (Macintosh; U; PPC Mac OS X 10_5_5; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1', '2009-03-19 03:35:44', 1, '192.168.21.26', '2009-03-19 03:35:57'),
+(173, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-19 03:37:35', 1, '192.168.21.25', '2009-03-19 04:47:16'),
+(174, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-19 06:02:33', 1, '192.168.21.25', '2009-03-19 06:02:43'),
+(175, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-23 15:58:43', 1, '192.168.21.25', '2009-03-23 16:29:13'),
+(176, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-23 16:29:22', 1, '192.168.21.25', '2009-03-23 16:29:39'),
+(177, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-23 16:30:37', 1, '192.168.21.25', '2009-03-23 16:50:26'),
+(178, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-23 16:50:35', 1, '192.168.21.25', '2009-03-24 07:40:54'),
+(179, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-24 07:41:06', 1, '192.168.21.25', '2009-03-24 07:55:33'),
+(180, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-24 07:55:43', 1, '192.168.21.25', '2009-03-24 08:13:23'),
+(181, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-24 08:13:27', 1, '192.168.21.25', '2009-03-24 08:28:38'),
+(182, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-24 08:28:43', 1, '192.168.21.25', '2009-03-24 08:32:52'),
+(183, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-24 08:32:58', 1, '192.168.21.25', '2009-03-24 08:40:48'),
+(184, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-24 09:14:16', 1, '192.168.21.25', '2009-03-24 09:15:10'),
+(185, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-24 09:15:18', 1, '192.168.21.25', '2009-03-24 09:15:23'),
+(186, 1261, 1, '192.168.21.25', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 1.0.3705; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 3.0.04506.30)', '2009-03-30 09:35:01', 1, '192.168.21.25', '2009-03-30 09:35:56');
 
 -- --------------------------------------------------------
 
