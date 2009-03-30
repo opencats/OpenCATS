@@ -1,3 +1,20 @@
+3-30-09
+---
+WARNING.. THIS SYSTEM IS NOT FULLY FUNCTIONAL! YOU WILL RUN INTO ISSUES. THANKS!
+
+Changed the Install routine to hide the passwords with '*'
+
+Updated the install db to the latest.
+
+Lots of cleanup (removing functions that are not required etc)
+
+Tabs can be on top or bottom now. You choose the preference in the Settings area.
+
+Administration links are only shown for those with the proper rights. It shows up on the same page as the profile settings for the logged in user.
+
+
+
+
 3-11-2009
 ---
 WARNING.. THIS SYSTEM IS NOT FULLY FUNCTIONAL! YOU WILL RUN INTO ISSUES. THANKS!

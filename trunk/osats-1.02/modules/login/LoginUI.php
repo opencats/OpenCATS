@@ -9,7 +9,6 @@
 include_once('./lib/SystemInfo.php');
 include_once('./lib/Mailer.php');
 include_once('./lib/Site.php');
-//include_once('./lib/Wizard.php');
 include_once('./lib/i18n.php');
 
 class LoginUI extends UserInterface
@@ -206,12 +205,7 @@ class LoginUI extends UserInterface
             $this->_template->assign('siteName', $siteName);
             $this->_template->assign('siteNameFull', $siteNameFull);
             $this->_template->assign('dateString', date('l, F jS, Y'));
-
-            if (ModuleUtility::moduleExists("asp"))
-                $this->_template->display('./modules/asp/AspLogin.tpl');
-            else
-                $this->_template->display('./modules/login/Login.tpl');
-
+            $this->_template->display('./modules/login/Login.tpl');
             return;
         }
 
@@ -284,153 +278,14 @@ class LoginUI extends UserInterface
 
         $mailerSettings = new MailerSettings($_SESSION['OSATS']->getSiteID());
         $mailerSettingsRS = $mailerSettings->getAll();
-
-        /***************************** BEGIN NEW WIZARD *****************************************/
-        /**
-         * Improved setup wizard using the Wizard library. If the user succeeds,
-         * all old-style wizards will no longer be shown.
-         */
-
-       // $wizard = new Wizard(osatutil::getIndexName() . '?m=home', './js/wizardIntro.js');
-       // if ($_SESSION['OSATS']->isFirstTimeSetup())
-        //{
-       //     $wizard->addPage('Welcome!', './modules/login/wizard/Intro.tpl', '', false, true);
-       // }
-
-        /* change for our own GPL license - Jamin 
-		if (!$_SESSION['OSATS']->isAgreedToLicense())
-        {
-            $phpeval = '';
-            if (!eval(Hooks::get('LICENSE_TERMS'))) return;
-            $wizard->addPage('License', './modules/login/wizard/License.tpl', $phpeval, true, true);
-        }
-
-		*/
-        
-		/* if (!file_exists('modules/asp') || (defined('OSATS_TEST_MODE') && OSATS_TEST_MODE))
-        {
-            // On-site wizard pages
-            /*
-            MK: do something reasonable like "install this software"
-            if (!LicenseUtility::isLicenseValid())
-            {
-                if (defined('LICENSE_KEY') && LICENSE_KEY == '')
-                {
-                    $template = 'Register.tpl';
-                    $templateName = 'Register';
-                }
-                else
-                {
-                    $template = 'Reregister.tpl';
-                    $templateName = 'License Expired';
-                }
-                $wizard->addPage($templateName, './modules/login/wizard/' . $template, '', false, true);
-            }
-            */
-       
-
-        // if logged in for the first time, change password
-       /* if (strtolower($username) == 'admin' && $password === DEFAULT_ADMIN_PASSWORD)
-        {
-            $wizard->addPage('Password', './modules/login/wizard/Password.tpl', '', false, true);
-        }
- */
-        // make user set an e-mail address
-        if (trim($_SESSION['OSATS']->getEmail()) == '')
-        {
-            // change this to something different or MAKE it so the person who created the account must add the email.
-			//$wizard->addPage('E-mail', './modules/login/wizard/Email.tpl', '', false, true);
-        }
-
-        // if no site name set, make user set site name
-        if ($accessLevel >= ACCESS_LEVEL_SA && $_SESSION['OSATS']->getSiteName() === 'default_site')
-        {
-            $wizard->addPage('Site', './modules/login/wizard/SiteName.tpl', '', false, true);
-        }
-
-        // Wizard Pages
-        if (!eval(Hooks::get('ASP_WIZARD_PAGES'))) return;
-
-        /*if ($_SESSION['OSATS']->isFirstTimeSetup())
-        {
-            $wizard->addPage('Setup Users', './modules/login/wizard/Users.tpl', '
-                $users = new Users($siteID);
-                $mp = $users->getAll();
-                $data = $users->getLicenseData();
-
-                $this->_template->assign(\'users\', $mp);
-                $this->_template->assign(\'totalUsers\', $data[\'totalUsers\']);
-                $this->_template->assign(\'userLicenses\', $data[\'userLicenses\']);
-                $this->_template->assign(\'accessLevels\', $users->getAccessLevels());
-            ');
-
-            if (!eval(Hooks::get('ASP_WIZARD_IMPORT'))) return;
-        }
-	*/
-
-        // The wizard will not display if no pages have been added.
-        //$wizard->doModal();
-
-        /******************************* END NEW WIZARD *******************************************/
-
-        /* Session is logged in, do we need to send the user to the wizard?
-         * This should be done only on the first use, indicated by the
-         * admin user's password still being set to the default.
-         */
-
-        /* If we have a specific page to go to, go there. */
-
-        /* These hooks are for important things, like disabling the site based on criteria. */
         if (!eval(Hooks::get('LOGGED_IN'))) return;
-
         if (isset($_GET['reloginVars']))
         {
             osatutil::transferRelativeURI($_GET['reloginVars']);
         }
-
-        /* LOGGED_IN_MESSAGES hooks are only for messages which show up on initial login (warnings, etc) */
-        if (!eval(Hooks::get('LOGGED_IN_MESSAGES'))) return;
-
-        /* If logged in for the first time, make user change password. */
-        if (strtolower($username) == 'admin' &&
-            $password === DEFAULT_ADMIN_PASSWORD)
-        {
-            osatutil::transferRelativeURI('m=settings&a=newInstallPassword');
-        }
-
-        /* If no site name set, make user set site name. * /
-        else if ($accessLevel >= ACCESS_LEVEL_SA &&
-                 $_SESSION['OSATS']->getSiteName() === 'default_site')
-        {
-            osatutil::transferRelativeURI('m=settings&a=upgradeSiteName');
-        }
-
-        /* If the default email is set in the configuration, complain to the admin. */
-        else if ($accessLevel >= ACCESS_LEVEL_SA &&
-                 $mailerSettingsRS['configured'] == '0')
-        {
-            NewVersionCheck::checkForUpdate();
-
-            $this->_template->assign('inputType', 'conclusion');
-            $this->_template->assign('title', 'E-Mail Disabled');
-            $this->_template->assign('prompt', 'E-mail features are disabled. In order to enable e-mail features (such as e-mail notifications), please configure your e-mail settings by clicking on the Settings tab and then clicking on Administration.');
-            $this->_template->assign('action', $this->getAction());
-            $this->_template->assign('home', 'home');
-            $this->_template->display('./modules/settings/NewInstallWizard.tpl');
-        }
-
-        /* If no E-Mail set for current user, make user set E-Mail address. * /
-        else if (trim($_SESSION['OSATS']->getEmail()) == '')
-        {
-            osatutil::transferRelativeURI('m=settings&a=forceEmail');
-        }
-
         /* If nothing else has stopped us, just go to the home page. */
-        else
-        {
-            if (!eval(Hooks::get('LOGGED_IN_HOME_PAGE'))) return;
-            osatutil::transferRelativeURI('m=home');
-        }
+        if (!eval(Hooks::get('LOGGED_IN_HOME_PAGE'))) return;
+        osatutil::transferRelativeURI('m=home');
     }
 
     /*

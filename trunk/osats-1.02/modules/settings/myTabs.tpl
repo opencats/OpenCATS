@@ -28,8 +28,10 @@ if (MYTABPOS == 'top') {
             <p class="note">Manage my Tabs</p>
 
             <table class="adminTable" width="100%">
-                    <td><form action='<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration&s=mytabs' method='post'>
+                    <td><form action='<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration&s=myTabs' method='post'>
 						<?php
+							// This is temporary. I will write a class that does all of the sql calls.
+							// but for now, this will do the work. Jamin.
                     		include('./dbconfig.php');
 						
 							$myServer = mysql_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS);
@@ -96,10 +98,16 @@ if (MYTABPOS == 'top') {
 									$content2 = $content2 . "'" . strtolower($myVal) . "'=>'" . $_POST[$myVal] . "',";
 								}
 							}
-							echo "<br/><h2>You must log out and back in again for changes to take affect!</h2>";
+							echo "<br/><h2>You must <a href='".osatutil::getIndexName()."?m=logout'>logout</a> and back in again for changes to take affect!</h2>";
 							//now write the data to the taborder.php file.
 							mysql_free_result($sql);
 							mysql_close();
+							// Log user out.
+							/*
+							$_SESSION['OSATS']->logout();
+                			unset($_SESSION['OSATS']);
+                			osatutil::transferRelativeURI('?m=settings&a=administration&messageSuccess=true&message='.urlencode());
+                			*/
 							 	
 						}
                     	?>

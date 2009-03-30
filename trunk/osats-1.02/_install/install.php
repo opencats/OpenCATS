@@ -50,7 +50,7 @@ function welcome()
 		<form action="<?=$_SERVER['PHP_SELF'];?>" method="post">
 		Username to access the mySQL Server: <input type="text" name="dbusername" />
 		<br />
-		Password to access the mySQL Server: <input type="text" name="dbpwd" />
+		Password to access the mySQL Server: <input type="password" name="dbpwd" />
 		<br /><br />
 		<input type="submit" class="button" name="op" value="Next" />
 		</form></div>
@@ -183,7 +183,7 @@ else
 	<br />
 	We will now finalize the database.
 	<br />
-	Choose a password for the OSATS Admin account: <input type="text" name="adminpwd" />
+	Choose a password for the OSATS Admin account: <input type="password" name="adminpwd" />
 	<br />
 	Enter the email address that OSATS will reply from: <input type="text" name="adminemail" />
 	<br />

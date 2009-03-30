@@ -88,7 +88,8 @@ if (MYTABPOS == 'top') {
                         <input type="radio" name="typeOfImport" value="Companies" >&nbsp;<img src="images/mru/company.gif">&nbsp;<?php _e('Companies')?><br />
                         <input type="radio" name="typeOfImport" value="Contacts" >&nbsp;<img src="images/mru/contact.gif">&nbsp;<?php _e('Contacts')?><br />
                         <br />
-                        <input class="button" type="submit" value="<?php _e('Next')?>">
+                        <input type="button" name="back" class = "button" value="Back" onclick="document.location.href='<?php echo(osatutil::getIndexName()); ?>?m=settings';" />
+						<input class="button" type="submit" value="<?php _e('Next')?>">
                         </td>
                     </form>
                 </tr>

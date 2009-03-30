@@ -362,10 +362,12 @@ class SettingsUI extends UserInterface
                 $this->wizard_deleteUser();
                 break;
 
-            case 'ajax_wizardCheckKey':
+            /*
+			case 'ajax_wizardCheckKey':
                 $this->wizard_checkKey();
                 break;
-
+			*/
+			
             case 'ajax_wizardLocalization':
                 $this->wizard_localization();
                 break;
@@ -374,10 +376,12 @@ class SettingsUI extends UserInterface
                 $this->wizard_firstTimeSetup();
                 break;
 
-            case 'ajax_wizardLicense':
+            /*
+			case 'ajax_wizardLicense':
                 $this->wizard_license();
                 break;
-
+			*/
+			
             case 'ajax_wizardPassword':
                 $this->wizard_password();
                 break;
@@ -1733,27 +1737,12 @@ class SettingsUI extends UserInterface
         $this->_template->display('./modules/settings/CustomizeReports.tpl');
     }
 
-    /*
-     * Called by handleRequest() to process loading new site pages.
-     GET RID OF THIS. THE INSTALLATION ROUTINE FROM THE _INSTALL FOLDER WILL GET THE NEW PASSWORD. JAMIN
-     */
-    private function newInstallPassword()
-    {
-        $this->_template->assign('inputType', 'password');
-        $this->_template->assign('title', 'Change default Administrator Password');
-        $this->_template->assign('prompt', 'For Security Reasons - Please create a new administrator password. You cannot reuse the default "osats" password.');
-        $this->_template->assign('action', $this->getAction());
-        $this->_template->assign('home', 'home');
-        $this->_template->display('./modules/settings/NewInstallWizard.tpl');
-    }
-
 
 // Change this section to be ONLY for changing the site name. FROM HERE.
-    private function newSiteName()
+    /*
+	private function newSiteName()
     {
-        /* Bail out if the user doesn't have SA permissions. 
-		
-		*/
+      
         if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
         {
             osatutil::transferRelativeURI('m=settings&a=newInstallFinished');
@@ -1767,7 +1756,8 @@ class SettingsUI extends UserInterface
         $this->_template->assign('home', 'home');
         $this->_template->display('./modules/settings/NewInstallWizard.tpl');
     }
-
+	*/
+		//get rid of this. Jamin
     private function upgradeSiteName()
     {
         /* Bail out if the user doesn't have SA permissions. */
@@ -1833,7 +1823,7 @@ class SettingsUI extends UserInterface
 
         osatutil::transferRelativeURI('m=settings&a=createBackup');
     }
-
+	//get rid of this. Jamin
     private function forceEmail()
     {
         $this->_template->assign('inputType', 'siteName');
@@ -1845,6 +1835,7 @@ class SettingsUI extends UserInterface
         $this->_template->display('./modules/settings/NewInstallWizard.tpl');
     }
 
+	//get rid of this. Jamin
     private function onForceEmail()
     {
         $emailAddress = $this->getTrimmedInput('siteName', $_POST);
@@ -1869,85 +1860,14 @@ class SettingsUI extends UserInterface
         }
     }
 
-    private function newInstallFinished()
-    {
-
-        $accessLevel = $_SESSION['OSATS']->getAccessLevel();
-
-        $mailerSettings = new MailerSettings($this->_siteID);
-        $mailerSettingsRS = $mailerSettings->getAll();
-
-        $this->_template->assign('inputType', 'conclusion');
-        $this->_template->assign('title', 'Settings Saved');
-
-        if ($mailerSettingsRS['configured'] == '0' &&
-            $accessLevel >= ACCESS_LEVEL_SA)
-        {
-            $this->_template->assign('prompt', 'Your site name has been saved. This concludes the required OSATS configuration wizard.<BR><BR><span style="font-weight: bold;">Warning:</span><BR><BR> E-mail features are disabled. In order to enable e-mail features (such as e-mail notifications), please configure your e-mail settings by clicking on the Settings tab');
-        }
-        else
-        {
-            $this->_template->assign('prompt', 'Your site name has been saved. This concludes the required OSATS configuration wizard.');
-        }
-
-        $this->_template->assign('action', $this->getAction());
-        $this->_template->assign('home', 'home');
-        $this->_template->display('./modules/settings/NewInstallWizard.tpl');
-    }
-
-    /*
-     * Called by handleRequest() to process handling new site pages.
-     */
-    private function onNewInstallPassword()
-    {
-        $error = '';
-
-        $newPassword = $this->getTrimmedInput(
-            'password1',
-            $_POST
-        );
-        $retypeNewPassword = $this->getTrimmedInput(
-            'password2',
-            $_POST
-        );
-
-        /* Bail out if the two passwords don't match. */
-        if ($retypeNewPassword !== $newPassword)
-        {
-            $error = 'New passwords do not match.';
-        }
-
-        /* Bail out if the password is 'OSATS'. */
-        if ($newPassword == 'osats')
-        {
-            $error = 'New password cannot equal \'osats\'.';
-        }
-
-        /* Attempt to change the user's password. */
-        if (!$error)
-        {
-            $users = new Users($this->_siteID);
-            if ($users->changePassword($this->_userID, 'osats', $newPassword) != LOGIN_SUCCESS)
-            {
-                $error = 'Unable to reset password.';
-            }
-        }
-
-        if ($error)
-        {
-            $this->_template->assign('message', $error);
-            $this->_template->assign('messageSuccess', false);
-            $this->newInstallPassword();
-        }
-        else
-        {
-            osatutil::transferRelativeURI('m=settings&a=newSiteName');
-        }
-    }
+   
+   
 
     private function onNewSiteName()
     {
-        /* The user shouldn't be here if they are not an SA */
+        
+		//get rid of this. The new installation routine gets the Sitename. Jamin
+		/* The user shouldn't be here if they are not an SA */
         if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
         {
             osatutil::transferRelativeURI('m=home');
@@ -1989,13 +1909,8 @@ class SettingsUI extends UserInterface
         }
     }
 
-    private function onNewInstallFinished()
-    {
-        osatutil::transferRelativeURI('m=home');
-    }
-
-    /*
-     * Called by handleRequest() to process loading the administration page.
+    
+    /* Called by handleRequest() to process loading the administration page.
      */
     private function administration()
     {
@@ -2018,7 +1933,7 @@ class SettingsUI extends UserInterface
                     $templateFile = './modules/settings/SiteName.tpl';
                     break;
 				
-				case 'mytabs':
+				case 'myTabs':
                     $templateFile = './modules/settings/myTabs.tpl';
                     break;
                     
@@ -2051,13 +1966,15 @@ class SettingsUI extends UserInterface
                     break;
 				
                 default:
-                    $templateFile = './modules/settings/Administration.tpl';
+                    $templateFile = './modules/settings/MyProfile.tpl';
+                    //$templateFile = './modules/settings/Administration.tpl';
                     break;
             }
         }
         else
         {
-            $templateFile = './modules/settings/Administration.tpl';
+            $templateFile = './modules/settings/MyProfile.tpl';
+			//$templateFile = './modules/settings/Administration.tpl';
 
             /* Load extra settings. */
             $extraSettings = array();
@@ -2135,6 +2052,7 @@ class SettingsUI extends UserInterface
 
     /*
      * Called by handleRequest() to process the administration page.
+     * 
      */
     private function onAdministration()
     {
@@ -2149,37 +2067,39 @@ class SettingsUI extends UserInterface
 
         switch ($administrationMode)
         {
-            case 'changeSiteName':
+        	// rewrite the SiteName.tpl to not use this method. Jamin
+            case 'ChangeSiteName':
                 $siteName = $this->getTrimmedInput(
-                    'siteName',
+                    'MySiteName',
                     $_POST
                 );
 
-                if (empty($siteName))
+                // remove this after getting site name change to work
+				if (empty($siteName))
                 {
                     CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
                 }
 
                 $this->changeSiteName($siteName);
-                osatutil::transferRelativeURI('m=settings&a=administration');
+                osatutil::transferRelativeURI('m=settings');
                 break;
 			
-			case 'myTabs':
+			
+			/* I dont think this gets used. I wrote it in, but I have the work being done 
+			*  all on the mytabs.tpl form.. Jamin
+			case 'mytabs':
                 if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
                     return;
                 }
 
-                //get the tab order and set it in the db
-                
-				
 				//now force the logout so the settings take effect
                 $_SESSION['OSATS']->logout();
                 unset($_SESSION['OSATS']);
-
-
+                osatutil::transferRelativeURI('?m=settings&a=administration&messageSuccess=true&message='.urlencode());
                 break;
+            */
             
 			case 'localization':
                 if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
@@ -2254,7 +2174,7 @@ class SettingsUI extends UserInterface
     }
 
     /*
-     * Called by Administration to change site name.
+     * Called by Administration to change site name. This is the only sitename change function we need. Jamin
      */
     private function changeSiteName($newSiteName)
     {

@@ -792,7 +792,8 @@ class Users
      */
     public function getLicenseData()
     {
-        $sql = sprintf(
+        /*
+		$sql = sprintf(
             "SELECT
                 COUNT(user.site_id) AS totalUsers,
                 user.access_level,
@@ -831,7 +832,7 @@ class Users
         {
             $license['canAdd'] = 1;
         }
-
+		*/
         $license['unlimited'] = 1;
         $license['canAdd'] = 1;
 

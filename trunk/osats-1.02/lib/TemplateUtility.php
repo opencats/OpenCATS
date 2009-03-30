@@ -628,13 +628,7 @@ class TemplateUtility
                       echo '<li'.$style.'><a href="', $link, '">', $subTabText, '</a></li>', "\n";
                     }
                   }
-                  else if (strpos($link, 'a=administration') !== false) {
-                    /* Administration subtab. */
-                    if ($_SESSION['OSATS']->getRealAccessLevel() >= ACCESS_LEVEL_DEMO)
-                    {
-                      echo '<li'.$style.'><a href="', $link, '">', $subTabText, '</a></li>', "\n";
-                    }
-                  }
+                
                   else if (strpos($link, 'a=customizeEEOReport') !== false) {
                     /* EEO Report subtab.  Shouldn't be visible if EEO tracking is disabled. */
                     $EEOSettings = new EEOSettings($_SESSION['OSATS']->getSiteID());

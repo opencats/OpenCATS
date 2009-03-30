@@ -569,6 +569,13 @@ table.adminTable
   empty-cells: show;
 }
 
+table.TabsTable
+{
+  padding: 5px;
+  border: 1px solid #ccc;
+  empty-cells: show;
+}
+
 table.attachmentsTable
 {
   border-collapse: collapse;

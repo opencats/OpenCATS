@@ -24,9 +24,9 @@ if (MYTABPOS == 'top') {
             <table class="searchTable" width="100%">
                 <tr>
                     <td>
-                        <form name="SiteNameForm" action="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration" method="post" id="SiteNameForm" onsubmit="return CheckMySiteName(document.SiteNameForm);" autocomplete="off">
+                        <form name="SiteNameForm" action="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration&s=siteName'" method="post" id="SiteNameForm" onsubmit="return CheckMySiteName(document.SiteNameForm);" autocomplete="off">
                             <input type="hidden" name="postback" value="postback" />
-                            <input type="hidden" name="administrationMode" value="changeSiteName" />
+                            <input type="hidden" name="administrationMode" value="ChangeSiteName" />
                             Current site name: <h3> <?php echo($_SESSION['OSATS']->getSiteName())?></h3>
                             <br />
                             <label id="siteNameLabel" for="SiteName">New Site Name:</label>

@@ -15,7 +15,7 @@
                                 </td>
                                 <td width="230">
                                     <img src="images/2dot1c.gif" alt="" />
-                                        <a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration&amp;s=mytabs">
+                                        <a href="<?php echo(osatutil::getIndexName()); ?>?m=settings&amp;a=administration&amp;s=myTabs">
                                             Hide/Show Tabs
                                         </a>
                                     <br>

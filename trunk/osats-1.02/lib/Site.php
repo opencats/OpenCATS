@@ -75,8 +75,6 @@ class Site
             "SELECT
                 site_id AS siteID,
                 name AS name,
-                is_demo AS isDemo,
-                user_licenses AS userLicenses,
                 entered_by AS enteredBy,
                 unix_name AS unixName
             FROM
@@ -91,20 +89,13 @@ class Site
        return $this->_db->getAssoc($sql);
     }
 
-    /**
-     * Get site information by site ID.
-     *
-     * @param integer site ID
-     * @return array site data
-     */
+
     public function getSiteBySiteID($siteID)
     {
         $sql = sprintf(
             "SELECT
                 site_id AS siteID,
                 name AS name,
-                is_demo AS isDemo,
-                user_licenses AS userLicenses,
                 entered_by AS enteredBy,
                 unix_name AS unixName,
                 date_format_ddmmyy as dateFormatDDMMYY
@@ -149,24 +140,6 @@ class Site
        return $rs['siteID'];
     }
 
-    public function setAgreedToLicense()
-    {
-        $sql = sprintf(
-            "UPDATE
-                site
-             SET
-                agreed_to_license = 1
-             WHERE
-                site.site_id = %d",
-            $this->_siteID
-        );
-        if (!$this->_db->query($sql))
-        {
-            return false;
-        }
-        return true;
-    }
-
     public function setLocalizationConfigured()
     {
         $sql = sprintf(
@@ -185,22 +158,4 @@ class Site
         return true;
     }
 
-    public function setFirstTimeSetup()
-    {
-        $db =  DatabaseConnection::getInstance();
-        $sql = sprintf(
-            "UPDATE
-                site
-             SET
-                first_time_setup = 0
-             WHERE
-                site.site_id = %d",
-            $this->_siteID
-        );
-        if (!$this->_db->query($sql))
-        {
-            return false;
-        }
-        return true;
-    }
 }
