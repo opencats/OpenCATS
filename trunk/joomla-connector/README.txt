@@ -1,9 +1,11 @@
 This Joomla connector comprises two Joomla components - one module and one component (evolved from the image available on the opencats download page).
 
+This connector is known to work with Joomla 1.5.9 and below, and will work by default with OpenCATS v0.9.1a. Some work would be requried due to db name changes in order to have it work with OSATS.
+
 The module will display a list of 'sectors' the jobs are available in - for example IT, Management etc
 The Component displays the job details, and allows people to apply to jobs.
 
-options that will need to be changed in order to connect to a different OpenCATS server include;
+Options that will need to be changed in order to connect to a different OpenCATS server include;
 
 Description		placeholdername in config files
 
