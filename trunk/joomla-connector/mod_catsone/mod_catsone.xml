@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<install type="module" version="1.5.0">
+    <name>Catsone</name>
+    <author>Dang Thuc Dam</author>
+    <version>1.5.0</version>
+    <description>A module which show all type of jobs from catsone portal.</description>
+    <files>
+        <filename module="mod_catsone">mod_catsone.php</filename>
+        <filename>index.html</filename>
+        <filename>helper.php</filename>
+        <filename>tmpl/default.php</filename>
+        <filename>tmpl/index.html</filename>
+    </files>
+<params>
+		<param name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
+		
+	</params>
+</install>
