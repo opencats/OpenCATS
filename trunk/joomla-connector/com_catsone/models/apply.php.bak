@@ -1,0 +1,71 @@
+  <?php
+
+// Check to ensure this file is included in Joomla!
+//defined('_JEXEC') or die( 'Restricted access' );
+
+jimport('joomla.application.component.model');
+
+class CatsoneModelapply extends JModel
+{
+	function applyJob($options)
+	{
+		$user		= &JFactory::getUser();
+		jimport('joomla.database.database');
+		jimport( 'joomla.database.table' );
+		$conf =& JFactory::getConfig();
+		// TODO: Cache on the fingerprint of the arguments
+		//$db			=& JFactory::getDBO();
+		$host 		= $conf->getValue('config.host');
+		$user 		= $conf->getValue('config.user');
+		$password 	= $conf->getValue('config.password');
+		$database	= $conf->getValue('config.db');
+		$prefix 	= $conf->getValue('config.dbprefix');
+		$driver 	= $conf->getValue('config.dbtype');
+		$debug 		= $conf->getValue('config.debug');
+		$optionDb	= array ( 'driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => 'chasejob_cats', 'prefix' => "" );
+		$db =& JDatabase::getInstance( $optionDb );
+		$query = "Insert into candidate (candidate_id,site_id,last_name,first_name,phone_home,phone_cell,phone_work,address,city,state,zip,key_skills,entered_by,owner,date_created,email1,best_time_to_call) values (NULL,'1','".$options['lastname']."','".$options['firstname']."','".$options['homephone']."','".$options['mobilephone']."','".$options['workphone']."','".$options['mailingaddress']."','".$options['city']."','".$options['state']."','".$options['zip']."','".$options['skill']."','".$user->id."','".$user->id."','".date( 'Y-m-d H:i:s')."','".$options['email_address']."','".$options['besttimetocall']."')";
+		$db->setQuery($query);
+		$db->query();
+		$id = $db->insertID();
+		$query1 = "Insert into candidate_joborder (candidate_joborder_id,candidate_id,joborder_id,site_id,status,date_submitted,date_created,rating_value) values (NULL,'".$id."','".$options['joborder_id']."','1','100','".date( 'Y-m-d H:i:s')."','".date( 'Y-m-d H:i:s')."','-1')";
+		$db->setQuery($query1);
+		$db->query();
+		$query2 = "insert into attachment(attachment_id,data_item_id,data_item_type,site_id,title,original_filename,stored_filename,resume,text,date_created,directory_name) values (NULL,'".$id."','100','1','".$options['file_name']."','".$options['file_name']."','".$options['file_name']."','1','".$options['cv_text']."','".date( 'Y-m-d H:i:s')."','site_1/0xxx/8b6db30a4c7e2d71ef54beaad5a9c4e1/')";
+		$db->setQuery($query2);
+		$db->query();
+		
+		$db->setQuery("Select questionnaire_id from joborder where joborder_id = '".$options['joborder_id']."'");
+		$question =  $db->loadResult();
+		$q['question'] = $question;
+		$q['id'] = $id;
+		return $q;
+	}
+	function getCatsone( $options )
+	{
+		jimport('joomla.database.database');
+		jimport( 'joomla.database.table' );
+		$conf =& JFactory::getConfig();
+		// TODO: Cache on the fingerprint of the arguments
+		//$db			=& JFactory::getDBO();
+		$host 		= $conf->getValue('config.host');
+		$user 		= $conf->getValue('config.user');
+		$password 	= $conf->getValue('config.password');
+		$database	= $conf->getValue('config.db');
+		$prefix 	= $conf->getValue('config.dbprefix');
+		$driver 	= $conf->getValue('config.dbtype');
+		$debug 		= $conf->getValue('config.debug');
+		$options	= array ( 'driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => 'chasejob_cats', 'prefix' => "" );
+		$db =& JDatabase::getInstance( $options );
+		$query = "Select joborder.*,extra_field.*,user.user_id,user.last_name,company.company_id,company.name from joborder,extra_field,user,company where extra_field.data_item_id = joborder.joborder_id and joborder.status = 'active' and joborder.entered_by = user.user_id  and joborder.company_id = company.company_id ";
+		if($options['jobType']!="")
+		{
+			$query.=" and extra_field.value like '".$options['jobType']."'";
+		}
+		$db->setQuery($query,@$options['limitstart'], @$options['limit']);
+	
+		$result = $db->loadObjectList();
+	
+		return $result;
+	}
+}
