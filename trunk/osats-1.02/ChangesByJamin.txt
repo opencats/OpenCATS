@@ -1,3 +1,12 @@
+4-6-2009
+---------------------
+Rewrote the following into  resetbit.php.
+include_once ('../dbconfig.php');
+mysql_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS);
+
+I had forgotten to change it to use Vars instead of directly assigning the data.
+
+
 3-30-09
 ---
 WARNING.. THIS SYSTEM IS NOT FULLY FUNCTIONAL! YOU WILL RUN INTO ISSUES. THANKS!

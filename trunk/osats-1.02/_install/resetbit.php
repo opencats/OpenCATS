@@ -4,8 +4,8 @@
 * This is for programmers only. Do not run unless you want to re-install clean! - Jamin
 * OSATS
 */
-
-mysql_connect("localhost", "root", "");
+include_once ('../dbconfig.php');
+mysql_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS);
 mysql_select_db("osats");
 if(MySQL_query("UPDATE system SET Installed = NULL"))
 {
