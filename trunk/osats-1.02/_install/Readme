@@ -1,0 +1,10 @@
+OSATS Installation Instructions.
+
+1. Be sure that the dbconfig.php is Writeable in the OSATS Root dir.
+2. Make sure you have a mySQL server setup locally. For instructions on setting up OSATS with a server not hosted locally, stay tuned.  Currently this is only designed for local db access.
+3. Have the mySQL Root password available. If you have a blank password, we recommend you set your mySQL Root account with a password first for security.
+3. Enable Short Tags in PHP.ini
+3. Direct your browser to the OSATS web site. The installation should automatically begin.
+
+** You DO NOT need to create a table. The install will do this for you.
+

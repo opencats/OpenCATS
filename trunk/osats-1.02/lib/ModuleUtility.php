@@ -15,6 +15,11 @@ class ModuleUtility
     private function __clone() {}
 
 
+   public function stripslashes_deep($value)
+	{
+    return is_array($value) ? array_map('stripslashes_deep', $value) : stripslashes($value);
+	}
+
     /**
      * Loads a module.
      *
@@ -54,7 +59,8 @@ class ModuleUtility
      * Check each module for a tasks directory which contains events that need
      * to be registered with the Asychroneous Queue Processor.
      */
-    public static function registerModuleTasks()
+    
+	public static function registerModuleTasks()
     {
         $modules = self::getModules();
 
@@ -164,19 +170,18 @@ class ModuleUtility
         /* Get a blocking advisory lock on the database. */
         $db = DatabaseConnection::getInstance();
         $db->getAdvisoryLock('OSATSUpdateLock', 120);
-      	
       	//this is only until I finish the entire rewrite, then I will pair things up. Jamin
 		include('./dbconfig.php');
 		$myServer = mysql_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS);
 		$myDB = mysql_select_db(DATABASE_NAME);
-		$sql = mysql_query("SELECT * FROM moduleInfo ORDER BY ordernum ASC");
-		$num_rows = mysql_num_rows($sql);
+		$sql = mysql_query("SELECT * FROM moduleinfo ORDER BY ordernum ASC");
+		//$num_rows = mysql_num_rows($sql);
 		
 		while ($myrow = mysql_fetch_array($sql))
 		{ 
 			$moduleName = strtolower($myrow['name']);
 			$moduleClass = $myrow['class'];
-			//echo $moduleClass;
+			echo $moduleClass;
 			include ('./modules/' . $moduleName . "/" . $moduleClass . ".php");
 			$module = new $moduleClass();
 			//$modules[] = $myrow['class']; 

@@ -1,3 +1,35 @@
+4-21-2009
+-------------------
+Installation Only Tests:
+Ubuntu 8.10
+SuSE 10.1
+Windows 2003, WAMP environment WITHOUT IIS.
+Windows 2003, WAMP environment set to port 8080, WITH IIS installed.
+
+Fixed issue with incorrect spelling of data table in a couple modules.
+
+I incorrectly noted that you could change the option for displaying tabs on top or bottom.  You CANT currently change the setting in the Settings area. You need to open the Constants.php and look for:
+
+/*defines where your tabs show up.
+on the top of the window = top
+on the bottom = bottom */
+define ('MYTABPOS', 'bottom');
+
+... and change the MYTABPOS choice to top or bottom. I will be writing this into the settings area later. 
+
+
+4-20-2009
+------------------------------
+Started the creation of the Installation Readme file located in the _Install dir.
+Updated text in the install.php file to reflect the error of the dbconfig.php file not being writable.
+Changed the mySql pwd field to be a password field.
+
+
+4-17-2009
+-----------------------
+Known issue:  Shorttags must be set to ON in the PHP.INI or you will get errors with self posts.
+
+
 4-6-2009
 ---------------------
 Rewrote the following into  resetbit.php.
@@ -16,8 +48,6 @@ Changed the Install routine to hide the passwords with '*'
 Updated the install db to the latest.
 
 Lots of cleanup (removing functions that are not required etc)
-
-Tabs can be on top or bottom now. You choose the preference in the Settings area.
 
 Administration links are only shown for those with the proper rights. It shows up on the same page as the profile settings for the logged in user.
 

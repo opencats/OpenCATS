@@ -81,7 +81,7 @@ if(get_magic_quotes_runtime())
 /* Isnt there a better way to do this? - Jamin */
 if (get_magic_quotes_gpc())
 {
-    echo "magic quotes gpc is true";
+    //echo "magic quotes gpc is true";
 	include_once('./lib/ArrayUtility.php');
 
     $_GET     = array_map('stripslashes', $_GET);

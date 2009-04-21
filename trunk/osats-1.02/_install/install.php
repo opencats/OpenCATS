@@ -24,7 +24,7 @@ function dbdata()
 	<form action="<?=$_SERVER['PHP_SELF'];?>" method="post">
 	Enter the username to access the mySQL Server <input type="text" name="dbusername" />
 	<br />
-	Enter the password to access the mySQL Server <input type="text" name="dbpwd" />
+	Enter the password to access the mySQL Server <input type="password" name="dbpwd" />
 	<br /><br />
 	<input type="submit" class="button" name="op" value="Next" />
 	</form></div>
@@ -62,7 +62,7 @@ function welcome()
 		$checks = array();
     	@chmod("dbconfig.php", 0666);
     	@is_writable("dbconfig.php") ? $checks[] = "<h3>The Config.php is writable - GOOD!</h3>" : 
-		$checks[] = "<h3>The Config.php file in the root is not Writable. Please Fix and refresh this page.</h3>";
+		$checks[] = "<h3>The dbconfig.php file in the root is not Writable. Please Fix and refresh this page.</h3>";
     
 		if (!function_exists('mysql_get_client_info'))
     	{
