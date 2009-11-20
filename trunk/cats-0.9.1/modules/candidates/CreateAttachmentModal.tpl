@@ -1,7 +1,7 @@
 <?php /* $Id: CreateAttachmentModal.tpl 3093 2007-09-24 21:09:45Z brian $ */ ?>
 <?php TemplateUtility::printModalHeader('Candidates', array('modules/candidates/validator.js'), 'Create Candidate Attachment'); ?>
 
-    <?php if (!$this->isFinishedMode): ?>
+    <?php if (!$this->isFinishedMode){ ?>
         <form name="createAttachmentForm" id="createAttachmentForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=createAttachment" enctype="multipart/form-data" method="post" onsubmit="return checkCreateAttachmentForm(document.createAttachmentForm);">
             <input type="hidden" name="postback" id="postback" value="postback" />
             <input type="hidden" id="candidateID" name="candidateID" value="<?php echo($this->candidateID); ?>" />
@@ -22,7 +22,7 @@
             <input type="submit" class="button" name="submit" id="submit" value="Create Attachment" />&nbsp;
             <input type="button" class="button" name="cancel" value="Cancel" onclick="parentHidePopWin();" />
         </form>
-    <?php else: ?>
+    <?php } else { ?>
         <?php if(isset($this->resumeText) && $this->resumeText == ''): ?>
             <p>The file has been successfully attached, but CATS was unable to index the resume keywords to make the document searchable.  The file format may be unsupported by CATS.</p>
         <?php else: ?>
@@ -31,6 +31,6 @@
         <form>
             <input type="button" name="close" value="Close" onclick="parentHidePopWinRefresh();" />
         </form>
-    <?php endif; ?>
+    <?php } ?>
     </body>
 </html>

@@ -1354,7 +1354,30 @@ class CandidatesDataGrid extends DataGrid
                                      'filter'    => 'candidate.is_hot',
                                      'pagerOptional' => false,
                                      'filterable' => false,
-                                     'filterDescription' => 'Only Hot Candidates')
+                                     'filterDescription' => 'Only Hot Candidates'),
+        // Tags filtering
+        	'Tags'	=>			array(
+                                     'select'	=> '(
+                                                    SELECT TRIM(GROUP_CONCAT(\' \',t2.title))	FROM candidate_tag t1
+                                                    LEFT JOIN tag t2 ON t1.tag_id = t2.tag_id
+                                                    WHERE t1.candidate_id = candidate.candidate_id
+                                                    GROUP BY candidate_id
+                                                    ) as tags
+                                                    ',
+                                     'sortableColumn' => 'tags',
+                                     'pagerRender'    => 'return $rsData[\'tags\'];',
+                                     'pagerOptional' => false,
+                                     'pagerWidth'     => 310,
+                                     'exportable'     => false,
+                                     'filterable'     => false,
+
+                                     'filterTypes'    => '=#',
+                                     'filterRender=#' => '
+                                      return "candidate.candidate_id IN (
+                                         SELECT t1.candidate_id tags FROM candidate t1
+                                         LEFT JOIN candidate_tag t2 ON t1.candidate_id = t2.candidate_id
+                                         WHERE t2.site_id = 1 AND t2.tag_id IN (". implode(",",$arguments)."))";
+                                     ')
         );
 
         if (US_ZIPS_ENABLED)

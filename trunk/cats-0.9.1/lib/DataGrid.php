@@ -1774,8 +1774,8 @@ class DataGrid
                 {
                     echo sprintf(
                         '<nobr>%s</nobr>',
-                        (!isset($data['data']['columnHeaderText']) ? 
-                            $data['name'] : 
+                        (!isset($data['data']['columnHeaderText']) ?
+                            $data['name'] :
                             $data['data']['columnHeaderText'])
                     );
                 }

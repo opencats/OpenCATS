@@ -281,6 +281,17 @@
                                     Enable and configure EEO / EOC compliance tracking.
                                 </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    <img src="images/bullet_black.gif" alt="" />
+                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=tags">
+                                        Configure Tags
+                                    </a>
+                                </td>
+                                <td>
+                                    Add/Remove tags, description for tags
+                                </td>
+                            </tr>
                         </table>
                         <br />
 

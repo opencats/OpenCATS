@@ -46,6 +46,7 @@ include_once('./lib/WebForm.php');
 include_once('./lib/CommonErrors.php');
 include_once('./lib/Import.php');
 include_once('./lib/Questionnaire.php');
+include_once('./lib/Tags.php');
 eval(Hooks::get('XML_FEED_SUBMISSION_SETTINGS_HEADERS'));
 
 /* Users.php is included by index.php already. */
@@ -133,6 +134,108 @@ class SettingsUI extends UserInterface
             'REPORTS_HANDLE_REQUEST' =>    'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");'
         );
     }
+    
+    function onAddNewTag(){
+        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+        {
+            echo 'CATS has lost your session data!';
+            return;
+        }
+        $tags = new Tags($this->_siteID);
+        $arr = $tags->add((isset($_POST['tag_parent_id'])?$_POST['tag_parent_id']:null),$_POST['tag_title'], "-");
+        if (isset($_POST['tag_parent_id'])){
+	        printf('
+				<li id="id_li_tag_%d">
+					<a href="javascript:;" onclick="doDelete(%d);"><img src="images/actions/delete.gif" /></a>
+					<div id="id_tag_%d"><a href="javascript:;" onclick="editTag(%d);">%s</a><div></div></div>
+				</li>',
+	        $arr['id'],$arr['id'],$arr['id'],$arr['id'],$arr['tag_title']);
+        }else
+        {
+	        printf('
+				<li id="id_li_tag_%d">
+					<a href="javascript:;" onclick="doDelete(%d);"><img src="images/actions/delete.gif" /></a> %s
+					<ul>
+						<li>
+							<img src="images/actions/add.gif" />
+							<form method="post" action="%s?m=settings&amp;a=ajax_tags_add">
+								<input type="hidden" name="tag_parent_id" value="%d" />
+								<input type="text" name="tag_title" value="" />
+								<input type="button" value="Add" onclick="doAdd(this.form);" />
+							</form>
+						</li>
+					</ul>
+				</li>',
+	        $arr['id'],$arr['id'],$arr['tag_title'], CATSUtility::getIndexName(), $arr['id']);        	
+        }
+        
+        
+		return; 
+    }
+    
+    function onRemoveTag(){
+        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+        {
+            echo 'CATS has lost your session data!';
+            return;
+        }
+        $tags = new Tags($this->_siteID);
+        $tags->delete($_POST['tag_id']);
+		return; 
+    }
+    
+    function onChangeTag(){
+        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+        {
+            echo 'CATS has lost your session data!';
+            return;
+        }
+        $tags = new Tags($this->_siteID);
+        //$tags->update($_POST['tag_id'], $_POST['title'], $_POST['description']);
+        $tags->update($_POST['tag_id'], $_POST['tag_title'], "-");
+        echo $_POST['tag_title'];
+        return;
+    }
+    
+    
+    /**
+     * This function make changes to tags
+     * @return unknown_type
+     */
+	function onChangeTags(){
+		// TODO: Add tags changing code
+        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
+            return;
+            //$this->fatal(ERROR_NO_PERMISSION);
+        }
+
+ 
+	}
+
+	/**
+	 * Show the tag list
+	 * @return unknown_type
+	 */
+	function changeTags(){
+		if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
+            return;
+            //$this->fatal(ERROR_NO_PERMISSION);
+        }
+
+        $tags = new Tags($this->_siteID);
+        $tagsRS = $tags->getAll();
+
+        //if (!eval(Hooks::get('SETTINGS_EMAIL_TEMPLATES'))) return;
+
+        $this->_template->assign('active', $this);
+        $this->_template->assign('subActive', 'Administration');
+        $this->_template->assign('tagsRS', $tagsRS);
+        $this->_template->display('./modules/settings/tags.tpl');
+	}
 
     public function handleRequest()
     {
@@ -142,7 +245,15 @@ class SettingsUI extends UserInterface
 
         switch ($action)
         {
-            case 'changePassword':
+        	case 'tags':
+        		if ($this->isPostBack()){
+        			$this->onChangeTags();
+        		}else{
+        			$this->changeTags();
+        		}
+        		break;
+        	
+        	case 'changePassword':
                 if ($this->isPostBack())
                 {
                     $this->onChangePassword();
@@ -397,6 +508,18 @@ class SettingsUI extends UserInterface
                 $this->downloads();
                 break;
 
+        	case 'ajax_tags_add':
+        		$this->onAddNewTag();
+        		break;
+        	
+        	case 'ajax_tags_del':
+        			$this->onRemoveTag();
+        		break;
+
+        	case 'ajax_tags_upd':
+        			$this->onChangeTag();
+        		break;
+               
             case 'ajax_wizardAddUser':
                 $this->wizard_addUser();
                 break;

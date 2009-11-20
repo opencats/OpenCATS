@@ -34,7 +34,7 @@ define('LICENSE_KEY','3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
 define('DATABASE_USER', 'cats');
 define('DATABASE_PASS', 'password');
 define('DATABASE_HOST', 'localhost');
-define('DATABASE_NAME', 'cats');
+define('DATABASE_NAME', 'cats_dev');
 
 /* Resfly.com Resume Import Services Enabled */
 define('PARSING_ENABLED', true);
@@ -55,19 +55,19 @@ define('ANTIWORD_MAP', '8859-1.txt');
  * one backslash (\).
  * http://www.foolabs.com/xpdf/
  */
-define('PDFTOTEXT_PATH', "c:\\catsbin\\pdftotext.exe");
+define('PDFTOTEXT_PATH', "d:\\bfc_vasilache\\projects\\work\\opencats\\external\\catsbin\\pdftotext.exe");
 
 /* html2text settings. Remember to use double backslashes (\) to represent
  * one backslash (\). 'html2text' can be found at:
  * http://www.mbayer.de/html2text/
  */
-define('HTML2TEXT_PATH', "c:\\catsbin\\html2text.exe");
+define('HTML2TEXT_PATH', "d:\\bfc_vasilache\\projects\\work\\opencats\\external\\catsbin\\html2text.exe");
 
 /* UnRTF settings. Remember to use double backslashes (\) to represent
  * one backslash (\). 'unrtf' can be found at:
  * http://www.gnu.org/software/unrtf/unrtf.html
  */
-define('UNRTF_PATH', "c:\\catsbin\\unrtf.exe");
+define('UNRTF_PATH', "d:\\bfc_vasilache\\projects\\work\\opencats\\external\\catsbin\\unrtf.exe");
 
 /* Temporary directory. Set this to a directory that is writable by the
  * web server. The default should be fine for most systems. Remember to
@@ -155,7 +155,7 @@ define('FORGOT_PASSWORD_BODY',      'You recently requested that your CATS: Appl
 define('ENABLE_DEMO_MODE', false);
 
 /* Offset to GMT Time. */
-define('OFFSET_GMT', -6);
+define('OFFSET_GMT', 2);
 
 /* Should we enforce only one session per user (excluding demo)? */
 define('ENABLE_SINGLE_SESSION', false);

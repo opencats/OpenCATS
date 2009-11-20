@@ -47,6 +47,7 @@ include_once('./lib/CommonErrors.php');
 include_once('./lib/License.php');
 include_once('./lib/ParseUtility.php');
 include_once('./lib/Questionnaire.php');
+include_once('./lib/Tags.php');
 
 class CandidatesUI extends UserInterface
 {
@@ -154,6 +155,17 @@ class CandidatesUI extends UserInterface
                 $this->onAddToPipeline();
                 break;
 
+            case 'addCandidateTags':
+                if ($this->isPostBack())
+                {
+                    $this->onAddCandidateTags();
+                }
+                else
+                {
+                    $this->addCandidateTags();
+                }
+            	break;
+                
             /* Change candidate-joborder status. */
             case 'addActivityChangeStatus':
                 if ($this->isPostBack())
@@ -230,6 +242,9 @@ class CandidatesUI extends UserInterface
         }
     }
 
+    
+    
+    
     /*
      * Called by external modules for adding candidates.
      */
@@ -253,6 +268,7 @@ class CandidatesUI extends UserInterface
         );
         CATSUtility::transferRelativeURI($transferURI);
     }
+
 
     /*
      * Called by external modules for processing the log activity / change
@@ -289,6 +305,11 @@ class CandidatesUI extends UserInterface
                                         'filterVisible' => false);
         }
 
+        $newParameterArray = $this->_parameters;
+        $tags = new Tags($this->_siteID);
+        $tagsRS = $tags->getAll();
+        //foreach($tagsRS as $r) $r['link'] = DataGrid::_makeControlLink($newParameterArray);
+
         $dataGrid = DataGrid::get("candidates:candidatesListByViewDataGrid", $dataGridProperties);
 
         $candidates = new Candidates($this->_siteID);
@@ -299,6 +320,7 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
         $this->_template->assign('errMessage', $errMessage);
         $this->_template->assign('topLog', $topLog);
+        $this->_template->assign('tagsRS', $tagsRS);
 
         if (!eval(Hooks::get('CANDIDATE_LIST_BY_VIEW'))) return;
 
@@ -562,6 +584,8 @@ class CandidatesUI extends UserInterface
             }
         }
 
+        $tags = new Tags($this->_siteID);
+
         $questionnaire = new Questionnaire($this->_siteID);
         $questionnaires = $questionnaire->getCandidateQuestionnaires($candidateID);
 
@@ -580,6 +604,8 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('EEOValues', $EEOValues);
         $this->_template->assign('privledgedUser', $privledgedUser);
         $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('tagsRS', $tags->getAll());
+        $this->_template->assign('assignedTags', $tags->getCandidateTagsTitle($candidateID));
 
         if (!eval(Hooks::get('CANDIDATE_SHOW'))) return;
 
@@ -1628,6 +1654,78 @@ class CandidatesUI extends UserInterface
         );
     }
 
+    private function onAddCandidateTags()
+    {
+    	
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+
+            /* Bail out if we don't have a valid regardingjob order ID. */
+        if (!$this->isOptionalIDValid('candidateID', $_POST))
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid Candidate ID.');
+        }
+
+        /* Bail out if we don't have a valid regardingjob order ID. */
+        if (!isset($_POST['candidate_tags']) || !is_array($_POST['candidate_tags']))
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid Tag ID.');
+        }
+
+        $candidateID	= $_POST['candidateID'];
+        $tagIDs			= $_POST['candidate_tags'];
+        
+        $tags = new Tags($this->_siteID);
+        $tags->AddTagsToCandidate($candidateID, $tagIDs);
+        
+        $this->_template->assign('candidateID', $candidateID);
+        $this->_template->assign('isFinishedMode', true);
+        $this->_template->display(
+            './modules/candidates/AssignCandidateTagModal.tpl'
+        );
+        
+    }
+    
+   
+	private function addCandidateTags(){
+        /* Bail out if we don't have a valid candidate ID. */
+        if (!$this->isRequiredIDValid('candidateID', $_GET))
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+        }
+
+        $candidateID        = $_GET['candidateID'];
+
+        $candidates = new Candidates($this->_siteID);
+        $candidateData = $candidates->get($candidateID);
+
+        /* Bail out if we got an empty result set. */
+        if (empty($candidateData))
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);
+            return;
+            /*$this->fatalModal(
+                'The specified candidate ID could not be found.'
+            );*/
+        }
+        
+        $tags = new Tags($this->_siteID);
+        $tagsRS = $tags->getAll();
+        
+        $this->_template->assign('candidateID', $candidateID);
+        $this->_template->assign('assignedTags', $tags->getCandidateTagsID($candidateID));
+        $this->_template->assign('isFinishedMode', false);
+        
+        $this->_template->assign('tagsRS', $tagsRS);
+        $this->_template->display(
+            './modules/candidates/AssignCandidateTagModal.tpl'
+        );
+        
+    }
+    
+    
     private function onAddActivityChangeStatus()
     {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)

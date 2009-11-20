@@ -3,6 +3,7 @@
     <?php TemplateUtility::printHeader('Candidate - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js', 'js/attachment.js')); ?>
 <?php else: ?>
     <?php TemplateUtility::printHeader('Candidate - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js', 'js/attachment.js')); ?>
+    
     <?php TemplateUtility::printHeaderBlock(); ?>
     <?php TemplateUtility::printTabs($this->active); ?>
         <div id="main">
@@ -382,6 +383,20 @@
                                     <?php endif; ?>
                                 </td>
                             </tr>
+                            <tr>
+                                <td valign="top" class="vertical">Tags:
+                                    <?php if (!$this->isPopup){ ?>
+                                        <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT){ ?>
+                                                <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addCandidateTags&amp;candidateID=<?php echo($this->candidateID); ?>', 400, 125, null); return false;">
+                                                Add/Remove
+                                            </a>
+                                        <?php } ?>
+                                    <?php } ?>
+
+                                </td>
+                                <td valign="top" class="data"><?= implode(', ',$this->assignedTags) ?>
+                                </td>
+                            </tr>
                         </table>
                     </td>
                 </tr>
@@ -571,5 +586,8 @@
     </div>
 
 <?php endif; ?>
+	
+
+
     <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>
