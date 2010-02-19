@@ -1,5 +1,5 @@
 <?php /* $Id: SendEmail.tpl 3078 2007-09-21 20:25:28Z will $ */ ?>
-<?php TemplateUtility::printHeader(__('Candidates'), array('modules/candidates/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js')); ?>
+<?php TemplateUtility::printHeader(__('Candidates'), array('ckeditor/ckeditor.js','modules/candidates/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js')); ?>
 <?php 
 if (MYTABPOS == 'top') {
 	osatutil::TabsAtTop();
@@ -109,6 +109,8 @@ if (MYTABPOS == 'top') {
 
                         <script type="text/javascript">
                         document.emailForm.emailSubject.focus();
+                        //added the code below for the ckeditor html box - Jamin 2-19-2010
+						CKEDITOR.replace( 'emailBody' );
                         </script>
                     </td>
                 </tr>

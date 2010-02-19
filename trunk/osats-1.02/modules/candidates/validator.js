@@ -118,7 +118,8 @@ function checkEmailForm(form)
     var errorMessage = '';
 
     errorMessage += checkEmailSubject();
-    errorMessage += checkEmailBody();
+    // remarked next line until we fix the allowing of html in the Function later called checkEmailBody- Jamin 2-19-2010
+	//errorMessage += checkEmailBody();
 
     if (errorMessage != '')
     {
@@ -291,6 +292,9 @@ function checkEmailSubject()
     return errorMessage;
 }
 
+//We need to fix this to allow the HTML to be seen or the validation will error on the body!
+// So to prevent the error for now..I have remarked out the validation earlier in this code. See the function called CheckEmailForm - Jamin 2-19-2010
+/* 
 function checkEmailBody()
 {
     var errorMessage = '';
@@ -311,3 +315,4 @@ function checkEmailBody()
 
     return errorMessage;
 }
+*/

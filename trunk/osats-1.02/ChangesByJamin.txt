@@ -1,3 +1,50 @@
+2-19-2010
+-------------------
+CKEDITOR integration- 2-19-2010 Jamin
+----
+Downloaded and Copied the ckeditor folder into the root of the dir. 
+It did produce an issue with the javascript doing its validation though.
+
+----
+Modified \modules\candidates\validator.js
+This was modified to temporarily remark the validation for the body. The code needs to be written to see HTML. This means that the email could inadvertantly get sent without a body for now! So..be careful.
+
+----
+Modified \modules\candidates\SendEmail.tpl
+Change the following from:
+<?php TemplateUtility::printHeader(__('Candidates'), array('modules/candidates/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js')); ?>
+
+Change to:
+<?php TemplateUtility::printHeader(__('Candidates'), array('ckeditor/ckeditor.js','modules/candidates/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js')); ?>
+
+
+*Note I added ckeditor/ckeditor.js to the line. This is for the new ckeditor functionality. It overlays on the old text only body text box in the email applicant section. 
+
+//added the code below for the ckeditor html box - Jamin 2-19-2010
+CKEDITOR.replace( 'emailBody' );
+
+----
+Other items. It has nothing to do with the CKEDITOR.. but it needed to be cleaned up. :-)
+
+Modified \modules\candidates\CandidateUI.php
+Remarked out the following. 
+// going to remove this as this will not be a DEMO application! - Jamin 2-19-2010
+//if ($this->_accessLevel == ACCESS_LEVEL_DEMO)
+//{
+//    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Sorry, but demo accounts are not allowed to send e-mails.'));
+//}
+// going to remove the above as this will not be a DEMO application! - Jamin 2-19-2010
+
+----
+Modified \lib\ModuleUtility.php
+Commented out a line I use for testing only.
+//echo $moduleClass; -This is for testing only. - Jamin 2-19-2010
+
+
+---- 
+And cleared the main config and dbconfig files so that the initial setup wizard prompts for installation and it doesnt contain MY data.
+-Jamin
+
 4-21-2009
 -------------------
 Installation Only Tests:

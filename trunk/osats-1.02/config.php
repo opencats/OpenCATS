@@ -148,11 +148,11 @@ define('MAIL_MAILER', 3);
 define('MAIL_SENDMAIL_PATH', "/usr/sbin/sendmail");
 
 /* SMTP Settings. Define if you chose SMTP Above. */
-define('MAIL_SMTP_HOST', "myhost");
+define('MAIL_SMTP_HOST', "");
 define('MAIL_SMTP_PORT', 25);
 define('MAIL_SMTP_AUTH', false);
-define('MAIL_SMTP_USER', "myusername");
-define('MAIL_SMTP_PASS', "test");
+define('MAIL_SMTP_USER', "");
+define('MAIL_SMTP_PASS', "");
 
 /* Event reminder E-Mail Template. */
 $GLOBALS['eventReminderEmail'] = <<<EOF

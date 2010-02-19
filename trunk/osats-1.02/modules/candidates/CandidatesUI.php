@@ -3042,11 +3042,13 @@ class CandidatesUI extends UserInterface
      */
     private function onEmailCandidates()
     {
-        if ($this->_accessLevel == ACCESS_LEVEL_DEMO)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Sorry, but demo accounts are not allowed to send e-mails.'));
-        }
-
+        // going to remove this as this will not be a DEMO application! - Jamin 2-19-2010
+		//if ($this->_accessLevel == ACCESS_LEVEL_DEMO)
+        //{
+        //    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Sorry, but demo accounts are not allowed to send e-mails.'));
+        //}
+		// going to remove the above as this will not be a DEMO application! - Jamin 2-19-2010
+		
         if (isset($_POST['postback']))
         {
             $emailTo = $_POST['emailTo'];

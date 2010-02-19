@@ -181,7 +181,7 @@ class ModuleUtility
 		{ 
 			$moduleName = strtolower($myrow['name']);
 			$moduleClass = $myrow['class'];
-			echo $moduleClass;
+			//echo $moduleClass; -This is for testing only. - Jamin 2-19-2010
 			include ('./modules/' . $moduleName . "/" . $moduleClass . ".php");
 			$module = new $moduleClass();
 			//$modules[] = $myrow['class']; 

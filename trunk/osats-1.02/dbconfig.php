@@ -5,7 +5,7 @@
 			// OSATS DB Password
 			define('DATABASE_PASS', '');
 			// OSATS DB Host
-			define('DATABASE_HOST', 'localhost');
+			define('DATABASE_HOST', '');
 			// OSATS DB Name
-			define('DATABASE_NAME', 'osats');
+			define('DATABASE_NAME', '');
 				?>
