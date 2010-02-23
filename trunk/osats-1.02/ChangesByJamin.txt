@@ -1,3 +1,8 @@
+2-23-2010
+-------------------
+Adjusted the SendEmail.tpl javascript to remove extra breaks in the emails. see code for details.
+
+
 2-19-2010
 -------------------
 CKEDITOR integration- 2-19-2010 Jamin

@@ -110,7 +110,19 @@ if (MYTABPOS == 'top') {
                         <script type="text/javascript">
                         document.emailForm.emailSubject.focus();
                         //added the code below for the ckeditor html box - Jamin 2-19-2010
-						CKEDITOR.replace( 'emailBody' );
+                        //adjusted code to remove or prevent extra breaks in email - Jamin 2-23-2010
+						CKEDITOR.replace( 'emailBody' ), {  enterMode : CKEDITOR.ENTER_BR, shiftEnterMode : CKEDITOR.ENTER_BR } );
+						CKEDITOR.on( 'instanceReady', function( ev )
+        				{
+         					ev.editor.dataProcessor.writer.setRules( 'br',
+         					{
+            					indent : false,
+            					breakBeforeOpen : false,
+            					breakAfterOpen : false,
+            					breakBeforeClose : false,
+            					breakAfterClose : false
+         					});
+   						});
                         </script>
                     </td>
                 </tr>
