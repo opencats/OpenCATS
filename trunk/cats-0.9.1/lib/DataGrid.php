@@ -300,6 +300,10 @@ class DataGrid
 
         return self::get($indentifier, $parameters);
     }
+    
+    public function getInstanceName(){
+    	return $this->_instanceName;
+    }
 
     /**
      * Static function retrieves the most recent parameter array for a datagrid from the database.

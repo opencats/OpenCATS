@@ -2,7 +2,7 @@
 <?php TemplateUtility::printHeader('Candidates', array( 'js/highlightrows.js', 'js/export.js', 'js/dataGrid.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
-<?php $md5InstanceName = md5($this->_instanceName);?>
+<?php $md5InstanceName = md5($this->dataGrid->getInstanceName());?>
     <style type="text/css">
     div.addCandidateButton { background: #4172E3 url(images/nodata/candidatesButton.jpg); cursor: pointer; width: 337px; height: 67px; }
     div.addCandidateButton:hover { background: #4172E3 url(images/nodata/candidateButton-o.jpg); cursor: pointer; width: 337px; height: 67px; }
@@ -43,23 +43,29 @@
 	                					<a href="javascript:void(0);" id="exportBoxLink<?= $md5InstanceName ?>" onclick="toggleHideShowControls('<?= $md5InstanceName ?>'); return false;">Filter by tag</a>
 	                					<div class="ajaxSearchResults" id="ColumnBox<?= $md5InstanceName ?>" align="left"  style="width:auto;<?= $this->globalStyle ?>">
 	                						<table width="100%"><tr><td style="font-weight:bold; color:#000000;">Tag list</td>
-	                						<td align="right"><a id="onlySomeTags" href="javascript:void(0);" onclick="var arrValues=[];for each(var el in document.getElementsByName('candidate_tags')){ if (el.checked)arrValues.push(el.value);};<?php echo $this->dataGrid->getJSAddFilter('Tags', '=#',  "arrValues.join('/')"). $this->dataGrid->getJSApplyFilter(); ?>;">Save&amp;Close</a>
+	                						<td align="right"><a id="onlySomeTags" href="javascript:void(0);" onclick="var arrValues=[];for each(var el in document.getElementsByName('candidate_tags[]')){ if (el.checked)arrValues.push(el.value);};<?php echo $this->dataGrid->getJSAddFilter('Tags', '=#',  "arrValues.join('/')"). $this->dataGrid->getJSApplyFilter(); ?>;">Save&amp;Close</a>
 	                						</td>
 	                						</tr></table>
 
 
-	                                        <ul>
-	                                        <?php $parent=""; foreach($this->tagsRS as $index => $data){
-
-
-	                                        	?>
-	                                        	<?php if ($parent != $data['parent_tag_title']){
-	                                        			if ($parent != ""):?></ul><?php endif;?><li><?= $data['parent_tag_title'] ?></li><ul>
-	                                        	<?php } ?><li><input type="checkbox" name="candidate_tags" id="checkbox<?= $i ?>" value="<?= $data['tag_id'] ?>"><label for="checkbox<?= $i++ ?>"><?= $data['tag_title'] ?></label></li>
-	                                        <?php $parent=$data['parent_tag_title']; }; ?>
-	                                        </ul>
+	                                        <ul>	                                        
+											<?php $i=1;
+											
+											function drw($data, $id){
+												global $i;
+												foreach($data as $k => $v){
+													if ($v['tag_parent_id'] == $id){
+														?><li><input type="checkbox" name="candidate_tags[]" id="checkbox<?= $i ?>" value="<?= $v['tag_id'] ?>"><label for="checkbox<?= $i++ ?>"><?= $v['tag_title'] ?></label></li><?php 
+														echo "\n<ul>";
+														drw($data, $v['tag_id']);
+														echo "\n</ul>";
+													}
+												}
+											}
+											drw($this->tagsRS, '');
+											?></ul>
 	                					</div>
-										<span style="display:none;" id="ajaxTableIndicator'.$md5InstanceName.'"><img src="images/indicator_small.gif" alt="" /></span>
+										<span style="display:none;" id="ajaxTableIndicator<?= $md5InstanceName ?>"><img src="images/indicator_small.gif" alt="" /></span>
                                     </td>
                                 </tr>
                             </table>

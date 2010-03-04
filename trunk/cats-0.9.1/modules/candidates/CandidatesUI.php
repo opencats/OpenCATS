@@ -305,7 +305,7 @@ class CandidatesUI extends UserInterface
                                         'filterVisible' => false);
         }
 
-        $newParameterArray = $this->_parameters;
+        //$newParameterArray = $this->_parameters;
         $tags = new Tags($this->_siteID);
         $tagsRS = $tags->getAll();
         //foreach($tagsRS as $r) $r['link'] = DataGrid::_makeControlLink($newParameterArray);

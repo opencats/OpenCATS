@@ -157,7 +157,7 @@ class Tags
 				tag t1
 			LEFT JOIN
 				tag t2 ON t2.tag_id = t1.tag_parent_id
-			WHERE t1.site_id = 1 
+			WHERE t1.site_id = %d  
 			ORDER BY IFNULL(t1.tag_parent_id, t1.tag_id), t1.tag_id",
 			$this->_siteID
 		);
