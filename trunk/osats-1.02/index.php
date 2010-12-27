@@ -40,7 +40,7 @@ $myServer = mysql_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS);
 $result = mysql_query("SELECT Installed FROM system");
 
 if (!$result==null)
-	$row = mysql_result( $result,'Installed');
+	$row = mysql_result( $result, 0);
 	if ($row==null)//if the table does not have a 1 in it, then run the setup wizard.
 	{
     	include('_install/install.php');
