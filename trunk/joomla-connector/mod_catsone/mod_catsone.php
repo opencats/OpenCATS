@@ -16,5 +16,6 @@ defined('_JEXEC') or die('Restricted access');
 // Include the syndicate functions only once
 require_once (dirname(__FILE__).DS.'helper.php');
 
-$list = modCatsone::getList();
+$list = modCatsone::getList($params);
+$amount = modCatsone::getAllAmount($params);
 require(JModuleHelper::getLayoutPath('mod_catsone'));

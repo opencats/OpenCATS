@@ -18,33 +18,38 @@ require_once (JPATH_SITE.DS.'components'.DS.'com_content'.DS.'helpers'.DS.'route
 
 class modCatsone
 {
-	function getList()
-	{
+	function getList(&$params){
 		global $mainframe;
-		//$user		=& JFactory::getUser();
+
 		jimport('joomla.database.database');
 		jimport( 'joomla.database.table' );
 		$conf =& JFactory::getConfig();
-		// TODO: Cache on the fingerprint of the arguments
-		//$db			=& JFactory::getDBO();
-		/*
-		$host 		= $conf->getValue('config.host');
-		$user 		= $conf->getValue('config.user');
-		$password 	= $conf->getValue('config.password');
-		$database	= $conf->getValue('config.db');
-		$prefix 	= $conf->getValue('config.dbprefix');
-		$driver 	= $conf->getValue('config.dbtype');
-		$debug 		= $conf->getValue('config.debug');
-		$options	= array ( 'driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => 'chasejob_cats', 'prefix' => "" );
-		*/
+
 		$host 		= $conf->getValue('config.host');
 		$driver 	= $conf->getValue('config.dbtype');
-	$options	= array ( 'driver' => $driver, 'host' => 'yourcatsservername', 'user' => 'yourcatsdbusername', 'password' => '$yourcatsdbpassword', 'database' => 'yourcatsdbname', 'prefix' => "" );
+		$options	= array ( 'driver' => $driver, 'host' => $params->get('dbhost'), 'user' => $params->get('dbuser'), 'password' => $params->get('dbpass'), 'database' => $params->get('dbname'), 'prefix' => "" );
 		$db =& JDatabase::getInstance( $options );
-		$query = "Select joborder.*,extra_field.*,user.user_id,user.last_name,company.company_id,company.name from joborder,extra_field,user,company where extra_field.data_item_id = joborder.joborder_id and joborder.status = 'active' and joborder.entered_by = user.user_id  and joborder.company_id = company.company_id ";
-		//echo $query;
+		$query = "SELECT value, count(value) as count FROM extra_field,joborder,user,company WHERE field_name LIKE('Job Orders') AND extra_field.data_item_id = joborder.joborder_id AND joborder.status = 'active' AND joborder.entered_by = user.user_id  AND joborder.company_id = company.company_id AND joborder.public = '1' GROUP BY value;";
+
 		$db->setQuery($query);
-		$lists = $db->loadObjectList();
+		$lists = $db->loadAssocList();
+		return $lists;
+	}
+	function getAllAmount(&$params){
+		global $mainframe;
+
+		jimport('joomla.database.database');
+		jimport( 'joomla.database.table' );
+		$conf =& JFactory::getConfig();
+
+		$host 		= $conf->getValue('config.host');
+		$driver 	= $conf->getValue('config.dbtype');
+		$options	= array ( 'driver' => $driver, 'host' => $params->get('dbhost'), 'user' => $params->get('dbuser'), 'password' => $params->get('dbpass'), 'database' => $params->get('dbname'), 'prefix' => "" );
+		$db =& JDatabase::getInstance( $options );
+		$query = "SELECT count(joborder.joborder_id) AS count FROM joborder,extra_field,user,company WHERE field_name LIKE('Job Orders') AND  extra_field.data_item_id = joborder.joborder_id AND joborder.status = 'active' AND joborder.entered_by = user.user_id  AND joborder.company_id = company.company_id AND joborder.public = '1'";
+
+		$db->setQuery($query);
+		$lists = $db->loadResult();
 		return $lists;
 	}
 }

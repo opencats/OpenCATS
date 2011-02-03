@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <install type="module" version="1.5.0">
-    <name>Catsone</name>
-    <author>RussH</author>
+    <name>OpenCATS</name>
+    <author>Dang Thuc Dam</author>
     <version>1.5.0</version>
-    <license>GPL</license>
-    <authorEmail>russh@opencats.org</authorEmail>
-    <authorUrl>www.opencats.org</authorUrl>
-    <description>A module which shows jobs from opencats</description>
+    <description>A module which show all type of jobs from OpenCATS.</description>
     <files>
         <filename module="mod_catsone">mod_catsone.php</filename>
         <filename>index.html</filename>
@@ -14,10 +11,11 @@
         <filename>tmpl/default.php</filename>
         <filename>tmpl/index.html</filename>
     </files>
-<params>
-	<param name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
-	<param name="db_name" type="text" default="catsdatabase" label="db name" description="Set db name for cats jobs" />
-	<param name="db_address" type="text" default="127.0.0.1" label="db address" description="Set db address for cats jobs" />
-	<param name="db_password" type="text" default="password" label="db password" description="Set db address for cats jobs" />
-</params>
+	<params>
+		<param name="moduleclass_sfx" type="text" default="" label="Module Class Suffix" description="PARAMMODULECLASSSUFFIX" />
+		<param name="dbname" type="text" label="OC Database Name" />
+		<param name="dbuser" type="text" label="OC Database Username" />
+		<param name="dbhost" type="text" default="localhost" label="OC Database host" />
+		<param name="dbpass" type="password" label="OC Database password" />
+	</params>
 </install>
