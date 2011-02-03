@@ -1,0 +1,388 @@
+/*+++++++++++++++++++++++++++++++++++++++++++++
+CatsOne
+
++++++++++++++++++++++++++++++++++++++++++++++*/
+.music_stats A IMG
+{
+	float: left;
+}
+#mm_contact .image_pad
+{
+	padding: 3px 6px;
+}
+#logo
+{
+	text-align: left;
+}
+.formOption
+{
+	text-align: left;
+}
+.pop
+{
+	background-color: #EBEDEF;
+	border: 1px solid #40ACC7;
+	width: 99%;
+	text-align: center;
+	margin: 2px auto;
+	color: #716E6E;
+}
+.pop .italics
+{
+	font-style: italic;
+}
+.pop B
+{
+	color: #053C73;
+}
+.orange
+{
+	color: #0D5BA9;
+}
+.icon-48-about
+{
+	background-image: url(images/about.png);
+}
+.icon-48-albums
+{
+	background-image: url(images/albums.png);
+}
+.icon-48-add
+{
+	background-image: url(images/add.png);
+}
+.icon-48-tracks
+{
+	background-image: url(images/tracks.png);
+}
+.icon-48-sales
+{
+	background-image: url(images/sales.png);
+}
+.icon-48-search_sales
+{
+	background-image: url(images/search_sales.png);
+}
+.icon-48-stats
+{
+	background-image: url(images/stats.png);
+}
+.icon-48-tools
+{
+	background-image: url(images/tools.png);
+}
+.icon-48-cat
+{
+	background-image: url(images/cat.png);
+}
+.icon-48-template
+{
+	background-image: url(images/template.png);
+}
+#maian_about .admintable TD.key
+{
+	text-align: left;
+}
+#maian_about .admintable
+{
+	border: thin solid #CCCCCC;
+}
+#mm_check
+{
+	margin: 121px 0 0;
+}
+#version_check
+{
+	width: 236px;
+}
+#maian_about #version_check
+{
+	height: 10px;
+	font: normal normal lighter small normal;
+}
+.key #version_check
+{
+	margin-top: -14px;
+	float: right;
+}
+#check
+{
+	width: 451px;
+}
+#sales_search .formButton
+{
+	float: right;
+}
+#sales_search TBODY TR TD.key
+{
+	background-color: #FFFFFF;
+	font: inherit bolder smaller;
+	border: thin none;
+}
+UL#sortlist LI
+{
+}
+.handle
+{
+	float: right;
+	cursor: move;
+}
+.handle IMG
+{
+	padding: 0 0 0 9px;
+}
+#sortlist .adminform IMG
+{
+	float: right;
+	cursor: move;
+}
+.music_stats
+{
+	width: 302px;
+}
+.chartFrame
+{
+	float: left;
+	margin-top: 5px;
+}
+#props
+{
+	font: normal normal 7.8pt;
+	width: 400px;
+	float: left;
+	margin: -75px 0 0 507px;
+	height: 75px;
+}
+#props .sucErr .tableHeader
+{
+	margin-bottom: -26px;
+}
+#flash_block
+{
+	width: 102px;
+	height: 57px;
+	margin-top: 7px;
+}
+#ajaxTracks
+{
+	margin-top: 0px;
+}
+.sortme
+{
+	width: 556px;
+}
+.remove_track
+{
+	float: right;
+	margin: -22px 0px 0;
+}
+#import
+{
+	font: normal normal normal small normal;
+	/*[empty]text-align:;*/
+}
+#import IMG
+{
+	padding: 8px 0 0 20px;
+}
+#maian_about DIV.icon A:hover
+{
+	border-left: 1px solid #EEE;
+	border-top: 1px solid #EEE;
+	border-right: 1px solid #CCC;
+	border-bottom: 1px solid #CCC;
+	background: #F9F9F9;
+	color: #0B55C4;
+}
+.icon A SPAN
+{
+	margin-left: -5px;
+}
+.icon A IMG
+{
+	padding: 12px 23px 12px 21px;
+}
+#maian_about DIV.icon A
+{
+	display: block;
+	float: left;
+	border: 1px solid #F0F0F0;
+	height: 97px;
+	width: 108px;
+	color: #666;
+	vertical-align: inherit;
+	text-decoration: none;
+	text-align: center;
+}
+.uploadBox A.modal-button IMG
+{
+	position: relative;
+	top: 6px;
+}
+.icon
+{
+	float: left;
+}
+#mm_custom .current
+{
+	margin: 0 3px;
+	height: 427px;
+}
+/** overlib **/
+#overDiv .ol-foreground
+{
+	background-color: #FFE;
+}
+#overDiv .ol-background
+{
+	background-color: #5568C7;
+}
+#overDiv .ol-captionfont
+{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #FFF;
+	font-weight: bold;
+}
+#overDiv .ol-captionfont A
+{
+	color: #0B5FC6;
+	text-decoration: none;
+}
+#overDiv .ol-background .ol-closefont A
+{
+	color: #FFFFFF;
+}
+#flash_player OBJECT
+{
+	/*[disabled]width:135px;*/
+}
+LI
+{
+	list-style: none;
+}
+.toggle_track
+{
+	padding: 0 2px 0 3px;
+	cursor: pointer;
+	float: left;
+	margin: -19px 0px 0px 44px;
+}
+#sales_search .calendar
+{
+	margin: 0 0 0 8px;
+	position: relative;
+	top: 4px;
+}
+#sales .pagination
+{
+	position: relative;
+	left: 202px;
+}
+#warning
+{
+	margin: 35px 0 8px;
+}
+#run_import
+{
+	margin: 13px 0;
+}
+#manage_top A.manage_tracks
+{
+	padding: 0 14px 0 12px;
+	font-weight: bold;
+	color: #0B55C4;
+}
+#manage_top
+{
+	margin-bottom: 10px;
+}
+.sliderwrapper
+{
+	position: relative;
+/*leave as is*/
+	overflow: hidden;
+/*leave as is*/
+	/*[disabled]border:0px groove #1313C3;*/
+	border-bottom-width: 4px;
+	width: 325px;
+/*width of featured content slider*/
+	height: 343px;
+	#margin-left: 251px;
+	#height: 348px;
+}
+.musicInfo LI
+{
+	/*[disabled]width:300px;*/
+}
+.sliderwrapper .contentdiv
+{
+	visibility: hidden;
+/*leave as is*/
+	position: absolute;
+/*leave as is*/
+	left: 0;
+/*leave as is*/
+	top: 0;
+/*leave as is*/
+	padding: 5px;
+	background: white;
+	width: 300px;
+/*width of content DIVs within slider. Total width should equal slider's inner width (390+5+5=400)*/
+	height: 100%;
+	filter: progid:DXImageTransform.Microsoft.alpha(opacity=100);
+	-moz-opacity: 1;
+	opacity: 1;
+}
+.contentdiv A IMG
+{
+	float: left;
+}
+#paginate-slider1.pagination
+{
+	width: 325px;
+/*Width of pagination DIV. Total width should equal slider's outer width (400+10+10=420)*/
+	text-align: right;
+	/*[disabled]background-color:navy;*/
+	padding: 5px 10px;
+}
+#paginate-slider1.pagination A
+{
+	padding: 0 5px;
+	text-decoration: none;
+	color: #00007D;
+	background: white;
+}
+#paginate-slider1.pagination A:hover, #paginate-slider1.pagination A.selected
+{
+	color: #000;
+	background-color: #FEE496;
+}
+.track_align
+{
+	text-align: center;
+}
+#album_top
+{
+	font-size: 13.8pt;
+	margin-bottom: 9px;
+	color: #116DC9;
+}
+.icon
+{
+	margin-right: 4px;
+}
+.search
+{
+	background-image: url(images/bgmboxbutton.gif);
+}
+#search_sales
+{
+	margin-left: 531px;
+	margin-right: auto;
+}
+#import_backup
+{
+	/*[disabled]float:left;*/
+	margin-left: 281px;
+}
