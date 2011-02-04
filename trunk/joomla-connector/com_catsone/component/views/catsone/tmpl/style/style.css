@@ -1,0 +1,61 @@
+.catsone_title{
+	background-color:#efefef;
+	height:30px;
+	font-weight:bold;
+	text-align:center;
+	
+}
+
+.catsone_content{
+	width:100%;
+	padding:10px 0 0 0;
+}
+
+.catsone_inner{
+	width:100% ;
+	border:1px solid #efefef;
+	padding:10px;
+}
+
+.rank_title{
+	text-align:center;
+	font-weight:bold;
+	border-right:1px solid white;
+	height:25px;
+	background-color:#efefef;
+}
+
+.name_title,.date_title,.city_title,.state_title,.type_title{
+	 text-align:center;
+	 border-right:1px solid white;
+	 background-color:#efefef;
+}
+
+.apply_title{
+	background-color:#efefef;
+	text-align:center;
+}
+	
+.catsone_rank{
+	height:20px;
+	border-right:1px solid white;
+}
+.catsone_name{
+	padding-left:10px;
+	border-right:1px solid white;
+}
+.catsone_date{
+	
+	padding-left:20px;
+	border-right:1px solid white;
+
+}
+
+.catsone_city,.catsone_state,.catsone_type{
+	text-align:center;
+	border-right:1px solid white;
+}
+
+.catsone_apply{
+	text-align:center;
+}
