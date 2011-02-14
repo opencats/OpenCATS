@@ -25,56 +25,35 @@
 	<files folder="component">
 		<filename>catsone.php</filename>
 		<filename>controller.php</filename>
-		<filename>controller.php.bak</filename>
 		<filename>index.html</filename>
 		<filename>metadata.xml</filename>
-		<filename>metadata.xml.bak</filename>
 		<filename>router.php</filename>
 		<filename>models/apply.php</filename>
-		<filename>models/apply.php.bak</filename>
-		<filename>models/appy.php.bak</filename>
 		<filename>models/catsone.php</filename>
-		<filename>models/catsone.php.bak</filename>
 		<filename>models/details.php</filename>
-		<filename>models/details.php.bak</filename>
 		<filename>models/index.html</filename>
-		<filename>models/viewDetails.php.bak</filename>
 		<filename>views/index.html</filename>
 		<filename>views/apply/index.html</filename>
 		<filename>views/apply/view.html.php</filename>
-		<filename>views/apply/view.html.php.bak</filename>
-		<filename>views/apply/tmpl/default.php</filename>
-		<filename>views/apply/tmpl/default.php.bak</filename>
 		<filename>views/apply/tmpl/default.xml</filename>
 		<filename>views/apply/tmpl/default_catsone.php</filename>
-		<filename>views/apply/tmpl/default_catsone.php.bak</filename>
 		<filename>views/apply/tmpl/default_showSearch.php</filename>
-		<filename>views/apply/tmpl/default_showSearch.php.bak</filename>
 		<filename>views/apply/tmpl/default_viewDetails.php</filename>
 		<filename>views/apply/tmpl/index.html</filename>
 		<filename>views/catsone/index.html</filename>
 		<filename>views/catsone/view.html.php</filename>
-		<filename>views/catsone/view.html.php.bak</filename>
-		<filename>views/catsone/tmpl/Copy of default.php</filename>
 		<filename>views/catsone/tmpl/default.php</filename>
-		<filename>views/catsone/tmpl/default.php.bak</filename>
-		<filename>views/catsone/tmpl/default.phpback</filename>
 		<filename>views/catsone/tmpl/default.xml</filename>
 		<filename>views/catsone/tmpl/default_catsone.php</filename>
-		<filename>views/catsone/tmpl/default_catsone.php.bak</filename>
 		<filename>views/catsone/tmpl/index.html</filename>
 		<filename>views/catsone/tmpl/spolszczenie/default.php</filename>
-		<filename>views/catsone/tmpl/spolszczenie/default_catsone.php
-		</filename>
+		<filename>views/catsone/tmpl/spolszczenie/default_catsone.php</filename>
 		<filename>views/catsone/tmpl/style/style.css</filename>
 		<filename>views/details/index.html</filename>
 		<filename>views/details/view.html.php</filename>
-		<filename>views/details/view.html.php.bak</filename>
 		<filename>views/details/tmpl/default.php</filename>
-		<filename>views/details/tmpl/default.php.bak</filename>
 		<filename>views/details/tmpl/default.xml</filename>
 		<filename>views/details/tmpl/default_catsone.php</filename>
-		<filename>views/details/tmpl/default_catsone.php.bak</filename>
 		<filename>views/details/tmpl/default_viewDetails.php</filename>
 		<filename>views/details/tmpl/index.html</filename>
 	</files>
