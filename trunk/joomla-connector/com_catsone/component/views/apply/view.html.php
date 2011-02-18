@@ -46,6 +46,11 @@ class CatsoneViewapply extends JView
 		$pathway	= &$mainframe->getPathway();
 		$document	= & JFactory::getDocument();
 		//$model		= &$this->getModel();
+		
+		$job_id = Jrequest::getVar('id');
+		if(!isset($job_id)){
+			$job_id = Jrequest::getVar('catid');
+		}
 
 		// Get the parameters of the active menu item
 		$menus	= &JSite::getMenu();
@@ -55,7 +60,8 @@ class CatsoneViewapply extends JView
 
 		// Push a model into the view
 		$modelDetails	= &$this->getModel( 'apply' );
-		$options['joborder_id'] = Jrequest::getVar('id');
+		
+		$options['joborder_id'] = $job_id;
 		//$details = $modelDetails->getDetails($options);
 		//print_r($details);
 		?>
@@ -65,9 +71,9 @@ class CatsoneViewapply extends JView
 			?>
 <table cellpadding=0 cellspacing=0 width=100%>
 	<tr>
-		<td width=100% valign=top height=35><b> <?
+		<td width=100% valign=top height=35><b> 
+		<?
 
-		$job_id = Jrequest::getVar('id');
 		$this->CatsDb->setQuery("Select * from joborder where joborder_id = '$job_id'");
 		$r = $this->CatsDb->loadObjectList();
 		$r = $r[0];
@@ -110,7 +116,7 @@ class CatsoneViewapply extends JView
 										<b>*First Name:</b></td>
 										<td width=60% style='padding-top: 5px; padding-bottom: 5px;'>
 										<input name='firstname' size=25 id='firstname'
-											value="<?=$row->firstname?>"></td>
+											value="<?=isset($row->firstname)? $row->firstname:''?>"></td>
 									</tr>
 									<tr>
 										<td width=40%
@@ -118,7 +124,7 @@ class CatsoneViewapply extends JView
 										<b>*Last Name:</b></td>
 										<td width=60% style='padding-top: 5px; padding-bottom: 5px;'>
 										<input name='lastname' size=25 id='lastname'
-											value='<?=$row->lastname?>'></td>
+											value='<?=isset($row->lastname) ? $row->lastname:'' ?>'></td>
 									</tr>
 									<tr>
 										<td width=40%
@@ -126,7 +132,7 @@ class CatsoneViewapply extends JView
 										<b>*e-mail:</b></td>
 										<td width=60% style='padding-top: 5px; padding-bottom: 5px;'>
 										<input name='email_address' size=25 id='email_address'
-											value="<?=$user->email?>"></td>
+											value="<?=isset($user->email) ? $user->email: '' ?>"></td>
 									</tr>
 									<tr>
 										<td width=40%
@@ -134,7 +140,7 @@ class CatsoneViewapply extends JView
 										<b>*Comfirm e-mail:</b></td>
 										<td width=60% style='padding-top: 5px; padding-bottom: 5px;'>
 										<input name='confirm_email_address' size=25
-											id='confirm_email_address' value="<?=$user->email?>"></td>
+											id='confirm_email_address' value="<?=isset($user->email) ? $user->email: ''?>"></td>
 									</tr>
 								</table>
 								</td>
@@ -364,6 +370,7 @@ class CatsoneViewapply extends JView
 		$zip = &Jrequest::getVar('zip');
 		$skill = &Jrequest::getVar('skill');
 		$joborder_id = &Jrequest::getVar('joborder_id');
+		/* Using new attachment class in models/apply.php.  Moving the ftp code to the attachment class.
 		if(is_uploaded_file($_FILES['cv']['tmp_name']))
 		{
 			$file_name = md5(time()).$_FILES['cv']['name'];
@@ -376,7 +383,7 @@ class CatsoneViewapply extends JView
 			}else{
 				move_uploaded_file($_FILES['cv']['tmp_name'],$this->Cats_local.DS.$file_name);
 			}
-		}
+		}*/
 
 		$options['firstname'] = $firstname;
 		$options['lastname'] = $lastname;

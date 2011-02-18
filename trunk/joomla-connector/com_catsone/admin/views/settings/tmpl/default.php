@@ -16,15 +16,23 @@ $SETTINGS = $db->loadObject();
     <table class="admintable" width="100%" cellspacing="1" cellpadding="0">
        <tr>
         <td class="key">Web Address For Cats</td>
-        <td align="left" style="padding:5px"><input class="formBox" type="text" name="Cats_install" maxlength="250" size="30" value="<?php echo $SETTINGS->Cats_install?>"></td>
+        <td align="left" style="padding:5px"><input class="formBox" type="text" name="Cats_install" maxlength="250" size="50" value="<?php echo $SETTINGS->Cats_install?>"></td>
       </tr>
       <tr>
         <td class="key">Path To Cats Install (Local Only)</td>
-        <td align="left" style="padding:5px" width="70%"><input class="formBox" type="text" name="Cats_local" maxlength="250" size="30" value="<?php echo $SETTINGS->Cats_local;?>"></td>
+        <td align="left" style="padding:5px" width="70%"><input class="formBox" type="text" name="Cats_local" maxlength="250" size="50" value="<?php echo $SETTINGS->Cats_local;?>"></td>
       </tr>
       <tr>
         <td class="key">Cats Email Address</td>
-        <td align="left" style="padding:5px" width="70%"><input class="formBox" type="text" name="email" maxlength="250" size="30" value="<?php echo $SETTINGS->email;?>"></td>
+        <td align="left" style="padding:5px" width="70%"><input class="formBox" type="text" name="email" maxlength="250" size="50" value="<?php echo $SETTINGS->email;?>"></td>
+      </tr>
+      <tr>
+        <td class="key">Path to Local Attachments Folder</td>
+        <td align="left" style="padding:5px"><input class="formBox" type="text" name="attachment_path" maxlength="250" size="50" value="<?php echo $SETTINGS->attachment_path;?>"></td>
+      </tr>
+      <tr>
+        <td class="key">Site ID</td>
+        <td align="left" style="padding:5px"><input class="formBox" type="text" name="site_id" maxlength="250" size="50" value="<?php echo $SETTINGS->site_id;?>"></td>
       </tr>
     </table>
     </fieldset>
@@ -33,19 +41,19 @@ $SETTINGS = $db->loadObject();
     <table class="admintable" width="100%" cellspacing="1" cellpadding="0">
        <tr>
         <td class="key">Database Host</td>
-        <td align="left" style="padding:5px"><input class="formBox" type="text" name="OC_Database_host" maxlength="250" size="30" value="<?php echo $SETTINGS->OC_Database_host?>"></td>
+        <td align="left" style="padding:5px"><input class="formBox" type="text" name="OC_Database_host" maxlength="250" size="50" value="<?php echo $SETTINGS->OC_Database_host?>"></td>
       </tr>
       <tr>
         <td class="key">Database Name</td>
-        <td align="left" style="padding:5px" width="70%"><input class="formBox" type="text" name="OC_Database_Name" maxlength="250" size="30" value="<?php echo $SETTINGS->OC_Database_Name;?>"></td>
+        <td align="left" style="padding:5px" width="70%"><input class="formBox" type="text" name="OC_Database_Name" maxlength="250" size="50" value="<?php echo $SETTINGS->OC_Database_Name;?>"></td>
       </tr>
       <tr>
       <td class="key">Database Username</td>
-        <td align="left" style="padding:5px" width="70%"><input class="formBox" type="text" name="OC_Database_Username" maxlength="250" size="30" value="<?php echo $SETTINGS->OC_Database_Username;?>"></td>
+        <td align="left" style="padding:5px" width="70%"><input class="formBox" type="text" name="OC_Database_Username" maxlength="250" size="50" value="<?php echo $SETTINGS->OC_Database_Username;?>"></td>
       </tr>
       <tr>
         <td class="key">Database Password</td>
-        <td align="left" style="padding:5px"><input class="formBox" type="password" name="OC_Database_password" maxlength="250" size="30" value="<?php echo $SETTINGS->OC_Database_password;?>"></td>
+        <td align="left" style="padding:5px"><input class="formBox" type="password" name="OC_Database_password" maxlength="250" size="50" value="<?php echo $SETTINGS->OC_Database_password;?>"></td>
       </tr>
 
     </table>
@@ -54,21 +62,32 @@ $SETTINGS = $db->loadObject();
 	<fieldset class="adminform">
     <legend>CATS FTP Settings </legend>
     <table class="admintable" width="100%" cellspacing="1" cellpadding="0">
+    <tr>
+        <td width="100" align="right" class="key">Enable FTP:</td>
+        <td align="left" width="70%" style="padding:5px">
+        	<input type="radio" name="enable_ftp" value="1"<?php echo ($SETTINGS->enable_ftp == '1'? ' checked' : ''); ?>> Yes
+    		<input type="radio" name="enable_ftp" value="0"<?php echo ($SETTINGS->enable_ftp == '0' || $SETTINGS->enable_ftp == '' ? ' checked' : ''); ?>>No
+        </td>
+      </tr>
        <tr>
         <td class="key">FTP Host</td>
-        <td align="left" style="padding:5px"><input class="formBox" type="text" name="ftp_host" maxlength="250" size="30" value="<?php echo $SETTINGS->ftp_host?>"></td>
+        <td align="left" style="padding:5px"><input class="formBox" type="text" name="ftp_host" maxlength="250" size="50" value="<?php echo $SETTINGS->ftp_host?>"></td>
       </tr>
       <tr>
         <td class="key">FTP User Name</td>
-        <td align="left" style="padding:5px" width="70%"><input class="formBox" type="text" name="ftp_user" maxlength="250" size="30" value="<?php echo $SETTINGS->ftp_user;?>"></td>
+        <td align="left" style="padding:5px" width="70%"><input class="formBox" type="text" name="ftp_user" maxlength="250" size="50" value="<?php echo $SETTINGS->ftp_user;?>"></td>
       </tr>
       <tr>
       <td class="key">FTP Password</td>
-        <td align="left" style="padding:5px" width="70%"><input class="formBox" type="password" name="ftp_password" maxlength="250" size="30" value="<?php echo $SETTINGS->ftp_password;?>"></td>
+        <td align="left" style="padding:5px" width="70%"><input class="formBox" type="password" name="ftp_password" maxlength="250" size="50" value="<?php echo $SETTINGS->ftp_password;?>"></td>
+      </tr>
+      <tr>
+      <td class="key">FTP Port</td>
+        <td align="left" style="padding:5px" width="70%"><input class="formBox" type="password" name="ftp_port" maxlength="250" size="50" value="<?php echo $SETTINGS->ftp_port;?>"></td>
       </tr>
       <tr>
         <td class="key">Remote Path to Attachments Folder</td>
-        <td align="left" style="padding:5px"><input class="formBox" type="text" name="ftp_path" maxlength="250" size="30" value="<?php echo $SETTINGS->ftp_path;?>"></td>
+        <td align="left" style="padding:5px"><input class="formBox" type="text" name="ftp_path" maxlength="250" size="50" value="<?php echo $SETTINGS->ftp_path;?>"></td>
       </tr>
     </table>
     </fieldset>

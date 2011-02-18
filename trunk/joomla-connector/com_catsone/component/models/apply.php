@@ -43,9 +43,14 @@ class CatsoneModelapply extends JModel
 		$query1 = "Insert into candidate_joborder (candidate_joborder_id,candidate_id,joborder_id,site_id,status,date_submitted,date_created,rating_value) values (NULL,'".$id."','".$options['joborder_id']."','1','100','".date( 'Y-m-d H:i:s')."','".date( 'Y-m-d H:i:s')."','-1')";
 		$this->CatsDb->setQuery($query1);
 		$this->CatsDb->query();
-		$query2 = "insert into attachment(attachment_id,data_item_id,data_item_type,site_id,title,original_filename,stored_filename,resume,text,date_created,directory_name) values (NULL,'".$id."','100','1','".$options['file_name']."','".$options['file_name']."','".$options['file_name']."','1','".$options['cv_text']."','".date( 'Y-m-d H:i:s')."','site_1/0xxx/8b6db30a4c7e2d71ef54beaad5a9c4e1/')";
-		$this->CatsDb->setQuery($query2);
-		$this->CatsDb->query();
+		
+		include_once(JPATH_COMPONENT.DS.'lib'.DS.'Attachments.php');
+		
+		$attachmentCreator = new AttachmentCreator(1, $this->CatsDb);
+		if(!$attachmentCreator->createFromUpload('100', $id, 'cv', false, 1)){
+			jimport( 'joomla.error.error' );
+			JError::raise(E_WARNING, 500, 'Problem uploading attachment<br>'.$attachmentCreator->getError(), $attachmentCreator->getError());
+		}
 		
 		//Inset vao bang activity
 		$this->CatsDb->setQuery("Insert into activity (activity_id,data_item_id,data_item_type,joborder_id,site_id,entered_by,date_created,type,notes,date_modified) values (NULL,'".$id."','100','".$options['joborder_id']."','1','1250','".date( 'Y-m-d H:i:s')."','400','User applied through candidate portal','".date( 'Y-m-d H:i:s')."')");

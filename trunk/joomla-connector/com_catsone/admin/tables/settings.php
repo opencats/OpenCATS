@@ -36,7 +36,8 @@ class TableSettings extends JTable
 	var $ftp_password = null;
 	var $ftp_path = null;
 	var $email = null;
-				 	 	
+	var $attachment_path = null;
+	var $enable_ftp = null;			 	 	
 
 	/**
 	 * Constructor

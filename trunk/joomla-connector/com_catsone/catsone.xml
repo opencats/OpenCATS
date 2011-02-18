@@ -8,7 +8,7 @@
 	<authorUrl>opencats.org</authorUrl>
 	<version>1.0</version>
 	<description>This will create a bridge between your Cats system and
-		your Joomla Website. Installer and admin configured by http://AreTimes.com
+		your Joomla Website. Installer and admin configured by <a target="_blank" href="http://AreTimes.com">AreTimes</a>
 	</description>
 	<installfile>install.catsone.php</installfile>
 	<uninstallfile>uninstall.catsone.php</uninstallfile>
@@ -56,6 +56,9 @@
 		<filename>views/details/tmpl/default_catsone.php</filename>
 		<filename>views/details/tmpl/default_viewDetails.php</filename>
 		<filename>views/details/tmpl/index.html</filename>
+		<filename>lib/Attachments.php</filename>
+		<filename>lib/FileUtility.php</filename>
+		<filename>lib/History.php</filename>
 	</files>
 	<administration>
 		<menu img="components/com_catsone/logo.png">OpenCats</menu>
