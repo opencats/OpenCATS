@@ -1,0 +1,209 @@
+/*
+ * CATS
+ * Tests CSS Library
+ *
+ * Portions Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
+ *
+ * $Id: tests.css 1037 2006-02-01 08:46:44Z Will $
+ */
+
+body
+{
+    background: #fff;
+    padding: 0px 10px 5px 10px;
+    margin: 0px;
+    font: normal normal normal 9pt Arial, Tahoma, sans-serif;
+}
+
+pre
+{
+    background-color: lightgray;
+}
+
+form
+{
+    margin: 0px;
+    padding: 0px;
+}
+
+h1
+{
+    color: #3e4754;
+    margin-bottom: 0px;
+    font: normal normal bold 48px Arial, Tahoma, sans-serif;
+}
+
+h2
+{
+    color: #666;
+    font: normal normal bold 18px Arial, Tahoma, sans-serif;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+p.note
+{
+    background: #ccc;
+    padding: 4px;
+    margin-top: 0px;
+    margin-bottom: 8px;
+    border: 1px solid #bbb;
+    font: normal normal normal 12px/120% Arial, Tahoma, sans-serif;
+}
+
+p.test_heading
+{
+    background: #ccc;
+    padding: 4px;
+    margin-top: 0px;
+    margin-bottom: 8px;
+    border: 1px solid #bbb;
+    font: normal normal normal 12px/120% Arial, Tahoma, sans-serif;
+}
+
+table.test_output
+{
+    border: 1px solid #000;
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+
+table.test_output th
+{
+    border: 1px solid #000;
+    border-collapse: collapse;
+    border-spacing: 0px;
+    padding: 2px 4px 2px 4px;
+    color: #000;
+    background: #ccc;
+    font: normal normal bold 9pt Arial, Tahoma, sans-serif;
+}
+
+table.test_output td
+{
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    border-collapse: collapse;
+    border-spacing: 0px;
+    padding: 2px 5px 2px 5px;
+    font: normal normal normal 9pt Arial, Tahoma, sans-serif;
+}
+
+tr.fail
+{
+    border-spacing: 0px;
+    font-weight: bold;
+    background: #ec3737;
+}
+
+tr.pass
+{
+    border-spacing: 0px;
+    font-weight: bold;
+    background: #419933;
+}
+
+span.fail
+{
+    font-weight: bold;
+}
+
+span.pass
+{
+    font-weight: bold;
+}
+
+span.bold
+{
+    font-weight: bold;
+}
+
+span.test_case
+{
+    font-weight: bold;
+}
+
+#footer_pass
+{
+    padding: 8px;
+    background: #419933;
+    color: white;
+    border: 1px solid #000;
+    font: normal normal normal 9pt Arial, Tahoma, sans-serif;
+}
+
+#footer_fail
+{
+    padding: 8px;
+    background: #ec3737;
+    color: white;
+    border: 1px solid #000;
+    font: normal normal normal 9pt Arial, Tahoma, sans-serif;
+}
+
+#headerBlock
+{
+    margin: 0px;
+    padding: 0px;
+    height: 50px;
+}
+
+#headerBlock div#topRight
+{
+    color: #3e4754;
+    margin-bottom: -5px;
+    padding: 5px 5px 0px 5px;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+    float: right;
+    text-align: right;
+    background-color: transparent;
+}
+
+#headerBlock div#mainLogo
+{
+    padding: 0px 0px 0px 0px;
+    float: left;
+    background-color: transparent;
+    background: url('../../images/cats_icon.gif') no-repeat center;
+    width: 55px;
+    height: 55px;
+}
+
+#headerBlock span#mainLogoText
+{
+    color: #2f4f88;
+    margin-bottom: 0px;
+    padding: 0px 5px 0px 5px;
+    font: normal normal bold 30px Verdana, Tahoma, sans-serif;
+    float: left;
+}
+
+#headerBlock span#subLogoText
+{
+    color: #6084c8;
+    margin-bottom: 0px;
+    padding: 0px 5px 0px 5px;
+    font: normal normal bold 14px Verdana, Tahoma, sans-serif;
+}
+
+#footerBlock
+{
+    margin-top: 40px;
+    width: 960px;
+    text-align: center;
+}
+
+#footerBlock p#footerQuotation
+{
+    font: italic normal normal 8pt/130% Arial, Tahoma, sans-serif;
+}
+
+#footerBlock p#footerText
+{
+    font: normal normal normal 8pt/130% Arial, Tahoma, sans-serif;
+}
+
+#footerBlock span#footerCopyright
+{
+    font: normal normal normal 8pt/130% Arial, Tahoma, sans-serif;
+}

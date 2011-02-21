@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<definitions name="KeyCheck"
+        targetNamespace="urn:KeyCheck"
+        xmlns:typens="urn:KeyCheck"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+        xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+        xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+    <!-- Types for results -->
+    <types>
+        <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:KeyCheck">
+            <xsd:complexType name="KeyCheckResult">
+                <xsd:all>
+                    <xsd:element name="name"                type="xsd:string"/>
+                    <xsd:element name="parseUsed"           type="xsd:string"/>
+                    <xsd:element name="parseLimit"          type="xsd:string"/>
+                    <xsd:element name="parseLimitReset"     type="xsd:string"/>
+                </xsd:all>
+            </xsd:complexType>
+        </xsd:schema>
+    </types>
+
+    <!-- Messages -->
+    <message name="KeyCheckMessage">
+        <part name="key"                                    type="xsd:string"/>
+    </message>
+
+    <message name="KeyCheckResponse">
+        <part name="return"                                 type="typens:KeyCheckResult"/>
+    </message>
+
+    <!-- Port -->
+    <portType name="KeyCheckPort">
+        <operation name="KeyCheck">
+            <input message="typens:KeyCheckMessage"/>
+            <output message="typens:KeyCheckResponse"/>
+        </operation>
+    </portType>
+
+  <!-- Bindings for each operation -->
+
+    <binding name="KeyCheckBinding"                type="typens:KeyCheckPort">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+        <operation name="KeyCheck">
+            <soap:operation soapAction="urn:KeyCheckAction"/>
+
+            <input>
+                <soap:body use="encoded"
+                namespace="urn:KeyCheck"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded"
+                namespace="urn:KeyCheck"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+    </binding>
+
+    <!-- Endpoint -->
+    <service name="KeyCheckService">
+        <port name="KeyCheckPort" binding="typens:KeyCheckBinding">
+            <soap:address location="http://catsone.com/keyCheck.php"/>
+        </port>
+    </service>
+
+</definitions>

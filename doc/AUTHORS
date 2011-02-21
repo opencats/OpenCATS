@@ -1,0 +1,31 @@
+$Id: AUTHORS 2676 2007-07-10 15:46:21Z brian $
+
+CATS Developers and Contributers
+Last revised: February 01, 2006
+    _____________________________________________________________________
+
+                      CATS Developers and Contributers
+
+
+  This file attempts to list the majority of CATS developers and contributors.
+
+  CATS was originally written by Asim Baig.
+
+  Developers (in alphabetical order):
+
+    Asim Baig
+    Will Buckner
+    Andrew Candals
+    Paul Canfield
+    Brian Hanson
+    Austin Smith
+
+  Thanks go to all the people who have made individual contributions to the
+  CATS project by sending bug-reports, patches, and otherwise have supported
+  the project. Patch contributors are listed in the CHANGELOG file.
+
+  If you think that you are missing from this list, you can contact us at
+  dev@catsone.com.
+    _____________________________________________________________________
+
+                Copyright (C) 2006 - 2007 Cognizo Technologies, Inc.

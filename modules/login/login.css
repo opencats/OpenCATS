@@ -1,0 +1,289 @@
+/*
+ * CATS
+ * Login CSS Library
+ *
+ * Portions Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
+ *
+ * $Id: main.css 742 2005-10-24 22:08:19Z will $
+ */
+
+
+/*** Begin Generic Tag Rules ***/
+body
+{
+    background: #fff;
+    padding: 8px 18px 8px 18px;
+    margin: 0px;
+}
+
+p
+{
+    color: #000;
+}
+
+form
+{
+    margin: 0px;
+    padding: 0px;
+}
+
+.button
+{
+  height: 20px;
+  color: #333;
+  font-size: 12px;
+  padding-left: 8px;
+  padding-right: 8px;
+  background: url('../../images/button_bg.gif') repeat-x #f0f0f0;
+  border: 1px solid #a4a4a4;
+}
+
+a:link, a:visited
+{
+    color: #00008b;
+    text-decoration: none;
+    font: normal normal normal 12px/130% Arial, Tahoma, sans-serif;
+}
+
+a:hover
+{
+    text-decoration: underline;
+    font: normal normal normal 12px/130% Arial, Tahoma, sans-serif;
+}
+/*** End Generic Tag Rules ***/
+
+
+/*** Header / Footer ***/
+div#headerBlock
+{
+    position: relative;
+    margin: 0 auto;
+    text-align: center;
+}
+
+div#headerBlock span#mainLogo
+{
+    color: #2f4f88;
+    position: relative;
+    margin: 0 auto -5 auto;
+    text-align: center;
+    font: normal normal bold 48px veranda, Tahoma, sans-serif;
+}
+
+div#headerBlock span#subMainLogo
+{
+    color: #6084c8;
+    position: relative;
+    margin: 0 auto -5 auto;
+    text-align: center;
+    font: normal normal bold 18px veranda, Tahoma, sans-serif;
+}
+
+#footerBlock
+{
+    margin-top: 10px;
+    text-align: center;
+}
+
+#footerBlock p#footerQuotation
+{
+    font: italic normal normal 8pt/130% Arial, Tahoma, sans-serif;
+}
+
+#footerBlock p#footerText
+{
+    font: normal normal normal 8pt/130% Arial, Tahoma, sans-serif;
+}
+
+#footerBlock span#footerCopyright
+{
+    font: normal normal normal 8pt/130% Arial, Tahoma, sans-serif;
+}
+/*** End Header / Footer ***/
+
+p.failure
+{
+    background: #ec3737;
+    padding: 4px;
+    margin-top: 0;
+    font: normal normal bold 12px/130% Arial, Tahoma, sans-serif;
+}
+
+p.success
+{
+    background: #419933;
+    padding: 4px;
+    margin-top: 0;
+    font: normal normal bold 12px/130% Arial, Tahoma, sans-serif;
+}
+
+
+div#contents
+{
+    text-align: center;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+}
+
+div#login
+{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5em;
+    padding: 15px;
+    border: 1px solid #ccc;
+    width: 480px;
+    background: #f1f3f5;
+}
+
+div#formBlock
+{
+    text-align: left;
+    float: right;
+    width: 60%;
+    display: inline;
+}
+
+div#formBlockNewSite
+{
+    text-align: center;
+    width: 900px;
+}
+
+div#formBlockBelow
+{
+    text-align: center;
+    float: bottom;
+    width: 60%;
+    display: block;
+}
+
+div#subFormBlock
+{
+    border: 1px solid #ccc;
+    background: #e9ecef;
+    padding: 15px 10px 10px 10px;
+}
+
+div#loginText
+{
+    text-align: left;
+    width: 40%;
+    float: left;
+    display: inline;
+}
+
+form#loginForm label
+{
+    font-weight: bold;
+    text-align: left;
+}
+
+form#loginForm input.login-input-box
+{
+    width: 150px;
+    margin: 0px 0px 1em 0px;
+    border: 1px solid #ccc;
+}
+
+form#loginForm .login-input-box:focus
+{
+    background-color: #f9f9d9;
+}
+
+div.clear
+{
+    clear: both;
+}
+
+/**
+ * POPUP CONTAINER STYLES
+ */
+#popupMask
+{
+    position: absolute;
+    z-index: 200;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    opacity: .40;
+    -moz-opacity: .40;
+    filter: alpha(opacity=40);
+    /* this hack is so it works in IE
+     * I find setting the color in the css gives me more flexibility
+     * than the PNG solution.
+     */
+    background-color: transparent !important;
+    background-color: #333;
+    /* background-image\**\: url('images/maskBG.gif') !important; */
+    background-image: none;
+    background-repeat: repeat;
+    display: none;
+}
+
+#popupContainer
+{
+    position: absolute;
+    z-index: 201;
+    top: 0px;
+    left: 0px;
+    display: none;
+    padding: 0px;
+}
+
+#popupInner
+{
+    border: 1px solid #000;
+    background-color: #eee;
+}
+
+#popupFrame
+{
+    margin: 0px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 202;
+}
+
+#popupTitleBar
+{
+    background-color: #486cae;
+    color: #fff;
+    font-weight: bold;
+    height: 1.3em;
+    padding: 5px;
+    border-bottom: 1px solid #000;
+    border-top: 1px solid #78a3f2;
+    border-left: 1px solid #78a3f2;
+    border-right: 1px solid #204095;
+    position: relative;
+    z-index: 203;
+}
+
+#popupTitle
+{
+    float: left;
+    font: normal normal bold 17px Arial, Tahoma, sans-serif;
+}
+
+#popupControls
+{
+    float: right;
+    cursor: pointer;
+    /*cursor: hand;*/
+}
+
+.selectView
+{
+    margin: 2px 0px 5px 0px;
+    border-collapse: collapse;
+    border: 1px solid #bbb;
+}
+
+.selectView td
+{
+    border: none;
+    padding: 3px 4px 3px 4px;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
+}

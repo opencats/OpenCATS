@@ -1,0 +1,39 @@
+# This is SimplyHired.com's XML export template to be used when automatically
+# adding jobs to their database from CATS' career portal site.
+
+>>header
+<jobs>
+<<header
+
+>>job
+<job>
+<title>$[jobTitle]</title>
+<job-code>$[jobID]</job-code>
+<job-board-name>CATS Applicant Tracking System</job-board-name>
+
+<job-board-url>http://www.catsone.com</job-board-url>
+<detail-url>$[jobURL]</detail-url>
+<apply-url>$[jobURL]</apply-url>
+
+<description>
+  <summary>$[jobDescription]</summary>
+</description>
+
+<posted-date>$[jobPostDate]</posted-date>
+
+<location>
+  <city>$[jobCity]</city>
+  <state>$[jobState]</state>
+  <country>$[jobCountry]</country>
+</location>
+
+<company>
+  <name>$[hiringCompany]</name>
+  <url>$[siteURL]</url>
+</company>
+</job>
+<<job
+
+>>footer
+</jobs>
+<<footer
