@@ -1,0 +1,68 @@
+td.stepColumn {
+    background-color: #E6EEFF;
+    color: #4264B2;
+    width: 25%;
+    font-size: 14px;
+    padding: 8px;
+    vertical-align: top;
+    border-right: 1px solid #C8D9FF;
+}
+td.stepColumnSelected {
+    background-color: #C8D9FF;
+    color: #1E3C7F;
+    width: 25%;
+    font-size: 14px;
+    padding: 8px;
+    vertical-align: top;
+}
+td.softMiddle {
+    background-color: #C8D9FF;
+    font-size: 14px;
+    text-align: center;
+}
+#statusBarContainer {
+    border: 1px solid #3F6BCC;
+    padding: 2px 0px 2px 2px;
+    width: 870px;
+}
+#statusBar {
+    height: 31px;
+    background: #6B94F2 url(images/parser/statusBar.jpg);
+    width: 1px;
+}
+div.stepContainer {
+    width: 875px;
+    margin-top: 20px;
+}
+div.infoBar { background-color: #DDE4F4; border-top: 1px solid #587BC9; padding: 3px 10px 3px 10px;
+    text-align: left; }
+div.infoBarBottom { background-color: #FFE2CA; border-top: 1px solid #CF7F3D; border-bottom: 1px solid #CF7F3D; padding: 20px;
+    text-align: left; }
+.infoBarText { font-size: 16px; font-weight: bold; }
+.infoFileText { font-size: 14px; font-weight: normal; }
+textarea.documentViewer { border: 1px solid black; width: 500px; height: 826px; padding: 15px; }
+div.parsedData { background-color: #ffffff; border: 0px solid #666666; height: 810px; padding: 0px; }
+textarea.largeInputField { border: 1px solid #666666; width: 300px; height: 139px; padding: 5px; }
+td.fieldTitle { font-size: 14px; padding-right: 10px; }
+td.fieldCell { padding: 4px; }
+td.hintText { font-size: 14px; font-style: italic; color: #000000; }
+div.resumeParsing { background-color: #D2DDFF; padding: 20px; margin: 20px 0 20px 0; width: 500px; text-align: center; }
+
+input.inputField { border: 1px solid #666666; padding: 4px 4px 4px 5px; height: 20px; }
+input.inputField:hover { background-color: #f7f7f7; }
+input.firstName { width: 150px; }
+input.lastName { width: 150px; }
+input.address { width: 200px; }
+input.city { width: 150px; }
+input.state { width: 50px; }
+input.zipCode { width: 125px; }
+input.email { width: 200px; }
+input.homePhone { width: 125px; }
+
+span.hiddenDataColumn { display: none; }
+td.scrollContainer { background-color: #DDECFE; }
+
+div.resultsScroller { border: 1px solid #c0c0c0; padding: 5px; margin: 10px 0 20px 0; }
+td.dataColumnTitle { padding: 2px 3px 2px 5px; font-size: 12px; font-weight: bold; color: #ffffff; background-color: #093B79; }
+td.dataColumnEven { padding: 2px 3px 2px 5px; border-top: 1px solid #e0e0e0; font-size: 13px; }
+td.dataColumnOdd { padding: 2px 3px 2px 5px; border-top: 1px solid #e0e0e0; font-size: 13px; background-color: #f7f7f7; }

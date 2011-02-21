@@ -1,0 +1,256 @@
+/*
+ *
+ *
+ * The contents of this file are subject to the CATS Public License
+ * Version 1.1a (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.catsone.com/.
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Original Code is "CATS Standard Edition".
+ *
+ * The Initial Developer of the Original Code is Cognizo Technologies, Inc.
+ * Portions created by the Initial Developer are Copyright (C) 2005 - 2007
+ * (or from the year in which this file was created to the year 2007) by
+ * Cognizo Technologies, Inc. All Rights Reserved.
+ *
+ *
+ */
+table#calendarMonth
+{
+    border: 1px solid #c0c0c0;
+    border-collapse: collapse;
+    width: 675px;
+    height: 400px;
+    margin-top: 5px;
+    vertical-align: middle
+}
+
+table#calendarMonth th
+{
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: 2px solid #ccc;
+    border-collapse: collapse;
+    width: 14%;
+    background-image: url('../../images/calendar1_bg.gif');
+    background-repeat: repeat-x;
+}
+
+table#calendarMonth td.empty
+{
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    padding: 5px;
+    vertical-align: top;
+}
+
+table#calendarMonth td.today
+{
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    padding: 5px;
+    vertical-align: top;
+    background: #ccc;
+}
+
+table#calendarMonth td.today a.dateLink:link,
+table#calendarMonth td.today a.dateLink:active,
+table#calendarMonth td.today a.dateLink:visited
+{
+    font-weight: bold;
+}
+
+table#calendarMonth td.day
+{
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    padding: 5px;
+    vertical-align: top;
+    background: #e9e9e9;
+}
+
+ul#calendarMonthListing
+{
+    display: inline;
+    padding: 0px;
+    margin: 0px;
+}
+
+ul#calendarMonthListing li
+{
+    display: inline;
+    list-style: none;
+    padding-right: 4px;
+}
+
+table#calendarWeek
+{
+    border: 1px solid #c0c0c0;
+    border-collapse: collapse;
+    width: 675px;
+    height: 400px;
+    margin-top: 5px;
+    vertical-align: middle
+}
+
+table#calendarWeek th
+{
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: 2px solid #ccc;
+    border-collapse: collapse;
+    /* background-image: url('../../images/calendar1_bg.gif'); */
+    background-repeat: repeat-x;
+    width:100px;
+}
+
+table#calendarWeek td.empty
+{
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    padding: 5px;
+    vertical-align: top;
+}
+
+table#calendarWeek td.today
+{
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    padding: 5px;
+    vertical-align: top;
+    background: #ccc;
+}
+
+table#calendarWeek td.today a.dateLink:link,
+table#calendarWeek td.today a.dateLink:active,
+table#calendarWeek td.today a.dateLink:visited
+{
+    font-weight: bold;
+}
+
+table#calendarWeek td.day
+{
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    padding: 5px;
+    vertical-align: top;
+    background: #e9e9e9;
+}
+
+ul#calendarWeekListing
+{
+    display: inline;
+    padding: 0px;
+    margin: 0px;
+}
+
+ul#calendarWeekListing li
+{
+    display: inline;
+    list-style: none;
+    padding-right: 4px;
+}
+
+.calendarEntry
+{
+    border: 1px solid #000; 
+    background-color: #fff;
+}
+
+table#calendarDay
+{
+    border: 1px solid #c0c0c0;
+    border-collapse: collapse;
+    width: 725px;
+    height: 400px;
+    margin-top: 5px;
+    vertical-align: middle
+}
+
+table#calendarDay th
+{
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: 2px solid #ccc;
+    border-collapse: collapse;
+    /* background-image: url('../../images/calendar1_bg.gif'); */
+    background-repeat: repeat-x;
+    width:100px;
+}
+
+table#calendarDay td.empty
+{
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    padding: 5px;
+    vertical-align: top;
+}
+
+table#calendarDay td.today
+{
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    padding: 5px;
+    vertical-align: top;
+    background: #ccc;
+}
+
+table#calendarDay td.today a.dateLink:link,
+table#calendarDay td.today a.dateLink:active,
+table#calendarDay td.today a.dateLink:visited
+{
+    font-weight: bold;
+}
+
+table#calendarDay td.day
+{
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    padding: 5px;
+    vertical-align: top;
+    background: #e9e9e9;
+}
+
+ul#calendarDayListing
+{
+    display: inline;
+    padding: 0px;
+    margin: 0px;
+}
+
+ul#calendarDayListing li
+{
+    display: inline;
+    list-style: none;
+    padding-right: 4px;
+}
+
+.calendarEntry
+{
+    border: 1px solid #000; 
+    background-color: #fff;
+}
+
+.dayEntry
+{
+    border: 1px solid #000; 
+    z-index: 99; 
+    background-color: #fff;
+}
+
+
+.calendarEntryMultiple
+{
+    border: 1px solid #000;
+    box-shadow: 0.2em 0.2em #ccc;
+    background-color: #fff;
+}
+

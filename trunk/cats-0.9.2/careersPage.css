@@ -1,0 +1,60 @@
+@charset "utf-8";
+/* CATS Applicant Tracking System Careers Page
+Released: 11.13.2007
+Created By: Sae Vang
+ */
+
+/* COMMON */
+body, html { margin: 0; padding: 0; background: #ffffff; font: normal 12px/14px Arial, Helvetica, sans-serif; color: #000000; }
+#container { margin: 0 auto; padding: 0; width: 930px; height: auto; }
+#logo { float: left; margin: 0; }
+	#logo img { width: 424px; height: 103px; }
+#actions { float: right; margin: 0; width: 310px; height: 100px; background: #efefef; border: 1px solid #cccccc; }
+	#actions img { float: left; margin: 2px 6px 2px 15px; width: 130px; height: 25px; }
+#footer { clear: both; margin: 20px auto 0 auto; width: 150px; }
+	#footer img { width: 137px; height: 38px; }
+
+a:link, a:active { color: #1763b9; }
+a:hover { color: #c75a01; }
+a:visited { color: #333333; }
+
+h1 { margin: 0 0 10px 0; font: bold 18px Arial, Helvetica, sans-serif; }
+h2 { margin: 8px 0 8px 15px; font: bold 14px Arial, Helvetica, sans-serif; }
+h3 { margin: 0; font: bold 14px Arial, Helvetica, sans-serif; }
+p { font: normal 12px Arial, Helvetica, sans-serif; }
+img { border: none; }
+strong { font-weight: bold; }
+em { font-style: italics; }
+
+
+/* CONTENTS ON PAGE SPECS */
+#careerContent { clear: both; padding: 15px 0 0 0; }
+
+/* DISPLAY ALL JOBS PAGE */
+#displayTable { width: 930px; }
+#displayTable tr.header { background: #e0e0e0; border: 1px solid #cccccc; border-left: none; border-right: none; }
+#displayTable tr.odd { background: #ffffff; }
+#displayTable tr.even { background: #ebebeb; }
+#displayTable td { padding: 5px; }
+	
+/* DISPLAY JOB DETAILS */
+#detailsTable { width: 400px; }
+	#detailsTable td.detailsHeader { width: 30%; }
+div#discriptive { float: left; width: 585px; }
+div#detailsTools { float: right; width: 330px; height: 70px; background: #ffffff; border: 1px solid #cccccc; }
+	div#detailsTools img { float: left; margin: 2px 6px 5px 15px;  }
+
+/* DISPLAY APPLICATION FORM */
+div.applyBoxLeft, div.applyBoxRight { width: 450px; height: 470px; background: #f9f9f9; border: 1px solid #cccccc; border-top: none; }
+div.applyBoxLeft { float: left; margin: 0 10px 30px 0; }
+div.applyBoxRight { float: right; margin: 0 0 30px 10px; }
+	div.applyBoxLeft div, div.applyBoxRight div { margin: 0 0 5px 0; padding: 3px 10px; background: #efefef; border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc; }
+	div.applyBoxLeft table, div.applyBoxRight table { margin: 0 auto; width: 420px; }
+	div.applyBoxLeft table td, div.applyBoxRight table td { padding: 3px; vertical-align: top; }
+		td.label { text-align: right; width: 110px; }
+	label { font-weight: bold; }
+	input#documentFile { width: 342px; }
+	input.inputbox { width: 285px; height: 15px; }
+	input.submitbutton { float: right; width: 195px; height: 25px; }
+	textarea { margin: 8px 0 0 0; width: 410px; height: 170px; }
+	textarea.inputboxlarge { width: 285px; height: 70px; }
