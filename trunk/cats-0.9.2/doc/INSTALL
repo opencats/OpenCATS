@@ -24,6 +24,7 @@ Last Revised: Nov 26, 2007
       * Linux, FreeBSD or Windows NT-based (2000, XP, 2003, Vista) Operating System
       * A working LAMP environment
       * The Antiword, PdfToText, html2text, and UnRTF document indexing tools
+      * PHP support for zip operations (ZipArchive class) by php zip library. 
 
         Instructions on configuring a LAMP environment and setting up the
         document indexing packages are included under the sections "C) New
