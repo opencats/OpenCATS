@@ -59,6 +59,7 @@ class InstallationTests
         $proceed = $proceed && self::checkGD2Extension();
         $proceed = $proceed && self::checkPCREExtension();
         $proceed = $proceed && self::checkSOAPExtension();
+        $proceed = $proceed && self::checkZipExtension();
 
         return $proceed;
     }
@@ -113,6 +114,11 @@ class InstallationTests
         }
         
         if (!InstallationTests::checkSOAPExtension())
+        {
+            $result = false;
+        }
+        
+        if (!InstallationTests::checkZipExtension())
         {
             $result = false;
         }
@@ -308,10 +314,10 @@ class InstallationTests
         return true;
     }
 
-    /* Check for libgd support. */
+    /* Check for SOAP support. */
     public static function checkSOAPExtension()
     {
-        /* Is the GD2 extension loaded?. */
+        /* Is the SOAP extension loaded?. */
         if (!self::DEBUG_FAIL && extension_loaded('soap') && class_exists('SoapClient') &&
             (is_callable(array('SoapClient', '__soapCall'), false) ||
             is_callable(array('SoapClient', '__call'), false)))
@@ -328,6 +334,25 @@ class InstallationTests
             . '<strong>Ubuntu:</strong> Run "apt-get install php-soap" and restart your webserver.<br /><br />'
             . '<strong>Debian:</strong> Run "apt-get install php5-soap" and restart your webserver.<br /><br />'
             . '<strong>FreeBSD:</strong> Install the php5-soap port, or configure SOAP support in the php-extensions port and restart your webserver.'
+            . '</td></tr>';
+        $GLOBALS['warningsOccurred'] = true;
+        return true;
+    }
+
+    /* Check for Zip support. */
+    public static function checkZipExtension()
+    {
+        /* Is the ZIP extension loaded?. */
+        if (!self::DEBUG_FAIL && extension_loaded('zip') && class_exists('ZipArchive'))
+        {
+            echo '<tr class="pass"><td>PHP zip extension is loaded.</td></tr>';
+            return true;
+        }
+
+        echo '<tr class="warning"><td><strong>PHP Zip support extension (zip) is not loaded.</strong><br />'
+            . 'Check your settings in php.ini.<br /><br />'
+            . 'CATS Open Source will function without zip, but '
+            . 'attachment handling functionality will be limited.<br /><br />'
             . '</td></tr>';
         $GLOBALS['warningsOccurred'] = true;
         return true;

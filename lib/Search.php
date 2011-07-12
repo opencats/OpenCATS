@@ -608,6 +608,64 @@ class SearchCandidates
 
         return $this->_db->getAllAssoc($sql);
     }
+
+    /**
+     * Returns all candidates with City or Address matching $wildCardString.
+     *
+     * @param string wildcard match string
+     * @return array candidates data
+     */
+    public function byCity($wildCardString, $sortBy, $sortDirection)
+    {
+        $where1 = DatabaseSearch::makeBooleanSQLWhere(
+            $wildCardString, $this->_db, 'candidate.city'
+        );
+        $where2 = DatabaseSearch::makeBooleanSQLWhere(
+            $wildCardString, $this->_db, 'candidate.address'
+        );
+
+        $sql = sprintf(
+            "SELECT
+                candidate.candidate_id AS candidateID,
+                candidate.first_name AS firstName,
+                candidate.last_name AS lastName,
+                candidate.city AS city,
+                candidate.state AS state,
+                candidate.phone_home AS phoneHome,
+                candidate.phone_cell AS phoneCell,
+                candidate.address AS address,
+                candidate.email1 AS email1,
+                owner_user.first_name AS ownerFirstName,
+                owner_user.last_name AS ownerLastName,
+                DATE_FORMAT(
+                    candidate.date_created, '%%m-%%d-%%y'
+                ) AS dateCreated,
+                DATE_FORMAT(
+                    candidate.date_modified, '%%m-%%d-%%y'
+                ) AS dateModified
+            FROM
+                candidate
+            LEFT JOIN user AS owner_user
+                ON candidate.owner = owner_user.user_id
+            WHERE
+                (%s OR %s)
+            AND
+                candidate.is_admin_hidden = 0
+            AND
+                candidate.site_id = %s
+            AND
+                candidate.is_active = 1
+            ORDER BY
+                %s %s",
+            $where1,
+            $where2,
+            $this->_siteID,
+            $sortBy,
+            $sortDirection
+        );
+
+        return $this->_db->getAllAssoc($sql);
+    }
 }
 
 
