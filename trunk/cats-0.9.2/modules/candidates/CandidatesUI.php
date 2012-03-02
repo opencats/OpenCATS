@@ -1937,38 +1937,6 @@ class CandidatesUI extends UserInterface
 
                 break;
 
-            case 'searchByCity':
-                $rs = $search->byCity($query, $sortBy, $sortDirection);
-
-                foreach ($rs as $rowIndex => $row)
-                {
-                    if (!empty($row['ownerFirstName']))
-                    {
-                        $rs[$rowIndex]['ownerAbbrName'] = StringUtility::makeInitialName(
-                            $row['ownerFirstName'],
-                            $row['ownerLastName'],
-                            false,
-                            LAST_NAME_MAXLEN
-                        );
-                    }
-                    else
-                    {
-                        $rs[$rowIndex]['ownerAbbrName'] = 'None';
-                    }
-
-                    $rsResume = $candidates->getResumes($row['candidateID']);
-                    if (isset($rsResume[0]))
-                    {
-                        $rs[$rowIndex]['resumeID'] = $rsResume[0]['attachmentID'];
-                    }
-                }
-
-                $isResumeMode = false;
-
-                $addressWildCardString = $query;
-
-                break;
-
             case 'searchByResume':
                 $searchPager = new SearchByResumePager(
                     20,
