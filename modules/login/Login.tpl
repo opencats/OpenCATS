@@ -15,7 +15,7 @@
     <!-- CATS_LOGIN -->
     <?php TemplateUtility::printPopupContainer(); ?>
         <div id="headerBlock">
-            <span id="mainLogo">C&nbsp;A&nbsp;T&nbsp;S</span><br />
+            <span id="mainLogo">o&nbsp;p&nbsp;e&nbsp;n&nbsp;C&nbsp;A&nbsp;T&nbsp;S</span><br />
             <span id="subMainLogo">Applicant Tracking System</span>
         </div>
 
