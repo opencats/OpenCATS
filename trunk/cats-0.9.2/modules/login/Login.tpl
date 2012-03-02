@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
     <head>
-        <title>CATS - Login</title>
+        <title>opencats - Login</title>
         <meta http-equiv="Content-Type" content="text/html; charset=<?php echo(HTML_ENCODING); ?>" />
         <style type="text/css" media="all">@import "modules/login/login.css";</style>
         <script type="text/javascript" src="js/lib.js"></script>
@@ -14,10 +14,16 @@
     <body>
     <!-- CATS_LOGIN -->
     <?php TemplateUtility::printPopupContainer(); ?>
-        <div id="headerBlock">
-            <span id="mainLogo">o&nbsp;p&nbsp;e&nbsp;n&nbsp;C&nbsp;A&nbsp;T&nbsp;S</span><br />
-            <span id="subMainLogo">Applicant Tracking System</span>
-        </div>
+<!--       <div id="headerBlock"> 
+            <span id="mainLogo">opencats</span><br /> 
+             <span id="subMainLogo">Applicant Tracking System</span> 
+       </div> -->
+<p>
+	&nbsp;</p>
+<p>
+	&nbsp;</p>
+<p>
+	&nbsp;</p>
 
         <div id="contents">
             <div id="login">
@@ -36,7 +42,7 @@
                         <img src="images/folder1_locked.jpg" width="64" height="64" alt="security" />
                     </div>
                     <br />
-                    <span>Welcome to CATS!</span><br />
+                    <span>Welcome to opencats!</span><br />
                     <span style="font-size: 10px;">Version <?php echo(CATSUtility::getVersion()); ?></span>
 
                     <?php if (ENABLE_DEMO_MODE && !($this->siteName != '' && $this->siteName != 'choose') || ($this->siteName == 'demo')): ?>
@@ -129,26 +135,29 @@
                     defaultLogin();
                 <?php endif; ?>
             </script>
-
-            <div id="footerBlock">
-                <?php 
-                    /* THE MODIFICATION OF THE COPYRIGHT AND 'Powered by CATS' LINES IS NOT ALLOWED
-                       BY THE TERMS OF THE CPL FOR CATS OPEN SOURCE EDITION.
-                    
-                         II) The following copyright notice must be retained and clearly legible
-                         at the bottom of every rendered HTML document: Copyright (C) 2005 - 2007
-                         Cognizo Technologies, Inc. All rights reserved.
-                    
-                         III) The "Powered by CATS" text or logo must be retained and clearly
-                         legible on every rendered HTML document. The logo, or the text
-                         "CATS", must be a hyperlink to the CATS Project website, currently
-                         http://www.catsone.com/.
-                   */
-                ?>
+<div>Join the Conversation  - <a href="http://www.opencats.org "><strong>opencats forums</strong></a>.</div>
+          <p>
+	&nbsp;</p>  
+<p>
+	&nbsp;</p>  
+<p>
+	&nbsp;</p>  
+<p>
+	&nbsp;</p>
+<p>
+	&nbsp;</p>
+<p>
+	&nbsp;</p>
+<p>
+	&nbsp;</p>
+	  <div id="footerBlock">
+              
                 <span class="footerCopyright"><?php echo(COPYRIGHT_HTML); ?></span>
-                <div>Powered by <a href="http://www.catsone.com/"><strong>CATS</strong></a>.</div>
+                <div>Based upon original work and Powered by <a href="http://www.catsone.com ">CATS</a>.</div>
             </div>
         </div>
+
+
         <script type="text/javascript">
             initPopUp();
         </script>
