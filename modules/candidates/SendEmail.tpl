@@ -1,5 +1,5 @@
 <?php /* $Id: SendEmail.tpl 3078 2007-09-21 20:25:28Z will $ */ ?>
-<?php TemplateUtility::printHeader('Candidates', array('modules/candidates/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js')); ?>
+<?php TemplateUtility::printHeader('Candidates', array('ckeditor/ckeditor.js', 'modules/candidates/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">
@@ -103,9 +103,28 @@
 
                         </form>
 
-                        <script type="text/javascript">
+			<script type="text/javascript">
                         document.emailForm.emailSubject.focus();
-                        </script>
+                        //added the code below for the ckeditor html box - Jamin 2-19-2010
+                        //adjusted code to remove or prevent extra breaks in email - Jamin 2-23-2010
+			CKEDITOR.replace( 'emailBody' );
+    			CKEDITOR.on('instanceReady', function(ev)
+        		{
+            		var tags = ['p', 'ol', 'ul', 'li']; // etc.
+
+            		for (var key in tags) {
+                	ev.editor.dataProcessor.writer.setRules(tags[key],
+                    	{
+                        indent : false,
+                        breakBeforeOpen : false,
+                        breakAfterOpen : false,
+                        breakBeforeClose : false,
+                        breakAfterClose : false, 
+                    	});
+            		}
+        		});
+              		</script>
+
                     </td>
                 </tr>
             </table>
