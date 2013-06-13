@@ -242,6 +242,25 @@ CREATE TABLE `candidate_jobordrer_status_type` (
 
 LOCK TABLES `candidate_jobordrer_status_type` WRITE;
 UNLOCK TABLES;
+DROP TABLE IF EXISTS `candidate_tag`;
+CREATE TABLE `candidate_tag` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `site_id` int(10) unsigned DEFAULT NULL,
+  `candidate_id` int(10) unsigned NOT NULL,
+  `tag_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+LOCK TABLES `candidate_tag` WRITE;
+INSERT INTO `candidate_tag` (`id`, `site_id`, `candidate_id`, `tag_id`) VALUES
+(55, 1, 1, 5),
+(56, 1, 1, 78),
+(57, 1, 1, 80),
+(58, 1, 1, 81),
+(61, 1, 2, 1),
+(62, 1, 2, 78),
+(63, 1, 2, 80);
+UNLOCK TABLES;
 DROP TABLE IF EXISTS `candidate_source`;
 CREATE TABLE `candidate_source` (
   `source_id` int(11) NOT NULL auto_increment,
@@ -876,7 +895,25 @@ CREATE TABLE `user` (
   KEY `IDX_last_name` (`last_name`),
   KEY `IDX_access_level` (`access_level`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1251 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
+CREATE TABLE IF NOT EXISTS `tag` (
+  `tag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `tag_parent_id` int(10) unsigned DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `description` varchar(500) DEFAULT NULL,
+  `site_id` int(11) unsigned DEFAULT NULL,
+  `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`tag_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=87 ;
+INSERT INTO `tag` (`tag_id`, `tag_parent_id`, `title`, `description`, `site_id`, `date_created`) VALUES
+(1, NULL, 'tag1', '-', 1, '2009-11-19 10:24:02'),
+(5, 1, 'tag13', '-', 1, '2009-11-19 12:06:08'),
+(78, NULL, 'tag2', '-', 1, '2009-11-20 13:13:42'),
+(79, 78, 'tag21', '-', 1, '2009-11-20 13:13:47'),
+(80, 78, 'tag22', '-', 1, '2009-11-20 13:13:50'),
+(81, 78, 'tag23', '-', 1, '2009-11-20 13:13:52'),
+(83, NULL, 'new tag', '-', 1, '2010-03-04 21:25:53'),
+(84, 83, 'sub1', '-', 1, '2010-03-04 21:25:59'),
+(86, 83, 'sub3', '-', 1, '2010-03-04 21:26:04');
 LOCK TABLES `user` WRITE;
 INSERT INTO `user` VALUES (1,1,'admin','','cats',500,1,0,'Administrator','CATS',0,NULL,NULL,15,NULL,0,'','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0),(1250,180,'cats@rootadmin','0','cantlogin',0,0,0,'Automated','CATS',0,NULL,NULL,15,NULL,0,'','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
 UNLOCK TABLES;
