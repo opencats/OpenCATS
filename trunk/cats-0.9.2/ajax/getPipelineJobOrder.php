@@ -188,6 +188,7 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
     <table class="notsortable" id="pipelineTable" width="925">
     <tr>
         <th></th>
+        <th></th>
         <th align="left" width="10" nowrap="nowrap"></th>
         <th align="left" width="62" nowrap="nowrap">
             <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('ratingValue'); ?>, <?php if ($isPopup) echo(1); else echo(0); ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
@@ -237,6 +238,9 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
     <?php for ($i = $minEntry; $i < $maxEntry; $i++): ?>
         <?php $pipelinesData = $pipelinesRS[$i]; $rowNumber = $i - $minEntry; ?>
         <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>" id="pipelineRow<?php echo($rowNumber); ?>">
+        	<td>
+        		<input type="checkbox" id="checked_<?php echo($pipelinesData['candidateID']); ?>" name="checked" value="<?php echo($pipelinesData['candidateID']); ?>"/>
+        	</td>
             <td valign="top">
                 <span id="pipelineEntryOpen<?php echo($rowNumber); ?>">
                     <a href="javascript:void(0);" onclick="document.getElementById('pipelineDetails<?php echo($rowNumber); ?>').style.display = ''; document.getElementById('pipelineEntryClose<?php echo($rowNumber); ?>').style.display = ''; document.getElementById('pipelineEntryOpen<?php echo($rowNumber); ?>').style.display = 'none'; PipelineDetails_populate(<?php echo($pipelinesData['candidateJobOrderID']); ?>, 'pipelineEntryInner<?php echo($rowNumber); ?>', '<?php echo($_SESSION['CATS']->getCookie()); ?>');">
