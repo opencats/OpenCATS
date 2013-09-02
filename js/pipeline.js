@@ -112,3 +112,23 @@ function PipelineJobOrder_populate(joborderID, page, entriesPerPage, sortBy,
         false
     );
 }
+
+
+function selectAll_candidates(el){
+	var pipeline=document.getElementsByName('checked');
+	for(var i=0;i<pipeline.length;i++){
+		pipeline[i].checked=el.checked;
+	}
+}
+
+function getSelected_candidates(){
+	var exportArray=[];
+	var pipeline=document.getElementsByName('checked');
+
+	for(var i=0;i<pipeline.length;i++){
+		if (pipeline[i].checked){
+			exportArray.push(pipeline[i].value);
+		}
+	}
+	return exportArray;
+}

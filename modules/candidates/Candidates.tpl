@@ -39,9 +39,9 @@
                                         <label for="onlyHotCandidates">Only Hot Candidates</label>&nbsp;
                                     </td>
                                     <td valign="top" align="right" nowrap="nowrap">
-	                					<a href="javascript:void(0);" id="exportBoxLink<?= $md5InstanceName ?>" onclick="toggleHideShowControls('<?= $md5InstanceName ?>'); console.log(this.offsetLeft); return false;">Filter by tag</a>
+	                					<a href="javascript:void(0);" id="exportBoxLink<?= $md5InstanceName ?>" onclick="toggleHideShowControls('<?= $md5InstanceName ?>-tags'); return false;">Filter by tag</a>
 	                					<div id="tagsContainer" style="position:relative">
-	                					<div class="ajaxSearchResults" id="ColumnBox<?= $md5InstanceName ?>" align="left"  style="position:absolute;width:200px;<?= $this->globalStyle ?>">
+	                					<div class="ajaxSearchResults" id="ColumnBox<?= $md5InstanceName ?>-tags" align="left"  style="position:absolute;width:200px;<?= $this->globalStyle ?>">
 	                						<table width="100%"><tr><td style="font-weight:bold; color:#000000;">Tag list</td>
 	                						<td align="right">
 	                							<input type="button" onclick="applyTagFilter()" value="Save&amp;Close" />
