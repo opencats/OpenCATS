@@ -190,7 +190,7 @@ class Mailer
      */
     public function send($from, $recipients, $subject, $body, $isHTML = false,
         $logMessage = true, $replyTo = array(), $wrapLinesAt = 78,
-        $signature = true)
+        $signature = false)
     {
 
         $this->_mailer->From     = $from[0];
