@@ -840,7 +840,7 @@ class CompaniesDataGrid extends DataGrid
 
 
             'Web Site' =>      array('select'  => 'company.url AS webSite',
-                                     'pagerRender'     => 'return \'<a href="\'.htmlspecialchars($rsData[\'webSite\']).\'">\'.htmlspecialchars($rsData[\'webSite\']).\'</a>\';',
+                                     'pagerRender'     => 'return \'<a href="\'.htmlspecialchars($rsData[\'webSite\']).\'" target="_blank">\'.htmlspecialchars($rsData[\'webSite\']).\'</a>\';',
                                      'sortableColumn'    => 'webSite',
                                      'pagerWidth'   => 80,
                                      'filter'         => 'company.url'),
