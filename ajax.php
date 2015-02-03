@@ -74,7 +74,7 @@ if (!isset($_REQUEST['f']) || empty($_REQUEST['f']))
 
 if (strpos($_REQUEST['f'], ':') === false)
 {
-    $function = ereg_replace("[^A-Za-z0-9]", "", $_REQUEST['f']);
+    $function = preg_replace("/[^A-Za-z0-9]/", "", $_REQUEST['f']);
     
     $filename = sprintf('ajax/%s.php', $function);
 }
@@ -83,8 +83,8 @@ else
     /* Split function parameter into module name and function name. */
     $parameters = explode(':', $_REQUEST['f']);
     
-    $module = ereg_replace("[^A-Za-z0-9]", "", $parameters[0]);
-    $function = ereg_replace("[^A-Za-z0-9]", "", $parameters[1]);
+    $module = preg_replace("/[^A-Za-z0-9]/", "", $parameters[0]);
+    $function = preg_replace("/[^A-Za-z0-9]/", "", $parameters[1]);
     
     $filename = sprintf('modules/%s/ajax/%s.php', $module, $function);
 }
