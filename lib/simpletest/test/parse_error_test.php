@@ -1,10 +1,9 @@
 <?php
-    // $Id: parse_error_test.php 424 2006-07-21 02:20:17Z will $
-    
-    require_once('../unit_tester.php');
-    require_once('../reporter.php');
+// $Id: parse_error_test.php 1509 2007-05-08 22:11:49Z lastcraft $
+require_once('../unit_tester.php');
+require_once('../reporter.php');
 
-    $test = &new GroupTest('This should fail');
-    $test->addTestFile('test_with_parse_error.php');
-    $test->run(new HtmlReporter());
+$test = &new TestSuite('This should fail');
+$test->addFile('test_with_parse_error.php');
+$test->run(new HtmlReporter());
 ?>

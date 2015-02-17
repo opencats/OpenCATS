@@ -41,7 +41,7 @@ class CATSSchema
                 UPDATE `attachment` SET directory_name = attachment_id;
             ',
             '3' => '
-                UPDATE system SET disable_version_check = 0;
+                UPDATE system SET disable_version_check = 1;
             ',
             /* Upgrade directory names to prevent iteration through attachments folder. */
             '4' => 'PHP:
@@ -846,7 +846,7 @@ class CATSSchema
                 CREATE INDEX IDX_CANDIDATE_JOBORDER_STATUS_HISTORY_JOBORDER_ID ON candidate_joborder_status_history (joborder_id);
             ',
             '251' => '
-                UPDATE system SET disable_version_check = 0;
+                UPDATE system SET disable_version_check = 1;
             ',
             '253' => 'PHP:
                 $rs = $db->query(\'SELECT * FROM zipcodes\');

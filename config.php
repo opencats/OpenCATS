@@ -48,26 +48,26 @@ define('SSL_ENABLED', false);
  * 'C:\\antiword\\antiword.exe'. Windows Antiword will have problems locating
  * mapping files if you install it anywhere but C:\antiword\.
  */
-define('ANTIWORD_PATH', "c:\\antiword\\antiword.exe");
+define('ANTIWORD_PATH', "\\path\\to\\antiword");
 define('ANTIWORD_MAP', '8859-1.txt');
 
 /* XPDF / pdftotext settings. Remember to use double backslashes (\) to represent
  * one backslash (\).
  * http://www.foolabs.com/xpdf/
  */
-define('PDFTOTEXT_PATH', "d:\\bfc_vasilache\\projects\\work\\opencats\\external\\catsbin\\pdftotext.exe");
+define('PDFTOTEXT_PATH', "\\path\\to\\pdftotext");
 
 /* html2text settings. Remember to use double backslashes (\) to represent
  * one backslash (\). 'html2text' can be found at:
  * http://www.mbayer.de/html2text/
  */
-define('HTML2TEXT_PATH', "d:\\bfc_vasilache\\projects\\work\\opencats\\external\\catsbin\\html2text.exe");
+define('HTML2TEXT_PATH', "\\path\\to\\html2text");
 
 /* UnRTF settings. Remember to use double backslashes (\) to represent
  * one backslash (\). 'unrtf' can be found at:
  * http://www.gnu.org/software/unrtf/unrtf.html
  */
-define('UNRTF_PATH', "d:\\bfc_vasilache\\projects\\work\\opencats\\external\\catsbin\\unrtf.exe");
+define('UNRTF_PATH', "\\path\\to\unrtf");
 
 /* Temporary directory. Set this to a directory that is writable by the
  * web server. The default should be fine for most systems. Remember to
@@ -149,7 +149,7 @@ define('CANDIDATE_STATUSCHANGE_SUBJECT', 'Job Application Status Change');
  */
 define('FORGOT_PASSWORD_FROM_NAME', 'CATS');
 define('FORGOT_PASSWORD_SUBJECT',   'CATS - Password Retrieval Request');
-define('FORGOT_PASSWORD_BODY',      'You recently requested that your CATS: Applicant Tracking System password be sent to you. Your current password is %s.');
+define('FORGOT_PASSWORD_BODY',      'You recently requested that your OpenCATS: Applicant Tracking System password be sent to you. Your current password is %s.');
 
 /* Is this a demo site? */
 define('ENABLE_DEMO_MODE', false);
@@ -204,7 +204,7 @@ define('MAIL_SMTP_PASS', "password");
 $GLOBALS['eventReminderEmail'] = <<<EOF
 %FULLNAME%,
 
-This is a reminder from the CATS Applicant Tracking System about an
+This is a reminder from the OpenCATS Applicant Tracking System about an
 upcoming event.
 
 '%EVENTNAME%'
@@ -214,7 +214,7 @@ Description:
 %NOTES%
 
 --
-CATS Applicant Tracking System
+OPENCATS Applicant Tracking System
 EOF;
 
 /* Enable replication slave mode? This is probably only useful for the CATS

@@ -15,7 +15,7 @@ input.userAddField:focus { background-color: #D7E0F5; border: 1px solid #666666;
 
 #contentAddUser { position: absolute; left: 150px; top: 75px; margin: 5px 0 5px 0; padding: 20px; visibility: hidden; }
 </style>
-<b>Setup users who can access your CATS site.</b>
+<b>Setup users who can access your OpenCATS site.</b>
 <br />
 <br />
 <table cellpadding="0" cellspacing="0" border="0" width="100%" class="userTable">

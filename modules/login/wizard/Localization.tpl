@@ -18,4 +18,4 @@
     </tr>
 </table>
 <p />
-These settings will effect how you see dates and times in CATS.
+These settings will effect how you see dates and times in OpenCATS.

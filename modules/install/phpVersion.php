@@ -11,13 +11,13 @@
 
     <body>
         <div id="headerBlock">
-            <span id="mainLogo">C&nbsp;A&nbsp;T&nbsp;S</span><br />
+            <span id="mainLogo">OpenCATS</span><br />
             <span id="subMainLogo">Applicant Tracking System</span>
         </div>
 
         <div id="contents">
             <div id="login">
-                <p>Your PHP version is <?php echo phpversion(); ?>  CATS Requires PHP 5 or better.</p>
+                <p>Your PHP version is <?php echo phpversion(); ?>  OpenCATS Requires PHP 5 or better.</p>
                 <p>Please get a newer version of PHP and try again.</p>
             </div>
         </div>

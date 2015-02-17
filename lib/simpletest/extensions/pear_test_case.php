@@ -3,7 +3,7 @@
      *	adapter for SimpleTest to use PEAR PHPUnit test cases
      *	@package	SimpleTest
      *	@subpackage Extensions
-     *	@version	$Id: pear_test_case.php 424 2006-07-21 02:20:17Z will $
+     *	@version	$Id: pear_test_case.php 1836 2008-12-21 00:02:26Z edwardzyang $
      */
     
     /**#@+
@@ -22,15 +22,15 @@
      *    @subpackage   Extensions
      */
     class PHPUnit_TestCase extends SimpleTestCase {
-        var $_loosely_typed;
+        private $_loosely_typed;
         
         /**
          *    Constructor. Sets the test name.
          *    @param $label        Test name to display.
          *    @public
          */
-        function PHPUnit_TestCase($label = false) {
-            $this->SimpleTestCase($label);
+        function __construct($label = false) {
+            parent::__construct($label);
             $this->_loosely_typed = false;
         }
         
@@ -44,9 +44,9 @@
          */
         function assertEquals($first, $second, $message = "%s", $delta = 0) {
             if ($this->_loosely_typed) {
-                $expectation = &new EqualExpectation($first);
+                $expectation = new EqualExpectation($first);
             } else {
-                $expectation = &new IdenticalExpectation($first);
+                $expectation = new IdenticalExpectation($first);
             }
             $this->assert($expectation, $second, $message);
         }
@@ -58,7 +58,7 @@
          *    @public
          */
         function assertNotNull($value, $message = "%s") {
-            parent::assertTrue(isset($value), $message);
+            parent::assert(new TrueExpectation(), isset($value), $message);
         }
         
         /**
@@ -68,45 +68,45 @@
          *    @public
          */
         function assertNull($value, $message = "%s") {
-            parent::assertTrue(!isset($value), $message);
+            parent::assert(new TrueExpectation(), !isset($value), $message);
         }
         
         /**
-         *    In PHP5 the identity test tests for the same
-         *    object. This is a reference test in PHP4.
+         *    Identity test tests for the same object.
          *    @param $first          First object handle.
          *    @param $second         Hopefully the same handle.
          *    @param $message        Message to display.
          *    @public
          */
-        function assertSame(&$first, &$second, $message = "%s") {
-            $dumper = &new SimpleDumper();
+        function assertSame($first, $second, $message = "%s") {
+            $dumper = new SimpleDumper();
             $message = sprintf(
                     $message,
                     "[" . $dumper->describeValue($first) .
                             "] and [" . $dumper->describeValue($second) .
                             "] should reference the same object");
-            return $this->assertTrue(
+            return $this->assert(
+					new TrueExpectation(),
                     SimpleTestCompatibility::isReference($first, $second),
                     $message);
         }
         
         /**
-         *    In PHP5 the identity test tests for the same
-         *    object. This is a reference test in PHP4.
+         *    Inverted identity test.
          *    @param $first          First object handle.
          *    @param $second         Hopefully a different handle.
          *    @param $message        Message to display.
          *    @public
          */
-        function assertNotSame(&$first, &$second, $message = "%s") {
-            $dumper = &new SimpleDumper();
+        function assertNotSame($first, $second, $message = "%s") {
+            $dumper = new SimpleDumper();
             $message = sprintf(
                     $message,
                     "[" . $dumper->describeValue($first) .
                             "] and [" . $dumper->describeValue($second) .
                             "] should not be the same object");
-            return $this->assertFalse(
+            return $this->assert(
+					new falseExpectation(),
                     SimpleTestCompatibility::isReference($first, $second),
                     $message);
         }
@@ -119,7 +119,7 @@
          *    @public
          */
         function assertTrue($condition, $message = "%s") {
-            parent::assertTrue($condition, $message);
+            parent::assert(new TrueExpectation(), $condition, $message);
         }
         
         /**
@@ -130,7 +130,7 @@
          *    @public
          */
         function assertFalse($condition, $message = "%s") {
-            parent::assertTrue(!$condition, $message);
+            parent::assert(new FalseExpectation(), $condition, $message);
         }
         
         /**
@@ -152,7 +152,7 @@
          *    @public
          */
         function assertType($value, $type, $message = "%s") {
-            parent::assertTrue(gettype($value) == strtolower($type), $message);
+            parent::assert(new TrueExpectation(), gettype($value) == strtolower($type), $message);
         }
         
         /**

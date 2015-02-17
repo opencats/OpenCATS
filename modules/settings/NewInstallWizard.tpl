@@ -13,7 +13,7 @@
     <body>
 
     <div id="headerBlock">
-        <span id="mainLogo">C&nbsp;A&nbsp;T&nbsp;S</span><br />
+        <span id="mainLogo">OpenCATS</span><br />
         <span id="subMainLogo">Applicant Tracking System</span>
     </div>
 
@@ -127,7 +127,7 @@
            <?php if ($this->inputType == 'conclusion'): ?>
                 <div id="subFormBlock" style="text-align: center;">
                     <form name="configurationForm" id="configurationForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=<?php echo($this->home); ?>" method="post" autocomplete="off">
-                        <input type="submit" id="submit" name="submit" class="button" value="Continue Using CATS" />
+                        <input type="submit" id="submit" name="submit" class="button" value="Continue Using OpenCATS" />
                     </form>
                 </div>
            <?php endif; ?>
