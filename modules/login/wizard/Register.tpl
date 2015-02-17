@@ -8,16 +8,14 @@ input.licenseKey { border: 1px solid #0C519D; padding: 5px; width: 500px; }
         </td>
 
         <td align="left" valign="top">
-            <b>CATS Professional</b> users get everything CATS has to offer.</b>
+            <b>OpenCATS</b> users get everything.</b>
             <ul>
-                <li>Import candidates from websites using your web browser.</li>
+                <li>Freeform text-search across resume's.</li>
                 <li>A careers website where applicants can view public jobs and apply.</li>
                 <li>Import your resume documents directly as candidates.</li>
                 <li>Plug-ins and add-ons to make recruiting even easier.</li>
-                <li>Complete telephone and e-mail support.</li>
+                <li>Forum and e-mail support.</li>
             </ul>
-
-            <b>Need a license key?</b> <a href="http://www.catsone.com/?a=license_key" target="_blank">Register here</a>.
 
             <p />
 

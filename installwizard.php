@@ -22,7 +22,7 @@
 ?>
 <html>
     <head>
-        <title>CATS - Installation Wizard Script</title>
+        <title>OpenCATS - Installation Wizard Script</title>
         <script type="text/javascript" src="js/lib.js"></script>
         <script type="text/javascript" src="js/install.js"></script>
         <script type="text/javascript" src="js/submodal/subModal.js"></script>
@@ -31,7 +31,7 @@
 
     <body>
         <div id="headerBlock">
-            <span id="mainLogo">C&nbsp;A&nbsp;T&nbsp;S</span><br />
+            <span id="mainLogo">OpenCATS</span><br />
             <span id="subMainLogo">Applicant Tracking System</span>
         </div>
 
@@ -81,34 +81,34 @@
                                 <tr>
                                     <td style="vertical-align: top; text-align: left;" id="allSpans">
                                         <div id="installLocked" style="display: none;">
-                                            <span style="font-weight: bold;">CATS is already installed!</span><br />
-                                            <p>To run the installer again, you must first delete the file named INSTALL_BLOCK in the CATS directory. After removing the file, you can click &quot;Retry Installation&quot; below.</p><br />
+                                            <span style="font-weight: bold;">OpenCATS is already installed!</span><br />
+                                            <p>To run the installer again, you must first delete the file named INSTALL_BLOCK in the OpenCATS directory. After removing the file, you can click &quot;Retry Installation&quot; below.</p><br />
                                             <input type="button" class="button" value="Retry Installation" onclick="Installpage_populate('a=startInstall');">
                                         </div>
                                         <div id="startInstall" style="display: none;">
-                                            <span style="font: normal normal bold 18px Arial, Tahoma, sans-serif">Welcome to CATS!</span><br />
+                                            <span style="font: normal normal bold 18px Arial, Tahoma, sans-serif">Welcome to OpenCATS!</span><br />
 
-                                            <p style="text-align: justify; margin-top: 15px;">This process will help you set up the CATS environment
-                                            for the first time. Before we begin, CATS needs to run some tests on your system to make sure that your
-                                            web environment can support CATS and is configured properly.</p>
+                                            <p style="text-align: justify; margin-top: 15px;">This process will help you set up the OpenCATS environment
+                                            for the first time. Before we begin, OpenCATS needs to run some tests on your system to make sure that your
+                                            web environment can support OpenCATS and is configured properly.</p>
                                         </div>
                                         <div id="phpVersion" style="display: none;">
-                                            <span style="font: normal normal bold 18px Arial, Tahoma, sans-serif">Welcome to CATS!</span><br />
+                                            <span style="font: normal normal bold 18px Arial, Tahoma, sans-serif">Welcome to OpenCATS!</span><br />
 
-                                            <p style="text-align: justify; margin-top: 15px;">This process will help you set up the CATS environment
-                                            for the first time. Before we begin, CATS needs to run some tests on your system to make sure that your
-                                            web environment can support CATS and is configured properly.</p>
+                                            <p style="text-align: justify; margin-top: 15px;">This process will help you set up the OpenCATS environment
+                                            for the first time. Before we begin, OpenCATS needs to run some tests on your system to make sure that your
+                                            web environment can support OpenCATS and is configured properly.</p>
                                             
                                             <br />
                                             <span style="font-weight: bold;">Test Results</span>
                                             <table class="test_output">
-                                            <tr class="fail"><td>PHP 5.0.0 or greater is required to run CATS. Found version: <?php echo(phpversion()); ?>.</td></tr>
+                                            <tr class="fail"><td>PHP 5.0.0 or greater is required to run OpenCATS. Found version: <?php echo(phpversion()); ?>.</td></tr>
                                             </table>
                                         </div>
                                         <div id="databaseConnectivity" style="display: none;">
                                             <span style="font-weight: bold;">Database Configuration</span><br />
                                             <br />
-                                            The CATS installer needs some information about your MySQL database to continue the installation.
+                                            The OpenCATS installer needs some information about your MySQL database to continue the installation.
                                             If you do not know this information, then please contact your website host or administrator.
                                             Please note that this is probably NOT the same as your FTP login information!<br />
                                             <br />
@@ -138,7 +138,7 @@
                                         <div id="resumeParsing" style="display: none;">
                                             <span style="font-weight:bold;">Resume Indexing Configuration</span><br />
                                             <br />
-                                            CATS can index resumes for advanced searching with the assistance of external
+                                            OpenCATS can index resumes for advanced searching with the assistance of external
                                             document processing software. You need to configure the software below
                                             to enable resume indexing.<br />
                                             <br />
@@ -210,7 +210,7 @@
                                             <span style="font-weight: bold;">Mail Settings</span><br />
 
                                             <br />
-                                            Please enter your e-mail address (for where CATS e-mails should be replied to, etc.).
+                                            Please enter your e-mail address (for where OpenCATS e-mails should be replied to, etc.).
                                             <br />
                                             <br />
                                             <table width="100%">
@@ -222,7 +222,7 @@
 
                                             <br />
                                             <br />
-                                            CATS sends automatic E-Mails on different events.  Please choose the mechanism for E-Mail delivery via CATS.<br />
+                                            OpenCATS sends automatic E-Mails on different events.  Please choose the mechanism for E-Mail delivery via OpenCATS.<br />
                                             <br />
                                             <form name="mailForm">
                                             <table width="100%">
@@ -305,7 +305,7 @@
                                         <div id="installingComponentsMaint" style="display: none;">
                                             <span style="font-weight:bold;">Performing Maintenance</span><br />
                                             <br />
-                                            Please wait while the CATS database is brought up to date...<br />
+                                            Please wait whilst the OpenCATS database is brought up to date...<br />
 											<br />
 											<span id="upToDateModuleName">
 											</span><br /><br />
@@ -332,7 +332,7 @@
                                         <div id="emptyDatabase" style="display: none;">
                                             <span style="font-weight:bold;">Loading Data - Empty Database</span><br />
                                             <br />
-                                            The installer is ready to set up your CATS data. Please pick the way you want the installer to set up CATS:<br />
+                                            The installer is ready to set up your OpenCATS data. Please pick the way you want the installer to set up OpenCATS:<br />
                                             <br />
                                             <input type="radio" name="installgroup" id="emptyCheckBox" value="empty" checked>&nbsp;New Installation (Recommended)<br />
                                             <input type="radio" name="installgroup" value="demo">&nbsp;Demonstration Installation<br />
@@ -353,15 +353,15 @@
                                             <br />
                                             <span id="tableNamesUnknown" style="font-weight: bold; display: none;"></span>
                                             <br />
-                                            Please remove all of the-non CATS tables to continue.<br />
+                                            Please remove all of the-non OpenCATS tables to continue.<br />
                                             <br />
-                                            <input type="button" class="button" value="Remove Non-CATS Tables" onclick="Installpage_populate('a=resetDatabase');">&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input type="button" class="button" value="Remove Non-OpenCATS Tables" onclick="Installpage_populate('a=resetDatabase');">&nbsp;&nbsp;&nbsp;&nbsp;
                                             <input type="button" class="button" value="Do Nothing and Retry Installation" onclick="Installpage_populate('a=startInstall');">
                                         </div>
                                         <div id="databaseUpgrade" style="display: none;">
                                             <span style="font-weight:bold;">Loading Data - Upgrade</span><br />
                                             <br />
-                                            The installer has scanned the database and found an older version of CATS in the database (<span id="upgradeVersion"></span>). The installer
+                                            The installer has scanned the database and found an older version of OpenCATS in the database (<span id="upgradeVersion"></span>). The installer
                                             will upgrade your database version to the latest version automatically.<br />
                                             <br />
                                             <input style="float: right;" type="button" class="button" value="Next -->" onclick="document.getElementById('databaseUpgrade').style.display='none';showTextBlock('installingComponentsMaint');Installpage_populate('a=upgradeCats');" />
@@ -369,16 +369,16 @@
                                         <div id="catsUpToDate" style="display: none;">
                                             <span style="font-weight: bold;">Loading Data - Existing Database</span><br />
                                             <br />
-                                            The installer has detected an existing installation of CATS.<br />
+                                            The installer has detected an existing installation of OpenCATS.<br />
                                             How would you like to proceed?<br />
                                             <br />
-                                            <input type="radio" name="installgroupexists" id="currentCheckBox" value="current" checked />&nbsp;Use existing CATS installation and automatically preform any necessary upgrade (recommended).<br />
+                                            <input type="radio" name="installgroupexists" id="currentCheckBox" value="current" checked />&nbsp;Use existing OpenCATS installation and automatically preform any necessary upgrade (recommended).<br />
                                             <br />
                                             <input type="radio" name="installgroupexists" value="empty" />&nbsp;Delete existing data and create a new installation.<br />
-                                            <input type="radio" name="installgroupexists" value="demo" />&nbsp;Delete existing data and install the CATS demonstration database.<br />
-                                            <input type="radio" name="installgroupexists" value="restore" />&nbsp;Delete existing data and restore a previous CATS installation from backup.<br />
+                                            <input type="radio" name="installgroupexists" value="demo" />&nbsp;Delete existing data and install the OpenCATS demonstration database.<br />
+                                            <input type="radio" name="installgroupexists" value="restore" />&nbsp;Delete existing data and restore a previous OpenCATS installation from backup.<br />
                                             <br />
-                                            If you choose to use the existing CATS installation, you can always run<br />
+                                            If you choose to use the existing OpenCATS installation, you can always run<br />
                                             the installer again later and choose a different option.<br />
                                             <br />
                                             <input style="float: right;" type="button" class="button" value="Next -->" onclick="if (getCheckedValue(document.getElementsByName('installgroupexists')) == 'current') Installpage_populate('a=resumeParsing'); else {document.getElementById('catsUpToDate').style.display='none';showTextBlock('queryResetDatabase');}" />
@@ -402,7 +402,7 @@
                                             <br />
                                             The installer is about to install a demonstration database for the fictitious company 'MyCompany.NET'.<br />
                                             <br />
-                                            The database will be pre-populated with test data that you can use to train new users on using CATS. You can login using
+                                            The database will be pre-populated with test data that you can use to train new users on using OpenCATS. You can login using
                                             username: john@mycompany.net, password john99 (or by clicking Login to demo on the login screen).<br /><br />
                                             To clear the demo data and start a production system, run the installer again.<br />
                                             <br />
@@ -412,29 +412,29 @@
                                         <div id="installCompleteProd" style="display: none;">
                                             <span style="font-weight:bold;">Finishing Installation</span><br />
                                             <br />
-                                            The installer has finished installing CATS! The installer has been disabled to prevent unauthorized access. To run the installer again, delete the file 'INSTALL_BLOCK' in your CATS directory.<br /><br />
+                                            The installer has finished installing OpenCATS! The installer has been disabled to prevent unauthorized access. To run the installer again, delete the file 'INSTALL_BLOCK' in your OpenCATS directory.<br /><br />
                                             <br />
-                                            You may now login to CATS. If it is a new installation, use the following logon information:<br /><br />
+                                            You may now login to OpenCATS. If it is a new installation, use the following logon information:<br /><br />
                                             Username: admin<br />
                                             Password: cats<br />
                                             <br />
                                             <br />
-                                            CATS will periodically check for new versions of the software from catsone.com, and will send non confidential information about your
-                                            installation including operating system version and web browser configuration back to catsone.com in order for us to improve CATS.  To see what information is sent, view
+                                            OpenCATS will periodically check for new versions of the software from catsone.com, and will send non confidential information about your
+                                            installation including operating system version and web browser configuration back to catsone.com in order for us to improve OpenCATS.  To see what information is sent, view
                                             lib/NewVersionCheck.php.<br />
                                             <br />
-                                            <input type="button" class="button" value="Start CATS" onclick="window.location.href='index.php';" />
+                                            <input type="button" class="button" value="Start OpenCATS" onclick="window.location.href='index.php';" />
                                         </div>
                                         <div id="installCompleteDemo" style="display: none;">
                                             <span style="font-weight:bold;">Finishing Installation - Demo</span><br />
                                             <br />
-                                            The installer has finished installing CATS! The installer has been disabled to prevent unauthorized access. To run the installer again, delete the file 'INSTALL_BLOCK' in your CATS directory.<br /><br />
+                                            The installer has finished installing OpenCATS! The installer has been disabled to prevent unauthorized access. To run the installer again, delete the file 'INSTALL_BLOCK' in your OpenCATS directory.<br /><br />
                                             <br />
-                                            You may now login to CATS. To login, either click "Login to Demo Account" on the logon screen or use the following logon information:<br /><br />
+                                            You may now login to OpenCATS. To login, either click "Login to Demo Account" on the logon screen or use the following logon information:<br /><br />
                                             Username: john@mycompany.net<br />
                                             Password: john99<br />
                                             <br />
-                                            <input type="button" class="button" value="Start CATS" onclick="window.location.href='index.php';" />
+                                            <input type="button" class="button" value="Start OpenCATS" onclick="window.location.href='index.php';" />
                                         </div>
                                         <div id="queryResetDatabase" style="display: none;">
                                             <span style="font-weight:bold;">Loading Data - Existing Database</span><br />
@@ -473,7 +473,7 @@
                                             <br />
                                             <span style="font-weight: bold;">Loading Extras - Choose Extras</span><br />
                                             <br />
-                                            CATS comes with some optional features. You can enable them below.<br />
+                                            OpenCATS comes with some optional features. You can enable them below.<br />
                                             <br />
                                             To add or remove features in the future, run the installer again.<br />
                                             <br />
@@ -496,22 +496,22 @@
                                         <div id="testWarning" style="display: none;">
                                             <table class="footer_warning"><tr><td>One or more tests issued a warning. You may still proceed, but read the warnings carefully and address them if you can.<br />
                                             <br />
-                                            If you have any questions, visit the CATS forums at <a href="http://www.catsone.com/forum/">http://www.catsone.com/forum/</a>.</td></tr></table><br />
+                                            If you have any questions, visit the OpenCATS forums at <a href="http://www.opencats.org/forums/">http://www.opencats.org/forums/</a>.</td></tr></table><br />
                                             <input style="float: right;" type="button" class="button" value="Next -->" onclick="Installpage_populate('a=databaseConnectivity');" />
                                         </div>
                                         <div id="testFailed" style="display: none;">
                                             <table class="footer_fail"><tr><td>One or more tests failed. Please correct the errors and try again.<br />
                                             <br />
-                                            If you have any questions, visit the CATS forums at <a href="http://www.catsone.com/forum/">http://www.catsone.com/forum/</a>.</td></tr></table><br />
+                                            If you have any questions, visit the OpenCATS forums at <a href="http://www.opencats.org/forums/">http://www.opencats.org/forums/</a>.</td></tr></table><br />
                                             <input type="button" class="button" value="Retry Installation" onclick="Installpage_populate('a=startInstall');" />
                                         </div>
                                         <div id="testFailedWarning" style="display: none;"><table class="footer_warning"><tr><td>One or more tests issued a warning. You may still proceed, but read the warnings carefully and address them if you can.<br />
                                             <br />
-                                            If you have any questions, visit the CATS forums at <a href="http://www.catsone.com/forum/">http://www.catsone.com/forum/</a>.</td></tr></table>
+                                            If you have any questions, visit the OpenCATS forums at <a href="http://www.opencats.org/forums/">http://www.opencats.org/forums/</a>.</td></tr></table>
 
                                             <table class="footer_fail"><tr><td>One or more tests failed. Please correct the errors and try again.<br />
                                             <br />
-                                            If you have any questions, visit the CATS forums at <a href="http://www.catsone.com/forum/">http://www.catsone.com/forum/</a>.</td></tr></table><br />
+                                            If you have any questions, visit the OpenCATS forums at <a href="http://www.opencats.org/forums/">http://www.opencats.org/forums/</a>.</td></tr></table><br />
                                             <input type="button" class="button" value="Retry Installation" onclick="Installpage_populate('a=startInstall');" />
                                         </div>
 
@@ -524,7 +524,7 @@
                                         <div id="MySQLTestFailed" style="display: none;">
                                             <table class="footer_fail"><tr><td>One or more tests failed. Please correct the errors and try again.<br />
                                             <br />
-                                            If you have any questions, visit the CATS forums at <a href="http://www.catsone.com/forum/">http://www.catsone.com/forum/</a>.</td></tr></table>
+                                            If you have any questions, visit the OpenCATS forums at <a href="http://www.opencats.org/forums/">http://www.opencats.org/forums/</a>.</td></tr></table>
                                         </div>
 
                                         <div style="clear: both;"></div>

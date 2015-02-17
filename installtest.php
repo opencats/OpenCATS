@@ -138,7 +138,7 @@ header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
             <table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; float: left;">
                 <tr>
                     <td rowspan="2"><div id="mainLogo"></div></td>
-                    <td><span id="mainLogoText">C&nbsp;A&nbsp;T&nbsp;S</span></td>
+                    <td><span id="mainLogoText">OpenCATS</span></td>
                 </tr>
                 <tr>
                     <td><span id="subLogoText">Applicant Tracking System</span></td>
