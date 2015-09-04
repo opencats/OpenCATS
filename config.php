@@ -37,7 +37,7 @@ define('DATABASE_HOST', 'localhost');
 define('DATABASE_NAME', 'cats_dev');
 
 /* Resfly.com Resume Import Services Enabled */
-define('PARSING_ENABLED', true);
+define('PARSING_ENABLED', false);
 
 /* If you have an SSL compatible server, you can enable SSL for all of CATS. */
 define('SSL_ENABLED', false);
