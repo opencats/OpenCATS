@@ -186,7 +186,7 @@ define('DEMO_PASSWORD',  'john99');
 define('MAIL_MAILER', 1);
 
 /* Sendmail Settings. You don't need to worry about this unless MAIL_MAILER
- * is set to 1.
+ * is set to 2.
  */
 define('MAIL_SENDMAIL_PATH', "/usr/sbin/sendmail");
 
