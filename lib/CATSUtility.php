@@ -316,7 +316,7 @@ class CATSUtility
         $indexParts = explode('.', $index);
         if ($indexParts[0] == 'ajax')
         {
-            return 'index' . $indexParts[1];
+            return 'index.' . $indexParts[1];
         }
 
         /* Older versions of apache sometimes don't concatinate script name by default. */
