@@ -121,6 +121,14 @@ define('HTML_ENCODING', 'UTF-8');
 /* AJAX Encoding. */
 define('AJAX_ENCODING', 'UTF-8');
 
+/* Insert BOM in the beginning of CSV file */
+/* This is UTF-8 BOM, EF BB BF for UTF-8 */
+define('INSERT_BOM_CSV_LENGTH', '3');
+define('INSERT_BOM_CSV_1', '239');
+define('INSERT_BOM_CSV_2', '187');
+define('INSERT_BOM_CSV_3', '191');
+define('INSERT_BOM_CSV_4', '');
+
 /* Path to modules. */
 define('MODULES_PATH', './modules/');
 
