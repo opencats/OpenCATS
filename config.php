@@ -37,7 +37,7 @@ define('DATABASE_HOST', 'localhost');
 define('DATABASE_NAME', 'cats_dev');
 
 /* Resfly.com Resume Import Services Enabled */
-define('PARSING_ENABLED', true);
+define('PARSING_ENABLED', false);
 
 /* If you have an SSL compatible server, you can enable SSL for all of CATS. */
 define('SSL_ENABLED', false);
@@ -121,6 +121,14 @@ define('HTML_ENCODING', 'UTF-8');
 /* AJAX Encoding. */
 define('AJAX_ENCODING', 'UTF-8');
 
+/* Insert BOM in the beginning of CSV file */
+/* This is UTF-8 BOM, EF BB BF for UTF-8 */
+define('INSERT_BOM_CSV_LENGTH', '3');
+define('INSERT_BOM_CSV_1', '239');
+define('INSERT_BOM_CSV_2', '187');
+define('INSERT_BOM_CSV_3', '191');
+define('INSERT_BOM_CSV_4', '');
+
 /* Path to modules. */
 define('MODULES_PATH', './modules/');
 
@@ -186,7 +194,7 @@ define('DEMO_PASSWORD',  'john99');
 define('MAIL_MAILER', 1);
 
 /* Sendmail Settings. You don't need to worry about this unless MAIL_MAILER
- * is set to 1.
+ * is set to 2.
  */
 define('MAIL_SENDMAIL_PATH', "/usr/sbin/sendmail");
 

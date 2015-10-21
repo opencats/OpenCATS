@@ -1470,6 +1470,23 @@ class DataGrid
         header('Connection: close');
         header('Content-Type: text/x-csv; name=export.csv');
 
+        if (defined('INSERT_BOM_CSV_LENGTH') && (INSERT_BOM_CSV_LENGTH > 0))
+        {
+            echo chr(INSERT_BOM_CSV_1);
+            if (INSERT_BOM_CSV_LENGTH > 1)
+            {
+                echo chr(INSERT_BOM_CSV_2);
+            }
+            if (INSERT_BOM_CSV_LENGTH > 2)
+            {
+                echo chr(INSERT_BOM_CSV_3);
+            }
+            if (INSERT_BOM_CSV_LENGTH > 3)
+            {
+                echo chr(INSERT_BOM_CSV_4);
+            }
+        }
+
         echo $headerRow;
 
         foreach ($this->_rs as $rowIndex => $row)
