@@ -679,6 +679,36 @@ class Candidates
 
         return $rs['candidateID'];
     }
+    public function getIDByPhone($phone)
+    {
+        $sql = sprintf(
+            "SELECT
+                candidate.candidate_id AS candidateID
+            FROM
+                candidate
+            WHERE
+            (
+                candidate.phone_home = %s
+                OR candidate.phone_cell = %s
+                OR candidate.phone_work = %s
+            )
+            AND
+                candidate.site_id = %s",
+            $this->_db->makeQueryString($phone),
+            $this->_db->makeQueryString($phone),
+            $this->_db->makeQueryString($phone),
+            $this->_siteID
+        );
+        $rs = $this->_db->getAssoc($sql);
+         
+        if (empty($rs))
+        {
+            return -1;
+        }
+         
+        return $rs['candidateID'];
+    }
+     
 
     /**
      * Returns the number of candidates in the system.  Useful
@@ -1156,7 +1186,8 @@ class CandidatesDataGrid extends DataGrid
 
             'Work Phone' =>     array('select'   => 'candidate.phone_work AS phoneWork',
                                      'sortableColumn'     => 'phoneWork',
-                                     'pagerWidth'    => 80),
+                                     'pagerWidth'    => 80,
+                                     'filter'         => 'candidate.phone_work'),
 
             'Address' =>        array('select'   => 'candidate.address AS address',
                                      'sortableColumn'     => 'address',
