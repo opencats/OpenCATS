@@ -32,6 +32,11 @@
 
 include_once('./lib/License.php');
 
+if (AUTH_MODE == "ldap") 
+{
+	require_once('./lib/LDAP.php');
+}
+
 /* Login status flags. */
 define('LOGIN_SUCCESS',               1);
 define('LOGIN_INVALID_USER',         -1);
@@ -55,6 +60,7 @@ class Users
 {
     private $_db;
     private $_siteID;
+    private $_ldap;
 
 
     public function __construct($siteID)
@@ -784,11 +790,19 @@ class Users
             return LOGIN_INVALID_USER;
         }
 
-        /* Is the user's supplied password correct? */
-        if ($rs['password'] !== $password)
-        {
-            return LOGIN_INVALID_PASSWORD;
-        }
+	if(AUTH_MODE == 'ldap') {
+            	$this->_ldap = LDAP::getInstance();
+		if(!$this->_ldap->authenticate($username, $password)) 
+		{
+			return LOGIN_INVALID_PASSWORD;
+		} 
+	} else {
+		/* Is the user's supplied password correct? */
+		if ($rs['password'] !== $password)
+		{
+			return LOGIN_INVALID_PASSWORD;
+		}
+	}
 
         /* Is the user's account disabled? */
         if ($rs['accessLevel'] <= ACCESS_LEVEL_DISABLED)
