@@ -258,7 +258,6 @@ define ('LDAP_BASEDN', 'dc=example,dc=com');
 define ('LDAP_UID', 'uid');
 define ('LDAP_BIND_DN', 'cn=read-only-admin,dc=example,dc=com');
 define ('LDAP_BIND_PASSWORD', 'password');
-define ('LDAP_USE_REC_GROUPS', '');
 define ('LDAP_PROTOCOL_VERSION', 3);
 
 ?>
