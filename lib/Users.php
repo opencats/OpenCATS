@@ -1204,6 +1204,11 @@ class Users
 
         return $rs;
     }
+
+    public function searchLDAPUser($username)
+    {
+        return $this->_ldap->searchUid($username);
+    }
 }
 
 ?>
