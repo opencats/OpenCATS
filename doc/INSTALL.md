@@ -5,31 +5,49 @@
 * GNU/Linux, FreeBSD or Windows NT-based (2000, XP, 2003, Vista) Operating System
 * PHP
 * MySQL or MariaDB
-* Antiword, PdfToText, html2text, and UnRTF document indexing tools
+* Antiword 
+* PdfToText
+* html2text
+* UnRTF
 * PHP Zip library
 * PHP LDAP library
-
-Instructions on configuring a LAMP environment and setting up the document indexing packages are included under the sections "C) New Installation (Unix/Linix)" and "E) New Installation (Windows)".
 
 ## Installation
 
 ### Unix/Linux
-THESE INSTRUCTIONS ARE FOR USERS OF A LINUX OR UNIX OPERATING SYSTEM. For installation instructions for Windows, read part E) Installation Instructions (Windows)
 
 #### Installing Pre-requisites
 
 ##### PHP
+PHP can be installed from the distribution's package repository (yum/apt)
+
+CentOS:
+	#yum install php
 
 ##### Apache HTTPD
+Apache HTTPD can be installed from distribution specific package repository (yum/apt)
+
+CentOS:
+	#yum install httpd
 
 ##### MySQL/MariaDB
+MySQL in CentOS:
+	yum install mysql-server
 
+MariaDB in CentOS:
+	yum install mariadb
+	
 ##### PHP GD
+CentOS:
+	yum install php-gd
 
 ##### PHP LDAP
+CentOS:
+	yum install php-ldap
 
 ##### Antiword
-[ www.winfield.demon.nl/ ]
+Antiword is available in CentOS yum repository
+	yum install antiword
 
 ##### PdfToText
 [ http://www.foolabs.com/xpdf/ ]
@@ -53,28 +71,29 @@ Unpack tarball (cats-0.9.1.tar.gz) under your apache document root  (/var/www/ht
 Launch MySQL client and create a new database and user.
 
 	# mysql -uroot -p
-	mysql> CREATE DATABASE cats;
-    mysql> GRANT ALL PRIVILEGES ON `cats`.* TO  'cats'@'localhost' IDENTIFIED BY 'password';
+	mysql> CREATE DATABASE opencats;
+    mysql> GRANT ALL PRIVILEGES ON `opencats`.* TO  'opencats'@'localhost' IDENTIFIED BY 'password';
 	mysql> EXIT;
 
 #### Step 3
 Change ownership of the installation directory to the user and group that your web server runs under. This is usually 'apache', 'nobody', or 'www' (you can do a ps -auxww to see what user your web server is running as).
 
-	# chown apache:apache cats
-	# chown -R apache:apache cats-x.x.x/
-	# chmod 770 cats/attachments
+	# chown apache:apache opencats
+	# chown -R apache:apache opencats
+	# chmod 770 opencats/attachments
 
 #### Step 4
 Preform any necessary apache configuration changes so that the installation is accessible from a web browser (aliases, virtual hosts, etc.). See apache documentation for how to do this.
 
 #### Step 5
-In a web browser, visit the CATS installer page inside the cats web directory to finish the installation process: *
+In a web browser, visit the OpenCATS installation
 
-    http://mydomain.com/cats/installwizard.php
+Example:
+    http://localhost/opencats
 
-(Replacing 'mydomain.com' with your domain name, or the ip address of your server)
+(Replace *localhost* with your domain name, or the ip address of your server
 
-*Tip: If the installer does not load, check to see if there is a file called 'INSTALL_BLOCK' in the CATS directory. Delete it to allow the installer to be executed.
+*Tip: If the installer does not load, check to see if there is a file called 'INSTALL_BLOCK' in the OpenCATS directory. Delete it to allow the installer to be executed*
 
 #### Step 6
 Follow the installer directions to complete the installation.
@@ -85,8 +104,7 @@ If any tests do not pass, check your configuration and requirements fulfillment 
 OpenCATS should now be up and running. Enjoy! Please visit https://github.com/opencats if you wish to contribute to OpenCATS
 
 ### Windows
-
-These instructions are given for the WAMP environment only.
+This instructions are for the WAMP environment only.
 
 #### Pre-requisites
 
