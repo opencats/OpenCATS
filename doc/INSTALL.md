@@ -11,18 +11,24 @@
 
 Instructions on configuring a LAMP environment and setting up the document indexing packages are included under the sections "C) New Installation (Unix/Linix)" and "E) New Installation (Windows)".
 
-## Quick Installation - Unix/Linux
+## Quick Installation 
 
-This "quick install" section is only intended for advanced users and users that have installed CATS before and just need a quick overview. New users and non-advanced users are advised to read the in depth install instructions in part C) New Installation - In Depth instead of this section.
+### Unix/Linux
 
-1. Unpack the tarball into the web directory (/var/www/html,/usr/local/apache2/htdocs, or similar). Make a symlink to   cats-0.9.1/ or rename the cats-0.9.1/ directory to cats/.
-2. Start MySQL as the root user and create a new database and username.
+This "quick install" section is only intended for advanced users and users that have installed OpenCATS before and just need a quick overview. New users and non-advanced users are advised to read the in depth install instructions in part C) New Installation - In Depth instead of this section.
+
+#### Step 1
+Unpack the tarball into the web directory (/var/www/html,/usr/local/apache2/htdocs, or similar). Make a symlink to   cats-0.9.1/ or rename the cats-0.9.1/ directory to opencats/.
+
+#### Step 2
+Start MySQL as the root user and create a new database and username.
     
     mysql> CREATE DATABASE cats;
 
     mysql> GRANT ALL PRIVILEGES ON `cats`.* TO  'cats'@'localhost' IDENTIFIED BY 'password';
 
-3. Make sure that the web server has permission to write to the attachments directory.
+#### Step 3
+Make sure that the web server has permission to write to the attachments directory.
 
     chown apache:apache cats
 
@@ -30,91 +36,139 @@ This "quick install" section is only intended for advanced users and users that 
 
     chmod 770 cats/attachments
 
-4. Visit installwizard.php from a browser to invoke the installer. *
-5. Follow the on-screen instructions.
+#### Step 4
+Visit installwizard.php from a browser to invoke the installer. *
 
-Tip: If the installer does not load, check to see if there is a file called 'INSTALL_BLOCK' in the CATS directory. Delete it to allow the installer to be executed.
+#### Step 5
+Follow the on-screen instructions.
 
-## Installation - Unix/Linux
+Tip: *If the installer does not load, check to see if there is a file called 'INSTALL_BLOCK' in the CATS directory. Delete it to allow the installer to be executed.*
 
+## Installation
+
+### Unix/Linux
 THESE INSTRUCTIONS ARE FOR USERS OF A LINUX OR UNIX OPERATING SYSTEM. For installation instructions for Windows, read part E) Installation Instructions (Windows)
 
-### Prerequisites:
+#### Installing Pre-requisites
 
-* MySQL Daemon 4.1 (or greater) [ www.mysql.org/ ]
-* PHP 5.x w/ MySQL Module [ www.php.net/ ]
-* PHP GD2 Module [ http://www.boutell.com/gd/ ] ***
-* Apache HTTP Daemon [ www.apache.org/ ]
-* Antiword [ www.winfield.demon.nl/ ]
-* PdfToText [ http://www.foolabs.com/xpdf/ ]
-* html2text [ http://www.mbayer.de/html2text/ ]
-* UnRTF [ http://www.gnu.org/software/unrtf/unrtf.html ]
-* PHP LDAP          
+##### PHP
 
-The OpenCATS team recommends Ubuntu Server Edition for hosting CATS. http://www.ubuntu.com/getubuntu/download
-Ubuntu Server comes preconfigured with MySQL, PHP, and Apache.  To install GD2 under Ubuntu, execute:
+##### Apache HTTPD
 
-    sudo apt-get install php5-gd
+##### MySQL/MariaDB
 
-For instructions on downlading and installing Antiword, PdfToText, html2text, and UnRTF visit:               http://www.catsone.com/resumeIndexingSoftware.php?server_software=&os=LIST
+##### PHP GD
 
-      1) Unpack tarball (cats-0.9.1.tar.gz) under your apache document root
-         (/var/www/html, /usr/local/apache2/htdocs, /cygdrive/c/wamp/www,
-         or similar) and create a symlink to it named 'cats':
+##### PHP LDAP
+
+##### Antiword
+[ www.winfield.demon.nl/ ]
+
+##### PdfToText
+[ http://www.foolabs.com/xpdf/ ]
+
+##### html2text
+[ http://www.mbayer.de/html2text/ ]
+
+##### UnRTF
+[ http://www.gnu.org/software/unrtf/unrtf.html ]
+
+### OpenCATS
+
+#### Step 1
+Unpack tarball (cats-0.9.1.tar.gz) under your apache document root  (/var/www/html, /usr/local/apache2/htdocs, /cygdrive/c/wamp/www, or similar) and create a symlink to it named 'opencats':
 
          # cd /var/www/html
          # tar zxvf cats-0.9.1.tar.gz
          # ln -s cats-0.9.1 cats
 
-      2) Launch MySQL client and create a new database and user.
+#### Step 2
+Launch MySQL client and create a new database and user.
 
          # mysql -uroot -p
          mysql> CREATE DATABASE cats;
          mysql> GRANT ALL PRIVILEGES ON `cats`.* TO  'cats'@'localhost' IDENTIFIED BY 'password';
          mysql> EXIT;
 
-      3) Change ownership of the installation directory to the user and group
-         that your web server runs under. This is usually 'apache', 'nobody',
-         or 'www' (you can do a ps -auxww to see what user your web server is
-         running as).
+#### Step 3
+
+Change ownership of the installation directory to the user and group that your web server runs under. This is usually 'apache', 'nobody', or 'www' (you can do a ps -auxww to see what user your web server is running as).
 
          # chown apache:apache cats
          # chown -R apache:apache cats-x.x.x/
          # chmod 770 cats/attachments
 
-      4) Preform any necessary apache configuration changes so that the
-         installation is accessible from a web browser (aliases, virtual hosts,
-         etc.). See apache documentation for how to do this.
+#### Step 4
+Preform any necessary apache configuration changes so that the installation is accessible from a web browser (aliases, virtual hosts, etc.). See apache documentation for how to do this.
 
-      5) In a web browser, visit the CATS installer page inside the cats web
-         directory to finish the installation process: *
+#### Step 5
+In a web browser, visit the CATS installer page inside the cats web directory to finish the installation process: *
 
          http://mydomain.com/cats/installwizard.php
 
-         (Replacing 'mydomain.com' with your domain name, or the ip address
-         of your server)
+(Replacing 'mydomain.com' with your domain name, or the ip address of your server)
 
-          * Tip: If the installer does not load, check to see if there is a file
-            called 'INSTALL_BLOCK' in the CATS directory. Delete it to allow the
-            installer to be executed.
+*Tip: If the installer does not load, check to see if there is a file called 'INSTALL_BLOCK' in the CATS directory. Delete it to allow the installer to be executed.
 
-      6) Follow the installer directions to complete the installation.
+#### Step 6
+Follow the installer directions to complete the installation.
 
-         If any tests do not pass, check your configuration and requirements
-         fulfillment and refresh the page (hold down shift while refreshing
-         for Firefox and IE to ensure a refresh). You may visit the forum
-         on http://www.catsone.com/ for support.
+If any tests do not pass, check your configuration and requirements fulfillment and refresh the page (hold down shift while refreshing for Firefox and IE to ensure a refresh). You may visit the forum on http://www.opencats.org/forums for support.
 
-      7) CATS should now be up and running. Enjoy! Remember to visit
-         http://www.catsone.com/ and participate in the forum.
+##### Step 7
+OpenCATS should now be up and running. Enjoy! Please visit https://github.com/opencats if you wish to contribute to OpenCATS
 
+### Windows
+    E) New Installation (Windows)
 
+      Prerequisites:
 
+          * WAMP [ http://www.wampserver.com/en/ ]
+          * Resume Indexing Tools [ http://www.catsone.com/indexingTools/setupResumeIndexingTools.exe ]
+          * WinRAR [ http://www.rarlab.com/ ]
 
-    D) Upgrading from an Earlier Version (Unix/Linux) - In Depth
+           - OR (Power Users) -
 
-        THESE INSTRCUTIONS ARE FOR USERS OF A LINUX OR UNIX OPERATING SYSTEM. For installation
-        instructions for Windows, read part F) Upgrading from an Earlier Version (Windows)
+          * MySQL Daemon 4.1 (or greater) [ www.mysql.org/ ]
+          * PHP 5.x w/ MySQL Module [ www.php.net/ ]
+          * PHP GD2 Module [ http://www.boutell.com/gd/ ] ***
+          * Apache HTTP Daemon [ www.apache.org/ ]
+          * Antiword [ www.winfield.demon.nl/ ]
+          * PdfToText [ http://www.foolabs.com/xpdf/ ]
+          * html2text [ http://www.mbayer.de/html2text/ ]
+          * UnRTF [ http://www.gnu.org/software/unrtf/unrtf.html ]
+          * A tool to extract tar.gz files
+
+           Installation instructions are given for the WAMP environment only.
+
+     1) Open tarball (cats-0.9.1.tar.gz) under WinRAR and extract all files
+        to c:\wamp\www (or your web server's document root folder).
+
+     2) Launch phpMyAdmin by clicking on the WAMP icon in your system tray and
+        selecting phpMyAdmin.  A web browser will open.  In the page that displays,
+        type 'cats' into the textbox under Create new database and click the Create button.
+
+     3) Enable GD2 by clicking on the WAMP icon in your system tray and selecting
+        'PHP settings' followed by 'PHP extensions', and selecting 'php_gd2'.
+
+     4) Bring your WAMP server online by clicking on the WAMP icon in your system
+        tray and selecting 'Put Online'.
+
+     5) In a Web Browser, visit http://localhost/cats-0.9.1/ .  If CATS has been
+        configured correctly, you should see a page that says:
+
+        CATS has not yet been installed, or a previous installation was not completed.
+                    Please visit the Installation Wizard to continue.
+
+        Follow the link to the Installation Wizard to complete installation.  When
+        asked for database name, user, and password use database 'cats', user 'root',
+        and a blank password.
+
+## Upgrading 
+
+### Unix/Linux
+
+*THESE INSTRCUTIONS ARE FOR USERS OF A LINUX OR UNIX OPERATING SYSTEM. For installation instructions for Windows, read part F) Upgrading from an Earlier Version (Windows)*
 
      1) Unpack tarball (cats-0.9.1.tar.gz) under your apache document root
         (/var/www/html, /usr/local/apache2/htdocs or similar).
@@ -186,57 +240,7 @@ For instructions on downlading and installing Antiword, PdfToText, html2text, an
      9) CATS should now be up and running. Enjoy! Remember to visit
         http://www.catsone.com/ and participate in the forum.
 
-
-
-
-    E) New Installation (Windows)
-
-      Prerequisites:
-
-          * WAMP [ http://www.wampserver.com/en/ ]
-          * Resume Indexing Tools [ http://www.catsone.com/indexingTools/setupResumeIndexingTools.exe ]
-          * WinRAR [ http://www.rarlab.com/ ]
-
-           - OR (Power Users) -
-
-          * MySQL Daemon 4.1 (or greater) [ www.mysql.org/ ]
-          * PHP 5.x w/ MySQL Module [ www.php.net/ ]
-          * PHP GD2 Module [ http://www.boutell.com/gd/ ] ***
-          * Apache HTTP Daemon [ www.apache.org/ ]
-          * Antiword [ www.winfield.demon.nl/ ]
-          * PdfToText [ http://www.foolabs.com/xpdf/ ]
-          * html2text [ http://www.mbayer.de/html2text/ ]
-          * UnRTF [ http://www.gnu.org/software/unrtf/unrtf.html ]
-          * A tool to extract tar.gz files
-
-           Installation instructions are given for the WAMP environment only.
-
-     1) Open tarball (cats-0.9.1.tar.gz) under WinRAR and extract all files
-        to c:\wamp\www (or your web server's document root folder).
-
-     2) Launch phpMyAdmin by clicking on the WAMP icon in your system tray and
-        selecting phpMyAdmin.  A web browser will open.  In the page that displays,
-        type 'cats' into the textbox under Create new database and click the Create button.
-
-     3) Enable GD2 by clicking on the WAMP icon in your system tray and selecting
-        'PHP settings' followed by 'PHP extensions', and selecting 'php_gd2'.
-
-     4) Bring your WAMP server online by clicking on the WAMP icon in your system
-        tray and selecting 'Put Online'.
-
-     5) In a Web Browser, visit http://localhost/cats-0.9.1/ .  If CATS has been
-        configured correctly, you should see a page that says:
-
-        CATS has not yet been installed, or a previous installation was not completed.
-                    Please visit the Installation Wizard to continue.
-
-        Follow the link to the Installation Wizard to complete installation.  When
-        asked for database name, user, and password use database 'cats', user 'root',
-        and a blank password.
-
-
-
-
+### Windows
     F) Upgrading from an Earlier Version (Windows)
 
      1) Open tarball (cats-0.9.1.tar.gz) and extract all files
@@ -270,7 +274,7 @@ For instructions on downlading and installing Antiword, PdfToText, html2text, an
 
 
 
-    G) Advanced CATS Add-ons
+## Advanced CATS Add-ons
 
         For advanced users, CATS has a few special features which can be
         manually installed.
@@ -319,7 +323,5 @@ For instructions on downlading and installing Antiword, PdfToText, html2text, an
         Download URL:
         http://www.catsone.com/modules/asp/website/tarballs/sphinx_for_cats.tar.gz
 
+## Enable LDAP Authentication
 
-_____________________________________________________________________
-
-      Copyright (C) 2006 - 2007 Cognizo Technologies, Inc.
