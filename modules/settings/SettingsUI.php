@@ -624,6 +624,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('userID', $this->_userID);
         $this->_template->assign('active', $this);
         $this->_template->assign('subActive', 'My Profile');
+	$this->_template->assign('auth_mode', AUTH_MODE);
         $this->_template->display($templateFile);
     }
 
@@ -787,6 +788,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('defaultAccessLevel', ACCESS_LEVEL_DELETE);
         $this->_template->assign('currentUser', $this->_userID);
         $this->_template->assign('categories', $categories);
+	$this->_template->assign('auth_mode', AUTH_MODE);
 
         if (!eval(Hooks::get('SETTINGS_ADD_USER'))) return;
 
@@ -858,6 +860,16 @@ class SettingsUI extends UserInterface
         {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'The specified username already exists.');
         }
+
+	/* Check if username exists in LDAP */
+	if (AUTH_MODE == "ldap")
+        {
+            if ($users->searchLDAPUser($username) == NULL)
+            {
+                $this->fatal('The user doesn\'t exists in LDAP Database');
+            }
+        }
+
 
         $userID = $users->add(
             $lastName, $firstName, $email, $username, $password, $accessLevel, $eeoIsVisible
@@ -992,6 +1004,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('currentUser', $this->_userID);
         $this->_template->assign('cannotEnableMessage', $cannotEnableMessage);
         $this->_template->assign('disableAccessChange', $disableAccessChange);
+	$this->_template->assign('auth_mode', AUTH_MODE);
         $this->_template->display('./modules/settings/EditUser.tpl');
     }
 
@@ -2679,6 +2692,13 @@ class SettingsUI extends UserInterface
                 'You are not allowed to change your password.'
             );
         }
+
+	if(AUTH_MODE == 'ldap')
+	{
+            $this->fatal(
+                'LDAP authentication is enabled. You are not allowed to change your password.'
+            );
+	}
 
         $logout = false;
 

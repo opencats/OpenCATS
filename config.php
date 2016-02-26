@@ -36,6 +36,11 @@ define('DATABASE_PASS', 'password');
 define('DATABASE_HOST', 'localhost');
 define('DATABASE_NAME', 'cats_dev');
 
+/* Authentication Configuration 
+ * Options are sql and ldap
+ */
+define ('AUTH_MODE', 'sql');
+
 /* Resfly.com Resume Import Services Enabled */
 define('PARSING_ENABLED', false);
 
@@ -246,5 +251,15 @@ define('CACHE_MODULES', false);
  */
 
 define('US_ZIPS_ENABLED', false);
+
+/* LDAP Configuration 
+ */
+define ('LDAP_HOST', 'ldap.forumsys.com');
+define ('LDAP_PORT', '389');
+define ('LDAP_BASEDN', 'dc=example,dc=com');
+define ('LDAP_UID', 'uid');
+define ('LDAP_BIND_DN', 'cn=read-only-admin,dc=example,dc=com');
+define ('LDAP_BIND_PASSWORD', 'password');
+define ('LDAP_PROTOCOL_VERSION', 3);
 
 ?>
