@@ -11,39 +11,6 @@
 
 Instructions on configuring a LAMP environment and setting up the document indexing packages are included under the sections "C) New Installation (Unix/Linix)" and "E) New Installation (Windows)".
 
-## Quick Installation 
-
-### Unix/Linux
-
-This "quick install" section is only intended for advanced users and users that have installed OpenCATS before and just need a quick overview. New users and non-advanced users are advised to read the in depth install instructions in part C) New Installation - In Depth instead of this section.
-
-#### Step 1
-Unpack the tarball into the web directory (/var/www/html,/usr/local/apache2/htdocs, or similar). Make a symlink to   cats-0.9.1/ or rename the cats-0.9.1/ directory to opencats/.
-
-#### Step 2
-Start MySQL as the root user and create a new database and username.
-    
-    mysql> CREATE DATABASE cats;
-
-    mysql> GRANT ALL PRIVILEGES ON `cats`.* TO  'cats'@'localhost' IDENTIFIED BY 'password';
-
-#### Step 3
-Make sure that the web server has permission to write to the attachments directory.
-
-    chown apache:apache cats
-
-    chown -R apache:apache cats-x.x.x/
-
-    chmod 770 cats/attachments
-
-#### Step 4
-Visit installwizard.php from a browser to invoke the installer. *
-
-#### Step 5
-Follow the on-screen instructions.
-
-Tip: *If the installer does not load, check to see if there is a file called 'INSTALL_BLOCK' in the CATS directory. Delete it to allow the installer to be executed.*
-
 ## Installation
 
 ### Unix/Linux
@@ -78,25 +45,24 @@ THESE INSTRUCTIONS ARE FOR USERS OF A LINUX OR UNIX OPERATING SYSTEM. For instal
 #### Step 1
 Unpack tarball (cats-0.9.1.tar.gz) under your apache document root  (/var/www/html, /usr/local/apache2/htdocs, /cygdrive/c/wamp/www, or similar) and create a symlink to it named 'opencats':
 
-         # cd /var/www/html
-         # tar zxvf cats-0.9.1.tar.gz
-         # ln -s cats-0.9.1 cats
+	# cd /var/www/html
+	# tar zxvf cats-0.9.1.tar.gz
+	# ln -s cats-0.9.1 cats
 
 #### Step 2
 Launch MySQL client and create a new database and user.
 
-         # mysql -uroot -p
-         mysql> CREATE DATABASE cats;
-         mysql> GRANT ALL PRIVILEGES ON `cats`.* TO  'cats'@'localhost' IDENTIFIED BY 'password';
-         mysql> EXIT;
+	# mysql -uroot -p
+	mysql> CREATE DATABASE cats;
+    mysql> GRANT ALL PRIVILEGES ON `cats`.* TO  'cats'@'localhost' IDENTIFIED BY 'password';
+	mysql> EXIT;
 
 #### Step 3
-
 Change ownership of the installation directory to the user and group that your web server runs under. This is usually 'apache', 'nobody', or 'www' (you can do a ps -auxww to see what user your web server is running as).
 
-         # chown apache:apache cats
-         # chown -R apache:apache cats-x.x.x/
-         # chmod 770 cats/attachments
+	# chown apache:apache cats
+	# chown -R apache:apache cats-x.x.x/
+	# chmod 770 cats/attachments
 
 #### Step 4
 Preform any necessary apache configuration changes so that the installation is accessible from a web browser (aliases, virtual hosts, etc.). See apache documentation for how to do this.
@@ -104,7 +70,7 @@ Preform any necessary apache configuration changes so that the installation is a
 #### Step 5
 In a web browser, visit the CATS installer page inside the cats web directory to finish the installation process: *
 
-         http://mydomain.com/cats/installwizard.php
+    http://mydomain.com/cats/installwizard.php
 
 (Replacing 'mydomain.com' with your domain name, or the ip address of your server)
 
@@ -119,50 +85,47 @@ If any tests do not pass, check your configuration and requirements fulfillment 
 OpenCATS should now be up and running. Enjoy! Please visit https://github.com/opencats if you wish to contribute to OpenCATS
 
 ### Windows
-    E) New Installation (Windows)
 
-      Prerequisites:
+These instructions are given for the WAMP environment only.
 
-          * WAMP [ http://www.wampserver.com/en/ ]
-          * Resume Indexing Tools [ http://www.catsone.com/indexingTools/setupResumeIndexingTools.exe ]
-          * WinRAR [ http://www.rarlab.com/ ]
+#### Pre-requisites
 
-           - OR (Power Users) -
+##### WAMP
+        [ http://www.wampserver.com/en/ ]
+##### WinRAR
+        [ http://www.rarlab.com/ ]
+##### PHP GD2
+        PHP GD2 Module [ http://www.boutell.com/gd/ ] ***
+##### Antiword
+        Antiword [ www.winfield.demon.nl/ ]
+##### PdfToText 
+        PdfToText [ http://www.foolabs.com/xpdf/ ]
+##### html2text
+         html2text [ http://www.mbayer.de/html2text/ ]
+##### UnRTF
+         UnRTF [ http://www.gnu.org/software/unrtf/unrtf.html ]
 
-          * MySQL Daemon 4.1 (or greater) [ www.mysql.org/ ]
-          * PHP 5.x w/ MySQL Module [ www.php.net/ ]
-          * PHP GD2 Module [ http://www.boutell.com/gd/ ] ***
-          * Apache HTTP Daemon [ www.apache.org/ ]
-          * Antiword [ www.winfield.demon.nl/ ]
-          * PdfToText [ http://www.foolabs.com/xpdf/ ]
-          * html2text [ http://www.mbayer.de/html2text/ ]
-          * UnRTF [ http://www.gnu.org/software/unrtf/unrtf.html ]
-          * A tool to extract tar.gz files
+#### OpenCATS
 
-           Installation instructions are given for the WAMP environment only.
+##### Step 1
+Open tarball (cats-0.9.1.tar.gz) under WinRAR and extract all files to c:\wamp\www (or your web server's document root folder).
 
-     1) Open tarball (cats-0.9.1.tar.gz) under WinRAR and extract all files
-        to c:\wamp\www (or your web server's document root folder).
+##### Step 2
+Launch phpMyAdmin by clicking on the WAMP icon in your system tray and  selecting phpMyAdmin.  A web browser will open.  In the page that displays, type 'opencats' into the textbox under Create new database and click the Create button.
 
-     2) Launch phpMyAdmin by clicking on the WAMP icon in your system tray and
-        selecting phpMyAdmin.  A web browser will open.  In the page that displays,
-        type 'cats' into the textbox under Create new database and click the Create button.
+##### Step 3
+Enable GD2 by clicking on the WAMP icon in your system tray and selecting 'PHP settings' followed by 'PHP extensions', and selecting 'php_gd2'.
 
-     3) Enable GD2 by clicking on the WAMP icon in your system tray and selecting
-        'PHP settings' followed by 'PHP extensions', and selecting 'php_gd2'.
+##### Step 4
+Bring your WAMP server online by clicking on the WAMP icon in your system tray and selecting 'Put Online'.
 
-     4) Bring your WAMP server online by clicking on the WAMP icon in your system
-        tray and selecting 'Put Online'.
-
-     5) In a Web Browser, visit http://localhost/cats-0.9.1/ .  If CATS has been
-        configured correctly, you should see a page that says:
+##### Step 5
+In a Web Browser, visit http://localhost/cats-0.9.1/ .  If OpenCATS has been configured correctly, you should see a page that says:
 
         CATS has not yet been installed, or a previous installation was not completed.
                     Please visit the Installation Wizard to continue.
 
-        Follow the link to the Installation Wizard to complete installation.  When
-        asked for database name, user, and password use database 'cats', user 'root',
-        and a blank password.
+Follow the link to the Installation Wizard to complete installation.  When asked for database name, user, and password use database 'opencats', user 'root', and a blank password.
 
 ## Upgrading 
 
@@ -170,32 +133,29 @@ OpenCATS should now be up and running. Enjoy! Please visit https://github.com/op
 
 *THESE INSTRCUTIONS ARE FOR USERS OF A LINUX OR UNIX OPERATING SYSTEM. For installation instructions for Windows, read part F) Upgrading from an Earlier Version (Windows)*
 
-     1) Unpack tarball (cats-0.9.1.tar.gz) under your apache document root
-        (/var/www/html, /usr/local/apache2/htdocs or similar).
+##### Step 1
+Unpack tarball (cats-0.9.1.tar.gz) under your apache document root (/var/www/html, /usr/local/apache2/htdocs or similar).
+	# cd /var/www/html
+	# tar zxvf cats-0.9.1.tar.gz
 
-        # cd /var/www/html
-        # tar zxvf cats-0.9.1.tar.gz
-
-     2) Back up the 'cats' database by issuing the following command at
-        your shell prompt:
+##### Step 2
+Back up the *opencats* database by issuing the following command at  your shell prompt:
 
         # mysqldump -uroot -p cats > ~/cats-backup.sql
-        (enter the password you created for the 'cats' user during install
-         when prompted to do so)
 
-        Please note that this backup can not be restored by the interactive
-        CATS installer - it is a failsafe incase the upgrade fails and the
-        database becomes corrupt. If you later need to restore the database
-        from this backup, you can issue the command:
+(enter the password you created for the 'opencats' user during install when prompted to do so)
+
+Please note that this backup can not be restored by the interactive CATS installer - it is a failsafe incase the upgrade fails and the database becomes corrupt. If you later need to restore the database from this backup, you can issue the command:
 
         # mysql -uroot -p cats < ~/cats-backup.sql
 
-     3) Remove the 'cats' symlink (DO NOT USE rm -rf; this would delete all
-        of your attachments. USE rm WITH NO COMMAND LINE OPTIONS!):
+##### Step 3
+Remove the 'opencats' symlink (DO NOT USE rm -rf; this would delete all of your attachments. USE rm WITH NO COMMAND LINE OPTIONS!):
 
         # rm cats
 
-     4) Copy the attachments/ directory from cats-x.x.x/ to cats-0.9.1/:
+##### Step 4
+Copy the attachments/ directory from cats-x.x.x/ to cats-0.9.1/:
 
         Linux:
         # cp -p -r cats-x.x.x/attachments/ cats-0.9.1/
@@ -205,10 +165,12 @@ OpenCATS should now be up and running. Enjoy! Please visit https://github.com/op
 
         Where x.x.x is your older version number of CATS.
 
+##### Step 5
      5) Create a symlink to the cats-0.9.1 directory:
 
         # ln -s cats-0.9.1 cats
 
+##### Step 6
      6) Change ownership of the installation directory to the user and group
         that your web server runs under. This is usually 'apache', 'nobody',
         or 'www' (you can do a ps -auxww to see what user your web server is
@@ -217,6 +179,7 @@ OpenCATS should now be up and running. Enjoy! Please visit https://github.com/op
         # chown apache:apache cats
         # chown -R apache:apache cats-0.9.1/
 
+##### Step 7
      7) In a web browser, visit the CATS installer page inside the cats web
         directory to finish the installation process: *
 
@@ -229,6 +192,7 @@ OpenCATS should now be up and running. Enjoy! Please visit https://github.com/op
            called 'INSTALL_BLOCK' in the CATS directory. Delete it to allow the
            installer to be executed.
 
+##### Step 8
      8) Follow the installer directions to complete the installation. Your
         database schema will be upgraded automatically.
 
@@ -237,15 +201,17 @@ OpenCATS should now be up and running. Enjoy! Please visit https://github.com/op
         for Firefox and IE to ensure a refresh). You may visit the forum
         on http://www.catsone.com/ for support.
 
+##### Step 9
      9) CATS should now be up and running. Enjoy! Remember to visit
         http://www.catsone.com/ and participate in the forum.
 
 ### Windows
-    F) Upgrading from an Earlier Version (Windows)
 
+##### Step 1 
      1) Open tarball (cats-0.9.1.tar.gz) and extract all files
         to c:\wamp\www (or your web server's document root folder).
 
+##### Step 2
      2) Launch phpMyAdmin by clicking on the WAMP icon in your system tray and
         selecting phpMyAdmin.  A web browser will open.
 
@@ -258,11 +224,13 @@ OpenCATS should now be up and running. Enjoy! Please visit https://github.com/op
         you will need this file to restore your database in the event
         something goes wrong during the upgrade process.
 
+##### Step 3 
      3) Copy the attachments folder from your previous installation of CATS
         into your new installation of CATS.  For example, if you installed
         CATS 0.8.0 in c:\wamp\www\cats-0.8.0, move c:\wamp\www\cats-0.8.0\attachments
         to c:\wamp\www\cats-0.9.1\attachments.
 
+##### Step 4 
      4) In a Web Browser, visit http://localhost/cats-0.9.1/ .  If CATS has been
         configured correctly, you should see a page that says:
 
@@ -279,12 +247,13 @@ OpenCATS should now be up and running. Enjoy! Please visit https://github.com/op
         For advanced users, CATS has a few special features which can be
         manually installed.
 
+### Sphinx Indexing
      1) Sphinx Indexing [ http://www.sphinxsearch.com/ ]:
         CATS can integrate with the advanced Sphinx to dramatically improve
         the speed which indexed documents are searched (more than 200x speed
         improvement).  To learn how to integrate with the Sphinx engine, visit
         the CATS forums at http://www.catsone.com/forum/.
-
+### Scheduled E-Mail reminders
      2) Scheduled E-Mail reminders
         CATS can send out E-Mail reminders for calendar events before they happen.
         To enable this feature, configure cron or another scheduling daemon to
@@ -295,6 +264,7 @@ OpenCATS should now be up and running. Enjoy! Please visit https://github.com/op
         Or,
 
             * * * * * curl http://mysite.com/QueueCLI.php > /dev/null
+### CLI / On demand backups
 
      3) CLI / On demand backups
         CATS can generate a backup from the command line on Unix systems.  If the
@@ -307,15 +277,7 @@ OpenCATS should now be up and running. Enjoy! Please visit https://github.com/op
         This, combined with a script to rotate backups which was executed from
         cron, could yield automated backups.
 
-     4) CATS attachments layout upgrade
-        All new CATS attachments bury themselves a few more levels down in the
-        attachments folder.  If you are upgrading from a previous 0.7.1 installation
-        of CATS and want CATS to reorganize your attachments folder to follow the
-        new organization pattern, log in as an administrator and visit:
-
-            ajax.php?f=install:attachmentsToThreeDirectory
-
-    H)  Integration with Sphinx
+## Integration with Sphinx
 
         As of CATS 0.9.1 Sphinx integration is available via separate package.
         Sphinx speeds up text-based database searches considerably.
