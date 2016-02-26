@@ -1,61 +1,76 @@
 OpenCATS Installation Procedure
 ===============================
 
-## Requirements
+# Requirements
 
 * GNU/Linux, FreeBSD or Windows NT-based (2000, XP, 2003, Vista) Operating System
 * PHP
 * MySQL or MariaDB
 * Antiword, PdfToText, html2text, and UnRTF document indexing tools
-* PHP Zip library
-* PHP LDAP library
+* PHP Zip library. 
 
-Instructions on configuring a LAMP environment and setting up the document indexing packages are included under the sections "C) New Installation (Unix/Linix)" and "E) New Installation (Windows)".
+Instructions on configuring a LAMP environment and setting up the document indexing packages are included under the sections "C) New
+        Installation (Unix/Linix)" and "E) New Installation (Windows)".
 
-## New Installation (Unix/Linix) - Quick
-This "quick install" section is only intended for advanced users and users that have installed CATS before and just need a quick overview. New users and non-advanced users are advised to read the in depth install instructions in part C) New Installation - In Depth instead of this section.
 
-1. Unpack the tarball into the web directory (/var/www/html,/usr/local/apache2/htdocs, or similar). Make a symlink to   cats-0.9.1/ or rename the cats-0.9.1/ directory to cats/.
-2. Start MySQL as the root user and create a new database and username.
-    
-    mysql> CREATE DATABASE cats;
 
-    mysql> GRANT ALL PRIVILEGES ON `cats`.* TO  'cats'@'localhost' IDENTIFIED BY 'password';
-3. Make sure that the web server has permission to write to the attachments directory.
+    B) New Installation (Unix/Linix) - Quick
 
-    chown apache:apache cats
+        This "quick install" section is only intended for advanced users and
+        users that have installed CATS before and just need a quick overview.
+        New users and non-advanced users are advised to read the in depth
+        install instructions in part C) New Installation - In Depth instead
+        of this section.
 
-    chown -R apache:apache cats-x.x.x/
+        1)  Unpack the tarball into the web directory (/var/www/html,
+            /usr/local/apache2/htdocs, or similar). Make a symlink to
+            cats-0.9.1/ or rename the cats-0.9.1/ directory to cats/.
+        2)  Start MySQL as the root user and create a new database and username.
+              mysql> CREATE DATABASE cats;
+              mysql> GRANT ALL PRIVILEGES ON `cats`.* TO  'cats'@'localhost' IDENTIFIED BY 'password';
+        3)  Make sure that the web server has permission to write to the
+            attachments directory.
+              # chown apache:apache cats
+              # chown -R apache:apache cats-x.x.x/
+              # chmod 770 cats/attachments
+        4)  Visit installwizard.php from a browser to invoke the installer. *
+        5)  Follow the on-screen instructions.
 
-    chmod 770 cats/attachments
+        * Tip: If the installer does not load, check to see if there is a file
+          called 'INSTALL_BLOCK' in the CATS directory. Delete it to allow the
+          installer to be executed.
 
-4. Visit installwizard.php from a browser to invoke the installer. *
-5. Follow the on-screen instructions.
 
-Tip: If the installer does not load, check to see if there is a file called 'INSTALL_BLOCK' in the CATS directory. Delete it to allow the installer to be executed.
 
-## New Installation (Unix/Linux) - In Depth
+    C)  New Installation (Unix/Linux) - In Depth
 
-THESE INSTRUCTIONS ARE FOR USERS OF A LINUX OR UNIX OPERATING SYSTEM. For installation instructions for Windows, read part E) Installation Instructions (Windows)
+        THESE INSTRUCTIONS ARE FOR USERS OF A LINUX OR UNIX OPERATING SYSTEM. For installation
+        instructions for Windows, read part E) Installation Instructions (Windows)
 
-### Prerequisites:
+      Prerequisites:
 
-* MySQL Daemon 4.1 (or greater) [ www.mysql.org/ ]
-* PHP 5.x w/ MySQL Module [ www.php.net/ ]
-* PHP GD2 Module [ http://www.boutell.com/gd/ ] ***
-* Apache HTTP Daemon [ www.apache.org/ ]
-* Antiword [ www.winfield.demon.nl/ ]
-* PdfToText [ http://www.foolabs.com/xpdf/ ]
-* html2text [ http://www.mbayer.de/html2text/ ]
-* UnRTF [ http://www.gnu.org/software/unrtf/unrtf.html ]
-* PHP LDAP          
+          * MySQL Daemon 4.1 (or greater) [ www.mysql.org/ ]
+          * PHP 5.x w/ MySQL Module [ www.php.net/ ]
+          * PHP GD2 Module [ http://www.boutell.com/gd/ ] ***
+          * Apache HTTP Daemon [ www.apache.org/ ]
+          * Antiword [ www.winfield.demon.nl/ ]
+          * PdfToText [ http://www.foolabs.com/xpdf/ ]
+          * html2text [ http://www.mbayer.de/html2text/ ]
+          * UnRTF [ http://www.gnu.org/software/unrtf/unrtf.html ]
 
-The OpenCATS team recommends Ubuntu Server Edition for hosting CATS. http://www.ubuntu.com/getubuntu/download
-Ubuntu Server comes preconfigured with MySQL, PHP, and Apache.  To install GD2 under Ubuntu, execute:
+          The CATS team recommends Ubuntu Server Edition for hosting CATS.
 
-    sudo apt-get install php5-gd
+                http://www.ubuntu.com/getubuntu/download
 
-For instructions on downlading and installing Antiword, PdfToText, html2text, and UnRTF visit:               http://www.catsone.com/resumeIndexingSoftware.php?server_software=&os=LIST
+          Ubuntu Server comes preconfigured with MySQL, PHP, and Apache.  To
+          install GD2 under Ubuntu, execute:
+
+                sudo apt-get install php5-gd
+
+          For instructions on downlading and installing Antiword, PdfToText,
+          html2text, and UnRTF visit:
+
+                http://www.catsone.com/resumeIndexingSoftware.php?server_software=&os=LIST
 
       1) Unpack tarball (cats-0.9.1.tar.gz) under your apache document root
          (/var/www/html, /usr/local/apache2/htdocs, /cygdrive/c/wamp/www,
