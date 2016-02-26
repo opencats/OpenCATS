@@ -305,3 +305,24 @@ Copy the attachments/ directory from cats-x.x.x/ to cats-0.9.1/:
 
 ## Enable LDAP Authentication
 
+Make sure that you are logged in to OpenCATS using an Administrator account before you perform any configuration changes for LDAP. Do not logout of tyhe system unless you are done with the configuration changes. Otherwise you might be locked out of the system if there are any issues with your LDAP configuration.
+
+The following instructions are tested only in OpenLDAP.
+
+The user list is still maintained  in the mysql table, but the authentication request will be directed to the ldap database. To create the user first you have to add the user to LDAP and then to the MySQL database (through Settings in OpenCATS).
+
+Edit config.php and modify the following parameters:
+
+	define ('AUTH_MODE', 'ldap');
+	define ('LDAP_HOST', 'ldap.forumsys.com');
+	define ('LDAP_PORT', '389');
+	define ('LDAP_BASEDN', 'dc=example,dc=com');
+	define ('LDAP_UID', 'uid');
+	define ('LDAP_BIND_DN', 'cn=read-only-admin,dc=example,dc=com');
+	define ('LDAP_BIND_PASSWORD', 'password');
+	define ('LDAP_PROTOCOL_VERSION', 3);
+
+Now add the users from LDAP to OpenCATS from the User Management page in OpenCATS. The username should match with the value of LDAP_UID. You should also make one of the LDAP user account as Administrator in OpenCATS before signing off from the application.
+
+
+
