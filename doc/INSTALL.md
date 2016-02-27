@@ -22,31 +22,38 @@
 PHP can be installed from the distribution's package repository (yum/apt)
 
 CentOS:
+
 	#yum install php
 
 ##### Apache HTTPD
 Apache HTTPD can be installed from distribution specific package repository (yum/apt)
 
 CentOS:
+
 	#yum install httpd
 
 ##### MySQL/MariaDB
 MySQL in CentOS:
+
 	yum install mysql-server
 
 MariaDB in CentOS:
+
 	yum install mariadb
 	
 ##### PHP GD
 CentOS:
+
 	yum install php-gd
 
 ##### PHP LDAP
 CentOS:
+
 	yum install php-ldap
 
 ##### Antiword
 Antiword is available in CentOS yum repository
+
 	yum install antiword
 
 ##### PdfToText
@@ -72,7 +79,7 @@ Launch MySQL client and create a new database and user.
 
 	# mysql -uroot -p
 	mysql> CREATE DATABASE opencats;
-    mysql> GRANT ALL PRIVILEGES ON `opencats`.* TO  'opencats'@'localhost' IDENTIFIED BY 'password';
+	mysql> GRANT ALL PRIVILEGES ON `opencats`.* TO  'opencats'@'localhost' IDENTIFIED BY 'password';
 	mysql> EXIT;
 
 #### Step 3
@@ -92,6 +99,7 @@ Preform any necessary apache configuration changes so that the installation is a
 In a web browser, visit the OpenCATS installation
 
 Example:
+
     http://localhost/opencats
 
 (Replace *localhost* with your domain name, or the ip address of your server
@@ -101,7 +109,7 @@ Example:
 #### Step 6
 Follow the installer directions to complete the installation.
 
-If any tests do not pass, check your configuration and requirements fulfillment and refresh the page (hold down shift while refreshing for Firefox and IE to ensure a refresh). You may visit the forum on http://www.opencats.org/forums for support.
+If any tests do not pass, check your configuration and requirements fulfillment and refresh the page (hold down shift while refreshing for Firefox and IE to ensure a refresh). You may visit the forum on http://forums.opencats.org for support.
 
 ##### Step 7
 OpenCATS should now be up and running. Enjoy! Please visit https://github.com/opencats if you wish to contribute to OpenCATS
@@ -118,7 +126,7 @@ This instructions are for the WAMP environment only.
 ##### PHP GD2
         PHP GD2 Module [ http://www.boutell.com/gd/ ]
 ##### Resume Indexing Tools
-Download the tools from the following URL:
+Download iand install the tools from the following URL:
  
 http://downloads.opencats.org/setupResumeIndexingTools.exe
 
@@ -134,7 +142,7 @@ http://downloads.opencats.org/setupResumeIndexingTools.exe
 #### OpenCATS
 
 ##### Step 1
-Open tarball (cats-0.9.1.tar.gz) under WinRAR and extract all files to c:\wamp\www (or your web server's document root folder).
+Open tarball (cats-0.9.1.tar.gz) under WinRAR and extract all files to c:\wamp\www (or your web server's document root folder). Rename cats-0.9.1 to *opencats*.
 
 ##### Step 2
 Launch phpMyAdmin by clicking on the WAMP icon in your system tray and selecting phpMyAdmin. A web browser will open.  In the page that displays, type 'opencats' into the textbox under Create new database and click the Create button.
@@ -146,7 +154,7 @@ Enable GD2 by clicking on the WAMP icon in your system tray and selecting 'PHP s
 Bring your WAMP server online by clicking on the WAMP icon in your system tray and selecting 'Put Online'.
 
 ##### Step 5
-In a Web Browser, visit http://localhost/cats-0.9.1/. If OpenCATS has been configured correctly, you should see a page that says:
+In a Web Browser, visit http://localhost/opencats/. If OpenCATS has been configured correctly, you should see a page that says:
 
 	CATS has not yet been installed, or a previous installation was not completed.
     Please visit the Installation Wizard to continue.
@@ -184,9 +192,11 @@ Please note that this backup can not be restored by the interactive OpenCATS ins
 Copy the attachments/ directory from opencats-old/ to opencats/:
 
 Linux:
+
 	# cp -p -r opencats-old/attachments/ opencats/
 
 FreeBSD:
+
 	# cp -p -R opencats-old/attachments/ opencats/
 
 ##### Step 5
@@ -211,7 +221,7 @@ In a web browser, visit the CATS installer page inside the cats web directory to
 ##### Step 7
 Follow the installer directions to complete the installation. Your database schema will be upgraded automatically.
 
-If any tests do not pass, check your configuration and requirements fulfillment and refresh the page (hold down shift while refreshing for Firefox and IE to ensure a refresh). You may visit the forum on http://www.opencats.org/forums for support.
+If any tests do not pass, check your configuration and requirements fulfillment and refresh the page (hold down shift while refreshing for Firefox and IE to ensure a refresh). You may visit the forum on http://forums.opencats.org for support.
 
 ##### Step 8
 OpenCATS should now be up and running. Enjoy! Please visit https://github.com/opencats if you wish to contribute to OpenCATS
@@ -219,82 +229,56 @@ OpenCATS should now be up and running. Enjoy! Please visit https://github.com/op
 ### Windows
 
 ##### Step 1 
-     1) Open tarball (cats-0.9.1.tar.gz) and extract all files
-        to c:\wamp\www (or your web server's document root folder).
+Open tarball (cats-0.9.1.tar.gz) and extract all files to c:\wamp\www (or your web server's document root folder).
 
 ##### Step 2
-     2) Launch phpMyAdmin by clicking on the WAMP icon in your system tray and
-        selecting phpMyAdmin.  A web browser will open.
+Launch phpMyAdmin by clicking on the WAMP icon in your system tray and selecting phpMyAdmin.  A web browser will open. On the dropdown menu under Database on the left, Choose 'opencats'. Select the 'Export' tab.
 
-        On the dropdown menu under Database on the left, Choose 'cats'.
-
-        Select the 'Export' tab.
-
-        Check 'Save as File' at the bottom of the window and press 'Go'.  Download
-        and put the resulting SQL file somewhere safe on your computer.
-        you will need this file to restore your database in the event
-        something goes wrong during the upgrade process.
+Check 'Save as File' at the bottom of the window and press 'Go'.  Download and put the resulting SQL file somewhere safe on your computer. You will need this file to restore your database in the event something goes wrong during the upgrade process.
 
 ##### Step 3 
-     3) Copy the attachments folder from your previous installation of CATS
-        into your new installation of CATS.  For example, if you installed
-        CATS 0.8.0 in c:\wamp\www\cats-0.8.0, move c:\wamp\www\cats-0.8.0\attachments
-        to c:\wamp\www\cats-0.9.1\attachments.
+Copy the attachments folder from your previous installation of OpenCATS into your new installation of OpenCATS. For example, if you installed OpenCATS 0.8.0 in c:\wamp\www\cats-0.8.0, move c:\wamp\www\cats-0.8.0\attachments to c:\wamp\www\cats-0.9.1\attachments.
 
 ##### Step 4 
-     4) In a Web Browser, visit http://localhost/cats-0.9.1/ .  If CATS has been
-        configured correctly, you should see a page that says:
+In a Web Browser, visit http://localhost/opencats.  If OpenCATS has been configured correctly, you should see a page that says:
 
-        CATS has not yet been installed, or a previous installation was not completed.
-                    Please visit the Installation Wizard to continue.
+    OpenCATS has not yet been installed, or a previous installation was not completed.
+    Please visit the Installation Wizard to continue.
 
-        Follow the link to the Installation Wizard to complete installation.
-
-
-
+Follow the link to the Installation Wizard to complete installation.
 
 ## Advanced CATS Add-ons
 
-        For advanced users, CATS has a few special features which can be
-        manually installed.
+For advanced users, CATS has a few special features which can be manually installed.
 
 ### Sphinx Indexing
-     1) Sphinx Indexing [ http://www.sphinxsearch.com/ ]:
-        CATS can integrate with the advanced Sphinx to dramatically improve
-        the speed which indexed documents are searched (more than 200x speed
-        improvement).  To learn how to integrate with the Sphinx engine, visit
-        the CATS forums at http://www.catsone.com/forum/.
-### Scheduled E-Mail reminders
-     2) Scheduled E-Mail reminders
-        CATS can send out E-Mail reminders for calendar events before they happen.
-        To enable this feature, configure cron or another scheduling daemon to
-        invoke QueueCLI.php every minute.  An example crontab line would look like:
+Sphinx Indexing [ http://www.sphinxsearch.com/ ]:
 
-            * * * * * /usr/local/bin/php /var/www/html/cats/QueueCLI.php
+OpenCATS can integrate with the advanced Sphinx to dramatically improve the speed which indexed documents are searched (more than 200x speed improvement).  To learn how to integrate with the Sphinx engine, visit the CATS forums at http://forums.opencats.org.
 
-        Or,
+### Scheduled Email reminders
+OpenCATS can send out Email reminders for calendar events before they happen. To enable this feature, configure cron or another scheduling daemon to invoke QueueCLI.php every minute.  An example crontab line would look like:
 
-            * * * * * curl http://mysite.com/QueueCLI.php > /dev/null
+    * * * * * /usr/local/bin/php /var/www/html/cats/QueueCLI.php
+
+OR
+
+    * * * * * curl http://mysite.com/QueueCLI.php > /dev/null
+
 ### CLI / On demand backups
+CLI / On demand backups OpenCATS can generate a backup from the command line on Unix systems.  If the Unix zip utility is installed, then you can execute:
 
-     3) CLI / On demand backups
-        CATS can generate a backup from the command line on Unix systems.  If the
-        Unix zip utility is installed, then you can execute:
+    php scripts/makeBackup.php 1
 
-        php scripts/makeBackup.php 1
-
-        from the CATS root directory to generate a backup in scrips/backup/catsbackup.bak.
-
-        This, combined with a script to rotate backups which was executed from
-        cron, could yield automated backups.
+from the OpenCATS root directory to generate a backup in scrips/backup/catsbackup.bak. This, combined with a script to rotate backups which was executed from cron, could yield automated backups.
 
 ## Integration with Sphinx
 
-        As of CATS 0.9.1 Sphinx integration is available via separate package.
-        Sphinx speeds up text-based database searches considerably.
-        
-        Download URL:
-        http://downloads.opencats.org/sphinx_for_cats.tar.gz
+As of OpenCATS 0.9.1 Sphinx integration is available via separate package. Sphinx speeds up text-based database searches considerably.
+
+Download URL:
+
+    http://downloads.opencats.org/sphinx_for_cats.tar.gz
 
 ## Enable LDAP Authentication
 
@@ -316,6 +300,3 @@ Edit config.php and modify the following parameters:
 	define ('LDAP_PROTOCOL_VERSION', 3);
 
 Now add the users from LDAP to OpenCATS from the User Management page in OpenCATS. The username should match with the value of LDAP_UID. You should also make one of the LDAP user account as Administrator in OpenCATS before signing off from the application.
-
-
-
