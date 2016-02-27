@@ -15,5 +15,5 @@ Support Forums:
 
 Installation Procedure:
 
-<doc/INSTALL.md>
+    doc/INSTALL.md
 
