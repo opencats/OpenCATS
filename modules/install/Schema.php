@@ -1326,7 +1326,7 @@ class CATSSchema
                 $db->queryMultiple($schemaNewCareerPortal, ";\n");
             ',
             '364' => '
-                UPDATE user SET password = md5(password);
+                UPDATE user SET password = md5(password) WHERE can_change_password=1;
             ',
 
         );
