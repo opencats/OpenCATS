@@ -49,7 +49,6 @@ class LDAP
 
 	public function bind()
 	{
-	print "GHG";
 		if ($this->_connection) 
 		{
 			if (LDAP_BIND_DN != "") 
