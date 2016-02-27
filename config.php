@@ -196,7 +196,7 @@ define('DEMO_PASSWORD',  'john99');
  * 2: Sendmail
  * 3: SMTP
  */
-define('MAIL_MAILER', 1);
+define('MAIL_MAILER', 3);
 
 /* Sendmail Settings. You don't need to worry about this unless MAIL_MAILER
  * is set to 2.
@@ -208,10 +208,12 @@ define('MAIL_SENDMAIL_PATH', "/usr/sbin/sendmail");
  * true and configure MAIL_SMTP_USER and MAIL_SMTP_PASS.
  */
 define('MAIL_SMTP_HOST', "localhost");
-define('MAIL_SMTP_PORT', 25);
-define('MAIL_SMTP_AUTH', false);
+define('MAIL_SMTP_PORT', 587);
+define('MAIL_SMTP_AUTH', true);
 define('MAIL_SMTP_USER', "user");
 define('MAIL_SMTP_PASS', "password");
+//Options: '', 'ssl' or 'tls'
+define('MAIL_SMTP_SECURE', "tls");
 
 /* Event reminder E-Mail Template. */
 $GLOBALS['eventReminderEmail'] = <<<EOF
