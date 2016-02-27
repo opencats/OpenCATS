@@ -3,17 +3,17 @@ OpenCATS is a Free and Open Source Candidate/Applicant Tracking System designed 
 
 More details: 
 
-    <http://www.opencats.org>
+<http://www.opencats.org>
 
 Developers Mailing List:
 
-    <https://groups.google.com/forum/#!forum/opencats-dev>
+<https://groups.google.com/forum/#!forum/opencats-dev>
 
 Support Forums:
 
-    <http://forums.opencats.org>
+<http://forums.opencats.org>
 
 Installation Procedure:
 
-    doc/INSTALL.md
+<doc/INSTALL.md>
 
