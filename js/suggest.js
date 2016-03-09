@@ -213,7 +213,7 @@ function suggestListPopulate(focusID, sessionCookie, lookupText, maxResults, def
 
             output += '<div id="suggest' + i + '" onclick="'
                     + 'document.getElementById(textInputID).value=\''
-                    + trim(nameNodeValue) + '\'; '
+                    + trim(nameNodeValue.replace(/'/g,"\\'")) + '\'; '
                     + 'document.getElementById(resultsElementID).style.display = \'none\'; '
                     + 'document.getElementById(IDElementID).value='
                     + IDNode.firstChild.nodeValue + ';'
