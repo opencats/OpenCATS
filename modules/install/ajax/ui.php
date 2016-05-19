@@ -754,7 +754,7 @@ switch ($action)
 
         //Check if we need to update from 0.6.0 to 0.7.0
         $tables = array();
-        $result = MySQLQuery(sprintf("SHOW TABLES FROM %s", DATABASE_NAME));
+        $result = MySQLQuery(sprintf("SHOW TABLES FROM `%s`", DATABASE_NAME));
         while ($row = mysql_fetch_array($result, MYSQL_NUM))
         {
             $tables[$row[0]] = true;
