@@ -1064,7 +1064,7 @@ function MySQLConnect()
 
     /* Create an array of all tables in the database. */
     $tables = array();
-    $result = MySQLQuery(sprintf("SHOW TABLES FROM %s", DATABASE_NAME));
+    $result = MySQLQuery(sprintf("SHOW TABLES FROM `%s`", DATABASE_NAME));
     while ($row = mysql_fetch_row($result))
     {
         $tables[$row[0]] = true;
