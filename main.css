@@ -101,7 +101,6 @@ a:hover
     color: #fff;
     clear: both;
     padding-top: 1.6em; /* Affects the height of the sub-tab bar; was 2em. */
-    width: 955px;
     min-height: 400px;
     height: auto !important;
     height: 400px;
@@ -123,7 +122,6 @@ a:hover
 #bottomShadow
 {
     background: url('images/bottom_shadow.jpg') no-repeat top center;
-    width: 955px;
     height: 50px;
     /*border-style: solid;*/
     border-width: 1px;
@@ -144,7 +142,6 @@ a:hover
 {
     position: relative;
     height: 2em;
-    width: 955px;
 }
 
 #header ul#primary
@@ -284,7 +281,6 @@ a:hover
     font: normal normal normal 12px Arial, Tahoma, sans-serif;
     background: #fff;
     border-bottom: 1px #bbb solid;
-    /*width: 955px; */
     width: 100%;
 }
 
@@ -319,7 +315,6 @@ a:hover
 {
     margin: 0px;
     padding: 0px;
-    width: 955px;
     height: 45px;
 }
 
@@ -366,7 +361,6 @@ a:hover
 .footerBlock
 {
     margin-top: 10px;
-    width: 955px;
     text-align: center;
 }
 
