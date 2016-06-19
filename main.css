@@ -1365,3 +1365,6 @@ td.contentContainerOld {
     font: normal normal normal 12px/130% Arial, Tahoma, sans-serif;
 }
 
+.home table {
+	width: 100%;
+}
