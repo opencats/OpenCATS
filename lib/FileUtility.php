@@ -419,7 +419,7 @@ class FileUtility
      * @param integer file size in bytes
      * @return string human-readable file size
      */
-    public function sizeToHuman($size, $round = 2, $skipUnits = 0)
+    public static function sizeToHuman($size, $round = 2, $skipUnits = 0)
     {
         $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
         $unitIndex = 0;
