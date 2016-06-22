@@ -560,15 +560,13 @@ class StringUtility
      */
     public static function quotedPrintableEncode($string)
     {
-        /* Use the callback (e modifier) feature of PHP PCRE to do the
-         * transformation.
-         */
-        $string = preg_replace(
-            '/[^\x21-\x3C\x3E-\x7E\x09\x20]/e',
-            'sprintf("=%02X", ord("$0"));',
+        $string = preg_replace_callback(
+            '/[^\x21-\x3C\x3E-\x7E\x09\x20]/',
+            function($result) {
+                return sprintf("=%02X", ord($result[0])); 
+            },
             $string
         );
-
        /* Prevent the splitting of lines from interfering with escaped
         * characters.
         */
