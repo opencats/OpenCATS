@@ -221,7 +221,7 @@ class FileUtility
      * @param string Extra data to include in the MD5 hash.
      * @return string Ranom unique 32-character directory name.
      */
-    public function getUniqueDirectory($basePath, $extraData = '')
+    public static function getUniqueDirectory($basePath, $extraData = '')
     {
         if (!empty($basePath) && substr($basePath, -1, 1) != '/')
         {
