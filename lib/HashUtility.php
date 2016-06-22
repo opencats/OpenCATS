@@ -37,85 +37,12 @@
  */
 class HashUtility
 {
-    const HASH_OFFSET = 2590992;
     const CRC32_CRCPOLY = 0xEDB88320;
     const CRC32_CRCINV = 0x5B358FD3;
     const CRC32_INITXOR = 0xFFFFFFFF;
     const CRC32_FINALXOR = 0xFFFFFFFF;
     const CRC32_READ_BLOCKSIZE = 1048576;
     const INT_MAX = 0x7fffffff;
-
-    /**
-     * Decodes a 14-byte case-insensative int32 hash string created by
-     * hashInt32. Basic md5 hashing prevents tampering.
-     *
-     * Note that this does not handle values over (2,147,483,647 - HASH_OFFSET)
-     * or under (-2,147,483,647 + HASH_OFFSET).
-     *
-     * @param string 14-byte base-35 case-insensitive encoded string.
-     * @return integer Decoded integer or false if tampering/data errors
-     *                 have occurred.
-     */
-    public static function unhashInt32($hash)
-    {
-        $hash = strtolower($hash);
-
-        $scramble = intval(chr(ord(substr($hash, 8, 1)) - 63));
-        $md5hash = substr($hash, 9, 10);
-        $bytes = '';
-
-        $md5 = '';
-        for ($i = 0; $i < 10; $i += 2)
-        {
-            $pc = substr($md5hash, $i, 2);
-            if ($pc[0] == 'z') $pc = substr($pc, 1);
-            $ch = base_convert($pc, 34, 10);
-            
-            /* Scramble */
-            if ($ch & (1 << $scramble))
-            {
-                $ch = $ch ^ (1 << $scramble);
-            }
-            else
-            {
-                $ch = $ch | (1 << $scramble);
-            }
-            $md5 .= chr($ch);
-        }
-
-        for ($i = 0; $i < 8; $i += 2)
-        {
-            $pc = substr($hash, $i, 2);
-            if ($pc[0] == 'z') $pc = substr($pc, 1);
-            $ch = base_convert($pc, 34, 10);
-
-            for ($bit = 0; $bit < 7; ++$bit)
-            {
-                if ($ch & (1 << $bit)) $ch = $ch ^ (1 << $bit);
-                else $ch = $ch | (1 << $bit);
-            }
-
-            /* Scramble */
-            if ($ch & (1 << $scramble))
-            {
-                $ch = $ch ^ (1 << $scramble);
-            }
-            else
-            {
-                $ch = $ch | (1 << $scramble);
-            }
-            $bytes .= chr($ch);
-        }
-
-        if (strcasecmp(substr(md5($bytes), 0, 5), $md5))
-        {
-            return false;
-        }
-
-        list(, $integer) = unpack('N1', $bytes);
-        return $integer - self::HASH_OFFSET;
-    }
-    
 
     /**
      * A reasonably fast pure-PHP CRC algorithm that doesn't require the
