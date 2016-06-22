@@ -108,7 +108,7 @@ class DatabaseSearch
      * @param string text to escape
      * @return string marked up string
      */
-    public function markUpQuotes($string)
+    public static function markUpQuotes($string)
     {
         while (strpos($string, '"') !== false)
         {
