@@ -1311,7 +1311,7 @@ class DatabaseConnectionTest extends CATSUnitTestCase
             $this->assertIdentical(
                 $queryDouble,
                 $value[1],
-                $value[0] . ' => ' . $value[1]
+                $queryDouble . ' should be ' . $value[1]
             );
         }
     }
