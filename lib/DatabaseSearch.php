@@ -163,7 +163,7 @@ class DatabaseSearch
      * @param string string to evaluate
      * @return boolean parenthesis are unmatched
      */
-    public function containsUnmatchedParenthesis($string)
+    public static function containsUnmatchedParenthesis($string)
     {
         /* Counters for open and close paranthesis. */
         $open  = 0;
