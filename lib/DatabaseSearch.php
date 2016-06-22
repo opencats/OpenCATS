@@ -150,7 +150,7 @@ class DatabaseSearch
      * @param string text to unescape
      * @return string marked up string
      */
-    public function unMarkUpQuotes($string)
+    public static function unMarkUpQuotes($string)
     {
         return str_replace(
             array('_QSPACEQ_', '_QCOMMAQ_'), array(' ', ','), $string
