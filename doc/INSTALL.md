@@ -306,6 +306,7 @@ Edit config.php and modify the following parameters:
 | LDAP_ATTRIBUTE_LASTNAME | `sn` | name of attribute for last name / surname; Used to fill in Last Name of user in DB |
 | LDAP_ATTRIBUTE_FIRSTNAME | `givenname` | name of attribute for first name / given name; Used to fill in First Name of user|
 | LDAP_ATTRIBUTE_EMAIL | `mail` or `email` | name of attribute for email address;; Used to fill in Email Address of user |
+| LDAP_SITEID | 1 | ID of site where user is created (only one site is supported for user) |
 
 ### Example of configuration for OpenLDAP
 
@@ -322,6 +323,8 @@ define ('LDAP_ATTRIBUTE_DN', 'dn');
 define ('LDAP_ATTRIBUTE_LASTNAME', 'sn');
 define ('LDAP_ATTRIBUTE_FIRSTNAME', 'givenname');
 define ('LDAP_ATTRIBUTE_EMAIL', 'mail');
+
+define ('LDAP_SITEID', 1);
 ```
 
 ### Example of configuration for Active Directory
@@ -339,4 +342,6 @@ define ('LDAP_ATTRIBUTE_DN', 'distinguishedname');
 define ('LDAP_ATTRIBUTE_LASTNAME', 'sn');
 define ('LDAP_ATTRIBUTE_FIRSTNAME', 'givenname');
 define ('LDAP_ATTRIBUTE_EMAIL', 'mail');
+
+define ('LDAP_SITEID', 1);
 ```
