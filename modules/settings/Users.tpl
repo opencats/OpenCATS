@@ -50,9 +50,11 @@
                     <?php endforeach; ?>
                 <?php endif; ?>
             </table>
-            <a id="add_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=addUser" title="You have <?php $this->_($this->license['diff']); ?> user accounts remaining.">
-                <img src="images/candidate_inline.gif" width="16" height="16" class="absmiddle" alt="add" style="border: none;" />&nbsp;Add User
-            </a>
+            <?php if (AUTH_MODE != "ldap"): ?>
+                <a id="add_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=addUser" title="You have <?php $this->_($this->license['diff']); ?> user accounts remaining.">
+                    <img src="images/candidate_inline.gif" width="16" height="16" class="absmiddle" alt="add" style="border: none;" />&nbsp;Add User
+                </a>
+            <?php endif; ?>
         </div>
     </div>
     <div id="bottomShadow"></div>

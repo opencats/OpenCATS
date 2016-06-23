@@ -282,21 +282,61 @@ Download URL:
 
 ## Enable LDAP Authentication
 
-Make sure that you are logged in to OpenCATS using an Administrator account before you perform any configuration changes for LDAP. Do not logout of tyhe system unless you are done with the configuration changes. Otherwise you might be locked out of the system if there are any issues with your LDAP configuration.
+Make sure that you are logged in to OpenCATS using an Administrator account before you perform any configuration changes for LDAP. Do not logout of the system unless you are done with the configuration changes. Otherwise you might be locked out of the system if there are any issues with your LDAP configuration.
 
-The following instructions are tested only in OpenLDAP.
+The following instructions are tested in OpenLDAP and ActiveDirectory (AD).
 
-The user list is still maintained  in the mysql table, but the authentication request will be directed to the ldap database. To create the user first you have to add the user to LDAP and then to the MySQL database (through Settings in OpenCATS).
+The user list is still maintained in the mysql table, but the authentication request will be directed to the ldap database. To create the user it is enough to attempt to login with LDAP credentials for the first time and the user will be created in the database if the authentication through LDAP is successful. The user information in mysql table will be populated with information from LDAP. Password is not stored in mysql database.
+New LDAP user will need to wait to be approved by system administrator before being able to log into the system. 
 
 Edit config.php and modify the following parameters:
 
-	define ('AUTH_MODE', 'ldap');
-	define ('LDAP_HOST', 'ldap.forumsys.com');
-	define ('LDAP_PORT', '389');
-	define ('LDAP_BASEDN', 'dc=example,dc=com');
-	define ('LDAP_UID', 'uid');
-	define ('LDAP_BIND_DN', 'cn=read-only-admin,dc=example,dc=com');
-	define ('LDAP_BIND_PASSWORD', 'password');
-	define ('LDAP_PROTOCOL_VERSION', 3);
+| Parameter | Value example | Comment |
+| --------- | ------ | ------- |
+| AUTH_MODE | `ldap` or `sql+ldap` | if mode is `sql+ldap` it is also possible to log in with mysql-only user and also to create mysql-only users. |
+| LDAP_HOST | `ldap.example.com` or `ldaps://ldap.example.com` | host name of LDAP server |
+| LDAP_PORT | `389` or `636` | port of LDAP server |
+| LDAP_PROTOCOL_VERSION | 3 | version of LDAP protocol, ususaly 3 or 2 (for AD use 3) |
+| LDAP_BASEDN | `dc=example,dc=com` or `OU=Employees,DC=example,DC=com` | baseDN in LDAP or in active directory |
+| LDAP_BIND_DN | `cn=read-only-admin,dc=example,dc=com` | bind DN of technical user to be used for initial bind; if not defined (is empty), username provided is used to bind |
+| LDAP_BIND_PASSWORD | `password` | password of technical user for initial bind; can be skipped if LDAP_BIND_DN not defined |
+| LDAP_ACCOUNT | `domain\\{$username}` or `{$username}@example.com` | if initial bind is done using logged in user, this is form of string to be used as username for bind; `{$username}` is replaced with provided username during login | 
+| LDAP_ATTRIBUTE_UID | `uid` or `sAMAccountName` | name of attribute for user id; Used to fill in Username of user in DB and also in search for user in LDAP based on Username |
+| LDAP_ATTRIBUTE_DN | `dn` or `distingushedname` | name of attribute for distinguished name |
+| LDAP_ATTRIBUTE_LASTNAME | `sn` | name of attribute for last name / surname; Used to fill in Last Name of user in DB |
+| LDAP_ATTRIBUTE_FIRSTNAME | `givenname` | name of attribute for first name / given name; Used to fill in First Name of user|
+| LDAP_ATTRIBUTE_EMAIL | `mail` or `email` | name of attribute for email address;; Used to fill in Email Address of user |
 
-Now add the users from LDAP to OpenCATS from the User Management page in OpenCATS. The username should match with the value of LDAP_UID. You should also make one of the LDAP user account as Administrator in OpenCATS before signing off from the application.
+### Example of configuration for OpenLDAP
+
+```php
+define ('LDAP_HOST', 'ldap.forumsys.com');
+define ('LDAP_PORT', '389');
+define ('LDAP_PROTOCOL_VERSION', 3);
+define ('LDAP_BASEDN', 'dc=example,dc=com');
+define ('LDAP_BIND_DN', 'cn=read-only-admin,dc=example,dc=com');
+define ('LDAP_BIND_PASSWORD', 'password');
+
+define ('LDAP_ATTRIBUTE_UID', 'uid');
+define ('LDAP_ATTRIBUTE_DN', 'dn');
+define ('LDAP_ATTRIBUTE_LASTNAME', 'sn');
+define ('LDAP_ATTRIBUTE_FIRSTNAME', 'givenname');
+define ('LDAP_ATTRIBUTE_EMAIL', 'mail');
+```
+
+### Example of configuration for Active Directory
+```php
+define ('LDAP_HOST', 'ldaps://ldap.example.com');
+define ('LDAP_PORT', '636');
+define ('LDAP_PROTOCOL_VERSION', 3);
+
+define ('LDAP_BASEDN', 'OU=Employees,DC=example,DC=com');
+define ('LDAP_BIND_DN', '');
+define ('LDAP_ACCOUNT', '{$username}@example.com');
+
+define ('LDAP_ATTRIBUTE_UID', 'sAMAccountName');
+define ('LDAP_ATTRIBUTE_DN', 'distinguishedname');
+define ('LDAP_ATTRIBUTE_LASTNAME', 'sn');
+define ('LDAP_ATTRIBUTE_FIRSTNAME', 'givenname');
+define ('LDAP_ATTRIBUTE_EMAIL', 'mail');
+```
