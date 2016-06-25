@@ -31,6 +31,8 @@
  */
 
 include_once('./lib/StringUtility.php');
+include_once('./lib/Width.php');
+
 
 /**
  *  Data Grid Library
@@ -47,7 +49,7 @@ class DataGrid
      * A datagrid must be configured in its child constructor.  Specifically, each one of these
      * class variables must be set:
      *
-     *   $this->_tableWidth = 915;                        - Table width in pixels.
+     *   $this->_tableWidth;                              - Table width (Width object).
      *   $this->_defaultAlphabeticalSortBy = 'lastName';  - Default SQL column that the table is sorted by.
      *                                                      This MUST match a sortableColumn property of a
      *                                                      non optional class column.
@@ -2646,7 +2648,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
 
     protected function getTableWidth($makeLargerThanDisplayableArea = false)
     {
-        return $this->_tableWidth + ($makeLargerThanDisplayableArea ? 10 : 0);
+        return $this->_tableWidth->getDigit() + ($makeLargerThanDisplayableArea ? 10 : 0);
     }
  }
 
