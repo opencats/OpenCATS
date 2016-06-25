@@ -13,6 +13,8 @@ class Width
     function asString($makeLargerThanDisplayableArea = false) {
         if ($this->unit == 'px') {
             $out = $this->digit + ($makeLargerThanDisplayableArea ? 10 : 0);
+        } else if ($this->unit == '%') {
+            $out = $this->digit;
         } else {
             $out = $this->digit + ($makeLargerThanDisplayableArea ? 1 : 0);
         }
