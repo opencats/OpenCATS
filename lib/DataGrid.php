@@ -2648,7 +2648,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
 
     protected function getTableWidth($makeLargerThanDisplayableArea = false)
     {
-        return $this->_tableWidth->getDigit() + ($makeLargerThanDisplayableArea ? 10 : 0);
+        return $this->_tableWidth->asString($makeLargerThanDisplayableArea);
     }
  }
 
