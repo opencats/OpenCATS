@@ -46,7 +46,7 @@ class ImportantPipelineDashboard extends DataGrid
     public function __construct($siteID, $parameters)
     {
         /* Pager configuration. */
-        $this->_tableWidth = new Width(915);
+        $this->_tableWidth = new Width(100, "%");
         $this->_defaultAlphabeticalSortBy = 'lastName';
         $this->ajaxMode = true;
         $this->showExportColumn = false;
@@ -212,7 +212,7 @@ class CallsDataGrid extends DataGrid
     public function __construct($siteID, $parameters)
     {
         /* Pager configuration. */
-        $this->_tableWidth = new Width(300);
+        $this->_tableWidth = new Width(30, '%');
         $this->_defaultAlphabeticalSortBy = 'lastName';
         $this->ajaxMode = true;
         $this->showExportColumn = false;
