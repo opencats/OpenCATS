@@ -73,7 +73,6 @@ class TestsUI extends UserInterface
             array('EncryptionTest',         'Encryption Unit Tests'),
             array('ExportTest',             'Export Unit Tests'),
             array('FileUtilityTest',        'FileUtility Unit Tests'),
-            array('HashUtilityTest',        'HashUtility Unit Tests'),
             array('ResultSetUtilityTest',   'ResultSetUtility Unit Tests'),
             array('StringUtilityTest',      'StringUtility Unit Tests'),
             array('VCardTest',              'VCard Unit Tests')
@@ -142,27 +141,27 @@ class TestsUI extends UserInterface
         $microTimeStart = $microTimeArray[1] + $microTimeArray[0];
 
         /* FIXME: 3 groups! Unit, Web, AJAX. */
-        $groupTest = new GroupTest('CATS Test Suite');
+        $testSuite = new TestSuite('CATS Test Suite');
 
         foreach ($this->_unitTestCases as $offset => $value)
         {
             if ($this->isChecked($value[0], $_POST))
             {
-                $groupTest->addTestCase(new $value[0]());
+                $testSuite->add(new $value[0]());
             }
         }
         foreach ($this->_systemTestCases as $offset => $value)
         {
             if ($this->isChecked($value[0], $_POST))
             {
-                $groupTest->addTestCase(new $value[0]());
+                $testSuite->add(new $value[0]());
             }
         }
         foreach ($this->_AJAXTestCases as $offset => $value)
         {
             if ($this->isChecked($value[0], $_POST))
             {
-                $groupTest->addTestCase(new $value[0]());
+                $testSuite->add(new $value[0]());
             }
         }
 
@@ -170,7 +169,7 @@ class TestsUI extends UserInterface
         $reporter->showPasses = true;
         $reporter->showFails = true;
 
-        $groupTest->run($reporter);
+        $testSuite->run($reporter);
     }
 }
 

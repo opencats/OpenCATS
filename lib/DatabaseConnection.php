@@ -531,7 +531,9 @@ class DatabaseConnection
 
         if ($precision !== false)
         {
-            return (string) round($value, $precision);
+            $valueAsDouble = round($value, $precision);
+            $isAWholeNumber = fmod($valueAsDouble, 1) == 0;
+            return number_format($valueAsDouble, $isAWholeNumber ? 0 : 2);
         }
 
         return (string) $value;
