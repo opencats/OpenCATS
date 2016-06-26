@@ -56,7 +56,7 @@
                     <p class="note">Search Results</p>
                 <?php endif; ?>
 
-                <table class="sortable" width="925">
+                <table class="sortable">
                     <thead>
                         <tr>
                             <th nowrap>&nbsp;</th>
