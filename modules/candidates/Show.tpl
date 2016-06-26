@@ -26,7 +26,7 @@
                 <p class="warning">This Candidate is hidden.  Only CATS Administrators can view it or search for it.  To make it visible by the site users, click <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=administrativeHideShow&amp;candidateID=<?php echo($this->candidateID); ?>&amp;state=0" style="font-weight:bold;">Here.</a></p>
             <?php endif; ?>
 
-            <table class="detailsOutside" width="925">
+            <table class="detailsOutside">
                 <tr style="vertical-align:top;">
                     <?php $profileImage = false; ?>
                     <?php foreach ($this->attachmentsRS as $rowNumber => $attachmentsData): ?>
@@ -230,7 +230,7 @@
             </table>
 
             <?php if($this->EEOSettingsRS['enabled'] == 1): ?>
-                <table class="detailsOutside" width="925">
+                <table class="detailsOutside">
                     <tr>
                         <td>
                             <table class="detailsInside">
@@ -268,7 +268,7 @@
                 </table>
             <?php endif; ?>
 
-            <table class="detailsOutside" width="925">
+            <table class="detailsOutside">
                 <tr>
                     <td>
                         <table class="detailsInside">
@@ -437,7 +437,7 @@
             <br />
 
             <p class="note">Job Order Pipeline</p>
-            <table class="sortablepair" width="925">
+            <table class="sortablepair">
                 <tr>
                     <th></th>
                     <th align="left">Match</th>
@@ -537,7 +537,7 @@
 
             <p class="note">Activity</p>
 
-            <table id="activityTable" class="sortable" width="925">
+            <table id="activityTable" class="sortable">
                 <tr>
                     <th align="left" width="125">Date</th>
                     <th align="left" width="90">Type</th>
