@@ -408,5 +408,4 @@
     </div>
 
 <?php endif; ?>
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

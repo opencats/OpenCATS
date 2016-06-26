@@ -117,14 +117,9 @@ a:hover
     height: 400px;
     font: normal normal normal 12px Arial, Tahoma, sans-serif;
     margin-bottom: 0px;
-}
-
-#bottomShadow
-{
-    background: url('images/bottom_shadow.jpg') no-repeat top center;
-    height: 50px;
-    /*border-style: solid;*/
-    border-width: 1px;
+    -webkit-box-shadow: 0px 10px 5px -5px rgba(112,112,112,1);
+    -moz-box-shadow: 0px 10px 5px -5px rgba(112,112,112,1);
+    box-shadow: 0px 10px 5px -5px rgba(112,112,112,1);
 }
 
 /* Modal dialog contents div. */
