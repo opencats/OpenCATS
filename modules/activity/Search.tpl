@@ -20,7 +20,7 @@
             <?php if (!empty($this->rs)): ?>
                 <p class="note">Activities on <?php echo($this->startDate['month'].'/'.$this->startDate['day'].'/'.$this->startDate['year'])?></p>
 
-                 <table id="activityTable" class="sortable" width="925" onmouseover="javascript:trackTableHighlight(event)">
+                 <table id="activityTable" class="sortable" width="100%" onmouseover="javascript:trackTableHighlight(event)">
                     <tr>
                         <th align="left" width="60" nowrap="nowrap">
                             <?php $this->pager->printSortLink('dateCreatedSort', 'Date'); ?>
