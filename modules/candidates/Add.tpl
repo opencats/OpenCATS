@@ -24,7 +24,7 @@
 
             <p class="note<?php if ($this->isModal): ?>Unsized<?php endif; ?>">Basic Information</p>
 
-            <table style="font-weight:bold; border: 1px solid #000; background-color: #ffed1a; padding:5px; display:none; margin-bottom:7px;" width="<?php if ($this->isModal): ?>100%<?php else: ?>925<?php endif; ?>" id="candidateAlreadyInSystemTable">
+            <table style="font-weight:bold; border: 1px solid #000; background-color: #ffed1a; padding:5px; display:none; margin-bottom:7px;" width="100%" id="candidateAlreadyInSystemTable">
                 <tr>
                     <td class="tdVertical">
                         This profile may already be in the system.&nbsp;&nbsp;Possible duplicate candidate profile:&nbsp;&nbsp;
@@ -49,7 +49,7 @@
                 <?php endif; ?>
                 <input type="hidden" name="postback" id="postback" value="postback" />
 
-                <table class="editTable" width="<?php if ($this->isModal): ?>100%<?php else: ?>925<?php endif; ?>">
+                <table class="editTable" width="100%">
                     <?php if ($this->isParsingEnabled): ?>
                     <tr>
                         <td class="tdVertical" colspan="2">
@@ -286,7 +286,7 @@
                 <?php if (!$this->isParsingEnabled || $this->associatedAttachment != 0): ?>
                 <p class="note<?php if ($this->isModal): ?>Unsized<?php endif; ?>" style="margin-top: 5px;">Resume</p>
 
-                <table class="editTable" width="<?php if ($this->isModal): ?>100%<?php else: ?>925<?php endif; ?>">
+                <table class="editTable" width="100%">
                     <tr>
                         <td class="tdVertical">Resume:</td>
                         <td class="tdData" style="width:320px;">
@@ -333,7 +333,7 @@
 
                 <?php if($this->EEOSettingsRS['enabled'] == 1): ?>
                     <p class="note<?php if ($this->isModal): ?>Unsized<?php endif; ?>" style="margin-top: 5px;">EEO Information</p>
-                    <table class="editTable" width="<?php if ($this->isModal): ?>100%<?php else: ?>925<?php endif; ?>">
+                    <table class="editTable" width="100%">
                          <?php if ($this->EEOSettingsRS['genderTracking'] == 1): ?>
                              <tr>
                                 <td class="tdVertical">
@@ -400,7 +400,7 @@
                 <?php endif; ?>
 
                 <p class="note<?php if ($this->isModal): ?>Unsized<?php endif; ?>" style="margin-top: 5px;">Other</p>
-                <table class="editTable" width="<?php if ($this->isModal): ?>100%<?php else: ?>925<?php endif; ?>">
+                <table class="editTable" width="100%">
 
                     <?php for ($i = 0; $i < count($this->extraFieldRS); $i++): ?>
                         <tr>
