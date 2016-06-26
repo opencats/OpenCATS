@@ -1847,7 +1847,7 @@ class DataGrid
                 $formatString .=
                       'user-select: none;" onmouseover="style.cursor = '
                     . '\'e-resize\'" onmousedown="startResize(\'cell%s%s\', '
-                    . '\'table%s\', \'cell%s%s\', %s, \'%s\', \'%s\', '
+                    . '\'table%s\', \'cell%s%s\', \'%s\', \'%s\', \'%s\', '
                     . '\'%s\', \'%s\', this.offsetWidth);">';
 
                 echo sprintf(
@@ -1930,7 +1930,7 @@ class DataGrid
         echo ('</table>' . "\n");
 
         /* If the table is smaller than the maximum width, JS will extend out the last cell so the table takes up all of its allocated space. */
-echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'", '.$this->_totalColumnWidths.', document.getElementById(\'cell'.$md5InstanceName.end($_keys_current_columns).'\'), document.getElementById(\'cell'.$md5InstanceName.end($_keys_current_columns).'div\'), ' . ($this->getTableWidth()) . ');</script>' . "\n");
+echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'", '.$this->_totalColumnWidths.', document.getElementById(\'cell'.$md5InstanceName.end($_keys_current_columns).'\'), document.getElementById(\'cell'.$md5InstanceName.end($_keys_current_columns).'div\'), \'' . $this->getTableWidth() . '\');</script>' . "\n");
 
         /* Close overflowdiv */
         if (!$noOverflow)
