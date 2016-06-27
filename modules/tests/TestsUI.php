@@ -73,7 +73,6 @@ class TestsUI extends UserInterface
             array('EncryptionTest',         'Encryption Unit Tests'),
             array('ExportTest',             'Export Unit Tests'),
             array('FileUtilityTest',        'FileUtility Unit Tests'),
-            array('HashUtilityTest',        'HashUtility Unit Tests'),
             array('ResultSetUtilityTest',   'ResultSetUtility Unit Tests'),
             array('StringUtilityTest',      'StringUtility Unit Tests'),
             array('VCardTest',              'VCard Unit Tests')
