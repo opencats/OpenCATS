@@ -47,7 +47,6 @@ include_once('./modules/tests/TestCaseList.php');
 
 class TestsUI extends UserInterface
 {
-    private $_unitTestCases;
     private $_systemTestCases;
     private $_AJAXTestCases;
     private $_testCaseList;
@@ -62,21 +61,6 @@ class TestsUI extends UserInterface
         $this->_moduleDirectory = 'tests';
         $this->_testCaseList = new TestCaseList();
 
-        $this->_unitTestCases = array(
-            array('AddressParserTest',      'AddressParser Unit Tests'),
-            array('AJAXInterfaceTest',      'AJAX Interface Unit Tests'),
-            array('AttachmentsTest',        'Attachments Unit Tests'),
-            array('ArrayUtilityTest',       'ArrayUtility Unit Tests'),
-            array('BrowserDetectionTest',   'Browser Detection Unit Tests'),
-            array('CalendarTest',           'Calendar Unit Tests'),
-            array('EmailTemplatesTest',     'EmailTemplates Unit Tests'),
-            array('EncryptionTest',         'Encryption Unit Tests'),
-            array('ExportTest',             'Export Unit Tests'),
-            array('FileUtilityTest',        'FileUtility Unit Tests'),
-            array('ResultSetUtilityTest',   'ResultSetUtility Unit Tests'),
-            array('StringUtilityTest',      'StringUtility Unit Tests'),
-            array('VCardTest',              'VCard Unit Tests')
-        );
         $this->_systemTestCases = array(
             array('LoginWebTest',      'Login Module System Tests'),
             array('HomeWebTest',       'Home Module System Tests'),
@@ -125,7 +109,7 @@ class TestsUI extends UserInterface
 
     private function selectTests()
     {
-        $this->_template->assign('unitTestCases', $this->_unitTestCases);
+        $this->_template->assign('unitTestCases', $this->_testCaseList->getUnitTests());
         $this->_template->assign('integrationTestCases', $this->_testCaseList->getIntegrationTests());
         $this->_template->assign('systemTestCases', $this->_systemTestCases);
         $this->_template->assign('AJAXTestCases', $this->_AJAXTestCases);
@@ -144,7 +128,7 @@ class TestsUI extends UserInterface
         /* FIXME: 3 groups! Unit, Web, AJAX. */
         $testSuite = new TestSuite('CATS Test Suite');
 
-        foreach ($this->_unitTestCases as $offset => $value)
+        foreach ($this->_testCaseList->getUnitTests() as $offset => $value)
         {
             if ($this->isChecked($value[0], $_POST))
             {
