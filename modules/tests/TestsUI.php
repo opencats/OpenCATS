@@ -47,7 +47,6 @@ include_once('./modules/tests/TestCaseList.php');
 
 class TestsUI extends UserInterface
 {
-    private $_AJAXTestCases;
     private $_testCaseList;
 
 
@@ -59,21 +58,6 @@ class TestsUI extends UserInterface
         $this->_moduleName = 'tests';
         $this->_moduleDirectory = 'tests';
         $this->_testCaseList = new TestCaseList();
-
-        $this->_AJAXTestCases = array(
-            array('ActivityTest',                         'Activity AJAX Tests'),
-            array('GetCompanyContactsTest',               'GetCompanyContacts AJAX Tests'),
-            array('GetCompanyLocationTest',               'GetCompanyLocation AJAX Tests'),
-            array('GetCompanyLocationAndDepartmentsTest', 'GetCompanyLocationAndDepartments AJAX Tests'),
-            array('GetCompanyNamesTest',                  'GetCompanyNames AJAX Tests'),
-            array('GetDataItemJobOrdersTest',             'GetDataItemJobOrders AJAX Tests'),
-            array('GetParsedAddressTest',                 'GetParsedAddress AJAX Tests'),
-            array('GetPipelineDetailsTest',               'GetPipelineDetails AJAX Tests'),
-            array('GetPipelineJobOrderTest',              'GetPipelineJobOrder AJAX Tests'),
-            array('SetCandidateJobOrderRatingTest',       'SetCandidateJobOrderRating AJAX Tests'),
-            array('TestEmailSettingsTest',                'TestEmailSettings AJAX Tests'),
-            array('ZipLookupTest',                        'ZipLookup AJAX Tests')
-        );
     }
 
 
@@ -99,7 +83,7 @@ class TestsUI extends UserInterface
         $this->_template->assign('unitTestCases', $this->_testCaseList->getUnitTests());
         $this->_template->assign('integrationTestCases', $this->_testCaseList->getIntegrationTests());
         $this->_template->assign('systemTestCases', $this->_testCaseList->getSystemTests());
-        $this->_template->assign('AJAXTestCases', $this->_AJAXTestCases);
+        $this->_template->assign('AJAXTestCases', $this->_testCaseList->getAjaxTests());
         $this->_template->display('./modules/tests/Tests.tpl');
     }
 
@@ -136,7 +120,7 @@ class TestsUI extends UserInterface
                 $testSuite->add(new $value[0]());
             }
         }
-        foreach ($this->_AJAXTestCases as $offset => $value)
+        foreach ($this->_testCaseList->getAjaxTests() as $offset => $value)
         {
             if ($this->isChecked($value[0], $_POST))
             {
