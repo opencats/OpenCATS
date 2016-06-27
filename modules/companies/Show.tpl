@@ -17,7 +17,7 @@
 
             <p class="note">Company Details</p>
 
-            <table class="detailsOutside" width="925">
+            <table class="detailsOutside">
                 <tr style="vertical-align:top;">
                     <td width="50%" height="100%">
                         <table class="detailsInside" height="100%">
@@ -131,7 +131,7 @@
 
             <!-- CONTACT INFO -->
             <?php if (count($this->departmentsRS) > 0): ?>
-                <table class="detailsOutside" width="925">
+                <table class="detailsOutside">
                     <tr>
                         <td>
                             <table class="detailsInside">
@@ -152,7 +152,7 @@
             <!-- /CONTACT INFO -->
 
             <!-- CONTACT INFO -->
-            <table class="detailsOutside" width="925">
+            <table class="detailsOutside">
                 <tr>
                     <td>
                         <table class="detailsInside">
@@ -236,7 +236,7 @@
             <br />
 
             <p class="note">Job Orders</p>
-            <table class="sortable" width="925">
+            <table class="sortable">
                 <tr>
                     <th align="left" width="30" nowrap="nowrap">ID</th>
                     <th align="left" width="200">Title</th>
@@ -292,7 +292,7 @@
 
             <!-- CONTACT INFO -->
             <p class="note">Contacts</p>
-            <table class="sortable" width="925">
+            <table class="sortable">
                 <tr>
                     <th align="left" nowrap="nowrap">First Name</th>
                     <th align="left" nowrap="nowrap">Last Name</th>
