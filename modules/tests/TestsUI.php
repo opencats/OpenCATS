@@ -42,6 +42,7 @@ include_once('./modules/tests/CATSTestReporter.php');
 include_once('./modules/tests/CATSWebTestCase.php');
 include_once('./modules/tests/CATSAJAXTestCase.php');
 include_once('./modules/tests/CATSUnitTestCase.php');
+include_once('./modules/tests/TestCaseList.php');
 
 
 class TestsUI extends UserInterface
@@ -49,6 +50,7 @@ class TestsUI extends UserInterface
     private $_unitTestCases;
     private $_systemTestCases;
     private $_AJAXTestCases;
+    private $_testCaseList;
 
 
     public function __construct()
@@ -58,6 +60,7 @@ class TestsUI extends UserInterface
         $this->_authenticationRequired = true;
         $this->_moduleName = 'tests';
         $this->_moduleDirectory = 'tests';
+        $this->_testCaseList = new TestCaseList();
 
         $this->_unitTestCases = array(
             array('AddressParserTest',      'AddressParser Unit Tests'),
@@ -66,9 +69,6 @@ class TestsUI extends UserInterface
             array('ArrayUtilityTest',       'ArrayUtility Unit Tests'),
             array('BrowserDetectionTest',   'Browser Detection Unit Tests'),
             array('CalendarTest',           'Calendar Unit Tests'),
-            array('DatabaseConnectionTest', 'DatabaseConnection Unit Tests'),
-            array('DatabaseSearchTest',     'DatabaseSearch Unit Tests'),
-            array('DateUtilityTest',        'DateUtility Unit Tests'),
             array('EmailTemplatesTest',     'EmailTemplates Unit Tests'),
             array('EncryptionTest',         'Encryption Unit Tests'),
             array('ExportTest',             'Export Unit Tests'),
@@ -126,6 +126,7 @@ class TestsUI extends UserInterface
     private function selectTests()
     {
         $this->_template->assign('unitTestCases', $this->_unitTestCases);
+        $this->_template->assign('integrationTestCases', $this->_testCaseList->getIntegrationTests());
         $this->_template->assign('systemTestCases', $this->_systemTestCases);
         $this->_template->assign('AJAXTestCases', $this->_AJAXTestCases);
         $this->_template->display('./modules/tests/Tests.tpl');
@@ -144,6 +145,13 @@ class TestsUI extends UserInterface
         $testSuite = new TestSuite('CATS Test Suite');
 
         foreach ($this->_unitTestCases as $offset => $value)
+        {
+            if ($this->isChecked($value[0], $_POST))
+            {
+                $testSuite->add(new $value[0]());
+            }
+        }
+        foreach ($this->_testCaseList->getIntegrationTests() as $offset => $value)
         {
             if ($this->isChecked($value[0], $_POST))
             {
