@@ -1,6 +1,6 @@
 <?php /* $Id: Tests.tpl 1930 2007-02-22 08:39:53Z will $ */ ?>
-<?php CATSTestReporter::printHeader(array('modules/tests/validator.js')); ?>
-<?php CATSTestReporter::printHeaderBlock(); ?>
+<?php $this->reporter->printHeader(array('modules/tests/validator.js')); ?>
+<?php $this->reporter->printHeaderBlock(); ?>
     <br clear="all" />
     <table>
         <tr>

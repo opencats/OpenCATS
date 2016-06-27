@@ -48,6 +48,7 @@ include_once('./modules/tests/TestCaseList.php');
 class TestsUI extends UserInterface
 {
     private $_testCaseList;
+    private $reporter;
 
 
     public function __construct()
@@ -58,6 +59,13 @@ class TestsUI extends UserInterface
         $this->_moduleName = 'tests';
         $this->_moduleDirectory = 'tests';
         $this->_testCaseList = new TestCaseList();
+        
+        $microTimeArray = explode(' ', microtime());
+        $microTimeStart = $microTimeArray[1] + $microTimeArray[0];
+        
+        $this->reporter = new CATSTestReporter($microTimeStart);
+        $this->reporter->showPasses = true;
+        $this->reporter->showFails = true;
     }
 
 
@@ -80,6 +88,7 @@ class TestsUI extends UserInterface
 
     private function selectTests()
     {
+        $this->_template->assign('reporter', $this->reporter);
         $this->_template->assign('unitTestCases', $this->_testCaseList->getUnitTests());
         $this->_template->assign('integrationTestCases', $this->_testCaseList->getIntegrationTests());
         $this->_template->assign('systemTestCases', $this->_testCaseList->getSystemTests());
@@ -92,9 +101,6 @@ class TestsUI extends UserInterface
         include('./modules/tests/testcases/UnitTests.php');
         include('./modules/tests/testcases/WebTests.php');
         include('./modules/tests/testcases/AJAXTests.php');
-
-        $microTimeArray = explode(' ', microtime());
-        $microTimeStart = $microTimeArray[1] + $microTimeArray[0];
 
         /* FIXME: 3 groups! Unit, Web, AJAX. */
         $testSuite = new TestSuite('CATS Test Suite');
@@ -128,11 +134,7 @@ class TestsUI extends UserInterface
             }
         }
 
-        $reporter = new CATSTestReporter($microTimeStart);
-        $reporter->showPasses = true;
-        $reporter->showFails = true;
-
-        $testSuite->run($reporter);
+        $testSuite->run($this->reporter);
     }
 }
 
