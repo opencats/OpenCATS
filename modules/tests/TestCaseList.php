@@ -26,4 +26,19 @@ class TestCaseList
             array('VCardTest',              'VCard Unit Tests')
         );
     }
+    
+    public function getSystemTests() {
+        return array(
+            array('LoginWebTest',      'Login Module System Tests'),
+            array('HomeWebTest',       'Home Module System Tests'),
+            array('ActivitiesWebTest', 'Activities Module System Tests'),
+            array('JobOrdersWebTest',  'Job Orders Module System Tests'),
+            array('CandidatesWebTest', 'Candidates Module System Tests'),
+            array('CompaniesWebTest',  'Companies Module System Tests'),
+            array('ContactsWebTest',   'Contacts Module System Tests'),
+            array('ReportsWebTest',    'Reports Module System Tests'),
+            array('CalendarWebTest',   'Calendar Module System Tests'),
+            array('SettingsWebTest',   'Settings Module System Tests'),
+        );
+    }
 }

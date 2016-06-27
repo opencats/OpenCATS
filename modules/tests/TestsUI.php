@@ -47,7 +47,6 @@ include_once('./modules/tests/TestCaseList.php');
 
 class TestsUI extends UserInterface
 {
-    private $_systemTestCases;
     private $_AJAXTestCases;
     private $_testCaseList;
 
@@ -61,18 +60,6 @@ class TestsUI extends UserInterface
         $this->_moduleDirectory = 'tests';
         $this->_testCaseList = new TestCaseList();
 
-        $this->_systemTestCases = array(
-            array('LoginWebTest',      'Login Module System Tests'),
-            array('HomeWebTest',       'Home Module System Tests'),
-            array('ActivitiesWebTest', 'Activities Module System Tests'),
-            array('JobOrdersWebTest',  'Job Orders Module System Tests'),
-            array('CandidatesWebTest', 'Candidates Module System Tests'),
-            array('CompaniesWebTest',  'Companies Module System Tests'),
-            array('ContactsWebTest',   'Contacts Module System Tests'),
-            array('ReportsWebTest',    'Reports Module System Tests'),
-            array('CalendarWebTest',   'Calendar Module System Tests'),
-            array('SettingsWebTest',   'Settings Module System Tests'),
-        );
         $this->_AJAXTestCases = array(
             array('ActivityTest',                         'Activity AJAX Tests'),
             array('GetCompanyContactsTest',               'GetCompanyContacts AJAX Tests'),
@@ -111,7 +98,7 @@ class TestsUI extends UserInterface
     {
         $this->_template->assign('unitTestCases', $this->_testCaseList->getUnitTests());
         $this->_template->assign('integrationTestCases', $this->_testCaseList->getIntegrationTests());
-        $this->_template->assign('systemTestCases', $this->_systemTestCases);
+        $this->_template->assign('systemTestCases', $this->_testCaseList->getSystemTests());
         $this->_template->assign('AJAXTestCases', $this->_AJAXTestCases);
         $this->_template->display('./modules/tests/Tests.tpl');
     }
@@ -142,7 +129,7 @@ class TestsUI extends UserInterface
                 $testSuite->add(new $value[0]());
             }
         }
-        foreach ($this->_systemTestCases as $offset => $value)
+        foreach ($this->_testCaseList->getSystemTests() as $offset => $value)
         {
             if ($this->isChecked($value[0], $_POST))
             {
