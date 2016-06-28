@@ -40,7 +40,7 @@ class JobOrdersListByViewDataGrid extends JobOrdersDataGrid
     public function __construct($siteID, $parameters, $misc)
     {
         /* Pager configuration. */
-        $this->_tableWidth = new Width(915);
+        $this->_tableWidth = new Width(100, '%');
         $this->_defaultAlphabeticalSortBy = 'title';
         $this->ajaxMode = false;
         $this->showExportCheckboxes = true; //BOXES WILL NOT APPEAR UNLESS SQL ROW exportID IS RETURNED!
@@ -99,7 +99,7 @@ class joborderSavedListByViewDataGrid extends JobOrdersDataGrid
     public function __construct($siteID, $parameters, $misc)
     {
         /* Pager configuration. */
-        $this->_tableWidth = new Width(915);
+        $this->_tableWidth = new Width(100, '%');
         $this->_defaultAlphabeticalSortBy = 'title';
         $this->ajaxMode = false;
         $this->showExportCheckboxes = true; //BOXES WILL NOT APPEAR UNLESS SQL ROW exportID IS RETURNED!
