@@ -373,7 +373,6 @@ div.questionContainerPlainJane { }
             </form>
         </div>
     </div>
-    <div id="bottomShadow"></div>
 
     <script type="text/javascript">
     restoreScrollPosition();

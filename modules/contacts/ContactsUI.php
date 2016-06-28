@@ -1056,7 +1056,8 @@ class ContactsUI extends UserInterface
         $rs = $contacts->getColdCallList();
 
         if (!eval(Hooks::get('CONTACTS_COLD_CALL_LIST'))) return;
-
+        $this->_template->assign('active', $this);
+        $this->_template->assign('subActive', 'Cold Call List');
         $this->_template->assign('rs', $rs);
         $this->_template->display('./modules/contacts/ColdCallList.tpl');
     }

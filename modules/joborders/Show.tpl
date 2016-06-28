@@ -26,9 +26,9 @@
             <?php endif; ?>
 
             <?php if (isset($this->frozen)): ?>
-                <table style="font-weight:bold; border: 1px solid #000; background-color: #ffed1a; padding:5px; margin-bottom:7px;" width="<?php /* if ($this->isModal): */ if(false): ?>100%<?php else: ?>925<?php endif; ?>" id="candidateAlreadyInSystemTable">
+                <table style="font-weight:bold; border: 1px solid #000; background-color: #ffed1a; padding:5px; margin-bottom:7px;" width="100%" id="candidateAlreadyInSystemTable">
                     <tr>
-                        <td class="tdVertical" style="width:925px;">
+                        <td class="tdVertical">
                             This Job Order is <?php $this->_($this->data['status']); ?> and can not be modified.
                            <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
                                <a id="edit_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=edit&amp;jobOrderID=<?php echo($this->jobOrderID); ?>">
@@ -41,7 +41,7 @@
                 </table>
             <?php endif; ?>
 
-            <table class="detailsOutside" width="925" height="<?php echo((count($this->extraFieldRS)/2 + 12) * 22); ?>">
+            <table class="detailsOutside" width="100%" height="<?php echo((count($this->extraFieldRS)/2 + 12) * 22); ?>">
                 <tr style="vertical-align:top;">
                     <td width="50%" height="100%">
                         <table class="detailsInside" height="100%">
@@ -224,7 +224,7 @@
             </div>
             <?php endif; ?>
 
-            <table class="detailsOutside" width="925">
+            <table class="detailsOutside">
                 <tr>
                     <td>
                         <table class="detailsInside">
@@ -408,5 +408,4 @@
     </div>
 
 <?php endif; ?>
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

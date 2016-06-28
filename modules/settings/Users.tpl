@@ -17,7 +17,7 @@
 
             <p class="note">User Management</p>
 
-            <table class="sortable" width="925">
+            <table class="sortable">
                 <thead>
                     <tr>
                         <th align="left" nowrap="nowrap">First Name</th>
@@ -55,5 +55,4 @@
             </a>
         </div>
     </div>
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>
