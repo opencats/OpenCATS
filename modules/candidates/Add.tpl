@@ -49,7 +49,7 @@
                 <?php endif; ?>
                 <input type="hidden" name="postback" id="postback" value="postback" />
 
-                <table class="editTable" width="100%">
+                <table class="editTable">
                     <?php if ($this->isParsingEnabled): ?>
                     <tr>
                         <td class="tdVertical" colspan="2">
@@ -286,7 +286,7 @@
                 <?php if (!$this->isParsingEnabled || $this->associatedAttachment != 0): ?>
                 <p class="note<?php if ($this->isModal): ?>Unsized<?php endif; ?>" style="margin-top: 5px;">Resume</p>
 
-                <table class="editTable" width="100%">
+                <table class="editTable">
                     <tr>
                         <td class="tdVertical">Resume:</td>
                         <td class="tdData" style="width:320px;">
@@ -333,7 +333,7 @@
 
                 <?php if($this->EEOSettingsRS['enabled'] == 1): ?>
                     <p class="note<?php if ($this->isModal): ?>Unsized<?php endif; ?>" style="margin-top: 5px;">EEO Information</p>
-                    <table class="editTable" width="100%">
+                    <table class="editTable">
                          <?php if ($this->EEOSettingsRS['genderTracking'] == 1): ?>
                              <tr>
                                 <td class="tdVertical">
@@ -400,7 +400,7 @@
                 <?php endif; ?>
 
                 <p class="note<?php if ($this->isModal): ?>Unsized<?php endif; ?>" style="margin-top: 5px;">Other</p>
-                <table class="editTable" width="100%">
+                <table class="editTable">
 
                     <?php for ($i = 0; $i < count($this->extraFieldRS); $i++): ?>
                         <tr>
