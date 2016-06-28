@@ -29,7 +29,7 @@
                 <p>Contact your site administrator to change these settings.</p>
             <?php endif; ?>
 
-            <table class="detailsOutside" width="925">
+            <table class="detailsOutside">
                 <tr>
                     <td width="100%" height="100%">
                         <table class="detailsInside" height="100%">
@@ -108,7 +108,7 @@
 
             <?php if ($this->privledged): ?>
                 <p class="note">Recent Logins Activity</p>
-                <table class="sortable" width="925">
+                <table class="sortable">
                     <thead>
                         <tr>
                             <th align="left" nowrap="nowrap">IP</th>
