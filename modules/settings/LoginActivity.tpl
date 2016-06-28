@@ -44,7 +44,7 @@
             </form>
 
             <?php if (!empty($this->rs)): ?>
-                <table class="sortable" width="925">
+                <table class="sortable">
                     <thead>
                         <tr>
                             <th align="left" nowrap="nowrap">
