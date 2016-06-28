@@ -71,7 +71,7 @@ class candidatesSavedListByViewDataGrid extends CandidatesDataGrid
 {
     public function __construct($siteID, $parameters, $misc)
     {
-        $this->_tableWidth = new Width(915);
+        $this->_tableWidth = new Width(100, '%');
         $this->_defaultAlphabeticalSortBy = 'lastName';
         $this->ajaxMode = false;
         $this->showExportCheckboxes = true; //BOXES WILL NOT APPEAR UNLESS SQL ROW exportID IS RETURNED!
