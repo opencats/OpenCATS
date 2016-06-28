@@ -19,7 +19,7 @@
                 <input type="hidden" name="postback" id="postback" value="postback" />
                 <input type="hidden" name="contactID" id="contactID" value="<?php echo($this->contactID); ?>" />
 
-                <table width="925">
+                <table>
                     <tr>
                         <td width="50%" height="100%" valign="top">
                             <p class="noteUnsized">Basic Information</p>
@@ -227,7 +227,7 @@
 
                 <p class="note">Other</p>
 
-                <table class="editTable" width="925">
+                <table class="editTable">
                     
                     <?php for ($i = 0; $i < count($this->extraFieldRS); $i++): ?>
                         <tr>
