@@ -17,8 +17,7 @@
 
             <form name="addContactForm" id="addContactForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=contacts&amp;a=add&amp;v=<?php if ($this->selectedCompanyID === false) { echo('-1'); } else { echo($this->selectedCompanyID); } ?>" method="post" onsubmit="return checkAddForm(document.addContactForm);" autocomplete="off">
                 <input type="hidden" name="postback" id="postback" value="postback" />
-
-                <table width="925">
+                <table>
                     <tr>
                         <td width="50%" height="100%" valign="top">
                             <p class="noteUnsized">Basic Information</p>
@@ -209,7 +208,7 @@
 
                 <p class="note">Other</p>
 
-                <table class="editTable" width="925">
+                <table class="editTable">
                     
                     <?php for ($i = 0; $i < count($this->extraFieldRS); $i++): ?>
                         <tr>
