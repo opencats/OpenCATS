@@ -1,0 +1,7 @@
+INSTALL_BLOCK
+.buildpath
+.project
+.settings/*
+config.php
+docker/data/*
+docker/persist/*
