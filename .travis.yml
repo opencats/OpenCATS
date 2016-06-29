@@ -18,4 +18,4 @@ php:
 - 5.4
 script:
     - php modules/tests/runTests.php
-    - cd docker/; docker-compose build
+    - cd docker/; docker-compose build; docker-compose up -d
