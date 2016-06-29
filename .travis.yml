@@ -17,5 +17,6 @@ php:
 - 5.5
 - 5.4
 script:
+    - composer install
     - php modules/tests/runTests.php
     - cd docker/; docker-compose build; docker-compose up -d
