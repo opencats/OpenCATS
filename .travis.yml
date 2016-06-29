@@ -2,4 +2,6 @@ language: php
 php:
 - 5.5
 - 5.4
-script: php modules/tests/runTests.php
+script:
+    - php modules/tests/runTests.php
+    - cd docker/; docker-compose up -d
