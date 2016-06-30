@@ -5,3 +5,4 @@ INSTALL_BLOCK
 config.php
 docker/data/*
 docker/persist/*
+vendor/*
