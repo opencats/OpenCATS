@@ -6,3 +6,4 @@ config.php
 docker/data/*
 docker/persist/*
 vendor/*
+attachments/*
