@@ -15,7 +15,7 @@ before_install:
 language: php
 php:
 - 5.5
-- 5.4
+
 script:
     - composer install
     - php modules/tests/runTests.php
