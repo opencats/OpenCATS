@@ -126,6 +126,9 @@ define('HTML_ENCODING', 'UTF-8');
 /* AJAX Encoding. */
 define('AJAX_ENCODING', 'UTF-8');
 
+/* SQL Character Set. */
+define('SQL_CHARACTER_SET', 'utf8');
+
 /* Insert BOM in the beginning of CSV file */
 /* This is UTF-8 BOM, EF BB BF for UTF-8 */
 define('INSERT_BOM_CSV_LENGTH', '3');
