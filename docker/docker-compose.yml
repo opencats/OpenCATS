@@ -31,3 +31,15 @@ services:
       volumes:
         - ./data:/docker-entrypoint-initdb.d
         - ./persist/mysql:/var/lib/mysql
+
+    phpmyadmin:
+      container_name: phpmyadmin
+      image: phpmyadmin/phpmyadmin
+      ports:
+        - 8080:80
+      links:
+        - mariadb:db
+      environment:
+        PMA_HOST: db
+        PMA_USER: dev
+        PMA_PASSWORD: dev
