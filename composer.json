@@ -1,5 +1,2 @@
 {
-    "require-dev": {
-        "behat/behat": "~3.0.4"
-    }
 }
