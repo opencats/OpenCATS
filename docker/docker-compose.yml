@@ -14,9 +14,10 @@ services:
         - dataphp
 
     dataphp:
-      image: debian:jessie
+      image: busybox
       volumes:
-        - ../:/var/www/public
+        - ..:/var/www/public
+      command: "true"
 
     mariadb:
       image: mariadb
