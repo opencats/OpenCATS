@@ -20,4 +20,5 @@ script:
     - composer install
     - php modules/tests/runTests.php
     - cd docker/; docker-compose -f docker-compose-test.yml up -d
+    - sleep 5
     - cd docker/; docker-compose -f docker-compose-test.yml run -w /var/www/public php ./vendor/bin/behat -v
