@@ -18,6 +18,7 @@ services:
       volumes:
         - ..:/var/www/public
         - ./test/fs/config.php:/var/www/public/config.php
+        - ./test/fs/INSTALL_BLOCK:/var/www/public/INSTALL_BLOCK
       command: "true"
 
     mariadb:

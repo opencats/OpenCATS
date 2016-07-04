@@ -31,12 +31,12 @@
 define('LICENSE_KEY','3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
 
 /* Database configuration. */
-define('DATABASE_USER', 'cats');
-define('DATABASE_PASS', 'password');
-define('DATABASE_HOST', 'localhost');
-define('DATABASE_NAME', 'cats_dev');
+define('DATABASE_USER', 'dev');
+define('DATABASE_PASS', 'dev');
+define('DATABASE_HOST', 'mariadb');
+define('DATABASE_NAME', 'cats');
 
-/* Authentication Configuration 
+/* Authentication Configuration
  * Options are sql and ldap
  */
 define ('AUTH_MODE', 'sql');
@@ -255,7 +255,7 @@ define('CACHE_MODULES', false);
 
 define('US_ZIPS_ENABLED', false);
 
-/* LDAP Configuration 
+/* LDAP Configuration
  */
 define ('LDAP_HOST', 'ldap.forumsys.com');
 define ('LDAP_PORT', '389');
