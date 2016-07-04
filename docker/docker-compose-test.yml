@@ -1,0 +1,38 @@
+version: '2'
+services:
+    opencats:
+      image: prooph/nginx:www
+      ports:
+          - "80:80"
+          - "443:443"
+      volumes_from:
+        - dataphp
+
+    php:
+      build: ./php/
+      volumes_from:
+        - dataphp
+
+    dataphp:
+      image: busybox
+      volumes:
+        - ..:/var/www/public
+        - ./test/fs/config.php:/var/www/public/config.php
+      command: "true"
+
+    mariadb:
+      image: mariadb
+      ports:
+        - 3306:3306
+      environment:
+        - MYSQL_ROOT_PASSWORD=dev
+        - MYSQL_USER=dev
+        - MYSQL_PASSWORD=dev
+        - MYSQL_DATABASE=cats
+      volumes:
+        - ./test/data:/docker-entrypoint-initdb.d
+
+    selenium:
+      image: selenium/standalone-chrome
+      ports:
+        - 4444
