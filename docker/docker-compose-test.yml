@@ -37,11 +37,3 @@ services:
       image: selenium/standalone-chrome
       ports:
         - 4444
-
-    wait:
-      image: n3llyb0y/wait
-      environment:
-        PORTS: "3306 4444"
-      links:
-        - selenium
-        - mariadb
