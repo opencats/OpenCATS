@@ -58,6 +58,5 @@ div.friendlyErrorMessage {
         </div>
     </div>
 <?php if (!$this->modal): ?>
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>
 <?php endif; ?>

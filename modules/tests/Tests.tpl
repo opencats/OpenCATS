@@ -1,6 +1,6 @@
 <?php /* $Id: Tests.tpl 1930 2007-02-22 08:39:53Z will $ */ ?>
-<?php CATSTestReporter::printHeader(array('modules/tests/validator.js')); ?>
-<?php CATSTestReporter::printHeaderBlock(); ?>
+<?php $this->reporter->printHeader(array('modules/tests/validator.js')); ?>
+<?php $this->reporter->printHeaderBlock(); ?>
     <br clear="all" />
     <table>
         <tr>
@@ -44,6 +44,31 @@
 
                 <td>&nbsp;</td>
 
+                <td valign="top">
+                    <table>
+                        <tr>
+                            <td><span class="bold">Integration Tests</span></td>
+                        </tr>
+
+                        <?php foreach ($this->integrationTestCases as $key => $value): ?>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="integrationTests" name="<?php $this->_($value[0]); ?>" id="<?php $this->_($value[0]); ?>" />
+                                    <?php $this->_($value[1]); ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="selectAllIntegration" id="selectAllIntegration" onclick="selectAllCheckboxesByClassName('selectTestsForm', 'selectAllIntegration', 'integrationTests');" />
+                                <span class="bold">All</span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+
+                <td>&nbsp;</td>
                 <td valign="top">
                     <table>
                         <tr>

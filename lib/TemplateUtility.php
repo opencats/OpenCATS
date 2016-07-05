@@ -61,7 +61,7 @@ class TemplateUtility
     public static function printHeader($pageTitle, $headIncludes = array())
     {
         self::_printCommonHeader($pageTitle, $headIncludes);
-        echo '<body style="background: #fff; width: 955px;">', "\n";
+        echo '<body style="background: #fff">', "\n";
         self::_printQuickActionMenuHolder();
         self::printPopupContainer();
     }
