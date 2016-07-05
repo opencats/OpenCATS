@@ -1311,7 +1311,7 @@ class DatabaseConnectionTest extends CATSUnitTestCase
             $this->assertIdentical(
                 $queryDouble,
                 $value[1],
-                $value[0] . ' => ' . $value[1]
+                $queryDouble . ' should be ' . $value[1]
             );
         }
     }
@@ -1688,76 +1688,6 @@ class GraphGeneratorTest extends CATSUnitTestCase
 /* Tests for Graphs class. */
 class GraphsTest extends CATSUnitTestCase
 {
-}
-
-/* Tests for History class. */
-class HashUtilityTest extends CATSUnitTestCase
-{
-    function testHashInt32()
-    {
-        // FIXME: Test a couple of constants?
-    }
-    
-    function testUnHashInt32()
-    {
-        // FIXME: Test a couple of constants?
-    }
-    
-    function testInt32HashingSanity()
-    {
-        /* Max value for a signed 32-bit integer. */
-        $integerMax = 2147483647;
-        
-        $maxValue = ($integerMax - HashUtility::HASH_OFFSET);
-        
-        $integersToTest = array(
-            0, 1, 2, 3, 4, 5,
-            10, 21, 30, 43, 50,
-            101, 211, 300, 461, 500,
-            1011, 2000, 3000, 4051, 4096,
-            1000000000,
-            2000000000,
-            $maxValue
-        );
-        
-        $integersToTestNegative = array(
-            1, 2, 3, 4, 5,
-            10, 21, 30, 43, 50,
-            101, 211, 300, 461, 500,
-            1011, 2000, 3000, 4051, 4096,
-            1000000000,
-            2000000000,
-            $maxValue,
-            $integerMax,
-            $integerMax + HashUtility::HASH_OFFSET
-        );
-        
-        foreach($integersToTest as $integer)
-        {
-            $hash     = HashUtility::hashInt32($integer);
-            $unhashed = HashUtility::unhashInt32($hash);
-            
-            $this->assertEqual(
-                $integer,
-                $unhashed,
-                sprintf("HashUtility::hashInt32(%s) should equal HashUtility::unhashInt32(%s), equals %s", $integer, $hash, $unhashed)
-            );
-        }
-        
-        foreach($integersToTestNegative as $integer)
-        {
-            $integer *= -1;
-            
-            $hash     = HashUtility::hashInt32($integer);
-            $unhashed = HashUtility::unhashInt32($hash);
-            
-            $this->assertEqual(
-                $integer,
-                $unhashed,
-                sprintf("HashUtility::hashInt32(%s) should equal HashUtility::unhashInt32(%s), equals %s", $integer, $hash, $unhashed)
-            );
-        }
-    }
 }
 
 /* Tests for History class. */

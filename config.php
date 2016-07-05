@@ -36,8 +36,8 @@ define('DATABASE_PASS', 'password');
 define('DATABASE_HOST', 'localhost');
 define('DATABASE_NAME', 'cats_dev');
 
-/* Authentication Configuration 
- * Options are sql and ldap
+/* Authentication Configuration
+ * Options are sql, ldap, sql+ldap
  */
 define ('AUTH_MODE', 'sql');
 
@@ -252,14 +252,25 @@ define('CACHE_MODULES', false);
 
 define('US_ZIPS_ENABLED', false);
 
-/* LDAP Configuration 
+/* LDAP Configuration
  */
 define ('LDAP_HOST', 'ldap.forumsys.com');
 define ('LDAP_PORT', '389');
+define ('LDAP_PROTOCOL_VERSION', 3);
+
 define ('LDAP_BASEDN', 'dc=example,dc=com');
-define ('LDAP_UID', 'uid');
+
 define ('LDAP_BIND_DN', 'cn=read-only-admin,dc=example,dc=com');
 define ('LDAP_BIND_PASSWORD', 'password');
-define ('LDAP_PROTOCOL_VERSION', 3);
+
+define ('LDAP_ACCOUNT', '{$username}'); // '{$username}' cannot be changed, else can
+
+define ('LDAP_ATTRIBUTE_UID', 'uid');
+define ('LDAP_ATTRIBUTE_DN', 'dn');
+define ('LDAP_ATTRIBUTE_LASTNAME', 'sn');
+define ('LDAP_ATTRIBUTE_FIRSTNAME', 'givenname');
+define ('LDAP_ATTRIBUTE_EMAIL', 'mail');
+
+define ('LDAP_SITEID', 1);
 
 ?>

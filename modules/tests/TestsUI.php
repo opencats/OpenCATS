@@ -42,13 +42,13 @@ include_once('./modules/tests/CATSTestReporter.php');
 include_once('./modules/tests/CATSWebTestCase.php');
 include_once('./modules/tests/CATSAJAXTestCase.php');
 include_once('./modules/tests/CATSUnitTestCase.php');
+include_once('./modules/tests/TestCaseList.php');
 
 
 class TestsUI extends UserInterface
 {
-    private $_unitTestCases;
-    private $_systemTestCases;
-    private $_AJAXTestCases;
+    private $_testCaseList;
+    private $reporter;
 
 
     public function __construct()
@@ -58,52 +58,14 @@ class TestsUI extends UserInterface
         $this->_authenticationRequired = true;
         $this->_moduleName = 'tests';
         $this->_moduleDirectory = 'tests';
-
-        $this->_unitTestCases = array(
-            array('AddressParserTest',      'AddressParser Unit Tests'),
-            array('AJAXInterfaceTest',      'AJAX Interface Unit Tests'),
-            array('AttachmentsTest',        'Attachments Unit Tests'),
-            array('ArrayUtilityTest',       'ArrayUtility Unit Tests'),
-            array('BrowserDetectionTest',   'Browser Detection Unit Tests'),
-            array('CalendarTest',           'Calendar Unit Tests'),
-            array('DatabaseConnectionTest', 'DatabaseConnection Unit Tests'),
-            array('DatabaseSearchTest',     'DatabaseSearch Unit Tests'),
-            array('DateUtilityTest',        'DateUtility Unit Tests'),
-            array('EmailTemplatesTest',     'EmailTemplates Unit Tests'),
-            array('EncryptionTest',         'Encryption Unit Tests'),
-            array('ExportTest',             'Export Unit Tests'),
-            array('FileUtilityTest',        'FileUtility Unit Tests'),
-            array('HashUtilityTest',        'HashUtility Unit Tests'),
-            array('ResultSetUtilityTest',   'ResultSetUtility Unit Tests'),
-            array('StringUtilityTest',      'StringUtility Unit Tests'),
-            array('VCardTest',              'VCard Unit Tests')
-        );
-        $this->_systemTestCases = array(
-            array('LoginWebTest',      'Login Module System Tests'),
-            array('HomeWebTest',       'Home Module System Tests'),
-            array('ActivitiesWebTest', 'Activities Module System Tests'),
-            array('JobOrdersWebTest',  'Job Orders Module System Tests'),
-            array('CandidatesWebTest', 'Candidates Module System Tests'),
-            array('CompaniesWebTest',  'Companies Module System Tests'),
-            array('ContactsWebTest',   'Contacts Module System Tests'),
-            array('ReportsWebTest',    'Reports Module System Tests'),
-            array('CalendarWebTest',   'Calendar Module System Tests'),
-            array('SettingsWebTest',   'Settings Module System Tests'),
-        );
-        $this->_AJAXTestCases = array(
-            array('ActivityTest',                         'Activity AJAX Tests'),
-            array('GetCompanyContactsTest',               'GetCompanyContacts AJAX Tests'),
-            array('GetCompanyLocationTest',               'GetCompanyLocation AJAX Tests'),
-            array('GetCompanyLocationAndDepartmentsTest', 'GetCompanyLocationAndDepartments AJAX Tests'),
-            array('GetCompanyNamesTest',                  'GetCompanyNames AJAX Tests'),
-            array('GetDataItemJobOrdersTest',             'GetDataItemJobOrders AJAX Tests'),
-            array('GetParsedAddressTest',                 'GetParsedAddress AJAX Tests'),
-            array('GetPipelineDetailsTest',               'GetPipelineDetails AJAX Tests'),
-            array('GetPipelineJobOrderTest',              'GetPipelineJobOrder AJAX Tests'),
-            array('SetCandidateJobOrderRatingTest',       'SetCandidateJobOrderRating AJAX Tests'),
-            array('TestEmailSettingsTest',                'TestEmailSettings AJAX Tests'),
-            array('ZipLookupTest',                        'ZipLookup AJAX Tests')
-        );
+        $this->_testCaseList = new TestCaseList();
+        
+        $microTimeArray = explode(' ', microtime());
+        $microTimeStart = $microTimeArray[1] + $microTimeArray[0];
+        
+        $this->reporter = new CATSTestReporter($microTimeStart);
+        $this->reporter->showPasses = true;
+        $this->reporter->showFails = true;
     }
 
 
@@ -126,9 +88,11 @@ class TestsUI extends UserInterface
 
     private function selectTests()
     {
-        $this->_template->assign('unitTestCases', $this->_unitTestCases);
-        $this->_template->assign('systemTestCases', $this->_systemTestCases);
-        $this->_template->assign('AJAXTestCases', $this->_AJAXTestCases);
+        $this->_template->assign('reporter', $this->reporter);
+        $this->_template->assign('unitTestCases', $this->_testCaseList->getUnitTests());
+        $this->_template->assign('integrationTestCases', $this->_testCaseList->getIntegrationTests());
+        $this->_template->assign('systemTestCases', $this->_testCaseList->getSystemTests());
+        $this->_template->assign('AJAXTestCases', $this->_testCaseList->getAjaxTests());
         $this->_template->display('./modules/tests/Tests.tpl');
     }
 
@@ -138,39 +102,39 @@ class TestsUI extends UserInterface
         include('./modules/tests/testcases/WebTests.php');
         include('./modules/tests/testcases/AJAXTests.php');
 
-        $microTimeArray = explode(' ', microtime());
-        $microTimeStart = $microTimeArray[1] + $microTimeArray[0];
-
         /* FIXME: 3 groups! Unit, Web, AJAX. */
-        $groupTest = new GroupTest('CATS Test Suite');
+        $testSuite = new TestSuite('CATS Test Suite');
 
-        foreach ($this->_unitTestCases as $offset => $value)
+        foreach ($this->_testCaseList->getUnitTests() as $offset => $value)
         {
             if ($this->isChecked($value[0], $_POST))
             {
-                $groupTest->addTestCase(new $value[0]());
+                $testSuite->add(new $value[0]());
             }
         }
-        foreach ($this->_systemTestCases as $offset => $value)
+        foreach ($this->_testCaseList->getIntegrationTests() as $offset => $value)
         {
             if ($this->isChecked($value[0], $_POST))
             {
-                $groupTest->addTestCase(new $value[0]());
+                $testSuite->add(new $value[0]());
             }
         }
-        foreach ($this->_AJAXTestCases as $offset => $value)
+        foreach ($this->_testCaseList->getSystemTests() as $offset => $value)
         {
             if ($this->isChecked($value[0], $_POST))
             {
-                $groupTest->addTestCase(new $value[0]());
+                $testSuite->add(new $value[0]());
+            }
+        }
+        foreach ($this->_testCaseList->getAjaxTests() as $offset => $value)
+        {
+            if ($this->isChecked($value[0], $_POST))
+            {
+                $testSuite->add(new $value[0]());
             }
         }
 
-        $reporter = new CATSTestReporter($microTimeStart);
-        $reporter->showPasses = true;
-        $reporter->showFails = true;
-
-        $groupTest->run($reporter);
+        $testSuite->run($this->reporter);
     }
 }
 
