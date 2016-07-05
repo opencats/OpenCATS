@@ -757,7 +757,7 @@ class CATSSession
 
             case LOGIN_DISABLED:
                 $this->_isLoggedIn = false;
-                $this->_loginError = 'Your account is disabled.';
+                $this->_loginError = 'Your account is disabled or pending approval.';
 
                 /* Log the login as unsuccessful. */
                 if ($addToHistory)
@@ -772,7 +772,13 @@ class CATSSession
                 }
 
                 break;
+                
+            case LOGIN_PENDING_APPROVAL:
+                $this->_isLoggedIn = false;
+                $this->_loginError = 'Your account has been created and is pending approval.';
 
+                break;
+                
             case LOGIN_SUCCESS:
                 $this->_username               = $rs['username'];
                 $this->_password               = $rs['password'];

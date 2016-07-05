@@ -17,10 +17,13 @@ class LDAP
 		if (self::$_instance == null)
 		{
 			self::$_instance = new LDAP();
-			self::$_instance->connect();
-			self::$_instance->bind();
 		}
-
+        if (!self::$_instance->_connection) {
+			self::$_instance->connect();
+		}
+        if (!self::$_instance->_connection) {
+            return NULL;
+        }
 		return self::$_instance;
 	}
 
@@ -35,10 +38,6 @@ class LDAP
 	public function connect()
 	{
 		$this->_connection = @ldap_connect(LDAP_HOST, LDAP_PORT);
-		if (!$this->_connection){
-			die("Error Connecting to LDAP Server".ldap_error($this->_connection));
-		}
-
 		if (!$this->_connection)
 		{
 			return false;
@@ -47,41 +46,49 @@ class LDAP
 		return true;
 	}
 
-	public function bind()
-	{
+	public function authenticate($username, $password)
+	{   
 		if ($this->_connection) 
 		{
 			if (LDAP_BIND_DN != "") 
 			{
 				$this->_bind = @ldap_bind($this->_connection, LDAP_BIND_DN, LDAP_BIND_PASSWORD);
+				if(!$this->_bind) 
+				{
+					$this->_bind = NULL;
+					return false;
+				}
+
+				$search = @ldap_search( $this->_connection, LDAP_BASEDN, '('.LDAP_ATTRIBUTE_UID . '=' . $username.')');
+				if (!$search) 
+				{
+					return false;
+				}
+
+				$result = @ldap_get_entries( $this->_connection, $search);
+				if ($result[0]) 
+				{
+					if (ldap_bind( $this->_connection, $result[0][LDAP_ATTRIBUTE_DN][0], $password) ) 
+					{
+						return true;
+					}
+					else 
+					{
+						return false;
+					}
+				}
 			}
 			else 
 			{
-				$this->_bind = @ldap_bind($this->_connection);
-			}
-			if(!$this->_bind) 
-			{
-				die ("LDAP bind error: ". ldap_error($this->_connection));
-			}
-		}
-	}
-
-	public function authenticate($username, $password)
-	{   
-		$search = @ldap_search( $this->_connection, LDAP_BASEDN, '('.LDAP_UID . '=' . $username.')');
-		if ($search) 
-		{
-			$result = @ldap_get_entries( $this->_connection, $search);
-			if ($result[0]) 
-			{
-				if (ldap_bind( $this->_connection, $result[0]['dn'], $password) ) 
+                $trans = array('{$username}' => $username);
+                $username = strtr(LDAP_ACCOUNT, $trans);
+				$this->_bind = @ldap_bind($this->_connection, $username, $password);
+				if(!$this->_bind) 
 				{
-					return true;
+					$this->_bind = NULL;
+					return false;
 				}
-				else 
-				{
-					return NULL;
-				}
+				return true;
 			}
 		}
 	}
@@ -89,7 +96,7 @@ class LDAP
 	public function searchUid($username)
 	{
 		$search = @ldap_search( $this->_connection,
-				LDAP_BASEDN, LDAP_UID . '=' . $username);
+				LDAP_BASEDN, LDAP_ATTRIBUTE_UID . '=' . $username);
 		if ($search) 
 		{
 			$result = @ldap_get_entries( $this->_connection, $search);
@@ -104,5 +111,20 @@ class LDAP
 		}
 	}
 
+    public function getUserInfo($username)
+    {
+        $search = @ldap_search( $this->_connection,
+				LDAP_BASEDN, LDAP_ATTRIBUTE_UID . '=' . $username);
+		
+        if ($search) 
+		{
+			$result = @ldap_get_entries( $this->_connection, $search);
+			$userInfo = array($result[0][LDAP_ATTRIBUTE_LASTNAME][0], $result[0][LDAP_ATTRIBUTE_FIRSTNAME][0], $result[0][LDAP_ATTRIBUTE_EMAIL][0], $result[0][LDAP_ATTRIBUTE_UID][0]);
+            return $userInfo;
+		}
+        
+        return NULL;
+    
+    }
 }
 ?>
