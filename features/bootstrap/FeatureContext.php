@@ -28,12 +28,30 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
      */
     public function iAmAuthenticatedAs($role)
     {
-        if ($role != 'Administrator') {
+        $this->visitPath('/index.php?m=login');
+        if ($role == 'Administrator') {
+            $this->fillField('username', 'admin');
+            $this->fillField('password', 'admin');
+        } else if ($role == 'User') {
+            $this->fillField('username', 'john@mycompany.net');
+            $this->fillField('password', 'john99');
+        } else {
             throw new PendingException();
         }
-        $this->visitPath('/index.php?m=login');
-        $this->fillField('username', 'admin');
-        $this->fillField('password', 'admin');
         $this->pressButton('Login');
+    }
+    
+    /**
+     * @Given There is a person called :fullName with :property
+     */
+    public function thereIsAPersonCalledWith($fullName, $property)
+    {
+        $this->visitPath('/index.php?m=candidates&a=add');
+        list($firstName, $lastName) = explode(" ", $fullName);
+        $this->fillField('firstName', $firstName);
+        $this->fillField('lastName', $lastName);
+        list($key, $value) = explode("=", $property);
+        $this->fillField($key, $value);
+        $this->pressButton('Add Candidate');
     }
 }
