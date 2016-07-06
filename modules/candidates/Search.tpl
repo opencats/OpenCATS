@@ -56,7 +56,7 @@
                     <p class="note">Search Results</p>
                 <?php endif; ?>
 
-                <table class="sortable" width="925">
+                <table class="sortable">
                     <thead>
                         <tr>
                             <th nowrap>&nbsp;</th>
@@ -216,5 +216,4 @@
             <?php endif; ?>
         </div>
     </div>
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

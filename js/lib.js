@@ -312,8 +312,9 @@ function AJAX_getXMLHttpObject()
 function AJAX_sendPOSTHeaders(http, contentLength)
 {
     http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    http.setRequestHeader('Content-length', contentLength);
-    http.setRequestHeader('Connection', 'close');
+    /* No more allowed! */
+    //http.setRequestHeader('Content-length', contentLength);
+    //http.setRequestHeader('Connection', 'close');
 }
 
 /**

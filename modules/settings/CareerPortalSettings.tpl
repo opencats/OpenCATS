@@ -306,5 +306,4 @@
             <?php endif; ?>
         <?php endforeach; ?>
     </script>
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

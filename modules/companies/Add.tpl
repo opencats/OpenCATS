@@ -19,12 +19,12 @@
                 <input type="hidden" name="postback" id="postback" value="postback" />
 
                 <p class="noteUnsized">Basic Information</p>
-                <table class="editTable" width="925">
+                <table class="editTable" width="100%">
                     <tr>
                         <td class="tdVertical">
                             <label id="nameLabel" for="name">Company Name:</label>
                         </td>
-                        <td class="tdData">
+                        <td class="tdData" width="250">
                             <input type="text" name="name" id="name" class="inputbox" style="width: 150px" />&nbsp;*
                         </td>
                         <td rowspan="5" align="left" valign="top">
@@ -143,7 +143,7 @@
 
                 <p class="noteUnsized" style="margin-top: 5px;">Other</p>
 
-                <table class="editTable" width="925">
+                <table class="editTable" width="100%">
                     
                     <?php for ($i = 0; $i < count($this->extraFieldRS); $i++): ?>
                         <tr>
@@ -186,5 +186,4 @@
             </script>
         </div>
     </div>
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

@@ -185,7 +185,7 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
 
     document.getElementById('ajaxPipelineNavigation').innerHTML = s;
 </script>
-    <table class="notsortable" id="pipelineTable" width="925">
+    <table class="notsortable" id="pipelineTable" width="100%">
     <tr>
         <th></th>
         <th></th>

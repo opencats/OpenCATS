@@ -80,7 +80,7 @@ function dumpDB($db, $file, $useStatus = false, $splitFiles = true, $siteID = -1
     $text = '';
 
     $result = mysql_query(
-        sprintf("SHOW TABLES FROM %s", DATABASE_NAME),
+        sprintf("SHOW TABLES FROM `%s`", DATABASE_NAME),
         $connection
     );
     while ($row = mysql_fetch_array($result, MYSQL_NUM))

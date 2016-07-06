@@ -15,10 +15,14 @@
                 </tr>
             </table>
 
+	    <?php if ($this->auth_mode == "ldap"): ?>
+		<p class="note">LDAP Enabled. Password cannot be changed from OpenCATS</p>
+	    <?php endif; ?>
             <p class="note">Change Password</p>
 
             <form name="changePasswordForm" id="changePasswordForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=changePassword" method="post" onsubmit="return checkChangePasswordForm(document.changePasswordForm);">
                 <input type="hidden" name="postback" id="postback" value="postback" />
+
 
                 <?php if ($this->isDemoUser): ?>
                     Note that as a demo user, you do not have privileges to modify any settings.
@@ -83,5 +87,4 @@
             </script>
         </div>
     </div>
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>
