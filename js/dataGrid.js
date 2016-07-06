@@ -651,14 +651,19 @@ var selectColumnOption = {
 	}
 };
 
-var filterNames = {
-    '==': 'is equal to',
-    '=~': 'contains',
-    '=<': 'is less than',
-    '=>': 'is greater than',
-    '=#': 'has element',
-    '=@': 'Near'
+var filter = {
+    getNames: function() {
+        return {
+            '==': 'is equal to',
+            '=~': 'contains',
+            '=<': 'is less than',
+            '=>': 'is greater than',
+            '=#': 'has element',
+            '=@': 'Near'
+        };
+    }
 };
+ 
 /* Shows a new DHTML filter for the user to add a filter to. */
 function showNewFilter(
     filterCounter,
@@ -734,7 +739,7 @@ function showNewFilter(
             selectOperatorColumn.appendChild(
                 selectColumnOption.create(
                     possibleType,
-                    filterNames[possibleType]
+                    filter.getNames()[possibleType]
                 )
             );
             if (possibleType == '=@')
