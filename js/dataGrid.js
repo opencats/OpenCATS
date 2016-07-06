@@ -649,7 +649,16 @@ var selectColumnOption = {
 		option.innerHTML = innerHtml;
         return option;
 	}
-}
+};
+
+var filterNames = {
+    '==': 'is equal to',
+    '=~': 'contains',
+    '=<': 'is less than',
+    '=>': 'is greater than',
+    '=#': 'has element',
+    '=@': 'Near'
+};
 /* Shows a new DHTML filter for the user to add a filter to. */
 function showNewFilter(filterCounter, filterAreaID, selectableColumns, instanceName, submitFilterCommand)
 {
@@ -719,66 +728,15 @@ function showNewFilter(filterCounter, filterAreaID, selectableColumns, instanceN
         for (var i = 0; i < possibleTypes.length; i+=2)
         {
             var possibleType = possibleTypes.substr(i,2);
-            
-            if (possibleType == '==')
-            {
-                selectOperatorColumn.appendChild(
-                    selectColumnOption.create(
-                        '==',
-                        'is equal to'
-                    )
-                );
-            }
-
-            if (possibleType == '=~')
-            {
-                selectOperatorColumn.appendChild(
-                    selectColumnOption.create(
-                        '=~',
-                        'contains'
-                    )
-                );
-            }
-
-            if (possibleType == '=<')
-            {
-                selectOperatorColumn.appendChild(
-                    selectColumnOption.create(
-                        '=<',
-                        'is less than'
-                    )
-                );
-            }
-
-            if (possibleType == '=>')
-            {
-                selectOperatorColumn.appendChild(
-                    selectColumnOption.create(
-                        '=>',
-                        'is greater than'
-                    )
-                );
-            }
-
-            if (possibleType == '=#')
-            {
-                selectOperatorColumn.appendChild(
-                    selectColumnOption.create(
-                        '=#',
-                        'has element'
-                    )
-                );
-            }
-            
+            selectOperatorColumn.appendChild(
+                selectColumnOption.create(
+                    possibleType,
+                    filterNames[possibleType]
+                )
+            );
             if (possibleType == '=@')
             {
                 selectOperatorColumn.style.display='none';
-                selectOperatorColumn.appendChild(
-                    selectColumnOption.create(
-                        '=@',
-                        'Near'
-                    )
-                );
                 
                 document.getElementById(filterAreaID+filterCounter+'value').style.display='none';
                 
