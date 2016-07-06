@@ -667,7 +667,6 @@ function showNewFilter(
     instanceName,
     submitFilterCommand
 ) {
-    var selectableColumnsArray = selectableColumns.split(',');
     var filterArea = document.getElementById(filterAreaID);
 
     // Make the previous column dropdown boxes unselectable.
@@ -684,11 +683,11 @@ function showNewFilter(
             columnSelector.disabled=true;
 
             //Take previously filtered columns out of the list of filterable columns.
-            for (var i2 = 0; i2 < selectableColumnsArray.length; i2++)
+            for (var i2 = 0; i2 < selectableColumns.length; i2++)
             {
-                if (urlDecode(selectableColumnsArray[i2]) == columnSelector.value)
+                if (urlDecode(selectableColumns[i2]) == columnSelector.value)
                 {
-                    selectableColumnsArray.splice(i2, 1);
+                    selectableColumns.splice(i2, 1);
                     i2--;
                 }
             }
@@ -698,11 +697,11 @@ function showNewFilter(
     var filterDiv = document.createElement('div');
     var selectColumn = document.createElement('select');
             
-    for (var i = 0; i < selectableColumnsArray.length; i++)
+    for (var i = 0; i < selectableColumns.length; i++)
     {
         selectColumn.appendChild(selectColumnOption.create(
-            urlDecode(selectableColumnsArray[i]),
-            getFilterColumnNameFromOptionValue(urlDecode(selectableColumnsArray[i]))
+            urlDecode(selectableColumns[i]),
+            getFilterColumnNameFromOptionValue(urlDecode(selectableColumns[i]))
         ));
     }
 
@@ -720,7 +719,7 @@ function showNewFilter(
                 
         document.getElementById(filterAreaID+filterCounter+'zipInput1').style.display='none';
         document.getElementById(filterAreaID+filterCounter+'zipInput2').style.display='none';
- 
+            
         /* Remove all child nodes */
         if ( selectOperatorColumn.hasChildNodes() )
         {

@@ -891,11 +891,9 @@ class DataGrid
                 }
             }
         }
-        
-        $arrayKeysString = implode(',', array_map('urlencode', $filterableColumns));
         $template = new Template();
         $template->assign('md5InstanceName', $md5InstanceName);
-        $template->assign('arrayKeysString', $arrayKeysString);
+        $template->assign('arrayKeysString', json_encode(array_values($filterableColumns)));
         $template->assign('counterFilters', $counterFilters);
         $template->display('./lib/datagrid/FilterArea.tpl');
     }
