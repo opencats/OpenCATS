@@ -661,6 +661,36 @@ var filter = {
             '=#': 'has element',
             '=@': 'Near'
         };
+    },
+    makePreviousSelectionBoxesUnselectable: function(
+        filterCounter,
+        filterAreaID,
+        selectableColumns
+    ) {
+        var filterArea = document.getElementById(filterAreaID);
+        if (filterCounter > 1)
+        {
+            filterBr = document.createElement('br');
+            filterBr.clear = 'all';
+        
+            filterArea.appendChild(filterBr);
+
+            for (var i = 1; i < filterCounter; i++)
+            {
+                var columnSelector = document.getElementById(filterAreaID+i+'columnName');
+                columnSelector.disabled=true;
+
+                //Take previously filtered columns out of the list of filterable columns.
+                for (var i2 = 0; i2 < selectableColumns.length; i2++)
+                {
+                    if (selectableColumns[i2] == columnSelector.value)
+                    {
+                        selectableColumns.splice(i2, 1);
+                        i2--;
+                    }
+                }
+            }
+        }
     }
 };
  
@@ -672,32 +702,11 @@ function showNewFilter(
     instanceName
 ) {
     var filterArea = document.getElementById(filterAreaID);
-
-    // Make the previous column dropdown boxes unselectable.
-    if (filterCounter > 1)
-    {
-        filterBr = document.createElement('br');
-        filterBr.clear = 'all';
-    
-        filterArea.appendChild(filterBr);
-
-        for (var i = 1; i < filterCounter; i++)
-        {
-            var columnSelector = document.getElementById(filterAreaID+i+'columnName');
-            columnSelector.disabled=true;
-
-            //Take previously filtered columns out of the list of filterable columns.
-            for (var i2 = 0; i2 < selectableColumns.length; i2++)
-            {
-                if (urlDecode(selectableColumns[i2]) == columnSelector.value)
-                {
-                    selectableColumns.splice(i2, 1);
-                    i2--;
-                }
-            }
-        }
-    }
-
+    filter.makePreviousSelectionBoxesUnselectable(
+        filterCounter,
+        filterAreaID,
+        selectableColumns
+    );
     var filterDiv = document.createElement('div');
     var selectColumn = document.createElement('select');
             
