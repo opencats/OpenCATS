@@ -642,6 +642,14 @@ function getFilterColumnTypesFromOptionValue(theValue)
     return theValue.substr(theValue.indexOf('!@!') + 3);
 }
 
+var selectColumnOption = {
+	create: function(value, innerHtml) {
+		var option = document.createElement('option');
+		option.value = value;
+		option.innerHTML = innerHtml;
+        return option;
+	}
+}
 /* Shows a new DHTML filter for the user to add a filter to. */
 function showNewFilter(filterCounter, filterAreaID, selectableColumns, instanceName, submitFilterCommand)
 {
@@ -675,14 +683,13 @@ function showNewFilter(filterCounter, filterAreaID, selectableColumns, instanceN
 
     var filterDiv = document.createElement('div');
     var selectColumn = document.createElement('select');
-    var selectColumnOption;
             
     for (var i = 0; i < selectableColumnsArray.length; i++)
     {
-        selectColumnOption = document.createElement('option');
-        selectColumnOption.value = urlDecode(selectableColumnsArray[i]);
-        selectColumnOption.innerHTML = getFilterColumnNameFromOptionValue(urlDecode(selectableColumnsArray[i]));
-        selectColumn.appendChild(selectColumnOption);
+        selectColumn.appendChild(selectColumnOption.create(
+            urlDecode(selectableColumnsArray[i]),
+            getFilterColumnNameFromOptionValue(urlDecode(selectableColumnsArray[i]))
+        ));
     }
 
     selectColumn.id = filterAreaID+filterCounter+'columnName';
@@ -715,51 +722,63 @@ function showNewFilter(filterCounter, filterAreaID, selectableColumns, instanceN
             
             if (possibleType == '==')
             {
-                selectColumnOption = document.createElement('option');
-                selectColumnOption.value = '==';
-                selectColumnOption.innerHTML = 'is equal to';
-                selectOperatorColumn.appendChild(selectColumnOption);
+                selectOperatorColumn.appendChild(
+                    selectColumnOption.create(
+                        '==',
+                        'is equal to'
+                    )
+                );
             }
 
             if (possibleType == '=~')
             {
-                selectColumnOption = document.createElement('option');
-                selectColumnOption.value = '=~';
-                selectColumnOption.innerHTML = 'contains';
-                selectOperatorColumn.appendChild(selectColumnOption);
+                selectOperatorColumn.appendChild(
+                    selectColumnOption.create(
+                        '=~',
+                        'contains'
+                    )
+                );
             }
 
             if (possibleType == '=<')
             {
-                selectColumnOption = document.createElement('option');
-                selectColumnOption.value = '=<';
-                selectColumnOption.innerHTML = 'is less than';
-                selectOperatorColumn.appendChild(selectColumnOption);
+                selectOperatorColumn.appendChild(
+                    selectColumnOption.create(
+                        '=<',
+                        'is less than'
+                    )
+                );
             }
 
             if (possibleType == '=>')
             {
-                selectColumnOption = document.createElement('option');
-                selectColumnOption.value = '=>';
-                selectColumnOption.innerHTML = 'is greater than';
-                selectOperatorColumn.appendChild(selectColumnOption);
+                selectOperatorColumn.appendChild(
+                    selectColumnOption.create(
+                        '=>',
+                        'is greater than'
+                    )
+                );
             }
 
             if (possibleType == '=#')
             {
-                selectColumnOption = document.createElement('option');
-                selectColumnOption.value = '=#';
-                selectColumnOption.innerHTML = 'has element';
-                selectOperatorColumn.appendChild(selectColumnOption);
+                selectOperatorColumn.appendChild(
+                    selectColumnOption.create(
+                        '=#',
+                        'has element'
+                    )
+                );
             }
             
             if (possibleType == '=@')
             {
-                selectColumnOption = document.createElement('option');
-                selectColumnOption.value = '=@';
-                selectColumnOption.innerHTML = 'Near';
                 selectOperatorColumn.style.display='none';
-                selectOperatorColumn.appendChild(selectColumnOption);
+                selectOperatorColumn.appendChild(
+                    selectColumnOption.create(
+                        '=@',
+                        'Near'
+                    )
+                );
                 
                 document.getElementById(filterAreaID+filterCounter+'value').style.display='none';
                 
