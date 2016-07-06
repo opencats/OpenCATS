@@ -18,8 +18,7 @@
             newFilterCounter<?=$this->md5InstanceName?>, 
             'filterResultsAreaTable<?=$this->md5InstanceName?>',
             <?=$this->arrayKeysString?>,
-            '<?=$this->md5InstanceName?>',
-            'submitFilter<?=$this->md5InstanceName?>()'
+            '<?=$this->md5InstanceName?>'
         );
     };
 </script>

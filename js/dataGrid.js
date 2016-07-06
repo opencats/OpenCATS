@@ -664,8 +664,7 @@ function showNewFilter(
     filterCounter,
     filterAreaID,
     selectableColumns,
-    instanceName,
-    submitFilterCommand
+    instanceName
 ) {
     var filterArea = document.getElementById(filterAreaID);
 
