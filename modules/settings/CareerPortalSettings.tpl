@@ -244,7 +244,7 @@
                                     <span id="textTemplateName" style="font-weight: bold; font-size: 18px;"></span>
                                     <br />
                                     <input type="button" class="button" value="Full Screen Preview" onclick="fullScreenPreview();" />
-                                    <input type="button" class="button" value="Edit" id="buttonEdit" onclick="window.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=careerPortalTemplateEdit&amp;templateName='+escape(usingID);" />
+                                    <input type="button" class="button" value="Edit" id="buttonEdit" onclick="window.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=careerPortalTemplateEdit&amp;templateName='+encodeURI(usingID);" />
                                     <input type="button" class="button" value="Edit" id="buttonEditDefault" onclick="showEditDefaultInput();" style="display: none;" />
                                     <input type="button" class="button" value="Delete" id="buttonDelete" onclick="showDeleteInput();" />
                                     <input type="button" class="button" value="Duplicate" onclick="showDuplicateInput();" />

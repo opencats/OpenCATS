@@ -123,7 +123,7 @@ class DatabaseConnection
             );
             return false;
         }
-
+        mysql_set_charset(SQL_CHARACTER_SET, $this->_connection);
         $isDBSelected = @mysql_select_db(DATABASE_NAME, $this->_connection);
         if (!$isDBSelected)
         {
