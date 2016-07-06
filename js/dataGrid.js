@@ -660,8 +660,13 @@ var filterNames = {
     '=@': 'Near'
 };
 /* Shows a new DHTML filter for the user to add a filter to. */
-function showNewFilter(filterCounter, filterAreaID, selectableColumns, instanceName, submitFilterCommand)
-{
+function showNewFilter(
+    filterCounter,
+    filterAreaID,
+    selectableColumns,
+    instanceName,
+    submitFilterCommand
+) {
     var selectableColumnsArray = selectableColumns.split(',');
     var filterArea = document.getElementById(filterAreaID);
 
