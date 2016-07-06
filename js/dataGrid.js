@@ -713,8 +713,8 @@ function showNewFilter(
     for (var i = 0; i < selectableColumns.length; i++)
     {
         selectColumn.appendChild(selectColumnOption.create(
-            urlDecode(selectableColumns[i]),
-            getFilterColumnNameFromOptionValue(urlDecode(selectableColumns[i]))
+            selectableColumns[i],
+            getFilterColumnNameFromOptionValue(selectableColumns[i])
         ));
     }
 
