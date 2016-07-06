@@ -723,10 +723,17 @@ var selectColumnFactory = {
 };
 
 var inputAreaFactory = {
-    create: function(filterAreaID, filterCounter) {
+    create: function(filterAreaID, filterCounter, instanceName) {
         var inputArea = document.createElement('input');
         inputArea.id = filterAreaID+filterCounter+'value';
         inputArea.style.width='180px';
+        var inputAreaChangeHandler = inputAreaFactory.createInputAreaChangeHandler(instanceName, filterAreaID, filterCounter)
+        if (inputArea.addEventListener) {
+            inputArea.addEventListener('change', inputAreaChangeHandler, false);
+         } else if (inputArea.attachEvent) {
+            inputArea.attachEvent('onchange', inputAreaChangeHandler);
+         }
+         inputArea.className = 'inputbox';
         return inputArea;
     },
     createInputAreaChangeHandler: function(instanceName, filterAreaID, filterCounter) {
@@ -802,16 +809,7 @@ function showNewFilter(
     filterDiv.appendChild(selectColumn);
     selectColumn = selectColumnFactory.createOperatorSelect(filterAreaID, filterCounter);
     filterDiv.appendChild(selectColumn);
-    var inputArea = inputAreaFactory.create(filterAreaID, filterCounter);
-    var inputAreaChangeHandler = inputAreaFactory.createInputAreaChangeHandler(instanceName, filterAreaID, filterCounter);
-    
-    if (inputArea.addEventListener) {
-       inputArea.addEventListener('change', inputAreaChangeHandler, false);
-    } else if (inputArea.attachEvent) {
-       inputArea.attachEvent('onchange', inputAreaChangeHandler);
-    } 
-    
-    inputArea.className = 'inputbox';
+    var inputArea = inputAreaFactory.create(filterAreaID, filterCounter, instanceName);
     filterDiv.appendChild(inputArea);
 
 
