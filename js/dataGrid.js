@@ -660,6 +660,11 @@ var selectColumnFactory = {
 	    }
 	    selectColumn.id = filterAreaID+filterCounter+'columnName';
 	    selectColumn.className = 'inputbox';
+	    if (selectColumn.addEventListener) {
+	        selectColumn.addEventListener('change', selectColumnFactory.createSelectAreaChangeHandler(filterAreaID, filterCounter), false);
+	     } else if (selectColumn.attachEvent) {
+	        selectColumn.attachEvent('onchange', selectColumnFactory.createSelectAreaChangeHandler(filterAreaID, filterCounter));
+	     }
 	    return selectColumn;
 	},
 	createSelectAreaChangeHandler: function(filterAreaID, filterCounter) {
@@ -768,14 +773,6 @@ function showNewFilter(
     );
     var filterDiv = document.createElement('div');
     var selectColumn = selectColumnFactory.createFieldSelect(filterAreaID, filterCounter, selectableColumns);
-
-
-    if (selectColumn.addEventListener) {
-       selectColumn.addEventListener('change', selectColumnFactory.createSelectAreaChangeHandler(filterAreaID, filterCounter), false);
-    } else if (selectColumn.attachEvent) {
-       selectColumn.attachEvent('onchange', selectColumnFactory.createSelectAreaChangeHandler(filterAreaID, filterCounter));
-    } 
-
     filterDiv.appendChild(selectColumn);
     
     selectColumn = document.createElement('select');
