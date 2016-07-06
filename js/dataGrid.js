@@ -642,8 +642,8 @@ function getFilterColumnTypesFromOptionValue(theValue)
     return theValue.substr(theValue.indexOf('!@!') + 3);
 }
 
-var selectColumnOption = {
-	create: function(value, innerHtml) {
+var selectColumnFactory = {
+	createOption: function(value, innerHtml) {
 		var option = document.createElement('option');
 		option.value = value;
 		option.innerHTML = innerHtml;
@@ -712,7 +712,7 @@ function showNewFilter(
             
     for (var i = 0; i < selectableColumns.length; i++)
     {
-        selectColumn.appendChild(selectColumnOption.create(
+        selectColumn.appendChild(selectColumnFactory.createOption(
             selectableColumns[i],
             getFilterColumnNameFromOptionValue(selectableColumns[i])
         ));
@@ -746,7 +746,7 @@ function showNewFilter(
         {
             var possibleType = possibleTypes.substr(i,2);
             selectOperatorColumn.appendChild(
-                selectColumnOption.create(
+                selectColumnFactory.createOption(
                     possibleType,
                     filter.getNames()[possibleType]
                 )
