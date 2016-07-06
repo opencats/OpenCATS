@@ -891,25 +891,12 @@ class DataGrid
                 }
             }
         }
-
+        
         $arrayKeysString = implode(',', array_map('urlencode', $filterableColumns));
-
-        if ($counterFilters > 0)
-        {
-            echo '<br /><br />';
-        }
-
-        echo '</td><td style="width:140px; vertical-align:top;">';
-        echo '<input class="button" style="width:120px; margin-left:5px;" type="button" name="addFilterButton', $md5InstanceName, '" onclick="showNewFilter', $md5InstanceName, '();" value="Add New"  /><br />';
-        echo '<input class="button" style="width:120px; margin-left:5px;" type="button" name="clearFilterButton', $md5InstanceName, '" onclick="clearFilter(\'filterArea'.$md5InstanceName.'\'); submitFilter', $md5InstanceName, '(false);" value="Remove All"  /><br />';
-        echo '<input class="button" style="width:120px; margin-left:5px;" type="button" name="applyFilterButton', $md5InstanceName, '" onclick="submitFilter', $md5InstanceName, '();" value="Apply" />';
-
-        echo '</td></tr></table>';
-
-
         $template = new Template();
         $template->assign('md5InstanceName', $md5InstanceName);
         $template->assign('arrayKeysString', $arrayKeysString);
+        $template->assign('counterFilters', $counterFilters);
         $template->display('./lib/datagrid/FilterArea.tpl');
     }
 
