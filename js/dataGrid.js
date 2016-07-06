@@ -661,7 +661,53 @@ var selectColumnFactory = {
 	    selectColumn.id = filterAreaID+filterCounter+'columnName';
 	    selectColumn.className = 'inputbox';
 	    return selectColumn;
-	}
+	},
+	createSelectAreaChangeHandler: function(filterAreaID, filterCounter) {
+	    return function() {
+            var selectOperatorColumn = document.getElementById(filterAreaID+filterCounter+'operator');
+            var possibleTypes = getFilterColumnTypesFromOptionValue(document.getElementById(filterAreaID+filterCounter+'columnName').value);
+     
+            selectOperatorColumn.style.display='';
+    
+            document.getElementById(filterAreaID+filterCounter+'zip1').style.display='none';
+            document.getElementById(filterAreaID+filterCounter+'zip2').style.display='none';
+                    
+            document.getElementById(filterAreaID+filterCounter+'zipInput1').style.display='none';
+            document.getElementById(filterAreaID+filterCounter+'zipInput2').style.display='none';
+                
+            /* Remove all child nodes */
+            if ( selectOperatorColumn.hasChildNodes() )
+            {
+                while ( selectOperatorColumn.childNodes.length >= 1 )
+                {
+                    selectOperatorColumn.removeChild( selectOperatorColumn.firstChild );       
+                } 
+            }
+        
+            for (var i = 0; i < possibleTypes.length; i+=2)
+            {
+                var possibleType = possibleTypes.substr(i,2);
+                selectOperatorColumn.appendChild(
+                    selectColumnFactory.createOption(
+                        possibleType,
+                        filter.getNames()[possibleType]
+                    )
+                );
+                if (possibleType == '=@')
+                {
+                    selectOperatorColumn.style.display='none';
+                    
+                    document.getElementById(filterAreaID+filterCounter+'value').style.display='none';
+                    
+                    document.getElementById(filterAreaID+filterCounter+'zip1').style.display='';
+                    document.getElementById(filterAreaID+filterCounter+'zip2').style.display='';
+                    
+                    document.getElementById(filterAreaID+filterCounter+'zipInput1').style.display='';
+                    document.getElementById(filterAreaID+filterCounter+'zipInput2').style.display='';
+                }
+            }
+        };
+	} 
 };
 
 var filter = {
@@ -723,55 +769,11 @@ function showNewFilter(
     var filterDiv = document.createElement('div');
     var selectColumn = selectColumnFactory.createFieldSelect(filterAreaID, filterCounter, selectableColumns);
 
-    var selectAreaChangeHandler = function() {
-        var selectOperatorColumn = document.getElementById(filterAreaID+filterCounter+'operator');
-        var possibleTypes = getFilterColumnTypesFromOptionValue(document.getElementById(filterAreaID+filterCounter+'columnName').value);
- 
-        selectOperatorColumn.style.display='';
-
-        document.getElementById(filterAreaID+filterCounter+'zip1').style.display='none';
-        document.getElementById(filterAreaID+filterCounter+'zip2').style.display='none';
-                
-        document.getElementById(filterAreaID+filterCounter+'zipInput1').style.display='none';
-        document.getElementById(filterAreaID+filterCounter+'zipInput2').style.display='none';
-            
-        /* Remove all child nodes */
-        if ( selectOperatorColumn.hasChildNodes() )
-        {
-            while ( selectOperatorColumn.childNodes.length >= 1 )
-            {
-                selectOperatorColumn.removeChild( selectOperatorColumn.firstChild );       
-            } 
-        }
-    
-        for (var i = 0; i < possibleTypes.length; i+=2)
-        {
-            var possibleType = possibleTypes.substr(i,2);
-            selectOperatorColumn.appendChild(
-                selectColumnFactory.createOption(
-                    possibleType,
-                    filter.getNames()[possibleType]
-                )
-            );
-            if (possibleType == '=@')
-            {
-                selectOperatorColumn.style.display='none';
-                
-                document.getElementById(filterAreaID+filterCounter+'value').style.display='none';
-                
-                document.getElementById(filterAreaID+filterCounter+'zip1').style.display='';
-                document.getElementById(filterAreaID+filterCounter+'zip2').style.display='';
-                
-                document.getElementById(filterAreaID+filterCounter+'zipInput1').style.display='';
-                document.getElementById(filterAreaID+filterCounter+'zipInput2').style.display='';
-            }
-        }
-    }
 
     if (selectColumn.addEventListener) {
-       selectColumn.addEventListener('change', selectAreaChangeHandler, false);
+       selectColumn.addEventListener('change', selectColumnFactory.createSelectAreaChangeHandler(filterAreaID, filterCounter), false);
     } else if (selectColumn.attachEvent) {
-       selectColumn.attachEvent('onchange', selectAreaChangeHandler);
+       selectColumn.attachEvent('onchange', selectColumnFactory.createSelectAreaChangeHandler(filterAreaID, filterCounter));
     } 
 
     filterDiv.appendChild(selectColumn);
@@ -861,7 +863,7 @@ function showNewFilter(
     filterDiv.style.float='left';    
     filterArea.appendChild(filterDiv);
     
-    selectAreaChangeHandler();
+    selectColumnFactory.createSelectAreaChangeHandler(filterAreaID, filterCounter)();
 }
 
 /* Generic message to display when a user tries to export selected, but nothing is selected. */
