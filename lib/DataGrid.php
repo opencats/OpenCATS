@@ -906,14 +906,11 @@ class DataGrid
 
         echo '</td></tr></table>';
 
-        echo '<script type="text/javascript">';
-        echo 'newFilterCounter', $md5InstanceName, ' = 0;';
-        echo 'function showNewFilter', $md5InstanceName, '() {';
-            echo 'newFilterCounter', $md5InstanceName, '++;';
-            echo 'showNewFilter(newFilterCounter', $md5InstanceName, ', \'filterResultsAreaTable', $md5InstanceName, '\', \'',$arrayKeysString,'\', \'', $md5InstanceName, '\', \'submitFilter'. $md5InstanceName .'();\');';
-        echo ' };';
-        echo '</script>';
-        echo '</fieldset>';
+
+        $template = new Template();
+        $template->assign('md5InstanceName', $md5InstanceName);
+        $template->assign('arrayKeysString', $arrayKeysString);
+        $template->display('./lib/datagrid/FilterArea.tpl');
     }
 
     /**
