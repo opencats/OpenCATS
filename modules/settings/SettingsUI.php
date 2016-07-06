@@ -808,6 +808,12 @@ class SettingsUI extends UserInterface
             //$this->fatal(ERROR_NO_PERMISSION);
         }
 
+        if (AUTH_MODE == "ldap")
+        {
+            /* LDAP users are not allowed to be created in DB manualy */
+            return;
+        }
+
         $firstName      = $this->getTrimmedInput('firstName', $_POST);
         $lastName       = $this->getTrimmedInput('lastName', $_POST);
         $email          = $this->getTrimmedInput('email', $_POST);
@@ -860,16 +866,6 @@ class SettingsUI extends UserInterface
         {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'The specified username already exists.');
         }
-
-	/* Check if username exists in LDAP */
-	if (AUTH_MODE == "ldap")
-        {
-            if ($users->searchLDAPUser($username) == NULL)
-            {
-                $this->fatal('The user doesn\'t exists in LDAP Database');
-            }
-        }
-
 
         $userID = $users->add(
             $lastName, $firstName, $email, $username, $password, $accessLevel, $eeoIsVisible
@@ -2692,13 +2688,16 @@ class SettingsUI extends UserInterface
                 'You are not allowed to change your password.'
             );
         }
-
-	if(AUTH_MODE == 'ldap')
-	{
-            $this->fatal(
-                'LDAP authentication is enabled. You are not allowed to change your password.'
-            );
-	}
+        
+        $users = new Users($this->_siteID);
+        if(AUTH_MODE == 'ldap' || AUTH_MODE == 'sql+ldap')
+        {
+            if($users->isUserLDAP($this->_userID)) {
+                $this->fatal(
+                    'LDAP authentication is enabled. You are not allowed to change your password.'
+                );
+            }
+        }
 
         $logout = false;
 
@@ -2737,7 +2736,6 @@ class SettingsUI extends UserInterface
         }
 
         /* Attempt to change the user's password. */
-        $users = new Users($this->_siteID);
         $status = $users->changePassword(
             $this->_userID, $currentPassword, $newPassword
         );

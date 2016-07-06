@@ -32,7 +32,7 @@
 
 include_once('./lib/License.php');
 
-if (AUTH_MODE == "ldap") 
+if (AUTH_MODE == "ldap" || AUTH_MODE == "sql+ldap") 
 {
     require_once('./lib/LDAP.php');
 }
@@ -50,6 +50,9 @@ define('ADD_USER_SUCCESS',            1);
 define('ADD_USER_BAD_PASS',          -1);
 define('ADD_USER_EXISTS',            -2);
 define('ADD_USER_DB_ERROR',          -3);
+
+/* Password for user authenticated against LDAP */ 
+define('LDAPUSER_PASSWORD',          '_LDAPUSER_');
 
 /**
  *	Users Library
@@ -83,8 +86,11 @@ class Users
      * @return new user ID, or -1 on failure.
      */
     public function add($lastName, $firstName, $email, $username, $password,
-            $accessLevel, $eeoIsVisible = false)
+            $accessLevel, $eeoIsVisible = false, $userSiteID = -1)
     {
+
+        $md5pwd = $password == LDAPUSER_PASSWORD ? $password : md5($password);
+        $userSiteID = $userSiteID < 0 ? $this->_siteID : $userSiteID;
         $sql = sprintf(
                 "INSERT INTO user (
             user_name,
@@ -100,7 +106,7 @@ class Users
             )
                 VALUES (
                     %s,
-                    md5(%s),
+                    %s,
                     %s,
                     1,
                     0,
@@ -111,12 +117,12 @@ class Users
                     %s
                     )",
         $this->_db->makeQueryString($username),
-        $this->_db->makeQueryString($password),
+        $this->_db->makeQueryString($md5pwd),
         $this->_db->makeQueryInteger($accessLevel),
         $this->_db->makeQueryString($email),
         $this->_db->makeQueryString($firstName),
         $this->_db->makeQueryString($lastName),
-        $this->_siteID,
+        $userSiteID,
         ($eeoIsVisible ? 1 : 0)
             );
 
@@ -641,6 +647,12 @@ class Users
      */
     public function changePassword($userID, $currentPassword, $newPassword)
     {
+        if( $this->isUserLDAP($userID))
+        {
+            /* LDAP user not allowed to change password */
+            return LOGIN_CANT_CHANGE_PASSWORD;
+        }
+
         $sql = sprintf(
                 "SELECT
                 user.password AS password,
@@ -707,6 +719,12 @@ class Users
      */
     public function resetPassword($userID, $newPassword)
     {
+        if( $this->isUserLDAP($userID))
+        {
+            /* LDAP user not allowed to reset password */
+            return false;
+        }
+
         $sql = sprintf(
                 "SELECT
                 user.password AS password,
@@ -754,6 +772,7 @@ class Users
      *   LOGIN_INVALID_PASSWORD - Invalid password.
      *   LOGIN_DISABLED         - Account is disabled.
      *   LOGIN_SUCCESS          - Password is valid and account is enabled.
+     *   LOGIN_PENDING_APPROVAL - Account is new but disabled and needs to be approved by SA or root.
      *
      * @param string username
      * @param string password
@@ -761,6 +780,9 @@ class Users
      */
     public function isCorrectLogin($username, $password)
     {
+        $existsInLDAP = false;
+        $existsInDB = false;
+        
         if (empty($username))
         {
             return LOGIN_INVALID_USER;
@@ -784,24 +806,47 @@ class Users
                 );
         $rs = $this->_db->getAssoc($sql);
 
-        /* No results? Probably an invalid user. */
-        if (!$rs || $this->_db->isEOF())
+        /* No results? Invalid user or new LDAP user. */
+        if(!$rs || $this->_db->isEOF())
         {
-            return LOGIN_INVALID_USER;
+            if(AUTH_MODE == 'sql')
+            {
+                return LOGIN_INVALID_USER;
+            }
+        } 
+        else 
+        {
+            $existsInDB = true;
         }
 
-        if(AUTH_MODE == 'ldap') {
-            $this->_ldap = LDAP::getInstance();
+        if((AUTH_MODE == 'ldap' || AUTH_MODE == 'sql+ldap')
+            && (($existsInDB && $rs['password'] == LDAPUSER_PASSWORD) || !$existsInDB) ) {
+            $this->_ldap = LDAP::getInstance($username, $password);
+            if($this->_ldap == NULL)
+            {
+                return LOGIN_INVALID_USER;
+            }
             if(!$this->_ldap->authenticate($username, $password)) 
             {
                 return LOGIN_INVALID_PASSWORD;
             } 
+            $existsInLDAP = true;
+        } else if(AUTH_MODE == 'ldap'){
+            /*  incorrect LDAP user in db */
+            return LOGIN_INVALID_USER;
         } else {
             /* Is the user's supplied password correct? */
             if ($rs['password'] !== md5($password))
             {
                 return LOGIN_INVALID_PASSWORD;
             }
+        }
+        
+        if (!$existsInDB && $existsInLDAP) {
+            /* ldap user not created in local db -> create one as disabled */
+            $userInfo = $this->_ldap->getUserInfo($username);
+            $userID = $this->add($userInfo[0], $userInfo[1], $userInfo[2], $userInfo[3], LDAPUSER_PASSWORD, '0', false, LDAP_SITEID);            
+            return LOGIN_PENDING_APPROVAL;
         }
 
         /* Is the user's account disabled? */
@@ -1205,10 +1250,22 @@ class Users
         return $rs;
     }
 
-    public function searchLDAPUser($username)
+    public function isUserLDAP($userID)
     {
-        return $this->_ldap->searchUid($username);
+        $sql = sprintf(
+                "SELECT
+                user.password AS password
+                FROM
+                user
+                WHERE
+                user.user_id = %s",
+                $this->_db->makeQueryString($userID)
+                );
+        $rs = $this->_db->getAssoc($sql);
+        
+        return ($rs['password'] == LDAPUSER_PASSWORD);
     }
+    
 }
 
 ?>
