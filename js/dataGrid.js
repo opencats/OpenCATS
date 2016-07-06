@@ -648,6 +648,19 @@ var selectColumnFactory = {
 		option.value = value;
 		option.innerHTML = innerHtml;
         return option;
+	},
+	createFieldSelect: function(filterAreaID, filterCounter, selectableColumns) {
+	    var selectColumn = document.createElement('select');
+	    for (var i = 0; i < selectableColumns.length; i++)
+	    {
+	        selectColumn.appendChild(selectColumnFactory.createOption(
+	            selectableColumns[i],
+	            getFilterColumnNameFromOptionValue(selectableColumns[i])
+	        ));
+	    }
+	    selectColumn.id = filterAreaID+filterCounter+'columnName';
+	    selectColumn.className = 'inputbox';
+	    return selectColumn;
 	}
 };
 
@@ -708,18 +721,7 @@ function showNewFilter(
         selectableColumns
     );
     var filterDiv = document.createElement('div');
-    var selectColumn = document.createElement('select');
-            
-    for (var i = 0; i < selectableColumns.length; i++)
-    {
-        selectColumn.appendChild(selectColumnFactory.createOption(
-            selectableColumns[i],
-            getFilterColumnNameFromOptionValue(selectableColumns[i])
-        ));
-    }
-
-    selectColumn.id = filterAreaID+filterCounter+'columnName';
-    selectColumn.className = 'inputbox';
+    var selectColumn = selectColumnFactory.createFieldSelect(filterAreaID, filterCounter, selectableColumns);
 
     var selectAreaChangeHandler = function() {
         var selectOperatorColumn = document.getElementById(filterAreaID+filterCounter+'operator');
