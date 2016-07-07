@@ -671,14 +671,6 @@ var selectColumnFactory = {
 	    return function() {
             var selectOperatorColumn = document.getElementById(filterAreaID+filterCounter+'operator');
             var possibleTypes = getFilterColumnTypesFromOptionValue(document.getElementById(filterAreaID+filterCounter+'columnName').value);
-
-            selectOperatorColumn.style.display='';
-    
-            document.getElementById(filterAreaID+filterCounter+'zip1').style.display='none';
-            document.getElementById(filterAreaID+filterCounter+'zip2').style.display='none';
-                    
-            document.getElementById(filterAreaID+filterCounter+'zipInput1').style.display='none';
-            document.getElementById(filterAreaID+filterCounter+'zipInput2').style.display='none';
                 
             /* Remove all child nodes */
             if ( selectOperatorColumn.hasChildNodes() )
@@ -698,18 +690,6 @@ var selectColumnFactory = {
                         filter.getNames()[possibleType]
                     )
                 );
-                if (possibleType == '=@')
-                {
-                    selectOperatorColumn.style.display='none';
-                    
-                    document.getElementById(filterAreaID+filterCounter+'value').style.display='none';
-                    
-                    document.getElementById(filterAreaID+filterCounter+'zip1').style.display='';
-                    document.getElementById(filterAreaID+filterCounter+'zip2').style.display='';
-                    
-                    document.getElementById(filterAreaID+filterCounter+'zipInput1').style.display='';
-                    document.getElementById(filterAreaID+filterCounter+'zipInput2').style.display='';
-                }
             }
         };
 	},
@@ -791,6 +771,15 @@ var filter = {
     }
 };
 
+filter.FilterFactory = {}
+filter.FilterFactory.createFromPossibleOperatorType = function(possibleType) {
+    if (getFilterColumnTypesFromOptionValue(possibleType) == '=@') {
+        return new filter.NearZipCodeFilter();
+    } else {
+        return new filter.Filter();
+    }
+}
+
 filter.Filter = function() {
 }
 
@@ -807,20 +796,30 @@ filter.Filter.prototype.render = function(
     filterDiv.appendChild(selectColumn);
     var inputArea = inputAreaFactory.create(filterAreaID, filterCounter, instanceName);
     filterDiv.appendChild(inputArea);
+    filterDiv.style.float='left';
+    return filterDiv;
+}
 
+filter.NearZipCodeFilter = function() {
+}
 
+filter.NearZipCodeFilter.prototype.render = function(
+    filterCounter,
+    filterAreaID,
+    selectableColumns,
+    instanceName
+) {
+    var filterDiv = document.createElement('div');
+    var selectColumn = selectColumnFactory.createFieldSelect(filterAreaID, filterCounter, selectableColumns);
+    filterDiv.appendChild(selectColumn);
     /* Zipcode input area */
     var labelZip = document.createElement('span');
     labelZip.id = filterAreaID+filterCounter+'zip1';
     labelZip.innerHTML = '&nbsp;&nbsp;Zipcode:&nbsp;&nbsp;';
-    labelZip.style.display='none';
     filterDiv.appendChild(labelZip);
-
     var inputArea2 = document.createElement('input');
     inputArea2.id = filterAreaID+filterCounter+'zipInput1';
     inputArea2.style.width='80px';
-    inputArea2.style.display='none';
-    
     inputAreaChangeHandlerZip = function() {
         addColumnToFilter('filterArea' + instanceName, 
           getFilterColumnNameFromOptionValue(document.getElementById(filterAreaID+filterCounter+'columnName').value),
@@ -828,43 +827,33 @@ filter.Filter.prototype.render = function(
           document.getElementById(filterAreaID+filterCounter+'zipInput1').value + ',' + document.getElementById(filterAreaID+filterCounter+'zipInput2').value
          ); 
     }
-    
     if (inputArea2.addEventListener) {
        inputArea2.addEventListener('change', inputAreaChangeHandlerZip, false);
     } else if (inputArea2.attachEvent) {
        inputArea2.attachEvent('onchange', inputAreaChangeHandlerZip);
-    } 
-    
+    }
     inputArea2.className = 'inputbox';
     filterDiv.appendChild(inputArea2);
-
-
     var labelZip2 = document.createElement('span');
     labelZip2.id = filterAreaID+filterCounter+'zip2';
     labelZip2.innerHTML = '&nbsp;&nbsp;Distance to Zipcode (Miles):&nbsp;&nbsp;';
-    labelZip2.style.display='none';
     filterDiv.appendChild(labelZip2);
-
     var inputArea3 = document.createElement('input');
     inputArea3.id = filterAreaID+filterCounter+'zipInput2';
     inputArea3.style.width='80px';
-    inputArea3.style.display='none';
     inputArea3.value="25";
-    
     if (inputArea3.addEventListener) {
        inputArea3.addEventListener('change', inputAreaChangeHandlerZip, false);
     } else if (inputArea3.attachEvent) {
        inputArea3.attachEvent('onchange', inputAreaChangeHandlerZip);
     } 
-    
     inputArea3.className = 'inputbox';
     filterDiv.appendChild(inputArea3);
-
-
-    
-    filterDiv.style.float='left';    
+    filterDiv.style.float='left';
     return filterDiv;
 }
+
+$.extend({}, filter.NearZipCodeFilter, filter.Filter);
 
 /* Shows a new DHTML filter for the user to add a filter to. */
 function showNewFilter(
@@ -879,7 +868,7 @@ function showNewFilter(
         filterAreaID,
         selectableColumns
     );
-    var currentFilter = new filter.Filter();
+    var currentFilter = filter.FilterFactory.createFromPossibleOperatorType(selectableColumns[0]);
     filterArea.appendChild(currentFilter.render(
         filterCounter,
         filterAreaID,
