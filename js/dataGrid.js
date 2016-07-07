@@ -671,7 +671,7 @@ var selectColumnFactory = {
 	    return function() {
             var selectOperatorColumn = document.getElementById(filterAreaID+filterCounter+'operator');
             var possibleTypes = getFilterColumnTypesFromOptionValue(document.getElementById(filterAreaID+filterCounter+'columnName').value);
-     
+
             selectOperatorColumn.style.display='';
     
             document.getElementById(filterAreaID+filterCounter+'zip1').style.display='none';
@@ -790,20 +790,16 @@ var filter = {
         }
     }
 };
- 
-/* Shows a new DHTML filter for the user to add a filter to. */
-function showNewFilter(
+
+filter.Filter = function() {
+}
+
+filter.Filter.prototype.render = function(
     filterCounter,
     filterAreaID,
     selectableColumns,
     instanceName
 ) {
-    var filterArea = document.getElementById(filterAreaID);
-    filter.makePreviousSelectionBoxesUnselectable(
-        filterCounter,
-        filterAreaID,
-        selectableColumns
-    );
     var filterDiv = document.createElement('div');
     var selectColumn = selectColumnFactory.createFieldSelect(filterAreaID, filterCounter, selectableColumns);
     filterDiv.appendChild(selectColumn);
@@ -827,10 +823,10 @@ function showNewFilter(
     
     inputAreaChangeHandlerZip = function() {
         addColumnToFilter('filterArea' + instanceName, 
-                          getFilterColumnNameFromOptionValue(document.getElementById(filterAreaID+filterCounter+'columnName').value),
-                          document.getElementById(filterAreaID+filterCounter+'operator').value,
-                          document.getElementById(filterAreaID+filterCounter+'zipInput1').value + ',' + document.getElementById(filterAreaID+filterCounter+'zipInput2').value
-                         ); 
+          getFilterColumnNameFromOptionValue(document.getElementById(filterAreaID+filterCounter+'columnName').value),
+          document.getElementById(filterAreaID+filterCounter+'operator').value,
+          document.getElementById(filterAreaID+filterCounter+'zipInput1').value + ',' + document.getElementById(filterAreaID+filterCounter+'zipInput2').value
+         ); 
     }
     
     if (inputArea2.addEventListener) {
@@ -867,8 +863,29 @@ function showNewFilter(
 
     
     filterDiv.style.float='left';    
-    filterArea.appendChild(filterDiv);
-    
+    return filterDiv;
+}
+
+/* Shows a new DHTML filter for the user to add a filter to. */
+function showNewFilter(
+    filterCounter,
+    filterAreaID,
+    selectableColumns,
+    instanceName
+) {
+    var filterArea = document.getElementById(filterAreaID);
+    filter.makePreviousSelectionBoxesUnselectable(
+        filterCounter,
+        filterAreaID,
+        selectableColumns
+    );
+    var currentFilter = new filter.Filter();
+    filterArea.appendChild(currentFilter.render(
+        filterCounter,
+        filterAreaID,
+        selectableColumns,
+        instanceName
+    ));
     selectColumnFactory.createSelectAreaChangeHandler(filterAreaID, filterCounter)();
 }
 
