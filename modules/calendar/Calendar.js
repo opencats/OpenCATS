@@ -607,7 +607,7 @@ function calendarDataPopulateString(theData)
         for (var j = 0; j < valuesArray.length; j++)
         {
             record = valuesArray[j].split('|');
-            record[1] = unescape(record[1]);
+            record[1] = decodeURIComponent(record[1]);
 
             if (record[0] == 'datetime')
             {
