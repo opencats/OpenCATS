@@ -803,6 +803,19 @@ filter.Filter.prototype.render = function(
 filter.NearZipCodeFilter = function() {
 }
 
+filter.NearZipCodeFilter.prototype.createElement = function(tagName, properties, eventListeners) {
+    var element = document.createElement(tagName);
+    for (var property in properties) {
+        element[property] = properties[property];
+    }
+    if (eventListeners) {
+        for (var eventName in eventListeners) {
+            element.addEventListener(eventName, eventListeners[eventName]);
+        }
+    }
+    return element;
+}
+
 filter.NearZipCodeFilter.prototype.render = function(
     filterCounter,
     filterAreaID,
@@ -813,43 +826,52 @@ filter.NearZipCodeFilter.prototype.render = function(
     var selectColumn = selectColumnFactory.createFieldSelect(filterAreaID, filterCounter, selectableColumns);
     filterDiv.appendChild(selectColumn);
     /* Zipcode input area */
-    var labelZip = document.createElement('span');
-    labelZip.id = filterAreaID+filterCounter+'zip1';
-    labelZip.innerHTML = '&nbsp;&nbsp;Zipcode:&nbsp;&nbsp;';
-    filterDiv.appendChild(labelZip);
-    var inputArea2 = document.createElement('input');
-    inputArea2.id = filterAreaID+filterCounter+'zipInput1';
-    inputArea2.style.width='80px';
-    inputAreaChangeHandlerZip = function() {
+    filterDiv.appendChild(this.createElement(
+        'span',
+        {
+            id: filterAreaID + filterCounter + 'zip1',
+            innerHTML: 'Zipcode:'
+        }
+    )); 
+    var inputAreaChangeHandlerZip = function() {
         addColumnToFilter('filterArea' + instanceName, 
-          getFilterColumnNameFromOptionValue(document.getElementById(filterAreaID+filterCounter+'columnName').value),
-          document.getElementById(filterAreaID+filterCounter+'operator').value,
-          document.getElementById(filterAreaID+filterCounter+'zipInput1').value + ',' + document.getElementById(filterAreaID+filterCounter+'zipInput2').value
-         ); 
-    }
-    if (inputArea2.addEventListener) {
-       inputArea2.addEventListener('change', inputAreaChangeHandlerZip, false);
-    } else if (inputArea2.attachEvent) {
-       inputArea2.attachEvent('onchange', inputAreaChangeHandlerZip);
-    }
-    inputArea2.className = 'inputbox';
-    filterDiv.appendChild(inputArea2);
-    var labelZip2 = document.createElement('span');
-    labelZip2.id = filterAreaID+filterCounter+'zip2';
-    labelZip2.innerHTML = '&nbsp;&nbsp;Distance to Zipcode (Miles):&nbsp;&nbsp;';
-    filterDiv.appendChild(labelZip2);
-    var inputArea3 = document.createElement('input');
-    inputArea3.id = filterAreaID+filterCounter+'zipInput2';
-    inputArea3.style.width='80px';
-    inputArea3.value="25";
-    if (inputArea3.addEventListener) {
-       inputArea3.addEventListener('change', inputAreaChangeHandlerZip, false);
-    } else if (inputArea3.attachEvent) {
-       inputArea3.attachEvent('onchange', inputAreaChangeHandlerZip);
-    } 
-    inputArea3.className = 'inputbox';
-    filterDiv.appendChild(inputArea3);
-    filterDiv.style.float='left';
+            getFilterColumnNameFromOptionValue(document.getElementById(filterAreaID+filterCounter+'columnName').value),
+            document.getElementById(filterAreaID+filterCounter+'operator').value,
+            document.getElementById(filterAreaID+filterCounter+'zipInput1').value + ',' + document.getElementById(filterAreaID+filterCounter+'zipInput2').value
+        );
+    };
+    filterDiv.appendChild(this.createElement(
+        'input',
+        {
+            id: filterAreaID + filterCounter + 'zipInput1',
+            style: 'width: 80px',
+            className: 'inputbox,',
+            innerHTML: 'Zipcode:'
+        },
+        {
+            change: inputAreaChangeHandlerZip
+        }
+    ));
+    filterDiv.appendChild(this.createElement(
+        'span',
+        {
+            id: filterAreaID + filterCounter + 'zip2',
+            innerHTML: 'Distance to Zipcode (Miles):'
+        }
+    ));
+    filterDiv.appendChild(this.createElement(
+        'input',
+        {
+            id: filterAreaID+filterCounter+'zipInput2',
+            style: 'width: 80px;',
+            className: 'inputbox,',
+            innerHTML: 'Zipcode:',
+            value: '25'
+        },
+        {
+            change: inputAreaChangeHandlerZip
+        }
+    ));
     return filterDiv;
 }
 
