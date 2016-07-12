@@ -690,18 +690,11 @@ filter.FilterFactory.createFromPossibleOperatorType = function(possibleType) {
     if (getFilterColumnTypesFromOptionValue(possibleType) == '=@') {
         return new filter.NearZipCodeFilter();
     } else {
-        return new filter.Filter();
+        return new filter.DefaultFilter();
     }
 }
 
 filter.Filter = function() {
-}
-
-filter.Filter.prototype.createOption = function(value, innerHtml) {
-    var option = document.createElement('option');
-    option.value = value;
-    option.innerHTML = innerHtml;
-    return option;
 }
 
 filter.Filter.prototype.createFieldSelect = function(filterAreaID, filterCounter, selectableColumns) {
@@ -718,7 +711,19 @@ filter.Filter.prototype.createFieldSelect = function(filterAreaID, filterCounter
     return selectColumn;
 }
 
-filter.Filter.prototype.createOperatorSelect = function(filterAreaID, filterCounter) {
+filter.Filter.prototype.createOption = function(value, innerHtml) {
+    var option = document.createElement('option');
+    option.value = value;
+    option.innerHTML = innerHtml;
+    return option;
+}
+
+filter.DefaultFilter = function() {
+}
+
+filter.DefaultFilter.prototype = Object.create(filter.Filter.prototype);
+
+filter.DefaultFilter.prototype.createOperatorSelect = function(filterAreaID, filterCounter) {
     var selectColumn = document.createElement('select');
     selectColumn.id = filterAreaID+filterCounter+'operator';
     selectColumn.className = 'inputbox';
@@ -726,7 +731,7 @@ filter.Filter.prototype.createOperatorSelect = function(filterAreaID, filterCoun
     return selectColumn;
 }
 
-filter.Filter.prototype.createSelectAreaChangeHandler = function(selectColumn, selectOperatorColumn) {
+filter.DefaultFilter.prototype.createSelectAreaChangeHandler = function(selectColumn, selectOperatorColumn) {
     var me = this;
     return function() {
         var possibleTypes = getFilterColumnTypesFromOptionValue(selectColumn.value);
@@ -751,7 +756,7 @@ filter.Filter.prototype.createSelectAreaChangeHandler = function(selectColumn, s
     };
 }
 
-filter.Filter.prototype.createInputAreaChangeHandler = function(instanceName, filterAreaID, filterCounter) {
+filter.DefaultFilter.prototype.createInputAreaChangeHandler = function(instanceName, filterAreaID, filterCounter) {
     return function() {
         addColumnToFilter(
             'filterArea' + instanceName, 
@@ -762,7 +767,7 @@ filter.Filter.prototype.createInputAreaChangeHandler = function(instanceName, fi
     };
 }
 
-filter.Filter.prototype.createInputArea = function(filterAreaID, filterCounter, instanceName) {
+filter.DefaultFilter.prototype.createInputArea = function(filterAreaID, filterCounter, instanceName) {
     var inputArea = document.createElement('input');
     inputArea.id = filterAreaID+filterCounter+'value';
     inputArea.style.width='180px';
@@ -776,7 +781,7 @@ filter.Filter.prototype.createInputArea = function(filterAreaID, filterCounter, 
     return inputArea;
 }
 
-filter.Filter.prototype.render = function(
+filter.DefaultFilter.prototype.render = function(
     filterCounter,
     filterAreaID,
     selectableColumns,
