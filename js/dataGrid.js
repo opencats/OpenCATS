@@ -718,6 +718,19 @@ filter.Filter.prototype.createOption = function(value, innerHtml) {
     return option;
 }
 
+filter.Filter.prototype.createElement = function(tagName, properties, eventListeners) {
+    var element = document.createElement(tagName);
+    for (var property in properties) {
+        element[property] = properties[property];
+    }
+    if (eventListeners) {
+        for (var eventName in eventListeners) {
+            element.addEventListener(eventName, eventListeners[eventName]);
+        }
+    }
+    return element;
+}
+
 filter.DefaultFilter = function() {
 }
 
@@ -808,19 +821,6 @@ filter.NearZipCodeFilter = function() {
 }
 
 filter.NearZipCodeFilter.prototype = Object.create(filter.Filter.prototype);
-
-filter.NearZipCodeFilter.prototype.createElement = function(tagName, properties, eventListeners) {
-    var element = document.createElement(tagName);
-    for (var property in properties) {
-        element[property] = properties[property];
-    }
-    if (eventListeners) {
-        for (var eventName in eventListeners) {
-            element.addEventListener(eventName, eventListeners[eventName]);
-        }
-    }
-    return element;
-}
 
 filter.NearZipCodeFilter.prototype.render = function(
     filterCounter,
