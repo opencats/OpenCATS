@@ -102,11 +102,11 @@ filter.DefaultFilter = function(filterCounter, filterAreaID, selectableColumns, 
 filter.DefaultFilter.prototype = Object.create(filter.Filter.prototype);
 
 filter.DefaultFilter.prototype.createOperatorSelect = function(filterAreaID, filterCounter) {
-    var selectColumn = document.createElement('select');
-    selectColumn.id = filterAreaID+filterCounter+'operator';
-    selectColumn.className = 'inputbox';
-    selectColumn.style.width='120px';
-    return selectColumn;
+    return this.createElement('select', {
+        id: filterAreaID + filterCounter + 'operator',
+        className: 'inputbox',
+        style: 'width: 120px'
+    });
 }
 
 filter.DefaultFilter.prototype.createSelectAreaChangeHandler = function(selectColumn, selectOperatorColumn) {
