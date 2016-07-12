@@ -644,19 +644,6 @@ function getFilterColumnTypesFromOptionValue(theValue)
 
 
 var inputAreaFactory = {
-    create: function(filterAreaID, filterCounter, instanceName) {
-        var inputArea = document.createElement('input');
-        inputArea.id = filterAreaID+filterCounter+'value';
-        inputArea.style.width='180px';
-        var inputAreaChangeHandler = inputAreaFactory.createInputAreaChangeHandler(instanceName, filterAreaID, filterCounter)
-        if (inputArea.addEventListener) {
-            inputArea.addEventListener('change', inputAreaChangeHandler, false);
-         } else if (inputArea.attachEvent) {
-            inputArea.attachEvent('onchange', inputAreaChangeHandler);
-         }
-         inputArea.className = 'inputbox';
-        return inputArea;
-    },
     createInputAreaChangeHandler: function(instanceName, filterAreaID, filterCounter) {
         return function() {
             addColumnToFilter(
@@ -778,6 +765,20 @@ filter.Filter.prototype.createSelectAreaChangeHandler = function(selectColumn, s
     };
 }
 
+filter.Filter.prototype.createInputArea = function(filterAreaID, filterCounter, instanceName) {
+    var inputArea = document.createElement('input');
+    inputArea.id = filterAreaID+filterCounter+'value';
+    inputArea.style.width='180px';
+    var inputAreaChangeHandler = inputAreaFactory.createInputAreaChangeHandler(instanceName, filterAreaID, filterCounter)
+    if (inputArea.addEventListener) {
+        inputArea.addEventListener('change', inputAreaChangeHandler, false);
+     } else if (inputArea.attachEvent) {
+        inputArea.attachEvent('onchange', inputAreaChangeHandler);
+     }
+     inputArea.className = 'inputbox';
+    return inputArea;
+}
+
 filter.Filter.prototype.render = function(
     filterCounter,
     filterAreaID,
@@ -794,7 +795,7 @@ filter.Filter.prototype.render = function(
      } else if (selectColumn.attachEvent) {
         selectColumn.attachEvent('onchange', this.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn));
      }
-    var inputArea = inputAreaFactory.create(filterAreaID, filterCounter, instanceName);
+    var inputArea = this.createInputArea(filterAreaID, filterCounter, instanceName);
     filterDiv.appendChild(inputArea);
     filterDiv.style.float='left';
     this.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn)();
