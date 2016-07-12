@@ -759,7 +759,7 @@ filter.Filter.prototype.createSelectAreaChangeHandler = function(selectColumn, s
         var possibleTypes = getFilterColumnTypesFromOptionValue(selectColumn.value);
         if (selectOperatorColumn.hasChildNodes() )
         {
-            while ( selectOperatorColumn.childNodes.length >= 1 )
+            while (selectOperatorColumn.childNodes.length >= 1 )
             {
                 selectOperatorColumn.removeChild( selectOperatorColumn.firstChild );       
             } 
