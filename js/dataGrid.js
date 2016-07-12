@@ -642,20 +642,6 @@ function getFilterColumnTypesFromOptionValue(theValue)
     return theValue.substr(theValue.indexOf('!@!') + 3);
 }
 
-
-var inputAreaFactory = {
-    createInputAreaChangeHandler: function(instanceName, filterAreaID, filterCounter) {
-        return function() {
-            addColumnToFilter(
-                'filterArea' + instanceName, 
-                getFilterColumnNameFromOptionValue(document.getElementById(filterAreaID+filterCounter+'columnName').value),
-                document.getElementById(filterAreaID+filterCounter+'operator').value,
-                document.getElementById(filterAreaID+filterCounter+'value').value
-            ); 
-        };
-    }
-}
-
 var filter = {
     getNames: function() {
         return {
@@ -765,11 +751,22 @@ filter.Filter.prototype.createSelectAreaChangeHandler = function(selectColumn, s
     };
 }
 
+filter.Filter.prototype.createInputAreaChangeHandler = function(instanceName, filterAreaID, filterCounter) {
+    return function() {
+        addColumnToFilter(
+            'filterArea' + instanceName, 
+            getFilterColumnNameFromOptionValue(document.getElementById(filterAreaID+filterCounter+'columnName').value),
+            document.getElementById(filterAreaID+filterCounter+'operator').value,
+            document.getElementById(filterAreaID+filterCounter+'value').value
+        ); 
+    };
+}
+
 filter.Filter.prototype.createInputArea = function(filterAreaID, filterCounter, instanceName) {
     var inputArea = document.createElement('input');
     inputArea.id = filterAreaID+filterCounter+'value';
     inputArea.style.width='180px';
-    var inputAreaChangeHandler = inputAreaFactory.createInputAreaChangeHandler(instanceName, filterAreaID, filterCounter)
+    var inputAreaChangeHandler = this.createInputAreaChangeHandler(instanceName, filterAreaID, filterCounter)
     if (inputArea.addEventListener) {
         inputArea.addEventListener('change', inputAreaChangeHandler, false);
      } else if (inputArea.attachEvent) {
