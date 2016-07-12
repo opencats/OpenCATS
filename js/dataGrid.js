@@ -662,29 +662,6 @@ var selectColumnFactory = {
 	    selectColumn.className = 'inputbox';
 	    return selectColumn;
 	},
-	createSelectAreaChangeHandler: function(selectColumn, selectOperatorColumn) {
-	    return function() {
-            var possibleTypes = getFilterColumnTypesFromOptionValue(selectColumn.value);
-            if (selectOperatorColumn.hasChildNodes() )
-            {
-                while ( selectOperatorColumn.childNodes.length >= 1 )
-                {
-                    selectOperatorColumn.removeChild( selectOperatorColumn.firstChild );       
-                } 
-            }
-        
-            for (var i = 0; i < possibleTypes.length; i+=2)
-            {
-                var possibleType = possibleTypes.substr(i,2);
-                selectOperatorColumn.appendChild(
-                    selectColumnFactory.createOption(
-                        possibleType,
-                        filter.getNames()[possibleType]
-                    )
-                );
-            }
-        };
-	},
 	createOperatorSelect: function(filterAreaID, filterCounter) {
 	    var selectColumn = document.createElement('select');
 	    selectColumn.id = filterAreaID+filterCounter+'operator';
@@ -775,6 +752,30 @@ filter.FilterFactory.createFromPossibleOperatorType = function(possibleType) {
 filter.Filter = function() {
 }
 
+filter.Filter.prototype.createSelectAreaChangeHandler = function(selectColumn, selectOperatorColumn) {
+    return function() {
+        var possibleTypes = getFilterColumnTypesFromOptionValue(selectColumn.value);
+        if (selectOperatorColumn.hasChildNodes() )
+        {
+            while ( selectOperatorColumn.childNodes.length >= 1 )
+            {
+                selectOperatorColumn.removeChild( selectOperatorColumn.firstChild );       
+            } 
+        }
+    
+        for (var i = 0; i < possibleTypes.length; i+=2)
+        {
+            var possibleType = possibleTypes.substr(i,2);
+            selectOperatorColumn.appendChild(
+                selectColumnFactory.createOption(
+                    possibleType,
+                    filter.getNames()[possibleType]
+                )
+            );
+        }
+    };
+}
+
 filter.Filter.prototype.render = function(
     filterCounter,
     filterAreaID,
@@ -787,14 +788,14 @@ filter.Filter.prototype.render = function(
     var operatorSelectColumn = selectColumnFactory.createOperatorSelect(filterAreaID, filterCounter);
     filterDiv.appendChild(operatorSelectColumn);
     if (selectColumn.addEventListener) {
-        selectColumn.addEventListener('change', selectColumnFactory.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn), false);
+        selectColumn.addEventListener('change', this.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn), false);
      } else if (selectColumn.attachEvent) {
-        selectColumn.attachEvent('onchange', selectColumnFactory.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn));
+        selectColumn.attachEvent('onchange', this.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn));
      }
     var inputArea = inputAreaFactory.create(filterAreaID, filterCounter, instanceName);
     filterDiv.appendChild(inputArea);
     filterDiv.style.float='left';
-    selectColumnFactory.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn)();
+    this.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn)();
     return filterDiv;
 }
 
