@@ -660,20 +660,12 @@ var selectColumnFactory = {
 	    }
 	    selectColumn.id = filterAreaID+filterCounter+'columnName';
 	    selectColumn.className = 'inputbox';
-	    if (selectColumn.addEventListener) {
-	        selectColumn.addEventListener('change', selectColumnFactory.createSelectAreaChangeHandler(filterAreaID, filterCounter), false);
-	     } else if (selectColumn.attachEvent) {
-	        selectColumn.attachEvent('onchange', selectColumnFactory.createSelectAreaChangeHandler(filterAreaID, filterCounter));
-	     }
 	    return selectColumn;
 	},
-	createSelectAreaChangeHandler: function(filterAreaID, filterCounter) {
+	createSelectAreaChangeHandler: function(selectColumn, selectOperatorColumn) {
 	    return function() {
-            var selectOperatorColumn = document.getElementById(filterAreaID+filterCounter+'operator');
-            var possibleTypes = getFilterColumnTypesFromOptionValue(document.getElementById(filterAreaID+filterCounter+'columnName').value);
-                
-            /* Remove all child nodes */
-            if ( selectOperatorColumn.hasChildNodes() )
+            var possibleTypes = getFilterColumnTypesFromOptionValue(selectColumn.value);
+            if (selectOperatorColumn.hasChildNodes() )
             {
                 while ( selectOperatorColumn.childNodes.length >= 1 )
                 {
@@ -792,11 +784,17 @@ filter.Filter.prototype.render = function(
     var filterDiv = document.createElement('div');
     var selectColumn = selectColumnFactory.createFieldSelect(filterAreaID, filterCounter, selectableColumns);
     filterDiv.appendChild(selectColumn);
-    selectColumn = selectColumnFactory.createOperatorSelect(filterAreaID, filterCounter);
-    filterDiv.appendChild(selectColumn);
+    var operatorSelectColumn = selectColumnFactory.createOperatorSelect(filterAreaID, filterCounter);
+    filterDiv.appendChild(operatorSelectColumn);
+    if (selectColumn.addEventListener) {
+        selectColumn.addEventListener('change', selectColumnFactory.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn), false);
+     } else if (selectColumn.attachEvent) {
+        selectColumn.attachEvent('onchange', selectColumnFactory.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn));
+     }
     var inputArea = inputAreaFactory.create(filterAreaID, filterCounter, instanceName);
     filterDiv.appendChild(inputArea);
     filterDiv.style.float='left';
+    selectColumnFactory.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn)();
     return filterDiv;
 }
 
@@ -897,7 +895,6 @@ function showNewFilter(
         selectableColumns,
         instanceName
     ));
-    selectColumnFactory.createSelectAreaChangeHandler(filterAreaID, filterCounter)();
 }
 
 /* Generic message to display when a user tries to export selected, but nothing is selected. */
