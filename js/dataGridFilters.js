@@ -42,11 +42,16 @@ var filter = {
 };
 
 filter.FilterFactory = {}
-filter.FilterFactory.createFromPossibleOperatorType = function(possibleType) {
-    if (getFilterColumnTypesFromOptionValue(possibleType) == '=@') {
-        return new filter.NearZipCodeFilter();
+filter.FilterFactory.createFromPossibleOperatorType = function(
+    filterCounter,
+    filterAreaID,
+    selectableColumns,
+    instanceName
+) {
+    if (getFilterColumnTypesFromOptionValue(selectableColumns[0]) == '=@') {
+        return new filter.NearZipCodeFilter(filterCounter, filterAreaID, selectableColumns, instanceName);
     } else {
-        return new filter.DefaultFilter();
+        return new filter.DefaultFilter(filterCounter, filterAreaID, selectableColumns, instanceName);
     }
 }
 
@@ -87,7 +92,11 @@ filter.Filter.prototype.createElement = function(tagName, properties, eventListe
     return element;
 }
 
-filter.DefaultFilter = function() {
+filter.DefaultFilter = function(filterCounter, filterAreaID, selectableColumns, instanceName) {
+    this.filterCounter = filterCounter;
+    this.filterAreaID = filterAreaID;
+    this.selectableColumns = selectableColumns;
+    this.instanceName = instanceName;
 }
 
 filter.DefaultFilter.prototype = Object.create(filter.Filter.prototype);
@@ -150,62 +159,56 @@ filter.DefaultFilter.prototype.createInputArea = function(filterAreaID, filterCo
     return inputArea;
 }
 
-filter.DefaultFilter.prototype.render = function(
-    filterCounter,
-    filterAreaID,
-    selectableColumns,
-    instanceName
-) {
+filter.DefaultFilter.prototype.render = function() {
     var filterDiv = document.createElement('div');
-    var selectColumn = this.createFieldSelect(filterAreaID, filterCounter, selectableColumns);
+    var selectColumn = this.createFieldSelect(this.filterAreaID, this.filterCounter, this.selectableColumns);
     filterDiv.appendChild(selectColumn);
-    var operatorSelectColumn = this.createOperatorSelect(filterAreaID, filterCounter);
+    var operatorSelectColumn = this.createOperatorSelect(this.filterAreaID, this.filterCounter);
     filterDiv.appendChild(operatorSelectColumn);
     if (selectColumn.addEventListener) {
         selectColumn.addEventListener('change', this.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn), false);
      } else if (selectColumn.attachEvent) {
         selectColumn.attachEvent('onchange', this.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn));
      }
-    var inputArea = this.createInputArea(filterAreaID, filterCounter, instanceName);
+    var inputArea = this.createInputArea(this.filterAreaID, this.filterCounter, this.instanceName);
     filterDiv.appendChild(inputArea);
     filterDiv.style.float='left';
     this.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn)();
     return filterDiv;
 }
 
-filter.NearZipCodeFilter = function() {
+filter.NearZipCodeFilter = function(filterCounter, filterAreaID, selectableColumns, instanceName) {
+    this.filterCounter = filterCounter;
+    this.filterAreaID = filterAreaID;
+    this.selectableColumns = selectableColumns;
+    this.instanceName = instanceName;
 }
 
 filter.NearZipCodeFilter.prototype = Object.create(filter.Filter.prototype);
 
-filter.NearZipCodeFilter.prototype.render = function(
-    filterCounter,
-    filterAreaID,
-    selectableColumns,
-    instanceName
-) {
+filter.NearZipCodeFilter.prototype.render = function() {
     var filterDiv = document.createElement('div');
-    var selectColumn = this.createFieldSelect(filterAreaID, filterCounter, selectableColumns);
+    var selectColumn = this.createFieldSelect(this.filterAreaID, this.filterCounter, this.selectableColumns);
     filterDiv.appendChild(selectColumn);
     /* Zipcode input area */
     filterDiv.appendChild(this.createElement(
         'span',
         {
-            id: filterAreaID + filterCounter + 'zip1',
+            id: this.filterAreaID + this.filterCounter + 'zip1',
             innerHTML: 'Zipcode:'
         }
     )); 
     var inputAreaChangeHandlerZip = function() {
-        addColumnToFilter('filterArea' + instanceName, 
-            getFilterColumnNameFromOptionValue(document.getElementById(filterAreaID+filterCounter+'columnName').value),
-            document.getElementById(filterAreaID+filterCounter+'operator').value,
-            document.getElementById(filterAreaID+filterCounter+'zipInput1').value + ',' + document.getElementById(filterAreaID+filterCounter+'zipInput2').value
+        addColumnToFilter('filterArea' + this.instanceName, 
+            getFilterColumnNameFromOptionValue(document.getElementById(this.filterAreaID+this.filterCounter+'columnName').value),
+            document.getElementById(this.filterAreaID+this.filterCounter+'operator').value,
+            document.getElementById(this.filterAreaID+this.filterCounter+'zipInput1').value + ',' + document.getElementById(this.filterAreaID+this.filterCounter+'zipInput2').value
         );
     };
     filterDiv.appendChild(this.createElement(
         'input',
         {
-            id: filterAreaID + filterCounter + 'zipInput1',
+            id: this.filterAreaID + this.filterCounter + 'zipInput1',
             style: 'width: 80px',
             className: 'inputbox,',
             innerHTML: 'Zipcode:'
@@ -217,14 +220,14 @@ filter.NearZipCodeFilter.prototype.render = function(
     filterDiv.appendChild(this.createElement(
         'span',
         {
-            id: filterAreaID + filterCounter + 'zip2',
+            id: this.filterAreaID + this.filterCounter + 'zip2',
             innerHTML: 'Distance to Zipcode (Miles):'
         }
     ));
     filterDiv.appendChild(this.createElement(
         'input',
         {
-            id: filterAreaID+filterCounter+'zipInput2',
+            id: this.filterAreaID+this.filterCounter+'zipInput2',
             style: 'width: 80px;',
             className: 'inputbox,',
             innerHTML: 'Zipcode:',

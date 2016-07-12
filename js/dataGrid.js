@@ -657,13 +657,13 @@ function showNewFilter(
         filterAreaID,
         selectableColumns
     );
-    var currentFilter = filter.FilterFactory.createFromPossibleOperatorType(selectableColumns[0]);
-    filterArea.appendChild(currentFilter.render(
+    var currentFilter = filter.FilterFactory.createFromPossibleOperatorType(
         filterCounter,
         filterAreaID,
         selectableColumns,
         instanceName
-    ));
+    );
+    filterArea.appendChild(currentFilter.render());
     var disableAddFilterButton = selectableColumns.length > 1 ? false : true;
     document.getElementsByName('addFilterButton' + instanceName)[0].disabled = disableAddFilterButton;
 }
