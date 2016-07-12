@@ -661,13 +661,6 @@ var selectColumnFactory = {
 	    selectColumn.id = filterAreaID+filterCounter+'columnName';
 	    selectColumn.className = 'inputbox';
 	    return selectColumn;
-	},
-	createOperatorSelect: function(filterAreaID, filterCounter) {
-	    var selectColumn = document.createElement('select');
-	    selectColumn.id = filterAreaID+filterCounter+'operator';
-	    selectColumn.className = 'inputbox';
-	    selectColumn.style.width='120px';
-	    return selectColumn;
 	}
 };
 
@@ -752,6 +745,14 @@ filter.FilterFactory.createFromPossibleOperatorType = function(possibleType) {
 filter.Filter = function() {
 }
 
+filter.Filter.prototype.createOperatorSelect = function(filterAreaID, filterCounter) {
+    var selectColumn = document.createElement('select');
+    selectColumn.id = filterAreaID+filterCounter+'operator';
+    selectColumn.className = 'inputbox';
+    selectColumn.style.width='120px';
+    return selectColumn;
+}
+
 filter.Filter.prototype.createSelectAreaChangeHandler = function(selectColumn, selectOperatorColumn) {
     return function() {
         var possibleTypes = getFilterColumnTypesFromOptionValue(selectColumn.value);
@@ -785,7 +786,7 @@ filter.Filter.prototype.render = function(
     var filterDiv = document.createElement('div');
     var selectColumn = selectColumnFactory.createFieldSelect(filterAreaID, filterCounter, selectableColumns);
     filterDiv.appendChild(selectColumn);
-    var operatorSelectColumn = selectColumnFactory.createOperatorSelect(filterAreaID, filterCounter);
+    var operatorSelectColumn = this.createOperatorSelect(filterAreaID, filterCounter);
     filterDiv.appendChild(operatorSelectColumn);
     if (selectColumn.addEventListener) {
         selectColumn.addEventListener('change', this.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn), false);
