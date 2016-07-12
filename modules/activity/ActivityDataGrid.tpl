@@ -1,5 +1,5 @@
 <?php /* $Id: ActivityDataGrid.tpl 3355 2007-10-31 16:11:56Z andrew $ */ ?>
-<?php TemplateUtility::printHeader('Activities', array('js/highlightrows.js', 'js/sweetTitles.js', 'js/dataGrid.js')); ?>
+<?php TemplateUtility::printHeader('Activities', array('js/highlightrows.js', 'js/sweetTitles.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">
