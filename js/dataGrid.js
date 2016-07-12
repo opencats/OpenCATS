@@ -649,19 +649,7 @@ var selectColumnFactory = {
 		option.innerHTML = innerHtml;
         return option;
 	},
-	createFieldSelect: function(filterAreaID, filterCounter, selectableColumns) {
-	    var selectColumn = document.createElement('select');
-	    for (var i = 0; i < selectableColumns.length; i++)
-	    {
-	        selectColumn.appendChild(selectColumnFactory.createOption(
-	            selectableColumns[i],
-	            getFilterColumnNameFromOptionValue(selectableColumns[i])
-	        ));
-	    }
-	    selectColumn.id = filterAreaID+filterCounter+'columnName';
-	    selectColumn.className = 'inputbox';
-	    return selectColumn;
-	}
+	
 };
 
 var inputAreaFactory = {
@@ -745,6 +733,20 @@ filter.FilterFactory.createFromPossibleOperatorType = function(possibleType) {
 filter.Filter = function() {
 }
 
+filter.Filter.prototype.createFieldSelect = function(filterAreaID, filterCounter, selectableColumns) {
+    var selectColumn = document.createElement('select');
+    for (var i = 0; i < selectableColumns.length; i++)
+    {
+        selectColumn.appendChild(selectColumnFactory.createOption(
+            selectableColumns[i],
+            getFilterColumnNameFromOptionValue(selectableColumns[i])
+        ));
+    }
+    selectColumn.id = filterAreaID+filterCounter+'columnName';
+    selectColumn.className = 'inputbox';
+    return selectColumn;
+}
+
 filter.Filter.prototype.createOperatorSelect = function(filterAreaID, filterCounter) {
     var selectColumn = document.createElement('select');
     selectColumn.id = filterAreaID+filterCounter+'operator';
@@ -784,7 +786,7 @@ filter.Filter.prototype.render = function(
     instanceName
 ) {
     var filterDiv = document.createElement('div');
-    var selectColumn = selectColumnFactory.createFieldSelect(filterAreaID, filterCounter, selectableColumns);
+    var selectColumn = this.createFieldSelect(filterAreaID, filterCounter, selectableColumns);
     filterDiv.appendChild(selectColumn);
     var operatorSelectColumn = this.createOperatorSelect(filterAreaID, filterCounter);
     filterDiv.appendChild(operatorSelectColumn);
@@ -804,6 +806,7 @@ filter.NearZipCodeFilter = function() {
 }
 
 filter.NearZipCodeFilter.prototype = Object.create(filter.Filter.prototype);
+
 filter.NearZipCodeFilter.prototype.createElement = function(tagName, properties, eventListeners) {
     var element = document.createElement(tagName);
     for (var property in properties) {
@@ -824,7 +827,7 @@ filter.NearZipCodeFilter.prototype.render = function(
     instanceName
 ) {
     var filterDiv = document.createElement('div');
-    var selectColumn = selectColumnFactory.createFieldSelect(filterAreaID, filterCounter, selectableColumns);
+    var selectColumn = this.createFieldSelect(filterAreaID, filterCounter, selectableColumns);
     filterDiv.appendChild(selectColumn);
     /* Zipcode input area */
     filterDiv.appendChild(this.createElement(
@@ -875,7 +878,6 @@ filter.NearZipCodeFilter.prototype.render = function(
     ));
     return filterDiv;
 }
-
 
 /* Shows a new DHTML filter for the user to add a filter to. */
 function showNewFilter(
