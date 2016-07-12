@@ -642,15 +642,6 @@ function getFilterColumnTypesFromOptionValue(theValue)
     return theValue.substr(theValue.indexOf('!@!') + 3);
 }
 
-var selectColumnFactory = {
-	createOption: function(value, innerHtml) {
-		var option = document.createElement('option');
-		option.value = value;
-		option.innerHTML = innerHtml;
-        return option;
-	},
-	
-};
 
 var inputAreaFactory = {
     create: function(filterAreaID, filterCounter, instanceName) {
@@ -733,11 +724,18 @@ filter.FilterFactory.createFromPossibleOperatorType = function(possibleType) {
 filter.Filter = function() {
 }
 
+filter.Filter.prototype.createOption = function(value, innerHtml) {
+    var option = document.createElement('option');
+    option.value = value;
+    option.innerHTML = innerHtml;
+    return option;
+}
+
 filter.Filter.prototype.createFieldSelect = function(filterAreaID, filterCounter, selectableColumns) {
     var selectColumn = document.createElement('select');
     for (var i = 0; i < selectableColumns.length; i++)
     {
-        selectColumn.appendChild(selectColumnFactory.createOption(
+        selectColumn.appendChild(this.createOption(
             selectableColumns[i],
             getFilterColumnNameFromOptionValue(selectableColumns[i])
         ));
@@ -756,6 +754,7 @@ filter.Filter.prototype.createOperatorSelect = function(filterAreaID, filterCoun
 }
 
 filter.Filter.prototype.createSelectAreaChangeHandler = function(selectColumn, selectOperatorColumn) {
+    var me = this;
     return function() {
         var possibleTypes = getFilterColumnTypesFromOptionValue(selectColumn.value);
         if (selectOperatorColumn.hasChildNodes() )
@@ -770,7 +769,7 @@ filter.Filter.prototype.createSelectAreaChangeHandler = function(selectColumn, s
         {
             var possibleType = possibleTypes.substr(i,2);
             selectOperatorColumn.appendChild(
-                selectColumnFactory.createOption(
+                me.createOption(
                     possibleType,
                     filter.getNames()[possibleType]
                 )
