@@ -803,6 +803,7 @@ filter.Filter.prototype.render = function(
 filter.NearZipCodeFilter = function() {
 }
 
+filter.NearZipCodeFilter.prototype = Object.create(filter.Filter.prototype);
 filter.NearZipCodeFilter.prototype.createElement = function(tagName, properties, eventListeners) {
     var element = document.createElement(tagName);
     for (var property in properties) {
@@ -875,7 +876,6 @@ filter.NearZipCodeFilter.prototype.render = function(
     return filterDiv;
 }
 
-$.extend({}, filter.NearZipCodeFilter, filter.Filter);
 
 /* Shows a new DHTML filter for the user to add a filter to. */
 function showNewFilter(
