@@ -895,6 +895,8 @@ function showNewFilter(
         selectableColumns,
         instanceName
     ));
+    var disableAddFilterButton = selectableColumns.length > 1 ? false : true;
+    document.getElementsByName('addFilterButton' + instanceName)[0].disabled = disableAddFilterButton;
 }
 
 /* Generic message to display when a user tries to export selected, but nothing is selected. */

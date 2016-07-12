@@ -760,6 +760,11 @@ p.freeformbottom
   border: 1px solid #a4a4a4;
 }
 
+.button:disabled
+{
+  color: #ddd;
+}
+
 .buttonDown
 {
   height: 20px;
