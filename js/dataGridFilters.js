@@ -43,28 +43,30 @@ var filter = {
 
 filter.FilterFactory = {}
 filter.FilterFactory.createFromPossibleOperatorType = function(
+    possibleOperatorType,
     filterCounter,
     filterAreaID,
     selectableColumns,
     instanceName
 ) {
-    if (getFilterColumnTypesFromOptionValue(selectableColumns[0]) == '=@') {
-        return new filter.NearZipCodeFilter(filterCounter, filterAreaID, selectableColumns, instanceName);
+    if (getFilterColumnTypesFromOptionValue(possibleOperatorType) == '=@') {
+        return new filter.NearZipCodeFilter(possibleOperatorType, filterCounter, filterAreaID, selectableColumns, instanceName);
     } else {
-        return new filter.DefaultFilter(filterCounter, filterAreaID, selectableColumns, instanceName);
+        return new filter.DefaultFilter(possibleOperatorType, filterCounter, filterAreaID, selectableColumns, instanceName);
     }
 }
 
 filter.Filter = function() {
 }
 
-filter.Filter.prototype.createFieldSelect = function(filterAreaID, filterCounter, selectableColumns) {
+filter.Filter.prototype.createFieldSelect = function(defaultValue, filterAreaID, filterCounter, selectableColumns) {
     var selectColumn = document.createElement('select');
     for (var i = 0; i < selectableColumns.length; i++)
     {
         selectColumn.appendChild(this.createOption(
             selectableColumns[i],
-            getFilterColumnNameFromOptionValue(selectableColumns[i])
+            getFilterColumnNameFromOptionValue(selectableColumns[i]),
+            defaultValue == selectableColumns[i]
         ));
     }
     selectColumn.id = filterAreaID+filterCounter+'columnName';
@@ -72,10 +74,13 @@ filter.Filter.prototype.createFieldSelect = function(filterAreaID, filterCounter
     return selectColumn;
 }
 
-filter.Filter.prototype.createOption = function(value, innerHtml) {
+filter.Filter.prototype.createOption = function(value, innerHtml, isSelected) {
     var option = document.createElement('option');
     option.value = value;
     option.innerHTML = innerHtml;
+    if (isSelected) {
+        option.selected = 'selected';
+    } 
     return option;
 }
 
@@ -92,7 +97,8 @@ filter.Filter.prototype.createElement = function(tagName, properties, eventListe
     return element;
 }
 
-filter.DefaultFilter = function(filterCounter, filterAreaID, selectableColumns, instanceName) {
+filter.DefaultFilter = function(defaultValue, filterCounter, filterAreaID, selectableColumns, instanceName) {
+    this.defaultValue = defaultValue;
     this.filterCounter = filterCounter;
     this.filterAreaID = filterAreaID;
     this.selectableColumns = selectableColumns;
@@ -101,36 +107,46 @@ filter.DefaultFilter = function(filterCounter, filterAreaID, selectableColumns, 
 
 filter.DefaultFilter.prototype = Object.create(filter.Filter.prototype);
 
-filter.DefaultFilter.prototype.createOperatorSelect = function(filterAreaID, filterCounter) {
-    return this.createElement('select', {
+filter.DefaultFilter.prototype.createOperatorSelect = function(currentValue, filterAreaID, filterCounter) {
+    var operatorSelect = this.createElement('select', {
         id: filterAreaID + filterCounter + 'operator',
         className: 'inputbox',
         style: 'width: 120px'
     });
+    var possibleTypes = getFilterColumnTypesFromOptionValue(currentValue);
+    for (var i = 0; i < possibleTypes.length; i+=2)
+    {
+        var possibleType = possibleTypes.substr(i,2);
+        operatorSelect.appendChild(
+            this.createOption(
+                possibleType,
+                filter.getNames()[possibleType]
+            )
+        );
+    }
+    return operatorSelect;
 }
 
-filter.DefaultFilter.prototype.createSelectAreaChangeHandler = function(selectColumn, selectOperatorColumn) {
+filter.Filter.prototype.createSelectAreaChangeHandler = function(
+        selectColumn,
+        filterCounter,
+        filterAreaID,
+        selectableColumns,
+        instanceName
+) {
     var me = this;
     return function() {
-        var possibleTypes = getFilterColumnTypesFromOptionValue(selectColumn.value);
-        if (selectOperatorColumn.hasChildNodes() )
-        {
-            while (selectOperatorColumn.childNodes.length >= 1 )
-            {
-                selectOperatorColumn.removeChild( selectOperatorColumn.firstChild );       
-            } 
-        }
-    
-        for (var i = 0; i < possibleTypes.length; i+=2)
-        {
-            var possibleType = possibleTypes.substr(i,2);
-            selectOperatorColumn.appendChild(
-                me.createOption(
-                    possibleType,
-                    filter.getNames()[possibleType]
-                )
-            );
-        }
+        var newFilter = filter.FilterFactory.createFromPossibleOperatorType(
+            selectColumn.value,
+            filterCounter,
+            filterAreaID,
+            selectableColumns,
+            instanceName
+        );
+        var currentFilter = selectColumn.parentNode;
+        var filterArea = currentFilter.parentNode;
+        filterArea.insertBefore(newFilter.render(), currentFilter);
+        filterArea.removeChild(currentFilter);
     };
 }
 
@@ -161,23 +177,25 @@ filter.DefaultFilter.prototype.createInputArea = function(filterAreaID, filterCo
 
 filter.DefaultFilter.prototype.render = function() {
     var filterDiv = document.createElement('div');
-    var selectColumn = this.createFieldSelect(this.filterAreaID, this.filterCounter, this.selectableColumns);
+    var selectColumn = this.createFieldSelect(this.defaultValue, this.filterAreaID, this.filterCounter, this.selectableColumns);
     filterDiv.appendChild(selectColumn);
-    var operatorSelectColumn = this.createOperatorSelect(this.filterAreaID, this.filterCounter);
+    var operatorSelectColumn = this.createOperatorSelect(selectColumn.value, this.filterAreaID, this.filterCounter);
     filterDiv.appendChild(operatorSelectColumn);
-    if (selectColumn.addEventListener) {
-        selectColumn.addEventListener('change', this.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn), false);
-     } else if (selectColumn.attachEvent) {
-        selectColumn.attachEvent('onchange', this.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn));
-     }
+    selectColumn.addEventListener('change', this.createSelectAreaChangeHandler(
+        selectColumn,
+        this.filterCounter,
+        this.filterAreaID,
+        this.selectableColumns,
+        this.instanceName
+    ));
     var inputArea = this.createInputArea(this.filterAreaID, this.filterCounter, this.instanceName);
     filterDiv.appendChild(inputArea);
     filterDiv.style.float='left';
-    this.createSelectAreaChangeHandler(selectColumn, operatorSelectColumn)();
     return filterDiv;
 }
 
-filter.NearZipCodeFilter = function(filterCounter, filterAreaID, selectableColumns, instanceName) {
+filter.NearZipCodeFilter = function(defaultValue, filterCounter, filterAreaID, selectableColumns, instanceName) {
+    this.defaultValue = defaultValue;
     this.filterCounter = filterCounter;
     this.filterAreaID = filterAreaID;
     this.selectableColumns = selectableColumns;
@@ -188,7 +206,14 @@ filter.NearZipCodeFilter.prototype = Object.create(filter.Filter.prototype);
 
 filter.NearZipCodeFilter.prototype.render = function() {
     var filterDiv = document.createElement('div');
-    var selectColumn = this.createFieldSelect(this.filterAreaID, this.filterCounter, this.selectableColumns);
+    var selectColumn = this.createFieldSelect(this.defaultValue, this.filterAreaID, this.filterCounter, this.selectableColumns);
+    selectColumn.addEventListener('change', this.createSelectAreaChangeHandler(
+        selectColumn,
+        this.filterCounter,
+        this.filterAreaID,
+        this.selectableColumns,
+        this.instanceName
+    ));
     filterDiv.appendChild(selectColumn);
     /* Zipcode input area */
     filterDiv.appendChild(this.createElement(

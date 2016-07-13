@@ -658,6 +658,7 @@ function showNewFilter(
         selectableColumns
     );
     var currentFilter = filter.FilterFactory.createFromPossibleOperatorType(
+        selectableColumns[0],
         filterCounter,
         filterAreaID,
         selectableColumns,
