@@ -76,7 +76,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
             $actual
         );
         
-        if(!preg_match($regex, $actual)) {
+        if (!preg_match($regex, $actual)) {
             throw new ElementHtmlException($message, $this->getSession()->getDriver(), $element);
         }
     }
