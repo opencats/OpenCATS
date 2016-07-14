@@ -122,8 +122,8 @@ CREATE TABLE `mru` (
   `user_id` int(11) NOT NULL default '0',
   `site_id` int(11) NOT NULL default '0',
   `data_item_type` int(11) NOT NULL default '0',
-  `data_item_text` varchar(64) character set latin1 NOT NULL default '',
-  `url` varchar(255) character set latin1 NOT NULL default '',
+  `data_item_text` varchar(64) character set utf8 NOT NULL default '',
+  `url` varchar(255) character set utf8 NOT NULL default '',
   `date_created` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`mru_id`),
   KEY `IDX_user_site` (`user_id`,`site_id`)

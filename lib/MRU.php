@@ -140,9 +140,9 @@ class MRU
 
         foreach ($rs as $rowIndex => $row)
         {
-            if (strlen($row['dataItemText']) > MRU_ITEM_LENGTH)
+            if (mb_strlen($row['dataItemText']) > MRU_ITEM_LENGTH)
             {
-                $rs[$rowIndex]['dataItemText'] = substr(
+                $rs[$rowIndex]['dataItemText'] = mb_substr(
                     $row['dataItemText'], 0, MRU_ITEM_LENGTH
                 ) . "..";
             }
@@ -152,7 +152,7 @@ class MRU
             $HTML[] = sprintf(
                 '<a href="%s" style="text-decoration: none;">%s</a>',
                 $row['URL'],
-                htmlspecialchars($rs[$rowIndex]['dataItemText'])
+                $rs[$rowIndex]['dataItemText']
             );
         }
 
