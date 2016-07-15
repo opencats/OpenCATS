@@ -496,12 +496,15 @@ class ImportUI extends UserInterface
             $this->importSelectType();
             return;
         }
-
+        if (!is_dir(CATS_TEMP_DIR))
+        {
+            @mkdir(CATS_TEMP_DIR);
+        }
         /* Make sure the attachments directory exists and create it if not. */
         if (!is_dir(CATS_TEMP_DIR))
         {
             $errorMessage = sprintf(
-                'Directory \'%s\' does not exist. CATS is not configured correctly.',
+                'Directory \'%s\' does not exist and can\'t be created. CATS is not configured correctly.',
                 CATS_TEMP_DIR
             );
             $this->_template->assign('errorMessage', $errorMessage);
