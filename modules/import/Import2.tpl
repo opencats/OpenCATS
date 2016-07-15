@@ -15,6 +15,52 @@
                 </tr>
             </table>
 
+            <?php if (isset($this->errorMessage)): ?>
+
+                <p class="warning" id="importHide0">Error!</p>
+
+                <table class="searchTable" id="importHide1">
+                    <tr>
+                        <td>
+                            <?php echo($this->errorMessage); ?>
+                        </td>
+                    </tr>
+                </table>
+
+                <br />
+
+            <?php elseif (isset($this->successMessage)): ?>
+
+                <p class="note" id="importHide0">Success</p>
+
+                <table class="searchTable" id="importHide1">
+                    <tr>
+                        <td>
+                            <?php echo($this->successMessage); ?>
+                        </td>
+                    </tr>
+                </table>
+
+                <br />
+
+            <?php elseif (isset($this->pendingCommits)): ?>
+
+                <p class="warning" id="importHide0">Notice</p>
+
+                <table class="searchTable" id="importHide1">
+                    <tr>
+                        <td>
+                            You have recently imported CSV data.  You can click here to review or delete the imported data.<br />
+                            <input type="button" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=viewpending';" value="View Recent Imports" class="button" />
+                        </td>
+                    </tr>
+                </table>
+
+                <br />
+
+
+            <?php else: ?>
+
             <p class="note" id="importHide2">Import Data - Step 2</p>
 
             <table class="searchTable" id="importTable1" width="100%">
@@ -27,6 +73,7 @@
             </table>
 
             <br />
+            <?php endif; ?>
 
             <form name="importDataForm" id="importDataForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=importUploadFile" enctype="multipart/form-data" method="post" autocomplete="off" onsubmit="document.getElementById('nextSpan').style.display='none'; document.getElementById('uploadingSpan').style.display='';">
                 <table class="searchTable" width="740" id="importHide3" width="100%">
