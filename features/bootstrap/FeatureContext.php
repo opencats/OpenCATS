@@ -37,9 +37,9 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         if (!$roleData) {
             throw new PendingException();
         }
+        $this->visitPath('/index.php?m=login');
         $this->fillField('username', $roleData->getUserName());
         $this->fillField('password', $roleData->getPassword());
-        $this->visitPath('/index.php?m=login');
         $this->pressButton('Login');
     }
     
