@@ -11,7 +11,6 @@ class TestCaseList
     
     public function getUnitTests() {
         return array(
-            array('StringUtilityTest',      'StringUtility Unit Tests'),
             array('VCardTest',              'VCard Unit Tests')
         );
     }
