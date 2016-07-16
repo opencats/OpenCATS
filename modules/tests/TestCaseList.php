@@ -11,10 +11,6 @@ class TestCaseList
     
     public function getUnitTests() {
         return array(
-            array('CalendarTest',           'Calendar Unit Tests'),
-            array('EmailTemplatesTest',     'EmailTemplates Unit Tests'),
-            array('EncryptionTest',         'Encryption Unit Tests'),
-            array('ExportTest',             'Export Unit Tests'),
             array('FileUtilityTest',        'FileUtility Unit Tests'),
             array('ResultSetUtilityTest',   'ResultSetUtility Unit Tests'),
             array('StringUtilityTest',      'StringUtility Unit Tests'),

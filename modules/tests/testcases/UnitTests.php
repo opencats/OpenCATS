@@ -91,62 +91,6 @@ class DatabaseSearchTest extends CATSUnitTestCase
     }
 }
 
-
-
-/* Tests for Calendar class. */
-class CalendarTest extends CATSUnitTestCase
-{
-}
-
-/* Tests for Candidates class. */
-class CandidatesTest extends CATSUnitTestCase
-{
-}
-
-/* Tests for CATSUtility class. */
-class CATSUtilityTest extends CATSUnitTestCase
-{
-    function testGetVersion()
-    {
-        //FIXME: Write me!
-    }
-
-    function testGetVersionAsInteger()
-    {
-        //FIXME: Write me!
-    }
-
-    function testGetBuild()
-    {
-        //FIXME: Write me!
-    }
-
-    function testGetAbsoluteURI()
-    {
-        //FIXME: Write me!
-    }
-
-    function getIndexName()
-    {
-        //FIXME: Write me!
-    }
-}
-
-/* Tests for Companies class. */
-class CompaniesTest extends CATSUnitTestCase
-{
-}
-
-/* Tests for Contacts class. */
-class ContactsTest extends CATSUnitTestCase
-{
-}
-
-/* Tests for Dashboard class. */
-class DashboardTest extends CATSUnitTestCase
-{
-}
-
 /* Tests for DatabaseConnection class. */
 class DatabaseConnectionTest extends CATSUnitTestCase
 {
@@ -516,21 +460,6 @@ class DateUtilityTest extends CATSUnitTestCase
             );
         }
     }
-}
-
-/* Tests for EmailTemplates class. */
-class EmailTemplatesTest extends CATSUnitTestCase
-{
-}
-
-/* Tests for Encryption class. */
-class EncryptionTest extends CATSUnitTestCase
-{
-}
-
-/* Tests for Export class. */
-class ExportTest extends CATSUnitTestCase
-{
 }
 
 /* Tests for FileUtility class. */
