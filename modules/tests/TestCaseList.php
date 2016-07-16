@@ -11,7 +11,6 @@ class TestCaseList
     
     public function getUnitTests() {
         return array(
-            array('AddressParserTest',      'AddressParser Unit Tests'),
             array('AJAXInterfaceTest',      'AJAX Interface Unit Tests'),
             array('AttachmentsTest',        'Attachments Unit Tests'),
             array('ArrayUtilityTest',       'ArrayUtility Unit Tests'),
