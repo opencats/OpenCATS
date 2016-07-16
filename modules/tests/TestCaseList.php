@@ -11,7 +11,6 @@ class TestCaseList
     
     public function getUnitTests() {
         return array(
-            array('AttachmentsTest',        'Attachments Unit Tests'),
             array('ArrayUtilityTest',       'ArrayUtility Unit Tests'),
             array('BrowserDetectionTest',   'Browser Detection Unit Tests'),
             array('CalendarTest',           'Calendar Unit Tests'),

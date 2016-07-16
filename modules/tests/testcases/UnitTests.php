@@ -17,7 +17,6 @@ include_once('./lib/ArrayUtility.php');
 include_once('./lib/ResultSetUtility.php');
 include_once('./lib/DatabaseConnection.php');
 include_once('./lib/VCard.php');
-include_once('./lib/Attachments.php');
 include_once('./lib/BrowserDetection.php');
 include_once('./lib/FileUtility.php');
 include_once('./lib/HashUtility.php');
@@ -66,11 +65,6 @@ class ArrayUtilityTest extends CATSUnitTestCase
         $result = ArrayUtility::implodeRange(', ', $pieces, -500, 500);
         $this->assertIdentical($result, 'Zero, One, Two, Three, Four, Five');
     }
-}
-
-/* Tests for AttachmentsTest class. */
-class AttachmentsTest extends CATSUnitTestCase
-{
 }
 
 /* Tests for DatabaseSearch class. */
