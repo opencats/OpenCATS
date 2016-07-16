@@ -13,7 +13,6 @@
 
 include_once('./lib/StringUtility.php');
 include_once('./lib/DateUtility.php');   /* Depends on StringUtility. */
-include_once('./lib/AddressParser.php'); /* Depends on StringUtility. */
 include_once('./lib/ArrayUtility.php');
 include_once('./lib/ResultSetUtility.php');
 include_once('./lib/DatabaseConnection.php');
