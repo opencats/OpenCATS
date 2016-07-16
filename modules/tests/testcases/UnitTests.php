@@ -13,59 +13,12 @@
 
 include_once('./lib/StringUtility.php');
 include_once('./lib/DateUtility.php');   /* Depends on StringUtility. */
-include_once('./lib/ArrayUtility.php');
 include_once('./lib/ResultSetUtility.php');
 include_once('./lib/DatabaseConnection.php');
 include_once('./lib/VCard.php');
 include_once('./lib/BrowserDetection.php');
 include_once('./lib/FileUtility.php');
 include_once('./lib/HashUtility.php');
-
-
-
-/* Tests for ArrayUtility class. */
-class ArrayUtilityTest extends CATSUnitTestCase
-{
-    /* Tests for implodeRange(). */
-    function testImplodeRange()
-    {
-        $pieces = array(
-            'Zero',
-            'One',
-            'Two',
-            'Three',
-            'Four',
-            'Five'
-        );
-
-        $result = ArrayUtility::implodeRange(' ', $pieces, 0, 5);
-        $this->assertIdentical($result, 'Zero One Two Three Four Five');
-
-        $result = ArrayUtility::implodeRange(' ', $pieces, 0, 4);
-        $this->assertIdentical($result, 'Zero One Two Three Four');
-
-        $result = ArrayUtility::implodeRange(' ', $pieces, 1, 4);
-        $this->assertIdentical($result, 'One Two Three Four');
-
-        $result = ArrayUtility::implodeRange(' ', $pieces, 1, 3);
-        $this->assertIdentical($result, 'One Two Three');
-
-        $result = ArrayUtility::implodeRange(' ', $pieces, 2, 3);
-        $this->assertIdentical($result, 'Two Three');
-
-        $result = ArrayUtility::implodeRange(' ', $pieces, 2, 2);
-        $this->assertIdentical($result, 'Two');
-
-        $result = ArrayUtility::implodeRange(' ', $pieces, 0, 6);
-        $this->assertIdentical($result, 'Zero One Two Three Four Five');
-
-        $result = ArrayUtility::implodeRange(' ', $pieces, -500, 500);
-        $this->assertIdentical($result, 'Zero One Two Three Four Five');
-
-        $result = ArrayUtility::implodeRange(', ', $pieces, -500, 500);
-        $this->assertIdentical($result, 'Zero, One, Two, Three, Four, Five');
-    }
-}
 
 /* Tests for DatabaseSearch class. */
 class DatabaseSearchTest extends CATSUnitTestCase
