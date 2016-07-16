@@ -23,13 +23,6 @@ include_once('./lib/BrowserDetection.php');
 include_once('./lib/FileUtility.php');
 include_once('./lib/HashUtility.php');
 
-
-
-/* Tests for ActivityEntries class. */
-class ActivityEntriesTest extends CATSUnitTestCase
-{
-}
-
 /* Tests for AJAXInterface class. */
 class AJAXInterfaceTest extends CATSUnitTestCase
 {
