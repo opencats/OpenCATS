@@ -19,6 +19,7 @@ php:
 script:
     - composer install
     - php modules/tests/runTests.php
+    - ./vendor/bin/phpunit src/
     - cd docker/; docker-compose -f docker-compose-test.yml up -d
     - sleep 10
     - docker-compose -f docker-compose-test.yml run -w /var/www/public php cat config.php
