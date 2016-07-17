@@ -89,7 +89,6 @@ class TestsUI extends UserInterface
     private function selectTests()
     {
         $this->_template->assign('reporter', $this->reporter);
-        $this->_template->assign('unitTestCases', $this->_testCaseList->getUnitTests());
         $this->_template->assign('integrationTestCases', $this->_testCaseList->getIntegrationTests());
         $this->_template->assign('systemTestCases', $this->_testCaseList->getSystemTests());
         $this->_template->assign('AJAXTestCases', $this->_testCaseList->getAjaxTests());
@@ -105,13 +104,6 @@ class TestsUI extends UserInterface
         /* FIXME: 3 groups! Unit, Web, AJAX. */
         $testSuite = new TestSuite('CATS Test Suite');
 
-        foreach ($this->_testCaseList->getUnitTests() as $offset => $value)
-        {
-            if ($this->isChecked($value[0], $_POST))
-            {
-                $testSuite->add(new $value[0]());
-            }
-        }
         foreach ($this->_testCaseList->getIntegrationTests() as $offset => $value)
         {
             if ($this->isChecked($value[0], $_POST))

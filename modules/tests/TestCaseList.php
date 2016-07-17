@@ -9,11 +9,6 @@ class TestCaseList
         );
     }
     
-    public function getUnitTests() {
-        return array(
-        );
-    }
-    
     public function getSystemTests() {
         return array(
             array('LoginWebTest',      'Login Module System Tests'),
