@@ -18,7 +18,6 @@ php:
 
 script:
     - composer install
-    - php modules/tests/runTests.php
     - ./vendor/bin/phpunit src/
     - cd docker/; docker-compose -f docker-compose-test.yml up -d
     - docker-compose -f docker-compose-test.yml run -w /var/www/public php dockerize -wait tcp://mariadb:3306 -wait http://opencats:80 -timeout 30s
