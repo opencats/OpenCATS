@@ -1,11 +1,6 @@
 <?php
 class TestCaseList
 {
-    public function getIntegrationTests() {
-        return array(
-        );
-    }
-    
     public function getSystemTests() {
         return array(
             array('LoginWebTest',      'Login Module System Tests'),
