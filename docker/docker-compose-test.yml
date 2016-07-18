@@ -33,6 +33,16 @@ services:
       volumes:
         - ./test/data:/docker-entrypoint-initdb.d
 
+    unittestdb:
+      image: mariadb
+      ports:
+        - 3307:3306
+      environment:
+        - MYSQL_ROOT_PASSWORD=dev
+        - MYSQL_USER=dev
+        - MYSQL_PASSWORD=dev
+        - MYSQL_DATABASE=cats_unittests
+
     selenium:
       image: selenium/standalone-chrome
       ports:
