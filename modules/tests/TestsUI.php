@@ -96,11 +96,10 @@ class TestsUI extends UserInterface
 
     private function runSelectedTests()
     {
-        include('./modules/tests/testcases/UnitTests.php');
         include('./modules/tests/testcases/WebTests.php');
         include('./modules/tests/testcases/AJAXTests.php');
 
-        /* FIXME: 3 groups! Unit, Web, AJAX. */
+        /* FIXME: 2 groups! Web, AJAX. */
         $testSuite = new TestSuite('CATS Test Suite');
 
         foreach ($this->_testCaseList->getSystemTests() as $offset => $value)
