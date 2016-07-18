@@ -14,30 +14,6 @@
  * $Id: WebTests.php 3565 2007-11-12 09:09:22Z will $
  */
 
-class HomeWebTest extends CATSWebTestCase
-{
-    function testHome()
-    {
-        /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
-            /* Abort. */
-            return false;
-        }
-
-        /* We should get taken to Home automatically after login. Make sure
-         * things that should be on the page are.
-         */
-        $this->assertTitle('CATS - Home');
-        $this->assertPattern(
-            '/CATS Version \d+\.\d+.\d+ (?:\(\w+\))?(?: \((?:BETA|RC\d+)\))?(?: build \d+)?\./'
-        );
-
-        /* We're done; log out. */
-        $this->logout();
-    }
-}
-
 class ActivitiesWebTest extends CATSWebTestCase
 {
     function testActivities()

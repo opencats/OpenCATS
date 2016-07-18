@@ -3,7 +3,6 @@ class TestCaseList
 {
     public function getSystemTests() {
         return array(
-            array('HomeWebTest',       'Home Module System Tests'),
             array('ActivitiesWebTest', 'Activities Module System Tests'),
             array('JobOrdersWebTest',  'Job Orders Module System Tests'),
             array('CandidatesWebTest', 'Candidates Module System Tests'),
