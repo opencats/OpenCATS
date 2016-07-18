@@ -12,6 +12,7 @@ use Behat\MinkExtension\Context\MinkContext;
  */
 class FeatureContext extends MinkContext implements Context, SnippetAcceptingContext
 {
+    private $roleData;
     /**
      * Initializes context.
      *
@@ -21,6 +22,10 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
      */
     public function __construct()
     {
+        $this->roleData = array(
+            'Administrator' => new Role('admin', 'admin'),
+            'User' => new Role('john@mycompany.net', 'john99')
+        );
     }
     
     /**
@@ -28,16 +33,13 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
      */
     public function iAmAuthenticatedAs($role)
     {
-        $this->visitPath('/index.php?m=login');
-        if ($role == 'Administrator') {
-            $this->fillField('username', 'admin');
-            $this->fillField('password', 'admin');
-        } else if ($role == 'User') {
-            $this->fillField('username', 'john@mycompany.net');
-            $this->fillField('password', 'john99');
-        } else {
+        $roleData = empty($this->roleData[$role]) ? null : $this->roleData[$role]; 
+        if (!$roleData) {
             throw new PendingException();
         }
+        $this->visitPath('/index.php?m=login');
+        $this->fillField('username', $roleData->getUserName());
+        $this->fillField('password', $roleData->getPassword());
         $this->pressButton('Login');
     }
     
@@ -53,5 +55,27 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         list($key, $value) = explode("=", $property);
         $this->fillField($key, $value);
         $this->pressButton('Add Candidate');
+    }
+}
+
+class Role
+{
+    private $userName;
+    private $password;
+    
+    function __construct($userName, $password)
+    {
+        $this->userName = $userName;
+        $this->password = $password;
+    }
+    
+    function getUserName()
+    {
+        return $this->userName;
+    }
+    
+    function getPassword()
+    {
+        return $this->password;
     }
 }
