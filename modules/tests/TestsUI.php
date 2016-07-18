@@ -41,7 +41,6 @@ require_once('lib/simpletest/form.php');
 include_once('./modules/tests/CATSTestReporter.php');
 include_once('./modules/tests/CATSWebTestCase.php');
 include_once('./modules/tests/CATSAJAXTestCase.php');
-include_once('./modules/tests/CATSUnitTestCase.php');
 include_once('./modules/tests/TestCaseList.php');
 
 
