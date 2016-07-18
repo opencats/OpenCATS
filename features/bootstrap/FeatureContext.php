@@ -6,7 +6,7 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\MinkExtension\Context\MinkContext;
-
+include_once('./config.php');
 /**
  * Defines application features from the specific context.
  */
@@ -55,6 +55,14 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         list($key, $value) = explode("=", $property);
         $this->fillField($key, $value);
         $this->pressButton('Add Candidate');
+    }
+    
+    /**
+     * @Given I am spoofing a session with :cookieValue cookie
+     */
+    public function iAmSpoofingASessionWithCookie($cookieValue)
+    {
+        $this->getSession()->setCookie(CATS_SESSION_NAME, 'o964p0pr602975o0671qo50n1208r6nn');
     }
 }
 
