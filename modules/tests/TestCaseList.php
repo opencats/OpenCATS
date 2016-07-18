@@ -3,7 +3,6 @@ class TestCaseList
 {
     public function getIntegrationTests() {
         return array(
-            array('DatabaseSearchTest',     'DatabaseSearch Unit Tests'),
         );
     }
     
