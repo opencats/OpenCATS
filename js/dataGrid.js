@@ -642,230 +642,31 @@ function getFilterColumnTypesFromOptionValue(theValue)
     return theValue.substr(theValue.indexOf('!@!') + 3);
 }
 
+
+
 /* Shows a new DHTML filter for the user to add a filter to. */
-function showNewFilter(filterCounter, filterAreaID, selectableColumns, instanceName, submitFilterCommand)
-{
-    var selectableColumnsArray = selectableColumns.split(',');
+function showNewFilter(
+    filterCounter,
+    filterAreaID,
+    selectableColumns,
+    instanceName
+) {
     var filterArea = document.getElementById(filterAreaID);
-
-    // Make the previous column dropdown boxes unselectable.
-    if (filterCounter > 1)
-    {
-        filterBr = document.createElement('br');
-        filterBr.clear = 'all';
-    
-        filterArea.appendChild(filterBr);
-
-        for (var i = 1; i < filterCounter; i++)
-        {
-            var columnSelector = document.getElementById(filterAreaID+i+'columnName');
-            columnSelector.disabled=true;
-
-            //Take previously filtered columns out of the list of filterable columns.
-            for (var i2 = 0; i2 < selectableColumnsArray.length; i2++)
-            {
-                if (urlDecode(selectableColumnsArray[i2]) == columnSelector.value)
-                {
-                    selectableColumnsArray.splice(i2, 1);
-                    i2--;
-                }
-            }
-        }
-    }
-
-    var filterDiv = document.createElement('div');
-    var selectColumn = document.createElement('select');
-    var selectColumnOption;
-            
-    for (var i = 0; i < selectableColumnsArray.length; i++)
-    {
-        selectColumnOption = document.createElement('option');
-        selectColumnOption.value = urlDecode(selectableColumnsArray[i]);
-        selectColumnOption.innerHTML = getFilterColumnNameFromOptionValue(urlDecode(selectableColumnsArray[i]));
-        selectColumn.appendChild(selectColumnOption);
-    }
-
-    selectColumn.id = filterAreaID+filterCounter+'columnName';
-    selectColumn.className = 'inputbox';
-
-    var selectAreaChangeHandler = function() {
-        var selectOperatorColumn = document.getElementById(filterAreaID+filterCounter+'operator');
-        var possibleTypes = getFilterColumnTypesFromOptionValue(document.getElementById(filterAreaID+filterCounter+'columnName').value);
- 
-        selectOperatorColumn.style.display='';
-
-        document.getElementById(filterAreaID+filterCounter+'zip1').style.display='none';
-        document.getElementById(filterAreaID+filterCounter+'zip2').style.display='none';
-                
-        document.getElementById(filterAreaID+filterCounter+'zipInput1').style.display='none';
-        document.getElementById(filterAreaID+filterCounter+'zipInput2').style.display='none';
- 
-        /* Remove all child nodes */
-        if ( selectOperatorColumn.hasChildNodes() )
-        {
-            while ( selectOperatorColumn.childNodes.length >= 1 )
-            {
-                selectOperatorColumn.removeChild( selectOperatorColumn.firstChild );       
-            } 
-        }
-    
-        for (var i = 0; i < possibleTypes.length; i+=2)
-        {
-            var possibleType = possibleTypes.substr(i,2);
-            
-            if (possibleType == '==')
-            {
-                selectColumnOption = document.createElement('option');
-                selectColumnOption.value = '==';
-                selectColumnOption.innerHTML = 'is equal to';
-                selectOperatorColumn.appendChild(selectColumnOption);
-            }
-
-            if (possibleType == '=~')
-            {
-                selectColumnOption = document.createElement('option');
-                selectColumnOption.value = '=~';
-                selectColumnOption.innerHTML = 'contains';
-                selectOperatorColumn.appendChild(selectColumnOption);
-            }
-
-            if (possibleType == '=<')
-            {
-                selectColumnOption = document.createElement('option');
-                selectColumnOption.value = '=<';
-                selectColumnOption.innerHTML = 'is less than';
-                selectOperatorColumn.appendChild(selectColumnOption);
-            }
-
-            if (possibleType == '=>')
-            {
-                selectColumnOption = document.createElement('option');
-                selectColumnOption.value = '=>';
-                selectColumnOption.innerHTML = 'is greater than';
-                selectOperatorColumn.appendChild(selectColumnOption);
-            }
-
-            if (possibleType == '=#')
-            {
-                selectColumnOption = document.createElement('option');
-                selectColumnOption.value = '=#';
-                selectColumnOption.innerHTML = 'has element';
-                selectOperatorColumn.appendChild(selectColumnOption);
-            }
-            
-            if (possibleType == '=@')
-            {
-                selectColumnOption = document.createElement('option');
-                selectColumnOption.value = '=@';
-                selectColumnOption.innerHTML = 'Near';
-                selectOperatorColumn.style.display='none';
-                selectOperatorColumn.appendChild(selectColumnOption);
-                
-                document.getElementById(filterAreaID+filterCounter+'value').style.display='none';
-                
-                document.getElementById(filterAreaID+filterCounter+'zip1').style.display='';
-                document.getElementById(filterAreaID+filterCounter+'zip2').style.display='';
-                
-                document.getElementById(filterAreaID+filterCounter+'zipInput1').style.display='';
-                document.getElementById(filterAreaID+filterCounter+'zipInput2').style.display='';
-            }
-        }
-    }
-
-    if (selectColumn.addEventListener) {
-       selectColumn.addEventListener('change', selectAreaChangeHandler, false);
-    } else if (selectColumn.attachEvent) {
-       selectColumn.attachEvent('onchange', selectAreaChangeHandler);
-    } 
-
-    filterDiv.appendChild(selectColumn);
-    
-    selectColumn = document.createElement('select');
-                
-    selectColumn.id = filterAreaID+filterCounter+'operator';
-    selectColumn.className = 'inputbox';
-    selectColumn.style.width='120px';
-    filterDiv.appendChild(selectColumn);
-    
-    var inputArea = document.createElement('input');
-    inputArea.id = filterAreaID+filterCounter+'value';
-    inputArea.style.width='180px';
-    
-    var inputAreaChangeHandler = function() {
-        addColumnToFilter('filterArea' + instanceName, 
-                          getFilterColumnNameFromOptionValue(document.getElementById(filterAreaID+filterCounter+'columnName').value),
-                          document.getElementById(filterAreaID+filterCounter+'operator').value,
-                          document.getElementById(filterAreaID+filterCounter+'value').value
-                         ); 
-    }
-    
-    if (inputArea.addEventListener) {
-       inputArea.addEventListener('change', inputAreaChangeHandler, false);
-    } else if (inputArea.attachEvent) {
-       inputArea.attachEvent('onchange', inputAreaChangeHandler);
-    } 
-    
-    inputArea.className = 'inputbox';
-    filterDiv.appendChild(inputArea);
-
-
-    /* Zipcode input area */
-    var labelZip = document.createElement('span');
-    labelZip.id = filterAreaID+filterCounter+'zip1';
-    labelZip.innerHTML = '&nbsp;&nbsp;Zipcode:&nbsp;&nbsp;';
-    labelZip.style.display='none';
-    filterDiv.appendChild(labelZip);
-
-    var inputArea2 = document.createElement('input');
-    inputArea2.id = filterAreaID+filterCounter+'zipInput1';
-    inputArea2.style.width='80px';
-    inputArea2.style.display='none';
-    
-    inputAreaChangeHandlerZip = function() {
-        addColumnToFilter('filterArea' + instanceName, 
-                          getFilterColumnNameFromOptionValue(document.getElementById(filterAreaID+filterCounter+'columnName').value),
-                          document.getElementById(filterAreaID+filterCounter+'operator').value,
-                          document.getElementById(filterAreaID+filterCounter+'zipInput1').value + ',' + document.getElementById(filterAreaID+filterCounter+'zipInput2').value
-                         ); 
-    }
-    
-    if (inputArea2.addEventListener) {
-       inputArea2.addEventListener('change', inputAreaChangeHandlerZip, false);
-    } else if (inputArea2.attachEvent) {
-       inputArea2.attachEvent('onchange', inputAreaChangeHandlerZip);
-    } 
-    
-    inputArea2.className = 'inputbox';
-    filterDiv.appendChild(inputArea2);
-
-
-    var labelZip2 = document.createElement('span');
-    labelZip2.id = filterAreaID+filterCounter+'zip2';
-    labelZip2.innerHTML = '&nbsp;&nbsp;Distance to Zipcode (Miles):&nbsp;&nbsp;';
-    labelZip2.style.display='none';
-    filterDiv.appendChild(labelZip2);
-
-    var inputArea3 = document.createElement('input');
-    inputArea3.id = filterAreaID+filterCounter+'zipInput2';
-    inputArea3.style.width='80px';
-    inputArea3.style.display='none';
-    inputArea3.value="25";
-    
-    if (inputArea3.addEventListener) {
-       inputArea3.addEventListener('change', inputAreaChangeHandlerZip, false);
-    } else if (inputArea3.attachEvent) {
-       inputArea3.attachEvent('onchange', inputAreaChangeHandlerZip);
-    } 
-    
-    inputArea3.className = 'inputbox';
-    filterDiv.appendChild(inputArea3);
-
-
-    
-    filterDiv.style.float='left';    
-    filterArea.appendChild(filterDiv);
-    
-    selectAreaChangeHandler();
+    filter.makePreviousSelectionBoxesUnselectable(
+        filterCounter,
+        filterAreaID,
+        selectableColumns
+    );
+    var currentFilter = filter.FilterFactory.createFromPossibleOperatorType(
+        selectableColumns[0],
+        filterCounter,
+        filterAreaID,
+        selectableColumns,
+        instanceName
+    );
+    filterArea.appendChild(currentFilter.render());
+    var disableAddFilterButton = selectableColumns.length > 1 ? false : true;
+    document.getElementsByName('addFilterButton' + instanceName)[0].disabled = disableAddFilterButton;
 }
 
 /* Generic message to display when a user tries to export selected, but nothing is selected. */

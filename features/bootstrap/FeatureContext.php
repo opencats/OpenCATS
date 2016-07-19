@@ -6,6 +6,8 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\MinkExtension\Context\MinkContext;
+use Behat\Mink\Exception\ExpectationException;
+use Behat\Mink\Exception\ElementHtmlException;
 
 /**
  * Defines application features from the specific context.
@@ -55,6 +57,28 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         list($key, $value) = explode("=", $property);
         $this->fillField($key, $value);
         $this->pressButton('Add Candidate');
+    }
+    
+    /**
+     * @override: @Then /^the "(?P<element>[^"]*)" element should contain "(?P<value>(?:[^"]|\\")*)"$/
+     */
+    public function assertElementContains($selector, $value)
+    {
+        $selectorType = 'css';
+        $html = $this->fixStepArgument($value);
+        $element = $this->assertSession()->elementExists($selectorType, $selector);
+        $actual = $element->getOuterHtml();
+        $regex = '/'.preg_quote($html, '/').'/umi';
+        
+        $message = sprintf(
+            'The regex "%s" does not matches HTML %s.',
+            $regex,
+            $actual
+        );
+        
+        if (!preg_match($regex, $actual)) {
+            throw new ElementHtmlException($message, $this->getSession()->getDriver(), $element);
+        }
     }
 }
 

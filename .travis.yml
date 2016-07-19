@@ -20,7 +20,6 @@ script:
     - composer install
     - php modules/tests/runTests.php
     - cd docker/; docker-compose -f docker-compose-test.yml up -d
-    - docker-compose -f docker-compose-test.yml run -w /var/www/public php dockerize -wait tcp://mariadb:3306 -wait http://opencats:80 -timeout 30s
-    - docker-compose -f docker-compose-test.yml run -w /var/www/public php php modules/tests/waitForDb.php
+    - sleep 12
     - docker-compose -f docker-compose-test.yml run -w /var/www/public php cat config.php
     - docker-compose -f docker-compose-test.yml run -w /var/www/public php ./vendor/bin/behat -v

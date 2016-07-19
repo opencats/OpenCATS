@@ -891,29 +891,11 @@ class DataGrid
                 }
             }
         }
-
-        $arrayKeysString = implode(',', array_map('urlencode', $filterableColumns));
-
-        if ($counterFilters > 0)
-        {
-            echo '<br /><br />';
-        }
-
-        echo '</td><td style="width:140px; vertical-align:top;">';
-        echo '<input class="button" style="width:120px; margin-left:5px;" type="button" name="addFilterButton', $md5InstanceName, '" onclick="showNewFilter', $md5InstanceName, '();" value="Add New"  /><br />';
-        echo '<input class="button" style="width:120px; margin-left:5px;" type="button" name="clearFilterButton', $md5InstanceName, '" onclick="clearFilter(\'filterArea'.$md5InstanceName.'\'); submitFilter', $md5InstanceName, '(false);" value="Remove All"  /><br />';
-        echo '<input class="button" style="width:120px; margin-left:5px;" type="button" name="applyFilterButton', $md5InstanceName, '" onclick="submitFilter', $md5InstanceName, '();" value="Apply" />';
-
-        echo '</td></tr></table>';
-
-        echo '<script type="text/javascript">';
-        echo 'newFilterCounter', $md5InstanceName, ' = 0;';
-        echo 'function showNewFilter', $md5InstanceName, '() {';
-            echo 'newFilterCounter', $md5InstanceName, '++;';
-            echo 'showNewFilter(newFilterCounter', $md5InstanceName, ', \'filterResultsAreaTable', $md5InstanceName, '\', \'',$arrayKeysString,'\', \'', $md5InstanceName, '\', \'submitFilter'. $md5InstanceName .'();\');';
-        echo ' };';
-        echo '</script>';
-        echo '</fieldset>';
+        $template = new Template();
+        $template->assign('md5InstanceName', $md5InstanceName);
+        $template->assign('arrayKeysString', json_encode(array_values($filterableColumns)));
+        $template->assign('counterFilters', $counterFilters);
+        $template->display('./lib/datagrid/FilterArea.tpl');
     }
 
     /**
