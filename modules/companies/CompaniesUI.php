@@ -434,6 +434,11 @@ class CompaniesUI extends UserInterface
      */
     private function add()
     {
+        if ($this->getUserAccessLevel('companies.addCompany') < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         $companies = new Companies($this->_siteID);
 
         /* Get extra fields. */
