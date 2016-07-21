@@ -204,7 +204,7 @@
             <div style="background-color: #E6EEFE; padding: 10px; margin: 5px 0 12px 0; border: 1px solid #728CC8;">
                 <b>This job order is public<?php if ($this->careerPortalURL === false): ?>.</b><?php else: ?>
                     and will be shown on your
-                    <?php if ($_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA): ?>
+                    <?php if ($_SESSION['CATS']->getAccessLevel('') >= ACCESS_LEVEL_SA): ?>
                         <a style="font-weight: bold;" href="<?php $this->_($this->careerPortalURL); ?>">Careers Website</a>.
                     <?php else: ?>
                         Careers Website.
@@ -215,7 +215,7 @@
                     <br />Applicants must complete the "<i><?php echo $this->questionnaireData['title']; ?></i>" (<a href="<?php echo CATSUtility::getIndexName(); ?>?m=settings&a=careerPortalQuestionnaire&questionnaireID=<?php echo $this->questionnaireID; ?>">edit</a>) questionnaire when applying.
                 <?php else: ?>
                     <br />You have not attached any
-                    <?php if ($_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA): ?>
+                    <?php if ($_SESSION['CATS']->getAccessLevel('') >= ACCESS_LEVEL_SA): ?>
                         <a href="<?php echo CATSUtility::getIndexName(); ?>?m=settings&a=careerPortalSettings">Questionnaires</a>.
                     <?php else: ?>
                         Questionnaires.

@@ -2055,7 +2055,7 @@ class SettingsUI extends UserInterface
     {
         NewVersionCheck::checkForUpdate();
 
-        $accessLevel = $_SESSION['CATS']->getAccessLevel();
+        $accessLevel = $_SESSION['CATS']->getAccessLevel('');
 
         $mailerSettings = new MailerSettings($this->_siteID);
         $mailerSettingsRS = $mailerSettings->getAll();

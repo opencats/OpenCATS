@@ -353,7 +353,7 @@ class ContactsUI extends UserInterface
         $extraFieldRS = $contacts->extraFields->getValuesForShow($contactID);
 
         /* Is the user an admin - can user see history? */
-        if ($this->_accessLevel < ACCESS_LEVEL_DEMO)
+        if ($this->getUserAccessLevel('contacts.show') < ACCESS_LEVEL_DEMO)
         {
             $privledgedUser = false;
         }
@@ -439,7 +439,7 @@ class ContactsUI extends UserInterface
     private function onAdd()
     {
         /* Bail if we don't have add permision. */
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        if ($this->getUserAccessLevel('contacts.addContact') < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
@@ -610,7 +610,7 @@ class ContactsUI extends UserInterface
 
         $reportsToRS = $contacts->getAll(-1, $data['companyID']);
 
-        if ($this->_accessLevel == ACCESS_LEVEL_DEMO)
+        if ($this->getUserAccessLevel('contacts.editContact') == ACCESS_LEVEL_DEMO)
         {
             $canEmail = false;
         }
@@ -654,7 +654,7 @@ class ContactsUI extends UserInterface
      */
     private function onEdit()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        if ($this->getUserAccessLevel('contacts.editContact') < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
@@ -839,7 +839,7 @@ class ContactsUI extends UserInterface
      */
     private function onDelete()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_DELETE)
+        if ($this->getUserAccessLevel('contacts.deleteContact') < ACCESS_LEVEL_DELETE)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
@@ -1110,7 +1110,7 @@ class ContactsUI extends UserInterface
     //TODO: Document me.
     private function onAddActivityScheduleEvent()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        if ($this->getUserAccessLevel('contacts.logActivityScheduleEvent') < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }

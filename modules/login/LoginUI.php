@@ -302,7 +302,7 @@ class LoginUI extends UserInterface
 
         $systemInfoDb = new SystemInfo();
 
-        $accessLevel = $_SESSION['CATS']->getAccessLevel();
+        $accessLevel = $_SESSION['CATS']->getAccessLevel('');
 
         $mailerSettings = new MailerSettings($_SESSION['CATS']->getSiteID());
         $mailerSettingsRS = $mailerSettings->getAll();

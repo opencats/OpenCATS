@@ -47,11 +47,9 @@ class UserInterface
     protected $_moduleDirectory = '';
     protected $_userID = -1;
     protected $_siteID = -1;
-    protected $_accessLevel = -1;
     protected $_authenticationRequired = true;
     protected $_hooks = array();
     protected $_schema = array();
-
 
     public function __construct()
     {
@@ -66,10 +64,10 @@ class UserInterface
             $this->_siteID = $_SESSION['CATS']->getSiteID();
 
             /* Get the current user's access level. */
-            $this->_accessLevel = $_SESSION['CATS']->getAccessLevel();
+            $accessLevel = $_SESSION['CATS']->getAccessLevel('');
 
             /* All templates have an access level if we have a session. */
-            $this->_template->assign('accessLevel', $this->_accessLevel);
+            $this->_template->assign('accessLevel', $accessLevel);
         }
     }
 
@@ -414,6 +412,11 @@ class UserInterface
         }
 
         return $ret;
+    }
+    
+    public function getUserAccessLevel($securedObjectName)
+    {
+        return $_SESSION['CATS']->getAccessLevel($securedObjectName);
     }
 }
 

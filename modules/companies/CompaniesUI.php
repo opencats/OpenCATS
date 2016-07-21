@@ -390,7 +390,7 @@ class CompaniesUI extends UserInterface
         $departmentsRS = $companies->getDepartments($companyID);
 
         /* Is the user an admin - can user see history? */
-        if ($this->_accessLevel < ACCESS_LEVEL_DEMO)
+        if ($this->getUserAccessLevel('companies.show') < ACCESS_LEVEL_DEMO)
         {
             $privledgedUser = false;
         }
@@ -452,7 +452,7 @@ class CompaniesUI extends UserInterface
      */
     private function onAdd()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        if ($this->getUserAccessLevel('companies.addCompany') < ACCESS_LEVEL_EDIT)
         {
             $this->listByView('Invalid user level for action.');
             return;
@@ -614,7 +614,7 @@ class CompaniesUI extends UserInterface
             $emailTemplateDisabled = false;
         }
 
-        if ($this->_accessLevel == ACCESS_LEVEL_DEMO)
+        if ($this->getUserAccessLevel('companies.canEmail') == ACCESS_LEVEL_DEMO)
         {
             $canEmail = false;
         }
@@ -643,7 +643,7 @@ class CompaniesUI extends UserInterface
      */
     private function onEdit()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        if ($this->getUserAccessLevel('companies.editCompany') < ACCESS_LEVEL_EDIT)
         {
             $this->listByView('Invalid user level for action.');
             return;
@@ -844,7 +844,7 @@ class CompaniesUI extends UserInterface
      */
     private function onDelete()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_DELETE)
+        if ($this->getUserAccessLevel('companies.deleteCompany') < ACCESS_LEVEL_DELETE)
         {
             $this->listByView('Invalid user level for action.');
             return;
@@ -1077,7 +1077,7 @@ class CompaniesUI extends UserInterface
      */
     private function onCreateAttachment()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        if ($this->getUserAccessLevel('companies.createAttachment') < ACCESS_LEVEL_EDIT)
         {
             $this->listByView('Invalid user level for action.');
             return;
@@ -1117,7 +1117,7 @@ class CompaniesUI extends UserInterface
      */
     private function onDeleteAttachment()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_DELETE)
+        if ($this->getUserAccessLevel('companies.deleteAttachment') < ACCESS_LEVEL_DELETE)
         {
             $this->listByView('Invalid user level for action.');
             return;

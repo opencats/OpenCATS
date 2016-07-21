@@ -396,7 +396,7 @@ class CATSSession
     }
 
     // FIXME: Document me!
-    public function getAccessLevel()
+    public function getAccessLevel($securedObjectName)
     {
         return $this->_accessLevel;
     }
