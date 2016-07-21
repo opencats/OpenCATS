@@ -104,6 +104,7 @@
                 &nbsp;
             </div>
             <br /><br />
+                 <?php if ($_SESSION['CATS']->getAccessLevel('joborders.addJobOrder') >= ACCESS_LEVEL_EDIT): ?>
             <table cellpadding="0" cellspacing="0" border="0">
                 <tr>
                 <td style="padding-left: 62px;" align="center" valign="center">
@@ -120,6 +121,7 @@
 
                 </tr>
             </table>
+                <?php endif; ?>
 
             <?php endif; ?>
         </div>
