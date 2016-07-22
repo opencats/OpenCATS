@@ -127,6 +127,14 @@ class Template
 
         echo($html);
     }
+
+    /**
+     *  TODO: Document me.
+     */
+    public function getUserAccessLevel($securedObjectName)
+    {
+        $_SESSION['CATS']->getAccessLevel($securedObjectName);
+    }
 }
 
 ?>

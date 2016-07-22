@@ -204,7 +204,7 @@
                                     <tr>
                                         <td style="text-align:center;" class="vertical">
                                             <?php if (!$this->isPopup): ?>
-                                                <?php if ($this->accessLevel >= ACCESS_LEVEL_DELETE): ?>
+                                                <?php if ($_SESSION['CATS']->getAccessLevel('candidates.deleteAttachment') >= ACCESS_LEVEL_DELETE): ?>
                                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=deleteAttachment&amp;candidateID=<?php echo($this->candidateID); ?>&amp;attachmentID=<?php $this->_($attachmentsData['attachmentID']) ?>" onclick="javascript:return confirm('Delete this attachment?');">
                                                         <img src="images/actions/delete.gif" alt="" width="16" height="16" border="0" title="Delete" />
                                                     </a>
@@ -302,7 +302,7 @@
                                         </a>
                                     </div>
                                 <?php endforeach; ?>
-                                <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
+                                <?php if ($_SESSION['CATS']->getAccessLevel('candidates.addActivityChangeStatus') >= ACCESS_LEVEL_EDIT): ?>
                                     <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addActivityChangeStatus&amp;candidateID=<?php echo($this->candidateID); ?>&amp;jobOrderID=-1&amp;onlyScheduleEvent=true', 600, 350, null); return false;">
                                         <img src="images/calendar_add.gif" width="16" height="16" border="0" alt="Schedule Event" class="absmiddle" />&nbsp;Schedule Event
                                     </a>
@@ -359,7 +359,7 @@
                                                     <td><?php $this->_($attachmentsData['dateCreated']) ?></td>
                                                     <td>
                                                         <?php if (!$this->isPopup): ?>
-                                                            <?php if ($this->accessLevel >= ACCESS_LEVEL_DELETE): ?>
+                                                            <?php if ($_SESSION['CATS']->getAccessLevel('candidates.deleteAttachment') >= ACCESS_LEVEL_DELETE): ?>
                                                                 <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=deleteAttachment&amp;candidateID=<?php echo($this->candidateID); ?>&amp;attachmentID=<?php $this->_($attachmentsData['attachmentID']) ?>" onclick="javascript:return confirm('Delete this attachment?');">
                                                                     <img src="images/actions/delete.gif" alt="" width="16" height="16" border="0" title="Delete" />
                                                                 </a>
