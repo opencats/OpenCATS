@@ -83,10 +83,18 @@ class ContactsUI extends UserInterface
         switch ($action)
         {
             case 'show':
+                if ($this->getUserAccessLevel('contacts.show') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->show();
                 break;
 
             case 'add':
+                if ($this->getUserAccessLevel('contacts.editContact') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onAdd();
@@ -99,6 +107,10 @@ class ContactsUI extends UserInterface
                 break;
 
             case 'edit':
+                if ($this->getUserAccessLevel('contacts.edit') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onEdit();
@@ -111,10 +123,18 @@ class ContactsUI extends UserInterface
                 break;
 
             case 'delete':
+                if ($this->getUserAccessLevel('contacts.deleteContact') < ACCESS_LEVEL_DELETE)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->onDelete();
                 break;
 
             case 'search':
+                if ($this->getUserAccessLevel('contacts.search') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 include_once('./lib/Search.php');
 
                 if ($this->isGetBack())
@@ -129,6 +149,10 @@ class ContactsUI extends UserInterface
                 break;
 
             case 'addActivityScheduleEvent':
+                if ($this->getUserAccessLevel('contacts.addActivityScheduleEvent') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onAddActivityScheduleEvent();
@@ -141,10 +165,18 @@ class ContactsUI extends UserInterface
                 break;
 
             case 'showColdCallList':
+                if ($this->getUserAccessLevel('contacts.showColdCallList') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->showColdCallList();
                 break;
 
             case 'downloadVCard':
+                if ($this->getUserAccessLevel('contacts.downloadVCard') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 include_once('./lib/VCard.php');
 
                 $this->downloadVCard();
@@ -153,6 +185,10 @@ class ContactsUI extends UserInterface
             /* Main contacts page. */
             case 'listByView':
             default:
+                if ($this->getUserAccessLevel('contacts.list') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->listByView();
                 break;
         }
@@ -383,11 +419,6 @@ class ContactsUI extends UserInterface
      */
     private function add()
     {
-        if ($this->getUserAccessLevel('contacts.addContact') < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         $companies = new Companies($this->_siteID);
         $contacts = new Contacts($this->_siteID);
 
@@ -443,12 +474,6 @@ class ContactsUI extends UserInterface
      */
     private function onAdd()
     {
-        /* Bail if we don't have add permision. */
-        if ($this->getUserAccessLevel('contacts.addContact') < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid company ID. */
         if (!$this->isRequiredIDValid('companyID', $_POST))
         {
@@ -615,7 +640,7 @@ class ContactsUI extends UserInterface
 
         $reportsToRS = $contacts->getAll(-1, $data['companyID']);
 
-        if ($this->getUserAccessLevel('contacts.editContact') == ACCESS_LEVEL_DEMO)
+        if ($this->getUserAccessLevel('contacts.emailContact') == ACCESS_LEVEL_DEMO)
         {
             $canEmail = false;
         }
@@ -659,11 +684,6 @@ class ContactsUI extends UserInterface
      */
     private function onEdit()
     {
-        if ($this->getUserAccessLevel('contacts.editContact') < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid contact ID. */
         if (!$this->isRequiredIDValid('contactID', $_POST))
         {
@@ -844,10 +864,6 @@ class ContactsUI extends UserInterface
      */
     private function onDelete()
     {
-        if ($this->getUserAccessLevel('contacts.deleteContact') < ACCESS_LEVEL_DELETE)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
 
         /* Bail out if we don't have a valid contact ID. */
         if (!$this->isRequiredIDValid('contactID', $_GET))
@@ -1115,11 +1131,6 @@ class ContactsUI extends UserInterface
     //TODO: Document me.
     private function onAddActivityScheduleEvent()
     {
-        if ($this->getUserAccessLevel('contacts.logActivityScheduleEvent') < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid regardingjob order ID. */
         if (!$this->isOptionalIDValid('regardingID', $_POST))
         {
