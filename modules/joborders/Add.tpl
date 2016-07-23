@@ -289,7 +289,7 @@
                                     <option value="<?php echo $questionnaire['questionnaireID']; ?>"><?php echo $questionnaire['title']; ?></option>
                                 <?php endforeach; ?>
                                 </select>
-                                <?php if ($_SESSION['CATS']->getAccessLevel('') >= ACCESS_LEVEL_SA): ?>
+                                <?php if ($this->getUserAccessLevel('settings.careerPortalSettings') >= ACCESS_LEVEL_SA): ?>
                                 <br />
                                 <a href="<?php echo CATSUtility::getIndexName(); ?>?m=settings&a=careerPortalSettings" target="_blank">Add / Edit / Delete Questionnaires</a>
                                 <?php endif; ?>
