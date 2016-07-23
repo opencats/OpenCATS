@@ -73,14 +73,26 @@ class CompaniesUI extends UserInterface
         switch ($action)
         {
             case 'show':
+                if ($this->getUserAccessLevel('companies.show') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->show();
                 break;
 
             case 'internalPostings':
+                if ($this->getUserAccessLevel('companies.internalPostings') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->internalPostings();
                 break;
 
             case 'add':
+                if ($this->getUserAccessLevel('companies.add') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onAdd();
@@ -93,6 +105,11 @@ class CompaniesUI extends UserInterface
                 break;
 
             case 'edit':
+                if ($this->getUserAccessLevel('companies.edit') < ACCESS_LEVEL_EDIT)
+                {
+                    $this->listByView('Invalid user level for action.');
+                    return;
+                }
                 if ($this->isPostBack())
                 {
                     $this->onEdit();
@@ -105,6 +122,11 @@ class CompaniesUI extends UserInterface
                 break;
 
             case 'delete':
+                if ($this->getUserAccessLevel('companies.delete') < ACCESS_LEVEL_DELETE)
+                {
+                    $this->listByView('Invalid user level for action.');
+                    return;
+                }
                 $this->onDelete();
                 break;
 
@@ -124,6 +146,11 @@ class CompaniesUI extends UserInterface
 
             /* Add an attachment */
             case 'createAttachment':
+                if ($this->getUserAccessLevel('companies.createAttachment') < ACCESS_LEVEL_EDIT)
+                {
+                    $this->listByView('Invalid user level for action.');
+                    return;
+                }
                 include_once('./lib/DocumentToText.php');
 
                 if ($this->isPostBack())
@@ -139,12 +166,22 @@ class CompaniesUI extends UserInterface
 
             /* Delete an attachment */
             case 'deleteAttachment':
+                if ($this->getUserAccessLevel('companies.deleteAttachment') < ACCESS_LEVEL_DELETE)
+                {
+                    $this->listByView('Invalid user level for action.');
+                    return;
+                }
                 $this->onDeleteAttachment();
                 break;
 
             /* Main companies page. */
             case 'listByView':
             default:
+                if ($this->getUserAccessLevel('companies.list') < ACCESS_LEVEL_READ)
+                {
+                    $this->listByView('Invalid user level for action.');
+                    return;
+                }
                 $this->listByView();
                 break;
         }
@@ -434,11 +471,6 @@ class CompaniesUI extends UserInterface
      */
     private function add()
     {
-        if ($this->getUserAccessLevel('companies.addCompany') < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-        
         $companies = new Companies($this->_siteID);
 
         /* Get extra fields. */
@@ -457,12 +489,6 @@ class CompaniesUI extends UserInterface
      */
     private function onAdd()
     {
-        if ($this->getUserAccessLevel('companies.addCompany') < ACCESS_LEVEL_EDIT)
-        {
-            $this->listByView('Invalid user level for action.');
-            return;
-        }
-
         $formattedPhone1 = StringUtility::extractPhoneNumber(
             $this->getTrimmedInput('phone1', $_POST)
         );
@@ -619,7 +645,7 @@ class CompaniesUI extends UserInterface
             $emailTemplateDisabled = false;
         }
 
-        if ($this->getUserAccessLevel('companies.canEmail') == ACCESS_LEVEL_DEMO)
+        if ($this->getUserAccessLevel('companies.email') == ACCESS_LEVEL_DEMO)
         {
             $canEmail = false;
         }
@@ -648,12 +674,6 @@ class CompaniesUI extends UserInterface
      */
     private function onEdit()
     {
-        if ($this->getUserAccessLevel('companies.editCompany') < ACCESS_LEVEL_EDIT)
-        {
-            $this->listByView('Invalid user level for action.');
-            return;
-        }
-
         $companies = new Companies($this->_siteID);
 
         /* Bail out if we don't have a valid company ID. */
@@ -849,12 +869,6 @@ class CompaniesUI extends UserInterface
      */
     private function onDelete()
     {
-        if ($this->getUserAccessLevel('companies.deleteCompany') < ACCESS_LEVEL_DELETE)
-        {
-            $this->listByView('Invalid user level for action.');
-            return;
-        }
-
         /* Bail out if we don't have a valid company ID. */
         if (!$this->isRequiredIDValid('companyID', $_GET))
         {
@@ -1082,12 +1096,6 @@ class CompaniesUI extends UserInterface
      */
     private function onCreateAttachment()
     {
-        if ($this->getUserAccessLevel('companies.createAttachment') < ACCESS_LEVEL_EDIT)
-        {
-            $this->listByView('Invalid user level for action.');
-            return;
-        }
-
         /* Bail out if we don't have a valid joborder ID. */
         if (!$this->isRequiredIDValid('companyID', $_POST))
         {
@@ -1122,12 +1130,6 @@ class CompaniesUI extends UserInterface
      */
     private function onDeleteAttachment()
     {
-        if ($this->getUserAccessLevel('companies.deleteAttachment') < ACCESS_LEVEL_DELETE)
-        {
-            $this->listByView('Invalid user level for action.');
-            return;
-        }
-
         /* Bail out if we don't have a valid attachment ID. */
         if (!$this->isRequiredIDValid('attachmentID', $_GET))
         {
