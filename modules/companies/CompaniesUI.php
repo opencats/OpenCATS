@@ -107,8 +107,7 @@ class CompaniesUI extends UserInterface
             case 'edit':
                 if ($this->getUserAccessLevel('companies.edit') < ACCESS_LEVEL_EDIT)
                 {
-                    $this->listByView('Invalid user level for action.');
-                    return;
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 if ($this->isPostBack())
                 {
@@ -124,13 +123,16 @@ class CompaniesUI extends UserInterface
             case 'delete':
                 if ($this->getUserAccessLevel('companies.delete') < ACCESS_LEVEL_DELETE)
                 {
-                    $this->listByView('Invalid user level for action.');
-                    return;
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->onDelete();
                 break;
 
             case 'search':
+                if ($this->getUserAccessLevel('companies.search') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 include_once('./lib/Search.php');
 
                 if ($this->isGetBack())
@@ -148,8 +150,7 @@ class CompaniesUI extends UserInterface
             case 'createAttachment':
                 if ($this->getUserAccessLevel('companies.createAttachment') < ACCESS_LEVEL_EDIT)
                 {
-                    $this->listByView('Invalid user level for action.');
-                    return;
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 include_once('./lib/DocumentToText.php');
 
@@ -168,8 +169,7 @@ class CompaniesUI extends UserInterface
             case 'deleteAttachment':
                 if ($this->getUserAccessLevel('companies.deleteAttachment') < ACCESS_LEVEL_DELETE)
                 {
-                    $this->listByView('Invalid user level for action.');
-                    return;
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->onDeleteAttachment();
                 break;
@@ -179,8 +179,7 @@ class CompaniesUI extends UserInterface
             default:
                 if ($this->getUserAccessLevel('companies.list') < ACCESS_LEVEL_READ)
                 {
-                    $this->listByView('Invalid user level for action.');
-                    return;
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->listByView();
                 break;
