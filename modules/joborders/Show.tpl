@@ -204,7 +204,7 @@
             <div style="background-color: #E6EEFE; padding: 10px; margin: 5px 0 12px 0; border: 1px solid #728CC8;">
                 <b>This job order is public<?php if ($this->careerPortalURL === false): ?>.</b><?php else: ?>
                     and will be shown on your
-                    <?php if ($this->getUserAccessLevel('') >= ACCESS_LEVEL_SA): ?>
+                    <?php if ($this->getUserAccessLevel('joborders.careerPortalUrl') >= ACCESS_LEVEL_SA): ?>
                         <a style="font-weight: bold;" href="<?php $this->_($this->careerPortalURL); ?>">Careers Website</a>.
                     <?php else: ?>
                         Careers Website.

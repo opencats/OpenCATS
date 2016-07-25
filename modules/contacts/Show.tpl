@@ -280,7 +280,7 @@
                                     <img src="images/actions/edit.gif" width="16" height="16" alt="" class="absmiddle" border="0" title="Edit"/>
                                 </a>
                             <?php endif; ?>
-                            <?php if ($this->$this->getUserAccessLevel('contacts.deleteActivity) >= ACCESS_LEVEL_EDIT): ?>
+                            <?php if ($this->getUserAccessLevel('contacts.deleteActivity) >= ACCESS_LEVEL_EDIT): ?>
                                 <a href="#" id="deleteActivity<?php echo($activityData['activityID']); ?>" onclick="Activity_deleteEntry(<?php echo($activityData['activityID']); ?>, '<?php echo($this->sessionCookie); ?>'); return false;">
                                     <img src="images/actions/delete.gif" width="16" height="16" alt="" class="absmiddle" border="0" title="Delete"/>
                                 </a>
@@ -290,7 +290,7 @@
                 <?php endforeach; ?>
             </table>
             <div id="addActivityDiv">
-                <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
+                <?php if ($this->getUserAccessLevel('contacts.logActivityScheduleEvent') >= ACCESS_LEVEL_EDIT): ?>
                     <a href="#" id="addActivityLink" title="Log an Activity / Schedule Event" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=contacts&amp;a=addActivityScheduleEvent&amp;contactID=<?php echo($this->contactID); ?>', 600, 375, null); return false;">
                         <img src="images/new_activity_inline.gif" width="16" height="16" class="absmiddle" title="Log an Activity / Schedule Event" alt="Log an Activity / Schedule Event" border="0" />&nbsp;Log an Activity / Schedule Event
                     </a>

@@ -1425,7 +1425,7 @@ class ImportUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_NOTLOGGEDIN, $this);
         }
 
-        if ($_SESSION['CATS']->getAccessLevel('import.massImport') < ACCESS_LEVEL_EDIT)
+        if ($this->getUserAccessLevel('import.massImport') < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You do not have permission to import '
                 . 'mass resume documents.'
@@ -1946,7 +1946,7 @@ class ImportUI extends UserInterface
         {
             CommonErrors::fatal(COMMONERROR_NOTLOGGEDIN, $this);
         }
-        if ($_SESSION['CATS']->getAccessLevel('import.bulkResumes') < ACCESS_LEVEL_SA)
+        if ($this->getUserAccessLevel('import.bulkResumes') < ACCESS_LEVEL_SA)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
         }
@@ -1979,7 +1979,7 @@ class ImportUI extends UserInterface
         {
             CommonErrors::fatal(COMMONERROR_NOTLOGGEDIN, $this);
         }
-        if ($_SESSION['CATS']->getAccessLevel('import.bulkResumes') < ACCESS_LEVEL_SA)
+        if ($this->getUserAccessLevel('import.bulkResumes') < ACCESS_LEVEL_SA)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
         }
