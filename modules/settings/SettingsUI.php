@@ -858,6 +858,11 @@ class SettingsUI extends UserInterface
             /* Main settings page. */
             case 'myProfile':
             default:
+                /* Bail out if the user doesn't have SA permissions. */
+                if ($this->getUserAccessLevel('settings.myProfile') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->myProfile();
                 break;
         }
