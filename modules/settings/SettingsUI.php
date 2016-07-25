@@ -135,7 +135,8 @@ class SettingsUI extends UserInterface
         );
     }
     
-    function onAddNewTag(){
+    private function onAddNewTag()
+    {
         if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
         {
             echo 'CATS has lost your session data!';
@@ -143,7 +144,8 @@ class SettingsUI extends UserInterface
         }
         $tags = new Tags($this->_siteID);
         $arr = $tags->add((isset($_POST['tag_parent_id'])?$_POST['tag_parent_id']:null),$_POST['tag_title'], "-");
-        if (isset($_POST['tag_parent_id'])){
+        if (isset($_POST['tag_parent_id']))
+        {
 	        printf('
 				<li id="id_li_tag_%d">
 					<a href="javascript:;" onclick="doDelete(%d);"><img src="images/actions/delete.gif" /></a>
@@ -173,7 +175,8 @@ class SettingsUI extends UserInterface
 		return; 
     }
     
-    function onRemoveTag(){
+    private function onRemoveTag()
+    {
         if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
         {
             echo 'CATS has lost your session data!';
@@ -184,7 +187,8 @@ class SettingsUI extends UserInterface
 		return; 
     }
     
-    function onChangeTag(){
+    private function onChangeTag()
+    {
         if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
         {
             echo 'CATS has lost your session data!';
@@ -202,7 +206,8 @@ class SettingsUI extends UserInterface
      * This function make changes to tags
      * @return unknown_type
      */
-	function onChangeTags(){
+	private function onChangeTags()
+    {
 		// TODO: Add tags changing code
         if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
         {
@@ -218,7 +223,8 @@ class SettingsUI extends UserInterface
 	 * Show the tag list
 	 * @return unknown_type
 	 */
-	function changeTags(){
+	private function changeTags()
+    {
 		if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
@@ -246,9 +252,12 @@ class SettingsUI extends UserInterface
         switch ($action)
         {
         	case 'tags':
-        		if ($this->isPostBack()){
+        		if ($this->isPostBack())
+                {
         			$this->onChangeTags();
-        		}else{
+        		}
+                else
+                {
         			$this->changeTags();
         		}
         		break;
