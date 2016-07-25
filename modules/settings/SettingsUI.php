@@ -2972,7 +2972,7 @@ class SettingsUI extends UserInterface
         $this->_template->display('./modules/settings/ItemHistory.tpl');
     }
 
-    public function wizard_addUser()
+    private function wizard_addUser()
     {
         if (isset($_GET[$id = 'firstName'])) $firstName = $_GET[$id]; else $firstName = '';
         if (isset($_GET[$id = 'lastName'])) $lastName = $_GET[$id]; else $lastName = '';
@@ -3030,7 +3030,7 @@ class SettingsUI extends UserInterface
         }
     }
 
-    public function wizard_deleteUser()
+    private function wizard_deleteUser()
     {
         if (isset($_GET[$id = 'userID'])) $userID = intval($_GET[$id]);
         else
@@ -3050,7 +3050,7 @@ class SettingsUI extends UserInterface
         echo 'Ok';
     }
 
-    public function wizard_checkKey()
+    private function wizard_checkKey()
     {
         $fileError = false;
 
@@ -3128,7 +3128,7 @@ class SettingsUI extends UserInterface
             . 'http://www.catsone.com/professional';
     }
 
-    public function wizard_localization()
+    private function wizard_localization()
     {
         if (!isset($_GET['timeZone']) || !isset($_GET['dateFormat']))
         {
@@ -3154,7 +3154,7 @@ class SettingsUI extends UserInterface
         echo 'Ok';
     }
 
-    public function wizard_license()
+    private function wizard_license()
     {
         $site = new Site($this->_siteID);
         $site->setAgreedToLicense();
@@ -3162,7 +3162,7 @@ class SettingsUI extends UserInterface
         echo 'Ok';
     }
 
-    public function wizard_firstTimeSetup()
+    private function wizard_firstTimeSetup()
     {
         $site = new Site($this->_siteID);
         $site->setFirstTimeSetup();
@@ -3170,7 +3170,7 @@ class SettingsUI extends UserInterface
         echo 'Ok';
     }
 
-    public function wizard_password()
+    private function wizard_password()
     {
         if (isset($_GET['password']) && !empty($_GET['password'])) $password = $_GET['password'];
         else $password = '';
@@ -3191,7 +3191,7 @@ class SettingsUI extends UserInterface
         echo 'Ok';
     }
 
-    public function wizard_email()
+    private function wizard_email()
     {
         if (isset($_GET['email']) && !empty($_GET['email'])) $email = $_GET['email'];
         else $email = '';
@@ -3208,7 +3208,7 @@ class SettingsUI extends UserInterface
         echo 'Ok';
     }
 
-    public function wizard_siteName()
+    private function wizard_siteName()
     {
         if (isset($_GET['siteName']) && !empty($_GET['siteName'])) $siteName = $_GET['siteName'];
         else $siteName = '';
@@ -3235,7 +3235,7 @@ class SettingsUI extends UserInterface
         echo 'Ok';
     }
 
-    public function wizard_import()
+    private function wizard_import()
     {
         $siteID = $_SESSION['CATS']->getSiteID();
 
@@ -3246,7 +3246,7 @@ class SettingsUI extends UserInterface
         else echo 'Fail';
     }
 
-    public function wizard_website()
+    private function wizard_website()
     {
         $website = trim(isset($_GET[$id='website']) ? $_GET[$id] : '');
         if (strlen($website) > 10)
@@ -3257,7 +3257,7 @@ class SettingsUI extends UserInterface
         echo 'Ok';
     }
 
-    public function careerPortalQuestionnaire($fromPostback = false)
+    private function careerPortalQuestionnaire($fromPostback = false)
     {
         // Get the ID if provided, otherwise we're adding a questionnaire
         $questionnaireID = isset($_GET[$id='questionnaireID']) ? $_GET[$id] : '';
@@ -3339,7 +3339,7 @@ class SettingsUI extends UserInterface
         $this->_template->display('./modules/settings/CareerPortalQuestionnaire.tpl');
     }
 
-    public function onCareerPortalQuestionnaire()
+    private function onCareerPortalQuestionnaire()
     {
         if (!isset($_SESSION['CATS_QUESTIONNAIRE']) || empty($_SESSION['CATS_QUESTIONNAIRE']))
         {
@@ -3766,7 +3766,7 @@ class SettingsUI extends UserInterface
         $this->careerPortalQuestionnaire(true);
     }
 
-    public function careerPortalQuestionnaireUpdate()
+    private function careerPortalQuestionnaireUpdate()
     {
         $questionnaire = new Questionnaire($this->_siteID);
         $data = $questionnaire->getAll(true);
@@ -3783,7 +3783,7 @@ class SettingsUI extends UserInterface
         CATSUtility::transferRelativeURI('m=settings&a=careerPortalSettings');
     }
 
-    public function careerPortalQuestionnairePreview()
+    private function careerPortalQuestionnairePreview()
     {
         if (!isset($_GET['questionnaireID']))
         {
