@@ -30,6 +30,8 @@
  * @version    $Id: Session.php 3676 2007-11-21 21:02:15Z brian $
  */
 
+include('./lib/ACL.php');
+
 /**
  *  CATS Session Object
  *  @package    CATS
@@ -398,6 +400,35 @@ class CATSSession
     // FIXME: Document me!
     public function getAccessLevel($securedObjectName)
     {
+        $ACL = ACL::getInstance();
+        $permissions = $ACL->permissions;
+
+        if(empty($permissions) || isset($permissions) == false || isset($securedObjectName) == false)
+        {
+            return $this->_accessLevel;
+        }
+
+        $userCategory = $this->getUserCategories()[0];
+        if( isset($userCategory) == false)
+        {
+            return $this->_accessLevel;
+        }
+
+        if(isset($permissions[$userCategory][$securedObjectName]))
+        {
+            return $permissions[$userCategory][$securedObjectName];
+        }
+        else
+        {
+            while(($pos = strrpos($securedObjectName, ".")) !== false)
+            {
+                $securedObjectName = substr($securedObjectName, 0, $pos);
+                if(isset($permissions[$userCategory][$securedObjectName]))
+                {
+                    return $permissions[$userCategory][$securedObjectName];
+                }
+            }
+        }
         return $this->_accessLevel;
     }
 
