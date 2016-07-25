@@ -172,7 +172,7 @@ class SettingsUI extends UserInterface
         }
         
         
-		return; 
+        return; 
     }
     
     private function onRemoveTag()
@@ -184,7 +184,7 @@ class SettingsUI extends UserInterface
         }
         $tags = new Tags($this->_siteID);
         $tags->delete($_POST['tag_id']);
-		return; 
+        return; 
     }
     
     private function onChangeTag()
@@ -206,17 +206,17 @@ class SettingsUI extends UserInterface
      * This function make changes to tags
      * @return unknown_type
      */
-	private function onChangeTags()
+    private function onChangeTags()
     {
-		// TODO: Add tags changing code
+        // TODO: Add tags changing code
  
-	}
+    }
 
-	/**
-	 * Show the tag list
-	 * @return unknown_type
-	 */
-	private function changeTags()
+    /**
+     * Show the tag list
+     * @return unknown_type
+     */
+    private function changeTags()
     {
         $tags = new Tags($this->_siteID);
         $tagsRS = $tags->getAll();
@@ -227,7 +227,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('subActive', 'Administration');
         $this->_template->assign('tagsRS', $tagsRS);
         $this->_template->display('./modules/settings/tags.tpl');
-	}
+    }
 
     public function handleRequest()
     {
@@ -237,23 +237,23 @@ class SettingsUI extends UserInterface
 
         switch ($action)
         {
-        	case 'tags':
+            case 'tags':
                 /* Bail out if the user is demo. */
                 if ($this->getUserAccessLevel('settings.tags') < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You are not allowed to change your password.');
                 }
-        		if ($this->isPostBack())
+                if ($this->isPostBack())
                 {
-        			$this->onChangeTags();
-        		}
+                    $this->onChangeTags();
+                }
                 else
                 {
-        			$this->changeTags();
-        		}
-        		break;
-        	
-        	case 'changePassword':
+                    $this->changeTags();
+                }
+                break;
+            
+            case 'changePassword':
                 /* Bail out if the user is demo. */
                 if ($this->getUserAccessLevel('settings.changePassword') == ACCESS_LEVEL_DEMO)
                 {
@@ -646,15 +646,15 @@ class SettingsUI extends UserInterface
                 $this->downloads();
                 break;
 
-        	case 'ajax_tags_add':
+            case 'ajax_tags_add':
                 if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
                 {
                     echo 'CATS has lost your session data!';
                     return;
                 }
-        		$this->onAddNewTag();
-        		break;
-        	
+                $this->onAddNewTag();
+                break;
+            
             case 'ajax_tags_del':
                 if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
                 {
@@ -662,16 +662,16 @@ class SettingsUI extends UserInterface
                     return;
                 }
                 $this->onRemoveTag();
-        		break;
+                break;
 
-        	case 'ajax_tags_upd':
+            case 'ajax_tags_upd':
                 if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
                 {
                     echo 'CATS has lost your session data!';
                     return;
                 }
                 $this->onChangeTag();
-        		break;
+                break;
                
             case 'ajax_wizardAddUser':
                 if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
@@ -856,7 +856,7 @@ class SettingsUI extends UserInterface
 
             /* Main settings page. */
             case 'myProfile':
-                default:
+            default:
                 $this->myProfile();
                 break;
         }
@@ -903,7 +903,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('userID', $this->_userID);
         $this->_template->assign('active', $this);
         $this->_template->assign('subActive', 'My Profile');
-	$this->_template->assign('auth_mode', AUTH_MODE);
+        $this->_template->assign('auth_mode', AUTH_MODE);
         $this->_template->display($templateFile);
     }
 
@@ -1051,7 +1051,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('defaultAccessLevel', ACCESS_LEVEL_DELETE);
         $this->_template->assign('currentUser', $this->_userID);
         $this->_template->assign('categories', $categories);
-	$this->_template->assign('auth_mode', AUTH_MODE);
+        $this->_template->assign('auth_mode', AUTH_MODE);
 
         if (!eval(Hooks::get('SETTINGS_ADD_USER'))) return;
 
@@ -1247,7 +1247,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('currentUser', $this->_userID);
         $this->_template->assign('cannotEnableMessage', $cannotEnableMessage);
         $this->_template->assign('disableAccessChange', $disableAccessChange);
-	$this->_template->assign('auth_mode', AUTH_MODE);
+        $this->_template->assign('auth_mode', AUTH_MODE);
         $this->_template->display('./modules/settings/EditUser.tpl');
     }
 
