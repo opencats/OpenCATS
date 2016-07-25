@@ -194,8 +194,8 @@ class CATSSession
          * account.
          */
         if ($this->isDemo() ||
-            $this->_accessLevel == ACCESS_LEVEL_READ ||
-            $this->_accessLevel >= ACCESS_LEVEL_ROOT ||
+            $this->getAccessLevel('') == ACCESS_LEVEL_READ ||
+            $this->getAccessLevel('') >= ACCESS_LEVEL_ROOT ||
             $this->_unixName == 'cognizo')
         {
             return false;
