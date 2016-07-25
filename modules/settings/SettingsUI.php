@@ -378,7 +378,8 @@ class SettingsUI extends UserInterface
 
             case 'showUser':
                 /* Bail out if the user doesn't have SA permissions. */
-                if ($this->getUserAccessLevel("settings.showUser") < ACCESS_LEVEL_DEMO)
+                if ($this->getUserAccessLevel("settings.showUser") < ACCESS_LEVEL_DEMO
+                    && $this->_userID != $_GET['userID'])
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
