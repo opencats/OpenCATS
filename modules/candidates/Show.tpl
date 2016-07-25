@@ -204,7 +204,7 @@
                                     <tr>
                                         <td style="text-align:center;" class="vertical">
                                             <?php if (!$this->isPopup): ?>
-                                                <?php if ($_SESSION['CATS']->getAccessLevel('candidates.deleteAttachment') >= ACCESS_LEVEL_DELETE): ?>
+                                                <?php if ($this->getUserAccessLevel('candidates.deleteAttachment') >= ACCESS_LEVEL_DELETE): ?>
                                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=deleteAttachment&amp;candidateID=<?php echo($this->candidateID); ?>&amp;attachmentID=<?php $this->_($attachmentsData['attachmentID']) ?>" onclick="javascript:return confirm('Delete this attachment?');">
                                                         <img src="images/actions/delete.gif" alt="" width="16" height="16" border="0" title="Delete" />
                                                     </a>
@@ -302,7 +302,7 @@
                                         </a>
                                     </div>
                                 <?php endforeach; ?>
-                                <?php if ($_SESSION['CATS']->getAccessLevel('candidates.addActivityChangeStatus') >= ACCESS_LEVEL_EDIT): ?>
+                                <?php if ($this->getUserAccessLevel('candidates.addActivityChangeStatus') >= ACCESS_LEVEL_EDIT): ?>
                                     <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addActivityChangeStatus&amp;candidateID=<?php echo($this->candidateID); ?>&amp;jobOrderID=-1&amp;onlyScheduleEvent=true', 600, 350, null); return false;">
                                         <img src="images/calendar_add.gif" width="16" height="16" border="0" alt="Schedule Event" class="absmiddle" />&nbsp;Schedule Event
                                     </a>
@@ -486,7 +486,7 @@
 <?php if (!$this->isPopup): ?>
                         <td align="center" nowrap="nowrap">
                             <?php eval(Hooks::get('CANDIDATE_TEMPLATE_SHOW_PIPELINE_ACTION')); ?>
-                            <?php if ($_SESSION['CATS']->getAccessLevel('') >= ACCESS_LEVEL_EDIT && !$_SESSION['CATS']->hasUserCategory('sourcer')): ?>
+                            <?php if ($this->getUserAccessLevel('pipeline.edit') >= ACCESS_LEVEL_EDIT && !$_SESSION['CATS']->hasUserCategory('sourcer')): ?>
                                 <?php if ($pipelinesData['ratingValue'] < 0): ?>
                                     <a href="#" id="screenLink<?php echo($pipelinesData['candidateJobOrderID']); ?>" onclick="moImageValue<?php echo($pipelinesData['candidateJobOrderID']); ?> = 0; setRating(<?php echo($pipelinesData['candidateJobOrderID']); ?>, 0, 'moImage<?php echo($pipelinesData['candidateJobOrderID']); ?>', '<?php echo($_SESSION['CATS']->getCookie()); ?> '); return false;">
                                         <img id="screenImage<?php echo($pipelinesData['candidateJobOrderID']); ?>" src="images/actions/screen.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Mark as Screened" />
