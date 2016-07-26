@@ -577,9 +577,13 @@ class TemplateUtility
          *
          * Tab text = 'something*al=somenumber' where somenumber is an access level -
          *      Only display tab if current user userlevel >= somenumber.
+         * Tab text = 'something*al=somenumber@somesecuredobject' where somenumber is an access level and somesecuredobject is secured objec name -
+         *      Only display tab if current user userlevel_for_securedobject >= somenumber.
          *
          * Subtab url = 'url*al=somenumber' where somenumber is an access level -
          *      Only display subtab if current user userlevel >= somenumber.
+         * Subtab url = 'url*al=somenumber@somesecuredobject' where somenumber is an access level and somesecuredobject is secured objec name -
+         *      Only display subtab if current user userlevel_for_securedobject >= somenumber.
          *
          * Subtab url = 'url*js=javascript code' where javascript code is JS commands -
          *      JS code to execute for button OnClick event.
@@ -641,7 +645,14 @@ class TemplateUtility
                 else
                 {
                      $al = substr($tabText, $alPosition + 4);
-                     if ($_SESSION['CATS']->getAccessLevel('') >= $al ||
+                     $soPosition = strpos($al, "@");
+                     $soName = '';
+                     if( $soPosition !== false )
+                     {
+                         $soName = substr($al, $soPosition + 1);
+                         $al = substr($al, 0, $soPosition);
+                     }
+                     if ($_SESSION['CATS']->getAccessLevel($soName) >= $al ||
                          $_SESSION['CATS']->isDemo())
                      {
                         echo '<li><a class="', $className, '" href="', $indexName, '?m=', $moduleName, '">',
@@ -705,7 +716,14 @@ class TemplateUtility
                     {
                         /* Access level restricted subtab. */
                         $al = substr($link, $alPosition + 4);
-                        if ($_SESSION['CATS']->getAccessLevel('') >= $al ||
+                        $soPosition = strpos($al, "@");
+                        $soName = '';
+                        if( $soPosition !== false )
+                        {
+                            $soName = substr($al, $soPosition + 1);
+                            $al = substr($al, 0, $soPosition);
+                        }
+                        if ($_SESSION['CATS']->getAccessLevel($soName) >= $al ||
                             $_SESSION['CATS']->isDemo())
                         {
                             $link =  substr($link, 0, $alPosition);

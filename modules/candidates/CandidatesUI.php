@@ -71,7 +71,7 @@ class CandidatesUI extends UserInterface
         $this->_moduleName = 'candidates';
         $this->_moduleTabText = 'Candidates';
         $this->_subTabs = array(
-            'Add Candidate'     => CATSUtility::getIndexName() . '?m=candidates&amp;a=add*al=' . ACCESS_LEVEL_EDIT,
+            'Add Candidate'     => CATSUtility::getIndexName() . '?m=candidates&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@candidates.add',
             'Search Candidates' => CATSUtility::getIndexName() . '?m=candidates&amp;a=search'
         );
     }
