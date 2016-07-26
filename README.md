@@ -20,3 +20,12 @@ Installation Procedure:
 
     doc/INSTALL.md
 
+Issues:
+
+[Open Issues](https://github.com/opencats/OpenCATS/issues?q=is%3Aopen)
+
+[![Waffle](https://badge.waffle.io/opencats/opencats.svg?label=ready&title=Planed)](http://waffle.io/opencats/opencats)
+[![Waffle](https://badge.waffle.io/opencats/opencats.svg?label=in progress&title=In Progress)](http://waffle.io/opencats/opencats)
+[![Waffle](https://badge.waffle.io/opencats/opencats.svg?label=ready to test&title=Ready To Test)](http://waffle.io/opencats/opencats)
+
+[![Throughput Graph](https://graphs.waffle.io/opencats/opencats/throughput.svg)](https://waffle.io/opencats/opencats/metrics/throughput)
