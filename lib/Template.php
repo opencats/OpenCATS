@@ -133,7 +133,7 @@ class Template
      */
     public function getUserAccessLevel($securedObjectName)
     {
-        $_SESSION['CATS']->getAccessLevel($securedObjectName);
+        return $_SESSION['CATS']->getAccessLevel($securedObjectName);
     }
 }
 
