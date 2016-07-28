@@ -65,7 +65,7 @@ class ACL
     /* Returns accessLevel to securedObjectName for user with userCategories 
      * current implementation evaluates only first user category
     */
-    public function getAccessLevel($securedObjectName, $userCategories, $defaultAccessLevel)
+    public static function getAccessLevel($securedObjectName, $userCategories, $defaultAccessLevel)
     {
         if( empty(ACL::ACCESS_LEVEL_MAP))
         {

@@ -400,7 +400,7 @@ class CATSSession
     // FIXME: Document me!
     public function getAccessLevel($securedObjectName)
     {
-        return ACL::getInstance()->getAccessLevel($securedObjectName, $this->getUserCategories(), $this->_accessLevel);
+        return ACL::getAccessLevel($securedObjectName, $this->getUserCategories(), $this->_accessLevel);
     }
 
     // FIXME: Document me!
