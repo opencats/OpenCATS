@@ -16,8 +16,6 @@ class ACL
     const SECOBJ_ROOT = '';
     const CATEGORY_EMPTY = '';
 
-    static private $_instance;
-
     /* Access level map in form securedObject => category => accessLevel
      * Exemple:
     const CATEGORY_DISABLED = '#';
@@ -43,25 +41,7 @@ class ACL
     */
     const ACCESS_LEVEL_MAP = array();
 
-    static function getInstance()
-    {
-        if (self::$_instance == null)
-        {
-            self::$_instance = new ACL();
-        }
-        return self::$_instance;
-    }
 
-    /* Prevent this class from being instantiated by any means other
-     * than getInstance().
-     */
-    private function __construct()
-    {
-    }
-    private function __clone()
-    {
-    }
-    
     /* Returns accessLevel to securedObjectName for user with userCategories 
      * current implementation evaluates only first user category
     */
