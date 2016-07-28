@@ -11,6 +11,10 @@ include_once("./config.php");
 class ACL
 {
 
+    /* Constant to define root secured object for retrieveing access level 
+    */
+    const SECOBJ_ROOT = '';
+
     static private $_instance;
     public $permissions;
 

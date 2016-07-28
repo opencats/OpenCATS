@@ -131,7 +131,7 @@ class TemplateUtility
             if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_UPGRADE'))) return;
 
             if ((!file_exists('modules/asp') || (defined('CATS_TEST_MODE') && CATS_TEST_MODE)) && LicenseUtility::isProfessional() &&
-                $_SESSION['CATS']->getAccessLevel('') >= ACCESS_LEVEL_SA)
+                $_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA)
             {
                 if (abs(LicenseUtility::getExpirationDate() - time()) < 60*60*24*30)
                 {
@@ -165,7 +165,7 @@ class TemplateUtility
 
             echo '<span>', $fullName, '&nbsp;&lt;', $username, '&gt;&nbsp;(', $siteName, ')</span>', "\n";
 
-            if ($_SESSION['CATS']->getAccessLevel('') >= ACCESS_LEVEL_SA)
+            if ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA)
             {
                 echo '&nbsp;<span style="font-weight:bold;">Administrator</span>', "\n";
             }
@@ -179,7 +179,7 @@ class TemplateUtility
                 $systemInfoData['available_version'] > CATSUtility::getVersionAsInteger() &&
                 isset($systemInfoData['disable_version_check']) &&
                 !$systemInfoData['disable_version_check'] &&
-                $_SESSION['CATS']->getAccessLevel('') >= ACCESS_LEVEL_SA)
+                $_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA)
             {
                 echo '<a href="http://www.catsone.com/download.php" target="catsdl">A new CATS version is available!</a><br />';
             }
@@ -189,7 +189,7 @@ class TemplateUtility
             {
                 echo '<span style="font-weight:bold;">Account Inactive</span><br />', "\n";
             }
-            else if ($_SESSION['CATS']->getAccessLevel('') == ACCESS_LEVEL_READ)
+            else if ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) == ACCESS_LEVEL_READ)
             {
                 echo '<span>Read Only Access</span><br />', "\n";
             }

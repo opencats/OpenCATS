@@ -64,7 +64,7 @@ class UserInterface
             $this->_siteID = $_SESSION['CATS']->getSiteID();
 
             /* Get the current user's access level. */
-            $accessLevel = $_SESSION['CATS']->getAccessLevel('');
+            $accessLevel = $_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT);
 
             /* All templates have an access level if we have a session. */
             $this->_template->assign('accessLevel', $accessLevel);
