@@ -64,6 +64,40 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     {
         $this->getSession()->setCookie(CATS_SESSION_NAME, 'o964p0pr602975o0671qo50n1208r6nn');
     }
+    /**
+     * @Then /^I wait for the activity note box to appear$/
+     */
+    public function iWaitForTheSuggestionBoxToAppear()
+    {
+        $this->getSession()->wait(5000, "$('iframe', parent.document).length > 0");
+    }
+    
+    /**
+     * @Given /^I switch to the iframe "([^"]*)"$/
+     */
+    public function iSwitchToIframe($element_id)
+    {
+        if (empty($element_id)) {
+            $this->getSession()->switchToIframe(null);
+        } else {
+            $check = 1; //@todo need to check using js if exists
+            if($check <= 0) {
+                throw new \Exception('Element not found');
+            } else {
+                $javascript = "
+                    (function(){
+                      var elem = document.getElementById('$element_id');
+                      var iframes = elem.getElementsByTagName('iframe');
+                      var f = iframes[0];
+                      f.id = \"no_name_iframe\";
+                    })()";
+                $this->getSession()->executeScript($javascript);
+            }
+            $this->getSession()->switchToIframe("no_name_iframe");
+        }
+    }
+    
+ 
 }
 
 class Role
