@@ -14,44 +14,6 @@
  * $Id: WebTests.php 3565 2007-11-12 09:09:22Z will $
  */
 
-class ActivitiesWebTest extends CATSWebTestCase
-{
-    function testActivities()
-    {
-        /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
-            /* Abort. */
-            return false;
-        }
-
-        /* Click on the Activities tab. */
-        $this->assertClickLink('Activities');
-        $this->runPageLoadAssertions(false);
-
-        /* Test the main Reports page. */
-        $this->assertTitle('CATS - Activities');
-        $this->assertPattern('/<h2>Activities<\/h2>/');
-        // Test for valid dates.
-
-        /* Test Yesterday search page. */
-        $this->assertClickLink('Yesterday', 0);
-        $this->runPageLoadAssertions(false);
-        $this->back();
-
-        /* Test Tomorrow search page. */
-        $this->assertClickLink('Last Week', 0);
-        $this->runPageLoadAssertions(false);
-
-        /* Test Today search page. */
-        $this->assertClickLink('Today', 0);
-        $this->runPageLoadAssertions(false);
-
-        /* We're done; log out. */
-        $this->logout();
-    }
-}
-
 class JobOrdersWebTest extends CATSWebTestCase
 {
     function testJobOrders()
