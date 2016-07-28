@@ -400,36 +400,7 @@ class CATSSession
     // FIXME: Document me!
     public function getAccessLevel($securedObjectName)
     {
-        $ACL = ACL::getInstance();
-        $permissions = $ACL->permissions;
-
-        if(empty($permissions) || isset($permissions) == false || isset($securedObjectName) == false)
-        {
-            return $this->_accessLevel;
-        }
-
-        $userCategory = $this->getUserCategories()[0];
-        if( isset($userCategory) == false)
-        {
-            return $this->_accessLevel;
-        }
-
-        if(isset($permissions[$userCategory][$securedObjectName]))
-        {
-            return $permissions[$userCategory][$securedObjectName];
-        }
-        else
-        {
-            while(($pos = strrpos($securedObjectName, ".")) !== false)
-            {
-                $securedObjectName = substr($securedObjectName, 0, $pos);
-                if(isset($permissions[$userCategory][$securedObjectName]))
-                {
-                    return $permissions[$userCategory][$securedObjectName];
-                }
-            }
-        }
-        return $this->_accessLevel;
+        return ACL::getInstance()->getAccessLevel($securedObjectName, $this->getUserCategories(), $this->_accessLevel);
     }
 
     // FIXME: Document me!
