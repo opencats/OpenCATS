@@ -409,7 +409,11 @@ class UserInterface
         return $ret;
     }
     
-    public function getUserAccessLevel($securedObjectName)
+     /**
+     * Returns access level of logged in user for securedObject
+     * Intended to be used in UI classes (deriving from UserInterface) to check if user has acces to particular module and it's action.
+     */
+    protected function getUserAccessLevel($securedObjectName)
     {
         return $_SESSION['CATS']->getAccessLevel($securedObjectName);
     }

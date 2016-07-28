@@ -129,9 +129,10 @@ class Template
     }
 
     /**
-     *  TODO: Document me.
+     * Returns access level of logged in user for securedObject
+     * Intended to be used in tpl classes to check if user has acces to particular part of page and if shall be generated or not
      */
-    public function getUserAccessLevel($securedObjectName)
+    protected function getUserAccessLevel($securedObjectName)
     {
         return $_SESSION['CATS']->getAccessLevel($securedObjectName);
     }
