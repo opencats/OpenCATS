@@ -69,12 +69,43 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     {
         $this->getSession()->setCookie(CATS_SESSION_NAME, 'o964p0pr602975o0671qo50n1208r6nn');
     }
+    
+    /**
+     * @Given I wait for :element
+     */
+    public function iWaitFor($element)
+    {
+        $this->spins(function() use ($element) {
+            $field = $this->getSession()->getPage()->find('css', $element);
+            if (null === $field) {
+                throw new Exception('form field ' . $element . 'id|name|label|value|placeholder');
+            }
+        });
+    }
+    
     /**
      * @Then /^I wait for the activity note box to appear$/
      */
     public function iWaitForTheSuggestionBoxToAppear()
     {
         $this->getSession()->wait(5000, "$('iframe', parent.document).length > 0");
+    }
+    
+    public function spins($closure, $tries = 10)
+    {
+        for ($i = 0; $i <= $tries; $i++) {
+            try {
+                $closure();
+    
+                return;
+            } catch (\Exception $e) {
+                if ($i == $tries) {
+                    throw $e;
+                }
+            }
+    
+            sleep(1);
+        }
     }
     
     /**
@@ -164,18 +195,19 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     /**
      * @Given /^I switch to the iframe "([^"]*)"$/
      */
-    public function iSwitchToIframe($element_id)
+    public function iSwitchToIframe($iFrameId)
     {
-        if (empty($element_id)) {
+        if (empty($iFrameId)) {
             $this->getSession()->switchToIframe(null);
         } else {
+            $this->getSession()->wait(5000, "$('iframe', parent.document).length > 0");
             $check = 1; //@todo need to check using js if exists
             if($check <= 0) {
                 throw new \Exception('Element not found');
             } else {
                 $javascript = "
                     (function(){
-                      var elem = document.getElementById('$element_id');
+                      var elem = document.getElementById('$iFrameId');
                       var iframes = elem.getElementsByTagName('iframe');
                       var f = iframes[0];
                       f.id = \"no_name_iframe\";
@@ -186,7 +218,103 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         }
     }
     
- 
+    /**
+     * @Given There is a company called :companyName
+     */
+    public function thereIsACompanyCalled($companyName)
+    {
+        $this->visitPath('/index.php?m=companies&a=add');
+        $this->fillField('name', $companyName);
+        $this->pressButton('Add Company');
+    }
+    
+    /**
+     * @Given There is a user :userName named :fullName with :password password
+     */
+    public function thereIsAUserWithParams($userName, $fullName, $password) {
+        $this->visitPath('/index.php?m=settings&a=addUser');
+        list($firstName, $lastName) = explode(" ", $fullName);
+        $this->fillField('firstName', $firstName);
+        $this->fillField('lastName', $lastName);
+        $this->fillField('username', $userName);
+        $this->fillField('password', $password);
+        $this->fillField('retypePassword', $password);
+        $this->pressButton('Add User');
+    }
+    
+    /**
+     * @When /^(?:|I )should see "([^"]*)" in alert popup$/
+     *
+     * @param string $message The message.
+     *
+     * @return bool
+     */
+    public function assertPopupMessage($message)
+    {
+        return strpos(
+            $this->getSession()->getDriver()->getWebDriverSession()->getAlert_text(),
+            $message
+          ) != -1;
+    }
+    
+    /**
+     * @When /^(?:|I )confirm the popup$/
+     */
+    public function confirmPopup()
+    {
+        $this->getSession()->getDriver()->getWebDriverSession()->accept_alert();
+    }
+    
+    /**
+     * @Given I manually press :key
+     */
+    public function manuallyPress($key)
+    {
+        $script = "jQuery.event.trigger({ type : 'keypress', which : '" . $key . "' });";
+        $this->getSession()->evaluateScript($script);
+    }
+    
+    /** Click on the element with the provided xpath query
+     *
+     * @When I click on the element :locator
+     */
+    public function iClickOnTheElement($locator)
+    {
+        $this->clickOnTheElement($locator);
+    }
+        
+    private function clickOnTheElement($locator, $retries = 15)
+    {
+        $element = $this->getSession()->getPage()->find('css', $locator); // runs the actual query and returns the element
+        // errors must not pass silently
+        if (null === $element) {
+            throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $locator));
+        }
+        try {
+            $element->click();
+        } catch(Exception $e) {
+            if ($retries > 0) {
+                print_r("Retry stale element. Retries: " . $retries);
+                sleep(1);
+                $this->clickOnTheElement($locator, $retries -1);
+            } else {
+                print_r("Do not retry stale element. Retries: " . $retries);
+                throw $e;
+            }
+        }
+    }
+    
+    /**
+     * @When I select :option in the :selectLocator select
+     */
+    public function selectState($option, $selectLocator) {
+        $page = $this->getSession()->getPage();
+        $selectElement = $page->find('css', $selectLocator);
+        if (null === $selectElement) {
+            throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $selectLocator));
+        }
+        $selectElement->selectOption($option);
+    }
 }
 
 class Role
