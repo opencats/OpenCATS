@@ -17,8 +17,8 @@ services:
       image: busybox
       volumes:
         - ..:/var/www/public
-        - ./test/fs/config.php:/var/www/public/config.php
-        - ./test/fs/INSTALL_BLOCK:/var/www/public/INSTALL_BLOCK
+        - ../test/config.php:/var/www/public/config.php
+        - ../test/INSTALL_BLOCK:/var/www/public/INSTALL_BLOCK
       command: "true"
 
     mariadb:
@@ -31,7 +31,7 @@ services:
         - MYSQL_PASSWORD=dev
         - MYSQL_DATABASE=cats
       volumes:
-        - ./test/data:/docker-entrypoint-initdb.d
+        - ../test/data:/docker-entrypoint-initdb.d
 
     selenium:
       image: selenium/standalone-chrome
