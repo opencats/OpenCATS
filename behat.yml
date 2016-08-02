@@ -1,4 +1,10 @@
 default:
+    autoload:
+        '': %paths.base%/features/bootstrap
+    suites:
+        default:
+            paths:
+                - %paths.base%/features
     extensions:
         Behat\MinkExtension:
             base_url: http://opencats
