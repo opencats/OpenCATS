@@ -1,5 +1,12 @@
 <?php
 
+include_once (".\lib\Candidates.php");
+include_once (".\lib\JobOrders.php");
+include_once (".\lib\Pipelines.php");
+include_once (".\lib\Companies.php");
+include_once(".\lib\DatabaseConnection.php");
+include_once(".\constants.php");
+
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
@@ -9,6 +16,9 @@ use Behat\MinkExtension\Context\MinkContext;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ElementHtmlException;
 
+
+define('SITE_ID', 1);
+define('ADMIN_ID', 1);
 /**
  * Defines application features from the specific context.
  */
@@ -30,6 +40,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         );
     }
     
+    
     /**
      * @Given I am authenticated as :role
      */
@@ -42,6 +53,46 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         $this->visitPath('/index.php?m=login');
         $this->fillField('username', $roleData->getUserName());
         $this->fillField('password', $roleData->getPassword());
+        $this->pressButton('Login');
+    }
+    
+    /**
+     * @Given I am logged in with :accessLevel access level
+     */
+    public function iAmLoggedInWithAccessLevel($accessLevel)
+    {
+        switch($accessLevel)
+        {
+            case 'DISABLED':
+                $username = "testerDisabled";
+                $password = "tester";
+            case 'READONLY':
+                $username = "testerRead";
+                $password = "tester";
+                break;
+            case 'EDIT':
+                $username = "testerEdit";
+                $password = "tester";
+                break;
+            case 'DELETE':
+                $username = "testerDelete";
+                $password = "tester";
+                break;
+            case 'ADMIN':
+                $username = "testerSA";
+                $password = "tester";
+                break;
+            case 'ROOT':
+                $username = "testerRoot";
+                $password = "tester";
+                break;
+            default:
+                throw new PendingException();
+        }
+        
+        $this->visitPath('/index.php?m=login');
+        $this->fillField('username', $username);
+        $this->fillField('password', $password);
         $this->pressButton('Login');
     }
     
@@ -80,6 +131,32 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
             throw new ElementHtmlException($message, $this->getSession()->getDriver(), $element);
         }
     }
+    
+    /**
+     * @Then the page should  contain :text
+     */
+    public function assertHTMLcontains($text)
+    {
+        $this->assertSession()->responseContains($text);
+    }
+    
+    /**
+     * @Then the page should not contain :text
+     */
+    public function assertHTMLnotContains($text)
+    {
+        $this->assertSession()->responseNotContains($text);
+    }
+    
+    /**
+     * @Then I will log out
+     */
+    public function iWillLogOut()
+    {
+        $this->clickLink('Logout');
+    }
+    
+    
 }
 
 class Role
