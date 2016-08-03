@@ -3,8 +3,8 @@ default:
         '': %paths.base%/features/bootstrap
     suites:
         default:
-            paths:
-                - %paths.base%/features
+            paths: [ %paths.base%/features ]
+            context: [FeaturesContext]
     extensions:
         Behat\MinkExtension:
             base_url: http://opencats

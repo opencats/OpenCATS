@@ -1,19 +1,22 @@
 version: '2'
 services:
     opencats:
+      container_name: opencats_test_web
       image: prooph/nginx:www
       ports:
           - "80:80"
           - "443:443"
       volumes_from:
-        - dataphp
+        - opencatsdata
 
     php:
+      container_name: opencats_test_php
       build: ./php/
       volumes_from:
-        - dataphp
+        - opencatsdata
 
-    dataphp:
+    opencatsdata:
+      container_name: opencats_test_data
       image: busybox
       volumes:
         - ..:/var/www/public
@@ -21,19 +24,21 @@ services:
         - ../test/INSTALL_BLOCK:/var/www/public/INSTALL_BLOCK
       command: "true"
 
-    mariadb:
+    opencatsdb:
+      container_name: opencats_test_mariadb
       image: mariadb
       ports:
         - 3306:3306
       environment:
-        - MYSQL_ROOT_PASSWORD=dev
-        - MYSQL_USER=dev
-        - MYSQL_PASSWORD=dev
-        - MYSQL_DATABASE=cats
+        MYSQL_ROOT_PASSWORD: dev
+        MYSQL_USER: dev
+        MYSQL_PASSWORD: dev
+        MYSQL_DATABASE: cats_test
       volumes:
         - ../test/data:/docker-entrypoint-initdb.d
 
     selenium:
+      container_name: selenium_test
       image: selenium/standalone-chrome
       ports:
         - 4444
