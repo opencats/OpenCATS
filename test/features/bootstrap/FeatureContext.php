@@ -1,9 +1,5 @@
 <?php
 
-include_once (".\lib\Candidates.php");
-include_once (".\lib\JobOrders.php");
-include_once (".\lib\Pipelines.php");
-include_once (".\lib\Companies.php");
 include_once(".\lib\DatabaseConnection.php");
 include_once(".\constants.php");
 
@@ -66,6 +62,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
             case 'DISABLED':
                 $username = "testerDisabled";
                 $password = "tester";
+                break;
             case 'READONLY':
                 $username = "testerRead";
                 $password = "tester";
@@ -78,8 +75,16 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
                 $username = "testerDelete";
                 $password = "tester";
                 break;
+            case 'DEMO':
+                $username = "testerDemo";
+                $password = "tester";
+                break;
             case 'ADMIN':
                 $username = "testerSA";
+                $password = "tester";
+                break;
+            case 'MULTI_ADMIN':
+                $username = "testerMultiSA";
                 $password = "tester";
                 break;
             case 'ROOT':
