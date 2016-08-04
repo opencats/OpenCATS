@@ -1606,8 +1606,10 @@ INSERT INTO `user` VALUES (1,1,'admin','admin@testdomain.com','21232f297a57a5a74
 (2002, 1, 'testerRead', NULL, 'f5d1278e8109edd94e1e4197e04873b9', 100, 1, 0, 'Readonly', 'Tester', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
 (2003, 1, 'testerEdit', NULL, 'f5d1278e8109edd94e1e4197e04873b9', 200, 1, 0, 'Edit', 'Tester', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
 (2004, 1, 'testerDelete', NULL, 'f5d1278e8109edd94e1e4197e04873b9', 300, 1, 0, 'Delete', 'Tester', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
-(2005, 1, 'testerSA', NULL, 'f5d1278e8109edd94e1e4197e04873b9', 400, 1, 0, 'SiteAdmin', 'Tester', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
-(2006, 1, 'testerRoot', NULL, 'f5d1278e8109edd94e1e4197e04873b9', 500, 1, 0, 'Root', 'Tester', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
+(2005, 1, 'testerDemo', NULL, 'f5d1278e8109edd94e1e4197e04873b9', 350, 1, 0, 'Demo', 'Tester', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
+(2006, 1, 'testerSA', NULL, 'f5d1278e8109edd94e1e4197e04873b9', 400, 1, 0, 'SiteAdmin', 'Tester', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+(2007, 1, 'testerMultiSA', NULL, 'f5d1278e8109edd94e1e4197e04873b9', 450, 1, 0, 'MultiSiteAdmin', 'Tester', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
+(2008, 1, 'testerRoot', NULL, 'f5d1278e8109edd94e1e4197e04873b9', 500, 1, 0, 'Root', 'Tester', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
