@@ -17,9 +17,9 @@ php:
 - 5.5
 
 script:
-    - composer install --working-dir test
+    - composer install --working-dir /var/www/public
     - php modules/tests/runTests.php
     - cd docker/; docker-compose -f docker-compose-test.yml up -d
     - sleep 12
     - docker-compose -f docker-compose-test.yml run -w /var/www/public php cat config.php
-    - docker-compose -f docker-compose-test.yml run -w /var/www/public php ./test/vendor/bin/behat -v -c ./test/behat.yml
+    - docker-compose -f docker-compose-test.yml run -w /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml
