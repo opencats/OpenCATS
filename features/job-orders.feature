@@ -80,3 +80,104 @@ Feature: Job Orders
     And I should see "Minneapolis"
     And I should see "MN"
     And I should see "Marcus Gomez"
+    
+  @javascript
+  Scenario: Edit job order has fields
+    # To be refactored by creating the Job Order programatically
+    Given I am authenticated as "Administrator"
+    And There is a company called "Test Company ATxyz"
+    And There is a user "testuser101" named "Marcus Gomez" with "password101" password 
+    And I am on "/index.php?m=candidates" 
+    And I follow "Job Orders"
+    And I follow "Add Job Order"
+    And I switch to the iframe "popupInner"
+    And press "Create Job Order"
+    And I switch to the iframe ""
+    And fill in "title" with "Javascript developer"
+    And fill in "companyName" with "Test Company ATxyz"
+    And I wait for "#CompanyResults div#suggest0"
+    And I click on the element "#CompanyResults div#suggest0"
+    And I select "Gomez, Marcus" in the "#recruiter" select
+    And fill in "city" with "Minneapolis"
+    And fill in "state" with "MN"
+    And press "Add Job Order"
+    And I follow "Edit"
+    Then I should see "Title"
+    And I should see "Company"
+    And I should see "Recruiter"
+    And I should see "Contact"
+    And I should see "City"
+    And I should see "State"
+    And I should see "Javascript developer"
+    And I should see "Test Company ATxyz"
+    And I should see "Marcus Gomez"
+    And I should see "Total Openings"
+    And I should see "Duration"
+    And I should see "Maximum Rate"
+    And I should see "Salary"
+    And I should see "Hot"
+    And I should see "Description"
+    And I should see "Internal Notes"
+    And I should see "Owner"
+    
+  @javascript
+  Scenario: Edit job order with blank title pops error 
+    # To be refactored by creating the Job Order programatically
+    Given I am authenticated as "Administrator"
+    And There is a company called "Test Company ATxyz"
+    And There is a user "testuser101" named "Marcus Gomez" with "password101" password 
+    And I am on "/index.php?m=candidates" 
+    And I follow "Job Orders"
+    And I follow "Add Job Order"
+    And I switch to the iframe "popupInner"
+    And press "Create Job Order"
+    And I switch to the iframe ""
+    And fill in "title" with "Javascript developer"
+    And fill in "companyName" with "Test Company ATxyz"
+    And I wait for "#CompanyResults div#suggest0"
+    And I click on the element "#CompanyResults div#suggest0"
+    And I select "Gomez, Marcus" in the "#recruiter" select
+    And fill in "city" with "Minneapolis"
+    And fill in "state" with "MN"
+    And press "Add Job Order"
+    And I follow "Edit"
+    And fill in "title" with ""
+    And press "Save"
+    Then I should see "Form Error" in alert popup
+    And I should see "You must enter a job title" in alert popup
+    And I confirm the popup
+
+  @javascript
+  Scenario: Edit job order updates record
+    # To be refactored by creating the Job Order programatically
+    Given I am authenticated as "Administrator"
+    And There is a company called "Test Company ATxyz"
+    And There is a user "testuser101" named "Marcus Gomez" with "password101" password 
+    And I am on "/index.php?m=candidates" 
+    And I follow "Job Orders"
+    And I follow "Add Job Order"
+    And I switch to the iframe "popupInner"
+    And press "Create Job Order"
+    And I switch to the iframe ""
+    And fill in "title" with "Javascript developer"
+    And fill in "companyName" with "Test Company ATxyz"
+    And I wait for "#CompanyResults div#suggest0"
+    And I click on the element "#CompanyResults div#suggest0"
+    And I select "Gomez, Marcus" in the "#recruiter" select
+    And fill in "city" with "Minneapolis"
+    And fill in "state" with "MN"
+    And press "Add Job Order"
+    And I follow "Edit"
+    And fill in "title" with "Frontend developer"
+    And I select "Administrator, CATS" in the "#recruiter" select
+    And I select "Gomez, Marcus" in the "#owner" select
+    And fill in "openings" with "999"
+    And fill in "companyName" with "Test Company ATxyz"
+    And I wait for "#CompanyResults div#suggest0"
+    And I click on the element "#CompanyResults div#suggest0"
+    And press "Save"
+    Then I should see "Frontend developer"
+    And I should see "CATS Administrator"
+    And I should see "Marcus Gomez"
+    And I should see "999"
+    

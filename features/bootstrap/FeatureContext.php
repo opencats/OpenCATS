@@ -314,6 +314,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
             throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $selectLocator));
         }
         $selectElement->selectOption($option);
+        sleep(1);
     }
 }
 
