@@ -28,10 +28,10 @@ services:
       ports:
         - 3306:3306
       environment:
-        MYSQL_ROOT_PASSWORD: root
-        MYSQL_USER: dev
-        MYSQL_PASSWORD: dev
-        MYSQL_DATABASE: cats
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_USER=dev
+        - MYSQL_PASSWORD=dev
+        - MYSQL_DATABASE=cats
       volumes:
         - ../test/data:/docker-entrypoint-initdb.d
         - ./persist/mysql:/var/lib/mysql
@@ -44,6 +44,6 @@ services:
       links:
         - opencatsdb:db
       environment:
-        PMA_HOST: db
-        PMA_USER: dev
-        PMA_PASSWORD: dev
+        - PMA_HOST=db
+        - PMA_USER=dev
+        - PMA_PASSWORD=dev
