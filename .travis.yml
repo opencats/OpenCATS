@@ -17,7 +17,7 @@ php:
 - 5.5
 
 script:
-    - composer install --working-dir /var/www/public
+    - composer install
     - php modules/tests/runTests.php
     - cd docker/; docker-compose -f docker-compose-test.yml up -d
     - sleep 12
