@@ -1,7 +1,7 @@
 @security
-Feature: Security using ACL
+Feature: Access Level to objects check
   In order to protect sensitive information from users who should not have access to them
-  All accesses in the system need to be controlled by the Access Control List
+  All objects in the system need to be controlled by the Access Level of user
 
   ######## DASHBOARD(HOME) #######
 
