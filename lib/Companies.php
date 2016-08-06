@@ -81,6 +81,23 @@ class Companies
                         $phone2, $faxNumber, $url, $keyTechnologies, $isHot,
                         $notes, $enteredBy, $owner)
     {
+        $company= Company::create(
+            $this->_siteID,
+            $name,
+            $address,
+            $city,
+            $state,
+            $zip,
+            $phone1,
+            $phone2,
+            $faxNumber,
+            $url,
+            $keyTechnologies,
+            $isHot,
+            $notes,
+            $enteredBy,
+            $owner
+        );
         $sql = sprintf(
             "INSERT INTO company (
                 name,
@@ -120,21 +137,21 @@ class Companies
                 NOW(),
                 NOW()
             )",
-            $this->_db->makeQueryString($name),
-            $this->_db->makeQueryString($address),
-            $this->_db->makeQueryString($city),
-            $this->_db->makeQueryString($state),
-            $this->_db->makeQueryString($zip),
-            $this->_db->makeQueryString($phone1),
-            $this->_db->makeQueryString($phone2),
-            $this->_db->makeQueryString($faxNumber),
-            $this->_db->makeQueryString($url),
-            $this->_db->makeQueryString($keyTechnologies),
-            ($isHot ? '1' : '0'),
-            $this->_db->makeQueryString($notes),
-            $this->_db->makeQueryInteger($enteredBy),
-            $this->_db->makeQueryInteger($owner),
-            $this->_siteID
+            $this->_db->makeQueryString($company->getName()),
+            $this->_db->makeQueryString($company->getAddress()),
+            $this->_db->makeQueryString($company->getCity()),
+            $this->_db->makeQueryString($company->getState()),
+            $this->_db->makeQueryString($company->getZipCode()),
+            $this->_db->makeQueryString($company->getPhoneNumberOne()),
+            $this->_db->makeQueryString($company->getPhoneNumberTwo()),
+            $this->_db->makeQueryString($company->getFaxNumber()),
+            $this->_db->makeQueryString($company->getUrl()),
+            $this->_db->makeQueryString($company->getKeyTechnologies()),
+            ($company->isHot() ? '1' : '0'),
+            $this->_db->makeQueryString($company->getNotes()),
+            $this->_db->makeQueryInteger($company->getEnteredBy()),
+            $this->_db->makeQueryInteger($company->getOwner()),
+            $company->getSiteId()
         );
 
         $queryResult = $this->_db->query($sql);
