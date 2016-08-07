@@ -448,6 +448,10 @@ class DatabaseConnection
      */
     public function escapeString($string)
     {
+        // FIXME: Security issue, this function is not enough for sanitizing
+        // user input. For instance see: 
+        // https://johnroach.info/2011/02/17/why-mysql_real_escape_string-isnt-enough-to-stop-sql-injection-attacks/
+        // To be replaced with Symfony's stack
         return mysql_real_escape_string($string, $this->_connection);
     }
 
