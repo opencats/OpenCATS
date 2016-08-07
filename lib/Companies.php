@@ -1,4 +1,9 @@
 <?php
+include_once('./vendor/autoload.php');
+use OpenCATS\Entity\Company;
+use OpenCATS\Service\CompanyService;
+
+
 /**
  * CATS
  * Companies Library
@@ -98,74 +103,13 @@ class Companies
             $enteredBy,
             $owner
         );
-        $sql = sprintf(
-            "INSERT INTO company (
-                name,
-                address,
-                city,
-                state,
-                zip,
-                phone1,
-                phone2,
-                fax_number,
-                url,
-                key_technologies,
-                is_hot,
-                notes,
-                entered_by,
-                owner,
-                site_id,
-                date_created,
-                date_modified
-            )
-            VALUES (
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                NOW(),
-                NOW()
-            )",
-            $this->_db->makeQueryString($company->getName()),
-            $this->_db->makeQueryString($company->getAddress()),
-            $this->_db->makeQueryString($company->getCity()),
-            $this->_db->makeQueryString($company->getState()),
-            $this->_db->makeQueryString($company->getZipCode()),
-            $this->_db->makeQueryString($company->getPhoneNumberOne()),
-            $this->_db->makeQueryString($company->getPhoneNumberTwo()),
-            $this->_db->makeQueryString($company->getFaxNumber()),
-            $this->_db->makeQueryString($company->getUrl()),
-            $this->_db->makeQueryString($company->getKeyTechnologies()),
-            ($company->isHot() ? '1' : '0'),
-            $this->_db->makeQueryString($company->getNotes()),
-            $this->_db->makeQueryInteger($company->getEnteredBy()),
-            $this->_db->makeQueryInteger($company->getOwner()),
-            $company->getSiteId()
-        );
-
-        $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        $companyService = new CompanyService($this->_db);
+        try {
+            $companyId = $companyService->persist($company, new History($this->_siteID));
+        } catch(CompanyServiceException $e) {
             return -1;
         }
-
-        $companyID = $this->_db->getLastInsertID();
-
-        $history = new History($this->_siteID);
-        $history->storeHistoryNew(DATA_ITEM_COMPANY, $companyID);
-
-        return $companyID;
+        return $companyId;
     }
 
     /**

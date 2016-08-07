@@ -191,12 +191,12 @@ class Company
         $company->setAddress($address);
         $company->setCity($city);
         $company->setState($state);
-        $company->setZip($zip);
-        $company->setPhoneOne($phone1);
-        $company->setPhoneTwo($phone2);
+        $company->setZipCode($zipCode);
+        $company->setPhoneNumberOne($phoneNumberOne);
+        $company->setPhoneNumberTwo($phoneNumberTwo);
         $company->setFaxNumber($faxNumber);
         $company->setUrl($url);
-        $company->setKeyTechonologies($keyTechnologies);
+        $company->setKeyTechnologies($keyTechnologies);
         $company->setIsHot($isHot);
         $company->setNotes($notes);
         $company->setEnteredBy($enteredBy);
