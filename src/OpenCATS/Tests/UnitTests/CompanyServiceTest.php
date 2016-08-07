@@ -26,9 +26,7 @@ class CompanyServiceTests extends TestCase
     
     function test_persist_CreatesNewCompany_InputValuesAreEscaped()
     {
-        $databaseConnectionMock = $this->getMockBuilder('\DatabaseConnection')
-            ->setMethods(['makeQueryString', 'makeQueryInteger', 'query', 'getLastInsertID'])
-            ->getMock();
+        $databaseConnectionMock = $this->getDatabaseConnectionMock();
         $databaseConnectionMock->expects($this->exactly(11))
             ->method('makeQueryString')
             ->withConsecutive(
@@ -54,9 +52,62 @@ class CompanyServiceTests extends TestCase
             ->willReturn(true);
         $databaseConnectionMock->method('getLastInsertID')
             ->willReturn(self::COMPANY_ID);
-        $historyMock = $this->createMock(\History::class);
+        $historyMock = $this->getHistoryMock();
         $companyService = new CompanyService($databaseConnectionMock);
         $companyService->persist($this->createCompany(), $historyMock);
+    }
+    
+    function test_persist_CreateNewCompany_ExecutesSqlQuery()
+    {
+        $databaseConnectionMock = $this->getDatabaseConnectionMock();
+        $databaseConnectionMock->expects($this->exactly(1))
+            ->method('query')
+            ->willReturn(true);
+        $historyMock = $this->getHistoryMock();
+        $companyService = new CompanyService($databaseConnectionMock);
+        $companyService->persist($this->createCompany(), $historyMock);
+    }
+    
+    function test_persist_CreateNewCompany_StoresHistoryWithCompanyId()
+    {
+        $databaseConnectionMock = $this->getDatabaseConnectionMock();
+        $databaseConnectionMock->method('query')
+            ->willReturn(true);
+        $databaseConnectionMock->method('getLastInsertID')
+            ->willReturn(self::COMPANY_ID);
+        $historyMock = $this->getHistoryMock();
+        $historyMock->expects($this->exactly(1))
+            ->method('storeHistoryNew')
+            ->withConsecutive(
+                [DATA_ITEM_COMPANY, self::COMPANY_ID]
+            );
+        $companyService = new CompanyService($databaseConnectionMock);
+        $companyService->persist($this->createCompany(), $historyMock);
+    }
+    
+    /**
+     * @expectedException OpenCATS\Service\CompanyServiceException
+     */
+    function test_persist_FailToCreateNewCompany_ThrowsException()
+    {
+        $databaseConnectionMock = $this->getDatabaseConnectionMock();
+        $databaseConnectionMock->method('query')
+            ->willReturn(false);
+        $historyMock = $this->getHistoryMock();
+        $companyService = new CompanyService($databaseConnectionMock);
+        $companyService->persist($this->createCompany(), $historyMock);
+    }
+    
+    private function getHistoryMock()
+    {
+        return $this->createMock(\History::class);
+    }
+    
+    private function getDatabaseConnectionMock()
+    {
+        return $this->getMockBuilder('\DatabaseConnection')
+            ->setMethods(['makeQueryString', 'makeQueryInteger', 'query', 'getLastInsertID'])
+            ->getMock();
     }
     
     private function createCompany()
