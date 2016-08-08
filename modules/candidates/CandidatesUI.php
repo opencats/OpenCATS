@@ -623,6 +623,12 @@ class CandidatesUI extends UserInterface
      */
     private function add($contents = '', $fields = array())
     {
+
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+
         $candidates = new Candidates($this->_siteID);
 
         /* Get possible sources. */
