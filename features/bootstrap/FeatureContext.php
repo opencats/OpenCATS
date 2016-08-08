@@ -8,8 +8,14 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Testwork\Tester\Result\TestResult;
 use Behat\Mink\Driver\Selenium2Driver;
+use OpenCATS\Entity\Company;
+use OpenCATS\Service\CompanyService;
 
 include_once('./config.php');
+include_once('./constants.php');
+include_once('./lib/DatabaseConnection.php');
+include_once('./lib/Site.php');
+include_once('./lib/History.php');
 /**
  * Defines application features from the specific context.
  */
@@ -42,10 +48,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         if (!$roleData) {
             throw new PendingException();
         }
-        $this->visitPath('/index.php?m=login');
-        $this->fillField('username', $roleData->getUserName());
-        $this->fillField('password', $roleData->getPassword());
-        $this->pressButton('Login');
+        $this->iLoginAs($roleData->getUserName(), $roleData->getPassword());
     }
     
     /**
@@ -223,9 +226,14 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
      */
     public function thereIsACompanyCalled($companyName)
     {
-        $this->visitPath('/index.php?m=companies&a=add');
-        $this->fillField('name', $companyName);
-        $this->pressButton('Add Company');
+        $site = new Site(-1);
+        $siteId = $site->getFirstSiteID();
+        $company= new Company(
+            $siteId,
+            $companyName
+        );
+        $companyService = new CompanyService(DatabaseConnection::getInstance());
+        $companyService->persist($company, new Dummy_History($siteId));
     }
     
     /**
@@ -316,6 +324,17 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         $selectElement->selectOption($option);
         sleep(1);
     }
+    /**
+     * @Given I login as :username :password
+     */
+    public function iLoginAs($username, $password)
+    {
+        $this->visitPath('/index.php?m=login');
+        $this->fillField('username', $username);
+        $this->fillField('password', $password);
+        $this->pressButton('Login');
+        
+    }
 }
 
 class Role
@@ -338,4 +357,10 @@ class Role
     {
         return $this->password;
     }
+}
+
+class Dummy_History extends History
+{
+    public function __construct($siteID) {}
+    public function storeHistoryNew($dataItemType, $dataItemID) {}
 }
