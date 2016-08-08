@@ -483,6 +483,11 @@ class JobOrdersUI extends UserInterface
      */
     private function add()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+
         $users = new Users($this->_siteID);
         $usersRS = $users->getSelectList();
 
