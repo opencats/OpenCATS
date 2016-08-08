@@ -383,6 +383,12 @@ class ContactsUI extends UserInterface
      */
     private function add()
     {
+        /* Bail if we don't have add permision. */
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+
         $companies = new Companies($this->_siteID);
         $contacts = new Contacts($this->_siteID);
 
