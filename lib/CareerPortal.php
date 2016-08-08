@@ -407,7 +407,7 @@ class CareerPortalSettings
             "DELETE FROM
                 settings
             WHERE
-                settings.setting = %s
+                settings.setting = '%s'
             AND
                 settings.settings_type = %s
             AND
