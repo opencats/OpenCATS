@@ -256,6 +256,7 @@ Feature: Access Level to objects check - main pages
      | ROOT        |              | see         |
      
 ####### SETTINGS #######  
+
 @javascript @settings
     Scenario Outline: Settings module visibility
      Given I am logged in with <accessLevel> access level
@@ -284,7 +285,7 @@ Feature: Access Level to objects check - main pages
 ####### CALENDAR #######
 
   @javascript @calendar
-    Scenario Outline: Reports module visibility
+    Scenario Outline: Calendar module visibility
      Given I am logged in with <accessLevel> access level
      And I am on "/index.php?m=calendar"
      Then I should <upcomingEvents> "My Upcoming Events"
