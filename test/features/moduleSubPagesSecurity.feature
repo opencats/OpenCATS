@@ -166,7 +166,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
    Scenario Outline: Lists Show page visibility
      Given I am logged in with <accessLevel> access level
      And I am on "/index.php?m=lists"
-     When I follow "list"
+     When I follow "UK Candidates"
      Then I should <showLists> "Show Lists"
      And the page should <quickSearch> contain "Quick Search"
      And the page should <quickSearch> contain "quickSearchFor"
