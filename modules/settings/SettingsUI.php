@@ -219,7 +219,14 @@ class SettingsUI extends UserInterface
 	 * @return unknown_type
 	 */
 	function changeTags(){
-		if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+		if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
+            return;
+            //$this->fatal(ERROR_NO_PERMISSION);
+        }
+        
+        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
             return;
@@ -3902,7 +3909,7 @@ class SettingsUI extends UserInterface
 
         if (!isset($_GET['questionnaireID']))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX);
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Bad index.');
         }
 
         $questionnaireID = intval($_GET['questionnaireID']);
