@@ -12,7 +12,6 @@ use Behat\MinkExtension\Context\MinkContext;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ElementHtmlException;
 
-
 define('SITE_ID', 1);
 define('ADMIN_ID', 1);
 /**
@@ -21,6 +20,7 @@ define('ADMIN_ID', 1);
 class FeatureContext extends MinkContext implements Context, SnippetAcceptingContext
 {
     private $roleData;
+    private $result;
     /**
      * Initializes context.
      *
@@ -36,6 +36,60 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         );
     }
     
+    
+    /**
+     * @When I do POST request :url
+     */
+    public function iDoPOSTRequest($url)
+    {
+        $url = rtrim($this->getMinkParameter('base_url'), '/') . '/'.$url;
+        $data = array('postback' => 'postback');
+
+        // use key 'http' even if you send the request to https://...
+        $options = array(
+            'http' => array(
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n"."Cookie: CATS=".$this->getSession()->getCookie('CATS')."\r\n",
+                'method'  => 'POST',
+                'content' => http_build_query($data)
+            )
+        );
+        $context  = stream_context_create($options);
+        $this->result = file_get_contents($url, false, $context);
+    }
+    
+    /**
+     * @Then /^the response should  contain "(?P<text>(?:[^"]|\\")*)"$/
+     */
+    public function theResponseShouldContain($text)
+    {
+        $response = $this->result;
+        $position = strpos($response, $text);
+        if($position === false)
+        {
+            throw new ExpectationException("'".$text."' was not found in the response from this request and it should be", $this->getSession());
+        }
+    }
+    
+    /**
+     * @Then `/^the response should not contain "(?P<text>(?:[^"]|\\")*)"$/`
+     */
+    public function theResponseShouldNotContain($text)
+    {
+        $response = $this->result;
+        $position = strpos($response, $text);
+        if($position !== false)
+        {
+            throw new ExpectationException("'".$text."' was found in the response from this request and it should be not", $this->getSession());
+        }
+    }
+    
+    /**
+     * @When I do GET request :url
+     */
+    public function iDoGETRequest($url)
+    {
+        $this->visitPath($url);
+    }
     
     /**
      * @Given I am authenticated as :role
