@@ -88,7 +88,16 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
      */
     public function iDoGETRequest($url)
     {
-        $this->visitPath($url);
+        $opts = array(
+            'http'=>array(
+            'method'=>"GET",
+            'header'=> "Cookie: CATS=".$this->getSession()->getCookie('CATS')."\r\n"
+          )
+        );
+
+        $context = stream_context_create($opts);
+        $url = rtrim($this->getMinkParameter('base_url'), '/') . '/'.$url.'&';
+        $this->result = file_get_contents($url, false, $context);
     }
     
     /**
