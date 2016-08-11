@@ -221,10 +221,11 @@ class CandidatesUI extends UserInterface
                 $this->onDeleteAttachment();
                 break;
 
+            /* FIXME: function savedList() missing */
             /* Hot List Page */
-            case 'savedLists':
+            /*case 'savedLists':
                 $this->savedList();
-                break;
+                break;*/
 
             case 'emailCandidates':
                 $this->onEmailCandidates();
@@ -291,6 +292,13 @@ class CandidatesUI extends UserInterface
      */
     private function listByView($errMessage = '')
     {
+        
+        if ($this->_accessLevel < ACCESS_LEVEL_READ)
+        {
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid user level for action.');
+            return;
+        }
+        
         // Log message that shows up on the top of the list page
         $topLog = '';
 
@@ -623,7 +631,6 @@ class CandidatesUI extends UserInterface
      */
     private function add($contents = '', $fields = array())
     {
-
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -937,6 +944,11 @@ class CandidatesUI extends UserInterface
      */
     private function edit()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -1316,6 +1328,16 @@ class CandidatesUI extends UserInterface
      */
     private function considerForJobSearch($candidateIDArray = array())
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
+        if (!$this->isRequiredIDValid('candidateID', $_GET))
+        {
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+        }
+        
         /* Get list of candidates. */
         if (isset($_REQUEST['candidateIDArrayStored']) && $this->isRequiredIDValid('candidateIDArrayStored', $_REQUEST, true))
         {
@@ -1543,6 +1565,12 @@ class CandidatesUI extends UserInterface
 
     private function addActivityChangeStatus()
     {
+        
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -1696,6 +1724,12 @@ class CandidatesUI extends UserInterface
     
    
 	private function addCandidateTags(){
+        
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -1817,6 +1851,11 @@ class CandidatesUI extends UserInterface
      */
     private function onSearch()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_READ)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out to prevent an error if the GET string doesn't even contain
          * a field named 'wildCardString' at all.
          */
@@ -2085,6 +2124,12 @@ class CandidatesUI extends UserInterface
      */
     private function viewResume()
     {
+        
+        if ($this->_accessLevel < ACCESS_LEVEL_READ)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('attachmentID', $_GET))
         {
@@ -2115,6 +2160,11 @@ class CandidatesUI extends UserInterface
 
     private function addEditImage()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatalModal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -2185,6 +2235,12 @@ class CandidatesUI extends UserInterface
      */
     private function createAttachment()
     {
+        
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -3172,6 +3228,11 @@ class CandidatesUI extends UserInterface
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Sorry, but demo accounts are not allowed to send e-mails.');
         }
+        
+        if ($this->_accessLevel < ACCESS_LEVEL_READ)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
 
         if (isset($_POST['postback']))
         {
@@ -3204,6 +3265,10 @@ class CandidatesUI extends UserInterface
         }
         else
         {
+            if(!isset($_POST['i']) || !isset($_POST['p']))
+            {
+                 CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Missing required fields.');
+            }
             $dataGrid = DataGrid::getFromRequest();
 
             $candidateIDs = $dataGrid->getExportIDs();
@@ -3239,6 +3304,11 @@ class CandidatesUI extends UserInterface
 
     private function onShowQuestionnaire()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_READ)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         $candidateID = isset($_GET[$id='candidateID']) ? $_GET[$id] : false;
         $title = isset($_GET[$id='questionnaireTitle']) ? urldecode($_GET[$id]) : false;
         $printOption = isset($_GET[$id='print']) ? $_GET[$id] : '';
@@ -3246,7 +3316,7 @@ class CandidatesUI extends UserInterface
 
         if (!$candidateID || !$title)
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX);
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Bad Server Information.');
         }
 
         $candidates = new Candidates($this->_siteID);

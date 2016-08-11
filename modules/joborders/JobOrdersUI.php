@@ -204,11 +204,7 @@ class JobOrdersUI extends UserInterface
                 $this->onRemoveFromPipeline();
                 break;
 
-            /* Remove a candidate from a pipeline. */
-            case 'removeFromPipeline':
-                $this->onRemoveFromPipeline();
-                break;
-
+          
             /* Add an attachment */
             case 'createAttachment':
                 include_once('./lib/DocumentToText.php');
@@ -228,10 +224,11 @@ class JobOrdersUI extends UserInterface
             case 'deleteAttachment':
                 $this->onDeleteAttachment();
                 break;
-
-            case 'setCandidateJobOrder':
+                
+            /* FIXME: function setCandidateJobOrder() does not exist
+            /*case 'setCandidateJobOrder':
                 $this->setCandidateJobOrder();
-                break;
+                break;*/
 
             case 'administrativeHideShow':
                 $this->administrativeHideShow();
@@ -251,6 +248,11 @@ class JobOrdersUI extends UserInterface
      */
     private function listByView($errMessage = '')
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_READ)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         $dataGridProperties = DataGrid::getRecentParamaters("joborders:JobOrdersListByViewDataGrid");
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
@@ -283,6 +285,12 @@ class JobOrdersUI extends UserInterface
      */
     private function show()
     {
+        
+        if ($this->_accessLevel < ACCESS_LEVEL_READ)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Is this a popup? */
         if (isset($_GET['display']) && $_GET['display'] == 'popup')
         {
@@ -466,6 +474,11 @@ class JobOrdersUI extends UserInterface
      */
     private function addJobOrderPopup()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         $jobOrders = new JobOrders($this->_siteID);
 
         $rs = $jobOrders->getAll(JOBORDERS_STATUS_ACTIVEONHOLDFULL);
@@ -747,6 +760,11 @@ class JobOrdersUI extends UserInterface
      */
     private function edit()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
@@ -1123,6 +1141,12 @@ class JobOrdersUI extends UserInterface
      */
     private function considerCandidateSearch()
     {
+        
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
@@ -1146,6 +1170,11 @@ class JobOrdersUI extends UserInterface
      */
     private function onConsiderCandidateSearch()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_POST))
         {
@@ -1275,6 +1304,12 @@ class JobOrdersUI extends UserInterface
      */
     private function addCandidateModal($contents = '', $fields = array())
     {
+        
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
@@ -1378,6 +1413,12 @@ class JobOrdersUI extends UserInterface
 
     private function addActivityChangeStatus()
     {
+        
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -1562,6 +1603,12 @@ class JobOrdersUI extends UserInterface
      */
     private function search()
     {
+        
+        if ($this->_accessLevel < ACCESS_LEVEL_READ)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         $savedSearches = new SavedSearches($this->_siteID);
         $savedSearchRS = $savedSearches->get(DATA_ITEM_JOBORDER);
 
@@ -1584,6 +1631,12 @@ class JobOrdersUI extends UserInterface
      */
     private function onSearch()
     {
+        
+        if ($this->_accessLevel < ACCESS_LEVEL_READ)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         $query_jobTitle = '';
         $query_companyName = '';
 
@@ -1731,6 +1784,12 @@ class JobOrdersUI extends UserInterface
      */
     private function createAttachment()
     {
+        
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid joborder ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {

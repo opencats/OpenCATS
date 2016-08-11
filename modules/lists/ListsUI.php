@@ -67,11 +67,12 @@ class ListsUI extends UserInterface
         if (!eval(Hooks::get('LISTS_HANDLE_REQUEST'))) return;
 
         switch ($action)
-        {
+        {  
+            /* FIXME: function show() undefined
             case 'show':
                 $this->show();
                 break;
-
+            */
             case 'showList':
                 $this->showList();
                 break;
@@ -138,6 +139,10 @@ class ListsUI extends UserInterface
 
     private function showList()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_READ)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('savedListID', $_GET))
         {
@@ -211,6 +216,10 @@ class ListsUI extends UserInterface
      */
     private function quickActionAddToListModal()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_READ)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
         /* Bail out if we don't have a valid type. */
         if (!$this->isRequiredIDValid('dataItemType', $_GET))
         {
@@ -249,6 +258,10 @@ class ListsUI extends UserInterface
      */
     private function addToListFromDatagridModal()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_READ)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
         /* Bail out if we don't have a valid type. */
         if (!$this->isRequiredIDValid('dataItemType', $_GET))
         {
@@ -292,6 +305,10 @@ class ListsUI extends UserInterface
      */
     private function removeFromListDatagrid()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_READ)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
         /* Bail out if we don't have a valid type. */
         if (!$this->isRequiredIDValid('dataItemType', $_GET))
         {
@@ -354,6 +371,10 @@ class ListsUI extends UserInterface
      */
     private function onDeleteStaticList()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_READ)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
         /* Bail out if we don't have a valid type. */
         if (!$this->isRequiredIDValid('savedListID', $_GET))
         {
