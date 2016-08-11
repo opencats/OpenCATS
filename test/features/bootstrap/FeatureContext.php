@@ -84,6 +84,18 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     }
     
     /**
+     * @When I follow link :name
+     */
+    public function iFollowLink($name)
+    {
+        $link = $this->getSession()->getPage()->findLink($name);
+        if($link !== null)
+        {
+            $link->click();
+        }
+    }
+    
+    /**
      * @When I do GET request :url
      */
     public function iDoGETRequest($url)

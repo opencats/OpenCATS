@@ -15,7 +15,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
   Scenario Outline: Job Order Show page visibility
     Given I am logged in with <accessLevel> access level
     And I am on "/index.php?m=joborders"
-    When I follow "OpenCATS Tester"
+    When I follow link "OpenCATS Tester"
     Then I should <addJobOrder> "Add Job Order"
     And I should <searchJobOrder> "Search Job Orders"
     And the page should <quickSearch> contain "Quick Search"
@@ -54,7 +54,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
    Scenario Outline: Candidate Show page visibility
      Given I am logged in with <accessLevel> access level
      And I am on "/index.php?m=candidates"
-     When I follow "Pippin"
+     When I follow link "Pippin"
      Then I should <addCandidate> "Add Candidate"
      And I should <searchCandidate> "Search Candidates"
      And the page should <quickSearch> contain "Quick Search"
@@ -82,7 +82,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
      
    Examples:
      | accessLevel | addCandidate | searchCandidate | quickSearch | actionMenu | addToList | details | scheduleEvent | addAttachment | editCandidate | deleteCandidate | viewHistory | administrativeHideShow | addToPipeline | logAnActivity2 | logAnActivity | removeFromPipeline | editActivity | deleteActivity | setMatchingRating | deleteAttachment |
-     | DISABLE     | not see      | not see         | not         | not        | not       | not see | not see       | not see       | not see       | not see         | not see     | not see                | not           | not            | not see       | not                | not          | not            | not                     | not              |
+     | DISABLED    | not see      | not see         | not         | not        | not       | not see | not see       | not see       | not see       | not see         | not see     | not see                | not           | not            | not see       | not                | not          | not            | not                     | not              |
      | READONLY    | not see      | see             |             |            |           | see     | not see       | not see       | not see       | not see         | not see     | not see                | not           | not            | not see       | not                | not          | not            | not                     | not              |
      | EDIT        | see          | see             |             |            |           | see     | see           | see           | see           | not see         | not see     | not see                |               |                | see           | not                |              | not            |                         | not              |
      | DELETE      | see          | see             |             |            |           | see     | see           | see           | see           | see             | not see     | not see                |               |                | see           |                    |              |                |                         |                  |
@@ -97,7 +97,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
     Scenario Outline: Company Show page visibility
      Given I am logged in with <accessLevel> access level
      And I am on "/index.php?m=companies"
-     When I follow "Google"
+     When I follow link "Google"
      Then I should <addCompany> "Add Company"
      And I should <searchCompany> "Search Companies"
      And the page should <quickSearch> contain "Quick Search"
@@ -132,7 +132,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
     Scenario Outline: Contacts Show page visibility
      Given I am logged in with <accessLevel> access level
      And I am on "/index.php?m=contacts"
-     When I follow "Elizabeth"
+     When I follow link "Elizabeth"
      Then I should <addContact> "Add Contact"
      And I should <searchContact> "Search Contacts"
      And the page should <quickSearch> contain "Quick Search"
@@ -166,7 +166,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
    Scenario Outline: Lists Show page visibility
      Given I am logged in with <accessLevel> access level
      And I am on "/index.php?m=lists"
-     When I follow "UK Candidates"
+     When I follow link "UK Candidates"
      Then I should <showLists> "Show Lists"
      And the page should <quickSearch> contain "Quick Search"
      And the page should <quickSearch> contain "quickSearchFor"
