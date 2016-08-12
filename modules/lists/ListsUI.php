@@ -67,7 +67,7 @@ class ListsUI extends UserInterface
         if (!eval(Hooks::get('LISTS_HANDLE_REQUEST'))) return;
 
         switch ($action)
-        {  
+        {
             /* FIXME: function show() undefined
             case 'show':
                 $this->show();

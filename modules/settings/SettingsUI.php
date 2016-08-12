@@ -202,7 +202,8 @@ class SettingsUI extends UserInterface
      * This function make changes to tags
      * @return unknown_type
      */
-	function onChangeTags(){
+	function onChangeTags()
+    {
 		// TODO: Add tags changing code
         if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
         {
@@ -210,22 +211,20 @@ class SettingsUI extends UserInterface
             return;
             //$this->fatal(ERROR_NO_PERMISSION);
         }
-
- 
 	}
 
 	/**
 	 * Show the tag list
 	 * @return unknown_type
 	 */
-	function changeTags()
+    function changeTags()
     {
-		if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
+        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
         }
         
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+		if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
         }

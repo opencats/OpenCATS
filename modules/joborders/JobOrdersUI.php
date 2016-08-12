@@ -203,7 +203,7 @@ class JobOrdersUI extends UserInterface
             case 'removeFromPipeline':
                 $this->onRemoveFromPipeline();
                 break;
-          
+
             /* Add an attachment */
             case 'createAttachment':
                 include_once('./lib/DocumentToText.php');
@@ -223,7 +223,7 @@ class JobOrdersUI extends UserInterface
             case 'deleteAttachment':
                 $this->onDeleteAttachment();
                 break;
-                
+
             /* FIXME: function setCandidateJobOrder() does not exist
             case 'setCandidateJobOrder':
                 $this->setCandidateJobOrder();
