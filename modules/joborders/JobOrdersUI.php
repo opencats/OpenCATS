@@ -203,7 +203,6 @@ class JobOrdersUI extends UserInterface
             case 'removeFromPipeline':
                 $this->onRemoveFromPipeline();
                 break;
-
           
             /* Add an attachment */
             case 'createAttachment':
@@ -226,9 +225,10 @@ class JobOrdersUI extends UserInterface
                 break;
                 
             /* FIXME: function setCandidateJobOrder() does not exist
-            /*case 'setCandidateJobOrder':
+            case 'setCandidateJobOrder':
                 $this->setCandidateJobOrder();
-                break;*/
+                break;
+            */
 
             case 'administrativeHideShow':
                 $this->administrativeHideShow();
@@ -285,7 +285,6 @@ class JobOrdersUI extends UserInterface
      */
     private function show()
     {
-        
         if ($this->_accessLevel < ACCESS_LEVEL_READ)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -1141,7 +1140,6 @@ class JobOrdersUI extends UserInterface
      */
     private function considerCandidateSearch()
     {
-        
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -1304,7 +1302,6 @@ class JobOrdersUI extends UserInterface
      */
     private function addCandidateModal($contents = '', $fields = array())
     {
-        
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -1413,7 +1410,6 @@ class JobOrdersUI extends UserInterface
 
     private function addActivityChangeStatus()
     {
-        
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -1603,7 +1599,6 @@ class JobOrdersUI extends UserInterface
      */
     private function search()
     {
-        
         if ($this->_accessLevel < ACCESS_LEVEL_READ)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -1631,7 +1626,6 @@ class JobOrdersUI extends UserInterface
      */
     private function onSearch()
     {
-        
         if ($this->_accessLevel < ACCESS_LEVEL_READ)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -1784,7 +1778,6 @@ class JobOrdersUI extends UserInterface
      */
     private function createAttachment()
     {
-        
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');

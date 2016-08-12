@@ -73,6 +73,7 @@ class ListsUI extends UserInterface
                 $this->show();
                 break;
             */
+
             case 'showList':
                 $this->showList();
                 break;

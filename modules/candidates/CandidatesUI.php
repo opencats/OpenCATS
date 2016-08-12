@@ -221,11 +221,12 @@ class CandidatesUI extends UserInterface
                 $this->onDeleteAttachment();
                 break;
 
-            /* FIXME: function savedList() missing */
             /* Hot List Page */
-            /*case 'savedLists':
+            /* FIXME: function savedList() missing
+            case 'savedLists':
                 $this->savedList();
-                break;*/
+                break;
+            */
 
             case 'emailCandidates':
                 $this->onEmailCandidates();
@@ -292,7 +293,6 @@ class CandidatesUI extends UserInterface
      */
     private function listByView($errMessage = '')
     {
-        
         if ($this->_accessLevel < ACCESS_LEVEL_READ)
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid user level for action.');
@@ -1565,7 +1565,6 @@ class CandidatesUI extends UserInterface
 
     private function addActivityChangeStatus()
     {
-        
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -1723,8 +1722,8 @@ class CandidatesUI extends UserInterface
     }
     
    
-	private function addCandidateTags(){
-        
+    private function addCandidateTags()
+    {
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -2124,7 +2123,6 @@ class CandidatesUI extends UserInterface
      */
     private function viewResume()
     {
-        
         if ($this->_accessLevel < ACCESS_LEVEL_READ)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -2235,7 +2233,6 @@ class CandidatesUI extends UserInterface
      */
     private function createAttachment()
     {
-        
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');

@@ -218,19 +218,16 @@ class SettingsUI extends UserInterface
 	 * Show the tag list
 	 * @return unknown_type
 	 */
-	function changeTags(){
+	function changeTags()
+    {
 		if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
         }
         
         if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
         }
 
         $tags = new Tags($this->_siteID);
