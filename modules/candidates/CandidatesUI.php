@@ -293,12 +293,6 @@ class CandidatesUI extends UserInterface
      */
     private function listByView($errMessage = '')
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_READ)
-        {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid user level for action.');
-            return;
-        }
-        
         // Log message that shows up on the top of the list page
         $topLog = '';
 
@@ -1850,11 +1844,6 @@ class CandidatesUI extends UserInterface
      */
     private function onSearch()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_READ)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-        
         /* Bail out to prevent an error if the GET string doesn't even contain
          * a field named 'wildCardString' at all.
          */
@@ -2123,11 +2112,6 @@ class CandidatesUI extends UserInterface
      */
     private function viewResume()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_READ)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('attachmentID', $_GET))
         {
@@ -3225,11 +3209,6 @@ class CandidatesUI extends UserInterface
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Sorry, but demo accounts are not allowed to send e-mails.');
         }
-        
-        if ($this->_accessLevel < ACCESS_LEVEL_READ)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
 
         if (isset($_POST['postback']))
         {
@@ -3301,11 +3280,6 @@ class CandidatesUI extends UserInterface
 
     private function onShowQuestionnaire()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_READ)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-        
         $candidateID = isset($_GET[$id='candidateID']) ? $_GET[$id] : false;
         $title = isset($_GET[$id='questionnaireTitle']) ? urldecode($_GET[$id]) : false;
         $printOption = isset($_GET[$id='print']) ? $_GET[$id] : '';

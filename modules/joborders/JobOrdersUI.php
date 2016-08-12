@@ -248,11 +248,6 @@ class JobOrdersUI extends UserInterface
      */
     private function listByView($errMessage = '')
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_READ)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-        
         $dataGridProperties = DataGrid::getRecentParamaters("joborders:JobOrdersListByViewDataGrid");
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
@@ -285,11 +280,6 @@ class JobOrdersUI extends UserInterface
      */
     private function show()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_READ)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-        
         /* Is this a popup? */
         if (isset($_GET['display']) && $_GET['display'] == 'popup')
         {
@@ -1599,11 +1589,6 @@ class JobOrdersUI extends UserInterface
      */
     private function search()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_READ)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-        
         $savedSearches = new SavedSearches($this->_siteID);
         $savedSearchRS = $savedSearches->get(DATA_ITEM_JOBORDER);
 
@@ -1626,11 +1611,6 @@ class JobOrdersUI extends UserInterface
      */
     private function onSearch()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_READ)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-        
         $query_jobTitle = '';
         $query_companyName = '';
 

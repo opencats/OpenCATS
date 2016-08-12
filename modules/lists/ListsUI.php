@@ -140,10 +140,6 @@ class ListsUI extends UserInterface
 
     private function showList()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_READ)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('savedListID', $_GET))
         {
@@ -217,10 +213,6 @@ class ListsUI extends UserInterface
      */
     private function quickActionAddToListModal()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_READ)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
         /* Bail out if we don't have a valid type. */
         if (!$this->isRequiredIDValid('dataItemType', $_GET))
         {
@@ -259,10 +251,6 @@ class ListsUI extends UserInterface
      */
     private function addToListFromDatagridModal()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_READ)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
         /* Bail out if we don't have a valid type. */
         if (!$this->isRequiredIDValid('dataItemType', $_GET))
         {
@@ -306,10 +294,6 @@ class ListsUI extends UserInterface
      */
     private function removeFromListDatagrid()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_READ)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
         /* Bail out if we don't have a valid type. */
         if (!$this->isRequiredIDValid('dataItemType', $_GET))
         {
@@ -372,10 +356,6 @@ class ListsUI extends UserInterface
      */
     private function onDeleteStaticList()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_READ)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
         /* Bail out if we don't have a valid type. */
         if (!$this->isRequiredIDValid('savedListID', $_GET))
         {

@@ -1061,10 +1061,6 @@ class ContactsUI extends UserInterface
      */
     private function showColdCallList()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_READ)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
         $contacts = new Contacts($this->_siteID);
 
         $rs = $contacts->getColdCallList();
