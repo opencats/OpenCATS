@@ -165,7 +165,7 @@ class CandidatesUI extends UserInterface
              * consider a candidate.
              */
             case 'considerForJobSearch':
-                if ($this->getUserAccessLevel('candidates.search') < ACCESS_LEVEL_READ)
+                if ($this->getUserAccessLevel('candidates.search') < ACCESS_LEVEL_EDIT)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
@@ -283,6 +283,7 @@ class CandidatesUI extends UserInterface
                 break;
 
             /* Hot List Page */
+            /* FIXME: function savedList() missing
             case 'savedLists':
                 if ($this->getUserAccessLevel('candidates.savedLists') < ACCESS_LEVEL_READ)
                 {
@@ -290,6 +291,7 @@ class CandidatesUI extends UserInterface
                 }
                 $this->savedList();
                 break;
+            */
 
             case 'emailCandidates':
                 if ($this->getUserAccessLevel('candidates.emailCandidates') < ACCESS_LEVEL_READ)
@@ -1377,6 +1379,11 @@ class CandidatesUI extends UserInterface
      */
     private function considerForJobSearch($candidateIDArray = array())
     {
+        if (!$this->isRequiredIDValid('candidateID', $_GET))
+        {
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+        }
+        
         /* Get list of candidates. */
         if (isset($_REQUEST['candidateIDArrayStored']) && $this->isRequiredIDValid('candidateIDArrayStored', $_REQUEST, true))
         {
@@ -1745,7 +1752,7 @@ class CandidatesUI extends UserInterface
     }
     
    
-	private function addCandidateTags()
+    private function addCandidateTags()
     {
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
@@ -3220,6 +3227,10 @@ class CandidatesUI extends UserInterface
         }
         else
         {
+            if(!isset($_POST['i']) || !isset($_POST['p']))
+            {
+                 CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Missing required fields.');
+            }
             $dataGrid = DataGrid::getFromRequest();
 
             $candidateIDs = $dataGrid->getExportIDs();
@@ -3262,7 +3273,7 @@ class CandidatesUI extends UserInterface
 
         if (!$candidateID || !$title)
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX);
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Bad Server Information.');
         }
 
         $candidates = new Candidates($this->_siteID);

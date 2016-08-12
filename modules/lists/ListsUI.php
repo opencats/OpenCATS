@@ -68,9 +68,11 @@ class ListsUI extends UserInterface
 
         switch ($action)
         {
+            /* FIXME: function show() undefined
             case 'show':
                 $this->show();
                 break;
+            */
 
             case 'showList':
                 $this->showList();

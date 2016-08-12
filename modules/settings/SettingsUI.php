@@ -239,9 +239,9 @@ class SettingsUI extends UserInterface
         {
             case 'tags':
                 /* Bail out if the user is demo. */
-                if ($this->getUserAccessLevel('settings.tags') < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+                if ($this->getUserAccessLevel('settings.tags') < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
                 {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You are not allowed to change your password.');
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You are not allowed to edit tags.');
                 }
                 if ($this->isPostBack())
                 {
@@ -3793,7 +3793,7 @@ class SettingsUI extends UserInterface
     {
         if (!isset($_GET['questionnaireID']))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX);
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Bad index.');
         }
 
         $questionnaireID = intval($_GET['questionnaireID']);

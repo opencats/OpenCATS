@@ -191,7 +191,7 @@ class JobOrdersUI extends UserInterface
              * consider for this job order.
              */
             case 'considerCandidateSearch':
-                if ($this->getUserAccessLevel('joborders.considerCandidateSearch') < ACCESS_LEVEL_READ)
+                if ($this->getUserAccessLevel('joborders.considerCandidateSearch') < ACCESS_LEVEL_EDIT)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
@@ -277,6 +277,7 @@ class JobOrdersUI extends UserInterface
                 $this->onDeleteAttachment();
                 break;
 
+            /* FIXME: function setCandidateJobOrder() does not exist
             case 'setCandidateJobOrder':
                 if ($this->getUserAccessLevel('joborders.setCandidateJobOrder') < ACCESS_LEVEL_EDIT)
                 {
@@ -284,6 +285,7 @@ class JobOrdersUI extends UserInterface
                 }
                 $this->setCandidateJobOrder();
                 break;
+            */
 
             case 'administrativeHideShow':
                 if ($this->getUserAccessLevel('joborders.administrativeHideShow') < ACCESS_LEVEL_MULTI_SA)
