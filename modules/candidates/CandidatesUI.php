@@ -222,9 +222,11 @@ class CandidatesUI extends UserInterface
                 break;
 
             /* Hot List Page */
+            /* FIXME: function savedList() missing
             case 'savedLists':
                 $this->savedList();
                 break;
+            */
 
             case 'emailCandidates':
                 $this->onEmailCandidates();
@@ -623,7 +625,6 @@ class CandidatesUI extends UserInterface
      */
     private function add($contents = '', $fields = array())
     {
-
         if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -937,6 +938,11 @@ class CandidatesUI extends UserInterface
      */
     private function edit()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -1316,6 +1322,16 @@ class CandidatesUI extends UserInterface
      */
     private function considerForJobSearch($candidateIDArray = array())
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
+        if (!$this->isRequiredIDValid('candidateID', $_GET))
+        {
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+        }
+        
         /* Get list of candidates. */
         if (isset($_REQUEST['candidateIDArrayStored']) && $this->isRequiredIDValid('candidateIDArrayStored', $_REQUEST, true))
         {
@@ -1543,6 +1559,11 @@ class CandidatesUI extends UserInterface
 
     private function addActivityChangeStatus()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -1695,7 +1716,13 @@ class CandidatesUI extends UserInterface
     }
     
    
-	private function addCandidateTags(){
+    private function addCandidateTags()
+    {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -2115,6 +2142,11 @@ class CandidatesUI extends UserInterface
 
     private function addEditImage()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatalModal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -2185,6 +2217,11 @@ class CandidatesUI extends UserInterface
      */
     private function createAttachment()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -3204,6 +3241,10 @@ class CandidatesUI extends UserInterface
         }
         else
         {
+            if(!isset($_POST['i']) || !isset($_POST['p']))
+            {
+                 CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Missing required fields.');
+            }
             $dataGrid = DataGrid::getFromRequest();
 
             $candidateIDs = $dataGrid->getExportIDs();
@@ -3246,7 +3287,7 @@ class CandidatesUI extends UserInterface
 
         if (!$candidateID || !$title)
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX);
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Bad Server Information.');
         }
 
         $candidates = new Candidates($this->_siteID);

@@ -565,6 +565,10 @@ class ContactsUI extends UserInterface
      */
     private function edit()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
         /* Bail out if we don't have a valid contact ID. */
         if (!$this->isRequiredIDValid('contactID', $_GET))
         {
@@ -1071,6 +1075,11 @@ class ContactsUI extends UserInterface
     //TODO: Document me.
     private function addActivityScheduleEvent()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('contactID', $_GET))
         {
