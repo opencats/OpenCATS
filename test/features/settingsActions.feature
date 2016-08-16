@@ -56,23 +56,21 @@ Scenario Outline: Settings module actions
   And the response should <FUpgSiteName> contain "My Recent Calls"
   
   When I do GET request "index.php?m=settings&a=newInstallFinished"
-  Then the response should <PNewInstallFnshd> contain "Settings Saved"
-  And the response should <FNewInstallFnshd> contain "Settings Saved"
+  Then the response should <NewInstallFnshd> contain "Settings Saved"
   
   When I do POST request "index.php?m=settings&a=newInstallFinished"
-  Then the response should <PNewInstallFnshd> contain "My Recent Calls"
-  And the response should <FNewInstallFnshd> contain "My Recent Calls"
+  Then the response should <NewInstallFnshd> contain "My Recent Calls"
   
   Examples:
-  | accessLevel | PTags   | FTags   | PChangePasswd | FChangePasswd | FChangePasswdDemo | PNewInstallPswd  | FNewInstallPswd    | PForceEmail | FForceEmail | PNewSiteName | FNewSiteName | PUpgSiteName | FUpgSiteName | PNewInstallFnshd | FNewInstallFnshd |
-  | DISABLED    | not     | not     | not           | not           | not               | not              | not                | not         | not         | not          | not          | not          | not          | not              | not              |
-  | READONLY    | not     |         |               | not           | not               |                  | not                |             | not         | not          |              | not          |              |                  | not              |
-  | EDIT        | not     |         |               | not           | not               |                  | not                |             | not         | not          |              | not          |              |                  | not              |
-  | DELETE      | not     |         |               | not           | not               |                  | not                |             | not         | not          |              | not          |              |                  | not              |
-  | DEMO        | not     |         | not           | not           |                   |                  | not                |             | not         | not          |              | not          |              |                  | not              |
-  | ADMIN       |         | not     |               | not           | not               |                  | not                |             | not         |              | not          |              | not          |                  | not              |
-  | MULTI_ADMIN |         | not     |               | not           | not               |                  | not                |             | not         |              | not          |              | not          |                  | not              |
-  | ROOT        |         | not     |               | not           | not               |                  | not                |             | not         |              | not          |              | not          |                  | not              |
+  | accessLevel | PTags   | FTags   | PChangePasswd | FChangePasswd | FChangePasswdDemo | PNewInstallPswd  | FNewInstallPswd    | PForceEmail | FForceEmail | PNewSiteName | FNewSiteName | PUpgSiteName | FUpgSiteName | NewInstallFnshd  |
+  | DISABLED    | not     | not     | not           | not           | not               | not              | not                | not         | not         | not          | not          | not          | not          | not              |
+  | READONLY    | not     |         |               | not           | not               |                  | not                |             | not         | not          |              | not          |              |                  |
+  | EDIT        | not     |         |               | not           | not               |                  | not                |             | not         | not          |              | not          |              |                  |
+  | DELETE      | not     |         |               | not           | not               |                  | not                |             | not         | not          |              | not          |              |                  |
+  | DEMO        | not     |         | not           | not           |                   |                  | not                |             | not         | not          |              | not          |              |                  |
+  | ADMIN       |         | not     |               | not           | not               |                  | not                |             | not         |              | not          |              | not          |                  |
+  | MULTI_ADMIN |         | not     |               | not           | not               |                  | not                |             | not         |              | not          |              | not          |                  |
+  | ROOT        |         | not     |               | not           | not               |                  | not                |             | not         |              | not          |              | not          |                  |
   
 @settings @actions
 Scenario Outline: Settings module actions
