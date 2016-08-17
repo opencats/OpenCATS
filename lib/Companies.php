@@ -1,7 +1,7 @@
 <?php
 include_once('./vendor/autoload.php');
 use OpenCATS\Entity\Company;
-use OpenCATS\Service\CompanyService;
+use OpenCATS\Service\CompanyRepository;
 
 
 /**
@@ -103,10 +103,10 @@ class Companies
             $enteredBy,
             $owner
         );
-        $companyService = new CompanyService($this->_db);
+        $CompanyRepository = new CompanyRepository($this->_db);
         try {
-            $companyId = $companyService->persist($company, new History($this->_siteID));
-        } catch(CompanyServiceException $e) {
+            $companyId = $CompanyRepository->persist($company, new History($this->_siteID));
+        } catch(CompanyRepositoryException $e) {
             return -1;
         }
         return $companyId;

@@ -4,7 +4,7 @@ use OpenCATS\Entity\JobOrder;
 
 include_once('./lib/History.php');
 
-// FIXME: It's way too similar to CompanyService
+// FIXME: It's way too similar to CompanyRepository
 // Remove duplicated code 
 class JobOrderService
 {

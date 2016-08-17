@@ -4,7 +4,7 @@ use OpenCATS\Entity\Company;
 
 include_once('./lib/History.php');
 
-class CompanyService
+class CompanyRepository
 {
     private $databaseConnection;
     
@@ -82,7 +82,7 @@ class CompanyService
             $history->storeHistoryNew(DATA_ITEM_COMPANY, $companyId);
             return $companyId;
         } else {
-            throw new CompanyServiceException('errorPersistingCompany');
+            throw new CompanyRepositoryException('errorPersistingCompany');
         }
     }
 }

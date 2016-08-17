@@ -1,11 +1,11 @@
 <?php
 namespace OpenCATS\Tests\UnitTests;
 use PHPUnit\Framework\TestCase;
-use OpenCATS\Service\CompanyService;
+use OpenCATS\Service\CompanyRepository;
 use OpenCATS\Entity\Company;
 include_once('./lib/History.php');
 
-class CompanyServiceTests extends TestCase
+class CompanyRepositoryTests extends TestCase
 {
     const COMPANY_NAME = "Test Company Name";
     const SITE_ID = -1;
@@ -53,8 +53,8 @@ class CompanyServiceTests extends TestCase
         $databaseConnectionMock->method('getLastInsertID')
             ->willReturn(self::COMPANY_ID);
         $historyMock = $this->getHistoryMock();
-        $companyService = new CompanyService($databaseConnectionMock);
-        $companyService->persist($this->createCompany(), $historyMock);
+        $CompanyRepository = new CompanyRepository($databaseConnectionMock);
+        $CompanyRepository->persist($this->createCompany(), $historyMock);
     }
     
     function test_persist_CreateNewCompany_ExecutesSqlQuery()
@@ -64,8 +64,8 @@ class CompanyServiceTests extends TestCase
             ->method('query')
             ->willReturn(true);
         $historyMock = $this->getHistoryMock();
-        $companyService = new CompanyService($databaseConnectionMock);
-        $companyService->persist($this->createCompany(), $historyMock);
+        $CompanyRepository = new CompanyRepository($databaseConnectionMock);
+        $CompanyRepository->persist($this->createCompany(), $historyMock);
     }
     
     function test_persist_CreateNewCompany_StoresHistoryWithCompanyId()
@@ -81,12 +81,12 @@ class CompanyServiceTests extends TestCase
             ->withConsecutive(
                 [DATA_ITEM_COMPANY, self::COMPANY_ID]
             );
-        $companyService = new CompanyService($databaseConnectionMock);
-        $companyService->persist($this->createCompany(), $historyMock);
+        $CompanyRepository = new CompanyRepository($databaseConnectionMock);
+        $CompanyRepository->persist($this->createCompany(), $historyMock);
     }
     
     /**
-     * @expectedException OpenCATS\Service\CompanyServiceException
+     * @expectedException OpenCATS\Service\CompanyRepositoryException
      */
     function test_persist_FailToCreateNewCompany_ThrowsException()
     {
@@ -94,8 +94,8 @@ class CompanyServiceTests extends TestCase
         $databaseConnectionMock->method('query')
             ->willReturn(false);
         $historyMock = $this->getHistoryMock();
-        $companyService = new CompanyService($databaseConnectionMock);
-        $companyService->persist($this->createCompany(), $historyMock);
+        $CompanyRepository = new CompanyRepository($databaseConnectionMock);
+        $CompanyRepository->persist($this->createCompany(), $historyMock);
     }
     
     private function getHistoryMock()

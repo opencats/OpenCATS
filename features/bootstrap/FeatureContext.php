@@ -9,7 +9,7 @@ use Behat\MinkExtension\Context\MinkContext;
 use Behat\Testwork\Tester\Result\TestResult;
 use Behat\Mink\Driver\Selenium2Driver;
 use OpenCATS\Entity\Company;
-use OpenCATS\Service\CompanyService;
+use OpenCATS\Service\CompanyRepository;
 
 include_once('./config.php');
 include_once('./constants.php');
@@ -232,8 +232,8 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
             $siteId,
             $companyName
         );
-        $companyService = new CompanyService(DatabaseConnection::getInstance());
-        $companyService->persist($company, new Dummy_History($siteId));
+        $CompanyRepository = new CompanyRepository(DatabaseConnection::getInstance());
+        $CompanyRepository->persist($company, new Dummy_History($siteId));
     }
     
     /**
