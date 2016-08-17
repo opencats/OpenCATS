@@ -6,7 +6,7 @@ include_once('./lib/History.php');
 
 // FIXME: It's way too similar to CompanyRepository
 // Remove duplicated code 
-class JobOrderService
+class JobOrderRepository
 {
     private $databaseConnection;
     
