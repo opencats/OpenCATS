@@ -1,7 +1,7 @@
 <?php
 namespace OpenCATS\Tests\UnitTests;
 use PHPUnit\Framework\TestCase;
-use OpenCATS\Service\CompanyRepository;
+use OpenCATS\Entity\CompanyRepository;
 use OpenCATS\Entity\Company;
 include_once('./lib/History.php');
 
@@ -86,7 +86,7 @@ class CompanyRepositoryTests extends TestCase
     }
     
     /**
-     * @expectedException OpenCATS\Service\CompanyRepositoryException
+     * @expectedException OpenCATS\Entity\CompanyRepositoryException
      */
     function test_persist_FailToCreateNewCompany_ThrowsException()
     {

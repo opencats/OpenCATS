@@ -1,7 +1,7 @@
 <?php
 include_once('./vendor/autoload.php');
 use OpenCATS\Entity\Company;
-use OpenCATS\Service\CompanyRepository;
+use OpenCATS\Entity\CompanyRepository;
 
 
 /**

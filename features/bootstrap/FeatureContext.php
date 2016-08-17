@@ -9,7 +9,7 @@ use Behat\MinkExtension\Context\MinkContext;
 use Behat\Testwork\Tester\Result\TestResult;
 use Behat\Mink\Driver\Selenium2Driver;
 use OpenCATS\Entity\Company;
-use OpenCATS\Service\CompanyRepository;
+use OpenCATS\Entity\CompanyRepository;
 
 include_once('./config.php');
 include_once('./constants.php');
