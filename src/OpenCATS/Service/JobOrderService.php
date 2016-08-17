@@ -110,7 +110,7 @@ class JobOrderService
             $history->storeHistoryNew(DATA_ITEM_JOBORDER, $jobOrderId);
             return $jobOrderId;
         } else {
-            throw new JobOrderServiceException('errorPersistingJobOrder');
+            throw new JobOrderRepositoryException('errorPersistingJobOrder');
         }
     }
 }
