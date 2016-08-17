@@ -280,7 +280,7 @@ class JobOrder
             $siteId,
             $title,
             $type,
-            $status,
+            $status = 0,
             $city,
             $state,
             $enteredBy,
