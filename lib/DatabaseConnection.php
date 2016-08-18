@@ -123,7 +123,7 @@ class DatabaseConnection
             );
             return false;
         }
-
+        mysql_set_charset(SQL_CHARACTER_SET, $this->_connection);
         $isDBSelected = @mysql_select_db(DATABASE_NAME, $this->_connection);
         if (!$isDBSelected)
         {
@@ -531,7 +531,9 @@ class DatabaseConnection
 
         if ($precision !== false)
         {
-            return (string) round($value, $precision);
+            $valueAsDouble = round($value, $precision);
+            $isAWholeNumber = fmod($valueAsDouble, 1) == 0;
+            return number_format($valueAsDouble, $isAWholeNumber ? 0 : 2);
         }
 
         return (string) $value;

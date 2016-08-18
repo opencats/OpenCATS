@@ -434,6 +434,12 @@ class CompaniesUI extends UserInterface
      */
     private function add()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            $this->listByView('Invalid user level for action.');
+            return;
+        }
+
         $companies = new Companies($this->_siteID);
 
         /* Get extra fields. */
@@ -563,6 +569,12 @@ class CompaniesUI extends UserInterface
      */
     private function edit()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            $this->listByView('Invalid user level for action.');
+            return;
+        }
+        
         /* Bail out if we don't have a valid company ID. */
         if (!$this->isRequiredIDValid('companyID', $_GET))
         {
@@ -1055,6 +1067,12 @@ class CompaniesUI extends UserInterface
      */
     private function createAttachment()
     {
+        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        {
+            $this->listByView('Invalid user level for action.');
+            return;
+        }
+
         /* Bail out if we don't have a valid joborder ID. */
         if (!$this->isRequiredIDValid('companyID', $_GET))
         {

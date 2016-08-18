@@ -1,5 +1,5 @@
 <?php /* $Id: HotList.tpl 3430 2007-11-06 20:44:51Z will $ */ ?>
-<?php TemplateUtility::printNonSelectableHeader('Candidates', array( 'js/highlightrows.js', 'js/export.js', 'js/listEditor.js', 'js/dataGrid.js')); ?>
+<?php TemplateUtility::printNonSelectableHeader('Candidates', array( 'js/highlightrows.js', 'js/export.js', 'js/listEditor.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">
@@ -65,5 +65,4 @@
         </div>
     </div>
 
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

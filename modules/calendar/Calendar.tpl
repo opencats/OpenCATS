@@ -400,7 +400,7 @@
                                             <?php if ($this->firstDayMonday != '1'): ?><th height="1%">Sunday</th><?php endif; ?>
                                             <th height="1%">Monday</th>
                                             <th height="1%">Tuesday</th>
-                                            <th height="1%">Wednsday</th>
+                                            <th height="1%">Wednesday</th>
                                             <th height="1%">Thursday</th>
                                             <th height="1%">Friday</th>
                                             <th height="1%">Saturday</th>
@@ -564,7 +564,6 @@
             </table>
         </div>
     </div>
-    <div id="bottomShadow"></div>
 
     <script type="text/javascript">
         /* Settings */

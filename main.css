@@ -101,7 +101,6 @@ a:hover
     color: #fff;
     clear: both;
     padding-top: 1.6em; /* Affects the height of the sub-tab bar; was 2em. */
-    width: 955px;
     min-height: 400px;
     height: auto !important;
     height: 400px;
@@ -118,15 +117,9 @@ a:hover
     height: 400px;
     font: normal normal normal 12px Arial, Tahoma, sans-serif;
     margin-bottom: 0px;
-}
-
-#bottomShadow
-{
-    background: url('images/bottom_shadow.jpg') no-repeat top center;
-    width: 955px;
-    height: 50px;
-    /*border-style: solid;*/
-    border-width: 1px;
+    -webkit-box-shadow: 0px 10px 5px -5px rgba(112,112,112,1);
+    -moz-box-shadow: 0px 10px 5px -5px rgba(112,112,112,1);
+    box-shadow: 0px 10px 5px -5px rgba(112,112,112,1);
 }
 
 /* Modal dialog contents div. */
@@ -144,7 +137,6 @@ a:hover
 {
     position: relative;
     height: 2em;
-    width: 955px;
 }
 
 #header ul#primary
@@ -284,7 +276,6 @@ a:hover
     font: normal normal normal 12px Arial, Tahoma, sans-serif;
     background: #fff;
     border-bottom: 1px #bbb solid;
-    /*width: 955px; */
     width: 100%;
 }
 
@@ -319,7 +310,6 @@ a:hover
 {
     margin: 0px;
     padding: 0px;
-    width: 955px;
     height: 45px;
 }
 
@@ -366,7 +356,6 @@ a:hover
 .footerBlock
 {
     margin-top: 10px;
-    width: 955px;
     text-align: center;
 }
 
@@ -402,7 +391,7 @@ p.note
     padding: 4px;
     margin-top: 0px;
     margin-bottom: 8px;
-    width: 916px;
+    width: 100%;
     font: normal normal bold  12px/120% Verdana, Tahoma, sans-serif;
     border-top: 1px solid #9999cc;
     /*border-bottom: 1px solid #009900;*/
@@ -748,7 +737,6 @@ p.freeformtop
 {
     margin: 0px;
     padding: 0px;
-    text-align: center;
     font: normal normal normal 12px Arial, Tahoma, sans-serif;
 }
 
@@ -770,6 +758,11 @@ p.freeformbottom
   padding-right: 8px;
   background: url('images/button_bg.gif') repeat-x #f0f0f0;
   border: 1px solid #a4a4a4;
+}
+
+.button:disabled
+{
+  color: #ddd;
 }
 
 .buttonDown
@@ -1371,3 +1364,6 @@ td.contentContainerOld {
     font: normal normal normal 12px/130% Arial, Tahoma, sans-serif;
 }
 
+.home table {
+	width: 100%;
+}

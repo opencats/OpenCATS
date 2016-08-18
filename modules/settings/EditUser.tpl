@@ -135,6 +135,7 @@
                         </tr>
                     <?php endif; ?>
                     
+		    <?php if ($this->auth_mode != "ldap"): ?>
                     <tr id="passwordResetElement1">
                         <td class="tdVertical">
                             <label id="PasswordResetLabel" for="username">Password Reset:</label>
@@ -144,6 +145,7 @@
                             <input type="hidden" id="passwordIsReset" name="passwordIsReset" value="0" />
                         </td>
                     </tr>
+                    <?php endif; ?>
 
                     <tr id="passwordResetElement2" style="display:none;">
                         <td class="tdVertical">
@@ -170,5 +172,4 @@
             </form>
         </div>
     </div>
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

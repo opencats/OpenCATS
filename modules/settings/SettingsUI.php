@@ -202,7 +202,8 @@ class SettingsUI extends UserInterface
      * This function make changes to tags
      * @return unknown_type
      */
-	function onChangeTags(){
+	function onChangeTags()
+    {
 		// TODO: Add tags changing code
         if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
         {
@@ -210,20 +211,22 @@ class SettingsUI extends UserInterface
             return;
             //$this->fatal(ERROR_NO_PERMISSION);
         }
-
- 
 	}
 
 	/**
 	 * Show the tag list
 	 * @return unknown_type
 	 */
-	function changeTags(){
+    function changeTags()
+    {
+        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
+        }
+        
 		if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
         }
 
         $tags = new Tags($this->_siteID);
@@ -624,6 +627,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('userID', $this->_userID);
         $this->_template->assign('active', $this);
         $this->_template->assign('subActive', 'My Profile');
+	$this->_template->assign('auth_mode', AUTH_MODE);
         $this->_template->display($templateFile);
     }
 
@@ -787,6 +791,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('defaultAccessLevel', ACCESS_LEVEL_DELETE);
         $this->_template->assign('currentUser', $this->_userID);
         $this->_template->assign('categories', $categories);
+	$this->_template->assign('auth_mode', AUTH_MODE);
 
         if (!eval(Hooks::get('SETTINGS_ADD_USER'))) return;
 
@@ -804,6 +809,12 @@ class SettingsUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
             return;
             //$this->fatal(ERROR_NO_PERMISSION);
+        }
+
+        if (AUTH_MODE == "ldap")
+        {
+            /* LDAP users are not allowed to be created in DB manualy */
+            return;
         }
 
         $firstName      = $this->getTrimmedInput('firstName', $_POST);
@@ -992,6 +1003,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('currentUser', $this->_userID);
         $this->_template->assign('cannotEnableMessage', $cannotEnableMessage);
         $this->_template->assign('disableAccessChange', $disableAccessChange);
+	$this->_template->assign('auth_mode', AUTH_MODE);
         $this->_template->display('./modules/settings/EditUser.tpl');
     }
 
@@ -2679,6 +2691,16 @@ class SettingsUI extends UserInterface
                 'You are not allowed to change your password.'
             );
         }
+        
+        $users = new Users($this->_siteID);
+        if(AUTH_MODE == 'ldap' || AUTH_MODE == 'sql+ldap')
+        {
+            if($users->isUserLDAP($this->_userID)) {
+                $this->fatal(
+                    'LDAP authentication is enabled. You are not allowed to change your password.'
+                );
+            }
+        }
 
         $logout = false;
 
@@ -2717,7 +2739,6 @@ class SettingsUI extends UserInterface
         }
 
         /* Attempt to change the user's password. */
-        $users = new Users($this->_siteID);
         $status = $users->changePassword(
             $this->_userID, $currentPassword, $newPassword
         );
@@ -3884,7 +3905,7 @@ class SettingsUI extends UserInterface
 
         if (!isset($_GET['questionnaireID']))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX);
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Bad index.');
         }
 
         $questionnaireID = intval($_GET['questionnaireID']);

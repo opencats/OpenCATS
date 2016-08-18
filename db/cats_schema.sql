@@ -1009,7 +1009,7 @@ CREATE TABLE `sph_counter` (
   `counter_id` int(11) NOT NULL,
   `max_doc_id` int(11) NOT NULL,
   PRIMARY KEY (`counter_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Data for the table `sph_counter` */
 
@@ -1066,7 +1066,7 @@ CREATE TABLE `user` (
   `first_name` varchar(40) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `is_demo` int(1) DEFAULT '0',
   `categories` varchar(192) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `session_cookie` varchar(48) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `session_cookie` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
   `pipeline_entries_per_page` int(8) DEFAULT '15',
   `column_preferences` longtext COLLATE utf8_unicode_ci,
   `force_logout` int(1) DEFAULT '0',

@@ -1,5 +1,5 @@
 <?php /* $Id: Candidates.tpl 3445 2007-11-06 23:17:04Z will $ */ ?>
-<?php TemplateUtility::printHeader('Candidates', array( 'js/highlightrows.js', 'js/export.js', 'js/dataGrid.js')); ?>
+<?php TemplateUtility::printHeader('Candidates', array( 'js/highlightrows.js', 'js/export.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
 <?php $md5InstanceName = md5($this->dataGrid->getInstanceName());?>
@@ -41,7 +41,7 @@
                                     <td valign="top" align="right" nowrap="nowrap">
 	                					<a href="javascript:void(0);" id="exportBoxLink<?= $md5InstanceName ?>" onclick="toggleHideShowControls('<?= $md5InstanceName ?>-tags'); return false;">Filter by tag</a>
 	                					<div id="tagsContainer" style="position:relative">
-	                					<div class="ajaxSearchResults" id="ColumnBox<?= $md5InstanceName ?>-tags" align="left"  style="position:absolute;width:200px;<?= $this->globalStyle ?>">
+	                					<div class="ajaxSearchResults" id="ColumnBox<?= $md5InstanceName ?>-tags" align="left"  style="position:absolute;width:200px;right:0<?= $this->globalStyle ?>">
 	                						<table width="100%"><tr><td style="font-weight:bold; color:#000000;">Tag list</td>
 	                						<td align="right">
 	                							<input type="button" onclick="applyTagFilter()" value="Save&amp;Close" />
@@ -137,6 +137,7 @@
                 &nbsp;
             </div>
             <br /><br />
+                <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
             <table cellpadding="0" cellspacing="0" border="0" width="956">
                 <tr>
                 <td style="padding-left: 62px;" align="center" valign="center">
@@ -163,10 +164,9 @@
 
                 </tr>
             </table>
+                <?php endif; ?>
 
             <?php endif; ?>
         </div>
     </div>
-
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

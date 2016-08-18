@@ -177,5 +177,4 @@ if (isset($_GET['sendDevEmail']) && !strcmp($_GET['sendDevEmail'], 'true') && fi
             </table>
         </div>
     </div>
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>
