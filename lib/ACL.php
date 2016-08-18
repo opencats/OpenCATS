@@ -17,7 +17,7 @@ class ACL
     const CATEGORY_EMPTY = '';
 
     /* Access level map in form securedObject => category => accessLevel
-     * Exemple:
+     * Example:
     const CATEGORY_DISABLED = '#';
 
     const ACCESS_LEVEL_MAP = array(
@@ -53,7 +53,7 @@ class ACL
         }
 
         $userCategory = ACL::CATEGORY_EMPTY;
- 	    if( isset($userCategories) && $userCategories.count > 0 )
+ 	    if( isset($userCategories) && count($userCategories) > 0 )
         {
             // for now, only first category is used for evalualtion
             $userCategory = $userCategories[0];
