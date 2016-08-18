@@ -761,7 +761,7 @@ class TemplateUtility
                     else if (strpos($link, 'a=administration') !== false)
                     {
                         /* Administration subtab. */
-                        if ($_SESSION['CATS']->getAccessLevel('administration') >= ACCESS_LEVEL_DEMO)
+                        if ($_SESSION['CATS']->getAccessLevel('settings.administration') >= ACCESS_LEVEL_DEMO)
                         {
                             echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
                         }

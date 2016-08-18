@@ -75,6 +75,13 @@ class SettingsUI extends UserInterface
                 array('Career Portal Customizer', 'careerportal', 'This user can\'t do anything but modify the career portal settings.  It is intended to be used by the CATS Professional Support Team.  This user does not count against your maximum users.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
             );
         }
+        else
+        {
+            if(defined('USER_ROLES'))
+            {
+                $this->_settingsUserCategories = USER_ROLES;
+            }
+        }
 
         $mp = array(
             'Administration' => CATSUtility::getIndexName() . '?m=settings&amp;a=administration',
@@ -801,9 +808,9 @@ class SettingsUI extends UserInterface
                     return;
                 }
                 /* Bail out if the user doesn't have SA permissions. */
-                if ($this->getUserAccessLevel('settings.siteName') < ACCESS_LEVEL_SA)
+                if ($this->getUserAccessLevel('settings.setEmail') < ACCESS_LEVEL_READ)
                 {
-                    echo 'You do not have permission to change the site name.';
+                    echo 'You do not have permission to set the email.';
                     return;
                 }
                 $this->wizard_email();
@@ -816,9 +823,9 @@ class SettingsUI extends UserInterface
                     return;
                 }
                 /* Bail out if the user doesn't have SA permissions. */
-                if ($this->getUserAccessLevel('settings.siteName') < ACCESS_LEVEL_SA)
+                if ($this->getUserAccessLevel('settings.import') < ACCESS_LEVEL_SA)
                 {
-                    echo 'You do not have permission to change the site name.';
+                    echo 'You do not have permission to import.';
                     return;
                 }
                 $this->wizard_import();
@@ -831,9 +838,9 @@ class SettingsUI extends UserInterface
                     return;
                 }
                 /* Bail out if the user doesn't have SA permissions. */
-                if ($this->getUserAccessLevel('settings.siteName') < ACCESS_LEVEL_SA)
+                if ($this->getUserAccessLevel('settings.website') < ACCESS_LEVEL_SA)
                 {
-                    echo 'You do not have permission to change the site name.';
+                    echo 'You do not have permission.';
                     return;
                 }
                 $this->wizard_website();
@@ -2340,7 +2347,7 @@ class SettingsUI extends UserInterface
                     break;
 
                 case 'localization':
-                    if ($this->getUserAccessLevel('settings.administration') < ACCESS_LEVEL_SA)
+                    if ($this->getUserAccessLevel('settings.administration.localization') < ACCESS_LEVEL_SA)
                     {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                     }
@@ -2351,7 +2358,7 @@ class SettingsUI extends UserInterface
                     break;
 
                 case 'systemInformation':
-                    if ($this->getUserAccessLevel('settings.administration') < ACCESS_LEVEL_SA)
+                    if ($this->getUserAccessLevel('settings.administration.systemInformation') < ACCESS_LEVEL_SA)
                     {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                     }
@@ -2496,7 +2503,7 @@ class SettingsUI extends UserInterface
         switch ($administrationMode)
         {
             case 'changeSiteName':
-                if ($this->getUserAccessLevel('settings.administration') < ACCESS_LEVEL_SA)
+                if ($this->getUserAccessLevel('settings.administration.changeSiteName') < ACCESS_LEVEL_SA)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                 }
@@ -2515,7 +2522,7 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'changeVersionCheck':
-                if ($this->getUserAccessLevel('settings.administration') < ACCESS_LEVEL_ROOT)
+                if ($this->getUserAccessLevel('settings.administration.changeVersionName') < ACCESS_LEVEL_ROOT)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                 }
@@ -2529,7 +2536,7 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'localization':
-                if ($this->getUserAccessLevel('settings.administration') < ACCESS_LEVEL_SA)
+                if ($this->getUserAccessLevel('settings.administration.localization') < ACCESS_LEVEL_SA)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                 }

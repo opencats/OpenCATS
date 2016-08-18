@@ -91,7 +91,7 @@ class ContactsUI extends UserInterface
                 break;
 
             case 'add':
-                if ($this->getUserAccessLevel('contacts.editContact') < ACCESS_LEVEL_EDIT)
+                if ($this->getUserAccessLevel('contacts.add') < ACCESS_LEVEL_EDIT)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
@@ -123,7 +123,7 @@ class ContactsUI extends UserInterface
                 break;
 
             case 'delete':
-                if ($this->getUserAccessLevel('contacts.deleteContact') < ACCESS_LEVEL_DELETE)
+                if ($this->getUserAccessLevel('contacts.delete') < ACCESS_LEVEL_DELETE)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }

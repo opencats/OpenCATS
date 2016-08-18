@@ -213,7 +213,7 @@ class JobOrdersUI extends UserInterface
              * to consider a candidate (in the modal window).
              */
             case 'addToPipeline':
-                if ($this->getUserAccessLevel('joborders.addToPipeline') < ACCESS_LEVEL_EDIT)
+                if ($this->getUserAccessLevel('pipelines.addToPipeline') < ACCESS_LEVEL_EDIT)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
@@ -224,7 +224,7 @@ class JobOrdersUI extends UserInterface
              * Quick add candidate (in the modal window).
              */
             case 'addCandidateModal':
-                if ($this->getUserAccessLevel('candidate.add') < ACCESS_LEVEL_EDIT)
+                if ($this->getUserAccessLevel('candidates.add') < ACCESS_LEVEL_EDIT)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }

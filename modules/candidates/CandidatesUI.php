@@ -180,7 +180,7 @@ class CandidatesUI extends UserInterface
              * to consider a candidate (in the modal window).
              */
             case 'addToPipeline':
-                if ($this->getUserAccessLevel('candidates.addToPipeline') < ACCESS_LEVEL_EDIT)
+                if ($this->getUserAccessLevel('pipelines.addToPipeline') < ACCESS_LEVEL_EDIT)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
@@ -221,7 +221,7 @@ class CandidatesUI extends UserInterface
 
             /* Remove a candidate from a pipeline. */
             case 'removeFromPipeline':
-                if ($this->getUserAccessLevel('candidates.removeFromPipeline') < ACCESS_LEVEL_EDIT)
+                if ($this->getUserAccessLevel('pipelines.removeFromPipeline') < ACCESS_LEVEL_EDIT)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
