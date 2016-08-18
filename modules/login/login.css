@@ -11,7 +11,7 @@
 /*** Begin Generic Tag Rules ***/
 body
 {
-    background: #fff;
+       background: #f1f3f5; 
     padding: 8px 18px 8px 18px;
     margin: 0px;
 }
@@ -130,19 +130,32 @@ div#login
     margin-right: auto;
     margin-top: 5em;
     padding: 15px;
-    border: 1px solid #ccc;
-    width: 480px;
-    background: #f1f3f5;
+/*    border: 1px solid #ccc; */
+    width: 288px;
+/*    background: #f1f3f5; */
+    text-align: center;
 }
 
 div#formBlock
 {
-    text-align: left;
+ /*   text-align: left; */
     float: right;
-    width: 60%;
-    display: inline;
+    
+    /* display: inline; */
+    text-align: left; 
+    width:288px;
+    height:300px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    /* background-color:#f1f3f5F; */
+        background: #fff; 
+    -webkit-box-shadow: #B3B3B3 6px 6px 6px;
+    -moz-box-shadow: #B3B3B3 6px 6px 6px;
+    box-shadow: #B3B3B3 6px 6px 6px;
 }
-
+    
+    
 div#formBlockNewSite
 {
     text-align: center;

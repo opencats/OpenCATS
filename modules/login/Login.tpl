@@ -39,11 +39,8 @@
 
                 <div id="loginText">
                     <div class="ctr">
-                        <img src="images/folder1_locked.jpg" width="64" height="64" alt="security" />
                     </div>
                     <br />
-                    <span>Welcome to opencats!</span><br />
-                    <span style="font-size: 10px;">Version <?php echo(CATSUtility::getVersion()); ?></span>
 
                     <?php if (ENABLE_DEMO_MODE && !($this->siteName != '' && $this->siteName != 'choose') || ($this->siteName == 'demo')): ?>
                         <br /><br />
@@ -61,7 +58,9 @@
                 </div>
 
                 <div id="formBlock">
-                    <img src="images/login2.jpg" alt="Login" />
+                    <img src="images/CATS-sig.gif" alt="Login" />
+                    <br />
+                    <br />
                     <form name="loginForm" id="loginForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=login&amp;a=attemptLogin<?php if ($this->reloginVars != ''): ?>&amp;reloginVars=<?php echo($this->reloginVars); ?><?php endif; ?>" method="post" onsubmit="return checkLoginForm(document.loginForm);" autocomplete="off">
                         <div id="subFormBlock">
                             <?php if ($this->siteName != '' && $this->siteName != 'choose'): ?>
@@ -109,6 +108,8 @@
                             <br /><br />
                         </div>
                     </form>
+                    <br /><br />
+                    <span style="font-size: 10px;">Version <?php echo(CATSUtility::getVersion()); ?></span>
                 </div>
                 <div style="clear: both;"></div>
             </div>
@@ -135,7 +136,7 @@
                     defaultLogin();
                 <?php endif; ?>
             </script>
-<div>Join the Conversation  - <a href="http://www.opencats.org "><strong>opencats forums</strong></a>.</div>
+
           <p>
 	&nbsp;</p>  
 <p>
@@ -151,9 +152,10 @@
 <p>
 	&nbsp;</p>
 	  <div id="footerBlock">
-              
+              Support queries?  - <a href="http://www.opencats.org ">talk to us at the opencats forums</a>.
+              &nbsp;</p>
                 <span class="footerCopyright"><?php echo(COPYRIGHT_HTML); ?></span>
-                <div>Based upon original work and Powered by <a href="http://www.catsone.com ">CATS</a>.</div>
+                Based upon original work and Powered by <a href="http://www.catsone.com ">CATS</a>.</div>
             </div>
         </div>
 
