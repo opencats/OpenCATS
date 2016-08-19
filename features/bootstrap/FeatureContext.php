@@ -226,8 +226,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
      */
     public function thereIsACompanyCalled($companyName)
     {
-        $site = new Site(-1);
-        $siteId = $site->getFirstSiteID();
+        $siteId = $this->getSiteId();
         $company= new Company(
             $siteId,
             $companyName
@@ -323,6 +322,12 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         }
         $selectElement->selectOption($option);
         sleep(1);
+    }
+    
+    private function getSiteId()
+    {
+        $site = new Site(-1);
+        return $site->getFirstSiteID();
     }
     /**
      * @Given I login as :username :password
