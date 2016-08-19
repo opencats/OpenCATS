@@ -1,10 +1,17 @@
 default:
-    autoload:
-        '': %paths.base%/features/bootstrap
     suites:
         default:
             paths: [ %paths.base%/features ]
-            context: [FeaturesContext]
+            contexts:
+                - FeatureContext
+            filters:
+                tags: @core 
+        security:
+            paths: [ %paths.base%/features ]
+            contexts:
+                - SecurityContext
+            filters:
+                tags: @security 
     extensions:
         Behat\MinkExtension:
             base_url: http://opencats

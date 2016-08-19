@@ -22,6 +22,6 @@ script:
     - cd docker/; docker-compose -f docker-compose-test.yml up -d
     - sleep 12
     - docker-compose -f docker-compose-test.yml run -w /var/www/public php cat config.php
-    - docker-compose -f docker-compose-test.yml run -w /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --tags="@core"
+    - docker-compose -f docker-compose-test.yml run -w /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="default"
     - docker-compose -f docker-compose-test.yml run -w /test/ opencatsdb /bin/sh scripts/securityTestData.sh
-    - docker-compose -f docker-compose-test.yml run -w /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --tags="@security"
+    - docker-compose -f docker-compose-test.yml run -w /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="security"
