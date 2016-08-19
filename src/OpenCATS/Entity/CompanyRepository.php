@@ -1,5 +1,5 @@
 <?php
-namespace OpenCATS\Service;
+namespace OpenCATS\Entity;
 use OpenCATS\Entity\Company;
 
 include_once('./lib/History.php');
