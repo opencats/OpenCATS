@@ -20,6 +20,7 @@ define('ADMIN_ID', 1);
 class SecurityContext extends MinkContext implements Context, SnippetAcceptingContext
 {
     private $result;
+    private $accessLevel;
 
     /**
      * Initializes Security context.
@@ -37,6 +38,7 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
      */
     public function iAmLoggedInWithAccessLevel($accessLevel)
     {
+        $this->accessLevel = $accessLevel;
         switch($accessLevel)
         {
             case 'DISABLED':
@@ -75,12 +77,31 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
                 throw new PendingException();
         }
         
+        $this->visitPath('/index.php?m=login&a=logout');
         $this->visitPath('/index.php?m=login');
         $this->fillField('username', $username);
         $this->fillField('password', $password);
         $this->pressButton('Login');
     }
 
+    /**
+     * @When I do :type request on url :url
+     */
+    public function whenIDoRequestOnUrl($type, $url)
+    {
+        switch($type){
+            case "GET":
+                $this->iDoGETRequest($url);
+                break;
+            case "POST":
+                $this->iDoPOSTRequest($url);
+                break;
+            default:
+                throw new PendingException();
+                
+        }
+    }
+    
     /**
      * @When I do POST request :url
      */
@@ -143,6 +164,30 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
             throw new ExpectationException("'".$text."' was found in the response from this request and it should be not", $this->getSession());
         }
     }
+
+    /**
+     * @Then I should  have permission
+     */
+    public function iShouldHavePermission()
+    {
+        $this->theResponseShouldNotContain("You don't have permission");      
+        $this->theResponseShouldNotContain("opencats - Login");      
+    }
+
+    /**
+     * @Then I should not have permission
+     */
+    public function iShouldNotHavePermission()
+    {
+        if($this->accessLevel == "DISABLED")
+        {
+            $this->theResponseShouldContain("opencats - Login");
+        }
+        else
+        {
+            $this->theResponseShouldContain("You don't have permission");
+        }
+    }    
 
     /**
      * @When I follow link :name
