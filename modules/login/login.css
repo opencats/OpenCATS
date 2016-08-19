@@ -83,6 +83,7 @@ div#headerBlock span#subMainLogo
 {
     margin-top: 10px;
     text-align: center;
+    bottom: 0px;
 }
 
 #footerBlock p#footerQuotation
@@ -144,7 +145,7 @@ div#formBlock
     /* display: inline; */
     text-align: left; 
     width:288px;
-    height:300px;
+    height:266px;
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
     border-radius: 20px;

@@ -58,8 +58,7 @@
                 </div>
 
                 <div id="formBlock">
-                    <img src="images/CATS-sig.gif" alt="Login" />
-                    <br />
+                    <img src="images/CATS-sig.gif" alt="Login" hspace="10" vspace="10" />
                     <br />
                     <form name="loginForm" id="loginForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=login&amp;a=attemptLogin<?php if ($this->reloginVars != ''): ?>&amp;reloginVars=<?php echo($this->reloginVars); ?><?php endif; ?>" method="post" onsubmit="return checkLoginForm(document.loginForm);" autocomplete="off">
                         <div id="subFormBlock">
@@ -108,8 +107,8 @@
                             <br /><br />
                         </div>
                     </form>
-                    <br /><br />
-                    <span style="font-size: 10px;">Version <?php echo(CATSUtility::getVersion()); ?></span>
+                
+                    <span style="line-height: 30px;font-size: 10px;padding-LEFT: 10px;">Version <?php echo(CATSUtility::getVersion()); ?></span>
                 </div>
                 <div style="clear: both;"></div>
             </div>
