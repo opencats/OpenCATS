@@ -170,7 +170,8 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
      */
     public function iShouldHavePermission()
     {
-        $this->theResponseShouldNotContain("You don't have permission");      
+        $this->theResponseShouldNotContain("You don't have permission");
+        $this->theResponseShouldNotContain("Invalid user level for action");      
         $this->theResponseShouldNotContain("opencats - Login");      
     }
 
@@ -179,14 +180,24 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
      */
     public function iShouldNotHavePermission()
     {
+        
         if($this->accessLevel == "DISABLED")
         {
             $this->theResponseShouldContain("opencats - Login");
+            return;
         }
-        else
+        $expectedTexts = array("You don't have permission", "Invalid user level for action");
+        $response = $this->result;
+
+        foreach ($expectedTexts as &$text)
         {
-            $this->theResponseShouldContain("You don't have permission");
+            $position = strpos($response, $text);
+            if($position !== false)
+            {
+                return;
+            }
         }
+        throw new ExpectationException("'".$expectedTexts[0]."' was not found in the response from this request and it should be", $this->getSession());
     }    
 
     /**
