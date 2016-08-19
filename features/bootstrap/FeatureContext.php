@@ -16,6 +16,7 @@ include_once('./constants.php');
 include_once('./lib/DatabaseConnection.php');
 include_once('./lib/Site.php');
 include_once('./lib/History.php');
+include_once('./lib/Users.php');
 /**
  * Defines application features from the specific context.
  */
@@ -239,14 +240,17 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
      * @Given There is a user :userName named :fullName with :password password
      */
     public function thereIsAUserWithParams($userName, $fullName, $password) {
-        $this->visitPath('/index.php?m=settings&a=addUser');
         list($firstName, $lastName) = explode(" ", $fullName);
-        $this->fillField('firstName', $firstName);
-        $this->fillField('lastName', $lastName);
-        $this->fillField('username', $userName);
-        $this->fillField('password', $password);
-        $this->fillField('retypePassword', $password);
-        $this->pressButton('Add User');
+        $siteId = $this->getSiteId();
+        $users = new Users($siteId);
+        $users->add(
+            $lastName,
+            $firstName,
+            $email = '', 
+            $userName,
+            $password,
+            $accessLevel = ACCESS_LEVEL_DELETE
+        );
     }
     
     /**
