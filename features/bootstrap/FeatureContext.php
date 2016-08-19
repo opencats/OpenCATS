@@ -10,12 +10,15 @@ use Behat\Testwork\Tester\Result\TestResult;
 use Behat\Mink\Driver\Selenium2Driver;
 use OpenCATS\Entity\Company;
 use OpenCATS\Entity\CompanyRepository;
+use OpenCATS\Entity\JobOrder;
+use OpenCATS\Entity\JobOrderRepository;
 
 include_once('./config.php');
 include_once('./constants.php');
 include_once('./lib/DatabaseConnection.php');
 include_once('./lib/Site.php');
 include_once('./lib/History.php');
+include_once('./lib/Search.php');
 include_once('./lib/Users.php');
 /**
  * Defines application features from the specific context.
@@ -333,6 +336,44 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         $site = new Site(-1);
         return $site->getFirstSiteID();
     }
+    
+    /**
+     * @Given There is a job order for a :jobTitle for :companyName
+     */
+    public function thereIsAJobOrderForAFor($jobTitle, $companyName)
+    {
+        $siteId = $this->getSiteId();
+        $CompanyRepository = new CompanyRepository(DatabaseConnection::getInstance());
+        $companies = $CompanyRepository->findByName($siteId, $companyName);
+        $companyId = $companies[0]['companyID'];
+        $jobOrder = JobOrder::create(
+            $siteId,
+            $jobTitle,
+            $companyId,
+            $contactId = '',
+            $description = '',
+            $notes = '',
+            $duration = '',
+            $maxRate = '',
+            $type = '',
+            $isHot = '',
+            $public = '',
+            $openings = '',
+            $companyJobId = '',
+            $salary = '',
+            $city = '',
+            $state = '',
+            $startDate = '',
+            $enteredBy = '',
+            $recruiter = '',
+            $owner = '',
+            $departmentId = '',
+            $questionnaire = ''
+        );
+        $JobOrderRepository = new JobOrderRepository(DatabaseConnection::getInstance());
+        $JobOrderRepository->persist($jobOrder, new Dummy_History($siteId));
+    }
+    
     /**
      * @Given I login as :username :password
      */

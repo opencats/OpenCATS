@@ -85,4 +85,46 @@ class CompanyRepository
             throw new CompanyRepositoryException('errorPersistingCompany');
         }
     }
+    
+    // FIXME: Consolidate with Search.php code
+    function findByName($siteId, $companyName)
+    {
+        $wildCardString = str_replace('*', '%', $companyName) . '%';
+        $wildCardString = $this->databaseConnection->makeQueryString($wildCardString);
+        
+        $sql = sprintf(
+            "SELECT
+                company.company_id AS companyID,
+                company.name AS name,
+                company.city AS city,
+                company.state AS state,
+                company.phone1 AS phone1,
+                company.url AS url,
+                company.key_technologies AS keyTechnologies,
+                company.is_hot AS isHot,
+                DATE_FORMAT(
+                    company.date_created, '%%m-%%d-%%y'
+                ) AS dateCreated,
+                DATE_FORMAT(
+                    company.date_modified, '%%m-%%d-%%y'
+                ) AS dateModified,
+                owner_user.first_name AS ownerFirstName,
+                owner_user.last_name AS ownerLastName
+            FROM
+                company
+            LEFT JOIN user AS owner_user
+                ON company.owner = owner_user.user_id
+            WHERE
+                company.name LIKE %s
+            AND
+                company.site_id = %s
+            ORDER BY
+                %s %s",
+            $wildCardString,
+            $siteId,
+            'company.name',
+            'ASC'
+        );
+        return $this->databaseConnection->getAllAssoc($sql);
+    }
 }
