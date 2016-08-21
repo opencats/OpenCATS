@@ -250,3 +250,95 @@ Feature: Job Orders
     And I should see "Delete this job order?" in alert popup
     And I confirm the popup
     Then I should see "Job Orders: Home"
+    
+  @javascript
+  Scenario: Add candidate from modal has candidate fields 
+    Given There is a company called "Test Company ATxyz"
+    And There is a job order for a "Javascript developer" for "Test Company ATxyz"
+    And There is a user "testuser101" named "Marcus Gomez" with "password101" password
+    And I login as "testuser101" "password101"
+    And I am on "/index.php?m=joborders&a=search" 
+    And I select "Job Title" in the "#searchMode" select
+    And I fill in "searchText" with "Javascript developer"
+    And press "Search" 
+    And I click on "Javascript developer" on the row containing "Active"
+    And follow "Add Candidate to This Job Order Pipeline"
+    And I switch to the iframe "popupInner"
+    And follow "Add Candidate"
+    Then I should see "First Name"
+    And I should see "Middle Name"
+    And I should see "Last Name"
+    And I should see "E-Mail"
+    And I should see "2nd E-Mail"
+    And I should see "Home Phone"
+    And I should see "Cell Phone"
+    And I should see "Work Phone"
+    And I should see "City"
+    And I should see "State"
+    And I should see "Postal Code"
+    And I should see "Address"
+    And I should see "Source"
+    And I should see "Key Skills"
+    And I should see "Current Employer"
+    And I should see "Notes"
+    And I should see "Date Available"
+
+  @javascript
+  Scenario: Add candidate from modal only with first name fails 
+    Given There is a company called "Test Company ATxyz"
+    And There is a job order for a "Javascript developer" for "Test Company ATxyz"
+    And There is a user "testuser101" named "Marcus Gomez" with "password101" password
+    And I login as "testuser101" "password101"
+    And I am on "/index.php?m=joborders&a=search" 
+    And I select "Job Title" in the "#searchMode" select
+    And I fill in "searchText" with "Javascript developer"
+    And press "Search" 
+    And I click on "Javascript developer" on the row containing "Active"
+    And follow "Add Candidate to This Job Order Pipeline"
+    And I switch to the iframe "popupInner"
+    And follow "Add Candidate"
+    And I fill in "firstName" with "John"
+    And press "Add Candidate"
+    Then I should see "You must enter last name" in alert popup
+    And I confirm the popup
+    
+  @javascript
+  Scenario: Add candidate from modal with all required field succeeds 
+    Given There is a company called "Test Company ATxyz"
+    And There is a job order for a "Javascript developer" for "Test Company ATxyz"
+    And There is a user "testuser101" named "Marcus Gomez" with "password101" password
+    And I login as "testuser101" "password101"
+    And I am on "/index.php?m=joborders&a=search" 
+    And I select "Job Title" in the "#searchMode" select
+    And I fill in "searchText" with "Javascript developer"
+    And press "Search" 
+    And I click on "Javascript developer" on the row containing "Active"
+    And follow "Add Candidate to This Job Order Pipeline"
+    And I switch to the iframe "popupInner"
+    And follow "Add Candidate"
+    And I fill in "firstName" with "John"
+    And I fill in "lastName" with "John"
+    And press "Add Candidate"
+    Then I should see "The candidate has been successfully added to the pipeline for the selected job order."
+    
+  @javascript
+  Scenario: Job Order detail page is updated after adding a candidate 
+    Given There is a company called "Test Company ATxyz"
+    And There is a job order for a "Javascript developer" for "Test Company ATxyz"
+    And There is a user "testuser101" named "Marcus Gomez" with "password101" password
+    And I login as "testuser101" "password101"
+    And I am on "/index.php?m=joborders&a=search" 
+    And I select "Job Title" in the "#searchMode" select
+    And I fill in "searchText" with "Javascript developer"
+    And press "Search" 
+    And I click on "Javascript developer" on the row containing "Active"
+    And follow "Add Candidate to This Job Order Pipeline"
+    And I switch to the iframe "popupInner"
+    And follow "Add Candidate"
+    And I fill in "firstName" with "John"
+    And I fill in "lastName" with "Doe"
+    And press "Add Candidate"
+    And press "Close"
+    And I switch to the iframe ""
+    Then I should see "John"
+    And I should see "Doe"
