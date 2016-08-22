@@ -914,20 +914,11 @@ Scenario Outline: Reports module actions
    When I do <type> request on url "<url>"
    Then I should <bool> have permission 
   
+  ####commented lines in table have URLs that are not called from anywhere in the code anymore
    Examples:
   | accessLevel | type | url                                        | bool | 
   | DISABLED    | GET  | index.php?m=settings&a=tags                | not  |
-  | DISABLED    | POST | index.php?m=settings&a=changePassword      | not  |    
-  #| DISABLED    | GET  | index.php?m=settings&a=newInstallPassword  | not  |
-  #| DISABLED    | POST | index.php?m=settings&a=newInstallPassword  | not  |
-  #| DISABLED    | GET  | index.php?m=settings&a=forceEmail          | not  |
-  #| DISABLED    | POST | index.php?m=settings&a=forceEmail          | not  |
-  #| DISABLED    | GET  | index.php?m=settings&a=newSiteName         | not  | 
-  #| DISABLED    | POST | index.php?m=settings&a=newSiteName         | not  |
-  #| DISABLED    | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
-  #| DISABLED    | POST | index.php?m=settings&a=upgradeSiteName     | not  |
-  #| DISABLED    | GET  | index.php?m=settings&a=newInstallFinished  | not  |
-  #| DISABLED    | POST | index.php?m=settings&a=newInstallFinished  | not  |
+  | DISABLED    | POST | index.php?m=settings&a=changePassword      | not  |   
   | DISABLED    | POST | index.php?m=settings&a=manageUsers         | not  |
   | DISABLED    | POST | index.php?m=settings&a=professional        | not  |
   | DISABLED    | POST | index.php?m=settings&a=previewPage         | not  |
@@ -970,16 +961,6 @@ Scenario Outline: Reports module actions
   | DISABLED    | GET  | index.php?m=settings&a=myProfile           | not  |
   | READONLY    | GET  | index.php?m=settings&a=tags                | not  |
   | READONLY    | POST | index.php?m=settings&a=changePassword      |      |
-  #| READONLY    | GET  | index.php?m=settings&a=newInstallPassword  | not  |
-  #| READONLY    | POST | index.php?m=settings&a=newInstallPassword  | not  |
-  #| READONLY    | GET  | index.php?m=settings&a=forceEmail          | not  |
-  #| READONLY    | POST | index.php?m=settings&a=forceEmail          | not  |
-  #| READONLY    | GET  | index.php?m=settings&a=newSiteName         | not  |
-  #| READONLY    | POST | index.php?m=settings&a=newSiteName         | not  |
-  #| READONLY    | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
-  #| READONLY    | POST | index.php?m=settings&a=upgradeSiteName     | not  |
-  #| READONLY    | GET  | index.php?m=settings&a=newInstallFinished  | not  |
-  #| READONLY    | POST | index.php?m=settings&a=newInstallFinished  | not  |
   | READONLY    | POST | index.php?m=settings&a=manageUsers         | not  |
   | READONLY    | POST | index.php?m=settings&a=professional        | not  |
   | READONLY    | POST | index.php?m=settings&a=previewPage         |      |
@@ -1022,16 +1003,6 @@ Scenario Outline: Reports module actions
   | READONLY    | GET  | index.php?m=settings&a=myProfile           |      |
   | EDIT        | GET  | index.php?m=settings&a=tags                | not  |
   | EDIT        | POST | index.php?m=settings&a=changePassword      |      |
-  #| EDIT        | GET  | index.php?m=settings&a=newInstallPassword  | not  |
-  #| EDIT        | POST | index.php?m=settings&a=newInstallPassword  | not  |
-  #| EDIT        | GET  | index.php?m=settings&a=forceEmail          | not  |
-  #| EDIT        | POST | index.php?m=settings&a=forceEmail          | not  |
-  #| EDIT        | GET  | index.php?m=settings&a=newSiteName         | not  |
-  #| EDIT        | POST | index.php?m=settings&a=newSiteName         | not  |
-  #| EDIT        | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
-  #| EDIT        | POST | index.php?m=settings&a=upgradeSiteName     | not  |
-  #| EDIT        | GET  | index.php?m=settings&a=newInstallFinished  | not  |
-  #| EDIT        | POST | index.php?m=settings&a=newInstallFinished  | not  |
   | EDIT        | POST | index.php?m=settings&a=manageUsers         | not  |
   | EDIT        | POST | index.php?m=settings&a=professional        | not  |
   | EDIT        | POST | index.php?m=settings&a=previewPage         |      |
@@ -1074,16 +1045,6 @@ Scenario Outline: Reports module actions
   | EDIT        | GET  | index.php?m=settings&a=myProfile           |      |
   | DELETE      | GET  | index.php?m=settings&a=tags                | not  |
   | DELETE      | POST | index.php?m=settings&a=changePassword      |      |
-  #| DELETE      | GET  | index.php?m=settings&a=newInstallPassword  | not  |
-  #| DELETE      | POST | index.php?m=settings&a=newInstallPassword  | not  |
-  #| DELETE      | GET  | index.php?m=settings&a=forceEmail          | not  |
-  #| DELETE      | POST | index.php?m=settings&a=forceEmail          | not  |
-  #| DELETE      | GET  | index.php?m=settings&a=newSiteName         | not  |
-  #| DELETE      | POST | index.php?m=settings&a=newSiteName         | not  |
-  #| DELETE      | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
-  #| DELETE      | POST | index.php?m=settings&a=upgradeSiteName     | not  |
-  #| DELETE      | GET  | index.php?m=settings&a=newInstallFinished  | not  |
-  #| DELETE      | POST | index.php?m=settings&a=newInstallFinished  | not  |
   | DELETE      | POST | index.php?m=settings&a=manageUsers         | not  |
   | DELETE      | POST | index.php?m=settings&a=professional        | not  |
   | DELETE      | POST | index.php?m=settings&a=previewPage         |      |
@@ -1126,16 +1087,6 @@ Scenario Outline: Reports module actions
   | DELETE      | GET  | index.php?m=settings&a=myProfile           |      |
   | DEMO        | GET  | index.php?m=settings&a=tags                | not  |
   | DEMO        | POST | index.php?m=settings&a=changePassword      | not  |
-  ##| DEMO        | GET  | index.php?m=settings&a=newInstallPassword  | not  |
-  ##| DEMO        | POST | index.php?m=settings&a=newInstallPassword  | not  |
-  ##| DEMO        | GET  | index.php?m=settings&a=forceEmail          | not  |
-  ##| DEMO        | POST | index.php?m=settings&a=forceEmail          | not  |
-  ##| DEMO        | GET  | index.php?m=settings&a=newSiteName         | not  |
-  ##| DEMO        | POST | index.php?m=settings&a=newSiteName         | not  |
-  ##| DEMO        | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
-  ##| DEMO        | POST | index.php?m=settings&a=upgradeSiteName     | not  |
-  ##| DEMO        | GET  | index.php?m=settings&a=newInstallFinished  | not  |
-  ##| DEMO        | POST | index.php?m=settings&a=newInstallFinished  | not  |
   | DEMO        | POST | index.php?m=settings&a=manageUsers         |      |
   | DEMO        | POST | index.php?m=settings&a=professional        |      |
   | DEMO        | POST | index.php?m=settings&a=previewPage         |      |
@@ -1178,16 +1129,6 @@ Scenario Outline: Reports module actions
   | DEMO        | GET  | index.php?m=settings&a=myProfile           |      |
   | ADMIN       | GET  | index.php?m=settings&a=tags                |      |
   | ADMIN       | POST | index.php?m=settings&a=changePassword      |      |
-  #| ADMIN       | GET  | index.php?m=settings&a=newInstallPassword  |      |
-  #| ADMIN       | POST | index.php?m=settings&a=newInstallPassword  |      |
-  #| ADMIN       | GET  | index.php?m=settings&a=forceEmail          |      |
-  #| ADMIN       | POST | index.php?m=settings&a=forceEmail          |      |
-  #| ADMIN       | GET  | index.php?m=settings&a=newSiteName         |      |
-  #| ADMIN       | POST | index.php?m=settings&a=newSiteName         |      |
-  #| ADMIN       | GET  | index.php?m=settings&a=upgradeSiteName     |      |
-  #| ADMIN       | POST | index.php?m=settings&a=upgradeSiteName     |      |
-  #| ADMIN       | GET  | index.php?m=settings&a=newInstallFinished  |      |
-  #| ADMIN       | POST | index.php?m=settings&a=newInstallFinished  |      |
   | ADMIN       | POST | index.php?m=settings&a=manageUsers         |      |
   | ADMIN       | POST | index.php?m=settings&a=professional        |      |
   | ADMIN       | POST | index.php?m=settings&a=previewPage         |      |
@@ -1230,16 +1171,6 @@ Scenario Outline: Reports module actions
   | ADMIN       | GET  | index.php?m=settings&a=myProfile           |      |
   | MULTI_ADMIN | GET  | index.php?m=settings&a=tags                |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=changePassword      |      |
-  #| MULTI_ADMIN | GET  | index.php?m=settings&a=newInstallPassword  |      |
-  #| MULTI_ADMIN | POST | index.php?m=settings&a=newInstallPassword  |      |
-  #| MULTI_ADMIN | GET  | index.php?m=settings&a=forceEmail          |      |
-  #| MULTI_ADMIN | POST | index.php?m=settings&a=forceEmail          |      |
-  #| MULTI_ADMIN | GET  | index.php?m=settings&a=newSiteName         |      |
-  #| MULTI_ADMIN | POST | index.php?m=settings&a=newSiteName         |      |
-  #| MULTI_ADMIN | GET  | index.php?m=settings&a=upgradeSiteName     |      |
-  #| MULTI_ADMIN | POST | index.php?m=settings&a=upgradeSiteName     |      |
-  #| MULTI_ADMIN | GET  | index.php?m=settings&a=newInstallFinished  |      |
-  #| MULTI_ADMIN | POST | index.php?m=settings&a=newInstallFinished  |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=manageUsers         |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=professional        |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=previewPage         |      |
@@ -1282,16 +1213,6 @@ Scenario Outline: Reports module actions
   | MULTI_ADMIN | GET  | index.php?m=settings&a=myProfile           |      |
   | ROOT        | GET  | index.php?m=settings&a=tags                |      |
   | ROOT        | POST | index.php?m=settings&a=changePassword      |      |
-  #| ROOT        | GET  | index.php?m=settings&a=newInstallPassword  |      |
-  #| ROOT        | POST | index.php?m=settings&a=newInstallPassword  |      |
-  #| ROOT        | GET  | index.php?m=settings&a=forceEmail          |      |
-  #| ROOT        | POST | index.php?m=settings&a=forceEmail          |      |
-  #| ROOT        | GET  | index.php?m=settings&a=newSiteName         |      |
-  #| ROOT        | POST | index.php?m=settings&a=newSiteName         |      |
-  #| ROOT        | GET  | index.php?m=settings&a=upgradeSiteName     |      |
-  #| ROOT        | POST | index.php?m=settings&a=upgradeSiteName     |      |
-  #| ROOT        | GET  | index.php?m=settings&a=newInstallFinished  |      |
-  #| ROOT        | POST | index.php?m=settings&a=newInstallFinished  |      |
   | ROOT        | POST | index.php?m=settings&a=manageUsers         |      |
   | ROOT        | POST | index.php?m=settings&a=professional        |      |
   | ROOT        | POST | index.php?m=settings&a=previewPage         |      |
@@ -1332,7 +1253,87 @@ Scenario Outline: Reports module actions
   | ROOT        | GET  | index.php?m=settings&a=administration      |      |
   | ROOT        | POST | index.php?m=settings&a=administration      |      |
   | ROOT        | GET  | index.php?m=settings&a=myProfile           |      |
-  
+  #| DISABLED    | GET  | index.php?m=settings&a=newInstallPassword  | not  |
+  #| DISABLED    | POST | index.php?m=settings&a=newInstallPassword  | not  |
+  #| DISABLED    | GET  | index.php?m=settings&a=forceEmail          | not  |
+  #| DISABLED    | POST | index.php?m=settings&a=forceEmail          | not  |
+  #| DISABLED    | GET  | index.php?m=settings&a=newSiteName         | not  | 
+  #| DISABLED    | POST | index.php?m=settings&a=newSiteName         | not  |
+  #| DISABLED    | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
+  #| DISABLED    | POST | index.php?m=settings&a=upgradeSiteName     | not  |
+  #| DISABLED    | GET  | index.php?m=settings&a=newInstallFinished  | not  |
+  #| DISABLED    | POST | index.php?m=settings&a=newInstallFinished  | not  |
+  #| READONLY    | GET  | index.php?m=settings&a=newInstallPassword  | not  |
+  #| READONLY    | POST | index.php?m=settings&a=newInstallPassword  | not  |
+  #| READONLY    | GET  | index.php?m=settings&a=forceEmail          | not  |
+  #| READONLY    | POST | index.php?m=settings&a=forceEmail          | not  |
+  #| READONLY    | GET  | index.php?m=settings&a=newSiteName         | not  |
+  #| READONLY    | POST | index.php?m=settings&a=newSiteName         | not  |
+  #| READONLY    | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
+  #| READONLY    | POST | index.php?m=settings&a=upgradeSiteName     | not  |
+  #| READONLY    | GET  | index.php?m=settings&a=newInstallFinished  | not  |
+  #| READONLY    | POST | index.php?m=settings&a=newInstallFinished  | not  |
+  #| EDIT        | GET  | index.php?m=settings&a=newInstallPassword  | not  |
+  #| EDIT        | POST | index.php?m=settings&a=newInstallPassword  | not  |
+  #| EDIT        | GET  | index.php?m=settings&a=forceEmail          | not  |
+  #| EDIT        | POST | index.php?m=settings&a=forceEmail          | not  |
+  #| EDIT        | GET  | index.php?m=settings&a=newSiteName         | not  |
+  #| EDIT        | POST | index.php?m=settings&a=newSiteName         | not  |
+  #| EDIT        | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
+  #| EDIT        | POST | index.php?m=settings&a=upgradeSiteName     | not  |
+  #| EDIT        | GET  | index.php?m=settings&a=newInstallFinished  | not  |
+  #| EDIT        | POST | index.php?m=settings&a=newInstallFinished  | not  |
+  #| DELETE      | GET  | index.php?m=settings&a=newInstallPassword  | not  |
+  #| DELETE      | POST | index.php?m=settings&a=newInstallPassword  | not  |
+  #| DELETE      | GET  | index.php?m=settings&a=forceEmail          | not  |
+  #| DELETE      | POST | index.php?m=settings&a=forceEmail          | not  |
+  #| DELETE      | GET  | index.php?m=settings&a=newSiteName         | not  |
+  #| DELETE      | POST | index.php?m=settings&a=newSiteName         | not  |
+  #| DELETE      | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
+  #| DELETE      | POST | index.php?m=settings&a=upgradeSiteName     | not  |
+  #| DELETE      | GET  | index.php?m=settings&a=newInstallFinished  | not  |
+  #| DELETE      | POST | index.php?m=settings&a=newInstallFinished  | not  |
+  #| DEMO        | GET  | index.php?m=settings&a=newInstallPassword  | not  |
+  #| DEMO        | POST | index.php?m=settings&a=newInstallPassword  | not  |
+  #| DEMO        | GET  | index.php?m=settings&a=forceEmail          | not  |
+  #| DEMO        | POST | index.php?m=settings&a=forceEmail          | not  |
+  #| DEMO        | GET  | index.php?m=settings&a=newSiteName         | not  |
+  #| DEMO        | POST | index.php?m=settings&a=newSiteName         | not  |
+  #| DEMO        | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
+  #| DEMO        | POST | index.php?m=settings&a=upgradeSiteName     | not  |
+  #| DEMO        | GET  | index.php?m=settings&a=newInstallFinished  | not  |
+  #| DEMO        | POST | index.php?m=settings&a=newInstallFinished  | not  |
+  #| ADMIN       | GET  | index.php?m=settings&a=newInstallPassword  |      |
+  #| ADMIN       | POST | index.php?m=settings&a=newInstallPassword  |      |
+  #| ADMIN       | GET  | index.php?m=settings&a=forceEmail          |      |
+  #| ADMIN       | POST | index.php?m=settings&a=forceEmail          |      |
+  #| ADMIN       | GET  | index.php?m=settings&a=newSiteName         |      |
+  #| ADMIN       | POST | index.php?m=settings&a=newSiteName         |      |
+  #| ADMIN       | GET  | index.php?m=settings&a=upgradeSiteName     |      |
+  #| ADMIN       | POST | index.php?m=settings&a=upgradeSiteName     |      |
+  #| ADMIN       | GET  | index.php?m=settings&a=newInstallFinished  |      |
+  #| ADMIN       | POST | index.php?m=settings&a=newInstallFinished  |      |
+  #| MULTI_ADMIN | GET  | index.php?m=settings&a=newInstallPassword  |      |
+  #| MULTI_ADMIN | POST | index.php?m=settings&a=newInstallPassword  |      |
+  #| MULTI_ADMIN | GET  | index.php?m=settings&a=forceEmail          |      |
+  #| MULTI_ADMIN | POST | index.php?m=settings&a=forceEmail          |      |
+  #| MULTI_ADMIN | GET  | index.php?m=settings&a=newSiteName         |      |
+  #| MULTI_ADMIN | POST | index.php?m=settings&a=newSiteName         |      |
+  #| MULTI_ADMIN | GET  | index.php?m=settings&a=upgradeSiteName     |      |
+  #| MULTI_ADMIN | POST | index.php?m=settings&a=upgradeSiteName     |      |
+  #| MULTI_ADMIN | GET  | index.php?m=settings&a=newInstallFinished  |      |
+  #| MULTI_ADMIN | POST | index.php?m=settings&a=newInstallFinished  |      |
+  #| ROOT        | GET  | index.php?m=settings&a=newInstallPassword  |      |
+  #| ROOT        | POST | index.php?m=settings&a=newInstallPassword  |      |
+  #| ROOT        | GET  | index.php?m=settings&a=forceEmail          |      |
+  #| ROOT        | POST | index.php?m=settings&a=forceEmail          |      |
+  #| ROOT        | GET  | index.php?m=settings&a=newSiteName         |      |
+  #| ROOT        | POST | index.php?m=settings&a=newSiteName         |      |
+  #| ROOT        | GET  | index.php?m=settings&a=upgradeSiteName     |      |
+  #| ROOT        | POST | index.php?m=settings&a=upgradeSiteName     |      |
+  #| ROOT        | GET  | index.php?m=settings&a=newInstallFinished  |      |
+  #| ROOT        | POST | index.php?m=settings&a=newInstallFinished  |      |
+  ####commented lines in table have URLs that are not called from anywhere in the code anymore
   
   #### AJAX not tested 
   #When I do GET request "index.php?m=settings&a=ajax_tags_add"
