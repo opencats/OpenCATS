@@ -25,25 +25,13 @@
 <p>
 	&nbsp;</p>
 
+
         <div id="contents">
             <div id="login">
-                <?php if (!empty($this->message)): ?>
-                    <div>
-                        <?php if ($this->messageSuccess): ?>
-                            <p class="success"><?php $this->_($this->message); ?><br /></p>
-                        <?php else: ?>
-                            <p class="failure"><?php $this->_($this->message); ?><br /></p>
-                        <?php endif; ?>
-                    </div>
-                <?php endif; ?>
-
                 <div id="loginText">
                     <div class="ctr">
-                        <img src="images/folder1_locked.jpg" width="64" height="64" alt="security" />
                     </div>
                     <br />
-                    <span>Welcome to opencats!</span><br />
-                    <span style="font-size: 10px;">Version <?php echo(CATSUtility::getVersion()); ?></span>
 
                     <?php if (ENABLE_DEMO_MODE && !($this->siteName != '' && $this->siteName != 'choose') || ($this->siteName == 'demo')): ?>
                         <br /><br />
@@ -61,7 +49,8 @@
                 </div>
 
                 <div id="formBlock">
-                    <img src="images/login2.jpg" alt="Login" />
+                    <img src="images/CATS-sig.gif" alt="Login" hspace="10" vspace="10" />
+                    <br />
                     <form name="loginForm" id="loginForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=login&amp;a=attemptLogin<?php if ($this->reloginVars != ''): ?>&amp;reloginVars=<?php echo($this->reloginVars); ?><?php endif; ?>" method="post" onsubmit="return checkLoginForm(document.loginForm);" autocomplete="off">
                         <div id="subFormBlock">
                             <?php if ($this->siteName != '' && $this->siteName != 'choose'): ?>
@@ -109,6 +98,8 @@
                             <br /><br />
                         </div>
                     </form>
+                
+                    <span style="line-height: 30px;font-size: 10px;padding-LEFT: 10px;">Version <?php echo(CATSUtility::getVersion()); ?></span>
                 </div>
                 <div style="clear: both;"></div>
             </div>
@@ -135,25 +126,27 @@
                     defaultLogin();
                 <?php endif; ?>
             </script>
-<div>Join the Conversation  - <a href="http://www.opencats.org "><strong>opencats forums</strong></a>.</div>
+
           <p>
 	&nbsp;</p>  
 <p>
 	&nbsp;</p>  
-<p>
-	&nbsp;</p>  
-<p>
-	&nbsp;</p>
-<p>
-	&nbsp;</p>
-<p>
-	&nbsp;</p>
-<p>
-	&nbsp;</p>
+
+	<span style="font-size: 12px;"><a href="http://forums.opencats.org ">opencats support forum</a></span>
+	           <div id="login">
+                <?php if (!empty($this->message)): ?>
+                    <div>
+                        <?php if ($this->messageSuccess): ?>
+                            <p class="success"><?php $this->_($this->message); ?><br /></p>
+                        <?php else: ?>
+                            <p class="failure"><?php $this->_($this->message); ?><br /></p>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+	</div>
 	  <div id="footerBlock">
-              
                 <span class="footerCopyright"><?php echo(COPYRIGHT_HTML); ?></span>
-                <div>Based upon original work and Powered by <a href="http://www.catsone.com ">CATS</a>.</div>
+                Based upon original work and Powered by <a href="http://www.catsone.com ">CATS</a>.</div>
             </div>
         </div>
 
