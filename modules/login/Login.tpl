@@ -1,4 +1,4 @@
-<?php /* $Id: Login.tpl 3530 2007-11-09 18:28:10Z brian $ */ ?>
+<?php>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -25,18 +25,9 @@
 <p>
 	&nbsp;</p>
 
+
         <div id="contents">
             <div id="login">
-                <?php if (!empty($this->message)): ?>
-                    <div>
-                        <?php if ($this->messageSuccess): ?>
-                            <p class="success"><?php $this->_($this->message); ?><br /></p>
-                        <?php else: ?>
-                            <p class="failure"><?php $this->_($this->message); ?><br /></p>
-                        <?php endif; ?>
-                    </div>
-                <?php endif; ?>
-
                 <div id="loginText">
                     <div class="ctr">
                     </div>
@@ -140,19 +131,20 @@
 	&nbsp;</p>  
 <p>
 	&nbsp;</p>  
-<p>
-	&nbsp;</p>  
-<p>
-	&nbsp;</p>
-<p>
-	&nbsp;</p>
-<p>
-	&nbsp;</p>
-<p>
-	&nbsp;</p>
+
+	<span style="font-size: 12px;"><a href="http://forums.opencats.org ">opencats support forum</a></span>
+	           <div id="login">
+                <?php if (!empty($this->message)): ?>
+                    <div>
+                        <?php if ($this->messageSuccess): ?>
+                            <p class="success"><?php $this->_($this->message); ?><br /></p>
+                        <?php else: ?>
+                            <p class="failure"><?php $this->_($this->message); ?><br /></p>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+	</div>
 	  <div id="footerBlock">
-              Support queries?  - <a href="http://www.opencats.org ">talk to us at the opencats forums</a>.
-              &nbsp;</p>
                 <span class="footerCopyright"><?php echo(COPYRIGHT_HTML); ?></span>
                 Based upon original work and Powered by <a href="http://www.catsone.com ">CATS</a>.</div>
             </div>

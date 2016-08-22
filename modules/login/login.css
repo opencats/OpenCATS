@@ -40,7 +40,7 @@ form
 
 a:link, a:visited
 {
-    color: #00008b;
+    color: #2f4f88;
     text-decoration: none;
     font: normal normal normal 12px/130% Arial, Tahoma, sans-serif;
 }
@@ -81,9 +81,9 @@ div#headerBlock span#subMainLogo
 
 #footerBlock
 {
-    margin-top: 10px;
-    text-align: center;
-    bottom: 0px;
+    bottom: 0;
+    position: absolute;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
 }
 
 #footerBlock p#footerQuotation
