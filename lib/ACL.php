@@ -39,7 +39,6 @@ class ACL
 
     );
     */
-    const ACCESS_LEVEL_MAP = array();
 
 
     /* Returns accessLevel to securedObjectName for user with userCategories 
@@ -47,7 +46,7 @@ class ACL
     */
     public static function getAccessLevel($securedObjectName, $userCategories, $defaultAccessLevel)
     {
-        if( empty(ACL::ACCESS_LEVEL_MAP))
+        if( !defined('ACCESS_LEVEL_MAP') || empty(ACCESS_LEVEL_MAP))
         {
             return $defaultAccessLevel;
         }
@@ -57,29 +56,29 @@ class ACL
         {
             // for now, only first category is used for evalualtion
             $userCategory = $userCategories[0];
+
             if( isset($userCategory) == false)
             {
                 $userCategory = ACL::CATEGORY_EMPTY;
             }
         }
-
-        if( NULL !== ACL::ACCESS_LEVEL_MAP[$userCategory][$securedObjectName])
+        if( NULL !== ACCESS_LEVEL_MAP[$userCategory][$securedObjectName])
         {
-            return ACL::ACCESS_LEVEL_MAP[$userCategory][$securedObjectName];
+            return ACCESS_LEVEL_MAP[$userCategory][$securedObjectName];
         }
         else
         {
             while(($pos = strrpos($securedObjectName, ".")) !== false)
             {
                 $securedObjectName = substr($securedObjectName, 0, $pos);
-                if( NULL !== ACL::ACCESS_LEVEL_MAP[$userCategory][$securedObjectName])
+                if( NULL !== ACCESS_LEVEL_MAP[$userCategory][$securedObjectName])
                 {
-                    return ACL::ACCESS_LEVEL_MAP[$userCategory][$securedObjectName];
+                    return ACCESS_LEVEL_MAP[$userCategory][$securedObjectName];
                 }
             }
-            if( NULL !== ACL::ACCESS_LEVEL_MAP[$userCategory][ACL::SECOBJ_ROOT])
+            if( NULL !== ACCESS_LEVEL_MAP[$userCategory][ACL::SECOBJ_ROOT])
             {
-                return ACL::ACCESS_LEVEL_MAP[$userCategory][ACL::SECOBJ_ROOT];
+                return ACCESS_LEVEL_MAP[$userCategory][ACL::SECOBJ_ROOT];
             }
         }
         return $defaultAccessLevel;
