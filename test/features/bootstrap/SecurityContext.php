@@ -186,7 +186,7 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
             $this->theResponseShouldContain("opencats - Login");
             return;
         }
-        $expectedTexts = array("You don't have permission", "Invalid user level for action");
+        $expectedTexts = array("You don't have permission", "Invalid user level for action", "You are not allowed to change your password.");
         $response = $this->result;
 
         foreach ($expectedTexts as &$text)
