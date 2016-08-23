@@ -221,7 +221,7 @@ class CandidatesUI extends UserInterface
 
             /* Remove a candidate from a pipeline. */
             case 'removeFromPipeline':
-                if ($this->getUserAccessLevel('pipelines.removeFromPipeline') < ACCESS_LEVEL_EDIT)
+                if ($this->getUserAccessLevel('pipelines.removeFromPipeline') < ACCESS_LEVEL_DELETE)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
