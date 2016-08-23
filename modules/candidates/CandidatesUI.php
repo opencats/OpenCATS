@@ -632,7 +632,7 @@ class CandidatesUI extends UserInterface
         );
 
         /* Is the user an admin - can user see history? */
-        if ($this->getUserAccessLevel('candidates.show') < ACCESS_LEVEL_DEMO)
+        if ($this->getUserAccessLevel('candidates.priviledgedUser') < ACCESS_LEVEL_DEMO)
         {
             $privledgedUser = false;
         }
