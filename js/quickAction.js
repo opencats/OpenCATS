@@ -28,7 +28,7 @@ var _singleQuickActionMenuDataItemType;
 var _singleQuickActionMenuDataItemID;
 
 /* Creates and displays a popup menu for an individual data item on the page to do some simple action to. */
-function showHideSingleQuickActionMenu(dataItemType, dataItemID, menuX, menuY)
+function showHideSingleQuickActionMenu(dataItemType, dataItemID, menuX, menuY, accessLevel)
 {
     var singleQuickActionMenu = document.getElementById('singleQuickActionMenu');
     
@@ -50,7 +50,10 @@ function showHideSingleQuickActionMenu(dataItemType, dataItemID, menuX, menuY)
     switch (dataItemType)
     {
         case DATA_ITEM_CANDIDATE:
-            addItemToPopupMenu('Add To Pipeline', 'showQuickActionAddToPipeline();');
+            if(accessLevel >= 200) //ACCESS_LEVEL_EDIT
+            {
+                addItemToPopupMenu('Add To Pipeline', 'showQuickActionAddToPipeline();');
+            }
             break;
     }
 }

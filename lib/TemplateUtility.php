@@ -904,7 +904,7 @@ class TemplateUtility
         $ratings = self::_getRatingImages();
         $indexName = CATSUtility::getIndexName();
 
-        if ($_SESSION['CATS']->getAccessLevel('joborders.editRating') < ACCESS_LEVEL_EDIT)
+        if ($_SESSION['CATS']->getAccessLevel('pipelines.editRating') < ACCESS_LEVEL_EDIT)
         {
             $HTML = '<img src="' . $ratings[$rating] . '" style="border: none;" alt="" id="moImage' . $candidateJobOrderID . '" />';
             return $HTML;
@@ -1143,7 +1143,7 @@ class TemplateUtility
 
     public static function printSingleQuickActionMenu($dataItemType, $dataItemID)
     {
-        echo '<a href="javascript:void(0);" onclick="showHideSingleQuickActionMenu('.$dataItemType.', '.$dataItemID.', docjslib_getRealLeft(this), docjslib_getRealTop(this)+6);"><img src="images/downward.gif" border=0></a>';
+        echo '<a href="javascript:void(0);" onclick="showHideSingleQuickActionMenu('.$dataItemType.', '.$dataItemID.', docjslib_getRealLeft(this), docjslib_getRealTop(this)+15, '.$_SESSION['CATS']->getAccessLevel('pipelines.addToPipeline').' );"><img src="images/downward.gif" border=0></a>';
     }
 
     public static function _printQuickActionMenuHolder()

@@ -204,7 +204,7 @@ class CandidatesUI extends UserInterface
                 
             /* Change candidate-joborder status. */
             case 'addActivityChangeStatus':
-                if ($this->getUserAccessLevel('candidates.addActivityChangeStatus') < ACCESS_LEVEL_EDIT)
+                if ($this->getUserAccessLevel('pipelines.addActivityChangeStatus') < ACCESS_LEVEL_EDIT)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
@@ -359,7 +359,7 @@ class CandidatesUI extends UserInterface
      */
     public function publicAddActivityChangeStatus($isJobOrdersMode, $regardingID, $moduleDirectory)
     {
-        if ($this->getUserAccessLevel('candidates.addActivityChangeStatus') < ACCESS_LEVEL_EDIT)
+        if ($this->getUserAccessLevel('pipelines.addActivityChangeStatus') < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
@@ -1629,9 +1629,6 @@ class CandidatesUI extends UserInterface
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);
             return;
-            /*$this->fatalModal(
-                'The specified candidate ID could not be found.'
-            );*/
         }
 
         $pipelines = new Pipelines($this->_siteID);

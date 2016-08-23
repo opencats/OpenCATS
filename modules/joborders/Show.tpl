@@ -255,7 +255,7 @@
                                         <?php endforeach; ?>
                                     </table>
                                     <?php if (!$this->isPopup): ?>
-                                        <?php if ($this->getUserAccessLevel('joborders.createAttachement') >= ACCESS_LEVEL_EDIT): ?>
+                                        <?php if ($this->getUserAccessLevel('joborders.createAttachment') >= ACCESS_LEVEL_EDIT): ?>
                                             <?php if (isset($this->attachmentLinkHTML)): ?>
                                                 <?php echo($this->attachmentLinkHTML); ?>
                                             <?php else: ?>

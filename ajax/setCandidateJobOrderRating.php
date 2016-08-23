@@ -32,7 +32,7 @@ include_once('./lib/Pipelines.php');
 
 $interface = new SecureAJAXInterface();
 
-if ($_SESSION['CATS']->getAccessLevel('joborders.editRating') < ACCESS_LEVEL_EDIT)
+if ($_SESSION['CATS']->getAccessLevel('pipelines.editRating') < ACCESS_LEVEL_EDIT)
 {
     $interface->outputXMLErrorPage(-1, ERROR_NO_PERMISSION);
     die();
