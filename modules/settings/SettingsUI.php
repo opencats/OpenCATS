@@ -385,7 +385,7 @@ class SettingsUI extends UserInterface
 
             case 'showUser':
                 /* Bail out if the user doesn't have SA permissions. */
-                if ($this->getUserAccessLevel("settings.showUser") < ACCESS_LEVEL_DEMO
+                if ($this->getUserAccessLevel('settings.showUser') < ACCESS_LEVEL_DEMO
                     && $this->_userID != $_GET['userID'])
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -848,7 +848,7 @@ class SettingsUI extends UserInterface
 
             case 'administration':
                 /* Bail out if the user doesn't have SA permissions. */
-                if ($this->getUserAccessLevel('settings.administration') < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+                if ($this->getUserAccessLevel('settings.administration') < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
