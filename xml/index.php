@@ -3,7 +3,7 @@
  * CATS
  * RSS Display Module
  *
- * CATS Version: 0.9.2 Diablo
+ * CATS Version: 0.9.3 Inferno
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
