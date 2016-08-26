@@ -4,7 +4,6 @@ Feature: Login
   Scenario: Spoof session
     Given I am spoofing a session with "o964p0pr602975o0671qo50n1208r6nn" cookie
     And I am on "/index.php?m=joborders"
-    Then I should see "Welcome to opencats"
     And I should see "Username"
     And I should see "Password"
     And I should see "Login"
@@ -13,7 +12,6 @@ Feature: Login
     
   Scenario: Login page fields
     Given I am on "/"
-    Then I should see "Welcome to opencats"
     And I should see "Username"
     And I should see "Password"
     And I should see "Login"
@@ -48,7 +46,6 @@ Feature: Login
     Then I should not see "Logout"
     And I should not see "Administrator"
     And I should see "Login"
-    And I should see "Welcome to opencats"
     And I should see "Username"
     And I should see "Password"
     
@@ -57,7 +54,6 @@ Feature: Login
     And I am on "/"
     And I follow "Logout"
     And I am on "/index.php?m=joborders"
-    Then I should see "Welcome to opencats"
     And I should see "Username"
     And I should see "Password"
     And I should see "Login"
