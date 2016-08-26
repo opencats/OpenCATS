@@ -1,5 +1,5 @@
 <?php /* $Id: Candidates.tpl 3445 2007-11-06 23:17:04Z will $ */ ?>
-<?php TemplateUtility::printHeader('Candidates', array( 'js/highlightrows.js', 'js/export.js', 'js/dataGrid.js')); ?>
+<?php TemplateUtility::printHeader('Candidates', array( 'js/highlightrows.js', 'js/export.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
 <?php $md5InstanceName = md5($this->dataGrid->getInstanceName());?>
@@ -137,6 +137,7 @@
                 &nbsp;
             </div>
             <br /><br />
+                <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
             <table cellpadding="0" cellspacing="0" border="0" width="956">
                 <tr>
                 <td style="padding-left: 62px;" align="center" valign="center">
@@ -163,6 +164,7 @@
 
                 </tr>
             </table>
+                <?php endif; ?>
 
             <?php endif; ?>
         </div>

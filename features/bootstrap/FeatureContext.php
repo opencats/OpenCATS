@@ -3,8 +3,6 @@
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
-use Behat\Gherkin\Node\PyStringNode;
-use Behat\Gherkin\Node\TableNode;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Testwork\Tester\Result\TestResult;
 use Behat\Mink\Driver\Selenium2Driver;
@@ -12,6 +10,7 @@ use OpenCATS\Entity\Company;
 use OpenCATS\Entity\CompanyRepository;
 use OpenCATS\Entity\JobOrder;
 use OpenCATS\Entity\JobOrderRepository;
+use Behat\Mink\Exception\ElementHtmlException;
 
 include_once('./config.php');
 include_once('./constants.php');
@@ -404,6 +403,28 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
             throw new \Exception(sprintf('Cannot find any row on the page containing the text "%s"', $rowText));
         }
         $row->clickLink($linkName);
+    }
+    
+    /**
+     * @override: @Then /^the "(?P<element>[^"]*)" element should contain "(?P<value>(?:[^"]|\\")*)"$/
+     */
+    public function assertElementContains($selector, $value)
+    {
+        $selectorType = 'css';
+        $html = $this->fixStepArgument($value);
+        $element = $this->assertSession()->elementExists($selectorType, $selector);
+        $actual = $element->getOuterHtml();
+        $regex = '/'.preg_quote($html, '/').'/umi';
+        
+        $message = sprintf(
+            'The regex "%s" does not matches HTML %s.',
+            $regex,
+            $actual
+        );
+        
+        if (!preg_match($regex, $actual)) {
+            throw new ElementHtmlException($message, $this->getSession()->getDriver(), $element);
+        }
     }
 }
 

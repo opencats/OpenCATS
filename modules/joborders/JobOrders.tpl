@@ -1,5 +1,5 @@
 <?php /* $Id: JobOrders.tpl 3676 2007-11-21 21:02:15Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Job Orders', array( 'js/highlightrows.js',  'js/sweetTitles.js', 'js/export.js', 'js/dataGrid.js')); ?>
+<?php TemplateUtility::printHeader('Job Orders', array( 'js/highlightrows.js',  'js/sweetTitles.js', 'js/export.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <style type="text/css">
@@ -104,6 +104,7 @@
                 &nbsp;
             </div>
             <br /><br />
+                 <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
             <table cellpadding="0" cellspacing="0" border="0">
                 <tr>
                 <td style="padding-left: 62px;" align="center" valign="center">
@@ -120,6 +121,7 @@
 
                 </tr>
             </table>
+                <?php endif; ?>
 
             <?php endif; ?>
         </div>
