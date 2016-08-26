@@ -1327,11 +1327,6 @@ class CandidatesUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
         
-        if (!$this->isRequiredIDValid('candidateID', $_GET))
-        {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
-        }
-        
         /* Get list of candidates. */
         if (isset($_REQUEST['candidateIDArrayStored']) && $this->isRequiredIDValid('candidateIDArrayStored', $_REQUEST, true))
         {
@@ -3241,10 +3236,6 @@ class CandidatesUI extends UserInterface
         }
         else
         {
-            if(!isset($_POST['i']) || !isset($_POST['p']))
-            {
-                 CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Missing required fields.');
-            }
             $dataGrid = DataGrid::getFromRequest();
 
             $candidateIDs = $dataGrid->getExportIDs();
