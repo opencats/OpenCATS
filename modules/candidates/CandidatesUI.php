@@ -335,8 +335,7 @@ class CandidatesUI extends UserInterface
     {
         if ($this->getUserAccessLevel('candidates.add') < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid user level for action.');
-            return;
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
 
         $candidateID = $this->_addCandidate($isModal, $moduleDirectory);
@@ -1379,10 +1378,6 @@ class CandidatesUI extends UserInterface
      */
     private function considerForJobSearch($candidateIDArray = array())
     {
-        if (!$this->isRequiredIDValid('candidateID', $_GET))
-        {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
-        }
         
         /* Get list of candidates. */
         if (isset($_REQUEST['candidateIDArrayStored']) && $this->isRequiredIDValid('candidateIDArrayStored', $_REQUEST, true))
@@ -3224,10 +3219,6 @@ class CandidatesUI extends UserInterface
         }
         else
         {
-            if(!isset($_POST['i']) || !isset($_POST['p']))
-            {
-                 CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Missing required fields.');
-            }
             $dataGrid = DataGrid::getFromRequest();
 
             $candidateIDs = $dataGrid->getExportIDs();
