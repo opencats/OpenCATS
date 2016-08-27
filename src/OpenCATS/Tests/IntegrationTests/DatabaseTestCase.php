@@ -22,7 +22,7 @@ class DatabaseTestCase extends TestCase
             );
         if (!$mySQLConnection)
         {
-            throw new Exception('Error connecting to the mysql server');
+            throw new \Exception('Error connecting to the mysql server');
         }
         $this->mySQLQuery('DROP DATABASE IF EXISTS ' . DATABASE_NAME);
         $this->mySQLQuery('CREATE DATABASE ' . DATABASE_NAME);
