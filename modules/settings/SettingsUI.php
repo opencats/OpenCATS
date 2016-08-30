@@ -272,6 +272,7 @@ class SettingsUI extends UserInterface
                 }
                 break;
 
+                /*
             case 'newInstallPassword':
                 if ($this->getUserAccessLevel("settings.newInstallPassword") < ACCESS_LEVEL_SA)
                 {
@@ -286,7 +287,9 @@ class SettingsUI extends UserInterface
                     $this->newInstallPassword();
                 }
                 break;
+                */
 
+                /*
             case 'forceEmail':
                 if ($this->getUserAccessLevel("settings.forceEmail") < ACCESS_LEVEL_SA)
                 {
@@ -301,9 +304,10 @@ class SettingsUI extends UserInterface
                     $this->forceEmail();
                 }
                 break;
+                */
 
+                /*
             case 'newSiteName':
-                /* The user shouldn't be here if they are not an SA */
                 if ($this->getUserAccessLevel('settings.newSiteName') < ACCESS_LEVEL_SA)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -317,9 +321,10 @@ class SettingsUI extends UserInterface
                     $this->newSiteName();
                 }
                 break;
+                */
 
+                /*
             case 'upgradeSiteName':
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.upgradeSiteName') < ACCESS_LEVEL_SA)
                 {
                     CATSUtility::transferRelativeURI('m=settings&a=newInstallFinished');
@@ -333,7 +338,9 @@ class SettingsUI extends UserInterface
                     $this->upgradeSiteName();
                 }
                 break;
+                */
 
+                /*
             case 'newInstallFinished':
                 if ($this->getUserAccessLevel('settings.newSiteName') < ACCESS_LEVEL_SA)
                 {
@@ -348,9 +355,9 @@ class SettingsUI extends UserInterface
                     $this->newInstallFinished();
                 }
                 break;
+                */
 
             case 'manageUsers':
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.manageUsers') < ACCESS_LEVEL_DEMO)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -359,7 +366,6 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'professional':
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.professional') < ACCESS_LEVEL_DEMO)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -384,7 +390,6 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'showUser':
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.showUser') < ACCESS_LEVEL_DEMO
                     && $this->_userID != $_GET['userID'])
                 {
@@ -394,7 +399,6 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'addUser':
-
                 if ($this->isPostBack())
                 {
                     if ($this->getUserAccessLevel('settings.addUser.POST') < ACCESS_LEVEL_SA)
@@ -415,7 +419,7 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'editUser':
-                
+
                 if ($this->isPostBack())
                 {
                     if ($this->getUserAccessLevel('settings.editUser.POST') < ACCESS_LEVEL_SA)
@@ -632,7 +636,6 @@ class SettingsUI extends UserInterface
 
             /* This really only exists for automated testing at this point. */
             case 'deleteUser':
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.deleteUser') < ACCESS_LEVEL_SA)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -672,7 +675,6 @@ class SettingsUI extends UserInterface
                 break;
 
            case 'loginActivity':
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.loginActivity') < ACCESS_LEVEL_DEMO)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -684,7 +686,6 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'viewItemHistory':
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.viewItemHistory') < ACCESS_LEVEL_DEMO)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
@@ -733,7 +734,6 @@ class SettingsUI extends UserInterface
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.addUser') < ACCESS_LEVEL_SA)
                 {
                     echo 'You do not have access to add a user.';
@@ -748,7 +748,6 @@ class SettingsUI extends UserInterface
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.deleteUser') < ACCESS_LEVEL_SA)
                 {
                     echo 'You do not have access to delete a user.';
@@ -763,7 +762,6 @@ class SettingsUI extends UserInterface
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.checkKey') < ACCESS_LEVEL_SA)
                 {
                     echo 'You do not have access to set the key.';
@@ -778,7 +776,6 @@ class SettingsUI extends UserInterface
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.localization') < ACCESS_LEVEL_SA)
                 {
                     echo 'You do not have access to change your localization settings.';
@@ -793,7 +790,6 @@ class SettingsUI extends UserInterface
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.firstTimeSetup') < ACCESS_LEVEL_SA)
                 {
                     echo 'You do not has access to this first-time-setup wizard.';
@@ -808,7 +804,6 @@ class SettingsUI extends UserInterface
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.license') < ACCESS_LEVEL_SA)
                 {
                     echo 'You do not have access to accept the license agreement.';
@@ -823,7 +818,6 @@ class SettingsUI extends UserInterface
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.password') < ACCESS_LEVEL_SA)
                 {
                     echo 'You do not have acess to set the site password.';
@@ -838,7 +832,6 @@ class SettingsUI extends UserInterface
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.siteName') < ACCESS_LEVEL_SA)
                 {
                     echo 'You do not have permission to change the site name.';
@@ -853,7 +846,6 @@ class SettingsUI extends UserInterface
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.setEmail') < ACCESS_LEVEL_READ)
                 {
                     echo 'You do not have permission to set the email.';
@@ -868,7 +860,6 @@ class SettingsUI extends UserInterface
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.import') < ACCESS_LEVEL_SA)
                 {
                     echo 'You do not have permission to import.';
@@ -883,7 +874,6 @@ class SettingsUI extends UserInterface
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.website') < ACCESS_LEVEL_SA)
                 {
                     echo 'You do not have permission.';
@@ -893,8 +883,6 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'administration':
-                /* Bail out if the user doesn't have SA permissions. */
-                
                 if ($this->isPostBack())
                 {
                     if ($this->getUserAccessLevel('settings.administration.POST') < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
@@ -916,7 +904,6 @@ class SettingsUI extends UserInterface
             /* Main settings page. */
             case 'myProfile':
             default:
-                /* Bail out if the user doesn't have SA permissions. */
                 if ($this->getUserAccessLevel('settings.myProfile') < ACCESS_LEVEL_READ)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
