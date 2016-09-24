@@ -1,0 +1,13 @@
+default:
+    suites:
+        default:
+            paths: [ %paths.base%/features ]
+            contexts:
+                - FeatureContext
+    extensions:
+        Behat\MinkExtension:
+            base_url: http://opencats
+            goutte: ~
+            selenium2:
+               wd_host: 'http://selenium:4444/wd/hub'
+               browser: 'chrome'
