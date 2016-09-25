@@ -73,7 +73,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
      */
     public function iAmSpoofingASessionWithCookie($cookieValue)
     {
-        $this->getSession()->setCookie(CATS_SESSION_NAME, 'o964p0pr602975o0671qo50n1208r6nn');
+        $this->getSession()->setCookie(CATS_SESSION_NAME, $cookieValue);
     }
     
     /**
@@ -161,14 +161,12 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         if (!self::$wsendUser) {
             self::$wsendUser = $this->getWsendUser();
         }
-    
         exec(sprintf(
             'curl -F "uid=%s" -F "filehandle=@%s" %s 2>/dev/null',
             self::$wsendUser,
             $filename,
             'https://wsend.net/upload_cli'
             ), $output, $return);
-    
         return $output[0];
     }
     
@@ -248,10 +246,10 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         $users->add(
             $lastName,
             $firstName,
-            $email = '', 
+            '', 
             $userName,
             $password,
-            $accessLevel = ACCESS_LEVEL_DELETE
+            ACCESS_LEVEL_DELETE
         );
     }
     
@@ -349,25 +347,25 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
             $siteId,
             $jobTitle,
             $companyId,
-            $contactId = '',
-            $description = '',
-            $notes = '',
-            $duration = '',
-            $maxRate = '',
-            $type = '',
-            $isHot = '',
-            $public = '',
-            $openings = '',
-            $companyJobId = '',
-            $salary = '',
-            $city = '',
-            $state = '',
-            $startDate = '',
-            $enteredBy = '',
-            $recruiter = '',
-            $owner = '',
-            $departmentId = '',
-            $questionnaire = ''
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            ''
         );
         $JobOrderRepository = new JobOrderRepository(DatabaseConnection::getInstance());
         $JobOrderRepository->persist($jobOrder, new Dummy_History($siteId));
@@ -450,6 +448,7 @@ class Role
     }
 }
 
+// FIXME: Should abstract session from history
 class Dummy_History extends History
 {
     public function __construct($siteID) {}
