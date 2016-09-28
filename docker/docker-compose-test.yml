@@ -50,6 +50,6 @@ services:
 
     selenium:
       container_name: selenium_test
-      image: selenium/standalone-chrome:2.53.0
+      image: mlespiau/selenium-standalone-chrome
       ports:
         - 4444
