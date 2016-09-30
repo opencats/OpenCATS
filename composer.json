@@ -3,8 +3,6 @@
     "require-dev": {
         "behat/behat": "~3.0.4",
         "phpunit/phpunit": "5.4.*"
-    },
-    "require": {
         "behat/mink": "^1.7",
         "behat/mink-extension": "dev-master",
         "behat/mink-goutte-driver": "^1.2",
