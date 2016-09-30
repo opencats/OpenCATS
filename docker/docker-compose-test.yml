@@ -38,7 +38,7 @@ services:
         - ../test/data/:/test/data/
         - ../test/data/test.sql:/docker-entrypoint-initdb.d/000_test.sql
 
-    unittestdb:
+    integrationtestdb:
       image: mariadb
       ports:
         - 3307:3306
@@ -46,7 +46,7 @@ services:
         - MYSQL_ROOT_PASSWORD=dev
         - MYSQL_USER=dev
         - MYSQL_PASSWORD=dev
-        - MYSQL_DATABASE=cats_unittests
+        - MYSQL_DATABASE=cats_integrationtest
 
     selenium:
       container_name: selenium_test

@@ -12,8 +12,8 @@ class DatabaseTestCase extends TestCase
         global $mySQLConnection;
         parent::setUp();
         include_once('./constants.php');
-        define('DATABASE_NAME', 'cats_unittests');
-        define('DATABASE_HOST', 'unittestdb');
+        define('DATABASE_NAME', 'cats_integrationtest');
+        define('DATABASE_HOST', 'integrationtestdb');
 
         include_once('./config.php');
         include_once('./lib/DatabaseConnection.php');
