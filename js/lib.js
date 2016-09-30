@@ -56,17 +56,7 @@ var AJAX_TIMEOUT = 15000;
  */
 function stringIsNumeric(string)
 {
-    for (var i = 0; i < string.length; i++)
-    {
-        var character = string.charAt(i);
-
-        if ((character < '0') || (character > '9'))
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return !isNaN(string);
 }
 
 /**
