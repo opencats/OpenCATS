@@ -51,5 +51,9 @@ services:
     selenium:
       container_name: selenium_test
       image: mlespiau/standalone-chrome:2.53.1-cd2.23
+      environment:
+        # Required to avoid container startup hanging sometimes in
+        # some environments
+        JAVA_OPTS: -Djava.security.egd=file:/dev/./urandom
       ports:
         - 4444
