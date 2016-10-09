@@ -166,7 +166,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
             self::$wsendUser,
             $filename,
             'https://wsend.net/upload_cli'
-            ), $output, $return);
+        ), $output);
         return $output[0];
     }
     
