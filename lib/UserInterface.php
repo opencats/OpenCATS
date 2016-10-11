@@ -319,7 +319,7 @@ class UserInterface
     {
         if (isset($request[$key]) && (!empty($request[$key]) ||
             ($allowZero && $request[$key] == '0')) &&
-            ctype_digit((string) $request[$key]))
+            ctype_digit((string) trim($request[$key])))
         {
             return true;
         }

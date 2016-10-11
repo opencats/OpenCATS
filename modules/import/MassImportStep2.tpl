@@ -5,7 +5,7 @@
     <?php $currentDocument = 0; ?>
 <?php endif; ?>
 <div style="font-size: 22px; font-weight: bold; text-align: center; margin: 60px 0 60px 0; color: #666666;">
-Please wait while CATS processes your resume documents...
+Please wait whilst OpenCATS processes your resume documents...
 <br />
 <span style="font-size: 14px; color: #666666;" id="timeWait">&nbsp;</span>
 </div>

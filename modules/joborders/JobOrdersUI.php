@@ -707,8 +707,8 @@ class JobOrdersUI extends UserInterface
         }
 
         if (isset($_POST['openings']) && !empty($_POST['openings']) &&
-            !ctype_digit((string) $_POST['openings']))
-        {
+            !ctype_digit((string) trim($_POST['openings'])))
+        {        	
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid number of openings.');
         }
 
@@ -1000,7 +1000,7 @@ class JobOrdersUI extends UserInterface
         }
 
         if (isset($_POST['openings']) && !empty($_POST['openings']) &&
-            !ctype_digit((string) $_POST['openings']))
+            !ctype_digit((string) trim($_POST['openings'])))
         {
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid number of openings.');
         }

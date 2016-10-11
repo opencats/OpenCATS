@@ -1183,10 +1183,10 @@ class TemplateUtility
         echo '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">', "\n";
         echo '<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">', "\n";
         echo '<head>', "\n";
-        echo '<title>CATS - ', $pageTitle, '</title>', "\n";
+        echo '<title>OpenCATS - ', $pageTitle, '</title>', "\n";
         echo '<meta http-equiv="Content-Type" content="text/html; charset=', HTML_ENCODING, '" />', "\n";
-        echo '<link rel="icon" href="images/favicon.ico" type="image/x-icon" />', "\n";
-        echo '<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />', "\n";
+        echo '<link rel="icon" href="/images/favicon.ico" type="image/x-icon" />', "\n";
+        echo '<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />', "\n";
         echo '<link rel="alternate" type="application/rss+xml" title="RSS" href="',
              CATSUtility::getIndexName(), '?m=rss" />', "\n";
 
