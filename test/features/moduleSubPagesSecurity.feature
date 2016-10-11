@@ -92,6 +92,32 @@ Feature: Access Level to objects check - sub pages (show, ...)
      | ROOT        | see          | see             |             |            |           | see     | see           | see           | see           | see             | see         | see                    |               |                | see           |                    |              |                |                         |                  |
      
     ####### COMPANIES #######
+
+    @javascript @companies
+    Scenario Outline: Company Show page visibility for disabled level
+     Given I am logged in with <accessLevel> access level
+     And I am on "/index.php?m=home"
+     When I follow link "Google"
+     Then I should <addCompany> "Add Company"
+     And I should <searchCompany> "Search Companies"
+     And the page should <quickSearch> contain "Quick Search"
+     And the page should <quickSearch> contain "quickSearchFor"
+     And the page should <quickSearch> contain "quickSearch"
+     And the page should <actionMenu> contain "showHideSingleQuickActionMenu"
+     And I should <addAttachment> "Add Attachment"
+     And I should <viewHistory> "View History"
+     And I should <editCompany> "Edit"
+     And I should <deleteCompany> "Delete"
+     And I should <addJobOrder> "Add Job Order"
+     And I should <addContact> "Add Contact"
+     And the page should <editJobOrder> contain "index.php?m=joborders&amp;a=edit"  
+     And the page should <editContact> contain "index.php?m=contacts&amp;a=edit"
+     And the page should <deleteAttachment> contain "index.php?m=companies&amp;a=deleteAttachment"
+     And the page should <sendEmail> contain "Send E-Mail"
+     
+     Examples:
+     | accessLevel | addCompany  | searchCompany  | quickSearch | actionMenu | addAttachment | viewHistory | editCompany   | deleteCompany   | addJobOrder | addContact | editJobOrder | editContact | deleteAttachment | sendEmail |
+     | DISABLED    | not see     | not see        | not         | not        | not see       | not see     | not see       | not see         | not see     | not see    | not          | not         | not              | not       |
    
     @javascript @companies
     Scenario Outline: Company Show page visibility
@@ -117,7 +143,6 @@ Feature: Access Level to objects check - sub pages (show, ...)
      
      Examples:
      | accessLevel | addCompany  | searchCompany  | quickSearch | actionMenu | addAttachment | viewHistory | editCompany   | deleteCompany   | addJobOrder | addContact | editJobOrder | editContact | deleteAttachment | sendEmail |
-     | DISABLED    | not see     | not see        | not         | not        | not see       | not see     | not see       | not see         | not see     | not see    | not          | not         | not              | not       |
      | READONLY    | not see     | see            |             |            | not see       | not see     | not see       | not see         | not see     | not see    | not          | not         | not              |           |
      | EDIT        | see         | see            |             |            | see           | not see     | see           | not see         | see         | see        |              |             | not              |           | 
      | DELETE      | see         | see            |             |            | see           | not see     | see           | see             | see         | see        |              |             |                  |           |
