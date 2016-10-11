@@ -21,57 +21,6 @@
                 <td valign="top">
                     <table>
                         <tr>
-                            <td><span class="bold">Unit Tests</span></td>
-                        </tr>
-
-                        <?php foreach ($this->unitTestCases as $key => $value): ?>
-                            <tr>
-                                <td>
-                                    <input type="checkbox" class="unitTests" name="<?php $this->_($value[0]); ?>" id="<?php $this->_($value[0]); ?>" />
-                                    <?php $this->_($value[1]); ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-
-                        <tr>
-                            <td>
-                                <input type="checkbox" name="selectAllUnit" id="selectAllUnit" onclick="selectAllCheckboxesByClassName('selectTestsForm', 'selectAllUnit', 'unitTests');" />
-                                <span class="bold">All</span>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-
-                <td>&nbsp;</td>
-
-                <td valign="top">
-                    <table>
-                        <tr>
-                            <td><span class="bold">Integration Tests</span></td>
-                        </tr>
-
-                        <?php foreach ($this->integrationTestCases as $key => $value): ?>
-                            <tr>
-                                <td>
-                                    <input type="checkbox" class="integrationTests" name="<?php $this->_($value[0]); ?>" id="<?php $this->_($value[0]); ?>" />
-                                    <?php $this->_($value[1]); ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-
-                        <tr>
-                            <td>
-                                <input type="checkbox" name="selectAllIntegration" id="selectAllIntegration" onclick="selectAllCheckboxesByClassName('selectTestsForm', 'selectAllIntegration', 'integrationTests');" />
-                                <span class="bold">All</span>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-
-                <td>&nbsp;</td>
-                <td valign="top">
-                    <table>
-                        <tr>
                             <td><span class="bold">Web / System Tests</span></td>
                         </tr>
 

@@ -1,4 +1,11 @@
 <?php
+include_once('./vendor/autoload.php');
+
+use OpenCATS\Entity\JobOrder;
+use OpenCATS\Entity\JobOrderRepository;
+use OpenCATS\Entity\JobOrderRepositoryException;
+
+
 /**
  * CATS
  * Job Orders Library
@@ -92,8 +99,8 @@ class JobOrders
      * @param integer owner user
      * @return new job order ID, or -1 on failure.
      */
-    public function add($title, $companyID, $contactID, $description, $notes,
-        $duration, $maxRate, $type, $isHot, $public, $openings, $companyJobID,
+    public function add($title, $companyId, $contactId, $description, $notes,
+        $duration, $maxRate, $type, $isHot, $public, $openings, $companyJobId,
         $salary, $city, $state, $startDate, $enteredBy, $recruiter, $owner,
         $department, $questionnaire = false)
     {
@@ -101,105 +108,40 @@ class JobOrders
         // FIXME: Move this up to the UserInterface level. I don't like this
         //        tight coupling, and calling Contacts methods as static is
         //        bad.
-        $departmentID = Contacts::getDepartmentIDByName(
-            $department, $companyID, $this->_db
+        $departmentId = Contacts::getDepartmentIDByName(
+            $department, $companyId, $this->_db
         );
-
-        // FIXME: Is the OrNULL usage below correct? Can these fields be NULL?
-        $sql = sprintf(
-            "INSERT INTO joborder (
-                title,
-                client_job_id,
-                company_id,
-                contact_id,
-                description,
-                notes,
-                duration,
-                rate_max,
-                type,
-                is_hot,
-                public,
-                openings,
-                openings_available,
-                salary,
-                city,
-                state,
-                company_department_id,
-                start_date,
-                entered_by,
-                recruiter,
-                owner,
-                site_id,
-                date_created,
-                date_modified,
-                questionnaire_id
-            )
-            VALUES (
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                NOW(),
-                NOW(),
-                %s
-            )",
-            $this->_db->makeQueryString($title),
-            $this->_db->makeQueryString($companyJobID),
-            $this->_db->makeQueryInteger($companyID),
-            $this->_db->makeQueryInteger($contactID),
-            $this->_db->makeQueryString($description),
-            $this->_db->makeQueryString($notes),
-            $this->_db->makeQueryString($duration),
-            $this->_db->makeQueryString($maxRate),
-            $this->_db->makeQueryString($type),
-            ($isHot ? '1' : '0'),
-            ($public ? '1' : '0'),
-            $this->_db->makeQueryInteger($openings),
-            $this->_db->makeQueryInteger($openings),
-            $this->_db->makeQueryString($salary),
-            $this->_db->makeQueryString($city),
-            $this->_db->makeQueryString($state),
-            $this->_db->makeQueryInteger($departmentID),
-            $this->_db->makeQueryStringOrNULL($startDate),
-            $this->_db->makeQueryInteger($enteredBy),
-            $this->_db->makeQueryInteger($recruiter),
-            $this->_db->makeQueryInteger($owner),
+        $jobOrder = JobOrder::create(
             $this->_siteID,
-            // Questionnaire ID or NULL if none
-            $questionnaire !== false ? $this->_db->makeQueryInteger($questionnaire) : 'NULL'
+            $title,
+            $companyId,
+            $contactId,
+            $description,
+            $notes,
+            $duration,
+            $maxRate,
+            $type,
+            $isHot,
+            $public,
+            $openings,
+            $companyJobId,
+            $salary,
+            $city,
+            $state,
+            $startDate,
+            $enteredBy,
+            $recruiter,
+            $owner,
+            $departmentId,
+            $questionnaire
         );
-
-        $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        $JobOrderRepository = new JobOrderRepository($this->_db);
+        try {
+            $jobOrderId = $JobOrderRepository->persist($jobOrder, new History($this->_siteID));
+        } catch (JobOrderRepositoryException $e) {
             return -1;
         }
-
-        $jobOrderID = $this->_db->getLastInsertID();
-
-        /* Store history. */
-        $history = new History($this->_siteID);
-        $history->storeHistoryNew(DATA_ITEM_JOBORDER, $jobOrderID);
-
-        return $jobOrderID;
+        return $jobOrderId;
     }
 
     /**

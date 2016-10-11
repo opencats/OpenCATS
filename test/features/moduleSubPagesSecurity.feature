@@ -54,7 +54,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
    Scenario Outline: Candidate Show page visibility
      Given I am logged in with <accessLevel> access level
      And I am on "/index.php?m=candidates"
-     When I follow link "Pippin"
+     When I follow link "Pipin"
      Then I should <addCandidate> "Add Candidate"
      And I should <searchCandidate> "Search Candidates"
      And the page should <quickSearch> contain "Quick Search"
