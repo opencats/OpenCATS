@@ -1,38 +1,8 @@
 <?php
 class TestCaseList
 {
-    public function getIntegrationTests() {
-        return array(
-            array('DatabaseConnectionTest', 'DatabaseConnection Unit Tests'),
-            array('DatabaseSearchTest',     'DatabaseSearch Unit Tests'),
-            array('DateUtilityTest',        'DateUtility Unit Tests'),
-        );
-    }
-    
-    public function getUnitTests() {
-        return array(
-            array('AddressParserTest',      'AddressParser Unit Tests'),
-            array('AJAXInterfaceTest',      'AJAX Interface Unit Tests'),
-            array('AttachmentsTest',        'Attachments Unit Tests'),
-            array('ArrayUtilityTest',       'ArrayUtility Unit Tests'),
-            array('BrowserDetectionTest',   'Browser Detection Unit Tests'),
-            array('CalendarTest',           'Calendar Unit Tests'),
-            array('EmailTemplatesTest',     'EmailTemplates Unit Tests'),
-            array('EncryptionTest',         'Encryption Unit Tests'),
-            array('ExportTest',             'Export Unit Tests'),
-            array('FileUtilityTest',        'FileUtility Unit Tests'),
-            array('ResultSetUtilityTest',   'ResultSetUtility Unit Tests'),
-            array('StringUtilityTest',      'StringUtility Unit Tests'),
-            array('VCardTest',              'VCard Unit Tests')
-        );
-    }
-    
     public function getSystemTests() {
         return array(
-            array('LoginWebTest',      'Login Module System Tests'),
-            array('HomeWebTest',       'Home Module System Tests'),
-            array('ActivitiesWebTest', 'Activities Module System Tests'),
-            array('JobOrdersWebTest',  'Job Orders Module System Tests'),
             array('CandidatesWebTest', 'Candidates Module System Tests'),
             array('CompaniesWebTest',  'Companies Module System Tests'),
             array('ContactsWebTest',   'Contacts Module System Tests'),

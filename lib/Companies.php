@@ -1,4 +1,9 @@
 <?php
+include_once('./vendor/autoload.php');
+use OpenCATS\Entity\Company;
+use OpenCATS\Entity\CompanyRepository;
+
+
 /**
  * CATS
  * Companies Library
@@ -81,74 +86,30 @@ class Companies
                         $phone2, $faxNumber, $url, $keyTechnologies, $isHot,
                         $notes, $enteredBy, $owner)
     {
-        $sql = sprintf(
-            "INSERT INTO company (
-                name,
-                address,
-                city,
-                state,
-                zip,
-                phone1,
-                phone2,
-                fax_number,
-                url,
-                key_technologies,
-                is_hot,
-                notes,
-                entered_by,
-                owner,
-                site_id,
-                date_created,
-                date_modified
-            )
-            VALUES (
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                NOW(),
-                NOW()
-            )",
-            $this->_db->makeQueryString($name),
-            $this->_db->makeQueryString($address),
-            $this->_db->makeQueryString($city),
-            $this->_db->makeQueryString($state),
-            $this->_db->makeQueryString($zip),
-            $this->_db->makeQueryString($phone1),
-            $this->_db->makeQueryString($phone2),
-            $this->_db->makeQueryString($faxNumber),
-            $this->_db->makeQueryString($url),
-            $this->_db->makeQueryString($keyTechnologies),
-            ($isHot ? '1' : '0'),
-            $this->_db->makeQueryString($notes),
-            $this->_db->makeQueryInteger($enteredBy),
-            $this->_db->makeQueryInteger($owner),
-            $this->_siteID
+        $company= Company::create(
+            $this->_siteID,
+            $name,
+            $address,
+            $city,
+            $state,
+            $zip,
+            $phone1,
+            $phone2,
+            $faxNumber,
+            $url,
+            $keyTechnologies,
+            $isHot,
+            $notes,
+            $enteredBy,
+            $owner
         );
-
-        $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        $CompanyRepository = new CompanyRepository($this->_db);
+        try {
+            $companyId = $CompanyRepository->persist($company, new History($this->_siteID));
+        } catch(CompanyRepositoryException $e) {
             return -1;
         }
-
-        $companyID = $this->_db->getLastInsertID();
-
-        $history = new History($this->_siteID);
-        $history->storeHistoryNew(DATA_ITEM_COMPANY, $companyID);
-
-        return $companyID;
+        return $companyId;
     }
 
     /**

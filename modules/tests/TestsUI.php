@@ -41,7 +41,6 @@ require_once('lib/simpletest/form.php');
 include_once('./modules/tests/CATSTestReporter.php');
 include_once('./modules/tests/CATSWebTestCase.php');
 include_once('./modules/tests/CATSAJAXTestCase.php');
-include_once('./modules/tests/CATSUnitTestCase.php');
 include_once('./modules/tests/TestCaseList.php');
 
 
@@ -89,8 +88,6 @@ class TestsUI extends UserInterface
     private function selectTests()
     {
         $this->_template->assign('reporter', $this->reporter);
-        $this->_template->assign('unitTestCases', $this->_testCaseList->getUnitTests());
-        $this->_template->assign('integrationTestCases', $this->_testCaseList->getIntegrationTests());
         $this->_template->assign('systemTestCases', $this->_testCaseList->getSystemTests());
         $this->_template->assign('AJAXTestCases', $this->_testCaseList->getAjaxTests());
         $this->_template->display('./modules/tests/Tests.tpl');
@@ -98,27 +95,12 @@ class TestsUI extends UserInterface
 
     private function runSelectedTests()
     {
-        include('./modules/tests/testcases/UnitTests.php');
         include('./modules/tests/testcases/WebTests.php');
         include('./modules/tests/testcases/AJAXTests.php');
 
-        /* FIXME: 3 groups! Unit, Web, AJAX. */
+        /* FIXME: 2 groups! Web, AJAX. */
         $testSuite = new TestSuite('CATS Test Suite');
 
-        foreach ($this->_testCaseList->getUnitTests() as $offset => $value)
-        {
-            if ($this->isChecked($value[0], $_POST))
-            {
-                $testSuite->add(new $value[0]());
-            }
-        }
-        foreach ($this->_testCaseList->getIntegrationTests() as $offset => $value)
-        {
-            if ($this->isChecked($value[0], $_POST))
-            {
-                $testSuite->add(new $value[0]());
-            }
-        }
         foreach ($this->_testCaseList->getSystemTests() as $offset => $value)
         {
             if ($this->isChecked($value[0], $_POST))

@@ -101,7 +101,7 @@ function checkTitle()
 
     fieldValue = document.getElementById('title').value;
     fieldLabel = document.getElementById('titleLabel');
-    if (fieldValue == '')
+    if (fieldValue.trim() == '')
     {
         errorMessage = "    - You must enter a job title.\n";
 
