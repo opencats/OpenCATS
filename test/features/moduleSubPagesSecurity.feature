@@ -96,7 +96,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
     @javascript @companies
     Scenario Outline: Company Show page visibility
      Given I am logged in with <accessLevel> access level
-     And I am on "/index.php?m=companies"
+     And I am on "/index.php?m=home&a=quickSearch&quickSearchFor=google"
      When I follow link "Google"
      Then I should <addCompany> "Add Company"
      And I should <searchCompany> "Search Companies"
