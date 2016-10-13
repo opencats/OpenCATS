@@ -154,7 +154,7 @@ class DocumentToText
             case DOCUMENT_TYPE_RTF;
                  /* Store the output in string and array form. */
                 $this->_returnCode = ($this->_rawOutput = $this->rtf2text($fileName)) ? 1 : 0;
-
+                $commandResult['returnCode'] = $this->_returnCode;
                 /* If command returned non-zero or output is not an array, assume
                  * failure.
                  */
@@ -170,7 +170,7 @@ class DocumentToText
             case DOCUMENT_TYPE_ODT:
                  /* Store the output in string and array form. */
                 $this->_returnCode = ($this->_rawOutput = $this->odt2text($fileName)) ? 1 : 0;
-
+                $commandResult['returnCode'] = $this->_returnCode;
                 /* If command returned non-zero or output is not an array, assume
                  * failure.
                  */
@@ -187,7 +187,7 @@ class DocumentToText
             case DOCUMENT_TYPE_DOCX:
                 /* Store the output in string and array form. */
                 $this->_returnCode = ($this->_rawOutput = $this->docx2text($fileName)) ? 1 : 0;
-
+                $commandResult['returnCode'] = $this->_returnCode;
                 /* If command returned non-zero or output is not an array, assume
                  * failure.
                  */
