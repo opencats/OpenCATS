@@ -69,7 +69,7 @@ UPDATE contact_foreign, contact SET contact_foreign.site_id = contact.site_id WH
 #r958 10-11-6 BH
 UPDATE system SET schema_version = 958;
 ALTER IGNORE TABLE `site` ADD COLUMN `is_trial` int(1) NOT NULL default '0';
-ALTER IGNORE TABLE `site` ADD COLUMN `trial_expires` datetime NOT NULL default '0000-00-00 00:00:00';
+ALTER IGNORE TABLE `site` ADD COLUMN `trial_expires` datetime NOT NULL default '1000-01-01 00:00:00';
 
 #r959 10-13-6 BH
 UPDATE system SET schema_version = 959;
