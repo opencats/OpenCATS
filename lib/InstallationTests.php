@@ -342,9 +342,10 @@ class InstallationTests
     public static function checkSOAPExtension()
     {
         /* Is the SOAP extension loaded?. */
+        /* The is_callable function seems to work with   */
         if (!self::DEBUG_FAIL && extension_loaded('soap') && class_exists('SoapClient') &&
-            (is_callable(array('SoapClient', '__soapCall'), false) ||
-            is_callable(array('SoapClient', '__call'), false)))
+            (method_exists('SoapClient', '__soapCall') ||
+            method_exists('SoapClient', '__call')))
         {
             echo '<tr class="pass"><td>PHP SOAP extension (soap) is loaded.</td></tr>';
             return true;
