@@ -88,7 +88,7 @@ CREATE TABLE `attachment` (
   `title` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
   `original_filename` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `stored_filename` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `content_type` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `content_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `resume` int(1) NOT NULL DEFAULT '0',
   `text` text COLLATE utf8_unicode_ci,
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
