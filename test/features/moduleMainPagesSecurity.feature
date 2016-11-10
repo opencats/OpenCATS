@@ -265,22 +265,21 @@ Feature: Access Level to objects check - main pages
      And I should <changePassword> "Change Password"
      And I should <administration> "Administration"
      And I should <myProfile> "My Profile"
-     And I should <download> "Downloads"
      And the page should <quickSearch> contain "Quick Search"
      And the page should <quickSearch> contain "quickSearchFor"
      And the page should <quickSearch> contain "quickSearch"
      And I should <settingsHome> "Settings: My Profile"
     
     Examples:
-     | accessLevel | viewProfile  | changePassword  | administration | myProfile | download | quickSearch  | settingsHome |
-     | DISABLED    | not see      | not see         | not see        | not see   | not see  | not          | not see      |
-     | READONLY    | see          | see             | not see        | see       | see      |              | see          |
-     | EDIT        | see          | see             | not see        | see       | see      |              | see          |
-     | DELETE      | see          | see             | not see        | see       | see      |              | see          |
-     | DEMO        | see          | see             | see            | see       | see      |              | see          |
-     | ADMIN       | see          | see             | see            | see       | see      |              | see          |
-     | MULTI_ADMIN | see          | see             | see            | see       | see      |              | see          |
-     | ROOT        | see          | see             | see            | see       | see      |              | see          |
+     | accessLevel | viewProfile  | changePassword  | administration | myProfile | quickSearch  | settingsHome |
+     | DISABLED    | not see      | not see         | not see        | not see   | not          | not see      |
+     | READONLY    | see          | see             | not see        | see       |              | see          |
+     | EDIT        | see          | see             | not see        | see       |              | see          |
+     | DELETE      | see          | see             | not see        | see       |              | see          |
+     | DEMO        | see          | see             | see            | see       |              | see          |
+     | ADMIN       | see          | see             | see            | see       |              | see          |
+     | MULTI_ADMIN | see          | see             | see            | see       |              | see          |
+     | ROOT        | see          | see             | see            | see       |              | see          |
      
 ####### CALENDAR #######
 
