@@ -217,7 +217,7 @@ class XmlUI extends UserInterface
                         case 'jobPostDate':
                             $txtJobPosting = XmlTemplate::replaceTemplateTags(
                                 $tag,
-                                DateUtility::getRSSDate(strtotime($row['dateCreatedSort'])),
+                                $row['dateCreatedSort'],
                                 $txtJobPosting
                             );
                             break;
