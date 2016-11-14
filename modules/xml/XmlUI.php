@@ -300,6 +300,21 @@ class XmlUI extends UserInterface
                                 $txtJobPosting
                             );
                             break;
+                            
+                        case 'notes':
+                            $txtJobPosting = XmlTemplate::replaceTemplateTags(
+                                $tag,
+                                $row['notes'],
+                                $txtJobPosting
+                            );
+                            break;
+                        case 'type':
+                            $txtJobPosting = XmlTemplate::replaceTemplateTags(
+                                $tag,
+                                $row['type'],
+                                $txtJobPosting
+                            );
+                            break;
                     }
                 }
 

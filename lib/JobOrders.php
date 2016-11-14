@@ -651,6 +651,7 @@ class JobOrders
                 IF(attachment_id, 1, 0) AS attachmentPresent,
                 joborder.title AS title,
                 joborder.description AS jobDescription,
+                joborder.notes AS notes,
                 joborder.type AS type,
                 joborder.is_hot AS isHot,
                 joborder.openings AS openings,
