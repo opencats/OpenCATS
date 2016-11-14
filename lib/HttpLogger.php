@@ -88,7 +88,7 @@ class HTTPLogger
             $db->makeQueryString(@$_SERVER['SCRIPT_NAME']),
             $db->makeQueryInteger($type),
             $db->makeQueryInteger($siteID),
-            $db->makeQueryString(date('c'))
+            $db->makeQueryString(date("Y-m-d H:i:s"))
         );
         
         return (boolean) $db->query($sql);
