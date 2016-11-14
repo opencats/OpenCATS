@@ -230,10 +230,18 @@ class XmlUI extends UserInterface
                             );
                             break;
 
-                        case 'jobID':
+                        case 'jobOrderID':
                             $txtJobPosting = XmlTemplate::replaceTemplateTags(
                                 $tag,
                                 $row['jobOrderID'],
+                                $txtJobPosting
+                            );
+                            break;
+                            
+                        case 'jobID':
+                            $txtJobPosting = XmlTemplate::replaceTemplateTags(
+                                $tag,
+                                $row['jobID'],
                                 $txtJobPosting
                             );
                             break;
