@@ -809,28 +809,11 @@ class JobOrders
      */
     public static function typeCodeToString($typeCode)
     {
-        switch ($typeCode)
+        if(JOB_TYPES_LIST[$typeCode] == null)
         {
-            case 'C':
-                return 'Contract';
-                break;
-
-            case 'H';
-                return 'Hire';
-                break;
-
-            case 'C2H';
-                return 'Contract to Hire';
-                break;
-
-            case 'FL';
-                return 'Freelance';
-                break;
-
-            default:
-                return '(Unknown)';
-                break;
+            return '(Unknown)';
         }
+        return JOB_TYPES_LIST[$typeCode];
     }
 
     /**

@@ -610,6 +610,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('selectedDepartmentsString', $selectedDepartmentsString);
         $this->_template->assign('isHrMode', $_SESSION['CATS']->isHrMode());
         $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('jobTypes', JOB_TYPES_LIST);
 
         if (!eval(Hooks::get('JO_ADD'))) return;
 
@@ -884,6 +885,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('jobOrderID', $jobOrderID);
         $this->_template->assign('isHrMode', $_SESSION['CATS']->isHrMode());
         $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('jobTypes', JOB_TYPES_LIST);
 
         if (!eval(Hooks::get('JO_EDIT'))) return;
 

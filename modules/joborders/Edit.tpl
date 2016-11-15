@@ -139,27 +139,14 @@
                         </td>
                         <td class="tdData">
                             <select tabindex="15" id="type" name="type" class="inputbox" style="width: 150px;">
-                                <?php if ($this->data['type'] == 'H'): ?>
-                                    <option value="H" selected="selected">H (Hire)</option>
-                                    <option value="C2H">C2H (Contract to Hire)</option>
-                                    <option value="C">C (Contract)</option>
-                                    <option value="FL">FL (Freelance)</option>
-                                <?php elseif ($this->data['type'] == 'C2H'): ?>
-                                    <option value="H">H (Hire)</option>
-                                    <option value="C2H" selected="selected">C2H (Contract to Hire)</option>
-                                    <option value="C">C (Contract)</option>
-                                    <option value="FL">FL (Freelance)</option>
-                                <?php elseif ($this->data['type'] == 'FL'): ?>
-                                    <option value="H">H (Hire)</option>
-                                    <option value="C2H">C2H (Contract to Hire)</option>
-                                    <option value="C">C (Contract)</option>
-                                    <option value="FL" selected="selected">FL (Freelance)</option>
-                                <?php else: ?>
-                                    <option value="H">H (Hire)</option>
-                                    <option value="C2H">C2H (Contract to Hire)</option>
-                                    <option value="C" selected="selected">C (Contract)</option>
-                                    <option value="FL">FL (Freelance)</option>
-                                <?php endif; ?>
+                                <?php foreach($this->jobTypes as $jobTypeShort => $jobTypeLong): ?>
+                                    <option value="<?php echo $jobTypeShort;?>" 
+                                            <?php if($this->data['type'] == $jobTypeShort): ?>
+                                                selected="selected"
+                                            <?php endif; ?>
+                                            ><?php echo $jobTypeShort." (".$jobTypeLong.")";?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>&nbsp;*
                         </td>
                     </tr>
