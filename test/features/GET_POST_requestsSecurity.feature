@@ -1257,8 +1257,8 @@ Scenario Outline: Reports module actions
   #| DISABLED    | POST | index.php?m=settings&a=newInstallPassword  | not  |
   #| DISABLED    | GET  | index.php?m=settings&a=forceEmail          | not  |
   #| DISABLED    | POST | index.php?m=settings&a=forceEmail          | not  |
-  #| DISABLED    | GET  | index.php?m=settings&a=newSiteName         | not  | 
-  #| DISABLED    | POST | index.php?m=settings&a=newSiteName         | not  |
+  | DISABLED    | GET  | index.php?m=settings&a=newSiteName         | not  | 
+  | DISABLED    | POST | index.php?m=settings&a=newSiteName         | not  |
   #| DISABLED    | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
   #| DISABLED    | POST | index.php?m=settings&a=upgradeSiteName     | not  |
   #| DISABLED    | GET  | index.php?m=settings&a=newInstallFinished  | not  |
@@ -1267,8 +1267,8 @@ Scenario Outline: Reports module actions
   #| READONLY    | POST | index.php?m=settings&a=newInstallPassword  | not  |
   #| READONLY    | GET  | index.php?m=settings&a=forceEmail          | not  |
   #| READONLY    | POST | index.php?m=settings&a=forceEmail          | not  |
-  #| READONLY    | GET  | index.php?m=settings&a=newSiteName         | not  |
-  #| READONLY    | POST | index.php?m=settings&a=newSiteName         | not  |
+  | READONLY    | GET  | index.php?m=settings&a=newSiteName         | not  |
+  | READONLY    | POST | index.php?m=settings&a=newSiteName         | not  |
   #| READONLY    | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
   #| READONLY    | POST | index.php?m=settings&a=upgradeSiteName     | not  |
   #| READONLY    | GET  | index.php?m=settings&a=newInstallFinished  | not  |
@@ -1277,8 +1277,8 @@ Scenario Outline: Reports module actions
   #| EDIT        | POST | index.php?m=settings&a=newInstallPassword  | not  |
   #| EDIT        | GET  | index.php?m=settings&a=forceEmail          | not  |
   #| EDIT        | POST | index.php?m=settings&a=forceEmail          | not  |
-  #| EDIT        | GET  | index.php?m=settings&a=newSiteName         | not  |
-  #| EDIT        | POST | index.php?m=settings&a=newSiteName         | not  |
+  | EDIT        | GET  | index.php?m=settings&a=newSiteName         | not  |
+  | EDIT        | POST | index.php?m=settings&a=newSiteName         | not  |
   #| EDIT        | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
   #| EDIT        | POST | index.php?m=settings&a=upgradeSiteName     | not  |
   #| EDIT        | GET  | index.php?m=settings&a=newInstallFinished  | not  |
@@ -1297,8 +1297,8 @@ Scenario Outline: Reports module actions
   #| DEMO        | POST | index.php?m=settings&a=newInstallPassword  | not  |
   #| DEMO        | GET  | index.php?m=settings&a=forceEmail          | not  |
   #| DEMO        | POST | index.php?m=settings&a=forceEmail          | not  |
-  #| DEMO        | GET  | index.php?m=settings&a=newSiteName         | not  |
-  #| DEMO        | POST | index.php?m=settings&a=newSiteName         | not  |
+  | DEMO        | GET  | index.php?m=settings&a=newSiteName         | not  |
+  | DEMO        | POST | index.php?m=settings&a=newSiteName         | not  |
   #| DEMO        | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
   #| DEMO        | POST | index.php?m=settings&a=upgradeSiteName     | not  |
   #| DEMO        | GET  | index.php?m=settings&a=newInstallFinished  | not  |
@@ -1307,8 +1307,8 @@ Scenario Outline: Reports module actions
   #| ADMIN       | POST | index.php?m=settings&a=newInstallPassword  |      |
   #| ADMIN       | GET  | index.php?m=settings&a=forceEmail          |      |
   #| ADMIN       | POST | index.php?m=settings&a=forceEmail          |      |
-  #| ADMIN       | GET  | index.php?m=settings&a=newSiteName         |      |
-  #| ADMIN       | POST | index.php?m=settings&a=newSiteName         |      |
+  | ADMIN       | GET  | index.php?m=settings&a=newSiteName         |      |
+  | ADMIN       | POST | index.php?m=settings&a=newSiteName         |      |
   #| ADMIN       | GET  | index.php?m=settings&a=upgradeSiteName     |      |
   #| ADMIN       | POST | index.php?m=settings&a=upgradeSiteName     |      |
   #| ADMIN       | GET  | index.php?m=settings&a=newInstallFinished  |      |
@@ -1317,8 +1317,8 @@ Scenario Outline: Reports module actions
   #| MULTI_ADMIN | POST | index.php?m=settings&a=newInstallPassword  |      |
   #| MULTI_ADMIN | GET  | index.php?m=settings&a=forceEmail          |      |
   #| MULTI_ADMIN | POST | index.php?m=settings&a=forceEmail          |      |
-  #| MULTI_ADMIN | GET  | index.php?m=settings&a=newSiteName         |      |
-  #| MULTI_ADMIN | POST | index.php?m=settings&a=newSiteName         |      |
+  | MULTI_ADMIN | GET  | index.php?m=settings&a=newSiteName         |      |
+  | MULTI_ADMIN | POST | index.php?m=settings&a=newSiteName         |      |
   #| MULTI_ADMIN | GET  | index.php?m=settings&a=upgradeSiteName     |      |
   #| MULTI_ADMIN | POST | index.php?m=settings&a=upgradeSiteName     |      |
   #| MULTI_ADMIN | GET  | index.php?m=settings&a=newInstallFinished  |      |
@@ -1327,8 +1327,8 @@ Scenario Outline: Reports module actions
   #| ROOT        | POST | index.php?m=settings&a=newInstallPassword  |      |
   #| ROOT        | GET  | index.php?m=settings&a=forceEmail          |      |
   #| ROOT        | POST | index.php?m=settings&a=forceEmail          |      |
-  #| ROOT        | GET  | index.php?m=settings&a=newSiteName         |      |
-  #| ROOT        | POST | index.php?m=settings&a=newSiteName         |      |
+  | ROOT        | GET  | index.php?m=settings&a=newSiteName         |      |
+  | ROOT        | POST | index.php?m=settings&a=newSiteName         |      |
   #| ROOT        | GET  | index.php?m=settings&a=upgradeSiteName     |      |
   #| ROOT        | POST | index.php?m=settings&a=upgradeSiteName     |      |
   #| ROOT        | GET  | index.php?m=settings&a=newInstallFinished  |      |

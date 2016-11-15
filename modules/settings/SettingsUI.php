@@ -278,6 +278,7 @@ class SettingsUI extends UserInterface
                     $this->forceEmail();
                 }
                 break;
+            */
 
             case 'newSiteName':
                 if ($this->isPostBack())
@@ -290,6 +291,7 @@ class SettingsUI extends UserInterface
                 }
                 break;
 
+            /*
             case 'upgradeSiteName':
                 if ($this->isPostBack())
                 {
