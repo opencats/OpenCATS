@@ -809,7 +809,7 @@ class JobOrders
      */
     public static function typeCodeToString($typeCode)
     {
-        if(JOB_TYPES_LIST[$typeCode] == null)
+        if(!defined('JOB_TYPES_LIST') || JOB_TYPES_LIST[$typeCode] == null)
         {
             return '(Unknown)';
         }

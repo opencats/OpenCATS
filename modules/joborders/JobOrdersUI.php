@@ -591,6 +591,14 @@ class JobOrdersUI extends UserInterface
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
         $careerPortalSettingsRS = $careerPortalSettings->getAll();
         $careerPortalEnabled = intval($careerPortalSettingsRS['enabled']) ? true : false;
+        
+        if(defined('JOB_TYPES_LIST'))
+        {
+            $jobTypes = JOB_TYPES_LIST;
+        } else {
+            $jobTypes = array('N/A' => 'Not Applicable');
+        }
+        
 
         $this->_template->assign('careerPortalEnabled', $careerPortalEnabled);
         $this->_template->assign('questionnaires', $questionnaires);
@@ -610,7 +618,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('selectedDepartmentsString', $selectedDepartmentsString);
         $this->_template->assign('isHrMode', $_SESSION['CATS']->isHrMode());
         $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
-        $this->_template->assign('jobTypes', JOB_TYPES_LIST);
+        $this->_template->assign('jobTypes', $jobTypes);
 
         if (!eval(Hooks::get('JO_ADD'))) return;
 
@@ -864,7 +872,14 @@ class JobOrdersUI extends UserInterface
                 }
             }
         }
-
+        
+        if(defined('JOB_TYPES_LIST'))
+        {
+            $jobTypes = JOB_TYPES_LIST;
+        } else {
+            $jobTypes = array('N/A' => 'Not Applicable');
+        }
+        
         $this->_template->assign('extraFieldRS', $extraFieldRS);
         $this->_template->assign('careerPortalEnabled', $careerPortalEnabled);
         $this->_template->assign('questionnaireID', $questionnaireID);
@@ -885,7 +900,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('jobOrderID', $jobOrderID);
         $this->_template->assign('isHrMode', $_SESSION['CATS']->isHrMode());
         $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
-        $this->_template->assign('jobTypes', JOB_TYPES_LIST);
+        $this->_template->assign('jobTypes', $jobTypes);
 
         if (!eval(Hooks::get('JO_EDIT'))) return;
 

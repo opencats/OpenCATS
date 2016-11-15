@@ -147,6 +147,9 @@
                                             ><?php echo $jobTypeShort." (".$jobTypeLong.")";?>
                                     </option>
                                 <?php endforeach; ?>
+                                <?php if(count($this->jobTypes) < 1): ?>
+                                    <option value="N/A" selected>N/A (Not Applicable)</option>
+                                <?php endif; ?>
                             </select>&nbsp;*
                         </td>
                     </tr>
