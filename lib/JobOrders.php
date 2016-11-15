@@ -55,6 +55,7 @@ include_once('./lib/Calendar.php');
 include_once('./lib/Pager.php');
 include_once('./lib/History.php');
 include_once('./lib/DataGrid.php');
+include_once('./lib/JobOrderTypes.php');
 
 /**
  *	Job Orders Library
@@ -809,11 +810,12 @@ class JobOrders
      */
     public static function typeCodeToString($typeCode)
     {
-        if(!defined('JOB_TYPES_LIST') || JOB_TYPES_LIST[$typeCode] == null)
+        $jobTypes = (new JobOrderTypes())->getAll();
+        if($jobTypes[$typeCode] == null)
         {
             return '(Unknown)';
         }
-        return JOB_TYPES_LIST[$typeCode];
+        return $jobTypes[$typeCode];
     }
 
     /**

@@ -277,9 +277,9 @@ define ('LDAP_ATTRIBUTE_EMAIL', 'mail');
 define ('LDAP_SITEID', 1);
 
 const JOB_TYPES_LIST = array(
-    'H' => 'Hire',
-    'C' => 'Contract',
-    'C2H' => 'Contract To Hire',
+    'PT' => 'Part-Time',
+    'FT' => 'Full-Time',
+    'ST' => 'Student',
     'FL' => 'Freelance'
 );
 
