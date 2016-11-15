@@ -301,7 +301,6 @@ class SettingsUI extends UserInterface
                 }
                 break;
 
-            /*
             case 'newInstallFinished':
                 if ($this->isPostBack())
                 {
@@ -312,7 +311,7 @@ class SettingsUI extends UserInterface
                     $this->newInstallFinished();
                 }
                 break;
-                */
+
             case 'manageUsers':
                 $this->manageUsers();
                 break;

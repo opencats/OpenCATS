@@ -1261,8 +1261,8 @@ Scenario Outline: Reports module actions
   | DISABLED    | POST | index.php?m=settings&a=newSiteName         | not  |
   | DISABLED    | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
   | DISABLED    | POST | index.php?m=settings&a=upgradeSiteName     | not  |
-  #| DISABLED    | GET  | index.php?m=settings&a=newInstallFinished  | not  |
-  #| DISABLED    | POST | index.php?m=settings&a=newInstallFinished  | not  |
+  | DISABLED    | GET  | index.php?m=settings&a=newInstallFinished  | not  |
+  | DISABLED    | POST | index.php?m=settings&a=newInstallFinished  | not  |
   | READONLY    | GET  | index.php?m=settings&a=newInstallPassword  | not  |
   | READONLY    | POST | index.php?m=settings&a=newInstallPassword  | not  |
   | READONLY    | GET  | index.php?m=settings&a=forceEmail          | not  |
@@ -1271,8 +1271,8 @@ Scenario Outline: Reports module actions
   | READONLY    | POST | index.php?m=settings&a=newSiteName         | not  |
   | READONLY    | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
   | READONLY    | POST | index.php?m=settings&a=upgradeSiteName     | not  |
-  #| READONLY    | GET  | index.php?m=settings&a=newInstallFinished  | not  |
-  #| READONLY    | POST | index.php?m=settings&a=newInstallFinished  | not  |
+  | READONLY    | GET  | index.php?m=settings&a=newInstallFinished  | not  |
+  | READONLY    | POST | index.php?m=settings&a=newInstallFinished  | not  |
   | EDIT        | GET  | index.php?m=settings&a=newInstallPassword  | not  |
   | EDIT        | POST | index.php?m=settings&a=newInstallPassword  | not  |
   | EDIT        | GET  | index.php?m=settings&a=forceEmail          | not  |
@@ -1281,8 +1281,8 @@ Scenario Outline: Reports module actions
   | EDIT        | POST | index.php?m=settings&a=newSiteName         | not  |
   | EDIT        | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
   | EDIT        | POST | index.php?m=settings&a=upgradeSiteName     | not  |
-  #| EDIT        | GET  | index.php?m=settings&a=newInstallFinished  | not  |
-  #| EDIT        | POST | index.php?m=settings&a=newInstallFinished  | not  |
+  | EDIT        | GET  | index.php?m=settings&a=newInstallFinished  | not  |
+  | EDIT        | POST | index.php?m=settings&a=newInstallFinished  | not  |
   | DELETE      | GET  | index.php?m=settings&a=newInstallPassword  | not  |
   | DELETE      | POST | index.php?m=settings&a=newInstallPassword  | not  |
   | DELETE      | GET  | index.php?m=settings&a=forceEmail          | not  |
@@ -1291,8 +1291,8 @@ Scenario Outline: Reports module actions
   | DELETE      | POST | index.php?m=settings&a=newSiteName         | not  |
   | DELETE      | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
   | DELETE      | POST | index.php?m=settings&a=upgradeSiteName     | not  |
-  #| DELETE      | GET  | index.php?m=settings&a=newInstallFinished  | not  |
-  #| DELETE      | POST | index.php?m=settings&a=newInstallFinished  | not  |
+  | DELETE      | GET  | index.php?m=settings&a=newInstallFinished  | not  |
+  | DELETE      | POST | index.php?m=settings&a=newInstallFinished  | not  |
   | DEMO        | GET  | index.php?m=settings&a=newInstallPassword  | not  |
   | DEMO        | POST | index.php?m=settings&a=newInstallPassword  | not  |
   | DEMO        | GET  | index.php?m=settings&a=forceEmail          | not  |
@@ -1301,8 +1301,8 @@ Scenario Outline: Reports module actions
   | DEMO        | POST | index.php?m=settings&a=newSiteName         | not  |
   | DEMO        | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
   | DEMO        | POST | index.php?m=settings&a=upgradeSiteName     | not  |
-  #| DEMO        | GET  | index.php?m=settings&a=newInstallFinished  | not  |
-  #| DEMO        | POST | index.php?m=settings&a=newInstallFinished  | not  |
+  | DEMO        | GET  | index.php?m=settings&a=newInstallFinished  | not  |
+  | DEMO        | POST | index.php?m=settings&a=newInstallFinished  | not  |
   | ADMIN       | GET  | index.php?m=settings&a=newInstallPassword  |      |
   | ADMIN       | POST | index.php?m=settings&a=newInstallPassword  |      |
   | ADMIN       | GET  | index.php?m=settings&a=forceEmail          |      |
@@ -1311,8 +1311,8 @@ Scenario Outline: Reports module actions
   | ADMIN       | POST | index.php?m=settings&a=newSiteName         |      |
   | ADMIN       | GET  | index.php?m=settings&a=upgradeSiteName     |      |
   | ADMIN       | POST | index.php?m=settings&a=upgradeSiteName     |      |
-  #| ADMIN       | GET  | index.php?m=settings&a=newInstallFinished  |      |
-  #| ADMIN       | POST | index.php?m=settings&a=newInstallFinished  |      |
+  | ADMIN       | GET  | index.php?m=settings&a=newInstallFinished  |      |
+  | ADMIN       | POST | index.php?m=settings&a=newInstallFinished  |      |
   | MULTI_ADMIN | GET  | index.php?m=settings&a=newInstallPassword  |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=newInstallPassword  |      |
   | MULTI_ADMIN | GET  | index.php?m=settings&a=forceEmail          |      |
@@ -1321,8 +1321,8 @@ Scenario Outline: Reports module actions
   | MULTI_ADMIN | POST | index.php?m=settings&a=newSiteName         |      |
   | MULTI_ADMIN | GET  | index.php?m=settings&a=upgradeSiteName     |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=upgradeSiteName     |      |
-  #| MULTI_ADMIN | GET  | index.php?m=settings&a=newInstallFinished  |      |
-  #| MULTI_ADMIN | POST | index.php?m=settings&a=newInstallFinished  |      |
+  | MULTI_ADMIN | GET  | index.php?m=settings&a=newInstallFinished  |      |
+  | MULTI_ADMIN | POST | index.php?m=settings&a=newInstallFinished  |      |
   | ROOT        | GET  | index.php?m=settings&a=newInstallPassword  |      |
   | ROOT        | POST | index.php?m=settings&a=newInstallPassword  |      |
   | ROOT        | GET  | index.php?m=settings&a=forceEmail          |      |
@@ -1331,9 +1331,8 @@ Scenario Outline: Reports module actions
   | ROOT        | POST | index.php?m=settings&a=newSiteName         |      |
   | ROOT        | GET  | index.php?m=settings&a=upgradeSiteName     |      |
   | ROOT        | POST | index.php?m=settings&a=upgradeSiteName     |      |
-  #| ROOT        | GET  | index.php?m=settings&a=newInstallFinished  |      |
-  #| ROOT        | POST | index.php?m=settings&a=newInstallFinished  |      |
-  ####commented lines in table have URLs that are not called from anywhere in the code anymore
+  | ROOT        | GET  | index.php?m=settings&a=newInstallFinished  |      |
+  | ROOT        | POST | index.php?m=settings&a=newInstallFinished  |      |
   
   #### AJAX not tested 
   #When I do GET request "index.php?m=settings&a=ajax_tags_add"
