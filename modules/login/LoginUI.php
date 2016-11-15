@@ -433,7 +433,7 @@ class LoginUI extends UserInterface
             $this->_template->display('./modules/settings/NewInstallWizard.tpl');
         }
 
-        /* If no E-Mail set for current user, make user set E-Mail address. * /
+        /* If no E-Mail set for current user, make user set E-Mail address. */
         else if (trim($_SESSION['CATS']->getEmail()) == '')
         {
             CATSUtility::transferRelativeURI('m=settings&a=forceEmail');
