@@ -1287,8 +1287,8 @@ Scenario Outline: Reports module actions
   | DELETE      | POST | index.php?m=settings&a=newInstallPassword  | not  |
   | DELETE      | GET  | index.php?m=settings&a=forceEmail          | not  |
   | DELETE      | POST | index.php?m=settings&a=forceEmail          | not  |
-  #| DELETE      | GET  | index.php?m=settings&a=newSiteName         | not  |
-  #| DELETE      | POST | index.php?m=settings&a=newSiteName         | not  |
+  | DELETE      | GET  | index.php?m=settings&a=newSiteName         | not  |
+  | DELETE      | POST | index.php?m=settings&a=newSiteName         | not  |
   | DELETE      | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
   | DELETE      | POST | index.php?m=settings&a=upgradeSiteName     | not  |
   #| DELETE      | GET  | index.php?m=settings&a=newInstallFinished  | not  |
