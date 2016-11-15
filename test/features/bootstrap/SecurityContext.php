@@ -1,7 +1,7 @@
 <?php
 
-include_once(".\lib\DatabaseConnection.php");
-include_once(".\constants.php");
+include_once("./lib/DatabaseConnection.php");
+include_once("./constants.php");
 
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
