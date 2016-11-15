@@ -1253,8 +1253,8 @@ Scenario Outline: Reports module actions
   | ROOT        | GET  | index.php?m=settings&a=administration      |      |
   | ROOT        | POST | index.php?m=settings&a=administration      |      |
   | ROOT        | GET  | index.php?m=settings&a=myProfile           |      |
-  #| DISABLED    | GET  | index.php?m=settings&a=newInstallPassword  | not  |
-  #| DISABLED    | POST | index.php?m=settings&a=newInstallPassword  | not  |
+  | DISABLED    | GET  | index.php?m=settings&a=newInstallPassword  | not  |
+  | DISABLED    | POST | index.php?m=settings&a=newInstallPassword  | not  |
   #| DISABLED    | GET  | index.php?m=settings&a=forceEmail          | not  |
   #| DISABLED    | POST | index.php?m=settings&a=forceEmail          | not  |
   | DISABLED    | GET  | index.php?m=settings&a=newSiteName         | not  | 
@@ -1263,8 +1263,8 @@ Scenario Outline: Reports module actions
   #| DISABLED    | POST | index.php?m=settings&a=upgradeSiteName     | not  |
   #| DISABLED    | GET  | index.php?m=settings&a=newInstallFinished  | not  |
   #| DISABLED    | POST | index.php?m=settings&a=newInstallFinished  | not  |
-  #| READONLY    | GET  | index.php?m=settings&a=newInstallPassword  | not  |
-  #| READONLY    | POST | index.php?m=settings&a=newInstallPassword  | not  |
+  | READONLY    | GET  | index.php?m=settings&a=newInstallPassword  | not  |
+  | READONLY    | POST | index.php?m=settings&a=newInstallPassword  | not  |
   #| READONLY    | GET  | index.php?m=settings&a=forceEmail          | not  |
   #| READONLY    | POST | index.php?m=settings&a=forceEmail          | not  |
   | READONLY    | GET  | index.php?m=settings&a=newSiteName         | not  |
@@ -1273,8 +1273,8 @@ Scenario Outline: Reports module actions
   #| READONLY    | POST | index.php?m=settings&a=upgradeSiteName     | not  |
   #| READONLY    | GET  | index.php?m=settings&a=newInstallFinished  | not  |
   #| READONLY    | POST | index.php?m=settings&a=newInstallFinished  | not  |
-  #| EDIT        | GET  | index.php?m=settings&a=newInstallPassword  | not  |
-  #| EDIT        | POST | index.php?m=settings&a=newInstallPassword  | not  |
+  | EDIT        | GET  | index.php?m=settings&a=newInstallPassword  | not  |
+  | EDIT        | POST | index.php?m=settings&a=newInstallPassword  | not  |
   #| EDIT        | GET  | index.php?m=settings&a=forceEmail          | not  |
   #| EDIT        | POST | index.php?m=settings&a=forceEmail          | not  |
   | EDIT        | GET  | index.php?m=settings&a=newSiteName         | not  |
@@ -1283,8 +1283,8 @@ Scenario Outline: Reports module actions
   #| EDIT        | POST | index.php?m=settings&a=upgradeSiteName     | not  |
   #| EDIT        | GET  | index.php?m=settings&a=newInstallFinished  | not  |
   #| EDIT        | POST | index.php?m=settings&a=newInstallFinished  | not  |
-  #| DELETE      | GET  | index.php?m=settings&a=newInstallPassword  | not  |
-  #| DELETE      | POST | index.php?m=settings&a=newInstallPassword  | not  |
+  | DELETE      | GET  | index.php?m=settings&a=newInstallPassword  | not  |
+  | DELETE      | POST | index.php?m=settings&a=newInstallPassword  | not  |
   #| DELETE      | GET  | index.php?m=settings&a=forceEmail          | not  |
   #| DELETE      | POST | index.php?m=settings&a=forceEmail          | not  |
   #| DELETE      | GET  | index.php?m=settings&a=newSiteName         | not  |
@@ -1293,8 +1293,8 @@ Scenario Outline: Reports module actions
   #| DELETE      | POST | index.php?m=settings&a=upgradeSiteName     | not  |
   #| DELETE      | GET  | index.php?m=settings&a=newInstallFinished  | not  |
   #| DELETE      | POST | index.php?m=settings&a=newInstallFinished  | not  |
-  #| DEMO        | GET  | index.php?m=settings&a=newInstallPassword  | not  |
-  #| DEMO        | POST | index.php?m=settings&a=newInstallPassword  | not  |
+  | DEMO        | GET  | index.php?m=settings&a=newInstallPassword  | not  |
+  | DEMO        | POST | index.php?m=settings&a=newInstallPassword  | not  |
   #| DEMO        | GET  | index.php?m=settings&a=forceEmail          | not  |
   #| DEMO        | POST | index.php?m=settings&a=forceEmail          | not  |
   | DEMO        | GET  | index.php?m=settings&a=newSiteName         | not  |
@@ -1303,8 +1303,8 @@ Scenario Outline: Reports module actions
   #| DEMO        | POST | index.php?m=settings&a=upgradeSiteName     | not  |
   #| DEMO        | GET  | index.php?m=settings&a=newInstallFinished  | not  |
   #| DEMO        | POST | index.php?m=settings&a=newInstallFinished  | not  |
-  #| ADMIN       | GET  | index.php?m=settings&a=newInstallPassword  |      |
-  #| ADMIN       | POST | index.php?m=settings&a=newInstallPassword  |      |
+  | ADMIN       | GET  | index.php?m=settings&a=newInstallPassword  |      |
+  | ADMIN       | POST | index.php?m=settings&a=newInstallPassword  |      |
   #| ADMIN       | GET  | index.php?m=settings&a=forceEmail          |      |
   #| ADMIN       | POST | index.php?m=settings&a=forceEmail          |      |
   | ADMIN       | GET  | index.php?m=settings&a=newSiteName         |      |
@@ -1313,8 +1313,8 @@ Scenario Outline: Reports module actions
   #| ADMIN       | POST | index.php?m=settings&a=upgradeSiteName     |      |
   #| ADMIN       | GET  | index.php?m=settings&a=newInstallFinished  |      |
   #| ADMIN       | POST | index.php?m=settings&a=newInstallFinished  |      |
-  #| MULTI_ADMIN | GET  | index.php?m=settings&a=newInstallPassword  |      |
-  #| MULTI_ADMIN | POST | index.php?m=settings&a=newInstallPassword  |      |
+  | MULTI_ADMIN | GET  | index.php?m=settings&a=newInstallPassword  |      |
+  | MULTI_ADMIN | POST | index.php?m=settings&a=newInstallPassword  |      |
   #| MULTI_ADMIN | GET  | index.php?m=settings&a=forceEmail          |      |
   #| MULTI_ADMIN | POST | index.php?m=settings&a=forceEmail          |      |
   | MULTI_ADMIN | GET  | index.php?m=settings&a=newSiteName         |      |
@@ -1323,8 +1323,8 @@ Scenario Outline: Reports module actions
   #| MULTI_ADMIN | POST | index.php?m=settings&a=upgradeSiteName     |      |
   #| MULTI_ADMIN | GET  | index.php?m=settings&a=newInstallFinished  |      |
   #| MULTI_ADMIN | POST | index.php?m=settings&a=newInstallFinished  |      |
-  #| ROOT        | GET  | index.php?m=settings&a=newInstallPassword  |      |
-  #| ROOT        | POST | index.php?m=settings&a=newInstallPassword  |      |
+  | ROOT        | GET  | index.php?m=settings&a=newInstallPassword  |      |
+  | ROOT        | POST | index.php?m=settings&a=newInstallPassword  |      |
   #| ROOT        | GET  | index.php?m=settings&a=forceEmail          |      |
   #| ROOT        | POST | index.php?m=settings&a=forceEmail          |      |
   | ROOT        | GET  | index.php?m=settings&a=newSiteName         |      |

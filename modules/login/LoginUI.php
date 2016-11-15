@@ -405,7 +405,7 @@ class LoginUI extends UserInterface
         /* LOGGED_IN_MESSAGES hooks are only for messages which show up on initial login (warnings, etc) */
         if (!eval(Hooks::get('LOGGED_IN_MESSAGES'))) return;
 
-        /* If logged in for the first time, make user change password. * /
+        /* If logged in for the first time, make user change password. */
         if (strtolower($username) == 'admin' &&
             $password === DEFAULT_ADMIN_PASSWORD)
         {

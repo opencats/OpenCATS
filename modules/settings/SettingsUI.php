@@ -256,7 +256,7 @@ class SettingsUI extends UserInterface
                     $this->onChangePassword();
                 }
                 break;
-                /*
+
             case 'newInstallPassword':
                 if ($this->isPostBack())
                 {
@@ -268,6 +268,7 @@ class SettingsUI extends UserInterface
                 }
                 break;
 
+            /*
             case 'forceEmail':
                 if ($this->isPostBack())
                 {
