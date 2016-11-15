@@ -412,7 +412,7 @@ class LoginUI extends UserInterface
             CATSUtility::transferRelativeURI('m=settings&a=newInstallPassword');
         }
 
-        /* If no site name set, make user set site name. * /
+        /* If no site name set, make user set site name. */
         else if ($accessLevel >= ACCESS_LEVEL_SA &&
                  $_SESSION['CATS']->getSiteName() === 'default_site')
         {

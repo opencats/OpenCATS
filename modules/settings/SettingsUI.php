@@ -290,7 +290,6 @@ class SettingsUI extends UserInterface
                 }
                 break;
 
-            /*
             case 'upgradeSiteName':
                 if ($this->isPostBack())
                 {
@@ -302,6 +301,7 @@ class SettingsUI extends UserInterface
                 }
                 break;
 
+            /*
             case 'newInstallFinished':
                 if ($this->isPostBack())
                 {
