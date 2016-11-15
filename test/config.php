@@ -265,4 +265,11 @@ define ('LDAP_BIND_DN', 'cn=read-only-admin,dc=example,dc=com');
 define ('LDAP_BIND_PASSWORD', 'password');
 define ('LDAP_PROTOCOL_VERSION', 3);
 
+const JOB_TYPES_LIST = array(
+    'H' => 'Hire',
+    'C' => 'Contract',
+    'C2H' => 'Contract To Hire',
+    'FL' => 'Freelance'
+);
+
 ?>
