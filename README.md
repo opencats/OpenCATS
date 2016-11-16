@@ -8,6 +8,10 @@ More details:
 
 <http://www.opencats.org>
 
+End user documentation:
+
+<http://opencats-documentation.readthedocs.io/en/latest/>
+
 Developers Mailing List:
 
 <https://groups.google.com/forum/#!forum/opencats-dev>
