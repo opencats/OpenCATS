@@ -23,3 +23,12 @@ script:
     - sleep 12
     - docker-compose -f docker-compose-test.yml run -w /var/www/public php cat config.php
     - docker-compose -f docker-compose-test.yml run -w /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml
+    - ./ci/package-code.sh
+
+deploy:
+  provider: releases
+  api_key: 2ff16bbc698c6aa61c7e04eeb4f2aaa4938792ef
+  file: $TRAVIS_TAG.tar.gz
+  skip_cleanup: true
+  on:
+    tags: true
