@@ -23,6 +23,8 @@ script:
     - sleep 12
     - docker-compose -f docker-compose-test.yml run -w /var/www/public php cat config.php
     - docker-compose -f docker-compose-test.yml run -w /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml
+    - cd ..
+    - ls -la
     - ./ci/package-code.sh
 
 deploy:
