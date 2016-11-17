@@ -156,7 +156,7 @@ CREATE TABLE `candidate_joborder_status_history` (
   `candidate_joborder_status_history_id` int(11) NOT NULL auto_increment,
   `candidate_id` int(11) NOT NULL default '0',
   `joborder_id` int(11) NOT NULL default '0',
-  `date` datetime NOT NULL default '0000-00-00 00:00:00',
+  `date` datetime NOT NULL default '1000-01-01 00:00:00',
   `status_from` int(11) NOT NULL default '0',
   `status_to` int(11) NOT NULL default '0',
   PRIMARY KEY  (`candidate_joborder_status_history_id`)

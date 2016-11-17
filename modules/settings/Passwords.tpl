@@ -26,7 +26,7 @@
                                     Allow retrieval of forgotten passwords through email:
                                 </td>
                                 <td class="tdData">
-                                    <input type="checkbox" name="ForgottenPasswords" disabled>
+                                    <input type="checkbox" name="ForgottenPasswords">
                                 </td>
                             </tr>
                         </table>

@@ -83,7 +83,7 @@ CREATE TABLE `admin_user_login` (
   `user_id` int(11) NOT NULL default '0',
   `ip` varchar(128) collate utf8_unicode_ci NOT NULL default '',
   `user_agent` varchar(255) collate utf8_unicode_ci default NULL,
-  `date` datetime NOT NULL default '0000-00-00 00:00:00',
+  `date` datetime NOT NULL default '1000-01-01 00:00:00',
   `successful` int(1) NOT NULL default '0',
   PRIMARY KEY  (`user_login_id`),
   KEY `IDX_user_id` (`user_id`),
@@ -109,7 +109,7 @@ CREATE TABLE `feedback` (
   `feedback_id` int(11) NOT NULL auto_increment,
   `user_id` int(11) NOT NULL default '0',
   `site_id` int(11) NOT NULL default '0',
-  `date_created` datetime NOT NULL default '0000-00-00 00:00:00',
+  `date_created` datetime NOT NULL default '1000-01-01 00:00:00',
   `subject` varchar(255) collate utf8_unicode_ci NOT NULL default '',
   `reply_to_address` varchar(255) collate utf8_unicode_ci NOT NULL default '',
   `reply_to_name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
@@ -124,7 +124,7 @@ CREATE TABLE `mru` (
   `data_item_type` int(11) NOT NULL default '0',
   `data_item_text` varchar(64) character set utf8 NOT NULL default '',
   `url` varchar(255) character set utf8 NOT NULL default '',
-  `date_created` datetime NOT NULL default '0000-00-00 00:00:00',
+  `date_created` datetime NOT NULL default '1000-01-01 00:00:00',
   PRIMARY KEY  (`mru_id`),
   KEY `IDX_user_site` (`user_id`,`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -134,7 +134,7 @@ CREATE TABLE `site` (
   `is_demo` int(1) NOT NULL default '0',
   `user_licenses` int(11) NOT NULL default '0',
   `entered_by` int(11) NOT NULL default '0',
-  `date_created` datetime NOT NULL default '0000-00-00 00:00:00',
+  `date_created` datetime NOT NULL default '1000-01-01 00:00:00',
   PRIMARY KEY  (`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 CREATE TABLE `zipcodes` (

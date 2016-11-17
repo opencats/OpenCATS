@@ -8,6 +8,10 @@ More details:
 
 <http://www.opencats.org>
 
+End user documentation:
+
+<http://opencats-documentation.readthedocs.io/en/latest/>
+
 Developers Mailing List:
 
 <https://groups.google.com/forum/#!forum/opencats-dev>
@@ -18,7 +22,8 @@ Support Forums:
 
 Installation Procedure:
 
-    doc/INSTALL.md
+    Windows: http://opencats-documentation.readthedocs.io/en/latest/install-windows.html
+    Linux: http://opencats-documentation.readthedocs.io/en/latest/install-linux.html
 
 Issues:
 
