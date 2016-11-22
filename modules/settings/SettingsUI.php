@@ -88,12 +88,6 @@ class SettingsUI extends UserInterface
             'My Profile'     => CATSUtility::getIndexName() . '?m=settings'
         );
 
-        /* Only CATS professional can download addons. */
-        if (file_exists('modules/asp') || LicenseUtility::isProfessional())
-        {
-            $mp['Downloads'] = CATSUtility::getIndexName() . '?m=settings&amp;a=downloads';
-        }
-
         $this->_subTabs = $mp;
         
         $this->_hooks = $this->defineHooks();

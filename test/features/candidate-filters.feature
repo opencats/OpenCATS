@@ -1,3 +1,4 @@
+@core
 Feature: Candidate filters
   In order for my organization to be able to effectively actionate over the candidates in the database. 
   As an administrator

@@ -1,3 +1,4 @@
+@core
 Feature: Login
   Access is required in order for my organization to be able to restric access to our opencats instance and information. 
   

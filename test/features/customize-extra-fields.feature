@@ -1,3 +1,4 @@
+@core
 Feature: Customize extra fields
   In order for my organization to be able to effectively track relevant information about candidates, job orders, companies and contacts. 
   As an administrator
