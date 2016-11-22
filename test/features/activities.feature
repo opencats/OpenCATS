@@ -1,3 +1,4 @@
+@core
 Feature: Activities
   In order to build a customer and clients knowledge base for my organization, 
   As a user

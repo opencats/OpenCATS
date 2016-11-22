@@ -405,14 +405,14 @@ class LoginUI extends UserInterface
         /* LOGGED_IN_MESSAGES hooks are only for messages which show up on initial login (warnings, etc) */
         if (!eval(Hooks::get('LOGGED_IN_MESSAGES'))) return;
 
-        /* If logged in for the first time, make user change password. * /
+        /* If logged in for the first time, make user change password. */
         if (strtolower($username) == 'admin' &&
             $password === DEFAULT_ADMIN_PASSWORD)
         {
             CATSUtility::transferRelativeURI('m=settings&a=newInstallPassword');
         }
 
-        /* If no site name set, make user set site name. * /
+        /* If no site name set, make user set site name. */
         else if ($accessLevel >= ACCESS_LEVEL_SA &&
                  $_SESSION['CATS']->getSiteName() === 'default_site')
         {
@@ -433,7 +433,7 @@ class LoginUI extends UserInterface
             $this->_template->display('./modules/settings/NewInstallWizard.tpl');
         }
 
-        /* If no E-Mail set for current user, make user set E-Mail address. * /
+        /* If no E-Mail set for current user, make user set E-Mail address. */
         else if (trim($_SESSION['CATS']->getEmail()) == '')
         {
             CATSUtility::transferRelativeURI('m=settings&a=forceEmail');

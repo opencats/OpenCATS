@@ -21,3 +21,16 @@ script:
     - ./vendor/bin/phpunit src/OpenCATS/Tests/UnitTests
     - cd docker/; docker-compose -f docker-compose-test.yml up -d
     - docker-compose -f docker-compose-test.yml exec php /var/www/public/test/runAllTests.sh
+    - cd ..; ./ci/package-code.sh 
+
+deploy:
+  provider: releases
+  api_key:
+    secure: TycO0iVT7HAvBBeMMZZzxemmy1jDOq8gTTHYDR6pWMHzEMskPuzZpAYRXCL1khKdLvY77GJ1b4ooMCFEQ4dWdMfCUcqttlU/auB4pt4ZrfhOj2VIcIOiA2sXXNR4gNiu5AbUsbbbvBuRQtTI0AIQNt7ZK61YWePTC5idiwFefhTY9qp4W/Dgsi6OCF6W4URmpXOLz4t4t7RgbUVOO26oRSSQ6BvZjDx8b1sIDEsgg0BSe/gj9D16hYkNEI7LkE/0V9djUTxZi/7vmFGU2boJUteGTKVXzacGuJ+h/W4Kmk87WmGw1oG18OzejeBQpsAeRu7d5wdARiSv5iRATm5wUiGd9JsKkgER65mYFFNi0l+4+/W6p65IGQ4T74nTFt4w96XSN/hp1OSHHZ/d+AL9ANK+DZnQafLO47AXPffw9TX06pZSVQGbVfs73MGlLCr33BJW+td4KwvgzY6E9IO/GT7JjYuADI3HgO+Nc5vbsM+2wcLqRhsUs4gk4SvSTQ31iq324VkcA7qKmzH5SjyNmaCw30dgiFSVQg5rypBArYEGoqNHm25MjwG0peCKiaIkmBCqqzqQp+OyuWaIdw/NMgKHEGgywDQcOXDl8umbxCRyrARMQIGMmb8kfpVJ9FZfTzlYF0qHBPzbLZ7hQunRMYo/vdee8unuKikPj7FJyJw=
+  file:
+     - $TRAVIS_BUILD_DIR/opencats-$TRAVIS_TAG-full.tar.gz
+     - $TRAVIS_BUILD_DIR/opencats-$TRAVIS_TAG-full.zip
+  skip_cleanup: true
+  on:
+    tags: true
+
