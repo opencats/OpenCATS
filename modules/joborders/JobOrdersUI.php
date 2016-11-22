@@ -592,7 +592,6 @@ class JobOrdersUI extends UserInterface
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
         $careerPortalSettingsRS = $careerPortalSettings->getAll();
         $careerPortalEnabled = intval($careerPortalSettingsRS['enabled']) ? true : false;
-        
 
         $this->_template->assign('careerPortalEnabled', $careerPortalEnabled);
         $this->_template->assign('questionnaires', $questionnaires);
@@ -866,7 +865,7 @@ class JobOrdersUI extends UserInterface
                 }
             }
         }
-        
+
         $this->_template->assign('extraFieldRS', $extraFieldRS);
         $this->_template->assign('careerPortalEnabled', $careerPortalEnabled);
         $this->_template->assign('questionnaireID', $questionnaireID);
