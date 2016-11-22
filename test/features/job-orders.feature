@@ -1,3 +1,4 @@
+@core
 Feature: Job Orders
   In order to fullfil customers job orders 
   As a user

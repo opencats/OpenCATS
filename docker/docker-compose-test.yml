@@ -36,7 +36,9 @@ services:
         - MYSQL_DATABASE=cats_test
       volumes:
         - ../test/data/:/test/data/
-        - ../test/data/test.sql:/docker-entrypoint-initdb.d/000_test.sql
+        - ../test/scripts/:/test/scripts
+        - ../test/data/test.sql:/docker-entrypoint-initdb.d/000_initDB.sql
+        - ../test/data/securityTests.sql:/docker-entrypoint-initdb.d/001_addUsers.sql
 
     integrationtestdb:
       image: mariadb
