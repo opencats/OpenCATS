@@ -26,7 +26,6 @@
  *
  * $Id: zipLookup.php 1479 2007-01-17 00:22:21Z will $
  */
-
 include_once('./lib/ZipLookup.php');
 include_once('./lib/StringUtility.php');
 
@@ -41,12 +40,14 @@ if (!isset($_REQUEST['zip']))
 $zip = $_REQUEST['zip'];
 
 $zipLookup = new ZipLookup();
+
 $searchableZip = $zipLookup->makeSearchableUSZip($zip);
 
 $data = $zipLookup->getCityStateByZip($searchableZip);
 
-$city  = $data['city'];
-$state = $data['state'];
+$street = $data[1];
+$city  = $data[2];
+$state = $data[3];
 
 /* Send back the XML data. */
 $interface->outputXMLPage(
@@ -57,5 +58,4 @@ $interface->outputXMLPage(
     "    <state>"  . $state . "</state>\n" .
     "</data>\n"
 );
-
 ?>
