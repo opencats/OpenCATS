@@ -1692,8 +1692,9 @@ class DataGrid
 
            /* Opening of header cell. */
            echo ('<th align="left" style="width:'.$data['width'].'px; border-collapse: collapse; ' . $this->globalStyle);
-
-           if (end(array_keys($this->_currentColumns)) != $index && !$sizable)
+           
+	   $currentColumnsKeys = array_keys($this->_currentColumns);
+           if (end($currentColumnsKeys) != $index && !$sizable)
            {
                    //Uncomment for gray resize bars
                    echo 'border-right:1px solid gray;';
@@ -1716,7 +1717,7 @@ class DataGrid
                     $md5InstanceName, $index,
                     $md5InstanceName, $index,
                     $md5InstanceName,
-                    $md5InstanceName, end(array_keys($this->_currentColumns)),
+                    $md5InstanceName, end($currentColumnsKeys),
                     urlencode($this->_instanceName),
                     $_SESSION['CATS']->getCookie(),
                     $data['name'],
