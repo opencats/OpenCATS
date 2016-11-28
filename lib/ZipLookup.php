@@ -1,94 +1,26 @@
 <?php
 /**
- * CATS
- * Zip Code Lookup Library
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * @package    CATS
- * @subpackage Library
- *
- *
- */
-/**
- *	Zip Code Lookup Library
- *	@package    CATS
- *	@subpackage Library
- */
+* Google API Zip Code Lookup library
+* @package OpenCATS
+* @subpackage Library
+* @copyright (C) OpenCats
+* @license GNU/GPL, see license.txt
+* OpenCATS is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License 2
+* as published by the Free Software Foundation.
+*/
 class ZipLookup
 {
-    /**
-     * Makes a proper "searchable" United States Zip code from a given Zip
-     * code string. All whitespace and leading 0's are removed.
-     *
-     * @param string free-form Zip code (ex: 55121, 30504 - 1000, 01369-5463)
-     * @return integer 3-5 digit searchable zip code or 0 on failure
-     */
+
      public static function makeSearchableUSZip($zipString)
      {
-	/*
-        if (preg_match('/^\s*[0]*(\d{3,5})\s*(?:-.*)?$/', $zipString, $match))
-        {
-            return (int) $match[1];
-        }
-        return 0;
-	*/
+
 	return str_replace(' ', '', $zipString);
      }
-    /**
-     * Finds City and State names via United States Zip code. The Zip code
-     * should be specified as an integer with no leading 0s.
-     *
-     * @param integer United States Zip code
-     * @return array city / state data (empty strings if not found)
-     */
+
     public function getCityStateByZip($zip)
     {
-        /* Make sure we have an integer. */
 
-	/*
-        $zip = (int) $zip;
-        if ($zip === 0)
-        {
-            return array('city' => '', 'state' => '');
-        }
-        $db = DatabaseConnection::getInstance();
-        $sql = sprintf(
-            "SELECT
-                city AS city,
-                state AS state
-            FROM
-                zipcodes
-            WHERE
-                zipcode = %s",
-            $zip
-        );
-        $data = $db->getAssoc($sql);
-        if (empty($data))
-        {
-            return array('city' => '', 'state' => '');
-        }
-        return $data;
-	*/
 
 	$aAddress[0] = 0;
 	$aAddress[1] = '';
@@ -103,7 +35,10 @@ class ZipLookup
 				if ($value->type == 'route') {
 					$aAddress[1] = (string) $value->long_name;
 				}
-				if ($value->type == 'postal_town') {
+				if ($value->type[0] == 'locality') {
+					$aAddress[2] = (string) $value->long_name;
+				}
+				if (($value->type == 'postal_town') && ($aAddress[2] == '')) {
 					$aAddress[2] = (string) $value->long_name;
 				}
 				if ($value->type[0] == 'administrative_area_level_2') {
