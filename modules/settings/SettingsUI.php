@@ -266,7 +266,6 @@ class SettingsUI extends UserInterface
                 }
                 break;
 
-                /*
             case 'newInstallPassword':
                 if ($this->getUserAccessLevel("settings.newInstallPassword") < ACCESS_LEVEL_SA)
                 {
@@ -281,9 +280,7 @@ class SettingsUI extends UserInterface
                     $this->newInstallPassword();
                 }
                 break;
-                */
 
-                /*
             case 'forceEmail':
                 if ($this->getUserAccessLevel("settings.forceEmail") < ACCESS_LEVEL_SA)
                 {
@@ -298,9 +295,7 @@ class SettingsUI extends UserInterface
                     $this->forceEmail();
                 }
                 break;
-                */
 
-                /*
             case 'newSiteName':
                 if ($this->getUserAccessLevel('settings.newSiteName') < ACCESS_LEVEL_SA)
                 {
@@ -315,9 +310,7 @@ class SettingsUI extends UserInterface
                     $this->newSiteName();
                 }
                 break;
-                */
 
-                /*
             case 'upgradeSiteName':
                 if ($this->getUserAccessLevel('settings.upgradeSiteName') < ACCESS_LEVEL_SA)
                 {
@@ -332,9 +325,7 @@ class SettingsUI extends UserInterface
                     $this->upgradeSiteName();
                 }
                 break;
-                */
 
-                /*
             case 'newInstallFinished':
                 if ($this->getUserAccessLevel('settings.newSiteName') < ACCESS_LEVEL_SA)
                 {
@@ -349,7 +340,6 @@ class SettingsUI extends UserInterface
                     $this->newInstallFinished();
                 }
                 break;
-                */
 
             case 'manageUsers':
                 if ($this->getUserAccessLevel('settings.manageUsers') < ACCESS_LEVEL_DEMO)
