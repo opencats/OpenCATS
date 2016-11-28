@@ -276,4 +276,14 @@ define ('LDAP_ATTRIBUTE_EMAIL', 'mail');
 
 define ('LDAP_SITEID', 1);
 
+/* Job Types mapping
+ */
+/* Uncomment bellow if you want custom mapping */
+/*const JOB_TYPES_LIST = array(
+    'PT' => 'Part-Time',
+    'FT' => 'Full-Time',
+    'ST' => 'Student',
+    'FL' => 'Freelance'
+);*/
+
 ?>
