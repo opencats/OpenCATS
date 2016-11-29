@@ -1130,7 +1130,7 @@ class TemplateUtility
 
     public static function _printQuickActionMenuHolder()
     {
-        echo '<div class="ajaxSearchResults" id="singleQuickActionMenu" align="left" style="width:200px;">';
+        echo '<div class="ajaxSearchResults" id="singleQuickActionMenu" align="left" style="width:200px;" onclick="toggleVisibility()">';
 
         echo '</div>';
     }
