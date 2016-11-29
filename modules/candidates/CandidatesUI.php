@@ -48,6 +48,8 @@ include_once('./lib/License.php');
 include_once('./lib/ParseUtility.php');
 include_once('./lib/Questionnaire.php');
 include_once('./lib/Tags.php');
+include_once('./lib/Search.php');
+include_once('./lib/Duplicates.php');
 
 class CandidatesUI extends UserInterface
 {
@@ -608,6 +610,7 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
         $this->_template->assign('tagsRS', $tags->getAll());
         $this->_template->assign('assignedTags', $tags->getCandidateTagsTitle($candidateID));
+        $this->_template->assign('isDuplicate', 1);
 
         if (!eval(Hooks::get('CANDIDATE_SHOW'))) return;
 
@@ -2581,6 +2584,9 @@ class CandidatesUI extends UserInterface
         if (!eval(Hooks::get('CANDIDATE_ON_ADD_PRE'))) return;
 
         $candidates = new Candidates($this->_siteID);
+
+        $duplicatesID = $candidates->checkDuplicity($firstName, $middleName, $lastName, $email1, $email2, $phoneHome, $phoneCell, $phoneWork, $address, $city);
+
         $candidateID = $candidates->add(
             $firstName,
             $middleName,
@@ -2615,6 +2621,12 @@ class CandidatesUI extends UserInterface
         if ($candidateID <= 0)
         {
             return $candidateID;
+        }
+        
+        $duplicates = new Duplicates($this->_siteID);
+        if(sizeof($duplicatesID) > 0)
+        {
+            $duplicates->addDuplicates($candidateID, $duplicatesID);
         }
 
         /* Update extra fields. */

@@ -1123,9 +1123,18 @@ class TemplateUtility
         return $text;
     }
 
-    public static function printSingleQuickActionMenu($dataItemType, $dataItemID)
+    public static function printSingleQuickActionMenu($dataItemType, $dataItemID, $url1 = '', $url2= '' )
     {
-        echo '<a href="javascript:void(0);" onclick="showHideSingleQuickActionMenu('.$dataItemType.', '.$dataItemID.', docjslib_getRealLeft(this), docjslib_getRealTop(this)+6);"><img src="images/downward.gif" border=0></a>';
+        if($url1 == "" && $url2 == "")
+        {
+            echo '<a href="javascript:void(0);" onclick="showHideSingleQuickActionMenu('.$dataItemType.', '.$dataItemID.', docjslib_getRealLeft(this)-20, docjslib_getRealTop(this)+20);"><img src="images/downward.gif" border=0></a>';
+        }
+        else
+        {
+            $url1 = "'".$url1."'"; 
+            $url2 = "'".$url2."'"; 
+            echo '<a href="javascript:void(0);" onclick="showHideSingleQuickActionMenuExtended('.$dataItemType.', '.$dataItemID.', docjslib_getRealLeft(this)-20, docjslib_getRealTop(this)+20, '.$url1.', '.$url2.');"><img src="images/downward.gif" border=0></a>';
+        }
     }
 
     public static function _printQuickActionMenuHolder()

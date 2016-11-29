@@ -45,14 +45,51 @@ function showHideSingleQuickActionMenu(dataItemType, dataItemID, menuX, menuY)
     _singleQuickActionMenuDataItemType = dataItemType;
     _singleQuickActionMenuDataItemID = dataItemID;
     
-    addItemToPopupMenu('Add To List', 'showQuickActionAddToList();');
+  
     
     switch (dataItemType)
     {
         case DATA_ITEM_CANDIDATE:
+            addItemToPopupMenu('Add To List', 'showQuickActionAddToList();');
             addItemToPopupMenu('Add To Pipeline', 'showQuickActionAddToPipeline();');
             break;
+        default:
+            addItemToPopupMenu('Add To List', 'showQuickActionAddToList();');
     }
+}
+
+function showHideSingleQuickActionMenuExtended(dataItemType, dataItemID, menuX, menuY, url1, url2)
+{
+    var singleQuickActionMenu = document.getElementById('singleQuickActionMenu');
+    
+    if (singleQuickActionMenu.style.display == 'block')
+    {
+        closeQuickActionMenu();
+        return;
+    }
+    
+    singleQuickActionMenu.style.display = 'block';
+    singleQuickActionMenu.style.left = menuX + 'px';
+    singleQuickActionMenu.style.top = menuY + 'px';
+    singleQuickActionMenu.innerHTML = '';
+    _singleQuickActionMenuDataItemType = dataItemType;
+    _singleQuickActionMenuDataItemID = dataItemID;
+    
+  
+    
+    switch (dataItemType)
+    {
+        case DATA_ITEM_DUPLICATE:
+            addLinkToPopupMenu('Merge', urldecode(url1), 0);
+            addLinkToPopupMenu('Remove duplicity warning', urldecode(url2), 1);
+            break;
+        default:
+            addItemToPopupMenu('Add To List', 'showQuickActionAddToList();');
+    }
+}
+
+function urldecode(url) {
+  return decodeURIComponent(url.replace(/\+/g, ' '));
 }
 
 /* Shows a popup for adding a item to a list. */
@@ -76,9 +113,32 @@ function addItemToPopupMenu(itemTitle, itemAction)
     singleQuickActionMenu.innerHTML += '<a href="javascript:void(0);" onclick="' + itemAction +' closeQuickActionMenu();">' + itemTitle + '</a><br />';
 }
 
+function addLinkToPopupMenu(itemTitle, itemAction, option)
+{
+    var singleQuickActionMenu = document.getElementById('singleQuickActionMenu');
+    var message = "'Are you sure?'";
+    switch(option)
+    {
+        case 0:
+            itemAction = "'" + itemAction + "'";
+            singleQuickActionMenu.innerHTML += '<a href=# onclick="showPopWin(' + itemAction + ', 750, 540, null); return false;">' + itemTitle + '</a><br />';
+            break;
+        case 1:
+        default:
+            singleQuickActionMenu.innerHTML += '<a href="' + itemAction + '" onclick="return confirm(' + message + ')">' + itemTitle + '</a><br />';
+            break;
+    }
+    
+}
+
 function closeQuickActionMenu()
 {
     var singleQuickActionMenu = document.getElementById('singleQuickActionMenu');
     singleQuickActionMenu.style.display = 'none';
+}
+
+function mergeCandidates()
+{
+    
 }
 

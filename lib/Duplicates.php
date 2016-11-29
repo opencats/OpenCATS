@@ -43,7 +43,7 @@ include_once('lib/DataGrid.php');
  *  @package    CATS
  *  @subpackage Library
  */
-class Candidates
+class Duplicates
 {
     private $_db;
     private $_siteID;
@@ -58,301 +58,8 @@ class Candidates
         $this->extraFields = new ExtraFields($siteID, DATA_ITEM_CANDIDATE);
     }
 
-    /**
-     * Adds a candidate to the database and returns its candidate ID.
-     *
-     * @param string First name.
-     * @param string Middle name / initial.
-     * @param string Last name.
-     * @param string Primary e-mail address.
-     * @param string Secondary e-mail address.
-     * @param string Home phone number.
-     * @param string Mobile phone number.
-     * @param string Work phone number.
-     * @param string Address (can be multiple lines).
-     * @param string City.
-     * @param string State / province.
-     * @param string Postal code.
-     * @param string Source where this candidate was found.
-     * @param string Key skills.
-     * @param string Date available.
-     * @param string Current employer.
-     * @param boolean Is this candidate willing to relocate?
-     * @param string Current pay rate / salary.
-     * @param string Desired pay rate / salary.
-     * @param string Misc. candidate notes.
-     * @param string Candidate's personal web site.
-     * @param integer Entered-by user ID.
-     * @param integer Owner user ID.
-     * @param string EEO gender, or '' to not specify.
-     * @param string EEO gender, or '' to not specify.
-     * @param string EEO veteran status, or '' to not specify.
-     * @param string EEO disability status, or '' to not specify.
-     * @param boolean Skip creating a history entry?
-     * @return integer Candidate ID of new candidate, or -1 on failure.
-     */
-    public function add($firstName, $middleName, $lastName, $email1, $email2,
-        $phoneHome, $phoneCell, $phoneWork, $address, $city, $state, $zip,
-        $source, $keySkills, $dateAvailable, $currentEmployer, $canRelocate,
-        $currentPay, $desiredPay, $notes, $webSite, $bestTimeToCall, $enteredBy, $owner,
-        $gender = '', $race = '', $veteran = '', $disability = '',
-        $skipHistory = false)
-    {
-        $sql = sprintf(
-            "INSERT INTO candidate (
-                first_name,
-                middle_name,
-                last_name,
-                email1,
-                email2,
-                phone_home,
-                phone_cell,
-                phone_work,
-                address,
-                city,
-                state,
-                zip,
-                source,
-                key_skills,
-                date_available,
-                current_employer,
-                can_relocate,
-                current_pay,
-                desired_pay,
-                notes,
-                web_site,
-                best_time_to_call,
-                entered_by,
-                is_hot,
-                owner,
-                site_id,
-                date_created,
-                date_modified,
-                eeo_ethnic_type_id,
-                eeo_veteran_type_id,
-                eeo_disability_status,
-                eeo_gender
-            )
-            VALUES (
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                %s,
-                0,
-                %s,
-                %s,
-                NOW(),
-                NOW(),
-                %s,
-                %s,
-                %s,
-                %s
-            )",
-            $this->_db->makeQueryString($firstName),
-            $this->_db->makeQueryString($middleName),
-            $this->_db->makeQueryString($lastName),
-            $this->_db->makeQueryString($email1),
-            $this->_db->makeQueryString($email2),
-            $this->_db->makeQueryString($phoneHome),
-            $this->_db->makeQueryString($phoneCell),
-            $this->_db->makeQueryString($phoneWork),
-            $this->_db->makeQueryString($address),
-            $this->_db->makeQueryString($city),
-            $this->_db->makeQueryString($state),
-            $this->_db->makeQueryString($zip),
-            $this->_db->makeQueryString($source),
-            $this->_db->makeQueryString($keySkills),
-            $this->_db->makeQueryStringOrNULL($dateAvailable),
-            $this->_db->makeQueryString($currentEmployer),
-            ($canRelocate ? '1' : '0'),
-            $this->_db->makeQueryString($currentPay),
-            $this->_db->makeQueryString($desiredPay),
-            $this->_db->makeQueryString($notes),
-            $this->_db->makeQueryString($webSite),
-            $this->_db->makeQueryString($bestTimeToCall),
-            $this->_db->makeQueryInteger($enteredBy),
-            $this->_db->makeQueryInteger($owner),
-            $this->_siteID,
-            $this->_db->makeQueryInteger($race),
-            $this->_db->makeQueryInteger($veteran),
-            $this->_db->makeQueryString($disability),
-            $this->_db->makeQueryString($gender)
-        );
-        $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
-            return -1;
-        }
+    
 
-        $candidateID = $this->_db->getLastInsertID();
-
-        if (!$skipHistory)
-        {
-            $history = new History($this->_siteID);
-            $history->storeHistoryNew(DATA_ITEM_CANDIDATE, $candidateID);
-        }
-
-        return $candidateID;
-    }
-
-    /**
-     * Updates a candidate.
-     *
-     * @param integer Candidate ID to update.
-     * @param string First name.
-     * @param string Middle name / initial.
-     * @param string Last name.
-     * @param string Primary e-mail address.
-     * @param string Secondary e-mail address.
-     * @param string Home phone number.
-     * @param string Mobile phone number.
-     * @param string Work phone number.
-     * @param string Address (can be multiple lines).
-     * @param string City.
-     * @param string State / province.
-     * @param string Postal code.
-     * @param string Source where this candidate was found.
-     * @param string Key skills.
-     * @param string Date available.
-     * @param string Current employer.
-     * @param boolean Is this candidate willing to relocate?
-     * @param string Current pay rate / salary.
-     * @param string Desired pay rate / salary.
-     * @param string Misc. candidate notes.
-     * @param string Candidate's personal web site.
-     * @param integer Owner user ID.
-     * @param string EEO gender, or '' to not specify.
-     * @param string EEO gender, or '' to not specify.
-     * @param string EEO veteran status, or '' to not specify.
-     * @param string EEO disability status, or '' to not specify.
-     * @return boolean True if successful; false otherwise.
-     */
-    public function update($candidateID, $isActive, $firstName, $middleName, $lastName,
-        $email1, $email2, $phoneHome, $phoneCell, $phoneWork, $address,
-        $city, $state, $zip, $source, $keySkills, $dateAvailable,
-        $currentEmployer, $canRelocate, $currentPay, $desiredPay,
-        $notes, $webSite, $bestTimeToCall, $owner, $isHot, $email, $emailAddress,
-        $gender = '', $race = '', $veteran = '', $disability = '')
-    {
-        $sql = sprintf(
-            "UPDATE
-                candidate
-            SET
-                is_active             = %s,
-                first_name            = %s,
-                middle_name           = %s,
-                last_name             = %s,
-                email1                = %s,
-                email2                = %s,
-                phone_home            = %s,
-                phone_work            = %s,
-                phone_cell            = %s,
-                address               = %s,
-                city                  = %s,
-                state                 = %s,
-                zip                   = %s,
-                source                = %s,
-                key_skills            = %s,
-                date_available        = %s,
-                current_employer      = %s,
-                current_pay           = %s,
-                desired_pay           = %s,
-                can_relocate          = %s,
-                is_hot                = %s,
-                notes                 = %s,
-                web_site              = %s,
-                best_time_to_call     = %s,
-                owner                 = %s,
-                date_modified         = NOW(),
-                eeo_ethnic_type_id    = %s,
-                eeo_veteran_type_id   = %s,
-                eeo_disability_status = %s,
-                eeo_gender            = %s
-            WHERE
-                candidate_id = %s
-            AND
-                site_id = %s",
-            ($isActive ? '1' : '0'),
-            $this->_db->makeQueryString($firstName),
-            $this->_db->makeQueryString($middleName),
-            $this->_db->makeQueryString($lastName),
-            $this->_db->makeQueryString($email1),
-            $this->_db->makeQueryString($email2),
-            $this->_db->makeQueryString($phoneHome),
-            $this->_db->makeQueryString($phoneWork),
-            $this->_db->makeQueryString($phoneCell),
-            $this->_db->makeQueryString($address),
-            $this->_db->makeQueryString($city),
-            $this->_db->makeQueryString($state),
-            $this->_db->makeQueryString($zip),
-            $this->_db->makeQueryString($source),
-            $this->_db->makeQueryString($keySkills),
-            $this->_db->makeQueryStringOrNULL($dateAvailable),
-            $this->_db->makeQueryString($currentEmployer),
-            $this->_db->makeQueryString($currentPay),
-            $this->_db->makeQueryString($desiredPay),
-            ($canRelocate ? '1' : '0'),
-            ($isHot ? '1' : '0'),
-            $this->_db->makeQueryString($notes),
-            $this->_db->makeQueryString($webSite),
-            $this->_db->makeQueryString($bestTimeToCall),
-            $this->_db->makeQueryInteger($owner),
-            $this->_db->makeQueryInteger($race),
-            $this->_db->makeQueryInteger($veteran),
-            $this->_db->makeQueryString($disability),
-            $this->_db->makeQueryString($gender),
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
-        );
-
-        $preHistory = $this->get($candidateID);
-        $queryResult = $this->_db->query($sql);
-        $postHistory = $this->get($candidateID);
-
-        $history = new History($this->_siteID);
-        $history->storeHistoryChanges(
-            DATA_ITEM_CANDIDATE, $candidateID, $preHistory, $postHistory
-        );
-
-        if (!$queryResult)
-        {
-            return false;
-        }
-
-        if (!empty($emailAddress))
-        {
-            /* Send e-mail notification. */
-            //FIXME: Make subject configurable.
-            $mailer = new Mailer($this->_siteID);
-            $mailerStatus = $mailer->sendToOne(
-                array($emailAddress, ''),
-                'CATS Notification: Candidate Ownership Change',
-                $email,
-                true
-            );
-        }
-
-        return true;
-    }
 
     /**
      * Removes a candidate and all associated records from the system.
@@ -360,92 +67,27 @@ class Candidates
      * @param integer Candidate ID to delete.
      * @return void
      */
-    public function delete($candidateID)
+    public function delete($firstCandidateID, $secondCandidateID)
     {
-        /* Delete the candidate from candidate. */
-        $sql = sprintf(
-            "DELETE FROM
-                candidate
-            WHERE
-                candidate_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
-        );
-        $this->_db->query($sql);
-
-        $history = new History($this->_siteID);
-        $history->storeHistoryDeleted(DATA_ITEM_CANDIDATE, $candidateID);
-
-        /* Delete pipeline entries from candidate_joborder. */
-        $sql = sprintf(
-            "DELETE FROM
-                candidate_joborder
-            WHERE
-                candidate_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
-        );
-        $this->_db->query($sql);
-
-        /* Delete pipeline history from candidate_joborder_status_history. */
-        $sql = sprintf(
-            "DELETE FROM
-                candidate_joborder_status_history
-            WHERE
-                candidate_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
-        );
-        $this->_db->query($sql);
-
-        /* Delete from saved lists. */
-        $sql = sprintf(
-            "DELETE FROM
-                saved_list_entry
-            WHERE
-                data_item_id = %s
-            AND
-                site_id = %s
-            AND
-                data_item_type = %s",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID,
-            DATA_ITEM_CANDIDATE
-        );
-        $this->_db->query($sql);
-        
-        /* Delete from candidate_duplicates. */
+        /* Delete the duplicate from candidate_duplicates. */
         $sql = sprintf(
             "DELETE FROM
                 candidate_duplicates
             WHERE
                 old_candidate_id = %s
+            AND
+                new_candidate_id = %s
             OR
-                new_candidate_id = %s",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_db->makeQueryInteger($candidateID)
+                new_candidate_id = %s
+            AND
+                old_candidate_id = %s"
+            ,
+            $this->_db->makeQueryInteger($firstCandidateID),
+            $this->_db->makeQueryInteger($secondCandidateID),
+            $this->_db->makeQueryInteger($firstCandidateID),
+            $this->_db->makeQueryInteger($secondCandidateID)
         );
         $this->_db->query($sql);
-
-        /* Delete attachments. */
-        $attachments = new Attachments($this->_siteID);
-        $attachmentsRS = $attachments->getAll(
-            DATA_ITEM_CANDIDATE, $candidateID
-        );
-
-        foreach ($attachmentsRS as $rowNumber => $row)
-        {
-            $attachments->delete($row['attachmentID']);
-        }
-
-        /* Delete extra fields. */
-        $this->extraFields->deleteValueByDataItemID($candidateID);
     }
 
     /**
@@ -456,108 +98,6 @@ class Candidates
      *               if no records were returned.
      */
     public function get($candidateID)
-    {
-        $sql = sprintf(
-            "SELECT
-                candidate.candidate_id AS candidateID,
-                candidate.is_active AS isActive,
-                candidate.first_name AS firstName,
-                candidate.middle_name AS middleName,
-                candidate.last_name AS lastName,
-                candidate.email1 AS email1,
-                candidate.email2 AS email2,
-                candidate.phone_home AS phoneHome,
-                candidate.phone_work AS phoneWork,
-                candidate.phone_cell AS phoneCell,
-                candidate.address AS address,
-                candidate.city AS city,
-                candidate.state AS state,
-                candidate.zip AS zip,
-                candidate.source AS source,
-                candidate.key_skills AS keySkills,
-                candidate.current_employer AS currentEmployer,
-                candidate.current_pay AS currentPay,
-                candidate.desired_pay AS desiredPay,
-                candidate.notes AS notes,
-                candidate.owner AS owner,
-                candidate.can_relocate AS canRelocate,
-                candidate.web_site AS webSite,
-                candidate.best_time_to_call AS bestTimeToCall,
-                candidate.is_hot AS isHot,
-                candidate.is_admin_hidden AS isAdminHidden,
-                DATE_FORMAT(
-                    candidate.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
-                ) AS dateCreated,
-                DATE_FORMAT(
-                    candidate.date_modified, '%%m-%%d-%%y (%%h:%%i %%p)'
-                ) AS dateModified,
-                COUNT(
-                    candidate_joborder.joborder_id
-                ) AS pipeline,
-                (
-                    SELECT
-                        COUNT(*)
-                    FROM
-                        candidate_joborder_status_history
-                    WHERE
-                        candidate_id = %s
-                    AND
-                        status_to = %s
-                    AND
-                        site_id = %s
-                ) AS submitted,
-                CONCAT(
-                    candidate.first_name, ' ', candidate.last_name
-                ) AS candidateFullName,
-                CONCAT(
-                    entered_by_user.first_name, ' ', entered_by_user.last_name
-                ) AS enteredByFullName,
-                CONCAT(
-                    owner_user.first_name, ' ', owner_user.last_name
-                ) AS ownerFullName,
-                owner_user.email AS owner_email,
-                DATE_FORMAT(
-                    candidate.date_available, '%%m-%%d-%%y'
-                ) AS dateAvailable,
-                eeo_ethnic_type.type AS eeoEthnicType,
-                eeo_veteran_type.type AS eeoVeteranType,
-                candidate.eeo_disability_status AS eeoDisabilityStatus,
-                candidate.eeo_gender AS eeoGender,
-                IF (candidate.eeo_gender = 'm',
-                    'Male',
-                    IF (candidate.eeo_gender = 'f',
-                        'Female',
-                        ''))
-                     AS eeoGenderText
-            FROM
-                candidate
-            LEFT JOIN user AS entered_by_user
-                ON candidate.entered_by = entered_by_user.user_id
-            LEFT JOIN user AS owner_user
-                ON candidate.owner = owner_user.user_id
-            LEFT JOIN candidate_joborder
-                ON candidate.candidate_id = candidate_joborder.candidate_id
-            LEFT JOIN eeo_ethnic_type
-                ON eeo_ethnic_type.eeo_ethnic_type_id = candidate.eeo_ethnic_type_id
-            LEFT JOIN eeo_veteran_type
-                ON eeo_veteran_type.eeo_veteran_type_id = candidate.eeo_veteran_type_id
-            WHERE
-                candidate.candidate_id = %s
-            AND
-                candidate.site_id = %s
-            GROUP BY
-                candidate.candidate_id",
-            $this->_db->makeQueryInteger($candidateID),
-            PIPELINE_STATUS_SUBMITTED,
-            $this->_siteID,
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
-        );
-
-        return $this->_db->getAssoc($sql);
-    }
-    
-    public function getWithDuplicity($candidateID)
     {
         $sql = sprintf(
             "SELECT
@@ -679,63 +219,6 @@ class Candidates
         return $data;
     }
 
-    /**
-     * Returns all candidate information relevent for the Edit Candidate page
-     * for a given candidate ID.
-     *
-     * @param integer Candidate ID.
-     * @return array Associative result set array of candidate data, or array()
-     *               if no records were returned.
-     */
-    public function getForEditing($candidateID)
-    {
-        $sql = sprintf(
-            "SELECT
-                candidate.candidate_id AS candidateID,
-                candidate.is_active AS isActive,
-                candidate.first_name AS firstName,
-                candidate.middle_name AS middleName,
-                candidate.last_name AS lastName,
-                candidate.email1 AS email1,
-                candidate.email2 AS email2,
-                candidate.phone_home AS phoneHome,
-                candidate.phone_work AS phoneWork,
-                candidate.phone_cell AS phoneCell,
-                candidate.address AS address,
-                candidate.city AS city,
-                candidate.state AS state,
-                candidate.zip AS zip,
-                candidate.source AS source,
-                candidate.key_skills AS keySkills,
-                candidate.current_employer AS currentEmployer,
-                candidate.current_pay AS currentPay,
-                candidate.desired_pay AS desiredPay,
-                candidate.notes AS notes,
-                candidate.owner AS owner,
-                candidate.can_relocate AS canRelocate,
-                candidate.web_site AS webSite,
-                candidate.best_time_to_call AS bestTimeToCall,
-                candidate.is_hot AS isHot,
-                candidate.eeo_ethnic_type_id AS eeoEthnicTypeID,
-                candidate.eeo_veteran_type_id AS eeoVeteranTypeID,
-                candidate.eeo_disability_status AS eeoDisabilityStatus,
-                candidate.eeo_gender AS eeoGender,
-                candidate.is_admin_hidden AS isAdminHidden,
-                DATE_FORMAT(
-                    candidate.date_available, '%%m-%%d-%%y'
-                ) AS dateAvailable
-            FROM
-                candidate
-            WHERE
-                candidate.candidate_id = %s
-            AND
-                candidate.site_id = %s",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
-        );
-
-        return $this->_db->getAssoc($sql);
-    }
 
     // FIXME: Document me.
     public function getExport($IDs)
@@ -846,36 +329,26 @@ class Candidates
      
 
     /**
-     * Returns the number of candidates in the system.  Useful
+     * Returns the number of duplicates in the system.  Useful
      * for determining if the friendly "no candidates in system"
      * should be displayed rather than the datagrid.
      *
-     * @param boolean Include administratively hidden candidates?
-     * @return integer Number of Candidates in site.
+     * @return integer Number of Duplicates in site.
      */
-    public function getCount($allowAdministrativeHidden = false)
+    public function getCount()
     {
-        if (!$allowAdministrativeHidden)
-        {
-            $adminHiddenCriterion = 'AND candidate.is_admin_hidden = 0';
-        }
-        else
-        {
-            $adminHiddenCriterion = '';
-        }
-
         $sql = sprintf(
             "SELECT
-                COUNT(*) AS totalCandidates
-            FROM
-                candidate
-            WHERE
-                candidate.site_id = %s
-            %s",
-            $this->_siteID,
-            $adminHiddenCriterion
+                COUNT(*) AS totalDuplicates
+            FROM 
+                (SELECT * 
+                    FROM candidate_duplicates
+                WHERE
+                    candidate_duplicates.site_id = %s
+                GROUP BY
+                    candidate_duplicates.new_candidate_id) as innerQuery",
+            $this->_siteID
         );
-
         return $this->_db->getColumn($sql, 0, 0);
     }
 
@@ -933,108 +406,7 @@ class Candidates
         return $this->_db->getAllAssoc($sql);
     }
 
-    /**
-     * Returns all resumes for a candidate.
-     *
-     * @param integer Candidate ID.
-     * @return array Multi-dimensional associative result set array of
-     *               candidate attachments data, or array() if no records were
-     *               returned.
-     */
-    public function getResumes($candidateID)
-    {
-        $sql = sprintf(
-            "SELECT
-                attachment.attachment_id AS attachmentID,
-                attachment.data_item_id AS candidateID,
-                attachment.title AS title,
-                attachment.text AS text
-            FROM
-                attachment
-            WHERE
-                resume = 1
-            AND
-                attachment.data_item_type = %s
-            AND
-                attachment.data_item_id = %s
-            AND
-                attachment.site_id = %s",
-            DATA_ITEM_CANDIDATE,
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
-        );
-
-        return $this->_db->getAllAssoc($sql);
-    }
-
-    /**
-     * Returns a candidate resume attachment by attachment.
-     *
-     * @param integer Attachment ID.
-     * @return array Associative result set array of candidate / attachment
-     *               data, or array() if no records were returned.
-     */
-    public function getResume($attachmentID)
-    {
-        $sql = sprintf(
-            "SELECT
-                attachment.attachment_id AS attachmentID,
-                attachment.data_item_id AS candidateID,
-                attachment.title AS title,
-                attachment.text AS text,
-                candidate.first_name AS firstName,
-                candidate.last_name AS lastName
-            FROM
-                attachment
-            LEFT JOIN candidate
-                ON attachment.data_item_id = candidate.candidate_id
-                AND attachment.site_id = candidate.site_id
-            WHERE
-                attachment.resume = 1
-            AND
-                attachment.attachment_id = %s
-            AND
-                attachment.site_id = %s",
-            $this->_db->makeQueryInteger($attachmentID),
-            $this->_siteID
-        );
-
-        return $this->_db->getAssoc($sql);
-    }
-
-    /**
-     * Returns an array of job orders data (jobOrderID, title, companyName)
-     * for the specified candidate ID.
-     *
-     * @param integer Candidate ID,
-     * @return array Multi-dimensional associative result set array of
-     *               job orders data, or array() if no records were returned.
-     */
-    public function getJobOrdersArray($candidateID)
-    {
-        $sql = sprintf(
-            "SELECT
-                joborder.joborder_id AS jobOrderID,
-                joborder.title AS title,
-                company.name AS companyName
-            FROM
-                joborder
-            LEFT JOIN company
-                ON joborder.company_id = company.company_id
-            LEFT JOIN candidate_joborder
-                ON joborder.joborder_id = candidate_joborder.joborder_id
-            WHERE
-                candidate_joborder.candidate_id = %s
-            AND
-                joborder.site_id = %s
-            ORDER BY
-                title ASC",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
-        );
-
-        return $this->_db->getAllAssoc($sql);
-     }
+    
 
     /**
      * Updates a candidate's modified timestamp.
@@ -1059,255 +431,427 @@ class Candidates
 
         return (boolean) $this->_db->query($sql);
     }
-
-    /**
-     * Returns all upcoming events for the candidate.
-     *
-     * @param integer Candidate ID.
-     * @return array Multi-dimensional associative result set array of
-     *               candidate events data, or array() if no records were
-     *               returned.
-     */
-    public function getUpcomingEvents($candidateID)
-    {
-        $calendar = new Calendar($this->_siteID);
-        return $calendar->getUpcomingEventsByDataItem(
-            DATA_ITEM_CANDIDATE, $candidateID
-        );
-    }
-
-    /**
-     * Gets all possible source suggestions for a site.
-     *
-     * @return array Multi-dimensional associative result set array of
-     *               candidate sources data.
-     */
-    public function getPossibleSources()
+   
+    public function removeDuplicity($oldCandidateID, $newCandidateID)
     {
         $sql = sprintf(
-            "SELECT
-                candidate_source.source_id AS sourceID,
-                candidate_source.name AS name
-            FROM
-                candidate_source
+                "DELETE FROM 
+                    candidate_duplicates
+                WHERE
+                    candidate_duplicates.old_candidate_id = %s
+                AND
+                    candidate_duplicates.new_candidate_id = %s",
+                 $this->_db->makeQueryStringOrNULL($oldCandidateID),
+                 $this->_db->makeQueryStringOrNULL($newCandidateID)
+            );
+        $this->_db->query($sql);
+    }
+    
+    /**
+     * Adds a duplicate to the database.
+     *
+     * @param string first candidate ID.
+     * @param string second candidate ID.
+     * @return integer 1 on success, or -1 on failure.
+     */
+    
+    public function addDuplicates($candidateID, $duplicates)
+    {
+        if(is_array($duplicates))
+        {
+            foreach($duplicates as $duplicateID)
+            {
+                $sql = sprintf(
+                            "INSERT INTO candidate_duplicates (
+                                old_candidate_id,
+                                new_candidate_id,
+                                site_id
+                             )
+                             VALUES (
+                                %s,
+                                %s,
+                                %s
+                             )",
+                             $this->_db->makeQueryString($duplicateID),
+                             $this->_db->makeQueryString($candidateID),
+                             $this->_siteID
+                        );
+                $this->_db->query($sql);
+            }
+        }
+        else if($duplicates != "")
+        {
+            $sql = sprintf(
+                            "INSERT INTO candidate_duplicates (
+                                old_candidate_id,
+                                new_candidate_id,
+                                site_id
+                             )
+                             VALUES (
+                                %s,
+                                %s,
+                                %s
+                             )",
+                             $this->_db->makeQueryString($duplicates),
+                             $this->_db->makeQueryString($candidateID),
+                             $this->_siteID
+                        );
+                $this->_db->query($sql);
+        }
+    }
+    
+    
+    
+    public function mergeDuplicates($params, $rs)
+    {
+        $oldCandidateID = $params['oldCandidateID'];
+        $newCandidateID = $params['newCandidateID']; 
+         $sql = sprintf(
+            "UPDATE
+                activity
+            SET
+                data_item_id = %s
             WHERE
-                candidate_source.site_id = %s
-            ORDER BY
-                candidate_source.name ASC",
+                data_item_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
             $this->_siteID
         );
 
-        return $this->_db->getAllAssoc($sql);
-    }
-
-    /**
-     * Updates a sites possible sources with an array generated
-     * by getDifferencesFromList (ListEditor.php).
-     *
-     * @param array Result of ListEditor::getDifferencesFromList().
-     * @return void
-     */
-    public function updatePossibleSources($updates)
-    {
-        $history = new History($this->_siteID);
-
-        foreach ($updates as $update)
-        {
-            switch ($update[2])
-            {
-                case LIST_EDITOR_ADD:
-                    $sql = sprintf(
-                        "INSERT INTO candidate_source (
-                            name,
-                            site_id,
-                            date_created
-                         )
-                         VALUES (
-                            %s,
-                            %s,
-                            NOW()
-                         )",
-                         $this->_db->makeQueryString($update[0]),
-                         $this->_siteID
-                    );
-                    $this->_db->query($sql);
-
-                    break;
-
-                case LIST_EDITOR_REMOVE:
-                    $sql = sprintf(
-                        "DELETE FROM
-                            candidate_source
-                         WHERE
-                            source_id = %s
-                         AND
-                            site_id = %s",
-                         $update[1],
-                         $this->_siteID
-                    );
-                    $this->_db->query($sql);
-
-                    break;
-
-                case LIST_EDITOR_MODIFY:
-                    $sql = sprintf(
-                        "SELECT
-                            name
-                         FROM
-                            candidate_source
-                         WHERE
-                            source_id = %s
-                         AND
-                            site_id = %s",
-                         $this->_db->makeQueryInteger($update[1]),
-                         $this->_siteID
-                    );
-                    $firstSource = $this->_db->getAssoc($sql);
-
-                    $sql = sprintf(
-                        "UPDATE
-                            candidate
-                         SET
-                            source = %s
-                         WHERE
-                            source = %s
-                         AND
-                            site_id = %s",
-                         $update[1],
-                         $this->_db->makeQueryString($firstSource['name']),
-                         $this->_siteID
-                    );
-                    $this->_db->query($sql);
-
-                    $sql = sprintf(
-                        "UPDATE
-                            candidate_source
-                         SET
-                            name = %s
-                         WHERE
-                            source_id = %s
-                         AND
-                            site_id = %s",
-                         $this->_db->makeQueryString($update[0]),
-                         $this->_db->makeQueryInteger($update[1]),
-                         $this->_siteID
-                    );
-                    $this->_db->query($sql);
-
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Changes the administrative hide / show flag.
-     * Only can be accessed by a MSA or higher user.
-     *
-     * @param integer Candidate ID.
-     * @param boolean Administratively hide this candidate?
-     * @return boolean Was the query executed successfully?
-     */    
-    public function administrativeHideShow($candidateID, $state)
-    {
+        echo $this->_db->query($sql);
+        
         $sql = sprintf(
             "UPDATE
-                candidate
+                attachment
             SET
-                is_admin_hidden = %s
+                data_item_id = %s
+            WHERE
+                data_item_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
+            $this->_siteID
+        );
+
+        echo $this->_db->query($sql);
+        
+        $sql = sprintf(
+            "UPDATE
+                calendar_event
+            SET
+                data_item_id = %s
+            WHERE
+                data_item_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
+            $this->_siteID
+        );
+
+        echo $this->_db->query($sql);
+        
+        $sql = sprintf(
+            "DELETE FROM
+                candidate_duplicates
+            WHERE
+                new_candidate_id = %s",
+            $this->_db->makeQueryInteger($newCandidateID)
+        );
+
+        echo $this->_db->query($sql);
+        
+        $sql = sprintf(
+            "UPDATE 
+                candidate_duplicates
+            SET
+                old_candidate_id = %s
+            WHERE
+                old_candidate_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID)
+        );
+        
+        echo $this->_db->query($sql);
+        
+         $sql = sprintf(
+            "UPDATE
+                candidate_joborder
+            SET
+                candidate_id = %s
             WHERE
                 candidate_id = %s
             AND
                 site_id = %s",
-            ($state ? 1 : 0),
-            $this->_db->makeQueryInteger($candidateID),
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
             $this->_siteID
         );
 
-        return (boolean) $this->_db->query($sql);
-    }
-    
-    public function checkDuplicity($firstName, $middleName, $lastName, $email1, $email2, $phoneHome, $phoneCell, $phoneWork, $address, $city)
-    {
-        $sql = sprintf(
-            "SELECT
-                candidate.candidate_id AS candidateID,
-                candidate.middle_name AS middleName,
-                candidate.phone_home AS phoneHome,
-                candidate.phone_cell AS phoneCell,
-                candidate.phone_work AS phoneWork,
-                candidate.email1 AS email1,
-                candidate.email2 AS email2,
-                candidate.address AS address,
-                candidate.city AS city
-            FROM
-                candidate
+        echo $this->_db->query($sql);
+        
+         $sql = sprintf(
+            "UPDATE
+                candidate_joborder_status_history
+            SET
+                candidate_id = %s
             WHERE
-                candidate.first_name = %s AND
-                candidate.last_name = %s",
-            $this->_db->makeQueryStringOrNULL($firstName),
-            $this->_db->makeQueryStringOrNULL($lastName)
+                candidate_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
+            $this->_siteID
+        );
+
+        echo $this->_db->query($sql);
+        
+         $sql = sprintf(
+            "UPDATE
+                candidate_tag
+            SET
+                candidate_id = %s
+            WHERE
+                candidate_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
+            $this->_siteID
+        );
+
+        echo $this->_db->query($sql);
+        
+         $sql = sprintf(
+            "UPDATE
+                saved_list_entry
+            SET
+                data_item_id = %s
+            WHERE
+                data_item_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
+            $this->_siteID
+        );
+
+        echo $this->_db->query($sql);
+        
+        
+        $update = " ";
+        $comma = false;
+        
+        if($params['firstName'] == "1")
+        {
+            $update .= "first_name = '" . $rs['firstName']."'";
+            $comma = true;
+        }
+        if($params['middleName'] == "1")
+        {
+            if($comma)
+            {
+                $update .= ", ";
+            }
+            $update .= "middle_name = '" . $rs['middleName']."'";
+            $comma = true;
+        }
+        if($params['lastName'] == "1")
+        {
+            if($comma)
+            {
+                $update .= ", ";
+            }
+            $update .= "last_name = '" . $rs['lastName']."'";
+            $comma = true;
+        }
+        if($params['phoneCell'] == "1")
+        {
+            if($comma)
+            {
+                $update .= ", ";
+            }
+            $update .= "phone_cell = '" . $rs['phoneCell']."'";
+            $comma = true;
+        }
+        if($params['phoneWork'] == "1")
+        {
+            if($comma)
+            {
+                $update .= ", ";
+            }
+            $update .= "phone_work = '" . $rs['phoneWork']."'";
+            $comma = true;
+        }
+        if($params['phoneHome'] == "1")
+        {
+            if($comma)
+            {
+                $update .= ", ";
+            }
+            $update .= "phone_home = '" . $rs['phoneHome']."'";
+            $comma = true;
+        }
+        if($params['address'] == "1")
+        {
+            if($comma)
+            {
+                $update .= ", ";
+            }
+            $update .= "address = '" . $rs['address'] . "', city = '" . $rs['city'] . "', zip = '" . $rs['zip'] . "', state = '" . $rs['state'] . "'";
+            $comma = true;
+        }
+        if($params['website'] == "1")
+        {
+            if($comma)
+            {
+                $update .= ", ";
+            }
+            $update .= "web_site = '" . $rs['webSite'] . "'";
+            $comma = true;
+        }
+        if(sizeof($params['emails']) == 1)
+        {
+            if($comma)
+            {
+                $update .= ", ";
+            }
+            $update .= "email1 = '" . $params['emails'][0]."'";
+            $comma = true;
+        }else if(sizeof($params['emails']) == 2)
+        {
+            if($comma)
+            {
+                $update .= ", ";
+                $comma = false;
+            }
+            if($params['emails'][0] != "")
+            {
+                $update .= "email1 = '" . $params['emails'][0] . "'";
+                $comma = true;
+            }
+            if(comma)
+            {
+                $update .= ", ";
+            }
+            if($params['emails'][1] != "")
+            {
+                $update .= "email2 = '" . $params['emails'][1] . "'";
+            }
+            $comma = true;
+        }
+        if(comma){
+           $update .= ", "; 
+        }
+        $dateAvailable = $rs['dateAvailable'];
+        $dateParts = explode("-", $dateAvailable);
+        $dateAvailable = "20" . $dateParts[2] . "-" . $dateParts[0] . "-" . $dateParts[1] . " 00:00:00";
+        $update .= "is_active = " . $rs['isActive'] . ", " .
+                    "current_employer = '" . $rs['currentEmployer'] . "', " .
+                    "current_pay = '" . $rs['currentPay'] . "', " .     
+                    "desired_pay = '" . $rs['desiredPay'] . "', " .  
+                    "can_relocate = " . $rs['canRelocate'] . ", " .  
+                    "best_time_to_call = '" . $rs['bestTimeToCall'] . "', " .
+                    "is_hot = " . $rs['isHot'] . ", " . 
+                    "date_modified = NOW()";
+        $comma = true;
+        if($rs['source'] != "" && $rs['source'] != "(none)")
+        {
+            if($comma){$update .= ", ";}
+            $update.= "source = IFNULL(CONCAT(source, ', ".$rs['source'] . "'), '" . $rs['source'] . "')";
+            $comma = true;
+        }
+        if($rs['keySkills'] != "")
+        {   
+            if($comma){$update .= ", ";}    
+            $update .= "key_skills = IFNULL(CONCAT(key_skills, ', ".$rs['keySkills']."'), '" . $rs['keySkills'] . "')";
+            $comma = true;
+        }
+        if($rs['notes'] != "")
+        { 
+            if($comma){$update .= ", ";}  
+            $update .= "notes = IFNULL(CONCAT(notes, ', ".$rs['notes']."'), '" . $rs['notes'] . "')";
+            $comma = true;
+        }
+        if($rs['date_available'] != "")
+        { 
+            if($comma){$update .= ", ";}  
+            $update .= "date_available = '".$dateAvailable."' ";
+        }
+        
+        $sql = sprintf(
+            "UPDATE
+                candidate
+            SET
+                %s 
+            WHERE
+                candidate_id = %s
+            AND
+                site_id = %s",
+            $update,
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_siteID
         );
         
-        $rs = $this->_db->getAllAssoc($sql);
+        if($this->_db->query($sql))
+        {
+            $sql = sprintf(
+                "DELETE FROM
+                    candidate
+                WHERE
+                    candidate_id = %s",
+                $this->_db->makeQueryInteger($newCandidateID)
+            );
+            echo $this->_db->query($sql);
+        }
         
-        $duplicatesID = array();
+        //TO-DO:  delete new candidate
+    }
+    
+    public function checkIfLinked($oldCandidateID, $newCandidateID)
+    {
+        if($oldCandidateID == $newCandidateID)
+        {
+            return true;
+        }
+        
+        $sql = sprintf(
+            "SELECT 
+                candidate_duplicates.old_candidate_id as oldCandidateID,
+                candidate_duplicates.new_candidate_id as newCandidateID
+            FROM
+                candidate_duplicates
+            WHERE
+                candidate_duplicates.old_candidate_id = %s
+            AND
+                candidate_duplicates.new_candidate_id = %s
+            OR
+                candidate_duplicates.old_candidate_id = %s
+            AND
+                candidate_duplicates.new_candidate_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
+            $this->_db->makeQueryInteger($oldCandidateID)
+        );
+        $rs = $this->_db->getAllAssoc($sql);
         
         if($rs && !$this->_db->isEOF())
         {
-            $phoneNumbers = array();
-            
-            if($phoneHome != ""){array_push($phoneNumbers, $phoneHome);}
-            if($phoneCell != ""){array_push($phoneNumbers, $phoneCell);}
-            if($phoneWork != ""){array_push($phoneNumbers, $phoneWork);}
-            
-            $phoneNumbers = array_map('strtolower', $phoneNumbers);
-            
-            
-            foreach($rs as $row)
-            {   
-                $phoneNumbersDB = array();
-                if($row['phoneHome'] != ""){array_push($phoneNumbersDB, $row['phoneHome']);}
-                if($row['phoneCell'] != ""){array_push($phoneNumbersDB, $row['phoneCell']);}
-                if($row['phoneWork'] != ""){array_push($phoneNumbersDB, $row['phoneWork']);}
-                $phoneNumbersDB = array_map('strtolower', $phoneNumbersDB);
-                
-                if (strtolower($row['middleName']) == strtolower($middleName) && $middleName != "")
-                {
-                    array_push($duplicatesID, $row['candidateID']);
-                }
-                else if(sizeof(array_diff($phoneNumbers, $phoneNumbersDB)) != sizeof($phoneNumbers) || sizeof(array_diff($phoneNumbersDB, $phoneNumbers)) != sizeof($phoneNumbersDB))
-                {
-                    array_push($duplicatesID, $row['candidateID']);
-                }
-                else if((strtolower($email1) == strtolower($row['email1']) && $email1!= "" ) || (strtolower($email1) == strtolower($row['email2']) && $email1!= "") || 
-                        (strtolower($email2) == strtolower($row['email1']) && $email2!= "" ) || (strtolower($email2) == strtolower($row['email2'])) && $email2!= "")
-                {
-                    array_push($duplicatesID, $row['candidateID']);
-                }
-                else if(strtolower($city) == strtolower($row['city']) && $city != "")
-                {
-                    if(strtolower($address) == strtolower[$row['address']] && $address != "")
-                    {
-                         array_push($duplicatesID, $row['candidateID']);
-                    }
-                }
-            }
-            
-            return $duplicatesID;
-            
+            return true;
         }
         else
         {
-            return $duplicatesID;    
-        }   
+            return false;
+        }
     }
 }
 
 
-class CandidatesDataGrid extends DataGrid
+class DuplicatesDataGrid extends DataGrid
 {
     protected $_siteID;
 
@@ -1340,7 +884,7 @@ class CandidatesDataGrid extends DataGrid
                                                     {
                                                         $return .= \'<img src="images/mru/blank.gif" alt="" width="16" height="16" />\';
                                                     }
-
+                                                    
                                                     return $return;
                                                    ',
 
@@ -1351,8 +895,11 @@ class CandidatesDataGrid extends DataGrid
                                                         ON candidate_joborder_submitted.candidate_id = candidate.candidate_id
                                                         AND candidate_joborder_submitted.status >= '.PIPELINE_STATUS_SUBMITTED.'
                                                         AND candidate_joborder_submitted.site_id = '.$this->_siteID.'
-                                                        AND candidate_joborder_submitted.status != '.PIPELINE_STATUS_NOTINCONSIDERATION,
-                                     'pagerWidth'    => 34,
+                                                        AND candidate_joborder_submitted.status != '.PIPELINE_STATUS_NOTINCONSIDERATION.'
+                                                    INNER JOIN candidate_duplicates 
+                                                        ON candidate.candidate_id = candidate_duplicates.new_candidate_id
+                                   ',
+                                     'pagerWidth'    => 70,
                                      'pagerOptional' => true,
                                      'pagerNoTitle' => true,
                                      'sizable'  => false,
@@ -1360,7 +907,7 @@ class CandidatesDataGrid extends DataGrid
                                      'filterable' => false),
 
             'First Name' =>     array('select'         => 'candidate.first_name AS firstName',
-                                      'pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'candidateID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';',
+                                      'pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=duplicates&amp;a=show&amp;candidateID=\'.$rsData[\'candidateID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';',
                                       'sortableColumn' => 'firstName',
                                       'pagerWidth'     => 75,
                                       'pagerOptional'  => false,
@@ -1369,7 +916,7 @@ class CandidatesDataGrid extends DataGrid
 
             'Last Name' =>      array('select'         => 'candidate.last_name AS lastName',
                                      'sortableColumn'  => 'lastName',
-                                     'pagerRender'     => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'candidateID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';',
+                                     'pagerRender'     => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=duplicates&amp;a=show&amp;candidateID=\'.$rsData[\'candidateID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';',
                                      'pagerWidth'      => 85,
                                      'pagerOptional'   => false,
                                      'alphaNavigation' => true,
@@ -1720,124 +1267,6 @@ class CandidatesDataGrid extends DataGrid
         );
 
         return $sql;
-    }
-}
-
-/**
- *  EEO Settings Library
- *  @package    CATS
- *  @subpackage Library
- */
-class EEOSettings
-{
-    private $_db;
-    private $_siteID;
-    private $_userID;
-
-
-    public function __construct($siteID)
-    {
-        $this->_siteID = $siteID;
-        // FIXME: Factor out Session dependency.
-        $this->_userID = $_SESSION['CATS']->getUserID();
-        $this->_db = DatabaseConnection::getInstance();
-    }
-
-
-    /**
-     * Returns all EEO settings for a site.
-     *
-     * @return array (setting => value)
-     */
-    public function getAll()
-    {
-        /* Default values. */
-        $settings = array(
-            'enabled' => '0',
-            'genderTracking' => '0',
-            'ethnicTracking' => '0',
-            'veteranTracking' => '0',
-            'veteranTracking' => '0',
-            'disabilityTracking' => '0',
-            'canSeeEEOInfo' => false
-        );
-
-        $sql = sprintf(
-            "SELECT
-                settings.setting AS setting,
-                settings.value AS value,
-                settings.site_id AS siteID
-            FROM
-                settings
-            WHERE
-                settings.site_id = %s
-            AND
-                settings.settings_type = %s",
-            $this->_siteID,
-            SETTINGS_EEO
-        );
-        $rs = $this->_db->getAllAssoc($sql);
-
-        /* Override default settings with settings from the database. */
-        foreach ($rs as $rowIndex => $row)
-        {
-            foreach ($settings as $setting => $value)
-            {
-                if ($row['setting'] == $setting)
-                {
-                    $settings[$setting] = $row['value'];
-                }
-            }
-        }
-
-        $settings['canSeeEEOInfo'] = $_SESSION['CATS']->canSeeEEOInfo();
-
-        return $settings;
-    }
-
-    /**
-     * Sets an EEO setting for a site.
-     *
-     * @param string Setting name
-     * @param string Setting value
-     * @return void
-     */
-    public function set($setting, $value)
-    {
-        $sql = sprintf(
-            "DELETE FROM
-                settings
-            WHERE
-                settings.setting = %s
-            AND
-                site_id = %s
-            AND
-                settings_type = %s",
-            $this->_db->makeQueryStringOrNULL($setting),
-            $this->_siteID,
-            SETTINGS_EEO
-        );
-        $this->_db->query($sql);
-
-        $sql = sprintf(
-            "INSERT INTO settings (
-                setting,
-                value,
-                site_id,
-                settings_type
-            )
-            VALUES (
-                %s,
-                %s,
-                %s,
-                %s
-            )",
-            $this->_db->makeQueryStringOrNULL($setting),
-            $this->_db->makeQueryStringOrNULL($value),
-            $this->_siteID,
-            SETTINGS_EEO
-         );
-         $this->_db->query($sql);
     }
 }
 

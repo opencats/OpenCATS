@@ -1,4 +1,15 @@
-<?php /* $Id: Show.tpl 3814 2007-12-06 17:54:28Z brian $ */ ?>
+<?php
+/**
+* Duplicates show template
+* @package OpenCATS
+* @subpackage modules/duplicates
+* @copyright (C) OpenCats
+* @license GNU/GPL, see license.txt
+* OpenCATS is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License 2
+* as published by the Free Software Foundation.
+*/
+?>
 <?php if ($this->isPopup): ?>
     <?php TemplateUtility::printHeader('Candidate - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js', 'js/attachment.js')); ?>
 <?php else: ?>
@@ -16,17 +27,27 @@
                     <td width="3%">
                         <img src="images/candidate.gif" width="24" height="24" border="0" alt="Candidates" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Candidates: Candidate Details</h2></td>
+                    <td><h2>Duplicates: Duplicate Details
+                        <?php if(!empty($this->data['isDuplicate'])): ?>
+                        <img src="images/wf_error.gif" alt="duplicate_warning" width="20" height="20" border="0" title="Possible duplicate" />
+                        <?php foreach($this->data['isDuplicate'] as $item): ?>
+                            <?php echo '<a href='.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID='.$item['duplicateTo'].' target=_blank>Duplicate</a>' ?>
+                            <?php TemplateUtility::printSingleQuickActionMenu(DATA_ITEM_DUPLICATE, $this->data['candidateID'], 
+                            urlencode(CATSUtility::getIndexName().'?m=duplicates&a=merge&oldCandidateID='.$item['duplicateTo'].'&newCandidateID='.$this->data['candidateID']),
+                            urlencode(CATSUtility::getIndexName().'?m=duplicates&a=removeDuplicity&oldCandidateID='.$item['duplicateTo'].'&newCandidateID='.$this->data['candidateID'])); ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                        </h2></td>
                </tr>
             </table>
 
-            <p class="note">Candidate Details</p>
+            <p class="note">Duplicate Details</p>
 
             <?php if ($this->data['isAdminHidden'] == 1): ?>
                 <p class="warning">This Candidate is hidden.  Only CATS Administrators can view it or search for it.  To make it visible by the site users, click <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=administrativeHideShow&amp;candidateID=<?php echo($this->candidateID); ?>&amp;state=0" style="font-weight:bold;">Here.</a></p>
             <?php endif; ?>
 
-            <table class="detailsOutside">
+            <table class="detailsOutside" width="925">
                 <tr style="vertical-align:top;">
                     <?php $profileImage = false; ?>
                     <?php foreach ($this->attachmentsRS as $rowNumber => $attachmentsData): ?>
@@ -44,13 +65,13 @@
                                 <td class="vertical">Name:</td>
                                 <td class="data">
                                     <span style="font-weight: bold;" class="<?php echo($this->data['titleClass']); ?>">
+                                        <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=show&amp;candidateID=<?php echo($this->candidateID); ?>&amp;state=0" style="font-weight:bold;" target=_blank>
                                         <?php $this->_($this->data['firstName']); ?>
                                         <?php $this->_($this->data['middleName']); ?>
-                                        <?php $this->_($this->data['lastName']); ?>
+                                            <?php $this->_($this->data['lastName']); ?></a>
                                         <?php if ($this->data['isActive'] != 1): ?>
                                             &nbsp;<span style="color:orange;">(INACTIVE)</span>
                                         <?php endif; ?>
-                                        <?php TemplateUtility::printSingleQuickActionMenu(DATA_ITEM_CANDIDATE, $this->data['candidateID']); ?>
                                     </span>
                                 </td>
                             </tr>
@@ -230,7 +251,7 @@
             </table>
 
             <?php if($this->EEOSettingsRS['enabled'] == 1): ?>
-                <table class="detailsOutside">
+                <table class="detailsOutside" width="925">
                     <tr>
                         <td>
                             <table class="detailsInside">
@@ -268,7 +289,7 @@
                 </table>
             <?php endif; ?>
 
-            <table class="detailsOutside">
+            <table class="detailsOutside" width="925">
                 <tr>
                     <td>
                         <table class="detailsInside">
@@ -302,11 +323,7 @@
                                         </a>
                                     </div>
                                 <?php endforeach; ?>
-                                <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
-                                    <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addActivityChangeStatus&amp;candidateID=<?php echo($this->candidateID); ?>&amp;jobOrderID=-1&amp;onlyScheduleEvent=true', 600, 350, null); return false;">
-                                        <img src="images/calendar_add.gif" width="16" height="16" border="0" alt="Schedule Event" class="absmiddle" />&nbsp;Schedule Event
-                                    </a>
-                                <?php endif; ?>
+                                
                                 </td>
                             </tr>
 
@@ -357,41 +374,14 @@
                                                     </td>
                                                     <td><?php echo($attachmentsData['previewLink']); ?></td>
                                                     <td><?php $this->_($attachmentsData['dateCreated']) ?></td>
-                                                    <td>
-                                                        <?php if (!$this->isPopup): ?>
-                                                            <?php if ($this->accessLevel >= ACCESS_LEVEL_DELETE): ?>
-                                                                <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=deleteAttachment&amp;candidateID=<?php echo($this->candidateID); ?>&amp;attachmentID=<?php $this->_($attachmentsData['attachmentID']) ?>" onclick="javascript:return confirm('Delete this attachment?');">
-                                                                    <img src="images/actions/delete.gif" alt="" width="16" height="16" border="0" title="Delete" />
-                                                                </a>
-                                                            <?php endif; ?>
-                                                        <?php endif; ?>
-                                                    </td>
                                                 </tr>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
                                     </table>
-                                    <?php if (!$this->isPopup): ?>
-                                        <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
-                                            <?php if (isset($this->attachmentLinkHTML)): ?>
-                                                <?php echo($this->attachmentLinkHTML); ?>
-                                            <?php else: ?>
-                                                <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=createAttachment&amp;candidateID=<?php echo($this->candidateID); ?>', 400, 125, null); return false;">
-                                            <?php endif; ?>
-                                                <img src="images/paperclip_add.gif" width="16" height="16" border="0" alt="Add Attachment" class="absmiddle" />&nbsp;Add Attachment
-                                            </a>
-                                        <?php endif; ?>
-                                    <?php endif; ?>
                                 </td>
                             </tr>
                             <tr>
                                 <td valign="top" class="vertical">Tags:
-                                    <?php if (!$this->isPopup){ ?>
-                                        <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT){ ?>
-                                                <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addCandidateTags&amp;candidateID=<?php echo($this->candidateID); ?>', 400, 125, null); return false;">
-                                                Add/Remove
-                                            </a>
-                                        <?php } ?>
-                                    <?php } ?>
 
                                 </td>
                                 <td valign="top" class="data"><?= implode(', ',$this->assignedTags) ?>
@@ -402,39 +392,9 @@
                 </tr>
             </table>
 <?php if (!$this->isPopup): ?>
-            <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
-                <a id="edit_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=edit&amp;candidateID=<?php echo($this->candidateID); ?>">
-                    <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="edit" border="0" />&nbsp;Edit
-                </a>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-            <?php endif; ?>
-            <?php if ($this->accessLevel >= ACCESS_LEVEL_DELETE): ?>
-                <a id="delete_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=delete&amp;candidateID=<?php echo($this->candidateID); ?>" onclick="javascript:return confirm('Delete this candidate?');">
-                    <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;Delete
-                </a>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-            <?php endif; ?>
             <?php if ($this->privledgedUser): ?>
                 <a id="history_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=viewItemHistory&amp;dataItemType=100&amp;dataItemID=<?php echo($this->candidateID); ?>">
                     <img src="images/icon_clock.gif" width="16" height="16" class="absmiddle"  border="0" />&nbsp;View History
-                </a>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-            <?php endif; ?>
-            <?php if ($this->accessLevel >= ACCESS_LEVEL_MULTI_SA): ?>
-                <?php if ($this->data['isAdminHidden'] == 1): ?>
-                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=administrativeHideShow&amp;candidateID=<?php echo($this->candidateID); ?>&amp;state=0">
-                        <img src="images/resume_preview_inline.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;Administrative Show
-                    </a>
-                    <?php else: ?>
-                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=administrativeHideShow&amp;candidateID=<?php echo($this->candidateID); ?>&amp;state=1">
-                        <img src="images/resume_preview_inline.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;Administrative Hide
-                    </a>
-                <?php endif; ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-            <?php endif; ?>
-            <?php if ($this->accessLevel >= ACCESS_LEVEL_SA): ?>
-                <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=duplicates&amp;a=linkDuplicate&amp;candidateID=<?php echo($this->candidateID); ?>', 750, 390, null); return false;">
-                    <img src="images/actions/duplicates.png" width="16" height="16" class="absmiddle" alt="add duplicate" border="0" />&nbsp;Link duplicate
                 </a>
                 &nbsp;&nbsp;&nbsp;&nbsp;
             <?php endif; ?>
@@ -443,7 +403,7 @@
             <br />
 
             <p class="note">Job Order Pipeline</p>
-            <table class="sortablepair">
+            <table class="sortablepair" width="925">
                 <tr>
                     <th></th>
                     <th align="left">Match</th>
@@ -531,19 +491,12 @@
                 <?php endforeach; ?>
             </table>
 
-<?php if (!$this->isPopup): ?>
-            <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
-                <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=considerForJobSearch&amp;candidateID=<?php echo($this->candidateID); ?>', 750, 390, null); return false;">
-                    <img src="images/consider.gif" width="16" height="16" class="absmiddle" alt="Add to Pipeline" border="0" />&nbsp;Add This Candidate to Job Order Pipeline
-                </a>
-            <?php endif; ?>
-<?php endif; ?>
             <br clear="all" />
             <br />
 
             <p class="note">Activity</p>
 
-            <table id="activityTable" class="sortable">
+            <table id="activityTable" class="sortable" width="925">
                 <tr>
                     <th align="left" width="125">Date</th>
                     <th align="left" width="90">Type</th>
@@ -581,11 +534,6 @@
             </table>
 <?php if (!$this->isPopup): ?>
             <div id="addActivityDiv">
-                <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
-                    <a href="#" id="addActivityLink" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addActivityChangeStatus&amp;candidateID=<?php echo($this->candidateID); ?>&amp;jobOrderID=-1', 600, 480, null); return false;">
-                        <img src="images/new_activity_inline.gif" width="16" height="16" class="absmiddle" title="Log an Activity / Change Status" alt="Log an Activity / Change Status" border="0" />&nbsp;Log an Activity
-                    </a>
-                <?php endif; ?>
                 <img src="images/indicator2.gif" id="addActivityIndicator" alt="" style="visibility: hidden; margin-left: 5px;" height="16" width="16" />
             </div>
         </div>
@@ -593,4 +541,7 @@
 
 <?php endif; ?>
 	
+
+
+    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

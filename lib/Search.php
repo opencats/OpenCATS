@@ -375,7 +375,50 @@ class SearchCandidates
         $this->_userID = $_SESSION['CATS']->getUserID();
     }
     
-    
+     /**
+     * Returns all candidates.
+     *
+     * @param string wildcard match string
+     * @return array candidates data
+     */
+    public function all($wildCardString, $sortBy, $sortDirection)
+    {
+
+        $sql = sprintf(
+            "SELECT
+                candidate.candidate_id AS candidateID,
+                candidate.first_name AS firstName,
+                candidate.last_name AS lastName,
+                candidate.city AS city,
+                candidate.state AS state,
+                candidate.phone_home AS phoneHome,
+                candidate.phone_cell AS phoneCell,
+                candidate.key_skills AS keySkills,
+                candidate.email1 AS email1,
+                owner_user.first_name AS ownerFirstName,
+                owner_user.last_name AS ownerLastName,
+                DATE_FORMAT(
+                    candidate.date_created, '%%m-%%d-%%y'
+                ) AS dateCreated,
+                DATE_FORMAT(
+                    candidate.date_modified, '%%m-%%d-%%y'
+                ) AS dateModified
+            FROM
+                candidate
+            LEFT JOIN user AS owner_user
+                ON candidate.owner = owner_user.user_id
+            WHERE
+                candidate.site_id = %s
+            ORDER BY
+                %s %s",
+            $this->_siteID,
+            $sortBy,
+            $sortDirection
+        );
+
+        return $this->_db->getAllAssoc($sql);
+    }
+
     /**
      * Returns all candidates with full names matching $wildCardString.
      *
