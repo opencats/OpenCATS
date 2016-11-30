@@ -1,6 +1,6 @@
 This application is available under two licenses.
-1) OpenCATS code is under Mozilla Public License 2.0
-2) Original code is under CATS Public License Version 1.1a
+ 1) OpenCATS code is under Mozilla Public License 2.0
+ 2) Original code is under CATS Public License Version 1.1a
 
 
 Mozilla Public License Version 2.0
@@ -378,9 +378,8 @@ Exhibit B - "Incompatible With Secondary Licenses" Notice
   defined by the Mozilla Public License, v. 2.0.
   
   
-
-                CATS Public License Version 1.1a
-
+CATS Public License Version 1.1a
+==================================
 
 The CATS Public License Version ("CPL") consists of the Mozilla Public
 License Version 1.1, modified to be specific to CATS, with the Additional
