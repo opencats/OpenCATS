@@ -31,7 +31,7 @@ class ZipLookup
 
 	if ($zip != '') {
 		if (($oXml = simplexml_load_file($sUrl . $zip))) {
-			foreach($oXml->result->address_component as $key => $value) {
+			foreach($oXml->result->address_component as $value) {
 				if ($value->type == 'route') {
 					$aAddress[1] = (string) $value->long_name;
 				}
