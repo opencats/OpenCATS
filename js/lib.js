@@ -565,8 +565,21 @@ function CityState_populate(zipEditID, indicatorID)
             return;
         }
 
+	var addressNode = http.responseXML.getElementsByTagName('address').item(0);
         var cityNode  = http.responseXML.getElementsByTagName('city').item(0);
         var stateNode = http.responseXML.getElementsByTagName('state').item(0);
+
+	if (document.getElementById('address'))
+        {
+            if (addressNode.firstChild)
+            {
+                document.getElementById('address').value = addressNode.firstChild.nodeValue;
+            }
+            else
+            {
+                document.getElementById('address').value = '';
+            }
+        }
 
         if (document.getElementById('city'))
         {
@@ -1083,11 +1096,8 @@ function rot13(theString)
 
 /*
 PROJECT: Javascript Based Base64 Encoding and Decoding Engine
-
 DATE: 02/10/2004
-
 AUTHOR: Adrian Bacon
-
 COPYRIGHT: You are free to use this code as you see fit provided
 that you send any changes or modifications back to me.
 */
@@ -1127,5 +1137,3 @@ function decode64(input)
 
    return output;
 }
-
-
