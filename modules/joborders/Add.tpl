@@ -125,10 +125,15 @@
                             </td>
                             <td class="tdData">
                                 <select tabindex="7" id="type" name="type" class="inputbox" style="width: 150px;">
-                                    <option value="H"   <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == 'H') echo('selected'); ?>>H (Hire)</option>
-                                    <option value="C2H" <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == 'C2H') echo('selected'); ?>>C2H (Contract to Hire)</option>
-                                    <option value="C"   <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == 'C') echo('selected'); ?>>C (Contract)</option>
-                                    <option value="FL"  <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == 'FL') echo('selected'); ?>>FL (Freelance)</option>
+                                <?php foreach($this->jobTypes as $jobTypeShort => $jobTypeLong): ?>
+                                    <option value="<?php echo $jobTypeShort ?>" 
+                                            <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == $jobTypeShort) echo('selected'); ?>>
+                                            <?php echo $jobTypeShort." (".$jobTypeLong.")";?>
+                                    </option>
+                                <?php endforeach; ?>
+                                <?php if(count($this->jobTypes) < 1): ?>
+                                    <option value="N/A" selected>N/A (Not Applicable)</option>
+                                <?php endif; ?>
                                 </select>&nbsp;*
                             </td>
                         </tr>

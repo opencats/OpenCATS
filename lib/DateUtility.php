@@ -277,7 +277,7 @@ class DateUtility
      * @param integer number of days to subtract
      * @return integer calculated past timestamp
      */
-    public function subtractDaysFromDate($startDate, $daysToSubtract)
+    public static function subtractDaysFromDate($startDate, $daysToSubtract)
     {
         return self::addDaysToDate($startDate, ($daysToSubtract * -1));
     }
@@ -289,7 +289,7 @@ class DateUtility
      * @param integer number of days to add
      * @return integer calculated future timestamp
      */
-    public function addDaysToDate($startDate, $daysToAdd)
+    public static function addDaysToDate($startDate, $daysToAdd)
     {
         return mktime(
             0,
@@ -309,7 +309,7 @@ class DateUtility
      * @param integer date timestamp (optional)
      * @return integer week number
      */
-    public function getWeekNumber($date = false)
+    public static function getWeekNumber($date = false)
     {
         if ($date === false)
         {
