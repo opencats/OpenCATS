@@ -148,7 +148,7 @@ header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
         <br />
         <p class="note">CATS Installation Test</p>
 <?php
-echo '<table class="test_output">';
+echo '<table class="table table-bordered">';
 
 $proceed = true;
 $warningsOccurred = false;

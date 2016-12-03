@@ -1,109 +1,99 @@
-<?php /* $Id: Login.tpl 3530 2007-11-09 18:28:10Z brian $ */ ?>
+<?php /* $Id: Login.tpl 3530 2016-12-02 18:28:10Z Bloafer $ */ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
     <head>
         <title>opencats - Login</title>
+        <link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
         <meta http-equiv="Content-Type" content="text/html; charset=<?php echo(HTML_ENCODING); ?>" />
         <style type="text/css" media="all">@import "modules/login/login.css";</style>
+        <script type="text/javascript" src="vendor/components/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/lib.js"></script>
         <script type="text/javascript" src="modules/login/validator.js"></script>
         <script type="text/javascript" src="js/submodal/subModal.js"></script>
     </head>
 
     <body>
-    <!-- CATS_LOGIN -->
     <?php TemplateUtility::printPopupContainer(); ?>
-<!--       <div id="headerBlock"> 
-            <span id="mainLogo">opencats</span><br /> 
-             <span id="subMainLogo">Applicant Tracking System</span> 
-       </div> -->
-<p>
-	&nbsp;</p>
-<p>
-	&nbsp;</p>
-<p>
-	&nbsp;</p>
-
-
-        <div id="contents">
-            <div id="login">
-                <div id="loginText">
-                    <div class="ctr">
-                    </div>
-                    <br />
+        <div id="contents" class="container">
+            <div id="login" class="row">
+                <div id="loginText" class="col-md-4 col-md-offset-4">
 
                     <?php if (ENABLE_DEMO_MODE && !($this->siteName != '' && $this->siteName != 'choose') || ($this->siteName == 'demo')): ?>
-                        <br /><br />
                         <?php if ($this->aspMode): ?>
-                            <a href="javascript:void(0);" onclick="demoLogin(); return false;">Login to Demo Account</a><br />
-                            <br />
-                            <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=forgotLogin&amp;p=0">Forgot Login Information?</a>
+                            <a href="javascript:void(0);" onclick="demoLogin(); return false;" class="btn btn-default btn-block">Login to Demo Account</a><br />
+                            <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=forgotLogin&amp;p=0" class="btn btn-default btn-block">Forgot Login Information?</a>
                         <?php else: ?>
-                            <a href="javascript:void(0);" onclick="demoLogin(); return false;">Login to Demo Account</a><br />
+                            <a href="javascript:void(0);" onclick="demoLogin(); return false;" class="btn btn-default btn-block">Login to Demo Account</a><br />
                         <?php endif; ?>
                     <?php elseif ($this->aspMode): ?>
                         <br /><br />
-                        <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=forgotLogin&amp;p=0">Forgot Login Information?</a>
+                        <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=forgotLogin&amp;p=0" class="btn btn-default btn-block">Forgot Login Information?</a>
                     <?php endif; ?>
                 </div>
 
-                <div id="formBlock">
+                <div id="formBlock" class="col-md-4 col-md-offset-4">
                     <img src="images/CATS-sig.gif" alt="Login" hspace="10" vspace="10" />
-                    <br />
-                    <form name="loginForm" id="loginForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=login&amp;a=attemptLogin<?php if ($this->reloginVars != ''): ?>&amp;reloginVars=<?php echo($this->reloginVars); ?><?php endif; ?>" method="post" onsubmit="return checkLoginForm(document.loginForm);" autocomplete="off">
-                        <div id="subFormBlock">
-                            <?php if ($this->siteName != '' && $this->siteName != 'choose'): ?>
-                                <?php if ($this->siteNameFull == 'error'): ?>
-                                    <label>This site does not exist. Please check the URL and try again.</label>
-                                    <br />
-                                    <br />
-                                <?php else: ?>
-                                    <label><?php $this->_($this->siteNameFull); ?></label>
-                                    <br />
-                                    <br />
-                                <?php endif; ?>
-                            <?php endif; ?>
-
-                            <?php if ($this->aspMode): ?>
-                                <?php if ($this->siteName == 'choose' || ($this->aspMode && $this->siteName == '')): ?>
-                                    <label id="siteNameLabel" for="siteName">Company Identifier</label><br />
-                                    <input name="siteName" id="siteName" class="login-input-box" />
-                                    <br />
-                                <?php elseif($this->siteName != ''): ?>
-                                    <input type="hidden" name="siteName" value="<?php $this->_($this->siteName); ?>">
-                                <?php endif; ?>
-                            <?php endif; ?>
-
-                            <?php if ($this->siteNameFull != 'error'): ?>
-                                <label id="usernameLabel" for="username">Username</label><br />
-                                <input name="username" id="username" class="login-input-box" value="<?php if (isset($this->username)) $this->_($this->username); ?>" />
-                                <br />
-
-                                <label id="passwordLabel" for="password">Password</label><br />
-                                <input type="password" name="password" id="password" class="login-input-box" />
-                                <br />
-
-                                <input type="submit" class="button" value="Login" />
-                                <input type="reset"  id="reset" name="reset"  class="button" value="Reset" />
+                    <div class="panel panel-default">
+                        <?php if ($this->siteName != '' && $this->siteName != 'choose'): ?>
+                            <?php if ($this->siteNameFull == 'error'): ?>
+                                <div class="panel-body">
+                                    <div class="alert alert-warning">This site does not exist. Please check the URL and try again.</div>
+                                </div>
                             <?php else: ?>
-                                <br />
-                                <?php if ($this->aspMode): ?>
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=createsite&amp;p=0">Create Free Trial Site</a><br />
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=forgotLogin&amp;p=0">Forgot Login Information</a>
-                                <?php else: ?>
-                                    <a href="javascript:void(0);" onclick="demoLogin(); return false;">Login to Demo Account</a><br />
-                                <?php endif; ?>
+                                <div class="panel-heading"><?php $this->_($this->siteNameFull); ?></div>
                             <?php endif; ?>
-                            <br /><br />
+                        <?php endif; ?>
+                        <div class="panel-body">
+                        <?php if (!empty($this->message)): ?>
+                        <?php if ($this->messageSuccess): ?>
+                            <div class="alert alert-success"><?php $this->_($this->message); ?></div>
+                        <?php else: ?>
+                            <div class="alert alert-danger"><?php $this->_($this->message); ?></div>
+                        <?php endif; ?>
+                        <?php endif; ?>
+                            <form name="loginForm" id="loginForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=login&amp;a=attemptLogin<?php if ($this->reloginVars != ''): ?>&amp;reloginVars=<?php echo($this->reloginVars); ?><?php endif; ?>" method="post" onsubmit="return checkLoginForm(document.loginForm);" autocomplete="off">
+                                <div id="subFormBlock">
+                                    <?php if ($this->aspMode): ?>
+                                        <?php if ($this->siteName == 'choose' || ($this->aspMode && $this->siteName == '')): ?>
+                                            <div class="form-group">
+                                                <label id="siteNameLabel" for="siteName">Company Identifier</label><br />
+                                                <input name="siteName" id="siteName" class="form-control" />
+                                            </div>
+                                        <?php elseif($this->siteName != ''): ?>
+                                            <input type="hidden" name="siteName" value="<?php $this->_($this->siteName); ?>">
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+
+                                    <?php if ($this->siteNameFull != 'error'): ?>
+                                        <div class="form-group">
+                                            <label id="usernameLabel" for="username">Username</label><br />
+                                            <input name="username" id="username" class="form-control" value="<?php if (isset($this->username)) $this->_($this->username); ?>" placeholder="Username" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label id="passwordLabel" for="password">Password</label><br />
+                                            <input type="password" name="password" id="password" class="form-control" placeholder="Password" />
+                                        </div>
+
+                                        <input type="submit" class="btn btn-success pull-right" value="Login" />
+                                        <input type="reset"  id="reset" name="reset"  class="btn btn-default" value="Reset" />
+                                    <?php else: ?>
+                                        <?php if ($this->aspMode): ?>
+                                            <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=createsite&amp;p=0">Create Free Trial Site</a><br />
+                                            <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=forgotLogin&amp;p=0">Forgot Login Information</a>
+                                        <?php else: ?>
+                                            <a href="javascript:void(0);" onclick="demoLogin(); return false;" class="btn btn-success btn-block">Login to Demo Account</a><br />
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </div>
+                            </form>
                         </div>
-                    </form>
-                
-                    <span style="line-height: 30px;font-size: 10px;padding-LEFT: 10px;">Version <?php echo(CATSUtility::getVersion()); ?></span>
+                        <div class="panel-footer text-right"><small class="text-muted">Version <?php echo(CATSUtility::getVersion()); ?></small></div>
+                    </div>
                 </div>
-                <div style="clear: both;"></div>
             </div>
-            <br />
 
             <script type="text/javascript">
                 <?php if ($this->siteNameFull != 'error'): ?>
@@ -126,29 +116,20 @@
                     defaultLogin();
                 <?php endif; ?>
             </script>
-
-          <p>
-	&nbsp;</p>  
-<p>
-	&nbsp;</p>  
-
-	<span style="font-size: 12px;"><a href="http://forums.opencats.org ">opencats support forum</a></span>
-	           <div id="login">
-                <?php if (!empty($this->message)): ?>
-                    <div>
-                        <?php if ($this->messageSuccess): ?>
-                            <p class="success"><?php $this->_($this->message); ?><br /></p>
-                        <?php else: ?>
-                            <p class="failure"><?php $this->_($this->message); ?><br /></p>
-                        <?php endif; ?>
-                    </div>
-                <?php endif; ?>
-	</div>
-	  <div id="footerBlock">
-                <span class="footerCopyright"><?php echo(COPYRIGHT_HTML); ?></span>
-                Based upon original work and Powered by <a href="http://www.catsone.com ">CATS</a>.</div>
+        </div>
+    <footer class="footer">
+      <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <a href="http://forums.opencats.org ">opencats support forum</a>
+            </div>
+            <div class="col-md-8 text-right">
+                <span class="footerCopyright"><?php echo(COPYRIGHT_HTML); ?></span> Based upon original work and Powered by <a href="http://www.catsone.com ">CATS</a>.
             </div>
         </div>
+      </div>
+    </footer>
+
 
 
         <script type="text/javascript">
