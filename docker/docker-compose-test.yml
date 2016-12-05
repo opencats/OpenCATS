@@ -19,7 +19,8 @@ services:
       container_name: opencats_test_data
       image: busybox
       volumes:
-        - ..:/var/www/public
+        - ../code:/var/www/public
+        - ../docker/php/scripts/www.conf:/etc/nginx/sites-enabled/www.conf
         - ../test/config.php:/var/www/public/config.php
         - ../test/INSTALL_BLOCK:/var/www/public/INSTALL_BLOCK
       command: "true"
