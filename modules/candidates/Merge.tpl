@@ -1,8 +1,8 @@
 <?php 
 /**
-* Duplicates merge template
+* Candidate merge duplicates template
 * @package OpenCATS
-* @subpackage modules/duplicates
+* @subpackage modules/candidates
 * @copyright (C) OpenCats
 * @license GNU/GPL, see license.txt
 * OpenCATS is free software; you can redistribute it and/or
@@ -10,12 +10,12 @@
 * as published by the Free Software Foundation.
 */
  ?>
-<?php TemplateUtility::printModalHeader('Duplicates', array(), 'Select information to keep in merge'); ?>
+<?php TemplateUtility::printModalHeader('Candidates', array(), 'Select information to keep in merge duplicates'); ?>
 
     <?php if (!$this->isFinishedMode): ?>
 
         <table class="searchTable">
-            <form id="chooseMergeInformation" name="chooseMergeInformationForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=duplicates&amp;a=mergeInfo" method="post">
+            <form id="chooseMergeInformation" name="chooseMergeInformationForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=mergeInfo" method="post">
                 <input type="hidden" id="oldCandidateID" name="oldCandidateID" value=<?php echo $this->oldCandidateID; ?> />
                 <input type="hidden" id="newCandidateID" name="newCandidateID" value=<?php echo $this->newCandidateID; ?> />
                 
@@ -59,23 +59,18 @@
                 <tr>
                     <td colspan=4 align="center">E-mails (max. 2)&nbsp;</td>
                 </tr>
-                <?php if($this->rsNew['email1'] != "" || $this->rsOld['email1'] != ""): ?>
                 <tr>
                     <td align="right"><?php echo($this->rsOld['email1'] == '') ?  '(none)' : ($this->rsOld['email1']);  ?></td>
                     <td align="center"><input type="checkbox" name="email[]" value="<?php echo ($this->rsOld['email1'] == '') ?  '' : ($this->rsOld['email1']); ?>" onclick="return keepCount('email')"/></td>
                     <td align="center"><input type="checkbox" name="email[]" value="<?php echo ($this->rsNew['email1'] == '') ?  '' : ($this->rsNew['email1']); ?>" onclick="return keepCount('email')" checked/></td>
                     <td align="left"><?php echo($this->rsNew['email1'] == '') ?  '(none)' : ($this->rsNew['email1']);  ?></td>
                 </tr>
-                <?php endif; ?>
-                <?php if($this->rsNew['email2'] != "" || $this->rsOld['email2'] != ""): ?>
                 <tr>
                     <td align="right"><?php echo($this->rsOld['email2'] == '') ?  '(none)' : ($this->rsOld['email2']); ?></td>
                     <td align="center"><input type="checkbox" name="email[]" value="<?php echo ($this->rsOld['email2'] == '') ?  '' : ($this->rsOld['email2']); ?>" onclick="return keepCount('email')"/></td>
                     <td align="center"><input type="checkbox" name="email[]" value="<?php echo ($this->rsNew['email2'] == '') ?  '' : ($this->rsNew['email2']); ?>" onclick="return keepCount('email')" checked/></td>
                     <td align="left"><?php echo($this->rsNew['email2'] == '') ?  '(none)' : ($this->rsNew['email2']); ?></td>
                 </tr>
-                <?php endif; ?>
-               
                 <tr>
                     <td colspan=4 align="center">Cell phone&nbsp;</td>
                 </tr>

@@ -559,103 +559,7 @@ class Candidates
     
     public function getWithDuplicity($candidateID)
     {
-        $sql = sprintf(
-            "SELECT
-                candidate.candidate_id AS candidateID,
-                candidate.is_active AS isActive,
-                candidate.first_name AS firstName,
-                candidate.middle_name AS middleName,
-                candidate.last_name AS lastName,
-                candidate.email1 AS email1,
-                candidate.email2 AS email2,
-                candidate.phone_home AS phoneHome,
-                candidate.phone_work AS phoneWork,
-                candidate.phone_cell AS phoneCell,
-                candidate.address AS address,
-                candidate.city AS city,
-                candidate.state AS state,
-                candidate.zip AS zip,
-                candidate.source AS source,
-                candidate.key_skills AS keySkills,
-                candidate.current_employer AS currentEmployer,
-                candidate.current_pay AS currentPay,
-                candidate.desired_pay AS desiredPay,
-                candidate.notes AS notes,
-                candidate.owner AS owner,
-                candidate.can_relocate AS canRelocate,
-                candidate.web_site AS webSite,
-                candidate.best_time_to_call AS bestTimeToCall,
-                candidate.is_hot AS isHot,
-                candidate.is_admin_hidden AS isAdminHidden,
-                DATE_FORMAT(
-                    candidate.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
-                ) AS dateCreated,
-                DATE_FORMAT(
-                    candidate.date_modified, '%%m-%%d-%%y (%%h:%%i %%p)'
-                ) AS dateModified,
-                COUNT(
-                    candidate_joborder.joborder_id
-                ) AS pipeline,
-                (
-                    SELECT
-                        COUNT(*)
-                    FROM
-                        candidate_joborder_status_history
-                    WHERE
-                        candidate_id = %s
-                    AND
-                        status_to = %s
-                    AND
-                        site_id = %s
-                ) AS submitted,
-                CONCAT(
-                    candidate.first_name, ' ', candidate.last_name
-                ) AS candidateFullName,
-                CONCAT(
-                    entered_by_user.first_name, ' ', entered_by_user.last_name
-                ) AS enteredByFullName,
-                CONCAT(
-                    owner_user.first_name, ' ', owner_user.last_name
-                ) AS ownerFullName,
-                owner_user.email AS owner_email,
-                DATE_FORMAT(
-                    candidate.date_available, '%%m-%%d-%%y'
-                ) AS dateAvailable,
-                eeo_ethnic_type.type AS eeoEthnicType,
-                eeo_veteran_type.type AS eeoVeteranType,
-                candidate.eeo_disability_status AS eeoDisabilityStatus,
-                candidate.eeo_gender AS eeoGender,
-                IF (candidate.eeo_gender = 'm',
-                    'Male',
-                    IF (candidate.eeo_gender = 'f',
-                        'Female',
-                        ''))
-                     AS eeoGenderText
-            FROM
-                candidate
-            LEFT JOIN user AS entered_by_user
-                ON candidate.entered_by = entered_by_user.user_id
-            LEFT JOIN user AS owner_user
-                ON candidate.owner = owner_user.user_id
-            LEFT JOIN candidate_joborder
-                ON candidate.candidate_id = candidate_joborder.candidate_id
-            LEFT JOIN eeo_ethnic_type
-                ON eeo_ethnic_type.eeo_ethnic_type_id = candidate.eeo_ethnic_type_id
-            LEFT JOIN eeo_veteran_type
-                ON eeo_veteran_type.eeo_veteran_type_id = candidate.eeo_veteran_type_id
-            WHERE
-                candidate.candidate_id = %s
-            AND
-                candidate.site_id = %s
-            GROUP BY
-                candidate.candidate_id",
-            $this->_db->makeQueryInteger($candidateID),
-            PIPELINE_STATUS_SUBMITTED,
-            $this->_siteID,
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
-        );
-        $data = $this->_db->getAssoc($sql);
+        $data = $this->get($candidateID);
         
         $sql = sprintf(
             "SELECT
@@ -1304,6 +1208,464 @@ class Candidates
             return $duplicatesID;    
         }   
     }
+    
+     /**
+     * Returns the number of duplicates in the system.
+     *
+     * @return integer Number of Duplicates in site.
+     */
+    public function getDuplicatesCount()
+    {
+        $sql = sprintf(
+            "SELECT
+                COUNT(*) AS totalDuplicates
+            FROM 
+                (SELECT * 
+                    FROM candidate_duplicates
+                WHERE
+                    candidate_duplicates.site_id = %s
+                GROUP BY
+                    candidate_duplicates.new_candidate_id) as innerQuery",
+            $this->_siteID
+        );
+        return $this->_db->getColumn($sql, 0, 0);
+    }
+    
+    /**
+     * Removes a candidate's duplicate warning/link from the system.
+     *
+     * @param integer first Candidate ID.
+     * @param integer second Candidate ID.
+     * @return void
+     */
+    public function deleteDuplicate($firstCandidateID, $secondCandidateID)
+    {
+        /* Delete the duplicate from candidate_duplicates. */
+        $sql = sprintf(
+            "DELETE FROM
+                candidate_duplicates
+            WHERE
+                old_candidate_id = %s
+            AND
+                new_candidate_id = %s
+            OR
+                new_candidate_id = %s
+            AND
+                old_candidate_id = %s"
+            ,
+            $this->_db->makeQueryInteger($firstCandidateID),
+            $this->_db->makeQueryInteger($secondCandidateID),
+            $this->_db->makeQueryInteger($firstCandidateID),
+            $this->_db->makeQueryInteger($secondCandidateID)
+        );
+        $this->_db->query($sql);
+    }
+    
+     public function removeDuplicity($oldCandidateID, $newCandidateID)
+    {
+        $sql = sprintf(
+                "DELETE FROM 
+                    candidate_duplicates
+                WHERE
+                    candidate_duplicates.old_candidate_id = %s
+                AND
+                    candidate_duplicates.new_candidate_id = %s",
+                 $this->_db->makeQueryStringOrNULL($oldCandidateID),
+                 $this->_db->makeQueryStringOrNULL($newCandidateID)
+            );
+        $this->_db->query($sql);
+    }
+    
+    /**
+     * Adds a duplicate to the database.
+     *
+     * @param string first candidate ID.
+     * @param string second candidate ID.
+     * @return integer 1 on success, or -1 on failure.
+     */
+    
+    public function addDuplicates($candidateID, $duplicates)
+    {
+        if(is_array($duplicates))
+        {
+            foreach($duplicates as $duplicateID)
+            {
+                $sql = sprintf(
+                            "INSERT INTO candidate_duplicates (
+                                old_candidate_id,
+                                new_candidate_id,
+                                site_id
+                             )
+                             VALUES (
+                                %s,
+                                %s,
+                                %s
+                             )",
+                             $this->_db->makeQueryString($duplicateID),
+                             $this->_db->makeQueryString($candidateID),
+                             $this->_siteID
+                        );
+                $this->_db->query($sql);
+            }
+        }
+        else if($duplicates != "")
+        {
+            $sql = sprintf(
+                            "INSERT INTO candidate_duplicates (
+                                old_candidate_id,
+                                new_candidate_id,
+                                site_id
+                             )
+                             VALUES (
+                                %s,
+                                %s,
+                                %s
+                             )",
+                             $this->_db->makeQueryString($duplicates),
+                             $this->_db->makeQueryString($candidateID),
+                             $this->_siteID
+                        );
+                $this->_db->query($sql);
+        }
+    }
+    
+    
+    
+    public function mergeDuplicates($params, $rs)
+    {
+        $oldCandidateID = $params['oldCandidateID'];
+        $newCandidateID = $params['newCandidateID']; 
+         $sql = sprintf(
+            "UPDATE
+                activity
+            SET
+                data_item_id = %s
+            WHERE
+                data_item_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
+            $this->_siteID
+        );
+
+        $this->_db->query($sql);
+        
+        $sql = sprintf(
+            "UPDATE
+                attachment
+            SET
+                data_item_id = %s
+            WHERE
+                data_item_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
+            $this->_siteID
+        );
+
+        $this->_db->query($sql);
+        
+        $sql = sprintf(
+            "UPDATE
+                calendar_event
+            SET
+                data_item_id = %s
+            WHERE
+                data_item_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
+            $this->_siteID
+        );
+
+        $this->_db->query($sql);
+        
+        $sql = sprintf(
+            "DELETE FROM
+                candidate_duplicates
+            WHERE
+                new_candidate_id = %s",
+            $this->_db->makeQueryInteger($newCandidateID)
+        );
+
+        $this->_db->query($sql);
+        
+        $sql = sprintf(
+            "UPDATE 
+                candidate_duplicates
+            SET
+                old_candidate_id = %s
+            WHERE
+                old_candidate_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID)
+        );
+        
+        $this->_db->query($sql);
+        
+         $sql = sprintf(
+            "UPDATE
+                candidate_joborder
+            SET
+                candidate_id = %s
+            WHERE
+                candidate_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
+            $this->_siteID
+        );
+
+        $this->_db->query($sql);
+        
+         $sql = sprintf(
+            "UPDATE
+                candidate_joborder_status_history
+            SET
+                candidate_id = %s
+            WHERE
+                candidate_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
+            $this->_siteID
+        );
+
+        $this->_db->query($sql);
+        
+         $sql = sprintf(
+            "UPDATE
+                candidate_tag
+            SET
+                candidate_id = %s
+            WHERE
+                candidate_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
+            $this->_siteID
+        );
+
+        $this->_db->query($sql);
+        
+        $sql = sprintf(
+            "UPDATE
+                saved_list_entry
+            SET
+                data_item_id = %s
+            WHERE
+                data_item_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
+            $this->_siteID
+        );
+
+        $this->_db->query($sql);
+        
+        
+        $update = " ";
+        $comma = false;
+        
+        if($params['firstName'] == "1")
+        {
+            $update .= "first_name = '" . $rs['firstName']."'";
+            $comma = true;
+        }
+        if($params['middleName'] == "1")
+        {
+            if($comma)
+            {
+                $update .= ", ";
+            }
+            $update .= "middle_name = '" . $rs['middleName']."'";
+            $comma = true;
+        }
+        if($params['lastName'] == "1")
+        {
+            if($comma)
+            {
+                $update .= ", ";
+            }
+            $update .= "last_name = '" . $rs['lastName']."'";
+            $comma = true;
+        }
+        if($params['phoneCell'] == "1")
+        {
+            if($comma)
+            {
+                $update .= ", ";
+            }
+            $update .= "phone_cell = '" . $rs['phoneCell']."'";
+            $comma = true;
+        }
+        if($params['phoneWork'] == "1")
+        {
+            if($comma)
+            {
+                $update .= ", ";
+            }
+            $update .= "phone_work = '" . $rs['phoneWork']."'";
+            $comma = true;
+        }
+        if($params['phoneHome'] == "1")
+        {
+            if($comma)
+            {
+                $update .= ", ";
+            }
+            $update .= "phone_home = '" . $rs['phoneHome']."'";
+            $comma = true;
+        }
+        if($params['address'] == "1")
+        {
+            if($comma)
+            {
+                $update .= ", ";
+            }
+            $update .= "address = '" . $rs['address'] . "', city = '" . $rs['city'] . "', zip = '" . $rs['zip'] . "', state = '" . $rs['state'] . "'";
+            $comma = true;
+        }
+        if($params['website'] == "1")
+        {
+            if($comma)
+            {
+                $update .= ", ";
+            }
+            $update .= "web_site = '" . $rs['webSite'] . "'";
+            $comma = true;
+        }
+        if(sizeof($params['emails']) == 1)
+        {
+            if($comma)
+            {
+                $update .= ", ";
+            }
+            $update .= "email1 = '" . $params['emails'][0]."'";
+            $comma = true;
+        }else if(sizeof($params['emails']) == 2)
+        {
+            if($comma)
+            {
+                $update .= ", ";
+                $comma = false;
+            }
+            $update .= "email1 = '" . $params['emails'][0] . "', ";
+            $update .= "email2 = '" . $params['emails'][1] . "', ";
+            $comma = false;
+        }
+        if($comma){
+           $update .= ", "; 
+        }
+        $dateAvailable = $rs['dateAvailable'];
+        $dateParts = explode("-", $dateAvailable);
+        $dateAvailable = "20" . $dateParts[2] . "-" . $dateParts[0] . "-" . $dateParts[1] . " 00:00:00";
+        $update .= "is_active = " . $rs['isActive'] . ", " .
+                    "current_employer = '" . $rs['currentEmployer'] . "', " .
+                    "current_pay = '" . $rs['currentPay'] . "', " .     
+                    "desired_pay = '" . $rs['desiredPay'] . "', " .  
+                    "can_relocate = " . $rs['canRelocate'] . ", " .  
+                    "best_time_to_call = '" . $rs['bestTimeToCall'] . "', " .
+                    "is_hot = " . $rs['isHot'] . ", " . 
+                    "date_modified = NOW()";
+        $comma = true;
+        if($rs['source'] != "" && $rs['source'] != "(none)")
+        {
+            if($comma){$update .= ", ";}
+            $update.= "source = IFNULL(CONCAT(source, ', ".$rs['source'] . "'), '" . $rs['source'] . "')";
+            $comma = true;
+        }
+        if($rs['keySkills'] != "")
+        {   
+            if($comma){$update .= ", ";}    
+            $update .= "key_skills = IFNULL(CONCAT(key_skills, ', ".$rs['keySkills']."'), '" . $rs['keySkills'] . "')";
+            $comma = true;
+        }
+        if($rs['notes'] != "")
+        { 
+            if($comma){$update .= ", ";}  
+            $update .= "notes = IFNULL(CONCAT(notes, ', ".$rs['notes']."'), '" . $rs['notes'] . "')";
+            $comma = true;
+        }
+        if($rs['date_available'] != "")
+        { 
+            if($comma){$update .= ", ";}  
+            $update .= "date_available = '".$dateAvailable."' ";
+        }
+        
+        $sql = sprintf(
+            "UPDATE
+                candidate
+            SET
+                %s 
+            WHERE
+                candidate_id = %s
+            AND
+                site_id = %s",
+            $update,
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_siteID
+        );
+        
+        if($this->_db->query($sql))
+        {
+            $sql = sprintf(
+                "DELETE FROM
+                    candidate
+                WHERE
+                    candidate_id = %s",
+                $this->_db->makeQueryInteger($newCandidateID)
+            );
+            $this->_db->query($sql);
+        }
+        
+        //TO-DO:  delete new candidate
+    }
+    
+    public function checkIfLinked($oldCandidateID, $newCandidateID)
+    {
+        if($oldCandidateID == $newCandidateID)
+        {
+            return true;
+        }
+        
+        $sql = sprintf(
+            "SELECT 
+                candidate_duplicates.old_candidate_id as oldCandidateID,
+                candidate_duplicates.new_candidate_id as newCandidateID
+            FROM
+                candidate_duplicates
+            WHERE
+                candidate_duplicates.old_candidate_id = %s
+            AND
+                candidate_duplicates.new_candidate_id = %s
+            OR
+                candidate_duplicates.old_candidate_id = %s
+            AND
+                candidate_duplicates.new_candidate_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
+            $this->_db->makeQueryInteger($oldCandidateID)
+        );
+        $rs = $this->_db->getAllAssoc($sql);
+        
+        if($rs && !$this->_db->isEOF())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
 
 
@@ -1312,7 +1674,7 @@ class CandidatesDataGrid extends DataGrid
     protected $_siteID;
 
     // FIXME: Fix ugly indenting - ~400 character lines = bad.
-    public function __construct($instanceName, $siteID, $parameters, $misc = 0)
+    public function __construct($instanceName, $siteID, $parameters, $misc = 0, $duplicates = 0)
     {
         $this->_db = DatabaseConnection::getInstance();
         $this->_siteID = $siteID;
@@ -1340,7 +1702,6 @@ class CandidatesDataGrid extends DataGrid
                                                     {
                                                         $return .= \'<img src="images/mru/blank.gif" alt="" width="16" height="16" />\';
                                                     }
-
                                                     return $return;
                                                    ',
 
@@ -1351,7 +1712,9 @@ class CandidatesDataGrid extends DataGrid
                                                         ON candidate_joborder_submitted.candidate_id = candidate.candidate_id
                                                         AND candidate_joborder_submitted.status >= '.PIPELINE_STATUS_SUBMITTED.'
                                                         AND candidate_joborder_submitted.site_id = '.$this->_siteID.'
-                                                        AND candidate_joborder_submitted.status != '.PIPELINE_STATUS_NOTINCONSIDERATION,
+                                                        AND candidate_joborder_submitted.status != '.PIPELINE_STATUS_NOTINCONSIDERATION
+                                                    
+                                   ,
                                      'pagerWidth'    => 34,
                                      'pagerOptional' => true,
                                      'pagerNoTitle' => true,
@@ -1621,6 +1984,16 @@ class CandidatesDataGrid extends DataGrid
                                          WHERE t2.site_id = 1 AND t2.tag_id IN (". implode(",",$arguments)."))";
                                      ')
         );
+        
+        if($duplicates == 1)
+        {
+            $this->_classColumns['Attachments']['join'] .= ' INNER JOIN candidate_duplicates 
+                                            ON candidate.candidate_id = 
+                                            candidate_duplicates.new_candidate_id';
+            $this->_classColumns['Attachments']['pagerWidth'] = 70;
+            $this->_classColumns['First Name']['pagerRender'] = 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=showDuplicate&amp;candidateID=\'.$rsData[\'candidateID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';';
+            $this->_classColumns['Last Name']['pagerRender'] = 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=showDuplicate&amp;candidateID=\'.$rsData[\'candidateID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';';
+        }
 
         if (US_ZIPS_ENABLED)
         {
@@ -1650,7 +2023,7 @@ class CandidatesDataGrid extends DataGrid
             }
         }
 
-        parent::__construct($instanceName, $parameters, $misc);
+        parent::__construct($instanceName, $parameters, $misc, $duplicates);
     }
 
     /**

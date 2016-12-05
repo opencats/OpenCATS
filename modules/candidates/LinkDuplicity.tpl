@@ -1,8 +1,8 @@
 <?php 
 /**
-* Duplicates link duplicity template
+* Candidates link duplicity template
 * @package OpenCATS
-* @subpackage modules/duplicates
+* @subpackage modules/candidates
 * @copyright (C) OpenCats
 * @license GNU/GPL, see license.txt
 * OpenCATS is free software; you can redistribute it and/or
@@ -10,14 +10,14 @@
 * as published by the Free Software Foundation.
 */
 ?>
-<?php TemplateUtility::printModalHeader('Duplicates', array(), 'Select duplicate to this Candidate'); ?>
+<?php TemplateUtility::printModalHeader('Candidates', array(), 'Select duplicate to this Candidate'); ?>
 
     <?php if (!$this->isFinishedMode): ?>
         <p>Search for a candidate below, and then click on the candidate name to link
         this candidate as a duplicate to them.</p>
 
         <table class="searchTable">
-            <form id="searchByCandidateNameForm" name="searchByJobTitleForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=duplicates&amp;a=linkDuplicate" method="post">
+            <form id="searchByCandidateNameForm" name="searchByJobTitleForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=linkDuplicate" method="post">
                 <input type="hidden" name="postback" id="postback" value="postback" />
                 <input type="hidden" id="mode_candidateName" name="mode" value="searchByCandidateName" />
                 <input type="hidden" id="candidateID" name="candidateID" value=<?php echo($this->duplicateCandidateID)?> />
@@ -63,7 +63,7 @@
                         <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
                             <td align="left" valign="top">
                                 <?php if (!$data['linked']): ?>
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=duplicates&amp;a=addDuplicates&amp;getback=getback&amp;candidateID=<?php $this->_($data['candidateID']); ?>&amp;duplicateCandidateID=<?php $this->_($data['duplicateCandidateID']); ?>" class="<?php $this->_($data['linkClass']); ?>">
+                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addDuplicates&amp;getback=getback&amp;candidateID=<?php $this->_($data['candidateID']); ?>&amp;duplicateCandidateID=<?php $this->_($data['duplicateCandidateID']); ?>" class="<?php $this->_($data['linkClass']); ?>">
                                         <?php $this->_($data['firstName']); ?>
                                     </a>
                                 <?php else: ?>
@@ -72,7 +72,7 @@
                             </td>
                             <td align="left" valign="top">
                                 <?php if (!$data['linked']): ?>
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=duplicates&amp;a=addDuplicates&amp;getback=getback&amp;candidateID=<?php $this->_($data['candidateID']); ?>&amp;duplicateCandidateID=<?php $this->_($data['duplicateCandidateID']); ?>" class="<?php $this->_($data['linkClass']); ?>">
+                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addDuplicates&amp;getback=getback&amp;candidateID=<?php $this->_($data['candidateID']); ?>&amp;duplicateCandidateID=<?php $this->_($data['duplicateCandidateID']); ?>" class="<?php $this->_($data['linkClass']); ?>">
                                         <?php $this->_($data['lastName']); ?>
                                     </a>
                                 <?php else: ?>
@@ -116,7 +116,7 @@
                         <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
                             <td align="left" valign="top">
                                 <?php if (!$data['linked']): ?>
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=duplicates&amp;a=addDuplicates&amp;getback=getback&amp;candidateID=<?php $this->_($data['candidateID']); ?>&amp;duplicateCandidateID=<?php $this->_($data['duplicateCandidateID']); ?>" class="<?php $this->_($data['linkClass']); ?>">
+                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addDuplicates&amp;getback=getback&amp;candidateID=<?php $this->_($data['candidateID']); ?>&amp;duplicateCandidateID=<?php $this->_($data['duplicateCandidateID']); ?>" class="<?php $this->_($data['linkClass']); ?>">
                                         <?php $this->_($data['firstName']); ?>
                                     </a>
                                 <?php else: ?>
@@ -125,7 +125,7 @@
                             </td>
                             <td align="left" valign="top">
                                 <?php if (!$data['linked']): ?>
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=duplicates&amp;a=addDuplicates&amp;getback=getback&amp;candidateID=<?php $this->_($data['candidateID']); ?>&amp;duplicateCandidateID=<?php $this->_($data['duplicateCandidateID']); ?>" class="<?php $this->_($data['linkClass']); ?>">
+                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addDuplicates&amp;getback=getback&amp;candidateID=<?php $this->_($data['candidateID']); ?>&amp;duplicateCandidateID=<?php $this->_($data['duplicateCandidateID']); ?>" class="<?php $this->_($data['linkClass']); ?>">
                                         <?php $this->_($data['lastName']); ?>
                                     </a>
                                 <?php else: ?>

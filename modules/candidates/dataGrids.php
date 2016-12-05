@@ -7,7 +7,7 @@ include_once('./lib/Width.php');
 
 class candidatesListByViewDataGrid extends CandidatesDataGrid
 {
-    public function __construct($siteID, $parameters, $misc)
+    public function __construct($siteID, $parameters, $misc, $duplicates = 0)
     {
         /* Pager configuration. */
         $this->_tableWidth = new Width(100, '%');
@@ -34,7 +34,7 @@ class candidatesListByViewDataGrid extends CandidatesDataGrid
         );
 
          parent::__construct("candidates:candidatesListByViewDataGrid",
-                             $siteID, $parameters, $misc
+                             $siteID, $parameters, $misc, $duplicates
                         );
     }
 

@@ -1,8 +1,8 @@
 <?php
 /**
-* Duplicates template
+* Candidate template for Duplicates
 * @package OpenCATS
-* @subpackage modules/duplicates
+* @subpackage modules/candidates
 * @copyright (C) OpenCats
 * @license GNU/GPL, see license.txt
 * OpenCATS is free software; you can redistribute it and/or
@@ -10,7 +10,7 @@
 * as published by the Free Software Foundation.
 */
 ?>
-<?php TemplateUtility::printHeader('Duplicates', array( 'js/highlightrows.js', 'js/export.js', 'js/dataGrid.js')); ?>
+<?php TemplateUtility::printHeader('Candidates', array( 'js/highlightrows.js', 'js/export.js', 'js/dataGrid.js'), 'List of duplicates'); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
 <?php $md5InstanceName = md5($this->dataGrid->getInstanceName());?>
@@ -144,7 +144,7 @@
             <?php else: ?>
 
             <br /><br /><br /><br />
-            <div style="height: 95px; background: #E6EEFF url(images/nodata/candidatesTop.jpg);">
+            <div style="height: 207px; background: #E6EEFF url(images/nodata/dashboardNoCandidates.jpg);">
                 &nbsp;
             </div>
             <br /><br />
