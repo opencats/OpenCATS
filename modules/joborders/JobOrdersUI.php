@@ -45,6 +45,7 @@ include_once('./lib/ExtraFields.php');
 include_once('./lib/Graphs.php');
 include_once('./lib/Questionnaire.php');
 include_once('./lib/CommonErrors.php');
+include_once('./lib/JobOrderTypes.php');
 
 
 class JobOrdersUI extends UserInterface
@@ -665,6 +666,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('selectedDepartmentsString', $selectedDepartmentsString);
         $this->_template->assign('isHrMode', $_SESSION['CATS']->isHrMode());
         $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('jobTypes', (new JobOrderTypes())->getAll());
 
         if (!eval(Hooks::get('JO_ADD'))) return;
 
@@ -929,6 +931,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('jobOrderID', $jobOrderID);
         $this->_template->assign('isHrMode', $_SESSION['CATS']->isHrMode());
         $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('jobTypes', (new JobOrderTypes())->getAll());
 
         if (!eval(Hooks::get('JO_EDIT'))) return;
 
