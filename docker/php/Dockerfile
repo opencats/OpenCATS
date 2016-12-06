@@ -1,4 +1,4 @@
-FROM php:5.6.22-fpm-alpine
+FROM php:5.6.28-fpm-alpine
 RUN apk upgrade --update && apk add \
   coreutils \
   freetype-dev \
