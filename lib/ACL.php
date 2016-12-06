@@ -1,9 +1,10 @@
 <?php
 
 /*
- * OpenCATS
  * ACL Library
- * author: 
+ * @package OpenCATS
+ * @subpackage Library
+ * @copyright (C) OpenCats
  */
 
 include_once("./config.php");
@@ -52,34 +53,27 @@ class ACL
         }
 
         $userCategory = ACL::CATEGORY_EMPTY;
- 	    if( isset($userCategories) && count($userCategories) > 0 )
+        if( isset($userCategories) && count($userCategories) > 0 && isset($userCategories[0]) )
         {
             // for now, only first category is used for evalualtion
             $userCategory = $userCategories[0];
-
-            if( isset($userCategory) == false)
-            {
-                $userCategory = ACL::CATEGORY_EMPTY;
-            }
         }
         if( NULL !== ACCESS_LEVEL_MAP[$userCategory][$securedObjectName])
         {
             return ACCESS_LEVEL_MAP[$userCategory][$securedObjectName];
         }
-        else
+
+        while(($pos = strrpos($securedObjectName, ".")) !== false)
         {
-            while(($pos = strrpos($securedObjectName, ".")) !== false)
+            $securedObjectName = substr($securedObjectName, 0, $pos);
+            if( NULL !== ACCESS_LEVEL_MAP[$userCategory][$securedObjectName])
             {
-                $securedObjectName = substr($securedObjectName, 0, $pos);
-                if( NULL !== ACCESS_LEVEL_MAP[$userCategory][$securedObjectName])
-                {
-                    return ACCESS_LEVEL_MAP[$userCategory][$securedObjectName];
-                }
+                return ACCESS_LEVEL_MAP[$userCategory][$securedObjectName];
             }
-            if( NULL !== ACCESS_LEVEL_MAP[$userCategory][ACL::SECOBJ_ROOT])
-            {
-                return ACCESS_LEVEL_MAP[$userCategory][ACL::SECOBJ_ROOT];
-            }
+        }
+        if( NULL !== ACCESS_LEVEL_MAP[$userCategory][ACL::SECOBJ_ROOT])
+        {
+            return ACCESS_LEVEL_MAP[$userCategory][ACL::SECOBJ_ROOT];
         }
         return $defaultAccessLevel;
     }
