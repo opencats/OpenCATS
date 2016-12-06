@@ -4,14 +4,18 @@ services:
       container_name: opencats_test_web
       image: prooph/nginx:www
       ports:
-          - "80:80"
-          - "443:443"
+        - 80:80
+        - 443:443
+      links:
+        - php
       volumes_from:
         - opencatsdata
 
     php:
       container_name: opencats_test_php
       build: ./php/
+      links:
+        - opencatsdb
       volumes_from:
         - opencatsdata
 
@@ -27,8 +31,8 @@ services:
     opencatsdb:
       container_name: opencats_test_mariadb
       image: mariadb
-      ports:
-        - 3306:3306
+      expose:
+        - 3306
       environment:
         - MYSQL_ROOT_PASSWORD=dev
         - MYSQL_USER=dev
