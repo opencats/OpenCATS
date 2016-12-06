@@ -20,7 +20,7 @@ script:
     - composer install
     - ./vendor/bin/phpunit src/OpenCATS/Tests/UnitTests
     - cd docker/; docker-compose -f docker-compose-test.yml up -d
-    - docker-compose -f docker-compose-test.yml exec php /var/www/public/test/runAllTests.sh
+    - docker-compose build -f docker-compose-test.yml exec php /var/www/public/test/runAllTests.sh
     - cd ..; ./ci/package-code.sh 
 
 deploy:
