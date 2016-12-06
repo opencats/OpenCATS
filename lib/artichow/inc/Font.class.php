@@ -192,7 +192,7 @@ class awTTFFont extends awFont {
        		$offsetRight -= 7;
    		}
    		
-		$textParts = split("\n", $textWorking);
+		$textParts = explode("\n", $textWorking);
 		$textFirstPart = $textParts[0];
    		
 		$text->setText($textWorking." ");
@@ -249,7 +249,7 @@ class awTTFFont extends awFont {
 	public function getTextWidth(awText $text) {
 
         $theText = $text->getText();
-        $theTextParts = split("\n", $theText);
+        $theTextParts = explode("\n", $theText);
         $theTextFirstPart = $theTextParts[0];
 
 		$box = imagettfbbox($this->size, $text->getAngle(), $this->font, $theTextFirstPart);
