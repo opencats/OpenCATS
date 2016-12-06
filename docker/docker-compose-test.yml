@@ -2,12 +2,15 @@ version: '2'
 services:
     opencats:
       container_name: opencats_test_web
-      image: prooph/nginx:www
+      image: nginx:1.11.6
       ports:
           - "80:80"
           - "443:443"
       volumes_from:
         - opencatsdata
+      environment:
+       - NGINX_HOST=foobar.com
+       - NGINX_PORT=80
 
     php:
       container_name: opencats_test_php
@@ -19,8 +22,8 @@ services:
       container_name: opencats_test_data
       image: busybox
       volumes:
-        - ../code:/var/www/public
-        - ../docker/php/scripts/www.conf:/etc/nginx/sites-enabled/www.conf
+        - ./mysite.template:/etc/nginx/conf.d/default.conf
+        - ../code:/var/www/
         - ../test/config.php:/var/www/public/config.php
         - ../test/INSTALL_BLOCK:/var/www/public/INSTALL_BLOCK
       command: "true"
