@@ -28,7 +28,7 @@ services:
       container_name: opencats_test_mariadb
       image: mariadb
       ports:
-        - 3306:3306
+        - 3306
       environment:
         - MYSQL_ROOT_PASSWORD=dev
         - MYSQL_USER=dev
