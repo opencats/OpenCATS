@@ -26,14 +26,16 @@ framework:
     trusted_proxies: ~
     session:
         # http://symfony.com/doc/current/reference/configuration/framework.html#handler-id
-        handler_id:  session.handler.native_file
-        save_path:   "%kernel.root_dir%/../var/sessions/%kernel.environment%"
+        # handler_id:  session.handler.native_file
+        # save_path:   "%kernel.root_dir%/../var/sessions/%kernel.environment%"
+        storage_id: session.storage.php_bridge
+        handler_id: session.handler.native_file
+
     fragments:       ~
     http_method_override: true
     assets: ~
     php_errors:
         log: true
-
 
 # Twig Configuration
 twig:
