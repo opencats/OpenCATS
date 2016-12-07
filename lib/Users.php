@@ -30,7 +30,7 @@
  * @version    $Id: Users.php 3593 2007-11-13 17:36:57Z andrew $
  */
 
-include_once('./lib/License.php');
+include_once(LEGACY_ROOT . '/lib/License.php');
 
 if (AUTH_MODE == "ldap" || AUTH_MODE == "sql+ldap") 
 {
@@ -44,6 +44,7 @@ define('LOGIN_INVALID_PASSWORD',     -2);
 define('LOGIN_DISABLED',             -3);
 define('LOGIN_CANT_CHANGE_PASSWORD', -4);
 define('LOGIN_ROOT_ONLY',            -5);
+define('LOGIN_PENDING_APPROVAL',     -6);
 
 /* Add User status flags. */
 define('ADD_USER_SUCCESS',            1);

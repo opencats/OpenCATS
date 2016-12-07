@@ -5,7 +5,7 @@ use \OpenCATS\Tests\IntegrationTests\DatabaseTestCase;
 use DatabaseConnection;
 use DatabaseSearch;
 
-include_once('./lib/DatabaseSearch.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseSearch.php');
 
 class DatabaseSearchTest extends DatabaseTestCase
 {

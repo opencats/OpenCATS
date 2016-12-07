@@ -27,9 +27,9 @@
  * $Id: ui.php 3807 2007-12-05 01:47:41Z will $
  */
 
-include_once('./config.php');
-include_once('./lib/InstallationTests.php');
-include_once('./lib/CATSUtility.php');
+include_once(LEGACY_ROOT . '/config.php');
+include_once(LEGACY_ROOT . '/lib/InstallationTests.php');
+include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
 
 set_time_limit(300);
 @ini_set('memory_limit', '192M');
@@ -493,7 +493,7 @@ switch ($action)
         foreach ($optionalComponents as $index => $component)
         {
             echo '<tr>';
-            echo '<td><a href="javascript:void(0);" onclick="function HTML' . htmlspecialchars($index) . '() { return \\\'<p style=\\\' + String.fromCharCode(34) + \\\'font-weight: bold; padding-left: 8px; padding-right: 8px;\\\' + String.fromCharCode(34) + \\\'>' . htmlspecialchars($component['name']) . '</p><p style=\\\' + String.fromCharCode(34) + \\\'padding-left: 8px; padding-right: 8px;\\\' + String.fromCharCode(34) + \\\'>' . htmlspecialchars($component['description']) . '</p>\\\'; } showPopWinHTML(HTML' . htmlspecialchars($index) . '(), 400, 100, null); return false;">' . htmlspecialchars($component['name']) . '</a>&nbsp;&nbsp;&nbsp;</td>';
+            echo '<td><a href="javascript:void(0);" onclick="function HTML' . htmlspecialchars($index) . '() { return \'<p style=\\\' + String.fromCharCode(34) + \\\'font-weight: bold; padding-left: 8px; padding-right: 8px;\\\' + String.fromCharCode(34) + \\\'>' . htmlspecialchars($component['name']) . '</p><p style=\\\' + String.fromCharCode(34) + \\\'padding-left: 8px; padding-right: 8px;\\\' + String.fromCharCode(34) + \\\'>' . htmlspecialchars($component['description']) . '</p>\\\'; } showPopWinHTML(HTML' . htmlspecialchars($index) . '(), 400, 100, null); return false;">' . htmlspecialchars($component['name']) . '</a>&nbsp;&nbsp;&nbsp;</td>';
             echo '<td><input type="radio" name="' . htmlspecialchars($index) . '" value="true"' . ($component['componentExists'] ? ' checked' : '') . '></td>';
             echo '<td><input type="radio" name="' . htmlspecialchars($index) . '" value="false"' . ($component['componentExists'] ? '' : ' checked') . '></td>';
             echo '</tr>';
@@ -681,7 +681,7 @@ switch ($action)
         break;
 
     case 'restoreFromBackup':
-        include_once('lib/FileCompressor.php');
+        include_once(LEGACY_ROOT . '/lib/FileCompressor.php');
         MySQLConnect();
         $extractor = new ZipFileExtractor('./restore/catsbackup.bak');
         
@@ -773,7 +773,7 @@ switch ($action)
     case 'onLoadDemoData':
         CATSUtility::changeConfigSetting('ENABLE_DEMO_MODE', 'true');
 
-        include_once('lib/FileCompressor.php');
+        include_once(LEGACY_ROOT . '/lib/FileCompressor.php');
         MySQLConnect();
         $extractor = new ZipFileExtractor('./db/cats_testdata.bak');
         
@@ -940,7 +940,7 @@ switch ($action)
         break;
             
     case 'onReindexResumes':
-        include_once('modules/install/ajax/attachmentsReindex.php');
+        include_once(LEGACY_ROOT . '/modules/install/ajax/attachmentsReindex.php');
         
         echo '<script type="text/javascript">
                   Installpage_populate(\'a=maintComplete\');
@@ -1132,7 +1132,7 @@ function initializeOptionalComponents()
     global $optionalComponents;
 
     //Detect which components are installed and which ones are not
-    include_once('modules/install/OptionalComponents.php');
+    include_once(LEGACY_ROOT . '/modules/install/OptionalComponents.php');
 
     foreach ($optionalComponents as $index => $data)
     {

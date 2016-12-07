@@ -30,8 +30,8 @@
  * @version    $Id: DocumentToText.php 3587 2007-11-13 03:55:57Z will $
  */
 
-include_once('./lib/SystemUtility.php');
-include_once('./lib/FileUtility.php');
+include_once(LEGACY_ROOT . '/lib/SystemUtility.php');
+include_once(LEGACY_ROOT . '/lib/FileUtility.php');
 
 /**
  *	Document to Text Conversion Library

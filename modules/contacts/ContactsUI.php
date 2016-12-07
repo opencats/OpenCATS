@@ -27,17 +27,17 @@
  * $Id: ContactsUI.php 3444 2007-11-06 23:16:27Z will $
  */
 
-include_once('./lib/StringUtility.php');
-include_once('./lib/ResultSetUtility.php');
-include_once('./lib/DateUtility.php');
-include_once('./lib/Contacts.php');
-include_once('./lib/Companies.php');
-include_once('./lib/JobOrders.php');
-include_once('./lib/ActivityEntries.php');
-include_once('./lib/Export.php');
-include_once('./lib/ExtraFields.php');
-include_once('./lib/Calendar.php');
-include_once('./lib/CommonErrors.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/lib/ResultSetUtility.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+include_once(LEGACY_ROOT . '/lib/Contacts.php');
+include_once(LEGACY_ROOT . '/lib/Companies.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
+include_once(LEGACY_ROOT . '/lib/Export.php');
+include_once(LEGACY_ROOT . '/lib/ExtraFields.php');
+include_once(LEGACY_ROOT . '/lib/Calendar.php');
+include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
 
 
 class ContactsUI extends UserInterface
@@ -115,7 +115,7 @@ class ContactsUI extends UserInterface
                 break;
 
             case 'search':
-                include_once('./lib/Search.php');
+                include_once(LEGACY_ROOT . '/lib/Search.php');
 
                 if ($this->isGetBack())
                 {
@@ -145,7 +145,7 @@ class ContactsUI extends UserInterface
                 break;
 
             case 'downloadVCard':
-                include_once('./lib/VCard.php');
+                include_once(LEGACY_ROOT . '/lib/VCard.php');
 
                 $this->downloadVCard();
                 break;

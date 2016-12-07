@@ -98,7 +98,7 @@ class Template
     public function display($template)
     {
         /* File existence checking. */
-        $file = realpath('./' . $template);
+        $file = realpath(LEGACY_ROOT . '/' . $template);
         if (!$file)
         {
             echo 'Template error: File \'', $template, '\' not found.', "\n\n";

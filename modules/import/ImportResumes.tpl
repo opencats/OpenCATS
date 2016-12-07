@@ -1,5 +1,5 @@
 <?php /* $Id: ImportResumes.tpl 3584 2007-11-12 23:20:53Z will $ */ ?>
-<?php TemplateUtility::printHeader('Import', array('modules/import/import.js')); ?>
+<?php TemplateUtility::printHeader('Import', array('js/import/import.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, ''); ?>
     <div id="main">

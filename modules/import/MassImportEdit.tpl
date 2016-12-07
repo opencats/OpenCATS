@@ -3,7 +3,7 @@
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
 <script src='http://resfly.com/js/resumeParserValidation.js' type='text/javascript' language='javascript'></script>
-<link rel="stylesheet" type="text/css" href="modules/import/MassImport.css" />
+<link rel="stylesheet" type="text/css" href="css/import/MassImport.css" />
     <div id="main">
         <div id="contents">
             <div style="width: 910px; padding: 20px 5px 0 5px;">
@@ -249,9 +249,9 @@
                 <div id="copyBlockGrey" style="display: none;">
                     <table id="copyBlockGreyTable" cellpadding="0" cellspacing="0" border="0" style="height: 150px; cursor: pointer;">
                         <tr><td align="left" width="17" height="2" valign="bottom"><img src="images/copyTop-d.jpg" border="0" /></td></tr>
-                        <tr><td align="left" width="17" valign="bottom" style="background: #ffffff url(images/copyBg-d.jpg);">&nbsp;</td></tr>
+                        <tr><td align="left" width="17" valign="bottom" style="background: #ffffff url(/images/copyBg-d.jpg);">&nbsp;</td></tr>
                         <tr><td align="left" width="17" height="11" valign="bottom"><img src="images/copyArrow-d.jpg" border="0" /></td></tr>
-                        <tr><td align="left" width="17" valign="bottom" style="background: #ffffff url(images/copyBg-d.jpg);">&nbsp;</td></tr>
+                        <tr><td align="left" width="17" valign="bottom" style="background: #ffffff url(/images/copyBg-d.jpg);">&nbsp;</td></tr>
                         <tr><td align="left" width="17" height="2" valign="bottom"><img src="images/copyBottom-d.jpg" border="0" /></td></tr>
                     </table>
                 </div>
@@ -259,9 +259,9 @@
                 <div id="copyBlockActive" style="display: none;">
                     <table id="copyBlockActiveTable" cellpadding="0" cellspacing="0" border="0" style="height: 150px; cursor: pointer;">
                         <tr><td align="left" width="17" height="2" valign="bottom"><img src="images/copyTop.jpg" border="0" /></td></tr>
-                        <tr><td align="left" width="17" valign="bottom" style="background: #ffffff url(images/copyBg.jpg);">&nbsp;</td></tr>
+                        <tr><td align="left" width="17" valign="bottom" style="background: #ffffff url(/images/copyBg.jpg);">&nbsp;</td></tr>
                         <tr><td align="left" width="17" height="11" valign="bottom"><img src="images/copyArrow.jpg" border="0" /></td></tr>
-                        <tr><td align="left" width="17" valign="bottom" style="background: #ffffff url(images/copyBg.jpg);">&nbsp;</td></tr>
+                        <tr><td align="left" width="17" valign="bottom" style="background: #ffffff url(/images/copyBg.jpg);">&nbsp;</td></tr>
                         <tr><td align="left" width="17" height="2" valign="bottom"><img src="images/copyBottom.jpg" border="0" /></td></tr>
                     </table>
                 </div>

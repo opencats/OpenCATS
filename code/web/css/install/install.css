@@ -199,7 +199,7 @@ p.success
      */
     background-color: transparent !important;
     background-color: #333;
-    /* background-image\**\: url('images/maskBG.gif') !important; */
+    /* background-image\**\: url('/images/maskBG.gif') !important; */
     background-image: none;
     background-repeat: repeat;
     display: none;

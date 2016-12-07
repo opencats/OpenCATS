@@ -1,7 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-include_once('./lib/AJAXInterface.php');
+include_once(LEGACY_ROOT . '/lib/AJAXInterface.php');
 
 class AJAXInterfaceTest extends TestCase
 {

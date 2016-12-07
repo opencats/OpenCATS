@@ -27,7 +27,7 @@ td.softMiddle {
 }
 #statusBar {
     height: 31px;
-    background: #6B94F2 url(images/parser/statusBar.jpg);
+    background: #6B94F2 url(/images/parser/statusBar.jpg);
     width: 1px;
 }
 div.stepContainer {

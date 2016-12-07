@@ -1,5 +1,5 @@
 <?php /* $Id: SiteName.tpl 1930 2007-02-22 08:39:53Z will $ */ ?>
-<?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js')); ?>
+<?php TemplateUtility::printHeader('Settings', array('js/settings/validator.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">

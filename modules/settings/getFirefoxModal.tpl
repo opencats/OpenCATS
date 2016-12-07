@@ -1,5 +1,5 @@
 <?php /* $Id: getFirefoxModal.tpl 3214 2007-10-16 15:31:00Z will $ */ ?>
-<?php TemplateUtility::printModalHeader('Settings', array('modules/candidates/validator.js'), 'Get Firefox'); ?>
+<?php TemplateUtility::printModalHeader('Settings', array('js/candidates/validator.js'), 'Get Firefox'); ?>
 
             <table class="editTable">
                 <tr>

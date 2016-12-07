@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LegacyController extends Controller
 {
+
     /**
      * @Route("/{fileName}.php", name="_proxy", requirements={"fileName":"\w+"})
      */
@@ -16,12 +17,13 @@ class LegacyController extends Controller
         ob_start();
         if ($fileName == 'index')
         {
+            define('LEGACY_ROOT', dirname(dirname($this->get('kernel')->getRootDir())));
             // A properly formatted query string will look like this:
             // /index.php?m=candidates&a=edit&candidateID=55
             // Do we need to run the installer?
-            if (!file_exists('INSTALL_BLOCK') && !isset($_POST['performMaintenence']))
+            if (!file_exists(LEGACY_ROOT . '/INSTALL_BLOCK') && !isset($_POST['performMaintenence']))
             {
-                include('modules/install/notinstalled.php');
+                include(LEGACY_ROOT . '/modules/install/notinstalled.php');
                 die();
             }
 
@@ -42,23 +44,23 @@ class LegacyController extends Controller
                 @$_SERVER['REMOTE_ADDR'] !== '::1' &&
                 substr(@$_SERVER['REMOTE_ADDR'], 0, 3) !== '10.')
             {
-                include_once('modules/asp/lib/ErrorHandler.php');
+                include_once(LEGACY_ROOT . '/modules/asp/lib/ErrorHandler.php');
                 $errorHandler = new ErrorHandler();
             }
 
-            include_once('./config.php');
-            include_once('./constants.php');
-            include_once('./lib/CommonErrors.php');
-            include_once('./lib/CATSUtility.php');
-            include_once('./lib/DatabaseConnection.php');
-            include_once('./lib/Template.php');
-            include_once('./lib/Users.php');
-            include_once('./lib/MRU.php');
-            include_once('./lib/Hooks.php');
-            include_once('./lib/Session.php'); /* Depends: MRU, Users, DatabaseConnection. */
-            include_once('./lib/UserInterface.php'); /* Depends: Template, Session. */
-            include_once('./lib/ModuleUtility.php'); /* Depends: UserInterface */
-            include_once('./lib/TemplateUtility.php'); /* Depends: ModuleUtility, Hooks */
+            include_once(LEGACY_ROOT . '/config.php');
+            include_once(LEGACY_ROOT . '/constants.php');
+            include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
+            include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
+            include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
+            include_once(LEGACY_ROOT . '/lib/Template.php');
+            include_once(LEGACY_ROOT . '/lib/Users.php');
+            include_once(LEGACY_ROOT . '/lib/MRU.php');
+            include_once(LEGACY_ROOT . '/lib/Hooks.php');
+            include_once(LEGACY_ROOT . '/lib/Session.php'); /* Depends: MRU, Users, DatabaseConnection. */
+            include_once(LEGACY_ROOT . '/lib/UserInterface.php'); /* Depends: Template, Session. */
+            include_once(LEGACY_ROOT . '/lib/ModuleUtility.php'); /* Depends: UserInterface */
+            include_once(LEGACY_ROOT . '/lib/TemplateUtility.php'); /* Depends: ModuleUtility, Hooks */
 
 
             /* Give the session a unique name to avoid conflicts and start the session. */
@@ -87,7 +89,7 @@ class LegacyController extends Controller
             }
             if (get_magic_quotes_gpc())
             {
-                include_once('./lib/ArrayUtility.php');
+                include_once(LEGACY_ROOT . '/lib/ArrayUtility.php');
 
                 $_GET     = array_map('stripslashes_deep', $_GET);
                 $_POST    = array_map('stripslashes_deep', $_POST);
@@ -96,7 +98,6 @@ class LegacyController extends Controller
                 $_POST    = ArrayUtility::arrayMapKeys('stripslashes_deep', $_POST);
                 $_REQUEST = ArrayUtility::arrayMapKeys('stripslashes_deep', $_REQUEST);
             }
-
             /* Objects can't be stored in the session if session.auto_start is enabled. */
             if (ini_get('session.auto_start') !== '0' &&
                 ini_get('session.auto_start') !== 'Off')
@@ -113,7 +114,7 @@ class LegacyController extends Controller
             /* Make sure we have a Session object stored in the user's session. */
             if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
             {
-                $_SESSION['CATS'] = new CATSSession();
+                $_SESSION['CATS'] = new \CATSSession();
             }
 
             /* Start timer for measuring server response time. Displayed in footer. */
@@ -129,10 +130,10 @@ class LegacyController extends Controller
              * if ASP module exists (code is running on catsone.com), load the website by default
              * rather than the login page.
              */
-            if (ModuleUtility::moduleExists("asp") && ModuleUtility::moduleExists("website"))
+            if (\ModuleUtility::moduleExists("asp") && \ModuleUtility::moduleExists("website"))
             {
                 // FIXME: Can we optimize this a bit...?
-                include_once('modules/asp/lib/General.php');
+                include_once(LEGACY_ROOT . '/modules/asp/lib/General.php');
 
                 if (!(isset($careerPage) && $careerPage) &&
                     !(isset($rssPage) && $rssPage) &&
@@ -140,7 +141,7 @@ class LegacyController extends Controller
                     (!isset($_GET['m']) || empty($_GET['m'])) &&
                     (Asp::getSubDomain() == '' || isset($_GET['a'])))
                 {
-                    ModuleUtility::loadModule('website');
+                    \ModuleUtility::loadModule('website');
                     exit(1);
                 }
             }
@@ -152,7 +153,7 @@ class LegacyController extends Controller
             // FIXME: This is slow!
             if ($_SESSION['CATS']->isLoggedIn())
             {
-                $users = new Users($_SESSION['CATS']->getSiteID());
+                $users = new \Users($_SESSION['CATS']->getSiteID());
                 $forceLogoutData = $users->getForceLogoutData($_SESSION['CATS']->getUserID());
 
                 if (!empty($forceLogoutData) && ($forceLogoutData['forceLogout'] == 1 ||
@@ -177,7 +178,7 @@ class LegacyController extends Controller
                             $URI .= '&s=' . $unixName;
                         }
 
-                        CATSUtility::transferRelativeURI($URI);
+                        \CATSUtility::transferRelativeURI($URI);
                         die();
                     }
                 }
@@ -187,27 +188,27 @@ class LegacyController extends Controller
             if (((isset($careerPage) && $careerPage) ||
                 (isset($_GET['showCareerPortal']) && $_GET['showCareerPortal'] == '1')))
             {
-                ModuleUtility::loadModule('careers');
+                \ModuleUtility::loadModule('careers');
             }
 
             /* Check to see if we are supposed to display an rss page. */
             else if (isset($rssPage) && $rssPage)
             {
-                ModuleUtility::loadModule('rss');
+                \ModuleUtility::loadModule('rss');
             }
 
             else if (isset($xmlPage) && $xmlPage)
             {
-                ModuleUtility::loadModule('xml');
+                \ModuleUtility::loadModule('xml');
             }
 
             /* Check to see if the user was forcibly logged out (logged in from another browser). */
             else if ($_SESSION['CATS']->isLoggedIn() &&
-                (!isset($_GET['m']) || ModuleUtility::moduleRequiresAuthentication($_GET['m'])) &&
+                (!isset($_GET['m']) || \ModuleUtility::moduleRequiresAuthentication($_GET['m'])) &&
                 $_SESSION['CATS']->checkForceLogout())
             {
                 // FIXME: Unset session / etc.?
-                ModuleUtility::loadModule('login');
+                \ModuleUtility::loadModule('login');
             }
 
             /* If user specified a module, load it; otherwise, load the home module. */
@@ -219,11 +220,11 @@ class LegacyController extends Controller
 
                     if (!eval(Hooks::get('INDEX_LOAD_HOME'))) return;
 
-                    ModuleUtility::loadModule('home');
+                    \ModuleUtility::loadModule('home');
                 }
                 else
                 {
-                    ModuleUtility::loadModule('login');
+                    \ModuleUtility::loadModule('login');
                 }
             }
             else
@@ -255,32 +256,32 @@ class LegacyController extends Controller
                     }
 
                     /* catsone.com demo domain doesn't relogin. */
-                    if (strpos(CATSUtility::getIndexName(), '://demo.catsone.com') !== false)
+                    if (strpos(\CATSUtility::getIndexName(), '://demo.catsone.com') !== false)
                     {
-                        CATSUtility::transferURL('http://www.catsone.com');
+                        \CATSUtility::transferURL('http://www.catsone.com');
                     }
                     else
                     {
-                        CATSUtility::transferRelativeURI($URI);
+                        \CATSUtility::transferRelativeURI($URI);
                     }
                 }
-                else if (!ModuleUtility::moduleRequiresAuthentication($_GET['m']))
+                else if (!\ModuleUtility::moduleRequiresAuthentication($_GET['m']))
                 {
                     /* No authentication required; load the module. */
-                    ModuleUtility::loadModule($_GET['m']);
+                    \ModuleUtility::loadModule($_GET['m']);
                 }
                 else if (!$_SESSION['CATS']->isLoggedIn())
                 {
                     /* User isn't logged in and authentication is required; send the user
                      * to the login page.
                      */
-                    ModuleUtility::loadModule('login');
+                    \ModuleUtility::loadModule('login');
                 }
                 else
                 {
                     /* Everything's good; load the requested module. */
                     $_SESSION['CATS']->logPageView();
-                    ModuleUtility::loadModule($_GET['m']);
+                    \ModuleUtility::loadModule($_GET['m']);
                 }
             }
 

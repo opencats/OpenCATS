@@ -30,12 +30,12 @@
  * @version    $Id: Candidates.php 3813 2007-12-05 23:16:22Z brian $
  */
 
-include_once('./lib/Attachments.php');
-include_once('./lib/Pipelines.php');
-include_once('./lib/History.php');
-include_once('./lib/SavedLists.php');
-include_once('./lib/ExtraFields.php');
-include_once('lib/DataGrid.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/Pipelines.php');
+include_once(LEGACY_ROOT . '/lib/History.php');
+include_once(LEGACY_ROOT . '/lib/SavedLists.php');
+include_once(LEGACY_ROOT . '/lib/ExtraFields.php');
+include_once(LEGACY_ROOT . '/lib/DataGrid.php');
 
 
 /**

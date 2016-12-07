@@ -27,18 +27,18 @@
  * $Id: ListsUI.php 3807 2007-12-05 01:47:41Z will $
  */
 
-include_once('./lib/StringUtility.php');
-include_once('./lib/DateUtility.php'); /* Depends on StringUtility. */
-include_once('./lib/ResultSetUtility.php');
-include_once('./lib/Companies.php');
-include_once('./lib/Contacts.php');
-include_once('./lib/JobOrders.php');
-include_once('./lib/Attachments.php');
-include_once('./lib/Export.php');
-include_once('./lib/ListEditor.php');
-include_once('./lib/FileUtility.php');
-include_once('./lib/SavedLists.php');
-include_once('./lib/ExtraFields.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php'); /* Depends on StringUtility. */
+include_once(LEGACY_ROOT . '/lib/ResultSetUtility.php');
+include_once(LEGACY_ROOT . '/lib/Companies.php');
+include_once(LEGACY_ROOT . '/lib/Contacts.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/Export.php');
+include_once(LEGACY_ROOT . '/lib/ListEditor.php');
+include_once(LEGACY_ROOT . '/lib/FileUtility.php');
+include_once(LEGACY_ROOT . '/lib/SavedLists.php');
+include_once(LEGACY_ROOT . '/lib/ExtraFields.php');
 
 
 class ListsUI extends UserInterface

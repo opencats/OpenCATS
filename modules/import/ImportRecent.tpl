@@ -1,5 +1,5 @@
 <?php /* $Id: ImportRecent.tpl 3548 2007-11-09 23:54:52Z andrew $ */ ?>
-<?php TemplateUtility::printHeader('Import', array('modules/import/import.js')); ?>
+<?php TemplateUtility::printHeader('Import', array('js/import/import.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">

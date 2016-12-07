@@ -30,8 +30,8 @@
  * @version    $Id: Questionnaire.php 3745 2007-11-28 18:37:56Z andrew $
  */
 
-include_once('./lib/DatabaseConnection.php');
-include_once('./lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
 
 define('QUESTIONNAIRE_QUESTION_TYPE_TEXT', 1);
 define('QUESTIONNAIRE_QUESTION_TYPE_SELECT', 2);

@@ -1,7 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-include_once('./lib/ArrayUtility.php');
+include_once(LEGACY_ROOT . '/lib/ArrayUtility.php');
 
 class ArrayUtilityTest extends TestCase
 {

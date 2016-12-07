@@ -1,5 +1,5 @@
 <?php /* $Id: AspDownloads.tpl 3367 2007-10-31 22:24:34Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'modules/settings/downloads.css')); ?>
+<?php TemplateUtility::printHeader('Settings', array('js/settings/validator.js', 'css/settings/downloads.css')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
 
@@ -47,7 +47,7 @@ if (isset($_GET['sendDevEmail']) && !strcmp($_GET['sendDevEmail'], 'true') && fi
 {
     if (isset($_COOKIE['CATS_firefoxToolbar']) && !strcmp($_COOKIE['CATS_firefoxToolbar'], 'true')) exit(0);
 
-    include_once('./modules/asp/lib/ASPUtility.php');
+    include_once(LEGACY_ROOT . '/modules/asp/lib/ASPUtility.php');
     ASPUtility::sendDevEmail(
         'Firefox Download',
         sprintf(

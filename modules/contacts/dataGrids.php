@@ -31,9 +31,9 @@
  * $Id: dataGrids.php 3096 2007-09-25 19:27:04Z brian $
  */
  
-include_once('./lib/Contacts.php');
-include_once('./lib/Hooks.php');
-include_once('./lib/Width.php');
+include_once(LEGACY_ROOT . '/lib/Contacts.php');
+include_once(LEGACY_ROOT . '/lib/Hooks.php');
+include_once(LEGACY_ROOT . '/lib/Width.php');
 
 class ContactsListByViewDataGrid extends ContactsDataGrid
 {

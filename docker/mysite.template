@@ -5,7 +5,7 @@ server {
     listen 80;
 
     server_name opencats;
-    root /var/www/web;
+    root /var/www/code/web;
 
     error_log /var/log/nginx/symfony2.error.log;
     access_log /var/log/nginx/symfony2.access.log;
@@ -38,7 +38,7 @@ server {
     listen 443;
 
     server_name opencats;
-    root /var/www/web;
+    root /var/www/code/web;
 
     #ssl on;
     #ssl_certificate /etc/ssl/certs/symfony2.crt;

@@ -29,9 +29,9 @@
 
 // FIXME: Test config readable.
 
-include_once('./config.php');
-include_once('./constants.php');
-include_once('./lib/InstallationTests.php');
+include_once(LEGACY_ROOT . '/config.php');
+include_once(LEGACY_ROOT . '/constants.php');
+include_once(LEGACY_ROOT . '/lib/InstallationTests.php');
 
 
 define('REQUIRED_SCHEMA_VERSION', '1200');
@@ -45,7 +45,7 @@ header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 <html>
     <head>
         <title>CATS - Installation Test Script</title>
-        <style type="text/css" media="all">@import "main.css";</style>
+        <style type="text/css" media="all">@import "css/main.css";</style>
         <style type="text/css" media="all">
             table.test_output
             {

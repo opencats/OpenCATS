@@ -3,7 +3,7 @@ namespace OpenCATS\Tests\UnitTests;
 use PHPUnit\Framework\TestCase;
 use OpenCATS\Entity\CompanyRepository;
 use OpenCATS\Entity\Company;
-include_once('./lib/History.php');
+include_once(LEGACY_ROOT . '/lib/History.php');
 
 class CompanyRepositoryTests extends TestCase
 {

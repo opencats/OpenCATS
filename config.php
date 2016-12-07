@@ -138,7 +138,7 @@ define('INSERT_BOM_CSV_3', '191');
 define('INSERT_BOM_CSV_4', '');
 
 /* Path to modules. */
-define('MODULES_PATH', './modules/');
+define('MODULES_PATH', LEGACY_ROOT  . '/modules/');
 
 /* Unique session name. The only reason you might want to modify this is
  * for multiple CATS installations on one server. A-Z, 0-9 only! */

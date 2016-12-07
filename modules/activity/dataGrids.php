@@ -31,10 +31,10 @@
  * $Id: dataGrids.php 3566 2007-11-12 09:46:35Z will $
  */
  
-include_once('./lib/ActivityEntries.php');
-include_once('./lib/Hooks.php');
-include_once('./lib/InfoString.php');
-include_once('./lib/Width.php');
+include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
+include_once(LEGACY_ROOT . '/lib/Hooks.php');
+include_once(LEGACY_ROOT . '/lib/InfoString.php');
+include_once(LEGACY_ROOT . '/lib/Width.php');
 
 class ActivityDataGrid extends DataGrid
 {

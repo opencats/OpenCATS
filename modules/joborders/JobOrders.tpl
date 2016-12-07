@@ -3,8 +3,8 @@
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <style type="text/css">
-    div.addJobOrderButton { background: #4172E3 url(images/nodata/jobOrdersButton.jpg); cursor: pointer; width: 337px; height: 67px; }
-    div.addJobOrderButton:hover { background: #4172E3 url(images/nodata/jobOrdersButton-o.jpg); cursor: pointer; width: 337px; height: 67px; }
+    div.addJobOrderButton { background: #4172E3 url(/images/nodata/jobOrdersButton.jpg); cursor: pointer; width: 337px; height: 67px; }
+    div.addJobOrderButton:hover { background: #4172E3 url(/images/nodata/jobOrdersButton-o.jpg); cursor: pointer; width: 337px; height: 67px; }
     </style>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
@@ -100,7 +100,7 @@
             <?php else: ?>
 
             <br /><br /><br /><br />
-            <div style="height: 95px; background: #E6EEFF url(images/nodata/jobOrdersTop.jpg);">
+            <div style="height: 95px; background: #E6EEFF url(/images/nodata/jobOrdersTop.jpg);">
                 &nbsp;
             </div>
             <br /><br />

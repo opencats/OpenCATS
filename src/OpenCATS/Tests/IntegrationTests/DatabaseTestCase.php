@@ -11,12 +11,12 @@ class DatabaseTestCase extends TestCase
     {
         global $mySQLConnection;
         parent::setUp();
-        include_once('./constants.php');
+        include_once(LEGACY_ROOT . '/constants.php');
         define('DATABASE_NAME', 'cats_integrationtest');
         define('DATABASE_HOST', 'integrationtestdb');
 
-        include_once('./config.php');
-        include_once('./lib/DatabaseConnection.php');
+        include_once(LEGACY_ROOT . '/config.php');
+        include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
         $mySQLConnection = @mysql_connect(
             DATABASE_HOST, DATABASE_USER, DATABASE_PASS
             );

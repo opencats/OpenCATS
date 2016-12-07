@@ -1,7 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-include_once('./lib/ResultSetUtility.php');
+include_once(LEGACY_ROOT . '/lib/ResultSetUtility.php');
 
 class ResultSetUtilityTest extends TestCase
 {

@@ -30,7 +30,7 @@
  * @version    $Id: Statistics.php 3587 2007-11-13 03:55:57Z will $
  */
 
-include_once('./lib/Pipelines.php');
+include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 
 /**
  *	Statistics Library

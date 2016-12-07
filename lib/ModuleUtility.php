@@ -69,8 +69,9 @@ class ModuleUtility
         $moduleClass = $modules[$moduleName][0];
 
         include_once(
-            'modules/' . $moduleName . '/'
-            . $moduleClass . '.php'
+            LEGACY_ROOT .
+            '/modules/' . $moduleName . '/' .
+            $moduleClass . '.php'
         );
 
         if (!eval(Hooks::get('LOAD_MODULE'))) return;
@@ -122,8 +123,9 @@ class ModuleUtility
         $moduleClass = $modules[$moduleName][0];
 
         include_once(
-            'modules/' . $moduleName . '/'
-            . $moduleClass . '.php'
+            LEGACY_ROOT .
+            '/modules/' . $moduleName . '/' .
+            $moduleClass . '.php'
         );
 
         $module = new $moduleClass();
@@ -354,15 +356,8 @@ class ModuleUtility
         $template = new Template();
 
         $template->assign('errorMessage', $error);
-        $template->display('./Error.tpl');
-
-        echo '<!--';
-         trigger_error(
-             str_replace("\n", " ", 'Fatal Error raised: ' . $error)
-         );
-        echo '-->';
-
-        die();
+        $template->display('Error.tpl');
+        throw new Exception(str_replace("\n", " ", 'Fatal Error raised: ' . $error));
     }
 
     /**

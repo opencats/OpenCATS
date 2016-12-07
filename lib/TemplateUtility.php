@@ -35,9 +35,9 @@
  * @version    $Id: TemplateUtility.php 3835 2007-12-12 19:08:38Z brian $
  */
 
-include_once('Candidates.php');
-include_once('DateUtility.php');
-include_once('SystemInfo.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+include_once(LEGACY_ROOT . '/lib/SystemInfo.php');
 
 /**
  *	Template Utility Library
@@ -731,7 +731,7 @@ class TemplateUtility
                     else if (strpos($link, 'a=internalPostings') !== false)
                     {
                         /* Default company subtab. */
-                        include_once('./lib/Companies.php');
+                        include_once(LEGACY_ROOT . '/lib/Companies.php');
 
                         $companies = new Companies($_SESSION['CATS']->getSiteID());
                         $defaultCompanyID = $companies->getDefaultCompany();
@@ -1180,7 +1180,7 @@ class TemplateUtility
         echo '<script type="text/javascript" src="js/jquery-1.3.2.min.js'.$javascriptAntiCache.'"></script>', "\n";
         echo '<script type="text/javascript">CATSIndexName = "'.CATSUtility::getIndexName().'";</script>', "\n";
 
-       $headIncludes[] = 'main.css';
+       $headIncludes[] = 'css/main.css';
 
         foreach ($headIncludes as $key => $filename)
         {
@@ -1231,8 +1231,8 @@ class TemplateUtility
             }
         }
 
-        echo '<!--[if IE]><link rel="stylesheet" type="text/css" href="ie.css" /><![endif]-->', "\n";
-        echo '<![if !IE]><link rel="stylesheet" type="text/css" href="not-ie.css" /><![endif]>', "\n";
+        echo '<!--[if IE]><link rel="stylesheet" type="text/css" href="css/ie.css" /><![endif]-->', "\n";
+        echo '<![if !IE]><link rel="stylesheet" type="text/css" href="css/not-ie.css" /><![endif]>', "\n";
         echo '</head>', "\n\n";
     }
 
