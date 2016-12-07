@@ -10,6 +10,14 @@ class LegacyController extends Controller
 {
 
     /**
+     * @Route("/", name="_proxyIndex")
+     */
+    public function proxyIndexAction()
+    {
+        return $this->proxyAction('index');
+    }
+
+    /**
      * @Route("/{fileName}.php", name="_proxy", requirements={"fileName":"\w+"})
      */
     public function proxyAction($fileName)
@@ -71,8 +79,8 @@ class LegacyController extends Controller
             header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
             header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 
-// This function assures to strip the values from
-// request arrays even if as values are arrays not only values
+            // This function assures to strip the values from
+            // request arrays even if as values are arrays not only values
             function stripslashes_deep($value)
             {
                 $value = is_array($value) ?
@@ -94,9 +102,9 @@ class LegacyController extends Controller
                 $_GET     = array_map('stripslashes_deep', $_GET);
                 $_POST    = array_map('stripslashes_deep', $_POST);
                 $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
-                $_GET     = ArrayUtility::arrayMapKeys('stripslashes_deep', $_GET);
-                $_POST    = ArrayUtility::arrayMapKeys('stripslashes_deep', $_POST);
-                $_REQUEST = ArrayUtility::arrayMapKeys('stripslashes_deep', $_REQUEST);
+                $_GET     = \ArrayUtility::arrayMapKeys('stripslashes_deep', $_GET);
+                $_POST    = \ArrayUtility::arrayMapKeys('stripslashes_deep', $_POST);
+                $_REQUEST = \ArrayUtility::arrayMapKeys('stripslashes_deep', $_REQUEST);
             }
             /* Objects can't be stored in the session if session.auto_start is enabled. */
             if (ini_get('session.auto_start') !== '0' &&
@@ -139,7 +147,7 @@ class LegacyController extends Controller
                     !(isset($rssPage) && $rssPage) &&
                     !(isset($xmlPage) && $xmlPage) &&
                     (!isset($_GET['m']) || empty($_GET['m'])) &&
-                    (Asp::getSubDomain() == '' || isset($_GET['a'])))
+                    (\Asp::getSubDomain() == '' || isset($_GET['a'])))
                 {
                     \ModuleUtility::loadModule('website');
                     exit(1);
@@ -218,7 +226,7 @@ class LegacyController extends Controller
                 {
                     $_SESSION['CATS']->logPageView();
 
-                    if (!eval(Hooks::get('INDEX_LOAD_HOME'))) return;
+                    if (!eval(\Hooks::get('INDEX_LOAD_HOME'))) return;
 
                     \ModuleUtility::loadModule('home');
                 }
