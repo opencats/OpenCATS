@@ -53,7 +53,7 @@ function update_150($db)
     global $badFileExtensions;
 
     $attachments = $db->query('SELECT * FROM attachment');
-    while ($attachment = mysql_fetch_assoc($attachments))
+    while ($attachment = mysqli_fetch_assoc($attachments))
     {
         $fileExtension = substr(
             $attachment['stored_filename'],

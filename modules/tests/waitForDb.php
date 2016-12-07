@@ -6,12 +6,12 @@ $canConnectAndSelectDb = false;
 $count = 30;
 while (!$canConnectAndSelectDb && $count > 0)
 {
-    $connection = @mysql_connect(
+    $connection = @mysqli_connect(
         DATABASE_HOST, DATABASE_USER, DATABASE_PASS
     );
     if ($connection)
     {
-        $isDBSelected = @mysql_select_db(DATABASE_NAME, $connection);
+        $isDBSelected = @mysqli_select_db(DATABASE_NAME, $connection);
         if ($isDBSelected)
         {
             $canConnectAndSelectDb = true;

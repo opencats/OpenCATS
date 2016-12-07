@@ -295,7 +295,7 @@ class CommonErrors
         $db = DatabaseConnection::getInstance();
         $tables = array();
         $rs = $db->query('show tables');
-        while ($tbl = mysql_fetch_array($rs)) $tables[] = $tbl[0];
+        while ($tbl = mysqli_fetch_array($rs)) $tables[] = $tbl[0];
         if (in_array('exceptions', $tables)) return true;
         else return false;
     }

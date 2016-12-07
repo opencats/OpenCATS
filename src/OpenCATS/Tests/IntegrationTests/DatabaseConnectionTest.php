@@ -173,7 +173,7 @@ class DatabaseConnectionTest extends DatabaseTestCase
             'SELECT query should succeed'
             );
         $this->assertEquals(
-            mysql_num_rows($queryResult),
+            mysqli_num_rows($queryResult),
             1,
             '1 row should be returned'
             );
