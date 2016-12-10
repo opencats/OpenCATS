@@ -247,26 +247,15 @@
                             <label id="statusLabel" for="status">Status:</label>
                         </td>
                         <td class="tdData">
-                            <?php if(isset($this->overOpenJOQuota) && ($this->data['status'] == 'OnHold' || $this->data['status'] == 'Full' || $this->data['status'] == 'Closed' || $this->data['status'] == 'Canceled')): ?>
-                                <select tabindex="8" id="status" name="status" class="inputbox" style="width: 150px;">
-                                    <option <?php if ($this->data['status'] == 'OnHold'): ?>selected<?php endif; ?> value="OnHold">On Hold</option>
-                                    <option <?php if ($this->data['status'] == 'Full'): ?>selected<?php endif; ?> value="Full">Full</option>
-                                    <option <?php if ($this->data['status'] == 'Closed'): ?>selected<?php endif; ?> value="Closed">Closed</option>
-                                    <option <?php if ($this->data['status'] == 'Canceled'): ?>selected<?php endif; ?> value="Canceled">Canceled</option>
-                                </select>&nbsp;*<br />
-                                <span style="font-size:10px;">(You have already reached your limit of <?php echo(FREE_ACCOUNT_JOBORDERS); ?> open Job Orders, and cannot make this Job Order Active.)<br /></font>
-
-                            <?php else: ?>
-                                <select tabindex="8" id="status" name="status" class="inputbox" style="width: 150px;">
-                                    <option <?php if ($this->data['status'] == 'Active'): ?>selected<?php endif; ?> value="Active">Active</option>
-                                    <option <?php if ($this->data['status'] == 'Upcoming'): ?>selected<?php endif; ?> value="Upcoming">Upcoming</option>
-                                    <option <?php if ($this->data['status'] == 'Lead'): ?>selected<?php endif; ?> value="Lead">Prospective / Lead</option>
-                                    <option <?php if ($this->data['status'] == 'OnHold'): ?>selected<?php endif; ?> value="OnHold">On Hold</option>
-                                    <option <?php if ($this->data['status'] == 'Full'): ?>selected<?php endif; ?> value="Full">Full</option>
-                                    <option <?php if ($this->data['status'] == 'Closed'): ?>selected<?php endif; ?> value="Closed">Closed</option>
-                                    <option <?php if ($this->data['status'] == 'Canceled'): ?>selected<?php endif; ?> value="Canceled">Canceled</option>
-                                </select>&nbsp;*
-                            <?php endif; ?>
+                            <select tabindex="8" id="status" name="status" class="inputbox" style="width: 150px;">
+                                <option <?php if ($this->data['status'] == 'Active'): ?>selected<?php endif; ?> value="Active">Active</option>
+                                <option <?php if ($this->data['status'] == 'Upcoming'): ?>selected<?php endif; ?> value="Upcoming">Upcoming</option>
+                                <option <?php if ($this->data['status'] == 'Lead'): ?>selected<?php endif; ?> value="Lead">Prospective / Lead</option>
+                                <option <?php if ($this->data['status'] == 'OnHold'): ?>selected<?php endif; ?> value="OnHold">On Hold</option>
+                                <option <?php if ($this->data['status'] == 'Full'): ?>selected<?php endif; ?> value="Full">Full</option>
+                                <option <?php if ($this->data['status'] == 'Closed'): ?>selected<?php endif; ?> value="Closed">Closed</option>
+                                <option <?php if ($this->data['status'] == 'Canceled'): ?>selected<?php endif; ?> value="Canceled">Canceled</option>
+                            </select>&nbsp;*
                         </td>
 
                         <td class="tdVertical">
