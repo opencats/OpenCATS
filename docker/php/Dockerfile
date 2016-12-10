@@ -1,4 +1,4 @@
-FROM php:5.6.28-fpm-alpine
+FROM php:5.6.27-fpm-alpine
 RUN apk upgrade --update && apk add \
   coreutils \
   freetype-dev \
@@ -20,7 +20,8 @@ RUN cd ~ && \
   ./configure && \
   make && \
   make install
-RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-install -j5 mysql gd ldap soap zip
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install -j5 mysql gd ldap soap zip
 ADD scripts/install-composer.sh /opt/install-composer.sh
 RUN dos2unix /opt/install-composer.sh && \
   chmod +x /opt/install-composer.sh && \
