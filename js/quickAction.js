@@ -1,84 +1,118 @@
-/*
- * CATS
- * Quick Action JavaScript Library
- *
- * Portions Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
- *
- * The contents of this file are subject to the CATS Public License
- * Version 1.1a (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://www.catsone.com/.
- *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * The Original Code is "CATS Standard Edition".
- *
- * The Initial Developer of the Original Code is Cognizo Technologies, Inc.
- * Portions created by the Initial Developer are Copyright (C) 2005 - 2007
- * (or from the year in which this file was created to the year 2007) by
- * Cognizo Technologies, Inc. All Rights Reserved.
- *
- * $Id: quickAction.js 3198 2007-10-14 23:36:43Z will $
- */
+var quickAction = {};
 
-var _singleQuickActionMenuDataItemType;
-var _singleQuickActionMenuDataItemID;
-
-/* Creates and displays a popup menu for an individual data item on the page to do some simple action to. */
-function showHideSingleQuickActionMenu(dataItemType, dataItemID, menuX, menuY)
+quickAction.MenuOption = function(title, action)
 {
-    var singleQuickActionMenu = document.getElementById('singleQuickActionMenu');
-    
-    if (singleQuickActionMenu.style.display == 'block')
+    this.title = title;
+    this.action = action;
+};
+
+quickAction.MenuOption.prototype.getTitle = function()
+{
+    return this.title;
+};
+
+quickAction.MenuOption.prototype.getAction = function()
+{
+    return this.action;
+};
+
+
+quickAction.MenuOption.prototype.getHtml = function()
+{
+    return '<a href="javascript:void(0);" onclick="' + this.getAction() + '">' + this.getTitle() + '</a><br />';
+};
+
+quickAction.LinkMenuOption = function(title, action, option)
+{
+    quickAction.MenuOption.call(this, title, action);
+    this.option = option;
+};
+
+quickAction.LinkMenuOption.prototype = Object.create(quickAction.MenuOption.prototype);
+
+quickAction.LinkMenuOption.prototype.getOption = function()
+{
+    return this.option;
+};
+
+quickAction.LinkMenuOption.prototype.getHtml = function()
+{
+    var message = "'Are you sure?'";
+    var result;
+    switch(this.getOption())
     {
-        closeQuickActionMenu();
-        return;
-    }
-    
-    singleQuickActionMenu.style.display = 'block';
-    singleQuickActionMenu.style.left = menuX + 'px';
-    singleQuickActionMenu.style.top = menuY + 'px';
-    singleQuickActionMenu.innerHTML = '';
-    _singleQuickActionMenuDataItemType = dataItemType;
-    _singleQuickActionMenuDataItemID = dataItemID;
-    
-    addItemToPopupMenu('Add To List', 'showQuickActionAddToList();');
-    
-    switch (dataItemType)
-    {
-        case DATA_ITEM_CANDIDATE:
-            addItemToPopupMenu('Add To Pipeline', 'showQuickActionAddToPipeline();');
+        case 0:
+            var itemAction = "'" + this.getAction() + "'";
+            result = '<a href=# onclick="showPopWin(' + itemAction + ', 750, 540, null); return false;">' + this.getTitle() + '</a><br />';
+            break;
+        case 1:
+        default:
+            result = '<a href="' + this.getAction() + '" onclick="return confirm(' + message + ')">' + this.getTitle() + '</a><br />';
             break;
     }
-}
+    return result;
+};
+
+
+quickAction.DefaultMenu = function(menuDataItemType, menuDataItemId, menuX, menuY)
+{
+    this.element = document.getElementById('singleQuickActionMenu');
+    this.menuDataItemType = menuDataItemType;
+    this.menuDataItemId = menuDataItemId;
+    this.menuX = menuX;
+    this.menuY = menuY;
+};
+
+quickAction.DefaultMenu.prototype.getType = function()
+{
+    return this.menuDataItemType;
+};
+
+quickAction.DefaultMenu.prototype.getId = function()
+{
+    return this.menuDataItemId;
+};
+
+quickAction.DefaultMenu.prototype.getOptions = function()
+{
+    return [
+        new quickAction.MenuOption('Add To List', 'showQuickActionAddToList(' +  this.menuDataItemType + ', ' + this.menuDataItemId + ');')
+    ];
+};
+
+quickAction.DefaultMenu.prototype.toggle = function()
+{
+    if (this.element.style.display != 'block')
+    {
+        this.element.style.display = 'block';
+        this.element.style.left = this.menuX + 'px';
+        this.element.style.top = this.menuY + 'px';
+        this.element.innerHTML = '';
+        var options = this.getOptions();
+        for (var i = 0; i < options.length; ++i)
+        {
+            this.element.innerHTML += options[i].getHtml();
+        }
+    }
+};
+
+/* Creates and displays a popup menu for an individual data item on the page to do some simple action to. */
+function showHideSingleQuickActionMenu(menu)
+{
+    menu.toggle();
+};
 
 /* Shows a popup for adding a item to a list. */
-function showQuickActionAddToList()
+function showQuickActionAddToList(menuDataItemType, menuDataItemId)
 {
     /* Create a popup window for adding this data item type to a list (content loaded from server) */
-    showPopWin(CATSIndexName + '?m=lists&a=quickActionAddToListModal&dataItemType='+_singleQuickActionMenuDataItemType+'&dataItemID='+_singleQuickActionMenuDataItemID, 450, 350, null);
-}
+    showPopWin(CATSIndexName + '?m=lists&a=quickActionAddToListModal&dataItemType='+ menuDataItemType +'&dataItemID='+ menuDataItemId, 450, 350, null);
+};
 
 /* Shows a popup for adding a item to a list. */
-function showQuickActionAddToPipeline()
+function showQuickActionAddToPipeline(menuDataItemId)
 {
     /* Create a popup window for adding this candidate to the pipeline */
-    showPopWin(CATSIndexName + '?m=candidates&a=considerForJobSearch&candidateID='+_singleQuickActionMenuDataItemID, 750, 390, null);
-}
-
-function addItemToPopupMenu(itemTitle, itemAction)
-{
-    var singleQuickActionMenu = document.getElementById('singleQuickActionMenu');
-    
-    singleQuickActionMenu.innerHTML += '<a href="javascript:void(0);" onclick="' + itemAction +' closeQuickActionMenu();">' + itemTitle + '</a><br />';
-}
-
-function closeQuickActionMenu()
-{
-    var singleQuickActionMenu = document.getElementById('singleQuickActionMenu');
-    singleQuickActionMenu.style.display = 'none';
-}
+    showPopWin(CATSIndexName + '?m=candidates&a=considerForJobSearch&candidateID=' + menuDataItemId, 750, 390, null);
+};
 

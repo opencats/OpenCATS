@@ -1,4 +1,7 @@
-<?php /* $Id: Show.tpl 3582 2007-11-12 22:58:48Z brian $ */ ?>
+<?php /* $Id: Show.tpl 3582 2007-11-12 22:58:48Z brian $ */
+include_once('./vendor/autoload.php');
+use OpenCATS\UI\QuickActionMenu;
+?>
 <?php TemplateUtility::printHeader('Company - '.$this->data['name'], array( 'js/sorttable.js', 'js/attachment.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
@@ -25,7 +28,7 @@
                                 <td class="vertical">Name:</td>
                                 <td class="data">
                                     <span class="<?php echo($this->data['titleClass']); ?>"><?php $this->_($this->data['name']); ?></span>
-                                    <?php TemplateUtility::printSingleQuickActionMenu(DATA_ITEM_COMPANY, $this->companyID); ?>
+                                    <?php TemplateUtility::printSingleQuickActionMenu(new QuickActionMenu(DATA_ITEM_COMPANY, $this->companyID)); ?>
                                 </td>
                             </tr>
 
