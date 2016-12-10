@@ -12,7 +12,7 @@
 
 <?php
 include_once('./vendor/autoload.php');
-use OpenCATS\UI\DuplicateCandidateQuickActionMenu;
+use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
 ?>
 <?php if ($this->isPopup): ?>
     <?php TemplateUtility::printHeader('Candidate - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js', 'js/attachment.js', 'modules/candidates/quickAction-duplicates.js')); ?>
@@ -36,7 +36,7 @@ use OpenCATS\UI\DuplicateCandidateQuickActionMenu;
                         <img src="images/wf_error.gif" alt="duplicate_warning" width="20" height="20" border="0" title="Possible duplicate" />
                         <?php foreach($this->data['isDuplicate'] as $item): ?>
                             <?php echo '<a href='.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID='.$item['duplicateTo'].' target=_blank>Duplicate</a>' ?>
-                            <?php TemplateUtility::printSingleQuickActionMenu(new DuplicateCandidateQuickActionMenu(
+                            <?php TemplateUtility::printSingleQuickActionMenu(new CandidateDuplicateQuickActionMenu(
                                 DATA_ITEM_DUPLICATE,
                                 $this->data['candidateID'],
                                 urlencode(CATSUtility::getIndexName().'?m=duplicates&a=merge&oldCandidateID='.$item['duplicateTo'].'&newCandidateID='.$this->data['candidateID']),

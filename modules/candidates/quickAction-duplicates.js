@@ -1,13 +1,13 @@
-quickAction.DuplicateCandidateMenu = function(menuDataItemType, menuDataItemId, menuX, menuY, mergeUrl, removeUrl)
+quickAction.CandidateDuplicateMenu = function(menuDataItemType, menuDataItemId, menuX, menuY, mergeUrl, removeUrl)
 {
     quickAction.DefaultMenu.call(this, menuDataItemType, menuDataItemId, menuX, menuY);
     this.mergeUrl = mergeUrl;
     this.removeUrl = removeUrl;
 }
 
-quickAction.DuplicateCandidateMenu.prototype = Object.create(quickAction.DefaultMenu.prototype);
+quickAction.CandidateDuplicateMenu.prototype = Object.create(quickAction.DefaultMenu.prototype);
 
-quickAction.DuplicateCandidateMenu.prototype.getOptions = function()
+quickAction.CandidateDuplicateMenu.prototype.getOptions = function()
 {
     return [
         new quickAction.LinkMenuOption('Merge', this.urlDecode(this.mergeUrl), 0),
@@ -15,7 +15,7 @@ quickAction.DuplicateCandidateMenu.prototype.getOptions = function()
     ];
 }
 
-quickAction.DuplicateCandidateMenu.prototype.urlDecode = function(url)
+quickAction.CandidateDuplicateMenu.prototype.urlDecode = function(url)
 {
     return decodeURIComponent(url.replace(/\+/g, ' '));
 }

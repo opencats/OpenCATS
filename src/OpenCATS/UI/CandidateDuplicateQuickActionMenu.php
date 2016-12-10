@@ -1,7 +1,7 @@
 <?php
 namespace OpenCATS\UI;
 
-class DuplicateCandidateQuickActionMenu extends QuickActionMenu
+class CandidateDuplicateQuickActionMenu extends QuickActionMenu
 {
     private $mergeUrl;
     private $removeUrl;
@@ -15,7 +15,7 @@ class DuplicateCandidateQuickActionMenu extends QuickActionMenu
 
     protected function getMenuType()
     {
-        return 'quickAction.DuplicateCandidateMenu';
+        return 'quickAction.CandidateDuplicateMenu';
     }
 
     protected function getParameters()
