@@ -35,9 +35,12 @@
  * @version    $Id: TemplateUtility.php 3835 2007-12-12 19:08:38Z brian $
  */
 
+include_once('./vendor/autoload.php');
 include_once('Candidates.php');
 include_once('DateUtility.php');
 include_once('SystemInfo.php');
+
+use OpenCATS\UI\QuickActionMenu;
 
 /**
  *	Template Utility Library
@@ -1123,18 +1126,9 @@ class TemplateUtility
         return $text;
     }
 
-    public static function printSingleQuickActionMenu($dataItemType, $dataItemID, $url1 = '', $url2= '' )
+    public static function printSingleQuickActionMenu(QuickActionMenu $menu)
     {
-        if($url1 == "" && $url2 == "")
-        {
-            echo '<a href="javascript:void(0);" onclick="showHideSingleQuickActionMenu('.$dataItemType.', '.$dataItemID.', docjslib_getRealLeft(this)-20, docjslib_getRealTop(this)+20);"><img src="images/downward.gif" border=0></a>';
-        }
-        else
-        {
-            $url1 = "'".$url1."'"; 
-            $url2 = "'".$url2."'"; 
-            echo '<a href="javascript:void(0);" onclick="showHideSingleQuickActionMenuExtended('.$dataItemType.', '.$dataItemID.', docjslib_getRealLeft(this)-20, docjslib_getRealTop(this)+20, '.$url1.', '.$url2.');"><img src="images/downward.gif" border=0></a>';
-        }
+        return $menu->getHtml();
     }
 
     public static function _printQuickActionMenuHolder()

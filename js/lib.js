@@ -42,7 +42,6 @@ var DATA_ITEM_CANDIDATE = 100;
 var DATA_ITEM_COMPANY   = 200;
 var DATA_ITEM_CONTACT   = 300;
 var DATA_ITEM_JOBORDER  = 400;
-var DATA_ITEM_DUPLICATE = 900;
 
 /* Set by TemplateUtility drawing headers. */
 var CATSIndexName;
@@ -53,12 +52,7 @@ var AJAX_TIMEOUT = 15000;
 function toggleVisibility()
 {
     var singleQuickActionMenu = document.getElementById('singleQuickActionMenu');
-    
-    if (singleQuickActionMenu.style.display == 'block')
-    {
-        singleQuickActionMenu.style.display = 'none';
-        return;
-    }
+    singleQuickActionMenu.style.display = singleQuickActionMenu.style.display == 'block' ? 'none' : 'block';
 }
 
 /**

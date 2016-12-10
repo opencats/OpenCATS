@@ -1,4 +1,8 @@
-<?php /* $Id: Show.tpl 3444 2007-11-06 23:16:27Z will $ */ ?>
+<?php /* $Id: Show.tpl 3444 2007-11-06 23:16:27Z will $
+*/
+include_once('./vendor/autoload.php');
+use OpenCATS\UI\QuickActionMenu;
+?>
 <?php TemplateUtility::printHeader('Contact - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js', 'js/attachment.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
@@ -28,7 +32,7 @@
                                         <span class="<?php echo($this->data['titleClassContact']);?>">
                                             <?php $this->_($this->data['firstName']); ?>
                                             <?php $this->_($this->data['lastName']); ?>
-                                            <?php TemplateUtility::printSingleQuickActionMenu(DATA_ITEM_CONTACT, $this->contactID); ?>
+                                            <?php TemplateUtility::printSingleQuickActionMenu(new QuickActionMenu(DATA_ITEM_CONTACT, $this->contactID)); ?>
                                         </span>
                                         &nbsp;
                                         <a id="vCard" href="<?php echo(CATSUtility::getIndexName()); ?>?m=contacts&amp;a=downloadVCard&amp;contactID=<?php echo($this->contactID); ?>">
