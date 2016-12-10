@@ -9,8 +9,8 @@
             <?php foreach ($this->attachmentsRS as $rowNumber => $attachmentsData): ?>
                  <?php if ($attachmentsData['isProfileImage'] == '1'): ?>
                     <div style="text-align:center;">
-                        <a href="attachments/<?php $this->_($attachmentsData['attachmentID']) ?>/<?php $this->_($attachmentsData['storedFilename']) ?>">
-                            <img src="attachments/<?php $this->_($attachmentsData['attachmentID']) ?>/<?php $this->_($attachmentsData['storedFilename']) ?>" border="0" width="165">
+                        <a href="attachments/<?php $this->_($attachmentsData['directoryName']) ?>/<?php $this->_($attachmentsData['storedFilename']) ?>">
+                            <img src="attachments/<?php $this->_($attachmentsData['directoryName']) ?>/<?php $this->_($attachmentsData['storedFilename']) ?>" border="0" width="165">
                         </a>
                     </div>
                  <?php endif; ?>
