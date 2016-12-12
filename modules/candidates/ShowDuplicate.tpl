@@ -10,7 +10,6 @@
 * as published by the Free Software Foundation.
 */
 
-<?php
 include_once('./vendor/autoload.php');
 use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
 ?>
