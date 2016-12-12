@@ -21,8 +21,8 @@ class CandidateDuplicateQuickActionMenu extends QuickActionMenu
     protected function getParameters()
     {
         $parameters = parent::getParameters();
-        $parameters[] = "'". $this->mergeUrl .";'";
-        $parameters[] = "'". $this->removeUrl .";'";
+        $parameters[] = "'". $this->mergeUrl ."'";
+        $parameters[] = "'". $this->removeUrl ."'";
         return $parameters;
     }
 }
