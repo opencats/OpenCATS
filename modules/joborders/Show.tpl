@@ -1,4 +1,7 @@
-<?php /* $Id: Show.tpl 3814 2007-12-06 17:54:28Z brian $ */ ?>
+<?php /* $Id: Show.tpl 3814 2007-12-06 17:54:28Z brian $ */
+include_once('./vendor/autoload.php');
+use OpenCATS\UI\QuickActionMenu;
+?>
 <?php if ($this->isPopup): ?>
     <?php TemplateUtility::printHeader('Job Order - '.$this->data['title'], array('js/sorttable.js', 'js/match.js', 'js/pipeline.js', 'js/attachment.js')); ?>
 <?php else: ?>
@@ -50,7 +53,7 @@
                                 <td class="data" width="300">
                                     <span class="<?php echo($this->data['titleClass']); ?>"><?php $this->_($this->data['title']); ?></span>
                                     <?php echo($this->data['public']) ?>
-                                    <?php TemplateUtility::printSingleQuickActionMenu(DATA_ITEM_JOBORDER, $this->data['jobOrderID']); ?>
+                                    <?php TemplateUtility::printSingleQuickActionMenu(new QuickActionMenu(DATA_ITEM_JOBORDER, $this->data['jobOrderID'])); ?>
                                 </td>
                             </tr>
 

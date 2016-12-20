@@ -35,9 +35,12 @@
  * @version    $Id: TemplateUtility.php 3835 2007-12-12 19:08:38Z brian $
  */
 
+include_once('./vendor/autoload.php');
 include_once('Candidates.php');
 include_once('DateUtility.php');
 include_once('SystemInfo.php');
+
+use OpenCATS\UI\QuickActionMenu;
 
 /**
  *	Template Utility Library
@@ -131,7 +134,7 @@ class TemplateUtility
             if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_UPGRADE'))) return;
 
             if ((!file_exists('modules/asp') || (defined('CATS_TEST_MODE') && CATS_TEST_MODE)) && LicenseUtility::isProfessional() &&
-                $_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA)
+                $_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA)
             {
                 if (abs(LicenseUtility::getExpirationDate() - time()) < 60*60*24*30)
                 {
@@ -165,7 +168,7 @@ class TemplateUtility
 
             echo '<span>', $fullName, '&nbsp;&lt;', $username, '&gt;&nbsp;(', $siteName, ')</span>', "\n";
 
-            if ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA)
+            if ($_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA)
             {
                 echo '&nbsp;<span style="font-weight:bold;">Administrator</span>', "\n";
             }
@@ -179,7 +182,7 @@ class TemplateUtility
                 $systemInfoData['available_version'] > CATSUtility::getVersionAsInteger() &&
                 isset($systemInfoData['disable_version_check']) &&
                 !$systemInfoData['disable_version_check'] &&
-                $_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA)
+                $_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA)
             {
                 echo '<a href="http://www.catsone.com/download.php" target="catsdl">A new CATS version is available!</a><br />';
             }
@@ -189,7 +192,7 @@ class TemplateUtility
             {
                 echo '<span style="font-weight:bold;">Account Inactive</span><br />', "\n";
             }
-            else if ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) == ACCESS_LEVEL_READ)
+            else if ($_SESSION['CATS']->getAccessLevel() == ACCESS_LEVEL_READ)
             {
                 echo '<span>Read Only Access</span><br />', "\n";
             }
@@ -577,13 +580,9 @@ class TemplateUtility
          *
          * Tab text = 'something*al=somenumber' where somenumber is an access level -
          *      Only display tab if current user userlevel >= somenumber.
-         * Tab text = 'something*al=somenumber@somesecuredobject' where somenumber is an access level and somesecuredobject is secured objec name -
-         *      Only display tab if current user userlevel_for_securedobject >= somenumber.
          *
          * Subtab url = 'url*al=somenumber' where somenumber is an access level -
          *      Only display subtab if current user userlevel >= somenumber.
-         * Subtab url = 'url*al=somenumber@somesecuredobject' where somenumber is an access level and somesecuredobject is secured objec name -
-         *      Only display subtab if current user userlevel_for_securedobject >= somenumber.
          *
          * Subtab url = 'url*js=javascript code' where javascript code is JS commands -
          *      JS code to execute for button OnClick event.
@@ -645,14 +644,7 @@ class TemplateUtility
                 else
                 {
                      $al = substr($tabText, $alPosition + 4);
-                     $soPosition = strpos($al, "@");
-                     $soName = '';
-                     if( $soPosition !== false )
-                     {
-                         $soName = substr($al, $soPosition + 1);
-                         $al = substr($al, 0, $soPosition);
-                     }
-                     if ($_SESSION['CATS']->getAccessLevel($soName) >= $al ||
+                     if ($_SESSION['CATS']->getAccessLevel() >= $al ||
                          $_SESSION['CATS']->isDemo())
                      {
                         echo '<li><a class="', $className, '" href="', $indexName, '?m=', $moduleName, '">',
@@ -716,14 +708,7 @@ class TemplateUtility
                     {
                         /* Access level restricted subtab. */
                         $al = substr($link, $alPosition + 4);
-                        $soPosition = strpos($al, "@");
-                        $soName = '';
-                        if( $soPosition !== false )
-                        {
-                            $soName = substr($al, $soPosition + 1);
-                            $al = substr($al, 0, $soPosition);
-                        }
-                        if ($_SESSION['CATS']->getAccessLevel($soName) >= $al ||
+                        if ($_SESSION['CATS']->getAccessLevel() >= $al ||
                             $_SESSION['CATS']->isDemo())
                         {
                             $link =  substr($link, 0, $alPosition);
@@ -761,7 +746,7 @@ class TemplateUtility
                     else if (strpos($link, 'a=administration') !== false)
                     {
                         /* Administration subtab. */
-                        if ($_SESSION['CATS']->getAccessLevel('settings.administration') >= ACCESS_LEVEL_DEMO)
+                        if ($_SESSION['CATS']->getRealAccessLevel() >= ACCESS_LEVEL_DEMO)
                         {
                             echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
                         }
@@ -904,7 +889,7 @@ class TemplateUtility
         $ratings = self::_getRatingImages();
         $indexName = CATSUtility::getIndexName();
 
-        if ($_SESSION['CATS']->getAccessLevel('pipelines.editRating') < ACCESS_LEVEL_EDIT)
+        if ($_SESSION['CATS']->getAccessLevel() < ACCESS_LEVEL_EDIT)
         {
             $HTML = '<img src="' . $ratings[$rating] . '" style="border: none;" alt="" id="moImage' . $candidateJobOrderID . '" />';
             return $HTML;
@@ -1141,14 +1126,14 @@ class TemplateUtility
         return $text;
     }
 
-    public static function printSingleQuickActionMenu($dataItemType, $dataItemID)
+    public static function printSingleQuickActionMenu(QuickActionMenu $menu)
     {
-        echo '<a href="javascript:void(0);" onclick="showHideSingleQuickActionMenu('.$dataItemType.', '.$dataItemID.', docjslib_getRealLeft(this), docjslib_getRealTop(this)+15, '.$_SESSION['CATS']->getAccessLevel('pipelines.addToPipeline').' );"><img src="images/downward.gif" border=0></a>';
+        return $menu->getHtml();
     }
 
     public static function _printQuickActionMenuHolder()
     {
-        echo '<div class="ajaxSearchResults" id="singleQuickActionMenu" align="left" style="width:200px;">';
+        echo '<div class="ajaxSearchResults" id="singleQuickActionMenu" align="left" style="width:200px;" onclick="toggleVisibility()">';
 
         echo '</div>';
     }
