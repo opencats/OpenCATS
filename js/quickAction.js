@@ -115,7 +115,3 @@ function showQuickActionAddToPipeline(menuDataItemId)
     /* Create a popup window for adding this candidate to the pipeline */
     showPopWin(CATSIndexName + '?m=candidates&a=considerForJobSearch&candidateID=' + menuDataItemId, 750, 390, null);
 };
-
-function mergeCandidates()
-{    
-};
