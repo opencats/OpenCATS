@@ -45,108 +45,21 @@ header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 <html>
     <head>
         <title>CATS - Installation Test Script</title>
-        <style type="text/css" media="all">@import "main.css";</style>
-        <style type="text/css" media="all">
-            table.test_output
-            {
-                border: 1px solid #000;
-                border-collapse: collapse;
-                border-spacing: 0px;
-                width: 925px;
-            }
-
-            table.test_output th
-            {
-                border: 1px solid #000;
-                border-collapse: collapse;
-                border-spacing: 0px;
-                padding: 2px 4px 2px 4px;
-                color: #000;
-                background: #ccc;
-                font: normal normal bold 9pt Arial, Tahoma, sans-serif;
-            }
-
-            table.test_output td
-            {
-                border-right: 1px solid #000;
-                border-bottom: 1px solid #000;
-                border-collapse: collapse;
-                border-spacing: 0px;
-                padding: 2px 5px 2px 5px;
-                font: normal normal normal 9pt Arial, Tahoma, sans-serif;
-                vertical-align: top;
-            }
-
-            table.test_output tr.pass
-            {
-                border-spacing: 0px;
-                font-weight: bold;
-                background: #419933;
-            }
-
-            table.test_output tr.fail
-            {
-                border-spacing: 0px;
-                font-weight: bold;
-                background: #ec3737;
-            }
-
-            table.test_output tr.warning
-            {
-                border-spacing: 0px;
-                font-weight: bold;
-                background: orange;
-            }
-
-            p#footer_pass
-            {
-                padding: 6px;
-                margin-top: 1em;
-                background: #419933;
-                font-weight: bold;
-                border: 1px solid #000;
-                color: #000;
-                width: 910px;
-            }
-
-            p#footer_fail
-            {
-                padding: 6px;
-                margin-top: 1em;
-                background: #ec3737;
-                font-weight: bold;
-                border: 1px solid #000;
-                color: #000;
-                width: 910px;
-            }
-
-            p#footer_warning
-            {
-                padding: 6px;
-                margin-top: 1em;
-                background: orange;
-                font-weight: bold;
-                border: 1px solid #000;
-                color: #000;
-                width: 910px;
-            }
-        </style>
+        <link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="vendor/components/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>
     </head>
-
     <body>
-        <div id="headerBlock">
-            <table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; float: left;">
-                <tr>
-                    <td rowspan="2"><div id="mainLogo"></div></td>
-                    <td><span id="mainLogoText">OpenCATS</span></td>
-                </tr>
-                <tr>
-                    <td><span id="subLogoText">Applicant Tracking System</span></td>
-                </tr>
-            </table>
-        </div>
-        <br />
-        <p class="note">CATS Installation Test</p>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <img src="images/CATS-sig.gif" alt="Login" hspace="10" vspace="10" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">CATS Installation Test</div>
 <?php
 echo '<table class="table table-bordered">';
 
@@ -161,26 +74,33 @@ $proceed = $proceed && InstallationTests::checkAttachmentsDir();
 $proceed = $proceed && InstallationTests::checkAntiword();
 
 echo '</table>';
+?>
+</div>
+<?php
 
 if (!$proceed)
 {
-    echo '<p id="footer_fail">One ore more tests failed. Please fix the problem and refresh this page.</p>';
+    echo '<div class="alert alert-danger">One ore more tests failed. Please fix the problem and refresh this page.</div>';
 
     if ($warningsOccurred)
     {
-        echo '<p id="footer_warning">One or more tests issued a warning. Once the fatal errors (red) are fixed, you may still proceed, but read the warnings carefully and address them if you can.</p>';
+        echo '<div class="alert alert-warning">One or more tests issued a warning. Once the fatal errors (red) are fixed, you may still proceed, but read the warnings carefully and address them if you can.</div>';
     }
 }
 else
 {
     if ($warningsOccurred)
     {
-        echo '<p id="footer_warning">One or more tests issued a warning. You may still proceed, but read the warnings carefully and address them if you can.</p>';
+        echo '<div class="alert alert-warning">One or more tests issued a warning. You may still proceed, but read the warnings carefully and address them if you can.</div>';
     }
 
-    echo '<p id="footer_pass">All tests passed successfully! Proceed to the next step.</p>';
+    echo '<div class="alert alert-success">All tests passed successfully! Proceed to the next step.</div>';
 }
 
+
 ?>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
