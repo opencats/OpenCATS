@@ -32,7 +32,7 @@ use OpenCATS\UI\QuickActionMenu;
                                         <span class="<?php echo($this->data['titleClassContact']);?>">
                                             <?php $this->_($this->data['firstName']); ?>
                                             <?php $this->_($this->data['lastName']); ?>
-                                            <?php TemplateUtility::printSingleQuickActionMenu(new QuickActionMenu(DATA_ITEM_CONTACT, $this->contactID)); ?>
+                                            <?php TemplateUtility::printSingleQuickActionMenu(new QuickActionMenu(DATA_ITEM_CONTACT, $this->contactID, $_SESSION['CATS']->getAccessLevel('contacts.edit'))); ?>
                                         </span>
                                         &nbsp;
                                         <a id="vCard" href="<?php echo(CATSUtility::getIndexName()); ?>?m=contacts&amp;a=downloadVCard&amp;contactID=<?php echo($this->contactID); ?>">
