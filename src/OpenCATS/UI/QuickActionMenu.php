@@ -25,11 +25,15 @@ class QuickActionMenu
 
     protected function getParameters()
     {
+        $addToPipeline = ($_SESSION['CATS']->getAccessLevel('pipelines.addToPipeline') > ACCESS_LEVEL_READ) ? 1 : 0;
+        $editCandidate = ($_SESSION['CATS']->getAccessLevel('candidates.edit') > ACCESS_LEVEL_READ) ? 1 : 0;
+        
         return array(
             $this->dataItemType,
             $this->dataItemId,
             'docjslib_getRealLeft(this)-20',
-            'docjslib_getRealTop(this)+20'
+            'docjslib_getRealTop(this)+20',
+            '{pipelines_addToPipeline: '.$addToPipeline.'}'
         );
     }
 
