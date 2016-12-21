@@ -15,7 +15,7 @@ class QuickActionMenu
 
     public function getHtml()
     {
-        if( $this->accessLevel >= ACCESS_LEVEL_READONLY) {
+        if( $this->accessLevel >= ACCESS_LEVEL_READ) {
             $onClick = 'showHideSingleQuickActionMenu(';
             $onClick .= 'new ' . $this->getMenuType() . '('. implode(', ',  $this->getParameters()) .')';
             $onClick .= ');';
