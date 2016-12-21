@@ -107,7 +107,7 @@ Scenario Outline: Candidate module actions
   | DELETE      | GET     | index.php?m=candidates&a=administrativeHideShow  | not     |
   | DELETE      | GET     | index.php?m=candidates&a=deleteAttachment        |         |
   | DELETE      | GET     | index.php?m=candidates&a=savedLists              |         |
-  | DELETE      | GET     | index.php?m=candidates&a=s                       | not     |
+  | DELETE      | GET     | index.php?m=candidates&a=emailCandidates         | not     |
   | DELETE      | GET     | index.php?m=candidates&a=show_questionnaire      |         |
   | DELETE      | GET     | index.php?m=candidates&a=listByView              |         |
   | DELETE      | POST    | index.php?m=candidates&a=add                     |         |

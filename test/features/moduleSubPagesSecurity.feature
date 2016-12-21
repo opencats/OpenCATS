@@ -211,10 +211,10 @@ Feature: Access Level to objects check - sub pages (show, ...)
      Examples:
      | accessLevel | showLists    | quickSearch | deleteList | listsHome | filter | rowsPerPage | action | lists  | alphabetFilter| removeFromList | addToPipeline | sendEmail | export |
      | DISABLED    | not see      | not         | not see    | not see   | not see| not see     | not see| not see| not see       | not            | not           | not       | not    |
-     | READONLY    | see          |             | see        | see       | see    | see         | see    | see    | see           |                |               |           |        |
-     | EDIT        | see          |             | see        | see       | see    | see         | see    | see    | see           |                |               |           |        |
-     | DELETE      | see          |             | see        | see       | see    | see         | see    | see    | see           |                |               |           |        |
-     | DEMO        | see          |             | see        | see       | see    | see         | see    | see    | see           |                |               |           |        |
+     | READONLY    | see          |             | see        | see       | see    | see         | see    | see    | see           |                |               | not       |        |
+     | EDIT        | see          |             | see        | see       | see    | see         | see    | see    | see           |                |               | not       |        |
+     | DELETE      | see          |             | see        | see       | see    | see         | see    | see    | see           |                |               | not       |        |
+     | DEMO        | see          |             | see        | see       | see    | see         | see    | see    | see           |                |               | not       |        |
      | ADMIN       | see          |             | see        | see       | see    | see         | see    | see    | see           |                |               |           |        |
      | MULTI_ADMIN | see          |             | see        | see       | see    | see         | see    | see    | see           |                |               |           |        |
      | ROOT        | see          |             | see        | see       | see    | see         | see    | see    | see           |                |               |           |        |
