@@ -54,18 +54,24 @@ quickAction.LinkMenuOption.prototype.getHtml = function()
 };
 
 
-quickAction.DefaultMenu = function(menuDataItemType, menuDataItemId, menuX, menuY)
+quickAction.DefaultMenu = function(menuDataItemType, menuDataItemId, menuX, menuY, permissions)
 {
     this.element = document.getElementById('singleQuickActionMenu');
     this.menuDataItemType = menuDataItemType;
     this.menuDataItemId = menuDataItemId;
     this.menuX = menuX;
     this.menuY = menuY;
+    this.permissions = permissions;
 };
 
 quickAction.DefaultMenu.prototype.getType = function()
 {
     return this.menuDataItemType;
+};
+
+quickAction.DefaultMenu.prototype.getPermissions = function()
+{
+    return this.permissions;
 };
 
 quickAction.DefaultMenu.prototype.getId = function()

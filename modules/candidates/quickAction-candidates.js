@@ -1,6 +1,6 @@
-quickAction.CandidateMenu = function(menuDataItemType, menuDataItemId, menuX, menuY)
+quickAction.CandidateMenu = function(menuDataItemType, menuDataItemId, menuX, menuY, permissions)
 {
-    quickAction.DefaultMenu.call(this, menuDataItemType, menuDataItemId, menuX, menuY);
+    quickAction.DefaultMenu.call(this, menuDataItemType, menuDataItemId, menuX, menuY, permissions);
 };
 
 quickAction.CandidateMenu.prototype = Object.create(quickAction.DefaultMenu.prototype);
