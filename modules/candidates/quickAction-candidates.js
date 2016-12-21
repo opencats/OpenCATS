@@ -8,6 +8,10 @@ quickAction.CandidateMenu.prototype = Object.create(quickAction.DefaultMenu.prot
 quickAction.CandidateMenu.prototype.getOptions = function()
 {
     var options = quickAction.DefaultMenu.prototype.getOptions.call(this);
-    options.push(new quickAction.MenuOption('Add To Pipeline', 'showQuickActionAddToPipeline(' + this.getType() + ');'));
+    if(this.getPermissions().pipelines_addToPipeline)
+    {
+        options.push(new quickAction.MenuOption('Add To Pipeline', 'showQuickActionAddToPipeline(' + this.getType() + ');'));
+    }
+
     return options;
 };
