@@ -60,7 +60,7 @@ class candidatesListByViewDataGrid extends CandidatesDataGrid
             $html .= $this->getInnerActionAreaItemPopup('Add To Pipeline', CATSUtility::getIndexName().'?m=candidates&amp;a=considerForJobSearch', 750, 460);
         }
         
-        if(MAIL_MAILER != 0 && $_SESSION['CATS']->getAccessLevel('candidates.canEmail') >= ACCESS_LEVEL_SA)
+        if(MAIL_MAILER != 0 && $_SESSION['CATS']->getAccessLevel('candidates.canEmail') >= ACCESS_LEVEL_READ)
         {
             $html .= $this->getInnerActionAreaItem('Send E-Mail', CATSUtility::getIndexName().'?m=candidates&amp;a=emailCandidates');
         }
