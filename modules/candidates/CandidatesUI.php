@@ -3204,6 +3204,10 @@ class CandidatesUI extends UserInterface
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Sorry, but demo accounts are not allowed to send e-mails.');
         }
+        if ($this->_accessLevel < ACCESS_LEVEL_SA)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Sorry, but you are not allowed to send e-mails.');
+        }
 
         if (isset($_POST['postback']))
         {
