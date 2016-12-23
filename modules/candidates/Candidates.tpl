@@ -137,7 +137,7 @@
                 &nbsp;
             </div>
             <br /><br />
-                <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
+                <?php if ($this->getUserAccessLevel('candidates.add') >= ACCESS_LEVEL_EDIT): ?>
             <table cellpadding="0" cellspacing="0" border="0" width="956">
                 <tr>
                 <td style="padding-left: 62px;" align="center" valign="center">
