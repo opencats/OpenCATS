@@ -203,42 +203,22 @@ function changeMailForm()
 var firstProgressInstall;
 var totalProgressInstall = 0;
 
-function setProgressUpdating(progress, currentVersion, maxVersion, module)
-{
-	document.getElementById('upToDateSqlQuery').innerHTML = progress;
-	document.getElementById('upToDateModuleName').innerHTML = 'Processing Module:  ' + module + ' (' + currentVersion + ')';
+function setProgressUpdating(progress, currentVersion, maxVersion, module){
 
-	if (totalProgressInstall != maxVersion)
-	{
-	    totalProgressInstall = maxVersion;
-	    firstProgressInstall = currentVersion;
-	}
+    $("#upToDateSqlQuery").text(progress);
+    $("#upToDateModuleName").text('Processing Module:  ' + module + ' (' + currentVersion + ')');
+
+    if (totalProgressInstall != maxVersion){
+        totalProgressInstall = maxVersion;
+        firstProgressInstall = currentVersion;
+    }
 
     theProgress = Math.round(((currentVersion - firstProgressInstall) * 100) / (totalProgressInstall - firstProgressInstall));
 
-    if (theProgress > 100)
-    {
+    if (theProgress > 100){
         return;
     }
+    $(".progress .progress-bar").css("width", parseInt(theProgress, 10) + '%').text(parseInt(theProgress, 10) + '%');
 
-    document.getElementById('d1').style.display = '';
-    document.getElementById('d2').style.display = '';
-    document.getElementById('d3').style.display = '';
-    document.getElementById('upToDateSqlQuery').style.display = '';
-    document.getElementById('upToDateSqlQueryLabel').style.display = '';
-
-    if (theProgress > 12)
-    {
-        document.getElementById('d1').innerHTML = parseInt(theProgress) + '%';
-    }
-    else
-    {
-        document.getElementById('d1').innerHTML = '';
-    }
-
-    if (theProgress > 0)
-    {
-        document.getElementById('d2').style.width = (theProgress * 3) + 'px';
-    }
 }
 

@@ -49,13 +49,13 @@
                                         maxSteps = 7;
                                     </script>
                                     <ul class="nav nav-pills nav-stacked">
-                                        <li id="step1" class="step"><a href="#">Step 1: System Check</a></li>
-                                        <li id="step2" class="step"><a href="#">Step 2: Database Connectivity</a></li>
-                                        <li id="step3" class="step"><a href="#">Step 3: Loading Data</a></li>
-                                        <li id="step4" class="step"><a href="#">Step 4: <nobr>Setup Resume Indexing</nobr></a></li>
-                                        <li id="step5" class="step"><a href="#">Step 5: <nobr>Mail Settings</nobr></a></li>
-                                        <li id="step6" class="step"><a href="#">Step 6: Loading Extras</a></li>
-                                        <li id="step7" class="step"><a href="#">Step 7: Finishing Installation</a></li>
+                                        <li id="step1" class="step"><a>Step 1: System Check</a></li>
+                                        <li id="step2" class="step"><a>Step 2: Database Connectivity</a></li>
+                                        <li id="step3" class="step"><a>Step 3: Loading Data</a></li>
+                                        <li id="step4" class="step"><a>Step 4: <nobr>Setup Resume Indexing</nobr></a></li>
+                                        <li id="step5" class="step"><a>Step 5: <nobr>Mail Settings</nobr></a></li>
+                                        <li id="step6" class="step"><a>Step 6: Loading Extras</a></li>
+                                        <li id="step7" class="step"><a>Step 7: Finishing Installation</a></li>
                                     </ul>
                                     <input type="button" class="btn btn-default btn-block" value="Restart Install" onclick="Installpage_populate('a=startInstall');">
                                 </div>
@@ -283,15 +283,14 @@
                                         <br />
                                         <span id="upToDateModuleName">
                                         </span><br /><br />
-                                        <div id="d3" style="background-color:#eeeeee;border:1px solid black;height:20px;width:300px;padding:0px;" align="left">
-                                            <div id="d2" style="position:relative;top:0px;left:0px;background-color:#2244ff;height:20px;width:0px;padding-top:5px;padding:0px;">
-                                                <div id="d1" style="position:relative;top:0px;left:0px;color:#ffffff;height:20px;text-align:center;font:bold;padding:0px;padding-top:1px;">
-                                                </div>
-                                            </div>
+                                        <div class="progress">
+                                          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; min-width: 2%;">
+                                            <span class="sr-only">0%</span>
+                                          </div>
                                         </div>
-                                        <br /><br />
+
                                         <span id="upToDateSqlQueryLabel" style="display:none;">SQL Query Being Executed:</span><br />
-                                        <div id="upToDateSqlQuery" style="overflow:hidden; width: 350px; height:100px; padding: 5px; border: 1px solid #000; background-color: #fff;">
+                                        <div id="upToDateSqlQuery" style="overflow:hidden; width: 350px; height:100px; padding: 5px;">
                                         </div>
                                         <br /><br />
                                         <img src="images/indicator.gif" alt="" />
