@@ -231,7 +231,7 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                                     <tr>
                                         <td style="text-align:center;" class="vertical">
                                             <?php if (!$this->isPopup): ?>
-                                                <?php if ($this->accessLevel >= ACCESS_LEVEL_DELETE): ?>
+                                                <?php if ($this->getUserAccessLevel('candidates.deleteAttachment') >= ACCESS_LEVEL_DELETE): ?>
                                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=deleteAttachment&amp;candidateID=<?php echo($this->candidateID); ?>&amp;attachmentID=<?php $this->_($attachmentsData['attachmentID']) ?>" onclick="javascript:return confirm('Delete this attachment?');">
                                                         <img src="images/actions/delete.gif" alt="" width="16" height="16" border="0" title="Delete" />
                                                     </a>
@@ -458,7 +458,7 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
 <?php if (!$this->isPopup): ?>
                         <td align="center" nowrap="nowrap">
                             <?php eval(Hooks::get('CANDIDATE_TEMPLATE_SHOW_PIPELINE_ACTION')); ?>
-                            <?php if ($_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_EDIT && !$_SESSION['CATS']->hasUserCategory('sourcer')): ?>
+                            <?php if ($this->getUserAccessLevel('pipelines.screening') >= ACCESS_LEVEL_EDIT && !$_SESSION['CATS']->hasUserCategory('sourcer')): ?>
                                 <?php if ($pipelinesData['ratingValue'] < 0): ?>
                                     <a href="#" id="screenLink<?php echo($pipelinesData['candidateJobOrderID']); ?>" onclick="moImageValue<?php echo($pipelinesData['candidateJobOrderID']); ?> = 0; setRating(<?php echo($pipelinesData['candidateJobOrderID']); ?>, 0, 'moImage<?php echo($pipelinesData['candidateJobOrderID']); ?>', '<?php echo($_SESSION['CATS']->getCookie()); ?> '); return false;">
                                         <img id="screenImage<?php echo($pipelinesData['candidateJobOrderID']); ?>" src="images/actions/screen.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Mark as Screened" />
@@ -467,12 +467,12 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                                     <img src="images/actions/blank.gif" width="16" height="16" class="absmiddle" alt="" border="0" />
                                 <?php endif; ?>
                             <?php endif; ?>
-                            <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
+                            <?php if ($this->getUserAccessLevel('pipelines.addActivityChangeStatus') >= ACCESS_LEVEL_EDIT): ?>
                                 <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addActivityChangeStatus&amp;candidateID=<?php echo($this->candidateID); ?>&amp;jobOrderID=<?php echo($pipelinesData['jobOrderID']); ?>', 600, 480, null); return false;" >
                                     <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Log an Activity / Change Status"/>
                                 </a>
                             <?php endif; ?>
-                            <?php if ($this->accessLevel >= ACCESS_LEVEL_DELETE): ?>
+                            <?php if ($this->getUserAccessLevel('pipelines.removeFromPipeline') >= ACCESS_LEVEL_DELETE): ?>
                                 <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=removeFromPipeline&amp;candidateID=<?php echo($this->candidateID); ?>&amp;jobOrderID=<?php echo($pipelinesData['jobOrderID']); ?>"  onclick="javascript:return confirm('Delete from <?php $this->_(str_replace('\'', '\\\'', $pipelinesData['title'])); ?> (<?php $this->_(str_replace('\'', '\\\'', $pipelinesData['companyName'])); ?>) pipeline?')">
                                     <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Remove from Pipeline"/>
                                 </a>
@@ -523,12 +523,12 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                         <td align="left" valign="top" id="activityNotes<?php echo($activityData['activityID']); ?>"><?php echo($activityData['notes']); ?></td>
 <?php if (!$this->isPopup): ?>
                         <td align="center" >
-                            <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
+                            <?php if ($this->getUserAccessLevel('candidates.edit') >= ACCESS_LEVEL_EDIT): ?>
                                 <a href="#" id="editActivity<?php echo($activityData['activityID']); ?>" onclick="Activity_editEntry(<?php echo($activityData['activityID']); ?>, <?php echo($this->candidateID); ?>, <?php echo(DATA_ITEM_CANDIDATE); ?>, '<?php echo($this->sessionCookie); ?>'); return false;">
                                     <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Edit" />
                                 </a>
                             <?php endif; ?>
-                            <?php if ($this->accessLevel >= ACCESS_LEVEL_DELETE): ?>
+                            <?php if ($this->getUserAccessLevel('candidates.delete') >= ACCESS_LEVEL_DELETE): ?>
                                 <a href="#" id="deleteActivity<?php echo($activityData['activityID']); ?>" onclick="Activity_deleteEntry(<?php echo($activityData['activityID']); ?>, '<?php echo($this->sessionCookie); ?>'); return false;">
                                     <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Delete" />
                                 </a>

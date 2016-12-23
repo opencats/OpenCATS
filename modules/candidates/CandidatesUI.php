@@ -74,7 +74,7 @@ class CandidatesUI extends UserInterface
         $this->_subTabs = array(
             'Add Candidate'     => CATSUtility::getIndexName() . '?m=candidates&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@candidates.add',
             'Search Candidates' => CATSUtility::getIndexName() . '?m=candidates&amp;a=search',
-            'View Duplicates'   => CATSUtility::getIndexName() . '?m=candidates&amp;a=viewDuplicates*al=' . ACCESS_LEVEL_SA
+            'View Duplicates'   => CATSUtility::getIndexName() . '?m=candidates&amp;a=viewDuplicates*al=' . ACCESS_LEVEL_SA . '@canidates.viewDuplicates'
         );
     }
 
@@ -316,33 +316,61 @@ class CandidatesUI extends UserInterface
                 break;
 
             case 'viewDuplicates':
+                if ($this->getUserAccessLevel('canidates.viewDuplicates') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->showDuplicates();
                 break;
 
             case 'showDuplicate':
+                if ($this->getUserAccessLevel('canidates.viewDuplicates') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $duplicate = 1;
                 $this->show($duplicate);
                 break;
 
             case 'linkDuplicate':
+                if ($this->getUserAccessLevel('canidates.linkDuplicate') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->findDuplicateCandidateSearch();
                 break;
 
              /* Merge two duplicate candidates into the older one */
             case 'merge':
+                if ($this->getUserAccessLevel('canidates.merge') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->mergeDuplicates();
                 break;
                 
             case 'mergeInfo':
+                if ($this->getUserAccessLevel('canidates.mergeInfo') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->mergeDuplicatesInfo();
                 break;
             
             /* Remove duplicity warning from a new candidate */
             case 'removeDuplicity':
+                if ($this->getUserAccessLevel('canidates.removeDuplicity') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->removeDuplicity();
                 break;
             
             case 'addDuplicates':
+                if ($this->getUserAccessLevel('canidates.addDuplicates') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->addDuplicates();
                 break;
 
@@ -3348,10 +3376,6 @@ class CandidatesUI extends UserInterface
     
     private function showDuplicates($errMessage = '')
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
         // Log message that shows up on the top of the list page
         $topLog = '';
 
@@ -3388,10 +3412,6 @@ class CandidatesUI extends UserInterface
     
     private function findDuplicateCandidateSearch()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
         $duplicateCandidateID = $_GET['candidateID'];
         if($duplicateCandidateID == "")
         {
@@ -3450,10 +3470,6 @@ class CandidatesUI extends UserInterface
     
     private function mergeDuplicates()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
         $candidates = new Candidates($this->_siteID);
         $oldCandidateID = $_GET['oldCandidateID'];
         $newCandidateID = $_GET['newCandidateID'];
@@ -3471,10 +3487,6 @@ class CandidatesUI extends UserInterface
     
     private function mergeDuplicatesInfo()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
         $candidates = new Candidates($this->_siteID);
         $params = array();
         $params['firstName'] = $_POST['firstName'];
@@ -3503,10 +3515,6 @@ class CandidatesUI extends UserInterface
     
     private function removeDuplicity()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
         $candidates = new Candidates($this->_siteID);
         $oldCandidateID = $_GET['oldCandidateID'];
         $newCandidateID = $_GET['newCandidateID'];
@@ -3519,10 +3527,6 @@ class CandidatesUI extends UserInterface
     
     private function addDuplicates()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
         $candidates = new Candidates($this->_siteID);
         $oldCandidateID = $_GET['candidateID'];
         $newCandidateID = $_GET['duplicateCandidateID'];

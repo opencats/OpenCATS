@@ -435,7 +435,7 @@ use OpenCATS\UI\CandidateQuickActionMenu;
                 <?php endif; ?>
                 &nbsp;&nbsp;&nbsp;&nbsp;
             <?php endif; ?>
-            <?php if ($this->accessLevel >= ACCESS_LEVEL_SA): ?>
+            <?php if ($this->getUserAccessLevel('candidates.linkDuplicate') >= ACCESS_LEVEL_SA): ?>
                 <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=linkDuplicate&amp;candidateID=<?php echo($this->candidateID); ?>', 750, 390, null); return false;">
                     <img src="images/actions/duplicates.png" width="16" height="16" class="absmiddle" alt="add duplicate" border="0" />&nbsp;Link duplicate
                 </a>
