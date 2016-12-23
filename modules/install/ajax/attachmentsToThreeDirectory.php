@@ -32,7 +32,7 @@ include_once('./lib/DatabaseConnection.php');
 
 $interface = new SecureAJAXInterface();
 
-if ($_SESSION['CATS']->getAccessLevel() < ACCESS_LEVEL_ROOT)
+if ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) < ACCESS_LEVEL_ROOT)
 {
     die('No permision.');
 }

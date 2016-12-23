@@ -72,7 +72,7 @@ class CandidatesUI extends UserInterface
         $this->_moduleName = 'candidates';
         $this->_moduleTabText = 'Candidates';
         $this->_subTabs = array(
-            'Add Candidate'     => CATSUtility::getIndexName() . '?m=candidates&amp;a=add*al=' . ACCESS_LEVEL_EDIT,
+            'Add Candidate'     => CATSUtility::getIndexName() . '?m=candidates&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@candidates.add',
             'Search Candidates' => CATSUtility::getIndexName() . '?m=candidates&amp;a=search',
             'View Duplicates'   => CATSUtility::getIndexName() . '?m=candidates&amp;a=viewDuplicates*al=' . ACCESS_LEVEL_SA
         );
@@ -87,10 +87,18 @@ class CandidatesUI extends UserInterface
         switch ($action)
         {
             case 'show':
+                if ($this->getUserAccessLevel('candidates.show') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->show();
                 break;
 
             case 'add':
+                if ($this->getUserAccessLevel('candidates.add') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onAdd();
@@ -103,6 +111,10 @@ class CandidatesUI extends UserInterface
                 break;
 
             case 'edit':
+                if ($this->getUserAccessLevel('candidates.edit') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onEdit();
@@ -115,10 +127,18 @@ class CandidatesUI extends UserInterface
                 break;
 
             case 'delete':
+                if ($this->getUserAccessLevel('candidates.delete') < ACCESS_LEVEL_DELETE)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->onDelete();
                 break;
 
             case 'search':
+                if ($this->getUserAccessLevel('candidates.search') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 include_once('./lib/Search.php');
 
                 if ($this->isGetBack())
@@ -133,6 +153,10 @@ class CandidatesUI extends UserInterface
                 break;
 
             case 'viewResume':
+                if ($this->getUserAccessLevel('candidates.viewResume') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 include_once('./lib/Search.php');
 
                 $this->viewResume();
@@ -143,6 +167,10 @@ class CandidatesUI extends UserInterface
              * consider a candidate.
              */
             case 'considerForJobSearch':
+                if ($this->getUserAccessLevel('candidates.search') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 include_once('./lib/Search.php');
 
                 $this->considerForJobSearch();
@@ -154,10 +182,18 @@ class CandidatesUI extends UserInterface
              * to consider a candidate (in the modal window).
              */
             case 'addToPipeline':
+                if ($this->getUserAccessLevel('pipelines.addToPipeline') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->onAddToPipeline();
                 break;
 
             case 'addCandidateTags':
+                if ($this->getUserAccessLevel('candidates.addCandidateTags') < ACCESS_LEVEL_EDIT )
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onAddCandidateTags();
@@ -170,6 +206,10 @@ class CandidatesUI extends UserInterface
                 
             /* Change candidate-joborder status. */
             case 'addActivityChangeStatus':
+                if ($this->getUserAccessLevel('pipelines.addActivityChangeStatus') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onAddActivityChangeStatus();
@@ -183,10 +223,18 @@ class CandidatesUI extends UserInterface
 
             /* Remove a candidate from a pipeline. */
             case 'removeFromPipeline':
+                if ($this->getUserAccessLevel('pipelines.removeFromPipeline') < ACCESS_LEVEL_DELETE)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->onRemoveFromPipeline();
                 break;
 
             case 'addEditImage':
+                if ($this->getUserAccessLevel('candidates.addEditImage') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatalModal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onAddEditImage();
@@ -200,6 +248,11 @@ class CandidatesUI extends UserInterface
 
             /* Add an attachment to the candidate. */
             case 'createAttachment':
+                if ($this->getUserAccessLevel('candidates.createAttachment') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
+
                 include_once('./lib/DocumentToText.php');
 
                 if ($this->isPostBack())
@@ -215,26 +268,50 @@ class CandidatesUI extends UserInterface
 
             /* Administrators can hide a candidate from a site with this action. */
             case 'administrativeHideShow':
+                if ($this->getUserAccessLevel('candidates.hidden') < ACCESS_LEVEL_MULTI_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->administrativeHideShow();
                 break;
 
             /* Delete a candidate attachment */
             case 'deleteAttachment':
+                if ($this->getUserAccessLevel('candidates.deleteAttachment') < ACCESS_LEVEL_DELETE)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->onDeleteAttachment();
                 break;
 
             /* Hot List Page */
             /* FIXME: function savedList() missing
             case 'savedLists':
+                if ($this->getUserAccessLevel('candidates.savedLists') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->savedList();
                 break;
             */
 
             case 'emailCandidates':
+                if ($this->getUserAccessLevel('candidates.emailCandidates') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
+                if ($this->getUserAccessLevel('candidates.emailCandidates') == ACCESS_LEVEL_DEMO)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Sorry, but demo accounts are not allowed to send e-mails.');
+                }
                 $this->onEmailCandidates();
                 break;
 
             case 'show_questionnaire':
+                if ($this->getUserAccessLevel('candidates.show_questionnaire') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->onShowQuestionnaire();
                 break;
 
@@ -272,6 +349,10 @@ class CandidatesUI extends UserInterface
             /* Main candidates page. */
             case 'listByView':
             default:
+                if ($this->getUserAccessLevel('candidates.list') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->listByView();
                 break;
         }
@@ -285,10 +366,9 @@ class CandidatesUI extends UserInterface
      */
     public function publicAddCandidate($isModal, $transferURI, $moduleDirectory)
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        if ($this->getUserAccessLevel('candidates.add') < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid user level for action.');
-            return;
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
 
         $candidateID = $this->_addCandidate($isModal, $moduleDirectory);
@@ -311,7 +391,7 @@ class CandidatesUI extends UserInterface
      */
     public function publicAddActivityChangeStatus($isJobOrdersMode, $regardingID, $moduleDirectory)
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        if ($this->getUserAccessLevel('pipelines.addActivityChangeStatus') < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
@@ -410,7 +490,7 @@ class CandidatesUI extends UserInterface
             return;
         }
 
-        if ($data['isAdminHidden'] == 1 && $this->_accessLevel < ACCESS_LEVEL_MULTI_SA)
+        if ($data['isAdminHidden'] == 1 && $this->getUserAccessLevel('candidates.hidden') < ACCESS_LEVEL_MULTI_SA)
         {
             $this->listByView('This candidate is hidden - only a CATS Administrator can unlock the candidate.');
             return;
@@ -591,7 +671,7 @@ class CandidatesUI extends UserInterface
         );
 
         /* Is the user an admin - can user see history? */
-        if ($this->_accessLevel < ACCESS_LEVEL_DEMO)
+        if ($this->getUserAccessLevel('candidates.priviledgedUser') < ACCESS_LEVEL_DEMO)
         {
             $privledgedUser = false;
         }
@@ -673,11 +753,6 @@ class CandidatesUI extends UserInterface
      */
     private function add($contents = '', $fields = array())
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         $candidates = new Candidates($this->_siteID);
 
         /* Get possible sources. */
@@ -959,11 +1034,6 @@ class CandidatesUI extends UserInterface
      */
     private function onAdd()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         if (is_array($mp = $this->checkParsingFunctions()))
         {
             return $this->add($mp[0], $mp[1]);
@@ -986,11 +1056,6 @@ class CandidatesUI extends UserInterface
      */
     private function edit()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -1008,7 +1073,7 @@ class CandidatesUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified candidate ID could not be found.');
         }
 
-        if ($data['isAdminHidden'] == 1 && $this->_accessLevel < ACCESS_LEVEL_MULTI_SA)
+        if ($data['isAdminHidden'] == 1 && $this->getUserAccessLevel('candidates.hidden') < ACCESS_LEVEL_MULTI_SA)
         {
             $this->listByView('This candidate is hidden - only a CATS Administrator can unlock the candidate.');
             return;
@@ -1040,7 +1105,8 @@ class CandidatesUI extends UserInterface
             }
         }
 
-        if ($this->_accessLevel == ACCESS_LEVEL_DEMO)
+        // TODO - improve for permission who can send email
+        if ($this->getUserAccessLevel('candidates.emailCandidates') == ACCESS_LEVEL_DEMO)
         {
             $canEmail = false;
         }
@@ -1098,11 +1164,6 @@ class CandidatesUI extends UserInterface
      */
     private function onEdit()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         $candidates = new Candidates($this->_siteID);
 
         /* Bail out if we don't have a valid candidate ID. */
@@ -1337,11 +1398,6 @@ class CandidatesUI extends UserInterface
      */
     private function onDelete()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_DELETE)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -1370,10 +1426,6 @@ class CandidatesUI extends UserInterface
      */
     private function considerForJobSearch($candidateIDArray = array())
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
         
         /* Get list of candidates. */
         if (isset($_REQUEST['candidateIDArrayStored']) && $this->isRequiredIDValid('candidateIDArrayStored', $_REQUEST, true))
@@ -1500,11 +1552,6 @@ class CandidatesUI extends UserInterface
      */
     private function onAddToPipeline()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
@@ -1602,11 +1649,6 @@ class CandidatesUI extends UserInterface
 
     private function addActivityChangeStatus()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -1630,9 +1672,6 @@ class CandidatesUI extends UserInterface
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);
             return;
-            /*$this->fatalModal(
-                'The specified candidate ID could not be found.'
-            );*/
         }
 
         $pipelines = new Pipelines($this->_siteID);
@@ -1726,13 +1765,7 @@ class CandidatesUI extends UserInterface
 
     private function onAddCandidateTags()
     {
-    	
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
-            /* Bail out if we don't have a valid regardingjob order ID. */
+        /* Bail out if we don't have a valid regardingjob order ID. */
         if (!$this->isOptionalIDValid('candidateID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid Candidate ID.');
@@ -1761,11 +1794,6 @@ class CandidatesUI extends UserInterface
    
     private function addCandidateTags()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -1804,11 +1832,6 @@ class CandidatesUI extends UserInterface
     
     private function onAddActivityChangeStatus()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid regardingjob order ID. */
         if (!$this->isOptionalIDValid('regardingID', $_POST))
         {
@@ -1826,11 +1849,6 @@ class CandidatesUI extends UserInterface
      */
     private function onRemoveFromPipeline()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_DELETE)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -2185,11 +2203,6 @@ class CandidatesUI extends UserInterface
 
     private function addEditImage()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatalModal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -2218,11 +2231,6 @@ class CandidatesUI extends UserInterface
      */
     private function onAddEditImage()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatalModal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_POST))
         {
@@ -2260,11 +2268,6 @@ class CandidatesUI extends UserInterface
      */
     private function createAttachment()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-        
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -2287,11 +2290,6 @@ class CandidatesUI extends UserInterface
      */
     private function onCreateAttachment()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_POST))
         {
@@ -2356,11 +2354,6 @@ class CandidatesUI extends UserInterface
      */
     private function onDeleteAttachment()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_DELETE)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid attachment ID. */
         if (!$this->isRequiredIDValid('attachmentID', $_GET))
         {
@@ -2392,11 +2385,6 @@ class CandidatesUI extends UserInterface
     //Only accessable by MSA users - hides this job order from everybody by
     private function administrativeHideShow()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_MULTI_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid joborder ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
         {
@@ -3021,7 +3009,7 @@ class CandidatesUI extends UserInterface
                     $notificationHTML = '<p><span class="bold">Error:</span> An e-mail notification'
                         . ' will not be sent because the message text specified was blank.</p>';
                 }
-                else if ($this->_accessLevel == ACCESS_LEVEL_DEMO)
+                else if ($this->getUserAccessLevel('candidates.emailCandidates') == ACCESS_LEVEL_DEMO)
                 {
                     $email = '';
                     $notificationHTML = '<p><span class="bold">Error:</span> Demo users can not send'
@@ -3257,11 +3245,6 @@ class CandidatesUI extends UserInterface
      */
     private function onEmailCandidates()
     {
-        if ($this->_accessLevel == ACCESS_LEVEL_DEMO)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Sorry, but demo accounts are not allowed to send e-mails.');
-        }
-
         if (isset($_POST['postback']))
         {
             $emailTo = $_POST['emailTo'];

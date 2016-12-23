@@ -30,6 +30,8 @@
  * @version    $Id: Session.php 3676 2007-11-21 21:02:15Z brian $
  */
 
+include('./lib/ACL.php');
+
 /**
  *  CATS Session Object
  *  @package    CATS
@@ -194,8 +196,8 @@ class CATSSession
          * account.
          */
         if ($this->isDemo() ||
-            $this->_accessLevel == ACCESS_LEVEL_READ ||
-            $this->_accessLevel >= ACCESS_LEVEL_ROOT ||
+            $this->getAccessLevel(ACL::SECOBJ_ROOT) == ACCESS_LEVEL_READ ||
+            $this->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_ROOT ||
             $this->_unixName == 'cognizo')
         {
             return false;
@@ -396,9 +398,9 @@ class CATSSession
     }
 
     // FIXME: Document me!
-    public function getAccessLevel()
+    public function getAccessLevel($securedObjectName)
     {
-        return $this->_accessLevel;
+        return ACL::getAccessLevel($securedObjectName, $this->getUserCategories(), $this->_accessLevel);
     }
 
     // FIXME: Document me!
