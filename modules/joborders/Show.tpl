@@ -33,7 +33,7 @@ use OpenCATS\UI\QuickActionMenu;
                     <tr>
                         <td class="tdVertical">
                             This Job Order is <?php $this->_($this->data['status']); ?> and can not be modified.
-                           <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
+                           <?php if ($this->getUserAccessLevel('joborders.edit') >= ACCESS_LEVEL_EDIT): ?>
                                <a id="edit_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=edit&amp;jobOrderID=<?php echo($this->jobOrderID); ?>">
                                    <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="edit" border="0" />&nbsp;Edit
                                </a>
@@ -53,7 +53,7 @@ use OpenCATS\UI\QuickActionMenu;
                                 <td class="data" width="300">
                                     <span class="<?php echo($this->data['titleClass']); ?>"><?php $this->_($this->data['title']); ?></span>
                                     <?php echo($this->data['public']) ?>
-                                    <?php TemplateUtility::printSingleQuickActionMenu(new QuickActionMenu(DATA_ITEM_JOBORDER, $this->data['jobOrderID'])); ?>
+                                    <?php TemplateUtility::printSingleQuickActionMenu(new QuickActionMenu(DATA_ITEM_JOBORDER, $this->data['jobOrderID'], $_SESSION['CATS']->getAccessLevel('joborders.edit'))); ?>
                                 </td>
                             </tr>
 
@@ -207,7 +207,7 @@ use OpenCATS\UI\QuickActionMenu;
             <div style="background-color: #E6EEFE; padding: 10px; margin: 5px 0 12px 0; border: 1px solid #728CC8;">
                 <b>This job order is public<?php if ($this->careerPortalURL === false): ?>.</b><?php else: ?>
                     and will be shown on your
-                    <?php if ($_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA): ?>
+                    <?php if ($this->getUserAccessLevel('joborders.careerPortalUrl') >= ACCESS_LEVEL_SA): ?>
                         <a style="font-weight: bold;" href="<?php $this->_($this->careerPortalURL); ?>">Careers Website</a>.
                     <?php else: ?>
                         Careers Website.
@@ -218,7 +218,7 @@ use OpenCATS\UI\QuickActionMenu;
                     <br />Applicants must complete the "<i><?php echo $this->questionnaireData['title']; ?></i>" (<a href="<?php echo CATSUtility::getIndexName(); ?>?m=settings&a=careerPortalQuestionnaire&questionnaireID=<?php echo $this->questionnaireID; ?>">edit</a>) questionnaire when applying.
                 <?php else: ?>
                     <br />You have not attached any
-                    <?php if ($_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA): ?>
+                    <?php if ($this->getUserAccessLevel('setting.carrerPortalSettings') >= ACCESS_LEVEL_SA): ?>
                         <a href="<?php echo CATSUtility::getIndexName(); ?>?m=settings&a=careerPortalSettings">Questionnaires</a>.
                     <?php else: ?>
                         Questionnaires.
@@ -247,7 +247,7 @@ use OpenCATS\UI\QuickActionMenu;
                                                 <td><?php $this->_($attachmentsData['dateCreated']) ?></td>
                                                 <td>
                                                     <?php if (!$this->isPopup): ?>
-                                                        <?php if ($this->accessLevel >= ACCESS_LEVEL_DELETE): ?>
+                                                        <?php if ($this->getUserAccessLevel('joborders.deleteAttachment') >= ACCESS_LEVEL_DELETE): ?>
                                                             <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=deleteAttachment&amp;jobOrderID=<?php echo($this->jobOrderID); ?>&amp;attachmentID=<?php $this->_($attachmentsData['attachmentID']) ?>"  title="Delete" onclick="javascript:return confirm('Delete this attachment?');">
                                                                 <img src="images/actions/delete.gif" alt="" width="16" height="16" border="0" />
                                                             </a>
@@ -258,7 +258,7 @@ use OpenCATS\UI\QuickActionMenu;
                                         <?php endforeach; ?>
                                     </table>
                                     <?php if (!$this->isPopup): ?>
-                                        <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
+                                        <?php if ($this->getUserAccessLevel('joborders.createAttachment') >= ACCESS_LEVEL_EDIT): ?>
                                             <?php if (isset($this->attachmentLinkHTML)): ?>
                                                 <?php echo($this->attachmentLinkHTML); ?>
                                             <?php else: ?>
@@ -307,19 +307,19 @@ use OpenCATS\UI\QuickActionMenu;
 <?php if (!$this->isPopup): ?>
             <div id="actionbar">
                 <span style="float:left;">
-                    <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
+                    <?php if ($this->getUserAccessLevel('joborders.edit') >= ACCESS_LEVEL_EDIT): ?>
                         <a id="edit_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=edit&amp;jobOrderID=<?php echo($this->jobOrderID); ?>">
                             <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="edit" border="0" />&nbsp;Edit
                         </a>
                         &nbsp;&nbsp;&nbsp;&nbsp;
                     <?php endif; ?>
-                    <?php if ($this->accessLevel >= ACCESS_LEVEL_DELETE): ?>
+                    <?php if ($this->getUserAccessLevel('joborders.delete') >= ACCESS_LEVEL_DELETE): ?>
                         <a id="delete_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=delete&amp;jobOrderID=<?php echo($this->jobOrderID); ?>" onclick="javascript:return confirm('Delete this job order?');">
                             <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;Delete
                         </a>
                         &nbsp;&nbsp;&nbsp;&nbsp;
                     <?php endif; ?>
-                    <?php if ($this->accessLevel >= ACCESS_LEVEL_MULTI_SA): ?>
+                    <?php if ($this->getUserAccessLevel('joborders.hidden') >= ACCESS_LEVEL_MULTI_SA): ?>
                         <?php if ($this->data['isAdminHidden'] == 1): ?>
                             <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=administrativeHideShow&amp;jobOrderID=<?php echo($this->jobOrderID); ?>&amp;state=0">
                                 <img src="images/resume_preview_inline.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;Administrative Show
@@ -401,8 +401,8 @@ use OpenCATS\UI\QuickActionMenu;
                 PipelineJobOrder_populate(<?php $this->_($this->data['jobOrderID']); ?>, 0, <?php $this->_($this->pipelineEntriesPerPage); ?>, 'dateCreatedInt', 'desc', <?php if ($this->isPopup) echo(1); else echo(0); ?>, 'ajaxPipelineTable', '<?php echo($this->sessionCookie); ?>', 'ajaxPipelineTableIndicator', '<?php echo(CATSUtility::getIndexName()); ?>');
             </script>
 
-<?php if (!$this->isPopup): ?>
-            <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT && !isset($this->frozen)): ?>
+            <?php if (!$this->isPopup): ?>
+            <?php if ($this->getUserAccessLevel('joborders.considerCandidateSearch') >= ACCESS_LEVEL_EDIT && !isset($this->frozen)): ?>
                 <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=considerCandidateSearch&amp;jobOrderID=<?php echo($this->jobOrderID); ?>', 820, 550, null); return false;">
                     <img src="images/consider.gif" width="16" height="16" class="absmiddle" alt="add candidate" border="0" />&nbsp;Add Candidate to This Job Order Pipeline
                 </a>
