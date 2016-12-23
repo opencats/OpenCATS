@@ -206,19 +206,19 @@ var totalProgressInstall = 0;
 function setProgressUpdating(progress, currentVersion, maxVersion, module){
 
     $("#upToDateSqlQuery").text(progress);
-    $("#upToDateModuleName").text('Processing Module:  ' + module + ' (' + currentVersion + ')');
+    $("#upToDateModuleName").text("Processing Module:  " + module + " (" + currentVersion + ")");
 
-    if (totalProgressInstall != maxVersion){
+    if (totalProgressInstall !== maxVersion){
         totalProgressInstall = maxVersion;
         firstProgressInstall = currentVersion;
     }
 
-    theProgress = Math.round(((currentVersion - firstProgressInstall) * 100) / (totalProgressInstall - firstProgressInstall));
+    var theProgress = Math.round(((currentVersion - firstProgressInstall) * 100) / (totalProgressInstall - firstProgressInstall));
 
     if (theProgress > 100){
         return;
     }
-    $(".progress .progress-bar").css("width", parseInt(theProgress, 10) + '%').text(parseInt(theProgress, 10) + '%');
+    $(".progress .progress-bar").css("width", parseInt(theProgress, 10) + "%").text(parseInt(theProgress, 10) + "%");
 
 }
 

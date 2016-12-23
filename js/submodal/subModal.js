@@ -113,22 +113,6 @@ function initPopUp()
     }
 }
 
-/**
- * @argument width - int in pixels
- * @argument height - int in pixels
- * @argument url - url to display
- * @argument returnFunc - function to call when returning true from the window.
- */
-function showPopWin(url, width, height, returnFunc, title)
-{
-    _showPopWin(null, url, width, height, returnFunc, title);
-}
-
-function showPopWinHTML(html, width, height, returnFunc, title)
-{
-    _showPopWin(html, '', width, height, returnFunc, title);
-}
-
 function _showPopWin(html, url, width, height, returnFunc, title)
 {
     if(title===undefined || title===''){
@@ -155,6 +139,22 @@ function _showPopWin(html, url, width, height, returnFunc, title)
 
     $(".modal").modal("show");
 
+}
+
+/**
+ * @argument width - int in pixels
+ * @argument height - int in pixels
+ * @argument url - url to display
+ * @argument returnFunc - function to call when returning true from the window.
+ */
+function showPopWin(url, width, height, returnFunc, title)
+{
+    _showPopWin(null, url, width, height, returnFunc, title);
+}
+
+function showPopWinHTML(html, width, height, returnFunc, title)
+{
+    _showPopWin(html, '', width, height, returnFunc, title);
 }
 
 function setPopTitle(title)
