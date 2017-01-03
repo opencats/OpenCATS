@@ -884,6 +884,14 @@ class SettingsUI extends UserInterface
                     $this->administration();
                 }
                 break;
+            
+            case 'addEmailTemplate':
+                $this->addEmailTemplate();
+                break;
+                
+            case 'deleteEmailTemplate':
+                $this->deleteEmailTemplate();
+                break;
 
             /* Main settings page. */
             case 'myProfile':
@@ -897,6 +905,42 @@ class SettingsUI extends UserInterface
         }
     }
 
+    private function deleteEmailTemplate() 
+    {
+        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
+            return;
+        }
+        
+        $emailTemplates = new EmailTemplates($this->_siteID);
+        $templateID = $_GET['id'];
+        $emailTemplates->delete($templateID);
+       
+        $this->emailTemplates();
+    }
+    
+    private function addEmailTemplate()
+    {
+        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
+            return;
+        }
+        
+        $possibleVariables = "%CANDSTATUS%%CANDOWNER%%CANDFIRSTNAME%%CANDFULLNAME%%CANDPREVSTATUS%";
+        $emailTemplates = new EmailTemplates($this->_siteID);
+        $emailTemplateID = $emailTemplates->add("", "New Email Template", "CUSTOM", $this->_siteID, $possibleVariables);
+        if($emailTemplateID < 1)
+        {
+            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add template.');
+        }
+        else
+        {
+            $this->emailTemplates();
+        }
+    }
+    
     /*
      * Called by handleRequest() to process loading the get firefox modal dialog.
      */
@@ -1562,6 +1606,16 @@ class SettingsUI extends UserInterface
         }
 
         $templateID = $_POST['templateID'];
+        
+        if(isset($_POST['emailTemplateTitle']))
+        {
+             $templateTitle = $_POST['emailTemplateTitle'];
+        }
+        else
+        {
+             $templateTitle = "";
+        }
+        
         $useThisTemplate = isset($_POST['useThisTemplate']);
 
         if ($useThisTemplate)
@@ -1581,7 +1635,7 @@ class SettingsUI extends UserInterface
         }
 
         $emailTemplates = new EmailTemplates($this->_siteID);
-        $emailTemplates->update($templateID, $text, $disabled);
+        $emailTemplates->update($templateID, $templateTitle, $text, $disabled);
 
         CATSUtility::transferRelativeURI('m=settings&a=emailTemplates');
     }
