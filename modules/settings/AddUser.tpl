@@ -97,7 +97,7 @@
                                     <td class="tdData">
                                         <span id="accessLevelsSpan">
                                             <?php foreach ($this->accessLevels as $accessLevel): ?>
-                                                <?php if ($accessLevel['accessID'] > $this->accessLevel): continue; endif; ?>
+                                                <?php if ($accessLevel['accessID'] > $this->getUserAccessLevel('settings.addUser')): continue; endif; ?>
                                                 <?php if (!$this->license['canAdd'] && !$this->license['unlimited'] && $accessLevel['accessID'] > ACCESS_LEVEL_READ): continue; endif; ?>
 
                                                 <?php $radioButtonID = 'access' . $accessLevel['accessID']; ?>
