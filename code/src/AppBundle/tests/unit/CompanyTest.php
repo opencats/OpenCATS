@@ -1,8 +1,7 @@
 <?php
-use PHPUnit\Framework\TestCase;
 use \OpenCATS\Entity\Company;
     
-class CompanyTest extends TestCase
+class CompanyTest extends \PHPUnit_Framework_TestCase
 {
     const COMPANY_NAME = "Test Company Name";
     const SITE_ID = -1;
