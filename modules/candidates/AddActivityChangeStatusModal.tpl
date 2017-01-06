@@ -49,7 +49,7 @@
         <input type="hidden" id="regardingID" name="regardingID" value="<?php echo($this->selectedJobOrderID); ?>" />
 <?php endif; ?>
 
-        <table class="editTable" width="560">
+        <table class="table">
             <tr id="visibleTR" <?php if ($this->onlyScheduleEvent): ?>style="display:none;"<?php endif; ?>>
                 <td class="tdVertical">
                     <label id="regardingIDLabel" for="regardingID">Regarding:</label>
@@ -58,7 +58,7 @@
 <?php if ($this->isJobOrdersMode): ?>
                     <span><?php $this->_($this->pipelineData['title']); ?></span>
 <?php else: ?>
-                    <select id="regardingID" name="regardingID" class="inputbox" style="width: 150px;" onchange="AS_onRegardingChange(statusesArray, jobOrdersArray, 'regardingID', 'statusID', 'statusTR', 'sendEmailCheckTR', 'triggerEmail', 'triggerEmailSpan', 'changeStatus', 'changeStatusSpanA', 'changeStatusSpanB');">
+                    <select id="regardingID" name="regardingID" class="form-control" onchange="AS_onRegardingChange(statusesArray, jobOrdersArray, 'regardingID', 'statusID', 'statusTR', 'sendEmailCheckTR', 'triggerEmail', 'triggerEmailSpan', 'changeStatus', 'changeStatusSpanA', 'changeStatusSpanB');">
                         <option value="-1">General</option>
 
                         <?php foreach ($this->pipelineRS as $rowNumber => $pipelinesData): ?>
@@ -82,7 +82,7 @@
                     <span id="changeStatusSpanA"<?php if ($this->selectedJobOrderID == -1): ?> style="color: #aaaaaa;"<?php endif;?>>Change Status</span><br />
 
                     <div id="changeStatusDiv" style="margin-top: 4px;">
-                        <select id="statusID" name="statusID" class="inputbox" style="width: 150px;" onchange="AS_onStatusChange(statusesArray, jobOrdersArray, 'regardingID', 'statusID', 'sendEmailCheckTR', 'triggerEmailSpan', 'activityNote', 'activityTypeID', <?php if ($this->isJobOrdersMode): echo $this->selectedJobOrderID; else: ?>null<?php endif; ?>, 'customMessage', 'origionalCustomMessage', 'triggerEmail', statusesArrayString, jobOrdersArrayStringTitle, jobOrdersArrayStringCompany, statusTriggersEmailArray, 'emailIsDisabled');" disabled>
+                        <select id="statusID" name="statusID" class="form-control" onchange="AS_onStatusChange(statusesArray, jobOrdersArray, 'regardingID', 'statusID', 'sendEmailCheckTR', 'triggerEmailSpan', 'activityNote', 'activityTypeID', <?php if ($this->isJobOrdersMode): echo $this->selectedJobOrderID; else: ?>null<?php endif; ?>, 'customMessage', 'origionalCustomMessage', 'triggerEmail', statusesArrayString, jobOrdersArrayStringTitle, jobOrdersArrayStringCompany, statusTriggersEmailArray, 'emailIsDisabled');" disabled>
                             <option value="-1">(Select a Status)</option>
 
                             <?php if ($this->selectedStatusID == -1): ?>
@@ -109,7 +109,7 @@
                     Custom Message<br />
                     <input type="hidden" id="origionalCustomMessage" value="<?php $this->_($this->statusChangeTemplate); ?>" />
                     <input type="hidden" id="emailIsDisabled" value="<?php echo($this->emailDisabled); ?>" />
-                    <textarea style="height:135px; width:375px;" name="customMessage" id="customMessage" cols="50" class="inputbox"></textarea>
+                    <textarea name="customMessage" id="customMessage" class="form-control"></textarea>
                 </td>
             </tr>
            <tr id="addActivityTR" <?php if ($this->onlyScheduleEvent): ?>style="display:none;"<?php endif; ?>>
@@ -120,7 +120,7 @@
                     <input type="checkbox" name="addActivity" id="addActivity" style="margin-left: 0px;"<?php if (!$this->onlyScheduleEvent): ?> checked="checked"<?php endif; ?> onclick="AS_onAddActivityChange('addActivity', 'activityTypeID', 'activityNote', 'addActivitySpanA', 'addActivitySpanB');" />Log an Activity<br />
                     <div id="activityNoteDiv" style="margin-top: 4px;">
                         <span id="addActivitySpanA">Activity Type</span><br />
-                        <select id="activityTypeID" name="activityTypeID" class="inputbox" style="width: 150px; margin-bottom: 4px;">
+                        <select id="activityTypeID" name="activityTypeID" class="form-control">
                             <option selected="selected" value="<?php echo(ACTIVITY_CALL); ?>">Call</option>
                             <option value="<?php echo(ACTIVITY_CALL_TALKED); ?>">Call (Talked)</option>
                             <option value="<?php echo(ACTIVITY_CALL_LVM); ?>">Call (LVM)</option>
@@ -130,7 +130,7 @@
                             <option value="<?php echo(ACTIVITY_OTHER); ?>">Other</option>
                         </select><br />
                         <span id="addActivitySpanB">Activity Notes</span><br />
-                        <textarea name="activityNote" id="activityNote" cols="50" style="margin-bottom: 4px;" class="inputbox"></textarea>
+                        <textarea name="activityNote" id="activityNote" class="form-control"></textarea>
                     </div>
                 </td>
             </tr>
@@ -146,7 +146,7 @@
                             <tr>
                                 <td valign="top">
                                     <div style="margin-bottom: 4px;">
-                                        <select id="eventTypeID" name="eventTypeID" class="inputbox" style="width: 150px;">
+                                        <select id="eventTypeID" name="eventTypeID" class="form-control">
                                             <?php foreach ($this->calendarEventTypes as $eventType): ?>
                                                 <option <?php if ($eventType['typeID'] == CALENDAR_EVENT_INTERVIEW): ?>selected="selected" <?php endif; ?>value="<?php echo($eventType['typeID']); ?>"><?php $this->_($eventType['description']); ?></option>
                                             <?php endforeach; ?>
@@ -195,7 +195,7 @@
                                     <div style="margin-bottom: 4px;">
                                         <label id="durationLabel" for="duration">Length:</label>
                                         <br />
-                                        <select id="duration" name="duration" class="inputbox" style="width: 180px;">
+                                        <select id="duration" name="duration" class="form-control">
                                             <option value="15">15 minutes</option>
                                             <option value="30">30 minutes</option>
                                             <option value="45">45 minutes</option>
@@ -224,7 +224,7 @@
                                         </div>
                                         <div>
                                             <label>Time:</label><br />
-                                            <select id="reminderTime" name="reminderTime" style="width: 150px">
+                                            <select id="reminderTime" name="reminderTime" class="form-control">
                                                 <option value="15">15 min early</option>
                                                 <option value="30">30 min early</option>
                                                 <option value="45">45 min early</option>
@@ -242,11 +242,11 @@
             </tr>
 
         </table>
-        <input type="submit" class="button" name="submit" id="submit" value="Save" />&nbsp;
+        <input type="submit" class="btn btn-success" name="submit" id="submit" value="Save" />&nbsp;
 <?php if ($this->isJobOrdersMode): ?>
-        <input type="button" class="button" name="close" value="Cancel" onclick="parentGoToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=show&amp;jobOrderID=<?php echo($this->selectedJobOrderID); ?>');" />
+        <input type="button" class="btn btn-success" name="close" value="Cancel" onclick="parentGoToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=show&amp;jobOrderID=<?php echo($this->selectedJobOrderID); ?>');" />
 <?php else: ?>
-        <input type="button" class="button" name="close" value="Cancel" onclick="parentGoToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=show&amp;candidateID=<?php echo($this->candidateID); ?>');" />
+        <input type="button" class="btn btn-success" name="close" value="Cancel" onclick="parentGoToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=show&amp;candidateID=<?php echo($this->candidateID); ?>');" />
 <?php endif; ?>
     </form>
 
@@ -284,9 +284,9 @@
 
     <form>
 <?php if ($this->isJobOrdersMode): ?>
-        <input type="button" name="close" class="button" value="Close" onclick="parentGoToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=show&amp;jobOrderID=<?php echo($this->regardingID); ?>');" />
+        <input type="button" name="close" class="btn btn-success" value="Close" onclick="parentGoToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=show&amp;jobOrderID=<?php echo($this->regardingID); ?>');" />
 <?php else: ?>
-        <input type="button" name="close" class="button" value="Close" onclick="parentGoToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=show&amp;candidateID=<?php echo($this->candidateID); ?>');" />
+        <input type="button" name="close" class="btn btn-success" value="Close" onclick="parentGoToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=show&amp;candidateID=<?php echo($this->candidateID); ?>');" />
 <?php endif; ?>
     </form>
 <?php endif; ?>

@@ -1,30 +1,25 @@
 <?php /* $Id: AddModalPopup.tpl 3321 2007-10-25 22:03:10Z brian $ */ ?>
 <?php TemplateUtility::printModalHeader('Job Order', array('modules/joborders/validator.js')); ?>
-    <table>
-        <tr>
-            <td width="3%">
-                <img src="images/job_orders.gif" width="24" height="24" border="0" alt="Job Orders" style="margin-top: 3px;" />&nbsp;
-            </td>
-            <td><h2>Job Orders: Add Job Order</h2></td>
-       </tr>
-    </table>
+<div class="row">
+    <div class="col-md-12">
+        <h2><i class="glyphicon glyphicon-paste"></i> Job Orders: Add Job Order</h2>
+    </div>
+</div>
 
-    <p class="noteUnsized">Add Job Order</p>
-            
         <script type="text/javascript">
             var typeOfAdd="new";
         </script>
-            
-        <table class="editTable" width="100%">
+
+        <table class="table">
             <tr>
-                <td class="tdData"><input type="radio" name="typeOfAddElement" onclick="document.getElementById('copyFrom').disabled=true; typeOfAdd='new';" checked>&nbsp;Empty Job Order</td>
+                <td><label><input type="radio" name="typeOfAddElement" onclick="document.getElementById('copyFrom').disabled=true; typeOfAdd='new';" checked>&nbsp;Empty Job Order</label></td>
             </tr>
             <tr>
-                <td class="tdData"><input type="radio" name="typeOfAddElement" onclick="document.getElementById('copyFrom').disabled=false; typeOfAdd='existing';">&nbsp;Copy Existing Job Order</td>
+                <td><label><input type="radio" name="typeOfAddElement" onclick="document.getElementById('copyFrom').disabled=false; typeOfAdd='existing';">&nbsp;Copy Existing Job Order</label></td>
             </tr>
             <tr id="hideShowCopyExisting">
                 <td class="tdData">
-                    <select name="copyFrom" id="copyFrom" style="width:350px;" disabled>
+                    <select name="copyFrom" id="copyFrom" class="form-control" disabled>
                         <?php foreach($this->rs as $index => $data): ?>
                             <option value="<?php echo($data['jobOrderID']); ?>"><?php $this->_($data['title'].' ('.$data['companyName'].')'); ?></option>
                         <?php endforeach; ?>
@@ -32,7 +27,6 @@
                 </td>
             </tr>
         </table>
-        <input type="button" class="button"  value="Create Job Order" onclick="parentGoToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=add&amp;jobOrderID='+document.getElementById('copyFrom').value+'&amp;typeOfAdd='+typeOfAdd);"/>&nbsp;
-        <input type="button" class="button" name="close" value="Close" onclick="parentHidePopWin();" />
+        <input type="button" class="btn btn-default"  value="Create Job Order" onclick="parentGoToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=add&amp;jobOrderID='+document.getElementById('copyFrom').value+'&amp;typeOfAdd='+typeOfAdd);"/>&nbsp;
     </body>
 </html>
