@@ -1,9 +1,8 @@
 <?php
-use PHPUnit\Framework\TestCase;
 
 include_once(LEGACY_ROOT . '/lib/FileUtility.php');
 
-class FileUtilityTest extends TestCase
+class FileUtilityTest extends \PHPUnit_Framework_TestCase
 {
     function testSizeToHuman()
     {
@@ -32,7 +31,7 @@ class FileUtilityTest extends TestCase
         foreach ($tests as $key => $value)
         {
             $this->assertSame(
-                FileUtility::sizeToHuman($value[0], $value[1], $value[2]),
+                \FileUtility::sizeToHuman($value[0], $value[1], $value[2]),
                 $value[3]
                 );
         }
@@ -43,13 +42,13 @@ class FileUtilityTest extends TestCase
         /* Get two random directory names; one with extra data and one
          * without.
          */
-        $directoryA = FileUtility::getUniqueDirectory('attachments');
-        $directoryB = FileUtility::getUniqueDirectory('attachments/', 'Extra Data!');
+        $directoryA = \FileUtility::getUniqueDirectory('attachments');
+        $directoryB = \FileUtility::getUniqueDirectory('attachments/', 'Extra Data!');
 
         /* Directories are also unique in time, with randomness added. */
         sleep(1);
-        $directoryC = FileUtility::getUniqueDirectory('attachments');
-        $directoryD = FileUtility::getUniqueDirectory('attachments');
+        $directoryC = \FileUtility::getUniqueDirectory('attachments');
+        $directoryD = \FileUtility::getUniqueDirectory('attachments');
 
         /* Make sure all directory names look like md5 strings. */
         $this->assertEquals(

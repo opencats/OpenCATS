@@ -1,9 +1,8 @@
 <?php
-use PHPUnit\Framework\TestCase;
 
 include_once(LEGACY_ROOT . '/lib/StringUtility.php');
 
-class StringUtilityTest extends TestCase
+class StringUtilityTest extends \PHPUnit_Framework_TestCase
 {
     /* Tests for isURL(). */
     function testIsURL()
@@ -168,7 +167,7 @@ class StringUtilityTest extends TestCase
         }
 
         /* Some sample text to test with. */
-        $fairyTale = implode('', file('./modules/tests/SampleText.txt'));
+        $fairyTale = implode('', file(LEGACY_ROOT . '/modules/tests/SampleText.txt'));
 
         /* I can assure you that none of Grimm's fairy tales contain phone numbers. */
         $this->assertFalse(StringUtility::containsPhoneNumber($fairyTale));
@@ -299,7 +298,7 @@ class StringUtilityTest extends TestCase
         }
 
         /* Some sample text to test with. */
-        $fairyTale = implode('', file('./modules/tests/SampleText.txt'));
+        $fairyTale = implode('', file(LEGACY_ROOT . '/modules/tests/SampleText.txt'));
 
         /* I can assure you that none of Grimm's fairy tales contain e-mail addresses. */
         $this->assertFalse(StringUtility::containsEmailAddress($fairyTale));

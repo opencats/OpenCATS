@@ -1,9 +1,8 @@
 <?php
 namespace OpenCATS\Tests\UnitTests;
-use PHPUnit\Framework\TestCase;
 use OpenCATS\Entity\JobOrder;
 
-class JobOrderTest extends TestCase
+class JobOrderTest extends \PHPUnit_Framework_TestCase
 {
     const JOB_ORDER_TITLE = 'Test job order';
     const COMPANY_ID = 1;

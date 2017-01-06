@@ -1,9 +1,8 @@
 <?php
-use PHPUnit\Framework\TestCase;
 
 include_once(LEGACY_ROOT . '/lib/VCard.php');
 
-class VCardTest extends TestCase
+class VCardTest extends \PHPUnit_Framework_TestCase
 {
     function testVersion()
     {

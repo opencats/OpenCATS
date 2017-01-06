@@ -1,9 +1,8 @@
 <?php
-use PHPUnit\Framework\TestCase;
 
 include_once(LEGACY_ROOT . '/lib/ResultSetUtility.php');
 
-class ResultSetUtilityTest extends TestCase
+class ResultSetUtilityTest extends \PHPUnit_Framework_TestCase
 {
     /* Tests for findRowByColumnValue(). */
     function testFindRowByColumnValue()
