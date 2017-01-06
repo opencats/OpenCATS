@@ -64,7 +64,7 @@ class TemplateUtility
     public static function printHeader($pageTitle, $headIncludes = array())
     {
         self::_printCommonHeader($pageTitle, $headIncludes);
-        echo '<body style="background: #fff">', "\n";
+        echo '<body>', "\n";
         self::_printQuickActionMenuHolder();
         self::printPopupContainer();
     }
@@ -79,7 +79,7 @@ class TemplateUtility
     public static function printModalHeader($pageTitle, $headIncludes = array(), $title = '')
     {
         self::_printCommonHeader($pageTitle, $headIncludes);
-        echo '<body style="background: #eee;">', "\n";
+        echo '<body>', "\n";
         if ($title != '')
         {
             $title = str_replace('\'', '\\\'', $title);
@@ -559,7 +559,7 @@ class TemplateUtility
         $popup .= '      </div>';
         $popup .= '      <div class="modal-body">';
         $popup .= '        <div class="modal-info"></div>';
-        $popup .= '        <iframe src="js/submodal/loading.html" style="width: 100%; height: 100%; background-color: transparent; display: none;" scrolling="auto" frameborder="0" allowtransparency="true" class="modal-iframe" id="bootstrap-popup-iframe" width="100%" height="100%"></iframe>';
+        $popup .= '        <iframe src="js/submodal/loading.html" style="width: 100%; height: 450px; background-color: transparent; display: none;" scrolling="auto" frameborder="0" allowtransparency="true" class="modal-iframe" id="bootstrap-popup-iframe" width="100%" height="100%"></iframe>';
         $popup .= '      </div>';
         //$popup .= '      <div class="modal-footer">';
         //$popup .= '        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>';
