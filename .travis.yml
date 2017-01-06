@@ -18,7 +18,8 @@ php:
 
 script:
     - composer install
-    - ./vendor/bin/phpunit src/OpenCATS/Tests/UnitTests
+    - cd code; composer install; cd ..
+    - ./vendor/bin/codecept run unit -c src/AppBundle/
     - cd docker/; docker-compose -f docker-compose-test.yml up -d
     - docker-compose -f docker-compose-test.yml exec php /var/www/public/test/runAllTests.sh
     - cd ..; ./ci/package-code.sh 
