@@ -1,11 +1,10 @@
 <?php
-namespace OpenCATS\Tests\UnitTests;
-use PHPUnit\Framework\TestCase;
+namespace AppBundle;
 use OpenCATS\Entity\CompanyRepository;
 use OpenCATS\Entity\Company;
 include_once(LEGACY_ROOT . '/lib/History.php');
 
-class CompanyRepositoryTests extends TestCase
+class CompanyRepositoryTest extends \PHPUnit_Framework_TestCase
 {
     const COMPANY_NAME = "Test Company Name";
     const SITE_ID = -1;

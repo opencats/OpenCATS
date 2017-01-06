@@ -11,7 +11,7 @@
         "psr-4": { "Tests\\": "tests/" }
     },
     "require": {
-        "php": ">=5.5.9",
+        "php": ">=5.6.1",
         "symfony/symfony": "3.2.*",
         "doctrine/orm": "^2.5",
         "doctrine/doctrine-bundle": "^1.6",
@@ -26,7 +26,8 @@
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
         "symfony/phpunit-bridge": "^3.0",
-        "codeception/codeception": "^2.2"
+        "codeception/codeception": "^2.2",
+        "phpunit/phpunit": "5.4.8"
     },
     "scripts": {
         "symfony-scripts": [
@@ -46,7 +47,7 @@
     },
     "config": {
         "platform": {
-            "php": "5.5.9"
+            "php": "5.6.22"
         }
     },
     "extra": {
