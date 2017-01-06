@@ -1,9 +1,9 @@
 <?php
-use PHPUnit\Framework\TestCase;
+namespace AppBundle;
 
 include_once(LEGACY_ROOT . '/lib/BrowserDetection.php');
 
-class BrowserDetectionTest extends TestCase
+class BrowserDetectionTest extends \PHPUnit_Framework_TestCase
 {
     /* See http://www.useragentstring.com/ for updating. */
     function testDetect()
@@ -140,7 +140,7 @@ class BrowserDetectionTest extends TestCase
         foreach ($intendedMatches as $intendedMatch)
         {
             $this->assertSame(
-                BrowserDetection::detect($intendedMatch[0]),
+                \BrowserDetection::detect($intendedMatch[0]),
                 $intendedMatch[1],
                 ltrim($intendedMatch[2] . ' %s')
                 );
