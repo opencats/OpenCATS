@@ -1,13 +1,13 @@
 <?php
-use PHPUnit\Framework\TestCase;
+namespace AppBundle;
 
 include_once(LEGACY_ROOT . '/lib/AJAXInterface.php');
 
-class AJAXInterfaceTest extends TestCase
+class AJAXInterfaceTest extends \PHPUnit_Framework_TestCase
 {
     function testIsRequiredIDValid()
     {
-        $AJAXInterface = new AJAXInterface();
+        $AJAXInterface = new \AJAXInterface();
 
         /* Make sure an unset key does not pass. */
         $random = md5('random' . time());
@@ -98,7 +98,7 @@ class AJAXInterfaceTest extends TestCase
 
     function testIsOptionalIDValid()
     {
-        $AJAXInterface = new AJAXInterface();
+        $AJAXInterface = new \AJAXInterface();
 
         /* Make sure an unset key does not pass. */
         $random = md5('random' . time());
