@@ -1,8 +1,6 @@
 <?php
 namespace AppBundle;
 
-use PHPUnit\Framework\TestCase;
-
 include_once(LEGACY_ROOT . '/lib/StringUtility.php');
 include_once(LEGACY_ROOT . '/lib/AddressParser.php'); /* Depends on StringUtility. */
 
