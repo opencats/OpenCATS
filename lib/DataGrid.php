@@ -1452,7 +1452,7 @@ class DataGrid
         header('Content-Disposition: attachment; filename="export.csv"');
         header('Content-Length: ' . $length);
         header('Connection: close');
-        header('Content-Type: text/x-csv; name=export.csv');
+        header('Content-Type: text/x-csv; name=export.csv; charset=utf-8');
 
         if (defined('INSERT_BOM_CSV_LENGTH') && (INSERT_BOM_CSV_LENGTH > 0))
         {
