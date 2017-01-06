@@ -1237,6 +1237,12 @@ class TemplateUtility
 
         echo '<!--[if IE]><link rel="stylesheet" type="text/css" href="ie.css" /><![endif]-->', "\n";
         echo '<![if !IE]><link rel="stylesheet" type="text/css" href="not-ie.css" /><![endif]>', "\n";
+
+        /* Bootstrap require files */
+        echo '<link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />', "\n";
+        echo '<script type="text/javascript" src="vendor/components/jquery/jquery.min.js'.$javascriptAntiCache.'"></script>', "\n";
+        echo '<script type="text/javascript" src="vendor/twbs/bootstrap/dist/js/bootstrap.min.js'.$javascriptAntiCache.'"></script>', "\n";
+
         echo '</head>', "\n\n";
     }
 

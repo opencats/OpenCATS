@@ -207,7 +207,7 @@
                                             <option value="300">More than 4 hours</option>
                                         </select>
                                     </div>
-                                    
+
                                     <div style="margin-bottom: 4px;">
                                         <label id="descriptionLabel" for="description">Description</label><br />
                                         <textarea name="description" id="description" cols="20" class="inputbox" style="width: 180px; height:60px;"></textarea>
@@ -216,7 +216,7 @@
                                     <div <?php if (!$this->allowEventReminders): ?>style="display:none;"<?php endif; ?>>
                                         <input type="checkbox" name="reminderToggle" onclick="if (this.checked) document.getElementById('reminderArea').style.display = ''; else document.getElementById('reminderArea').style.display = '';">&nbsp;<label>Set Reminder</label><br />
                                     </div>
-                                    
+
                                     <div style="display:none;" id="reminderArea">
                                         <div>
                                             <label>E-Mail To:</label><br />
