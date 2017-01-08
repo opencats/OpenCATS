@@ -300,9 +300,9 @@ class CandidatesUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                if ($this->getUserAccessLevel('candidates.emailCandidates') == ACCESS_LEVEL_DEMO)
+                if ($this->getUserAccessLevel('candidates.emailCandidates') < ACCESS_LEVEL_SA)
                 {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Sorry, but demo accounts are not allowed to send e-mails.');
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Sorry, but you are not allowed to send e-mails.');
                 }
                 $this->onEmailCandidates();
                 break;
