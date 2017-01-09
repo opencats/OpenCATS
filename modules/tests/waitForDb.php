@@ -1,4 +1,5 @@
 <?php
+define('LEGACY_ROOT', dirname(dirname(dirname(__FILE))));
 include_once(LEGACY_ROOT . '/config.php');
 include_once(LEGACY_ROOT . '/constants.php');
 include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
