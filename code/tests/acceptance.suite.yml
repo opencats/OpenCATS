@@ -1,0 +1,8 @@
+class_name: AcceptanceTester
+modules:
+    enabled:
+        - WebDriver:
+            url: 'http://opencats/' # put your local url
+            host: 172.19.0.3
+            browser: chrome
+        - \Helper\Acceptance

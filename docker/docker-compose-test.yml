@@ -62,4 +62,4 @@ services:
         # some environments
         JAVA_OPTS: -Djava.security.egd=file:/dev/./urandom
       ports:
-        - 4444
+        - 4444:4444

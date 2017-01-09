@@ -557,7 +557,7 @@ class TemplateUtility
 
         echo '<iframe src="js/submodal/loading.html" style="width: 100%; height: 100%;',
              ' background-color: transparent; display: none;" scrolling="auto"',
-             ' frameborder="0" allowtransparency="true" id="popupFrameIFrame"',
+             ' frameborder="0" allowtransparency="true" id="popupFrameIFrame" name="popupFrameIFrame"',
              ' width="100%" height="100%"></iframe>';
 
         echo '</div></div>';
