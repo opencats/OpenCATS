@@ -3281,16 +3281,22 @@ class CandidatesUI extends UserInterface
             $db = DatabaseConnection::getInstance();
 
             $rs = $db->getAllAssoc(sprintf(
-                'SELECT candidate_id, email1, email2 '
+                'SELECT candidate_id, first_name, last_name, email1, email2 '
                 . 'FROM candidate '
                 . 'WHERE candidate_id IN (%s)',
                 $db_str
             ));
-
+            
+            $emailTemplates = new EmailTemplates($this->_siteID);
+            $emailTemplatesRS = $emailTemplates->getAllCustom();
+            
+            
             //$this->_template->assign('privledgedUser', $privledgedUser);
             $this->_template->assign('active', $this);
             $this->_template->assign('success', false);
+            $this->_template->assign('emailTemplatesRS', $emailTemplatesRS);
             $this->_template->assign('recipients', $rs);
+            $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
             $this->_template->display('./modules/candidates/SendEmail.tpl');
         }
     }
