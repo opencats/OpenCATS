@@ -3200,17 +3200,60 @@ class CandidatesUI extends UserInterface
             {
                 $destination[] = array($emailDest, $emailDest);
             }
-
+            
             $mailer = new Mailer(CATS_ADMIN_SITE);
-            // FIXME: Use sendToOne()?
-            $mailerStatus = $mailer->send(
-                array($_SESSION['CATS']->getEmail(), $_SESSION['CATS']->getEmail()),
-                $destination,
-                $emailSubject,
-                $emailBody,
-                true,
-                true
-            );
+            
+            if($_POST['emailTemplate'] == "-1")
+            {
+                $mailerStatus = $mailer->send(
+                    array($_SESSION['CATS']->getEmail(), $_SESSION['CATS']->getEmail()),
+                    $destination,
+                    $emailSubject,
+                    $emailBody,
+                    true,
+                    true
+                );
+            }
+            else
+            {
+                $emailTemplates = new EmailTemplates($this->_siteID);
+                $candidates = new Candidates($this->_siteID);
+                
+                $emailsToIDs = $_POST['candidateID'];
+                $candidateIDs = array();
+                foreach($emailsToIDs as $email)
+                {
+                    $temp = explode('=', $email);
+                    $candidateIDs[$temp[0]] = $temp[1];
+                }
+                foreach($candidateIDs as $email => $ID)
+                {
+                    $candidateData = $candidates->get($ID);
+                    $emailTextSubstituted = $emailTemplates->replaceVariables($emailBody);
+                    $stringsToFind = array(
+                        '%CANDOWNER%',
+                        '%CANDFIRSTNAME%',
+                        '%CANDFULLNAME%'
+                    );
+                    $replacementStrings = array(
+                            $candidateData['ownerFullName'],
+                            $candidateData['firstName'],
+                            $candidateData['candidateFullName']
+                    );
+                    $emailTextSubstituted = str_replace(
+                            $stringsToFind,
+                            $replacementStrings,
+                            $emailTextSubstituted
+                    );
+                    
+                    $mailerStatus = $mailer->sendToOne(
+                        array($email, $candidateData['candidateFullName']), 
+                        $emailSubject,
+                        $emailTextSubstituted,
+                        true
+                    );
+                }
+            }
 
             $this->_template->assign('active', $this);
             $this->_template->assign('success', true);
