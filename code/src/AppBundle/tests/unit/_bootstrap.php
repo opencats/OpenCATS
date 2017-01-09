@@ -4,7 +4,7 @@ define('LEGACY_ROOT', dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))
 define('DATABASE_USER', 'dev');
 define('DATABASE_PASS', 'dev');
 define('DATABASE_NAME', 'cats_unittestdb');
-define('DATABASE_HOST', 'unittestdb');
+define('DATABASE_HOST', 'unittestdb:3307');
 define('OFFSET_GMT', 2);
 define('SQL_CHARACTER_SET', 'utf8');
 define('CATS_SLAVE', false);
