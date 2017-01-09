@@ -1,19 +1,11 @@
 <?php
-namespace OpenCATS\Tests\IntegrationTests;
+namespace AppBundle\tests\unit;
 
-use \OpenCATS\Tests\IntegrationTests\DatabaseTestCase;
-use DatabaseConnection;
-use DatabaseSearch;
-
+include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
 include_once(LEGACY_ROOT . '/lib/DatabaseSearch.php');
 
 class DatabaseSearchTest extends DatabaseTestCase
 {
-    function testMakeREGEXPString()
-    {
-        //FIXME: Write me!
-    }
-
     function testMakeBooleanSQLWhere()
     {
         $tests = array(
@@ -67,13 +59,13 @@ class DatabaseSearchTest extends DatabaseTestCase
             )
         );
 
-        $db = DatabaseConnection::getInstance();
+        $db = \DatabaseConnection::getInstance();
         foreach ($tests as $test)
         {
             $this->assertSame(
-                DatabaseSearch::makeBooleanSQLWhere($test[0], $db, 'field'),
+                \DatabaseSearch::makeBooleanSQLWhere($test[0], $db, 'field'),
                 $test[1]
-                );
+            );
         }
     }
 }

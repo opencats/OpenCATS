@@ -1,9 +1,7 @@
 <?php
-namespace OpenCATS\Tests\IntegrationTests;
+namespace AppBundle\tests\unit;
 
-use PHPUnit\Framework\TestCase;
-
-class DatabaseTestCase extends TestCase
+abstract class DatabaseTestCase extends \PHPUnit\Framework\TestCase
 {
     private $connection;
 
@@ -12,10 +10,6 @@ class DatabaseTestCase extends TestCase
         global $mySQLConnection;
         parent::setUp();
         include_once(LEGACY_ROOT . '/constants.php');
-        define('DATABASE_NAME', 'cats_integrationtest');
-        define('DATABASE_HOST', 'integrationtestdb');
-
-        include_once(LEGACY_ROOT . '/config.php');
         include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
         $mySQLConnection = @mysql_connect(
             DATABASE_HOST, DATABASE_USER, DATABASE_PASS
@@ -29,7 +23,7 @@ class DatabaseTestCase extends TestCase
 
         @mysql_select_db(DATABASE_NAME, $mySQLConnection);
 
-        $this->mySQLQueryMultiple(file_get_contents('db/cats_schema.sql'), ";\n");
+        $this->mySQLQueryMultiple(file_get_contents(LEGACY_ROOT . '/db/cats_schema.sql'), ";\n");
     }
 
     // TODO: remove duplicated code

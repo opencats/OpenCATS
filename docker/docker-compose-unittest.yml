@@ -1,0 +1,11 @@
+version: '2'
+services:
+    unittestdb:
+      image: mariadb
+      ports:
+        - 3306
+      environment:
+        - MYSQL_ROOT_PASSWORD=dev
+        - MYSQL_USER=dev
+        - MYSQL_PASSWORD=dev
+        - MYSQL_DATABASE=cats_unittestdb

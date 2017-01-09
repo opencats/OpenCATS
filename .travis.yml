@@ -19,7 +19,9 @@ php:
 script:
     - composer install
     - cd code; composer install; cd ..
+    - cd docker/; docker-compose -f docker-compose-unittest.yml up -d; cd ..
     - cd code; ./vendor/bin/codecept run unit -c src/AppBundle/; cd ..
+    - cd docker/; docker-compose -f docker-compose-unittest.yml down; cd ..
     - cd docker/; docker-compose -f docker-compose-test.yml up -d
     - docker-compose -f docker-compose-test.yml exec php /var/www/public/test/runAllTests.sh
     - cd ..; ./ci/package-code.sh 

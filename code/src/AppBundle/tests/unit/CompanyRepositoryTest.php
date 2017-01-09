@@ -4,7 +4,7 @@ use OpenCATS\Entity\CompanyRepository;
 use OpenCATS\Entity\Company;
 include_once(LEGACY_ROOT . '/lib/History.php');
 
-class CompanyRepositoryTest extends \PHPUnit_Framework_TestCase
+class CompanyRepositoryTests extends \PHPUnit_Framework_TestCase
 {
     const COMPANY_NAME = "Test Company Name";
     const SITE_ID = -1;
@@ -104,7 +104,7 @@ class CompanyRepositoryTest extends \PHPUnit_Framework_TestCase
     
     private function getDatabaseConnectionMock()
     {
-        return $this->getMockBuilder('\DatabaseConnection')
+        return $this->getMockBuilder('DatabaseConnection')
             ->setMethods(['makeQueryString', 'makeQueryInteger', 'query', 'getLastInsertID'])
             ->getMock();
     }

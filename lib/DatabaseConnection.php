@@ -75,10 +75,12 @@ class DatabaseConnection
     }
 
 
-    /* Prevent this class from being instantiated by any means other
+    /* TODO:
+     * Prevent this class from being instantiated by any means other
      * than getInstance().
+     * Had to change it to public to allow unit testing
      */
-    private function __construct() {}
+    function __construct() {}
     private function __clone() {}
 
     public function setInTransaction($tf)

@@ -1,14 +1,15 @@
 <?php
-namespace OpenCATS\Tests\IntegrationTests;
+namespace AppBundle;
 
-use \OpenCATS\Tests\IntegrationTests\DatabaseTestCase;
-use DatabaseConnection;
+use AppBundle\tests\unit\DatabaseTestCase;
+
+include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
 
 class DatabaseConnectionTest extends DatabaseTestCase
 {
     function testMakeQueryString()
     {
-        $db = DatabaseConnection::getInstance();
+        $db = \DatabaseConnection::getInstance();
 
         $strings = array(
             array('test string',  "'test string'"),
@@ -31,7 +32,7 @@ class DatabaseConnectionTest extends DatabaseTestCase
 
     function testEscapeString()
     {
-        $db = DatabaseConnection::getInstance();
+        $db = \DatabaseConnection::getInstance();
 
         $strings = array(
             array('test string',  "test string"),
@@ -54,7 +55,7 @@ class DatabaseConnectionTest extends DatabaseTestCase
 
     function testMakeQueryStringOrNULL()
     {
-        $db = DatabaseConnection::getInstance();
+        $db = \DatabaseConnection::getInstance();
 
         $strings = array(
             array('test string',  "'test string'"),
@@ -81,7 +82,7 @@ class DatabaseConnectionTest extends DatabaseTestCase
 
     function testMakeQueryInteger()
     {
-        $db = DatabaseConnection::getInstance();
+        $db = \DatabaseConnection::getInstance();
 
         $strings = array(
             array('1.5',  1),
@@ -103,7 +104,7 @@ class DatabaseConnectionTest extends DatabaseTestCase
 
     function testMakeQueryIntegerOrNULL()
     {
-        $db = DatabaseConnection::getInstance();
+        $db = \DatabaseConnection::getInstance();
 
         $strings = array(
             array('1.5',  1),
@@ -126,7 +127,7 @@ class DatabaseConnectionTest extends DatabaseTestCase
 
     function testMakeQueryDouble()
     {
-        $db = DatabaseConnection::getInstance();
+        $db = \DatabaseConnection::getInstance();
 
         $strings = array(
             array('1.5',  '1.5'),
@@ -157,7 +158,7 @@ class DatabaseConnectionTest extends DatabaseTestCase
 
     function testQuery()
     {
-        $db = DatabaseConnection::getInstance();
+        $db = \DatabaseConnection::getInstance();
 
         $queryResult = $db->query('INSERT INTO installtest (id) VALUES(35)');
         $this->assertNotSame(
