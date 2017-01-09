@@ -130,4 +130,28 @@ class AcceptanceTester extends \Codeception\Actor
     {
         $this->see($text);
     }
+
+    /**
+     * @When I select :option from :select
+     */
+    public function iSelectFrom($option, $select)
+    {
+        $this->selectOption($select, $option);
+    }
+
+    /**
+     * @Then I should not see :text
+     */
+    public function iShouldNotSee($text)
+    {
+        $this->cantSee($text);
+    }
+
+    /**
+     * @Then the :element element should contain :attribute
+     */
+    public function theElementShouldContain($element, $attribute)
+    {
+        $this->grabAttributeFrom($element, $attribute);
+    }
 }
