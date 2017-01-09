@@ -120,7 +120,7 @@ function checkEmailForm(form)
     var errorMessage = '';
 
     errorMessage += checkEmailSubject();
-    errorMessage += checkEmailBody();
+    //errorMessage += checkEmailBody();
 
     if (errorMessage != '')
     {
