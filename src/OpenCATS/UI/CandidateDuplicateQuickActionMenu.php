@@ -6,9 +6,9 @@ class CandidateDuplicateQuickActionMenu extends QuickActionMenu
     private $mergeUrl;
     private $removeUrl;
 
-    public function __construct($dataItemType, $dataItemId, $mergeUrl, $removeUrl)
+    public function __construct($dataItemType, $dataItemId, $accessLevel, $mergeUrl, $removeUrl)
     {
-        parent::__construct($dataItemType, $dataItemId);
+        parent::__construct($dataItemType, $dataItemId, $accessLevel);
         $this->mergeUrl = $mergeUrl;
         $this->removeUrl = $removeUrl;
     }
