@@ -43,7 +43,7 @@ addons:
     debug: true
     paths:
       - ./code/tests/_output
-    target_paths: $TRAVIS_BUILD_NUMBER
+    target_paths: $TRAVIS_REPO_SLUG/$TRAVIS_BUILD_NUMBER
     working_dir: WORKING_DIR
-    bucket: opencats/$TRAVIS_REPO_SLUG/$TRAVIS_BUILD_NUMBER
+    bucket: opencats
     s3_region: us-east-1
