@@ -1,6 +1,6 @@
-quickAction.CandidateDuplicateMenu = function(menuDataItemType, menuDataItemId, menuX, menuY, mergeUrl, removeUrl)
+quickAction.CandidateDuplicateMenu = function(menuDataItemType, menuDataItemId, menuX, menuY, permissions, mergeUrl, removeUrl)
 {
-    quickAction.DefaultMenu.call(this, menuDataItemType, menuDataItemId, menuX, menuY);
+    quickAction.DefaultMenu.call(this, menuDataItemType, menuDataItemId, menuX, menuY, permissions);
     this.mergeUrl = mergeUrl;
     this.removeUrl = removeUrl;
 }
@@ -9,7 +9,7 @@ quickAction.CandidateDuplicateMenu.prototype = Object.create(quickAction.Default
 
 quickAction.CandidateDuplicateMenu.prototype.getOptions = function()
 {
-    if(this.getPermissions().candidate_merge)
+    if(this.getPermissions().candidates_merge)
     {
         return [
             new quickAction.LinkMenuOption('Merge', this.urlDecode(this.mergeUrl), 0),

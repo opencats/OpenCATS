@@ -38,6 +38,7 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                             <?php TemplateUtility::printSingleQuickActionMenu(new CandidateDuplicateQuickActionMenu(
                                 DATA_ITEM_DUPLICATE,
                                 $this->data['candidateID'],
+                                $_SESSION['CATS']->getAccessLevel('candidates.duplicates'),
                                 urlencode(CATSUtility::getIndexName().'?m=candidates&a=merge&oldCandidateID='.$item['duplicateTo'].'&newCandidateID='.$this->data['candidateID']),
                                 urlencode(CATSUtility::getIndexName().'?m=candidates&a=removeDuplicity&oldCandidateID='.$item['duplicateTo'].'&newCandidateID='.$this->data['candidateID']
                             ))); ?>
