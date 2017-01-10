@@ -308,23 +308,24 @@
                 </form>
                 
                 <script type="text/javascript">
-			    CKEDITOR.replace( 'description' );
-    			CKEDITOR.on('instanceReady', function(ev)
-        		{
-            		var tags = ['p', 'ol', 'ul', 'li']; // etc.
+                    CKEDITOR.replace( 'description' );
+                    CKEDITOR.on('instanceReady', function(ev)
+                    {
+                        var tags = ['p', 'ol', 'ul', 'li']; // etc.
 
-            		for (var key in tags) {
-                	ev.editor.dataProcessor.writer.setRules(tags[key],
-                    	{
-                        indent : false,
-                        breakBeforeOpen : false,
-                        breakAfterOpen : false,
-                        breakBeforeClose : false,
-                        breakAfterClose : false, 
-                    	});
-            		}
-        		});
-              		</script>
+                        for (var key in tags) {
+                            ev.editor.dataProcessor.writer.setRules(
+                                tags[key],
+                                {
+                                    indent : false,
+                                    breakBeforeOpen : false,
+                                    breakAfterOpen : false,
+                                    breakBeforeClose : false,
+                                    breakAfterClose : false, 
+                                });
+                        }
+                    });
+                </script>
 
                 <script type="text/javascript">
                     document.addJobOrderForm.title.focus();
