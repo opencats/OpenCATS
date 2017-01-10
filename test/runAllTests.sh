@@ -4,6 +4,7 @@ dockerize -wait tcp://opencats_test_mariadb:3306 -wait http://opencats_test_web:
 php modules/tests/waitForDb.php
 cat config.php
 cd /var/www/code
+ls -la /var/www/
 ls -la
 ls -la /var/www/code/var
 ls -la /var/www/code/var/cache
