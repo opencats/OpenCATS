@@ -1187,7 +1187,7 @@ class TemplateUtility
             /* Done manually to prevent a global dependency on FileUtility. */
             if ($filename == 'tinymce')
             {
-                echo ('<script language="javascript" type="text/javascript" src="lib/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>'."\n".
+                echo ('<script language="javascript" type="text/javascript" src="/js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>'."\n".
                       '<script language="javascript" type="text/javascript">tinyMCE.init({
                             mode : "specific_textareas",
                             editor_selector : "mceEditor",
