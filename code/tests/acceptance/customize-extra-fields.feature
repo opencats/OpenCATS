@@ -9,7 +9,7 @@ Feature: Customize extra fields
     Given I am authenticated as "Administrator" 
     And I am on "/index.php?m=settings&a=customizeExtraFields" 
     When I follow "Add field to Job Orders"
-    And fill in "addFieldName0" with "Compensation range"
+    And fill in "#addFieldName0" with "Compensation range"
     And press "Add Field"
     And press "Save"
     Then I should see "Compensation range" 

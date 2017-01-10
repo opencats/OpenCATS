@@ -1,7 +1,13 @@
 <?php
 
 use \Codeception\Scenario;
-use \AppBundle\Entity\User;
+use AppBundle\Entity\User;
+use AppBundle\Entity\DummyHistory;
+use OpenCATS\Entity\Company;
+use OpenCATS\Entity\CompanyRepository;
+use OpenCATS\Entity\JobOrder;
+use OpenCATS\Entity\JobOrderRepository;
+
 
 /**
  * Inherited Methods
@@ -88,6 +94,22 @@ class AcceptanceTester extends \Codeception\Actor
     }
 
     /**
+    * @When follow :link
+    */
+    public function follow($link)
+    {
+        $this->click($link);
+    }
+
+    /**
+     * @Given I fill in :field with :value
+     */
+    public function iFillInWith($field, $value)
+    {
+        $this->fillField($field, $value);
+    }
+
+    /**
      * @Given I wait for the activity note box to appear
      */
     public function iWaitForTheActivityNoteBoxToAppear()
@@ -110,10 +132,11 @@ class AcceptanceTester extends \Codeception\Actor
     /**
      * @Given fill in :field with :value
      */
-    public function fillInWith($field, $value)
+    public function thenFillInWith($field, $value)
     {
         $this->fillField($field, $value);
     }
+
 
     /**
      * @Given press :button
@@ -140,6 +163,14 @@ class AcceptanceTester extends \Codeception\Actor
     }
 
     /**
+     * @Given I select :option in the :select
+     */
+    public function iSelectInThe($option, $select)
+    {
+        $this->selectOption($select, $option);
+    }
+
+    /**
      * @Then I should not see :text
      */
     public function iShouldNotSee($text)
@@ -154,4 +185,135 @@ class AcceptanceTester extends \Codeception\Actor
     {
         $this->grabAttributeFrom($element, $attribute);
     }
+
+    /**
+     * @Given There is a company called :companyName
+     */
+    public function thereIsACompanyCalled($companyName)
+    {
+        $siteId = $this->getSiteId();
+        $company= new Company(
+            $siteId,
+            $companyName
+        );
+        $CompanyRepository = new CompanyRepository(DatabaseConnection::getInstance());
+        $CompanyRepository->persist($company, new DummyHistory($siteId));
+    }
+
+    private function getSiteId()
+    {
+        $site = new Site(-1);
+        return $site->getFirstSiteID();
+    }
+
+    /**
+     * @Given There is a user :userName named :fullName with :password password
+     */
+    public function thereIsAUserNamedWithPassword($userName, $fullName, $password)
+    {
+        list($firstName, $lastName) = explode(" ", $fullName);
+        $siteId = $this->getSiteId();
+        $users = new Users($siteId);
+        $users->add(
+            $lastName,
+            $firstName,
+            '',
+            $userName,
+            $password,
+            ACCESS_LEVEL_DELETE
+        );
+    }
+
+    /**
+     * @Then I should see :message in alert popup
+     */
+    public function iShouldSeeInAlertPopup($message)
+    {
+        $this->seeInPopup($message);
+    }
+
+    /**
+     * @Then I confirm the popup
+     */
+    public function iConfirmThePopup()
+    {
+        $this->acceptPopup();
+    }
+
+    /**
+     * @Given I wait for :element
+     */
+    public function iWaitFor($element)
+    {
+        $this->waitForElement($element);
+    }
+
+    /**
+     * @Given I click on the element :element
+     */
+    public function iClickOnTheElement($element)
+    {
+        $this->click($element);
+    }
+
+    /**
+     * @Given There is a job order for a :jobTitle for :companyName
+     */
+    public function thereIsAJobOrderForAFor($jobTitle, $companyName)
+    {
+        $siteId = $this->getSiteId();
+        $CompanyRepository = new CompanyRepository(DatabaseConnection::getInstance());
+        $companies = $CompanyRepository->findByName($siteId, $companyName);
+        $companyId = $companies[0]['companyID'];
+        $jobOrder = JobOrder::create(
+            $siteId,
+            $jobTitle,
+            $companyId,
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            ''
+        );
+        $JobOrderRepository = new JobOrderRepository(DatabaseConnection::getInstance());
+        $JobOrderRepository->persist($jobOrder, new DummyHistory($siteId));
+
+    }
+
+    /**
+     * Looks for a table, then looks for a row that contains the given text.
+     * Once it finds the right row, it clicks a link in that row.
+     *
+     * Really handy when you have a generic "Edit" link on each row of
+     * a table, and you want to click a specific one (e.g. the "Edit" link
+     * in the row that contains "Item #2")
+     *
+     * @When I click on :linkName on the row containing :rowText
+     */
+    public function iClickOnOnTheRowContaining($linkName, $rowText)
+    {
+        /** @var $row \Behat\Mink\Element\NodeElement */
+        $row = $this->getModule('WebDriver')->_findElements(sprintf('table tr:contains("%s")', $rowText));
+        if (!$row) {
+            throw new \Exception(sprintf('Cannot find any row on the page containing the text "%s"', $rowText));
+        }
+        $row->clickLink($linkName);
+
+    }
+
 }
+
