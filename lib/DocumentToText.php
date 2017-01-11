@@ -412,7 +412,8 @@ class DocumentToText
                 $zip->close();
                 // Load XML from a string
                 // Skip errors and warnings
-                $xml = DOMDocument::loadXML($data, LIBXML_NOENT | LIBXML_XINCLUDE | LIBXML_NOERROR | LIBXML_NOWARNING);
+                $xml = new DOMDocument();
+                $xml->loadXML($data, LIBXML_NOENT | LIBXML_XINCLUDE | LIBXML_NOERROR | LIBXML_NOWARNING);
                 $raw_text = $xml->saveXML();
                 // We need to add a space where end-of-line and end-of-paragraphs present 
                 $raw_text_patched = str_replace(

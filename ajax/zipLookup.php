@@ -31,7 +31,7 @@ $interface->outputXMLPage(
     "<data>\n" .
     "    <errorcode>0</errorcode>\n" .
     "    <errormessage></errormessage>\n" .
-    "    <address>" . $street. "</address>\n .
+    "    <address>" . $street. "</address>\n" .
     "    <city>"    . $city  . "</city>\n" .
     "    <state>"   . $state . "</state>\n" .
     "</data>\n"
