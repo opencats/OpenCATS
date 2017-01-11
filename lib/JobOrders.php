@@ -980,7 +980,7 @@ class JobOrdersDataGrid extends DataGrid
                                        'pagerRender'      => 'return $rsData[\'totalPipeline\'];',
                                        'sortableColumn'     => 'totalPipeline',
                                        'columnHeaderText' => 'Total',
-                                       'pagerWidth'    => 50,
+                                       'pagerWidth'    => 25,
                                        'filterHaving'  => 'totalPipeline',
                                        'filterTypes'   => '===>=<'),
 
