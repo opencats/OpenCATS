@@ -91,7 +91,7 @@
                 </tr>
             </table>
 
-            <?php if ($this->bulk['numBulkAttachments'] > 0 && $_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA): ?>
+            <?php if ($this->bulk['numBulkAttachments'] > 0 && $this->getUserAccessLevel('import.import') >= ACCESS_LEVEL_SA): ?>
             <br />
             <div style="background-color: #f0f0f0; color: #000000; border: 1px solid #000000; text-align: left; font-size: 14px; padding: 10px; margin: 0 0 15px 0; font-weight: normal;">
                 You have uploaded <b><?php echo number_format($this->bulk['numBulkAttachments'], 0); ?></b>

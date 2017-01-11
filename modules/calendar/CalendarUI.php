@@ -41,11 +41,11 @@ class CalendarUI extends UserInterface
         $this->_authenticationRequired = true;
         $this->_moduleDirectory = 'calendar';
         $this->_moduleName = 'calendar';
-        $this->_moduleTabText = 'Calendar';
+        $this->_moduleTabText = 'Calendar*al=' . ACCESS_LEVEL_READ . '@calendar';
         $this->_subTabs = array(
-            'My Upcoming Events' => 'javascript:void(0);*js=calendarUpcomingEvents();',
-            'Add Event' => 'javascript:void(0);*js=userCalendarAddEvent();*al=' . ACCESS_LEVEL_EDIT,
-            'Goto Today' => 'javascript:void(0);*js=goToToday();'
+            'My Upcoming Events' => 'javascript:void(0);*js=calendarUpcomingEvents();*al=' . ACCESS_LEVEL_READ . '@calendar',
+            'Add Event' => 'javascript:void(0);*js=userCalendarAddEvent();*al=' . ACCESS_LEVEL_EDIT . '@calendar',
+            'Goto Today' => 'javascript:void(0);*js=goToToday();*al=' . ACCESS_LEVEL_READ . '@calendar'
         );
     }
 
@@ -170,7 +170,7 @@ class CalendarUI extends UserInterface
             $showEvent = null;
         }
 
-        $userIsSuperUser = ($this->_accessLevel < ACCESS_LEVEL_SA ? 0 : 1);
+        $userIsSuperUser = ($this->getUserAccessLevel('calendar.show') < ACCESS_LEVEL_SA ? 0 : 1);
         if ($userIsSuperUser && isset($_GET['superuser']) && $_GET['superuser'] == 1)
         {
             $superUserActive = true;
@@ -342,7 +342,7 @@ class CalendarUI extends UserInterface
      */
     private function onAddEvent()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        if ($this->getUserAccessLevel('calendar.addEvent') < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
@@ -502,7 +502,7 @@ class CalendarUI extends UserInterface
      */
     private function onEditEvent()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        if ($this->getUserAccessLevel('calendar.editEvent') < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
@@ -687,7 +687,7 @@ class CalendarUI extends UserInterface
      */
     private function onDeleteEvent()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_DELETE)
+        if ($this->getUserAccessLevel('calendar.deleteEvent') < ACCESS_LEVEL_DELETE)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }

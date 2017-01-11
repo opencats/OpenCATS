@@ -257,7 +257,7 @@ class CommonErrors
             $siteID = $_SESSION['CATS']->getSiteID();
 
             /* Get the current user's access level. */
-            $accessLevel = $_SESSION['CATS']->getAccessLevel();
+            $accessLevel = $_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT);
 
             /* Is it a demo */
             $isDemo = $_SESSION['CATS']->isDemo();

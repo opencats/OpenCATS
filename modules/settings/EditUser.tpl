@@ -67,7 +67,7 @@
                         </td>
                         <td class="tdData">
                             <?php foreach ($this->accessLevels as $accessLevel): ?>
-                                <?php if ($accessLevel['accessID'] > $this->accessLevel): continue; endif; ?>
+                                <?php if ($accessLevel['accessID'] > $this->getUserAccessLevel('')): continue; endif; ?>
 
                                 <?php $radioButtonID = 'access' . $accessLevel['accessID']; ?>
 

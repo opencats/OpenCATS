@@ -49,6 +49,12 @@ var CATSIndexName;
 /* Default timeout for AJAX requests; 15 seconds. */
 var AJAX_TIMEOUT = 15000;
 
+function toggleVisibility()
+{
+    var singleQuickActionMenu = document.getElementById('singleQuickActionMenu');
+    singleQuickActionMenu.style.display = singleQuickActionMenu.style.display == 'block' ? 'none' : 'block';
+}
+
 /**
  * Returns true if the string is a valid positive integer.
  *
