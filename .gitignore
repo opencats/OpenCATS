@@ -6,3 +6,6 @@ docker/data/*
 docker/persist/*
 vendor/*
 attachments/*
+code/tests/_output/*
+code/var/*
+code/vendor/*
