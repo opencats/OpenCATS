@@ -269,7 +269,7 @@
                                 <label id="descriptionLabel" for="description">Description:</label>
                             </td>
                             <td class="tdData">
-                                <textarea tabindex="18"  name="description" id="description" rows="15" style="width: 500px;"><?php if(isset($this->jobOrderSourceRS['description'])): ?><?php $this->_($this->jobOrderSourceRS['description']); ?><?php endif; ?></textarea>
+                                <textarea tabindex="18" class="ckEditor" name="description" id="description" rows="15" style="width: 500px;"><?php if(isset($this->jobOrderSourceRS['description'])): ?><?php $this->_($this->jobOrderSourceRS['description']); ?><?php endif; ?></textarea>
                             </td>
                         </tr>
 
@@ -278,7 +278,7 @@
                                 <label id="notesLabel" for="notes">Internal Notes:</label>
                             </td>
                             <td class="tdData">
-                                <textarea tabindex="19" class="mceEditor" name="notes" id="notes" rows="5" style="width: 500px;"><?php if(isset($this->jobOrderSourceRS['notes'])): ?><?php $this->_($this->jobOrderSourceRS['notes']); ?><?php endif; ?></textarea>
+                                <textarea tabindex="19" class="ckEditor" name="notes" id="notes" rows="5" style="width: 500px;"><?php if(isset($this->jobOrderSourceRS['notes'])): ?><?php $this->_($this->jobOrderSourceRS['notes']); ?><?php endif; ?></textarea>
                             </td>
                         </tr>
 
