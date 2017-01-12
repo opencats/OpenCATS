@@ -35,7 +35,7 @@
  * @version    $Id: TemplateUtility.php 3835 2007-12-12 19:08:38Z brian $
  */
 
-include_once('./vendor/autoload.php');
+include_once(LEGACY_ROOT . '/vendor/autoload.php');
 include_once(LEGACY_ROOT . '/lib/Candidates.php');
 include_once(LEGACY_ROOT . '/lib/DateUtility.php');
 include_once(LEGACY_ROOT . '/lib/SystemInfo.php');
@@ -1211,35 +1211,7 @@ class TemplateUtility
 
             if ($extension == 'js')
             {
-<<<<<<< HEAD
-                echo ('<script language="javascript" type="text/javascript" src="/js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>'."\n".
-                      '<script language="javascript" type="text/javascript">tinyMCE.init({
-                            mode : "specific_textareas",
-                            editor_selector : "mceEditor",
-                            width : "100%",
-                        	theme : "advanced",
-                        	theme_advanced_buttons1 : "bold,italic,strikethrough,separator,bullist,numlist,outdent,indent,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,link,unlink,separator,underline,forecolor,separator,removeformat,cleanup,separator,charmap,separator,undo,redo",
-                        	theme_advanced_buttons2 : "",
-                        	theme_advanced_buttons3 : "",
-                        	language : "en",
-                        	theme_advanced_toolbar_location : "top",
-                        	theme_advanced_toolbar_align : "left",
-                        	theme_advanced_resizing : true,
-                        	browsers : "msie,gecko,opera,safari",
-                        	dialog_type : "modal",
-                        	theme_advanced_resize_horizontal : false,
-                        	convert_urls : false,
-                        	relative_urls : false,
-                        	remove_script_host : false,
-                        	force_p_newlines : false,
-                        	force_br_newlines : true,
-                        	convert_newlines_to_brs : false,
-                        	remove_linebreaks : false,
-                        	fix_list_elements : true
-                        });</script>'."\n");
-=======
                 echo '<script type="text/javascript" src="', $filename, '"></script>', "\n";
->>>>>>> origin/master
             }
             else if ($extension == 'css')
             {
