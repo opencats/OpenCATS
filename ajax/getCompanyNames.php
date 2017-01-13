@@ -56,36 +56,35 @@ $companiesArray = $search->byName($dataName, 'company.name', 'ASC');
 if (empty($companiesArray))
 {
     $interface->outputXMLErrorPage(-2, 'No companies data.');
-    die();
-}
-
-$output =
-    "<data>\n" .
-    "    <errorcode>0</errorcode>\n" .
-    "    <errormessage></errormessage>\n" .
-    "    <totalelements>" . count($companiesArray) . "</totalelements>\n";
-
-$arrayCounter = 0;
-foreach ($companiesArray as $rowIndex => $row)
+} else
 {
-    $arrayCounter++;
+    $output =
+        "<data>\n" .
+        "    <errorcode>0</errorcode>\n" .
+        "    <errormessage></errormessage>\n" .
+        "    <totalelements>" . count($companiesArray) . "</totalelements>\n";
 
-    if ($arrayCounter > $maxResults)
+    $arrayCounter = 0;
+    foreach ($companiesArray as $rowIndex => $row)
     {
-        break;
+        $arrayCounter++;
+
+        if ($arrayCounter > $maxResults)
+        {
+            break;
+        }
+
+        $output .=
+            "    <result>\n" .
+            "        <id>"   . $companiesArray[$rowIndex]['companyID'] . "</id>\n" .
+            "        <name>" . rawurlencode($companiesArray[$rowIndex]['name']) . "</name>\n" .
+            "    </result>\n";
     }
 
     $output .=
-        "    <result>\n" .
-        "        <id>"   . $companiesArray[$rowIndex]['companyID'] . "</id>\n" .
-        "        <name>" . rawurlencode($companiesArray[$rowIndex]['name']) . "</name>\n" .
-        "    </result>\n";
+        "</data>\n";
+
+    /* Send back the XML data. */
+    $interface->outputXMLPage($output);
 }
-
-$output .=
-    "</data>\n";
-
-/* Send back the XML data. */
-$interface->outputXMLPage($output);
-
 ?>
