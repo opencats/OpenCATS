@@ -18,8 +18,6 @@
                     </td>
                     <td><h2>Job Orders: Home</h2></td>
 
-                    <?php TemplateUtility::printPopupContainer(); ?>
-
                     <td align="right">
                         <form name="jobOrdersViewSelectorForm" id="jobOrdersViewSelectorForm" action="<?php echo(CATSUtility::getIndexName()); ?>" method="get">
                             <input type="hidden" name="m" value="joborders" />
