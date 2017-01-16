@@ -71,7 +71,7 @@ switch ($action)
 
         echo '<br />',
              '<span style="font-weight: bold;">Test Results</span>',
-             '<table class="test_output">';
+             '<table class="table table-bordered">';
 
 
         InstallationTests::runInstallerTests();
@@ -244,7 +244,7 @@ switch ($action)
     case 'testDatabaseConnectivity':
         echo '<br /><span style="font-weight: bold;">Test Results</span>';
 
-        echo '<table class="test_output">';
+        echo '<table class="table table-bordered">';
 
         if (InstallationTests::checkMySQL(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME))
         {
@@ -422,7 +422,7 @@ switch ($action)
 
         echo '<br />',
              '<span style="font-weight: bold;">Test Results</span>',
-             '<table class="test_output">';
+             '<table class="table table-bordered">';
 
         $antiwordResults = !(ANTIWORD_PATH != '' && !InstallationTests::checkAntiword());
         $pdftotextResults = !(PDFTOTEXT_PATH != '' && !InstallationTests::checkPdftotext());
@@ -501,7 +501,7 @@ switch ($action)
 
         echo '</table><br /><br />';
 
-        echo '<input type="button" style="float: right;" class="button" value="Next -->" onclick="\' + onClick + \'">\';</script>';
+        echo '<input type="button" class="btn btn-success pull-right" value="Next" onclick="\' + onClick + \'">\';</script>';
         break;
 
     case 'setupOptional':
@@ -684,27 +684,27 @@ switch ($action)
         include_once('lib/FileCompressor.php');
         MySQLConnect();
         $extractor = new ZipFileExtractor('./restore/catsbackup.bak');
-        
+
         CATSUtility::changeConfigSetting('ENABLE_DEMO_MODE', 'false');
 
         /* Extract the file.  This command also executes all sql commands in the file. */
         /* Normally, we could just do the following lines, but we want a custom extractor
            that ignores the file 'database', and executes all of the catsbackup.sql.xxx
            files rather than extracting them. */
-        /* 
+        /*
             if (!$extractor->open() || !$extractor->extractAll())
             {
                 echo($extractor->getErrorMessage());
             }
         */
-        
+
         if (!$extractor->open())
         {
             echo($extractor->getErrorMessage());
-        }       
-        
+        }
+
         $metaData = $extractor->getMetaData();
-        
+
         foreach ($metaData['centralDirectory'] as $index => $data)
         {
             $fileName = $data['filename'];
@@ -727,16 +727,16 @@ switch ($action)
                 }
 
                 $fileContents = $extractor->getFile($index);
-                
+
                 if ($fileContents === false)
                 {
                     /* Report error? */
                 }
-                
+
                 file_put_contents ($fileName, $fileContents);
             }
         }
-        
+
         echo '<script type="text/javascript">Installpage_populate(\'a=upgradeCats\');</script>';
         break;
 
@@ -776,25 +776,25 @@ switch ($action)
         include_once('lib/FileCompressor.php');
         MySQLConnect();
         $extractor = new ZipFileExtractor('./db/cats_testdata.bak');
-        
+
         /* Extract the file.  This command also executes all sql commands in the file. */
         /* Normally, we could just do the following lines, but we want a custom extractor
            that ignores the file 'database', and executes all of the catsbackup.sql.xxx
            files rather than extracting them. */
-        /* 
+        /*
             if (!$extractor->open() || !$extractor->extractAll())
             {
                 echo($extractor->getErrorMessage());
             }
         */
-        
+
         if (!$extractor->open())
         {
             echo($extractor->getErrorMessage());
-        }       
-        
+        }
+
         $metaData = $extractor->getMetaData();
-        
+
         foreach ($metaData['centralDirectory'] as $index => $data)
         {
             $fileName = $data['filename'];
@@ -817,12 +817,12 @@ switch ($action)
                 }
 
                 $fileContents = $extractor->getFile($index);
-                
+
                 if ($fileContents === false)
                 {
                     /* Report error? */
                 }
-                
+
                 file_put_contents ($fileName, $fileContents);
             }
         }
@@ -938,14 +938,14 @@ switch ($action)
                   Installpage_populate(\'a=onReindexResumes\');
               </script>';
         break;
-            
+
     case 'onReindexResumes':
         include_once('modules/install/ajax/attachmentsReindex.php');
-        
+
         echo '<script type="text/javascript">
                   Installpage_populate(\'a=maintComplete\');
               </script>';
-        
+
         break;
 
     case 'maintComplete':

@@ -1,18 +1,18 @@
 @core
 Feature: Job Orders
-  In order to fullfil customers job orders 
+  In order to fullfil customers job orders
   As a user
   I need to be able to track all interaction in the application
-  
+
   @javascript
   Scenario: View add job order page
     Given I am authenticated as "Administrator"
     And There is a company called "Test Company ATxyz"
-    And There is a user "testuser101" named "Marcus Gomez" with "password101" password 
-    And I am on "/index.php?m=candidates" 
+    And There is a user "testuser101" named "Marcus Gomez" with "password101" password
+    And I am on "/index.php?m=candidates"
     And I follow "Job Orders"
     And I follow "Add Job Order"
-    And I switch to the iframe "popupInner"
+    And I switch to the iframe "bootstrap-popup-iframe"
     And press "Create Job Order"
     And I switch to the iframe ""
     Then I should see "Title"
@@ -32,35 +32,35 @@ Feature: Job Orders
     And I should see "Company Job ID"
     And I should see "Hot"
     And I should see "Public"
-    
+
   @javascript
   Scenario: Add job order with title only gets fatal error
     Given I am authenticated as "Administrator"
     And There is a company called "Test Company ATxyz"
-    And There is a user "testuser101" named "Marcus Gomez" with "password101" password 
-    And I am on "/index.php?m=candidates" 
+    And There is a user "testuser101" named "Marcus Gomez" with "password101" password
+    And I am on "/index.php?m=candidates"
     And I follow "Job Orders"
     And I follow "Add Job Order"
-    And I switch to the iframe "popupInner"
+    And I switch to the iframe "bootstrap-popup-iframe"
     And press "Create Job Order"
     And I switch to the iframe ""
     And fill in "title" with "Javascript developer"
-    And press "Add Job Order" 
+    And press "Add Job Order"
     Then I should see "Form Error" in alert popup
     And I should see "You must select a company" in alert popup
     And I should see "You must enter a city" in alert popup
     And I should see "You must enter a state" in alert popup
     And I confirm the popup
-    
+
   @javascript
   Scenario: Add job order succesfully
     Given I am authenticated as "Administrator"
     And There is a company called "Test Company ATxyz"
-    And There is a user "testuser101" named "Marcus Gomez" with "password101" password 
-    And I am on "/index.php?m=candidates" 
+    And There is a user "testuser101" named "Marcus Gomez" with "password101" password
+    And I am on "/index.php?m=candidates"
     And I follow "Job Orders"
     And I follow "Add Job Order"
-    And I switch to the iframe "popupInner"
+    And I switch to the iframe "bootstrap-popup-iframe"
     And press "Create Job Order"
     And I switch to the iframe ""
     And fill in "title" with "Javascript developer"
@@ -70,7 +70,7 @@ Feature: Job Orders
     And I select "Gomez, Marcus" in the "#recruiter" select
     And fill in "city" with "Minneapolis"
     And fill in "state" with "MN"
-    And press "Add Job Order" 
+    And press "Add Job Order"
     Then I should see "Title"
     And I should see "Company Name"
     And I should see "Recruiter"
@@ -81,17 +81,17 @@ Feature: Job Orders
     And I should see "Minneapolis"
     And I should see "MN"
     And I should see "Marcus Gomez"
-    
+
   @javascript
   Scenario: Edit job order has fields
     # To be refactored by creating the Job Order programatically
     Given I am authenticated as "Administrator"
     And There is a company called "Test Company ATxyz"
-    And There is a user "testuser101" named "Marcus Gomez" with "password101" password 
-    And I am on "/index.php?m=candidates" 
+    And There is a user "testuser101" named "Marcus Gomez" with "password101" password
+    And I am on "/index.php?m=candidates"
     And I follow "Job Orders"
     And I follow "Add Job Order"
-    And I switch to the iframe "popupInner"
+    And I switch to the iframe "bootstrap-popup-iframe"
     And press "Create Job Order"
     And I switch to the iframe ""
     And fill in "title" with "Javascript developer"
@@ -121,17 +121,17 @@ Feature: Job Orders
     And I should see "Description"
     And I should see "Internal Notes"
     And I should see "Owner"
-    
+
   @javascript
-  Scenario: Edit job order with blank title pops error 
+  Scenario: Edit job order with blank title pops error
     # To be refactored by creating the Job Order programatically
     Given I am authenticated as "Administrator"
     And There is a company called "Test Company ATxyz"
-    And There is a user "testuser101" named "Marcus Gomez" with "password101" password 
-    And I am on "/index.php?m=candidates" 
+    And There is a user "testuser101" named "Marcus Gomez" with "password101" password
+    And I am on "/index.php?m=candidates"
     And I follow "Job Orders"
     And I follow "Add Job Order"
-    And I switch to the iframe "popupInner"
+    And I switch to the iframe "bootstrap-popup-iframe"
     And press "Create Job Order"
     And I switch to the iframe ""
     And fill in "title" with "Javascript developer"
@@ -154,11 +154,11 @@ Feature: Job Orders
     # To be refactored by creating the Job Order programatically
     Given I am authenticated as "Administrator"
     And There is a company called "Test Company ATxyz"
-    And There is a user "testuser101" named "Marcus Gomez" with "password101" password 
-    And I am on "/index.php?m=candidates" 
+    And There is a user "testuser101" named "Marcus Gomez" with "password101" password
+    And I am on "/index.php?m=candidates"
     And I follow "Job Orders"
     And I follow "Add Job Order"
-    And I switch to the iframe "popupInner"
+    And I switch to the iframe "bootstrap-popup-iframe"
     And press "Create Job Order"
     And I switch to the iframe ""
     And fill in "title" with "Javascript developer"
@@ -191,15 +191,15 @@ Feature: Job Orders
     And There is a job order for a "PHP developer" for "Test Company BigJump"
     And There is a user "testuser101" named "Marcus Gomez" with "password101" password
     And I login as "testuser101" "password101"
-    And I am on "/index.php?m=joborders&a=search" 
+    And I am on "/index.php?m=joborders&a=search"
     And I select "Company Name" in the "#searchMode" select
     And I fill in "searchText" with "Test Company BigJump"
-    And press "Search" 
+    And press "Search"
     Then I should see "PHP developer"
     And I should see "Test Company BigJump"
     And I should not see "Test Company ATxyz"
     And I should not see "Javascript developer"
-    
+
   @javascript
   Scenario: Search job order by job title
     Given There is a company called "Test Company ATxyz"
@@ -208,15 +208,15 @@ Feature: Job Orders
     And There is a job order for a "PHP developer" for "Test Company BigJump"
     And There is a user "testuser101" named "Marcus Gomez" with "password101" password
     And I login as "testuser101" "password101"
-    And I am on "/index.php?m=joborders&a=search" 
+    And I am on "/index.php?m=joborders&a=search"
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "PHP developer"
-    And press "Search" 
+    And press "Search"
     Then I should see "PHP developer"
     And I should see "Test Company BigJump"
     And I should not see "Test Company ATxyz"
     And I should not see "Javascript developer"
-    
+
   @javascript
   Scenario: Open job order from search result list
     Given There is a company called "Test Company ATxyz"
@@ -225,46 +225,46 @@ Feature: Job Orders
     And There is a job order for a "PHP developer" for "Test Company BigJump"
     And There is a user "testuser101" named "Marcus Gomez" with "password101" password
     And I login as "testuser101" "password101"
-    And I am on "/index.php?m=joborders&a=search" 
+    And I am on "/index.php?m=joborders&a=search"
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "PHP developer"
-    And press "Search" 
+    And press "Search"
     When I click on "PHP developer" on the row containing "Active"
     Then I should see "PHP developer"
     And I should see "Job Order Details"
     And I should see "Test Company BigJump"
-    
+
   @javascript
-  Scenario: Open job order from search result and delete it 
+  Scenario: Open job order from search result and delete it
     Given There is a company called "Test Company ATxyz"
     And There is a company called "Test Company BigJump"
     And There is a job order for a "Javascript developer" for "Test Company ATxyz"
     And There is a job order for a "PHP developer" for "Test Company BigJump"
     And There is a user "testuser101" named "Marcus Gomez" with "password101" password
     And I login as "testuser101" "password101"
-    And I am on "/index.php?m=joborders&a=search" 
+    And I am on "/index.php?m=joborders&a=search"
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "PHP developer"
-    And press "Search" 
+    And press "Search"
     When I click on "PHP developer" on the row containing "Active"
     And follow "Delete"
     And I should see "Delete this job order?" in alert popup
     And I confirm the popup
     Then I should see "Job Orders: Home"
-    
+
   @javascript
-  Scenario: Add candidate from modal has candidate fields 
+  Scenario: Add candidate from modal has candidate fields
     Given There is a company called "Test Company ATxyz"
     And There is a job order for a "Javascript developer" for "Test Company ATxyz"
     And There is a user "testuser101" named "Marcus Gomez" with "password101" password
     And I login as "testuser101" "password101"
-    And I am on "/index.php?m=joborders&a=search" 
+    And I am on "/index.php?m=joborders&a=search"
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "Javascript developer"
-    And press "Search" 
+    And press "Search"
     And I click on "Javascript developer" on the row containing "Active"
     And follow "Add Candidate to This Job Order Pipeline"
-    And I switch to the iframe "popupInner"
+    And I switch to the iframe "bootstrap-popup-iframe"
     And follow "Add Candidate"
     Then I should see "First Name"
     And I should see "Middle Name"
@@ -285,56 +285,56 @@ Feature: Job Orders
     And I should see "Date Available"
 
   @javascript
-  Scenario: Add candidate from modal only with first name fails 
+  Scenario: Add candidate from modal only with first name fails
     Given There is a company called "Test Company ATxyz"
     And There is a job order for a "Javascript developer" for "Test Company ATxyz"
     And There is a user "testuser101" named "Marcus Gomez" with "password101" password
     And I login as "testuser101" "password101"
-    And I am on "/index.php?m=joborders&a=search" 
+    And I am on "/index.php?m=joborders&a=search"
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "Javascript developer"
-    And press "Search" 
+    And press "Search"
     And I click on "Javascript developer" on the row containing "Active"
     And follow "Add Candidate to This Job Order Pipeline"
-    And I switch to the iframe "popupInner"
+    And I switch to the iframe "bootstrap-popup-iframe"
     And follow "Add Candidate"
     And I fill in "firstName" with "John"
     And press "Add Candidate"
     Then I should see "You must enter last name" in alert popup
     And I confirm the popup
-    
+
   @javascript
-  Scenario: Add candidate from modal with all required field succeeds 
+  Scenario: Add candidate from modal with all required field succeeds
     Given There is a company called "Test Company ATxyz"
     And There is a job order for a "Javascript developer" for "Test Company ATxyz"
     And There is a user "testuser101" named "Marcus Gomez" with "password101" password
     And I login as "testuser101" "password101"
-    And I am on "/index.php?m=joborders&a=search" 
+    And I am on "/index.php?m=joborders&a=search"
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "Javascript developer"
-    And press "Search" 
+    And press "Search"
     And I click on "Javascript developer" on the row containing "Active"
     And follow "Add Candidate to This Job Order Pipeline"
-    And I switch to the iframe "popupInner"
+    And I switch to the iframe "bootstrap-popup-iframe"
     And follow "Add Candidate"
     And I fill in "firstName" with "John"
     And I fill in "lastName" with "John"
     And press "Add Candidate"
     Then I should see "The candidate has been successfully added to the pipeline for the selected job order."
-    
+
   @javascript
-  Scenario: Job Order detail page is updated after adding a candidate 
+  Scenario: Job Order detail page is updated after adding a candidate
     Given There is a company called "Test Company ATxyz"
     And There is a job order for a "Javascript developer" for "Test Company ATxyz"
     And There is a user "testuser101" named "Marcus Gomez" with "password101" password
     And I login as "testuser101" "password101"
-    And I am on "/index.php?m=joborders&a=search" 
+    And I am on "/index.php?m=joborders&a=search"
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "Javascript developer"
-    And press "Search" 
+    And press "Search"
     And I click on "Javascript developer" on the row containing "Active"
     And follow "Add Candidate to This Job Order Pipeline"
-    And I switch to the iframe "popupInner"
+    And I switch to the iframe "bootstrap-popup-iframe"
     And follow "Add Candidate"
     And I fill in "firstName" with "John"
     And I fill in "lastName" with "Doe"

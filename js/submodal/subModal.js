@@ -113,72 +113,53 @@ function initPopUp()
     }
 }
 
+function _showPopWin(html, url, width, height, returnFunc, title)
+{
+    if(title===undefined || title===''){
+        title = 'OpenCats';
+    }
+
+    setPopTitle(title);
+
+    // set the url
+    if (html === null){
+        $(".modal .modal-info").hide();
+        $(".modal .modal-iframe").show().attr("src", url);
+    }else{
+        $(".modal .modal-iframe").hide();
+        $(".modal .modal-info").show().html(html);
+    }
+
+    gReturnFunc = returnFunc;
+    // for IE
+    if (gHideSelects === true)
+    {
+        hideSelectBoxes();
+    }
+
+    $(".modal").modal("show");
+
+}
+
 /**
  * @argument width - int in pixels
  * @argument height - int in pixels
  * @argument url - url to display
  * @argument returnFunc - function to call when returning true from the window.
  */
-function showPopWin(url, width, height, returnFunc)
+function showPopWin(url, width, height, returnFunc, title)
 {
-    _showPopWin(null, url, width, height, returnFunc);
+    _showPopWin(null, url, width, height, returnFunc, title);
 }
 
-function showPopWinHTML(html, width, height, returnFunc)
+function showPopWinHTML(html, width, height, returnFunc, title)
 {
-    _showPopWin(html, '', width, height, returnFunc);
-}
-
-function _showPopWin(html, url, width, height, returnFunc)
-{
-    gPopupIsShown = true;
-    disableTabIndexes();
-    gPopupMask.style.display = 'block';
-    gPopupContainer.style.display = 'block';
-    // calculate where to place the window on screen
-    centerPopWin(width, height);
-
-    var titleBarHeight = parseInt(document.getElementById('popupTitleBar').offsetHeight, 10);
-
-    gPopupContainer.style.width = width + 'px';
-    gPopupContainer.style.height = (height+titleBarHeight) + 'px';
-    // need to set the width of the iframe to the title bar width because of the dropshadow
-    // some oddness was occuring and causing the frame to poke outside the border in IE6
-    gPopFrameIFrame.style.width = parseInt(document.getElementById('popupTitleBar').offsetWidth, 10) + 'px';
-    gPopFrameIFrame.style.height = (height) + 'px';
-    gPopFrameDiv.style.width = parseInt(document.getElementById('popupTitleBar').offsetWidth, 10) + 'px';
-    gPopFrameDiv.style.height = (height) + 'px';
-
-    setPopTitle('');
-
-    // set the url
-    if (html == null)
-    {
-        gPopFrameDiv.style.display = 'none';
-        gPopFrameIFrame.style.display = '';
-
-        gPopFrameIFrame.src = url;
-    }
-    else
-    {
-        gPopFrameDiv.style.display = '';
-        gPopFrameIFrame.style.display = 'none';
-
-        gPopFrameDiv.innerHTML = html;
-        gPopFrameDiv.innerHTML += '';
-    }
-
-    gReturnFunc = returnFunc;
-    // for IE
-    if (gHideSelects == true)
-    {
-        hideSelectBoxes();
-    }
+    _showPopWin(html, '', width, height, returnFunc, title);
 }
 
 function setPopTitle(title)
 {
-    document.getElementById('popupTitle').innerHTML = title;
+    $(".modal .modal-title").text(title);
 }
 
 //

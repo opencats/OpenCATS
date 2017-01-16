@@ -64,7 +64,7 @@ class TemplateUtility
     public static function printHeader($pageTitle, $headIncludes = array())
     {
         self::_printCommonHeader($pageTitle, $headIncludes);
-        echo '<body style="background: #fff">', "\n";
+        echo '<body>', "\n";
         self::_printQuickActionMenuHolder();
         self::printPopupContainer();
     }
@@ -79,7 +79,7 @@ class TemplateUtility
     public static function printModalHeader($pageTitle, $headIncludes = array(), $title = '')
     {
         self::_printCommonHeader($pageTitle, $headIncludes);
-        echo '<body style="background: #eee;">', "\n";
+        echo '<body>', "\n";
         if ($title != '')
         {
             $title = str_replace('\'', '\\\'', $title);
@@ -536,7 +536,7 @@ class TemplateUtility
 
             if (!cookieEnabled)
             {
-                showPopWin(\'' . $indexName . '?m=login&amp;a=noCookiesModal\', 400, 225, null);
+                showPopWin(\'' . $indexName . '?m=login&a=noCookiesModal\', 400, 225, null, "Cookie problem");
             }
             </script>';
     }
@@ -549,21 +549,25 @@ class TemplateUtility
      */
     public static function printPopupContainer()
     {
-        echo '<div id="popupMask">&nbsp;</div><div id="popupContainer">',
-             '<div id="popupInner"><div id="popupTitleBar">',
-             '<div id="popupTitle"></div><div id="popupControls">',
-             '<img src="js/submodal/close.gif" alt="X" width="16" height="16"',
-             ' onclick="hidePopWin(false);" /></div></div>';
-
-        echo '<div style="width: 100%; height: 100%; background-color:',
-             ' transparent; display: none;" id="popupFrameDiv"></div>';
-
-        echo '<iframe src="js/submodal/loading.html" style="width: 100%; height: 100%;',
-             ' background-color: transparent; display: none;" scrolling="auto"',
-             ' frameborder="0" allowtransparency="true" id="popupFrameIFrame"',
-             ' width="100%" height="100%"></iframe>';
-
-        echo '</div></div>';
+        $popup = '';
+        $popup .= '<div class="modal fade" tabindex="-1" role="dialog">';
+        $popup .= '  <div class="modal-dialog" role="document">';
+        $popup .= '    <div class="modal-content">';
+        $popup .= '      <div class="modal-header">';
+        $popup .= '        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+        $popup .= '        <h4 class="modal-title"></h4>';
+        $popup .= '      </div>';
+        $popup .= '      <div class="modal-body">';
+        $popup .= '        <div class="modal-info"></div>';
+        $popup .= '        <iframe src="js/submodal/loading.html" style="width: 100%; height: 450px; background-color: transparent; display: none;" scrolling="auto" frameborder="0" allowtransparency="true" class="modal-iframe" id="bootstrap-popup-iframe" width="100%" height="100%"></iframe>';
+        $popup .= '      </div>';
+        //$popup .= '      <div class="modal-footer">';
+        //$popup .= '        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>';
+        //$popup .= '      </div>';
+        $popup .= '    </div><!-- /.modal-content -->';
+        $popup .= '  </div><!-- /.modal-dialog -->';
+        $popup .= '</div><!-- /.modal -->';
+        echo $popup;
     }
 
     /**
@@ -1236,6 +1240,12 @@ class TemplateUtility
 
         echo '<!--[if IE]><link rel="stylesheet" type="text/css" href="ie.css" /><![endif]-->', "\n";
         echo '<![if !IE]><link rel="stylesheet" type="text/css" href="not-ie.css" /><![endif]>', "\n";
+
+        /* Bootstrap require files */
+        echo '<link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />', "\n";
+        echo '<script type="text/javascript" src="vendor/components/jquery/jquery.min.js'.$javascriptAntiCache.'"></script>', "\n";
+        echo '<script type="text/javascript" src="vendor/twbs/bootstrap/dist/js/bootstrap.min.js'.$javascriptAntiCache.'"></script>', "\n";
+
         echo '</head>', "\n\n";
     }
 

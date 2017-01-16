@@ -32,33 +32,19 @@ var maxSteps;
 
 function setActiveStep(step)
 {
-    for (var i = 1; i <= maxSteps; i++)
-    {
-        if (i == step)
-        {
-            document.getElementById('step' + i).style.fontWeight = 'bold';
-        }
-        else
-        {
-            document.getElementById('step' + i).style.fontWeight = '';
-        }
-
-    }
+    $(".step").removeClass("active");
+    $("#step" + step).addClass("active");
 }
 
 function hideDivsWithin(node)
 {
-    var divNodes = node.getElementsByTagName('div');
-
-    for (var i = 0; i < divNodes.length; i++)
-    {
-        divNodes[i].style.display = 'none';
-    }
+    $(node).find(">div").hide();
+    $(node).find("#subFormBlock").show();
 }
 
 function showTextBlock(textBlock)
 {
-    document.getElementById(textBlock).style.display = '';
+    $("#" + textBlock).show();
 }
 
 function Installpage_populate(postData, message)
@@ -120,7 +106,7 @@ function Installpage_maint()
         response = http.responseText;
 
         if (response.indexOf('setProgressUpdating') == -1)
- 		{	
+ 		{
 	        Installpage_populate('a=reindexResumes');
         }
         else
@@ -217,42 +203,22 @@ function changeMailForm()
 var firstProgressInstall;
 var totalProgressInstall = 0;
 
-function setProgressUpdating(progress, currentVersion, maxVersion, module)
-{
-	document.getElementById('upToDateSqlQuery').innerHTML = progress;
-	document.getElementById('upToDateModuleName').innerHTML = 'Processing Module:  ' + module + ' (' + currentVersion + ')';
-	
-	if (totalProgressInstall != maxVersion)
-	{
-	    totalProgressInstall = maxVersion;
-	    firstProgressInstall = currentVersion;
-	}
-	
-    theProgress = Math.round(((currentVersion - firstProgressInstall) * 100) / (totalProgressInstall - firstProgressInstall));
+function setProgressUpdating(progress, currentVersion, maxVersion, module){
 
-    if (theProgress > 100)
-    {
+    $("#upToDateSqlQuery").text(progress);
+    $("#upToDateModuleName").text("Processing Module:  " + module + " (" + currentVersion + ")");
+
+    if (totalProgressInstall !== maxVersion){
+        totalProgressInstall = maxVersion;
+        firstProgressInstall = currentVersion;
+    }
+
+    var theProgress = Math.round(((currentVersion - firstProgressInstall) * 100) / (totalProgressInstall - firstProgressInstall));
+
+    if (theProgress > 100){
         return;
     }
-    
-    document.getElementById('d1').style.display = '';
-    document.getElementById('d2').style.display = '';
-    document.getElementById('d3').style.display = '';
-    document.getElementById('upToDateSqlQuery').style.display = '';
-    document.getElementById('upToDateSqlQueryLabel').style.display = '';
+    $(".progress .progress-bar").css("width", parseInt(theProgress, 10) + "%").text(parseInt(theProgress, 10) + "%");
 
-    if (theProgress > 12)
-    {
-        document.getElementById('d1').innerHTML = parseInt(theProgress) + '%';
-    }
-    else
-    {
-        document.getElementById('d1').innerHTML = '';
-    }
-
-    if (theProgress > 0)
-    {
-        document.getElementById('d2').style.width = (theProgress * 3) + 'px';
-    }
 }
 
