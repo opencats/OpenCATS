@@ -55,7 +55,7 @@ Scenario Outline: Candidate module actions
   | READONLY    | GET     | index.php?m=candidates&a=administrativeHideShow  | not     |
   | READONLY    | GET     | index.php?m=candidates&a=deleteAttachment        | not     |
   | READONLY    | GET     | index.php?m=candidates&a=savedLists              |         |
-  | READONLY    | GET     | index.php?m=candidates&a=emailCandidates         |         |
+  | READONLY    | GET     | index.php?m=candidates&a=emailCandidates         | not     |
   | READONLY    | GET     | index.php?m=candidates&a=show_questionnaire      |         |
   | READONLY    | GET     | index.php?m=candidates&a=listByView              |         |
   | READONLY    | POST    | index.php?m=candidates&a=add                     | not     |
@@ -81,7 +81,7 @@ Scenario Outline: Candidate module actions
   | EDIT        | GET     | index.php?m=candidates&a=administrativeHideShow  | not     |
   | EDIT        | GET     | index.php?m=candidates&a=deleteAttachment        | not     |
   | EDIT        | GET     | index.php?m=candidates&a=savedLists              |         |
-  | EDIT        | GET     | index.php?m=candidates&a=emailCandidates         |         |
+  | EDIT        | GET     | index.php?m=candidates&a=emailCandidates         | not     |
   | EDIT        | GET     | index.php?m=candidates&a=show_questionnaire      |         |
   | EDIT        | GET     | index.php?m=candidates&a=listByView              |         |
   | EDIT        | POST    | index.php?m=candidates&a=add                     |         |
@@ -107,7 +107,7 @@ Scenario Outline: Candidate module actions
   | DELETE      | GET     | index.php?m=candidates&a=administrativeHideShow  | not     |
   | DELETE      | GET     | index.php?m=candidates&a=deleteAttachment        |         |
   | DELETE      | GET     | index.php?m=candidates&a=savedLists              |         |
-  | DELETE      | GET     | index.php?m=candidates&a=emailCandidates         |         |
+  | DELETE      | GET     | index.php?m=candidates&a=emailCandidates         | not     |
   | DELETE      | GET     | index.php?m=candidates&a=show_questionnaire      |         |
   | DELETE      | GET     | index.php?m=candidates&a=listByView              |         |
   | DELETE      | POST    | index.php?m=candidates&a=add                     |         |

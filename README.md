@@ -23,7 +23,7 @@ Support Forums:
 Installation Procedure:
 
     Windows: http://opencats-documentation.readthedocs.io/en/latest/install-windows.html
-    Linux: http://opencats-documentation.readthedocs.io/en/latest/install-linux.html
+    Linux: http://opencats-documentation.readthedocs.io/en/latest/
 
 Issues:
 
