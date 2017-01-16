@@ -56,7 +56,7 @@ services:
 
     selenium:
       container_name: selenium_test
-      image: mlespiau/standalone-chrome:2.53.1-cd2.23
+      image: selenium/standalone-firefox:2.53.1
       environment:
         # Required to avoid container startup hanging sometimes in
         # some environments
