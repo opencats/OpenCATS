@@ -41,7 +41,7 @@ $reindexed = 0;
 
 include_once('lib/Attachments.php');
 
-if (file_exists('INSTALL_BLOCK') && ($_SESSION['CATS']->getAccessLevel() < ACCESS_LEVEL_SA || ModuleUtility::moduleExists('asp')))
+if (file_exists('INSTALL_BLOCK') && ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) < ACCESS_LEVEL_SA || ModuleUtility::moduleExists('asp')))
 {
     die('No permision.');
 }
