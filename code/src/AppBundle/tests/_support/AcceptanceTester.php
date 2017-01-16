@@ -160,7 +160,6 @@ class AcceptanceTester extends \Codeception\Actor
     {
         // FIXME: HACK to simulate Create Job Order button
         if ('Create Job Order' == $button) {
-            codecept_debug('calling acceptance code');
             $this->pressButtonInIframe($button, 'popupFrameIFrame');
             #$this->waitForJS('document.querySelectorAll(\'iframe[name="popupFrameIFrame"]\')[0].contentDocument.querySelectorAll(\'input[value="Create Job Order"]\').length > 0;', 10);
             #$this->executeJS('document.querySelectorAll(\'iframe[name="popupFrameIFrame"]\')[0].contentDocument.querySelectorAll(\'input[value="Create Job Order"]\')[0].onclick()');
