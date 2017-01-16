@@ -2993,6 +2993,13 @@ class CandidatesUI extends UserInterface
                 $jobOrders = new JobOrders($this->_siteID);
                 $jobOrders->updateOpeningsAvailable($regardingID, $data['openingsAvailable'] - 1);
             }
+            
+            /* If status is changed from placed to something else, increase number of open positions by one. */
+            if ($statusID != PIPELINE_STATUS_PLACED && $data['statusID'] == PIPELINE_STATUS_PLACED)
+            {
+                $jobOrders = new JobOrders($this->_siteID);
+                $jobOrders->updateOpeningsAvailable($regardingID, $data['openingsAvailable'] + 1);
+            }
         }
 
         if ($this->isChecked('scheduleEvent', $_POST))
