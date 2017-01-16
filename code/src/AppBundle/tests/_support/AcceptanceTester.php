@@ -1,5 +1,6 @@
 <?php
-
+namespace AppBundle;
+use AppBundle\Helper\Acceptance;
 use \Codeception\Scenario;
 use AppBundle\Entity\User;
 use AppBundle\Entity\DummyHistory;
@@ -123,9 +124,23 @@ class AcceptanceTester extends \Codeception\Actor
     public function iSwitchToTheIframe($iFrameId)
     {
         if (empty($iFrameId)) {
+            echo "1";
             $this->switchToIFrame();
         } else {
+            echo "2";
             $this->switchToIFrame($iFrameId);
+        }
+    }
+
+    /**
+     * @Given I switch to the window :iFrameId
+     */
+    public function iSwitchToTheWindow($windowId)
+    {
+        if (empty($windowId)) {
+            $this->switchToWindow();
+        } else {
+            $this->switchToWindow($windowId);
         }
     }
 
@@ -143,7 +158,15 @@ class AcceptanceTester extends \Codeception\Actor
      */
     public function press($button)
     {
-        $this->click($button);
+        // FIXME: HACK to simulate Create Job Order button
+        if ('Create Job Order' == $button) {
+            codecept_debug('calling acceptance code');
+            $this->pressButtonInIframe($button, 'popupFrameIFrame');
+            #$this->waitForJS('document.querySelectorAll(\'iframe[name="popupFrameIFrame"]\')[0].contentDocument.querySelectorAll(\'input[value="Create Job Order"]\').length > 0;', 10);
+            #$this->executeJS('document.querySelectorAll(\'iframe[name="popupFrameIFrame"]\')[0].contentDocument.querySelectorAll(\'input[value="Create Job Order"]\')[0].onclick()');
+        } else  {
+            $this->click($button);
+        }
     }
 
     /**
@@ -196,13 +219,13 @@ class AcceptanceTester extends \Codeception\Actor
             $siteId,
             $companyName
         );
-        $CompanyRepository = new CompanyRepository(DatabaseConnection::getInstance());
+        $CompanyRepository = new CompanyRepository(\DatabaseConnection::getInstance());
         $CompanyRepository->persist($company, new DummyHistory($siteId));
     }
 
     private function getSiteId()
     {
-        $site = new Site(-1);
+        $site = new \Site(-1);
         return $site->getFirstSiteID();
     }
 
@@ -213,7 +236,7 @@ class AcceptanceTester extends \Codeception\Actor
     {
         list($firstName, $lastName) = explode(" ", $fullName);
         $siteId = $this->getSiteId();
-        $users = new Users($siteId);
+        $users = new \Users($siteId);
         $users->add(
             $lastName,
             $firstName,
@@ -241,6 +264,14 @@ class AcceptanceTester extends \Codeception\Actor
     }
 
     /**
+     * @Then I cancel the popup
+     */
+    public function iCancelThePopup()
+    {
+        $this->cancelPopup();
+    }
+
+    /**
      * @Given I wait for :element
      */
     public function iWaitFor($element)
@@ -262,7 +293,7 @@ class AcceptanceTester extends \Codeception\Actor
     public function thereIsAJobOrderForAFor($jobTitle, $companyName)
     {
         $siteId = $this->getSiteId();
-        $CompanyRepository = new CompanyRepository(DatabaseConnection::getInstance());
+        $CompanyRepository = new CompanyRepository(\DatabaseConnection::getInstance());
         $companies = $CompanyRepository->findByName($siteId, $companyName);
         $companyId = $companies[0]['companyID'];
         $jobOrder = JobOrder::create(
@@ -289,7 +320,7 @@ class AcceptanceTester extends \Codeception\Actor
             '',
             ''
         );
-        $JobOrderRepository = new JobOrderRepository(DatabaseConnection::getInstance());
+        $JobOrderRepository = new JobOrderRepository(\DatabaseConnection::getInstance());
         $JobOrderRepository->persist($jobOrder, new DummyHistory($siteId));
 
     }
@@ -307,7 +338,7 @@ class AcceptanceTester extends \Codeception\Actor
     public function iClickOnOnTheRowContaining($linkName, $rowText)
     {
         /** @var $row \Behat\Mink\Element\NodeElement */
-        $row = $this->getModule('WebDriver')->_findElements(sprintf('table tr:contains("%s")', $rowText));
+        $row = $this->_findElements(sprintf('table tr:contains("%s")', $rowText));
         if (!$row) {
             throw new \Exception(sprintf('Cannot find any row on the page containing the text "%s"', $rowText));
         }

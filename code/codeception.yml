@@ -1,6 +1,4 @@
 actor: Tester
-include:
-    - src/*Bundle
 paths:
     tests: tests
     log: tests/_output
@@ -21,3 +19,5 @@ modules:
             user: ''
             password: ''
             dump: tests/_data/dump.sql
+include:
+    - src/AppBundle

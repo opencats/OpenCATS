@@ -1,7 +1,7 @@
 <?php
 // Here you can initialize variables that will be available to your tests
 // Here you can initialize variables that will be available to your tests
-define('LEGACY_ROOT', dirname(dirname(dirname(dirname(__FILE__)))));
+define('LEGACY_ROOT', dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))));
 define('DATABASE_USER', 'dev');
 define('DATABASE_PASS', 'dev');
 define('DATABASE_NAME', 'cats_test');

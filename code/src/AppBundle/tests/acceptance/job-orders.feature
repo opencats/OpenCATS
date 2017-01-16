@@ -12,9 +12,7 @@ Feature: Job Orders
     And I am on "/index.php?m=candidates" 
     And I follow "Job Orders"
     And I follow "Add Job Order"
-    And I switch to the iframe "popupFrameIFrame"
     And press "Create Job Order"
-    #And I switch to the iframe ""
     Then I should see "Title"
     And I should see "Company"
     And I should see "Department"
@@ -41,17 +39,15 @@ Feature: Job Orders
     And I am on "/index.php?m=candidates" 
     And I follow "Job Orders"
     And I follow "Add Job Order"
-    And I switch to the iframe "popupFrameIFrame"
     And press "Create Job Order"
-    #And I switch to the iframe ""
     And fill in "#title" with "Javascript developer"
-    And press "Add Job Order" 
+    And press "Save Job Order"
     Then I should see "Form Error" in alert popup
     And I should see "You must select a company" in alert popup
     And I should see "You must enter a city" in alert popup
     And I should see "You must enter a state" in alert popup
     And I confirm the popup
-    
+
   @javascript
   Scenario: Add job order succesfully
     Given I am authenticated as "Administrator"
@@ -60,7 +56,6 @@ Feature: Job Orders
     And I am on "/index.php?m=candidates" 
     And I follow "Job Orders"
     And I follow "Add Job Order"
-    And I switch to the iframe "popupFrameIFrame"
     And press "Create Job Order"
     #And I switch to the iframe ""
     And fill in "#title" with "Javascript developer"
@@ -70,7 +65,7 @@ Feature: Job Orders
     And I select "Gomez, Marcus" from "#recruiter"
     And fill in "#city" with "Minneapolis"
     And fill in "#state" with "MN"
-    And press "Add Job Order" 
+    And press "Save Job Order"
     Then I should see "Title"
     And I should see "Company Name"
     And I should see "Recruiter"
@@ -91,7 +86,6 @@ Feature: Job Orders
     And I am on "/index.php?m=candidates" 
     And I follow "Job Orders"
     And I follow "Add Job Order"
-    And I switch to the iframe "popupFrameIFrame"
     And press "Create Job Order"
     #And I switch to the iframe ""
     And fill in "#title" with "Javascript developer"
@@ -101,7 +95,7 @@ Feature: Job Orders
     And I select "Gomez, Marcus" from "#recruiter"
     And fill in "#city" with "Minneapolis"
     And fill in "#state" with "MN"
-    And press "Add Job Order"
+    And press "Save Job Order"
     And I follow "Edit"
     Then I should see "Title"
     And I should see "Company"
@@ -141,7 +135,7 @@ Feature: Job Orders
     And I select "Gomez, Marcus" from "#recruiter"
     And fill in "#city" with "Minneapolis"
     And fill in "#state" with "MN"
-    And press "Add Job Order"
+    And press "Save Job Order"
     And I follow "Edit"
     And fill in "#title" with ""
     And press "Save"
