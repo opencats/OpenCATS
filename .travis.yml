@@ -20,6 +20,7 @@ script:
     - composer install
     - docker ps
     - cd code; composer install; cd ..
+    - cd code; ./vendor/bin/codecept build; cd ..
     - cd docker/; docker-compose -f docker-compose-unittest.yml up -d; cd ..
     - cd code; ./vendor/bin/codecept run unit -c src/AppBundle/; cd ..
     - cd docker/; docker-compose -f docker-compose-unittest.yml down; cd ..
