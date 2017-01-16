@@ -2831,6 +2831,17 @@ class CandidatesUI extends UserInterface
         else
         {
             $statusID = $_POST['statusID'];
+            if($statusID == PIPELINE_STATUS_PLACED)
+            {
+                $jobOrders = new JobOrders($this->_siteID);
+                $canBeHired = $jobOrders->checkOpenings($regardingID);
+                if(!$canBeHired)
+                {
+                    $this->fatalModal(
+                        'This job order has been filled. Cannot assign the status Placed to any other candidate.'
+                    );
+                }
+            }
         }
 
         $candidateID = $_POST['candidateID'];
