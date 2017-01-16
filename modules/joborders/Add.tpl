@@ -302,7 +302,7 @@
                             <?php endif; ?>
                         </tr>
                     </table>
-                    <input type="submit" tabindex="20" class="button" name="submit" value="Add Job Order" />&nbsp;
+                    <input type="submit" tabindex="20" class="button" name="submit" value="Save Job Order" />&nbsp;
                     <input type="reset"  tabindex="21" class="button" name="reset"  value="Reset" />&nbsp;
                     <input type="button" tabindex="22" class="button" name="back"   value="Back to Job Orders" onclick="javascript:goToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=listByView');" />
                 </form>
