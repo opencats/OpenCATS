@@ -845,6 +845,40 @@ class JobOrders
 
         return (boolean) $this->_db->query($sql);
     }
+    
+    public function checkOpenings($regardingID)
+    {
+        
+        $sql = sprintf(
+            "SELECT 
+                joborder.openings_available AS openingsAvailable
+            FROM
+                joborder
+            WHERE
+                site_id = %s
+            AND
+                joborder_id = %s",
+            $this->_siteID,
+            $this->_db->makeQueryInteger($regardingID)
+        );
+        
+        $rs = $this->_db->getAllAssoc($sql);
+        if(!$rs)
+        {
+            return false;
+        }
+        
+        $openingsAvailable = intval($rs[0]['openingsAvailable']);
+        
+        if($openingsAvailable > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
 
 
