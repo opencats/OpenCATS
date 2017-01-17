@@ -2,9 +2,9 @@ upstream phpfcgi {
     server php:9000;
 }
 server {
-    listen 80;
+    listen $NGINX_HTTP_PORT;
 
-    server_name opencats;
+    server_name $NGINX_HOST;
     root /var/www/code/web;
 
     error_log /var/log/nginx/symfony2.error.log;
@@ -35,9 +35,9 @@ server {
 
 
 server {
-    listen 443;
+    listen $NGINX_HTTPS_PORT;
 
-    server_name opencats;
+    server_name $NGINX_HOST;
     root /var/www/code/web;
 
     #ssl on;
