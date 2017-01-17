@@ -4,5 +4,5 @@ modules:
         - WebDriver:
             url: 'http://opencats/' # put your local url
             host: selenium
-            browser: firefox
+            browser: chrome
         - AppBundle\Helper\Acceptance
