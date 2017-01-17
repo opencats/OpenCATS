@@ -437,6 +437,122 @@ class CandidatesImport
 
 }
 
+class JobOrdersImport
+{
+    private $_db;
+    private $_siteID;
+
+
+    public function __construct($siteID)
+    {
+        $this->_siteID = $siteID;
+        $this->_db = DatabaseConnection::getInstance();
+    }
+
+
+    /**
+     * Adds a record to the joborder table.
+     *
+     * @param array (field => value)
+     * @param userID
+     * @param importID
+     * @return joborderID
+     */
+    public function add($dataNamed, $userID, $importID)
+    {
+        $sql = sprintf(
+            "SELECT 
+                company.company_id AS companyID
+            FROM
+                company
+            WHERE
+                site_id = %s
+            AND
+                name = %s",
+            $this->_siteID,
+            $this->_db->makeQueryString($dataNamed['company'])
+        );
+        
+        $rs = $this->_db->getAllAssoc($sql);
+        
+        if(!$rs)
+        {
+            $companyID = -1;
+        }
+        else
+        {
+            $companyID = $rs[0]['companyID'];
+        }
+        unset($dataNamed['company']);
+        
+        $dataColumns = array();
+        $data = array();
+
+        foreach ($dataNamed AS $dataColumn => $d)
+        {
+            $dataColumns[] = $dataColumn;
+            if(in_array($dataColumn, array("is_hot", "openings", "public")))
+            {
+                $data[] = $this->_db->makeQueryInteger($d);
+            }
+            else
+            {
+                $data[] = $this->_db->makeQueryStringOrNULL($d);   
+            }
+        }
+
+        $sql = sprintf(
+            "INSERT INTO joborder (
+                %s,
+                recruiter,
+                entered_by,
+                owner,
+                site_id,
+                status,
+                date_created,
+                date_modified,
+                openings_available,
+                company_id,
+                contact_id,
+                company_department_id
+            )
+            VALUES (
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                NOW(),
+                NOW(),
+                %s,
+                %s,
+                %s,
+                %s
+            )",
+            implode(",\n", $dataColumns),
+            implode(",\n", $data),
+            $userID,
+            $userID,
+            $userID,
+            $this->_siteID,
+            $this->_db->makeQueryString('Draft'),
+            $this->_db->makeQueryInteger($dataNamed['openings']),
+            $this->_db->makeQueryInteger($companyID),
+            $this->_db->makeQueryInteger(-1),
+            $this->_db->makeQueryInteger(0)
+        );
+        $queryResult = $this->_db->query($sql);
+        if (!$queryResult)
+        {
+            return -1;
+        }
+
+        return $this->_db->getLastInsertID();
+    }
+
+}
+
 class CompaniesImport
 {
     private $_db;
