@@ -120,6 +120,8 @@ function checkEmailForm(form)
     var errorMessage = '';
 
     errorMessage += checkEmailSubject();
+    
+    /* this check sometimes returns empty even if there is text in ckeditor */
     //errorMessage += checkEmailBody();
 
     if (errorMessage != '')
