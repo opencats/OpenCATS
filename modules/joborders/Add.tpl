@@ -109,7 +109,7 @@
                             </td>
                             <td class="tdData">
                                 <select tabindex="3" id="contactID" name="contactID" class="inputbox" style="width: 150px;">
-                                    <option value="-1">None</option>
+                                    <option value="-1" selected="selected">None</option>
 
                                     <?php if ($this->selectedCompanyID !== false): ?>
                                         <?php foreach ($this->selectedCompanyContacts as $rowNumber => $contactsData): ?>
