@@ -1,7 +1,7 @@
 <?php
 namespace AppBundle\Entity;
 
-include_once (LEGACY_ROOT . '/lib/History.php');
+include_once (dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/lib/History.php');
 // FIXME: To be removed once we abstract session from history
 class DummyHistory extends \History
 {
