@@ -308,7 +308,7 @@
                 </form>
                 
                 <script type="text/javascript">
-                    CKEDITOR.replace( 'description' );
+                    CKEDITOR.replace( 'description', { extraPlugins: 'font' } );
                     CKEDITOR.on('instanceReady', function(ev)
                     {
                         var tags = ['p', 'ol', 'ul', 'li']; // etc.
