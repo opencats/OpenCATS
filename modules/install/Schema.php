@@ -1324,7 +1324,10 @@ class CATSSchema
             '363' => 'PHP:
                 $schemaNewCareerPortal = @file_get_contents(\'modules/install/scripts/359.sql\');
                 $db->queryMultiple($schemaNewCareerPortal, ";\n");
-            '
+            ',
+            '364' => '
+                UPDATE user SET password = md5(password) WHERE can_change_password=1;
+            ',
 
         );
     }

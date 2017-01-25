@@ -3,7 +3,7 @@
  * CATS
  * Contacts Datagrid
  *
- * CATS Version: 0.9.2 Diablo
+ * CATS Version: 0.9.3 Inferno
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
@@ -33,13 +33,14 @@
  
 include_once('./lib/Contacts.php');
 include_once('./lib/Hooks.php');
+include_once('./lib/Width.php');
 
 class ContactsListByViewDataGrid extends ContactsDataGrid
 {
     public function __construct($siteID, $parameters, $misc)
     {
         /* Pager configuration. */
-        $this->_tableWidth = 915;
+        $this->_tableWidth = new Width(100, '%');
         $this->_defaultAlphabeticalSortBy = 'lastName';
         $this->ajaxMode = false;
         $this->showExportCheckboxes = true; //BOXES WILL NOT APPEAR UNLESS SQL ROW exportID IS RETURNED!
@@ -93,7 +94,7 @@ class contactSavedListByViewDataGrid extends ContactsDataGrid
     public function __construct($siteID, $parameters, $misc)
     {
         /* Pager configuration. */
-        $this->_tableWidth = 915;
+        $this->_tableWidth = new Width(100, '%');
         $this->_defaultAlphabeticalSortBy = 'lastName';
         $this->ajaxMode = false;
         $this->showExportCheckboxes = true; //BOXES WILL NOT APPEAR UNLESS SQL ROW exportID IS RETURNED!

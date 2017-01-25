@@ -68,7 +68,12 @@
                                         <label id="passwordLabel" for="password">Password:</label>
                                     </td>
                                     <td class="tdData">
+					<?php if ($this->auth_mode == "ldap"): ?>
+					LDAP Authentication is enabled, hence password not required.
+                            		<input type="hidden" class="inputbox" id="password" name="password" value="password" />
+                            		<?php else: ?>
                                         <input type="password" class="inputbox" id="password" name="password" style="width: 150px;" />&nbsp;*
+					<?php endif; ?>
                                     </td>
                                 </tr>
 
@@ -77,7 +82,11 @@
                                         <label id="retypePasswordLabel" for="retypePassword">Retype Password:</label>
                                     </td>
                                     <td class="tdData">
+					<?php if ($this->auth_mode == "ldap"): ?>
+                            		<input type="hidden" class="inputbox" id="retypePassword" name="retypePassword" value="password"/>
+                             		<?php else: ?>
                                         <input type="password" class="inputbox" id="retypePassword" name="retypePassword" style="width: 150px;" />&nbsp;*
+					<?php endif; ?>
                                     </td>
                                 </tr>
 
@@ -88,7 +97,7 @@
                                     <td class="tdData">
                                         <span id="accessLevelsSpan">
                                             <?php foreach ($this->accessLevels as $accessLevel): ?>
-                                                <?php if ($accessLevel['accessID'] > $this->accessLevel): continue; endif; ?>
+                                                <?php if ($accessLevel['accessID'] > $this->getUserAccessLevel('settings.addUser')): continue; endif; ?>
                                                 <?php if (!$this->license['canAdd'] && !$this->license['unlimited'] && $accessLevel['accessID'] > ACCESS_LEVEL_READ): continue; endif; ?>
 
                                                 <?php $radioButtonID = 'access' . $accessLevel['accessID']; ?>
@@ -200,5 +209,4 @@
         </div>
     </div>
 
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

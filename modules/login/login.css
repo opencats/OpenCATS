@@ -11,7 +11,7 @@
 /*** Begin Generic Tag Rules ***/
 body
 {
-    background: #fff;
+       background: #f1f3f5; 
     padding: 8px 18px 8px 18px;
     margin: 0px;
 }
@@ -40,7 +40,7 @@ form
 
 a:link, a:visited
 {
-    color: #00008b;
+    color: #2f4f88;
     text-decoration: none;
     font: normal normal normal 12px/130% Arial, Tahoma, sans-serif;
 }
@@ -81,8 +81,9 @@ div#headerBlock span#subMainLogo
 
 #footerBlock
 {
-    margin-top: 10px;
-    text-align: center;
+    bottom: 0;
+    position: absolute;
+    font: normal normal normal 12px Arial, Tahoma, sans-serif;
 }
 
 #footerBlock p#footerQuotation
@@ -130,19 +131,32 @@ div#login
     margin-right: auto;
     margin-top: 5em;
     padding: 15px;
-    border: 1px solid #ccc;
-    width: 480px;
-    background: #f1f3f5;
+/*    border: 1px solid #ccc; */
+    width: 288px;
+/*    background: #f1f3f5; */
+    text-align: center;
 }
 
 div#formBlock
 {
-    text-align: left;
+ /*   text-align: left; */
     float: right;
-    width: 60%;
-    display: inline;
+    
+    /* display: inline; */
+    text-align: left; 
+    width:288px;
+    height:266px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    /* background-color:#f1f3f5F; */
+        background: #fff; 
+    -webkit-box-shadow: #B3B3B3 6px 6px 6px;
+    -moz-box-shadow: #B3B3B3 6px 6px 6px;
+    box-shadow: #B3B3B3 6px 6px 6px;
 }
-
+    
+    
 div#formBlockNewSite
 {
     text-align: center;
@@ -153,7 +167,7 @@ div#formBlockBelow
 {
     text-align: center;
     float: bottom;
-    width: 60%;
+ /*   width: 60%; */
     display: block;
 }
 

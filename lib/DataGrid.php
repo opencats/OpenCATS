@@ -31,6 +31,8 @@
  */
 
 include_once('./lib/StringUtility.php');
+include_once('./lib/Width.php');
+
 
 /**
  *  Data Grid Library
@@ -47,7 +49,7 @@ class DataGrid
      * A datagrid must be configured in its child constructor.  Specifically, each one of these
      * class variables must be set:
      *
-     *   $this->_tableWidth = 915;                        - Table width in pixels.
+     *   $this->_tableWidth;                              - Table width (Width object).
      *   $this->_defaultAlphabeticalSortBy = 'lastName';  - Default SQL column that the table is sorted by.
      *                                                      This MUST match a sortableColumn property of a
      *                                                      non optional class column.
@@ -889,29 +891,11 @@ class DataGrid
                 }
             }
         }
-
-        $arrayKeysString = implode(',', array_map('urlencode', $filterableColumns));
-
-        if ($counterFilters > 0)
-        {
-            echo '<br /><br />';
-        }
-
-        echo '</td><td style="width:140px; vertical-align:top;">';
-        echo '<input class="button" style="width:120px; margin-left:5px;" type="button" name="addFilterButton', $md5InstanceName, '" onclick="showNewFilter', $md5InstanceName, '();" value="Add New"  /><br />';
-        echo '<input class="button" style="width:120px; margin-left:5px;" type="button" name="clearFilterButton', $md5InstanceName, '" onclick="clearFilter(\'filterArea'.$md5InstanceName.'\'); submitFilter', $md5InstanceName, '(false);" value="Remove All"  /><br />';
-        echo '<input class="button" style="width:120px; margin-left:5px;" type="button" name="applyFilterButton', $md5InstanceName, '" onclick="submitFilter', $md5InstanceName, '();" value="Apply" />';
-
-        echo '</td></tr></table>';
-
-        echo '<script type="text/javascript">';
-        echo 'newFilterCounter', $md5InstanceName, ' = 0;';
-        echo 'function showNewFilter', $md5InstanceName, '() {';
-            echo 'newFilterCounter', $md5InstanceName, '++;';
-            echo 'showNewFilter(newFilterCounter', $md5InstanceName, ', \'filterResultsAreaTable', $md5InstanceName, '\', \'',$arrayKeysString,'\', \'', $md5InstanceName, '\', \'submitFilter'. $md5InstanceName .'();\');';
-        echo ' };';
-        echo '</script>';
-        echo '</fieldset>';
+        $template = new Template();
+        $template->assign('md5InstanceName', $md5InstanceName);
+        $template->assign('arrayKeysString', json_encode(array_values($filterableColumns)));
+        $template->assign('counterFilters', $counterFilters);
+        $template->display('./lib/datagrid/FilterArea.tpl');
     }
 
     /**
@@ -1468,7 +1452,7 @@ class DataGrid
         header('Content-Disposition: attachment; filename="export.csv"');
         header('Content-Length: ' . $length);
         header('Connection: close');
-        header('Content-Type: text/x-csv; name=export.csv');
+        header('Content-Type: text/x-csv; name=export.csv; charset=utf-8');
 
         if (defined('INSERT_BOM_CSV_LENGTH') && (INSERT_BOM_CSV_LENGTH > 0))
         {
@@ -1597,7 +1581,7 @@ class DataGrid
             echo '<script type="text/javascript">', $this->_getApplyFilterFunctionDefinition(), '</script>';
 
             /* This makes the table able to be wider then the displayable area. */
-            echo '<div id="OverflowDiv'.$md5InstanceName.'" style="overflow: auto; width: ' , ($this->_tableWidth + 10) , 'px; padding-left: 1px; overflow-y: hidden; overflow-x: none; padding-bottom: expression(this.scrollWidth > this.offsetWidth ? 14 : 4); ' . $this->globalStyle . '">', "\n";
+            echo '<div id="OverflowDiv'.$md5InstanceName.'" style="overflow: auto; width: ' , ($this->getTableWidth(true)) , 'px; padding-left: 1px; overflow-y: hidden; overflow-x: none; padding-bottom: expression(this.scrollWidth > this.offsetWidth ? 14 : 4); ' . $this->globalStyle . '">', "\n";
         }
 
         /* IE fix for floating dialog boxes not floating over controls like dropdown lists. */
@@ -1609,12 +1593,12 @@ class DataGrid
         /* Actuall definition for the table. */
         if (isset($this->listStyle) && $this->listStyle == true)
         {
-            echo ('<table class="sortable" width="'. ($this->_tableWidth + 10) .'" onmouseover="javascript:trackTableHighlight(event)" id="table'.$md5InstanceName.'" style="border:none;">' . "\n");
+            echo ('<table class="sortable" width="'. $this->getTableWidth(true) .'" onmouseover="javascript:trackTableHighlight(event)" id="table'.$md5InstanceName.'" style="border:none;">' . "\n");
             echo ('<thead style="-moz-user-select:none; -khtml-user-select:none; user-select:none; display:none; ' . $this->globalStyle . '">' . "\n");
         }
         else
         {
-            echo ('<table class="sortable" width="'. ($this->_tableWidth + 10) .'" onmouseover="javascript:trackTableHighlight(event)" id="table'.$md5InstanceName.'">' . "\n");
+            echo ('<table class="sortable" width="'. $this->getTableWidth(true) .'" onmouseover="javascript:trackTableHighlight(event)" id="table'.$md5InstanceName.'">' . "\n");
             echo ('<thead style="-moz-user-select:none; -khtml-user-select:none; user-select:none; ' . $this->globalStyle . '">' . "\n");
         }
         echo ('<tr>' . "\n");
@@ -1708,8 +1692,9 @@ class DataGrid
 
            /* Opening of header cell. */
            echo ('<th align="left" style="width:'.$data['width'].'px; border-collapse: collapse; ' . $this->globalStyle);
-
-           if (end(array_keys($this->_currentColumns)) != $index && !$sizable)
+           
+	   $currentColumnsKeys = array_keys($this->_currentColumns);
+           if (end($currentColumnsKeys) != $index && !$sizable)
            {
                    //Uncomment for gray resize bars
                    echo 'border-right:1px solid gray;';
@@ -1732,7 +1717,7 @@ class DataGrid
                     $md5InstanceName, $index,
                     $md5InstanceName, $index,
                     $md5InstanceName,
-                    $md5InstanceName, end(array_keys($this->_currentColumns)),
+                    $md5InstanceName, end($currentColumnsKeys),
                     urlencode($this->_instanceName),
                     $_SESSION['CATS']->getCookie(),
                     $data['name'],
@@ -1845,7 +1830,7 @@ class DataGrid
                 $formatString .=
                       'user-select: none;" onmouseover="style.cursor = '
                     . '\'e-resize\'" onmousedown="startResize(\'cell%s%s\', '
-                    . '\'table%s\', \'cell%s%s\', %s, \'%s\', \'%s\', '
+                    . '\'table%s\', \'cell%s%s\', \'%s\', \'%s\', \'%s\', '
                     . '\'%s\', \'%s\', this.offsetWidth);">';
 
                 echo sprintf(
@@ -1853,7 +1838,7 @@ class DataGrid
                     $md5InstanceName, $index,
                     $md5InstanceName,
                     $md5InstanceName, end($_keys_current_columns),
-                    $this->_tableWidth,
+                    $this->getTableWidth(),
                     urlencode($this->_instanceName),
                     $_SESSION['CATS']->getCookie(),
                     $data['name'],
@@ -1928,7 +1913,7 @@ class DataGrid
         echo ('</table>' . "\n");
 
         /* If the table is smaller than the maximum width, JS will extend out the last cell so the table takes up all of its allocated space. */
-echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'", '.$this->_totalColumnWidths.', document.getElementById(\'cell'.$md5InstanceName.end($_keys_current_columns).'\'), document.getElementById(\'cell'.$md5InstanceName.end($_keys_current_columns).'div\'), ' . ($this->_tableWidth) . ');</script>' . "\n");
+echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'", '.$this->_totalColumnWidths.', document.getElementById(\'cell'.$md5InstanceName.end($_keys_current_columns).'\'), document.getElementById(\'cell'.$md5InstanceName.end($_keys_current_columns).'div\'), \'' . $this->getTableWidth() . '\');</script>' . "\n");
 
         /* Close overflowdiv */
         if (!$noOverflow)
@@ -2642,6 +2627,11 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         }
 
         echo '}';
+    }
+
+    protected function getTableWidth($makeLargerThanDisplayableArea = false)
+    {
+        return $this->_tableWidth->asString($makeLargerThanDisplayableArea);
     }
  }
 

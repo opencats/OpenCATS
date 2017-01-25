@@ -10,7 +10,7 @@ CREATE TABLE `candidate_foreign` (
   `import_id` int(11) default NULL,
   PRIMARY KEY  (`alien_id`),
   KEY `assoc_id` (`assoc_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `client_foreign` (
   `alien_id` int(11) NOT NULL auto_increment,
@@ -20,7 +20,7 @@ CREATE TABLE `client_foreign` (
   `import_id` int(11) default NULL,
   PRIMARY KEY  (`alien_id`),
   KEY `assoc_id` (`assoc_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `contact_foreign` (
   `alien_id` int(11) NOT NULL auto_increment,
@@ -30,7 +30,7 @@ CREATE TABLE `contact_foreign` (
   `import_id` int(11) default NULL,
   PRIMARY KEY  (`alien_id`),
   KEY `assoc_id` (`assoc_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `import` (
   `import_id` int(11) NOT NULL auto_increment,
@@ -40,7 +40,7 @@ CREATE TABLE `import` (
   `import_errors` longtext,
   `added_lines` int(11) default NULL,
   PRIMARY KEY  (`import_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `candidate` ADD COLUMN `import_id` INTEGER(11) NOT NULL DEFAULT '0';
 ALTER TABLE `contact` ADD COLUMN `import_id` INTEGER(11) NOT NULL DEFAULT '0';
@@ -94,7 +94,7 @@ CREATE TABLE `saved_search` (
   `site_id` int(11) default NULL,
   `date_created` datetime default NULL,
   PRIMARY KEY  (`search_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 #r518 8-11-6 PC
 UPDATE system SET schema_version = 518;
@@ -104,7 +104,7 @@ CREATE TABLE `hot_list` (
   `hot_list_type` int(11) NOT NULL default 0,
   `site_id` int(11) NOT NULL default 0,
   PRIMARY KEY (`hot_list_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 ALTER TABLE `candidate` ADD COLUMN `is_hot` INT(1) NOT NULL DEFAULT 0;
 ALTER TABLE `candidate` ADD COLUMN `hot_list_id` int(11) NULL;
 
@@ -156,7 +156,7 @@ CREATE TABLE `candidate_joborder_status_history` (
   `candidate_joborder_status_history_id` int(11) NOT NULL auto_increment,
   `candidate_id` int(11) NOT NULL default '0',
   `joborder_id` int(11) NOT NULL default '0',
-  `date` datetime NOT NULL default '0000-00-00 00:00:00',
+  `date` datetime NOT NULL default '1000-01-01 00:00:00',
   `status_from` int(11) NOT NULL default '0',
   `status_to` int(11) NOT NULL default '0',
   PRIMARY KEY  (`candidate_joborder_status_history_id`)
@@ -187,7 +187,7 @@ CREATE TABLE `candidate_source` (
   `date_created` datetime default NULL,
   PRIMARY KEY  (`source_id`),
   KEY `siteID` (`site_id`)
-) ENGINE=MYISAM DEFAULT CHARSET=latin1;
+) ENGINE=MYISAM DEFAULT CHARSET=utf8;
 
 #r538 8-11-6 WB
 UPDATE system SET schema_version = 538;

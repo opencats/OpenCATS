@@ -1,0 +1,49 @@
+version: '2'
+services:
+    opencats:
+      container_name: opencats_web
+      image: prooph/nginx:www
+      ports:
+          - "80:80"
+          - "443:443"
+      volumes_from:
+        - opencatsdata
+
+    php:
+      container_name: opencats_php
+      image: opencats/php:5.6.27-fpm-alpine
+      volumes_from:
+        - opencatsdata
+
+    opencatsdata:
+      container_name: opencats_data
+      image: busybox
+      volumes:
+        - ..:/var/www/public
+      command: "true"
+
+    opencatsdb:
+      container_name: opencats_mariadb
+      image: mariadb
+      ports:
+        - 3306:3306
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_USER=dev
+        - MYSQL_PASSWORD=dev
+        - MYSQL_DATABASE=cats
+      volumes:
+        - ../test/data:/docker-entrypoint-initdb.d
+        - ./persist/mysql:/var/lib/mysql
+
+    phpmyadmin:
+      container_name: opencats_phpmyadmin
+      image: phpmyadmin/phpmyadmin
+      ports:
+        - 8080:80
+      links:
+        - opencatsdb:db
+      environment:
+        - PMA_HOST=db
+        - PMA_USER=dev
+        - PMA_PASSWORD=dev

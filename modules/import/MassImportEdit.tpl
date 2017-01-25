@@ -284,7 +284,6 @@
             </div>
         </div>
     </div>
-    <div id="bottomShadow"></div>
     <script>
     validation();
 

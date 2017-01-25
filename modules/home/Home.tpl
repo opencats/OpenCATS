@@ -1,24 +1,24 @@
 <?php /* $Id: Home.tpl 3563 2007-11-12 07:41:54Z will $ */ ?>
-<?php TemplateUtility::printHeader('Home', array('js/sweetTitles.js', 'js/dataGrid.js', 'js/home.js')); ?>
+<?php TemplateUtility::printHeader('Home', array('js/sweetTitles.js', 'js/dataGrid.js', 'js/dataGridFilters.js', 'js/home.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
-    <div id="main">
+    <div id="main" class="home">
         <?php TemplateUtility::printQuickSearch(); ?>
 
         <div id="contents" style="padding-top: 10px;">
 
             <table>
                 <tr>
-                    <td align="left" valign="top" style="text-align: left; width: 305px; height:50px;">
-                        <div class="noteUnsizedSpan" style="width:306px;">My Recent Calls</div>
+                    <td align="left" valign="top" style="text-align: left; height:50px;">
+                        <div class="noteUnsizedSpan">My Recent Calls</div>
                         <?php $this->dataGrid2->drawHTML();  ?>
                     </td>
 
-                    <td align="center" valign="top" style="text-align: left; width: 305px; font-size:11px; height:50px;">
+                    <td align="center" valign="top" style="text-align: left; font-size:11px; height:50px;">
                         <?php echo($this->upcomingEventsFupHTML); ?>
                     </td>
 
-                    <td align="center" valign="top" style="text-align: left; width: 305px; font-size:11px; height:50px;">
+                    <td align="center" valign="top" style="text-align: left;font-size:11px; height:50px;">
                         <?php echo($this->upcomingEventsHTML); ?>
                     </td>
                 </tr>
@@ -27,9 +27,9 @@
             <table>
                 <tr>
                     <td align="left" valign="top" style="text-align: left; width: 50%; height: 240px;">
-                        <div class="noteUnsizedSpan" style="width:410px;">Recent Hires</div>
+                        <div class="noteUnsizedSpan">Recent Hires</div>
 
-                        <table class="sortable" width="410" style="margin: 0 0 4px 0;">
+                        <table class="sortable" style="margin: 0 0 4px 0;">
                             <tr>
                                 <th align="left" style="font-size:11px;">Name</th>
                                 <th align="left" style="font-size:11px;">Company</th>
@@ -47,14 +47,14 @@
                         </table>
 
                         <?php if (!count($this->placedRS)): ?>
-                            <div style="width: 411px; height: 207px; border: 1px solid #c0c0c0; background: #E7EEFF url(images/nodata/dashboardNoHiresWhite.jpg);">
+                            <div style="height: 207px; border: 1px solid #c0c0c0; background: #E7EEFF url(images/nodata/dashboardNoHiresWhite.jpg);">
                                 &nbsp;
                             </div>
                         <?php endif; ?>
                     </td>
 
                     <td align="center" valign="top" style="text-align: left; width: 50%; height: 240px;">
-                        <div class="noteUnsizedSpan" style="width:495px;">Hiring Overview</div>
+                        <div class="noteUnsizedSpan">Hiring Overview</div>
                         <map name="dashboardmap" id="dashboardmap">
                            <area href="#" alt="Weekly" title="Weekly"
                                  shape="rect" coords="398,0,461,24" onclick="swapHomeGraph(<?php echo(DASHBOARD_GRAPH_WEEKLY); ?>);" />
@@ -71,12 +71,12 @@
             <table>
                 <tr>
                     <td align="left" valign="top" style="text-align: left; width: 50%; height: 260px;">
-                        <div class="noteUnsizedSpan" style="width: 920px;">Important Candidates (Submitted, Interviewing, Offered in Active Job Orders) - Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?> (<?php echo($this->dataGrid->getNumberOfRows()); ?> Items)</div>
+                        <div class="noteUnsizedSpan">Important Candidates (Submitted, Interviewing, Offered in Active Job Orders) - Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?> (<?php echo($this->dataGrid->getNumberOfRows()); ?> Items)</div>
                         <?php $this->dataGrid->draw(); ?>
                         <div style="float:right;"><?php $this->dataGrid->printNavigation(false); ?>&nbsp;&nbsp;&nbsp;&nbsp;<?php $this->dataGrid->printShowAll(); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
 
                         <?php if (!$this->dataGrid->getNumberOfRows()): ?>
-                        <div style="width: 926px; height: 208px; border: 1px solid #c0c0c0; background: #E7EEFF url(images/nodata/dashboardNoCandidatesWhite.jpg);">
+                        <div style="height: 208px; border: 1px solid #c0c0c0; background: #E7EEFF url(images/nodata/dashboardNoCandidatesWhite.jpg);">
                             &nbsp;
                         </div>
                         <?php endif; ?>
@@ -85,5 +85,4 @@
             </table>
         </div>
     </div>
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

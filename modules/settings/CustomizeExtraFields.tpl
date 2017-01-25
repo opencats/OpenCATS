@@ -30,7 +30,7 @@
                 <script type="text/javascript">
                    function appendCommandList(command)
                    {
-                      document.getElementById('commandList').value = document.getElementById('commandList').value + escape(command) + ',';
+                      document.getElementById('commandList').value = document.getElementById('commandList').value + encodeURI(command) + ',';
                       document.getElementById('changedDiv').style.display = '';
                       document.getElementById('buttonSave').style.display = '';
                       document.getElementById('buttonDone').style.display = 'none';
@@ -292,7 +292,7 @@
                                             addOptionsAreaToTable<?php echo($index); ?>(thisIndex, rowName);
                                         }
                                         
-                                        appendCommandList('ADDFIELD <?php echo(urlencode($data['type'])); ?> '+escape(rowType)+' '+escape(rowName));
+                                        appendCommandList('ADDFIELD <?php echo(urlencode($data['type'])); ?> '+encodeURI(rowType)+' '+encodeURI(rowName));
                                     }
                                     
                                     //TODO: Document me.
@@ -309,7 +309,7 @@
                                         
                                         deleteRowFromTable<?php echo($index); ?>(rowIndex);
                                         
-                                        appendCommandList('DELETEFIELD <?php echo(urlencode($data['type'])); ?> '+escape(rowName));
+                                        appendCommandList('DELETEFIELD <?php echo(urlencode($data['type'])); ?> '+encodeURI(rowName));
                                     }
 
                                     //TODO: Document me.
@@ -354,7 +354,7 @@
                                         col.innerHTML = html2;
                                         col2.innerHTML = html;    
                                         
-                                        appendCommandList('SWAPFIELDS <?php echo(urlencode($data['type'])); ?> '+escape(rowName1)+':'+escape(rowName2));
+                                        appendCommandList('SWAPFIELDS <?php echo(urlencode($data['type'])); ?> '+encodeURI(rowName1)+':'+encodeURI(rowName2));
                                     }
 
                                     //TODO: Document me.
@@ -384,7 +384,7 @@
                                           var rowNameOrg = document.getElementById('inlineEditOrg'+inlineID).value;
                                           var rowNameNew = document.getElementById('inlineEdit'+inlineID).value;
                                           
-                                          appendCommandList('RENAMEROW <?php echo(urlencode($data['type'])); ?> '+escape(rowNameOrg)+':'+escape(rowNameNew));
+                                          appendCommandList('RENAMEROW <?php echo(urlencode($data['type'])); ?> '+encodeURI(rowNameOrg)+':'+encodeURI(rowNameNew));
 
                                           document.getElementById('editSettingsForm').submit();
                                       }                                    
@@ -417,7 +417,7 @@
                                         
                                         addOptionToTable<?php echo($index); ?>(optionName, tbl, fieldName);
                                         
-                                        appendCommandList('ADDOPTION <?php echo(urlencode($data['type'])); ?> '+escape(fieldName)+':'+escape(optionName));
+                                        appendCommandList('ADDOPTION <?php echo(urlencode($data['type'])); ?> '+encodeURI(fieldName)+':'+encodeURI(optionName));
                                     }
                                     
                                     //TODO: Document me.
@@ -433,7 +433,7 @@
                                         
                                         deleteOptionFromTable<?php echo($index); ?>(rowOptions, optionName, fieldName);
                                         
-                                        appendCommandList('DELETEOPTION <?php echo(urlencode($data['type'])); ?> '+escape(fieldName)+':'+escape(optionName));
+                                        appendCommandList('DELETEOPTION <?php echo(urlencode($data['type'])); ?> '+encodeURI(fieldName)+':'+encodeURI(optionName));
                                     }                                    
                                     
                                     //TODO: Document me.
@@ -537,5 +537,4 @@
             </form>
         </div>
     </div>
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

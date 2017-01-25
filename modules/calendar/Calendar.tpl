@@ -334,7 +334,7 @@
                                         </table>
                                         <div style="text-align: center;">
                                             <input type="submit" class="button" name="submit" value="Save" />
-                                            <?php if ($this->accessLevel >= ACCESS_LEVEL_DELETE): ?>
+                                            <?php if ($this->getUserAccessLevel('calendar.deleteEvent') >= ACCESS_LEVEL_DELETE): ?>
                                                 <input type="button" class="button" name="delete" value="Delete" onclick="confirmDeleteEntry();" />
                                             <?php endif; ?>
                                         </div>
@@ -358,7 +358,7 @@
                                     Description:<br />
                                     <span id="viewEventDescription"></span><br />
                                     <br />
-                                    <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
+                                    <?php if ($this->getUserAccessLevel('calendar.editEvent') >= ACCESS_LEVEL_EDIT): ?>
                                         <input type="button" class="button" name="Edit" value="Edit Event" onclick="calendarEditEvent(currentViewedEntry);" />
                                     <?php endif; ?>
                                     </td>
@@ -400,7 +400,7 @@
                                             <?php if ($this->firstDayMonday != '1'): ?><th height="1%">Sunday</th><?php endif; ?>
                                             <th height="1%">Monday</th>
                                             <th height="1%">Tuesday</th>
-                                            <th height="1%">Wednsday</th>
+                                            <th height="1%">Wednesday</th>
                                             <th height="1%">Thursday</th>
                                             <th height="1%">Friday</th>
                                             <th height="1%">Saturday</th>
@@ -564,7 +564,6 @@
             </table>
         </div>
     </div>
-    <div id="bottomShadow"></div>
 
     <script type="text/javascript">
         /* Settings */
@@ -582,7 +581,7 @@
         userID = <?php echo($this->userID); ?>;
         userIsSuperUser = <?php echo($this->userIsSuperUser); ?>;
         firstDayMonday =  <?php if ($this->firstDayMonday == 1) echo('1'); else echo('0'); ?>;
-        accessLevel =  <?php echo($this->accessLevel); ?>;
+        accessLevel =  <?php echo($this->getUserAccessLevel('calendar')); ?>;
 
         /* Constants */
         <?php

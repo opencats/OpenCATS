@@ -1,5 +1,5 @@
 <?php /* $Id: HotList.tpl 3430 2007-11-06 20:44:51Z will $ */ ?>
-<?php TemplateUtility::printNonSelectableHeader('Candidates', array( 'js/highlightrows.js', 'js/export.js', 'js/listEditor.js', 'js/dataGrid.js')); ?>
+<?php TemplateUtility::printNonSelectableHeader('Candidates', array( 'js/highlightrows.js', 'js/export.js', 'js/listEditor.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">
@@ -24,7 +24,7 @@
                                     </td>
                                     <td>
                                         <select name="view" id="hotListSelect" onChange="if (this.value != 'edit' &amp;&amp; this.value != 'nullline') { document.candidatesViewSelectorForm.submit(); } else { if (this.value == 'edit') { listEditor('Hot Lists', 'hotListSelect', 'hotListCSV', false, 'candidatesViewSelectorForm', 0); } if (this.value == 'nullline') { this.value = '(none)'; } }" >
-                                            <?php if ($this->accessLevel >= ACCESS_LEVEL_DELETE): ?>
+                                            <?php if ($this->getUserAccessLevel('candidates.manageHotLists') >= ACCESS_LEVEL_DELETE): ?>
                                                 <option value="edit">(Manage Hot Lists)</option>
                                             <?php else: ?>
                                                 <option value="nullline">Hot Lists (Select to View):</option>
@@ -65,5 +65,4 @@
         </div>
     </div>
 
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

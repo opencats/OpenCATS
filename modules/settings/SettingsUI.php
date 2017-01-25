@@ -75,17 +75,18 @@ class SettingsUI extends UserInterface
                 array('Career Portal Customizer', 'careerportal', 'This user can\'t do anything but modify the career portal settings.  It is intended to be used by the CATS Professional Support Team.  This user does not count against your maximum users.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
             );
         }
+        else
+        {
+            if(defined('USER_ROLES'))
+            {
+                $this->_settingsUserCategories = USER_ROLES;
+            }
+        }
 
         $mp = array(
             'Administration' => CATSUtility::getIndexName() . '?m=settings&amp;a=administration',
             'My Profile'     => CATSUtility::getIndexName() . '?m=settings'
         );
-
-        /* Only CATS professional can download addons. */
-        if (file_exists('modules/asp') || LicenseUtility::isProfessional())
-        {
-            $mp['Downloads'] = CATSUtility::getIndexName() . '?m=settings&amp;a=downloads';
-        }
 
         $this->_subTabs = $mp;
         
@@ -135,7 +136,8 @@ class SettingsUI extends UserInterface
         );
     }
     
-    function onAddNewTag(){
+    private function onAddNewTag()
+    {
         if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
         {
             echo 'CATS has lost your session data!';
@@ -143,7 +145,8 @@ class SettingsUI extends UserInterface
         }
         $tags = new Tags($this->_siteID);
         $arr = $tags->add((isset($_POST['tag_parent_id'])?$_POST['tag_parent_id']:null),$_POST['tag_title'], "-");
-        if (isset($_POST['tag_parent_id'])){
+        if (isset($_POST['tag_parent_id']))
+        {
 	        printf('
 				<li id="id_li_tag_%d">
 					<a href="javascript:;" onclick="doDelete(%d);"><img src="images/actions/delete.gif" /></a>
@@ -170,10 +173,11 @@ class SettingsUI extends UserInterface
         }
         
         
-		return; 
+        return; 
     }
     
-    function onRemoveTag(){
+    private function onRemoveTag()
+    {
         if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
         {
             echo 'CATS has lost your session data!';
@@ -181,10 +185,11 @@ class SettingsUI extends UserInterface
         }
         $tags = new Tags($this->_siteID);
         $tags->delete($_POST['tag_id']);
-		return; 
+        return; 
     }
     
-    function onChangeTag(){
+    private function onChangeTag()
+    {
         if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
         {
             echo 'CATS has lost your session data!';
@@ -202,30 +207,18 @@ class SettingsUI extends UserInterface
      * This function make changes to tags
      * @return unknown_type
      */
-	function onChangeTags(){
-		// TODO: Add tags changing code
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
+    private function onChangeTags()
+    {
+        // TODO: Add tags changing code
  
-	}
+    }
 
-	/**
-	 * Show the tag list
-	 * @return unknown_type
-	 */
-	function changeTags(){
-		if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
+    /**
+     * Show the tag list
+     * @return unknown_type
+     */
+    private function changeTags()
+    {
         $tags = new Tags($this->_siteID);
         $tagsRS = $tags->getAll();
 
@@ -235,7 +228,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('subActive', 'Administration');
         $this->_template->assign('tagsRS', $tagsRS);
         $this->_template->display('./modules/settings/tags.tpl');
-	}
+    }
 
     public function handleRequest()
     {
@@ -245,15 +238,28 @@ class SettingsUI extends UserInterface
 
         switch ($action)
         {
-        	case 'tags':
-        		if ($this->isPostBack()){
-        			$this->onChangeTags();
-        		}else{
-        			$this->changeTags();
-        		}
-        		break;
-        	
-        	case 'changePassword':
+            case 'tags':
+                /* Bail out if the user is demo. */
+                if ($this->getUserAccessLevel('settings.tags') < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You are not allowed to edit tags.');
+                }
+                if ($this->isPostBack())
+                {
+                    $this->onChangeTags();
+                }
+                else
+                {
+                    $this->changeTags();
+                }
+                break;
+            
+            case 'changePassword':
+                /* Bail out if the user is demo. */
+                if ($this->getUserAccessLevel('settings.changePassword') == ACCESS_LEVEL_DEMO)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You are not allowed to change your password.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onChangePassword();
@@ -261,6 +267,10 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'newInstallPassword':
+                if ($this->getUserAccessLevel("settings.newInstallPassword") < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onNewInstallPassword();
@@ -272,6 +282,10 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'forceEmail':
+                if ($this->getUserAccessLevel("settings.forceEmail") < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onForceEmail();
@@ -283,6 +297,10 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'newSiteName':
+                if ($this->getUserAccessLevel('settings.newSiteName') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onNewSiteName();
@@ -294,6 +312,10 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'upgradeSiteName':
+                if ($this->getUserAccessLevel('settings.upgradeSiteName') < ACCESS_LEVEL_SA)
+                {
+                    CATSUtility::transferRelativeURI('m=settings&a=newInstallFinished');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onNewSiteName();
@@ -305,6 +327,10 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'newInstallFinished':
+                if ($this->getUserAccessLevel('settings.newSiteName') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onNewInstallFinished();
@@ -316,80 +342,148 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'manageUsers':
+                if ($this->getUserAccessLevel('settings.manageUsers') < ACCESS_LEVEL_DEMO)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->manageUsers();
                 break;
 
             case 'professional':
+                if ($this->getUserAccessLevel('settings.professional') < ACCESS_LEVEL_DEMO)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->manageProfessional();
                 break;
 
             case 'previewPage':
+                if ($this->getUserAccessLevel('settings.previewPage') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->previewPage();
                 break;
 
             case 'previewPageTop':
+                if ($this->getUserAccessLevel('settings.previewPageTop') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->previewPageTop();
                 break;
 
             case 'showUser':
+                if ($this->getUserAccessLevel('settings.showUser') < ACCESS_LEVEL_DEMO
+                    && $this->_userID != $_GET['userID'])
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->showUser();
                 break;
 
             case 'addUser':
                 if ($this->isPostBack())
                 {
+                    if ($this->getUserAccessLevel('settings.addUser.POST') < ACCESS_LEVEL_SA)
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->onAddUser();
                 }
                 else
                 {
+                    if ($this->getUserAccessLevel('settings.addUser.GET') < ACCESS_LEVEL_DEMO)
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->addUser();
                 }
 
                 break;
 
             case 'editUser':
+
                 if ($this->isPostBack())
                 {
+                    if ($this->getUserAccessLevel('settings.editUser.POST') < ACCESS_LEVEL_SA)
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->onEditUser();
                 }
                 else
                 {
+                    if ($this->getUserAccessLevel('settings.editUser.GET') < ACCESS_LEVEL_DEMO)
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->editUser();
                 }
 
                 break;
 
             case 'createBackup':
+                if ($this->getUserAccessLevel('settings.createBackup') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->createBackup();
                 break;
 
             case 'deleteBackup':
+                if ($this->getUserAccessLevel('settings.deleteBackup') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->deleteBackup();
                 break;
 
             case 'customizeExtraFields':
+                
                 if ($this->isPostBack())
                 {
+                    if ($this->getUserAccessLevel('settings.customizeExtraFields.POST') < ACCESS_LEVEL_SA)
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->onCustomizeExtraFields();
                 }
                 else
                 {
+                    if ($this->getUserAccessLevel('settings.customizeExtraFields.GET') < ACCESS_LEVEL_DEMO)
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->customizeExtraFields();
                 }
                 break;
 
             case 'customizeCalendar':
+                
                 if ($this->isPostBack())
                 {
+                    if ($this->getUserAccessLevel('settings.customizeCalendar.POST') < ACCESS_LEVEL_SA)
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->onCustomizeCalendar();
                 }
                 else
                 {
+                    if ($this->getUserAccessLevel('settings.customizeCalendar.GET') < ACCESS_LEVEL_DEMO)
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->customizeCalendar();
                 }
                 break;
 
             case 'reports':
+                if ($this->getUserAccessLevel('settings.reports') < ACCESS_LEVEL_DEMO)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
 
@@ -401,21 +495,39 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'emailSettings':
+                
                 if ($this->isPostBack())
                 {
+                    if ($this->getUserAccessLevel('settings.emailSettings.POST') < ACCESS_LEVEL_SA)
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->onEmailSettings();
                 }
                 else
                 {
+                    if ($this->getUserAccessLevel('settings.emailSettings.GET') < ACCESS_LEVEL_DEMO)
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->emailSettings();
                 }
                 break;
 
             case 'careerPortalQuestionnairePreview':
+                if ($this->getUserAccessLevel('settings.careerPortalQuestionnairePreview') < ACCESS_LEVEL_DEMO)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->careerPortalQuestionnairePreview();
                 break;
 
             case 'careerPortalQuestionnaire':
+
+                if ($this->getUserAccessLevel('settings.careerPortalQuestionnaire') < ACCESS_LEVEL_DEMO)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onCareerPortalQuestionnaire();
@@ -427,63 +539,119 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'careerPortalQuestionnaireUpdate':
+                if ($this->getUserAccessLevel('settings.careerPortalQuestionnaireUpdate') < ACCESS_LEVEL_DEMO)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->careerPortalQuestionnaireUpdate();
                 break;
 
             case 'careerPortalTemplateEdit':
+                
                 if ($this->isPostBack())
                 {
+                    if ($this->getUserAccessLevel('settings.careerPortalTemplateEdit.POST') < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->onCareerPortalTemplateEdit();
                 }
                 else
                 {
+                    if ($this->getUserAccessLevel('settings.careerPortalTemplateEdit') < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->careerPortalTemplateEdit();
                 }
                 break;
 
             case 'careerPortalSettings':
+                if ($this->getUserAccessLevel('settings.careerPortalSettings') < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
+                    if ($this->getUserAccessLevel('settings.careerPortalSettings.POST') < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->onCareerPortalSettings();
                 }
                 else
                 {
+                    if ($this->getUserAccessLevel('settings.careerPortalSettings.GET') < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->careerPortalSettings();
                 }
                 break;
 
             case 'eeo':
+                
                 if ($this->isPostBack())
                 {
+                    if ($this->getUserAccessLevel('settings.eeo.POST') < ACCESS_LEVEL_SA)
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->onEEOEOCSettings();
                 }
                 else
                 {
+                    if ($this->getUserAccessLevel('settings.eeo.GET') < ACCESS_LEVEL_DEMO)
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->EEOEOCSettings();
                 }
                 break;
 
             case 'onCareerPortalTweak':
+                if ($this->getUserAccessLevel('settings.careerPortalTweak') < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
+
                 $this->onCareerPortalTweak();
                 break;
 
             /* This really only exists for automated testing at this point. */
             case 'deleteUser':
+                if ($this->getUserAccessLevel('settings.deleteUser') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->onDeleteUser();
                 break;
 
             case 'emailTemplates':
+                
                 if ($this->isPostBack())
                 {
+                    if ($this->getUserAccessLevel('settings.emailTemplates.POST') < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->onEmailTemplates();
                 }
                 else
                 {
+                    if ($this->getUserAccessLevel('settings.emailTemplates.GET') < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->emailTemplates();
                 }
                 break;
 
            case 'aspLocalization':
+                if ($this->getUserAccessLevel('settings.aspLocalization') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onAspLocalization();
@@ -491,12 +659,21 @@ class SettingsUI extends UserInterface
                 break;
 
            case 'loginActivity':
+                if ($this->getUserAccessLevel('settings.loginActivity') < ACCESS_LEVEL_DEMO)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
+
                 include_once('./lib/BrowserDetection.php');
 
                 $this->loginActivity();
                 break;
 
             case 'viewItemHistory':
+                if ($this->getUserAccessLevel('settings.viewItemHistory') < ACCESS_LEVEL_DEMO)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->viewItemHistory();
                 break;
 
@@ -508,76 +685,213 @@ class SettingsUI extends UserInterface
                 $this->downloads();
                 break;
 
-        	case 'ajax_tags_add':
-        		$this->onAddNewTag();
-        		break;
-        	
-        	case 'ajax_tags_del':
-        			$this->onRemoveTag();
-        		break;
+            case 'ajax_tags_add':
+                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+                {
+                    echo 'CATS has lost your session data!';
+                    return;
+                }
+                $this->onAddNewTag();
+                break;
+            
+            case 'ajax_tags_del':
+                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+                {
+                    echo 'CATS has lost your session data!';
+                    return;
+                }
+                $this->onRemoveTag();
+                break;
 
-        	case 'ajax_tags_upd':
-        			$this->onChangeTag();
-        		break;
+            case 'ajax_tags_upd':
+                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+                {
+                    echo 'CATS has lost your session data!';
+                    return;
+                }
+                $this->onChangeTag();
+                break;
                
             case 'ajax_wizardAddUser':
+                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+                {
+                    echo 'CATS has lost your session data!';
+                    return;
+                }
+                if ($this->getUserAccessLevel('settings.addUser') < ACCESS_LEVEL_SA)
+                {
+                    echo 'You do not have access to add a user.';
+                    return;
+                }
                 $this->wizard_addUser();
                 break;
 
             case 'ajax_wizardDeleteUser':
+                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+                {
+                    echo 'CATS has lost your session data!';
+                    return;
+                }
+                if ($this->getUserAccessLevel('settings.deleteUser') < ACCESS_LEVEL_SA)
+                {
+                    echo 'You do not have access to delete a user.';
+                    return;
+                }
                 $this->wizard_deleteUser();
                 break;
 
             case 'ajax_wizardCheckKey':
+                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+                {
+                    echo 'CATS has lost your session data!';
+                    return;
+                }
+                if ($this->getUserAccessLevel('settings.checkKey') < ACCESS_LEVEL_SA)
+                {
+                    echo 'You do not have access to set the key.';
+                    return;
+                }
                 $this->wizard_checkKey();
                 break;
 
             case 'ajax_wizardLocalization':
+                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+                {
+                    echo 'CATS has lost your session data!';
+                    return;
+                }
+                if ($this->getUserAccessLevel('settings.localization') < ACCESS_LEVEL_SA)
+                {
+                    echo 'You do not have access to change your localization settings.';
+                    return;
+                }
                 $this->wizard_localization();
                 break;
 
             case 'ajax_wizardFirstTimeSetup':
+                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+                {
+                    echo 'CATS has lost your session data!';
+                    return;
+                }
+                if ($this->getUserAccessLevel('settings.firstTimeSetup') < ACCESS_LEVEL_SA)
+                {
+                    echo 'You do not has access to this first-time-setup wizard.';
+                    return;
+                }
                 $this->wizard_firstTimeSetup();
                 break;
 
             case 'ajax_wizardLicense':
+                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+                {
+                    echo 'CATS has lost your session data!';
+                    return;
+                }
+                if ($this->getUserAccessLevel('settings.license') < ACCESS_LEVEL_SA)
+                {
+                    echo 'You do not have access to accept the license agreement.';
+                    return;
+                }
                 $this->wizard_license();
                 break;
 
             case 'ajax_wizardPassword':
+                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+                {
+                    echo 'CATS has lost your session data!';
+                    return;
+                }
+                if ($this->getUserAccessLevel('settings.password') < ACCESS_LEVEL_SA)
+                {
+                    echo 'You do not have acess to set the site password.';
+                    return;
+                }
                 $this->wizard_password();
                 break;
 
             case 'ajax_wizardSiteName':
+                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+                {
+                    echo 'CATS has lost your session data!';
+                    return;
+                }
+                if ($this->getUserAccessLevel('settings.siteName') < ACCESS_LEVEL_SA)
+                {
+                    echo 'You do not have permission to change the site name.';
+                    return;
+                }
                 $this->wizard_siteName();
                 break;
 
             case 'ajax_wizardEmail':
+                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+                {
+                    echo 'CATS has lost your session data!';
+                    return;
+                }
+                if ($this->getUserAccessLevel('settings.setEmail') < ACCESS_LEVEL_READ)
+                {
+                    echo 'You do not have permission to set the email.';
+                    return;
+                }
                 $this->wizard_email();
                 break;
 
             case 'ajax_wizardImport':
+                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+                {
+                    echo 'CATS has lost your session data!';
+                    return;
+                }
+                if ($this->getUserAccessLevel('settings.import') < ACCESS_LEVEL_SA)
+                {
+                    echo 'You do not have permission to import.';
+                    return;
+                }
                 $this->wizard_import();
                 break;
 
             case 'ajax_wizardWebsite':
+                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
+                {
+                    echo 'CATS has lost your session data!';
+                    return;
+                }
+                if ($this->getUserAccessLevel('settings.website') < ACCESS_LEVEL_SA)
+                {
+                    echo 'You do not have permission.';
+                    return;
+                }
                 $this->wizard_website();
                 break;
 
             case 'administration':
                 if ($this->isPostBack())
                 {
+                    if ($this->getUserAccessLevel('settings.administration.POST') < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->onAdministration();
                 }
                 else
                 {
+                    if ($this->getUserAccessLevel('settings.administration.GET') < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
+                    {
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    }
                     $this->administration();
                 }
                 break;
 
             /* Main settings page. */
             case 'myProfile':
-                default:
+            default:
+                if ($this->getUserAccessLevel('settings.myProfile') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->myProfile();
                 break;
         }
@@ -624,6 +938,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('userID', $this->_userID);
         $this->_template->assign('active', $this);
         $this->_template->assign('subActive', 'My Profile');
+        $this->_template->assign('auth_mode', AUTH_MODE);
         $this->_template->display($templateFile);
     }
 
@@ -640,14 +955,6 @@ class SettingsUI extends UserInterface
         }
         else
         {
-            /* Bail out if the user doesn't have SA permissions. */
-            if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
-            {
-                CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-                return;
-                //$this->fatal(ERROR_NO_PERMISSION);
-            }
-
             $privledged = true;
         }
 
@@ -742,14 +1049,6 @@ class SettingsUI extends UserInterface
      */
     private function addUser()
     {
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         $users = new Users($this->_siteID);
         $accessLevels = $users->getAccessLevels();
 
@@ -787,6 +1086,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('defaultAccessLevel', ACCESS_LEVEL_DELETE);
         $this->_template->assign('currentUser', $this->_userID);
         $this->_template->assign('categories', $categories);
+        $this->_template->assign('auth_mode', AUTH_MODE);
 
         if (!eval(Hooks::get('SETTINGS_ADD_USER'))) return;
 
@@ -798,12 +1098,10 @@ class SettingsUI extends UserInterface
      */
     private function onAddUser()
     {
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
+        if (AUTH_MODE == "ldap")
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
+            /* LDAP users are not allowed to be created in DB manualy */
             return;
-            //$this->fatal(ERROR_NO_PERMISSION);
         }
 
         $firstName      = $this->getTrimmedInput('firstName', $_POST);
@@ -903,14 +1201,6 @@ class SettingsUI extends UserInterface
      */
     private function editUser()
     {
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         /* Bail out if we don't have a valid user ID. */
         if (!$this->isRequiredIDValid('userID', $_GET))
         {
@@ -992,6 +1282,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('currentUser', $this->_userID);
         $this->_template->assign('cannotEnableMessage', $cannotEnableMessage);
         $this->_template->assign('disableAccessChange', $disableAccessChange);
+        $this->_template->assign('auth_mode', AUTH_MODE);
         $this->_template->display('./modules/settings/EditUser.tpl');
     }
 
@@ -1000,14 +1291,6 @@ class SettingsUI extends UserInterface
      */
     private function onEditUser()
     {
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         /* Bail out if we don't have a valid user ID. */
         if (!$this->isRequiredIDValid('userID', $_POST))
         {
@@ -1134,14 +1417,6 @@ class SettingsUI extends UserInterface
      */
     private function onDeleteUser()
     {
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         /* Bail out if we don't have a valid user ID. */
         if (!$this->isRequiredIDValid('userID', $_GET))
         {
@@ -1167,13 +1442,6 @@ class SettingsUI extends UserInterface
      */
     private function customizeExtraFields()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         $candidates = new Candidates($this->_siteID);
         $candidatesRS = $candidates->extraFields->getSettings();
 
@@ -1202,13 +1470,6 @@ class SettingsUI extends UserInterface
      */
     private function onCustomizeExtraFields()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         $extraFieldsMaintScript = $this->getTrimmedInput('commandList', $_POST);
         $extraFieldsMaintScriptArray = explode(',', $extraFieldsMaintScript);
 
@@ -1276,13 +1537,6 @@ class SettingsUI extends UserInterface
     //FIXME: Document me.
     private function emailTemplates()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         $emailTemplates = new EmailTemplates($this->_siteID);
         $emailTemplatesRS = $emailTemplates->getAll();
 
@@ -1297,13 +1551,6 @@ class SettingsUI extends UserInterface
     //FIXME: Document me.
     private function onEmailTemplates()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         if (!$this->isRequiredIDValid('templateID', $_POST))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid template ID.');
@@ -1368,12 +1615,6 @@ class SettingsUI extends UserInterface
      */
     private function careerPortalTemplateEdit()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-        }
-
         $templateName = $this->getTrimmedInput('templateName', $_GET);
         if (empty($templateName))
         {
@@ -1444,12 +1685,6 @@ class SettingsUI extends UserInterface
     //FIXME: Document me.
     private function onCareerPortalTemplateEdit()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-        }
-
         $templateName = $this->getTrimmedInput('templateName', $_POST);
         if (empty($templateName) || !isset($_POST['continueEdit']))
         {
@@ -1506,12 +1741,6 @@ class SettingsUI extends UserInterface
      */
     private function careerPortalSettings()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-        }
-
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
         $careerPortalSettingsRS = $careerPortalSettings->getAll();
         $careerPortalTemplateNames = $careerPortalSettings->getDefaultTemplates();
@@ -1538,12 +1767,6 @@ class SettingsUI extends UserInterface
     //FIXME: Document me.
     private function onCareerPortalSettings()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-        }
-
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
         $careerPortalSettingsRS = $careerPortalSettings->getAll();
 
@@ -1627,13 +1850,6 @@ class SettingsUI extends UserInterface
 
     private function onCareerPortalTweak()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         if (!isset($_GET['p']))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid page.');
@@ -1711,13 +1927,6 @@ class SettingsUI extends UserInterface
      */
     private function EEOEOCSettings()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         $EEOSettings = new EEOSettings($this->_siteID);
         $EEOSettingsRS = $EEOSettings->getAll();
 
@@ -1731,13 +1940,6 @@ class SettingsUI extends UserInterface
     //FIXME: Document me.
     private function onEEOEOCSettings()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         $EEOSettings = new EEOSettings($this->_siteID);
         $EEOSettingsRS = $EEOSettings->getAll();
 
@@ -1761,13 +1963,6 @@ class SettingsUI extends UserInterface
      */
     private function emailSettings()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         $mailerSettings = new MailerSettings($this->_siteID);
         $mailerSettingsRS = $mailerSettings->getAll();
 
@@ -1790,13 +1985,6 @@ class SettingsUI extends UserInterface
      */
     private function onEmailSettings()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         $mailerSettings = new MailerSettings($this->_siteID);
         $mailerSettingsRS = $mailerSettings->getAll();
 
@@ -1838,13 +2026,6 @@ class SettingsUI extends UserInterface
      */
     private function customizeCalendar()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         $calendarSettings = new CalendarSettings($this->_siteID);
         $calendarSettingsRS = $calendarSettings->getAll();
 
@@ -1860,13 +2041,6 @@ class SettingsUI extends UserInterface
      */
     private function onCustomizeCalendar()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         $calendarSettings = new CalendarSettings($this->_siteID);
         $calendarSettingsRS = $calendarSettings->getAll();
 
@@ -1901,13 +2075,6 @@ class SettingsUI extends UserInterface
      */
     private function reports()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         $this->_template->assign('active', $this);
         $this->_template->assign('subActive', 'Administration');
         $this->_template->display('./modules/settings/CustomizeReports.tpl');
@@ -1928,12 +2095,6 @@ class SettingsUI extends UserInterface
 
     private function newSiteName()
     {
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            CATSUtility::transferRelativeURI('m=settings&a=newInstallFinished');
-        }
-
         $this->_template->assign('inputType', 'siteName');
         $this->_template->assign('inputTypeTextParam', 'Please choose your site name.');
         $this->_template->assign('title', 'Site Name');
@@ -1945,12 +2106,6 @@ class SettingsUI extends UserInterface
 
     private function upgradeSiteName()
     {
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            CATSUtility::transferRelativeURI('m=settings&a=newInstallFinished');
-        }
-
         $this->_template->assign('inputType', 'siteName');
         $this->_template->assign('inputTypeTextParam', 'Site Name');
         $this->_template->assign('title', 'Site Name');
@@ -1962,13 +2117,6 @@ class SettingsUI extends UserInterface
 
     private function createBackup()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         /* Attachments */
         $attachments = new Attachments(CATS_ADMIN_SITE);
         $attachmentsRS = $attachments->getAll(
@@ -1977,7 +2125,7 @@ class SettingsUI extends UserInterface
 
         foreach ($attachmentsRS as $index => $data)
         {
-            $attachmentsRS[$index]['fileSize'] = fileUtility::sizeToHuman(
+            $attachmentsRS[$index]['fileSize'] = FileUtility::sizeToHuman(
                 filesize($data['retrievalURLLocal']), 2, 1
             );
         }
@@ -1990,13 +2138,6 @@ class SettingsUI extends UserInterface
 
     private function deleteBackup()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         $attachments = new Attachments(CATS_ADMIN_SITE);
         $attachments->deleteAll(
             DATA_ITEM_COMPANY,
@@ -2046,7 +2187,7 @@ class SettingsUI extends UserInterface
     {
         NewVersionCheck::checkForUpdate();
 
-        $accessLevel = $_SESSION['CATS']->getAccessLevel();
+        $accessLevel = $_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT);
 
         $mailerSettings = new MailerSettings($this->_siteID);
         $mailerSettingsRS = $mailerSettings->getAll();
@@ -2121,13 +2262,6 @@ class SettingsUI extends UserInterface
 
     private function onNewSiteName()
     {
-        /* The user shouldn't be here if they are not an SA */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            CATSUtility::transferRelativeURI('m=home');
-            return;
-        }
-
         $newSiteName = $this->getTrimmedInput('siteName', $_POST);
 
         if (empty($newSiteName) || $newSiteName === 'default_site')
@@ -2173,12 +2307,6 @@ class SettingsUI extends UserInterface
      */
     private function administration()
     {
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-        }
-
         $systemInfo = new SystemInfo();
         $systemInfoData = $systemInfo->getSystemInfo();
 
@@ -2200,7 +2328,7 @@ class SettingsUI extends UserInterface
             $versionCheckPref = true;
         }
 
-        if ($this->_realAccessLevel >= ACCESS_LEVEL_ROOT || $this->_realAccessLevel == ACCESS_LEVEL_DEMO)
+        if ($this->getUserAccessLevel('settings.administration') >= ACCESS_LEVEL_ROOT || $this->getUserAccessLevel('settings.administration') == ACCESS_LEVEL_DEMO)
         {
             $systemAdministration = true;
         }
@@ -2221,9 +2349,7 @@ class SettingsUI extends UserInterface
                 case 'newVersionCheck':
                     if (!$systemAdministration)
                     {
-                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-                        return;
-                        //$this->fatal(ERROR_NO_PERMISSION);
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                     }
 
                     $this->_template->assign('versionCheckPref', $versionCheckPref);
@@ -2236,20 +2362,16 @@ class SettingsUI extends UserInterface
                 case 'passwords':
                     if (!$systemAdministration)
                     {
-                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-                        return;
-                        //$this->fatal(ERROR_NO_PERMISSION);
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                     }
 
                     $templateFile = './modules/settings/Passwords.tpl';
                     break;
 
                 case 'localization':
-                    if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
+                    if ($this->getUserAccessLevel('settings.administration.localization') < ACCESS_LEVEL_SA)
                     {
-                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-                        return;
-                        //$this->fatal(ERROR_NO_PERMISSION);
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                     }
 
                     $this->_template->assign('timeZone', $_SESSION['CATS']->getTimeZone());
@@ -2258,11 +2380,9 @@ class SettingsUI extends UserInterface
                     break;
 
                 case 'systemInformation':
-                    if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
+                    if ($this->getUserAccessLevel('settings.administration.systemInformation') < ACCESS_LEVEL_SA)
                     {
-                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-                        return;
-                        //$this->fatal(ERROR_NO_PERMISSION);
+                        CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                     }
 
                     $db = DatabaseConnection::getInstance();
@@ -2397,13 +2517,6 @@ class SettingsUI extends UserInterface
      */
     private function onAdministration()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         $administrationMode = $this->getTrimmedInput(
             'administrationMode',
             $_POST
@@ -2412,6 +2525,10 @@ class SettingsUI extends UserInterface
         switch ($administrationMode)
         {
             case 'changeSiteName':
+                if ($this->getUserAccessLevel('settings.administration.changeSiteName') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
+                }
                 $siteName = $this->getTrimmedInput(
                     'siteName',
                     $_POST
@@ -2427,11 +2544,9 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'changeVersionCheck':
-                if ($this->_realAccessLevel < ACCESS_LEVEL_ROOT)
+                if ($this->getUserAccessLevel('settings.administration.changeVersionName') < ACCESS_LEVEL_ROOT)
                 {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-                    return;
-                    //$this->fatal(ERROR_NO_PERMISSION);
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                 }
 
                 $this->changeNewVersionCheck(
@@ -2443,14 +2558,10 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'localization':
-                if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
+                if ($this->getUserAccessLevel('settings.administration.localization') < ACCESS_LEVEL_SA)
                 {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-                    return;
-                    //$this->fatal(ERROR_NO_PERMISSION);
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                 }
-
-
                 //FIXME: Validation (escaped at lib level anyway)
                 $timeZone = $_POST['timeZone'];
                 $dateFormat = $_POST['dateFormat'];
@@ -2483,13 +2594,6 @@ class SettingsUI extends UserInterface
      */
     private function onAspLocalization()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         // FIXME: Input validation!
 
         $timeZone = $_POST['timeZone'];
@@ -2545,14 +2649,6 @@ class SettingsUI extends UserInterface
      */
     private function manageUsers()
     {
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         $users = new Users($this->_siteID);
         $rs = $users->getAll();
         $license = $users->getLicenseData();
@@ -2589,11 +2685,6 @@ class SettingsUI extends UserInterface
 
     private function manageProfessional()
     {
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-        }
         if (ModuleUtility::moduleExists('asp') && (!defined('CATS_TEST_MODE') || !CATS_TEST_MODE))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
@@ -2672,12 +2763,14 @@ class SettingsUI extends UserInterface
      */
     private function onChangePassword()
     {
-        /* Bail out if the user is demo. */
-        if ($this->_realAccessLevel == ACCESS_LEVEL_DEMO)
+        $users = new Users($this->_siteID);
+        if(AUTH_MODE == 'ldap' || AUTH_MODE == 'sql+ldap')
         {
-            $this->fatal(
-                'You are not allowed to change your password.'
-            );
+            if($users->isUserLDAP($this->_userID)) {
+                $this->fatal(
+                    'LDAP authentication is enabled. You are not allowed to change your password.'
+                );
+            }
         }
 
         $logout = false;
@@ -2717,7 +2810,6 @@ class SettingsUI extends UserInterface
         }
 
         /* Attempt to change the user's password. */
-        $users = new Users($this->_siteID);
         $status = $users->changePassword(
             $this->_userID, $currentPassword, $newPassword
         );
@@ -2784,14 +2876,6 @@ class SettingsUI extends UserInterface
      */
     private function loginActivity()
     {
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         if (isset($_GET['view']) && !empty($_GET['view']))
         {
             $view = $_GET['view'];
@@ -2870,14 +2954,6 @@ class SettingsUI extends UserInterface
      */
     private function viewItemHistory()
     {
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-            //$this->fatal(ERROR_NO_PERMISSION);
-        }
-
         /* Bail out if we don't have a valid data item type. */
         if (!$this->isRequiredIDValid('dataItemType', $_GET))
         {
@@ -2931,21 +3007,8 @@ class SettingsUI extends UserInterface
         $this->_template->display('./modules/settings/ItemHistory.tpl');
     }
 
-    public function wizard_addUser()
+    private function wizard_addUser()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-        {
-            echo 'CATS has lost your session data!';
-            return;
-        }
-
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            echo 'You do not have access to add a user.';
-            return;
-        }
-
         if (isset($_GET[$id = 'firstName'])) $firstName = $_GET[$id]; else $firstName = '';
         if (isset($_GET[$id = 'lastName'])) $lastName = $_GET[$id]; else $lastName = '';
         if (isset($_GET[$id = 'password'])) $password = $_GET[$id]; else $password = '';
@@ -3002,20 +3065,8 @@ class SettingsUI extends UserInterface
         }
     }
 
-    public function wizard_deleteUser()
+    private function wizard_deleteUser()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-        {
-            echo 'CATS has lost your session!';
-            return;
-        }
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            echo 'You do not have access to delete a user.';
-            return;
-        }
-
         if (isset($_GET[$id = 'userID'])) $userID = intval($_GET[$id]);
         else
         {
@@ -3034,21 +3085,9 @@ class SettingsUI extends UserInterface
         echo 'Ok';
     }
 
-    public function wizard_checkKey()
+    private function wizard_checkKey()
     {
         $fileError = false;
-
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-        {
-            echo 'CATS has lost your session!';
-            return;
-        }
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            echo 'You do not have access to set the key.';
-            return;
-        }
 
         if (isset($_GET[$id = 'key']) && $_GET[$id] != '')
         {
@@ -3124,20 +3163,8 @@ class SettingsUI extends UserInterface
             . 'http://www.catsone.com/professional';
     }
 
-    public function wizard_localization()
+    private function wizard_localization()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-        {
-            echo 'CATS has lost your session!';
-            return;
-        }
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            echo 'You do not have access to change your localization settings.';
-            return;
-        }
-
         if (!isset($_GET['timeZone']) || !isset($_GET['dateFormat']))
         {
             echo 'You didn\'t provide a time zone or date format.';
@@ -3162,60 +3189,24 @@ class SettingsUI extends UserInterface
         echo 'Ok';
     }
 
-    public function wizard_license()
+    private function wizard_license()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-        {
-            echo 'CATS has lost your session!';
-            return;
-        }
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            echo 'You do not have access to accept the license agreement.';
-            return;
-        }
-
         $site = new Site($this->_siteID);
         $site->setAgreedToLicense();
 
         echo 'Ok';
     }
 
-    public function wizard_firstTimeSetup()
+    private function wizard_firstTimeSetup()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-        {
-            echo 'CATS has lost your session!';
-            return;
-        }
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            echo 'You do not has access to this first-time-setup wizard.';
-            return;
-        }
-
         $site = new Site($this->_siteID);
         $site->setFirstTimeSetup();
 
         echo 'Ok';
     }
 
-    public function wizard_password()
+    private function wizard_password()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-        {
-            echo 'CATS has lost your session!';
-            return;
-        }
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            echo 'You do not have acess to set the site password.';
-            return;
-        }
-
         if (isset($_GET['password']) && !empty($_GET['password'])) $password = $_GET['password'];
         else $password = '';
 
@@ -3235,14 +3226,8 @@ class SettingsUI extends UserInterface
         echo 'Ok';
     }
 
-    public function wizard_email()
+    private function wizard_email()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-        {
-            echo 'CATS has lost your session!';
-            return;
-        }
-
         if (isset($_GET['email']) && !empty($_GET['email'])) $email = $_GET['email'];
         else $email = '';
 
@@ -3258,20 +3243,8 @@ class SettingsUI extends UserInterface
         echo 'Ok';
     }
 
-    public function wizard_siteName()
+    private function wizard_siteName()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-        {
-            echo 'CATS has lost your session!';
-            return;
-        }
-        /* Bail out if the user doesn't have SA permissions. */
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
-            echo 'You do not have permission to change the site name.';
-            return;
-        }
-
         if (isset($_GET['siteName']) && !empty($_GET['siteName'])) $siteName = $_GET['siteName'];
         else $siteName = '';
 
@@ -3297,14 +3270,8 @@ class SettingsUI extends UserInterface
         echo 'Ok';
     }
 
-    public function wizard_import()
+    private function wizard_import()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-        {
-            echo 'CATS has lost your session!';
-            return;
-        }
-
         $siteID = $_SESSION['CATS']->getSiteID();
 
         // Echos Ok to redirect to the import stage, or Fail to go to home module
@@ -3314,14 +3281,8 @@ class SettingsUI extends UserInterface
         else echo 'Fail';
     }
 
-    public function wizard_website()
+    private function wizard_website()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-        {
-            echo 'CATS has lost your session!';
-            return;
-        }
-
         $website = trim(isset($_GET[$id='website']) ? $_GET[$id] : '');
         if (strlen($website) > 10)
         {
@@ -3331,14 +3292,8 @@ class SettingsUI extends UserInterface
         echo 'Ok';
     }
 
-    public function careerPortalQuestionnaire($fromPostback = false)
+    private function careerPortalQuestionnaire($fromPostback = false)
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-        }
-
         // Get the ID if provided, otherwise we're adding a questionnaire
         $questionnaireID = isset($_GET[$id='questionnaireID']) ? $_GET[$id] : '';
 
@@ -3419,14 +3374,8 @@ class SettingsUI extends UserInterface
         $this->_template->display('./modules/settings/CareerPortalQuestionnaire.tpl');
     }
 
-    public function onCareerPortalQuestionnaire()
+    private function onCareerPortalQuestionnaire()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-        }
-
         if (!isset($_SESSION['CATS_QUESTIONNAIRE']) || empty($_SESSION['CATS_QUESTIONNAIRE']))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, 'Please return to your careers website '
@@ -3852,14 +3801,8 @@ class SettingsUI extends UserInterface
         $this->careerPortalQuestionnaire(true);
     }
 
-    public function careerPortalQuestionnaireUpdate()
+    private function careerPortalQuestionnaireUpdate()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-            return;
-        }
-
         $questionnaire = new Questionnaire($this->_siteID);
         $data = $questionnaire->getAll(true);
 
@@ -3875,16 +3818,11 @@ class SettingsUI extends UserInterface
         CATSUtility::transferRelativeURI('m=settings&a=careerPortalSettings');
     }
 
-    public function careerPortalQuestionnairePreview()
+    private function careerPortalQuestionnairePreview()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_DEMO)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-        }
-
         if (!isset($_GET['questionnaireID']))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX);
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Bad index.');
         }
 
         $questionnaireID = intval($_GET['questionnaireID']);

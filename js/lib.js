@@ -49,6 +49,12 @@ var CATSIndexName;
 /* Default timeout for AJAX requests; 15 seconds. */
 var AJAX_TIMEOUT = 15000;
 
+function toggleVisibility()
+{
+    var singleQuickActionMenu = document.getElementById('singleQuickActionMenu');
+    singleQuickActionMenu.style.display = singleQuickActionMenu.style.display == 'block' ? 'none' : 'block';
+}
+
 /**
  * Returns true if the string is a valid positive integer.
  *
@@ -56,17 +62,7 @@ var AJAX_TIMEOUT = 15000;
  */
 function stringIsNumeric(string)
 {
-    for (var i = 0; i < string.length; i++)
-    {
-        var character = string.charAt(i);
-
-        if ((character < '0') || (character > '9'))
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return !isNaN(string);
 }
 
 /**
@@ -312,8 +308,9 @@ function AJAX_getXMLHttpObject()
 function AJAX_sendPOSTHeaders(http, contentLength)
 {
     http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    http.setRequestHeader('Content-length', contentLength);
-    http.setRequestHeader('Connection', 'close');
+    /* No more allowed! */
+    //http.setRequestHeader('Content-length', contentLength);
+    //http.setRequestHeader('Connection', 'close');
 }
 
 /**
@@ -562,8 +559,21 @@ function CityState_populate(zipEditID, indicatorID)
             return;
         }
 
+	var addressNode = http.responseXML.getElementsByTagName('address').item(0);
         var cityNode  = http.responseXML.getElementsByTagName('city').item(0);
         var stateNode = http.responseXML.getElementsByTagName('state').item(0);
+
+	if (document.getElementById('address'))
+        {
+            if (addressNode.firstChild)
+            {
+                document.getElementById('address').value = addressNode.firstChild.nodeValue;
+            }
+            else
+            {
+                document.getElementById('address').value = '';
+            }
+        }
 
         if (document.getElementById('city'))
         {
@@ -1080,11 +1090,8 @@ function rot13(theString)
 
 /*
 PROJECT: Javascript Based Base64 Encoding and Decoding Engine
-
 DATE: 02/10/2004
-
 AUTHOR: Adrian Bacon
-
 COPYRIGHT: You are free to use this code as you see fit provided
 that you send any changes or modifications back to me.
 */
@@ -1124,5 +1131,3 @@ function decode64(input)
 
    return output;
 }
-
-

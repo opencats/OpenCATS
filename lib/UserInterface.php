@@ -47,11 +47,9 @@ class UserInterface
     protected $_moduleDirectory = '';
     protected $_userID = -1;
     protected $_siteID = -1;
-    protected $_accessLevel = -1;
     protected $_authenticationRequired = true;
     protected $_hooks = array();
     protected $_schema = array();
-
 
     public function __construct()
     {
@@ -65,11 +63,6 @@ class UserInterface
             /* Get the current user's site ID. */
             $this->_siteID = $_SESSION['CATS']->getSiteID();
 
-            /* Get the current user's access level. */
-            $this->_accessLevel = $_SESSION['CATS']->getAccessLevel();
-
-            /* All templates have an access level if we have a session. */
-            $this->_template->assign('accessLevel', $this->_accessLevel);
         }
     }
 
@@ -326,7 +319,7 @@ class UserInterface
     {
         if (isset($request[$key]) && (!empty($request[$key]) ||
             ($allowZero && $request[$key] == '0')) &&
-            ctype_digit((string) $request[$key]))
+            ctype_digit((string) trim($request[$key])))
         {
             return true;
         }
@@ -414,6 +407,15 @@ class UserInterface
         }
 
         return $ret;
+    }
+    
+     /**
+     * Returns access level of logged in user for securedObject
+     * Intended to be used in UI classes (deriving from UserInterface) to check if user has acces to particular module and it's action.
+     */
+    protected function getUserAccessLevel($securedObjectName)
+    {
+        return $_SESSION['CATS']->getAccessLevel($securedObjectName);
     }
 }
 

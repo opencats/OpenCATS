@@ -45,6 +45,7 @@ include_once('./lib/ExtraFields.php');
 include_once('./lib/Graphs.php');
 include_once('./lib/Questionnaire.php');
 include_once('./lib/CommonErrors.php');
+include_once('./lib/JobOrderTypes.php');
 
 
 class JobOrdersUI extends UserInterface
@@ -80,8 +81,8 @@ class JobOrdersUI extends UserInterface
         $this->_moduleName = 'joborders';
         $this->_moduleTabText = 'Job Orders';
         $this->_subTabs = array(
-            //'Add Job Order'     => CATSUtility::getIndexName() . '?m=joborders&amp;a=add*al='.ACCESS_LEVEL_EDIT,
-            'Add Job Order' => 'javascript:void(0);*js=showPopWin(\''.CATSUtility::getIndexName().'?m=joborders&amp;a=addJobOrderPopup\', 400, 250, null);*al='.ACCESS_LEVEL_EDIT,
+            //'Add Job Order'     => CATSUtility::getIndexName() . '?m=joborders&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@joborders.add',
+            'Add Job Order' => 'javascript:void(0);*js=showPopWin(\''.CATSUtility::getIndexName().'?m=joborders&amp;a=addJobOrderPopup\', 400, 250, null);*al=' . ACCESS_LEVEL_EDIT . '@joborders.add',
             'Search Job Orders' => CATSUtility::getIndexName() . '?m=joborders&amp;a=search'
         );
     }
@@ -96,14 +97,26 @@ class JobOrdersUI extends UserInterface
         switch ($action)
         {
             case 'show':
+                if ($this->getUserAccessLevel('joborders.show') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->show();
                 break;
 
             case 'addJobOrderPopup':
+                if ($this->getUserAccessLevel('joborders.add') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->addJobOrderPopup();
                 break;
 
             case 'add':
+                if ($this->getUserAccessLevel('joborders.add') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onAdd();
@@ -116,6 +129,10 @@ class JobOrdersUI extends UserInterface
                 break;
 
             case 'edit':
+                if ($this->getUserAccessLevel('joborders.edit') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onEdit();
@@ -128,10 +145,18 @@ class JobOrdersUI extends UserInterface
                 break;
 
             case 'delete':
+                if ($this->getUserAccessLevel('joborders.delete') < ACCESS_LEVEL_DELETE)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->onDelete();
                 break;
 
             case 'search':
+                if ($this->getUserAccessLevel('joborders.search') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 include_once('./lib/Search.php');
 
                 if ($this->isGetBack())
@@ -147,6 +172,10 @@ class JobOrdersUI extends UserInterface
 
             /* Change candidate-joborder status. */
             case 'addActivityChangeStatus':
+                if ($this->getUserAccessLevel('pipelines.addActivityChangeStatus') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onAddActivityChangeStatus();
@@ -163,6 +192,10 @@ class JobOrdersUI extends UserInterface
              * consider for this job order.
              */
             case 'considerCandidateSearch':
+                if ($this->getUserAccessLevel('joborders.considerCandidateSearch') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 include_once('./lib/Search.php');
 
                 if ($this->isPostBack())
@@ -181,6 +214,10 @@ class JobOrdersUI extends UserInterface
              * to consider a candidate (in the modal window).
              */
             case 'addToPipeline':
+                if ($this->getUserAccessLevel('pipelines.addToPipeline') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->onAddToPipeline();
                 break;
 
@@ -188,6 +225,10 @@ class JobOrdersUI extends UserInterface
              * Quick add candidate (in the modal window).
              */
             case 'addCandidateModal':
+                if ($this->getUserAccessLevel('candidates.add') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 if ($this->isPostBack())
                 {
                     $this->onAddCandidateModal();
@@ -201,16 +242,20 @@ class JobOrdersUI extends UserInterface
 
             /* Remove a candidate from a pipeline. */
             case 'removeFromPipeline':
-                $this->onRemoveFromPipeline();
-                break;
-
-            /* Remove a candidate from a pipeline. */
-            case 'removeFromPipeline':
+                if ($this->getUserAccessLevel('pipelines.removeFromPipeline') < ACCESS_LEVEL_DELETE)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->onRemoveFromPipeline();
                 break;
 
             /* Add an attachment */
             case 'createAttachment':
+                if ($this->getUserAccessLevel('joborders.createAttachment') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
+
                 include_once('./lib/DocumentToText.php');
 
                 if ($this->isPostBack())
@@ -226,20 +271,38 @@ class JobOrdersUI extends UserInterface
 
             /* Delete an attachment */
             case 'deleteAttachment':
+                if ($this->getUserAccessLevel('joborders.deleteAttachment') < ACCESS_LEVEL_DELETE)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->onDeleteAttachment();
                 break;
 
+            /* FIXME: function setCandidateJobOrder() does not exist
             case 'setCandidateJobOrder':
+                if ($this->getUserAccessLevel('joborders.setCandidateJobOrder') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->setCandidateJobOrder();
                 break;
+            */
 
             case 'administrativeHideShow':
+                if ($this->getUserAccessLevel('joborders.administrativeHideShow') < ACCESS_LEVEL_MULTI_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->administrativeHideShow();
                 break;
 
             /* Main job orders page. */
             case 'listByView':
             default:
+                if ($this->getUserAccessLevel('joborders.list') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->listByView();
                 break;
         }
@@ -312,7 +375,7 @@ class JobOrdersUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified job order ID could not be found.');
         }
 
-        if ($data['isAdminHidden'] == 1 && $this->_accessLevel < ACCESS_LEVEL_MULTI_SA)
+        if ($data['isAdminHidden'] == 1 && $this->getUserAccessLevel('joborders.hidden') < ACCESS_LEVEL_MULTI_SA)
         {
             $this->listByView('This Job Order is hidden - only a CATS Administrator can unlock the Job Order.');
             return;
@@ -390,7 +453,7 @@ class JobOrdersUI extends UserInterface
             DATA_ITEM_JOBORDER, $jobOrderID, $data['title']
         );
 
-        if ($this->_accessLevel < ACCESS_LEVEL_DEMO)
+        if ($this->getUserAccessLevel('joborders.show') < ACCESS_LEVEL_DEMO)
         {
             $privledgedUser = false;
         }
@@ -603,6 +666,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('selectedDepartmentsString', $selectedDepartmentsString);
         $this->_template->assign('isHrMode', $_SESSION['CATS']->isHrMode());
         $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('jobTypes', (new JobOrderTypes())->getAll());
 
         if (!eval(Hooks::get('JO_ADD'))) return;
 
@@ -614,11 +678,6 @@ class JobOrdersUI extends UserInterface
      */
     private function onAdd()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid company ID. */
         if (!$this->isRequiredIDValid('companyID', $_POST))
         {
@@ -650,8 +709,8 @@ class JobOrdersUI extends UserInterface
         }
 
         if (isset($_POST['openings']) && !empty($_POST['openings']) &&
-            !ctype_digit((string) $_POST['openings']))
-        {
+            !ctype_digit((string) trim($_POST['openings'])))
+        {        	
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid number of openings.');
         }
 
@@ -785,7 +844,7 @@ class JobOrdersUI extends UserInterface
             $emailTemplateDisabled = false;
         }
 
-        if ($this->_accessLevel == ACCESS_LEVEL_DEMO)
+        if ($this->getUserAccessLevel('joborders.email') == ACCESS_LEVEL_DEMO)
         {
             $canEmail = false;
         }
@@ -872,6 +931,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('jobOrderID', $jobOrderID);
         $this->_template->assign('isHrMode', $_SESSION['CATS']->isHrMode());
         $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
+        $this->_template->assign('jobTypes', (new JobOrderTypes())->getAll());
 
         if (!eval(Hooks::get('JO_EDIT'))) return;
 
@@ -883,11 +943,6 @@ class JobOrdersUI extends UserInterface
      */
     private function onEdit()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         $jobOrders = new JobOrders($this->_siteID);
 
         /* Bail out if we don't have a valid job order ID. */
@@ -948,7 +1003,7 @@ class JobOrdersUI extends UserInterface
         }
 
         if (isset($_POST['openings']) && !empty($_POST['openings']) &&
-            !ctype_digit((string) $_POST['openings']))
+            !ctype_digit((string) trim($_POST['openings'])))
         {
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid number of openings.');
         }
@@ -1084,11 +1139,6 @@ class JobOrdersUI extends UserInterface
      */
     private function onDelete()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_DELETE)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
@@ -1215,11 +1265,6 @@ class JobOrdersUI extends UserInterface
      */
     private function onAddToPipeline()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
@@ -1336,11 +1381,6 @@ class JobOrdersUI extends UserInterface
      */
     private function onAddCandidateModal()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_POST))
         {
@@ -1492,11 +1532,6 @@ class JobOrdersUI extends UserInterface
 
     private function onAddActivityChangeStatus()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid regarding job order ID. */
         if (!$this->isRequiredIDValid('regardingID', $_POST))
         {
@@ -1520,10 +1555,6 @@ class JobOrdersUI extends UserInterface
      */
     private function onRemoveFromPipeline()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_DELETE)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
 
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
@@ -1749,11 +1780,6 @@ class JobOrdersUI extends UserInterface
      */
     private function onCreateAttachment()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid joborder ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_POST))
         {
@@ -1789,11 +1815,6 @@ class JobOrdersUI extends UserInterface
      */
     private function onDeleteAttachment()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_DELETE)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid attachment ID. */
         if (!$this->isRequiredIDValid('attachmentID', $_GET))
         {
@@ -1825,11 +1846,6 @@ class JobOrdersUI extends UserInterface
     // FIXME: Document me.
     private function administrativeHideShow()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_MULTI_SA)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-        }
-
         /* Bail out if we don't have a valid joborder ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {

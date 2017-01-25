@@ -397,7 +397,7 @@ class ImportUI extends UserInterface
     */
     private function onImport()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        if ($this->getUserAccessLevel('import.import') < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
@@ -496,12 +496,15 @@ class ImportUI extends UserInterface
             $this->importSelectType();
             return;
         }
-
+        if (!is_dir(CATS_TEMP_DIR))
+        {
+            @mkdir(CATS_TEMP_DIR);
+        }
         /* Make sure the attachments directory exists and create it if not. */
         if (!is_dir(CATS_TEMP_DIR))
         {
             $errorMessage = sprintf(
-                'Directory \'%s\' does not exist. CATS is not configured correctly.',
+                'Directory \'%s\' does not exist and can\'t be created. CATS is not configured correctly.',
                 CATS_TEMP_DIR
             );
             $this->_template->assign('errorMessage', $errorMessage);
@@ -687,7 +690,7 @@ class ImportUI extends UserInterface
 
         $highlightModule = strtolower($importInto);
 
-        $isSA = ($this->_accessLevel >= ACCESS_LEVEL_SA);
+        $isSA = ($this->getUserAccessLevel('import.import') >= ACCESS_LEVEL_SA);
 
         if (!eval(Hooks::get('IMPORT_ON_IMPORT_DELIMITED_4'))) return;
 
@@ -713,7 +716,7 @@ class ImportUI extends UserInterface
      */
     public function onImportFieldsDelimited()
     {
-        if ($this->_accessLevel < ACCESS_LEVEL_EDIT)
+        if ($this->getUserAccessLevel('import.import') < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
@@ -851,7 +854,7 @@ class ImportUI extends UserInterface
                 else if ($theFieldPreferenceValue == 'foreign' || $theFieldPreferenceValue == 'foreignAdded')
                 {
                     /* Before we do this, ensure that we have permision and the field is in the database. */
-                    if ($this->_accessLevel >= ACCESS_LEVEL_SA)
+                    if ($this->getUserAccessLevel('import.import') >= ACCESS_LEVEL_SA)
                     {
                         $import = new Import($this->_siteID);
                         if ($theFieldPreferenceValue == 'foreign')
@@ -1422,7 +1425,7 @@ class ImportUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_NOTLOGGEDIN, $this);
         }
 
-        if ($_SESSION['CATS']->getAccessLevel() < ACCESS_LEVEL_EDIT)
+        if ($this->getUserAccessLevel('import.massImport') < ACCESS_LEVEL_EDIT)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You do not have permission to import '
                 . 'mass resume documents.'
@@ -1943,7 +1946,7 @@ class ImportUI extends UserInterface
         {
             CommonErrors::fatal(COMMONERROR_NOTLOGGEDIN, $this);
         }
-        if ($_SESSION['CATS']->getAccessLevel() < ACCESS_LEVEL_SA)
+        if ($this->getUserAccessLevel('import.bulkResumes') < ACCESS_LEVEL_SA)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
         }
@@ -1976,7 +1979,7 @@ class ImportUI extends UserInterface
         {
             CommonErrors::fatal(COMMONERROR_NOTLOGGEDIN, $this);
         }
-        if ($_SESSION['CATS']->getAccessLevel() < ACCESS_LEVEL_SA)
+        if ($this->getUserAccessLevel('import.bulkResumes') < ACCESS_LEVEL_SA)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
         }

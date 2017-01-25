@@ -1,4 +1,7 @@
-<?php /* $Id: Show.tpl 3582 2007-11-12 22:58:48Z brian $ */ ?>
+<?php /* $Id: Show.tpl 3582 2007-11-12 22:58:48Z brian $ */
+include_once('./vendor/autoload.php');
+use OpenCATS\UI\QuickActionMenu;
+?>
 <?php TemplateUtility::printHeader('Company - '.$this->data['name'], array( 'js/sorttable.js', 'js/attachment.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
@@ -17,7 +20,7 @@
 
             <p class="note">Company Details</p>
 
-            <table class="detailsOutside" width="925">
+            <table class="detailsOutside">
                 <tr style="vertical-align:top;">
                     <td width="50%" height="100%">
                         <table class="detailsInside" height="100%">
@@ -25,7 +28,7 @@
                                 <td class="vertical">Name:</td>
                                 <td class="data">
                                     <span class="<?php echo($this->data['titleClass']); ?>"><?php $this->_($this->data['name']); ?></span>
-                                    <?php TemplateUtility::printSingleQuickActionMenu(DATA_ITEM_COMPANY, $this->companyID); ?>
+                                    <?php TemplateUtility::printSingleQuickActionMenu(new QuickActionMenu(DATA_ITEM_COMPANY, $this->companyID, $_SESSION['CATS']->getAccessLevel('companies.edit'))); ?>
                                 </td>
                             </tr>
 
@@ -131,7 +134,7 @@
 
             <!-- CONTACT INFO -->
             <?php if (count($this->departmentsRS) > 0): ?>
-                <table class="detailsOutside" width="925">
+                <table class="detailsOutside">
                     <tr>
                         <td>
                             <table class="detailsInside">
@@ -152,7 +155,7 @@
             <!-- /CONTACT INFO -->
 
             <!-- CONTACT INFO -->
-            <table class="detailsOutside" width="925">
+            <table class="detailsOutside">
                 <tr>
                     <td>
                         <table class="detailsInside">
@@ -171,7 +174,7 @@
                                                 </td>
                                                 <td><?php $this->_($attachmentsData['dateCreated']) ?></td>
                                                 <td>
-                                                    <?php if ($this->accessLevel >= ACCESS_LEVEL_DELETE): ?>
+                                                    <?php if ($this->getUserAccessLevel('companies.deleteAttachment') >= ACCESS_LEVEL_DELETE): ?>
                                                         <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=companies&amp;a=deleteAttachment&amp;companyID=<?php echo($this->companyID); ?>&amp;attachmentID=<?php $this->_($attachmentsData['attachmentID']) ?>"  title="Delete" onclick="javascript:return confirm('Delete this attachment?');">
                                                             <img src="images/actions/delete.gif" alt="" width="16" height="16" border="0" />
                                                         </a>
@@ -180,7 +183,7 @@
                                             </tr>
                                         <?php endforeach; ?>
                                     </table>
-                                    <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
+                                    <?php if ($this->getUserAccessLevel('companies.createAttachment') >= ACCESS_LEVEL_EDIT): ?>
                                             <?php if (isset($this->attachmentLinkHTML)): ?>
                                                 <?php echo($this->attachmentLinkHTML); ?>
                                             <?php else: ?>
@@ -214,13 +217,13 @@
             </table>
             <!-- /CONTACT INFO -->
 
-            <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
+            <?php if ($this->getUserAccessLevel('companies.edit') >= ACCESS_LEVEL_EDIT): ?>
                 <a id="edit_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=companies&amp;a=edit&amp;companyID=<?php echo($this->companyID); ?>">
                     <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="edit" border="0" />&nbsp;Edit
                 </a>
                 &nbsp;&nbsp;&nbsp;&nbsp;
             <?php endif; ?>
-            <?php if ($this->accessLevel >= ACCESS_LEVEL_DELETE && $this->data['defaultCompany'] != 1): ?>
+            <?php if ($this->getUserAccessLevel('companies.delete') >= ACCESS_LEVEL_DELETE && $this->data['defaultCompany'] != 1): ?>
                 <a id="delete_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=companies&amp;a=delete&amp;companyID=<?php echo($this->companyID); ?>" onclick="javascript:return confirm('Delete this company?');">
                     <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;Delete
                 </a>
@@ -236,7 +239,7 @@
             <br />
 
             <p class="note">Job Orders</p>
-            <table class="sortable" width="925">
+            <table class="sortable">
                 <tr>
                     <th align="left" width="30" nowrap="nowrap">ID</th>
                     <th align="left" width="200">Title</th>
@@ -272,7 +275,7 @@
                         <td valign="top" align="left"><?php $this->_($jobOrdersData['recruiterAbbrName']); ?></td>
                         <td valign="top" align="left"><?php $this->_($jobOrdersData['ownerAbbrName']); ?></td>
                         <td valign="top" align="center">
-                            <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
+                            <?php if ($this->getUserAccessLevel('joborders.edit') >= ACCESS_LEVEL_EDIT): ?>
                                 <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=edit&amp;jobOrderID=<?php $this->_($jobOrdersData['jobOrderID']) ?>">
                                     <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="edit" border="0" />
                                 </a>
@@ -282,7 +285,7 @@
                 <?php endforeach; ?>
             </table>
 
-            <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
+            <?php if ($this->getUserAccessLevel('joborders.add') >= ACCESS_LEVEL_EDIT): ?>
                 <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=add&amp;selected_company_id=<?php echo($this->companyID); ?>" title="Add Job Order">
                     <img src="images/actions/job_order.gif" width="16" height="16" class="absmiddle" alt="New Job Order" border="0" />&nbsp;Add Job Order
                 </a>
@@ -292,7 +295,7 @@
 
             <!-- CONTACT INFO -->
             <p class="note">Contacts</p>
-            <table class="sortable" width="925">
+            <table class="sortable">
                 <tr>
                     <th align="left" nowrap="nowrap">First Name</th>
                     <th align="left" nowrap="nowrap">Last Name</th>
@@ -332,7 +335,7 @@
                             <?php else: ?>
                                 <img src="images/actions/email_no.gif" title="No E-Mail Address" width="16" height="16" alt="" class="absmiddle" border="0" />
                             <?php endif; ?>
-                            <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
+                            <?php if ($this->getUserAccessLevel('contacts.edit') >= ACCESS_LEVEL_EDIT): ?>
                                 <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=contacts&amp;a=edit&amp;contactID=<?php $this->_($contactsData['contactID']) ?>">
                                     <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="edit" border="0" />
                                 </a>
@@ -370,7 +373,7 @@
                             <?php else: ?>
                                 <img src="images/actions/email_no.gif" title="No E-Mail Address" width="16" height="16" alt="" class="absmiddle" border="0" />
                             <?php endif; ?>
-                            <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
+                            <?php if ($this->getUserAccessLevel('contacts.edit') >= ACCESS_LEVEL_EDIT): ?>
                                 <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=contacts&amp;a=edit&amp;contactID=<?php $this->_($contactsData['contactID']) ?>">
                                     <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="edit" border="0" />
                                 </a>
@@ -382,7 +385,7 @@
 
             </table>
 
-            <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
+            <?php if ($this->getUserAccessLevel('contacts.add') >= ACCESS_LEVEL_EDIT): ?>
                 <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=contacts&amp;a=add&amp;selected_company_id=<?php echo($this->companyID); ?>" title="Add Contact">
                     <img src="images/actions/add_contact.gif" width="16" height="16" class="absmiddle" alt="add contact" border="0" title="Add Contact"/>&nbsp;Add Contact
                 </a>
@@ -402,5 +405,4 @@
         </div>
     </div>
 
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

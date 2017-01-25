@@ -152,50 +152,35 @@ class DocumentToText
                 break;
 
             case DOCUMENT_TYPE_RTF;
-                 /* Store the output in string and array form. */
-                $this->_returnCode = ($this->_rawOutput = $this->rtf2text($fileName)) ? 1 : 0;
-
-                /* If command returned non-zero or output is not an array, assume
-                 * failure.
-                 */
-                if ($commandResult['returnCode'] != 0)
+                $this->_rawOutput = $this->rtf2text($fileName);
+                if ($this->_rawOutput == null)
                 {
                     return false;
                 }
-                $this->_linesArray = array($commandResult['output']);
                 $this->_linesString = $this->_rawOutput;
-
-                return true;                break;
+                
+                return true;                
+                break;
 
             case DOCUMENT_TYPE_ODT:
-                 /* Store the output in string and array form. */
-                $this->_returnCode = ($this->_rawOutput = $this->odt2text($fileName)) ? 1 : 0;
-
-                /* If command returned non-zero or output is not an array, assume
-                 * failure.
-                 */
-                if ($commandResult['returnCode'] != 0)
+                $this->_rawOutput = $this->odt2text($filename);
+                if ( $this->_rawOutput == null )
                 {
                     return false;
                 }
-                $this->_linesArray = array($commandResult['output']);
+                $this->_linesArray = explode("\n", $this->_rawOutput);
                 $this->_linesString = $this->_rawOutput;
 
                 return true;
                 break;
 
             case DOCUMENT_TYPE_DOCX:
-                /* Store the output in string and array form. */
-                $this->_returnCode = ($this->_rawOutput = $this->docx2text($fileName)) ? 1 : 0;
-
-                /* If command returned non-zero or output is not an array, assume
-                 * failure.
-                 */
-                if ($commandResult['returnCode'] != 0)
+                $this->_rawOutput = $this->docx2text($fileName);
+                if ($this->_rawOutput == null)
                 {
                     return false;
                 }
-                $this->_linesArray = array($commandResult['output']);
+                $this->_linesArray = explode("\n", $this->_rawOutput);
                 $this->_linesString = $this->_rawOutput;
 
                 return true;
@@ -427,14 +412,15 @@ class DocumentToText
                 $zip->close();
                 // Load XML from a string
                 // Skip errors and warnings
-                $xml = DOMDocument::loadXML($data, LIBXML_NOENT | LIBXML_XINCLUDE | LIBXML_NOERROR | LIBXML_NOWARNING);
+                $xml = new DOMDocument();
+                $xml->loadXML($data, LIBXML_NOENT | LIBXML_XINCLUDE | LIBXML_NOERROR | LIBXML_NOWARNING);
                 $raw_text = $xml->saveXML();
                 // We need to add a space where end-of-line and end-of-paragraphs present 
                 $raw_text_patched = str_replace(
                         array('<w:br/>', '</w:p>', '<text:line-break', '<text:p'),
                         array("\n<w:br/>", "\n</w:p>", "\n<text:line-break", "\n<text:p"), $raw_text);
                 // Return data without XML formatting tags
-                return strip_tags($raw_text_patched);
+                return utf8_encode(strip_tags($raw_text_patched));
             }
             $zip->close();
         }
@@ -448,8 +434,15 @@ class DocumentToText
         global $text;
         global $j;
         global $len;
+        if(!is_readable($filename))
+        {
+            return null;
+        }
         $text = file_get_contents($filename);
-
+        if(!$text)
+        {
+            return null;
+        }
         // we'll try to fix up the parts of the rtf as best we can
         // clean up the file a little to simplify parsing
         $text = str_replace("\r", ' ', $text); // returns
@@ -518,7 +511,7 @@ class DocumentToText
         }
         $ansa = str_replace('{', '', $ansa);
         $ansa = str_replace('}', '', $ansa);
-        return $ansa;
+        return utf8_encode($ansa);
     }
 
     private function getpgraph()

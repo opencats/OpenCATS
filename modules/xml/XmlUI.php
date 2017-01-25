@@ -181,6 +181,12 @@ class XmlUI extends UserInterface
         $careerPortalSettings = new CareerPortalSettings($careerPortalSiteID);
         $settings = $careerPortalSettings->getAll();
 
+        $url = CATSUtility::getAbsoluteURI();
+        if(strrpos($url, 'xml') == (strlen($url) - 4))
+        {
+            $url = substr($url, 0, -4);
+        }
+
         if ($settings['allowBrowse'] == 1)
         {
             // browse the jobs, adding a section body for each job
@@ -195,7 +201,7 @@ class XmlUI extends UserInterface
                         case 'siteURL':
                             $txtJobPosting = XmlTemplate::replaceTemplateTags(
                                 $tag,
-                                substr(CATSUtility::getAbsoluteURI(''), 0, -4),
+                                $url,
                                 $txtJobPosting
                         );
                         break;
@@ -211,14 +217,14 @@ class XmlUI extends UserInterface
                         case 'jobPostDate':
                             $txtJobPosting = XmlTemplate::replaceTemplateTags(
                                 $tag,
-                                DateUtility::getRSSDate(strtotime($row['dateCreatedSort'])),
+                                $row['dateCreatedSort'],
                                 $txtJobPosting
                             );
                             break;
 
                         case 'jobURL':
                             $uri = sprintf("%scareers/?p=showJob&ID=%d&ref=%s",
-                                substr(CATSUtility::getAbsoluteURI(), 0, -4),
+                                $url,
                                 $row['jobOrderID'],
                                 $templateName
                             );
@@ -230,10 +236,18 @@ class XmlUI extends UserInterface
                             );
                             break;
 
-                        case 'jobID':
+                        case 'jobOrderID':
                             $txtJobPosting = XmlTemplate::replaceTemplateTags(
                                 $tag,
                                 $row['jobOrderID'],
+                                $txtJobPosting
+                            );
+                            break;
+                            
+                        case 'jobID':
+                            $txtJobPosting = XmlTemplate::replaceTemplateTags(
+                                $tag,
+                                $row['jobID'],
                                 $txtJobPosting
                             );
                             break;
@@ -283,6 +297,21 @@ class XmlUI extends UserInterface
                             $txtJobPosting = XmlTemplate::replaceTemplateTags(
                                 $tag,
                                 $row['jobDescription'],
+                                $txtJobPosting
+                            );
+                            break;
+                            
+                        case 'notes':
+                            $txtJobPosting = XmlTemplate::replaceTemplateTags(
+                                $tag,
+                                $row['notes'],
+                                $txtJobPosting
+                            );
+                            break;
+                        case 'type':
+                            $txtJobPosting = XmlTemplate::replaceTemplateTags(
+                                $tag,
+                                $row['type'],
                                 $txtJobPosting
                             );
                             break;

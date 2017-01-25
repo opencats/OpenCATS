@@ -1,5 +1,5 @@
 <?php /* $Id: Add.tpl 3810 2007-12-05 19:13:25Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Job Orders', array('modules/joborders/validator.js',  'js/company.js', 'js/sweetTitles.js', 'js/suggest.js', 'js/joborder.js', 'js/lib.js', 'js/listEditor.js', 'tinymce')); ?>
+<?php TemplateUtility::printHeader('Job Orders', array('modules/joborders/validator.js',  'js/company.js', 'js/sweetTitles.js', 'js/suggest.js', 'js/joborder.js', 'js/lib.js', 'js/listEditor.js', 'ckeditor/ckeditor.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">
@@ -125,10 +125,15 @@
                             </td>
                             <td class="tdData">
                                 <select tabindex="7" id="type" name="type" class="inputbox" style="width: 150px;">
-                                    <option value="H"   <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == 'H') echo('selected'); ?>>H (Hire)</option>
-                                    <option value="C2H" <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == 'C2H') echo('selected'); ?>>C2H (Contract to Hire)</option>
-                                    <option value="C"   <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == 'C') echo('selected'); ?>>C (Contract)</option>
-                                    <option value="FL"  <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == 'FL') echo('selected'); ?>>FL (Freelance)</option>
+                                <?php foreach($this->jobTypes as $jobTypeShort => $jobTypeLong): ?>
+                                    <option value="<?php echo $jobTypeShort ?>" 
+                                            <?php if(isset($this->jobOrderSourceRS['type']) && $this->jobOrderSourceRS['type'] == $jobTypeShort) echo('selected'); ?>>
+                                            <?php echo $jobTypeShort." (".$jobTypeLong.")";?>
+                                    </option>
+                                <?php endforeach; ?>
+                                <?php if(count($this->jobTypes) < 1): ?>
+                                    <option value="N/A" selected>N/A (Not Applicable)</option>
+                                <?php endif; ?>
                                 </select>&nbsp;*
                             </td>
                         </tr>
@@ -264,7 +269,7 @@
                                 <label id="descriptionLabel" for="description">Description:</label>
                             </td>
                             <td class="tdData">
-                                <textarea tabindex="18" class="mceEditor" name="description" id="description" rows="15" style="width: 500px;"><?php if(isset($this->jobOrderSourceRS['description'])): ?><?php $this->_($this->jobOrderSourceRS['description']); ?><?php endif; ?></textarea>
+                                <textarea tabindex="18" class="ckEditor" name="description" id="description" rows="15" style="width: 500px;"><?php if(isset($this->jobOrderSourceRS['description'])): ?><?php $this->_($this->jobOrderSourceRS['description']); ?><?php endif; ?></textarea>
                             </td>
                         </tr>
 
@@ -273,7 +278,7 @@
                                 <label id="notesLabel" for="notes">Internal Notes:</label>
                             </td>
                             <td class="tdData">
-                                <textarea tabindex="19" class="mceEditor" name="notes" id="notes" rows="5" style="width: 500px;"><?php if(isset($this->jobOrderSourceRS['notes'])): ?><?php $this->_($this->jobOrderSourceRS['notes']); ?><?php endif; ?></textarea>
+                                <textarea tabindex="19" class="ckEditor" name="notes" id="notes" rows="5" style="width: 500px;"><?php if(isset($this->jobOrderSourceRS['notes'])): ?><?php $this->_($this->jobOrderSourceRS['notes']); ?><?php endif; ?></textarea>
                             </td>
                         </tr>
 
@@ -289,7 +294,7 @@
                                     <option value="<?php echo $questionnaire['questionnaireID']; ?>"><?php echo $questionnaire['title']; ?></option>
                                 <?php endforeach; ?>
                                 </select>
-                                <?php if ($_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA): ?>
+                                <?php if ($this->getUserAccessLevel('settings.careerPortalSettings') >= ACCESS_LEVEL_SA): ?>
                                 <br />
                                 <a href="<?php echo CATSUtility::getIndexName(); ?>?m=settings&a=careerPortalSettings" target="_blank">Add / Edit / Delete Questionnaires</a>
                                 <?php endif; ?>
@@ -301,6 +306,26 @@
                     <input type="reset"  tabindex="21" class="button" name="reset"  value="Reset" />&nbsp;
                     <input type="button" tabindex="22" class="button" name="back"   value="Back to Job Orders" onclick="javascript:goToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=listByView');" />
                 </form>
+                
+                <script type="text/javascript">
+                    CKEDITOR.replace( 'description' );
+                    CKEDITOR.on('instanceReady', function(ev)
+                    {
+                        var tags = ['p', 'ol', 'ul', 'li']; // etc.
+
+                        for (var key in tags) {
+                            ev.editor.dataProcessor.writer.setRules(
+                                tags[key],
+                                {
+                                    indent : false,
+                                    breakBeforeOpen : false,
+                                    breakAfterOpen : false,
+                                    breakBeforeClose : false,
+                                    breakAfterClose : false, 
+                                });
+                        }
+                    });
+                </script>
 
                 <script type="text/javascript">
                     document.addJobOrderForm.title.focus();
@@ -310,5 +335,4 @@
             <?php endif; ?>
         </div>
     </div>
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

@@ -1,0 +1,21 @@
+default:
+    suites:
+        default:
+            paths: [ %paths.base%/features ]
+            contexts:
+                - FeatureContext
+            filters:
+                tags: @core 
+        security:
+            paths: [ %paths.base%/features ]
+            contexts:
+                - SecurityContext
+            filters:
+                tags: @security 
+    extensions:
+        Behat\MinkExtension:
+            base_url: http://opencats
+            goutte: ~
+            selenium2:
+               wd_host: 'http://selenium:4444/wd/hub'
+               browser: 'chrome'

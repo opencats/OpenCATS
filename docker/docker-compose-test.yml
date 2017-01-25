@@ -1,0 +1,61 @@
+version: '2'
+services:
+    opencats:
+      container_name: opencats_test_web
+      image: prooph/nginx:www
+      ports:
+          - "80:80"
+          - "443:443"
+      volumes_from:
+        - opencatsdata
+
+    php:
+      container_name: opencats_test_php
+      image: opencats/php:5.6.27-fpm-alpine
+      volumes_from:
+        - opencatsdata
+
+    opencatsdata:
+      container_name: opencats_test_data
+      image: busybox
+      volumes:
+        - ..:/var/www/public
+        - ../test/config.php:/var/www/public/config.php
+        - ../test/INSTALL_BLOCK:/var/www/public/INSTALL_BLOCK
+      command: "true"
+
+    opencatsdb:
+      container_name: opencats_test_mariadb
+      image: mariadb
+      ports:
+        - 3306
+      environment:
+        - MYSQL_ROOT_PASSWORD=dev
+        - MYSQL_USER=dev
+        - MYSQL_PASSWORD=dev
+        - MYSQL_DATABASE=cats_test
+      volumes:
+        - ../test/data/:/test/data/
+        - ../test/scripts/:/test/scripts
+        - ../test/data/test.sql:/docker-entrypoint-initdb.d/000_initDB.sql
+        - ../test/data/securityTests.sql:/docker-entrypoint-initdb.d/001_addUsers.sql
+
+    integrationtestdb:
+      image: mariadb
+      ports:
+        - 3307:3306
+      environment:
+        - MYSQL_ROOT_PASSWORD=dev
+        - MYSQL_USER=dev
+        - MYSQL_PASSWORD=dev
+        - MYSQL_DATABASE=cats_integrationtest
+
+    selenium:
+      container_name: selenium_test
+      image: mlespiau/standalone-chrome:2.53.1-cd2.23
+      environment:
+        # Required to avoid container startup hanging sometimes in
+        # some environments
+        JAVA_OPTS: -Djava.security.egd=file:/dev/./urandom
+      ports:
+        - 4444

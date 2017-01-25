@@ -36,6 +36,11 @@ define('DATABASE_PASS', 'password');
 define('DATABASE_HOST', 'localhost');
 define('DATABASE_NAME', 'cats_dev');
 
+/* Authentication Configuration
+ * Options are sql, ldap, sql+ldap
+ */
+define ('AUTH_MODE', 'sql');
+
 /* Resfly.com Resume Import Services Enabled */
 define('PARSING_ENABLED', false);
 
@@ -121,6 +126,9 @@ define('HTML_ENCODING', 'UTF-8');
 /* AJAX Encoding. */
 define('AJAX_ENCODING', 'UTF-8');
 
+/* SQL Character Set. */
+define('SQL_CHARACTER_SET', 'utf8');
+
 /* Insert BOM in the beginning of CSV file */
 /* This is UTF-8 BOM, EF BB BF for UTF-8 */
 define('INSERT_BOM_CSV_LENGTH', '3');
@@ -191,7 +199,7 @@ define('DEMO_PASSWORD',  'john99');
  * 2: Sendmail
  * 3: SMTP
  */
-define('MAIL_MAILER', 1);
+define('MAIL_MAILER', 3);
 
 /* Sendmail Settings. You don't need to worry about this unless MAIL_MAILER
  * is set to 2.
@@ -203,10 +211,12 @@ define('MAIL_SENDMAIL_PATH', "/usr/sbin/sendmail");
  * true and configure MAIL_SMTP_USER and MAIL_SMTP_PASS.
  */
 define('MAIL_SMTP_HOST', "localhost");
-define('MAIL_SMTP_PORT', 25);
-define('MAIL_SMTP_AUTH', false);
+define('MAIL_SMTP_PORT', 587);
+define('MAIL_SMTP_AUTH', true);
 define('MAIL_SMTP_USER', "user");
 define('MAIL_SMTP_PASS', "password");
+//Options: '', 'ssl' or 'tls'
+define('MAIL_SMTP_SECURE', "tls");
 
 /* Event reminder E-Mail Template. */
 $GLOBALS['eventReminderEmail'] = <<<EOF
@@ -244,5 +254,189 @@ define('CACHE_MODULES', false);
  */
 
 define('US_ZIPS_ENABLED', false);
+
+/* LDAP Configuration
+ */
+define ('LDAP_HOST', 'ldap.forumsys.com');
+define ('LDAP_PORT', '389');
+define ('LDAP_PROTOCOL_VERSION', 3);
+
+define ('LDAP_BASEDN', 'dc=example,dc=com');
+
+define ('LDAP_BIND_DN', 'cn=read-only-admin,dc=example,dc=com');
+define ('LDAP_BIND_PASSWORD', 'password');
+
+define ('LDAP_ACCOUNT', '{$username}'); // '{$username}' cannot be changed, else can
+
+define ('LDAP_ATTRIBUTE_UID', 'uid');
+define ('LDAP_ATTRIBUTE_DN', 'dn');
+define ('LDAP_ATTRIBUTE_LASTNAME', 'sn');
+define ('LDAP_ATTRIBUTE_FIRSTNAME', 'givenname');
+define ('LDAP_ATTRIBUTE_EMAIL', 'mail');
+
+define ('LDAP_SITEID', 1);
+
+
+/* Job Types mapping
+ */
+/* Uncomment bellow if you want custom mapping */
+/*const JOB_TYPES_LIST = array(
+    'PT' => 'Part-Time',
+    'FT' => 'Full-Time',
+    'ST' => 'Student',
+    'FL' => 'Freelance'
+);*/
+
+
+/* 
+require_once('.\constants.php');
+// defining user roles
+const USER_ROLES = array(
+        'candidate' => array('Candidate', 'candidate', 'This is a candidate.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ),
+        'demo' => array('Demo', 'demo', 'This is a demo user.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
+    );
+    
+// defining access levels different from the default access level    
+const ACCESS_LEVEL_MAP = array(
+        'candidate' => array(
+        ),
+        'demo' => array(
+            'candidates' => ACCESS_LEVEL_DELETE,
+            'candidates.emailCandidates' => ACCESS_LEVEL_DISABLED,
+            'candidates.history' => ACCESS_LEVEL_DEMO,
+            'joborders' => ACCESS_LEVEL_DELETE,
+            'joborders.show' => ACCESS_LEVEL_DEMO,
+            'joborders.email' => ACCESS_LEVEL_DISABLED,
+        )
+    );*/
+
+/* All possible secure object names 
+            'candidates.history'
+            'settings.administration'
+            'joborders.editRating'
+            'pipelines.screening'
+            'pipelines.editActivity'
+            'pipelines.removeFromPipeline'
+            'pipelines.addActivityChangeStatus'
+            'pipelines.addToPipeline'
+            'settings.tags'
+            'settings.changePassword'
+            'settings.newInstallPassword'
+            'settings.forceEmail'
+            'settings.newSiteName'
+            'settings.upgradeSiteName'
+            'settings.newSiteName'
+            'settings.manageUsers'
+            'settings.professional'
+            'settings.previewPage'
+            'settings.previewPageTop'
+            'settings.showUser'
+            'settings.addUser'
+            'settings.editUser'
+            'settings.createBackup'
+            'settings.deleteBackup'
+            'settings.customizeExtraFields'
+            'settings.customizeCalendar'
+            'settings.reports'
+            'settings.careerPortalQuestionnairePreview'
+            'settings.careerPortalQuestionnaire'
+            'settings.careerPortalQuestionnaireUpdate'
+            'settings.careerPortalTemplateEdit'
+            'settings.careerPortalSettings'
+            'settings.eeo'
+            'settings.careerPortalTweak'
+            'settings.deleteUser'
+            'settings.aspLocalization'
+            'settings.loginActivity'
+            'settings.viewItemHistory'
+            'settings.addUser'
+            'settings.deleteUser'
+            'settings.checkKey'
+            'settings.localization'
+            'settings.firstTimeSetup'
+            'settings.license'
+            'settings.password'
+            'settings.siteName'
+            'settings.setEmail'
+            'settings.import'
+            'settings.website'
+            'settings.administration'
+            'settings.myProfile'
+            'settings.administration.localization'
+            'settings.administration.systemInformation'
+            'settings.administration.changeSiteName'
+            'settings.administration.changeVersionName'
+            'settings.addUser'
+            'joborders.edit'
+            'joborders.careerPortalUrl'
+            'joborders.deleteAttachment'
+            'joborders.createAttachement'
+            'joborders.delete'
+            'joborders.hidden'
+            'joborders.considerCandidateSearch'
+            'joborders.show'
+            'joborders.add'
+            'joborders.search'
+            'joborders.administrativeHideShow'
+            'joborders.list'
+            'joborders.email'
+            'candidates.add'
+            'import.import'
+            'import.massImport'
+            'import.bulkResumes'
+            'contacts.addActivityScheduleEvent'
+            'contacts.edit'
+            'contacts.delete'
+            'contacts.editActivity'
+            'contacts.deleteActivity'
+            'contacts.logActivityScheduleEvent'
+            'contacts.show'
+            'contacts.add'
+            'contacts.edit'
+            'contacts.delete'
+            'contacts.search'
+            'contacts.addActivityScheduleEvent'
+            'contacts.showColdCallList'
+            'contacts.downloadVCard'
+            'contacts.list'
+            'contacts.emailContact'
+            'companies.deleteAttachment'
+            'companies.createAttachment'
+            'companies.edit'
+            'companies.delete'
+            'companies.show'
+            'companies.internalPostings'
+            'companies.add'
+            'companies.edit'
+            'companies.delete'
+            'companies.search'
+            'companies.createAttachment'
+            'companies.deleteAttachment'
+            'companies.list'
+            'companies.email'
+            'candidates.deleteAttachment'
+            'candidates.addActivityChangeStatus'
+            'candidates.deleteAttachment'
+            'candidates.createAttachment'
+            'candidates.addCandidateTags'
+            'candidates.edit'
+            'candidates.delete'
+            'candidates.administrativeHideShow'
+            'candidates.considerForJobSearch'
+            'candidates.manageHotLists'
+            'candidates.show'
+            'candidates.add'
+            'candidates.search'
+            'candidates.viewResume'
+            'candidates.search'
+            'candidates.hidden'
+            'candidates.emailCandidates'
+            'candidates.show_questionnaire'
+            'candidates.list'
+            'calendar.show'
+            'calendar.addEvent'
+            'calendar.editEvent'
+            'calendar.deleteEvent'
+            */
 
 ?>

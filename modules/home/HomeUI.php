@@ -72,11 +72,13 @@ class HomeUI extends UserInterface
                 $this->addSavedSearch();
                 break;
 
+            /* FIXME: undefined function getAttachment()
             case 'getAttachment':
                 include_once('./lib/Attachments.php');
 
                 $this->getAttachment();
                 break;
+            */     
 
             case 'home':
             default:

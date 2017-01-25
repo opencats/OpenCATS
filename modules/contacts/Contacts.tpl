@@ -1,5 +1,5 @@
 <?php /* $Id: Contacts.tpl 3430 2007-11-06 20:44:51Z will $ */ ?>
-<?php TemplateUtility::printHeader('Contacts', array('js/highlightrows.js', 'js/export.js', 'js/dataGrid.js')); ?>
+<?php TemplateUtility::printHeader('Contacts', array('js/highlightrows.js', 'js/export.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <style type="text/css">
@@ -90,6 +90,7 @@
                 &nbsp;
             </div>
             <br /><br />
+                <?php if ($this->getUserAccessLevel('contacts.add') >= ACCESS_LEVEL_EDIT): ?>
             <table cellpadding="0" cellspacing="0" border="0" width="956">
                 <tr>
                 <td style="padding-left: 62px;" align="center" valign="center">
@@ -105,10 +106,10 @@
 
                 </tr>
             </table>
+                <?php endif; ?>
 
             <?php endif; ?>
 
         </div>
     </div>
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

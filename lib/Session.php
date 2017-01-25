@@ -30,6 +30,8 @@
  * @version    $Id: Session.php 3676 2007-11-21 21:02:15Z brian $
  */
 
+include('./lib/ACL.php');
+
 /**
  *  CATS Session Object
  *  @package    CATS
@@ -194,8 +196,8 @@ class CATSSession
          * account.
          */
         if ($this->isDemo() ||
-            $this->_accessLevel == ACCESS_LEVEL_READ ||
-            $this->_accessLevel >= ACCESS_LEVEL_ROOT ||
+            $this->getAccessLevel(ACL::SECOBJ_ROOT) == ACCESS_LEVEL_READ ||
+            $this->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_ROOT ||
             $this->_unixName == 'cognizo')
         {
             return false;
@@ -396,9 +398,9 @@ class CATSSession
     }
 
     // FIXME: Document me!
-    public function getAccessLevel()
+    public function getAccessLevel($securedObjectName)
     {
-        return $this->_accessLevel;
+        return ACL::getAccessLevel($securedObjectName, $this->getUserCategories(), $this->_accessLevel);
     }
 
     // FIXME: Document me!
@@ -757,7 +759,7 @@ class CATSSession
 
             case LOGIN_DISABLED:
                 $this->_isLoggedIn = false;
-                $this->_loginError = 'Your account is disabled.';
+                $this->_loginError = 'Your account is disabled or pending approval.';
 
                 /* Log the login as unsuccessful. */
                 if ($addToHistory)
@@ -772,7 +774,13 @@ class CATSSession
                 }
 
                 break;
+                
+            case LOGIN_PENDING_APPROVAL:
+                $this->_isLoggedIn = false;
+                $this->_loginError = 'Your account has been created and is pending approval.';
 
+                break;
+                
             case LOGIN_SUCCESS:
                 $this->_username               = $rs['username'];
                 $this->_password               = $rs['password'];

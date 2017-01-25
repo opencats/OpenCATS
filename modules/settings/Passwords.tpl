@@ -26,7 +26,7 @@
                                     Allow retrieval of forgotten passwords through email:
                                 </td>
                                 <td class="tdData">
-                                    <input type="checkbox" name="ForgottenPasswords" disabled>
+                                    <input type="checkbox" name="ForgottenPasswords">
                                 </td>
                             </tr>
                         </table>
@@ -36,5 +36,4 @@
             </table>
         </div>
     </div>
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

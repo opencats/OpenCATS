@@ -123,7 +123,7 @@ class DatabaseConnection
             );
             return false;
         }
-
+        mysql_set_charset(SQL_CHARACTER_SET, $this->_connection);
         $isDBSelected = @mysql_select_db(DATABASE_NAME, $this->_connection);
         if (!$isDBSelected)
         {
@@ -448,6 +448,10 @@ class DatabaseConnection
      */
     public function escapeString($string)
     {
+        // FIXME: Security issue, this function is not enough for sanitizing
+        // user input. For instance see: 
+        // https://johnroach.info/2011/02/17/why-mysql_real_escape_string-isnt-enough-to-stop-sql-injection-attacks/
+        // To be replaced with Symfony's stack
         return mysql_real_escape_string($string, $this->_connection);
     }
 
@@ -531,7 +535,9 @@ class DatabaseConnection
 
         if ($precision !== false)
         {
-            return (string) round($value, $precision);
+            $valueAsDouble = round($value, $precision);
+            $isAWholeNumber = fmod($valueAsDouble, 1) == 0;
+            return number_format($valueAsDouble, $isAWholeNumber ? 0 : 2);
         }
 
         return (string) $value;

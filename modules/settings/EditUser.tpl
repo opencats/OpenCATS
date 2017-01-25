@@ -67,7 +67,7 @@
                         </td>
                         <td class="tdData">
                             <?php foreach ($this->accessLevels as $accessLevel): ?>
-                                <?php if ($accessLevel['accessID'] > $this->accessLevel): continue; endif; ?>
+                                <?php if ($accessLevel['accessID'] > $this->getUserAccessLevel('')): continue; endif; ?>
 
                                 <?php $radioButtonID = 'access' . $accessLevel['accessID']; ?>
 
@@ -135,6 +135,7 @@
                         </tr>
                     <?php endif; ?>
                     
+		    <?php if ($this->auth_mode != "ldap"): ?>
                     <tr id="passwordResetElement1">
                         <td class="tdVertical">
                             <label id="PasswordResetLabel" for="username">Password Reset:</label>
@@ -144,6 +145,7 @@
                             <input type="hidden" id="passwordIsReset" name="passwordIsReset" value="0" />
                         </td>
                     </tr>
+                    <?php endif; ?>
 
                     <tr id="passwordResetElement2" style="display:none;">
                         <td class="tdVertical">
@@ -170,5 +172,4 @@
             </form>
         </div>
     </div>
-    <div id="bottomShadow"></div>
 <?php TemplateUtility::printFooter(); ?>

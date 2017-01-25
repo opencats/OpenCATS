@@ -108,7 +108,7 @@ class DatabaseSearch
      * @param string text to escape
      * @return string marked up string
      */
-    public function markUpQuotes($string)
+    public static function markUpQuotes($string)
     {
         while (strpos($string, '"') !== false)
         {
@@ -150,7 +150,7 @@ class DatabaseSearch
      * @param string text to unescape
      * @return string marked up string
      */
-    public function unMarkUpQuotes($string)
+    public static function unMarkUpQuotes($string)
     {
         return str_replace(
             array('_QSPACEQ_', '_QCOMMAQ_'), array(' ', ','), $string
@@ -163,7 +163,7 @@ class DatabaseSearch
      * @param string string to evaluate
      * @return boolean parenthesis are unmatched
      */
-    public function containsUnmatchedParenthesis($string)
+    public static function containsUnmatchedParenthesis($string)
     {
         /* Counters for open and close paranthesis. */
         $open  = 0;

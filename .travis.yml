@@ -1,0 +1,36 @@
+sudo: required
+services:
+  - docker
+
+env:
+  COMPOSE_VERSION: 1.7.1
+
+before_install:
+    - sudo apt-get update -qq
+    - sudo apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install docker-engine
+    - curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+    - chmod +x docker-compose
+    - sudo mv docker-compose /usr/local/bin
+
+language: php
+php:
+- 5.6
+
+script:
+    - composer install
+    - ./vendor/bin/phpunit src/OpenCATS/Tests/UnitTests
+    - cd docker/; docker-compose -f docker-compose-test.yml up -d
+    - docker-compose -f docker-compose-test.yml exec php /var/www/public/test/runAllTests.sh
+    - cd ..; ./ci/package-code.sh 
+
+deploy:
+  provider: releases
+  api_key:
+    secure: Srgq/VW4yoYg0yWq/llOix47MAe2EKccqxfdukxrm6fePKRRv6bVBQXH/0hhrTTn4Q6xrmVycqC36SD9/JVL684xNYBESlT4V3DpZ6vxPYeNzU2GjtoMBqGCOgjZvxpq5AGIf7gXZ9GdM4+xikBPthspCcUorg8hkLgaOQ5PPlI0dC7cdFPjQweoxAqDe6VwQ31J1MiO+DPI+69GHb/KukHkS/sjhZTMZoO0shfw5dhv0TSuaeaPzWYw1+g6sNdgNurNbi4bPEEpofUdfA+WaWw7oapsO7ZW4qTqKxsrsrCf1ZgTnynm2Kow5D7oFVqRkt/kpoQ/UzwZUalzm8JrVeYPbQ2j7mYxOh3TcTYn24NSm8xuDgF8ZaG3BxoWCLQSA8pdJZRI7QbWrDdFA93ZD1EWRW0amL3rOGLED61K0ZFhulUBy1bKyjAnT2T6FPsKk4hOwFDo1nojzemQnl6PfPT6Lsuvk5FotevsemBUQl+xx7UQsxhDM3kw3/IheE/abOYmIK+qRKdcH5J04m+dadXKZBa+h/Jsd5AdC7Yp3Si74IhJFceyvQIx7GkkG4fo/0Y34mCAXuwEN7acB7RbNU8DVyzfUtpWSPwkw2iDTJshDsV1RN94Xzt+k/GvLAvAOttozkhruYV563+MEYizBRN+96jaF/35dZYd+X3UwBA=
+  file:
+     - $TRAVIS_BUILD_DIR/opencats-$TRAVIS_TAG-full.tar.gz
+     - $TRAVIS_BUILD_DIR/opencats-$TRAVIS_TAG-full.zip
+  skip_cleanup: true
+  on:
+    tags: true
+
