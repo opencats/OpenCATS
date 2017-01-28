@@ -2,10 +2,15 @@ version: '2'
 services:
     unittestdb:
       image: mariadb
-      ports:
-        - 3307:3306
       environment:
         - MYSQL_ROOT_PASSWORD=dev
         - MYSQL_USER=dev
         - MYSQL_PASSWORD=dev
         - MYSQL_DATABASE=cats_unittestdb
+
+    unittestphp:
+      image: opencats/php:5.6.27-fpm-alpine-symfony
+      volumes:
+        - ..:/var/www/
+
+
