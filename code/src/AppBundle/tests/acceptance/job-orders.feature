@@ -59,9 +59,11 @@ Feature: Job Orders
     And press "Create Job Order"
     And fill in "#title" with "Javascript developer"
     And fill in "#companyName" with "Test Company ATxyz"
+    And I wait 1 seconds
     And I wait for "#CompanyResults div#suggest0"
     And I click on the element "#CompanyResults div#suggest0"
     And I select "Gomez, Marcus" from "#recruiter"
+    And I wait 2 seconds
     And fill in "#city" with "Minneapolis"
     And fill in "#state" with "MN"
     And press "Save Job Order"
@@ -88,9 +90,11 @@ Feature: Job Orders
     And press "Create Job Order"
     And fill in "#title" with "Javascript developer"
     And fill in "#companyName" with "Test Company ATxyz"
+    And I wait 1 seconds
     And I wait for "#CompanyResults div#suggest0"
     And I click on the element "#CompanyResults div#suggest0"
     And I select "Gomez, Marcus" from "#recruiter"
+    And I wait 2 seconds
     And fill in "#city" with "Minneapolis"
     And fill in "#state" with "MN"
     And press "Save Job Order"
@@ -126,12 +130,15 @@ Feature: Job Orders
     And press "Create Job Order"
     And fill in "#title" with "Javascript developer"
     And fill in "#companyName" with "Test Company ATxyz"
+    And I wait 1 seconds
     And I wait for "#CompanyResults div#suggest0"
     And I click on the element "#CompanyResults div#suggest0"
     And I select "Gomez, Marcus" from "#recruiter"
+    And I wait 2 seconds
     And fill in "#city" with "Minneapolis"
     And fill in "#state" with "MN"
     And press "Save Job Order"
+    And I wait 2 seconds
     And I follow "Edit"
     And fill in "#title" with ""
     And press "Save"
@@ -151,12 +158,14 @@ Feature: Job Orders
     And press "Create Job Order"
     And fill in "#title" with "Javascript developer"
     And fill in "#companyName" with "Test Company ATxyz"
+    And I wait 1 seconds
     And I wait for "#CompanyResults div#suggest0"
     And I click on the element "#CompanyResults div#suggest0"
     And I select "Gomez, Marcus" from "#recruiter"
+    And I wait 2 seconds
     And fill in "#city" with "Minneapolis"
     And fill in "#state" with "MN"
-    And press "Add Job Order"
+    And press "Save Job Order"
     And I follow "Edit"
     And fill in "#title" with "Frontend developer"
     And I select "Administrator, CATS" from "#recruiter"
