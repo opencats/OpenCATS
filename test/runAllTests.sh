@@ -11,5 +11,3 @@ ls -la /var/www/code/var
 ls -la /var/www/code/var/cache
 ls -la /var/www/code/var/cache/dev
 ./vendor/bin/codecept run acceptance activities.feature -vvv
-# ./vendor/bin/behat -v -c ./test/behat.yml --suite="default"
-# ./vendor/bin/behat -v -c ./test/behat.yml --suite="security"
