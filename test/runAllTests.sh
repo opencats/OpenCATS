@@ -10,4 +10,4 @@ ls -la
 ls -la /var/www/code/var
 ls -la /var/www/code/var/cache
 ls -la /var/www/code/var/cache/dev
-./vendor/bin/codecept run acceptance activities.feature -vvv
+./vendor/bin/codecept run -c src/AppBundle/ acceptance  -vvv --debug
