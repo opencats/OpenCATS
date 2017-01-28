@@ -137,31 +137,11 @@ class Security extends \AppBundle\AcceptanceTester
 
 
     /**
-     * @Then the page should not contain :arg1
-     */
-    public function thePageShouldNotContain($arg1)
-    {
-        throw new \Codeception\Exception\Incomplete("Step `the page should not contain :arg1` is not defined");
-    }
-
-    /**
-     * @Then the page should  contain :arg1
-     */
-    public function thePageShouldContain($arg1)
-    {
-        throw new \Codeception\Exception\Incomplete("Step `the page should  contain :arg1` is not defined");
-    }
-
-    /**
      * @When I follow link :name
      */
     public function iFollowLink($name)
     {
-        $link = $this->getSession()->getPage()->findLink($name);
-        if($link !== null)
-        {
-            $link->click();
-        }
+        $this->click($name);
     }
 
     /**
