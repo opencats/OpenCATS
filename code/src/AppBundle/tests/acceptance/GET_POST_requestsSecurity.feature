@@ -5,9 +5,9 @@ Feature: Security using ACL - actions - GET & POST
 
 @candidates @actions
 Scenario Outline: Candidate module actions
-  Given I am logged in with <accessLevel> access level
+  Given I am logged in with "<accessLevel>" access level
   
-  When I do <type> request on url "<url>"
+  When I do "<type>" request on url "<url>"
   Then I should <bool> have permission
   
   Examples:
