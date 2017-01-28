@@ -23,4 +23,19 @@ class Acceptance extends \Codeception\Module
         $this->getModule('WebDriver')->switchToWindow();
         $this->getModule('WebDriver')->amOnPage('/' . $result);
     }
+
+    public function clickOnOnTheRowContaining($linkName, $rowText)
+    {
+        /** @var $row \Behat\Mink\Element\NodeElement */
+        $row = $this->getModule('WebDriver')->_findElements(sprintf('table tr:contains("%s")', $rowText));
+        if (!$row) {
+            throw new \Exception(sprintf('Cannot find any row on the page containing the text "%s"', $rowText));
+        }
+        $row->clickLink($linkName);
+    }
+
+    public function spoofSessionWithCookie($cookieValue)
+    {
+        $this->getModule('WebDriver')->setCookie(CATS_SESSION_NAME, $cookieValue);
+    }
 }

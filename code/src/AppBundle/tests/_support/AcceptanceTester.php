@@ -169,6 +169,14 @@ class AcceptanceTester extends \Codeception\Actor
     }
 
     /**
+     * @When I press :button
+     */
+    public function whenPress($button)
+    {
+        $this->press($button);
+    }
+
+    /**
      * @Then I should see :text
      */
     public function iShouldSee($text)
@@ -213,13 +221,18 @@ class AcceptanceTester extends \Codeception\Actor
      */
     public function thereIsACompanyCalled($companyName)
     {
-        $siteId = $this->getSiteId();
-        $company= new Company(
-            $siteId,
-            $companyName
-        );
-        $CompanyRepository = new CompanyRepository(\DatabaseConnection::getInstance());
-        $CompanyRepository->persist($company, new DummyHistory($siteId));
+        try {
+            $siteId = $this->getSiteId();
+            $company= new Company(
+                $siteId,
+                $companyName
+            );
+            $CompanyRepository = new CompanyRepository(\DatabaseConnection::getInstance());
+            $CompanyRepository->persist($company, new DummyHistory($siteId));
+        } catch (\Exception $e) {
+            print_r($e->getMessage());
+            print_r($e->getTraceAsString());
+        }
     }
 
     private function getSiteId()
@@ -253,6 +266,23 @@ class AcceptanceTester extends \Codeception\Actor
     {
         $this->seeInPopup($message);
     }
+
+    /**
+     * @Given I wait :timeInSeconds seconds
+     */
+    public function iWait($timeInSeconds)
+    {
+        $this->wait($timeInSeconds);
+    }
+
+    /**
+     * @Given I am spoofing a session with :cookieValue cookie
+     */
+    public function iAmSpoofingASessionWithCookie($cookieValue)
+    {
+        $this->spoofSessionWithCookie(CATS_SESSION_NAME, $cookieValue);
+    }
+
 
     /**
      * @Then I confirm the popup
@@ -336,13 +366,7 @@ class AcceptanceTester extends \Codeception\Actor
      */
     public function iClickOnOnTheRowContaining($linkName, $rowText)
     {
-        /** @var $row \Behat\Mink\Element\NodeElement */
-        $row = $this->_findElements(sprintf('table tr:contains("%s")', $rowText));
-        if (!$row) {
-            throw new \Exception(sprintf('Cannot find any row on the page containing the text "%s"', $rowText));
-        }
-        $row->clickLink($linkName);
-
+        return $this->clickOnOnTheRowContaining($linkName, $rowText);
     }
 
 }
