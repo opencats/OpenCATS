@@ -56,6 +56,7 @@ class AcceptanceTester extends Actor
     */
     /**
      * @Given I am authenticated as :role
+     * @param string $role Role to authenticate with
      */
     public function iAmAuthenticatedAs($role)
     {
