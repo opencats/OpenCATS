@@ -1,6 +1,7 @@
 <?php
 namespace AppBundle;
 use AppBundle\Helper\Acceptance;
+use Codeception\Exception\Fail;
 use \Codeception\Scenario;
 use AppBundle\Entity\User;
 use AppBundle\Entity\DummyHistory;
