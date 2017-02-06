@@ -1674,7 +1674,7 @@ class CandidatesDataGrid extends DataGrid
     protected $_siteID;
 
     // FIXME: Fix ugly indenting - ~400 character lines = bad.
-    public function __construct($instanceName, $siteID, $parameters, $misc = 0, $duplicates = 0)
+    public function __construct($instanceName, $siteID, $parameters, $misc = 0)
     {
         $this->_db = DatabaseConnection::getInstance();
         $this->_siteID = $siteID;

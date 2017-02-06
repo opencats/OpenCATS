@@ -473,7 +473,7 @@ class CandidatesUI extends UserInterface
     /*
      * Called by handleRequest() to process loading the details page.
      */
-    private function show($duplicate = 0)
+    private function show()
     {
         /* Is this a popup? */
         if (isset($_GET['display']) && $_GET['display'] == 'popup')
