@@ -20,7 +20,23 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                     <td width="3%">
                         <img src="images/candidate.gif" width="24" height="24" border="0" alt="Candidates" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Candidates: Candidate Details</h2></td>
+                    <td><h2>Candidates: Candidate Details
+                        <?php if($_SESSION['CATS']->getAccessLevel('candidates.duplicates') >= ACCESS_LEVEL_SA): ?>    
+                            <?php if(!empty($this->data['isDuplicate'])): ?>
+                                <img src="images/wf_error.gif" alt="duplicate_warning" width="20" height="20" border="0" title="Possible duplicate" />
+                                <?php foreach($this->data['isDuplicate'] as $item): ?>
+                                    <?php echo '<a href='.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID='.$item['duplicateTo'].' target=_blank>Duplicate</a>' ?>
+                                    <?php TemplateUtility::printSingleQuickActionMenu(new CandidateDuplicateQuickActionMenu(
+                                        DATA_ITEM_DUPLICATE,
+                                        $this->data['candidateID'],
+                                        $_SESSION['CATS']->getAccessLevel('candidates.duplicates'),
+                                        urlencode(CATSUtility::getIndexName().'?m=candidates&a=merge&oldCandidateID='.$item['duplicateTo'].'&newCandidateID='.$this->data['candidateID']),
+                                        urlencode(CATSUtility::getIndexName().'?m=candidates&a=removeDuplicity&oldCandidateID='.$item['duplicateTo'].'&newCandidateID='.$this->data['candidateID']
+                                    ))); ?>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </h2></td>
                </tr>
             </table>
 
