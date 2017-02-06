@@ -1,7 +1,6 @@
 <?php
 namespace AppBundle\Step\Acceptance;
 
-use Behat\Mink\Exception\Exception;
 use Codeception\Exception\Fail;
 
 class Security extends \AppBundle\AcceptanceTester

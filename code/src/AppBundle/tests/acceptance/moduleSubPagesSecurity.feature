@@ -13,7 +13,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
        
   @javascript @joborders
   Scenario Outline: Job Order Show page visibility
-    Given I am logged in with <accessLevel> access level
+    Given I am logged in with "<accessLevel>" access level
     And I am on "/index.php?m=joborders"
     When I follow link "OpenCATS Tester"
     Then I should <addJobOrder> "Add Job Order"
@@ -31,7 +31,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
     And I should <addToPipeline> "Add Candidate to This Job Order Pipeline"
     And I should <export> "Export"
     And I should <details> "Job Order Details"
-    And the page should <logAnActivity> contain "Log an Activity"  
+    And the page should <logAnActivity> contain "Log an Activity"
     And the page should <removeFromPipeline> contain "Remove from Pipeline"
     And the page should <setMatchingRating> contain "<map"
     And the page should <deleteAttachment> contain "index.php?m=joborders&amp;a=deleteAttachment"
@@ -52,7 +52,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
   
    @javascript @candidates
    Scenario Outline: Candidate Show page visibility
-     Given I am logged in with <accessLevel> access level
+     Given I am logged in with "<accessLevel>" access level
      And I am on "/index.php?m=candidates"
      When I follow link "Pipin"
      Then I should <addCandidate> "Add Candidate"
@@ -70,7 +70,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
      And I should <administrativeHideShow> "Administrative"
      And the page should <addToPipeline> contain "Add This Candidate to Job Order Pipeline"
      And I should <logAnActivity> "Log an Activity"
-     And the page should <logAnActivity2> contain "Log an Activity"  
+     And the page should <logAnActivity2> contain "Log an Activity"
      And the page should <removeFromPipeline> contain "Remove from Pipeline"
      And the page should <editActivity> contain "editActivity"
      And the page should <deleteActivity> contain "deleteActivity"
@@ -95,7 +95,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
 
     @javascript @companies
     Scenario Outline: Company Show page visibility for disabled level
-     Given I am logged in with <accessLevel> access level
+     Given I am logged in with "<accessLevel>" access level
      And I am on "/index.php?m=home"
      When I follow link "Google"
      Then I should <addCompany> "Add Company"
@@ -110,7 +110,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
      And I should <deleteCompany> "Delete"
      And I should <addJobOrder> "Add Job Order"
      And I should <addContact> "Add Contact"
-     And the page should <editJobOrder> contain "index.php?m=joborders&amp;a=edit"  
+     And the page should <editJobOrder> contain "index.php?m=joborders&amp;a=edit"
      And the page should <editContact> contain "index.php?m=contacts&amp;a=edit"
      And the page should <deleteAttachment> contain "index.php?m=companies&amp;a=deleteAttachment"
      And the page should <sendEmail> contain "Send E-Mail"
@@ -121,7 +121,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
    
     @javascript @companies
     Scenario Outline: Company Show page visibility
-     Given I am logged in with <accessLevel> access level
+     Given I am logged in with "<accessLevel>" access level
      And I am on "/index.php?m=home&a=quickSearch&quickSearchFor=google"
      When I follow link "Google"
      Then I should <addCompany> "Add Company"
@@ -136,7 +136,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
      And I should <deleteCompany> "Delete"
      And I should <addJobOrder> "Add Job Order"
      And I should <addContact> "Add Contact"
-     And the page should <editJobOrder> contain "index.php?m=joborders&amp;a=edit"  
+     And the page should <editJobOrder> contain "index.php?m=joborders&amp;a=edit"
      And the page should <editContact> contain "index.php?m=contacts&amp;a=edit"
      And the page should <deleteAttachment> contain "index.php?m=companies&amp;a=deleteAttachment"
      And the page should <sendEmail> contain "Send E-Mail"
@@ -155,7 +155,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
   
   @javascript @contacts
     Scenario Outline: Contacts Show page visibility
-     Given I am logged in with <accessLevel> access level
+     Given I am logged in with "<accessLevel>" access level
      And I am on "/index.php?m=contacts"
      When I follow link "Elizabeth"
      Then I should <addContact> "Add Contact"
@@ -189,7 +189,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
        
    @javascript @lists
    Scenario Outline: Lists Show page visibility
-     Given I am logged in with <accessLevel> access level
+     Given I am logged in with "<accessLevel>" access level
      And I am on "/index.php?m=lists"
      When I follow link "UK Candidates"
      Then I should <showLists> "Show Lists"

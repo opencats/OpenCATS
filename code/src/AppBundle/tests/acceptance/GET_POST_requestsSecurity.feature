@@ -3,7 +3,7 @@ Feature: Security using ACL - actions - GET & POST
   In order to protect sensitive information from users who shouldd not have access to them
   All accesses in the system need to be controlled by the Access Control List
 
-@candidates @actions
+@candidates @actions @security
 Scenario Outline: Candidate module actions
   Given I am logged in with "<accessLevel>" access level
   
@@ -225,9 +225,9 @@ Scenario Outline: Candidate module actions
 
 @joborders @actions
 Scenario Outline: Job Order module actions
-  Given I am logged in with <accessLevel> access level
+  Given I am logged in with "<accessLevel>" access level
   
-  When I do <type> request on url "<url>"
+  When I do "<type>" request on url "<url>"
   Then I should <bool> have permission
   
  Examples:
@@ -413,9 +413,9 @@ Scenario Outline: Job Order module actions
   
  @companies @actions
  Scenario Outline: Companies module actions
-  Given I am logged in with <accessLevel> access level
+  Given I am logged in with "<accessLevel>" access level
   
-  When I do <type> request on url "<url>"
+  When I do "<type>" request on url "<url>"
   Then I should <bool> have permission
 
 Examples:
@@ -528,9 +528,9 @@ Examples:
 
 @contacts @actions
 Scenario Outline: Contacts module actions
-  Given I am logged in with <accessLevel> access level
+  Given I am logged in with "<accessLevel>" access level
   
-  When I do <type> request on url "<url>"
+  When I do "<type>" request on url "<url>"
   Then I should <bool> have permission
   
  Examples:
@@ -642,9 +642,9 @@ Scenario Outline: Contacts module actions
   
 @activities @actions
 Scenario Outline: Activity module actions
-  Given I am logged in with <accessLevel> access level
+  Given I am logged in with "<accessLevel>" access level
   
-  When I do <type> request on url "<url>"
+  When I do "<type>" request on url "<url>"
   Then I should <bool> have permission 
   
   Examples:
@@ -676,9 +676,9 @@ Scenario Outline: Activity module actions
   
 @dashboard @home @actions
 Scenario Outline: Home module actions
-  Given I am logged in with <accessLevel> access level
+  Given I am logged in with "<accessLevel>" access level
   
-   When I do <type> request on url "<url>"
+   When I do "<type>" request on url "<url>"
    Then I should <bool> have permission 
   
  Examples:
@@ -726,9 +726,9 @@ Scenario Outline: Home module actions
   
 @lists @actions
 Scenario Outline: Lists module actions
-  Given I am logged in with <accessLevel> access level
+  Given I am logged in with "<accessLevel>" access level
   
-   When I do <type> request on url "<url>"
+   When I do "<type>" request on url "<url>"
    Then I should <bool> have permission 
   
  Examples:
@@ -785,9 +785,9 @@ Scenario Outline: Lists module actions
  
 @calendar @actions
 Scenario Outline: Calendar module actions
-  Given I am logged in with <accessLevel> access level
+  Given I am logged in with "<accessLevel>" access level
   
-   When I do <type> request on url "<url>"
+   When I do "<type>" request on url "<url>"
    Then I should <bool> have permission 
   
  Examples:
@@ -835,9 +835,9 @@ Scenario Outline: Calendar module actions
   
 @reports @actions
 Scenario Outline: Reports module actions
-  Given I am logged in with <accessLevel> access level
+  Given I am logged in with "<accessLevel>" access level
   
-   When I do <type> request on url "<url>"
+   When I do "<type>" request on url "<url>"
    Then I should <bool> have permission 
   
  Examples:
@@ -909,9 +909,9 @@ Scenario Outline: Reports module actions
   
  @settings @actions
   Scenario Outline: Settings module actions
-  Given I am logged in with <accessLevel> access level
+  Given I am logged in with "<accessLevel>" access level
   
-   When I do <type> request on url "<url>"
+   When I do "<type>" request on url "<url>"
    Then I should <bool> have permission 
   
   ####commented lines in table have URLs that are not called from anywhere in the code anymore

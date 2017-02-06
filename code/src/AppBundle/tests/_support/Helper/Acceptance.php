@@ -26,8 +26,8 @@ class Acceptance extends \Codeception\Module
 
     public function clickOnOnTheRowContaining($linkName, $rowText)
     {
-        /** @var $row \Behat\Mink\Element\NodeElement */
-        $row = $this->getModule('WebDriver')->_findElements(sprintf('table tr:contains("%s")', $rowText));
+
+        $row = $this->getModule('WebDriver')->_findElements(sprintf('//table/tr[text()~"%s"]', $rowText));
         if (!$row) {
             throw new \Exception(sprintf('Cannot find any row on the page containing the text "%s"', $rowText));
         }

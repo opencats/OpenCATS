@@ -7,7 +7,7 @@ Feature: Access Level to objects check - main pages
 
   @javascript @dashboard
   Scenario Outline: Dashboard module visibility
-    Given I am logged in with <accessLevel> access level
+    Given I am logged in with "<accessLevel>" access level
     And I am on "/index.php?m=home"
     Then the page should <quickSearch> contain "Quick Search"
     And the page should <quickSearch> contain "quickSearchFor"
@@ -34,7 +34,7 @@ Feature: Access Level to objects check - main pages
     
   @javascript @activities
   Scenario Outline: Activities module visibility
-    Given I am logged in with <accessLevel> access level
+    Given I am logged in with "<accessLevel>" access level
     And I am on "/index.php?m=activity"
     Then the page should <quickSearch> contain "Quick Search"
     And the page should <quickSearch> contain "quickSearchFor"
@@ -66,7 +66,7 @@ Feature: Access Level to objects check - main pages
     
   @javascript @joborders
   Scenario Outline: Job Orders module visibility
-    Given I am logged in with <accessLevel> access level
+    Given I am logged in with "<accessLevel>" access level
     And I am on "/index.php?m=joborders"
     Then I should <addJobOrder> "Add Job Order"
     And I should <searchJobOrder> "Search Job Orders"
@@ -100,7 +100,7 @@ Feature: Access Level to objects check - main pages
      
   @javascript @candidates
   Scenario Outline: Candidates module visibility
-    Given I am logged in with <accessLevel> access level
+    Given I am logged in with "<accessLevel>" access level
     And I am on "/index.php?m=candidates"
     Then I should <addCandidate> "Add Candidate"
     And I should <searchCandidate> "Search Candidates"
@@ -136,7 +136,7 @@ Feature: Access Level to objects check - main pages
     
     @javascript @companies
     Scenario Outline: Companies module visibility
-     Given I am logged in with <accessLevel> access level
+     Given I am logged in with "<accessLevel>" access level
      And I am on "/index.php?m=companies"
      Then I should <addCompany> "Add Company"
      And I should <searchCompany> "Search Companies"
@@ -169,7 +169,7 @@ Feature: Access Level to objects check - main pages
      
    @javascript @contacts
    Scenario Outline: Contacts module visibility
-     Given I am logged in with <accessLevel> access level
+     Given I am logged in with "<accessLevel>" access level
      And I am on "/index.php?m=contacts"
      Then I should <addContact> "Add Contact"
      And I should <searchContact> "Search Contacts"
@@ -203,7 +203,7 @@ Feature: Access Level to objects check - main pages
      
     @javascript @lists
     Scenario Outline: Lists module visibility
-     Given I am logged in with <accessLevel> access level
+     Given I am logged in with "<accessLevel>" access level
      And I am on "/index.php?m=lists"
      Then I should <showLists> "Show Lists"
      And the page should <quickSearch> contain "Quick Search"
@@ -229,7 +229,7 @@ Feature: Access Level to objects check - main pages
   
   @javascript @reports
     Scenario Outline: Reports module visibility
-     Given I am logged in with <accessLevel> access level
+     Given I am logged in with "<accessLevel>" access level
      And I am on "/index.php?m=reports"
      And the page should <quickSearch> contain "Quick Search"
      And the page should <quickSearch> contain "quickSearchFor"
@@ -259,7 +259,7 @@ Feature: Access Level to objects check - main pages
 
 @javascript @settings
     Scenario Outline: Settings module visibility
-     Given I am logged in with <accessLevel> access level
+     Given I am logged in with "<accessLevel>" access level
      And I am on "/index.php?m=settings"
      Then I should <viewProfile> "View Profile"
      And I should <changePassword> "Change Password"
@@ -285,22 +285,22 @@ Feature: Access Level to objects check - main pages
 
   @javascript @calendar
     Scenario Outline: Calendar module visibility
-     Given I am logged in with <accessLevel> access level
+     Given I am logged in with "<accessLevel>" access level
      And I am on "/index.php?m=calendar"
      Then I should <upcomingEvents> "My Upcoming Events"
      And I should <addEvent> "Add Event"
      And I should <gotoToday> "Goto Today"
      And I should <myUpcomingEvents> "My Upcoming Events / Calls"
-     And the page should <quickSearch> contain "Quick Search"
-     And the page should <quickSearch> contain "quickSearchFor"
-     And the page should <quickSearch> contain "quickSearch"
-     And the page should <hideNonPublic> contain "hideNonPublic"
-     And the page should <switchPeriod> contain "userCalendarViewDay"
-     And the page should <switchPeriod> contain "userCalendarViewWeek"
-     And the page should <switchPeriod> contain "userCalendarViewMonth"
-     And the page should <switchMonth> contain "linkMonthBack"
-     And the page should <switchMonth> contain "linkMonthForeward"
-     And the page should <calendarTable> contain "calendarMonth"
+     And the response should <quickSearch> contain "Quick Search"
+     And the response should <quickSearch> contain "quickSearchFor"
+     And the response should <quickSearch> contain "quickSearch"
+     And the response should <hideNonPublic> contain "hideNonPublic"
+     And the response should <switchPeriod> contain "userCalendarViewDay"
+     And the response should <switchPeriod> contain "userCalendarViewWeek"
+     And the response should <switchPeriod> contain "userCalendarViewMonth"
+     And the response should <switchMonth> contain "linkMonthBack"
+     And the response should <switchMonth> contain "linkMonthForeward"
+     And the response should <calendarTable> contain "calendarMonth"
      
      
     
