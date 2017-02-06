@@ -3,6 +3,7 @@ namespace AppBundle;
 
 use Codeception\Exception\Fail;
 use Codeception\Actor;
+use Codeception\Scenario;
 use AppBundle\Entity\User;
 use AppBundle\Entity\DummyHistory;
 use OpenCATS\Entity\Company;
