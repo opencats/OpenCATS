@@ -39,6 +39,10 @@ class AcceptanceTester extends Actor
      */
     private $roleData;
 
+    /**
+     * AcceptanceTester constructor.
+     * @param Scenario $scenario
+     */
     public function __construct(Scenario $scenario)
     {
         parent::__construct($scenario);
