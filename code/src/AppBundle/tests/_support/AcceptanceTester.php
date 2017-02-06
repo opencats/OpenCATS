@@ -2,7 +2,6 @@
 namespace AppBundle;
 
 use Codeception\Exception\Fail;
-use \Codeception\Scenario;
 use Codeception\Actor;
 use AppBundle\Entity\User;
 use AppBundle\Entity\DummyHistory;
