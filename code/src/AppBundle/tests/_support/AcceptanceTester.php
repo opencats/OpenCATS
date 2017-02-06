@@ -61,7 +61,7 @@ class AcceptanceTester extends Actor
     {
         $roleData = empty($this->roleData[$role]) ? null : $this->roleData[$role];
         if (!$roleData) {
-            throw new \Codeception\Exception\Fail('The role ' . $role . ' does not exists');
+            throw new Fail('The role ' . $role . ' does not exists');
         }
         $this->iLoginAs($roleData->getUserName(), $roleData->getPassword());
     }
@@ -473,7 +473,7 @@ class AcceptanceTester extends Actor
                     return;
                 }
             }
-            throw new ExpectationException("'".$expectedTexts[0]."' was not found in the response from this request and it should be", $this->getSession());
+            throw new Fail("'".$expectedTexts[0]."' was not found in the response from this request and it should be", $this->getSession());
 
         } catch (\Exception $e) {
             print_r($e->getMessage());
