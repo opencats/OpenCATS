@@ -73,8 +73,7 @@ class CandidatesUI extends UserInterface
         $this->_moduleTabText = 'Candidates';
         $this->_subTabs = array(
             'Add Candidate'     => CATSUtility::getIndexName() . '?m=candidates&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@candidates.add',
-            'Search Candidates' => CATSUtility::getIndexName() . '?m=candidates&amp;a=search',
-            'View Duplicates'   => CATSUtility::getIndexName() . '?m=candidates&amp;a=viewDuplicates*al=' . ACCESS_LEVEL_SA . '@candidates.viewDuplicates'
+            'Search Candidates' => CATSUtility::getIndexName() . '?m=candidates&amp;a=search'
         );
     }
 
@@ -315,25 +314,8 @@ class CandidatesUI extends UserInterface
                 $this->onShowQuestionnaire();
                 break;
 
-            case 'viewDuplicates':
-                if ($this->getUserAccessLevel('candidates.viewDuplicates') < ACCESS_LEVEL_SA)
-                {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-                }
-                $this->showDuplicates();
-                break;
-
-            case 'showDuplicate':
-                if ($this->getUserAccessLevel('candidates.viewDuplicates') < ACCESS_LEVEL_SA)
-                {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-                }
-                $duplicate = 1;
-                $this->show($duplicate);
-                break;
-
             case 'linkDuplicate':
-                if ($this->getUserAccessLevel('s.linkDuplicate') < ACCESS_LEVEL_SA)
+                if ($this->getUserAccessLevel('candidates.linkDuplicate') < ACCESS_LEVEL_SA)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
@@ -502,14 +484,7 @@ class CandidatesUI extends UserInterface
             $candidateID = $candidates->getIDByEmail($_GET['email']);
         }
         
-        if($duplicate == 0)
-        {
-            $data = $candidates->get($candidateID);
-        }
-        else 
-        {
-            $data = $candidates->getWithDuplicity($candidateID);
-        }
+        $data = $candidates->getWithDuplicity($candidateID);
 
         /* Bail out if we got an empty result set. */
         if (empty($data))
@@ -756,17 +731,10 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
         $this->_template->assign('tagsRS', $tags->getAll());
         $this->_template->assign('assignedTags', $tags->getCandidateTagsTitle($candidateID));
-        $this->_template->assign('isDuplicate', 1);
-
+        
+        $this->_template->display('./modules/candidates/Show.tpl');
+        
         if (!eval(Hooks::get('CANDIDATE_SHOW'))) return;
-        if($duplicate == 0)
-        {
-            $this->_template->display('./modules/candidates/Show.tpl');
-        }
-        else 
-        {
-             $this->_template->display('./modules/candidates/ShowDuplicate.tpl');
-        }
        
     }
 
@@ -3374,42 +3342,6 @@ class CandidatesUI extends UserInterface
         $this->_template->display('./modules/candidates/Questionnaire.tpl');
     }
     
-    private function showDuplicates($errMessage = '')
-    {
-        // Log message that shows up on the top of the list page
-        $topLog = '';
-
-        $dataGridProperties = DataGrid::getRecentParamaters("candidates:candidatesListByViewDataGrid");
-
-        /* If this is the first time we visited the datagrid this session, the recent paramaters will
-         * be empty.  Fill in some default values. */
-        if ($dataGridProperties == array())
-        {
-            $dataGridProperties = array('rangeStart'    => 0,
-                                        'maxResults'    => 15,
-                                        'filterVisible' => false);
-        }
-
-        $tags = new Tags($this->_siteID);
-        $tagsRS = $tags->getAll();
-
-        $dataGrid = DataGrid::get("candidates:candidatesListByViewDataGrid", $dataGridProperties, 0, 1);
-
-        $candidates = new Candidates($this->_siteID);
-        $this->_template->assign('totalDuplicates', $candidates->getDuplicatesCount());
-
-        $this->_template->assign('active', $this);
-        $this->_template->assign('dataGrid', $dataGrid);
-        $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
-        $this->_template->assign('errMessage', $errMessage);
-        $this->_template->assign('topLog', $topLog);
-        $this->_template->assign('tagsRS', $tagsRS);
-
-        if (!eval(Hooks::get('DUPLICATE_LIST_BY_VIEW'))) return;
-
-        $this->_template->display('./modules/candidates/Duplicates.tpl');
-    }
-    
     private function findDuplicateCandidateSearch()
     {
         $duplicateCandidateID = $_GET['candidateID'];
@@ -3519,7 +3451,7 @@ class CandidatesUI extends UserInterface
         $oldCandidateID = $_GET['oldCandidateID'];
         $newCandidateID = $_GET['newCandidateID'];
         $candidates->removeDuplicity($oldCandidateID, $newCandidateID);
-        $url = CATSUtility::getIndexName()."?m=candidates&amp;a=viewDuplicates";
+        $url = CATSUtility::getIndexName()."?m=candidates";
         header("Location: " . $url); /* Redirect browser */
         exit();
     }
