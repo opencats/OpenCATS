@@ -1686,7 +1686,7 @@ class CandidatesDataGrid extends DataGrid
                                                 IF(attachment_id, 1, 0) AS attachmentPresent,
                                                 IF(old_candidate_id, 1, 0) AS duplicatePresent',
 
-                                     'pagerRender' => 'if ($rsData[\'duplicatePresent\'] == 1 && $_SESSION[\'CATS\']->getAccessLevel(\'candidates.viewDuplicates\') >= ACCESS_LEVEL_SA)
+                                     'pagerRender' => 'if ($rsData[\'duplicatePresent\'] == 1 && $_SESSION[\'CATS\']->getAccessLevel(\'candidates.duplicates\') >= ACCESS_LEVEL_SA)
                                                     {
                                                         $return = \'<img src="images/wf_error.gif" alt="" width="16" height="16" title="Possible Duplicate" />\';
                                                     }

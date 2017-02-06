@@ -27,7 +27,7 @@ class QuickActionMenu
     {
         $addToPipeline = ($_SESSION['CATS']->getAccessLevel('pipelines.addToPipeline') > ACCESS_LEVEL_READ) ? 1 : 0;
         $editCandidate = ($_SESSION['CATS']->getAccessLevel('candidates.edit') > ACCESS_LEVEL_READ) ? 1 : 0;
-        $mergeCandidates = ($_SESSION['CATS']->getAccessLevel('candidates.merge') >= ACCESS_LEVEL_SA) ? 1 : 0;
+        $mergeCandidates = ($_SESSION['CATS']->getAccessLevel('candidates.duplicates') >= ACCESS_LEVEL_SA) ? 1 : 0;
         
         return array(
             $this->dataItemType,

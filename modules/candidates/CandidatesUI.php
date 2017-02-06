@@ -315,7 +315,7 @@ class CandidatesUI extends UserInterface
                 break;
 
             case 'linkDuplicate':
-                if ($this->getUserAccessLevel('candidates.linkDuplicate') < ACCESS_LEVEL_SA)
+                if ($this->getUserAccessLevel('candidates.duplicates') < ACCESS_LEVEL_SA)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
@@ -324,7 +324,7 @@ class CandidatesUI extends UserInterface
 
              /* Merge two duplicate candidates into the older one */
             case 'merge':
-                if ($this->getUserAccessLevel('candidates.merge') < ACCESS_LEVEL_SA)
+                if ($this->getUserAccessLevel('candidates.duplicates') < ACCESS_LEVEL_SA)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
@@ -332,7 +332,7 @@ class CandidatesUI extends UserInterface
                 break;
                 
             case 'mergeInfo':
-                if ($this->getUserAccessLevel('candidates.mergeInfo') < ACCESS_LEVEL_SA)
+                if ($this->getUserAccessLevel('candidates.duplicates') < ACCESS_LEVEL_SA)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
@@ -341,7 +341,7 @@ class CandidatesUI extends UserInterface
             
             /* Remove duplicity warning from a new candidate */
             case 'removeDuplicity':
-                if ($this->getUserAccessLevel('candidates.removeDuplicity') < ACCESS_LEVEL_SA)
+                if ($this->getUserAccessLevel('candidates.duplicates') < ACCESS_LEVEL_SA)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
@@ -349,7 +349,7 @@ class CandidatesUI extends UserInterface
                 break;
             
             case 'addDuplicates':
-                if ($this->getUserAccessLevel('candidates.addDuplicates') < ACCESS_LEVEL_SA)
+                if ($this->getUserAccessLevel('candidates.duplicates') < ACCESS_LEVEL_SA)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
