@@ -30,6 +30,13 @@ use OpenCATS\Entity\JobOrderRepository;
 class AcceptanceTester extends Actor
 {
     use _generated\AcceptanceTesterActions;
+    /**
+     * @roleData array A map of role and users to use to test that role in the form
+     * array(
+     *     'Administrator' => new User('admin', 'admin'),
+     *     'User' => new User('john@mycompany.net', 'john99')
+     * )
+     */
     private $roleData;
 
     public function __construct(Scenario $scenario)
