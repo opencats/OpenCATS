@@ -3,6 +3,7 @@ namespace AppBundle;
 
 use Codeception\Exception\Fail;
 use \Codeception\Scenario;
+use Codeception\Actor;
 use AppBundle\Entity\User;
 use AppBundle\Entity\DummyHistory;
 use OpenCATS\Entity\Company;
@@ -26,7 +27,7 @@ use OpenCATS\Entity\JobOrderRepository;
  *
  * @SuppressWarnings(PHPMD)
 */
-class AcceptanceTester extends \Codeception\Actor
+class AcceptanceTester extends Actor
 {
     use _generated\AcceptanceTesterActions;
     private $roleData;
