@@ -138,10 +138,8 @@ class AcceptanceTester extends Actor
     public function iSwitchToTheIframe($iFrameId)
     {
         if (empty($iFrameId)) {
-            echo "1";
             $this->switchToIFrame();
         } else {
-            echo "2";
             $this->switchToIFrame($iFrameId);
         }
     }

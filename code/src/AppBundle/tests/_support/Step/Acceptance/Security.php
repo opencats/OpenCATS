@@ -77,28 +77,23 @@ class Security extends \AppBundle\AcceptanceTester
      */
     public function iShouldNotHavePermission()
     {
-        try {
-            if($this->accessLevel == "DISABLED")
+        if($this->accessLevel == "DISABLED")
+        {
+            $this->theResponseShouldContain("opencats - Login");
+            return;
+        }
+        $expectedTexts = array("You don't have permission", "Invalid user level for action", "You are not allowed to change your password.");
+        $response = $this->getVisibleText();
+
+        foreach ($expectedTexts as &$text)
+        {
+            $position = strpos($response, $text);
+            if($position !== false)
             {
-                $this->theResponseShouldContain("opencats - Login");
                 return;
             }
-            $expectedTexts = array("You don't have permission", "Invalid user level for action", "You are not allowed to change your password.");
-            $response = $this->getVisibleText();
-
-            foreach ($expectedTexts as &$text)
-            {
-                $position = strpos($response, $text);
-                if($position !== false)
-                {
-                    return;
-                }
-            }
-            throw new ExpectationException("'".$expectedTexts[0]."' was not found in the response from this request and it should be", $this->getSession());
-
-        } catch (\Exception $e) {
-            print_r($e->getMessage());
         }
+        throw new ExpectationException("'".$expectedTexts[0]."' was not found in the response from this request and it should be", $this->getSession());
     }
 
     /**
@@ -106,13 +101,8 @@ class Security extends \AppBundle\AcceptanceTester
      */
     public function iDoPOSTRequestOnUrl($url)
     {
-        try {
-            $this->amOnPage($url);
-            $this->submitForm('form', array('postback' => 'postback'));
-        } catch (\Exception $e) {
-            print_r($e->getMessage());
-        }
-
+        $this->amOnPage($url);
+        $this->submitForm('form', array('postback' => 'postback'));
     }
 
     /**
@@ -151,7 +141,7 @@ class Security extends \AppBundle\AcceptanceTester
         $position = strpos($this->getVisibleText(), $text);
         if($position === false)
         {
-            throw new Fail("'". $this->getVisibleText() ."' was not found in the response from this request and it should be");
+            throw new \Exception("'". $this->getVisibleText() ."' was not found in the response from this request and it should be");
         }
     }
 
@@ -163,7 +153,7 @@ class Security extends \AppBundle\AcceptanceTester
         $position = strpos($this->getVisibleText(), $text);
         if($position !== false)
         {
-            throw new Fail("'".$text."' was found in the response from this request and it should be not");
+            throw new \Exception("'".$text."' was found in the response from this request and it should be not");
         }
     }
 }
