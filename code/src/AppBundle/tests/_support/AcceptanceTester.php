@@ -457,7 +457,7 @@ class AcceptanceTester extends Actor
     {
         if($this->accessLevel == "DISABLED")
         {
-            $this->theResponseShouldContain("opencats - Login");
+            $this->dontSeeInTitle('opencats - Login');
             return;
         }
         $expectedTexts = array("You don't have permission", "Invalid user level for action", "You are not allowed to change your password.");
@@ -499,7 +499,7 @@ class AcceptanceTester extends Actor
     {
         $this->theResponseShouldNotContain("You don't have permission");
         $this->theResponseShouldNotContain("Invalid user level for action");
-        $this->theResponseShouldNotContain("opencats - Login");
+        $this->dontSeeInTitle('opencats - Login');
     }
 
 
