@@ -3348,7 +3348,7 @@ class SettingsUI extends UserInterface
             // session. Postback will handle saves.
             if (!isset($_SESSION['CATS_QUESTIONNAIRE']) || empty($_SESSION['CATS_QUESTIONNAIRE']))
             {
-                CommonErrors::fatal(COMMONERROR_BADINDEX, 'Please return to your careers website '
+                CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Please return to your careers website '
                     . 'and load the questionnaire a second time as your session has '
                     . 'expired.');
             }
@@ -3378,7 +3378,7 @@ class SettingsUI extends UserInterface
     {
         if (!isset($_SESSION['CATS_QUESTIONNAIRE']) || empty($_SESSION['CATS_QUESTIONNAIRE']))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, 'Please return to your careers website '
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Please return to your careers website '
                 . 'and load the questionnaire a second time as your session has '
                 . 'expired.');
         }
