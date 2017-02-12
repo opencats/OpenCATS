@@ -10,6 +10,7 @@ use OpenCATS\Entity\Company;
 use OpenCATS\Entity\CompanyRepository;
 use OpenCATS\Entity\JobOrder;
 use OpenCATS\Entity\JobOrderRepository;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 
 /**
@@ -38,6 +39,7 @@ class AcceptanceTester extends Actor
      * )
      */
     private $roleData;
+    private $lastRequestIsPost = false;
 
     /**
      * AcceptanceTester constructor.
@@ -457,11 +459,15 @@ class AcceptanceTester extends Actor
     {
         if($this->accessLevel == "DISABLED")
         {
-            $this->seeInTitle('opencats - Login');
+            if ($this->lastRequestIsPost) {
+                $this->theResponseShouldContain('opencats - Login');
+            } else {
+                $this->seeInTitle('opencats - Login');
+            }
             return;
         }
         $expectedTexts = array("You don't have permission", "Invalid user level for action", "You are not allowed to change your password.");
-        $response = $this->getVisibleText();
+        $response = $this->getCurrentVisibleText();
 
         foreach ($expectedTexts as &$text)
         {
@@ -474,13 +480,22 @@ class AcceptanceTester extends Actor
         throw new \Exception("'".$expectedTexts[0]."' was not found in the response from this request and it should be", $this->getSession());
     }
 
+    public function getCurrentVisibleText()
+    {
+        if ($this->lastRequestIsPost) {
+            return $this->postResultAsHtmlText;
+        } else {
+            return $this->getVisibleText();
+        }
+    }
+
     /**
      * @When I do POST request on url :url
      */
     public function iDoPOSTRequestOnUrl($url)
     {
-        $this->amOnPage($url);
-        $this->submitForm('form', array('postback' => 'postback'));
+        $this->lastRequestIsPost = true;
+        $this->postResultAsHtmlText = $this->doPost($url, array('postback' => 'postback'), 'CATS');
     }
 
     /**
@@ -488,6 +503,7 @@ class AcceptanceTester extends Actor
      */
     public function iDoGETRequest($url)
     {
+        $this->lastRequestIsPost = false;
         $this->amOnPage($url);
     }
 
@@ -511,15 +527,16 @@ class AcceptanceTester extends Actor
         $this->click($name);
     }
 
+
     /**
      * @Then the response should  contain :text
      */
     public function theResponseShouldContain($text)
     {
-        $position = strpos($this->getVisibleText(), $text);
+        $position = strpos($this->getCurrentVisibleText(), $text);
         if($position === false)
         {
-            throw new Fail("'". $this->getVisibleText() ."' was not found in the response from this request and it should be");
+            throw new Fail("'". $this->getCurrentVisibleText() ."' was not found in the response from this request and it should be: " . $text);
         }
     }
 
@@ -528,7 +545,7 @@ class AcceptanceTester extends Actor
      */
     public function theResponseShouldNotContain($text)
     {
-        $position = strpos($this->getVisibleText(), $text);
+        $position = strpos($this->getCurrentVisibleText(), $text);
         if($position !== false)
         {
             throw new Fail("'".$text."' was found in the response from this request and it should be not");

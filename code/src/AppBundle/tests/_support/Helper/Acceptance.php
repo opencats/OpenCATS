@@ -38,4 +38,23 @@ class Acceptance extends \Codeception\Module
     {
         $this->getModule('WebDriver')->setCookie(CATS_SESSION_NAME, $cookieValue);
     }
+
+    public function getCookie($cookieName)
+    {
+        return $this->getModule('WebDriver')->grabCookie($cookieName);
+    }
+
+    public function doPost($url, $data, $cookieName)
+    {
+        // use key 'http' even if you send the request to https://...
+        $options = array(
+            'http' => array(
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n"."Cookie: CATS=".$this->getCookie($cookieName)."\r\n",
+                'method'  => 'POST',
+                'content' => http_build_query($data)
+            )
+        );
+        $context  = stream_context_create($options);
+        return file_get_contents($this->getModule('WebDriver')->_getUrl() . $url, false, $context);
+    }
 }
