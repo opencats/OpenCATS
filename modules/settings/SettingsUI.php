@@ -2179,7 +2179,7 @@ class SettingsUI extends UserInterface
 
         foreach ($attachmentsRS as $index => $data)
         {
-            $attachmentsRS[$index]['fileSize'] = fileUtility::sizeToHuman(
+            $attachmentsRS[$index]['fileSize'] = FileUtility::sizeToHuman(
                 filesize($data['retrievalURLLocal']), 2, 1
             );
         }

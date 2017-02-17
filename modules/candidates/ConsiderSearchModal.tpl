@@ -55,6 +55,7 @@
             <?php if (!empty($this->rs)): ?>
                 <table class="sortable" width="100%">
                     <tr>
+                        <th align="left">Ref. #</th>
                         <th align="left">Title</th>
                         <th align="left">Company</th>
                         <th align="left">Type</th>
@@ -68,6 +69,7 @@
 
                     <?php foreach ($this->rs as $rowNumber => $data): ?>
                         <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
+                            <td align="left" valign="top"><?php $this->_($data['jobID']); ?></td>
                             <td align="left" valign="top">
                                 <?php if (!$data['inPipeline']): ?>
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addToPipeline&amp;getback=getback&amp;candidateIDArrayStored=<?php echo($this->candidateIDArrayStored); ?>&amp;jobOrderID=<?php $this->_($data['jobOrderID']); ?>" class="<?php $this->_($data['linkClass']); ?>">
@@ -103,6 +105,7 @@
             <?php if (!empty($this->rs)): ?>
                 <table class="sortable" width="100%">
                     <tr>
+                        <th align="left">Ref. #</th>
                         <th align="left">Title</th>
                         <th align="left">Company</th>
                         <th align="left">Type</th>
@@ -116,6 +119,7 @@
 
                     <?php foreach ($this->rs as $rowNumber => $data): ?>
                         <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
+                            <td align="left" valign="top"><?php $this->_($data['jobID']); ?></td>
                             <td align="left" valign="top">
                                 <?php if (!$data['inPipeline']): ?>
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addToPipeline&amp;getback=getback&amp;candidateIDArrayStored=<?php echo($this->candidateIDArrayStored); ?>&amp;jobOrderID=<?php $this->_($data['jobOrderID']); ?>" class="<?php $this->_($data['linkClass']); ?>">

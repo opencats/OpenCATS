@@ -163,7 +163,7 @@ class FileUtility
      *                text?
      * @return string Safe filename.
      */
-    public function makeSafeFilename($filename)
+    public static function makeSafeFilename($filename)
     {
         /* Strip out *nix directories. */
         $filenameParts = explode('/', $filename);
