@@ -8,9 +8,13 @@ More details:
 
 <http://www.opencats.org>
 
-End user documentation:
+End user/Installation  documentation:
 
 <http://opencats-documentation.readthedocs.io/en/latest/>
+
+OpenCATS YouTube channel:
+
+<https://www.youtube.com/channel/UChJ_YF1w74o8iWFAYa9w0xQ>
 
 Developers Mailing List:
 
