@@ -288,15 +288,15 @@ define ('LDAP_SITEID', 1);
 );*/
 
 
-/* 
+/*
 require_once('.\constants.php');
 // defining user roles
 const USER_ROLES = array(
         'candidate' => array('Candidate', 'candidate', 'This is a candidate.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ),
         'demo' => array('Demo', 'demo', 'This is a demo user.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
     );
-    
-// defining access levels different from the default access level    
+
+// defining access levels different from the default access level
 const ACCESS_LEVEL_MAP = array(
         'candidate' => array(
         ),
@@ -310,7 +310,7 @@ const ACCESS_LEVEL_MAP = array(
         )
     );*/
 
-/* All possible secure object names 
+/* All possible secure object names
             'candidates.history'
             'settings.administration'
             'joborders.editRating'
@@ -438,5 +438,11 @@ const ACCESS_LEVEL_MAP = array(
             'calendar.editEvent'
             'calendar.deleteEvent'
             */
+
+
+/* Uncomment below if you want enable theme debugging, ideal for developing themes for OpenCATS */
+/*
+define("THEME_DEBUG", true);
+*/
 
 ?>

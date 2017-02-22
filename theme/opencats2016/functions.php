@@ -11,6 +11,7 @@ function opencats2016_scripts(){
     oc_enqueue_script('opencats2016-submodal', '/js/submodal/subModal.js');
     oc_enqueue_script('opencats2016-jquery', '/js/jquery-1.3.2.min.js');
 
+    oc_enqueue_script('opencats2016-highlightrows', '/js/highlightrows.js');
     oc_enqueue_script('opencats2016-sweettitles', '/js/sweetTitles.js');
     oc_enqueue_script('opencats2016-datagrid', '/js/dataGrid.js');
     oc_enqueue_script('opencats2016-datagridfilters', '/js/dataGridFilters.js');

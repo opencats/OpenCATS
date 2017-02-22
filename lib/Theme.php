@@ -5,6 +5,10 @@
  * @subpackage Library
  * @copyright (C) OpenCats
  * @author Bloafer
+ *
+ * Theme library for enhancing OpenCATS, allowing end users to create themes without touching the core files
+ * theme functions are provided as global functions to give a WordPress feel to themes, debugging is based on
+ * Drupal style debugging, to apply theme debug just uncomment the THEME_DEBUG in the config.php file
  */
 
 include_once("./config.php");

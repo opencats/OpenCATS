@@ -1,11 +1,8 @@
-<?php /* $Id: ActivityDataGrid.tpl 3355 2007-10-31 16:11:56Z andrew $ */ ?>
-<?php TemplateUtility::printHeader('Activities', array('js/highlightrows.js', 'js/sweetTitles.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active); ?>
-    <div id="main">
+<?php get_header(); ?>
+    <div id="main" class="home">
         <?php TemplateUtility::printQuickSearch(); ?>
-        <div id="contents"<?php echo !$this->numActivities ? ' style="background-color: #E6EEFF; padding: 0px;"' : ''; ?>>
-            <?php if ($this->numActivities): ?>
+        <div id="contents" style="padding-top: 10px;">
+            <?php if ($numActivities): ?>
             <table width="100%">
                 <tr>
                     <td width="3%">
@@ -13,28 +10,28 @@
                     </td>
                     <td><h2>Activities</h2></td>
                     <td align="right">
-                        <?php $this->dataGrid->printNavigation(false); ?>&nbsp;&nbsp;<?php echo($this->quickLinks); ?>
+                        <?php $dataGrid->printNavigation(false); ?>&nbsp;&nbsp;<?php echo($quickLinks); ?>
                     </td>
                 </tr>
             </table>
 
             <p class="note">
-                <span style="float:left;">Activities - Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?></span>
+                <span style="float:left;">Activities - Page <?php echo($dataGrid->getCurrentPageHTML()); ?></span>
                 <span style="float:right;">
-                    <?php $this->dataGrid->drawRowsPerPageSelector(); ?>
-                    <?php $this->dataGrid->drawShowFilterControl(); ?>
+                    <?php $dataGrid->drawRowsPerPageSelector(); ?>
+                    <?php $dataGrid->drawShowFilterControl(); ?>
                 </span>&nbsp;
             </p>
 
-            <?php $this->dataGrid->drawFilterArea(); ?>
-            <?php $this->dataGrid->draw();  ?>
+            <?php $dataGrid->drawFilterArea(); ?>
+            <?php $dataGrid->draw();  ?>
 
             <div style="display:block;">
                 <span style="float:left;">
-                    <?php $this->dataGrid->printActionArea(); ?>
+                    <?php $dataGrid->printActionArea(); ?>
                 </span>
                 <span style="float:right;">
-                    <?php $this->dataGrid->printNavigation(true); ?>
+                    <?php $dataGrid->printNavigation(true); ?>
                 </span>&nbsp;
             </div>
 
@@ -60,4 +57,4 @@
             <?php endif; ?>
         </div>
     </div>
-<?php TemplateUtility::printFooter(); ?>
+<?php get_footer(); ?>

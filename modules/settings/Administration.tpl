@@ -198,6 +198,17 @@
                                     Add, rename, and remove extra text fields from various data types.
                                 </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    <img src="images/bullet_black.gif" alt="" />
+                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=themeSettings">
+                                        Theme Settings
+                                    </a>
+                                </td>
+                                <td>
+                                    Change OpenCATS theme settings, such as switching between OpenCATS 2016 and  OpenCATS 2017 theme
+                                </td>
+                            </tr>
                         </table>
                         <br />
 

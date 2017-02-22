@@ -110,15 +110,18 @@ class ActivityUI extends UserInterface
 
         if (!eval(Hooks::get('ACTIVITY_LIST_BY_VIEW_DG'))) return;
 
-        $this->_template->assign('quickLinks', $quickLinks);
-        $this->_template->assign('active', $this);
-        $this->_template->assign('dataGrid', $dataGrid);
-        $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
+        $themeVariables['quickLinks']   = $quickLinks;
+        $themeVariables['active']       = $this;
+        $themeVariables['dataGrid']     = $dataGrid;
+        $themeVariables['userID']       = $_SESSION['CATS']->getUserID();
 
         $activityEntries = new ActivityEntries($this->_siteID);
-        $this->_template->assign('numActivities', $activityEntries->getCount());
+        $themeVariables['numActivities']    = $activityEntries->getCount();
 
-        $this->_template->display('./modules/activity/ActivityDataGrid.tpl');
+        oc_set_title("Activities");
+
+        theme(array("activity/home"), $themeVariables);
+
     }
 
     /*
@@ -128,10 +131,13 @@ class ActivityUI extends UserInterface
     {
         if (!eval(Hooks::get('ACTIVITY_SEARCH'))) return;
 
-        $this->_template->assign('isResultsMode', false);
-        $this->_template->assign('wildCardString', '');
-        $this->_template->assign('active', $this);
-        $this->_template->display('./modules/activity/Search.tpl');
+        $themeVariables['isResultsMode']    = false;
+        $themeVariables['wildCardString']   = '';
+        $themeVariables['active']           = $this;
+
+        oc_set_title("Activity Search");
+
+        theme(array("activity/search"), $themeVariables);
     }
 
     /*
@@ -255,15 +261,19 @@ class ActivityUI extends UserInterface
 
         if (!eval(Hooks::get('ACTIVITY_LIST_BY_VIEW_DG'))) return;
 
-        $this->_template->assign('quickLinks', $quickLinks);
-        $this->_template->assign('active', $this);
-        $this->_template->assign('dataGrid', $dataGrid);
-        $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
-        
-        $activityEntries = new ActivityEntries($this->_siteID);
-        $this->_template->assign('numActivities', $activityEntries->getCount());
+        $themeVariables['quickLinks']   = $quickLinks;
+        $themeVariables['active']       = $this;
+        $themeVariables['dataGrid']     = $dataGrid;
+        $themeVariables['userID']       = $_SESSION['CATS']->getUserID();
 
-        $this->_template->display('./modules/activity/ActivityDataGrid.tpl');
+        $activityEntries = new ActivityEntries($this->_siteID);
+        $themeVariables['numActivities'] = $activityEntries->getCount();
+
+        oc_set_title("Activities");
+
+        theme(array("activity/home"), $themeVariables);
+
+
     }
 
     /**

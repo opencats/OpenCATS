@@ -6,12 +6,12 @@ Feature: Security using ACL - actions - GET & POST
 @candidates @actions
 Scenario Outline: Candidate module actions
   Given I am logged in with <accessLevel> access level
-  
+
   When I do <type> request on url "<url>"
   Then I should <bool> have permission
-  
+
   Examples:
-  | accessLevel | type    | url                                              | bool    | 
+  | accessLevel | type    | url                                              | bool    |
   | DISABLED    | GET     | index.php?m=candidates&a=show                    | not     |
   | DISABLED    | GET     | index.php?m=candidates&a=add                     | not     |
   | DISABLED    | GET     | index.php?m=candidates&a=edit                    | not     |
@@ -220,16 +220,16 @@ Scenario Outline: Candidate module actions
   | ROOT        | POST    | index.php?m=candidates&a=addActivityChangeStatus |         |
   | ROOT        | POST    | index.php?m=candidates&a=addEditImage            |         |
   | ROOT        | POST    | index.php?m=candidates&a=createAttachment        |         |
-  
-  
+
+
 
 @joborders @actions
 Scenario Outline: Job Order module actions
   Given I am logged in with <accessLevel> access level
-  
+
   When I do <type> request on url "<url>"
   Then I should <bool> have permission
-  
+
  Examples:
   | accessLevel | type    | url                                             | bool |
   | DISABLED    | GET     | index.php?m=joborders&a=show                    | not  |
@@ -270,12 +270,12 @@ Scenario Outline: Job Order module actions
   | READONLY    | GET     | index.php?m=joborders&a=removeFromPipeline      | not  |
   | READONLY    | GET     | index.php?m=joborders&a=createAttachment        | not  |
   | READONLY    | GET     | index.php?m=joborders&a=deleteAttachment        | not  |
-  | READONLY    | POST    | index.php?m=joborders&a=add                     | not  | 
-  | READONLY    | POST    | index.php?m=joborders&a=addCandidateModal       | not  | 
-  | READONLY    | POST    | index.php?m=joborders&a=edit                    | not  | 
-  | READONLY    | POST    | index.php?m=joborders&a=addActivityChangeStatus | not  | 
-  | READONLY    | POST    | index.php?m=joborders&a=considerCandidateSearch | not  | 
-  | READONLY    | POST    | index.php?m=joborders&a=createAttachment        | not  | 
+  | READONLY    | POST    | index.php?m=joborders&a=add                     | not  |
+  | READONLY    | POST    | index.php?m=joborders&a=addCandidateModal       | not  |
+  | READONLY    | POST    | index.php?m=joborders&a=edit                    | not  |
+  | READONLY    | POST    | index.php?m=joborders&a=addActivityChangeStatus | not  |
+  | READONLY    | POST    | index.php?m=joborders&a=considerCandidateSearch | not  |
+  | READONLY    | POST    | index.php?m=joborders&a=createAttachment        | not  |
   | EDIT        | GET     | index.php?m=joborders&a=show                    |      |
   | EDIT        | GET     | index.php?m=joborders&a=addJobOrderPopup        |      |
   | EDIT        | GET     | index.php?m=joborders&a=add                     |      |
@@ -408,13 +408,13 @@ Scenario Outline: Job Order module actions
   | ROOT        | POST    | index.php?m=joborders&a=addActivityChangeStatus |      |
   | ROOT        | POST    | index.php?m=joborders&a=considerCandidateSearch |      |
   | ROOT        | POST    | index.php?m=joborders&a=createAttachment        |      |
-  
- 
-  
+
+
+
  @companies @actions
  Scenario Outline: Companies module actions
   Given I am logged in with <accessLevel> access level
-  
+
   When I do <type> request on url "<url>"
   Then I should <bool> have permission
 
@@ -430,35 +430,35 @@ Examples:
   | DISABLED    | GET  | index.php?m=companies&a=listByView         | not  |
   | DISABLED    | GET  | index.php?m=companies&a=createAttachment   | not  |
   | DISABLED    | GET  | index.php?m=companies&a=deleteAttachment   | not  |
-  | DISABLED    | POST | index.php?m=companies&a=add                | not  |                                                   
-  | DISABLED    | POST | index.php?m=companies&a=edit               | not  |                                                 
-  | DISABLED    | POST | index.php?m=companies&a=createAttachment   | not  |         
-  | READONLY    | GET  | index.php?m=companies&a=show               |      |    
-  | READONLY    | GET  | index.php?m=companies&a=internalPostings   |      |    
-  | READONLY    | GET  | index.php?m=companies&a=add                | not  |    
-  | READONLY    | GET  | index.php?m=companies&a=edit               | not  |    
-  | READONLY    | GET  | index.php?m=companies&a=delete             | not  |    
-  | READONLY    | GET  | index.php?m=companies&a=search             |      |    
-  | READONLY    | GET  | index.php?m=companies&a=search             |      |    
-  | READONLY    | GET  | index.php?m=companies&a=listByView         |      |    
-  | READONLY    | GET  | index.php?m=companies&a=createAttachment   | not  |    
-  | READONLY    | GET  | index.php?m=companies&a=deleteAttachment   | not  |  
-  | READONLY    | POST | index.php?m=companies&a=add                | not  |                                                                        
-  | READONLY    | POST | index.php?m=companies&a=edit               | not  |                                                                      
-  | READONLY    | POST | index.php?m=companies&a=createAttachment   | not  |                                                                     
-  | EDIT        | GET  | index.php?m=companies&a=show               |      |    
-  | EDIT        | GET  | index.php?m=companies&a=internalPostings   |      |    
-  | EDIT        | GET  | index.php?m=companies&a=add                |      |    
-  | EDIT        | GET  | index.php?m=companies&a=edit               |      |    
-  | EDIT        | GET  | index.php?m=companies&a=delete             | not  |    
-  | EDIT        | GET  | index.php?m=companies&a=search             |      |    
-  | EDIT        | GET  | index.php?m=companies&a=search             |      |    
-  | EDIT        | GET  | index.php?m=companies&a=listByView         |      |    
-  | EDIT        | GET  | index.php?m=companies&a=createAttachment   |      |    
-  | EDIT        | GET  | index.php?m=companies&a=deleteAttachment   | not  |  
-  | EDIT        | POST | index.php?m=companies&a=add                |      |                                                                        
-  | EDIT        | POST | index.php?m=companies&a=edit               |      |                                                                      
-  | EDIT        | POST | index.php?m=companies&a=createAttachment   |      |                                                                     
+  | DISABLED    | POST | index.php?m=companies&a=add                | not  |
+  | DISABLED    | POST | index.php?m=companies&a=edit               | not  |
+  | DISABLED    | POST | index.php?m=companies&a=createAttachment   | not  |
+  | READONLY    | GET  | index.php?m=companies&a=show               |      |
+  | READONLY    | GET  | index.php?m=companies&a=internalPostings   |      |
+  | READONLY    | GET  | index.php?m=companies&a=add                | not  |
+  | READONLY    | GET  | index.php?m=companies&a=edit               | not  |
+  | READONLY    | GET  | index.php?m=companies&a=delete             | not  |
+  | READONLY    | GET  | index.php?m=companies&a=search             |      |
+  | READONLY    | GET  | index.php?m=companies&a=search             |      |
+  | READONLY    | GET  | index.php?m=companies&a=listByView         |      |
+  | READONLY    | GET  | index.php?m=companies&a=createAttachment   | not  |
+  | READONLY    | GET  | index.php?m=companies&a=deleteAttachment   | not  |
+  | READONLY    | POST | index.php?m=companies&a=add                | not  |
+  | READONLY    | POST | index.php?m=companies&a=edit               | not  |
+  | READONLY    | POST | index.php?m=companies&a=createAttachment   | not  |
+  | EDIT        | GET  | index.php?m=companies&a=show               |      |
+  | EDIT        | GET  | index.php?m=companies&a=internalPostings   |      |
+  | EDIT        | GET  | index.php?m=companies&a=add                |      |
+  | EDIT        | GET  | index.php?m=companies&a=edit               |      |
+  | EDIT        | GET  | index.php?m=companies&a=delete             | not  |
+  | EDIT        | GET  | index.php?m=companies&a=search             |      |
+  | EDIT        | GET  | index.php?m=companies&a=search             |      |
+  | EDIT        | GET  | index.php?m=companies&a=listByView         |      |
+  | EDIT        | GET  | index.php?m=companies&a=createAttachment   |      |
+  | EDIT        | GET  | index.php?m=companies&a=deleteAttachment   | not  |
+  | EDIT        | POST | index.php?m=companies&a=add                |      |
+  | EDIT        | POST | index.php?m=companies&a=edit               |      |
+  | EDIT        | POST | index.php?m=companies&a=createAttachment   |      |
   | DELETE      | GET  | index.php?m=companies&a=show               |      |
   | DELETE      | GET  | index.php?m=companies&a=internalPostings   |      |
   | DELETE      | GET  | index.php?m=companies&a=add                |      |
@@ -469,9 +469,9 @@ Examples:
   | DELETE      | GET  | index.php?m=companies&a=listByView         |      |
   | DELETE      | GET  | index.php?m=companies&a=createAttachment   |      |
   | DELETE      | GET  | index.php?m=companies&a=deleteAttachment   |      |
-  | DELETE      | POST | index.php?m=companies&a=add                |      |                                                                        
-  | DELETE      | POST | index.php?m=companies&a=edit               |      |                                                                      
-  | DELETE      | POST | index.php?m=companies&a=createAttachment   |      |        
+  | DELETE      | POST | index.php?m=companies&a=add                |      |
+  | DELETE      | POST | index.php?m=companies&a=edit               |      |
+  | DELETE      | POST | index.php?m=companies&a=createAttachment   |      |
   | DEMO        | GET  | index.php?m=companies&a=show               |      |
   | DEMO        | GET  | index.php?m=companies&a=internalPostings   |      |
   | DEMO        | GET  | index.php?m=companies&a=add                |      |
@@ -482,9 +482,9 @@ Examples:
   | DEMO        | GET  | index.php?m=companies&a=listByView         |      |
   | DEMO        | GET  | index.php?m=companies&a=createAttachment   |      |
   | DEMO        | GET  | index.php?m=companies&a=deleteAttachment   |      |
-  | DEMO        | POST | index.php?m=companies&a=add                |      |                                                                        
-  | DEMO        | POST | index.php?m=companies&a=edit               |      |                                                                      
-  | DEMO        | POST | index.php?m=companies&a=createAttachment   |      |                                                                     
+  | DEMO        | POST | index.php?m=companies&a=add                |      |
+  | DEMO        | POST | index.php?m=companies&a=edit               |      |
+  | DEMO        | POST | index.php?m=companies&a=createAttachment   |      |
   | ADMIN       | GET  | index.php?m=companies&a=show               |      |
   | ADMIN       | GET  | index.php?m=companies&a=internalPostings   |      |
   | ADMIN       | GET  | index.php?m=companies&a=add                |      |
@@ -495,9 +495,9 @@ Examples:
   | ADMIN       | GET  | index.php?m=companies&a=listByView         |      |
   | ADMIN       | GET  | index.php?m=companies&a=createAttachment   |      |
   | ADMIN       | GET  | index.php?m=companies&a=deleteAttachment   |      |
-  | ADMIN       | POST | index.php?m=companies&a=add                |      |                                                                        
-  | ADMIN       | POST | index.php?m=companies&a=edit               |      |                                                                      
-  | ADMIN       | POST | index.php?m=companies&a=createAttachment   |      |          
+  | ADMIN       | POST | index.php?m=companies&a=add                |      |
+  | ADMIN       | POST | index.php?m=companies&a=edit               |      |
+  | ADMIN       | POST | index.php?m=companies&a=createAttachment   |      |
   | MULTI_ADMIN | GET  | index.php?m=companies&a=show               |      |
   | MULTI_ADMIN | GET  | index.php?m=companies&a=internalPostings   |      |
   | MULTI_ADMIN | GET  | index.php?m=companies&a=add                |      |
@@ -508,9 +508,9 @@ Examples:
   | MULTI_ADMIN | GET  | index.php?m=companies&a=listByView         |      |
   | MULTI_ADMIN | GET  | index.php?m=companies&a=createAttachment   |      |
   | MULTI_ADMIN | GET  | index.php?m=companies&a=deleteAttachment   |      |
-  | MULTI_ADMIN | POST | index.php?m=companies&a=add                |      |                                                                        
-  | MULTI_ADMIN | POST | index.php?m=companies&a=edit               |      |                                                                      
-  | MULTI_ADMIN | POST | index.php?m=companies&a=createAttachment   |      |                                                                     
+  | MULTI_ADMIN | POST | index.php?m=companies&a=add                |      |
+  | MULTI_ADMIN | POST | index.php?m=companies&a=edit               |      |
+  | MULTI_ADMIN | POST | index.php?m=companies&a=createAttachment   |      |
   | ROOT        | GET  | index.php?m=companies&a=show               |      |
   | ROOT        | GET  | index.php?m=companies&a=internalPostings   |      |
   | ROOT        | GET  | index.php?m=companies&a=add                |      |
@@ -521,33 +521,33 @@ Examples:
   | ROOT        | GET  | index.php?m=companies&a=listByView         |      |
   | ROOT        | GET  | index.php?m=companies&a=createAttachment   |      |
   | ROOT        | GET  | index.php?m=companies&a=deleteAttachment   |      |
-  | ROOT        | POST | index.php?m=companies&a=add                |      |                                                                        
-  | ROOT        | POST | index.php?m=companies&a=edit               |      |                                                                      
-  | ROOT        | POST | index.php?m=companies&a=createAttachment   |      |          
+  | ROOT        | POST | index.php?m=companies&a=add                |      |
+  | ROOT        | POST | index.php?m=companies&a=edit               |      |
+  | ROOT        | POST | index.php?m=companies&a=createAttachment   |      |
 
 
 @contacts @actions
 Scenario Outline: Contacts module actions
   Given I am logged in with <accessLevel> access level
-  
+
   When I do <type> request on url "<url>"
   Then I should <bool> have permission
-  
+
  Examples:
   | accessLevel | type    | url                                             | bool  |
   | DISABLED    | GET     | index.php?m=contacts&a=show                     | not   |
   | DISABLED    | GET     | index.php?m=contacts&a=add                      | not   |
   | DISABLED    | GET     | index.php?m=contacts&a=edit                     | not   |
   | DISABLED    | GET     | index.php?m=contacts&a=delete                   | not   |
-  | DISABLED    | GET     | index.php?m=contacts&a=search                   | not   |        
+  | DISABLED    | GET     | index.php?m=contacts&a=search                   | not   |
   | DISABLED    | GET     | index.php?m=contacts&a=search                   | not   |
   | DISABLED    | GET     | index.php?m=contacts&a=listByView               | not   |
   | DISABLED    | GET     | index.php?m=contacts&a=addActivityScheduleEvent | not   |
   | DISABLED    | GET     | index.php?m=contacts&a=showColdCallList         | not   |
   | DISABLED    | GET     | index.php?m=contacts&a=downloadVCard            | not   |
-  | DISABLED    | POST    | index.php?m=contacts&a=add                      | not   |                                                   
-  | DISABLED    | POST    | index.php?m=contacts&a=edit                     | not   |                                                 
-  | DISABLED    | POST    | index.php?m=contacts&a=addActivityScheduleEvent | not   |    
+  | DISABLED    | POST    | index.php?m=contacts&a=add                      | not   |
+  | DISABLED    | POST    | index.php?m=contacts&a=edit                     | not   |
+  | DISABLED    | POST    | index.php?m=contacts&a=addActivityScheduleEvent | not   |
   | READONLY    | GET     | index.php?m=contacts&a=show                     |       |
   | READONLY    | GET     | index.php?m=contacts&a=add                      | not   |
   | READONLY    | GET     | index.php?m=contacts&a=edit                     | not   |
@@ -558,9 +558,9 @@ Scenario Outline: Contacts module actions
   | READONLY    | GET     | index.php?m=contacts&a=addActivityScheduleEvent | not   |
   | READONLY    | GET     | index.php?m=contacts&a=showColdCallList         |       |
   | READONLY    | GET     | index.php?m=contacts&a=downloadVCard            |       |
-  | READONLY    | POST    | index.php?m=contacts&a=add                      | not   |                                                                        
-  | READONLY    | POST    | index.php?m=contacts&a=edit                     | not   |                                                                      
-  | READONLY    | POST    | index.php?m=contacts&a=addActivityScheduleEvent | not   |    
+  | READONLY    | POST    | index.php?m=contacts&a=add                      | not   |
+  | READONLY    | POST    | index.php?m=contacts&a=edit                     | not   |
+  | READONLY    | POST    | index.php?m=contacts&a=addActivityScheduleEvent | not   |
   | EDIT        | GET     | index.php?m=contacts&a=show                     |       |
   | EDIT        | GET     | index.php?m=contacts&a=add                      |       |
   | EDIT        | GET     | index.php?m=contacts&a=edit                     |       |
@@ -571,9 +571,9 @@ Scenario Outline: Contacts module actions
   | EDIT        | GET     | index.php?m=contacts&a=addActivityScheduleEvent |       |
   | EDIT        | GET     | index.php?m=contacts&a=showColdCallList         |       |
   | EDIT        | GET     | index.php?m=contacts&a=downloadVCard            |       |
-  | EDIT        | POST    | index.php?m=contacts&a=add                      |       |                                                                        
-  | EDIT        | POST    | index.php?m=contacts&a=edit                     |       |                                                                      
-  | EDIT        | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |    
+  | EDIT        | POST    | index.php?m=contacts&a=add                      |       |
+  | EDIT        | POST    | index.php?m=contacts&a=edit                     |       |
+  | EDIT        | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |
   | DELETE      | GET     | index.php?m=contacts&a=show                     |       |
   | DELETE      | GET     | index.php?m=contacts&a=add                      |       |
   | DELETE      | GET     | index.php?m=contacts&a=edit                     |       |
@@ -584,9 +584,9 @@ Scenario Outline: Contacts module actions
   | DELETE      | GET     | index.php?m=contacts&a=addActivityScheduleEvent |       |
   | DELETE      | GET     | index.php?m=contacts&a=showColdCallList         |       |
   | DELETE      | GET     | index.php?m=contacts&a=downloadVCard            |       |
-  | DELETE      | POST    | index.php?m=contacts&a=add                      |       |                                                                        
-  | DELETE      | POST    | index.php?m=contacts&a=edit                     |       |                                                                      
-  | DELETE      | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |    
+  | DELETE      | POST    | index.php?m=contacts&a=add                      |       |
+  | DELETE      | POST    | index.php?m=contacts&a=edit                     |       |
+  | DELETE      | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |
   | DEMO        | GET     | index.php?m=contacts&a=show                     |       |
   | DEMO        | GET     | index.php?m=contacts&a=add                      |       |
   | DEMO        | GET     | index.php?m=contacts&a=edit                     |       |
@@ -597,9 +597,9 @@ Scenario Outline: Contacts module actions
   | DEMO        | GET     | index.php?m=contacts&a=addActivityScheduleEvent |       |
   | DEMO        | GET     | index.php?m=contacts&a=showColdCallList         |       |
   | DEMO        | GET     | index.php?m=contacts&a=downloadVCard            |       |
-  | DEMO        | POST    | index.php?m=contacts&a=add                      |       |                                                                        
-  | DEMO        | POST    | index.php?m=contacts&a=edit                     |       |                                                                      
-  | DEMO        | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |    
+  | DEMO        | POST    | index.php?m=contacts&a=add                      |       |
+  | DEMO        | POST    | index.php?m=contacts&a=edit                     |       |
+  | DEMO        | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |
   | ADMIN       | GET     | index.php?m=contacts&a=show                     |       |
   | ADMIN       | GET     | index.php?m=contacts&a=add                      |       |
   | ADMIN       | GET     | index.php?m=contacts&a=edit                     |       |
@@ -610,9 +610,9 @@ Scenario Outline: Contacts module actions
   | ADMIN       | GET     | index.php?m=contacts&a=addActivityScheduleEvent |       |
   | ADMIN       | GET     | index.php?m=contacts&a=showColdCallList         |       |
   | ADMIN       | GET     | index.php?m=contacts&a=downloadVCard            |       |
-  | ADMIN       | POST    | index.php?m=contacts&a=add                      |       |                                                                        
-  | ADMIN       | POST    | index.php?m=contacts&a=edit                     |       |                                                                      
-  | ADMIN       | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |    
+  | ADMIN       | POST    | index.php?m=contacts&a=add                      |       |
+  | ADMIN       | POST    | index.php?m=contacts&a=edit                     |       |
+  | ADMIN       | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |
   | MULTI_ADMIN | GET     | index.php?m=contacts&a=show                     |       |
   | MULTI_ADMIN | GET     | index.php?m=contacts&a=add                      |       |
   | MULTI_ADMIN | GET     | index.php?m=contacts&a=edit                     |       |
@@ -623,9 +623,9 @@ Scenario Outline: Contacts module actions
   | MULTI_ADMIN | GET     | index.php?m=contacts&a=addActivityScheduleEvent |       |
   | MULTI_ADMIN | GET     | index.php?m=contacts&a=showColdCallList         |       |
   | MULTI_ADMIN | GET     | index.php?m=contacts&a=downloadVCard            |       |
-  | MULTI_ADMIN | POST    | index.php?m=contacts&a=add                      |       |                                                                        
-  | MULTI_ADMIN | POST    | index.php?m=contacts&a=edit                     |       |                                                                      
-  | MULTI_ADMIN | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |    
+  | MULTI_ADMIN | POST    | index.php?m=contacts&a=add                      |       |
+  | MULTI_ADMIN | POST    | index.php?m=contacts&a=edit                     |       |
+  | MULTI_ADMIN | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |
   | ROOT        | GET     | index.php?m=contacts&a=show                     |       |
   | ROOT        | GET     | index.php?m=contacts&a=add                      |       |
   | ROOT        | GET     | index.php?m=contacts&a=edit                     |       |
@@ -636,53 +636,53 @@ Scenario Outline: Contacts module actions
   | ROOT        | GET     | index.php?m=contacts&a=addActivityScheduleEvent |       |
   | ROOT        | GET     | index.php?m=contacts&a=showColdCallList         |       |
   | ROOT        | GET     | index.php?m=contacts&a=downloadVCard            |       |
-  | ROOT        | POST    | index.php?m=contacts&a=add                      |       |                                                                        
-  | ROOT        | POST    | index.php?m=contacts&a=edit                     |       |                                                                      
-  | ROOT        | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |    
-  
+  | ROOT        | POST    | index.php?m=contacts&a=add                      |       |
+  | ROOT        | POST    | index.php?m=contacts&a=edit                     |       |
+  | ROOT        | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |
+
 @activities @actions
 Scenario Outline: Activity module actions
   Given I am logged in with <accessLevel> access level
-  
+
   When I do <type> request on url "<url>"
-  Then I should <bool> have permission 
-  
+  Then I should <bool> have permission
+
   Examples:
   | accessLevel | type | url                                        | bool |
   | DISABLED    | GET  | index.php?m=activity&a=viewByDate          | not  |
   | DISABLED    | GET  | index.php?m=activity&a=listByViewDataGrid  | not  |
   | DISABLED    | POST | index.php?m=activity&a=viewByDate          | not  |
   | READONLY    | GET  | index.php?m=activity&a=viewByDate          |      |
-  | READONLY    | GET  | index.php?m=activity&a=listByViewDataGrid  |      |  
+  | READONLY    | GET  | index.php?m=activity&a=listByViewDataGrid  |      |
   | READONLY    | POST | index.php?m=activity&a=viewByDate          |      |
   | EDIT        | GET  | index.php?m=activity&a=viewByDate          |      |
-  | EDIT        | GET  | index.php?m=activity&a=listByViewDataGrid  |      |  
+  | EDIT        | GET  | index.php?m=activity&a=listByViewDataGrid  |      |
   | EDIT        | POST | index.php?m=activity&a=viewByDate          |      |
   | DELETE      | GET  | index.php?m=activity&a=viewByDate          |      |
-  | DELETE      | GET  | index.php?m=activity&a=listByViewDataGrid  |      |  
+  | DELETE      | GET  | index.php?m=activity&a=listByViewDataGrid  |      |
   | DELETE      | POST | index.php?m=activity&a=viewByDate          |      |
   | DEMO        | GET  | index.php?m=activity&a=viewByDate          |      |
-  | DEMO        | GET  | index.php?m=activity&a=listByViewDataGrid  |      |  
+  | DEMO        | GET  | index.php?m=activity&a=listByViewDataGrid  |      |
   | DEMO        | POST | index.php?m=activity&a=viewByDate          |      |
   | ADMIN       | GET  | index.php?m=activity&a=viewByDate          |      |
-  | ADMIN       | GET  | index.php?m=activity&a=listByViewDataGrid  |      |  
+  | ADMIN       | GET  | index.php?m=activity&a=listByViewDataGrid  |      |
   | ADMIN       | POST | index.php?m=activity&a=viewByDate          |      |
   | MULTI_ADMIN | GET  | index.php?m=activity&a=viewByDate          |      |
-  | MULTI_ADMIN | GET  | index.php?m=activity&a=listByViewDataGrid  |      |  
+  | MULTI_ADMIN | GET  | index.php?m=activity&a=listByViewDataGrid  |      |
   | MULTI_ADMIN | POST | index.php?m=activity&a=viewByDate          |      |
   | ROOT        | GET  | index.php?m=activity&a=viewByDate          |      |
-  | ROOT        | GET  | index.php?m=activity&a=listByViewDataGrid  |      |  
+  | ROOT        | GET  | index.php?m=activity&a=listByViewDataGrid  |      |
   | ROOT        | POST | index.php?m=activity&a=viewByDate          |      |
-  
+
 @dashboard @home @actions
 Scenario Outline: Home module actions
   Given I am logged in with <accessLevel> access level
-  
+
    When I do <type> request on url "<url>"
-   Then I should <bool> have permission 
-  
+   Then I should <bool> have permission
+
  Examples:
-  | accessLevel | type | url                                    | bool | 
+  | accessLevel | type | url                                    | bool |
   | DISABLED    | GET  | index.php?m=home&a=quickSearch         | not  |
   | DISABLED    | GET  | index.php?m=home&a=deleteSavedSearch   | not  |
   | DISABLED    | GET  | index.php?m=home&a=addSavedSearch      | not  |
@@ -723,16 +723,16 @@ Scenario Outline: Home module actions
   | ROOT        | GET  | index.php?m=home&a=addSavedSearch      |      |
   | ROOT        | GET  | index.php?m=home&a=getAttachment       |      |
   | ROOT        | GET  | index.php?m=home&a=home                |      |
-  
+
 @lists @actions
 Scenario Outline: Lists module actions
   Given I am logged in with <accessLevel> access level
-  
+
    When I do <type> request on url "<url>"
-   Then I should <bool> have permission 
-  
+   Then I should <bool> have permission
+
  Examples:
-  | accessLevel | type | url                                            | bool | 
+  | accessLevel | type | url                                            | bool |
   | DISABLED    | GET  | index.php?m=lists&a=showList                   | not  |
   | DISABLED    | GET  | index.php?m=lists&a=quickActionAddToListModal  | not  |
   | DISABLED    | GET  | index.php?m=lists&a=addToListFromDatagridModal | not  |
@@ -770,28 +770,28 @@ Scenario Outline: Lists module actions
   | ADMIN       | GET  | index.php?m=lists&a=deleteStaticList           |      |
   | ADMIN       | GET  | index.php?m=lists&a=listByView                 |      |
   | MULTI_ADMIN | GET  | index.php?m=lists&a=showList                   |      |
-  | MULTI_ADMIN | GET  | index.php?m=lists&a=quickActionAddToListModal  |      | 
-  | MULTI_ADMIN | GET  | index.php?m=lists&a=addToListFromDatagridModal |      | 
-  | MULTI_ADMIN | GET  | index.php?m=lists&a=removeFromListDatagrid     |      | 
-  | MULTI_ADMIN | GET  | index.php?m=lists&a=deleteStaticList           |      | 
-  | MULTI_ADMIN | GET  | index.php?m=lists&a=listByView                 |      | 
+  | MULTI_ADMIN | GET  | index.php?m=lists&a=quickActionAddToListModal  |      |
+  | MULTI_ADMIN | GET  | index.php?m=lists&a=addToListFromDatagridModal |      |
+  | MULTI_ADMIN | GET  | index.php?m=lists&a=removeFromListDatagrid     |      |
+  | MULTI_ADMIN | GET  | index.php?m=lists&a=deleteStaticList           |      |
+  | MULTI_ADMIN | GET  | index.php?m=lists&a=listByView                 |      |
   | ROOT        | GET  | index.php?m=lists&a=showList                   |      |
   | ROOT        | GET  | index.php?m=lists&a=quickActionAddToListModal  |      |
   | ROOT        | GET  | index.php?m=lists&a=addToListFromDatagridModal |      |
   | ROOT        | GET  | index.php?m=lists&a=removeFromListDatagrid     |      |
   | ROOT        | GET  | index.php?m=lists&a=deleteStaticList           |      |
   | ROOT        | GET  | index.php?m=lists&a=listByView                 |      |
-  
- 
+
+
 @calendar @actions
 Scenario Outline: Calendar module actions
   Given I am logged in with <accessLevel> access level
-  
+
    When I do <type> request on url "<url>"
-   Then I should <bool> have permission 
-  
+   Then I should <bool> have permission
+
  Examples:
-  | accessLevel | type | url                                            | bool | 
+  | accessLevel | type | url                                            | bool |
   | DISABLED    | GET  | index.php?m=calendar&a=dynamicData             | not  |
   | DISABLED    | GET  | index.php?m=calendar&a=deleteEvent             | not  |
   | DISABLED    | GET  | index.php?m=calendar&a=showCalendar            | not  |
@@ -808,7 +808,7 @@ Scenario Outline: Calendar module actions
   | EDIT        | POST | index.php?m=calendar&a=addEvent                |      |
   | EDIT        | POST | index.php?m=calendar&a=editEvent               |      |
   | DELETE      | GET  | index.php?m=calendar&a=dynamicData             |      |
-  | DELETE      | GET  | index.php?m=calendar&a=deleteEvent             |      | 
+  | DELETE      | GET  | index.php?m=calendar&a=deleteEvent             |      |
   | DELETE      | GET  | index.php?m=calendar&a=showCalendar            |      |
   | DELETE      | POST | index.php?m=calendar&a=addEvent                |      |
   | DELETE      | POST | index.php?m=calendar&a=editEvent               |      |
@@ -832,17 +832,17 @@ Scenario Outline: Calendar module actions
   | ROOT        | GET  | index.php?m=calendar&a=showCalendar            |      |
   | ROOT        | POST | index.php?m=calendar&a=addEvent                |      |
   | ROOT        | POST | index.php?m=calendar&a=editEvent               |      |
-  
+
 @reports @actions
 Scenario Outline: Reports module actions
   Given I am logged in with <accessLevel> access level
-  
+
    When I do <type> request on url "<url>"
-   Then I should <bool> have permission 
-  
+   Then I should <bool> have permission
+
  Examples:
   | accessLevel | type | url                                                | bool |
-  | DISABLED    | GET  | index.php?m=reports&a=graphView                    | not  |  
+  | DISABLED    | GET  | index.php?m=reports&a=graphView                    | not  |
   | DISABLED    | GET  | index.php?m=reports&a=generateJobOrderReportPDF    | not  |
   | DISABLED    | GET  | index.php?m=reports&a=showSubmissionReport         | not  |
   | DISABLED    | GET  | index.php?m=reports&a=showPlacementReport          | not  |
@@ -906,19 +906,19 @@ Scenario Outline: Reports module actions
   | ROOT        | GET  | index.php?m=reports&a=customizeEEOReport           |      |
   | ROOT        | GET  | index.php?m=reports&a=generateEEOReportPreview     |      |
   | ROOT        | GET  | index.php?m=reports&a=reports                      |      |
-  
+
  @settings @actions
   Scenario Outline: Settings module actions
   Given I am logged in with <accessLevel> access level
-  
+
    When I do <type> request on url "<url>"
-   Then I should <bool> have permission 
-  
+   Then I should <bool> have permission
+
   ####commented lines in table have URLs that are not called from anywhere in the code anymore
    Examples:
-  | accessLevel | type | url                                        | bool | 
+  | accessLevel | type | url                                        | bool |
   | DISABLED    | GET  | index.php?m=settings&a=tags                | not  |
-  | DISABLED    | POST | index.php?m=settings&a=changePassword      | not  |   
+  | DISABLED    | POST | index.php?m=settings&a=changePassword      | not  |
   | DISABLED    | POST | index.php?m=settings&a=manageUsers         | not  |
   | DISABLED    | POST | index.php?m=settings&a=professional        | not  |
   | DISABLED    | POST | index.php?m=settings&a=previewPage         | not  |
@@ -927,7 +927,7 @@ Scenario Outline: Reports module actions
   | DISABLED    | GET  | index.php?m=settings&a=addUser             | not  |
   | DISABLED    | POST | index.php?m=settings&a=addUser             | not  |
   | DISABLED    | GET  | index.php?m=settings&a=editUser            | not  |
-  | DISABLED    | POST | index.php?m=settings&a=editUser            | not  | 
+  | DISABLED    | POST | index.php?m=settings&a=editUser            | not  |
   | DISABLED    | GET  | index.php?m=settings&a=createBackup        | not  |
   | DISABLED    | GET  | index.php?m=settings&a=deleteBackup        | not  |
   | DISABLED    | GET  | index.php?m=settings&a=customizeExtraFields| not  |
@@ -937,6 +937,8 @@ Scenario Outline: Reports module actions
   | DISABLED    | GET  | index.php?m=settings&a=reports             | not  |
   | DISABLED    | GET  | index.php?m=settings&a=emailSettings       | not  |
   | DISABLED    | POST | index.php?m=settings&a=emailSettings       | not  |
+  | DISABLED    | GET  | index.php?m=settings&a=themeSettings       | not  |
+  | DISABLED    | POST | index.php?m=settings&a=themeSettings       | not  |
   | DISABLED    | GET  | index.php?m=settings&a=careerPortalQuestionnairePreview| not  |
   | DISABLED    | GET  | index.php?m=settings&a=careerPortalQuestionnaire       | not  |
   | DISABLED    | POST | index.php?m=settings&a=careerPortalQuestionnaire       | not  |
@@ -979,6 +981,8 @@ Scenario Outline: Reports module actions
   | READONLY    | GET  | index.php?m=settings&a=reports             | not  |
   | READONLY    | GET  | index.php?m=settings&a=emailSettings       | not  |
   | READONLY    | POST | index.php?m=settings&a=emailSettings       | not  |
+  | READONLY    | GET  | index.php?m=settings&a=themeSettings       | not  |
+  | READONLY    | POST | index.php?m=settings&a=themeSettings       | not  |
   | READONLY    | GET  | index.php?m=settings&a=careerPortalQuestionnairePreview| not  |
   | READONLY    | GET  | index.php?m=settings&a=careerPortalQuestionnaire       | not  |
   | READONLY    | POST | index.php?m=settings&a=careerPortalQuestionnaire       | not  |
@@ -1021,6 +1025,8 @@ Scenario Outline: Reports module actions
   | EDIT        | GET  | index.php?m=settings&a=reports             | not  |
   | EDIT        | GET  | index.php?m=settings&a=emailSettings       | not  |
   | EDIT        | POST | index.php?m=settings&a=emailSettings       | not  |
+  | EDIT        | GET  | index.php?m=settings&a=themeSettings       | not  |
+  | EDIT        | POST | index.php?m=settings&a=themeSettings       | not  |
   | EDIT        | GET  | index.php?m=settings&a=careerPortalQuestionnairePreview| not  |
   | EDIT        | GET  | index.php?m=settings&a=careerPortalQuestionnaire       | not  |
   | EDIT        | POST | index.php?m=settings&a=careerPortalQuestionnaire       | not  |
@@ -1063,6 +1069,8 @@ Scenario Outline: Reports module actions
   | DELETE      | GET  | index.php?m=settings&a=reports             | not  |
   | DELETE      | GET  | index.php?m=settings&a=emailSettings       | not  |
   | DELETE      | POST | index.php?m=settings&a=emailSettings       | not  |
+  | DELETE      | GET  | index.php?m=settings&a=themeSettings       | not  |
+  | DELETE      | POST | index.php?m=settings&a=themeSettings       | not  |
   | DELETE      | GET  | index.php?m=settings&a=careerPortalQuestionnairePreview| not  |
   | DELETE      | GET  | index.php?m=settings&a=careerPortalQuestionnaire       | not  |
   | DELETE      | POST | index.php?m=settings&a=careerPortalQuestionnaire       | not  |
@@ -1105,6 +1113,8 @@ Scenario Outline: Reports module actions
   | DEMO        | GET  | index.php?m=settings&a=reports             |      |
   | DEMO        | GET  | index.php?m=settings&a=emailSettings       |      |
   | DEMO        | POST | index.php?m=settings&a=emailSettings       | not  |
+  | DEMO        | GET  | index.php?m=settings&a=themeSettings       |      |
+  | DEMO        | POST | index.php?m=settings&a=themeSettings       | not  |
   | DEMO        | GET  | index.php?m=settings&a=careerPortalQuestionnairePreview|      |
   | DEMO        | GET  | index.php?m=settings&a=careerPortalQuestionnaire       |      |
   | DEMO        | POST | index.php?m=settings&a=careerPortalQuestionnaire       |      |
@@ -1147,6 +1157,8 @@ Scenario Outline: Reports module actions
   | ADMIN       | GET  | index.php?m=settings&a=reports             |      |
   | ADMIN       | GET  | index.php?m=settings&a=emailSettings       |      |
   | ADMIN       | POST | index.php?m=settings&a=emailSettings       |      |
+  | ADMIN       | GET  | index.php?m=settings&a=themeSettings       |      |
+  | ADMIN       | POST | index.php?m=settings&a=themeSettings       |      |
   | ADMIN       | GET  | index.php?m=settings&a=careerPortalQuestionnairePreview|      |
   | ADMIN       | GET  | index.php?m=settings&a=careerPortalQuestionnaire       |      |
   | ADMIN       | POST | index.php?m=settings&a=careerPortalQuestionnaire       |      |
@@ -1189,6 +1201,8 @@ Scenario Outline: Reports module actions
   | MULTI_ADMIN | GET  | index.php?m=settings&a=reports             |      |
   | MULTI_ADMIN | GET  | index.php?m=settings&a=emailSettings       |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=emailSettings       |      |
+  | MULTI_ADMIN | GET  | index.php?m=settings&a=themeSettings       |      |
+  | MULTI_ADMIN | POST | index.php?m=settings&a=themeSettings       |      |
   | MULTI_ADMIN | GET  | index.php?m=settings&a=careerPortalQuestionnairePreview|      |
   | MULTI_ADMIN | GET  | index.php?m=settings&a=careerPortalQuestionnaire       |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=careerPortalQuestionnaire       |      |
@@ -1231,6 +1245,8 @@ Scenario Outline: Reports module actions
   | ROOT        | GET  | index.php?m=settings&a=reports             |      |
   | ROOT        | GET  | index.php?m=settings&a=emailSettings       |      |
   | ROOT        | POST | index.php?m=settings&a=emailSettings       |      |
+  | ROOT        | GET  | index.php?m=settings&a=themeSettings       |      |
+  | ROOT        | POST | index.php?m=settings&a=themeSettings       |      |
   | ROOT        | GET  | index.php?m=settings&a=careerPortalQuestionnairePreview|      |
   | ROOT        | GET  | index.php?m=settings&a=careerPortalQuestionnaire       |      |
   | ROOT        | POST | index.php?m=settings&a=careerPortalQuestionnaire       |      |
@@ -1257,7 +1273,7 @@ Scenario Outline: Reports module actions
   | DISABLED    | POST | index.php?m=settings&a=newInstallPassword  | not  |
   | DISABLED    | GET  | index.php?m=settings&a=forceEmail          | not  |
   | DISABLED    | POST | index.php?m=settings&a=forceEmail          | not  |
-  | DISABLED    | GET  | index.php?m=settings&a=newSiteName         | not  | 
+  | DISABLED    | GET  | index.php?m=settings&a=newSiteName         | not  |
   | DISABLED    | POST | index.php?m=settings&a=newSiteName         | not  |
   | DISABLED    | GET  | index.php?m=settings&a=upgradeSiteName     | not  |
   | DISABLED    | POST | index.php?m=settings&a=upgradeSiteName     | not  |
@@ -1334,47 +1350,46 @@ Scenario Outline: Reports module actions
   | ROOT        | GET  | index.php?m=settings&a=newInstallFinished  |      |
   | ROOT        | POST | index.php?m=settings&a=newInstallFinished  |      |
   ####commented lines in table have URLs that are not called from anywhere in the code anymore
-  
-  #### AJAX not tested 
+
+  #### AJAX not tested
   #When I do GET request "index.php?m=settings&a=ajax_tags_add"
   #And the response should <FAddTags> contain "You don't have permission"
-  
+
   #When I do GET request "index.php?m=settings&a=ajax_tags_del"
   #And the response should <FDelTags> contain "You don't have permission"
-    
+
   #When I do GET request "index.php?m=settings&a=ajax_tags_upd"
   #And the response should <FUpdTags> contain "You don't have permission"
-  
+
   #When I do GET request "index.php?m=settings&a=ajax_wizardAddUser"
   #And the response should <FAddUser> contain "You don't have permission"
-  
+
   #When I do GET request "index.php?m=settings&a=ajax_wizardDeleteUser"
   #And the response should <FDeleteUser> contain "You don't have permission"
-     
+
   #When I do GET request "index.php?m=settings&a=ajax_wizardCheckKey"
   #And the response should <FCheckKey> contain "You don't have permission"
-  
+
   #When I do GET request "index.php?m=settings&a=ajax_wizardLocalization"
   #And the response should <FLocalization> contain "You don't have permission"
-  
+
   #When I do GET request "index.php?m=settings&a=ajax_wizardFirstTimeSetup"
   #And the response should <FFirstTimeSetup> contain "You don't have permission"
-    
+
   #When I do GET request "index.php?m=settings&a=ajax_wizardLicense"
   #And the response should <FLicense> contain "You don't have permission"
-  
+
   #When I do GET request "index.php?m=settings&a=ajax_wizardPassword"
   #And the response should <FPasswd> contain "You don't have permission"
-  
+
   #When I do GET request "index.php?m=settings&a=ajax_wizardSiteName"
   #And the response should <FSiteName> contain "You don't have permission"
-    
+
   #When I do GET request "index.php?m=settings&a=ajax_wizardEmail"
   #And the response should <FEmail> contain "You don't have permission"
-  
+
   #When I do GET request "index.php?m=settings&a=ajax_wizardImport"
   #And the response should <FImport> contain "You don't have permission"
-  
+
   #When I do GET request "index.php?m=settings&a=ajax_wizardWebsite"
   #And the response should <FWebsite> contain "You don't have permission"
- 
