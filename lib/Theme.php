@@ -63,6 +63,10 @@ function theme($themeFiles, $variables=array(), $printOutput=true, $fallback=arr
     if(!isset($variables["content"])){
         $variables["content"] = "No content provided";
     }
+    if(isset($variables["active"])){
+        oc_set_active($variables["active"]);
+    }
+
     extract($variables);
     if(THEME_DEBUG){
         print PHP_EOL . "Available variables:" . PHP_EOL;
@@ -155,6 +159,15 @@ function oc_set_title($title){
 function oc_get_title(){
     global $oc_title;
     return $oc_title;
+}
+function oc_set_active($active){
+    global $oc_active;
+    $oc_active = $active;
+    return $oc_active;
+}
+function oc_get_active(){
+    global $oc_active;
+    return $oc_active;
 }
 function oc_enqueue_style($handle, $src='', $deps=array(), $ver=false, $media='all'){
     global $oc_style;

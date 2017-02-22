@@ -147,3 +147,4 @@
 -->
 <?php print opencats2017_nav() ?>
 <div id="wrapper">
+<?php TemplateUtility::printQuickSearch(); ?>

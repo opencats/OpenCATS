@@ -1,6 +1,6 @@
 <?php
 function opencats2017_nav(){
-    $active = null;
+    $active = oc_get_active();
     $subActive = '';
     $forceHighlight = '';
     echo '<aside id="menu">';
@@ -51,7 +51,7 @@ function opencats2017_nav(){
             $alPosition = strpos($tabText, "*al=");
             if ($alPosition === false)
             {
-                echo '<li><a class="', $className, '" href="', $indexName,
+                echo '<li class="', $className, '"><a href="', $indexName,
                      '?m=', $moduleName, '">', $tabText, '</a></li>', "\n";
             }
             else
@@ -67,7 +67,7 @@ function opencats2017_nav(){
                  if ($_SESSION['CATS']->getAccessLevel($soName) >= $al ||
                      $_SESSION['CATS']->isDemo())
                  {
-                    echo '<li><a class="', $className, '" href="', $indexName, '?m=', $moduleName, '">',
+                    echo '<li class="', $className, '"><a href="', $indexName, '?m=', $moduleName, '">',
                          substr($tabText, 0, $alPosition), '</a></li>', "\n";
                 }
             }
@@ -84,25 +84,25 @@ function opencats2017_nav(){
         /* Start the <li> block for the active tab. The secondary <ul>
          * for subtabs MUST be contained within this block. It is
          * closed after subtabs are printed. */
-        echo '<li>';
+        echo '<li class="active">';
 
-        echo '<a class="active" href="', $indexName, '?m=', $moduleName,
+        echo '<a href="', $indexName, '?m=', $moduleName,
              '">', $tabText, '</a>', "\n";
 
         $subTabs = $active->getSubTabs($modules);
         if ($subTabs)
         {
-            echo '<ul id="secondary">';
+            echo '<ul class="nav nav-second-level collapse in">';
 
             foreach ($subTabs as $subTabText => $link)
             {
                 if ($subTabText == $subActive)
                 {
-                    $style = "color:#cccccc;";
+                    $subClass = "active";
                 }
                 else
                 {
-                    $style = "";
+                    $subClass = "";
                 }
 
                 /* Check HR mode for displaying tab. */
@@ -150,8 +150,8 @@ function opencats2017_nav(){
                 if ($jsPosition !== false)
                 {
                     /* Javascript subtab. */
-                    echo '<li><a href="', substr($link, 0, $jsPosition), '" onclick="',
-                         substr($link, $jsPosition + 4), '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
+                    echo '<li class="'.$subClass.'"><a href="', substr($link, 0, $jsPosition), '" onclick="',
+                         substr($link, $jsPosition + 4), '">', $subTabText, '</a></li>', "\n";
                 }
 
                 /* A few subtabs have special logic to decide if they display or not. */
@@ -167,7 +167,7 @@ function opencats2017_nav(){
                     $defaultCompanyID = $companies->getDefaultCompany();
                     if ($defaultCompanyID !== false)
                     {
-                        echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
+                        echo '<li class="'.$subClass.'"><a href="', $link, '">', $subTabText, '</a></li>', "\n";
                     }
                 }
                 else if (strpos($link, 'a=administration') !== false)
@@ -175,7 +175,7 @@ function opencats2017_nav(){
                     /* Administration subtab. */
                     if ($_SESSION['CATS']->getAccessLevel('settings.administration') >= ACCESS_LEVEL_DEMO)
                     {
-                        echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
+                        echo '<li class="'.$subClass.'"><a href="', $link, '">', $subTabText, '</a></li>', "\n";
                     }
                 }
                 else if (strpos($link, 'a=customizeEEOReport') !== false)
@@ -186,7 +186,7 @@ function opencats2017_nav(){
 
                     if ($EEOSettingsRS['enabled'] == 1)
                     {
-                        echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
+                        echo '<li class="'.$subClass.'"><a href="', $link, '">', $subTabText, '</a></li>', "\n";
                     }
                 }
 
@@ -195,7 +195,7 @@ function opencats2017_nav(){
                 else if ($link != '')
                 {
                     /* Normal subtab. */
-                    echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
+                    echo '<li class="'.$subClass.'"><a href="', $link, '">', $subTabText, '</a></li>', "\n";
                 }
             }
 

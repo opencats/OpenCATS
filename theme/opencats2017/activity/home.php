@@ -1,6 +1,5 @@
 <?php get_header(); ?>
     <div class="content">
-        <?php TemplateUtility::printQuickSearch(); ?>
         <div id="contents" style="padding-top: 10px;">
             <?php if ($numActivities): ?>
             <div class="hpanel">

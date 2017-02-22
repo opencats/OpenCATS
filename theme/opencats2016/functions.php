@@ -1,10 +1,12 @@
 <?php
 function opencats2016_nav(){
-    $active = null;
+    $active = oc_get_active();
     return TemplateUtility::printTabs($active);
 }
 
 function opencats2016_scripts(){
+    oc_enqueue_script('opencats2016-validator', '/modules/settings/validator.js');
+    oc_enqueue_script('opencats2016-sorttable', '/js/sorttable.js');
     oc_enqueue_script('opencats2016-lib', '/js/lib.js');
     oc_enqueue_script('opencats2016-quickaction', '/js/quickAction.js');
     oc_enqueue_script('opencats2016-calendardateinput', '/js/calendarDateInput.js');

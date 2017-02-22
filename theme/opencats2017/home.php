@@ -1,6 +1,5 @@
 <?php get_header(); ?>
 <div class="content">
-<?php TemplateUtility::printQuickSearch(); ?>
     <div class="row">
         <div class="col-md-12">
             <div class="hpanel">
