@@ -1,0 +1,269 @@
+/* Toastr custom styles*/
+#toast-container {
+}
+
+#toast-container.toast-bottom-center > div, #toast-container.toast-top-center > div {
+    margin: 10px auto 0;
+}
+
+#toast-container > .toast-info,
+#toast-container > .toast-error,
+#toast-container > .toast-warning,
+#toast-container > .toast-success{
+    background-image: none;
+}
+
+#toast-container > div {
+    background: #fff;
+    padding: 20px;
+    color: #6a6c6f;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.2);
+    opacity: 1;
+}
+
+
+#toast-container > div:hover {
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toast-close-button {
+    color: #000;
+    opacity: 0.2;
+}
+
+.toast-info {
+    background: #fff;
+    border-left: 6px solid #3498db;
+}
+.toast-success {
+    background: #fff;
+    border-left: 6px solid #62cb31;
+}
+.toast-warning {
+    background: #fff;
+    border-left: 6px solid #ffb606;
+}
+.toast-error {
+    background: #fff;
+    border-left: 6px solid #e74c3c;
+}
+
+.toast-progress {
+    opacity: 0.6;
+}
+
+.toast-info .toast-progress {
+    background-color: #3498db;
+}
+.toast-success .toast-progress {
+    background-color: #62cb31;
+}
+.toast-warning .toast-progress {
+    background-color: #ffb606;
+}
+.toast-error .toast-progress {
+    background-color: #e74c3c;
+}
+
+/* Nestable list */
+
+.dd {
+    position: relative;
+    display: block;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+    line-height: 20px;
+}
+
+.dd-list {
+    display: block;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.dd-list .dd-list {
+    padding-left: 30px;
+}
+
+.dd-collapsed .dd-list {
+    display: none;
+}
+
+.dd-item,
+.dd-empty,
+.dd-placeholder {
+    display: block;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    min-height: 20px;
+    font-size: 13px;
+    line-height: 20px;
+}
+
+.dd-handle {
+    display: block;
+    margin: 5px 0;
+    padding: 5px 10px;
+    color: #333;
+    text-decoration: none;
+    border: 1px solid #e4e5e7;
+    background: #f7f9fa;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+.dd-handle span {
+    font-weight: bold;
+}
+
+.dd-handle:hover {
+    background: #f0f0f0;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.dd-item > button {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    float: left;
+    width: 25px;
+    height: 20px;
+    margin: 5px 0;
+    padding: 0;
+    text-indent: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    border: 0;
+    background: transparent;
+    font-size: 12px;
+    line-height: 1;
+    text-align: center;
+    font-weight: bold;
+}
+
+.dd-item > button:before {
+    content: '+';
+    display: block;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    text-indent: 0;
+}
+
+.dd-item > button[data-action="collapse"]:before {
+    content: '-';
+}
+
+#nestable2 .dd-item > button {
+    font-family: FontAwesome;
+    height: 34px;
+    width: 33px;
+    color: #c1c1c1;
+
+}
+
+#nestable2 .dd-item > button:before {
+    content: "\f067";
+}
+
+#nestable2 .dd-item > button[data-action="collapse"]:before {
+    content: "\f068";
+}
+
+.dd-placeholder,
+.dd-empty {
+    margin: 5px 0;
+    padding: 0;
+    min-height: 30px;
+    background: #f2fbff;
+    border: 1px dashed #e4e5e7;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+.dd-empty {
+    border: 1px dashed #bbb;
+    min-height: 100px;
+    background-color: #e5e5e5;
+    background-image: -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff), -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+    background-image: -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff), -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+    background-image: linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff), linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+    background-size: 60px 60px;
+    background-position: 0 0, 30px 30px;
+}
+
+.dd-dragel {
+    position: absolute;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.dd-dragel > .dd-item .dd-handle {
+    margin-top: 0;
+}
+
+.dd-dragel .dd-handle {
+    -webkit-box-shadow: 2px 4px 6px 0 rgba(0, 0, 0, .1);
+    box-shadow: 2px 4px 6px 0 rgba(0, 0, 0, .1);
+}
+
+/**
+* Nestable Extras
+*/
+.nestable-lists {
+    display: block;
+    clear: both;
+    padding: 30px 0;
+    width: 100%;
+    border: 0;
+    border-top: 2px solid #e4e5e7;
+    border-bottom: 2px solid #e4e5e7;
+}
+
+#nestable-menu {
+    padding: 0;
+    margin: 10px 0 20px 0;
+}
+
+#nestable-output,
+#nestable2-output {
+    width: 100%;
+    font-size: 0.75em;
+    line-height: 1.333333em;
+    font-family: open sans, lucida grande, lucida sans unicode, helvetica, arial, sans-serif;
+    padding: 5px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+#nestable2 .dd-handle {
+    color: inherit;
+    border: 1px dashed #e4e5e7;
+    background: #f7f9fa;
+    padding: 10px;
+}
+
+#nestable2 .dd-handle:hover {
+    /*background: #bbb;*/
+}
+
+
+#nestable2  span.label {
+    margin-right: 10px;
+}
+
+#nestable-output,
+#nestable2-output {
+    font-size: 12px;
+    padding: 25px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}

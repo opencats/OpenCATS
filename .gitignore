@@ -1,4 +1,5 @@
 INSTALL_BLOCK
+.DS_Store
 .buildpath
 .project
 .settings/*

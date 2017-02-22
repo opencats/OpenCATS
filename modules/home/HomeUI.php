@@ -78,7 +78,7 @@ class HomeUI extends UserInterface
 
                 $this->getAttachment();
                 break;
-            */     
+            */
 
             case 'home':
             default:
@@ -89,19 +89,19 @@ class HomeUI extends UserInterface
 
 
     private function home()
-    {        
+    {
          if (!eval(Hooks::get('HOME'))) return;
-        
+
         NewVersionCheck::getNews();
-        
+
         $dashboard = new Dashboard($this->_siteID);
         $placedRS = $dashboard->getPlacements();
-        
+
         $calendar = new Calendar($this->_siteID);
         $upcomingEventsHTML = $calendar->getUpcomingEventsHTML(7, UPCOMING_FOR_DASHBOARD);
-        
+
         $calendar = new Calendar($this->_siteID);
-        $upcomingEventsFupHTML = $calendar->getUpcomingEventsHTML(7, UPCOMING_FOR_DASHBOARD_FUP);        
+        $upcomingEventsFupHTML = $calendar->getUpcomingEventsHTML(7, UPCOMING_FOR_DASHBOARD_FUP);
 
         /* Important cand datagrid */
 
@@ -113,7 +113,7 @@ class HomeUI extends UserInterface
 
         $dataGrid = DataGrid::get("home:ImportantPipelineDashboard", $dataGridProperties);
 
-        $this->_template->assign('dataGrid', $dataGrid);
+        $themeVariables['dataGrid']                = $dataGrid;
 
         $dataGridProperties = array(
             'rangeStart'    => 0,
@@ -128,14 +128,16 @@ class HomeUI extends UserInterface
 
         $dataGrid2 = DataGrid::get("home:CallsDataGrid", $dataGridProperties);
 
-        $this->_template->assign('dataGrid2', $dataGrid2);
-        
-        $this->_template->assign('active', $this);
-        $this->_template->assign('placedRS', $placedRS);
-        $this->_template->assign('upcomingEventsHTML', $upcomingEventsHTML);
-        $this->_template->assign('upcomingEventsFupHTML', $upcomingEventsFupHTML);
-        $this->_template->assign('wildCardQuickSearch', '');
-        $this->_template->display('./modules/home/Home.tpl');
+        $themeVariables['dataGrid2']                = $dataGrid2;
+        $themeVariables['active']                   = $this;
+        $themeVariables['placedRS']                 = $placedRS;
+        $themeVariables['upcomingEventsHTML']       = $upcomingEventsHTML;
+        $themeVariables['upcomingEventsFupHTML']    = $upcomingEventsFupHTML;
+        $themeVariables['wildCardQuickSearch']      = '';
+
+        oc_set_title("Home");
+
+        theme(array("home"), $themeVariables);
     }
 
     private function deleteSavedSearch()

@@ -71,6 +71,7 @@ include_once('./lib/CommonErrors.php');
 include_once('./lib/CATSUtility.php');
 include_once('./lib/DatabaseConnection.php');
 include_once('./lib/Template.php');
+include_once('./lib/Theme.php');
 include_once('./lib/Users.php');
 include_once('./lib/MRU.php');
 include_once('./lib/Hooks.php');
