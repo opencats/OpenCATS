@@ -139,27 +139,24 @@ Feature: Access Level to objects check - sub pages (show, ...)
      Then I should <addContact> "Add Contact"
      And I should <searchContact> "Search Contacts"
      And the page should <quickSearch> contain "Quick Search"
-     And the page should <quickSearch> contain "quickSearchFor"
-     And the page should <quickSearch> contain "quickSearch"
-     And the page should <actionMenu> contain "showHideSingleQuickActionMenu"
      And I should <coldCallList> "Cold Call List"
      And I should <scheduleEvent> "Schedule Event"
      And I should <viewHistory> "View History"
      And I should <editContact> "Edit"
      And I should <deleteContact> "Delete"
      And I should <logAnActivity> "Log an Activity"
-     And the page should <editActivity> contain "editActivity"
-     And the page should <deleteActivity> contain "deleteActivity"
+     And the page should <editActivity> element "#editActivity2"
+     And the page should <deleteActivity> element "#deleteActivity2"
      
      Examples:
      | accessLevel | addContact   | searchContact   | actionMenu | quickSearch | coldCallList | scheduleEvent | viewHistory | editContact | deleteContact | logAnActivity | editActivity | deleteActivity |
-     | READONLY    | not see      | see             |            |             | see          | not see       | not see     | not see     | not see       | not see       | not          | not            |
-     | EDIT        | see          | see             |            |             | see          | see           | not see     | see         | not see       | see           |              |                |
-     | DELETE      | see          | see             |            |             | see          | see           | not see     | see         | see           | see           |              |                |
-     | DEMO        | see          | see             |            |             | see          | see           | see         | see         | see           | see           |              |                |
-     | ADMIN       | see          | see             |            |             | see          | see           | see         | see         | see           | see           |              |                |
-     | MULTI_ADMIN | see          | see             |            |             | see          | see           | see         | see         | see           | see           |              |                |
-     | ROOT        | see          | see             |            |             | see          | see           | see         | see         | see           | see           |              |                |
+     | READONLY    | not see      | see             |            |             | see          | not see       | not see     | not see     | not see       | not see       | not see      | not see        |
+     | EDIT        | see          | see             |            |             | see          | see           | not see     | see         | not see       | see           | see          | see            |
+     | DELETE      | see          | see             |            |             | see          | see           | not see     | see         | see           | see           | see          | see            |
+     | DEMO        | see          | see             |            |             | see          | see           | see         | see         | see           | see           | see          | see            |
+     | ADMIN       | see          | see             |            |             | see          | see           | see         | see         | see           | see           | see          | see            |
+     | MULTI_ADMIN | see          | see             |            |             | see          | see           | see         | see         | see           | see           | see          | see            |
+     | ROOT        | see          | see             |            |             | see          | see           | see         | see         | see           | see           | see          | see            |
      
      
    ####### LISTS #######
@@ -169,10 +166,9 @@ Feature: Access Level to objects check - sub pages (show, ...)
      Given I am logged in with "<accessLevel>" access level
      And I am on "/index.php?m=lists"
      When I follow link "UK Candidates"
+     And I press "Action"
      Then I should <showLists> "Show Lists"
      And the page should <quickSearch> contain "Quick Search"
-     And the page should <quickSearch> contain "quickSearchFor"
-     And the page should <quickSearch> contain "quickSearch"
      And I should <deleteList> "Delete List"
      And I should <listsHome> "Lists:"
      And I should <filter> "Filter"
@@ -180,7 +176,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
      And I should <action> "Action"
      And I should <lists> "- Page"
      And I should <alphabetFilter> "ALL"
-     And the page should <removeFromList> contain "Remove From This List"
+     And I should see "Remove From This List"
      And the page should <addToPipeline> contain "Add To Pipeline"
      And the page should <sendEmail> contain "Send E-Mail"
      And the page should <export> contain "Export"
