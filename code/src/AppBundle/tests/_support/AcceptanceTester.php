@@ -574,7 +574,7 @@ class AcceptanceTester extends Actor
     }
 
     /**
-     * @Then the page should  contain element :selector
+     * @Then the page should see element :selector
      */
     public function thePageShouldContainElement($selector)
     {
@@ -593,7 +593,7 @@ class AcceptanceTester extends Actor
     }
 
     /**
-     * @Then the page should not contain element :selector
+     * @Then the page should not see element :selector
      */
     public function thePageShouldNotContainElement($selector)
     {
