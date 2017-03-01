@@ -3,14 +3,29 @@ Feature: Access Level to objects check - sub pages (show, ...)
   In order to protect sensitive information from users who should not have access to them
   All objects in the system need to be controlled by the Access Level of user
 
+  @javascript @joborders
+  Scenario Outline: When not logged in (Access Level Disabled) accessing page URL redirects to login
+    Given I am logged in with "<accessLevel>" access level
+    And I am on "<page>"
+    Then the page should  contain element "#username"
+    And the page should  contain element "#password"
+    And the page should  contain element "input[value='Login']"
+
+    Examples:
+      | accessLevel | page                      |
+      | DISABLED    | /index.php?m=joborders    |
+      | DISABLED    | /index.php?m=candidates   |
+      | DISABLED    | /index.php?m=home         |
+      | DISABLED    | /index.php?m=contacts     |
+      | DISABLED    | /index.php?m=lists        |
+
   ######## DASHBOARD(HOME) #######
   # no sub pages
   
   ####### ACTIVITIES #######
   # no sub pages
  
-  ####### JOB ORDERS #######  
-       
+  ####### JOB ORDERS #######
   @javascript @joborders
   Scenario Outline: Job Order Show page visibility
     Given I am logged in with "<accessLevel>" access level
@@ -36,7 +51,6 @@ Feature: Access Level to objects check - sub pages (show, ...)
      
   Examples:
      | accessLevel | addJobOrder | searchJobOrder | quickSearch | actionMenu  | addAttachment | generateReport | viewHistory | editJobOrder  | deleteJobOrder  | administrativeHideShow | addToPipeline | export | logAnActivity | removeFromPipeline | setMatchingRating | details | deleteAttachment |
-     | DISABLED    | not see     | not see        | not         | not         | not see       | not see        | not see     | not see       | not see         | not see                | not see       | not see|not            | not                | not               | not see | not              | 
      | READONLY    | not see     | see            |             |             | not see       | see            | not see     | not see       | not see         | not see                | not see       | see    |not            | not                | not               | see     | not              |
      | EDIT        | see         | see            |             |             | see           | see            | not see     | see           | not see         | not see                | see           | see    |               | not                |                   | see     | not              |
      | DELETE      | see         | see            |             |             | see           | see            | not see     | see           | see             | not see                | see           | see    |               |                    |                   | see     |                  |
@@ -55,9 +69,6 @@ Feature: Access Level to objects check - sub pages (show, ...)
      Then I should <addCandidate> "Add Candidate"
      And I should <searchCandidate> "Search Candidates"
      And the page should <quickSearch> contain "Quick Search"
-     And the page should <quickSearch> contain "quickSearchFor"
-     And the page should <quickSearch> contain "quickSearch"
-     And the page should <actionMenu> contain "showHideSingleQuickActionMenu"
      And I should <details> "Candidate Details"
      And I should <scheduleEvent> "Schedule Event"
      And I should <addAttachment> "Add Attachment"
@@ -66,7 +77,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
      And I should <viewHistory> "View History"
      And I should <administrativeHideShow> "Administrative"
      And the page should <addToPipeline> contain "Add This Candidate to Job Order Pipeline"
-     And I should <logAnActivity> "Log an Activity"
+     And the page should <logAnActivity> contain element "img[title='Log an Activity / Change Status']"
      And the page should <logAnActivity2> contain "Log an Activity"
      And the page should <removeFromPipeline> contain "Remove from Pipeline"
      And the page should <editActivity> contain "editActivity"
@@ -79,7 +90,6 @@ Feature: Access Level to objects check - sub pages (show, ...)
      
    Examples:
      | accessLevel | addCandidate | searchCandidate | quickSearch | actionMenu | addToList | details | scheduleEvent | addAttachment | editCandidate | deleteCandidate | viewHistory | administrativeHideShow | addToPipeline | logAnActivity2 | logAnActivity | removeFromPipeline | editActivity | deleteActivity | setMatchingRating | deleteAttachment |
-     | DISABLED    | not see      | not see         | not         | not        | not       | not see | not see       | not see       | not see       | not see         | not see     | not see                | not           | not            | not see       | not                | not          | not            | not                     | not              |
      | READONLY    | not see      | see             |             |            |           | see     | not see       | not see       | not see       | not see         | not see     | not see                | not           | not            | not see       | not                | not          | not            | not                     | not              |
      | EDIT        | see          | see             |             |            |           | see     | see           | see           | see           | not see         | not see     | not see                |               |                | see           | not                |              | not            |                         | not              |
      | DELETE      | see          | see             |             |            |           | see     | see           | see           | see           | see             | not see     | not see                |               |                | see           |                    |              |                |                         |                  |
@@ -90,32 +100,6 @@ Feature: Access Level to objects check - sub pages (show, ...)
      
     ####### COMPANIES #######
 
-    @javascript @companies
-    Scenario Outline: Company Show page visibility for disabled level
-     Given I am logged in with "<accessLevel>" access level
-     And I am on "/index.php?m=home"
-     When I follow link "Google"
-     Then I should <addCompany> "Add Company"
-     And I should <searchCompany> "Search Companies"
-     And the page should <quickSearch> contain "Quick Search"
-     And the page should <quickSearch> contain "quickSearchFor"
-     And the page should <quickSearch> contain "quickSearch"
-     And the page should <actionMenu> contain "showHideSingleQuickActionMenu"
-     And I should <addAttachment> "Add Attachment"
-     And I should <viewHistory> "View History"
-     And I should <editCompany> "Edit"
-     And I should <deleteCompany> "Delete"
-     And I should <addJobOrder> "Add Job Order"
-     And I should <addContact> "Add Contact"
-     And the page should <editJobOrder> contain "index.php?m=joborders&amp;a=edit"
-     And the page should <editContact> contain "index.php?m=contacts&amp;a=edit"
-     And the page should <deleteAttachment> contain "index.php?m=companies&amp;a=deleteAttachment"
-     And the page should <sendEmail> contain "Send E-Mail"
-     
-     Examples:
-     | accessLevel | addCompany  | searchCompany  | quickSearch | actionMenu | addAttachment | viewHistory | editCompany   | deleteCompany   | addJobOrder | addContact | editJobOrder | editContact | deleteAttachment | sendEmail |
-     | DISABLED    | not see     | not see        | not         | not        | not see       | not see     | not see       | not see         | not see     | not see    | not          | not         | not              | not       |
-   
     @javascript @companies
     Scenario Outline: Company Show page visibility
      Given I am logged in with "<accessLevel>" access level
@@ -172,7 +156,6 @@ Feature: Access Level to objects check - sub pages (show, ...)
      
      Examples:
      | accessLevel | addContact   | searchContact   | actionMenu | quickSearch | coldCallList | scheduleEvent | viewHistory | editContact | deleteContact | logAnActivity | editActivity | deleteActivity |
-     | DISABLED    | not see      | not see         | not        | not         | not see      | not see       | not see     | not see     | not see       | not see       | not          | not            |
      | READONLY    | not see      | see             |            |             | see          | not see       | not see     | not see     | not see       | not see       | not          | not            |
      | EDIT        | see          | see             |            |             | see          | see           | not see     | see         | not see       | see           |              |                |
      | DELETE      | see          | see             |            |             | see          | see           | not see     | see         | see           | see           |              |                |
@@ -207,7 +190,6 @@ Feature: Access Level to objects check - sub pages (show, ...)
      
      Examples:
      | accessLevel | showLists    | quickSearch | deleteList | listsHome | filter | rowsPerPage | action | lists  | alphabetFilter| removeFromList | addToPipeline | sendEmail | export |
-     | DISABLED    | not see      | not         | not see    | not see   | not see| not see     | not see| not see| not see       | not            | not           | not       | not    |
      | READONLY    | see          |             | see        | see       | see    | see         | see    | see    | see           |                |               | not       |        |
      | EDIT        | see          |             | see        | see       | see    | see         | see    | see    | see           |                |               | not       |        |
      | DELETE      | see          |             | see        | see       | see    | see         | see    | see    | see           |                |               | not       |        |

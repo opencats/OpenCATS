@@ -79,7 +79,7 @@ class Security extends \AppBundle\AcceptanceTester
     {
         if($this->accessLevel == "DISABLED")
         {
-            $this->theResponseShouldContain("opencats - Login");
+            $this->dontSeeInTitle('opencats - Login');
             return;
         }
         $expectedTexts = array("You don't have permission", "Invalid user level for action", "You are not allowed to change your password.");
