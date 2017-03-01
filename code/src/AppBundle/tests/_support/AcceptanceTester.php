@@ -495,7 +495,13 @@ class AcceptanceTester extends Actor
     public function iDoPOSTRequestOnUrl($url)
     {
         $this->lastRequestIsPost = true;
-        $this->postResultAsHtmlText = $this->doPost($url, array('postback' => 'postback'), 'CATS');
+        try {
+            $this->postResultAsHtmlText = $this->doPost($url, array('postback' => 'postback'), 'CATS');
+        } catch (\Exception $e) {
+            print_r($e->getMessage());
+            print_r($e->getTraceAsString());
+        }
+
     }
 
     /**
@@ -536,7 +542,7 @@ class AcceptanceTester extends Actor
         $position = strpos($this->getCurrentVisibleText(), $text);
         if($position === false)
         {
-            throw new Fail("'". $this->getCurrentVisibleText() ."' was not found in the response from this request and it should be: " . $text);
+            throw new Fail("'". $text ."' was not found in the response. Response text: " . $this->getCurrentVisibleText());
         }
     }
 
@@ -557,7 +563,13 @@ class AcceptanceTester extends Actor
      */
     public function thePageShouldContain($text)
     {
-        $this->theResponseShouldContain($text);
+        try {
+            $this->theResponseShouldContain($text);
+        } catch (\Exception $e) {
+            print_r($e->getMessage());
+            print_r($e->getTraceAsString());
+            throw $e;
+        }
     }
 
     /**
