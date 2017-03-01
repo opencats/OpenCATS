@@ -570,6 +570,45 @@ class AcceptanceTester extends Actor
             print_r($e->getTraceAsString());
             throw $e;
         }
+
+    }
+
+    /**
+     * @Then the page should  contain element :selector
+     */
+    public function thePageShouldContainElement($selector)
+    {
+        if ($this->lastRequestIsPost)
+        {
+            throw new Fail("The page should containt :text step is only supported after a GET request (as POST is hackish and does not parse the DOM with Selenium)");
+        }
+        try {
+            $this->canSeeElement($selector);
+        } catch (\Exception $e) {
+            print_r($e->getMessage());
+            print_r($e->getTraceAsString());
+            throw $e;
+        }
+
+    }
+
+    /**
+     * @Then the page should not contain element :selector
+     */
+    public function thePageShouldNotContainElement($selector)
+    {
+        if ($this->lastRequestIsPost)
+        {
+            throw new Fail("The page should containt :text step is only supported after a GET request (as POST is hackish and does not parse the DOM with Selenium)");
+        }
+        try {
+            $this->cantSeeElement($selector);
+        } catch (\Exception $e) {
+            print_r($e->getMessage());
+            print_r($e->getTraceAsString());
+            throw $e;
+        }
+
     }
 
     /**

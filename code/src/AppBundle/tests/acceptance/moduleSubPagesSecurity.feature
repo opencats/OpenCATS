@@ -19,9 +19,6 @@ Feature: Access Level to objects check - sub pages (show, ...)
     Then I should <addJobOrder> "Add Job Order"
     And I should <searchJobOrder> "Search Job Orders"
     And the page should <quickSearch> contain "Quick Search"
-    And the page should <quickSearch> contain "quickSearchFor"
-    And the page should <quickSearch> contain "quickSearch"
-    And the page should <actionMenu> contain "showHideSingleQuickActionMenu"
     And I should <addAttachment> "Add Attachment"
     And I should <generateReport> "Generate Report"
     And I should <viewHistory> "View History"
@@ -31,10 +28,10 @@ Feature: Access Level to objects check - sub pages (show, ...)
     And I should <addToPipeline> "Add Candidate to This Job Order Pipeline"
     And I should <export> "Export"
     And I should <details> "Job Order Details"
-    And the page should <logAnActivity> contain "Log an Activity"
-    And the page should <removeFromPipeline> contain "Remove from Pipeline"
-    And the page should <setMatchingRating> contain "<map"
-    And the page should <deleteAttachment> contain "index.php?m=joborders&amp;a=deleteAttachment"
+    And the page should <logAnActivity> contain element "img[title='Log an Activity / Change Status']"
+    And the page should <removeFromPipeline> contain element "img[title='Remove from Pipeline']"
+    And the page should <setMatchingRating> contain element "map"
+    And the page should <deleteAttachment> contain element "#delete_link"
 
      
   Examples:
