@@ -239,7 +239,7 @@ use OpenCATS\UI\QuickActionMenu;
             <br />
 
             <p class="note">Job Orders</p>
-            <table class="sortable">
+            <table class="sortable jobOrders">
                 <tr>
                     <th align="left" width="30" nowrap="nowrap">ID</th>
                     <th align="left" width="200">Title</th>
@@ -295,7 +295,7 @@ use OpenCATS\UI\QuickActionMenu;
 
             <!-- CONTACT INFO -->
             <p class="note">Contacts</p>
-            <table class="sortable">
+            <table class="sortable contacts">
                 <tr>
                     <th align="left" nowrap="nowrap">First Name</th>
                     <th align="left" nowrap="nowrap">Last Name</th>

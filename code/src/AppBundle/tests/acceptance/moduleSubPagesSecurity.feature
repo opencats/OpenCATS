@@ -114,20 +114,20 @@ Feature: Access Level to objects check - sub pages (show, ...)
      And I should <deleteCompany> "Delete"
      And I should <addJobOrder> "Add Job Order"
      And I should <addContact> "Add Contact"
-     And the page should <editJobOrder> contain "index.php?m=joborders&amp;a=edit"
-     And the page should <editContact> contain "index.php?m=contacts&amp;a=edit"
-     And the page should <deleteAttachment> contain "index.php?m=companies&amp;a=deleteAttachment"
-     And the page should <sendEmail> contain "Send E-Mail"
+     And the page should <editJobOrder> element "table[class='sortable jobOrders'] img[src='images/actions/edit.gif']"
+     And the page should <editContact> element "table[class='sortable contacts'] img[src='images/actions/edit.gif']"
+     And the page should <deleteAttachment> element "#delete_link"
+     And the page should see element "img[src='images/actions/email.gif']"
      
      Examples:
      | accessLevel | addCompany  | searchCompany  | quickSearch | actionMenu | addAttachment | viewHistory | editCompany   | deleteCompany   | addJobOrder | addContact | editJobOrder | editContact | deleteAttachment | sendEmail |
-     | READONLY    | not see     | see            |             |            | not see       | not see     | not see       | not see         | not see     | not see    | not          | not         | not              |           |
-     | EDIT        | see         | see            |             |            | see           | not see     | see           | not see         | see         | see        |              |             | not              |           | 
-     | DELETE      | see         | see            |             |            | see           | not see     | see           | see             | see         | see        |              |             |                  |           |
-     | DEMO        | see         | see            |             |            | see           | see         | see           | see             | see         | see        |              |             |                  |           |
-     | ADMIN       | see         | see            |             |            | see           | see         | see           | see             | see         | see        |              |             |                  |           |
-     | MULTI_ADMIN | see         | see            |             |            | see           | see         | see           | see             | see         | see        |              |             |                  |           |
-     | ROOT        | see         | see            |             |            | see           | see         | see           | see             | see         | see        |              |             |                  |           |
+     | READONLY    | not see     | see            |             |            | not see       | not see     | not see       | not see         | not see     | not see    | not see      | not see     | not see          |           |
+     | EDIT        | see         | see            |             |            | see           | not see     | see           | not see         | see         | see        | see          | see         | not see          |           |
+     | DELETE      | see         | see            |             |            | see           | not see     | see           | see             | see         | see        | see          | see         | see              |           |
+     | DEMO        | see         | see            |             |            | see           | see         | see           | see             | see         | see        | see          | see         | see              |           |
+     | ADMIN       | see         | see            |             |            | see           | see         | see           | see             | see         | see        | see          | see         | see              |           |
+     | MULTI_ADMIN | see         | see            |             |            | see           | see         | see           | see             | see         | see        | see          | see         | see              |           |
+     | ROOT        | see         | see            |             |            | see           | see         | see           | see             | see         | see        | see          | see         | see              |           |
      
   ####### CONTACTS #######
   
