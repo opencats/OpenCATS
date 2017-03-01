@@ -477,7 +477,7 @@ class AcceptanceTester extends Actor
                 return;
             }
         }
-        throw new \Exception("'".$expectedTexts[0]."' was not found in the response from this request and it should be", $this->getSession());
+        throw new \Exception("Neither of the non-permissions texts '". json_encode($expectedTexts) . "' were found in the page with content: " . $this->getCurrentVisibleText());
     }
 
     public function getCurrentVisibleText()
