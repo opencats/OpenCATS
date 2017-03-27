@@ -967,6 +967,22 @@ class JobOrdersDataGrid extends DataGrid
                                      'pagerWidth'    => 60,
                                      'pagerOptional' => true,
                                      'filterHaving' => 'DATE_FORMAT(joborder.date_modified, \'%m-%d-%y\')'),
+            'In Pipeline' => array('select'     => '(
+                                                            SELECT
+                                                                COUNT(*)
+                                                            FROM
+                                                                candidate_joborder
+                                                            WHERE
+                                                                joborder_id = joborder.joborder_id
+                                                            AND
+                                                                site_id = '.$this->_siteID.'
+                                                          ) AS totalPipeline',
+                                       'pagerRender'      => 'return $rsData[\'totalPipeline\'];',
+                                       'sortableColumn'     => 'totalPipeline',
+                                       'columnHeaderText' => 'Total',
+                                       'pagerWidth'    => 25,
+                                       'filterHaving'  => 'totalPipeline',
+                                       'filterTypes'   => '===>=<'),
 
             'Not Contacted' => array('select'   => '(
                                                               SELECT
