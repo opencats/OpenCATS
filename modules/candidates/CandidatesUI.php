@@ -998,6 +998,15 @@ class CandidatesUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add candidate.');
         }
 
+        $activityEntries = new ActivityEntries($this->_siteID);
+        $activityID = $activityEntries->add(
+            $candidateID,
+            DATA_ITEM_CANDIDATE,
+            400,
+            'Added a new candidate.',
+            $this->_userID
+        );
+
         CATSUtility::transferRelativeURI(
             'm=candidates&a=show&candidateID=' . $candidateID
         );
