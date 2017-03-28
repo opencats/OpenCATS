@@ -288,6 +288,18 @@ LOCK TABLES `candidate` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `candidate_duplicates` */
+--
+
+DROP TABLE IF EXISTS `candidate_duplicates`;
+CREATE TABLE `candidate_duplicates` (
+  `old_candidate_id` int(11) NOT NULL,
+  `new_candidate_id` int(11) NOT NULL,
+  `site_id` int(11) NOT NULL,    
+  PRIMARY KEY (`old_candidate_id`, `new_candidate_id`)
+  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
 -- Table structure for table `candidate_joborder`
 --
 
