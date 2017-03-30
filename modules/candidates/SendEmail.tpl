@@ -107,23 +107,23 @@
                         document.emailForm.emailSubject.focus();
                         //added the code below for the ckeditor html box - Jamin 2-19-2010
                         //adjusted code to remove or prevent extra breaks in email - Jamin 2-23-2010
-                CKEDITOR.replace( 'emailBody', { extraPlugins: 'font' } );
-                CKEDITOR.on('instanceReady', function(ev)
-                {
-                    var tags = ['p', 'ol', 'ul', 'li']; // etc.
+                        CKEDITOR.replace( 'emailBody', { extraPlugins: 'font' } );
+                        CKEDITOR.on('instanceReady', function(ev)
+                        {
+                            var tags = ['p', 'ol', 'ul', 'li']; // etc.
 
-                    for (var key in tags) {
-                        ev.editor.dataProcessor.writer.setRules(tags[key],
-                            {
-                                indent : false,
-                                breakBeforeOpen : false,
-                                breakAfterOpen : false,
-                                breakBeforeClose : false,
-                                breakAfterClose : false, 
-                            });
-                    }
-                });
-            </script>
+                            for (var key in tags) {
+                                ev.editor.dataProcessor.writer.setRules(tags[key],
+                                    {
+                                        indent : false,
+                                        breakBeforeOpen : false,
+                                        breakAfterOpen : false,
+                                        breakBeforeClose : false,
+                                        breakAfterClose : false, 
+                                    });
+                            }
+                        });
+                    </script>
 
                     </td>
                 </tr>
