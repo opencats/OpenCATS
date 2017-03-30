@@ -8,9 +8,13 @@ More details:
 
 <http://www.opencats.org>
 
-End user documentation:
+End user/Installation  documentation:
 
 <http://opencats-documentation.readthedocs.io/en/latest/>
+
+OpenCATS YouTube channel:
+
+<https://www.youtube.com/channel/UChJ_YF1w74o8iWFAYa9w0xQ>
 
 Developers Mailing List:
 
@@ -29,8 +33,9 @@ Issues:
 
 [Open Issues](https://github.com/opencats/OpenCATS/issues?q=is%3Aopen)
 
-[![Waffle](https://badge.waffle.io/opencats/opencats.svg?label=waffle: ready&title=Planed)](http://waffle.io/opencats/opencats)
-[![Waffle](https://badge.waffle.io/opencats/opencats.svg?label=waffle: in progress&title=In Progress)](http://waffle.io/opencats/opencats)
-[![Waffle](https://badge.waffle.io/opencats/opencats.svg?label=waffle: ready to test&title=Ready To Test)](http://waffle.io/opencats/opencats)
+[![Planed](https://badge.waffle.io/opencats/opencats.svg?label=waffle:%20ready&title=Planed)](http://waffle.io/opencats/opencats)
+[![In Progress](https://badge.waffle.io/opencats/opencats.svg?label=waffle:%20in%20progress&title=In%20Progress)](http://waffle.io/opencats/opencats)
+[![Ready To Test](https://badge.waffle.io/opencats/opencats.svg?label=waffle:%20ready%20to%20test&title=Ready%20To%20Test)](http://waffle.io/opencats/opencats)
+
 
 [![Throughput Graph](https://graphs.waffle.io/opencats/opencats/throughput.svg)](https://waffle.io/opencats/opencats/metrics/throughput)

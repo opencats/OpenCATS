@@ -72,6 +72,10 @@ foreach ($pipelinesRS as $rowIndex => $row)
     {
         $pipelinesRS[$rowIndex]['highlightStyle'] = 'jobLinkSubmitted';
     }
+    else if($row['isHotCandidate'] == '1')
+    {
+        $pipelinesRS[$rowIndex]['highlightStyle'] = 'jobLinkHot';
+    }
     else
     {
         $pipelinesRS[$rowIndex]['highlightStyle'] = 'jobLinkCold';

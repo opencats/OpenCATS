@@ -95,10 +95,14 @@ class Statistics
                 COUNT(*) AS submissionCount
             FROM
                 candidate_joborder_status_history
+            LEFT JOIN joborder
+                ON joborder.joborder_id = candidate_joborder_status_history.joborder_id
             WHERE
                 status_to = 400
             AND
-                site_id = %s
+                joborder.status IN ('Active', 'OnHold', 'Full', 'Closed')
+            AND
+                candidate_joborder_status_history.site_id = %s
             %s",
             $this->_siteID,
             $criterion
