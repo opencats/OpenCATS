@@ -17,9 +17,9 @@ quickAction.CandidateDuplicateMenu.prototype.getOptions = function()
         ];
     }
     return null;
-}
+};
 
 quickAction.CandidateDuplicateMenu.prototype.urlDecode = function(url)
 {
     return decodeURIComponent(url.replace(/\+/g, " "));
-}
+};
