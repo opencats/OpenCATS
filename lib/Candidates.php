@@ -1438,7 +1438,7 @@ class Candidates
 
         $this->_db->query($sql);
         
-         $sql = sprintf(
+        $sql = sprintf(
             "UPDATE
                 candidate_tag
             SET
