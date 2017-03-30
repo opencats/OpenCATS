@@ -845,6 +845,40 @@ class JobOrders
 
         return (boolean) $this->_db->query($sql);
     }
+    
+    public function checkOpenings($regardingID)
+    {
+        
+        $sql = sprintf(
+            "SELECT 
+                joborder.openings_available AS openingsAvailable
+            FROM
+                joborder
+            WHERE
+                site_id = %s
+            AND
+                joborder_id = %s",
+            $this->_siteID,
+            $this->_db->makeQueryInteger($regardingID)
+        );
+        
+        $rs = $this->_db->getAllAssoc($sql);
+        if(!$rs)
+        {
+            return false;
+        }
+        
+        $openingsAvailable = intval($rs[0]['openingsAvailable']);
+        
+        if($openingsAvailable > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
 
 
@@ -967,6 +1001,22 @@ class JobOrdersDataGrid extends DataGrid
                                      'pagerWidth'    => 60,
                                      'pagerOptional' => true,
                                      'filterHaving' => 'DATE_FORMAT(joborder.date_modified, \'%m-%d-%y\')'),
+            'In Pipeline' => array('select'     => '(
+                                                            SELECT
+                                                                COUNT(*)
+                                                            FROM
+                                                                candidate_joborder
+                                                            WHERE
+                                                                joborder_id = joborder.joborder_id
+                                                            AND
+                                                                site_id = '.$this->_siteID.'
+                                                          ) AS totalPipeline',
+                                       'pagerRender'      => 'return $rsData[\'totalPipeline\'];',
+                                       'sortableColumn'     => 'totalPipeline',
+                                       'columnHeaderText' => 'Total',
+                                       'pagerWidth'    => 25,
+                                       'filterHaving'  => 'totalPipeline',
+                                       'filterTypes'   => '===>=<'),
 
             'Not Contacted' => array('select'   => '(
                                                               SELECT

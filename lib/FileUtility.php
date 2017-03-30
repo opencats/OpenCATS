@@ -176,7 +176,7 @@ class FileUtility
         /* Strip out non-ASCII characters. */
         for ($i = 0; $i < strlen($filename); $i++)
         {
-            if (ord($filename[$i]) > 128 || ord($filename[$i]) < 32)
+            if (ord($filename[$i]) >= 128 || ord($filename[$i]) < 32)
             {
                 $filename[$i] = '_';
             }

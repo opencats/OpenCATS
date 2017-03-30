@@ -547,6 +547,7 @@ class Pipelines
                 candidate.state As state,
                 candidate.email1 AS candidateEmail,
                 candidate_joborder.status AS jobOrderStatus,
+                candidate.is_hot AS isHotCandidate,
                 DATE_FORMAT(
                     candidate_joborder.date_created, '%%m-%%d-%%y'
                 ) AS dateCreated,
@@ -601,7 +602,7 @@ class Pipelines
                         status_to = %s
                     AND
                         site_id = %s
-                ) > 1, 1, 0) AS submitted,
+                ) >= 1, 1, 0) AS submitted,
                 added_user.first_name AS addedByFirstName,
                 added_user.last_name AS addedByLastName
             FROM

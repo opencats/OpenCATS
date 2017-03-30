@@ -2916,6 +2916,17 @@ class CandidatesUI extends UserInterface
         else
         {
             $statusID = $_POST['statusID'];
+            if($statusID == PIPELINE_STATUS_PLACED)
+            {
+                $jobOrders = new JobOrders($this->_siteID);
+                $canBeHired = $jobOrders->checkOpenings($regardingID);
+                if(!$canBeHired)
+                {
+                    $this->fatalModal(
+                        'This job order has been filled. Cannot assign the status Placed to any other candidate.'
+                    );
+                }
+            }
         }
 
         $candidateID = $_POST['candidateID'];
@@ -3066,6 +3077,13 @@ class CandidatesUI extends UserInterface
             {
                 $jobOrders = new JobOrders($this->_siteID);
                 $jobOrders->updateOpeningsAvailable($regardingID, $data['openingsAvailable'] - 1);
+            }
+            
+            /* If status is changed from placed to something else, increase number of open positions by one. */
+            if ($statusID != PIPELINE_STATUS_PLACED && $data['statusID'] == PIPELINE_STATUS_PLACED)
+            {
+                $jobOrders = new JobOrders($this->_siteID);
+                $jobOrders->updateOpeningsAvailable($regardingID, $data['openingsAvailable'] + 1);
             }
         }
 
