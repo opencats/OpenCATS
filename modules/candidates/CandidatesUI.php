@@ -3286,11 +3286,10 @@ class CandidatesUI extends UserInterface
                 . 'WHERE candidate_id IN (%s)',
                 $db_str
             ));
-            
+
             $emailTemplates = new EmailTemplates($this->_siteID);
             $emailTemplatesRS = $emailTemplates->getAllCustom();
-            
-            
+
             //$this->_template->assign('privledgedUser', $privledgedUser);
             $this->_template->assign('active', $this);
             $this->_template->assign('success', false);
