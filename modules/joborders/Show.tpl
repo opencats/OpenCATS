@@ -127,10 +127,12 @@ use OpenCATS\UI\QuickActionMenu;
                             </tr>
 
                             <?php for ($i = 0; $i < intval(count($this->extraFieldRS)/2); $i++): ?>
-                               <tr>
-                                    <td class="vertical"><?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:</td>
-                                    <td class="data"><?php echo($this->extraFieldRS[$i]['display']); ?></td>
-                              </tr>
+                               <?php if(($this->extraFieldRS[$i]['extraFieldType']) != EXTRA_FIELD_TEXTAREA): ?>
+                                   <tr>
+                                        <td class="vertical"><?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:</td>
+                                        <td class="data"><?php echo($this->extraFieldRS[$i]['display']); ?></td>
+                                   </tr>
+                                <?php endif; ?>
                             <?php endfor; ?>
 
                             <?php eval(Hooks::get('JO_TEMPLATE_SHOW_BOTTOM_OF_LEFT')); ?>
@@ -191,10 +193,12 @@ use OpenCATS\UI\QuickActionMenu;
                             </tr>
 
                             <?php for ($i = (intval(count($this->extraFieldRS))/2); $i < (count($this->extraFieldRS)); $i++): ?>
-                                <tr>
-                                    <td class="vertical"><?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:</td>
-                                    <td class="data"><?php echo($this->extraFieldRS[$i]['display']); ?></td>
-                                </tr>
+                                <?php if(($this->extraFieldRS[$i]['extraFieldType']) != EXTRA_FIELD_TEXTAREA): ?>
+                                    <tr>
+                                        <td class="vertical"><?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:</td>
+                                        <td class="data"><?php echo($this->extraFieldRS[$i]['display']); ?></td>
+                                    </tr>
+                                <?php endif; ?>
                             <?php endfor; ?>
 
                             <?php eval(Hooks::get('JO_TEMPLATE_SHOW_BOTTOM_OF_RIGHT')); ?>
@@ -283,6 +287,15 @@ use OpenCATS\UI\QuickActionMenu;
                                 </td>
 
                             </tr>
+                
+                            <?php for ($i = (intval(count($this->extraFieldRS))/2); $i < (count($this->extraFieldRS)); $i++): ?>
+                                <?php if(($this->extraFieldRS[$i]['extraFieldType']) == EXTRA_FIELD_TEXTAREA): ?>
+                                    <tr>
+                                        <td class="vertical"><?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:</td>
+                                        <td class="data"><?php echo($this->extraFieldRS[$i]['display']); ?></td>
+                                    </tr>
+                                <?php endif; ?>
+                            <?php endfor; ?>
 
                             <tr>
                                 <td valign="top" class="vertical">Internal Notes:</td>
