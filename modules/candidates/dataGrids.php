@@ -7,7 +7,7 @@ include_once('./lib/Width.php');
 
 class candidatesListByViewDataGrid extends CandidatesDataGrid
 {
-    public function __construct($siteID, $parameters, $misc, $duplicates = 0)
+    public function __construct($siteID, $parameters, $misc)
     {
         /* Pager configuration. */
         $this->_tableWidth = new Width(100, '%');
@@ -34,7 +34,7 @@ class candidatesListByViewDataGrid extends CandidatesDataGrid
         );
 
          parent::__construct("candidates:candidatesListByViewDataGrid",
-                             $siteID, $parameters, $misc, $duplicates
+                             $siteID, $parameters, $misc
                         );
     }
 
@@ -60,7 +60,7 @@ class candidatesListByViewDataGrid extends CandidatesDataGrid
             $html .= $this->getInnerActionAreaItemPopup('Add To Pipeline', CATSUtility::getIndexName().'?m=candidates&amp;a=considerForJobSearch', 750, 460);
         }
         
-        if(MAIL_MAILER != 0 && $_SESSION['CATS']->getAccessLevel('candidates.canEmail') >= ACCESS_LEVEL_SA)
+        if(MAIL_MAILER != 0 && $_SESSION['CATS']->getAccessLevel('candidates.emailCandidates') >= ACCESS_LEVEL_SA)
         {
             $html .= $this->getInnerActionAreaItem('Send E-Mail', CATSUtility::getIndexName().'?m=candidates&amp;a=emailCandidates');
         }

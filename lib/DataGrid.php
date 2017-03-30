@@ -240,7 +240,7 @@ class DataGrid
      * @param integer dataGrid miscalaneous ID
      * @return object data grid
      */
-    public static function get($indentifier, $parameters, $misc = 0, $duplicates = 0)
+    public static function get($indentifier, $parameters, $misc = 0)
     {
         /* This deals with loading a datagrid that was selected by use of the action / export box. */
         if (isset($_REQUEST['dynamicArgument' . md5($indentifier)]))
@@ -279,7 +279,7 @@ class DataGrid
 
         include_once (sprintf('modules/%s/dataGrids.php', $module));
 
-        $dg = new $class($_SESSION['CATS']->getSiteID(), $parameters, $misc, $duplicates);
+        $dg = new $class($_SESSION['CATS']->getSiteID(), $parameters, $misc);
 
         return $dg;
     }

@@ -1674,7 +1674,7 @@ class CandidatesDataGrid extends DataGrid
     protected $_siteID;
 
     // FIXME: Fix ugly indenting - ~400 character lines = bad.
-    public function __construct($instanceName, $siteID, $parameters, $misc = 0, $duplicates = 0)
+    public function __construct($instanceName, $siteID, $parameters, $misc = 0)
     {
         $this->_db = DatabaseConnection::getInstance();
         $this->_siteID = $siteID;
@@ -1683,15 +1683,25 @@ class CandidatesDataGrid extends DataGrid
 
         $this->_classColumns = array(
             'Attachments' => array('select' => 'IF(candidate_joborder_submitted.candidate_joborder_id, 1, 0) AS submitted,
-                                                IF(attachment_id, 1, 0) AS attachmentPresent',
+                                                IF(attachment_id, 1, 0) AS attachmentPresent,
+                                                IF(old_candidate_id, 1, 0) AS duplicatePresent',
 
-                                     'pagerRender' => 'if ($rsData[\'submitted\'] == 1)
+                                     'pagerRender' => 'if ($rsData[\'duplicatePresent\'] == 1 && $_SESSION[\'CATS\']->getAccessLevel(\'candidates.duplicates\') >= ACCESS_LEVEL_SA)
                                                     {
-                                                        $return = \'<img src="images/job_orders.gif" alt="" width="16" height="16" title="Submitted for a Job Order" />\';
+                                                        $return = \'<img src="images/wf_error.gif" alt="" width="16" height="16" title="Possible Duplicate" />\';
                                                     }
                                                     else
                                                     {
                                                         $return = \'<img src="images/mru/blank.gif" alt="" width="16" height="16" />\';
+                                                    }
+                                     
+                                                    if ($rsData[\'submitted\'] == 1)
+                                                    {
+                                                        $return .= \'<img src="images/job_orders.gif" alt="" width="16" height="16" title="Submitted for a Job Order" />\';
+                                                    }
+                                                    else
+                                                    {
+                                                        $return .= \'<img src="images/mru/blank.gif" alt="" width="16" height="16" />\';
                                                     }
 
                                                     if ($rsData[\'attachmentPresent\'] == 1)
@@ -1712,13 +1722,15 @@ class CandidatesDataGrid extends DataGrid
                                                         ON candidate_joborder_submitted.candidate_id = candidate.candidate_id
                                                         AND candidate_joborder_submitted.status >= '.PIPELINE_STATUS_SUBMITTED.'
                                                         AND candidate_joborder_submitted.site_id = '.$this->_siteID.'
-                                                        AND candidate_joborder_submitted.status != '.PIPELINE_STATUS_NOTINCONSIDERATION
+                                                        AND candidate_joborder_submitted.status != '.PIPELINE_STATUS_NOTINCONSIDERATION.' LEFT JOIN candidate_duplicates 
+                                                        ON candidate.candidate_id = 
+                                                        candidate_duplicates.new_candidate_id'
                                                     
                                    ,
-                                     'pagerWidth'    => 34,
+                                     'pagerWidth'    => 100,
                                      'pagerOptional' => true,
                                      'pagerNoTitle' => true,
-                                     'sizable'  => false,
+                                     'sizable'  => true,
                                      'exportable' => false,
                                      'filterable' => false),
 
@@ -1985,16 +1997,6 @@ class CandidatesDataGrid extends DataGrid
                                      ')
         );
         
-        if($duplicates == 1)
-        {
-            $this->_classColumns['Attachments']['join'] .= ' INNER JOIN candidate_duplicates 
-                                            ON candidate.candidate_id = 
-                                            candidate_duplicates.new_candidate_id';
-            $this->_classColumns['Attachments']['pagerWidth'] = 70;
-            $this->_classColumns['First Name']['pagerRender'] = 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=showDuplicate&amp;candidateID=\'.$rsData[\'candidateID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';';
-            $this->_classColumns['Last Name']['pagerRender'] = 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=showDuplicate&amp;candidateID=\'.$rsData[\'candidateID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';';
-        }
-
         if (US_ZIPS_ENABLED)
         {
             $this->_classColumns['Near Zipcode'] =
