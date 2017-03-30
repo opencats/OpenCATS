@@ -274,13 +274,13 @@ Feature: Access Level to objects check - main pages
      And I should <gotoToday> "Goto Today"
      And I should <myUpcomingEvents> "My Upcoming Events / Calls"
      And the response should <quickSearch> contain "Quick Search"
-     And the response should <hideNonPublic> contain "hideNonPublic"
-     And the response should <switchPeriod> contain "userCalendarViewDay"
-     And the response should <switchPeriod> contain "userCalendarViewWeek"
-     And the response should <switchPeriod> contain "userCalendarViewMonth"
-     And the response should <switchMonth> contain "linkMonthBack"
-     And the response should <switchMonth> contain "linkMonthForeward"
-     And the response should <calendarTable> contain "calendarMonth"
+     And the page should <hideNonPublic> element "#hideNonPublic"
+     And the page should <switchPeriod> element "input[value='Day']"
+     And the page should <switchPeriod> element "input[value='Week']"
+     And the page should <switchPeriod> element "input[value='Month']"
+     And the page should <switchMonth> element "#linkMonthBack"
+     And the page should <switchMonth> element "#linkMonthForeward"
+     And the page should <calendarTable> element "#calendarMonth"
      
      
     
