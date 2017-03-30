@@ -876,13 +876,13 @@ switch ($action)
         }
         else if (!isset($tables['candidate_duplicates']))
         {
-            /* 0.9.2 */
-            $revision = 92;
+            /* 0.9.4 */
+            $revision = 94;
         }
         else if (isset($tables['candidate_duplicates']))
         {
-            /* 0.9.3 */
-            $revision = 93;
+            /* 0.9.5 */
+            $revision = 95;
         }
 
         if ($revision <= 50)
@@ -909,10 +909,10 @@ switch ($action)
             $schema = file_get_contents('db/upgrade-0.6.x-0.7.0.sql');
             MySQLQueryMultiple($schema);
         }
-        if ($revision <= 92)
+        if ($revision <= 94)
         {
             // FIXME: File exists?!
-            $schema = file_get_contents('db/upgrade-0.9.2-0.9.3.sql');
+            $schema = file_get_contents('db/upgrade-0.9.4-0.9.5.sql');
             MySQLQueryMultiple($schema);
         }
 
