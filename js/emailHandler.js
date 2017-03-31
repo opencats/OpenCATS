@@ -29,18 +29,18 @@
 function populateEmailForm(cnt)
 {
     var isValid = false;
-    var emailTo = '';
+    var emailTo = "";
     for (var x = 0; x < cnt; x++)
     {
-        var cb = document.getElementById('email_site_user_cb_' + x);
+        var cb = document.getElementById("email_site_user_cb_" + x);
         if(cb)
         {
             if(cb.checked == true)
             {
                 isValid = true;
-                if(emailTo != '')
+                if(emailTo != "")
                 {
-                    emailTo += ', ' + cb.value;
+                    emailTo += ", " + cb.value;
                 }
                 else
                 {
@@ -52,8 +52,8 @@ function populateEmailForm(cnt)
 
     if(isValid == true)
     {
-        var emailFormTo = document.getElementById('emailTo');
-        var emailFormToHidden = document.getElementById('emailToHidden');
+        var emailFormTo = document.getElementById("emailTo");
+        var emailFormToHidden = document.getElementById("emailToHidden");
         showEmailForm(true);
         if(emailFormTo)
         {
@@ -69,16 +69,16 @@ function populateEmailForm(cnt)
 
 function showEmailForm(tf)
 {
-    var emailForm = document.getElementById('siteEmailForm');
+    var emailForm = document.getElementById("siteEmailForm");
     if(emailForm)
     {
         if(tf == true)
         {
-            emailForm.style.visibility = 'visible';
+            emailForm.style.visibility = "visible";
         }
         else
         {
-            emailForm.style.visibility = 'hidden';
+            emailForm.style.visibility = "hidden";
         }
     }
 }
@@ -87,7 +87,7 @@ function setAllBoxes(cnt, tf)
 {
     for (var x = 0; x < cnt; x++)
     {
-        var cb = document.getElementById('email_site_user_cb_' + x);
+        var cb = document.getElementById("email_site_user_cb_" + x);
         if(cb)
         {
             cb.checked = tf;
@@ -97,11 +97,11 @@ function setAllBoxes(cnt, tf)
 
 function submitFinalEmail()
 {
-    var emailToHidden = document.getElementById('emailToHidden');
+    var emailToHidden = document.getElementById("emailToHidden");
 
-    if(emailToHidden.value == '' || document.getElementById('emailSubject').value == '' || document.getElementById('emailBody').value == '')
+    if(emailToHidden.value == "" || document.getElementById("emailSubject").value == "" || document.getElementById("emailBody").value == "")
     {
-        alert('You must have select at least one name and have a complete subject and body!');
+        alert("You must have select at least one name and have a complete subject and body!");
     }
     else
     {
@@ -110,28 +110,10 @@ function submitFinalEmail()
     }
 }
 
-function showTemplate(sessionCookie)
-{
-    document.getElementById("candidateName").value = -1;
-    document.getElementById("emailPreview").innerHTML = "";
-    
-    var templateId = $('#emailTemplate').children(":selected").attr("value");
-    if(templateId < 1)
-    {
-        document.getElementById("emailBody").value = "";
-        CKEDITOR.instances['emailBody'].setData(" ");
-        return;
-    }
-    else
-    {
-        getTemplateText_AJAX(templateId, sessionCookie);
-    }
-}
-
-function getTemplateText_AJAX(templateId, sessionCookie)
+function getTemplateTextAJAX(templateId, sessionCookie)
 {
     
-    if (templateId == '' || !stringIsNumeric(templateId))
+    if (templateId == "" || !stringIsNumeric(templateId))
     {
         return;
     }
@@ -139,7 +121,7 @@ function getTemplateText_AJAX(templateId, sessionCookie)
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '&templateID=' + urlEncode(templateId);
+    var POSTData = "&templateID=" + urlEncode(templateId);
 
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
@@ -158,11 +140,11 @@ function getTemplateText_AJAX(templateId, sessionCookie)
         }
 
         /* Return if we have any errors. */
-        var errorCodeNode    = http.responseXML.getElementsByTagName('errorcode').item(0);
-        var errorMessageNode = http.responseXML.getElementsByTagName('errormessage').item(0);
-        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != '0')
+        var errorCodeNode    = http.responseXML.getElementsByTagName("errorcode").item(0);
+        var errorMessageNode = http.responseXML.getElementsByTagName("errormessage").item(0);
+        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != "0")
         {
-            if (errorCodeNode.firstChild.nodeValue != '-2')
+            if (errorCodeNode.firstChild.nodeValue != "-2")
             {
                 var errorMessage = "An error occurred while receiving a response from the server.\n\n"
                                  + errorMessageNode.firstChild.nodeValue;
@@ -172,23 +154,23 @@ function getTemplateText_AJAX(templateId, sessionCookie)
             return;
         }
 
-        var templateText = http.responseXML.getElementsByTagName('text').item(0);
+        var templateText = http.responseXML.getElementsByTagName("text").item(0);
 
         if (templateText.firstChild)
         {
             var text = templateText.firstChild.nodeValue;
-            text = text.replace(/(?:\r\n|\r|\n)/g, '<br />');
-            CKEDITOR.instances['emailBody'].setData(text);
+            text = text.replace(/(?:\r\n|\r|\n)/g, "<br />");
+            CKEDITOR.instances["emailBody"].setData(text);
         }
         else
         {
-            CKEDITOR.instances['emailBody'].setData('');
+            CKEDITOR.instances["emailBody"].setData("");
         }
     }
 
     AJAX_callCATSFunction(
         http,
-        'showTemplate',
+        "showTemplate",
         POSTData,
         callBack,
         0,
@@ -198,10 +180,28 @@ function getTemplateText_AJAX(templateId, sessionCookie)
     );
 }
 
+function showTemplate(sessionCookie)
+{
+    document.getElementById("candidateName").value = -1;
+    document.getElementById("emailPreview").innerHTML = "";
+    
+    var templateId = $("#emailTemplate").children(":selected").attr("value");
+    if(templateId < 1)
+    {
+        document.getElementById("emailBody").value = "";
+        CKEDITOR.instances["emailBody"].setData(" ");
+        return;
+    }
+    else
+    {
+        getTemplateTextAJAX(templateId, sessionCookie);
+    }
+}
+
 function replaceTemplateTags(sessionCookie)
 {
-    var candidateId = $('#candidateName').children(":selected").attr("value");
-    var templateText = CKEDITOR.instances['emailBody'].getData();
+    var candidateId = $("#candidateName").children(":selected").attr("value");
+    var templateText = CKEDITOR.instances["emailBody"].getData();
     
     if(candidateId < 1)
     {
@@ -217,7 +217,7 @@ function replaceTemplateTags(sessionCookie)
 function getReplaceText_AJAX(candidateId, templateText, sessionCookie)
 {
     
-    if (candidateId == '' || !stringIsNumeric(candidateId))
+    if (candidateId == "" || !stringIsNumeric(candidateId))
     {
         return;
     }
@@ -225,7 +225,7 @@ function getReplaceText_AJAX(candidateId, templateText, sessionCookie)
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '&candidateID=' + urlEncode(candidateId) + '&templateText=' + urlEncode(templateText);
+    var POSTData = "&candidateID=" + urlEncode(candidateId) + "&templateText=" + urlEncode(templateText);
     
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
@@ -244,12 +244,12 @@ function getReplaceText_AJAX(candidateId, templateText, sessionCookie)
         }
     
         /* Return if we have any errors. */
-        var errorCodeNode    = http.responseXML.getElementsByTagName('errorcode').item(0);
-        var errorMessageNode = http.responseXML.getElementsByTagName('errormessage').item(0);
+        var errorCodeNode    = http.responseXML.getElementsByTagName("errorcode").item(0);
+        var errorMessageNode = http.responseXML.getElementsByTagName("errormessage").item(0);
         
-        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != '0')
+        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != "0")
         {
-            if (errorCodeNode.firstChild.nodeValue != '-2')
+            if (errorCodeNode.firstChild.nodeValue != "-2")
             {
                 var errorMessage = "An error occurred while receiving a response from the server.\n\n"
                                  + errorMessageNode.firstChild.nodeValue;
@@ -259,7 +259,7 @@ function getReplaceText_AJAX(candidateId, templateText, sessionCookie)
             return;
         }
         
-        var templateTextReplaced = http.responseXML.getElementsByTagName('text').item(0);
+        var templateTextReplaced = http.responseXML.getElementsByTagName("text").item(0);
         
         if (templateTextReplaced.firstChild)
         {
@@ -273,7 +273,7 @@ function getReplaceText_AJAX(candidateId, templateText, sessionCookie)
 
     AJAX_callCATSFunction(
         http,
-        'replaceTemplateTags',
+        "replaceTemplateTags",
         POSTData,
         callBack,
         0,
