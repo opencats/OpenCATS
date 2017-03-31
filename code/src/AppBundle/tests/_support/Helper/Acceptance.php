@@ -4,6 +4,9 @@ namespace AppBundle\Helper;
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
 
+use Codeception\Util\Locator;
+use Facebook\WebDriver\WebDriverBy;
+
 class Acceptance extends \Codeception\Module
 {
     // FIXME: HACK to simulate parentGoToURL js function in popups
@@ -26,11 +29,13 @@ class Acceptance extends \Codeception\Module
 
     public function clickOnOnTheRowContaining($linkName, $rowText)
     {
-        $row = $this->getModule('WebDriver')->_findElements(sprintf('table tr td:contains("%s")]', $rowText));
-        if (!$row) {
+        $rows = $this->getModule('WebDriver')->_findElements(Locator::contains('table tr', $rowText));
+        if (!$rows) {
             throw new \Exception(sprintf('Cannot find any row on the page containing the text "%s"', $rowText));
         }
-        $row->clickLink($linkName);
+        $row = is_array($rows) ? $rows[0] : $rows;
+        $element = $row->findElement(WebDriverBy::partialLinkText($linkName));
+        $element->click();
     }
 
     public function spoofSessionWithCookie($cookieValue)
