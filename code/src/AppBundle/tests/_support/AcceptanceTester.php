@@ -457,35 +457,31 @@ class AcceptanceTester extends Actor
      */
     public function iShouldNotHavePermission()
     {
-        if($this->accessLevel == "DISABLED")
-        {
-            if ($this->lastRequestIsPost) {
-                $this->theResponseShouldContain('opencats - Login');
-            } else {
-                $this->seeInTitle('opencats - Login');
-            }
-            return;
-        }
         $expectedTexts = array("You don't have permission", "Invalid user level for action", "You are not allowed to change your password.");
-        $response = $this->getCurrentVisibleText();
-
-        foreach ($expectedTexts as &$text)
-        {
-            $position = strpos($response, $text);
-            if($position !== false)
+        if ($this->lastRequestIsPost) {
+            if($this->accessLevel == "DISABLED")
             {
+                $this->theResponseShouldContain('opencats - Login');
                 return;
             }
-        }
-        throw new \Exception("Neither of the non-permissions texts '". json_encode($expectedTexts) . "' were found in the page with content: " . $this->getCurrentVisibleText());
-    }
-
-    public function getCurrentVisibleText()
-    {
-        if ($this->lastRequestIsPost) {
-            return $this->postResultAsHtmlText;
+            foreach ($expectedTexts as &$text)
+            {
+                $position = strpos($this->lastRequestIsPost, $text);
+                if ($position !== false) {
+                    return;
+                }
+            }
+            throw new \Exception("Neither of the non-permissions texts '" . json_encode($expectedTexts) . "' were found in the page with content: " . $this->lastRequestIsPost);
         } else {
-            return $this->getVisibleText();
+            if($this->accessLevel == "DISABLED")
+            {
+                $this->seeInTitle('opencats - Login');
+                return;
+            }
+            foreach ($expectedTexts as &$text)
+            {
+                $this->see($text);
+            }
         }
     }
 
@@ -501,7 +497,6 @@ class AcceptanceTester extends Actor
             print_r($e->getMessage());
             print_r($e->getTraceAsString());
         }
-
     }
 
     /**
@@ -539,10 +534,13 @@ class AcceptanceTester extends Actor
      */
     public function theResponseShouldContain($text)
     {
-        $position = strpos($this->getCurrentVisibleText(), $text);
-        if($position === false)
-        {
-            throw new Fail("'". $text ."' was not found in the response. Response text: " . $this->getCurrentVisibleText());
+        if ($this->lastRequestIsPost) {
+            $position = strpos($this->postResultAsHtmlText, $text);
+            if ($position === false) {
+                throw new Fail("'" . $text . "' was not found in the response. Response text: " . $this->postResultAsHtmlText);
+            }
+        } else {
+            $this->see($text);
         }
     }
 
@@ -551,10 +549,14 @@ class AcceptanceTester extends Actor
      */
     public function theResponseShouldNotContain($text)
     {
-        $position = strpos($this->getCurrentVisibleText(), $text);
-        if($position !== false)
-        {
-            throw new Fail("'".$text."' was found in the response from this request and it should be not");
+        if ($this->lastRequestIsPost) {
+            $position = strpos($this->postResultAsHtmlText, $text);
+            if($position !== false)
+            {
+                throw new Fail("'".$text."' was found in the response from this request and it should be not. Response text: " . $this->postResultAsHtmlText);
+            }
+        } else {
+            $this->dontSee($text);
         }
     }
 
