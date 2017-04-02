@@ -481,8 +481,16 @@ class AcceptanceTester extends Actor
             }
             foreach ($expectedTexts as &$text)
             {
-                $this->see($text);
+                try {
+                    print_r($this->see($text));
+                    return;
+                } catch (\Exception $e)
+                {
+                    // Ignore if see fails each time
+                }
+
             }
+            throw new \Exception("Neither of the non-permissions texts '" . json_encode($expectedTexts) . "' were found in the page with content");
         }
     }
 
