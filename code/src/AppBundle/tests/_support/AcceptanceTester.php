@@ -464,14 +464,15 @@ class AcceptanceTester extends Actor
                 $this->theResponseShouldContain('opencats - Login');
                 return;
             }
+
             foreach ($expectedTexts as &$text)
             {
-                $position = strpos($this->lastRequestIsPost, $text);
+                $position = strpos($this->postResultAsHtmlText, $text);
                 if ($position !== false) {
                     return;
                 }
             }
-            throw new \Exception("Neither of the non-permissions texts '" . json_encode($expectedTexts) . "' were found in the page with content: " . $this->lastRequestIsPost);
+            throw new \Exception("Neither of the non-permissions texts '" . json_encode($expectedTexts) . "' were found in the page with content: " . $this->postResultAsHtmlText);
         } else {
             if($this->accessLevel == "DISABLED")
             {
