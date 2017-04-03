@@ -2025,7 +2025,7 @@ class CandidatesDataGrid extends DataGrid
             }
         }
 
-        parent::__construct($instanceName, $parameters, $misc, $duplicates);
+        parent::__construct($instanceName, $parameters, $misc);
     }
 
     /**
