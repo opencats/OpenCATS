@@ -37,18 +37,8 @@ use OpenCATS\Entity\JobOrderRepositoryException;
  * @version    $Id: JobOrders.php 3829 2007-12-11 21:17:46Z brian $
  */
 
-define('JOBORDERS_STATUS_ACTIVE',        100);
-define('JOBORDERS_STATUS_ONHOLD',        200);
-define('JOBORDERS_STATUS_FULL',          300);
-define('JOBORDERS_STATUS_PLACED',        400);
-define('JOBORDERS_STATUS_LOST',          500);
-define('JOBORDERS_STATUS_CLOSED',        600);
-define('JOBORDERS_STATUS_UPCOMING_LEAD', 700);
-define('JOBORDERS_STATUS_CANCELED',      800);
-
-define('JOBORDERS_STATUS_ALL',              10100);
-define('JOBORDERS_STATUS_ONHOLDFULL',       10200);
-define('JOBORDERS_STATUS_ACTIVEONHOLDFULL', 10300);
+define('JOBORDERS_STATUS_SHARE',         100);
+define('JOBORDERS_STATUS_ALL',           10100);
 
 include_once('./lib/Pipelines.php');
 include_once('./lib/Calendar.php');
@@ -56,6 +46,7 @@ include_once('./lib/Pager.php');
 include_once('./lib/History.php');
 include_once('./lib/DataGrid.php');
 include_once('./lib/JobOrderTypes.php');
+include_once('./lib/JobOrderStatuses.php');
 
 /**
  *	Job Orders Library
@@ -620,23 +611,11 @@ class JobOrders
         {
             $adminHiddenCriterion = '';
         }
-
+        $jobOrderStatuses = new JobOrderStatuses();
         switch ($status)
         {
-            case JOBORDERS_STATUS_ACTIVE:
-                $statusCriterion = "AND joborder.status = 'Active'";
-                break;
-
-            case JOBORDERS_STATUS_ONHOLDFULL:
-                $statusCriterion = "AND joborder.status IN ('OnHold', 'Full')";
-                break;
-
-            case JOBORDERS_STATUS_ACTIVEONHOLDFULL:
-                $statusCriterion = "AND joborder.status IN ('Active', 'OnHold', 'Full')";
-                break;
-
-            case JOBORDERS_STATUS_CLOSED:
-                $statusCriterion = "AND joborder.status = 'Closed'";
+            case JOBORDERS_STATUS_SHARE:
+                $statusCriterion = "AND joborder.status IN ".$jobOrderStatuses->getShareStatusSQL();
                 break;
 
             case JOBORDERS_STATUS_ALL:
