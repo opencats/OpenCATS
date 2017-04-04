@@ -46,6 +46,7 @@ include_once('./lib/Graphs.php');
 include_once('./lib/Questionnaire.php');
 include_once('./lib/CommonErrors.php');
 include_once('./lib/JobOrderTypes.php');
+include_once('./lib/JobOrderStatuses.php');
 
 
 class JobOrdersUI extends UserInterface
@@ -535,7 +536,7 @@ class JobOrdersUI extends UserInterface
     {
         $jobOrders = new JobOrders($this->_siteID);
 
-        $rs = $jobOrders->getAll(JOBORDERS_STATUS_ACTIVEONHOLDFULL);
+        $rs = $jobOrders->getAll(JOBORDERS_STATUS_ALL);
 
         $this->_template->assign('isModal', true);
         $this->_template->assign('rs', $rs);
@@ -936,6 +937,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('isHrMode', $_SESSION['CATS']->isHrMode());
         $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
         $this->_template->assign('jobTypes', (new JobOrderTypes())->getAll());
+        $this->_template->assign('jobOrderStatuses', (new JobOrderStatuses())->getAll());
 
         if (!eval(Hooks::get('JO_EDIT'))) return;
 
