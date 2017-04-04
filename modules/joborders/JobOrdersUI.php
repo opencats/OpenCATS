@@ -314,6 +314,9 @@ class JobOrdersUI extends UserInterface
      */
     private function listByView($errMessage = '')
     {
+        $jobOrderStatuses = new JobOrderStatuses();
+        $jobOrderFilters = $jobOrderStatuses->getFilters();
+
         $dataGridProperties = DataGrid::getRecentParamaters("joborders:JobOrdersListByViewDataGrid");
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
@@ -322,7 +325,7 @@ class JobOrdersUI extends UserInterface
         {
             $dataGridProperties = array('rangeStart'    => 0,
                                         'maxResults'    => 50,
-                                        'filter'        => 'Status==Active / OnHold / Full',
+                                        'filter'        => 'Status=='.$jobOrderFilters[0],
                                         'filterVisible' => false);
         }
 
@@ -332,6 +335,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('dataGrid', $dataGrid);
         $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
         $this->_template->assign('errMessage', $errMessage);
+        $this->_template->assign('jobOrderFilters', $jobOrderFilters);
 
         if (!eval(Hooks::get('JO_LIST_BY_VIEW'))) return;
 
