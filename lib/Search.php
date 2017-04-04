@@ -809,26 +809,18 @@ class SearchJobOrders
     
     /**
      * Returns all job orders with titles matching $wildCardString. If
-     * activeOnly is true, only Active/OnHold/Full job orders will be shown.
+     * activeOnly is true, only Open(defined in config, or default as 'Active', 'On Hold', 'Full') job orders will be shown.
      *
      * @param string wildcard match string
      * @param boolean return active job orders only
      * @return array job orders data
      */
-    public function byTitle($wildCardString, $sortBy, $sortDirection,
-        $activeOnly)
+    public function byTitle($wildCardString, $sortBy, $sortDirection, $activeOnly)
     {
+        $jobOrderStatuses = new JobOrderStatuses();
         if ($activeOnly)
         {
-            //FIXME:  Remove session dependancy.
-            if ($_SESSION['CATS']->isFree())
-            {
-                $activeCriterion = "AND joborder.status = 'Active'";
-            }
-            else
-            {
-                $activeCriterion = "AND (joborder.status IN ('Active', 'OnHold', 'Full'))";
-            }
+            $activeCriterion = "AND (joborder.status IN ".$jobOrderStatuses->getOpenStatusSQL().")";
         }
         else
         {
@@ -897,7 +889,7 @@ class SearchJobOrders
 
     /**
      * Returns all job orders with company names matching $wildCardString. If
-     * activeOnly is true, only Active/OnHold/Full job orders will be shown.
+     * activeOnly is true, only Open(defined in config, or default as 'Active', 'On Hold', 'Full') job orders will be shown.
      *
      * @param string wildcard match string
      * @param boolean return active job orders only
@@ -905,20 +897,13 @@ class SearchJobOrders
      */
     public function byCompanyName($wildCardString, $sortBy, $sortDirection, $activeOnly)
     {
+        $jobOrderStatuses = new JobOrderStatuses();
         $wildCardString = str_replace('*', '%', $wildCardString) . '%';
         $wildCardString = $this->_db->makeQueryString($wildCardString);
 
         if ($activeOnly)
         {
-            //FIXME:  Remove session dependancy.
-            if ($_SESSION['CATS']->isFree())
-            {
-                $activeCriterion = "AND joborder.status = 'Active'";
-            }
-            else
-            {
-                $activeCriterion = "AND (joborder.status IN ('Active', 'OnHold', 'Full'))";
-            }
+            $activeCriterion = "AND (joborder.status IN ".$jobOrderStatuses->getOpenStatusSQL().")";
         }
         else
         {
@@ -986,24 +971,17 @@ class SearchJobOrders
     
     /**
      * Returns all recently modified job orders. If activeOnly is true, 
-     * only Active/OnHold/Full job orders will be shown.
+     * only Open(defined in config, or default as 'Active', 'On Hold', 'Full') job orders will be shown.
      *
      * @param boolean return active job orders only
      * @return array job orders data
      */
     public function recentlyModified($sortDirection, $activeOnly, $limit)
     {
+        $jobOrderStatuses = new JobOrderStatuses();
         if ($activeOnly)
         {
-            //FIXME:  Remove session dependancy.
-            if ($_SESSION['CATS']->isFree())
-            {
-                $activeCriterion = "AND joborder.status = 'Active'";
-            }
-            else
-            {
-                $activeCriterion = "AND (joborder.status IN ('Active', 'OnHold', 'Full'))";
-            }
+            $activeCriterion = "AND (joborder.status IN ".$jobOrderStatuses->getOpenStatusSQL().")";
         }
         else
         {
