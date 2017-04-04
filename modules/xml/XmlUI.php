@@ -109,7 +109,7 @@ class XmlUI extends UserInterface
         if (!eval(Hooks::get('RSS_SITEID'))) return;
 
         $jobOrders = new JobOrders($careerPortalSiteID);
-        $rs = $jobOrders->getAll(JOBORDERS_STATUS_ACTIVE, -1, -1, -1, false, true);
+        $rs = $jobOrders->getAll(JOBORDERS_STATUS_SHARE, -1, -1, -1, false, true);
 
         // Log that this file was accessed
         // FIXME: Does this really need to involve two queries? Can we store

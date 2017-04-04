@@ -123,7 +123,7 @@ class CareersUI extends UserInterface
 
         /* Get all public job orders for this site. */
         $jobOrders = new JobOrders($siteID);
-        $rs = $jobOrders->getAll(JOBORDERS_STATUS_ACTIVE, -1, -1, -1, false, true);
+        $rs = $jobOrders->getAll(JOBORDERS_STATUS_SHARE, -1, -1, -1, false, true);
 
         $useCookie = true;
 
