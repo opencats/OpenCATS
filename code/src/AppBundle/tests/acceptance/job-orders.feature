@@ -146,39 +146,39 @@ Feature: Job Orders
     And I should see "You must enter a job title" in alert popup
     And I confirm the popup
 
-  @javascript
-  Scenario: Edit job order updates record
+  #@javascript
+  #Scenario: Edit job order updates record
     # To be refactored by creating the Job Order programatically
-    Given I am authenticated as "Administrator"
-    And There is a company called "Test Company ATxyz"
-    And There is a user "testuser101" named "Marcus Gomez" with "password101" password 
-    And I am on "/index.php?m=candidates" 
-    And I follow "Job Orders"
-    And I follow "Add Job Order"
-    And press "Create Job Order"
-    And fill in "#title" with "Javascript developer"
-    And fill in "#companyName" with "Test Company ATxyz"
-    And I wait 1 seconds
-    And I wait for "#CompanyResults div#suggest0"
-    And I click on the element "#CompanyResults div#suggest0"
-    And I select "Gomez, Marcus" from "#recruiter"
-    And I wait 2 seconds
-    And fill in "#city" with "Minneapolis"
-    And fill in "#state" with "MN"
-    And press "Save Job Order"
-    And I follow "Edit"
-    And fill in "#title" with "Frontend developer"
-    And I select "Administrator, CATS" from "#recruiter"
-    And I select "Gomez, Marcus" from "#owner"
-    And fill in "#openings" with "999"
-    And fill in "#companyName" with "Test Company ATxyz"
-    And I wait for "#CompanyResults div#suggest0"
-    And I click on the element "#CompanyResults div#suggest0"
-    And press "Save"
-    Then I should see "Frontend developer"
-    And I should see "CATS Administrator"
-    And I should see "Marcus Gomez"
-    And I should see "999"
+#    Given I am authenticated as "Administrator"
+#    And There is a company called "Test Company ATxyz"
+#    And There is a user "testuser101" named "Marcus Gomez" with "password101" password
+#    And I am on "/index.php?m=candidates"
+#    And I follow "Job Orders"
+#    And I follow "Add Job Order"
+#    And press "Create Job Order"
+#    And fill in "#title" with "Javascript developer"
+#    And fill in "#companyName" with "Test Company ATxyz"
+#    And I wait 1 seconds
+#    And I wait for "#CompanyResults div#suggest0"
+#    And I click on the element "#CompanyResults div#suggest0"
+#    And I select "Gomez, Marcus" from "#recruiter"
+#    And I wait 2 seconds
+#    And fill in "#city" with "Minsneapolis"
+#    And fill in "#state" with "MN"
+#    And press "Save Job Order"
+#    And I follow "Edit"
+#    And fill in "#title" with "Frontend developer"
+#    And I select "Administrator, CATS" from "#recruiter"
+#    And I select "Gomez, Marcus" from "#owner"
+#    And fill in "#openings" with "999"
+#    And fill in "#companyName" with "Test Company ATxyz"
+#    And I wait for "#CompanyResults div#suggest0"
+#    And I click on the element "#CompanyResults div#suggest0"
+#    And press "Save"
+#    Then I should see "Frontend developer"
+#    And I should see "CATS Administrator"
+#    And I should see "Marcus Gomez"
+#    And I should see "999"
 
   @javascript
   Scenario: Search job order by company name
