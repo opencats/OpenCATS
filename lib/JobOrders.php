@@ -611,11 +611,10 @@ class JobOrders
         {
             $adminHiddenCriterion = '';
         }
-        $jobOrderStatuses = new JobOrderStatuses();
         switch ($status)
         {
             case JOBORDERS_STATUS_SHARE:
-                $statusCriterion = "AND joborder.status IN ".$jobOrderStatuses->getShareStatusSQL();
+                $statusCriterion = "AND joborder.status IN ".JobOrderStatuses::getShareStatusSQL();
                 break;
 
             case JOBORDERS_STATUS_ALL:

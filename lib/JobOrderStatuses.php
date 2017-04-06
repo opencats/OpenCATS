@@ -9,34 +9,28 @@
 
 class JobOrderStatuses
 {
-    private $_defaultStatuses;
-    private $_defaultFilters;
-    private $_defaultSharingStatuses;
-    private $_defaultStatisticsStatuses;
-
-    public function __construct() {
-        $this->_defaultStatuses = array(
-            'Open' => array ('Active', 'On Hold', 'Full'),
-            'Closed' => array('Closed', 'Canceled'),
-            'Other' => array('Upcoming', 'Prospective / Lead')
-        );
-        $this->_defaultFilters = array(
-            'Active / On Hold / Full',
-            'Active',
-            'On Hold / Full',
-            'Closed / Canceled',
-            'Upcoming / Lead'
-        );
-        $this->_defaultSharingStatuses = array('Active');
-        $this->_defaultStatisticsStatuses = array('Active', 'OnHold', 'Full', 'Closed');
-    }
+    private static $_defaultStatuses = array(
+        'Open' => array ('Active', 'On Hold', 'Full'),
+        'Closed' => array('Closed', 'Canceled'),
+        'Other' => array('Upcoming', 'Prospective / Lead')
+    );
+    private static $_defaultFilters = array(
+        'Active / On Hold / Full',
+        'Active',
+        'On Hold / Full',
+        'Closed / Canceled',
+        'Upcoming / Lead'
+    );
+    private static $_defaultSharingStatuses = array('Active');
+    private static $_defaultStatisticsStatuses = array('Active', 'OnHold', 'Full', 'Closed');
+    private static $_defaultNewStatus = 'Active';
 
     /**
      * Returns job order statuses from config or default
      *
      * @return array job order statuses from config or if undefined, then default
      */
-    public function getAll()
+    public static function getAll()
     {
         if(defined('JOB_ORDER_STATUS_LIST'))
         {
@@ -44,7 +38,7 @@ class JobOrderStatuses
         }
         else
         {
-            return $this->_defaultStatuses;
+            return self::$_defaultStatuses;
         }
     }
     /**
@@ -52,24 +46,24 @@ class JobOrderStatuses
      *
      * @return array job order searches from config or if undefined, then default
      */
-    public function getFilters(){
+    public static function getFilters(){
         if(defined('JOB_ORDER_STATUS_FILTERING'))
         {
             return JOB_ORDER_STATUS_FILTERING;
         }
         else
         {
-            return $this->_defaultFilters;
+            return self::$_defaultFilters;
         }
     }
 
     /**
      * Returns job order statuses for sharing (XML, RSS, Career portal) in a format for MySQL IN() query
      */
-    public function getShareStatusSQL(){
+    public static function getShareStatusSQL(){
         $result = "";
         if(!defined( 'JOB_ORDER_STATUS_SHARING')){
-            $array = $this->_defaultSharingStatuses;
+            $array = self::$_defaultSharingStatuses;
         } else {
             $array = JOB_ORDER_STATUS_SHARING;
         }
@@ -86,10 +80,10 @@ class JobOrderStatuses
     /**
      * Returns job order statuses for statistics (submission/placement) in a format for MySQL IN() query
      */
-    public function getStatisticsStatusSQL(){
+    public static function getStatisticsStatusSQL(){
         $result = "";
         if(!defined( 'JOB_ORDER_STATUS_STATISTICS')){
-            $array = $this->_defaultStatisticsStatuses;
+            $array = self::$_defaultStatisticsStatuses;
         } else {
             $array = JOB_ORDER_STATUS_STATISTICS;
         }
@@ -106,9 +100,9 @@ class JobOrderStatuses
     /**
      * Returns job order statuses for important candidates on home page in a format for MySQL IN() query
      */
-    public function getOpenStatusSQL(){
+    public static function getOpenStatusSQL(){
         $result = "";
-        $array = $this->getAll()['Open'];
+        $array = self::getAll()['Open'];
         foreach($array as $status){
             $result .= "'".$status."',";
         }
@@ -117,6 +111,14 @@ class JobOrderStatuses
             $result = "(".$result.")";
         }
         return $result;
+    }
+
+    public static function getDefaultNewStatus(){
+        if(defined('JOB_ORDER_NEW_STATUS')){
+            return JOB_ORDER_NEW_STATUS;
+        } else {
+            return self::$_defaultNewStatus;
+        }
     }
 }
 

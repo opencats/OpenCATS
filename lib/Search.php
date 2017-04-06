@@ -817,10 +817,9 @@ class SearchJobOrders
      */
     public function byTitle($wildCardString, $sortBy, $sortDirection, $activeOnly)
     {
-        $jobOrderStatuses = new JobOrderStatuses();
         if ($activeOnly)
         {
-            $activeCriterion = "AND (joborder.status IN ".$jobOrderStatuses->getOpenStatusSQL().")";
+            $activeCriterion = "AND (joborder.status IN ".JobOrderStatuses::getOpenStatusSQL().")";
         }
         else
         {
@@ -897,13 +896,12 @@ class SearchJobOrders
      */
     public function byCompanyName($wildCardString, $sortBy, $sortDirection, $activeOnly)
     {
-        $jobOrderStatuses = new JobOrderStatuses();
         $wildCardString = str_replace('*', '%', $wildCardString) . '%';
         $wildCardString = $this->_db->makeQueryString($wildCardString);
 
         if ($activeOnly)
         {
-            $activeCriterion = "AND (joborder.status IN ".$jobOrderStatuses->getOpenStatusSQL().")";
+            $activeCriterion = "AND (joborder.status IN ".JobOrderStatuses::getOpenStatusSQL().")";
         }
         else
         {
@@ -978,10 +976,9 @@ class SearchJobOrders
      */
     public function recentlyModified($sortDirection, $activeOnly, $limit)
     {
-        $jobOrderStatuses = new JobOrderStatuses();
         if ($activeOnly)
         {
-            $activeCriterion = "AND (joborder.status IN ".$jobOrderStatuses->getOpenStatusSQL().")";
+            $activeCriterion = "AND (joborder.status IN ".JobOrderStatuses::getOpenStatusSQL().")";
         }
         else
         {

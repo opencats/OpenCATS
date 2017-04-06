@@ -89,7 +89,6 @@ class Statistics
      */
     public function getSubmissionCount($period)
     {
-        $jobOrderStatuses = new JobOrderStatuses();
         $criterion = $this->makePeriodCriterion('date', $period);
 
         $sql = sprintf(
@@ -106,7 +105,7 @@ class Statistics
             AND
                 candidate_joborder_status_history.site_id = %s
             %s",
-            $jobOrderStatuses->getStatisticsStatusSQL(),
+            JobOrderStatuses::getStatisticsStatusSQL(),
             $this->_siteID,
             $criterion
         );
@@ -229,7 +228,6 @@ class Statistics
      */
     public function getSubmissionJobOrders($period)
     {
-        $jobOrderStatuses = new JobOrderStatuses();
         $criterion = $this->makePeriodCriterion(
             'candidate_joborder_status_history.date', $period
         );
@@ -264,7 +262,7 @@ class Statistics
             HAVING
                 submittedCount > 0",
             $criterion,
-            $jobOrderStatuses->getStatisticsStatusSQL(),
+            JobOrderStatuses::getStatisticsStatusSQL(),
             $this->_siteID
         );
 
@@ -340,7 +338,6 @@ class Statistics
      */
     public function getPlacementsJobOrders($period)
     {
-        $jobOrderStatuses = new JobOrderStatuses();
         $criterion = $this->makePeriodCriterion(
             'candidate_joborder_status_history.date', $period
         );
@@ -375,7 +372,7 @@ class Statistics
             HAVING
                 submittedCount > 0",
             $criterion,
-            $jobOrderStatuses->getStatisticsStatusSQL(),
+            JobOrderStatuses::getStatisticsStatusSQL(),
             $this->_siteID
         );
 

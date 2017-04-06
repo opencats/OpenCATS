@@ -127,7 +127,6 @@ class ImportantPipelineDashboard extends DataGrid
      */
     public function getSQL($selectSQL, $joinSQL, $whereSQL, $havingSQL, $orderSQL, $limitSQL, $distinct = '')
     {
-        $jobOrderStatuses = new JobOrderStatuses();
         $sql = sprintf(
             "SELECT SQL_CALC_FOUND_ROWS %s
                 candidate_joborder.candidate_joborder_id as candidateJoborderID,
@@ -182,7 +181,7 @@ class ImportantPipelineDashboard extends DataGrid
             PIPELINE_STATUS_SUBMITTED,
             PIPELINE_STATUS_INTERVIEWING,
             PIPELINE_STATUS_OFFERED,
-            $jobOrderStatuses->getOpenStatusSQL(),
+            JobOrderStatuses::getOpenStatusSQL(),
             (strlen($whereSQL) > 0) ? ' AND ' . $whereSQL : '',
             (strlen($havingSQL) > 0) ? ' HAVING ' . $havingSQL : '',
             $orderSQL,

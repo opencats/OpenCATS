@@ -315,8 +315,7 @@ class JobOrdersUI extends UserInterface
      */
     private function listByView($errMessage = '')
     {
-        $jobOrderStatuses = new JobOrderStatuses();
-        $jobOrderFilters = $jobOrderStatuses->getFilters();
+        $jobOrderFilters = JobOrderStatuses::getFilters();
 
         $dataGridProperties = DataGrid::getRecentParamaters("joborders:JobOrdersListByViewDataGrid");
 
@@ -937,7 +936,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('isHrMode', $_SESSION['CATS']->isHrMode());
         $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
         $this->_template->assign('jobTypes', (new JobOrderTypes())->getAll());
-        $this->_template->assign('jobOrderStatuses', (new JobOrderStatuses())->getAll());
+        $this->_template->assign('jobOrderStatuses', (JobOrderStatuses::getAll()));
 
         if (!eval(Hooks::get('JO_EDIT'))) return;
 
