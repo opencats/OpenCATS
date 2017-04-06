@@ -7,6 +7,36 @@
  * @copyright (C) OpenCats
  */
 
+/* Configuration in config.php. Ad if missing or rewrite these constants there. */
+/* Job Order statuses (not pipeline statuses)
+const JOB_ORDER_STATUS_GROUP = array(
+    'Open' => array ('Active', 'On Hold', 'Full'),
+    'Closed' => array('Closed', 'Canceled'),
+    'Pre-Open' => array('Upcoming', 'Prospective / Lead')
+);
+Job order status(es) used for XML, RSS and Careers portal
+const JOB_ORDER_STATUS_SHARING = array(
+    'Active'
+);
+
+Filters that can be used on main job order grid, the first one will be default selected
+const JOB_ORDER_STATUS_FILTERING = array(
+    'Active / On Hold / Full',
+    'Active',
+    'On Hold / Full',
+    'Closed / Canceled',
+    'Upcoming / Lead'
+);
+
+Job order status(es) used for submission/placement statistics
+const JOB_ORDER_STATUS_STATISTICS = array(
+    'Active', 'On Hold', 'Full', 'Closed'
+);
+
+const JOB_ORDER_STATUS_DEFAULT = 'Active';
+*/
+
+
 class JobOrderStatuses
 {
     private static $_defaultStatuses = array(
