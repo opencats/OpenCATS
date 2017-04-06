@@ -1,6 +1,8 @@
 <?php
 namespace OpenCATS\Entity;
 
+include_once('./lib/JobOrderStatuses.php');
+
 class JobOrder
 {
     private $id;
