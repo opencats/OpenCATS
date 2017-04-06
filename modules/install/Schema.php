@@ -1036,7 +1036,7 @@ class CATSSchema
                 CREATE INDEX `IDX_site_id_email_1_2` ON `candidate` (`site_id`,`email1`(8),`email2`(8));
             ',
             '286' => '
-                ALTER TABLE  `joborder` CHANGE  `status`  `status` VARCHAR(16) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT \'Active\';
+                ALTER TABLE  `joborder` CHANGE  `status`  `status` VARCHAR(16) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT \'New\';
             ',
             '287' => '
                 CREATE INDEX `IDX_site_id_status` ON `joborder` (`site_id`,`status`(8));
