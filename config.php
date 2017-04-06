@@ -277,10 +277,10 @@ define ('LDAP_ATTRIBUTE_EMAIL', 'mail');
 define ('LDAP_SITEID', 1);
 
 /* Job Order statuses (not pipeline statuses) */
-const JOB_ORDER_STATUS_LIST = array(
+const JOB_ORDER_STATUS_GROUP = array(
     'Open' => array ('Active', 'On Hold', 'Full'),
     'Closed' => array('Closed', 'Canceled'),
-    'Other' => array('Upcoming', 'Prospective / Lead')
+    'Pre-Open' => array('Upcoming', 'Prospective / Lead')
 );
 /* Job order status(es) used for XML, RSS and Careers portal */
 const JOB_ORDER_STATUS_SHARING = array(
@@ -301,7 +301,7 @@ const JOB_ORDER_STATUS_STATISTICS = array(
     'Active', 'On Hold', 'Full', 'Closed'
 );
 
-const JOB_ORDER_NEW_STATUS = 'Active';
+const JOB_ORDER_STATUS_DEFAULT = 'Active';
 
 /* Job Types mapping
  */
