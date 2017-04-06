@@ -278,32 +278,30 @@ define ('LDAP_SITEID', 1);
 
 /* Job Order statuses (not pipeline statuses) */
 const JOB_ORDER_STATUS_LIST = array(
-    /*'Open' => array ('Active', 'On Hold', 'Full'),
+    'Open' => array ('Active', 'On Hold', 'Full'),
     'Closed' => array('Closed', 'Canceled'),
-    'Other' => array('Upcoming', 'Prospective / Lead')*/
-    'Open' => array ('Pending Approval', 'Approval', 'Posted', 'CV Review', 'Interviews', 'Candidate Selected'),
-    'Closed' => array('Filled', 'Canceled', 'On Hold', 'Deleted'),
-    'Other' => array('Draft')
+    'Other' => array('Upcoming', 'Prospective / Lead')
 );
 /* Job order status(es) used for XML, RSS and Careers portal */
 const JOB_ORDER_STATUS_SHARING = array(
-    'Posted', 'CV Review', 'Interviews', 'Candidate Selected'
+    'Active'
 );
 
 /* Filters that can be used on main job order grid, the first one will be default selected */
 const JOB_ORDER_STATUS_FILTERING = array(
-    'Pending Approval / Approval / Posted / CV Review / Interviews / Candidate Selected',
-    'Draft',
-    'Filled / Canceled / On Hold / Deleted',
-    'Canceled / Deleted'
+    'Active / On Hold / Full',
+    'Active',
+    'On Hold / Full',
+    'Closed / Canceled',
+    'Upcoming / Lead'
 );
 
 /* Job order status(es) used for submission/placement statistics */
 const JOB_ORDER_STATUS_STATISTICS = array(
-    'Posted', 'CV Review', 'Interviews', 'Candidate Selected'
+    'Active', 'On Hold', 'Full', 'Closed'
 );
 
-const JOB_ORDER_NEW_STATUS = 'Pending Approval';
+const JOB_ORDER_NEW_STATUS = 'Active';
 
 /* Job Types mapping
  */
