@@ -303,6 +303,8 @@ const JOB_ORDER_STATUS_STATISTICS = array(
     'Posted', 'CV Review', 'Interviews', 'Candidate Selected'
 );
 
+const JOB_ORDER_NEW_STATUS = 'Pending Approval';
+
 /* Job Types mapping
  */
 /* Uncomment bellow if you want custom mapping */
