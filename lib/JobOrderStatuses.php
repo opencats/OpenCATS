@@ -12,7 +12,7 @@
 const JOB_ORDER_STATUS_GROUP = array(
     'Open' => array ('Active', 'On Hold', 'Full'),
     'Closed' => array('Closed', 'Canceled'),
-    'Pre-Open' => array('Upcoming', 'Prospective / Lead')
+    'Pre-Open' => array('Upcoming', 'Lead')
 );
 Job order status(es) used for XML, RSS and Careers portal
 const JOB_ORDER_STATUS_SHARING = array(
@@ -42,7 +42,7 @@ class JobOrderStatuses
     private static $_defaultStatusGroups = array(
         'Open' => array ('Active', 'On Hold', 'Full'),
         'Closed' => array('Closed', 'Canceled'),
-        'Pre-Open' => array('Upcoming', 'Prospective / Lead')
+        'Pre-Open' => array('Upcoming', 'Lead')
     );
     private static $_defaultFilters = array(
         'Active / On Hold / Full',
