@@ -27,6 +27,7 @@ class JobOrder
     private $departmentId;
     private $questionnaire;
     private $siteId;
+    private $status;
     
     function __construct(
         $siteId,
@@ -251,6 +252,11 @@ class JobOrder
     {
         $this->questionnaire = $value;
     }
+
+    function getStatus()
+    {
+        return $this->status;
+    }
     
     static function create(
         $siteId,
@@ -280,7 +286,7 @@ class JobOrder
             $siteId,
             $title,
             $type,
-            $status = 0,
+            $status = \JobOrderStatuses::getDefaultNewStatus(),
             $city,
             $state,
             $enteredBy,
