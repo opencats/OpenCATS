@@ -286,7 +286,7 @@ class JobOrder
             $siteId,
             $title,
             $type,
-            $status = \JobOrderStatuses::getDefaultNewStatus(),
+            $status = \JobOrderStatuses::getDefaultStatus(),
             $city,
             $state,
             $enteredBy,
