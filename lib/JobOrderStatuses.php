@@ -39,10 +39,10 @@ const JOB_ORDER_STATUS_DEFAULT = 'Active';
 
 class JobOrderStatuses
 {
-    private static $_defaultStatuses = array(
+    private static $_defaultStatusGroups = array(
         'Open' => array ('Active', 'On Hold', 'Full'),
         'Closed' => array('Closed', 'Canceled'),
-        'Other' => array('Upcoming', 'Prospective / Lead')
+        'Pre-Open' => array('Upcoming', 'Prospective / Lead')
     );
     private static $_defaultFilters = array(
         'Active / On Hold / Full',
@@ -53,7 +53,7 @@ class JobOrderStatuses
     );
     private static $_defaultSharingStatuses = array('Active');
     private static $_defaultStatisticsStatuses = array('Active', 'OnHold', 'Full', 'Closed');
-    private static $_defaultNewStatus = 'Active';
+    private static $_defaultStatus = 'Active';
 
     /**
      * Returns job order statuses from config or default
@@ -62,13 +62,13 @@ class JobOrderStatuses
      */
     public static function getAll()
     {
-        if(defined('JOB_ORDER_STATUS_LIST'))
+        if(defined('JOB_ORDER_STATUS_GROUP'))
         {
-            return JOB_ORDER_STATUS_LIST;
+            return JOB_ORDER_STATUS_GROUP;
         }
         else
         {
-            return self::$_defaultStatuses;
+            return self::$_defaultStatusGroups;
         }
     }
     /**
@@ -143,11 +143,11 @@ class JobOrderStatuses
         return $result;
     }
 
-    public static function getDefaultNewStatus(){
-        if(defined('JOB_ORDER_NEW_STATUS')){
-            return JOB_ORDER_NEW_STATUS;
+    public static function getDefaultStatus(){
+        if(defined('JOB_ORDER_STATUS_DEFAULT')){
+            return JOB_ORDER_STATUS_DEFAULT;
         } else {
-            return self::$_defaultNewStatus;
+            return self::$_defaultStatus;
         }
     }
 }
