@@ -276,6 +276,12 @@ define ('LDAP_ATTRIBUTE_EMAIL', 'mail');
 
 define ('LDAP_SITEID', 1);
 
+/* Encodings available during Data Import */
+const IMPORT_FILE_ENCODING = array(
+    'ISO-8859-1', 'GB2312', 'Windows-1251', 'Windows-1252', 'Shift JIS',
+'GBK', 'Windows-1256', 'ISO-8859-2', 'EUC-JP', 'ISO-8859-15', 'ISO-8859-9', 'Windows-1250',
+'Windows-1254', 'EUC-KR', 'Big5', 'Windows-874', 'US-ASCII', 'TIS-620', 'ISO-8859-7', 'Windows-1255'
+);
 
 /* Job Types mapping
  */

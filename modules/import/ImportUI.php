@@ -408,6 +408,7 @@ class ImportUI extends UserInterface
 
         $dataType   = $this->getTrimmedInput('dataType', $_POST);
         $importInto = $this->getTrimmedInput('importInto', $_POST);
+        $encoding = $this->getTrimmedInput('encoding', $_POST);
 
         if (empty($dataType))
         {
@@ -436,7 +437,7 @@ class ImportUI extends UserInterface
             switch($dataType)
             {
                 case 'Text File':
-                    $this->onImportFieldsDelimited();
+                    $this->onImportFieldsDelimited($encoding);
                     return;
 
                 default:
@@ -714,7 +715,7 @@ class ImportUI extends UserInterface
      * Called by onImport() to physically insert the data into the
      * database (Step 3).
      */
-    public function onImportFieldsDelimited()
+    public function onImportFieldsDelimited($encoding)
     {
         if ($this->getUserAccessLevel('import.import') < ACCESS_LEVEL_EDIT)
         {
@@ -898,15 +899,15 @@ class ImportUI extends UserInterface
             switch ($importInto)
             {
                 case 'Candidates':
-                    $result = $this->addToCandidates($catsEntriesRows, $catsEntriesValuesNamed, $foreignEntries, $importID);
+                    $result = $this->addToCandidates($catsEntriesRows, $catsEntriesValuesNamed, $foreignEntries, $importID, $encoding);
                     break;
 
                 case 'Contacts':
-                    $result = $this->addToContacts($catsEntriesRows, $catsEntriesValuesNamed, $foreignEntries, $importID);
+                    $result = $this->addToContacts($catsEntriesRows, $catsEntriesValuesNamed, $foreignEntries, $importID, $encoding);
                     break;
 
                 case 'Companies':
-                    $result = $this->addToCompanies($catsEntriesRows, $catsEntriesValuesNamed, $foreignEntries, $importID);
+                    $result = $this->addToCompanies($catsEntriesRows, $catsEntriesValuesNamed, $foreignEntries, $importID, $encoding);
                     break;
 
                 default:
@@ -1000,7 +1001,7 @@ class ImportUI extends UserInterface
    /*
     * Inserts a record into candidates.
     */
-    private function addToCandidates($dataFields, $dataNamed, $dataForeign, $importID)
+    private function addToCandidates($dataFields, $dataNamed, $dataForeign, $importID, $encoding)
     {
         $dateAvailable = '01/01/0001';
 
@@ -1024,7 +1025,7 @@ class ImportUI extends UserInterface
         if (!eval(Hooks::get('IMPORT_ADD_CANDIDATE'))) return;
 
         $candidatesImport = new CandidatesImport($this->_siteID);
-        $candidateID = $candidatesImport->add($dataNamed, $this->_userID, $importID);
+        $candidateID = $candidatesImport->add($dataNamed, $this->_userID, $importID, $encoding);
 
         if ($candidateID <= 0)
         {
@@ -1041,7 +1042,7 @@ class ImportUI extends UserInterface
    /*
     * Inserts a record into Companies.
     */
-    private function addToCompanies($dataFields, $dataNamed, $dataForeign, $importID)
+    private function addToCompanies($dataFields, $dataNamed, $dataForeign, $importID, $encoding)
     {
         $companiesImport = new CompaniesImport($this->_siteID);
 
@@ -1062,7 +1063,7 @@ class ImportUI extends UserInterface
 
         if (!eval(Hooks::get('IMPORT_ADD_CLIENT'))) return;
 
-        $companyID = $companiesImport->add($dataNamed, $this->_userID, $importID);
+        $companyID = $companiesImport->add($dataNamed, $this->_userID, $importID, $encoding);
 
         if ($companyID <= 0)
         {
@@ -1079,7 +1080,7 @@ class ImportUI extends UserInterface
    /*
     * Inserts a record into Contacts.
     */
-    private function addToContacts($dataFields, $dataNamed, $dataForeign, $importID)
+    private function addToContacts($dataFields, $dataNamed, $dataForeign, $importID, $encoding)
     {
         $contactImport = new ContactImport($this->_siteID);
 
@@ -1117,7 +1118,7 @@ class ImportUI extends UserInterface
 
                 if (!eval(Hooks::get('IMPORT_ADD_CONTACT_CLIENT'))) return;
 
-                $companyID = $contactImport->addCompany($dataCompany, $this->_userID, $importID);
+                $companyID = $contactImport->addCompany($dataCompany, $this->_userID, $importID, $encoding);
                 if ($companyID == -1)
                 {
                     return 'Unable to add company.';

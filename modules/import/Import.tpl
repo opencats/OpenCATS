@@ -183,6 +183,25 @@
             </table>
 
             <br />
+            <tr>
+                <td class="tdVertical">
+                    <label id="encodingLabel" for="encoding">File Encoding:</label>
+                </td>
+                <td class="tdData">
+                    <select name="encoding">
+                        <option value="">Keep default or is UTF-8</option>
+                        <?php
+                                    if(defined('IMPORT_FILE_ENCODING')){
+                                        foreach(IMPORT_FILE_ENCODING as $encoding){
+                                            echo "<option value=\"";
+                                            echo $encoding;
+                                            echo "\">".$encoding."</option>";
+                        }
+                        }
+                        ?>
+                    </select>
+                </td>
+            </tr>
             <table class="editTable" width="740" id="importHide10">
                 <?php foreach ($this->theFields AS $fieldIndex => $theField): ?>
                     <tr>
