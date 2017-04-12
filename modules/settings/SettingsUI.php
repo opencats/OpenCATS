@@ -2727,11 +2727,7 @@ class SettingsUI extends UserInterface
                         . 'Re-install PHP with the --enable-soap configuration option.<br /><br />'
                         . 'Please visit http://www.catsone.com for more support options.';
                 }
-                if (!LicenseUtility::validateProfessionalKey($key))
-                {
-                    $message = 'That is not a valid Professional membership key<br /><span style="font-size: 16px; color: #000000;">Please verify that you have the correct key and try again.</span>';
-                }
-                else if (!CATSUtility::changeConfigSetting('LICENSE_KEY', "'" . $key . "'"))
+                if (!CATSUtility::changeConfigSetting('LICENSE_KEY', "'" . $key . "'"))
                 {
                     $message = 'Internal Permissions Error<br /><span style="font-size: 12px; color: #000000;">CATS is unable '
                         . 'to write changes to your <b>config.php</b> file. Please change the file permissions or contact us '
@@ -3114,17 +3110,6 @@ class SettingsUI extends UserInterface
                             . "Re-install PHP with the --enable-soap configuration option.\n\n"
                             . "Please visit http://www.catsone.com for more support options.";
                         return;
-                    }
-                    else
-                    {
-                        if (!LicenseUtility::validateProfessionalKey($key))
-                        {
-                            echo "That is not a valid CATS Professional license key. Please visit "
-                                . "http://www.catsone.com/professional for more information about CATS Professional.\n\n"
-                                . "For a free open-source key, please visit http://www.catsone.com/ and "
-                                . "click on \"Downloads\".";
-                            return;
-                        }
                     }
                 }
 
