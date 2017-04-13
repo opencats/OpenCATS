@@ -311,6 +311,39 @@ class EmailTemplates
 
         return $this->_db->getAllAssoc($sql);
     }
+
+    public function getEmailSignature(){
+        $sql = sprintf(
+            "SELECT
+                settings.value AS value
+            FROM
+                settings
+            WHERE
+                settings.site_id = %s
+            AND
+                settings.settings_type = %s
+            AND
+                settings.setting = %s",
+            $this->_siteID,
+            SETTINGS_MAILER,
+            $this->_db->makeQueryString("emailSignature_".$_SESSION['CATS']->getUserID())
+        );
+        $rs = $this->_db->getAllAssoc($sql);
+        if(empty($rs) || !$rs){
+            return "";
+        }
+        return $rs[0]['value'];
+    }
+
+    public function saveEmailSignature($signature){
+        if(strlen($signature) > 1000){
+            return -1;
+        } else {
+            $mailerSettings = new MailerSettings($this->_siteID);
+            $mailerSettings->set("emailSignature_" . $_SESSION['CATS']->getUserID(), $signature);
+            return 0;
+        }
+    }
 }
 
 ?>
