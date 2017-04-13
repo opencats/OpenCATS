@@ -171,6 +171,7 @@ class EmailTemplates
         $email    = $_SESSION['CATS']->getEmail();
         $siteName = $_SESSION['CATS']->getSiteName();
         $fullName = $_SESSION['CATS']->getFullName();
+        $emailSignature = $this->getEmailSignature();
 
         if ($_SESSION['CATS']->isDateDMY())
         {
@@ -195,7 +196,8 @@ class EmailTemplates
             '%DATETIME%',
             '%SITENAME%',
             '%USERFULLNAME%',
-            '%USERMAIL%'
+            '%USERMAIL%',
+            '%USEREMAILSIGNATURE%'
         );
 
         if ($isLoggedIn)
@@ -204,7 +206,8 @@ class EmailTemplates
                 DateUtility::getAdjustedDate($dateFormat . ' g:i A'),
                 $siteName,
                 $fullName,
-                '<a href="mailto:'. $email .'">'. $email .'</a>'
+                '<a href="mailto:'. $email .'">'. $email .'</a>',
+                $emailSignature
             );
         }
         else
