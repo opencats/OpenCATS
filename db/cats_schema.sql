@@ -954,7 +954,7 @@ CREATE TABLE `saved_search` (
 CREATE TABLE `settings` (
   `settings_id` int(11) NOT NULL AUTO_INCREMENT,
   `setting` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `value` varchar(1023) COLLATE utf8_unicode_ci DEFAULT NULL,
   `site_id` int(11) NOT NULL DEFAULT '0',
   `settings_type` int(11) DEFAULT '0',
   PRIMARY KEY (`settings_id`)
