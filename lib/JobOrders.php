@@ -1201,7 +1201,12 @@ class JobOrdersDataGrid extends DataGrid
                                      'filter'    => 'joborder.is_hot',
                                      'pagerOptional' => false,
                                      'filterable' => false,
-                                     'filterDescription' => 'Only Hot Job Orders')
+                                     'filterDescription' => 'Only Hot Job Orders'),
+
+            'Public/Private' => array('select'  => 'IF(joborder.public, \'Public\', \'Private\') AS public',
+                                    'sortableColumn'    => 'public',
+                                    'pagerWidth'   => 50,
+                                    'filter'         => 'IF(joborder.public, \'Public\', \'Private\')')
         );
 
         if (!eval(Hooks::get('JOBORDERS_DATAGRID_COLUMNS'))) return;
