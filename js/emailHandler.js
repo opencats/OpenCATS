@@ -140,7 +140,7 @@ function getTemplateTextAJAX(templateId, sessionCookie)
         /* Return if we have any errors. */
         var errorCodeNode    = http.responseXML.getElementsByTagName("errorcode").item(0);
         var errorMessageNode = http.responseXML.getElementsByTagName("errormessage").item(0);
-        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != "0")
+        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue !== "0")
         {
             if (errorCodeNode.firstChild.nodeValue !== "-2")
             {
