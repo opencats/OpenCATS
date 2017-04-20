@@ -492,6 +492,7 @@ class CompaniesImport
      * @param array (field => value)
      * @param userID
      * @param importID
+     * @param encoding
      * @return companyID
      */
 
