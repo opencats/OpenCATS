@@ -2653,7 +2653,6 @@ class CandidatesUI extends UserInterface
             return $candidateID;
         }
         
-        $candidates = new Candidates($this->_siteID);
         if(sizeof($duplicatesID) > 0)
         {
             $candidates->addDuplicates($candidateID, $duplicatesID);
