@@ -35,10 +35,10 @@ function populateEmailForm(cnt)
         var cb = document.getElementById("email_site_user_cb_" + x);
         if(cb)
         {
-            if(cb.checked == true)
+            if(cb.checked === true)
             {
                 isValid = true;
-                if(emailTo != "")
+                if(emailTo !== "")
                 {
                     emailTo += ", " + cb.value;
                 }
@@ -50,7 +50,7 @@ function populateEmailForm(cnt)
         }
     }
 
-    if(isValid == true)
+    if(isValid === true)
     {
         var emailFormTo = document.getElementById("emailTo");
         var emailFormToHidden = document.getElementById("emailToHidden");
@@ -72,7 +72,7 @@ function showEmailForm(tf)
     var emailForm = document.getElementById("siteEmailForm");
     if(emailForm)
     {
-        if(tf == true)
+        if(tf === true)
         {
             emailForm.style.visibility = "visible";
         }
@@ -99,7 +99,7 @@ function submitFinalEmail()
 {
     var emailToHidden = document.getElementById("emailToHidden");
 
-    if(emailToHidden.value == "" || document.getElementById("emailSubject").value == "" || document.getElementById("emailBody").value == "")
+    if(emailToHidden.value === "" || document.getElementById("emailSubject").value === "" || document.getElementById("emailBody").value === "")
     {
         alert("You must have select at least one name and have a complete subject and body!");
     }
@@ -112,8 +112,8 @@ function submitFinalEmail()
 
 function getTemplateTextAJAX(templateId, sessionCookie)
 {
-    
-    if (templateId == "" || !stringIsNumeric(templateId))
+
+    if (templateId === "" || !stringIsNumeric(templateId))
     {
         return;
     }
@@ -126,16 +126,14 @@ function getTemplateTextAJAX(templateId, sessionCookie)
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
     {
-        if (http.readyState != 4)
+        if (http.readyState !== 4)
         {
             return;
         }
 
         if (!http.responseXML)
         {
-            var errorMessage = "An error occurred while receiving a response from the server.\n\n"
-                             + http.responseText;
-            alert(errorMessage);
+            alert("An error occurred while receiving a response from the server.\n\n" + http.responseText);
             return;
         }
 
@@ -144,13 +142,10 @@ function getTemplateTextAJAX(templateId, sessionCookie)
         var errorMessageNode = http.responseXML.getElementsByTagName("errormessage").item(0);
         if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != "0")
         {
-            if (errorCodeNode.firstChild.nodeValue != "-2")
+            if (errorCodeNode.firstChild.nodeValue !== "-2")
             {
-                var errorMessage = "An error occurred while receiving a response from the server.\n\n"
-                                 + errorMessageNode.firstChild.nodeValue;
-                alert(errorMessage);
+                alert("An error occurred while receiving a response from the server.\n\n" + errorMessageNode.firstChild.nodeValue);
             }
-
             return;
         }
 
@@ -184,7 +179,7 @@ function showTemplate(sessionCookie)
 {
     document.getElementById("candidateName").value = -1;
     document.getElementById("emailPreview").innerHTML = "";
-    
+
     var templateId = $("#emailTemplate").children(":selected").attr("value");
     if(templateId < 1)
     {
@@ -202,7 +197,7 @@ function replaceTemplateTags(sessionCookie)
 {
     var candidateId = $("#candidateName").children(":selected").attr("value");
     var templateText = CKEDITOR.instances["emailBody"].getData();
-    
+
     if(candidateId < 1)
     {
         document.getElementById("emailPreview").innerHTML = "";
@@ -216,8 +211,8 @@ function replaceTemplateTags(sessionCookie)
 
 function getReplaceText_AJAX(candidateId, templateText, sessionCookie)
 {
-    
-    if (candidateId == "" || !stringIsNumeric(candidateId))
+
+    if (candidateId === "" || !stringIsNumeric(candidateId))
     {
         return;
     }
@@ -226,7 +221,7 @@ function getReplaceText_AJAX(candidateId, templateText, sessionCookie)
 
     /* Build HTTP POST data. */
     var POSTData = "&candidateID=" + urlEncode(candidateId) + "&templateText=" + urlEncode(templateText);
-    
+
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
     {
@@ -234,33 +229,28 @@ function getReplaceText_AJAX(candidateId, templateText, sessionCookie)
         {
             return;
         }
-        
+
         if (!http.responseXML)
         {
-            var errorMessage = "An error occurred while receiving a response from the server.\n\n"
-                             + http.responseText;
-            alert(errorMessage);
+            alert("An error occurred while receiving a response from the server.\n\n" + http.responseText);
             return;
         }
-    
+
         /* Return if we have any errors. */
         var errorCodeNode    = http.responseXML.getElementsByTagName("errorcode").item(0);
         var errorMessageNode = http.responseXML.getElementsByTagName("errormessage").item(0);
-        
+
         if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != "0")
         {
             if (errorCodeNode.firstChild.nodeValue != "-2")
             {
-                var errorMessage = "An error occurred while receiving a response from the server.\n\n"
-                                 + errorMessageNode.firstChild.nodeValue;
-                alert(errorMessage);
+                alert("An error occurred while receiving a response from the server.\n\n" + errorMessageNode.firstChild.nodeValue);
             }
-
             return;
         }
-        
+
         var templateTextReplaced = http.responseXML.getElementsByTagName("text").item(0);
-        
+
         if (templateTextReplaced.firstChild)
         {
             document.getElementById("emailPreview").innerHTML = templateTextReplaced.firstChild.textContent;
@@ -281,4 +271,4 @@ function getReplaceText_AJAX(candidateId, templateText, sessionCookie)
         false,
         false
     );
-}
+};

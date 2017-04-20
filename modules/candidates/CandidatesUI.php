@@ -3218,7 +3218,7 @@ class CandidatesUI extends UserInterface
             {
                 $destination[] = array($emailDest, $emailDest);
             }
-            
+
             $mailer = new Mailer(CATS_ADMIN_SITE);
             
             if($_POST['emailTemplate'] == "-1")
