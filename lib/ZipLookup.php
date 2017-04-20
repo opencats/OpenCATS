@@ -34,7 +34,7 @@ class ZipLookup
 				if (($value->type == 'postal_town') && ($aAddress[2] == '')) {
 					$aAddress[2] = (string) $value->long_name;
 				}
-				if ($value->type[0] == 'administrative_area_level_2') {
+				if ($value->type[0] == 'administrative_area_level_1') {
 					$aAddress[3] = (string) $value->long_name;
 				}
 			}
