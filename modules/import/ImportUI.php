@@ -1104,7 +1104,7 @@ class ImportUI extends UserInterface
             return 'Failed to add job order.';
         }
 
-        $this->addForeign(DATA_ITEM_JOBORDER, $dataForeign, $candidateID, $importID);
+        $this->addForeign(DATA_ITEM_JOBORDER, $dataForeign, $jobOrderID, $importID);
 
         if (!eval(Hooks::get('IMPORT_ADD_JOBORDER_POST'))) return;
 
