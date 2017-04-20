@@ -1420,7 +1420,7 @@ class CareersUI extends UserInterface
             /* Attempt to add the candidate to the pipeline. */
             if (!$pipelines->add($candidateID, $jobOrderID))
             {
-                CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add candidate to pipeline.');
+                CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add candidate to job order.');
             }
 
             // FIXME: For some reason, pipeline entries like to disappear between

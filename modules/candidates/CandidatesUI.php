@@ -1574,14 +1574,14 @@ class CandidatesUI extends UserInterface
         {
             if (!$pipelines->add($candidateID, $jobOrderID, $this->_userID))
             {
-                CommonErrors::fatalModal(COMMONERROR_RECORDERROR, $this, 'Failed to add candidate to pipeline.');
+                CommonErrors::fatalModal(COMMONERROR_RECORDERROR, $this, 'Failed to add candidate to Job Order.');
             }
 
             $activityID = $activityEntries->add(
                 $candidateID,
                 DATA_ITEM_CANDIDATE,
                 400,
-                'Added candidate to pipeline.',
+                'Added candidate to job order.',
                 $this->_userID,
                 $jobOrderID
             );

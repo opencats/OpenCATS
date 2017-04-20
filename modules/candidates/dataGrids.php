@@ -49,7 +49,7 @@ class candidatesListByViewDataGrid extends CandidatesDataGrid
     {
         //TODO: Add items:
         //  - Add to List
-        //  - Add to Pipeline
+        //  - Add to Job Order
         //  - Mass set rank (depends on each candidate having their own personal rank - are we going to do this?)
         $html = '';
 
@@ -57,7 +57,7 @@ class candidatesListByViewDataGrid extends CandidatesDataGrid
         
         if($_SESSION['CATS']->getAccessLevel('pipelines.addToPipeline') >= ACCESS_LEVEL_EDIT) 
         {
-            $html .= $this->getInnerActionAreaItemPopup('Add To Pipeline', CATSUtility::getIndexName().'?m=candidates&amp;a=considerForJobSearch', 750, 460);
+            $html .= $this->getInnerActionAreaItemPopup('Add To Job Order', CATSUtility::getIndexName().'?m=candidates&amp;a=considerForJobSearch', 750, 460);
         }
         
         if(MAIL_MAILER != 0 && $_SESSION['CATS']->getAccessLevel('candidates.canEmail') >= ACCESS_LEVEL_SA)
@@ -114,12 +114,12 @@ class candidatesSavedListByViewDataGrid extends CandidatesDataGrid
     {
         //TODO: Add items:
         //  - Add to List
-        //  - Add to Pipeline
+        //  - Add to Job Order
         //  - Mass set rank (depends on each candidate having their own personal rank - are we going to do this?)
         $html = '';
 
         $html .= $this->getInnerActionAreaItem('Remove From This List', CATSUtility::getIndexName().'?m=lists&amp;a=removeFromListDatagrid&amp;dataItemType='.DATA_ITEM_CANDIDATE.'&amp;savedListID='.$this->getMiscArgument(), false);
-        $html .= $this->getInnerActionAreaItemPopup('Add To Pipeline', CATSUtility::getIndexName().'?m=candidates&amp;a=considerForJobSearch', 750, 460);
+        $html .= $this->getInnerActionAreaItemPopup('Add To Job Order', CATSUtility::getIndexName().'?m=candidates&amp;a=considerForJobSearch', 750, 460);
         if(MAIL_MAILER != 0 && $_SESSION['CATS']->getAccessLevel() >= ACCESS_LEVEL_SA)
         {
             $html .= $this->getInnerActionAreaItem('Send E-Mail', CATSUtility::getIndexName().'?m=candidates&amp;a=emailCandidates');

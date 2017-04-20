@@ -51,7 +51,7 @@ VALUES
 INSERT INTO `activity`
 (`activity_id`, `data_item_id`, `data_item_type`, `joborder_id`, `site_id`, `entered_by`, `date_created`, `type`, `notes`, `date_modified`)
 VALUES
-(1, 20000, 100, 1, 1, 1, '2016-08-10 14:48:57', 400, 'Added candidate to pipeline.', '2016-08-10 14:48:57'),
+(1, 20000, 100, 1, 1, 1, '2016-08-10 14:48:57', 400, 'Added candidate to job order.', '2016-08-10 14:48:57'),
 (2, 1, 300, -1, 1, 1, '2016-08-10 15:04:48', 100, '', '2016-08-10 15:04:48');
 
 INSERT INTO `attachment`
@@ -72,7 +72,7 @@ VALUES
 (6, 300, 1, '!newEntry!', NULL, NULL, '(USER) created entry.', '2016-08-10 14:47:47', 1, 1),
 (7, 400, 1, '!newEntry!', NULL, NULL, '(USER) created entry.', '2016-08-10 14:48:21', 1, 1),
 (8, 100, 20000, '!newEntry!', NULL, NULL, '(USER) created entry.', '2016-08-10 14:48:32', 1, 1),
-(9, 100, 20000, 'ACTIVITY', '(NEW)', 'Added candidate to pipeline.', '(USER) Added activity.', '2016-08-10 14:48:57', 1, 1),
+(9, 100, 20000, 'ACTIVITY', '(NEW)', 'Added candidate to job order.', '(USER) Added activity.', '2016-08-10 14:48:57', 1, 1),
 (10, 300, 1, 'email1', NULL, 'elizabeth@blue.com', NULL, '2016-08-10 15:01:26', 1, 1),
 (11, 300, 1, 'reportsTo', '-1', NULL, '(USER) changed field(s): email1, reportsTo.', '2016-08-10 15:01:26', 1, 1),
 (12, 400, 1, 'contactID', '-1', '1', NULL, '2016-08-10 15:03:11', 1, 1),

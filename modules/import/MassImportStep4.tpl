@@ -8,7 +8,7 @@
                 </span>
                 <p />
                 A candidate has all applicable information (such as name, address, skill set) on file
-                and can be added to pipelines and included in reports and actions. The uploaded resume
+                and can be added to job orders and included in reports and actions. The uploaded resume
                 documents are attached to the candidate record for later viewing and searches.
                 <p />
                 <b>Imported Candidates:</b>

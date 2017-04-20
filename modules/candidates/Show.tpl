@@ -439,7 +439,7 @@ use OpenCATS\UI\CandidateQuickActionMenu;
             <br clear="all" />
             <br />
 
-            <p class="note">Job Order Pipeline</p>
+            <p class="note">Job Orders for Candidates</p>
             <table class="sortablepair">
                 <tr>
                     <th></th>
@@ -505,7 +505,7 @@ use OpenCATS\UI\CandidateQuickActionMenu;
                             <?php endif; ?>
                             <?php if ($this->getUserAccessLevel('pipelines.removeFromPipeline') >= ACCESS_LEVEL_DELETE): ?>
                                 <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=removeFromPipeline&amp;candidateID=<?php echo($this->candidateID); ?>&amp;jobOrderID=<?php echo($pipelinesData['jobOrderID']); ?>"  onclick="javascript:return confirm('Delete from <?php $this->_(str_replace('\'', '\\\'', $pipelinesData['title'])); ?> (<?php $this->_(str_replace('\'', '\\\'', $pipelinesData['companyName'])); ?>) pipeline?')">
-                                    <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Remove from Pipeline"/>
+                                    <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Remove from Job Order"/>
                                 </a>
                             <?php endif; ?>
                         </td>
@@ -531,7 +531,7 @@ use OpenCATS\UI\CandidateQuickActionMenu;
 <?php if (!$this->isPopup): ?>
             <?php if ($this->getUserAccessLevel('candidates.considerForJobSearch') >= ACCESS_LEVEL_EDIT): ?>
                 <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=considerForJobSearch&amp;candidateID=<?php echo($this->candidateID); ?>', 750, 390, null); return false;">
-                    <img src="images/consider.gif" width="16" height="16" class="absmiddle" alt="Add to Pipeline" border="0" />&nbsp;Add This Candidate to Job Order Pipeline
+                    <img src="images/consider.gif" width="16" height="16" class="absmiddle" alt="Add to Job Order" border="0" />&nbsp;Add This Candidate to Job Order
                 </a>
             <?php endif; ?>
 <?php endif; ?>

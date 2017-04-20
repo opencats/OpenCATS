@@ -1,5 +1,5 @@
 <?php /* $Id: ConsiderSearchModal.tpl 3093 2007-09-24 21:09:45Z brian $ */ ?>
-<?php TemplateUtility::printModalHeader('Job Orders', 'js/sorttable.js', 'Add Candidate to This Job Order Pipeline'); ?>
+<?php TemplateUtility::printModalHeader('Job Orders', 'js/sorttable.js', 'Add Candidate to This Job Order'); ?>
 
     <?php if (!$this->isFinishedMode): ?>
         <p>Search for a candidate below, and then click on the candidate's
