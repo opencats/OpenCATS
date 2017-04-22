@@ -3,7 +3,7 @@ services:
   - docker
 
 env:
-  COMPOSE_VERSION: 1.7.1
+  COMPOSE_VERSION: 1.12.0
 
 before_install:
     - sudo apt-get update -qq
