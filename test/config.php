@@ -27,25 +27,24 @@
  * $Id: config.php 3826 2007-12-10 06:03:18Z will $
  */
 
-/* License key. */
-define('LICENSE_KEY','3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
-
 /* Database configuration. */
-define('DATABASE_USER', 'dev');
-define('DATABASE_PASS', 'dev');
-define('DATABASE_HOST', 'opencatsdb');
-define('DATABASE_NAME', 'cats_test');
+define('DATABASE_USER', $_ENV['MYSQL_USER']);
+define('DATABASE_PASS', $_ENV['MYSQL_PASSWORD']);
+define('DATABASE_HOST', $_ENV['MYSQL_HOST']);
+define('DATABASE_NAME', $_ENV['MYSQL_DATABASE']);
 
 /* Authentication Configuration
  * Options are sql and ldap
  */
-define ('AUTH_MODE', 'sql');
+define ('AUTH_MODE', $_ENV['AUTH_MODE']);
 
 /* Resfly.com Resume Import Services Enabled */
+// TODO: Remove this variable and support for Resfly as it does no longer exists as a service
 define('PARSING_ENABLED', false);
 
 /* If you have an SSL compatible server, you can enable SSL for all of CATS. */
-define('SSL_ENABLED', false);
+// TODO: Make SSL the only way to setup OpenCATS to make it secure
+define('SSL_ENABLED', $_ENV['SSL_ENABLED']);
 
 /* Text parser settings. Remember to use double backslashes (\) to represent
  * one backslash (\). On Windows, installing in C:\antiword\ is
@@ -53,26 +52,26 @@ define('SSL_ENABLED', false);
  * 'C:\\antiword\\antiword.exe'. Windows Antiword will have problems locating
  * mapping files if you install it anywhere but C:\antiword\.
  */
-define('ANTIWORD_PATH', "\\path\\to\\antiword");
-define('ANTIWORD_MAP', '8859-1.txt');
+define('ANTIWORD_PATH', $_ENV['TOOLS_ANTIWORD_PATH']);
+define('ANTIWORD_MAP', $_ENV['TOOLS_ANTIWORD_MAP']);
 
 /* XPDF / pdftotext settings. Remember to use double backslashes (\) to represent
  * one backslash (\).
  * http://www.foolabs.com/xpdf/
  */
-define('PDFTOTEXT_PATH', "\\path\\to\\pdftotext");
+define('PDFTOTEXT_PATH', $_ENV['TOOLS_PDFTOTEXT_PATH']);
 
 /* html2text settings. Remember to use double backslashes (\) to represent
  * one backslash (\). 'html2text' can be found at:
  * http://www.mbayer.de/html2text/
  */
-define('HTML2TEXT_PATH', "\\path\\to\\html2text");
+define('HTML2TEXT_PATH', $_ENV['TOOLS_HTMLTOTEXT_PATH']);
 
 /* UnRTF settings. Remember to use double backslashes (\) to represent
  * one backslash (\). 'unrtf' can be found at:
  * http://www.gnu.org/software/unrtf/unrtf.html
  */
-define('UNRTF_PATH', "\\path\\to\unrtf");
+define('UNRTF_PATH', $_ENV['TOOLS_UNRTF_PATH']);
 
 /* Temporary directory. Set this to a directory that is writable by the
  * web server. The default should be fine for most systems. Remember to
@@ -83,16 +82,17 @@ define('CATS_TEMP_DIR', './temp');
 /* If User Details and Login Activity pages in the settings module are
  * unbearably slow, set this to false.
  */
+// TODO: Remove hostname lookup
 define('ENABLE_HOSTNAME_LOOKUP', false);
 
 /* CATS can optionally use Sphinx to speed up document searching.
  * Install Sphinx and set ENABLE_SPHINX (below) to true to enable Sphinx.
  */
-define('ENABLE_SPHINX', false);
-define('SPHINX_API', './lib/sphinx/sphinxapi.php');
-define('SPHINX_HOST', 'localhost');
-define('SPHINX_PORT', 3312);
-define('SPHINX_INDEX', 'cats catsdelta');
+define('ENABLE_SPHINX', $_ENV['SPHINX_ENABLE']);
+define('SPHINX_API', $_ENV['SPHINX_API']);
+define('SPHINX_HOST', $_ENV['SPHINX_HOST']);
+define('SPHINX_PORT', $_ENV['SPHINX_PORT']);
+define('SPHINX_INDEX', $_ENV['SPHINX_INDEX']);
 
 /* Probably no need to edit anything below this line. */
 
@@ -168,7 +168,7 @@ define('FORGOT_PASSWORD_SUBJECT',   'CATS - Password Retrieval Request');
 define('FORGOT_PASSWORD_BODY',      'You recently requested that your OpenCATS: Applicant Tracking System password be sent to you. Your current password is %s.');
 
 /* Is this a demo site? */
-define('ENABLE_DEMO_MODE', false);
+define('ENABLE_DEMO_MODE', $_ENV['DEMO_MODE_ENABLE']);
 
 /* Offset to GMT Time. */
 define('OFFSET_GMT', 2);
@@ -199,24 +199,24 @@ define('DEMO_PASSWORD',  'john99');
  * 2: Sendmail
  * 3: SMTP
  */
-define('MAIL_MAILER', 3);
+define('MAIL_MAILER', $_ENV['MAIL_MAILER']);
 
 /* Sendmail Settings. You don't need to worry about this unless MAIL_MAILER
  * is set to 2.
  */
-define('MAIL_SENDMAIL_PATH', "/usr/sbin/sendmail");
+define('MAIL_SENDMAIL_PATH', $_ENV['MAIL_SENDMAIL_PATH']);
 
 /* SMTP Settings. You don't need to worry about this unless MAIL_MAILER is
  * set to 3. If your server requires authentication, set MAIL_SMTP_AUTH to
  * true and configure MAIL_SMTP_USER and MAIL_SMTP_PASS.
  */
-define('MAIL_SMTP_HOST', "localhost");
-define('MAIL_SMTP_PORT', 587);
-define('MAIL_SMTP_AUTH', true);
-define('MAIL_SMTP_USER', "user");
-define('MAIL_SMTP_PASS', "password");
+define('MAIL_SMTP_HOST', $_ENV['MAIL_SMTP_HOST']);
+define('MAIL_SMTP_PORT', $_ENV['MAIL_SMTP_PORT']);
+define('MAIL_SMTP_AUTH', $_ENV['MAIL_SMTP_AUTH']);
+define('MAIL_SMTP_USER', $_ENV['MAIL_SMTP_USER']);
+define('MAIL_SMTP_PASS', $_ENV['MAIL_SMTP_PASS']);
 //Options: '', 'ssl' or 'tls'
-define('MAIL_SMTP_SECURE', "tls");
+define('MAIL_SMTP_SECURE', $_ENV['MAIL_SMTP_SECURE']);
 
 /* Event reminder E-Mail Template. */
 $GLOBALS['eventReminderEmail'] = <<<EOF
@@ -257,13 +257,13 @@ define('US_ZIPS_ENABLED', true);
 
 /* LDAP Configuration
  */
-define ('LDAP_HOST', 'ldap.forumsys.com');
-define ('LDAP_PORT', '389');
-define ('LDAP_BASEDN', 'dc=example,dc=com');
-define ('LDAP_UID', 'uid');
-define ('LDAP_BIND_DN', 'cn=read-only-admin,dc=example,dc=com');
-define ('LDAP_BIND_PASSWORD', 'password');
-define ('LDAP_PROTOCOL_VERSION', 3);
+define ('LDAP_HOST', $_ENV['LDAP_HOST']);
+define ('LDAP_PORT', $_ENV['LDAP_PORT']);
+define ('LDAP_BASEDN', $_ENV['LDAP_BASEDN']);
+define ('LDAP_UID', $_ENV['LDAP_UID']);
+define ('LDAP_BIND_DN', $_ENV['LDAP_BIND_DN']);
+define ('LDAP_BIND_PASSWORD', $_ENV['LDAP_BIND_PASSWORD']);
+define ('LDAP_PROTOCOL_VERSION', $_ENV['LDAP_PROTOCOL_VERSION']);
 
 const JOB_TYPES_LIST = array(
     'H' => 'Hire',
