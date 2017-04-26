@@ -681,10 +681,6 @@ class SettingsUI extends UserInterface
                 $this->getFirefoxModal();
                 break;
 
-            case 'downloads':
-                $this->downloads();
-                break;
-
             case 'ajax_tags_add':
                 if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
                 {
@@ -2465,49 +2461,6 @@ class SettingsUI extends UserInterface
         $this->_template->assign('careerPortalUnlock', $careerPortalUnlock);
         $this->_template->assign('subActive', 'Administration');
         $this->_template->assign('systemAdministration', $systemAdministration);
-        $this->_template->assign('active', $this);
-        $this->_template->display($templateFile);
-    }
-
-    /*
-     * Called by handleRequest() to process loading the administration page.
-     */
-    private function downloads()
-    {
-        //FIXME: This needs to give an appropriate error message to both Open Source and ASP Free users.
-        //       The current message is geared toward Open Source users.
-        if (!file_exists('modules/asp') && !LicenseUtility::isProfessional())
-        {
-            CommonErrors::fatal(COMMONERROR_RESTRICTEDEXTENSION, $this);
-        }
-
-        // FIXME: Temporary! We need a better error message.
-        if ($_SESSION['CATS']->isFree() || $_SESSION['CATS']->isDemo())
-        {
-            CommonErrors::fatal(COMMONERROR_RESTRICTEDEXTENSION, $this);
-        }
-
-        // FIXME: 's' isn't a good variable name.
-        if (isset($_GET['s']))
-        {
-            switch($_GET['s'])
-            {
-                case 'toolbar':
-                    $templateFile = './modules/asp/toolbar.tpl';
-                    break;
-
-                default:
-                    $templateFile = './modules/settings/AspDownloads.tpl';
-                    break;
-            }
-        }
-        else
-        {
-            $templateFile = './modules/settings/AspDownloads.tpl';
-        }
-
-        $this->_template->assign('isFree', $_SESSION['CATS']->isFree());
-        $this->_template->assign('subActive', 'Extras');
         $this->_template->assign('active', $this);
         $this->_template->display($templateFile);
     }
