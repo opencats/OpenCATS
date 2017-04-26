@@ -151,13 +151,6 @@ class TemplateUtility
                 }
             }
 
-            if (!LicenseUtility::isProfessional())
-            {
-                echo '<a href="http://www.catsone.com/professional" target="_blank">';
-                echo '<img src="images/tabs/small_upgrade.jpg" border="0" /> ';
-                echo '<b>For more features, upgrade to CATS Professional</b></a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
-            }
-
             echo '<a href="', $indexName, '?m=logout">';
             echo '<img src="images/tabs/small_logout.jpg" border="0" /> ';
             echo 'Logout</a>', "\n";

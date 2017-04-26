@@ -911,21 +911,6 @@ class Users
             $license['canAdd'] = 1;
         }
 
-        if (LicenseUtility::isProfessional())
-        {
-            $license['unlimited'] = 0;
-            $license['userLicenses'] = LicenseUtility::getNumberOfSeats();
-            $license['diff'] = $license['userLicenses'] - $license['totalUsers'];
-            if ($license['diff'] > 0)
-            {
-                $license['canAdd'] = 1;
-            }
-            else
-            {
-                $license['canAdd'] = 0;
-            }
-        }
-
         return $license;
     }
 
