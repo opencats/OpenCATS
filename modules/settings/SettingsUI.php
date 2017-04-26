@@ -2629,7 +2629,7 @@ class SettingsUI extends UserInterface
 
     private function manageProfessional()
     {
-        if (!defined('CATS_TEST_MODE') || !CATS_TEST_MODE))
+        if (!defined('CATS_TEST_MODE') || !CATS_TEST_MODE)
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
         }
