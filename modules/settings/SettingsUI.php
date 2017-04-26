@@ -2452,7 +2452,7 @@ class SettingsUI extends UserInterface
         $careerPortalUnlock = false;
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
         $cpData = $careerPortalSettings->getAll();
-        if (intval($cpData['enabled']) || (file_exists('modules/asp') && !$_SESSION['CATS']->isFree()) ||
+        if (intval($cpData['enabled']) || !$_SESSION['CATS']->isFree() ||
             LicenseUtility::isProfessional())
         {
             $careerPortalUnlock = true;
