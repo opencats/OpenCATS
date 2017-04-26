@@ -2629,11 +2629,6 @@ class SettingsUI extends UserInterface
 
     private function manageProfessional()
     {
-        if (!defined('CATS_TEST_MODE') || !CATS_TEST_MODE)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-        }
-
         $wf = new WebForm();
         $wf->addField('licenseKey', 'License Key', WFT_TEXT, true, 60, 30, 190, '', '/[A-Za-z0-9 ]+/',
             'That is not a valid license key!');
