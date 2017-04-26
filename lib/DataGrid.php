@@ -1107,10 +1107,18 @@ class DataGrid
                     $joinSQL[md5($this->_classColumns[$columnName]['join'])] = $this->_classColumns[$columnName]['join'];
                 }
 
-                /* The / character works as an OR clause for filters. */
-                $argument = str_replace(' or ', '/', $argument);
-                $argument = str_replace(' OR ', '/', $argument);
-                $arguments = explode('/', $argument);
+                /* The / character works as an OR clause for filters, exclude url and web_site */
+                if((strpos($this->_classColumns[$columnName]['filter'], 'web_site') !== false) ||
+                   (strpos($this->_classColumns[$columnName]['filter'], 'url') !== false))
+                {
+                    $arguments = array($argument);
+                }
+                else
+                {
+                    $argument = str_replace(' or ', '/', $argument);
+                    $argument = str_replace(' OR ', '/', $argument);
+                    $arguments = explode('/', $argument);
+                }
 
                 $whereSQL_or = array();
                 $havingSQL_or = array();
@@ -1452,7 +1460,7 @@ class DataGrid
         header('Content-Disposition: attachment; filename="export.csv"');
         header('Content-Length: ' . $length);
         header('Connection: close');
-        header('Content-Type: text/x-csv; name=export.csv');
+        header('Content-Type: text/x-csv; name=export.csv; charset=utf-8');
 
         if (defined('INSERT_BOM_CSV_LENGTH') && (INSERT_BOM_CSV_LENGTH > 0))
         {
