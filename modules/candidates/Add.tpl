@@ -112,7 +112,7 @@
                                             <div style="color: #666666; text-align: center;">
                                             (<b>hint:</b> you may also paste the resume contents)
                                             <br /><br />
-                                            <?php if (LicenseUtility::isProfessional() || file_exists('modules/asp')): ?>
+                                            <?php if (LicenseUtility::isProfessional()): ?>
                                             Need to upload multiple resumes? <a href="<?php echo CATSUtility::getIndexName(); ?>?m=import&a=massImport">Click here!</a>
                                             <?php else: ?>
                                                 <?php if ($this->parsingStatus['parseLimit'] >= 0 && (($used = $this->parsingStatus['parseUsed']) / ($limit = $this->parsingStatus['parseLimit']) * 100) > 50): ?>
