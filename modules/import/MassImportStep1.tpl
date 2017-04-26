@@ -9,9 +9,7 @@ You have <?php echo number_format(count($this->documents), 0); ?> document<?php 
 </div>
 <?php endif; ?>
 
-<?php if ($this->isDemo): ?>
-    <img src="modules/asp/website/images/demoImport.jpg" border="0" />
-<?php elseif ($this->flashUploaderEnabled): ?>
+<?php if ($this->flashUploaderEnabled): ?>
     <table cellpadding="0" cellspacing="0" border="0" width="100%">
         <tr>
             <td align="left" valign="top" width="50%">
