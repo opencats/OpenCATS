@@ -1462,7 +1462,6 @@ class ImportUI extends UserInterface
                 $uploadPath = false;
             }
 
-            $this->_template->assign('flashUploaderEnabled', file_exists('modules/asp') ? true : false);
             $this->_template->assign('multipleFilesEnabled', true);
             $this->_template->assign('uploadPath', $uploadPath);
         }
