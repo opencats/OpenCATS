@@ -53,18 +53,6 @@ if (function_exists('date_default_timezone_set'))
     @date_default_timezone_set(date_default_timezone_get());
 }
 
-/* Start error handler if ASP error handler exists and this isn't a localhost
- * connection.
- */
-if (file_exists('modules/asp/lib/ErrorHandler.php') &&
-    @$_SERVER['REMOTE_ADDR'] !== '127.0.0.1' &&
-    @$_SERVER['REMOTE_ADDR'] !== '::1' &&
-    substr(@$_SERVER['REMOTE_ADDR'], 0, 3) !== '10.')
-{
-    include_once('modules/asp/lib/ErrorHandler.php');
-    $errorHandler = new ErrorHandler();
-}
-
 include_once('./config.php');
 include_once('./constants.php');
 include_once('./lib/CommonErrors.php');
@@ -301,11 +289,6 @@ else
         $_SESSION['CATS']->logPageView();
         ModuleUtility::loadModule($_GET['m']);
     }
-}
-
-if (isset($errorHandler))
-{
-    $errorHandler->reportErrors();
 }
 
 ?>
