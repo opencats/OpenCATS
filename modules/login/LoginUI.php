@@ -127,8 +127,6 @@ class LoginUI extends UserInterface
             $siteName = $_SESSION['CATS']->getUnixName();
         }
 
-        $this->_template->assign('aspMode', false);
-
         if (!eval(Hooks::get('SHOW_LOGIN_FORM_PRE'))) return;
 
         /* If a site was specified, get the site's full name from its
@@ -152,8 +150,6 @@ class LoginUI extends UserInterface
         {
             $siteNameFull = '';
         }
-
-        $this->_template->assign('aspMode', false);
 
         if (!eval(Hooks::get('SHOW_LOGIN_FORM_POST'))) return;
 
@@ -216,8 +212,6 @@ class LoginUI extends UserInterface
                 $siteNameFull = $siteName;
             }
 
-            $this->_template->assign('aspMode', false);
-
             if (!eval(Hooks::get('LOGIN_NO_CREDENTIALS'))) return;
 
             $this->_template->assign('message', $message);
@@ -276,8 +270,6 @@ class LoginUI extends UserInterface
             {
                 $siteNameFull = $siteName;
             }
-
-            $this->_template->assign('aspMode', false);
 
             if (!eval(Hooks::get('LOGIN_UNSUCCESSFUL'))) return;
 
