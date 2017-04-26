@@ -131,28 +131,6 @@ $_SESSION['CATS']->startTimer();
  */
 $_SESSION['CATS']->checkForcedUpdate();
 
-
-/* We would hook this, but the hooks aren't loaded by the time this code executes.
- * if ASP module exists (code is running on catsone.com), load the website by default
- * rather than the login page.
- */
-if (ModuleUtility::moduleExists("asp") && ModuleUtility::moduleExists("website"))
-{
-    // FIXME: Can we optimize this a bit...?
-    include_once('modules/asp/lib/General.php');
-
-    if (!(isset($careerPage) && $careerPage) &&
-        !(isset($rssPage) && $rssPage) &&
-        !(isset($xmlPage) && $xmlPage) &&
-        (!isset($_GET['m']) || empty($_GET['m'])) &&
-        (Asp::getSubDomain() == '' || isset($_GET['a'])))
-    {
-        ModuleUtility::loadModule('website');
-        exit(1);
-    }
-}
-
-
 /* Check to see if the user level suddenly changed. If the user was changed to disabled,
  * also log the user out.
  */
