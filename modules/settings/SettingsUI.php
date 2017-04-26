@@ -69,7 +69,7 @@ class SettingsUI extends UserInterface
         $this->_moduleTabText = 'Settings';
 
         /* Only CATS professional on site gets to make career portal customizer users. */
-        if (!file_exists('modules/asp') && LicenseUtility::isProfessional())
+        if (LicenseUtility::isProfessional())
         {
             $this->_settingsUserCategories = array(
                 array('Career Portal Customizer', 'careerportal', 'This user can\'t do anything but modify the career portal settings.  It is intended to be used by the CATS Professional Support Team.  This user does not count against your maximum users.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
@@ -2638,7 +2638,7 @@ class SettingsUI extends UserInterface
 
     private function manageProfessional()
     {
-        if (ModuleUtility::moduleExists('asp') && (!defined('CATS_TEST_MODE') || !CATS_TEST_MODE))
+        if (!defined('CATS_TEST_MODE') || !CATS_TEST_MODE))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
         }

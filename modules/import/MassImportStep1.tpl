@@ -79,7 +79,7 @@ You have <?php echo number_format(count($this->documents), 0); ?> document<?php 
                 </span>
 
                 <p />
-                <?php if (file_exists('modules/asp') || (is_array($status = LicenseUtility::getParsingStatus()) && $status['parseLimit'] == -1)): ?>
+                <?php if ((is_array($status = LicenseUtility::getParsingStatus()) && $status['parseLimit'] == -1)): ?>
                     <span style="font-size: 14px; color: #333333;">
                     You have unlimited use of the Resfly parsing service, which searches your resume files for contact
                     and resume information. CATS will import all applicable resume documents as candidates.

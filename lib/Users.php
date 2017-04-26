@@ -911,7 +911,7 @@ class Users
             $license['canAdd'] = 1;
         }
 
-        if (LicenseUtility::isProfessional() && !file_exists('modules/asp'))
+        if (LicenseUtility::isProfessional())
         {
             $license['unlimited'] = 0;
             $license['userLicenses'] = LicenseUtility::getNumberOfSeats();

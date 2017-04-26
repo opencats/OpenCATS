@@ -317,7 +317,7 @@ class LoginUI extends UserInterface
             $wizard->addPage('License', './modules/login/wizard/License.tpl', $phpeval, true, true);
         }
 
-        if (!file_exists('modules/asp') || (defined('CATS_TEST_MODE') && CATS_TEST_MODE))
+        if (defined('CATS_TEST_MODE') && CATS_TEST_MODE)
         {
             // On-site wizard pages
             if (!LicenseUtility::isLicenseValid())

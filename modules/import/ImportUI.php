@@ -1182,17 +1182,6 @@ class ImportUI extends UserInterface
     function showMassImport()
     {
         $directoryRoot = './upload/';
-
-        if (ModuleUtility::moduleExists('asp'))
-        {
-           $siteID = $_SESSION['CATS']->getSiteID();
-           $directoryRoot = './upload/'.$siteID.'/';
-           if (!file_exists($directoryRoot))
-           {
-               mkdir($directoryRoot, 0777, true);
-           }
-        }
-
         $foundFiles = array();
         $numberOfFiles = 0;
 
