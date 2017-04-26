@@ -338,24 +338,6 @@ class ImportUI extends UserInterface
        {
            // Start the new mass import/parser
            $this->massImport();
-
-           /*
-           $this->_template->assign('allowMultipleFiles', true);
-           $this->_template->assign('active', $this);
-
-           if (ModuleUtility::moduleExists('asp'))
-           {
-               $this->_template->assign('allowAspFlashUploader', true);
-           }
-           else
-           {
-               $this->_template->assign('allowAspFlashUploader', false);
-           }
-
-           if (!eval(Hooks::get('IMPORT_RESUMES'))) return;
-
-           $this->_template->display('./modules/import/ImportResumes.tpl');
-           */
        }
        else
        {
