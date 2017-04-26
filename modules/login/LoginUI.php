@@ -167,10 +167,7 @@ class LoginUI extends UserInterface
 
         if (!eval(Hooks::get('SHOW_LOGIN_FORM_POST_2'))) return;
 
-        if (ModuleUtility::moduleExists("asp"))
-                $this->_template->display('./modules/asp/AspLogin.tpl');
-            else
-                $this->_template->display('./modules/login/Login.tpl');
+        $this->_template->display('./modules/login/Login.tpl');
     }
 
     private function noCookiesModal()
@@ -229,10 +226,7 @@ class LoginUI extends UserInterface
             $this->_template->assign('siteNameFull', $siteNameFull);
             $this->_template->assign('dateString', date('l, F jS, Y'));
 
-            if (ModuleUtility::moduleExists("asp"))
-                $this->_template->display('./modules/asp/AspLogin.tpl');
-            else
-                $this->_template->display('./modules/login/Login.tpl');
+            $this->_template->display('./modules/login/Login.tpl');
 
             return;
         }
@@ -292,10 +286,7 @@ class LoginUI extends UserInterface
             $this->_template->assign('siteName', $siteName);
             $this->_template->assign('siteNameFull', $siteNameFull);
             $this->_template->assign('dateString', date('l, F jS, Y'));
-            if (ModuleUtility::moduleExists("asp"))
-                $this->_template->display('./modules/asp/AspLogin.tpl');
-            else
-                $this->_template->display('./modules/login/Login.tpl');
+            $this->_template->display('./modules/login/Login.tpl');
 
             return;
         }
