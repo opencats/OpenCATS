@@ -1392,19 +1392,48 @@ class Candidates
         );
 
         $this->_db->query($sql);
-        
+
         $sql = sprintf(
-            "UPDATE 
+            "SELECT 
+                new_candidate_id AS newID
+            FROM 
                 candidate_duplicates
-            SET
-                old_candidate_id = %s
             WHERE
-                old_candidate_id = %s",
-            $this->_db->makeQueryInteger($oldCandidateID),
+                old_candidate_id = %s
+            ",
             $this->_db->makeQueryInteger($newCandidateID)
         );
-        
-        $this->_db->query($sql);
+
+        $rsTmp = $this->_db->getAllAssoc($sql);
+
+        if($rsTmp || count($rsTmp) > 0){
+            foreach($rsTmp AS $index => $newID){
+                $sql = sprintf(
+                    "DELETE FROM
+                    candidate_duplicates
+                WHERE
+                    new_candidate_id = %s
+                AND
+                    old_candidate_id = %s",
+                $this->_db->makeQueryInteger($newID['newID']),
+                $this->_db->makeQueryInteger($newCandidateID)
+                );
+
+                $this->_db->query($sql);
+
+                $sql = sprintf(
+                    "INSERT IGNORE INTO
+                    candidate_duplicates(old_candidate_id, new_candidate_id, site_id)
+                VALUES
+                    (%s, %s, %s)",
+                    $this->_db->makeQueryInteger($oldCandidateID),
+                    $this->_db->makeQueryInteger($newID['newID']),
+                    $this->_siteID
+                );
+
+                $this->_db->query($sql);
+            }
+        }
         
          $sql = sprintf(
             "UPDATE
