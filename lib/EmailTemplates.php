@@ -339,7 +339,7 @@ class EmailTemplates
     }
 
     public function saveEmailSignature($signature){
-        if(strlen($signature) > 1000){
+        if(strlen($signature) > 254){
             return -1;
         } else {
             $mailerSettings = new MailerSettings($this->_siteID);
