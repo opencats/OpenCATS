@@ -9,8 +9,6 @@ env:
 before_install:
     - sudo apt-get update -qq
     - sudo apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install docker-engine
-    - uname -s
-    - uname -m
     - curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
     - chmod +x docker-compose
     - sudo mv docker-compose /usr/local/bin
@@ -20,6 +18,8 @@ php:
 - 5.6
 
 script:
+    - uname -s
+    - uname -m
     - composer install
     - docker ps
     - cd code; composer install; cd ..
