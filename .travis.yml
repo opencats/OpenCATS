@@ -21,12 +21,11 @@ script:
     - docker ps
     - cd code; composer install; cd ..
     - cd code; ./vendor/bin/codecept build; cd ..
-    - export TAG=`if [ "$TRAVIS_TAG" != "" ]; then echo $TRAVIS_TAG; elif [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
-    - docker build -f Dockerfile -t opencats/opencats:$TAG .
     - cd docker/; docker-compose -f docker-compose-unittest.yml up -d; cd ..
     - docker exec -ti docker_unittestphp_1 /var/www/test/runUnitTests.sh
     - cd docker/; docker-compose -f docker-compose-unittest.yml down; cd ..
-    - docker build -t opencats/opencats:$TRAVIS_COMMIT .
+    - export TAG=`if [ "$TRAVIS_TAG" != "" ]; then echo $TRAVIS_TAG; elif [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
+    - docker build -f Dockerfile -t opencats/opencats:$TAG .
     - cd docker/env-test; docker-compose up -d
     - docker --version
     - docker info
