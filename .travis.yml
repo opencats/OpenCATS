@@ -24,12 +24,12 @@ script:
     - cd docker/; docker-compose -f docker-compose-unittest.yml up -d; cd ..
     - docker exec -ti docker_unittestphp_1 /var/www/test/runUnitTests.sh
     - cd docker/; docker-compose -f docker-compose-unittest.yml down; cd ..
+    - docker build -t test/test .
     - cd docker/env-test; docker-compose up -d
     - docker --version
     - docker info
     - docker-compose exec php /var/www/test/runAllTests.sh
     - cd ..; cd ..; ./ci/package-code.sh
-    - docker build -t test/test .
 
 deploy:
   provider: releases
