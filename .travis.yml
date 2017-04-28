@@ -29,6 +29,7 @@ script:
     - docker info
     - docker-compose exec php /var/www/test/runAllTests.sh
     - cd ..; cd ..; ./ci/package-code.sh
+    - docker build -t test/test .
 
 deploy:
   provider: releases
