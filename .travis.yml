@@ -4,7 +4,6 @@ services:
 
 env:
   COMPOSE_VERSION: 1.12.0
-  REPO: opencats/opencats
 
 before_install:
     - sudo apt-get update -qq
@@ -22,12 +21,9 @@ script:
     - docker ps
     - cd code; composer install; cd ..
     - cd code; ./vendor/bin/codecept build; cd ..
-    - export TAG=`if [ "$TRAVIS_TAG" != "" ]; then echo $TRAVIS_TAG; elif [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
-    - docker build -f Dockerfile -t $REPO:$TAG .
     - cd docker/; docker-compose -f docker-compose-unittest.yml up -d; cd ..
     - docker exec -ti docker_unittestphp_1 /var/www/test/runUnitTests.sh
     - cd docker/; docker-compose -f docker-compose-unittest.yml down; cd ..
-    - docker build -t opencats/opencats:$TRAVIS_COMMIT .
     - cd docker/env-test; docker-compose up -d
     - docker --version
     - docker info
@@ -54,14 +50,3 @@ addons:
     working_dir: WORKING_DIR
     bucket: opencats
     s3_region: us-east-1
-
-env:
-  global:
-    - secure: "Lu0LkbmyCFTAFrhcrRltcDn5kwKIynjclTxdta3Wj5lPvntSC8tdDaUBl0u3ZxHgdQIuS4YqB4aPVO9zkdvScnwPcLILOyhVT7YH8hnasVddA51ctDaNQrHSK7jeCPDaeKnvpXMlnKdVqFbcS03/vU5y072M5kb1rXO/UPYu3P+N68GhZJKuTcuQgat3rJ5IiegphFL7jmzDapWtT/t8ibnVMj8wmOr97XuoKsOR/6cpnxI1uABfATCYBIkxyepUlTdKn85lj2mLRtHRy0rsh23Kl7rhUL3WIeFkC5Ja9V3I5wIXn6VgMxIfCwrIzUoxgbd8wJxfbiK/4wvj0Oul5L0p1vKkt5waa2Wl+HBsL/1hA1xn/dzH0ON/5QFhC/tDSA3t+jrgNYOHSChcE/yYz9g6w9uBwj/TVgqRUJtMfmc1I8T9SVQn9wz8qb5C96siHRjYTU3fvCZ+2+yAhHbLZGZSgr/jVw0jeBbCPY8cZMzgS4EGoJC/qnKCbZ7sdcQd85+qHINPBn7OvWmZZSuO08nzta0Lp6tfyZ54/fx2SgFTsjU4w67URNabYzEFLfv/MQLp7fqfILLuuac83/1ZMW24oyLbGroDutbWwdh4VARrz+roML2qHnpqcQ46e2jYRRY0n8rFoAQN7pGIVDuqXC+4ijl0C0CNdnN1u44ibQk=" # DOCKER_EMAIL
-    - secure: "nKqpeeR0z37aWROoVyQL94qLuiBwB0X/qykGMPTdcZbDeeqdtlD0QYtPExKVfVC5f18V/PKOA5gQj7pO2Qfpr0BivxUyxqfWJ5hThrFW2s8C20z5BwTbXoLWvU5nebfelurZJQlWw41GAoCQSO+W+9IK0gu2pD5ETpMz7/lLCHUo6f2vGG7RpqI0jeZ8/f1wKnvjv58Qt+Bxj+g+QeC7/WT4lCHQMdFpQzHwug8fHzEBiCjXIJ9ZSrpGS0y5eMKqQG9Mh/5In23QCGRnm7E97eTV3e638Et2wyCyAvgedycDflMgVNylj8U3AQLMzRKKiyUVJs05zHJQRMvOeNjVWZUM9jivbgHC82KD1VIvZw+CK8JY/4ZRTKwecmhSfoNsKxyWA97dr6H2Tj3VQraVMdoITd+6PSOX8B8JOTNBBIaq/S/aQXhoQNAZ6i0DyV2o/ohqFF8/El1UvOvI7E7ZoIYNOL5i5EfaXkhh+FNxwnhXti9JApMXM8dU2XpGBI3DuZrhMzJp00ZUo68avj6Ac3zQaQ511QjN/wDqQ+IYKmR9Xhhm5hw+x3Yurrrb2rsVBmr4xig+/ti1qa5N5UjKuTqqpK3GGqccMnX3o21167lRxE74pnpLJwIXmqL/fNhlEGNZ/yPd5Kuy1WFbESkUnivdzKWEM5mk/mrAkGB1VE0=" # DOCKER_USER
-    - secure: "khUY15znLe25zS0b8ChGNKLnnZ12JCZptONI9ygkQkVJBlr1G38suJl//soQkP++/vRnKgP8qh1B8Rl8xm9si8LyTiM4uEcyvzEj0keDHjY+Z3ZaxDgli4MKx2aCK8ebNa8S1cwEb9Mimcu22AN0ORsSsTX64/8Ycl9QT+tt99FjMltXHlH+NF44tIjzS+nDZrgjd9x433fn0YbXIpNM8wqQzU2LZWWsVgg952JxYvavkYt0ZCzHWmtZXK05aMJ2/MbqGQtyjy/d1d/Eg1cZAi9MZ5JKWK32tuq57aDyGNJ21N9PNQTaGPAlBqFQwuxDWcLkHzmN6hEVERZvf1ItAYpeJrIsgBDmDEgDc1m/tenTRm1lPDzMgnuducGf0kewk6Yy5AtvXnVBVIqh4hQuwGBpPx4dH1tzPW82+iW/tCd0WN+Y8qWXr/VqKO+Sqo0hUSNF5TpEFwHZ/RUvGn5W6rzojLUWxV0nDJl7c+RLp6P4D42KoavQpU5XXn6tGSOf3FkXN7GqOXlPaSCnesfBAYVM6ZvGLz29WbZv/C4lx/vHlEpRspZn3SzBfmTCvwbqhKhByb27Zw4/ga6stV3lmtbtp23IkXZbbftBPiVYXcWLcbvGRldwMaAMSNvEt03JdqbVZWS8sBxuvD08GyCvSGhnQE+8lS6JhD3MUCaRkfc=" # DOCKER_PASS
-    - COMMIT=${TRAVIS_COMMIT::8}
-
-after_success:
-  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-  - docker push $REPO
