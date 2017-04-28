@@ -4,7 +4,6 @@ services:
 
 env:
   COMPOSE_VERSION: 1.12.0
-  REPO: opencats/opencats
 
 before_install:
     - sudo apt-get update -qq
@@ -23,7 +22,7 @@ script:
     - cd code; composer install; cd ..
     - cd code; ./vendor/bin/codecept build; cd ..
     - export TAG=`if [ "$TRAVIS_TAG" != "" ]; then echo $TRAVIS_TAG; elif [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
-    - docker build -f Dockerfile -t $REPO:$TAG .
+    - docker build -f Dockerfile -t opencats/opencats:$TAG .
     - cd docker/; docker-compose -f docker-compose-unittest.yml up -d; cd ..
     - docker exec -ti docker_unittestphp_1 /var/www/test/runUnitTests.sh
     - cd docker/; docker-compose -f docker-compose-unittest.yml down; cd ..
@@ -64,4 +63,4 @@ env:
 
 after_success:
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-  - docker push $REPO
+  - docker push opencats/opencats
