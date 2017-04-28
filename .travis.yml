@@ -61,4 +61,4 @@ addons:
 
 after_success:
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-  - docker push opencats
+  - docker push opencats/opencats:0.9.5
