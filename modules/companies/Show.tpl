@@ -1,5 +1,5 @@
 <?php /* $Id: Show.tpl 3582 2007-11-12 22:58:48Z brian $ */
-include_once('./vendor/autoload.php');
+include_once(LEGACY_ROOT . '/code/vendor/autoload.php');
 use OpenCATS\UI\QuickActionMenu;
 ?>
 <?php TemplateUtility::printHeader('Company - '.$this->data['name'], array( 'js/sorttable.js', 'js/attachment.js')); ?>

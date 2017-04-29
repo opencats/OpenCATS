@@ -1,6 +1,6 @@
 <?php /* $Id: Show.tpl 3444 2007-11-06 23:16:27Z will $
 */
-include_once('./vendor/autoload.php');
+include_once(LEGACY_ROOT . '/code/vendor/autoload.php');
 use OpenCATS\UI\QuickActionMenu;
 ?>
 <?php TemplateUtility::printHeader('Contact - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js', 'js/attachment.js')); ?>
