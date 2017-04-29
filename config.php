@@ -256,7 +256,7 @@ define('CACHE_MODULES', false);
  * by distance from a zipcode.
  */
 
-define('US_ZIPS_ENABLED', false);
+define('US_ZIPS_ENABLED', $_ENV['US_ZIPS_ENABLED']);
 
 /* LDAP Configuration
  */
