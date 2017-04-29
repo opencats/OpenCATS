@@ -59,5 +59,5 @@ addons:
     s3_region: us-east-1
 
 after_success:
-  - docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+  - docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
   - docker push opencats/opencats:0.9.5
