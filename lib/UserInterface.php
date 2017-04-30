@@ -253,7 +253,7 @@ class UserInterface
         $this->_template->assign('active', $this);
         $this->_template->assign('errorMessage', $error);
         $this->_template->display(
-            './modules/' . $moduleDirectory . '/Error.tpl'
+            'modules/' . $moduleDirectory . '/Error.tpl'
         );
 
         $getArray = array();

@@ -1,16 +1,16 @@
 <?php /* $Id: Administration.tpl 3722 2007-11-27 21:49:36Z andrew $ */ ?>
-<?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js')); ?>
+<?php TemplateUtility::printHeader('Settings', array('js/settings/validator.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <style>
 #profButton {
-    background: #E7EFFF url(images/profButton.jpg);
+    background: #E7EFFF url(/images/profButton.jpg);
     width: 169px;
     height: 34px;
     cursor: pointer;
     margin-top: 20px;
 }
 #profButton:hover {
-    background: #E7EFFF url(images/profButton-o.jpg);
+    background: #E7EFFF url(/images/profButton-o.jpg);
 }
 </style>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>

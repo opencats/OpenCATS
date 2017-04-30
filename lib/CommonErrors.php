@@ -30,7 +30,7 @@
  * @version    $Id: CommonErrors.php 3784 2007-12-03 21:57:10Z brian $
  */
 
-include_once('./lib/Mailer.php');
+include_once(LEGACY_ROOT . '/lib/Mailer.php');
 
 define('COMMONERROR_PERMISSION',                            1);
 define('COMMONERROR_NOTLOGGEDIN',                           2);
@@ -277,7 +277,7 @@ class CommonErrors
         $template->assign('errorTitle', $errorTitle);
         $template->assign('errorMessage', $errorMessage);
         $template->assign('modal', $modal);
-        $template->display('./modules/home/FriendlyError.tpl');
+        $template->display('modules/home/FriendlyError.tpl');
         die();
     }
 

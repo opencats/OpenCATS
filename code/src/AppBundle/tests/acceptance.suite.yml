@@ -1,0 +1,16 @@
+class_name: AcceptanceTester
+modules:
+    enabled:
+        - WebDriver:
+            url: 'http://opencats/' # put your local url
+            host: selenium
+            browser: chrome
+        - AppBundle\Helper\Acceptance
+
+gherkin:
+    contexts:
+        default:
+            - AppBundle\AcceptanceTester
+        #tag:
+        #    security:
+        #        - AppBundle\Step\Acceptance\Security

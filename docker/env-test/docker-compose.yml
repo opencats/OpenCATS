@@ -1,0 +1,54 @@
+version: '3'
+services:
+    opencats:
+      container_name: opencats_test_web
+      image: opencats/base:0.1.0
+      volumes:
+        - ../..:/var/www/
+        - ../../test/INSTALL_BLOCK:/var/www/INSTALL_BLOCK
+      ports:
+          - "80:80"
+      env_file:
+           - .env
+      environment:
+       - NGINX_HOST=opencats
+       - NGINX_HTTP_PORT=80
+       - NGINX_HTTPS_PORT=443
+       - PHP_FRONT_CONTROLLER=app
+      links:
+        - opencatsdb
+
+    opencatsdb:
+      container_name: opencats_test_mariadb
+      image: mariadb
+      ports:
+        - 3306
+      environment:
+        - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+        - MYSQL_USER=$MYSQL_USER
+        - MYSQL_PASSWORD=$MYSQL_PASSWORD
+        - MYSQL_DATABASE=$MYSQL_DATABASE
+      volumes:
+        - ../../test/data/:/test/data/
+        - ../../test/scripts/:/test/scripts
+        - ../../test/data/test.sql:/docker-entrypoint-initdb.d/000_initDB.sql
+        - ../../test/data/securityTests.sql:/docker-entrypoint-initdb.d/001_addUsers.sql
+
+    integrationtestdb:
+      image: mariadb
+      ports:
+        - 3306
+      env_file:
+           - .env
+      environment:
+        - MYSQL_DATABASE=cats_integrationtest
+
+    selenium:
+      container_name: selenium_test
+      image: selenium/standalone-chrome:2.53.1
+      environment:
+        # Required to avoid container startup hanging sometimes in
+        # some environments
+        JAVA_OPTS: -Djava.security.egd=file:/dev/./urandom
+      ports:
+        - 4444:4444

@@ -8,7 +8,7 @@
         <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
         <link rel="alternate" type="application/rss+xml" title="RSS" href="<?php echo(CATSUtility::getIndexName()); ?>?m=rss&amp;siteID=<?php echo($_SESSION['CATS']->getSiteID()); ?>" />
-        <style type="text/css" media="all">@import "main.css";</style>
+        <style type="text/css" media="all">@import "css/main.css";</style>
         <script type="text/javascript" src="js/lib.js"></script>
         <style type="text/css">
         div.outer

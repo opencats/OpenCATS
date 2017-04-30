@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=<?php echo(HTML_ENCODING); ?>">
-        <style type="text/css" media="all">@import "main.css";</style>
+        <style type="text/css" media="all">@import "css/main.css";</style>
         <style type="text/css" media="all">
             body
             {

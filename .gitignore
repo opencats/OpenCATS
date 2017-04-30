@@ -6,3 +6,11 @@ docker/data/*
 docker/persist/*
 vendor/*
 attachments/*
+code/tests/_output/*
+code/var/*
+code/vendor/*
+code/src/AppBundle/tests/_output/*
+code/src/AppBundle/tests/_support/_generated/*
+.idea/*
+supervisord.log
+supervisord.pid

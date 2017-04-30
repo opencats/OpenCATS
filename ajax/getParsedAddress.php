@@ -27,9 +27,9 @@
  * $Id: getParsedAddress.php 2492 2007-05-25 21:12:47Z will $
  */
 
-include_once('./lib/StringUtility.php');
-include_once('./lib/AddressParser.php');
-include_once('./lib/ResultSetUtility.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/lib/AddressParser.php');
+include_once(LEGACY_ROOT . '/lib/ResultSetUtility.php');
 
 
 $interface = new AJAXInterface();

@@ -31,10 +31,10 @@
  */
 
 
-include_once('./lib/FileUtility.php');
-include_once('./lib/DocumentToText.php');
-include_once('./lib/DatabaseSearch.php');
-include_once('./lib/Hooks.php');
+include_once(LEGACY_ROOT . '/lib/FileUtility.php');
+include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseSearch.php');
+include_once(LEGACY_ROOT . '/lib/Hooks.php');
 
 /**
  *	Attachments Library

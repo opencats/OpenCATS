@@ -36,7 +36,8 @@
 
 /*************** ADD NEW TASKS HERE (scheduling is set inside the task) ****************/
 
-include_once('config.php');
+include_once(LEGACY_ROOT . '/config.php');
+include_once(LEGACY_ROOT . '/modules/asp/lib/ASPUtility.php');
 
 QueueProcessor::registerRecurringTask('CleanExceptions');
 

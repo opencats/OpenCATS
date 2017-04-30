@@ -34,4 +34,4 @@ if (file_exists('./modules.cache'))
 
 $maintPage = true;
 
-include_once('index.php');
+include_once(LEGACY_ROOT . '/index.php');

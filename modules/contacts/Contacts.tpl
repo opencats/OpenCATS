@@ -3,8 +3,8 @@
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <style type="text/css">
-    div.addContactsButton { background: #4172E3 url(images/nodata/contactsButton.jpg); cursor: pointer; width: 337px; height: 67px; }
-    div.addContactsButton:hover { background: #4172E3 url(images/nodata/contactsButton-o.jpg); cursor: pointer; width: 337px; height: 67px; }
+    div.addContactsButton { background: #4172E3 url(/images/nodata/contactsButton.jpg); cursor: pointer; width: 337px; height: 67px; }
+    div.addContactsButton:hover { background: #4172E3 url(/images/nodata/contactsButton-o.jpg); cursor: pointer; width: 337px; height: 67px; }
     </style>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
@@ -86,7 +86,7 @@
             <?php else: ?>
 
             <br /><br /><br /><br />
-            <div style="height: 95px; background: #E6EEFF url(images/nodata/contactsTop.jpg);">
+            <div style="height: 95px; background: #E6EEFF url(/images/nodata/contactsTop.jpg);">
                 &nbsp;
             </div>
             <br /><br />

@@ -27,8 +27,8 @@
  * $Id: attachmentsToThreeDirectory.php 2336 2007-04-14 22:01:51Z will $
  */
 
-include_once('./config.php');
-include_once('./lib/DatabaseConnection.php');
+include_once(LEGACY_ROOT . '/config.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
 
 $interface = new SecureAJAXInterface();
 
@@ -40,11 +40,11 @@ if ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) < ACCESS_LEVEL_ROOT)
 set_time_limit(0);
 @ini_set('memory_limit', '256M');
 
-include_once('lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
 
 $db = DatabaseConnection::getInstance();
  
-include_once('lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
 
 $db->query('ALTER IGNORE TABLE `attachment` CHANGE `directory_name` `directory_name` VARCHAR(64);');
  

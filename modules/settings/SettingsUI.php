@@ -27,26 +27,26 @@
  * $Id: SettingsUI.php 3810 2007-12-05 19:13:25Z brian $
  */
 
-include_once('./lib/LoginActivity.php');
-include_once('./lib/NewVersionCheck.php');
-include_once('./lib/Candidates.php');
-include_once('./lib/Companies.php');
-include_once('./lib/Contacts.php');
-include_once('./lib/Graphs.php');
-include_once('./lib/Site.php');
-include_once('./lib/ListEditor.php');
-include_once('./lib/SystemUtility.php');
-include_once('./lib/Mailer.php');
-include_once('./lib/EmailTemplates.php');
-include_once('./lib/License.php');
-include_once('./lib/History.php');
-include_once('./lib/Pipelines.php');
-include_once('./lib/CareerPortal.php');
-include_once('./lib/WebForm.php');
-include_once('./lib/CommonErrors.php');
-include_once('./lib/Import.php');
-include_once('./lib/Questionnaire.php');
-include_once('./lib/Tags.php');
+include_once(LEGACY_ROOT . '/lib/LoginActivity.php');
+include_once(LEGACY_ROOT . '/lib/NewVersionCheck.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/Companies.php');
+include_once(LEGACY_ROOT . '/lib/Contacts.php');
+include_once(LEGACY_ROOT . '/lib/Graphs.php');
+include_once(LEGACY_ROOT . '/lib/Site.php');
+include_once(LEGACY_ROOT . '/lib/ListEditor.php');
+include_once(LEGACY_ROOT . '/lib/SystemUtility.php');
+include_once(LEGACY_ROOT . '/lib/Mailer.php');
+include_once(LEGACY_ROOT . '/lib/EmailTemplates.php');
+include_once(LEGACY_ROOT . '/lib/License.php');
+include_once(LEGACY_ROOT . '/lib/History.php');
+include_once(LEGACY_ROOT . '/lib/Pipelines.php');
+include_once(LEGACY_ROOT . '/lib/CareerPortal.php');
+include_once(LEGACY_ROOT . '/lib/WebForm.php');
+include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
+include_once(LEGACY_ROOT . '/lib/Import.php');
+include_once(LEGACY_ROOT . '/lib/Questionnaire.php');
+include_once(LEGACY_ROOT . '/lib/Tags.php');
 eval(Hooks::get('XML_FEED_SUBMISSION_SETTINGS_HEADERS'));
 
 /* Users.php is included by index.php already. */
@@ -655,7 +655,7 @@ class SettingsUI extends UserInterface
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
 
-                include_once('./lib/BrowserDetection.php');
+                include_once(LEGACY_ROOT . '/lib/BrowserDetection.php');
 
                 $this->loginActivity();
                 break;
@@ -2720,11 +2720,7 @@ class SettingsUI extends UserInterface
                         . 'Re-install PHP with the --enable-soap configuration option.<br /><br />'
                         . 'Please visit http://www.catsone.com for more support options.';
                 }
-                if (!LicenseUtility::validateProfessionalKey($key))
-                {
-                    $message = 'That is not a valid Professional membership key<br /><span style="font-size: 16px; color: #000000;">Please verify that you have the correct key and try again.</span>';
-                }
-                else if (!CATSUtility::changeConfigSetting('LICENSE_KEY', "'" . $key . "'"))
+                if (!CATSUtility::changeConfigSetting('LICENSE_KEY', "'" . $key . "'"))
                 {
                     $message = 'Internal Permissions Error<br /><span style="font-size: 12px; color: #000000;">CATS is unable '
                         . 'to write changes to your <b>config.php</b> file. Please change the file permissions or contact us '
@@ -3108,17 +3104,6 @@ class SettingsUI extends UserInterface
                             . "Please visit http://www.catsone.com for more support options.";
                         return;
                     }
-                    else
-                    {
-                        if (!LicenseUtility::validateProfessionalKey($key))
-                        {
-                            echo "That is not a valid CATS Professional license key. Please visit "
-                                . "http://www.catsone.com/professional for more information about CATS Professional.\n\n"
-                                . "For a free open-source key, please visit http://www.catsone.com/ and "
-                                . "click on \"Downloads\".";
-                            return;
-                        }
-                    }
                 }
 
                 if (CATSUtility::changeConfigSetting('LICENSE_KEY', "'" . $key . "'"))
@@ -3341,7 +3326,7 @@ class SettingsUI extends UserInterface
             // session. Postback will handle saves.
             if (!isset($_SESSION['CATS_QUESTIONNAIRE']) || empty($_SESSION['CATS_QUESTIONNAIRE']))
             {
-                CommonErrors::fatal(COMMONERROR_BADINDEX, 'Please return to your careers website '
+                CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Please return to your careers website '
                     . 'and load the questionnaire a second time as your session has '
                     . 'expired.');
             }
@@ -3371,7 +3356,7 @@ class SettingsUI extends UserInterface
     {
         if (!isset($_SESSION['CATS_QUESTIONNAIRE']) || empty($_SESSION['CATS_QUESTIONNAIRE']))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, 'Please return to your careers website '
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Please return to your careers website '
                 . 'and load the questionnaire a second time as your session has '
                 . 'expired.');
         }

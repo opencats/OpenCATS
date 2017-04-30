@@ -3,8 +3,8 @@
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <style type="text/css">
-    div.addCompaniesButton { background: #4172E3 url(images/nodata/companiesButton.jpg); cursor: pointer; width: 337px; height: 67px; }
-    div.addCompaniesButton:hover { background: #4172E3 url(images/nodata/companiesButton-o.jpg); cursor: pointer; width: 337px; height: 67px; }
+    div.addCompaniesButton { background: #4172E3 url(/images/nodata/companiesButton.jpg); cursor: pointer; width: 337px; height: 67px; }
+    div.addCompaniesButton:hover { background: #4172E3 url(/images/nodata/companiesButton-o.jpg); cursor: pointer; width: 337px; height: 67px; }
     </style>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>

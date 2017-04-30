@@ -32,16 +32,16 @@ set_time_limit(300);
 
 /* SimpleTest */
 error_reporting(E_ALL); /* Simpletest doesn't work with E_STRICT. */
-require_once('lib/simpletest/web_tester.php');
-require_once('lib/simpletest/unit_tester.php');
-require_once('lib/simpletest/reporter.php');
-require_once('lib/simpletest/form.php');
+require_once(LEGACY_ROOT . '/lib/simpletest/web_tester.php');
+require_once(LEGACY_ROOT . '/lib/simpletest/unit_tester.php');
+require_once(LEGACY_ROOT . '/lib/simpletest/reporter.php');
+require_once(LEGACY_ROOT . '/lib/simpletest/form.php');
 
 /* CATS Test Framework. */
-include_once('./modules/tests/CATSTestReporter.php');
-include_once('./modules/tests/CATSWebTestCase.php');
-include_once('./modules/tests/CATSAJAXTestCase.php');
-include_once('./modules/tests/TestCaseList.php');
+include_once(LEGACY_ROOT . '/modules/tests/CATSTestReporter.php');
+include_once(LEGACY_ROOT . '/modules/tests/CATSWebTestCase.php');
+include_once(LEGACY_ROOT . '/modules/tests/CATSAJAXTestCase.php');
+include_once(LEGACY_ROOT . '/modules/tests/TestCaseList.php');
 
 
 class TestsUI extends UserInterface

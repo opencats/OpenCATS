@@ -1,5 +1,5 @@
 <?php /* $Id: Add.tpl 3810 2007-12-05 19:13:25Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Job Orders', array('modules/joborders/validator.js',  'js/company.js', 'js/sweetTitles.js', 'js/suggest.js', 'js/joborder.js', 'js/lib.js', 'js/listEditor.js', 'ckeditor/ckeditor.js')); ?>
+<?php TemplateUtility::printHeader('Job Orders', array('js/joborders/validator.js',  'js/company.js', 'js/sweetTitles.js', 'js/suggest.js', 'js/joborder.js', 'js/lib.js', 'js/listEditor.js', 'ckeditor/ckeditor.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">
@@ -109,7 +109,7 @@
                             </td>
                             <td class="tdData">
                                 <select tabindex="3" id="contactID" name="contactID" class="inputbox" style="width: 150px;">
-                                    <option value="-1">None</option>
+                                    <option value="-1" selected="selected">None</option>
 
                                     <?php if ($this->selectedCompanyID !== false): ?>
                                         <?php foreach ($this->selectedCompanyContacts as $rowNumber => $contactsData): ?>
@@ -302,7 +302,7 @@
                             <?php endif; ?>
                         </tr>
                     </table>
-                    <input type="submit" tabindex="20" class="button" name="submit" value="Add Job Order" />&nbsp;
+                    <input type="submit" tabindex="20" class="button" name="submit" value="Save Job Order" />&nbsp;
                     <input type="reset"  tabindex="21" class="button" name="reset"  value="Reset" />&nbsp;
                     <input type="button" tabindex="22" class="button" name="back"   value="Back to Job Orders" onclick="javascript:goToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=listByView');" />
                 </form>

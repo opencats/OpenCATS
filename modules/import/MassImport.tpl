@@ -2,7 +2,7 @@
 <?php TemplateUtility::printHeader('Settings', array('js/massImport.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, '', 'settings'); ?>
-<link rel="stylesheet" type="text/css" href="modules/import/MassImport.css" />
+<link rel="stylesheet" type="text/css" href="css/import/MassImport.css" />
     <div id="main">
         <div id="contents">
             <div style="width: 880px; padding: 15px;">

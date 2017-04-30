@@ -27,8 +27,8 @@
  * $Id: getCompanyNames.php 2367 2007-04-23 23:24:05Z will $
  */
 
-include_once('./lib/Companies.php');
-include_once('./lib/Search.php');
+include_once(LEGACY_ROOT . '/lib/Companies.php');
+include_once(LEGACY_ROOT . '/lib/Search.php');
 
 
 $interface = new SecureAJAXInterface();
@@ -56,36 +56,35 @@ $companiesArray = $search->byName($dataName, 'company.name', 'ASC');
 if (empty($companiesArray))
 {
     $interface->outputXMLErrorPage(-2, 'No companies data.');
-    die();
-}
-
-$output =
-    "<data>\n" .
-    "    <errorcode>0</errorcode>\n" .
-    "    <errormessage></errormessage>\n" .
-    "    <totalelements>" . count($companiesArray) . "</totalelements>\n";
-
-$arrayCounter = 0;
-foreach ($companiesArray as $rowIndex => $row)
+} else
 {
-    $arrayCounter++;
+    $output =
+        "<data>\n" .
+        "    <errorcode>0</errorcode>\n" .
+        "    <errormessage></errormessage>\n" .
+        "    <totalelements>" . count($companiesArray) . "</totalelements>\n";
 
-    if ($arrayCounter > $maxResults)
+    $arrayCounter = 0;
+    foreach ($companiesArray as $rowIndex => $row)
     {
-        break;
+        $arrayCounter++;
+
+        if ($arrayCounter > $maxResults)
+        {
+            break;
+        }
+
+        $output .=
+            "    <result>\n" .
+            "        <id>"   . $companiesArray[$rowIndex]['companyID'] . "</id>\n" .
+            "        <name>" . rawurlencode($companiesArray[$rowIndex]['name']) . "</name>\n" .
+            "    </result>\n";
     }
 
     $output .=
-        "    <result>\n" .
-        "        <id>"   . $companiesArray[$rowIndex]['companyID'] . "</id>\n" .
-        "        <name>" . rawurlencode($companiesArray[$rowIndex]['name']) . "</name>\n" .
-        "    </result>\n";
+        "</data>\n";
+
+    /* Send back the XML data. */
+    $interface->outputXMLPage($output);
 }
-
-$output .=
-    "</data>\n";
-
-/* Send back the XML data. */
-$interface->outputXMLPage($output);
-
 ?>

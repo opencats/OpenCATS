@@ -31,8 +31,8 @@
  */
 
 // FIXME: Why is this being reincluded here?
-include_once('./config.php');
-include_once('./lib/FileUtility.php');
+include_once(LEGACY_ROOT . '/config.php');
+include_once(LEGACY_ROOT . '/lib/FileUtility.php');
 
 /**
  *	General Utility Library
@@ -308,8 +308,8 @@ class CATSUtility
         {
             return 'index.php';
         }
-
-        $parts = explode('/', $_SERVER['PHP_SELF']);
+        $sections = explode('?', $_SERVER['REQUEST_URI']);
+        $parts = explode('/', $sections[0]);
         $index = end($parts);
 
         /* Handle ajax.php. */

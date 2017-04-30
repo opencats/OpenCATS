@@ -7,7 +7,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=<?php echo(HTML_ENCODING); ?>">
         <style type="text/css" media="all">@import "modules/login/login.css";</style>
         <script type="text/javascript" src="js/lib.js"></script>
-        <script type="text/javascript" src="modules/login/validator.js"></script>
+        <script type="text/javascript" src="js/login/validator.js"></script>
     </head>
 
     <body>

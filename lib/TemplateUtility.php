@@ -35,10 +35,10 @@
  * @version    $Id: TemplateUtility.php 3835 2007-12-12 19:08:38Z brian $
  */
 
-include_once('./vendor/autoload.php');
-include_once('Candidates.php');
-include_once('DateUtility.php');
-include_once('SystemInfo.php');
+include_once(LEGACY_ROOT . '/vendor/autoload.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+include_once(LEGACY_ROOT . '/lib/SystemInfo.php');
 
 use OpenCATS\UI\QuickActionMenu;
 
@@ -553,7 +553,7 @@ class TemplateUtility
 
         echo '<iframe src="js/submodal/loading.html" style="width: 100%; height: 100%;',
              ' background-color: transparent; display: none;" scrolling="auto"',
-             ' frameborder="0" allowtransparency="true" id="popupFrameIFrame"',
+             ' frameborder="0" allowtransparency="true" id="popupFrameIFrame" name="popupFrameIFrame"',
              ' width="100%" height="100%"></iframe>';
 
         echo '</div></div>';
@@ -745,7 +745,7 @@ class TemplateUtility
                     else if (strpos($link, 'a=internalPostings') !== false)
                     {
                         /* Default company subtab. */
-                        include_once('./lib/Companies.php');
+                        include_once(LEGACY_ROOT . '/lib/Companies.php');
 
                         $companies = new Companies($_SESSION['CATS']->getSiteID());
                         $defaultCompanyID = $companies->getDefaultCompany();
@@ -838,14 +838,6 @@ class TemplateUtility
 
         echo '</body>', "\n";
         echo '</html>', "\n";
-
-        if (LicenseUtility::isProfessional() && !rand(0,10))
-        {
-            if (!LicenseUtility::validateProfessionalKey(LICENSE_KEY))
-            {
-                CATSUtility::changeConfigSetting('LICENSE_KEY', "''");
-            }
-        }
     }
 
     /**
@@ -1194,7 +1186,7 @@ class TemplateUtility
         echo '<script type="text/javascript" src="js/jquery-1.3.2.min.js'.$javascriptAntiCache.'"></script>', "\n";
         echo '<script type="text/javascript">CATSIndexName = "'.CATSUtility::getIndexName().'";</script>', "\n";
 
-       $headIncludes[] = 'main.css';
+       $headIncludes[] = 'css/main.css';
 
         foreach ($headIncludes as $key => $filename)
         {
@@ -1212,8 +1204,8 @@ class TemplateUtility
             }
         }
 
-        echo '<!--[if IE]><link rel="stylesheet" type="text/css" href="ie.css" /><![endif]-->', "\n";
-        echo '<![if !IE]><link rel="stylesheet" type="text/css" href="not-ie.css" /><![endif]>', "\n";
+        echo '<!--[if IE]><link rel="stylesheet" type="text/css" href="css/ie.css" /><![endif]-->', "\n";
+        echo '<![if !IE]><link rel="stylesheet" type="text/css" href="css/not-ie.css" /><![endif]>', "\n";
         echo '</head>', "\n\n";
     }
 

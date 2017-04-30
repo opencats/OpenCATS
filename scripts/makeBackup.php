@@ -54,10 +54,10 @@ if (isset($_SERVER['argv'][1]))
     $CATSHome = realpath(dirname(__FILE__) . '/../');
     chdir($CATSHome);
 
-    include_once('./config.php');
-    include_once('./constants.php');
-    include_once('./lib/DatabaseConnection.php');
-    include_once('modules/install/backupDB.php');
+    include_once(LEGACY_ROOT . '/config.php');
+    include_once(LEGACY_ROOT . '/constants.php');
+    include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
+    include_once(LEGACY_ROOT . '/modules/install/backupDB.php');
 
     makeBackup((int) $_SERVER['argv'][1], BACKUP_CATS);
 }
@@ -67,10 +67,10 @@ else if(php_sapi_name() == 'cli')
     fwrite($stderr, "Site ID is usually 1.\n");
 }
 
-include_once('./config.php');
-include_once('./constants.php');
-include_once('./lib/DatabaseConnection.php');
-include_once('modules/install/backupDB.php');
+include_once(LEGACY_ROOT . '/config.php');
+include_once(LEGACY_ROOT . '/constants.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
+include_once(LEGACY_ROOT . '/modules/install/backupDB.php');
 
 function makeBackup($siteID, $backupType = BACKUP_TAR, $logFile = null)
 {
@@ -274,7 +274,7 @@ function dumpAttachments($db, $directory, $siteID)
 
         if (file_exists('modules/s3storage'))
         {
-            include_once('modules/s3storage/lib.php');
+            include_once(LEGACY_ROOT . '/modules/s3storage/lib.php');
 
             $s3storage = new S3Storage();
             $s3storage->getTemporarilyFromS3Storage($row['attachment_id']);

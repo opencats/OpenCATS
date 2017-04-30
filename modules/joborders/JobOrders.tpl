@@ -3,8 +3,8 @@
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <style type="text/css">
-    div.addJobOrderButton { background: #4172E3 url(images/nodata/jobOrdersButton.jpg); cursor: pointer; width: 337px; height: 67px; }
-    div.addJobOrderButton:hover { background: #4172E3 url(images/nodata/jobOrdersButton-o.jpg); cursor: pointer; width: 337px; height: 67px; }
+    div.addJobOrderButton { background: #4172E3 url(/images/nodata/jobOrdersButton.jpg); cursor: pointer; width: 337px; height: 67px; }
+    div.addJobOrderButton:hover { background: #4172E3 url(/images/nodata/jobOrdersButton-o.jpg); cursor: pointer; width: 337px; height: 67px; }
     </style>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
@@ -17,8 +17,6 @@
                         <img src="images/job_orders.gif" width="24" height="24" border="0" alt="Job Orders" style="margin-top: 3px;" />&nbsp;
                     </td>
                     <td><h2>Job Orders: Home</h2></td>
-
-                    <?php TemplateUtility::printPopupContainer(); ?>
 
                     <td align="right">
                         <form name="jobOrdersViewSelectorForm" id="jobOrdersViewSelectorForm" action="<?php echo(CATSUtility::getIndexName()); ?>" method="get">
@@ -100,7 +98,7 @@
             <?php else: ?>
 
             <br /><br /><br /><br />
-            <div style="height: 95px; background: #E6EEFF url(images/nodata/jobOrdersTop.jpg);">
+            <div style="height: 95px; background: #E6EEFF url(/images/nodata/jobOrdersTop.jpg);">
                 &nbsp;
             </div>
             <br /><br />
