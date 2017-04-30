@@ -35,7 +35,7 @@ script:
     - cd docker/env-test; docker-compose up -d
     - docker --version
     - docker info
-    - docker-compose exec php /var/www/test/runAllTests.sh
+    - docker-compose exec opencats /var/www/test/runAllTests.sh
     - cd ..; cd ..; ./ci/package-code.sh
 
 deploy:
