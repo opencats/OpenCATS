@@ -3,7 +3,7 @@
  * CATS
  * Contacts Datagrid
  *
- * CATS Version: 0.9.3 Inferno
+ * CATS Version: 0.9.4 Countach
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
@@ -133,8 +133,8 @@ class ActivityDataGrid extends DataGrid
                                      'pagerWidth'      => 240,
                                      'pagerOptional'   => true,
                                      'alphaNavigation' => true,
-                                     'filterHaving'    => 'activity.notes'),  
-                                     
+                                     'filter'    => 'activity.notes'),
+
             'Entered By' =>         array(
                                      'pagerRender'      => 'return StringUtility::makeInitialName($rsData[\'enteredByFirstName\'], $rsData[\'enteredByLastName\'], false, LAST_NAME_MAXLEN);',
                                      'exportRender'     => 'return $rsData[\'enteredByFirstName\'] . " " .$rsData[\'enteredByLastName\'];',
