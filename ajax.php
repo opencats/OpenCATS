@@ -36,11 +36,11 @@
 
 
 include_once('./config.php');
-include_once('./constants.php');
-include_once('./lib/DatabaseConnection.php');
-include_once('./lib/Session.php'); /* Depends: MRU, Users, DatabaseConnection. */
-include_once('./lib/AJAXInterface.php');
-include_once('./lib/CATSUtility.php');
+include_once(LEGACY_ROOT . '/constants.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
+include_once(LEGACY_ROOT . '/lib/Session.php'); /* Depends: MRU, Users, DatabaseConnection. */
+include_once(LEGACY_ROOT . '/lib/AJAXInterface.php');
+include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
 
 
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
@@ -107,7 +107,7 @@ $filters = array();
 
 if (!isset($_REQUEST['nobuffer']))
 {
-    include_once('./lib/Hooks.php');
+    include_once(LEGACY_ROOT . '/lib/Hooks.php');
 
     ob_start();
     include($filename);

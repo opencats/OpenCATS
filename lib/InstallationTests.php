@@ -32,7 +32,7 @@
 
 //FIXME: Test for zlib!
 
-include_once('./lib/FileUtility.php');
+include_once(LEGACY_ROOT . '/lib/FileUtility.php');
 
 /**
  *	Installation Tests Library

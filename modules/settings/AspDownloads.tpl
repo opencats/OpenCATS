@@ -47,7 +47,7 @@ if (isset($_GET['sendDevEmail']) && !strcmp($_GET['sendDevEmail'], 'true') && fi
 {
     if (isset($_COOKIE['CATS_firefoxToolbar']) && !strcmp($_COOKIE['CATS_firefoxToolbar'], 'true')) exit(0);
 
-    include_once('./modules/asp/lib/ASPUtility.php');
+    include_once(LEGACY_ROOT . '/modules/asp/lib/ASPUtility.php');
     ASPUtility::sendDevEmail(
         'Firefox Download',
         sprintf(

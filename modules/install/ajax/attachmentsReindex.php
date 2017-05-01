@@ -26,8 +26,8 @@
  */
 
 include_once('./config.php');
-include_once('./lib/DatabaseConnection.php');
-include_once('./lib/ModuleUtility.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
+include_once(LEGACY_ROOT . '/lib/ModuleUtility.php');
 
 if (file_exists('INSTALL_BLOCK'))
 {

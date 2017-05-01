@@ -37,8 +37,8 @@
  * @version    $Id: QueueProcessor.php 3639 2007-11-16 18:02:56Z andrew $
  */
 
-include_once('./modules/queue/constants.php');
-include_once('./lib/Mailer.php');
+include_once(LEGACY_ROOT . '/modules/queue/constants.php');
+include_once(LEGACY_ROOT . '/lib/Mailer.php');
 
 /**
  *	Asynchroneous Queue Processor Library

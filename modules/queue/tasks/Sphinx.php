@@ -31,8 +31,8 @@
  * $Id: Sphinx.php 3539 2007-11-09 23:03:11Z andrew $
  */
 
-include_once('./modules/queue/lib/Task.php');
-include_once('./modules/asp/lib/ASPUtility.php');
+include_once(LEGACY_ROOT . '/modules/queue/lib/Task.php');
+include_once(LEGACY_ROOT . '/modules/asp/lib/ASPUtility.php');
 
 class Sphinx extends Task
 {

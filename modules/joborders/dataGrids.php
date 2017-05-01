@@ -32,8 +32,8 @@
  */
  
 include_once('lib/JobOrders.php');
-include_once('./lib/Hooks.php');
-include_once('./lib/Width.php');
+include_once(LEGACY_ROOT . '/lib/Hooks.php');
+include_once(LEGACY_ROOT . '/lib/Width.php');
 
 class JobOrdersListByViewDataGrid extends JobOrdersDataGrid
 {

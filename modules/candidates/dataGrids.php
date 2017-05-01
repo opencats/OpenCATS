@@ -3,7 +3,7 @@
 //TODO: License
 
 include_once('lib/Candidates.php');
-include_once('./lib/Width.php');
+include_once(LEGACY_ROOT . '/lib/Width.php');
 
 class candidatesListByViewDataGrid extends CandidatesDataGrid
 {

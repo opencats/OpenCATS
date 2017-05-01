@@ -119,7 +119,7 @@ if ($action == 'start')
 
 if ($action == 'backup')
 {
-    include_once('./lib/FileCompressor.php');
+    include_once(LEGACY_ROOT . '/lib/FileCompressor.php');
     
     /* Backups shouldn't time out. */
     set_time_limit(0);
