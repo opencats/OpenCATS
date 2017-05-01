@@ -239,6 +239,23 @@ if ($action == 'backup')
     while ($row = mysql_fetch_assoc($queryResult))
     {
         ++$attachmentCount;
+        $relativePath = sprintf(
+            'attachments/%s/%s',
+            $row['directory_name'],
+            $row['stored_filename']
+        );
+        if (!file_exists($relativePath)) {
+            setStatusBackup(
+                sprintf(
+                    'Skipping attachment that\'s missing on the file system: %s (%s of %s files processed)...',
+                    $relativePath,
+                    $attachmentCount,
+                    $totalAttachments
+                ),
+                ($attachmentCount / $totalAttachments)
+            );
+            continue;
+        }
 
         setStatusBackup(
             sprintf(
@@ -249,11 +266,7 @@ if ($action == 'backup')
             ($attachmentCount / $totalAttachments)
         );
 
-        $relativePath = sprintf(
-            'attachments/%s/%s',
-            $row['directory_name'],
-            $row['stored_filename']
-        );
+
         
         $attachmentID = $row['attachment_id'];
         
