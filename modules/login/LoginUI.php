@@ -127,8 +127,6 @@ class LoginUI extends UserInterface
             $siteName = $_SESSION['CATS']->getUnixName();
         }
 
-        $this->_template->assign('aspMode', false);
-
         if (!eval(Hooks::get('SHOW_LOGIN_FORM_PRE'))) return;
 
         /* If a site was specified, get the site's full name from its
@@ -153,8 +151,6 @@ class LoginUI extends UserInterface
             $siteNameFull = '';
         }
 
-        $this->_template->assign('aspMode', false);
-
         if (!eval(Hooks::get('SHOW_LOGIN_FORM_POST'))) return;
 
         /* Display the login page. */
@@ -167,10 +163,7 @@ class LoginUI extends UserInterface
 
         if (!eval(Hooks::get('SHOW_LOGIN_FORM_POST_2'))) return;
 
-        if (ModuleUtility::moduleExists("asp"))
-                $this->_template->display('./modules/asp/AspLogin.tpl');
-            else
-                $this->_template->display('./modules/login/Login.tpl');
+        $this->_template->display('./modules/login/Login.tpl');
     }
 
     private function noCookiesModal()
@@ -219,8 +212,6 @@ class LoginUI extends UserInterface
                 $siteNameFull = $siteName;
             }
 
-            $this->_template->assign('aspMode', false);
-
             if (!eval(Hooks::get('LOGIN_NO_CREDENTIALS'))) return;
 
             $this->_template->assign('message', $message);
@@ -229,10 +220,7 @@ class LoginUI extends UserInterface
             $this->_template->assign('siteNameFull', $siteNameFull);
             $this->_template->assign('dateString', date('l, F jS, Y'));
 
-            if (ModuleUtility::moduleExists("asp"))
-                $this->_template->display('./modules/asp/AspLogin.tpl');
-            else
-                $this->_template->display('./modules/login/Login.tpl');
+            $this->_template->display('./modules/login/Login.tpl');
 
             return;
         }
@@ -283,8 +271,6 @@ class LoginUI extends UserInterface
                 $siteNameFull = $siteName;
             }
 
-            $this->_template->assign('aspMode', false);
-
             if (!eval(Hooks::get('LOGIN_UNSUCCESSFUL'))) return;
 
             $this->_template->assign('message', $message);
@@ -292,10 +278,7 @@ class LoginUI extends UserInterface
             $this->_template->assign('siteName', $siteName);
             $this->_template->assign('siteNameFull', $siteNameFull);
             $this->_template->assign('dateString', date('l, F jS, Y'));
-            if (ModuleUtility::moduleExists("asp"))
-                $this->_template->display('./modules/asp/AspLogin.tpl');
-            else
-                $this->_template->display('./modules/login/Login.tpl');
+            $this->_template->display('./modules/login/Login.tpl');
 
             return;
         }
@@ -326,7 +309,7 @@ class LoginUI extends UserInterface
             $wizard->addPage('License', './modules/login/wizard/License.tpl', $phpeval, true, true);
         }
 
-        if (!file_exists('modules/asp') || (defined('CATS_TEST_MODE') && CATS_TEST_MODE))
+        if (defined('CATS_TEST_MODE') && CATS_TEST_MODE)
         {
             // On-site wizard pages
             if (!LicenseUtility::isLicenseValid())

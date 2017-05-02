@@ -112,15 +112,12 @@ class ToolbarUI extends UserInterface
             die();
         }
 
-        if (!ModuleUtility::moduleExists('asp'))
+        if (!LicenseUtility::isProfessional())
         {
-            if (!LicenseUtility::isProfessional())
-            {
-                echo 'cats_authenticationFailed(); Message:The FireFox toolbar extension '
-                    . 'is only available to CATS Professional users. See catsone.com/Professional for '
-                    . 'more information.';
-                die();
-            }
+            echo 'cats_authenticationFailed(); Message:The FireFox toolbar extension '
+                . 'is only available to CATS Professional users. See catsone.com/Professional for '
+                . 'more information.';
+            die();
         }
 
         return true;
