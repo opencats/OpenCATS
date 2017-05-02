@@ -4,10 +4,10 @@
 <?php TemplateUtility::printTabs($this->active); ?>
 <?php $md5InstanceName = md5($this->dataGrid->getInstanceName());?>
     <style type="text/css">
-    div.addCandidateButton { background: #4172E3 url(images/nodata/candidatesButton.jpg); cursor: pointer; width: 337px; height: 67px; }
-    div.addCandidateButton:hover { background: #4172E3 url(images/nodata/candidateButton-o.jpg); cursor: pointer; width: 337px; height: 67px; }
-    div.addMassImportButton { background: #4172E3 url(images/nodata/addMassImport.jpg); cursor: pointer; width: 337px; height: 67px; }
-    div.addMassImportButton:hover { background: #4172E3 url(images/nodata/addMassImport-o.jpg); cursor: pointer; width: 337px; height: 67px; }
+    div.addCandidateButton { background: #4172E3 url(/images/nodata/candidatesButton.jpg); cursor: pointer; width: 337px; height: 67px; }
+    div.addCandidateButton:hover { background: #4172E3 url(/images/nodata/candidateButton-o.jpg); cursor: pointer; width: 337px; height: 67px; }
+    div.addMassImportButton { background: #4172E3 url(/images/nodata/addMassImport.jpg); cursor: pointer; width: 337px; height: 67px; }
+    div.addMassImportButton:hover { background: #4172E3 url(/images/nodata/addMassImport-o.jpg); cursor: pointer; width: 337px; height: 67px; }
     </style>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
@@ -133,7 +133,7 @@
             <?php else: ?>
 
             <br /><br /><br /><br />
-            <div style="height: 95px; background: #E6EEFF url(images/nodata/candidatesTop.jpg);">
+            <div style="height: 95px; background: #E6EEFF url(/images/nodata/candidatesTop.jpg);">
                 &nbsp;
             </div>
             <br /><br />

@@ -35,7 +35,7 @@
  * @version    $Id: TemplateUtility.php 3835 2007-12-12 19:08:38Z brian $
  */
 
-include_once('./vendor/autoload.php');
+include_once(LEGACY_ROOT . '/vendor/autoload.php');
 include_once(LEGACY_ROOT . '/lib/Candidates.php');
 include_once(LEGACY_ROOT . '/lib/DateUtility.php');
 include_once(LEGACY_ROOT . '/lib/SystemInfo.php');
@@ -133,7 +133,7 @@ class TemplateUtility
             // Begin top-right action block
             if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_UPGRADE'))) return;
 
-            if ((!file_exists('modules/asp') || (defined('CATS_TEST_MODE') && CATS_TEST_MODE)) && LicenseUtility::isProfessional() &&
+            if (LicenseUtility::isProfessional() &&
                 $_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA)
             {
                 if (abs(LicenseUtility::getExpirationDate() - time()) < 60*60*24*30)
@@ -149,13 +149,6 @@ class TemplateUtility
                     echo '<img src="images/tabs/small_upgrade.jpg" border="0" /> ';
                     echo 'CATS Professional Account Login</a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
                 }
-            }
-
-            if (!file_exists('modules/asp') && !LicenseUtility::isProfessional())
-            {
-                echo '<a href="http://www.catsone.com/professional" target="_blank">';
-                echo '<img src="images/tabs/small_upgrade.jpg" border="0" /> ';
-                echo '<b>For more features, upgrade to CATS Professional</b></a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
             }
 
             echo '<a href="', $indexName, '?m=logout">';
@@ -560,7 +553,7 @@ class TemplateUtility
 
         echo '<iframe src="js/submodal/loading.html" style="width: 100%; height: 100%;',
              ' background-color: transparent; display: none;" scrolling="auto"',
-             ' frameborder="0" allowtransparency="true" id="popupFrameIFrame"',
+             ' frameborder="0" allowtransparency="true" id="popupFrameIFrame" name="popupFrameIFrame"',
              ' width="100%" height="100%"></iframe>';
 
         echo '</div></div>';
@@ -845,14 +838,6 @@ class TemplateUtility
 
         echo '</body>', "\n";
         echo '</html>', "\n";
-
-        if ((!file_exists('modules/asp') || (defined('CATS_TEST_MODE') && CATS_TEST_MODE)) && LicenseUtility::isProfessional() && !rand(0,10))
-        {
-            if (!LicenseUtility::validateProfessionalKey(LICENSE_KEY))
-            {
-                CATSUtility::changeConfigSetting('LICENSE_KEY', "''");
-            }
-        }
     }
 
     /**
@@ -1201,7 +1186,7 @@ class TemplateUtility
         echo '<script type="text/javascript" src="js/jquery-1.3.2.min.js'.$javascriptAntiCache.'"></script>', "\n";
         echo '<script type="text/javascript">CATSIndexName = "'.CATSUtility::getIndexName().'";</script>', "\n";
 
-       $headIncludes[] = 'main.css';
+       $headIncludes[] = 'css/main.css';
 
         foreach ($headIncludes as $key => $filename)
         {
@@ -1219,8 +1204,8 @@ class TemplateUtility
             }
         }
 
-        echo '<!--[if IE]><link rel="stylesheet" type="text/css" href="ie.css" /><![endif]-->', "\n";
-        echo '<![if !IE]><link rel="stylesheet" type="text/css" href="not-ie.css" /><![endif]>', "\n";
+        echo '<!--[if IE]><link rel="stylesheet" type="text/css" href="css/ie.css" /><![endif]-->', "\n";
+        echo '<![if !IE]><link rel="stylesheet" type="text/css" href="css/not-ie.css" /><![endif]>', "\n";
         echo '</head>', "\n\n";
     }
 

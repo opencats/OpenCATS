@@ -54,7 +54,7 @@ if (isset($_SERVER['argv'][1]))
     $CATSHome = realpath(dirname(__FILE__) . '/../');
     chdir($CATSHome);
 
-    include_once('./config.php');
+    include_once(LEGACY_ROOT . '/config.php');
     include_once(LEGACY_ROOT . '/constants.php');
     include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
     include_once(LEGACY_ROOT . '/modules/install/backupDB.php');
@@ -67,7 +67,7 @@ else if(php_sapi_name() == 'cli')
     fwrite($stderr, "Site ID is usually 1.\n");
 }
 
-include_once('./config.php');
+include_once(LEGACY_ROOT . '/config.php');
 include_once(LEGACY_ROOT . '/constants.php');
 include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
 include_once(LEGACY_ROOT . '/modules/install/backupDB.php');

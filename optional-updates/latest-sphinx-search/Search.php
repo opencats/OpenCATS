@@ -2437,7 +2437,7 @@ class SearchByResumePager extends Pager
     {
         $template = new Template();
         $template->assign('errorMessage', $error);
-        $template->display('./Error.tpl');
+        $template->display('Error.tpl');
         die();
     }
 }

@@ -3218,17 +3218,60 @@ class CandidatesUI extends UserInterface
             {
                 $destination[] = array($emailDest, $emailDest);
             }
-
+            
             $mailer = new Mailer(CATS_ADMIN_SITE);
-            // FIXME: Use sendToOne()?
-            $mailerStatus = $mailer->send(
-                array($_SESSION['CATS']->getEmail(), $_SESSION['CATS']->getEmail()),
-                $destination,
-                $emailSubject,
-                $emailBody,
-                true,
-                true
-            );
+            
+            if($_POST['emailTemplate'] == "-1")
+            {
+                $mailerStatus = $mailer->send(
+                    array($_SESSION['CATS']->getEmail(), $_SESSION['CATS']->getEmail()),
+                    $destination,
+                    $emailSubject,
+                    $emailBody,
+                    true,
+                    true
+                );
+            }
+            else
+            {
+                $emailTemplates = new EmailTemplates($this->_siteID);
+                $candidates = new Candidates($this->_siteID);
+                
+                $emailsToIDs = $_POST['candidateID'];
+                $candidateIDs = array();
+                foreach($emailsToIDs as $email)
+                {
+                    $temp = explode('=', $email);
+                    $candidateIDs[$temp[0]] = $temp[1];
+                }
+                foreach($candidateIDs as $email => $ID)
+                {
+                    $candidateData = $candidates->get($ID);
+                    $emailTextSubstituted = $emailTemplates->replaceVariables($emailBody);
+                    $stringsToFind = array(
+                        '%CANDOWNER%',
+                        '%CANDFIRSTNAME%',
+                        '%CANDFULLNAME%'
+                    );
+                    $replacementStrings = array(
+                            $candidateData['ownerFullName'],
+                            $candidateData['firstName'],
+                            $candidateData['candidateFullName']
+                    );
+                    $emailTextSubstituted = str_replace(
+                            $stringsToFind,
+                            $replacementStrings,
+                            $emailTextSubstituted
+                    );
+                    
+                    $mailerStatus = $mailer->sendToOne(
+                        array($email, $candidateData['candidateFullName']), 
+                        $emailSubject,
+                        $emailTextSubstituted,
+                        true
+                    );
+                }
+            }
 
             $this->_template->assign('active', $this);
             $this->_template->assign('success', true);
@@ -3256,16 +3299,22 @@ class CandidatesUI extends UserInterface
             $db = DatabaseConnection::getInstance();
 
             $rs = $db->getAllAssoc(sprintf(
-                'SELECT candidate_id, email1, email2 '
+                'SELECT candidate_id, first_name, last_name, email1, email2 '
                 . 'FROM candidate '
                 . 'WHERE candidate_id IN (%s)',
                 $db_str
             ));
-
+            
+            $emailTemplates = new EmailTemplates($this->_siteID);
+            $emailTemplatesRS = $emailTemplates->getAllCustom();
+            
+            
             //$this->_template->assign('privledgedUser', $privledgedUser);
             $this->_template->assign('active', $this);
             $this->_template->assign('success', false);
+            $this->_template->assign('emailTemplatesRS', $emailTemplatesRS);
             $this->_template->assign('recipients', $rs);
+            $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
             $this->_template->display('./modules/candidates/SendEmail.tpl');
         }
     }

@@ -27,7 +27,7 @@
  * $Id: ui.php 3807 2007-12-05 01:47:41Z will $
  */
 
-include_once('./config.php');
+include_once(LEGACY_ROOT . '/config.php');
 include_once(LEGACY_ROOT . '/lib/InstallationTests.php');
 include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
 
@@ -493,7 +493,7 @@ switch ($action)
         foreach ($optionalComponents as $index => $component)
         {
             echo '<tr>';
-            echo '<td><a href="javascript:void(0);" onclick="function HTML' . htmlspecialchars($index) . '() { return \\\'<p style=\\\' + String.fromCharCode(34) + \\\'font-weight: bold; padding-left: 8px; padding-right: 8px;\\\' + String.fromCharCode(34) + \\\'>' . htmlspecialchars($component['name']) . '</p><p style=\\\' + String.fromCharCode(34) + \\\'padding-left: 8px; padding-right: 8px;\\\' + String.fromCharCode(34) + \\\'>' . htmlspecialchars($component['description']) . '</p>\\\'; } showPopWinHTML(HTML' . htmlspecialchars($index) . '(), 400, 100, null); return false;">' . htmlspecialchars($component['name']) . '</a>&nbsp;&nbsp;&nbsp;</td>';
+            echo '<td><a href="javascript:void(0);" onclick="function HTML' . htmlspecialchars($index) . '() { return \'<p style=\\\' + String.fromCharCode(34) + \\\'font-weight: bold; padding-left: 8px; padding-right: 8px;\\\' + String.fromCharCode(34) + \\\'>' . htmlspecialchars($component['name']) . '</p><p style=\\\' + String.fromCharCode(34) + \\\'padding-left: 8px; padding-right: 8px;\\\' + String.fromCharCode(34) + \\\'>' . htmlspecialchars($component['description']) . '</p>\\\'; } showPopWinHTML(HTML' . htmlspecialchars($index) . '(), 400, 100, null); return false;">' . htmlspecialchars($component['name']) . '</a>&nbsp;&nbsp;&nbsp;</td>';
             echo '<td><input type="radio" name="' . htmlspecialchars($index) . '" value="true"' . ($component['componentExists'] ? ' checked' : '') . '></td>';
             echo '<td><input type="radio" name="' . htmlspecialchars($index) . '" value="false"' . ($component['componentExists'] ? '' : ' checked') . '></td>';
             echo '</tr>';

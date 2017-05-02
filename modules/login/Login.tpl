@@ -5,9 +5,9 @@
     <head>
         <title>opencats - Login</title>
         <meta http-equiv="Content-Type" content="text/html; charset=<?php echo(HTML_ENCODING); ?>" />
-        <style type="text/css" media="all">@import "modules/login/login.css";</style>
+        <style type="text/css" media="all">@import "login/login.css";</style>
         <script type="text/javascript" src="js/lib.js"></script>
-        <script type="text/javascript" src="modules/login/validator.js"></script>
+        <script type="text/javascript" src="js/login/validator.js"></script>
         <script type="text/javascript" src="js/submodal/subModal.js"></script>
     </head>
 
@@ -35,16 +35,7 @@
 
                     <?php if (ENABLE_DEMO_MODE && !($this->siteName != '' && $this->siteName != 'choose') || ($this->siteName == 'demo')): ?>
                         <br /><br />
-                        <?php if ($this->aspMode): ?>
-                            <a href="javascript:void(0);" onclick="demoLogin(); return false;">Login to Demo Account</a><br />
-                            <br />
-                            <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=forgotLogin&amp;p=0">Forgot Login Information?</a>
-                        <?php else: ?>
-                            <a href="javascript:void(0);" onclick="demoLogin(); return false;">Login to Demo Account</a><br />
-                        <?php endif; ?>
-                    <?php elseif ($this->aspMode): ?>
-                        <br /><br />
-                        <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=forgotLogin&amp;p=0">Forgot Login Information?</a>
+                        <a href="javascript:void(0);" onclick="demoLogin(); return false;">Login to Demo Account</a><br />
                     <?php endif; ?>
                 </div>
 
@@ -65,16 +56,6 @@
                                 <?php endif; ?>
                             <?php endif; ?>
 
-                            <?php if ($this->aspMode): ?>
-                                <?php if ($this->siteName == 'choose' || ($this->aspMode && $this->siteName == '')): ?>
-                                    <label id="siteNameLabel" for="siteName">Company Identifier</label><br />
-                                    <input name="siteName" id="siteName" class="login-input-box" />
-                                    <br />
-                                <?php elseif($this->siteName != ''): ?>
-                                    <input type="hidden" name="siteName" value="<?php $this->_($this->siteName); ?>">
-                                <?php endif; ?>
-                            <?php endif; ?>
-
                             <?php if ($this->siteNameFull != 'error'): ?>
                                 <label id="usernameLabel" for="username">Username</label><br />
                                 <input name="username" id="username" class="login-input-box" value="<?php if (isset($this->username)) $this->_($this->username); ?>" />
@@ -88,12 +69,7 @@
                                 <input type="reset"  id="reset" name="reset"  class="button" value="Reset" />
                             <?php else: ?>
                                 <br />
-                                <?php if ($this->aspMode): ?>
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=createsite&amp;p=0">Create Free Trial Site</a><br />
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=forgotLogin&amp;p=0">Forgot Login Information</a>
-                                <?php else: ?>
-                                    <a href="javascript:void(0);" onclick="demoLogin(); return false;">Login to Demo Account</a><br />
-                                <?php endif; ?>
+                                <a href="javascript:void(0);" onclick="demoLogin(); return false;">Login to Demo Account</a><br />
                             <?php endif; ?>
                             <br /><br />
                         </div>

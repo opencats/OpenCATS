@@ -1,5 +1,5 @@
 <?php
-include_once('./vendor/autoload.php');
+include_once(LEGACY_ROOT . '/vendor/autoload.php');
 
 use OpenCATS\Entity\JobOrder;
 use OpenCATS\Entity\JobOrderRepository;

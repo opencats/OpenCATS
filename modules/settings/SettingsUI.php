@@ -69,18 +69,9 @@ class SettingsUI extends UserInterface
         $this->_moduleTabText = 'Settings';
 
         /* Only CATS professional on site gets to make career portal customizer users. */
-        if (!file_exists('modules/asp') && LicenseUtility::isProfessional())
+        if(defined('USER_ROLES'))
         {
-            $this->_settingsUserCategories = array(
-                array('Career Portal Customizer', 'careerportal', 'This user can\'t do anything but modify the career portal settings.  It is intended to be used by the CATS Professional Support Team.  This user does not count against your maximum users.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
-            );
-        }
-        else
-        {
-            if(defined('USER_ROLES'))
-            {
-                $this->_settingsUserCategories = USER_ROLES;
-            }
+            $this->_settingsUserCategories = USER_ROLES;
         }
 
         $mp = array(
@@ -681,10 +672,6 @@ class SettingsUI extends UserInterface
                 $this->getFirefoxModal();
                 break;
 
-            case 'downloads':
-                $this->downloads();
-                break;
-
             case 'ajax_tags_add':
                 if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
                 {
@@ -884,6 +871,14 @@ class SettingsUI extends UserInterface
                     $this->administration();
                 }
                 break;
+            
+            case 'addEmailTemplate':
+                $this->addEmailTemplate();
+                break;
+                
+            case 'deleteEmailTemplate':
+                $this->deleteEmailTemplate();
+                break;
 
             /* Main settings page. */
             case 'myProfile':
@@ -897,6 +892,42 @@ class SettingsUI extends UserInterface
         }
     }
 
+    private function deleteEmailTemplate() 
+    {
+        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
+            return;
+        }
+        
+        $emailTemplates = new EmailTemplates($this->_siteID);
+        $templateID = $_GET['id'];
+        $emailTemplates->delete($templateID);
+       
+        $this->emailTemplates();
+    }
+    
+    private function addEmailTemplate()
+    {
+        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
+            return;
+        }
+        
+        $possibleVariables = "%CANDSTATUS%%CANDOWNER%%CANDFIRSTNAME%%CANDFULLNAME%%CANDPREVSTATUS%";
+        $emailTemplates = new EmailTemplates($this->_siteID);
+        $emailTemplateID = $emailTemplates->add("", "New Email Template", "CUSTOM", $this->_siteID, $possibleVariables);
+        if($emailTemplateID < 1)
+        {
+            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add template.');
+        }
+        else
+        {
+            $this->emailTemplates();
+        }
+    }
+    
     /*
      * Called by handleRequest() to process loading the get firefox modal dialog.
      */
@@ -1562,6 +1593,16 @@ class SettingsUI extends UserInterface
         }
 
         $templateID = $_POST['templateID'];
+        
+        if(isset($_POST['emailTemplateTitle']))
+        {
+             $templateTitle = $_POST['emailTemplateTitle'];
+        }
+        else
+        {
+             $templateTitle = "";
+        }
+        
         $useThisTemplate = isset($_POST['useThisTemplate']);
 
         if ($useThisTemplate)
@@ -1581,7 +1622,7 @@ class SettingsUI extends UserInterface
         }
 
         $emailTemplates = new EmailTemplates($this->_siteID);
-        $emailTemplates->update($templateID, $text, $disabled);
+        $emailTemplates->update($templateID, $templateTitle, $text, $disabled);
 
         CATSUtility::transferRelativeURI('m=settings&a=emailTemplates');
     }
@@ -2456,7 +2497,7 @@ class SettingsUI extends UserInterface
         $careerPortalUnlock = false;
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
         $cpData = $careerPortalSettings->getAll();
-        if (intval($cpData['enabled']) || (file_exists('modules/asp') && !$_SESSION['CATS']->isFree()) ||
+        if (intval($cpData['enabled']) || !$_SESSION['CATS']->isFree() ||
             LicenseUtility::isProfessional())
         {
             $careerPortalUnlock = true;
@@ -2465,49 +2506,6 @@ class SettingsUI extends UserInterface
         $this->_template->assign('careerPortalUnlock', $careerPortalUnlock);
         $this->_template->assign('subActive', 'Administration');
         $this->_template->assign('systemAdministration', $systemAdministration);
-        $this->_template->assign('active', $this);
-        $this->_template->display($templateFile);
-    }
-
-    /*
-     * Called by handleRequest() to process loading the administration page.
-     */
-    private function downloads()
-    {
-        //FIXME: This needs to give an appropriate error message to both Open Source and ASP Free users.
-        //       The current message is geared toward Open Source users.
-        if (!file_exists('modules/asp') && !LicenseUtility::isProfessional())
-        {
-            CommonErrors::fatal(COMMONERROR_RESTRICTEDEXTENSION, $this);
-        }
-
-        // FIXME: Temporary! We need a better error message.
-        if ($_SESSION['CATS']->isFree() || $_SESSION['CATS']->isDemo())
-        {
-            CommonErrors::fatal(COMMONERROR_RESTRICTEDEXTENSION, $this);
-        }
-
-        // FIXME: 's' isn't a good variable name.
-        if (isset($_GET['s']))
-        {
-            switch($_GET['s'])
-            {
-                case 'toolbar':
-                    $templateFile = './modules/asp/toolbar.tpl';
-                    break;
-
-                default:
-                    $templateFile = './modules/settings/AspDownloads.tpl';
-                    break;
-            }
-        }
-        else
-        {
-            $templateFile = './modules/settings/AspDownloads.tpl';
-        }
-
-        $this->_template->assign('isFree', $_SESSION['CATS']->isFree());
-        $this->_template->assign('subActive', 'Extras');
         $this->_template->assign('active', $this);
         $this->_template->display($templateFile);
     }
@@ -2685,11 +2683,6 @@ class SettingsUI extends UserInterface
 
     private function manageProfessional()
     {
-        if (ModuleUtility::moduleExists('asp') && (!defined('CATS_TEST_MODE') || !CATS_TEST_MODE))
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-        }
-
         $wf = new WebForm();
         $wf->addField('licenseKey', 'License Key', WFT_TEXT, true, 60, 30, 190, '', '/[A-Za-z0-9 ]+/',
             'That is not a valid license key!');
@@ -2727,11 +2720,7 @@ class SettingsUI extends UserInterface
                         . 'Re-install PHP with the --enable-soap configuration option.<br /><br />'
                         . 'Please visit http://www.catsone.com for more support options.';
                 }
-                if (!LicenseUtility::validateProfessionalKey($key))
-                {
-                    $message = 'That is not a valid Professional membership key<br /><span style="font-size: 16px; color: #000000;">Please verify that you have the correct key and try again.</span>';
-                }
-                else if (!CATSUtility::changeConfigSetting('LICENSE_KEY', "'" . $key . "'"))
+                if (!CATSUtility::changeConfigSetting('LICENSE_KEY', "'" . $key . "'"))
                 {
                     $message = 'Internal Permissions Error<br /><span style="font-size: 12px; color: #000000;">CATS is unable '
                         . 'to write changes to your <b>config.php</b> file. Please change the file permissions or contact us '
@@ -3115,17 +3104,6 @@ class SettingsUI extends UserInterface
                             . "Please visit http://www.catsone.com for more support options.";
                         return;
                     }
-                    else
-                    {
-                        if (!LicenseUtility::validateProfessionalKey($key))
-                        {
-                            echo "That is not a valid CATS Professional license key. Please visit "
-                                . "http://www.catsone.com/professional for more information about CATS Professional.\n\n"
-                                . "For a free open-source key, please visit http://www.catsone.com/ and "
-                                . "click on \"Downloads\".";
-                            return;
-                        }
-                    }
                 }
 
                 if (CATSUtility::changeConfigSetting('LICENSE_KEY', "'" . $key . "'"))
@@ -3348,7 +3326,7 @@ class SettingsUI extends UserInterface
             // session. Postback will handle saves.
             if (!isset($_SESSION['CATS_QUESTIONNAIRE']) || empty($_SESSION['CATS_QUESTIONNAIRE']))
             {
-                CommonErrors::fatal(COMMONERROR_BADINDEX, 'Please return to your careers website '
+                CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Please return to your careers website '
                     . 'and load the questionnaire a second time as your session has '
                     . 'expired.');
             }
@@ -3378,7 +3356,7 @@ class SettingsUI extends UserInterface
     {
         if (!isset($_SESSION['CATS_QUESTIONNAIRE']) || empty($_SESSION['CATS_QUESTIONNAIRE']))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, 'Please return to your careers website '
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Please return to your careers website '
                 . 'and load the questionnaire a second time as your session has '
                 . 'expired.');
         }

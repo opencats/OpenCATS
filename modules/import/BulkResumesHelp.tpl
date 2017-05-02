@@ -1,7 +1,7 @@
 <?php /* $Id: BulkResumesHelp.tpl 2336 2007-04-14 22:01:51Z will $ */ ?>
 <?php TemplateUtility::printModalHeader('Login'); ?>
         <div align="center">
-            <p style="background-image: url('images/blue_gradient.jpg'); background-repeat: repeat-x; padding: 4px; margin-top: 0px; margin-bottom: 8px; width: 100%; font: normal normal bold  12px/120% Verdana, Tahoma, sans-serif; color: #F6F6F6;">
+            <p style="background-image: url('/images/blue_gradient.jpg'); background-repeat: repeat-x; padding: 4px; margin-top: 0px; margin-bottom: 8px; width: 100%; font: normal normal bold  12px/120% Verdana, Tahoma, sans-serif; color: #F6F6F6;">
                  Bulk Resumes
             </p>
             <br />

@@ -3,7 +3,10 @@ services:
   - docker
 
 env:
-  COMPOSE_VERSION: 1.7.1
+  global:
+    - COMPOSE_VERSION: 1.12.0
+    - secure: W83x4IKY3XSPsxhIP6fqTZvggqPvBeZXfbC+DWQRlerir0e/7pLwaICgPrXH6fOLAmdHtOCgore0NIq8gMHO0ktyuYsqBiunIWunlDlEsHNtnZwKdDz6g8XId85/FFqv54aVHHxW310gvFfw6B2Lpu4CsWuWuWLpr/TMp+kRVktVPes57MRl6gVWm2VwJt961GmAt3snFSNK5adrYi+JElpQq1Ow1+JuB/evd1zPCfEhYY/xXDuViMo2yDmNwUtDM/MX4QT+a4mc5EIlOFsMNZLJgwLmcKa8M9wjNDwi9hePNB0Mas77aeHxvUTbGPayF0rFDdyD+g0ZMFS16OcfvtAik65CswV1TC/9jQ9LDciaIsPqpH+0ur9EWRc2NybfYVVhRocdtZ5VxWql9BzNDv991IAqIuvVNuJO6LDQ6UCI+zz/I9m7BC4Ean94Jz2HP/tqI8wftXK35bjrgMWgEOXuF8MYnfAnFeP+1Hp2aFYKs0qTfsrZDz5rCQTGksd0tmdRz1UrrGjuHQhauHvZX+Tiz0nbgRaCjFRJicIXkI/ZH/srGZsBvSJy3rsp00PsdksZ2HkZPr9hwpah5tWxA3yEsES0p+6DWUay94SvJL4XJYKcfrlav+TTlo9SgiK47pLx1V59WBB1WIY+1irVV5wh3gWQPNgHuultah/n6h0=
+    - secure: KEcrIpXfepTir1baq96qF/44sBhyE6l6YNKCvGVQNamMwPgodwFD28eNbOnI2PAUqH6U8dUekUhTCMs0fUyGTSNUtFVGtDGwbvoKCgMnG8UlpcmyaVgo7xyN4UKsBdKOWQAT44VDbBY4/9/16KQoJ4t8Jod5VOt6LENhjF804YmjtCS7MW46VhuK1mD1L0voe2lPWPtc1tlBgOTQ62zgZulLmD0JilWw5PckI9zu8ZeNpNqOjAs2mYRgU6Ed5LPWSyjkBVWH11EtQsvXQKwQUynDFH3wnoeDpP3Nigi4pWOqAWr7r+A/F5pBlklANLpT49nBEMtUu9SPuqGKkdBlaCIVbd/ov3PowRg4BfDBN/o8ZAGaUcS3lBtXMYJun4e0Zq9irmtFt6rI/HYxPscInPlsafZ3ROf577F0qGtec8aRcpGzi+QAEGpTCM9uYm4PEX88ajQbRCTdD+p7FLsQCahqrFkZD2xPSR4Pt3sRCKHX5AW6/XYMcKomz4xw1bs2okWOmZWzFbGo26cMeAzpEuxwRp8o/WB7Xn9ulhUWxpBy1KBEgPBRUcK9EihTo89nabcwFDJuZTbxmRyz8HokAaW1TOZ+qIb9vtzKMP81fUr/YN59Ty926U1rdOBW21rKIDuT+jo700CRCthgQ2vTIZs5DtMW6+JautKL3wwLQuk=
 
 before_install:
     - sudo apt-get update -qq
@@ -17,11 +20,23 @@ php:
 - 5.6
 
 script:
+    - echo $COMPOSE_VERSION
+    - uname -s
+    - uname -m
     - composer install
-    - ./vendor/bin/phpunit src/OpenCATS/Tests/UnitTests
-    - cd docker/; docker-compose -f docker-compose-test.yml up -d
-    - docker-compose -f docker-compose-test.yml exec php /var/www/public/test/runAllTests.sh
-    - cd ..; ./ci/package-code.sh 
+    - docker ps
+    - cd code; composer install; cd ..
+    - cd code; ./vendor/bin/codecept build; cd ..
+    - cd docker/; docker-compose -f docker-compose-unittest.yml up -d; cd ..
+    - docker exec -ti docker_unittestphp_1 /var/www/test/runUnitTests.sh
+    - cd docker/; docker-compose -f docker-compose-unittest.yml down; cd ..
+    - export TAG=`if [ "$TRAVIS_TAG" != "" ]; then echo $TRAVIS_TAG; elif [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
+    - docker build -t opencats/opencats:$TAG .
+    - cd docker/env-test; docker-compose up -d
+    - docker --version
+    - docker info
+    - docker-compose exec opencats /var/www/test/runAllTests.sh
+    - cd ..; cd ..; ./ci/package-code.sh
 
 deploy:
   provider: releases
@@ -34,3 +49,17 @@ deploy:
   on:
     tags: true
 
+addons:
+  artifacts:
+    debug: true
+    paths:
+      - ./code/tests/_output
+    target_paths: $TRAVIS_REPO_SLUG/$TRAVIS_BUILD_NUMBER
+    working_dir: WORKING_DIR
+    bucket: opencats
+    s3_region: us-east-1
+
+after_success:
+  - export TAG=`if [ "$TRAVIS_TAG" != "" ]; then echo $TRAVIS_TAG; elif [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
+  - docker login --username $DOCKER_USER --password $DOCKER_PASS
+  - docker push opencats/opencats:$TAG

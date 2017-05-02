@@ -1,5 +1,5 @@
 <?php /* $Id: Tests.tpl 1930 2007-02-22 08:39:53Z will $ */ ?>
-<?php $this->reporter->printHeader(array('modules/tests/validator.js')); ?>
+<?php $this->reporter->printHeader(array('js/tests/validator.js')); ?>
 <?php $this->reporter->printHeaderBlock(); ?>
     <br clear="all" />
     <table>

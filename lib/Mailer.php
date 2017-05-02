@@ -39,7 +39,7 @@
 /* E_STRICT doesn't like PHPMailer. */
 $errorReporting = error_reporting();
 error_reporting($errorReporting & ~ E_STRICT);
-require './lib/phpmailer/PHPMailerAutoload.php';
+require LEGACY_ROOT . '/lib/phpmailer/PHPMailerAutoload.php';
 error_reporting($errorReporting);
 
 // FIXME: Remove this dependency! Bad bad bad!

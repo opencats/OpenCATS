@@ -980,7 +980,7 @@ class ZipFileExtractor
         $this->_filename = $filename;
     }
     
-    private function getErrorMessage()
+    public function getErrorMessage()
     {
         return $this->_errorMessage;
     }

@@ -1,10 +1,10 @@
 <?php /* $Id: AddActivityChangeStatusModal.tpl 3799 2007-12-04 17:54:36Z brian $ */ ?>
 <?php if ($this->isJobOrdersMode): ?>
-    <?php TemplateUtility::printModalHeader('Job Orders', array('modules/candidates/activityvalidator.js', 'js/activity.js'), 'Job Orders: Log Activity'); ?>
+    <?php TemplateUtility::printModalHeader('Job Orders', array('js/candidates/activityvalidator.js', 'js/activity.js'), 'Job Orders: Log Activity'); ?>
 <?php elseif ($this->onlyScheduleEvent): ?>
-    <?php TemplateUtility::printModalHeader('Candidates', array('modules/candidates/activityvalidator.js', 'js/activity.js'), 'Candidates: Schedule Event'); ?>
+    <?php TemplateUtility::printModalHeader('Candidates', array('js/candidates/activityvalidator.js', 'js/activity.js'), 'Candidates: Schedule Event'); ?>
 <?php else: ?>
-    <?php TemplateUtility::printModalHeader('Candidates', array('modules/candidates/activityvalidator.js', 'js/activity.js'), 'Candidates: Log Activity'); ?>
+    <?php TemplateUtility::printModalHeader('Candidates', array('js/candidates/activityvalidator.js', 'js/activity.js'), 'Candidates: Log Activity'); ?>
 <?php endif; ?>
 
 <?php if (!$this->isFinishedMode): ?>

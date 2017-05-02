@@ -37,21 +37,23 @@ if( !defined('LEGACY_ROOT') )
 }
 
 /* Database configuration. */
-define('DATABASE_USER', 'cats');
-define('DATABASE_PASS', 'password');
-define('DATABASE_HOST', 'localhost');
-define('DATABASE_NAME', 'cats_dev');
+define('DATABASE_USER', $_ENV['MYSQL_USER']);
+define('DATABASE_PASS', $_ENV['MYSQL_PASSWORD']);
+define('DATABASE_HOST', $_ENV['MYSQL_HOST']);
+define('DATABASE_NAME', $_ENV['MYSQL_DATABASE']);
 
 /* Authentication Configuration
  * Options are sql, ldap, sql+ldap
  */
-define ('AUTH_MODE', 'sql');
+define ('AUTH_MODE', $_ENV['AUTH_MODE']);
 
 /* Resfly.com Resume Import Services Enabled */
+// TODO: Remove this variable and support for Resfly as it does no longer exists as a service
 define('PARSING_ENABLED', false);
 
 /* If you have an SSL compatible server, you can enable SSL for all of CATS. */
-define('SSL_ENABLED', false);
+// TODO: Make SSL the only way to setup OpenCATS to make it secure
+define('SSL_ENABLED', $_ENV['SSL_ENABLED']);
 
 /* Text parser settings. Remember to use double backslashes (\) to represent
  * one backslash (\). On Windows, installing in C:\antiword\ is
@@ -59,26 +61,26 @@ define('SSL_ENABLED', false);
  * 'C:\\antiword\\antiword.exe'. Windows Antiword will have problems locating
  * mapping files if you install it anywhere but C:\antiword\.
  */
-define('ANTIWORD_PATH', "\\path\\to\\antiword");
-define('ANTIWORD_MAP', '8859-1.txt');
+define('ANTIWORD_PATH', $_ENV['TOOLS_ANTIWORD_PATH']);
+define('ANTIWORD_MAP', $_ENV['TOOLS_ANTIWORD_MAP']);
 
 /* XPDF / pdftotext settings. Remember to use double backslashes (\) to represent
  * one backslash (\).
  * http://www.foolabs.com/xpdf/
  */
-define('PDFTOTEXT_PATH', "\\path\\to\\pdftotext");
+define('PDFTOTEXT_PATH', $_ENV['TOOLS_PDFTOTEXT_PATH']);
 
 /* html2text settings. Remember to use double backslashes (\) to represent
  * one backslash (\). 'html2text' can be found at:
  * http://www.mbayer.de/html2text/
  */
-define('HTML2TEXT_PATH', "\\path\\to\\html2text");
+define('HTML2TEXT_PATH', $_ENV['TOOLS_HTMLTOTEXT_PATH']);
 
 /* UnRTF settings. Remember to use double backslashes (\) to represent
  * one backslash (\). 'unrtf' can be found at:
  * http://www.gnu.org/software/unrtf/unrtf.html
  */
-define('UNRTF_PATH', "\\path\\to\unrtf");
+define('UNRTF_PATH', $_ENV['TOOLS_UNRTF_PATH']);
 
 /* Temporary directory. Set this to a directory that is writable by the
  * web server. The default should be fine for most systems. Remember to
@@ -89,16 +91,17 @@ define('CATS_TEMP_DIR', './temp');
 /* If User Details and Login Activity pages in the settings module are
  * unbearably slow, set this to false.
  */
+// TODO: Remove hostname lookup
 define('ENABLE_HOSTNAME_LOOKUP', false);
 
 /* CATS can optionally use Sphinx to speed up document searching.
  * Install Sphinx and set ENABLE_SPHINX (below) to true to enable Sphinx.
  */
-define('ENABLE_SPHINX', false);
-define('SPHINX_API', './lib/sphinx/sphinxapi.php');
-define('SPHINX_HOST', 'localhost');
-define('SPHINX_PORT', 3312);
-define('SPHINX_INDEX', 'cats catsdelta');
+define('ENABLE_SPHINX', $_ENV['SPHINX_ENABLE']);
+define('SPHINX_API', $_ENV['SPHINX_API']);
+define('SPHINX_HOST', $_ENV['SPHINX_HOST']);
+define('SPHINX_PORT', $_ENV['SPHINX_PORT']);
+define('SPHINX_INDEX', $_ENV['SPHINX_INDEX']);
 
 /* Probably no need to edit anything below this line. */
 
@@ -144,7 +147,7 @@ define('INSERT_BOM_CSV_3', '191');
 define('INSERT_BOM_CSV_4', '');
 
 /* Path to modules. */
-define('MODULES_PATH', './modules/');
+define('MODULES_PATH', LEGACY_ROOT . '/modules/');
 
 /* Unique session name. The only reason you might want to modify this is
  * for multiple CATS installations on one server. A-Z, 0-9 only! */
@@ -174,7 +177,7 @@ define('FORGOT_PASSWORD_SUBJECT',   'CATS - Password Retrieval Request');
 define('FORGOT_PASSWORD_BODY',      'You recently requested that your OpenCATS: Applicant Tracking System password be sent to you. Your current password is %s.');
 
 /* Is this a demo site? */
-define('ENABLE_DEMO_MODE', false);
+define('ENABLE_DEMO_MODE', $_ENV['DEMO_MODE_ENABLE']);
 
 /* Offset to GMT Time. */
 define('OFFSET_GMT', 2);
@@ -205,24 +208,24 @@ define('DEMO_PASSWORD',  'john99');
  * 2: Sendmail
  * 3: SMTP
  */
-define('MAIL_MAILER', 3);
+define('MAIL_MAILER', $_ENV['MAIL_MAILER']);
 
 /* Sendmail Settings. You don't need to worry about this unless MAIL_MAILER
  * is set to 2.
  */
-define('MAIL_SENDMAIL_PATH', "/usr/sbin/sendmail");
+define('MAIL_SENDMAIL_PATH', $_ENV['MAIL_SENDMAIL_PATH']);
 
 /* SMTP Settings. You don't need to worry about this unless MAIL_MAILER is
  * set to 3. If your server requires authentication, set MAIL_SMTP_AUTH to
  * true and configure MAIL_SMTP_USER and MAIL_SMTP_PASS.
  */
-define('MAIL_SMTP_HOST', "localhost");
-define('MAIL_SMTP_PORT', 587);
-define('MAIL_SMTP_AUTH', true);
-define('MAIL_SMTP_USER', "user");
-define('MAIL_SMTP_PASS', "password");
+define('MAIL_SMTP_HOST', $_ENV['MAIL_SMTP_HOST']);
+define('MAIL_SMTP_PORT', $_ENV['MAIL_SMTP_PORT']);
+define('MAIL_SMTP_AUTH', $_ENV['MAIL_SMTP_AUTH']);
+define('MAIL_SMTP_USER', $_ENV['MAIL_SMTP_USER']);
+define('MAIL_SMTP_PASS', $_ENV['MAIL_SMTP_PASS']);
 //Options: '', 'ssl' or 'tls'
-define('MAIL_SMTP_SECURE', "tls");
+define('MAIL_SMTP_SECURE', $_ENV['MAIL_SMTP_SECURE']);
 
 /* Event reminder E-Mail Template. */
 $GLOBALS['eventReminderEmail'] = <<<EOF
@@ -259,34 +262,29 @@ define('CACHE_MODULES', false);
  * by distance from a zipcode.
  */
 
-define('US_ZIPS_ENABLED', false);
+define('US_ZIPS_ENABLED', $_ENV['US_ZIPS_ENABLED']);
 
 /* LDAP Configuration
  */
-define ('LDAP_HOST', 'ldap.forumsys.com');
-define ('LDAP_PORT', '389');
-define ('LDAP_PROTOCOL_VERSION', 3);
-
-define ('LDAP_BASEDN', 'dc=example,dc=com');
-
-define ('LDAP_BIND_DN', 'cn=read-only-admin,dc=example,dc=com');
-define ('LDAP_BIND_PASSWORD', 'password');
-
-define ('LDAP_ACCOUNT', '{$username}'); // '{$username}' cannot be changed, else can
-
-define ('LDAP_ATTRIBUTE_UID', 'uid');
-define ('LDAP_ATTRIBUTE_DN', 'dn');
-define ('LDAP_ATTRIBUTE_LASTNAME', 'sn');
-define ('LDAP_ATTRIBUTE_FIRSTNAME', 'givenname');
-define ('LDAP_ATTRIBUTE_EMAIL', 'mail');
-
-define ('LDAP_SITEID', 1);
-
+define ('LDAP_HOST', $_ENV['LDAP_HOST']);
+define ('LDAP_PORT', $_ENV['LDAP_PORT']);
+define ('LDAP_PROTOCOL_VERSION', $_ENV['LDAP_PROTOCOL_VERSION']);
+define ('LDAP_BASEDN', $_ENV['LDAP_BASEDN']);
+define ('LDAP_BIND_DN', $_ENV['LDAP_BIND_DN']);
+define ('LDAP_BIND_PASSWORD', $_ENV['LDAP_BIND_PASSWORD']);
+define ('LDAP_ATTRIBUTE_UID', $_ENV['LDAP_ATTRIBUTE_UID']);
+define ('LDAP_ATTRIBUTE_DN', $_ENV['LDAP_ATTRIBUTE_DN']);
+define ('LDAP_ATTRIBUTE_LASTNAME', $_ENV['LDAP_ATTRIBUTE_LASTNAME']);
+define ('LDAP_ATTRIBUTE_FIRSTNAME', $_ENV['LDAP_ATTRIBUTE_FIRSTNAME']);
+define ('LDAP_ATTRIBUTE_EMAIL', $_ENV['LDAP_ATTRIBUTE_EMAIL']);
+define ('LDAP_SITEID', $_ENV['LDAP_SITE_ID']);
+define ('LDAP_UID', $_ENV['LDAP_UID']);
+define ('LDAP_ACCOUNT', $_ENV['LDAP_ACCOUNT']); // '{$username}' cannot be changed, else can
 
 /* Job Types mapping
  */
 /* Uncomment bellow if you want custom mapping */
-/*const JOB_TYPES_LIST = array(
+/* const JOB_TYPES_LIST = array(
     'PT' => 'Part-Time',
     'FT' => 'Full-Time',
     'ST' => 'Student',

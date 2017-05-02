@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <?php
-    include_once('constants.php');
-    include_once('config.php');
+    include_once(LEGACY_ROOT . '/constants.php');
+    include_once(LEGACY_ROOT . '/config.php');
 
     /* We aren't using any TemplateUtility methods that require us to pull in
      * any of its dependencies.
@@ -26,7 +26,7 @@
         <script type="text/javascript" src="js/lib.js"></script>
         <script type="text/javascript" src="js/install.js"></script>
         <script type="text/javascript" src="js/submodal/subModal.js"></script>
-        <style type="text/css" media="all">@import "modules/install/install.css";</style>
+        <style type="text/css" media="all">@import "css/install/install.css";</style>
     </head>
 
     <body>

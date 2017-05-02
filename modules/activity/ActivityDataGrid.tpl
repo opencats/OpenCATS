@@ -41,7 +41,7 @@
             <?php else: ?>
 
             <br /><br /><br /><br />
-            <div style="height: 95px; background: #E6EEFF url(images/nodata/activitiesTop.jpg);">
+            <div style="height: 95px; background: #E6EEFF url(/images/nodata/activitiesTop.jpg);">
                 &nbsp;
             </div>
             <br /><br />

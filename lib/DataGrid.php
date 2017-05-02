@@ -272,12 +272,12 @@ class DataGrid
             $misc = unserialize($indentifierParts[2]);
         }
 
-        if (!file_exists(sprintf('modules/%s/dataGrids.php', $module)))
+        if (!file_exists(sprintf(LEGACY_ROOT . '/modules/%s/dataGrids.php', $module)))
         {
             trigger_error('No datagrid named: '.$indentifier);
         }
 
-        include_once (sprintf('modules/%s/dataGrids.php', $module));
+        include_once (sprintf(LEGACY_ROOT . '/modules/%s/dataGrids.php', $module));
 
         $dg = new $class($_SESSION['CATS']->getSiteID(), $parameters, $misc);
 
@@ -1593,7 +1593,7 @@ class DataGrid
         }
 
         /* IE fix for floating dialog boxes not floating over controls like dropdown lists. */
-        echo '<iframe id="helpShim'.$md5InstanceName.'" src="lib/IFrameBlank.html" scrolling="no" frameborder="0" style="position:absolute; display:none;"></iframe>', "\n";
+        echo '<iframe id="helpShim'.$md5InstanceName.'" src="/IFrameBlank.html" scrolling="no" frameborder="0" style="position:absolute; display:none;"></iframe>', "\n";
 
         /* Definition for the cell which appears to be showing when dragging a column into a new position (not resizing). */
         echo ('<div class="moveableCell" style="cursor: move; position:absolute; width:100px; border:1px solid gray; display:none; zIndex:10000; filter:alpha(opacity=75);-moz-opacity:.75;opacity:.75; ' . $this->globalStyle . '" id="moveColumn'.$md5InstanceName.'"></div>' . "\n");

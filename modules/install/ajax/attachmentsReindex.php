@@ -25,7 +25,7 @@
  *
  */
 
-include_once('./config.php');
+include_once(LEGACY_ROOT . '/config.php');
 include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
 include_once(LEGACY_ROOT . '/lib/ModuleUtility.php');
 
@@ -41,7 +41,7 @@ $reindexed = 0;
 
 include_once(LEGACY_ROOT . '/lib/Attachments.php');
 
-if (file_exists('INSTALL_BLOCK') && ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) < ACCESS_LEVEL_SA || ModuleUtility::moduleExists('asp')))
+if (file_exists('INSTALL_BLOCK') && ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) < ACCESS_LEVEL_SA))
 {
     die('No permision.');
 }

@@ -655,11 +655,6 @@ class LicenseUtility
         return $license->getExpirationDate();
     }
 
-    public static function validateProfessionalKey($key = '')
-    {
-             return true;
-    }
-
     // FIXME: Document me!
     public static function isProfessional()
     {

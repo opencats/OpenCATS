@@ -7,8 +7,6 @@
  * @copyright (C) OpenCats
  */
 
-include_once("./config.php");
-
 class ACL
 {
 
