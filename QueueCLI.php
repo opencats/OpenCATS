@@ -35,7 +35,7 @@ $CATSHome = realpath(dirname(__FILE__) . '/');
 
 chdir($CATSHome);
 
-include_once(LEGACY_ROOT . '/config.php');
+include_once('./config.php');
 include_once(LEGACY_ROOT . '/constants.php');
 include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
 include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');

@@ -253,7 +253,6 @@ class CandidatesUI extends UserInterface
 
                 include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
 
-
                 if ($this->isPostBack())
                 {
                     $this->onCreateAttachment();

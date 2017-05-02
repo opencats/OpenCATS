@@ -34,7 +34,7 @@ include_once(LEGACY_ROOT . '/lib/License.php');
 
 if (AUTH_MODE == "ldap" || AUTH_MODE == "sql+ldap") 
 {
-    require_once('./lib/LDAP.php');
+    require_once(LEGACY_ROOT . '/lib/LDAP.php');
 }
 
 /* Login status flags. */

@@ -93,7 +93,7 @@ class ModuleUtility
             $moduleClass = $moduleData[0];
 
             if (file_exists($taskFile =
-                sprintf('./modules/%s/tasks/tasks.php',
+                sprintf(LEGACY_ROOT . '/modules/%s/tasks/tasks.php',
                     $moduleName)))
             {
                 include_once($taskFile);
