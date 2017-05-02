@@ -38,10 +38,4 @@
 
 QueueProcessor::registerRecurringTask('./modules/queue/tasks/CleanExceptions.php');
 
-// Sphinx task for updating deltas, rebuilding of the index, etc.
-if (ENABLE_SPHINX)
-{
-    //QueueProcessor::registerRecurringTask('./modules/queue/tasks/Sphinx.php');
-}
-
 ?>

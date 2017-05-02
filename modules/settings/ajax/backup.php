@@ -239,22 +239,33 @@ if ($action == 'backup')
     while ($row = mysql_fetch_assoc($queryResult))
     {
         ++$attachmentCount;
-
-        setStatusBackup(
-            sprintf(
-                'Adding attachments (%s of %s files processed)...',
-                $attachmentCount,
-                $totalAttachments
-            ),
-            ($attachmentCount / $totalAttachments)
-        );
-
         $relativePath = sprintf(
             'attachments/%s/%s',
             $row['directory_name'],
             $row['stored_filename']
         );
-        
+        if (!file_exists($relativePath)) {
+            setStatusBackup(
+                sprintf(
+                    '%s - Skipping attachment as it\'s missing on the file system (%s of %s files processed)...',
+                    $relativePath,
+                    $attachmentCount,
+                    $totalAttachments
+                ),
+                ($attachmentCount / $totalAttachments)
+            );
+            continue;
+        }
+
+        setStatusBackup(
+            sprintf(
+                '%s - Adding attachments (%s of %s files processed)...',
+                $relativePath,
+                $attachmentCount,
+                $totalAttachments
+            ),
+            ($attachmentCount / $totalAttachments)
+        );
         $attachmentID = $row['attachment_id'];
         
         if (!eval(Hooks::get('FORCE_ATTACHMENT_LOCAL'))) return;
