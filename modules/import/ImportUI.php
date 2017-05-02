@@ -338,24 +338,6 @@ class ImportUI extends UserInterface
        {
            // Start the new mass import/parser
            $this->massImport();
-
-           /*
-           $this->_template->assign('allowMultipleFiles', true);
-           $this->_template->assign('active', $this);
-
-           if (ModuleUtility::moduleExists('asp'))
-           {
-               $this->_template->assign('allowAspFlashUploader', true);
-           }
-           else
-           {
-               $this->_template->assign('allowAspFlashUploader', false);
-           }
-
-           if (!eval(Hooks::get('IMPORT_RESUMES'))) return;
-
-           $this->_template->display('./modules/import/ImportResumes.tpl');
-           */
        }
        else
        {
@@ -1200,17 +1182,6 @@ class ImportUI extends UserInterface
     function showMassImport()
     {
         $directoryRoot = './upload/';
-
-        if (ModuleUtility::moduleExists('asp'))
-        {
-           $siteID = $_SESSION['CATS']->getSiteID();
-           $directoryRoot = './upload/'.$siteID.'/';
-           if (!file_exists($directoryRoot))
-           {
-               mkdir($directoryRoot, 0777, true);
-           }
-        }
-
         $foundFiles = array();
         $numberOfFiles = 0;
 
@@ -1462,7 +1433,6 @@ class ImportUI extends UserInterface
                 $uploadPath = false;
             }
 
-            $this->_template->assign('flashUploaderEnabled', file_exists('modules/asp') ? true : false);
             $this->_template->assign('multipleFilesEnabled', true);
             $this->_template->assign('uploadPath', $uploadPath);
         }

@@ -80,14 +80,6 @@ class CareersUI extends UserInterface
 
         if (!eval(Hooks::get('CAREERS_SITEID'))) return;
 
-        /*
-        if (!eval(Hooks::get('CAREERS_IS_ENABLED'))) return;
-        if (!file_exists('modules/asp') && !LicenseUtility::isProfessional())
-        {
-            CommonErrors::fatal(COMMONERROR_INVALIDMODULE, $this, 'Career Portal');
-        }
-        */
-
         $siteRS = $site->getSiteBySiteID($siteID);
 
         if (!isset($siteRS['name']))

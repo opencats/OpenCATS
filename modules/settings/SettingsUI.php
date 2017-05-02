@@ -69,18 +69,9 @@ class SettingsUI extends UserInterface
         $this->_moduleTabText = 'Settings';
 
         /* Only CATS professional on site gets to make career portal customizer users. */
-        if (!file_exists('modules/asp') && LicenseUtility::isProfessional())
+        if(defined('USER_ROLES'))
         {
-            $this->_settingsUserCategories = array(
-                array('Career Portal Customizer', 'careerportal', 'This user can\'t do anything but modify the career portal settings.  It is intended to be used by the CATS Professional Support Team.  This user does not count against your maximum users.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
-            );
-        }
-        else
-        {
-            if(defined('USER_ROLES'))
-            {
-                $this->_settingsUserCategories = USER_ROLES;
-            }
+            $this->_settingsUserCategories = USER_ROLES;
         }
 
         $mp = array(
@@ -679,10 +670,6 @@ class SettingsUI extends UserInterface
 
             case 'getFirefoxModal':
                 $this->getFirefoxModal();
-                break;
-
-            case 'downloads':
-                $this->downloads();
                 break;
 
             case 'ajax_tags_add':
@@ -2456,7 +2443,7 @@ class SettingsUI extends UserInterface
         $careerPortalUnlock = false;
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
         $cpData = $careerPortalSettings->getAll();
-        if (intval($cpData['enabled']) || (file_exists('modules/asp') && !$_SESSION['CATS']->isFree()) ||
+        if (intval($cpData['enabled']) || !$_SESSION['CATS']->isFree() ||
             LicenseUtility::isProfessional())
         {
             $careerPortalUnlock = true;
@@ -2465,49 +2452,6 @@ class SettingsUI extends UserInterface
         $this->_template->assign('careerPortalUnlock', $careerPortalUnlock);
         $this->_template->assign('subActive', 'Administration');
         $this->_template->assign('systemAdministration', $systemAdministration);
-        $this->_template->assign('active', $this);
-        $this->_template->display($templateFile);
-    }
-
-    /*
-     * Called by handleRequest() to process loading the administration page.
-     */
-    private function downloads()
-    {
-        //FIXME: This needs to give an appropriate error message to both Open Source and ASP Free users.
-        //       The current message is geared toward Open Source users.
-        if (!file_exists('modules/asp') && !LicenseUtility::isProfessional())
-        {
-            CommonErrors::fatal(COMMONERROR_RESTRICTEDEXTENSION, $this);
-        }
-
-        // FIXME: Temporary! We need a better error message.
-        if ($_SESSION['CATS']->isFree() || $_SESSION['CATS']->isDemo())
-        {
-            CommonErrors::fatal(COMMONERROR_RESTRICTEDEXTENSION, $this);
-        }
-
-        // FIXME: 's' isn't a good variable name.
-        if (isset($_GET['s']))
-        {
-            switch($_GET['s'])
-            {
-                case 'toolbar':
-                    $templateFile = './modules/asp/toolbar.tpl';
-                    break;
-
-                default:
-                    $templateFile = './modules/settings/AspDownloads.tpl';
-                    break;
-            }
-        }
-        else
-        {
-            $templateFile = './modules/settings/AspDownloads.tpl';
-        }
-
-        $this->_template->assign('isFree', $_SESSION['CATS']->isFree());
-        $this->_template->assign('subActive', 'Extras');
         $this->_template->assign('active', $this);
         $this->_template->display($templateFile);
     }
@@ -2685,11 +2629,6 @@ class SettingsUI extends UserInterface
 
     private function manageProfessional()
     {
-        if (ModuleUtility::moduleExists('asp') && (!defined('CATS_TEST_MODE') || !CATS_TEST_MODE))
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
-        }
-
         $wf = new WebForm();
         $wf->addField('licenseKey', 'License Key', WFT_TEXT, true, 60, 30, 190, '', '/[A-Za-z0-9 ]+/',
             'That is not a valid license key!');
