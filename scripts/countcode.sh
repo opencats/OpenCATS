@@ -41,10 +41,9 @@ addcommas()
 	sed -e ':a' -e 's/\(.*[0-9]\)\([0-9]\{3\}\)/\1,\2/;ta'
 }
 
-PHPFILES=$(find . -name '*.php' -print | grep -vE 'asp|website|artichow|fpdf|simpletest|phpmailer|site_backup.php|zip/')
-TPLFILES=$(find . -name '*.tpl' -print | grep -vE 'asp')
-CSSFILES=$(find . -name '*.css' -print | grep -vE 'asp|website|fpdf')
-JSFILES=$(find . -name '*.js' -print | grep -vE 'asp|website|calendarDate|sweetTitles.js')
+PHPFILES=$(find . -name '*.php' -print | grep -vE 'website|artichow|fpdf|simpletest|phpmailer|site_backup.php|zip/')
+CSSFILES=$(find . -name '*.css' -print | grep -vE 'website|fpdf')
+JSFILES=$(find . -name '*.js' -print | grep -vE 'website|calendarDate|sweetTitles.js')
 
 
 if [ -f ./.countcode.tmp ]; then
@@ -52,9 +51,6 @@ if [ -f ./.countcode.tmp ]; then
 fi
 
 cat $PHPFILES | scripts/countfilecode.awk | sed 's!^!PHP !' | tee -a ./.countcode.tmp | addcommas
-echo ""
-
-cat $TPLFILES | scripts/countfilecode.awk | sed 's!^!TPL !' | tee -a ./.countcode.tmp | addcommas
 echo ""
 
 cat $CSSFILES | scripts/countfilecode.awk | sed 's!^!CSS !' | tee -a ./.countcode.tmp | addcommas
