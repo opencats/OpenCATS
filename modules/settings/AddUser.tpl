@@ -172,32 +172,6 @@
                         </td>
                         <?php
                         eval(Hooks::get('SETTINGS_USERS_FULLQUOTALICENSES'));
-                        if (!$this->license['canAdd'] && !$this->license['unlimited'] && LicenseUtility::isProfessional() && !file_exists('modules/asp'))
-                        {
-                            echo '<td valign="top" align="center">';
-                            $link = 'http://www.catsone.com/professional';
-                            $image = 'images/add_licenses.jpg';
-
-                            echo '<a href="' . $link . '">';
-                            echo '<img src="' . $image . '" border="0" alt="Click here to add more user licenses"/>';
-                            echo '</a>';
-                            echo '<div style="text-align: left; padding: 10px 25px 0px 25px;">';
-                            echo 'A <i>user license</i>, or <i>seat</i>, is the limit of full-access users you can have. You may ';
-                            echo 'have unlimited read only users.';
-                            echo '<p>';
-
-                            echo 'This version of CATS is licensed to:<br /><center>';
-                            echo '<b>' . LicenseUtility::getName() . '</b><br />';
-                            $seats = LicenseUtility::getNumberOfSeats();
-                            echo ucfirst(StringUtility::cardinal($seats)) . ' ('.$seats.') user license'.($seats!=1?'s':'').'<br />';
-                            echo 'Valid until ' . date('m/d/Y', LicenseUtility::getExpirationDate()) . '<br />';
-                            echo '</center>';
-
-
-                            echo '<p>';
-                            echo 'Click <a href="<?php echo $link; ?>">here</a> to purchase additional user seats.';
-                            echo '</div></td>';
-                        }
                         ?>
                     </tr>
                 </table>

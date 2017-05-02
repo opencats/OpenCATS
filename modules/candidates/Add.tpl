@@ -112,20 +112,7 @@
                                             <div style="color: #666666; text-align: center;">
                                             (<b>hint:</b> you may also paste the resume contents)
                                             <br /><br />
-                                            <?php if (LicenseUtility::isProfessional() || file_exists('modules/asp')): ?>
                                             Need to upload multiple resumes? <a href="<?php echo CATSUtility::getIndexName(); ?>?m=import&a=massImport">Click here!</a>
-                                            <?php else: ?>
-                                                <?php if ($this->parsingStatus['parseLimit'] >= 0 && (($used = $this->parsingStatus['parseUsed']) / ($limit = $this->parsingStatus['parseLimit']) * 100) > 50): ?>
-                                                    <?php if ($used == $limit): ?><span style="color: #800000;"><?php endif; ?>
-                                                    Used <b><?php echo number_format($this->parsingStatus['parseUsed'],0); ?> / <?php echo number_format($this->parsingStatus['parseLimit'],0); ?></b> daily <a href="http://www.resfly.com" target="_blank">Resfly&trade;</a> automatic resume imports
-                                                    <?php if ($used == $limit): ?>
-                                                        </span>
-                                                        <br />
-                                                        Enter resume information manually or
-                                                        <a href="http://www.catsone.com/?a=getcats">upgrade to CATS Professional</a>.
-                                                    <?php endif; ?>
-                                                <?php endif; ?>
-                                            <?php endif; ?>
                                             </div>
                                         </td>
                                     </tr>
