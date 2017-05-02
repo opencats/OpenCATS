@@ -6,3 +6,4 @@ docker/data/*
 docker/persist/*
 vendor/*
 attachments/*
+temp/*
