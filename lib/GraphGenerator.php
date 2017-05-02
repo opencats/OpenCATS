@@ -35,13 +35,13 @@ define('GRAPH_TREND_LINES', false);
 /* Is GD2 installed? */
 if (function_exists('ImageCreateFromJpeg'))
 {
-    include_once('./lib/artichow/LinePlot.class.php');
-    include_once('./lib/artichow/BarPlot.class.php');
-    include_once('./lib/artichow/inc/Label.class.php');
-    include_once('./lib/artichow/BarPlotPipeline.class.php');
-    include_once('./lib/artichow/BarPlotDashboard.class.php');
-    include_once('./lib/artichow/AntiSpam.class.php');
-    include_once('./lib/artichow/Pie.class.php');
+    include_once(LEGACY_ROOT . '/lib/artichow/LinePlot.class.php');
+    include_once(LEGACY_ROOT . '/lib/artichow/BarPlot.class.php');
+    include_once(LEGACY_ROOT . '/lib/artichow/inc/Label.class.php');
+    include_once(LEGACY_ROOT . '/lib/artichow/BarPlotPipeline.class.php');
+    include_once(LEGACY_ROOT . '/lib/artichow/BarPlotDashboard.class.php');
+    include_once(LEGACY_ROOT . '/lib/artichow/AntiSpam.class.php');
+    include_once(LEGACY_ROOT . '/lib/artichow/Pie.class.php');
 }
 
 /**

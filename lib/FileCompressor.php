@@ -39,7 +39,7 @@
  *	@subpackage Library
  */
  
-include_once('./lib/HashUtility.php');
+include_once(LEGACY_ROOT . '/lib/HashUtility.php');
 
 define('START_FILE_RECORD',             0x04034b50);
 define('START_DATA_DESCRIPTOR',         0x08074b50);
