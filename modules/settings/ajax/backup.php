@@ -247,7 +247,7 @@ if ($action == 'backup')
         if (!file_exists($relativePath)) {
             setStatusBackup(
                 sprintf(
-                    'Skipping attachment that\'s missing on the file system: %s (%s of %s files processed)...',
+                    '%s - Skipping attachment as it\'s missing on the file system (%s of %s files processed)...',
                     $relativePath,
                     $attachmentCount,
                     $totalAttachments
@@ -259,15 +259,13 @@ if ($action == 'backup')
 
         setStatusBackup(
             sprintf(
-                'Adding attachments (%s of %s files processed)...',
+                '%s - Adding attachments (%s of %s files processed)...',
+                $relativePath,
                 $attachmentCount,
                 $totalAttachments
             ),
             ($attachmentCount / $totalAttachments)
         );
-
-
-        
         $attachmentID = $row['attachment_id'];
         
         if (!eval(Hooks::get('FORCE_ATTACHMENT_LOCAL'))) return;
