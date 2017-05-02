@@ -9,75 +9,7 @@ You have <?php echo number_format(count($this->documents), 0); ?> document<?php 
 </div>
 <?php endif; ?>
 
-<?php if ($this->isDemo): ?>
-    <img src="modules/asp/website/images/demoImport.jpg" border="0" />
-<?php elseif ($this->flashUploaderEnabled): ?>
-    <table cellpadding="0" cellspacing="0" border="0" width="100%">
-        <tr>
-            <td align="left" valign="top" width="50%">
-                <img src="images/massImport.jpg" border="0" />
-
-                <p />
-                <b>Supported File Types</b>:
-                <table cellpadding="2" cellspacing="0" border="0" style="padding-left: 80px;">
-                    <tr><td><img src="images/fileTypeDoc.jpg" border="0" /> Microsoft Word Documents (.doc)</td></tr>
-                    <tr><td><img src="images/fileTypePdf.jpg" border="0" /> Adobe Portable Document Format (.pdf)</td></tr>
-                    <tr><td><img src="images/fileTypeRtf.jpg" border="0" /> Rich Text Format (.rtf)</td></tr>
-                    <tr><td><img src="images/fileTypeHtml.jpg" border="0" /> HTML Web Pages (.html)</td></tr>
-                    <tr><td><img src="images/fileTypeTxt.jpg" border="0" /> Plain Text Files (.txt)</td></tr>
-                </table>
-                <br />
-                <b>Supported File Archives</b>:
-                <table cellpadding="2" cellspacing="0" border="0" style="padding-left: 80px; padding-top: 10px;">
-                    <tr><td><img src="images/fileTypeZip.jpg" border="0" /> Zip Archives (.zip)</td></tr>
-                    <tr><td><img src="images/fileTypeGz.jpg" border="0" /> GNU Zip Archives (.gz)</td></tr>
-                </table>
-            </td>
-
-            <td align="left valign="top" width="50%">
-                <object id="FlashFilesUpload" codeBase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0"
-            		width="450" height="350" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" VIEWASTEXT>
-            		<!-- Replace symbols " with the &quot; at all parameters values and
-            		symbols "&" with the "%26" at URL values or &amp; at other values!
-            		The same parameters values should be set for EMBED object below. -->
-               	    <param name="FlashVars" VALUE="uploadUrl=<?php echo(CATSUtility::getNonSSLDirectoryURL()); ?>modules/asp/lib/MultiPowUpload/upload.php?session_id=<?php echo(session_id()); ?>&amp;showLink=false&amp;labelUploadText=%20&amp;backgroundColor=#FFFFFF">
-                   	<param name="BGColor" VALUE="#FFFFFF">
-                   	<param name="Movie" VALUE="<?php echo(CATSUtility::getNonSSLDirectoryURL()); ?>modules/asp/lib/MultiPowUpload/ElementITMultiPowUpload1.7.swf">
-                   	<param name="Src" VALUE="<?php echo(CATSUtility::getNonSSLDirectoryURL()); ?>modules/asp/lib/MultiPowUpload/ElementITMultiPowUpload1.7.swf">
-                   	<param name="WMode" VALUE="Window">
-                   	<param name="Play" VALUE="-1">
-                   	<param name="Loop" VALUE="-1">
-                   	<param name="Quality" VALUE="High">
-                   	<param name="SAlign" VALUE="">
-                   	<param name="Menu" VALUE="-1">
-                   	<param name="Base" VALUE="">
-                   	<param name="AllowScriptAccess" VALUE="always">
-                   	<param name="Scale" VALUE="ShowAll">
-                   	<param name="DeviceFont" VALUE="0">
-                   	<param name="EmbedMovie" VALUE="0">
-                   	<param name="SWRemote" VALUE="">
-                   	<param name="MovieData" VALUE="">
-                   	<param name="SeamlessTabbing" VALUE="1">
-                   	<param name="Profile" VALUE="0">
-                   	<param name="ProfileAddress" VALUE="">
-                   	<param name="ProfilePort" VALUE="0">
-                	<!-- Embed for Netscape,Mozilla/FireFox browsers support. Flashvars parameters are the same.-->
-                    <!-- Replace symbols " with the &quot; at all parameters values and
-                    symbols "&" with the "%26" at URL values or &amp; at other values! -->
-                	<embed bgcolor="#FFFFFF" id="EmbedFlashFilesUpload" src="<?php echo(CATSUtility::getNonSSLDirectoryURL()); ?>modules/asp/lib/MultiPowUpload/ElementITMultiPowUpload1.7.swf" quality="high" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" type="application/x-shockwave-flash" width="450" height="350"
-                    flashvars="uploadUrl=<?php echo(CATSUtility::getNonSSLDirectoryURL()); ?>modules/asp/lib/MultiPowUpload/upload.php?session_id=<?php echo(session_id()); ?>&amp;showLink=false&amp;labelUploadText=%20&amp;backgroundColor=#FFFFFF">
-                	</embed>
-                </object>
-            </td>
-        </tr>
-    </table>
-
-    <div style="text-align: right;">
-    <input type="button" class="button" value="Continue ->" onclick="document.location.href='<?php echo CATSUtility::getIndexName(); ?>?m=import&a=massImport&step=2';" />
-    </div>
-
-
-<?php elseif ($this->multipleFilesEnabled): ?>
+<?php if ($this->multipleFilesEnabled): ?>
     <span style="font-size: 16px;">
     <?php if ($this->uploadPath !== false): ?>
         To import multiple files, move or copy your resume documents to the following directory on the computer
@@ -147,7 +79,7 @@ You have <?php echo number_format(count($this->documents), 0); ?> document<?php 
                 </span>
 
                 <p />
-                <?php if (file_exists('modules/asp') || (is_array($status = LicenseUtility::getParsingStatus()) && $status['parseLimit'] == -1)): ?>
+                <?php if ((is_array($status = LicenseUtility::getParsingStatus()) && $status['parseLimit'] == -1)): ?>
                     <span style="font-size: 14px; color: #333333;">
                     You have unlimited use of the Resfly parsing service, which searches your resume files for contact
                     and resume information. CATS will import all applicable resume documents as candidates.

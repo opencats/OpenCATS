@@ -133,7 +133,7 @@ class TemplateUtility
             // Begin top-right action block
             if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_UPGRADE'))) return;
 
-            if ((!file_exists('modules/asp') || (defined('CATS_TEST_MODE') && CATS_TEST_MODE)) && LicenseUtility::isProfessional() &&
+            if (LicenseUtility::isProfessional() &&
                 $_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA)
             {
                 if (abs(LicenseUtility::getExpirationDate() - time()) < 60*60*24*30)
@@ -149,13 +149,6 @@ class TemplateUtility
                     echo '<img src="images/tabs/small_upgrade.jpg" border="0" /> ';
                     echo 'CATS Professional Account Login</a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
                 }
-            }
-
-            if (!file_exists('modules/asp') && !LicenseUtility::isProfessional())
-            {
-                echo '<a href="http://www.catsone.com/professional" target="_blank">';
-                echo '<img src="images/tabs/small_upgrade.jpg" border="0" /> ';
-                echo '<b>For more features, upgrade to CATS Professional</b></a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
             }
 
             echo '<a href="', $indexName, '?m=logout">';
@@ -846,7 +839,7 @@ class TemplateUtility
         echo '</body>', "\n";
         echo '</html>', "\n";
 
-        if ((!file_exists('modules/asp') || (defined('CATS_TEST_MODE') && CATS_TEST_MODE)) && LicenseUtility::isProfessional() && !rand(0,10))
+        if (LicenseUtility::isProfessional() && !rand(0,10))
         {
             if (!LicenseUtility::validateProfessionalKey(LICENSE_KEY))
             {
@@ -1188,8 +1181,8 @@ class TemplateUtility
         echo '<head>', "\n";
         echo '<title>OpenCATS - ', $pageTitle, '</title>', "\n";
         echo '<meta http-equiv="Content-Type" content="text/html; charset=', HTML_ENCODING, '" />', "\n";
-        echo '<link rel="icon" href="/images/favicon.ico" type="image/x-icon" />', "\n";
-        echo '<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />', "\n";
+        echo '<link rel="icon" href="images/favicon.ico" type="image/x-icon" />', "\n";
+        echo '<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />', "\n";
         echo '<link rel="alternate" type="application/rss+xml" title="RSS" href="',
              CATSUtility::getIndexName(), '?m=rss" />', "\n";
 
