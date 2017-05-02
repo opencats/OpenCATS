@@ -40,7 +40,7 @@
 /* Do we need to run the installer? */
 if (!file_exists('INSTALL_BLOCK') && !isset($_POST['performMaintenence']))
 {
-    include('modules/install/notinstalled.php');
+    include(LEGACY_ROOT .'/modules/install/notinstalled.php');
     die();
 }
 
@@ -151,7 +151,7 @@ $_SESSION['CATS']->checkForcedUpdate();
 if (ModuleUtility::moduleExists("asp") && ModuleUtility::moduleExists("website"))
 {
     // FIXME: Can we optimize this a bit...?
-    include_once('modules/asp/lib/General.php');
+    include_once(LEGACY_ROOT .'/modules/asp/lib/General.php');
 
     if (!(isset($careerPage) && $careerPage) &&
         !(isset($rssPage) && $rssPage) &&

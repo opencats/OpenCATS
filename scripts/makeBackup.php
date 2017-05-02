@@ -274,7 +274,7 @@ function dumpAttachments($db, $directory, $siteID)
 
         if (file_exists('modules/s3storage'))
         {
-            include_once('modules/s3storage/lib.php');
+            include_once(LEGACY_ROOT . '/modules/s3storage/lib.php');
 
             $s3storage = new S3Storage();
             $s3storage->getTemporarilyFromS3Storage($row['attachment_id']);

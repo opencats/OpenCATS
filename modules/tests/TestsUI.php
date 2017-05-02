@@ -95,8 +95,8 @@ class TestsUI extends UserInterface
 
     private function runSelectedTests()
     {
-        include('./modules/tests/testcases/WebTests.php');
-        include('./modules/tests/testcases/AJAXTests.php');
+        include(LEGACY_ROOT . '/modules/tests/testcases/WebTests.php');
+        include(LEGACY_ROOT . '/modules/tests/testcases/AJAXTests.php');
 
         /* FIXME: 2 groups! Web, AJAX. */
         $testSuite = new TestSuite('CATS Test Suite');

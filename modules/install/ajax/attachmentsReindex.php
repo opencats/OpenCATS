@@ -39,7 +39,7 @@ set_time_limit(0);
 
 $reindexed = 0;
 
-include_once('lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
 
 if (file_exists('INSTALL_BLOCK') && ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) < ACCESS_LEVEL_SA || ModuleUtility::moduleExists('asp')))
 {

@@ -36,9 +36,9 @@
  */
 
 include_once('./vendor/autoload.php');
-include_once('Candidates.php');
-include_once('DateUtility.php');
-include_once('SystemInfo.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+include_once(LEGACY_ROOT . '/lib/SystemInfo.php');
 
 use OpenCATS\UI\QuickActionMenu;
 

@@ -681,7 +681,7 @@ switch ($action)
         break;
 
     case 'restoreFromBackup':
-        include_once('lib/FileCompressor.php');
+        include_once(LEGACY_ROOT . '/lib/FileCompressor.php');
         MySQLConnect();
         $extractor = new ZipFileExtractor('./restore/catsbackup.bak');
         
@@ -773,7 +773,7 @@ switch ($action)
     case 'onLoadDemoData':
         CATSUtility::changeConfigSetting('ENABLE_DEMO_MODE', 'true');
 
-        include_once('lib/FileCompressor.php');
+        include_once(LEGACY_ROOT . '/lib/FileCompressor.php');
         MySQLConnect();
         $extractor = new ZipFileExtractor('./db/cats_testdata.bak');
         
@@ -940,7 +940,7 @@ switch ($action)
         break;
             
     case 'onReindexResumes':
-        include_once('modules/install/ajax/attachmentsReindex.php');
+        include_once(LEGACY_ROOT . '/modules/install/ajax/attachmentsReindex.php');
         
         echo '<script type="text/javascript">
                   Installpage_populate(\'a=maintComplete\');
@@ -1132,7 +1132,7 @@ function initializeOptionalComponents()
     global $optionalComponents;
 
     //Detect which components are installed and which ones are not
-    include_once('modules/install/OptionalComponents.php');
+    include_once(LEGACY_ROOT . '/modules/install/OptionalComponents.php');
 
     foreach ($optionalComponents as $index => $data)
     {

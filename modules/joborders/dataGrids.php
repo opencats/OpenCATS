@@ -31,7 +31,7 @@
  * $Id: dataGrids.php 3096 2007-09-25 19:27:04Z brian $
  */
  
-include_once('lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
 include_once(LEGACY_ROOT . '/lib/Hooks.php');
 include_once(LEGACY_ROOT . '/lib/Width.php');
 
