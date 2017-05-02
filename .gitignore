@@ -14,3 +14,4 @@ code/src/AppBundle/tests/_support/_generated/*
 .idea/*
 supervisord.log
 supervisord.pid
+code/web/attachments/*
