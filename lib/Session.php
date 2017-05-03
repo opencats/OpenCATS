@@ -30,7 +30,7 @@
  * @version    $Id: Session.php 3676 2007-11-21 21:02:15Z brian $
  */
 
-include('./lib/ACL.php');
+include(LEGACY_ROOT . '/lib/ACL.php');
 
 /**
  *  CATS Session Object
