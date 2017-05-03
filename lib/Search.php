@@ -433,6 +433,7 @@ class SearchCandidates
         $sql = sprintf(
             "SELECT
                 candidate.candidate_id AS candidateID,
+                IF(candidate_duplicates.new_candidate_id, 1, 0) AS isDuplicateCandidate,
                 candidate.first_name AS firstName,
                 candidate.last_name AS lastName,
                 candidate.city AS city,
@@ -453,6 +454,8 @@ class SearchCandidates
                 candidate
             LEFT JOIN user AS owner_user
                 ON candidate.owner = owner_user.user_id
+            LEFT JOIN candidate_duplicates
+                ON candidate_duplicates.new_candidate_id = candidate.candidate_id
             WHERE
             (
                 CONCAT(candidate.first_name, ' ', candidate.last_name) LIKE %s
