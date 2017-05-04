@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="OpenATS" default="scp-file">
+
+	<property environment="env" />
+
+	<property file="build.properties" />
+
+	<condition property="bundleName" value="${env.BUNDLE_NAME}" else="OpenATS">
+		<isset property="env.BUNDLE_NAME"/>
+	</condition>
+	<condition property="atsVersion" value="${env.ATS_VERSION}" else="1.0.0">
+		<isset property="env.AMW_VERSION"/>
+	</condition>	
+	
+	<scriptdef name="currenttarget" language="javascript">
+	    <attribute name="property"/>
+	    <![CDATA[
+	    //importClass( java.lang.Thread );
+
+	    project.setProperty(
+	        attributes.get( "property" ),
+	        project.getThreadTask(
+		java.lang.Thread.currentThread( ) ).getTask( ).getOwningTarget( ).getName( ) );
+	    project.setProperty(
+	        attributes.get( "property" ),self.getOwningTarget().getName());
+		// project.setProperty(
+		//	        attributes.get( "property" ),"dupa");
+	
+	    ]]>
+	</scriptdef>
+	
+	<currenttarget property="currTarget" />
+	
+	<echo message=" currTarget: ${currTarget} " />
+	<echo message=" bundleName: ${bundleName} " />
+	<echo message=" version: ${version} " />
+	<echo message=" atsVersion: ${atsVersion} " />
+	<echo message=" envName: ${env.ATS_ENV_NAME} " />
+	<echo message=" workspaceDir: ${workspace.ats.dir} " />
+	<echo message=" antClassPath: ${env.ANT_CLASSPATH} " />
+	<echo message=" fileSelected: ${fileSelected} " />
+	<echo message=" testHost: ${env.ATS_TEST_HOST} " />
+	<echo message=" distrHost: ${env.ATS_DISTR_HOST} " />
+	
+
+
+	
+	<path id="class.path">
+		<pathelement location="${workspace.antResources.dir}/configuration/jsch-0.1.54.jar" />
+	</path>
+		
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="${workspace.antResources.dir}/configuration/ant-contrib-0.6.jar" />
+			<!-- SCP -->
+			<pathelement location="${workspace.antResources.dir}/configuration/jsch-0.1.54.jar" />
+		</classpath>
+	</taskdef>
+	
+	<target name="gt-generateFileList" description="gt-generateFileList">
+	  <delete file="${workspace.ats.dir}/locale/files.lst" quiet="true"/>		
+	  <foreach target="gt-appendFile" param="theFile">  	
+	    <fileset dir="${workspace.ats.dir}" casesensitive="yes">
+	      <include name="*.php"/>
+	    </fileset>
+	  </foreach>		
+	  <foreach target="gt-appendFile" param="theFile">  	
+	    <fileset dir="${workspace.ats.dir}/modules" casesensitive="yes">
+	      <include name="**/*.php"/>
+	      <include name="**/*.tpl"/>
+	      <include name="**/*.js"/>	
+	      <exclude name="**/*Test*"/>
+	    </fileset>
+	  </foreach>
+	  <foreach target="gt-appendFile" param="theFile">  	
+	    <fileset dir="${workspace.ats.dir}/lib" casesensitive="yes">
+	      <include name="**/*.php"/>
+	      <include name="**/*.tpl"/>
+	      <include name="**/*.js"/>	
+	      <exclude name="**/*Test*"/>
+	    </fileset>
+	  </foreach>
+	  <foreach target="gt-appendFile" param="theFile">  	
+	    <fileset dir="${workspace.ats.dir}/js" casesensitive="yes">
+	      <include name="**/*.php"/>
+	      <include name="**/*.tpl"/>
+	      <include name="**/*.js"/>	
+	      <exclude name="**/*Test*"/>
+	    </fileset>
+	  </foreach>		
+	</target>
+
+	<target name="gt-appendFile">
+	  <echo message="${theFile} " output="${workspace.ats.dir}/locale/files.lst" append="true"/>
+	</target>
+	
+	<target name="gt-run-xgettext" depends="" description="Generacja dokumentacji">
+		  <loadfile property="gtFileList"
+		      srcFile="${workspace.ats.dir}/locale/files.lst"/>
+		  <exec executable="${env.GETTEXT_HOME}/bin/xgettext.exe" dir="${env.ATS_WORKSPACE_DIR}">
+		  	<arg line=" --from-code=UTF-8 --no-wrap -L PHP -k -k__ -o ${workspace.ats.dir}/locale/messages.pot ${gtFileList} ${workspace.ats.dir}/lib/DataGrid.php ${workspace.ats.dir}/js/dataGridFilters.js"/>
+		  	<!--<arg line="-j"/>
+		  	<arg line=""/>
+		  	<arg line="*.tpl"/> -->
+		  	<!--arg line="*.js"/-->
+		  </exec>
+	</target>
+	<target name="gt-run-msgmerge-pl" depends="" description="gen pl po">
+		  <exec executable="${env.GETTEXT_HOME}/bin/msgmerge.exe" dir="${env.ATS_WORKSPACE_DIR}">
+		  	<arg line=" -N --backup=off --update ${workspace.ats.dir}/locale/pl/LC_MESSAGES/messages.po ${workspace.ats.dir}/locale/messages.pot"/>
+		  	<!--<arg line="-j"/>
+		  	<arg line=""/>
+		  	<arg line="*.tpl"/> -->
+		  	<!--arg line="*.js"/-->
+		  </exec>
+	</target>	
+	 
+
+	<target name="distr-web" depends="" description="Deploy Web">
+		<zip destfile="${workspace.ats.dir}/distr/atsWeb-${atsVersion}.zip" basedir="${workspace.ats.dir}"/>
+	</target>
+	
+</project>

@@ -66,7 +66,7 @@ class SettingsUI extends UserInterface
         $this->_authenticationRequired = true;
         $this->_moduleDirectory = 'settings';
         $this->_moduleName = 'settings';
-        $this->_moduleTabText = 'Settings';
+        $this->_moduleTabText = __('Settings');
 
         /* Only CATS professional on site gets to make career portal customizer users. */
         if (!file_exists('modules/asp') && LicenseUtility::isProfessional())
@@ -84,8 +84,8 @@ class SettingsUI extends UserInterface
         }
 
         $mp = array(
-            'Administration' => CATSUtility::getIndexName() . '?m=settings&amp;a=administration',
-            'My Profile'     => CATSUtility::getIndexName() . '?m=settings'
+            __('Administration') => CATSUtility::getIndexName() . '?m=settings&amp;a=administration',
+            __('My Profile')     => CATSUtility::getIndexName() . '?m=settings'
         );
 
         $this->_subTabs = $mp;
@@ -265,6 +265,8 @@ class SettingsUI extends UserInterface
                     $this->onChangePassword();
                 }
                 break;
+                
+
 
             case 'newInstallPassword':
                 if ($this->getUserAccessLevel("settings.newInstallPassword") < ACCESS_LEVEL_SA)
@@ -886,6 +888,17 @@ class SettingsUI extends UserInterface
                 break;
 
             /* Main settings page. */
+             case 'lang':
+                	/* Bail out if the user is demo. */
+                	/*if ($this->getUserAccessLevel('settings.changePassword') == ACCESS_LEVEL_DEMO)
+                	 {
+                	 CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You are not allowed to change your password.');
+                	 }*/
+                	//if ($this->isPostBack())
+                	//{
+                	$this->onChangeCountry();
+                	//}
+                	//break;
             case 'myProfile':
             default:
                 if ($this->getUserAccessLevel('settings.myProfile') < ACCESS_LEVEL_READ)
@@ -937,7 +950,7 @@ class SettingsUI extends UserInterface
         $this->_template->assign('isDemoUser', $isDemoUser);
         $this->_template->assign('userID', $this->_userID);
         $this->_template->assign('active', $this);
-        $this->_template->assign('subActive', 'My Profile');
+        $this->_template->assign('subActive', __('My Profile'));
         $this->_template->assign('auth_mode', AUTH_MODE);
         $this->_template->display($templateFile);
     }
@@ -2463,7 +2476,7 @@ class SettingsUI extends UserInterface
         }
 
         $this->_template->assign('careerPortalUnlock', $careerPortalUnlock);
-        $this->_template->assign('subActive', 'Administration');
+        $this->_template->assign('subActive', __('Administration'));
         $this->_template->assign('systemAdministration', $systemAdministration);
         $this->_template->assign('active', $this);
         $this->_template->display($templateFile);
@@ -2677,7 +2690,7 @@ class SettingsUI extends UserInterface
         }
 
         $this->_template->assign('active', $this);
-        $this->_template->assign('subActive', 'User Management');
+        $this->_template->assign('subActive', __('User Management'));
         $this->_template->assign('rs', $rs);
         $this->_template->assign('license', $license);
         $this->_template->display('./modules/settings/Users.tpl');
@@ -2758,6 +2771,19 @@ class SettingsUI extends UserInterface
         $this->_template->display('./modules/settings/Professional.tpl');
     }
 
+    private function onChangeCountry()
+    {
+    	$users = new Users($this->_siteID);
+    	$newCountry =  $_GET['s'];
+    	$msg =  $users->changeCountry(
+            $this->_userID, $newCountry
+    		);
+    	$_SESSION['CATS']->setUserCountry($newCountry);
+    	$_SESSION['CATS']->resetDataGridColumnPreferences();
+    	$_SESSION['modules']=null;
+    	lngReset($newCountry);
+    }
+    
     /*
      * Called by handleRequest() to process changing a user's password.
      */
@@ -3837,7 +3863,7 @@ class SettingsUI extends UserInterface
         $questions = $questionnaire->getQuestions($questionnaireID);
 
         $this->_template->assign('active', $this);
-        $this->_template->assign('subActive', 'Administration');
+        $this->_template->assign('subActive', __('Administration'));
         $this->_template->assign('isModal', false);
         $this->_template->assign('questionnaireID', $questionnaireID);
         $this->_template->assign('data', $data);

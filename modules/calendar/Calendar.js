@@ -1,3 +1,7 @@
+<?php
+chdir('./../../');
+include_once('./config.php');
+?>
 /*
  * CATS
  * Calendar JavaScript Library
@@ -61,33 +65,33 @@ var accessLevel = -1;
 /* HELPER FUNCTIONS */
 
 var monthName = new Array (
-    "January ",
-    "February ",
-    "March ",
-    "April ",
-    "May ",
-    "June ",
-    "July ",
-    "August ",
-    "September ",
-    "October ",
-    "November ",
-    "December "
+    "<?php echo __("January");?> ",
+    "<?php echo __("February");?> ",
+    "<?php echo __("March");?> ",
+    "<?php echo __("April");?> ",
+    "<?php echo __("May");?> ",
+    "<?php echo __("June");?> ",
+    "<?php echo __("July");?> ",
+    "<?php echo __("August");?> ",
+    "<?php echo __("September");?> ",
+    "<?php echo __("October");?> ",
+    "<?php echo __("November");?> ",
+    "<?php echo __("December");?> "
 );
 
 var monthNameAbreiv = new Array (
-    "Jan ",
-    "Feb ",
-    "Mar ",
-    "Apr ",
-    "May ",
-    "Jun ",
-    "Jul ",
-    "Aug ",
-    "Sept ",
-    "Oct ",
-    "Nov ",
-    "Dec "
+    "<?php echo __("Jan");?> ",
+    "<?php echo __("Feb");?> ",
+    "<?php echo __("Mar");?> ",
+    "<?php echo __("Apr");?> ",
+    "<?php echo __("May");?> ",
+    "<?php echo __("Jun");?> ",
+    "<?php echo __("Jul");?> ",
+    "<?php echo __("Aug");?> ",
+    "<?php echo __("Sept");?> ",
+    "<?php echo __("Oct");?> ",
+    "<?php echo __("Nov");?> ",
+    "<?php echo __("Dec");?> "
 );
 
 function monthNameWrap(month)
@@ -881,7 +885,7 @@ function updateCalendarViewMonth()
 
     if (monthData.days.length == 0)
     {
-        string = monthNameWrap(currentMonth) + ' ' + currentYear + ' (No Entries)';
+        string = monthNameWrap(currentMonth) + ' ' + currentYear + ' (<?php echo __("No Entries");?>)';
         document.getElementById('monthNotice').innerHTML = string;
     }
     else
@@ -973,7 +977,7 @@ function updateCalendarViewMonthCell(year, month, day, cellID, monthData)
             if (validDayEntriesCount > 1)
             {
                 string += generateCalendarEntryGrouped(
-                    daylink + ' style="font-weight: bold;">' + validDayEntriesCount + ' Events' + '</a>'
+                    daylink + ' style="font-weight: bold;"><?php echo sprintf(__("%s Events"),"' + validDayEntriesCount + '");?>' + '</a>'
                 );
             }
             else
@@ -1020,10 +1024,10 @@ function updateCalendarViewWeek()
     var theDay = 0;
     var totalEntries = 0;
 
-    weekNames = Array('1st', '2nd', '3rd', '4th', '5th', '6th');
+    weekNames = Array('<?php echo __("1st");?>', '<?php echo __("2nd");?>', '<?php echo __("3rd");?>', '<?php echo __("4th");?>', '<?php echo __("5th");?>', '<?php echo __("6th");?>');
 
-    document.getElementById('calendarTitle').innerHTML = 'Calendar: '
-        + weekNames[currentWeek-1] + ' week of ' + monthNameWrap(currentMonth)
+    document.getElementById('calendarTitle').innerHTML = '<?php echo __("Calendar");?>: '
+        + weekNames[currentWeek-1] + ' <?php echo __("week of");?> ' + monthNameWrap(currentMonth)
         + ' ' + currentYear;
 
     document.getElementById('linkWeekBack').innerHTML = '<a href="javascript:setCalendarViewWeek('
@@ -1092,7 +1096,7 @@ function updateCalendarViewWeek()
             + getDayByDay(currentYear, currentMonth, theDay);
     }
 
-    document.getElementById('weekNotice').innerHTML = totalEntries + ' entries for ' + weekNames[currentWeek - 1] + ' week of ' + monthNameWrap(currentMonth) + ' ' + currentYear;
+    document.getElementById('weekNotice').innerHTML = totalEntries + ' <?php echo __("entries for");?> ' + weekNames[currentWeek - 1] + ' <?php echo __("week of");?> ' + monthNameWrap(currentMonth) + ' ' + currentYear;
 }
 
 function updateCalendarViewWeekCell(cellID, dayData)
@@ -1168,7 +1172,7 @@ function updateCalendarViewDay()
 
     dayPositionData = Array();
 
-    document.getElementById('calendarTitle').innerHTML = 'Calendar: ' + monthNameWrap(currentMonth) + ' ' + currentDay + ', ' + currentYear;
+    document.getElementById('calendarTitle').innerHTML = '<?php echo __("Calendar");?>: ' + monthNameWrap(currentMonth) + ' ' + currentDay + ', ' + currentYear;
 
     document.getElementById('linkDayBack').innerHTML = '<a href="javascript:setCalendarViewDay(' + getYearByDay(currentYear, currentMonth, currentDay - 1) + ', ' + getMonthByDay(currentYear, currentMonth, currentDay - 1) + ', ' + getDayByDay(currentYear, currentMonth, currentDay - 1) + ');"><img src="images/arrow_left_24.gif" style="border:none;" />&nbsp;</a>';
     document.getElementById('linkDayForeward').innerHTML = '<a href="javascript:setCalendarViewDay(' + getYearByDay(currentYear, currentMonth, currentDay + 1) + ', ' + getMonthByDay(currentYear, currentMonth, currentDay + 1) + ', ' + getDayByDay(currentYear, currentMonth, currentDay + 1) + ');">&nbsp;<img src="images/arrow_right_24.gif" style="border:none;" /></a>';
@@ -1222,7 +1226,7 @@ function updateCalendarViewDay()
     }
 
 
-    document.getElementById('dayNotice').innerHTML = totalEntries + ' entries for ' + monthNameWrap(currentMonth) + ' ' + currentDay + ', ' + currentYear;
+    document.getElementById('dayNotice').innerHTML = totalEntries + ' <?php echo __("entries for");?> ' + monthNameWrap(currentMonth) + ' ' + currentDay + ', ' + currentYear;
 
 }
 

@@ -1109,12 +1109,12 @@ class CandidatesDataGrid extends DataGrid
         $this->_dataItemIDColumn = 'candidate.candidate_id';
 
         $this->_classColumns = array(
-            'Attachments' => array('select' => 'IF(candidate_joborder_submitted.candidate_joborder_id, 1, 0) AS submitted,
+            __('Attachments') => array('select' => 'IF(candidate_joborder_submitted.candidate_joborder_id, 1, 0) AS submitted,
                                                 IF(attachment_id, 1, 0) AS attachmentPresent',
 
                                      'pagerRender' => 'if ($rsData[\'submitted\'] == 1)
                                                     {
-                                                        $return = \'<img src="images/job_orders.gif" alt="" width="16" height="16" title="Submitted for a Job Order" />\';
+                                                        $return = \'<img src="images/job_orders.gif" alt="" width="16" height="16" title="'.__('Submitted for a Job Order').'" />\';
                                                     }
                                                     else
                                                     {
@@ -1123,7 +1123,7 @@ class CandidatesDataGrid extends DataGrid
 
                                                     if ($rsData[\'attachmentPresent\'] == 1)
                                                     {
-                                                        $return .= \'<img src="images/paperclip.gif" alt="" width="16" height="16" title="Attachment Present" />\';
+                                                        $return .= \'<img src="images/paperclip.gif" alt="" width="16" height="16" title="'.__('Attachment Present').'" />\';
                                                     }
                                                     else
                                                     {
@@ -1148,7 +1148,7 @@ class CandidatesDataGrid extends DataGrid
                                      'exportable' => false,
                                      'filterable' => false),
 
-            'First Name' =>     array('select'         => 'candidate.first_name AS firstName',
+            __('First Name') =>     array('select'         => 'candidate.first_name AS firstName',
                                       'pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'candidateID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';',
                                       'sortableColumn' => 'firstName',
                                       'pagerWidth'     => 75,
@@ -1156,7 +1156,7 @@ class CandidatesDataGrid extends DataGrid
                                       'alphaNavigation'=> true,
                                       'filter'         => 'candidate.first_name'),
 
-            'Last Name' =>      array('select'         => 'candidate.last_name AS lastName',
+            __('Last Name') =>      array('select'         => 'candidate.last_name AS lastName',
                                      'sortableColumn'  => 'lastName',
                                      'pagerRender'     => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'candidateID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';',
                                      'pagerWidth'      => 85,
@@ -1164,74 +1164,74 @@ class CandidatesDataGrid extends DataGrid
                                      'alphaNavigation' => true,
                                      'filter'         => 'candidate.last_name'),
 
-            'E-Mail' =>         array('select'   => 'candidate.email1 AS email1',
+            __('E-Mail') =>         array('select'   => 'candidate.email1 AS email1',
                                      'sortableColumn'     => 'email1',
                                      'pagerWidth'    => 80,
                                      'filter'         => 'candidate.email1'),
 
-            '2nd E-Mail' =>     array('select'   => 'candidate.email2 AS email2',
+            __('2nd E-Mail') =>     array('select'   => 'candidate.email2 AS email2',
                                      'sortableColumn'     => 'email2',
                                      'pagerWidth'    => 80,
                                      'filter'         => 'candidate.email2'),
 
-            'Home Phone' =>     array('select'   => 'candidate.phone_home AS phoneHome',
+            __('Home Phone') =>     array('select'   => 'candidate.phone_home AS phoneHome',
                                      'sortableColumn'     => 'phoneHome',
                                      'pagerWidth'    => 80,
                                      'filter'         => 'candidate.phone_home'),
 
-            'Cell Phone' =>     array('select'   => 'candidate.phone_cell AS phoneCell',
+            __('Cell Phone') =>     array('select'   => 'candidate.phone_cell AS phoneCell',
                                      'sortableColumn'     => 'phoneCell',
                                      'pagerWidth'    => 80,
                                      'filter'         => 'candidate.phone_cell'),
 
-            'Work Phone' =>     array('select'   => 'candidate.phone_work AS phoneWork',
+            __('Work Phone') =>     array('select'   => 'candidate.phone_work AS phoneWork',
                                      'sortableColumn'     => 'phoneWork',
                                      'pagerWidth'    => 80,
                                      'filter'         => 'candidate.phone_work'),
 
-            'Address' =>        array('select'   => 'candidate.address AS address',
+            __('Address') =>        array('select'   => 'candidate.address AS address',
                                      'sortableColumn'     => 'address',
                                      'pagerWidth'    => 250,
                                      'alphaNavigation' => true,
                                      'filter'         => 'candidate.address'),
 
-            'City' =>           array('select'   => 'candidate.city AS city',
+            __('City') =>           array('select'   => 'candidate.city AS city',
                                      'sortableColumn'     => 'city',
                                      'pagerWidth'    => 80,
                                      'alphaNavigation' => true,
                                      'filter'         => 'candidate.city'),
 
 
-            'State' =>          array('select'   => 'candidate.state AS state',
+            __('State') =>          array('select'   => 'candidate.state AS state',
                                      'sortableColumn'     => 'state',
                                      'filterType' => 'dropDown',
                                      'pagerWidth'    => 50,
                                      'alphaNavigation' => true,
                                      'filter'         => 'candidate.state'),
 
-            'Zip' =>            array('select'  => 'candidate.zip AS zip',
+            __('Zip') =>            array('select'  => 'candidate.zip AS zip',
                                      'sortableColumn'    => 'zip',
                                      'pagerWidth'   => 50,
                                      'filter'         => 'candidate.zip'),
 
-            'Misc Notes' =>     array('select'  => 'candidate.notes AS notes',
+            __('Misc Notes') =>     array('select'  => 'candidate.notes AS notes',
                                      'sortableColumn'    => 'notes',
                                      'pagerWidth'   => 300,
                                      'filter'         => 'candidate.notes'),
 
-            'Web Site' =>      array('select'  => 'candidate.web_site AS webSite',
+            __('Web Site') =>      array('select'  => 'candidate.web_site AS webSite',
                                      'pagerRender'     => 'return \'<a href="\'.htmlspecialchars($rsData[\'webSite\']).\'">\'.htmlspecialchars($rsData[\'webSite\']).\'</a>\';',
                                      'sortableColumn'    => 'webSite',
                                      'pagerWidth'   => 80,
                                      'filter'         => 'candidate.web_site'),
 
-            'Key Skills' =>    array('select'  => 'candidate.key_skills AS keySkills',
+            __('Key Skills') =>    array('select'  => 'candidate.key_skills AS keySkills',
                                      'pagerRender' => 'return substr(trim($rsData[\'keySkills\']), 0, 30) . (strlen(trim($rsData[\'keySkills\'])) > 30 ? \'...\' : \'\');',
                                      'sortableColumn'    => 'keySkills',
                                      'pagerWidth'   => 210,
                                      'filter'         => 'candidate.key_skills'),
 
-            'Recent Status' => array('select'  => '(
+            __('Recent Status') => array('select'  => '(
                                                     SELECT
                                                         CONCAT(
                                                             \'<a href="'.CATSUtility::getIndexName().'?m=joborders&amp;a=show&amp;jobOrderID=\',
@@ -1267,7 +1267,7 @@ class CandidatesDataGrid extends DataGrid
                                      'filterHaving'  => 'lastStatus',
                                      'filterTypes'   => '=~'),
 
-            'Recent Status (Extended)' => array('select'  => '(
+            __('Recent Status (Extended)') => array('select'  => '(
                                                     SELECT
                                                         CONCAT(
                                                             candidate_joborder_status.short_description,
@@ -1304,42 +1304,42 @@ class CandidatesDataGrid extends DataGrid
                                      'exportable' => false,
                                      'filterable' => false),
 
-            'Source' =>        array('select'  => 'candidate.source AS source',
+            __('Source') =>        array('select'  => 'candidate.source AS source',
                                      'sortableColumn'    => 'source',
                                      'pagerWidth'   => 140,
                                      'alphaNavigation' => true,
                                      'filter'         => 'candidate.source'),
 
-            'Available' =>     array('select'   => 'DATE_FORMAT(candidate.date_available, \'%m-%d-%y\') AS dateAvailable',
+            __('Available') =>     array('select'   => 'DATE_FORMAT(candidate.date_available, \'%m-%d-%y\') AS dateAvailable',
                                      'sortableColumn'     => 'dateAvailable',
                                      'pagerWidth'    => 60),
 
-            'Current Employer' => array('select'  => 'candidate.current_employer AS currentEmployer',
+            __('Current Employer') => array('select'  => 'candidate.current_employer AS currentEmployer',
                                      'sortableColumn'    => 'currentEmployer',
                                      'pagerWidth'   => 125,
                                      'alphaNavigation' => true,
                                      'filter'         => 'candidate.current_employer'),
 
-            'Current Pay' => array('select'  => 'candidate.current_pay AS currentPay',
+            __('Current Pay') => array('select'  => 'candidate.current_pay AS currentPay',
                                      'sortableColumn'    => 'currentPay',
                                      'pagerWidth'   => 125,
                                      'filter'         => 'candidate.current_pay',
                                      'filterTypes'   => '===>=<'),
 
-            'Desired Pay' => array('select'  => 'candidate.desired_pay AS desiredPay',
+            __('Desired Pay') => array('select'  => 'candidate.desired_pay AS desiredPay',
                                      'sortableColumn'    => 'desiredPay',
                                      'pagerWidth'   => 125,
                                      'filter'         => 'candidate.desired_pay',
                                      'filterTypes'   => '===>=<'),
 
-            'Can Relocate'  => array('select'  => 'candidate.can_relocate AS canRelocate',
+            __('Can Relocate')  => array('select'  => 'candidate.can_relocate AS canRelocate',
                                      'pagerRender'     => 'return ($rsData[\'canRelocate\'] == 0 ? \'No\' : \'Yes\');',
                                      'exportRender'     => 'return ($rsData[\'canRelocate\'] == 0 ? \'No\' : \'Yes\');',
                                      'sortableColumn'    => 'canRelocate',
                                      'pagerWidth'   => 80,
                                      'filter'         => 'candidate.can_relocate'),
 
-            'Owner' =>         array('select'   => 'owner_user.first_name AS ownerFirstName,' .
+            __('Owner') =>         array('select'   => 'owner_user.first_name AS ownerFirstName,' .
                                                    'owner_user.last_name AS ownerLastName,' .
                                                    'CONCAT(owner_user.last_name, owner_user.first_name) AS ownerSort',
                                      'join'     => 'LEFT JOIN user AS owner_user ON candidate.owner = owner_user.user_id',
@@ -1350,13 +1350,13 @@ class CandidatesDataGrid extends DataGrid
                                      'alphaNavigation' => true,
                                      'filter'         => 'CONCAT(owner_user.first_name, owner_user.last_name)'),
 
-            'Created' =>       array('select'   => 'DATE_FORMAT(candidate.date_created, \'%m-%d-%y\') AS dateCreated',
+            __('Created') =>       array('select'   => 'DATE_FORMAT(candidate.date_created, \'%m-%d-%y\') AS dateCreated',
                                      'pagerRender'      => 'return $rsData[\'dateCreated\'];',
                                      'sortableColumn'     => 'dateCreatedSort',
                                      'pagerWidth'    => 60,
                                      'filterHaving' => 'DATE_FORMAT(candidate.date_created, \'%m-%d-%y\')'),
 
-            'Modified' =>      array('select'   => 'DATE_FORMAT(candidate.date_modified, \'%m-%d-%y\') AS dateModified',
+            __('Modified') =>      array('select'   => 'DATE_FORMAT(candidate.date_modified, \'%m-%d-%y\') AS dateModified',
                                      'pagerRender'      => 'return $rsData[\'dateModified\'];',
                                      'sortableColumn'     => 'dateModifiedSort',
                                      'pagerWidth'    => 60,
@@ -1366,7 +1366,7 @@ class CandidatesDataGrid extends DataGrid
             /* This one only works when called from the saved list view.  Thats why it is not optional, filterable, or exportable.
              * FIXME:  Somehow make this defined in the associated savedListDataGrid class child.
              */
-            'Added To List' =>  array('select'   => 'DATE_FORMAT(saved_list_entry.date_created, \'%m-%d-%y\') AS dateAddedToList,
+            __('Added To List') =>  array('select'   => 'DATE_FORMAT(saved_list_entry.date_created, \'%m-%d-%y\') AS dateAddedToList,
                                                      saved_list_entry.date_created AS dateAddedToListSort',
                                      'pagerRender'      => 'return $rsData[\'dateAddedToList\'];',
                                      'sortableColumn'     => 'dateAddedToListSort',
@@ -1375,19 +1375,19 @@ class CandidatesDataGrid extends DataGrid
                                      'filterable' => false,
                                      'exportable' => false),
 
-            'OwnerID' =>       array('select'    => '',
+            __('OwnerID') =>       array('select'    => '',
                                      'filter'    => 'candidate.owner',
                                      'pagerOptional' => false,
                                      'filterable' => false,
                                      'filterDescription' => 'Only My Candidates'),
 
-            'IsHot' =>         array('select'    => '',
+            __('IsHot') =>         array('select'    => '',
                                      'filter'    => 'candidate.is_hot',
                                      'pagerOptional' => false,
                                      'filterable' => false,
                                      'filterDescription' => 'Only Hot Candidates'),
         // Tags filtering
-        	'Tags'	=>			array(
+        	__('Tags')	=>			array(
                                      'select'	=> '(
                                                     SELECT TRIM(GROUP_CONCAT(\' \',t2.title))	FROM candidate_tag t1
                                                     LEFT JOIN tag t2 ON t1.tag_id = t2.tag_id

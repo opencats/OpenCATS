@@ -52,15 +52,15 @@ class ContactsListByViewDataGrid extends ContactsDataGrid
         $this->defaultSortDirection = 'DESC';
    
         $this->_defaultColumns = array( 
-            array('name' => 'Attachments', 'width' => 10),
-            array('name' => 'First Name', 'width' => 80),
-            array('name' => 'Last Name', 'width' => 80),
-            array('name' => 'Company', 'width' => 135),
-            array('name' => 'Title', 'width' => 135),
-            array('name' => 'Work Phone', 'width' => 85),
-            array('name' => 'Owner', 'width' => 85),
-            array('name' => 'Created', 'width' => 60),
-            array('name' => 'Modified', 'width' => 60),
+            array('name' => __('Attachments'), 'width' => 10),
+            array('name' => __('First Name'), 'width' => 80),
+            array('name' => __('Last Name'), 'width' => 80),
+            array('name' => __('Company'), 'width' => 135),
+            array('name' => __('Title'), 'width' => 135),
+            array('name' => __('Work Phone'), 'width' => 85),
+            array('name' => __('Owner'), 'width' => 85),
+            array('name' => __('Created'), 'width' => 60),
+            array('name' => __('Modified'), 'width' => 60),
         );
    
         parent::__construct("contacts:ContactsListByViewDataGrid", 
@@ -79,8 +79,8 @@ class ContactsListByViewDataGrid extends ContactsDataGrid
     {
         $html = '';
 
-        $html .= $this->getInnerActionAreaItemPopup('Add To List', CATSUtility::getIndexName().'?m=lists&amp;a=addToListFromDatagridModal&amp;dataItemType='.DATA_ITEM_CONTACT, 450, 350);
-        $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
+        $html .= $this->getInnerActionAreaItemPopup(__('Add To List'), CATSUtility::getIndexName().'?m=lists&amp;a=addToListFromDatagridModal&amp;dataItemType='.DATA_ITEM_CONTACT, 450, 350);
+        $html .= $this->getInnerActionAreaItem(__('Export'), CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
 
         $html .= parent::getInnerActionArea();
 
@@ -106,15 +106,15 @@ class contactSavedListByViewDataGrid extends ContactsDataGrid
         $this->defaultSortDirection = 'DESC';
    
         $this->_defaultColumns = array( 
-            array('name' => 'Attachments', 'width' => 10),
-            array('name' => 'First Name', 'width' => 80),
-            array('name' => 'Last Name', 'width' => 80),
-            array('name' => 'Company', 'width' => 135),
-            array('name' => 'Title', 'width' => 135),
-            array('name' => 'Work Phone', 'width' => 85),
-            array('name' => 'Owner', 'width' => 85),
-            array('name' => 'Created', 'width' => 60),
-            array('name' => 'Modified', 'width' => 60),
+            array('name' => __('Attachments'), 'width' => 10),
+            array('name' => __('First Name'), 'width' => 80),
+            array('name' => __('Last Name'), 'width' => 80),
+            array('name' => __('Company'), 'width' => 135),
+            array('name' => __('Title'), 'width' => 135),
+            array('name' => __('Work Phone'), 'width' => 85),
+            array('name' => __('Owner'), 'width' => 85),
+            array('name' => __('Created'), 'width' => 60),
+            array('name' => __('Modified'), 'width' => 60),
         );
    
         parent::__construct("contacts:contactSavedListByViewDataGrid", 
@@ -133,8 +133,8 @@ class contactSavedListByViewDataGrid extends ContactsDataGrid
     {
         $html = '';
 
-        $html .= $this->getInnerActionAreaItem('Remove From This List', CATSUtility::getIndexName().'?m=lists&amp;a=removeFromListDatagrid&amp;dataItemType='.DATA_ITEM_CONTACT.'&amp;savedListID='.$this->getMiscArgument(), false);
-        $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
+        $html .= $this->getInnerActionAreaItem(__('Remove From This List'), CATSUtility::getIndexName().'?m=lists&amp;a=removeFromListDatagrid&amp;dataItemType='.DATA_ITEM_CONTACT.'&amp;savedListID='.$this->getMiscArgument(), false);
+        $html .= $this->getInnerActionAreaItem(__('Export'), CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
 
         $html .= parent::getInnerActionArea();
 

@@ -1,5 +1,5 @@
 <?php /* $Id: Backup.tpl 3582 2007-11-12 22:58:48Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Settings', array('js/backup.js')); ?>
+<?php TemplateUtility::printHeader(__('Settings'), array('js/backup.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">
@@ -11,31 +11,30 @@
                     <td width="3%">
                         <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Settings: Site Backup</h2></td>
+                    <td><h2><?php echo __("Settings");?>: <?php echo __("Site Backup");?></h2></td>
                 </tr>
             </table>
 
-            <p class="note">Create Site Backup</p>
+            <p class="note"><?php echo __("Create Site Backup");?></p>
 
             <table class="searchTable" width="100%">
                 <tr>
                     <td>
-                        Create a backup of your entire CATS database (including all of your attachments).<br />
-                        Note: Only one backup of your database can be stored on the server at a time.  Creating a new backup will
-                        delete the previous backup.<br />
+                        <?php echo __("Create a backup of your entire CATS database (including all of your attachments).");?><br />
+                        <?php echo __("Note: Only one backup of your database can be stored on the server at a time.  Creating a new backup will delete the previous backup.");?><br />
                         <br />
                     </td>
                 </tr>
                     <td>
                     <span id="backupRunning" style="display:none;">
-                        Backing up database, please wait... (Now would be a good time to take a coffee break!)
+                        <?php echo __("Backing up database, please wait... (Now would be a good time to take a coffee break!)");?>
                         <br /><br />
-                        Status:<br />
+                        <?php echo __("Status");?>:<br />
                     </span>
                     <span id="progressHistory">
                     </span>
                     <span id="progress">
-                        Last backup:
+                        <?php echo __("Last backup");?>:
                         <table class="attachmentsTable">
                             <?php foreach ($this->attachmentsRS as $rowNumber => $attachmentsData): ?>
                                 <tr>
@@ -52,7 +51,7 @@
                                     </td>
                                     <td><?php $this->_($attachmentsData['dateCreated']) ?></td>
                                     <td>
-                                        <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=deleteBackup" title="Delete" onclick="javascript:return confirm('Delete this backup?');">
+                                        <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=deleteBackup" title="<?php echo __("Delete");?>" onclick="javascript:return confirm('<?php echo __("Delete this backup?");?>');">
                                             <img src="images/actions/delete.gif" alt="" width="16" height="16" border="0" />
                                         </a>
                                     </td>
@@ -62,12 +61,12 @@
                         <?php if (empty($this->attachmentsRS)): ?>
                             None<br />
                         <?php else: ?>
-                            Click the file above to download the backup.<br />
+                            <?php echo __("Click the file above to download the backup.");?><br />
                         <?php endif; ?>
 
                     <br />
-                    <input type="button" class="button" value="Create Full System Backup" onclick="startBackup('settings:backup', '');" style="margin:3px; width:200px;"><br />
-                    <input type="button" class="button" value="Create Attachments Backup" onclick="startBackup('settings:backup', '&attachmentsOnly=true');" style="margin:3px; width:200px;">
+                    <input type="button" class="button" value="<?php echo __("Create Full System Backup");?>" onclick="startBackup('settings:backup', '');" style="margin:3px; width:200px;"><br />
+                    <input type="button" class="button" value="<?php echo __("Create Attachments Backup");?>" onclick="startBackup('settings:backup', '&attachmentsOnly=true');" style="margin:3px; width:200px;">
                     </span>
                     <span id="progressBar" style="display:none;">
                     <br /><br />

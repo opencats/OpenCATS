@@ -1,3 +1,7 @@
+<?php
+chdir('./../../');
+include_once('./config.php');
+?>
 /*
  * CATS
  * Calendar UI JavaScript Library
@@ -45,19 +49,19 @@ function generateCalendarEntrySmall(time, title, separator, entry)
     if (typeImage != '')
     {
         // FIXME: Show actual type of event instead of "Type of Event" in title.
-        iconSet += '<img class="absmiddle" src="' + typeImage + '" title="Type of Event" /> ';
+        iconSet += '<img class="absmiddle" src="' + typeImage + '" title="<?php echo __("Type of Event");?>" /> ';
     }
 
     iconSet += entry.getData('displayDataItemSmall');
 
     if (entry.getData('reminderEnabled') == 1)
     {
-        iconSet += '<img class="absmiddle" src="' + imageAlert + '" title="Reminder Set" /> ';
+        iconSet += '<img class="absmiddle" src="' + imageAlert + '" title="<?php echo __("Reminder Set");?>" /> ';
     }
 
     if (entry.getData('public') == 1)
     {
-        iconSet += '<img class="absmiddle" src="images/public.gif" title="Public Entry" /> ';
+        iconSet += '<img class="absmiddle" src="images/public.gif" title="<?php echo __("Public Entry");?>" /> ';
     }
 
     iconSet += '</nobr></nowrap>';
@@ -96,17 +100,17 @@ function generateCalendarEntryDayView(time, title, position, idDiv, idEntry, sep
     if (typeImage != '')
     {
         // FIXME: Show actual type of event instead of "Type of Event" in title.
-        iconSet += '<img class="absmiddle" src="' + typeImage + '" title="Type of Event" /> ';
+        iconSet += '<img class="absmiddle" src="' + typeImage + '" title="<?php echo __("Type of Event");?>" /> ';
     }
 
     if (entry.getData('reminderEnabled') == 1)
     {
-        iconSet += '<img class="absmiddle" src="' + imageAlert + '" title="Reminder Set" /> ';
+        iconSet += '<img class="absmiddle" src="' + imageAlert + '" title="<?php echo __("Reminder Set");?>" /> ';
     }
 
     if (entry.getData('public') == 1)
     {
-        iconSet += '<img class="absmiddle" src="images/public.gif" title="Public Entry" /> ';
+        iconSet += '<img class="absmiddle" src="images/public.gif" title="<?php echo __("Public Entry");?>" /> ';
     }
 
     iconSet += '</nobr></nowrap>';
@@ -276,8 +280,8 @@ function calendarViewEvent(entry)
     }
     else
     {
-        document.getElementById('viewEventTime').innerHTML = 'All Day / No Specific Time';
-        document.getElementById('viewEventDuration').innerHTML = '<i>(All day event - None Set)</i>';
+        document.getElementById('viewEventTime').innerHTML = '<?php echo __("All Day / No Specific Time");?>';
+        document.getElementById('viewEventDuration').innerHTML = '<i>(<?php echo __("All day event - None Set");?>)</i>';
     }
     if (entry.getData('reminderEnabled') == 1)
     {
@@ -286,7 +290,7 @@ function calendarViewEvent(entry)
     }
     else
     {
-        document.getElementById('viewEventReminder').innerHTML = '<i>(None Set)</i>';
+        document.getElementById('viewEventReminder').innerHTML = '<i>(<?php echo __("None Set");?>)</i>';
     }
 
     if (entry.getData('description') != '')
@@ -295,7 +299,7 @@ function calendarViewEvent(entry)
     }
     else
     {
-        document.getElementById('viewEventDescription').innerHTML = '<i>(None Set)</i>';
+        document.getElementById('viewEventDescription').innerHTML = '<i>(<?php echo __("None Set");?>)</i>';
     }
 
     currentViewedEntry = entry;
@@ -419,7 +423,7 @@ function userCalendarAddEvent()
 
 function confirmDeleteEntry()
 {
-    if (!confirm("Are you sure you want to delete this entry?"))
+    if (!confirm("<?php echo __("Are you sure you want to delete this entry?");?>"))
     {
         return;
     }
@@ -507,27 +511,27 @@ function getDurationString(duration)
 
     if (duration < 1)
     {
-        string = 'All Day';
+        string = '<?php echo __("All Day");?>';
     }
     else if (duration == 1)
     {
-        string = '1 Minute';
+        string = '<?php echo __("1 Minute");?>';
     }
     else if (duration < 60)
     {
-        string = duration + ' Minutes';
+        string = '<?php echo sprintf(__("%s Minutes"),"'+duration+'");?>';
     }
     else if (duration == 60)
     {
-        string = '1 Hour';
+        string = '<?php echo __("1 Hour");?>';
     }
     else if (duration <= 240)
     {
-        string = ((duration * 1.0) / 60) + ' Hours';
+        string = '<?php echo sprintf(__("%s Hours"),"'+((duration * 1.0) / 60)+'");?>';
     }
     else
     {
-        string = 'More Than 4 Hours';
+        string = '<?php echo __("More Than 4 Hours");?>';
     }
 
     return string;
@@ -537,31 +541,31 @@ function getReminderTimeString(reminderTime)
 {
     if (reminderTime < 1)
     {
-        string = '(None Set)';
+        string = '(<?php echo __("None Set");?>)';
     }
     else if (reminderTime == 1)
     {
-        string = '1 Minute Before';
+        string = '<?php echo __("1 Minute Before");?>';
     }
     else if (reminderTime < 60)
     {
-        string = reminderTime + ' Minutes Before';
+        string = '<?php echo sprintf(__("%s Minutes Before"),"'+reminderTime+'");?>';
     }
     else if (reminderTime == 60)
     {
-        string = '1 Hour Before';
+        string = '<?php echo __("1 Hour Before");?>';
     }
     else if (reminderTime < 1440)
     {
-        string = ((reminderTime * 1.0) / 60) + ' Hours Before';
+        string = '<?php echo sprintf(__("%s Hours Before"),"'+((reminderTime * 1.0) / 60)+'");?>';
     }
     else if (reminderTime == 1440)
     {
-        string = '1 Day Before';
+        string = '<?php echo __("1 Day Before");?>';
     }
     else
     {
-        string = ((reminderTime * 1.0) / 1440) + ' Days Before';
+        string = '<?php echo sprintf(__("%s Days Before"),"'+((reminderTime * 1.0) / 1440)+'");?>';
     }
 
 	return string;

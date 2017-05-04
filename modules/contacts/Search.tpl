@@ -1,5 +1,5 @@
 <?php /* $Id: Search.tpl 3676 2007-11-21 21:02:15Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Contacts', array('modules/contacts/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js')); ?>
+<?php TemplateUtility::printHeader(__('Contacts'), array('modules/contacts/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">
@@ -9,9 +9,9 @@
             <table>
                 <tr>
                     <td width="3%">
-                        <img src="images/contact.gif" width="24" height="24" border="0" alt="Contacts" style="margin-top: 3px;" />&nbsp;
+                        <img src="images/contact.gif" width="24" height="24" border="0" alt="<?php echo __("Contacts");?>" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Contacts: Search Contacts</h2></td>
+                    <td><h2><?php echo __("Contacts");?>: <?php echo __("Search Contacts");?></h2></td>
                 </tr>
             </table>
 
@@ -27,14 +27,14 @@
 
                             <?php TemplateUtility::printSavedSearch($this->savedSearchRS); ?>
 
-                            <label id="searchModeLabel" for="searcgMode">Search By:</label>&nbsp;
+                            <label id="searchModeLabel" for="searcgMode"><?php echo __("Search By");?>:</label>&nbsp;
                             <select id="searchMode" name="mode" onclick="advancedSearchConsider();" class="selectBox">
-                                <option value="searchByFullName"<?php if ($this->mode == "searchByFullName"): ?> selected<?php endif; ?>>Contact Name</option>
-                                <option value="searchByCompanyName"<?php if ($this->mode == "searchByCompanyName"): ?> selected<?php endif; ?>>Company Name</option>
-                                <option value="searchByTitle"<?php if ($this->mode == "searchByTitle"): ?> selected<?php endif; ?>>Title</option>
+                                <option value="searchByFullName"<?php if ($this->mode == "searchByFullName"): ?> selected<?php endif; ?>><?php echo __("Contact Name");?></option>
+                                <option value="searchByCompanyName"<?php if ($this->mode == "searchByCompanyName"): ?> selected<?php endif; ?>><?php echo __("Company Name");?></option>
+                                <option value="searchByTitle"<?php if ($this->mode == "searchByTitle"): ?> selected<?php endif; ?>><?php echo __("Title");?></option>
                             </select>&nbsp;
                             <input type="text" class="inputbox" id="searchText" name="wildCardString" value="<?php if (!empty($this->wildCardString)) echo(urldecode($this->wildCardString)); ?>" style="width:250px" />&nbsp;*&nbsp;
-                            <input type="submit" class="button" id="searchContacts" name="searchContacts" value="Search" />
+                            <input type="submit" class="button" id="searchContacts" name="searchContacts" value="<?php echo __("Search");?>" />
                             <?php TemplateUtility::printAdvancedSearch(''); ?>
                         </form>
                     </td>
@@ -47,7 +47,7 @@
 
             <?php if ($this->isResultsMode): ?>
                 <br />
-                <p class="note">Search Results (<?php echo(count($this->rs)); ?>)</p>
+                <p class="note"><?php echo __("Search Results");?> (<?php echo(count($this->rs)); ?>)</p>
 
                 <?php if (!empty($this->rs)): ?>
                     <?php echo($this->exportForm['header']); ?>
@@ -55,22 +55,22 @@
                         <tr>
                             <th></th>
                             <th align="left" nowrap="nowrap">
-                                <?php $this->pager->printSortLink('firstName', 'First Name'); ?>
+                                <?php $this->pager->printSortLink('firstName', __('First Name')); ?>
                             </th>
                             <th align="left" nowrap="nowrap">
-                                <?php $this->pager->printSortLink('lastName', 'Last Name'); ?>
+                                <?php $this->pager->printSortLink('lastName', __('Last Name')); ?>
                             </th>
                             <th align="left" nowrap="nowrap">
-                                <?php $this->pager->printSortLink('title', 'Title'); ?>
+                                <?php $this->pager->printSortLink('title', __('Title')); ?>
                             </th>
                             <th align="left" nowrap="nowrap">
-                                <?php $this->pager->printSortLink('companyName', 'Company'); ?>
+                                <?php $this->pager->printSortLink('companyName', __('Company')); ?>
                             </th>
                             <th align="left" nowrap="nowrap">
-                                <?php $this->pager->printSortLink('dateCreated', 'Created'); ?>
+                                <?php $this->pager->printSortLink('dateCreated', __('Created')); ?>
                             </th>
                             <th align="left" nowrap="nowrap">
-                                <?php $this->pager->printSortLink('owner_user.last_name', 'Owner'); ?>
+                                <?php $this->pager->printSortLink('owner_user.last_name', __('Owner')); ?>
                             </th>
                         </tr>
 
@@ -78,8 +78,8 @@
                             <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
                                 <td valign="top" nowrap="nowrap">
                                     <input type="checkbox" id="checked_<?php echo($data['contactID']); ?>" name="checked_<?php echo($data['contactID']); ?>" />
-                                    <a href="javascript:void(0);" onclick="window.open('<?php echo(CATSUtility::getIndexName()); ?>?m=contacts&amp;a=show&amp;contactID=<?php $this->_($data['contactID']); ?>')" title="View in New Window">
-                                        <img src="images/new_window.gif" alt="(Preview)" border="0" width="15" height="15" />
+                                    <a href="javascript:void(0);" onclick="window.open('<?php echo(CATSUtility::getIndexName()); ?>?m=contacts&amp;a=show&amp;contactID=<?php $this->_($data['contactID']); ?>')" title="<?php echo __("View in New Window");?>">
+                                        <img src="images/new_window.gif" alt="(<?php echo __("Preview");?>)" border="0" width="15" height="15" />
                                     </a>
                                 </td>
                                 <td valign="top" align="left">
@@ -106,7 +106,7 @@
                     <?php echo($this->exportForm['footer']); ?>
                     <?php echo($this->exportForm['menu']); ?>
                 <?php else: ?>
-                    <p>No matching entries found.</p>
+                    <p><?php echo __("No matching entries found.");?></p>
                 <?php endif; ?>
             <?php endif; ?>
         </div>

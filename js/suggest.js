@@ -35,7 +35,7 @@
  *   <input type="text" name="companyName" id="companyName" class="inputbox"
  *          onFocus="suggestListActivate('getCompanyNames', 'companyName',
  *          'CompanyResults', 'companyID', 'ajaxTextEntryHover', 0,
- *          '<?php echo($this->sessionCookie); ?>');" />
+ *          '<? php echo($this->sessionCookie); ?>');" />
  *  <br />
  *  <div id="CompanyResults" class="ajaxSearchResults"></div>
  *

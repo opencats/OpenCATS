@@ -34,7 +34,7 @@
 $careerPage = true;
 
 chdir('..');
-include_once('./lib/CATSUtility.php');
-include_once(CATSUtility::getIndexName());
+include_once(__DIR__.'/.././lib/CATSUtility.php');
+include_once(__DIR__.'/../'.CATSUtility::getIndexName());
 
 ?>

@@ -7,6 +7,10 @@
  *
  * $Id: validator.js 3634 2007-11-16 16:41:47Z brian $
  */
+<?php
+chdir('./../../');
+include_once('./config.php');
+?>
 
 function checkAddForm(form)
 {
@@ -21,7 +25,7 @@ function checkAddForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -43,7 +47,7 @@ function checkEditForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -58,7 +62,7 @@ function checkSearchByJobTitleForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -73,7 +77,7 @@ function checkSearchByCompanyNameForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -88,7 +92,7 @@ function checkAttachmentForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -103,7 +107,7 @@ function checkTitle()
     fieldLabel = document.getElementById('titleLabel');
     if (fieldValue.trim() == '')
     {
-        errorMessage = "    - You must enter a job title.\n";
+        errorMessage = "    - <?php echo __("You must enter a job title.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -123,7 +127,7 @@ function checkCity()
     fieldLabel = document.getElementById('cityLabel');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter a city.\n";
+        errorMessage = "    - <?php echo __("You must enter a city.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -143,7 +147,7 @@ function checkState()
     fieldLabel = document.getElementById('stateLabel');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter a state.\n";
+        errorMessage = "    - <?php echo __("You must enter a state.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -163,7 +167,7 @@ function checkCompany()
     fieldLabel = document.getElementById('companyIDLabel');
     if (fieldValue <= 0)
     {
-        errorMessage = "    - You must select a company.\n";
+        errorMessage = "    - <?php echo __("You must select a company.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -183,7 +187,7 @@ function checkRecruiter()
     fieldLabel = document.getElementById('recruiterLabel');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must select a recruiter.\n";
+        errorMessage = "    - <?php echo __("You must select a recruiter.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -203,7 +207,7 @@ function checkOwner()
     fieldLabel = document.getElementById('ownerLabel');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must select an owner.\n";
+        errorMessage = "    - <?php echo __("You must select an owner.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -223,13 +227,13 @@ function checkOpenings()
     fieldLabel = document.getElementById('openingsLabel');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter a number of openings.\n";
+        errorMessage = "    - <?php echo __("You must enter a number of openings.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
     else if (!stringIsNumeric(fieldValue))
     {
-        errorMessage = "    - Openings must be a number.\n";
+        errorMessage = "    - <?php echo __("Openings must be a number.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -249,13 +253,13 @@ function checkOpeningsAvailable()
     fieldLabel = document.getElementById('openingsAvailableLabel');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter a number of openings.\n";
+        errorMessage = "    - <?php echo __("You must enter a number of openings.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
     else if (!stringIsNumeric(fieldValue))
     {
-        errorMessage = "    - Openings must be a number.\n";
+        errorMessage = "    - <?php echo __("Openings must be a number.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -268,7 +272,7 @@ function checkOpeningsAvailable()
     if (stringIsNumeric(fieldValueToCompare) && stringIsNumeric(fieldValue) &&
         fieldValue > fieldValueToCompare) 
     {
-        errorMessage = "    - Remaining Openings can not be more than "+fieldValueToCompare+".\n";
+        errorMessage = "    - <?php echo __("Remaining Openings can not be more than");?> "+fieldValueToCompare+".\n";
 
         fieldLabel.style.color = '#ff0000';            
     }    
@@ -285,7 +289,7 @@ function checkSearchJobTitle()
     fieldLabel = document.getElementById('wildCardStringLabel_jobTitle');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter some search text.\n";
+        errorMessage = "    - <?php echo __("You must enter some search text.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -305,7 +309,7 @@ function checkSearchCompanyName()
     fieldLabel = document.getElementById('wildCardStringLabel_companyName');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter some search text.\n";
+        errorMessage = "    - <?php echo __("You must enter some search text.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -325,7 +329,7 @@ function checkFilename()
     fieldLabel = document.getElementById('file');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter a file to upload.\n";
+        errorMessage = "    - <?php echo __("You must enter a file to upload.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }

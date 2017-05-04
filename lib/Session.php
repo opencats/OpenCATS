@@ -55,6 +55,7 @@ class CATSSession
     private $_siteName = '';
     private $_unixName = '';
     private $_username = '';
+    private $_userCountry = '';
     private $_password = '';
     private $_firstName = '';
     private $_lastName = '';
@@ -668,6 +669,7 @@ class CATSSession
                 user.pipeline_entries_per_page AS pipelineEntriesPerPage,
                 user.column_preferences as columnPreferences,
                 user.can_see_eeo_info as canSeeEEOInfo,
+        		user.country as country,
                 site.name AS siteName,
                 site.unix_name AS unixName,
                 site.user_licenses AS userLicenses,
@@ -793,6 +795,7 @@ class CATSSession
                 $this->_userLicenses           = $rs['userLicenses'];
                 $this->_accessLevel            = $rs['accessLevel'];
                 $this->_realAccessLevel        = $rs['accessLevel'];
+                $this->_userCountry            = $rs['country'];
                 $this->_categories             = explode(',', $rs['categories']);
                 $this->_isASP                  = ($rs['companyID'] != 0 ? true : false);
                 $this->_isHrMode               = ($rs['isHrMode'] != 0 ? true : false);
@@ -1171,6 +1174,20 @@ class CATSSession
         {
             return array();
         }
+    }
+    
+    public function resetDataGridColumnPreferences(){
+    	$this->__dataGridColumnPreferences = array();
+    }
+    
+    public function getUserCountry()
+    {
+    	return $this->_userCountry;
+    }
+    
+    public function setUserCountry($country)
+    {
+    	$this->_userCountry=$country;
     }
 
     /**

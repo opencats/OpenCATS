@@ -1,5 +1,5 @@
 <?php /* $Id: Import.tpl 3370 2007-11-01 16:43:07Z andrew $ */ ?>
-<?php TemplateUtility::printHeader('Import', array('modules/import/import.js')); ?>
+<?php TemplateUtility::printHeader(__('Import'), array('modules/import/import.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, '', 'settings'); ?>
     <div id="main">
@@ -11,7 +11,7 @@
                     <td width="3%">
                         <img src="images/reports.gif" width="24" height="24" border="0" alt="Import" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Import Data</h2></td>
+                    <td><h2><?php echo __("Import Data");?></h2></td>
                 </tr>
             </table>
 
@@ -45,13 +45,13 @@
 
             <?php elseif (isset($this->pendingCommits)): ?>
 
-                <p class="warning" id="importHide0">Notice</p>
+                <p class="warning" id="importHide0"><?php echo __("Notice");?></p>
 
                 <table class="searchTable" id="importHide1">
                     <tr>
                         <td>
-                            You have recently imported CSV data.  You can click here to review or delete the imported data.<br />
-                            <input type="button" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=viewpending';" value="View Recent Imports" class="button" />
+                            <?php echo __("You have recently imported CSV data.  You can click here to review or delete the imported data.");?><br />
+                            <input type="button" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=viewpending';" value="<?php echo __("View Recent Imports");?>" class="button" />
                         </td>
                     </tr>
                 </table>
@@ -60,12 +60,13 @@
 
 
             <?php else: ?>
-                <p class="note" id="importHide0">Warning!</p>
+                <p class="note" id="importHide0"><?php echo __("Warning!");?></p>
 
                 <table class="searchTable" id="importTable1" width="100%">
                     <tr>
-                        <td>CATS may discard or fail to read some of the submitted data which it does not
-                        understand how to use. Do not discard the original data!
+                        <td><p class="warning">
+                        <?php echo __("CATS may discard or fail to read some of the submitted data which it does not understand how to use. Do not discard the original data!");?>
+                        </p>
                         </td>
                     </tr>
 
@@ -74,20 +75,20 @@
                 <br />
             <?php endif; ?>
 
-            <p class="warning" id="importShow0" style="display:none;">PLEASE WAIT!</p>
+            <p class="warning" id="importShow0" style="display:none;"><?php echo __("PLEASE WAIT!");?></p>
 
             <table class="searchTable" id="importShow1" style="display:none;">
                 <tr>
                     <td>
-                        Please wait! Importing data may take a few minutes.<br />
+                        <?php echo __("Please wait! Importing data may take a few minutes.");?><br />
                         <img src="images/loading.gif" />
                     </td>
                 </tr>
             </table>
 
-            <p class="note" id="importHide2">Import Data</p>
+            <p class="note" id="importHide2"><?php echo __("Import Data");?></p>
 
-            <form name="importDataForm" id="importDataForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=import&amp;#step2" enctype="multipart/form-data" method="post" autocomplete="off" <?php if (isset($this->contactsUploadNotice) && $this->contactsUploadNotice): ?> onsubmit="return checkField(<?php echo(count($this->theFields)); ?>, 'company_id', 'You must have 1 field set as Company.') && showLoading();"<?php else: ?> onsubmit="return showLoading();"<?php endif; ?>>
+            <form name="importDataForm" id="importDataForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=import&amp;#step2" enctype="multipart/form-data" method="post" autocomplete="off" <?php if (isset($this->contactsUploadNotice) && $this->contactsUploadNotice): ?> onsubmit="return checkField(<?php echo(count($this->theFields)); ?>, 'company_id', '<?php echo __("You must have 1 field set as Company.");?>') && showLoading();"<?php else: ?> onsubmit="return showLoading();"<?php endif; ?>>
                 <input type="hidden" name="postback" id="postback" value="postback" />
                 <input type="hidden" id="fileName" name="fileName" value="<?php echo($this->fileName); ?>" />
                 <input type="hidden" id="dataContaining" name="dataContaining" value="<?php echo($this->dataContaining) ?>" />
@@ -99,13 +100,15 @@
 
                     <tr>
                         <td class="tdVertical">
-                            <label id="dataContainingDisabledLabel" for="dataContainingDisabled">File Format:</label>
+                            <label id="dataContainingDisabledLabel" for="dataContainingDisabled"><?php echo __("File Format");?>:</label>
                         </td>
                         <td class="tdData">
                             <?php if ($this->dataContaining == 'tab'): ?>
-                                Tab Delimited Data
+                                <?php echo __("Tab Delimited Data");?>
                             <?php elseif ($this->dataContaining == 'csv'): ?>
-                                Comma Delimited Data (CSV)
+                                <?php echo __("Comma Delimited Data (CSV)");?>
+                            <?php elseif ($this->dataContaining == 'semi'): ?>
+                                <?php echo __("Semicolon Delimited Data (CSV)");?>                                
                             <?php endif; ?>
 
                         </td>
@@ -113,59 +116,54 @@
 
                     <tr>
                         <td class="tdVertical">
-                            <label id="importIntoLabel" for="importIntoDisabled">Import Into:</label>
+                            <label id="importIntoLabel" for="importIntoDisabled"><?php echo __("Import Into");?>:</label>
                         </td>
                         <td class="tdData">
                             <?php if ($this->importInto == 'Candidates'): ?>
-                                <img src="images/candidate_inline.gif">&nbsp;Candidates
+                                <img src="images/candidate_inline.gif">&nbsp;<?php echo __("Candidates");?>
                             <?php elseif ($this->importInto == 'Companies'): ?>
-                                <img src="images/mru/company.gif">&nbsp;Companies
+                                <img src="images/mru/company.gif">&nbsp;<?php echo __("Companies");?>
                             <?php elseif ($this->importInto == 'Contacts'): ?>
-                                <img src="images/mru/contact.gif">&nbsp;Contacts
+                                <img src="images/mru/contact.gif">&nbsp;<?php echo __("Contacts");?>
                             <?php endif; ?>
                         </td>
                     </tr>
                 </table>
 
-                    <input type="reset"  class="button" name="reset" id="importHide4" value="Reset" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=import';" />&nbsp;
+                    <input type="reset"  class="button" name="reset" id="importHide4" value="<?php echo __("Reset");?>" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=import';" />&nbsp;
 
             <br />
             <br />
 
 
-            <p class="note" id="importHide5"><a name="step2">Map Data</a></p>
+            <p class="note" id="importHide5"><a name="step2"><?php echo __("Map Data");?></a></p>
 
             <?php if (isset($this->contactsUploadNotice) && $this->contactsUploadNotice): ?>
 
             <table class="searchTable" id="importHide6">
                 <tr>
                     <td>
-                        You are importing data into Contacts. Each contact is required to have an associated
-                        Company.<br /><br />
+                        <?php echo __("You are importing data into Contacts. Each contact is required to have an associated Company.");?><br /><br />
 
-                        If you wish, CATS can create the companies for each company who is not in the database. The
-                        company's contact information will be identical to the first contacts contact information.
+                        <?php echo __("If you wish, CATS can create the companies for each company who is not in the database. The company's contact information will be identical to the first contacts contact information.");?>
                         <br /><br />
 
-                        For example, if adding John Smith listed as being associated to Fun Industries, and John
-                        Smith is listed as having work address '1234 Fun St.', then CATS can create the company Fun
-                        Industries with address '1234 Fun St.'.<br /><br />
+                        <?php echo __("For example, if adding John Smith listed as being associated to Fun Industries, and John Smith is listed as having work address '1234 Fun St.', then CATS can create the company Fun Industries with address '1234 Fun St.'.");?><br /><br />
 
-                        If you choose not to generate company data, then contacts with unknown companies will not be
-                        imported.<br /><br />
+                        <?php echo __("If you choose not to generate company data, then contacts with unknown companies will not be imported.");?><br /><br />
 
-                        <span class="bold">Should CATS generate the company data automatically?</span><br />
+                        <span class="bold"><?php echo __("Should CATS generate the company data automatically?");?></span><br />
                         <select id="generateCompanies" name="generateCompanies" class ="inputBox" style="width: 260px;" onchange="evaluateUnnamedContacts();">
-                            <option value="yes" selected="selected">Yes, generate assocated company data.</option>
-                            <option value="no">No, just import the contacts.</option>
+                            <option value="yes" selected="selected"><?php echo __("Yes, generate assocated company data.");?></option>
+                            <option value="no"><?php echo __("No, just import the contacts.");?></option>
                         </select>
                         <br />
                         <span id='unnamedContactsSpan'>
                         <br />
-                        <span class="bold">If there is no name for the companies contact, should CATS name the contact 'nobody' and add it to the company?</span><br />
+                        <span class="bold"><?php echo __("If there is no name for the companies contact, should CATS name the contact 'nobody' and add it to the company?");?></span><br />
                         <select id="unnamedContacts" name="unnamedContacts" class ="inputBox" style="width: 260px;">
-                            <option value="yes" selected="selected">Yes, add a name as necessary.</option>
-                            <option value="no">No, throw out these records.</option>
+                            <option value="yes" selected="selected"><?php echo __("Yes, add a name as necessary.");?></option>
+                            <option value="no"><?php echo __("No, throw out these records.");?></option>
                         </select>
                         </span>
                     </td>
@@ -177,8 +175,7 @@
 
             <table class="searchTable" id="importHide9">
                 <tr>
-                    <td>The following fields were detected in your data. Please pick where to put the
-                    data from each field, then press import at the bottom.</td>
+                    <td><?php echo __("The following fields were detected in your data. Please pick where to put the data from each field, then press import at the bottom.");?></td>
                 </tr>
             </table>
 
@@ -196,17 +193,17 @@
                                     <?php $match = true; ?>
                                 <?php endif; ?>
                             <?php endforeach; ?>
-                            <a href="javascript:void(0);" onclick="showSampleData(<?php echo($fieldIndex); ?>);" onmouseout="hideSampleData(<?php echo($fieldIndex); ?>);" title="Sample Data">
+                            <a href="javascript:void(0);" onclick="showSampleData(<?php echo($fieldIndex); ?>);" onmouseout="hideSampleData(<?php echo($fieldIndex); ?>);" title="<?php echo __("Sample Data");?>">
                                 <img src="images/mru/contact.gif" alt="" border="0" />
                             </a>
                             &nbsp;
                             <select id="importType<?php echo($fieldIndex); ?>" name="importType<?php echo($fieldIndex); ?>" class="inputbox" style="width: 230px;" onchange="evaluateFieldSelection(<?php echo($fieldIndex); ?>);">
-                                <option value="">Do not import.</option>
-                                <option value="cats" <?php if ($match): ?>selected<?php endif; ?>>Import as a <?php echo($this->importInto); ?> field.</option>
-                                <?php if ($this->isSA): ?><option value="foreign">Add field to Extra Fields and Import.</option><?php endif; ?>
+                                <option value=""><?php echo __("Do not import.");?></option>
+                                <option value="cats" <?php if ($match): ?>selected<?php endif; ?>><?php echo sprintf(__("Import as a %s field."),$this->importInto);?></option>
+                                <?php if ($this->isSA): ?><option value="foreign"><?php echo __("Add field to Extra Fields and Import.");?></option><?php endif; ?>
                             </select>
                             <span <?php if (!$match): ?>style="display:none;"<?php endif; ?> id="importIntoSpan<?php echo($fieldIndex); ?>">
-                                &nbsp;<?php echo($this->importInto); ?> Field:&nbsp;
+                                &nbsp;<?php echo($this->importInto); ?> <?php echo __("Field");?>:&nbsp;
                                 <select id="importIntoField<?php echo($fieldIndex); ?>" name="importIntoField<?php echo($fieldIndex); ?>" class="inputbox" style="width: 180px;">
                                     <?php for ($i = 0; $i < count($this->importTypes); $i += 2): ?>
                                         <option value='<?php echo($this->importTypes[$i+1]); ?>' <?php if ($match && strtolower($theField) == strtolower($this->importTypes[$i])): ?>selected<?php endif; ?>><?php echo($this->importTypes[$i]); ?></option>
@@ -218,7 +215,7 @@
                                 <table class="searchTable">
                                     <tr>
                                         <td>
-                                            <span class="bold">Sample Data:</span>
+                                            <span class="bold"><?php echo __("Sample Data");?>:</span>
 
                                             <?php $fieldsDisplayed = 0; ?>
                                             <?php for ($i = 0; $i < 20; $i++): ?>
@@ -227,7 +224,7 @@
                                                 <?php endif; ?>
                                             <?php endfor; ?>
                                             <?php if ($fieldsDisplayed == 0): ?>
-                                                <br /><i>(none)</i>
+                                                <br /><i>(<?php echo __("none");?>)</i>
                                             <?php endif; ?>
                                         </td>
                                     </tr>
@@ -239,8 +236,8 @@
                 <?php endforeach; ?>
             </table>
 
-            <input type="reset"  class="button" name="reset"  id="importHide8"  value="Reset" onclick="for (var i = 0; i < <?php echo(count($this->theFields)); ?>; i++) evaluateFieldSelection(i); " />&nbsp;
-            <input type="submit" class="button" name="submit" id="importHide7" value="Next - Import data" />&nbsp;
+            <input type="reset"  class="button" name="reset"  id="importHide8"  value="<?php echo __("Reset");?>" onclick="for (var i = 0; i < <?php echo(count($this->theFields)); ?>; i++) evaluateFieldSelection(i); " />&nbsp;
+            <input type="submit" class="button" name="submit" id="importHide7" value="<?php echo __("Next");?> - <?php echo __("Import data");?>" />&nbsp;
             </form>
         </div>
     </div>

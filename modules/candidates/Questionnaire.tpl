@@ -1,5 +1,5 @@
 <?php /* $Id: Questionnaire.tpl 3668 2007-11-21 00:38:50Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Candidate - '.$this->cData['firstName'].' '.$this->cData['lastName'] . ' Questionnaire', array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js', 'js/attachment.js')); ?>
+<?php TemplateUtility::printHeader(__('Candidate').' - '.$this->cData['firstName'].' '.$this->cData['lastName'] . ' '.__('Questionnaire'), array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js', 'js/attachment.js')); ?>
 <?php if (!$this->print): ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
@@ -12,7 +12,7 @@
                     <td width="3%">
                         <img src="images/candidate.gif" width="24" height="24" border="0" alt="Candidates" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Candidates: Questionnaire Results</h2></td>
+                    <td><h2><?php echo __("Candidates");?>: <?php echo __("Questionnaire Results");?></h2></td>
                </tr>
             </table>
 
@@ -21,12 +21,12 @@
             <table cellpadding="0" cellspacing="0" width="100%" border="0">
                 <tr>
                     <td align="left" valign="top">
-                        <input type="button" class="button" value="<- Back to Candidate Profile" onclick="document.location.href='<?php echo CATSUtility::getIndexName(); ?>?m=candidates&a=show&candidateID=<?php echo $this->candidateID; ?>';" />
+                        <input type="button" class="button" value="<?php echo __("<- Back to Candidate Profile");?>" onclick="document.location.href='<?php echo CATSUtility::getIndexName(); ?>?m=candidates&a=show&candidateID=<?php echo $this->candidateID; ?>';" />
                     </td>
                     <td align="right">
                         <a href="<?php echo CATSUtility::getIndexName() . '?' . str_replace('print=no', 'print=yes', $_SERVER['QUERY_STRING']); ?>">
                         <img src="images/actions/print.gif" border="0" />
-                        Printer Friendly
+                        <?php echo __("Printer Friendly");?>
                         </a>
                     </td>
                 </tr>
@@ -40,7 +40,7 @@
                 <tr>
                     <td width="40%" align="left" valign="top">
                         <span style="font-size: 16px;">
-                        <b>Candidate Information:</b><br />
+                        <b><?php echo __("Candidate Information");?>:</b><br />
                         <?php echo $this->cData['lastName'] . ', ' . $this->cData['firstName']; ?><br />
                         <?php echo $this->cData['address']; ?><br />
                         <?php echo ($str = $this->cData['city'] . ' ' . $this->cData['state'] . ' ' . $this->cData['zip']) . strlen($str) > 2 ? '<br />' : ''; ?>
@@ -51,11 +51,11 @@
                     </td>
                     <td align="left" valign="top" width="60%" style="padding-left: 10px;">
                         <span style="font-size: 14px;">
-                        <b>Notes:</b>
+                        <b><?php echo __("Notes");?>:</b>
                         <br />
                         <?php echo $this->cData['notes']; ?>
                         <br /><br />
-                        <b>Will Relocate:</b><br />
+                        <b><?php echo __("Will Relocate");?>:</b><br />
                         <?php echo $this->cData['canRelocate'] ? 'Yes' : 'No'; ?>
                         </span>
                     </td>

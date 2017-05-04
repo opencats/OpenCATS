@@ -714,7 +714,7 @@ class DataGrid
                     'rowsPerPageSelector.style.top = (docjslib_getRealTop(this) + 17) + \'px\'; '.
                   '} else '.
                     'rowsPerPageSelector.style.display=\'none\'; '.
-             '">Rows Per Page</a>';
+             '">'.__('Rows Per Page').'</a>';
 
         echo '<span style="position: absolute; text-align:left; display:none;" id="rowsPerPageSelectorFrame', md5($this->_instanceName), '">';
         $this->_getData();
@@ -742,14 +742,14 @@ class DataGrid
             if ($this->_parameters['maxResults'] == $maxResults)
             {
                 echo sprintf(
-                    '<option selected="selected" value="%s">%s entries per page</option>',
+                    '<option selected="selected" value="%s">'.__('%s entries per page').'</option>',
                     $maxResults, $maxResults
                 );
             }
             else
             {
                 echo sprintf(
-                    '<option value="%s">%s entries per page</option>',
+                    '<option value="%s">'.__('%s entries per page').'</option>',
                     $maxResults, $maxResults
                 );
 
@@ -768,7 +768,7 @@ class DataGrid
      */
     public function drawShowFilterControl()
     {
-        echo '<a href="javascript:void(0);" class="button" style="text-decoration: none;" onclick="var filterArea = document.getElementById(\'filterResultsArea', md5($this->_instanceName), '\'); if(filterArea.style.display==\'none\') {filterArea.style.display=\'\'; if (newFilterCounter', md5($this->_instanceName),' == 0){ showNewFilter', md5($this->_instanceName), '();}}else filterArea.style.display=\'none\';">Filter</a>';
+        echo '<a href="javascript:void(0);" class="button" style="text-decoration: none;" onclick="var filterArea = document.getElementById(\'filterResultsArea', md5($this->_instanceName), '\'); if(filterArea.style.display==\'none\') {filterArea.style.display=\'\'; if (newFilterCounter', md5($this->_instanceName),' == 0){ showNewFilter', md5($this->_instanceName), '();}}else filterArea.style.display=\'none\';">'.__('Filter').'</a>';
     }
 
     /**
@@ -807,7 +807,7 @@ class DataGrid
         {
             echo 'style="display:none;"';
         }
-        echo '><legend class="filterAreaLegend">Filter</legend>';
+        echo '><legend class="filterAreaLegend">'.__('Filter').'</legend>';
 
         echo '<table style="border-collapse: collapse;"><tr><td width="100%" style="vertical-align:top;" id="filterResultsAreaTable', $md5InstanceName, '">';
 
@@ -832,29 +832,29 @@ class DataGrid
                 switch ($filterOperator)
                 {
                     case '==':
-                        $filterOperatorHuman = ' is equal to';
+                        $filterOperatorHuman = __(' is equal to');
                         break;
 
                     case '=~':
-                        $filterOperatorHuman = ' contains';
+                        $filterOperatorHuman = __(' contains');
                         break;
 
                     case '=>':
-                        $filterOperatorHuman = ' is greater than';
+                        $filterOperatorHuman = __(' is greater than');
                         break;
 
                     case '=<':
-                        $filterOperatorHuman = ' is less than';
+                        $filterOperatorHuman = __(' is less than');
                         break;
 
                     case '=#':
-                        $filterOperatorHuman = ' has element';
+                        $filterOperatorHuman = __(' has element');
                         break;
                 }
 
                 echo '<span class="filterArea">';
                 echo '<a href="javascript:void(0);" onclick="this.parentNode.style.display=\'none\'; ', $this->getJSRemoveFilter($index), '">';
-                echo '<img src="images/actions/delete_small.gif" style="padding:0px; margin:0px;" border="0" alt="" title="Remove this Filter" />';
+                echo '<img src="images/actions/delete_small.gif" style="padding:0px; margin:0px;" border="0" alt="" title="'.__('Remove this Filter').'" />';
                 echo '</a>&nbsp;';
 
                 if (!isset($data['filterDescription']))
@@ -1663,7 +1663,7 @@ class DataGrid
                 echo ('<br />');
                 $newParameterArray = $this->_parameters;
                 $newParameterArray['resetColumns'] = true;
-                echo ('<span style="font-weight:bold;">' . $this->_makeControlLink($newParameterArray) . '<img src="images/checkbox_blank.gif" alt="" border="0" />&nbsp;&nbsp;&nbsp;&nbsp;Reset to Default Columns</a></span><br />' . "\n");
+                echo ('<span style="font-weight:bold;">' . $this->_makeControlLink($newParameterArray) . '<img src="images/checkbox_blank.gif" alt="" border="0" />&nbsp;&nbsp;&nbsp;&nbsp;'.__('Reset to Default Columns').'</a></span><br />' . "\n");
 
                 echo ('</div>');
             }
@@ -1936,7 +1936,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
      */
     public function printActionArea()
     {
-        echo '&nbsp;<input type="checkbox" name="allBox" title="Select All" onclick="toggleChecksAllDataGrid'.md5($this->_instanceName).'(this.checked);" />&nbsp;&nbsp;&nbsp;';
+        echo '&nbsp;<input type="checkbox" name="allBox" title="'.__('Select All').'" onclick="toggleChecksAllDataGrid'.md5($this->_instanceName).'(this.checked);" />&nbsp;&nbsp;&nbsp;';
 
         echo '<script type="text/javascript">', $this->_getCheckAllDefinition(), '</script>';
 
@@ -1945,9 +1945,9 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
             return;
         }
 
-        echo '<a href="javascript:void(0);" onclick="toggleHideShowAction(\''.md5($this->_instanceName).'\');">Action</a>';
+        echo '<a href="javascript:void(0);" onclick="toggleHideShowAction(\''.md5($this->_instanceName).'\');">'.__('Action').'</a>';
 
-        echo '<div class="ajaxSearchResults" id="ActionArea'.md5($this->_instanceName).'" align="left" onclick="toggleHideShowAction(\''.md5($this->_instanceName).'\');" style="width:270px;">';
+        echo '<div class="ajaxSearchResults" id="ActionArea'.md5($this->_instanceName).'" align="left" onclick="toggleHideShowAction(\''.md5($this->_instanceName).'\');" style="width:320px;">';
 
         echo $this->getInnerActionArea();
 
@@ -1980,7 +1980,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         if ($allowAll)
         {
             $html = sprintf(
-                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) window.location.href=\'%s&i=%s&p=%s&dynamicArgument%s=\' + urlEncode(serializeArray(exportArray%s)); else dataGridNoSelected();">Selected</a>&nbsp;|&nbsp;<a href="%s&i=%s&p=%s">All</a></div></div>',
+                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:130px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) window.location.href=\'%s&i=%s&p=%s&dynamicArgument%s=\' + urlEncode(serializeArray(exportArray%s)); else dataGridNoSelected();">'.__('Selected').'</a>&nbsp;|&nbsp;<a href="%s&i=%s&p=%s">'.__('All').'</a></div></div>',
                 htmlspecialchars($actionTitle),
                 md5($this->_instanceName),
                 $actionURL,
@@ -1996,7 +1996,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         else
         {
             $html = sprintf(
-                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) window.location.href=\'%s&i=%s&p=%s&dynamicArgument%s=\' + urlEncode(serializeArray(exportArray%s)); else dataGridNoSelected();">Selected</a></div></div>',
+                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:130px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) window.location.href=\'%s&i=%s&p=%s&dynamicArgument%s=\' + urlEncode(serializeArray(exportArray%s)); else dataGridNoSelected();">'.__('Selected').'</a></div></div>',
                 htmlspecialchars($actionTitle),
                 md5($this->_instanceName),
                 $actionURL,
@@ -2039,7 +2039,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         if ($allowAll)
         {
             $html = sprintf(
-                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) showPopWin(\'%s&i=%s&p=%s&dynamicArgument%s=\' + urlEncode(serializeArray(exportArray%s)), %s, %s); else dataGridNoSelected();">Selected</a>&nbsp;|&nbsp;<a href="javascript:void(0);" onclick="showPopWin(\'%s&i=%s&p=%s\', %s, %s);">All</a></div></div>',
+                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:130px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) showPopWin(\'%s&i=%s&p=%s&dynamicArgument%s=\' + urlEncode(serializeArray(exportArray%s)), %s, %s); else dataGridNoSelected();">'.__('Selected').'</a>&nbsp;|&nbsp;<a href="javascript:void(0);" onclick="showPopWin(\'%s&i=%s&p=%s\', %s, %s);">'.__('All').'</a></div></div>',
                 htmlspecialchars($actionTitle),
                 md5($this->_instanceName),
                 $actionURL,
@@ -2059,7 +2059,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         else
         {
             $html = sprintf(
-                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) showPopWin(\'%s&i=%s&p=%s&dynamicArgument%s=\' + urlEncode(serializeArray(exportArray%s)), %s, %s); else dataGridNoSelected();">Selected</a></div></div>',
+                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:130px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) showPopWin(\'%s&i=%s&p=%s&dynamicArgument%s=\' + urlEncode(serializeArray(exportArray%s)), %s, %s); else dataGridNoSelected();">'.__('Selected').'</a></div></div>',
                 htmlspecialchars($actionTitle),
                 md5($this->_instanceName),
                 $actionURL,
@@ -2173,7 +2173,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
             if (isset($this->ajaxMode) && ($this->ajaxMode))
             {
                 echo sprintf(
-                    '<span style="%s" id="pageInputArea%s%s">Page <input id="pageSelection%s%s" style="width: 32px;" onChange="populateAjaxPager(&quot;%s&quot;, \'%s\', &quot;%s&quot;, (this.value - 1) * %s);" value="%s"/> of %s%s</span>',
+                    '<span style="%s" id="pageInputArea%s%s">'.__('Page').' <input id="pageSelection%s%s" style="width: 32px;" onChange="populateAjaxPager(&quot;%s&quot;, \'%s\', &quot;%s&quot;, (this.value - 1) * %s);" value="%s"/> '.__('of').' %s%s</span>',
                     $this->globalStyle,
                     $ID, $md5InstanceName,
                     $ID, $md5InstanceName,      //Select Box ID
@@ -2192,7 +2192,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
                 $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(serialize($newParameterArray));
 
                 echo sprintf(
-                    '<span style="%s">Page <input id="pageSelection%s%s" style="width: 32px;" value="%s" onkeypress="document.getElementById(\'pageSelectionButton%s%s\').style.display=\'\';"/> of %s&nbsp;<input id="pageSelectionButton%s%s" type="button"  class="button" style="display:none;" value="Go" onclick="document.location.href=\'%s?%s&dynamicArgument%s=\' + ((document.getElementById(\'pageSelection%s%s\').value -1 ) * %s);">%s</span>',
+                    '<span style="%s">'.__('Page').' <input id="pageSelection%s%s" style="width: 32px;" value="%s" onkeypress="document.getElementById(\'pageSelectionButton%s%s\').style.display=\'\';"/> '.__('of').' %s&nbsp;<input id="pageSelectionButton%s%s" type="button"  class="button" style="display:none;" value="Go" onclick="document.location.href=\'%s?%s&dynamicArgument%s=\' + ((document.getElementById(\'pageSelection%s%s\').value -1 ) * %s);">%s</span>',
                     $this->globalStyle,
                     $ID, $md5InstanceName,      //Select Box ID
                     $this->_currentPage,
@@ -2327,7 +2327,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         $newParameterArrayPagenate['maxResults'] = 15;
 
         echo sprintf(
-            '%sShow All</a>%sPagenate</a>%s',
+            '%s'.__('Show All').'</a>%s'.__('Pagenate').'</a>%s',
             $this->_makeControlLink($newParameterArray, '', 'showAll'.md5($this->_instanceName), 'this.style.display=\'none\'; document.getElementById(\'pagenate'.md5($this->_instanceName).'\').style.display=\'\';'),
             $this->_makeControlLink($newParameterArrayPagenate, '', 'pagenate'.md5($this->_instanceName), 'this.style.display=\'none\'; document.getElementById(\'showAll'.md5($this->_instanceName).'\').style.display=\'\';', 'display:none;'),
             "\n"
@@ -2466,7 +2466,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         /* If this is the last page, don't make a link; just text. */
         if ($this->_currentPage == $this->_totalPages)
         {
-            return '<span class="pagerPrevNext" style="' . $this->globalStyle . '">Next &gt;&gt;</span>&nbsp;&nbsp;<span class="pagerPrevNext" style="' . $this->globalStyle . '">Last &gt;</span>' . "\n";
+            return '<span class="pagerPrevNext" style="' . $this->globalStyle . '">'.__('Next &gt;&gt;').'</span>&nbsp;&nbsp;<span class="pagerPrevNext" style="' . $this->globalStyle . '">'.__('Last &gt;').'</span>' . "\n";
         }
 
         $newParameterArray = $this->_parameters;
@@ -2480,7 +2480,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         }
 
         return sprintf(
-            '%sNext &gt;&gt;</a>&nbsp;&nbsp;%sLast &gt;</a>%s',
+            '%s'.__('Next &gt;&gt;').'</a>&nbsp;&nbsp;%s'.__('Last &gt;').'</a>%s',
             $this->_makeControlLink($newParameterArray, 'pagerPrevNext'),
             $this->_makeControlLink($newParameterArray2, 'pagerPrevNext'),
             "\n"
@@ -2502,7 +2502,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         /* If this is the first page, don't make a link; just text. */
         if ($this->_currentPage == 1)
         {
-            return '<span class="pagerPrevNext" style="' . $this->globalStyle . '">&lt; First</span>&nbsp;&nbsp;<span class="pagerPrevNext" style="' . $this->globalStyle . '">&lt;&lt; Prev</span>' . "\n";
+            return '<span class="pagerPrevNext" style="' . $this->globalStyle . '">'.__('&lt; First').'</span>&nbsp;&nbsp;<span class="pagerPrevNext" style="' . $this->globalStyle . '">'.__('&lt;&lt; Prev').'</span>' . "\n";
         }
 
         $newParameterArray = $this->_parameters;
@@ -2512,7 +2512,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         $newParameterArray2['rangeStart'] = 0;
 
         return sprintf(
-            '%s&lt; First</a>&nbsp;&nbsp;%s&lt;&lt; Prev</a>%s',
+            '%s'.__('&lt; First').'</a>&nbsp;&nbsp;%s'.__('&lt;&lt; Prev').'</a>%s',
             $this->_makeControlLink($newParameterArray2, 'pagerPrevNext'),
             $this->_makeControlLink($newParameterArray, 'pagerPrevNext'),
             "\n"

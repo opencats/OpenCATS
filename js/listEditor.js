@@ -1,3 +1,7 @@
+<?php
+chdir('./../');
+include_once('./config.php');
+?>
 /*
  * CATS
  * List Editor JavaScript Library
@@ -349,8 +353,8 @@ function drawListEditor()
                     '<input type="text" id="listEditorText" style="width: 165px;">&nbsp;' +
                 '</td>' +
                 '<td>' +
-                    '<input id="listEditorButtonAdd" type="button" value="Add" style="width: 80px;" class="button" onclick="listEditorAddValue();" />' +
-                    '<input id="listEditorButtonSave" type="button" value="Save" style="width: 80px; display: none;" class="button" onclick="listEditorSaveValue();" />' +
+                    '<input id="listEditorButtonAdd" type="button" value="<?php echo __("Add");?>" style="width: 80px;" class="button" onclick="listEditorAddValue();" />' +
+                    '<input id="listEditorButtonSave" type="button" value="<?php echo __("Save");?>" style="width: 80px; display: none;" class="button" onclick="listEditorSaveValue();" />' +
                 '</td>' +
             '</tr>' +
             '<tr>' +
@@ -360,10 +364,10 @@ function drawListEditor()
                     '</div>' +
                 '</td>' +
                 '<td>' +
-                    '<input id="listEditorButtonDoModify" type="button" value="Modify" style="width: 80px;" class="button" onclick="listEditorDoModify();" />' +
-                    '<input id="listEditorButtonDoAdd" type="button" value="Add" style="width: 80px; display: none;" class="button" onclick="listEditorDoAdd();" /><br /><br />' +
-                    '<input id="listEditorButtonDelete" type="button" value="Delete" style="width: 80px;" class="button" onclick="listEditorDeleteValue();" /><br /><br />' +
-                    '<input id="closeButton" type="button" value="Close" style="width: 80px;" class="button" onclick="closeWindow()" />' +
+                    '<input id="listEditorButtonDoModify" type="button" value="<?php echo __("Modify");?>" style="width: 80px;" class="button" onclick="listEditorDoModify();" />' +
+                    '<input id="listEditorButtonDoAdd" type="button" value="<?php echo __("Add");?>" style="width: 80px; display: none;" class="button" onclick="listEditorDoAdd();" /><br /><br />' +
+                    '<input id="listEditorButtonDelete" type="button" value="<?php echo __("Delete");?>" style="width: 80px;" class="button" onclick="listEditorDeleteValue();" /><br /><br />' +
+                    '<input id="closeButton" type="button" value="<?php echo __("Close");?>" style="width: 80px;" class="button" onclick="closeWindow()" />' +
                 '</td>' +
             '</tr>' +
         '</table>';
@@ -381,9 +385,9 @@ function drawListEditorExtraFields()
                 '</td>' +
                 '<td>' +
                   '<span id="listEditorButtonAdd">'+
-                    '<input id="listEditorButtonAdd" type="button" value="Add as Textbox" style="width: 110px;" class="button" onclick="listEditorAddValue();" /><br />' +
-                    '<input id="listEditorButtonAdd" type="button" value="Add as Checkbox" style="width: 110px;" class="button" onclick="listEditorAddValueCB();" /></span>' +
-                    '<input id="listEditorButtonSave" type="button" value="Save" style="width: 80px; display: none;" class="button" onclick="listEditorSaveValue();" />' +
+                    '<input id="listEditorButtonAdd" type="button" value="<?php echo __("Add as Textbox");?>" style="width: 110px;" class="button" onclick="listEditorAddValue();" /><br />' +
+                    '<input id="listEditorButtonAdd" type="button" value="<?php echo __("Add as Checkbox");?>" style="width: 110px;" class="button" onclick="listEditorAddValueCB();" /></span>' +
+                    '<input id="listEditorButtonSave" type="button" value="<?php echo __("Save");?>" style="width: 80px; display: none;" class="button" onclick="listEditorSaveValue();" />' +
                 '</td>' +
             '</tr>' +
             '<tr>' +
@@ -393,10 +397,10 @@ function drawListEditorExtraFields()
                     '</div>' +
                 '</td>' +
                 '<td>' +
-                    '<input id="listEditorButtonDoModify" type="button" value="Modify" style="width: 80px;" class="button" onclick="listEditorDoModify();" />' +
-                    '<input id="listEditorButtonDoAdd" type="button" value="Add" style="width: 80px; display: none;" class="button" onclick="listEditorDoAdd();" /><br /><br />' +
-                    '<input id="listEditorButtonDelete" type="button" value="Delete" style="width: 80px;" class="button" onclick="listEditorDeleteValue();" /><br /><br />' +
-                    '<input id="closeButton" type="button" value="Close" style="width: 80px;" class="button" onclick="closeWindow()" />' +
+                    '<input id="listEditorButtonDoModify" type="button" value="<?php echo __("Modify");?>" style="width: 80px;" class="button" onclick="listEditorDoModify();" />' +
+                    '<input id="listEditorButtonDoAdd" type="button" value="<?php echo __("Add");?>" style="width: 80px; display: none;" class="button" onclick="listEditorDoAdd();" /><br /><br />' +
+                    '<input id="listEditorButtonDelete" type="button" value="<?php echo __("Delete");?>" style="width: 80px;" class="button" onclick="listEditorDeleteValue();" /><br /><br />' +
+                    '<input id="closeButton" type="button" value="<?php echo __("Close");?>" style="width: 80px;" class="button" onclick="closeWindow()" />' +
                 '</td>' +
             '</tr>' +
         '</table>';

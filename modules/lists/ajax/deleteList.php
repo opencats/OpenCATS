@@ -37,7 +37,7 @@ $interface = new SecureAJAXInterface();
 
 if (!$interface->isRequiredIDValid('savedListID'))
 {
-    $interface->outputXMLErrorPage(-1, 'Invalid saved list ID.');
+    $interface->outputXMLErrorPage(-1, __('Invalid saved list ID.'));
     die();
 }
 

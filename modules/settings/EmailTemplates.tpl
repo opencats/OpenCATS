@@ -1,5 +1,5 @@
 <?php /* $Id: EmailTemplates.tpl 1929 2007-02-22 06:18:30Z will $ */ ?>
-<?php TemplateUtility::printHeader('Settings', array()); ?>
+<?php TemplateUtility::printHeader(__('Settings'), array()); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">
@@ -11,11 +11,11 @@
                     <td width="3%">
                         <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Administration: E-Mail Templates</h2></td>
+                    <td><h2><?php echo __("Administration");?>: <?php echo __("E-Mail Templates");?></h2></td>
                 </tr>
             </table>
 
-            <p class="note">E-Mail Templates</p>
+            <p class="note"><?php echo __("E-Mail Templates");?></p>
 
             <script type="text/javascript">
                 function showTemplate(templateID)
@@ -107,7 +107,7 @@
                                     </tr>
                                     <tr>
                                         <td class="tdVertical" style="width:150px;">
-                                            Message:
+                                            <?php echo __("Message");?>:
                                         </td>
                                         <td class="tdData">
                                             <table>
@@ -119,12 +119,12 @@
                                                         <input type="checkbox" name="useThisTemplate" id="useThisTemplate<?php echo($data['emailTemplateID']); ?>" <?php if ($data['disabled'] == 0) echo('checked'); ?> onclick="if (this.checked) {document.getElementById('messageText<?php echo($data['emailTemplateID']); ?>').disabled=false;} else {document.getElementById('messageText<?php echo($data['emailTemplateID']); ?>').disabled=true;} document.getElementById('selectorSpan').style.display='none'; document.getElementById('templateTitleSpan<?php echo($data['emailTemplateID']); ?>').style.display='';"> Use this Template / Feature<br />
                                                     </td>
                                                     <td style="text-align: center;">
-                                                    <div style="font-weight:bold;">Insert Formatting:</div>
+                                                    <div style="font-weight:bold;"><?php echo __("Insert Formatting");?>:</div>
                                                         <?php generateInsertAtCursorLink($data, 'Bold', '<B></B>'); ?>
                                                         <?php generateInsertAtCursorLink($data, 'Italics', '<I></I>'); ?>
                                                         <?php generateInsertAtCursorLink($data, 'Underline', '<U></U>'); ?>
                                                         <br />
-                                                        <div style="font-weight:bold;">Insert Mail Merge Fields:</div>
+                                                        <div style="font-weight:bold;"><?php echo __("Insert Mail Merge Fields");?>:</div>
                                                         <?php /* Global vars */ ?>
                                                         <?php if(!isset($this->noGlobalTemplates)): ?>
                                                             <?php generateInsertAtCursorLink($data, 'Current Date/Time', '%DATETIME%'); ?>
@@ -165,8 +165,8 @@
                                         <td class="tdVertical" style="width:150px;">
                                         </td>
                                         <td>
-                                            <input type="submit" class="button" value="Save Template">
-                                            <input type="reset" class="button" value="Reset Template" onclick="document.getElementById('selectorSpan').style.display=''; document.getElementById('templateTitleSpan<?php echo($data['emailTemplateID']); ?>').style.display='none'; document.getElementById('messageText<?php echo($data['emailTemplateID']); ?>').disabled=<?php if ($data['disabled'] == 0) {echo('false'); } else {echo('true'); } ?>;">
+                                            <input type="submit" class="button" value="<?php echo __("Save Template");?>">
+                                            <input type="reset" class="button" value="<?php echo __("Reset Template");?>" onclick="document.getElementById('selectorSpan').style.display=''; document.getElementById('templateTitleSpan<?php echo($data['emailTemplateID']); ?>').style.display='none'; document.getElementById('messageText<?php echo($data['emailTemplateID']); ?>').disabled=<?php if ($data['disabled'] == 0) {echo('false'); } else {echo('true'); } ?>;">
                                         </td>
                                     </tr>
                                 </table>

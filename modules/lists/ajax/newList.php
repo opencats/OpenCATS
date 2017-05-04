@@ -37,13 +37,13 @@ $interface = new SecureAJAXInterface();
 
 if (!$interface->isRequiredIDValid('dataItemType'))
 {
-    $interface->outputXMLErrorPage(-1, 'Invalid saved list type.');
+    $interface->outputXMLErrorPage(-1, __('Invalid saved list type.'));
     die();
 }
 
 if (!isset($_REQUEST['description']))
 {
-    $interface->outputXMLErrorPage(-1, 'Invalid name.');
+    $interface->outputXMLErrorPage(-1, __('Invalid name.'));
     die();
 }
 

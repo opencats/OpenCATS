@@ -7,7 +7,10 @@
  *
  * $Id: validator.js 1887 2007-02-20 05:17:10Z will $
  */
-
+<?php
+chdir('./../../');
+include_once('./config.php');
+?>
 function checkAddForm(form)
 {
     var errorMessage = '';
@@ -16,7 +19,7 @@ function checkAddForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -31,7 +34,7 @@ function checkEditForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -46,7 +49,7 @@ function checkAttachmentForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -61,7 +64,7 @@ function checkSearchByNameForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -76,7 +79,7 @@ function checkSearchByKeyTechnologiesForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -91,7 +94,7 @@ function checkName()
     fieldLabel = document.getElementById('nameLabel');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter a name.\n";
+        errorMessage = "    - <?php echo __("You must enter a name.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -111,7 +114,7 @@ function checkSearchName()
     fieldLabel = document.getElementById('wildCardStringLabel_name');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter some search text.\n";
+        errorMessage = "    - <?php echo __("You must enter some search text.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -131,7 +134,7 @@ function checkSearchKeyTechnologies()
     fieldLabel = document.getElementById('wildCardStringLabel_keyTechnologies');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter some search text.\n";
+        errorMessage = "    - <?php echo __("You must enter some search text.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -151,7 +154,7 @@ function checkFilename()
     fieldLabel = document.getElementById('file');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter a file to upload.\n";
+        errorMessage = "    - <?php echo __("You must enter a file to upload.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }

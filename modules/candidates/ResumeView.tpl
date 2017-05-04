@@ -3,11 +3,11 @@
     <head>
         <?php if (!empty($this->data)): ?>
             <title>
-                Candidates - Preview
+                <?php echo __("Candidates");?> - <?php echo __("Preview");?>
                 <?php $this->_($this->data['firstName'] . ' ' . $this->data['lastName']); ?>
             </title>
         <?php else: ?>
-            <title>Candidates - Preview (Error)</title>
+            <title><?php echo __("Candidates");?> - <?php echo __("Preview");?> (<?php echo __("Error");?>)</title>
         <?php endif; ?>
     </head>
 
@@ -21,7 +21,7 @@
 <?php else: ?>
 
 <pre style="font-size: 12px; padding: 5px;">
-Error: No text exists for this attachment.
+<?php echo __("Error: No text exists for this attachment.");?>
 </pre>
 
 <?php endif; ?>

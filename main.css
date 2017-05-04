@@ -431,7 +431,7 @@ p.warning
     padding: 4px;
     margin-top: 0px;
     margin-bottom: 8px;
-    width: 916px;
+   /* width: 916px;*/
     font: normal normal bold  12px/120% Verdana, Tahoma, sans-serif;
     border-top: 1px solid #bbb;
     border-bottom: 1px solid #bbb;
@@ -689,7 +689,7 @@ table.detailsInside td.vertical
     font: normal normal normal 12px Arial, Tahoma, sans-serif;
     background: #f4f4f4;
     color: #000;
-    text-align: left;
+    text-align: right;
     vertical-align: top;
     width: 120px;
 }
@@ -720,7 +720,7 @@ td.tdVertical
 {
     font: normal normal normal 12px Arial, Tahoma, sans-serif;
     color: #000;
-    text-align: left;
+    text-align: right;
     vertical-align: top;
     width: 120px;
 }

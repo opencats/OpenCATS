@@ -7,7 +7,10 @@
  *
  * $Id: validator.js 2646 2007-07-09 16:40:31Z Andrew $
  */
-
+<?php
+chdir('./../../');
+include_once('./config.php');
+?>
 function checkAddForm(form)
 {
     var errorMessage = '';
@@ -17,7 +20,7 @@ function checkAddForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -33,7 +36,7 @@ function checkEditForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -48,7 +51,7 @@ function checkCreateAttachmentForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -63,7 +66,7 @@ function checkSearchByFullNameForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -78,7 +81,7 @@ function checkSearchPhoneNumberForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -93,7 +96,7 @@ function checkSearchByKeySkillsForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -108,7 +111,7 @@ function checkSearchResumeForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -139,7 +142,7 @@ function checkFirstName()
     fieldLabel = document.getElementById('firstNameLabel');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter a first name.\n";
+        errorMessage = "    - <?php echo __("You must enter a first name.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -159,7 +162,7 @@ function checkLastName()
     fieldLabel = document.getElementById('lastNameLabel');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter a last name.\n";
+        errorMessage = "    - <?php echo __("You must enter a last name.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -179,7 +182,7 @@ function checkSearchFullName()
     fieldLabel = document.getElementById('wildCardStringLabel_fullName');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter some search text.\n";
+        errorMessage = "    - <?php echo __("You must enter some search text.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -199,7 +202,7 @@ function checkSearchKeySkills()
     fieldLabel = document.getElementById('wildCardStringLabel_keySkills');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter some search text.\n";
+        errorMessage = "    - <?php echo __("You must enter some search text.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -219,7 +222,7 @@ function checkSearchResume()
     fieldLabel = document.getElementById('wildCardStringLabel_resume');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter some search text.\n";
+        errorMessage = "    - <?php echo __("You must enter some search text.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -239,7 +242,7 @@ function checkAttachmentFile()
     fieldLabel = document.getElementById('file');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter a file to upload.\n";
+        errorMessage = "    - <?php echo __("You must enter a file to upload.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -260,7 +263,7 @@ function checkPhoneNumber()
 
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter numbers to search.\n";
+        errorMessage = "    - <?php echo __("You must enter numbers to search.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -281,7 +284,7 @@ function checkEmailSubject()
 
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter a subject for your e-mail.\n";
+        errorMessage = "    - <?php echo __("You must enter a subject for your e-mail.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -302,7 +305,7 @@ function checkEmailBody()
 
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter a body for your e-mail.\n";
+        errorMessage = "    - <?php echo __("You must enter a body for your e-mail.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }

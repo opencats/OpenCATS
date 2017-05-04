@@ -40,7 +40,7 @@ class HomeUI extends UserInterface
         $this->_authenticationRequired = true;
         $this->_moduleDirectory = 'home';
         $this->_moduleName = 'home';
-        $this->_moduleTabText = 'Dashboard';
+        $this->_moduleTabText = __('Dashboard');
         $this->_subTabs = array();
     }
 
@@ -142,12 +142,12 @@ class HomeUI extends UserInterface
     {
         if (!isset($_GET['searchID']))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'No search ID specified.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('No search ID specified.'));
         }
 
         if (!isset($_GET['currentURL']))
         {
-            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'No current URL specified.');
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('No current URL specified.'));
         }
 
         $searchID   = $_GET['searchID'];
@@ -167,12 +167,12 @@ class HomeUI extends UserInterface
     {
         if (!isset($_GET['searchID']))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'No search ID specified.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('No search ID specified.'));
         }
 
         if (!isset($_GET['currentURL']))
         {
-            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'No current URL specified.');
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('No current URL specified.'));
         }
 
         $searchID   = $_GET['searchID'];
@@ -195,7 +195,7 @@ class HomeUI extends UserInterface
          */
         if (!isset($_GET['quickSearchFor']))
         {
-            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'No query string specified.');
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('No query string specified.'));
         }
 
         $query = trim($_GET['quickSearchFor']);
@@ -223,17 +223,17 @@ class HomeUI extends UserInterface
                 }
                 else
                 {
-                    $candidatesRS[$rowIndex]['ownerAbbrName'] = 'None';
+                    $candidatesRS[$rowIndex]['ownerAbbrName'] = __('None');
                 }
 
                 if (empty($candidatesRS[$rowIndex]['phoneHome']))
                 {
-                    $candidatesRS[$rowIndex]['phoneHome'] = 'None';
+                    $candidatesRS[$rowIndex]['phoneHome'] = __('None');
                 }
 
                 if (empty($candidatesRS[$rowIndex]['phoneCell']))
                 {
-                    $candidatesRS[$rowIndex]['phoneCell'] = 'None';
+                    $candidatesRS[$rowIndex]['phoneCell'] = __('None');
                 }
             }
         }
@@ -253,12 +253,12 @@ class HomeUI extends UserInterface
                 }
                 else
                 {
-                    $companiesRS[$rowIndex]['ownerAbbrName'] = 'None';
+                    $companiesRS[$rowIndex]['ownerAbbrName'] = __('None');
                 }
 
                 if (empty($companiesRS[$rowIndex]['phone1']))
                 {
-                    $companiesRS[$rowIndex]['phone1'] = 'None';
+                    $companiesRS[$rowIndex]['phone1'] = __('None');
                 }
             }
         }
@@ -301,17 +301,17 @@ class HomeUI extends UserInterface
                 }
                 else
                 {
-                    $contactsRS[$rowIndex]['ownerAbbrName'] = 'None';
+                    $contactsRS[$rowIndex]['ownerAbbrName'] = __('None');
                 }
 
                 if (empty($contactsRS[$rowIndex]['phoneWork']))
                 {
-                    $contactsRS[$rowIndex]['phoneWork'] = 'None';
+                    $contactsRS[$rowIndex]['phoneWork'] = __('None');
                 }
 
                 if (empty($contactsRS[$rowIndex]['phoneCell']))
                 {
-                    $contactsRS[$rowIndex]['phoneCell'] = 'None';
+                    $contactsRS[$rowIndex]['phoneCell'] = __('None');
                 }
             }
         }
@@ -345,7 +345,7 @@ class HomeUI extends UserInterface
                 }
                 else
                 {
-                    $jobOrdersRS[$rowIndex]['recruiterAbbrName'] = 'None';
+                    $jobOrdersRS[$rowIndex]['recruiterAbbrName'] = __('None');
                 }
 
                 if (!empty($jobOrdersRS[$rowIndex]['ownerFirstName']))
@@ -359,7 +359,7 @@ class HomeUI extends UserInterface
                 }
                 else
                 {
-                    $jobOrdersRS[$rowIndex]['ownerAbbrName'] = 'None';
+                    $jobOrdersRS[$rowIndex]['ownerAbbrName'] = __('None');
                 }
             }
         }

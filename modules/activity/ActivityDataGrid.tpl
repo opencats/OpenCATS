@@ -1,6 +1,6 @@
 <?php /* $Id: ActivityDataGrid.tpl 3355 2007-10-31 16:11:56Z andrew $ */ ?>
-<?php TemplateUtility::printHeader('Activities', array('js/highlightrows.js', 'js/sweetTitles.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
-<?php TemplateUtility::printHeaderBlock(); ?>
+<?php TemplateUtility::printHeader(__('Activities'), array('js/highlightrows.js', 'js/sweetTitles.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
+<?php TemplateUtility::printHeaderBlock(); ?> 
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
@@ -11,7 +11,7 @@
                     <td width="3%">
                         <img src="images/activities.gif" width="24" height="24" alt="Activities" style="border: none; margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Activities</h2></td>
+                    <td><h2><?php echo __("Activities");?></h2></td>
                     <td align="right">
                         <?php $this->dataGrid->printNavigation(false); ?>&nbsp;&nbsp;<?php echo($this->quickLinks); ?>
                     </td>
@@ -19,7 +19,7 @@
             </table>
 
             <p class="note">
-                <span style="float:left;">Activities - Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?></span>
+                <span style="float:left;"><?php echo __("Activities");?> - Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?></span>
                 <span style="float:right;">
                     <?php $this->dataGrid->drawRowsPerPageSelector(); ?>
                     <?php $this->dataGrid->drawShowFilterControl(); ?>
@@ -50,7 +50,7 @@
                 <td style="padding-left: 62px;" align="center" valign="center">
 
                     <div style="text-align: center; width: 700px; line-height: 22px; font-size: 18px; font-weight: bold; color: #666666; padding-bottom: 20px;">
-                    Activities are automatically recorded based on actions you perform.
+                    <?php echo __("Activities are automatically recorded based on actions you perform.");?>
                     </div>
                 </td>
 

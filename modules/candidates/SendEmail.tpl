@@ -1,5 +1,5 @@
 <?php /* $Id: SendEmail.tpl 3078 2007-09-21 20:25:28Z will $ */ ?>
-<?php TemplateUtility::printHeader('Candidates', array('ckeditor/ckeditor.js', 'modules/candidates/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js')); ?>
+<?php TemplateUtility::printHeader(__('Candidates'), array('ckeditor/ckeditor.js', 'modules/candidates/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">
@@ -9,13 +9,13 @@
             <table>
                 <tr>
                     <td width="3%">
-                        <img src="images/candidate.gif" width="24" height="24" border="0" alt="Candidates" style="margin-top: 3px;" />&nbsp;
+                        <img src="images/candidate.gif" width="24" height="24" border="0" alt="<?php echo __("Candidates");?>" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Candidates: Send E-mail</h2></td>
+                    <td><h2><?php echo __("Candidates");?>: <?php echo __("Send E-mail");?></h2></td>
                 </tr>
             </table>
 
-            <p class="note">Send Candidates E-mail</p>
+            <p class="note"><?php echo __("Send Candidates E-mail");?></p>
 
             <?php
             if($this->success == true)
@@ -24,7 +24,7 @@
 
                 <br />
                 <span style="font-size: 12pt; font-weight: 900;">
-                Your e-mail has been successfully sent to the following recipients:
+                <?php echo __("Your e-mail has been successfully sent to the following recipients:");?>
                 <blockquote>
                 <?php
                 echo $this->success_to;
@@ -79,7 +79,7 @@
                             </tr>
                             <tr>
                                 <td class="tdVertical" style="text-align: right;">
-                                    <label id="emailSubjectLabel" for="emailSubject">Subject</label>
+                                    <label id="emailSubjectLabel" for="emailSubject"><?php echo __("Subject");?></label>
                                 </td>
                                 <td class="tdData">
                                     <input id="emailSubject" tabindex="<?php echo($tabIndex++); ?>" type="text" name="emailSubject" class="inputbox" style="width: 600px;" />
@@ -87,7 +87,7 @@
                             </tr>
                             <tr>
                                 <td class="tdVertical" style="text-align: right;">
-                                    <label id="emailBodyLabel" for="emailBody">Body</label>
+                                    <label id="emailBodyLabel" for="emailBody"><?php echo __("Body");?></label>
                                 </td>
                                 <td class="tdData">
                                     <textarea id="emailBody" tabindex="<?php echo($tabIndex++); ?>" name="emailBody" rows="10" cols="90" style="width: 600px;" class="inputbox"></textarea>
@@ -95,8 +95,8 @@
                             </tr>
                             <tr>
                                 <td align="right" valign="top" colspan="2">
-                                    <input type="submit" tabindex="<?php echo($tabIndex++); ?>" class="button" value="Send E-Mail" />&nbsp;
-                                    <input type="reset"  tabindex="<?php echo($tabIndex++); ?>" class="button" value="Reset" />&nbsp;
+                                    <input type="submit" tabindex="<?php echo($tabIndex++); ?>" class="button" value="<?php echo __("Send E-Mail");?>" />&nbsp;
+                                    <input type="reset"  tabindex="<?php echo($tabIndex++); ?>" class="button" value="<?php echo __("Reset");?>" />&nbsp;
                                 </td>
                             </tr>
                         </table>

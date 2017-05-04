@@ -1,3 +1,7 @@
+<?php
+chdir('./../../');
+include_once('./config.php');
+?>
 /*
  * CATS
  * Job Orders Form Validation
@@ -20,7 +24,7 @@ function checkAddForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
     return true;
@@ -36,7 +40,7 @@ function checkEditForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
     return true;
@@ -58,7 +62,7 @@ function checkEvent(mode)
     }
     if (fieldValue == '')
     {
-        errorMessage = "    - You must select an Event Type.\n";
+        errorMessage = "    - <?php echo __("You must select an Event Type.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -86,7 +90,7 @@ function checkDescription(mode)
     }
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter a Description.\n";
+        errorMessage = "    - <?php echo __("You must enter a Description.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }

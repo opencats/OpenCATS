@@ -1,0 +1,3 @@
+<FilesMatch "\.(js)$">
+AddHandler application/x-httpd-php .js
+</FilesMatch>

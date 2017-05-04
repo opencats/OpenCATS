@@ -1,5 +1,5 @@
 <?php /* $Id: EEOReport.tpl 2441 2007-05-04 20:42:02Z brian $ */ ?>
-<?php TemplateUtility::printHeader('EEO Reports', array('modules/joborders/validator.js', 'js/company.js', 'js/sweetTitles.js')); ?>
+<?php TemplateUtility::printHeader(__('EEO Reports'), array('modules/joborders/validator.js', 'js/company.js', 'js/sweetTitles.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">
@@ -11,11 +11,11 @@
                     <td width="3%">
                         <img src="images/job_orders.gif" width="24" height="24" border="0" alt="Job Orders" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Reports: EEO Report (Work In Progress)</h2></td>
+                    <td><h2><?php echo __("Reports");?>: <?php echo __("EEO Report");?> (<?php echo __("Work In Progress");?>)</h2></td>
                 </tr>
             </table>
 
-            <p class="note">Generate a report on Equal Employment Opportunity Statistics.</p>
+            <p class="note"><?php echo __("Generate a report on Equal Employment Opportunity Statistics.");?></p>
 
             <form name="jobOrderReportForm" id="jobOrderReportForm" action="<?php echo(CATSUtility::getIndexName()); ?>" method="get">
                 <input type="hidden" name="m" value="reports">
@@ -27,27 +27,27 @@
                             <table class="editTable" <?php if (isset($this->EEOReportStatistics)): ?>width="230"<?php else: ?>width="680"<?php endif; ?>>
                                 <tr>
                                     <td class="tdVertical" style="width: 75px;">
-                                        <label id="siteNameLabel" for="siteName">Date Range:</label>
+                                        <label id="siteNameLabel" for="siteName"><?php echo __("Date Range");?>:</label>
                                     </td>
                                     <td class="tdData">
-                                       <input type="radio" name="period" value="all" <?php if ($this->modePeriod == 'all'): ?>checked<?php endif; ?>>&nbsp;All time<br />
-                                       <input type="radio" name="period" value="month" <?php if ($this->modePeriod == 'month'): ?>checked<?php endif; ?>>&nbsp;Last Month<br />
-                                       <input type="radio" name="period" value="week" <?php if ($this->modePeriod == 'week'): ?>checked<?php endif; ?>>&nbsp;Last Week<br />
+                                       <input type="radio" name="period" value="all" <?php if ($this->modePeriod == 'all'): ?>checked<?php endif; ?>>&nbsp;<?php echo __("All time");?><br />
+                                       <input type="radio" name="period" value="month" <?php if ($this->modePeriod == 'month'): ?>checked<?php endif; ?>>&nbsp;<?php echo __("Last Month");?><br />
+                                       <input type="radio" name="period" value="week" <?php if ($this->modePeriod == 'week'): ?>checked<?php endif; ?>>&nbsp;<?php echo __("Last Week");?><br />
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td class="tdVertical" style="width: 75px;">
-                                        <label id="companyNameLabel" for="companyName">Status:</label>
+                                        <label id="companyNameLabel" for="companyName"><?php echo __("Status");?>:</label>
                                     </td>
                                     <td class="tdData">
-                                       <input type="radio" name="status" value="all" <?php if ($this->modeStatus == 'all'): ?>checked<?php endif; ?>>&nbsp;All<br />
-                                       <input type="radio" name="status" value="placed" <?php if ($this->modeStatus == 'placed'): ?>checked<?php endif; ?>>&nbsp;Placed<br />
-                                       <input type="radio" name="status" value="rejected" <?php if ($this->modeStatus == 'rejected'): ?>checked<?php endif; ?>>&nbsp;Not in Consideration<br />
+                                       <input type="radio" name="status" value="all" <?php if ($this->modeStatus == 'all'): ?>checked<?php endif; ?>>&nbsp;<?php echo __("All");?><br />
+                                       <input type="radio" name="status" value="placed" <?php if ($this->modeStatus == 'placed'): ?>checked<?php endif; ?>>&nbsp;<?php echo __("Placed");?><br />
+                                       <input type="radio" name="status" value="rejected" <?php if ($this->modeStatus == 'rejected'): ?>checked<?php endif; ?>>&nbsp;<?php echo __("Not in Consideration");?><br />
                                     </td>
                                 </tr>
                             </table>
-                            <input type="submit" class="button" name="submit" value="Preview Report" />&nbsp;
+                            <input type="submit" class="button" name="submit" value="<?php echo __("Preview Report");?>" />&nbsp;
                         </td>
                         
                         <?php if (isset($this->EEOReportStatistics)): ?>
@@ -55,7 +55,7 @@
                                 <table class="selectView" width="705">
                                     <tr>
                                         <td class="tdVertical" style="padding:10px;">
-                                            <div style="text-align: center; font-size:25px; width:250px;">Report Preview:</div>
+                                            <div style="text-align: center; font-size:25px; width:250px;"><?php echo __("Report Preview");?>:</div>
                                             <br />
                                             <?php if ($this->EEOSettingsRS['ethnicTracking'] == 1): ?>
                                                 <table>
@@ -68,7 +68,7 @@
                                                                 <tr>
                                                                     <td colspan="2">
                                                                         <br />
-                                                                        Candidates by Ethnic Types:<br />
+                                                                        <?php echo __("Candidates by Ethnic Types");?>:<br />
                                                                         <br />
                                                                     </td>
                                                                 </tr>
@@ -100,7 +100,7 @@
                                                                 <tr>
                                                                     <td colspan="2">
                                                                         <br />
-                                                                        Candidates by Veteran Status:<br />
+                                                                        <?php echo __("Candidates by Veteran Status");?>:<br />
                                                                         <br />
                                                                     </td>
                                                                 </tr>

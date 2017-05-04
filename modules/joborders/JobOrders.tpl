@@ -1,5 +1,5 @@
 <?php /* $Id: JobOrders.tpl 3676 2007-11-21 21:02:15Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Job Orders', array( 'js/highlightrows.js',  'js/sweetTitles.js', 'js/export.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
+<?php TemplateUtility::printHeader(__('Job Orders'), array( 'js/highlightrows.js',  'js/sweetTitles.js', 'js/export.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <style type="text/css">
@@ -16,7 +16,7 @@
                     <td width="3%">
                         <img src="images/job_orders.gif" width="24" height="24" border="0" alt="Job Orders" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Job Orders: Home</h2></td>
+                    <td><h2><?php echo __("Job Orders");?>: <?php echo __("Home");?></h2></td>
 
                     <?php TemplateUtility::printPopupContainer(); ?>
 
@@ -29,23 +29,23 @@
                                 <tr>
                                     <td>
                                         <select name="view" id="view" onchange="<?php echo($this->dataGrid->getJSAddFilter('Status', '==', 'this.value', 'true')); ?>" class="selectBox">
-                                            <option value="Active / OnHold / Full"<?php if ($this->dataGrid->getFilterValue('Status') == 'Active / OnHold / Full'): ?> selected="selected"<?php endif; ?>>Active / On Hold / Full</option>
-                                            <option value="Active"<?php if ($this->dataGrid->getFilterValue('Status') == 'Active'): ?> selected="selected"<?php endif; ?>>Active</option>
-                                            <option value="OnHold / Full"<?php if ($this->dataGrid->getFilterValue('Status') == 'OnHold / Full'): ?> selected="selected"<?php endif; ?>>On Hold / Full</option>
-                                            <option value="Closed / Canceled"<?php if ($this->dataGrid->getFilterValue('Status') == 'Closed / Canceled'): ?> selected="selected"<?php endif; ?>>Closed / Canceled</option>
-                                            <option value="Upcoming / Lead"<?php if ($this->dataGrid->getFilterValue('Status') == 'Upcoming / Lead'): ?> selected="selected"<?php endif; ?>>Upcoming / Lead</option>
-                                            <option value=""<?php if ($this->dataGrid->getFilterValue('Status') == ''): ?> selected="selected"<?php endif; ?>>All</option>
+                                            <option value="Active / OnHold / Full"<?php if ($this->dataGrid->getFilterValue('Status') == 'Active / OnHold / Full'): ?> selected="selected"<?php endif; ?>><?php echo __("Active / On Hold / Full");?></option>
+                                            <option value="Active"<?php if ($this->dataGrid->getFilterValue('Status') == 'Active'): ?> selected="selected"<?php endif; ?>><?php echo __("Active");?></option>
+                                            <option value="OnHold / Full"<?php if ($this->dataGrid->getFilterValue('Status') == 'OnHold / Full'): ?> selected="selected"<?php endif; ?>><?php echo __("On Hold / Full");?></option>
+                                            <option value="Closed / Canceled"<?php if ($this->dataGrid->getFilterValue('Status') == 'Closed / Canceled'): ?> selected="selected"<?php endif; ?>><?php echo __("Closed / Canceled");?></option>
+                                            <option value="Upcoming / Lead"<?php if ($this->dataGrid->getFilterValue('Status') == 'Upcoming / Lead'): ?> selected="selected"<?php endif; ?>><?php echo __("Upcoming / Lead");?></option>
+                                            <option value=""<?php if ($this->dataGrid->getFilterValue('Status') == ''): ?> selected="selected"<?php endif; ?>><?php echo __("All");?></option>
                                         </select>
                                     </td>
 
                                     <td valign="top" align="right" nowrap="nowrap">
                                         <input type="checkbox" name="onlyMyJobOrders" id="onlyMyJobOrders" <?php if ($this->dataGrid->getFilterValue('OwnerID') ==  $this->userID): ?>checked<?php endif; ?> onclick="<?php echo $this->dataGrid->getJSAddRemoveFilterFromCheckbox('OwnerID', '==',  $this->userID); ?>" />
-                                        <label for="onlyMyJobOrders">Only My Job Orders</label>&nbsp;
+                                        <label for="onlyMyJobOrders"><?php echo __("Only My Job Orders");?></label>&nbsp;
 
                                     </td>
                                     <td valign="top" align="right" nowrap="nowrap">
                                         <input type="checkbox" name="onlyHotJobOrders" id="onlyHotJobOrders" <?php if ($this->dataGrid->getFilterValue('IsHot') == '1'): ?>checked<?php endif; ?> onclick="<?php echo $this->dataGrid->getJSAddRemoveFilterFromCheckbox('IsHot', '==', '\'1\''); ?>" />
-                                        <label for="onlyHotJobOrders">Only Hot Job Orders</label>&nbsp;
+                                        <label for="onlyHotJobOrders"><?php echo __("Only Hot Job Orders");?></label>&nbsp;
                                     </td>
                                 </tr>
                             </table>
@@ -63,7 +63,7 @@
                         <img src="images/large_error.gif" align="left">
                     </td>
                     <td align="left" valign="center">
-                        <span style="font-size: 12pt; font-weight: bold; color: #800000; line-height: 12pt;">There was a problem with your request:</span>
+                        <span style="font-size: 12pt; font-weight: bold; color: #800000; line-height: 12pt;"><?php echo __("There was a problem with your request");?>:</span>
                         <div style="font-size: 10pt; font-weight: bold; padding: 3px 0px 0px 0px;"><?php echo $this->errMessage; ?></div>
                     </td>
                 </tr>
@@ -73,12 +73,12 @@
 
             <?php if ($this->totalJobOrders): ?>
             <p class="note">
-                <span style="float:left;">Job Orders  -
-                    Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?>
-                    (<?php echo($this->dataGrid->getNumberOfRows()); ?> Items)
-                    (<?php if ($this->dataGrid->getFilterValue('Status') != '') echo ($this->dataGrid->getFilterValue('Status')); else echo ('All'); ?>)
-                    <?php if ($this->dataGrid->getFilterValue('OwnerID') ==  $this->userID): ?>(Only My Job Orders)<?php endif; ?>
-                    <?php if ($this->dataGrid->getFilterValue('IsHot') == '1'): ?>(Only Hot Job Orders)<?php endif; ?>
+                <span style="float:left;"><?php echo __("Job Orders");?>  -
+                    <?php echo __("Page");?> <?php echo($this->dataGrid->getCurrentPageHTML()); ?>
+                    (<?php echo($this->dataGrid->getNumberOfRows()); ?> <?php echo __("Items");?>)
+                    (<?php if ($this->dataGrid->getFilterValue('Status') != '') echo ($this->dataGrid->getFilterValue('Status')); else echo (__('All')); ?>)
+                    <?php if ($this->dataGrid->getFilterValue('OwnerID') ==  $this->userID): ?>(<?php echo __("Only My Job Orders");?>)<?php endif; ?>
+                    <?php if ($this->dataGrid->getFilterValue('IsHot') == '1'): ?>(<?php echo __("Only Hot Job Orders");?>)<?php endif; ?>
                 </span>
                 <span style="float:right;">
                     <?php $this->dataGrid->drawRowsPerPageSelector(); ?>
@@ -110,8 +110,7 @@
                 <td style="padding-left: 62px;" align="center" valign="center">
 
                     <div style="text-align: center; width: 600px; line-height: 22px; font-size: 18px; font-weight: bold; color: #666666; padding-bottom: 20px;">
-                    Add a job order, then attach candidates
-                    to the pipeline with their status (interviewing, qualifying, etc.)
+                    <?php echo __("Add a job order, then attach candidates to the pipeline with their status (interviewing, qualifying, etc.)");?>
                     </div>
 
                     <a href="javascript:void(0);"  onclick="showPopWin('<?php echo CATSUtility::getIndexName(); ?>?m=joborders&amp;a=addJobOrderPopup', 400, 250, null);">

@@ -43,10 +43,10 @@ div.friendlyErrorMessage {
                             <?php echo $this->errorMessage; ?>
                             <?php if ($this->isDemo): ?>
                             <br /><br />
-                            You are logged in as a <b>demo account.</b> Demo accounts
-                            have several restrictions in place because of their inherent anonymity.
-                            You may wish to sign up for a CATS Hosted account -- it's free,
-                            and none of the demo restrictions are in place. To sign up, <a href="?a=getcats">click here</a>!
+                            <?php echo sprintf(__("You are logged in as a %s"),'<b>'.__('demo account.').'</b>');?>  
+                            <?php echo __("Demo accounts have several restrictions in place because of their inherent anonymity.");?>
+                            <?php echo __("You may wish to sign up for a OpenCATS Hosted account -- it's free, and none of the demo restrictions are in place.");?> 
+                            <?php echo __("To sign up");?>, <a href="?a=getcats"><?php echo __("click here");?></a>!
                             <?php endif; ?>
                             <?php
                             eval(Hooks::get('FRIENDLYERRORS_CONTACTCATS'));

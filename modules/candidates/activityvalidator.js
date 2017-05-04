@@ -7,7 +7,10 @@
  *
  * $Id: activityvalidator.js 2336 2007-04-14 22:01:51Z will $
  */
-
+<?php
+chdir('./../../');
+include_once('./config.php');
+?>
 function checkActivityForm(form)
 {
     var errorMessage = '';
@@ -16,7 +19,7 @@ function checkActivityForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -37,7 +40,7 @@ function checkEventTitle()
     fieldLabel = document.getElementById('titleLabel');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter an event title.\n";
+        errorMessage = "    - <?php echo __("You must enter an event title.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }

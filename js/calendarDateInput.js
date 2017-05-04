@@ -1,3 +1,8 @@
+<?php
+chdir('./../');
+include_once('./config.php');
+?>
+
 /***********************************************
  Fool-Proof Date Input Script with DHTML Calendar
  by Jason Moon - calendar@moonscript.com
@@ -23,7 +28,7 @@ var ZCounter = 100;
 var Today = new Date();
 var WeekDays = new Array('S','M','T','W','T','F','S');
 var MonthDays = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
-var MonthNames = new Array('January','February','March','April','May','June','July','August','September','October','November','December');
+var MonthNames = new Array('<?php echo __("January");?>','<?php echo __("February");?>','<?php echo __("March");?>','<?php echo __("April");?>','<?php echo __("May");?>','<?php echo __("June");?>','<?php echo __("July");?>','<?php echo __("August");?>','<?php echo __("September");?>','<?php echo __("October");?>','<?php echo __("November");?>','<?php echo __("December");?>');
 
 // Write out the stylesheet definition for the calendar
 with (document) {
@@ -629,11 +634,11 @@ function DateInput(DateName, Required, DateFormat, DefaultDate, TabIndex)
         {
             if (DefaultDate == '')
             {
-                writeln('<option selected="selected" value="">None</option>');
+                writeln('<option selected="selected" value=""><?php echo __("None");?></option>');
             }
             else
             {
-                writeln('<option value="">None</option>');
+                writeln('<option value=""><?php echo __("None");?></option>');
             }
         }
 

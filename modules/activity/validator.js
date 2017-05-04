@@ -25,7 +25,10 @@
  *
  * $Id: validator.js 1479 2007-01-17 00:22:21Z will $
  */
-
+<?php
+chdir('./../../');
+include_once('./config.php');
+?>
 function checkDate(form)
 {
     var errorMessage = '';
@@ -54,7 +57,7 @@ function checkDate(form)
 
     if (startDate > endDate)
     {
-        alert("You must enter a Date that is later\n then the begining search date.");
+        alert('<?php echo __("You must enter a Date that is later\n then the begining search date.");?>');
         return false;
     }
     else

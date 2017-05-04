@@ -1,6 +1,6 @@
 <?php /* $Id: CreateImageAttachmentModal.tpl 2026 2007-02-27 22:34:05Z brian $ */ ?>
-<?php TemplateUtility::printModalHeader('Candidates', array('modules/candidates/validator.js')); ?>
-    <p class="noteUnsized">Edit Profile Image</p>
+<?php TemplateUtility::printModalHeader(__('Candidates'), array('modules/candidates/validator.js')); ?>
+    <p class="noteUnsized"><?php echo __("Edit Profile Image");?></p>
 
     <?php if (!$this->isFinishedMode): ?>
         <form name="createAttachmentForm" id="createAttachmentForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addEditImage" enctype="multipart/form-data" method="post" onsubmit="">
@@ -17,17 +17,17 @@
             <?php endforeach; ?>
             <table class="editTable">
                 <tr>
-                    <td class="tdVertical">New Profile Picture:</td>
+                    <td class="tdVertical"><?php echo __("New Profile Picture");?>:</td>
                     <td class="tdData"><input type="file" id="file" name="file" /></td>
                 </tr>
             </table>
-            <input type="submit" class="button" name="submit" id="submit" value="Set Image" />&nbsp;
-            <input type="button" class="button" name="close" value="Close" onclick="parentHidePopWin();" />
+            <input type="submit" class="button" name="submit" id="submit" value="<?php echo __("Set Image");?>" />&nbsp;
+            <input type="button" class="button" name="close" value="<?php echo __("Close");?>" onclick="parentHidePopWin();" />
         </form>
     <?php else: ?>
-        <p>The picture has been saved..</p>
+        <p><?php echo __("The picture has been saved..");?></p>
 
-        <input type="button" name="close" value="Close" onclick="parentHidePopWin();" />
+        <input type="button" name="close" value="<?php echo __("Close");?>" onclick="parentHidePopWin();" />
         <script type="text/javascript">
             parentHidePopWin();
         </script>

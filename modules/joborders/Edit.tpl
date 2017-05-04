@@ -1,5 +1,5 @@
 <?php /* $Id: Edit.tpl 3810 2007-12-05 19:13:25Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Job Orders', array('modules/joborders/validator.js', 'js/company.js', 'js/sweetTitles.js',  'js/suggest.js', 'js/joborder.js', 'js/lib.js', 'js/listEditor.js', 'ckeditor/ckeditor.js')); ?>
+<?php TemplateUtility::printHeader(__('Job Orders'), array('modules/joborders/validator.js', 'js/company.js', 'js/sweetTitles.js',  'js/suggest.js', 'js/joborder.js', 'js/lib.js', 'js/listEditor.js', 'ckeditor/ckeditor.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">
@@ -9,13 +9,13 @@
             <table>
                 <tr>
                     <td width="3%">
-                        <img src="images/job_orders.gif" width="24" height="24" border="0" alt="Job Orders" style="margin-top: 3px;" />&nbsp;
+                        <img src="images/job_orders.gif" width="24" height="24" border="0" alt="<?php echo __("Job Orders");?>" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Job Orders: Edit Job Order</h2></td>
+                    <td><h2><?php echo __("Job Orders");?>: <?php echo __("Edit Job Order");?></h2></td>
                 </tr>
             </table>
 
-            <p class="note">Edit Job Order</p>
+            <p class="note"><?php echo __("Edit Job Order");?></p>
 
             <form name="editJobOrderForm" id="editJobOrderForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=edit" method="post" onsubmit="return checkEditForm(document.editJobOrderForm);" autocomplete="off">
                 <input type="hidden" name="postback" id="postback" value="postback" />
@@ -24,14 +24,14 @@
                 <table class="editTable" width="700">
                     <tr>
                         <td class="tdVertical">
-                            <label id="titleLabel" for="title">Title:</label>
+                            <label id="titleLabel" for="title"><?php echo __("Title");?>:</label>
                         </td>
                         <td class="tdData">
                             <input type="text" tabindex="1" class="inputbox" id="title" name="title" value="<?php $this->_($this->data['title']); ?>" style="width: 150px;" />&nbsp;*
                         </td>
 
                         <td class="tdVertical">
-                            <label id="startDateLabel" for="startDate">Start Date:</label>
+                            <label id="startDateLabel" for="startDate"><?php echo __("Start Date");?>:</label>
                         </td>
                         <td class="tdData">
                             <?php if (!empty($this->data['startDate'])): ?>
@@ -44,7 +44,7 @@
 
                     <tr>
                         <td class="tdVertical">
-                            <label id="companyIDLabel" for="companyID">Company:</label>
+                            <label id="companyIDLabel" for="companyID"><?php echo __("Company");?>:</label>
                         </td>
 
                         <td class="tdData">
@@ -62,7 +62,7 @@
                         </td>
 
                         <td class="tdVertical">
-                            <label id="durationLabel" for="duration">Duration:</label>
+                            <label id="durationLabel" for="duration"><?php echo __("Duration");?>:</label>
                         </td>
                         <td class="tdData">
                             <input type="text" tabindex="12" class="inputbox" id="duration" name="duration" value="<?php $this->_($this->data['duration']); ?>" style="width: 150px;" />
@@ -75,14 +75,14 @@
                          </td>
                          <td class="tdData">
                             <?php if ($this->defaultCompanyID !== false): ?>
-                                <input type="radio" name="typeCompany" <?php if ($this->defaultCompanyID == $this->data['companyID']) echo(' checked'); ?> id="defaultCompany" onchange="if(document.getElementById('companyName').disabled == false && document.getElementById('companyID').value > 0) {oldCompanyID = document.getElementById('companyID').value; } else if(document.getElementById('companyName').disabled == false) { oldCompanyID = 0; } document.getElementById('companyName').disabled = true; document.getElementById('companyID').value = '<?php echo($this->defaultCompanyID); ?>'; ">&nbsp;Internal Posting
+                                <input type="radio" name="typeCompany" <?php if ($this->defaultCompanyID == $this->data['companyID']) echo(' checked'); ?> id="defaultCompany" onchange="if(document.getElementById('companyName').disabled == false && document.getElementById('companyID').value > 0) {oldCompanyID = document.getElementById('companyID').value; } else if(document.getElementById('companyName').disabled == false) { oldCompanyID = 0; } document.getElementById('companyName').disabled = true; document.getElementById('companyID').value = '<?php echo($this->defaultCompanyID); ?>'; ">&nbsp;<?php echo __("Internal Posting");?>
                             <?php endif; ?>
                             <script type="text/javascript">oldCompanyID = -1; watchCompanyIDChangeJO('<?php echo($this->sessionCookie); ?>');</script>
                          </td>
 
 
                         <td class="tdVertical">
-                            <label id="maxRateLabel" for="maxRate">Maximum Rate:</label>
+                            <label id="maxRateLabel" for="maxRate"><?php echo __("Maximum Rate");?>:</label>
                         </td>
                         <td class="tdData">
                             <input type="text" tabindex="13" class="inputbox" id="maxRate" name="maxRate" value="<?php $this->_($this->data['maxRate']); ?>" style="width: 150px;" />
@@ -92,12 +92,12 @@
 
                     <tr>
                         <td class="tdVertical">
-                            <label id="departmentLabel" for="department">Department:</label>
+                            <label id="departmentLabel" for="department"><?php echo __("Department");?>:</label>
                         </td>
                         <td class="tdData">
                             <select id="departmentSelect" name="department" class="inputbox" style="width: 150px;" onchange="if (this.value == 'edit') { listEditor('Departments', 'departmentSelect', 'departmentsCSV', false); this.value = '(none)'; } if (this.value == 'nullline') { this.value = '(none)'; }">
                                 <?php if ($this->data['departmentID'] == 0): ?>
-                                    <option value="(none)" selected="selected">None</option>
+                                    <option value="(none)" selected="selected"><?php echo __("None");?></option>
                                 <?php else: ?>
                                     <option value="(none)">None</option>
                                 <?php endif; ?>
@@ -118,7 +118,7 @@
 
                     <tr>
                         <td class="tdVertical">
-                            <label id="contactIDLabel" for="contactID">Contact:</label>
+                            <label id="contactIDLabel" for="contactID"><?php echo __("Contact");?>:</label>
                         </td>
                         <td class="tdData">
                             <select tabindex="3" id="contactID" name="contactID" class="inputbox" style="width: 150px;">
@@ -135,7 +135,7 @@
                             <img src="images/indicator2.gif" id="contactsIndicator" alt="" style="visibility: hidden; margin-left: 5px;" height="16" width="16" />
                         </td>
                         <td class="tdVertical">
-                            <label id="typeLabel" for="type">Type:</label>
+                            <label id="typeLabel" for="type"><?php echo __("Type");?>:</label>
                         </td>
                         <td class="tdData">
                             <select tabindex="15" id="type" name="type" class="inputbox" style="width: 150px;">
@@ -148,7 +148,7 @@
                                     </option>
                                 <?php endforeach; ?>
                                 <?php if(count($this->jobTypes) < 1): ?>
-                                    <option value="N/A" selected>N/A (Not Applicable)</option>
+                                    <option value="N/A" selected>N/A (<?php echo __("Not Applicable");?>)</option>
                                 <?php endif; ?>
                             </select>&nbsp;*
                         </td>
@@ -156,14 +156,14 @@
 
                     <tr>
                         <td class="tdVertical">
-                            <label id="cityLabel" for="city">City:</label>
+                            <label id="cityLabel" for="city"><?php echo __("City");?>:</label>
                         </td>
                         <td class="tdData">
                             <input type="text" tabindex="4" class="inputbox" id="city" name="city" value="<?php $this->_($this->data['city']); ?>" style="width: 150px;" />&nbsp;*
                         </td>
 
                         <td class="tdVertical">
-                            <label id="openingsLabel" for="openings">Total Openings:</label>
+                            <label id="openingsLabel" for="openings"><?php echo __("Total Openings");?>:</label>
                         </td>
                         <td class="tdData">
                             <input type="text" tabindex="16" class="inputbox" id="openings" name="openings" value="<?php $this->_($this->data['openings']); ?>" style="width: 150px;" />&nbsp;*
@@ -172,7 +172,7 @@
 
                     <tr>
                         <td class="tdVertical">
-                            <label id="stateLabel" for="state">State:</label>
+                            <label id="stateLabel" for="state"><?php echo __("State");?>:</label>
                         </td>
                         <td class="tdData">
                             <input type="text" tabindex="5" class="inputbox" id="state" name="state" value="<?php $this->_($this->data['state']); ?>" style="width: 150px;" />&nbsp;*
@@ -188,11 +188,11 @@
 
                     <tr>
                         <td class="tdVertical">
-                            <label id="recruiterLabel" for="recruiter">Recruiter:</label>
+                            <label id="recruiterLabel" for="recruiter"><?php echo __("Recruiter");?>:</label>
                         </td>
                         <td class="tdData">
                             <select tabindex="6" id="recruiter" name="recruiter" class="inputbox" style="width: 150px;">
-                                <option value="">(Select a User)</option>
+                                <option value="">(<?php echo __("Select a User");?>)</option>
 
                                 <?php foreach ($this->usersRS as $rowNumber => $usersData): ?>
                                     <?php if ($this->data['recruiter'] == $usersData['userID']): ?>
@@ -205,7 +205,7 @@
                         </td>
 
                         <td class="tdVertical">
-                            <label id="companyJobIDLabel" for="openings">Company Job ID:</label>
+                            <label id="companyJobIDLabel" for="openings"><?php echo __("Company Job ID");?>:</label>
                         </td>
                         <td class="tdData">
                             <input type="text" tabindex="17" class="inputbox" id="companyJobID" name="companyJobID" value="<?php $this->_($this->data['companyJobID']); ?>" style="width: 150px;" />
@@ -214,11 +214,11 @@
 
                     <tr>
                         <td class="tdVertical">
-                            <label id="ownerLabel" for="owner">Owner:</label>
+                            <label id="ownerLabel" for="owner"><?php echo __("Owner");?>:</label>
                         </td>
                         <td class="tdData">
                             <select tabindex="7" id="owner" name="owner" class="inputbox" style="width: 150px;" <?php if (!$this->emailTemplateDisabled): ?>onchange="document.getElementById('divOwnershipChange').style.display=''; <?php if ($this->canEmail): ?>document.getElementById('checkboxOwnershipChange').checked=true;<?php endif; ?>"<?php endif; ?>>
-                                <option value="-1">None</option>
+                                <option value="-1"><?php echo __("None");?></option>
 
                                 <?php foreach ($this->usersRS as $rowNumber => $usersData): ?>
                                     <?php if ($this->data['owner'] == $usersData['userID']): ?>
@@ -234,36 +234,36 @@
                         </td>
 
                         <td class="tdVertical">
-                            <label id="isHotLabel" for="isHot">Hot:</label>
+                            <label id="isHotLabel" for="isHot"><?php echo __("Hot");?>:</label>
                         </td>
                         <td class="tdData">
                             <input type="checkbox" tabindex="18" id="isHot" name="isHot"<?php if ($this->data['isHot'] == 1): ?> checked<?php endif; ?> />&nbsp;
-                            <img title="Checking this box indicates that the job order is 'hot', and shows up highlighted throughout the system." src="images/information.gif" alt="" width="16" height="16" />
+                            <img title="<?php echo __("Checking this box indicates that the job order is 'hot', and shows up highlighted throughout the system.");?>" src="images/information.gif" alt="" width="16" height="16" />
                         </td>
                     </tr>
 
                     <tr>
                         <td class="tdVertical">
-                            <label id="statusLabel" for="status">Status:</label>
+                            <label id="statusLabel" for="status"><?php echo __("Status");?>:</label>
                         </td>
                         <td class="tdData">
                             <select tabindex="8" id="status" name="status" class="inputbox" style="width: 150px;">
-                                <option <?php if ($this->data['status'] == 'Active'): ?>selected<?php endif; ?> value="Active">Active</option>
-                                <option <?php if ($this->data['status'] == 'Upcoming'): ?>selected<?php endif; ?> value="Upcoming">Upcoming</option>
-                                <option <?php if ($this->data['status'] == 'Lead'): ?>selected<?php endif; ?> value="Lead">Prospective / Lead</option>
-                                <option <?php if ($this->data['status'] == 'OnHold'): ?>selected<?php endif; ?> value="OnHold">On Hold</option>
-                                <option <?php if ($this->data['status'] == 'Full'): ?>selected<?php endif; ?> value="Full">Full</option>
-                                <option <?php if ($this->data['status'] == 'Closed'): ?>selected<?php endif; ?> value="Closed">Closed</option>
-                                <option <?php if ($this->data['status'] == 'Canceled'): ?>selected<?php endif; ?> value="Canceled">Canceled</option>
+                                <option <?php if ($this->data['status'] == 'Active'): ?>selected<?php endif; ?> value="Active"><?php echo __("Active");?></option>
+                                <option <?php if ($this->data['status'] == 'Upcoming'): ?>selected<?php endif; ?> value="Upcoming"><?php echo __("Upcoming");?></option>
+                                <option <?php if ($this->data['status'] == 'Lead'): ?>selected<?php endif; ?> value="Lead"><?php echo __("Prospective / Lead");?></option>
+                                <option <?php if ($this->data['status'] == 'OnHold'): ?>selected<?php endif; ?> value="OnHold"><?php echo __("On Hold");?></option>
+                                <option <?php if ($this->data['status'] == 'Full'): ?>selected<?php endif; ?> value="Full"><?php echo __("Full");?></option>
+                                <option <?php if ($this->data['status'] == 'Closed'): ?>selected<?php endif; ?> value="Closed"><?php echo __("Closed");?></option>
+                                <option <?php if ($this->data['status'] == 'Canceled'): ?>selected<?php endif; ?> value="Canceled"><?php echo __("Canceled");?></option>
                             </select>&nbsp;*
                         </td>
 
                         <td class="tdVertical">
-                            <label id="publicLabel" for="public">Public:</label>
+                            <label id="publicLabel" for="public"><?php echo __("Public");?>:</label>
                         </td>
                         <td class="tdData">
                             <input type="checkbox" tabindex="19" id="public" name="public" onchange="checkPublic(this);" onclick="checkPublic(this);" onkeydown="checkPublic(this);"<?php if ($this->data['public'] == 1): ?> checked<?php endif; ?> />&nbsp;
-                            <img title="Checking this box indicates that the job order is public. Job orders flaged as public will be able to be viewed by anonymous users." src="images/information.gif" alt="" width="16" height="16" />
+                            <img title="<?php echo __("Checking this box indicates that the job order is public. Job orders flaged as public will be able to be viewed by anonymous users.");?>" src="images/information.gif" alt="" width="16" height="16" />
                         </td>
                     </tr>
 
@@ -288,7 +288,7 @@
 
                     <tr>
                         <td class="tdVertical">
-                            <label id="descriptionLabel" for="description">Description:</label>
+                            <label id="descriptionLabel" for="description"><?php echo __("Description");?>:</label>
                         </td>
                         <td class="tdData">
                             <textarea tabindex="20" class="ckEditor" name="description" id="description" rows="15" style="width: 500px;"><?php $this->_($this->data['description']); ?></textarea>
@@ -297,7 +297,7 @@
 
                     <tr>
                         <td class="tdVertical">
-                            <label id="notesLabel" for="notes">Internal Notes:</label>
+                            <label id="notesLabel" for="notes"><?php echo __("Internal Notes");?>:</label>
                         </td>
                         <td class="tdData">
                             <textarea tabindex="21" class="ckEditor" name="notes" id="notes" rows="5" style="width: 500px;"><?php $this->_($this->data['notes']); ?></textarea>
@@ -307,11 +307,11 @@
                     <tr id="displayQuestionnaires" style="<?php if ($this->isPublic): ?>display: table-row;<?php else: ?>display: none;<?php endif; ?>">
                         <?php if ($this->careerPortalEnabled): ?>
                         <td class="tdVertical">
-                            <label id="notesLabel" for="notes">Questionnaire:</label>
+                            <label id="notesLabel" for="notes"><?php echo __("Questionnaire");?>:</label>
                         </td>
                         <td class="tdData">
                             <select id="questionnaire" name="questionnaire" class="inputbox" style="width: 500px;">
-                            <option value="none">None</option>
+                            <option value="none"><?php echo __("None");?></option>
                             <?php foreach ($this->questionnaires as $questionnaire): ?>
                                 <option value="<?php echo $questionnaire['questionnaireID']; ?>"<?php if ($this->questionnaireID == $questionnaire['questionnaireID']) echo ' selected'; ?>><?php echo $questionnaire['title']; ?></option>
                             <?php endforeach; ?>
@@ -324,9 +324,9 @@
                         <?php endif; ?>
                     </tr>
                 </table>
-                <input type="submit" tabindex="22" class="button" name="submit" id="submit" value="Save" />&nbsp;
-                <input type="reset"  tabindex="23" class="button" name="reset"  id="reset"  value="Reset" />&nbsp;
-                <input type="button" tabindex="24" class="button" name="back"   id="back"   value="Back to Details" onclick="javascript:goToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=show&amp;jobOrderID=<?php echo($this->jobOrderID); ?>');" />
+                <input type="submit" tabindex="22" class="button" name="submit" id="submit" value="<?php echo __("Save");?>" />&nbsp;
+                <input type="reset"  tabindex="23" class="button" name="reset"  id="reset"  value="<?php echo __("Reset");?>" />&nbsp;
+                <input type="button" tabindex="24" class="button" name="back"   id="back"   value="<?php echo __("Back to Details");?>" onclick="javascript:goToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=show&amp;jobOrderID=<?php echo($this->jobOrderID); ?>');" />
             </form>
 
             <script type="text/javascript">

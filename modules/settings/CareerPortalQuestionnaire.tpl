@@ -1,5 +1,5 @@
 <?php /* $Id: CareerPortalQuestionnaire.tpl 3736 2007-11-28 01:19:24Z andrew $ */ ?>
-<?php TemplateUtility::printHeader('Settings', array('js/questionnaire.js')); ?>
+<?php TemplateUtility::printHeader(__('Settings'), array('js/questionnaire.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
 
@@ -28,14 +28,14 @@ div.questionContainerPlainJane { }
                     <td width="3%">
                         <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Settings: Administration</h2></td>
+                    <td><h2><?php echo __("Settings");?>: <?php echo __("Administration");?></h2></td>
                 </tr>
             </table>
 
             <div style="width: 700px;">
-            <p class="note">Careers Website Questionnaire</p>
-            A questionnaire provides questions to candidates before they apply through your careers website.
-            You can specify actions to perform based on the responses they give.
+            <p class="note"><?php echo __("Careers Website Questionnaire");?></p>
+            <?php echo __("A questionnaire provides questions to candidates before they apply through your careers website.");?>
+            <?php echo __("You can specify actions to perform based on the responses they give.");?>
             </div>
             <br /><br />
 
@@ -53,7 +53,7 @@ div.questionContainerPlainJane { }
             <table class="editTable" width="700">
                 <tr id="fromTitleRow">
                     <td class="tdVertical" style="width: 175px;">
-                        <label for="titleLabel" id="titleLabel">Title (Internal):</label>
+                        <label for="titleLabel" id="titleLabel"><?php echo __("Title (Internal)");?>:</label>
                     </td>
                     <td class="tdData">
                         <input type="text" tabindex="1" class="inputbox" name="title" id="title" value="<?php echo isset($this->title) ? $this->title : ''; ?>" maxlength="200" style="width: 250px;" />
@@ -61,18 +61,18 @@ div.questionContainerPlainJane { }
                     <td class="tdData" align="right" style="text-align: right;">
                         <table cellpadding="0" cellspacing="0" border="0">
                             <tr>
-                                <td valign="top" align="right"><input type="button" class="button" name="cancelButton" id="cancelButton" value="Cancel, Go Back" onclick="onCancel();" /></td>
-                                <td valign="top" align="right"><input type="button" class="button" name="saveButton" id="saveButton" value="<?php echo isset($this->questionnaireID) && $this->questionnaireID != '' ? 'Save Changes' : 'Add Questionnaire'; ?>" onclick="onSave();" /></td>
+                                <td valign="top" align="right"><input type="button" class="button" name="cancelButton" id="cancelButton" value="<?php echo __("Cancel, Go Back");?>" onclick="onCancel();" /></td>
+                                <td valign="top" align="right"><input type="button" class="button" name="saveButton" id="saveButton" value="<?php echo isset($this->questionnaireID) && $this->questionnaireID != '' ? __('Save Changes') : __('Add Questionnaire'); ?>" onclick="onSave();" /></td>
                             </tr>
                             <tr>
-                                <td valign="top" align="right" colspan="2"><input type="button" class="button" name="update" id="update" value="Update" onclick="onUpdate();" /></td>
+                                <td valign="top" align="right" colspan="2"><input type="button" class="button" name="update" id="update" value="<?php echo __("Update");?>" onclick="onUpdate();" /></td>
                             </tr>
                         </table>
                     </td>
                 </tr>
                 <tr id="fromDescriptionRow">
                     <td class="tdVertical" style="width: 175px;">
-                        <label for="descriptionLabel" id="descriptionLabel">Description (Public):</label>
+                        <label for="descriptionLabel" id="descriptionLabel"><?php echo __("Description (Public)");?>:</label>
                     </td>
                     <td class="tdData">
                         <input type="text" tabindex="2" class="inputbox" name="description" id="description" value="<?php echo isset($this->description) ? $this->description : ''; ?>" maxlength="200" style="width: 250px;" />
@@ -83,12 +83,12 @@ div.questionContainerPlainJane { }
                 </tr>
                 <tr id="fromActiveRow">
                     <td class="tdVertical" style="width: 175px;">
-                        <label for="activeabel" id="activeLabel">Status:</label>
+                        <label for="activeabel" id="activeLabel"><?php echo __("Status");?>:</label>
                     </td>
                     <td class="tdData">
                         <select name="isActive" id="isActive" tabindex="3">
-                            <option value="yes"<?php echo isset($this->isActive) && $this->isActive ? ' selected' : ''; ?>>Active</option>
-                            <option value="no"<?php echo isset($this->isActive) && !$this->isActive ? ' selected' : ''; ?>>In-active</option>
+                            <option value="yes"<?php echo isset($this->isActive) && $this->isActive ? ' selected' : ''; ?>><?php echo __("Active");?></option>
+                            <option value="no"<?php echo isset($this->isActive) && !$this->isActive ? ' selected' : ''; ?>><?php echo __("In-active");?></option>
                         </select>
                     </td>
                     <td class="tdData" align="right" style="text-align: right;">
@@ -101,7 +101,7 @@ div.questionContainerPlainJane { }
                 </tr>
                 <tr>
                     <td class="tdVertical" style="width: 175px;">
-                        <label for="titleLabel" id="titleLabel" style="font-weight: bold;">Questions:</label>
+                        <label for="titleLabel" id="titleLabel" style="font-weight: bold;"><?php echo __("Questions");?>:</label>
                     </td>
                     <td class="tdData" colspan="2">&nbsp;</td>
                 </tr>
@@ -111,10 +111,10 @@ div.questionContainerPlainJane { }
                             <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                 <!-- Begin Title Bar for the Questions -->
                                 <tr>
-                                    <td class="questionTitleText" colspan="2">Position</td>
-                                    <td class="questionTitleText">Question</td>
-                                    <td class="questionTitleText" align="left">Question Type</td>
-                                    <td class="questionTitleText">Remove</td>
+                                    <td class="questionTitleText" colspan="2"><?php echo __("Position");?></td>
+                                    <td class="questionTitleText"><?php echo __("Question");?></td>
+                                    <td class="questionTitleText" align="left"><?php echo __("Question Type");?></td>
+                                    <td class="questionTitleText"><?php echo __("Remove");?></td>
                                 </tr>
                                 <!-- End Title Bar for the Questions -->
 
@@ -129,11 +129,11 @@ div.questionContainerPlainJane { }
                                             <div id="question<?php echo $questionIndex; ?>TextContainer" class="questionText">
                                                 <div id="question<?php echo $questionIndex; ?>TextLabel">
                                                     <span id="question<?php echo $questionIndex; ?>TextLabelValue"><?php echo $question['questionText']; ?></span>
-                                                    <a href="javascript:void(0);" id="question<?php echo $questionIndex; ?>TextChange" onclick="promptChangeQuestionText(this);">(edit)</a>
+                                                    <a href="javascript:void(0);" id="question<?php echo $questionIndex; ?>TextChange" onclick="promptChangeQuestionText(this);">(<?php echo __("edit");?>)</a>
                                                 </div>
                                                 <div id="question<?php echo $questionIndex; ?>TextInput" style="display: none;">
                                                     <input type="text" class="inputbox" id="question<?php echo $questionIndex; ?>TextValue" name="question<?php echo $questionIndex; ?>TextValue" value="<?php echo $question['questionText']; ?>" maxlength="255" style="width: 350px;" />
-                                                    <input type="button" class="button" id="question<?php echo $questionIndex; ?>SaveTextValue" value="Save" onclick="saveChangeQuestionText(this, true);" />
+                                                    <input type="button" class="button" id="question<?php echo $questionIndex; ?>SaveTextValue" value="<?php echo __("Save");?>" onclick="saveChangeQuestionText(this, true);" />
                                                 </div>
                                             </div>
                                         </td>
@@ -141,14 +141,14 @@ div.questionContainerPlainJane { }
                                             <div id="question<?php echo $questionIndex; ?>TypeContainer">
                                                 <div id="question<?php echo $questionIndex; ?>TypeLabel">
                                                     <span id="question<?php echo $questionIndex; ?>TypeLabelValue"><?php echo $question['questionTypeLabel']; ?></span>
-                                                    <a href="javascript:void(0);" id="question<?php echo $questionIndex; ?>TypeChange" onclick="promptChangeQuestionType(this);">(edit)</a>
+                                                    <a href="javascript:void(0);" id="question<?php echo $questionIndex; ?>TypeChange" onclick="promptChangeQuestionType(this);">(<?php echo __("edit");?>)</a>
                                                 </div>
                                                 <div id="question<?php echo $questionIndex; ?>TypeInput" style="display: none;">
                                                     <select id="question<?php echo $questionIndex; ?>TypeValue" name="question<?php echo $questionIndex; ?>TypeValue" onchange="saveChangeQuestionType(this, true);">
-                                                        <option value="select"<?php if ($question['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_SELECT) echo ' selected'; ?>>Drop-down List</option>
-                                                        <option value="checkbox"<?php if ($question['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_CHECKBOX) echo ' selected'; ?>>Checkboxes</option>
-                                                        <option value="radio"<?php if ($question['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_RADIO) echo ' selected'; ?>>Radio Buttons</option>
-                                                        <option value="text"<?php if ($question['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_TEXT) echo ' selected'; ?>>Text</option>
+                                                        <option value="select"<?php if ($question['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_SELECT) echo ' selected'; ?>><?php echo __("Drop-down List");?></option>
+                                                        <option value="checkbox"<?php if ($question['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_CHECKBOX) echo ' selected'; ?>><?php echo __("Checkboxes");?></option>
+                                                        <option value="radio"<?php if ($question['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_RADIO) echo ' selected'; ?>><?php echo __("Radio Buttons");?></option>
+                                                        <option value="text"<?php if ($question['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_TEXT) echo ' selected'; ?>><?php echo __("Text");?></option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -163,9 +163,9 @@ div.questionContainerPlainJane { }
                                             <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                                 <!-- Begin Title Bar for the Answers -->
                                                 <tr>
-                                                    <td class="questionTitleText" colspan="2">Position</td>
-                                                    <td class="questionTitleText">Answer</td>
-                                                    <td class="questionTitleText">Remove</td>
+                                                    <td class="questionTitleText" colspan="2"><?php echo __("Position");?></td>
+                                                    <td class="questionTitleText"><?php echo __("Answer");?></td>
+                                                    <td class="questionTitleText"><?php echo __("Remove");?></td>
                                                 </tr>
                                                 <!-- End Title Bar for the Answers -->
 
@@ -187,11 +187,11 @@ div.questionContainerPlainJane { }
                                                             <div id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>TextContainer" class="questionText">
                                                                 <div id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>TextLabel">
                                                                     <span id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>TextLabelValue"><?php echo $answer['answerText']; ?></span>
-                                                                    <a href="javascript:void(0);" id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>TextChange" onclick="promptChangeQuestionText(this);">(edit)</a>
+                                                                    <a href="javascript:void(0);" id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>TextChange" onclick="promptChangeQuestionText(this);">(<?php echo __("edit");?>)</a>
                                                                 </div>
                                                                 <div id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>TextInput" style="display: none;">
                                                                     <input type="text" class="inputbox" id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>TextValue" name="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>TextValue" value="<?php echo $answer['answerText']; ?>" maxlength="255" style="width: 350px;" />
-                                                                    <input type="button" class="button" id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>SaveTextValue" value="Save" onclick="saveChangeQuestionText(this, true);" />
+                                                                    <input type="button" class="button" id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>SaveTextValue" value="<?php echo __("Save");?>" onclick="saveChangeQuestionText(this, true);" />
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -207,43 +207,43 @@ div.questionContainerPlainJane { }
                                                                 <?php if (($actionSource = $answer['actionSource']) != ''): ?>
                                                                     <?php $actionTaken = true; ?>
                                                                     <tr>
-                                                                        <td class="questionColumnText"><span id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionSource">Add to <b>source</b>, &quot;<?php echo $actionSource; ?>&quot;.</span></td>
-                                                                        <td align="right" class="questionColumnText"><a id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionSourceDelete" href="javascript:void(0);" onclick="toggleDeleteAction(this);">(delete)</a></td>
+                                                                        <td class="questionColumnText"><span id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionSource"><?php echo __("Add to <b>source</b>");?>, &quot;<?php echo $actionSource; ?>&quot;.</span></td>
+                                                                        <td align="right" class="questionColumnText"><a id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionSourceDelete" href="javascript:void(0);" onclick="toggleDeleteAction(this);">(<?php echo __("delete");?>)</a></td>
                                                                     </tr>
                                                                 <?php endif; ?>
                                                                 <?php if (($actionNotes = $answer['actionNotes']) != ''): ?>
                                                                     <?php $actionTaken = true; ?>
                                                                     <tr>
-                                                                        <td class="questionColumnText"><span id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionNotes">Add to <b>notes</b>, &quot;<?php echo $actionNotes; ?>&quot;.</span></td>
-                                                                        <td align="right" class="questionColumnText"><a id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionNotesDelete" href="javascript:void(0);" onclick="toggleDeleteAction(this);">(delete)</a></td>
+                                                                        <td class="questionColumnText"><span id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionNotes"><?php echo __("Add to <b>notes</b>");?>, &quot;<?php echo $actionNotes; ?>&quot;.</span></td>
+                                                                        <td align="right" class="questionColumnText"><a id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionNotesDelete" href="javascript:void(0);" onclick="toggleDeleteAction(this);">(<?php echo __("delete");?>)</a></td>
                                                                     </tr>
                                                                 <?php endif; ?>
                                                                 <?php if ($actionIsHot = $answer['actionIsHot']): ?>
                                                                     <?php $actionTaken = true; ?>
                                                                     <tr>
-                                                                        <td class="questionColumnText"><span id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionIsHot">Mark the candidate as <span style="color: #800000"><b>hot</b></span>.</span></td>
-                                                                        <td align="right" class="questionColumnText"><a id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionIsHotDelete" href="javascript:void(0);" onclick="toggleDeleteAction(this);">(delete)</a></td>
+                                                                        <td class="questionColumnText"><span id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionIsHot"><?php echo __("Mark the candidate as <span style=\"color: #800000\"><b>hot</b></span>");?>.</span></td>
+                                                                        <td align="right" class="questionColumnText"><a id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionIsHotDelete" href="javascript:void(0);" onclick="toggleDeleteAction(this);">(<?php echo __("delete");?>)</a></td>
                                                                     </tr>
                                                                 <?php endif; ?>
                                                                 <?php if (!($actionIsActive = $answer['actionIsActive'])): ?>
                                                                     <?php $actionTaken = true; ?>
                                                                     <tr>
-                                                                        <td class="questionColumnText"><span id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionIsActive">Mark the candidate as <b>inactive</b> and eliminate from searches.</span></td>
-                                                                        <td align="right" class="questionColumnText"><a id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionIsActiveDelete" href="javascript:void(0);" onclick="toggleDeleteAction(this);">(delete)</a></td>
+                                                                        <td class="questionColumnText"><span id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionIsActive"><?php echo __("Mark the candidate as <b>inactive</b> and eliminate from searches.");?></span></td>
+                                                                        <td align="right" class="questionColumnText"><a id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionIsActiveDelete" href="javascript:void(0);" onclick="toggleDeleteAction(this);">(<?php echo __("delete");?>)</a></td>
                                                                     </tr>
                                                                 <?php endif; ?>
                                                                 <?php if ($actionCanRelocate = $answer['actionCanRelocate']): ?>
                                                                     <?php $actionTaken = true; ?>
                                                                     <tr>
-                                                                        <td class="questionColumnText"><span id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionCanRelocate">Mark that the candidate is able to relocate.</span></td>
-                                                                        <td align="right" class="questionColumnText"><a id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionCanRelocateDelete" href="javascript:void(0);" onclick="toggleDeleteAction(this);">(delete)</a></td>
+                                                                        <td class="questionColumnText"><span id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionCanRelocate"><?php echo __("Mark that the candidate is able to relocate.");?></span></td>
+                                                                        <td align="right" class="questionColumnText"><a id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionCanRelocateDelete" href="javascript:void(0);" onclick="toggleDeleteAction(this);">(<?php echo __("delete");?>)</a></td>
                                                                     </tr>
                                                                 <?php endif; ?>
                                                                 <?php if (($actionKeySkills = $answer['actionKeySkills']) != ''): ?>
                                                                     <?php $actionTaken = true; ?>
                                                                     <tr>
-                                                                        <td class="questionColumnText"><span id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionKeySkills">Add to <b>key skills</b>, &quot;<?php echo $actionKeySkills; ?>&quot;.</span></td>
-                                                                        <td align="right" class="questionColumnText"><a id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionKeySkillsDelete" href="javascript:void(0);" onclick="toggleDeleteAction(this);">(delete)</a></td>
+                                                                        <td class="questionColumnText"><span id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionKeySkills"><?php echo __("Add to <b>key skills</b>");?>, &quot;<?php echo $actionKeySkills; ?>&quot;.</span></td>
+                                                                        <td align="right" class="questionColumnText"><a id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>ActionKeySkillsDelete" href="javascript:void(0);" onclick="toggleDeleteAction(this);">(<?php echo __("delete");?>)</a></td>
                                                                     </tr>
                                                                 <?php endif; ?>
 
@@ -264,21 +264,21 @@ div.questionContainerPlainJane { }
                                                                 <tr>
                                                                     <td colspan="3" class="questionColumnText" style="padding-top: 0px;">
                                                                         <div id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>AddAction" class="actionContainerPlainJane">
-                                                                            <a href="javascript:void(0);" onclick="addAction(this);" id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>AddActionLink">(add action)</a>
+                                                                            <a href="javascript:void(0);" onclick="addAction(this);" id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>AddActionLink">(<?php echo __("add action");?>)</a>
                                                                         </div>
                                                                         <div id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>New" class="actionContainerContents">
                                                                             <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                                                                 <tr>
                                                                                     <td class="questionColumnText">
-                                                                                        Add Action:
+                                                                                        <?php echo __("Add Action");?>:
                                                                                         <br />
                                                                                         <select id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>NewAction" name="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>NewAction" onchange="changeNewAction(this);" style="width: 380px; ">
-                                                                                            <option value="actionSource">Add text to the candidate source</option>
-                                                                                            <option value="actionNotes">Add text to the candidate's notes</option>
-                                                                                            <option value="actionIsHot">Mark the candidate as hot</option>
-                                                                                            <option value="actionIsActive">Mark the candidate as inactive and eliminate from searches</option>
-                                                                                            <option value="actionCanRelocate">Mark that the candidate is able to relocate</option>
-                                                                                            <option value="actionKeySkills">Add text to the candidate's key skills</option>
+                                                                                            <option value="actionSource"><?php echo __("Add text to the candidate source");?></option>
+                                                                                            <option value="actionNotes"><?php echo __("Add text to the candidate's notes");?></option>
+                                                                                            <option value="actionIsHot"><?php echo __("Mark the candidate as hot");?></option>
+                                                                                            <option value="actionIsActive"><?php echo __("Mark the candidate as inactive and eliminate from searches");?></option>
+                                                                                            <option value="actionCanRelocate"><?php echo __("Mark that the candidate is able to relocate");?></option>
+                                                                                            <option value="actionKeySkills"><?php echo __("Add text to the candidate's key skills");?></option>
                                                                                         </select>
                                                                                         <p />
                                                                                         <input type="text" class="inputbox" id="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>NewActionText" name="question<?php echo $questionIndex; ?>Answer<?php echo $answerIndex; ?>NewActionText" maxlength="255" style="width: 380px;" />
@@ -286,8 +286,8 @@ div.questionContainerPlainJane { }
                                                                                 </tr>
                                                                             </table>
                                                                             <br />
-                                                                            <input type="button" value="Add Action" onclick="submitAction();" />
-                                                                            <input type="button" value="Cancel" onclick="cancelAddAction();" />
+                                                                            <input type="button" value="<?php echo __("Add Action");?>" onclick="submitAction();" />
+                                                                            <input type="button" value="<?php echo __("Cancel");?>" onclick="cancelAddAction();" />
                                                                         </div>
                                                                     </td>
                                                                 </tr>
@@ -300,21 +300,21 @@ div.questionContainerPlainJane { }
                                                 <tr>
                                                     <td colspan="3" class="questionColumnText" style="padding-top: 15px;">
                                                         <div id="question<?php echo $questionIndex; ?>AddAnswer" class="answerContainerPlainJane">
-                                                            <a href="javascript:void(0);" onclick="addAnswer(this);" id="question<?php echo $questionIndex; ?>AddAnswerLink">(add answer)</a>
+                                                            <a href="javascript:void(0);" onclick="addAnswer(this);" id="question<?php echo $questionIndex; ?>AddAnswerLink">(<?php echo __("add answer");?>)</a>
                                                         </div>
                                                         <div id="question<?php echo $questionIndex; ?>New" class="answerContainerContents">
                                                             <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                                                 <tr>
                                                                     <td class="questionColumnText">
-                                                                        Add Answer:
+                                                                        <?php echo __("Add Answer");?>:
                                                                         <br />
                                                                         <input type="text" class="inputbox" id="question<?php echo $questionIndex; ?>AnswerText" name="question<?php echo $questionIndex; ?>AnswerText" maxlength="255" style="width: 380px;" />
                                                                     </td>
                                                                 </tr>
                                                             </table>
                                                             <br />
-                                                            <input type="button" value="Add Answer" onclick="submitAnswer();" />
-                                                            <input type="button" value="Cancel" onclick="cancelAddAnswer();" />
+                                                            <input type="button" value="<?php echo __("Add Answer");?>" onclick="submitAnswer();" />
+                                                            <input type="button" value="<?php echo __("Cancel");?>" onclick="cancelAddAnswer();" />
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -326,21 +326,21 @@ div.questionContainerPlainJane { }
                                 <tr>
                                     <td colspan="5" style="padding-top: 20px;">
                                         <div id="addQuestion" class="questionContainerPlainJane">
-                                            <a href="javascript:void(0);" onclick="addQuestion();" id="AddQuestionLink">(add question)</a>
+                                            <a href="javascript:void(0);" onclick="addQuestion();" id="AddQuestionLink">(<?php echo __("add question");?>)</a>
                                         </div>
                                         <div id="newQuestionContainer" class="questionContainerContents">
                                             <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                                 <tr>
                                                     <td class="questionColumnText">
-                                                        Add Question:
+                                                        <?php echo __("Add Question");?>:
                                                         <br />
                                                         <input type="text" id="questionText" name="questionText" style="width: 650px;" maxlength="255" class="inputbox" />
                                                     </td>
                                                 </tr>
                                             </table>
                                             <br />
-                                            <input type="button" name="addQuestionButton" id="addQuestionButton" value="Add Question" onclick="submitQuestion();" />
-                                            <input type="button" name="cancelAddQuestionButton" id="cancelAddQuestionButton" value="Cancel" onclick="cancelAddQuestion();" />
+                                            <input type="button" name="addQuestionButton" id="addQuestionButton" value="<?php echo __("Add Question");?>" onclick="submitQuestion();" />
+                                            <input type="button" name="cancelAddQuestionButton" id="cancelAddQuestionButton" value="<?php echo __("Cancel");?>" onclick="cancelAddQuestion();" />
                                         </div>
                                     </td>
                                 </tr>
@@ -351,14 +351,14 @@ div.questionContainerPlainJane { }
                                         <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                             <tr>
                                                 <td align="left" valign="top">
-                                                    <input type="button" class="button" name="startOverButton" id="startOverButton" value="Start Over" onclick="onStartOver();" />
+                                                    <input type="button" class="button" name="startOverButton" id="startOverButton" value="<?php echo __("Start Over");?>" onclick="onStartOver();" />
                                                 </td>
                                                 <td align="center">
-                                                    <input type="button" class="button" name="update" id="update" value="Update" onclick="onUpdate();" />
+                                                    <input type="button" class="button" name="update" id="update" value="<?php echo __("Update");?>" onclick="onUpdate();" />
                                                 </td>
                                                 <td align="right" valign="top">
-                                                    <input type="button" class="button" name="cancelButton" id="cancelButton" value="Cancel, Go Back" onclick="onCancel();" />
-                                                    <input type="button" class="button" name="saveButton" id="saveButton" value="<?php echo isset($this->questionnaireID) && $this->questionnaireID != '' ? 'Save Changes' : 'Add Questionnaire'; ?>" onclick="onSave();" />
+                                                    <input type="button" class="button" name="cancelButton" id="cancelButton" value="<?php echo __("Cancel, Go Back");?>" onclick="onCancel();" />
+                                                    <input type="button" class="button" name="saveButton" id="saveButton" value="<?php echo isset($this->questionnaireID) && $this->questionnaireID != '' ? __('Save Changes') : __('Add Questionnaire'); ?>" onclick="onSave();" />
                                                 </td>
                                             </tr>
                                         </table>

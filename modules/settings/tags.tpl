@@ -1,7 +1,7 @@
 <?php 
 /* $Id: EmailSettings.tpl 3310 2007-10-25 21:24:20Z brian $ */ ?>
 
-<?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'modules/settings/Settings.js')); ?>
+<?php TemplateUtility::printHeader(__('Settings'), array('modules/settings/validator.js', 'modules/settings/Settings.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">
@@ -13,11 +13,11 @@
                     <td width="3%">
                         <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Settings: Administration</h2></td>
+                    <td><h2><?php echo __("Settings");?>: <?php echo __("Administration");?></h2></td>
                 </tr>
             </table>
 
-            <p class="note">Tags Settings</p>
+            <p class="note"><?php echo __("Tags Settings");?></p>
 
             <table>
                 <tr>
@@ -54,7 +54,7 @@ function showNew(frm,data){
 function doDelete(id){
 	//alert($('#id_li_tag_'+id).html());return;
 	
-	if (!confirm('Are you sure you want to delete this tag?')) return;
+	if (!confirm('<?php echo __("Are you sure you want to delete this tag?");?>')) return;
 	$.ajax({
 		type: 'POST',
 		url: '<?= CATSUtility::getIndexName() ?>?m=settings&a=ajax_tags_del',
@@ -76,7 +76,7 @@ function editTag(id){
 	}
 
 	$(el).find("a").hide();
-	$(el).find("div").html('<form method="post" action="<?= CATSUtility::getIndexName() ?>?m=settings&amp;a=ajax_tags_upd"><input type="hidden" name="tag_id" value="' + id + '" /><input type="text" name="tag_title" value="'+$(el).find('a').html()+'" /> <input type="button" value="save" onclick="doSave(this.form);" /></form>');
+	$(el).find("div").html('<form method="post" action="<?= CATSUtility::getIndexName() ?>?m=settings&amp;a=ajax_tags_upd"><input type="hidden" name="tag_id" value="' + id + '" /><input type="text" name="tag_title" value="'+$(el).find('a').html()+'" /> <input type="button" value="<?php echo __("save");?>" onclick="doSave(this.form);" /></form>');
 	lastEdited = el;
 }
 -->
@@ -85,7 +85,7 @@ function editTag(id){
 
                                 <tr id="fromAddressRow">
                                     <td class="tdVertical" style="width: 175px;">
-                                        <label>Add/Remove Tags</label>
+                                        <label><?php echo __("Add/Remove Tags");?></label>
                                     </td>
                                     <td class="tdData">
                                     	<div  class="lst">
@@ -97,7 +97,7 @@ function editTag(id){
 														<form method="post" action="<?= CATSUtility::getIndexName() ?>?m=settings&amp;a=ajax_tags_add">
 															<input type="hidden" name="tag_parent_id" value="<?= $tag_parent_id ?>" />
 															<input type="text" name="tag_title" value="" />
-															<input type="button" value="Add" onclick="doAdd(this.form);" />
+															<input type="button" value="<?php echo __("Add");?>" onclick="doAdd(this.form);" />
 														</form>
 													</li>
 
@@ -126,7 +126,7 @@ function editTag(id){
 													<form method="post" action="<?= CATSUtility::getIndexName() ?>?m=settings&amp;a=ajax_tags_add">
 														<input type="hidden" name="tag_parent_id" value="<?= $tag_parent_id ?>" />
 														<input type="text" name="tag_title" value="" />
-														<input type="button" value="Add" onclick="doAdd(this.form);" />
+														<input type="button" value="<?php echo __("Add");?>" onclick="doAdd(this.form);" />
 													</form>
 												</li>
 											</ul>
@@ -135,7 +135,7 @@ function editTag(id){
 											<img src="images/actions/add.gif" />
 											<form method="post" action="<?= CATSUtility::getIndexName() ?>?m=settings&amp;a=ajax_tags_add">
 												<input type="text" name="tag_title" value="" />
-												<input type="button" value="Add" onclick="doAdd(this.form);" />
+												<input type="button" value="<?php echo __("Add");?>" onclick="doAdd(this.form);" />
 											</form>
 										</li>
 									</div>

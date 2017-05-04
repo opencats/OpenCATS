@@ -65,11 +65,11 @@ class ContactsUI extends UserInterface
         $this->_authenticationRequired = true;
         $this->_moduleDirectory = 'contacts';
         $this->_moduleName = 'contacts';
-        $this->_moduleTabText = 'Contacts';
+        $this->_moduleTabText = __('Contacts');
         $this->_subTabs = array(
-            'Add Contact'     => CATSUtility::getIndexName() . '?m=contacts&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@contacts.add',
-            'Search Contacts' => CATSUtility::getIndexName() . '?m=contacts&amp;a=search',
-            'Cold Call List'  => CATSUtility::getIndexName() . '?m=contacts&amp;a=showColdCallList'
+            __('Add Contact')     => CATSUtility::getIndexName() . '?m=contacts&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@contacts.add',
+            __('Search Contacts') => CATSUtility::getIndexName() . '?m=contacts&amp;a=search',
+            __('Cold Call List')  => CATSUtility::getIndexName() . '?m=contacts&amp;a=showColdCallList'
         );
     }
 
@@ -85,7 +85,7 @@ class ContactsUI extends UserInterface
             case 'show':
                 if ($this->getUserAccessLevel('contacts.show') < ACCESS_LEVEL_READ)
                 {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
                 }
                 $this->show();
                 break;
@@ -93,7 +93,7 @@ class ContactsUI extends UserInterface
             case 'add':
                 if ($this->getUserAccessLevel('contacts.add') < ACCESS_LEVEL_EDIT)
                 {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
                 }
                 if ($this->isPostBack())
                 {
@@ -109,7 +109,7 @@ class ContactsUI extends UserInterface
             case 'edit':
                 if ($this->getUserAccessLevel('contacts.edit') < ACCESS_LEVEL_EDIT)
                 {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
                 }
                 if ($this->isPostBack())
                 {
@@ -125,7 +125,7 @@ class ContactsUI extends UserInterface
             case 'delete':
                 if ($this->getUserAccessLevel('contacts.delete') < ACCESS_LEVEL_DELETE)
                 {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
                 }
                 $this->onDelete();
                 break;
@@ -133,7 +133,7 @@ class ContactsUI extends UserInterface
             case 'search':
                 if ($this->getUserAccessLevel('contacts.search') < ACCESS_LEVEL_READ)
                 {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
                 }
                 include_once('./lib/Search.php');
 
@@ -151,7 +151,7 @@ class ContactsUI extends UserInterface
             case 'addActivityScheduleEvent':
                 if ($this->getUserAccessLevel('contacts.addActivityScheduleEvent') < ACCESS_LEVEL_EDIT)
                 {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
                 }
                 if ($this->isPostBack())
                 {
@@ -167,7 +167,7 @@ class ContactsUI extends UserInterface
             case 'showColdCallList':
                 if ($this->getUserAccessLevel('contacts.showColdCallList') < ACCESS_LEVEL_READ)
                 {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
                 }
                 $this->showColdCallList();
                 break;
@@ -175,7 +175,7 @@ class ContactsUI extends UserInterface
             case 'downloadVCard':
                 if ($this->getUserAccessLevel('contacts.downloadVCard') < ACCESS_LEVEL_READ)
                 {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
                 }
                 include_once('./lib/VCard.php');
 
@@ -187,7 +187,7 @@ class ContactsUI extends UserInterface
             default:
                 if ($this->getUserAccessLevel('contacts.list') < ACCESS_LEVEL_READ)
                 {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
                 }
                 $this->listByView();
                 break;
@@ -235,7 +235,7 @@ class ContactsUI extends UserInterface
         /* Bail out if we don't have a valid contact ID. */
         if (!$this->isRequiredIDValid('contactID', $_GET))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid contact ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid contact ID.'));
         }
 
         $contactID = $_GET['contactID'];
@@ -246,7 +246,7 @@ class ContactsUI extends UserInterface
         /* Bail out if we got an empty result set. */
         if (empty($data))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified contact ID could not be found.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('The specified contact ID could not be found.'));
         }
 
         /* We want to handle formatting the city and state here instead
@@ -347,7 +347,7 @@ class ContactsUI extends UserInterface
             {
                 if (empty($activityRS[$rowIndex]['notes']))
                 {
-                    $activityRS[$rowIndex]['notes'] = '(No Notes)';
+                    $activityRS[$rowIndex]['notes'] = '('.__('No Notes').')';
                 }
 
                 if (empty($activityRS[$rowIndex]['jobOrderID']) ||
@@ -461,7 +461,7 @@ class ContactsUI extends UserInterface
         $this->_template->assign('defaultCompanyRS', $defaultCompanyRS);
         $this->_template->assign('active', $this);
         $this->_template->assign('extraFieldRS', $extraFieldRS);
-        $this->_template->assign('subActive', 'Add Contact');
+        $this->_template->assign('subActive', __('Add Contact'));
         $this->_template->assign('companyRS', $companyRS);
         $this->_template->assign('reportsToRS', $reportsToRS);
         $this->_template->assign('selectedCompanyID', $selectedCompanyID);
@@ -477,7 +477,7 @@ class ContactsUI extends UserInterface
         /* Bail out if we don't have a valid company ID. */
         if (!$this->isRequiredIDValid('companyID', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid company ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid company ID.'));
         }
 
         $formattedPhoneWork = StringUtility::extractPhoneNumber(
@@ -540,7 +540,7 @@ class ContactsUI extends UserInterface
         /* Bail out if any of the required fields are empty. */
         if (empty($firstName) || empty($lastName) || empty($title))
         {
-            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
+            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, __('Required fields are missing.'));
         }
 
         /* Update departments. */
@@ -562,7 +562,7 @@ class ContactsUI extends UserInterface
 
         if ($contactID <= 0)
         {
-            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add contact.');
+            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, __('Failed to add contact.'));
         }
 
         /* Update extra fields. */
@@ -592,7 +592,7 @@ class ContactsUI extends UserInterface
         /* Bail out if we don't have a valid contact ID. */
         if (!$this->isRequiredIDValid('contactID', $_GET))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid contact ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid contact ID.'));
         }
 
         $contactID = $_GET['contactID'];
@@ -603,7 +603,7 @@ class ContactsUI extends UserInterface
         /* Bail out if we got an empty result set. */
         if (empty($data))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified contact ID could not be found.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('The specified contact ID could not be found.'));
         }
 
         $companies = new Companies($this->_siteID);
@@ -687,19 +687,19 @@ class ContactsUI extends UserInterface
         /* Bail out if we don't have a valid contact ID. */
         if (!$this->isRequiredIDValid('contactID', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid contact ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid contact ID.'));
         }
 
         /* Bail out if we don't have a valid company ID. */
         if (!$this->isRequiredIDValid('companyID', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid company ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid company ID.'));
         }
 
         /* Bail out if we don't have a valid owner user ID. */
         if (!$this->isOptionalIDValid('owner', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid owner user ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid owner user ID.'));
         }
 
         $contactID  = $_POST['contactID'];
@@ -828,7 +828,7 @@ class ContactsUI extends UserInterface
         /* Bail out if any of the required fields are empty. */
         if (empty($firstName) || empty($lastName) || empty($title))
         {
-            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
+            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, __('Required fields are missing.'));
         }
 
         if (!eval(Hooks::get('CONTACTS_ON_EDIT_PRE'))) return;
@@ -846,7 +846,7 @@ class ContactsUI extends UserInterface
             $phoneOther, $address, $city, $state, $zip, $isHot,
             $leftCompany, $notes, $owner, $email, $emailAddress))
         {
-            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update contact.');
+            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, __('Failed to update contact.'));
         }
 
         /* Update extra fields. */
@@ -868,7 +868,7 @@ class ContactsUI extends UserInterface
         /* Bail out if we don't have a valid contact ID. */
         if (!$this->isRequiredIDValid('contactID', $_GET))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid contact ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid contact ID.'));
         }
 
         $contactID = $_GET['contactID'];
@@ -901,7 +901,7 @@ class ContactsUI extends UserInterface
         $this->_template->assign('wildCardString', '');
         $this->_template->assign('savedSearchRS', $savedSearchRS);
         $this->_template->assign('active', $this);
-        $this->_template->assign('subActive', 'Search Contacts');
+        $this->_template->assign('subActive', __('Search Contacts'));
         $this->_template->assign('isResultsMode', false);
         $this->_template->assign('wildCardContactName', '');
         $this->_template->assign('wildCardCompanyName', '');
@@ -924,7 +924,7 @@ class ContactsUI extends UserInterface
          */
         if (!isset($_GET['wildCardString']))
         {
-            CommonErrors::fatal(COMMONERROR_WILDCARDSTRING, $this, 'No wild card string specified.');
+            CommonErrors::fatal(COMMONERROR_WILDCARDSTRING, $this, __('No wild card string specified.'));
         }
 
         $query = trim($_GET['wildCardString']);
@@ -989,7 +989,7 @@ class ContactsUI extends UserInterface
                 break;
 
             default:
-                CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid search mode.');
+                CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid search mode.'));
                 break;
         }
 
@@ -1078,7 +1078,7 @@ class ContactsUI extends UserInterface
 
         if (!eval(Hooks::get('CONTACTS_COLD_CALL_LIST'))) return;
         $this->_template->assign('active', $this);
-        $this->_template->assign('subActive', 'Cold Call List');
+        $this->_template->assign('subActive', __('Cold Call List'));
         $this->_template->assign('rs', $rs);
         $this->_template->display('./modules/contacts/ColdCallList.tpl');
     }
@@ -1089,7 +1089,7 @@ class ContactsUI extends UserInterface
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('contactID', $_GET))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid contact ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid contact ID.'));
         }
 
         $contactID = $_GET['contactID'];
@@ -1134,7 +1134,7 @@ class ContactsUI extends UserInterface
         /* Bail out if we don't have a valid regardingjob order ID. */
         if (!$this->isOptionalIDValid('regardingID', $_POST))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid job order ID.'));
         }
 
         $regardingID = $_POST['regardingID'];
@@ -1152,7 +1152,7 @@ class ContactsUI extends UserInterface
         /* Bail out if we don't have a valid contact ID. */
         if (!$this->isRequiredIDValid('contactID', $_GET))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid contact ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid contact ID.'));
         }
 
         $contactID = $_GET['contactID'];
@@ -1166,7 +1166,7 @@ class ContactsUI extends UserInterface
         /* Bail out if we got an empty result set. */
         if (empty($contact))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified contact ID could not be found.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('The specified contact ID could not be found.'));
         }
 
         /* Create a new vCard. */
@@ -1327,7 +1327,7 @@ class ContactsUI extends UserInterface
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('contactID', $_POST))
         {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid contact ID.');
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid contact ID.'));
         }
 
         $contactID = $_POST['contactID'];
@@ -1339,7 +1339,7 @@ class ContactsUI extends UserInterface
             /* Bail out if we don't have a valid job order ID. */
             if (!$this->isOptionalIDValid('activityTypeID', $_POST))
             {
-                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid activity type ID.');
+                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid activity type ID.'));
             }
 
             $activityTypeID = $_POST['activityTypeID'];
@@ -1379,20 +1379,20 @@ class ContactsUI extends UserInterface
             if (empty($trimmedDate) ||
                 !DateUtility::validate('-', $trimmedDate, DATE_FORMAT_MMDDYY))
             {
-                CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid date.');
+                CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, __('Invalid date.'));
             }
 
             /* Bail out if we don't have a valid event type. */
             if (!$this->isRequiredIDValid('eventTypeID', $_POST))
             {
-                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid event type ID.');
+                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, __('Invalid event type ID.'));
             }
 
             /* Bail out if we don't have a valid time format ID. */
             if (!isset($_POST['allDay']) ||
                 ($_POST['allDay'] != '0' && $_POST['allDay'] != '1'))
             {
-                CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid time format ID.');
+                CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, __('Invalid time format ID.'));
             }
 
             $eventTypeID = $_POST['eventTypeID'];
@@ -1430,20 +1430,20 @@ class ContactsUI extends UserInterface
                 /* Bail out if we don't have a valid hour. */
                 if (!isset($_POST['hour']))
                 {
-                    CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid hour.');
+                    CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, __('Invalid hour.'));
                 }
 
                 /* Bail out if we don't have a valid minute. */
                 if (!isset($_POST['minute']))
                 {
-                    CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid minute.');
+                    CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, __('Invalid minute.'));
                 }
 
                 /* Bail out if we don't have a valid meridiem value. */
                 if (!isset($_POST['meridiem']) ||
                     ($_POST['meridiem'] != 'AM' && $_POST['meridiem'] != 'PM'))
                 {
-                    CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid meridiem value.');
+                    CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, __('Invalid meridiem value.'));
                 }
 
                 $hour     = $_POST['hour'];
@@ -1474,7 +1474,7 @@ class ContactsUI extends UserInterface
             /* Bail out if any of the required fields are empty. */
             if (empty($title))
             {
-                CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
+                CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, __('Required fields are missing.'));
             }
 
             if ($regardingID > 0)
@@ -1496,7 +1496,7 @@ class ContactsUI extends UserInterface
 
             if ($eventID <= 0)
             {
-                CommonErrors::fatalModal(COMMONERROR_RECORDERROR, $this, 'Failed to add calendar event.');
+                CommonErrors::fatalModal(COMMONERROR_RECORDERROR, $this, __('Failed to add calendar event.'));
             }
 
             /* Extract the date parts from the specified date. */
@@ -1520,7 +1520,7 @@ class ContactsUI extends UserInterface
         }
         else
         {
-            $eventHTML = '<p>No event has been scheduled.</p>';
+            $eventHTML = '<p>'.__('No event has been scheduled.').'</p>';
             $eventScheduled = false;
         }
 

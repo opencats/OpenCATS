@@ -1,10 +1,8 @@
 <?php /* $Id: ConsiderSearchModal.tpl 3093 2007-09-24 21:09:45Z brian $ */ ?>
-<?php TemplateUtility::printModalHeader('Job Orders', 'js/sorttable.js', 'Add Candidate to This Job Order Pipeline'); ?>
+<?php TemplateUtility::printModalHeader(__('Job Orders'), 'js/sorttable.js', __('Add Candidate to This Job Order Pipeline')); ?>
 
     <?php if (!$this->isFinishedMode): ?>
-        <p>Search for a candidate below, and then click on the candidate's
-        first or last name to add the selected candidate to the job order
-        pipeline.</p>
+        <p><?php echo __("Search for a candidate below, and then click on the candidate's first or last name to add the selected candidate to the job order pipeline.");?></p>
 
         <table class="searchTable">
             <form id="searchByFullNameForm" name="searchByFullNameForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=considerCandidateSearch" method="post">
@@ -13,11 +11,11 @@
                 <input type="hidden" id="jobOrderID_fullName" name="jobOrderID" value="<?php echo($this->jobOrderID); ?>" />
 
                 <tr>
-                    <td>Search by Full Name:&nbsp;</td>
+                    <td><?php echo __("Search by Full Name");?>:&nbsp;</td>
                     <td><input type="text" class="inputbox" id="wildCardString_fullname" name="wildCardString" />&nbsp;*</td>
                 </tr>
                 <tr>
-                    <td><input type="submit" class="button" id="searchByFullName" name="searchByFullName" value="Search by Full Name" /></td>
+                    <td><input type="submit" class="button" id="searchByFullName" name="searchByFullName" value="<?php echo __("Search by Full Name");?>" /></td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
@@ -27,7 +25,7 @@
         <br />
 
         <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=addCandidateModal&amp;jobOrderID=<?php echo($this->jobOrderID); ?>">
-            <img src="images/candidate_inline.gif" width="16" height="16" class="absmiddle" alt="add" border="0" />&nbsp;Add Candidate
+            <img src="images/candidate_inline.gif" width="16" height="16" class="absmiddle" alt="add" border="0" />&nbsp;<?php echo __("Add Candidate");?>
         </a>
         <br />
 
@@ -43,17 +41,17 @@
 
         <?php if ($this->isResultsMode): ?>
             <br />
-            <p class="noteUnsized">Search Results</p>
+            <p class="noteUnsized"><?php echo __("Search Results");?></p>
 
             <?php if (!empty($this->rs)): ?>
                 <table class="sortable" width="100%">
                     <tr>
-                        <th align="left" nowrap="nowrap">First Name</th>
-                        <th align="left" nowrap="nowrap">Last Name</th>
-                        <th align="left" nowrap="nowrap">Key Skills</th>
-                        <th align="left">Created</th>
-                        <th align="left">Owner</th>
-                        <th align="center">Action</th>
+                        <th align="left" nowrap="nowrap"><?php echo __("First Name");?></th>
+                        <th align="left" nowrap="nowrap"><?php echo __("Last Name");?></th>
+                        <th align="left" nowrap="nowrap"><?php echo __("Key Skills");?></th>
+                        <th align="left"><?php echo __("Created");?></th>
+                        <th align="left"><?php echo __("Owner");?></th>
+                        <th align="center"><?php echo __("Action");?></th>
                     </tr>
 
                     <?php foreach ($this->rs as $rowNumber => $data): ?>
@@ -79,7 +77,7 @@
                             <td valign="top" align="left" nowrap="nowrap"><?php $this->_($data['dateCreated']); ?>&nbsp;</td>
                             <td valign="top" align="left" nowrap="nowrap"><?php $this->_($data['ownerAbbrName']); ?>&nbsp;</td>
                             <td align="center" nowrap="nowrap">
-                                <a href="#" title="Show Candidate" onclick="javascript:openCenteredPopup('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=show&amp;display=popup&amp;candidateID=<?php $this->_($data['candidateID']); ?>', 'viewCandidateDetails', 1000, 675, true); return false;">
+                                <a href="#" title="<?php echo __("Show Candidate");?>" onclick="javascript:openCenteredPopup('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=show&amp;display=popup&amp;candidateID=<?php $this->_($data['candidateID']); ?>', 'viewCandidateDetails', 1000, 675, true); return false;">
                                     <img src="images/new_browser_inline.gif" alt="consider" width="16" height="16" border="0" class="absmiddle" />
                                 </a>
                             </td>
@@ -87,14 +85,14 @@
                     <?php endforeach; ?>
                 </table>
             <?php else: ?>
-                <p>No matching entries found.</p>
+                <p><?php echo __("No matching entries found.");?></p>
             <?php endif; ?>
         <?php endif; ?>
     <?php else: ?>
-        <p>The selected candidate has been successfully added to the pipeline for this job order.</p>
+        <p><?php echo __("The selected candidate has been successfully added to the pipeline for this job order.");?></p>
 
         <form method="get" action="<?php echo(CATSUtility::getIndexName()); ?>">
-            <input type="button" name="close" value="Close" onclick="parentGoToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=show&amp;jobOrderID=<?php echo($this->jobOrderID); ?>');" />
+            <input type="button" name="close" value="<?php echo __("Close");?>" onclick="parentGoToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=show&amp;jobOrderID=<?php echo($this->jobOrderID); ?>');" />
         </form>
     <?php endif; ?>
     </body>

@@ -637,6 +637,40 @@ class Users
         return $this->_db->getAllAssoc($sql);
     }
 
+
+    public function getCountry($userID){
+    	$sql = sprintf(
+    			"SELECT
+                user.country AS country
+                FROM
+                user
+                WHERE
+                user.user_id = %s",
+    			$this->_db->makeQueryInteger($userID)
+    			);
+    	$rs = $this->_db->getAssoc($sql);
+    	return $rs['country'];
+    }
+    
+    public function changeCountry($userID,$country){
+    	/* Change the user's password. */
+    	$sql = sprintf(
+    			"UPDATE
+                user
+                SET
+                country = %s,
+    			column_preferences = ''
+                WHERE
+                user.user_id = %s",
+    			$this->_db->makeQueryString($country),
+    			$this->_db->makeQueryInteger($userID)
+    			);
+    	$this->_db->query($sql);
+    	// FIXME: Did the above query succeed? If not, fail.
+    	 
+    	return null;
+    }
+    
     /**
      * Changes a user's password to the password specified.
      *

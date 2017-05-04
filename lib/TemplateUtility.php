@@ -105,7 +105,7 @@ class TemplateUtility
         /* CATS Logo */
         echo '<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; float: left;">', "\n";
         echo '<tr>', "\n";
-        echo '<td rowspan="2"><img src="images/applicationLogo.jpg" border="0" alt="CATS Applicant Tracking System" /></td>', "\n";
+        echo '<td rowspan="2"><img src="images/applicationLogo.jpg" border="0" alt="'.__('CATS Applicant Tracking System').'" /></td>', "\n";
         echo '</tr>', "\n";
         echo '</table>', "\n";
 
@@ -160,7 +160,7 @@ class TemplateUtility
 
             echo '<a href="', $indexName, '?m=logout">';
             echo '<img src="images/tabs/small_logout.jpg" border="0" /> ';
-            echo 'Logout</a>', "\n";
+            echo __('Logout').'</a>', "\n";
             echo '</div>', "\n";
             // End top-right action block
 
@@ -190,11 +190,11 @@ class TemplateUtility
             /* Disabled notice */
             if (!$_SESSION['CATS']->accountActive())
             {
-                echo '<span style="font-weight:bold;">Account Inactive</span><br />', "\n";
+                echo '<span style="font-weight:bold;">'.__('Account Inactive').'</span><br />', "\n";
             }
             else if ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) == ACCESS_LEVEL_READ)
             {
-                echo '<span>Read Only Access</span><br />', "\n";
+                echo '<span>'.__('Read Only Access').'</span><br />', "\n";
             }
             else
             {
@@ -271,7 +271,7 @@ class TemplateUtility
 
         if (!empty($MRU))
         {
-            echo '<span class="MRUTitle">Recent:&nbsp;</span>&nbsp;', $MRU, "\n";
+            echo '<span class="MRUTitle">'.__('Recent').':&nbsp;</span>&nbsp;', $MRU, "\n";
         }
         else
         {
@@ -290,13 +290,13 @@ class TemplateUtility
         {
             echo '<input type="hidden" name="m" value="asp" />', "\n";
             echo '<input type="hidden" name="a" value="aspSearch" />', "\n";
-            echo '<span class="quickSearchLabel" id="quickSearchLabel">ASP Search:</span>&nbsp;', "\n";
+            echo '<span class="quickSearchLabel" id="quickSearchLabel">'.__('ASP Search').':</span>&nbsp;', "\n";
         }
         else
         {
             echo '<input type="hidden" name="m" value="home" />', "\n";
             echo '<input type="hidden" name="a" value="quickSearch" />', "\n";
-            echo '<span class="quickSearchLabel" id="quickSearchLabel">Quick Search:</span>&nbsp;', "\n";
+            echo '<span class="quickSearchLabel" id="quickSearchLabel">'.__('Quick Search').':</span>&nbsp;', "\n";
         }
 
         echo '<input name="quickSearchFor" id="quickSearchFor" class="quickSearchBox" value="',
@@ -402,8 +402,8 @@ class TemplateUtility
         echo '<div class="recentSearchResults">';
         echo '<table style="vertical-align: top; border-collapse: collapse;"><tr style="vertical-align: top;"><td>';
 
-        echo 'Recent Searches&nbsp;&nbsp;';
-        echo '<img title="To save a recent search, press the + button below."',
+        echo __('Recent Searches').'&nbsp;&nbsp;';
+        echo '<img title="'.__('To save a recent search, press the + button below.').'"',
              ' src="images/information.gif" alt="" width="16" height="16" />';
 
         echo '<div id="searchRecent" class="recentSearchResultsHidden">';
@@ -411,7 +411,7 @@ class TemplateUtility
         /* Recent Search Results */
         if (count($savedSearchRecent) == 0)
         {
-           echo '(None)';
+           echo '('.__('None').')';
         }
         else
         {
@@ -424,8 +424,8 @@ class TemplateUtility
 
                 if (count($savedSearchSaved) >= RECENT_SEARCH_MAX_ITEMS)
                 {
-                    echo '<a href="javascript:void(0);" onclick="alert(\'The maximum amount of saved searches is ',
-                         RECENT_SEARCH_MAX_ITEMS, '. To save this search, delete another saved search.\');">';
+                    echo '<a href="javascript:void(0);" onclick="alert(\''.__('The maximum amount of saved searches is').' ',
+                         RECENT_SEARCH_MAX_ITEMS, '. '.__('To save this search, delete another saved search.').'\');">';
                 }
                 else
                 {
@@ -433,7 +433,7 @@ class TemplateUtility
                          $savedSearchRow['searchID'], '&amp;currentURL=', $currentUrlGETString, '">';
                 }
 
-                echo '<img src="images/actions/add_small.gif" alt="" style="border: none;" title="Save This Search" /></a>&nbsp;', "\n";
+                echo '<img src="images/actions/add_small.gif" alt="" style="border: none;" title="'.__('Save This Search').'" /></a>&nbsp;', "\n";
 
                 $escapedURL  = htmlspecialchars($savedSearchRow['URL']);
 
@@ -458,8 +458,8 @@ class TemplateUtility
         echo '</div>';
         echo '</td><td>&nbsp;</td><td>';
 
-        echo 'Saved Searches&nbsp;&nbsp;';
-        echo '<img title="To delete a recent search, press the - button."',
+        echo __('Saved Searches').'&nbsp;&nbsp;';
+        echo '<img title="'.__('To delete a recent search, press the - button.').'"',
              ' src="images/information.gif" alt="" width="16" height="16" />';
 
         echo '<div id="searchSaved" class="savedSearchResultsHidden">';
@@ -467,7 +467,7 @@ class TemplateUtility
         /* Saved Search Results */
         if (count($savedSearchSaved) == 0)
         {
-           echo '(None)';
+           echo '('.__('None').')';
         }
         else
         {
@@ -490,7 +490,7 @@ class TemplateUtility
 
                 echo '<a href="', $indexName, '?m=home&amp;a=deleteSavedSearch&amp;searchID=',
                      $savedSearchRow['searchID'], '&currentURL=', $currentUrlGETString, '">',
-                     '<img src="images/actions/delete_small.gif" style="border: none;" title="Delete This Search" /></a>&nbsp;';
+                     '<img src="images/actions/delete_small.gif" style="border: none;" title="'.__('Delete This Search').'" /></a>&nbsp;';
 
                 echo '<a href="', $escapedURL, '&amp;savedSearchID=', $savedSearchRow['searchID'],
                      '" onclick="gotoSearch(\'', $escapedText, "', '", $escapedURL,

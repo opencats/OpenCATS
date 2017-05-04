@@ -1,5 +1,5 @@
 <?php /* $Id: CustomizeExtraFields.tpl 3660 2007-11-19 18:26:19Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Settings', array('js/highlightrows.js', 'modules/settings/validator.js', 'js/listEditor.js')); ?>
+<?php TemplateUtility::printHeader(__('Settings'), array('js/highlightrows.js', 'modules/settings/validator.js', 'js/listEditor.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, ''); ?>
     <div id="main">
@@ -11,18 +11,18 @@
                     <td width="3%">
                         <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Settings: Customization</h2></td>
+                    <td><h2><?php echo __("Settings");?>: <?php echo __("Customization");?></h2></td>
                 </tr>
             </table>
 
-            <p class="note">Customize Extra Fields</p>
+            <p class="note"><?php echo __("Customize Extra Fields");?></p>
 
             <form name="editSettingsForm" id="editSettingsForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=customizeExtraFields" method="post">
               <input type="hidden" name="postback" value="postback" />
               <table class="sortable" width="920">
                 <div id="changedDiv" style="display:none;">
                   <div style="font-weight:bold; border: 1px solid #000; background-color: #ff0000; padding:5px;">
-                     You have made changes, to apply them press 'Save' at the bottom of the page.
+                     <?php echo __("You have made changes, to apply them press 'Save' at the bottom of the page.");?>
                   </div>
                   <br />
                 </div>
@@ -37,10 +37,10 @@
                    }
                    var inlineEditIDCounter = 0;
                 </script>
-                    <?php foreach (array(array("name" => "Job Orders", "RS" => $this->extraFieldSettingsJobOrdersRS, "type" => DATA_ITEM_JOBORDER), 
-                                         array("name" => "Candidates", "RS" => $this->extraFieldSettingsCandidatesRS, "type" => DATA_ITEM_CANDIDATE), 
-                                         array("name" => "Companies", "RS" => $this->extraFieldSettingsCompaniesRS, "type" => DATA_ITEM_COMPANY), 
-                                         array("name" => "Contacts", "RS" => $this->extraFieldSettingsContactsRS, "type" => DATA_ITEM_CONTACT)) as $index => $data): ?>
+                    <?php foreach (array(array("name" => __("Job Orders"), "RS" => $this->extraFieldSettingsJobOrdersRS, "type" => DATA_ITEM_JOBORDER), 
+                                         array("name" => __("Candidates"), "RS" => $this->extraFieldSettingsCandidatesRS, "type" => DATA_ITEM_CANDIDATE), 
+                                         array("name" => __("Companies"), "RS" => $this->extraFieldSettingsCompaniesRS, "type" => DATA_ITEM_COMPANY), 
+                                         array("name" => __("Contacts"), "RS" => $this->extraFieldSettingsContactsRS, "type" => DATA_ITEM_CONTACT)) as $index => $data): ?>
                         <tr>
                             <td style="width:150px;">
                                 <?php echo($data['name']); ?>
@@ -219,12 +219,12 @@
                                         
                                         addOptionDiv.innerHTML = 
                                             '<a href="javascript:void(0);" id="addOptionLine<?php echo($index); ?>row' + rowIndex + '" onclick="document.getElementById(&quot;addOption<?php echo($index); ?>row' + rowIndex + '&quot;).style.display=&quot;&quot;; document.getElementById(&quot;addOptionLine<?php echo($index); ?>row' + rowIndex + '&quot;).style.display=&quot;none&quot;; document.getElementById(&quot;addOptionInput<?php echo($index); ?>row' + rowIndex +'&quot;).focus(); document.getElementById(&quot;addOptionInput<?php echo($index); ?>row' + rowIndex +'&quot;).value = &quot;&quot;;">' +
-                                                '<img src="images/actions/add_small.gif" border="0" />&nbsp;Add option to ' + rowName +
+                                                '<img src="images/actions/add_small.gif" border="0" />&nbsp;<?php echo __("Add option to");?> ' + rowName +
                                             '</a>' + 
                                             '<span style="display:none;" id="addOption<?php echo($index); ?>row' + rowIndex + '">' + 
-                                                'Name:&nbsp;<input id="addOptionInput<?php echo($index); ?>row' + rowIndex + '" style="width:200px;" value="" class="inputbox" /><br />' +
-                                                '<input type="button" class="button" value="Add Field" onclick="addOption<?php echo($index); ?>(document.getElementById(&quot;addOptionInput<?php echo($index); ?>row' + rowIndex + '&quot;).value, document.getElementById(&quot;optionsTable<?php echo($index); ?>row' + rowIndex + '&quot;), &quot;' + rowName + '&quot;);  document.getElementById(&quot;addOption<?php echo($index); ?>row' + rowIndex + '&quot;).style.display=&quot;none&quot;; document.getElementById(&quot;addOptionLine<?php echo($index); ?>row' + rowIndex + '&quot;).style.display=&quot;&quot;;" />&nbsp;' +
-                                                '<input type="button" class="button" value="Cancel" onclick="document.getElementById(&quot;addOption<?php echo($index); ?>row' + rowIndex + '&quot;).style.display=&quot;none&quot;; document.getElementById(&quot;addOptionLine<?php echo($index); ?>row' + rowIndex + '&quot;).style.display=&quot;&quot;;" />' +
+                                                '<?php echo __("Name");?>:&nbsp;<input id="addOptionInput<?php echo($index); ?>row' + rowIndex + '" style="width:200px;" value="" class="inputbox" /><br />' +
+                                                '<input type="button" class="button" value="<?php echo __("Add Field");?>" onclick="addOption<?php echo($index); ?>(document.getElementById(&quot;addOptionInput<?php echo($index); ?>row' + rowIndex + '&quot;).value, document.getElementById(&quot;optionsTable<?php echo($index); ?>row' + rowIndex + '&quot;), &quot;' + rowName + '&quot;);  document.getElementById(&quot;addOption<?php echo($index); ?>row' + rowIndex + '&quot;).style.display=&quot;none&quot;; document.getElementById(&quot;addOptionLine<?php echo($index); ?>row' + rowIndex + '&quot;).style.display=&quot;&quot;;" />&nbsp;' +
+                                                '<input type="button" class="button" value="<?php echo __("Cancel");?>" onclick="document.getElementById(&quot;addOption<?php echo($index); ?>row' + rowIndex + '&quot;).style.display=&quot;none&quot;; document.getElementById(&quot;addOptionLine<?php echo($index); ?>row' + rowIndex + '&quot;).style.display=&quot;&quot;;" />' +
                                             '</span>';
                                         
                                         col.appendChild(addOptionDiv);
@@ -300,7 +300,7 @@
                                     {                                      
                                         //FIXME: Do we really need this?
                                         /*
-                                        var c= confirm("Do you really want to delete the field "+rowName+"?");
+                                        var c= confirm("<?php echo __("Do you really want to delete the field");?> "+rowName+"?");
                                         if (!c)
                                         {
                                             return;
@@ -370,7 +370,7 @@
 
                                         inlineEditIDCounter++;
 
-                                        html = html.replace(rowName, "<!--inline--><input type=\"hidden\" id=\"inlineEditOrg"+inlineEditIDCounter+"\"><input id=\"inlineEdit"+inlineEditIDCounter+"\"><input type=\"button\" onclick=\"saveRow<?php echo($index); ?>("+rowIndex+", "+inlineEditIDCounter+")\" value=\"Save\"><!--/inline-->");
+                                        html = html.replace(rowName, "<!--inline--><input type=\"hidden\" id=\"inlineEditOrg"+inlineEditIDCounter+"\"><input id=\"inlineEdit"+inlineEditIDCounter+"\"><input type=\"button\" onclick=\"saveRow<?php echo($index); ?>("+rowIndex+", "+inlineEditIDCounter+")\" value=\"<?php echo __("Save");?>\"><!--/inline-->");
 
                                         col.innerHTML = html;
                                          
@@ -450,10 +450,10 @@
                                             <th width="75">
                                             </th>
                                             <th align="left" width="325" nowrap="nowrap">
-                                                Field Name
+                                                <?php echo __("Field Name");?>
                                             </th>
                                             <th align="left">
-                                                Field Type
+                                                <?php echo __("Field Type");?>
                                             </th>
                                         </tr>
                                     </thead>
@@ -500,13 +500,13 @@
                                     <table>
                                         <tr>
                                             <td>
-                                                Name:
+                                                <?php echo __("Name");?>:
                                             </td>
                                             <td>
                                                 <input id="addFieldName<?php echo($index); ?>" style="width:240px;" value="" class="inputbox" />
                                             </td>
                                             <td>
-                                                Type:
+                                                <?php echo __("Type");?>:
                                             </td>
                                             <td>
                                                 <select id="addFieldSelect<?php echo($index); ?>">
@@ -517,12 +517,12 @@
                                             </td>
                                         </tr>
                                     </table>                                    
-                                    <input type="button" class="button" value="Add Field" onclick="onAddField<?php echo($index); ?>();" />&nbsp;
-                                    <input type="button" class="button" value="Cancel" onclick="onHideAddArea<?php echo($index); ?>();" />
+                                    <input type="button" class="button" value="<?php echo __("Add Field");?>" onclick="onAddField<?php echo($index); ?>();" />&nbsp;
+                                    <input type="button" class="button" value="<?php echo __("Cancel");?>" onclick="onHideAddArea<?php echo($index); ?>();" />
                                 </div>
                                 <div id="addFieldOption<?php echo($index); ?>">
                                     <a href="javascript:void(0);" onclick="document.getElementById('addField<?php echo($index); ?>').style.display=''; document.getElementById('addFieldOption<?php echo($index); ?>').style.display='none'; document.getElementById('addFieldName<?php echo($index); ?>').value=''; document.getElementById('addFieldName<?php echo($index); ?>').focus();">
-                                        <img src="images/actions/add_small.gif" border="0" />&nbsp;Add field to <?php echo($data['name']); ?>
+                                        <img src="images/actions/add_small.gif" border="0" />&nbsp;<?php echo __("Add field to");?> <?php echo($data['name']); ?>
                                     </a>
                                 </div>
                                 <br />
@@ -532,8 +532,8 @@
                     <?php endforeach; ?>
                     
                 </table>
-                <input type="submit" class="button" value="Save" style="display:none;" id="buttonSave" />
-                <input type="button" name="back" class = "button" value="Done" id="buttonDone"  onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=administration';" />
+                <input type="submit" class="button" value="<?php echo __("Save");?>" style="display:none;" id="buttonSave" />
+                <input type="button" name="back" class = "button" value="<?php echo __("Done");?>" id="buttonDone"  onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=administration';" />
             </form>
         </div>
     </div>

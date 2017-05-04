@@ -1,5 +1,5 @@
 <?php /* $Id: ShowUser.tpl 2881 2007-08-14 07:47:26Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Settings', 'js/sorttable.js'); ?>
+<?php TemplateUtility::printHeader(__('Settings'), 'js/sorttable.js'); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">
@@ -11,22 +11,22 @@
                     <td width="3%">
                         <img src="images/settings.gif" width="24" height="24" alt="Settings" style="border: none; margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Settings: User Details</h2></td>
+                    <td><h2><?php echo __("Settings");?>: <?php echo __("User Details");?></h2></td>
                 </tr>
             </table>
 
             <p class="note">
                 <?php /* Leave these separate; just one span makes the background image display weird. */ ?>
                 <?php if ($this->privledged): ?>
-                    <span style="float: left;">User Details</span>
-                    <span style="float: right;"><a href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=manageUsers'>Back to User Management</a></span>&nbsp;
+                    <span style="float: left;"><?php echo __("User Details");?></span>
+                    <span style="float: right;"><a href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=manageUsers'><?php echo __("Back to User Management");?></a></span>&nbsp;
                 <?php else: ?>
-                    User Details
+                    <?php echo __("User Details");?>
                 <?php endif; ?>
             </p>
 
             <?php if (!$this->privledged): ?>
-                <p>Contact your site administrator to change these settings.</p>
+                <p><?php echo __("Contact your site administrator to change these settings.");?></p>
             <?php endif; ?>
 
             <table class="detailsOutside">
@@ -34,7 +34,7 @@
                     <td width="100%" height="100%">
                         <table class="detailsInside" height="100%">
                             <tr>
-                                <td class="vertical" style="width: 135px;">Name:</td>
+                                <td class="vertical" style="width: 135px;"><?php echo __("Name");?>:</td>
                                 <td class="data">
                                     <span class="bold">
                                         <?php $this->_($this->data['firstName']); ?>
@@ -44,7 +44,7 @@
                             </tr>
 
                             <tr>
-                                <td class="vertical">E-Mail:</td>
+                                <td class="vertical"><?php echo __("E-Mail");?>:</td>
                                 <td class="data">
                                     <a href="mailto:<?php $this->_($this->data['email']); ?>">
                                         <?php $this->_($this->data['email']); ?>
@@ -53,19 +53,19 @@
                             </tr>
 
                             <tr>
-                                <td class="vertical">Username:</td>
+                                <td class="vertical"><?php echo __("Username");?>:</td>
                                 <td class="data"><?php $this->_($this->data['username']); ?></td>
                             </tr>
 
                             <tr>
-                                <td class="vertical">Access Level:</td>
+                                <td class="vertical"><?php echo __("Access Level");?>:</td>
                                 <td class="data"><?php $this->_($this->data['accessLevelLongDescription']); ?></td>
                             </tr>
                             
                             <?php if($this->EEOSettingsRS['enabled'] == 1): ?> <tr>
-                                <td class="vertical">Can See EEO Info:</td>
+                                <td class="vertical"><?php echo __("Can See EEO Info");?>:</td>
                                     <td class="data">                                       
-                                        This user is <?php if ($this->data['canSeeEEOInfo'] == 0): ?>not <?php endif; ?>allowed to edit and view candidate's EEO information.
+                                        <?php echo sprintf(__("This user is %s allowed to edit and view candidate's EEO information."),($this->data['canSeeEEOInfo'] == 0)?'not':'');?>
                                     </td>
                                 </tr>
                             <?php endif; ?>
@@ -74,7 +74,7 @@
                                 <?php foreach ($this->categories as $category): ?>
                                     <?php if ($this->data['categories'] == $category[1]): ?>
                                         <tr>
-                                            <td class="vertical">Role:</td>
+                                            <td class="vertical"><?php echo __("Role");?>:</td>
                                             <td class="data">
                                                 <?php $this->_($category[0]); ?> - <?php $this->_($category[2]); ?>
                                             </td>
@@ -84,12 +84,12 @@
                             <?php endif; ?>
 
                            <tr>
-                                <td class="vertical">Last Successful Login:</td>
+                                <td class="vertical"><?php echo __("Last Successful Login");?>:</td>
                                 <td class="data"><?php $this->_($this->data['successfulDate']); ?></td>
                             </tr>
 
                             <tr>
-                                <td class="vertical">Last Failed Login:</td>
+                                <td class="vertical"><?php echo __("Last Failed Login");?>:</td>
                                 <td class="data"><?php $this->_($this->data['unsuccessfulDate']); ?></td>
                             </tr>
                         </table>
@@ -97,25 +97,25 @@
                 </tr>
             </table>
             <?php if ($this->privledged): ?>
-                <a id="edit_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=editUser&amp;userID=<?php $this->_($this->data['userID']); ?>" title="Edit">
-                    <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" style="border: none;" alt="edit user" />&nbsp;Edit
+                <a id="edit_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=editUser&amp;userID=<?php $this->_($this->data['userID']); ?>" title="<?php echo __("Edit");?>">
+                    <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" style="border: none;" alt="edit user" />&nbsp;<?php echo __("Edit");?>
                 </a>
             <?php else: ?>
-                <input type="button" name="back" class = "button" value="Back" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings';" />
+                <input type="button" name="back" class = "button" value="<?php echo __("Back");?>" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings';" />
             <?php endif; ?>
             <br clear="all" />
             <br />
 
             <?php if ($this->privledged): ?>
-                <p class="note">Recent Logins Activity</p>
+                <p class="note"><?php echo __("Recent Logins Activity");?></p>
                 <table class="sortable">
                     <thead>
                         <tr>
-                            <th align="left" nowrap="nowrap">IP</th>
-                            <th align="left" nowrap="nowrap">Host Name</th>
-                            <th align="left" nowrap="nowrap">User Agent</th>
-                            <th align="left">Date</th>
-                            <th align="left" nowrap="nowrap">Successful</th>
+                            <th align="left" nowrap="nowrap"><?php echo __("IP");?></th>
+                            <th align="left" nowrap="nowrap"><?php echo __("Host Name");?></th>
+                            <th align="left" nowrap="nowrap"><?php echo __("User Agent");?></th>
+                            <th align="left"><?php echo __("Date");?></th>
+                            <th align="left" nowrap="nowrap"><?php echo __("Successful");?></th>
                         </tr>
                     </thead>
 

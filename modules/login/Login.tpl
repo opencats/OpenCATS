@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
     <head>
-        <title>opencats - Login</title>
+        <title><?php echo __("opencats - Login");?></title>
         <meta http-equiv="Content-Type" content="text/html; charset=<?php echo(HTML_ENCODING); ?>" />
         <style type="text/css" media="all">@import "modules/login/login.css";</style>
         <script type="text/javascript" src="js/lib.js"></script>
@@ -36,26 +36,26 @@
                     <?php if (ENABLE_DEMO_MODE && !($this->siteName != '' && $this->siteName != 'choose') || ($this->siteName == 'demo')): ?>
                         <br /><br />
                         <?php if ($this->aspMode): ?>
-                            <a href="javascript:void(0);" onclick="demoLogin(); return false;">Login to Demo Account</a><br />
+                            <a href="javascript:void(0);" onclick="demoLogin(); return false;"><?php echo __("Login to Demo Account");?></a><br />
                             <br />
-                            <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=forgotLogin&amp;p=0">Forgot Login Information?</a>
+                            <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=forgotLogin&amp;p=0"><?php echo __("Forgot Login Information?");?></a>
                         <?php else: ?>
-                            <a href="javascript:void(0);" onclick="demoLogin(); return false;">Login to Demo Account</a><br />
+                            <a href="javascript:void(0);" onclick="demoLogin(); return false;"><?php echo __("Login to Demo Account");?></a><br />
                         <?php endif; ?>
                     <?php elseif ($this->aspMode): ?>
                         <br /><br />
-                        <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=forgotLogin&amp;p=0">Forgot Login Information?</a>
+                        <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=forgotLogin&amp;p=0"><?php echo __("Forgot Login Information?");?></a>
                     <?php endif; ?>
                 </div>
 
                 <div id="formBlock">
-                    <img src="images/CATS-sig.gif" alt="Login" hspace="10" vspace="10" />
+                    <img src="images/CATS-sig.gif" alt="<?php echo __("Login");?>" hspace="10" vspace="10" />
                     <br />
                     <form name="loginForm" id="loginForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=login&amp;a=attemptLogin<?php if ($this->reloginVars != ''): ?>&amp;reloginVars=<?php echo($this->reloginVars); ?><?php endif; ?>" method="post" onsubmit="return checkLoginForm(document.loginForm);" autocomplete="off">
                         <div id="subFormBlock">
                             <?php if ($this->siteName != '' && $this->siteName != 'choose'): ?>
                                 <?php if ($this->siteNameFull == 'error'): ?>
-                                    <label>This site does not exist. Please check the URL and try again.</label>
+                                    <label><?php echo __("This site does not exist. Please check the URL and try again.");?></label>
                                     <br />
                                     <br />
                                 <?php else: ?>
@@ -67,7 +67,7 @@
 
                             <?php if ($this->aspMode): ?>
                                 <?php if ($this->siteName == 'choose' || ($this->aspMode && $this->siteName == '')): ?>
-                                    <label id="siteNameLabel" for="siteName">Company Identifier</label><br />
+                                    <label id="siteNameLabel" for="siteName"><?php echo __("Company Identifier");?></label><br />
                                     <input name="siteName" id="siteName" class="login-input-box" />
                                     <br />
                                 <?php elseif($this->siteName != ''): ?>
@@ -76,23 +76,23 @@
                             <?php endif; ?>
 
                             <?php if ($this->siteNameFull != 'error'): ?>
-                                <label id="usernameLabel" for="username">Username</label><br />
+                                <label id="usernameLabel" for="username"><?php echo __("Username");?></label><br />
                                 <input name="username" id="username" class="login-input-box" value="<?php if (isset($this->username)) $this->_($this->username); ?>" />
                                 <br />
 
-                                <label id="passwordLabel" for="password">Password</label><br />
+                                <label id="passwordLabel" for="password"><?php echo __("Password");?></label><br />
                                 <input type="password" name="password" id="password" class="login-input-box" />
                                 <br />
 
-                                <input type="submit" class="button" value="Login" />
-                                <input type="reset"  id="reset" name="reset"  class="button" value="Reset" />
+                                <input type="submit" class="button" value="<?php echo __("Login");?>" />
+                                <input type="reset"  id="reset" name="reset"  class="button" value="<?php echo __("Reset");?>" />
                             <?php else: ?>
                                 <br />
                                 <?php if ($this->aspMode): ?>
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=createsite&amp;p=0">Create Free Trial Site</a><br />
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=forgotLogin&amp;p=0">Forgot Login Information</a>
+                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=createsite&amp;p=0"><?php echo __("Create Free Trial Site");?></a><br />
+                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=asp&amp;a=forgotLogin&amp;p=0"><?php echo __("Forgot Login Information");?></a>
                                 <?php else: ?>
-                                    <a href="javascript:void(0);" onclick="demoLogin(); return false;">Login to Demo Account</a><br />
+                                    <a href="javascript:void(0);" onclick="demoLogin(); return false;"><?php echo __("Login to Demo Account");?></a><br />
                                 <?php endif; ?>
                             <?php endif; ?>
                             <br /><br />
@@ -132,7 +132,7 @@
 <p>
 	&nbsp;</p>  
 
-	<span style="font-size: 12px;"><a href="http://forums.opencats.org ">opencats support forum</a></span>
+	<span style="font-size: 12px;"><a href="http://forums.opencats.org "><?php echo __("opencats support forum");?></a></span>
 	           <div id="login">
                 <?php if (!empty($this->message)): ?>
                     <div>

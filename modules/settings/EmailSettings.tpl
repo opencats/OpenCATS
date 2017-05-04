@@ -1,5 +1,5 @@
 <?php /* $Id: EmailSettings.tpl 3310 2007-10-25 21:24:20Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'modules/settings/Settings.js')); ?>
+<?php TemplateUtility::printHeader(__('Settings'), array('modules/settings/validator.js', 'modules/settings/Settings.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">
@@ -11,11 +11,11 @@
                     <td width="3%">
                         <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Settings: Administration</h2></td>
+                    <td><h2><?php echo __("Settings");?>: <?php echo __("Administration");?></h2></td>
                 </tr>
             </table>
 
-            <p class="note">E-Mail Settings</p>
+            <p class="note"><?php echo __("E-Mail Settings");?></p>
 
             <table>
                 <tr>
@@ -27,7 +27,7 @@
                             <table class="editTable" width="700">
                                 <tr id="fromAddressRow">
                                     <td class="tdVertical" style="width: 175px;">
-                                        <label for="fromAddress" id="fromAddressLabel">From E-Mail Address for Outgoing Messages:</label>
+                                        <label for="fromAddress" id="fromAddressLabel"><?php echo __("From E-Mail Address for Outgoing Messages");?>:</label>
                                     </td>
                                     <td class="tdData">
                                         <input type="text" class="inputbox" name="fromAddress" id="fromAddress" value="<?php $this->_($this->mailerSettingsRS['fromAddress']); ?>" style="width: 180px;" />
@@ -40,13 +40,13 @@
                                 <tr>
                                     <td class="tdVertical" style="width: 175px;">&nbsp;</td>
                                     <td class="tdData">
-                                        <span>Send Test E-Mail To:</span><br/>
+                                        <span><?php echo __("Send Test E-Mail To");?>:</span><br/>
                                         <input type="text" class="inputbox" name="testEmailAddress" id="testEmailAddress" value="" style="margin-bottom: 6px; width: 180px;" />
                                         <span id="testButtonSpanActive" style="display:none;">
                                             &nbsp;<img src="images/indicator2.gif">
                                         </span><br />
                                         <span id="testButtonSpan">
-                                            <input type="button" class="button" name="test" id="test" onclick="testEmailSettings('<?php echo($this->sessionCookie); ?>');" value="Test Configuration" />
+                                            <input type="button" class="button" name="test" id="test" onclick="testEmailSettings('<?php echo($this->sessionCookie); ?>');" value="<?php echo __("Test Configuration");?>" />
                                         </span>
                                         <div id="testOutput">
                                         </div>
@@ -59,7 +59,7 @@
                                 
                                 <tr id="fromAddressRow">
                                     <td class="tdVertical" style="width: 175px;">
-                                        <label>E-Mail Messages Generated for:</label>
+                                        <label><?php echo __("E-Mail Messages Generated for");?>:</label>
                                     </td>
                                     <td class="tdData">
                                         <input type="checkbox" name="statusChangeContacted" <?php if($this->candidateJoborderStatusSendsMessage[PIPELINE_STATUS_CONTACTED]==1): ?>checked<?php endif; ?>>Status Change: Contacted<br />
@@ -76,8 +76,8 @@
                                   </td>
                                 </tr>
                             </table>
-                            <input type="submit" class="button" name="submit" id="submit" value="Save" />&nbsp;
-                            <input type="reset"  class="button" name="reset"  id="reset"  value="Reset" />&nbsp;
+                            <input type="submit" class="button" name="submit" id="submit" value="<?php echo __("Save");?>" />&nbsp;
+                            <input type="reset"  class="button" name="reset"  id="reset"  value="<?php echo __("Reset");?>" />&nbsp;
                         </form>
                     </td>
                 </tr>

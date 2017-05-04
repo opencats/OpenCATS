@@ -267,7 +267,7 @@ class Calendar
                 typeID ASC"
         );
 
-        return $this->_db->getAllAssoc($sql);
+        return lngTranslateAsoc1($this->_db->getAllAssoc($sql),'description');
     }
 
     /**
@@ -643,19 +643,19 @@ class Calendar
         switch ($flag)
         {
             case UPCOMING_FOR_CALENDAR:
-                $HTML = '<div class="noteUnsizedSpan">My Upcoming Events / Calls</div>';
+                $HTML = '<div class="noteUnsizedSpan">'.__('My Upcoming Events / Calls').'</div>';
                 $style = '';
                 $criteria = '';
                 break;
 
             case UPCOMING_FOR_DASHBOARD:
-                $HTML = '<div class="noteUnsizedSpan" style="width:100%;">My Upcoming Events</div>';
+                $HTML = '<div class="noteUnsizedSpan" style="width:100%;">'.__('My Upcoming Events').'</div>';
                 $style = 'font-size:11px;';
                 $criteria = 'AND NOT TYPE = 100';
                 break;
 
             case UPCOMING_FOR_DASHBOARD_FUP:
-                $HTML = '<div class="noteUnsizedSpan">My Upcoming Calls</div>';
+                $HTML = '<div class="noteUnsizedSpan">'.__('My Upcoming Calls').'</div>';
                 $style = 'font-size:11px;';
                 $criteria = 'AND TYPE = 100';
                 break;
@@ -850,13 +850,13 @@ class Calendar
             case DATA_ITEM_CANDIDATE:
                 $candidates = new Candidates($this->_siteID);
                 $string .= '?m=candidates&amp;a=show&amp;candidateID=' . $dataItemID . '">';
-                $string .= '<img src="images/mru/candidate.gif" alt="" style="border: none;" title="Candidate" />';
+                $string .= '<img src="images/mru/candidate.gif" alt="" style="border: none;" title="'.__('Candidate').'" />';
                 if ($showTitle)
                 {
                     $data = $candidates->get($dataItemID);
                     if (!isset($data['firstName']))
                     {
-                        $string = '<img src="images/mru/company.gif" alt="" style="border: none;" /> (Candidate Deleted)<a>';
+                        $string = '<img src="images/mru/company.gif" alt="" style="border: none;" /> ('.__('Candidate Deleted').')<a>';
                     }
                     else
                     {
@@ -869,13 +869,13 @@ class Calendar
             case DATA_ITEM_COMPANY:
                 $companies = new Companies($this->_siteID);
                 $string .= '?m=companies&amp;a=show&amp;companyID=' . $dataItemID . '">';
-                $string .= '<img src="images/mru/company.gif" alt="" style="border: none;" title="Company" />';
+                $string .= '<img src="images/mru/company.gif" alt="" style="border: none;" title="'.__('Company').'" />';
                 if ($showTitle)
                 {
                     $data = $companies->get($dataItemID);
                     if (!isset($data['name']))
                     {
-                        $string = '<img src="images/mru/company.gif" alt="" style="border: none;" /> (Company Deleted)<a>';
+                        $string = '<img src="images/mru/company.gif" alt="" style="border: none;" /> ('.__('Company Deleted').')<a>';
                     }
                     else
                     {
@@ -887,13 +887,13 @@ class Calendar
             case DATA_ITEM_CONTACT:
                 $contacts = new Contacts($this->_siteID);
                 $string .= '?m=contacts&amp;a=show&amp;contactID=' . $dataItemID . '">';
-                $string .= '<img src="images/mru/contact.gif" alt="" style="border: none;" title="Contact" />';
+                $string .= '<img src="images/mru/contact.gif" alt="" style="border: none;" title="'.__('Contact').'" />';
                 if ($showTitle)
                 {
                     $data = $contacts->get($dataItemID);
                     if (!isset($data['firstName']))
                     {
-                        $string = '<img src="images/mru/contact.gif" alt="" style="border: none;" /> (Contact Deleted)<a>';
+                        $string = '<img src="images/mru/contact.gif" alt="" style="border: none;" /> ('.__('Contact Deleted').')<a>';
                     }
                     else
                     {
@@ -905,13 +905,13 @@ class Calendar
             case DATA_ITEM_JOBORDER:
                 $jobOrders = new JobOrders($this->_siteID);
                 $string .= '?m=joborders&amp;a=show&amp;jobOrderID=' . $dataItemID . '">';
-                $string .= '<img src="images/mru/job_order.gif" alt="" style="border: none;" title="Job Order" />';
+                $string .= '<img src="images/mru/job_order.gif" alt="" style="border: none;" title="'.__('Job Order').'" />';
                 if ($showTitle)
                 {
                     $data = $jobOrders->get($dataItemID);
                     if (!isset($data['title']))
                     {
-                        $string = '<img src="images/mru/job_order.gif" alt="" style="border: none;" /> (Job Order Deleted)<a>';
+                        $string = '<img src="images/mru/job_order.gif" alt="" style="border: none;" /> ('.__('Job Order Deleted').')<a>';
                     }
                     else
                     {

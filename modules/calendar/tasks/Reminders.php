@@ -49,8 +49,8 @@ class Reminders extends Task
 
     public function run($siteID, $args)
     {
-        Task::setName('Calendar Reminders');
-        Task::setDescription('Send out reminder e-mails from the CATS calendar.');
+        Task::setName(__('Calendar Reminders'));
+        Task::setDescription(__('Send out reminder e-mails from the CATS calendar.'));
 
         $calendar = new Calendar(0);
 
@@ -65,7 +65,7 @@ class Reminders extends Task
 
         foreach ($dueEvents as $index => $data)
         {
-            $emailSubject = 'CATS Event Reminder: ' . $data['title'];
+            $emailSubject = __('CATS Event Reminder').': ' . $data['title'];
 
             $emailContents = $GLOBALS['eventReminderEmail'];
 
@@ -104,7 +104,7 @@ class Reminders extends Task
 
         // Set the response the task wants logged
         $this->setResponse(sprintf(
-            'E-mailed %d calendar reminders.',
+            __('E-mailed %d calendar reminders.'),
             count($dueEvents)
         ));
 
@@ -115,31 +115,31 @@ class Reminders extends Task
     {
         if ($reminderTime < 1)
         {
-            $string = 'immediately';
+            $string = __('immediately');
         }
         else if ($reminderTime == 1)
         {
-            $string = 'in 1 minute';
+            $string = __('in 1 minute');
         }
         else if ($reminderTime < 60)
         {
-            $string = 'in ' . $reminderTime . ' minutes';
+            $string = sprintf(__('in %s minutes'),$reminderTime);
         }
         else if ($reminderTime == 60)
         {
-            $string = 'in 1 hour';
+            $string = __('in 1 hour');
         }
         else if ($reminderTime < 1440)
         {
-            $string = 'in ' . (($reminderTime * 1.0) / 60) . ' hours';
+            $string = sprintf(__('in %s  hours'),(($reminderTime * 1.0) / 60));
         }
         else if ($reminderTime == 1440)
         {
-            $string = 'in 1 day';
+            $string = __('in 1 day');
         }
         else
         {
-            $string = 'in ' . (($reminderTime * 1.0) / 1440) . ' days';
+            $string = sprintf(__('in %s days'),(($reminderTime * 1.0) / 1440));
         }
 
     	return $string;

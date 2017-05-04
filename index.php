@@ -84,6 +84,17 @@ include_once('./lib/TemplateUtility.php'); /* Depends: ModuleUtility, Hooks */
 @session_name(CATS_SESSION_NAME);
 session_start();
 
+if (isset($_SESSION['CATS']) && trim($_SESSION['CATS']->getUserCountry())!=''){
+	//echo 'lngreset'.$_SESSION['CATS']->getUserCountry();
+	//if (!isset($_SESSION['lang']) || ($_SESSION['lang']!=$_SESSION['CATS']->getUserCountry())){
+	$_SESSION['lang']=$_SESSION['CATS']->getUserCountry();
+	//}
+}
+if (isset($_SESSION['lang']) && $_SESSION['lang']!=DEFAULT_LOCALE){
+	//cho 'lngreset'.$_SESSION['lang'];
+	lngReset($_SESSION['lang']);
+}
+
 /* Try to prevent caching. */
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');

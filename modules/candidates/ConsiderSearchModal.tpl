@@ -1,9 +1,8 @@
 <?php /* $Id: ConsiderSearchModal.tpl 3093 2007-09-24 21:09:45Z brian $ */ ?>
-<?php TemplateUtility::printModalHeader('Candidates', array(), 'Add Candidates to Job Order Pipeline'); ?>
+<?php TemplateUtility::printModalHeader(__('Candidates'), array(), __('Add Candidates to Job Order Pipeline')); ?>
 
     <?php if (!$this->isFinishedMode): ?>
-        <p>Search for a job order below, and then click on the job title to add
-        the candidate to the selected job order pipeline.</p>
+        <p><?php echo __("Search for a job order below, and then click on the job title to add the candidate to the selected job order pipeline.");?></p>
 
         <table class="searchTable">
             <form id="searchByJobTitleForm" name="searchByJobTitleForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=considerForJobSearch" method="post">
@@ -12,11 +11,11 @@
                 <input type="hidden" id="candidateID_jobtitle" name="candidateIDArrayStored" value="<?php echo($this->candidateIDArrayStored); ?>" />
 
                 <tr>
-                    <td>Search by Job Title:&nbsp;</td>
+                    <td><?php echo __("Search by Job Title");?>:&nbsp;</td>
                     <td><input type="text" class="inputbox" id="wildCardString_jobTitle" name="wildCardString"style="width:200px;" />&nbsp;*</td>
                 </tr>
                 <tr>
-                    <td><input type="submit" class="button" id="searchByJobTitle" name="searchByJobTitle" value="Search by Job Title" /></td>
+                    <td><input type="submit" class="button" id="searchByJobTitle" name="searchByJobTitle" value="<?php echo __("Search by Job Title");?>" /></td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
@@ -29,11 +28,11 @@
                 <input type="hidden" id="candidateID_companyname" name="candidateIDArrayStored" value="<?php echo($this->candidateIDArrayStored); ?>" />
 
                 <tr>
-                    <td>Search by Company Name:&nbsp;</td>
+                    <td><?php echo __("Search by Company Name");?>:&nbsp;</td>
                     <td><input type="text" class="inputbox" id="wildCardString_companyname" name="wildCardString" style="width:200px;" />&nbsp;*</td>
                 </tr>
                 <tr>
-                    <td><input type="submit" class="button" id="searchByCompanyName" name="searchByCompanyName" value="Search by Company Name" /></td>
+                    <td><input type="submit" class="button" id="searchByCompanyName" name="searchByCompanyName" value="<?php echo __("Search by Company Name");?>" /></td>
                 </tr>
             </form>
         </table>
@@ -50,21 +49,21 @@
 
         <?php if ($this->isResultsMode): ?>
             <br />
-            <p class="noteUnsized">Search Results</p>
+            <p class="noteUnsized"><?php echo __("Search Results");?></p>
 
             <?php if (!empty($this->rs)): ?>
                 <table class="sortable" width="100%">
                     <tr>
-                        <th align="left">Ref. #</th>
-                        <th align="left">Title</th>
-                        <th align="left">Company</th>
-                        <th align="left">Type</th>
-                        <th align="left">Status</th>
-                        <th align="left">Created</th>
-                        <th align="left">Start</th>
-                        <th align="left">Recruiter</th>
-                        <th align="left">Owner</th>
-                        <th align="center">Action</th>
+                        <th align="left"><?php echo __("Ref. #");?></th>
+                        <th align="left"><?php echo __("Title");?></th>
+                        <th align="left"><?php echo __("Company");?></th>
+                        <th align="left"><?php echo __("Type");?></th>
+                        <th align="left"><?php echo __("Status");?></th>
+                        <th align="left"><?php echo __("Created");?></th>
+                        <th align="left"><?php echo __("Start");?></th>
+                        <th align="left"><?php echo __("Recruiter");?></th>
+                        <th align="left"><?php echo __("Owner");?></th>
+                        <th align="center"><?php echo __("Action");?></th>
                     </tr>
 
                     <?php foreach ($this->rs as $rowNumber => $data): ?>
@@ -95,26 +94,26 @@
                     <?php endforeach; ?>
                 </table>
             <?php else: ?>
-                <p>No matching entries found.</p>
+                <p><?php echo __("No matching entries found.");?></p>
             <?php endif; ?>
-            <input type="button" class="button" id="showRecentJobOrders" name="showRecentJobOrders" value="Show Recently Modified Job Orders" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=considerForJobSearch&amp;candidateIDArrayStored=<?php echo($this->candidateIDArrayStored); ?>';" />
+            <input type="button" class="button" id="showRecentJobOrders" name="showRecentJobOrders" value="<?php echo __("Show Recently Modified Job Orders");?>" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=considerForJobSearch&amp;candidateIDArrayStored=<?php echo($this->candidateIDArrayStored); ?>';" />
         <?php else: ?>
             <br />
-            <p class="noteUnsized">Recently Modified Job Orders</p>
+            <p class="noteUnsized"><?php echo __("Recently Modified Job Orders");?></p>
 
             <?php if (!empty($this->rs)): ?>
                 <table class="sortable" width="100%">
                     <tr>
-                        <th align="left">Ref. #</th>
-                        <th align="left">Title</th>
-                        <th align="left">Company</th>
-                        <th align="left">Type</th>
-                        <th align="left">Status</th>
-                        <th align="left">Modified</th>
-                        <th align="left">Start</th>
-                        <th align="left">Recruiter</th>
-                        <th align="left">Owner</th>
-                        <th align="center">Action</th>
+                        <th align="left"><?php echo __("Ref. #");?></th>
+                        <th align="left"><?php echo __("Title");?></th>
+                        <th align="left"><?php echo __("Company");?></th>
+                        <th align="left"><?php echo __("Type");?></th>
+                        <th align="left"><?php echo __("Status");?></th>
+                        <th align="left"><?php echo __("Modified");?></th>
+                        <th align="left"><?php echo __("Start");?></th>
+                        <th align="left"><?php echo __("Recruiter");?></th>
+                        <th align="left"><?php echo __("Owner");?></th>
+                        <th align="center"><?php echo __("Action");?></th>
                     </tr>
 
                     <?php foreach ($this->rs as $rowNumber => $data): ?>
@@ -145,14 +144,21 @@
                     <?php endforeach; ?>
                 </table>
             <?php else: ?>
-                <p>No recent job orders found.</p>
+                <p><?php echo __("No recent job orders found.");?></p>
             <?php endif; ?>
         <?php endif; ?>
     <?php else: ?>
-        <p>The <?php if(count($this->candidateIDArray)>1): ?> <?php echo(count($this->candidateIDArray)); ?> candidates have<?php else: ?>candidate has<?php endif; ?> been successfully added to the pipeline for the selected job order.</p>
+        <p>
+        <?php if(count($this->candidateIDArray)>1): ?>
+        <?php echo(count($this->candidateIDArray)); ?>
+        	<?php echo sprintf(__("The  %s candidates have been successfully added to the pipeline for the selected job order."),count($this->candidateIDArray));?>
+        <?php else: ?>
+        	<?php echo __("The candidate has been successfully added to the pipeline for the selected job order.");?>
+        <?php endif; ?>
+        </p>
 
         <form method="get" action="<?php echo(CATSUtility::getIndexName()); ?>">
-            <input type="button" name="close" value="Close" onclick="parentHidePopWinRefresh();" />
+            <input type="button" name="close" value="<?php echo __("Close");?>" onclick="parentHidePopWinRefresh();" />
         </form>
     <?php endif; ?>
 

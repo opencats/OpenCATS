@@ -1,5 +1,5 @@
 <?php /* $Id: Users.tpl 2452 2007-05-11 17:47:55Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Settings', 'js/sorttable.js'); ?>
+<?php TemplateUtility::printHeader(__('Settings'), 'js/sorttable.js'); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">
@@ -11,7 +11,7 @@
                     <td width="3%">
                         <img src="images/settings.gif" width="24" height="24" alt="Settings" style="border: none; margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Settings: User Management</h2></td>
+                    <td><h2><?php echo __("Settings");?>: <?php echo __("User Management");?></h2></td>
                 </tr>
             </table>
 
@@ -20,12 +20,12 @@
             <table class="sortable">
                 <thead>
                     <tr>
-                        <th align="left" nowrap="nowrap">First Name</th>
-                        <th align="left" nowrap="nowrap">Last Name</th>
-                        <th align="left">Username</th>
-                        <th align="left" nowrap="nowrap">Access Level</th>
-                        <th align="left" nowrap="nowrap">Last Success</th>
-                        <th align="left" nowrap="nowrap">Last Fail</th>
+                        <th align="left" nowrap="nowrap"><?php echo __("First Name");?></th>
+                        <th align="left" nowrap="nowrap"><?php echo __("Last Name");?></th>
+                        <th align="left"><?php echo __("Username");?></th>
+                        <th align="left" nowrap="nowrap"><?php echo __("Access Level");?></th>
+                        <th align="left" nowrap="nowrap"><?php echo __("Last Success");?></th>
+                        <th align="left" nowrap="nowrap"><?php echo __("Last Fail");?></th>
                     </tr>
                 </thead>
 
@@ -52,7 +52,7 @@
             </table>
             <?php if (AUTH_MODE != "ldap"): ?>
                 <a id="add_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=addUser" title="You have <?php $this->_($this->license['diff']); ?> user accounts remaining.">
-                    <img src="images/candidate_inline.gif" width="16" height="16" class="absmiddle" alt="add" style="border: none;" />&nbsp;Add User
+                    <img src="images/candidate_inline.gif" width="16" height="16" class="absmiddle" alt="add" style="border: none;" />&nbsp;<?php echo __("Add User");?>
                 </a>
             <?php endif; ?>
         </div>

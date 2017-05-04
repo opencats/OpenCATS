@@ -37,13 +37,13 @@ $interface = new SecureAJAXInterface();
 
 if (!$interface->isRequiredIDValid('savedListID'))
 {
-    $interface->outputXMLErrorPage(-1, 'Invalid saved list ID.');
+    $interface->outputXMLErrorPage(-1, __('Invalid saved list ID.'));
     die();
 }
 
 if (!isset($_REQUEST['savedListName']))
 {
-    $interface->outputXMLErrorPage(-1, 'Invalid name.');
+    $interface->outputXMLErrorPage(-1, __('Invalid name.'));
     die();
 }
 

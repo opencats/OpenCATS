@@ -26,7 +26,10 @@
  *
  * $Id: validator.js 1479 2007-01-17 00:22:21Z will $
  */
-
+<?php
+chdir('./../../');
+include_once('./config.php');
+?>
 function checkLoginForm(form)
 {
     var errorMessage = '';
@@ -36,7 +39,7 @@ function checkLoginForm(form)
 
     if (errorMessage != '')
     {
-        alert("Form Error:\n" + errorMessage);
+        alert("<?php echo __("Form Error");?>:\n" + errorMessage);
         return false;
     }
 
@@ -51,7 +54,7 @@ function checkUsername()
     fieldLabel = document.getElementById('usernameLabel');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter a username.\n";
+        errorMessage = "    - <?php echo __("You must enter a username.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }
@@ -71,7 +74,7 @@ function checkPassword()
     fieldLabel = document.getElementById('passwordLabel');
     if (fieldValue == '')
     {
-        errorMessage = "    - You must enter a password.\n";
+        errorMessage = "    - <?php echo __("You must enter a password.");?>\n";
 
         fieldLabel.style.color = '#ff0000';
     }

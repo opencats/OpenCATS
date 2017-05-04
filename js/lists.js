@@ -1,3 +1,7 @@
+<?php
+chdir('./../');
+include_once('./config.php');
+?>
 /*
  * CATS
  * Lists JavaScript Library
@@ -56,7 +60,7 @@ function saveListRow(rowNumber, sessionCookie)
 
         if (!http.responseXML)
         {
-            var errorMessage = "An error occurred while receiving a response from the server.\n\n"
+            var errorMessage = "<?php echo __("An error occurred while receiving a response from the server.");?>\n\n"
                              + http.responseText;
             alert(errorMessage);
             downloadBlock = false; 
@@ -68,7 +72,7 @@ function saveListRow(rowNumber, sessionCookie)
         var errorMessageNode = http.responseXML.getElementsByTagName('errormessage').item(0);
         if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != '0')
         {
-            var errorMessage = "An error occurred while receiving a response from the server.\n\n"
+            var errorMessage = "<?php echo __("An error occurred while receiving a response from the server.");?>\n\n"
                              + errorMessageNode.firstChild.nodeValue;
             alert(errorMessage);
             return;
@@ -96,7 +100,7 @@ function saveListRow(rowNumber, sessionCookie)
                 document.getElementById('savedListRowAjaxing'+rowNumber).style.display = 'none';
                 document.getElementById('savedListRowEditing'+rowNumber).style.display = '';
                 document.getElementById('savedListRow'+rowNumber).style.display = 'none';
-                alert('Please type a name for the list.');
+                alert('<?php echo __("Please type a name for the list.");?>');
                 break;
         }
     }
@@ -138,7 +142,7 @@ function commitNewList(sessionCookie, dataItemType)
 
         if (!http.responseXML)
         {
-            var errorMessage = "An error occurred while receiving a response from the server.\n\n"
+            var errorMessage = "<?php echo __("An error occurred while receiving a response from the server.");?>\n\n"
                              + http.responseText;
             alert(errorMessage);
             downloadBlock = false; 
@@ -150,7 +154,7 @@ function commitNewList(sessionCookie, dataItemType)
         var errorMessageNode = http.responseXML.getElementsByTagName('errormessage').item(0);
         if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != '0')
         {
-            var errorMessage = "An error occurred while receiving a response from the server.\n\n"
+            var errorMessage = "<?php echo __("An error occurred while receiving a response from the server.");?>\n\n"
                              + errorMessageNode.firstChild.nodeValue;
             alert(errorMessage);
             return;
@@ -175,13 +179,13 @@ function commitNewList(sessionCookie, dataItemType)
             case "collision":
                 document.getElementById('savedListNew').style.display = '';
                 document.getElementById('savedListNewAjaxing').style.display = 'none';
-                alert('That name is already in use, please try another.');
+                alert('<?php echo __("That name is already in use, please try another.");?>');
                 break;
 
             case "badName":
                 document.getElementById('savedListNew').style.display = '';
                 document.getElementById('savedListNewAjaxing').style.display = 'none';
-                alert('Please type a name for the list.');
+                alert('<?php echo __("Please type a name for the list.");?>');
                 break;
         }
     }
@@ -200,7 +204,7 @@ function commitNewList(sessionCookie, dataItemType)
 
 function deleteListFromListView(savedListID, numberEntries)
 {
-    if (numberEntries != 0 && !confirm("Do you really want to delete this saved list with "+numberEntries+" entries?")) 
+    if (numberEntries != 0 && !confirm("<?php echo sprintf(__("Do you really want to delete this saved list with %s entries?"),'"+numberEntries+"');?>")) 
     {
          return;
     }
@@ -210,7 +214,7 @@ function deleteListFromListView(savedListID, numberEntries)
 
 function deleteListRow(savedListID, sessionCookie, numberEntries)
 {
-    if (numberEntries != 0 && !confirm("Do you really want to delete this saved list with "+numberEntries+" entries?")) 
+    if (numberEntries != 0 && !confirm("<?php echo sprintf(__("Do you really want to delete this saved list with %s entries?"),'"+numberEntries+"');?>  ")) 
     {
          return;
     }
@@ -236,7 +240,7 @@ function deleteListRow(savedListID, sessionCookie, numberEntries)
 
         if (!http.responseXML)
         {
-            var errorMessage = "An error occurred while receiving a response from the server.\n\n"
+            var errorMessage = "<?php echo __("An error occurred while receiving a response from the server.");?>\n\n"
                              + http.responseText;
             alert(errorMessage);
             downloadBlock = false; 
@@ -248,7 +252,7 @@ function deleteListRow(savedListID, sessionCookie, numberEntries)
         var errorMessageNode = http.responseXML.getElementsByTagName('errormessage').item(0);
         if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != '0')
         {
-            var errorMessage = "An error occurred while receiving a response from the server.\n\n"
+            var errorMessage = "<?php echo __("An error occurred while receiving a response from the server.");?>\n\n"
                              + errorMessageNode.firstChild.nodeValue;
             alert(errorMessage);
             return;
@@ -309,7 +313,7 @@ function addItemsToList(sessionCookie, dataItemType)
 
         if (!http.responseXML)
         {
-            var errorMessage = "An error occurred while receiving a response from the server.\n\n"
+            var errorMessage = "<?php echo __("An error occurred while receiving a response from the server.");?>\n\n"
                              + http.responseText;
             alert(errorMessage);
             downloadBlock = false; 
@@ -321,7 +325,7 @@ function addItemsToList(sessionCookie, dataItemType)
         var errorMessageNode = http.responseXML.getElementsByTagName('errormessage').item(0);
         if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != '0')
         {
-            var errorMessage = "An error occurred while receiving a response from the server.\n\n"
+            var errorMessage = "<?php echo __("An error occurred while receiving a response from the server.");?>\n\n"
                              + errorMessageNode.firstChild.nodeValue;
             alert(errorMessage);
             return;

@@ -1,5 +1,5 @@
 <?php /* $Id: Administration.tpl 3722 2007-11-27 21:49:36Z andrew $ */ ?>
-<?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js')); ?>
+<?php TemplateUtility::printHeader(__('Settings'), array('modules/settings/validator.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <style>
 #profButton {
@@ -23,228 +23,228 @@
                     <td width="3%">
                         <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Settings: Administration</h2></td>
+                    <td><h2><?php echo __("Settings");?>: <?php echo __("Administration");?></h2></td>
                 </tr>
             </table>
 
-                        <p class="noteUnsized">Site Management</p>
+                        <p class="noteUnsized"><?php echo __("Site Management");?></p>
 
                         <table class="searchTable" width="100%">
                             <tr>
                                 <td width="230">
                                     <img src="images/bullet_black.gif" alt="" />
                                     <?php if ($this->careerPortalUnlock): ?>
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=careerPortalSettings">Careers Website</a>
+                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=careerPortalSettings"><?php echo __("Careers Website");?></a>
                                     <?php else: ?>
-                                    <a href="http://www.catsone.com/?a=careerswebsite"><b>Careers Website</b></a>
+                                    <a href="http://www.catsone.com/?a=careerswebsite"><b><?php echo __("Careers Website");?></b></a>
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    Configure your website where applicants can apply and post their resumes for your jobs.
+                                    <?php echo __("Configure your website where applicants can apply and post their resumes for your jobs.");?>
                                 </td>
                             </tr>
                            <tr>
                                 <td width="230">
                                     <img src="images/bullet_black.gif" alt="" />
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=administration&amp;s=siteName">
-                                        Change Site Details
+                                        <?php echo __("Change Site Details");?>
                                     </a>
                                 </td>
                                 <td>
-                                    Change the site details such as site name and institution configuration.
+                                    <?php echo __("Change the site details such as site name and institution configuration.");?>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <img src="images/bullet_black.gif" alt="" />
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=manageUsers">
-                                        User Management
+                                        <?php echo __("User Management");?>
                                     </a>
                                 </td>
                                 <td>
-                                    Add, edit and delete users for your site.
+                                    <?php echo __("Add, edit and delete users for your site.");?>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <img src="images/bullet_black.gif" alt="" />
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=loginActivity">
-                                        Login Activity
+                                        <?php echo __("Login Activity");?>
                                     </a>
                                 </td>
                                 <td>
-                                    Shows you the login history for your site.
+                                    <?php echo __("Shows you the login history for your site.");?>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <img src="images/bullet_black.gif" alt="" />
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=emailSettings">
-                                        General E-Mail Configuration
+                                        <?php echo __("General E-Mail Configuration");?>
                                     </a>
                                 </td>
                                 <td>
-                                    Configure E-Mail preferences such as return address and when E-Mails are sent.
+                                    <?php echo __("Configure E-Mail preferences such as return address and when E-Mails are sent.");?>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <img src="images/bullet_black.gif" alt="" />
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=emailTemplates">
-                                        E-Mail Template Configuration
+                                        <?php echo __("E-Mail Template Configuration");?>
                                     </a>
                                 </td>
                                 <td>
-                                    Configure E-Mail templates for your site.
+                                    <?php echo __("Configure E-Mail templates for your site.");?>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <img src="images/bullet_black.gif" alt="" />
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=administration&amp;s=localization">
-                                        Localization
+                                        <?php echo __("Localization");?>
                                     </a>
                                 </td>
                                 <td>
-                                    Change how addresses and times are displayed and behave for different regions.
+                                    <?php echo __("Change how addresses and times are displayed and behave for different regions.");?>
                                 </td>
                             </tr>
                             <tr <?php if (!$this->totalCandidates): ?>style="background-color: #DAE3F7;"<?php endif; ?>>
                                 <td>
                                     <img src="images/bullet_black.gif" alt="" />
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=import">
-                                        <?php if (!$this->totalCandidates): ?><b><?php endif; ?>Data Import<?php if (!$this->totalCandidates): ?></b><?php endif; ?>
+                                        <?php if (!$this->totalCandidates): ?><b><?php endif; ?><?php echo __("Data Import");?><?php if (!$this->totalCandidates): ?></b><?php endif; ?>
                                     </a>
                                 </td>
                                 <td>
-                                    <?php if (!$this->totalCandidates): ?><b><?php endif; ?>Import resumes, candidates, companies or contacts from files on your computer.<?php if (!$this->totalCandidates): ?></b><?php endif; ?>
+                                    <?php if (!$this->totalCandidates): ?><b><?php endif; ?><?php echo __("Import resumes, candidates, companies or contacts from files on your computer.");?><?php if (!$this->totalCandidates): ?></b><?php endif; ?>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <img src="images/bullet_black.gif" alt="" />
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=createBackup">
-                                        Site Backup
+                                        <?php echo __("Site Backup");?>
                                     </a>
                                 </td>
                                 <td>
-                                    Produce a downloadable backup with all the content in your site.
+                                    <?php echo __("Produce a downloadable backup with all the content in your site.");?>
                                 </td>
                             </tr>
                         </table>
                         <br />
 
-                        <p class="noteUnsized">Feature Settings</p>
+                        <p class="noteUnsized"><?php echo __("Feature Settings");?></p>
 
                         <table class="searchTable" width="100%">
                             <!--<tr>
                                 <td width="230">
                                     <img src="images/bullet_black.gif" alt="" />
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=reports">
-                                        Reports
+                                        <?php echo __("Reports");?>
                                     </a>
                                 </td>
                                 <td>
-                                    Configure how your site's reports look by default.
+                                    <?php echo __("Configure how your site's reports look by default.");?>
                                 </td>
                             </tr>-->
                             <tr>
                                 <td>
                                     <img src="images/bullet_black.gif" alt="" />
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=eeo">
-                                        EEO / EOC Support
+                                        <?php echo __("EEO / EOC Support");?>
                                     </a>
                                 </td>
                                 <td>
-                                    Enable and configure EEO / EOC compliance tracking.
+                                    <?php echo __("Enable and configure EEO / EOC compliance tracking.");?>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <img src="images/bullet_black.gif" alt="" />
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=tags">
-                                        Configure Tags
+                                        <?php echo __("Configure Tags");?>
                                     </a>
                                 </td>
                                 <td>
-                                    Add/Remove tags, description for tags
+                                    <?php echo __("Add/Remove tags, description for tags");?>
                                 </td>
                             </tr>
                         </table>
                         <br />
 
-                        <p class="noteUnsized">GUI Customization</p>
+                        <p class="noteUnsized"><?php echo __("GUI Customization");?></p>
 
                         <table class="searchTable" width="100%">
                             <tr>
                                 <td>
                                     <img src="images/bullet_black.gif" alt="" />
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=customizeCalendar">
-                                        Customize Calendar
+                                        <?php echo __("Customize Calendar");?>
                                     </a>
                                 </td>
                                 <td>
-                                    Change calendar settings, such as the duration of a work day.
+                                    <?php echo __("Change calendar settings, such as the duration of a work day.");?>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <img src="images/bullet_black.gif" alt="" />
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=customizeExtraFields">
-                                        Customize Extra Fields
+                                        <?php echo __("Customize Extra Fields");?>
                                     </a>
                                 </td>
                                 <td>
-                                    Add, rename, and remove extra text fields from various data types.
+                                    <?php echo __("Add, rename, and remove extra text fields from various data types.");?>
                                 </td>
                             </tr>
                         </table>
                         <br />
 
                         <?php if ($this->systemAdministration): ?>
-                            <p class="noteUnsized">System</p>
+                            <p class="noteUnsized"><?php echo __("System");?></p>
 
                             <table class="searchTable" width="100%">
                                 <!--<tr>
                                     <td width="230">
                                         <img src="images/bullet_black.gif" alt="" border="0" />
-                                        Scheduler
+                                        <?php echo __("Scheduler");?>
                                     </td>
                                     <td>
-                                        <i>Change how CATS interacts with the server to schedule tasks.</i>
+                                        <i><?php echo __("Change how CATS interacts with the server to schedule tasks.");?></i>
                                     </td>
                                 </tr>-->
                                 <tr>
                                     <td width="230">
                                     <img src="images/bullet_black.gif" alt="" />
                                         <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=administration&amp;s=passwords">
-                                            Passwords
+                                            <?php echo __("Passwords");?>
                                         </a>
                                     </td>
                                     <td>
-                                        Change how CATS stores user passwords, and how users can retrieve them.
+                                        <?php echo __("Change how CATS stores user passwords, and how users can retrieve them.");?>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td width="230">
                                     <img src="images/bullet_black.gif" alt="" />
                                         <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=administration&amp;s=newVersionCheck">
-                                            New Version Check
+                                            <?php echo __("New Version Check");?>
                                         </a>
                                     </td>
                                     <td>
-                                        Change how CATS checks periodically for new versions.
+                                        <?php echo __("Change how CATS checks periodically for new versions.");?>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td width="230">
                                     <img src="images/bullet_black.gif" alt="" />
                                         <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=administration&amp;s=systemInformation">
-                                            System Information
+                                            <?php echo __("System Information");?>
                                         </a>
                                     </td>
                                     <td>
-                                        View information about this CATS installation.
+                                        <?php echo __("View information about this CATS installation.");?>
                                     </td>
                                 </tr>
                             </table>
@@ -253,7 +253,7 @@
                         <?php if (!empty($this->extraSettings)): ?>
                             <br />
 
-                            <p class="noteUnsized">Other Settings</p>
+                            <p class="noteUnsized"><?php echo __("Other Settings");?></p>
 
                             <table class="searchTable" width="100%">
                                 <?php foreach ($this->extraSettings as $setting): ?>

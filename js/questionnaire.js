@@ -1,3 +1,7 @@
+<?php
+chdir('./../');
+include_once('./config.php');
+?>
 // Preload images for the mouse up icons (for mouseover)
 var moveUpOn = new Image(18, 17);
 moveUpOn.src = 'images/moveUp-o.gif';
@@ -169,10 +173,10 @@ function saveChangeQuestionType(e, tf)
     {
         switch (inputValue.value)
         {
-            case 'checkbox': labelValue.innerHTML = 'Checkboxes'; break;
-            case 'radio': labelValue.innerHTML = 'Radio Buttons'; break;
-            case 'text': labelValue.innerHTML = 'Text'; break;
-            case 'select': labelValue.innerHTML = 'Drop-down List'; break;
+            case 'checkbox': labelValue.innerHTML = '<?php echo __("Checkboxes");?>'; break;
+            case 'radio': labelValue.innerHTML = '<?php echo __("Radio Buttons");?>'; break;
+            case 'text': labelValue.innerHTML = '<?php echo __("Text");?>'; break;
+            case 'select': labelValue.innerHTML = '<?php echo __("Drop-down List");?>'; break;
         }
     }
 
@@ -231,7 +235,7 @@ function validateFields()
         if (!(obj = document.getElementById('question' + questionID + 'TextLabelValue'))) break;
         if (!(obj.innerHTML).match(re))
         {
-            alert('All questions and answers must have at least 1 character of text.');
+            alert('<?php echo __("All questions and answers must have at least 1 character of text.");?>');
             return false;
         }
 
@@ -240,7 +244,7 @@ function validateFields()
             if (!(obj = document.getElementById('question' + questionID + 'Answer' + answerID + 'TextLabelValue'))) break;
             if (!(obj.innerHTML).match(re))
             {
-                alert('All questions and answers must have at least 1 character of text.');
+                alert('<?php echo __("All questions and answers must have at least 1 character of text.");?>');
                 return false;
             }
         }
@@ -389,7 +393,7 @@ function submitAction()
         case 'actionKeySkills':
             if (!actionText.length)
             {
-                alert('Enter the text you want to add in the second textbox.');
+                alert('<?php echo __("Enter the text you want to add in the second textbox.");?>');
                 return false;
             }
             break;
@@ -410,7 +414,7 @@ function submitAnswer()
 
     if (!answerText.length)
     {
-        alert('Enter the answer in the textbox.');
+        alert('<?php echo __("Enter the answer in the textbox.");?>');
         return;
     }
     saveScrollPosition();
@@ -424,7 +428,7 @@ function submitQuestion()
 
     if (!questionText.length)
     {
-        alert('Enter the question in the textbox.');
+        alert('<?php echo __("Enter the question in the textbox.");?>');
         return;
     }
     saveScrollPosition();
@@ -436,21 +440,21 @@ function onUpdate()
 {
     if (addingQuestion)
     {
-        if (!confirm('Your question will not be added. Use the "Add Question" button to add your question. Continue anyway?'))
+        if (!confirm('<?php echo __("Your question will not be added. Use the \"Add Question\" button to add your question. Continue anyway?");?>'))
         {
             return;
         }
     }
     else if (addingAnswer)
     {
-        if (!confirm('Your answer will not be added. Use the "Add Answer" button to add your answer. Continue anyway?'))
+        if (!confirm('<?php echo __("Your answer will not be added. Use the \"Add Answer\" button to add your answer. Continue anyway?");?>'))
         {
             return;
         }
     }
     else if (addingAction)
     {
-        if (!confirm('Your action will not be added. Use the "Add Action" button to add your action. Continue anyway?'))
+        if (!confirm('<?php echo __("Your action will not be added. Use the \"Add Action\" button to add your action. Continue anyway?");?>'))
         {
             return;
         }
@@ -501,7 +505,7 @@ function moveUp(e)
 
 function onCancel()
 {
-    if (confirm('Any changes you have made will be lost. Continue?'))
+    if (confirm('<?php echo __("Any changes you have made will be lost. Continue?");?>'))
     {
         document.location.href = '?m=settings&a=careerPortalSettings';
     }
@@ -515,7 +519,7 @@ function onSave()
 
     if (!title.length || !description.length)
     {
-        alert('Enter a title and a description for your questionnaire. This will be displayed to applicants.');
+        alert('<?php echo __("Enter a title and a description for your questionnaire. This will be displayed to applicants.");?>');
         return;
     }
 
@@ -526,7 +530,7 @@ function onSave()
 function onStartOver()
 {
     var obj = document.getElementById('startOver');
-    if (confirm('Delete all questions and answers on the questionnaire and start over?'))
+    if (confirm('<?php echo __("Delete all questions and answers on the questionnaire and start over?");?>'))
     {
         obj.value = 'yes';
         onUpdate();

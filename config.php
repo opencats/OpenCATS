@@ -31,10 +31,10 @@
 define('LICENSE_KEY','3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
 
 /* Database configuration. */
-define('DATABASE_USER', 'cats');
-define('DATABASE_PASS', 'password');
+define('DATABASE_USER', 'demoats');
+define('DATABASE_PASS', 'demoats');
 define('DATABASE_HOST', 'localhost');
-define('DATABASE_NAME', 'cats_dev');
+define('DATABASE_NAME', 'demoats');
 
 /* Authentication Configuration
  * Options are sql, ldap, sql+ldap
@@ -53,8 +53,8 @@ define('SSL_ENABLED', false);
  * 'C:\\antiword\\antiword.exe'. Windows Antiword will have problems locating
  * mapping files if you install it anywhere but C:\antiword\.
  */
-define('ANTIWORD_PATH', "\\path\\to\\antiword");
-define('ANTIWORD_MAP', '8859-1.txt');
+define('ANTIWORD_PATH', "C:\\antiword\\antiword.exe");
+define('ANTIWORD_MAP', 'cp1250.txt');
 
 /* XPDF / pdftotext settings. Remember to use double backslashes (\) to represent
  * one backslash (\).
@@ -78,7 +78,7 @@ define('UNRTF_PATH', "\\path\\to\unrtf");
  * web server. The default should be fine for most systems. Remember to
  * use double backslashes (\) to represent one backslash (\) on Windows.
  */
-define('CATS_TEMP_DIR', './temp');
+define('CATS_TEMP_DIR', 'C:/temp');
 
 /* If User Details and Login Activity pages in the settings module are
  * unbearably slow, set this to false.
@@ -168,10 +168,10 @@ define('FORGOT_PASSWORD_SUBJECT',   'CATS - Password Retrieval Request');
 define('FORGOT_PASSWORD_BODY',      'You recently requested that your OpenCATS: Applicant Tracking System password be sent to you. Your current password is %s.');
 
 /* Is this a demo site? */
-define('ENABLE_DEMO_MODE', false);
+define('ENABLE_DEMO_MODE', true);
 
 /* Offset to GMT Time. */
-define('OFFSET_GMT', 2);
+define('OFFSET_GMT', 1);
 
 /* Should we enforce only one session per user (excluding demo)? */
 define('ENABLE_SINGLE_SESSION', false);
@@ -199,7 +199,7 @@ define('DEMO_PASSWORD',  'john99');
  * 2: Sendmail
  * 3: SMTP
  */
-define('MAIL_MAILER', 3);
+define('MAIL_MAILER', 1);
 
 /* Sendmail Settings. You don't need to worry about this unless MAIL_MAILER
  * is set to 2.
@@ -212,7 +212,7 @@ define('MAIL_SENDMAIL_PATH', "/usr/sbin/sendmail");
  */
 define('MAIL_SMTP_HOST', "localhost");
 define('MAIL_SMTP_PORT', 587);
-define('MAIL_SMTP_AUTH', true);
+define('MAIL_SMTP_AUTH', false);
 define('MAIL_SMTP_USER', "user");
 define('MAIL_SMTP_PASS', "password");
 //Options: '', 'ssl' or 'tls'
@@ -288,15 +288,15 @@ define ('LDAP_SITEID', 1);
 );*/
 
 
-/* 
+/*
 require_once('.\constants.php');
 // defining user roles
 const USER_ROLES = array(
         'candidate' => array('Candidate', 'candidate', 'This is a candidate.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ),
         'demo' => array('Demo', 'demo', 'This is a demo user.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
     );
-    
-// defining access levels different from the default access level    
+
+// defining access levels different from the default access level
 const ACCESS_LEVEL_MAP = array(
         'candidate' => array(
         ),
@@ -310,7 +310,7 @@ const ACCESS_LEVEL_MAP = array(
         )
     );*/
 
-/* All possible secure object names 
+/* All possible secure object names
             'candidates.history'
             'settings.administration'
             'joborders.editRating'
@@ -438,5 +438,22 @@ const ACCESS_LEVEL_MAP = array(
             'calendar.editEvent'
             'calendar.deleteEvent'
             */
+
+define('PROJECT_DIR',dirname(__FILE__));
+define('LOCALE_DIR', PROJECT_DIR .'/locale');
+define('DEFAULT_LOCALE', 'pl');
+define('ATS_CV_INDEXING_INFO_URL', 'http://www.catsone.com/resumeIndexingSoftware.php?');
+define('ATS_DB_BACKUP_FILENAME', 'catsbackup.bak');
+define('ATS_DEMO_FICT_COMPANY','MyCompany.NET');
+define('ATS_DEMO_FICT_USER','john@mycompany.net');
+define('ATS_DEMO_FICT_PASS','john99');
+define('ATS_CT_DOMAIN','catsone.com');
+define('ATS_FORUM_URL','http://www.opencats.org/forums/');
+
+/* Give the session a unique name to avoid conflicts and start the session. */
+//@session_name(CATS_SESSION_NAME);
+//session_start();
+
+include_once('./locale/lang.php');
 
 ?>

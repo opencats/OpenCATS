@@ -1,12 +1,18 @@
+<?php
+chdir('./../');
+include_once('./config.php');
+?>
+
+
 var filter = {
     getNames: function() {
         return {
-            '==': 'is equal to',
-            '=~': 'contains',
-            '=<': 'is less than',
-            '=>': 'is greater than',
-            '=#': 'has element',
-            '=@': 'Near'
+            '==': '<?php echo __(" is equal to");?>',
+            '=~': '<?php echo __(" contains");?>',
+            '=<': '<?php echo __(" is less than");?>',
+            '=>': '<?php echo __(" is greater than");?>',
+            '=#': '<?php echo __(" has element");?>',
+            '=@': '<?php echo __(" Near");?>'
         };
     },
     makePreviousSelectionBoxesUnselectable: function(

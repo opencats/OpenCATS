@@ -1,5 +1,5 @@
 <?php /* $Id: HotList.tpl 3430 2007-11-06 20:44:51Z will $ */ ?>
-<?php TemplateUtility::printNonSelectableHeader('Candidates', array( 'js/highlightrows.js', 'js/export.js', 'js/listEditor.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
+<?php TemplateUtility::printNonSelectableHeader(__('Candidates'), array( 'js/highlightrows.js', 'js/export.js', 'js/listEditor.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">
@@ -11,7 +11,7 @@
                     <td width="3%">
                         <img src="images/candidate.gif" width="24" height="24" border="0" alt="Candidates" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Candidates: Hot Lists</h2></td>
+                    <td><h2><?php echo __("Candidates");?>: <?php echo __("Hot Lists");?></h2></td>
                     <td align="right">
                         <form name="candidatesViewSelectorForm" id="candidatesViewSelectorForm" action="<?php echo(CATSUtility::getIndexName()); ?>" method="get">
                             <input type="hidden" name="m" value="candidates" />
@@ -23,14 +23,14 @@
                                         <?php $this->pager->printNavigation('lastName', false); ?>
                                     </td>
                                     <td>
-                                        <select name="view" id="hotListSelect" onChange="if (this.value != 'edit' &amp;&amp; this.value != 'nullline') { document.candidatesViewSelectorForm.submit(); } else { if (this.value == 'edit') { listEditor('Hot Lists', 'hotListSelect', 'hotListCSV', false, 'candidatesViewSelectorForm', 0); } if (this.value == 'nullline') { this.value = '(none)'; } }" >
+                                        <select name="view" id="hotListSelect" onChange="if (this.value != 'edit' &amp;&amp; this.value != 'nullline') { document.candidatesViewSelectorForm.submit(); } else { if (this.value == 'edit') { listEditor('<?php echo __("Hot Lists");?>', 'hotListSelect', 'hotListCSV', false, 'candidatesViewSelectorForm', 0); } if (this.value == 'nullline') { this.value = '(<?php echo __("none");?>)'; } }" >
                                             <?php if ($this->getUserAccessLevel('candidates.manageHotLists') >= ACCESS_LEVEL_DELETE): ?>
-                                                <option value="edit">(Manage Hot Lists)</option>
+                                                <option value="edit">(<?php echo __("Manage Hot Lists");?>)</option>
                                             <?php else: ?>
-                                                <option value="nullline">Hot Lists (Select to View):</option>
+                                                <option value="nullline"><?php echo __("Hot Lists");?> (<?php echo __("Select to View");?>):</option>
                                             <?php endif; ?>
                                             <option value="nullline">------------------------</option>
-                                            <option value="-1" <?php if ($this->hotListID == -1): ?> selected<?php endif; ?>>All Hot Candidates</option>
+                                            <option value="-1" <?php if ($this->hotListID == -1): ?> selected<?php endif; ?>><?php echo __("All Hot Candidates");?></option>
                                             <?php foreach ($this->hotListsRS as $row => $rowIndex) : ?>
                                                 <option value="<?php echo($this->hotListsRS[$row]['hotListID']) ?>"<?php if ($this->hotListID == $this->hotListsRS[$row]['hotListID']): ?> selected<?php endif; ?>"><?php echo($this->hotListsRS[$row]['description']) ?></option>
                                             <?php endforeach; ?>
@@ -54,7 +54,7 @@
             </table>
 
 
-            <p class="note">All Candidates - Page <?php echo($this->currentPage); ?> <?php if ($this->pager->getSortBy() == 'dateModifiedSort'): ?>(Most Recently Modified First)<?php endif; ?> <?php if ($this->onlyMyCandidates): ?>(Only My Candidates)<?php endif; ?></p>
+            <p class="note"><?php echo __("All Candidates");?> - <?php echo __("Page");?> <?php echo($this->currentPage); ?> <?php if ($this->pager->getSortBy() == 'dateModifiedSort'): ?>(<?php echo __("Most Recently Modified First");?>)<?php endif; ?> <?php if ($this->onlyMyCandidates): ?>(<?php echo __("Only My Candidates");?>)<?php endif; ?></p>
 
                         <?php if (!empty($this->rs)): ?><?php echo($this->exportForm['formHead']); ?><?php endif; ?>
             

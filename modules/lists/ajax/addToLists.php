@@ -64,19 +64,19 @@ $interface = new SecureAJAXInterface();
 
 if (!isset($_REQUEST['listsToAdd']))
 {
-    $interface->outputXMLErrorPage(-1, 'No listsToAdd passed.');
+    $interface->outputXMLErrorPage(-1, __('No listsToAdd passed.'));
     die();
 }
 
 if (!isset($_REQUEST['itemsToAdd']))
 {
-    $interface->outputXMLErrorPage(-1, 'No itemsToAdd passed.');
+    $interface->outputXMLErrorPage(-1, __('No itemsToAdd passed.'));
     die();
 }
 
 if (!$interface->isRequiredIDValid('dataItemType'))
 {
-    $interface->outputXMLErrorPage(-1, 'Invalid saved list type.');
+    $interface->outputXMLErrorPage(-1, __('Invalid saved list type.'));
     die();
 }
 
@@ -96,7 +96,7 @@ foreach ($listsToAdd as $index => $data)
     {
         if (isRequiredValueValid($data) == false)
         {
-            $interface->outputXMLErrorPage(-1, 'Invalid lists value. ('.$data.')');
+            $interface->outputXMLErrorPage(-1, __('Invalid lists value.').' ('.$data.')');
             die;
         }
     }
@@ -112,7 +112,7 @@ foreach ($itemsToAdd as $index => $data)
     {
         if (isRequiredValueValid($data) == false)
         {
-            $interface->outputXMLErrorPage(-1, 'Invalid items value.');
+            $interface->outputXMLErrorPage(-1, __('Invalid items value.'));
             die;
         }
     }

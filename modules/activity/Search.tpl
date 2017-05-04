@@ -1,5 +1,5 @@
 <?php /* $Id: Search.tpl 1948 2007-02-23 09:49:27Z will $ */ ?>
-<?php TemplateUtility::printHeader('Activities', array('js/highlightrows.js', 'modules/activity/validator.js', 'js/sweetTitles.js')); ?>
+<?php TemplateUtility::printHeader(__('Activities'), array('js/highlightrows.js', 'modules/activity/validator.js', 'js/sweetTitles.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">
@@ -10,7 +10,7 @@
                     <td width="3%">
                         <img src="images/activities.gif" width="24" height="24" alt="Activities" style="border: none; margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Activities</h2></td>
+                    <td><h2><?php echo __("Activities");?></h2></td>
                     <td align="right">
                       <?php echo($this->quickLinks); ?>
                     </td>
@@ -18,31 +18,31 @@
             </table>
 
             <?php if (!empty($this->rs)): ?>
-                <p class="note">Activities on <?php echo($this->startDate['month'].'/'.$this->startDate['day'].'/'.$this->startDate['year'])?></p>
+                <p class="note"><?php echo sprintf(__("Activities on %s"),$this->startDate['month'].'/'.$this->startDate['day'].'/'.$this->startDate['year']);?></p>
 
                  <table id="activityTable" class="sortable" width="100%" onmouseover="javascript:trackTableHighlight(event)">
                     <tr>
                         <th align="left" width="60" nowrap="nowrap">
-                            <?php $this->pager->printSortLink('dateCreatedSort', 'Date'); ?>
+                            <?php $this->pager->printSortLink('dateCreatedSort', __('Date')); ?>
                         </th>
                         <th align="left" width="18"></th>
                         <th align="left" width="60" nowrap="nowrap">
-                            <?php $this->pager->printSortLink('firstName', 'First Name'); ?>
+                            <?php $this->pager->printSortLink('firstName', __('First Name')); ?>
                         </th>
                         <th align="left" width="80" nowrap="nowrap">
-                            <?php $this->pager->printSortLink('lastName', 'Last Name'); ?>
+                            <?php $this->pager->printSortLink('lastName', __('Last Name')); ?>
                         </th>
                         <th align="left" width="160" nowrap="nowrap">
-                            <?php $this->pager->printSortLink('regarding', 'Regarding'); ?>
+                            <?php $this->pager->printSortLink('regarding', __('Regarding')); ?>
                         </th>
                         <th align="left" width="80" nowrap="nowrap">
-                            <?php $this->pager->printSortLink('typeDescription', 'Activity'); ?>
+                            <?php $this->pager->printSortLink('typeDescription', __('Activity')); ?>
                         </th>
                         <th align="left" width="280" nowrap="nowrap">
-                            <?php $this->pager->printSortLink('notes', 'Notes'); ?>
+                            <?php $this->pager->printSortLink('notes', __('Notes')); ?>
                         </th>
                         <th align="left" width="65" nowrap="nowrap">
-                            <?php $this->pager->printSortLink('enteredByLastName', 'Entered By'); ?>
+                            <?php $this->pager->printSortLink('enteredByLastName', __('Entered By')); ?>
                         </th>
                     </tr>
 
@@ -88,7 +88,7 @@
                 </table>
                 <?php $this->pager->printNavigation(); ?>
             <?php elseif ($this->isResultsMode): ?>
-                <p class="note">No activities found on <?php echo($this->startDate['month'] . '/' . $this->startDate['day'] . '/' . $this->startDate['year']); ?></p>
+                <p class="note"><?php echo sprintf(__("No activities found on %s"),$this->startDate['month'] . '/' . $this->startDate['day'] . '/' . $this->startDate['year']);?></p>
             <?php endif; ?>
         </div>
     </div>

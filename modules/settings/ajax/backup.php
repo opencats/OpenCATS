@@ -35,12 +35,12 @@ $interface = new SecureAJAXInterface();
 
 if ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) < ACCESS_LEVEL_SA)
 {
-    die('No permision.');
+    die(__('No permision.'));
 }
 
 if (!isset($_REQUEST['a']))
 {
-    die('No action.');
+    die(__('No action.'));
 }
 
 $action = $_REQUEST['a'];
@@ -51,7 +51,7 @@ function markCompleted($task)
     global $completedTasks;
 
     $completedTasks .= '<tr><td width="295px;">' . $task
-        . '</td><td><span class="passedText">DONE</span></td></tr>';
+        . '</td><td><span class="passedText">'.__('DONE').'</span></td></tr>';
 }
 
 function setStatusBackup($status, $progress)
@@ -83,11 +83,11 @@ if ($action == 'start')
     /* Build title string. */
     if ($attachmentsOnly)
     {
-        $title = 'CATS Attachments Backup';
+        $title = __('CATS Attachments Backup');
     }
     else
     {
-        $title = 'CATS Backup';
+        $title = __('CATS Backup');
     }
 
     $attachmentCreator = new AttachmentCreator(CATS_ADMIN_SITE);
@@ -129,7 +129,7 @@ if ($action == 'backup')
 
     if (!$interface->isRequiredIDValid('attachmentID'))
     {
-        die('Error: Invalid attachment ID.');
+        die(__('Error: Invalid attachment ID.'));
     }
 
     $attachmentID    = $_REQUEST['attachmentID'];
@@ -150,8 +150,8 @@ if ($action == 'backup')
     $zipFileCreator = new ZipFileCreator($directory . 'catsbackup.bak', true);
     if (!$zipFileCreator->open())
     {
-        setStatusBackup('Error: Failed to open zip file.', 0);
-        die('Failed to open zip file.');
+        setStatusBackup(__('Error: Failed to open zip file.'), 0);
+        die(__('Failed to open zip file.'));
     }
 
     /* Backup the database if we're not in attachments-only mode. */
@@ -165,10 +165,10 @@ if ($action == 'backup')
          * schema and special CATS restore files split into ~1MB chunks.
          */
         $totalFiles = dumpDB($db, $SQLDumpPath, true);
-        markCompleted('Dumping tables...');
+        markCompleted(__('Dumping tables...'));
 
         /* Add the complete database dump to the zip file. */
-        setStatusBackup('Compressing database...', 0);
+        setStatusBackup(__('Compressing database...'), 0);
         $status = $zipFileCreator->addFileFromDisk(
             'database',
             $SQLDumpPath
@@ -178,11 +178,11 @@ if ($action == 'backup')
         /* Fail out if we were't successful writing the file to the zip. */
         if (!$status)
         {
-            setStatusBackup('Error: Failed to add database to zip file.', 0);
+            setStatusBackup(__('Error: Failed to add database to zip file.'), 0);
             $zipFileCreator->abort();
-            die('Failed to add database to zip file.');
+            die(__('Failed to add database to zip file.'));
         }
-        markCompleted('Compressing SQL dump...');
+        markCompleted(__('Compressing SQL dump...'));
 
         /* Add the CATS restore files to the zip file. */
         for ($i = 0; $i < $totalFiles; ++$i)
@@ -191,7 +191,7 @@ if ($action == 'backup')
         
             setStatusBackup(
                 sprintf(
-                    'Compressing database (%s of %s files processed)...',
+                    __('Compressing database (%s of %s files processed)...'),
                     $fileNumber,
                     $totalFiles
                 ),
@@ -205,15 +205,15 @@ if ($action == 'backup')
             if (!$status)
             {
                 setStatusBackup(
-                    'Error: Failed to add database part to zip file.', 0
+                    __('Error: Failed to add database part to zip file.'), 0
                 );
                 $zipFileCreator->abort();
-                die('Failed to add database part to zip file.');
+                die(__('Failed to add database part to zip file.'));
             }
         
             @unlink($SQLDumpPath . '.' . $i);
         }
-        markCompleted('Compressing database for CATS restore...');
+        markCompleted(__('Compressing database for CATS restore...'));
     }
 
     /* Add all attachments to the archive. */
@@ -242,7 +242,7 @@ if ($action == 'backup')
 
         setStatusBackup(
             sprintf(
-                'Adding attachments (%s of %s files processed)...',
+                __('Adding attachments (%s of %s files processed)...'),
                 $attachmentCount,
                 $totalAttachments
             ),
@@ -263,15 +263,15 @@ if ($action == 'backup')
             $relativePath, $relativePath
         );
     }
-    markCompleted('Adding attachments...');
+    markCompleted(__('Adding attachments...'));
 
     /* Finalize the zip file and write it to disk. */
-    setStatusBackup('Writing backup...', 1);
+    setStatusBackup(__('Writing backup...'), 1);
     $status = $zipFileCreator->finalize();
     if (!$status)
     {
-        setStatusBackup('Error: Failed to write zip file.', 0);
-        die('Failed to add write zip file.');
+        setStatusBackup(__('Error: Failed to write zip file.'), 0);
+        die(__('Failed to add write zip file.'));
     }
 
     /* Update attachment metadata for the zip file now that it's completed. */
@@ -283,7 +283,7 @@ if ($action == 'backup')
 
     echo '<html><head>',
          '<script type="text/javascript">parent.backupFinished();</script>',
-         '</head><body>Backup Finished.</body></html>';
+         '</head><body>'.__('Backup Finished.').'</body></html>';
 }
 
 ?>

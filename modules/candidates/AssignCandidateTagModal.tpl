@@ -1,5 +1,5 @@
 <?php /* $Id: CreateAttachmentModal.tpl 3093 2007-09-24 21:09:45Z brian $ */ ?>
-<?php TemplateUtility::printModalHeader('Candidates', array(''), 'Assign candidate tag'); ?>
+<?php TemplateUtility::printModalHeader(__('Candidates'), array(''), __('Assign candidate tag')); ?>
 
     <?php if (!$this->isFinishedMode): ?>
 		<form class="changeCandidateTags" id="changeCandidateTags" method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addCandidateTags">
@@ -22,13 +22,13 @@
 			drw($this->tagsRS, '', $this->assignedTags);
 			?></ul>
 
-            <input type="submit" class="button" name="submit" id="submit" value="Save" />&nbsp;
-            <input type="button" class="button" name="cancel" value="Cancel" onclick="parentHidePopWin();" />
+            <input type="submit" class="button" name="submit" id="submit" value="<?php echo __("Save");?>" />&nbsp;
+            <input type="button" class="button" name="cancel" value="<?php echo __("Cancel");?>" onclick="parentHidePopWin();" />
 		</form>
     <?php else: ?>
-    	<p>All data has been saved</p>
+    	<p><?php echo __("All data has been saved");?></p>
         <form>
-            <input type="button" name="close" value="Close" onclick="parentHidePopWinRefresh();" />
+            <input type="button" name="close" value="<?php echo __("Close");?>" onclick="parentHidePopWinRefresh();" />
         </form>
     <?php endif; ?>
     </body>

@@ -41,11 +41,11 @@ class CalendarUI extends UserInterface
         $this->_authenticationRequired = true;
         $this->_moduleDirectory = 'calendar';
         $this->_moduleName = 'calendar';
-        $this->_moduleTabText = 'Calendar*al=' . ACCESS_LEVEL_READ . '@calendar';
+        $this->_moduleTabText = __('Calendar').'*al=' . ACCESS_LEVEL_READ . '@calendar';
         $this->_subTabs = array(
-            'My Upcoming Events' => 'javascript:void(0);*js=calendarUpcomingEvents();*al=' . ACCESS_LEVEL_READ . '@calendar',
-            'Add Event' => 'javascript:void(0);*js=userCalendarAddEvent();*al=' . ACCESS_LEVEL_EDIT . '@calendar',
-            'Goto Today' => 'javascript:void(0);*js=goToToday();*al=' . ACCESS_LEVEL_READ . '@calendar'
+            __('My Upcoming Events') => 'javascript:void(0);*js=calendarUpcomingEvents();*al=' . ACCESS_LEVEL_READ . '@calendar',
+            __('Add Event') => 'javascript:void(0);*js=userCalendarAddEvent();*al=' . ACCESS_LEVEL_EDIT . '@calendar',
+            __('Goto Today') => 'javascript:void(0);*js=goToToday();*al=' . ACCESS_LEVEL_READ . '@calendar'
         );
     }
 
@@ -115,7 +115,7 @@ class CalendarUI extends UserInterface
 
             if (!checkdate($month, 1, $year))
             {
-                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid date.');
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('Invalid date.'));
             }
 
             if ($month == $currentMonth && $year == $currentYear)
@@ -316,12 +316,12 @@ class CalendarUI extends UserInterface
 
             if (!checkdate($month, 1, $year))
             {
-                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid date.');
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('Invalid date.'));
             }
         }
         else
         {
-            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid date.');
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('Invalid date.'));
         }
 
         $calendar = new Calendar($this->_siteID);
@@ -344,7 +344,7 @@ class CalendarUI extends UserInterface
     {
         if ($this->getUserAccessLevel('calendar.addEvent') < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we received an invalid date. */
@@ -352,14 +352,14 @@ class CalendarUI extends UserInterface
         if (empty($trimmedDate) ||
             !DateUtility::validate('-', $trimmedDate, DATE_FORMAT_MMDDYY))
         {
-            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid date.');
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('Invalid date.'));
         }
 
         // FIXME: typeID
         /* Bail out if we don't have a valid event type. */
         if (!$this->isRequiredIDValid('type', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid event type ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid event type ID.'));
         }
 
         /* If we don't have a valid event duration, set dur = 30. */
@@ -376,7 +376,7 @@ class CalendarUI extends UserInterface
         if (!isset($_POST['allDay']) ||
             ($_POST['allDay'] != '0' && $_POST['allDay'] != '1'))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid time format ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid time format ID.'));
         }
 
         $type = $_POST['type'];
@@ -403,7 +403,7 @@ class CalendarUI extends UserInterface
         /* Bail out if any of the required fields are empty. */
         if (empty($title))
         {
-            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
+            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, __('Required fields are missing.'));
         }
 
         /* Is this a scheduled event or an all day event? */
@@ -422,20 +422,20 @@ class CalendarUI extends UserInterface
             /* Bail out if we don't have a valid hour. */
             if (!isset($_POST['hour']))
             {
-                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid hour.');
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('Invalid hour.'));
             }
 
             /* Bail out if we don't have a valid minute. */
             if (!isset($_POST['minute']))
             {
-                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid minute.');
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('Invalid minute.'));
             }
 
             /* Bail out if we don't have a valid meridiem value. */
             if (!isset($_POST['meridiem']) ||
                 ($_POST['meridiem'] != 'AM' && $_POST['meridiem'] != 'PM'))
             {
-                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid meridiem value.');
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('Invalid meridiem value.'));
             }
 
             $hour     = $_POST['hour'];
@@ -470,7 +470,7 @@ class CalendarUI extends UserInterface
 
         if ($eventID <= 0)
         {
-            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add calendar event.');
+            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, __('Failed to add calendar event.'));
         }
 
         /* Extract the date parts from the specified date. */
@@ -504,20 +504,20 @@ class CalendarUI extends UserInterface
     {
         if ($this->getUserAccessLevel('calendar.editEvent') < ACCESS_LEVEL_EDIT)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid event ID. */
         if (!$this->isRequiredIDValid('eventID', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid event ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid event ID.'));
         }
 
         // FIXME: typeID
         /* Bail out if we don't have a valid event type. */
         if (!$this->isRequiredIDValid('type', $_POST))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid event type ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid event type ID.'));
         }
 
         /* If we don't have a valid event duration, set duration to 30. */
@@ -558,14 +558,14 @@ class CalendarUI extends UserInterface
         if (empty($trimmedDate) ||
             !DateUtility::validate('-', $trimmedDate, DATE_FORMAT_MMDDYY))
         {
-            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid date.');
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('Invalid date.'));
         }
 
         /* Bail out if we don't have a valid time format ID. */
         if (!isset($_POST['allDay']) ||
             ($_POST['allDay'] != '0' && $_POST['allDay'] != '1'))
         {
-            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid time format ID.');
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('Invalid time format ID.'));
         }
 
         $eventID  = $_POST['eventID'];
@@ -593,7 +593,7 @@ class CalendarUI extends UserInterface
         /* Bail out if any of the required fields are empty. */
         if (empty($title))
         {
-            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
+            CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, __('Required fields are missing.'));
         }
 
         /* Is this a scheduled event or an all day event? */
@@ -612,20 +612,20 @@ class CalendarUI extends UserInterface
             /* Bail out if we don't have a valid hour. */
             if (!isset($_POST['hour']))
             {
-                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid hour.');
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('Invalid hour.'));
             }
 
             /* Bail out if we don't have a valid minute. */
             if (!isset($_POST['minute']))
             {
-                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid minute.');
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('Invalid minute.'));
             }
 
             /* Bail out if we don't have a valid meridiem value. */
             if (!isset($_POST['meridiem']) ||
                 ($_POST['meridiem'] != 'AM' && $_POST['meridiem'] != 'PM'))
             {
-                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid meridiem value.');
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, __('Invalid meridiem value.'));
             }
 
             $hour     = $_POST['hour'];
@@ -656,7 +656,7 @@ class CalendarUI extends UserInterface
             $reminderEnabled, $reminderEmail, $reminderTime, $publicEntry,
             $_SESSION['CATS']->getTimeZoneOffset()))
         {
-            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update calendar event.');
+            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, __('Failed to update calendar event.'));
         }
 
         if (!eval(Hooks::get('CALENDAR_EDIT_POST'))) return;
@@ -689,13 +689,13 @@ class CalendarUI extends UserInterface
     {
         if ($this->getUserAccessLevel('calendar.deleteEvent') < ACCESS_LEVEL_DELETE)
         {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, __('Invalid user level for action.'));
         }
 
         /* Bail out if we don't have a valid event ID. */
         if (!$this->isRequiredIDValid('eventID', $_GET))
         {
-            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid event ID.');
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, __('Invalid event ID.'));
         }
 
         $eventID = $_GET['eventID'];
@@ -727,31 +727,31 @@ class CalendarUI extends UserInterface
     {
         if ($reminderTime < 1)
         {
-            $string = 'immediately';
+            $string = __('immediately');
         }
         else if ($reminderTime == 1)
         {
-            $string = 'in 1 minute';
+            $string = __('in 1 minute');
         }
         else if ($reminderTime < 60)
         {
-            $string = 'in ' . $reminderTime . ' minutes';
+            $string = sprintf(__('in %s minutes'),$reminderTime);
         }
         else if ($reminderTime == 60)
         {
-            $string = 'in 1 hour';
+            $string = __('in 1 hour');
         }
         else if ($reminderTime < 1440)
         {
-            $string = 'in ' . (($reminderTime * 1.0) / 60) . ' hours';
+            $string = sprintf(__('in %s hours'),(($reminderTime * 1.0) / 60));
         }
         else if ($reminderTime == 1440)
         {
-            $string = 'in 1 day';
+            $string = __('in 1 day');
         }
         else
         {
-            $string = 'in ' . (($reminderTime * 1.0) / 1440) . ' days';
+            $string = sprintf(__('in %s days'),(($reminderTime * 1.0) / 1440)); 
         }
 
     	return $string;

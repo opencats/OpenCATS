@@ -41,7 +41,7 @@ class ReportsUI extends UserInterface
         $this->_authenticationRequired = true;
         $this->_moduleDirectory = 'reports';
         $this->_moduleName = 'reports';
-        $this->_moduleTabText = 'Reports';
+        $this->_moduleTabText = __('Reports');
         $this->_subTabs = array(
                 'EEO Reports' => CATSUtility::getIndexName() . '?m=reports&amp;a=customizeEEOReport'
             );

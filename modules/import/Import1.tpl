@@ -1,5 +1,5 @@
 <?php /* $Id: Import1.tpl 3780 2007-12-03 21:13:56Z andrew $ */ ?>
-<?php TemplateUtility::printHeader('Import', array('modules/import/import.js')); ?>
+<?php TemplateUtility::printHeader(__('Import'), array('modules/import/import.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, '', 'settings'); ?>
     <div id="main">
@@ -11,13 +11,13 @@
                     <td width="3%">
                         <img src="images/reports.gif" width="24" height="24" border="0" alt="Import" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Import Data</h2></td>
+                    <td><h2><?php echo __("Import Data");?></h2></td>
                 </tr>
             </table>
 
             <?php if (isset($this->errorMessage)): ?>
 
-                <p class="warning" id="importHide0">Error!</p>
+                <p class="warning" id="importHide0"><?php echo __("Error!");?></p>
 
                 <table class="searchTable" id="importHide1" width="100%">
                     <tr>
@@ -31,7 +31,7 @@
 
             <?php elseif (isset($this->successMessage)): ?>
 
-                <p class="note" id="importHide0">Success</p>
+                <p class="note" id="importHide0"><?php echo __("Success");?></p>
 
                 <table class="searchTable" id="importHide1" width="100%">
                     <tr>
@@ -45,13 +45,13 @@
 
             <?php elseif (isset($this->pendingCommits)): ?>
 
-                <p class="warning" id="importHide0">Notice</p>
+                <p class="warning" id="importHide0"><?php echo __("Notice");?></p>
 
                 <table class="searchTable" id="importHide1">
                     <tr>
                         <td>
-                            You have recently imported CSV data.  You can click here to review or delete the imported data.<br />
-                            <input type="button" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=viewpending';" value="View Recent Imports" class="button" />
+                            <?php echo __("You have recently imported CSV data.  You can click here to review or delete the imported data.");?><br />
+                            <input type="button" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=viewpending';" value="<?php echo __("View Recent Imports");?>" class="button" />
                         </td>
                     </tr>
                 </table>
@@ -60,12 +60,13 @@
 
             <?php endif; ?>
 
-            <p class="note">Import Data</p>
+            <p class="note"><?php echo __("Import Data");?></p>
 
             <table class="searchTable" id="importTable1" width="100%">
                 <tr>
-                    <td>CATS may discard or fail to read some of the submitted data which it does not
-                    understand how to use. Do not discard the original data!
+                    <td><p class="warning">
+                    <?php echo __("CATS may discard or fail to read some of the submitted data which it does not understand how to use. Do not discard the original data!");?>
+                    </p>
                     </td>
                 </tr>
             </table>
@@ -74,18 +75,18 @@
 
             <table class="searchTable" id="importTable2" width="100%">
                 <tr>
-                    <td>What would you like to import?<br />
+                    <td><?php echo __("What would you like to import?");?><br />
                     <br />
                     <form name="importDataForm" id="importDataForm" action="<?php echo(CATSUtility::getIndexName()); ?>" method="get" autocomplete="off">
                         <input type="hidden" name="m" value="import">
                         <input type="hidden" name="a" value="importSelectType">
 
-                        <input type="radio" name="typeOfImport" value="resume" checked>&nbsp;<img src="images/file/doc.gif">&nbsp;Resumes<br />
-                        <input type="radio" name="typeOfImport" value="Candidates">&nbsp;<img src="images/candidate_inline.gif">&nbsp;Candidates<br />
-                        <input type="radio" name="typeOfImport" value="Companies" >&nbsp;<img src="images/mru/company.gif">&nbsp;Companies<br />
-                        <input type="radio" name="typeOfImport" value="Contacts" >&nbsp;<img src="images/mru/contact.gif">&nbsp;Contacts<br />
+                        <input type="radio" name="typeOfImport" value="resume" checked>&nbsp;<img src="images/file/doc.gif">&nbsp;<?php echo __("Resumes");?><br />
+                        <input type="radio" name="typeOfImport" value="Candidates">&nbsp;<img src="images/candidate_inline.gif">&nbsp;<?php echo __("Candidates");?><br />
+                        <input type="radio" name="typeOfImport" value="Companies" >&nbsp;<img src="images/mru/company.gif">&nbsp;<?php echo __("Companies");?><br />
+                        <input type="radio" name="typeOfImport" value="Contacts" >&nbsp;<img src="images/mru/contact.gif">&nbsp;<?php echo __("Contacts");?><br />
                         <br />
-                        <input class="button" type="submit" value="Next">
+                        <input class="button" type="submit" value="<?php echo __("Next");?>">
                         </td>
                     </form>
                 </tr>
