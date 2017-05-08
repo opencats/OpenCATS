@@ -37,6 +37,8 @@
  * $Id: index.php 3807 2007-12-05 01:47:41Z will $
  */
 
+global $careerPage;
+
 /* Do we need to run the installer? */
 if (!file_exists('INSTALL_BLOCK') && !isset($_POST['performMaintenence']))
 {
@@ -159,6 +161,8 @@ $_SESSION['CATS']->checkForcedUpdate();
  * if ASP module exists (code is running on catsone.com), load the website by default
  * rather than the login page.
  */
+//vd(array('$careerPage'=>$careerPage));
+
 if (ModuleUtility::moduleExists("asp") && ModuleUtility::moduleExists("website"))
 {
     // FIXME: Can we optimize this a bit...?

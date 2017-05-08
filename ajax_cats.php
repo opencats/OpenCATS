@@ -69,7 +69,8 @@ if (!isset($_REQUEST['f']) || empty($_REQUEST['f']))
         "</data>\n"
     );
 
-    die();
+    //ie();
+    return;
 }
 
 if (strpos($_REQUEST['f'], ':') === false)
@@ -100,7 +101,8 @@ if (!is_readable($filename))
         "</data>\n"
     );
 
-    die();
+    //ie();
+    return;
 }
 
 $filters = array();

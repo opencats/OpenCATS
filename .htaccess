@@ -1,3 +1,18 @@
+DirectoryIndex index.php
+
+#RewriteEngine On
+#RewriteBase /
+#RewriteRule ^(.*)$ /index.php?$1 [L,QSA]
+#RewriteRule . /index.php [L]
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ ats/index.php?route=$1 [L,QSA]
+</IfModule>
+
 <FilesMatch "\.(js)$">
 AddHandler application/x-httpd-php .js
 </FilesMatch>

@@ -95,6 +95,23 @@
 	  <echo message="${theFile} " output="${workspace.ats.dir}/locale/files.lst" append="true"/>
 	</target>
 	
+	<target name="ats-gt-generateFileList" description="gt-generateFileList">
+	  <delete file="${workspace.ats.dir}/ats/locale/files.lst" quiet="true"/>				
+	  <foreach target="ats-gt-appendFile" param="theFile">  	
+	    <fileset dir="${workspace.ats.dir}/ats" casesensitive="yes">
+	      <include name="**/*.php"/>
+	      <include name="**/*.tpl"/>
+	      <include name="**/*.js"/>	
+	      <exclude name="**/*Test*"/>
+	    </fileset>
+	  </foreach>		
+	</target>
+
+	<target name="ats-gt-appendFile">
+	  <echo message="${theFile} " output="${workspace.ats.dir}/ats/locale/files.lst" append="true"/>
+	</target>	
+	
+	
 	<target name="gt-run-xgettext" depends="" description="Generacja dokumentacji">
 		  <loadfile property="gtFileList"
 		      srcFile="${workspace.ats.dir}/locale/files.lst"/>
@@ -106,6 +123,19 @@
 		  	<!--arg line="*.js"/-->
 		  </exec>
 	</target>
+	
+	<target name="ats-gt-run-xgettext" depends="" description="Generacja dokumentacji">
+		  <loadfile property="gtFileList"
+		      srcFile="${workspace.ats.dir}/ats/locale/files.lst"/>
+		  <exec executable="${env.GETTEXT_HOME}/bin/xgettext.exe" dir="${env.ATS_WORKSPACE_DIR}">
+		  	<arg line=" --from-code=UTF-8 --no-wrap -L PHP -k -k__ -o ${workspace.ats.dir}/ats/locale/messages.pot ${gtFileList}"/>
+		  	<!--<arg line="-j"/>
+		  	<arg line=""/>
+		  	<arg line="*.tpl"/> -->
+		  	<!--arg line="*.js"/-->
+		  </exec>
+	</target>	
+	
 	<target name="gt-run-msgmerge-pl" depends="" description="gen pl po">
 		  <exec executable="${env.GETTEXT_HOME}/bin/msgmerge.exe" dir="${env.ATS_WORKSPACE_DIR}">
 		  	<arg line=" -N --backup=off --update ${workspace.ats.dir}/locale/pl/LC_MESSAGES/messages.po ${workspace.ats.dir}/locale/messages.pot"/>
@@ -115,6 +145,16 @@
 		  	<!--arg line="*.js"/-->
 		  </exec>
 	</target>	
+	
+	<target name="ats-gt-run-msgmerge-pl" depends="" description="gen pl po">
+		  <exec executable="${env.GETTEXT_HOME}/bin/msgmerge.exe" dir="${env.ATS_WORKSPACE_DIR}">
+		  	<arg line=" -N --backup=off --update ${workspace.ats.dir}/ats/locale/pl/LC_MESSAGES/messages.po ${workspace.ats.dir}/ats/locale/messages.pot"/>
+		  	<!--<arg line="-j"/>
+		  	<arg line=""/>
+		  	<arg line="*.tpl"/> -->
+		  	<!--arg line="*.js"/-->
+		  </exec>
+	</target>		
 	 
 
 	<target name="distr-web" depends="" description="Deploy Web">

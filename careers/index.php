@@ -30,7 +30,7 @@
  *
  * $Id: index.php 1623 2007-02-06 18:38:58Z will $
  */
-
+global $careerPage;
 $careerPage = true;
 
 chdir('..');

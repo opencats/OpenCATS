@@ -449,11 +449,14 @@ define('ATS_DEMO_FICT_USER','john@mycompany.net');
 define('ATS_DEMO_FICT_PASS','john99');
 define('ATS_CT_DOMAIN','catsone.com');
 define('ATS_FORUM_URL','http://www.opencats.org/forums/');
+define('ATS_APPLOGO_HREF','images/applicationLogo.jpg');
+define('ATS_VERSION','106');
 
 /* Give the session a unique name to avoid conflicts and start the session. */
 //@session_name(CATS_SESSION_NAME);
 //session_start();
 
 include_once('./locale/lang.php');
+//include_once('./ats/index.php');
 
 ?>

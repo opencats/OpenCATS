@@ -2782,6 +2782,7 @@ class SettingsUI extends UserInterface
     	$_SESSION['CATS']->resetDataGridColumnPreferences();
     	$_SESSION['modules']=null;
     	lngReset($newCountry);
+    	ModuleUtility::getModules();
     }
     
     /*

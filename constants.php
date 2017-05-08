@@ -27,6 +27,7 @@
  * $Id: constants.php 3785 2007-12-03 21:59:23Z brian $
  */
 
+global $coreModules;
 $coreModules = array(
     'home'       => '1',
     'activity'   => '2',

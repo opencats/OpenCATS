@@ -63,11 +63,23 @@ class TemplateUtility
      */
     public static function printHeader($pageTitle, $headIncludes = array())
     {
+    	ob_start();
         self::_printCommonHeader($pageTitle, $headIncludes);
         echo '<body style="background: #fff">', "\n";
         self::_printQuickActionMenuHolder();
         self::printPopupContainer();
+        $output=ob_get_contents();ob_end_clean();
+        evSetGlobal('isModal',false);
+        evSetGlobal('printHeader',array(
+        		'output'=>$output,
+        		'result'=>array(
+        			'pageTitle' => $pageTitle,
+        			'headIncludes'=>$headIncludes	
+        		)
+        ));
+        //cho $output;s
     }
+    
 
     /**
      * Prints the template header HTML for a modal window.
@@ -78,6 +90,7 @@ class TemplateUtility
      */
     public static function printModalHeader($pageTitle, $headIncludes = array(), $title = '')
     {
+    	ob_start();
         self::_printCommonHeader($pageTitle, $headIncludes);
         echo '<body style="background: #eee;">', "\n";
         if ($title != '')
@@ -86,6 +99,17 @@ class TemplateUtility
             echo '<script type="text/javascript">parentSetPopTitle(\''.$title.'\');</script>';
         }
         self::_printQuickActionMenuHolder();
+        $output=ob_get_contents();ob_end_clean();
+        evSetGlobal('isModal',true);
+        evSetGlobal('printModalHeader',array(
+        		'output'=>$output,
+        		'result'=>array(
+        				'pageTitle' => $pageTitle,
+        				'headIncludes'=>$headIncludes,
+        				'title'=>$title
+        		)
+        ));
+        //cho $output;
     }
 
     /**
@@ -95,6 +119,7 @@ class TemplateUtility
      */
     public static function printHeaderBlock($showTopRight = true)
     {
+    	ob_start();
         $username     = $_SESSION['CATS']->getUsername();
         $siteName     = $_SESSION['CATS']->getSiteName();
         $fullName     = $_SESSION['CATS']->getFullName();
@@ -105,7 +130,7 @@ class TemplateUtility
         /* CATS Logo */
         echo '<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; float: left;">', "\n";
         echo '<tr>', "\n";
-        echo '<td rowspan="2"><img src="images/applicationLogo.jpg" border="0" alt="'.__('CATS Applicant Tracking System').'" /></td>', "\n";
+        echo '<td rowspan="2"><img src="'.ATS_APPLOGO_HREF.'" border="0" alt="'.__('CATS Applicant Tracking System').'" style="width:250px;"/></td>', "\n";
         echo '</tr>', "\n";
         echo '</table>', "\n";
 
@@ -205,6 +230,18 @@ class TemplateUtility
         }
 
         echo '</div>', "\n";
+        
+        $output=ob_get_contents();ob_end_clean();
+        evSetGlobal('printHeaderBlock',array(
+        		'output'=>$output,
+        		'result'=>array(
+        				'showTopRight' => $showTopRight,
+        				'catsSess'=> $_SESSION['CATS'],
+        				'systemInfo'=>$systemInfo
+        		)
+        ));
+        //cho $output;
+        
     }
 
     /**
@@ -594,7 +631,7 @@ class TemplateUtility
 
          /* FIXME:  There is too much logic going on here, there should be something that loads settings or evaluates what tabs
                     shouldn't be drawn. */
-
+		ob_start();
         echo '<div id="header">', "\n";
         echo '<ul id="primary">', "\n";
 
@@ -799,6 +836,17 @@ class TemplateUtility
         }
         echo '</ul>', "\n";
         echo '</div>', "\n";
+       
+        $output=ob_get_contents();ob_end_clean();
+        evSetGlobal('printTabs',array(
+        		'output'=>$output,
+        		'result'=>array(
+        				'active' => $active, 
+        				'subActive'=> $subActive,
+        				'forceHighlight'=>$forceHighlight
+        		)
+        ));
+        //cho $output;
     }
 
     /**
