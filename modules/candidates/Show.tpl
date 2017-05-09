@@ -538,6 +538,21 @@ use OpenCATS\UI\CandidateQuickActionMenu;
             <br clear="all" />
             <br />
 
+            <p class="note">Lists</p>
+
+            <table id="listsTable" class="sortable">
+                <tr>
+                    <th align="left" width="250">Name</th>
+                </tr>
+                <?php foreach($this->lists as $rowNumber => $list): ?>
+                    <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
+                        <td>
+                            <a href="index.php?m=lists&a=showList&savedListID=<?php echo $list['listID']; ?>"><?php echo $list['name']; ?></a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+
             <p class="note">Activity</p>
 
             <table id="activityTable" class="sortable">
