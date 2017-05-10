@@ -2107,6 +2107,7 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('savedSearchRS', $savedSearchRS);
         $this->_template->assign('exportForm', $exportForm);
         $this->_template->assign('active', $this);
+        $this->_template->assign('subActive', __('Search Candidates'));
         $this->_template->assign('rs', $rs);
         $this->_template->assign('pager', $searchPager);
         $this->_template->assign('isResultsMode', true);
@@ -3079,11 +3080,8 @@ class CandidatesUI extends UserInterface
                 $hour     = $_POST['hour'];
                 $minute   = $_POST['minute'];
                 $meridiem = $_POST['meridiem'];
-
-                /* Convert formatted time to UNIX timestamp. */
-                $time = strtotime(
-                    sprintf('%s:%s %s', $hour, $minute, $meridiem)
-                );
+                
+                $time = evCatsTimeToUTime($hour, $minute, $meridiem);
 
                 /* Create MySQL date string w/ 24hr time (YYYY-MM-DD HH:MM:SS). */
                 $date = sprintf(

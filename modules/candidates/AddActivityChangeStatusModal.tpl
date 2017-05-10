@@ -79,12 +79,12 @@
                 </td>
                 <td class="tdData">
                     <input type="checkbox" name="changeStatus" id="changeStatus" style="margin-left: 0px" onclick="AS_onChangeStatusChange('changeStatus', 'statusID', 'changeStatusSpanB');"<?php if ($this->selectedJobOrderID == -1 || $this->onlyScheduleEvent): ?> disabled<?php endif; ?> />
-                    <span id="changeStatusSpanA"<?php if ($this->selectedJobOrderID == -1): ?> style="color: #aaaaaa;"<?php endif;?>>Change Status</span><br />
+                    <span id="changeStatusSpanA"<?php if ($this->selectedJobOrderID == -1): ?> style="color: #aaaaaa;"<?php endif;?>><?php echo __("Change Status");?></span><br />
 
                     <div id="changeStatusDiv" style="margin-top: 4px;">
                         <select id="statusID" name="statusID" class="inputbox" style="width: 150px;" onchange="AS_onStatusChange(statusesArray, jobOrdersArray, 'regardingID', 'statusID', 'sendEmailCheckTR', 'triggerEmailSpan', 'activityNote', 'activityTypeID', <?php if ($this->isJobOrdersMode): echo $this->selectedJobOrderID; else: ?>null<?php endif; ?>, 'customMessage', 'origionalCustomMessage', 'triggerEmail', statusesArrayString, jobOrdersArrayStringTitle, jobOrdersArrayStringCompany, statusTriggersEmailArray, 'emailIsDisabled');" disabled>
-                            <option value="-1">(Select a Status)</option>
-
+                            <option value="-1">(<?php echo __("Select a Status");?>)</option>
+							<!--
                             <?php if ($this->selectedStatusID == -1): ?>
                                 <?php foreach ($this->statusRS as $rowNumber => $statusData): ?>
                                     <option value="<?php $this->_($statusData['statusID']) ?>"><?php $this->_($statusData['status']) ?></option>
@@ -94,6 +94,16 @@
                                     <option <?php if ($this->selectedStatusID == $statusData['statusID']): ?>selected <?php endif; ?>value="<?php $this->_($statusData['statusID']) ?>"><?php $this->_($statusData['status']) ?></option>
                                 <?php endforeach; ?>
                             <?php endif; ?>
+                            -->
+                        <?php
+                        $activityStatuses = EnumTypeEnum::activityStatus()->enumValues();
+                        $selectedValue = $this->selectedStatusID;//ActivityStatusEnum::call()->dbValue;
+                        foreach($activityStatuses as $k =>$as){
+                        	$selected = ($selectedValue==$as->dbValue);
+                        	?>    
+                        	<option <?php if ($selected) { ?>selected="selected"<?php } ?> value="<?php echo($as->dbValue); ?>"><?php echo $as->desc;?></option>
+                        <?php } //foreach($activityTypes ?>                             
+                            
                         </select>
                         <span id="changeStatusSpanB" style="color: #aaaaaa;">&nbsp;*</span>&nbsp;&nbsp;
                         <span id="triggerEmailSpan" style="display: none;"><input type="checkbox" name="triggerEmail" id="triggerEmail" onclick="AS_onSendEmailChange('triggerEmail', 'sendEmailCheckTR', 'visibleTR');" /><?php echo __("Send E-Mail Notification to Candidate");?></span>
@@ -121,13 +131,14 @@
                     <div id="activityNoteDiv" style="margin-top: 4px;">
                         <span id="addActivitySpanA"><?php echo __("Activity Type");?></span><br />
                         <select id="activityTypeID" name="activityTypeID" class="inputbox" style="width: 150px; margin-bottom: 4px;">
-                            <option selected="selected" value="<?php echo(ACTIVITY_CALL); ?>"><?php echo __("Call");?></option>
-                            <option value="<?php echo(ACTIVITY_CALL_TALKED); ?>"><?php echo __("Call (Talked)");?></option>
-                            <option value="<?php echo(ACTIVITY_CALL_LVM); ?>"><?php echo __("Call (LVM)");?></option>
-                            <option value="<?php echo(ACTIVITY_CALL_MISSED); ?>"><?php echo __("Call (Missed)");?></option>
-                            <option value="<?php echo(ACTIVITY_EMAIL); ?>"><?php echo __("E-Mail");?></option>
-                            <option value="<?php echo(ACTIVITY_MEETING); ?>"><?php echo __("Meeting");?></option>
-                            <option value="<?php echo(ACTIVITY_OTHER); ?>"><?php echo __("Other");?></option>
+                        <?php
+                        $activityTypes = EnumTypeEnum::activityType()->enumValues();
+                        $selectedValue = ActivityTypeEnum::call()->dbValue;
+                        foreach($activityTypes as $k =>$at){
+                        	$selected = ($selectedValue==$at->dbValue);
+                        	?>    
+                        	<option <?php if ($selected) { ?>selected="selected"<?php } ?> value="<?php echo($at->dbValue); ?>"><?php echo $at->desc;?></option>
+                        <?php } //foreach($activityTypes ?>    
                         </select><br />
                         <span id="addActivitySpanB"><?php echo __("Activity Notes");?></span><br />
                         <textarea name="activityNote" id="activityNote" cols="50" style="margin-bottom: 4px;" class="inputbox"></textarea>
@@ -147,9 +158,12 @@
                                 <td valign="top">
                                     <div style="margin-bottom: 4px;">
                                         <select id="eventTypeID" name="eventTypeID" class="inputbox" style="width: 150px;">
-                                            <?php foreach ($this->calendarEventTypes as $eventType): ?>
-                                                <option <?php if ($eventType['typeID'] == CALENDAR_EVENT_INTERVIEW): ?>selected="selected" <?php endif; ?>value="<?php echo($eventType['typeID']); ?>"><?php $this->_($eventType['description']); ?></option>
-                                            <?php endforeach; ?>
+                                                    <?php 
+                                                    E::ui('selectOptions')->html(array(
+                                                    	'enum'=>EnumTypeEnum::eventType(),
+                                                    	'dbValue'=>CALENDAR_EVENT_INTERVIEW
+                                                    ));
+                                                    ?>                                        
                                         </select>
                                     </div>
 
@@ -160,7 +174,7 @@
                                     <div style="margin-bottom: 4px;">
                                         <input type="radio" name="allDay" id="allDay0" value="0" style="margin-left: 0px" checked="checked" onchange="AS_onEventAllDayChange('allDay1');" />
                                         <select id="hour" name="hour" class="inputbox" style="width: 40px;">
-                                            <?php for ($i = 1; $i <= 12; ++$i): ?>
+                                            <?php for ($i = 0; $i <= 23; ++$i): ?>
                                                 <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
                                             <?php endfor; ?>
                                         </select>&nbsp;
@@ -171,7 +185,7 @@
                                                 </option>
                                             <?php endfor; ?>
                                         </select>&nbsp;
-                                        <select id="meridiem" name="meridiem" class="inputbox" style="width: 45px;">
+                                        <select id="meridiem" name="meridiem" class="inputbox" style="width: 45px;display:none;s">
                                             <option value="AM">AM</option>
                                             <option value="PM">PM</option>
                                         </select>

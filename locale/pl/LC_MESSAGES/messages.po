@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-04 22:05+0200\n"
-"PO-Revision-Date: 2017-05-04 22:22+0200\n"
+"POT-Creation-Date: 2017-05-09 22:59+0200\n"
+"PO-Revision-Date: 2017-05-09 23:24+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pl\n"
@@ -16,6 +16,144 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.0.1\n"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityStatusEnum.php:10
+msgid "No Status"
+msgstr "Brak statusu"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityStatusEnum.php:15
+msgid "No Contact"
+msgstr "Bez kontaktu"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityStatusEnum.php:20
+msgid "Contacted"
+msgstr "Kontakt nawiązany"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityStatusEnum.php:25
+msgid "Candidate Responded"
+msgstr "Kandydat odpowiedział"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityStatusEnum.php:30
+msgid "Qualifying"
+msgstr "W kwalifikacji"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityStatusEnum.php:35
+#: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:181
+#: C:\Users\mb\git\OpenATS\modules\joborders\Show.tpl:173
+#: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:63
+#: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:122
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1041
+msgid "Submitted"
+msgstr "Skierowany"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityStatusEnum.php:40
+msgid "Interviewing"
+msgstr "Na rozmowie"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityStatusEnum.php:45
+msgid "Offered"
+msgstr "Przedstawiony"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityStatusEnum.php:50
+#: C:\Users\mb\git\OpenATS\modules\reports\EEOReport.tpl:46
+msgid "Not in Consideration"
+msgstr "Nie rozpatrywany"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityStatusEnum.php:55
+msgid "Client Declined"
+msgstr "Odmowa klienta"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityStatusEnum.php:60
+#: C:\Users\mb\git\OpenATS\modules\reports\EEOReport.tpl:45
+msgid "Placed"
+msgstr "Zatrudniony"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityTypeEnum.php:10
+msgid "Call"
+msgstr "Rozmowa"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityTypeEnum.php:15
+msgid "Call (Talked)"
+msgstr "Rozmowa(przeprowadzono)"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityTypeEnum.php:20
+msgid "Call (LVM)"
+msgstr "Rozmowa(LVM)"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityTypeEnum.php:25
+msgid "Call (Missed)"
+msgstr "Rozmowa(nieodebrana)"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityTypeEnum.php:30
+#: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:275
+#: C:\Users\mb\git\OpenATS\modules\candidates\Add.tpl:173
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:116
+#: C:\Users\mb\git\OpenATS\modules\candidates\Edit.tpl:64
+#: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:62
+#: C:\Users\mb\git\OpenATS\modules\contacts\Add.tpl:123
+#: C:\Users\mb\git\OpenATS\modules\contacts\Edit.tpl:145
+#: C:\Users\mb\git\OpenATS\modules\contacts\Show.tpl:111
+#: C:\Users\mb\git\OpenATS\modules\settings\AddUser.tpl:50
+#: C:\Users\mb\git\OpenATS\modules\settings\ShowUser.tpl:47
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1168
+#: C:\Users\mb\git\OpenATS\lib\Contacts.php:879
+msgid "E-Mail"
+msgstr "e-mail"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityTypeEnum.php:35
+msgid "Meeting"
+msgstr "Spotkanie"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\activity\model\ActivityTypeEnum.php:40
+#: C:\Users\mb\git\OpenATS\modules\candidates\Add.tpl:402
+#: C:\Users\mb\git\OpenATS\modules\companies\Add.tpl:144
+#: C:\Users\mb\git\OpenATS\modules\contacts\Add.tpl:209
+#: C:\Users\mb\git\OpenATS\modules\contacts\Edit.tpl:228
+msgid "Other"
+msgstr "Inne"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\front\Front.php:36
+msgid "No controller found"
+msgstr "Brak kontrolera"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\front\Front.php:42
+#, php-format
+msgid "No route %s for module %s"
+msgstr "Brak ścieżki %s dla modułu %s"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\joborder\model\JobOrderStatusEnum.php:10
+#: C:\Users\mb\git\OpenATS\modules\candidates\Edit.tpl:27
+#: C:\Users\mb\git\OpenATS\modules\joborders\JobOrders.tpl:33
+#: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalQuestionnaire.tpl:90
+#: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalSettings.tpl:149
+#: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalSettings.tpl:201
+#: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalSettings.tpl:226
+msgid "Active"
+msgstr "Aktywny"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\joborder\model\JobOrderStatusEnum.php:15
+msgid "Upcoming"
+msgstr "Nadchodzący"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\joborder\model\JobOrderStatusEnum.php:20
+msgid "Prospective / Lead"
+msgstr "Prowadzony"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\joborder\model\JobOrderStatusEnum.php:25
+msgid "On Hold"
+msgstr "Wstrzymany"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\joborder\model\JobOrderStatusEnum.php:30
+msgid "Full"
+msgstr "Pełny/Zrealizowany"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\joborder\model\JobOrderStatusEnum.php:35
+msgid "Closed"
+msgstr "Zamknięty"
+
+#: C:\Users\mb\git\OpenATS\ats\mod\joborder\model\JobOrderStatusEnum.php:40
+msgid "Canceled"
+msgstr "Anulowany"
 
 #: C:\Users\mb\git\OpenATS\installwizard.php:25
 #: C:\Users\mb\git\OpenATS\installwizard.php:34
@@ -317,11 +455,11 @@ msgstr "Obsługa e-mail"
 #: C:\Users\mb\git\OpenATS\modules\joborders\Add.tpl:294
 #: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:100
 #: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:221
-#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:314
-#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:414
-#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:470
-#: C:\Users\mb\git\OpenATS\js\calendarDateInput.js:637
-#: C:\Users\mb\git\OpenATS\js\calendarDateInput.js:641
+#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:315
+#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:438
+#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:494
+#: C:\Users\mb\git\OpenATS\js\calendarDateInput.js:657
+#: C:\Users\mb\git\OpenATS\js\calendarDateInput.js:661
 msgid "None"
 msgstr "Brak"
 
@@ -563,12 +701,12 @@ msgstr "Kontynuuj"
 
 #: C:\Users\mb\git\OpenATS\installwizard.php:405
 #: C:\Users\mb\git\OpenATS\installwizard.php:417
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:247
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:249
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:258
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:260
 #: C:\Users\mb\git\OpenATS\modules\candidates\AssignCandidateTagModal.tpl:26
 #: C:\Users\mb\git\OpenATS\modules\candidates\CreateAttachmentModal.tpl:23
 #: C:\Users\mb\git\OpenATS\modules\companies\CreateAttachmentModal.tpl:16
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:148
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:149
 #: C:\Users\mb\git\OpenATS\modules\joborders\CreateAttachmentModal.tpl:16
 #: C:\Users\mb\git\OpenATS\modules\lists\QuickActionAddToListModal.tpl:51
 #: C:\Users\mb\git\OpenATS\modules\settings\AddUser.tpl:207
@@ -580,6 +718,7 @@ msgstr "Kontynuuj"
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalSettings.tpl:272
 #: C:\Users\mb\git\OpenATS\modules\settings\CustomizeExtraFields.tpl:227
 #: C:\Users\mb\git\OpenATS\modules\settings\CustomizeExtraFields.tpl:521
+#: C:\Users\mb\git\OpenATS\js\activity.js:284
 msgid "Cancel"
 msgstr "Anuluj"
 
@@ -873,6 +1012,7 @@ msgstr "Data"
 #: C:\Users\mb\git\OpenATS\modules\activity\dataGrids.php:101
 #: C:\Users\mb\git\OpenATS\modules\candidates\Add.tpl:72
 #: C:\Users\mb\git\OpenATS\modules\candidates\Edit.tpl:37
+#: C:\Users\mb\git\OpenATS\modules\candidates\Search.tpl:64
 #: C:\Users\mb\git\OpenATS\modules\candidates\dataGrids.php:26
 #: C:\Users\mb\git\OpenATS\modules\candidates\dataGrids.php:92
 #: C:\Users\mb\git\OpenATS\modules\companies\Show.tpl:300
@@ -892,7 +1032,7 @@ msgstr "Data"
 #: C:\Users\mb\git\OpenATS\modules\settings\AddUser.tpl:32
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalTemplateEdit.tpl:89
 #: C:\Users\mb\git\OpenATS\modules\settings\Users.tpl:23
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1151
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1152
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:818
 msgid "First Name"
 msgstr "Imię"
@@ -902,6 +1042,7 @@ msgstr "Imię"
 #: C:\Users\mb\git\OpenATS\modules\activity\dataGrids.php:109
 #: C:\Users\mb\git\OpenATS\modules\candidates\Add.tpl:164
 #: C:\Users\mb\git\OpenATS\modules\candidates\Edit.tpl:55
+#: C:\Users\mb\git\OpenATS\modules\candidates\Search.tpl:67
 #: C:\Users\mb\git\OpenATS\modules\candidates\dataGrids.php:27
 #: C:\Users\mb\git\OpenATS\modules\candidates\dataGrids.php:93
 #: C:\Users\mb\git\OpenATS\modules\companies\Show.tpl:301
@@ -921,7 +1062,7 @@ msgstr "Imię"
 #: C:\Users\mb\git\OpenATS\modules\settings\AddUser.tpl:41
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalTemplateEdit.tpl:90
 #: C:\Users\mb\git\OpenATS\modules\settings\Users.tpl:24
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1159
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1160
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:826
 msgid "Last Name"
 msgstr "Nazwisko"
@@ -939,7 +1080,7 @@ msgstr "Dotyczy"
 #: C:\Users\mb\git\OpenATS\modules\activity\Search.tpl:39
 #: C:\Users\mb\git\OpenATS\modules\activity\dataGrids.php:82
 #: C:\Users\mb\git\OpenATS\modules\activity\dataGrids.php:124
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:117
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:127
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:541
 #: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:36
 #: C:\Users\mb\git\OpenATS\modules\contacts\Show.tpl:263
@@ -948,7 +1089,7 @@ msgstr "Działanie"
 
 #: C:\Users\mb\git\OpenATS\modules\activity\Search.tpl:42
 #: C:\Users\mb\git\OpenATS\modules\activity\dataGrids.php:83
-#: C:\Users\mb\git\OpenATS\modules\activity\dataGrids.php:131
+#: C:\Users\mb\git\OpenATS\modules\activity\dataGrids.php:132
 #: C:\Users\mb\git\OpenATS\modules\candidates\Questionnaire.tpl:54
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:549
 #: C:\Users\mb\git\OpenATS\modules\contacts\Show.tpl:270
@@ -960,7 +1101,7 @@ msgstr "Notatki"
 
 #: C:\Users\mb\git\OpenATS\modules\activity\Search.tpl:45
 #: C:\Users\mb\git\OpenATS\modules\activity\dataGrids.php:84
-#: C:\Users\mb\git\OpenATS\modules\activity\dataGrids.php:138
+#: C:\Users\mb\git\OpenATS\modules\activity\dataGrids.php:139
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:349
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:451
 msgid "Entered By"
@@ -1082,6 +1223,19 @@ msgstr "Lis"
 msgid "Dec"
 msgstr "Gru"
 
+#: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.js:846
+#: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.js:1029
+#: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.js:1174
+#: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:2
+#: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:14
+#: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:25
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:44
+#: C:\Users\mb\git\OpenATS\modules\calendar\Error.tpl:2
+#: C:\Users\mb\git\OpenATS\modules\calendar\Error.tpl:12
+#: C:\Users\mb\git\OpenATS\modules\calendar\Error.tpl:14
+msgid "Calendar"
+msgstr "Kalendarz"
+
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.js:888
 msgid "No Entries"
 msgstr "Brak wpisów"
@@ -1115,24 +1269,12 @@ msgstr "5ty"
 msgid "6th"
 msgstr "6ty"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.js:1029
-#: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.js:1175
-#: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:2
-#: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:14
-#: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:25
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:44
-#: C:\Users\mb\git\OpenATS\modules\calendar\Error.tpl:2
-#: C:\Users\mb\git\OpenATS\modules\calendar\Error.tpl:12
-#: C:\Users\mb\git\OpenATS\modules\calendar\Error.tpl:14
-msgid "Calendar"
-msgstr "Kalendarz"
-
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.js:1030
-#: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.js:1099
+#: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.js:1098
 msgid "week of"
 msgstr "tydzień z"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.js:1099
+#: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.js:1098
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.js:1229
 msgid "entries for"
 msgstr "wpisów dla"
@@ -1149,14 +1291,14 @@ msgstr "Dodaj zdarzenie"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:52
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:202
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:191
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:202
 #: C:\Users\mb\git\OpenATS\modules\candidates\ConsiderSearchModal.tpl:58
 #: C:\Users\mb\git\OpenATS\modules\candidates\ConsiderSearchModal.tpl:108
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:447
 #: C:\Users\mb\git\OpenATS\modules\companies\Show.tpl:245
 #: C:\Users\mb\git\OpenATS\modules\companies\Show.tpl:302
 #: C:\Users\mb\git\OpenATS\modules\contacts\Add.tpl:63
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:110
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:111
 #: C:\Users\mb\git\OpenATS\modules\contacts\ColdCallList.tpl:26
 #: C:\Users\mb\git\OpenATS\modules\contacts\Edit.tpl:66
 #: C:\Users\mb\git\OpenATS\modules\contacts\Search.tpl:34
@@ -1176,7 +1318,7 @@ msgstr "Dodaj zdarzenie"
 #: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:116
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalSettings.tpl:133
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:843
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:939
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:940
 msgid "Title"
 msgstr "Tytuł"
 
@@ -1197,7 +1339,7 @@ msgstr "Tytuł"
 #: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:118
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalTemplateEdit.tpl:151
 #: C:\Users\mb\git\OpenATS\modules\settings\CustomizeExtraFields.tpl:509
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:965
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:966
 msgid "Type"
 msgstr "Typ"
 
@@ -1209,7 +1351,7 @@ msgstr "Wybierz typ"
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:75
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:225
 #: C:\Users\mb\git\OpenATS\modules\joborders\Add.tpl:245
-#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:262
+#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:263
 msgid "Public"
 msgstr "Publiczny"
 
@@ -1217,8 +1359,8 @@ msgstr "Publiczny"
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:228
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:64
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:113
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:185
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:104
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:196
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:105
 msgid "Public Entry"
 msgstr "Wpis publiczny"
 
@@ -1226,8 +1368,8 @@ msgstr "Wpis publiczny"
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:139
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:243
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:354
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:226
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:128
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:237
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:129
 #: C:\Users\mb\git\OpenATS\modules\home\dataGrids.php:250
 #: C:\Users\mb\git\OpenATS\modules\home\dataGrids.php:262
 msgid "Time"
@@ -1235,9 +1377,9 @@ msgstr "Czas"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:115
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:265
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:283
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:181
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:100
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:285
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:192
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:101
 msgid "All Day / No Specific Time"
 msgstr "Cały dzień/Bez pref."
 
@@ -1248,46 +1390,46 @@ msgstr "Wyślij przypomnienie e-mail"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:143
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:293
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:130
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:131
 msgid "15 min early"
 msgstr "15 min wcześniej"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:144
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:294
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:131
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:132
 msgid "30 min early"
 msgstr "30 min wcześniej"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:145
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:295
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:132
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:133
 msgid "45 min early"
 msgstr "45 min wcześniej"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:146
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:296
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:231
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:133
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:242
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:134
 msgid "1 hour early"
 msgstr "1 godzina wcześniej"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:147
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:297
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:232
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:134
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:243
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:135
 msgid "2 hours early"
 msgstr "2 godziny wcześniej"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:148
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:298
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:233
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:135
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:244
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:136
 msgid "1 day early"
 msgstr "1 dzień wcześniej"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:158
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:308
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:196
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:207
 msgid "Length"
 msgstr "Długość"
 
@@ -1308,37 +1450,37 @@ msgstr "45 minut"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:165
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:315
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:202
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:213
 msgid "1 hour"
 msgstr "1 godzina"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:166
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:316
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:203
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:214
 msgid "1.5 hours"
 msgstr "1,5 godziny"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:167
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:317
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:204
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:215
 msgid "2 hours"
 msgstr "2 godziny"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:168
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:318
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:205
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:216
 msgid "3 hours"
 msgstr "3 godziny"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:169
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:319
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:206
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:217
 msgid "4 hours"
 msgstr "4 godziny"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:170
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:320
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:207
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:218
 msgid "More than 4 hours"
 msgstr "Więcej niż 4 godziny"
 
@@ -1352,32 +1494,15 @@ msgstr "Opis"
 msgid "Edit Event"
 msgstr "Edytuj zdarzenie"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:275
-#: C:\Users\mb\git\OpenATS\modules\candidates\Add.tpl:173
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:106
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:128
-#: C:\Users\mb\git\OpenATS\modules\candidates\Edit.tpl:64
-#: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:62
-#: C:\Users\mb\git\OpenATS\modules\contacts\Add.tpl:123
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:47
-#: C:\Users\mb\git\OpenATS\modules\contacts\Edit.tpl:145
-#: C:\Users\mb\git\OpenATS\modules\contacts\Show.tpl:111
-#: C:\Users\mb\git\OpenATS\modules\settings\AddUser.tpl:50
-#: C:\Users\mb\git\OpenATS\modules\settings\ShowUser.tpl:47
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1167
-#: C:\Users\mb\git\OpenATS\lib\Contacts.php:879
-msgid "E-Mail"
-msgstr "e-mail"
-
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:336
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:245
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:256
 #: C:\Users\mb\git\OpenATS\modules\candidates\AssignCandidateTagModal.tpl:25
 #: C:\Users\mb\git\OpenATS\modules\candidates\Candidates.tpl:47
 #: C:\Users\mb\git\OpenATS\modules\candidates\Edit.tpl:390
 #: C:\Users\mb\git\OpenATS\modules\companies\Edit.tpl:245
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:147
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:148
 #: C:\Users\mb\git\OpenATS\modules\contacts\Edit.tpl:276
-#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:327
+#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:328
 #: C:\Users\mb\git\OpenATS\modules\lists\QuickActionAddToListModal.tpl:27
 #: C:\Users\mb\git\OpenATS\modules\lists\QuickActionAddToListModal.tpl:40
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalQuestionnaire.tpl:136
@@ -1426,7 +1551,7 @@ msgstr "Typ zdarzenia"
 #: C:\Users\mb\git\OpenATS\modules\joborders\Add.tpl:79
 #: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:65
 #: C:\Users\mb\git\OpenATS\modules\joborders\Show.tpl:148
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1170
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1171
 msgid "Duration"
 msgstr "Czas trwania"
 
@@ -1435,10 +1560,10 @@ msgid "Reminder"
 msgstr "Przypomnienie"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\Calendar.tpl:358
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:212
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:114
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:223
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:115
 #: C:\Users\mb\git\OpenATS\modules\joborders\Add.tpl:271
-#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:291
+#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:292
 #: C:\Users\mb\git\OpenATS\modules\joborders\Show.tpl:281
 #: C:\Users\mb\git\OpenATS\modules\lists\dataGrids.php:76
 #: C:\Users\mb\git\OpenATS\modules\lists\dataGrids.php:119
@@ -1526,75 +1651,77 @@ msgstr "Typ zdarzenia"
 msgid "Reminder Set"
 msgstr "Przypomnienie ustawione"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:284
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:286
 msgid "All day event - None Set"
 msgstr "Całodzienny - bez ust."
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:293
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:302
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:544
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:295
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:304
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:548
 msgid "None Set"
 msgstr "Nie ustawiony"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:426
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:430
 msgid "Are you sure you want to delete this entry?"
 msgstr "Jesteś pewien że chcesz usunąć ten wpis?"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:514
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:518
+#: C:\Users\mb\git\OpenATS\lib\Calendar.php:782
+#: C:\Users\mb\git\OpenATS\lib\Calendar.php:815
 msgid "All Day"
 msgstr "Cały dzień"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:518
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:522
 msgid "1 Minute"
 msgstr "1 minuta"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:522
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:526
 #, php-format
 msgid "%s Minutes"
 msgstr "%s minut"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:526
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:530
 msgid "1 Hour"
 msgstr "1 godzina"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:530
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:534
 #, php-format
 msgid "%s Hours"
 msgstr "%s godzin"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:534
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:538
 msgid "More Than 4 Hours"
 msgstr "Więcej niż 4 godziny"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:548
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:552
 msgid "1 Minute Before"
 msgstr "1 minuta przed"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:552
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:556
 #, php-format
 msgid "%s Minutes Before"
 msgstr "%s minut przed"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:556
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:560
 msgid "1 Hour Before"
 msgstr "1 godzina przed"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:560
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:564
 #, php-format
 msgid "%s Hours Before"
 msgstr "%s godzin przed"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:564
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:568
 msgid "1 Day Before"
 msgstr "1 dzień przed"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:568
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.js:572
 #, php-format
 msgid "%s Days Before"
 msgstr "%s dni przed"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:46
-#: C:\Users\mb\git\OpenATS\lib\Calendar.php:652
+#: C:\Users\mb\git\OpenATS\lib\Calendar.php:658
 msgid "My Upcoming Events"
 msgstr "Nadchodzące Zdarzenia"
 
@@ -1607,14 +1734,14 @@ msgstr "Przejdź do teraz"
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:324
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:355
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:561
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3011
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3012
 #: C:\Users\mb\git\OpenATS\modules\contacts\ContactsUI.php:1382
 msgid "Invalid date."
 msgstr "Nieprawidłowa data"
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:347
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:507
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:692
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:699
 #: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:90
 #: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:98
 #: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:114
@@ -1675,14 +1802,14 @@ msgstr "Nieprawidłowy poziom dostępu użytkownika dla tej akcji."
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:362
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:520
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3017
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3018
 #: C:\Users\mb\git\OpenATS\modules\contacts\ContactsUI.php:1388
 msgid "Invalid event type ID."
 msgstr "Nieprawidłowy ID typu zdarzenia."
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:379
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:568
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3024
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3025
 #: C:\Users\mb\git\OpenATS\modules\contacts\ContactsUI.php:1395
 msgid "Invalid time format ID."
 msgstr "Nieprawidłowy ID formatu czasu."
@@ -1694,7 +1821,7 @@ msgstr "Nieprawidłowy ID formatu czasu."
 #: C:\Users\mb\git\OpenATS\modules\companies\CompaniesUI.php:826
 #: C:\Users\mb\git\OpenATS\modules\contacts\ContactsUI.php:543
 #: C:\Users\mb\git\OpenATS\modules\contacts\ContactsUI.php:831
-#: C:\Users\mb\git\OpenATS\modules\contacts\ContactsUI.php:1477
+#: C:\Users\mb\git\OpenATS\modules\contacts\ContactsUI.php:1475
 #: C:\Users\mb\git\OpenATS\modules\joborders\JobOrdersUI.php:771
 #: C:\Users\mb\git\OpenATS\modules\joborders\JobOrdersUI.php:1114
 msgid "Required fields are missing."
@@ -1702,14 +1829,14 @@ msgstr "Wymagane pola nie są wypełnione."
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:425
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:615
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3061
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3062
 #: C:\Users\mb\git\OpenATS\modules\contacts\ContactsUI.php:1433
 msgid "Invalid hour."
 msgstr "Nieprawidłowa godzina."
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:431
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:621
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3067
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3068
 #: C:\Users\mb\git\OpenATS\modules\contacts\ContactsUI.php:1439
 msgid "Invalid minute."
 msgstr "Nieprawidłowa minuta."
@@ -1721,52 +1848,52 @@ msgid "Invalid meridiem value."
 msgstr "Błędne wskazanie pory dnia."
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:473
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3134
-#: C:\Users\mb\git\OpenATS\modules\contacts\ContactsUI.php:1499
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3132
+#: C:\Users\mb\git\OpenATS\modules\contacts\ContactsUI.php:1497
 msgid "Failed to add calendar event."
 msgstr "Błąd przy dodaniu zdarzenia do kalendarza."
 
 #: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:513
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:698
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:705
 msgid "Invalid event ID."
 msgstr "Nieprawidłowe ID zdarzenia."
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:659
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:666
 msgid "Failed to update calendar event."
 msgstr "Błąd aktualizacji zdarzenia."
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:730
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:737
 #: C:\Users\mb\git\OpenATS\modules\calendar\tasks\Reminders.php:118
 msgid "immediately"
 msgstr "natychmiast"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:734
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:741
 #: C:\Users\mb\git\OpenATS\modules\calendar\tasks\Reminders.php:122
 msgid "in 1 minute"
 msgstr "w ciągu 1 minuty"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:738
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:745
 #: C:\Users\mb\git\OpenATS\modules\calendar\tasks\Reminders.php:126
 #, php-format
 msgid "in %s minutes"
 msgstr "w ciągu %s minut"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:742
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:749
 #: C:\Users\mb\git\OpenATS\modules\calendar\tasks\Reminders.php:130
 msgid "in 1 hour"
 msgstr "w ciągu 1 godziny"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:746
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:753
 #, php-format
 msgid "in %s hours"
 msgstr "w ciągu %s godzin"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:750
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:757
 #: C:\Users\mb\git\OpenATS\modules\calendar\tasks\Reminders.php:138
 msgid "in 1 day"
 msgstr "w ciągu 1 dnia"
 
-#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:754
+#: C:\Users\mb\git\OpenATS\modules\calendar\CalendarUI.php:761
 #: C:\Users\mb\git\OpenATS\modules\calendar\tasks\Reminders.php:142
 #, php-format
 msgid "in %s days"
@@ -1943,7 +2070,7 @@ msgstr "Drugie imię"
 #: C:\Users\mb\git\OpenATS\modules\contacts\Add.tpl:132
 #: C:\Users\mb\git\OpenATS\modules\contacts\Edit.tpl:154
 #: C:\Users\mb\git\OpenATS\modules\contacts\Show.tpl:118
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1172
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1173
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:884
 msgid "2nd E-Mail"
 msgstr "2gi e-mail"
@@ -1955,8 +2082,8 @@ msgstr "2gi e-mail"
 #: C:\Users\mb\git\OpenATS\modules\companies\Edit.tpl:80
 #: C:\Users\mb\git\OpenATS\modules\companies\Show.tpl:91
 #: C:\Users\mb\git\OpenATS\modules\import\ImportUI.php:239
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1222
-#: C:\Users\mb\git\OpenATS\lib\Companies.php:803
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1223
+#: C:\Users\mb\git\OpenATS\lib\Companies.php:804
 msgid "Web Site"
 msgstr "Strona Web"
 
@@ -1964,7 +2091,7 @@ msgstr "Strona Web"
 #: C:\Users\mb\git\OpenATS\modules\candidates\Edit.tpl:81
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:79
 #: C:\Users\mb\git\OpenATS\modules\import\ImportUI.php:232
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1177
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1178
 msgid "Home Phone"
 msgstr "Tel. domowy"
 
@@ -1977,7 +2104,7 @@ msgstr "Tel. domowy"
 #: C:\Users\mb\git\OpenATS\modules\contacts\Show.tpl:75
 #: C:\Users\mb\git\OpenATS\modules\import\ImportUI.php:233
 #: C:\Users\mb\git\OpenATS\modules\import\ImportUI.php:251
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1182
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1183
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:865
 msgid "Cell Phone"
 msgstr "Tel. kom."
@@ -1994,7 +2121,7 @@ msgstr "Tel. kom."
 #: C:\Users\mb\git\OpenATS\modules\contacts\dataGrids.php:114
 #: C:\Users\mb\git\OpenATS\modules\import\ImportUI.php:234
 #: C:\Users\mb\git\OpenATS\modules\import\ImportUI.php:252
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1187
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1188
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:858
 msgid "Work Phone"
 msgstr "Tel. służb."
@@ -2011,7 +2138,7 @@ msgstr "Tel. służb."
 #: C:\Users\mb\git\OpenATS\modules\import\ImportUI.php:228
 #: C:\Users\mb\git\OpenATS\modules\import\ImportUI.php:247
 #: C:\Users\mb\git\OpenATS\modules\import\ImportUI.php:262
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1192
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1193
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:889
 msgid "Address"
 msgstr "Adres"
@@ -2019,6 +2146,7 @@ msgstr "Adres"
 #: C:\Users\mb\git\OpenATS\modules\candidates\Add.tpl:247
 #: C:\Users\mb\git\OpenATS\modules\candidates\Edit.tpl:126
 #: C:\Users\mb\git\OpenATS\modules\candidates\Search.tpl:35
+#: C:\Users\mb\git\OpenATS\modules\candidates\Search.tpl:71
 #: C:\Users\mb\git\OpenATS\modules\candidates\dataGrids.php:28
 #: C:\Users\mb\git\OpenATS\modules\candidates\dataGrids.php:94
 #: C:\Users\mb\git\OpenATS\modules\companies\Add.tpl:84
@@ -2035,15 +2163,16 @@ msgstr "Adres"
 #: C:\Users\mb\git\OpenATS\modules\lists\dataGrids.php:59
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalTemplateEdit.tpl:92
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalTemplateEdit.tpl:152
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1198
-#: C:\Users\mb\git\OpenATS\lib\Companies.php:783
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1199
+#: C:\Users\mb\git\OpenATS\lib\Companies.php:784
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:895
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1136
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1137
 msgid "City"
 msgstr "Miasto"
 
 #: C:\Users\mb\git\OpenATS\modules\candidates\Add.tpl:256
 #: C:\Users\mb\git\OpenATS\modules\candidates\Edit.tpl:135
+#: C:\Users\mb\git\OpenATS\modules\candidates\Search.tpl:74
 #: C:\Users\mb\git\OpenATS\modules\candidates\dataGrids.php:29
 #: C:\Users\mb\git\OpenATS\modules\candidates\dataGrids.php:95
 #: C:\Users\mb\git\OpenATS\modules\companies\Add.tpl:93
@@ -2060,10 +2189,10 @@ msgstr "Miasto"
 #: C:\Users\mb\git\OpenATS\modules\lists\dataGrids.php:60
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalTemplateEdit.tpl:93
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalTemplateEdit.tpl:153
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1205
-#: C:\Users\mb\git\OpenATS\lib\Companies.php:790
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1206
+#: C:\Users\mb\git\OpenATS\lib\Companies.php:791
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:902
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1144
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1145
 msgid "State"
 msgstr "Kraj"
 
@@ -2188,19 +2317,10 @@ msgstr "Stan niepełnosprawności"
 msgid "Yes"
 msgstr "Tak"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\Add.tpl:402
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:130
-#: C:\Users\mb\git\OpenATS\modules\companies\Add.tpl:144
-#: C:\Users\mb\git\OpenATS\modules\contacts\Add.tpl:209
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:49
-#: C:\Users\mb\git\OpenATS\modules\contacts\Edit.tpl:228
-msgid "Other"
-msgstr "Inne"
-
 #: C:\Users\mb\git\OpenATS\modules\candidates\Add.tpl:420
 #: C:\Users\mb\git\OpenATS\modules\candidates\Edit.tpl:324
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:161
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1335
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1336
 msgid "Can Relocate"
 msgstr "Możliwość relokacji"
 
@@ -2215,21 +2335,21 @@ msgstr "Dostępny od"
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:151
 #: C:\Users\mb\git\OpenATS\modules\import\ImportUI.php:236
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalTemplateEdit.tpl:100
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1317
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1318
 msgid "Current Employer"
 msgstr "Aktualny pracodawca"
 
 #: C:\Users\mb\git\OpenATS\modules\candidates\Add.tpl:450
 #: C:\Users\mb\git\OpenATS\modules\candidates\Edit.tpl:356
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:166
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1323
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1324
 msgid "Current Pay"
 msgstr "Aktualne zarobki"
 
 #: C:\Users\mb\git\OpenATS\modules\candidates\Add.tpl:459
 #: C:\Users\mb\git\OpenATS\modules\candidates\Edit.tpl:365
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:171
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1329
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1330
 msgid "Desired Pay"
 msgstr "Pożądane zarobki"
 
@@ -2237,7 +2357,7 @@ msgstr "Pożądane zarobki"
 #: C:\Users\mb\git\OpenATS\modules\candidates\Edit.tpl:174
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:121
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalTemplateEdit.tpl:99
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1307
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1308
 msgid "Source"
 msgstr "Źródło"
 
@@ -2250,7 +2370,7 @@ msgstr "Źródło"
 #: C:\Users\mb\git\OpenATS\modules\import\ImportUI.php:240
 #: C:\Users\mb\git\OpenATS\modules\joborders\ConsiderSearchModal.tpl:51
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalTemplateEdit.tpl:103
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1228
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1229
 msgid "Key Skills"
 msgstr "Kluczowe umiejętności"
 
@@ -2276,7 +2396,7 @@ msgstr "Inne notatki"
 #: C:\Users\mb\git\OpenATS\modules\import\Import.tpl:133
 #: C:\Users\mb\git\OpenATS\modules\import\Import.tpl:239
 #: C:\Users\mb\git\OpenATS\modules\joborders\Add.tpl:308
-#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:328
+#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:329
 #: C:\Users\mb\git\OpenATS\modules\login\Login.tpl:88
 #: C:\Users\mb\git\OpenATS\modules\settings\AddUser.tpl:206
 #: C:\Users\mb\git\OpenATS\modules\settings\ChangePassword.tpl:78
@@ -2327,12 +2447,12 @@ msgid "Log Activity"
 msgstr "Dopisz Działanie"
 
 #: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:5
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:140
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:143
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:151
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:154
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:310
 #: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:6
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:59
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:62
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:60
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:63
 #: C:\Users\mb\git\OpenATS\modules\contacts\Show.tpl:193
 msgid "Schedule Event"
 msgstr "Zaplanuj zdarzenie"
@@ -2360,109 +2480,92 @@ msgstr "Ogólny"
 #: C:\Users\mb\git\OpenATS\modules\settings\Backup.tpl:32
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalQuestionnaire.tpl:86
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalSettings.tpl:135
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:974
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:975
 msgid "Status"
 msgstr "Status"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:99
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:82
+msgid "Change Status"
+msgstr "Zmień status"
+
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:86
+msgid "Select a Status"
+msgstr "Wybierz status"
+
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:109
 msgid "Send E-Mail Notification to Candidate"
 msgstr "Wyślij wiadomość do kandydata"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:120
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:130
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:583
 #: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:39
 msgid "Log an Activity"
 msgstr "Dopisz Działanie"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:122
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:132
 #: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:41
 msgid "Activity Type"
 msgstr "Typ działania"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:124
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:43
-msgid "Call"
-msgstr "Rozmowa"
-
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:125
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:44
-msgid "Call (Talked)"
-msgstr "Rozmowa(przeprowadzono)"
-
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:126
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:45
-msgid "Call (LVM)"
-msgstr "Rozmowa(LVM)"
-
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:127
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:46
-msgid "Call (Missed)"
-msgstr "Rozmowa(nieodebrana)"
-
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:129
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:48
-msgid "Meeting"
-msgstr "Spotkanie"
-
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:132
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:51
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:143
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:52
 msgid "Activity Notes"
 msgstr "Notatki z działania"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:199
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:200
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:201
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:210
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:211
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:212
 #, php-format
 msgid "%s minutes"
 msgstr "%s minut"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:217
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:119
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:228
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:120
 msgid "Set Reminder"
 msgstr "Ustaw przypomnienie"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:222
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:124
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:233
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:125
 msgid "E-Mail To"
 msgstr "e-mail do"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:228
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:229
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:230
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:239
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:240
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:241
 #, php-format
 msgid "%s min early"
 msgstr "%s min. wcześniej"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:264
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:275
 msgid "The candidate's status has been changed from"
 msgstr "Status kandydata został zmieniony z"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:264
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:275
 msgid "to"
 msgstr "do"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:266
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:277
 msgid "The candidate's status has not been changed."
 msgstr "Status kandydata został zmieniony."
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:271
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:282
 #, php-format
 msgid ""
 "An activity entry of type %s has been added with the following note: %s."
 msgstr "Działanie typu %s zostało dodane z notatką: %s"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:273
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:284
 #, php-format
 msgid "An activity entry of type %s has been added with no notes."
 msgstr "Działanie typu %s zostało dodane bez notatek."
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:276
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:167
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:287
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:168
 msgid "No activity entries have been added."
 msgstr "Nie dodano żadnych działań."
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:287
-#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:289
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:298
+#: C:\Users\mb\git\OpenATS\modules\candidates\AddActivityChangeStatusModal.tpl:300
 #: C:\Users\mb\git\OpenATS\modules\candidates\AssignCandidateTagModal.tpl:31
 #: C:\Users\mb\git\OpenATS\modules\candidates\Candidates.tpl:47
 #: C:\Users\mb\git\OpenATS\modules\candidates\Candidates.tpl:48
@@ -2516,6 +2619,7 @@ msgstr "Lista tagów"
 
 #: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:75
 #: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:1844
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2110
 #: C:\Users\mb\git\OpenATS\modules\candidates\Search.tpl:14
 #: C:\Users\mb\git\OpenATS\modules\candidates\Search.tpl:18
 msgid "Search Candidates"
@@ -2543,13 +2647,13 @@ msgstr "Błąd przy dodaniu kandydata."
 #: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:1607
 #: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:1752
 #: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:1807
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2161
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2189
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2226
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2248
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2318
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2823
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3248
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2162
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2190
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2227
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2249
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2319
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2824
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3246
 #: C:\Users\mb\git\OpenATS\modules\joborders\JobOrdersUI.php:1277
 #: C:\Users\mb\git\OpenATS\modules\joborders\JobOrdersUI.php:1419
 #: C:\Users\mb\git\OpenATS\modules\joborders\JobOrdersUI.php:1562
@@ -2588,7 +2692,7 @@ msgid "Invalid owner user ID."
 msgstr "Nieprawidłowe ID Właściciela."
 
 #: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:1142
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2483
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2484
 msgid "Invalid availability date."
 msgstr "Nieprawidłowa data dostępności."
 
@@ -2648,46 +2752,46 @@ msgstr "Nieprawidłowe ID kandydata."
 msgid "Invalid Tag ID."
 msgstr "Nieprawidłowe ID tagu."
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2131
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2312
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2132
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2313
 #: C:\Users\mb\git\OpenATS\modules\companies\CompaniesUI.php:1135
 #: C:\Users\mb\git\OpenATS\modules\joborders\JobOrdersUI.php:1821
 msgid "Invalid attachment ID."
 msgstr "Nieprawidłowe ID załącznika."
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2255
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2256
 msgid "Invalid resume status."
 msgstr "Nieprawidłowy status CV."
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2286
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2647
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2722
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2757
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2287
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2648
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2723
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2758
 msgid "This attachment has already been added to this candidate."
 msgstr "Ten załącznik był już dodawany do danych kandydata."
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2343
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2344
 #: C:\Users\mb\git\OpenATS\modules\joborders\JobOrdersUI.php:1827
 #: C:\Users\mb\git\OpenATS\modules\joborders\JobOrdersUI.php:1852
 msgid "Invalid Job Order ID."
 msgstr "Nieprawidłowe ID zlecenia."
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2349
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2350
 #: C:\Users\mb\git\OpenATS\modules\joborders\JobOrdersUI.php:1858
 msgid "Invalid state ID."
 msgstr "Nieprawidłowe ID statusu."
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2404
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1117
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2405
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1118
 msgid "Submitted for a Job Order"
 msgstr "Zgłoszony do zlecenia"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2413
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1126
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2414
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1127
 msgid "Attachment Present"
 msgstr "Załącznik istnieje"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2841
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2842
 msgid ""
 "This job order has been filled. Cannot assign the status Placed to any other "
 "candidate."
@@ -2695,18 +2799,18 @@ msgstr ""
 "To zlecenie zostało zrealizowane. Nie można już przypisywać do niego "
 "kandydatów."
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2856
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2857
 #: C:\Users\mb\git\OpenATS\modules\contacts\ContactsUI.php:1342
 msgid "Invalid activity type ID."
 msgstr "Nieprawidłowe ID typu działania."
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2916
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2917
 #: C:\Users\mb\git\OpenATS\modules\joborders\JobOrdersUI.php:1446
 msgid "The specified pipeline entry could not be found."
 msgstr "Wymieniony proces obsługi nie został znaleziony."
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2956
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2962
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2957
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2963
 #: C:\Users\mb\git\OpenATS\modules\candidates\Error.tpl:14
 #: C:\Users\mb\git\OpenATS\modules\candidates\ErrorModal.tpl:8
 #: C:\Users\mb\git\OpenATS\modules\candidates\ResumeView.tpl:10
@@ -2720,7 +2824,7 @@ msgstr "Wymieniony proces obsługi nie został znaleziony."
 msgid "Error"
 msgstr "Błąd"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2957
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2958
 msgid ""
 "An e-mail notification could not be sent to the candidate because the "
 "candidate does not have a valid e-mail address."
@@ -2728,39 +2832,39 @@ msgstr ""
 "Wiadomość nie została wysłana - kandydat nie posiada zdefiniowanego "
 "prawidłowego adresu e-mail."
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2963
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2964
 msgid ""
 "An e-mail notification will not be sent because the message text specified "
 "was blank."
 msgstr "Wiadomość nie zostanie wysłana - treść nie została określona"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2969
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2970
 msgid "Demo users can not send E-Mails.  No E-Mail was sent."
 msgstr ""
 "Uzytkownicy demo nie mogą wysyłać wiadomości - e-mail nie został wysłany."
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2974
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2975
 msgid "An e-mail notification has been sent to the candidate."
 msgstr "Wiadomość -e-mail nie została wysłana do kandydata."
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2981
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:2982
 msgid "No e-mail notification has been sent to the candidate."
 msgstr "Zadana wiadomość nie została wysłana do kandydata."
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3150
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3148
 msgid "An event of type"
 msgstr "Zdarzenie typu"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3150
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3148
 msgid "has been scheduled on"
 msgstr "zostało zaplanowane na"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3159
-#: C:\Users\mb\git\OpenATS\modules\contacts\ContactsUI.php:1523
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3157
+#: C:\Users\mb\git\OpenATS\modules\contacts\ContactsUI.php:1521
 msgid "No event has been scheduled."
 msgstr "Żadne zdarzenie nie zostało zaplanowane."
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3281
+#: C:\Users\mb\git\OpenATS\modules\candidates\CandidatesUI.php:3279
 msgid "Bad Server Information."
 msgstr "Błędne informacje z serwera."
 
@@ -2787,6 +2891,8 @@ msgid "Search by Company Name"
 msgstr "Szukaj po nazwie firmy"
 
 #: C:\Users\mb\git\OpenATS\modules\candidates\ConsiderSearchModal.tpl:52
+#: C:\Users\mb\git\OpenATS\modules\candidates\Search.tpl:53
+#: C:\Users\mb\git\OpenATS\modules\candidates\Search.tpl:56
 #: C:\Users\mb\git\OpenATS\modules\companies\Search.tpl:49
 #: C:\Users\mb\git\OpenATS\modules\contacts\Search.tpl:50
 #: C:\Users\mb\git\OpenATS\modules\joborders\ConsiderSearchModal.tpl:44
@@ -2820,13 +2926,14 @@ msgstr "Nr ref."
 #: C:\Users\mb\git\OpenATS\modules\joborders\Search.tpl:61
 #: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:58
 #: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:117
-#: C:\Users\mb\git\OpenATS\lib\Calendar.php:872
+#: C:\Users\mb\git\OpenATS\lib\Calendar.php:884
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:834
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:947
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:948
 msgid "Company"
 msgstr "Firma"
 
 #: C:\Users\mb\git\OpenATS\modules\candidates\ConsiderSearchModal.tpl:62
+#: C:\Users\mb\git\OpenATS\modules\candidates\Search.tpl:77
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:186
 #: C:\Users\mb\git\OpenATS\modules\candidates\dataGrids.php:32
 #: C:\Users\mb\git\OpenATS\modules\companies\Search.tpl:65
@@ -2852,10 +2959,10 @@ msgstr "Firma"
 #: C:\Users\mb\git\OpenATS\modules\lists\dataGrids.php:63
 #: C:\Users\mb\git\OpenATS\modules\lists\dataGrids.php:104
 #: C:\Users\mb\git\OpenATS\modules\lists\dataGrids.php:123
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1353
-#: C:\Users\mb\git\OpenATS\lib\Companies.php:831
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1354
+#: C:\Users\mb\git\OpenATS\lib\Companies.php:832
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:927
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:992
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:993
 msgid "Created"
 msgstr "Utworzono"
 
@@ -2881,13 +2988,14 @@ msgstr "Start"
 #: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:65
 #: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:124
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalTemplateEdit.tpl:159
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1106
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1107
 msgid "Recruiter"
 msgstr "Rekruter"
 
 #: C:\Users\mb\git\OpenATS\modules\candidates\ConsiderSearchModal.tpl:65
 #: C:\Users\mb\git\OpenATS\modules\candidates\ConsiderSearchModal.tpl:115
 #: C:\Users\mb\git\OpenATS\modules\candidates\Edit.tpl:199
+#: C:\Users\mb\git\OpenATS\modules\candidates\Search.tpl:83
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:191
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:449
 #: C:\Users\mb\git\OpenATS\modules\candidates\dataGrids.php:31
@@ -2919,10 +3027,10 @@ msgstr "Rekruter"
 #: C:\Users\mb\git\OpenATS\modules\lists\dataGrids.php:62
 #: C:\Users\mb\git\OpenATS\modules\lists\dataGrids.php:94
 #: C:\Users\mb\git\OpenATS\modules\lists\dataGrids.php:122
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1342
-#: C:\Users\mb\git\OpenATS\lib\Companies.php:809
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1343
+#: C:\Users\mb\git\OpenATS\lib\Companies.php:810
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:919
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1095
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1096
 msgid "Owner"
 msgstr "Właściciel"
 
@@ -2960,6 +3068,7 @@ msgid "Recently Modified Job Orders"
 msgstr "Ostatnio zmodyfikowane zlecenia"
 
 #: C:\Users\mb\git\OpenATS\modules\candidates\ConsiderSearchModal.tpl:112
+#: C:\Users\mb\git\OpenATS\modules\candidates\Search.tpl:80
 #: C:\Users\mb\git\OpenATS\modules\candidates\dataGrids.php:33
 #: C:\Users\mb\git\OpenATS\modules\candidates\dataGrids.php:98
 #: C:\Users\mb\git\OpenATS\modules\companies\Show.tpl:249
@@ -2977,10 +3086,10 @@ msgstr "Ostatnio zmodyfikowane zlecenia"
 #: C:\Users\mb\git\OpenATS\modules\lists\dataGrids.php:64
 #: C:\Users\mb\git\OpenATS\modules\lists\dataGrids.php:109
 #: C:\Users\mb\git\OpenATS\modules\lists\dataGrids.php:124
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1359
-#: C:\Users\mb\git\OpenATS\lib\Companies.php:837
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1360
+#: C:\Users\mb\git\OpenATS\lib\Companies.php:838
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:933
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:998
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:999
 msgid "Modified"
 msgstr "Zmodyfikowano"
 
@@ -3073,16 +3182,6 @@ msgstr "Edytuj"
 msgid "Edit Candidate"
 msgstr "Edytuj kandydata"
 
-#: C:\Users\mb\git\OpenATS\modules\candidates\Edit.tpl:27
-#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:251
-#: C:\Users\mb\git\OpenATS\modules\joborders\JobOrders.tpl:33
-#: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalQuestionnaire.tpl:90
-#: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalSettings.tpl:149
-#: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalSettings.tpl:201
-#: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalSettings.tpl:226
-msgid "Active"
-msgstr "Aktywny"
-
 #: C:\Users\mb\git\OpenATS\modules\candidates\Edit.tpl:31
 msgid ""
 "Unchecking this box indicates the candidate is inactive, and will no longer "
@@ -3134,7 +3233,7 @@ msgstr "Płeć"
 #: C:\Users\mb\git\OpenATS\modules\candidates\Edit.tpl:392
 #: C:\Users\mb\git\OpenATS\modules\companies\Edit.tpl:247
 #: C:\Users\mb\git\OpenATS\modules\contacts\Edit.tpl:278
-#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:329
+#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:330
 msgid "Back to Details"
 msgstr "Wróć do szczegółów"
 
@@ -3187,13 +3286,13 @@ msgstr "Ostatnio zmodyfikowani na początku"
 #: C:\Users\mb\git\OpenATS\modules\candidates\Questionnaire.tpl:2
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:6
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:8
-#: C:\Users\mb\git\OpenATS\lib\Calendar.php:853
+#: C:\Users\mb\git\OpenATS\lib\Calendar.php:865
 msgid "Candidate"
 msgstr "Kandydat"
 
 #: C:\Users\mb\git\OpenATS\modules\candidates\Questionnaire.tpl:2
 #: C:\Users\mb\git\OpenATS\modules\joborders\Add.tpl:290
-#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:310
+#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:311
 msgid "Questionnaire"
 msgstr "Kwestionariusz"
 
@@ -3310,7 +3409,7 @@ msgstr "Tutaj."
 #: C:\Users\mb\git\OpenATS\modules\settings\CustomizeExtraFields.tpl:225
 #: C:\Users\mb\git\OpenATS\modules\settings\CustomizeExtraFields.tpl:503
 #: C:\Users\mb\git\OpenATS\modules\settings\ShowUser.tpl:37
-#: C:\Users\mb\git\OpenATS\lib\Companies.php:748
+#: C:\Users\mb\git\OpenATS\lib\Companies.php:749
 msgid "Name"
 msgstr "Nazwa"
 
@@ -3322,17 +3421,9 @@ msgstr "NIEAKTYWNY"
 #: C:\Users\mb\git\OpenATS\modules\joborders\Show.tpl:168
 #: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:64
 #: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:123
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1059
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1060
 msgid "Pipeline"
 msgstr "Obsługa"
-
-#: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:181
-#: C:\Users\mb\git\OpenATS\modules\joborders\Show.tpl:173
-#: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:63
-#: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:122
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1040
-msgid "Submitted"
-msgstr "Zgłoszony"
 
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:211
 #: C:\Users\mb\git\OpenATS\modules\candidates\Show.tpl:366
@@ -3397,9 +3488,9 @@ msgstr "Drukuj"
 #: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:55
 #: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:114
 #: C:\Users\mb\git\OpenATS\modules\lists\dataGrids.php:56
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1112
-#: C:\Users\mb\git\OpenATS\lib\Companies.php:727
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:899
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1113
+#: C:\Users\mb\git\OpenATS\lib\Companies.php:728
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:900
 msgid "Attachments"
 msgstr "Załączniki"
 
@@ -3510,7 +3601,7 @@ msgid "Export"
 msgstr "Eksport"
 
 #: C:\Users\mb\git\OpenATS\modules\candidates\dataGrids.php:99
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1369
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1370
 msgid "Added To List"
 msgstr "Dodany do listy"
 
@@ -3804,7 +3895,7 @@ msgstr "usuń"
 #: C:\Users\mb\git\OpenATS\modules\companies\Show.tpl:244
 #: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:56
 #: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:115
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:920
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:921
 msgid "ID"
 msgstr "ID"
 
@@ -3812,7 +3903,7 @@ msgstr "ID"
 #: C:\Users\mb\git\OpenATS\modules\contacts\Show.tpl:233
 #: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:62
 #: C:\Users\mb\git\OpenATS\modules\joborders\dataGrids.php:121
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:983
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:984
 msgid "Age"
 msgstr "Wiek(dni)"
 
@@ -3849,7 +3940,7 @@ msgstr "Nowe zlecenie"
 #: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:95
 #: C:\Users\mb\git\OpenATS\modules\joborders\Show.tpl:72
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:850
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:956
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:957
 msgid "Department"
 msgstr "Wydział"
 
@@ -3888,7 +3979,7 @@ msgstr "Ukryj pozostałe kontakty"
 #: C:\Users\mb\git\OpenATS\modules\companies\dataGrids.php:57
 #: C:\Users\mb\git\OpenATS\modules\companies\dataGrids.php:114
 #: C:\Users\mb\git\OpenATS\modules\lists\dataGrids.php:58
-#: C:\Users\mb\git\OpenATS\lib\Companies.php:756
+#: C:\Users\mb\git\OpenATS\lib\Companies.php:757
 msgid "Jobs"
 msgstr "Oferty"
 
@@ -3896,7 +3987,7 @@ msgstr "Oferty"
 #: C:\Users\mb\git\OpenATS\modules\companies\dataGrids.php:117
 #: C:\Users\mb\git\OpenATS\modules\import\ImportUI.php:266
 #: C:\Users\mb\git\OpenATS\modules\lists\dataGrids.php:61
-#: C:\Users\mb\git\OpenATS\lib\Companies.php:772
+#: C:\Users\mb\git\OpenATS\lib\Companies.php:773
 msgid "Phone"
 msgstr "Telefon"
 
@@ -3960,7 +4051,7 @@ msgstr "Inny telefon"
 msgid "Back to Contacts"
 msgstr "Powrót do kontaktów"
 
-#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:157
+#: C:\Users\mb\git\OpenATS\modules\contacts\AddActivityScheduleEventModal.tpl:158
 msgid "No changes have been made."
 msgstr "Nie dokonano żadnych zmian."
 
@@ -4046,9 +4137,9 @@ msgstr "Kontakt - nazwa"
 #: C:\Users\mb\git\OpenATS\modules\contacts\Show.tpl:6
 #: C:\Users\mb\git\OpenATS\modules\joborders\Add.tpl:110
 #: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:121
-#: C:\Users\mb\git\OpenATS\lib\Calendar.php:890
-#: C:\Users\mb\git\OpenATS\lib\Companies.php:819
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1117
+#: C:\Users\mb\git\OpenATS\lib\Calendar.php:902
+#: C:\Users\mb\git\OpenATS\lib\Companies.php:820
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1118
 msgid "Contact"
 msgstr "Kontakt"
 
@@ -4172,7 +4263,7 @@ msgstr "Brak treści zapytania."
 #: C:\Users\mb\git\OpenATS\modules\home\SearchEverything.tpl:2
 #: C:\Users\mb\git\OpenATS\modules\home\SearchEverything.tpl:11
 #: C:\Users\mb\git\OpenATS\modules\home\SearchEverything.tpl:13
-#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:299
+#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:323
 msgid "Quick Search"
 msgstr "Szybkie wyszukanie"
 
@@ -4463,8 +4554,8 @@ msgstr "Pełna nazwa"
 #: C:\Users\mb\git\OpenATS\modules\import\ImportUI.php:231
 #: C:\Users\mb\git\OpenATS\modules\import\ImportUI.php:250
 #: C:\Users\mb\git\OpenATS\modules\import\ImportUI.php:265
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1212
-#: C:\Users\mb\git\OpenATS\lib\Companies.php:797
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1213
+#: C:\Users\mb\git\OpenATS\lib\Companies.php:798
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:909
 msgid "Zip"
 msgstr "Kod pocztowy"
@@ -4480,7 +4571,7 @@ msgid "Email 2"
 msgstr "E-mail 2"
 
 #: C:\Users\mb\git\OpenATS\modules\import\ImportUI.php:267
-#: C:\Users\mb\git\OpenATS\lib\Companies.php:777
+#: C:\Users\mb\git\OpenATS\lib\Companies.php:778
 msgid "Phone 2"
 msgstr "Telefon 2"
 
@@ -4750,14 +4841,14 @@ msgstr "Nie dotyczy"
 #: C:\Users\mb\git\OpenATS\modules\joborders\Add.tpl:156
 #: C:\Users\mb\git\OpenATS\modules\joborders\Show.tpl:122
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalTemplateEdit.tpl:156
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1161
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1162
 msgid "Salary"
 msgstr "Wynagrodzenie"
 
 #: C:\Users\mb\git\OpenATS\modules\joborders\Add.tpl:176
 #: C:\Users\mb\git\OpenATS\modules\joborders\Show.tpl:153
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalTemplateEdit.tpl:154
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1179
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1180
 msgid "Openings"
 msgstr "Otwarcia(ilość stanowisk)"
 
@@ -4770,7 +4861,7 @@ msgstr "Wybierz użytkownika"
 #: C:\Users\mb\git\OpenATS\modules\joborders\Add.tpl:202
 #: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:208
 #: C:\Users\mb\git\OpenATS\modules\joborders\Show.tpl:84
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:929
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:930
 msgid "Company Job ID"
 msgstr "Firmowy nr zlecenia"
 
@@ -4789,7 +4880,7 @@ msgstr ""
 "sposób. "
 
 #: C:\Users\mb\git\OpenATS\modules\joborders\Add.tpl:249
-#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:266
+#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:267
 msgid ""
 "Checking this box indicates that the job order is public. Job orders flaged "
 "as public will be able to be viewed by anonymous users."
@@ -4798,7 +4889,7 @@ msgstr ""
 "niezalogowanych użytkowników."
 
 #: C:\Users\mb\git\OpenATS\modules\joborders\Add.tpl:280
-#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:300
+#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:301
 #: C:\Users\mb\git\OpenATS\modules\joborders\Show.tpl:303
 msgid "Internal Notes"
 msgstr "Notatki wewnętrzne"
@@ -4815,7 +4906,7 @@ msgstr "Powrót do zleceń"
 #: C:\Users\mb\git\OpenATS\modules\joborders\CreateAttachmentModal.tpl:2
 #: C:\Users\mb\git\OpenATS\modules\joborders\Show.tpl:6
 #: C:\Users\mb\git\OpenATS\modules\joborders\Show.tpl:8
-#: C:\Users\mb\git\OpenATS\lib\Calendar.php:908
+#: C:\Users\mb\git\OpenATS\lib\Calendar.php:920
 msgid "Job Order"
 msgstr "Zlecenie"
 
@@ -4870,31 +4961,11 @@ msgstr "Edytuj zlecenie"
 
 #: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:166
 msgid "Total Openings"
-msgstr "Łącznie otwarcia"
+msgstr "Łącznie stanowisk (otwarcia)"
 
-#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:252
-msgid "Upcoming"
-msgstr "Nadchodzący"
-
-#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:253
-msgid "Prospective / Lead"
-msgstr "Prowadzony"
-
-#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:254
-msgid "On Hold"
-msgstr "Wstrzymany"
-
-#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:255
-msgid "Full"
-msgstr "Pełny/Zrealizowany"
-
-#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:256
-msgid "Closed"
-msgstr "Zamknięty"
-
-#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:257
-msgid "Canceled"
-msgstr "Anulowany"
+#: C:\Users\mb\git\OpenATS\modules\joborders\Edit.tpl:182
+msgid "Remaining Openings"
+msgstr "Pozostałe stanowiska (otwarcia)"
 
 #: C:\Users\mb\git\OpenATS\modules\joborders\JobOrders.tpl:32
 msgid "Active / On Hold / Full"
@@ -5011,7 +5082,7 @@ msgstr "ID zlecenia"
 
 #: C:\Users\mb\git\OpenATS\modules\joborders\Show.tpl:99
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalTemplateEdit.tpl:162
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1128
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1129
 msgid "Contact Phone"
 msgstr "Kontakt - telefon"
 
@@ -5025,7 +5096,7 @@ msgstr "Lokacja"
 
 #: C:\Users\mb\git\OpenATS\modules\joborders\Show.tpl:117
 #: C:\Users\mb\git\OpenATS\modules\settings\CareerPortalTemplateEdit.tpl:155
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1152
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1153
 msgid "Max Rate"
 msgstr "Stawka maksymalna"
 
@@ -5328,14 +5399,6 @@ msgstr "Zakres dat"
 msgid "All time"
 msgstr "Cały czas"
 
-#: C:\Users\mb\git\OpenATS\modules\reports\EEOReport.tpl:45
-msgid "Placed"
-msgstr "Zatrudnień"
-
-#: C:\Users\mb\git\OpenATS\modules\reports\EEOReport.tpl:46
-msgid "Not in Consideration"
-msgstr "Nie rozpatrywany"
-
 #: C:\Users\mb\git\OpenATS\modules\reports\EEOReport.tpl:50
 msgid "Preview Report"
 msgstr "Podgląd raportu"
@@ -5596,7 +5659,7 @@ msgstr "Dodaj użytkownika"
 #: C:\Users\mb\git\OpenATS\modules\settings\Passwords.tpl:14
 #: C:\Users\mb\git\OpenATS\modules\settings\SettingsUI.php:87
 #: C:\Users\mb\git\OpenATS\modules\settings\SettingsUI.php:2479
-#: C:\Users\mb\git\OpenATS\modules\settings\SettingsUI.php:3866
+#: C:\Users\mb\git\OpenATS\modules\settings\SettingsUI.php:3867
 #: C:\Users\mb\git\OpenATS\modules\settings\SiteName.tpl:14
 #: C:\Users\mb\git\OpenATS\modules\settings\SystemInformation.tpl:14
 #: C:\Users\mb\git\OpenATS\modules\settings\tags.tpl:16
@@ -6790,64 +6853,64 @@ msgstr "Dodaj/usuń tagi"
 msgid "Add"
 msgstr "Dodaj"
 
-#: C:\Users\mb\git\OpenATS\lib\Calendar.php:646
+#: C:\Users\mb\git\OpenATS\lib\Calendar.php:652
 msgid "My Upcoming Events / Calls"
 msgstr "Nadchodzące Zdarzenia/Rozmowy"
 
-#: C:\Users\mb\git\OpenATS\lib\Calendar.php:658
+#: C:\Users\mb\git\OpenATS\lib\Calendar.php:664
 msgid "My Upcoming Calls"
 msgstr "Nadchodzące rozmowy"
 
-#: C:\Users\mb\git\OpenATS\lib\Calendar.php:859
+#: C:\Users\mb\git\OpenATS\lib\Calendar.php:871
 msgid "Candidate Deleted"
 msgstr "Kandydat usunięty"
 
-#: C:\Users\mb\git\OpenATS\lib\Calendar.php:878
+#: C:\Users\mb\git\OpenATS\lib\Calendar.php:890
 msgid "Company Deleted"
 msgstr "Firma usunięta"
 
-#: C:\Users\mb\git\OpenATS\lib\Calendar.php:896
+#: C:\Users\mb\git\OpenATS\lib\Calendar.php:908
 msgid "Contact Deleted"
 msgstr "Kontakt usunięty"
 
-#: C:\Users\mb\git\OpenATS\lib\Calendar.php:914
+#: C:\Users\mb\git\OpenATS\lib\Calendar.php:926
 msgid "Job Order Deleted"
 msgstr "Zlecenie usunięte"
 
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1217
-#: C:\Users\mb\git\OpenATS\lib\Companies.php:844
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1218
+#: C:\Users\mb\git\OpenATS\lib\Companies.php:845
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:914
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1188
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1189
 msgid "Misc Notes"
 msgstr "Inne notatki"
 
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1234
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1235
 msgid "Recent Status"
 msgstr "Ostatni status"
 
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1270
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1271
 msgid "Recent Status (Extended)"
 msgstr "Ostatni status(rozsz.)"
 
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1313
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1314
 msgid "Available"
 msgstr "Dostępny"
 
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1378
-#: C:\Users\mb\git\OpenATS\lib\Companies.php:849
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1379
+#: C:\Users\mb\git\OpenATS\lib\Companies.php:850
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:940
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1193
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1194
 msgid "OwnerID"
 msgstr "ID właściciela"
 
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1384
-#: C:\Users\mb\git\OpenATS\lib\Companies.php:855
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1385
+#: C:\Users\mb\git\OpenATS\lib\Companies.php:856
 #: C:\Users\mb\git\OpenATS\lib\Contacts.php:946
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1200
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1201
 msgid "IsHot"
 msgstr "Specjalny"
 
-#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1390
+#: C:\Users\mb\git\OpenATS\lib\Candidates.php:1391
 msgid "Tags"
 msgstr "Tagi"
 
@@ -7000,73 +7063,77 @@ msgstr "Lista rozwijana"
 msgid "Radio Button List"
 msgstr "Radio Lista"
 
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1004
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1005
 msgid "In Pipeline"
 msgstr "W procesie"
 
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1021
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1022
 msgid "Not Contacted"
 msgstr "Bez kontaktu"
 
-#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1076
+#: C:\Users\mb\git\OpenATS\lib\JobOrders.php:1077
 msgid "Interviews"
 msgstr "Wywiad"
 
-#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:108
+#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:125
 msgid "CATS Applicant Tracking System"
 msgstr "ATS System Śledzenia Aplikantów"
 
-#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:163
+#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:180
 msgid "Logout"
 msgstr "Wyloguj"
 
-#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:193
+#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:210
 msgid "Account Inactive"
 msgstr "Konto nieaktywne"
 
-#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:197
+#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:214
 msgid "Read Only Access"
 msgstr "Dostęp tylko do odczytu"
 
-#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:274
+#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:298
 msgid "Recent"
 msgstr "Ostatnio"
 
-#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:293
+#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:317
 msgid "ASP Search"
 msgstr "Wyszukanie ASP"
 
-#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:405
+#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:429
 msgid "Recent Searches"
 msgstr "Ostatnio szukano"
 
-#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:406
+#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:430
 msgid "To save a recent search, press the + button below."
 msgstr "Aby zapisać - kliknij przycisk \"+\" poniżej."
 
-#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:427
+#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:451
 msgid "The maximum amount of saved searches is"
 msgstr "Maksymalna ilośc zapisanych wyszukiwani to "
 
-#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:428
+#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:452
 msgid "To save this search, delete another saved search."
 msgstr "Aby zapisać to wyszukanie - usuń inne."
 
-#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:436
+#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:460
 msgid "Save This Search"
 msgstr "Zapisz to wyszukanie"
 
-#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:461
+#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:485
 msgid "Saved Searches"
 msgstr "Zapisane wyszukania"
 
-#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:462
+#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:486
 msgid "To delete a recent search, press the - button."
 msgstr "Aby usunąć ostatnio szukane kliknij przycisk \"-\""
 
-#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:493
+#: C:\Users\mb\git\OpenATS\lib\TemplateUtility.php:517
 msgid "Delete This Search"
 msgstr "Usuń to wyszukanie"
+
+#: C:\Users\mb\git\OpenATS\js\activity.js:278
+msgid "Submit"
+msgstr "Wyślij"
 
 #: C:\Users\mb\git\OpenATS\js\dataGridFilters.js:15
 #: C:/Users/mb/git/OpenATS/js/dataGridFilters.js:15

@@ -843,7 +843,7 @@ function updateCalendarViewMonth()
 
     var monthData = -1;
 
-    document.getElementById('calendarTitle').innerHTML = 'Calendar: '
+    document.getElementById('calendarTitle').innerHTML = '<?php echo __("Calendar");?>: '
         + monthNameWrap(currentMonth) + ' ' + currentYear;
 
     document.getElementById('linkMonthBack').innerHTML = '<a href="javascript:setCalendarViewMonth('
@@ -993,7 +993,7 @@ function updateCalendarViewMonthCell(year, month, day, cellID, monthData)
                     }
 
                     string += generateCalendarEntrySmall(
-                        dayData.entries[i].getData('time'),
+                        dayData.entries[i].getData('timeUI'),
                         dayData.entries[i].getData('title'),
                         '<br />',
                         dayData.entries[i]
@@ -1092,8 +1092,7 @@ function updateCalendarViewWeek()
         {
             document.getElementById('calendarWeekCell' + i).className = 'day';
         }
-        document.getElementById('weekDay' + i).innerHTML = monthNameAbreiv[getMonthByDay(currentYear, currentMonth, theDay) - 1]
-            + getDayByDay(currentYear, currentMonth, theDay);
+        document.getElementById('weekDay' + i).innerHTML = getDayByDay(currentYear, currentMonth, theDay) +' '+ monthNameAbreiv[getMonthByDay(currentYear, currentMonth, theDay) - 1];
     }
 
     document.getElementById('weekNotice').innerHTML = totalEntries + ' <?php echo __("entries for");?> ' + weekNames[currentWeek - 1] + ' <?php echo __("week of");?> ' + monthNameWrap(currentMonth) + ' ' + currentYear;
@@ -1113,7 +1112,7 @@ function updateCalendarViewWeekCell(cellID, dayData)
         }
 
         string += generateCalendarEntrySmall(
-            dayData.entries[i].getData('time'),
+            dayData.entries[i].getData('timeUI'),
             dayData.entries[i].getData('title'),
             '&nbsp;-',
             dayData.entries[i]
@@ -1145,7 +1144,7 @@ function getDayHourByCell(id)
     if (id == 0)
     {
         /* Morning. */
-        return 0;
+        return dayHourStart-1;
     }
 
     if (dayTotalCells - 1 == id)
@@ -1172,7 +1171,7 @@ function updateCalendarViewDay()
 
     dayPositionData = Array();
 
-    document.getElementById('calendarTitle').innerHTML = '<?php echo __("Calendar");?>: ' + monthNameWrap(currentMonth) + ' ' + currentDay + ', ' + currentYear;
+    document.getElementById('calendarTitle').innerHTML = '<?php echo __("Calendar");?>: '  + currentDay + ' ' + monthNameWrap(currentMonth) + ', ' + currentYear;
 
     document.getElementById('linkDayBack').innerHTML = '<a href="javascript:setCalendarViewDay(' + getYearByDay(currentYear, currentMonth, currentDay - 1) + ', ' + getMonthByDay(currentYear, currentMonth, currentDay - 1) + ', ' + getDayByDay(currentYear, currentMonth, currentDay - 1) + ');"><img src="images/arrow_left_24.gif" style="border:none;" />&nbsp;</a>';
     document.getElementById('linkDayForeward').innerHTML = '<a href="javascript:setCalendarViewDay(' + getYearByDay(currentYear, currentMonth, currentDay + 1) + ', ' + getMonthByDay(currentYear, currentMonth, currentDay + 1) + ', ' + getDayByDay(currentYear, currentMonth, currentDay + 1) + ');">&nbsp;<img src="images/arrow_right_24.gif" style="border:none;" /></a>';
@@ -1211,6 +1210,7 @@ function updateCalendarViewDay()
         document.getElementById('calendarDayCell' + i).className = 'day';
         document.getElementById('calendarDayCell' + i).onclick  = function()
         {
+        	//lert('test');
             addEventByDay(
                 currentYear,
                 currentMonth,
@@ -1226,7 +1226,7 @@ function updateCalendarViewDay()
     }
 
 
-    document.getElementById('dayNotice').innerHTML = totalEntries + ' <?php echo __("entries for");?> ' + monthNameWrap(currentMonth) + ' ' + currentDay + ', ' + currentYear;
+    document.getElementById('dayNotice').innerHTML = totalEntries + ' <?php echo __("entries for");?> '  + currentDay + ' ' + monthNameWrap(currentMonth) + ', ' + currentYear;
 
 }
 
@@ -1245,7 +1245,7 @@ function updateCalendarViewDayCell(cell, entry)
     var idEntry = 'dayCell' + dayPositionData.length;
 
     string += generateCalendarEntryDayView(
-        entry.getData('time'),
+        entry.getData('timeUI'),
         entry.getData('title'),
         0,
         0,

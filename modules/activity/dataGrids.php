@@ -91,7 +91,7 @@ class ActivityDataGrid extends DataGrid
         $this->_dataItemIDColumn = 'company.company_id';
 
         $this->_classColumns = array( 
-            __('Date') =>           array('pagerRender'    => 'return $rsData[\'dateCreated\'];', 
+            __('Date') =>           array('pagerRender'    => '$ret = $rsData[\'dateCreatedSort\']; return evConvertDateDbToDateTime($ret);', 
                                       'sortableColumn' => 'dateCreatedSort',
                                       'pagerWidth'     => 110,
                                       'pagerOptional'  => true,
@@ -121,8 +121,9 @@ class ActivityDataGrid extends DataGrid
                                      'alphaNavigation' => true,
 									 'filter' 		   => 'CONCAT(joborder.title, company.name)'),        
 
-             __('Activity') =>      array('pagerRender'    => '$ret = $rsData[\'typeDescription\']; return $ret;', 
-                                     'sortableColumn'  => 'typeDescription',
+             __('Activity') =>      array('pagerRender'    => '$ret = $rsData[\'type\']; return EnumTypeEnum::activityType()->enumByAttr(\'dbValue\',$ret)->desc;', 
+             						 'exportRender'   => 'return $rsData[\'type\'];',
+             						 'sortableColumn'  => 'type',
                                      'pagerWidth'      => 65,
                                      'pagerOptional'   => true,
                                      'alphaNavigation' => true,
@@ -168,9 +169,10 @@ class ActivityDataGrid extends DataGrid
                 company.is_hot AS companyIsHot,
                 company.company_id AS companyID,
                 activity.joborder_id AS jobOrderID,
-                activity.notes AS notes,
-                activity_type.short_description AS typeDescription,
-                DATE_FORMAT(
+        		activity.type AS type,
+                activity.notes AS notes,"
+                //activity_type.short_description AS typeDescription,
+                ."DATE_FORMAT(
                     activity.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
                 ) AS dateCreated,
                 activity.date_created AS dateCreatedSort,
@@ -188,10 +190,10 @@ class ActivityDataGrid extends DataGrid
             JOIN data_item_type
                 ON activity.data_item_type = data_item_type.data_item_type_id
             LEFT JOIN user AS entered_by_user
-                ON activity.entered_by = entered_by_user.user_id
-            LEFT JOIN activity_type
-                ON activity.type = activity_type.activity_type_id
-            LEFT JOIN joborder
+                ON activity.entered_by = entered_by_user.user_id "
+            //LEFT JOIN activity_type
+            //   ON activity.type = activity_type.activity_type_id
+            ."LEFT JOIN joborder
                 ON activity.joborder_id = joborder.joborder_id
             LEFT JOIN company
                 ON joborder.company_id = company.company_id
@@ -217,9 +219,10 @@ class ActivityDataGrid extends DataGrid
                 company.is_hot AS companyIsHot,
                 company.company_id AS companyID,
                 activity.joborder_id AS jobOrderID,
-                activity.notes AS notes,
-                activity_type.short_description AS typeDescription,
-                DATE_FORMAT(
+        		activity.type AS type,
+                activity.notes AS notes,"
+                //activity_type.short_description AS typeDescription,
+                ."DATE_FORMAT(
                     activity.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
                 ) AS dateCreated,
                 activity.date_created AS dateCreatedSort,
@@ -237,10 +240,10 @@ class ActivityDataGrid extends DataGrid
             JOIN data_item_type
                 ON activity.data_item_type = data_item_type.data_item_type_id
             LEFT JOIN user AS entered_by_user
-                ON activity.entered_by = entered_by_user.user_id
-            LEFT JOIN activity_type
-                ON activity.type = activity_type.activity_type_id
-            LEFT JOIN joborder
+                ON activity.entered_by = entered_by_user.user_id "
+            //LEFT JOIN activity_type
+            //    ON activity.type = activity_type.activity_type_id
+            ."LEFT JOIN joborder
                 ON activity.joborder_id = joborder.joborder_id
             LEFT JOIN company
                 ON joborder.company_id = company.company_id

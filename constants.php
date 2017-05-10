@@ -192,6 +192,7 @@ define('DEFAULT_XML_EXPORT_TEMPLATE', 'rss');
 
 /* Time Zones */
 // FIXME: Support fractional GMT offsets.
+global $timeZones;
 $timeZones = array(
     array(-12,  'GMT-12:00 International Date Line West'),
     array(-11,  'GMT-11:00 Midway Island, Samoa'),
@@ -281,6 +282,7 @@ $timeZones = array(
 );
 
 /* These file extensions will have '.txt' appended to them on upload. */
+global $badFileExtensions;
 $badFileExtensions = array(
     'shtml',
     'php',

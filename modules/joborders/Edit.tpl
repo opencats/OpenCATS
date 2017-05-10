@@ -179,7 +179,7 @@
                         </td>
 
                         <td class="tdVertical">
-                            <label id="openingsAvailableLabel" for="openingsAvailable">Remaining Openings:</label>
+                            <label id="openingsAvailableLabel" for="openingsAvailable"><?php echo __("Remaining Openings");?>:</label>
                         </td>
                         <td class="tdData">
                             <input type="text" tabindex="16" class="inputbox" id="openingsAvailable" name="openingsAvailable" value="<?php $this->_($this->data['openingsAvailable']); ?>" style="width: 150px;" />&nbsp;*
@@ -248,13 +248,14 @@
                         </td>
                         <td class="tdData">
                             <select tabindex="8" id="status" name="status" class="inputbox" style="width: 150px;">
-                                <option <?php if ($this->data['status'] == 'Active'): ?>selected<?php endif; ?> value="Active"><?php echo __("Active");?></option>
-                                <option <?php if ($this->data['status'] == 'Upcoming'): ?>selected<?php endif; ?> value="Upcoming"><?php echo __("Upcoming");?></option>
-                                <option <?php if ($this->data['status'] == 'Lead'): ?>selected<?php endif; ?> value="Lead"><?php echo __("Prospective / Lead");?></option>
-                                <option <?php if ($this->data['status'] == 'OnHold'): ?>selected<?php endif; ?> value="OnHold"><?php echo __("On Hold");?></option>
-                                <option <?php if ($this->data['status'] == 'Full'): ?>selected<?php endif; ?> value="Full"><?php echo __("Full");?></option>
-                                <option <?php if ($this->data['status'] == 'Closed'): ?>selected<?php endif; ?> value="Closed"><?php echo __("Closed");?></option>
-                                <option <?php if ($this->data['status'] == 'Canceled'): ?>selected<?php endif; ?> value="Canceled"><?php echo __("Canceled");?></option>
+                        <?php
+                        $joStatuses = EnumTypeEnum::jobOrderStatus()->enumValues();
+                        $selectedValue = JobOrderStatusEnum::active()->dbValue;
+                        foreach($joStatuses as $k =>$jos){
+                        	$selected = ($selectedValue==$jos->dbValue);
+                        	?>
+                        		<option <?php if ($selected): ?>selected<?php endif; ?> value="<?php echo $jos->dbValue;?>"><?php echo $jos->desc;?></option>
+                            <?php } //foreach($joStatuses ?>    
                             </select>&nbsp;*
                         </td>
 

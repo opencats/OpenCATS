@@ -1,12 +1,17 @@
 <?php 
 
-function evIncBe($name){
-	include_once(ATS_BE_DIR.'/'.$name.'.php');
+function evIncBe($name,$silent=false,$args=array()){
+	if ($silent){
+		@include_once(ATS_BE_DIR.'/'.$name.'.php');
+	} else {
+		include_once(ATS_BE_DIR.'/'.$name.'.php');
+	}
 }
 
 function evIncFe($name){
 	include_once(ATS_FE_DIR.'/'.$name.'.php');
 }
+
 
 function evKrumo($arr){
 	evIncBe('sys/krumo/class.krumo');
@@ -54,14 +59,33 @@ function evPrint($arr,$msg=null,$return=false){
 	if ($return) {$ret=ob_get_contents();ob_end_clean(); return $ret;}
 }
 
-function evRunWithBuf($obj,$method,$args){
+function evStrContains($str,$search, $case = false){
+	if (!$case){
+		$search = strtolower($search);
+		$str = strtolower($str);
+	}
+	return (strpos($str, $search) !== false);
+}
+
+function evRunWithBuff($callable,$args){
 	//cho 'start:'.$method;
-	ob_start();	
-	$result=call_user_func(array($obj,$method),$args);
+	//vd(array(
+	//	'$callable'=>$callable,
+	//	'$args'=>$args	
+	//));
+	
+	ob_start();
+	$result=call_user_func($callable,$args);
 	$output=ob_get_contents();
 	ob_end_clean();
 	//cho 'stop:'.$method;
 	return array('result'=>$result,'output'=>$output);
+	
+}
+
+function evRunWithBuf($obj,$method,$args){
+	$callable = array($obj,$method); 
+	return evRunWithBuff($callable,$args);
 }
 
 function evStrToLower($str){
@@ -69,11 +93,15 @@ function evStrToLower($str){
 }
 
 evIncBe('sys/Controller');
-function evGetControllerObj($modName){
+function evGetControllerObj($modName,$silent=false){
 	$modNameUC = ucfirst($modName);
-	evIncBe('mod/'.$modName.'/'.$modNameUC);
+	evIncBe('mod/'.$modName.'/'.$modNameUC,$silent);
 	//vd(array('evGetControllerObj'=>'mod/'.$modName.'/'.$modNameUC));
-	$res = call_user_func($modNameUC.'::getInstance');
+	if ($silent){
+		$res = @call_user_func($modNameUC.'::getInstance');
+	} else {
+		$res = call_user_func($modNameUC.'::getInstance');
+	}
 	return ($res===false)?null:$res;
 }
 
@@ -101,6 +129,24 @@ function evGetGlobal($name){
 	return (isset($GLOBALS[$name]))?$GLOBALS[$name]:null;
 }
 
+function evGetExecTime($_startTime)
+{
+	$_endTime = microtime();
+
+	if (!isset($_startTime) || empty($_startTime))
+	{
+		$_startTime = $_endTime;
+	}
+
+	list($a_dec, $a_sec) = explode(' ', $_startTime);
+	list($b_dec, $b_sec) = explode(' ', $_endTime);
+
+	$duration = $b_sec - $a_sec + $b_dec - $a_dec;
+	$duration = sprintf('%0.2f', $duration);
+
+	return $duration;
+}
+
 
 evIncBe('sys/RouteEnum');
 function evIndex(){
@@ -110,6 +156,87 @@ function evIndex(){
 	//cho 'test2';
 	$front->handleRequest();
 	
+}
+
+
+function evAtsObStart($name){
+	if (ATS_INDEX){
+		return ob_start();
+	} else {
+		return true;
+	}
+}
+
+function evAtsObEnd($name, $args){
+	if (ATS_INDEX){
+		$output=ob_get_contents();ob_end_clean();
+		//cho $output;
+		//cho 'obEnd:'.$name;
+		evSetGlobal($name,array(
+				'output'=>$output,
+				'result'=>$args
+				));
+	}
+}
+
+function evConvertDateDbToTime($dateDb){
+	return substr($dateDb,11,5);
+}
+
+function evConvertDateDbToDate($dateDb){
+	return substr($dateDb,8,2).'-'.substr($dateDb,5,2).'-'.substr($dateDb,2,2);
+}
+
+function evConvertDateDbToDateTime($dateDb){
+	return evConvertDateDbToDate($dateDb).' '.evConvertDateDbToTime($dateDb);
+}
+
+function evCatsTimeToUTime($activityHour,$activityMinute,$activityAMPM){
+	
+/*
+ *           // handle 24h
+            if (intval($hour)>11){
+            	$hour = intval($hour)-12;
+            	$meridiem='PM';
+            }
+ */	
+	
+	$h = $activityHour * 1;
+	$time = null;
+	if ($h > 11) {
+		$time = strtotime(
+				sprintf('%s:%s', $activityHour, $activityMinute,$activityAMPM)
+				);
+	} else {
+		$time = strtotime(
+				sprintf('%s:%s %s', $activityHour, $activityMinute, 'AM')
+				);
+	}
+	return $time;
+}
+
+evIncBe('sys/EnumTypeEnum');
+/*function evIncEnum($enumTypeEnum){
+	$path=$enumTypeEnum->getDefPath();
+	return evIncBe($path);
+}*/
+
+//vd(array('EnumTypeEnum::values'=>EnumTypeEnum::values()));
+//f//oreach(EnumTypeEnum::values() as $k =>$v){
+//	evIncEnum($v);
+//	$values = call_user_func(ucfirst($v->name()).'Enum::values');
+//	evDbg($values);
+//}
+function evShowJs($args){
+	$jsFlagPhpNoHeader=1;
+	include_once(ATS_FE_DIR.'/'.$args['path'].'.js');
+}
+
+evIncBe('lib/Minifier');
+function evGetJs($path){
+	$result = evRunWithBuff("evShowJs",array('path'=>$path));
+	$minifiedCode = \JShrink\Minifier::minify($result['output'], array('flaggedComments' => false));
+	return $minifiedCode;
 }
 
 

@@ -161,7 +161,7 @@ use OpenCATS\UI\QuickActionMenu;
 
                             <tr>
                                 <td class="vertical"><?php echo __("Status");?>:</td>
-                                <td class="data"><?php $this->_($this->data['status']); ?></td>
+                                <td class="data"><?php $this->_(EnumTypeEnum::jobOrderStatus()->enumByAttr('dbValue',$this->data['status'])->desc); ?></td>
                             </tr>
 
                             <tr>
@@ -181,7 +181,7 @@ use OpenCATS\UI\QuickActionMenu;
 
                             <tr>
                                 <td class="vertical"><?php echo __("Created");?>:</td>
-                                <td class="data"><?php $this->_($this->data['dateCreated']); ?> (<?php $this->_($this->data['enteredByFullName']); ?>)</td>
+                                <td class="data"><?php $this->_(evConvertDateDbToDateTime($this->data['dateCreatedDb'])); ?> (<?php $this->_($this->data['enteredByFullName']); ?>)</td>
                             </tr>
 
                             <tr>
@@ -250,7 +250,7 @@ use OpenCATS\UI\QuickActionMenu;
                                                         <?php $this->_($attachmentsData['originalFilename']) ?>
                                                     </a>
                                                 </td>
-                                                <td><?php $this->_($attachmentsData['dateCreated']) ?></td>
+                                                <td><?php $this->_(evConvertDateDbToDateTime($attachmentsData['dateCreatedDb'])) ?></td>
                                                 <td>
                                                     <?php if (!$this->isPopup): ?>
                                                         <?php if ($this->getUserAccessLevel('joborders.deleteAttachment') >= ACCESS_LEVEL_DELETE): ?>

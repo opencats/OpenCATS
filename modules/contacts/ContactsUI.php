@@ -1451,9 +1451,7 @@ class ContactsUI extends UserInterface
                 $meridiem = $_POST['meridiem'];
 
                 /* Convert formatted time to UNIX timestamp. */
-                $time = strtotime(
-                    sprintf('%s:%s %s', $hour, $minute, $meridiem)
-                );
+                $time = evCatsTimeToUTime($hour, $minute, $meridiem);
 
                 /* Create MySQL date string w/ 24hr time (YYYY-MM-DD HH:MM:SS). */
                 $date = sprintf(
@@ -1506,9 +1504,10 @@ class ContactsUI extends UserInterface
             $calendar = new Calendar($this->_siteID);
             $calendarEventTypes = $calendar->getAllEventTypes();
 
-            $eventTypeDescription = ResultSetUtility::getColumnValueByIDValue(
-                $calendarEventTypes, 'typeID', $eventTypeID, 'description'
-            );
+            //$eventTypeDescription = ResultSetUtility::getColumnValueByIDValue(
+            //    $calendarEventTypes, 'typeID', $eventTypeID, 'description'
+            //);
+            $eventTypeDescription = EnumTypeEnum::eventType()->enumByAttr('dbValue',$eventTypeID)->desc;
 
             $eventHTML = sprintf(
                 '<p>An event of type <span class="bold">%s</span> has been scheduled on <span class="bold">%s</span>.</p>',

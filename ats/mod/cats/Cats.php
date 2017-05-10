@@ -31,7 +31,7 @@ class Cats extends Controller {
 		//$content = evStrReplace($content,'import "main.css','import "/main.css');
 		///$content = evStrReplace($content,'href="ie.css','href="/ie.css');
 		
-		echo $content;
+		echo trim($content);
 		
 	}
 
@@ -39,4 +39,3 @@ class Cats extends Controller {
 }
 
 ?>
-

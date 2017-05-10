@@ -50,10 +50,10 @@
             <?php if ($this->isResumeMode && $this->isResultsMode): ?>
                 <br />
                 <?php if (!empty($this->rs)): ?>
-                    <p class="note">Search Results &nbsp;<?php $this->_($this->pageStart); ?> to <?php $this->_($this->pageEnd); ?> of <?php $this->_($this->totalResults); ?></p>
+                    <p class="note"><?php echo __("Search Results");?> &nbsp;<?php $this->_($this->pageStart); ?> to <?php $this->_($this->pageEnd); ?> of <?php $this->_($this->totalResults); ?></p>
                     <?php echo($this->exportForm['header']); ?>
                 <?php else: ?>
-                    <p class="note">Search Results</p>
+                    <p class="note"><?php echo __("Search Results");?></p>
                 <?php endif; ?>
 
                 <table class="sortable">
@@ -61,26 +61,26 @@
                         <tr>
                             <th nowrap>&nbsp;</th>
                             <th align="left" nowrap="nowrap">
-                                <?php $this->pager->printSortLink('firstName', 'First Name'); ?>
+                                <?php $this->pager->printSortLink('firstName', __('First Name')); ?>
                             </th>
                             <th align="left" nowrap="nowrap">
-                                <?php $this->pager->printSortLink('lastName', 'Last Name'); ?>
+                                <?php $this->pager->printSortLink('lastName', __('Last Name')); ?>
                             </th>
                             <th align="left" nowrap="nowrap">Resume</th>
                             <th align="left" nowrap="nowrap">
-                                <?php $this->pager->printSortLink('city', 'City'); ?>
+                                <?php $this->pager->printSortLink('city', __('City')); ?>
                             </th>
                             <th align="left" nowrap="nowrap">
-                                <?php $this->pager->printSortLink('state', 'State'); ?>
+                                <?php $this->pager->printSortLink('state', __('State')); ?>
                             </th>
                             <th align="left" nowrap="nowrap">
-                                <?php $this->pager->printSortLink('dateCreatedSort', 'Created'); ?>
+                                <?php $this->pager->printSortLink('dateCreatedSort', __('Created')); ?>
                             </th>
                             <th align="left" nowrap="nowrap">
-                                <?php $this->pager->printSortLink('dateModifiedSort', 'Modified'); ?>
+                                <?php $this->pager->printSortLink('dateModifiedSort', __('Modified')); ?>
                             </th>
                             <th align="left" nowrap="nowrap">
-                                <?php $this->pager->printSortLink('ownerSort', 'Owner'); ?>
+                                <?php $this->pager->printSortLink('ownerSort', __('Owner')); ?>
                             </th>
                         </tr>
                     </thead>

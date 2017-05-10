@@ -3,7 +3,7 @@
 abstract class EnumType {
 	private static $enumCache = array();
     private $name;
-	private static $fields = array();
+	protected static $fields = array();
 	protected $attrs = null;
  
     public abstract function getFields();
@@ -45,6 +45,32 @@ abstract class EnumType {
 			return $this->attrs[$atrName];
 		}
 		return null;
+	}
+	
+	public function description(){
+		return $this->getAttr('desc');
+	}
+	
+	public static function values(){
+		$className = get_called_class();
+		$result = array();
+		foreach(static::$fields as $k=>$v){
+			$result[]=call_user_func($className.'::'.$k);
+		}
+		return $result;
+	}
+	
+	public static function valueOf($name){
+		$result = null;
+		if (isset(static::$fields[$name])){
+			$className = get_called_class();
+			$result=call_user_func($className.'::'.$name);
+		}
+		return $result;
+	}
+	
+	public function __get($name) {
+		return $this->getAttr($name);
 	}
 	
 }

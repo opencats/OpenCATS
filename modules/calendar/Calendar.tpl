@@ -62,10 +62,12 @@
                                                 </td>
                                                 <td class="tdData">
                                                     <select id="type" name="type" class="inputbox" style="width: 150px;">
-                                                        <option value="">(<?php echo __("Select a Type");?>)</option>
-                                                        <?php foreach ($this->calendarEventTypes as $type): ?>
-                                                            <option value="<?php echo($type['typeID']); ?>"><?php echo($type['description']); ?></option>
-                                                        <?php endforeach; ?>
+                                                    <option value="">(<?php echo __("Select a Type");?>)</option>
+                                                    <?php 
+                                                    E::ui('selectOptions')->html(array(
+                                                    	'enum'=>EnumTypeEnum::eventType()
+                                                    ));
+                                                    ?>
                                                     </select>&nbsp;*
                                                 </td>
                                             </tr>
@@ -95,7 +97,7 @@
                                                 <td class="tdData">
                                                     <input type="radio" name="allDay" id="allDay0" value="0" checked onchange="setAddAllDayEnabled();" />
                                                     <select id="hour" name="hour" class="inputbox" style="width: 40px;">
-                                                        <?php for ($i = 1; $i <= 12; ++$i): ?>
+                                                        <?php for ($i = 0; $i <= 23; ++$i): ?>
                                                             <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
                                                         <?php endfor; ?>
                                                     </select>&nbsp;
@@ -106,7 +108,7 @@
                                                             </option>
                                                         <?php endfor; ?>
                                                     </select>&nbsp;
-                                                    <select id="meridiem" name="meridiem" class="inputbox" style="width: 45px;">
+                                                    <select id="meridiem" name="meridiem" class="inputbox" style="width: 45px;display:none;">
                                                         <option value="AM">AM</option>
                                                         <option value="PM">PM</option>
                                                     </select>
@@ -213,9 +215,11 @@
                                                 <td class="tdData">
                                                     <select id="typeEdit" name="type" class="inputbox" style="width: 150px;">
                                                         <option value="">(<?php echo __("Select a Type");?>)</option>
-                                                        <?php foreach ($this->calendarEventTypes as $type): ?>
-                                                            <option value="<?php echo($type['typeID']); ?>"><?php echo($type['description']); ?></option>
-                                                        <?php endforeach; ?>
+                                                    	<?php 
+                                                    	E::ui('selectOptions')->html(array(
+                                                    		'enum'=>EnumTypeEnum::eventType()
+                                                   	 	));
+                                                    	?>                                                        
                                                     </select>&nbsp;*
                                                 </td>
                                             </tr>
@@ -245,7 +249,7 @@
                                                 <td class="tdData">
                                                     <input type="radio" name="allDay" id="allDayEdit0" value="0" checked onchange="setEditAllDayEnabled();" />
                                                     <select id="hourEdit" name="hour" class="inputbox" style="width: 40px;">
-                                                        <?php for ($i = 1; $i <= 12; ++$i): ?>
+                                                        <?php for ($i = 0; $i <= 23; ++$i): ?>
                                                             <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
                                                         <?php endfor; ?>
                                                     </select>&nbsp;
@@ -256,7 +260,7 @@
                                                             </option>
                                                         <?php endfor; ?>
                                                     </select>&nbsp;
-                                                    <select id="meridiemEdit" name="meridiem" class="inputbox" style="width: 45px;">
+                                                    <select id="meridiemEdit" name="meridiem" class="inputbox" style="width: 45px;display:none;">
                                                         <option value="AM">AM</option>
                                                         <option value="PM">PM</option>
                                                     </select>
@@ -586,9 +590,13 @@
         /* Constants */
         <?php
             $typesArray = array();
-            foreach ($this->calendarEventTypes as $type):
-                $typesArray[] = "new Array(" . $type['typeID'] . ", '" . $type['description'] . "', '" . $type['iconImage'] . "')";
-            endforeach;
+            //foreach ($this->calendarEventTypes as $type):
+            //    $typesArray[] = "new Array(" . $type['typeID'] . ", '" . $type['description'] . "', '" . $type['iconImage'] . "')";
+            //endforeach;
+            foreach (EnumTypeEnum::eventType()->enumValues() as $type):
+                $typesArray[] = "new Array(" . $type->dbValue . ", '" . $type->desc . "', '" . $type->iconImage . "')";
+            endforeach;            
+            
         ?>
         entryTypesArray = new Array(<?php echo(implode(",\n", $typesArray)); ?>);
 

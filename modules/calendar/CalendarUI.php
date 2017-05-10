@@ -268,7 +268,7 @@ class CalendarUI extends UserInterface
         $this->_template->assign('firstDayMonday', $calendarSettingsRS['firstDayMonday']);
         $this->_template->assign('allowAjax', ($calendarSettingsRS['noAjax'] == 0 ? true : false));
         $this->_template->assign('defaultPublic', ($calendarSettingsRS['defaultPublic'] == 0 ? 'false' : 'true'));
-        $this->_template->assign('militaryTime', false);
+        $this->_template->assign('militaryTime', true);
 
         $this->_template->assign('active', $this);
         $this->_template->assign('currentDateMDY', $currentDateMDY);
@@ -441,11 +441,11 @@ class CalendarUI extends UserInterface
             $hour     = $_POST['hour'];
             $minute   = $_POST['minute'];
             $meridiem = $_POST['meridiem'];
+            
+
 
             /* Convert formatted time to UNIX timestamp. */
-            $time = strtotime(
-                sprintf('%s:%s %s', $hour, $minute, $meridiem)
-            );
+            $time = evCatsTimeToUTime($hour, $minute, $meridiem);
 
             /* Create MySQL date string w/ 24hr time (YYYY-MM-DD HH:MM:SS). */
             $date = sprintf(
@@ -631,11 +631,15 @@ class CalendarUI extends UserInterface
             $hour     = $_POST['hour'];
             $minute   = $_POST['minute'];
             $meridiem = $_POST['meridiem'];
+            
+            // handle 24h
+            if (intval($hour)>11){
+            	$hour = intval($hour)-12;
+            	$meridiem='PM';
+            }
 
             /* Convert formatted time to UNIX timestamp. */
-            $time = strtotime(
-                sprintf('%s:%s %s', $hour, $minute, $meridiem)
-            );
+            $time = evCatsTimeToUTime($hour, $minute, $meridiem);
 
             /* Create MySQL date string w/ 24hr time (YYYY-MM-DD HH:MM:SS). */
             $date = sprintf(
@@ -645,6 +649,9 @@ class CalendarUI extends UserInterface
                 ),
                 date('H:i:00', $time)
             );
+            evd(array(
+            	'$date'=>$date	
+            ));
         }
 
         if (!eval(Hooks::get('CALENDAR_EDIT_PRE'))) return;

@@ -6,7 +6,7 @@ class FrontRouteEnum extends RouteEnum {
 public function getFields() {
 			
 	return array(
-			"/" => array(
+			"main" => array(
 					'desc'=>'Widok główny',
 					'view'=>'MainView'
 			)

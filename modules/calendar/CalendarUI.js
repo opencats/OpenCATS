@@ -200,7 +200,7 @@ function calendarEditEvent(entry)
         setCheckedValue(document.getElementById('editEventForm').elements['allDay'], '0');
         setEditAllDayEnabled();
 
-        if (entry.hour > 12)
+        /*if (entry.hour > 12)
         {
             document.getElementById('hourEdit').value = entry.hour - 12;
         }
@@ -214,7 +214,9 @@ function calendarEditEvent(entry)
             {
                 document.getElementById('hourEdit').value = entry.hour * 1;
             }
-        }
+        }*/
+        document.getElementById('hourEdit').value = entry.hour * 1;
+        
         if (entry.hour >= 12)
         {
             document.getElementById('meridiemEdit').value = 'PM';
@@ -266,14 +268,14 @@ function calendarViewEvent(entry)
         + getImageByType(entry.getData('eventType')) + '" /> '
         + getShortDescriptionByType(entry.getData('eventType'));
 
-    document.getElementById('viewEventDate').innerHTML = entry.getData('date');
+    document.getElementById('viewEventDate').innerHTML = entry.getData('dateUI');
 
     document.getElementById('viewEventOwner').innerHTML = entry.getData('enteredByFirstName')
         + ' ' + entry.getData('enteredByLastName');
 
     if (entry.getData('allDay') != '1')
     {
-        document.getElementById('viewEventTime').innerHTML = entry.getData('time');
+        document.getElementById('viewEventTime').innerHTML = entry.getData('timeUI');
 
         var durationText = getDurationString(entry.getData('duration'));
         document.getElementById('viewEventDuration').innerHTML = durationText;
@@ -333,6 +335,7 @@ function handleClickEntryByID(entryID)
 
 function addEventByDay(year, month, day, hour)
 {
+	//lert('hour:'+hour);
     /* Hack to stop executing on edit event. */
     if (noAddEvent)
     {
@@ -385,8 +388,8 @@ function addEventByDay(year, month, day, hour)
     SetDateInputDate('dateAdd', 'MM-DD-YY', dateString);
 
     document.getElementById('publicEntry').checked = defaultPublic;
-
-    if (hour > 12)
+   
+    /*if (hour > 12)
     {
         document.getElementById('hour').value = hour - 12;
     }
@@ -400,7 +403,8 @@ function addEventByDay(year, month, day, hour)
         {
             document.getElementById('hour').value = hour;
         }
-    }
+    }*/
+    document.getElementById('hour').value = hour;
 
     if (hour >= 12)
     {

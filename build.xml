@@ -59,7 +59,12 @@
 	</taskdef>
 	
 	<target name="gt-generateFileList" description="gt-generateFileList">
-	  <delete file="${workspace.ats.dir}/locale/files.lst" quiet="true"/>		
+	  <delete file="${workspace.ats.dir}/locale/files.lst" quiet="true"/>	
+	  <foreach target="gt-appendFile" param="theFile">  	
+	    <fileset dir="${workspace.ats.dir}/ats/mod" casesensitive="yes">
+	    	<include name="**/*.php"/>
+	    </fileset>
+	  </foreach>		
 	  <foreach target="gt-appendFile" param="theFile">  	
 	    <fileset dir="${workspace.ats.dir}" casesensitive="yes">
 	      <include name="*.php"/>

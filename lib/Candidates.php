@@ -475,6 +475,7 @@ class Candidates
                 DATE_FORMAT(
                     candidate.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
                 ) AS dateCreated,
+        		candidate.date_created AS dateCreatedDb,
                 DATE_FORMAT(
                     candidate.date_modified, '%%m-%%d-%%y (%%h:%%i %%p)'
                 ) AS dateModified,

@@ -105,7 +105,7 @@ use OpenCATS\UI\QuickActionMenu;
 
                             <tr>
                                 <td class="vertical"><?php echo __("Created");?>:</td>
-                                <td class="data"><?php $this->_($this->data['dateCreated']); ?> (<?php $this->_($this->data['enteredByFullName']); ?>)</td>
+                                <td class="data"><?php $this->_(evConvertDateDbToDateTime($this->data['dateCreatedDb'])); ?> (<?php $this->_($this->data['enteredByFullName']); ?>)</td>
                             </tr>
 
                             <tr>
@@ -172,7 +172,7 @@ use OpenCATS\UI\QuickActionMenu;
                                                         <?php $this->_($attachmentsData['originalFilename']) ?>
                                                     </a>
                                                 </td>
-                                                <td><?php $this->_($attachmentsData['dateCreated']) ?></td>
+                                                <td><?php $this->_(evConvertDateDbToDateTime($attachmentsData['dateCreatedDb'])) ?></td>
                                                 <td>
                                                     <?php if ($this->getUserAccessLevel('companies.deleteAttachment') >= ACCESS_LEVEL_DELETE): ?>
                                                         <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=companies&amp;a=deleteAttachment&amp;companyID=<?php echo($this->companyID); ?>&amp;attachmentID=<?php $this->_($attachmentsData['attachmentID']) ?>"  title="Delete" onclick="javascript:return confirm('<?php echo __("Delete this attachment?");?>');">
@@ -265,7 +265,7 @@ use OpenCATS\UI\QuickActionMenu;
                             </a>
                         </td>
                         <td valign="top" align="left"><?php $this->_($jobOrdersData['type']) ?></td>
-                        <td valign="top" align="left"><?php $this->_($jobOrdersData['status']) ?></td>
+                        <td valign="top" align="left"><?php $this->_(EnumTypeEnum::jobOrderStatus()->enumByAttr('dbValue',$jobOrdersData['status'])->desc) ?></td>
                         <td valign="top" align="left"><?php $this->_($jobOrdersData['dateCreated']) ?></td>
                         <td valign="top" align="left"><?php $this->_($jobOrdersData['dateModified']) ?></td>
                         <td valign="top" align="left"><?php $this->_($jobOrdersData['startDate']) ?></td>

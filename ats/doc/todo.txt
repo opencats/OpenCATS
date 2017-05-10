@@ -1,0 +1,2 @@
+eliminacja hardcoded activityType - szuk. ACTIVITY_CALL_TALKED
+przeniesc do enuma dataitemtype (trzon modelu) activity.data_item_type = data_item_type.data_item_type_id

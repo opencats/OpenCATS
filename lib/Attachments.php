@@ -526,7 +526,8 @@ class Attachments
                 directory_name AS directoryName,
                 md5_sum AS md5sum,
                 file_size_kb AS fileSizeKB,
-                DATE_FORMAT(date_created, '%%m-%%d-%%y (%%h:%%i:%%s %%p)') AS dateCreated
+                DATE_FORMAT(date_created, '%%m-%%d-%%y (%%h:%%i:%%s %%p)') AS dateCreated,
+        		date_created AS dateCreatedDb
             FROM
                 attachment
             WHERE

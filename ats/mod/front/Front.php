@@ -11,7 +11,8 @@ class Front extends Controller {
 	//}
 	
 	public function handleRequest(){
-		$route='/';
+		$_startTime = microtime();
+		$route='main';
 		if (isset($_REQUEST['route'])){
 			$route = $_REQUEST['route'];
 		}
@@ -19,7 +20,7 @@ class Front extends Controller {
 				'route'=>$route,
 				'request'=>$_REQUEST
 		);
-		if ('/'==$route){
+		if ('main'==$route){
 			
 		} else {
 			$ra=explode('/',$route);
@@ -27,8 +28,9 @@ class Front extends Controller {
 			if ('cats'!=$module && 'ajax'!=$module){
 				evincBe('locale/lang');
 			}
+			if ('front'==$module) return;
 			$action=isset($ra[1])?$ra[1]:null;
-			$this->contentController = evGetControllerObj($module);
+			$this->contentController = evGetControllerObj($module,true);
 			if ($this->contentController==null){
 				//$this->showView('error',array('message'=>__('No controller found').':'.$module));
 				echo __('No controller found').':'.$module;
@@ -45,10 +47,17 @@ class Front extends Controller {
 							'input'=>$mainInput,
 							'route'=>$contentControllerRoute
 					));
+					$output = $response['output'];
+					if (evStrContains($output,'<div class="footerBlock">')){
+						$footerBlock='<span id="footerResponse">ATS Response Time: '.evGetExecTime($_startTime).' seconds.</span>';
+						$footerBlock.='<br/><span id="footerResponse">ATS Version: '.ATS_VERSION.'.</span>';
+						$output = evStrReplace($output,'<div class="footerBlock">','<div class="footerBlock">'.$footerBlock);
+					}
+					
 					$this->view->show(array(
 							'route'=>$contentControllerRoute,
 							'view'=>$frontView,
-							'content'=> $response['output']
+							'content'=> $output
 					));
 				}
 			}

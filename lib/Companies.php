@@ -337,6 +337,7 @@ class Companies
                 DATE_FORMAT(
                     company.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
                 ) AS dateCreated,
+        		company.date_created AS dateCreatedDb,
                 CONCAT(
                     entered_by_user.first_name, ' ', entered_by_user.last_name
                 ) AS enteredByFullName,

@@ -79,10 +79,9 @@ if (!DateUtility::validate('-', $activityDate, DATE_FORMAT_MMDDYY))
 }
 
 /* Convert formatted time to UNIX timestamp. */
-$time = strtotime(
-    sprintf('%s:%s %s', $activityHour, $activityMinute, $activityAMPM)
-);
+$time = evCatsTimeToUTime($activityHour,$activityMinute,$activityAMPM);
 
+//cho 'time:'.$time;
 /* Create MySQL date string w/ 24hr time (YYYY-MM-DD HH:MM:SS). */
 $date = sprintf(
     '%s %s',
@@ -130,7 +129,7 @@ $interface->outputXMLPage(
     "    <typedescription>" . $activityEntry['typeDescription'] . "</typedescription>\n" .
     "    <notes>"           . htmlspecialchars($activityEntry['notes']) . "</notes>\n" .
     "    <regarding>"       . htmlspecialchars($activityEntry['regarding']) . "</regarding>\n" .
-    "    <date>"            . htmlspecialchars($activityEntry['dateCreated']) . "</date>\n" .
+    "    <date>"            . htmlspecialchars(evConvertDateDbToDateTime($activityEntry['dateCreatedSort'])) . "</date>\n" .
     "</data>\n"
 );
 

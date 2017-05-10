@@ -184,7 +184,7 @@ use OpenCATS\UI\CandidateQuickActionMenu;
 
                             <tr>
                                 <td class="vertical"><?php echo __("Created");?>:</td>
-                                <td class="data"><?php $this->_($this->data['dateCreated']); ?> (<?php $this->_($this->data['enteredByFullName']); ?>)</td>
+                                <td class="data"><?php $this->_(evConvertDateDbToDateTime($this->data['dateCreatedDb'])); ?> (<?php $this->_($this->data['enteredByFullName']); ?>)</td>
                             </tr>
 
                             <tr>
@@ -300,7 +300,7 @@ use OpenCATS\UI\CandidateQuickActionMenu;
                                     <div>
                                         <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=calendar&amp;view=DAYVIEW&amp;month=<?php echo($calendarData['month']); ?>&amp;year=20<?php echo($calendarData['year']); ?>&amp;day=<?php echo($calendarData['day']); ?>&amp;showEvent=<?php echo($calendarData['eventID']); ?>">
                                             <img src="<?php $this->_($calendarData['typeImage']) ?>" alt="" border="0" />
-                                            <?php $this->_($calendarData['dateShow']) ?>:
+                                            <?php $this->_(evConvertDateDbToDateTime($calendarData['dateShowDb'])) ?>:
                                             <?php $this->_($calendarData['title']); ?>
                                         </a>
                                     </div>
@@ -359,7 +359,7 @@ use OpenCATS\UI\CandidateQuickActionMenu;
                                                         </a>
                                                     </td>
                                                     <td><?php echo($attachmentsData['previewLink']); ?></td>
-                                                    <td><?php $this->_($attachmentsData['dateCreated']) ?></td>
+                                                    <td><?php $this->_(evConvertDateDbToDateTime($attachmentsData['dateCreatedDb'])) ?></td>
                                                     <td>
                                                         <?php if (!$this->isPopup): ?>
                                                             <?php if ($this->getUserAccessLevel('candidates.deleteAttachment') >= ACCESS_LEVEL_DELETE): ?>
@@ -485,7 +485,7 @@ use OpenCATS\UI\CandidateQuickActionMenu;
                         <td valign="top"><?php $this->_($pipelinesData['ownerAbbrName']) ?></td>
                         <td valign="top"><?php $this->_($pipelinesData['dateCreated']) ?></td>
                         <td valign="top"><?php $this->_($pipelinesData['addedByAbbrName']) ?></td>
-                        <td valign="top" nowrap="nowrap"><?php $this->_($pipelinesData['status']) ?></td>
+                        <td valign="top" nowrap="nowrap"><?php $this->_(EnumTypeEnum::activityStatus()->enumByAttr('dbValue',$pipelinesData['statusID'])->desc) ?></td>
 <?php if (!$this->isPopup): ?>
                         <td align="center" nowrap="nowrap">
                             <?php eval(Hooks::get('CANDIDATE_TEMPLATE_SHOW_PIPELINE_ACTION')); ?>
@@ -554,8 +554,8 @@ use OpenCATS\UI\CandidateQuickActionMenu;
 
                 <?php foreach ($this->activityRS as $rowNumber => $activityData): ?>
                     <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
-                        <td align="left" valign="top" id="activityDate<?php echo($activityData['activityID']); ?>"><?php $this->_($activityData['dateCreated']) ?></td>
-                        <td align="left" valign="top" id="activityType<?php echo($activityData['activityID']); ?>"><?php $this->_($activityData['typeDescription']) ?></td>
+                        <td align="left" valign="top" id="activityDate<?php echo($activityData['activityID']); ?>"><?php $this->_(evConvertDateDbToDate($activityData['dateCreatedSort']).' '.evConvertDateDbToTime($activityData['dateCreatedSort'])) ?></td>
+                        <td align="left" valign="top" id="activityType<?php echo($activityData['activityID']); ?>"><?php $this->_(EnumTypeEnum::activityType()->enumByAttr('dbValue',$activityData['type'])->desc) ?></td>
                         <td align="left" valign="top"><?php $this->_($activityData['enteredByAbbrName']) ?></td>
                         <td align="left" valign="top" id="activityRegarding<?php echo($activityData['activityID']); ?>"><?php $this->_($activityData['regarding']) ?></td>
                         <td align="left" valign="top" id="activityNotes<?php echo($activityData['activityID']); ?>"><?php echo($activityData['notes']); ?></td>

@@ -1,3 +1,62 @@
+<?php
+if (!isset($jsFlagPhpNoHeader)) {
+	chdir('./../');
+	$_GET['route']='js';
+	$_REQUEST['route']='js';
+	include_once('./ats/index.php');
+	include_once('./ats/lib/Minifier.php');
+	include_once('./config.php');
+	
+	$result = evRunWithBuff("showJs",array());
+	
+	//cho $result['output'];
+	//include('vendor/autoload.php');
+	///$js = "alert('test');";
+	// Basic (default) usage.
+	//$minifiedCode = \JShrink\Minifier::minify($result['output']);
+	
+	// Disable YUI style comment preservation.
+	$minifiedCode = \JShrink\Minifier::minify($result['output'], array('flaggedComments' => false));
+	echo $minifiedCode;
+} else {//jsFlag.phpNoHeader
+	
+	chdir('./../');	
+	$_GET['route']='js';
+	$_REQUEST['route']='js';
+	include_once('./ats/index.php');
+	include_once('./ats/lib/Minifier.php');
+	include_once('./config.php');	
+require './vendor/autoload.php';
+
+//$js = file_get_contents('test.js');
+$result = evRunWithBuff("showJs",array());
+
+/*
+ * params of the constructor :
+ * $script:           the JavaScript to pack, string.
+ * $encoding:         level of encoding, int or string :
+ *                    0,10,62,95 or 'None', 'Numeric', 'Normal', 'High ASCII'.
+ *                    default: 62 ('Normal').
+ * $fastDecode:       include the fast decoder in the packed result, boolean.
+ *                    default: true.
+ * $specialChars:     if you have flagged your private and local variables
+ *                    in the script, boolean.
+ *                    default: false.
+ * $removeSemicolons: whether to remove semicolons from the source script.
+ *                    default: true.
+ */
+
+// $packer = new Tholu\Packer\Packer($script, $encoding, $fastDecode, $specialChars, $removeSemicolons);
+$packer = new Tholu\Packer\Packer($result['output'], 'Normal', true, false, true);
+$packed_js = $packer->pack();
+//cho $packed_js;	
+echo $packed_js;	
+	
+	//showJs();
+}
+
+function showJs(){
+?>
 /*
  * CATS
  * Activity JavaScript Library
@@ -29,85 +88,39 @@
 /* Activity entry type flags. These should match up with the flags
  * from ActivityEntries.php.
  */
-ACTIVITY_CALL        = 100;
-ACTIVITY_EMAIL       = 200;
-ACTIVITY_MEETING     = 300;
-ACTIVITY_OTHER       = 400;
-ACTIVITY_CALL_TALKED = 500;
-ACTIVITY_CALL_LVM    = 600;
-ACTIVITY_CALL_MISSED = 700;
+<?php
+        $activityTypes = EnumTypeEnum::activityType()->enumValues();
+        $selectedValue = ActivityTypeEnum::call()->dbValue;
+        foreach($activityTypes as $k =>$at){
+        	$selected = ($selectedValue==$at->dbValue);
+        	?>
+<?php echo $at->defineName;?> = <?php echo $at->dbValue;?>;
+		<?php } //foreach($activityTypes ?>
 
 function Activity_fillTypeSelect(selectList, selectedText)
 {
     var optionElements = new Array();
-
-    /* Call option. */
-    optionElements[0] = document.createElement('option');
-    optionElements[0].value = ACTIVITY_CALL;
-    optionElements[0].appendChild(document.createTextNode('Call'));
-
-    /* Call (Talked) option. */
-    optionElements[1] = document.createElement('option');
-    optionElements[1].value = ACTIVITY_CALL_TALKED;
-    optionElements[1].appendChild(document.createTextNode('Call (Talked)'));
-
-    /* Call (LVM) option. */
-    optionElements[2] = document.createElement('option');
-    optionElements[2].value = ACTIVITY_CALL_LVM;
-    optionElements[2].appendChild(document.createTextNode('Call (LVM)'));
-
-    /* Call (Missed) option. */
-    optionElements[3] = document.createElement('option');
-    optionElements[3].value = ACTIVITY_CALL_MISSED;
-    optionElements[3].appendChild(document.createTextNode('Call (Missed)'));
-
-    /* Email option. */
-    optionElements[4] = document.createElement('option');
-    optionElements[4].value = ACTIVITY_EMAIL;
-    optionElements[4].appendChild(document.createTextNode('E-Mail'));
-
-    /* Meeting option. */
-    optionElements[5] = document.createElement('option');
-    optionElements[5].value = ACTIVITY_MEETING;
-    optionElements[5].appendChild(document.createTextNode('Meeting'));
-
-    /* Other option. */
-    optionElements[6] = document.createElement('option');
-    optionElements[6].value = ACTIVITY_OTHER;
-    optionElements[6].appendChild(document.createTextNode('Other'));
+    
+<?php
+		$i = 0;
+    foreach($activityTypes as $k =>$at){
+	$selected = ($selectedValue==$at->dbValue);
+	?>	
+	/* Call option. */
+    optionElements[<?php echo $i;?>] = document.createElement('option');
+    optionElements[<?php echo $i;?>].value = <?php echo $at->defineName;?>;
+    optionElements[<?php echo $i;?>].appendChild(document.createTextNode('<?php echo $at->desc;?>'));
 
     /* Select the correct option. */
     if (selectedText)
     {
-        if (selectedText == 'Call')
+        if (selectedText == '<?php echo $at->desc;?>')
         {
-            optionElements[0].setAttribute('selected', 'selected');
-        }
-        else if (selectedText == 'Call (Talked)')
-        {
-            optionElements[1].setAttribute('selected', 'selected');
-        }
-        else if (selectedText == 'Call (LVM)')
-        {
-            optionElements[2].setAttribute('selected', 'selected');
-        }
-        else if (selectedText == 'Call (Missed)')
-        {
-            optionElements[3].setAttribute('selected', 'selected');
-        }
-        else if (selectedText == 'E-Mail')
-        {
-            optionElements[4].setAttribute('selected', 'selected');
-        }
-        else if (selectedText == 'Meeting')
-        {
-            optionElements[5].setAttribute('selected', 'selected');
-        }
-        else if (selectedText == 'Other')
-        {
-            optionElements[6].setAttribute('selected', 'selected');
+        	optionElements[<?php echo $i;?>].setAttribute('selected', 'selected');
         }
     }
+    
+	<?php $i++;} //foreach($activityTypes ?>	
 
     /* Append options to select list. */
     for (var i = 0; i < optionElements.length; i++)
@@ -262,31 +275,37 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
         /* Create a submit button. */
         var submitButton = document.createElement('input');
         submitButton.setAttribute('type', 'submit');
-        submitButton.setAttribute('value', 'Submit');
+        submitButton.setAttribute('value', '<?php echo __("Submit");?>');
         submitButton.className = 'input-button';
 
         /* Create a cancel button. */
         var cancelButton = document.createElement('input');
         cancelButton.setAttribute('type', 'button');
-        cancelButton.setAttribute('value', 'Cancel');
+        cancelButton.setAttribute('value', '<?php echo __("Cancel");?>');
         cancelButton.className = 'input-button';
 
         /* Date editor. */
         var dateSpan = document.createElement('span');
         var dateAndTime = unEscapeHTML(dateTD.innerHTML.replace(/(<([^>]+)>)/ig,""));
-        dateSpan.innerHTML = DateInputForDOM('dateEditActivity' + activityID, true, 'MM-DD-YY', dateAndTime.substr(0,dateAndTime.indexOf(' ')), -1);
+        var dateAndTimeT = dateAndTime.substr(0,dateAndTime.indexOf(' '));
+        //lert(dateAndTimeT);
+        dateAndTimeT = dateAndTimeT.substr(3,2)+'-'+dateAndTimeT.substr(0,2)+'-'+dateAndTimeT.substr(6,2);
+        //lert(dateAndTimeT);
+        dateSpan.innerHTML = DateInputForDOM('dateEditActivity' + activityID, true, 'MM-DD-YY', dateAndTimeT, -1);
 
-        var timeString = dateAndTime.substr(dateAndTime.indexOf(' ')+2);
+        var timeString = dateAndTime.substr(dateAndTime.indexOf(' ')+1);
+        //lert(timeString);
         var hourString = timeString.substr(0,timeString.indexOf(':'));
         var timeString = timeString.substr(timeString.indexOf(':')+1);
-        var minuteString = timeString.substr(0,timeString.indexOf(' '));
-        var timeString = timeString.substr(timeString.indexOf(' ')+1);
+        var minuteString = timeString.substr(0,2);
+        //lert(minuteString);
+        //var timeString = timeString.substr(timeString.indexOf(' ')+1);
         var amPmString = timeString.substr(0,timeString.indexOf(')'));
         
         /* Time editor. */
         var hourSelect = document.createElement('select');
         hourSelect.setAttribute('id', 'hourEditActivity' + activityID);
-        for (var i = 1; i<= 12; ++i)
+        for (var i = 0; i<= 23; ++i)
         {
             var hourSelectOption = document.createElement('option');
             hourSelectOption.value = i;
@@ -314,6 +333,7 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
         
         var AMPMSelect = document.createElement('select');
         AMPMSelect.setAttribute('id', 'ampmEditActivity' + activityID);
+        AMPMSelect.style.visibility = 'hidden';
         
         var AMPMSelectOptionAM = document.createElement('option');
         AMPMSelectOptionAM.value = 'AM';
@@ -844,3 +864,5 @@ function AS_onEventAllDayChange(allDayRadioID)
     document.getElementById('meridiem').disabled = disableTime;
     document.getElementById('duration').disabled = disableTime;
 }
+
+<?php }//showJs ?>

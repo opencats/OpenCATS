@@ -432,6 +432,7 @@ class JobOrders
                 DATE_FORMAT(
                     joborder.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
                 ) AS dateCreated,
+        		joborder.date_created AS dateCreatedDb,
                 DATE_FORMAT(
                     joborder.date_modified, '%%m-%%d-%%y (%%h:%%i %%p)'
                 ) AS dateModified,
@@ -972,7 +973,7 @@ class JobOrdersDataGrid extends DataGrid
                                       'filter'         => 'joborder.type'),
 
             __('Status') =>         array('select'         => 'joborder.status AS status',
-                                      'pagerRender'    => 'return $rsData[\'status\'];',
+                                      'pagerRender'    => '$ret = $rsData[\'status\']; return EnumTypeEnum::jobOrderStatus()->enumByAttr(\'dbValue\',$ret)->desc;',
                                       'exportRender'   => 'return $rsData[\'status\'];',
                                       'sortableColumn' => 'status',
                                       'pagerWidth'     => 45,

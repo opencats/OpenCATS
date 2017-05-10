@@ -1,5 +1,9 @@
 {
     "name": "OpenCATS/OpenCATS",
+	"require": {
+	  "tedivm/jshrink": "~1.0",
+        "tholu/php-packer": "^0.2.0"
+	},    
     "require-dev": {
         "behat/behat": "~3.0.4",
         "phpunit/phpunit": "5.4.*",

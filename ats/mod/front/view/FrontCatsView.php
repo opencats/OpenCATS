@@ -8,11 +8,23 @@ if ($isModal){
 	echo evGetGlobal('printHeader')['output'];
 	echo evGetGlobal('printHeaderBlock')['output'];
 	echo evGetGlobal('printTabs')['output'];
-}
-?>
-
-<?php 
+} 
 
 echo $args['content'];
+
+function putJs($content){
+	//evGetGlobal('printModalHeader')['result']
+	$result = '<script type="text/javascript">'."\n"; 
+	$result.=evGetJs('js/lib');
+	$result.=evGetJs('js/quickAction');
+	$result.=evGetJs('js/calendarDateInput');
+	$result.=evGetJs('js/submodal/subModal');
+	$result.=evGetJs('js/jquery-1.3.2.min');
+	$result.= 'CATSIndexName = "'.CATSUtility::getIndexName().'";';
+	$result = evStrReplace($result,"'</script>'","'</'+'script'+'>'");
+	$result.='</script>'."\n";	
+	$result=evStrReplace($content,'###JsPlaceHolder###',$result);
+	return $result;
+}
 
 ?>

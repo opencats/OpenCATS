@@ -119,6 +119,7 @@ class Calendar
                 DATE_FORMAT(
                     calendar_event.date, '%%i'
                 ) AS minute,
+        		calendar_event.date AS dateDb,
                 calendar_event.date AS dateSort,
                 DATE_FORMAT(
                     calendar_event.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
@@ -522,7 +523,11 @@ class Calendar
                 unset($event['day']);
                 unset($event['hour']);
                 unset($event['minute']);
-
+                
+                $eventParameters[]='dateUI|'.evConvertDateDbToDate($event['dateDb']);
+                $eventParameters[]='timeUI|'.evConvertDateDbToTime($event['dateDb']);
+                unset($event['dateDb']);
+                
                 if ($event['dataItemType'] > 0)
                 {
                     $event['displayDataItemSmall'] = $this->getHTMLOfLink(
@@ -584,6 +589,7 @@ class Calendar
                 DATE_FORMAT(
                     calendar_event.date, '%%m-%%d-%%y (%%h:%%i %%p)'
                 ) AS dateShow,
+        		calendar_event.date AS dateShowDb,
                 DATE_FORMAT(
                     calendar_event.date, '%%d'
                 ) AS day,
@@ -684,6 +690,7 @@ class Calendar
                 DATE_FORMAT(
                     calendar_event.date, '%%h:%%i %%p'
                 ) AS time,
+        		calendar_event.date as dateDb,
                 calendar_event.date AS dateSort,
                 entered_by_user.user_id AS userID,
                 entered_by_user.first_name AS enteredByFirstName,
@@ -734,6 +741,7 @@ class Calendar
                 DATE_FORMAT(
                     calendar_event.date, '%%h:%%i %%p'
                 ) AS time,
+        		calendar_event.date as dateDb, 
                 calendar_event.date AS dateSort,
                 entered_by_user.user_id AS userID,
                 entered_by_user.first_name AS enteredByFirstName,
@@ -771,12 +779,14 @@ class Calendar
         {
             if ($row['allDay'] == '1')
             {
-                $time = 'All Day';
+                $time = __('All Day');
             }
             else
             {
                 $time = $row['time'];
+                $time = evConvertDateDbToTime($row['dateDb']);
             }
+            $date = evConvertDateDbToDate($row['dateDb']);
 
             $formatString = '<span title="%s" style="%s">%s %s: <a href="%s?m=calendar'
                 . '&amp;view=DAYVIEW&amp;month=%s&amp;year=20%s&amp;day=%s'
@@ -786,7 +796,7 @@ class Calendar
                 $formatString,
                 htmlspecialchars($row['description']),
                 $style,
-                $row['date'],
+                $date,
                 $time,
                 $indexName,
                 $row['month'],
@@ -802,13 +812,15 @@ class Calendar
         {
             if ($row['allDay'] == '1')
             {
-                $time = 'All Day';
+                $time = __('All Day');
             }
             else
             {
                 $time = $row['time'];
+                $time = evConvertDateDbToTime($row['dateDb']);
             }
-
+            $date = evConvertDateDbToDate($row['dateDb']);
+            
             $formatString = ''
                 . '<span title="%s" style="%s">%s %s: <a href="%s?m=calendar'
                 . '&amp;view=DAYVIEW&amp;month=%s&amp;year=20%s&amp;day=%s'
@@ -818,7 +830,7 @@ class Calendar
                 $formatString,
                 htmlspecialchars($row['description']),
                 $style,
-                $row['date'],
+                $date,
                 $time,
                 $indexName,
                 $row['month'],

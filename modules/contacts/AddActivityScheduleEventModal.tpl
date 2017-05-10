@@ -40,13 +40,14 @@
                     <div id="activityNoteDiv" style="margin-top: 4px;">
                         <span id="addActivitySpanA"><?php echo __("Activity Type");?></span><br />
                         <select id="activityTypeID" name="activityTypeID" class="inputbox" style="width: 150px; margin-bottom: 4px;">
-                            <option selected="selected" value="<?php echo(ACTIVITY_CALL); ?>"><?php echo __("Call");?></option>
-                            <option value="<?php echo(ACTIVITY_CALL_TALKED); ?>"><?php echo __("Call (Talked)");?></option>
-                            <option value="<?php echo(ACTIVITY_CALL_LVM); ?>"><?php echo __("Call (LVM)");?></option>
-                            <option value="<?php echo(ACTIVITY_CALL_MISSED); ?>"><?php echo __("Call (Missed)");?></option>
-                            <option value="<?php echo(ACTIVITY_EMAIL); ?>"><?php echo __("E-Mail");?></option>
-                            <option value="<?php echo(ACTIVITY_MEETING); ?>"><?php echo __("Meeting");?></option>
-                            <option value="<?php echo(ACTIVITY_OTHER); ?>"><?php echo __("Other");?></option>
+                        <?php
+                        $activityTypes = EnumTypeEnum::activityType()->enumValues();
+                        $selectedValue = ActivityTypeEnum::call()->dbValue;
+                        foreach($activityTypes as $k =>$at){
+                        	$selected = ($selectedValue==$at->dbValue);
+                        	?>    
+                        	<option <?php if ($selected) { ?>selected="selected"<?php } ?> value="<?php echo($at->dbValue); ?>"><?php echo $at->desc;?></option>
+                        <?php } //foreach($activityTypes ?>                        	                          
                         </select><br />
                         <span id="addActivitySpanB"><?php echo __("Activity Notes");?></span><br />
                         <textarea name="activityNote" id="activityNote" cols="50" style="margin-bottom: 4px;" class="inputbox"></textarea>

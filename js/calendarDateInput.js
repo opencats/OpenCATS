@@ -626,6 +626,26 @@ function DateInput(DateName, Required, DateFormat, DefaultDate, TabIndex)
 
         writeln('<table style="padding: 0px; border-spacing: 0px; margin: 0px;">');
         writeln('<tr>');
+        
+        writeln('<td style="padding: 0px 3px 0px 0px; margin: 0px;">');
+        writeln('<select' + tabIndexB + initialStatus + ' class="calendarDateInput" id="' + DateName + '_Day_ID" onchange="' + objectName + '.changeDay(this);">');
+
+        for (var j = 1; j <= 31; j++)
+        {
+            if (object.picked.day == j && DefaultDate != '')
+            {
+                DaySelected = ' selected="selected"';
+            }
+            else
+            {
+                DaySelected = '';
+            }
+
+            writeln('<option value="' + j + '"' + DaySelected + '>' + j + '</option>');
+        }
+
+        writeln('</select>');
+        writeln('</td>');        
 
         writeln('<td style="padding: 0px 3px 0px 0px; margin: 0px;">');
         writeln('<select' + tabIndexA + ' class="calendarDateInput" id="' + DateName + '_Month_ID" onchange="' + objectName + '.changeMonth(this);">');
@@ -659,25 +679,7 @@ function DateInput(DateName, Required, DateFormat, DefaultDate, TabIndex)
         writeln('</select>');
         writeln('</td>');
 
-        writeln('<td style="padding: 0px 3px 0px 0px; margin: 0px;">');
-        writeln('<select' + tabIndexB + initialStatus + ' class="calendarDateInput" id="' + DateName + '_Day_ID" onchange="' + objectName + '.changeDay(this);">');
 
-        for (var j = 1; j <= 31; j++)
-        {
-            if (object.picked.day == j && DefaultDate != '')
-            {
-                DaySelected = ' selected="selected"';
-            }
-            else
-            {
-                DaySelected = '';
-            }
-
-            writeln('<option value="' + j + '"' + DaySelected + '>' + j + '</option>');
-        }
-
-        writeln('</select>');
-        writeln('</td>');
 
         writeln('<td style="padding: 0px 3px 0px 0px; margin: 0px;">');
         writeln('<input' + tabIndexC + initialStatus + ' class="calendarDateInput" type="text" id="' + DateName + '_Year_ID" size="' + object.picked.yearPad.length + '" maxlength="' + object.picked.yearPad.length + '" title="Year" value="' + object.picked.yearPad + '" onKeyPress="return YearDigitsOnly(event);" onkeyup="' + objectName + '.checkYear(this);" onBlur="' + objectName + '.fixYear(this);" />');
@@ -782,6 +784,26 @@ function DateInputForDOM(DateName, Required, DateFormat, DefaultDate, TabIndex)
 
     outCode += ('<table style="padding: 0px; border-spacing: 0px; margin: 0px;">');
     outCode += ('<tr>');
+    
+    outCode += ('<td style="padding: 0px 3px 0px 0px; margin: 0px;">');
+    outCode += ('<select' + tabIndexB + initialStatus + ' class="calendarDateInput" id="' + DateName + '_Day_ID" onchange="' + objectName + '.changeDay(this);">');
+
+    for (var j = 1; j <= 31; j++)
+    {
+        if (object.picked.day == j && DefaultDate != '')
+        {
+            DaySelected = ' selected="selected"';
+        }
+        else
+        {
+            DaySelected = '';
+        }
+
+        outCode += ('<option value="' + j + '"' + DaySelected + '>' + j + '</option>');
+    }
+
+    outCode += ('</select>');
+    outCode += ('</td>');    
 
     outCode += ('<td style="padding: 0px 3px 0px 0px; margin: 0px;">');
     outCode += ('<select' + tabIndexA + ' class="calendarDateInput" id="' + DateName + '_Month_ID" onchange="' + objectName + '.changeMonth(this);">');
@@ -815,25 +837,9 @@ function DateInputForDOM(DateName, Required, DateFormat, DefaultDate, TabIndex)
     outCode += ('</select>');
     outCode += ('</td>');
 
-    outCode += ('<td style="padding: 0px 3px 0px 0px; margin: 0px;">');
-    outCode += ('<select' + tabIndexB + initialStatus + ' class="calendarDateInput" id="' + DateName + '_Day_ID" onchange="' + objectName + '.changeDay(this);">');
+    
+    
 
-    for (var j = 1; j <= 31; j++)
-    {
-        if (object.picked.day == j && DefaultDate != '')
-        {
-            DaySelected = ' selected="selected"';
-        }
-        else
-        {
-            DaySelected = '';
-        }
-
-        outCode += ('<option value="' + j + '"' + DaySelected + '>' + j + '</option>');
-    }
-
-    outCode += ('</select>');
-    outCode += ('</td>');
 
     outCode += ('<td style="padding: 0px 3px 0px 0px; margin: 0px;">');
     outCode += ('<input' + tabIndexC + initialStatus + ' class="calendarDateInput" type="text" id="' + DateName + '_Year_ID" size="' + object.picked.yearPad.length + '" maxlength="' + object.picked.yearPad.length + '" title="Year" value="' + object.picked.yearPad + '" onKeyPress="return YearDigitsOnly(event);" onkeyup="' + objectName + '.checkYear(this);" onBlur="' + objectName + '.fixYear(this);" />');
