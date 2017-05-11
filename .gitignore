@@ -15,3 +15,4 @@ code/src/AppBundle/tests/_support/_generated/*
 supervisord.log
 supervisord.pid
 code/web/attachments/*
+code/web/js/ckeditor/*
