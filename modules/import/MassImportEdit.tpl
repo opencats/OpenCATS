@@ -3,7 +3,7 @@
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
 <script src='http://resfly.com/js/resumeParserValidation.js' type='text/javascript' language='javascript'></script>
-<link rel="stylesheet" type="text/css" href="modules/import/MassImport.css" />
+<link rel="stylesheet" type="text/css" href="css/import/MassImport.css" />
     <div id="main">
         <div id="contents">
             <div style="width: 910px; padding: 20px 5px 0 5px;">
