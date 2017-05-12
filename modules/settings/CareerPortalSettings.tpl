@@ -1,5 +1,5 @@
 <?php /* $Id: CareerPortalSettings.tpl 3806 2007-12-05 00:39:15Z andrew $ */ ?>
-<?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'modules/settings/Settings.js', 'js/careerportal.js')); ?>
+<?php TemplateUtility::printHeader('Settings', array('js/settings/validator.js', 'js/settings/Settings.js', 'js/careerportal.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
 <?php $careerPortalEnabledId = 0; ?>

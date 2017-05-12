@@ -7,7 +7,7 @@
     <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="modules/wizard/style.css" type="text/css" />
-    <script type="text/javascript" src="modules/wizard/wizard.js"></script>
+    <script type="text/javascript" src="js/wizard/wizard.js"></script>
     <?php if ($this->jsInclude != ''): ?>
     <script type="text/javascript" src="<?php echo $this->jsInclude; ?>"></script>
     <?php endif; ?>

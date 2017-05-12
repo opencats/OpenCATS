@@ -1,5 +1,5 @@
 <?php /* $Id: CreateAttachmentModal.tpl 3093 2007-09-24 21:09:45Z brian $ */ ?>
-<?php TemplateUtility::printModalHeader('Companies', array('modules/companies/validator.js'), 'Create Company Attachment'); ?>
+<?php TemplateUtility::printModalHeader('Companies', array('js/companies/validator.js'), 'Create Company Attachment'); ?>
 
     <?php if (!$this->isFinishedMode): ?>
         <form name="createAttachmentForm" id="createAttachmentForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=companies&amp;a=createAttachment" enctype="multipart/form-data" method="post" onsubmit="return checkAttachmentForm(document.createAttachmentForm);">

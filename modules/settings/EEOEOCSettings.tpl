@@ -1,5 +1,5 @@
 <?php /* $Id: EEOEOCSettings.tpl 2336 2007-04-14 22:01:51Z will $ */ ?>
-<?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'js/eeo.js')); ?>
+<?php TemplateUtility::printHeader('Settings', array('js/settings/validator.js', 'js/eeo.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">

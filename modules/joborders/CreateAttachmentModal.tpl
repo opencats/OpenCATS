@@ -1,5 +1,5 @@
 <?php /* $Id: CreateAttachmentModal.tpl 3093 2007-09-24 21:09:45Z brian $ */ ?>
-<?php TemplateUtility::printModalHeader('Job Order', array('modules/joborders/validator.js'), 'Create Job Order Attachment'); ?>
+<?php TemplateUtility::printModalHeader('Job Order', array('js/joborders/validator.js'), 'Create Job Order Attachment'); ?>
 
     <?php if (!$this->isFinishedMode): ?>
         <form name="createAttachmentForm" id="createAttachmentForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=createAttachment" enctype="multipart/form-data" method="post" onsubmit="return checkAttachmentForm(document.createAttachmentForm);">
