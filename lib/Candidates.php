@@ -1434,8 +1434,41 @@ class Candidates
                 $this->_db->query($sql);
             }
         }
-        
-         $sql = sprintf(
+
+        /* start: find joborders that would cause duplicate rows in db (when both candidates already belong to the pipeline prior to merge) */
+        $sql = sprintf("
+            SELECT
+                joborder_id AS jobOrderID
+            FROM 
+                candidate_joborder
+            WHERE
+                candidate_id IN(%s, %s)
+            AND 
+                site_id = %s
+            GROUP BY
+                joborder_id
+            HAVING COUNT(candidate_id) > 1
+            ",
+            $this->_db->makeQueryInteger($oldCandidateID),
+            $this->_db->makeQueryInteger($newCandidateID),
+            $this->_db->makeQueryInteger($this->_siteID)
+        );
+
+        $rsTmp = $this->_db->getAllAssoc($sql);
+        if($rsTmp && count($rsTmp) > 0){
+            $jobOrderIDs = "";
+            foreach($rsTmp as $row){
+                $jobOrderIDs .= $row['jobOrderID'];
+                $jobOrderIDs .= ", ";
+            }
+            $jobOrderIDs = substr($jobOrderIDs, 0, strlen($jobOrderIDs) - 2);
+        } else {
+            $jobOrderIDs = "0";
+        }
+        /* end: find joborders that would cause duplicate rows in db (when both candidates already belong to the pipeline prior to merge) */
+
+        /* start: update pipeline and pipeline status history for job orders that will not cause duplicate rows in database */
+        $sql = sprintf(
             "UPDATE
                 candidate_joborder
             SET
@@ -1443,9 +1476,12 @@ class Candidates
             WHERE
                 candidate_id = %s
             AND
+                joborder_id NOT IN(%s)
+            AND
                 site_id = %s",
             $this->_db->makeQueryInteger($oldCandidateID),
             $this->_db->makeQueryInteger($newCandidateID),
+            $jobOrderIDs,
             $this->_siteID
         );
 
@@ -1459,14 +1495,117 @@ class Candidates
             WHERE
                 candidate_id = %s
             AND
+                joborder_id NOT IN(%s)
+            AND
                 site_id = %s",
             $this->_db->makeQueryInteger($oldCandidateID),
             $this->_db->makeQueryInteger($newCandidateID),
+            $jobOrderIDs,
             $this->_siteID
         );
 
         $this->_db->query($sql);
-        
+        /* end: update pipeline and pipeline status history for job orders that will not cause duplicate rows in database */
+
+        /*start: */
+        foreach($rsTmp as $row){
+            $sql = sprintf("
+                SELECT
+                    candidate_joborder_id AS candidateJobOrderID,
+                    status AS status,
+                    candidate_id as candidateID
+                FROM
+                    candidate_joborder
+                WHERE
+                    joborder_id = %s 
+                AND 
+                    candidate_id IN (%s, %s)
+                AND 
+                    site_id = %s
+                ORDER BY
+                    status DESC",
+                $this->_db->makeQueryInteger($row['jobOrderID']),
+                $this->_db->makeQueryInteger($oldCandidateID),
+                $this->_db->makeQueryInteger($newCandidateID),
+                $this->_db->makeQueryInteger($this->_siteID)
+                );
+            $rs2 = $this->_db->getAllAssoc($sql);
+
+            //delete from pipeline the lower status
+            $sql = sprintf("
+                    DELETE FROM
+                        candidate_joborder
+                    WHERE
+                        candidate_joborder_id = %s
+                    AND 
+                        site_id = %s",
+                $this->_db->makeQueryInteger($rs2[1]['candidateJobOrderID']),
+                $this->_db->makeQueryInteger($this->_siteID)
+            );
+            $this->_db->query($sql);
+
+            // if the old candidate has higher status, keep it and delete new candidate pipeline history
+            if($rs2[0]['candidateID'] == $oldCandidateID){
+
+                $sql = sprintf("
+                    DELETE FROM
+                        candidate_joborder_status_history
+                    WHERE
+                        candidate_id = %s
+                    AND 
+                        site_id = %s",
+                    $this->_db->makeQueryInteger($newCandidateID),
+                    $this->_db->makeQueryInteger($this->_siteID)
+                );
+                $this->_db->query($sql);
+            }
+            // if the newer candidate (to be merged and deleted) has higher status, keep this status and its history
+            else {
+                $sql = sprintf("
+                    DELETE FROM
+                        candidate_joborder_status_history
+                    WHERE
+                        candidate_id = %s
+                    AND 
+                        site_id = %s",
+                    $this->_db->makeQueryInteger($oldCandidateID),
+                    $this->_db->makeQueryInteger($this->_siteID)
+                );
+                $this->_db->query($sql);
+
+                $sql = sprintf(
+                    "UPDATE
+                        candidate_joborder
+                    SET
+                        candidate_id = %s
+                    WHERE
+                        candidate_id = %s
+                    AND
+                        site_id = %s",
+                    $this->_db->makeQueryInteger($oldCandidateID),
+                    $this->_db->makeQueryInteger($newCandidateID),
+                    $this->_siteID
+                );
+                $this->_db->query($sql);
+
+                $sql = sprintf(
+                    "UPDATE
+                        candidate_joborder_status_history
+                    SET
+                        candidate_id = %s
+                    WHERE
+                        candidate_id = %s
+                    AND
+                        site_id = %s",
+                    $this->_db->makeQueryInteger($oldCandidateID),
+                    $this->_db->makeQueryInteger($newCandidateID),
+                    $this->_siteID
+                );
+                $this->_db->query($sql);
+            }
+        }
+        /*end: */
+
         $sql = sprintf(
             "UPDATE
                 candidate_tag
