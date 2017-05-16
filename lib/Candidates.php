@@ -1769,8 +1769,6 @@ class Candidates
             );
             $this->_db->query($sql);
         }
-        
-        //TO-DO:  delete new candidate
     }
     
     public function checkIfLinked($oldCandidateID, $newCandidateID)
