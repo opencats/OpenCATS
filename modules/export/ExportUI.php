@@ -34,8 +34,8 @@
  * $Id: ExportUI.php 2996 2007-09-06 21:41:18Z brian $
  */
 
-include_once('./lib/Export.php');
-include_once('./lib/CommonErrors.php');
+include_once(LEGACY_ROOT . '/lib/Export.php');
+include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
 
 
 class ExportUI extends UserInterface

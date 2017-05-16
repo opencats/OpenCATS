@@ -30,7 +30,7 @@
  * @version    $Id: JavaScriptCompressor.php 3587 2007-11-13 03:55:57Z will $
  */
  
-include_once('./lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
 
 /**
  *	JavaScript Compression Library
