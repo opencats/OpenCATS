@@ -29,7 +29,7 @@
 
 $interface = new SecureAJAXInterface();
 
-include ('lib/Candidates.php');
+include (LEGACY_ROOT . '/lib/Candidates.php');
 
 if (!isset($_REQUEST['email']))
 {
