@@ -30,12 +30,12 @@
  * $Id: WizardUI.php 3569 2007-11-12 15:54:44Z andrew $
  */
 
-include_once('./lib/ActivityEntries.php');
-include_once('./lib/StringUtility.php');
-include_once('./lib/DateUtility.php');
-include_once('./lib/JobOrders.php');
-include_once('./lib/Site.php');
-include_once('./lib/CareerPortal.php');
+include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/Site.php');
+include_once(LEGACY_ROOT . '/lib/CareerPortal.php');
 
 class WizardUI extends UserInterface
 {

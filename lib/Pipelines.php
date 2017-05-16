@@ -30,7 +30,7 @@
  * @version    $Id: Pipelines.php 3593 2007-11-13 17:36:57Z andrew $
  */
 
-include_once('./lib/History.php');
+include_once(LEGACY_ROOT . '/lib/History.php');
 
 /**
  *	Pipelines Library

@@ -2,7 +2,7 @@
 namespace OpenCATS\Entity;
 use OpenCATS\Entity\Company;
 
-include_once('./lib/History.php');
+include_once(LEGACY_ROOT . '/lib/History.php');
 
 class CompanyRepository
 {

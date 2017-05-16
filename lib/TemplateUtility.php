@@ -36,9 +36,9 @@
  */
 
 include_once('./vendor/autoload.php');
-include_once('Candidates.php');
-include_once('DateUtility.php');
-include_once('SystemInfo.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+include_once(LEGACY_ROOT . '/lib/SystemInfo.php');
 
 use OpenCATS\UI\QuickActionMenu;
 
@@ -745,7 +745,7 @@ class TemplateUtility
                     else if (strpos($link, 'a=internalPostings') !== false)
                     {
                         /* Default company subtab. */
-                        include_once('./lib/Companies.php');
+                        include_once(LEGACY_ROOT . '/lib/Companies.php');
 
                         $companies = new Companies($_SESSION['CATS']->getSiteID());
                         $defaultCompanyID = $companies->getDefaultCompany();
