@@ -93,7 +93,17 @@ foreach ($pipelinesRS as $rowIndex => $row)
     }
     else
     {
-        $pipelinesRS[$rowIndex]['iconTag'] = '&nbsp;';
+        $pipelinesRS[$rowIndex]['iconTag'] = '<img src="images/mru/blank.gif" alt="" width="16" height="16" />';
+    }
+
+    if ($row['isDuplicateCandidate'] == 1)
+    {
+        $pipelinesRS[$rowIndex]['iconTag'] .= '<img src="images/wf_error.gif" alt="" width="16" height="16" title="Duplicate Candidate"/>';
+    }
+
+    if($pipelinesRS[$rowIndex]['iconTag'] == '')
+    {
+        $pipelinesRS[$rowIndex]['iconTag'] .= '&nbsp;';
     }
 
     $pipelinesRS[$rowIndex]['ratingLine'] = TemplateUtility::getRatingObject(
@@ -193,7 +203,7 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
     <tr>
         <th></th>
         <th></th>
-        <th align="left" width="10" nowrap="nowrap"></th>
+        <th align="left" width="32" nowrap="nowrap"></th>
         <th align="left" width="62" nowrap="nowrap">
             <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('ratingValue'); ?>, <?php if ($isPopup) echo(1); else echo(0); ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
                 Match

@@ -541,6 +541,7 @@ class Pipelines
         $sql = sprintf(
             "SELECT
                 IF(attachment_id, 1, 0) AS attachmentPresent,
+                IF(old_candidate_id, 1, 0) AS isDuplicateCandidate,
                 candidate.candidate_id AS candidateID,
                 candidate.first_name AS firstName,
                 candidate.last_name AS lastName,
@@ -617,6 +618,8 @@ class Pipelines
                 ON candidate.candidate_id = attachment.data_item_id
             LEFT JOIN candidate_joborder_status
                 ON candidate_joborder.status = candidate_joborder_status.candidate_joborder_status_id
+            LEFT JOIN candidate_duplicates
+                ON candidate_duplicates.new_candidate_id = candidate.candidate_id
             WHERE
                 candidate_joborder.joborder_id = %s
             AND
