@@ -38,9 +38,14 @@
 
 use PHPUnit\Framework\TestCase;
 
-include_once('./constants.php');
-include_once('./lib/StringUtility.php');
-include_once('./lib/DateUtility.php');   /* Depends on StringUtility. */
+if( !defined('LEGACY_ROOT') )
+{
+    define('LEGACY_ROOT', '.');
+}
+
+include_once(LEGACY_ROOT . '/constants.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');   /* Depends on StringUtility. */
 
 class DateUtilityTest extends TestCase
 {

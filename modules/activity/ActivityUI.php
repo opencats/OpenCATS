@@ -25,12 +25,12 @@
  *
  */
 
-include_once('./lib/ActivityEntries.php');
-include_once('./lib/StringUtility.php');
-include_once('./lib/Contacts.php');
-include_once('./lib/Candidates.php');
-include_once('./lib/DateUtility.php');
-include_once('./lib/InfoString.php');
+include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/lib/Contacts.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+include_once(LEGACY_ROOT . '/lib/InfoString.php');
 
 
 class ActivityUI extends UserInterface

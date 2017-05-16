@@ -6,7 +6,8 @@
         "behat/mink": "^1.7",
         "behat/mink-extension": "dev-master",
         "behat/mink-goutte-driver": "^1.2",
-        "behat/mink-selenium2-driver": "^1.3"
+        "behat/mink-selenium2-driver": "^1.3",
+        "ckeditor/ckeditor": "4.5.11"
     },
     "autoload": {
         "psr-4": {

@@ -1,5 +1,5 @@
 <?php
-include_once('./lib/DatabaseConnection.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
 
 define('CBF_HANDSHAKE', 'C');
 

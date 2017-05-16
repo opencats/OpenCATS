@@ -43,7 +43,7 @@ require './lib/phpmailer/PHPMailerAutoload.php';
 error_reporting($errorReporting);
 
 // FIXME: Remove this dependency! Bad bad bad!
-include_once('./lib/Pipelines.php');
+include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 
 define('MAILER_MODE_DISABLED', 0);
 define('MAILER_MODE_PHP',      1);

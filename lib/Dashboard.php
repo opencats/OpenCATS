@@ -30,7 +30,7 @@
  * @version    $Id: Dashboard.php 3784 2007-12-03 21:57:10Z brian $
  */
 
-include_once('lib/Calendar.php');
+include_once(LEGACY_ROOT . '/lib/Calendar.php');
 
 /**
  *	Dashboard Library
