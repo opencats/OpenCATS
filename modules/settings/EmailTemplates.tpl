@@ -70,7 +70,7 @@
                     }
                 } ?>
             </script>
-            
+
             <table style="width:850px;" class="searchTable">
                 <tr>
                     <td>
