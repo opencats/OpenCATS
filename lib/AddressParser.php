@@ -38,12 +38,12 @@ define('ADDRESSPARSER_MODE_COMPANY', 3);
 /**
  * Aray Utility library.
  */
-include_once('./lib/ArrayUtility.php');
+include_once(LEGACY_ROOT . '/lib/ArrayUtility.php');
 
 /**
  * Result Set Utility library.
  */
-include_once('./lib/ResultSetUtility.php');
+include_once(LEGACY_ROOT . '/lib/ResultSetUtility.php');
 
 
 /**

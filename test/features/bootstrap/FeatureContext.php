@@ -13,12 +13,12 @@ use OpenCATS\Entity\JobOrderRepository;
 use Behat\Mink\Exception\ElementHtmlException;
 
 include_once('./config.php');
-include_once('./constants.php');
-include_once('./lib/DatabaseConnection.php');
-include_once('./lib/Site.php');
-include_once('./lib/History.php');
-include_once('./lib/Search.php');
-include_once('./lib/Users.php');
+include_once(LEGACY_ROOT . '/constants.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
+include_once(LEGACY_ROOT . '/lib/Site.php');
+include_once(LEGACY_ROOT . '/lib/History.php');
+include_once(LEGACY_ROOT . '/lib/Search.php');
+include_once(LEGACY_ROOT . '/lib/Users.php');
 /**
  * Defines application features from the specific context.
  */

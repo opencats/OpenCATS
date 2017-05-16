@@ -30,7 +30,7 @@
  * @version    $Id: SystemUtility.php 3593 2007-11-13 17:36:57Z andrew $
  */
 
-include_once('./lib/QueueProcessor.php');
+include_once(LEGACY_ROOT . '/lib/QueueProcessor.php');
 
 /**
  *	System Utility Library
