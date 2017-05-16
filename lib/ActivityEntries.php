@@ -41,17 +41,17 @@ define('ACTIVITY_CALL_MISSED', 700);
 /**
  * Candidates library.
  */
-include_once('./lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
 
 /**
  * Contacts library.
  */
-include_once('./lib/Contacts.php');
+include_once(LEGACY_ROOT . '/lib/Contacts.php');
 
 /**
  * Job Orders library.
  */
-include_once('./lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
 
 
 /**

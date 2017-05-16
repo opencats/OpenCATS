@@ -27,7 +27,7 @@
  * $Id: DefaultQuestionnaires.php 3713 2007-11-27 18:52:42Z andrew $
  */
 
-include_once('./lib/Questionnaire.php');
+include_once(LEGACY_ROOT . '/lib/Questionnaire.php');
 
 class DefaultQuestionnaireUtility {
     private $_defaultQuestionnaires;

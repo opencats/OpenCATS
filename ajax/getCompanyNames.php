@@ -27,8 +27,8 @@
  * $Id: getCompanyNames.php 2367 2007-04-23 23:24:05Z will $
  */
 
-include_once('./lib/Companies.php');
-include_once('./lib/Search.php');
+include_once(LEGACY_ROOT . '/lib/Companies.php');
+include_once(LEGACY_ROOT . '/lib/Search.php');
 
 
 $interface = new SecureAJAXInterface();

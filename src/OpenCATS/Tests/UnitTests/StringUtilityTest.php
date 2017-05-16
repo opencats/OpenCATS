@@ -1,7 +1,12 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-include_once('./lib/StringUtility.php');
+if( !defined('LEGACY_ROOT') )
+{
+    define('LEGACY_ROOT', '.');
+}
+
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
 
 class StringUtilityTest extends TestCase
 {

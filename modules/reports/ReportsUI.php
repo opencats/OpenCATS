@@ -27,10 +27,10 @@
  * $Id: ReportsUI.php 3810 2007-12-05 19:13:25Z brian $
  */
 
-include_once('./lib/Statistics.php');
-include_once('./lib/DateUtility.php');
-include_once('./lib/Candidates.php');
-include_once('./lib/CommonErrors.php');
+include_once(LEGACY_ROOT . '/lib/Statistics.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
 
 class ReportsUI extends UserInterface
 {
@@ -411,7 +411,7 @@ class ReportsUI extends UserInterface
         /* E_STRICT doesn't like FPDF. */
         $errorReporting = error_reporting();
         error_reporting($errorReporting & ~ E_STRICT);
-        include_once('./lib/fpdf/fpdf.php');
+        include_once(LEGACY_ROOT . '/lib/fpdf/fpdf.php');
         error_reporting($errorReporting);
 
         // FIXME: Hook?
