@@ -1162,21 +1162,23 @@ class Candidates
         if($rs && !$this->_db->isEOF())
         {
             $phoneNumbers = array();
-            
-            if($phoneHome != ""){array_push($phoneNumbers, $phoneHome);}
-            if($phoneCell != ""){array_push($phoneNumbers, $phoneCell);}
-            if($phoneWork != ""){array_push($phoneNumbers, $phoneWork);}
+
+            if($phoneHome != ""){array_push($phoneNumbers, preg_replace('/\s+/', '', $phoneHome));}
+            if($phoneCell != ""){array_push($phoneNumbers, preg_replace('/\s+/', '', $phoneCell));}
+            if($phoneWork != ""){array_push($phoneNumbers, preg_replace('/\s+/', '', $phoneWork));}
             
             $phoneNumbers = array_map('strtolower', $phoneNumbers);
+            $phoneNumbers = array_map('trim', $phoneNumbers);
             
             
             foreach($rs as $row)
             {   
                 $phoneNumbersDB = array();
-                if($row['phoneHome'] != ""){array_push($phoneNumbersDB, $row['phoneHome']);}
-                if($row['phoneCell'] != ""){array_push($phoneNumbersDB, $row['phoneCell']);}
-                if($row['phoneWork'] != ""){array_push($phoneNumbersDB, $row['phoneWork']);}
+                if($row['phoneHome'] != ""){array_push($phoneNumbersDB, preg_replace('/\s+/', '', $row['phoneHome']));}
+                if($row['phoneCell'] != ""){array_push($phoneNumbersDB, preg_replace('/\s+/', '', $row['phoneCell']));}
+                if($row['phoneWork'] != ""){array_push($phoneNumbersDB, preg_replace('/\s+/', '', $row['phoneWork']));}
                 $phoneNumbersDB = array_map('strtolower', $phoneNumbersDB);
+                $phoneNumbersDB = array_map('trim', $phoneNumbersDB);
                 
                 if (strtolower($row['middleName']) == strtolower($middleName) && $middleName != "")
                 {
@@ -1186,22 +1188,20 @@ class Candidates
                 {
                     array_push($duplicatesID, $row['candidateID']);
                 }
-                else if((strtolower($email1) == strtolower($row['email1']) && $email1!= "" ) || (strtolower($email1) == strtolower($row['email2']) && $email1!= "") || 
-                        (strtolower($email2) == strtolower($row['email1']) && $email2!= "" ) || (strtolower($email2) == strtolower($row['email2'])) && $email2!= "")
+                else if((strtolower(trim($email1)) == strtolower(trim($row['email1'])) && trim($email1)!= "" ) || (strtolower(trim($email1)) == strtolower(trim($row['email2'])) && trim($email1) != "") ||
+                        (strtolower(trim($email2)) == strtolower(trim($row['email1'])) && trim($email2)!= "" ) || (strtolower(trim($email2)) == strtolower(trim($row['email2'])) && trim($email2) != ""))
                 {
                     array_push($duplicatesID, $row['candidateID']);
                 }
-                else if(strtolower($city) == strtolower($row['city']) && $city != "")
+                else if(strtolower(trim($city)) == strtolower(trim($row['city'])) && trim($city) != "")
                 {
-                    if(strtolower($address) == strtolower[$row['address']] && $address != "")
+                    if(strtolower(trim($address)) == strtolower(trim($row['address'])) && trim($address) != "")
                     {
                          array_push($duplicatesID, $row['candidateID']);
                     }
                 }
             }
-            
             return $duplicatesID;
-            
         }
         else
         {
