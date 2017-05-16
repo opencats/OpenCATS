@@ -27,19 +27,19 @@
  * $Id: ImportUI.php 3833 2007-12-12 18:18:09Z brian $
  */
 
-include_once('./lib/Statistics.php');
-include_once('./lib/StringUtility.php');
-include_once('./modules/import/Import.php');
-include_once('./lib/Companies.php');
-include_once('./lib/Contacts.php');
-include_once('./lib/Candidates.php');
-include_once('./lib/JobOrders.php');
-include_once('./lib/DatabaseSearch.php');
-include_once('./lib/FileUtility.php');
-include_once('./lib/ExtraFields.php');
-include_once('./lib/Attachments.php');
-include_once('./lib/ParseUtility.php');
-include_once('./lib/Import.php');
+include_once(LEGACY_ROOT . '/lib/Statistics.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/modules/import/Import.php');
+include_once(LEGACY_ROOT . '/lib/Companies.php');
+include_once(LEGACY_ROOT . '/lib/Contacts.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseSearch.php');
+include_once(LEGACY_ROOT . '/lib/FileUtility.php');
+include_once(LEGACY_ROOT . '/lib/ExtraFields.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/ParseUtility.php');
+include_once(LEGACY_ROOT . '/lib/Import.php');
 
 
 class ImportUI extends UserInterface
