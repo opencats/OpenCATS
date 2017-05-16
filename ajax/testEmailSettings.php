@@ -27,7 +27,7 @@
  * $Id: testEmailSettings.php 2101 2007-03-06 00:20:17Z brian $
  */
 
-include_once('./lib/Mailer.php');
+include_once(LEGACY_ROOT . '/lib/Mailer.php');
 
 
 $interface = new SecureAJAXInterface();

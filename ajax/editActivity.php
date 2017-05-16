@@ -28,9 +28,9 @@
  */
 
 
-include_once('./lib/StringUtility.php');
-include_once('./lib/ActivityEntries.php');
-include_once('./lib/Pipelines.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
+include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 
 
 $interface = new SecureAJAXInterface();

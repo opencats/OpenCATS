@@ -1,7 +1,12 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-include_once('./lib/BrowserDetection.php');
+if( !defined('LEGACY_ROOT') )
+{
+    define('LEGACY_ROOT', '.');
+}
+
+include_once(LEGACY_ROOT . '/lib/BrowserDetection.php');
 
 class BrowserDetectionTest extends TestCase
 {

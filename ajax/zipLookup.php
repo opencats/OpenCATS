@@ -3,8 +3,8 @@
  * OpenCATS
  * AJAX Street/City/State lookup via Zip Interface
  */
-include_once('./lib/ZipLookup.php');
-include_once('./lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/lib/ZipLookup.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
 
 $interface = new AJAXInterface();
 
