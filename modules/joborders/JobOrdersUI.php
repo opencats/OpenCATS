@@ -27,26 +27,26 @@
  * $Id: JobOrdersUI.php 3810 2007-12-05 19:13:25Z brian $
  */
 
-include_once('./lib/StringUtility.php');
-include_once('./lib/ResultSetUtility.php');
-include_once('./lib/DateUtility.php'); /* Depends on StringUtility. */
-include_once('./lib/JobOrders.php');
-include_once('./lib/Pipelines.php');
-include_once('./lib/Attachments.php');
-include_once('./lib/Companies.php');
-include_once('./lib/Candidates.php');
-include_once('./lib/ActivityEntries.php');
-include_once('./lib/Export.php');
-include_once('./lib/InfoString.php');
-include_once('./lib/EmailTemplates.php');
-include_once('./lib/FileUtility.php');
-include_once('./lib/CareerPortal.php');
-include_once('./lib/ExtraFields.php');
-include_once('./lib/Graphs.php');
-include_once('./lib/Questionnaire.php');
-include_once('./lib/CommonErrors.php');
-include_once('./lib/JobOrderTypes.php');
-include_once('./lib/JobOrderStatuses.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/lib/ResultSetUtility.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php'); /* Depends on StringUtility. */
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/Pipelines.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/Companies.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
+include_once(LEGACY_ROOT . '/lib/Export.php');
+include_once(LEGACY_ROOT . '/lib/InfoString.php');
+include_once(LEGACY_ROOT . '/lib/EmailTemplates.php');
+include_once(LEGACY_ROOT . '/lib/FileUtility.php');
+include_once(LEGACY_ROOT . '/lib/CareerPortal.php');
+include_once(LEGACY_ROOT . '/lib/ExtraFields.php');
+include_once(LEGACY_ROOT . '/lib/Graphs.php');
+include_once(LEGACY_ROOT . '/lib/Questionnaire.php');
+include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
+include_once(LEGACY_ROOT . '/lib/JobOrderTypes.php');
+include_once(LEGACY_ROOT . 'lib/JobOrderStatuses.php');
 
 
 class JobOrdersUI extends UserInterface
@@ -158,7 +158,7 @@ class JobOrdersUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                include_once('./lib/Search.php');
+                include_once(LEGACY_ROOT . '/lib/Search.php');
 
                 if ($this->isGetBack())
                 {
@@ -197,7 +197,7 @@ class JobOrdersUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                include_once('./lib/Search.php');
+                include_once(LEGACY_ROOT . '/lib/Search.php');
 
                 if ($this->isPostBack())
                 {
@@ -257,7 +257,7 @@ class JobOrdersUI extends UserInterface
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
 
-                include_once('./lib/DocumentToText.php');
+                include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
 
                 if ($this->isPostBack())
                 {
@@ -1403,7 +1403,7 @@ class JobOrdersUI extends UserInterface
 
         if (!eval(Hooks::get('JO_ON_ADD_CANDIDATE_MODAL'))) return;
 
-        include_once('./modules/candidates/CandidatesUI.php');
+        include_once(LEGACY_ROOT . '/modules/candidates/CandidatesUI.php');
         $candidatesUI = new CandidatesUI();
 
         if (is_array($mp = $candidatesUI->checkParsingFunctions()))
@@ -1547,7 +1547,7 @@ class JobOrdersUI extends UserInterface
 
         if (!eval(Hooks::get('JO_ON_ADD_ACTIVITY_CHANGE_STATUS'))) return;
 
-        include_once('./modules/candidates/CandidatesUI.php');
+        include_once(LEGACY_ROOT . '/modules/candidates/CandidatesUI.php');
         $candidatesUI = new CandidatesUI();
         $candidatesUI->publicAddActivityChangeStatus(
             true, $regardingID, $this->_moduleDirectory

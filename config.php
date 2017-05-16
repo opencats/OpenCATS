@@ -30,6 +30,12 @@
 /* License key. */
 define('LICENSE_KEY','3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
 
+/* legacy root. */
+if( !defined('LEGACY_ROOT') )
+{
+    define('LEGACY_ROOT', '.');
+}
+
 /* Database configuration. */
 define('DATABASE_USER', 'cats');
 define('DATABASE_PASS', 'password');
@@ -322,7 +328,7 @@ define ('LDAP_SITEID', 1);
 
 
 /* 
-require_once('.\constants.php');
+require_once(LEGACY_ROOT . '/constants.php');
 // defining user roles
 const USER_ROLES = array(
         'candidate' => array('Candidate', 'candidate', 'This is a candidate.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ),

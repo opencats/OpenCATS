@@ -40,13 +40,13 @@ use OpenCATS\Entity\JobOrderRepositoryException;
 define('JOBORDERS_STATUS_SHARE',         100);
 define('JOBORDERS_STATUS_ALL',           10100);
 
-include_once('./lib/Pipelines.php');
-include_once('./lib/Calendar.php');
-include_once('./lib/Pager.php');
-include_once('./lib/History.php');
-include_once('./lib/DataGrid.php');
-include_once('./lib/JobOrderTypes.php');
-include_once('./lib/JobOrderStatuses.php');
+include_once(LEGACY_ROOT . '/lib/Pipelines.php');
+include_once(LEGACY_ROOT . '/lib/Calendar.php');
+include_once(LEGACY_ROOT . '/lib/Pager.php');
+include_once(LEGACY_ROOT . '/lib/History.php');
+include_once(LEGACY_ROOT . '/lib/DataGrid.php');
+include_once(LEGACY_ROOT . '/lib/JobOrderTypes.php');
+include_once(LEGACY_ROOT . '/lib/JobOrderStatuses.php');
 
 /**
  *	Job Orders Library

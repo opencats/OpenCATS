@@ -28,7 +28,7 @@
  */
 
 
-include_once('lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
 
 $interface = new SecureAJAXInterface();
 

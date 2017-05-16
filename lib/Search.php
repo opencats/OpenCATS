@@ -30,8 +30,8 @@
  * @version    $Id: Search.php 3587 2007-11-13 03:55:57Z will $
  */
 
-include_once('./lib/Pager.php');
-include_once('./lib/DatabaseSearch.php');
+include_once(LEGACY_ROOT . '/lib/Pager.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseSearch.php');
 
 if (ENABLE_SPHINX)
 {

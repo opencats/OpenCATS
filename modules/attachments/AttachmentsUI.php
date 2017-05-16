@@ -27,8 +27,8 @@
  * $Id: HomeUI.php 2969 2007-08-29 23:33:39Z brian $
  */
 
-include_once('./lib/CommonErrors.php');
-include_once('./lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
 
 class AttachmentsUI extends UserInterface
 {

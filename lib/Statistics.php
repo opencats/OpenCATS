@@ -30,8 +30,8 @@
  * @version    $Id: Statistics.php 3587 2007-11-13 03:55:57Z will $
  */
 
-include_once('./lib/Pipelines.php');
-include_once('./lib/JobOrderStatuses.php');
+include_once(LEGACY_ROOT . '/lib/Pipelines.php');
+include_once(LEGACY_ROOT . '/lib/JobOrderStatuses.php');
 
 /**
  *	Statistics Library
