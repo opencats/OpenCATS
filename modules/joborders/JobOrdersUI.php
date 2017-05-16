@@ -46,7 +46,7 @@ include_once(LEGACY_ROOT . '/lib/Graphs.php');
 include_once(LEGACY_ROOT . '/lib/Questionnaire.php');
 include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
 include_once(LEGACY_ROOT . '/lib/JobOrderTypes.php');
-include_once(LEGACY_ROOT . 'lib/JobOrderStatuses.php');
+include_once(LEGACY_ROOT . '/lib/JobOrderStatuses.php');
 
 
 class JobOrdersUI extends UserInterface
