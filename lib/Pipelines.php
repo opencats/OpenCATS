@@ -480,6 +480,7 @@ class Pipelines
                 joborder.status AS jobOrderStatus,
                 joborder.salary AS salary,
                 joborder.is_hot AS isHot,
+                joborder.client_job_id AS clientJobID,
                 DATE_FORMAT(
                     joborder.start_date, '%%m-%%d-%%y'
                 ) AS start_date,
