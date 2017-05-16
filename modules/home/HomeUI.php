@@ -27,9 +27,9 @@
  * $Id: HomeUI.php 3810 2007-12-05 19:13:25Z brian $
  */
 
-include_once('./lib/NewVersionCheck.php');
-include_once('./lib/CommonErrors.php');
-include_once('./lib/Dashboard.php');
+include_once(LEGACY_ROOT . '/lib/NewVersionCheck.php');
+include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
+include_once(LEGACY_ROOT . '/lib/Dashboard.php');
 
 class HomeUI extends UserInterface
 {
@@ -54,27 +54,27 @@ class HomeUI extends UserInterface
         switch ($action)
         {
             case 'quickSearch':
-                include_once('./lib/Search.php');
-                include_once('./lib/StringUtility.php');
+                include_once(LEGACY_ROOT . '/lib/Search.php');
+                include_once(LEGACY_ROOT . '/lib/StringUtility.php');
 
                 $this->quickSearch();
                 break;
 
             case 'deleteSavedSearch':
-                include_once('./lib/Search.php');
+                include_once(LEGACY_ROOT . '/lib/Search.php');
 
                 $this->deleteSavedSearch();
                 break;
 
             case 'addSavedSearch':
-                include_once('./lib/Search.php');
+                include_once(LEGACY_ROOT . '/lib/Search.php');
 
                 $this->addSavedSearch();
                 break;
 
             /* FIXME: undefined function getAttachment()
             case 'getAttachment':
-                include_once('./lib/Attachments.php');
+                include_once(LEGACY_ROOT . '/lib/Attachments.php');
 
                 $this->getAttachment();
                 break;

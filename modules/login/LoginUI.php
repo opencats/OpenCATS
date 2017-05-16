@@ -27,12 +27,12 @@
  * $Id: LoginUI.php 3720 2007-11-27 21:06:13Z andrew $
  */
 
-include_once('./lib/SystemInfo.php');
-include_once('./lib/Mailer.php');
-include_once('./lib/Site.php');
-include_once('./lib/NewVersionCheck.php');
-include_once('./lib/Wizard.php');
-include_once('./lib/License.php');
+include_once(LEGACY_ROOT . '/lib/SystemInfo.php');
+include_once(LEGACY_ROOT . '/lib/Mailer.php');
+include_once(LEGACY_ROOT . '/lib/Site.php');
+include_once(LEGACY_ROOT . '/lib/NewVersionCheck.php');
+include_once(LEGACY_ROOT . '/lib/Wizard.php');
+include_once(LEGACY_ROOT . '/lib/License.php');
 
 class LoginUI extends UserInterface
 {

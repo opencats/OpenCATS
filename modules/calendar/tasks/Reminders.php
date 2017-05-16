@@ -25,10 +25,10 @@
  * $Id: Reminders.php 3558 2007-11-11 22:44:14Z will $
  */
 
-include_once('./modules/queue/lib/Task.php');
-include_once('./lib/Calendar.php');
-include_once('./lib/DateUtility.php');
-include_once('./lib/SystemUtility.php');
+include_once(LEGACY_ROOT . '/modules/queue/lib/Task.php');
+include_once(LEGACY_ROOT . '/lib/Calendar.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+include_once(LEGACY_ROOT . '/lib/SystemUtility.php');
 
 class Reminders extends Task
 {

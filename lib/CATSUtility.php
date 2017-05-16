@@ -32,7 +32,7 @@
 
 // FIXME: Why is this being reincluded here?
 include_once('./config.php');
-include_once('./lib/FileUtility.php');
+include_once(LEGACY_ROOT . '/lib/FileUtility.php');
 
 /**
  *	General Utility Library

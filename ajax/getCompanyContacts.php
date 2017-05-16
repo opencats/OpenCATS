@@ -27,7 +27,7 @@
  * $Id: getCompanyContacts.php 1892 2007-02-20 06:44:04Z will $
  */
 
-include_once('./lib/Companies.php');
+include_once(LEGACY_ROOT . '/lib/Companies.php');
 
 
 $interface = new SecureAJAXInterface();
