@@ -1,5 +1,5 @@
 <?php /* $Id: SendEmail.tpl 3078 2007-09-21 20:25:28Z will $ */ ?>
-<?php TemplateUtility::printHeader('Candidates', array('ckeditor/ckeditor.js', 'modules/candidates/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js', 'js/emailHandler.js')); ?>
+<?php TemplateUtility::printHeader('Candidates', array('vendor/ckeditor/ckeditor/ckeditor.js', 'modules/candidates/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js', 'js/emailHandler.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">

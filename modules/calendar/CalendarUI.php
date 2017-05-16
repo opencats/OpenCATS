@@ -27,9 +27,9 @@
  * $Id: CalendarUI.php 3807 2007-12-05 01:47:41Z will $
  */
 
-include_once('./lib/Calendar.php');
-include_once('./lib/DateUtility.php');
-include_once('./lib/SystemUtility.php');
+include_once(LEGACY_ROOT . '/lib/Calendar.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+include_once(LEGACY_ROOT . '/lib/SystemUtility.php');
 
 
 class CalendarUI extends UserInterface

@@ -17,7 +17,7 @@ function rebuild_old_docs() {
 
     $result = mysql_query('SELECT * FROM `attachment` WHERE `text` IS NULL');
 
-    include_once('./lib/DocumentToText.php');
+    include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
 
     $countOK = 0;
     $countError = 0;

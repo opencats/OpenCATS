@@ -27,7 +27,7 @@
  * $Id: deleteActivity.php 1479 2007-01-17 00:22:21Z will $
  */
 
-include_once('./lib/ActivityEntries.php');
+include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
 
 
 $interface = new SecureAJAXInterface();

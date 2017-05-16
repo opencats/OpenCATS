@@ -35,12 +35,12 @@ use OpenCATS\Entity\CompanyRepository;
  * @version    $Id: Companies.php 3690 2007-11-26 18:07:17Z brian $
  */
 
-include_once('./lib/Pager.php');
-include_once('./lib/ListEditor.php');
-include_once('./lib/EmailTemplates.php');
-include_once('./lib/Attachments.php');
-include_once('./lib/JobOrders.php');
-include_once('./lib/Contacts.php');
+include_once(LEGACY_ROOT . '/lib/Pager.php');
+include_once(LEGACY_ROOT . '/lib/ListEditor.php');
+include_once(LEGACY_ROOT . '/lib/EmailTemplates.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/Contacts.php');
 
 
 /**

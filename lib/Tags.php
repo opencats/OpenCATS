@@ -30,7 +30,7 @@
  * @version    $Id: EmailTemplates.php 3694 2007-11-26 21:11:00Z Veaceslav Vasilache $
  */
 
-include_once('./lib/Site.php');
+include_once(LEGACY_ROOT . '/lib/Site.php');
 
 /**
  *	E-Mail Templates Library
