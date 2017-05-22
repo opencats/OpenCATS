@@ -44,7 +44,7 @@ include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 include_once(LEGACY_ROOT . '/lib/CareerPortal.php');
 include_once(LEGACY_ROOT . '/lib/WebForm.php');
 include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
-include_once(LEGACY_ROOT . '/lib/Import.php');
+include_once(LEGACY_ROOT . '/lib/ImportUtility.php');
 include_once(LEGACY_ROOT . '/lib/Questionnaire.php');
 include_once(LEGACY_ROOT . '/lib/Tags.php');
 eval(Hooks::get('XML_FEED_SUBMISSION_SETTINGS_HEADERS'));

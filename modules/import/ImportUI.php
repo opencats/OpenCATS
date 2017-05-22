@@ -38,7 +38,10 @@ include_once(LEGACY_ROOT . '/lib/FileUtility.php');
 include_once(LEGACY_ROOT . '/lib/ExtraFields.php');
 include_once(LEGACY_ROOT . '/lib/Attachments.php');
 include_once(LEGACY_ROOT . '/lib/ParseUtility.php');
-include_once(LEGACY_ROOT . '/lib/Import.php');
+include_once(LEGACY_ROOT . '/lib/ImportUtility.php');
+include_once(LEGACY_ROOT . '/lib/CandidatesImport.php');
+include_once(LEGACY_ROOT . '/lib/CompaniesImport.php');
+include_once(LEGACY_ROOT . '/lib/ContactsImport.php');
 
 
 class ImportUI extends UserInterface
