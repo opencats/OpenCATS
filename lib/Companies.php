@@ -707,6 +707,36 @@ class Companies
             }
         }
     }
+
+    /**
+     * Returns the company ID of a company name, or -1 if the company does not exist.
+     *
+     * @param company name
+     * @return companyID
+     */
+    public function companyByName($name)
+    {
+        $sql = sprintf(
+            "SELECT
+                company.company_id AS companyID,
+                company.name AS name
+            FROM
+                company
+            WHERE
+                company.name = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryStringOrNULL($name),
+            $this->_siteID
+        );
+
+        $rs = $this->_db->getAssoc($sql);
+        if (empty($rs)) {
+            return -1;
+        }
+
+        return $rs['companyID'];
+    }
 }
 
 

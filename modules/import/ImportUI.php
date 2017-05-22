@@ -1027,6 +1027,7 @@ class ImportUI extends UserInterface
     private function addToCompanies($dataFields, $dataNamed, $dataForeign, $importID, $encoding)
     {
         $companiesImport = new CompaniesImport($this->_siteID);
+        $companies = new Companies($this->_siteID);
 
         /* Bail out if any of the required fields are empty. */
 
@@ -1037,7 +1038,7 @@ class ImportUI extends UserInterface
 
         /* check for duplicates */
 
-        $cID = $companiesImport->companyByName($dataNamed['name']);
+        $cID = $companies->companyByName($dataNamed['name']);
         if ($cID != -1)
         {
             return 'Duplicate entry.';
@@ -1065,6 +1066,7 @@ class ImportUI extends UserInterface
     private function addToContacts($dataFields, $dataNamed, $dataForeign, $importID, $encoding)
     {
         $contactImport = new ContactImport($this->_siteID);
+        $companies = new Companies($this->_siteID);
 
         /* Try to find the company. */
         if (!isset($dataNamed['company_id']))
@@ -1072,7 +1074,7 @@ class ImportUI extends UserInterface
             return 'Unable to add company - no company name.';
         }
 
-        $companyID = $contactImport->companyByName($dataNamed['company_id']);
+        $companyID = $companies->companyByName($dataNamed['company_id']);
 
         $genCompany = false;
 
@@ -1100,7 +1102,8 @@ class ImportUI extends UserInterface
 
                 if (!eval(Hooks::get('IMPORT_ADD_CONTACT_CLIENT'))) return;
 
-                $companyID = $contactImport->addCompany($dataCompany, $this->_userID, $importID, $encoding);
+                $companiesImport = new CompaniesImport($this->_siteID);
+                $companyID = $companiesImport->add($dataCompany, $this->_userID, $importID, $encoding);
                 if ($companyID == -1)
                 {
                     return 'Unable to add company.';
