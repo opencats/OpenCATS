@@ -38,6 +38,9 @@
  */
 
 /* Do we need to run the installer? */
+
+include_once('./config.php');
+
 if (!file_exists('INSTALL_BLOCK') && !isset($_POST['performMaintenence']))
 {
     include(LEGACY_ROOT . '/modules/install/notinstalled.php');
@@ -53,7 +56,6 @@ if (function_exists('date_default_timezone_set'))
     @date_default_timezone_set(date_default_timezone_get());
 }
 
-include_once('./config.php');
 include_once(LEGACY_ROOT . '/constants.php');
 include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
 include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
