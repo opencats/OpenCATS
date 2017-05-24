@@ -30,8 +30,8 @@
  * @version    $Id: LoginActivity.php 3587 2007-11-13 03:55:57Z will $
  */
 
-include_once('./lib/Pager.php');
-include_once('./lib/BrowserDetection.php');
+include_once(LEGACY_ROOT . '/lib/Pager.php');
+include_once(LEGACY_ROOT . '/lib/BrowserDetection.php');
 
 /**
  *	Login Activity Pager

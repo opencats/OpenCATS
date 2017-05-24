@@ -3,7 +3,7 @@ namespace OpenCATS\Entity;
 use OpenCATS\Entity\JobOrder;
 use OpenCATS\Entity\JobOrderRepositoryException;
 
-include_once('./lib/History.php');
+include_once(LEGACY_ROOT . '/lib/History.php');
 
 // FIXME: It's way too similar to CompanyRepository
 // Remove duplicated code 
