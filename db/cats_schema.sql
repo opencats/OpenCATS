@@ -805,6 +805,7 @@ CREATE TABLE `joborder` (
   `is_admin_hidden` int(1) DEFAULT '0',
   `openings_available` int(11) DEFAULT '0',
   `questionnaire_id` int(11) DEFAULT NULL,
+  `import_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`joborder_id`),
   KEY `IDX_recruiter` (`recruiter`),
   KEY `IDX_title` (`title`),
