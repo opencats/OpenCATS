@@ -734,6 +734,18 @@ class ImportUI extends UserInterface
             return;
         }
 
+        $contents = fread($theFile, filesize($filePath));
+        rewind($theFile); //move pointer to the beginning of file so fgetcsv can read it too
+
+        if(defined('IMPORT_FILE_ENCODING') && count(IMPORT_FILE_ENCODING) > 0)
+        {
+            $encoding = mb_detect_encoding($contents, IMPORT_FILE_ENCODING);
+        }
+        else
+        {
+            $encoding = mb_detect_encoding($contents, mb_detect_order());
+        }
+
         if (!eval(Hooks::get('IMPORT_ON_IMPORT_DELIMITED_5'))) return;
 
         switch ($dataContaining)
@@ -781,7 +793,7 @@ class ImportUI extends UserInterface
                 return;
         }
 
-        /* Get user preference for what do to with each field */
+        /* Get user preference for what do to with each field and convert each field into UTF-8*/
         foreach ($theFields AS $fieldID => $theField)
         {
             $theFieldPreference[$fieldID] = $_POST['importType' . $fieldID];
@@ -809,6 +821,12 @@ class ImportUI extends UserInterface
                     $this->_template->assign('errorMessage', 'Cannot read that data type.');
                     $this->import();
                     return;
+            }
+
+            if($encoding) {
+                foreach ($theData AS $index => $data) {
+                    $theData[$index] = iconv($encoding, 'UTF-8', $data);
+                }
             }
 
             $catsEntriesRows = array();
