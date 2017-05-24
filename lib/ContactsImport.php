@@ -17,9 +17,9 @@ class ContactImport extends ImportableEntity
      * @param importID
      * @return contactID
      */
-    public function add($dataNamed, $userID, $importID, $encoding)
+    public function add($dataNamed, $userID, $importID)
     {
-        $data = $this->prepareData($dataNamed, $encoding);
+        $data = $this->prepareData($dataNamed);
 
         $sql = sprintf(
             "INSERT INTO contact (
