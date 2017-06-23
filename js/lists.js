@@ -44,7 +44,7 @@ function saveListRow(rowNumber, sessionCookie)
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '&savedListID='+rowNumber+'&savedListName='+document.getElementById('savedListRowInput'+rowNumber).value;
+    var POSTData = '&savedListID='+rowNumber+'&savedListName='+encodeURIComponent(document.getElementById('savedListRowInput'+rowNumber).value);
     
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
