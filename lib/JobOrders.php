@@ -50,12 +50,12 @@ define('JOBORDERS_STATUS_ALL',              10100);
 define('JOBORDERS_STATUS_ONHOLDFULL',       10200);
 define('JOBORDERS_STATUS_ACTIVEONHOLDFULL', 10300);
 
-include_once('./lib/Pipelines.php');
-include_once('./lib/Calendar.php');
-include_once('./lib/Pager.php');
-include_once('./lib/History.php');
-include_once('./lib/DataGrid.php');
-include_once('./lib/JobOrderTypes.php');
+include_once(LEGACY_ROOT . '/lib/Pipelines.php');
+include_once(LEGACY_ROOT . '/lib/Calendar.php');
+include_once(LEGACY_ROOT . '/lib/Pager.php');
+include_once(LEGACY_ROOT . '/lib/History.php');
+include_once(LEGACY_ROOT . '/lib/DataGrid.php');
+include_once(LEGACY_ROOT . '/lib/JobOrderTypes.php');
 
 /**
  *	Job Orders Library
@@ -1201,7 +1201,12 @@ class JobOrdersDataGrid extends DataGrid
                                      'filter'    => 'joborder.is_hot',
                                      'pagerOptional' => false,
                                      'filterable' => false,
-                                     'filterDescription' => 'Only Hot Job Orders')
+                                     'filterDescription' => 'Only Hot Job Orders'),
+
+            'Public/Private' => array('select'  => 'IF(joborder.public, \'Public\', \'Private\') AS public',
+                                    'sortableColumn'    => 'public',
+                                    'pagerWidth'   => 50,
+                                    'filter'         => 'IF(joborder.public, \'Public\', \'Private\')')
         );
 
         if (!eval(Hooks::get('JOBORDERS_DATAGRID_COLUMNS'))) return;

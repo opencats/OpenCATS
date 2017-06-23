@@ -32,7 +32,7 @@
 
 //FIXME: Test for zlib!
 
-include_once('./lib/FileUtility.php');
+include_once(LEGACY_ROOT . '/lib/FileUtility.php');
 
 /**
  *	Installation Tests Library
@@ -540,7 +540,7 @@ class InstallationTests
             return false;
         }
 
-        include_once('lib/DocumentToText.php');
+        include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
         $documentToText = new DocumentToText();
         if ($documentToText->convert('modules/install/testdocs/test.doc', DOCUMENT_TYPE_DOC))
         {
@@ -590,7 +590,7 @@ class InstallationTests
             return false;
         }
 
-        include_once('lib/DocumentToText.php');
+        include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
         $documentToText = new DocumentToText();
         if ($documentToText->convert('modules/install/testdocs/test.pdf', DOCUMENT_TYPE_PDF))
         {
@@ -640,7 +640,7 @@ class InstallationTests
             return false;
         }
 
-        include_once('lib/DocumentToText.php');
+        include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
         $documentToText = new DocumentToText();
         if ($documentToText->convert('modules/install/testdocs/test.html', DOCUMENT_TYPE_HTML))
         {
@@ -690,7 +690,7 @@ class InstallationTests
             return false;
         }
 
-        include_once('lib/DocumentToText.php');
+        include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
         $documentToText = new DocumentToText();
         if ($documentToText->convert('modules/install/testdocs/test.rtf', DOCUMENT_TYPE_RTF))
         {
