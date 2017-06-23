@@ -454,6 +454,10 @@
             "require": {
                 "php": ">=5.3.3"
             },
+            "require-dev": {
+                "chuyskywalker/rolling-curl": "^3.1",
+                "php-yaoi/php-yaoi": "^1.0"
+            },
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -476,6 +480,47 @@
                 "transliterator"
             ],
             "time": "2015-09-28 16:26:35"
+        },
+        {
+            "name": "ckeditor/ckeditor",
+            "version": "4.5.11",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ckeditor/ckeditor-releases.git",
+                "reference": "48155a1e1c7e84736b5a166ad3f33acea2a51255"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ckeditor/ckeditor-releases/zipball/48155a1e1c7e84736b5a166ad3f33acea2a51255",
+                "reference": "48155a1e1c7e84736b5a166ad3f33acea2a51255",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0+",
+                "LGPL-2.1+",
+                "MPL-1.1+"
+            ],
+            "authors": [
+                {
+                    "name": "CKSource",
+                    "homepage": "http://cksource.com"
+                }
+            ],
+            "description": "JavaScript WYSIWYG web text editor.",
+            "homepage": "http://ckeditor.com",
+            "keywords": [
+                "CKEditor",
+                "editor",
+                "fckeditor",
+                "html",
+                "javascript",
+                "richtext",
+                "text",
+                "wysiwyg"
+            ],
+            "time": "2016-09-07T13:32:39+00:00"
         },
         {
             "name": "doctrine/instantiator",

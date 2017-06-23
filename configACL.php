@@ -1,7 +1,7 @@
 <?php
 
 /* 
-require_once('.\constants.php');
+require_once(LEGACY_ROOT . '/constants.php');
 // defining user roles
 const USER_ROLES = array(
         'candidate' => array('Candidate', 'candidate', 'This is a candidate.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ),

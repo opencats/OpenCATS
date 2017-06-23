@@ -29,7 +29,7 @@
  * @version    $Id: CareerPortal.php 3811 2007-12-05 19:32:16Z andrew $
  */
 
-include_once('./lib/Mailer.php');
+include_once(LEGACY_ROOT . '/lib/Mailer.php');
 
 /**
  *	Career Portal Settings Library

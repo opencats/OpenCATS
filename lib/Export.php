@@ -30,10 +30,10 @@
  * @version    $Id: Export.php 3813 2007-12-05 23:16:22Z brian $
  */
  
-include_once('./lib/Candidates.php');
-include_once('./lib/Contacts.php');
-include_once('./lib/Companies.php');
-include_once('./lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/Contacts.php');
+include_once(LEGACY_ROOT . '/lib/Companies.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
 
 /**
  *	Data Export Utility Library

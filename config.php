@@ -30,6 +30,12 @@
 /* License key. */
 define('LICENSE_KEY','3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
 
+/* legacy root. */
+if( !defined('LEGACY_ROOT') )
+{
+    define('LEGACY_ROOT', '.');
+}
+
 /* Database configuration. */
 define('DATABASE_USER', 'cats');
 define('DATABASE_PASS', 'password');

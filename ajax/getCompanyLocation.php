@@ -27,7 +27,7 @@
  * $Id: getCompanyLocation.php 2359 2007-04-21 22:49:17Z will $
  */
 
-include_once('./lib/Companies.php');
+include_once(LEGACY_ROOT . '/lib/Companies.php');
 
 
 $interface = new SecureAJAXInterface();
