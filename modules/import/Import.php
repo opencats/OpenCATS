@@ -514,7 +514,8 @@ class JobOrdersImport
                 openings_available,
                 company_id,
                 contact_id,
-                company_department_id
+                company_department_id,
+                import_id
             )
             VALUES (
                 %s,
@@ -525,6 +526,7 @@ class JobOrdersImport
                 %s,
                 NOW(),
                 NOW(),
+                %s,
                 %s,
                 %s,
                 %s,
@@ -540,7 +542,8 @@ class JobOrdersImport
             $this->_db->makeQueryInteger($dataNamed['openings']),
             $this->_db->makeQueryInteger($companyID),
             $this->_db->makeQueryInteger(-1),
-            $this->_db->makeQueryInteger(0)
+            $this->_db->makeQueryInteger(0),
+            $importID
         );
         $queryResult = $this->_db->query($sql);
         if (!$queryResult)
