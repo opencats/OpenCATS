@@ -5,7 +5,7 @@ abstract class ImportableEntity
     protected $_db;
     protected $_siteID;
 
-    abstract protected function add($dataNamed, $userID, $importID, $encoding);
+    abstract protected function add($dataNamed, $userID, $importID);
 
     public function __construct($siteID)
     {
@@ -13,18 +13,14 @@ abstract class ImportableEntity
         $this->_db = DatabaseConnection::getInstance();
     }
 
-    public function prepareData($dataNamed, $encoding)
+    public function prepareData($dataNamed)
     {
         $dataColumns = array();
         $data = array();
 
-        foreach ($dataNamed AS $dataColumn => $d) {
+        foreach ($dataNamed AS $dataColumn => $value) {
             $dataColumns[] = $dataColumn;
-            if ($encoding != "") {
-                $data[] = iconv($encoding, 'UTF-8', $this->_db->makeQueryStringOrNULL($d));
-            } else {
-                $data[] = $this->_db->makeQueryStringOrNULL($d);
-            }
+            $data[] = $this->_db->makeQueryStringOrNULL($value);
         }
         return array('data' => $data, 'dataColumns' => $dataColumns);
     }

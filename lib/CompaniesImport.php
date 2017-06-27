@@ -19,9 +19,9 @@ class CompaniesImport extends ImportableEntity
      * @return companyID
      */
 
-    public function add($dataNamed, $userID, $importID, $encoding)
+    public function add($dataNamed, $userID, $importID)
     {
-        $data = $this->prepareData($dataNamed, $encoding);
+        $data = $this->prepareData($dataNamed);
 
         $sql = sprintf(
             "INSERT INTO company (
