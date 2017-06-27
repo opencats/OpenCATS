@@ -27,12 +27,12 @@
  * $Id: getPipelineJobOrder.php 3814 2007-12-06 17:54:28Z brian $
  */
 
-include_once('./lib/Pipelines.php');
-include_once('./lib/TemplateUtility.php');
-include_once('./lib/StringUtility.php');
-include_once('./lib/CATSUtility.php');
-include_once('./lib/Hooks.php');
-include_once('./lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/Pipelines.php');
+include_once(LEGACY_ROOT . '/lib/TemplateUtility.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
+include_once(LEGACY_ROOT . '/lib/Hooks.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
 
 $interface = new SecureAJAXInterface();
 

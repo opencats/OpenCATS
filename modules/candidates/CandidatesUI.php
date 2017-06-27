@@ -27,28 +27,28 @@
  * $Id: CandidatesUI.php 3810 2007-12-05 19:13:25Z brian $
  */
 
-include_once('./lib/FileUtility.php');
-include_once('./lib/StringUtility.php');
-include_once('./lib/ResultSetUtility.php');
-include_once('./lib/DateUtility.php'); /* Depends on StringUtility. */
-include_once('./lib/Candidates.php');
-include_once('./lib/Pipelines.php');
-include_once('./lib/Attachments.php');
-include_once('./lib/ActivityEntries.php');
-include_once('./lib/JobOrders.php');
-include_once('./lib/Export.php');
-include_once('./lib/ExtraFields.php');
-include_once('./lib/Calendar.php');
-include_once('./lib/SavedLists.php');
-include_once('./lib/EmailTemplates.php');
-include_once('./lib/DocumentToText.php');
-include_once('./lib/DatabaseSearch.php');
-include_once('./lib/CommonErrors.php');
-include_once('./lib/License.php');
-include_once('./lib/ParseUtility.php');
-include_once('./lib/Questionnaire.php');
-include_once('./lib/Tags.php');
-include_once('./lib/Search.php');
+include_once(LEGACY_ROOT . '/lib/FileUtility.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/lib/ResultSetUtility.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php'); /* Depends on StringUtility. */
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/Pipelines.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/Export.php');
+include_once(LEGACY_ROOT . '/lib/ExtraFields.php');
+include_once(LEGACY_ROOT . '/lib/Calendar.php');
+include_once(LEGACY_ROOT . '/lib/SavedLists.php');
+include_once(LEGACY_ROOT . '/lib/EmailTemplates.php');
+include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseSearch.php');
+include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
+include_once(LEGACY_ROOT . '/lib/License.php');
+include_once(LEGACY_ROOT . '/lib/ParseUtility.php');
+include_once(LEGACY_ROOT . '/lib/Questionnaire.php');
+include_once(LEGACY_ROOT . '/lib/Tags.php');
+include_once(LEGACY_ROOT . '/lib/Search.php');
 
 class CandidatesUI extends UserInterface
 {
@@ -138,7 +138,7 @@ class CandidatesUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                include_once('./lib/Search.php');
+                include_once(LEGACY_ROOT . '/lib/Search.php');
 
                 if ($this->isGetBack())
                 {
@@ -156,7 +156,7 @@ class CandidatesUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                include_once('./lib/Search.php');
+                include_once(LEGACY_ROOT . '/lib/Search.php');
 
                 $this->viewResume();
                 break;
@@ -170,7 +170,7 @@ class CandidatesUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                include_once('./lib/Search.php');
+                include_once(LEGACY_ROOT . '/lib/Search.php');
 
                 $this->considerForJobSearch();
 
@@ -252,7 +252,7 @@ class CandidatesUI extends UserInterface
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
 
-                include_once('./lib/DocumentToText.php');
+                include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
 
                 if ($this->isPostBack())
                 {
