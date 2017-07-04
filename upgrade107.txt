@@ -1,0 +1,3 @@
+dbversion
+czyszczenie kolun w user
+doc/upgrade

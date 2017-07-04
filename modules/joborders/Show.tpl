@@ -7,13 +7,120 @@ use OpenCATS\UI\QuickActionMenu;
 <?php else: ?>
     <?php TemplateUtility::printHeader(__('Job Order').' - '.$this->data['title'], array( 'js/sorttable.js', 'js/match.js', 'js/pipeline.js', 'js/attachment.js')); ?>
     <?php TemplateUtility::printHeaderBlock(); ?>
-    <?php TemplateUtility::printTabs($this->active); ?>
+    <?php TemplateUtility::printTabs($this->active); 
+    ?>
         <div id="main">
             <?php TemplateUtility::printQuickSearch(); ?>
+<?php endif; 
+
+
+//vd(array('$this->fl'=>$this->fl));    
+$showWidth = 1000;   
+ 
+ 
+function tplAddCandidate($thisTpl){
+ ?>
+            <?php if (!$thisTpl->isPopup): ?>
+            <?php if ($thisTpl->getUserAccessLevel('joborders.considerCandidateSearch') >= ACCESS_LEVEL_EDIT && !isset($thisTpl->frozen)): ?>
+                <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=considerCandidateSearch&amp;jobOrderID=<?php echo($thisTpl->jobOrderID); ?>', 820, 550, null); return false;">
+                    <img src="images/consider.gif" width="16" height="16" class="absmiddle" alt="add candidate" border="0" />&nbsp;<?php echo __("Add Candidate to This Job Order Pipeline");?>
+                </a>
+            <?php endif; ?>
+            <?php endif; ?>
+ <?php
+ }
+
+ 
+ function tplAttachmentLink($thisTpl){
+ ?>
+                                     <?php if (!$thisTpl->isPopup): ?>
+                                        <?php if ($thisTpl->getUserAccessLevel('joborders.createAttachment') >= ACCESS_LEVEL_EDIT): ?>
+                                            <?php if (isset($thisTpl->attachmentLinkHTML)): ?>
+                                                <?php echo($thisTpl->attachmentLinkHTML); ?>
+                                            <?php else: ?>
+                                                <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=createAttachment&amp;jobOrderID=<?php echo($thisTpl->jobOrderID); ?>', 400, 125, null); return false;">
+                                            <?php endif; ?>
+                                                <img src="images/paperclip_add.gif" width="16" height="16" border="0" alt="<?php echo __("add attachment");?>" class="absmiddle" />&nbsp;<?php echo __("Add Attachment");?>
+                                            </a>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+ <?php
+ }
+ 
+ function tplActions($thisTpl, $top=false){
+ ?>
+ <?php if (!$thisTpl->isPopup): ?>
+            <div id="actionbar">
+                <span style="float:left;">
+                    <?php if ($thisTpl->getUserAccessLevel('joborders.edit') >= ACCESS_LEVEL_EDIT): ?>
+                        <a id="edit_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=edit&amp;jobOrderID=<?php echo($thisTpl->jobOrderID); ?>">
+                            <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="<?php echo __("edit");?>" border="0" />&nbsp;<?php echo __("Edit");?>
+                        </a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    <?php endif; ?>
+                    <?php if ($thisTpl->getUserAccessLevel('joborders.delete') >= ACCESS_LEVEL_DELETE): ?>
+                        <a id="delete_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=delete&amp;jobOrderID=<?php echo($thisTpl->jobOrderID); ?>" onclick="javascript:return confirm('<?php echo __("Delete this job order?");?>');">
+                            <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;<?php echo __("Delete");?>
+                        </a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    <?php endif; ?>
+                    <?php if ($thisTpl->getUserAccessLevel('joborders.hidden') >= ACCESS_LEVEL_MULTI_SA): ?>
+                        <?php if ($thisTpl->data['isAdminHidden'] == 1): ?>
+                            <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=administrativeHideShow&amp;jobOrderID=<?php echo($thisTpl->jobOrderID); ?>&amp;state=0">
+                                <img src="images/resume_preview_inline.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;<?php echo __("Administrative Show");?>
+                            </a>
+                            <?php else: ?>
+                            <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=administrativeHideShow&amp;jobOrderID=<?php echo($thisTpl->jobOrderID); ?>&amp;state=1">
+                                <img src="images/resume_preview_inline.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;<?php echo __("Administrative Hide");?>
+                            </a>
+                        <?php endif; ?>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    <?php endif; ?>
+                    
+                    <?php if ($top) { ?>
+                    <?php tplAttachmentLink($thisTpl);?>
+                    <?php tplAddCandidate($thisTpl);?>                    
+                    <a id="report_link" href="<?php echo E::routeHref('excel/export');?>?i=jobOrder&id=<?php echo($thisTpl->jobOrderID); ?>">
+                        <img src="images/reportsSmall.gif" width="16" height="16" class="absmiddle" alt="sheet" border="0" />&nbsp;<?php echo __("Generate Job Order Sheet");?>
+                    </a> 
+                    <?php } ?>   
+                                                        
+                </span>
+                <span style="float:right;">
+                    <?php if (!empty($thisTpl->data['public']) && $thisTpl->careerPortalEnabled): ?>
+                        <a id="public_link" href="<?php echo(CATSUtility::getAbsoluteURI()); ?>careers/<?php echo(CATSUtility::getIndexName()); ?>?p=showJob&amp;ID=<?php echo($thisTpl->jobOrderID); ?>">
+                            <img src="images/public.gif" width="16" height="16" class="absmiddle" alt="Online Application" border="0" />&nbsp;<?php echo __("Online Application");?>
+                        </a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    <?php endif; ?>
+                    <?php /* TODO: Make report available for every site. */ ?>
+                    <a id="report_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=reports&amp;a=customizeJobOrderReport&amp;jobOrderID=<?php echo($thisTpl->jobOrderID); ?>">
+                        <img src="images/reportsSmall.gif" width="16" height="16" class="absmiddle" alt="report" border="0" />&nbsp;<?php echo __("Generate Report");?>
+                    </a>
+                    <?php if ($thisTpl->privledgedUser): ?>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <a id="history_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=viewItemHistory&amp;dataItemType=400&amp;dataItemID=<?php echo($thisTpl->jobOrderID); ?>">
+                            <img src="images/icon_clock.gif" width="16" height="16" class="absmiddle"  border="0" />&nbsp;<?php echo __("View History");?>
+                        </a>
+                    <?php endif; ?>
+                </span>
+            </div>
 <?php endif; ?>
+ 
+ 
+ <?php
+ } //tplActions
+
+
+
+?>
 
         <div id="contents">
+
             <table>
+            	<tr><td colspan="2">
+            	 
+            	</td>
                 <tr>
                     <td width="3%">
                         <img src="images/job_orders.gif" width="24" height="24" border="0" alt="Job Orders" style="margin-top: 3px;" />&nbsp;
@@ -21,7 +128,9 @@ use OpenCATS\UI\QuickActionMenu;
                     <td><h2><?php echo __("Job Orders");?>: <?php echo __("Job Order Details");?></h2></td>
                 </tr>
             </table>
-
+            
+            
+<?php tplActions($this,true);?><br/>
             <p class="note"><?php echo __("Job Order Details");?></p>
 
             <?php if ($this->data['isAdminHidden'] == 1): ?>
@@ -45,8 +154,10 @@ use OpenCATS\UI\QuickActionMenu;
                     </tr>
                 </table>
             <?php endif; ?>
+            
+            
 
-            <table class="detailsOutside" width="100%" height="<?php echo((count($this->extraFieldRS)/2 + 12) * 22); ?>">
+            <table class="detailsOutside" width="<?php echo $showWidth;?>">
                 <tr style="vertical-align:top;">
                     <td width="50%" height="100%">
                         <table class="detailsInside" height="100%">
@@ -95,11 +206,22 @@ use OpenCATS\UI\QuickActionMenu;
                                 </td>
                             </tr>
 
-                            <tr>
+                            <!--tr>
                                 <td class="vertical"><?php echo __("Contact Phone");?>:</td>
-                                <td class="data"><?php echo($this->data['contactWorkPhone']); ?></td>
-                            </tr>
-
+                                <td class="data"><?php echo($this->data['contactWorkPhone']); 
+                                //vd($this->fl);
+                                ?></td>
+                            </tr-->
+						<tr><td colspan="2">
+                    	<?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'jobOrder',
+                    			'section'=>'col1read',
+                    			'template'=>'read',
+                    			'fl'=>$this->fl,
+                    			)); 
+                    	?>
+						</td></tr>
                             <tr>
                                 <td class="vertical"><?php echo __("Contact Email");?>:</td>
                                 <td class="data">
@@ -127,18 +249,6 @@ use OpenCATS\UI\QuickActionMenu;
                                 <td class="vertical"><?php echo __("Start Date");?>:</td>
                                 <td class="data"><?php $this->_($this->data['startDate']); ?></td>
                             </tr>
-
-                            <?php for ($i = 0; $i < intval(count($this->extraFieldRS)/2); $i++): ?>
-                               <?php if(($this->extraFieldRS[$i]['extraFieldType']) != EXTRA_FIELD_TEXTAREA): ?>
-                                   <tr>
-                                        <td class="vertical"><?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:</td>
-                                        <td class="data"><?php echo($this->extraFieldRS[$i]['display']); ?></td>
-                                   </tr>
-                                <?php endif; ?>
-                            <?php endfor; ?>
-
-                            <?php eval(Hooks::get('JO_TEMPLATE_SHOW_BOTTOM_OF_LEFT')); ?>
-
                         </table>
                     </td>
 
@@ -193,7 +303,30 @@ use OpenCATS\UI\QuickActionMenu;
                                 <td class="vertical"><?php echo __("Owner");?>:</td>
                                 <td class="data"><?php $this->_($this->data['ownerFullName']); ?></td>
                             </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+                        	            
+            
+            <table class="detailsOutside" width="<?php echo $showWidth;?>">
+                <tr style="vertical-align:top;">
+                    <td width="50%" height="100%">
+                        <table class="detailsInside" height="100%">
+                            <?php for ($i = 0; $i < intval(count($this->extraFieldRS)/2); $i++): ?>
+                               <?php if(($this->extraFieldRS[$i]['extraFieldType']) != EXTRA_FIELD_TEXTAREA): ?>
+                                   <tr>
+                                        <td class="vertical"><?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:</td>
+                                        <td class="data"><?php echo($this->extraFieldRS[$i]['display']); ?></td>
+                                   </tr>
+                                <?php endif; ?>
+                            <?php endfor; ?>
 
+                            <?php eval(Hooks::get('JO_TEMPLATE_SHOW_BOTTOM_OF_LEFT')); ?>
+                        </table>
+                    </td>
+                    <td width="50%" height="100%">
+                        <table class="detailsInside" height="100%">                        
                             <?php for ($i = (intval(count($this->extraFieldRS))/2); $i < (count($this->extraFieldRS)); $i++): ?>
                                 <?php if(($this->extraFieldRS[$i]['extraFieldType']) != EXTRA_FIELD_TEXTAREA): ?>
                                     <tr>
@@ -205,8 +338,8 @@ use OpenCATS\UI\QuickActionMenu;
 
                             <?php eval(Hooks::get('JO_TEMPLATE_SHOW_BOTTOM_OF_RIGHT')); ?>
                         </table>
-                    </td>
-                </tr>
+                    </td>                                        
+                </tr>                        
             </table>
 
             <?php if ($this->isPublic): ?>
@@ -233,10 +366,10 @@ use OpenCATS\UI\QuickActionMenu;
             </div>
             <?php endif; ?>
 
-            <table class="detailsOutside">
+            <table class="detailsOutside" width="<?php echo $showWidth;?>">
                 <tr>
                     <td>
-                        <table class="detailsInside">
+                        <table class="detailsInside" width="100%">
                             <tr>
                                 <td valign="top" class="vertical"><?php echo __("Attachments");?>:</td>
                                 <td valign="top" class="data">
@@ -263,17 +396,7 @@ use OpenCATS\UI\QuickActionMenu;
                                             </tr>
                                         <?php endforeach; ?>
                                     </table>
-                                    <?php if (!$this->isPopup): ?>
-                                        <?php if ($this->getUserAccessLevel('joborders.createAttachment') >= ACCESS_LEVEL_EDIT): ?>
-                                            <?php if (isset($this->attachmentLinkHTML)): ?>
-                                                <?php echo($this->attachmentLinkHTML); ?>
-                                            <?php else: ?>
-                                                <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=createAttachment&amp;jobOrderID=<?php echo($this->jobOrderID); ?>', 400, 125, null); return false;">
-                                            <?php endif; ?>
-                                                <img src="images/paperclip_add.gif" width="16" height="16" border="0" alt="<?php echo __("add attachment");?>" class="absmiddle" />&nbsp;<?php echo __("Add Attachment");?>
-                                            </a>
-                                        <?php endif; ?>
-                                    <?php endif; ?>
+                                    <?php tplAttachmentLink($this); ?>
                                 </td>
                             </tr>
 
@@ -302,7 +425,7 @@ use OpenCATS\UI\QuickActionMenu;
                             <tr>
                                 <td valign="top" class="vertical"><?php echo __("Internal Notes");?>:</td>
 
-                                <td class="data" style="width:320px;">
+                                <td class="data" style="width:100%;">
                                     <?php if($this->data['notes'] != ''): ?>
                                         <div id="shortDescription" style="overflow: auto; height:240px; border: #AAA 1px solid; padding:5px;">
                                             <?php echo($this->data['notes']); ?>
@@ -319,54 +442,81 @@ use OpenCATS\UI\QuickActionMenu;
                     </td>
                 </tr>
             </table>
-<?php if (!$this->isPopup): ?>
-            <div id="actionbar">
-                <span style="float:left;">
-                    <?php if ($this->getUserAccessLevel('joborders.edit') >= ACCESS_LEVEL_EDIT): ?>
-                        <a id="edit_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=edit&amp;jobOrderID=<?php echo($this->jobOrderID); ?>">
-                            <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="<?php echo __("edit");?>" border="0" />&nbsp;<?php echo __("Edit");?>
-                        </a>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                    <?php endif; ?>
-                    <?php if ($this->getUserAccessLevel('joborders.delete') >= ACCESS_LEVEL_DELETE): ?>
-                        <a id="delete_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=delete&amp;jobOrderID=<?php echo($this->jobOrderID); ?>" onclick="javascript:return confirm('<?php echo __("Delete this job order?");?>');">
-                            <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;<?php echo __("Delete");?>
-                        </a>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                    <?php endif; ?>
-                    <?php if ($this->getUserAccessLevel('joborders.hidden') >= ACCESS_LEVEL_MULTI_SA): ?>
-                        <?php if ($this->data['isAdminHidden'] == 1): ?>
-                            <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=administrativeHideShow&amp;jobOrderID=<?php echo($this->jobOrderID); ?>&amp;state=0">
-                                <img src="images/resume_preview_inline.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;<?php echo __("Administrative Show");?>
-                            </a>
-                            <?php else: ?>
-                            <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=administrativeHideShow&amp;jobOrderID=<?php echo($this->jobOrderID); ?>&amp;state=1">
-                                <img src="images/resume_preview_inline.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;<?php echo __("Administrative Hide");?>
-                            </a>
-                        <?php endif; ?>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                    <?php endif; ?>
-                </span>
-                <span style="float:right;">
-                    <?php if (!empty($this->data['public']) && $this->careerPortalEnabled): ?>
-                        <a id="public_link" href="<?php echo(CATSUtility::getAbsoluteURI()); ?>careers/<?php echo(CATSUtility::getIndexName()); ?>?p=showJob&amp;ID=<?php echo($this->jobOrderID); ?>">
-                            <img src="images/public.gif" width="16" height="16" class="absmiddle" alt="Online Application" border="0" />&nbsp;<?php echo __("Online Application");?>
-                        </a>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                    <?php endif; ?>
-                    <?php /* TODO: Make report available for every site. */ ?>
-                    <a id="report_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=reports&amp;a=customizeJobOrderReport&amp;jobOrderID=<?php echo($this->jobOrderID); ?>">
-                        <img src="images/reportsSmall.gif" width="16" height="16" class="absmiddle" alt="report" border="0" />&nbsp;<?php echo __("Generate Report");?>
-                    </a>
-                    <?php if ($this->privledgedUser): ?>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                        <a id="history_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=viewItemHistory&amp;dataItemType=400&amp;dataItemID=<?php echo($this->jobOrderID); ?>">
-                            <img src="images/icon_clock.gif" width="16" height="16" class="absmiddle"  border="0" />&nbsp;<?php echo __("View History");?>
-                        </a>
-                    <?php endif; ?>
-                </span>
-            </div>
-<?php endif; ?>
+            
+   			<p class="note"><?php echo __("Range and conitions of service");?></p>
+            <table class="detailsOutside" width="<?php echo $showWidth;?>">
+                <tr style="vertical-align:top;">
+                    <td width="50%">                    	
+                    	<?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'jobOrder',
+                    			'section'=>'rangeAndConditions1',
+                    			'template'=>'read',
+                    			'fl'=>$this->fl,
+                    			)); 
+                    	?>
+                    </td>   
+                  	<td width="50%">                  	
+                    	<?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'jobOrder',
+                    			'section'=>'rangeAndConditions2',
+                    			'template'=>'read',
+                    			'fl'=>$this->fl,
+                    			)); 
+                    	?>                	
+                  	</td>
+                </tr>
+            </table>
+            
+<script>
+function showHideReq() {
+    var x = document.getElementById('reqTable');
+    var h = document.getElementById('reqHeader');
+    if (x.style.display === 'none') {
+        x.style.display = null;
+        h.style.backgroundColor = null;
+        x = document.getElementById('reqButton');
+        x.innerHTML = 'Ukryj';
+    } else {
+        x.style.display = 'none';
+        h.style.backgroundColor = '#f9f9d9';
+        x = document.getElementById('reqButton');
+        x.innerHTML = 'Pokaż';        
+    }
+}
+</script>
+            
+            <p class="note" id="reqHeader" style="background-color:#f9f9d9;"><?php echo __("Requirements");?> <button id = "reqButton" onclick="showHideReq()">Pokaż</button></p> 
+            
+             <table id="reqTable" class="detailsOutside" width="<?php echo $showWidth;?>" style="display:none;">
+                <tr style="vertical-align:top;">
+                    <td width="50%">                   	
+                    	<?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'jobOrder',
+                    			'section'=>'requirements1',
+                    			'template'=>'read',
+                    			'fl'=>$this->fl,
+                    			)); 
+                    	?> 
+                    </td>   
+                  	<td width="50%">                  	
+                    	<?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'jobOrder',
+                    			'section'=>'requirements2',
+                    			'template'=>'read',
+                    			'fl'=>$this->fl,
+                    			)); 
+                    	?>                  	
+                  	</td>
+                </tr>
+            </table> 
+            
+            <?php tplActions($this);?>              
+            
+
             <br clear="all" />
             <br />
 
@@ -415,15 +565,10 @@ use OpenCATS\UI\QuickActionMenu;
             <script type="text/javascript">
                 PipelineJobOrder_populate(<?php $this->_($this->data['jobOrderID']); ?>, 0, <?php $this->_($this->pipelineEntriesPerPage); ?>, 'dateCreatedInt', 'desc', <?php if ($this->isPopup) echo(1); else echo(0); ?>, 'ajaxPipelineTable', '<?php echo($this->sessionCookie); ?>', 'ajaxPipelineTableIndicator', '<?php echo(CATSUtility::getIndexName()); ?>');
             </script>
+			
+			<?php tplAddCandidate($this);?>
 
-            <?php if (!$this->isPopup): ?>
-            <?php if ($this->getUserAccessLevel('joborders.considerCandidateSearch') >= ACCESS_LEVEL_EDIT && !isset($this->frozen)): ?>
-                <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=considerCandidateSearch&amp;jobOrderID=<?php echo($this->jobOrderID); ?>', 820, 550, null); return false;">
-                    <img src="images/consider.gif" width="16" height="16" class="absmiddle" alt="add candidate" border="0" />&nbsp;<?php echo __("Add Candidate to This Job Order Pipeline");?>
-                </a>
-            <?php endif; ?>
         </div>
     </div>
 
-<?php endif; ?>
 <?php TemplateUtility::printFooter(); ?>

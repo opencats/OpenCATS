@@ -7,7 +7,7 @@ DirectoryIndex index.php
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /
+    #RewriteBase /
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ ats/index.php?route=$1 [L,QSA]
@@ -16,3 +16,6 @@ DirectoryIndex index.php
 <FilesMatch "\.(js)$">
 AddHandler application/x-httpd-php .js
 </FilesMatch>
+#<FilesMatch "\.(css)$">
+#AddHandler application/x-httpd-php .css
+#</FilesMatch>

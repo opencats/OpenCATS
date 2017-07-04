@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+	<meta charset="UTF-8">
+	<title>OpenUI5 Explored</title>
+
+	<script
+		id='sap-ui-bootstrap'
+		src='resources/sap-ui-core.js'
+		data-sap-ui-theme='sap_bluecrystal'
+		data-sap-ui-preload="async"
+		data-sap-ui-libs='sap.m, sap.ui.layout, sap.ui.demokit'
+		data-sap-ui-bindingSyntax="complex"
+		data-sap-ui-compatVersion="1.16"
+		data-sap-ui-resourceroots='{
+			"sap.ui.demo.mock": "test-resources/sap/ui/demokit/explored/"
+		}'
+		data-sap-ui-xx-supportedLanguages="default" 
+		data-sap-ui-xx-waitForTheme="true" >
+	</script>
+
+	<script>
+		<!-- do not add code or style here the html is replicated in multiple projects -->
+		sap.ui.getCore().attachInit( function () {
+			jQuery.sap.require("sap.ui.demokit.explored.Bootstrap");
+			sap.ui.demokit.explored.Bootstrap.run();
+		});
+	</script>
+
+</head>
+<body class='sapUiBody' id='content'>
+	<div id="busyIndicator">Loading ...</div>
+</body>
+</html>

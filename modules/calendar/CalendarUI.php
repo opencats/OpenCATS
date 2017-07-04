@@ -160,10 +160,11 @@ class CalendarUI extends UserInterface
         {
             $day = $currentDay;
         }
-
+        $eventData = null;
         if (isset($_GET['showEvent']))
         {
             $showEvent = $_GET['showEvent'];
+            $eventData = E::c('calendar')->getEventById($showEvent);
         }
         else
         {
@@ -252,6 +253,10 @@ class CalendarUI extends UserInterface
         $summaryHTML = $calendar->getUpcomingEventsHTML(12, UPCOMING_FOR_CALENDAR);
 
         if (!eval(Hooks::get('CALENDAR_SHOW'))) return;
+        /*vd(array(
+        	'$_SESSION[CATS]->isDemo()'=>$_SESSION['CATS']->isDemo(),
+        	'SystemUtility::isSchedulerEnabled()'=>SystemUtility::isSchedulerEnabled(), 	
+        ));*/
 
         if (SystemUtility::isSchedulerEnabled() && !$_SESSION['CATS']->isDemo())
         {
@@ -292,6 +297,7 @@ class CalendarUI extends UserInterface
         $this->_template->assign('month', $month);
         $this->_template->assign('year', $year);
         $this->_template->assign('showEvent', $showEvent);
+        $this->_template->assign('eventData', $eventData);
         $this->_template->assign('dateString', $dateString);
         $this->_template->assign('isCurrentMonth', $isCurrentMonth);
         $this->_template->assign('eventsString', $eventsString);
@@ -633,13 +639,15 @@ class CalendarUI extends UserInterface
             $meridiem = $_POST['meridiem'];
             
             // handle 24h
-            if (intval($hour)>11){
-            	$hour = intval($hour)-12;
-            	$meridiem='PM';
-            }
+            //if (intval($hour)>11){
+            //	$hour = intval($hour)-12;
+            //	$meridiem='PM';
+            //}
 
             /* Convert formatted time to UNIX timestamp. */
             $time = evCatsTimeToUTime($hour, $minute, $meridiem);
+            
+
 
             /* Create MySQL date string w/ 24hr time (YYYY-MM-DD HH:MM:SS). */
             $date = sprintf(
@@ -649,9 +657,14 @@ class CalendarUI extends UserInterface
                 ),
                 date('H:i:00', $time)
             );
-            evd(array(
-            	'$date'=>$date	
+
+            /*vd(array(
+            		'$hour'=>$hour,
+            		'$minute'=>$minute,
+            		'$meridiem'=>$meridiem,
+            		'$date'=>$date,
             ));
+            //ie();*/
         }
 
         if (!eval(Hooks::get('CALENDAR_EDIT_PRE'))) return;

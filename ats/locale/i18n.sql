@@ -1,1 +1,0 @@
-UPDATE `user` SET `column_preferences` = ''

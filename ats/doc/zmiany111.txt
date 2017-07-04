@@ -1,0 +1,4 @@
+- wprowadzone role użytkownikow (administracja -> zarzadzanie użytkownikami -> edytuj uzytkownika -> Role.
+Zdefiniowana dodatkowa rola "praktykant" - dostęp tylko do dodawnia/edycji kandydatów
+Mozna dodac inne role edytując plik ats/config.access.php 
+- częściowe poprawki w tłumaczeniach dla zarządzania użytkownikami (komplet zgloszonych w kolejnej wersji)

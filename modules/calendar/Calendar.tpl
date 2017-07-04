@@ -1,11 +1,14 @@
-<?php /* $Id: Calendar.tpl 3221 2007-10-17 17:13:22Z will $ */ ?>
+<?php /* $Id: Calendar.tpl 3221 2007-10-17 17:13:22Z will $ */ 
+$isOldUI = E::c('ui')->isOldUI('calendar');
+
+?>
 <?php TemplateUtility::printHeader(__('Calendar'), array('modules/calendar/Calendar.css', 'js/highlightrows.js', 'modules/calendar/Calendar.js', 'modules/calendar/CalendarUI.js', 'modules/calendar/validator.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
-
-        <div id="contents">
+    
+<?php TemplateUtility::printQuickSearch(); ?>         
+<div id="pgHeader" style="background: #fff;">
             <table width="100%">
                 <tr>
                     <td width="3%">
@@ -21,13 +24,17 @@
                     </td>
                 </tr>
             </table>
+</div> 
+ 
+        <div id="contents">
 
-            <p class="note" id="calendarTitle"><?php echo __("Calendar");?></p>
+
+            <p class="note" id="calendarTitle" style="display:none;"><?php echo __("Calendar");?></p>
 
             <table style="border-collapse: collapse;">
                 <tr style="vertical-align: top;">
                     <td style="padding: 0px;">
-                        <table style="width: 240px; border: none; vertical-align:top; border-collapse: collapse;" id="tableNav">
+                        <table style="width: 305px; border: none; vertical-align:top; border-collapse: collapse;" id="tableNav">
                             <tr style="vertical-align:top;">
                             </tr>
 
@@ -46,7 +53,7 @@
                                     <form name="addEventForm" id="addEventForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=calendar&amp;a=addEvent" method="post" onsubmit="return checkAddForm(document.addEventForm);" autocomplete="off">
                                         <input type="hidden" name="postback" id="postbackA" value="postback" />
 
-                                        <table class="editTableMini" width="235">
+                                        <table class="editTableMini" width="305">
                                             <tr>
                                                 <td class="tdVertical">
                                                     <label id="titleLabel" for="title"><?php echo __("Title");?>:</label>
@@ -198,7 +205,7 @@
                                         <input type="hidden" name="dataItemID" id="dataItemIDEdit" />
                                         <input type="hidden" name="jobOrderID" id="jobOrderIDEdit" />
 
-                                        <table class="editTableMini" width="235">
+                                        <table class="editTableMini" width="305">
                                             <tr>
                                                 <td class="tdVertical">
                                                     <label id="titleLabelEdit" for="title"><?php echo __("Title");?>:</label>
@@ -215,11 +222,11 @@
                                                 <td class="tdData">
                                                     <select id="typeEdit" name="type" class="inputbox" style="width: 150px;">
                                                         <option value="">(<?php echo __("Select a Type");?>)</option>
-                                                    	<?php 
+                                                    	<?php echo 'jajo';
                                                     	E::ui('selectOptions')->html(array(
                                                     		'enum'=>EnumTypeEnum::eventType()
                                                    	 	));
-                                                    	?>                                                        
+                                                    	?> 
                                                     </select>&nbsp;*
                                                 </td>
                                             </tr>
@@ -345,7 +352,7 @@
                                     </form>
                                 </td>
                                 <td style="display:none" id="viewEventTD">
-                                    <table width="235">
+                                    <table width="305">
                                     <tr>
                                     <td>
                                     <p class="noteUnsized"><?php echo __("View Event");?></p>
@@ -363,7 +370,7 @@
                                     <span id="viewEventDescription"></span><br />
                                     <br />
                                     <?php if ($this->getUserAccessLevel('calendar.editEvent') >= ACCESS_LEVEL_EDIT): ?>
-                                        <input type="button" class="button" name="Edit" value="<?php echo __("Edit Event");?>" onclick="calendarEditEvent(currentViewedEntry);" />
+                                        <input type="button" id="calendarEditEventBtn" class="button" name="Edit" value="<?php echo __("Edit Event");?>" onclick="calendarEditEvent(currentViewedEntry);" />
                                     <?php endif; ?>
                                     </td>
                                     </tr>
@@ -372,7 +379,48 @@
                             </tr>
                         </table>
                     </td>
-                    <td style="padding-left: 8px;">
+                    <td style="padding-left: 8px;width:100%;">
+                    
+<?php 
+$y = $this->year; 
+$m = $this->month;
+while (strlen($m)<2){
+	$m='0'.$m;
+}
+$d = $this->day;
+if (intVal($d)<0){
+	$d='01';
+}
+while (strlen($d)<2){
+	$d='0'.$d;
+}
+$curDate = $y.'-'.$m.'-'.$d;
+/*vd(array(
+	'$y'=>$y,
+	'$m'=>$m,
+	'$d'=>$d,	
+	'$curDate'=>$curDate,
+));*/
+$dView = 'month';
+if ($this->view == 'WEEKVIEW'){
+	$dView = 'week';
+} else if ($this->view == 'DAYVIEW'){
+	$dView = 'day';
+}
+
+if (!$isOldUI){
+
+E::uiO('calendar',array(
+	//'currentDate'=>$curDate,
+	'defaultView'=>$dView,
+	'eventData'=>$this->eventData,
+));
+
+}//oldUI
+?>                    
+<!-- !REMOVE! -->    
+<div <?php if(!$isOldUI){ ?> style="display:none;"<?php }?>>                
+                    
                         <table id="calendarMonthParent" style="display:none;border-collapse: collapse;">
                             <tr>
                                 <td>
@@ -563,6 +611,10 @@
                                 </td>
                             </tr>
                         </table>
+</div>                        
+ <!-- !REMOVE! -->                       
+                        
+                        
                     </td>
                 </tr>
             </table>

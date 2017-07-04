@@ -44,6 +44,18 @@
                                         <input type="text" class="inputbox" id="lastName" name="lastName" style="width: 150px;" />&nbsp;*
                                     </td>
                                 </tr>
+                                
+                    <tr><td colspan="2" style="padding: 0px;">
+                    	<?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'user',
+                    			'section'=>'custom1',
+                    			'template'=>'add',
+                    			'fl'=>$this->fl,
+                    			)); 
+                    	?>                     
+                    
+                    </td></tr>                                
 
                                 <tr>
                                     <td class="tdVertical">

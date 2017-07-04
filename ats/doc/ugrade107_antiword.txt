@@ -1,0 +1,18 @@
+(wymagane dla użycia programu antiword) 
+
+1. Otworzyć plik C:\xampp\php\php.ini i wyszukać frazę "extension="
+ 
+2. Przed pierwszym wpisem jw dodać linię:
+ 
+extension=php_com_dotnet.dll
+
+3. Zrestartować Apache (np przy użyciu konsoli Xampp)
+
+4. Otworzyć plik C:\xampp\htdocs\ats\config.php i wyszukać frazę "ANTIWORD_PATH"
+
+- zmienić zawartość na:
+
+define('ANTIWORD_PATH', "C:\\antiword\\antiword.exe");
+define('ANTIWORD_MAP', 'UTF-8.txt');
+
+5. Skopiować załączony plik DocumentToText.php do C:\xampp\htdocs\ats\lib\DocumentToText.php

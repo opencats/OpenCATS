@@ -92,10 +92,49 @@
                                 <td class="vertical"><?php echo __("Last Failed Login");?>:</td>
                                 <td class="data"><?php $this->_($this->data['unsuccessfulDate']); ?></td>
                             </tr>
+                            <tr >
+                            	<td colspan ="2" width="100%">
+                         <?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'user',
+                    			'section'=>'custom1',
+                    			'template'=>'read',
+                    			'fl'=>$this->fl,
+                    			)); 
+                    	?>                              	
+                            	</td>
+                            </tr>
+                            
                         </table>
+                        
+                     
+
                     </td>
                 </tr>
             </table>
+            
+            <form name="editUserProfileForm" id="editUserProfileForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=showUser&userID=<?php echo  $this->fl['id'];?>&privledged=false" method="post" autocomplete="off"> <!-- onsubmit="return checkEditUserForm(document.editUserForm);" -->                       
+            <input type="hidden" name="fs[id]" id="fs_id" value="<?php echo $this->fl['id'];?>" />
+            <table class="detailsOutside">
+                <tr>
+
+                    <td width="50%" height="100%">            
+                        <?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'user',
+                    			'section'=>'editable1',
+                    			'template'=>'edit',
+                    			'fl'=>$this->fl,
+                    			)); 
+                    	?>
+                    </td> 
+                    <td width="30%" height="100%" valign="top">            
+						<input type="submit" class="button" name="submit" id="submit" value="Zapisz" />&nbsp;
+                    </td>                                       
+                </tr>
+            </table> 
+            </form>                 	
+                    	            
             <?php if ($this->privledged): ?>
                 <a id="edit_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=editUser&amp;userID=<?php $this->_($this->data['userID']); ?>" title="<?php echo __("Edit");?>">
                     <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" style="border: none;" alt="edit user" />&nbsp;<?php echo __("Edit");?>

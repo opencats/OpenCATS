@@ -1,4 +1,5 @@
 <?php
+ob_start();
 /*
  * CATS
  * Asynchroneous Queue Processor
@@ -50,6 +51,7 @@ include_once('./lib/ModuleUtility.php'); /* Depends: UserInterface */
 include_once('./lib/TemplateUtility.php'); /* Depends: ModuleUtility, Hooks */
 include_once('./lib/QueueProcessor.php');
 include_once('./modules/queue/constants.php');
+//include_once('./ats/sys/globalFuncs.php');
 
 /* Give the session a unique name to avoid conflicts and start the session. */
 @session_name(CATS_SESSION_NAME);
@@ -76,6 +78,9 @@ if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
 $taskedModules = ModuleUtility::registerModuleTasks();
 
 print_r($taskedModules);
+//vd(array(
+//	'$taskedModules'=>$taskedModules,	
+//));
 
 // Execute the next appropriate (if available) queue and return a status code
 $retVal = QueueProcessor::startNextTask();
@@ -98,7 +103,7 @@ if( ((time() - $lastCleanupTime) > QUEUE_CLEANUP_HOURS*60*60) || !$lastCleanupTi
     QueueProcessor::cleanUpOldQueues();
 }
 
-echo "CATS Queue Processor status: ";
+echo "ATS Queue Processor status: ";
 switch($retVal)
 {
     case TASKRET_ERROR:
@@ -118,5 +123,8 @@ switch($retVal)
         break;
 }
 echo "\n";
+$cnt = ob_get_contents();
+ob_end_clean();
+echo $cnt;
+file_put_contents(dirname(__FILE__).'/queue.log',$cnt);
 
-?>

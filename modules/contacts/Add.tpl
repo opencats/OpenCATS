@@ -11,7 +11,7 @@
                     <td width="3%">
                         <img src="images/contact.gif" width="24" height="24" border="0" alt="Contacts" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2><?php echo __("Contacts");?>: <?php echo __("Add Contact");?></h2></td>
+                    <td><h2><?php echo __("Contacts");?>: <?php echo __("Add Contact");?><?php if (isset($this->companyRS['name'])) { ?> (<?php $this->_($this->companyRS['name']); ?>)<?php } ?></h2></td>
                 </tr>
             </table>
 
@@ -115,7 +115,7 @@
                         </td>
 
                         <td width="50%" height="100%" valign="top">
-                            <p class="noteUnsized">Contact Information</p>
+                            <p class="noteUnsized"><?php echo __("Contact Information");?></p>
 
                             <table class="editTable" width="100%" height="285">
                                 <tr>

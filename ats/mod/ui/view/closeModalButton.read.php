@@ -1,0 +1,1 @@
+<input type="button" class="btn btn-primary btn-md" name="cancel" value="Zamknij" onclick="parentHidePopWinRefresh();">

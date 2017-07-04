@@ -387,6 +387,11 @@ class ContactsUI extends UserInterface
 
         /* Get extra fields. */
         $extraFieldRS = $contacts->extraFields->getValuesForShow($contactID);
+        $fl = E::loadCustomFieldValues(array(
+        		'siteId'=>$this->_siteID,
+        		'id'=>$contactID,
+        		'dataItemType'=>E::dataItemType('contact'),
+        ));
 
         /* Is the user an admin - can user see history? */
         if ($this->getUserAccessLevel('contacts.show') < ACCESS_LEVEL_DEMO)
@@ -398,6 +403,7 @@ class ContactsUI extends UserInterface
             $privledgedUser = true;
         }
 
+        $this->_template->assign('fl', $fl);
         $this->_template->assign('active', $this);
         $this->_template->assign('data', $data);
         $this->_template->assign('isShortNotes', $isShortNotes);

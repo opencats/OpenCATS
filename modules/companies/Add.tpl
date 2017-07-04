@@ -18,9 +18,13 @@
             <form name="addCompanyForm" id="addCompanyForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=companies&amp;a=add" method="post" onsubmit="return checkAddForm(document.addCompanyForm);" autocomplete="off">
                 <input type="hidden" name="postback" id="postback" value="postback" />
 
-                <p class="noteUnsized"><?php echo __("Basic Information");?></p>
-                <table class="editTable" width="100%">
+                <table width="100%">
                     <tr>
+                        <td valign="top" width="50%">
+                            <p class="noteUnsized"><?php echo __("Basic Information");?></p>
+               
+                <table class="editTable" width="100%">
+                    <!--tr>
                         <td class="tdVertical">
                             <label id="nameLabel" for="name"><?php echo __("Company Name");?>:</label>
                         </td>
@@ -39,18 +43,18 @@
                             <?php echo($freeformBottom); ?>
                         </td>
                         <td width="200"></td>
-                    </tr>
+                    </tr-->
                     
-                    <tr>
+                    <!--tr>
                         <td class="tdVertical">
                             <label id="phone1Label" for="phone1"><?php echo __("Primary Phone");?>:</label>
                         </td>
                         <td class="tdData">
                             <input type="text" name="phone1" id="phone1" class="inputbox" style="width: 150px" />
                         </td>
-                    </tr>
+                    </tr-->
 
-                    <tr>
+                    <!--tr>
                         <td class="tdVertical">
                             <label id="phone2Label" for="phone2"><?php echo __("Secondary Phone");?>:</label>
                         </td>
@@ -58,9 +62,9 @@
                             <input type="text" name="phone2" id="phone2" class="inputbox" style="width: 150px" />
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="arrowButton" tabindex="91" align="middle" type="button" value="&lt;--" class="arrowbutton" onclick="AddressParser_parse('addressBlock', 'company', 'addressParserIndicator', 'arrowButton'); document.addCompanyForm.name.focus();" />
                         </td>
-                    </tr>
+                    </tr-->
 
-                    <tr>
+                    <!--tr>
                         <td class="tdVertical">
                             <label id="faxNumberLabel" for="faxNumber"><?php echo __("Fax Number");?>:</label>
                         </td>
@@ -68,69 +72,19 @@
                             <input type="text" name="faxNumber" id="faxNumber" class="inputbox" style="width: 150px" />
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="images/indicator2.gif" id="addressParserIndicator" alt="" style="visibility: hidden; margin-left: 10px;" height="16" width="16" />
                         </td>
-                    </tr>
-
-                    <tr>
-                        <td class="tdVertical">
-                            <label id="addressLabel" for="address"><?php echo __("Address");?>:</label>
-                        </td>
-                        <td class="tdData">
-                            <textarea name="address" id="address" class="inputbox" style="width: 150px"></textarea>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td class="tdVertical">
-                            <label id="cityLabel" for="city"><?php echo __("City");?>:</label>
-                        </td>
-                        <td class="tdData">
-                            <input type="text" name="city" id="city" class="inputbox" style="width: 150px" />
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td class="tdVertical">
-                            <label id="stateLabel" for="state"><?php echo __("State");?>:</label>
-                        </td>
-                        <td class="tdData">
-                            <input type="text" name="state" id="state" class="inputbox" style="width: 150px" />
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td class="tdVertical">
-                            <label id="zipLabel" for="zip"><?php echo __("Postal Code");?>:</label>
-                        </td>
-                        <td class="tdData">
-                            <input type="text" name="zip" id="zip" class="inputbox" style="width: 150px" />&nbsp;
-                            <input type="button" class="button" onclick="CityState_populate('zip', 'ajaxIndicator');" value="<?php echo __("Lookup");?>" />
-                            <img src="images/indicator2.gif" alt="AJAX" id="ajaxIndicator" style="vertical-align: middle; visibility: hidden; margin-left: 5px;" />
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td class="tdVertical">
-                            <label id="urlLabel" for="url"><?php echo __("Web Site");?>:</label>
-                        </td>
-                        <td class="tdData">
-                            <input type="text" name="url" id="url" class="inputbox" style="width: 150px" />
-                        </td>
-                    </tr>
+                    </tr-->
                 
-                    <tr>
-                        <td class="tdVertical">
-                            <label id="departmentsLabel" for="departmentsSelect"><?php echo __("Departments");?>:</label>
-                        </td>
-                        <td class="tdData">
-                            <select tabindex="3" id="departmentsSelect" name="departmentsSelect" class="inputbox" style="width: 150px;" onchange="if (this.value == 'edit') { listEditor('<?php echo __("Departments");?>', 'departmentsSelect', 'departmentsCSV'); } this.value = 'num';">
-                                <option value="edit">(<?php echo __("Edit Departments");?>)</option>
-                                <option value="num" selected="selected"><?php echo __("No Departments");?></option>
-                                <option value="nullline">-------------------------------</option>
-                            </select>
-                            <input type="hidden" id="departmentsCSV" name="departmentsCSV" value="" />
-                        </td>
-                    </tr>
 
+					<tr><td colspan="2">
+                    	<?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'company',
+                    			'section'=>'custom1',
+                    			'template'=>'add',
+                    			'fl'=>$this->fl,
+                    			)); 
+                    	?>
+					</td></tr>
                     <tr>
                         <td class="tdVertical">
                             <label id="isHotLabel" for="isHot"><?php echo __("Hot Company");?>:</label>
@@ -140,6 +94,72 @@
                         </td>
                     </tr>
                 </table>
+                </td>
+                <td width="50%" valign="top">
+                            <p class="noteUnsized">Informacje kontaktowe</p>
+                    <table class="editTable" width="100%">
+                    <tr>
+                        <td class="tdVertical">
+                            <label id="urlLabel" for="url"><?php echo __("Web Site");?>:</label>
+                        </td>
+                        <td class="tdData">
+                            <input type="text" name="url" id="url" class="inputbox" style="width: 250px" />
+                        </td>
+                    </tr>                            
+
+                    <tr>
+                        <td class="tdVertical">
+                            <label id="stateLabel" for="state"><?php echo __("State");?>:</label>
+                        </td>
+                        <td class="tdData">
+                            <input type="text" name="state" id="state" class="inputbox" style="width: 250px" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="tdVertical">
+                            <label id="zipLabel" for="zip"><?php echo __("Postal Code");?>:</label>
+                        </td>
+                        <td class="tdData">
+                            <input type="text" name="zip" id="zip" class="inputbox" style="width: 250px" />&nbsp;
+                            <input type="button" class="button" onclick="CityState_populate('zip', 'ajaxIndicator');" value="<?php echo __("Lookup");?>" />
+                            <img src="images/indicator2.gif" alt="AJAX" id="ajaxIndicator" style="vertical-align: middle; visibility: hidden; margin-left: 5px;" />
+                        </td>
+                    </tr>                    
+                    <tr>
+                        <td class="tdVertical">
+                            <label id="cityLabel" for="city"><?php echo __("City");?>:</label>
+                        </td>
+                        <td class="tdData">
+                            <input type="text" name="city" id="city" class="inputbox" style="width: 250px" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdVertical">
+                            <label id="addressLabel" for="address">Ulica:</label>
+                        </td>
+                        <td class="tdData">
+                            <input type="text" name="address" id="address" class="inputbox" style="width: 250px"/>
+                        </td>
+                    </tr>                    
+                    <tr>
+                        <td class="tdVertical">
+                            <label id="departmentsLabel" for="departmentsSelect"><?php echo __("Departments");?>:</label>
+                        </td>
+                        <td class="tdData">
+                            <select tabindex="3" id="departmentsSelect" name="departmentsSelect" class="inputbox" style="width: 250px;" onchange="if (this.value == 'edit') { listEditor('<?php echo __("Departments");?>', 'departmentsSelect', 'departmentsCSV'); } this.value = 'num';">
+                                <option value="edit">(<?php echo __("Edit Departments");?>)</option>
+                                <option value="num" selected="selected"><?php echo __("No Departments");?></option>
+                                <option value="nullline">-------------------------------</option>
+                            </select>
+                            <input type="hidden" id="departmentsCSV" name="departmentsCSV" value="" />
+                        </td>
+                    </tr>                                          
+                                              
+                        </table>    
+                        </td>
+                    </tr>
+                </table>                            
 
                 <p class="noteUnsized" style="margin-top: 5px;"><?php echo __("Other");?></p>
 

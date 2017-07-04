@@ -90,8 +90,9 @@ function checkName()
 {
     var errorMessage = '';
 
-    fieldValue = document.getElementById('name').value;
-    fieldLabel = document.getElementById('nameLabel');
+    fieldValue = document.getElementById('fs_name').value;
+    fieldLabel = document.getElementById('fsl_name');
+    //lert('fieldvalue:'+fieldValue);
     if (fieldValue == '')
     {
         errorMessage = "    - <?php echo __("You must enter a name.");?>\n";
@@ -102,7 +103,7 @@ function checkName()
     {
         fieldLabel.style.color = '#000';
     }
-
+    //lert('errorMessage:'+errorMessage);
     return errorMessage;
 }
 

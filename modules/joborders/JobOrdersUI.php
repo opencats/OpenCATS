@@ -368,6 +368,7 @@ class JobOrdersUI extends UserInterface
 
         $jobOrders = new JobOrders($this->_siteID);
         $data = $jobOrders->get($jobOrderID);
+        E::front()->setObject($data);
 
         /* Bail out if we got an empty result set. */
         if (empty($data))
@@ -464,6 +465,12 @@ class JobOrdersUI extends UserInterface
 
         /* Get extra fields. */
         $extraFieldRS = $jobOrders->extraFields->getValuesForShow($jobOrderID);
+        $fl = E::loadCustomFieldValues(array(
+        		'siteId'=>$this->_siteID,
+        		'id'=>$jobOrderID,
+        		'dataItemType'=>E::dataItemType('jobOrder'),
+        ));
+        
 
         $pipelineEntriesPerPage = $_SESSION['CATS']->getPipelineEntriesPerPage();
 
@@ -502,7 +509,7 @@ class JobOrdersUI extends UserInterface
         {
             $careerPortalURL = CATSUtility::getAbsoluteURI() . 'careers/';
         }
-
+        $this->_template->assign('fl', $fl);
         $this->_template->assign('active', $this);
         $this->_template->assign('isPublic', $isPublic);
         $this->_template->assign('questionnaireID', $questionnaireID);
@@ -647,7 +654,8 @@ class JobOrdersUI extends UserInterface
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
         $careerPortalSettingsRS = $careerPortalSettings->getAll();
         $careerPortalEnabled = intval($careerPortalSettingsRS['enabled']) ? true : false;
-
+        
+        $this->_template->assign('fl', array());
         $this->_template->assign('careerPortalEnabled', $careerPortalEnabled);
         $this->_template->assign('questionnaires', $questionnaires);
         $this->_template->assign('extraFieldRS', $extraFieldRS);
@@ -788,6 +796,12 @@ class JobOrdersUI extends UserInterface
 
         /* Update extra fields. */
         $jobOrders->extraFields->setValuesOnEdit($jobOrderID);
+        E::setCustomFieldValues(array(
+        		'id'=>$jobOrderID,
+        		'dataItemType'=>E::dataItemType('jobOrder'),
+        		'values'=>$_POST['fs'],
+        		'siteId'=>$this->_siteID,
+        ));
 
         if (!eval(Hooks::get('JO_ON_ADD_POST'))) return;
 
@@ -882,6 +896,11 @@ class JobOrdersUI extends UserInterface
 
         /* Get extra fields. */
         $extraFieldRS = $jobOrders->extraFields->getValuesForEdit($jobOrderID);
+        $fl = E::loadCustomFieldValues(array(
+        		'siteId'=>$this->_siteID,
+        		'id'=>$jobOrderID,
+        		'dataItemType'=>E::dataItemType('jobOrder'),
+        ));
 
         /* Check if career portal is enabled */
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
@@ -910,7 +929,7 @@ class JobOrdersUI extends UserInterface
                 }
             }
         }
-
+        $this->_template->assign('fl', $fl);
         $this->_template->assign('extraFieldRS', $extraFieldRS);
         $this->_template->assign('careerPortalEnabled', $careerPortalEnabled);
         $this->_template->assign('questionnaireID', $questionnaireID);
@@ -1126,6 +1145,12 @@ class JobOrdersUI extends UserInterface
 
         /* Update extra fields. */
         $jobOrders->extraFields->setValuesOnEdit($jobOrderID);
+        E::setCustomFieldValues(array(
+        		'id'=>$jobOrderID,
+        		'dataItemType'=>E::dataItemType('jobOrder'),
+        		'values'=>$_POST['fs'],
+        		'siteId'=>$this->_siteID,
+        		));
 
         if (!eval(Hooks::get('JO_ON_EDIT_POST'))) return;
 
@@ -1293,7 +1318,7 @@ class JobOrdersUI extends UserInterface
             $candidateID,
             DATA_ITEM_CANDIDATE,
             400,
-            'Added candidate to pipeline.',
+            __('Added candidate to pipeline.'),
             $this->_userID,
             $jobOrderID
         );
@@ -1438,8 +1463,13 @@ class JobOrdersUI extends UserInterface
         }
 
         $pipelines = new Pipelines($this->_siteID);
-        $pipelineData = $pipelines->get($candidateID, $jobOrderID);
 
+        $pipelineData = $pipelines->get($candidateID, $jobOrderID);
+        /*vd(array(
+        		'$candidateID'=>$candidateID,
+        		'$jobOrderID'=>$jobOrderID,
+        		'$pipelineData'=>$pipelineData,
+        ));*/
         /* Bail out if we got an empty result set. */
         if (empty($pipelineData))
         {

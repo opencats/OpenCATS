@@ -812,9 +812,9 @@ class JobOrders
     public static function typeCodeToString($typeCode)
     {
         $jobTypes = (new JobOrderTypes())->getAll();
-        if($jobTypes[$typeCode] == null)
+        if(!isset($jobTypes[$typeCode]))
         {
-            return '(Unknown)';
+            return '('.__('Unknown').')';
         }
         return $jobTypes[$typeCode];
     }

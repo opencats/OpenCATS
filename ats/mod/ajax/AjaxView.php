@@ -2,9 +2,9 @@
 
 class AjaxView extends View {
 	
-	function show($args){
+	protected function showView($viewName,$args){
 		chdir(CATS_FE_DIR);
-		include_once('./ajax_cats.php');
+		include('./ajax_cats.php');
 	}
 	
 }

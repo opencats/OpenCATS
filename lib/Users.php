@@ -44,6 +44,7 @@ define('LOGIN_INVALID_PASSWORD',     -2);
 define('LOGIN_DISABLED',             -3);
 define('LOGIN_CANT_CHANGE_PASSWORD', -4);
 define('LOGIN_ROOT_ONLY',            -5);
+define('LOGIN_PENDING_APPROVAL',     -6);
 
 /* Add User status flags. */
 define('ADD_USER_SUCCESS',            1);
@@ -559,7 +560,18 @@ class Users
      */
     public function getAccessLevels()
     {
-        $sql = sprintf(
+    	$al = E::enum('accessLevel')->enumValues();
+    	//vd(array('$al'=>$al));
+    	$result = array();
+    	FOREACH($al AS $K =>$en){
+    		$result[] = array(
+    				'accessID'=>$en->dbValue,
+    				'shortDescription'=>$en->shortDesc,
+    				'longDescription'=>$en->desc,
+    		);
+    	}
+    	return $result;
+        /*$sql = sprintf(
                 "SELECT
                 access_level.access_level_id AS accessID,
                 access_level.short_description AS shortDescription,
@@ -570,7 +582,7 @@ class Users
                 access_level.access_level_id ASC"
                 );
 
-        return $this->_db->getAllAssoc($sql);
+        return $this->_db->getAllAssoc($sql);*/
     }
 
     /**

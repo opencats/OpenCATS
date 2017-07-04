@@ -251,6 +251,7 @@ class Pipelines
             $this->_siteID,
             $this->_siteID
         );
+        //vd($sql);
 
         return $this->_db->getAssoc($sql);
     }
@@ -480,6 +481,7 @@ class Pipelines
                 joborder.status AS jobOrderStatus,
                 joborder.salary AS salary,
                 joborder.is_hot AS isHot,
+        		candidate_joborder.added_by addedBy,
                 DATE_FORMAT(
                     joborder.start_date, '%%m-%%d-%%y'
                 ) AS start_date,
@@ -551,6 +553,9 @@ class Pipelines
                 DATE_FORMAT(
                     candidate_joborder.date_created, '%%m-%%d-%%y'
                 ) AS dateCreated,
+                DATE_FORMAT(
+                    candidate_joborder.date_modified, '%%m-%%d-%%y'
+                ) AS dateModified,        		
                 UNIX_TIMESTAMP(candidate_joborder.date_created) AS dateCreatedInt,
                 candidate_joborder_status.short_description AS status,
                 candidate_joborder.candidate_joborder_id AS candidateJobOrderID,

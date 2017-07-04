@@ -1,7 +1,10 @@
 <?php /* $Id: Add.tpl 3810 2007-12-05 19:13:25Z brian $ */ ?>
 <?php TemplateUtility::printHeader(__('Job Orders'), array('modules/joborders/validator.js',  'js/company.js', 'js/sweetTitles.js', 'js/suggest.js', 'js/joborder.js', 'js/lib.js', 'js/listEditor.js', 'ckeditor/ckeditor.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
+<?php TemplateUtility::printTabs($this->active, $this->subActive); 
+$editWidth = 1000;
+
+?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -33,7 +36,7 @@
                 <form name="addJobOrderForm" id="addJobOrderForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=add" method="post" onsubmit="return checkAddForm(document.addJobOrderForm);" autocomplete="off">
                     <input type="hidden" name="postback" id="postback" value="postback" />
 
-                    <table class="editTable" width="700">
+                    <table class="editTable" width="<?php echo $editWidth;?>">
                         <tr>
                             <td class="tdVertical">
                                 <label id="titleLabel" for="title"><?php echo __("Title");?>:</label>
@@ -142,7 +145,7 @@
 
                         <tr>
                             <td class="tdVertical">
-                                <label id="cityLabel" for="city"><?php echo __("City");?>:</label>
+                                <label id="cityLabel" for="city"><?php echo __("City of work");?>:</label>
                             </td>
                             <td class="tdData">
                                 <?php if ($this->selectedCompanyID !== false): ?>
@@ -250,21 +253,9 @@
                             </td>
                         </tr>
                     </table>
+                                   	                        	
 
-                    <table class="editTable" width="700">
-
-                        <?php for ($i = 0; $i < count($this->extraFieldRS); $i++): ?>
-                            <tr>
-                                <td class="tdVertical" id="extraFieldTd<?php echo($i); ?>">
-                                    <label id="extraFieldLbl<?php echo($i); ?>">
-                                        <?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:
-                                    </label>
-                                </td>
-                                <td class="tdData" id="extraFieldData<?php echo($i); ?>">
-                                    <?php echo($this->extraFieldRS[$i]['addHTML']); ?>
-                                </td>
-                            </tr>
-                        <?php endfor; ?>
+                    <table class="editTable" width="<?php echo $editWidth;?>">
 
                         <tr>
                             <td class="tdVertical">
@@ -304,6 +295,78 @@
                             <?php endif; ?>
                         </tr>
                     </table>
+                    <table class="editTable" width="<?php echo $editWidth;?>">
+                        <?php for ($i = 0; $i < count($this->extraFieldRS); $i++): ?>
+                            <tr>
+                                <td class="tdVertical" id="extraFieldTd<?php echo($i); ?>">
+                                    <label id="extraFieldLbl<?php echo($i); ?>">
+                                        <?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:
+                                    </label>
+                                </td>
+                                <td class="tdData" id="extraFieldData<?php echo($i); ?>">
+                                    <?php echo($this->extraFieldRS[$i]['addHTML']); ?>
+                                </td>
+                            </tr>
+                        <?php endfor; ?>
+                    </table>
+                    
+                    <p class="note"><?php echo __("Range and conitions of service");?></p>
+                    
+                    <table class="editTable" width="<?php echo $editWidth;?>">
+                        <tr>
+                        	<td width="50%" valign="top">
+                    	
+                    	<?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'jobOrder',
+                    			'section'=>'rangeAndConditions1',
+                    			'template'=>'add',
+                    			'fl'=>$this->fl
+                    			)); 
+                    	?>                        	
+                        	</td>
+                        	<td width="50%" valign="top">
+
+                    	<?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'jobOrder',
+                    			'section'=>'rangeAndConditions2',
+                    			'template'=>'add',
+                    			'fl'=>$this->fl
+                    			)); 
+                    	?>                         	
+                        	</td>
+                        </tr>
+                    </table>    
+                    
+                    <p class="note"><?php echo __("Requirements");?></p>
+                    
+                    <table class="editTable" width="<?php echo $editWidth;?>">
+                        <tr>
+                        	<td width="50%" valign="top">
+                    	<?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'jobOrder',
+                    			'section'=>'requirements1',
+                    			'template'=>'add',
+                    			'fl'=>$this->fl
+                    			)); 
+                    	?>                         	
+                        	</td>
+                        	<td width="50%" valign="top">
+
+                    	<?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'jobOrder',
+                    			'section'=>'requirements2',
+                    			'template'=>'add',
+                    			'fl'=>$this->fl
+                    			)); 
+                    	?>                        	
+                        	</td>
+                        </tr>
+                    </table>                        
+                    
                     <input type="submit" tabindex="20" class="button" name="submit" value="<?php echo __("Add Job Order");?>" />&nbsp;
                     <input type="reset"  tabindex="21" class="button" name="reset"  value="<?php echo __("Reset");?>" />&nbsp;
                     <input type="button" tabindex="22" class="button" name="back"   value="<?php echo __("Back to Job Orders");?>" onclick="javascript:goToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=listByView');" />

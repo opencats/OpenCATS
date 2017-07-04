@@ -712,6 +712,7 @@ function calendarDataPopulate(year, month, day, hour, minute, valuesArray)
     entryObject.minute = minute;
     entryObject.setDataByArray(valuesArray);
     entryObject.description = entryObject.getData('description');
+    //tsUpsertEntry(entryObject);
 
     totalRecordsInMemory++;
 
@@ -766,7 +767,7 @@ function calendarDataMarkNoRecord(year, month)
 
 /* User functions for showing view */
 
-function setCalendarViewMonth(year, month)
+function setCalendarViewMonth(year, month, day = null)
 {
     restoreHighlighting();
 
@@ -780,12 +781,15 @@ function setCalendarViewMonth(year, month)
 
     currentYear = year;
     currentMonth = month;
+    if (day!=null){
+    	currentDay = day;
+    }
 
     updateCalendarViewMonth();
     setSideFormActions();
 }
 
-function setCalendarViewWeek(year, month, week)
+function setCalendarViewWeek(year, month, week, day=null)
 {
     restoreHighlighting();
 
@@ -800,6 +804,9 @@ function setCalendarViewWeek(year, month, week)
     currentYear = year;
     currentMonth = month;
     currentWeek = week;
+    if (day!=null){
+    	currentDay = day;
+    }
     
 
     updateCalendarViewWeek();

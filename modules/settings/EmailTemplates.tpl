@@ -66,21 +66,33 @@
                             <tr>
                                 <td style="width:210px;">
                                     <div style="font-weight:bold;">
-                                        Template:
+                                        <?php echo __("Template");?>:
                                     </div>
                                 </td>
                                 <td>
                                     <span id="selectorSpan">
+                                    <br/><br/>
                                         <select id="titleSelect" style="width:550px;" onclick="showTemplate(this.value);">
-                                            <?php foreach ($this->emailTemplatesRS as $data): ?>
-                                                <option value="<?php echo($data['emailTemplateID']); ?>"><?php echo($data['emailTemplateTitle']); ?></option>
+                                            <?php 
+                                            $et = E::enum('emailTemplate');
+                                            
+                                            foreach ($this->emailTemplatesRS as $data): 
+                                            	$etv = $et->enumByAttr('dbValue',$data['emailTemplateTag']);
+                                            ?>
+                                                <option value="<?php echo($data['emailTemplateID']); ?>"><?php echo $etv->desc;//echo($data['emailTemplateTitle']); ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </span>
-                                    <?php foreach ($this->emailTemplatesRS as $data): ?>
-                                        <span id="templateTitleSpan<?php echo($data['emailTemplateID']); ?>" style="display:none; border:1px solid #000000; background-color:#ffffff; padding:5px;">
-                                            Editing: <?php echo($data['emailTemplateTitle']); ?>
+                                    <?php foreach ($this->emailTemplatesRS as $data): 
+                                    	$etv = $et->enumByAttr('dbValue',$data['emailTemplateTag']);
+                                    ?>
+                                    	<div id="templateTitleSpan<?php echo($data['emailTemplateID']); ?>" style="display:none;">
+                                    	<?php echo $etv->descLong;?><br/><br/>
+                                        <span   style="border:1px solid #000000; background-color:#ffffff; padding:5px;">
+                                            <?php echo __("Editing");?>: <?php echo $etv->desc;//echo($data['emailTemplateTitle']); ?>
                                         </span>
+                                        
+                                        </div>
                                     <?php endforeach; ?>
                                     <!--&nbsp;&nbsp;&nbsp;&nbsp;
                                     <input type="button" class="button" value="New">-->
@@ -116,46 +128,46 @@
                                                         <textarea class="inputbox" name="messageText" <?php if ($data['disabled'] == 1) echo('disabled'); ?> id="messageText<?php echo($data['emailTemplateID']); ?>" style="width:450px; height:280px;" onclick="document.getElementById('selectorSpan').style.display='none'; document.getElementById('templateTitleSpan<?php echo($data['emailTemplateID']); ?>').style.display='';" ><?php echo($this->_($data['text'])); ?></textarea>
                                                         <input type="hidden" name="messageTextOrigional" id="messageTextOrigional<?php echo($data['emailTemplateID']); ?>" value="<?php echo($this->_($data['text'])); ?>">
                                                         <br /><br />
-                                                        <input type="checkbox" name="useThisTemplate" id="useThisTemplate<?php echo($data['emailTemplateID']); ?>" <?php if ($data['disabled'] == 0) echo('checked'); ?> onclick="if (this.checked) {document.getElementById('messageText<?php echo($data['emailTemplateID']); ?>').disabled=false;} else {document.getElementById('messageText<?php echo($data['emailTemplateID']); ?>').disabled=true;} document.getElementById('selectorSpan').style.display='none'; document.getElementById('templateTitleSpan<?php echo($data['emailTemplateID']); ?>').style.display='';"> Use this Template / Feature<br />
+                                                        <input type="checkbox" name="useThisTemplate" id="useThisTemplate<?php echo($data['emailTemplateID']); ?>" <?php if ($data['disabled'] == 0) echo('checked'); ?> onclick="if (this.checked) {document.getElementById('messageText<?php echo($data['emailTemplateID']); ?>').disabled=false;} else {document.getElementById('messageText<?php echo($data['emailTemplateID']); ?>').disabled=true;} document.getElementById('selectorSpan').style.display='none'; document.getElementById('templateTitleSpan<?php echo($data['emailTemplateID']); ?>').style.display='';"> <?php echo __("Use this Template / Feature");?><br />
                                                     </td>
                                                     <td style="text-align: center;">
                                                     <div style="font-weight:bold;"><?php echo __("Insert Formatting");?>:</div>
-                                                        <?php generateInsertAtCursorLink($data, 'Bold', '<B></B>'); ?>
-                                                        <?php generateInsertAtCursorLink($data, 'Italics', '<I></I>'); ?>
-                                                        <?php generateInsertAtCursorLink($data, 'Underline', '<U></U>'); ?>
+                                                        <?php generateInsertAtCursorLink($data, __('Bold'), '<B></B>'); ?>
+                                                        <?php generateInsertAtCursorLink($data, __('Italics'), '<I></I>'); ?>
+                                                        <?php generateInsertAtCursorLink($data, __('Underline'), '<U></U>'); ?>
                                                         <br />
                                                         <div style="font-weight:bold;"><?php echo __("Insert Mail Merge Fields");?>:</div>
                                                         <?php /* Global vars */ ?>
                                                         <?php if(!isset($this->noGlobalTemplates)): ?>
-                                                            <?php generateInsertAtCursorLink($data, 'Current Date/Time', '%DATETIME%'); ?>
-                                                            <?php generateInsertAtCursorLink($data, 'Site Name', '%SITENAME%'); ?>
-                                                            <?php generateInsertAtCursorLink($data, 'Recruiter/Current User Name', '%USERFULLNAME%'); ?>
-                                                            <?php generateInsertAtCursorLink($data, 'Recruiter/Current User E-Mail Link', '%USERMAIL%'); ?>
+                                                            <?php generateInsertAtCursorLink($data, __('Current Date/Time'), '%DATETIME%'); ?>
+                                                            <?php generateInsertAtCursorLink($data, __('Site Name'), '%SITENAME%'); ?>
+                                                            <?php generateInsertAtCursorLink($data, __('Recruiter/Current User Name'), '%USERFULLNAME%'); ?>
+                                                            <?php generateInsertAtCursorLink($data, __('Recruiter/Current User E-Mail Link'), '%USERMAIL%'); ?>
                                                         <?php endif; ?>
 
                                                         <?php /* Template specific vars */ ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'Previous Candidate Status', '%CANDPREVSTATUS%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'Current Candidate Status', '%CANDSTATUS%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'Candidate Owner', '%CANDOWNER%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'Candidate First Name', '%CANDFIRSTNAME%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'Candidate Full Name', '%CANDFULLNAME%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'CATS Candidate URL', '%CANDCATSURL%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('Previous Candidate Status'), '%CANDPREVSTATUS%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('Current Candidate Status'), '%CANDSTATUS%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('Candidate Owner'), '%CANDOWNER%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('Candidate First Name'), '%CANDFIRSTNAME%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('Candidate Full Name'), '%CANDFULLNAME%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('CATS Candidate URL'), '%CANDCATSURL%'); ?>
 
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'Company Owner', '%CLNTOWNER%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'Company Name', '%CLNTNAME%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'CATS Company URL', '%CLNTCATSURL%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('Company Owner'), '%CLNTOWNER%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('Company Name'), '%CLNTNAME%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('CATS Company URL'), '%CLNTCATSURL%'); ?>
 
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'Contact Owner', '%CONTOWNER%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'Contact First Name', '%CONTFIRSTNAME%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'Contact Full Name', '%CONTFULLNAME%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'Contacts Company Name', '%CONTCLIENTNAME%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'CATS Contact URL', '%CONTCATSURL%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('Contact Owner'), '%CONTOWNER%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('Contact First Name'), '%CONTFIRSTNAME%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('Contact Full Name'), '%CONTFULLNAME%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('Contacts Company Name'), '%CONTCLIENTNAME%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('CATS Contact URL'), '%CONTCATSURL%'); ?>
 
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'Job Order Owner', '%JBODOWNER%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'Job Order Title', '%JBODTITLE%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'Job Order Company', '%JBODCLIENT%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'Job Order ID', '%JBODID%'); ?>
-                                                        <?php generateInsertAtCursorLinkConditional($data, 'CATS Job Order URL', '%JBODCATSURL%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('Job Order Owner'), '%JBODOWNER%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('Job Order Title'), '%JBODTITLE%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('Job Order Company'), '%JBODCLIENT%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('Job Order ID'), '%JBODID%'); ?>
+                                                        <?php generateInsertAtCursorLinkConditional($data, __('CATS Job Order URL'), '%JBODCATSURL%'); ?>
                                                     </td>
                                                  </tr>
                                              </table>

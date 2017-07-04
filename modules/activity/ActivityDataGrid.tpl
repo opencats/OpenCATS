@@ -13,13 +13,15 @@
                     </td>
                     <td><h2><?php echo __("Activities");?></h2></td>
                     <td align="right">
-                        <?php $this->dataGrid->printNavigation(false); ?>&nbsp;&nbsp;<?php echo($this->quickLinks); ?>
+                        
                     </td>
                 </tr>
             </table>
-
-            <p class="note">
-                <span style="float:left;"><?php echo __("Activities");?> - Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?></span>
+            <div style="float:right;">
+			<?php $this->dataGrid->printNavigation(false); ?>&nbsp;&nbsp;<?php echo($this->quickLinks); ?>
+			</div>
+            <p class="note" style="clear:both;">
+                <span style="float:left;"><?php echo __("Activities");?> - <?php echo __("Page");?> <?php echo($this->dataGrid->getCurrentPageHTML()); ?></span>
                 <span style="float:right;">
                     <?php $this->dataGrid->drawRowsPerPageSelector(); ?>
                     <?php $this->dataGrid->drawShowFilterControl(); ?>

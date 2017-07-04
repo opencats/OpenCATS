@@ -76,32 +76,18 @@
                         </td>
                     </tr>
 
-                    <tr>
-                        <td class="tdVertical">
-                            <label id="phoneHomeLabel" for="phoneHome"><?php echo __("Home Phone");?>:</label>
-                        </td>
-                        <td class="tdData">
-                            <input type="text" class="inputbox" id="phoneHome" name="phoneHome" value="<?php $this->_($this->data['phoneHome']); ?>" style="width: 150px;" />
-                        </td>
-                    </tr>
+                            <tr><td colspan="2">
 
-                    <tr>
-                        <td class="tdVertical">
-                            <label id="phoneCellLabel" for="phoneCell"><?php echo __("Cell Phone");?>:</label>
-                        </td>
-                        <td class="tdData">
-                            <input type="text" class="inputbox" id="phoneCell" name="phoneCell" value="<?php $this->_($this->data['phoneCell']); ?>" style="width: 150px;" />
-                        </td>
-                    </tr>
+							<?php
+							E::uiO('customFields',array(
+                    			'dataItem'=>'candidate',
+                    			'section'=>'show1',
+                    			'template'=>'edit',
+                    			'fl'=>$this->fl,							
+							)); 
+							?>
+							</td></tr> 
 
-                    <tr>
-                        <td class="tdVertical">
-                            <label id="phoneWorkLabel" for="phoneWork"><?php echo __("Work Phone");?>:</label>
-                        </td>
-                        <td class="tdData">
-                            <input type="text" class="inputbox" id="phoneWork" name="phoneWork" value="<?php $this->_($this->data['phoneWork']); ?>" style="width: 150px;" />
-                        </td>
-                    </tr>
 
                     <tr>
                         <td class="tdVertical">
@@ -118,6 +104,7 @@
                         </td>
                         <td class="tdData">
                             <textarea class="inputbox" id="address" name="address" style="width: 150px;"><?php $this->_($this->data['address']); ?></textarea>
+                            <?php if (evStrEmpty($this->data['city'])){ echo $this->fl['fullAddress'];}?> 
                         </td>
                     </tr>
 
@@ -377,6 +364,18 @@
                             <input type="text" class="inputbox" id="keySkills" name="keySkills" value="<?php $this->_($this->data['keySkills']); ?>" style="width: 400px;" />
                         </td>
                     </tr>
+
+                            <tr><td colspan="2">
+
+							<?php
+							E::uiO('customFields',array(
+                    			'dataItem'=>'candidate',
+                    			'section'=>'custom1',
+                    			'template'=>'edit',
+                    			'fl'=>$this->fl,							
+							)); 
+							?>
+							</td></tr>
 
                     <tr>
                         <td class="tdVertical">

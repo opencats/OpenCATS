@@ -200,13 +200,38 @@ class HomeUI extends UserInterface
 
         $query = trim($_GET['quickSearchFor']);
         $wildCardQuickSearch = $query;
+  
+        $customValues = E::c('db')->loadCustomFieldValuesFV($query,$this->_siteID);
+        $candDb = E::enum('dataItemType','candidate')->dbValue;
+        $compDb = E::enum('dataItemType','company')->dbValue;
+        $contDb = E::enum('dataItemType','contact')->dbValue;
+        $joDb = E::enum('dataItemType','jobOrder')->dbValue;
+        $customInd = array();
+        foreach ($customValues as $k =>$v){
+        	$dtType = $v['dataItemType'];
+        	$dtId = $v['dataItemId'];
+        	$val = $v['value'];
+        	$fieldName = $v['fieldName'];
+        	//if (!isset)
+        	$customInd[$dtType][]=$dtId;
+        }
+        
+        $attValues = E::c('db')->loadAttTextFV($query,$this->_siteID);
+        foreach ($attValues as $k =>$v){
+        	$dtType = $v['dataItemType'];
+        	$dtId = $v['dataItemId'];
+        	$customInd[$dtType][]=$dtId;	
+        }
+        
 
         $search = new QuickSearch($this->_siteID);
-        $candidatesRS = $search->candidates($query);
-        $companiesRS  = $search->companies($query);
-        $contactsRS   = $search->contacts($query);
-        $jobOrdersRS  = $search->jobOrders($query);
-        //$listsRS      = $search->lists($query);
+        $candidatesRS = $search->candidates($query, (isset($customInd[$candDb]))?implode(',',$customInd[$candDb]):null);
+        $companiesRS  = $search->companies($query, (isset($customInd[$compDb]))?implode(',',$customInd[$compDb]):null);
+        $contactsRS   = $search->contacts($query,(isset($customInd[$contDb]))?implode(',',$customInd[$contDb]):null);
+        $jobOrdersRS  = $search->jobOrders($query,(isset($customInd[$joDb]))?implode(',',$customInd[$joDb]):null);
+        //$listsRS      = $search->lists($query
+        
+
 
         if (!empty($candidatesRS))
         {

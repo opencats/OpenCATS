@@ -90,11 +90,12 @@ class ModuleUtility
         foreach ($modules as $moduleName => $moduleData)
         {
             $moduleClass = $moduleData[0];
-
+			
             if (file_exists($taskFile =
                 sprintf('./modules/%s/tasks/tasks.php',
                     $moduleName)))
             {
+            	echo 'Checking:'.$taskFile."\n";
                 include_once($taskFile);
             }
         }

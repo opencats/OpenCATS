@@ -1,31 +1,57 @@
 <?php
 // https://www.getinstance.com/a-php-enum-class/
 abstract class EnumType {
-	private static $enumCache = array();
-    private $name;
-	protected static $fields = array();
-	protected $attrs = null;
- 
-    public abstract function getFields();
 	
-    final function __construct( $name ) { 
-		$className = get_class($this);
-		if (!isset(EnumType::$fields[$className])){
-			EnumType::$fields[$className] = $this->getFields();
-		}
-        if (!array_key_exists( $name, EnumType::$fields[$className])) { 
-            throw new \Exception("Unknown EnumType::name reference in $className : $name");
+	private static $fields;//not used
+	private static $values;//not used
+	private $name;
+	private $attrs = null;
+ 	
+    protected function __construct( $name ) {
+        if (!isset(static::$fields[$name])) {
+        	$className = get_class($this);
+            throw new \Exception('Unknown '.$className.'::'.$name.' reference in EnumType constructor ('.$className.' not initialized?).');
         }   
         $this->name = $name;
-		$this->attrs =  EnumType::$fields[$className][$name];
+		$this->attrs =  static::$fields[$name];
+		if ($this->llAttr==null){
+			$this->llAttr=$this->llAttr();
+		}
+		/*vd(array(
+				'$this->name'=>$name,
+				'$this->attrs'=>$this->attrs
+		));*/
     } 	
+    
+    protected function addAttr($name,$value){
+    	if (isset($this->attrs[$name])){
+    		throw new \Exception('Canot overload attr with name:'.$name.' - already defined.');
+    	}
+    	$this->attrs[$name]=$value;
+    }
  
-    public static function __callStatic( $func, $args ) {
-		$className = get_called_class();		
-		if (!isset(EnumType::$enumCache[$className][$func])){
-			EnumType::$enumCache[$className][$func]=new static( $func ); 
+    public static function __callStatic( $name, $args ) {
+		if (!isset(static::$values[$name])){
+			static::$values[$name]=new static( $name ); 
 		} 
-		return EnumType::$enumCache[$className][$func];
+		/*vd(array(
+				'$calledClassName'=>get_called_class(),
+				'trace'=>debug_backtrace(),
+				'static::$values[name]->name()'=>static::$values[$name]->name()
+		));*/
+		return static::$values[$name];
+    }
+    
+    public static function hasName($name){
+    	return (isset(static::$fields[$name]));
+    }
+    
+    public static function initValues(){
+    	$result = array();
+    	$className = get_called_class();
+    	foreach(static::$fields as $k=>$v){
+    		call_user_func($className.'::'.$k);
+    	}
     }
  
     public function name() {
@@ -36,43 +62,57 @@ abstract class EnumType {
         return $this->name();
     }
 	
-	public function getEnumCache(){
-		return EnumType::$enumCache;
+	public function getAttr($atrName){
+		if ('name'==$atrName) return $this->name();
+		//lazy load
+		$result = (isset($this->attrs[$atrName]))?$this->attrs[$atrName]:null;
+		if (array_key_exists($atrName,$this->llAttr['attr']) && !is_array($result)){
+			$nn=$this->name().ucfirst($atrName);
+			$file = $this->llAttr['path'].$nn.'.php';
+			/*vd(array(
+					'$nn'=>$nn,
+					'$file'=>$file ,
+			));*/
+			if (file_exists($file)){
+		
+				include($file);
+				/*vd(array(
+						'$nn'=>$nn,
+						'$$nn'=>$$nn,
+				));*/
+				$va = $$nn;
+				$this->attrs[$atrName]=$va;
+				return $va;
+			}
+		}
+		return $result;
 	}
 	
-	public function getAttr($atrName){
-		if (isset($this->attrs[$atrName])){
-			return $this->attrs[$atrName];
-		}
-		return null;
-	}
+
 	
 	public function description(){
 		return $this->getAttr('desc');
 	}
 	
 	public static function values(){
-		$className = get_called_class();
-		$result = array();
-		foreach(static::$fields as $k=>$v){
-			$result[]=call_user_func($className.'::'.$k);
-		}
-		return $result;
+		return static::$values;
 	}
 	
 	public static function valueOf($name){
-		$result = null;
-		if (isset(static::$fields[$name])){
-			$className = get_called_class();
-			$result=call_user_func($className.'::'.$name);
-		}
-		return $result;
+		return static::$values[$name];
+	}
+	
+	private $llAttr = null;
+	
+	protected  function llAttr(){
+		return array(
+				'attr'=>array(),
+				'path'=>'',
+		);
 	}
 	
 	public function __get($name) {
 		return $this->getAttr($name);
-	}
-	
+	}	
 }
-
 ?>

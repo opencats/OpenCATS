@@ -2,9 +2,11 @@
 <?php TemplateUtility::printModalHeader(__('Candidates'), array(''), __('Assign candidate tag')); ?>
 
     <?php if (!$this->isFinishedMode): ?>
+    	
 		<form class="changeCandidateTags" id="changeCandidateTags" method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addCandidateTags">
 			<input type="hidden" name="postback" id="postback" value="postback" />
 			<input type="hidden" id="candidateID" name="candidateID" value="<?php echo($this->candidateID); ?>" />
+			<div><?php //style=" height:  $_GET['frameHeight']-40;px;overflow: scroll;"?>
             <ul>	                                        
 			<?php $i=1;
 			
@@ -21,10 +23,11 @@
 			}
 			drw($this->tagsRS, '', $this->assignedTags);
 			?></ul>
-
+			</div>
             <input type="submit" class="button" name="submit" id="submit" value="<?php echo __("Save");?>" />&nbsp;
             <input type="button" class="button" name="cancel" value="<?php echo __("Cancel");?>" onclick="parentHidePopWin();" />
 		</form>
+		
     <?php else: ?>
     	<p><?php echo __("All data has been saved");?></p>
         <form>

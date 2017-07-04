@@ -55,6 +55,14 @@
                     </tr>
                     <tr>
                         <td class="tdVertical" style="width:250px;">
+                            <?php echo __("Database Schema Version");?>:
+                        </td>
+                        <td class="tdData">
+                            <?php $this->_(E::db()->getDbVersion()); ?>
+                        </td>
+                    </tr>                    
+                    <tr>
+                        <td class="tdVertical" style="width:250px;">
                             <?php echo __("Installation Directory");?>:
                         </td>
                         <td class="tdData">

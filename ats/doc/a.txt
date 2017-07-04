@@ -1,0 +1,44 @@
+Dalsze wykonane zmiany które nie są objęte fakturą:
+
+1. Dodatkowe pola na zleceniach (zgodnie z arkuszem)
+
+- 3h
+ 
+2. Wstępnie generacja arkusza zlecenia w formacie xls (Zlecenie -> Generuj arkusz zlecenia)
+
+- 3h
+ 
+3. Import danych Excel
+
+- 3h
+ 
+
+W planie:
+ 
+
+1. Konfiguracja przypomnień, tłumaczenie szablonów email 
+
+- w ramach tłumaczenia (takze ewentualne dalsze uzupelnienia w tłumaczeniach)
+
+ 
+
+2. Dokończenie generacji arkusza zlecenia, obsługa importu arkusza
+
+- 3h
+ 
+
+3. Zlecenie - stanowisko jako lista rozwijana
+
+- 2h
+ 
+
+4. Strona dla zgłoszeń kadydatów (aktualnie http://localhost/ats/careers) - umożliwi umieszczanie linków do aplikowania elektronicznego w ogłoszeniach z ofertami pracy, - do wystawienia np pod adresem ats.assunto.pl lub zgloszenia.assunto.pl
+
+- 3h
+ 
+
+5. Integracja z Outlook (pobieranie eventów do Kalendarza Outlook)
+- 2h 
+ 
+
+Za powyższe  prace  wystawię kolejną fakturę  po ich ukończeniu.

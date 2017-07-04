@@ -3,6 +3,7 @@
 class EventTypeEnum extends EnumType {
 		
 	protected static $fields;
+	protected static $values;
 	
 	static function init(){
 		self::$fields= array(
@@ -12,7 +13,7 @@ class EventTypeEnum extends EnumType {
 					'dbValue'=>100
 			), 	 	
 			"email" => array(
-					'desc'=> __("Email"),
+					'desc'=>'e-mail',
 					'iconImage'=>'images/email.gif',
 					'dbValue'=>200
 			), 	
@@ -36,16 +37,9 @@ class EventTypeEnum extends EnumType {
 					'iconImage'=>'',
 					'dbValue'=>600
 			)		
-	);
+		);
 	}
-	
-	public function getFields() {
-		return self::$fields;    
-	}
-	
-
 }
-
 EventTypeEnum::init();
-
+EventTypeEnum::initValues();
 ?>

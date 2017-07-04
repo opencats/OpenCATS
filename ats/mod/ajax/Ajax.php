@@ -21,7 +21,7 @@ class Ajax extends Controller {
 		//if (!isset($_GET['m']) && isset($a[1])) $_GET['m']=$a[1];
 		//if (!isset($_GET['a']) && isset($a[2])) $_GET['a']=$a[2];
 		
-		$response = evRunWithBuf($this->view,'show',array());
+		$response = evRunWithBuf($this->view,'show',array('route'=>$args['route']));
 		$content = $response['output'];
 		
 		//$content = evStrReplace($content,'src="js/','src="/js/');

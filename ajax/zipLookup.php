@@ -16,6 +16,16 @@ if (!isset($_REQUEST['zip']))
 
 $zip = $_REQUEST['zip'];
 
+include('test.php');
+$zipc = str_replace('-','',$zip);
+if (isset($kodyP[$zipc])){
+	$kodP=$kodyP[$zipc];
+	$street = $kodP['ulica'];
+	$city = $kodP['miejsc'];
+	$state = 'PL';
+} else {
+
+
 $zipLookup = new ZipLookup();
 
 $searchableZip = $zipLookup->makeSearchableUSZip($zip);
@@ -25,6 +35,7 @@ $data = $zipLookup->getCityStateByZip($searchableZip);
 $street = $data[1];
 $city  = $data[2];
 $state = $data[3];
+}
 
 /* Send back the XML data. */
 $interface->outputXMLPage(

@@ -1304,9 +1304,9 @@ class QuickSearch
      * @param string wildcard match string
      * @return array candidates data
      */
-    public function candidates($wildCardString)
+    public function candidates($wildCardString, $ids=null)
     {
-        $wildCardString = str_replace('*', '%', $wildCardString) . '%';
+        $wildCardString = '%'.str_replace('*', '%', $wildCardString) . '%';
         $wildCardString = $this->_db->makeQueryString($wildCardString);
 
         $sql = sprintf(
@@ -1331,13 +1331,16 @@ class QuickSearch
                 candidate
             LEFT JOIN user AS owner_user
                 ON candidate.owner = owner_user.user_id
-            WHERE
+            WHERE "
+        	.(($ids!=null)?" candidate.candidate_id in (".$ids.") OR ":"").	
+        	"	
             (
                 CONCAT(candidate.first_name, ' ', candidate.last_name) LIKE %s
                 OR CONCAT(candidate.last_name, ' ', candidate.first_name) LIKE %s
                 OR CONCAT(candidate.last_name, ', ', candidate.first_name) LIKE %s
                 OR candidate.email1 LIKE %s
                 OR candidate.email2 LIKE %s
+        		OR candidate.key_skills LIKE %s 
                 OR REPLACE(
                     REPLACE(
                         REPLACE(
@@ -1368,6 +1371,7 @@ class QuickSearch
             $wildCardString,
             $wildCardString,
             $wildCardString,
+        	$wildCardString,
             $this->_siteID
         );
 
@@ -1381,7 +1385,7 @@ class QuickSearch
      * @param string wildcard match string
      * @return array companies data
      */
-    public function companies($wildCardString)
+    public function companies($wildCardString, $ids=null)
     {
         $wildCardString = str_replace('*', '%', $wildCardString) . '%';
         $wildCardString = $this->_db->makeQueryString($wildCardString);
@@ -1408,12 +1412,15 @@ class QuickSearch
                 company
             LEFT JOIN user AS owner_user
                 ON company.owner = owner_user.user_id
-            WHERE
-            (
+            WHERE"
+        	.(($ids!=null)?" company.company_id in (".$ids.") OR ":"").		
+            "(
                 company.name LIKE %s
                 OR company.phone1 LIKE %s
                 OR company.phone2 LIKE %s
                 OR company.url LIKE %s
+        		OR company.key_technologies LIKE %s 
+        		OR company.notes LIKE %s 
             )
             AND
                 company.site_id = %s
@@ -1423,6 +1430,8 @@ class QuickSearch
             $wildCardString,
             $wildCardString,
             $wildCardString,
+        	$wildCardString,
+        	$wildCardString,
             $this->_siteID
         );
 
@@ -1436,7 +1445,7 @@ class QuickSearch
      * @param string wildcard match string
      * @return array contacts data
      */
-    public function contacts($wildCardString)
+    public function contacts($wildCardString, $ids=null)
     {
         $wildCardString = str_replace('*', '%', $wildCardString) . '%';
         $wildCardString = $this->_db->makeQueryString($wildCardString);
@@ -1471,12 +1480,15 @@ class QuickSearch
                 ON contact.company_id = company.company_id
             LEFT JOIN user AS owner_user
                 ON contact.owner = owner_user.user_id
-            WHERE
-            (
+            WHERE"
+			.(($ids!=null)?" contact.contact_id in (".$ids.") OR ":"").            
+        	"(
                 CONCAT(contact.first_name, ' ', contact.last_name) LIKE %s
                 OR CONCAT(contact.last_name, ' ', contact.first_name) LIKE %s
                 OR CONCAT(contact.last_name, ', ', contact.first_name) LIKE %s
                 OR contact.phone_work LIKE %s
+        		OR contact.title LIKE %s 
+        		OR contact.notes LIKE %s 
                 OR company.name LIKE %s
                 OR contact.email1 LIKE %s
                 OR contact.email2 LIKE %s
@@ -1510,6 +1522,8 @@ class QuickSearch
             $wildCardString,
             $wildCardString,
             $wildCardString,
+        	$wildCardString,
+        	$wildCardString,
             $this->_siteID,
             $this->_siteID
         );
@@ -1524,7 +1538,7 @@ class QuickSearch
      * @param string wildcard match string
      * @return array job orders data
      */
-    public function jobOrders($wildCardString)
+    public function jobOrders($wildCardString, $ids=null)
     {
         $wildCardString = str_replace('*', '%', $wildCardString) . '%';
         $wildCardString = $this->_db->makeQueryString($wildCardString);
@@ -1564,10 +1578,13 @@ class QuickSearch
                 ON joborder.recruiter = recruiter_user.user_id
             LEFT JOIN user AS owner_user
                 ON joborder.owner = owner_user.user_id
-            WHERE
-            (
+            WHERE"
+        	.(($ids!=null)?" joborder.joborder_id in (".$ids.") OR ":""). 	
+            "(
                 company.name LIKE %s
-                OR joborder.title LIKE %s
+                OR joborder.title LIKE %s 
+        		OR joborder.description LIKE %s 
+        		OR joborder.notes LIKE %s 
             )
             AND
                 joborder.is_admin_hidden = 0
@@ -1579,6 +1596,8 @@ class QuickSearch
                 name ASC",
             $wildCardString,
             $wildCardString,
+        	$wildCardString,
+        	$wildCardString,
             $this->_siteID,
             $this->_siteID
         );

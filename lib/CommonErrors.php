@@ -151,16 +151,14 @@ class CommonErrors
                     . '<br /><br />'
                     . '<b>It\'s ok!</b> CATS can\'t complete whatever action you requested; but chances are, '
                     . 'if you click the <a href="javascript:back()">back button</a> and <b>refresh</b> the page '
-                    . 'and try again it will work just fine.';
+                    . 'and try again it will work just fine.'.'<b>' . $customMessage . '</b>';
                 break;
 
             case COMMONERROR_PERMISSION:
-                $errorTitle = 'You don\'t have permission';
-                $internalErrorTitle = 'Permission Denied';
-                $errorMessage = 'You don\'t have access to the action you\'re attempting to perform. If you '
-                    . 'feel you should have access, contact your site administrator. '
-                    . 'You can click the <a href="javascript:back()">back</a> button on your browser to return '
-                    . 'to where you came from.';
+                $errorTitle = 'Brak uprawnień';
+                $internalErrorTitle = 'Dostęp zabroniny';
+                $errorMessage = 'Nie posiadasz uprawnień do wykonania tej akcji. Jeśli uważasz że powinieneś je mieć - skontaktuj się z administratorem.'
+                    . '<br/><button onclick="javascript: window.history.back();">Powrót</button>';
                 break;
 
             case COMMONERROR_NOTLOGGEDIN:
@@ -286,6 +284,8 @@ class CommonErrors
         $template->assign('errorTitle', $errorTitle);
         $template->assign('errorMessage', $errorMessage);
         $template->assign('modal', $modal);
+        $backTrace=debug_backtrace();
+        $template->assign('backTrace', $backTrace);
         $template->display('./modules/home/FriendlyError.tpl');
         die();
     }

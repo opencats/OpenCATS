@@ -13,12 +13,7 @@ class JobOrderTypes
         
 
     public function __construct() {
-        $this->_defaultTypes = array(
-            'C' => 'Contract',
-            'C2H' => 'Contract To Hire',
-            'FL' => 'Freelance',
-            'H' => 'Hire'
-        );
+    	$this->_defaultTypes = E::jobOrderType()->getAsoc('dbValue','desc');
     }
 
     /**

@@ -58,7 +58,12 @@ class ACL
             // for now, only first category is used for evalualtion
             $userCategory = $userCategories[0];
         }
-        if( NULL !== ACCESS_LEVEL_MAP[$userCategory][$securedObjectName])
+		
+		if (evStrEmpty($userCategory)) return $defaultAccessLevel;
+		
+		$acat = ACCESS_LEVEL_MAP;
+		
+        if(isset($acat[$userCategory]) && isset($acat[$userCategory][$securedObjectName]) &&  NULL !== ACCESS_LEVEL_MAP[$userCategory][$securedObjectName])
         {
             return ACCESS_LEVEL_MAP[$userCategory][$securedObjectName];
         }
@@ -66,12 +71,16 @@ class ACL
         while(($pos = strrpos($securedObjectName, ".")) !== false)
         {
             $securedObjectName = substr($securedObjectName, 0, $pos);
-            if( NULL !== ACCESS_LEVEL_MAP[$userCategory][$securedObjectName])
+            if(isset($acat[$userCategory]) && isset($acat[$userCategory][$securedObjectName]) && NULL !== ACCESS_LEVEL_MAP[$userCategory][$securedObjectName])
             {
                 return ACCESS_LEVEL_MAP[$userCategory][$securedObjectName];
             }
         }
-        if( NULL !== ACCESS_LEVEL_MAP[$userCategory][ACL::SECOBJ_ROOT])
+		//cho "uuuuuuuuuuuuuuu<br/><br/><br/><br/><br/><br/><br/><br/><br/>";
+		/*vd(array('$userCategory'=>$userCategory,
+		'$userCategories'=>$userCategories
+		));*/
+        if(isset($acat[$userCategory]) && isset( $acat[$userCategory][ACL::SECOBJ_ROOT]) && NULL !== ACCESS_LEVEL_MAP[$userCategory][ACL::SECOBJ_ROOT])
         {
             return ACCESS_LEVEL_MAP[$userCategory][ACL::SECOBJ_ROOT];
         }

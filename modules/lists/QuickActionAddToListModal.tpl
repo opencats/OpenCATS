@@ -1,8 +1,8 @@
 <?php /* $Id: QuickActionAddToListModal.tpl 3198 2007-10-14 23:36:43Z will $ */ ?>
-<?php TemplateUtility::printModalHeader(__('Candidates'), array('js/lists.js'), 'Add to '.$this->dataItemDesc.' '.__('Static Lists')); ?>
+<?php TemplateUtility::printModalHeader(__('Candidates'), array('js/lists.js'), 'Dodaj do listy'); ?>
     <table>
         <tr>
-            <td><!--Add to Static Lists-->Select the lists you want to add the item<?php if (count($this->dataItemIDArray) > 1): ?>s<?php endif; ?> to.</td>
+            <td><!--Add to Static Lists-->Wybierz listę do której chcesz dodać element<?php if (count($this->dataItemIDArray) > 1): ?>y<?php endif; ?>.</td>
        </tr>
     </table>
             <div class="addToListListBox" id="addToListBox">

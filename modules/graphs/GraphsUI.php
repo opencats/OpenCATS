@@ -416,6 +416,10 @@ class GraphsUI extends UserInterface
         $dashboard = new Dashboard($this->_siteID);
         $pipelineRS = $dashboard->getPipelineData($view);
         
+        //vd(array(
+        //	'$pipelineRS'=>$pipelineRS	
+        //));
+        //ie();
         $noData = true;
         
         $y = array();
@@ -454,7 +458,7 @@ class GraphsUI extends UserInterface
         }
         
         $graph = new pipelineStatisticsGraph(
-            $y, $x, $colorArray, $this->width, $this->height, "Submissions", "Interviews", "Hires", $view, $noData
+            $y, $x, $colorArray, $this->width, $this->height, __("Submissions"), __("Interviews"), __("Hires"), $view, $noData
         );
         
         $graph->draw();
@@ -470,39 +474,63 @@ class GraphsUI extends UserInterface
             die();
         }
 
-        $statisticsData = $statistics->getPipelineData($_GET['params']);
+        $v=E::activityStatus()->enumValues();
+        
+        $statisticsData = $statistics->getPipelineData($_GET['params'],$v);
+        
+        
 
         /* We can expand things a bit if we have more room. */
         if ($this->width > 600)
         {
             $y = array(
-                "Total Pipeline",
-                "Contacted",
-                "Cand Replied",
-                "Qualifying",
-                "Submitted",
-                "Interviewing",
-                "Offered",
-                "Declined",
-                "Placed"
-            );
+                __("Total Pipeline"));
+            foreach($v as $n=>$def){
+            	$y[]=$def->descShort;
+            }
+            /*    $v['contacted']->descShort,
+            	$v['candidateResp']->descShort,
+            	$v['qualifying']->descShort,
+            	$v['submitted']->descShort,
+            	$v['interviewing']->descShort,
+            	$v['offered']->descShort,
+            	$v['clientDecl']->descShort,
+            	$v['placed']->descShort
+            );*/
         }
         else
         {
             $y = array(
-                "Total Pipeline",
-                "|Contacted",
-                "Cand Replied",
-                "|Qualifying",
-                "Submitted",
-                "|Interviewing",
-                "Offered",
-                "|Declined",
-                "Placed"
-            );
+                __("Total Pipeline"));
+            $con='';
+            foreach($v as $n=>$def){
+            	$con=($con=='|')?'':'|';
+            	$y[]=$con.$def->descShort;
+            }
+            /*		'|'.$v['contacted']->descShort,
+            		$v['candidateResp']->descShort,
+            		'|'.$v['qualifying']->descShort,
+            		$v['submitted']->descShort,
+            		'|'.$v['interviewing']->descShort,
+            		$v['offered']->descShort,
+            		'|'.$v['clientDecl']->descShort,
+            		$v['placed']->descShort
+            );*/
         }
+        $x=array($statisticsData['totalPipeline']);
+        //$i=1;//sizeof($v);
+        foreach($v as $n=>$def){
+        	$x[]=$statisticsData[$n];
+        	//$i++;
+        }
+        //$x[0]=;
+        
+        /*vd(array(
+        		'$x'=>$x,
+        		'$y'=>$y,
+        ));*/
 
-        $x[8] = $statisticsData['placed'];
+        /*$x[8] = $statisticsData['placed'];
         $x[7] = $statisticsData['passedOn'];
         $x[6] = $statisticsData['offered'] + $x[8];
         $x[5] = $statisticsData['interviewing'] + $x[6];
@@ -510,7 +538,7 @@ class GraphsUI extends UserInterface
         $x[3] = $statisticsData['qualifying'] + $x[4];
         $x[2] = $statisticsData['replied'] + $x[3];
         $x[1] = $statisticsData['contacted'] + $x[2];
-        $x[0] = $statisticsData['totalPipeline'];
+        $x[0] = $statisticsData['totalPipeline'];*/
 
         $colorOptions = Graphs::getColorOptions();
         $colorArray = array();
@@ -523,7 +551,7 @@ class GraphsUI extends UserInterface
         $colorArray[7] = new LinearGradient(new AlmostBlack, new White, 0);
 
         $graph = new GraphComparisonChart(
-            $y, $x, $colorArray, 'Job Order Pipeline', $this->width,
+            $y, $x, $colorArray, __('Job Order Pipeline'), $this->width,
             $this->height, $statisticsData['totalPipeline']
         );
 

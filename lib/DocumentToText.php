@@ -110,7 +110,7 @@ class DocumentToText
                     return false;
                 }
 
-                $nativeEncoding = 'ISO-8859-1';
+                $nativeEncoding = 'UTF-8';
                 $command = '"'. ANTIWORD_PATH . '" -m ' . ANTIWORD_MAP . ' '
                     . $escapedFilename;
                 break;

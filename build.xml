@@ -9,7 +9,8 @@
 	<condition property="bundleName" value="${env.BUNDLE_NAME}" else="OpenATS">
 		<isset property="env.BUNDLE_NAME"/>
 	</condition>
-	<condition property="atsVersion" value="${env.ATS_VERSION}" else="1.0.0">
+	<!-- ${env.ATS_VERSION} -->
+	<condition property="atsVersion" value="1.1.1" else="1.1.1">
 		<isset property="env.AMW_VERSION"/>
 	</condition>	
 	
@@ -48,6 +49,7 @@
 	
 	<path id="class.path">
 		<pathelement location="${workspace.antResources.dir}/configuration/jsch-0.1.54.jar" />
+		<pathelement location="${workspace.antResources.dir}/configuration/commons-net-3.6.jar" />		
 	</path>
 		
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
@@ -55,6 +57,8 @@
 			<pathelement location="${workspace.antResources.dir}/configuration/ant-contrib-0.6.jar" />
 			<!-- SCP -->
 			<pathelement location="${workspace.antResources.dir}/configuration/jsch-0.1.54.jar" />
+			<!-- FTP -->
+			<pathelement location="${workspace.antResources.dir}/configuration/commons-net-3.6.jar" />
 		</classpath>
 	</taskdef>
 	
@@ -163,7 +167,18 @@
 	 
 
 	<target name="distr-web" depends="" description="Deploy Web">
-		<zip destfile="${workspace.ats.dir}/distr/atsWeb-${atsVersion}.zip" basedir="${workspace.ats.dir}"/>
+		<zip destfile="${workspace.ats.dir}/distr/atsWeb-${atsVersion}.zip" basedir="${workspace.ats.dir}" excludes=".git/**,attachments/**,upload/**" includes="**"/>
 	</target>
+	
+	<target name="scp-distr-web"  depends="" description="Scp Distr Web">
+		<scp file="${workspace.ats.dir}/distr/atsWeb-${atsVersion}.zip" todir="${env.AMW_DISTR_USER}:${env.AMW_DISTR_PASS}@${env.AMW_DISTR_HOST}:${env.AMW_DISTR_RDIR}" trust="true" verbose="true"/>	
+	</target>
+	
+	<target name="ftp-distr-web"  depends="" description="FTP Distr Web">
+		<ftp server="ftp.swiety-wojciech.pl" userid="d73915da"
+		       password="rc67i4Z3">
+		<fileset file="${workspace.ats.dir}/distr/atsWeb-${atsVersion}.zip"/>
+		</ftp>
+	</target>		
 	
 </project>

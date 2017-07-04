@@ -495,6 +495,18 @@
                             <input type="text" class="inputbox" tabindex="<?php echo($tabIndex++); ?>" name="keySkills" id="keySkills" style="width: 400px;" value="<?php if (isset($this->preassignedFields['keySkills'])) $this->_($this->preassignedFields['keySkills']); ?>" />
                         </td>
                     </tr>
+                    
+                            <tr><td colspan="2">
+
+							<?php
+							E::uiO('customFields',array(
+                    			'dataItem'=>'candidate',
+                    			'section'=>'custom1',
+                    			'template'=>'add',
+                    			'fl'=>$this->fl,							
+							)); 
+							?>
+							</td></tr>                    
 
                     <tr>
                         <td class="tdVertical">

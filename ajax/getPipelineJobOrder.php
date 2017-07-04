@@ -276,7 +276,7 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
             <td valign="top" nowrap="nowrap"><?php echo(htmlspecialchars($pipelinesData['state'])); ?></td>
             <td valign="top" nowrap="nowrap"><?php echo(htmlspecialchars($pipelinesData['dateCreated'])); ?></td>
             <td valign="top" nowrap="nowrap"><?php echo(htmlspecialchars($pipelinesData['addedByAbbrName'])); ?></td>
-            <td valign="top" nowrap="nowrap"><?php echo(htmlspecialchars(EnumTypeEnum::activityStatus()->enumByAttr('dbValue',$pipelinesData['jobOrderStatus'])->desc)); ?></td>
+            <td valign="top" nowrap="nowrap"><?php echo(htmlspecialchars(@EnumTypeEnum::activityStatus()->enumByAttr('dbValue',$pipelinesData['jobOrderStatus'])->desc)); ?></td>
             <td valign="top"><?php echo($pipelinesData['lastActivity']); ?></td>
 <?php if (!$isPopup): ?>
             <td align="center" nowrap="nowrap">

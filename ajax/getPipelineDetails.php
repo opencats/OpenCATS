@@ -55,7 +55,7 @@ foreach ($pipelineActivitiesRS as $rowIndex => $row)
 }
 
 /* Output HTML. */
-echo '<div class="noteUnsizedSpan">Activity History:</div>',
+echo '<div class="noteUnsizedSpan">'.__('Activity History').':</div>',
      '<table>';
 
 if (empty($pipelineActivitiesRS))

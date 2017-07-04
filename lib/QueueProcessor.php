@@ -132,8 +132,11 @@ class QueueProcessor
         $task = self::getInstantiatedTask($taskPath);
 
         // recurring tasks need a getSchedule() function that returns a crontab string, i.e.: "0,1,5 * * * *", etc.
-        if (!self::isTaskReady($task->getSchedule())) return;
-
+        if (!self::isTaskReady($task->getSchedule())) {
+        	echo "Not ready - returning...\n";
+        	return;
+        }
+		echo "Ready - processing ...\n";
         // Check if an old instance of this SAME recurring task is running, do not run over the top of it
         $sql = sprintf(
             "SELECT
@@ -151,10 +154,13 @@ class QueueProcessor
         if ($cnt > 0)
         {
             // Instance of this task is running
+            echo 'Instances are running ('.$cnt.") - returning ...\n";
             return;
         }
-
+		echo "Adding asynch Task ".$taskName."...\n";
         $taskID = self::addAsynchronousTask(CATS_ADMIN_SITE, $taskName, 0, 5);
+        echo "Starting Task id:".$taskID."\n";
+        //return;
         self::startTask(CATS_ADMIN_SITE, $taskPath, 0, 5, $taskID);
     }
 
@@ -233,9 +239,10 @@ class QueueProcessor
 
         $taskName = self::getTaskNameFromPath($taskPath);
         $curTask = self::getInstantiatedTask($taskPath);
-
+		echo 'Instance loaded:'.is_object($curTask)."\n";
         if (!$curTask)
         {
+        	echo "Problem loading ...\n";
             self::setTaskResponse($taskID, sprintf(
                 'Cannot load task "%s" from "%s".',
                 $taskName, $taskPath
@@ -245,7 +252,9 @@ class QueueProcessor
         }
 
         $curTask->setTaskID($taskID);
+        echo "Runing curTask->run on task id ".$taskID."\n";
         $retVal = $curTask->run($siteID, $args);
+        echo "RetVal from task:".$retVal."\n";
 
         self::setTaskLock($taskID, 0);
 
@@ -303,6 +312,9 @@ class QueueProcessor
     // FIXME: Document me.
     public static function removeTask($taskID)
     {
+    	echo 'Removing task '.$taskID."\n";
+    	//return;
+    	
         $db = DatabaseConnection::getInstance();
 
         $sql = sprintf(

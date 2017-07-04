@@ -33,7 +33,7 @@ div.friendlyErrorMessage {
                 <tr>
                     <?php if (!$this->modal): ?>
                     <td align="left" valign="top" style="padding-right: 20px;">
-                        <img src="images/friendly_error.jpg" border="0" />
+                        <img src="assets/svg/alert.svg" height="220px" width="220px" border="0" />
                     </td>
                     <?php endif; ?>
                     <td align="left" valign="top">
@@ -51,6 +51,11 @@ div.friendlyErrorMessage {
                             <?php
                             eval(Hooks::get('FRIENDLYERRORS_CONTACTCATS'));
                             ?>
+                        </div>
+                        <div class="backTrace">
+                        <?php //echo nl2br(print_r($this->backTrace,true));
+                        evPrint($this->backTrace);
+                        ?>
                         </div>
                     </td>
                 </tr>

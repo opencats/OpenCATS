@@ -469,10 +469,10 @@ class Questionnaire
     {
         switch ($type)
         {
-            case QUESTIONNAIRE_QUESTION_TYPE_CHECKBOX: return 'Checkboxes';
-            case QUESTIONNAIRE_QUESTION_TYPE_SELECT: return 'Drop-down List';
-            case QUESTIONNAIRE_QUESTION_TYPE_RADIO: return 'Radio Buttons';
-            default: return 'Text';
+            case QUESTIONNAIRE_QUESTION_TYPE_CHECKBOX: return __('Checkboxes');
+            case QUESTIONNAIRE_QUESTION_TYPE_SELECT: return __('Drop-down List');
+            case QUESTIONNAIRE_QUESTION_TYPE_RADIO: return __('Radio Buttons');
+            default: return __('Text');
         }
     }
 

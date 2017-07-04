@@ -121,7 +121,7 @@ class ActivityDataGrid extends DataGrid
                                      'alphaNavigation' => true,
 									 'filter' 		   => 'CONCAT(joborder.title, company.name)'),        
 
-             __('Activity') =>      array('pagerRender'    => '$ret = $rsData[\'type\']; return EnumTypeEnum::activityType()->enumByAttr(\'dbValue\',$ret)->desc;', 
+             __('Activity') =>      array('pagerRender'    => '$ret = $rsData[\'type\']; return @EnumTypeEnum::activityType()->enumByAttr(\'dbValue\',$ret)->desc;', 
              						 'exportRender'   => 'return $rsData[\'type\'];',
              						 'sortableColumn'  => 'type',
                                      'pagerWidth'      => 65,

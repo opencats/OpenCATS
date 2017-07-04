@@ -1,0 +1,15 @@
+Checking:./modules/calendar/tasks/tasks.php
+Ready - processing ...
+Adding asynch Task Reminders...
+Starting Task id:16786
+Instance loaded:1
+Runing curTask->run on task id 16786
+RetVal from task:4
+Removing task 16786
+Checking:./modules/queue/tasks/tasks.php
+
+Strict Standards: Non-static method QueueProcessor::getHour() should not be called statically in C:\Users\mb\git\OpenATS\lib\QueueProcessor.php on line 556
+
+Strict Standards: Non-static method QueueProcessor::getMinute() should not be called statically in C:\Users\mb\git\OpenATS\lib\QueueProcessor.php on line 560
+Not ready - returning...
+ATS Queue Processor status: NO TASKS

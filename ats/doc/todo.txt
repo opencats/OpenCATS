@@ -1,2 +1,12 @@
 eliminacja hardcoded activityType - szuk. ACTIVITY_CALL_TALKED
 przeniesc do enuma dataitemtype (trzon modelu) activity.data_item_type = data_item_type.data_item_type_id
+http://www.pontikis.net/labs/bs_grid/demo/set-rules/
+http://www.jquery-bootgrid.com/Documentation#table
+http://www.piprime.fr/1472/efficient-html-code-generation-without-templating-system/
+https://fullcalendar.io/
+
+https://mapy.e-turysta.pl/#map=7/19.3698/52.0974
+https://opensource.com/alternatives/google-calendar
+http://www.k5n.us/webcalendar.php
+
+http://easyappointments.org/

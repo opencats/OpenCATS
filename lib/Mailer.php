@@ -199,6 +199,13 @@ class Mailer
         $this->_mailer->WordWrap = $wrapLinesAt;
 
         $this->_mailer->Subject = $subject;
+        
+        $replyToArr = array();
+        if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn()){
+        	$email = $_SESSION['CATS']->getEmail();
+        	$fullName = $_SESSION['CATS']->getFullName();
+        	$replyToArr[$email]=$fullName;
+        }
 
         if ($isHTML)
         {
@@ -234,6 +241,12 @@ class Mailer
             if (!empty($replyTo))
             {
                 $this->_mailer->AddReplyTo($replyTo[0], $replyTo[1]);
+            }
+            
+            if (sizeof($replyToArr)>0){
+            	foreach($replyToArr as $m =>$n){
+            		$this->_mailer->AddReplyTo($m, $n);
+            	}
             }
 
             if (!$this->_mailer->Send())

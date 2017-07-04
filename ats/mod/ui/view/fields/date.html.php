@@ -1,0 +1,1 @@
+<script type="text/javascript">DateInput('<?php echo $k?>', false, 'MM-DD-YY', '<?php echo evConvertDateMDDM($value);?>', 8);</script>

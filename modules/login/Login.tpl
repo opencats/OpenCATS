@@ -49,7 +49,7 @@
                 </div>
 
                 <div id="formBlock">
-                    <img src="images/CATS-sig.gif" alt="<?php echo __("Login");?>" hspace="10" vspace="10" />
+                    <img src="<?php echo ATS_APPLOGO_HREF;?>" alt="<?php echo __("Login");?>" hspace="10" vspace="10" style="width:180px;" />
                     <br />
                     <form name="loginForm" id="loginForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=login&amp;a=attemptLogin<?php if ($this->reloginVars != ''): ?>&amp;reloginVars=<?php echo($this->reloginVars); ?><?php endif; ?>" method="post" onsubmit="return checkLoginForm(document.loginForm);" autocomplete="off">
                         <div id="subFormBlock">

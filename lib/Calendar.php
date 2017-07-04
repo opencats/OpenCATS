@@ -853,7 +853,7 @@ class Calendar
      * @param boolean Show name / data item title?
      * @return string Link HTML (<a href="...">...</a>).
      */
-    private function getHTMLOfLink($dataItemID, $dataItemType, $showTitle = true)
+    public function getHTMLOfLink($dataItemID, $dataItemType, $showTitle = true)
     {
         $string = '<a href="' . CATSUtility::getIndexName();
 

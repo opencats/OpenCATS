@@ -1,0 +1,3 @@
+<my-app>Loading AppComponent content here ...
+<p myHighlight>Highlight me!</p>
+</my-app>

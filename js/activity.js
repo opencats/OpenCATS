@@ -733,9 +733,9 @@ function AS_onStatusChange(statusesArray, jobOrdersArray, regardingSelectID,
                 jobOrdersArrayStringTitle[statusIndex],
                 jobOrdersArrayStringCompany[statusIndex]
             );
-            if (activityEntry.value == '' || activityEntry.value.indexOf('Status change: ') != -1)
+            if (activityEntry.value == '' || activityEntry.value.indexOf('<?php echo __("Status change");?>: ') != -1)
             {
-                activityEntry.value = 'Status change: ' +
+                activityEntry.value = '<?php echo __("Status change");?>: ' +
                     statusSelectList[statusSelectList.selectedIndex].text;
             }
         }

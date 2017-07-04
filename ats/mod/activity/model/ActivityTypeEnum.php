@@ -3,6 +3,7 @@
 class ActivityTypeEnum extends EnumType {
 		
 	protected static $fields;
+	protected static $values;
 	
 	static function init(){
 		self::$fields= array(
@@ -31,6 +32,11 @@ class ActivityTypeEnum extends EnumType {
 					'defineName'=>'ACTIVITY_EMAIL',
 					'dbValue'=>200
 			),
+			"sms" => array(
+					'desc'=>"SMS",
+					'defineName'=>'ACTIVITY_SMS',
+					'dbValue'=>201
+			),
 			"meeting" => array(
 					'desc'=>__("Meeting"),
 					'defineName'=>'ACTIVITY_MEETING',
@@ -41,16 +47,10 @@ class ActivityTypeEnum extends EnumType {
 					'defineName'=>'ACTIVITY_OTHER',
 					'dbValue'=>400
 			)		
-	);
+		);
 	}
-	
-	public function getFields() {
-		return self::$fields;    
-	}
-	
 
 }
-
 ActivityTypeEnum::init();
-
+ActivityTypeEnum::initValues();
 ?>

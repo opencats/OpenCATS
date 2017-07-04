@@ -889,61 +889,25 @@ class Statistics
      *
      * @return array statistics data
      */
-    public function getPipelineData($jobOrderID = -1)
+    public function getPipelineData($jobOrderID = -1,$v )
     {
-        $sql = sprintf(
-            "SELECT
-                COUNT(*) AS totalPipeline,
-                SUM(IF(candidate_joborder.status = %s, 1, 0)) AS noStatus,
-                SUM(IF(candidate_joborder.status = %s, 1, 0)) +
-                SUM(IF(candidate_joborder.status = %s, 1, 0)) AS noContact,
-                SUM(IF(candidate_joborder.status = %s, 1, 0)) AS contacted,
-                SUM(IF(candidate_joborder.status = %s, 1, 0)) AS qualifying,
-                SUM(IF(candidate_joborder.status = %s, 1, 0)) AS submitted,
-                SUM(IF(candidate_joborder.status = %s, 1, 0)) AS interviewing,
-                SUM(IF(candidate_joborder.status = %s, 1, 0)) AS offered,
-                SUM(IF(candidate_joborder.status = %s, 1, 0)) AS passedOn,
-                SUM(IF(candidate_joborder.status = %s, 1, 0)) AS placed,
-                SUM(IF(candidate_joborder.status = %s, 1, 0)) AS replied
-            FROM
-                candidate_joborder
-            LEFT JOIN joborder
-                ON joborder.joborder_id = candidate_joborder.joborder_id
-            WHERE
-                candidate_joborder.site_id = %s
-            AND
-                joborder.status != 'Closed'
-            %s",
-            PIPELINE_STATUS_NOSTATUS,
-            PIPELINE_STATUS_NOCONTACT,
-            PIPELINE_STATUS_NOTINCONSIDERATION,
-            PIPELINE_STATUS_CONTACTED,
-            PIPELINE_STATUS_QUALIFYING,
-            PIPELINE_STATUS_SUBMITTED,
-            PIPELINE_STATUS_INTERVIEWING,
-            PIPELINE_STATUS_OFFERED,
-            PIPELINE_STATUS_CLIENTDECLINED,
-            PIPELINE_STATUS_PLACED,
-            PIPELINE_STATUS_CANDIDATE_REPLIED,
-            $this->_siteID,
-            ($jobOrderID != -1 ? "AND candidate_joborder.joborder_id = ".$jobOrderID : "")
-        );
-        $rs = $this->_db->getAssoc($sql);
+    	$isql =   "SELECT ";
+    	foreach($v as $n =>$def){
+    		$ae[$n]=0;
+    		$isql.='SUM(IF(candidate_joborder.status = '.$def->dbValue.', 1, 0)) AS '.$n.',';
+    	}
+    	$isql .= 'COUNT(*) AS totalPipeline FROM	candidate_joborder ';
+    	$ae['totalPipeline']=0;
+    	
+    	$isql .= 'LEFT JOIN joborder ON joborder.joborder_id = candidate_joborder.joborder_id ';
+    	$isql .= 'WHERE candidate_joborder.site_id = '.$this->_siteID.'	AND joborder.status != \'Closed\' ';
+    	$isql .= ($jobOrderID != -1) ? "AND candidate_joborder.joborder_id = ".$jobOrderID : "";
+    	    
+        $rs = $this->_db->getAssoc($isql);
 
         if (empty($rs))
         {
-            return array(
-                'totalPipeline' => 0,
-                'noStatus' => 0,
-                'noContact' => 0,
-                'contacted' => 0,
-                'qualifying' => 0,
-                'submitted' => 0,
-                'interviewing' => 0,
-                'offered' => 0,
-                'passedOn' => 0,
-                'placed' => 0
-            );
+            return  $ae;
         }
 
         return $rs;

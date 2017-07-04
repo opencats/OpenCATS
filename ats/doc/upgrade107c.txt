@@ -1,0 +1,32 @@
+
+
+
+1. Przed rozpoczêciem warto wykonac backup danych:
+
+- Settings -> Administration -> Site Backup -> Create full system backup 
+- pobrac sobie plik catsbackup.bak
+ 
+2. Za³¹czony plik antiword.zip wypakowaæ do c:/antiword
+
+3. Za³¹czony plik upgrade.php skopiowac do katalogu c:/xampp/htdocs/ats/
+
+4. Wejœæ pod adres http://localhost/ats/upgrade.php
+
+5. Wybraæ wersjê "1.0.7" i kontynuowaæ instalacjê a¿ program wyœwietli komunikat:
+
+"Wstêpna instalacja zakoñczona pomyœlnie."
+
+6. Nastêpnie  zmieniæ nazwy katalogów zgodnie z opisem ("ats" na "ats.[data]" i "OpenATS" na "ats")
+
+7. Wejœæ na http://localhost/ats/ i kontynuowaæ rekonfiguracjê
+
+WA¯NE! W "Krok 3: £adowanie danych" nale¿y wybraæ opcjê:
+
+"U¿yæ istniej¹cej instalacji i wykonaæ konieczne aktualizacje (rekomendowane)"
+
+8. W kroku 4 przy pozycji 
+  Plik .doc (Dokument Microsoft Word)
+wskazaæ sciezkê do   programu antiword: "C:/antiword/antiword.exe"    (pozostale opcje wylaczyc)
+
+Klikniêcie w "test konfiguracji" powinno odblokowaæ kontynuacjê (Dalej)
+                                    

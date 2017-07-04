@@ -46,6 +46,7 @@
                                 <?php echo($data['name']); ?>
                             </td>
                             <td>
+                            	<?php E::showCustomFieldsBe(array('data'=>$data));?>
                                 <script type="text/javascript">
                                 
                                     //TODO: Document me.

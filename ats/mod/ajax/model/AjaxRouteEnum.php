@@ -2,9 +2,11 @@
 
 class AjaxRouteEnum extends RouteEnum {
 
-	public function getFields() {
-			
-		return array(
+	protected static $fields;
+	protected static $values;
+	
+	public static function init() {
+		self::$fields = array(
 				"main" => array(
 						'desc'=>'Redir do CATS',
 						'view'=>'CatsPassThrough',
@@ -12,8 +14,7 @@ class AjaxRouteEnum extends RouteEnum {
 				)
 		);
 	}
-
 }
-
-
+AjaxRouteEnum::init();
+AjaxRouteEnum::initValues();
 ?>

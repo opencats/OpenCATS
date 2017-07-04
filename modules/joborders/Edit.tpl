@@ -1,7 +1,18 @@
 <?php /* $Id: Edit.tpl 3810 2007-12-05 19:13:25Z brian $ */ ?>
 <?php TemplateUtility::printHeader(__('Job Orders'), array('modules/joborders/validator.js', 'js/company.js', 'js/sweetTitles.js',  'js/suggest.js', 'js/joborder.js', 'js/lib.js', 'js/listEditor.js', 'ckeditor/ckeditor.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active); ?>
+<?php TemplateUtility::printTabs($this->active); 
+$editWidth = 1000;
+
+function tplActions($thisTpl) {
+?>
+                <input type="submit" tabindex="22" class="button" name="submit" id="submit" value="<?php echo __("Save");?>" />&nbsp;
+                <input type="reset"  tabindex="23" class="button" name="reset"  id="reset"  value="<?php echo __("Reset");?>" />&nbsp;
+                <input type="button" tabindex="24" class="button" name="back"   id="back"   value="<?php echo __("Back to Details");?>" onclick="javascript:goToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=show&amp;jobOrderID=<?php echo($thisTpl->jobOrderID); ?>');" />
+<?php
+}
+
+?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -20,8 +31,10 @@
             <form name="editJobOrderForm" id="editJobOrderForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=edit" method="post" onsubmit="return checkEditForm(document.editJobOrderForm);" autocomplete="off">
                 <input type="hidden" name="postback" id="postback" value="postback" />
                 <input type="hidden" id="jobOrderID" name="jobOrderID" value="<?php echo($this->jobOrderID); ?>" />
+                
+                <?php tplActions($this);?><br/>
 
-                <table class="editTable" width="700">
+                <table class="editTable" width="<?php echo $editWidth;?>">
                     <tr>
                         <td class="tdVertical">
                             <label id="titleLabel" for="title"><?php echo __("Title");?>:</label>
@@ -109,7 +122,7 @@
                         </td>
 
                         <td class="tdVertical">
-                            <label id="salaryLabel" for="salary">Salary:</label>
+                            <label id="salaryLabel" for="salary"><?php echo __("Salary");?>:</label>
                         </td>
                         <td class="tdData">
                             <input type="text" tabindex="14" class="inputbox" id="salary" name="salary" value="<?php $this->_($this->data['salary']); ?>" style="width: 150px;" />
@@ -156,7 +169,7 @@
 
                     <tr>
                         <td class="tdVertical">
-                            <label id="cityLabel" for="city"><?php echo __("City");?>:</label>
+                            <label id="cityLabel" for="city"><?php echo __("City of work");?>:</label>
                         </td>
                         <td class="tdData">
                             <input type="text" tabindex="4" class="inputbox" id="city" name="city" value="<?php $this->_($this->data['city']); ?>" style="width: 150px;" />&nbsp;*
@@ -270,22 +283,11 @@
 
                     <?php eval(Hooks::get('JO_TEMPLATE_BOTTOM_OF_TOP')); ?>
 
-                </table>
+                </table>                  	                                 
 
-                <table class="editTable" width="700">
+                <table class="editTable" width="<?php echo $editWidth;?>">
 
-                    <?php for ($i = 0; $i < count($this->extraFieldRS); $i++): ?>
-                        <tr>
-                            <td class="tdVertical" id="extraFieldTd<?php echo($i); ?>">
-                                <label id="extraFieldLbl<?php echo($i); ?>">
-                                    <?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:
-                                </label>
-                            </td>
-                            <td class="tdData" id="extraFieldData<?php echo($i); ?>">
-                                <?php echo($this->extraFieldRS[$i]['editHTML']); ?>
-                            </td>
-                        </tr>
-                    <?php endfor; ?>
+
 
                     <tr>
                         <td class="tdVertical">
@@ -324,10 +326,76 @@
                         </td>
                         <?php endif; ?>
                     </tr>
+                    
+                    <?php for ($i = 0; $i < count($this->extraFieldRS); $i++): ?>
+                        <tr>
+                            <td class="tdVertical" id="extraFieldTd<?php echo($i); ?>">
+                                <label id="extraFieldLbl<?php echo($i); ?>">
+                                    <?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:
+                                </label>
+                            </td>
+                            <td class="tdData" id="extraFieldData<?php echo($i); ?>">
+                                <?php echo($this->extraFieldRS[$i]['editHTML']); ?>
+                            </td>
+                        </tr>
+                    <?php endfor; ?>                    
+                    
                 </table>
-                <input type="submit" tabindex="22" class="button" name="submit" id="submit" value="<?php echo __("Save");?>" />&nbsp;
-                <input type="reset"  tabindex="23" class="button" name="reset"  id="reset"  value="<?php echo __("Reset");?>" />&nbsp;
-                <input type="button" tabindex="24" class="button" name="back"   id="back"   value="<?php echo __("Back to Details");?>" onclick="javascript:goToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=show&amp;jobOrderID=<?php echo($this->jobOrderID); ?>');" />
+                
+                <p class="note"><?php echo __("Range and conitions of service");?></p>
+                    <table class="editTable" width="<?php echo $editWidth;?>">
+                        <tr>
+                        	<td width="50%" valign="top">                   	
+                    	<?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'jobOrder',
+                    			'section'=>'rangeAndConditions1',
+                    			'template'=>'edit',
+                    			'fl'=>$this->fl,
+                    			)); 
+                    	?>                        	
+                        	</td>
+                        	<td width="50%" valign="top">
+                    	<?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'jobOrder',
+                    			'section'=>'rangeAndConditions2',
+                    			'template'=>'edit',
+                    			'fl'=>$this->fl,
+                    			)); 
+                    	?>                        	
+                        	</td>
+                        </tr>
+                    </table>  
+                    <p class="note"><?php echo __("Requirements");?></p>
+                     <table class="detailsOutside" width="<?php echo $editWidth;?>">
+                        <tr>
+                        	<td width="50%" valign="top"> 
+                        	                  	
+                    	<?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'jobOrder',
+                    			'section'=>'requirements1',
+                    			'template'=>'edit',
+                    			'fl'=>$this->fl,
+                    			)); 
+                    	?> 
+                        	</td>
+                        	<td width="50%" valign="top">
+                     	<?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'jobOrder',
+                    			'section'=>'requirements2',
+                    			'template'=>'edit',
+                    			'fl'=>$this->fl,
+                    			)); 
+                    	?>                        	
+                        	</td>                        	
+                        </tr>
+                    </table>                  
+                
+                <?php tplActions($this);?>
+                
             </form>
 
             <script type="text/javascript">

@@ -3,6 +3,7 @@
 class JobOrderStatusEnum extends EnumType {
 		
 	protected static $fields;
+	protected static $values;
 	
 	static function init(){
 		self::$fields= array(
@@ -38,19 +39,16 @@ class JobOrderStatusEnum extends EnumType {
 			),
 			"Canceled" => array(
 					'desc'=>__("Canceled"),
-					'defineName'=>'ACTIVITY_OTHER',
+					//'defineName'=>'ACTIVITY_OTHER',
 					'dbValue'=>'Canceled'
 			)		
-	);
+		);
 	}
 	
 	public function getFields() {
 		return self::$fields;    
 	}
-	
-
 }
-
 JobOrderStatusEnum::init();
-
+JobOrderStatusEnum::initValues();
 ?>

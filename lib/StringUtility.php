@@ -492,6 +492,7 @@ class StringUtility
     public static function makeInitialName($firstName, $lastName,
         $lastCommaFirst = false, $maxLength = 1000)
     {
+    	$maxLength = 15;
         if (empty($firstName) && empty($lastName))
         {
             return '';

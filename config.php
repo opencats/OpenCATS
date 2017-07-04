@@ -54,25 +54,25 @@ define('SSL_ENABLED', false);
  * mapping files if you install it anywhere but C:\antiword\.
  */
 define('ANTIWORD_PATH', "C:\\antiword\\antiword.exe");
-define('ANTIWORD_MAP', 'cp1250.txt');
+define('ANTIWORD_MAP', 'UTF-8.txt');
 
 /* XPDF / pdftotext settings. Remember to use double backslashes (\) to represent
  * one backslash (\).
  * http://www.foolabs.com/xpdf/
  */
-define('PDFTOTEXT_PATH', "\\path\\to\\pdftotext");
+define('PDFTOTEXT_PATH', "C:/xpdfbin-win-3.03/bin64/pdftotext.exe");
 
 /* html2text settings. Remember to use double backslashes (\) to represent
  * one backslash (\). 'html2text' can be found at:
  * http://www.mbayer.de/html2text/
  */
-define('HTML2TEXT_PATH', "\\path\\to\\html2text");
+define('HTML2TEXT_PATH', "");
 
 /* UnRTF settings. Remember to use double backslashes (\) to represent
  * one backslash (\). 'unrtf' can be found at:
  * http://www.gnu.org/software/unrtf/unrtf.html
  */
-define('UNRTF_PATH', "\\path\\to\unrtf");
+define('UNRTF_PATH', "");
 
 /* Temporary directory. Set this to a directory that is writable by the
  * web server. The default should be fine for most systems. Remember to
@@ -288,156 +288,6 @@ define ('LDAP_SITEID', 1);
 );*/
 
 
-/*
-require_once('.\constants.php');
-// defining user roles
-const USER_ROLES = array(
-        'candidate' => array('Candidate', 'candidate', 'This is a candidate.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ),
-        'demo' => array('Demo', 'demo', 'This is a demo user.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
-    );
-
-// defining access levels different from the default access level
-const ACCESS_LEVEL_MAP = array(
-        'candidate' => array(
-        ),
-        'demo' => array(
-            'candidates' => ACCESS_LEVEL_DELETE,
-            'candidates.emailCandidates' => ACCESS_LEVEL_DISABLED,
-            'candidates.history' => ACCESS_LEVEL_DEMO,
-            'joborders' => ACCESS_LEVEL_DELETE,
-            'joborders.show' => ACCESS_LEVEL_DEMO,
-            'joborders.email' => ACCESS_LEVEL_DISABLED,
-        )
-    );*/
-
-/* All possible secure object names
-            'candidates.history'
-            'settings.administration'
-            'joborders.editRating'
-            'pipelines.screening'
-            'pipelines.editActivity'
-            'pipelines.removeFromPipeline'
-            'pipelines.addActivityChangeStatus'
-            'pipelines.addToPipeline'
-            'settings.tags'
-            'settings.changePassword'
-            'settings.newInstallPassword'
-            'settings.forceEmail'
-            'settings.newSiteName'
-            'settings.upgradeSiteName'
-            'settings.newSiteName'
-            'settings.manageUsers'
-            'settings.professional'
-            'settings.previewPage'
-            'settings.previewPageTop'
-            'settings.showUser'
-            'settings.addUser'
-            'settings.editUser'
-            'settings.createBackup'
-            'settings.deleteBackup'
-            'settings.customizeExtraFields'
-            'settings.customizeCalendar'
-            'settings.reports'
-            'settings.careerPortalQuestionnairePreview'
-            'settings.careerPortalQuestionnaire'
-            'settings.careerPortalQuestionnaireUpdate'
-            'settings.careerPortalTemplateEdit'
-            'settings.careerPortalSettings'
-            'settings.eeo'
-            'settings.careerPortalTweak'
-            'settings.deleteUser'
-            'settings.aspLocalization'
-            'settings.loginActivity'
-            'settings.viewItemHistory'
-            'settings.addUser'
-            'settings.deleteUser'
-            'settings.checkKey'
-            'settings.localization'
-            'settings.firstTimeSetup'
-            'settings.license'
-            'settings.password'
-            'settings.siteName'
-            'settings.setEmail'
-            'settings.import'
-            'settings.website'
-            'settings.administration'
-            'settings.myProfile'
-            'settings.administration.localization'
-            'settings.administration.systemInformation'
-            'settings.administration.changeSiteName'
-            'settings.administration.changeVersionName'
-            'settings.addUser'
-            'joborders.edit'
-            'joborders.careerPortalUrl'
-            'joborders.deleteAttachment'
-            'joborders.createAttachement'
-            'joborders.delete'
-            'joborders.hidden'
-            'joborders.considerCandidateSearch'
-            'joborders.show'
-            'joborders.add'
-            'joborders.search'
-            'joborders.administrativeHideShow'
-            'joborders.list'
-            'joborders.email'
-            'candidates.add'
-            'import.import'
-            'import.massImport'
-            'import.bulkResumes'
-            'contacts.addActivityScheduleEvent'
-            'contacts.edit'
-            'contacts.delete'
-            'contacts.editActivity'
-            'contacts.deleteActivity'
-            'contacts.logActivityScheduleEvent'
-            'contacts.show'
-            'contacts.add'
-            'contacts.edit'
-            'contacts.delete'
-            'contacts.search'
-            'contacts.addActivityScheduleEvent'
-            'contacts.showColdCallList'
-            'contacts.downloadVCard'
-            'contacts.list'
-            'contacts.emailContact'
-            'companies.deleteAttachment'
-            'companies.createAttachment'
-            'companies.edit'
-            'companies.delete'
-            'companies.show'
-            'companies.internalPostings'
-            'companies.add'
-            'companies.edit'
-            'companies.delete'
-            'companies.search'
-            'companies.createAttachment'
-            'companies.deleteAttachment'
-            'companies.list'
-            'companies.email'
-            'candidates.deleteAttachment'
-            'candidates.addActivityChangeStatus'
-            'candidates.deleteAttachment'
-            'candidates.createAttachment'
-            'candidates.addCandidateTags'
-            'candidates.edit'
-            'candidates.delete'
-            'candidates.administrativeHideShow'
-            'candidates.considerForJobSearch'
-            'candidates.manageHotLists'
-            'candidates.show'
-            'candidates.add'
-            'candidates.search'
-            'candidates.viewResume'
-            'candidates.search'
-            'candidates.hidden'
-            'candidates.emailCandidates'
-            'candidates.show_questionnaire'
-            'candidates.list'
-            'calendar.show'
-            'calendar.addEvent'
-            'calendar.editEvent'
-            'calendar.deleteEvent'
-            */
 
 define('PROJECT_DIR',dirname(__FILE__));
 define('LOCALE_DIR', PROJECT_DIR .'/locale');
@@ -450,7 +300,7 @@ define('ATS_DEMO_FICT_PASS','john99');
 define('ATS_CT_DOMAIN','catsone.com');
 define('ATS_FORUM_URL','http://www.opencats.org/forums/');
 define('ATS_APPLOGO_HREF','images/applicationLogo.jpg');
-define('ATS_VERSION','106');
+define('ATS_BASE_VERSION','106');
 
 /* Give the session a unique name to avoid conflicts and start the session. */
 //@session_name(CATS_SESSION_NAME);

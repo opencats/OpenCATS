@@ -1,6 +1,8 @@
 <?php
 chdir('./../../');
-include_once('./config.php');
+$_GET['route']='js';
+$_REQUEST['route']='js';
+include_once('./ats/index.php');
 ?>
 /*
  * CATS
@@ -35,6 +37,62 @@ var defaultDaytableHeight = 725;
 
 var currentViewedEntry = null;
 
+function getEntryStartDate(entry){
+    /* Prepare date data. */
+    var yearString = entry.year  + '';
+    /*if (yearString.length == 1)
+    {
+        yearString = '0' + yearString;
+    }*/
+
+    var monthString = entry.month + '';
+    if (monthString.length == 1)
+    {
+        monthString = '0' + monthString;
+    }
+
+    var dayString = entry.day + '';
+    if (dayString.length == 1)
+    {
+        dayString = '0' + dayString;
+    }
+    return yearString+monthString+dayString;
+}
+
+function getEntryStartTime(entry){
+    /* Prepare date data. */
+    var hourString = entry.hour  + '';
+    if (hourString.length == 1)
+    {
+    	hourString = '0' + hourString;
+    }
+
+    var minuteString = entry.minute + '';
+    if (minuteString.length == 1)
+    {
+        minuteString = '0' + minuteString;
+    }
+
+    /*var secString = entry.seconds + '';
+    if (secString.length == 1)
+    {
+        secString = '0' + secString;
+    }*/
+    return hourString+minuteString+'00';
+}
+
+function getOutlookHref(entry){
+    var ll = encodeURI(entry.getData('duration'));
+    var eId = entry.getData('eventID');
+    if (entry.getData('allDay') == '1'){
+    	ll='d';
+    }	
+    
+    var et = entry.getData('eventType');
+    return '<a href="<?php echo E::routeHref('calendar/eventToOutook');?>?i='+eId+'&date='+getEntryStartDate(entry)+'&startTime='+getEntryStartTime(entry)+'&t='+et+'&l='+ll+'&subject='+encodeURI(entry.getData('title'))+'&desc='+encodeURI(entry.getData('description'))+'"><img src="assets/svg/outlook.svg" height="16px" width="16px" alt="" style="border: none;" title="Pobierz do Outlook"></a>';
+	
+}
+
 
 function generateCalendarEntrySmall(time, title, separator, entry)
 {
@@ -63,10 +121,12 @@ function generateCalendarEntrySmall(time, title, separator, entry)
     {
         iconSet += '<img class="absmiddle" src="images/public.gif" title="<?php echo __("Public Entry");?>" /> ';
     }
+    
+    iconSet += getOutlookHref(entry);    
 
     iconSet += '</nobr></nowrap>';
 
-    string += '<table><tr><td class="calendarEntry" onclick="handleClickEntry(visibleEntries['
+    string += '<table><tr><td class="calendarEntry" onclick="trackTableSelect(event);handleClickEntry(visibleEntries['
         + visibleEntryID
         + ']);" onmouseover="noAddEvent = true;" onmouseout="noAddEvent = false;">';
 
@@ -85,6 +145,9 @@ function generateCalendarEntrySmall(time, title, separator, entry)
     string +='</td></tr></table>';
     return string;
 }
+
+
+
 
 function generateCalendarEntryDayView(time, title, position, idDiv, idEntry, separator, entry, durationWidth)
 {
@@ -111,14 +174,17 @@ function generateCalendarEntryDayView(time, title, position, idDiv, idEntry, sep
     if (entry.getData('public') == 1)
     {
         iconSet += '<img class="absmiddle" src="images/public.gif" title="<?php echo __("Public Entry");?>" /> ';
+        
     }
-
+    
+    iconSet += getOutlookHref(entry);
+    
     iconSet += '</nobr></nowrap>';
 
     if (entry.getData('allDay') != '1')
     {
         string += '<table><tr><td class="calendarEntry" id="'
-            + idEntry + '" onclick="handleClickEntry(visibleEntries['
+            + idEntry + '" onclick="trackTableSelect(event);handleClickEntry(visibleEntries['
             + visibleEntryID
             + ']);" onmouseover="noAddEvent = true;" onmouseout="noAddEvent = false;">';
     }
@@ -333,7 +399,7 @@ function handleClickEntryByID(entryID)
     }
 }
 
-function addEventByDay(year, month, day, hour)
+function addEventByDay(year, month, day, hour, minute ='00')
 {
 	//lert('hour:'+hour);
     /* Hack to stop executing on edit event. */
@@ -353,7 +419,7 @@ function addEventByDay(year, month, day, hour)
     document.getElementById('addEventForm').reset();
 
     var _hour = hour;
-    if (_hour == null)
+    if (_hour == null || _hour == 0)
     {
         hour = 0;
         setCheckedValue(document.getElementById('addEventForm').elements['allDay'], '1');
@@ -405,6 +471,7 @@ function addEventByDay(year, month, day, hour)
         }
     }*/
     document.getElementById('hour').value = hour;
+    document.getElementById('minute').value = minute;
 
     if (hour >= 12)
     {

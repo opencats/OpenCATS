@@ -1,0 +1,31 @@
+1. Kalendarz:
+- nowy układ graficzny kalendarza
+- integracja z Outlook (zdarzenia kalendarza mają teraz dodatkową ikonkę za pomocą której mozna ściagnąć plik .ics dla zdarzenia do otwarcia w Outlook)
+- konfiguracja przypomnien (kalendarz)
+* uruchomic okno komend jako administrator (cmd.exe) 
+* (weryfikujemy czy modul kolejkowania zadań działa) uruchomić komende
+php c:/xampp/htdocs/ats/QueueCLI.php
+*ostatnia linia odpowiedzi powinna byc:
+"ATS Queue Processor status: NO TASKS"
+* (konfigurujemy scheduler do cyklicznego wywolywania przetwarzania kolejek) uruchomić komendę
+schtasks /Create /SC MINUTE /TN atsQueue /TR "php c:/xampp/htdocs/ats/QueueCLI.php"
+schtasks /Create /SC MINUTE /TN atsQueueDev /TR "C:/Users/mb/git/OpenATS/queue.vbs"
+
+
+- poprawki bledów:
+
+- Nie dodaje za��cznika CV o wi�kszym rozmiarze tj. 2,21 MB.
+
+- Fajnie by by�o gdyby opcja wpisania znajomo�ci j�zyka kandydata wyskakiwa�a od razu przy dodawaniu kandydata a nie jak jest teraz, �e najpierw trzeba wpisa� podstawowe dane a p�niej jeszcze raz doda� j�zyk.
+
+- Numer kandydata �eby wyskakiwa� od razu po wpisaniu go do bazy. Bez wpisywania r�cznego.
+
+Otworzyć plik c:/xampp/php/php.ini , odnaleźć odpowiednie pozycje (np "post_max_size=") i zmienić zawartość na:
+
+post_max_size=10M
+
+upload_max_filesize=10M
+
+
+ALTER TABLE candidate AUTO_INCREMENT=3001 
+ 

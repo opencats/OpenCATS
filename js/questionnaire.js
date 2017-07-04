@@ -153,7 +153,7 @@ function promptChangeQuestionType(e)
         saveChangeQuestionType(e2, false);
     }
 
-    inputValue.value = labelValue.innerHTML;
+    //inputValue.value = labelValue.innerHTML;
 
     label.style.display = 'none';
     input.style.display = 'inline';

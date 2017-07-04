@@ -11,12 +11,12 @@
                     <td width="3%">
                         <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Settings: Edit Site User</h2></td>
+                    <td><h2>Ustawienia: Edytuj dane użytkownika</h2></td>
                 </tr>
             </table>
 
             <p class="note">
-                <span style="float: left;">Edit Site User</span>
+                <span style="float: left;">Edytuj dane użytkownika</span>
                 <span style="float: right;"><a href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=manageUsers'>Back to User Management</a></span>&nbsp;
             </p>
 
@@ -27,7 +27,7 @@
                 <table class="editTable" width="600">
                     <tr>
                         <td class="tdVertical">
-                            <label id="firstNameLabel" for="firstName">First Name:</label>
+                            <label id="firstNameLabel" for="firstName">Imię:</label>
                         </td>
                         <td class="tdData">
                             <input type="text" class="inputbox" id="firstName" name="firstName" value="<?php $this->_($this->data['firstName']); ?>" style="width: 150px;" />&nbsp;*
@@ -36,16 +36,28 @@
 
                     <tr>
                         <td class="tdVertical">
-                            <label id="lastNameLabel" for="lastName">Last Name:</label>
+                            <label id="lastNameLabel" for="lastName">Nazwisko:</label>
                         </td>
                         <td class="tdData">
                             <input type="text" class="inputbox" id="lastName" name="lastName" value="<?php $this->_($this->data['lastName']); ?>" style="width: 150px;" />&nbsp;*
                         </td>
                     </tr>
+                    
+                    <tr><td colspan="2" style="padding: 0px;">
+                    	<?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'user',
+                    			'section'=>'custom1',
+                    			'template'=>'edit',
+                    			'fl'=>$this->fl,
+                    			)); 
+                    	?>                     
+                    
+                    </td></tr>
 
                     <tr>
                         <td class="tdVertical">
-                            <label id="emailLabel" for="email">E-Mail:</label>
+                            <label id="emailLabel" for="email">e-mail:</label>
                         </td>
                         <td class="tdData">
                             <input type="text" class="inputbox" id="email" name="email" value="<?php $this->_($this->data['email']); ?>" style="width: 150px;" />
@@ -54,7 +66,7 @@
 
                     <tr>
                         <td class="tdVertical">
-                            <label id="usernameLabel" for="username">Username:</label>
+                            <label id="usernameLabel" for="username">Login:</label>
                         </td>
                         <td class="tdData">
                             <input type="text" class="inputbox" id="username" name="username" value="<?php $this->_($this->data['username']); ?>" style="width: 150px;" />&nbsp;*
@@ -63,7 +75,7 @@
 
                     <tr>
                         <td class="tdVertical">
-                            <label id="notesLabel" for="notes">Access Level:</label>
+                            <label id="notesLabel" for="notes">Poziom dostępu:</label>
                         </td>
                         <td class="tdData">
                             <?php foreach ($this->accessLevels as $accessLevel): ?>
@@ -82,7 +94,7 @@
                     </tr>
 
                     <tr>
-                        <td class="tdVertical">Access Description:</td>
+                        <td class="tdVertical">Opis poziomu dostępu:</td>
                         <td class="tdData">
                             <span id="userAccessStatus" style='font-size: smaller'>
                                 <?php if ($this->cannotEnableMessage): ?>
@@ -99,11 +111,11 @@
                     <?php if (count($this->categories) > 0): ?>
                         <tr>
                             <td class="tdVertical">
-                                <label id="accessLevelLabel" for="accessLevel">Role:</label>
+                                <label id="accessLevelLabel" for="accessLevel">Rola:</label>
                             </td>
                             <td class="tdData">
-                               <input type="radio" name="role" value="none" title="" <?php if ($this->data['categories'] == ''): ?>checked<?php endif; ?> onclick="document.getElementById('userRoleDesc').innerHTML='This user is a normal user.';"/> Normal User
-                               <?php $roleDesc = "This user is a normal user."; ?>
+                               <input type="radio" name="role" value="none" title="" <?php if ($this->data['categories'] == ''): ?>checked<?php endif; ?> onclick="document.getElementById('userRoleDesc').innerHTML='Standardowy użytkownik.';"/> Zwykły użytkownik
+                               <?php $roleDesc = "Standardowy użytkownik."; ?>
                                <br />
                                <?php foreach ($this->categories as $category): ?>
                                    <input type="radio" name="role" value="<?php $this->_($category[1]); ?>"  <?php if ($this->data['categories'] == $category[1]): ?>checked<?php $roleDesc = $category[2]; ?><?php endif; ?> onclick="document.getElementById('userRoleDesc').innerHTML='<?php echo($category[2]); ?>';" /> <?php $this->_($category[0]); ?>
@@ -112,14 +124,14 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="tdVertical">Role Description:</td>
+                            <td class="tdVertical">Opis roli:</td>
                             <td class="tdData">
                                 <span id="userRoleDesc" style='font-size: smaller'><?php $this->_($roleDesc); ?></span>
                             </td>
                         </tr>
                     <?php else: ?>
                         <span style="display:none;">
-                            <input type="radio" name="role" value="none" title="" checked /> Normal User
+                            <input type="radio" name="role" value="none" title="" checked /> Zwykły użytkownik
                         </span>
                     <?php endif; ?>
                     
@@ -138,10 +150,10 @@
 		    <?php if ($this->auth_mode != "ldap"): ?>
                     <tr id="passwordResetElement1">
                         <td class="tdVertical">
-                            <label id="PasswordResetLabel" for="username">Password Reset:</label>
+                            <label id="PasswordResetLabel" for="username">Reset hasła:</label>
                         </td>
                         <td class="tdData">
-                            <input type="button" class="button" name="passwordreset" id="passwordreset" value="Reset Password" onclick="javascript:document.getElementById('passwordResetElement1').style.display = 'none'; document.getElementById('passwordResetElement2').style.display = ''; document.getElementById('passwordResetElement3').style.display = ''; document.getElementById('password1').value=''; document.getElementById('passwordIsReset').value='1';" />
+                            <input type="button" class="button" name="passwordreset" id="passwordreset" value="Zresetuj hasło" onclick="javascript:document.getElementById('passwordResetElement1').style.display = 'none'; document.getElementById('passwordResetElement2').style.display = ''; document.getElementById('passwordResetElement3').style.display = ''; document.getElementById('password1').value=''; document.getElementById('passwordIsReset').value='1';" />
                             <input type="hidden" id="passwordIsReset" name="passwordIsReset" value="0" />
                         </td>
                     </tr>
@@ -149,7 +161,7 @@
 
                     <tr id="passwordResetElement2" style="display:none;">
                         <td class="tdVertical">
-                            <label id="password1Label" for="password1">New Password:</label>
+                            <label id="password1Label" for="password1">Nowe hasło:</label>
                         </td>
                         <td class="tdData">
                                 <input type="password" class="inputbox" id="password1" name="password1" style="width: 150px;" />&nbsp;*
@@ -158,7 +170,7 @@
 
                     <tr id="passwordResetElement3" style="display:none;">
                         <td class="tdVertical">
-                            <label id="password2Label" for="password2">Retype Password:</label>
+                            <label id="password2Label" for="password2">Powtórz hasło:</label>
                         </td>
                         <td class="tdData">
                                 <input type="password" class="inputbox" id="password2" name="password2" style="width: 150px;" />&nbsp;*
@@ -166,9 +178,9 @@
                     </tr>
 
                 </table>
-                <input type="submit" class="button" name="submit" id="submit" value="Save" />&nbsp;
+                <input type="submit" class="button" name="submit" id="submit" value="Zapisz" />&nbsp;
                 <input type="reset"  class="button" name="reset"  id="reset"  value="Reset" onclick="document.getElementById('userAccessStatus').innerHTML='<?php $this->_($this->data['accessLevelLongDescription']); ?>'" />&nbsp;
-                <input type="button" class="button" name="back"   id="back"   value="Cancel" onclick="javascript:goToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=showUser&amp;userID=<?php $this->_($this->data['userID']); ?>');" />
+                <input type="button" class="button" name="back"   id="back"   value="Anuluj" onclick="javascript:goToURL('<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=showUser&amp;userID=<?php $this->_($this->data['userID']); ?>');" />
             </form>
         </div>
     </div>

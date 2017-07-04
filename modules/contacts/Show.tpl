@@ -66,7 +66,7 @@ use OpenCATS\UI\QuickActionMenu;
                                 <td class="data"><?php $this->_($this->data['department']); ?></td>
                             </tr>
 
-                            <tr>
+                            <!--tr>
                                 <td class="vertical"><?php echo __("Work Phone");?>:</td>
                                 <td class="data"><?php $this->_($this->data['phoneWork']); ?></td>
                             </tr>
@@ -79,7 +79,18 @@ use OpenCATS\UI\QuickActionMenu;
                             <tr>
                                 <td class="vertical"><?php echo __("Other Phone");?>:</td>
                                 <td class="data"><?php $this->_($this->data['phoneOther']); ?></td>
-                            </tr>
+                            </tr-->
+						<tr><td colspan="2">
+                    	<?php 
+                    		E::showCustomFields(array(
+                    			'dataItem'=>'contact',
+                    			'section'=>'col1read',
+                    			'template'=>'read',
+                    			'fl'=>$this->fl,
+                    			)); 
+                    	?>
+						</td></tr>                            
+                            
 
                             <?php for ($i = 0; $i < intval(count($this->extraFieldRS)/2); $i++): ?>
                                <tr>

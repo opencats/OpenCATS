@@ -88,12 +88,15 @@ class TemplateUtility
     {
     	evAtsObStart('printModalHeader');
         self::_printCommonHeader($pageTitle, $headIncludes);
+        
         echo '<body style="background: #eee;">', "\n";
+        evAtsObStart('_modalHeader');
         if ($title != '')
         {
             $title = str_replace('\'', '\\\'', $title);
             echo '<script type="text/javascript">parentSetPopTitle(\''.$title.'\');</script>';
         }
+        evAtsObEnd('_modalHeader',array(),true);
         self::_printQuickActionMenuHolder();
         evSetGlobal('isModal',true);
         evAtsObEnd('printModalHeader',array(
@@ -132,6 +135,7 @@ class TemplateUtility
 
         if ($showTopRight)
         {
+        	evAtsObStart('_topRight');
             // FIXME: Use common functions.
             // FIXME: Isn't the UNIX-name stuff ASP specific? Hook?
             if (strpos($username, '@'.$_SESSION['CATS']->getSiteID()) !== false &&
@@ -175,19 +179,23 @@ class TemplateUtility
                 echo '<b>For more features, upgrade to CATS Professional</b></a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
             }
 
-            echo '<a href="', $indexName, '?m=logout">';
-            echo '<img src="images/tabs/small_logout.jpg" border="0" /> ';
-            echo __('Logout').'</a>', "\n";
+            $logoutHref = '<a href="'. $indexName.'?m=logout">';
+            $logoutHref .= '<img src="images/tabs/small_logout.jpg" border="0" /> ';
+            $logoutHref .= __('Logout').'</a>'."\n";
+            echo $logoutHref;
             echo '</div>', "\n";
             // End top-right action block
 
             if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_EXTENDED_SITE_NAME'))) return;
 
-            echo '<span>', $fullName, '&nbsp;&lt;', $username, '&gt;&nbsp;(', $siteName, ')</span>', "\n";
+            $userNameSite = '<span>'. $fullName. '&nbsp;&lt;'.$username.'&gt;&nbsp;('. $siteName.')</span>'. "\n";
+            echo $userNameSite;
+            $adminInfo = '';
 
             if ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA)
             {
-                echo '&nbsp;<span style="font-weight:bold;">Administrator</span>', "\n";
+                $adminInfo = '&nbsp;<span style="font-weight:bold;">Administrator</span>'."\n";
+                echo $adminInfo;
             }
 
             echo '<br />';
@@ -219,6 +227,11 @@ class TemplateUtility
             }
 
             echo '</div>', "\n";
+            evAtsObEnd('_topRight',array(
+            		'logoutHref'=>$logoutHref,
+            		'userNameSite'=>$userNameSite,
+            		'adminInfo'=>$adminInfo,           		
+            ),true);
         }
 
         echo '</div>', "\n";
@@ -573,6 +586,7 @@ class TemplateUtility
      */
     public static function printPopupContainer()
     {
+    	evAtsObStart('_popupContainer');
         echo '<div id="popupMask">&nbsp;</div><div id="popupContainer">',
              '<div id="popupInner"><div id="popupTitleBar">',
              '<div id="popupTitle"></div><div id="popupControls">',
@@ -588,6 +602,7 @@ class TemplateUtility
              ' width="100%" height="100%"></iframe>';
 
         echo '</div></div>';
+        evAtsObEnd('_popupContainer',array(),true);
     }
 
     /**
@@ -625,9 +640,14 @@ class TemplateUtility
         $indexName = CATSUtility::getIndexName();
 
         $modules = ModuleUtility::getModules();
+        $tabInfos = array(
+        	'modules'=>$modules,
+        	'tabs'=>array(),	
+        );
         foreach ($modules as $moduleName => $parameters)
         {
             $tabText = $parameters[1];
+            $tabInfo=array('active'=>true);
 
             /* Don't display a module's tab if $tabText is empty. */
             if (empty($tabText))
@@ -651,6 +671,8 @@ class TemplateUtility
                 continue;
             }
 
+            $out = true;
+            
             /* Inactive Tab? */
             if ($active === null || $moduleName != $active->getModuleName())
             {
@@ -661,6 +683,7 @@ class TemplateUtility
                 else
                 {
                     $className = 'inactive';
+                    $tabInfo['active']=false;
                 }
 
                 $alPosition = strpos($tabText, "*al=");
@@ -668,6 +691,8 @@ class TemplateUtility
                 {
                     echo '<li><a class="', $className, '" href="', $indexName,
                          '?m=', $moduleName, '">', $tabText, '</a></li>', "\n";
+                    $tabInfo['href']=$indexName .'?m='.$moduleName;
+                    $tabInfo['text']=$tabText;
                 }
                 else
                 {
@@ -684,11 +709,16 @@ class TemplateUtility
                      {
                         echo '<li><a class="', $className, '" href="', $indexName, '?m=', $moduleName, '">',
                              substr($tabText, 0, $alPosition), '</a></li>', "\n";
+                        $tabInfo['href']=$indexName .'?m='.$moduleName;
+                        $tabInfo['text']=substr($tabText, 0, $alPosition);
                     }
                 }
-
+                $tabInfos['tabs'][$moduleName]=$tabInfo;
                 continue;
+                //$out = false;
             }
+            
+            evAtsObStart('_modActive');
 
             $alPosition = strpos($tabText, "*al=");
             if ($alPosition !== false)
@@ -703,21 +733,45 @@ class TemplateUtility
 
             echo '<a class="active" href="', $indexName, '?m=', $moduleName,
                  '">', $tabText, '</a>', "\n";
+            if ($out){
+            	$tabInfo['href']=$indexName. '?m='. $moduleName;
+            	$tabInfo['text']=$tabText;
+            }
 
             $subTabs = $active->getSubTabs($modules);
+            $tabInfo['subTabs']=array();
             if ($subTabs)
             {
                 echo '<ul id="secondary">';
-
+				$stInfo = array();
                 foreach ($subTabs as $subTabText => $link)
                 {
+                	$iconHref=null;
+                	if (is_array($link)){
+                		if (isset($link['iconHref'])){
+                			$iconHref=$link['iconHref'];
+                		}
+                		if (isset($link['link'])){
+                			$link=$link['link'];
+                		}
+                	}
+                	$iconHtml = '';
+                	if ($iconHref!=null){
+                		$iconHtml = '<img src="'.$iconHref.'" class="absmiddle" alt="'.$subTabText.'" width="16" border="0" height="16">';
+                	}
+                	$stInfo['iconHref']=$iconHref;
+                	$stInfo['iconHtml']=$iconHtml;
+                	
+                	
                     if ($subTabText == $subActive)
                     {
                         $style = "color:#cccccc;";
+                        $stInfo['active']=true;
                     }
                     else
                     {
                         $style = "";
+                        $stInfo['active']=false;
                     }
 
                     /* Check HR mode for displaying tab. */
@@ -761,12 +815,24 @@ class TemplateUtility
                         }
                     }
 
+                    $stInfo['style']=$style;
+                    $stInfo['text']=$subTabText;
                     $jsPosition = strpos($link, "*js=");
+                    if ($jsPosition !== false){
+                    	$stInfo['onclick']=substr($link, $jsPosition + 4);
+                    	$stInfo['href']=substr($link, 0, $jsPosition);
+                    } else {
+                    	$stInfo['onclick']='';
+                    	$stInfo['href']=$link;
+                    }
+                    $tabInfo['subTabs'][]=$stInfo;
+                    
+                    
                     if ($jsPosition !== false)
                     {
                         /* Javascript subtab. */
                         echo '<li><a href="', substr($link, 0, $jsPosition), '" onclick="',
-                             substr($link, $jsPosition + 4), '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
+                             substr($link, $jsPosition + 4), '" style="'.$style.'">',$iconHtml,$subTabText, '</a></li>', "\n";
                     }
 
                     /* A few subtabs have special logic to decide if they display or not. */
@@ -782,7 +848,7 @@ class TemplateUtility
                         $defaultCompanyID = $companies->getDefaultCompany();
                         if ($defaultCompanyID !== false)
                         {
-                            echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
+                            echo '<li><a href="', $link, '" style="'.$style.'">', $iconHtml,$subTabText, '</a></li>', "\n";
                         }
                     }
                     else if (strpos($link, 'a=administration') !== false)
@@ -790,7 +856,7 @@ class TemplateUtility
                         /* Administration subtab. */
                         if ($_SESSION['CATS']->getAccessLevel('settings.administration') >= ACCESS_LEVEL_DEMO)
                         {
-                            echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
+                            echo '<li><a href="', $link, '" style="'.$style.'">', $iconHtml,$subTabText, '</a></li>', "\n";
                         }
                     }
                     else if (strpos($link, 'a=customizeEEOReport') !== false)
@@ -801,7 +867,7 @@ class TemplateUtility
 
                         if ($EEOSettingsRS['enabled'] == 1)
                         {
-                            echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
+                            echo '<li><a href="', $link, '" style="'.$style.'">', $iconHtml,$subTabText, '</a></li>', "\n";
                         }
                     }
 
@@ -810,7 +876,7 @@ class TemplateUtility
                     else if ($link != '')
                     {
                         /* Normal subtab. */
-                        echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
+                        echo '<li><a href="', $link, '" style="'.$style.'">', $iconHtml,$subTabText, '</a></li>', "\n";
                     }
                 }
 
@@ -820,6 +886,8 @@ class TemplateUtility
             }
 
             echo '</li>';
+            evAtsObEnd('_modActive',array(),$out);
+            $tabInfos['tabs'][$moduleName]=$tabInfo;
         }
         echo '</ul>', "\n";
         echo '</div>', "\n";
@@ -827,7 +895,8 @@ class TemplateUtility
         evAtsObEnd('printTabs',array(
         	'active' => $active, 
         	'subActive'=> $subActive,
-        	'forceHighlight'=>$forceHighlight
+        	'forceHighlight'=>$forceHighlight,
+        	'tabInfos'=>$tabInfos,	
         ));
         //cho $output;
     }
@@ -839,6 +908,7 @@ class TemplateUtility
      */
     public static function printFooter()
     {
+    	evAtsObStart('printFooter');	
         $build    = $_SESSION['CATS']->getCachedBuild();
         $loadTime = $_SESSION['CATS']->getExecutionTime();
 
@@ -884,6 +954,10 @@ class TemplateUtility
                 CATSUtility::changeConfigSetting('LICENSE_KEY', "''");
             }
         }
+ 
+        evAtsObEnd('printFooter',array(
+        ));
+        
     }
 
     /**
@@ -1182,9 +1256,11 @@ class TemplateUtility
 
     public static function _printQuickActionMenuHolder()
     {
+    	evAtsObStart('_quickAction');
         echo '<div class="ajaxSearchResults" id="singleQuickActionMenu" align="left" style="width:200px;" onclick="toggleVisibility()">';
 
         echo '</div>';
+        evAtsObEnd('_quickAction',array(),true);
     }
 
     /**
@@ -1196,6 +1272,7 @@ class TemplateUtility
      */
     private static function _printCommonHeader($pageTitle, $headIncludes = array())
     {
+    	evAtsObStart('_commonHeader');
         if (!is_array($headIncludes))
         {
             $headIncludes = array($headIncludes);
@@ -1252,6 +1329,7 @@ class TemplateUtility
 
         echo '<!--[if IE]><link rel="stylesheet" type="text/css" href="ie.css" /><![endif]-->', "\n";
         echo '<![if !IE]><link rel="stylesheet" type="text/css" href="not-ie.css" /><![endif]>', "\n";
+        evAtsObEnd('_commonHeader',array(),true);
         echo '</head>', "\n\n";
     }
 

@@ -6,4 +6,5 @@ docker/data/*
 docker/persist/*
 vendor/*
 attachments/*
-/distr/
+distr/*
+temp/*

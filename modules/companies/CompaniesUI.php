@@ -421,6 +421,11 @@ class CompaniesUI extends UserInterface
 
         /* Get extra fields. */
         $extraFieldRS = $companies->extraFields->getValuesForShow($companyID);
+        $fl = E::loadCustomFieldValues(array(
+        		'siteId'=>$this->_siteID,
+        		'id'=>$companyID,
+        		'dataItemType'=>E::dataItemType('company'),
+        ));
 
         /* Get departments. */
         $departmentsRS = $companies->getDepartments($companyID);
@@ -435,6 +440,7 @@ class CompaniesUI extends UserInterface
             $privledgedUser = true;
         }
 
+        $this->_template->assign('fl', $fl);
         $this->_template->assign('active', $this);
         $this->_template->assign('data', $data);
         $this->_template->assign('attachmentsRS', $attachmentsRS);
@@ -476,7 +482,7 @@ class CompaniesUI extends UserInterface
         $extraFieldRS = $companies->extraFields->getValuesForAdd();
 
         if (!eval(Hooks::get('CLIENTS_ADD'))) return;
-
+        $this->_template->assign('fl', array());
         $this->_template->assign('extraFieldRS', $extraFieldRS);
         $this->_template->assign('active', $this);
         $this->_template->assign('subActive', __('Add Company'));
@@ -489,7 +495,7 @@ class CompaniesUI extends UserInterface
     private function onAdd()
     {
         $formattedPhone1 = StringUtility::extractPhoneNumber(
-            $this->getTrimmedInput('phone1', $_POST)
+            $this->getTrimmedInput('phone', $_POST['fs'])
         );
         if (!empty($formattedPhone1))
         {
@@ -497,11 +503,11 @@ class CompaniesUI extends UserInterface
         }
         else
         {
-            $phone1 = $this->getTrimmedInput('phone1', $_POST);
+            $phone1 = $this->getTrimmedInput('phone', $_POST['fs']);
         }
 
         $formattedPhone2 = StringUtility::extractPhoneNumber(
-            $this->getTrimmedInput('phone2', $_POST)
+            $this->getTrimmedInput('phone2', $_POST['fs'])
         );
         if (!empty($formattedPhone2))
         {
@@ -509,10 +515,10 @@ class CompaniesUI extends UserInterface
         }
         else
         {
-            $phone2 = $this->getTrimmedInput('phone2', $_POST);
+            $phone2 = $this->getTrimmedInput('phone2', $_POST['fs']);
         }
 
-        $formattedFaxNumber = StringUtility::extractPhoneNumber(
+        /*$formattedFaxNumber = StringUtility::extractPhoneNumber(
             $this->getTrimmedInput('faxNumber', $_POST)
         );
         if (!empty($formattedFaxNumber))
@@ -522,8 +528,9 @@ class CompaniesUI extends UserInterface
         else
         {
             $faxNumber = $this->getTrimmedInput('faxNumber', $_POST);
-        }
-
+        }*/
+        $faxNumber = $this->getTrimmedInput('email', $_POST['fs']);
+        
         $url = $this->getTrimmedInput('url', $_POST);
         if (!empty($url))
         {
@@ -538,7 +545,7 @@ class CompaniesUI extends UserInterface
         /* Hot company? */
         $isHot = $this->isChecked('isHot', $_POST);
 
-        $name            = $this->getTrimmedInput('name', $_POST);
+        $name            = $this->getTrimmedInput('name', $_POST['fs']);
         $address         = $this->getTrimmedInput('address', $_POST);
         $city            = $this->getTrimmedInput('city', $_POST);
         $state           = $this->getTrimmedInput('state', $_POST);
@@ -574,6 +581,12 @@ class CompaniesUI extends UserInterface
 
         /* Update extra fields. */
         $companies->extraFields->setValuesOnEdit($companyID);
+        E::setCustomFieldValues(array(
+        		'id'=>$companyID,
+        		'dataItemType'=>E::dataItemType('company'),
+        		'values'=>$_POST['fs'],
+        		'siteId'=>$this->_siteID,
+        ));
 
         /* Add departments */
         $departments = array();
@@ -625,6 +638,11 @@ class CompaniesUI extends UserInterface
 
         /* Get extra fields. */
         $extraFieldRS = $companies->extraFields->getValuesForEdit($companyID);
+        $fl = E::loadCustomFieldValues(array(
+        		'siteId'=>$this->_siteID,
+        		'id'=>$companyID,
+        		'dataItemType'=>E::dataItemType('company'),
+        ));
 
         /* Get departments. */
         $departmentsRS = $companies->getDepartments($companyID);
@@ -655,6 +673,7 @@ class CompaniesUI extends UserInterface
 
         if (!eval(Hooks::get('CLIENTS_EDIT'))) return;
 
+        $this->_template->assign('fl', $fl);
         $this->_template->assign('canEmail', $canEmail);
         $this->_template->assign('active', $this);
         $this->_template->assign('data', $data);
@@ -697,7 +716,7 @@ class CompaniesUI extends UserInterface
         }
 
         $formattedPhone1 = StringUtility::extractPhoneNumber(
-            $this->getTrimmedInput('phone1', $_POST)
+            $this->getTrimmedInput('phone', $_POST['fs'])
         );
         if (!empty($formattedPhone1))
         {
@@ -705,11 +724,11 @@ class CompaniesUI extends UserInterface
         }
         else
         {
-            $phone1 = $this->getTrimmedInput('phone1', $_POST);
+            $phone1 = $this->getTrimmedInput('phone2', $POST['fs']);
         }
 
         $formattedPhone2 = StringUtility::extractPhoneNumber(
-            $this->getTrimmedInput('phone2', $_POST)
+            $this->getTrimmedInput('phone2', $_POST['fs'])
         );
         if (!empty($formattedPhone2))
         {
@@ -717,10 +736,10 @@ class CompaniesUI extends UserInterface
         }
         else
         {
-            $phone2 = $this->getTrimmedInput('phone2', $_POST);
+            $phone2 = $this->getTrimmedInput('phone2', $_POST['fs']);
         }
 
-        $formattedFaxNumber = StringUtility::extractPhoneNumber(
+        /*$formattedFaxNumber = StringUtility::extractPhoneNumber(
             $this->getTrimmedInput('faxNumber', $_POST)
         );
         if (!empty($formattedFaxNumber))
@@ -730,7 +749,9 @@ class CompaniesUI extends UserInterface
         else
         {
             $faxNumber = $this->getTrimmedInput('faxNumber', $_POST);
-        }
+        }*/
+        
+        $faxNumber = $this->getTrimmedInput('email', $_POST);
 
         $url = $this->getTrimmedInput('url', $_POST);
         if (!empty($url))
@@ -809,7 +830,7 @@ class CompaniesUI extends UserInterface
             $emailAddress = '';
         }
 
-        $name            = $this->getTrimmedInput('name', $_POST);
+        $name            = $this->getTrimmedInput('name', $_POST['fs']);
         $address         = $this->getTrimmedInput('address', $_POST);
         $city            = $this->getTrimmedInput('city', $_POST);
         $state           = $this->getTrimmedInput('state', $_POST);
@@ -846,6 +867,12 @@ class CompaniesUI extends UserInterface
 
         /* Update extra fields. */
         $companies->extraFields->setValuesOnEdit($companyID);
+        E::setCustomFieldValues(array(
+        		'id'=>$companyID,
+        		'dataItemType'=>E::dataItemType('company'),
+        		'values'=>$_POST['fs'],
+        		'siteId'=>$this->_siteID,
+        ));
 
         /* Update contacts? */
         if (isset($_POST['updateContacts']))

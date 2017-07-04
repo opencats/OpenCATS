@@ -2,13 +2,15 @@
 
 class CatsRouteEnum extends RouteEnum {
 
+	protected static $fields;
+	protected static $values;
 
-	public function getFields() {
-			
-		return array(
+	public static function init() {
+		self::$fields = array(
 				"main" => array(
 						'desc'=>'Strona główna',
 						'view'=>'CatsPassThrough',
+						//RouteEnum::frontView =>'NMainView'
 						RouteEnum::frontView =>'CatsView'
 				),
 				"user" => array(
@@ -16,12 +18,10 @@ class CatsRouteEnum extends RouteEnum {
 						'view'=>'User',
 						RouteEnum::frontView =>'MainView'
 				)
-				, "SQLITE" => array('desc'=>'jajo')
-				, "FILES" => array('desc' => 'jajo2')
 		);
 	}
 
 }
-
-
+CatsRouteEnum::init();
+CatsRouteEnum::initValues();
 ?>

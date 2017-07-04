@@ -29,6 +29,12 @@
 /* padding / margin: top left bottom right; */
 
 /*** Begin Generic Tag Rules ***/
+/*
+<?php 
+
+Header('Content-Type: text/css'); 
+?>
+*/
 body
 {
     padding: 8px 18px 8px 18px;
@@ -145,7 +151,7 @@ a:hover
     padding: 0px;
     position: absolute;
     bottom: -1px;
-    width: 80em;
+    width: 100%;
     font: normal normal normal 12px Arial, Tahoma, sans-serif;
 }
 
@@ -207,7 +213,7 @@ a:hover
     padding: 0px;
     bottom: -1.9em;
     left: 1px;
-    width: 65em;
+    width: 100%;
     font: normal normal normal 12px Arial, Tahoma, sans-serif;
 }
 
@@ -1367,3 +1373,62 @@ td.contentContainerOld {
 .home table {
 	width: 100%;
 }
+
+
+/**
+* ATS
+*/
+
+
+fieldset.checkListGroup  { 
+  margin: 0; 
+  padding: 0; 
+  margin-bottom: 1.25em; 
+  padding: .125em; 
+} 
+
+fieldset.checkListGroup legend { 
+  margin: 0; 
+  padding: 0; 
+  font-weight: bold; 
+  margin-left: 20px; 
+  font-size: 100%; 
+  color: black; 
+} 
+
+
+fieldset.checkListGroup ul { 
+  margin: 0; 
+  padding: 0; 
+  margin-left: 20px; 
+  list-style: none; 
+} 
+
+fieldset.checkListGroup ul li input { 
+  margin-right: .25em; 
+} 
+
+fieldset.checkListGroup ul li { 
+  border: 1px transparent solid; 
+  display:inline-block;
+  width:8em;
+} 
+
+fieldset.checkListGroup ul li label { 
+  margin-left: ; 
+} 
+
+p.sectionTitle
+{
+    background-image: url('images/gradient.gif');
+    background-repeat: repeat-x;
+    padding: 4px;
+    margin-top: 0px;
+    margin-bottom: 8px;
+    width: 100%;
+    font: normal normal bold  12px/120% Verdana, Tahoma, sans-serif;
+    border-top: 1px solid #9999cc;
+    /*border-bottom: 1px solid #009900;*/
+    color: #AAAAAA;
+}
+

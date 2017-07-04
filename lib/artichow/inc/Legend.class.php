@@ -648,35 +648,36 @@ class awLegend implements awPositionable {
 
 
 		$text1 = new awText(
-			'Weekly',
-			new Tuffy(8),
+			__('Weekly'),
+			new awTTFFont(ARTICHOW_FONT.DIRECTORY_SEPARATOR.'arial.ttf',8),
 			new Color(0, 0, 0, 0),
 			0);
 
 		$text2 = new awText(
-			'Monthly',
-			new Tuffy(8),
+			__('Monthly'),
+			//new Tuffy(8),
+			new awTTFFont(ARTICHOW_FONT.DIRECTORY_SEPARATOR.'arial.ttf',8),
 			new Color(0, 0, 0, 0),
 			0);
 			
 		$text3 = new awText(
-			'Yearly',
-			new Tuffy(8),
+			__('Yearly'),
+			new awTTFFont(ARTICHOW_FONT.DIRECTORY_SEPARATOR.'arial.ttf',8),
 			new Color(0, 0, 0, 0),
 			0);
 
 		$point1 = new awPoint(
-			412,
+			400,
 			7
 		);	 
 		
 		$point2 = new awPoint(
-			412,
+			400,
 			30
 		);	
 		
 		$point3 = new awPoint(
-			412,
+			400,
 			54
 		);	
 		   

@@ -208,6 +208,11 @@ class Dashboard
         
         $rsCurrentTime = $this->_db->getAssoc($sql);
         
+        $rsCurrentTime['currentMonthName']=lngTranslateStr($rsCurrentTime['currentMonthName']);
+        $rsCurrentTime['oneMonthAgoName']=lngTranslateStr($rsCurrentTime['oneMonthAgoName']);
+        $rsCurrentTime['twoMonthAgoName']=lngTranslateStr($rsCurrentTime['twoMonthAgoName']);
+        $rsCurrentTime['threeMonthAgoName']=lngTranslateStr($rsCurrentTime['threeMonthAgoName']);
+        
         $data = array();
         
         switch ($view)
@@ -265,6 +270,13 @@ class Dashboard
         }
         
         ksort($data, SORT_NUMERIC);
+
+        /*vd(array(
+        		'$sql'=>$sql,
+        		'$rs'=>$rs,
+        		'$data'=>$data,
+        		'$rsCurrentTime'=>$rsCurrentTime
+        ));*/
         
         return $data;
     }

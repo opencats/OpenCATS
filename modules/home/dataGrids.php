@@ -92,7 +92,7 @@ class ImportantPipelineDashboard extends DataGrid
                                      'alphaNavigation' => true,
                                      'filterHaving'    => 'lastName'),
 
-            __('Status')    =>      array('pagerRender'    => 'return $rsData[\'status\'];',
+            __('Status')    =>      array('pagerRender'    => '$ret = $rsData[\'statusDb\']; return @EnumTypeEnum::activityStatus()->enumByAttr(\'dbValue\',$ret)->desc;',
                                      'sortableColumn'  => 'statusSort',
                                      'pagerWidth'      => 75,
                                      'alphaNavigation' => true,
@@ -146,7 +146,8 @@ class ImportantPipelineDashboard extends DataGrid
                 DATE_FORMAT(candidate_joborder.date_modified, '%%m-%%d-%%y ') as dateModified,
                 candidate_joborder.date_modified as dateModifiedSort,
                 IF(candidate_joborder.status = %s, 1, IF(candidate_joborder.status = %s, 2, 3)) as statusSort,
-                candidate_joborder_status.short_description as status
+                candidate_joborder_status.short_description as status,
+        		candidate_joborder.status as statusDb
             FROM
                 candidate_joborder
             LEFT JOIN candidate ON

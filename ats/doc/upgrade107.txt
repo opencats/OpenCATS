@@ -1,0 +1,10 @@
+pear config-set doc_dir D:\tools\xampp\php\pear
+pear config-set cfg_dir D:\tools\xampp\php\pear
+pear config-set data_dir D:\tools\xampp\php\pear
+pear config-set test_dir D:\tools\xampp\php\pear
+pear config-set www_dir D:\tools\xampp\php\pear
+
+
+
+WARNING: php_bin D:\tools\xampp\php\php.exe appears to have a suffix .exe, but config variable php_suffix does not match
+pear config-set php_suffix .exe

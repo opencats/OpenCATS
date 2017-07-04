@@ -1,0 +1,13 @@
+- wyszukiwanie po numerze wewnętrznym kandydata i kluczowych umiejętnościach (szybkie wyszukanie)
+- szybkie wyszukanie obejmuje także treść CV 
+- integracja pdfToText (indeksowanie/wyszukiwanie CV w formacie PDF)
+- poprawki w układzie pól dla dodania/edycji/widoku firmy
+- uzupełnienia tłumaczeń
+
+2. Załączony plik antiword.zip wypakować do c:/antiword
+
+8. W kroku 4 przy pierwszej pozycji (antiword) pozostawić bez zmian.
+Przy pozycji 
+      Plik .pdf (Dokument Adobe Acrobat ) - włączyć checkBox i 
+wskazać sciezkę do   programu pdftotext: (np. "C:/xpdfbin-win-3.03/bin64/pdftotext.exe")    
+(pozostale opcje wyłączyć)

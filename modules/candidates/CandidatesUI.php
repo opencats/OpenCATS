@@ -624,6 +624,12 @@ class CandidatesUI extends UserInterface
 
         /* Get extra fields. */
         $extraFieldRS = $candidates->extraFields->getValuesForShow($candidateID);
+        $fl = E::loadCustomFieldValues(array(
+        		'siteId'=>$this->_siteID,
+        		'id'=>$candidateID,
+        		'dataItemType'=>E::dataItemType('candidate'),
+        ));
+        
 
         /* Add an MRU entry. */
         $_SESSION['CATS']->getMRU()->addEntry(
@@ -671,6 +677,7 @@ class CandidatesUI extends UserInterface
         $questionnaire = new Questionnaire($this->_siteID);
         $questionnaires = $questionnaire->getCandidateQuestionnaires($candidateID);
 
+        $this->_template->assign('fl', $fl);
         $this->_template->assign('active', $this);
         $this->_template->assign('questionnaires', $questionnaires);
         $this->_template->assign('data', $data);
@@ -820,7 +827,7 @@ class CandidatesUI extends UserInterface
         {
             $parsingStatus['parseLimit'] = $parsingStatus['parseLimit'] - 1;
         }
-
+        $this->_template->assign('fl', array());
         $this->_template->assign('parsingStatus', $parsingStatus);
         $this->_template->assign('isParsingEnabled', $isParsingEnabled);
         $this->_template->assign('contents', $contents);
@@ -1041,6 +1048,11 @@ class CandidatesUI extends UserInterface
 
         /* Get extra fields. */
         $extraFieldRS = $candidates->extraFields->getValuesForEdit($candidateID);
+        $fl = E::loadCustomFieldValues(array(
+        		'siteId'=>$this->_siteID,
+        		'id'=>$candidateID,
+        		'dataItemType'=>E::dataItemType('candidate'),
+        ));
 
         /* Get possible sources. */
         $sourcesRS = $candidates->getPossibleSources();
@@ -1096,7 +1108,8 @@ class CandidatesUI extends UserInterface
 
         $EEOSettings = new EEOSettings($this->_siteID);
         $EEOSettingsRS = $EEOSettings->getAll();
-
+        
+        $this->_template->assign('fl', $fl);
         $this->_template->assign('active', $this);
         $this->_template->assign('data', $data);
         $this->_template->assign('usersRS', $usersRS);
@@ -1329,6 +1342,12 @@ class CandidatesUI extends UserInterface
 
         /* Update extra fields. */
         $candidates->extraFields->setValuesOnEdit($candidateID);
+        E::setCustomFieldValues(array(
+        		'id'=>$candidateID,
+        		'dataItemType'=>E::dataItemType('candidate'),
+        		'values'=>$_POST['fs'],
+        		'siteId'=>$this->_siteID,
+        ));
 
         /* Update possible source list */
         $sources = $candidates->getPossibleSources();
@@ -2608,6 +2627,13 @@ class CandidatesUI extends UserInterface
 
         /* Update extra fields. */
         $candidates->extraFields->setValuesOnEdit($candidateID);
+        E::setCustomFieldValues(array(
+        		'id'=>$candidateID,
+        		'dataItemType'=>E::dataItemType('candidate'),
+        		'values'=>$_POST['fs'],
+        		'siteId'=>$this->_siteID,
+        		'template'=>'add',        		
+        ));
 
         /* Update possible source list. */
         $sources = $candidates->getPossibleSources();
@@ -2864,7 +2890,7 @@ class CandidatesUI extends UserInterface
             $activityNote = htmlspecialchars($activityNote);
 
             // FIXME: Move this to a highlighter-method? */
-            if (strpos($activityNote, 'Status change: ') === 0)
+            if (strpos($activityNote, __('Status change').': ') === 0)
             {
                 foreach ($statusRS as $data)
                 {

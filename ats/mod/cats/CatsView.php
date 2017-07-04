@@ -2,9 +2,13 @@
 
 class CatsView extends View {
 	
-	function show($args){
+	protected function showView($viewName,$args){
 		chdir(CATS_FE_DIR);
-		include_once('./index_cats.php');
+		include('./index_cats.php');
+	}
+	
+	function show($args){
+		return $this->showView(null,$args);
 	}
 	
 }

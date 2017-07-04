@@ -111,7 +111,7 @@
             <?php endif; ?>
 
             <p class="note">
-                <span style="float:left;">Candidates - Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?> (<?php echo($this->dataGrid->getNumberOfRows()); ?> Items)</span>
+                <span style="float:left;"><?php echo __("Candidates");?> - <?php echo __("Page");?> <?php echo($this->dataGrid->getCurrentPageHTML()); ?> (<?php echo($this->dataGrid->getNumberOfRows()); ?> <?php echo __("Items");?>)</span>
                 <span style="float:right;">
                     <?php $this->dataGrid->drawRowsPerPageSelector(); ?>
                     <?php $this->dataGrid->drawShowFilterControl(); ?>

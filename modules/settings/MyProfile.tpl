@@ -1,7 +1,9 @@
 <?php /* $Id: MyProfile.tpl 2452 2007-05-11 17:47:55Z brian $ */ ?>
 <?php TemplateUtility::printHeader(__('Settings'), array('modules/settings/validator.js', 'js/sorttable.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
-<?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
+<?php TemplateUtility::printTabs($this->active, $this->subActive); 
+evAtsObStart('myProfile');
+?>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -65,7 +67,15 @@
                                     </a>
                                    </div>                                     
                                 </td>
-                            </tr>                            
+                            </tr> 
+                            <tr>
+                                <td>
+                                     <?php echo 'Autoryzacja';?>
+                                </td>
+                                <td>
+                                <?php E::settings()->authProfile() ?>
+                                </td>
+                            </tr>                                                       
                             <!--<tr>
                                 <td>
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=myProfile&amp;s=notificationOptions">
@@ -82,4 +92,9 @@
             </table>
         </div>
     </div>
-<?php TemplateUtility::printFooter(); ?>
+<?php 
+
+        evAtsObEnd('myProfile',array(
+        				),true);
+
+TemplateUtility::printFooter(); ?>

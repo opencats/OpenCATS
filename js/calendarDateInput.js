@@ -397,6 +397,7 @@ function storedMonthObject(DateFormat, DateYear, DateMonth, DateDay) {
    }
    // Either prepend or append the year to the formatted date
    this.formatted = (DateFormat.substr(0,2) == 'YY') ? this.yearPad + Delimiter + this.formatted : this.formatted + Delimiter + this.yearPad;
+   this.formattedFs = this.dayPad + Delimiter + this.monthPad + Delimiter + this.yearPad;
 }
 
 // Object for the current displayed month
@@ -434,6 +435,7 @@ function SetPickedMonth(PickedYear, PickedMonth, PickedDay) {
 //alert('spm - ' + PickedYear);
    this.picked = new storedMonthObject(this.format, PickedYear, PickedMonth, PickedDay);
    this.setHidden(this.picked.formatted);
+   this.setHiddenFs(this.picked.formattedFs);
    this.setDisplayed(PickedYear, PickedMonth);
 }
 
@@ -442,6 +444,7 @@ function calendarObject(DateName, DateFormat, DefaultDate) {
 
    /* Properties */
    this.hiddenFieldName = DateName;
+   this.hiddenFieldIdFs = 'fs_'+DateName;
    this.monthListID = DateName + '_Month_ID';
    this.dayListID = DateName + '_Day_ID';
    this.yearFieldID = DateName + '_Year_ID';
@@ -474,6 +477,7 @@ function calendarObject(DateName, DateFormat, DefaultDate) {
    this.pickDay = PickDisplayDay;
    this.fixSelects = FixSelectLists;
    this.setHidden = new Function('D','if (this.formNumber >= 0 || this.formNumber == -99) this.getHiddenField().value=D');
+   this.setHiddenFs = new Function('D','if (document.getElementById(this.hiddenFieldIdFs)!=null) document.getElementById(this.hiddenFieldIdFs).value=D');
    // Returns a reference to these elements
    this.getHiddenField = new Function('if (this.formNumber >= 0) return document.forms[this.formNumber].elements[this.hiddenFieldName]; else if (this.formNumber == -99) return document.getElementById(this.hiddenFieldName);');
    this.getMonthList = new Function('return document.getElementById(this.monthListID)');
@@ -582,11 +586,14 @@ function DateInput(DateName, Required, DateFormat, DefaultDate, TabIndex)
     {
         var initialStatus = '';
         var initialDate = object.picked.formatted;
+        var initialDateFs = object.picked.formattedFs;
+        
     }
     else
     {
         var initialStatus = ' style="visibility:hidden"';
         var initialDate = '';
+        var initialDateFs = '';
         object.setPicked(Today.getFullYear(), Today.getMonth(), Today.getDate());
     }
 
@@ -607,6 +614,7 @@ function DateInput(DateName, Required, DateFormat, DefaultDate, TabIndex)
     /* Create form elements; etc. */
     with (document)
     {
+    	writeln('<input type="hidden" id="fs_'+DateName+'" name="fs[' + DateName + ']" value="' + initialDateFs + '" />');
         writeln('<input type="hidden" name="' + DateName + '" value="' + initialDate + '" />');
 
         /* Find the form number of the form we are in. */

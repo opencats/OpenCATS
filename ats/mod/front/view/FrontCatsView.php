@@ -11,6 +11,7 @@ if ($isModal){
 } 
 
 echo $args['content'];
+echo evGetGlobal('printFooter')['output'];
 
 function putJs($content){
 	//evGetGlobal('printModalHeader')['result']

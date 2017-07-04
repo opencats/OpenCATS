@@ -316,6 +316,7 @@ class Companies
         $sql = sprintf(
             "SELECT
                 company.company_id AS companyID,
+        		company.site_id AS siteId,
                 company.owner AS owner,
                 company.name AS name,
                 company.is_hot AS isHot,
@@ -333,7 +334,7 @@ class Companies
                 billing_contact.contact_id AS billingContact,
                 CONCAT(
                     billing_contact.first_name, ' ', billing_contact.last_name
-                ) AS billingContactFullName,
+                ) AS billingContactFullName,       		
                 DATE_FORMAT(
                     company.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
                 ) AS dateCreated,

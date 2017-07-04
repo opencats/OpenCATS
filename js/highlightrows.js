@@ -191,6 +191,7 @@ function findNode(startingNode, tagName)
 function highlightTableRowSelected(currentElement, customSelectedColor)
 {
     deSelect();
+    //lert('currentElement'+currentElement);
     selectedTableCell = currentElement;
 
     for (var i = 0; i < savedStateCount; i++)

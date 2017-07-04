@@ -262,6 +262,7 @@ class CATSSession
      */
     public function isDemo()
     {
+    	//return false;
         return $this->_isDemo;
     }
 
@@ -628,6 +629,18 @@ class CATSSession
         );
     }
 
+    
+    private $userData = array();
+    
+    public function getUserData(){
+    	return $this->userData;
+    }
+
+    public function setUserData($uData){
+    	$this->userData = $uData;
+    }
+    
+    
     /**
      * Processes a user login request and sets up the session if successful.
      * After calling this method, if $this->isLoggedIn() returns false, an
@@ -694,7 +707,10 @@ class CATSSession
             $db->makeQueryString($username)
         );
         $rs = $db->getAssoc($sql);
+        
 
+        
+        
         /* Invalid username or password. */
         if (!$rs || $db->isEOF())
         {
@@ -905,6 +921,18 @@ class CATSSession
                     $this->_siteID
                 );
                 $rs = $db->query($sql);
+                
+                
+                $fl = E::db()->getUser(array('id'=>$this->_userID));/*(array(
+                		'siteId'=>$rs['userSiteID'],
+                		'id'=>$rs['userID'],
+                		'dataItemType'=>E::dataItemType('user'),
+                ));*/
+                //vd(array(
+                //		'$fl'=>$fl,
+                //		
+                //));
+                $this->userData = $fl;//array_merge($fl,$rs);
 
                 break;
         }

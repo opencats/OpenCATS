@@ -123,6 +123,18 @@
                             <tr>
                                 <td>
                                     <img src="images/bullet_black.gif" alt="" />
+                                    <a href="<?php echo(E::routeHref('excel/import'));?>">
+                                        <?php echo __("Data Import Excel");?>
+                                    </a>
+                                </td>
+                                <td>
+                                    <?php echo __("Import resumes, candidates, companies or contacts from files on your computer.");?>
+                                </td>
+                            </tr>                            
+                            
+                            <tr>
+                                <td>
+                                    <img src="images/bullet_black.gif" alt="" />
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=createBackup">
                                         <?php echo __("Site Backup");?>
                                     </a>

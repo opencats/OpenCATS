@@ -970,6 +970,13 @@ class SettingsUI extends UserInterface
         {
             $privledged = true;
         }
+        
+        if (isset($_POST['fs']['id'])){
+        	E::c('user')->updateProfile(array(
+        		'fs'=>$_POST['fs'],	
+        	));
+        	$_GET['userID']=$_POST['fs']['id'];
+        }
 
         $userID = $_GET['userID'];
 
@@ -1043,7 +1050,14 @@ class SettingsUI extends UserInterface
 
         $EEOSettings = new EEOSettings($this->_siteID);
         $EEOSettingsRS = $EEOSettings->getAll();
-
+        
+        $fl = E::loadCustomFieldValues(array(
+        		'siteId'=>$this->_siteID,
+        		'id'=>$userID,
+        		'dataItemType'=>E::dataItemType('user'),
+        ));
+        
+        $this->_template->assign('fl', $fl);
         $this->_template->assign('privledged', $privledged);
         $this->_template->assign('active', $this);
         $this->_template->assign('subActive', '');
@@ -1090,7 +1104,7 @@ class SettingsUI extends UserInterface
 
         $EEOSettings = new EEOSettings($this->_siteID);
         $EEOSettingsRS = $EEOSettings->getAll();
-
+        $this->_template->assign('fl', array());
         $this->_template->assign('active', $this);
         $this->_template->assign('subActive', '');
         $this->_template->assign('accessLevels', $accessLevels);
@@ -1173,6 +1187,13 @@ class SettingsUI extends UserInterface
         $userID = $users->add(
             $lastName, $firstName, $email, $username, $password, $accessLevel, $eeoIsVisible
         );
+        
+        E::setCustomFieldValues(array(
+        		'id'=>$userID,
+        		'dataItemType'=>E::dataItemType('user'),
+        		'values'=>$_POST['fs'],
+        		'siteId'=>$this->_siteID,
+        ));
 
         /* Check role (category) to make sure that the role is allowed to be set. */
         $modules = ModuleUtility::getModules();
@@ -1280,10 +1301,18 @@ class SettingsUI extends UserInterface
                 }
             }
         }
+        
+        //customdata
+        $fl = E::loadCustomFieldValues(array(
+        		'siteId'=>$this->_siteID,
+        		'id'=>$userID,
+        		'dataItemType'=>E::dataItemType('user'),
+        ));
 
         $EEOSettings = new EEOSettings($this->_siteID);
         $EEOSettingsRS = $EEOSettings->getAll();
 
+        $this->_template->assign('fl', $fl);
         $this->_template->assign('active', $this);
         $this->_template->assign('subActive', '');
         $this->_template->assign('data', $data);
@@ -1378,6 +1407,13 @@ class SettingsUI extends UserInterface
         {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update user.');
         }
+        E::setCustomFieldValues(array(
+        		'id'=>$userID,
+        		'dataItemType'=>E::dataItemType('user'),
+        		'values'=>$_POST['fs'],
+        		'siteId'=>$this->_siteID,
+        ));
+        
 
         if (trim($password1) !== '')
         {
@@ -2469,6 +2505,12 @@ class SettingsUI extends UserInterface
         $careerPortalUnlock = false;
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
         $cpData = $careerPortalSettings->getAll();
+        /*vd(array(
+        	'$_SESSION[CATS]->isFree()'=>$_SESSION['CATS']->isFree(),
+        	'$cpData'=>$cpData
+ 
+        ));*/
+        
         if (intval($cpData['enabled']) || (file_exists('modules/asp') && !$_SESSION['CATS']->isFree()) ||
             LicenseUtility::isProfessional())
         {
@@ -3459,6 +3501,11 @@ class SettingsUI extends UserInterface
             if (isset($_POST[$field]))
             {
                 $type = $questionnaire->convertQuestionTypeToConstant($_POST[$field]);
+                /*vd(array(
+                	'$type'=>$type,
+                	'$field'=>$field,
+                	'$_POST'=>$_POST,	
+                ));*/
                 $questions[$questionIndex]['questionType'] = $type;
                 $questions[$questionIndex]['questionTypeLabel'] = (
                     $questionnaire->convertQuestionConstantToType($type)
@@ -3573,6 +3620,7 @@ class SettingsUI extends UserInterface
                 );
             }
         }
+        
 
         /**
          * STEP 2
@@ -3667,6 +3715,8 @@ class SettingsUI extends UserInterface
             }
         }
 
+
+        
         /**
          * STEP 5
          * Remove any questions/answers that have "remove" checked prior to sorting/positioning
@@ -3692,6 +3742,7 @@ class SettingsUI extends UserInterface
         }
         $questions = $savedQuestions;
 
+        
         /**
          * STEP 6
          * Corrections. Any removals or changes that have altered the "way of things" need to
@@ -3702,6 +3753,7 @@ class SettingsUI extends UserInterface
             // If the question has no answers it is a TEXT automatically
             if (!count($questions[$questionIndex]['answers']))
             {
+            	$questions[$questionIndex]['userInfo'] = "If the question has no answers it is a TEXT automatically";
                 $questions[$questionIndex]['questionType'] = QUESTIONNAIRE_QUESTION_TYPE_TEXT;
                 $questions[$questionIndex]['questionTypeLabel'] =
                     $questionnaire->convertQuestionConstantToType(QUESTIONNAIRE_QUESTION_TYPE_TEXT);
@@ -3709,11 +3761,14 @@ class SettingsUI extends UserInterface
             // Otherwise, if there are answers, it cannot be a TEXT
             else if ($questions[$questionIndex]['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_TEXT)
             {
+            	$questions[$questionIndex]['userInfo'] = "If there are answers, question cannot be a TEXT";
                 $questions[$questionIndex]['questionType'] = QUESTIONNAIRE_QUESTION_TYPE_SELECT;
                 $questions[$questionIndex]['questionTypeLabel'] =
                     $questionnaire->convertQuestionConstantToType(QUESTIONNAIRE_QUESTION_TYPE_SELECT);
             }
         }
+        
+
 
         /**
          * STEP 7
@@ -3760,6 +3815,7 @@ class SettingsUI extends UserInterface
                 }
             }
         }
+       
 
         // Now define real position values (never trust the naughty user)
         for ($questionIndex2 = 0;

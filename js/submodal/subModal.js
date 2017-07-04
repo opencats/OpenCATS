@@ -157,7 +157,7 @@ function _showPopWin(html, url, width, height, returnFunc)
         gPopFrameDiv.style.display = 'none';
         gPopFrameIFrame.style.display = '';
 
-        gPopFrameIFrame.src = url;
+        gPopFrameIFrame.src = url;//+'&frameHeight='+height;
     }
     else
     {

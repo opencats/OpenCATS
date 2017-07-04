@@ -1,0 +1,1 @@
+<input type="text" class="inputbox" id="fs_<?php echo $k;?>" name="fs[<?php echo $k;?>]" style="width: 250px;" <?php if(isset($fl[$k])): ?>value="<?php echo evEscHtml($fl[$k]); ?>"<?php endif; ?> />
