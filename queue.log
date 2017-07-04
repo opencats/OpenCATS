@@ -1,11 +1,11 @@
 Checking:./modules/calendar/tasks/tasks.php
 Ready - processing ...
 Adding asynch Task Reminders...
-Starting Task id:16786
+Starting Task id:16788
 Instance loaded:1
-Runing curTask->run on task id 16786
+Runing curTask->run on task id 16788
 RetVal from task:4
-Removing task 16786
+Removing task 16788
 Checking:./modules/queue/tasks/tasks.php
 
 Strict Standards: Non-static method QueueProcessor::getHour() should not be called statically in C:\Users\mb\git\OpenATS\lib\QueueProcessor.php on line 556
