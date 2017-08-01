@@ -44,6 +44,7 @@ define('LOGIN_INVALID_PASSWORD',     -2);
 define('LOGIN_DISABLED',             -3);
 define('LOGIN_CANT_CHANGE_PASSWORD', -4);
 define('LOGIN_ROOT_ONLY',            -5);
+define('LOGIN_PENDING_APPROVAL',     -6);
 
 /* Add User status flags. */
 define('ADD_USER_SUCCESS',            1);
