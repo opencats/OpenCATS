@@ -442,7 +442,15 @@ class ModuleUtility
      */
     private static function processModuleSchema($moduleName, $schema)
     {
-        set_time_limit(0);
+        if( ini_get('safe_mode') )
+        {
+			//don't do anything in safe mode
+		}
+		else
+        {
+            /* Don't limit the execution time of queries. */
+            set_time_limit(0);
+        }
 
 		$executedQuery = false;
 
