@@ -34,7 +34,15 @@ if (file_exists('INSTALL_BLOCK'))
     $interface = new SecureAJAXInterface();
 }
 
-set_time_limit(0);
+if( ini_get('safe_mode') )
+{
+	//don't do anything in safe mode
+}
+else
+{
+	/* Don't limit the execution time. */
+	set_time_limit(0);
+}
 @ini_set('memory_limit', '256M');
 
 $reindexed = 0;
