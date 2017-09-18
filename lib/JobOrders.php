@@ -789,11 +789,11 @@ class JobOrders
     public static function typeCodeToString($typeCode)
     {
         $jobTypes = (new JobOrderTypes())->getAll();
-        if($jobTypes[$typeCode] == null)
+        if(array_key_exists($typeCode, $jobTypes) && isset($jobTypes[$typeCode]))
         {
-            return '(Unknown)';
+            return $jobTypes[$typeCode];
         }
-        return $jobTypes[$typeCode];
+        return '(Unknown)';
     }
 
     /**
