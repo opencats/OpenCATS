@@ -31,7 +31,15 @@ include_once('./config.php');
 include_once(LEGACY_ROOT . '/lib/InstallationTests.php');
 include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
 
-set_time_limit(300);
+if( ini_get('safe_mode') )
+{
+	//don't do anything in safe mode
+}
+else
+{
+	/* limit the execution time to 300 secs. */
+	set_time_limit(300);
+}
 @ini_set('memory_limit', '192M');
 
 if (file_exists('modules.cache')) @unlink('modules.cache');
