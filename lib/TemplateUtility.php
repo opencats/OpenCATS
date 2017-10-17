@@ -145,9 +145,9 @@ class TemplateUtility
                 }
                 else
                 {
-                    echo '<a href="http://www.catsone.com/professional" target="_blank">';
+                    echo '<a href="http://www.opencats.org" target="_blank">';
                     echo '<img src="images/tabs/small_upgrade.jpg" border="0" /> ';
-                    echo 'CATS Professional Account Login</a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
+                    echo 'OpenCATS.org</a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
                 }
             }
 
