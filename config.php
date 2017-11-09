@@ -280,24 +280,31 @@ define ('LDAP_SITEID', 1);
 /* Job Types mapping
  */
 /* Uncomment bellow if you want custom mapping */
-/*const JOB_TYPES_LIST = array(
-    'PT' => 'Part-Time',
-    'FT' => 'Full-Time',
-    'ST' => 'Student',
-    'FL' => 'Freelance'
-);*/
+/*
+class JOB_TYPES {
+    public static $LIST = array(
+        'PT' => 'Part-Time',
+        'FT' => 'Full-Time',
+        'ST' => 'Student',
+        'FL' => 'Freelance'
+    );
+};
+*/
 
 
-/* 
-require_once('.\constants.php');
-// defining user roles
-const USER_ROLES = array(
+/*
+require_once('./constants.php');
+
+class ACL_SETUP {
+
+    // defining user roles
+    public static $USER_ROLES = array(
         'candidate' => array('Candidate', 'candidate', 'This is a candidate.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ),
         'demo' => array('Demo', 'demo', 'This is a demo user.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
     );
-    
-// defining access levels different from the default access level    
-const ACCESS_LEVEL_MAP = array(
+   
+    // defining access levels different from the default access level    
+    public static $ACCESS_LEVEL_MAP = array(
         'candidate' => array(
         ),
         'demo' => array(
@@ -308,7 +315,9 @@ const ACCESS_LEVEL_MAP = array(
             'joborders.show' => ACCESS_LEVEL_DEMO,
             'joborders.email' => ACCESS_LEVEL_DISABLED,
         )
-    );*/
+    );
+};
+*/
 
 /* All possible secure object names 
             'candidates.history'
