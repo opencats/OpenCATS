@@ -63,7 +63,7 @@ class ACL
             // for now, only first category is used for evalualtion
             $userCategory = $userCategories[0];
         }
-        if( NULL !== $aclmap[$userCategory][$securedObjectName])
+        if( ACL::_hasACLEntry($aclmap, $userCategory, $securedObjectName))
         {
             return $aclmap[$userCategory][$securedObjectName];
         }
@@ -71,17 +71,23 @@ class ACL
         while(($pos = strrpos($securedObjectName, ".")) !== false)
         {
             $securedObjectName = substr($securedObjectName, 0, $pos);
-            if( NULL !== $aclmap[$userCategory][$securedObjectName])
+            if( ACL::_hasACLEntry($aclmap, $userCategory, $securedObjectName))
             {
                 return $aclmap[$userCategory][$securedObjectName];
             }
         }
-        if( NULL !== $aclmap[$userCategory][ACL::SECOBJ_ROOT])
+        if( ACL::_hasACLEntry($aclmap, $userCategory, ACL::SECOBJ_ROOT))
         {
             return $aclmap[$userCategory][ACL::SECOBJ_ROOT];
         }
         return $defaultAccessLevel;
     }
 
+    public static function _hasACLEntry($aclmap, $userCategory, $securedObjectName)
+    { 
+        return array_key_exists($userCategory, $aclmap)
+            && array_key_exists($securedObjectName, $aclmap[$userCategory])
+            && NULL !== $aclmap[$userCategory][$securedObjectName];
+    }
 }
 ?>
