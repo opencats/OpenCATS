@@ -330,7 +330,15 @@ class SMTP
             $max = ini_get('max_execution_time');
             // Don't bother if unlimited
             if ($max != 0 && $timeout > $max) {
-                @set_time_limit($timeout);
+                if( ini_get('safe_mode') )
+                {
+        			//don't do anything in safe mode
+		        }
+        		else
+                {
+                    /* limit the execution time to $timeout . */
+                    @set_time_limit($timeout);
+                }
             }
             stream_set_timeout($this->smtp_conn, $timeout, 0);
         }
