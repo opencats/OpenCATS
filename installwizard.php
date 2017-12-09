@@ -372,7 +372,7 @@
                                             The installer has detected an existing installation of OpenCATS.<br />
                                             How would you like to proceed?<br />
                                             <br />
-                                            <input type="radio" name="installgroupexists" id="currentCheckBox" value="current" checked />&nbsp;Use existing OpenCATS installation and automatically preform any necessary upgrade (recommended).<br />
+                                            <input type="radio" name="installgroupexists" id="currentCheckBox" value="current" checked />&nbsp;Use existing OpenCATS installation and automatically perform any necessary upgrade (recommended).<br />
                                             <br />
                                             <input type="radio" name="installgroupexists" value="empty" />&nbsp;Delete existing data and create a new installation.<br />
                                             <input type="radio" name="installgroupexists" value="demo" />&nbsp;Delete existing data and install the OpenCATS demonstration database.<br />
