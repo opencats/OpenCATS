@@ -296,7 +296,7 @@ class JobOrder
         );
         $instance->setCompanyJobId($companyJobId);
         $instance->setCompanyId($companyId);
-        $instance->setContactId($companyId);
+        $instance->setContactId($contactID);
         $instance->setDescription($description);
         $instance->setNotes($notes);
         $instance->setDuration($duration);
