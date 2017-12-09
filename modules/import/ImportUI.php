@@ -408,7 +408,15 @@ class ImportUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
 
-        set_time_limit(500);
+        if( ini_get('safe_mode') )
+        {
+			//don't do anything in safe mode
+		}
+		else
+        {
+            /* limit the execution time of import to 500 secs. */
+            set_time_limit(500);
+        }
 
         $this->setImportTypes();
 

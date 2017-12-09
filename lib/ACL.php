@@ -21,23 +21,27 @@ class ACL
      * Example:
     const CATEGORY_DISABLED = '#';
 
-    const ACCESS_LEVEL_MAP = array(
-        'recruiter' => array(
-            'calendar' => ACCESS_LEVEL_DELETE,
-            'candidates'=> ACCESS_LEVEL_DELETE,
-            'candidates.add'=> ACCESS_LEVEL_DISABLED
-        ),
-        'candidate' => array(
-            ACL::SECOBJ_ROOT => ACCESS_LEVEL_DISABLED,
-            'news' => ACCESS_LEVEL_READ,
-        ),
-        ACL::CATEGORY_EMPTY => array(
-            ACL::SECOBJ_ROOT => ACCESS_LEVEL_READ
-        ),
-        ACL::CATEGORY_DISABLED => array(
-            ACL::SECOBJ_ROOT => ACCESS_LEVEL_DISABLED
-        )
-
+    class ACL_SETUP {
+        public static $USER_ROLES = array(
+            'demo' => array('Demo', 'demo', 'This is a demo user.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
+        );
+        public static $ACCESS_LEVEL_MAP = array(
+            'recruiter' => array(
+                'calendar' => ACCESS_LEVEL_DELETE,
+                'candidates'=> ACCESS_LEVEL_DELETE,
+                'candidates.add'=> ACCESS_LEVEL_DISABLED
+            ),
+            'candidate' => array(
+                ACL::SECOBJ_ROOT => ACCESS_LEVEL_DISABLED,
+                'news' => ACCESS_LEVEL_READ,
+            ),
+            ACL::CATEGORY_EMPTY => array(
+                ACL::SECOBJ_ROOT => ACCESS_LEVEL_READ
+            ),
+            ACL::CATEGORY_DISABLED => array(
+                ACL::SECOBJ_ROOT => ACCESS_LEVEL_DISABLED
+            )
+        };
     );
     */
 
@@ -47,19 +51,19 @@ class ACL
     */
     public static function getAccessLevel($securedObjectName, $userCategories, $defaultAccessLevel)
     {
-        if( !defined('ACCESS_LEVEL_MAP') || empty(ACCESS_LEVEL_MAP))
+        if( !class_exists('ACL_SETUP') || empty(ACL_SETUP::$ACCESS_LEVEL_MAP))
         {
             return $defaultAccessLevel;
         }
 
-        $aclmap = ACCESS_LEVEL_MAP;
+        $aclmap = ACL_SETUP::$ACCESS_LEVEL_MAP;
         $userCategory = ACL::CATEGORY_EMPTY;
         if( isset($userCategories) && count($userCategories) > 0 && isset($userCategories[0]) )
         {
             // for now, only first category is used for evalualtion
             $userCategory = $userCategories[0];
         }
-        if( NULL !== $aclmap[$userCategory][$securedObjectName])
+        if( ACL::_hasACLEntry($aclmap, $userCategory, $securedObjectName))
         {
             return $aclmap[$userCategory][$securedObjectName];
         }
@@ -67,17 +71,23 @@ class ACL
         while(($pos = strrpos($securedObjectName, ".")) !== false)
         {
             $securedObjectName = substr($securedObjectName, 0, $pos);
-            if( NULL !== $aclmap[$userCategory][$securedObjectName])
+            if( ACL::_hasACLEntry($aclmap, $userCategory, $securedObjectName))
             {
                 return $aclmap[$userCategory][$securedObjectName];
             }
         }
-        if( NULL !== $aclmap[$userCategory][ACL::SECOBJ_ROOT])
+        if( ACL::_hasACLEntry($aclmap, $userCategory, ACL::SECOBJ_ROOT))
         {
             return $aclmap[$userCategory][ACL::SECOBJ_ROOT];
         }
         return $defaultAccessLevel;
     }
 
+    public static function _hasACLEntry($aclmap, $userCategory, $securedObjectName)
+    { 
+        return array_key_exists($userCategory, $aclmap)
+            && array_key_exists($securedObjectName, $aclmap[$userCategory])
+            && NULL !== $aclmap[$userCategory][$securedObjectName];
+    }
 }
 ?>
