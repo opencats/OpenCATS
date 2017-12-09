@@ -121,8 +121,15 @@ if ($action == 'backup')
 {
     include_once(LEGACY_ROOT . '/lib/FileCompressor.php');
     
-    /* Backups shouldn't time out. */
-    set_time_limit(0);
+	if( ini_get('safe_mode') )
+	{
+		//don't do anything in safe mode
+	}
+	else
+	{
+		/* Don't limit the execution time during backup. */
+		set_time_limit(0);
+	}
     
     // FIXME: Make this configurable.
     @ini_set('memory_limit', '192M');
