@@ -28,7 +28,15 @@
  */
 
 /* Allow this script to run as long as possible. */
-set_time_limit(300);
+if( ini_get('safe_mode') )
+{
+	//don't do anything in safe mode
+}
+else
+{
+	/* Allow this script to run longer. */
+	set_time_limit(300);
+}
 
 /* SimpleTest */
 error_reporting(E_ALL); /* Simpletest doesn't work with E_STRICT. */
