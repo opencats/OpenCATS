@@ -69,9 +69,9 @@ class SettingsUI extends UserInterface
         $this->_moduleTabText = 'Settings';
 
         /* Only CATS professional on site gets to make career portal customizer users. */
-        if(defined('USER_ROLES'))
+        if( class_exists('ACL_SETUP') && !empty(ACL_SETUP::$USER_ROLES) )
         {
-            $this->_settingsUserCategories = USER_ROLES;
+            $this->_settingsUserCategories = ACL_SETUP::$USER_ROLES;
         }
 
         $mp = array(

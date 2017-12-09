@@ -28,9 +28,9 @@ class JobOrderTypes
      */
     public function getAll()
     {
-        if(defined('JOB_TYPES_LIST'))
+        if( class_exists('JOB_TYPES') && !empty(JOB_TYPES::$LIST) )
         {
-            return JOB_TYPES_LIST;
+            return JOB_TYPES::$LIST;
         } 
         else 
         {
