@@ -85,7 +85,7 @@ class SphinxClient
 	/////////////////////////////////////////////////////////////////////////////
 
 	/// create a new client object and fill defaults
-	function SphinxClient ()
+	function __construct ()
 	{
 		$this->_host		= "localhost";
 		$this->_port		= 3312;
