@@ -358,7 +358,7 @@ class ControlPanel
 
                         if ($this->_insertBoundriesSql != '')
                         {
-                            list($fieldName, $fieldValue) = split('=', $this->_insertBoundriesSql);
+                            list($fieldName, $fieldValue) = explode('=', $this->_insertBoundriesSql);
                             $fieldName = trim($fieldName);
                             $fieldValue = trim($fieldValue);
                         }
@@ -1184,7 +1184,7 @@ class ControlPanel
         switch($fieldData['webFormType'])
         {
             case WFT_CC_EXPIRATION:
-                list($expireMonth, $expireYear) = split('/', $text);
+                list($expireMonth, $expireYear) = explode('/', $text);
                 return '"' . sprintf('%s-%s-01', $expireYear, $expireMonth) . '"';
             case WFT_CC_NUMBER:
                 return '"' . addslashes(EncryptionUtility::encryptCreditCardNumber($text)) . '"';

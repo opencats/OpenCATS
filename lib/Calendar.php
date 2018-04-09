@@ -952,7 +952,7 @@ class Calendar
         $mailer = new Mailer($siteID, $userID);
 
         $destination = str_replace(',', ';', $destination);
-        $destinations = split(';', $destination);
+        $destinations = explode(';', $destination);
 
         foreach ($destinations as $address)
         {
