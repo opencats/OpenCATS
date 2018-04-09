@@ -49,7 +49,9 @@ header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 /* Make sure we aren't getting screwed over by magic quotes. */
 if (get_magic_quotes_runtime())
 {
-    set_magic_quotes_runtime(0);
+    if (function_exists('set_magic_quotes_runtime')) {
+        set_magic_quotes_runtime(0);
+    }
 }
 if (get_magic_quotes_gpc())
 {
