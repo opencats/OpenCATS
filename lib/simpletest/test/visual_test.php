@@ -20,7 +20,7 @@ require_once('../xml.php');
 class TestDisplayClass {
     private $a;
 
-    function TestDisplayClass($a) {
+    function __construct($a) {
         $this->a = $a;
     }
 }
@@ -261,7 +261,7 @@ class FailingUnitTestCaseOutput extends UnitTestCase {
 }
 
 class Dummy {
-    function Dummy() {
+    function __construct() {
     }
 
     function a() {

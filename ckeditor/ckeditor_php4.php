@@ -97,7 +97,7 @@ class CKEditor
 	 *
 	 *  @param $basePath (string) URL to the %CKEditor installation directory (optional).
 	 */
-	function CKEditor($basePath = null) {
+	function __construct($basePath = null) {
 		if (!empty($basePath)) {
 			$this->basePath = $basePath;
 		}
