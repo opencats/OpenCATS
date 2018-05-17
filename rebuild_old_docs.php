@@ -14,14 +14,15 @@
 require_once 'config.php';
 
 function rebuild_old_docs() {
-
-    $result = mysql_query('SELECT * FROM `attachment` WHERE `text` IS NULL');
+	
+	global $con;
+    $result = mysqli_query($con, 'SELECT * FROM `attachment` WHERE `text` IS NULL');
 
     include_once('./lib/DocumentToText.php');
 
     $countOK = 0;
     $countError = 0;
-    while ($attachment = mysql_fetch_object($result)) {
+    while ($attachment = mysqli_fetch_object($result)) {
         $doc2txt = new DocumentToText();
         $doc2txt->convert('attachments/' . $attachment->directory_name . $attachment->stored_filename,
                 $doc2txt->getDocumentType('attachments/' . $attachment->directory_name . $attachment->stored_filename));
@@ -35,10 +36,10 @@ function rebuild_old_docs() {
             $extractedText = $doc2txt->getString();
             print('File ' . $attachment->stored_filename." reindexed.\n");
             $sql = 'UPDATE `attachment` SET `text` = \'' . addslashes($extractedText) . '\', `md5_sum_text` = \'' . md5($extractedText) . '\'  WHERE `attachment_id` = ' . $attachment->attachment_id;
-            $upd = mysql_query($sql);
+            $upd = mysqli_query($con, $sql);
             if (!$upd) {
                $countError++;
-                print('DB error: ' . mysql_error());
+                print('DB error: ' . mysqli_error($con));
             } else {
                $countOK++;
             }
@@ -50,12 +51,12 @@ function rebuild_old_docs() {
 
 
 //$con = mysql_connect("localhost","root","root");
-$con = mysql_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS);
+$con = mysqli_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS);
 if (!$con)
 {
-  die('Could not connect: ' . mysql_error());
+  die('Could not connect: ' . mysqli_error($co$conn));
 }
-mysql_select_db(DATABASE_NAME, $con);
+mysqli_select_db(DATABASE_NAME, $con);
 
 rebuild_old_docs();
 ?>

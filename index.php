@@ -114,9 +114,9 @@ if (ini_get('session.auto_start') !== '0' &&
 }
 
 /* Proper extensions loaded?! */
-if (!function_exists('mysql_connect') || !function_exists('session_start'))
+if (!function_exists('mysqli_connect') || !function_exists('session_start'))
 {
-    die('CATS Error: All required PHP extensions are not loaded.');
+    die('OpenCATS Error: Either PHP Sessions extension or MySQLi extension is not loaded.');
 }
 
 /* Make sure we have a Session object stored in the user's session. */

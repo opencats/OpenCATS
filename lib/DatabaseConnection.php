@@ -108,12 +108,12 @@ class DatabaseConnection
      */
     public function connect()
     {
-        $this->_connection = @mysql_connect(
+        $this->_connection = @mysqli_connect(
             DATABASE_HOST, DATABASE_USER, DATABASE_PASS
         );
         if (!$this->_connection)
         {
-            $error = mysql_error();
+            $error = mysqli_error($this->_connection);
 
             die(
                 '<!-- NOSPACEFILTER --><p style="background: #ec3737; padding:'
@@ -123,11 +123,11 @@ class DatabaseConnection
             );
             return false;
         }
-        mysql_set_charset(SQL_CHARACTER_SET, $this->_connection);
-        $isDBSelected = @mysql_select_db(DATABASE_NAME, $this->_connection);
+        mysqli_set_charset($this->_connection, SQL_CHARACTER_SET);
+        $isDBSelected = @mysqli_select_db($this->_connection, DATABASE_NAME);
         if (!$isDBSelected)
         {
-            $error = mysql_error($this->_connection);
+            $error = mysqli_error($this->_connection);
 
             die(
                 '<!-- NOSPACEFILTER --><p style="background: #ec3737; '
@@ -175,10 +175,10 @@ class DatabaseConnection
             set_time_limit(0);
         }
 
-        $this->_queryResult = mysql_query($query, $this->_connection);
+        $this->_queryResult = mysqli_query($this->_connection, $query);
         if (!$this->_queryResult && !$ignoreErrors)
         {
-            $error = mysql_error($this->_connection);
+            $error = mysqli_error($this->_connection);
 
             echo (
                 '<!-- NOSPACEFILTER --><p style="background: #ec3737; padding:'
@@ -246,7 +246,7 @@ class DatabaseConnection
             $this->query($query);
         }
 
-        $numRows = mysql_num_rows($this->_queryResult);
+        $numRows = mysqli_num_rows($this->_queryResult);
         if ($numRows === false)
         {
             return false;
@@ -260,7 +260,8 @@ class DatabaseConnection
             return false;
         }
 
-        return mysql_result($this->_queryResult, $row, $column);
+		mysqli_data_seek($this->_queryResult, $row);
+        return mysqli_fetch_row($this->_queryResult);
     }
 
     /**
@@ -297,7 +298,7 @@ class DatabaseConnection
             $this->query($query);
         }
 
-        $recordSet = mysql_fetch_assoc($this->_queryResult);
+        $recordSet = mysqli_fetch_assoc($this->_queryResult);
 
         if (empty($recordSet))
         {
@@ -343,7 +344,7 @@ class DatabaseConnection
         $recordSetArray = array();
 
         /* Store all rows in $recordSetArray; */
-        while (($recordSet = mysql_fetch_assoc($this->_queryResult)))
+        while (($recordSet = mysqli_fetch_assoc($this->_queryResult)))
         {
             $recordSetArray[] = $recordSet;
         }
@@ -365,7 +366,7 @@ class DatabaseConnection
             $this->query($query);
         }
 
-        return mysql_num_rows($this->_queryResult);
+        return mysqli_num_rows($this->_queryResult);
     }
 
     /**
@@ -376,7 +377,7 @@ class DatabaseConnection
      */
     public function isEOF()
     {
-        $rowCount = mysql_num_rows($this->_queryResult);
+        $rowCount = mysqli_num_rows($this->_queryResult);
         if (!$rowCount)
         {
             return true;
@@ -459,7 +460,7 @@ class DatabaseConnection
         // user input. For instance see: 
         // https://johnroach.info/2011/02/17/why-mysql_real_escape_string-isnt-enough-to-stop-sql-injection-attacks/
         // To be replaced with Symfony's stack
-        return mysql_real_escape_string($string, $this->_connection);
+        return mysqli_real_escape_string($this->_connection, $string);
     }
 
     /**
@@ -558,7 +559,7 @@ class DatabaseConnection
      */
     public function getError()
     {
-        return mysql_error($this->_connection);
+        return mysqli_error($this->_connection);
     }
 
     /**
@@ -572,7 +573,7 @@ class DatabaseConnection
      */
     public function getLastInsertID()
     {
-        return @mysql_insert_id($this->_connection);
+        return @mysqli_insert_id($this->_connection);
     }
 
     /**
@@ -584,7 +585,7 @@ class DatabaseConnection
      */
     public function getAffectedRows()
     {
-        return @mysql_affected_rows($this->_connection);
+        return @mysqli_affected_rows($this->_connection);
     }
 
     /**
