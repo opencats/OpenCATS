@@ -272,7 +272,7 @@ define ('LDAP_BASEDN', 'dc=example,dc=com');
 define ('LDAP_BIND_DN', 'cn=read-only-admin,dc=example,dc=com');
 define ('LDAP_BIND_PASSWORD', 'password');
 
-define ('LDAP_ACCOUNT', '{$username}'); // '{$username}' cannot be changed, else can
+define ('LDAP_ACCOUNT', 'cn={$username},dc=example,dc=com'); // '{$username}' cannot be changed, else can
 
 define ('LDAP_ATTRIBUTE_UID', 'uid');
 define ('LDAP_ATTRIBUTE_DN', 'dn');
@@ -281,6 +281,7 @@ define ('LDAP_ATTRIBUTE_FIRSTNAME', 'givenname');
 define ('LDAP_ATTRIBUTE_EMAIL', 'mail');
 
 define ('LDAP_SITEID', 1);
+define ('LDAP_AD', false); // use for AD and Samba LDAP servers
 
 
 /* Job Types mapping
