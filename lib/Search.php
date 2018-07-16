@@ -375,17 +375,14 @@ class SearchCandidates
         $this->_userID = $_SESSION['CATS']->getUserID();
     }
     
-    
-    /**
-     * Returns all candidates with full names matching $wildCardString.
+     /**
+     * Returns all candidates.
      *
      * @param string wildcard match string
      * @return array candidates data
      */
-    public function byFullName($wildCardString, $sortBy, $sortDirection)
+    public function all($wildCardString, $sortBy, $sortDirection)
     {
-        $wildCardString = str_replace('*', '%', $wildCardString) . '%';
-        $wildCardString = $this->_db->makeQueryString($wildCardString);
 
         $sql = sprintf(
             "SELECT
@@ -410,6 +407,55 @@ class SearchCandidates
                 candidate
             LEFT JOIN user AS owner_user
                 ON candidate.owner = owner_user.user_id
+            WHERE
+                candidate.site_id = %s
+            ORDER BY
+                %s %s",
+            $this->_siteID,
+            $sortBy,
+            $sortDirection
+        );
+
+        return $this->_db->getAllAssoc($sql);
+    }
+
+    /**
+     * Returns all candidates with full names matching $wildCardString.
+     *
+     * @param string wildcard match string
+     * @return array candidates data
+     */
+    public function byFullName($wildCardString, $sortBy, $sortDirection)
+    {
+        $wildCardString = str_replace('*', '%', $wildCardString) . '%';
+        $wildCardString = $this->_db->makeQueryString($wildCardString);
+
+        $sql = sprintf(
+            "SELECT
+                candidate.candidate_id AS candidateID,
+                IF(candidate_duplicates.new_candidate_id, 1, 0) AS isDuplicateCandidate,
+                candidate.first_name AS firstName,
+                candidate.last_name AS lastName,
+                candidate.city AS city,
+                candidate.state AS state,
+                candidate.phone_home AS phoneHome,
+                candidate.phone_cell AS phoneCell,
+                candidate.key_skills AS keySkills,
+                candidate.email1 AS email1,
+                owner_user.first_name AS ownerFirstName,
+                owner_user.last_name AS ownerLastName,
+                DATE_FORMAT(
+                    candidate.date_created, '%%m-%%d-%%y'
+                ) AS dateCreated,
+                DATE_FORMAT(
+                    candidate.date_modified, '%%m-%%d-%%y'
+                ) AS dateModified
+            FROM
+                candidate
+            LEFT JOIN user AS owner_user
+                ON candidate.owner = owner_user.user_id
+            LEFT JOIN candidate_duplicates
+                ON candidate_duplicates.new_candidate_id = candidate.candidate_id
             WHERE
             (
                 CONCAT(candidate.first_name, ' ', candidate.last_name) LIKE %s
