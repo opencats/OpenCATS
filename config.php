@@ -455,6 +455,7 @@ class ACL_SETUP {
             'candidates.emailCandidates'
             'candidates.show_questionnaire'
             'candidates.list'
+            'candidates.duplicates'
             'calendar.show'
             'calendar.addEvent'
             'calendar.editEvent'
