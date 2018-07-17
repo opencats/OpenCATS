@@ -48,6 +48,7 @@ include_once(LEGACY_ROOT . '/lib/License.php');
 include_once(LEGACY_ROOT . '/lib/ParseUtility.php');
 include_once(LEGACY_ROOT . '/lib/Questionnaire.php');
 include_once(LEGACY_ROOT . '/lib/Tags.php');
+include_once(LEGACY_ROOT . '/lib/Search.php');
 
 class CandidatesUI extends UserInterface
 {
@@ -313,6 +314,48 @@ class CandidatesUI extends UserInterface
                 $this->onShowQuestionnaire();
                 break;
 
+            case 'linkDuplicate':
+                if ($this->getUserAccessLevel('candidates.duplicates') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
+                $this->findDuplicateCandidateSearch();
+                break;
+
+             /* Merge two duplicate candidates into the older one */
+            case 'merge':
+                if ($this->getUserAccessLevel('candidates.duplicates') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
+                $this->mergeDuplicates();
+                break;
+                
+            case 'mergeInfo':
+                if ($this->getUserAccessLevel('candidates.duplicates') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
+                $this->mergeDuplicatesInfo();
+                break;
+            
+            /* Remove duplicity warning from a new candidate */
+            case 'removeDuplicity':
+                if ($this->getUserAccessLevel('candidates.duplicates') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
+                $this->removeDuplicity();
+                break;
+            
+            case 'addDuplicates':
+                if ($this->getUserAccessLevel('candidates.duplicates') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
+                $this->addDuplicates();
+                break;
+
             /* Main candidates page. */
             case 'listByView':
             default:
@@ -440,8 +483,8 @@ class CandidatesUI extends UserInterface
         {
             $candidateID = $candidates->getIDByEmail($_GET['email']);
         }
-
-        $data = $candidates->get($candidateID);
+        
+        $data = $candidates->getWithDuplicity($candidateID);
 
         /* Bail out if we got an empty result set. */
         if (empty($data))
@@ -688,10 +731,11 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
         $this->_template->assign('tagsRS', $tags->getAll());
         $this->_template->assign('assignedTags', $tags->getCandidateTagsTitle($candidateID));
-
-        if (!eval(Hooks::get('CANDIDATE_SHOW'))) return;
-
+        
         $this->_template->display('./modules/candidates/Show.tpl');
+        
+        if (!eval(Hooks::get('CANDIDATE_SHOW'))) return;
+       
     }
 
     /*
@@ -2578,6 +2622,9 @@ class CandidatesUI extends UserInterface
         if (!eval(Hooks::get('CANDIDATE_ON_ADD_PRE'))) return;
 
         $candidates = new Candidates($this->_siteID);
+        
+        $duplicatesID = $candidates->checkDuplicity($firstName, $middleName, $lastName, $email1, $email2, $phoneHome, $phoneCell, $phoneWork, $address, $city);
+        
         $candidateID = $candidates->add(
             $firstName,
             $middleName,
@@ -2609,11 +2656,17 @@ class CandidatesUI extends UserInterface
             $disability
         );
 
+        
         if ($candidateID <= 0)
         {
             return $candidateID;
         }
-
+        
+        if(sizeof($duplicatesID) > 0)
+        {
+            $candidates->addDuplicates($candidateID, $duplicatesID);
+        }
+        
         /* Update extra fields. */
         $candidates->extraFields->setValuesOnEdit($candidateID);
 
@@ -2791,7 +2844,6 @@ class CandidatesUI extends UserInterface
 
             // FIXME: Show parse errors!
         }
-
 
         if (!eval(Hooks::get('CANDIDATE_ON_ADD_POST'))) return;
 
@@ -3314,6 +3366,131 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('print', $printValue);
 
         $this->_template->display('./modules/candidates/Questionnaire.tpl');
+    }
+    
+    private function findDuplicateCandidateSearch()
+    {
+        $duplicateCandidateID = $_GET['candidateID'];
+        if($duplicateCandidateID == "")
+        {
+            $duplicateCandidateID = $_POST['candidateID'];
+        }
+        $query = $this->getTrimmedInput('wildCardString', $_POST);
+        $mode  = $this->getTrimmedInput('mode', $_POST);
+
+        /* Execute the search. */
+        $search = new SearchCandidates($this->_siteID);
+        switch ($mode)
+        {
+            case 'searchByCandidateName':
+                $rs = $search->byFullName($query, 'candidate.last_name', 'ASC', true);
+                $resultsMode = true;
+                break;
+
+            default:
+                $rs = $search->all($query, 'candidate.last_name', 'ASC', 'true');
+                $resultsMode = false;
+                break;
+        }
+        
+        $candidates = new Candidates($this->_siteID);
+        
+        foreach ($rs as $rowIndex => $row)
+        {
+            $rs[$rowIndex]['duplicateCandidateID'] = $duplicateCandidateID;
+            if ($candidates->checkIfLinked($rs[$rowIndex]['candidateID'], $duplicateCandidateID))
+            {
+                $rs[$rowIndex]['linked'] = true;
+            }
+            else
+            {
+                $rs[$rowIndex]['linked'] = false;
+            }
+
+            if ($row['isHot'] == 1)
+            {
+                $rs[$rowIndex]['linkClass'] = 'jobLinkHot';
+            }
+            else
+            {
+                $rs[$rowIndex]['linkClass'] = 'jobLinkCold';
+            }
+        }
+
+        if (!eval(Hooks::get('DUPLICATE_ON_LINK_DUPLICATES'))) return;
+
+        $this->_template->assign('rs', $rs);
+        $this->_template->assign('isFinishedMode', false);
+        $this->_template->assign('isResultsMode', $resultsMode);
+        $this->_template->assign('duplicateCandidateID', $duplicateCandidateID);
+        $this->_template->display('./modules/candidates/LinkDuplicity.tpl');
+    }
+    
+    private function mergeDuplicates()
+    {
+        $candidates = new Candidates($this->_siteID);
+        $oldCandidateID = $_GET['oldCandidateID'];
+        $newCandidateID = $_GET['newCandidateID'];
+        
+        $rsOld = $candidates->getWithDuplicity($oldCandidateID);
+        $rsNew = $candidates->getWithDuplicity($newCandidateID);
+         
+        $this->_template->assign('isFinishedMode', false); 
+        $this->_template->assign('rsOld', $rsOld);
+        $this->_template->assign('rsNew', $rsNew);
+        $this->_template->assign('oldCandidateID', $oldCandidateID);
+        $this->_template->assign('newCandidateID', $newCandidateID); 
+        $this->_template->display('./modules/candidates/Merge.tpl');
+    }
+    
+    private function mergeDuplicatesInfo()
+    {
+        $candidates = new Candidates($this->_siteID);
+        $params = array();
+        $params['firstName'] = $_POST['firstName'];
+        $params['middleName'] =  $_POST['middleName'];
+        $params['lastName'] = $_POST['lastName'];
+        if(isset($_POST['email']))
+        {
+            $params['emails'] = $_POST['email'];
+        }
+        else
+        {
+            $params['emails'] = array();
+        }
+        $params['phoneCell'] = $_POST['phoneCell'];
+        $params['phoneWork'] = $_POST['phoneWork'];
+        $params['phoneHome'] = $_POST['phoneHome'];
+        $params['address'] = $_POST['address'];
+        $params['website'] = $_POST['website'];
+        $params['oldCandidateID'] = $_POST['oldCandidateID'];
+        $params['newCandidateID'] = $_POST['newCandidateID'];
+        
+        $candidates->mergeDuplicates($params, $candidates->getWithDuplicity($params['newCandidateID']));
+        $this->_template->assign('isFinishedMode', true); 
+        $this->_template->display('./modules/candidates/Merge.tpl');
+    }
+    
+    private function removeDuplicity()
+    {
+        $candidates = new Candidates($this->_siteID);
+        $oldCandidateID = $_GET['oldCandidateID'];
+        $newCandidateID = $_GET['newCandidateID'];
+        $candidates->removeDuplicity($oldCandidateID, $newCandidateID);
+        $url = CATSUtility::getIndexName()."?m=candidates";
+        header("Location: " . $url); /* Redirect browser */
+        exit();
+    }
+    
+    
+    private function addDuplicates()
+    {
+        $candidates = new Candidates($this->_siteID);
+        $oldCandidateID = $_GET['candidateID'];
+        $newCandidateID = $_GET['duplicateCandidateID'];
+        $candidates->addDuplicates($newCandidateID, $oldCandidateID);
+        $this->_template->assign('isFinishedMode', true);
+        $this->_template->display('./modules/candidates/LinkDuplicity.tpl');
     }
 }
 

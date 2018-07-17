@@ -42,7 +42,7 @@ class ListsDataGrid extends DataGrid
     {
         /* Pager configuration. */
         $this->_tableWidth = new Width(100, '%');
-        $this->_defaultAlphabeticalSortBy = 'Description';
+        $this->_defaultAlphabeticalSortBy = 'description';
         $this->ajaxMode = false;
         $this->showExportCheckboxes = true; //BOXES WILL NOT APPEAR UNLESS SQL ROW exportID IS RETURNED!
         $this->showActionArea = true;
