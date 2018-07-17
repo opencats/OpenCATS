@@ -60,6 +60,7 @@ define('DATA_ITEM_BULKRESUME',  500);
 define('DATA_ITEM_USER',        600);
 define('DATA_ITEM_LIST',        700);
 define('DATA_ITEM_PIPELINE',    800);
+define('DATA_ITEM_DUPLICATE',   900);
 
 /* Settings types. */
 define('SETTINGS_MAILER',        1);
