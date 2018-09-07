@@ -3,7 +3,9 @@
 ### Steps to reproduce the problem.
 
 ### What version of opencats are you running? 
+
 #### Release or downloaded from Git? 
+
 #### WAMP or LAMP? 
 
 ### What version of PHP and MySQL are you running
