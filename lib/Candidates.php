@@ -708,7 +708,55 @@ class Candidates
          
         return $rs['candidateID'];
     }
-     
+    public function getIDByLink($link)
+    {
+        if (strpos($link,'%') !== false) 
+        {
+            $encLink4Query = trim($link);
+        }
+        else
+        {
+            $encLink4Query = trim(implode('/', array_map('rawurlencode', explode('/', $link))));
+        }
+        $encLink4Query = "'%" . str_replace('%', '\%', $this->_db->escapeString($encLink4Query)) . "%'";
+        
+        $sql = sprintf(
+            "SELECT
+                candidate.candidate_id AS candidateID,
+                candidate.web_site AS webSite
+            FROM
+                candidate
+            WHERE
+            (
+                candidate.web_site like %s
+                OR candidate.web_site like %s
+            )
+            AND
+                candidate.site_id = %s",
+            $encLink4Query,
+            $this->_db->makeQueryString('%' . trim(urlDecode($link)) . '%'),
+            $this->_siteID
+        );
+        $rs = $this->_db->getAllAssoc($sql);
+
+        if (!empty($rs))
+        {
+            foreach ($rs as $field)
+            {
+                // Remove the partial matches.
+                // Use Url's path to do reverse search to confirm the string is full matched.
+                if (!empty($field['webSite']))
+                {
+                    $parsedUrl = parse_url(urlDecode(rtrim($field['webSite'], '/')));
+                    if (!empty($parsedUrl) && !empty($parsedUrl['path']) && !empty(rtrim($parsedUrl['path'], '/')) && strpos($link, rtrim($parsedUrl['path'], '/')) !== false) {
+                        return $field['candidateID'];                
+                    }
+                }
+            }
+        }
+
+        return -1;     
+    }     
 
     /**
      * Returns the number of candidates in the system.  Useful

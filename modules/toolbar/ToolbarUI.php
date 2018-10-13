@@ -77,6 +77,10 @@ class ToolbarUI extends UserInterface
                 $this->checkEmailIsInSystem();
                 break;
 
+            case 'checkLinkIsInSystem':
+                $this->checkLinkIsInSystem();
+                break;
+
             case 'storeMonsterResumeText':
                 $this->storeMonsterResumeText();
                 break;
@@ -181,10 +185,33 @@ class ToolbarUI extends UserInterface
         }
         else
         {
-            echo ':1';
+            echo ':candidateID=' . $candidateID;
         }
 
         flush();
+    }
+
+    private function checkLinkIsInSystem()
+    {
+        if (!eval(Hooks::get('TOOLBAR_CHECK_LINK'))) return;
+         $this->_authenticate();
+         $link = $this->getTrimmedInput('link', $_GET);
+        if (empty($link))
+        {
+            $this->fatal('No e-mail address.');
+        }
+         echo $link;
+         $candidates = new Candidates($this->_siteID);
+        $candidateID = $candidates->getIDByLink($link);
+        if ($candidateID < 0)
+        {
+            echo ':0';
+        }
+        else
+        {
+            echo ':candidateID=' . $candidateID;
+        }
+         flush();
     }
 
     private function storeMonsterResumeText()
