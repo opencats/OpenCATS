@@ -538,6 +538,36 @@ use OpenCATS\UI\CandidateQuickActionMenu;
             <br clear="all" />
             <br />
 
+            <p class="note">In Lists</p>
+            <table id="listsTable" class="sortable" width="1225">
+            <tr>
+                <th align="left">Name</th>
+                <th align="left">Count</th>
+                <th align="left">Owner</th>
+                <th align="left">Add To List</th>
+            </tr>
+            <?php foreach($this->lists as $rowNumber => $list): ?>
+                <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
+                    <td>
+                        <a href="index.php?m=lists&a=showList&savedListID=<?php echo $list['listID']; ?>"><?php echo $list['name']; ?></a>
+                    </td>
+                    <td><?php echo $list['numberEntries']; ?></td>
+                    <td><?php echo $list['enteredByFullName']; ?></td>
+                    <td><?php echo $list['dateAddedToList']; ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </table>
+            
+<?php if (!$this->isPopup): ?>
+            <?php if ($this->accessLevel >= ACCESS_LEVEL_EDIT): ?>
+                <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=lists&amp;a=quickActionAddToListModal&amp;dataItemType=100&amp;dataItemID=<?php echo($this->candidateID); ?>', 450, 350, null); return false;">
+                    <img src="images/actions/add.gif" width="16" height="16" class="absmiddle" alt="Add to List" border="0" />&nbsp;Add This Candidate to Lists
+                </a>
+            <?php endif; ?>
+<?php endif; ?>
+            <br clear="all" />
+            <br />
+
             <p class="note">Activity</p>
 
             <table id="activityTable" class="sortable">
