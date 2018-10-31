@@ -46,6 +46,7 @@ include_once(LEGACY_ROOT . '/lib/Graphs.php');
 include_once(LEGACY_ROOT . '/lib/Questionnaire.php');
 include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
 include_once(LEGACY_ROOT . '/lib/JobOrderTypes.php');
+include_once(LEGACY_ROOT . '/lib/JobOrderStatuses.php');
 
 
 class JobOrdersUI extends UserInterface
@@ -314,6 +315,8 @@ class JobOrdersUI extends UserInterface
      */
     private function listByView($errMessage = '')
     {
+        $jobOrderFilters = JobOrderStatuses::getFilters();
+
         $dataGridProperties = DataGrid::getRecentParamaters("joborders:JobOrdersListByViewDataGrid");
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
@@ -322,7 +325,7 @@ class JobOrdersUI extends UserInterface
         {
             $dataGridProperties = array('rangeStart'    => 0,
                                         'maxResults'    => 50,
-                                        'filter'        => 'Status==Active / OnHold / Full',
+                                        'filter'        => 'Status=='.$jobOrderFilters[0],
                                         'filterVisible' => false);
         }
 
@@ -332,6 +335,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('dataGrid', $dataGrid);
         $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
         $this->_template->assign('errMessage', $errMessage);
+        $this->_template->assign('jobOrderFilters', $jobOrderFilters);
 
         if (!eval(Hooks::get('JO_LIST_BY_VIEW'))) return;
 
@@ -531,7 +535,7 @@ class JobOrdersUI extends UserInterface
     {
         $jobOrders = new JobOrders($this->_siteID);
 
-        $rs = $jobOrders->getAll(JOBORDERS_STATUS_ACTIVEONHOLDFULL);
+        $rs = $jobOrders->getAll(JOBORDERS_STATUS_ALL);
 
         $this->_template->assign('isModal', true);
         $this->_template->assign('rs', $rs);
@@ -932,6 +936,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('isHrMode', $_SESSION['CATS']->isHrMode());
         $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
         $this->_template->assign('jobTypes', (new JobOrderTypes())->getAll());
+        $this->_template->assign('jobOrderStatuses', (JobOrderStatuses::getAll()));
 
         if (!eval(Hooks::get('JO_EDIT'))) return;
 
