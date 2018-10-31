@@ -1,6 +1,8 @@
 <?php
 namespace OpenCATS\Entity;
 
+include_once('./lib/JobOrderStatuses.php');
+
 class JobOrder
 {
     private $id;
@@ -27,6 +29,7 @@ class JobOrder
     private $departmentId;
     private $questionnaire;
     private $siteId;
+    private $status;
     
     function __construct(
         $siteId,
@@ -251,6 +254,11 @@ class JobOrder
     {
         $this->questionnaire = $value;
     }
+
+    function getStatus()
+    {
+        return $this->status;
+    }
     
     static function create(
         $siteId,
@@ -280,7 +288,7 @@ class JobOrder
             $siteId,
             $title,
             $type,
-            $status = 0,
+            $status = \JobOrderStatuses::getDefaultStatus(),
             $city,
             $state,
             $enteredBy,
@@ -288,7 +296,7 @@ class JobOrder
         );
         $instance->setCompanyJobId($companyJobId);
         $instance->setCompanyId($companyId);
-        $instance->setContactId($companyId);
+        $instance->setContactId($contactID);
         $instance->setDescription($description);
         $instance->setNotes($notes);
         $instance->setDuration($duration);

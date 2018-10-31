@@ -169,13 +169,7 @@ class ImportantPipelineDashboard extends DataGrid
                     candidate_joborder.status = %s
                 )
             AND
-                (
-                    joborder.status = 'Active'
-                OR
-                    joborder.status = 'On Hold'
-                OR
-                    joborder.status = 'Full'
-                )
+                joborder.status IN %s
             %s
             %s
             %s
@@ -187,6 +181,7 @@ class ImportantPipelineDashboard extends DataGrid
             PIPELINE_STATUS_SUBMITTED,
             PIPELINE_STATUS_INTERVIEWING,
             PIPELINE_STATUS_OFFERED,
+            JobOrderStatuses::getOpenStatusSQL(),
             (strlen($whereSQL) > 0) ? ' AND ' . $whereSQL : '',
             (strlen($havingSQL) > 0) ? ' HAVING ' . $havingSQL : '',
             $orderSQL,
