@@ -158,7 +158,7 @@ a:hover
 /* Inactive Tab */
 #header ul#primary a.inactive
 {
-    background: #E2E2E2 url(images/tabs/inactive.jpg) no-repeat;
+    background: #E2E2E2 url(../images/tabs/inactive.jpg) no-repeat;
     height: 21px;
     width: 81px;
     margin: 3px 3px 0px 0px; /* 1px more margin-left than a.active. */
@@ -181,7 +181,7 @@ a:hover
 /* Active Tab */
 #header ul#primary a.active
 {
-    background: #E2E2E2 url(images/tabs/active.jpg) no-repeat;
+    background: #E2E2E2 url(../images/tabs/active.jpg) no-repeat;
     height: 24px;
     width: 81px;
     margin: 1px 2px 0px 0px;
@@ -259,7 +259,7 @@ a:hover
     margin: 0px 0px 0px 0px;
     padding: 5px 10px 5px 0px;
     background: #fff;
-    background-image: url('images/mru_background.gif');
+    background-image: url('../images/mru_background.gif');
     background-repeat: repeat-x;
     text-align: right;
 }
@@ -287,7 +287,7 @@ a:hover
     font: normal normal normal 12px Arial, Tahoma, sans-serif;
     color: #000;
     background: #fff;
-    background-image: url('images/mru_background.gif');
+    background-image: url('../images/mru_background.gif');
     background-repeat: repeat-x;
 
 }
@@ -331,7 +331,7 @@ a:hover
     padding: 0px 0px 0px 0px;
     float: left;
     background-color: transparent;
-    background: url('images/cats_icon.gif') no-repeat center;
+    background: url('../images/cats_icon.gif') no-repeat center;
     width: 55px;
     height: 55px;
 }
@@ -386,7 +386,7 @@ a:hover
 
 p.note
 {
-    background-image: url('images/bgBlue.gif');
+    background-image: url('../images/bgBlue.gif');
     background-repeat: repeat-x;
     padding: 4px;
     margin-top: 0px;
@@ -400,7 +400,7 @@ p.note
 
 p.noteUnsized
 {
-    background-image: url('images/bgBlue.gif');
+    background-image: url('../images/bgBlue.gif');
     background-repeat: repeat-x;
     padding: 4px;
     margin-top: 0px;
@@ -413,7 +413,7 @@ p.noteUnsized
 
 .noteUnsizedSpan
 {
-    background-image: url('images/bgBlue.gif');
+    background-image: url('../images/bgBlue.gif');
     background-repeat: repeat-x;
     padding: 4px;
     margin-top: 0px;
@@ -426,7 +426,7 @@ p.noteUnsized
 
 p.warning
 {
-    background-image: url('images/orange_gradient.jpg');
+    background-image: url('../images/orange_gradient.jpg');
     background-repeat: repeat-x;
     padding: 4px;
     margin-top: 0px;
@@ -440,7 +440,7 @@ p.warning
 
 p.perror
 {
-    background-image: url('images/red_gradient.jpg');
+    background-image: url('../images/red_gradient.jpg');
     background-repeat: repeat-x;
     padding: 4px;
     margin-top: 0px;
@@ -513,7 +513,7 @@ table.notsortable th
     border-left: none;
     border-right: none;
     padding: 2px 4px 2px 4px;
-    background-image: url('images/sort_table_bg.gif');
+    background-image: url('../images/sort_table_bg.gif');
     color: #000080;
     font: normal normal bold 12px Arial, Tahoma, sans-serif;
 }
@@ -579,7 +579,7 @@ table.statisticsTable th
     border-left: none;
     border-right: none;
     padding: 2px 4px 2px 4px;
-    background-image: url('images/sort_table_bg.gif');
+    background-image: url('../images/sort_table_bg.gif');
     color: #000080;
     font: normal normal bold 12px Arial, Tahoma, sans-serif;
 }
@@ -620,7 +620,7 @@ tr.evenTableRow-onmouseover
 
 .editTable
 {
-    background: url('images/bgGrayForm.gif');
+    background: url('../images/bgGrayForm.gif');
     background-repeat: repeat-x;
     background-position: top;
     background-color: #f4f4f4;
@@ -756,7 +756,7 @@ p.freeformbottom
   font-size: 12px;
   padding-left: 8px;
   padding-right: 8px;
-  background: url('images/button_bg.gif') repeat-x #f0f0f0;
+  background: url('../images/button_bg.gif') repeat-x #f0f0f0;
   border: 1px solid #a4a4a4;
 }
 
@@ -772,7 +772,7 @@ p.freeformbottom
   font-size: 12px;
   padding-left: 8px;
   padding-right: 8px;
-  background: url('images/button_bg_down.gif') repeat-x #f0f0f0;
+  background: url('../images/button_bg_down.gif') repeat-x #f0f0f0;
   border: 1px solid #a4a4a4;
 }
 
@@ -783,7 +783,7 @@ p.freeformbottom
   font-size: 12px;
   padding-left: 8px;
   padding-right: 8px;
-  background: url('images/button_bg.gif') repeat-x #f0f0f0;
+  background: url('../images/button_bg.gif') repeat-x #f0f0f0;
   border: 1px solid #a4a4a4;
 }
 
@@ -794,7 +794,7 @@ p.freeformbottom
   font-size: 12px;
   padding-left: 8px;
   padding-right: 8px;
-  background: url('images/button_bg_down.gif') repeat-x #f0f0f0;
+  background: url('../images/button_bg_down.gif') repeat-x #f0f0f0;
   border: 1px solid #a4a4a4;
 }
 
@@ -944,7 +944,7 @@ span.validationError
      */
     background-color: transparent !important;
     background-color: #333;
-    /* background-image\**\: url('images/maskBG.gif') !important; */
+    /* background-image\**\: url('../images/maskBG.gif') !important; */
     background-image: none;
     background-repeat: repeat;
     display: none;
@@ -1188,7 +1188,7 @@ input.selectAll
     line-height: normal;
     font-size-adjust: none;
     font-stretch: normal;
-    background-image: url('images/lightblue_gradient_15.jpg');
+    background-image: url('../images/lightblue_gradient_15.jpg');
     background-repeat: repeat;
     background-attachment: scroll;
     color: white;

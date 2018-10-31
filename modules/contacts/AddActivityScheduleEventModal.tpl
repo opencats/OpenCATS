@@ -1,9 +1,9 @@
 <?php /* $Id: AddActivityScheduleEventModal.tpl 3093 2007-09-24 21:09:45Z brian $ */ ?>
 
 <?php if(!$this->onlyScheduleEvent): ?>
-<?php TemplateUtility::printModalHeader('Contacts', array('modules/contacts/activityvalidator.js', 'js/activity.js'), 'Contacts: Log Activity'); ?>
+<?php TemplateUtility::printModalHeader('Contacts', array('js/contacts/activityvalidator.js', 'js/activity.js'), 'Contacts: Log Activity'); ?>
 <?php else: ?>
-    <?php TemplateUtility::printModalHeader('Contacts', array('modules/contacts/activityvalidator.js', 'js/activity.js'), 'Contacts: Schedule Event'); ?>
+    <?php TemplateUtility::printModalHeader('Contacts', array('js/contacts/activityvalidator.js', 'js/activity.js'), 'Contacts: Schedule Event'); ?>
 <?php endif; ?>
 
 <?php if (!$this->isFinishedMode): ?>

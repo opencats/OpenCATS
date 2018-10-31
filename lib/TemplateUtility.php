@@ -1194,7 +1194,7 @@ class TemplateUtility
         echo '<script type="text/javascript" src="js/jquery-1.3.2.min.js'.$javascriptAntiCache.'"></script>', "\n";
         echo '<script type="text/javascript">CATSIndexName = "'.CATSUtility::getIndexName().'";</script>', "\n";
 
-       $headIncludes[] = 'main.css';
+       $headIncludes[] = 'css/main.css';
 
         foreach ($headIncludes as $key => $filename)
         {
@@ -1212,8 +1212,8 @@ class TemplateUtility
             }
         }
 
-        echo '<!--[if IE]><link rel="stylesheet" type="text/css" href="ie.css" /><![endif]-->', "\n";
-        echo '<![if !IE]><link rel="stylesheet" type="text/css" href="not-ie.css" /><![endif]>', "\n";
+        echo '<!--[if IE]><link rel="stylesheet" type="text/css" href="css/ie.css" /><![endif]-->', "\n";
+        echo '<![if !IE]><link rel="stylesheet" type="text/css" href="css/not-ie.css" /><![endif]>', "\n";
         echo '</head>', "\n\n";
     }
 

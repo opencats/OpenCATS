@@ -45,7 +45,7 @@ header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 <html>
     <head>
         <title>CATS - Installation Test Script</title>
-        <style type="text/css" media="all">@import "main.css";</style>
+        <style type="text/css" media="all">@import "css/main.css";</style>
         <style type="text/css" media="all">
             table.test_output
             {

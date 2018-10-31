@@ -1,5 +1,5 @@
 <?php /* $Id: Calendar.tpl 3221 2007-10-17 17:13:22Z will $ */ ?>
-<?php TemplateUtility::printHeader('Calendar', array('modules/calendar/Calendar.css', 'js/highlightrows.js', 'modules/calendar/Calendar.js', 'modules/calendar/CalendarUI.js', 'modules/calendar/validator.js')); ?>
+<?php TemplateUtility::printHeader('Calendar', array('css/calendar/Calendar.css', 'js/highlightrows.js', 'js/calendar/Calendar.js', 'js/calendar/CalendarUI.js', 'js/calendar/validator.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">

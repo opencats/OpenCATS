@@ -151,7 +151,7 @@ class ToolbarUI extends UserInterface
         // FIXME: Send a JS library that just makes a button indicating that their version
         // is out of date.
 
-        $toolbarLibrary = @file_get_contents('./modules/toolbar/toolbarlibForLegacy.js');
+        $toolbarLibrary = @file_get_contents('./js/toolbar/toolbarlibForLegacy.js');
         echo $toolbarLibrary;
         return;
     }

@@ -1,5 +1,5 @@
 <?php /* $Id: EEOReport.tpl 2441 2007-05-04 20:42:02Z brian $ */ ?>
-<?php TemplateUtility::printHeader('EEO Reports', array('modules/joborders/validator.js', 'js/company.js', 'js/sweetTitles.js')); ?>
+<?php TemplateUtility::printHeader('EEO Reports', array('js/joborders/validator.js', 'js/company.js', 'js/sweetTitles.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <div id="main">

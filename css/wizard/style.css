@@ -9,7 +9,7 @@ td.wizardBody { font-size: 14px; background-color: #DDE2FF; color: #ffffff; heig
 td.sectionTitle { background-color: #FFDE90; padding: 10px; font-size: 12px; font-weight: bold; }
 td.sectionTitleCurrent { background-color: #FFB400; padding: 10px; font-size: 12px; font-weight: bold; }
 input.button { height: 20px; color: #333; font-size: 12px; padding-left: 8px; padding-right: 8px;
-    background: url('images/button_bg.gif') repeat-x #f0f0f0; border: 1px solid #a4a4a4; cursor: pointer; }
+    background: url('../../images/button_bg.gif') repeat-x #f0f0f0; border: 1px solid #a4a4a4; cursor: pointer; }
 #loadingBar { position: absolute; width: 650px; text-align: center; top: 25%; padding: 10px;
     left: 18%; border: 5px solid #e0e0e0; background-color: #f0f0f0; font-size: 38px; font-weight: bold;
     color: #666666; visibility: hidden; }

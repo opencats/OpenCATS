@@ -26,7 +26,7 @@
         <script type="text/javascript" src="js/lib.js"></script>
         <script type="text/javascript" src="js/install.js"></script>
         <script type="text/javascript" src="js/submodal/subModal.js"></script>
-        <style type="text/css" media="all">@import "modules/install/install.css";</style>
+        <style type="text/css" media="all">@import "css/install/install.css";</style>
     </head>
 
     <body>

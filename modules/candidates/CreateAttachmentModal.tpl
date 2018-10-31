@@ -1,5 +1,5 @@
 <?php /* $Id: CreateAttachmentModal.tpl 3093 2007-09-24 21:09:45Z brian $ */ ?>
-<?php TemplateUtility::printModalHeader('Candidates', array('modules/candidates/validator.js'), 'Create Candidate Attachment'); ?>
+<?php TemplateUtility::printModalHeader('Candidates', array('js/candidates/validator.js'), 'Create Candidate Attachment'); ?>
 
     <?php if (!$this->isFinishedMode){ ?>
         <form name="createAttachmentForm" id="createAttachmentForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=createAttachment" enctype="multipart/form-data" method="post" onsubmit="return checkCreateAttachmentForm(document.createAttachmentForm);">
