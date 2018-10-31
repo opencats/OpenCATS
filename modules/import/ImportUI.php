@@ -33,6 +33,7 @@ include_once(LEGACY_ROOT . '/modules/import/Import.php');
 include_once(LEGACY_ROOT . '/lib/Companies.php');
 include_once(LEGACY_ROOT . '/lib/Contacts.php');
 include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
 include_once(LEGACY_ROOT . '/lib/DatabaseSearch.php');
 include_once(LEGACY_ROOT . '/lib/FileUtility.php');
 include_once(LEGACY_ROOT . '/lib/ExtraFields.php');
@@ -239,6 +240,21 @@ class ImportUI extends UserInterface
             'Web Site',         'web_site',
             'Key Skills',       'key_skills'
         );
+        
+        $this->jobOrdersTypes = array(
+            'Reference',        'client_job_id',
+            'Title',            'title',
+            'Company',          'company',
+            'City',             'city',
+            'State',            'state',
+            'Type',             'type',
+            'Description',      'description',
+            'Notes',            'notes',
+            'Openings',         'openings',
+            'Public',           'public',
+            'Is Hot',           'is_hot'
+        );
+        
         $this->contactsTypes = array(
             'Company',      'company_id',
             'Full Name',   'name',
@@ -276,6 +292,7 @@ class ImportUI extends UserInterface
         $companies = new Companies($this->_siteID);
         $candidates = new Candidates($this->_siteID);
         $contacts = new Contacts($this->_siteID);
+        $jobOrders = new JobOrders($this->_siteID);
 
         $rs = $companies->extraFields->getSettings();
         foreach ($rs as $data)
@@ -284,6 +301,13 @@ class ImportUI extends UserInterface
             $this->companiesTypes[] = '#' . $data['fieldName'];
         }
 
+        $rs = $jobOrders->extraFields->getSettings();
+        foreach ($rs as $data)
+        {
+            $this->jobOrdersTypes[] = $data['fieldName'];
+            $this->jobOrdersTypes[] = '#' . $data['fieldName'];
+        }
+        
         $rs = $candidates->extraFields->getSettings();
         foreach ($rs as $data)
         {
@@ -610,6 +634,10 @@ class ImportUI extends UserInterface
             case 'Candidates':
                 $types = $this->candidatesTypes;
                 break;
+            
+            case 'JobOrders':
+                $types = $this->jobOrdersTypes;
+                break;
 
             case 'Contacts':
                 $types = $this->contactsTypes;
@@ -767,6 +795,11 @@ class ImportUI extends UserInterface
                 $types = $this->candidatesTypes;
                 $importID = $import->add('candidate');
                 break;
+                
+            case 'JobOrders':
+                $types = $this->jobOrdersTypes;
+                $importID = $import->add('joborder');
+                break;
 
             case 'Companies':
                 $types = $this->companiesTypes;
@@ -856,6 +889,10 @@ class ImportUI extends UserInterface
                                 case 'Candidates':
                                     $import->addForeignSettingUnique(DATA_ITEM_CANDIDATE, $theFields[$fieldID], $importID);
                                     break;
+                                    
+                                 case 'JobOrders':
+                                    $import->addForeignSettingUnique(DATA_ITEM_JOBORDER, $theFields[$fieldID], $importID);
+                                    break;
 
                                 case 'Contacts':
                                     $import->addForeignSettingUnique(DATA_ITEM_CONTACT, $theFields[$fieldID], $importID);
@@ -889,6 +926,10 @@ class ImportUI extends UserInterface
             {
                 case 'Candidates':
                     $result = $this->addToCandidates($catsEntriesRows, $catsEntriesValuesNamed, $foreignEntries, $importID);
+                    break;
+                    
+                case 'JobOrders':
+                    $result = $this->addToJobOrders($catsEntriesRows, $catsEntriesValuesNamed, $foreignEntries, $importID);
                     break;
 
                 case 'Contacts':
@@ -1027,6 +1068,39 @@ class ImportUI extends UserInterface
 
         return '';
     }
+    
+    /*
+    * Inserts a record into job orders.
+    */
+    private function addToJobOrders($dataFields, $dataNamed, $dataForeign, $importID)
+    {
+        $dateAvailable = '01/01/0001';
+
+        /* Bail out if any of the required fields are empty. */
+
+
+        if (!isset($dataNamed['title']))
+        {
+            return 'Required field (title) is missing.';
+        }
+
+        if (!eval(Hooks::get('IMPORT_ADD_JOBORDER'))) return;
+
+        $jobOrdersImport = new JobOrdersImport($this->_siteID);
+        $jobOrderID = $jobOrdersImport->add($dataNamed, $this->_userID, $importID);
+
+        if ($jobOrderID <= 0)
+        {
+            return 'Failed to add job order.';
+        }
+
+        $this->addForeign(DATA_ITEM_JOBORDER, $dataForeign, $jobOrderID, $importID);
+
+        if (!eval(Hooks::get('IMPORT_ADD_JOBORDER_POST'))) return;
+
+        return '';
+    }
+
 
    /*
     * Inserts a record into Companies.
