@@ -805,7 +805,7 @@ CREATE TABLE `joborder` (
   `duration` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   `rate_max` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `salary` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `status` varchar(16) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Active',
+  `status` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Active',
   `is_hot` int(1) NOT NULL DEFAULT '0',
   `openings` int(11) DEFAULT NULL,
   `city` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
