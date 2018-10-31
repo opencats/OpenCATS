@@ -37,7 +37,15 @@ if ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) < ACCESS_LEVEL_ROOT)
     die('No permision.');
 }
 
-set_time_limit(0);
+if( ini_get('safe_mode') )
+{
+	//don't do anything in safe mode
+}
+else
+{
+	/* Don't limit the execution time */
+	set_time_limit(0);
+}
 @ini_set('memory_limit', '256M');
 
 include_once(LEGACY_ROOT . '/lib/Attachments.php');
