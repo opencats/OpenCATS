@@ -84,6 +84,8 @@
                         <td class="tdData">
                             <?php if ($this->typeOfImport == 'Candidates'): ?>
                                 <img src="images/candidate_inline.gif">&nbsp;Candidates
+                            <?php elseif ($this->typeOfImport == 'JobOrders'): ?>
+                                <img src="images/mru/job_order.gif">&nbsp;Job Orders
                             <?php elseif ($this->typeOfImport == 'Companies'): ?>
                                 <img src="images/mru/company.gif">&nbsp;Companies
                             <?php elseif ($this->typeOfImport == 'Contacts'): ?>

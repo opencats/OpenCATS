@@ -82,6 +82,7 @@
 
                         <input type="radio" name="typeOfImport" value="resume" checked>&nbsp;<img src="images/file/doc.gif">&nbsp;Resumes<br />
                         <input type="radio" name="typeOfImport" value="Candidates">&nbsp;<img src="images/candidate_inline.gif">&nbsp;Candidates<br />
+                        <input type="radio" name="typeOfImport" value="JobOrders">&nbsp;<img src="images/joborder.gif">&nbsp;Job Orders<br />
                         <input type="radio" name="typeOfImport" value="Companies" >&nbsp;<img src="images/mru/company.gif">&nbsp;Companies<br />
                         <input type="radio" name="typeOfImport" value="Contacts" >&nbsp;<img src="images/mru/contact.gif">&nbsp;Contacts<br />
                         <br />

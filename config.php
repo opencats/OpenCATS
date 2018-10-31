@@ -282,6 +282,39 @@ define ('LDAP_ATTRIBUTE_EMAIL', 'mail');
 
 define ('LDAP_SITEID', 1);
 
+/* Job Order statuses (not pipeline statuses) defined in groups */
+/* Uncomment and correct bellow if you want different statuses */
+/*const JOB_ORDER_STATUS_GROUP = array(
+    'Open' => array ('Active', 'On Hold', 'Full'),
+    'Closed' => array('Closed', 'Canceled'),
+    'Pre-Open' => array('Upcoming', 'Lead')
+);*/
+
+/* Job order status(es) used for XML, RSS and Careers portal */
+/* Uncomment and correct bellow if you want different statuses to be included */
+/*const JOB_ORDER_STATUS_SHARING = array(
+    'Active'
+);*/
+
+/* Filters that can be used on main job order grid, the first one will be default selected */
+/* Uncomment and correct bellow if you want different combination of statuses */
+/*const JOB_ORDER_STATUS_FILTERING = array(
+    'Active / On Hold / Full',
+    'Active',
+    'On Hold / Full',
+    'Closed / Canceled',
+    'Upcoming / Lead'
+);*/
+
+/* Job order status(es) used for submission/placement statistics */
+/* Uncomment and correct bellow if you want different combination of statistics */
+/*const JOB_ORDER_STATUS_STATISTICS = array(
+    'Active', 'On Hold', 'Full', 'Closed'
+);*/
+
+/* Job Order Default status after creation */
+/* Uncomment and correct bellow if you want different default status */
+/*const JOB_ORDER_STATUS_DEFAULT = 'Active';*/
 
 /* Job Types mapping
  *
@@ -449,6 +482,7 @@ class ACL_SETUP {
             'candidates.emailCandidates'
             'candidates.show_questionnaire'
             'candidates.list'
+            'candidates.duplicates'
             'calendar.show'
             'calendar.addEvent'
             'calendar.editEvent'

@@ -29,11 +29,15 @@
                                 <tr>
                                     <td>
                                         <select name="view" id="view" onchange="<?php echo($this->dataGrid->getJSAddFilter('Status', '==', 'this.value', 'true')); ?>" class="selectBox">
-                                            <option value="Active / OnHold / Full"<?php if ($this->dataGrid->getFilterValue('Status') == 'Active / OnHold / Full'): ?> selected="selected"<?php endif; ?>>Active / On Hold / Full</option>
-                                            <option value="Active"<?php if ($this->dataGrid->getFilterValue('Status') == 'Active'): ?> selected="selected"<?php endif; ?>>Active</option>
-                                            <option value="OnHold / Full"<?php if ($this->dataGrid->getFilterValue('Status') == 'OnHold / Full'): ?> selected="selected"<?php endif; ?>>On Hold / Full</option>
-                                            <option value="Closed / Canceled"<?php if ($this->dataGrid->getFilterValue('Status') == 'Closed / Canceled'): ?> selected="selected"<?php endif; ?>>Closed / Canceled</option>
-                                            <option value="Upcoming / Lead"<?php if ($this->dataGrid->getFilterValue('Status') == 'Upcoming / Lead'): ?> selected="selected"<?php endif; ?>>Upcoming / Lead</option>
+                                            <?php
+                                                foreach($this->jobOrderFilters as $filter){
+                                                    echo '<option value="'.$filter.'"';
+                                                    if($this->dataGrid->getFilterValue('Status') == $filter){
+                                                        echo ' selected="selected"';
+                                                    }
+                                                    echo ">".$filter."</option>";
+                                                }
+                                            ?>
                                             <option value=""<?php if ($this->dataGrid->getFilterValue('Status') == ''): ?> selected="selected"<?php endif; ?>>All</option>
                                         </select>
                                     </td>
