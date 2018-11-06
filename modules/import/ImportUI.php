@@ -39,7 +39,10 @@ include_once(LEGACY_ROOT . '/lib/FileUtility.php');
 include_once(LEGACY_ROOT . '/lib/ExtraFields.php');
 include_once(LEGACY_ROOT . '/lib/Attachments.php');
 include_once(LEGACY_ROOT . '/lib/ParseUtility.php');
-include_once(LEGACY_ROOT . '/lib/Import.php');
+include_once(LEGACY_ROOT . '/lib/ImportUtility.php');
+include_once(LEGACY_ROOT . '/lib/CandidatesImport.php');
+include_once(LEGACY_ROOT . '/lib/CompaniesImport.php');
+include_once(LEGACY_ROOT . '/lib/ContactsImport.php');
 
 
 class ImportUI extends UserInterface
@@ -767,6 +770,18 @@ class ImportUI extends UserInterface
             return;
         }
 
+        $contents = fread($theFile, filesize($filePath));
+        rewind($theFile); //move pointer to the beginning of file so fgetcsv can read it too
+
+        if(defined('IMPORT_FILE_ENCODING') && count(IMPORT_FILE_ENCODING) > 0)
+        {
+            $encoding = mb_detect_encoding($contents, IMPORT_FILE_ENCODING);
+        }
+        else
+        {
+            $encoding = mb_detect_encoding($contents, mb_detect_order());
+        }
+
         if (!eval(Hooks::get('IMPORT_ON_IMPORT_DELIMITED_5'))) return;
 
         switch ($dataContaining)
@@ -819,7 +834,7 @@ class ImportUI extends UserInterface
                 return;
         }
 
-        /* Get user preference for what do to with each field */
+        /* Get user preference for what do to with each field and convert each field into UTF-8*/
         foreach ($theFields AS $fieldID => $theField)
         {
             $theFieldPreference[$fieldID] = $_POST['importType' . $fieldID];
@@ -847,6 +862,12 @@ class ImportUI extends UserInterface
                     $this->_template->assign('errorMessage', 'Cannot read that data type.');
                     $this->import();
                     return;
+            }
+
+            if($encoding) {
+                foreach ($theData AS $index => $data) {
+                    $theData[$index] = iconv($encoding, 'UTF-8', $data);
+                }
             }
 
             $catsEntriesRows = array();
@@ -1108,6 +1129,7 @@ class ImportUI extends UserInterface
     private function addToCompanies($dataFields, $dataNamed, $dataForeign, $importID)
     {
         $companiesImport = new CompaniesImport($this->_siteID);
+        $companies = new Companies($this->_siteID);
 
         /* Bail out if any of the required fields are empty. */
 
@@ -1118,7 +1140,7 @@ class ImportUI extends UserInterface
 
         /* check for duplicates */
 
-        $cID = $companiesImport->companyByName($dataNamed['name']);
+        $cID = $companies->companyByName($dataNamed['name']);
         if ($cID != -1)
         {
             return 'Duplicate entry.';
@@ -1146,6 +1168,7 @@ class ImportUI extends UserInterface
     private function addToContacts($dataFields, $dataNamed, $dataForeign, $importID)
     {
         $contactImport = new ContactImport($this->_siteID);
+        $companies = new Companies($this->_siteID);
 
         /* Try to find the company. */
         if (!isset($dataNamed['company_id']))
@@ -1153,7 +1176,7 @@ class ImportUI extends UserInterface
             return 'Unable to add company - no company name.';
         }
 
-        $companyID = $contactImport->companyByName($dataNamed['company_id']);
+        $companyID = $companies->companyByName($dataNamed['company_id']);
 
         $genCompany = false;
 
@@ -1181,7 +1204,8 @@ class ImportUI extends UserInterface
 
                 if (!eval(Hooks::get('IMPORT_ADD_CONTACT_CLIENT'))) return;
 
-                $companyID = $contactImport->addCompany($dataCompany, $this->_userID, $importID);
+                $companiesImport = new CompaniesImport($this->_siteID);
+                $companyID = $companiesImport->add($dataCompany, $this->_userID, $importID);
                 if ($companyID == -1)
                 {
                     return 'Unable to add company.';
