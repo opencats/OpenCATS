@@ -26,22 +26,30 @@
  */
 
 include_once('./config.php');
-include_once('./lib/DatabaseConnection.php');
-include_once('./lib/ModuleUtility.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
+include_once(LEGACY_ROOT . '/lib/ModuleUtility.php');
 
 if (file_exists('INSTALL_BLOCK'))
 {
     $interface = new SecureAJAXInterface();
 }
 
-set_time_limit(0);
+if( ini_get('safe_mode') )
+{
+	//don't do anything in safe mode
+}
+else
+{
+	/* Don't limit the execution time. */
+	set_time_limit(0);
+}
 @ini_set('memory_limit', '256M');
 
 $reindexed = 0;
 
-include_once('lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
 
-if (file_exists('INSTALL_BLOCK') && ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) < ACCESS_LEVEL_SA || ModuleUtility::moduleExists('asp')))
+if (file_exists('INSTALL_BLOCK') && ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) < ACCESS_LEVEL_SA))
 {
     die('No permision.');
 }

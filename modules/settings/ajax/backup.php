@@ -29,7 +29,7 @@
 
 @ini_set('memory_limit', '512M');
 
-include_once('lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
 
 $interface = new SecureAJAXInterface();
 
@@ -119,10 +119,17 @@ if ($action == 'start')
 
 if ($action == 'backup')
 {
-    include_once('./lib/FileCompressor.php');
+    include_once(LEGACY_ROOT . '/lib/FileCompressor.php');
     
-    /* Backups shouldn't time out. */
-    set_time_limit(0);
+	if( ini_get('safe_mode') )
+	{
+		//don't do anything in safe mode
+	}
+	else
+	{
+		/* Don't limit the execution time during backup. */
+		set_time_limit(0);
+	}
     
     // FIXME: Make this configurable.
     @ini_set('memory_limit', '192M');
@@ -157,7 +164,7 @@ if ($action == 'backup')
     /* Backup the database if we're not in attachments-only mode. */
     if (!$attachmentsOnly)
     {
-        include_once('modules/install/backupDB.php');
+        include_once(LEGACY_ROOT . '/modules/install/backupDB.php');
         
         $SQLDumpPath = $directory . 'catsbackup.sql';
     
@@ -239,22 +246,33 @@ if ($action == 'backup')
     while ($row = mysql_fetch_assoc($queryResult))
     {
         ++$attachmentCount;
-
-        setStatusBackup(
-            sprintf(
-                'Adding attachments (%s of %s files processed)...',
-                $attachmentCount,
-                $totalAttachments
-            ),
-            ($attachmentCount / $totalAttachments)
-        );
-
         $relativePath = sprintf(
             'attachments/%s/%s',
             $row['directory_name'],
             $row['stored_filename']
         );
-        
+        if (!file_exists($relativePath)) {
+            setStatusBackup(
+                sprintf(
+                    '%s - Skipping attachment as it\'s missing on the file system (%s of %s files processed)...',
+                    $relativePath,
+                    $attachmentCount,
+                    $totalAttachments
+                ),
+                ($attachmentCount / $totalAttachments)
+            );
+            continue;
+        }
+
+        setStatusBackup(
+            sprintf(
+                '%s - Adding attachments (%s of %s files processed)...',
+                $relativePath,
+                $attachmentCount,
+                $totalAttachments
+            ),
+            ($attachmentCount / $totalAttachments)
+        );
         $attachmentID = $row['attachment_id'];
         
         if (!eval(Hooks::get('FORCE_ATTACHMENT_LOCAL'))) return;

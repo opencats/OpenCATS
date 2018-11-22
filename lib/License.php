@@ -30,8 +30,8 @@
  * @version    $Id: License.php 3678 2007-11-21 23:10:42Z andrew $
  */
 
-include_once('./lib/CATSUtility.php');
-include_once('./lib/ParseUtility.php');
+include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
+include_once(LEGACY_ROOT . '/lib/ParseUtility.php');
 
 define('LICENSE_VERSION', 1);
 define('LICENSE_CHUNK_SIZE', 9.0);

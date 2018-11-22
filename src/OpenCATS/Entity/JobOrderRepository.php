@@ -3,7 +3,7 @@ namespace OpenCATS\Entity;
 use OpenCATS\Entity\JobOrder;
 use OpenCATS\Entity\JobOrderRepositoryException;
 
-include_once('./lib/History.php');
+include_once(LEGACY_ROOT . '/lib/History.php');
 
 // FIXME: It's way too similar to CompanyRepository
 // Remove duplicated code 
@@ -45,7 +45,8 @@ class JobOrderRepository
                 site_id,
                 date_created,
                 date_modified,
-                questionnaire_id
+                questionnaire_id,
+                status
             )
             VALUES (
                 %s,
@@ -72,6 +73,7 @@ class JobOrderRepository
                 %s,
                 NOW(),
                 NOW(),
+                %s,
                 %s
             )",
             $this->databaseConnection->makeQueryString($jobOrder->getTitle()),
@@ -97,7 +99,8 @@ class JobOrderRepository
             $this->databaseConnection->makeQueryInteger($jobOrder->getOwner()),
             $jobOrder->getSiteId(),
             // Questionnaire ID or NULL if none
-            $jobOrder->getQuestionnaire() !== false ? $this->databaseConnection->makeQueryInteger($jobOrder->getQuestionnaire()) : 'NULL'
+            $jobOrder->getQuestionnaire() !== false ? $this->databaseConnection->makeQueryInteger($jobOrder->getQuestionnaire()) : 'NULL',
+            $this->databaseConnection->makeQueryString($jobOrder->getStatus())
         );
         if ($result = $this->databaseConnection->query($sql)) {
             $jobOrderId = $this->databaseConnection->getLastInsertID();

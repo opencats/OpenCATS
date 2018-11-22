@@ -288,6 +288,20 @@ LOCK TABLES `candidate` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `candidate_duplicates` */
+--
+
+DROP TABLE IF EXISTS `candidate_duplicates`;
+CREATE TABLE `candidate_duplicates` (
+  `old_candidate_id` int(11) NOT NULL,
+  `new_candidate_id` int(11) NOT NULL,
+  `site_id` int(11) NOT NULL,
+  PRIMARY KEY (`old_candidate_id`, `new_candidate_id`),
+  KEY `IDX_old_candidate_id` (`old_candidate_id`),
+  KEY `IDX_new_candidate_id` (`new_candidate_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
 -- Table structure for table `candidate_joborder`
 --
 
@@ -1192,6 +1206,7 @@ CREATE TABLE `joborder` (
   `is_admin_hidden` int(1) DEFAULT '0',
   `openings_available` int(11) DEFAULT '0',
   `questionnaire_id` int(11) DEFAULT NULL,
+  `import_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`joborder_id`),
   KEY `IDX_recruiter` (`recruiter`),
   KEY `IDX_title` (`title`),

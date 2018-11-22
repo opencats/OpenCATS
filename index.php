@@ -3,7 +3,7 @@
  * CATS
  * Index (Delegation Module)
  *
- * CATS Version: 0.9.3 Inferno
+ * CATS Version: 0.9.4 Countach
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
@@ -38,9 +38,12 @@
  */
 
 /* Do we need to run the installer? */
+
+include_once('./config.php');
+
 if (!file_exists('INSTALL_BLOCK') && !isset($_POST['performMaintenence']))
 {
-    include('modules/install/notinstalled.php');
+    include(LEGACY_ROOT . '/modules/install/notinstalled.php');
     die();
 }
 
@@ -53,31 +56,18 @@ if (function_exists('date_default_timezone_set'))
     @date_default_timezone_set(date_default_timezone_get());
 }
 
-/* Start error handler if ASP error handler exists and this isn't a localhost
- * connection.
- */
-if (file_exists('modules/asp/lib/ErrorHandler.php') &&
-    @$_SERVER['REMOTE_ADDR'] !== '127.0.0.1' &&
-    @$_SERVER['REMOTE_ADDR'] !== '::1' &&
-    substr(@$_SERVER['REMOTE_ADDR'], 0, 3) !== '10.')
-{
-    include_once('modules/asp/lib/ErrorHandler.php');
-    $errorHandler = new ErrorHandler();
-}
-
-include_once('./config.php');
-include_once('./constants.php');
-include_once('./lib/CommonErrors.php');
-include_once('./lib/CATSUtility.php');
-include_once('./lib/DatabaseConnection.php');
-include_once('./lib/Template.php');
-include_once('./lib/Users.php');
-include_once('./lib/MRU.php');
-include_once('./lib/Hooks.php');
-include_once('./lib/Session.php'); /* Depends: MRU, Users, DatabaseConnection. */
-include_once('./lib/UserInterface.php'); /* Depends: Template, Session. */
-include_once('./lib/ModuleUtility.php'); /* Depends: UserInterface */
-include_once('./lib/TemplateUtility.php'); /* Depends: ModuleUtility, Hooks */
+include_once(LEGACY_ROOT . '/constants.php');
+include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
+include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
+include_once(LEGACY_ROOT . '/lib/Template.php');
+include_once(LEGACY_ROOT . '/lib/Users.php');
+include_once(LEGACY_ROOT . '/lib/MRU.php');
+include_once(LEGACY_ROOT . '/lib/Hooks.php');
+include_once(LEGACY_ROOT . '/lib/Session.php'); /* Depends: MRU, Users, DatabaseConnection. */
+include_once(LEGACY_ROOT . '/lib/UserInterface.php'); /* Depends: Template, Session. */
+include_once(LEGACY_ROOT . '/lib/ModuleUtility.php'); /* Depends: UserInterface */
+include_once(LEGACY_ROOT . '/lib/TemplateUtility.php'); /* Depends: ModuleUtility, Hooks */
 
 
 /* Give the session a unique name to avoid conflicts and start the session. */
@@ -106,7 +96,7 @@ if (get_magic_quotes_runtime())
 }
 if (get_magic_quotes_gpc())
 {
-    include_once('./lib/ArrayUtility.php');
+    include_once(LEGACY_ROOT . '/lib/ArrayUtility.php');
 
     $_GET     = array_map('stripslashes_deep', $_GET);
     $_POST    = array_map('stripslashes_deep', $_POST);
@@ -142,28 +132,6 @@ $_SESSION['CATS']->startTimer();
  * was active.
  */
 $_SESSION['CATS']->checkForcedUpdate();
-
-
-/* We would hook this, but the hooks aren't loaded by the time this code executes.
- * if ASP module exists (code is running on catsone.com), load the website by default
- * rather than the login page.
- */
-if (ModuleUtility::moduleExists("asp") && ModuleUtility::moduleExists("website"))
-{
-    // FIXME: Can we optimize this a bit...?
-    include_once('modules/asp/lib/General.php');
-
-    if (!(isset($careerPage) && $careerPage) &&
-        !(isset($rssPage) && $rssPage) &&
-        !(isset($xmlPage) && $xmlPage) &&
-        (!isset($_GET['m']) || empty($_GET['m'])) &&
-        (Asp::getSubDomain() == '' || isset($_GET['a'])))
-    {
-        ModuleUtility::loadModule('website');
-        exit(1);
-    }
-}
-
 
 /* Check to see if the user level suddenly changed. If the user was changed to disabled,
  * also log the user out.
@@ -301,11 +269,6 @@ else
         $_SESSION['CATS']->logPageView();
         ModuleUtility::loadModule($_GET['m']);
     }
-}
-
-if (isset($errorHandler))
-{
-    $errorHandler->reportErrors();
 }
 
 ?>

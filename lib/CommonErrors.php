@@ -30,7 +30,7 @@
  * @version    $Id: CommonErrors.php 3784 2007-12-03 21:57:10Z brian $
  */
 
-include_once('./lib/Mailer.php');
+include_once(LEGACY_ROOT . '/lib/Mailer.php');
 
 define('COMMONERROR_PERMISSION',                            1);
 define('COMMONERROR_NOTLOGGEDIN',                           2);
@@ -81,18 +81,9 @@ class CommonErrors
                     . 'extensions which allow CATS to work with software like Outlook and websites like Monster.<p />Designed '
                     . 'by recruiters, for recruits, they\'re purpose is to make recruiting faster and easier.<p />'
                     . '<b>At this time, these plug-ins are only available to CATS Professional users.</b><p /><ul>';
-                if (file_exists('modules/asp'))
-                {
-                    $errorMessage .= '<li>To upgrade your account to a CATS Professional account with ' . number_format(PAID_ACCOUNT_SIZE/1024,0)
-                        . ' MB of storage space, unlimited job orders and the ability to use all of our plug-ins, '
-                        . '<a href="' . CATSUtility::getIndexName() . '?m=asp&a=purchaseinfo' . '">click here</a>.<p /></li>';
-                }
-                else
-                {
-                    $errorMessage .= '<li>For more information about the CATS Professional hosted version where we take care of '
-                        . 'backups and the hassles of running a web server and you have access to all of our plug-ins, '
-                        . '<a href="http://www.catsone.com/getcats.php" style="font-weight: bold;">click here</a>.<p /></li>';
-                }
+                $errorMessage .= '<li>For more information about the CATS Professional hosted version where we take care of '
+                    . 'backups and the hassles of running a web server and you have access to all of our plug-ins, '
+                    . '<a href="http://www.catsone.com/getcats.php" style="font-weight: bold;">click here</a>.<p /></li>';
                 $errorMessage .= '<li>For more information about CATS Professional services where you host CATS on your '
                     . 'own server with our support and plug-ins, please visit '
                     . '<a href="http://www.catsone.com/Professional">http://www.catsone.com/Professional</a>.</li></ul>';

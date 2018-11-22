@@ -1367,3 +1367,13 @@ td.contentContainerOld {
 .home table {
 	width: 100%;
 }
+
+#emailPreview {
+    background-color: aliceblue;
+    box-shadow:0px 0px 0px 1px black inset;
+    
+}
+
+#emailPreview * {
+    padding: 5px;
+}

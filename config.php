@@ -30,6 +30,12 @@
 /* License key. */
 define('LICENSE_KEY','3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
 
+/* legacy root. */
+if( !defined('LEGACY_ROOT') )
+{
+    define('LEGACY_ROOT', '.');
+}
+
 /* Database configuration. */
 define('DATABASE_USER', 'cats');
 define('DATABASE_PASS', 'password');
@@ -276,28 +282,76 @@ define ('LDAP_ATTRIBUTE_EMAIL', 'mail');
 
 define ('LDAP_SITEID', 1);
 
-
-/* Job Types mapping
- */
-/* Uncomment bellow if you want custom mapping */
-/*const JOB_TYPES_LIST = array(
-    'PT' => 'Part-Time',
-    'FT' => 'Full-Time',
-    'ST' => 'Student',
-    'FL' => 'Freelance'
+/* Encodings available during Data Import */
+/*const IMPORT_FILE_ENCODING = array(
+    'ISO-8859-1', 'GB2312', 'Windows-1251', 'Windows-1252', 'Shift JIS',
+'GBK', 'Windows-1256', 'ISO-8859-2', 'EUC-JP', 'ISO-8859-15', 'ISO-8859-9', 'Windows-1250',
+'Windows-1254', 'EUC-KR', 'Big5', 'Windows-874', 'US-ASCII', 'TIS-620', 'ISO-8859-7', 'Windows-1255'
 );*/
 
+/* Job Order statuses (not pipeline statuses) defined in groups */
+/* Uncomment and correct bellow if you want different statuses */
+/*const JOB_ORDER_STATUS_GROUP = array(
+    'Open' => array ('Active', 'On Hold', 'Full'),
+    'Closed' => array('Closed', 'Canceled'),
+    'Pre-Open' => array('Upcoming', 'Lead')
+);*/
 
-/* 
-require_once('.\constants.php');
-// defining user roles
-const USER_ROLES = array(
+/* Job order status(es) used for XML, RSS and Careers portal */
+/* Uncomment and correct bellow if you want different statuses to be included */
+/*const JOB_ORDER_STATUS_SHARING = array(
+    'Active'
+);*/
+
+/* Filters that can be used on main job order grid, the first one will be default selected */
+/* Uncomment and correct bellow if you want different combination of statuses */
+/*const JOB_ORDER_STATUS_FILTERING = array(
+    'Active / On Hold / Full',
+    'Active',
+    'On Hold / Full',
+    'Closed / Canceled',
+    'Upcoming / Lead'
+);*/
+
+/* Job order status(es) used for submission/placement statistics */
+/* Uncomment and correct bellow if you want different combination of statistics */
+/*const JOB_ORDER_STATUS_STATISTICS = array(
+    'Active', 'On Hold', 'Full', 'Closed'
+);*/
+
+/* Job Order Default status after creation */
+/* Uncomment and correct bellow if you want different default status */
+/*const JOB_ORDER_STATUS_DEFAULT = 'Active';*/
+
+/* Job Types mapping
+ *
+ * Uncomment bellow if you want custom mapping */
+
+ /*
+class JOB_TYPES {
+    public static $LIST = array(
+        'PT' => 'Part-Time',
+        'FT' => 'Full-Time',
+        'ST' => 'Student',
+        'FL' => 'Freelance'
+    );
+};
+*/
+
+
+/*
+require_once(LEGACY_ROOT . '/constants.php');
+
+class ACL_SETUP {
+
+    // defining user roles
+    public static $USER_ROLES = array(
         'candidate' => array('Candidate', 'candidate', 'This is a candidate.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ),
         'demo' => array('Demo', 'demo', 'This is a demo user.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
     );
-    
-// defining access levels different from the default access level    
-const ACCESS_LEVEL_MAP = array(
+   
+    // defining access levels different from the default access level    
+    public static $ACCESS_LEVEL_MAP = array(
         'candidate' => array(
         ),
         'demo' => array(
@@ -308,7 +362,9 @@ const ACCESS_LEVEL_MAP = array(
             'joborders.show' => ACCESS_LEVEL_DEMO,
             'joborders.email' => ACCESS_LEVEL_DISABLED,
         )
-    );*/
+    );
+};
+*/
 
 /* All possible secure object names 
             'candidates.history'
@@ -433,6 +489,7 @@ const ACCESS_LEVEL_MAP = array(
             'candidates.emailCandidates'
             'candidates.show_questionnaire'
             'candidates.list'
+            'candidates.duplicates'
             'calendar.show'
             'calendar.addEvent'
             'calendar.editEvent'

@@ -18,12 +18,24 @@
             <p class="note">E-Mail Templates</p>
 
             <script type="text/javascript">
+                $(document).ready(function() { 
+                    $("select option:last").attr("selected", "selected");
+                    showLastTemplate();
+                });
                 function showTemplate(templateID)
                 {
                     <?php foreach ($this->emailTemplatesRS as $data): ?>
                         document.getElementById('editTable<?php echo($data['emailTemplateID']); ?>').style.display = 'none';
                     <?php endforeach; ?>
                     document.getElementById('editTable' + templateID).style.display = '';
+                }
+                function showLastTemplate()
+                {
+                    <?php foreach ($this->emailTemplatesRS as $data): ?>
+                        document.getElementById('editTable<?php echo($data['emailTemplateID']); ?>').style.display = 'none';
+                    <?php endforeach; ?>
+                    <?php $templateID = end($this->emailTemplatesRS)['emailTemplateID'];?>
+                    document.getElementById('editTable' + <?php echo $templateID; ?>).style.display = '';
                 }
                 function insertAtCursor(myField, myValue)
                 {
@@ -60,6 +72,11 @@
             </script>
 
             <table style="width:850px;" class="searchTable">
+                <tr>
+                    <td>
+                        <input type="button" value="Add a Template" onclick="window.location='index.php?m=settings&a=addEmailTemplate'">
+                    </td>
+                </tr>
                 <tr>
                     <td>
                         <table>
@@ -111,6 +128,15 @@
                                         </td>
                                         <td class="tdData">
                                             <table>
+                                                <?php if(strpos($data['emailTemplateTag'], "CUSTOM") === 0): ?>
+                                                <tr>
+                                                    <td>
+                                                        <input type="text" name="emailTemplateTitle" value="<?php echo($data['emailTemplateTitle']); ?>"/>
+                                                        <input type="button" value="Delete Template" onclick="window.location='index.php?m=settings&a=deleteEmailTemplate&id=<?php echo $data['emailTemplateID']?>'">
+                                                    </td>
+                                                </tr>
+                                                <?php endif; ?>
+                                                
                                                 <tr style="vertical-align:top;">
                                                     <td>
                                                         <textarea class="inputbox" name="messageText" <?php if ($data['disabled'] == 1) echo('disabled'); ?> id="messageText<?php echo($data['emailTemplateID']); ?>" style="width:450px; height:280px;" onclick="document.getElementById('selectorSpan').style.display='none'; document.getElementById('templateTitleSpan<?php echo($data['emailTemplateID']); ?>').style.display='';" ><?php echo($this->_($data['text'])); ?></textarea>

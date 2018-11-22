@@ -30,11 +30,11 @@
  * @version    $Id: Users.php 3593 2007-11-13 17:36:57Z andrew $
  */
 
-include_once('./lib/License.php');
+include_once(LEGACY_ROOT . '/lib/License.php');
 
 if (AUTH_MODE == "ldap" || AUTH_MODE == "sql+ldap") 
 {
-    require_once('./lib/LDAP.php');
+    require_once(LEGACY_ROOT . '/lib/LDAP.php');
 }
 
 /* Login status flags. */
@@ -44,6 +44,7 @@ define('LOGIN_INVALID_PASSWORD',     -2);
 define('LOGIN_DISABLED',             -3);
 define('LOGIN_CANT_CHANGE_PASSWORD', -4);
 define('LOGIN_ROOT_ONLY',            -5);
+define('LOGIN_PENDING_APPROVAL',     -6);
 
 /* Add User status flags. */
 define('ADD_USER_SUCCESS',            1);
@@ -909,21 +910,6 @@ class Users
         else if ($license['diff'] > 0)
         {
             $license['canAdd'] = 1;
-        }
-
-        if (LicenseUtility::isProfessional() && !file_exists('modules/asp'))
-        {
-            $license['unlimited'] = 0;
-            $license['userLicenses'] = LicenseUtility::getNumberOfSeats();
-            $license['diff'] = $license['userLicenses'] - $license['totalUsers'];
-            if ($license['diff'] > 0)
-            {
-                $license['canAdd'] = 1;
-            }
-            else
-            {
-                $license['canAdd'] = 0;
-            }
         }
 
         return $license;

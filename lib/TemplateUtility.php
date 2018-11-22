@@ -36,9 +36,9 @@
  */
 
 include_once('./vendor/autoload.php');
-include_once('Candidates.php');
-include_once('DateUtility.php');
-include_once('SystemInfo.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+include_once(LEGACY_ROOT . '/lib/SystemInfo.php');
 
 use OpenCATS\UI\QuickActionMenu;
 
@@ -133,7 +133,7 @@ class TemplateUtility
             // Begin top-right action block
             if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_UPGRADE'))) return;
 
-            if ((!file_exists('modules/asp') || (defined('CATS_TEST_MODE') && CATS_TEST_MODE)) && LicenseUtility::isProfessional() &&
+            if (LicenseUtility::isProfessional() &&
                 $_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA)
             {
                 if (abs(LicenseUtility::getExpirationDate() - time()) < 60*60*24*30)
@@ -145,17 +145,10 @@ class TemplateUtility
                 }
                 else
                 {
-                    echo '<a href="http://www.catsone.com/professional" target="_blank">';
+                    echo '<a href="http://www.opencats.org" target="_blank">';
                     echo '<img src="images/tabs/small_upgrade.jpg" border="0" /> ';
-                    echo 'CATS Professional Account Login</a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
+                    echo 'OpenCATS.org</a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
                 }
-            }
-
-            if (!file_exists('modules/asp') && !LicenseUtility::isProfessional())
-            {
-                echo '<a href="http://www.catsone.com/professional" target="_blank">';
-                echo '<img src="images/tabs/small_upgrade.jpg" border="0" /> ';
-                echo '<b>For more features, upgrade to CATS Professional</b></a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
             }
 
             echo '<a href="', $indexName, '?m=logout">';
@@ -752,7 +745,7 @@ class TemplateUtility
                     else if (strpos($link, 'a=internalPostings') !== false)
                     {
                         /* Default company subtab. */
-                        include_once('./lib/Companies.php');
+                        include_once(LEGACY_ROOT . '/lib/Companies.php');
 
                         $companies = new Companies($_SESSION['CATS']->getSiteID());
                         $defaultCompanyID = $companies->getDefaultCompany();
@@ -846,7 +839,7 @@ class TemplateUtility
         echo '</body>', "\n";
         echo '</html>', "\n";
 
-        if ((!file_exists('modules/asp') || (defined('CATS_TEST_MODE') && CATS_TEST_MODE)) && LicenseUtility::isProfessional() && !rand(0,10))
+        if (LicenseUtility::isProfessional() && !rand(0,10))
         {
             if (!LicenseUtility::validateProfessionalKey(LICENSE_KEY))
             {
@@ -1188,8 +1181,8 @@ class TemplateUtility
         echo '<head>', "\n";
         echo '<title>OpenCATS - ', $pageTitle, '</title>', "\n";
         echo '<meta http-equiv="Content-Type" content="text/html; charset=', HTML_ENCODING, '" />', "\n";
-        echo '<link rel="icon" href="/images/favicon.ico" type="image/x-icon" />', "\n";
-        echo '<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />', "\n";
+        echo '<link rel="icon" href="images/favicon.ico" type="image/x-icon" />', "\n";
+        echo '<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />', "\n";
         echo '<link rel="alternate" type="application/rss+xml" title="RSS" href="',
              CATSUtility::getIndexName(), '?m=rss" />', "\n";
 

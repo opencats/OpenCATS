@@ -30,7 +30,7 @@
  * @version    $Id: WebForm.php 3705 2007-11-26 23:34:51Z will $
  */
 
-include_once('./lib/Graphs.php');
+include_once(LEGACY_ROOT . '/lib/Graphs.php');
 
 define('WFT_TEXT',                  1);
 define('WFT_PASSWORD',              2);
@@ -614,7 +614,7 @@ class WebForm
             . "onclick=\"webFormEditField('%s', true, %s);\" onmouseover=\"webFormFieldHover('%s', true);\" "
             . "onmouseout=\"webFormFieldHover('%s', false);\">\n<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">"
             . "<tr><td align=\"left\" valign=\"center\" style=\"padding-right: 2px;\">"
-            . "<img id=\"%sEdit\" src=\"%smodules/asp/website/images/edit_action.gif\" onclick=\"webFormEditField('%s', true, %s);\" "
+            . "<img id=\"%sEdit\" src=\"%simages/edit.gif\" onclick=\"webFormEditField('%s', true, %s);\" "
             . "onmouseover=\"webFormFieldHover('%s', true);\" onmouseout=\"webFormFieldHover('%s', false);\" "
             . "style=\"cursor: pointer; visibility: hidden;\"></td><td align=\"left\" valign=\"top\"><a href=\"javascript:void(0);\" "
             . "onclick=\"webFormEditField('%s', true, %s);\" onmouseover=\"webFormFieldHover('%s', true);\" "
