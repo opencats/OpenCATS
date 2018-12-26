@@ -834,7 +834,7 @@ class ControlPanel
 
         // get the records count
         $rs = $this->_db->query($sql = $this->getTablesSQL($searchSql, '', 'COUNT(*)'));
-        $rsCount = intval(mysqli_fetch_row($rs);
+        $rsCount = intval(mysqli_fetch_row($rs));
         $numPages = ceil($rsCount / $pager_ResultsPerPage);
         if ($pager_CurrentPage >= $numPages) $pager_CurrentPage = $numPages - 1;
         if ($pager_CurrentPage < 0) $pager_CurrentPage = 0;
