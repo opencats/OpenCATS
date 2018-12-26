@@ -54,7 +54,7 @@ function rebuild_old_docs() {
 $con = mysqli_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS);
 if (!$con)
 {
-  die('Could not connect: ' . mysqli_error($co$conn));
+  die('Could not connect: ' . mysqli_error($con));
 }
 mysqli_select_db(DATABASE_NAME, $con);
 
