@@ -2965,7 +2965,7 @@ class SettingsUI extends UserInterface
         $users = new Users($this->_siteID);
 
         /* If adding an e-mail username, verify it is a valid e-mail. */
-        if (strpos($loginName, '@') !== false && filter_var($username, FILTER_VALIDATE_EMAIL) === false)
+        if (strpos($loginName, '@') !== false && filter_var($loginName, FILTER_VALIDATE_EMAIL) === false)
         {
             echo 'That is not a valid login name.';
             return;
