@@ -147,7 +147,7 @@ class ControlPanel
         $rs = $this->_db->query($sql);
         if ($rs && mysqli_num_rows($rs) > 0)
         {
-            $row = mysqli_fetch_array($rs, MYSQL_ASSOC);
+            $row = mysqli_fetch_array($rs, MYSQLI_ASSOC);
             if (!$row)
             {
                 return $this->getException('Bad or expired identifier', 'The operation you attempted cannot complete '
@@ -206,7 +206,7 @@ class ControlPanel
                     . 'because the unique identifier no longer exists. Did you perhaps use your browser\'s <b>back</b> '
                     . 'button?');
             }
-            $row = mysqli_fetch_array($rs, MYSQL_ASSOC);
+            $row = mysqli_fetch_array($rs, MYSQLI_ASSOC);
             if (!$row)
             {
                 return $this->getListView();
