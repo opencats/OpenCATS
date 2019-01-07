@@ -28,14 +28,20 @@ class ZipLookup
 				if ($value->type == 'route') {
 					$aAddress[1] = (string) $value->long_name;
 				}
-				if ($value->type[0] == 'locality') {
-					$aAddress[2] = (string) $value->long_name;
+				if ($value->type[0] == 'postal_town') {
+					$loc_level_1 = (string) $value->long_name;
 				}
-				if (($value->type == 'postal_town') && ($aAddress[2] == '')) {
-					$aAddress[2] = (string) $value->long_name;
+				if ($value->type[0] == 'locality') {
+					$loc_level_1 = (string) $value->long_name;
+				}
+				if ($value->type[0] == 'administrative_area_level_1') {
+					$loc_level_2 = (string) $value->long_name;
 				}
 				if ($value->type[0] == 'administrative_area_level_2') {
-					$aAddress[3] = (string) $value->long_name;
+					$loc_level_3 = (string) $value->long_name;
+				}
+				if ($value->type[0] == 'country') {
+					$loc_level_4 = (string) $value->long_name;	
 				}
 			}
 		} else {
@@ -45,6 +51,14 @@ class ZipLookup
 		$aAddress[0] = 2;
 	}
 
+	// Set the state based on US or non-US location
+	$aAddress[2] = $loc_level_1;
+	if ($loc_level_4 == 'United States') {
+		$aAddress[3] = $loc_level_3;
+	} else {
+		$aAddress[3] = $loc_level_2;
+	}
+	    
 	return $aAddress;
 
     }
