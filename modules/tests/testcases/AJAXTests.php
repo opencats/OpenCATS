@@ -843,7 +843,7 @@ class GetPipelineDetailsTest extends CATSAJAXTestCase
         $this->runPageLoadAssertions(false);
 
         /* There aren't any activity entries yet. */
-        $this->assertPattern('/Added candidate to pipeline./');
+        $this->assertPattern('/Added candidate to job order./');
 
         /* Add an activity. */
         $this->addPipelineActivity(

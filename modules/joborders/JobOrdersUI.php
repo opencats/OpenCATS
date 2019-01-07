@@ -1169,7 +1169,7 @@ class JobOrdersUI extends UserInterface
 
     /*
      * Called by handleRequest() to handle loading the "Add candidate to this
-     * Job Order Pipeline" initial search page in the modal dialog.
+     * Job Order" initial search page in the modal dialog.
      */
     private function considerCandidateSearch()
     {
@@ -1191,7 +1191,7 @@ class JobOrdersUI extends UserInterface
 
     /*
      * Called by handleRequest() to handle processing an "Add candidate to
-     * this Job Order Pipeline" search and displaying the results in the
+     * this Job Order" search and displaying the results in the
      * modal dialog.
      */
     private function onConsiderCandidateSearch()
@@ -1290,7 +1290,7 @@ class JobOrdersUI extends UserInterface
         $pipelines = new Pipelines($this->_siteID);
         if (!$pipelines->add($candidateID, $jobOrderID, $this->_userID))
         {
-            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add candidate to pipeline.');
+            CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add candidate to job order.');
         }
 
         $activityEntries = new ActivityEntries($this->_siteID);
@@ -1298,7 +1298,7 @@ class JobOrdersUI extends UserInterface
             $candidateID,
             DATA_ITEM_CANDIDATE,
             400,
-            'Added candidate to pipeline.',
+            'Added candidate to job order.',
             $this->_userID,
             $jobOrderID
         );
