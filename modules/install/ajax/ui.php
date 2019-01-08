@@ -169,8 +169,8 @@ switch ($action)
         if (isset($tables['settings']))
         {
             $rs = MySQLQuery('SELECT value FROM settings WHERE setting = "fromAddress" LIMIT 1');
-            if (mysql_num_rows($rs) > 0)
-                $mailFromAddress = mysql_result($rs, 0, 0);
+            if (mysqli_num_rows($rs) > 0)
+                $mailFromAddress = mysqli_fetch_row($rs);
         }
 
         echo '
@@ -183,7 +183,7 @@ switch ($action)
                 document.getElementById(\'mailSmtpPort\').value = \'' . htmlspecialchars(MAIL_SMTP_PORT) . '\';
                 document.getElementById(\'mailSmtpUsername\').value = \'' . htmlspecialchars(MAIL_SMTP_USER) . '\';
                 document.getElementById(\'mailSmtpPassword\').value = \'' . htmlspecialchars(MAIL_SMTP_PASS) . '\';
-                document.getElementById(\'mailFromAddress\').value = \'' . htmlspecialchars($mailFromAddress) . '\';
+                document.getElementById(\'mailFromAddress\').value = \'' . htmlspecialchars($mailFromAddress[0]) . '\';
                 changeMailForm();
             </script>';
         break;
@@ -466,7 +466,7 @@ switch ($action)
         $rs = MySQLQuery('SELECT date_format_ddmmyy FROM site', true);
         if ($rs)
         {
-            $record = mysql_fetch_assoc($rs);
+            $record = mysqli_fetch_assoc($rs);
         }
         else
         {
@@ -576,7 +576,7 @@ switch ($action)
 
         $rs = MySQLQuery('SELECT * FROM candidate', true);
         $fields = array();
-        while ($meta = @mysql_fetch_field($rs))
+        while ($meta = @mysqli_fetch_field($rs))
         {
             if ($meta)
             {
@@ -763,7 +763,7 @@ switch ($action)
         //Check if we need to update from 0.6.0 to 0.7.0
         $tables = array();
         $result = MySQLQuery(sprintf("SHOW TABLES FROM `%s`", DATABASE_NAME));
-        while ($row = mysql_fetch_array($result, MYSQL_NUM))
+        while ($row = mysqli_fetch_array($result, MYSQLI_NUM))
         {
             $tables[$row[0]] = true;
         }
@@ -856,7 +856,7 @@ switch ($action)
         $revision = 0;
         $rs = MySQLQuery('SELECT * FROM candidate', true);
         $fields = array();
-        while ($meta = mysql_fetch_field($rs))
+        while ($meta = mysqli_fetch_field($rs))
         {
             $fields[$meta->name] = true;
         }
@@ -985,7 +985,7 @@ switch ($action)
         // If this is an existing database, just set all the fromAddress settings to new
         MySQLQuery(sprintf('UPDATE settings SET value = "%s" WHERE setting = "fromAddress"', $fromAddress));
         // This is a new install, insert a settings value for each site in the database
-        if(mysql_affected_rows() == 0)
+        if(mysqli_affected_rows($mySQLConnection) == 0)
         {
             // Insert a "fromAddress" = $fromAddress for each site
             MySQLQuery(sprintf(
@@ -1046,7 +1046,7 @@ switch ($action)
 
         /* Determine if a default user is set. */
         $rs = MySQLQuery("SELECT * FROM user WHERE user_name = 'admin' AND password = 'cats'");
-        if ($rs && mysql_fetch_row($rs))
+        if ($rs && mysqli_fetch_row($rs))
         {
             //Default user set
             echo '<script type="text/javascript">document.location.href="index.php?defaultlogin=true";</script>';
@@ -1066,7 +1066,7 @@ function MySQLConnect()
 {
     global $tables, $mySQLConnection;
 
-    $mySQLConnection = @mysql_connect(
+    $mySQLConnection = @mysqli_connect(
         DATABASE_HOST, DATABASE_USER, DATABASE_PASS
     );
 
@@ -1075,7 +1075,7 @@ function MySQLConnect()
         die(
             '<p style="background: #ec3737; padding: 4px; margin-top: 0; font:'
             . ' normal normal bold 12px/130% Arial, Tahoma, sans-serif;">Error '
-            . " Connecting to Database</p><pre>\n\n" . mysql_error() . "</pre>\n\n"
+            . " Connecting to Database</p><pre>\n\n" . mysqli_error($mySQLConnection) . "</pre>\n\n"
         );
         return false;
     }
@@ -1084,16 +1084,16 @@ function MySQLConnect()
     /* Create an array of all tables in the database. */
     $tables = array();
     $result = MySQLQuery(sprintf("SHOW TABLES FROM `%s`", DATABASE_NAME));
-    while ($row = mysql_fetch_row($result))
+    while ($row = mysqli_fetch_row($result))
     {
         $tables[$row[0]] = true;
     }
 
     /* Select CATS database. */
-    $isDBSelected = @mysql_select_db(DATABASE_NAME, $mySQLConnection);
+    $isDBSelected = @mysqli_select_db($mySQLConnection, DATABASE_NAME);
     if (!$isDBSelected)
     {
-        $error = mysql_error($mySQLConnection);
+        $error = mysqli_error($mySQLConnection);
 
         die(
             '<p style="background: #ec3737; padding: 4px; margin-top: 0; font:'
@@ -1108,10 +1108,10 @@ function MySQLQuery($query, $ignoreErrors = false)
 {
     global $mySQLConnection;
 
-    $queryResult = mysql_query($query, $mySQLConnection);
+    $queryResult = mysqli_query($mySQLConnection, $query);
     if (!$queryResult && !$ignoreErrors)
     {
-        $error = mysql_error($mySQLConnection);
+        $error = mysqli_error($mySQLConnection);
 
         if ($error == 'Query was empty')
         {

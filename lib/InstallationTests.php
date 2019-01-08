@@ -226,17 +226,17 @@ class InstallationTests
     /* Is MySQL extension loaded?. */
     public static function checkMySQLExtension()
     {
-        if (!self::DEBUG_FAIL && extension_loaded('mysql') && function_exists('mysql_connect'))
+        if (!self::DEBUG_FAIL && extension_loaded('mysqli') && function_exists('mysqli_connect'))
         {
-            echo '<tr class="pass"><td>PHP MySQL extension (mysql) is loaded.</td></tr>';
+            echo '<tr class="pass"><td>PHP MySQLi extension (mysqli) is loaded.</td></tr>';
             return true;
         }
 
-        echo '<tr class="fail"><td><strong>PHP MySQL extension (mysql) is not loaded.</strong><br />'
+        echo '<tr class="fail"><td><strong>PHP MySQL extension (mysqli) is not loaded.</strong><br />'
             . 'Check your settings in php.ini.<br /><br />'
             . 'Under certain Linux / BSD distributions, the PHP MySQL extension is a separate package.<br /><br />'
-            . '<strong>Debian:</strong> Run "apt-get install php5-mysql" and restart your webserver.<br /><br />'
-            . '<strong>FreeBSD:</strong> Install the php5-mysql port, or configure MySQL support in the '
+            . '<strong>Debian:</strong> Run "apt-get install php5-mysqli" and restart your webserver.<br /><br />'
+            . '<strong>FreeBSD:</strong> Install the php5-mysqli port, or configure MySQL support in the '
             . 'php-extensions port and restart your webserver.</td></tr>';
         return false;
     }
@@ -387,11 +387,12 @@ class InstallationTests
     public static function checkMySQL($host, $user, $pass, $name)
     {
         /* Check MySQL connection. */
-        if (self::DEBUG_FAIL || !@mysql_connect($host, $user, $pass))
+		$db = @mysqli_connect($host, $user, $pass);
+        if (self::DEBUG_FAIL || !$db)
         {
             echo sprintf(
                 '<tr class="fail"><td>Cannot connect to database.<pre class="fail">%s</pre></td></tr>',
-                mysql_error()
+                mysqli_error($db)
             );
             return false;
         }
@@ -399,18 +400,18 @@ class InstallationTests
         echo '<tr class="pass"><td>MySQL connection was successful.</td></tr>';
 
         /* Check MySQL version number. */
-        if (!self::_checkMySQLVersion())
+        if (!self::_checkMySQLVersion($db))
         {
             return false;
         }
 
         /* Try to switch to the CATS database. */
-        if (!@mysql_select_db($name))
+        if (!@mysqli_select_db($db, $name))
         {
             echo sprintf(
                 '<tr class="fail"><td>Failed to select database \'%s\'.<pre class="fail">%s</pre></td></tr>',
                 $name,
-                mysql_error()
+                mysqli_error($db)
             );
             return false;
         }
@@ -421,11 +422,11 @@ class InstallationTests
         );
 
         /* Check CREATE TABLE permissions. */
-        $queryResult = @mysql_query('CREATE TABLE `testtable` (`id` int(11) NOT NULL default \'0\') ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
+        $queryResult = @mysqli_query($db, 'CREATE TABLE `testtable` (`id` int(11) NOT NULL default \'0\') ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
         if (!$queryResult)
         {
-            mysql_query('DROP TABLE testtable');
-            $queryResult = @mysql_query('CREATE TABLE `testtable` (`id` int(11) NOT NULL default \'0\') ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
+            mysqli_query($db, 'DROP TABLE testtable');
+            $queryResult = @mysqli_query($db, 'CREATE TABLE `testtable` (`id` int(11) NOT NULL default \'0\') ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
         }
         if (!$queryResult)
         {
@@ -444,7 +445,7 @@ class InstallationTests
         );
 
         /* Check INSERT permissions. */
-        if (!@mysql_query('INSERT INTO testtable (id) VALUES (1)'))
+        if (!@mysqli_query($db, 'INSERT INTO testtable (id) VALUES (1)'))
         {
             echo sprintf(
                 '<tr class="fail"><td>Cannot insert into \'testtable\' table. Please verify that '
@@ -459,7 +460,7 @@ class InstallationTests
         echo '<tr class="pass"><td>Can insert into \'testtable\' table.</td></tr>';
 
         /* Check UPDATE permissions. */
-        if (!@mysql_query('UPDATE testtable SET id = 5 WHERE id = 1'))
+        if (!@mysqli_query($db, 'UPDATE testtable SET id = 5 WHERE id = 1'))
         {
             echo sprintf(
                 '<tr class="fail"><td>Cannot update \'testtable\' table. Please verify that '
@@ -474,7 +475,7 @@ class InstallationTests
         echo '<tr class="pass"><td>Can update \'testtable\' table.</td></tr>';
 
         /* Check DELETE permissions. */
-        if (!@mysql_query('DELETE FROM testtable WHERE id = 5'))
+        if (!@mysqli_query($db, 'DELETE FROM testtable WHERE id = 5'))
         {
             echo sprintf(
                 '<tr class="fail"><td>Cannot delete from \'testtable\' table. Please verify that '
@@ -489,7 +490,7 @@ class InstallationTests
         echo '<tr class="pass"><td>Can delete from \'testtable\' table.</td></tr>';
 
         /* Check DROP TABLES permissions. */
-        if (!@mysql_query('DROP TABLE testtable'))
+        if (!@mysqli_query($db, 'DROP TABLE testtable'))
         {
             echo sprintf(
                 '<tr class="fail"><td>Cannot drop table \'testtable\'. Please verify that '
@@ -758,20 +759,21 @@ class InstallationTests
     }
 
 
-    private static function _checkMySQLVersion()
+    private static function _checkMySQLVersion($db)
     {
         /* Check MySQL version. */
-        $queryResult = mysql_query('SELECT VERSION()');
+        $queryResult = mysqli_query($db, 'SELECT VERSION()');
         if (!$queryResult)
         {
             echo sprintf(
                 '<tr class="fail"><td>Cannot retrieve MySQL version number. <pre class="fail">%s</pre></td></tr>',
-                mysql_error()
+                mysqli_error($db)
             );
             return false;
         }
 
-        $row = mysql_fetch_row($queryResult);
+        $row = mysqli_fetch_row($queryResult);
+
         $versionParts = explode('-', $row[0]);
         $version = $versionParts[0];
 

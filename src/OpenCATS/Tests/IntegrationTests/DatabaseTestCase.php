@@ -17,7 +17,7 @@ class DatabaseTestCase extends TestCase
 
         include_once('./config.php');
         include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
-        $mySQLConnection = @mysql_connect(
+        $mySQLConnection = @mysqli_connect(
             DATABASE_HOST, DATABASE_USER, DATABASE_PASS
             );
         if (!$mySQLConnection)
@@ -27,7 +27,7 @@ class DatabaseTestCase extends TestCase
         $this->mySQLQuery('DROP DATABASE IF EXISTS ' . DATABASE_NAME);
         $this->mySQLQuery('CREATE DATABASE ' . DATABASE_NAME);
 
-        @mysql_select_db(DATABASE_NAME, $mySQLConnection);
+        @mysqli_select_db(DATABASE_NAME, $mySQLConnection);
 
         $this->mySQLQueryMultiple(file_get_contents('db/cats_schema.sql'), ";\n");
     }
@@ -54,10 +54,10 @@ class DatabaseTestCase extends TestCase
     {
         global $mySQLConnection;
 
-        $queryResult = mysql_query($query, $mySQLConnection);
+        $queryResult = mysqli_query($mySQLConnection, $query);
         if (!$queryResult && !$ignoreErrors)
         {
-            $error = mysql_error($mySQLConnection);
+            $error = mysqli_error($mySQLConnection);
 
             if ($error == 'Query was empty')
             {

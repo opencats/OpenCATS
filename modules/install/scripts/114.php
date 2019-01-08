@@ -51,7 +51,7 @@ function getAllFilesInDirectory($directory)
 function update_114($db)
 {
     $attachments = $db->query('SELECT * FROM attachment');
-    while ($attachment = mysql_fetch_assoc($attachments))
+    while ($attachment = mysqli_fetch_assoc($attachments))
     {
         $newFilename = $attachment['stored_filename'];
         for ($i = 0; $i < strlen($newFilename); $i++)
