@@ -163,7 +163,7 @@ use OpenCATS\UI\QuickActionMenu;
                             </tr>
 
                             <tr>
-                                <td class="vertical">Pipeline:</td>
+                                <td class="vertical">Candidates:</td>
                                 <td class="data"><?php $this->_($this->data['pipeline']) ?></td>
                             </tr>
 
@@ -368,7 +368,7 @@ use OpenCATS\UI\QuickActionMenu;
             <br clear="all" />
             <br />
 
-            <p class="note">Candidate Pipeline</p>
+            <p class="note">Candidate in Job Order</p>
 
             <p id="ajaxPipelineControl">
                 Number of visible entries:&nbsp;&nbsp;
@@ -417,7 +417,7 @@ use OpenCATS\UI\QuickActionMenu;
             <?php if (!$this->isPopup): ?>
             <?php if ($this->getUserAccessLevel('joborders.considerCandidateSearch') >= ACCESS_LEVEL_EDIT && !isset($this->frozen)): ?>
                 <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=considerCandidateSearch&amp;jobOrderID=<?php echo($this->jobOrderID); ?>', 820, 550, null); return false;">
-                    <img src="images/consider.gif" width="16" height="16" class="absmiddle" alt="add candidate" border="0" />&nbsp;Add Candidate to This Job Order Pipeline
+                    <img src="images/consider.gif" width="16" height="16" class="absmiddle" alt="add candidate" border="0" />&nbsp;Add Candidate to This Job Order
                 </a>
             <?php endif; ?>
         </div>

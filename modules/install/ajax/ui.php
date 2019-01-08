@@ -28,8 +28,8 @@
  */
 
 include_once('./config.php');
-include_once('./lib/InstallationTests.php');
-include_once('./lib/CATSUtility.php');
+include_once(LEGACY_ROOT . '/lib/InstallationTests.php');
+include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
 
 if( ini_get('safe_mode') )
 {
@@ -689,7 +689,7 @@ switch ($action)
         break;
 
     case 'restoreFromBackup':
-        include_once('lib/FileCompressor.php');
+        include_once(LEGACY_ROOT . '/lib/FileCompressor.php');
         MySQLConnect();
         $extractor = new ZipFileExtractor('./restore/catsbackup.bak');
         
@@ -781,7 +781,7 @@ switch ($action)
     case 'onLoadDemoData':
         CATSUtility::changeConfigSetting('ENABLE_DEMO_MODE', 'true');
 
-        include_once('lib/FileCompressor.php');
+        include_once(LEGACY_ROOT . '/lib/FileCompressor.php');
         MySQLConnect();
         $extractor = new ZipFileExtractor('./db/cats_testdata.bak');
         
@@ -882,10 +882,15 @@ switch ($action)
             /* 0.6.0 */
             $revision = 60;
         }
-        else if (isset($tables['history']))
+        else if (!isset($tables['candidate_duplicates']))
         {
-            /* 0.7.0 */
-            $revision = 70;
+            /* 0.9.4 */
+            $revision = 94;
+        }
+        else if (isset($tables['candidate_duplicates']))
+        {
+            /* 0.9.5 */
+            $revision = 95;
         }
 
         if ($revision <= 50)
@@ -910,6 +915,12 @@ switch ($action)
         {
             // FIXME: File exists?!
             $schema = file_get_contents('db/upgrade-0.6.x-0.7.0.sql');
+            MySQLQueryMultiple($schema);
+        }
+        if ($revision <= 94)
+        {
+            // FIXME: File exists?!
+            $schema = file_get_contents('db/upgrade-0.9.4-0.9.5.sql');
             MySQLQueryMultiple($schema);
         }
 
@@ -948,7 +959,7 @@ switch ($action)
         break;
             
     case 'onReindexResumes':
-        include_once('modules/install/ajax/attachmentsReindex.php');
+        include_once(LEGACY_ROOT . '/modules/install/ajax/attachmentsReindex.php');
         
         echo '<script type="text/javascript">
                   Installpage_populate(\'a=maintComplete\');
@@ -1140,7 +1151,7 @@ function initializeOptionalComponents()
     global $optionalComponents;
 
     //Detect which components are installed and which ones are not
-    include_once('modules/install/OptionalComponents.php');
+    include_once(LEGACY_ROOT . '/modules/install/OptionalComponents.php');
 
     foreach ($optionalComponents as $index => $data)
     {

@@ -27,18 +27,18 @@
  * $Id: CompaniesUI.php 3460 2007-11-07 03:50:34Z brian $
  */
 
-include_once('./lib/StringUtility.php');
-include_once('./lib/DateUtility.php'); /* Depends on StringUtility. */
-include_once('./lib/ResultSetUtility.php');
-include_once('./lib/Companies.php');
-include_once('./lib/Contacts.php');
-include_once('./lib/JobOrders.php');
-include_once('./lib/Attachments.php');
-include_once('./lib/Export.php');
-include_once('./lib/ListEditor.php');
-include_once('./lib/FileUtility.php');
-include_once('./lib/ExtraFields.php');
-include_once('./lib/CommonErrors.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php'); /* Depends on StringUtility. */
+include_once(LEGACY_ROOT . '/lib/ResultSetUtility.php');
+include_once(LEGACY_ROOT . '/lib/Companies.php');
+include_once(LEGACY_ROOT . '/lib/Contacts.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/Export.php');
+include_once(LEGACY_ROOT . '/lib/ListEditor.php');
+include_once(LEGACY_ROOT . '/lib/FileUtility.php');
+include_once(LEGACY_ROOT . '/lib/ExtraFields.php');
+include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
 
 class CompaniesUI extends UserInterface
 {
@@ -133,7 +133,7 @@ class CompaniesUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                include_once('./lib/Search.php');
+                include_once(LEGACY_ROOT . '/lib/Search.php');
 
                 if ($this->isGetBack())
                 {
@@ -152,7 +152,7 @@ class CompaniesUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                include_once('./lib/DocumentToText.php');
+                include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
 
                 if ($this->isPostBack())
                 {

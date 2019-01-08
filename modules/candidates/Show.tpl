@@ -1,11 +1,12 @@
 <?php /* $Id: Show.tpl 3814 2007-12-06 17:54:28Z brian $ */
 include_once('./vendor/autoload.php');
 use OpenCATS\UI\CandidateQuickActionMenu;
+use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
 ?>
 <?php if ($this->isPopup): ?>
     <?php TemplateUtility::printHeader('Candidate - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js', 'js/attachment.js', 'modules/candidates/quickAction-candidates.js')); ?>
 <?php else: ?>
-    <?php TemplateUtility::printHeader('Candidate - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js', 'js/attachment.js', 'modules/candidates/quickAction-candidates.js')); ?>
+    <?php TemplateUtility::printHeader('Candidate - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js', 'js/attachment.js', 'modules/candidates/quickAction-candidates.js', 'modules/candidates/quickAction-duplicates.js')); ?>
     
     <?php TemplateUtility::printHeaderBlock(); ?>
     <?php TemplateUtility::printTabs($this->active); ?>
@@ -19,7 +20,23 @@ use OpenCATS\UI\CandidateQuickActionMenu;
                     <td width="3%">
                         <img src="images/candidate.gif" width="24" height="24" border="0" alt="Candidates" style="margin-top: 3px;" />&nbsp;
                     </td>
-                    <td><h2>Candidates: Candidate Details</h2></td>
+                    <td><h2>Candidates: Candidate Details
+                        <?php if($_SESSION['CATS']->getAccessLevel('candidates.duplicates') >= ACCESS_LEVEL_SA): ?>    
+                            <?php if(!empty($this->data['isDuplicate'])): ?>
+                                <img src="images/wf_error.gif" alt="duplicate_warning" width="20" height="20" border="0" title="Possible duplicate" />
+                                <?php foreach($this->data['isDuplicate'] as $item): ?>
+                                    <?php echo '<a href='.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID='.$item['duplicateTo'].' target=_blank>Duplicate</a>' ?>
+                                    <?php TemplateUtility::printSingleQuickActionMenu(new CandidateDuplicateQuickActionMenu(
+                                        DATA_ITEM_DUPLICATE,
+                                        $this->data['candidateID'],
+                                        $_SESSION['CATS']->getAccessLevel('candidates.duplicates'),
+                                        urlencode(CATSUtility::getIndexName().'?m=candidates&a=merge&oldCandidateID='.$item['duplicateTo'].'&newCandidateID='.$this->data['candidateID']),
+                                        urlencode(CATSUtility::getIndexName().'?m=candidates&a=removeDuplicity&oldCandidateID='.$item['duplicateTo'].'&newCandidateID='.$this->data['candidateID']
+                                    ))); ?>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </h2></td>
                </tr>
             </table>
 
@@ -435,11 +452,17 @@ use OpenCATS\UI\CandidateQuickActionMenu;
                 <?php endif; ?>
                 &nbsp;&nbsp;&nbsp;&nbsp;
             <?php endif; ?>
+            <?php if ($this->getUserAccessLevel('candidates.duplicates') >= ACCESS_LEVEL_SA): ?>
+                <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=linkDuplicate&amp;candidateID=<?php echo($this->candidateID); ?>', 750, 390, null); return false;">
+                    <img src="images/actions/duplicates.png" width="16" height="16" class="absmiddle" alt="add duplicate" border="0" />&nbsp;Link duplicate
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+            <?php endif; ?>
 <?php endif; ?>
             <br clear="all" />
             <br />
 
-            <p class="note">Job Order Pipeline</p>
+            <p class="note">Job Orders for Candidates</p>
             <table class="sortablepair">
                 <tr>
                     <th></th>
@@ -505,7 +528,7 @@ use OpenCATS\UI\CandidateQuickActionMenu;
                             <?php endif; ?>
                             <?php if ($this->getUserAccessLevel('pipelines.removeFromPipeline') >= ACCESS_LEVEL_DELETE): ?>
                                 <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=removeFromPipeline&amp;candidateID=<?php echo($this->candidateID); ?>&amp;jobOrderID=<?php echo($pipelinesData['jobOrderID']); ?>"  onclick="javascript:return confirm('Delete from <?php $this->_(str_replace('\'', '\\\'', $pipelinesData['title'])); ?> (<?php $this->_(str_replace('\'', '\\\'', $pipelinesData['companyName'])); ?>) pipeline?')">
-                                    <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Remove from Pipeline"/>
+                                    <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Remove from Job Order"/>
                                 </a>
                             <?php endif; ?>
                         </td>
@@ -531,7 +554,7 @@ use OpenCATS\UI\CandidateQuickActionMenu;
 <?php if (!$this->isPopup): ?>
             <?php if ($this->getUserAccessLevel('candidates.considerForJobSearch') >= ACCESS_LEVEL_EDIT): ?>
                 <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=considerForJobSearch&amp;candidateID=<?php echo($this->candidateID); ?>', 750, 390, null); return false;">
-                    <img src="images/consider.gif" width="16" height="16" class="absmiddle" alt="Add to Pipeline" border="0" />&nbsp;Add This Candidate to Job Order Pipeline
+                    <img src="images/consider.gif" width="16" height="16" class="absmiddle" alt="Add to Job Order" border="0" />&nbsp;Add This Candidate to Job Order
                 </a>
             <?php endif; ?>
 <?php endif; ?>

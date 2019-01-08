@@ -13,7 +13,7 @@
     $phpVersionParts = explode('.', $phpVersion);
     if ($phpVersionParts[0] >= 5)
     {
-        include_once('lib/TemplateUtility.php');
+        include_once(LEGACY_ROOT . '/lib/TemplateUtility.php');
     }
     else
     {

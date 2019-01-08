@@ -27,12 +27,12 @@
  * $Id: GraphsUI.php 3710 2007-11-27 16:41:19Z brian $
  */
 
-include_once('./lib/Statistics.php');
-include_once('./lib/Graphs.php');
-include_once('./lib/GraphGenerator.php');
-include_once('./lib/DateUtility.php');
-include_once('./lib/CommonErrors.php');
-include_once('./lib/Dashboard.php');
+include_once(LEGACY_ROOT . '/lib/Statistics.php');
+include_once(LEGACY_ROOT . '/lib/Graphs.php');
+include_once(LEGACY_ROOT . '/lib/GraphGenerator.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
+include_once(LEGACY_ROOT . '/lib/Dashboard.php');
 
 
 class GraphsUI extends UserInterface
@@ -523,7 +523,7 @@ class GraphsUI extends UserInterface
         $colorArray[7] = new LinearGradient(new AlmostBlack, new White, 0);
 
         $graph = new GraphComparisonChart(
-            $y, $x, $colorArray, 'Job Order Pipeline', $this->width,
+            $y, $x, $colorArray, 'Status of Candidates', $this->width,
             $this->height, $statisticsData['totalPipeline']
         );
 

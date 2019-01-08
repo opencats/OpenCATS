@@ -32,14 +32,14 @@
  * $Id: XmlUI.php 3565 2007-11-12 09:09:22Z will $
  */
 
-include_once('./lib/ActivityEntries.php');
-include_once('./lib/StringUtility.php');
-include_once('./lib/DateUtility.php');
-include_once('./lib/JobOrders.php');
-include_once('./lib/Site.php');
-include_once('./lib/XmlJobExport.php');
-include_once('./lib/HttpLogger.php');
-include_once('./lib/CareerPortal.php');
+include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/Site.php');
+include_once(LEGACY_ROOT . '/lib/XmlJobExport.php');
+include_once(LEGACY_ROOT . '/lib/HttpLogger.php');
+include_once(LEGACY_ROOT . '/lib/CareerPortal.php');
 
 define('XTPL_HEADER_STRING',    'header');
 define('XTPL_FOOTER_STRING',    'footer');
@@ -109,7 +109,7 @@ class XmlUI extends UserInterface
         if (!eval(Hooks::get('RSS_SITEID'))) return;
 
         $jobOrders = new JobOrders($careerPortalSiteID);
-        $rs = $jobOrders->getAll(JOBORDERS_STATUS_ACTIVE, -1, -1, -1, false, true);
+        $rs = $jobOrders->getAll(JOBORDERS_STATUS_SHARE, -1, -1, -1, false, true);
 
         // Log that this file was accessed
         // FIXME: Does this really need to involve two queries? Can we store

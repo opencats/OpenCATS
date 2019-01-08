@@ -1,5 +1,5 @@
 <?php /* $Id: Edit.tpl 3810 2007-12-05 19:13:25Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Job Orders', array('modules/joborders/validator.js', 'js/company.js', 'js/sweetTitles.js',  'js/suggest.js', 'js/joborder.js', 'js/lib.js', 'js/listEditor.js', 'ckeditor/ckeditor.js')); ?>
+<?php TemplateUtility::printHeader('Job Orders', array('modules/joborders/validator.js', 'js/company.js', 'js/sweetTitles.js',  'js/suggest.js', 'js/joborder.js', 'js/lib.js', 'js/listEditor.js', 'vendor/ckeditor/ckeditor/ckeditor.js', 'js/ckeditor-manager.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">
@@ -248,13 +248,17 @@
                         </td>
                         <td class="tdData">
                             <select tabindex="8" id="status" name="status" class="inputbox" style="width: 150px;">
-                                <option <?php if ($this->data['status'] == 'Active'): ?>selected<?php endif; ?> value="Active">Active</option>
-                                <option <?php if ($this->data['status'] == 'Upcoming'): ?>selected<?php endif; ?> value="Upcoming">Upcoming</option>
-                                <option <?php if ($this->data['status'] == 'Lead'): ?>selected<?php endif; ?> value="Lead">Prospective / Lead</option>
-                                <option <?php if ($this->data['status'] == 'OnHold'): ?>selected<?php endif; ?> value="OnHold">On Hold</option>
-                                <option <?php if ($this->data['status'] == 'Full'): ?>selected<?php endif; ?> value="Full">Full</option>
-                                <option <?php if ($this->data['status'] == 'Closed'): ?>selected<?php endif; ?> value="Closed">Closed</option>
-                                <option <?php if ($this->data['status'] == 'Canceled'): ?>selected<?php endif; ?> value="Canceled">Canceled</option>
+                                <?php foreach($this->jobOrderStatuses as $statusTypeName => $statusType){
+                                    echo("<optgroup label=".$statusTypeName.">");
+                                    foreach($statusType as $status){
+                                        $selected = "";
+                                        if ($this->data['status'] == $status){
+                                            $selected = "selected ";
+                                        }
+                                        echo('<option '.$selected.'value="'.$status.'">'.$status.'</option>');
+                                    }
+                                    echo("</optgroup>");
+                                }?>
                             </select>&nbsp;*
                         </td>
 
@@ -330,23 +334,7 @@
             </form>
 
             <script type="text/javascript">
-                CKEDITOR.replace( 'description' );
-                CKEDITOR.on('instanceReady', function(ev)
-                {
-                    var tags = ['p', 'ol', 'ul', 'li']; // etc.
-
-                    for (var key in tags) {
-                        ev.editor.dataProcessor.writer.setRules(
-                            tags[key],
-                            {
-                                indent : false,
-                                breakBeforeOpen : false,
-                                breakAfterOpen : false,
-                                breakBeforeClose : false,
-                                breakAfterClose : false, 
-                            });
-                    }
-                });
+                placeCkEditorIn('description');
             </script>
 
             <script type="text/javascript">

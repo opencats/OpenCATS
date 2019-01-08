@@ -28,11 +28,11 @@ Feature: Access Level to objects check - sub pages (show, ...)
     And I should <editJobOrder> "Edit"
     And I should <deleteJobOrder> "Delete"
     And I should <administrativeHideShow> "Administrative"
-    And I should <addToPipeline> "Add Candidate to This Job Order Pipeline"
+    And I should <addToPipeline> "Add Candidate to This Job Order"
     And I should <export> "Export"
     And I should <details> "Job Order Details"
     And the page should <logAnActivity> contain "Log an Activity"  
-    And the page should <removeFromPipeline> contain "Remove from Pipeline"
+    And the page should <removeFromPipeline> contain "Remove from Job Order"
     And the page should <setMatchingRating> contain "<map"
     And the page should <deleteAttachment> contain "index.php?m=joborders&amp;a=deleteAttachment"
 
@@ -68,17 +68,17 @@ Feature: Access Level to objects check - sub pages (show, ...)
      And I should <deleteCandidate> "Delete"
      And I should <viewHistory> "View History"
      And I should <administrativeHideShow> "Administrative"
-     And the page should <addToPipeline> contain "Add This Candidate to Job Order Pipeline"
+     And the page should <addToPipeline> contain "Add This Candidate to Job Order"
      And I should <logAnActivity> "Log an Activity"
      And the page should <logAnActivity2> contain "Log an Activity"  
-     And the page should <removeFromPipeline> contain "Remove from Pipeline"
+     And the page should <removeFromPipeline> contain "Remove from Job Order"
      And the page should <editActivity> contain "editActivity"
      And the page should <deleteActivity> contain "deleteActivity"
      And the page should <setMatchingRating> contain "<map"
      And the page should <deleteAttachment> contain "index.php?m=candidates&amp;a=deleteAttachment"
      #When I click on "arrow"
      #Then the page should <addToList> contain "Add To List"
-     #And the page should <addToPipeline> contain "Add To Pipeline"
+     #And the page should <addToPipeline> contain "Add To Job Order"
      
    Examples:
      | accessLevel | addCandidate | searchCandidate | quickSearch | actionMenu | addToList | details | scheduleEvent | addAttachment | editCandidate | deleteCandidate | viewHistory | administrativeHideShow | addToPipeline | logAnActivity2 | logAnActivity | removeFromPipeline | editActivity | deleteActivity | setMatchingRating | deleteAttachment |
@@ -204,7 +204,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
      And I should <lists> "- Page"
      And I should <alphabetFilter> "ALL"
      And the page should <removeFromList> contain "Remove From This List"
-     And the page should <addToPipeline> contain "Add To Pipeline"
+     And the page should <addToPipeline> contain "Add To Job Order"
      And the page should <sendEmail> contain "Send E-Mail"
      And the page should <export> contain "Export"
      

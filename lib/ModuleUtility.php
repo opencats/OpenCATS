@@ -68,8 +68,8 @@ class ModuleUtility
 
         $moduleClass = $modules[$moduleName][0];
 
-        include_once(
-            'modules/' . $moduleName . '/'
+        include_once(LEGACY_ROOT . 
+            '/modules/' . $moduleName . '/'
             . $moduleClass . '.php'
         );
 
@@ -92,7 +92,7 @@ class ModuleUtility
             $moduleClass = $moduleData[0];
 
             if (file_exists($taskFile =
-                sprintf('./modules/%s/tasks/tasks.php',
+                sprintf(LEGACY_ROOT . '/modules/%s/tasks/tasks.php',
                     $moduleName)))
             {
                 include_once($taskFile);
@@ -121,8 +121,8 @@ class ModuleUtility
 
         $moduleClass = $modules[$moduleName][0];
 
-        include_once(
-            'modules/' . $moduleName . '/'
+        include_once(LEGACY_ROOT . 
+            '/modules/' . $moduleName . '/'
             . $moduleClass . '.php'
         );
 

@@ -46,10 +46,10 @@ require_once('lib/simpletest/reporter.php');
 require_once('lib/simpletest/form.php');
 
 /* CATS Test Framework. */
-include_once('./modules/tests/CATSTestReporter.php');
-include_once('./modules/tests/CATSWebTestCase.php');
-include_once('./modules/tests/CATSAJAXTestCase.php');
-include_once('./modules/tests/TestCaseList.php');
+include_once(LEGACY_ROOT . '/modules/tests/CATSTestReporter.php');
+include_once(LEGACY_ROOT . '/modules/tests/CATSWebTestCase.php');
+include_once(LEGACY_ROOT . '/modules/tests/CATSAJAXTestCase.php');
+include_once(LEGACY_ROOT . '/modules/tests/TestCaseList.php');
 
 
 class TestsUI extends UserInterface
@@ -103,8 +103,8 @@ class TestsUI extends UserInterface
 
     private function runSelectedTests()
     {
-        include('./modules/tests/testcases/WebTests.php');
-        include('./modules/tests/testcases/AJAXTests.php');
+        include(LEGACY_ROOT . '/modules/tests/testcases/WebTests.php');
+        include(LEGACY_ROOT . '/modules/tests/testcases/AJAXTests.php');
 
         /* FIXME: 2 groups! Web, AJAX. */
         $testSuite = new TestSuite('CATS Test Suite');

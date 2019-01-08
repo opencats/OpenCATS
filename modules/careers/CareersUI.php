@@ -26,23 +26,23 @@
  * $Id: CareersUI.php 3812 2007-12-05 21:33:28Z andrew $
  */
 
-include_once('./lib/CareerPortal.php');
-include_once('./lib/JobOrders.php');
-include_once('./lib/Candidates.php');
-include_once('./lib/Site.php');
-include_once('./lib/Companies.php');
-include_once('./lib/Contacts.php');
-include_once('./lib/Users.php');
-include_once('./lib/FileUtility.php');
-include_once('./lib/ActivityEntries.php');
-include_once('./lib/DocumentToText.php');
-include_once('./lib/DatabaseConnection.php');
-include_once('./lib/DatabaseSearch.php');
-include_once('./lib/CommonErrors.php');
-include_once('./lib/Questionnaire.php');
-include_once('./lib/DocumentToText.php');
-include_once('./lib/FileUtility.php');
-include_once('./lib/ParseUtility.php');
+include_once(LEGACY_ROOT . '/lib/CareerPortal.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/Site.php');
+include_once(LEGACY_ROOT . '/lib/Companies.php');
+include_once(LEGACY_ROOT . '/lib/Contacts.php');
+include_once(LEGACY_ROOT . '/lib/Users.php');
+include_once(LEGACY_ROOT . '/lib/FileUtility.php');
+include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
+include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseSearch.php');
+include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
+include_once(LEGACY_ROOT . '/lib/Questionnaire.php');
+include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
+include_once(LEGACY_ROOT . '/lib/FileUtility.php');
+include_once(LEGACY_ROOT . '/lib/ParseUtility.php');
 
 class CareersUI extends UserInterface
 {
@@ -115,7 +115,7 @@ class CareersUI extends UserInterface
 
         /* Get all public job orders for this site. */
         $jobOrders = new JobOrders($siteID);
-        $rs = $jobOrders->getAll(JOBORDERS_STATUS_ACTIVE, -1, -1, -1, false, true);
+        $rs = $jobOrders->getAll(JOBORDERS_STATUS_SHARE, -1, -1, -1, false, true);
 
         $useCookie = true;
 
@@ -1412,7 +1412,7 @@ class CareersUI extends UserInterface
             /* Attempt to add the candidate to the pipeline. */
             if (!$pipelines->add($candidateID, $jobOrderID))
             {
-                CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add candidate to pipeline.');
+                CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add candidate to job order.');
             }
 
             // FIXME: For some reason, pipeline entries like to disappear between
