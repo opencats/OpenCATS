@@ -41,7 +41,7 @@ $optionalComponents['usZipCodes']['removeCode'] = '
 $optionalComponents['usZipCodes']['detectCode'] = '
     $rs = MySQLQuery(\'SELECT * FROM zipcodes\');
 
-    if ($rs && mysql_fetch_row($rs))
+    if ($rs && mysqli_fetch_row($rs))
     {
         return true;
     }
