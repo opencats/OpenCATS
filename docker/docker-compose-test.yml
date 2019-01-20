@@ -11,7 +11,7 @@ services:
 
     php:
       container_name: opencats_test_php
-      image: mdobak/7.3.0RC5-fpm-alpine
+      image: php/7.3-fpm-alpine
       volumes_from:
         - opencatsdata
 
