@@ -14,7 +14,7 @@ before_install:
 
 language: php
 php:
-- 7.3
+- 5.6
 
 script:
     - composer install
@@ -24,7 +24,7 @@ script:
     - cd ..; ./ci/package-code.sh 
 
 deploy:
-  provider: releases
+  providr: releases
   api_key:
     secure: Srgq/VW4yoYg0yWq/llOix47MAe2EKccqxfdukxrm6fePKRRv6bVBQXH/0hhrTTn4Q6xrmVycqC36SD9/JVL684xNYBESlT4V3DpZ6vxPYeNzU2GjtoMBqGCOgjZvxpq5AGIf7gXZ9GdM4+xikBPthspCcUorg8hkLgaOQ5PPlI0dC7cdFPjQweoxAqDe6VwQ31J1MiO+DPI+69GHb/KukHkS/sjhZTMZoO0shfw5dhv0TSuaeaPzWYw1+g6sNdgNurNbi4bPEEpofUdfA+WaWw7oapsO7ZW4qTqKxsrsrCf1ZgTnynm2Kow5D7oFVqRkt/kpoQ/UzwZUalzm8JrVeYPbQ2j7mYxOh3TcTYn24NSm8xuDgF8ZaG3BxoWCLQSA8pdJZRI7QbWrDdFA93ZD1EWRW0amL3rOGLED61K0ZFhulUBy1bKyjAnT2T6FPsKk4hOwFDo1nojzemQnl6PfPT6Lsuvk5FotevsemBUQl+xx7UQsxhDM3kw3/IheE/abOYmIK+qRKdcH5J04m+dadXKZBa+h/Jsd5AdC7Yp3Si74IhJFceyvQIx7GkkG4fo/0Y34mCAXuwEN7acB7RbNU8DVyzfUtpWSPwkw2iDTJshDsV1RN94Xzt+k/GvLAvAOttozkhruYV563+MEYizBRN+96jaF/35dZYd+X3UwBA=
   file:
