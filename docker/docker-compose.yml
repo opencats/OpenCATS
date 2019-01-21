@@ -11,7 +11,7 @@ services:
 
     php:
       container_name: opencats_php
-      image: devilbox/php-fpm-7.3:prod-alpine
+      build: ./php/
       volumes_from:
         - opencatsdata
 
