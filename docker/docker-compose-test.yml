@@ -11,7 +11,7 @@ services:
 
     php:
       container_name: opencats_test_php
-      build: ./php/
+      image: russh/php-base:7.2-fpm-alpine
       volumes_from:
         - opencatsdata
 
