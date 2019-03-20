@@ -14,7 +14,7 @@ before_install:
 
 language: php
 php:
-- 7.3
+- 7.2
 
 script:
     - composer install

@@ -785,9 +785,9 @@ class Contacts
                 company_id = %s
              AND
                 site_id = %s",
-             $this->_db->makeQueryString($departmentName),
+             $sql->_db->makeQueryString($departmentName),
              $companyID,
-             $this->_siteID
+             $sql->_siteID
         );
         $rs = $db->getAssoc($sql);
 
