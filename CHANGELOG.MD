@@ -887,7 +887,7 @@ Original CATS ChangeLog
         installer.
   * BH: Time zone constants updated.
   * WB: Cleanups to DatabaseConnection.php; always use connection handle for
-        mysql_error().
+        mysqli_error().
   * WB: More additions to qc.sh.
   * WB: Misc. cleanups.
   * BH: All sites can use job order PDF report generator.

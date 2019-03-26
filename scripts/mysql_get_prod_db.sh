@@ -10,7 +10,7 @@ MYSQL_PROD_USER=sae
 MYSQL_PROD_PASSWORD=sae99
 MYSQL_PROD_ARGS="-u${MYSQL_PROD_USER} -p${MYSQL_PROD_PASSWORD} -h${MYSQL_PROD_HOST}"
 
-HELP_ARGS="mysql_get_prod_db USERNAME PASSWORD DATABASE_NAME\nCopy production database DATABASE_NAME to local MySQL server. Must supply username/password for production server."
+HELP_ARGS="mysqli_get_prod_db USERNAME PASSWORD DATABASE_NAME\nCopy production database DATABASE_NAME to local MySQL server. Must supply username/password for production server."
 
 if [ $# -ne 3 ];
 then

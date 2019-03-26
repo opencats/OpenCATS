@@ -267,7 +267,7 @@ class DatabaseConnection
     /**
      * Returns one row from a query's result set in an associative array,
      * starting at the current row pointer. After the call, the row pointer
-     * will be incemented by 1 (this is how the mysql_fetch_*() functions
+     * will be incemented by 1 (this is how the mysqli_fetch_*() functions
      * work). If a query is not specified, this method will operate on the
      * last executed query for this instance. Specifing a query always resets
      * the row pointer to 0.
@@ -458,7 +458,7 @@ class DatabaseConnection
     {
         // FIXME: Security issue, this function is not enough for sanitizing
         // user input. For instance see: 
-        // https://johnroach.info/2011/02/17/why-mysql_real_escape_string-isnt-enough-to-stop-sql-injection-attacks/
+        // https://johnroach.info/2011/02/17/why-mysqli_real_escape_string-isnt-enough-to-stop-sql-injection-attacks/
         // To be replaced with Symfony's stack
         return mysqli_real_escape_string($this->_connection, $string);
     }
@@ -552,7 +552,7 @@ class DatabaseConnection
     }
 
     /**
-     * Returns the last error message (value of mysql_error()) for the current
+     * Returns the last error message (value of mysqli_error()) for the current
      * MySQL connection.
      *
      * @return string Error message, or '' if no error occurred.
