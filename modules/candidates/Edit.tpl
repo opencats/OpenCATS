@@ -274,7 +274,7 @@
                          <?php if ($this->EEOSettingsRS['veteranTracking'] == 1): ?>
                              <tr>
                                 <td class="tdVertical">
-                                    <label id="canRelocateLabel" for="canRelocate">Vetran Status:</label>
+                                    <label id="canRelocateLabel" for="canRelocate">Veteran Status:</label>
                                 </td>
                                 <td class="tdData">
                                     <select id="veteran" name="veteran" class="inputbox" style="width:200px;">
