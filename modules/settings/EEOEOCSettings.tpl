@@ -48,9 +48,9 @@
                                         <input type="checkbox" name="ethnicTracking" id="ethnicTracking"<?php if ($this->EEOSettingsRS['ethnicTracking'] == '1'): ?> checked<?php endif; ?> onchange="if (this.checked) document.getElementById('enabled').checked=true;">
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr
                                     <td class="tdVertical" style="width: 250px;">
-                                        Track Vetran Status:
+                                        Track Veteran Status:
                                     </td>
                                     <td class="tdData">
                                         <input type="checkbox" name="veteranTracking" id="veteranTracking"<?php if ($this->EEOSettingsRS['veteranTracking'] == '1'): ?> checked<?php endif; ?> onchange="if (this.checked) document.getElementById('enabled').checked=true;">
