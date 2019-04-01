@@ -41,8 +41,8 @@ include_once(LEGACY_ROOT . '/lib/Calendar.php');
  */
 class Contacts
 {
-    private $_db;
-    private $_siteID;
+    public $_db;
+    public $_siteID;
 
     public $extraFields;
 
@@ -394,7 +394,7 @@ class Contacts
         $history = new History($this->_siteID);
         $history->storeHistoryDeleted(DATA_ITEM_CONTACT, $contactID);
     }
-    
+
     /**
      * Returns number of total activities (for contacts datagrid).
      *
