@@ -47,6 +47,7 @@ include_once(LEGACY_ROOT . '/lib/History.php');
 include_once(LEGACY_ROOT . '/lib/DataGrid.php');
 include_once(LEGACY_ROOT . '/lib/JobOrderTypes.php');
 include_once(LEGACY_ROOT . '/lib/JobOrderStatuses.php');
+include_once(LEGACY_ROOT . './lib/Contacts.php');
 
 /**
  *	Job Orders Library
@@ -823,12 +824,12 @@ class JobOrders
 
         return (boolean) $this->_db->query($sql);
     }
-    
+
     public function checkOpenings($regardingID)
     {
-        
+
         $sql = sprintf(
-            "SELECT 
+            "SELECT
                 joborder.openings_available AS openingsAvailable
             FROM
                 joborder
@@ -839,15 +840,15 @@ class JobOrders
             $this->_siteID,
             $this->_db->makeQueryInteger($regardingID)
         );
-        
+
         $rs = $this->_db->getAllAssoc($sql);
         if(!$rs)
         {
             return false;
         }
-        
+
         $openingsAvailable = intval($rs[0]['openingsAvailable']);
-        
+
         if($openingsAvailable > 0)
         {
             return true;
@@ -1014,7 +1015,7 @@ class JobOrdersDataGrid extends DataGrid
                                        'pagerWidth'    => 25,
                                        'filterHaving'  => 'notContacted',
                                        'filterTypes'   => '===>=<'),
- 
+
             'Submitted' =>       array('select'   => '(
                                                             SELECT
                                                                 COUNT(*)
