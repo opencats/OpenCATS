@@ -62,11 +62,12 @@ class JobOrders
     public $extraFields;
 
 
-    public function __construct($siteID)
+    public function $this->contacts->($siteID)
     {
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
         $this->extraFields = new ExtraFields($siteID, DATA_ITEM_JOBORDER);
+        $this->contacts = new Contacts($siteID);
     }
 
 
@@ -867,7 +868,7 @@ class JobOrdersDataGrid extends DataGrid
 
 
     // FIXME: Fix ugly indenting - ~400 character lines = bad.
-    public function __construct($instanceName, $siteID, $parameters, $misc)
+    public function $this->contacts->($instanceName, $siteID, $parameters, $misc)
     {
         $this->_db = DatabaseConnection::getInstance();
         $this->_siteID = $siteID;
@@ -1209,7 +1210,7 @@ class JobOrdersDataGrid extends DataGrid
             }
         }
 
-        parent::__construct($instanceName, $parameters, $misc);
+        parent::$this->contacts->($instanceName, $parameters, $misc);
     }
 
     /**
