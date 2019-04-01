@@ -58,6 +58,7 @@ class JobOrders
 {
     public $_db;
     public $_siteID;
+    public $contacts;
 
     public $extraFields;
 
