@@ -47,7 +47,7 @@ include_once(LEGACY_ROOT . '/lib/History.php');
 include_once(LEGACY_ROOT . '/lib/DataGrid.php');
 include_once(LEGACY_ROOT . '/lib/JobOrderTypes.php');
 include_once(LEGACY_ROOT . '/lib/JobOrderStatuses.php');
-include_once(LEGACY_ROOT . './lib/Contacts.php');
+include_once(LEGACY_ROOT . '/lib/Contacts.php');
 
 /**
  *	Job Orders Library
