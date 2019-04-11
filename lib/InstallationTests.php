@@ -235,8 +235,8 @@ class InstallationTests
         echo '<tr class="fail"><td><strong>PHP MySQL extension (mysqli) is not loaded.</strong><br />'
             . 'Check your settings in php.ini.<br /><br />'
             . 'Under certain Linux / BSD distributions, the PHP MySQL extension is a separate package.<br /><br />'
-            . '<strong>Debian:</strong> Run "apt-get install php5-mysqli" and restart your webserver.<br /><br />'
-            . '<strong>FreeBSD:</strong> Install the php5-mysqli port, or configure MySQL support in the '
+            . '<strong>Debian:</strong> Run "apt-get install php7-mysqli" and restart your webserver.<br /><br />'
+            . '<strong>FreeBSD:</strong> Install the php7-mysqli port, or configure MySQL support in the '
             . 'php-extensions port and restart your webserver.</td></tr>';
         return false;
     }
@@ -253,8 +253,8 @@ class InstallationTests
         echo '<tr class="fail"><td><strong>PHP Sessions extension (session) is not loaded.</strong><br />'
             . 'Check your settings in php.ini.<br /><br />'
             . 'Under certain Linux / BSD distributions, the PHP session extension is a separate package.<br /><br />'
-            . '<strong>Debian:</strong> Run "apt-get install php5-session" and restart your webserver.<br /><br />'
-            . '<strong>FreeBSD:</strong> Install the php5-session session port, or configure session support in the'
+            . '<strong>Debian:</strong> Run "apt-get install php7-session" and restart your webserver.<br /><br />'
+            . '<strong>FreeBSD:</strong> Install the php7-session session port, or configure session support in the'
             . ' php-extensions port and restart your webserver.<br /><br />';
         return false;
     }
@@ -271,8 +271,8 @@ class InstallationTests
         echo '<tr class="fail"><td><strong>PHP CType string classification extension (ctype) is not loaded.</strong><br />'
             . 'Check your settings in php.ini.<br /><br />'
             . 'Under certain Linux / BSD distributions, the PHP CType extension is a separate package.<br /><br />'
-            . '<strong>Debian:</strong> Run "apt-get install php5-ctype" and restart your webserver.<br /><br />'
-            . '<strong>FreeBSD:</strong> Install the php5-ctype port, or configure CType support in the php-extensions port and restart your webserver.<br /><br />'
+            . '<strong>Debian:</strong> Run "apt-get install php7-ctype" and restart your webserver.<br /><br />'
+            . '<strong>FreeBSD:</strong> Install the php7-ctype port, or configure CType support in the php-extensions port and restart your webserver.<br /><br />'
             . '<strong>See also:</strong> <a target="_blank" href="http://www.google.com/search?q=%22Call+to+undefined+function+ctype_digit%28%29%22">Google: "Call to undefined function ctype_digit()"</a></td></tr>';
 
         return false;
@@ -290,8 +290,8 @@ class InstallationTests
         echo '<tr class="fail"><td><strong>PHP PCRE regular expressions extension (pcre) is not loaded.</strong><br />'
             . 'Check your settings in php.ini.<br /><br />'
             . 'Under certain Linux / BSD distributions, the PHP PCRE extension is a separate package.<br /><br />'
-            . '<strong>Debian:</strong> Run "apt-get install php5-pcre" and restart your webserver.<br /><br />'
-            . '<strong>FreeBSD:</strong> Install the php5-pcre port, or configure PCRE support in the php-extensions port and restart your webserver.</td></tr>';
+            . '<strong>Debian:</strong> Run "apt-get install php7-pcre" and restart your webserver.<br /><br />'
+            . '<strong>FreeBSD:</strong> Install the php7-pcre port, or configure PCRE support in the php-extensions port and restart your webserver.</td></tr>';
 
         return false;
     }
@@ -310,9 +310,9 @@ class InstallationTests
         echo '<tr class="warning"><td><strong>PHP GD image manipulation library extension (gd) is not loaded.</strong><br />'
             . 'Check your settings in php.ini.<br /><br />OpenCATS will function without GD, but no graphs will load.<br /><br />'
             . 'Under certain Linux / BSD distributions, the PHP GD extension is a separate package.<br /><br />'
-            . '<strong>Ubuntu:</strong> Run "apt-get install php5-gd" and restart your webserver.<br /><br />'
-            . '<strong>Debian:</strong> Run "apt-get install php5-gd" and restart your webserver.<br /><br />'
-            . '<strong>FreeBSD:</strong> Install the php5-gd port, or configure GD support in the php-extensions port and restart your webserver.'
+            . '<strong>Ubuntu:</strong> Run "apt-get install php7-gd" and restart your webserver.<br /><br />'
+            . '<strong>Debian:</strong> Run "apt-get install php7-gd" and restart your webserver.<br /><br />'
+            . '<strong>FreeBSD:</strong> Install the php7-gd port, or configure GD support in the php-extensions port and restart your webserver.'
             . '</td></tr>';
         $GLOBALS['warningsOccurred'] = true;
         return true;
@@ -331,7 +331,7 @@ class InstallationTests
         echo '<tr class="warning"><td><strong>PHP LDAP library extension (ldap) is not loaded.</strong><br />'
             . 'Check your settings in php.ini.<br /><br />OpenCATS will function without LDAP, but will not authenticate from a LDAP service<br /><br />'
             . 'Under certain GNU/Linux distributions, the PHP LDAP extension is a separate package.<br /><br />'
-            . '<strong>Ubuntu/Debian:</strong> Run "apt-get install php5-ldap" and restart your webserver.<br /><br />'
+            . '<strong>Ubuntu/Debian:</strong> Run "apt-get install php7-ldap" and restart your webserver.<br /><br />'
             . '<strong>Fedora/CentOS/RHEL:</strong> Run "dnf install php-ldap" or "yum install php-ldap" and restart your webserver.<br /><br />'
             . '</td></tr>';
         $GLOBALS['warningsOccurred'] = true;
@@ -357,8 +357,8 @@ class InstallationTests
             . 'CATS Professional functionality will not be supported.<br /><br />'
             . 'Under certain Linux / BSD distributions, the PHP SOAP extension is a separate package.<br /><br />'
             . '<strong>Ubuntu:</strong> Run "apt-get install php-soap" and restart your webserver.<br /><br />'
-            . '<strong>Debian:</strong> Run "apt-get install php5-soap" and restart your webserver.<br /><br />'
-            . '<strong>FreeBSD:</strong> Install the php5-soap port, or configure SOAP support in the php-extensions port and restart your webserver.'
+            . '<strong>Debian:</strong> Run "apt-get install php7-soap" and restart your webserver.<br /><br />'
+            . '<strong>FreeBSD:</strong> Install the php7-soap port, or configure SOAP support in the php-extensions port and restart your webserver.'
             . '</td></tr>';
         $GLOBALS['warningsOccurred'] = true;
         return true;
