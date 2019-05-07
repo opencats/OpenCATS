@@ -38,7 +38,6 @@
  */
 
 include_once(LEGACY_ROOT . '/modules/queue/constants.php');
-include_once(LEGACY_ROOT . '/lib/Mailer.php');
 
 /**
  *	Asynchroneous Queue Processor Library

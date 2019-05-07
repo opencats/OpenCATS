@@ -13,5 +13,8 @@
         "psr-4": {
             "OpenCATS\\": "src/OpenCATS/"
         }
+    },
+    "require": {
+        "phpmailer/phpmailer": "^6.0"
     }
 }
