@@ -3,18 +3,18 @@
 // This tool will reindex your *.odt, *.rtf and *.docx formats
 // Feature to reindex those files has nbeen added by patch on 2011 July, 08
 // by Inuits Company. Email: dennis.povshedny@gmail.com
-// 
+//
 // If you used version 0.9.2 or earlier for a while all your RTF, DOCX and ODT
 // candidate attachments are not indexed. By running this script once you may
 // index all such attachments.
-// 
+//
 // Please run this from CATS root directory.
-// 
+//
 
 require_once 'config.php';
 
 function rebuild_old_docs() {
-	
+
 	global $con;
     $result = mysqli_query($con, 'SELECT * FROM `attachment` WHERE `text` IS NULL');
 
@@ -39,7 +39,9 @@ function rebuild_old_docs() {
             $upd = mysqli_query($con, $sql);
             if (!$upd) {
                $countError++;
-                print('DB error: ' . mysqli_error($con));
+				 				$error = "errno: " . $upd->connect_errno . ", ";
+				 				$error .= "error: " . $upd->connect_error;
+                print('DB error: ' . $error);
             } else {
                $countOK++;
             }
@@ -54,7 +56,9 @@ function rebuild_old_docs() {
 $con = mysqli_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS);
 if (!$con)
 {
-  die('Could not connect: ' . mysqli_error($con));
+		$error = "errno: " . mysqli_connect_errno() . ", ";
+		$error .= "error: " . mysqli_connect_error();
+		die('Could not connect: ' . $error);
 }
 mysqli_select_db($con, DATABASE_NAME);
 

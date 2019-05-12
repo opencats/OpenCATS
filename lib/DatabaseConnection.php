@@ -111,9 +111,11 @@ class DatabaseConnection
         $this->_connection = @mysqli_connect(
             DATABASE_HOST, DATABASE_USER, DATABASE_PASS
         );
+        // handle connection failures
         if (!$this->_connection)
         {
-            $error = mysqli_error($this->_connection);
+            $error = "errno: " . mysqli_connect_errno() . ", ";
+            $error .= "error: " . mysqli_connect_error();
 
             die(
                 '<!-- NOSPACEFILTER --><p style="background: #ec3737; padding:'
@@ -127,7 +129,8 @@ class DatabaseConnection
         $isDBSelected = @mysqli_select_db($this->_connection, DATABASE_NAME);
         if (!$isDBSelected)
         {
-            $error = mysqli_error($this->_connection);
+            $error = "errno: " . mysqli_connect_errno() . ", ";
+            $error .= "error: " . mysqli_connect_error();
 
             die(
                 '<!-- NOSPACEFILTER --><p style="background: #ec3737; '
@@ -167,18 +170,35 @@ class DatabaseConnection
 
         if( ini_get('safe_mode') )
         {
-			//don't do anything in safe mode
-		}
-		else
+    			//don't do anything in safe mode
+    		}
+    		else
         {
             /* Don't limit the execution time of queries. */
             set_time_limit(0);
         }
 
         $this->_queryResult = mysqli_query($this->_connection, $query);
+
+        // handle connection failures
+        if ($this->_queryResult->connect_errno) {
+            $error = "errno: " . $this->_queryResult->connect_errno . ", ";
+            $error .= "error: " . $this->_queryResult->connect_error;
+
+            die (
+                '<!-- NOSPACEFILTER --><p style="background: #ec3737; padding:'
+                . ' 4px; margin-top: 0; font: normal normal bold 12px/130%'
+                . ' Arial, Tahoma, sans-serif;">Query Error -- Report to System'
+                . " Administrator ASAP</p><pre>\n\nMySQL Query Failed: "
+                . $error . "\n\n" . $query . "</pre>\n\n"
+            );
+            return false;
+        }
+
         if (!$this->_queryResult && !$ignoreErrors)
         {
-            $error = mysqli_error($this->_connection);
+            $error = "errno: " . $this->_queryResult->connect_errno . ", ";
+            $error .= "error: " . $this->_queryResult->connect_error;
 
             echo (
                 '<!-- NOSPACEFILTER --><p style="background: #ec3737; padding:'
@@ -457,7 +477,7 @@ class DatabaseConnection
     public function escapeString($string)
     {
         // FIXME: Security issue, this function is not enough for sanitizing
-        // user input. For instance see: 
+        // user input. For instance see:
         // https://johnroach.info/2011/02/17/why-mysql_real_escape_string-isnt-enough-to-stop-sql-injection-attacks/
         // To be replaced with Symfony's stack
         return mysqli_real_escape_string($this->_connection, $string);
@@ -559,7 +579,9 @@ class DatabaseConnection
      */
     public function getError()
     {
-        return mysqli_error($this->_connection);
+        $error = "errno: " . mysqli_connect_errno() . ", ";
+        $error .= "error: " . mysqli_connect_error();
+        return $error;
     }
 
     /**

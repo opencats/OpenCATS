@@ -692,27 +692,27 @@ switch ($action)
         include_once(LEGACY_ROOT . '/lib/FileCompressor.php');
         MySQLConnect();
         $extractor = new ZipFileExtractor('./restore/catsbackup.bak');
-        
+
         CATSUtility::changeConfigSetting('ENABLE_DEMO_MODE', 'false');
 
         /* Extract the file.  This command also executes all sql commands in the file. */
         /* Normally, we could just do the following lines, but we want a custom extractor
            that ignores the file 'database', and executes all of the catsbackup.sql.xxx
            files rather than extracting them. */
-        /* 
+        /*
             if (!$extractor->open() || !$extractor->extractAll())
             {
                 echo($extractor->getErrorMessage());
             }
         */
-        
+
         if (!$extractor->open())
         {
             echo($extractor->getErrorMessage());
-        }       
-        
+        }
+
         $metaData = $extractor->getMetaData();
-        
+
         foreach ($metaData['centralDirectory'] as $index => $data)
         {
             $fileName = $data['filename'];
@@ -735,16 +735,16 @@ switch ($action)
                 }
 
                 $fileContents = $extractor->getFile($index);
-                
+
                 if ($fileContents === false)
                 {
                     /* Report error? */
                 }
-                
+
                 file_put_contents ($fileName, $fileContents);
             }
         }
-        
+
         echo '<script type="text/javascript">Installpage_populate(\'a=upgradeCats\');</script>';
         break;
 
@@ -784,25 +784,25 @@ switch ($action)
         include_once(LEGACY_ROOT . '/lib/FileCompressor.php');
         MySQLConnect();
         $extractor = new ZipFileExtractor('./db/cats_testdata.bak');
-        
+
         /* Extract the file.  This command also executes all sql commands in the file. */
         /* Normally, we could just do the following lines, but we want a custom extractor
            that ignores the file 'database', and executes all of the catsbackup.sql.xxx
            files rather than extracting them. */
-        /* 
+        /*
             if (!$extractor->open() || !$extractor->extractAll())
             {
                 echo($extractor->getErrorMessage());
             }
         */
-        
+
         if (!$extractor->open())
         {
             echo($extractor->getErrorMessage());
-        }       
-        
+        }
+
         $metaData = $extractor->getMetaData();
-        
+
         foreach ($metaData['centralDirectory'] as $index => $data)
         {
             $fileName = $data['filename'];
@@ -825,12 +825,12 @@ switch ($action)
                 }
 
                 $fileContents = $extractor->getFile($index);
-                
+
                 if ($fileContents === false)
                 {
                     /* Report error? */
                 }
-                
+
                 file_put_contents ($fileName, $fileContents);
             }
         }
@@ -957,14 +957,14 @@ switch ($action)
                   Installpage_populate(\'a=onReindexResumes\');
               </script>';
         break;
-            
+
     case 'onReindexResumes':
         include_once(LEGACY_ROOT . '/modules/install/ajax/attachmentsReindex.php');
-        
+
         echo '<script type="text/javascript">
                   Installpage_populate(\'a=maintComplete\');
               </script>';
-        
+
         break;
 
     case 'maintComplete':
@@ -1072,10 +1072,13 @@ function MySQLConnect()
 
     if (!$mySQLConnection)
     {
+				$error = "errno: " . mysqli_connect_errno() . ", ";
+				$error .= "error: " . mysqli_connect_error();
+
         die(
             '<p style="background: #ec3737; padding: 4px; margin-top: 0; font:'
             . ' normal normal bold 12px/130% Arial, Tahoma, sans-serif;">Error '
-            . " Connecting to Database</p><pre>\n\n" . mysqli_error($mySQLConnection) . "</pre>\n\n"
+            . " Connecting to Database</p><pre>\n\n" . $error . "</pre>\n\n"
         );
         return false;
     }
@@ -1093,7 +1096,8 @@ function MySQLConnect()
     $isDBSelected = @mysqli_select_db($mySQLConnection, DATABASE_NAME);
     if (!$isDBSelected)
     {
-        $error = mysqli_error($mySQLConnection);
+				$error = "errno: " . mysqli_connect_errno() . ", ";
+				$error .= "error: " . mysqli_connect_error();
 
         die(
             '<p style="background: #ec3737; padding: 4px; margin-top: 0; font:'
@@ -1111,7 +1115,8 @@ function MySQLQuery($query, $ignoreErrors = false)
     $queryResult = mysqli_query($mySQLConnection, $query);
     if (!$queryResult && !$ignoreErrors)
     {
-        $error = mysqli_error($mySQLConnection);
+				$error = "errno: " . $queryResult->connect_errno . ", ";
+				$error .= "error: " . $queryResult->connect_error;
 
         if ($error == 'Query was empty')
         {
