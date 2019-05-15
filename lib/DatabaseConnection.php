@@ -181,7 +181,7 @@ class DatabaseConnection
         $this->_queryResult = mysqli_query($this->_connection, $query);
 
         // handle connection failures
-        if ($this->_queryResult->connect_errno) {
+        if (isset($this->_queryResult->connect_errno)) {
             $error = "errno: " . $this->_queryResult->connect_errno . ", ";
             $error .= "error: " . $this->_queryResult->connect_error;
 
@@ -195,7 +195,7 @@ class DatabaseConnection
             return false;
         }
 
-        if (!$this->_queryResult && !$ignoreErrors)
+        if (!$this->_queryResult && isset($this->_queryResult->connect_errno) && !$ignoreErrors)
         {
             $error = "errno: " . $this->_queryResult->connect_errno . ", ";
             $error .= "error: " . $this->_queryResult->connect_error;
