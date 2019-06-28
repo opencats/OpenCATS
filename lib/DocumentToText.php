@@ -412,8 +412,8 @@ class DocumentToText
                 $zip->close();
                 // Load XML from a string
                 // Skip errors and warnings
-                $xml = new DOMDocument();
                 libxml_disable_entity_loader(true);
+                $xml = new DOMDocument();
                 $xml->loadXML($data, LIBXML_NOENT | LIBXML_XINCLUDE | LIBXML_NOERROR | LIBXML_NOWARNING);
                 $raw_text = $xml->saveXML();
                 // We need to add a space where end-of-line and end-of-paragraphs present 
