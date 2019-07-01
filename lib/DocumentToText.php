@@ -412,6 +412,7 @@ class DocumentToText
                 $zip->close();
                 // Load XML from a string
                 // Skip errors and warnings
+                libxml_disable_entity_loader(true);
                 $xml = new DOMDocument();
                 $xml->loadXML($data, LIBXML_NOENT | LIBXML_XINCLUDE | LIBXML_NOERROR | LIBXML_NOWARNING);
                 $raw_text = $xml->saveXML();
