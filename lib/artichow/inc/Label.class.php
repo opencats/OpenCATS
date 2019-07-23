@@ -235,7 +235,7 @@ class awLabel implements awPositionable {
 	 * @param string $format New format (printf style: %.2f for example)
 	 */
 	public function setFormat($format) {
-		$function = 'label'.time().'_'.(microtime() * 1000000);
+	    $function = 'label'.time().'_'.(microtime(true) * 10000);
 		eval('function '.$function.'($value) {
 			return sprintf("'.addcslashes($format, '"').'", $value);
 		}');
@@ -498,7 +498,7 @@ class awLabel implements awPositionable {
 		}
 
 		// Hide last label
-		if($key === count($this->texts) - 1 and $this->hideLast) {
+		if(is_array($this->texts) && $key === count($this->texts) - 1 and $this->hideLast) {
 			return;
 		}
 
