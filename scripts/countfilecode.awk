@@ -2,7 +2,7 @@
 #
 # A program to count the number of lines in a C source code file
 # Written by David Reiss. Copyright (C) 2001 David Reiss.
-# This file may be distrubuted under the conditions of the
+# This file may be distributed under the conditions of the
 # GNU GPL, version 2 or later.
 #
 # $Id: $
