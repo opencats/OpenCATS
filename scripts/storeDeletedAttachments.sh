@@ -35,7 +35,7 @@ do
     then
         $SCP_PATH "$file_path" "${STORE_SERVER}:${STORE_PATH}/${file_name}" 2>/dev/null || \
 	    ( echo "Failed to transfer \"${file_name}\" to ${STORE_SERVER}:/${STORE_PATH}!"; ) && \
-	    ( echo "Transfered \"${file_name}\" to ${STORE_SERVER}:/${STORE_PATH}."; rm -f "${file_path}"; )
+	    ( echo "Transferred \"${file_name}\" to ${STORE_SERVER}:/${STORE_PATH}."; rm -f "${file_path}"; )
     fi
 done
 
