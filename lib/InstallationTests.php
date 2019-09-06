@@ -43,7 +43,7 @@ class InstallationTests
 {
     /* Set this to true to force all tests to fail for debugging. */
     const DEBUG_FAIL = false;
-    
+
     public static function runCoreTests()
     {
         $proceed = true;
@@ -64,56 +64,56 @@ class InstallationTests
 
         return $proceed;
     }
-    
+
     public static function runInstallerTests()
     {
         global $result;
-        
+
         if (!isset($result))
         {
             $result = true;
         }
-        
+
         if (!InstallationTests::checkPHPVersion())
         {
             $result = false;
         }
-        
+
         if (!InstallationTests::checkMagicQuotes())
         {
             $result = false;
         }
-        
+
         if (!InstallationTests::checkRegisterGlobals())
         {
             $result = false;
         }
-        
+
         if (!InstallationTests::checkMySQLExtension())
         {
             $result = false;
         }
-        
+
         if (!InstallationTests::checkSessionExtension())
         {
             $result = false;
         }
-        
+
         if (!InstallationTests::checkPCREExtension())
         {
             $result = false;
         }
-        
+
         if (!InstallationTests::checkCTypeExtension())
         {
             $result = false;
         }
-        
+
         if (!InstallationTests::checkGD2Extension())
         {
             $result = false;
         }
-        
+
         if (!InstallationTests::checkLDAPExtension())
         {
             $result = false;
@@ -123,22 +123,22 @@ class InstallationTests
         {
             $result = false;
         }
-        
+
         if (!InstallationTests::checkZipExtension())
         {
             $result = false;
         }
-        
+
         if (!InstallationTests::checkAttachmentsDir())
         {
             $result = false;
         }
-        
+
         if (!InstallationTests::checkConfigWritable())
         {
             $result = false;
         }
-        
+
         if (!InstallationTests::checkDirectoryWritable())
         {
             $result = false;
@@ -392,7 +392,7 @@ class InstallationTests
         {
             echo sprintf(
                 '<tr class="fail"><td>Cannot connect to database.<pre class="fail">%s</pre></td></tr>',
-                mysqli_error($db)
+                mysqli_connect_error()
             );
             return false;
         }
@@ -411,7 +411,7 @@ class InstallationTests
             echo sprintf(
                 '<tr class="fail"><td>Failed to select database \'%s\'.<pre class="fail">%s</pre></td></tr>',
                 $name,
-                mysqli_error($db)
+                mysqli_connect_error()
             );
             return false;
         }
@@ -767,7 +767,7 @@ class InstallationTests
         {
             echo sprintf(
                 '<tr class="fail"><td>Cannot retrieve MySQL version number. <pre class="fail">%s</pre></td></tr>',
-                mysqli_error($db)
+                $queryResult->connect_error
             );
             return false;
         }

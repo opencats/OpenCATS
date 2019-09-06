@@ -57,7 +57,8 @@ class DatabaseTestCase extends TestCase
         $queryResult = mysqli_query($mySQLConnection, $query);
         if (!$queryResult && !$ignoreErrors)
         {
-            $error = mysqli_error($mySQLConnection);
+    				$error = "errno: " . $queryResult->connect_errno . ", ";
+    				$error .= "error: " . $queryResult->connect_error;
 
             if ($error == 'Query was empty')
             {

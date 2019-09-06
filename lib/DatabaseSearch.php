@@ -144,7 +144,7 @@ class DatabaseSearch
     }
 
     /**
-     * Removes _QCOMMAQ_ and _QSPACEQ_ from a string that was 
+     * Removes _QCOMMAQ_ and _QSPACEQ_ from a string that was
      * created with markUpQuotes.
      *
      * @param string text to unescape
@@ -156,7 +156,7 @@ class DatabaseSearch
             array('_QSPACEQ_', '_QCOMMAQ_'), array(' ', ','), $string
         );
     }
-    
+
     /**
      * Returns true if for every ) we don't have an (, or vice versa.
      *
@@ -168,7 +168,7 @@ class DatabaseSearch
         /* Counters for open and close paranthesis. */
         $open  = 0;
         $close = 0;
-        
+
         /* Loop through each character of the string and ensure all paranthesis
          * are matched.
          */
@@ -180,7 +180,7 @@ class DatabaseSearch
             {
                 ++$open;
             }
-            
+
             /* Close paranthesis. */
             if ($string[$i] == ')')
             {
@@ -189,17 +189,17 @@ class DatabaseSearch
                 {
                     return true;
                 }
-                
+
                 ++$close;
             }
         }
-        
+
         /* If we don't have the same number of ('s as )'s, fail. */
         if ($open != $close)
         {
             return true;
         }
-        
+
         return false;
     }
 
@@ -232,7 +232,7 @@ class DatabaseSearch
         {
             return '0';
         }
-        
+
         /* Add spaces to the input string to make things easier. */
         $string = ' ' . $string . ' ';
 
@@ -297,7 +297,7 @@ class DatabaseSearch
         $string = str_replace('%5C%5C%2A', '*', $string);
         $string = str_replace('%', 'PPPERCENTTT', $string);
         $string = urldecode($string);
-        
+
         /* Convert normal boolean operators to shortened syntax. */
         /* Translate AND/OR/NOT to +/,/-. */
         $stringSearch  = array(' AND ', ' NOT ', ' OR ');
@@ -380,7 +380,7 @@ class DatabaseSearch
 
         /* WHERE clauses cannot start with AND or OR. */
         $string = preg_replace('/^\s*(?:(?:AND|OR)\s+)+/', ' ', $string);
-        
+
         /* WHERE clauses cannot end with AND or OR. */
         $string = preg_replace('/\s*(?:(?:AND|OR|NOT|AND\s+NOT)\s*)+$/', ' ', $string);
 
@@ -424,7 +424,7 @@ class DatabaseSearch
      * @param string text to encode
      * @return string encoded text
      */
-    public function fulltextEncode($text)
+    public static function fulltextEncode($text)
     {
         $_simpleReplaceHash = array(
             '+' => '_rPLUSr',
@@ -447,7 +447,7 @@ class DatabaseSearch
      * @param string text to decode
      * @return string decoded text
      */
-    public function fulltextDecode($text)
+    public static function fulltextDecode($text)
     {
         $_simpleReplaceHash = array(
             '+' => '_rPLUSr',

@@ -28,7 +28,6 @@
  */
 
 include_once(LEGACY_ROOT . '/lib/SystemInfo.php');
-include_once(LEGACY_ROOT . '/lib/Mailer.php');
 include_once(LEGACY_ROOT . '/lib/Site.php');
 include_once(LEGACY_ROOT . '/lib/Candidates.php');
 include_once(LEGACY_ROOT . '/lib/DocumentToText.php');

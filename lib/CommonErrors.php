@@ -30,8 +30,6 @@
  * @version    $Id: CommonErrors.php 3784 2007-12-03 21:57:10Z brian $
  */
 
-include_once(LEGACY_ROOT . '/lib/Mailer.php');
-
 define('COMMONERROR_PERMISSION',                            1);
 define('COMMONERROR_NOTLOGGEDIN',                           2);
 define('COMMONERROR_BADINDEX',                              3);
