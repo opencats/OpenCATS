@@ -347,7 +347,7 @@ class DateUtility
      * @param integer UNIX time (optional)
      * @return string RSS format date
      */
-    public function getRSSDate($unixTime = false)
+    static public function getRSSDate($unixTime = false)
     {
         if ($unixTime === false)
         {
