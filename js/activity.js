@@ -36,6 +36,8 @@ ACTIVITY_OTHER       = 400;
 ACTIVITY_CALL_TALKED = 500;
 ACTIVITY_CALL_LVM    = 600;
 ACTIVITY_CALL_MISSED = 700;
+ACTIVITY_LINKEDIN    = 800;
+ACTIVITY_TEXT        = 900;
 
 function Activity_fillTypeSelect(selectList, selectedText)
 {
@@ -75,6 +77,16 @@ function Activity_fillTypeSelect(selectList, selectedText)
     optionElements[6] = document.createElement('option');
     optionElements[6].value = ACTIVITY_OTHER;
     optionElements[6].appendChild(document.createTextNode('Other'));
+    
+    /* LinkedIn option. */
+    optionElements[7] = document.createElement('option');
+    optionElements[7].value = ACTIVITY_LINKEDIN;
+    optionElements[7].appendChild(document.createTextNode('LinkedIn'));
+    
+     /* LinkedIn option. */
+    optionElements[8] = document.createElement('option');
+    optionElements[8].value = ACTIVITY_TEXT;
+    optionElements[8].appendChild(document.createTextNode('Text'));
 
     /* Select the correct option. */
     if (selectedText)
@@ -106,6 +118,14 @@ function Activity_fillTypeSelect(selectList, selectedText)
         else if (selectedText == 'Other')
         {
             optionElements[6].setAttribute('selected', 'selected');
+        }
+        else if (selectedText == 'LinkedIn')
+        {
+            optionElements[7].setAttribute('selected', 'selected');
+        }
+        else if (selectedText == 'Text')
+        {
+            optionElements[8].setAttribute('selected', 'selected');
         }
     }
 
