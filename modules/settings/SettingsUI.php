@@ -1170,7 +1170,7 @@ class SettingsUI extends UserInterface
         }
 
         /* If adding an e-mail username, verify it is a valid e-mail. */
-        if (strpos($username, '@') !== false && !eregi("^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$", $username))
+        if (strpos($username, '@') !== false && filter_var($username, FILTER_VALIDATE_EMAIL) === false)
         {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Username is in improper format for an E-Mail address.');
         }
@@ -1377,7 +1377,7 @@ class SettingsUI extends UserInterface
 
         /* If adding an e-mail username, verify it is a valid e-mail. */
         // FIXME: PREG!
-        if (strpos($username, '@') !== false && !eregi("^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$", $username))
+        if (strpos($username, '@') !== false && filter_var($username, FILTER_VALIDATE_EMAIL) === false)
         {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Username is in improper format for an E-Mail address.');
         }
@@ -3019,7 +3019,7 @@ class SettingsUI extends UserInterface
         $users = new Users($this->_siteID);
 
         /* If adding an e-mail username, verify it is a valid e-mail. */
-        if (strpos($loginName, '@') !== false && !eregi("^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$", $loginName))
+        if (strpos($loginName, '@') !== false && filter_var($loginName, FILTER_VALIDATE_EMAIL) === false)
         {
             echo 'That is not a valid login name.';
             return;

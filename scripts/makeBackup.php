@@ -243,11 +243,11 @@ function dumpAttachments($db, $directory, $siteID)
         $siteID
     );
 
-    $queryResult = mysql_query($sql);
-    $totalAttachments = mysql_num_rows($queryResult);
+    $queryResult = mysqli_query($db, $sql);
+    $totalAttachments = mysqli_num_rows($queryResult);
 
     /* Add each attachment to the zip file. */
-    while ($row = mysql_fetch_assoc($queryResult))
+    while ($row = mysqli_fetch_assoc($queryResult))
     {
         $relativePath = sprintf(
             'attachments/%s/%s',

@@ -993,7 +993,7 @@ class AttachmentCreator
     public function createFromFile($dataItemType, $dataItemID, $filePath,
         $title, $contentType, $extractText, $fileExists)
     {
-        $filePathParts = split('/', $filePath);
+        $filePathParts = explode('/', $filePath);
         $originalFilename = end($filePathParts);
 
         return $this->createGeneric(

@@ -394,7 +394,7 @@ class Contacts
         $history = new History($this->_siteID);
         $history->storeHistoryDeleted(DATA_ITEM_CONTACT, $contactID);
     }
-    
+
     /**
      * Returns number of total activities (for contacts datagrid).
      *

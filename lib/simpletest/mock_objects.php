@@ -651,7 +651,7 @@ class SimpleMock {
      *    Creates an empty action list and expectation list.
      *    All call counts are set to zero.
      */
-    function SimpleMock() {
+    function __construct() {
         $this->actions = new SimpleCallSchedule();
         $this->expectations = new SimpleCallSchedule();
         $this->call_counts = array();

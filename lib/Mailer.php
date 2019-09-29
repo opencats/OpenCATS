@@ -3,8 +3,6 @@
  * CATS
  * Mail Transfer Library
  *
- * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
- *
  *
  * The contents of this file are subject to the CATS Public License
  * Version 1.1a (the "License"); you may not use this file except in
@@ -36,11 +34,13 @@
  *	@subpackage Library
  */
 
-/* E_STRICT doesn't like PHPMailer. */
-$errorReporting = error_reporting();
-error_reporting($errorReporting & ~ E_STRICT);
-require './lib/phpmailer/PHPMailerAutoload.php';
-error_reporting($errorReporting);
+ // Import PHPMailer classes into the global namespace
+ // These must be at the top of your script, not inside a function
+ use PHPMailer\PHPMailer\PHPMailer;
+ use PHPMailer\PHPMailer\Exception;
+
+ // Load Composer's autoloader
+ require './vendor/autoload.php';
 
 // FIXME: Remove this dependency! Bad bad bad!
 include_once(LEGACY_ROOT . '/lib/Pipelines.php');
@@ -50,6 +50,8 @@ define('MAILER_MODE_PHP',      1);
 define('MAILER_MODE_SENDMAIL', 2);
 define('MAILER_MODE_SMTP',     3);
 
+$errorReporting = error_reporting();
+error_reporting($errorReporting & ~ E_STRICT);
 
 /**
  *	E-Mail Abstraction Layer
@@ -70,8 +72,8 @@ class Mailer
     {
         $this->_siteID = $siteID;
 
-        $this->_mailer = new PHPMailer();
-        $this->_mailer->PluginDir = './lib/phpmailer/';
+        // Instantiation and passing `true` enables exceptions
+        $this->_mailer = new PHPMailer(true);
 
         /* Load mailer configuration settings. */
         $settings = new MailerSettings($this->_siteID);
@@ -315,15 +317,19 @@ class Mailer
                 break;
 
             case MAILER_MODE_SENDMAIL:
-                $this->_mailer->Mailer   = 'sendmail';
+                $this->_mailer->isSendmail();
                 $this->_mailer->Sendmail = MAIL_SENDMAIL_PATH;
                 break;
 
             case MAILER_MODE_SMTP:
-                $this->_mailer->Mailer = 'smtp';
+                $this->_mailer->isSMTP();
                 $this->_mailer->Host   = MAIL_SMTP_HOST;
                 $this->_mailer->Port   = MAIL_SMTP_PORT;
                 $this->_mailer->SMTPSecure  = MAIL_SMTP_SECURE;
+                if (!MAIL_SMTP_SECURE)
+                {
+                    $this->_mailer->SMTPAutoTLS = false;
+                }
                 if (MAIL_SMTP_AUTH == true)
                 {
                     $this->_mailer->SMTPAuth = MAIL_SMTP_AUTH;
@@ -340,7 +346,7 @@ class Mailer
 
             case MAILER_MODE_PHP:
             default:
-                $this->_mailer->Mailer = 'mail';
+                $this->_mailer->isMail();
                 break;
         }
     }
@@ -381,7 +387,7 @@ class Mailer
             $this->_userID,
             $this->_siteID
          );
-         
+
          $this->_db->query($sql);
     }
 }
@@ -411,7 +417,7 @@ class MailerSettings
     public function getAll()
     {
         // FIXME: This is violating just about every OO design principal I can come up with :)
-        
+
         /* Default values. */
         $pipelines = new Pipelines($this->_siteID);
         $statuses = $pipelines->getStatuses();
