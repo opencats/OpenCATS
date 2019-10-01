@@ -251,6 +251,7 @@ class EmailTemplates
         $email    = $_SESSION['CATS']->getEmail();
         $siteName = $_SESSION['CATS']->getSiteName();
         $fullName = $_SESSION['CATS']->getFullName();
+        $emailSignature = $this->getEmailSignature();
 
         if ($_SESSION['CATS']->isDateDMY())
         {
@@ -275,7 +276,8 @@ class EmailTemplates
             '%DATETIME%',
             '%SITENAME%',
             '%USERFULLNAME%',
-            '%USERMAIL%'
+            '%USERMAIL%',
+            '%USEREMAILSIGNATURE%'
         );
 
         if ($isLoggedIn)
@@ -284,7 +286,8 @@ class EmailTemplates
                 DateUtility::getAdjustedDate($dateFormat . ' g:i A'),
                 $siteName,
                 $fullName,
-                '<a href="mailto:'. $email .'">'. $email .'</a>'
+                '<a href="mailto:'. $email .'">'. $email .'</a>',
+                $emailSignature
             );
         }
         else
@@ -391,7 +394,40 @@ class EmailTemplates
 
         return $this->_db->getAllAssoc($sql);
     }
-    
+
+    public function getEmailSignature(){
+        $sql = sprintf(
+            "SELECT
+                settings.value AS value
+            FROM
+                settings
+            WHERE
+                settings.site_id = %s
+            AND
+                settings.settings_type = %s
+            AND
+                settings.setting = %s",
+            $this->_siteID,
+            SETTINGS_MAILER,
+            $this->_db->makeQueryString("emailSignature_".$_SESSION['CATS']->getUserID())
+        );
+        $rs = $this->_db->getAllAssoc($sql);
+        if(empty($rs) || !$rs){
+            return "";
+        }
+        return $rs[0]['value'];
+    }
+
+    public function saveEmailSignature($signature){
+        if(strlen($signature) > 254){
+            return -1;
+        } else {
+            $mailerSettings = new MailerSettings($this->_siteID);
+            $mailerSettings->set("emailSignature_" . $_SESSION['CATS']->getUserID(), $signature);
+            return 0;
+        }
+    }
+
     public function getAllCustom()
     {
         $sql = sprintf(

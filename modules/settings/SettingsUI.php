@@ -953,6 +953,24 @@ class SettingsUI extends UserInterface
                     $templateFile = './modules/settings/ChangePassword.tpl';
                     break;
 
+                case 'emailSignature':
+                    $emailTemplates = new EmailTemplates($this->_siteID);
+                    $emailSignature = $_POST['signature'];
+                    if($this->isPostBack()){
+                        $result = $emailTemplates->saveEmailSignature($emailSignature);
+                        if($result == -1){
+                            $this->_template->assign('errorMessage', "The signature text is too long.");
+
+                        } else {
+                            CATSUtility::transferRelativeURI("m=settings&a=myProfile");
+                        }
+                    } else {
+                        $emailSignature = $emailTemplates->getEmailSignature();
+                    }
+                    $this->_template->assign('emailSignature', $emailSignature);
+                    $templateFile = './modules/settings/EmailSignature.tpl';
+                    break;
+
                 default:
                     $templateFile = './modules/settings/MyProfile.tpl';
                     break;

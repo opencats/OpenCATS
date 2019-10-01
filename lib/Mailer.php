@@ -484,7 +484,7 @@ class MailerSettings
             AND
                 site_id = %s
             AND
-                settings_type",
+                settings_type = %s",
             $this->_db->makeQueryStringOrNULL($setting),
             $this->_siteID,
             SETTINGS_MAILER

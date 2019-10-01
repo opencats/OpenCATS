@@ -46,6 +46,16 @@
                                     Change your CATS login password.
                                 </td>
                             </tr>
+                            <tr>
+                                <td width="230">
+                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=myProfile&amp;s=emailSignature">
+                                        <img src="images/bullet_black.gif" alt="" border="0" />Change E-mail Signature
+                                    </a>
+                                </td>
+                                <td>
+                                    Change the signature that can be used with e-mail templates sent from your account.
+                                </td>
+                            </tr>
                             <!--<tr>
                                 <td>
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=myProfile&amp;s=notificationOptions">

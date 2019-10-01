@@ -157,6 +157,7 @@
                                                             <?php generateInsertAtCursorLink($data, 'Site Name', '%SITENAME%'); ?>
                                                             <?php generateInsertAtCursorLink($data, 'Recruiter/Current User Name', '%USERFULLNAME%'); ?>
                                                             <?php generateInsertAtCursorLink($data, 'Recruiter/Current User E-Mail Link', '%USERMAIL%'); ?>
+                                                            <?php generateInsertAtCursorLink($data, 'Current User E-Mail Signature', '%USEREMAILSIGNATURE%'); ?>
                                                         <?php endif; ?>
 
                                                         <?php /* Template specific vars */ ?>
