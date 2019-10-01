@@ -506,7 +506,7 @@ class ActivityEntries
             FROM
                 activity_type
             ORDER BY
-                activity_type_id ASC",
+                activity_type_id DESC",
             $this->_siteID
         );
 
