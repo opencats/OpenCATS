@@ -237,7 +237,7 @@ class Mailer
             {
                 $this->_mailer->AddReplyTo($replyTo[0], $replyTo[1]);
             }
-
+            $this->_mailer->CharSet = 'UTF-8';
             if (!$this->_mailer->Send())
             {
                 $failedRecipients[] = array(
