@@ -1113,15 +1113,11 @@ function MySQLQuery($query, $ignoreErrors = false)
     global $mySQLConnection;
 
     $queryResult = mysqli_query($mySQLConnection, $query);
-    if (!$queryResult && !$ignoreErrors)
-    {
-				$error = "errno: " . $queryResult->connect_errno . ", ";
-				$error .= "error: " . $queryResult->connect_error;
 
-        if ($error == 'Query was empty')
-        {
-            return $queryResult;
-        }
+    if (!$mySQLConnection)
+    {
+		$error = "errno: " . mysqli_connect_errno() . ", ";
+		$error .= "error: " . mysqli_connect_error();
 
         die (
             '<p style="background: #ec3737; padding: 4px; margin-top: 0; font:'
@@ -1129,6 +1125,7 @@ function MySQLQuery($query, $ignoreErrors = false)
             . " Error -- Please Report This Bug!</p><pre>\n\nMySQL Query "
             . "Failed: " . $error . "\n\n" . $query . "</pre>\n\n"
         );
+        return false;
     }
 
     return $queryResult;
