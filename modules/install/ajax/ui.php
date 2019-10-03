@@ -1115,13 +1115,13 @@ function MySQLQuery($query, $ignoreErrors = false)
     $queryResult = mysqli_query($mySQLConnection, $query);
     if (!$queryResult && !$ignoreErrors)
     {
-        if (!$mySQLConnection->connect_errno)
+				$error = "errno: " . $queryResult->connect_errno . ", ";
+				$error .= "error: " . $queryResult->connect_error;
+
+        if ($error == 'Query was empty')
         {
             return $queryResult;
         }
-
-        $error = "errno: " . $mySQLConnection->connect_errno . ", ";
-        $error .= "error: " . $mySQLConnection->connect_error;
 
         die (
             '<p style="background: #ec3737; padding: 4px; margin-top: 0; font:'
