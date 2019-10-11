@@ -32,6 +32,7 @@
 
 include_once(LEGACY_ROOT . '/lib/Pager.php');
 include_once(LEGACY_ROOT . '/lib/DatabaseSearch.php');
+include_once(LEGACY_ROOT . '/lib/JobOrderStatuses.php');
 
 if (ENABLE_SPHINX)
 {
