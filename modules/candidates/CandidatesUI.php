@@ -714,6 +714,8 @@ class CandidatesUI extends UserInterface
         $questionnaire = new Questionnaire($this->_siteID);
         $questionnaires = $questionnaire->getCandidateQuestionnaires($candidateID);
 
+        $lists = $candidates->getListsForCandidate($candidateID);
+
         $this->_template->assign('active', $this);
         $this->_template->assign('questionnaires', $questionnaires);
         $this->_template->assign('data', $data);
@@ -731,7 +733,8 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
         $this->_template->assign('tagsRS', $tags->getAll());
         $this->_template->assign('assignedTags', $tags->getCandidateTagsTitle($candidateID));
-        
+        $this->_template->assign('lists', $lists);
+
         $this->_template->display('./modules/candidates/Show.tpl');
         
         if (!eval(Hooks::get('CANDIDATE_SHOW'))) return;
