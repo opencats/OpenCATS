@@ -3344,21 +3344,31 @@ class CandidatesUI extends UserInterface
         }
         else
         {
-            $dataGrid = DataGrid::getFromRequest();
-
-            $candidateIDs = $dataGrid->getExportIDs();
-
-            /* Validate each ID */
-            foreach ($candidateIDs as $index => $candidateID)
+            if(isset($_GET['candidateID']))
             {
-                if (!$this->isRequiredIDValid($index, $candidateIDs))
-                {
+                if (!$this->isRequiredIDValid('candidateID', $_GET)) {
                     CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
                     return;
                 }
+                $candidateID = $_GET['candidateID'];
+                $db_str = $candidateID;
             }
+            else
+            {
+                $dataGrid = DataGrid::getFromRequest();
 
-            $db_str = implode(", ", $candidateIDs);
+                $candidateIDs = $dataGrid->getExportIDs();
+
+                /* Validate each ID */
+                foreach ($candidateIDs as $index => $candidateID) {
+                    if (!$this->isRequiredIDValid($index, $candidateIDs)) {
+                        CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+                        return;
+                    }
+                }
+
+                $db_str = implode(", ", $candidateIDs);
+            }
 
             $db = DatabaseConnection::getInstance();
 

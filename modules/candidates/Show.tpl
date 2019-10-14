@@ -78,9 +78,16 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                             <tr>
                                 <td class="vertical">E-Mail:</td>
                                 <td class="data">
-                                    <a href="mailto:<?php $this->_($this->data['email1']); ?>">
-                                        <?php $this->_($this->data['email1']); ?>
-                                    </a>
+                                    <?php if ($this->data['email1'] != ""): ?>
+                                        <a href="mailto:<?php $this->_($this->data['email1']); ?>" title="Send E-Mail via Email Client">
+                                            <?php $this->_($this->data['email1']); ?>
+                                        </a>
+                                        <a href="index.php?m=candidates&amp;a=emailCandidates&candidateID=<?php echo $this->_($this->data['candidateID']); ?>" title="Send E-Mail via OpenCATS"/>
+                                            <img src="images/actions/email.gif" width="16" height="16" alt="" class="absmiddle" border="0" />
+                                        </a>
+                                    <?php else: ?>
+                                        <img src="images/actions/email_no.gif" title="No E-Mail Address" width="16" height="16" alt="" class="absmiddle" border="0" />
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                             <tr>
