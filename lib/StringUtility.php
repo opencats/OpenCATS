@@ -499,7 +499,7 @@ class StringUtility
 
         if ($lastCommaFirst)
         {
-            $firstInitial = $firstName{0} . '.';
+            $firstInitial = $firstName[0] . '.';
 
             if (strlen($lastName) > $maxLength)
             {
@@ -511,7 +511,7 @@ class StringUtility
             return ucwords($lastName . ', ' . $firstInitial);
         }
 
-        $lastInitial = $lastName{0} . '.';
+        $lastInitial = $lastName[0] . '.';
 
         if (strlen($firstName) > $maxLength)
         {
