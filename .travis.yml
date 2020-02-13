@@ -15,6 +15,8 @@ before_install:
 language: php
 php:
 - 7.2
+- 7.3
+- 7.4
 
 script:
     - composer install
@@ -29,8 +31,7 @@ deploy:
   provider: releases
   api_key:
     secure: TRb8uQSt22NNKczLj6QvnBAjd953tb3bpQIdiltcVl7JhZ6YBWnylwEAMt3EryxD1ZqWsCS89F00VR/lo9N+iSZJfuN8xQGh76CS6MTG46DqFcgIbjkAjK3EFxqZamLfQKeQytfmIvsWJ3dDcwSjSrvvcAoI/Lklzpq2NoVfHj/6M+HX7q41tiucRfajrxC47bFgsOkljOfWuUYGteQ/hZOGeyZ5lNUfZDzSTPyaVamf6nPmHGi9Tbjks+YL6rvZ32MAkZpY4FQAFKhXELTjM6FSYW9V7n8Vq4ufaaN93UYXb3x5Yx1+ZBmAdbp3kQCt0gwe4aQtuT0kRft7rkD0Tg7Xp2ao2KyN1gzZN2ptHsXdNB9Y4yRv7pIsNPYXSQyi1ofPMWRO+zIjl1Je0kQ981YfWqu7RcqwPIQ6PVE34kT4hDMuRmzOqgrtnO07ZgozdhUCAK33aBIcGq4ZW7RXgvaNk0BmvZAP5oeM4wj/OUKpC7yw14fTOdGxETvP4E0zYc9TnfAxVhNHRGhGqWtLZshZ1/8apcjDO1eAN6x1Wa/tESWOzqADra+7ga09SSR8Agc1sVW9gW0UVqawNE83+cwzL5fO/lgIkIRVlZtsPMAYkzHMu9IeA0f1aV8yKML3znZuh8c6BKw4nZx6K/GhCqCqfNefNReaeeMMXXg99HI=
-
-file:
+  file:
      - $TRAVIS_BUILD_DIR/opencats-$TRAVIS_TAG-full.tar.gz
      - $TRAVIS_BUILD_DIR/opencats-$TRAVIS_TAG-full.zip
   skip_cleanup: true
