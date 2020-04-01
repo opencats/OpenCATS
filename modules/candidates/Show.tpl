@@ -467,6 +467,7 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                 <tr>
                     <th></th>
                     <th align="left">Match</th>
+                    <th align="left">Ref. Number</th>
                     <th align="left">Title</th>
                     <th align="left">Company</th>
                     <th align="left">Owner</th>
@@ -494,6 +495,9 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                         </td>
                         <td valign="top">
                             <?php echo($pipelinesData['ratingLine']); ?>
+                        </td>
+                        <td valign="top">
+                            <?php $this->_($pipelinesData['clientJobID']) ?>
                         </td>
                         <td valign="top">
                             <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=show&amp;jobOrderID=<?php echo($pipelinesData['jobOrderID']); ?>" class="<?php $this->_($pipelinesData['linkClass']) ?>">
@@ -560,6 +564,21 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
 <?php endif; ?>
             <br clear="all" />
             <br />
+
+            <p class="note">Lists</p>
+
+            <table id="listsTable" class="sortable">
+                <tr>
+                    <th align="left" width="250">Name</th>
+                </tr>
+                <?php foreach($this->lists as $rowNumber => $list): ?>
+                    <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
+                        <td>
+                            <a href="index.php?m=lists&a=showList&savedListID=<?php echo $list['listID']; ?>"><?php echo $list['name']; ?></a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
 
             <p class="note">Activity</p>
 

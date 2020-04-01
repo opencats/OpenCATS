@@ -226,7 +226,7 @@ class SearchUtility
         if (!empty($keywordsWild))
         {
             $regex = implode('|', array_map(
-                create_function('$string','return preg_quote($string, \'/\');'), $keywordsWild
+                function($string){return preg_quote($string, '/');}, $keywordsWild
             ));
             $text = preg_replace(
                 '/(' . $regex . ')/i',
@@ -238,7 +238,7 @@ class SearchUtility
         if (!empty($keywords))
         {
             $regex = implode('|', array_map(
-                create_function('$string','return preg_quote($string, \'/\');'), $keywords
+                function($string){return preg_quote($string, '/');}, $keywords
             ));
             $text = preg_replace(
                 '/\b(' . $regex . ')\b/i',
@@ -299,7 +299,7 @@ class SearchUtility
         if (!empty($keywordsWild))
         {
             $regex = implode('|', array_map(
-                create_function('$string','return preg_quote($string, \'/\');'), $keywordsWild
+                function($string){return preg_quote($string, '/');}, $keywordsWild
             ));
             $text = preg_replace(
                 '/(' . $regex . ')/i',
@@ -311,7 +311,7 @@ class SearchUtility
         if (!empty($keywords))
         {
             $regex = implode('|', array_map(
-                create_function('$string','return preg_quote($string, \'/\');'), $keywords
+                function($string){return preg_quote($string, '/');}, $keywords
             ));
             $text = preg_replace(
                 '/\b(' . $regex . ')\b/i',
@@ -2089,7 +2089,7 @@ class SearchPager extends Pager
         );
 
         /* Pass "Search By Resume"-specific parameters to Pager constructor. */
-        parent::__construct(count($this->_rs), $rowsPerPage, $currentPage);
+        parent::__construct((is_array($this->_rs)?count($this->_rs):0), $rowsPerPage, $currentPage);
     }
 }
 

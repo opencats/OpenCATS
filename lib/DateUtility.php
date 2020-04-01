@@ -735,7 +735,7 @@ class DateUtility
         foreach ($array as $key => $value)
         {
             /* Remove leading '0's from fields. */
-            if ($array[$key]{0} == '0')
+            if ($array[$key][0] == '0')
             {
                 $array[$key] = substr($array[$key], 1);
             }

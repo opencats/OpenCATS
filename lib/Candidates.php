@@ -1132,7 +1132,7 @@ class Candidates
 
         return (boolean) $this->_db->query($sql);
     }
-    
+
     public function checkDuplicity($firstName, $middleName, $lastName, $email1, $email2, $phoneHome, $phoneCell, $phoneWork, $address, $city)
     {
         $sql = sprintf(
@@ -1886,6 +1886,39 @@ class Candidates
         {
             return false;
         }
+    }
+
+    public function getListsForCandidate($candidateID){
+        $sql = sprintf("
+            SELECT 
+                saved_list.description AS name,
+                saved_list.saved_list_id AS listID
+            FROM
+                saved_list
+            WHERE 
+                data_item_type = %s 
+            AND 
+                site_id = %s 
+            AND 
+                saved_list_id IN (
+                  SELECT
+                      saved_list_entry.saved_list_id
+                  FROM
+                      saved_list_entry
+                  WHERE
+                      site_id = %s 
+                  AND
+                      data_item_type = %s 
+                  AND 
+                      data_item_id = %s
+                )",
+            DATA_ITEM_CANDIDATE,
+                $this->_siteID,
+                $this->_siteID,
+                DATA_ITEM_CANDIDATE,
+                $candidateID
+            );
+        return $this->_db->getAllAssoc($sql);
     }
 }
 

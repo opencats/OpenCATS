@@ -196,7 +196,7 @@ class TestOfCallSchedule extends UnitTestCase {
 }
 
 class Dummy {
-    function Dummy() {
+    function __construct() {
     }
 
     function aMethod() {
@@ -839,7 +839,7 @@ class TestOfPartialMocks extends UnitTestCase {
 }
 
 class ConstructorSuperClass {
-    function ConstructorSuperClass() { }
+    function __construct() { }
 }
 
 class ConstructorSubClass extends ConstructorSuperClass { }

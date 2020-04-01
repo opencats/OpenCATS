@@ -317,7 +317,7 @@ class awAxis {
 	 */
 	public function setLabelPrecision($precision) {
 		$this->auto(FALSE);
-		$function = 'axis'.time().'_'.(microtime() * 1000000);
+		$function = 'axis'.time().'_'.(microtime(true) * 10000);
 		eval('function '.$function.'($value) {
 			return sprintf("%.'.(int)$precision.'f", $value);
 		}');
@@ -332,7 +332,7 @@ class awAxis {
 	public function setLabelText($texts) {
 		if(is_array($texts)) {
 			$this->auto(FALSE);
-			$function = 'axis'.time().'_'.(microtime() * 1000000);
+			$function = 'axis'.time().'_'.(microtime(true) * 10000);
 			eval('function '.$function.'($value) {
 				$texts = '.var_export($texts, TRUE).';
 				return $texts[$value];

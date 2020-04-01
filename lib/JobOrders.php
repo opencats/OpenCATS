@@ -100,7 +100,7 @@ class JobOrders
         // FIXME: Move this up to the UserInterface level. I don't like this
         //        tight coupling, and calling Contacts methods as static is
         //        bad.
-        $departmentId = Contacts::getDepartmentIDByName(
+        $departmentId = (new Contacts($this->_siteID))->getDepartmentIDByName(
             $department, $companyId, $this->_db
         );
         $jobOrder = JobOrder::create(
@@ -169,7 +169,7 @@ class JobOrders
         // FIXME: Move this up to the UserInterface level. I don't like this
         //        tight coupling, and calling Contacts methods as static is
         //        bad.
-        $departmentID = Contacts::getDepartmentIDByName(
+        $departmentID = (new Contacts($this->_siteID))->getDepartmentIDByName(
             $department, $companyID, $this->_db
         );
 
@@ -823,12 +823,12 @@ class JobOrders
 
         return (boolean) $this->_db->query($sql);
     }
-    
+
     public function checkOpenings($regardingID)
     {
-        
+
         $sql = sprintf(
-            "SELECT 
+            "SELECT
                 joborder.openings_available AS openingsAvailable
             FROM
                 joborder
@@ -839,15 +839,15 @@ class JobOrders
             $this->_siteID,
             $this->_db->makeQueryInteger($regardingID)
         );
-        
+
         $rs = $this->_db->getAllAssoc($sql);
         if(!$rs)
         {
             return false;
         }
-        
+
         $openingsAvailable = intval($rs[0]['openingsAvailable']);
-        
+
         if($openingsAvailable > 0)
         {
             return true;
@@ -1014,7 +1014,7 @@ class JobOrdersDataGrid extends DataGrid
                                        'pagerWidth'    => 25,
                                        'filterHaving'  => 'notContacted',
                                        'filterTypes'   => '===>=<'),
- 
+
             'Submitted' =>       array('select'   => '(
                                                             SELECT
                                                                 COUNT(*)
