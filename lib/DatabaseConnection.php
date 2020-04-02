@@ -362,11 +362,14 @@ class DatabaseConnection
 
         /* Make sure we always return an array. */
         $recordSetArray = array();
-
-        /* Store all rows in $recordSetArray; */
-        while (($recordSet = mysqli_fetch_assoc($this->_queryResult)))
+        
+        if($this->_queryResult)
         {
-            $recordSetArray[] = $recordSet;
+            /* Store all rows in $recordSetArray; */
+            while (($recordSet = mysqli_fetch_assoc($this->_queryResult)))
+            {
+                $recordSetArray[] = $recordSet;
+            }
         }
 
         /* Return the multi-dimensional record set array. */
