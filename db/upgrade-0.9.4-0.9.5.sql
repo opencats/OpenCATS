@@ -11,3 +11,5 @@ CREATE TABLE `candidate_duplicates` (
   KEY `IDX_old_candidate_id` (`old_candidate_id`),
   KEY `IDX_new_candidate_id` (`new_candidate_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+ALTER TABLE `candidate`
+MODIFY COLUMN `web_site` varchar(352);
