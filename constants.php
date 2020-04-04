@@ -44,7 +44,7 @@ $coreModules = array(
 define('CATS_VERSION', '0.9.5.2');
 
 /* Copyright information at bottom of pages. */
-define('COPYRIGHT_HTML', '&copy; 2005 - 2007 Cognizo Technologies, Inc.');
+define('COPYRIGHT_HTML', '&copy; 2007-2020 OpenCATS.');
 
 /* HTTP response codes. */
 define('HTTP_OK',             200);
