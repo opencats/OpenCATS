@@ -78,36 +78,6 @@ session_start();
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 
-// This function assures to strip the values from
-// request arrays even if as values are arrays not only values
-function stripslashes_deep($value)
-{
-    $value = is_array($value) ?
-                array_map('stripslashes_deep', $value) :
-                stripslashes($value);
-
-    return $value;
-}
-
-/* Make sure we aren't getting screwed over by magic quotes. */
-if (get_magic_quotes_runtime())
-{
-    if (function_exists('set_magic_quotes_runtime')) {
-        set_magic_quotes_runtime(0);
-    }
-}
-if (get_magic_quotes_gpc())
-{
-    include_once(LEGACY_ROOT . '/lib/ArrayUtility.php');
-
-    $_GET     = array_map('stripslashes_deep', $_GET);
-    $_POST    = array_map('stripslashes_deep', $_POST);
-    $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
-    $_GET     = ArrayUtility::arrayMapKeys('stripslashes_deep', $_GET);
-    $_POST    = ArrayUtility::arrayMapKeys('stripslashes_deep', $_POST);
-    $_REQUEST = ArrayUtility::arrayMapKeys('stripslashes_deep', $_REQUEST);
-}
-
 /* Objects can't be stored in the session if session.auto_start is enabled. */
 if (ini_get('session.auto_start') !== '0' &&
     ini_get('session.auto_start') !== 'Off')
