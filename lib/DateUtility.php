@@ -347,7 +347,7 @@ class DateUtility
      * @param integer UNIX time (optional)
      * @return string RSS format date
      */
-    public function getRSSDate($unixTime = false)
+    static public function getRSSDate($unixTime = false)
     {
         if ($unixTime === false)
         {
@@ -735,7 +735,7 @@ class DateUtility
         foreach ($array as $key => $value)
         {
             /* Remove leading '0's from fields. */
-            if ($array[$key]{0} == '0')
+            if ($array[$key][0] == '0')
             {
                 $array[$key] = substr($array[$key], 1);
             }

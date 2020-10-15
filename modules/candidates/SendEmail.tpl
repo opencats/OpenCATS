@@ -1,5 +1,5 @@
 <?php /* $Id: SendEmail.tpl 3078 2007-09-21 20:25:28Z will $ */ ?>
-<?php TemplateUtility::printHeader('Candidates', array('ckeditor/ckeditor.js', 'modules/candidates/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js')); ?>
+<?php TemplateUtility::printHeader('Candidates', array('vendor/ckeditor/ckeditor/ckeditor.js', 'js/ckeditor-manager.js', 'modules/candidates/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js', 'js/emailHandler.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">
@@ -68,6 +68,9 @@
                     <td>
                         <form name="emailForm" id="emailForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=emailCandidates" method="post" onsubmit="return checkEmailForm(document.emailForm);" autocomplete="off" enctype="multipart/form-data">
                         <input type="hidden" name="postback" id="postback" value="postback" />
+                        <?php foreach($this->recipients as $data): ?>
+                            <input type="hidden" name="candidateID[]" value="<?php echo($data['email1'].'='.$data['candidate_id'])?>" />
+                        <?php endforeach; ?>
                         <table>
                             <tr>
                                 <td class="tdVertical" style="text-align: right;">
@@ -87,10 +90,34 @@
                             </tr>
                             <tr>
                                 <td class="tdVertical" style="text-align: right;">
+                                    <label id="emailTemplateLabel" for="emailTemplate">Template</label>
+                                </td>
+                                <td class="tdData">
+                                    <select id="emailTemplate" name="emailTemplate" tabindex="<?php echo($tabIndex++);?>" onchange="showTemplate('<?php echo($this->sessionCookie); ?>');">
+                                        <option selected="selected" value="-1">----</option>
+                                        <?php foreach($this->emailTemplatesRS as $data): ?>
+                                            <option value="<?php echo($data['emailTemplateID']); ?>"><?php echo($data['emailTemplateTitle']); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                
+                                    <label id="emailPreviewLabel" for="candidateName">Preview for:</label>
+                                    <select id="candidateName" tabindex="<?php echo($tabIndex++); ?>" onchange="replaceTemplateTags('<?php echo($this->sessionCookie); ?>')">
+                                        <option selected="selected" value="-1">----</option>
+                                        <?php foreach($this->recipients as $data): ?>
+                                            <option value="<?php echo($data['candidate_id']); ?>"><?php echo($data['last_name'].", ".$data['first_name']." (".$data['email1']).")"; ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tdVertical" style="text-align: right;">
                                     <label id="emailBodyLabel" for="emailBody">Body</label>
                                 </td>
                                 <td class="tdData">
                                     <textarea id="emailBody" tabindex="<?php echo($tabIndex++); ?>" name="emailBody" rows="10" cols="90" style="width: 600px;" class="inputbox"></textarea>
+                                </td>
+                                <td class="tdData">
+                                    <div id="emailPreview" tabindex="<?php echo($tabIndex++); ?>" name="emailPreview" rows="10" cols="90" style="width: 600px;"></div>
                                 </td>
                             </tr>
                             <tr>
@@ -107,23 +134,8 @@
                         document.emailForm.emailSubject.focus();
                         //added the code below for the ckeditor html box - Jamin 2-19-2010
                         //adjusted code to remove or prevent extra breaks in email - Jamin 2-23-2010
-			CKEDITOR.replace( 'emailBody' );
-    			CKEDITOR.on('instanceReady', function(ev)
-        		{
-            		var tags = ['p', 'ol', 'ul', 'li']; // etc.
-
-            		for (var key in tags) {
-                	ev.editor.dataProcessor.writer.setRules(tags[key],
-                    	{
-                        indent : false,
-                        breakBeforeOpen : false,
-                        breakAfterOpen : false,
-                        breakBeforeClose : false,
-                        breakAfterClose : false, 
-                    	});
-            		}
-        		});
-              		</script>
+                        placeCkEditorIn('emailBody');
+                    </script>
 
                     </td>
                 </tr>

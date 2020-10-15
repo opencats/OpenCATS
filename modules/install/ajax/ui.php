@@ -28,8 +28,8 @@
  */
 
 include_once('./config.php');
-include_once('./lib/InstallationTests.php');
-include_once('./lib/CATSUtility.php');
+include_once(LEGACY_ROOT . '/lib/InstallationTests.php');
+include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
 
 if( ini_get('safe_mode') )
 {
@@ -169,8 +169,8 @@ switch ($action)
         if (isset($tables['settings']))
         {
             $rs = MySQLQuery('SELECT value FROM settings WHERE setting = "fromAddress" LIMIT 1');
-            if (mysql_num_rows($rs) > 0)
-                $mailFromAddress = mysql_result($rs, 0, 0);
+            if (mysqli_num_rows($rs) > 0)
+                $mailFromAddress = mysqli_fetch_row($rs);
         }
 
         echo '
@@ -183,7 +183,7 @@ switch ($action)
                 document.getElementById(\'mailSmtpPort\').value = \'' . htmlspecialchars(MAIL_SMTP_PORT) . '\';
                 document.getElementById(\'mailSmtpUsername\').value = \'' . htmlspecialchars(MAIL_SMTP_USER) . '\';
                 document.getElementById(\'mailSmtpPassword\').value = \'' . htmlspecialchars(MAIL_SMTP_PASS) . '\';
-                document.getElementById(\'mailFromAddress\').value = \'' . htmlspecialchars($mailFromAddress) . '\';
+                document.getElementById(\'mailFromAddress\').value = \'' . htmlspecialchars($mailFromAddress[0]) . '\';
                 changeMailForm();
             </script>';
         break;
@@ -466,7 +466,7 @@ switch ($action)
         $rs = MySQLQuery('SELECT date_format_ddmmyy FROM site', true);
         if ($rs)
         {
-            $record = mysql_fetch_assoc($rs);
+            $record = mysqli_fetch_assoc($rs);
         }
         else
         {
@@ -576,7 +576,7 @@ switch ($action)
 
         $rs = MySQLQuery('SELECT * FROM candidate', true);
         $fields = array();
-        while ($meta = @mysql_fetch_field($rs))
+        while ($meta = @mysqli_fetch_field($rs))
         {
             if ($meta)
             {
@@ -689,30 +689,30 @@ switch ($action)
         break;
 
     case 'restoreFromBackup':
-        include_once('lib/FileCompressor.php');
+        include_once(LEGACY_ROOT . '/lib/FileCompressor.php');
         MySQLConnect();
         $extractor = new ZipFileExtractor('./restore/catsbackup.bak');
-        
+
         CATSUtility::changeConfigSetting('ENABLE_DEMO_MODE', 'false');
 
         /* Extract the file.  This command also executes all sql commands in the file. */
         /* Normally, we could just do the following lines, but we want a custom extractor
            that ignores the file 'database', and executes all of the catsbackup.sql.xxx
            files rather than extracting them. */
-        /* 
+        /*
             if (!$extractor->open() || !$extractor->extractAll())
             {
                 echo($extractor->getErrorMessage());
             }
         */
-        
+
         if (!$extractor->open())
         {
             echo($extractor->getErrorMessage());
-        }       
-        
+        }
+
         $metaData = $extractor->getMetaData();
-        
+
         foreach ($metaData['centralDirectory'] as $index => $data)
         {
             $fileName = $data['filename'];
@@ -735,16 +735,16 @@ switch ($action)
                 }
 
                 $fileContents = $extractor->getFile($index);
-                
+
                 if ($fileContents === false)
                 {
                     /* Report error? */
                 }
-                
+
                 file_put_contents ($fileName, $fileContents);
             }
         }
-        
+
         echo '<script type="text/javascript">Installpage_populate(\'a=upgradeCats\');</script>';
         break;
 
@@ -763,7 +763,7 @@ switch ($action)
         //Check if we need to update from 0.6.0 to 0.7.0
         $tables = array();
         $result = MySQLQuery(sprintf("SHOW TABLES FROM `%s`", DATABASE_NAME));
-        while ($row = mysql_fetch_array($result, MYSQL_NUM))
+        while ($row = mysqli_fetch_array($result, MYSQLI_NUM))
         {
             $tables[$row[0]] = true;
         }
@@ -781,28 +781,28 @@ switch ($action)
     case 'onLoadDemoData':
         CATSUtility::changeConfigSetting('ENABLE_DEMO_MODE', 'true');
 
-        include_once('lib/FileCompressor.php');
+        include_once(LEGACY_ROOT . '/lib/FileCompressor.php');
         MySQLConnect();
         $extractor = new ZipFileExtractor('./db/cats_testdata.bak');
-        
+
         /* Extract the file.  This command also executes all sql commands in the file. */
         /* Normally, we could just do the following lines, but we want a custom extractor
            that ignores the file 'database', and executes all of the catsbackup.sql.xxx
            files rather than extracting them. */
-        /* 
+        /*
             if (!$extractor->open() || !$extractor->extractAll())
             {
                 echo($extractor->getErrorMessage());
             }
         */
-        
+
         if (!$extractor->open())
         {
             echo($extractor->getErrorMessage());
-        }       
-        
+        }
+
         $metaData = $extractor->getMetaData();
-        
+
         foreach ($metaData['centralDirectory'] as $index => $data)
         {
             $fileName = $data['filename'];
@@ -825,12 +825,12 @@ switch ($action)
                 }
 
                 $fileContents = $extractor->getFile($index);
-                
+
                 if ($fileContents === false)
                 {
                     /* Report error? */
                 }
-                
+
                 file_put_contents ($fileName, $fileContents);
             }
         }
@@ -856,7 +856,7 @@ switch ($action)
         $revision = 0;
         $rs = MySQLQuery('SELECT * FROM candidate', true);
         $fields = array();
-        while ($meta = mysql_fetch_field($rs))
+        while ($meta = mysqli_fetch_field($rs))
         {
             $fields[$meta->name] = true;
         }
@@ -882,10 +882,15 @@ switch ($action)
             /* 0.6.0 */
             $revision = 60;
         }
-        else if (isset($tables['history']))
+        else if (!isset($tables['candidate_duplicates']))
         {
-            /* 0.7.0 */
-            $revision = 70;
+            /* 0.9.4 */
+            $revision = 94;
+        }
+        else if (isset($tables['candidate_duplicates']))
+        {
+            /* 0.9.5 */
+            $revision = 95;
         }
 
         if ($revision <= 50)
@@ -910,6 +915,12 @@ switch ($action)
         {
             // FIXME: File exists?!
             $schema = file_get_contents('db/upgrade-0.6.x-0.7.0.sql');
+            MySQLQueryMultiple($schema);
+        }
+        if ($revision <= 94)
+        {
+            // FIXME: File exists?!
+            $schema = file_get_contents('db/upgrade-0.9.4-0.9.5.sql');
             MySQLQueryMultiple($schema);
         }
 
@@ -946,14 +957,14 @@ switch ($action)
                   Installpage_populate(\'a=onReindexResumes\');
               </script>';
         break;
-            
+
     case 'onReindexResumes':
-        include_once('modules/install/ajax/attachmentsReindex.php');
-        
+        include_once(LEGACY_ROOT . '/modules/install/ajax/attachmentsReindex.php');
+
         echo '<script type="text/javascript">
                   Installpage_populate(\'a=maintComplete\');
               </script>';
-        
+
         break;
 
     case 'maintComplete':
@@ -974,7 +985,7 @@ switch ($action)
         // If this is an existing database, just set all the fromAddress settings to new
         MySQLQuery(sprintf('UPDATE settings SET value = "%s" WHERE setting = "fromAddress"', $fromAddress));
         // This is a new install, insert a settings value for each site in the database
-        if(mysql_affected_rows() == 0)
+        if(mysqli_affected_rows($mySQLConnection) == 0)
         {
             // Insert a "fromAddress" = $fromAddress for each site
             MySQLQuery(sprintf(
@@ -1035,7 +1046,7 @@ switch ($action)
 
         /* Determine if a default user is set. */
         $rs = MySQLQuery("SELECT * FROM user WHERE user_name = 'admin' AND password = 'cats'");
-        if ($rs && mysql_fetch_row($rs))
+        if ($rs && mysqli_fetch_row($rs))
         {
             //Default user set
             echo '<script type="text/javascript">document.location.href="index.php?defaultlogin=true";</script>';
@@ -1055,16 +1066,19 @@ function MySQLConnect()
 {
     global $tables, $mySQLConnection;
 
-    $mySQLConnection = @mysql_connect(
+    $mySQLConnection = @mysqli_connect(
         DATABASE_HOST, DATABASE_USER, DATABASE_PASS
     );
 
     if (!$mySQLConnection)
     {
+				$error = "errno: " . mysqli_connect_errno() . ", ";
+				$error .= "error: " . mysqli_connect_error();
+
         die(
             '<p style="background: #ec3737; padding: 4px; margin-top: 0; font:'
             . ' normal normal bold 12px/130% Arial, Tahoma, sans-serif;">Error '
-            . " Connecting to Database</p><pre>\n\n" . mysql_error() . "</pre>\n\n"
+            . " Connecting to Database</p><pre>\n\n" . $error . "</pre>\n\n"
         );
         return false;
     }
@@ -1073,16 +1087,17 @@ function MySQLConnect()
     /* Create an array of all tables in the database. */
     $tables = array();
     $result = MySQLQuery(sprintf("SHOW TABLES FROM `%s`", DATABASE_NAME));
-    while ($row = mysql_fetch_row($result))
+    while ($row = mysqli_fetch_row($result))
     {
         $tables[$row[0]] = true;
     }
 
     /* Select CATS database. */
-    $isDBSelected = @mysql_select_db(DATABASE_NAME, $mySQLConnection);
+    $isDBSelected = @mysqli_select_db($mySQLConnection, DATABASE_NAME);
     if (!$isDBSelected)
     {
-        $error = mysql_error($mySQLConnection);
+				$error = "errno: " . mysqli_connect_errno() . ", ";
+				$error .= "error: " . mysqli_connect_error();
 
         die(
             '<p style="background: #ec3737; padding: 4px; margin-top: 0; font:'
@@ -1097,15 +1112,12 @@ function MySQLQuery($query, $ignoreErrors = false)
 {
     global $mySQLConnection;
 
-    $queryResult = mysql_query($query, $mySQLConnection);
-    if (!$queryResult && !$ignoreErrors)
-    {
-        $error = mysql_error($mySQLConnection);
+    $queryResult = mysqli_query($mySQLConnection, $query);
 
-        if ($error == 'Query was empty')
-        {
-            return $queryResult;
-        }
+    if (!$mySQLConnection)
+    {
+		$error = "errno: " . mysqli_connect_errno() . ", ";
+		$error .= "error: " . mysqli_connect_error();
 
         die (
             '<p style="background: #ec3737; padding: 4px; margin-top: 0; font:'
@@ -1113,6 +1125,7 @@ function MySQLQuery($query, $ignoreErrors = false)
             . " Error -- Please Report This Bug!</p><pre>\n\nMySQL Query "
             . "Failed: " . $error . "\n\n" . $query . "</pre>\n\n"
         );
+        return false;
     }
 
     return $queryResult;
@@ -1140,7 +1153,7 @@ function initializeOptionalComponents()
     global $optionalComponents;
 
     //Detect which components are installed and which ones are not
-    include_once('modules/install/OptionalComponents.php');
+    include_once(LEGACY_ROOT . '/modules/install/OptionalComponents.php');
 
     foreach ($optionalComponents as $index => $data)
     {

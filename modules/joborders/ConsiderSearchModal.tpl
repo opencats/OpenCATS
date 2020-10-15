@@ -1,5 +1,5 @@
 <?php /* $Id: ConsiderSearchModal.tpl 3093 2007-09-24 21:09:45Z brian $ */ ?>
-<?php TemplateUtility::printModalHeader('Job Orders', 'js/sorttable.js', 'Add Candidate to This Job Order Pipeline'); ?>
+<?php TemplateUtility::printModalHeader('Job Orders', 'js/sorttable.js', 'Add Candidate to This Job Order'); ?>
 
     <?php if (!$this->isFinishedMode): ?>
         <p>Search for a candidate below, and then click on the candidate's
@@ -48,6 +48,7 @@
             <?php if (!empty($this->rs)): ?>
                 <table class="sortable" width="100%">
                     <tr>
+                        <th align="left" nowrap="nowrap"></th>
                         <th align="left" nowrap="nowrap">First Name</th>
                         <th align="left" nowrap="nowrap">Last Name</th>
                         <th align="left" nowrap="nowrap">Key Skills</th>
@@ -58,6 +59,15 @@
 
                     <?php foreach ($this->rs as $rowNumber => $data): ?>
                         <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
+                            <?php if($data['isDuplicateCandidate'] == 1): ?>
+                                <td valign="top" align="left">
+                                    <img src="images/wf_error.gif" alt="" width="16" height="16" title="Duplicate Candidate"/>
+                                </td>
+                            <?php else: ?>
+                                <td valign="top" align="left">
+                                    <img src="images/mru/blank.gif" alt="" width="16" height="16" />
+                                </td>
+                            <?php endif; ?>
                             <?php if (!$data['inPipeline']): ?>
                                 <td valign="top" align="left">
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=addToPipeline&amp;getback=getback&amp;jobOrderID=<?php echo($this->jobOrderID); ?>&amp;candidateID=<?php $this->_($data['candidateID']); ?>">

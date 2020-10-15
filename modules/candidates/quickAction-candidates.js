@@ -10,7 +10,7 @@ quickAction.CandidateMenu.prototype.getOptions = function()
     var options = quickAction.DefaultMenu.prototype.getOptions.call(this);
     if(this.getPermissions().pipelines_addToPipeline)
     {
-        options.push(new quickAction.MenuOption('Add To Pipeline', 'showQuickActionAddToPipeline(' + this.getType() + ');'));
+        options.push(new quickAction.MenuOption('Add To Job Order', 'showQuickActionAddToPipeline(' + this.getType() + ');'));
     }
 
     return options;

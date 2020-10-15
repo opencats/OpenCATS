@@ -30,7 +30,7 @@
  * @version    $Id: Pipelines.php 3593 2007-11-13 17:36:57Z andrew $
  */
 
-include_once('./lib/History.php');
+include_once(LEGACY_ROOT . '/lib/History.php');
 
 /**
  *	Pipelines Library
@@ -480,6 +480,7 @@ class Pipelines
                 joborder.status AS jobOrderStatus,
                 joborder.salary AS salary,
                 joborder.is_hot AS isHot,
+                joborder.client_job_id AS clientJobID,
                 DATE_FORMAT(
                     joborder.start_date, '%%m-%%d-%%y'
                 ) AS start_date,
@@ -541,6 +542,7 @@ class Pipelines
         $sql = sprintf(
             "SELECT
                 IF(attachment_id, 1, 0) AS attachmentPresent,
+                IF(old_candidate_id, 1, 0) AS isDuplicateCandidate,
                 candidate.candidate_id AS candidateID,
                 candidate.first_name AS firstName,
                 candidate.last_name AS lastName,
@@ -617,6 +619,8 @@ class Pipelines
                 ON candidate.candidate_id = attachment.data_item_id
             LEFT JOIN candidate_joborder_status
                 ON candidate_joborder.status = candidate_joborder_status.candidate_joborder_status_id
+            LEFT JOIN candidate_duplicates
+                ON candidate_duplicates.new_candidate_id = candidate.candidate_id
             WHERE
                 candidate_joborder.joborder_id = %s
             AND

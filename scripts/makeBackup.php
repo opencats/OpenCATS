@@ -55,9 +55,9 @@ if (isset($_SERVER['argv'][1]))
     chdir($CATSHome);
 
     include_once('./config.php');
-    include_once('./constants.php');
-    include_once('./lib/DatabaseConnection.php');
-    include_once('modules/install/backupDB.php');
+    include_once(LEGACY_ROOT . '/constants.php');
+    include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
+    include_once(LEGACY_ROOT . '/modules/install/backupDB.php');
 
     makeBackup((int) $_SERVER['argv'][1], BACKUP_CATS);
 }
@@ -68,9 +68,9 @@ else if(php_sapi_name() == 'cli')
 }
 
 include_once('./config.php');
-include_once('./constants.php');
-include_once('./lib/DatabaseConnection.php');
-include_once('modules/install/backupDB.php');
+include_once(LEGACY_ROOT . '/constants.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
+include_once(LEGACY_ROOT . '/modules/install/backupDB.php');
 
 function makeBackup($siteID, $backupType = BACKUP_TAR, $logFile = null)
 {
@@ -243,11 +243,11 @@ function dumpAttachments($db, $directory, $siteID)
         $siteID
     );
 
-    $queryResult = mysql_query($sql);
-    $totalAttachments = mysql_num_rows($queryResult);
+    $queryResult = mysqli_query($db, $sql);
+    $totalAttachments = mysqli_num_rows($queryResult);
 
     /* Add each attachment to the zip file. */
-    while ($row = mysql_fetch_assoc($queryResult))
+    while ($row = mysqli_fetch_assoc($queryResult))
     {
         $relativePath = sprintf(
             'attachments/%s/%s',
@@ -274,7 +274,7 @@ function dumpAttachments($db, $directory, $siteID)
 
         if (file_exists('modules/s3storage'))
         {
-            include_once('modules/s3storage/lib.php');
+            include_once(LEGACY_ROOT . '/modules/s3storage/lib.php');
 
             $s3storage = new S3Storage();
             $s3storage->getTemporarilyFromS3Storage($row['attachment_id']);

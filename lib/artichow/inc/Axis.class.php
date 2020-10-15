@@ -317,11 +317,9 @@ class awAxis {
 	 */
 	public function setLabelPrecision($precision) {
 		$this->auto(FALSE);
-		$function = 'axis'.time().'_'.(microtime() * 1000000);
-		eval('function '.$function.'($value) {
-			return sprintf("%.'.(int)$precision.'f", $value);
-		}');
-		$this->label->setCallbackFunction($function);
+		$this->label->setCallbackFunction(function ($value) use ($precision) {
+		    return sprintf('%.' . (int) $precision . 'f', $value);
+		});
 	}
 
 	/**
@@ -332,12 +330,9 @@ class awAxis {
 	public function setLabelText($texts) {
 		if(is_array($texts)) {
 			$this->auto(FALSE);
-			$function = 'axis'.time().'_'.(microtime() * 1000000);
-			eval('function '.$function.'($value) {
-				$texts = '.var_export($texts, TRUE).';
-				return $texts[$value];
-			}');
-			$this->label->setCallbackFunction($function);
+			$this->label->setCallbackFunction(function ($value) use ($texts) {
+			    return isset($texts[$value]) ? $texts[$value] : '?';
+			});
 		}
 	}
 

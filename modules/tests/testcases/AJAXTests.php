@@ -9,7 +9,7 @@
  * $Id: AJAXTests.php 2380 2007-04-25 21:01:23Z will $
  */
 
-include_once('./lib/ActivityEntries.php');
+include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
 
 
 class ActivityTest extends CATSAJAXTestCase
@@ -843,7 +843,7 @@ class GetPipelineDetailsTest extends CATSAJAXTestCase
         $this->runPageLoadAssertions(false);
 
         /* There aren't any activity entries yet. */
-        $this->assertPattern('/Added candidate to pipeline./');
+        $this->assertPattern('/Added candidate to job order./');
 
         /* Add an activity. */
         $this->addPipelineActivity(

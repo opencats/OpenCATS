@@ -27,12 +27,11 @@
  * $Id: ToolbarUI.php 3691 2007-11-26 18:12:48Z brian $
  */
 
-include_once('./lib/SystemInfo.php');
-include_once('./lib/Mailer.php');
-include_once('./lib/Site.php');
-include_once('./lib/Candidates.php');
-include_once('./lib/DocumentToText.php');
-include_once('./lib/License.php');
+include_once(LEGACY_ROOT . '/lib/SystemInfo.php');
+include_once(LEGACY_ROOT . '/lib/Site.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
+include_once(LEGACY_ROOT . '/lib/License.php');
 
 /* Toolbar library version. Increment to notify toolbars of an update. */
 define('TOOLBAR_LIB_VERSION', 32);

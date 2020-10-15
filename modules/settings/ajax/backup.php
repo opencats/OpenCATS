@@ -29,7 +29,7 @@
 
 @ini_set('memory_limit', '512M');
 
-include_once('lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
 
 $interface = new SecureAJAXInterface();
 
@@ -119,7 +119,7 @@ if ($action == 'start')
 
 if ($action == 'backup')
 {
-    include_once('./lib/FileCompressor.php');
+    include_once(LEGACY_ROOT . '/lib/FileCompressor.php');
     
 	if( ini_get('safe_mode') )
 	{
@@ -164,7 +164,7 @@ if ($action == 'backup')
     /* Backup the database if we're not in attachments-only mode. */
     if (!$attachmentsOnly)
     {
-        include_once('modules/install/backupDB.php');
+        include_once(LEGACY_ROOT . '/modules/install/backupDB.php');
         
         $SQLDumpPath = $directory . 'catsbackup.sql';
     
@@ -238,12 +238,12 @@ if ($action == 'backup')
             site_id = %s",
         $siteID
     );
-    $queryResult = mysql_query($sql);
-    $totalAttachments = mysql_num_rows($queryResult);
+    $queryResult = mysqli_query($db, $sql);
+    $totalAttachments = mysqli_num_rows($queryResult);
 
     /* Add each attachment to the zip file. */
     $attachmentCount = 0;
-    while ($row = mysql_fetch_assoc($queryResult))
+    while ($row = mysqli_fetch_assoc($queryResult))
     {
         ++$attachmentCount;
         $relativePath = sprintf(

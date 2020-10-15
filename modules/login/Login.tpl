@@ -122,7 +122,7 @@
 	</div>
 	  <div id="footerBlock">
                 <span class="footerCopyright"><?php echo(COPYRIGHT_HTML); ?></span>
-                Based upon original work and Powered by <a href="http://www.catsone.com ">CATS</a>.</div>
+                Based upon original work and Powered by <a href="http://www.opencats.org" target="_blank">OpenCATS</a>.</div>
             </div>
         </div>
 

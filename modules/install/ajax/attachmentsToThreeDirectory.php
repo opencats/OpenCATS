@@ -28,7 +28,7 @@
  */
 
 include_once('./config.php');
-include_once('./lib/DatabaseConnection.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
 
 $interface = new SecureAJAXInterface();
 
@@ -48,11 +48,11 @@ else
 }
 @ini_set('memory_limit', '256M');
 
-include_once('lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
 
 $db = DatabaseConnection::getInstance();
  
-include_once('lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
 
 $db->query('ALTER IGNORE TABLE `attachment` CHANGE `directory_name` `directory_name` VARCHAR(64);');
  

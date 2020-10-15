@@ -29,10 +29,10 @@
  * @version    $Id: Contacts.php 3690 2007-11-26 18:07:17Z brian $
  */
 
-include_once('./lib/Pager.php');
-include_once('./lib/EmailTemplates.php');
-include_once('./lib/ExtraFields.php');
-include_once('./lib/Calendar.php');
+include_once(LEGACY_ROOT . '/lib/Pager.php');
+include_once(LEGACY_ROOT . '/lib/EmailTemplates.php');
+include_once(LEGACY_ROOT . '/lib/ExtraFields.php');
+include_once(LEGACY_ROOT . '/lib/Calendar.php');
 
 /**
  *	Contacts Library
@@ -394,7 +394,7 @@ class Contacts
         $history = new History($this->_siteID);
         $history->storeHistoryDeleted(DATA_ITEM_CONTACT, $contactID);
     }
-    
+
     /**
      * Returns number of total activities (for contacts datagrid).
      *

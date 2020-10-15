@@ -105,7 +105,7 @@ class CandidatesWebTest extends CATSWebTestCase
         $this->assertPattern('/Home Phone:/');
         $this->assertPattern('/Source:/');
         $this->assertPattern('/\(' . TESTER_FULLNAME . '\)/');
-        $this->assertPattern('/Job Order Pipeline/');
+        $this->assertPattern('/Job Order/');
 
         /* Click the Edit link for the candidate that we just added. */
         $this->assertClickLinkById('edit_link');

@@ -117,7 +117,7 @@ Feature: Access Level to objects check - main pages
     And I should <candidates> "Candidates - Page"
     And the page should <addToList> contain "Add To List"
     And the page should <export> contain "Export"
-    And the page should <addToPipeline> contain "Add To Pipeline"
+    And the page should <addToPipeline> contain "Add To Job Order"
     And the page should <sendEmail> contain "Send E-Mail"
     And I should <alphabetFilter> "ALL"
     

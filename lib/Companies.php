@@ -35,12 +35,12 @@ use OpenCATS\Entity\CompanyRepository;
  * @version    $Id: Companies.php 3690 2007-11-26 18:07:17Z brian $
  */
 
-include_once('./lib/Pager.php');
-include_once('./lib/ListEditor.php');
-include_once('./lib/EmailTemplates.php');
-include_once('./lib/Attachments.php');
-include_once('./lib/JobOrders.php');
-include_once('./lib/Contacts.php');
+include_once(LEGACY_ROOT . '/lib/Pager.php');
+include_once(LEGACY_ROOT . '/lib/ListEditor.php');
+include_once(LEGACY_ROOT . '/lib/EmailTemplates.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/Contacts.php');
 
 
 /**
@@ -706,6 +706,36 @@ class Companies
                     break;
             }
         }
+    }
+
+    /**
+     * Returns the company ID of a company name, or -1 if the company does not exist.
+     *
+     * @param company name
+     * @return companyID
+     */
+    public function companyByName($name)
+    {
+        $sql = sprintf(
+            "SELECT
+                company.company_id AS companyID,
+                company.name AS name
+            FROM
+                company
+            WHERE
+                company.name = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryStringOrNULL($name),
+            $this->_siteID
+        );
+
+        $rs = $this->_db->getAssoc($sql);
+        if (empty($rs)) {
+            return -1;
+        }
+
+        return $rs['companyID'];
     }
 }
 

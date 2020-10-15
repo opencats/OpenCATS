@@ -30,7 +30,7 @@
  * @version    $Id: Display.php 3831 2007-12-11 23:14:32Z brian $
  */
 
-include_once('./lib/Profile.php');
+include_once(LEGACY_ROOT . '/lib/Profile.php');
 
 // Global variable defining profile stylesheet (to prevent double inclusion)
 $profileStylesheet = false;

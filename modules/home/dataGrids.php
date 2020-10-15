@@ -31,10 +31,10 @@
  * $Id: dataGrids.php 3583 2007-11-12 23:04:42Z brian $
  */
 
-include_once('./lib/Hooks.php');
-include_once('./lib/InfoString.php');
-include_once('./lib/Pipelines.php');
-include_once('./lib/Width.php');
+include_once(LEGACY_ROOT . '/lib/Hooks.php');
+include_once(LEGACY_ROOT . '/lib/InfoString.php');
+include_once(LEGACY_ROOT . '/lib/Pipelines.php');
+include_once(LEGACY_ROOT . '/lib/Width.php');
 
 
 class ImportantPipelineDashboard extends DataGrid
@@ -169,13 +169,7 @@ class ImportantPipelineDashboard extends DataGrid
                     candidate_joborder.status = %s
                 )
             AND
-                (
-                    joborder.status = 'Active'
-                OR
-                    joborder.status = 'On Hold'
-                OR
-                    joborder.status = 'Full'
-                )
+                joborder.status IN %s
             %s
             %s
             %s
@@ -187,6 +181,7 @@ class ImportantPipelineDashboard extends DataGrid
             PIPELINE_STATUS_SUBMITTED,
             PIPELINE_STATUS_INTERVIEWING,
             PIPELINE_STATUS_OFFERED,
+            JobOrderStatuses::getOpenStatusSQL(),
             (strlen($whereSQL) > 0) ? ' AND ' . $whereSQL : '',
             (strlen($havingSQL) > 0) ? ' HAVING ' . $havingSQL : '',
             $orderSQL,
@@ -199,9 +194,9 @@ class ImportantPipelineDashboard extends DataGrid
 
 // FIXME: Includes in the middle of the file = bad.
 // FIXME: Multiple classes per file probably also bad.
-include_once('./lib/ActivityEntries.php');
-include_once('./lib/Hooks.php');
-include_once('./lib/InfoString.php');
+include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
+include_once(LEGACY_ROOT . '/lib/Hooks.php');
+include_once(LEGACY_ROOT . '/lib/InfoString.php');
 
 class CallsDataGrid extends DataGrid
 {

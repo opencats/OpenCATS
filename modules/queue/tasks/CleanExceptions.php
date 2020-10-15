@@ -31,7 +31,7 @@
  * $Id: CleanExceptions.php 3539 2007-11-09 23:03:11Z andrew $
  */
 
-include_once('./modules/queue/lib/Task.php');
+include_once(LEGACY_ROOT . '/modules/queue/lib/Task.php');
 
 // The number of days a logged exception should be saved before it is deleted.
 define('EXCEPTIONS_TTL_DAYS', 7);

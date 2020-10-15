@@ -36,20 +36,20 @@ $CATSHome = realpath(dirname(__FILE__) . '/');
 chdir($CATSHome);
 
 include_once('./config.php');
-include_once('./constants.php');
-include_once('./lib/CATSUtility.php');
-include_once('./lib/DatabaseConnection.php');
-include_once('./lib/DateUtility.php');
-include_once('./lib/Template.php');
-include_once('./lib/Users.php');
-include_once('./lib/MRU.php');
-include_once('./lib/Hooks.php');
-include_once('./lib/Session.php'); /* Depends: MRU, Users, DatabaseConnection. */
-include_once('./lib/UserInterface.php'); /* Depends: Template, Session. */
-include_once('./lib/ModuleUtility.php'); /* Depends: UserInterface */
-include_once('./lib/TemplateUtility.php'); /* Depends: ModuleUtility, Hooks */
-include_once('./lib/QueueProcessor.php');
-include_once('./modules/queue/constants.php');
+include_once(LEGACY_ROOT . '/constants.php');
+include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+include_once(LEGACY_ROOT . '/lib/Template.php');
+include_once(LEGACY_ROOT . '/lib/Users.php');
+include_once(LEGACY_ROOT . '/lib/MRU.php');
+include_once(LEGACY_ROOT . '/lib/Hooks.php');
+include_once(LEGACY_ROOT . '/lib/Session.php'); /* Depends: MRU, Users, DatabaseConnection. */
+include_once(LEGACY_ROOT . '/lib/UserInterface.php'); /* Depends: Template, Session. */
+include_once(LEGACY_ROOT . '/lib/ModuleUtility.php'); /* Depends: UserInterface */
+include_once(LEGACY_ROOT . '/lib/TemplateUtility.php'); /* Depends: ModuleUtility, Hooks */
+include_once(LEGACY_ROOT . '/lib/QueueProcessor.php');
+include_once(LEGACY_ROOT . '/modules/queue/constants.php');
 
 /* Give the session a unique name to avoid conflicts and start the session. */
 @session_name(CATS_SESSION_NAME);
@@ -58,7 +58,9 @@ session_start();
 /* Make sure we aren't getting screwed over by magic quotes. */
 if (get_magic_quotes_runtime())
 {
-    set_magic_quotes_runtime(0);
+    if (function_exists('set_magic_quotes_runtime')) {
+        set_magic_quotes_runtime(0);
+    }
 }
 if (get_magic_quotes_gpc())
 {

@@ -27,12 +27,12 @@
  * $Id: getPipelineJobOrder.php 3814 2007-12-06 17:54:28Z brian $
  */
 
-include_once('./lib/Pipelines.php');
-include_once('./lib/TemplateUtility.php');
-include_once('./lib/StringUtility.php');
-include_once('./lib/CATSUtility.php');
-include_once('./lib/Hooks.php');
-include_once('./lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/Pipelines.php');
+include_once(LEGACY_ROOT . '/lib/TemplateUtility.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
+include_once(LEGACY_ROOT . '/lib/Hooks.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
 
 $interface = new SecureAJAXInterface();
 
@@ -93,7 +93,17 @@ foreach ($pipelinesRS as $rowIndex => $row)
     }
     else
     {
-        $pipelinesRS[$rowIndex]['iconTag'] = '&nbsp;';
+        $pipelinesRS[$rowIndex]['iconTag'] = '<img src="images/mru/blank.gif" alt="" width="16" height="16" />';
+    }
+
+    if ($row['isDuplicateCandidate'] == 1)
+    {
+        $pipelinesRS[$rowIndex]['iconTag'] .= '<img src="images/wf_error.gif" alt="" width="16" height="16" title="Duplicate Candidate"/>';
+    }
+
+    if($pipelinesRS[$rowIndex]['iconTag'] == '')
+    {
+        $pipelinesRS[$rowIndex]['iconTag'] .= '&nbsp;';
     }
 
     $pipelinesRS[$rowIndex]['ratingLine'] = TemplateUtility::getRatingObject(
@@ -193,7 +203,7 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
     <tr>
         <th></th>
         <th></th>
-        <th align="left" width="10" nowrap="nowrap"></th>
+        <th align="left" width="32" nowrap="nowrap"></th>
         <th align="left" width="62" nowrap="nowrap">
             <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('ratingValue'); ?>, <?php if ($isPopup) echo(1); else echo(0); ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
                 Match
@@ -297,7 +307,7 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
                     <?php endif; ?>
                     <?php if ($_SESSION['CATS']->getAccessLevel('pipelines.removeFromPipeline') >= ACCESS_LEVEL_DELETE): ?>
                         <a href="<?php echo($indexFile); ?>?m=joborders&amp;a=removeFromPipeline&amp;jobOrderID=<?php echo($jobOrderID); ?>&amp;candidateID=<?php echo($pipelinesData['candidateID']); ?>" onclick="javascript:return confirm('Remove <?php echo(str_replace('\'', '\\\'', htmlspecialchars($pipelinesData['firstName']))); ?> <?php echo(str_replace('\'', '\\\'', htmlspecialchars($pipelinesData['lastName']))); ?> from the pipeline?')">
-                            <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="remove" style="border: none;" title="Remove from Pipeline"  />
+                            <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="remove" style="border: none;" title="Remove from Job Order"  />
                         </a>
                     <?php endif; ?>
                 <?php endif; ?>

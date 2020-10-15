@@ -32,7 +32,7 @@
 
 // FIXME: Clean me up!
  
-include_once('./lib/WebForm.php');
+include_once(LEGACY_ROOT . '/lib/WebForm.php');
 
 define('CP_LISTVIEW',       1 << 1); // Predefined section for list view
 
@@ -145,9 +145,9 @@ class ControlPanel
         $uIDName = $this->getPostValue('uIDName');
         $sql = $this->getTablesSQL(sprintf('%s = %d', addslashes($uIDName), addslashes($uID)));
         $rs = $this->_db->query($sql);
-        if ($rs && mysql_num_rows($rs) > 0)
+        if ($rs && mysqli_num_rows($rs) > 0)
         {
-            $row = mysql_fetch_array($rs, MYSQL_ASSOC);
+            $row = mysqli_fetch_array($rs, MYSQLI_ASSOC);
             if (!$row)
             {
                 return $this->getException('Bad or expired identifier', 'The operation you attempted cannot complete '
@@ -206,7 +206,7 @@ class ControlPanel
                     . 'because the unique identifier no longer exists. Did you perhaps use your browser\'s <b>back</b> '
                     . 'button?');
             }
-            $row = mysql_fetch_array($rs, MYSQL_ASSOC);
+            $row = mysqli_fetch_array($rs, MYSQLI_ASSOC);
             if (!$row)
             {
                 return $this->getListView();
@@ -358,7 +358,7 @@ class ControlPanel
 
                         if ($this->_insertBoundriesSql != '')
                         {
-                            list($fieldName, $fieldValue) = split('=', $this->_insertBoundriesSql);
+                            list($fieldName, $fieldValue) = explode('=', $this->_insertBoundriesSql);
                             $fieldName = trim($fieldName);
                             $fieldValue = trim($fieldValue);
                         }
@@ -415,9 +415,9 @@ class ControlPanel
                         }
                         else
                         {
-                            $updatedRows += mysql_affected_rows();
+                            $updatedRows += mysqli_affected_rows($this->_db->getConnection());
                             if ($addRecord && $callBackPrimaryKey)
-                                $row[$callBackPrimaryKey] = mysql_insert_id();
+                                $row[$callBackPrimaryKey] = mysqli_insert_id($this->_db->getConnection());
                             if ($callBack)
                                 $callBack($row);
                         }
@@ -814,7 +814,7 @@ class ControlPanel
             if ($currencySql != '')
             {
                 $rs = $this->_db->query($sql = $this->getTablesSQL($searchSql, '', $currencySql));
-                $currencySums = mysql_fetch_array($rs, MYSQL_ASSOC);
+                $currencySums = mysqli_fetch_array($rs, MYSQLI_ASSOC);
             }
         }
 
@@ -834,7 +834,7 @@ class ControlPanel
 
         // get the records count
         $rs = $this->_db->query($sql = $this->getTablesSQL($searchSql, '', 'COUNT(*)'));
-        $rsCount = intval(mysql_result($rs, 0, 0));
+        $rsCount = intval(mysqli_fetch_row($rs));
         $numPages = ceil($rsCount / $pager_ResultsPerPage);
         if ($pager_CurrentPage >= $numPages) $pager_CurrentPage = $numPages - 1;
         if ($pager_CurrentPage < 0) $pager_CurrentPage = 0;
@@ -859,7 +859,7 @@ class ControlPanel
         $fieldOffset = true;
 
         $rowNum = 0;
-        while ($row = mysql_fetch_array($rs, MYSQL_ASSOC))
+        while ($row = mysqli_fetch_array($rs, MYSQLI_ASSOC))
         {
             $numColumns = 0;
             $infoHtml .= "<tr>\n";
@@ -1184,7 +1184,7 @@ class ControlPanel
         switch($fieldData['webFormType'])
         {
             case WFT_CC_EXPIRATION:
-                list($expireMonth, $expireYear) = split('/', $text);
+                list($expireMonth, $expireYear) = explode('/', $text);
                 return '"' . sprintf('%s-%s-01', $expireYear, $expireMonth) . '"';
             case WFT_CC_NUMBER:
                 return '"' . addslashes(EncryptionUtility::encryptCreditCardNumber($text)) . '"';
@@ -1443,7 +1443,7 @@ class ControlPanel
         $this->_tables[$name]['fields'] = array();
         // Fetch the fields from the table
         $rs = $this->_db->query('SHOW FIELDS FROM ' . $name);
-        while ($row = mysql_fetch_array($rs, MYSQL_ASSOC))
+        while ($row = mysqli_fetch_array($rs, MYSQLI_ASSOC))
         {
             $this->_tables[$name]['fields'][$row['Field']] = array(
                 'type' => $row['Type'],

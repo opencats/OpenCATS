@@ -45,8 +45,8 @@
             }
             </script>
 
-            <p id="footerText" align="center">CATS Version <?php echo(CATSUtility::getVersion()); ?> build <?php echo(CATSUtility::getBuild()); ?>. Powered by <a href="http://www.catsone.com/"><strong>CATS</strong></a>.<br />
-            <span id="footerCopyright">&copy;2005 - 2007 Cognizo Technologies, Inc. All rights reserved.</span></p>
+            <p id="footerText" align="center">CATS Version <?php echo(CATSUtility::getVersion()); ?> build <?php echo(CATSUtility::getBuild()); ?>. Powered by <a href="http://www.opencats.org" target="_blank"><strong>OpenCATS</strong></a>.<br />
+            <span id="footerCopyright">&copy;2007-2020 OpenCATS All rights reserved.</span></p>
         </div>
     </body>
 </html>

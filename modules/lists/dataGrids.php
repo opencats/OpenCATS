@@ -31,9 +31,9 @@
  * $Id: dataGrids.php 3566 2007-11-12 09:46:35Z will $
  */
  
-include_once('./lib/Companies.php');
-include_once('./lib/Hooks.php');
-include_once('./lib/Width.php');
+include_once(LEGACY_ROOT . '/lib/Companies.php');
+include_once(LEGACY_ROOT . '/lib/Hooks.php');
+include_once(LEGACY_ROOT . '/lib/Width.php');
 
 class ListsDataGrid extends DataGrid
 {   

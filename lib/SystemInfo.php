@@ -58,7 +58,7 @@ class SystemInfo
             "SELECT
                 *
             FROM
-                system
+                `system`
             WHERE
                 system_id = 0"
         );
@@ -76,7 +76,7 @@ class SystemInfo
     {
         $sql = sprintf(
             "UPDATE
-                system
+                `system`
             SET
                 uid = '%s'
             WHERE
@@ -96,7 +96,7 @@ class SystemInfo
     {
         $sql = sprintf(
             "UPDATE
-                system
+                `system`
             SET
                 disable_version_check = %s
             WHERE
@@ -118,7 +118,7 @@ class SystemInfo
     {
         $sql = sprintf(
             "UPDATE
-                system
+                `system`
             SET
                 available_version = '%s',
                 available_version_description = '%s',

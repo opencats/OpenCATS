@@ -30,8 +30,9 @@
  * @version    $Id: Search.php 3587 2007-11-13 03:55:57Z will $
  */
 
-include_once('./lib/Pager.php');
-include_once('./lib/DatabaseSearch.php');
+include_once(LEGACY_ROOT . '/lib/Pager.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseSearch.php');
+include_once(LEGACY_ROOT . '/lib/JobOrderStatuses.php');
 
 if (ENABLE_SPHINX)
 {
@@ -225,7 +226,7 @@ class SearchUtility
         if (!empty($keywordsWild))
         {
             $regex = implode('|', array_map(
-                create_function('$string','return preg_quote($string, \'/\');'), $keywordsWild
+                function($string){return preg_quote($string, '/');}, $keywordsWild
             ));
             $text = preg_replace(
                 '/(' . $regex . ')/i',
@@ -237,7 +238,7 @@ class SearchUtility
         if (!empty($keywords))
         {
             $regex = implode('|', array_map(
-                create_function('$string','return preg_quote($string, \'/\');'), $keywords
+                function($string){return preg_quote($string, '/');}, $keywords
             ));
             $text = preg_replace(
                 '/\b(' . $regex . ')\b/i',
@@ -298,7 +299,7 @@ class SearchUtility
         if (!empty($keywordsWild))
         {
             $regex = implode('|', array_map(
-                create_function('$string','return preg_quote($string, \'/\');'), $keywordsWild
+                function($string){return preg_quote($string, '/');}, $keywordsWild
             ));
             $text = preg_replace(
                 '/(' . $regex . ')/i',
@@ -310,7 +311,7 @@ class SearchUtility
         if (!empty($keywords))
         {
             $regex = implode('|', array_map(
-                create_function('$string','return preg_quote($string, \'/\');'), $keywords
+                function($string){return preg_quote($string, '/');}, $keywords
             ));
             $text = preg_replace(
                 '/\b(' . $regex . ')\b/i',
@@ -375,17 +376,14 @@ class SearchCandidates
         $this->_userID = $_SESSION['CATS']->getUserID();
     }
     
-    
-    /**
-     * Returns all candidates with full names matching $wildCardString.
+     /**
+     * Returns all candidates.
      *
      * @param string wildcard match string
      * @return array candidates data
      */
-    public function byFullName($wildCardString, $sortBy, $sortDirection)
+    public function all($wildCardString, $sortBy, $sortDirection)
     {
-        $wildCardString = str_replace('*', '%', $wildCardString) . '%';
-        $wildCardString = $this->_db->makeQueryString($wildCardString);
 
         $sql = sprintf(
             "SELECT
@@ -410,6 +408,55 @@ class SearchCandidates
                 candidate
             LEFT JOIN user AS owner_user
                 ON candidate.owner = owner_user.user_id
+            WHERE
+                candidate.site_id = %s
+            ORDER BY
+                %s %s",
+            $this->_siteID,
+            $sortBy,
+            $sortDirection
+        );
+
+        return $this->_db->getAllAssoc($sql);
+    }
+
+    /**
+     * Returns all candidates with full names matching $wildCardString.
+     *
+     * @param string wildcard match string
+     * @return array candidates data
+     */
+    public function byFullName($wildCardString, $sortBy, $sortDirection)
+    {
+        $wildCardString = str_replace('*', '%', $wildCardString) . '%';
+        $wildCardString = $this->_db->makeQueryString($wildCardString);
+
+        $sql = sprintf(
+            "SELECT
+                candidate.candidate_id AS candidateID,
+                IF(candidate_duplicates.new_candidate_id, 1, 0) AS isDuplicateCandidate,
+                candidate.first_name AS firstName,
+                candidate.last_name AS lastName,
+                candidate.city AS city,
+                candidate.state AS state,
+                candidate.phone_home AS phoneHome,
+                candidate.phone_cell AS phoneCell,
+                candidate.key_skills AS keySkills,
+                candidate.email1 AS email1,
+                owner_user.first_name AS ownerFirstName,
+                owner_user.last_name AS ownerLastName,
+                DATE_FORMAT(
+                    candidate.date_created, '%%m-%%d-%%y'
+                ) AS dateCreated,
+                DATE_FORMAT(
+                    candidate.date_modified, '%%m-%%d-%%y'
+                ) AS dateModified
+            FROM
+                candidate
+            LEFT JOIN user AS owner_user
+                ON candidate.owner = owner_user.user_id
+            LEFT JOIN candidate_duplicates
+                ON candidate_duplicates.new_candidate_id = candidate.candidate_id
             WHERE
             (
                 CONCAT(candidate.first_name, ' ', candidate.last_name) LIKE %s
@@ -809,26 +856,17 @@ class SearchJobOrders
     
     /**
      * Returns all job orders with titles matching $wildCardString. If
-     * activeOnly is true, only Active/OnHold/Full job orders will be shown.
+     * activeOnly is true, only Open(defined in config, or default as 'Active', 'On Hold', 'Full') job orders will be shown.
      *
      * @param string wildcard match string
      * @param boolean return active job orders only
      * @return array job orders data
      */
-    public function byTitle($wildCardString, $sortBy, $sortDirection,
-        $activeOnly)
+    public function byTitle($wildCardString, $sortBy, $sortDirection, $activeOnly)
     {
         if ($activeOnly)
         {
-            //FIXME:  Remove session dependancy.
-            if ($_SESSION['CATS']->isFree())
-            {
-                $activeCriterion = "AND joborder.status = 'Active'";
-            }
-            else
-            {
-                $activeCriterion = "AND (joborder.status IN ('Active', 'OnHold', 'Full'))";
-            }
+            $activeCriterion = "AND (joborder.status IN ".JobOrderStatuses::getOpenStatusSQL().")";
         }
         else
         {
@@ -897,7 +935,7 @@ class SearchJobOrders
 
     /**
      * Returns all job orders with company names matching $wildCardString. If
-     * activeOnly is true, only Active/OnHold/Full job orders will be shown.
+     * activeOnly is true, only Open(defined in config, or default as 'Active', 'On Hold', 'Full') job orders will be shown.
      *
      * @param string wildcard match string
      * @param boolean return active job orders only
@@ -910,15 +948,7 @@ class SearchJobOrders
 
         if ($activeOnly)
         {
-            //FIXME:  Remove session dependancy.
-            if ($_SESSION['CATS']->isFree())
-            {
-                $activeCriterion = "AND joborder.status = 'Active'";
-            }
-            else
-            {
-                $activeCriterion = "AND (joborder.status IN ('Active', 'OnHold', 'Full'))";
-            }
+            $activeCriterion = "AND (joborder.status IN ".JobOrderStatuses::getOpenStatusSQL().")";
         }
         else
         {
@@ -986,7 +1016,7 @@ class SearchJobOrders
     
     /**
      * Returns all recently modified job orders. If activeOnly is true, 
-     * only Active/OnHold/Full job orders will be shown.
+     * only Open(defined in config, or default as 'Active', 'On Hold', 'Full') job orders will be shown.
      *
      * @param boolean return active job orders only
      * @return array job orders data
@@ -995,15 +1025,7 @@ class SearchJobOrders
     {
         if ($activeOnly)
         {
-            //FIXME:  Remove session dependancy.
-            if ($_SESSION['CATS']->isFree())
-            {
-                $activeCriterion = "AND joborder.status = 'Active'";
-            }
-            else
-            {
-                $activeCriterion = "AND (joborder.status IN ('Active', 'OnHold', 'Full'))";
-            }
+            $activeCriterion = "AND (joborder.status IN ".JobOrderStatuses::getOpenStatusSQL().")";
         }
         else
         {
@@ -2067,7 +2089,7 @@ class SearchPager extends Pager
         );
 
         /* Pass "Search By Resume"-specific parameters to Pager constructor. */
-        parent::__construct(count($this->_rs), $rowsPerPage, $currentPage);
+        parent::__construct((is_array($this->_rs)?count($this->_rs):0), $rowsPerPage, $currentPage);
     }
 }
 

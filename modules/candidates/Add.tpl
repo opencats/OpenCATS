@@ -1,6 +1,6 @@
 <?php /* $Id: Add.tpl 3746 2007-11-28 20:28:21Z andrew $ */ ?>
 <?php if ($this->isModal): ?>
-    <?php TemplateUtility::printModalHeader('Candidates', array('modules/candidates/validator.js', 'js/addressParser.js', 'js/listEditor.js',  'js/candidate.js', 'js/candidateParser.js'), 'Add New Candidate to This Job Order Pipeline'); ?>
+    <?php TemplateUtility::printModalHeader('Candidates', array('modules/candidates/validator.js', 'js/addressParser.js', 'js/listEditor.js',  'js/candidate.js', 'js/candidateParser.js'), 'Add New Candidate to this Job Order'); ?>
 <?php else: ?>
     <?php TemplateUtility::printHeader('Candidates', array('modules/candidates/validator.js', 'js/addressParser.js', 'js/listEditor.js',  'js/candidate.js', 'js/candidateParser.js')); ?>
     <?php TemplateUtility::printHeaderBlock(); ?>

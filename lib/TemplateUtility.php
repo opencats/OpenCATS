@@ -36,9 +36,9 @@
  */
 
 include_once('./vendor/autoload.php');
-include_once('Candidates.php');
-include_once('DateUtility.php');
-include_once('SystemInfo.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+include_once(LEGACY_ROOT . '/lib/SystemInfo.php');
 
 use OpenCATS\UI\QuickActionMenu;
 
@@ -745,7 +745,7 @@ class TemplateUtility
                     else if (strpos($link, 'a=internalPostings') !== false)
                     {
                         /* Default company subtab. */
-                        include_once('./lib/Companies.php');
+                        include_once(LEGACY_ROOT . '/lib/Companies.php');
 
                         $companies = new Companies($_SESSION['CATS']->getSiteID());
                         $defaultCompanyID = $companies->getDefaultCompany();
@@ -813,22 +813,22 @@ class TemplateUtility
             $buildString = '';
         }
 
-        /* THE MODIFICATION OF THE COPYRIGHT AND 'Powered by CATS' LINES IS NOT ALLOWED
-           BY THE TERMS OF THE CPL FOR CATS OPEN SOURCE EDITION.
+        /* THE MODIFICATION OF THE COPYRIGHT AND 'Powered by OpenCATS' LINES IS NOT ALLOWED
+           BY THE TERMS OF THE CPL FOR OpenCATS OPEN SOURCE EDITION.
 
              II) The following copyright notice must be retained and clearly legible
-             at the bottom of every rendered HTML document: Copyright (C) 2005 - 2007
-             Cognizo Technologies, Inc. All rights reserved.
+             at the bottom of every rendered HTML document: Copyright (C) 2007-2020
+             OpenCATs All rights reserved.
 
-             III) The "Powered by CATS" text or logo must be retained and clearly
+             III) The "Powered by OpenCATS" text or logo must be retained and clearly
              legible on every rendered HTML document. The logo, or the text
-             "CATS", must be a hyperlink to the CATS Project website, currently
-             http://www.catsone.com/.
+             "OpenCATS", must be a hyperlink to the CATS Project website, currently
+             http://www.opencats.org/.
        */
 
         echo '<div class="footerBlock">', "\n";
-        echo '<p id="footerText">CATS Version ', CATS_VERSION, $buildString,
-             '. <span id="toolbarVersion"></span>Powered by <a href="http://www.catsone.com/"><strong>CATS</strong></a>.</p>', "\n";
+        echo '<p id="footerText">OpenCATS Version ', CATS_VERSION, $buildString,
+             '. <span id="toolbarVersion"></span>Powered by <a href="http://www.opencats.org/"><strong>OpenCATS</strong></a>.</p>', "\n";
         echo '<span id="footerResponse">Server Response Time: ', $loadTime, ' seconds.</span><br />';
         echo '<span id="footerCopyright">', COPYRIGHT_HTML, '</span>', "\n";
         if (!eval(Hooks::get('TEMPLATEUTILITY_SHOWPRIVACYPOLICY'))) return;

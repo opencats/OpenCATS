@@ -27,18 +27,22 @@
  * $Id: ImportUI.php 3833 2007-12-12 18:18:09Z brian $
  */
 
-include_once('./lib/Statistics.php');
-include_once('./lib/StringUtility.php');
-include_once('./modules/import/Import.php');
-include_once('./lib/Companies.php');
-include_once('./lib/Contacts.php');
-include_once('./lib/Candidates.php');
-include_once('./lib/DatabaseSearch.php');
-include_once('./lib/FileUtility.php');
-include_once('./lib/ExtraFields.php');
-include_once('./lib/Attachments.php');
-include_once('./lib/ParseUtility.php');
-include_once('./lib/Import.php');
+include_once(LEGACY_ROOT . '/lib/Statistics.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/modules/import/Import.php');
+include_once(LEGACY_ROOT . '/lib/Companies.php');
+include_once(LEGACY_ROOT . '/lib/Contacts.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseSearch.php');
+include_once(LEGACY_ROOT . '/lib/FileUtility.php');
+include_once(LEGACY_ROOT . '/lib/ExtraFields.php');
+include_once(LEGACY_ROOT . '/lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/ParseUtility.php');
+include_once(LEGACY_ROOT . '/lib/ImportUtility.php');
+include_once(LEGACY_ROOT . '/lib/CandidatesImport.php');
+include_once(LEGACY_ROOT . '/lib/CompaniesImport.php');
+include_once(LEGACY_ROOT . '/lib/ContactsImport.php');
 
 
 class ImportUI extends UserInterface
@@ -239,6 +243,21 @@ class ImportUI extends UserInterface
             'Web Site',         'web_site',
             'Key Skills',       'key_skills'
         );
+        
+        $this->jobOrdersTypes = array(
+            'Reference',        'client_job_id',
+            'Title',            'title',
+            'Company',          'company',
+            'City',             'city',
+            'State',            'state',
+            'Type',             'type',
+            'Description',      'description',
+            'Notes',            'notes',
+            'Openings',         'openings',
+            'Public',           'public',
+            'Is Hot',           'is_hot'
+        );
+        
         $this->contactsTypes = array(
             'Company',      'company_id',
             'Full Name',   'name',
@@ -276,6 +295,7 @@ class ImportUI extends UserInterface
         $companies = new Companies($this->_siteID);
         $candidates = new Candidates($this->_siteID);
         $contacts = new Contacts($this->_siteID);
+        $jobOrders = new JobOrders($this->_siteID);
 
         $rs = $companies->extraFields->getSettings();
         foreach ($rs as $data)
@@ -284,6 +304,13 @@ class ImportUI extends UserInterface
             $this->companiesTypes[] = '#' . $data['fieldName'];
         }
 
+        $rs = $jobOrders->extraFields->getSettings();
+        foreach ($rs as $data)
+        {
+            $this->jobOrdersTypes[] = $data['fieldName'];
+            $this->jobOrdersTypes[] = '#' . $data['fieldName'];
+        }
+        
         $rs = $candidates->extraFields->getSettings();
         foreach ($rs as $data)
         {
@@ -610,6 +637,10 @@ class ImportUI extends UserInterface
             case 'Candidates':
                 $types = $this->candidatesTypes;
                 break;
+            
+            case 'JobOrders':
+                $types = $this->jobOrdersTypes;
+                break;
 
             case 'Contacts':
                 $types = $this->contactsTypes;
@@ -739,6 +770,18 @@ class ImportUI extends UserInterface
             return;
         }
 
+        $contents = fread($theFile, filesize($filePath));
+        rewind($theFile); //move pointer to the beginning of file so fgetcsv can read it too
+
+        if(defined('IMPORT_FILE_ENCODING') && count(IMPORT_FILE_ENCODING) > 0)
+        {
+            $encoding = mb_detect_encoding($contents, IMPORT_FILE_ENCODING);
+        }
+        else
+        {
+            $encoding = mb_detect_encoding($contents, mb_detect_order());
+        }
+
         if (!eval(Hooks::get('IMPORT_ON_IMPORT_DELIMITED_5'))) return;
 
         switch ($dataContaining)
@@ -767,6 +810,11 @@ class ImportUI extends UserInterface
                 $types = $this->candidatesTypes;
                 $importID = $import->add('candidate');
                 break;
+                
+            case 'JobOrders':
+                $types = $this->jobOrdersTypes;
+                $importID = $import->add('joborder');
+                break;
 
             case 'Companies':
                 $types = $this->companiesTypes;
@@ -786,7 +834,7 @@ class ImportUI extends UserInterface
                 return;
         }
 
-        /* Get user preference for what do to with each field */
+        /* Get user preference for what do to with each field and convert each field into UTF-8*/
         foreach ($theFields AS $fieldID => $theField)
         {
             $theFieldPreference[$fieldID] = $_POST['importType' . $fieldID];
@@ -814,6 +862,12 @@ class ImportUI extends UserInterface
                     $this->_template->assign('errorMessage', 'Cannot read that data type.');
                     $this->import();
                     return;
+            }
+
+            if($encoding) {
+                foreach ($theData AS $index => $data) {
+                    $theData[$index] = iconv($encoding, 'UTF-8', $data);
+                }
             }
 
             $catsEntriesRows = array();
@@ -856,6 +910,10 @@ class ImportUI extends UserInterface
                                 case 'Candidates':
                                     $import->addForeignSettingUnique(DATA_ITEM_CANDIDATE, $theFields[$fieldID], $importID);
                                     break;
+                                    
+                                 case 'JobOrders':
+                                    $import->addForeignSettingUnique(DATA_ITEM_JOBORDER, $theFields[$fieldID], $importID);
+                                    break;
 
                                 case 'Contacts':
                                     $import->addForeignSettingUnique(DATA_ITEM_CONTACT, $theFields[$fieldID], $importID);
@@ -889,6 +947,10 @@ class ImportUI extends UserInterface
             {
                 case 'Candidates':
                     $result = $this->addToCandidates($catsEntriesRows, $catsEntriesValuesNamed, $foreignEntries, $importID);
+                    break;
+                    
+                case 'JobOrders':
+                    $result = $this->addToJobOrders($catsEntriesRows, $catsEntriesValuesNamed, $foreignEntries, $importID);
                     break;
 
                 case 'Contacts':
@@ -1027,6 +1089,39 @@ class ImportUI extends UserInterface
 
         return '';
     }
+    
+    /*
+    * Inserts a record into job orders.
+    */
+    private function addToJobOrders($dataFields, $dataNamed, $dataForeign, $importID)
+    {
+        $dateAvailable = '01/01/0001';
+
+        /* Bail out if any of the required fields are empty. */
+
+
+        if (!isset($dataNamed['title']))
+        {
+            return 'Required field (title) is missing.';
+        }
+
+        if (!eval(Hooks::get('IMPORT_ADD_JOBORDER'))) return;
+
+        $jobOrdersImport = new JobOrdersImport($this->_siteID);
+        $jobOrderID = $jobOrdersImport->add($dataNamed, $this->_userID, $importID);
+
+        if ($jobOrderID <= 0)
+        {
+            return 'Failed to add job order.';
+        }
+
+        $this->addForeign(DATA_ITEM_JOBORDER, $dataForeign, $jobOrderID, $importID);
+
+        if (!eval(Hooks::get('IMPORT_ADD_JOBORDER_POST'))) return;
+
+        return '';
+    }
+
 
    /*
     * Inserts a record into Companies.
@@ -1034,6 +1129,7 @@ class ImportUI extends UserInterface
     private function addToCompanies($dataFields, $dataNamed, $dataForeign, $importID)
     {
         $companiesImport = new CompaniesImport($this->_siteID);
+        $companies = new Companies($this->_siteID);
 
         /* Bail out if any of the required fields are empty. */
 
@@ -1044,7 +1140,7 @@ class ImportUI extends UserInterface
 
         /* check for duplicates */
 
-        $cID = $companiesImport->companyByName($dataNamed['name']);
+        $cID = $companies->companyByName($dataNamed['name']);
         if ($cID != -1)
         {
             return 'Duplicate entry.';
@@ -1072,6 +1168,7 @@ class ImportUI extends UserInterface
     private function addToContacts($dataFields, $dataNamed, $dataForeign, $importID)
     {
         $contactImport = new ContactImport($this->_siteID);
+        $companies = new Companies($this->_siteID);
 
         /* Try to find the company. */
         if (!isset($dataNamed['company_id']))
@@ -1079,7 +1176,7 @@ class ImportUI extends UserInterface
             return 'Unable to add company - no company name.';
         }
 
-        $companyID = $contactImport->companyByName($dataNamed['company_id']);
+        $companyID = $companies->companyByName($dataNamed['company_id']);
 
         $genCompany = false;
 
@@ -1107,7 +1204,8 @@ class ImportUI extends UserInterface
 
                 if (!eval(Hooks::get('IMPORT_ADD_CONTACT_CLIENT'))) return;
 
-                $companyID = $contactImport->addCompany($dataCompany, $this->_userID, $importID);
+                $companiesImport = new CompaniesImport($this->_siteID);
+                $companyID = $companiesImport->add($dataCompany, $this->_userID, $importID);
                 if ($companyID == -1)
                 {
                     return 'Unable to add company.';

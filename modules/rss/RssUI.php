@@ -34,11 +34,11 @@
  * $Id: RssUI.php 3687 2007-11-26 16:36:01Z andrew $
  */
 
-include_once('./lib/ActivityEntries.php');
-include_once('./lib/StringUtility.php');
-include_once('./lib/DateUtility.php');
-include_once('./lib/JobOrders.php');
-include_once('./lib/Site.php');
+include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
+include_once(LEGACY_ROOT . '/lib/StringUtility.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/Site.php');
 
 class RssUI extends UserInterface
 {
@@ -105,7 +105,7 @@ class RssUI extends UserInterface
         if (!eval(Hooks::get('RSS_SITEID'))) return;
 
         $jobOrders = new JobOrders($careerPortalSiteID);
-        $rs = $jobOrders->getAll(JOBORDERS_STATUS_ACTIVE, -1, -1, -1, false, true);
+        $rs = $jobOrders->getAll(JOBORDERS_STATUS_SHARE, -1, -1, -1, false, true);
 
         /* XML Headers */
         header('Content-type: text/xml');

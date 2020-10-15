@@ -39,13 +39,13 @@ define('CALENDAR_EVENT_PERSONAL',  500);
 define('CALENDAR_EVENT_OTHER',     600);
 
 
-include_once('./lib/ResultSetUtility.php');
-include_once('./lib/DateUtility.php');
-include_once('./lib/Companies.php');
-include_once('./lib/Candidates.php');
-include_once('./lib/JobOrders.php');
-include_once('./lib/Contacts.php');
-include_once('./lib/Mailer.php');
+include_once(LEGACY_ROOT . '/lib/ResultSetUtility.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+include_once(LEGACY_ROOT . '/lib/Companies.php');
+include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/Contacts.php');
+include_once(LEGACY_ROOT . '/lib/Mailer.php');
 
 
 /**
@@ -952,7 +952,7 @@ class Calendar
         $mailer = new Mailer($siteID, $userID);
 
         $destination = str_replace(',', ';', $destination);
-        $destinations = split(';', $destination);
+        $destinations = explode(';', $destination);
 
         foreach ($destinations as $address)
         {

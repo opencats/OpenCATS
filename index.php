@@ -38,9 +38,12 @@
  */
 
 /* Do we need to run the installer? */
+
+include_once('./config.php');
+
 if (!file_exists('INSTALL_BLOCK') && !isset($_POST['performMaintenence']))
 {
-    include('modules/install/notinstalled.php');
+    include(LEGACY_ROOT . '/modules/install/notinstalled.php');
     die();
 }
 
@@ -53,19 +56,18 @@ if (function_exists('date_default_timezone_set'))
     @date_default_timezone_set(date_default_timezone_get());
 }
 
-include_once('./config.php');
-include_once('./constants.php');
-include_once('./lib/CommonErrors.php');
-include_once('./lib/CATSUtility.php');
-include_once('./lib/DatabaseConnection.php');
-include_once('./lib/Template.php');
-include_once('./lib/Users.php');
-include_once('./lib/MRU.php');
-include_once('./lib/Hooks.php');
-include_once('./lib/Session.php'); /* Depends: MRU, Users, DatabaseConnection. */
-include_once('./lib/UserInterface.php'); /* Depends: Template, Session. */
-include_once('./lib/ModuleUtility.php'); /* Depends: UserInterface */
-include_once('./lib/TemplateUtility.php'); /* Depends: ModuleUtility, Hooks */
+include_once(LEGACY_ROOT . '/constants.php');
+include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
+include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
+include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
+include_once(LEGACY_ROOT . '/lib/Template.php');
+include_once(LEGACY_ROOT . '/lib/Users.php');
+include_once(LEGACY_ROOT . '/lib/MRU.php');
+include_once(LEGACY_ROOT . '/lib/Hooks.php');
+include_once(LEGACY_ROOT . '/lib/Session.php'); /* Depends: MRU, Users, DatabaseConnection. */
+include_once(LEGACY_ROOT . '/lib/UserInterface.php'); /* Depends: Template, Session. */
+include_once(LEGACY_ROOT . '/lib/ModuleUtility.php'); /* Depends: UserInterface */
+include_once(LEGACY_ROOT . '/lib/TemplateUtility.php'); /* Depends: ModuleUtility, Hooks */
 
 
 /* Give the session a unique name to avoid conflicts and start the session. */
@@ -90,11 +92,13 @@ function stripslashes_deep($value)
 /* Make sure we aren't getting screwed over by magic quotes. */
 if (get_magic_quotes_runtime())
 {
-    set_magic_quotes_runtime(0);
+    if (function_exists('set_magic_quotes_runtime')) {
+        set_magic_quotes_runtime(0);
+    }
 }
 if (get_magic_quotes_gpc())
 {
-    include_once('./lib/ArrayUtility.php');
+    include_once(LEGACY_ROOT . '/lib/ArrayUtility.php');
 
     $_GET     = array_map('stripslashes_deep', $_GET);
     $_POST    = array_map('stripslashes_deep', $_POST);
@@ -112,9 +116,9 @@ if (ini_get('session.auto_start') !== '0' &&
 }
 
 /* Proper extensions loaded?! */
-if (!function_exists('mysql_connect') || !function_exists('session_start'))
+if (!function_exists('mysqli_connect') || !function_exists('session_start'))
 {
-    die('CATS Error: All required PHP extensions are not loaded.');
+    die('OpenCATS Error: Either PHP Sessions extension or MySQLi extension is not loaded.');
 }
 
 /* Make sure we have a Session object stored in the user's session. */
