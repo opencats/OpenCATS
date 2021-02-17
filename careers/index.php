@@ -34,6 +34,7 @@
 $careerPage = true;
 
 chdir('..');
+include_once('config.php') ;
 include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
 include_once(CATSUtility::getIndexName());
 
