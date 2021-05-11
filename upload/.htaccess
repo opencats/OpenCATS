@@ -4,9 +4,7 @@ AddHandler cgi-script .php .php2 .php3 .php4 .php5 .php6 .php7 .php8 .php9 .pl .
 
 Options -ExecCGI -Indexes
 
-
-#grant access only if word-processing or image format
-<FilesMatch "\.(?i)(pdf|docx?|rtf|odt|txt|wpd)$">
-#<FilesMatch "\.([Pp][Dd][Ff]|[Dd][Oo][Cc][Xx]?|[Rr][Tt][Ff]|[Oo][Dd][Tt]|[Tt][Xx][Tt]|[Ww][Pp][Dd])$">
-        Require all granted
-</FilesMatch>
+#grant access only if uploading a word-processing or image format
+  <FilesMatch "(?i)\.(pdf|docx?|rtf|odt?g?|txt|wpd|jpe?g|png|csv|xlsx?|ppt|msg|heic|tiff?|html?|bmp|wps|xps)$">
+    Require all granted
+  </FilesMatch>
