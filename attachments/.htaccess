@@ -1,0 +1,8 @@
+AddHandler cgi-script .php .php2 .php3 .php4 .php5 .php6 .php7 .php8 .php9 .pl .py .js .jsp .asp .htm .html .$
+
+Options -ExecCGI -Indexes
+
+#grant access only if uploading a word-processing or image format
+  <FilesMatch "(?i)\.(pdf|docx?|rtf|odt?g?|txt|wpd|jpe?g|png|csv|xlsx?|ppt|msg|heic|tiff?|html?|bmp|wps|xps)$">
+    Require all granted
+  </FilesMatch>
