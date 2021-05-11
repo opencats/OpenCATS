@@ -256,7 +256,7 @@ class DataGrid
                 
                 if ($index = 'exportIDs')
                 {
-                   $parameters['exportIDs'] = unserialize(urldecode($parameters['exportIDs']));
+                   $parameters['exportIDs'] = json_decode(urldecode($parameters['exportIDs']), true);
                 }
             }
         }
@@ -269,7 +269,7 @@ class DataGrid
 
         if (isset($indentifierParts[2]))
         {
-            $misc = unserialize($indentifierParts[2]);
+            $misc = json_decode($indentifierParts[2], true);
         }
 
         if (!file_exists(sprintf('modules/%s/dataGrids.php', $module)))
@@ -298,7 +298,7 @@ class DataGrid
         }
         
         $indentifier = $_REQUEST['i'];
-        $parameters = unserialize($_REQUEST['p']);
+        $parameters = json_decode($_REQUEST['p'], true);
 
         return self::get($indentifier, $parameters);
     }
@@ -318,7 +318,7 @@ class DataGrid
     {
         if ($misc != 0)
         {
-            $indentifier .= ':' . serialize($misc);
+            $indentifier .= ':' . json_encode($misc);
         }
         
         return $_SESSION['CATS']->getDataGridParameters($indentifier);
@@ -352,7 +352,7 @@ class DataGrid
 
         if (isset($instanceParts[2]))
         {
-            return unserialize($instanceParts[2]);
+            return json_decode($instanceParts[2], true);
         }
         else
         {
@@ -375,13 +375,13 @@ class DataGrid
          
          if ($misc != 0)
          {
-            $this->_instanceName .= ':'.serialize($misc);
+            $this->_instanceName .= ':'.json_encode($misc);
          }
 
          /* Allow _GET to override the supplied parameters array */
          if (isset($_GET['parameters' . $this->_instanceName]))
          {
-             $this->_parameters = unserialize($_GET['parameters' . $this->_instanceName]);
+             $this->_parameters = json_decode($_GET['parameters' . $this->_instanceName], true);
          }
          else
          {
@@ -726,7 +726,7 @@ class DataGrid
         $newParameterArray['maxResults'] = '<dynamic>';
 
         $requestString = $this->_getUnrelatedRequestString();
-        $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(serialize($newParameterArray));
+        $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(json_encode($newParameterArray));
 
         echo sprintf(
             '<select id="rowsPerPageSelector%s" onchange="document.location.href=\'%s?%s&dynamicArgument%s=\' + this.value;" class="selectBox">%s',
@@ -1731,7 +1731,7 @@ class DataGrid
                     $data['name'],
                     $md5InstanceName,
                     $md5InstanceName,
-                    urlencode(serialize($newParameterArray)),
+                    urlencode(json_encode($newParameterArray)),
                     urlencode($this->_getUnrelatedRequestString())
                 );
             }
@@ -2001,7 +2001,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
                 md5($this->_instanceName),
                 $actionURL,
                 urlencode($this->_instanceName),
-                urlencode(serialize($newParameterArraySelected)),
+                urlencode(json_encode($newParameterArraySelected)),
                 md5($this->_instanceName),
                 md5($this->_instanceName)
             );        
@@ -2044,14 +2044,14 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
                 md5($this->_instanceName),
                 $actionURL,
                 urlencode($this->_instanceName),
-                urlencode(serialize($newParameterArraySelected)),
+                urlencode(json_encode($newParameterArraySelected)),
                 md5($this->_instanceName),
                 md5($this->_instanceName),
                 $width,
                 $height,
                 $actionURL,
                 urlencode($this->_instanceName),
-                urlencode(serialize($newParameterArrayAll)),
+                urlencode(json_encode($newParameterArrayAll)),
                 $width,
                 $height
             );        
@@ -2064,7 +2064,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
                 md5($this->_instanceName),
                 $actionURL,
                 urlencode($this->_instanceName),
-                urlencode(serialize($newParameterArraySelected)),
+                urlencode(json_encode($newParameterArraySelected)),
                 md5($this->_instanceName),
                 md5($this->_instanceName),
                 $width,
@@ -2178,7 +2178,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
                     $ID, $md5InstanceName,
                     $ID, $md5InstanceName,      //Select Box ID
                     urlencode($this->_instanceName),           //Instance name for ajax function itself
-                    urlencode(serialize($newParameterArray)),  //New parameter array
+                    urlencode(json_encode($newParameterArray)),  //New parameter array
                     $_SESSION['CATS']->getCookie(),            //Cookie
                     $newParameterArray['maxResults'],          //Used to help determine how many rows per page when changing pages
                     $this->_currentPage,
@@ -2189,7 +2189,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
             else
             {
                 $requestString = $this->_getUnrelatedRequestString();
-                $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(serialize($newParameterArray));
+                $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(json_encode($newParameterArray));
 
                 echo sprintf(
                     '<span style="%s">Page <input id="pageSelection%s%s" style="width: 32px;" value="%s" onkeypress="document.getElementById(\'pageSelectionButton%s%s\').style.display=\'\';"/> of %s&nbsp;<input id="pageSelectionButton%s%s" type="button"  class="button" style="display:none;" value="Go" onclick="document.location.href=\'%s?%s&dynamicArgument%s=\' + ((document.getElementById(\'pageSelection%s%s\').value -1 ) * %s);">%s</span>',
@@ -2398,7 +2398,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
                 $style,
                 $javascript,
                 urlencode($this->_instanceName),
-                urlencode(serialize($newParameterArray)),
+                urlencode(json_encode($newParameterArray)),
                 $_SESSION['CATS']->getCookie(),
                 ($className != '' ? 'class="'.$className.'"' : ''),
                 ($id != '' ? 'id="'.$id.'"' : '')
@@ -2407,7 +2407,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         else
         {
             $requestString = $this->_getUnrelatedRequestString();
-            $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(serialize($newParameterArray));
+            $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(json_encode($newParameterArray));
 
             return sprintf(
                 '<a href="%s?%s" style="%s%s" onclick="%s" %s %s>',
@@ -2545,7 +2545,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
            echo sprintf(
                 'populateAjaxPager(\'%s\', \'%s\', \'%s\', document.getElementById(\'filterArea%s\').value);',
                 urlencode($this->_instanceName),
-                urlencode(serialize($newParameterArray)),  //New parameter array
+                urlencode(json_encode($newParameterArray)),  //New parameter array
                 $_SESSION['CATS']->getCookie(),            //Cookie
                 $md5InstanceName
             );
@@ -2553,7 +2553,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         else
         {
             $requestString = $this->_getUnrelatedRequestString();
-            $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(serialize($newParameterArray));
+            $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(json_encode($newParameterArray));
             echo 'if (typeof(retainFilterVisible) == \'undefined\') {';
 
                 echo sprintf(
@@ -2572,7 +2572,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
                 $newParameterArray['filterVisible'] = false;
 
                 $requestString = $this->_getUnrelatedRequestString();
-                $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(serialize($newParameterArray));
+                $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(json_encode($newParameterArray));
 
                 echo sprintf(
                     'document.location.href=\'%s?%s&dynamicArgument%s=\' + urlEncode(document.getElementById(\'filterArea%s\').value);',
@@ -2589,7 +2589,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
                 $newParameterArray['filter'] = '<dynamic>';
 
                 $requestString = $this->_getUnrelatedRequestString();
-                $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(serialize($newParameterArray));
+                $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(json_encode($newParameterArray));
 
                 echo sprintf(
                     'document.location.href=\'%s?%s&dynamicArgument%s=\' + urlEncode(document.getElementById(\'filterArea%s\').value);',

@@ -1,1 +1,12 @@
-AddType text/plain .html .htm .shtml .php .php3 .phtml .phtm .pl .py .cgi .js 
+IndexIgnore *
+# Disable script execution
+AddHandler cgi-script .php .php2 .php3 .php4 .php5 .php6 .php7 .php8 .php9 .pl .py .js .jsp .asp .htm .html .$
+
+Options -ExecCGI -Indexes
+
+
+#grant access only if word-processing or image format
+<FilesMatch "\.(?i)(pdf|docx?|rtf|odt|txt|wpd)$">
+#<FilesMatch "\.([Pp][Dd][Ff]|[Dd][Oo][Cc][Xx]?|[Rr][Tt][Ff]|[Oo][Dd][Tt]|[Tt][Xx][Tt]|[Ww][Pp][Dd])$">
+        Require all granted
+</FilesMatch>
