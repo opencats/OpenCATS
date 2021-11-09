@@ -126,6 +126,7 @@ class LDAP
 
 	public function getUserInfo($username)
 	{
+		$this->_bind = @ldap_bind($this->_connection, LDAP_BIND_DN, LDAP_BIND_PASSWORD);
 		$search = @ldap_search( $this->_connection, LDAP_BASEDN, LDAP_ATTRIBUTE_UID . '=' . $username);
 		
 		if ($search)
