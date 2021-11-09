@@ -224,7 +224,7 @@ class CareersUI extends UserInterface
             /* Replace input fields. */
             $content = str_replace('<input-firstName>', '<input name="firstName" id="firstName" class="inputBoxName" value="' . $candidate['firstName'] . '" />', $content);
             $content = str_replace('<input-lastName>', '<input name="lastName" id="lastName" class="inputBoxName" value="' . $candidate['lastName'] . '" />', $content);
-            $content = str_replace('<input-address>', '<textarea name="address" class="inputBoxArea">'. $candidate['address'] .'</textarea>', $content);
+            $content = str_replace('<input-address>', '<textarea name="address" id="address" class="inputBoxArea">'. $candidate['address'] .'</textarea>', $content);
             $content = str_replace('<input-city>', '<input name="city" id="city" class="inputBoxNormal" value="' . $candidate['city'] . '" />', $content);
             $content = str_replace('<input-state>', '<input name="state" id="state" class="inputBoxNormal" value="' . $candidate['state'] . '" />', $content);
             $content = str_replace('<input-zip>', '<input name="zip" id="zip" class="inputBoxNormal" value="' . $candidate['zip'] . '" />', $content);
@@ -581,7 +581,7 @@ class CareersUI extends UserInterface
             $template['Content'] = str_replace('<title>', $jobOrderData['title'], $template['Content']);
             $template['Content'] = str_replace('<input-firstName>', '<input name="firstName" id="firstName" class="inputBoxName" value="' . $firstName . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-lastName>', '<input name="lastName" id="lastName" class="inputBoxName" value="' . $lastName . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-address>', '<textarea name="address" class="inputBoxArea">'. $address .'</textarea>', $template['Content']);
+            $template['Content'] = str_replace('<input-address>', '<textarea name="address" id="address" class="inputBoxArea">'. $address .'</textarea>', $template['Content']);
             $template['Content'] = str_replace('<input-city>', '<input name="city" id="city" class="inputBoxNormal" value="' . $city . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-state>', '<input name="state" id="state" class="inputBoxNormal" value="' . $state . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-zip>', '<input name="zip" id="zip" class="inputBoxNormal" value="' . $zip . '" />', $template['Content']);
