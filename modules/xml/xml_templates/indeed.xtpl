@@ -1,26 +1,26 @@
 # This is Indeed.com's XML export template to be used when automatically
-# adding jobs to their database from CATS' career portal site.
+# adding jobs to their database from OPENCATS' career portal site.
 
 >>header
 <?xml version="1.0"?>
 <source>
-<publisher>CATS Applicant Tracking System</publisher>
+<publisher>OPENCATS Applicant Tracking System</publisher>
 <publisherurl>http://www.catsone.com</publisherurl>
 <lastBuildDate>$[date]</lastBuildDate>
 <<header
 
 >>job
 <job>
-<title>$[jobTitle]</title>
-<date>$[jobPostDate]</date>
-<referencenumber>$[jobID]</referencenumber>
-<url>$[jobURL]</url>
-<company>$[hiringCompany]</company>
-<city>$[jobCity]</city>
-<state>$[jobState]</state>
-<country>$[jobCountry]</country>
-<postalcode>$[jobZipCode]</postalcode>
-<description>$[jobDescription]</description>
+<title><![CDATA[$[jobTitle]]]></title>
+<date><![CDATA[$[jobPostDate]]]></date>
+<referencenumber><$[jobID]></referencenumber>
+<url><![CDATA[$[jobURL]]]></url>
+<company><![CDATA[$[hiringCompany]]]></company>
+<city><![CDATA[$[jobCity]]]>></city>
+<state><![CDATA[$[jobState]]]></state>
+<country><![CDATA[$[jobCountry]]]></country>
+<postalcode><![CDATA[$[jobZipCode]]]></postalcode>
+<description><![CDATA[$[jobDescription]]]></description>
 </job>
 <<job
 
