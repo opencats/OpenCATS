@@ -13,7 +13,7 @@
 <job>
 <title><![CDATA[$[jobTitle]]]></title>
 <date><![CDATA[$[jobPostDate]]]></date>
-<referencenumber><$[jobID]></referencenumber>
+<referencenumber><![CDATA[$[jobID]]]></referencenumber>
 <url><![CDATA[$[jobURL]]]></url>
 <company><![CDATA[$[hiringCompany]]]></company>
 <city><![CDATA[$[jobCity]]]>></city>
