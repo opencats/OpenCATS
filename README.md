@@ -10,7 +10,7 @@ More details:
 
 End user/Installation  documentation:
 
-<http://opencats-documentation.readthedocs.io/en/latest/>
+<https://documentation.opencats.org>
 
 OpenCATS YouTube channel:
 
@@ -24,16 +24,11 @@ Support Forums:
 
 <http://forums.opencats.org>
 
-Installation Procedure:
-
-    Windows: http://opencats-documentation.readthedocs.io/en/latest/install-windows.html
-    Linux: http://opencats-documentation.readthedocs.io/en/latest/
-
 Issues:
 
 [Open Issues](https://github.com/opencats/OpenCATS/issues?q=is%3Aopen)
 
-[![Planed](https://badge.waffle.io/opencats/opencats.svg?label=waffle:%20ready&title=Planed)](http://waffle.io/opencats/opencats)
+[![Planned](https://badge.waffle.io/opencats/opencats.svg?label=waffle:%20ready&title=Planed)](http://waffle.io/opencats/opencats)
 [![In Progress](https://badge.waffle.io/opencats/opencats.svg?label=waffle:%20in%20progress&title=In%20Progress)](http://waffle.io/opencats/opencats)
 [![Ready To Test](https://badge.waffle.io/opencats/opencats.svg?label=waffle:%20ready%20to%20test&title=Ready%20To%20Test)](http://waffle.io/opencats/opencats)
 
