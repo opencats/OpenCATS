@@ -27,10 +27,3 @@ Support Forums:
 Issues:
 
 [Open Issues](https://github.com/opencats/OpenCATS/issues?q=is%3Aopen)
-
-[![Planned](https://badge.waffle.io/opencats/opencats.svg?label=waffle:%20ready&title=Planed)](http://waffle.io/opencats/opencats)
-[![In Progress](https://badge.waffle.io/opencats/opencats.svg?label=waffle:%20in%20progress&title=In%20Progress)](http://waffle.io/opencats/opencats)
-[![Ready To Test](https://badge.waffle.io/opencats/opencats.svg?label=waffle:%20ready%20to%20test&title=Ready%20To%20Test)](http://waffle.io/opencats/opencats)
-
-
-[![Throughput Graph](https://graphs.waffle.io/opencats/opencats/throughput.svg)](https://waffle.io/opencats/opencats/metrics/throughput)
