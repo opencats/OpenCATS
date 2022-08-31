@@ -382,6 +382,19 @@ class UserInterface
     }
 
     /**
+     * getSanitisedInput is getTrimmedInput but with XSS protection for public facing career portal
+     */
+    
+   protected function getSanitisedInput($key, $request)
+    {
+        if (isset($request[$key]))
+        {
+		return trim(htmlspecialchars($request[$key], ENT_QUOTES));
+		}
+        return '';
+    } 
+    
+    /**
      * Returns valid subtabs for this module.
      *
      * @return array subtab items for this module
