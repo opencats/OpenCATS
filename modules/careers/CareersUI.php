@@ -1206,29 +1206,30 @@ class CareersUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified job order could not be found.');
             return;
         }
+	    
+    /* funciton getSanitisedInput used to fix XSS vuln in public portal */
+        $lastName       = $this->getSanitisedInput('lastName', $_POST);
+        $middleName     = $this->getSanitisedInput('middleName', $_POST);
+        $firstName      = $this->getSanitisedInput('firstName', $_POST);
+        $email          = $this->getSanitisedInput('email', $_POST);
+        $email2         = $this->getSanitisedInput('email2', $_POST);
+        $address        = $this->getSanitisedInput('address', $_POST);
+        $city           = $this->getSanitisedInput('city', $_POST);
+        $state          = $this->getSanitisedInput('state', $_POST);
+        $zip            = $this->getSanitisedInput('zip', $_POST);
+        $source         = $this->getSanitisedInput('source', $_POST);
+        $phone          = $this->getSanitisedInput('phone', $_POST);
+        $phoneHome      = $this->getSanitisedInput('phoneHome', $_POST);
+        $phoneCell      = $this->getSanitisedInput('phoneCell', $_POST);
+        $bestTimeToCall = $this->getSanitisedInput('bestTimeToCall', $_POST);
+        $keySkills      = $this->getSanitisedInput('keySkills', $_POST);
+        $extraNotes     = $this->getSanitisedInput('extraNotes', $_POST);
+        $employer       = $this->getSanitisedInput('employer', $_POST);
 
-        $lastName       = $this->getTrimmedInput('lastName', $_POST);
-        $middleName     = $this->getTrimmedInput('middleName', $_POST);
-        $firstName      = $this->getTrimmedInput('firstName', $_POST);
-        $email          = $this->getTrimmedInput('email', $_POST);
-        $email2         = $this->getTrimmedInput('email2', $_POST);
-        $address        = $this->getTrimmedInput('address', $_POST);
-        $city           = $this->getTrimmedInput('city', $_POST);
-        $state          = $this->getTrimmedInput('state', $_POST);
-        $zip            = $this->getTrimmedInput('zip', $_POST);
-        $source         = $this->getTrimmedInput('source', $_POST);
-        $phone          = $this->getTrimmedInput('phone', $_POST);
-        $phoneHome      = $this->getTrimmedInput('phoneHome', $_POST);
-        $phoneCell      = $this->getTrimmedInput('phoneCell', $_POST);
-        $bestTimeToCall = $this->getTrimmedInput('bestTimeToCall', $_POST);
-        $keySkills      = $this->getTrimmedInput('keySkills', $_POST);
-        $extraNotes     = $this->getTrimmedInput('extraNotes', $_POST);
-        $employer       = $this->getTrimmedInput('employer', $_POST);
-
-        $gender         = $this->getTrimmedInput('eeogender', $_POST);
-        $race           = $this->getTrimmedInput('eeorace', $_POST);
-        $veteran        = $this->getTrimmedInput('eeoveteran', $_POST);
-        $disability     = $this->getTrimmedInput('eeodisability', $_POST);
+        $gender         = $this->getSanitisedInput('eeogender', $_POST);
+        $race           = $this->getSanitisedInput('eeorace', $_POST);
+        $veteran        = $this->getSanitisedInput('eeoveteran', $_POST);
+        $disability     = $this->getSanitisedInput('eeodisability', $_POST);
 
         if (empty($firstName))
         {
