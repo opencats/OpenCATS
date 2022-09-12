@@ -18,6 +18,10 @@ The main vector for [XSS](https://en.wikipedia.org/wiki/Cross-site_scripting) at
 
 The OpenCATS career portal permits resume uploads. Please review and configure .htaccess as per the [security guidance](https://documentation.opencats.org/technical-configuration-options/vital-security-restrict-access-to-upload-folders-.htaccess) to restrict malicious uploads.
 
+### Composer
+
+Composer vulnerabilities are released often and will require a review of the Composer.lock file to move to known good versions of dependencies. Other dependencies within the Composer requiements are needed only for testing and can be removed from produciton systems. These remain to be documented.
+
 ### Deployment concerns
 
 We strongly recommend that users check file and folder permissions as per the [documentation](https://documentation.opencats.org). As always, any passwords in use for MariaDB or server hosting should be strongly constructed and unique.
