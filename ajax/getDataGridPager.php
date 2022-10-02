@@ -41,7 +41,7 @@ if (!isset($_REQUEST['p']) ||
 }
 
 $indentifier = $_REQUEST['i'];
-$parameters = unserialize($_REQUEST['p']);
+$parameters = json_decode($_REQUEST['p']);
 
 /* Handle dynamicArgument if it is set. */
 if (isset($_REQUEST['dynamicArgument']))
