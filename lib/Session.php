@@ -1069,7 +1069,7 @@ class CATSSession
                 user_id = %s
             AND
                 site_id = %s",
-            $entriesPerPage,
+            $db->makeQueryString($entriesPerPage),
             $this->_userID,
             $this->_siteID
         );
