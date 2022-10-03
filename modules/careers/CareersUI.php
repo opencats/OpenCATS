@@ -1746,7 +1746,7 @@ class CareersUI extends UserInterface
         // Check if there's a cookie to prefill the fields with
         if (isset($_COOKIE[$id=$this->getCareerPortalCookieName($siteID)]))
         {
-            if (preg_match_all('/\\\"([^\"]+)\\\"\=\\\"([^\"]*)\\\"/', $_COOKIE[$id], $matches) > 0)
+            if (preg_match_all('/"([^"]+)"="([^"]*)"/', $_COOKIE[$id], $matches) > 0)
             {
                 for ($i = 0; $i < count($matches[1]); $i++)
                 {

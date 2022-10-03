@@ -48,12 +48,12 @@ if (!isset($_REQUEST['joborderID']) ||
 
 $siteID = $interface->getSiteID();
 
-$jobOrderID     = $_REQUEST['joborderID'];
-$page           = $_REQUEST['page'];
-$entriesPerPage = $_REQUEST['entriesPerPage'];
-$sortBy         = $_REQUEST['sortBy'];
-$sortDirection  = $_REQUEST['sortDirection'];
-$indexFile      = $_REQUEST['indexFile'];
+$jobOrderID     = trim(htmlspecialchars($_REQUEST['joborderID']));
+$page           = trim(htmlspecialchars($_REQUEST['page']));
+$entriesPerPage = trim(htmlspecialchars($_REQUEST['entriesPerPage']));
+$sortBy         = trim(htmlspecialchars($_REQUEST['sortBy']));
+$sortDirection  = trim(htmlspecialchars($_REQUEST['sortDirection']));
+$indexFile      = trim(htmlspecialchars($_REQUEST['indexFile']));
 $isPopup        = $_REQUEST['isPopup'] == 1 ? true : false;
 
 $_SESSION['CATS']->setPipelineEntriesPerPage($entriesPerPage);

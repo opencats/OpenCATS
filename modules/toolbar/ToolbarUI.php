@@ -133,7 +133,7 @@ class ToolbarUI extends UserInterface
         echo 'cats_connected = true';
         if (isset($_GET['callback']))
         {
-            echo ' EVAL=', $_GET['callback'];
+            echo ' EVAL=', trim(htmlspecialchars($_GET['callback']));
         }
     }
 
@@ -161,7 +161,7 @@ class ToolbarUI extends UserInterface
 
         $this->_authenticate();
 
-        $email = $this->getTrimmedInput('email', $_GET);
+        $email = htmlspecialchars($this->getTrimmedInput('email', $_GET));
         if (empty($email))
         {
             $this->fatal('No e-mail address.');
