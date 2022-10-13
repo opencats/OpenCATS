@@ -71,7 +71,7 @@ class Tags
                 site_id = %s",
             $this->_db->makeQueryStringOrNULL($title),
             $this->_db->makeQueryStringOrNULL($description),
-            $tagID,
+            $this->_db->makeQueryString($tagID),
             $this->_siteID
         );
 
