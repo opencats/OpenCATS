@@ -16,10 +16,6 @@ OpenCATS YouTube channel:
 
 <https://www.youtube.com/channel/UChJ_YF1w74o8iWFAYa9w0xQ>
 
-Developers Slack channel:
-
-<https://opencats.slack.com>
-
 Support Forums:
 
 <http://forums.opencats.org>
