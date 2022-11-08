@@ -122,7 +122,7 @@ class Import
                 import_id = %s
              AND
                 site_id = %s",
-            $importID,
+            $this->_db->makeQueryString($importID),
             $this->_siteID
         );
         $queryResult = $this->_db->query($sql);
