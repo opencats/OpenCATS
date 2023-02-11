@@ -1,7 +1,7 @@
 {
     "name": "opencats/opencats",
     "require-dev": {
-        "behat/behat": "~3.0.4",
+        "behat/behat": "~3.8.1",
         "phpunit/phpunit": "^7",
         "behat/mink": "^1.7",
         "behat/mink-extension": "dev-master",
