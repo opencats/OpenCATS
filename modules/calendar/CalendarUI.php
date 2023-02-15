@@ -395,8 +395,8 @@ class CalendarUI extends UserInterface
         
         $description   = htmlspecialchars($this->getTrimmedInput('description', $_POST), ENT_QUOTES, 'UTF-8');
         $title         = htmlspecialchars($this->getTrimmedInput('title', $_POST), ENT_QUOTES, 'UTF-8');
-        $reminderEmail = $this->validateEmailInput('sendEmail', $_POST);
-        $reminderTime  = $this->validateTimeInput('reminderTime', $_POST);
+        $reminderEmail = htmlspecialchars($this->getTrimmedInput('sendEmail', $_POST), ENT_QUOTES, 'UTF-8');
+        $reminderTime  = htmlspecialchars($this->getTrimmedInput('reminderTime', $_POST), ENT_QUOTES, 'UTF-8');
 
         // FIXME: Reminder time must be an integer!
 
