@@ -24,7 +24,7 @@
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
  *
- * $Id: SettingsUI.php 3810 2007-12-05 19:13:25Z brian $
+ * $Id: SettingsUI.php 3810 2007-12-05 19:13:25Z brian $opencats
  */
 
 include_once(LEGACY_ROOT . '/lib/LoginActivity.php');
@@ -189,7 +189,7 @@ class SettingsUI extends UserInterface
         $tags = new Tags($this->_siteID);
         //$tags->update($_POST['tag_id'], $_POST['title'], $_POST['description']);
         $tags->update($_POST['tag_id'], $_POST['tag_title'], "-");
-        echo $_POST['tag_title'];
+        echo htmlspecialchars($_POST['tag_title'], ENT_QUOTES, 'UTF-8');
         return;
     }
     
