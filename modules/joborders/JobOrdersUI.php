@@ -757,17 +757,17 @@ class JobOrdersUI extends UserInterface
         $owner       = $_POST['owner'];
         $openings    = $_POST['openings'];
 
-        $title       = $this->getTrimmedInput('title', $_POST);
+        $title       = $this->getSanitisedInput('title', $_POST);
         $companyJobID = $this->getTrimmedInput('companyJobID', $_POST);
         $type        = $this->getTrimmedInput('type', $_POST);
-        $city        = $this->getTrimmedInput('city', $_POST);
-        $state       = $this->getTrimmedInput('state', $_POST);
-        $duration    = $this->getTrimmedInput('duration', $_POST);
+        $city        = $this->getSanitisedInput('city', $_POST);
+        $state       = $this->getSanitisedInput('state', $_POST);
+        $duration    = $this->getSanitisedInput('duration', $_POST);
         $department  = $this->getTrimmedInput('department', $_POST);
-        $maxRate     = $this->getTrimmedInput('maxRate', $_POST);
-        $salary      = $this->getTrimmedInput('salary', $_POST);
-        $description = $this->getTrimmedInput('description', $_POST);
-        $notes       = $this->getTrimmedInput('notes', $_POST);
+        $maxRate     = $this->getSanitisedInput('maxRate', $_POST);
+        $salary      = $this->getSanitisedInput('salary', $_POST);
+        $description = $this->getSanitisedInput('description', $_POST);
+        $notes       = $this->getSanitisedInput('notes', $_POST);
 
         /* Bail out if any of the required fields are empty. */
         if (empty($title) || empty($type) || empty($city) || empty($state))
@@ -1100,18 +1100,18 @@ class JobOrdersUI extends UserInterface
             $emailAddress = '';
         }
 
-        $title       = $this->getTrimmedInput('title', $_POST);
+        $title       = $this->getSanitisedInput('title', $_POST);
         $companyJobID = $this->getTrimmedInput('companyJobID', $_POST);
         $type        = $this->getTrimmedInput('type', $_POST);
-        $city        = $this->getTrimmedInput('city', $_POST);
-        $state       = $this->getTrimmedInput('state', $_POST);
+        $city        = $this->getSanitisedInput('city', $_POST);
+        $state       = $this->getSanitisedInput('state', $_POST);
         $status      = $this->getTrimmedInput('status', $_POST);
-        $duration    = $this->getTrimmedInput('duration', $_POST);
+        $duration    = $this->getSanitisedInput('duration', $_POST);
         $department  = $this->getTrimmedInput('department', $_POST);
-        $maxRate     = $this->getTrimmedInput('maxRate', $_POST);
-        $salary      = $this->getTrimmedInput('salary', $_POST);
-        $description = $this->getTrimmedInput('description', $_POST);
-        $notes       = $this->getTrimmedInput('notes', $_POST);
+        $maxRate     = $this->getSanitisedInput('maxRate', $_POST);
+        $salary      = $this->getSanitisedInput('salary', $_POST);
+        $description = $this->getSanitisedInput('description', $_POST);
+        $notes       = $this->getSanitisedInput('notes', $_POST);
 
         /* Bail out if any of the required fields are empty. */
         if (empty($title) || empty($type) || empty($city) || empty($state))

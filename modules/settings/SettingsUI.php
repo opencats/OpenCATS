@@ -1135,10 +1135,10 @@ class SettingsUI extends UserInterface
             return;
         }
 
-        $firstName      = $this->getTrimmedInput('firstName', $_POST);
-        $lastName       = $this->getTrimmedInput('lastName', $_POST);
-        $email          = $this->getTrimmedInput('email', $_POST);
-        $username       = $this->getTrimmedInput('username', $_POST);
+        $firstName      = $this->getSanitisedInput('firstName', $_POST);
+        $lastName       = $this->getSanitisedInput('lastName', $_POST);
+        $email          = $this->getSanitisedInput('email', $_POST);
+        $username       = $this->getSanitisedInput('username', $_POST);
         $accessLevel    = $this->getTrimmedInput('accessLevel', $_POST);
         $password       = $this->getTrimmedInput('password', $_POST);
         $retypePassword = $this->getTrimmedInput('retypePassword', $_POST);
@@ -1339,10 +1339,10 @@ class SettingsUI extends UserInterface
 
         $userID = $_POST['userID'];
 
-        $firstName   = $this->getTrimmedInput('firstName', $_POST);
-        $lastName    = $this->getTrimmedInput('lastName', $_POST);
-        $email       = $this->getTrimmedInput('email', $_POST);
-        $username    = $this->getTrimmedInput('username', $_POST);
+        $firstName   = $this->getSanitisedInput('firstName', $_POST);
+        $lastName    = $this->getSanitisedInput('lastName', $_POST);
+        $email       = $this->getSanitisedInput('email', $_POST);
+        $username    = $this->getSanitisedInput('username', $_POST);
         $password1   = $this->getTrimmedInput('password1', $_POST);
         $password2   = $this->getTrimmedInput('password2', $_POST);
         $passwordRst = $this->getTrimmedInput('passwordIsReset', $_POST);
