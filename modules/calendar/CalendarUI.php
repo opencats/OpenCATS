@@ -392,11 +392,10 @@ class CalendarUI extends UserInterface
 
         $publicEntry     = $this->isChecked('publicEntry', $_POST);
         $reminderEnabled = $this->isChecked('reminderToggle', $_POST);
-        
-        $description   = htmlspecialchars($this->getTrimmedInput('description', $_POST), ENT_QUOTES, 'UTF-8');
-        $title         = htmlspecialchars($this->getTrimmedInput('title', $_POST), ENT_QUOTES, 'UTF-8');
-        $reminderEmail = htmlspecialchars($this->getTrimmedInput('sendEmail', $_POST), ENT_QUOTES, 'UTF-8');
-        $reminderTime  = htmlspecialchars($this->getTrimmedInput('reminderTime', $_POST), ENT_QUOTES, 'UTF-8');
+        $description   = $this->getSanitisedInput('description', $_POST);
+        $title         = $this->getSanitisedInput('title', $_POST);
+        $reminderEmail = $this->getSanitisedInput('sendEmail', $_POST);
+        $reminderTime  = $this->getSanitisedInput('reminderTime', $_POST);
 
         // FIXME: Reminder time must be an integer!
 
