@@ -392,11 +392,10 @@ class CalendarUI extends UserInterface
 
         $publicEntry     = $this->isChecked('publicEntry', $_POST);
         $reminderEnabled = $this->isChecked('reminderToggle', $_POST);
-
-        $description   = $this->getTrimmedInput('description', $_POST);
-        $title         = $this->getTrimmedInput('title', $_POST);
-        $reminderEmail = $this->getTrimmedInput('sendEmail', $_POST);
-        $reminderTime  = $this->getTrimmedInput('reminderTime', $_POST);
+        $description   = $this->getSanitisedInput('description', $_POST);
+        $title         = $this->getSanitisedInput('title', $_POST);
+        $reminderEmail = $this->getSanitisedInput('sendEmail', $_POST);
+        $reminderTime  = $this->getSanitisedInput('reminderTime', $_POST);
 
         // FIXME: Reminder time must be an integer!
 
@@ -583,9 +582,9 @@ class CalendarUI extends UserInterface
         $publicEntry     = $this->isChecked('publicEntry', $_POST);
         $reminderEnabled = $this->isChecked('reminderToggle', $_POST);
 
-        $description   = $this->getTrimmedInput('description', $_POST);
-        $title         = $this->getTrimmedInput('title', $_POST);
-        $reminderEmail = $this->getTrimmedInput('sendEmail', $_POST);
+        $description   = $this->getSanitisedInput('description', $_POST);
+        $title         = $this->getSanitisedInput('title', $_POST);
+        $reminderEmail = $this->getSanitisedInput('sendEmail', $_POST);
         $reminderTime  = $this->getTrimmedInput('reminderTime', $_POST);
 
         // FIXME: Reminder time must be an integer!

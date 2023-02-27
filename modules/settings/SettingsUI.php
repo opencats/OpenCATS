@@ -24,7 +24,7 @@
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
  *
- * $Id: SettingsUI.php 3810 2007-12-05 19:13:25Z brian $
+ * $Id: SettingsUI.php 3810 2007-12-05 19:13:25Z brian $opencats
  */
 
 include_once(LEGACY_ROOT . '/lib/LoginActivity.php');
@@ -189,7 +189,7 @@ class SettingsUI extends UserInterface
         $tags = new Tags($this->_siteID);
         //$tags->update($_POST['tag_id'], $_POST['title'], $_POST['description']);
         $tags->update($_POST['tag_id'], $_POST['tag_title'], "-");
-        echo $_POST['tag_title'];
+        echo htmlspecialchars($_POST['tag_title'], ENT_QUOTES, 'UTF-8');
         return;
     }
     
@@ -1135,10 +1135,10 @@ class SettingsUI extends UserInterface
             return;
         }
 
-        $firstName      = $this->getTrimmedInput('firstName', $_POST);
-        $lastName       = $this->getTrimmedInput('lastName', $_POST);
-        $email          = $this->getTrimmedInput('email', $_POST);
-        $username       = $this->getTrimmedInput('username', $_POST);
+        $firstName      = $this->getSanitisedInput('firstName', $_POST);
+        $lastName       = $this->getSanitisedInput('lastName', $_POST);
+        $email          = $this->getSanitisedInput('email', $_POST);
+        $username       = $this->getSanitisedInput('username', $_POST);
         $accessLevel    = $this->getTrimmedInput('accessLevel', $_POST);
         $password       = $this->getTrimmedInput('password', $_POST);
         $retypePassword = $this->getTrimmedInput('retypePassword', $_POST);
@@ -1339,10 +1339,10 @@ class SettingsUI extends UserInterface
 
         $userID = $_POST['userID'];
 
-        $firstName   = $this->getTrimmedInput('firstName', $_POST);
-        $lastName    = $this->getTrimmedInput('lastName', $_POST);
-        $email       = $this->getTrimmedInput('email', $_POST);
-        $username    = $this->getTrimmedInput('username', $_POST);
+        $firstName   = $this->getSanitisedInput('firstName', $_POST);
+        $lastName    = $this->getSanitisedInput('lastName', $_POST);
+        $email       = $this->getSanitisedInput('email', $_POST);
+        $username    = $this->getSanitisedInput('username', $_POST);
         $password1   = $this->getTrimmedInput('password1', $_POST);
         $password2   = $this->getTrimmedInput('password2', $_POST);
         $passwordRst = $this->getTrimmedInput('passwordIsReset', $_POST);

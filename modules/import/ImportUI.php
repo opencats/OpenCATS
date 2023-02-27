@@ -165,7 +165,7 @@ class ImportUI extends UserInterface
 
 
    /*
-    * Called by handleRequest() to view the errors of a pervious import.
+    * Called by handleRequest() to view the errors of a previous import.
     */
     private function viewErrors()
     {
@@ -176,25 +176,27 @@ class ImportUI extends UserInterface
             $this->import();
             return;
         }
-
+    
         $import = new Import($this->_siteID);
         $importData = $import->get($importID);
-
+    
         if (!eval(Hooks::get('IMPORT_VIEW_ERRORS'))) return;
-
+    
         if (isset($importData['importErrors']))
         {
-            $this->_template->assign('importErrors', $importData['importErrors']);
+            $importErrors = htmlspecialchars($importData['importErrors'], ENT_QUOTES, 'UTF-8');
+            $this->_template->assign('importErrors', $importErrors);
         }
         else
         {
             $this->_template->assign('importErrors', '');
         }
-
+    
+        $importID = htmlspecialchars($importID, ENT_QUOTES, 'UTF-8');
         $this->_template->assign('importID', $importID);
         $this->viewPending();
         return;
-    }
+    }    
 
    /*
     * Called by handleRequest() and viewErrors() to view pending imports and to display relavent information.

@@ -3,7 +3,7 @@
  * CATS
  * RSS Display Module
  *
- * CATS Version: 0.9.6
+ * CATS Version: 0.9.7.1
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
