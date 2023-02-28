@@ -26,7 +26,7 @@ services:
 
     opencatsdb:
       container_name: opencats_test_mariadb
-      image: mariadb:10.6
+      image: mariadb:10.10
       ports:
         - 3306
       environment:
