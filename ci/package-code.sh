@@ -1,5 +1,6 @@
 #!/bin/bash
 set -ev
+composer install --no-dev
 echo $TRAVIS_TAG
 if [ "${TRAVIS_TAG}" != "false" ]; then	if [ "${TRAVIS_TAG}" != "" ]; then
 	tar -czf /tmp/opencats-$TRAVIS_TAG-full.tar.gz --exclude=INSTALL_BLOCK -C $TRAVIS_BUILD_DIR .
