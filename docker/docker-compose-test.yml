@@ -26,7 +26,7 @@ services:
 
     opencatsdb:
       container_name: opencats_test_mariadb
-      image: mariadb:10.6
+      image: mariadb:10
       ports:
         - 3306
       environment:
@@ -41,7 +41,7 @@ services:
         - ../test/data/securityTests.sql:/docker-entrypoint-initdb.d/001_addUsers.sql
 
     integrationtestdb:
-      image: mariadb:10.6
+      image: mariadb:10
       ports:
         - 3307:3306
       environment:
