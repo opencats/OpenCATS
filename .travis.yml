@@ -10,7 +10,8 @@ before_install:
     - sudo apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install docker-ce
     - curl -SL https://github.com/docker/compose/releases/download/v2.1.6/docker-compose-`uname -s`-`uname -m` > docker-compose
     - chmod +x docker-compose
-    - sudo mv docker-compose /usr/lib/docker/cli-plugins
+    - mkdir -p $HOME/.docker/cli-plugins
+    - sudo mv docker-compose $HOME/.docker/cli-plugins/
     
 
 language: php
