@@ -3,14 +3,15 @@ services:
   - docker
 
 env:
-  COMPOSE_VERSION: 2.5.4
+  COMPOSE_VERSION: 2.16
 
 before_install:
     - sudo apt-get update -qq
     - sudo apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install docker-ce
-    - curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+    - curl -SL https://github.com/docker/compose/releases/download/v2.1.6/docker-compose-`uname -s`-`uname -m` > docker-compose
     - chmod +x docker-compose
-    - sudo mv docker-compose /usr/local/bin
+    - sudo mv docker-compose /usr/lib/docker/cli-plugins
+    
 
 language: php
 php:
@@ -21,9 +22,9 @@ script:
     - composer self-update
     - composer install
     - ./vendor/bin/phpunit src/OpenCATS/Tests/UnitTests
-    - cd docker/; docker-compose -f docker-compose-test.yml up -d
+    - cd docker/; docker compose -f docker-compose-test.yml up -d
     - sleep 30
-    - docker-compose -f docker-compose-test.yml exec php /var/www/public/test/runAllTests.sh
+    - docker compose -f docker-compose-test.yml exec php /var/www/public/test/runAllTests.sh
     - cd ..; ./ci/package-code.sh 
 
 deploy:
