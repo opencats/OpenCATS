@@ -15,8 +15,6 @@ before_install:
 language: php
 php:
 - 7.2
-- 7.3
-- 7.4
 script:
     - composer self-update --2
     - compose install
