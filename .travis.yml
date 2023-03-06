@@ -3,7 +3,7 @@ services:
   - docker
 
 env:
-  COMPOSE_VERSION: 1.25.3
+  COMPOSE_VERSION: v2.16.0
 
 before_install:
     - sudo apt-get update -qq
@@ -15,13 +15,12 @@ before_install:
 language: php
 php:
 - 7.2
-- 7.3
-- 7.4
 script:
+    - composer self-update --2
     - composer install
     - ./vendor/bin/phpunit src/OpenCATS/Tests/UnitTests
-    - cd docker/; docker-compose -f docker-compose-test.yml up -d
-    - docker-compose -f docker-compose-test.yml exec php /var/www/public/test/runAllTests.sh
+    - cd docker/; docker-compose --compatibility -f docker-compose-test.yml up -d
+    - docker-compose --compatibility -f docker-compose-test.yml exec php /var/www/public/test/runAllTests.sh
     - cd ..; ./ci/package-code.sh 
 
 deploy:
