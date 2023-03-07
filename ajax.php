@@ -3,7 +3,7 @@
  * CATS
  * AJAX Delegation Module
  *
- * CATS Version: 0.9.7.1
+ * CATS Version: 0.9.7.2
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
