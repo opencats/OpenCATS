@@ -1,0 +1,16 @@
+version: 2
+updates:
+- package-ecosystem: composer
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: phpunit/phpunit
+    versions:
+    - 9.5.1
+    - 9.5.2
+    - 9.5.3
+  - dependency-name: ckeditor/ckeditor
+    versions:
+    - 4.15.1
