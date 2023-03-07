@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7ffbb7a08404c100f9d3710bce8161c0",
+    "content-hash": "edb6962300041e3ecc0ed7d9d5ec2507",
     "packages": [
         {
             "name": "ckeditor/ckeditor",
-            "version": "4.5.11",
+            "version": "4.20.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ckeditor/ckeditor-releases.git",
-                "reference": "48155a1e1c7e84736b5a166ad3f33acea2a51255"
+                "url": "https://github.com/ckeditor/ckeditor4-releases.git",
+                "reference": "8cc8f1b065f93d90c305c2609fec4e4215dd20ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ckeditor/ckeditor-releases/zipball/48155a1e1c7e84736b5a166ad3f33acea2a51255",
-                "reference": "48155a1e1c7e84736b5a166ad3f33acea2a51255",
+                "url": "https://api.github.com/repos/ckeditor/ckeditor4-releases/zipball/8cc8f1b065f93d90c305c2609fec4e4215dd20ba",
+                "reference": "8cc8f1b065f93d90c305c2609fec4e4215dd20ba",
                 "shasum": ""
             },
             "type": "library",
@@ -30,13 +30,14 @@
             "authors": [
                 {
                     "name": "CKSource",
-                    "homepage": "http://cksource.com"
+                    "homepage": "https://cksource.com"
                 }
             ],
             "description": "JavaScript WYSIWYG web text editor.",
-            "homepage": "http://ckeditor.com",
+            "homepage": "https://ckeditor.com/ckeditor-4/",
             "keywords": [
                 "CKEditor",
+                "ckeditor4",
                 "editor",
                 "fckeditor",
                 "html",
@@ -46,12 +47,12 @@
                 "wysiwyg"
             ],
             "support": {
-                "forum": "http://ckeditor.com/forums",
-                "issues": "http://dev.ckeditor.com",
-                "source": "http://github.com/ckeditor/ckeditor-dev",
-                "wiki": "http://docs.ckeditor.com"
+                "forum": "https://stackoverflow.com/tags/ckeditor",
+                "issues": "https://github.com/ckeditor/ckeditor4/issues",
+                "source": "https://github.com/ckeditor/ckeditor4",
+                "wiki": "https://ckeditor.com/docs/ckeditor4/latest/"
             },
-            "time": "2016-09-07T13:32:39+00:00"
+            "time": "2023-02-15T12:55:37+00:00"
         },
         {
             "name": "phpmailer/phpmailer",

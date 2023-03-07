@@ -15,7 +15,7 @@
         }
     },
     "require": {
-        "phpmailer/phpmailer": "^6.0",
-        "ckeditor/ckeditor": "4.5.11"
+        "phpmailer/phpmailer": "^6.5.0",
+        "ckeditor/ckeditor": "^4.16.0"
     }
 }
