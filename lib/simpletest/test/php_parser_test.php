@@ -1,15 +1,15 @@
 <?php
 // $Id: php_parser_test.php 1911 2009-07-29 16:38:04Z lastcraft $
-require_once(dirname(__FILE__) . '/../autorun.php');
-require_once(dirname(__FILE__) . '/../php_parser.php');
-require_once(dirname(__FILE__) . '/../tag.php');
+require_once(__DIR__ . '/../autorun.php');
+require_once(__DIR__ . '/../php_parser.php');
+require_once(__DIR__ . '/../tag.php');
 Mock::generate('SimplePage');
 Mock::generate('SimplePhpPageBuilder');
 Mock::generate('SimpleHttpResponse');
 Mock::generatePartial(
         'SimplePhpPageBuilder',
         'PartialSimplePhpPageBuilder',
-        array('createPage', 'createParser'));
+        ['createPage', 'createParser']);
 Mock::generate('SimpleHtmlSaxParser');
 Mock::generate('SimplePhpPageBuilder');
 
@@ -131,14 +131,14 @@ class TestOfLexer extends UnitTestCase {
 
     function testSinglePattern() {
         $handler = new MockTestParser();
-        $handler->expectAt(0, "accept", array("aaa", LEXER_MATCHED));
-        $handler->expectAt(1, "accept", array("x", LEXER_UNMATCHED));
-        $handler->expectAt(2, "accept", array("a", LEXER_MATCHED));
-        $handler->expectAt(3, "accept", array("yyy", LEXER_UNMATCHED));
-        $handler->expectAt(4, "accept", array("a", LEXER_MATCHED));
-        $handler->expectAt(5, "accept", array("x", LEXER_UNMATCHED));
-        $handler->expectAt(6, "accept", array("aaa", LEXER_MATCHED));
-        $handler->expectAt(7, "accept", array("z", LEXER_UNMATCHED));
+        $handler->expectAt(0, "accept", ["aaa", LEXER_MATCHED]);
+        $handler->expectAt(1, "accept", ["x", LEXER_UNMATCHED]);
+        $handler->expectAt(2, "accept", ["a", LEXER_MATCHED]);
+        $handler->expectAt(3, "accept", ["yyy", LEXER_UNMATCHED]);
+        $handler->expectAt(4, "accept", ["a", LEXER_MATCHED]);
+        $handler->expectAt(5, "accept", ["x", LEXER_UNMATCHED]);
+        $handler->expectAt(6, "accept", ["aaa", LEXER_MATCHED]);
+        $handler->expectAt(7, "accept", ["z", LEXER_UNMATCHED]);
         $handler->expectCallCount("accept", 8);
         $handler->setReturnValue("accept", true);
         $lexer = new SimpleLexer($handler);
@@ -148,9 +148,9 @@ class TestOfLexer extends UnitTestCase {
 
     function testMultiplePattern() {
         $handler = new MockTestParser();
-        $target = array("a", "b", "a", "bb", "x", "b", "a", "xxxxxx", "a", "x");
+        $target = ["a", "b", "a", "bb", "x", "b", "a", "xxxxxx", "a", "x"];
         for ($i = 0; $i < count($target); $i++) {
-            $handler->expectAt($i, "accept", array($target[$i], '*'));
+            $handler->expectAt($i, "accept", [$target[$i], '*']);
         }
         $handler->expectCallCount("accept", count($target));
         $handler->setReturnValue("accept", true);
@@ -165,14 +165,14 @@ class TestOfLexerModes extends UnitTestCase {
 
     function testIsolatedPattern() {
         $handler = new MockTestParser();
-        $handler->expectAt(0, "a", array("a", LEXER_MATCHED));
-        $handler->expectAt(1, "a", array("b", LEXER_UNMATCHED));
-        $handler->expectAt(2, "a", array("aa", LEXER_MATCHED));
-        $handler->expectAt(3, "a", array("bxb", LEXER_UNMATCHED));
-        $handler->expectAt(4, "a", array("aaa", LEXER_MATCHED));
-        $handler->expectAt(5, "a", array("x", LEXER_UNMATCHED));
-        $handler->expectAt(6, "a", array("aaaa", LEXER_MATCHED));
-        $handler->expectAt(7, "a", array("x", LEXER_UNMATCHED));
+        $handler->expectAt(0, "a", ["a", LEXER_MATCHED]);
+        $handler->expectAt(1, "a", ["b", LEXER_UNMATCHED]);
+        $handler->expectAt(2, "a", ["aa", LEXER_MATCHED]);
+        $handler->expectAt(3, "a", ["bxb", LEXER_UNMATCHED]);
+        $handler->expectAt(4, "a", ["aaa", LEXER_MATCHED]);
+        $handler->expectAt(5, "a", ["x", LEXER_UNMATCHED]);
+        $handler->expectAt(6, "a", ["aaaa", LEXER_MATCHED]);
+        $handler->expectAt(7, "a", ["x", LEXER_UNMATCHED]);
         $handler->expectCallCount("a", 8);
         $handler->setReturnValue("a", true);
         $lexer = new SimpleLexer($handler, "a");
@@ -183,19 +183,19 @@ class TestOfLexerModes extends UnitTestCase {
 
     function testModeChange() {
         $handler = new MockTestParser();
-        $handler->expectAt(0, "a", array("a", LEXER_MATCHED));
-        $handler->expectAt(1, "a", array("b", LEXER_UNMATCHED));
-        $handler->expectAt(2, "a", array("aa", LEXER_MATCHED));
-        $handler->expectAt(3, "a", array("b", LEXER_UNMATCHED));
-        $handler->expectAt(4, "a", array("aaa", LEXER_MATCHED));
-        $handler->expectAt(0, "b", array(":", LEXER_ENTER));
-        $handler->expectAt(1, "b", array("a", LEXER_UNMATCHED));
-        $handler->expectAt(2, "b", array("b", LEXER_MATCHED));
-        $handler->expectAt(3, "b", array("a", LEXER_UNMATCHED));
-        $handler->expectAt(4, "b", array("bb", LEXER_MATCHED));
-        $handler->expectAt(5, "b", array("a", LEXER_UNMATCHED));
-        $handler->expectAt(6, "b", array("bbb", LEXER_MATCHED));
-        $handler->expectAt(7, "b", array("a", LEXER_UNMATCHED));
+        $handler->expectAt(0, "a", ["a", LEXER_MATCHED]);
+        $handler->expectAt(1, "a", ["b", LEXER_UNMATCHED]);
+        $handler->expectAt(2, "a", ["aa", LEXER_MATCHED]);
+        $handler->expectAt(3, "a", ["b", LEXER_UNMATCHED]);
+        $handler->expectAt(4, "a", ["aaa", LEXER_MATCHED]);
+        $handler->expectAt(0, "b", [":", LEXER_ENTER]);
+        $handler->expectAt(1, "b", ["a", LEXER_UNMATCHED]);
+        $handler->expectAt(2, "b", ["b", LEXER_MATCHED]);
+        $handler->expectAt(3, "b", ["a", LEXER_UNMATCHED]);
+        $handler->expectAt(4, "b", ["bb", LEXER_MATCHED]);
+        $handler->expectAt(5, "b", ["a", LEXER_UNMATCHED]);
+        $handler->expectAt(6, "b", ["bbb", LEXER_MATCHED]);
+        $handler->expectAt(7, "b", ["a", LEXER_UNMATCHED]);
         $handler->expectCallCount("a", 5);
         $handler->expectCallCount("b", 8);
         $handler->setReturnValue("a", true);
@@ -211,17 +211,17 @@ class TestOfLexerModes extends UnitTestCase {
         $handler = new MockTestParser();
         $handler->setReturnValue("a", true);
         $handler->setReturnValue("b", true);
-        $handler->expectAt(0, "a", array("aa", LEXER_MATCHED));
-        $handler->expectAt(1, "a", array("b", LEXER_UNMATCHED));
-        $handler->expectAt(2, "a", array("aa", LEXER_MATCHED));
-        $handler->expectAt(3, "a", array("b", LEXER_UNMATCHED));
-        $handler->expectAt(0, "b", array("(", LEXER_ENTER));
-        $handler->expectAt(1, "b", array("bb", LEXER_MATCHED));
-        $handler->expectAt(2, "b", array("a", LEXER_UNMATCHED));
-        $handler->expectAt(3, "b", array("bb", LEXER_MATCHED));
-        $handler->expectAt(4, "b", array(")", LEXER_EXIT));
-        $handler->expectAt(4, "a", array("aa", LEXER_MATCHED));
-        $handler->expectAt(5, "a", array("b", LEXER_UNMATCHED));
+        $handler->expectAt(0, "a", ["aa", LEXER_MATCHED]);
+        $handler->expectAt(1, "a", ["b", LEXER_UNMATCHED]);
+        $handler->expectAt(2, "a", ["aa", LEXER_MATCHED]);
+        $handler->expectAt(3, "a", ["b", LEXER_UNMATCHED]);
+        $handler->expectAt(0, "b", ["(", LEXER_ENTER]);
+        $handler->expectAt(1, "b", ["bb", LEXER_MATCHED]);
+        $handler->expectAt(2, "b", ["a", LEXER_UNMATCHED]);
+        $handler->expectAt(3, "b", ["bb", LEXER_MATCHED]);
+        $handler->expectAt(4, "b", [")", LEXER_EXIT]);
+        $handler->expectAt(4, "a", ["aa", LEXER_MATCHED]);
+        $handler->expectAt(5, "a", ["b", LEXER_UNMATCHED]);
         $handler->expectCallCount("a", 6);
         $handler->expectCallCount("b", 5);
         $lexer = new SimpleLexer($handler, "a");
@@ -236,12 +236,12 @@ class TestOfLexerModes extends UnitTestCase {
         $handler = new MockTestParser();
         $handler->setReturnValue("a", true);
         $handler->setReturnValue("b", true);
-        $handler->expectAt(0, "a", array("aa", LEXER_MATCHED));
-        $handler->expectAt(1, "a", array("aa", LEXER_MATCHED));
-        $handler->expectAt(2, "a", array("xx", LEXER_UNMATCHED));
-        $handler->expectAt(3, "a", array("xx", LEXER_UNMATCHED));
-        $handler->expectAt(0, "b", array("b", LEXER_SPECIAL));
-        $handler->expectAt(1, "b", array("bbb", LEXER_SPECIAL));
+        $handler->expectAt(0, "a", ["aa", LEXER_MATCHED]);
+        $handler->expectAt(1, "a", ["aa", LEXER_MATCHED]);
+        $handler->expectAt(2, "a", ["xx", LEXER_UNMATCHED]);
+        $handler->expectAt(3, "a", ["xx", LEXER_UNMATCHED]);
+        $handler->expectAt(0, "b", ["b", LEXER_SPECIAL]);
+        $handler->expectAt(1, "b", ["bbb", LEXER_SPECIAL]);
         $handler->expectCallCount("a", 4);
         $handler->expectCallCount("b", 2);
         $lexer = new SimpleLexer($handler, "a");
@@ -253,8 +253,8 @@ class TestOfLexerModes extends UnitTestCase {
     function testUnwindTooFar() {
         $handler = new MockTestParser();
         $handler->setReturnValue("a", true);
-        $handler->expectAt(0, "a", array("aa", LEXER_MATCHED));
-        $handler->expectAt(1, "a", array(")", LEXER_EXIT));
+        $handler->expectAt(0, "a", ["aa", LEXER_MATCHED]);
+        $handler->expectAt(1, "a", [")", LEXER_EXIT]);
         $handler->expectCallCount("a", 2);
         $lexer = new SimpleLexer($handler, "a");
         $lexer->addPattern("a+", "a");
@@ -268,13 +268,13 @@ class TestOfLexerHandlers extends UnitTestCase {
     function testModeMapping() {
         $handler = new MockTestParser();
         $handler->setReturnValue("a", true);
-        $handler->expectAt(0, "a", array("aa", LEXER_MATCHED));
-        $handler->expectAt(1, "a", array("(", LEXER_ENTER));
-        $handler->expectAt(2, "a", array("bb", LEXER_MATCHED));
-        $handler->expectAt(3, "a", array("a", LEXER_UNMATCHED));
-        $handler->expectAt(4, "a", array("bb", LEXER_MATCHED));
-        $handler->expectAt(5, "a", array(")", LEXER_EXIT));
-        $handler->expectAt(6, "a", array("b", LEXER_UNMATCHED));
+        $handler->expectAt(0, "a", ["aa", LEXER_MATCHED]);
+        $handler->expectAt(1, "a", ["(", LEXER_ENTER]);
+        $handler->expectAt(2, "a", ["bb", LEXER_MATCHED]);
+        $handler->expectAt(3, "a", ["a", LEXER_UNMATCHED]);
+        $handler->expectAt(4, "a", ["bb", LEXER_MATCHED]);
+        $handler->expectAt(5, "a", [")", LEXER_EXIT]);
+        $handler->expectAt(6, "a", ["b", LEXER_UNMATCHED]);
         $handler->expectCallCount("a", 7);
         $lexer = new SimpleLexer($handler, "mode_a");
         $lexer->addPattern("a+", "mode_a");
@@ -313,7 +313,7 @@ class TestOfSimpleHtmlLexer extends UnitTestCase {
 
     function testUninteresting() {
         $parser = $this->createParser();
-        $parser->expectOnce('acceptTextToken', array('<html></html>', '*'));
+        $parser->expectOnce('acceptTextToken', ['<html></html>', '*']);
         $lexer = new SimpleHtmlLexer($parser);
         $this->assertTrue($lexer->parse('<html></html>'));
     }
@@ -344,27 +344,27 @@ class TestOfSimpleHtmlLexer extends UnitTestCase {
 
     function testTagWithNoAttributes() {
         $parser = $this->createParser();
-        $parser->expectAt(0, 'acceptStartToken', array('<title', '*'));
-        $parser->expectAt(1, 'acceptStartToken', array('>', '*'));
+        $parser->expectAt(0, 'acceptStartToken', ['<title', '*']);
+        $parser->expectAt(1, 'acceptStartToken', ['>', '*']);
         $parser->expectCallCount('acceptStartToken', 2);
-        $parser->expectOnce('acceptTextToken', array('Hello', '*'));
-        $parser->expectOnce('acceptEndToken', array('</title>', '*'));
+        $parser->expectOnce('acceptTextToken', ['Hello', '*']);
+        $parser->expectOnce('acceptEndToken', ['</title>', '*']);
         $lexer = new SimpleHtmlLexer($parser);
         $this->assertTrue($lexer->parse('<title>Hello</title>'));
     }
 
     function testTagWithAttributes() {
         $parser = $this->createParser();
-        $parser->expectOnce('acceptTextToken', array('label', '*'));
-        $parser->expectAt(0, 'acceptStartToken', array('<a', '*'));
-        $parser->expectAt(1, 'acceptStartToken', array('href', '*'));
-        $parser->expectAt(2, 'acceptStartToken', array('>', '*'));
+        $parser->expectOnce('acceptTextToken', ['label', '*']);
+        $parser->expectAt(0, 'acceptStartToken', ['<a', '*']);
+        $parser->expectAt(1, 'acceptStartToken', ['href', '*']);
+        $parser->expectAt(2, 'acceptStartToken', ['>', '*']);
         $parser->expectCallCount('acceptStartToken', 3);
-        $parser->expectAt(0, 'acceptAttributeToken', array('= "', '*'));
-        $parser->expectAt(1, 'acceptAttributeToken', array('here.html', '*'));
-        $parser->expectAt(2, 'acceptAttributeToken', array('"', '*'));
+        $parser->expectAt(0, 'acceptAttributeToken', ['= "', '*']);
+        $parser->expectAt(1, 'acceptAttributeToken', ['here.html', '*']);
+        $parser->expectAt(2, 'acceptAttributeToken', ['"', '*']);
         $parser->expectCallCount('acceptAttributeToken', 3);
-        $parser->expectOnce('acceptEndToken', array('</a>', '*'));
+        $parser->expectOnce('acceptEndToken', ['</a>', '*']);
         $lexer = new SimpleHtmlLexer($parser);
         $this->assertTrue($lexer->parse('<a href = "here.html">label</a>'));
     }
@@ -382,9 +382,9 @@ class TestOfHtmlSaxParser extends UnitTestCase {
 
     function testFramesetTag() {
         $listener = $this->createListener();
-        $listener->expectOnce('startElement', array('frameset', array()));
-        $listener->expectOnce('addContent', array('Frames'));
-        $listener->expectOnce('endElement', array('frameset'));
+        $listener->expectOnce('startElement', ['frameset', []]);
+        $listener->expectOnce('addContent', ['Frames']);
+        $listener->expectOnce('endElement', ['frameset']);
         $parser = new SimpleHtmlSaxParser($listener);
         $this->assertTrue($parser->parse('<frameset>Frames</frameset>'));
     }
@@ -393,52 +393,52 @@ class TestOfHtmlSaxParser extends UnitTestCase {
         $listener = $this->createListener();
         $listener->expectOnce(
                 'startElement',
-                array('input', array('name' => 'a.b.c', 'value' => 'd')));
+                ['input', ['name' => 'a.b.c', 'value' => 'd']]);
         $parser = new SimpleHtmlSaxParser($listener);
         $this->assertTrue($parser->parse('<input name=a.b.c value = d>'));
     }
 
     function testTagInsideContent() {
         $listener = $this->createListener();
-        $listener->expectOnce('startElement', array('a', array()));
-        $listener->expectAt(0, 'addContent', array('<html>'));
-        $listener->expectAt(1, 'addContent', array('</html>'));
+        $listener->expectOnce('startElement', ['a', []]);
+        $listener->expectAt(0, 'addContent', ['<html>']);
+        $listener->expectAt(1, 'addContent', ['</html>']);
         $parser = new SimpleHtmlSaxParser($listener);
         $this->assertTrue($parser->parse('<html><a></a></html>'));
     }
 
     function testTagWithInternalContent() {
         $listener = $this->createListener();
-        $listener->expectOnce('startElement', array('a', array()));
-        $listener->expectOnce('addContent', array('label'));
-        $listener->expectOnce('endElement', array('a'));
+        $listener->expectOnce('startElement', ['a', []]);
+        $listener->expectOnce('addContent', ['label']);
+        $listener->expectOnce('endElement', ['a']);
         $parser = new SimpleHtmlSaxParser($listener);
         $this->assertTrue($parser->parse('<a>label</a>'));
     }
 
     function testLinkAddress() {
         $listener = $this->createListener();
-        $listener->expectOnce('startElement', array('a', array('href' => 'here.html')));
-        $listener->expectOnce('addContent', array('label'));
-        $listener->expectOnce('endElement', array('a'));
+        $listener->expectOnce('startElement', ['a', ['href' => 'here.html']]);
+        $listener->expectOnce('addContent', ['label']);
+        $listener->expectOnce('endElement', ['a']);
         $parser = new SimpleHtmlSaxParser($listener);
         $this->assertTrue($parser->parse("<a href = 'here.html'>label</a>"));
     }
 
     function testEncodedAttribute() {
         $listener = $this->createListener();
-        $listener->expectOnce('startElement', array('a', array('href' => 'here&there.html')));
-        $listener->expectOnce('addContent', array('label'));
-        $listener->expectOnce('endElement', array('a'));
+        $listener->expectOnce('startElement', ['a', ['href' => 'here&there.html']]);
+        $listener->expectOnce('addContent', ['label']);
+        $listener->expectOnce('endElement', ['a']);
         $parser = new SimpleHtmlSaxParser($listener);
         $this->assertTrue($parser->parse("<a href = 'here&amp;there.html'>label</a>"));
     }
 
     function testTagWithId() {
         $listener = $this->createListener();
-        $listener->expectOnce('startElement', array('a', array('id' => '0')));
-        $listener->expectOnce('addContent', array('label'));
-        $listener->expectOnce('endElement', array('a'));
+        $listener->expectOnce('startElement', ['a', ['id' => '0']]);
+        $listener->expectOnce('addContent', ['label']);
+        $listener->expectOnce('endElement', ['a']);
         $parser = new SimpleHtmlSaxParser($listener);
         $this->assertTrue($parser->parse('<a id="0">label</a>'));
     }
@@ -447,9 +447,9 @@ class TestOfHtmlSaxParser extends UnitTestCase {
         $listener = $this->createListener();
         $listener->expectOnce(
                 'startElement',
-                array('option', array('value' => '', 'selected' => '')));
-        $listener->expectOnce('addContent', array('label'));
-        $listener->expectOnce('endElement', array('option'));
+                ['option', ['value' => '', 'selected' => '']]);
+        $listener->expectOnce('addContent', ['label']);
+        $listener->expectOnce('endElement', ['option']);
         $parser = new SimpleHtmlSaxParser($listener);
         $this->assertTrue($parser->parse('<option value="" selected>label</option>'));
     }
@@ -458,9 +458,9 @@ class TestOfHtmlSaxParser extends UnitTestCase {
         $listener = $this->createListener();
         $listener->expectOnce(
                 'startElement',
-                array('a', array('href' => 'here.html', 'style' => "'cool'")));
-        $listener->expectOnce('addContent', array('label'));
-        $listener->expectOnce('endElement', array('a'));
+                ['a', ['href' => 'here.html', 'style' => "'cool'"]]);
+        $listener->expectOnce('addContent', ['label']);
+        $listener->expectOnce('endElement', ['a']);
         $parser = new SimpleHtmlSaxParser($listener);
         $this->assertTrue($parser->parse('<A HREF = \'here.html\' Style="\'cool\'">label</A>'));
     }
@@ -469,18 +469,18 @@ class TestOfHtmlSaxParser extends UnitTestCase {
         $listener = $this->createListener();
         $listener->expectOnce(
                 'startElement',
-                array('input', array('type' => 'submit', 'name' => 'N', 'value' => 'V')));
+                ['input', ['type' => 'submit', 'name' => 'N', 'value' => 'V']]);
         $parser = new SimpleHtmlSaxParser($listener);
         $this->assertTrue($parser->parse('<input type="submit" name="N" value="V" />'));
     }
 
     function testNestedFrameInFrameset() {
         $listener = $this->createListener();
-        $listener->expectAt(0, 'startElement', array('frameset', array()));
-        $listener->expectAt(1, 'startElement', array('frame', array('src' => 'frame.html')));
+        $listener->expectAt(0, 'startElement', ['frameset', []]);
+        $listener->expectAt(1, 'startElement', ['frame', ['src' => 'frame.html']]);
         $listener->expectCallCount('startElement', 2);
-        $listener->expectOnce('addContent', array('<noframes>Hello</noframes>'));
-        $listener->expectOnce('endElement', array('frameset'));
+        $listener->expectOnce('addContent', ['<noframes>Hello</noframes>']);
+        $listener->expectOnce('endElement', ['frameset']);
         $parser = new SimpleHtmlSaxParser($listener);
         $this->assertTrue($parser->parse(
                 '<frameset><frame src="frame.html"><noframes>Hello</noframes></frameset>'));

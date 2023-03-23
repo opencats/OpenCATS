@@ -1,9 +1,9 @@
 <?php
 // $Id: page_test.php 1913 2009-07-29 16:50:56Z lastcraft $
-require_once(dirname(__FILE__) . '/../autorun.php');
-require_once(dirname(__FILE__) . '/../expectation.php');
-require_once(dirname(__FILE__) . '/../http.php');
-require_once(dirname(__FILE__) . '/../page.php');
+require_once(__DIR__ . '/../autorun.php');
+require_once(__DIR__ . '/../expectation.php');
+require_once(__DIR__ . '/../http.php');
+require_once(__DIR__ . '/../page.php');
 Mock::generate('SimpleHttpHeaders');
 Mock::generate('SimpleHttpResponse');
 
@@ -18,7 +18,7 @@ class TestOfPageInterface extends UnitTestCase {
         $this->assertIdentical($page->getAuthentication(), false);
         $this->assertIdentical($page->getRealm(), false);
         $this->assertFalse($page->hasFrames());
-        $this->assertIdentical($page->getUrls(), array());
+        $this->assertIdentical($page->getUrls(), []);
         $this->assertIdentical($page->getTitle(), false);
     }
 }
@@ -32,12 +32,12 @@ class TestOfPageHeaders extends UnitTestCase {
         $response->setReturnValue('getHeaders', $headers);
         $response->setReturnValue('getMethod', 'POST');
         $response->setReturnValue('getUrl', new SimpleUrl('here'));
-        $response->setReturnValue('getRequestData', array('a' => 'A'));
+        $response->setReturnValue('getRequestData', ['a' => 'A']);
 
         $page = new SimplePage($response);
         $this->assertEqual($page->getMethod(), 'POST');
         $this->assertEqual($page->getUrl(), new SimpleUrl('here'));
-        $this->assertEqual($page->getRequestData(), array('a' => 'A'));
+        $this->assertEqual($page->getRequestData(), ['a' => 'A']);
     }
 
     function testTransportError() {

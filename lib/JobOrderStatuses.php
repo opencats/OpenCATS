@@ -39,20 +39,10 @@ const JOB_ORDER_STATUS_DEFAULT = 'Active';
 
 class JobOrderStatuses
 {
-    private static $_defaultStatusGroups = array(
-        'Open' => array ('Active', 'On Hold', 'Full'),
-        'Closed' => array('Closed', 'Canceled'),
-        'Pre-Open' => array('Upcoming', 'Lead')
-    );
-    private static $_defaultFilters = array(
-        'Active / On Hold / Full',
-        'Active',
-        'On Hold / Full',
-        'Closed / Canceled',
-        'Upcoming / Lead'
-    );
-    private static $_defaultSharingStatuses = array('Active');
-    private static $_defaultStatisticsStatuses = array('Active', 'OnHold', 'Full', 'Closed');
+    private static $_defaultStatusGroups = ['Open' => ['Active', 'On Hold', 'Full'], 'Closed' => ['Closed', 'Canceled'], 'Pre-Open' => ['Upcoming', 'Lead']];
+    private static $_defaultFilters = ['Active / On Hold / Full', 'Active', 'On Hold / Full', 'Closed / Canceled', 'Upcoming / Lead'];
+    private static $_defaultSharingStatuses = ['Active'];
+    private static $_defaultStatisticsStatuses = ['Active', 'OnHold', 'Full', 'Closed'];
     private static $_defaultStatus = 'Active';
 
     /**

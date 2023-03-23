@@ -28,16 +28,8 @@
         die();
     }
 
-    $stringsToFind = array(
-            '%CANDOWNER%',
-            '%CANDFIRSTNAME%',
-            '%CANDFULLNAME%'
-        );
-    $replacementStrings = array(
-            $candidateData['ownerFullName'],
-            $candidateData['firstName'],
-            $candidateData['candidateFullName'],
-        );
+    $stringsToFind = ['%CANDOWNER%', '%CANDFIRSTNAME%', '%CANDFULLNAME%'];
+    $replacementStrings = [$candidateData['ownerFullName'], $candidateData['firstName'], $candidateData['candidateFullName']];
     $emailTemplateText = str_replace(
             $stringsToFind,
             $replacementStrings,

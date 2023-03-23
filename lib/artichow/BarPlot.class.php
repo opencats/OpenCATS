@@ -7,7 +7,7 @@
  *
  */
 
-require_once dirname(__FILE__)."/Plot.class.php";
+require_once __DIR__."/Plot.class.php";
 
 /**
  * BarPlot
@@ -220,8 +220,8 @@ class awBarPlot extends awPlot implements awLegendable {
 	public function drawComponent(awDrawer $drawer, $x1, $y1, $x2, $y2, $aliasing) {
 
 		$count = count($this->datay);
-		$max = $this->getRealYMax(NULL);
-		$min = $this->getRealYMin(NULL);
+		$max = $this->getRealYMax();
+		$min = $this->getRealYMin();
 
 		// Find zero for bars
 		if($this->xAxisZero and $min <= 0 and $max >= 0) {

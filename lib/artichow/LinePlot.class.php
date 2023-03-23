@@ -7,7 +7,7 @@
  *
  */
 
-require_once dirname(__FILE__)."/Plot.class.php";
+require_once __DIR__."/Plot.class.php";
 
 
 /**
@@ -36,7 +36,7 @@ class awLinePlot extends awPlot implements awLegendable {
 	 *
 	 * @var bool
 	 */
-	protected $areas = array();
+	protected $areas = [];
 
 	/**
 	 * Is the line hidden
@@ -85,14 +85,14 @@ class awLinePlot extends awPlot implements awLegendable {
 	 *
 	 * @var int
 	 */
-	const LINE = 0;
+	public const LINE = 0;
 
 	/**
 	 * Line in the middle
 	 *
 	 * @var int
 	 */
-	const MIDDLE = 1;
+	public const MIDDLE = 1;
 
 	/**
 	 * Construct a new awLinePlot
@@ -135,7 +135,7 @@ class awLinePlot extends awPlot implements awLegendable {
 			trigger_error("End position can not be greater than begin position in awLinePlot::setFilledArea()", E_USER_ERROR);
 		}
 
-		$this->areas[] = array((int)$start, (int)$stop, $background);
+		$this->areas[] = [(int)$start, (int)$stop, $background];
 
 	}
 
@@ -235,7 +235,7 @@ class awLinePlot extends awPlot implements awLegendable {
 		$min = $this->getRealYMin();
 
 		// Get start and stop values
-		list($start, $stop) = $this->getLimit();
+		[$start, $stop] = $this->getLimit();
 
 		if($this->lineMode === awLinePlot::MIDDLE) {
 			$inc = $this->xAxis->getDistance(0, 1) / 2;
@@ -328,16 +328,16 @@ class awLinePlot extends awPlot implements awLegendable {
 
 	protected function drawArea(awDrawer $drawer, awPolygon $polygon) {
 
-		$starts = array();
+		$starts = [];
 		foreach($this->areas as $area) {
-			list($start) = $area;
+			[$start] = $area;
 			$starts[$start] = TRUE;
 		}
 
 		// Draw filled areas
 		foreach($this->areas as $area) {
 
-			list($start, $stop, $background) = $area;
+			[$start, $stop, $background] = $area;
 
 			$polygonArea = new awPolygon;
 
@@ -449,14 +449,14 @@ class awSimpleLinePlot extends awPlot implements awLegendable {
 	 *
 	 * @var int
 	 */
-	const LINE = 0;
+	public const LINE = 0;
 
 	/**
 	 * Line in the middle
 	 *
 	 * @var int
 	 */
-	const MIDDLE = 1;
+	public const MIDDLE = 1;
 
 	/**
 	 * Construct a new awLinePlot

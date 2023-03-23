@@ -106,12 +106,12 @@ class AddressParser
         /* Find the "City, State Zip" line and use it to guide the rest of our
          * parsing.
          */
-        $cityStateZipLineArray = array(-1, '');
+        $cityStateZipLineArray = [-1, ''];
         foreach ($reversedAddressBlock as $lineNumber => $line)
         {
-            if ($this->_isCityStateZip($line))
+            if (static::_isCityStateZip($line))
             {
-                $cityStateZipLineArray = array($lineNumber, $line);
+                $cityStateZipLineArray = [$lineNumber, $line];
                 break;
             }
         }
@@ -119,13 +119,13 @@ class AddressParser
         /* Using the "City, State Zip" line as a guiding point, find the
          * "address address line one.
          */
-        $addressOneLineArray = array(-1, '');
+        $addressOneLineArray = [-1, ''];
         foreach ($this->_addressBlock as $lineNumber => $line)
         {
             if ($lineNumber != $cityStateZipLineArray[0] &&
                 $this->_isStreetAddress($line))
             {
-                $addressOneLineArray = array($lineNumber, $line);
+                $addressOneLineArray = [$lineNumber, $line];
                 break;
             }
         }
@@ -140,7 +140,7 @@ class AddressParser
          * If there is an address line three, we ignore it.
          */
         if ($addressOneLineOffset >= 0 &&
-            count($this->_addressBlock) > ($addressOneLineOffset + 1) &&
+            (is_array($this->_addressBlock) || $this->_addressBlock instanceof \Countable ? count($this->_addressBlock) : 0) > ($addressOneLineOffset + 1) &&
             ($addressOneLineOffset + 1) != $cityStateZipLineArray[0])
         {
             $this->_addressLineTwo = $this->_addressBlock[$addressOneLineOffset + 1];
@@ -179,19 +179,7 @@ class AddressParser
      */
     public function getAddressArray()
     {
-        return array(
-            'company'        => $this->_company,
-            'firstName'      => $this->_firstName,
-            'middleName'     => $this->_middleName,
-            'lastName'       => $this->_lastName,
-            'addressLineOne' => $this->_addressLineOne,
-            'addressLineTwo' => $this->_addressLineTwo,
-            'city'           => $this->_city,
-            'state'          => $this->_state,
-            'zip'            => $this->_zip,
-            'email'          => $this->_email,
-            'phoneNumbers'   => $this->_phoneNumbers
-        );
+        return ['company'        => $this->_company, 'firstName'      => $this->_firstName, 'middleName'     => $this->_middleName, 'lastName'       => $this->_lastName, 'addressLineOne' => $this->_addressLineOne, 'addressLineTwo' => $this->_addressLineTwo, 'city'           => $this->_city, 'state'          => $this->_state, 'zip'            => $this->_zip, 'email'          => $this->_email, 'phoneNumbers'   => $this->_phoneNumbers];
     }
 
     // FIXME: Document me.
@@ -208,12 +196,12 @@ class AddressParser
         $this->_state          = '';
         $this->_zip            = '';
         $this->_email          = '';
-        $this->_phoneNumbers   = array();
+        $this->_phoneNumbers   = [];
 
         /* Clear out any old data if this is not our first run this
          * instance.
          */
-        $this->_addressBlock = array();
+        $this->_addressBlock = [];
 
         /* Remove blank or space-only lines from address block. */
         $addressBlock = StringUtility::removeEmptyLines($addressBlock);
@@ -223,7 +211,7 @@ class AddressParser
 
         /* Trim whitespace/etc. from each line in the array. */
         $addressBlockArray = array_map(
-            array($this, '_cleanAddressLine'),
+            [$this, '_cleanAddressLine'],
             $addressBlockArray
         );
 
@@ -246,12 +234,7 @@ class AddressParser
         /* Array of regular expressions that a "written-out" english number
          * can begin with.
          */
-        $validAddressPrefixes = array(
-            'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight',
-            'nine', 'ten', 'eleven', 'twelve', '.{3,5}teen', 'twenty',
-            'thirty', 'fourty', 'fifty', 'seventy', 'eighty', 'ninety',
-            'PO', 'P\.O\.', 'Post Office', 'Postal', 'Rural'
-        );
+        $validAddressPrefixes = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', '.{3,5}teen', 'twenty', 'thirty', 'fourty', 'fifty', 'seventy', 'eighty', 'ninety', 'PO', 'P\.O\.', 'Post Office', 'Postal', 'Rural'];
         
         /* Build a regular expression to match street addresses. */
         $regex = '/^(?:\d+(?:-\d+)?,? |(?:'
@@ -276,9 +259,7 @@ class AddressParser
      */
     protected static function _isCityStateZip($string)
     {
-        $statePrefixes = array(
-            'new', 'north', 'south', 'west', 'rhode', 'district\sof', 'puerto'
-        );
+        $statePrefixes = ['new', 'north', 'south', 'west', 'rhode', 'district\sof', 'puerto'];
         
         $cityStateZip = '[a-z\s.-]+[;,\s-]+(?:(?:'
             . implode('|', $statePrefixes)
@@ -347,6 +328,7 @@ class AddressParser
 
     protected function _getFullNameArray($addressOneLineOffset)
     {
+        $fullNameArray = [];
         /* Safe default values. */
         $fullNameArray['firstName']  = '';
         $fullNameArray['middleName'] = '';
@@ -459,7 +441,7 @@ class AddressParser
         $tokenCount = StringUtility::countTokens(";, \t", $cityStateZipLine);
         if ($tokenCount < 2)
         {
-            return array('city' => '', 'state' => '', 'zip' => '');
+            return ['city' => '', 'state' => '', 'zip' => ''];
         }
         
         /* Split the string into an array of tokens. */
@@ -481,7 +463,7 @@ class AddressParser
             );
             
             /* Known two- and three- word states / provinces. */
-            $twoWordStates = array(
+            $twoWordStates = [
                 'New Hampshire',
                 'New York',
                 'New Jersey',
@@ -492,25 +474,19 @@ class AddressParser
                 'South Carolina',
                 'West Virginia',
                 'Rhode Island',
-                
                 'American Samoa',
                 'Puerto Rico',
-                
                 'British Columbia',
                 'New Brunswick',
                 'Nova Scotia',
                 'Northwest Territories',
-                
                 /* Account for spelling errors. */
                 'South Dekota',
                 'North Dekota',
                 'Rode Island',
-                'New Hamshire'
-            );
-            $threeWordStates = array(
-                'District Of Columbia',
-                'Prince Edward Island'
-            );
+                'New Hamshire',
+            ];
+            $threeWordStates = ['District Of Columbia', 'Prince Edward Island'];
             
             /* Do we have a two-word state? */
             if (in_array(ucwords($twoWordState), $twoWordStates))
@@ -575,27 +551,13 @@ class AddressParser
         }
 
         /* Common spelling corrections. */
-        $search = array(
-            'South Dekota',
-            'North Dekota',
-            'Rode Island',
-            'New Hamshire'
-        );
-        $replace = array(
-            'South Dakota',
-            'North Dakota',
-            'Rhode Island',
-            'New Hampshire'
-        );
+        $search = ['South Dekota', 'North Dekota', 'Rode Island', 'New Hamshire'];
+        $replace = ['South Dakota', 'North Dakota', 'Rhode Island', 'New Hampshire'];
         $state = str_replace($search, $replace, $state);
         
         // FIXME: Convert US state names to abbreviations.
         // FIXME: Proper title case.
-        return array(
-            'city'  => ucwords($city),
-            'state' => ucwords($state),
-            'zip'   => strtoupper($zip)
-        );
+        return ['city'  => ucwords($city), 'state' => ucwords($state), 'zip'   => strtoupper($zip)];
     }
 
     // FIXME: Document me.
@@ -641,11 +603,11 @@ class AddressParser
          */
         if (empty($this->_addressBlock))
         {
-            return array();
+            return [];
         }
 
-        $unknownNumbers = array();
-        $numbers = array();
+        $unknownNumbers = [];
+        $numbers = [];
         
         /* Loop through each line of the address block and attempt to extract
          * and identify phone numbers.
@@ -675,24 +637,15 @@ class AddressParser
              */
             if (preg_match($cell, $line))
             {
-                $numbers[] = array(
-                    'number' => StringUtility::extractPhoneNumber($line),
-                    'type'   => 'cell'
-                );
+                $numbers[] = ['number' => StringUtility::extractPhoneNumber($line), 'type'   => 'cell'];
             }
             else if (preg_match($home, $line))
             {
-                $numbers[] = array(
-                    'number' => StringUtility::extractPhoneNumber($line),
-                    'type'   => 'home'
-                );
+                $numbers[] = ['number' => StringUtility::extractPhoneNumber($line), 'type'   => 'home'];
             }
             else if (preg_match($work, $line))
             {
-                $numbers[] = array(
-                    'number' => StringUtility::extractPhoneNumber($line),
-                    'type'   => 'work'
-                );
+                $numbers[] = ['number' => StringUtility::extractPhoneNumber($line), 'type'   => 'work'];
             }
             else if (preg_match($general, $line))
             {
@@ -702,32 +655,20 @@ class AddressParser
                 }
                 else
                 {
-                    $numbers[] = array(
-                        'number' => StringUtility::extractPhoneNumber($line),
-                        'type'   => 'general'
-                    );
+                    $numbers[] = ['number' => StringUtility::extractPhoneNumber($line), 'type'   => 'general'];
                 }
             }
             else if (preg_match($fax, $line))
             {
-                $numbers[] = array(
-                    'number' => StringUtility::extractPhoneNumber($line),
-                    'type'   => 'fax'
-                );
+                $numbers[] = ['number' => StringUtility::extractPhoneNumber($line), 'type'   => 'fax'];
             }
             else if (preg_match($tty, $line))
             {
-                $numbers[] = array(
-                    'number' => StringUtility::extractPhoneNumber($line),
-                    'type'   => 'tty'
-                );
+                $numbers[] = ['number' => StringUtility::extractPhoneNumber($line), 'type'   => 'tty'];
             }
             else if (preg_match($pager, $line))
             {
-                $numbers[] = array(
-                    'number' => StringUtility::extractPhoneNumber($line),
-                    'type'   => 'pager'
-                );
+                $numbers[] = ['number' => StringUtility::extractPhoneNumber($line), 'type'   => 'pager'];
             }
             else if (StringUtility::isPhoneNumber($line))
             {
@@ -774,10 +715,7 @@ class AddressParser
             if ($workPhoneRow === false && $homePhoneRow !== false &&
                 $cellPhoneRow !== false)
             {
-                $numbers[] = array(
-                    'number' => $unknownNumbers[0],
-                    'type'   => 'work'
-                );
+                $numbers[] = ['number' => $unknownNumbers[0], 'type'   => 'work'];
             }
             /* If we don't have a home number, but we have a work number
              * and a cell number, this is probably a home number.
@@ -785,10 +723,7 @@ class AddressParser
             else if ($homePhoneRow === false && $workPhoneRow !== false &&
                 $cellPhoneRow !== false)
             {
-                $numbers[] = array(
-                    'number' => $unknownNumbers[0],
-                    'type'   => 'home'
-                );
+                $numbers[] = ['number' => $unknownNumbers[0], 'type'   => 'home'];
             }
             /* If we don't have a cell number, but we have a work number
              * and a home number, this is probably a cell number.
@@ -796,10 +731,7 @@ class AddressParser
             else if ($cellPhoneRow === false && $workPhoneRow !== false &&
                 $homePhoneRow !== false)
             {
-                $numbers[] = array(
-                    'number' => $unknownNumbers[0],
-                    'type'   => 'cell'
-                );
+                $numbers[] = ['number' => $unknownNumbers[0], 'type'   => 'cell'];
             }
             else if ($cellPhoneRow !== false && $workPhoneRow !== false &&
                 $homePhoneRow !== false)
@@ -808,10 +740,7 @@ class AddressParser
                  * it's probably not a fax number, as fax numbers are usually
                  * labeled. Nothing to do except mark it as unknown.
                  */
-                $numbers[] = array(
-                    'number' => $unknownNumbers[0],
-                    'type'   => 'unknown'
-                );
+                $numbers[] = ['number' => $unknownNumbers[0], 'type'   => 'unknown'];
             }
             else
             {
@@ -873,10 +802,7 @@ class AddressParser
                         break;
                 }
                 
-                $numbers[] = array(
-                    'number' => $unknownNumbers[0],
-                    'type'   => $type
-                );
+                $numbers[] = ['number' => $unknownNumbers[0], 'type'   => $type];
             }
         }
         else if ($unknownCount > 1)

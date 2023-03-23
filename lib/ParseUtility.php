@@ -44,14 +44,12 @@ define('PARSE_CODE_NOAUTH',  'noauth');
  */
 class ParseUtility
 {
-    private $_wsdl;
-    private $_client;
+    private $_wsdl = 'wsdl/parse.wsdl';
+    private $_client = null;
 
 
     public function __construct()
     {
-        $this->_wsdl = 'wsdl/parse.wsdl';
-        $this->_client = null;
     }
 
 
@@ -112,19 +110,7 @@ class ParseUtility
                 return false;
         }
 
-        $ret = array(
-            'first_name' => $res->firstName,
-            'last_name' => $res->lastName,
-            'us_address' => $res->address,
-            'city' => $res->city,
-            'state' => $res->state,
-            'zip_code' => $res->zip,
-            'email_address' => $res->email,
-            'phone_number' => $res->phone,
-            'skills' => $res->skills,
-            'education' => $res->education,
-            'experience' => $res->experience
-        );
+        $ret = ['first_name' => $res->firstName, 'last_name' => $res->lastName, 'us_address' => $res->address, 'city' => $res->city, 'state' => $res->state, 'zip_code' => $res->zip, 'email_address' => $res->email, 'phone_number' => $res->phone, 'skills' => $res->skills, 'education' => $res->education, 'experience' => $res->experience];
 
         return $ret;
     }
@@ -160,14 +146,7 @@ class ParseUtility
                 return false;
         }
 
-        $ret = array(
-            'version' => $res->version,
-            'name' => $res->name,
-            'lastUse' => $res->lastUse,
-            'parseUsed' => $res->parseUsed,
-            'parseLimit' => $res->parseLimit,
-            'parseLimitReset' => $res->parseLimitReset
-        );
+        $ret = ['version' => $res->version, 'name' => $res->name, 'lastUse' => $res->lastUse, 'parseUsed' => $res->parseUsed, 'parseLimit' => $res->parseLimit, 'parseLimitReset' => $res->parseLimitReset];
 
         return $ret;
     }

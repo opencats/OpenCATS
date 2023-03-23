@@ -120,11 +120,11 @@ class Mailer
      * @return boolean Was the message successfully sent to all recipients?
      */
     public function sendToOne($recipient, $subject, $body, $isHTML = false,
-        $logMessage = true, $replyTo = array(), $wrapLinesAt = 78)
+        $logMessage = true, $replyTo = [], $wrapLinesAt = 78)
     {
         return $this->send(
-            array($this->_settings['fromAddress'], ''),
-            array($recipient),
+            [$this->_settings['fromAddress'], ''],
+            [$recipient],
             $subject,
             $body,
             $isHTML,
@@ -155,10 +155,10 @@ class Mailer
      * @return boolean Was the message successfully sent to all recipients?
      */
     public function sendToMany($recipients, $subject, $body, $isHTML = false,
-        $logMessage = true, $replyTo = array(), $wrapLinesAt = 78)
+        $logMessage = true, $replyTo = [], $wrapLinesAt = 78)
     {
         return $this->send(
-            array($this->_settings['fromAddress'], ''),
+            [$this->_settings['fromAddress'], ''],
             $recipients,
             $subject,
             $body,
@@ -191,7 +191,7 @@ class Mailer
      * @return boolean Was the message successfully sent to all recipients?
      */
     public function send($from, $recipients, $subject, $body, $isHTML = false,
-        $logMessage = true, $replyTo = array(), $wrapLinesAt = 78,
+        $logMessage = true, $replyTo = [], $wrapLinesAt = 78,
         $signature = false)
     {
 
@@ -228,7 +228,7 @@ class Mailer
             $this->_mailer->Body = $body;
         }
 
-        $failedRecipients = array();
+        $failedRecipients = [];
         foreach ($recipients as $key => $value)
         {
             $this->_mailer->AddAddress($recipients[$key][0], $recipients[$key][1]);
@@ -240,10 +240,7 @@ class Mailer
             $this->_mailer->CharSet = 'UTF-8';
             if (!$this->_mailer->Send())
             {
-                $failedRecipients[] = array(
-                    'recipient'    => $recipients[$key],
-                    'errorMessage' => $this->_mailer->ErrorInfo
-                );
+                $failedRecipients[] = ['recipient'    => $recipients[$key], 'errorMessage' => $this->_mailer->ErrorInfo];
             }
             else if ($logMessage)
             {
@@ -422,18 +419,13 @@ class MailerSettings
         $pipelines = new Pipelines($this->_siteID);
         $statuses = $pipelines->getStatuses();
 
-        $candidateJoborderStatusSendsMessage = array();
+        $candidateJoborderStatusSendsMessage = [];
         foreach ($statuses as $status)
         {
             $candidateJoborderStatusSendsMessage[$status['statusID']] = $status['triggersEmail'];
         }
 
-        $settings = array(
-            'fromAddress'       => 'noreply@yourdomain.com',
-            'configured'        => '0',
-            'modeConfigurable'  => '1',
-            'candidateJoborderStatusSendsMessage' => serialize($candidateJoborderStatusSendsMessage)
-        );
+        $settings = ['fromAddress'       => 'noreply@yourdomain.com', 'configured'        => '0', 'modeConfigurable'  => '1', 'candidateJoborderStatusSendsMessage' => serialize($candidateJoborderStatusSendsMessage)];
 
         $sql = sprintf(
             "SELECT

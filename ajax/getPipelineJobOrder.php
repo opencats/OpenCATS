@@ -116,7 +116,7 @@ foreach ($pipelinesRS as $rowIndex => $row)
 /* Sort the data. */
 if ($sortBy !== '' && $sortBy !== 'undefined')
 {
-    $sorting = array();
+    $sorting = [];
     foreach ($pipelinesRS as $p)
     {
         $sorting[] = $p[$sortBy];

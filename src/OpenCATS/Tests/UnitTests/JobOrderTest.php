@@ -5,30 +5,30 @@ use OpenCATS\Entity\JobOrder;
 
 class JobOrderTest extends TestCase
 {
-    const JOB_ORDER_TITLE = 'Test job order';
-    const COMPANY_ID = 1;
-    const CONTACT_ID = 1;
-    const JOB_ORDER_DESCRIPTION = 'Some description';
-    const JOB_ORDER_NOTES = 'Some note';
-    const JOB_ORDER_DURATION_IN_DAYS = 30;
-    const JOB_ORDER_MAX_RATE = 60000;
-    const JOB_ORDER_TYPE = '';
-    const JOB_ORDER_IS_HOT = 1;
-    const JOB_ORDER_PUBLIC = 1;
-    const JOB_ORDER_OPENINGS = 'Openings';
-    const JOB_ORDER_AVAILABLE_OPENINGS = 'Openings';
-    const COMPANY_JOB_ID = 10;
-    const JOB_ORDER_SALARY = 30000;
-    const CITY = 'Colonia';
-    const STATE = 'MALDONADO';
-    const JOB_ORDER_START_DATE = '2016-05-02';
-    const JOB_ORDER_ENTERED_BY = 31337;
-    const JOB_ORDER_RECRUITER = 31337;
-    const JOB_ORDER_OWNER = null;
-    const DEPARTMENT = 'DepartmentOne';
-    const DEPARTMENT_ID = 1234;
-    const SITE_ID = 1;
-    const JOB_ORDER_QUESTIONNAIRE = 'How do you see yourself in 5 years?';
+    public const JOB_ORDER_TITLE = 'Test job order';
+    public const COMPANY_ID = 1;
+    public const CONTACT_ID = 1;
+    public const JOB_ORDER_DESCRIPTION = 'Some description';
+    public const JOB_ORDER_NOTES = 'Some note';
+    public const JOB_ORDER_DURATION_IN_DAYS = 30;
+    public const JOB_ORDER_MAX_RATE = 60000;
+    public const JOB_ORDER_TYPE = '';
+    public const JOB_ORDER_IS_HOT = 1;
+    public const JOB_ORDER_PUBLIC = 1;
+    public const JOB_ORDER_OPENINGS = 'Openings';
+    public const JOB_ORDER_AVAILABLE_OPENINGS = 'Openings';
+    public const COMPANY_JOB_ID = 10;
+    public const JOB_ORDER_SALARY = 30000;
+    public const CITY = 'Colonia';
+    public const STATE = 'MALDONADO';
+    public const JOB_ORDER_START_DATE = '2016-05-02';
+    public const JOB_ORDER_ENTERED_BY = 31337;
+    public const JOB_ORDER_RECRUITER = 31337;
+    public const JOB_ORDER_OWNER = null;
+    public const DEPARTMENT = 'DepartmentOne';
+    public const DEPARTMENT_ID = 1234;
+    public const SITE_ID = 1;
+    public const JOB_ORDER_QUESTIONNAIRE = 'How do you see yourself in 5 years?';
     
     function test_create_CreateAndGetJobOrderTitle_ReturnsName()
     {

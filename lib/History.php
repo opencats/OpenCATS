@@ -64,7 +64,7 @@ class History
     public function storeHistoryChanges($dataItemType, $dataItemID,
         $preHistory, $postHistory)
     {
-        $changedHistory = array();
+        $changedHistory = [];
 
         /* Drop fields that change way too often. */
         if (isset($preHistory['dateModified']))
@@ -95,7 +95,7 @@ class History
         );
 
         /* Build new history entry entries. */
-        $changedHistoryValues = array();
+        $changedHistoryValues = [];
         foreach ($changedHistory as $index => $field)
         {
             /*NOTE:  Store strings (value value value value) for implode()ing later. */
@@ -142,6 +142,7 @@ class History
      */
     public function storeHistoryDeleted($dataItemType, $dataItemID)
     {
+        $changedHistoryValues = [];
         $description = '(USER) deleted entry.';
 
         $changedHistoryValues[] = sprintf(
@@ -171,6 +172,7 @@ class History
     public function storeHistoryCatagorized($dataItemType, $dataItemID,
         $category, $description)
     {
+        $changedHistoryValues = [];
         $changedHistoryValues[] = sprintf(
             "(%s, %s, %s, NULL, NULL, %s, NOW(), %s, %s)",
             $dataItemType,
@@ -203,6 +205,7 @@ class History
     public function storeHistoryData($dataItemType, $dataItemID, $category,
         $before, $after, $description)
     {
+        $changedHistoryValues = [];
         $changedHistoryValues[] = sprintf(
             "(%s, %s, %s, %s, %s, %s, NOW(), %s, %s)",
             $dataItemType,
@@ -234,6 +237,7 @@ class History
     public function storeHistorySimple($dataItemType, $dataItemID,
         $description)
     {
+        $changedHistoryValues = [];
         $changedHistoryValues[] = sprintf(
             "(%s, %s, NULL, NULL, NULL, %s, NOW(), %s, %s)",
             $dataItemType,

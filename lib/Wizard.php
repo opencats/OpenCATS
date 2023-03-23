@@ -53,12 +53,7 @@ class Wizard
         if (isset($_SESSION['CATS_WIZARD'])) unset($_SESSION['CATS_WIZARD']);
 
         // Initialize the session that will store information regarding the wizard
-        $_SESSION['CATS_WIZARD'] = array(
-            'pages' => array(),
-            'curPage' => 1,
-            'js' => $jsInclude,
-            'finishURL' => $finishURL
-        );
+        $_SESSION['CATS_WIZARD'] = ['pages' => [], 'curPage' => 1, 'js' => $jsInclude, 'finishURL' => $finishURL];
     }
 
     /**
@@ -74,13 +69,7 @@ class Wizard
      */
     public function addPage($pageTitle, $templateFile, $phpEval = '', $disableNext = false, $disableSkip = false)
     {
-        $_SESSION['CATS_WIZARD']['pages'][] = array(
-            'title' => $pageTitle,
-            'php' => $phpEval,
-            'template' => $templateFile,
-            'disableNext' => $disableNext,
-            'disableSkip' => $disableSkip
-        );
+        $_SESSION['CATS_WIZARD']['pages'][] = ['title' => $pageTitle, 'php' => $phpEval, 'template' => $templateFile, 'disableNext' => $disableNext, 'disableSkip' => $disableSkip];
         return true;
     }
 
@@ -93,7 +82,7 @@ class Wizard
      */
     public function doModal()
     {
-        if (!isset($_SESSION['CATS_WIZARD']) || !count($_SESSION['CATS_WIZARD']['pages'])) return;
+        if (!isset($_SESSION['CATS_WIZARD']) || !(is_array($_SESSION['CATS_WIZARD']['pages']) || $_SESSION['CATS_WIZARD']['pages'] instanceof \Countable ? count($_SESSION['CATS_WIZARD']['pages']) : 0)) return;
         CATSUtility::transferRelativeURI('m=wizard');
         return true;
     }

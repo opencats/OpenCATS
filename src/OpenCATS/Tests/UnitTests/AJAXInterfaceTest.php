@@ -22,7 +22,7 @@ class AJAXInterfaceTest extends TestCase
             );
 
         /* Make sure -0, non-numeric strings, and symbols never pass. */
-        $invalidIDs = array('-0', 'test', '0abc', '1abc', '-abc', '$');
+        $invalidIDs = ['-0', 'test', '0abc', '1abc', '-abc', '$'];
         foreach ($invalidIDs as $ID)
         {
             $_REQUEST['isRequiredIDValidTest'] = $ID;
@@ -45,7 +45,7 @@ class AJAXInterfaceTest extends TestCase
         }
 
         /* Make sure we don't allow '0' if $allowZero is false. */
-        $invalidIDs = array(0, '0');
+        $invalidIDs = [0, '0'];
         foreach ($invalidIDs as $ID)
         {
             $_REQUEST['isRequiredIDValidTest'] = $ID;
@@ -60,7 +60,7 @@ class AJAXInterfaceTest extends TestCase
         }
 
         /* Make sure we don't allow negatives if $allowNegative is false. */
-        $invalidIDs = array(-1, -100, '-1', '-100');
+        $invalidIDs = [-1, -100, '-1', '-100'];
         foreach ($invalidIDs as $ID)
         {
             $_REQUEST['isRequiredIDValidTest'] = $ID;
@@ -77,7 +77,7 @@ class AJAXInterfaceTest extends TestCase
         /* Make sure any positive, negative, or 0 number passes valid ID checks
          * if $allowZero and $allowNegative are true.
          */
-        $validIDs = array(1, 100, -1, -100, 0, '0', '-100', '1', '65535');
+        $validIDs = [1, 100, -1, -100, 0, '0', '-100', '1', '65535'];
         foreach ($validIDs as $ID)
         {
             $_REQUEST['isRequiredIDValidTest'] = $ID;
@@ -90,7 +90,7 @@ class AJAXInterfaceTest extends TestCase
         /* Make sure any positive number always passes valid ID checks
          * regardless of $allowZero and $allowNegative.
          */
-        $validIDs = array(1, 100, '1', '65535');
+        $validIDs = [1, 100, '1', '65535'];
         foreach ($validIDs as $ID)
         {
             $_REQUEST['isRequiredIDValidTest'] = $ID;
@@ -115,10 +115,7 @@ class AJAXInterfaceTest extends TestCase
         /* Make sure 0, -0, negative numbers, non-numeric strings, and symbols
          * never pass.
          */
-        $invalidIDs = array(
-            0, -1, -100, '0', '-0', '-1', '-100',
-            'test', '0abc', '1abc', '-abc', '$'
-        );
+        $invalidIDs = [0, -1, -100, '0', '-0', '-1', '-100', 'test', '0abc', '1abc', '-abc', '$'];
         foreach ($invalidIDs as $ID)
         {
             $_REQUEST['isRequiredIDValidTest'] = $ID;
@@ -129,7 +126,7 @@ class AJAXInterfaceTest extends TestCase
         }
 
         /* Make sure any positive number always passes. */
-        $validIDs = array(1, 100, '1', '65535');
+        $validIDs = [1, 100, '1', '65535'];
         foreach ($validIDs as $ID)
         {
             $_REQUEST['isOptionalIDValidValidTest'] = $ID;

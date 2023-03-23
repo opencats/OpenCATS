@@ -138,7 +138,7 @@ class Tags
             return false;
         }
 
-        return array('id'=> $queryResult = $this->_db->getLastInsertID(), 'tag_title' => $title);
+        return ['id'=> $queryResult = $this->_db->getLastInsertID(), 'tag_title' => $title];
     }
 
     /**
@@ -174,7 +174,7 @@ class Tags
      */
     public function getCandidateTags($candidateID)
     {
-    	if (FALSE === is_numeric($candidateID) ) return array();
+    	if (FALSE === is_numeric($candidateID) ) return [];
         $sql = sprintf(
 			"SELECT
 				t1.tag_id,
@@ -195,7 +195,7 @@ class Tags
 	
     public function getCandidateTagsID($candidateID)
     {
-    	$result = array();
+    	$result = [];
     	$tags = $this->getCandidateTags($candidateID);
     	foreach($tags as $t){
     		$result[] = $t['tag_id'];
@@ -205,7 +205,7 @@ class Tags
 	
     public function getCandidateTagsTitle($candidateID)
     {
-    	$result = array();
+    	$result = [];
     	$tags = $this->getCandidateTags($candidateID);
     	foreach($tags as $t){
     		$result[] = $t['tag_title'];
@@ -221,7 +221,8 @@ class Tags
 	 */
 	public function AddTagsToCandidate($candidateID, $tagIDs){
 
-		if (is_array($tagIDs)){
+		$values = [];
+  if (is_array($tagIDs)){
 			foreach($tagIDs as $t){
 				$values[] = sprintf(" (
 	                %s,

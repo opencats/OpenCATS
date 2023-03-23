@@ -48,7 +48,7 @@ class GraphsUI extends UserInterface
         $this->_authenticationRequired = false;
         $this->_moduleDirectory = 'graphs';
         $this->_moduleName = 'graphs';
-        $this->_subTabs = array();
+        $this->_subTabs = [];
 
         if (isset($_GET['width']) && $_GET['width'] < 2000)
         {
@@ -137,8 +137,8 @@ class GraphsUI extends UserInterface
     private function testGraph()
     {
         /* I am used for development purposes and intentionally empty. */
-        $x = array(1, 2, 3, 4);
-        $y = array(1, 2, 3, 4);
+        $x = [1, 2, 3, 4];
+        $y = [1, 2, 3, 4];
         $graph = new GraphSimple($x, $y, 'DarkGreen', 'Test Graph', $this->width, $this->height);
 
         if (!eval(Hooks::get('GRAPH_TEST'))) return;
@@ -149,6 +149,7 @@ class GraphsUI extends UserInterface
 
     private function jobOrderReportGraph()
     {
+        $colorArray = [];
         /* Build X values. */
         $data = $this->getTrimmedInput('data', $_GET);
         if (!empty($data))
@@ -171,10 +172,10 @@ class GraphsUI extends UserInterface
         }
         else
         {
-            $x = array(0, 0, 0, 0);
+            $x = [0, 0, 0, 0];
         }
 
-        $y = array('Screened', 'Submitted', 'Interviewed', 'Placed');
+        $y = ['Screened', 'Submitted', 'Interviewed', 'Placed'];
 
         $colorArray[] = new LinearGradient(new Red, new White, 0);
         $colorArray[] = new LinearGradient(new DarkGreen, new White, 0);
@@ -205,7 +206,7 @@ class GraphsUI extends UserInterface
         );
 
         /* Get Labels. */
-        $y = array();
+        $y = [];
 
         for ($i = 0; $i < 14; $i++)
         {
@@ -221,7 +222,7 @@ class GraphsUI extends UserInterface
         }
 
         /* Get Values. */
-        $x = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        $x = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
         foreach ($RS as $lineRS)
         {
@@ -262,7 +263,7 @@ class GraphsUI extends UserInterface
         );
 
         /* Get labels. */
-        $y = array();
+        $y = [];
         for ($i = 0; $i < 14; $i++)
         {
             $thisDay = mktime(
@@ -277,7 +278,7 @@ class GraphsUI extends UserInterface
         }
 
         /* Get values. */
-        $x = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        $x = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         foreach ($RS as $lineRS)
         {
             $thisDay = mktime(0, 0, 0, $lineRS['month'], $lineRS['day'], $lineRS['year']);
@@ -316,7 +317,7 @@ class GraphsUI extends UserInterface
             DateUtility::getAdjustedDate('Y')
         );
 
-        $y = array();
+        $y = [];
         for ($i = 0; $i < 14; $i++)
         {
             $thisDay = mktime(
@@ -331,7 +332,7 @@ class GraphsUI extends UserInterface
         }
 
         /* Get values. */
-        $x = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        $x = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         foreach ($RS as $lineRS)
         {
             $thisDay = mktime(0, 0, 0, $lineRS['month'], $lineRS['day'], $lineRS['year']);
@@ -418,8 +419,8 @@ class GraphsUI extends UserInterface
         
         $noData = true;
         
-        $y = array();
-        $x = array();
+        $y = [];
+        $x = [];
         foreach ($pipelineRS as $index => $data)
         {
             /* Positioning hack */
@@ -443,7 +444,7 @@ class GraphsUI extends UserInterface
         unset ($x[15]);
 
         $colorOptions = Graphs::getColorOptions();
-        $colorArray = array();
+        $colorArray = [];
 
         for ($i = 0; $i < 15; $i+=4)
         {
@@ -475,31 +476,11 @@ class GraphsUI extends UserInterface
         /* We can expand things a bit if we have more room. */
         if ($this->width > 600)
         {
-            $y = array(
-                "Total Pipeline",
-                "Contacted",
-                "Cand Replied",
-                "Qualifying",
-                "Submitted",
-                "Interviewing",
-                "Offered",
-                "Declined",
-                "Placed"
-            );
+            $y = ["Total Pipeline", "Contacted", "Cand Replied", "Qualifying", "Submitted", "Interviewing", "Offered", "Declined", "Placed"];
         }
         else
         {
-            $y = array(
-                "Total Pipeline",
-                "|Contacted",
-                "Cand Replied",
-                "|Qualifying",
-                "Submitted",
-                "|Interviewing",
-                "Offered",
-                "|Declined",
-                "Placed"
-            );
+            $y = ["Total Pipeline", "|Contacted", "Cand Replied", "|Qualifying", "Submitted", "|Interviewing", "Offered", "|Declined", "Placed"];
         }
 
         $x[8] = $statisticsData['placed'];
@@ -513,7 +494,7 @@ class GraphsUI extends UserInterface
         $x[0] = $statisticsData['totalPipeline'];
 
         $colorOptions = Graphs::getColorOptions();
-        $colorArray = array();
+        $colorArray = [];
 
         for ($i = 0; $i < 9; $i++)
         {
@@ -550,7 +531,7 @@ class GraphsUI extends UserInterface
             DateUtility::getAdjustedDate('Y')
         );
 
-        $y = array();
+        $y = [];
         for ($i = 0; $i < 14; $i++)
         {
             $thisDay = mktime(
@@ -565,7 +546,7 @@ class GraphsUI extends UserInterface
         }
 
         /* Get values. */
-        $x = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        $x = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         foreach ($RS as $lineRS)
         {
             $thisDay = mktime(0, 0, 0, $lineRS['month'], $lineRS['day'], $lineRS['year']);

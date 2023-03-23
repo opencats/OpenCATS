@@ -65,7 +65,7 @@ class ListEditor
 
         if (empty($string))
         {
-            return array();
+            return [];
         }
 
         $string = str_replace('""', '!!DOUBLEQUOTE!!', $string);
@@ -126,7 +126,7 @@ class ListEditor
         foreach ($rs as $rsIndex => $rsEntry)
         {
             $string = '"' . str_replace('"', '""', $rsEntry[$index]) . '"';
-            if ($rsIndex != count($rs) - 1)
+            if ($rsIndex != (is_array($rs) || $rs instanceof \Countable ? count($rs) : 0) - 1)
             {
                 $output .= $string . ',';
             }
@@ -148,9 +148,9 @@ class ListEditor
      */
     public static function getAddValues($theArray)
     {
-        $theArrayValues = array();
+        $theArrayValues = [];
 
-        for ($i = 0; $i < count($theArray); $i++)
+        for ($i = 0; $i < (is_array($theArray) || $theArray instanceof \Countable ? count($theArray) : 0); $i++)
         {
             if (strpos($theArray[$i], '!!EDIT!!') === false)
             {
@@ -169,9 +169,9 @@ class ListEditor
      */
     public static function getEditValues($theArray)
     {
-        $theArrayValues = array();
+        $theArrayValues = [];
 
-        for ($i = 0; $i < count($theArray); $i++)
+        for ($i = 0; $i < (is_array($theArray) || $theArray instanceof \Countable ? count($theArray) : 0); $i++)
         {
             if (strpos($theArray[$i], '!!EDIT!!') === 0)
             {
@@ -185,7 +185,7 @@ class ListEditor
                     strpos($theArray[$i], '!!INTO!!') + 8,
                     strlen($theArray[$i])
                 );
-                $theArrayValues[] = array($from, $into);
+                $theArrayValues[] = [$from, $into];
             }
         }
 
@@ -220,7 +220,7 @@ class ListEditor
             $stringListEditor = substr($stringListEditor, 0, strpos($stringListEditor, '&DELETEALLOWED&'));
         }
         
-        $arrayDiff = array();
+        $arrayDiff = [];
 
         $values = self::getArrayVaulesfromCSV($stringListEditor);
         $addValues = self::getAddValues($values);
@@ -230,11 +230,7 @@ class ListEditor
         {
             foreach ($rsOriginal as $rsLine)
             {
-                   $arrayDiff[] = array(
-                    $rsLine[$rsFieldNameOriginal],
-                    $rsLine[$rsFieldIndexOriginal],
-                    LIST_EDITOR_UNKNOWN
-                );
+                   $arrayDiff[] = [$rsLine[$rsFieldNameOriginal], $rsLine[$rsFieldIndexOriginal], LIST_EDITOR_UNKNOWN];
             }
         }
 
@@ -266,7 +262,7 @@ class ListEditor
             }
             if (!$foundValue)
             {
-                $arrayDiff[] = array($addLine, 0, LIST_EDITOR_ADD);
+                $arrayDiff[] = [$addLine, 0, LIST_EDITOR_ADD];
             }
         }
 

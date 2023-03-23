@@ -9,9 +9,9 @@
 /**#@+
  *  include other SimpleTest class files
  */
-require_once(dirname(__FILE__) . '/socket.php');
-require_once(dirname(__FILE__) . '/cookies.php');
-require_once(dirname(__FILE__) . '/url.php');
+require_once(__DIR__ . '/socket.php');
+require_once(__DIR__ . '/cookies.php');
+require_once(__DIR__ . '/url.php');
 /**#@-*/
 
 /**
@@ -75,9 +75,9 @@ class SimpleRoute {
     function createConnection($method, $timeout) {
         $default_port = ('https' == $this->url->getScheme()) ? 443 : 80;
         $socket = $this->createSocket(
-                $this->url->getScheme() ? $this->url->getScheme() : 'http',
+                $this->url->getScheme() ?: 'http',
                 $this->url->getHost(),
-                $this->url->getPort() ? $this->url->getPort() : $default_port,
+                $this->url->getPort() ?: $default_port,
                 $timeout);
         if (! $socket->isError()) {
             $socket->write($this->getRequestLine($method) . "\r\n");
@@ -97,9 +97,9 @@ class SimpleRoute {
      *    @access protected
      */
     protected function createSocket($scheme, $host, $port, $timeout) {
-        if (in_array($scheme, array('file'))) {
+        if (in_array($scheme, ['file'])) {
             return new SimpleFileSocket($this->url);
-        } elseif (in_array($scheme, array('https'))) {
+        } elseif (in_array($scheme, ['https'])) {
             return new SimpleSecureSocket($host, $port, $timeout);
         } else {
             return new SimpleSocket($host, $port, $timeout);
@@ -142,7 +142,7 @@ class SimpleProxyRoute extends SimpleRoute {
      */
     function getRequestLine($method) {
         $url = $this->getUrl();
-        $scheme = $url->getScheme() ? $url->getScheme() : 'http';
+        $scheme = $url->getScheme() ?: 'http';
         $port = $url->getPort() ? ':' . $url->getPort() : '';
         return $method . ' ' . $scheme . '://' . $url->getHost() . $port .
                 $url->getPath() . $url->getEncodedRequest() . ' HTTP/1.0';
@@ -156,7 +156,7 @@ class SimpleProxyRoute extends SimpleRoute {
      */
     function getHostLine() {
         $host = 'Host: ' . $this->proxy->getHost();
-        $port = $this->proxy->getPort() ? $this->proxy->getPort() : 8080;
+        $port = $this->proxy->getPort() ?: 8080;
         return "$host:$port";
     }
 
@@ -169,9 +169,9 @@ class SimpleProxyRoute extends SimpleRoute {
      */
     function createConnection($method, $timeout) {
         $socket = $this->createSocket(
-                $this->proxy->getScheme() ? $this->proxy->getScheme() : 'http',
+                $this->proxy->getScheme() ?: 'http',
                 $this->proxy->getHost(),
-                $this->proxy->getPort() ? $this->proxy->getPort() : 8080,
+                $this->proxy->getPort() ?: 8080,
                 $timeout);
         if ($socket->isError()) {
             return $socket;
@@ -197,8 +197,8 @@ class SimpleProxyRoute extends SimpleRoute {
 class SimpleHttpRequest {
     private $route;
     private $encoding;
-    private $headers;
-    private $cookies;
+    private $headers = [];
+    private $cookies = [];
 
     /**
      *    Builds the socket request from the different pieces.
@@ -212,8 +212,6 @@ class SimpleHttpRequest {
     function __construct($route, $encoding) {
         $this->route = $route;
         $this->encoding = $encoding;
-        $this->headers = array();
-        $this->cookies = array();
     }
 
     /**
@@ -295,13 +293,13 @@ class SimpleHttpRequest {
  */
 class SimpleHttpHeaders {
     private $raw_headers;
-    private $response_code;
-    private $http_version;
-    private $mime_type;
-    private $location;
-    private $cookies;
-    private $authentication;
-    private $realm;
+    private $response_code = false;
+    private $http_version = false;
+    private $mime_type = '';
+    private $location = false;
+    private $cookies = [];
+    private $authentication = false;
+    private $realm = false;
 
     /**
      *    Parses the incoming header block.
@@ -310,13 +308,6 @@ class SimpleHttpHeaders {
      */
     function __construct($headers) {
         $this->raw_headers = $headers;
-        $this->response_code = false;
-        $this->http_version = false;
-        $this->mime_type = '';
-        $this->location = false;
-        $this->cookies = array();
-        $this->authentication = false;
-        $this->realm = false;
         foreach (explode("\r\n", $headers) as $header_line) {
             $this->parseHeaderLine($header_line);
         }
@@ -365,7 +356,7 @@ class SimpleHttpHeaders {
      *    @access public
      */
     function isRedirect() {
-        return in_array($this->response_code, array(301, 302, 303, 307)) &&
+        return in_array($this->response_code, [301, 302, 303, 307]) &&
                 (boolean)$this->getLocation();
     }
 
@@ -459,7 +450,7 @@ class SimpleHttpHeaders {
      */
     protected function parseCookie($cookie_line) {
         $parts = explode(";", $cookie_line);
-        $cookie = array();
+        $cookie = [];
         preg_match('/\s*(.*?)\s*=(.*)/', array_shift($parts), $cookie);
         foreach ($parts as $part) {
             if (preg_match('/\s*(.*?)\s*=(.*)/', $part, $matches)) {
@@ -469,8 +460,8 @@ class SimpleHttpHeaders {
         return new SimpleCookie(
                 $cookie[1],
                 trim($cookie[2]),
-                isset($cookie["path"]) ? $cookie["path"] : "",
-                isset($cookie["expires"]) ? $cookie["expires"] : false);
+                $cookie["path"] ?? "",
+                $cookie["expires"] ?? false);
     }
 }
 
@@ -483,7 +474,7 @@ class SimpleHttpResponse extends SimpleStickyError {
     private $url;
     private $encoding;
     private $sent;
-    private $content;
+    private $content = false;
     private $headers;
 
     /**
@@ -500,7 +491,6 @@ class SimpleHttpResponse extends SimpleStickyError {
         $this->url = $url;
         $this->encoding = $encoding;
         $this->sent = $socket->getSent();
-        $this->content = false;
         $raw = $this->readAll($socket);
         if ($socket->isError()) {
             $this->setError('Error reading socket [' . $socket->getError() . ']');
@@ -525,7 +515,7 @@ class SimpleHttpResponse extends SimpleStickyError {
             $this->setError('Could not split headers from content');
             $this->headers = new SimpleHttpHeaders($raw);
         } else {
-            list($headers, $this->content) = explode("\r\n\r\n", $raw, 2);
+            [$headers, $this->content] = explode("\r\n\r\n", $raw, 2);
             $this->headers = new SimpleHttpHeaders($headers);
         }
     }

@@ -203,7 +203,7 @@ class awText {
 	 * @param int $bottom Bottom padding
 	 */
 	public function setPadding($left, $right, $top, $bottom) {
-		$this->padding = array((int)$left, (int)$right, (int)$top, (int)$bottom);
+		$this->padding = [(int)$left, (int)$right, (int)$top, (int)$bottom];
 	}
 
 	/**

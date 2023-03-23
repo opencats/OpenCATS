@@ -13,14 +13,7 @@ class ArrayUtilityTest extends TestCase
     /* Tests for implodeRange(). */
     function testImplodeRange()
     {
-        $pieces = array(
-            'Zero',
-            'One',
-            'Two',
-            'Three',
-            'Four',
-            'Five'
-        );
+        $pieces = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five'];
 
         $result = ArrayUtility::implodeRange(' ', $pieces, 0, 5);
         $this->assertSame($result, 'Zero One Two Three Four Five');

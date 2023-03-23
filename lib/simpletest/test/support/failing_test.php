@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(__FILE__) . '/../../autorun.php');
+require_once(__DIR__ . '/../../autorun.php');
 
 class FailingTest extends UnitTestCase {
     function test_fail() {

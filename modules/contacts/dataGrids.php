@@ -51,17 +51,7 @@ class ContactsListByViewDataGrid extends ContactsDataGrid
         $this->defaultSortBy = 'dateCreatedSort';
         $this->defaultSortDirection = 'DESC';
    
-        $this->_defaultColumns = array( 
-            array('name' => 'Attachments', 'width' => 10),
-            array('name' => 'First Name', 'width' => 80),
-            array('name' => 'Last Name', 'width' => 80),
-            array('name' => 'Company', 'width' => 135),
-            array('name' => 'Title', 'width' => 135),
-            array('name' => 'Work Phone', 'width' => 85),
-            array('name' => 'Owner', 'width' => 85),
-            array('name' => 'Created', 'width' => 60),
-            array('name' => 'Modified', 'width' => 60),
-        );
+        $this->_defaultColumns = [['name' => 'Attachments', 'width' => 10], ['name' => 'First Name', 'width' => 80], ['name' => 'Last Name', 'width' => 80], ['name' => 'Company', 'width' => 135], ['name' => 'Title', 'width' => 135], ['name' => 'Work Phone', 'width' => 85], ['name' => 'Owner', 'width' => 85], ['name' => 'Created', 'width' => 60], ['name' => 'Modified', 'width' => 60]];
    
         parent::__construct("contacts:ContactsListByViewDataGrid", 
                              $siteID, $parameters, $misc
@@ -105,17 +95,7 @@ class contactSavedListByViewDataGrid extends ContactsDataGrid
         $this->defaultSortBy = 'dateCreatedSort';
         $this->defaultSortDirection = 'DESC';
    
-        $this->_defaultColumns = array( 
-            array('name' => 'Attachments', 'width' => 10),
-            array('name' => 'First Name', 'width' => 80),
-            array('name' => 'Last Name', 'width' => 80),
-            array('name' => 'Company', 'width' => 135),
-            array('name' => 'Title', 'width' => 135),
-            array('name' => 'Work Phone', 'width' => 85),
-            array('name' => 'Owner', 'width' => 85),
-            array('name' => 'Created', 'width' => 60),
-            array('name' => 'Modified', 'width' => 60),
-        );
+        $this->_defaultColumns = [['name' => 'Attachments', 'width' => 10], ['name' => 'First Name', 'width' => 80], ['name' => 'Last Name', 'width' => 80], ['name' => 'Company', 'width' => 135], ['name' => 'Title', 'width' => 135], ['name' => 'Work Phone', 'width' => 85], ['name' => 'Owner', 'width' => 85], ['name' => 'Created', 'width' => 60], ['name' => 'Modified', 'width' => 60]];
    
         parent::__construct("contacts:contactSavedListByViewDataGrid", 
                              $siteID, $parameters, $misc

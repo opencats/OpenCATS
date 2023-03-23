@@ -730,25 +730,17 @@ class ExtraFields
         switch ($data['extraFieldType'])
         {
             case EXTRA_FIELD_CHECKBOX:
-               return array('select'       => 'extra_field'.$uniqueIndex.'.value AS extra_field_value'.$uniqueIndex,
-                          'join'         => 'LEFT JOIN extra_field AS extra_field' . $uniqueIndex . ' '.
-                                            'ON '.$column.' = extra_field' . $uniqueIndex . '.data_item_id '.
-                                            'AND extra_field' . $uniqueIndex . '.field_name = ' . $db->makeQueryString($data['fieldName']) . ' '.
-                                            'AND extra_field' . $uniqueIndex . '.data_item_type = ' . $this->_dataItemType,
-                          'pagerRender'          => 'return ($rsData[\'extra_field_value' . $uniqueIndex . '\'] == \'Yes\' ? \'Yes\' : \'No\');',
-                          'exportRender'          => 'return ($rsData[\'extra_field_value' . $uniqueIndex . '\'] == \'Yes\' ? \'Yes\' : \'No\');',
-                          'sortableColumn'         => 'extra_field_value' . $uniqueIndex,
-                          'pagerWidth'  => 45,
-                          'filter' => 'IF (extra_field'.$uniqueIndex.'.value = "Yes", "Yes", "No")');
+               return ['select'       => 'extra_field'.$uniqueIndex.'.value AS extra_field_value'.$uniqueIndex, 'join'         => 'LEFT JOIN extra_field AS extra_field' . $uniqueIndex . ' '.
+                                 'ON '.$column.' = extra_field' . $uniqueIndex . '.data_item_id '.
+                                 'AND extra_field' . $uniqueIndex . '.field_name = ' . $db->makeQueryString($data['fieldName']) . ' '.
+                                 'AND extra_field' . $uniqueIndex . '.data_item_type = ' . $this->_dataItemType, 'pagerRender'          => 'return ($rsData[\'extra_field_value' . $uniqueIndex . '\'] == \'Yes\' ? \'Yes\' : \'No\');', 'exportRender'          => 'return ($rsData[\'extra_field_value' . $uniqueIndex . '\'] == \'Yes\' ? \'Yes\' : \'No\');', 'sortableColumn'         => 'extra_field_value' . $uniqueIndex, 'pagerWidth'  => 45, 'filter' => 'IF (extra_field'.$uniqueIndex.'.value = "Yes", "Yes", "No")'];
             break;
             
             case EXTRA_FIELD_DATE:
-                return array('select'  => 'extra_field'.$uniqueIndex.'.value AS extra_field_value'.$uniqueIndex,
-                          'join'    => 'LEFT JOIN extra_field AS extra_field' . $uniqueIndex . ' '.
-                                       'ON '.$column.' = extra_field' . $uniqueIndex . '.data_item_id '.
-                                       'AND extra_field' . $uniqueIndex . '.field_name = ' . $db->makeQueryString($data['fieldName']) . ' '.
-                                       'AND extra_field' . $uniqueIndex . '.data_item_type = ' . $this->_dataItemType,
-                          'pagerRender'     => 'if (isset($_SESSION[\'CATS\']) && $_SESSION[\'CATS\']->isLoggedIn() && $_SESSION[\'CATS\']->isDateDMY())
+                return ['select'  => 'extra_field'.$uniqueIndex.'.value AS extra_field_value'.$uniqueIndex, 'join'    => 'LEFT JOIN extra_field AS extra_field' . $uniqueIndex . ' '.
+                             'ON '.$column.' = extra_field' . $uniqueIndex . '.data_item_id '.
+                             'AND extra_field' . $uniqueIndex . '.field_name = ' . $db->makeQueryString($data['fieldName']) . ' '.
+                             'AND extra_field' . $uniqueIndex . '.data_item_type = ' . $this->_dataItemType, 'pagerRender'     => 'if (isset($_SESSION[\'CATS\']) && $_SESSION[\'CATS\']->isLoggedIn() && $_SESSION[\'CATS\']->isDateDMY())
                                         {
                                               $dateParts = explode(\'-\',  $rsData[\'extra_field_value' . $uniqueIndex . '\']);
                                               if (count($dateParts) > 2)
@@ -763,8 +755,7 @@ class ExtraFields
                                         else
                                         {
                                              return $rsData[\'extra_field_value' . $uniqueIndex . '\'];
-                                        }',
-                          'exportRender'     => 'if (isset($_SESSION[\'CATS\']) && $_SESSION[\'CATS\']->isLoggedIn() && $_SESSION[\'CATS\']->isDateDMY())
+                                        }', 'exportRender'     => 'if (isset($_SESSION[\'CATS\']) && $_SESSION[\'CATS\']->isLoggedIn() && $_SESSION[\'CATS\']->isDateDMY())
                                         {
                                               $dateParts = explode(\'-\',  $rsData[\'extra_field_value' . $uniqueIndex . '\']);
                                               if (count($dateParts) > 2)
@@ -779,23 +770,14 @@ class ExtraFields
                                         else
                                         {
                                              return $rsData[\'extra_field_value' . $uniqueIndex . '\'];
-                                        }',
-                          'sortableColumn'       => 'extra_field_value' . $uniqueIndex,
-                          'pagerWidth' => 110,
-                          'filter' => 'extra_field'.$uniqueIndex.'.value');
+                                        }', 'sortableColumn'       => 'extra_field_value' . $uniqueIndex, 'pagerWidth' => 110, 'filter' => 'extra_field'.$uniqueIndex.'.value'];
             
             case EXTRA_FIELD_TEXT:
             default:
-                return array('select'  => 'extra_field'.$uniqueIndex.'.value AS extra_field_value'.$uniqueIndex,
-                          'join'    => 'LEFT JOIN extra_field AS extra_field' . $uniqueIndex . ' '.
-                                       'ON '.$column.' = extra_field' . $uniqueIndex . '.data_item_id '.
-                                       'AND extra_field' . $uniqueIndex . '.field_name = ' . $db->makeQueryString($data['fieldName']) . ' '.
-                                       'AND extra_field' . $uniqueIndex . '.data_item_type = ' . $this->_dataItemType,
-                          'pagerRender'     => 'return htmlspecialchars($rsData[\'extra_field_value' . $uniqueIndex . '\']);',
-                          'sortableColumn'    => 'extra_field_value' . $uniqueIndex,
-                          'pagerWidth'   => 110,
-                          'filter' => 'extra_field'.$uniqueIndex.'.value',
-                          'filterTypes'   => '===>=<=~');
+                return ['select'  => 'extra_field'.$uniqueIndex.'.value AS extra_field_value'.$uniqueIndex, 'join'    => 'LEFT JOIN extra_field AS extra_field' . $uniqueIndex . ' '.
+                             'ON '.$column.' = extra_field' . $uniqueIndex . '.data_item_id '.
+                             'AND extra_field' . $uniqueIndex . '.field_name = ' . $db->makeQueryString($data['fieldName']) . ' '.
+                             'AND extra_field' . $uniqueIndex . '.data_item_type = ' . $this->_dataItemType, 'pagerRender'     => 'return htmlspecialchars($rsData[\'extra_field_value' . $uniqueIndex . '\']);', 'sortableColumn'    => 'extra_field_value' . $uniqueIndex, 'pagerWidth'   => 110, 'filter' => 'extra_field'.$uniqueIndex.'.value', 'filterTypes'   => '===>=<=~'];
             break;
         }
     }
@@ -893,7 +875,7 @@ class ExtraFields
     {
         $extraFields = $this->_getValuesWithSettings($dataItemID);
 
-        for ($i = 0; $i < count($extraFields); $i++)
+        for ($i = 0; $i < (is_array($extraFields) || $extraFields instanceof \Countable ? count($extraFields) : 0); $i++)
         {
             if (isset($_POST['extraField' . $i]) && $extraFields[$i]['value'] != $_POST['extraField' . $i])
             {
@@ -910,32 +892,7 @@ class ExtraFields
      */
     public static function getValuesTypes()
     {
-        return array (
-            EXTRA_FIELD_TEXT => array(
-                'name' => 'Text Box',
-                'hasOptions' => false
-                ),
-            EXTRA_FIELD_TEXTAREA => array(
-                'name' => 'Multiline Text Box',
-                'hasOptions' => false
-                ),
-            EXTRA_FIELD_CHECKBOX => array(
-                'name' => 'Check Box',
-                'hasOptions' => false
-                ),
-            EXTRA_FIELD_DROPDOWN => array(
-                'name' => 'Dropdown List',
-                'hasOptions' => true
-                ),
-            EXTRA_FIELD_RADIO => array(
-                'name' => 'Radio Button List',
-                'hasOptions' => true
-                ),
-            EXTRA_FIELD_DATE => array(
-                'name' => 'Date',
-                'hasOptions' => false
-                ),
-          );
+        return [EXTRA_FIELD_TEXT => ['name' => 'Text Box', 'hasOptions' => false], EXTRA_FIELD_TEXTAREA => ['name' => 'Multiline Text Box', 'hasOptions' => false], EXTRA_FIELD_CHECKBOX => ['name' => 'Check Box', 'hasOptions' => false], EXTRA_FIELD_DROPDOWN => ['name' => 'Dropdown List', 'hasOptions' => true], EXTRA_FIELD_RADIO => ['name' => 'Radio Button List', 'hasOptions' => true], EXTRA_FIELD_DATE => ['name' => 'Date', 'hasOptions' => false]];
     }            
     
     //TODO: PHPDOC

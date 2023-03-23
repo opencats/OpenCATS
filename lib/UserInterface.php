@@ -39,17 +39,17 @@ class UserInterface
 {
     protected $_moduleName = '';
     protected $_moduleTabText = '';
-    protected $_subTabs = array();
-    protected $_subTabsExternal = array();
-    protected $_settingsEntries = array();
-    protected $_settingsUserCategories = array();
+    protected $_subTabs = [];
+    protected $_subTabsExternal = [];
+    protected $_settingsEntries = [];
+    protected $_settingsUserCategories = [];
     protected $_template;
     protected $_moduleDirectory = '';
     protected $_userID = -1;
     protected $_siteID = -1;
     protected $_authenticationRequired = true;
-    protected $_hooks = array();
-    protected $_schema = array();
+    protected $_hooks = [];
+    protected $_schema = [];
 
     public function __construct()
     {
@@ -111,7 +111,7 @@ class UserInterface
      *
      * @return array subtab items for this module
      */
-    public function getSubTabs($modules = array())
+    public function getSubTabs($modules = [])
     {
         if (empty($modules))
         {
@@ -256,7 +256,7 @@ class UserInterface
             './modules/' . $moduleDirectory . '/Error.tpl'
         );
 
-        $getArray = array();
+        $getArray = [];
         foreach ($_REQUEST as $index => $data)
         {
             $getArray[] = urlencode($index) . '=' . urlencode($data);
@@ -401,7 +401,7 @@ class UserInterface
      */
     public function getThisSubTabsExternal($modules)
     {
-        $ret = array();
+        $ret = [];
 
         foreach ($modules as $moduleName => $parameters)
         {

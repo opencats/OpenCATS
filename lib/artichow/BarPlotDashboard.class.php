@@ -7,7 +7,7 @@
  *
  */
 
-require_once dirname(__FILE__)."/Plot.class.php";
+require_once __DIR__."/Plot.class.php";
 
 /**
  * BarPlot
@@ -86,11 +86,11 @@ class awBarPlotDashboard extends awPlot implements awLegendable {
 	 */
 	protected $barBackground;
 
-	protected $onRowNumber;
-	public $arrayBarBackground;
+	protected $onRowNumber = 0;
+	public $arrayBarBackground = 0;
 	public $maxValue;
 	public $drawPercent;
-	public $legendColorCounter;
+	public $legendColorCounter = 0;
 	public $noData;
 
 	/**
@@ -106,9 +106,6 @@ class awBarPlotDashboard extends awPlot implements awLegendable {
 		parent::__construct();
 
 		$this->label = new awLabel;
-		$this->onRowNumber = 0;
-		$this->arrayBarBackground = 0;
-		$this->legendColorCounter = 0;
 
 		$this->barPadding = new awSide(0.06, 0.06, 0, 0);
 		$this->barShadow = new awShadow(awShadow::RIGHT_TOP);
@@ -255,7 +252,7 @@ class awBarPlotDashboard extends awPlot implements awLegendable {
 		$this->label->setFont(new Tuffy(8));
     	
     	$datayReal = $this->datay;
-    	$dataySkewed = array();
+    	$dataySkewed = [];
 
     	for($index = 0; $index < count($this->datay); $index++)
     	{
@@ -263,8 +260,8 @@ class awBarPlotDashboard extends awPlot implements awLegendable {
        	}
 
 		$count = count($this->datay);
-		$max = $this->getRealYMax(NULL);
-		$min = $this->getRealYMin(NULL);
+		$max = $this->getRealYMax();
+		$min = $this->getRealYMin();
 
 
 		// Find zero for bars

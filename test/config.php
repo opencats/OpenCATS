@@ -273,12 +273,7 @@ define ('LDAP_BIND_PASSWORD', 'password');
 define ('LDAP_PROTOCOL_VERSION', 3);
 
 class JOB_TYPES {
-    public static $LIST = array(
-        'H' => 'Hire',
-        'C' => 'Contract',
-        'C2H' => 'Contract To Hire',
-        'FL' => 'Freelance'       
-    );
+    public static $LIST = ['H' => 'Hire', 'C' => 'Contract', 'C2H' => 'Contract To Hire', 'FL' => 'Freelance'];
 };
 
 ?>

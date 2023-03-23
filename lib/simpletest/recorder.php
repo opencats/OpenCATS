@@ -12,7 +12,7 @@
 /**
  *	include other SimpleTest class files
  */
-require_once(dirname(__FILE__) . '/scorer.php');
+require_once(__DIR__ . '/scorer.php');
 
 /**
  *	A single test result.
@@ -30,8 +30,8 @@ abstract class SimpleResult {
 	 * @param string $message       The messsage to the human.
 	 */
 	function __construct($breadcrumb, $message) {
-		list($this->time, $this->breadcrumb, $this->message) =
-				array(time(), $breadcrumb, $message);
+		[$this->time, $this->breadcrumb, $this->message] =
+				[time(), $breadcrumb, $message];
 	}
 }
 
@@ -63,7 +63,7 @@ class SimpleResultOfException extends SimpleResult { }
  *	@subpackage	Extensions
  */
 class Recorder extends SimpleReporterDecorator {
-    public $results = array();
+    public $results = [];
 
 	/**
 	 *    Stashes the pass as a SimpleResultOfPass

@@ -51,20 +51,7 @@ class JobOrdersListByViewDataGrid extends JobOrdersDataGrid
         $this->defaultSortBy = 'dateCreatedSort';
         $this->defaultSortDirection = 'DESC';
    
-        $this->_defaultColumns = array(
-            array('name' => 'Attachments', 'width' => 10),
-            array('name' => 'ID', 'width' => 26),   
-            array('name' => 'Title', 'width' => 170),
-            array('name' => 'Company', 'width' => 135),
-            array('name' => 'Type', 'width' => 30),
-            array('name' => 'Status', 'width' => 40),
-            array('name' => 'Created', 'width' => 55),
-            array('name' => 'Age', 'width' => 30),
-            array('name' => 'Submitted', 'width' => 18),
-            array('name' => 'Pipeline', 'width' => 18),
-            array('name' => 'Recruiter', 'width' => 65),
-            array('name' => 'Owner', 'width' => 55),
-        );
+        $this->_defaultColumns = [['name' => 'Attachments', 'width' => 10], ['name' => 'ID', 'width' => 26], ['name' => 'Title', 'width' => 170], ['name' => 'Company', 'width' => 135], ['name' => 'Type', 'width' => 30], ['name' => 'Status', 'width' => 40], ['name' => 'Created', 'width' => 55], ['name' => 'Age', 'width' => 30], ['name' => 'Submitted', 'width' => 18], ['name' => 'Pipeline', 'width' => 18], ['name' => 'Recruiter', 'width' => 65], ['name' => 'Owner', 'width' => 55]];
    
         if (!eval(Hooks::get('JOBORDERS_DATAGRID_DEFAULTS'))) return;
    
@@ -110,20 +97,7 @@ class joborderSavedListByViewDataGrid extends JobOrdersDataGrid
         $this->defaultSortBy = 'dateCreatedSort';
         $this->defaultSortDirection = 'DESC';
    
-        $this->_defaultColumns = array(
-            array('name' => 'Attachments', 'width' => 10),
-            array('name' => 'ID', 'width' => 26),   
-            array('name' => 'Title', 'width' => 170),
-            array('name' => 'Company', 'width' => 135),
-            array('name' => 'Type', 'width' => 30),
-            array('name' => 'Status', 'width' => 40),
-            array('name' => 'Created', 'width' => 55),
-            array('name' => 'Age', 'width' => 30),
-            array('name' => 'Submitted', 'width' => 18),
-            array('name' => 'Pipeline', 'width' => 18),
-            array('name' => 'Recruiter', 'width' => 65),
-            array('name' => 'Owner', 'width' => 55),
-        );
+        $this->_defaultColumns = [['name' => 'Attachments', 'width' => 10], ['name' => 'ID', 'width' => 26], ['name' => 'Title', 'width' => 170], ['name' => 'Company', 'width' => 135], ['name' => 'Type', 'width' => 30], ['name' => 'Status', 'width' => 40], ['name' => 'Created', 'width' => 55], ['name' => 'Age', 'width' => 30], ['name' => 'Submitted', 'width' => 18], ['name' => 'Pipeline', 'width' => 18], ['name' => 'Recruiter', 'width' => 65], ['name' => 'Owner', 'width' => 55]];
    
         if (!eval(Hooks::get('JOBORDERS_DATAGRID_DEFAULTS'))) return;
    

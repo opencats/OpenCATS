@@ -55,7 +55,7 @@ eval(Hooks::get('XML_FEED_SUBMISSION_SETTINGS_HEADERS'));
 class SettingsUI extends UserInterface
 {
     /* Maximum number of login history entries to display on User Details. */
-    const MAX_RECENT_LOGINS = 15;
+    public const MAX_RECENT_LOGINS = 15;
 
 
     public function __construct()
@@ -74,10 +74,7 @@ class SettingsUI extends UserInterface
             $this->_settingsUserCategories = ACL_SETUP::$USER_ROLES;
         }
 
-        $mp = array(
-            'Administration' => CATSUtility::getIndexName() . '?m=settings&amp;a=administration',
-            'My Profile'     => CATSUtility::getIndexName() . '?m=settings'
-        );
+        $mp = ['Administration' => CATSUtility::getIndexName() . '?m=settings&amp;a=administration', 'My Profile'     => CATSUtility::getIndexName() . '?m=settings'];
 
         $this->_subTabs = $mp;
         
@@ -86,7 +83,7 @@ class SettingsUI extends UserInterface
 
     public function defineHooks()
     {
-        return array(
+        return [
             /* Hide all tabs in career portal mode. */
             'TEMPLATE_UTILITY_EVALUATE_TAB_VISIBLE' => '
                 if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\'))
@@ -97,7 +94,6 @@ class SettingsUI extends UserInterface
                     }
                 }
             ',
-            
             /* Home goes to settings in career portal mode. */
             'HOME' => '
                 if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\'))
@@ -106,7 +102,6 @@ class SettingsUI extends UserInterface
                     return false;
                 }
             ',
-            
             /* My Profile goes to administration in career portal mode. */
             'SETTINGS_DISPLAY_PROFILE_SETTINGS' => '
                 if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\'))
@@ -115,7 +110,6 @@ class SettingsUI extends UserInterface
                     return false;
                 }
             ',
-
             /* Deny access to all modules in career portal mode but settings. */
             'CLIENTS_HANDLE_REQUEST' =>    'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
             'CONTACTS_HANDLE_REQUEST' =>   'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
@@ -123,8 +117,8 @@ class SettingsUI extends UserInterface
             'JO_HANDLE_REQUEST' =>         'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
             'CANDIDATES_HANDLE_REQUEST' => 'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
             'ACTIVITY_HANDLE_REQUEST' =>   'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
-            'REPORTS_HANDLE_REQUEST' =>    'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");'
-        );
+            'REPORTS_HANDLE_REQUEST' =>    'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
+        ];
     }
     
     private function onAddNewTag()
@@ -135,7 +129,7 @@ class SettingsUI extends UserInterface
             return;
         }
         $tags = new Tags($this->_siteID);
-        $arr = $tags->add((isset($_POST['tag_parent_id'])?$_POST['tag_parent_id']:null),$_POST['tag_title'], "-");
+        $arr = $tags->add(($_POST['tag_parent_id'] ?? null),$_POST['tag_title'], "-");
         if (isset($_POST['tag_parent_id']))
         {
 	        printf('
@@ -1045,7 +1039,7 @@ class SettingsUI extends UserInterface
 
         /* Get user categories, if any. */
         $modules = ModuleUtility::getModules();
-        $categories = array();
+        $categories = [];
         foreach ($modules as $moduleName => $parameters)
         {
             $moduleCategories = $parameters[MODULE_SETTINGS_USER_CATEGORIES];
@@ -1088,7 +1082,7 @@ class SettingsUI extends UserInterface
 
         /* Get user categories, if any. */
         $modules = ModuleUtility::getModules();
-        $categories = array();
+        $categories = [];
         foreach ($modules as $moduleName => $parameters)
         {
             $moduleCategories = $parameters[MODULE_SETTINGS_USER_CATEGORIES];
@@ -1281,7 +1275,7 @@ class SettingsUI extends UserInterface
 
         /* Get user categories, if any. */
         $modules = ModuleUtility::getModules();
-        $categories = array();
+        $categories = [];
         foreach ($modules as $moduleName => $parameters)
         {
             $moduleCategories = $parameters[MODULE_SETTINGS_USER_CATEGORIES];
@@ -1670,7 +1664,7 @@ class SettingsUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'No custom template with that name exists.');
         }
 
-        $templateBySetting = array();
+        $templateBySetting = [];
         foreach ($templateSource as $templateLine)
         {
             $templateBySetting[$templateLine['setting']] = $templateLine['value'];
@@ -1679,7 +1673,7 @@ class SettingsUI extends UserInterface
         /* Arrange the array entries in a way that makes sense. */
         $desiredOrder = $careerPortalSettings->requiredTemplateFields;
 
-        $template = array();
+        $template = [];
         foreach ($desiredOrder as $item)
         {
             if (isset($templateBySetting[$item]))
@@ -2319,7 +2313,7 @@ class SettingsUI extends UserInterface
             $companies = new Companies($this->_siteID);
             $companyIDInternal = $companies->add(
                 'Internal Postings', '', '', '', '', '', '', '', '', '', '',
-                '', '', 'Internal postings.', $this->_userID, $this->_userID
+                '', '', 'Internal postings.'
             );
 
             $companies->setCompanyDefault($companyIDInternal);
@@ -2463,7 +2457,7 @@ class SettingsUI extends UserInterface
             $templateFile = './modules/settings/Administration.tpl';
 
             /* Load extra settings. */
-            $extraSettings = array();
+            $extraSettings = [];
 
             $modules = ModuleUtility::getModules();
             foreach ($modules as $moduleName => $parameters)
@@ -2693,8 +2687,8 @@ class SettingsUI extends UserInterface
 
         if (isset($_GET['webFormPostBack']))
         {
-            list ($fields, $errors) = $wf->getValidatedFields();
-            if (count($errors) > 0) $message = 'Please enter a license key in order to continue.';
+            [$fields, $errors] = str_split($wf->getValidatedFields());
+            if ((is_array($errors) || $errors instanceof \Countable ? count($errors) : 0) > 0) $message = 'Please enter a license key in order to continue.';
 
             $key = trim($fields['licenseKey']);
 
@@ -2756,6 +2750,9 @@ class SettingsUI extends UserInterface
      */
     private function onChangePassword()
     {
+        $error = [];
+        $message = null;
+        $messageSuccess = null;
         $users = new Users($this->_siteID);
         if(AUTH_MODE == 'ldap' || AUTH_MODE == 'sql+ldap')
         {
@@ -2947,6 +2944,7 @@ class SettingsUI extends UserInterface
      */
     private function viewItemHistory()
     {
+        $data = null;
         /* Bail out if we don't have a valid data item type. */
         if (!$this->isRequiredIDValid('dataItemType', $_GET))
         {
@@ -3253,7 +3251,7 @@ class SettingsUI extends UserInterface
         $companies = new Companies($this->_siteID);
         $companyIDInternal = $companies->add(
             'Internal Postings', '', '', '', '', '', '', '', '', '', '',
-            '', '', 'Internal postings.', $this->_userID, $this->_userID
+            '', '', 'Internal postings.'
         );
 
         $companies->setCompanyDefault($companyIDInternal);
@@ -3270,7 +3268,7 @@ class SettingsUI extends UserInterface
         // Echos Ok to redirect to the import stage, or Fail to go to home module
         $files = ImportUtility::getDirectoryFiles(FileUtility::getUploadPath($siteID, 'massimport'));
 
-        if (count($files)) echo 'Ok';
+        if (is_array($files) || $files instanceof \Countable ? count($files) : 0) echo 'Ok';
         else echo 'Fail';
     }
 
@@ -3290,7 +3288,7 @@ class SettingsUI extends UserInterface
         // Get the ID if provided, otherwise we're adding a questionnaire
         $questionnaireID = isset($_GET[$id='questionnaireID']) ? $_GET[$id] : '';
 
-        $questions = array();
+        $questions = [];
 
         if (!$fromPostback)
         {
@@ -3301,11 +3299,11 @@ class SettingsUI extends UserInterface
             if ($questionnaireID != '')
             {
                 $questionnaire = new Questionnaire($this->_siteID);
-                if (count($data = $questionnaire->get($questionnaireID)))
+                if (is_array($data = $questionnaire->get($questionnaireID)) || ($data = $questionnaire->get($questionnaireID)) instanceof \Countable ? count($data = $questionnaire->get($questionnaireID)) : 0)
                 {
                     $questions = $questionnaire->getQuestions($questionnaireID);
 
-                    for ($i=0; $i<count($questions); $i++)
+                    for ($i=0; $i<(is_array($questions) || $questions instanceof \Countable ? count($questions) : 0); $i++)
                     {
                         $questions[$i]['questionTypeLabel'] = $questionnaire->convertQuestionConstantToType(
                             $questions[$i]['questionType']
@@ -3327,13 +3325,7 @@ class SettingsUI extends UserInterface
             // without changing the database data. Only save the session to the DB if the
             // user requests it.
             if (isset($_SESSION['CATS_QUESTIONNAIRE'])) unset($_SESSION['CATS_QUESTIONNAIRE']);
-            $_SESSION['CATS_QUESTIONNAIRE'] = array(
-                'id' => $questionnaireID,
-                'title' => $title,
-                'description' => $description,
-                'questions' => $questions,
-                'isActive' => $isActive
-            );
+            $_SESSION['CATS_QUESTIONNAIRE'] = ['id' => $questionnaireID, 'title' => $title, 'description' => $description, 'questions' => $questions, 'isActive' => $isActive];
         }
         else
         {
@@ -3400,7 +3392,7 @@ class SettingsUI extends UserInterface
          * answers that the user specified to remove as "remove" which will be done
          * in the final step to prevent index changes.
          */
-        for ($questionIndex=0; $questionIndex<count($questions); $questionIndex++)
+        for ($questionIndex=0; $questionIndex<(is_array($questions) || $questions instanceof \Countable ? count($questions) : 0); $questionIndex++)
         {
             // Update the position of the question
             $field = sprintf('question%dPosition', $questionIndex);
@@ -3442,7 +3434,7 @@ class SettingsUI extends UserInterface
                 $questions[$questionIndex]['remove'] = false;
             }
 
-            for ($answerIndex=0; $answerIndex<count($questions[$questionIndex]['answers']); $answerIndex++)
+            for ($answerIndex=0; $answerIndex<(is_array($questions[$questionIndex]['answers']) || $questions[$questionIndex]['answers'] instanceof \Countable ? count($questions[$questionIndex]['answers']) : 0); $answerIndex++)
             {
                 // Update the position of the question
                 $field = sprintf('question%dAnswer%dPosition', $questionIndex, $answerIndex);
@@ -3558,7 +3550,7 @@ class SettingsUI extends UserInterface
             $questionTypeText = isset($_POST[$id = 'questionType']) ? $_POST[$id] : '';
 
             // Make sure the question doesn't already exist (re-submit)
-            for ($i = 0, $exists = false; $i < count($questions); $i++)
+            for ($i = 0, $exists = false; $i < (is_array($questions) || $questions instanceof \Countable ? count($questions) : 0); $i++)
             {
                 if (!strcmp($questions[$i]['questionText'], $questionText))
                 {
@@ -3568,17 +3560,19 @@ class SettingsUI extends UserInterface
 
             if (strlen($questionText) && !$exists)
             {
-                $questions[] = array(
-                    'questionID' => -1, // -1 indicates a record needs to be added
+                $questions[] = [
+                    'questionID' => -1,
+                    // -1 indicates a record needs to be added
                     'questionType' => QUESTIONNAIRE_QUESTION_TYPE_TEXT,
                     'questionTypeLabel' =>
                         $questionnaire->convertQuestionConstantToType(QUESTIONNAIRE_QUESTION_TYPE_TEXT),
                     'questionText' => $questionText,
                     'minimumLength' => 0,
                     'maximumLength' => 255,
-                    'questionPosition' => 1000, // should be positioned last (users can't enter higher than 999)
-                    'answers' => array()
-                );
+                    'questionPosition' => 1000,
+                    // should be positioned last (users can't enter higher than 999)
+                    'answers' => [],
+                ];
             }
         }
         else if (!strcasecmp($restrictAction, 'answer') &&
@@ -3586,12 +3580,13 @@ class SettingsUI extends UserInterface
         {
             // Adding a new answer to an existing question
             $field = sprintf('question%dAnswerText', $restrictQuestionID);
-            $answerText = substr(trim(isset($_POST[$field]) ? $_POST[$field] : ''), 0, 255);
+            $answerText = substr(trim($_POST[$field] ?? ''), 0, 255);
 
             if (strlen($answerText))
             {
-                $questions[$restrictQuestionID]['answers'][] = array(
-                    'answerID' => -1, // append to the db
+                $questions[$restrictQuestionID]['answers'][] = [
+                    'answerID' => -1,
+                    // append to the db
                     'answerText' => $answerText,
                     'actionSource' => '',
                     'actionNotes' => '',
@@ -3599,8 +3594,8 @@ class SettingsUI extends UserInterface
                     'actionIsActive' => 1,
                     'actionCanRelocate' => 0,
                     'actionKeySkills' => '',
-                    'answerPosition' => 1000 // should be positioned last (see above)
-                );
+                    'answerPosition' => 1000,
+                ];
             }
         }
         else if (!strcasecmp($restrictAction, 'action') &&
@@ -3637,16 +3632,16 @@ class SettingsUI extends UserInterface
          * STEP 5
          * Remove any questions/answers that have "remove" checked prior to sorting/positioning
          */
-        $savedQuestions = array();
+        $savedQuestions = [];
         for ($questionIndex = 0, $savedQuestionIndex = 0;
-             $questionIndex < count($questions);
+             $questionIndex < (is_array($questions) || $questions instanceof \Countable ? count($questions) : 0);
              $questionIndex++)
         {
             if (isset($questions[$questionIndex]['remove']) && $questions[$questionIndex]['remove']) continue;
             $savedQuestions[$savedQuestionIndex] = $questions[$questionIndex];
-            $savedQuestions[$savedQuestionIndex]['answers'] = array();
+            $savedQuestions[$savedQuestionIndex]['answers'] = [];
 
-            for ($answerIndex = 0; $answerIndex < count($questions[$questionIndex]['answers']); $answerIndex++)
+            for ($answerIndex = 0; $answerIndex < (is_array($questions[$questionIndex]['answers']) || $questions[$questionIndex]['answers'] instanceof \Countable ? count($questions[$questionIndex]['answers']) : 0); $answerIndex++)
             {
                 if (isset($questions[$questionIndex]['answers'][$answerIndex]['remove']) &&
                     $questions[$questionIndex]['answers'][$answerIndex]['remove']) continue;
@@ -3666,7 +3661,7 @@ class SettingsUI extends UserInterface
         for ($questionIndex = 0; $questionIndex < count($questions); $questionIndex++)
         {
             // If the question has no answers it is a TEXT automatically
-            if (!count($questions[$questionIndex]['answers']))
+            if (!(is_array($questions[$questionIndex]['answers']) || $questions[$questionIndex]['answers'] instanceof \Countable ? count($questions[$questionIndex]['answers']) : 0))
             {
                 $questions[$questionIndex]['questionType'] = QUESTIONNAIRE_QUESTION_TYPE_TEXT;
                 $questions[$questionIndex]['questionTypeLabel'] =
@@ -3708,11 +3703,11 @@ class SettingsUI extends UserInterface
 
             // Bubble sort the answers for each question using the same method
             for ($answerIndex2 = 0;
-                 $answerIndex2 < count($questions[$questionIndex2]['answers']) - 1;
+                 $answerIndex2 < (is_array($questions[$questionIndex2]['answers']) || $questions[$questionIndex2]['answers'] instanceof \Countable ? count($questions[$questionIndex2]['answers']) : 0) - 1;
                  $answerIndex2++)
             {
                 for ($answerIndex3 = 0;
-                     $answerIndex3 < count($questions[$questionIndex2]['answers']) - 1;
+                     $answerIndex3 < (is_array($questions[$questionIndex2]['answers']) || $questions[$questionIndex2]['answers'] instanceof \Countable ? count($questions[$questionIndex2]['answers']) : 0) - 1;
                      $answerIndex3++)
                 {
                     if (intval($questions[$questionIndex2]['answers'][$answerIndex3]['answerPosition']) >
@@ -3735,7 +3730,7 @@ class SettingsUI extends UserInterface
             $questions[$questionIndex2]['questionPosition'] = $questionIndex2 + 1;
 
             for ($answerIndex2 = 0;
-                 $answerIndex2 < count($questions[$questionIndex2]['answers']);
+                 $answerIndex2 < (is_array($questions[$questionIndex2]['answers']) || $questions[$questionIndex2]['answers'] instanceof \Countable ? count($questions[$questionIndex2]['answers']) : 0);
                  $answerIndex2++)
             {
                 $questions[$questionIndex2]['answers'][$answerIndex2]['answerPosition'] = ($answerIndex2 + 1);
@@ -3745,7 +3740,7 @@ class SettingsUI extends UserInterface
         if (isset($_POST[$id = 'startOver']) && !strcasecmp($_POST[$id], 'yes'))
         {
             // User wants to start over
-            $_SESSION['CATS_QUESTIONNAIRE']['questions'] = array();
+            $_SESSION['CATS_QUESTIONNAIRE']['questions'] = [];
         }
         else if (isset($_POST[$id = 'saveChanges']) && !strcasecmp($_POST[$id], 'yes'))
         {
@@ -3799,7 +3794,7 @@ class SettingsUI extends UserInterface
         $questionnaire = new Questionnaire($this->_siteID);
         $data = $questionnaire->getAll(true);
 
-        for ($i = 0; $i < count($data); $i++)
+        for ($i = 0; $i < (is_array($data) || $data instanceof \Countable ? count($data) : 0); $i++)
         {
             if (isset($_POST[$id = 'removeQuestionnaire' . $i]) &&
                 !strcasecmp($_POST[$id], 'yes'))

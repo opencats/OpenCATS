@@ -322,7 +322,7 @@ class DatabaseConnection
 
         if (empty($recordSet))
         {
-            $recordSet = array();
+            $recordSet = [];
         }
 
         return $recordSet;
@@ -361,7 +361,7 @@ class DatabaseConnection
         }
 
         /* Make sure we always return an array. */
-        $recordSetArray = array();
+        $recordSetArray = [];
         
         if($this->_queryResult)
         {

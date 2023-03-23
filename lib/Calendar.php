@@ -82,6 +82,7 @@ class Calendar
      */
     public function getEventArray($month, $year)
     {
+        $array = [];
         // FIXME: Rewrite this query to use date ranges in WHERE, so that
         //        indexes can be used.
         $sql = sprintf(
@@ -168,12 +169,12 @@ class Calendar
             if ($firstOffset === false)
             {
                 /* No events for this date. */
-                $array[$i] = array();
+                $array[$i] = [];
                 continue;
             }
 
             /* Store the first row we found that has 'day' set to $i. */
-            $array[$i] = array($rs[$firstOffset]);
+            $array[$i] = [$rs[$firstOffset]];
 
             /* There could be more than one row that has 'day' set to $i
              * (multiple events on the same day). We are going to tell
@@ -501,13 +502,13 @@ class Calendar
     public function makeEventString($eventArray, $month, $year,
         $showAllUsersEvents = true)
     {
-        $stringArray = array();
+        $stringArray = [];
 
         foreach ($eventArray as $day => $dayData)
         {
             foreach ($dayData as $event)
             {
-                $eventParameters = array();
+                $eventParameters = [];
                 $eventParameters[] = sprintf(
                     'datetime|%s,%s,%s,%s,%s',
                     $event['year'] + 2000,
@@ -640,6 +641,8 @@ class Calendar
      */
     public function getUpcomingEventsHTML($limit, $flag = UPCOMING_FOR_CALENDAR)
     {
+        $criteria = null;
+        $HTML = null;
         switch ($flag)
         {
             case UPCOMING_FOR_CALENDAR:
@@ -957,7 +960,7 @@ class Calendar
         foreach ($destinations as $address)
         {
             $mailerStatus = $mailer->sendToOne(
-                array($address, ''),
+                [$address, ''],
                 $subject,
                 $body,
                 true
@@ -995,14 +998,7 @@ class CalendarSettings
     public function getAll()
     {
         /* Default values. */
-        $settings = array(
-            'noAjax' => '0',
-            'defaultPublic' => '0',
-            'dayStart' => '8',
-            'dayStop' => '18',
-            'firstDayMonday' => '1',
-            'calendarView' => 'MONTHVIEW'
-        );
+        $settings = ['noAjax' => '0', 'defaultPublic' => '0', 'dayStart' => '8', 'dayStop' => '18', 'firstDayMonday' => '1', 'calendarView' => 'MONTHVIEW'];
 
         $sql = sprintf(
             "SELECT

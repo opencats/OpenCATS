@@ -13,38 +13,7 @@ class ResultSetUtilityTest extends TestCase
     /* Tests for findRowByColumnValue(). */
     function testFindRowByColumnValue()
     {
-        $input = array(
-            0   =>  array(
-                'ID'    => 100,
-                'Name'  => 'Cat',
-                'Sound' => 'Meow',
-                'Type'  => 'Mammal'
-            ),
-            1   =>  array(
-                'ID'    => 200,
-                'Name'  => 'Dog',
-                'Sound' => 'Bark',
-                'Type'  => 'Mammal'
-            ),
-            2  =>  array(
-                'ID'    => 300,
-                'Name'  => 'Wolf',
-                'Sound' => 'Howl',
-                'Type'  => 'Mammal'
-            ),
-            3   =>  array(
-                'ID'    => 400,
-                'Name'  => 'Cow',
-                'Sound' => 'Moo',
-                'Type'  => 'Mammal'
-            ),
-            4 =>  array(
-                'ID'    => 500,
-                'Name'  => 'Snake',
-                'Sound' => 'Hiss',
-                'Type'  => 'Reptile'
-            )
-        );
+        $input = [0   =>  ['ID'    => 100, 'Name'  => 'Cat', 'Sound' => 'Meow', 'Type'  => 'Mammal'], 1   =>  ['ID'    => 200, 'Name'  => 'Dog', 'Sound' => 'Bark', 'Type'  => 'Mammal'], 2  =>  ['ID'    => 300, 'Name'  => 'Wolf', 'Sound' => 'Howl', 'Type'  => 'Mammal'], 3   =>  ['ID'    => 400, 'Name'  => 'Cow', 'Sound' => 'Moo', 'Type'  => 'Mammal'], 4 =>  ['ID'    => 500, 'Name'  => 'Snake', 'Sound' => 'Hiss', 'Type'  => 'Reptile']];
 
         /* Test simple 'finding' functionality. */
         $this->assertSame(

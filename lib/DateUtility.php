@@ -92,6 +92,10 @@ class DateUtility
      */
     public static function convert($separator, $date, $fromFormat, $toFormat)
     {
+        $dateFormat = null;
+        $month = null;
+        $day = null;
+        $year = null;
         /* Extract the three date fields. */
         $dateFields = explode($separator, $date);
 
@@ -160,6 +164,9 @@ class DateUtility
      */
     public static function validate($separator, $dateString, $format)
     {
+        $month = null;
+        $day = null;
+        $year = null;
         /* Make sure the string is numeric except for separators. */
         if (!ctype_digit((string) str_replace($separator, '', $dateString)))
         {
@@ -398,23 +405,10 @@ class DateUtility
      */
     public static function getFormattedDuration($seconds, $short = false, $round = false)
     {
-        $abbreviations = array(
-            'year'   => 'yr',
-            'week'   => 'wk',
-            'day'    => 'day',
-            'hour'   => 'hr',
-            'minute' => 'min',
-            'second' => 'sec'
-        );
+        $segments = [];
+        $abbreviations = ['year'   => 'yr', 'week'   => 'wk', 'day'    => 'day', 'hour'   => 'hr', 'minute' => 'min', 'second' => 'sec'];
     
-        $periods = array(
-            'year'   => (60 * 60 * 24 * 365),
-            'week'   => (60 * 60 * 24 * 7),
-            'day'    => (60 * 60 * 24),
-            'hour'   => (60 * 60),
-            'minute' => (60),
-            'second' => (1)
-        );
+        $periods = ['year'   => (60 * 60 * 24 * 365), 'week'   => (60 * 60 * 24 * 7), 'day'    => (60 * 60 * 24), 'hour'   => (60 * 60), 'minute' => (60), 'second' => (1)];
     
         $seconds = (float) $seconds;
         foreach ($periods as $period => $divisor)
@@ -724,10 +718,7 @@ class DateUtility
                 break;
         }
         
-        return array(
-            'startDate' => $startDate,
-            'endDate'   => $endDate
-        );
+        return ['startDate' => $startDate, 'endDate'   => $endDate];
     }
 
     private static function _removeLeadingZeros($array)

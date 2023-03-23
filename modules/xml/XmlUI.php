@@ -55,7 +55,7 @@ class XmlUI extends UserInterface
         $this->_moduleDirectory = 'xml';
         $this->_moduleName = 'xml';
         $this->_moduleTabText = '';
-        $this->_subTabs = array();
+        $this->_subTabs = [];
     }
 
 

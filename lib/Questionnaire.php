@@ -193,7 +193,7 @@ class Questionnaire
 
         // Put the data into a well-formatted php array
         for (
-            $rowIndex = 0, $questions = array(), $questionIndex = $questionID = -1;
+            $rowIndex = 0, $questions = [], $questionIndex = $questionID = -1;
             $rowIndex < count($rs);
             $rowIndex++
         )
@@ -201,32 +201,14 @@ class Questionnaire
             if ($questionID != ($newID = $rs[$rowIndex]['questionID']))
             {
                 $questionID = $newID;
-                $questions[++$questionIndex] = array(
-                    'questionID' => $newID,
-                    'questionType' => $rs[$rowIndex]['questionType'],
-                    'questionText' => $rs[$rowIndex]['questionText'],
-                    'minimumLength' => $rs[$rowIndex]['minimumLength'],
-                    'maximumLength' => $rs[$rowIndex]['maximumLength'],
-                    'questionPosition' => $rs[$rowIndex]['questionPosition'],
-                    'answers' => array()
-                );
+                $questions[++$questionIndex] = ['questionID' => $newID, 'questionType' => $rs[$rowIndex]['questionType'], 'questionText' => $rs[$rowIndex]['questionText'], 'minimumLength' => $rs[$rowIndex]['minimumLength'], 'maximumLength' => $rs[$rowIndex]['maximumLength'], 'questionPosition' => $rs[$rowIndex]['questionPosition'], 'answers' => []];
             }
             if ($questions[$questionIndex]['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_TEXT)
             {
                 continue;
             }
 
-            $questions[$questionIndex]['answers'][] = array(
-                'answerID' => $rs[$rowIndex]['answerID'],
-                'answerText' => $rs[$rowIndex]['answerText'],
-                'actionSource' => $rs[$rowIndex]['actionSource'],
-                'actionNotes' => $rs[$rowIndex]['actionNotes'],
-                'actionIsHot' => $rs[$rowIndex]['actionIsHot'],
-                'actionIsActive' => $rs[$rowIndex]['actionIsActive'],
-                'actionCanRelocate' => $rs[$rowIndex]['actionCanRelocate'],
-                'actionKeySkills' => $rs[$rowIndex]['actionKeySkills'],
-                'answerPosition' => $rs[$rowIndex]['answerPosition']
-            );
+            $questions[$questionIndex]['answers'][] = ['answerID' => $rs[$rowIndex]['answerID'], 'answerText' => $rs[$rowIndex]['answerText'], 'actionSource' => $rs[$rowIndex]['actionSource'], 'actionNotes' => $rs[$rowIndex]['actionNotes'], 'actionIsHot' => $rs[$rowIndex]['actionIsHot'], 'actionIsActive' => $rs[$rowIndex]['actionIsActive'], 'actionCanRelocate' => $rs[$rowIndex]['actionCanRelocate'], 'actionKeySkills' => $rs[$rowIndex]['actionKeySkills'], 'answerPosition' => $rs[$rowIndex]['answerPosition']];
         }
 
         return $questions;
@@ -498,7 +480,7 @@ class Questionnaire
 
         $rs = $this->_db->getAllAssoc($sql);
         $lastTitle = '';
-        $results = array();
+        $results = [];
         foreach ($rs as $row)
         {
             if (strcmp($lastTitle, $row[$id='questionnaireTitle']))
@@ -594,7 +576,7 @@ class Questionnaire
         $qData = $this->get($questionnaireID);
         if (is_array($qData) && !empty($qData))
         {
-            if (!count($questions = $this->getQuestions($qData['questionnaireID']))) return false;
+            if (!(is_array($questions = $this->getQuestions($qData['questionnaireID'])) || ($questions = $this->getQuestions($qData['questionnaireID'])) instanceof \Countable ? count($questions = $this->getQuestions($qData['questionnaireID'])) : 0)) return false;
 
             foreach ($questions as $question)
             {
@@ -604,7 +586,7 @@ class Questionnaire
                 {
                     case QUESTIONNAIRE_QUESTION_TYPE_CHECKBOX:
                         // Multiple answers possible
-                        $answerIDs = array();
+                        $answerIDs = [];
                         foreach ($question['answers'] as $answer)
                         {
                             $index = sprintf('questionnaire%dQuestion%dAnswer%d',
@@ -625,7 +607,7 @@ class Questionnaire
                             $qData['questionnaireID'],
                             $question['questionID']
                         );
-                        $answerIDs = array(isset($postData[$index]) ? intval($postData[$index]) : false);
+                        $answerIDs = [isset($postData[$index]) ? intval($postData[$index]) : false];
                         break;
                     case QUESTIONNAIRE_QUESTION_TYPE_TEXT:
                     default:
@@ -634,8 +616,8 @@ class Questionnaire
                             $qData['questionnaireID'],
                             $question['questionID']
                         );
-                        $answerText = substr(trim(isset($postData[$index]) ? $postData[$index] : ''), 0, 255);
-                        $answerIDs = array();
+                        $answerText = substr(trim($postData[$index] ?? ''), 0, 255);
+                        $answerIDs = [];
                         break;
                 }
 

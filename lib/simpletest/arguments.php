@@ -12,7 +12,7 @@
  *    @subpackage   UnitTester
  */
 class SimpleArguments {
-    private $all = array();
+    private $all = [];
 
     /**
      * Parses the command line arguments. The usual formats
@@ -27,8 +27,8 @@ class SimpleArguments {
      */
     function __construct($arguments) {
         array_shift($arguments);
-        while (count($arguments) > 0) {
-            list($key, $value) = $this->parseArgument($arguments);
+        while ((is_array($arguments) || $arguments instanceof \Countable ? count($arguments) : 0) > 0) {
+            [$key, $value] = $this->parseArgument($arguments);
             $this->assign($key, $value);
         }
     }
@@ -45,7 +45,7 @@ class SimpleArguments {
         if ($this->$key === false) {
             $this->all[$key] = $value;
         } elseif (! is_array($this->$key)) {
-            $this->all[$key] = array($this->$key, $value);
+            $this->all[$key] = [$this->$key, $value];
         } else {
             $this->all[$key][] = $value;
         }
@@ -62,13 +62,13 @@ class SimpleArguments {
     private function parseArgument(&$arguments) {
         $argument = array_shift($arguments);
         if (preg_match('/^-(\w)=(.+)$/', $argument, $matches)) {
-            return array($matches[1], $matches[2]);
+            return [$matches[1], $matches[2]];
         } elseif (preg_match('/^-(\w)$/', $argument, $matches)) {
-            return array($matches[1], $this->nextNonFlagElseTrue($arguments));
+            return [$matches[1], $this->nextNonFlagElseTrue($arguments)];
         } elseif (preg_match('/^--(\w+)=(.+)$/', $argument, $matches)) {
-            return array($matches[1], $matches[2]);
+            return [$matches[1], $matches[2]];
         } elseif (preg_match('/^--(\w+)$/', $argument, $matches)) {
-            return array($matches[1], $this->nextNonFlagElseTrue($arguments));
+            return [$matches[1], $this->nextNonFlagElseTrue($arguments)];
         }
     }
 
@@ -137,8 +137,8 @@ class SimpleArguments {
  */
 class SimpleHelp {
     private $overview;
-    private $flag_sets = array();
-    private $explanations = array();
+    private $flag_sets = [];
+    private $explanations = [];
 
     /**
      * Sets up the top level explanation for the program.
@@ -157,7 +157,7 @@ class SimpleHelp {
      * @param string $explanation       What that flag group does.
      */
     function explainFlag($flags, $explanation) {
-        $flags = is_array($flags) ? $flags : array($flags);
+        $flags = is_array($flags) ? $flags : [$flags];
         $this->flag_sets[] = $flags;
         $this->explanations[] = $explanation;
     }

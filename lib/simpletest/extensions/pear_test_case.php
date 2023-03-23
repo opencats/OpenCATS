@@ -9,10 +9,10 @@
     /**#@+
      * include SimpleTest files
      */
-    require_once(dirname(__FILE__) . '/../dumper.php');
-    require_once(dirname(__FILE__) . '/../compatibility.php');
-    require_once(dirname(__FILE__) . '/../test_case.php');
-    require_once(dirname(__FILE__) . '/../expectation.php');
+    require_once(__DIR__ . '/../dumper.php');
+    require_once(__DIR__ . '/../compatibility.php');
+    require_once(__DIR__ . '/../test_case.php');
+    require_once(__DIR__ . '/../expectation.php');
 	/**#@-*/
    
     /**
@@ -22,7 +22,7 @@
      *    @subpackage   Extensions
      */
     class PHPUnit_TestCase extends SimpleTestCase {
-        private $_loosely_typed;
+        private $_loosely_typed = false;
         
         /**
          *    Constructor. Sets the test name.
@@ -31,7 +31,6 @@
          */
         function __construct($label = false) {
             parent::__construct($label);
-            $this->_loosely_typed = false;
         }
         
         /**

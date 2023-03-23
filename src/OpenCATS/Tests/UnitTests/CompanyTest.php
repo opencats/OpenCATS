@@ -4,21 +4,21 @@ use \OpenCATS\Entity\Company;
     
 class CompanyTest extends TestCase
 {
-    const COMPANY_NAME = "Test Company Name";
-    const SITE_ID = -1;
-    const ADDRESS = "O'Higgins 123";
-    const CITY = "Colonia";
-    const STATE = "Maldonado";
-    const ZIP_CODE = "31337";
-    const PHONE_NUMBER_ONE = "+53 123 45678";
-    const PHONE_NUMBER_TWO = "+53 987 65432";
-    const FAX_NUMBER = '+53 123 65432';
-    const URL = 'http://www.testcompany.com/';
-    const KEY_TECHNOLOGIES = 'PHP and Javascript';
-    const IS_HOT = 1;
-    const NOTES = "This is a note";
-    const ENTERED_BY = 1; // USER ID
-    const OWNER = 1; // USER ID
+    public const COMPANY_NAME = "Test Company Name";
+    public const SITE_ID = -1;
+    public const ADDRESS = "O'Higgins 123";
+    public const CITY = "Colonia";
+    public const STATE = "Maldonado";
+    public const ZIP_CODE = "31337";
+    public const PHONE_NUMBER_ONE = "+53 123 45678";
+    public const PHONE_NUMBER_TWO = "+53 987 65432";
+    public const FAX_NUMBER = '+53 123 65432';
+    public const URL = 'http://www.testcompany.com/';
+    public const KEY_TECHNOLOGIES = 'PHP and Javascript';
+    public const IS_HOT = 1;
+    public const NOTES = "This is a note";
+    public const ENTERED_BY = 1; // USER ID
+    public const OWNER = 1; // USER ID
     
     function setUp()
     {

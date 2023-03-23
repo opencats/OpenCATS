@@ -1,7 +1,7 @@
 <?php
 // $Id: simpletest_test.php 1748 2008-04-14 01:50:41Z lastcraft $
-require_once(dirname(__FILE__) . '/../autorun.php');
-require_once(dirname(__FILE__) . '/../simpletest.php');
+require_once(__DIR__ . '/../autorun.php');
+require_once(__DIR__ . '/../simpletest.php');
 
 SimpleTest::ignore('ShouldNeverBeRunEither');
 
@@ -16,12 +16,9 @@ class ShouldNeverBeRunEither extends ShouldNeverBeRun { }
 class TestOfStackTrace extends UnitTestCase {
 
     function testCanFindAssertInTrace() {
-        $trace = new SimpleStackTrace(array('assert'));
+        $trace = new SimpleStackTrace(['assert']);
         $this->assertEqual(
-                $trace->traceMethod(array(array(
-                        'file' => '/my_test.php',
-                        'line' => 24,
-                        'function' => 'assertSomething'))),
+                $trace->traceMethod([['file' => '/my_test.php', 'line' => 24, 'function' => 'assertSomething']]),
                 ' at [/my_test.php line 24]');
     }
 }

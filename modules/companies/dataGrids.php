@@ -51,17 +51,7 @@ class CompaniesListByViewDataGrid extends CompaniesDataGrid
         $this->defaultSortBy = 'dateCreatedSort';
         $this->defaultSortDirection = 'DESC';
    
-        $this->_defaultColumns = array( 
-            array('name' => 'Attachments', 'width' => 10),
-            array('name' => 'Name', 'width' => 255),
-            array('name' => 'Jobs', 'width' => 40),
-            array('name' => 'City', 'width' => 90),
-            array('name' => 'State', 'width' => 50),
-            array('name' => 'Phone', 'width' => 85),
-            array('name' => 'Owner', 'width' => 65),
-            array('name' => 'Created', 'width' => 60),
-            array('name' => 'Modified', 'width' => 60),
-        );
+        $this->_defaultColumns = [['name' => 'Attachments', 'width' => 10], ['name' => 'Name', 'width' => 255], ['name' => 'Jobs', 'width' => 40], ['name' => 'City', 'width' => 90], ['name' => 'State', 'width' => 50], ['name' => 'Phone', 'width' => 85], ['name' => 'Owner', 'width' => 65], ['name' => 'Created', 'width' => 60], ['name' => 'Modified', 'width' => 60]];
    
         parent::__construct("companies:CompaniesListByViewDataGrid", 
                              $siteID, $parameters, $misc
@@ -108,17 +98,7 @@ class companiesSavedListByViewDataGrid extends CompaniesDataGrid
         $this->defaultSortBy = 'dateCreatedSort';
         $this->defaultSortDirection = 'DESC';
    
-        $this->_defaultColumns = array( 
-            array('name' => 'Attachments', 'width' => 10),
-            array('name' => 'Name', 'width' => 255),
-            array('name' => 'Jobs', 'width' => 40),
-            array('name' => 'City', 'width' => 90),
-            array('name' => 'State', 'width' => 50),
-            array('name' => 'Phone', 'width' => 85),
-            array('name' => 'Owner', 'width' => 65),
-            array('name' => 'Created', 'width' => 60),
-            array('name' => 'Modified', 'width' => 60),
-        );
+        $this->_defaultColumns = [['name' => 'Attachments', 'width' => 10], ['name' => 'Name', 'width' => 255], ['name' => 'Jobs', 'width' => 40], ['name' => 'City', 'width' => 90], ['name' => 'State', 'width' => 50], ['name' => 'Phone', 'width' => 85], ['name' => 'Owner', 'width' => 65], ['name' => 'Created', 'width' => 60], ['name' => 'Modified', 'width' => 60]];
    
         parent::__construct("companies:companiesSavedListByViewDataGrid", 
                              $siteID, $parameters, $misc

@@ -70,10 +70,7 @@ class CATSWebTestCase extends WebTestCase
     {
         $success = $this->assertPOST(
             $this->_indexURL . '?m=login&a=attemptLogin',
-            array(
-                'username' => TESTER_LOGIN,
-                'password' => TESTER_PASSWORD
-            ),
+            ['username' => TESTER_LOGIN, 'password' => TESTER_PASSWORD],
             'Login should succeed'
         );
 
@@ -133,17 +130,7 @@ class CATSWebTestCase extends WebTestCase
         /* Add the job order. */
         $this->assertPOST(
             $this->_indexURL . '?m=joborders&a=add',
-            array(
-                'postback'  => 'postback',
-                'title'     => $title,
-                'companyID'  => $companyID,
-                'contactID' => $contactID,
-                'type'      => $type,
-                'recruiter' => $recruiter,
-                'openings'  => $openings,
-                'city'      => $city,
-                'state'     => $state
-            ),
+            ['postback'  => 'postback', 'title'     => $title, 'companyID'  => $companyID, 'contactID' => $contactID, 'type'      => $type, 'recruiter' => $recruiter, 'openings'  => $openings, 'city'      => $city, 'state'     => $state],
             'Adding test job order should succeed'
         );
         if (!$this->runPageLoadAssertions(false))
@@ -170,11 +157,7 @@ class CATSWebTestCase extends WebTestCase
         /* Add the candidate. */
         $this->assertPOST(
             $this->_indexURL . '?m=candidates&a=add',
-            array(
-                'postback'  => 'postback',
-                'firstName' => $firstName,
-                'lastName'  => $lastName
-            ),
+            ['postback'  => 'postback', 'firstName' => $firstName, 'lastName'  => $lastName],
             'Adding test candidate should succeed'
         );
         if (!$this->runPageLoadAssertions(false))
@@ -200,10 +183,7 @@ class CATSWebTestCase extends WebTestCase
         $zip = false, $departmentsCSV = false)
     {
         /* Build POST data. */
-        $POSTData = array(
-            'postback' => 'postback',
-            'name'     => $name
-        );
+        $POSTData = ['postback' => 'postback', 'name'     => $name];
         if ($city !== false)
         {
             $POSTData['city'] = $city;
@@ -251,13 +231,7 @@ class CATSWebTestCase extends WebTestCase
         /* Add the contact. */
         $this->assertPOST(
             $this->_indexURL . '?m=contacts&a=add',
-            array(
-                'postback'  => 'postback',
-                'firstName' => $firstName,
-                'lastName'  => $lastName,
-                'companyID'  => $companyID,
-                'title'     => $title
-            ),
+            ['postback'  => 'postback', 'firstName' => $firstName, 'lastName'  => $lastName, 'companyID'  => $companyID, 'title'     => $title],
             'Adding test contact should succeed'
         );
         if (!$this->runPageLoadAssertions(false))
@@ -285,14 +259,7 @@ class CATSWebTestCase extends WebTestCase
         /* Add the candidate. */
         $this->assertPOST(
             $this->_indexURL . '?m=candidates&a=addActivityChangeStatus',
-            array(
-                'postback'       => 'postback',
-                'addActivity'    => 'on',
-                'candidateID'    => $candidateID,
-                'regardingID'    => $jobOrderID,
-                'activityTypeID' => $activityTypeID,
-                'activityNote'   => $activityNote
-            ),
+            ['postback'       => 'postback', 'addActivity'    => 'on', 'candidateID'    => $candidateID, 'regardingID'    => $jobOrderID, 'activityTypeID' => $activityTypeID, 'activityNote'   => $activityNote],
             'Adding pipeline activity note should succeed'
         );
         if (!$this->runPageLoadAssertions(false))
@@ -313,15 +280,7 @@ class CATSWebTestCase extends WebTestCase
         /* Add the user. */
         $this->assertPOST(
             $this->_indexURL . '?m=settings&a=addUser',
-            array(
-                'postback'       => 'postback',
-                'firstName'      => $firstName,
-                'lastName'       => $lastName,
-                'username'       => $username,
-                'accessLevel'    => $accessLevel,
-                'password'       => $password,
-                'retypePassword' => $password
-            ),
+            ['postback'       => 'postback', 'firstName'      => $firstName, 'lastName'       => $lastName, 'username'       => $username, 'accessLevel'    => $accessLevel, 'password'       => $password, 'retypePassword' => $password],
             'Adding test user should succeed'
         );
         if (!$this->runPageLoadAssertions(false))

@@ -100,7 +100,7 @@ class QueueProcessor
     {
         $db = DatabaseConnection::getInstance();
 
-        $completedTxt = date('c', ($completedTime ? $completedTime : time()));
+        $completedTxt = date('c', ($completedTime ?: time()));
 
         $sql = sprintf(
             "UPDATE
@@ -200,6 +200,7 @@ class QueueProcessor
     // FIXME: Document me.
     public static function getInstantiatedTask($taskPath)
     {
+        $curTask = null;
         // Figure out the name from the path
         $taskName = self::getTaskNameFromPath($taskPath);
 
@@ -528,7 +529,7 @@ class QueueProcessor
     public static function isTaskReady($schedule)
     {
         $valid = true;
-        list ($minute, $hour, $dayofmonth, $month, $dayofweek) = explode(' ', $schedule);
+        [$minute, $hour, $dayofmonth, $month, $dayofweek] = explode(' ', $schedule);
         if ($minute != '*')
         {
             $match = false;

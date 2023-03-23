@@ -282,7 +282,7 @@ class CommonErrors
     private static function isExceptionLoggingEnabled()
     {
         $db = DatabaseConnection::getInstance();
-        $tables = array();
+        $tables = [];
         $rs = $db->query('show tables');
         while ($tbl = mysqli_fetch_array($rs)) $tables[] = $tbl[0];
         if (in_array('exceptions', $tables)) return true;

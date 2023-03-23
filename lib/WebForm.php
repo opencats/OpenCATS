@@ -81,15 +81,15 @@ define('WF_CARD_TYPE_DISCOVER',        400);
  */
 class WebForm
 {
-    private $_fields;
-    private $_requiredFields;
-    private $_layout;
-    private $_defaultLayout;
-    private $_printedPostBack;
-    private $_tabIndex;
-    private $_verifyForm;
-    private $_printedHelpBox;
-    private $_relPath;
+    private $_fields = [];
+    private $_requiredFields = [];
+    private $_layout = '';
+    private $_defaultLayout = '';
+    private $_printedPostBack = 0;
+    private $_tabIndex = 1;
+    private $_verifyForm = 0;
+    private $_printedHelpBox = 0;
+    private $_relPath = '';
 
     /**
      * Populate private variables with default data.
@@ -97,15 +97,6 @@ class WebForm
      */
     public function __construct()
     {
-        $this->_fields = array();
-        $this->_requiredFields = array();
-        $this->_layout = '';
-        $this->_defaultLayout = '';
-        $this->_printedPostback = 0;
-        $this->_tabIndex = 1;
-        $this->_verifyForm = 0;
-        $this->_printedHelpBox = 0;
-        $this->_relPath = '';
     }
 
     /**
@@ -192,18 +183,10 @@ class WebForm
                 $maxlen = 10;
                 break;
             case WFT_CC_TYPE:
-                $defaultValue = array(
-                    array( 'id' => WF_CARD_NAME_VISA, 'caption' => WF_CARD_NAME_VISA, 'selected' => false ),
-                    array( 'id' => WF_CARD_NAME_MASTERCARD, 'caption' => WF_CARD_NAME_MASTERCARD, 'selected' => false ),
-                    array( 'id' => WF_CARD_NAME_AMERICANEXPRESS, 'caption' => WF_CARD_NAME_AMERICANEXPRESS, 'selected' => false ),
-                    array( 'id' => WF_CARD_NAME_DISCOVER, 'caption' => WF_CARD_NAME_DISCOVER, 'selected' => false )
-                );
+                $defaultValue = [['id' => WF_CARD_NAME_VISA, 'caption' => WF_CARD_NAME_VISA, 'selected' => false], ['id' => WF_CARD_NAME_MASTERCARD, 'caption' => WF_CARD_NAME_MASTERCARD, 'selected' => false], ['id' => WF_CARD_NAME_AMERICANEXPRESS, 'caption' => WF_CARD_NAME_AMERICANEXPRESS, 'selected' => false], ['id' => WF_CARD_NAME_DISCOVER, 'caption' => WF_CARD_NAME_DISCOVER, 'selected' => false]];
                 break;
             case WFT_BOOLEAN:
-                $defaultValue = array(
-                    array( 'id' => 'true', 'caption' => 'True', 'selected' => false ),
-                    array( 'id' => 'false', 'caption' => 'False', 'selected' => false )
-                );
+                $defaultValue = [['id' => 'true', 'caption' => 'True', 'selected' => false], ['id' => 'false', 'caption' => 'False', 'selected' => false]];
                 $minlen = 0;
                 $maxlen = 10;
                 break;
@@ -216,22 +199,7 @@ class WebForm
                 $maxlen = 6;
                 break;
         }
-        $this->_fields[] = array(
-            'id' => $id,
-            'caption' => $caption,
-            'size' => $size,
-            'type' => $type,
-            'required' => $required,
-            'defaultValue' => $defaultValue,
-            'validatedData' => '',
-            'regex_test' => $regex_test,
-            'regex_fail' => $regex_fail,
-            'length' => array( $minlen, $maxlen ),
-            'helpBody' => $helpBody,
-            'html' => array(),
-            'helpRules' => $helpRules,
-            'tabIndex' => $this->_tabIndex++
-        );
+        $this->_fields[] = ['id' => $id, 'caption' => $caption, 'size' => $size, 'type' => $type, 'required' => $required, 'defaultValue' => $defaultValue, 'validatedData' => '', 'regex_test' => $regex_test, 'regex_fail' => $regex_fail, 'length' => [$minlen, $maxlen], 'helpBody' => $helpBody, 'html' => [], 'helpRules' => $helpRules, 'tabIndex' => $this->_tabIndex++];
         $this->_defaultLayout .= sprintf('[%s][NL]', $id);
     }
 
@@ -281,13 +249,13 @@ class WebForm
      */
     public function getValidatedFields()
     {
-        $retVal = array();
+        $retVal = [];
         $errors = $this->validateFields();
         foreach($this->_fields as $field)
         {
             $retVal[$field['id']] = $field['validatedData'];
         }
-        return array( $retVal, $errors );
+        return [$retVal, $errors];
     }
 
     /**
@@ -299,15 +267,17 @@ class WebForm
      */
     private function validateFields()
     {
-        $errors = array();
+        $monthValue = null;
+        $yearValue = null;
+        $errors = [];
         for ($x=0; $x < count($this->_fields); $x++)
         {
             $field = $this->_fields[$x];
             if ($field['type'] == WFT_CC_EXPIRATION)
             {
                 // one or both fields left blank
-                if (strlen(trim($this->getPostValue($field['id'] . 'Month'))) == 0 ||
-                    strlen(trim($this->getPostValue($field['id'] . 'Year'))) == 0)
+                if (strlen(trim(static::getPostValue($field['id'] . 'Month'))) == 0 ||
+                    strlen(trim(static::getPostValue($field['id'] . 'Year'))) == 0)
                 {
                     if ($field['required'])
                         $errors[] = 'You must select an card expiration month and year';
@@ -316,8 +286,8 @@ class WebForm
                 }
                 else
                 {
-                    $monthValue = intval($this->getPostValue($field['id'] . 'Month'));
-                    $yearValue = intval($this->getPostValue($field['id'] . 'Year'));
+                    $monthValue = intval(static::getPostValue($field['id'] . 'Month'));
+                    $yearValue = intval(static::getPostValue($field['id'] . 'Year'));
                     $curYear = intval(date('Y'));
                     if ($yearValue < $curYear)
                         $errors[] = 'The expiration year is in the past';
@@ -325,7 +295,7 @@ class WebForm
                         $errors[] = 'The expiration month is not valid';
                 }
             }
-            else if($field['required'] && !strlen(trim($this->getPostValue($field['id']))))
+            else if($field['required'] && !strlen(trim(static::getPostValue($field['id']))))
             {
                 if (strlen($field['caption']) > 0)
                     $errors[] = $field['caption'] . ' is a required field';
@@ -335,15 +305,15 @@ class WebForm
             }
             else if($field['type'] == WFT_CURRENCY)
             {
-                $value = trim($this->getPostValue($field['id']));
+                $value = trim(static::getPostValue($field['id']));
                 $value = str_replace('$', '', $value);
                 $cur = floatval($value);
                 $value = strval($cur);
             }
             else if($field['type'] == WFT_ANTI_SPAM_IMAGE)
             {
-                $antiSpamInput = $this->getPostValue($field['id']);
-                $wordVerifyID = $this->getPostValue('wordVerifyID');
+                $antiSpamInput = static::getPostValue($field['id']);
+                $wordVerifyID = static::getPostValue('wordVerifyID');
                 $graphs = new Graphs();
                 $wordVerifyText = $graphs->getVerificationImageText($wordVerifyID);
                 if (strtoupper($antiSpamInput) != $wordVerifyText || $antiSpamInput == '')
@@ -359,7 +329,7 @@ class WebForm
             }
             else if($field['type'] == WFT_SELECT || $field['type'] == WFT_CC_TYPE || $field['type'] == WFT_BOOLEAN)
             {
-                $value = $this->getPostValue($field['id']);
+                $value = static::getPostValue($field['id']);
                 if (!strcmp($value, 'noset'))
                 {
                     $errors[] = $field['caption'] . ': You must select an option';
@@ -369,7 +339,7 @@ class WebForm
             {
                 $value = '';
                 // Clean credit card number input
-                $cardNumber = preg_replace('/[^0-9]/', '', $this->getPostValue($field['id']));
+                $cardNumber = preg_replace('/[^0-9]/', '', static::getPostValue($field['id']));
 
                 if ($field['required'] == false && !strlen($cardNumber))
                 {
@@ -404,7 +374,7 @@ class WebForm
             }
             else
             {
-                $value = trim($this->getPostValue($field['id']));
+                $value = trim(static::getPostValue($field['id']));
 
                 if (!($field['required'] == false && !strlen($value)))
                 {
@@ -431,7 +401,7 @@ class WebForm
                                 $field['caption'], implode(' and ', $field['length']));
                     }
                 }
-                $value = str_replace(array("\r","\n","\t","\f"), '', strip_tags($value));
+                $value = str_replace(["\r", "\n", "\t", "\f"], '', strip_tags($value));
             }
 
             // Set the validated (form returned) data
@@ -467,7 +437,7 @@ class WebForm
             $form = $this->_defaultLayout;
 
         // if this is a post back where the fields have been completed and need to be validated/populated
-        if (!strcmp($this->getPostValue('webFormPostBack'), '1'))
+        if (!strcmp(static::getPostValue('webFormPostBack'), '1'))
         {
             // the fields have received input
             $this->validateFields();
@@ -679,8 +649,9 @@ class WebForm
      */
     public function getFieldInput($field, $options = '')
     {
+        $input = null;
         $onblur = $onmouseover = $onmouseout = $onkeyup = $onclick = '';
-        if (count($field['html']) > 0)
+        if ((is_array($field['html']) || $field['html'] instanceof \Countable ? count($field['html']) : 0) > 0)
         {
             if (isset($field['html']['onblur'])) $onblur = $field['html']['onblur'] . ' ';
             if (isset($field['html']['onmouseover'])) $onmouseover = $field['html']['onmouseover'] . ' ';

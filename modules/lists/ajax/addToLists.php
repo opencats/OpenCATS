@@ -33,6 +33,7 @@ include_once(LEGACY_ROOT . '/lib/SavedLists.php');
 
 function isRequiredValueValid($value)
 {
+    $allowZero = null;
     $value = (string) $value;
 
     /* Return false if the key is empty, or if the key is zero and
@@ -123,7 +124,7 @@ $savedLists = new SavedLists($siteID);
 /* Write changes. */
 foreach ($listsToAdd as $list)
 {
-    $itemsToAddTemp = array();
+    $itemsToAddTemp = [];
     foreach ($itemsToAdd as $item)
     {
         $itemsToAddTemp[] = $item;
@@ -131,7 +132,7 @@ foreach ($listsToAdd as $list)
         if (count($itemsToAddTemp) > 200)
         {
             $savedLists->addEntryMany($list, $dataItemType, $itemsToAddTemp);
-            $itemsToAddTemp = array();
+            $itemsToAddTemp = [];
         }
     }
     if (count($itemsToAddTemp) > 0)

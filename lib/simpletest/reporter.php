@@ -9,7 +9,7 @@
 /**#@+
  *  include other SimpleTest class files
  */
-require_once(dirname(__FILE__) . '/scorer.php');
+require_once(__DIR__ . '/scorer.php');
 //require_once(dirname(__FILE__) . '/arguments.php');
 /**#@-*/
 
@@ -40,7 +40,7 @@ class HtmlReporter extends SimpleReporter {
      *    @access public
      */
     function paintHeader($test_name) {
-        $this->sendNoCacheHeaders();
+        static::sendNoCacheHeaders();
         print "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
         print "<html>\n<head>\n<title>$test_name</title>\n";
         print "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=" .

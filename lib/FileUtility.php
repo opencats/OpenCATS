@@ -113,7 +113,7 @@ class FileUtility
      */
     public static function recursivelyRemoveDirectory($directoryName)
     {
-        $exceptions = array('.', '..');
+        $exceptions = ['.', '..'];
 
         $directory = @opendir($directoryName);
         if (!$directory)
@@ -189,7 +189,7 @@ class FileUtility
 /*
         if (!preg_match("/(?i)\.(pdf|docx?|rtf|odt?g?|txt|wpd|jpe?g|png|csv|xlsx?|ppt|msg|heic|tiff?|html?|bmp|wps|xps)$/i", $fileExtension))
 */
-        $GoodFileExtensions = array('bmp', 'csv', 'doc', 'docx', 'heic', 'html', 'jpeg', 'jpg', 'msg', 'odg', 'odt', 'pages', 'pdf', 'png', 'ppt', 'pptx', 'rtf', 'tiff', 'wpd', 'wps', 'xls', 'xlsx', 'xps');
+        $GoodFileExtensions = ['bmp', 'csv', 'doc', 'docx', 'heic', 'html', 'jpeg', 'jpg', 'msg', 'odg', 'odt', 'pages', 'pdf', 'png', 'ppt', 'pptx', 'rtf', 'tiff', 'wpd', 'wps', 'xls', 'xlsx', 'xps'];
         if (!in_array($fileExtension, $GoodFileExtensions))
         {
             $filename .= ".txt";
@@ -243,7 +243,7 @@ class FileUtility
          */
         do
         {
-            $md5 = md5(rand() . time() . $extraData);
+            $md5 = md5(random_int(0, mt_getrandmax()) . time() . $extraData);
         }
         while (file_exists($basePath . $md5));
 
@@ -258,7 +258,7 @@ class FileUtility
      */
     public static function makeRandomFilename($padding = '')
     {
-        return md5($padding . time() . mt_rand()) . mt_rand(0, 9);
+        return md5($padding . time() . random_int(0, mt_getrandmax())) . random_int(0, 9);
     }
 
     /**
@@ -431,7 +431,7 @@ class FileUtility
      */
     public static function sizeToHuman($size, $round = 2, $skipUnits = 0)
     {
-        $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+        $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
         $unitIndex = 0;
 
         /* Keep dividing the file size by 1024 as long as the number is >0.

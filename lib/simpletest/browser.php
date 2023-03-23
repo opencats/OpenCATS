@@ -9,17 +9,17 @@
 /**#@+
  *  include other SimpleTest class files
  */
-require_once(dirname(__FILE__) . '/simpletest.php');
-require_once(dirname(__FILE__) . '/http.php');
-require_once(dirname(__FILE__) . '/encoding.php');
-require_once(dirname(__FILE__) . '/page.php');
-require_once(dirname(__FILE__) . '/php_parser.php');
-require_once(dirname(__FILE__) . '/tidy_parser.php');
-require_once(dirname(__FILE__) . '/selector.php');
-require_once(dirname(__FILE__) . '/frames.php');
-require_once(dirname(__FILE__) . '/user_agent.php');
+require_once(__DIR__ . '/simpletest.php');
+require_once(__DIR__ . '/http.php');
+require_once(__DIR__ . '/encoding.php');
+require_once(__DIR__ . '/page.php');
+require_once(__DIR__ . '/php_parser.php');
+require_once(__DIR__ . '/tidy_parser.php');
+require_once(__DIR__ . '/selector.php');
+require_once(__DIR__ . '/frames.php');
+require_once(__DIR__ . '/user_agent.php');
 if (! SimpleTest::getParsers()) {
-    SimpleTest::setParsers(array(new SimpleTidyPageBuilder(), new SimplePHPPageBuilder()));
+    SimpleTest::setParsers([new SimpleTidyPageBuilder(), new SimplePHPPageBuilder()]);
     //SimpleTest::setParsers(array(new SimplePHPPageBuilder()));
 }
 /**#@-*/
@@ -34,7 +34,7 @@ if (! defined('DEFAULT_MAX_NESTED_FRAMES')) {
  *    @subpackage WebTester
  */
 class SimpleBrowserHistory {
-    private $sequence = array();
+    private $sequence = [];
     private $position = -1;
 
     /**
@@ -74,7 +74,7 @@ class SimpleBrowserHistory {
         $this->dropFuture();
         array_push(
                 $this->sequence,
-                array('url' => $url, 'parameters' => $parameters));
+                ['url' => $url, 'parameters' => $parameters]);
         $this->position++;
     }
 
@@ -158,8 +158,8 @@ class SimpleBrowser {
     private $user_agent;
     private $page;
     private $history;
-    private $ignore_frames;
-    private $maximum_nested_frames;
+    private $ignore_frames = false;
+    private $maximum_nested_frames = DEFAULT_MAX_NESTED_FRAMES;
     private $parser;
 
     /**
@@ -177,8 +177,6 @@ class SimpleBrowser {
                 SimpleTest::getDefaultProxyPassword());
         $this->page = new SimplePage();
         $this->history = $this->createHistory();
-        $this->ignore_frames = false;
-        $this->maximum_nested_frames = DEFAULT_MAX_NESTED_FRAMES;
     }
 
     /**
@@ -320,7 +318,7 @@ class SimpleBrowser {
         if (! $frame || ! $this->page->hasFrames() || (strtolower($frame) == '_top')) {
             return $this->loadPage($url, $parameters);
         }
-        return $this->loadFrame(array($frame), $url, $parameters);
+        return $this->loadFrame([$frame], $url, $parameters);
     }
 
     /**

@@ -7,7 +7,7 @@
  *
  */
 
-require_once dirname(__FILE__)."/Plot.class.php";
+require_once __DIR__."/Plot.class.php";
 
 /**
  * BarPlot
@@ -86,8 +86,8 @@ class awBarPlotPipeline extends awPlot implements awLegendable {
 	 */
 	protected $barBackground;
 
-	protected $onRowNumber;
-	public $arrayBarBackground;
+	protected $onRowNumber = 0;
+	public $arrayBarBackground = 0;
 	public $maxValue;
 	public $drawPercent;
 
@@ -104,8 +104,6 @@ class awBarPlotPipeline extends awPlot implements awLegendable {
 		parent::__construct();
 
 		$this->label = new awLabel;
-		$this->onRowNumber = 0;
-		$this->arrayBarBackground = 0;
 
 		$this->barPadding = new awSide(0.08, 0.08, 0, 0);
 		$this->barShadow = new awShadow(awShadow::RIGHT_TOP);
@@ -237,7 +235,7 @@ class awBarPlotPipeline extends awPlot implements awLegendable {
 	public function drawComponent(awDrawer $drawer, $x1, $y1, $x2, $y2, $aliasing) {
 
     	$datayReal = $this->datay;
-    	$dataySkewed = array();
+    	$dataySkewed = [];
 
     	for($index = 0; $index < count($this->datay); $index++)
     	{
@@ -267,8 +265,8 @@ class awBarPlotPipeline extends awPlot implements awLegendable {
     	}
 
 		$count = count($this->datay);
-		$max = $this->getRealYMax(NULL);
-		$min = $this->getRealYMin(NULL);
+		$max = $this->getRealYMax();
+		$min = $this->getRealYMin();
 
 
 		// Find zero for bars

@@ -12,7 +12,7 @@ error_reporting(E_ERROR);
 /* This is probably getting called from cron, so we have to figure out
  * where we are and where CATS is.
  */
-$CATSHome = realpath(dirname(__FILE__) . '/../');
+$CATSHome = realpath(__DIR__ . '/../');
 include(realpath($CATSHome . '/config.php'));
 
 if (php_sapi_name() == 'cli')
@@ -55,7 +55,7 @@ assert_options(ASSERT_WARNING, 0);
 /* Execute the Sphinx query. */
 $sphinx = new SphinxClient();
 $sphinx->SetServer(SPHINX_HOST, SPHINX_PORT);
-$sphinx->SetWeights(array(0, 100, 0, 0, 50));
+$sphinx->SetWeights([0, 100, 0, 0, 50]);
 $sphinx->SetMatchMode(SPH_MATCH_BOOLEAN);
 $sphinx->SetLimits(0, 10);
 $sphinx->SetSortMode(SPH_SORT_TIME_SEGMENTS, 'date_added');

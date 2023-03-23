@@ -38,7 +38,7 @@
 class Template
 {
     private $_templateFile;
-    private $_filters = array();
+    private $_filters = [];
 
     /**
      * Prints $string with all html special characters converted to &codes;.

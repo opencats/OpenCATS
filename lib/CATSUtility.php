@@ -154,7 +154,7 @@ class CATSUtility
             return false;
         }
 
-        $newconfig = array();
+        $newconfig = [];
         foreach ($config as $index => $line)
         {
             if (strpos($line, 'define(\'' . $name . '\'') === 0)
@@ -187,7 +187,7 @@ class CATSUtility
      * @param array GET variable separator.
      * @return string Filtered GET query string.
      */
-    public static function getFilteredGET($remove = array(), $separator = '&')
+    public static function getFilteredGET($remove = [], $separator = '&')
     {
         $getVars = $_GET;
 
@@ -199,7 +199,7 @@ class CATSUtility
             }
         }
 
-        $newParameters = array();
+        $newParameters = [];
         foreach ($getVars as $name => $value)
         {
             $newParameters[] = urlencode($name) . '=' . urlencode($value);

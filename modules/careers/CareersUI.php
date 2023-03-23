@@ -70,6 +70,19 @@ class CareersUI extends UserInterface
 
     private function careersPage()
     {
+        $firstName = null;
+        $lastName = null;
+        $email1 = null;
+        $phoneHome = null;
+        $phoneCell = null;
+        $phoneWork = null;
+        $address = null;
+        $city = null;
+        $state = null;
+        $zip = null;
+        $keySkills = null;
+        $currentEmployer = null;
+        $bestTimeToCall = null;
         global $careerPage;
 
         /* Get information on what site we are in, our environment, etc. */
@@ -120,12 +133,12 @@ class CareersUI extends UserInterface
         $useCookie = true;
 
         // Get the get or post page request
-        $p = isset($_GET['p']) ? $_GET['p'] : '';
-        $p = isset($_POST['p']) ? $_POST['p'] : $p;
+        $p = $_GET['p'] ?? '';
+        $p = $_POST['p'] ?? $p;
 
         // Get the get or post sub-page request
-        $pa = isset($_GET['pa']) ? $_GET['pa'] : '';
-        $pa = isset($_POST['pa']) ? $_POST['pa'] : $pa;
+        $pa = $_GET['pa'] ?? '';
+        $pa = $_POST['pa'] ?? $pa;
 
         $isRegistrationEnabled = $careerPortalSettingsRS['candidateRegistration'];
 
@@ -250,7 +263,7 @@ class CareersUI extends UserInterface
                 '<form name="updateForm" id="updateForm" enctype="multipart/form-data" method="post" '
                 . 'action="%s?m=careers&p=onRegisteredCandidateProfile&attachmentID=%d">',
                 CATSUtility::getIndexName(),
-                $latestAttachment ? $latestAttachment : -1
+                $latestAttachment ?: -1
             ) . $content . '</form>'
             . (isset($_GET[$id='isPostBack']) && !strcmp($_GET[$id], 'yes') ? '<script language="javascript" type="text/javascript">setTimeout(\'alert("Your changes have been saved!")\',25);</script>' : '');
 
@@ -268,10 +281,8 @@ class CareersUI extends UserInterface
             }
 
             // Get the fields (if included in the template) to update
-            $fields = array('firstName', 'lastName', 'email1', 'phoneHome', 'phoneCell', 'phoneWork', 'address',
-                'city', 'state', 'zip', 'keySkills', 'currentEmployer', 'bestTimeToCall'
-            );
-            $fieldValues = array();
+            $fields = ['firstName', 'lastName', 'email1', 'phoneHome', 'phoneCell', 'phoneWork', 'address', 'city', 'state', 'zip', 'keySkills', 'currentEmployer', 'bestTimeToCall'];
+            $fieldValues = [];
 
             foreach ($fields as $field)
             {
@@ -364,7 +375,7 @@ class CareersUI extends UserInterface
             $jobOrderData = $jobOrders->get($jobID);
             $js = '';
 
-            $content = str_replace(array('<applyContent>','</applyContent>'), '', $content);
+            $content = str_replace(['<applyContent>', '</applyContent>'], '', $content);
 
             $content = str_replace('<input-submit>', '<input type="submit" id="submitButton" name="submitButton" value="Continue to Application" />', $content);
             $content = str_replace('<input-new>', '<input type="radio" id="isNewYes" name="isNew" value="yes" onchange="isCandidateRegisteredChange();" checked />', $content);
@@ -379,7 +390,7 @@ class CareersUI extends UserInterface
                 $content
             );
 
-            if (count($fields = $this->getCookieFields($siteID)))
+            if (is_array($fields = $this->getCookieFields($siteID)) || ($fields = $this->getCookieFields($siteID)) instanceof \Countable ? count($fields = $this->getCookieFields($siteID)) : 0)
             {
                 $js = '<script language="javascript" type="text/javascript">' . "\n"
                     . 'function populateSavedFields() { var obj; obj = document.getElementById(\'isNewNo\'); '
@@ -524,7 +535,7 @@ class CareersUI extends UserInterface
                     if (LicenseUtility::isParsingEnabled())
                     {
                         $pu = new ParseUtility();
-                        $fileName = isset($uploadFile) ? $uploadFile : '';
+                        $fileName = $uploadFile ?? '';
                         $res = $pu->documentParse($fileName, strlen($resumeContents), '', $resumeContents);
                         if (is_array($res) && !empty($res))
                         {
@@ -546,7 +557,7 @@ class CareersUI extends UserInterface
 
             // Force integer
             // FIXME: Input validation, and use isRequiredIDValid() to check for / force integer.
-            $jobID = intval(isset($_GET['ID']) ? $_GET['ID'] : $_POST['ID']);
+            $jobID = intval($_GET['ID'] ?? $_POST['ID']);
 
             $jobOrderData = $jobOrders->get($jobID);
             if (!isset($jobOrderData['public']) || $jobOrderData['public'] == 0)
@@ -891,7 +902,7 @@ class CareersUI extends UserInterface
                     $content = $template['Content - Candidate Registration'];
                     $js = '';
 
-                    $content = str_replace(array('<registeredLoginTitle>', '</registeredLoginTitle>'), '', $content);
+                    $content = str_replace(['<registeredLoginTitle>', '</registeredLoginTitle>'], '', $content);
                     $content = str_replace('<applyContent>', '<div style="display: none;">', $content);
                     $content = str_replace('</applyContent>', '</div>', $content);
                     $content = str_replace('<input-submit>', '<input type="submit" id="submitButton" name="submitButton" value="Login" />', $content);
@@ -920,14 +931,14 @@ class CareersUI extends UserInterface
                 {
                     $template['Content'] = str_replace('<registeredLoginTitle>', '<div style="display: none;">', $template['Content']);
                     $template['Content'] = str_replace('</registeredLoginTitle>', '</div>', $template['Content']);
-                    $template['Content'] = str_replace(array('<registeredCandidate>', '<registeredLogin>'), '', $template['Content']);
+                    $template['Content'] = str_replace(['<registeredCandidate>', '<registeredLogin>'], '', $template['Content']);
                 }
             }
             else
             {
                 $template['Content'] = str_replace('<registeredLoginTitle>', '<div style="display: none;">', $template['Content']);
                 $template['Content'] = str_replace('</registeredLoginTitle>', '</div>', $template['Content']);
-                $template['Content'] = str_replace(array('<registeredCandidate>', '<registeredLogin>'), '', $template['Content']);
+                $template['Content'] = str_replace(['<registeredCandidate>', '<registeredLogin>'], '', $template['Content']);
             }
 
         }
@@ -1263,9 +1274,7 @@ class CareersUI extends UserInterface
          * Save basic information in a cookie in case the site is using registration to
          * process repeated postings, etc.
          */
-        $fields = array('firstName', 'lastName', 'email', 'address', 'city', 'state', 'zip', 'phone',
-            'phoneHome', 'phoneCell'
-        );
+        $fields = ['firstName', 'lastName', 'email', 'address', 'city', 'state', 'zip', 'phone', 'phoneHome', 'phoneCell'];
         $storedVal = '';
         foreach ($fields as $field)
         {
@@ -1408,7 +1417,7 @@ class CareersUI extends UserInterface
 
         /* Is the candidate already in the pipeline for this job order? */
         $rs = $pipelines->get($candidateID, $jobOrderID);
-        if (count($rs) == 0)
+        if ((is_array($rs) || $rs instanceof \Countable ? count($rs) : 0) == 0)
         {
             /* Attempt to add the candidate to the pipeline. */
             if (!$pipelines->add($candidateID, $jobOrderID))
@@ -1488,23 +1497,8 @@ class CareersUI extends UserInterface
 
         /* Replace e-mail template variables. */
         /* E-Mail #1 - to candidate */
-        $stringsToFind = array(
-            '%CANDFIRSTNAME%',
-            '%CANDFULLNAME%',
-            '%JBODOWNER%',
-            '%JBODTITLE%',
-            '%JBODCLIENT%'
-        );
-        $replacementStrings = array(
-            $firstName,
-            $firstName . ' ' . $lastName,
-            $jobOrderData['ownerFullName'],
-            $jobOrderData['title'],
-            $jobOrderData['companyName']
-
-            //'<a href="http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=candidates&amp;a=show&amp;candidateID=' . $candidateID . '">'.
-              //  'http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=candidates&amp;a=show&amp;candidateID=' . $candidateID . '</a>'
-        );
+        $stringsToFind = ['%CANDFIRSTNAME%', '%CANDFULLNAME%', '%JBODOWNER%', '%JBODTITLE%', '%JBODCLIENT%'];
+        $replacementStrings = [$firstName, $firstName . ' ' . $lastName, $jobOrderData['ownerFullName'], $jobOrderData['title'], $jobOrderData['companyName']];
         $candidatesEmailTemplate = str_replace(
             $stringsToFind,
             $replacementStrings,
@@ -1548,30 +1542,22 @@ class CareersUI extends UserInterface
         $uri = str_replace('/careers', '', $uri);
 
         /* Replace e-mail template variables. */
-        $stringsToFind = array(
+        $stringsToFind = [
             '%CANDFIRSTNAME%',
             '%CANDFULLNAME%',
             '%JBODOWNER%',
-            '%CANDOWNER%',     // Because the candidate was just added, we assume
-            '%JBODTITLE%',     // the candidate owner = job order owner.
+            '%CANDOWNER%',
+            // Because the candidate was just added, we assume
+            '%JBODTITLE%',
+            // the candidate owner = job order owner.
             '%JBODCLIENT%',
             '%CANDCATSURL%',
             '%JBODID%',
-            '%JBODCATSURL%'
-        );
-        $replacementStrings = array(
-            $firstName,
-            $firstName . ' ' . $lastName,
-            $jobOrderData['ownerFullName'],
-            $jobOrderData['ownerFullName'],
-            $jobOrderData['title'],
-            $jobOrderData['companyName'],
-            '<a href="http://' . $_SERVER['HTTP_HOST'] . substr($uri, 0, strpos($uri, '?')) . '?m=candidates&amp;a=show&amp;candidateID=' . $candidateID . '">'.
-                'http://' . $_SERVER['HTTP_HOST'] . substr($uri, 0, strpos($uri, '?')) . '?m=candidates&amp;a=show&amp;candidateID=' . $candidateID . '</a>',
-            $jobOrderData['jobOrderID'],
-            '<a href="http://' . $_SERVER['HTTP_HOST'] . substr($uri, 0, strpos($uri, '?')) . '?m=joborders&amp;a=show&amp;jobOrderID=' . $jobOrderData['jobOrderID'] . '">'.
-                'http://' . $_SERVER['HTTP_HOST'] . substr($uri, 0, strpos($uri, '?')) . '?m=joborders&amp;a=show&amp;jobOrderID=' . $jobOrderData['jobOrderID'] . '</a>',
-        );
+            '%JBODCATSURL%',
+        ];
+        $replacementStrings = [$firstName, $firstName . ' ' . $lastName, $jobOrderData['ownerFullName'], $jobOrderData['ownerFullName'], $jobOrderData['title'], $jobOrderData['companyName'], '<a href="http://' . $_SERVER['HTTP_HOST'] . substr($uri, 0, strpos($uri, '?')) . '?m=candidates&amp;a=show&amp;candidateID=' . $candidateID . '">'.
+            'http://' . $_SERVER['HTTP_HOST'] . substr($uri, 0, strpos($uri, '?')) . '?m=candidates&amp;a=show&amp;candidateID=' . $candidateID . '</a>', $jobOrderData['jobOrderID'], '<a href="http://' . $_SERVER['HTTP_HOST'] . substr($uri, 0, strpos($uri, '?')) . '?m=joborders&amp;a=show&amp;jobOrderID=' . $jobOrderData['jobOrderID'] . '">'.
+            'http://' . $_SERVER['HTTP_HOST'] . substr($uri, 0, strpos($uri, '?')) . '?m=joborders&amp;a=show&amp;jobOrderID=' . $jobOrderData['jobOrderID'] . '</a>'];
         $candidatesEmailTemplate = str_replace(
             $stringsToFind,
             $replacementStrings,
@@ -1602,7 +1588,7 @@ class CareersUI extends UserInterface
         }
     }
 
-    public function capturePostData($siteID, $ignore = array())
+    public function capturePostData($siteID, $ignore = [])
     {
         $hiddenTags = '';
 
@@ -1632,13 +1618,13 @@ class CareersUI extends UserInterface
         return $this->ProcessCandidateRegistration($siteID, $template, $fields, true) ? true : false;
     }
 
-    private function ProcessCandidateRegistration($siteID, $template, $cookieFields = array(), $ignorePost = false)
+    private function ProcessCandidateRegistration($siteID, $template, $cookieFields = [], $ignorePost = false)
     {
         $db = DatabaseConnection::getInstance();
 
         $numMatches = preg_match_all('/\<input\-([A-Za-z0-9]+)\>/', $template, $matches);
         if (!$numMatches) return false;
-        $fields = array();
+        $fields = [];
 
         foreach ($matches[1] as $tag)
         {
@@ -1741,14 +1727,14 @@ class CareersUI extends UserInterface
 
     private function getCookieFields($siteID)
     {
-        $fields = array();
+        $fields = [];
 
         // Check if there's a cookie to prefill the fields with
         if (isset($_COOKIE[$id=$this->getCareerPortalCookieName($siteID)]))
         {
             if (preg_match_all('/"([^"]+)"="([^"]*)"/', $_COOKIE[$id], $matches) > 0)
             {
-                for ($i = 0; $i < count($matches[1]); $i++)
+                for ($i = 0; $i < (is_array($matches[1]) || $matches[1] instanceof \Countable ? count($matches[1]) : 0); $i++)
                 {
                     $fields[urldecode($matches[1][$i])] = urldecode($matches[2][$i]);
                     // Some fields have multiple meanings:
@@ -1781,7 +1767,7 @@ class CareersUI extends UserInterface
                 . '</h3></div>',
                 CATSUtility::getIndexName(),
                 $_SERVER['QUERY_STRING'] != '' ? '?' . $_SERVER['QUERY_STRING'] : '',
-                $this->capturePostData($siteID, array('pa')),
+                $this->capturePostData($siteID, ['pa']),
                 $candidate['firstName'],
                 $candidate['firstName']
             );

@@ -224,7 +224,7 @@ class DataGrid
      *
      */
 
-     private $_rs;
+     private $_rs = false;
 
      protected $_parameters;
      protected $_instanceName;
@@ -369,8 +369,6 @@ class DataGrid
      */
      public function __construct($instanceName, $parameters, $misc = 0)
      {
-         $this->_rs = false;
-
          $this->_instanceName = $instanceName;
          
          if ($misc != 0)
@@ -737,7 +735,7 @@ class DataGrid
             "\n"
         );
 
-        foreach (array('15', '30', '50', '100') as $maxResults)
+        foreach (['15', '30', '50', '100'] as $maxResults)
         {
             if ($this->_parameters['maxResults'] == $maxResults)
             {
@@ -913,11 +911,11 @@ class DataGrid
         }
         else
         {
-            $this->_currentColumns = array();
+            $this->_currentColumns = [];
         }
 
         /* Do we need to reset the columns?  This has to be first. */
-        if ($this->_currentColumns == array() || (isset($this->_parameters['resetColumns']) && $this->_parameters['resetColumns'] == true))
+        if ($this->_currentColumns == [] || (isset($this->_parameters['resetColumns']) && $this->_parameters['resetColumns'] == true))
         {
             $this->_currentColumns = $this->_defaultColumns;
             $this->saveColumns();
@@ -964,7 +962,7 @@ class DataGrid
             {
                 if ($index == $this->_parameters['addColumn'])
                 {
-                    $this->_currentColumns[] = array('name' => $index, 'width' => $data['pagerWidth']);
+                    $this->_currentColumns[] = ['name' => $index, 'width' => $data['pagerWidth']];
                 }
             }
             $this->saveColumns();
@@ -999,7 +997,7 @@ class DataGrid
             }
 
             /* Insert column back into list. */
-            array_splice($this->_currentColumns, $reorderColumns[1], 0, array($columnMoving));
+            array_splice($this->_currentColumns, $reorderColumns[1], 0, [$columnMoving]);
 
             /* Write changes to database. */
             $this->saveColumns();
@@ -1049,10 +1047,10 @@ class DataGrid
         $db = DatabaseConnection::getInstance();
 
         // Using MD5 hashing to detect duplicates.
-        $selectSQL = array();
-        $joinSQL = array();
-        $whereSQL = array();
-        $havingSQL = array();
+        $selectSQL = [];
+        $joinSQL = [];
+        $whereSQL = [];
+        $havingSQL = [];
 
         /* Get SELECT and JOIN paramaters for each column we want to collect data on. */
         foreach ($this->_currentColumns as $index => $data)
@@ -1111,7 +1109,7 @@ class DataGrid
                 if((strpos($this->_classColumns[$columnName]['filter'], 'web_site') !== false) ||
                    (strpos($this->_classColumns[$columnName]['filter'], 'url') !== false))
                 {
-                    $arguments = array($argument);
+                    $arguments = [$argument];
                 }
                 else
                 {
@@ -1120,8 +1118,8 @@ class DataGrid
                     $arguments = explode('/', $argument);
                 }
 
-                $whereSQL_or = array();
-                $havingSQL_or = array();
+                $whereSQL_or = [];
+                $havingSQL_or = [];
                 foreach ($arguments as $argument)
                 {
                     $argument = trim($argument);
@@ -1228,36 +1226,36 @@ class DataGrid
                     {
                         /* Try to determine lat/lng of provided zipcode, if can't find abort. */
                         $parts = explode(',', $argument);
-                        
+
                         if (count($parts) != 2)
                         {
                             continue;
                         }
-                        
+
                         $zipcode = (int) $parts[0];
                         $distance = (int) $parts[1];
-                        
+
                         $zipcodeData = $db->getAssoc('SELECT * FROM zipcodes WHERE zipcode = '. $db->makeQueryInteger($zipcode));
-                        
+
                         if (!isset($zipcodeData['lat']))
                         {
                             continue;
                         }
-                        
+
                         $zipcodeLat = $zipcodeData['lat'];
                         $zipcodeLng = $zipcodeData['lng'];
-                        
+
                         $joinSQL['zipsearching'] = 'LEFT JOIN zipcodes AS zipcode_search ON zipcode_search.zipcode = '.$this->_classColumns[$columnName]['filter'];
-                        
+
                         // Boundaries
                         $whereSQL[] = 'zipcode_search.lat > '.($zipcodeLat - (float) $distance / MILES_PER_LATLNG);
                         $whereSQL[] = 'zipcode_search.lat < '.($zipcodeLat + (float) $distance / MILES_PER_LATLNG);
                         $whereSQL[] = 'zipcode_search.lng > '.($zipcodeLng - (float) $distance / MILES_PER_LATLNG);
                         $whereSQL[] = 'zipcode_search.lng < '.($zipcodeLng + (float) $distance / MILES_PER_LATLNG);
-                        
+
                         // Abs Distance
                         $whereSQL[] = 'sqrt(pow((zipcode_search.lng - '.$zipcodeLng.'),2) + pow((zipcode_search.lat - '.$zipcodeLat.'),2)) < '.((float) $distance / MILES_PER_LATLNG);
-                        
+
                         // TODO:  Actual geographic search?
                     }
 
@@ -1360,7 +1358,7 @@ class DataGrid
         // TODO:  Is this going to be too memory intensive?
         $this->_getData();
         
-        $exportableIDs = array();
+        $exportableIDs = [];
         
         foreach ($this->_rs as $rowIndex => $rsData)
         {
@@ -1384,10 +1382,10 @@ class DataGrid
         $this->_getData();
 
         /* Figure out what columns we can export. */
-        $exportableColumns = array();
+        $exportableColumns = [];
         foreach ($this->_classColumns as $index => $data)
         {
-            $exportableColumns[] = array('name' => $index, 'data' => $data);
+            $exportableColumns[] = ['name' => $index, 'data' => $data];
         }
         $this->_currentColumns = $exportableColumns;
 
@@ -1395,7 +1393,7 @@ class DataGrid
         $this->_rs = false;
         $this->_getData();
 
-        $exportableHeaders = array();
+        $exportableHeaders = [];
 
         foreach ($exportableColumns as $index => $data)
         {
@@ -1429,7 +1427,7 @@ class DataGrid
         $length = strlen($headerRow);
         foreach ($this->_rs as $rowIndex => $rsData)
         {
-            $rowColumns = array();
+            $rowColumns = [];
 
             foreach ($exportableColumns as $index => $data)
             {
@@ -1506,7 +1504,7 @@ class DataGrid
         $this->_totalColumnWidths = 0;
 
         /* Build cell indexes for cell headers. */
-        $cellIndexes = array();
+        $cellIndexes = [];
         foreach ($this->_currentColumns as $index => $data)
         {
             $cellIndexes[] = $index;
@@ -1514,7 +1512,7 @@ class DataGrid
 
         foreach ($this->_rs as $rowIndex => $rsData)
         {
-            $rowColumns = array();
+            $rowColumns = [];
 
             foreach ($this->_currentColumns as $index => $data)
             {
@@ -1558,6 +1556,7 @@ class DataGrid
      */
     public function draw($noOverflow = false)
     {
+        $_keys_current_columns = null;
         /* Get data. */
         $this->_getData();
 
@@ -1566,7 +1565,7 @@ class DataGrid
         $this->_totalColumnWidths = 0;
 
         /* Build cell indexes for cell headers. */
-        $cellIndexes = array();
+        $cellIndexes = [];
         foreach ($this->_currentColumns as $index => $data)
         {
             $cellIndexes[] = $index;
@@ -2367,7 +2366,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
                 unset($getVars['dynamicArgument' . $this->_instanceName]);
             }
 
-            $getStrings = array();
+            $getStrings = [];
 
             foreach ($getVars as $index => $data)
             {

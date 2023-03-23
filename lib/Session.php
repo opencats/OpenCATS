@@ -63,9 +63,9 @@ class CATSSession
     private $_userAgent = '';
     private $_userLicenses = 0;
     private $_loginError = '';
-    private $_checkBoxes = array();
-    private $_dropdowns = array();
-    private $_categories = array();
+    private $_checkBoxes = [];
+    private $_dropdowns = [];
+    private $_categories = [];
     private $_startTime;
     private $_endTime;
     private $_backupDirectory;
@@ -74,11 +74,11 @@ class CATSSession
     private $_timeZone = 0;
     private $_dateDMY = false;
     private $_pipelineEntriesPerPage = 15;
-    private $_storedData = array();
-    private $_storedValues = array();
+    private $_storedData = [];
+    private $_storedValues = [];
     private $_MRU = null;
-    private $_dataGridColumnPreferences = array();
-    private $_dataGridParameters = array();
+    private $_dataGridColumnPreferences = [];
+    private $_dataGridParameters = [];
     private $_isFirstTimeSetup = false;
     private $_isAgreedToLicense = false;
     private $_isLocalizationConfigured = false;
@@ -849,7 +849,7 @@ class CATSSession
                 }
                 else
                 {
-                    $this->__dataGridColumnPreferences = array();
+                    $this->__dataGridColumnPreferences = [];
                 }
 
                 /* Log the login as successful. */
@@ -964,7 +964,7 @@ class CATSSession
         $this->_unixName        = $rs['unixName'];
         $this->_accessLevel     = $rs['accessLevel'];
         $this->_realAccessLevel = $rs['accessLevel'];
-        $this->_categories      = array();
+        $this->_categories      = [];
         $this->_isASP           = ($rs['companyID'] != 0 ? true : false);
         $this->_siteCompanyID   = ($rs['companyID'] != 0 ? $rs['companyID'] : -1);
         $this->_isFree          = ($rs['isFree'] == 0 ? false : true);
@@ -1040,8 +1040,8 @@ class CATSSession
             $this->_startTime = $this->_endTime;
         }
 
-        list($a_dec, $a_sec) = explode(' ', $this->_startTime);
-        list($b_dec, $b_sec) = explode(' ', $this->_endTime);
+        [$a_dec, $a_sec] = explode(' ', $this->_startTime);
+        [$b_dec, $b_sec] = explode(' ', $this->_endTime);
 
         $duration = $b_sec - $a_sec + $b_dec - $a_dec;
         $duration = sprintf('%0.2f', $duration);
@@ -1169,7 +1169,7 @@ class CATSSession
         }
         else
         {
-            return array();
+            return [];
         }
     }
 
@@ -1218,7 +1218,7 @@ class CATSSession
         }
         else
         {
-            return array();
+            return [];
         }
     }
 

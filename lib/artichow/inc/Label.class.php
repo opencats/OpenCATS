@@ -112,14 +112,14 @@ class awLabel implements awPositionable {
 	 *
 	 * @var array
 	 */
-	protected $hideKey = array();
+	protected $hideKey = [];
 
 	/**
 	 * Values to hide
 	 *
 	 * @var array
 	 */
-	protected $hideValue = array();
+	protected $hideValue = [];
 
 	/**
 	 * Hide first label
@@ -145,7 +145,7 @@ class awLabel implements awPositionable {
 		if(is_array($label)) {
 			$this->set($label);
 		} else if(is_string($label)) {
-			$this->set(array($label));
+			$this->set([$label]);
 		}
 
 		if($font === NULL) {
@@ -195,7 +195,7 @@ class awLabel implements awPositionable {
 	public function set($labels) {
 
 		if(is_string($labels)) {
-			$this->texts = array($labels);
+			$this->texts = [$labels];
 		} else if(is_array($labels)) {
 			$this->texts = $labels;
 		}
@@ -307,7 +307,7 @@ class awLabel implements awPositionable {
 	 * @param int $bottom Bottom padding
 	 */
 	public function setPadding($left, $right, $top, $bottom) {
-		$this->padding = array((int)$left, (int)$right, (int)$top, (int)$bottom);
+		$this->padding = [(int)$left, (int)$right, (int)$top, (int)$bottom];
 	}
 
 	/**
@@ -432,7 +432,7 @@ class awLabel implements awPositionable {
 			$text->border = $this->border;
 
 			if($this->padding !== NULL) {
-				call_user_func_array(array($text, 'setPadding'), $this->padding);
+				call_user_func_array([$text, 'setPadding'], $this->padding);
 			}
 
 			return $text;
@@ -496,7 +496,7 @@ class awLabel implements awPositionable {
 		}
 
 		// Hide last label
-		if(is_array($this->texts) && $key === count($this->texts) - 1 and $this->hideLast) {
+		if(is_array($this->texts) && $key === count((array) $this->texts) - 1 and $this->hideLast) {
 			return;
 		}
 
@@ -514,7 +514,7 @@ class awLabel implements awPositionable {
 			$y = $p->y;
 
 			// Get padding
-			list($left, $right, $top, $bottom) = $text->getPadding();
+			[$left, $right, $top, $bottom] = $text->getPadding();
 
 			$font = $text->getFont();
 			$width = $font->getTextWidth($text);
@@ -589,7 +589,7 @@ class awLabel implements awPositionable {
 		}
 
 		// Hide last label
-		if($key === count($this->texts) - 1 and $this->hideLast) {
+		if($key === count((array) $this->texts) - 1 and $this->hideLast) {
 			return;
 		}
 
@@ -606,7 +606,7 @@ class awLabel implements awPositionable {
 			$y = $p->y;
 
 			// Get padding
-			list($left, $right, $top, $bottom) = $text->getPadding();
+			[$left, $right, $top, $bottom] = $text->getPadding();
 
 			$font = $text->getFont();
 			$width = $font->getTextWidth($text);

@@ -47,11 +47,11 @@
  */
 class VCard
 {
-    private $_properties = array();
+    private $_properties = [];
     private $_filename;
 
     /* vCard specification version. */
-    const VCARD_VERSION = '2.1';
+    public const VCARD_VERSION = '2.1';
 
 
     /**
@@ -93,10 +93,7 @@ class VCard
             $this->_encode($suffix)
         );
 
-        $this->_properties[] = array(
-            'N',
-            $name
-        );
+        $this->_properties[] = ['N', $name];
 
         /* Filename is 'First Last.vcf'. */
         $this->_filename = sprintf('%s %s.vcf', $firstName, $lastName);
@@ -117,10 +114,7 @@ class VCard
             $formattedName = str_replace('  ', ' ', $formattedName);
         }
 
-        $this->_properties[] = array(
-            'FN',
-            $this->_encode($formattedName)
-        );
+        $this->_properties[] = ['FN', $this->_encode($formattedName)];
     }
 
     /**
@@ -136,10 +130,7 @@ class VCard
      */
     public function setPhoneNumber($phoneNumber, $type = 'VOICE')
     {
-        $this->_properties[] = array(
-            'TEL;' . $type,
-            $phoneNumber
-        );
+        $this->_properties[] = ['TEL;' . $type, $phoneNumber];
     }
 
     /**
@@ -150,10 +141,7 @@ class VCard
      */
     public function setEmail($emailAddress)
     {
-        $this->_properties[] = array(
-            'EMAIL;INTERNET',
-            $emailAddress
-        );
+        $this->_properties[] = ['EMAIL;INTERNET', $emailAddress];
     }
 
     /**
@@ -164,10 +152,7 @@ class VCard
      */
     public function setTitle($title)
     {
-        $this->_properties[] = array(
-            'TITLE;ENCODING=QUOTED-PRINTABLE',
-            $this->_encode($title)
-        );
+        $this->_properties[] = ['TITLE;ENCODING=QUOTED-PRINTABLE', $this->_encode($title)];
     }
 
     /**
@@ -178,10 +163,7 @@ class VCard
      */
     public function setOrganization($organization)
     {
-        $this->_properties[] = array(
-            'ORG;ENCODING=QUOTED-PRINTABLE',
-            $this->_encode($organization)
-        );
+        $this->_properties[] = ['ORG;ENCODING=QUOTED-PRINTABLE', $this->_encode($organization)];
     }
 
     /**
@@ -236,10 +218,7 @@ class VCard
             )
         );
 
-        $this->_properties[] = array(
-            $property,
-            $address
-        );
+        $this->_properties[] = [$property, $address];
     }
 
     /**
@@ -250,10 +229,7 @@ class VCard
      */
     public function setNote($note)
     {
-        $this->_properties[] = array(
-            'ORG;ENCODING=QUOTED-PRINTABLE',
-            $this->_encode($note)
-        );
+        $this->_properties[] = ['ORG;ENCODING=QUOTED-PRINTABLE', $this->_encode($note)];
     }
 
     /**
@@ -276,10 +252,7 @@ class VCard
             $property = 'URL';
         }
 
-        $this->_properties[] = array(
-            $property,
-            $url
-        );
+        $this->_properties[] = [$property, $url];
     }
 
     /**
@@ -293,10 +266,7 @@ class VCard
      */
     public function setPhoto($photo, $type = 'JPEG')
     {
-        $this->_properties[] = array(
-            'PHOTO;TYPE=' . $type . ';ENCODING=BASE64',
-            base64_encode($photo)
-        );
+        $this->_properties[] = ['PHOTO;TYPE=' . $type . ';ENCODING=BASE64', base64_encode($photo)];
     }
 
     /**
@@ -308,10 +278,7 @@ class VCard
      */
     public function setBirthday($date)
     {
-        $this->_properties[] = array(
-            'BDAY',
-            $date
-        );
+        $this->_properties[] = ['BDAY', $date];
     }
 
     /**

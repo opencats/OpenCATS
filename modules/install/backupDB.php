@@ -65,6 +65,8 @@ function BackupDBErrorHandler ($errno, $errstr, $errfile, $errline, $errcontext)
 
 function dumpDB($db, $file, $useStatus = false, $splitFiles = true, $siteID = -1)
 {
+    $tables = [];
+    $fh = null;
     set_error_handler('BackupDBErrorHandler');
     
     if ($siteID == -1)

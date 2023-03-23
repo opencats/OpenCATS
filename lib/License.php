@@ -52,8 +52,8 @@ class License
     private $_numberOfSeats;
     private $_name;
     private $_professional;
-    private $_professionalSchema;
-    private $_parsingSchema;
+    private $_professionalSchema = ['6', 'i', '0', 'r', '8', '1', 'o', 't', 'p', 'f', 'k', '9', 'w', 'u', 'j', 'y', 'e', 'a'];
+    private $_parsingSchema = ['t', 's', 'd', '7', '1', 'p', '8', 'u', 'a', '9', 'f', 'h', 'o', 'r', 'y', '3', '5', 'w'];
 
 
     public function __construct()
@@ -62,8 +62,6 @@ class License
         $this->setNumberOfSeats(999);
         $this->setName('Open Source User');
         $this->setProfessional(true);
-        $this->_professionalSchema = array('6','i', '0','r', '8','1', 'o','t', 'p','f', 'k','9', 'w','u', 'j','y', 'e','a');
-        $this->_parsingSchema = array('t','s', 'd','7', '1','p', '8','u', 'a','9', 'f','h', 'o','r', 'y','3', '5','w');
 
         /* If the key has been set in config.php, use it. */
         if (defined('LICENSE_KEY'))
@@ -179,7 +177,7 @@ class License
             $e = '0' . $e;
         }
 
-        $sKey = array();
+        $sKey = [];
         for ($i = 0; $i < 5; $i++)
         {
             if (!isset($segments[$i+1]))
@@ -484,7 +482,7 @@ class License
     {
         for ($i = 0; $i < LICENSE_STRING_SIZE; $i++)
         {
-            if (rand(0, 1))
+            if (random_int(0, 1))
             {
                 $byteString[$i] = $this->setScrambleBitByte(
                     $byteString[$i], true
@@ -514,7 +512,7 @@ class License
         for ($i=0; $i<strlen($key); $i++)
         {
             $char = ord(strtoupper($key[$i]));
-            for ($i2=0; $i2<count($schema); $i2+=2)
+            for ($i2=0; $i2<(is_array($schema) || $schema instanceof \Countable ? count($schema) : 0); $i2+=2)
             {
                 $firstChar = ord(strtoupper($schema[$i2]));
                 $secondChar = ord(strtoupper($schema[$i2+1]));

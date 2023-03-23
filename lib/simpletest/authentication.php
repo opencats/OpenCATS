@@ -8,7 +8,7 @@
 /**
  *  include http class
  */
-require_once(dirname(__FILE__) . '/http.php');
+require_once(__DIR__ . '/http.php');
 
 /**
  *    Represents a single security realm's identity.
@@ -18,8 +18,8 @@ require_once(dirname(__FILE__) . '/http.php');
 class SimpleRealm {
     private $type;
     private $root;
-    private $username;
-    private $password;
+    private $username = false;
+    private $password = false;
 
     /**
      *    Starts with the initial entry directory.
@@ -32,8 +32,6 @@ class SimpleRealm {
     function __construct($type, $url) {
         $this->type = $type;
         $this->root = $url->getBasePath();
-        $this->username = false;
-        $this->password = false;
     }
 
     /**
@@ -144,7 +142,7 @@ class SimpleAuthenticator {
      *    @access public
      */
     function restartSession() {
-        $this->realms = array();
+        $this->realms = [];
     }
 
     /**
@@ -216,7 +214,7 @@ class SimpleAuthenticator {
         } else {
             return;
         }
-        $this->addBasicHeaders($request, $username, $password);
+        static::addBasicHeaders($request, $username, $password);
     }
 
     /**

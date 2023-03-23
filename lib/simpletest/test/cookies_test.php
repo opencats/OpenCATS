@@ -1,7 +1,7 @@
 <?php
 // $Id: cookies_test.php 1506 2007-05-07 00:58:03Z lastcraft $
-require_once(dirname(__FILE__) . '/../autorun.php');
-require_once(dirname(__FILE__) . '/../cookies.php');
+require_once(__DIR__ . '/../autorun.php');
+require_once(__DIR__ . '/../cookies.php');
 
 class TestOfCookie extends UnitTestCase {
     
@@ -107,7 +107,7 @@ class TestOfCookieJar extends UnitTestCase {
     function testAddCookie() {
         $jar = new SimpleCookieJar();
         $jar->setCookie("a", "A");
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), array('a=A'));
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), ['a=A']);
     }
     
     function testHostFilter() {
@@ -117,41 +117,41 @@ class TestOfCookieJar extends UnitTestCase {
         $jar->setCookie('c', 'C');
         $this->assertEqual(
                 $jar->selectAsPairs(new SimpleUrl('my-host.com')),
-                array('a=A', 'c=C'));
+                ['a=A', 'c=C']);
         $this->assertEqual(
                 $jar->selectAsPairs(new SimpleUrl('another-host.com')),
-                array('b=B', 'c=C'));
+                ['b=B', 'c=C']);
         $this->assertEqual(
                 $jar->selectAsPairs(new SimpleUrl('www.another-host.com')),
-                array('b=B', 'c=C'));
+                ['b=B', 'c=C']);
         $this->assertEqual(
                 $jar->selectAsPairs(new SimpleUrl('new-host.org')),
-                array('c=C'));
+                ['c=C']);
         $this->assertEqual(
                 $jar->selectAsPairs(new SimpleUrl('/')),
-                array('a=A', 'b=B', 'c=C'));
+                ['a=A', 'b=B', 'c=C']);
     }
     
     function testPathFilter() {
         $jar = new SimpleCookieJar();
         $jar->setCookie('a', 'A', false, '/path/');
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), array());
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/elsewhere')), array());
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/path/')), array('a=A'));
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/path')), array('a=A'));
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/pa')), array());
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/path/here')), array('a=A'));
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), []);
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/elsewhere')), []);
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/path/')), ['a=A']);
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/path')), ['a=A']);
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/pa')), []);
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/path/here')), ['a=A']);
     }
     
     function testPathFilterDeeply() {
         $jar = new SimpleCookieJar();
         $jar->setCookie('a', 'A', false, '/path/more_path/');
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/path/')), array());
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/path')), array());
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/pa')), array());
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/path/more_path/')), array('a=A'));
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/path/more_path/and_more')), array('a=A'));
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/path/not_here/')), array());
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/path/')), []);
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/path')), []);
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/pa')), []);
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/path/more_path/')), ['a=A']);
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/path/more_path/and_more')), ['a=A']);
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/path/not_here/')), []);
     }
     
     function testMultipleCookieWithDifferentPathsButSameName() {
@@ -160,68 +160,68 @@ class TestOfCookieJar extends UnitTestCase {
         $jar->setCookie('a', '123', false, '/path/here/');
         $this->assertEqual(
                 $jar->selectAsPairs(new SimpleUrl('/')),
-                array('a=abc'));
+                ['a=abc']);
         $this->assertEqual(
                 $jar->selectAsPairs(new SimpleUrl('my-host.com/')),
-                array('a=abc'));
+                ['a=abc']);
         $this->assertEqual(
                 $jar->selectAsPairs(new SimpleUrl('my-host.com/path/')),
-                array('a=abc'));
+                ['a=abc']);
         $this->assertEqual(
                 $jar->selectAsPairs(new SimpleUrl('my-host.com/path/here')),
-                array('a=abc', 'a=123'));
+                ['a=abc', 'a=123']);
         $this->assertEqual(
                 $jar->selectAsPairs(new SimpleUrl('my-host.com/path/here/there')),
-                array('a=abc', 'a=123'));
+                ['a=abc', 'a=123']);
     }
     
     function testOverwrite() {
         $jar = new SimpleCookieJar();
         $jar->setCookie('a', 'abc', false, '/');
         $jar->setCookie('a', 'cde', false, '/');
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), array('a=cde'));
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), ['a=cde']);
     }
     
     function testClearSessionCookies() {
         $jar = new SimpleCookieJar();
         $jar->setCookie('a', 'A', false, '/');
         $jar->restartSession();
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), array());
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), []);
     }
     
     function testExpiryFilterByDate() {
         $jar = new SimpleCookieJar();
         $jar->setCookie('a', 'A', false, '/', 'Wed, 25-Dec-02 04:24:20 GMT');
         $jar->restartSession("Wed, 25-Dec-02 04:24:19 GMT");
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), array('a=A'));
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), ['a=A']);
         $jar->restartSession("Wed, 25-Dec-02 04:24:21 GMT");
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), array());
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), []);
     }
     
     function testExpiryFilterByAgeing() {
         $jar = new SimpleCookieJar();
         $jar->setCookie('a', 'A', false, '/', 'Wed, 25-Dec-02 04:24:20 GMT');
         $jar->restartSession("Wed, 25-Dec-02 04:24:19 GMT");
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), array('a=A'));
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), ['a=A']);
         $jar->agePrematurely(2);
         $jar->restartSession("Wed, 25-Dec-02 04:24:19 GMT");
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), array());
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), []);
     }
     
     function testCookieClearing() {
         $jar = new SimpleCookieJar();
         $jar->setCookie('a', 'abc', false, '/');
         $jar->setCookie('a', '', false, '/');
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), array('a='));
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), ['a=']);
     }
     
     function testCookieClearByLoweringDate() {
         $jar = new SimpleCookieJar();
         $jar->setCookie('a', 'abc', false, '/', 'Wed, 25-Dec-02 04:24:21 GMT');
         $jar->setCookie('a', 'def', false, '/', 'Wed, 25-Dec-02 04:24:19 GMT');
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), array('a=def'));
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), ['a=def']);
         $jar->restartSession('Wed, 25-Dec-02 04:24:20 GMT');
-        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), array());
+        $this->assertEqual($jar->selectAsPairs(new SimpleUrl('/')), []);
     }
 }
 ?>

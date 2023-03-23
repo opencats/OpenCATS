@@ -1,9 +1,9 @@
 <?php
 // $Id: page_test.php 1912 2009-07-29 16:39:17Z lastcraft $
-require_once(dirname(__FILE__) . '/../autorun.php');
-require_once(dirname(__FILE__) . '/../page.php');
-require_once(dirname(__FILE__) . '/../php_parser.php');
-require_once(dirname(__FILE__) . '/../tidy_parser.php');
+require_once(__DIR__ . '/../autorun.php');
+require_once(__DIR__ . '/../page.php');
+require_once(__DIR__ . '/../php_parser.php');
+require_once(__DIR__ . '/../tidy_parser.php');
 Mock::generate('SimpleHttpResponse');
 
 abstract class TestOfParsing extends UnitTestCase {
@@ -26,7 +26,7 @@ abstract class TestOfParsing extends UnitTestCase {
 
     function testPageWithNoUrlsGivesEmptyArrayOfLinks() {
         $page = $this->whenVisiting('http://here/', '<html><body><p>Stuff</p></body></html>');
-        $this->assertIdentical($page->getUrls(), array());
+        $this->assertIdentical($page->getUrls(), []);
     }
 
     function testAddAbsoluteLink() {
@@ -34,7 +34,7 @@ abstract class TestOfParsing extends UnitTestCase {
                                     '<html><a href="http://somewhere.com">Label</a></html>');
         $this->assertEqual(
                 $page->getUrlsByLabel('Label'),
-                array(new SimpleUrl('http://somewhere.com')));
+                [new SimpleUrl('http://somewhere.com')]);
     }
 
     function testUrlLabelsHaveHtmlTagsStripped() {
@@ -42,7 +42,7 @@ abstract class TestOfParsing extends UnitTestCase {
                                     '<html><a href="http://somewhere.com"><b>Label</b></a></html>');
         $this->assertEqual(
                 $page->getUrlsByLabel('Label'),
-                array(new SimpleUrl('http://somewhere.com')));
+                [new SimpleUrl('http://somewhere.com')]);
     }
 
     function testAddStrictRelativeLink() {
@@ -50,7 +50,7 @@ abstract class TestOfParsing extends UnitTestCase {
                                     '<html><a href="./somewhere.php">Label</a></html>');
         $this->assertEqual(
                 $page->getUrlsByLabel('Label'),
-                array(new SimpleUrl('http://host/somewhere.php')));
+                [new SimpleUrl('http://host/somewhere.php')]);
     }
 
     function testAddBareRelativeLink() {
@@ -58,7 +58,7 @@ abstract class TestOfParsing extends UnitTestCase {
                                     '<html><a href="somewhere.php">Label</a></html>');
         $this->assertEqual(
                 $page->getUrlsByLabel('Label'),
-                array(new SimpleUrl('http://host/somewhere.php')));
+                [new SimpleUrl('http://host/somewhere.php')]);
     }
 
     function testAddRelativeLinkWithBaseTag() {
@@ -68,7 +68,7 @@ abstract class TestOfParsing extends UnitTestCase {
         $page = $this->whenVisiting('http://host', $raw);
         $this->assertEqual(
                 $page->getUrlsByLabel('Label'),
-                array(new SimpleUrl('http://www.lastcraft.com/stuff/somewhere.php')));
+                [new SimpleUrl('http://www.lastcraft.com/stuff/somewhere.php')]);
     }
 
     function testAddAbsoluteLinkWithBaseTag() {
@@ -78,7 +78,7 @@ abstract class TestOfParsing extends UnitTestCase {
         $page = $this->whenVisiting('http://host', $raw);
         $this->assertEqual(
                 $page->getUrlsByLabel('Label'),
-                array(new SimpleUrl('http://here.com/somewhere.php')));
+                [new SimpleUrl('http://here.com/somewhere.php')]);
     }
 
     function testCanFindLinkInsideForm() {
@@ -86,7 +86,7 @@ abstract class TestOfParsing extends UnitTestCase {
         $page = $this->whenVisiting('http://host', $raw);
         $this->assertEqual(
                 $page->getUrlsByLabel('Label'),
-                array(new SimpleUrl('http://host/somewhere.php')));
+                [new SimpleUrl('http://host/somewhere.php')]);
     }
 
     function testCanGetLinksByIdOrLabel() {
@@ -94,7 +94,7 @@ abstract class TestOfParsing extends UnitTestCase {
         $page = $this->whenVisiting('http://host', $raw);
         $this->assertEqual(
                 $page->getUrlsByLabel('Label'),
-                array(new SimpleUrl('http://host/somewhere.php')));
+                [new SimpleUrl('http://host/somewhere.php')]);
         $this->assertFalse($page->getUrlById(0));
         $this->assertEqual(
                 $page->getUrlById(33),
@@ -106,15 +106,15 @@ abstract class TestOfParsing extends UnitTestCase {
         $page = $this->whenVisiting('http://host', $raw);
         $this->assertEqual(
                 $page->getUrlsByLabel('Long & thin'),
-                array(new SimpleUrl('http://host/somewhere.php')));
+                [new SimpleUrl('http://host/somewhere.php')]);
     }
 
     function testCanFindLinkByImageAltText() {
         $raw = '<a href="./somewhere.php" id="33"><img src="pic.jpg" alt="&lt;A picture&gt;"></a>';
         $page = $this->whenVisiting('http://host', $raw);
         $this->assertEqual(
-                array_map(array($this, 'urlToString'), $page->getUrlsByLabel('<A picture>')),
-                array('http://host/somewhere.php'));
+                array_map([$this, 'urlToString'], $page->getUrlsByLabel('<A picture>')),
+                ['http://host/somewhere.php']);
     }
 
     function testTitle() {
@@ -138,9 +138,7 @@ abstract class TestOfParsing extends UnitTestCase {
             '<frame src="4.html"></frame>';
         $page = $this->whenVisiting('http://here', $raw);
         $this->assertTrue($page->hasFrames());
-        $this->assertSameFrameset($page->getFrameset(), array(
-                1 => new SimpleUrl('http://here/2.html'),
-                2 => new SimpleUrl('http://here/3.html')));
+        $this->assertSameFrameset($page->getFrameset(), [1 => new SimpleUrl('http://here/2.html'), 2 => new SimpleUrl('http://here/3.html')]);
     }
 
     function testReadsNamesInFrames() {
@@ -153,11 +151,7 @@ abstract class TestOfParsing extends UnitTestCase {
             '</frameset>';
         $page = $this->whenVisiting('http://here', $raw);
         $this->assertTrue($page->hasFrames());
-        $this->assertSameFrameset($page->getFrameset(), array(
-                1 => new SimpleUrl('http://here/1.html'),
-                'A' => new SimpleUrl('http://here/2.html'),
-                'B' => new SimpleUrl('http://here/3.html'),
-                4 => new SimpleUrl('http://here/4.html')));
+        $this->assertSameFrameset($page->getFrameset(), [1 => new SimpleUrl('http://here/1.html'), 'A' => new SimpleUrl('http://here/2.html'), 'B' => new SimpleUrl('http://here/3.html'), 4 => new SimpleUrl('http://here/4.html')]);
     }
 
     function testRelativeFramesRespectBaseTag() {
@@ -165,7 +159,7 @@ abstract class TestOfParsing extends UnitTestCase {
         $page = $this->whenVisiting('http://here', $raw);
         $this->assertSameFrameset(
                 $page->getFrameset(),
-                array(1 => new SimpleUrl('https://there.com/stuff/1.html')));
+                [1 => new SimpleUrl('https://there.com/stuff/1.html')]);
     }
 
     function testSingleFrameInNestedFrameset() {
@@ -176,7 +170,7 @@ abstract class TestOfParsing extends UnitTestCase {
         $this->assertTrue($page->hasFrames());
         $this->assertIdentical(
                 $page->getFrameset(),
-                array(1 => new SimpleUrl('http://host/a.html')));
+                [1 => new SimpleUrl('http://host/a.html')]);
     }
 
     function testFramesCollectedWithNestedFramesetTags() {
@@ -187,10 +181,7 @@ abstract class TestOfParsing extends UnitTestCase {
                 '</frameset></html>';
         $page = $this->whenVisiting('http://host', $raw);
         $this->assertTrue($page->hasFrames());
-        $this->assertIdentical($page->getFrameset(), array(
-                1 => new SimpleUrl('http://host/a.html'),
-                2 => new SimpleUrl('http://host/b.html'),
-                3 => new SimpleUrl('http://host/c.html')));
+        $this->assertIdentical($page->getFrameset(), [1 => new SimpleUrl('http://host/a.html'), 2 => new SimpleUrl('http://host/b.html'), 3 => new SimpleUrl('http://host/c.html')]);
     }
 
     function testNamedFrames() {
@@ -202,11 +193,7 @@ abstract class TestOfParsing extends UnitTestCase {
                 '</frameset></html>';
         $page = $this->whenVisiting('http://host', $raw);
         $this->assertTrue($page->hasFrames());
-        $this->assertIdentical($page->getFrameset(), array(
-                1 => new SimpleUrl('http://host/a.html'),
-                '_one' => new SimpleUrl('http://host/b.html'),
-                3 => new SimpleUrl('http://host/c.html'),
-                '_two' => new SimpleUrl('http://host/d.html')));
+        $this->assertIdentical($page->getFrameset(), [1 => new SimpleUrl('http://host/a.html'), '_one' => new SimpleUrl('http://host/b.html'), 3 => new SimpleUrl('http://host/c.html'), '_two' => new SimpleUrl('http://host/d.html')]);
     }
 
     function testCanReadElementOfCompleteForm() {
@@ -300,7 +287,7 @@ abstract class TestOfParsing extends UnitTestCase {
         $form = $page->getFormBySubmit(new SimpleByLabel('Submit'));
         $this->assertEqual(
                 $form->submitButton(new SimpleByLabel('Submit')),
-                new SimpleGetEncoding(array('s' => 'Submit')));
+                new SimpleGetEncoding(['s' => 'Submit']));
     }
 
     function testUnparsedTagDoesNotCrash() {
@@ -597,8 +584,8 @@ abstract class TestOfParsing extends UnitTestCase {
     }
 
     function assertSameFrameset($actual, $expected) {
-        $this->assertIdentical(array_map(array($this, 'urlToString'), $actual),
-                               array_map(array($this, 'urlToString'), $expected));
+        $this->assertIdentical(array_map([$this, 'urlToString'], $actual),
+                               array_map([$this, 'urlToString'], $expected));
     }
 }
 

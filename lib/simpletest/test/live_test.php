@@ -1,9 +1,9 @@
 <?php
 // $Id: live_test.php 1748 2008-04-14 01:50:41Z lastcraft $
-require_once(dirname(__FILE__) . '/../autorun.php');
-require_once(dirname(__FILE__) . '/../socket.php');
-require_once(dirname(__FILE__) . '/../http.php');
-require_once(dirname(__FILE__) . '/../compatibility.php');
+require_once(__DIR__ . '/../autorun.php');
+require_once(__DIR__ . '/../socket.php');
+require_once(__DIR__ . '/../http.php');
+require_once(__DIR__ . '/../compatibility.php');
 
 if (SimpleTest::getDefaultProxy()) {
     SimpleTest::ignore('LiveHttpTestCase');

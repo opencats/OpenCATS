@@ -9,8 +9,8 @@
 /**#@+
  * include SimpleTest files
  */
-require_once(dirname(__FILE__) . '/tag.php');
-require_once(dirname(__FILE__) . '/encoding.php');
+require_once(__DIR__ . '/tag.php');
+require_once(__DIR__ . '/encoding.php');
 /**#@-*/
 
 /**

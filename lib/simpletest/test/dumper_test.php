@@ -1,6 +1,6 @@
 <?php
 // $Id: dumper_test.php 1505 2007-04-30 23:39:59Z lastcraft $
-require_once(dirname(__FILE__) . '/../autorun.php');
+require_once(__DIR__ . '/../autorun.php');
 
 class DumperDummy {
 }
@@ -71,8 +71,8 @@ class TestOfTextFormatting extends UnitTestCase {
     
     function testDescribeArray() {
         $dumper = new SimpleDumper();
-        $this->assertPattern('/array/i', $dumper->describeValue(array(1, 4)));
-        $this->assertPattern('/2/i', $dumper->describeValue(array(1, 4)));
+        $this->assertPattern('/array/i', $dumper->describeValue([1, 4]));
+        $this->assertPattern('/2/i', $dumper->describeValue([1, 4]));
     }
     
     function testDescribeObject() {

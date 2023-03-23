@@ -10,21 +10,21 @@
  * Includes SimpleTest files and defined the root constant
  * for dependent libraries.
  */
-require_once(dirname(__FILE__) . '/invoker.php');
-require_once(dirname(__FILE__) . '/errors.php');
-require_once(dirname(__FILE__) . '/compatibility.php');
-require_once(dirname(__FILE__) . '/scorer.php');
-require_once(dirname(__FILE__) . '/expectation.php');
-require_once(dirname(__FILE__) . '/dumper.php');
-require_once(dirname(__FILE__) . '/simpletest.php');
-require_once(dirname(__FILE__) . '/exceptions.php');
-require_once(dirname(__FILE__) . '/reflection_php5.php');
+require_once(__DIR__ . '/invoker.php');
+require_once(__DIR__ . '/errors.php');
+require_once(__DIR__ . '/compatibility.php');
+require_once(__DIR__ . '/scorer.php');
+require_once(__DIR__ . '/expectation.php');
+require_once(__DIR__ . '/dumper.php');
+require_once(__DIR__ . '/simpletest.php');
+require_once(__DIR__ . '/exceptions.php');
+require_once(__DIR__ . '/reflection_php5.php');
 /**#@-*/
 if (! defined('SIMPLE_TEST')) {
     /**
      * @ignore
      */
-    define('SIMPLE_TEST', dirname(__FILE__) . DIRECTORY_SEPARATOR);
+    define('SIMPLE_TEST', __DIR__ . DIRECTORY_SEPARATOR);
 }
 
 /**
@@ -59,7 +59,7 @@ class SimpleTestCase {
      *    @access public
      */
     function getLabel() {
-        return $this->label ? $this->label : get_class($this);
+        return $this->label ?: get_class($this);
     }
 
     /**
@@ -162,7 +162,7 @@ class SimpleTestCase {
      *    @access public
      */
     function getTests() {
-        $methods = array();
+        $methods = [];
         foreach (get_class_methods(get_class($this)) as $method) {
             if ($this->isTest($method)) {
                 $methods[] = $method;
@@ -193,7 +193,7 @@ class SimpleTestCase {
      */
     function before($method) {
         $this->reporter->paintMethodStart($method);
-        $this->observers = array();
+        $this->observers = [];
     }
 
     /**
@@ -219,7 +219,7 @@ class SimpleTestCase {
      *    @access public
      */
     function after($method) {
-        for ($i = 0; $i < count($this->observers); $i++) {
+        for ($i = 0; $i < (is_array($this->observers) || $this->observers instanceof \Countable ? count($this->observers) : 0); $i++) {
             $this->observers[$i]->atTestEnd($method, $this);
         }
         $this->reporter->paintMethodEnd($method);
@@ -328,7 +328,7 @@ class SimpleTestCase {
      *    @access public
      */
     function getAssertionLine() {
-        $trace = new SimpleStackTrace(array('assert', 'expect', 'pass', 'fail', 'skip'));
+        $trace = new SimpleStackTrace(['assert', 'expect', 'pass', 'fail', 'skip']);
         return $trace->traceMethod();
     }
 
@@ -429,7 +429,7 @@ class SimpleFileLoader {
      *    @access public
      */
     function selectRunnableTests($candidates) {
-        $classes = array();
+        $classes = [];
         foreach ($candidates as $class) {
             if (TestSuite::getBaseTestCase($class)) {
                 $reflection = new SimpleReflection($class);
@@ -476,7 +476,7 @@ class SimpleFileLoader {
  */
 class TestSuite {
     private $label;
-    private $test_cases;
+    private $test_cases = [];
 
     /**
      *    Sets the name of the test suite.
@@ -486,7 +486,6 @@ class TestSuite {
      */
     function __construct($label = false) {
         $this->label = $label;
-        $this->test_cases = array();
     }
 
     /**

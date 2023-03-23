@@ -1,8 +1,8 @@
 <?php
-require_once(dirname(__FILE__) . '/../autorun.php');
-require_once(dirname(__FILE__) . '/../errors.php');
-require_once(dirname(__FILE__) . '/../expectation.php');
-require_once(dirname(__FILE__) . '/../test_case.php');
+require_once(__DIR__ . '/../autorun.php');
+require_once(__DIR__ . '/../errors.php');
+require_once(__DIR__ . '/../expectation.php');
+require_once(__DIR__ . '/../test_case.php');
 Mock::generate('SimpleTestCase');
 Mock::generate('SimpleExpectation');
 SimpleTest::ignore('MockSimpleTestCase');
@@ -23,10 +23,7 @@ class TestOfErrorQueue extends UnitTestCase {
 
     function testExpectationMatchCancelsIncomingError() {
         $test = new MockSimpleTestCase();
-        $test->expectOnce('assert', array(
-                new IdenticalExpectation(new AnythingExpectation()),
-                'B',
-                'a message'));
+        $test->expectOnce('assert', [new IdenticalExpectation(new AnythingExpectation()), 'B', 'a message']);
         $test->setReturnValue('assert', true);
         $test->expectNever('error');
         $queue = new SimpleErrorQueue();

@@ -55,12 +55,12 @@ class CandidatesUI extends UserInterface
     /* Maximum number of characters of the candidate notes to show without the
      * user clicking "[More]"
      */
-    const NOTES_MAXLEN = 500;
+    public const NOTES_MAXLEN = 500;
 
     /* Maximum number of characters of the candidate name to show on the main
      * contacts listing.
      */
-    const TRUNCATE_KEYSKILLS = 30;
+    public const TRUNCATE_KEYSKILLS = 30;
 
 
     public function __construct()
@@ -71,10 +71,7 @@ class CandidatesUI extends UserInterface
         $this->_moduleDirectory = 'candidates';
         $this->_moduleName = 'candidates';
         $this->_moduleTabText = 'Candidates';
-        $this->_subTabs = array(
-            'Add Candidate'     => CATSUtility::getIndexName() . '?m=candidates&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@candidates.add',
-            'Search Candidates' => CATSUtility::getIndexName() . '?m=candidates&amp;a=search'
-        );
+        $this->_subTabs = ['Add Candidate'     => CATSUtility::getIndexName() . '?m=candidates&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@candidates.add', 'Search Candidates' => CATSUtility::getIndexName() . '?m=candidates&amp;a=search'];
     }
 
 
@@ -423,11 +420,9 @@ class CandidatesUI extends UserInterface
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
          * be empty.  Fill in some default values. */
-        if ($dataGridProperties == array())
+        if ($dataGridProperties == [])
         {
-            $dataGridProperties = array('rangeStart'    => 0,
-                                        'maxResults'    => 15,
-                                        'filterVisible' => false);
+            $dataGridProperties = ['rangeStart'    => 0, 'maxResults'    => 15, 'filterVisible' => false];
         }
 
         //$newParameterArray = $this->_parameters;
@@ -685,7 +680,7 @@ class CandidatesUI extends UserInterface
 
         $EEOSettings = new EEOSettings($this->_siteID);
         $EEOSettingsRS = $EEOSettings->getAll();
-        $EEOValues = array();
+        $EEOValues = [];
 
         /* Make a list of all EEO related values so they can be positioned by index
          * rather than static positioning (like extra fields). */
@@ -693,19 +688,19 @@ class CandidatesUI extends UserInterface
         {
             if ($EEOSettingsRS['genderTracking'] == 1)
             {
-                $EEOValues[] = array('fieldName' => 'Gender', 'fieldValue' => $data['eeoGenderText']);
+                $EEOValues[] = ['fieldName' => 'Gender', 'fieldValue' => $data['eeoGenderText']];
             }
             if ($EEOSettingsRS['ethnicTracking'] == 1)
             {
-                $EEOValues[] = array('fieldName' => 'Ethnicity', 'fieldValue' => $data['eeoEthnicType']);
+                $EEOValues[] = ['fieldName' => 'Ethnicity', 'fieldValue' => $data['eeoEthnicType']];
             }
             if ($EEOSettingsRS['veteranTracking'] == 1)
             {
-                $EEOValues[] = array('fieldName' => 'Veteran Status', 'fieldValue' => $data['eeoVeteranType']);
+                $EEOValues[] = ['fieldName' => 'Veteran Status', 'fieldValue' => $data['eeoVeteranType']];
             }
             if ($EEOSettingsRS['disabilityTracking'] == 1)
             {
-                $EEOValues[] = array('fieldName' => 'Disability Status', 'fieldValue' => $data['eeoDisabilityStatus']);
+                $EEOValues[] = ['fieldName' => 'Disability Status', 'fieldValue' => $data['eeoDisabilityStatus']];
             }
         }
 
@@ -750,7 +745,7 @@ class CandidatesUI extends UserInterface
      * stored in the  session.  These ocourances are looked
      * for here, and the Add.tpl file displays the results.
      */
-    private function add($contents = '', $fields = array())
+    private function add($contents = '', $fields = [])
     {
         $candidates = new Candidates($this->_siteID);
 
@@ -763,7 +758,7 @@ class CandidatesUI extends UserInterface
 
         /* Get passed variables. */
         $preassignedFields = $_GET;
-        if (count($fields) > 0)
+        if ((is_array($fields) || $fields instanceof \Countable ? count($fields) : 0) > 0)
         {
             $preassignedFields = array_merge($preassignedFields, $fields);
         }
@@ -802,7 +797,7 @@ class CandidatesUI extends UserInterface
         else
         {
             $associatedAttachment = 0;
-            $associatedAttachmentRS = array();
+            $associatedAttachmentRS = [];
         }
 
         /* Get preuploaded resume text, if any */
@@ -898,35 +893,7 @@ class CandidatesUI extends UserInterface
             else $contents = '';
 
             // Retain all field data since this isn't done over AJAX (yet)
-            $fields = array(
-                'firstName'       => $this->getSanitisedInput('firstName', $_POST),
-                'middleName'      => $this->getSanitisedInput('middleName', $_POST),
-                'lastName'        => $this->getSanitisedInput('lastName', $_POST),
-                'email1'          => $this->getSanitisedInput('email1', $_POST),
-                'email2'          => $this->getSanitisedInput('email2', $_POST),
-                'phoneHome'       => $this->getSanitisedInput('phoneHome', $_POST),
-                'phoneCell'       => $this->getSanitisedInput('phoneCell', $_POST),
-                'phoneWork'       => $this->getSanitisedInput('phoneWork', $_POST),
-                'address'         => $this->getSanitisedInput('address', $_POST),
-                'city'            => $this->getSanitisedInput('city', $_POST),
-                'state'           => $this->getSanitisedInput('state', $_POST),
-                'zip'             => $this->getSanitisedInput('zip', $_POST),
-                'source'          => $this->getTrimmedInput('source', $_POST),
-                'keySkills'       => $this->getSanitisedInput('keySkills', $_POST),
-                'currentEmployer' => $this->getSanitisedInput('currentEmployer', $_POST),
-                'currentPay'      => $this->getSanitisedInput('currentPay', $_POST),
-                'desiredPay'      => $this->getSanitisedInput('desiredPay', $_POST),
-                'notes'           => $this->getSanitisedInput('notes', $_POST),
-                'canRelocate'     => $this->getSanitisedInput('canRelocate', $_POST),
-                'webSite'         => $this->getSanitisedInput('webSite', $_POST),
-                'bestTimeToCall'  => $this->getSanitisedInput('bestTimeToCall', $_POST),
-                'gender'          => $this->getTrimmedInput('gender', $_POST),
-                'race'            => $this->getTrimmedInput('race', $_POST),
-                'veteran'         => $this->getTrimmedInput('veteran', $_POST),
-                'disability'      => $this->getTrimmedInput('disability', $_POST),
-                'documentTempFile'=> $this->getTrimmedInput('documentTempFile', $_POST),
-                'isFromParser'    => true
-            );
+            $fields = ['firstName'       => $this->getSanitisedInput('firstName', $_POST), 'middleName'      => $this->getSanitisedInput('middleName', $_POST), 'lastName'        => $this->getSanitisedInput('lastName', $_POST), 'email1'          => $this->getSanitisedInput('email1', $_POST), 'email2'          => $this->getSanitisedInput('email2', $_POST), 'phoneHome'       => $this->getSanitisedInput('phoneHome', $_POST), 'phoneCell'       => $this->getSanitisedInput('phoneCell', $_POST), 'phoneWork'       => $this->getSanitisedInput('phoneWork', $_POST), 'address'         => $this->getSanitisedInput('address', $_POST), 'city'            => $this->getSanitisedInput('city', $_POST), 'state'           => $this->getSanitisedInput('state', $_POST), 'zip'             => $this->getSanitisedInput('zip', $_POST), 'source'          => $this->getTrimmedInput('source', $_POST), 'keySkills'       => $this->getSanitisedInput('keySkills', $_POST), 'currentEmployer' => $this->getSanitisedInput('currentEmployer', $_POST), 'currentPay'      => $this->getSanitisedInput('currentPay', $_POST), 'desiredPay'      => $this->getSanitisedInput('desiredPay', $_POST), 'notes'           => $this->getSanitisedInput('notes', $_POST), 'canRelocate'     => $this->getSanitisedInput('canRelocate', $_POST), 'webSite'         => $this->getSanitisedInput('webSite', $_POST), 'bestTimeToCall'  => $this->getSanitisedInput('bestTimeToCall', $_POST), 'gender'          => $this->getTrimmedInput('gender', $_POST), 'race'            => $this->getTrimmedInput('race', $_POST), 'veteran'         => $this->getTrimmedInput('veteran', $_POST), 'disability'      => $this->getTrimmedInput('disability', $_POST), 'documentTempFile'=> $this->getTrimmedInput('documentTempFile', $_POST), 'isFromParser'    => true];
 
             /**
              * User is loading a resume from a document. Convert it to a string and paste the contents
@@ -995,7 +962,7 @@ class CandidatesUI extends UserInterface
                 }
                 else
                 {
-                    return array($contents, $fields);
+                    return [$contents, $fields];
                 }
             }
 
@@ -1021,7 +988,7 @@ class CandidatesUI extends UserInterface
                     if (isset($res['skills'])) $fields['keySkills'] = str_replace("\n", ' ', str_replace('"', '\'\'', $res['skills']));
                 }
 
-                return array($contents, $fields);
+                return [$contents, $fields];
             }
         }
 
@@ -1276,19 +1243,9 @@ class CandidatesUI extends UserInterface
                     $statusChangeTemplate = $statusChangeTemplateRS['textReplaced'];
                 }
                 /* Replace e-mail template variables. */
-                $stringsToFind = array(
-                    '%CANDOWNER%',
-                    '%CANDFIRSTNAME%',
-                    '%CANDFULLNAME%',
-                    '%CANDCATSURL%'
-                );
-                $replacementStrings = array(
-                    $ownerDetails['fullName'],
-                    $candidateDetails['firstName'],
-                    $candidateDetails['firstName'] . ' ' . $candidateDetails['lastName'],
-                    '<a href="http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=candidates&amp;a=show&amp;candidateID=' . $candidateID . '">'.
-                        'http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=candidates&amp;a=show&amp;candidateID=' . $candidateID . '</a>'
-                );
+                $stringsToFind = ['%CANDOWNER%', '%CANDFIRSTNAME%', '%CANDFULLNAME%', '%CANDCATSURL%'];
+                $replacementStrings = [$ownerDetails['fullName'], $candidateDetails['firstName'], $candidateDetails['firstName'] . ' ' . $candidateDetails['lastName'], '<a href="http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=candidates&amp;a=show&amp;candidateID=' . $candidateID . '">'.
+                    'http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=candidates&amp;a=show&amp;candidateID=' . $candidateID . '</a>'];
                 $statusChangeTemplate = str_replace(
                     $stringsToFind,
                     $replacementStrings,
@@ -1432,7 +1389,7 @@ class CandidatesUI extends UserInterface
      * Pipeline" search and displaying the results in the modal dialog, or
      * to show the initial dialog.
      */
-    private function considerForJobSearch($candidateIDArray = array())
+    private function considerForJobSearch($candidateIDArray = [])
     {
         
         /* Get list of candidates. */
@@ -1442,9 +1399,9 @@ class CandidatesUI extends UserInterface
         }
         else if($this->isRequiredIDValid('candidateID', $_REQUEST))
         {
-            $candidateIDArray = array($_REQUEST['candidateID']);
+            $candidateIDArray = [$_REQUEST['candidateID']];
         }
-        else if ($candidateIDArray === array())
+        else if ($candidateIDArray === [])
         {
             $dataGrid = DataGrid::getFromRequest();
 
@@ -1574,7 +1531,7 @@ class CandidatesUI extends UserInterface
                 CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
             }
 
-            $candidateIDArray = array($_GET['candidateID']);
+            $candidateIDArray = [$_GET['candidateID']];
         }
         else
         {
@@ -1718,18 +1675,8 @@ class CandidatesUI extends UserInterface
         /* Replace e-mail template variables. '%CANDSTATUS%', '%JBODTITLE%',
          * '%JBODCLIENT%' are replaced by JavaScript.
          */
-        $stringsToFind = array(
-            '%CANDOWNER%',
-            '%CANDFIRSTNAME%',
-            '%CANDFULLNAME%'
-        );
-        $replacementStrings = array(
-            $candidateData['ownerFullName'],
-            $candidateData['firstName'],
-            $candidateData['firstName'] . ' ' . $candidateData['lastName'],
-            $candidateData['firstName'],
-            $candidateData['firstName']
-        );
+        $stringsToFind = ['%CANDOWNER%', '%CANDFIRSTNAME%', '%CANDFULLNAME%'];
+        $replacementStrings = [$candidateData['ownerFullName'], $candidateData['firstName'], $candidateData['firstName'] . ' ' . $candidateData['lastName'], $candidateData['firstName'], $candidateData['firstName']];
         $statusChangeTemplate = str_replace(
             $stringsToFind,
             $replacementStrings,
@@ -1963,7 +1910,7 @@ class CandidatesUI extends UserInterface
         }
 
         $baseURL = CATSUtility::getFilteredGET(
-            array('sortBy', 'sortDirection', 'page'), '&amp;'
+            ['sortBy', 'sortDirection', 'page'], '&amp;'
         );
         $searchPager->setSortByParameters($baseURL, $sortBy, $sortDirection);
 
@@ -2508,6 +2455,7 @@ class CandidatesUI extends UserInterface
      */
     private function _addCandidate($isModal, $directoryOverride = '')
     {
+        $attachmentCreated = null;
         /* Module directory override for fatal() calls. */
         if ($directoryOverride != '')
         {
@@ -3277,10 +3225,10 @@ class CandidatesUI extends UserInterface
             $emailBody = $_POST['emailBody'];
 
             $tmpDestination = explode(', ', $emailTo);
-            $destination = array();
+            $destination = [];
             foreach($tmpDestination as $emailDest)
             {
-                $destination[] = array($emailDest, $emailDest);
+                $destination[] = [$emailDest, $emailDest];
             }
 
             $mailer = new Mailer(CATS_ADMIN_SITE);
@@ -3288,7 +3236,7 @@ class CandidatesUI extends UserInterface
             if($_POST['emailTemplate'] == "-1")
             {
                 $mailerStatus = $mailer->send(
-                    array($_SESSION['CATS']->getEmail(), $_SESSION['CATS']->getEmail()),
+                    [$_SESSION['CATS']->getEmail(), $_SESSION['CATS']->getEmail()],
                     $destination,
                     $emailSubject,
                     $emailBody,
@@ -3302,7 +3250,7 @@ class CandidatesUI extends UserInterface
                 $candidates = new Candidates($this->_siteID);
                 
                 $emailsToIDs = $_POST['candidateID'];
-                $candidateIDs = array();
+                $candidateIDs = [];
                 foreach($emailsToIDs as $email)
                 {
                     $temp = explode('=', $email);
@@ -3312,16 +3260,8 @@ class CandidatesUI extends UserInterface
                 {
                     $candidateData = $candidates->get($ID);
                     $emailTextSubstituted = $emailTemplates->replaceVariables($emailBody);
-                    $stringsToFind = array(
-                        '%CANDOWNER%',
-                        '%CANDFIRSTNAME%',
-                        '%CANDFULLNAME%'
-                    );
-                    $replacementStrings = array(
-                            $candidateData['ownerFullName'],
-                            $candidateData['firstName'],
-                            $candidateData['candidateFullName']
-                    );
+                    $stringsToFind = ['%CANDOWNER%', '%CANDFIRSTNAME%', '%CANDFULLNAME%'];
+                    $replacementStrings = [$candidateData['ownerFullName'], $candidateData['firstName'], $candidateData['candidateFullName']];
                     $emailTextSubstituted = str_replace(
                             $stringsToFind,
                             $replacementStrings,
@@ -3329,7 +3269,7 @@ class CandidatesUI extends UserInterface
                     );
                     
                     $mailerStatus = $mailer->sendToOne(
-                        array($email, $candidateData['candidateFullName']), 
+                        [$email, $candidateData['candidateFullName']], 
                         $emailSubject,
                         $emailTextSubstituted,
                         true
@@ -3434,12 +3374,12 @@ class CandidatesUI extends UserInterface
         switch ($mode)
         {
             case 'searchByCandidateName':
-                $rs = $search->byFullName($query, 'candidate.last_name', 'ASC', true);
+                $rs = $search->byFullName($query, 'candidate.last_name', 'ASC');
                 $resultsMode = true;
                 break;
 
             default:
-                $rs = $search->all($query, 'candidate.last_name', 'ASC', 'true');
+                $rs = $search->all($query, 'candidate.last_name', 'ASC');
                 $resultsMode = false;
                 break;
         }
@@ -3497,7 +3437,7 @@ class CandidatesUI extends UserInterface
     private function mergeDuplicatesInfo()
     {
         $candidates = new Candidates($this->_siteID);
-        $params = array();
+        $params = [];
         $params['firstName'] = $_POST['firstName'];
         $params['middleName'] =  $_POST['middleName'];
         $params['lastName'] = $_POST['lastName'];
@@ -3507,7 +3447,7 @@ class CandidatesUI extends UserInterface
         }
         else
         {
-            $params['emails'] = array();
+            $params['emails'] = [];
         }
         $params['phoneCell'] = $_POST['phoneCell'];
         $params['phoneWork'] = $_POST['phoneWork'];

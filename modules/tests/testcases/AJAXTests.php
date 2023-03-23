@@ -59,14 +59,7 @@ class ActivityTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
-                'f' => 'addActivity',
-                'dataItemID' => $testCandidateID,
-                'dataItemType' => (string) DATA_ITEM_CANDIDATE,
-                'type' => (string) ACTIVITY_CALL_TALKED,
-                'notes' => 'Test notes.',
-                'jobOrderID' => $testJobOrderID1
-            )
+            ['f' => 'addActivity', 'dataItemID' => $testCandidateID, 'dataItemType' => (string) DATA_ITEM_CANDIDATE, 'type' => (string) ACTIVITY_CALL_TALKED, 'notes' => 'Test notes.', 'jobOrderID' => $testJobOrderID1]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -117,13 +110,7 @@ class ActivityTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
-                'f' => 'editActivity',
-                'activityID' => $addedActivityID,
-                'type' => (string) ACTIVITY_CALL_LVM,
-                'notes' => 'Test notes that are now edited.',
-                'jobOrderID' => $testJobOrderID2
-            )
+            ['f' => 'editActivity', 'activityID' => $addedActivityID, 'type' => (string) ACTIVITY_CALL_LVM, 'notes' => 'Test notes that are now edited.', 'jobOrderID' => $testJobOrderID2]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -152,10 +139,7 @@ class ActivityTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
-                'f' => 'deleteActivity',
-                'activityID' => $addedActivityID
-            )
+            ['f' => 'deleteActivity', 'activityID' => $addedActivityID]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -217,10 +201,7 @@ class GetCompanyContactsTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
-                'f' => 'getCompanyContacts',
-                'companyID' => $testCompanyID
-            )
+            ['f' => 'getCompanyContacts', 'companyID' => $testCompanyID]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -285,10 +266,7 @@ class GetCompanyLocationTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
-                'f' => 'getCompanyLocation',
-                'companyID' => $testCompanyID
-            )
+            ['f' => 'getCompanyLocation', 'companyID' => $testCompanyID]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -340,10 +318,7 @@ class GetCompanyLocationAndDepartmentsTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
-                'f' => 'getCompanyLocationAndDepartments',
-                'companyID' => $testCompanyID
-            )
+            ['f' => 'getCompanyLocationAndDepartments', 'companyID' => $testCompanyID]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -457,11 +432,7 @@ class GetDataItemJobOrdersTest extends CATSAJAXTestCase
         /* Consider the test candidate for the first test job order. */
         $this->assertGET(
             CATSUtility::getAbsoluteURI(CATSUtility::getIndexName() .'?m=joborders&a=addToPipeline'),
-            array(
-                'getback' => 'getback',
-                'jobOrderID' => $testJobOrderID1,
-                'candidateID' => $testCandidateID
-            ),
+            ['getback' => 'getback', 'jobOrderID' => $testJobOrderID1, 'candidateID' => $testCandidateID],
             'Considering test candidate for test job order should succees'
         );
         $this->runPageLoadAssertions(false);
@@ -469,11 +440,7 @@ class GetDataItemJobOrdersTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
-                'f' => 'getDataItemJobOrders',
-                'dataItemID' => $testCompanyID,
-                'dataItemType' => DATA_ITEM_COMPANY
-            )
+            ['f' => 'getDataItemJobOrders', 'dataItemID' => $testCompanyID, 'dataItemType' => DATA_ITEM_COMPANY]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -536,11 +503,7 @@ class GetDataItemJobOrdersTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
-                'f' => 'getDataItemJobOrders',
-                'dataItemID' => $testContactID,
-                'dataItemType' => DATA_ITEM_CONTACT
-            )
+            ['f' => 'getDataItemJobOrders', 'dataItemID' => $testContactID, 'dataItemType' => DATA_ITEM_CONTACT]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -603,11 +566,7 @@ class GetDataItemJobOrdersTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
-                'f' => 'getDataItemJobOrders',
-                'dataItemID' => $testCandidateID,
-                'dataItemType' => DATA_ITEM_CANDIDATE
-            )
+            ['f' => 'getDataItemJobOrders', 'dataItemID' => $testCandidateID, 'dataItemType' => DATA_ITEM_CANDIDATE]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -666,11 +625,7 @@ EOF;
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
-                'f' => 'getParsedAddress',
-                'mode' => 'person',
-                'addressBlock' => $address
-            )
+            ['f' => 'getParsedAddress', 'mode' => 'person', 'addressBlock' => $address]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -742,11 +697,7 @@ EOF;
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
-                'f' => 'getParsedAddress',
-                'mode' => 'person',
-                'addressBlock' => $address
-            )
+            ['f' => 'getParsedAddress', 'mode' => 'person', 'addressBlock' => $address]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -810,11 +761,7 @@ class GetPipelineDetailsTest extends CATSAJAXTestCase
         /* Consider the test candidate for the first test job order. */
         $this->assertGET(
             CATSUtility::getAbsoluteURI(CATSUtility::getIndexName() .'?m=joborders&a=addToPipeline'),
-            array(
-                'getback' => 'getback',
-                'candidateID' => $testCandidateID,
-                'jobOrderID' => $testJobOrderID1
-            ),
+            ['getback' => 'getback', 'candidateID' => $testCandidateID, 'jobOrderID' => $testJobOrderID1],
             'Considering test candidate for test job order should succees'
         );
         $this->runPageLoadAssertions(false);
@@ -822,11 +769,7 @@ class GetPipelineDetailsTest extends CATSAJAXTestCase
         /* Get the candidate-joborder ID of the pipeline entry we just created. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
-                'f' => 'tests:getCandidateJobOrderID',
-                'candidateID' => $testCandidateID,
-                'jobOrderID' => $testJobOrderID1
-            )
+            ['f' => 'tests:getCandidateJobOrderID', 'candidateID' => $testCandidateID, 'jobOrderID' => $testJobOrderID1]
         );
         $xml = $this->getSimpleXML();
         $this->runXMLLoadAssertions($xml, false);
@@ -835,10 +778,7 @@ class GetPipelineDetailsTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
-                'f' => 'getPipelineDetails',
-                'candidateJobOrderID' => $candidateJobOrderID
-            )
+            ['f' => 'getPipelineDetails', 'candidateJobOrderID' => $candidateJobOrderID]
         );
         $this->runPageLoadAssertions(false);
 
@@ -856,10 +796,7 @@ class GetPipelineDetailsTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
-                'f' => 'getPipelineDetails',
-                'candidateJobOrderID' => $candidateJobOrderID
-            )
+            ['f' => 'getPipelineDetails', 'candidateJobOrderID' => $candidateJobOrderID]
         );
         $this->runPageLoadAssertions(false);
 

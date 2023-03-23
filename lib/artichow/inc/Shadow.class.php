@@ -19,14 +19,14 @@ class awShadow {
 	 *
 	 * @var int
 	 */
-	const LEFT_TOP = 1;
+	public const LEFT_TOP = 1;
 
 	/**
 	 * Shadow on left and bottom sides
 	 *
 	 * @var int
 	 */
-	const LEFT_BOTTOM = 2;
+	public const LEFT_BOTTOM = 2;
 
 
 	/**
@@ -34,28 +34,28 @@ class awShadow {
 	 *
 	 * @var int
 	 */
-	const RIGHT_TOP = 3;
+	public const RIGHT_TOP = 3;
 
 	/**
 	 * Shadow on right and bottom sides
 	 *
 	 * @var int
 	 */
-	const RIGHT_BOTTOM = 4;
+	public const RIGHT_BOTTOM = 4;
 
 	/**
 	 * In mode
 	 *
 	 * @var int
 	 */
-	const IN = 1;
+	public const IN = 1;
 
 	/**
 	 * Out mode
 	 *
 	 * @var int
 	 */
-	const OUT = 2;
+	public const OUT = 2;
 
 	/**
 	 * Shadow size

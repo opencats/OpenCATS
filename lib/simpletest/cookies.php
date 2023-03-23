@@ -9,7 +9,7 @@
 /**#@+
  *  include other SimpleTest class files
  */
-require_once(dirname(__FILE__) . '/url.php');
+require_once(__DIR__ . '/url.php');
 /**#@-*/
 
 /**
@@ -21,11 +21,11 @@ require_once(dirname(__FILE__) . '/url.php');
  *    @subpackage WebTester
  */
 class SimpleCookie {
-    private $host;
+    private $host = false;
     private $name;
     private $value;
     private $path;
-    private $expiry;
+    private $expiry = false;
     private $is_secure;
 
     /**
@@ -37,11 +37,9 @@ class SimpleCookie {
      *    @param boolean $is_secure      Currently ignored.
      */
     function __construct($name, $value = false, $path = false, $expiry = false, $is_secure = false) {
-        $this->host = false;
         $this->name = $name;
         $this->value = $value;
         $this->path = ($path ? $this->fixPath($path) : "/");
-        $this->expiry = false;
         if (is_string($expiry)) {
             $this->expiry = strtotime($expiry);
         } elseif (is_integer($expiry)) {
@@ -226,14 +224,14 @@ class SimpleCookie {
  *    @subpackage WebTester
  */
 class SimpleCookieJar {
-    private $cookies;
+    private $cookies = [];
 
     /**
      *    Constructor. Jar starts empty.
      *    @access public
      */
-    function __construct() {
-        $this->cookies = array();
+    function __construct()
+    {
     }
 
     /**
@@ -243,7 +241,7 @@ class SimpleCookieJar {
      *    @access public
      */
     function restartSession($date = false) {
-        $surviving_cookies = array();
+        $surviving_cookies = [];
         for ($i = 0; $i < count($this->cookies); $i++) {
             if (! $this->cookies[$i]->getValue()) {
                 continue;
@@ -333,7 +331,7 @@ class SimpleCookieJar {
                 }
             }
         }
-        return (isset($value) ? $value : false);
+        return ($value ?? false);
     }
 
     /**
@@ -368,7 +366,7 @@ class SimpleCookieJar {
      *    @access public
      */
     function selectAsPairs($url) {
-        $pairs = array();
+        $pairs = [];
         foreach ($this->cookies as $cookie) {
             if ($this->isMatch($cookie, $url->getHost(), $url->getPath(), $cookie->getName())) {
                 $pairs[] = $cookie->getName() . '=' . $cookie->getValue();

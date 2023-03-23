@@ -7,7 +7,7 @@
  *
  */
 
-require_once dirname(__FILE__)."/Graph.class.php";
+require_once __DIR__."/Graph.class.php";
 
 $GLOBALS['jpegGraph'] = false;
 
@@ -23,14 +23,13 @@ abstract class awComponentGroup extends awComponent {
 	 *
 	 * @var array
 	 */
-	protected $components;
+	protected $components = [];
 
 	/**
 	 * Build the component group
 	 */
 	public function __construct() {
 		parent::__construct();
-		$this->components = array();
 	}
 
 	/**
@@ -317,7 +316,7 @@ abstract class awComponent {
 		$x2 = $this->w - $this->padding->right;
 		$y2 = $this->h - $this->padding->bottom;
 
-		return array($x1, $y1, $x2, $y2);
+		return [$x1, $y1, $x2, $y2];
 
 	}
 
@@ -406,7 +405,7 @@ abstract class awComponent {
 		$top = (int)($height * $this->space->top / 100);
 		$bottom = (int)($height * $this->space->bottom / 100);
 
-		return array($left, $right, $top, $bottom);
+		return [$left, $right, $top, $bottom];
 
 	}
 

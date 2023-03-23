@@ -9,9 +9,9 @@
 /**#@+
  * include SimpleTest files
  */
-require_once(dirname(__FILE__) . '/tag.php');
-require_once(dirname(__FILE__) . '/encoding.php');
-require_once(dirname(__FILE__) . '/selector.php');
+require_once(__DIR__ . '/tag.php');
+require_once(__DIR__ . '/encoding.php');
+require_once(__DIR__ . '/selector.php');
 /**#@-*/
 
 /**
@@ -23,13 +23,13 @@ class SimpleForm {
     private $method;
     private $action;
     private $encoding;
-    private $default_target;
+    private $default_target = false;
     private $id;
-    private $buttons;
-    private $images;
-    private $widgets;
-    private $radios;
-    private $checkboxes;
+    private $buttons = [];
+    private $images = [];
+    private $widgets = [];
+    private $radios = [];
+    private $checkboxes = [];
 
     /**
      *    Starts with no held controls/widgets.
@@ -40,13 +40,7 @@ class SimpleForm {
         $this->method = $tag->getAttribute('method');
         $this->action = $this->createAction($tag->getAttribute('action'), $page);
         $this->encoding = $this->setEncodingClass($tag);
-        $this->default_target = false;
         $this->id = $tag->getAttribute('id');
-        $this->buttons = array();
-        $this->images = array();
-        $this->widgets = array();
-        $this->radios = array();
-        $this->checkboxes = array();
     }
 
     /**
@@ -303,7 +297,7 @@ class SimpleForm {
      *    @access public
      */
     function submitButton($selector, $additional = false) {
-        $additional = $additional ? $additional : array();
+        $additional = $additional ?: [];
         foreach ($this->buttons as $button) {
             if ($selector->isMatch($button)) {
                 $encoding = $this->encode();
@@ -329,7 +323,7 @@ class SimpleForm {
      *    @access public
      */
     function submitImage($selector, $x, $y, $additional = false) {
-        $additional = $additional ? $additional : array();
+        $additional = $additional ?: [];
         foreach ($this->images as $image) {
             if ($selector->isMatch($image)) {
                 $encoding = $this->encode();

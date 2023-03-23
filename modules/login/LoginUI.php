@@ -456,7 +456,7 @@ class LoginUI extends UserInterface
         {
             $mailer = new Mailer($this->_siteID);
             $mailerStatus = $mailer->sendToOne(
-                array($username, $username),
+                [$username, $username],
                 PASSWORD_RESET_SUBJECT,
                 sprintf(PASSWORD_RESET_BODY, $password),
                 true
@@ -491,7 +491,7 @@ class LoginUI extends UserInterface
             return '';
         }
 
-        $getFormatted = array();
+        $getFormatted = [];
         foreach ($_GET as $key => $value)
         {
             if (($key == 'm' && $value == 'logout') ||

@@ -1,9 +1,9 @@
 <?php
 // $Id: exceptions_test.php 1882 2009-07-01 14:30:05Z lastcraft $
-require_once(dirname(__FILE__) . '/../autorun.php');
-require_once(dirname(__FILE__) . '/../exceptions.php');
-require_once(dirname(__FILE__) . '/../expectation.php');
-require_once(dirname(__FILE__) . '/../test_case.php');
+require_once(__DIR__ . '/../autorun.php');
+require_once(__DIR__ . '/../exceptions.php');
+require_once(__DIR__ . '/../expectation.php');
+require_once(__DIR__ . '/../test_case.php');
 Mock::generate('SimpleTestCase');
 Mock::generate('SimpleExpectation');
 
@@ -57,10 +57,7 @@ class TestOfExceptionTrap extends UnitTestCase {
 
     function testMatchingExceptionTriggersAssertion() {
         $test = new MockSimpleTestCase();
-        $test->expectOnce('assert', array(
-                '*',
-                new ExceptionExpectation(new Exception()),
-                'message'));
+        $test->expectOnce('assert', ['*', new ExceptionExpectation(new Exception()), 'message']);
         $queue = new SimpleExceptionTrap();
         $queue->expectException(new ExceptionExpectation(new Exception()), 'message');
         $queue->isExpected($test, new Exception());

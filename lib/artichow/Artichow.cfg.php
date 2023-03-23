@@ -11,7 +11,7 @@
  * Path to Artichow
  */
 
-define('ARTICHOW', dirname(__FILE__));
+define('ARTICHOW', __DIR__);
 
 
 /*
@@ -55,11 +55,6 @@ define('ARTICHOW_DEPRECATED', TRUE);
 /*
  * Fonts to use
  */
-$fonts = array(
-	'Tuffy',
-	'TuffyBold',
-	'TuffyBoldItalic',
-	'TuffyItalic'
-);
+$fonts = ['Tuffy', 'TuffyBold', 'TuffyBoldItalic', 'TuffyItalic'];
 
 ?>

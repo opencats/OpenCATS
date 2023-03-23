@@ -1,7 +1,7 @@
 <?php
 // $Id: reflection_php5_test.php 1778 2008-04-21 16:13:08Z edwardzyang $
-require_once(dirname(__FILE__) . '/../autorun.php');
-require_once(dirname(__FILE__) . '/../reflection_php5.php');
+require_once(__DIR__ . '/../autorun.php');
+require_once(__DIR__ . '/../reflection_php5.php');
 
 class AnyOldLeafClass {
 	function aMethod() { }
@@ -114,50 +114,50 @@ class TestOfReflection extends UnitTestCase {
 
 	function testMethodsListFromClass() {
 		$reflection = new SimpleReflection('AnyOldClass');
-		$this->assertIdentical($reflection->getMethods(), array('aMethod'));
+		$this->assertIdentical($reflection->getMethods(), ['aMethod']);
 	}
 
 	function testMethodsListFromInterface() {
 		$reflection = new SimpleReflection('AnyOldInterface');
-		$this->assertIdentical($reflection->getMethods(), array('aMethod'));
-		$this->assertIdentical($reflection->getInterfaceMethods(), array('aMethod'));
+		$this->assertIdentical($reflection->getMethods(), ['aMethod']);
+		$this->assertIdentical($reflection->getInterfaceMethods(), ['aMethod']);
 	}
 
 	function testMethodsComeFromDescendentInterfacesASWell() {
 		$reflection = new SimpleReflection('AnyDescendentInterface');
-		$this->assertIdentical($reflection->getMethods(), array('aMethod'));
+		$this->assertIdentical($reflection->getMethods(), ['aMethod']);
 	}
 	
 	function testCanSeparateInterfaceMethodsFromOthers() {
 		$reflection = new SimpleReflection('AnyOldImplementation');
-		$this->assertIdentical($reflection->getMethods(), array('aMethod', 'extraMethod'));
-		$this->assertIdentical($reflection->getInterfaceMethods(), array('aMethod'));
+		$this->assertIdentical($reflection->getMethods(), ['aMethod', 'extraMethod']);
+		$this->assertIdentical($reflection->getInterfaceMethods(), ['aMethod']);
 	}
 
 	function testMethodsComeFromDescendentInterfacesInAbstractClass() {
 		$reflection = new SimpleReflection('AnyAbstractImplementation');
-		$this->assertIdentical($reflection->getMethods(), array('aMethod'));
+		$this->assertIdentical($reflection->getMethods(), ['aMethod']);
 	}
 
 	function testInterfaceHasOnlyItselfToImplement() {
 		$reflection = new SimpleReflection('AnyOldInterface');
 		$this->assertEqual(
 				$reflection->getInterfaces(),
-				array('AnyOldInterface'));
+				['AnyOldInterface']);
 	}
 
 	function testInterfacesListedForClass() {
 		$reflection = new SimpleReflection('AnyOldImplementation');
 		$this->assertEqual(
 				$reflection->getInterfaces(),
-				array('AnyOldInterface'));
+				['AnyOldInterface']);
 	}
 
 	function testInterfacesListedForSubclass() {
 		$reflection = new SimpleReflection('AnyOldSubclass');
 		$this->assertEqual(
 				$reflection->getInterfaces(),
-				array('AnyOldInterface'));
+				['AnyOldInterface']);
 	}
 
 	function testNoParameterCreationWhenNoInterface() {
@@ -205,7 +205,7 @@ class TestOfReflection extends UnitTestCase {
 	function testProperlyReflectsTheFinalInterfaceWhenObjectImplementsAnExtendedInterface() {
 		$reflection = new SimpleReflection('AnyDescendentImplementation');
 		$interfaces = $reflection->getInterfaces();
-		$this->assertEqual(1, count($interfaces));
+		$this->assertEqual(1, is_array($interfaces) || $interfaces instanceof \Countable ? count($interfaces) : 0);
 		$this->assertEqual('AnyDescendentInterface', array_shift($interfaces));
 	}
 	

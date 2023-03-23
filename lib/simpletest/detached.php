@@ -9,8 +9,8 @@
 /**#@+
  *  include other SimpleTest class files
  */
-require_once(dirname(__FILE__) . '/xml.php');
-require_once(dirname(__FILE__) . '/shell_tester.php');
+require_once(__DIR__ . '/xml.php');
+require_once(__DIR__ . '/shell_tester.php');
 /**#@-*/
 
 /**
@@ -21,7 +21,7 @@ require_once(dirname(__FILE__) . '/shell_tester.php');
 class DetachedTestCase {
     private $command;
     private $dry_command;
-    private $size;
+    private $size = false;
 
     /**
      *    Sets the location of the remote test.
@@ -31,8 +31,7 @@ class DetachedTestCase {
      */
     function __construct($command, $dry_command = false) {
         $this->command = $command;
-        $this->dry_command = $dry_command ? $dry_command : $command;
-        $this->size = false;
+        $this->dry_command = $dry_command ?: $command;
     }
 
     /**

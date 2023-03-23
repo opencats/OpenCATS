@@ -1,16 +1,16 @@
 <?php
 // $Id: unit_tests.php 1986 2010-04-02 10:02:42Z lastcraft $
-require_once(dirname(__FILE__) . '/../autorun.php');
-require_once(dirname(__FILE__) . '/../unit_tester.php');
-require_once(dirname(__FILE__) . '/../shell_tester.php');
-require_once(dirname(__FILE__) . '/../mock_objects.php');
-require_once(dirname(__FILE__) . '/../web_tester.php');
-require_once(dirname(__FILE__) . '/../extensions/pear_test_case.php');
+require_once(__DIR__ . '/../autorun.php');
+require_once(__DIR__ . '/../unit_tester.php');
+require_once(__DIR__ . '/../shell_tester.php');
+require_once(__DIR__ . '/../mock_objects.php');
+require_once(__DIR__ . '/../web_tester.php');
+require_once(__DIR__ . '/../extensions/pear_test_case.php');
 
 class UnitTests extends TestSuite {
     function __construct() {
         $this->TestSuite('Unit tests');
-        $path = dirname(__FILE__);
+        $path = __DIR__;
         $this->addFile($path . '/errors_test.php');
         $this->addFile($path . '/exceptions_test.php');
         $this->addFile($path . '/arguments_test.php');

@@ -459,7 +459,7 @@ class ZipFileCreator
         $uncompressedLength = filesize($filename);
         
         /* Calculate the CRC32 checksum of the file data to be compressed. */
-        $CRC32 = HashUtility::crc32File($filename);
+        $CRC32 = (new HashUtility())->crc32File($filename);
         
         /* Version needed to extract.
          *
@@ -969,7 +969,7 @@ class ZipFileExtractor
     private $_fileHandle = null;
     
     /* Meta data and Central Directory. */
-    private $_metaData = array();
+    private $_metaData = [];
     
     /* Current error message. */
     private $_errorMessage = '';
@@ -1092,9 +1092,9 @@ class ZipFileExtractor
         /* Add the zip comment to the metadata array. */
         if (!$commentData)
         {
-            $commentData = array('');
+            $commentData = [''];
         }
-        list($metaData['comment']) = $commentData;
+        [$metaData['comment']] = $commentData;
         
         /* Is our central directory start offset valid? */
         $centralDirectoryOffset = $metaData['centralDirectoryStart'];
@@ -1202,7 +1202,7 @@ class ZipFileExtractor
          */
         array_shift($entries);
 
-        $metaData = array();
+        $metaData = [];
         foreach ($entries as $index => $entry)
         {   
             /* Format:
@@ -1265,7 +1265,7 @@ class ZipFileExtractor
             if ($metaData[$index]['filenameLength'] > 0)
             {
                 /* Attempt to extract the filename. */
-                list($metaData[$index]['filename']) = @unpack(
+                [$metaData[$index]['filename']] = @unpack(
                     'a*0',
                     substr($entry, 42, $metaData[$index]['filenameLength'])
                 );
@@ -1290,6 +1290,11 @@ class ZipFileExtractor
      */
     public function getFileByOffset($startOffset)
     {
+        $filenameLength = null;
+        $extraFieldLength = null;
+        $compressedSize = null;
+        $compressionMethod = null;
+        $CRC32 = null;
         /* Seek to the start of the central directory. */
         if (fseek($this->_fileHandle, $startOffset, SEEK_SET) === -1)
         {

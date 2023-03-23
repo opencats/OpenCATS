@@ -29,13 +29,7 @@ class QuickActionMenu
         $editCandidate = ($_SESSION['CATS']->getAccessLevel('candidates.edit') > ACCESS_LEVEL_READ) ? 1 : 0;
         $mergeCandidates = ($_SESSION['CATS']->getAccessLevel('candidates.duplicates') >= ACCESS_LEVEL_SA) ? 1 : 0;
         
-        return array(
-            $this->dataItemType,
-            $this->dataItemId,
-            'docjslib_getRealLeft(this)-20',
-            'docjslib_getRealTop(this)+20',
-            '{pipelines_addToPipeline: '.$addToPipeline.', candidates_merge: '.$mergeCandidates.'}'
-        );
+        return [$this->dataItemType, $this->dataItemId, 'docjslib_getRealLeft(this)-20', 'docjslib_getRealTop(this)+20', '{pipelines_addToPipeline: '.$addToPipeline.', candidates_merge: '.$mergeCandidates.'}'];
     }
 
     protected function getMenuType()

@@ -40,7 +40,7 @@ include_once(LEGACY_ROOT . '/lib/FileUtility.php');
  */
 class DocumentToText
 {
-    private $_linesArray = array();
+    private $_linesArray = [];
     private $_linesString = '';
     private $_rawOutput = '';
     private $_fileName = '';
@@ -71,8 +71,9 @@ class DocumentToText
      */
     public function convert($fileName, $documentType)
     {
+        $filename = null;
         /* (Re?)initialize variables. */
-        $this->_linesArray  = array();
+        $this->_linesArray  = [];
         $this->_linesString = '';
         $this->_rawOutput   = '';
         $this->_fileName    = $fileName;
@@ -307,7 +308,7 @@ class DocumentToText
     private function _setError($errorMessage, $returnCode = 1)
     {
         $this->_rawOutput = '';
-        $this->_linesArray  = array();
+        $this->_linesArray  = [];
         $this->_linesString = '';
         $this->_returnCode = $returnCode;
         $this->_isError = true;
@@ -378,11 +379,7 @@ class DocumentToText
             @exec($command, $output, $returnCode);
         }
 
-        return array(
-            'command'    => $command,
-            'output'     => $output,
-            'returnCode' => $returnCode
-        );
+        return ['command'    => $command, 'output'     => $output, 'returnCode' => $returnCode];
     }
 
     private function odt2text($filename)
@@ -418,8 +415,8 @@ class DocumentToText
                 $raw_text = $xml->saveXML();
                 // We need to add a space where end-of-line and end-of-paragraphs present 
                 $raw_text_patched = str_replace(
-                        array('<w:br/>', '</w:p>', '<text:line-break', '<text:p'),
-                        array("\n<w:br/>", "\n</w:p>", "\n<text:line-break", "\n<text:p"), $raw_text);
+                        ['<w:br/>', '</w:p>', '<text:line-break', '<text:p'],
+                        ["\n<w:br/>", "\n</w:p>", "\n<text:line-break", "\n<text:p"], $raw_text);
                 // Return data without XML formatting tags
                 return utf8_encode(strip_tags($raw_text_patched));
             }

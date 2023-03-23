@@ -74,8 +74,8 @@ class EclipseReporter extends SimpleScorer {
      *    @return string        Replaced with C backslashed tokens.
      */
     function escapeVal($raw){
-        $needle = array("\\","\"","/","\b","\f","\n","\r","\t");
-        $replace = array('\\\\','\"','\/','\b','\f','\n','\r','\t');
+        $needle = ["\\", "\"", "/", "\b", "\f", "\n", "\r", "\t"];
+        $replace = ['\\\\', '\"', '\/', '\b', '\f', '\n', '\r', '\t'];
         return str_replace($needle, $replace, $raw);
     }
 
@@ -235,7 +235,7 @@ class EclipseReporter extends SimpleScorer {
             if (extension_loaded('xdebug')){
                 $arrfiles = xdebug_get_code_coverage();
                 xdebug_stop_code_coverage();
-                $thisdir = dirname(__FILE__);
+                $thisdir = __DIR__;
                 $thisdirlen = strlen($thisdir);
                 foreach ($arrfiles as $index=>$file){
                     if (substr($index, 0, $thisdirlen)===$thisdir){

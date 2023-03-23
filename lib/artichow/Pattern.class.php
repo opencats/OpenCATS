@@ -7,7 +7,7 @@
  *
  */
 
-require_once dirname(__FILE__)."/Graph.class.php";
+require_once __DIR__."/Graph.class.php";
 
 /**
  * All patterns must derivate from this class
@@ -21,7 +21,7 @@ abstract class awPattern {
 	 *
 	 * @var array
 	 */
-	protected $args = array();
+	protected $args = [];
 
 	/**
 	 * Load a pattern

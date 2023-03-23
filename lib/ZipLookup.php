@@ -15,7 +15,9 @@ class ZipLookup
     {
 
 
-	$aAddress[0] = 0;
+	$aAddress = [];
+ $loc_level_4 = null;
+ $aAddress[0] = 0;
 	$aAddress[1] = '';
 	$aAddress[2] = '';
 	$aAddress[3] = '';
@@ -76,7 +78,7 @@ class ZipLookup
         
         $select = "(3958*3.1415926*sqrt((zipcode_searching.lat-zipcode_record.lat)*(zipcode_searching.lat-zipcode_record.lat) + cos(zipcode_searching.lat/57.29578)*cos(zipcode_record.lat/57.29578)*(zipcode_searching.lng-zipcode_record.lng)*(zipcode_searching.lng-zipcode_record.lng))/180) as distance_km";
         $join = "LEFT JOIN zipcodes as zipcode_searching ON zipcode_searching.zipcode = ".$zipcode." LEFT JOIN zipcodes as zipcode_record ON zipcode_record.zipcode = ".$zipcodeColumn;
-        return array("select" => $select, "join" => $join);
+        return ["select" => $select, "join" => $join];
     }
 }
 ?>

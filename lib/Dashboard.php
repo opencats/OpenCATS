@@ -208,22 +208,22 @@ class Dashboard
         
         $rsCurrentTime = $this->_db->getAssoc($sql);
         
-        $data = array();
+        $data = [];
         
         switch ($view)
         {
             case DASHBOARD_GRAPH_YEARLY:
-                $data[$rsCurrentTime['currentYearNumber']] = array('label' => $rsCurrentTime['currentYearNumber']);
-                $data[$rsCurrentTime['currentYearNumber'] - 1] = array('label' => $rsCurrentTime['currentYearNumber'] - 1);
-                $data[$rsCurrentTime['currentYearNumber'] - 2] = array('label' => $rsCurrentTime['currentYearNumber'] - 2);
-                $data[$rsCurrentTime['currentYearNumber'] - 3] = array('label' => $rsCurrentTime['currentYearNumber'] - 3);
+                $data[$rsCurrentTime['currentYearNumber']] = ['label' => $rsCurrentTime['currentYearNumber']];
+                $data[$rsCurrentTime['currentYearNumber'] - 1] = ['label' => $rsCurrentTime['currentYearNumber'] - 1];
+                $data[$rsCurrentTime['currentYearNumber'] - 2] = ['label' => $rsCurrentTime['currentYearNumber'] - 2];
+                $data[$rsCurrentTime['currentYearNumber'] - 3] = ['label' => $rsCurrentTime['currentYearNumber'] - 3];
                 break;
             
             case DASHBOARD_GRAPH_MONTHLY:
-                $data[$rsCurrentTime['currentMonthNumber']] = array('label' => $rsCurrentTime['currentMonthName']);
-                $data[$rsCurrentTime['oneMonthAgoNumber']] = array('label' => $rsCurrentTime['oneMonthAgoName']);
-                $data[$rsCurrentTime['twoMonthAgoNumber']] = array('label' => $rsCurrentTime['twoMonthAgoName']);
-                $data[$rsCurrentTime['threeMonthAgoNumber']] = array('label' => $rsCurrentTime['threeMonthAgoName']);
+                $data[$rsCurrentTime['currentMonthNumber']] = ['label' => $rsCurrentTime['currentMonthName']];
+                $data[$rsCurrentTime['oneMonthAgoNumber']] = ['label' => $rsCurrentTime['oneMonthAgoName']];
+                $data[$rsCurrentTime['twoMonthAgoNumber']] = ['label' => $rsCurrentTime['twoMonthAgoName']];
+                $data[$rsCurrentTime['threeMonthAgoNumber']] = ['label' => $rsCurrentTime['threeMonthAgoName']];
                 break;
                 
             case DASHBOARD_GRAPH_WEEKLY:
@@ -239,10 +239,10 @@ class Dashboard
                 }            
             
                 /* * 6 at the end gives us the last day in the week (first day in week plus 6 days) */
-                $data[$rsCurrentTime['currentWeekNumber']] = array('label' => date($pattern, $rsCurrentTime['currentWeekNumber']) . ' - ' . date($pattern, $rsCurrentTime['currentWeekNumber'] + $oneUnixDay * 6));
-                $data[$rsCurrentTime['oneWeekAgoNumber']] = array('label' => date($pattern, $rsCurrentTime['oneWeekAgoNumber']) . ' - ' . date($pattern, $rsCurrentTime['oneWeekAgoNumber'] + $oneUnixDay * 6));
-                $data[$rsCurrentTime['twoWeekAgoNumber']] = array('label' => date($pattern, $rsCurrentTime['twoWeekAgoNumber']) . ' - ' . date($pattern, $rsCurrentTime['twoWeekAgoNumber'] + $oneUnixDay * 6));
-                $data[$rsCurrentTime['threeWeekAgoNumber']] = array('label' => date($pattern, $rsCurrentTime['threeWeekAgoNumber']) . ' - ' . date($pattern, $rsCurrentTime['threeWeekAgoNumber'] + $oneUnixDay * 6));
+                $data[$rsCurrentTime['currentWeekNumber']] = ['label' => date($pattern, $rsCurrentTime['currentWeekNumber']) . ' - ' . date($pattern, $rsCurrentTime['currentWeekNumber'] + $oneUnixDay * 6)];
+                $data[$rsCurrentTime['oneWeekAgoNumber']] = ['label' => date($pattern, $rsCurrentTime['oneWeekAgoNumber']) . ' - ' . date($pattern, $rsCurrentTime['oneWeekAgoNumber'] + $oneUnixDay * 6)];
+                $data[$rsCurrentTime['twoWeekAgoNumber']] = ['label' => date($pattern, $rsCurrentTime['twoWeekAgoNumber']) . ' - ' . date($pattern, $rsCurrentTime['twoWeekAgoNumber'] + $oneUnixDay * 6)];
+                $data[$rsCurrentTime['threeWeekAgoNumber']] = ['label' => date($pattern, $rsCurrentTime['threeWeekAgoNumber']) . ' - ' . date($pattern, $rsCurrentTime['threeWeekAgoNumber'] + $oneUnixDay * 6)];
                 break;
         }  
         

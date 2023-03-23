@@ -38,16 +38,14 @@ class Profile
     private $_siteID;
     private $_db;
     private $_savedProfileID;
-    private $_savedProfile;
-    private $_titleCache;
+    private $_savedProfile = false;
+    private $_titleCache = false;
 
     public function __construct($siteID, $profileID = false)
     {
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
         $this->_savedProfileID = $profileID;
-        $this->_savedProfile = false;
-        $this->_titleCache = false;
     }
 
     /**
@@ -856,6 +854,7 @@ class Profile
      */
     public function deleteField($profileID = false, $page = false, $columnName = false)
     {
+        $criterion = null;
         if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
         {
             return false;
@@ -1108,12 +1107,7 @@ class Profile
         // If cacheing is enabled, add it the new title to the local cache
         if ($this->_savedProfileID !== false && $this->_titleCache !== false)
         {
-            $this->_titleCache[] = array(
-                'profileID' => $profileID,
-                'column_name' => $columnName,
-                'title' => $title,
-                'note' => $note !== false ? $note : ''
-            );
+            $this->_titleCache[] = ['profileID' => $profileID, 'column_name' => $columnName, 'title' => $title, 'note' => $note !== false ? $note : ''];
         }
 
         return true;

@@ -45,17 +45,17 @@ class ContactsUI extends UserInterface
     /* Maximum number of characters of the job notes to show without the user
      * clicking "[More]"
      */
-    const NOTES_MAXLEN = 500;
+    public const NOTES_MAXLEN = 500;
 
     /* Maximum number of characters of the company name to show on the main
      * contacts listing.
      */
-    const TRUNCATE_CLIENT_NAME = 22;
+    public const TRUNCATE_CLIENT_NAME = 22;
 
     /* Maximum number of characters of the contact's title to show on the main
      * contacts listing.
      */
-    const TRUNCATE_TITLE = 24;
+    public const TRUNCATE_TITLE = 24;
 
 
     public function __construct()
@@ -66,11 +66,7 @@ class ContactsUI extends UserInterface
         $this->_moduleDirectory = 'contacts';
         $this->_moduleName = 'contacts';
         $this->_moduleTabText = 'Contacts';
-        $this->_subTabs = array(
-            'Add Contact'     => CATSUtility::getIndexName() . '?m=contacts&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@contacts.add',
-            'Search Contacts' => CATSUtility::getIndexName() . '?m=contacts&amp;a=search',
-            'Cold Call List'  => CATSUtility::getIndexName() . '?m=contacts&amp;a=showColdCallList'
-        );
+        $this->_subTabs = ['Add Contact'     => CATSUtility::getIndexName() . '?m=contacts&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@contacts.add', 'Search Contacts' => CATSUtility::getIndexName() . '?m=contacts&amp;a=search', 'Cold Call List'  => CATSUtility::getIndexName() . '?m=contacts&amp;a=showColdCallList'];
     }
 
 
@@ -205,11 +201,9 @@ class ContactsUI extends UserInterface
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
          * be empty.  Fill in some default values. */
-        if ($dataGridProperties == array())
+        if ($dataGridProperties == [])
         {
-            $dataGridProperties = array('rangeStart'    => 0,
-                                        'maxResults'    => 15,
-                                        'filterVisible' => false);
+            $dataGridProperties = ['rangeStart'    => 0, 'maxResults'    => 15, 'filterVisible' => false];
         }
 
         $dataGrid = DataGrid::get("contacts:ContactsListByViewDataGrid", $dataGridProperties);
@@ -432,8 +426,8 @@ class ContactsUI extends UserInterface
         else if (!$this->isRequiredIDValid('selected_company_id', $_GET))
         {
             $selectedCompanyID = false;
-            $companyRS = array();
-            $reportsToRS = array();
+            $companyRS = [];
+            $reportsToRS = [];
         }
         else
         {
@@ -452,7 +446,7 @@ class ContactsUI extends UserInterface
         }
         else
         {
-            $defaultCompanyRS = array();
+            $defaultCompanyRS = [];
         }
 
         if (!eval(Hooks::get('CONTACTS_ADD'))) return;
@@ -657,7 +651,7 @@ class ContactsUI extends UserInterface
         }
         else
         {
-            $defaultCompanyRS = array();
+            $defaultCompanyRS = [];
         }
 
         if (!eval(Hooks::get('CONTACTS_EDIT'))) return;
@@ -771,21 +765,9 @@ class ContactsUI extends UserInterface
                     $statusChangeTemplate = $statusChangeTemplateRS['textReplaced'];
                 }
                 /* Replace e-mail template variables. */
-                $stringsToFind = array(
-                    '%CONTOWNER%',
-                    '%CONTFIRSTNAME%',
-                    '%CONTFULLNAME%',
-                    '%CONTCLIENTNAME%',
-                    '%CONTCATSURL%'
-                );
-                $replacementStrings = array(
-                    $ownerDetails['fullName'],
-                    $contactDetails['firstName'],
-                    $contactDetails['firstName'] . ' ' . $contactDetails['lastName'],
-                    $contactDetails['companyName'],
-                    '<a href="http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=contacts&amp;a=show&amp;contactID=' . $contactID . '">'.
-                        'http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=contacts&amp;a=show&amp;contactID=' . $contactID . '</a>'
-                );
+                $stringsToFind = ['%CONTOWNER%', '%CONTFIRSTNAME%', '%CONTFULLNAME%', '%CONTCLIENTNAME%', '%CONTCATSURL%'];
+                $replacementStrings = [$ownerDetails['fullName'], $contactDetails['firstName'], $contactDetails['firstName'] . ' ' . $contactDetails['lastName'], $contactDetails['companyName'], '<a href="http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=contacts&amp;a=show&amp;contactID=' . $contactID . '">'.
+                    'http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=contacts&amp;a=show&amp;contactID=' . $contactID . '</a>'];
                 $statusChangeTemplate = str_replace(
                     $stringsToFind,
                     $replacementStrings,
@@ -962,7 +944,7 @@ class ContactsUI extends UserInterface
         }
 
         $baseURL = CATSUtility::getFilteredGET(
-            array('sortBy', 'sortDirection', 'page'), '&amp;'
+            ['sortBy', 'sortDirection', 'page'], '&amp;'
         );
         $searchPager->setSortByParameters($baseURL, $sortBy, $sortDirection);
 

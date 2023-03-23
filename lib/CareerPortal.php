@@ -39,19 +39,7 @@ include_once(LEGACY_ROOT . '/lib/Mailer.php');
 class CareerPortalSettings
 {
     // FIXME: Make this private and use a getter.
-    public $requiredTemplateFields = array(
-        'Header',
-        'Content - Main',
-        'Content - Search Results',
-        'Content - Job Details',
-        'Content - Candidate Registration',
-        'Content - Candidate Profile',
-        'Content - Apply for Position',
-        'Content - Questionnaire',
-        'Content - Thanks for your Submission',
-        'Footer',
-        'CSS'
-    );
+    public $requiredTemplateFields = ['Header', 'Content - Main', 'Content - Search Results', 'Content - Job Details', 'Content - Candidate Registration', 'Content - Candidate Profile', 'Content - Apply for Position', 'Content - Questionnaire', 'Content - Thanks for your Submission', 'Footer', 'CSS'];
     private $_db;
     private $_siteID;
 
@@ -73,16 +61,22 @@ class CareerPortalSettings
     public function getAll()
     {
         /* Default values. */
-        $settings = array(
-            'enabled'               => '0', /* false */
-            'allowBrowse'           => '1', /* true */
-            'candidateRegistration' => '0', /* false */
-            'showDepartment'        => '1', /* true */
-            'showCompany'           => '0', /* false */
+        $settings = [
+            'enabled'               => '0',
+            /* false */
+            'allowBrowse'           => '1',
+            /* true */
+            'candidateRegistration' => '0',
+            /* false */
+            'showDepartment'        => '1',
+            /* true */
+            'showCompany'           => '0',
+            /* false */
             'activeBoard'           => 'CATS 2.0',
-            'allowXMLSubmit'        => '1', /* true */
-            'useCATSTemplate'       => ''
-        );
+            'allowXMLSubmit'        => '1',
+            /* true */
+            'useCATSTemplate'       => '',
+        ];
 
         /* Get all career portal settings for this site from the database. */
         $sql = sprintf(
@@ -308,7 +302,7 @@ class CareerPortalSettings
     {
         $rs = $this->getAllFromTemplate($templateName);
 
-        $template = array();
+        $template = [];
         foreach ($rs as $rowIndex => $row)
         {
             $template[$row['setting']] = $row['value'];
@@ -460,7 +454,7 @@ class CareerPortalSettings
         //FIXME: Make subject configurable.
         $mailer = new Mailer($this->_siteID, $userID);
         $mailerStatus = $mailer->sendToOne(
-            array($destination, ''),
+            [$destination, ''],
             $subject,
             $body,
             true

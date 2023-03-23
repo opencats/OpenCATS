@@ -13,7 +13,7 @@
  *  @ignore duplicate with reflection_php5.php
  */
 class SimpleReflection {
-    var $_interface;
+    public $_interface;
 
     /**
      *    Stashes the class/interface.
@@ -81,7 +81,7 @@ class SimpleReflection {
      *    @access public
      */
     function getInterfaces() {
-        return array();
+        return [];
     }
 
     /**

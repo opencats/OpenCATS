@@ -90,11 +90,7 @@ class ExportUtility
 
         $footer = '</form>';
 
-        return array(
-            'header' => $header,
-            'footer' => $footer,
-            'menu'   => $menu
-        );
+        return ['header' => $header, 'footer' => $footer, 'menu'   => $menu];
     }
 }
 

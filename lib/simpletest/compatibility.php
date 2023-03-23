@@ -19,6 +19,7 @@ class SimpleTestCompatibility {
      *    @access public
      */
     static function copy($object) {
+        $copy = null;
         if (version_compare(phpversion(), '5') >= 0) {
             eval('$copy = clone $object;');
             return $copy;
@@ -129,6 +130,7 @@ class SimpleTestCompatibility {
      *    @access public
      */
     static function isA($object, $class) {
+        $is_a = null;
         if (version_compare(phpversion(), '5') >= 0) {
             if (! class_exists($class, false)) {
                 if (function_exists('interface_exists')) {

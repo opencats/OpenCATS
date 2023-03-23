@@ -118,7 +118,7 @@ class MRU
         and database references can not be stored in the session. */
         $db = DatabaseConnection::getInstance();
         
-        $HTML = array();
+        $HTML = [];
 
         $sql = sprintf(
             "SELECT

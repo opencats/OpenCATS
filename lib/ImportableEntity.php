@@ -15,14 +15,14 @@ abstract class ImportableEntity
 
     public function prepareData($dataNamed)
     {
-        $dataColumns = array();
-        $data = array();
+        $dataColumns = [];
+        $data = [];
 
         foreach ($dataNamed AS $dataColumn => $value) {
             $dataColumns[] = $dataColumn;
             $data[] = $this->_db->makeQueryStringOrNULL($value);
         }
-        return array('data' => $data, 'dataColumns' => $dataColumns);
+        return ['data' => $data, 'dataColumns' => $dataColumns];
     }
 }
 

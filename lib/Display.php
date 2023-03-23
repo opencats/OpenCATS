@@ -77,7 +77,7 @@ class Display
         return $this->_profileLib->getField(false, $this->_profilePage['page'], $columnName);
     }
 
-    private function getTemplate($template, $flags = array())
+    private function getTemplate($template, $flags = [])
     {
         $templateFile = sprintf(
             './profile/%s/%s.tpl',
@@ -112,7 +112,7 @@ class Display
             $profileStylesheet = $sheet;
         }
 
-        $this->_table = array();
+        $this->_table = [];
         $this->_rowIndex = $this->_columnIndex = 0;
         $this->_currentColumn = false;
     }
@@ -120,12 +120,12 @@ class Display
     public function endTable()
     {
         $pageContent = $this->getTemplate('page');
-        list($pageTopContent, $pageBottomContent) = explode('<sections>', $pageContent);
+        [$pageTopContent, $pageBottomContent] = explode('<sections>', $pageContent);
 
         $sectionContent = $this->getTemplate('pageSection',
-            array('sectionWidth' => $this->_profilePage['columnWidth'])
+            ['sectionWidth' => $this->_profilePage['columnWidth']]
         );
-        list($sectionTopContent, $sectionBottomContent) = explode('<columns>', $sectionContent);
+        [$sectionTopContent, $sectionBottomContent] = explode('<columns>', $sectionContent);
 
         $columnContent = $this->getTemplate('pageColumn');
 
@@ -137,7 +137,7 @@ class Display
         echo $pageTopContent;
 
         for ($fieldIndex = 0, $curColumn = -1, $inSection = false;
-             $fieldIndex < count($fields);
+             $fieldIndex < (is_array($fields) || $fields instanceof \Countable ? count($fields) : 0);
              $fieldIndex++)
         {
             $field = $fields[$fieldIndex];

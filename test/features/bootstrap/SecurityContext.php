@@ -108,16 +108,10 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
     public function iDoPOSTRequest($url)
     {
         $url = rtrim($this->getMinkParameter('base_url'), '/') . '/'.$url;
-        $data = array('postback' => 'postback');
+        $data = ['postback' => 'postback'];
 
         // use key 'http' even if you send the request to https://...
-        $options = array(
-            'http' => array(
-                'header'  => "Content-type: application/x-www-form-urlencoded\r\n"."Cookie: CATS=".$this->getSession()->getCookie('CATS')."\r\n",
-                'method'  => 'POST',
-                'content' => http_build_query($data)
-            )
-        );
+        $options = ['http' => ['header'  => "Content-type: application/x-www-form-urlencoded\r\n"."Cookie: CATS=".$this->getSession()->getCookie('CATS')."\r\n", 'method'  => 'POST', 'content' => http_build_query($data)]];
         $context  = stream_context_create($options);
         $this->result = file_get_contents($url, false, $context);
     }
@@ -127,12 +121,7 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
      */
     public function iDoGETRequest($url)
     {
-        $opts = array(
-            'http'=>array(
-            'method'=>"GET",
-            'header'=> "Cookie: CATS=".$this->getSession()->getCookie('CATS')."\r\n"
-          )
-        );
+        $opts = ['http'=>['method'=>"GET", 'header'=> "Cookie: CATS=".$this->getSession()->getCookie('CATS')."\r\n"]];
 
         $context = stream_context_create($opts);
         $url = rtrim($this->getMinkParameter('base_url'), '/') . '/'.$url.'&';
@@ -186,7 +175,7 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
             $this->theResponseShouldContain("opencats - Login");
             return;
         }
-        $expectedTexts = array("You don't have permission", "Invalid user level for action", "You are not allowed to change your password.");
+        $expectedTexts = ["You don't have permission", "Invalid user level for action", "You are not allowed to change your password."];
         $response = $this->result;
 
         foreach ($expectedTexts as &$text)

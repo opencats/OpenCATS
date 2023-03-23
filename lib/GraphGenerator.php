@@ -154,10 +154,7 @@ class GraphPie
 
         $graph = new Graph($this->width, $this->height);
 
-        $colors = array (
-                new Green,
-                new Orange
-            );
+        $colors = [new Green, new Orange];
 
         $graph->setFormat($format);
         $graph->setBackgroundColor(new Color(0xF4, 0xF4, 0xF4));

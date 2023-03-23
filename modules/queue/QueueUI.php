@@ -42,7 +42,7 @@ class QueueUI extends UserInterface
         $this->_moduleDirectory = 'queue';
         $this->_moduleName = 'queue';
         $this->_moduleTabText = '';
-        $this->_subTabs = array();
+        $this->_subTabs = [];
     }
 
 

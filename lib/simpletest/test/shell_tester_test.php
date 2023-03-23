@@ -1,7 +1,7 @@
 <?php
 // $Id: shell_tester_test.php 1787 2008-04-26 20:35:39Z pp11 $
-require_once(dirname(__FILE__) . '/../autorun.php');
-require_once(dirname(__FILE__) . '/../shell_tester.php');
+require_once(__DIR__ . '/../autorun.php');
+require_once(__DIR__ . '/../shell_tester.php');
 Mock::generate('SimpleShell');
 
 class TestOfShellTestCase extends ShellTestCase {
@@ -19,7 +19,7 @@ class TestOfShellTestCase extends ShellTestCase {
     function testExitCode() {
         $this->mock_shell = new MockSimpleShell();
         $this->mock_shell->setReturnValue('execute', 0);
-        $this->mock_shell->expectOnce('execute', array('ls'));
+        $this->mock_shell->expectOnce('execute', ['ls']);
         $this->assertTrue($this->execute('ls'));
         $this->assertExitCode(0);
     }

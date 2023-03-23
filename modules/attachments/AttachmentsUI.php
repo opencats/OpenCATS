@@ -33,7 +33,7 @@ include_once(LEGACY_ROOT . '/lib/Attachments.php');
 class AttachmentsUI extends UserInterface
 {
     /* This is how many bytes at a time we read and output from an attachment. */
-    const ATTACHMENT_BLOCK_SIZE = 80192;
+    public const ATTACHMENT_BLOCK_SIZE = 80192;
 
 
     public function __construct()
@@ -44,7 +44,7 @@ class AttachmentsUI extends UserInterface
         $this->_moduleDirectory = 'attachments';
         $this->_moduleName = 'attachments';
         $this->_moduleTabText = '';
-        $this->_subTabs = array();
+        $this->_subTabs = [];
     }
 
 

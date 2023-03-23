@@ -7,7 +7,7 @@
  *
  */
 
-require_once dirname(__FILE__)."/Graph.class.php";
+require_once __DIR__."/Graph.class.php";
 
 /**
  * AntiSpam
@@ -60,7 +60,7 @@ class awAntiSpam extends awImage {
 		$number = strlen($letters);
 
 		for($i = 0; $i < $length; $i++) {
-			$this->string .= $letters{mt_rand(0, $number - 1)};
+			$this->string .= $letters{random_int(0, $number - 1)};
 		}
 
 		return $this->string;
@@ -129,18 +129,13 @@ class awAntiSpam extends awImage {
 	 * Draw image
 	 */
 	public function draw() {
-		$fonts = array(
-			ARTICHOW_FONT.DIRECTORY_SEPARATOR.'Tuffy.ttf',
-			ARTICHOW_FONT.DIRECTORY_SEPARATOR.'TuffyBold.ttf',
-			ARTICHOW_FONT.DIRECTORY_SEPARATOR.'TuffyItalic.ttf',
-			ARTICHOW_FONT.DIRECTORY_SEPARATOR.'TuffyBoldItalic.ttf'
-		);
+		$fonts = [ARTICHOW_FONT.DIRECTORY_SEPARATOR.'Tuffy.ttf', ARTICHOW_FONT.DIRECTORY_SEPARATOR.'TuffyBold.ttf', ARTICHOW_FONT.DIRECTORY_SEPARATOR.'TuffyItalic.ttf', ARTICHOW_FONT.DIRECTORY_SEPARATOR.'TuffyBoldItalic.ttf'];
 
-		$sizes = array(12, 12.5, 13, 13.5, 14, 15, 16, 17, 18, 19);
+		$sizes = [12, 12.5, 13, 13.5, 14, 15, 16, 17, 18, 19];
 
-		$widths = array();
-		$heights = array();
-		$texts = array();
+		$widths = [];
+		$heights = [];
+		$texts = [];
 
 		for($i = 0; $i < strlen($this->string); $i++) {
 
@@ -155,7 +150,7 @@ class awAntiSpam extends awImage {
 				$this->string{$i},
 				$font,
 				NULL,
-				mt_rand(-15, 15)
+				random_int(-15, 15)
 			);
 
 			$widths[] = $font->getTextWidth($text);
@@ -200,8 +195,8 @@ class awAntiSpam extends awImage {
 			$this->drawer->point(
 				$color,
 				new awPoint(
-					mt_rand(0, $width),
-					mt_rand(0, $height)
+					random_int(0, $width),
+					random_int(0, $height)
 				)
 			);
 		}

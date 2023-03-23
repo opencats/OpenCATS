@@ -9,9 +9,9 @@
 /**#@+
  * Includes SimpleTest files.
  */
-require_once dirname(__FILE__) . '/invoker.php';
-require_once dirname(__FILE__) . '/test_case.php';
-require_once dirname(__FILE__) . '/expectation.php';
+require_once __DIR__ . '/invoker.php';
+require_once __DIR__ . '/test_case.php';
+require_once __DIR__ . '/expectation.php';
 /**#@-*/
 
 /**
@@ -82,8 +82,8 @@ class SimpleErrorQueue {
      *    @access public
      */
     function clear() {
-        $this->queue = array();
-        $this->expectation_queue = array();
+        $this->queue = [];
+        $this->expectation_queue = [];
     }
 
     /**
@@ -105,7 +105,7 @@ class SimpleErrorQueue {
      *    @access public
      */
     function expectError($expected, $message) {
-        array_push($this->expectation_queue, array($expected, $message));
+        array_push($this->expectation_queue, [$expected, $message]);
     }
 
     /**
@@ -127,11 +127,11 @@ class SimpleErrorQueue {
      *    @access public
      */
     function tally() {
-        while (list($severity, $message, $file, $line) = $this->extract()) {
-            $severity = $this->getSeverityAsString($severity);
+        while ([$severity, $message, $file, $line] = $this->extract()) {
+            $severity = static::getSeverityAsString($severity);
             $this->test->error($severity, $message, $file, $line);
         }
-        while (list($expected, $message) = $this->extractExpectation()) {
+        while ([$expected, $message] = $this->extractExpectation()) {
             $this->test->assert($expected, false, "%s -> Expected error not caught");
         }
     }
@@ -147,11 +147,11 @@ class SimpleErrorQueue {
      */
     protected function testLatestError($severity, $content, $filename, $line) {
         if ($expectation = $this->extractExpectation()) {
-            list($expected, $message) = $expectation;
+            [$expected, $message] = $expectation;
             $this->test->assert($expected, $content, sprintf(
                     $message,
                     "%s -> PHP error [$content] severity [" .
-                            $this->getSeverityAsString($severity) .
+                            static::getSeverityAsString($severity) .
                             "] in [$filename] line [$line]"));
         } else {
             $this->test->error($severity, $content, $filename, $line);
@@ -168,7 +168,7 @@ class SimpleErrorQueue {
      *    @access public
      */
     function extract() {
-        if (count($this->queue)) {
+        if (is_array($this->queue) || $this->queue instanceof \Countable ? count($this->queue) : 0) {
             return array_shift($this->queue);
         }
         return false;
@@ -180,7 +180,7 @@ class SimpleErrorQueue {
      *    @access private
      */
     protected function extractExpectation() {
-        if (count($this->expectation_queue)) {
+        if (is_array($this->expectation_queue) || $this->expectation_queue instanceof \Countable ? count($this->expectation_queue) : 0) {
             return array_shift($this->expectation_queue);
         }
         return false;
@@ -194,19 +194,7 @@ class SimpleErrorQueue {
      *    @access public
      */
     static function getSeverityAsString($severity) {
-        static $map = array(
-                E_STRICT => 'E_STRICT',
-                E_ERROR => 'E_ERROR',
-                E_WARNING => 'E_WARNING',
-                E_PARSE => 'E_PARSE',
-                E_NOTICE => 'E_NOTICE',
-                E_CORE_ERROR => 'E_CORE_ERROR',
-                E_CORE_WARNING => 'E_CORE_WARNING',
-                E_COMPILE_ERROR => 'E_COMPILE_ERROR',
-                E_COMPILE_WARNING => 'E_COMPILE_WARNING',
-                E_USER_ERROR => 'E_USER_ERROR',
-                E_USER_WARNING => 'E_USER_WARNING',
-                E_USER_NOTICE => 'E_USER_NOTICE');
+        static $map = [E_STRICT => 'E_STRICT', E_ERROR => 'E_ERROR', E_WARNING => 'E_WARNING', E_PARSE => 'E_PARSE', E_NOTICE => 'E_NOTICE', E_CORE_ERROR => 'E_CORE_ERROR', E_CORE_WARNING => 'E_CORE_WARNING', E_COMPILE_ERROR => 'E_COMPILE_ERROR', E_COMPILE_WARNING => 'E_COMPILE_WARNING', E_USER_ERROR => 'E_USER_ERROR', E_USER_WARNING => 'E_USER_WARNING', E_USER_NOTICE => 'E_USER_NOTICE'];
         if (defined('E_RECOVERABLE_ERROR')) {
             $map[E_RECOVERABLE_ERROR] = 'E_RECOVERABLE_ERROR';
         }

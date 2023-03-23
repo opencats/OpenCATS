@@ -9,8 +9,8 @@
 /**#@+
  *    include other SimpleTest class files
  */
-require_once(dirname(__FILE__) . '/dumper.php');
-require_once(dirname(__FILE__) . '/compatibility.php');
+require_once(__DIR__ . '/dumper.php');
+require_once(__DIR__ . '/compatibility.php');
 /**#@-*/
 
 /**
@@ -786,7 +786,7 @@ class IsAExpectation extends SimpleExpectation {
      */
     protected function canonicalType($type) {
         $type = strtolower($type);
-        $map = array('boolean' => 'bool');
+        $map = ['boolean' => 'bool'];
         if (isset($map[$type])) {
             $type = $map[$type];
         }

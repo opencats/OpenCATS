@@ -1,7 +1,7 @@
 <?php
 // $Id: shell_test.php 1748 2008-04-14 01:50:41Z lastcraft $
-require_once(dirname(__FILE__) . '/../autorun.php');
-require_once(dirname(__FILE__) . '/../shell_tester.php');
+require_once(__DIR__ . '/../autorun.php');
+require_once(__DIR__ . '/../shell_tester.php');
 
 class TestOfShell extends UnitTestCase {
     
@@ -26,13 +26,13 @@ class TestOfShellTesterAndShell extends ShellTestCase {
     }
     
     function testFileExistence() {
-        $this->assertFileExists(dirname(__FILE__) . '/all_tests.php');
+        $this->assertFileExists(__DIR__ . '/all_tests.php');
         $this->assertFileNotExists('wibble');
     }
     
     function testFilePatterns() {
-        $this->assertFilePattern('/all[_ ]tests/i', dirname(__FILE__) . '/all_tests.php');
-        $this->assertNoFilePattern('/sputnik/i', dirname(__FILE__) . '/all_tests.php');
+        $this->assertFilePattern('/all[_ ]tests/i', __DIR__ . '/all_tests.php');
+        $this->assertNoFilePattern('/sputnik/i', __DIR__ . '/all_tests.php');
     }
 }
 ?>

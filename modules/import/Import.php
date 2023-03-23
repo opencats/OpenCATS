@@ -324,7 +324,7 @@ class Import
      */
     public function addForeign($type, $data, $assocID, $importID)
     {
-        $ar = array();
+        $ar = [];
         $dataS = '';
 
         foreach ($data AS $field => $value)
@@ -413,13 +413,13 @@ class JobOrdersImport
         }
         unset($dataNamed['company']);
         
-        $dataColumns = array();
-        $data = array();
+        $dataColumns = [];
+        $data = [];
 
         foreach ($dataNamed AS $dataColumn => $d)
         {
             $dataColumns[] = $dataColumn;
-            if(in_array($dataColumn, array("is_hot", "openings", "public")))
+            if(in_array($dataColumn, ["is_hot", "openings", "public"]))
             {
                 $data[] = $this->_db->makeQueryInteger($d);
             }

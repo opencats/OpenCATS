@@ -42,11 +42,7 @@ class CalendarUI extends UserInterface
         $this->_moduleDirectory = 'calendar';
         $this->_moduleName = 'calendar';
         $this->_moduleTabText = 'Calendar*al=' . ACCESS_LEVEL_READ . '@calendar';
-        $this->_subTabs = array(
-            'My Upcoming Events' => 'javascript:void(0);*js=calendarUpcomingEvents();*al=' . ACCESS_LEVEL_READ . '@calendar',
-            'Add Event' => 'javascript:void(0);*js=userCalendarAddEvent();*al=' . ACCESS_LEVEL_EDIT . '@calendar',
-            'Goto Today' => 'javascript:void(0);*js=goToToday();*al=' . ACCESS_LEVEL_READ . '@calendar'
-        );
+        $this->_subTabs = ['My Upcoming Events' => 'javascript:void(0);*js=calendarUpcomingEvents();*al=' . ACCESS_LEVEL_READ . '@calendar', 'Add Event' => 'javascript:void(0);*js=userCalendarAddEvent();*al=' . ACCESS_LEVEL_EDIT . '@calendar', 'Goto Today' => 'javascript:void(0);*js=goToToday();*al=' . ACCESS_LEVEL_READ . '@calendar'];
     }
 
 
@@ -222,7 +218,7 @@ class CalendarUI extends UserInterface
 
         $eventsString = implode(
             '@',
-            array($eventsStringNow, $eventsStringBefore, $eventsStringAfter, $userIsSuperUser)
+            [$eventsStringNow, $eventsStringBefore, $eventsStringAfter, $userIsSuperUser]
         );
 
         /* Textual representation of the month and year. */
@@ -304,6 +300,8 @@ class CalendarUI extends UserInterface
      */
     private function dynamicData()
     {
+        $month = null;
+        $year = null;
         /* Do we have a valid date argument? If a month was specified and
          * isn't valid, fatal() out. If none was specified, use the current
          * month.
@@ -480,7 +478,7 @@ class CalendarUI extends UserInterface
 
         /* Transfer to same url without a=addEvent. */
         $newGet = $_GET;
-        $newParams = array();
+        $newParams = [];
 
         unset($newGet['a']);
         $newGet['showEvent'] = $eventID;
@@ -668,7 +666,7 @@ class CalendarUI extends UserInterface
 
         /* Transfer to same url without a=editEvent. */
         $newGet = $_GET;
-        $newParams = array();
+        $newParams = [];
 
         unset($newGet['a']);
         $newGet['showEvent'] = $eventID;
@@ -708,7 +706,7 @@ class CalendarUI extends UserInterface
 
         /* Transfer to same url without a=deleteEvent or eventID. */
         $newGet = $_GET;
-        $newParams = array();
+        $newParams = [];
 
         unset($newGet['a']);
         unset($newGet['eventID']);

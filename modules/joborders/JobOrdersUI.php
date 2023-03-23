@@ -55,22 +55,22 @@ class JobOrdersUI extends UserInterface
     /* Maximum number of characters of the job description to show without the
      * user clicking "[More]"
      */
-    const DESCRIPTION_MAXLEN = 500;
+    public const DESCRIPTION_MAXLEN = 500;
 
     /* Maximum number of characters of the job notes to show without the user
      * clicking "[More]"
      */
-    const NOTES_MAXLEN = 500;
+    public const NOTES_MAXLEN = 500;
 
     /* Maximum number of characters of the Job Order Title to show on the main
      * job order list view.
      */
-    const TRUNCATE_JOBORDER_TITLE = 35;
+    public const TRUNCATE_JOBORDER_TITLE = 35;
 
     /* Maximum number of characters of the company name to show on the job orders
      * list view.
      */
-    const TRUNCATE_CLIENT_NAME = 28;
+    public const TRUNCATE_CLIENT_NAME = 28;
 
 
     public function __construct()
@@ -81,11 +81,11 @@ class JobOrdersUI extends UserInterface
         $this->_moduleDirectory = 'joborders';
         $this->_moduleName = 'joborders';
         $this->_moduleTabText = 'Job Orders';
-        $this->_subTabs = array(
+        $this->_subTabs = [
             //'Add Job Order'     => CATSUtility::getIndexName() . '?m=joborders&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@joborders.add',
             'Add Job Order' => 'javascript:void(0);*js=showPopWin(\''.CATSUtility::getIndexName().'?m=joborders&amp;a=addJobOrderPopup\', 400, 250, null);*al=' . ACCESS_LEVEL_EDIT . '@joborders.add',
-            'Search Job Orders' => CATSUtility::getIndexName() . '?m=joborders&amp;a=search'
-        );
+            'Search Job Orders' => CATSUtility::getIndexName() . '?m=joborders&amp;a=search',
+        ];
     }
 
 
@@ -321,12 +321,9 @@ class JobOrdersUI extends UserInterface
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
          * be empty.  Fill in some default values. */
-        if ($dataGridProperties == array())
+        if ($dataGridProperties == [])
         {
-            $dataGridProperties = array('rangeStart'    => 0,
-                                        'maxResults'    => 50,
-                                        'filter'        => 'Status=='.$jobOrderFilters[0],
-                                        'filterVisible' => false);
+            $dataGridProperties = ['rangeStart'    => 0, 'maxResults'    => 50, 'filter'        => 'Status=='.$jobOrderFilters[0], 'filterVisible' => false];
         }
 
         $dataGrid = DataGrid::get("joborders:JobOrdersListByViewDataGrid", $dataGridProperties);
@@ -475,7 +472,7 @@ class JobOrdersUI extends UserInterface
 
         /* Get pipeline graph. */
         $graphs = new graphs();
-        $pipelineGraph = $graphs->miniJobOrderPipeline(450, 250, array($jobOrderID));
+        $pipelineGraph = $graphs->miniJobOrderPipeline(450, 250, [$jobOrderID]);
 
         /* Get questionnaire information (if exists) */
         $questionnaireID = false;
@@ -586,8 +583,8 @@ class JobOrdersUI extends UserInterface
         /* Do we have a selected_company_id? */
         if ($selectedCompanyID === false)
         {
-            $selectedCompanyContacts = array();
-            $selectedCompanyLocation = array();
+            $selectedCompanyContacts = [];
+            $selectedCompanyLocation = [];
             $selectedDepartmentsString = '';
 
             $defaultCompanyID = $companies->getDefaultCompany();
@@ -597,10 +594,10 @@ class JobOrdersUI extends UserInterface
             }
             else
             {
-                $defaultCompanyRS = array();
+                $defaultCompanyRS = [];
             }
 
-            $companyRS = array();
+            $companyRS = [];
         }
         else
         {
@@ -616,7 +613,7 @@ class JobOrdersUI extends UserInterface
             );
 
             $defaultCompanyID = false;
-            $defaultCompanyRS = array();
+            $defaultCompanyRS = [];
 
             $companyRS = $companies->get($selectedCompanyID);
         }
@@ -865,7 +862,7 @@ class JobOrdersUI extends UserInterface
         }
         else
         {
-            $defaultCompanyRS = array();
+            $defaultCompanyRS = [];
         }
 
         /* Get departments. */
@@ -1065,21 +1062,9 @@ class JobOrdersUI extends UserInterface
                 }
 
                 /* Replace e-mail template variables. */
-                $stringsToFind = array(
-                    '%JBODOWNER%',
-                    '%JBODTITLE%',
-                    '%JBODCLIENT%',
-                    '%JBODID%',
-                    '%JBODCATSURL%'
-                );
-                $replacementStrings = array(
-                    $ownerDetails['fullName'],
-                    $jobOrderDetails['title'],
-                    $jobOrderDetails['companyName'],
-                    $jobOrderID,
-                    '<a href="http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=joborders&amp;a=show&amp;jobOrderID=' . $jobOrderID . '">'.
-                        'http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=joborders&amp;a=show&amp;jobOrderID=' . $jobOrderID . '</a>'
-                );
+                $stringsToFind = ['%JBODOWNER%', '%JBODTITLE%', '%JBODCLIENT%', '%JBODID%', '%JBODCATSURL%'];
+                $replacementStrings = [$ownerDetails['fullName'], $jobOrderDetails['title'], $jobOrderDetails['companyName'], $jobOrderID, '<a href="http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=joborders&amp;a=show&amp;jobOrderID=' . $jobOrderID . '">'.
+                    'http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=joborders&amp;a=show&amp;jobOrderID=' . $jobOrderID . '</a>'];
                 $statusChangeTemplate = str_replace(
                     $stringsToFind,
                     $replacementStrings,
@@ -1318,7 +1303,7 @@ class JobOrdersUI extends UserInterface
      * Called by handleRequest() to handle loading the quick add candidate form
      * in the modal dialog.
      */
-    private function addCandidateModal($contents = '', $fields = array())
+    private function addCandidateModal($contents = '', $fields = [])
     {
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
@@ -1338,7 +1323,7 @@ class JobOrdersUI extends UserInterface
         $extraFieldRS = $candidates->extraFields->getValuesForAdd();
 
         $associatedAttachment = 0;
-        $associatedAttachmentRS = array();
+        $associatedAttachmentRS = [];
 
         $EEOSettings = new EEOSettings($this->_siteID);
         $EEOSettingsRS = $EEOSettings->getAll();
@@ -1486,16 +1471,8 @@ class JobOrdersUI extends UserInterface
         /* Replace e-mail template variables. '%CANDSTATUS%', '%JBODTITLE%',
          * '%JBODCLIENT%' are replaced by JavaScript.
          */
-        $stringsToFind = array(
-            '%CANDOWNER%',
-            '%CANDFIRSTNAME%',
-            '%CANDFULLNAME%'
-        );
-        $replacementStrings = array(
-            $candidateData['ownerFullName'],
-            $candidateData['firstName'],
-            $candidateData['firstName'] . ' ' . $candidateData['lastName']
-        );
+        $stringsToFind = ['%CANDOWNER%', '%CANDFIRSTNAME%', '%CANDFULLNAME%'];
+        $replacementStrings = [$candidateData['ownerFullName'], $candidateData['firstName'], $candidateData['firstName'] . ' ' . $candidateData['lastName']];
         $statusChangeTemplate = str_replace(
             $stringsToFind,
             $replacementStrings,
@@ -1662,7 +1639,7 @@ class JobOrdersUI extends UserInterface
         }
 
         $baseURL = CATSUtility::getFilteredGET(
-            array('sortBy', 'sortDirection', 'page'), '&amp;'
+            ['sortBy', 'sortDirection', 'page'], '&amp;'
         );
         $searchPager->setSortByParameters($baseURL, $sortBy, $sortDirection);
 

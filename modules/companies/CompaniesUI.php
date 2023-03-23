@@ -45,7 +45,7 @@ class CompaniesUI extends UserInterface
     /* Maximum number of characters of the job notes to show without the user
      * clicking "[More]"
      */
-    const NOTES_MAXLEN = 500;
+    public const NOTES_MAXLEN = 500;
 
 
     public function __construct()
@@ -56,11 +56,7 @@ class CompaniesUI extends UserInterface
         $this->_moduleDirectory = 'companies';
         $this->_moduleName = 'companies';
         $this->_moduleTabText = 'Companies';
-        $this->_subTabs = array(
-            'Add Company'     => CATSUtility::getIndexName() . '?m=companies&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@companies.add' . '*hrmode=0',
-            'Search Companies' => CATSUtility::getIndexName() . '?m=companies&amp;a=search*hrmode=0',
-            'Go To My Company' => CATSUtility::getIndexName() . '?m=companies&amp;a=internalPostings*hrmode=0'
-        );
+        $this->_subTabs = ['Add Company'     => CATSUtility::getIndexName() . '?m=companies&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@companies.add' . '*hrmode=0', 'Search Companies' => CATSUtility::getIndexName() . '?m=companies&amp;a=search*hrmode=0', 'Go To My Company' => CATSUtility::getIndexName() . '?m=companies&amp;a=internalPostings*hrmode=0'];
     }
 
 
@@ -205,11 +201,9 @@ class CompaniesUI extends UserInterface
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
          * be empty.  Fill in some default values. */
-        if ($dataGridProperties == array())
+        if ($dataGridProperties == [])
         {
-            $dataGridProperties = array('rangeStart'    => 0,
-                                        'maxResults'    => 15,
-                                        'filterVisible' => false);
+            $dataGridProperties = ['rangeStart'    => 0, 'maxResults'    => 15, 'filterVisible' => false];
         }
 
         $dataGrid = DataGrid::get("companies:CompaniesListByViewDataGrid", $dataGridProperties);
@@ -576,7 +570,7 @@ class CompaniesUI extends UserInterface
         $companies->extraFields->setValuesOnEdit($companyID);
 
         /* Add departments */
-        $departments = array();
+        $departments = [];
         $departmentsDifferences = ListEditor::getDifferencesFromList(
             $departments, 'name', 'departmentID', $departmentsCSV
         );
@@ -778,17 +772,9 @@ class CompaniesUI extends UserInterface
                     $statusChangeTemplate = $statusChangeTemplateRS['textReplaced'];
                 }
                 /* Replace e-mail template variables. */
-                $stringsToFind = array(
-                    '%CLNTOWNER%',
-                    '%CLNTNAME%',
-                    '%CLNTCATSURL%'
-                );
-                $replacementStrings = array(
-                    $ownerDetails['fullName'],
-                    $companyDetails['name'],
-                    '<a href="http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=companies&amp;a=show&amp;companyID=' . $companyID . '">'.
-                        'http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=companies&amp;a=show&amp;companyID=' . $companyID . '</a>'
-                );
+                $stringsToFind = ['%CLNTOWNER%', '%CLNTNAME%', '%CLNTCATSURL%'];
+                $replacementStrings = [$ownerDetails['fullName'], $companyDetails['name'], '<a href="http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=companies&amp;a=show&amp;companyID=' . $companyID . '">'.
+                    'http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=companies&amp;a=show&amp;companyID=' . $companyID . '</a>'];
                 $statusChangeTemplate = str_replace(
                     $stringsToFind,
                     $replacementStrings,
@@ -979,7 +965,7 @@ class CompaniesUI extends UserInterface
         }
 
         $baseURL = CATSUtility::getFilteredGET(
-            array('sortBy', 'sortDirection', 'page'), '&amp;'
+            ['sortBy', 'sortDirection', 'page'], '&amp;'
         );
         $searchPager->setSortByParameters($baseURL, $sortBy, $sortDirection);
 
@@ -999,7 +985,7 @@ class CompaniesUI extends UserInterface
 
             case 'searchByKeyTechnologies':
                 $wildCardKeyTechnologies = $query;
-                $rs = $search->byKeyTechnologies($query, $sortBy, $sortDirection);
+                $rs = $search->byKeyTechnologies($query);
                 break;
 
             default:

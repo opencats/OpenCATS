@@ -65,12 +65,7 @@ class AddressParserTest extends TestCase
             $fax = '';
         }
 
-        return array(
-            'homePhone' => $homePhone,
-            'workPhone' => $workPhone,
-            'cellPhone' => $cellPhone,
-            'fax'  => $fax
-        );
+        return ['homePhone' => $homePhone, 'workPhone' => $workPhone, 'cellPhone' => $cellPhone, 'fax'  => $fax];
     }
 
 

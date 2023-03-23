@@ -253,7 +253,7 @@ class JobOrders
             //FIXME: Make subject configurable.
             $mailer = new Mailer($this->_siteID);
             $mailerStatus = $mailer->sendToOne(
-                array($emailAddress, ''),
+                [$emailAddress, ''],
                 'CATS Notification: Job Order Ownership Change',
                 $email,
                 true
@@ -873,9 +873,7 @@ class JobOrdersDataGrid extends DataGrid
         $this->_assignedCriterion = "";
         $this->_dataItemIDColumn = 'joborder.joborder_id';
 
-        $this->_classColumns = array(
-            'Attachments' => array(  'select'   => 'IF(attachment_id, 1, 0) AS attachmentPresent',
-                                     'pagerRender' => '
+        $this->_classColumns = ['Attachments' => ['select'   => 'IF(attachment_id, 1, 0) AS attachmentPresent', 'pagerRender' => '
                                                     if ($rsData[\'attachmentPresent\'] == 1)
                                                     {
                                                         $return = \'<img src="images/paperclip.gif" alt="" width="16" height="16" title="Attachment Present" />\';
@@ -886,100 +884,8 @@ class JobOrdersDataGrid extends DataGrid
                                                     }
 
                                                     return $return;
-                                                   ',
-
-                                     'pagerWidth'    => 10,
-                                     'pagerOptional' => true,
-                                     'pagerNoTitle' => true,
-                                     'sizable'  => false,
-                                     'exportable' => false,
-                                     'filterable' => false),
-
-            'ID' =>        array(     'pagerRender'    => 'return $rsData[\'jobOrderID\'];',
-                                      'sortableColumn' => 'jobOrderID',
-                                      'pagerWidth'     => 33,
-                                      'pagerOptional'  => true,
-                                      'alphaNavigation'=> false,
-                                      'exportColumnHeaderText' => 'id',
-                                      'filter'         => 'joborder.joborder_id',
-                                      'filterTypes'   => '===>=<'),
-
-            'Company Job ID'  => array ('select' => 'joborder.client_job_id AS cpyJobID',
-                                        'sortableColumn' => 'cpyJobID',
-                                        'pagerWidth'     => 65,
-                                        'pagerOptional'  => true,
-                                        'alphaNavigation'=> false,
-                                        'exportColumnHeaderText' => 'Company Job id',
-                                        'columnHeaderText' => 'Cpy Job ID',
-                                        'filter'         => 'joborder.client_job_id',
-                                        'filterTypes'   => '===>=<'),
-
-            'Title' =>       array('select'         => 'joborder.title AS title',
-                                      'pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=joborders&amp;a=show&amp;jobOrderID=\'.$rsData[\'jobOrderID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'title\']).\'</a>\';',
-                                      'sortableColumn' => 'title',
-                                      'pagerWidth'     => 165,
-                                      'pagerOptional'  => false,
-                                      'alphaNavigation'=> true,
-                                      'filter'         => 'joborder.title'),
-
-            'Company' =>       array('select'         => 'company.name AS companyName,
-                                                          company.company_id AS companyID',
-                                      'pagerRender'    => 'return \'<a href="'.CATSUtility::getIndexName().'?m=companies&amp;a=show&amp;companyID=\'.$rsData[\'companyID\'].\'">\'.htmlspecialchars($rsData[\'companyName\']).\'</a>\';',
-                                      'sortableColumn' => 'companyName',
-                                      'pagerWidth'     => 125,
-                                      'pagerOptional'  => true,
-                                      'alphaNavigation'=> true,
-                                      'filter'         => 'company.name'),
-
-            'Department' =>           array('select'   => 'company_department.name AS department',
-                                      'join'           => 'LEFT JOIN company_department ON company_department.company_department_id = joborder.company_department_id',
-                                      'pagerRender'    => 'return $rsData[\'department\'];',
-                                      'sortableColumn' => 'department',
-                                      'pagerWidth'     => 95,
-                                      'pagerOptional'  => true,
-                                      'alphaNavigation'=> true,
-                                      'filter'         => 'company_department.name'),
-
-            'Type' =>           array('select'         => 'joborder.type AS type',
-                                      'pagerRender'    => 'return $rsData[\'type\'];',
-                                      'sortableColumn' => 'type',
-                                      'pagerWidth'     => 45,
-                                      'pagerOptional'  => true,
-                                      'alphaNavigation'=> false,
-                                      'exportRender'   => 'return $rsData[\'type\'];',
-                                      'filter'         => 'joborder.type'),
-
-            'Status' =>         array('select'         => 'joborder.status AS status',
-                                      'pagerRender'    => 'return $rsData[\'status\'];',
-                                      'exportRender'   => 'return $rsData[\'status\'];',
-                                      'sortableColumn' => 'status',
-                                      'pagerWidth'     => 45,
-                                      'pagerOptional'  => true,
-                                      'alphaNavigation'=> false,
-                                      'filter'         => 'joborder.status'),
-
-            'Age' =>            array('select'         => 'DATEDIFF(NOW(), joborder.date_created) AS daysOld',
-                                      'pagerRender'    => 'return $rsData[\'daysOld\'];',
-                                      'sortableColumn' => 'daysOld',
-                                      'pagerWidth'     => 45,
-                                      'pagerOptional'  => true,
-                                      'alphaNavigation'=> false,
-                                      'filterHaving'  => 'daysOld',
-                                      'filterTypes'   => '===>=<'),
-
-            'Created' =>       array('select'   => 'DATE_FORMAT(joborder.date_created, \'%m-%d-%y\') AS dateCreated',
-                                     'pagerRender'      => 'return $rsData[\'dateCreated\'];',
-                                     'sortableColumn'     => 'dateCreatedSort',
-                                     'pagerWidth'    => 60,
-                                     'filterHaving' => 'DATE_FORMAT(joborder.date_created, \'%m-%d-%y\')'),
-
-            'Modified' =>      array('select'   => 'DATE_FORMAT(joborder.date_modified, \'%m-%d-%y\') AS dateModified',
-                                     'pagerRender'      => 'return $rsData[\'dateModified\'];',
-                                     'sortableColumn'     => 'dateModifiedSort',
-                                     'pagerWidth'    => 60,
-                                     'pagerOptional' => true,
-                                     'filterHaving' => 'DATE_FORMAT(joborder.date_modified, \'%m-%d-%y\')'),
-            'In Pipeline' => array('select'     => '(
+                                                   ', 'pagerWidth'    => 10, 'pagerOptional' => true, 'pagerNoTitle' => true, 'sizable'  => false, 'exportable' => false, 'filterable' => false], 'ID' =>        ['pagerRender'    => 'return $rsData[\'jobOrderID\'];', 'sortableColumn' => 'jobOrderID', 'pagerWidth'     => 33, 'pagerOptional'  => true, 'alphaNavigation'=> false, 'exportColumnHeaderText' => 'id', 'filter'         => 'joborder.joborder_id', 'filterTypes'   => '===>=<'], 'Company Job ID'  => ['select' => 'joborder.client_job_id AS cpyJobID', 'sortableColumn' => 'cpyJobID', 'pagerWidth'     => 65, 'pagerOptional'  => true, 'alphaNavigation'=> false, 'exportColumnHeaderText' => 'Company Job id', 'columnHeaderText' => 'Cpy Job ID', 'filter'         => 'joborder.client_job_id', 'filterTypes'   => '===>=<'], 'Title' =>       ['select'         => 'joborder.title AS title', 'pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=joborders&amp;a=show&amp;jobOrderID=\'.$rsData[\'jobOrderID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'title\']).\'</a>\';', 'sortableColumn' => 'title', 'pagerWidth'     => 165, 'pagerOptional'  => false, 'alphaNavigation'=> true, 'filter'         => 'joborder.title'], 'Company' =>       ['select'         => 'company.name AS companyName,
+                                                          company.company_id AS companyID', 'pagerRender'    => 'return \'<a href="'.CATSUtility::getIndexName().'?m=companies&amp;a=show&amp;companyID=\'.$rsData[\'companyID\'].\'">\'.htmlspecialchars($rsData[\'companyName\']).\'</a>\';', 'sortableColumn' => 'companyName', 'pagerWidth'     => 125, 'pagerOptional'  => true, 'alphaNavigation'=> true, 'filter'         => 'company.name'], 'Department' =>           ['select'   => 'company_department.name AS department', 'join'           => 'LEFT JOIN company_department ON company_department.company_department_id = joborder.company_department_id', 'pagerRender'    => 'return $rsData[\'department\'];', 'sortableColumn' => 'department', 'pagerWidth'     => 95, 'pagerOptional'  => true, 'alphaNavigation'=> true, 'filter'         => 'company_department.name'], 'Type' =>           ['select'         => 'joborder.type AS type', 'pagerRender'    => 'return $rsData[\'type\'];', 'sortableColumn' => 'type', 'pagerWidth'     => 45, 'pagerOptional'  => true, 'alphaNavigation'=> false, 'exportRender'   => 'return $rsData[\'type\'];', 'filter'         => 'joborder.type'], 'Status' =>         ['select'         => 'joborder.status AS status', 'pagerRender'    => 'return $rsData[\'status\'];', 'exportRender'   => 'return $rsData[\'status\'];', 'sortableColumn' => 'status', 'pagerWidth'     => 45, 'pagerOptional'  => true, 'alphaNavigation'=> false, 'filter'         => 'joborder.status'], 'Age' =>            ['select'         => 'DATEDIFF(NOW(), joborder.date_created) AS daysOld', 'pagerRender'    => 'return $rsData[\'daysOld\'];', 'sortableColumn' => 'daysOld', 'pagerWidth'     => 45, 'pagerOptional'  => true, 'alphaNavigation'=> false, 'filterHaving'  => 'daysOld', 'filterTypes'   => '===>=<'], 'Created' =>       ['select'   => 'DATE_FORMAT(joborder.date_created, \'%m-%d-%y\') AS dateCreated', 'pagerRender'      => 'return $rsData[\'dateCreated\'];', 'sortableColumn'     => 'dateCreatedSort', 'pagerWidth'    => 60, 'filterHaving' => 'DATE_FORMAT(joborder.date_created, \'%m-%d-%y\')'], 'Modified' =>      ['select'   => 'DATE_FORMAT(joborder.date_modified, \'%m-%d-%y\') AS dateModified', 'pagerRender'      => 'return $rsData[\'dateModified\'];', 'sortableColumn'     => 'dateModifiedSort', 'pagerWidth'    => 60, 'pagerOptional' => true, 'filterHaving' => 'DATE_FORMAT(joborder.date_modified, \'%m-%d-%y\')'], 'In Pipeline' => ['select'     => '(
                                                             SELECT
                                                                 COUNT(*)
                                                             FROM
@@ -988,15 +894,7 @@ class JobOrdersDataGrid extends DataGrid
                                                                 joborder_id = joborder.joborder_id
                                                             AND
                                                                 site_id = '.$this->_siteID.'
-                                                          ) AS totalPipeline',
-                                       'pagerRender'      => 'return $rsData[\'totalPipeline\'];',
-                                       'sortableColumn'     => 'totalPipeline',
-                                       'columnHeaderText' => 'Total',
-                                       'pagerWidth'    => 25,
-                                       'filterHaving'  => 'totalPipeline',
-                                       'filterTypes'   => '===>=<'),
-
-            'Not Contacted' => array('select'   => '(
+                                                          ) AS totalPipeline', 'pagerRender'      => 'return $rsData[\'totalPipeline\'];', 'sortableColumn'     => 'totalPipeline', 'columnHeaderText' => 'Total', 'pagerWidth'    => 25, 'filterHaving'  => 'totalPipeline', 'filterTypes'   => '===>=<'], 'Not Contacted' => ['select'   => '(
                                                               SELECT
                                                                   COUNT(*)
                                                               FROM
@@ -1007,15 +905,7 @@ class JobOrdersDataGrid extends DataGrid
                                                                   (status = '.PIPELINE_STATUS_NOCONTACT.' OR status = '.PIPELINE_STATUS_NOSTATUS.')
                                                               AND
                                                                   site_id = '.$this->_siteID.'
-                                                          ) AS notContacted',
-                                       'pagerRender'      => 'return $rsData[\'notContacted\'];',
-                                       'sortableColumn'     => 'notContacted',
-                                       'columnHeaderText' => 'NC',
-                                       'pagerWidth'    => 25,
-                                       'filterHaving'  => 'notContacted',
-                                       'filterTypes'   => '===>=<'),
-
-            'Submitted' =>       array('select'   => '(
+                                                          ) AS notContacted', 'pagerRender'      => 'return $rsData[\'notContacted\'];', 'sortableColumn'     => 'notContacted', 'columnHeaderText' => 'NC', 'pagerWidth'    => 25, 'filterHaving'  => 'notContacted', 'filterTypes'   => '===>=<'], 'Submitted' =>       ['select'   => '(
                                                             SELECT
                                                                 COUNT(*)
                                                             FROM
@@ -1026,15 +916,7 @@ class JobOrdersDataGrid extends DataGrid
                                                                 status_to = '.PIPELINE_STATUS_SUBMITTED.'
                                                             AND
                                                                 site_id = '.$this->_siteID.'
-                                                        ) AS submitted',
-                                     'pagerRender'      => 'return $rsData[\'submitted\'];',
-                                     'sortableColumn'     => 'submitted',
-                                     'columnHeaderText' => 'S',
-                                     'pagerWidth'    => 25,
-                                     'filterHaving'  => 'submitted',
-                                     'filterTypes'   => '===>=<'),
-
-            'Pipeline' =>       array('select'   => '(
+                                                        ) AS submitted', 'pagerRender'      => 'return $rsData[\'submitted\'];', 'sortableColumn'     => 'submitted', 'columnHeaderText' => 'S', 'pagerWidth'    => 25, 'filterHaving'  => 'submitted', 'filterTypes'   => '===>=<'], 'Pipeline' =>       ['select'   => '(
                                                             SELECT
                                                                 COUNT(*)
                                                             FROM
@@ -1043,15 +925,7 @@ class JobOrdersDataGrid extends DataGrid
                                                                 joborder_id = joborder.joborder_id
                                                             AND
                                                                 site_id = '.$this->_siteID.'
-                                                        ) AS pipeline',
-                                     'pagerRender'      => 'return $rsData[\'pipeline\'];',
-                                     'sortableColumn'     => 'pipeline',
-                                     'columnHeaderText' => 'P',
-                                     'pagerWidth'    => 25,
-                                     'filterHaving'  => 'pipeline',
-                                     'filterTypes'   => '===>=<'),
-
-             'Interviews' =>       array('select'   => '(
+                                                        ) AS pipeline', 'pagerRender'      => 'return $rsData[\'pipeline\'];', 'sortableColumn'     => 'pipeline', 'columnHeaderText' => 'P', 'pagerWidth'    => 25, 'filterHaving'  => 'pipeline', 'filterTypes'   => '===>=<'], 'Interviews' =>       ['select'   => '(
                                                              SELECT
                                                                  COUNT(*)
                                                              FROM
@@ -1062,130 +936,14 @@ class JobOrdersDataGrid extends DataGrid
                                                                  status_to = '.PIPELINE_STATUS_INTERVIEWING.'
                                                              AND
                                                                  site_id = '.$this->_siteID.'
-                                                         ) AS interviewingCount',
-                                      'pagerRender'      => 'return $rsData[\'interviewingCount\'];',
-                                      'sortableColumn'     => 'interviewingCount',
-                                      'columnHeaderText' => 'I',
-                                      'pagerWidth'    => 25,
-                                      'filterHaving'  => 'interviewingCount',
-                                      'filterTypes'   => '===>=<'),
-
-            'Owner' =>         array('select'   => 'owner_user.first_name AS ownerFirstName,' .
-                                                   'owner_user.last_name AS ownerLastName,' .
-                                                   'CONCAT(owner_user.last_name, owner_user.first_name) AS ownerSort',
-                                     'join'     => 'LEFT JOIN user AS owner_user ON joborder.owner = owner_user.user_id',
-                                     'pagerRender'      => 'return StringUtility::makeInitialName($rsData[\'ownerFirstName\'], $rsData[\'ownerLastName\'], false, LAST_NAME_MAXLEN);',
-                                     'exportRender'     => 'return $rsData[\'ownerFirstName\'] . " " .$rsData[\'ownerLastName\'];',
-                                     'sortableColumn'     => 'ownerSort',
-                                     'pagerWidth'    => 75,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'CONCAT(owner_user.first_name, owner_user.last_name)'),
-
-            'Recruiter' =>     array('select'   => 'recruiter_user.first_name AS recruiterFirstName,' .
-                                                   'recruiter_user.last_name AS recruiterLastName,' .
-                                                   'CONCAT(recruiter_user.last_name, recruiter_user.first_name) AS recruiterSort',
-                                     'join'     => 'LEFT JOIN user AS recruiter_user ON joborder.recruiter = recruiter_user.user_id',
-                                     'pagerRender'      => 'return StringUtility::makeInitialName($rsData[\'recruiterFirstName\'], $rsData[\'recruiterLastName\'], false, LAST_NAME_MAXLEN);',
-                                     'exportRender'     => 'return $rsData[\'recruiterFirstName\'] . " " .$rsData[\'recruiterLastName\'];',
-                                     'sortableColumn'     => 'recruiterSort',
-                                     'pagerWidth'    => 75,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'CONCAT(recruiter_user.first_name, recruiter_user.last_name)'),
-
-            'Contact' =>       array('select'   => 'contact.first_name AS contactFirstName,' .
-                                                   'contact.last_name AS contactLastName,' .
-                                                   'CONCAT(contact.last_name, contact.first_name) AS contactSort,' .
-                                                   'contact.contact_id AS contactID',
-                                     'pagerRender'      => 'return \'<a href="'.CATSUtility::getIndexName().'?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'contactID\'].\'">\'.StringUtility::makeInitialName($rsData[\'contactFirstName\'], $rsData[\'contactLastName\'], false, LAST_NAME_MAXLEN).\'</a>\';',
-                                     'exportRender'     => 'return $rsData[\'contactFirstName\'] . " " .$rsData[\'contactLastName\'];',
-                                     'sortableColumn'     => 'contactSort',
-                                     'pagerWidth'    => 75,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'CONCAT(contact.first_name, contact.last_name)'),
-
-            'Contact Phone' => array('select'   => 'contact.phone_work AS contactPhone',
-                                     'pagerRender'      => 'return $rsData[\'contactPhone\'];',
-                                     'exportRender'     => 'return $rsData[\'contactPhone\'];',
-                                     'sortableColumn'     => 'contactPhone',
-                                     'pagerWidth'    => 85,
-                                     'alphaNavigation' => false,
-                                     'filter'         => 'contact.phone_work'),
-
-            'City'          => array('select'   => 'joborder.city AS locationCity',
-                                     'pagerRender'      => 'return $rsData[\'locationCity\'];',
-                                     'exportRender'     => 'return $rsData[\'locationCity\'];',
-                                     'sortableColumn'     => 'locationCity',
-                                     'pagerWidth'    => 65,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'joborder.city'),
-
-            'State'          => array('select'   => 'joborder.state AS locationState',
-                                     'pagerRender'      => 'return $rsData[\'locationState\'];',
-                                     'exportRender'     => 'return $rsData[\'locationState\'];',
-                                     'sortableColumn'     => 'locationState',
-                                     'pagerWidth'    => 65,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'joborder.state'),
-
-            'Max Rate'          => array('select'   => 'joborder.rate_max AS maxRate',
-                                     'pagerRender'      => 'return $rsData[\'maxRate\'];',
-                                     'exportRender'     => 'return $rsData[\'maxRate\'];',
-                                     'sortableColumn'     => 'maxRate',
-                                     'pagerWidth'    => 85,
-                                     'alphaNavigation' => false,
-                                     'filter'         => 'joborder.rate_max',
-                                     'filterTypes'   => '===>=<'),
-
-            'Salary'          => array('select'   => 'joborder.salary AS salary',
-                                     'pagerRender'      => 'return $rsData[\'salary\'];',
-                                     'exportRender'     => 'return $rsData[\'salary\'];',
-                                     'sortableColumn'     => 'salary',
-                                     'pagerWidth'    => 85,
-                                     'alphaNavigation' => false,
-                                     'filter'         => 'joborder.salary',
-                                     'filterTypes'   => '===>=<'),
-
-            'Duration'          => array('select'   => 'joborder.duration AS duration',
-                                     'pagerRender'      => 'return $rsData[\'duration\'];',
-                                     'exportRender'     => 'return $rsData[\'duration\'];',
-                                     'sortableColumn'     => 'duration',
-                                     'pagerWidth'    => 85,
-                                     'alphaNavigation' => false,
-                                     'filter'         => 'joborder.duration',
-                                     'filterTypes'   => '===>=<'),
-
-            'Openings'      => array('select'   => 'joborder.openings_available AS openingsAvailable',
-                                     'pagerRender'      => 'return $rsData[\'openingsAvailable\'];',
-                                     'exportRender'     => 'return $rsData[\'openingsAvailable\'];',
-                                     'sortableColumn'     => 'openingsAvailable',
-                                     'pagerWidth'    => 85,
-                                     'alphaNavigation' => false,
-                                     'filter'         => 'joborder.openings_available',
-                                     'filterTypes'   => '===>=<'),
-
-            'Misc Notes' =>    array('select'  => 'joborder.notes AS notes',
-                                     'sortableColumn'    => 'notes',
-                                     'pagerWidth'   => 300,
-                                     'filter'         => 'joborder.notes'),
-
-            'OwnerID' =>       array('select'    => '',
-                                     'filter'    => 'joborder.owner, joborder.recruiter',
-                                     'filterInList' => true,
-                                     'pagerOptional' => false,
-                                     'filterable' => false,
-                                     'filterDescription' => 'Only My Job Orders'),
-
-            'IsHot' =>         array('select'    => '',
-                                     'filter'    => 'joborder.is_hot',
-                                     'pagerOptional' => false,
-                                     'filterable' => false,
-                                     'filterDescription' => 'Only Hot Job Orders'),
-
-            'Public/Private' => array('select'  => 'IF(joborder.public, \'Public\', \'Private\') AS public',
-                                    'sortableColumn'    => 'public',
-                                    'pagerWidth'   => 50,
-                                    'filter'         => 'IF(joborder.public, \'Public\', \'Private\')')
-        );
+                                                         ) AS interviewingCount', 'pagerRender'      => 'return $rsData[\'interviewingCount\'];', 'sortableColumn'     => 'interviewingCount', 'columnHeaderText' => 'I', 'pagerWidth'    => 25, 'filterHaving'  => 'interviewingCount', 'filterTypes'   => '===>=<'], 'Owner' =>         ['select'   => 'owner_user.first_name AS ownerFirstName,' .
+                                               'owner_user.last_name AS ownerLastName,' .
+                                               'CONCAT(owner_user.last_name, owner_user.first_name) AS ownerSort', 'join'     => 'LEFT JOIN user AS owner_user ON joborder.owner = owner_user.user_id', 'pagerRender'      => 'return StringUtility::makeInitialName($rsData[\'ownerFirstName\'], $rsData[\'ownerLastName\'], false, LAST_NAME_MAXLEN);', 'exportRender'     => 'return $rsData[\'ownerFirstName\'] . " " .$rsData[\'ownerLastName\'];', 'sortableColumn'     => 'ownerSort', 'pagerWidth'    => 75, 'alphaNavigation' => true, 'filter'         => 'CONCAT(owner_user.first_name, owner_user.last_name)'], 'Recruiter' =>     ['select'   => 'recruiter_user.first_name AS recruiterFirstName,' .
+                                               'recruiter_user.last_name AS recruiterLastName,' .
+                                               'CONCAT(recruiter_user.last_name, recruiter_user.first_name) AS recruiterSort', 'join'     => 'LEFT JOIN user AS recruiter_user ON joborder.recruiter = recruiter_user.user_id', 'pagerRender'      => 'return StringUtility::makeInitialName($rsData[\'recruiterFirstName\'], $rsData[\'recruiterLastName\'], false, LAST_NAME_MAXLEN);', 'exportRender'     => 'return $rsData[\'recruiterFirstName\'] . " " .$rsData[\'recruiterLastName\'];', 'sortableColumn'     => 'recruiterSort', 'pagerWidth'    => 75, 'alphaNavigation' => true, 'filter'         => 'CONCAT(recruiter_user.first_name, recruiter_user.last_name)'], 'Contact' =>       ['select'   => 'contact.first_name AS contactFirstName,' .
+                                               'contact.last_name AS contactLastName,' .
+                                               'CONCAT(contact.last_name, contact.first_name) AS contactSort,' .
+                                               'contact.contact_id AS contactID', 'pagerRender'      => 'return \'<a href="'.CATSUtility::getIndexName().'?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'contactID\'].\'">\'.StringUtility::makeInitialName($rsData[\'contactFirstName\'], $rsData[\'contactLastName\'], false, LAST_NAME_MAXLEN).\'</a>\';', 'exportRender'     => 'return $rsData[\'contactFirstName\'] . " " .$rsData[\'contactLastName\'];', 'sortableColumn'     => 'contactSort', 'pagerWidth'    => 75, 'alphaNavigation' => true, 'filter'         => 'CONCAT(contact.first_name, contact.last_name)'], 'Contact Phone' => ['select'   => 'contact.phone_work AS contactPhone', 'pagerRender'      => 'return $rsData[\'contactPhone\'];', 'exportRender'     => 'return $rsData[\'contactPhone\'];', 'sortableColumn'     => 'contactPhone', 'pagerWidth'    => 85, 'alphaNavigation' => false, 'filter'         => 'contact.phone_work'], 'City'          => ['select'   => 'joborder.city AS locationCity', 'pagerRender'      => 'return $rsData[\'locationCity\'];', 'exportRender'     => 'return $rsData[\'locationCity\'];', 'sortableColumn'     => 'locationCity', 'pagerWidth'    => 65, 'alphaNavigation' => true, 'filter'         => 'joborder.city'], 'State'          => ['select'   => 'joborder.state AS locationState', 'pagerRender'      => 'return $rsData[\'locationState\'];', 'exportRender'     => 'return $rsData[\'locationState\'];', 'sortableColumn'     => 'locationState', 'pagerWidth'    => 65, 'alphaNavigation' => true, 'filter'         => 'joborder.state'], 'Max Rate'          => ['select'   => 'joborder.rate_max AS maxRate', 'pagerRender'      => 'return $rsData[\'maxRate\'];', 'exportRender'     => 'return $rsData[\'maxRate\'];', 'sortableColumn'     => 'maxRate', 'pagerWidth'    => 85, 'alphaNavigation' => false, 'filter'         => 'joborder.rate_max', 'filterTypes'   => '===>=<'], 'Salary'          => ['select'   => 'joborder.salary AS salary', 'pagerRender'      => 'return $rsData[\'salary\'];', 'exportRender'     => 'return $rsData[\'salary\'];', 'sortableColumn'     => 'salary', 'pagerWidth'    => 85, 'alphaNavigation' => false, 'filter'         => 'joborder.salary', 'filterTypes'   => '===>=<'], 'Duration'          => ['select'   => 'joborder.duration AS duration', 'pagerRender'      => 'return $rsData[\'duration\'];', 'exportRender'     => 'return $rsData[\'duration\'];', 'sortableColumn'     => 'duration', 'pagerWidth'    => 85, 'alphaNavigation' => false, 'filter'         => 'joborder.duration', 'filterTypes'   => '===>=<'], 'Openings'      => ['select'   => 'joborder.openings_available AS openingsAvailable', 'pagerRender'      => 'return $rsData[\'openingsAvailable\'];', 'exportRender'     => 'return $rsData[\'openingsAvailable\'];', 'sortableColumn'     => 'openingsAvailable', 'pagerWidth'    => 85, 'alphaNavigation' => false, 'filter'         => 'joborder.openings_available', 'filterTypes'   => '===>=<'], 'Misc Notes' =>    ['select'  => 'joborder.notes AS notes', 'sortableColumn'    => 'notes', 'pagerWidth'   => 300, 'filter'         => 'joborder.notes'], 'OwnerID' =>       ['select'    => '', 'filter'    => 'joborder.owner, joborder.recruiter', 'filterInList' => true, 'pagerOptional' => false, 'filterable' => false, 'filterDescription' => 'Only My Job Orders'], 'IsHot' =>         ['select'    => '', 'filter'    => 'joborder.is_hot', 'pagerOptional' => false, 'filterable' => false, 'filterDescription' => 'Only Hot Job Orders'], 'Public/Private' => ['select'  => 'IF(joborder.public, \'Public\', \'Private\') AS public', 'sortableColumn'    => 'public', 'pagerWidth'   => 50, 'filter'         => 'IF(joborder.public, \'Public\', \'Private\')']];
 
         if (!eval(Hooks::get('JOBORDERS_DATAGRID_COLUMNS'))) return;
 

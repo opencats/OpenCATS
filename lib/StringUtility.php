@@ -37,40 +37,40 @@
  */
 class StringUtility
 {
-    const matchPHSeparator    = '[\s\/.-]*';                            /* PCRE */
-    const matchPHCountryCode  = '[(]?[+]?\d{0,3}[)]?';                  /* PCRE */
-    const matchPHECountryCode = '[(]?[+]?(?P<countryCode>\d{0,3})[)]?'; /* PCRE */
-    const matchPHAreaCode     = '[(]?[2-9]{1}\d{2}[)]?';                /* PCRE */
-    const matchPHEAreaCode    = '[(]?(?P<areaCode>[2-9]{1}\d{2})[)]?';  /* PCRE */
-    const matchPHExchange     = '\d{3}';                                /* PCRE */
-    const matchPHEExchange    = '(?P<exchange>\d{3})';                  /* PCRE */
-    const matchPHNumber       = '\d{4}';                                /* PCRE */
-    const matchPHENumber      = '(?P<number>\d{4})';                    /* PCRE */
+    public const matchPHSeparator    = '[\s\/.-]*';                            /* PCRE */
+    public const matchPHCountryCode  = '[(]?[+]?\d{0,3}[)]?';                  /* PCRE */
+    public const matchPHECountryCode = '[(]?[+]?(?P<countryCode>\d{0,3})[)]?'; /* PCRE */
+    public const matchPHAreaCode     = '[(]?[2-9]{1}\d{2}[)]?';                /* PCRE */
+    public const matchPHEAreaCode    = '[(]?(?P<areaCode>[2-9]{1}\d{2})[)]?';  /* PCRE */
+    public const matchPHExchange     = '\d{3}';                                /* PCRE */
+    public const matchPHEExchange    = '(?P<exchange>\d{3})';                  /* PCRE */
+    public const matchPHNumber       = '\d{4}';                                /* PCRE */
+    public const matchPHENumber      = '(?P<number>\d{4})';                    /* PCRE */
 
-    const matchPHExtension  = '([(]?(?:e?xt?(?:ension|)|#|[*]|)[)]?[\s\/.-]*\d{1,6}[)]?)?';                /* PCRE */
-    const matchPHEExtension = '([(]?(?:e?xt?(?:ension|)|#|[*]|)[)]?[\s\/.-]*(?P<extension>\d{1,6})[)]?)?'; /* PCRE */
+    public const matchPHExtension  = '([(]?(?:e?xt?(?:ension|)|#|[*]|)[)]?[\s\/.-]*\d{1,6}[)]?)?';                /* PCRE */
+    public const matchPHEExtension = '([(]?(?:e?xt?(?:ension|)|#|[*]|)[)]?[\s\/.-]*(?P<extension>\d{1,6})[)]?)?'; /* PCRE */
 
-    const matchEmailDot   = '(?:\.|\s*\(?\[?dot\)?\]?\s*)';                             /* PCRE */
-    const matchEmailAt    = '(?:@|\s*\(?\[?at\)?\]?\s*)';                               /* PCRE */
-    const matchEmailTLD   = '[a-z]{2,}';                                                /* PCRE */
-    const matchEmailETLD  = '(?P<tld>[a-z]{2,})';                                       /* PCRE */
-    const matchEmailHost  = '([a-z0-9_-]+(?:\.|\s*\(?\[?dot\)?\]?\s*)?)+';              /* PCRE */
-    const matchEmailEHost = '(?P<host>(?:[a-z0-9_-]+(?:\.|\s*\(?\[?dot\)?\]?\s*)?)+)';  /* PCRE */
-    const matchEmailUser  = '[a-z0-9._-]+';                                             /* PCRE */
-    const matchEmailEUser = '(?P<user>[a-z0-9._-]+)';                                   /* PCRE */
+    public const matchEmailDot   = '(?:\.|\s*\(?\[?dot\)?\]?\s*)';                             /* PCRE */
+    public const matchEmailAt    = '(?:@|\s*\(?\[?at\)?\]?\s*)';                               /* PCRE */
+    public const matchEmailTLD   = '[a-z]{2,}';                                                /* PCRE */
+    public const matchEmailETLD  = '(?P<tld>[a-z]{2,})';                                       /* PCRE */
+    public const matchEmailHost  = '([a-z0-9_-]+(?:\.|\s*\(?\[?dot\)?\]?\s*)?)+';              /* PCRE */
+    public const matchEmailEHost = '(?P<host>(?:[a-z0-9_-]+(?:\.|\s*\(?\[?dot\)?\]?\s*)?)+)';  /* PCRE */
+    public const matchEmailUser  = '[a-z0-9._-]+';                                             /* PCRE */
+    public const matchEmailEUser = '(?P<user>[a-z0-9._-]+)';                                   /* PCRE */
 
-    const matchURLDomain  = '(?:localhost|(?:\d{1,3}\.){3}\d{1,3}|(?:[a-z\d-]+\.)*[a-z\d-]+\.[a-z]{2,6})';         /* PCRE */
-    const matchEURLDomain = '(?P<domain>localhost|(?:\d{1,3}\.){3}\d{1,3}|(?:[a-z\d-]+\.)*[a-z\d-]+\.[a-z]{2,6})'; /* PCRE */
+    public const matchURLDomain  = '(?:localhost|(?:\d{1,3}\.){3}\d{1,3}|(?:[a-z\d-]+\.)*[a-z\d-]+\.[a-z]{2,6})';         /* PCRE */
+    public const matchEURLDomain = '(?P<domain>localhost|(?:\d{1,3}\.){3}\d{1,3}|(?:[a-z\d-]+\.)*[a-z\d-]+\.[a-z]{2,6})'; /* PCRE */
 
-    const matchEURLProtocol     = '(?:(?P<protocol>[a-z]+)(?:\:\/\/))?';                           /* PCRE */
-    const matchEURLUserPassword = '(?:(?P<user>[a-z\d.-]+)(?:\:(?P<password>[a-z&%\$\d.-]+))*@)?'; /* PCRE */
-    const matchEURLPort         = '\:?(?P<port>\d+)?';                                             /* PCRE */
-    const matchEURLExtras       = '(?P<extras>[\/][a-z\d.,\x27?\/+&%\$#=~_@-]*)*';                 /* PCRE */
+    public const matchEURLProtocol     = '(?:(?P<protocol>[a-z]+)(?:\:\/\/))?';                           /* PCRE */
+    public const matchEURLUserPassword = '(?:(?P<user>[a-z\d.-]+)(?:\:(?P<password>[a-z&%\$\d.-]+))*@)?'; /* PCRE */
+    public const matchEURLPort         = '\:?(?P<port>\d+)?';                                             /* PCRE */
+    public const matchEURLExtras       = '(?P<extras>[\/][a-z\d.,\x27?\/+&%\$#=~_@-]*)*';                 /* PCRE */
 
-    const matchURLProtocol     = '(?:[a-z]+\:\/\/|)';                     /* PCRE */
-    const matchURLUserPassword = '(?:[a-z\d.-]+(?:\:[a-z&%\$\d.-]+)*@|)'; /* PCRE */
-    const matchURLPort         = '\:?(\d+)?';                             /* PCRE */
-    const matchURLExtras       = '([\/][a-z\d.,\x27?\/+&%\$#=~_@-]*)*';   /* PCRE */
+    public const matchURLProtocol     = '(?:[a-z]+\:\/\/|)';                     /* PCRE */
+    public const matchURLUserPassword = '(?:[a-z\d.-]+(?:\:[a-z&%\$\d.-]+)*@|)'; /* PCRE */
+    public const matchURLPort         = '\:?(\d+)?';                             /* PCRE */
+    public const matchURLExtras       = '([\/][a-z\d.,\x27?\/+&%\$#=~_@-]*)*';   /* PCRE */
 
 
     /* Prevent this class from being instantiated. */
@@ -179,7 +179,7 @@ class StringUtility
      */
     public static function extractAllPhoneNumbers($string)
     {
-        $formattedPhoneNumbers = array();
+        $formattedPhoneNumbers = [];
 
         if (preg_match_all('/'
             . self::matchPHECountryCode . self::matchPHSeparator . self::matchPHEAreaCode
@@ -455,13 +455,14 @@ class StringUtility
      */
     public static function tokenize($splitCharacters, $string)
     {
+        $tokens = [];
         $tokenIndex = 0;
 
         $tokens[$tokenIndex] = strtok($string, $splitCharacters);
 
         if ($tokens[$tokenIndex] === false || empty($tokens[$tokenIndex]))
         {
-            return array();
+            return [];
         }
 
         while (true)
@@ -597,7 +598,7 @@ class StringUtility
 
         if (empty($string))
         {
-            return array();
+            return [];
         }
 
         $results = preg_split(
