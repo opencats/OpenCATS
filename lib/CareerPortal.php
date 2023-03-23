@@ -39,7 +39,18 @@ include_once(LEGACY_ROOT . '/lib/Mailer.php');
 class CareerPortalSettings
 {
     // FIXME: Make this private and use a getter.
-    public $requiredTemplateFields = ['Header', 'Content - Main', 'Content - Search Results', 'Content - Job Details', 'Content - Candidate Registration', 'Content - Candidate Profile', 'Content - Apply for Position', 'Content - Questionnaire', 'Content - Thanks for your Submission', 'Footer', 'CSS'];
+    public $requiredTemplateFields = [
+    'Header', 
+    'Content - Main', 
+    'Content - Search Results', 
+    'Content - Job Details', 
+    'Content - Candidate Registration', 
+    'Content - Candidate Profile', 
+    'Content - Apply for Position', 
+    'Content - Questionnaire', 
+    'Content - Thanks for your Submission', 
+    'Footer', 
+    'CSS'];
     private $_db;
     private $_siteID;
 
