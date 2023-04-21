@@ -54,7 +54,7 @@ class awAxis {
 	 *
 	 * @var array
 	 */
-	protected $ticks = array();
+	protected $ticks = [];
 
 	/**
 	 * Axis and ticks color
@@ -99,10 +99,7 @@ class awAxis {
 	 *
 	 * @var array
 	 */
-	protected $rangeCallback = array(
-		'toValue' => 'toProportionalValue',
-		'toPosition' => 'toProportionalPosition'
-	);
+	protected $rangeCallback = ['toValue' => 'toProportionalValue', 'toPosition' => 'toProportionalPosition'];
 
 	/**
 	 * Build the axis
@@ -331,7 +328,7 @@ class awAxis {
 		if(is_array($texts)) {
 			$this->auto(FALSE);
 			$this->label->setCallbackFunction(function ($value) use ($texts) {
-			    return isset($texts[$value]) ? $texts[$value] : '?';
+			    return $texts[$value] ?? '?';
 			});
 		}
 	}
@@ -458,10 +455,7 @@ class awAxis {
 	 * @param string $toPosition Transform a value to a position between 0 and 1 on the axis
 	 */
 	public function setRangeCallback($toValue, $toPosition) {
-		$this->rangeCallback = array(
-			'toValue' => (string)$toValue,
-			'toPosition' => (string)$toPosition
-		);
+		$this->rangeCallback = ['toValue' => (string)$toValue, 'toPosition' => (string)$toPosition];
 	}
 
 	/**
@@ -534,7 +528,7 @@ class awAxis {
 
 		$callback = $this->rangeCallback['toPosition'];
 
-		list($min, $max) = $this->range;
+		[$min, $max] = $this->range;
 		if($this->forcedMax !== null && $this->forcedMax > $max) $max = $this->forcedMax;
 		$position = $callback($value, $min, $max);
 
@@ -592,11 +586,13 @@ class awAxis {
 
 	public function autoScale() {
 
-		if($this->isAuto() === FALSE) {
+		$intervalReal = null;
+  $labelNumber = null;
+  if($this->isAuto() === FALSE) {
 			return;
 		}
 
-		list($min, $max) = $this->getRange();
+		[$min, $max] = $this->getRange();
 		$interval = $max - $min;
 
 		if($interval < 1) $interval = 1;
@@ -607,7 +603,7 @@ class awAxis {
 		$difference = log($interval) / log(10);
 		$difference = floor($difference);
 
-		$pow = pow(10, $difference);
+		$pow = 10 ** $difference;
 
 		$intervalNormalize = $interval / $pow;
 
@@ -692,13 +688,13 @@ class awAxis {
 	protected function drawLabels($drawer) {
 
 		if($this->labelNumber !== NULL) {
-			list($min, $max) = $this->range;
+			[$min, $max] = $this->range;
 			$number = $this->labelNumber - 1;
 			if($number < 1) {
 				return;
 			}
 			$function = $this->rangeCallback['toValue'];
-			$labels = array();
+			$labels = [];
 			for($i = 0; $i <= $number; $i++) {
 				$labels[] = $function($i / $number, $min, $max);
 			}

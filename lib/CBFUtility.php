@@ -25,11 +25,11 @@ class CBFUtility
 {
     private $_db;
     private $_siteID;
-    private $_structure;
-    private $_keys;
-    private $_GUID;
-    private $_GUIDs;
-    private $_GUIDRestores;
+    private $_structure = [];
+    private $_keys = [];
+    private $_GUID = 0;
+    private $_GUIDs = [];
+    private $_GUIDRestores = [];
     private $_GUIDSwap;
     private $_GUIDSwapEnabled;
     private $_dataOverwrite;
@@ -39,12 +39,7 @@ class CBFUtility
     {
         $siteID = $_SESSION['CATS']->getSiteID();
         $this->_db = DatabaseConnection::getInstance();
-        $this->_structure = array();
-        $this->_keys = array();
         $this->_siteID = $siteID;
-        $this->_GUID = 0;
-        $this->_GUIDs = array();
-        $this->_GUIDRestores = array();
         $this->_dataOverwrite = $dataOverwrite;
     }
 
@@ -90,8 +85,9 @@ class CBFUtility
 
     public function doScanTable($tableName)
     {
+        $primaryKey = null;
         $hasSiteID = false;
-        $tableStructure = array();
+        $tableStructure = [];
 
         $sql = sprintf(
             "SHOW COLUMNS
@@ -108,11 +104,7 @@ class CBFUtility
 
         foreach ($rs as $row)
         {
-            $tableStructure[$row['Field']] = array(
-                'Type' => $row['Type'],
-                'PRI'  => ($row['Key'] == 'PRI') ? true : false,
-                'Null' => ($row['Null'] == 'NO') ? false : true
-            );
+            $tableStructure[$row['Field']] = ['Type' => $row['Type'], 'PRI'  => ($row['Key'] == 'PRI') ? true : false, 'Null' => ($row['Null'] == 'NO') ? false : true];
 
             if ($row['Key'] == 'PRI')
             {
@@ -138,7 +130,7 @@ class CBFUtility
     // FIXME: Document me.
     public function getForeignKeys($tableData)
     {
-        $result = array();
+        $result = [];
         foreach ($tableData as $fieldName => $fieldData)
         {
             if (isset($fieldData[$id = 'foreign']))
@@ -152,11 +144,11 @@ class CBFUtility
     // FIXME: Document me.
     public function getTablesByForeignKeys($allowedKeys)
     {
-        $result = array();
+        $result = [];
         foreach ($this->_structure as $tableName => $tableData)
         {
             $foreignKeys = $this->getForeignKeys($tableData);
-            if (count($foreignKeys) == $allowedKeys)
+            if ((is_array($foreignKeys) || $foreignKeys instanceof \Countable ? count($foreignKeys) : 0) == $allowedKeys)
             {
                 $result[$tableName] = $tableData;
             }
@@ -187,7 +179,7 @@ class CBFUtility
         {
             if (!isset($this->_GUIDs[$fieldName]))
             {
-                return ($this->_GUIDs[$fieldName] = array( $id => ($this->_GUID++) ));
+                return ($this->_GUIDs[$fieldName] = [$id => ($this->_GUID++)]);
             }
 
             else if (isset($this->_GUIDs[$fieldName][$id]))
@@ -323,7 +315,7 @@ class CBFUtility
         // Check if table exists in current schema
         if (!isset($this->_structure[$tableName])) return false;
 
-        $tableStructure = array();
+        $tableStructure = [];
         foreach ($tableFields as $newFieldName)
         {
             $exists = false;
@@ -335,10 +327,10 @@ class CBFUtility
                 }
             }
 
-            $tableStructure[] = array('name' => $newFieldName, 'exists' => $exists);
+            $tableStructure[] = ['name' => $newFieldName, 'exists' => $exists];
         }
 
-        return array($tableName, $tableStructure);
+        return [$tableName, $tableStructure];
     }
 
     // FIXME: Document me.
@@ -411,16 +403,18 @@ class CBFUtility
 
     private function restoreTableDataBackup($tableName, $tableStructure, $tableData)
     {
-        $numFields = count($tableStructure);
+        $dataType = null;
+        $data = null;
+        $numFields = is_array($tableStructure) || $tableStructure instanceof \Countable ? count($tableStructure) : 0;
         $numRows = array_pop(unpack('N1', substr($tableData, 0, $size = 4)));
         $tableData = substr($tableData, $size);
 
-        $sqlInserts = array();
+        $sqlInserts = [];
 
         for ($rowIndex=0; $rowIndex < $numRows; $rowIndex++)
         {
             $sqlPre = '';
-            $sqlValues = array();
+            $sqlValues = [];
             $primaryGUID = false;
 
             for ($fieldIndex=0; $fieldIndex < $numFields; $fieldIndex++)
@@ -497,7 +491,7 @@ class CBFUtility
                 );
 
                 // If there are no untranslated GUIDs, insert the query
-                $sqlInserts[] = array('GUID' => $primaryGUID, 'SQL' => $sql);
+                $sqlInserts[] = ['GUID' => $primaryGUID, 'SQL' => $sql];
             }
         }
 
@@ -624,14 +618,14 @@ class CBFUtility
             $this->deleteSiteData();
         }
 
-        $sqlInserts = array();
+        $sqlInserts = [];
 
         while (!feof($fp) && ftell($fp) != $fileSize)
         {
             // Get info for the first table
             $tableInfoSize = array_pop(unpack('N1', fread($fp, 4)));
             $data = fread($fp, $tableInfoSize);
-            list($tableName, $tableStructure) = $this->restoreTableInfoBackup($data);
+            [$tableName, $tableStructure] = $this->restoreTableInfoBackup($data);
 
             $tableDataSize = array_pop(unpack('N1', fread($fp, 4)));
             $data = fread($fp, $tableDataSize);
@@ -642,7 +636,7 @@ class CBFUtility
 
         while (count($sqlInserts) > 0)
         {
-            $tmp = array();
+            $tmp = [];
             for ($sqlIndex=0; $sqlIndex < count($sqlInserts); $sqlIndex++)
             {
                 $sqlInsert = $sqlInserts[$sqlIndex];

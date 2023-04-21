@@ -55,8 +55,8 @@ class CleanExceptions extends Task
 
     public function run($siteID, $args)
     {
-        Task::setName('CleanExceptions');
-        Task::setDescription('Clean up the exceptions log.');
+        parent::setName('CleanExceptions');
+        parent::setDescription('Clean up the exceptions log.');
 
         $db = DatabaseConnection::getInstance();
 

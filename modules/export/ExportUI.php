@@ -48,7 +48,7 @@ class ExportUI extends UserInterface
         $this->_moduleDirectory = 'export';
         $this->_moduleName = 'export';
         $this->_moduleTabText = '';
-        $this->_subTabs = array();
+        $this->_subTabs = [];
     }
 
     public function handleRequest()
@@ -76,6 +76,7 @@ class ExportUI extends UserInterface
      */
     public function onExport()
     {
+        $IDs = [];
         $filename = 'export.csv';
 
         /* Bail out if we don't have a valid data item type. */
@@ -110,7 +111,7 @@ class ExportUI extends UserInterface
             else
             {
                 /* No; All Records Mode. */
-                $IDs = array();
+                $IDs = [];
             }
         }
 

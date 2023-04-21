@@ -142,7 +142,7 @@ class ResultSetUtility
      */
     public static function getColumnValues($resultSet, $columnName)
     {
-        $outputArray = array();
+        $outputArray = [];
 
         foreach ($resultSet as $value)
         {
@@ -212,8 +212,8 @@ class ResultSetUtility
             return false;
         }
 
-        $sortArray = array();
-        $outArray = array();
+        $sortArray = [];
+        $outArray = [];
 
         foreach ($resultSet as $rowIndex => $row)
         {

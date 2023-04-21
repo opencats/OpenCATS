@@ -37,12 +37,12 @@
  */
 class HashUtility
 {
-    const CRC32_CRCPOLY = 0xEDB88320;
-    const CRC32_CRCINV = 0x5B358FD3;
-    const CRC32_INITXOR = 0xFFFFFFFF;
-    const CRC32_FINALXOR = 0xFFFFFFFF;
-    const CRC32_READ_BLOCKSIZE = 1048576;
-    const INT_MAX = 0x7fffffff;
+    public const CRC32_CRCPOLY = 0xEDB88320;
+    public const CRC32_CRCINV = 0x5B358FD3;
+    public const CRC32_INITXOR = 0xFFFFFFFF;
+    public const CRC32_FINALXOR = 0xFFFFFFFF;
+    public const CRC32_READ_BLOCKSIZE = 1048576;
+    public const INT_MAX = 0x7fffffff;
 
     /**
      * A reasonably fast pure-PHP CRC algorithm that doesn't require the
@@ -76,7 +76,7 @@ class HashUtility
             }
             
             // FIXME: Should this be in machine byte order, or always little endian?
-            list(,$hash) = unpack('V', $rawHash);
+            [, $hash] = unpack('V', $rawHash);
             return $hash;
         }
 

@@ -1,8 +1,8 @@
 <?php
 // $Id: authentication_test.php 1748 2008-04-14 01:50:41Z lastcraft $
-require_once(dirname(__FILE__) . '/../autorun.php');
-require_once(dirname(__FILE__) . '/../authentication.php');
-require_once(dirname(__FILE__) . '/../http.php');
+require_once(__DIR__ . '/../autorun.php');
+require_once(__DIR__ . '/../authentication.php');
+require_once(__DIR__ . '/../http.php');
 Mock::generate('SimpleHttpRequest');
 
 class TestOfRealm extends UnitTestCase {

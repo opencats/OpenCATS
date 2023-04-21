@@ -27,12 +27,12 @@
 
 function getAllFilesInDirectory150($directory)
 {
-    $files = array();
+    $files = [];
 
     $handle = @opendir($directory);
     if (!$handle)
     {
-        return array();
+        return [];
     }
 
     while (($file = readdir($handle)) !== false)

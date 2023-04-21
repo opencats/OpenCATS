@@ -9,9 +9,9 @@
 /**#@+
  * include SimpleTest files
  */
-require_once(dirname(__FILE__) . '/reflection_php5.php');
-require_once(dirname(__FILE__) . '/default_reporter.php');
-require_once(dirname(__FILE__) . '/compatibility.php');
+require_once(__DIR__ . '/reflection_php5.php');
+require_once(__DIR__ . '/default_reporter.php');
+require_once(__DIR__ . '/compatibility.php');
 /**#@-*/
 
 /**
@@ -27,7 +27,7 @@ class SimpleTest {
      *    @return string        Version string.
      */
     static function getVersion() {
-        $content = file(dirname(__FILE__) . '/VERSION');
+        $content = file(__DIR__ . '/VERSION');
         return trim($content[0]);
     }
 
@@ -88,10 +88,10 @@ class SimpleTest {
      */
     static function preferred($classes) {
         if (! is_array($classes)) {
-            $classes = array($classes);
+            $classes = [$classes];
         }
         $registry = &SimpleTest::getRegistry();
-        for ($i = count($registry['Preferred']) - 1; $i >= 0; $i--) {
+        for ($i = (is_array($registry['Preferred']) || $registry['Preferred'] instanceof \Countable ? count($registry['Preferred']) : 0) - 1; $i >= 0; $i--) {
             foreach ($classes as $class) {
                 if (SimpleTestCompatibility::isA($registry['Preferred'][$i], $class)) {
                     return $registry['Preferred'][$i];
@@ -210,14 +210,7 @@ class SimpleTest {
      *    @return hash       All registry defaults.
      */
     protected static function getDefaults() {
-        return array(
-                'Parsers' => false,
-                'MockBaseClass' => 'SimpleMock',
-                'IgnoreList' => array(),
-                'DefaultProxy' => false,
-                'DefaultProxyUsername' => false,
-                'DefaultProxyPassword' => false,
-                'Preferred' => array(new HtmlReporter(), new TextReporter(), new XmlReporter()));
+        return ['Parsers' => false, 'MockBaseClass' => 'SimpleMock', 'IgnoreList' => [], 'DefaultProxy' => false, 'DefaultProxyUsername' => false, 'DefaultProxyPassword' => false, 'Preferred' => [new HtmlReporter(), new TextReporter(), new XmlReporter()]];
     }
 
     /**
@@ -255,7 +248,7 @@ class SimpleTestContext {
      *    @access public
      */
     function clear() {
-        $this->resources = array();
+        $this->resources = [];
     }
 
     /**
@@ -334,7 +327,7 @@ class SimpleStackTrace {
      *                             number and file.
      */
     function traceMethod($stack = false) {
-        $stack = $stack ? $stack : $this->captureTrace();
+        $stack = $stack ?: $this->captureTrace();
         foreach ($stack as $frame) {
             if ($this->frameLiesWithinSimpleTestFolder($frame)) {
                 continue;
@@ -385,7 +378,7 @@ class SimpleStackTrace {
         if (function_exists('debug_backtrace')) {
             return array_reverse(debug_backtrace());
         }
-        return array();
+        return [];
     }
 }
 ?>

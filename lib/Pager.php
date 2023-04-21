@@ -43,7 +43,7 @@ class Pager
     protected $_currentPage = 1;
     protected $_totalRows;
     protected $_navigationData;
-    protected $_sortByFields = array();
+    protected $_sortByFields = [];
     protected $_baseURL = '';
     protected $_sortBy = '';
     protected $_sortDirection = '';
@@ -267,9 +267,7 @@ class Pager
             return;
         }
 
-        $valid = array(
-            'name', 'city', 'state', 'clientName', 'title', 'firstName', 'lastName'
-        );
+        $valid = ['name', 'city', 'state', 'clientName', 'title', 'firstName', 'lastName'];
 
         
         /* Try to get default column data if not on an alpha column. */
@@ -432,14 +430,14 @@ class Pager
             /* $i+2, because every pair of records indicates the first and
              * last entry on a page.
              */
-            for ($i = 0; $i < count($rsNav); $i += 2)
+            for ($i = 0; $i < (is_array($rsNav) || $rsNav instanceof \Countable ? count($rsNav) : 0); $i += 2)
             {
                 $output = '';
 
                 /* If no corresponding 2nd entry, make one (1 entry on last
                  * page for example).
                  */
-                if (count($rsNav) == $i+1)
+                if ((is_array($rsNav) || $rsNav instanceof \Countable ? count($rsNav) : 0) == $i+1)
                 {
                     $rsNav[$i + 1] = $rsNav[$i];
                 }
@@ -452,7 +450,7 @@ class Pager
                 /* If it is the last entry, go to the first or last letter
                  * in the alphabet.
                  */
-                if (count($rsNav) == $i + 2)
+                if ((is_array($rsNav) || $rsNav instanceof \Countable ? count($rsNav) : 0) == $i + 2)
                 {
                     if ($sortDirection == 'ASC')
                     {

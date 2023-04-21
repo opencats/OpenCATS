@@ -9,9 +9,9 @@
 /**#@+
  *  include other SimpleTest class files
  */
-require_once(dirname(__FILE__) . '/browser.php');
-require_once(dirname(__FILE__) . '/xml.php');
-require_once(dirname(__FILE__) . '/test_case.php');
+require_once(__DIR__ . '/browser.php');
+require_once(__DIR__ . '/xml.php');
+require_once(__DIR__ . '/test_case.php');
 /**#@-*/
 
 /**
@@ -22,7 +22,7 @@ require_once(dirname(__FILE__) . '/test_case.php');
 class RemoteTestCase {
     private $url;
     private $dry_url;
-    private $size;
+    private $size = false;
 
     /**
      *    Sets the location of the remote test.
@@ -32,8 +32,7 @@ class RemoteTestCase {
      */
     function __construct($url, $dry_url = false) {
         $this->url = $url;
-        $this->dry_url = $dry_url ? $dry_url : $url;
-        $this->size = false;
+        $this->dry_url = $dry_url ?: $url;
     }
 
     /**

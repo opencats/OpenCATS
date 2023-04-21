@@ -40,7 +40,7 @@ class ImportUtility
     // FIXME: Document me.
     public static function getDirectoryFiles($dirName)
     {
-        $files = array();
+        $files = [];
         
         $handle = opendir($dirName);
         if (!$handle)
@@ -71,15 +71,7 @@ class ImportUtility
                 // Make sure it's a document type we can get text from
                 if (($docType = FileUtility::getDocumentType($file)) == DOCUMENT_TYPE_UNKNOWN) continue;
 
-                $fileMp = array(
-                    'realName' => $file,
-                    'name' => $fileName,
-                    'size' => $fileSize,
-                    'ext' => $fileExt,
-                    'type' => $docType,
-                    'cTime' => $info['ctime'],
-                    'parsed' => false
-                );
+                $fileMp = ['realName' => $file, 'name' => $fileName, 'size' => $fileSize, 'ext' => $fileExt, 'type' => $docType, 'cTime' => $info['ctime'], 'parsed' => false];
 
                 $files[] = $fileMp;
             }

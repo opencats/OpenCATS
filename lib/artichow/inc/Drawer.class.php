@@ -158,7 +158,7 @@ class awDrawer {
 	 */
 	public function getSize() {
 
-		return array($this->w, $this->h);
+		return [$this->w, $this->h];
 
 	}
 
@@ -171,8 +171,8 @@ class awDrawer {
 	 */
 	public function copyImage(awImage $image, awPoint $p1, awPoint $p2) {
 
-		list($x1, $y1) = $p1->getLocation();
-		list($x2, $y2) = $p2->getLocation();
+		[$x1, $y1] = $p1->getLocation();
+		[$x2, $y2] = $p2->getLocation();
 
 		$drawer = $image->getDrawer();
 		imagecopy($this->resource, $drawer->resource, $this->x + $x1, $this->y + $y1, 0, 0, $x2 - $x1, $y2 - $y1);
@@ -222,7 +222,7 @@ class awDrawer {
 
 		if($text->getBackground() !== NULL or $text->border->visible()) {
 
-			list($left, $right, $top, $bottom) = $text->getPadding();
+			[$left, $right, $top, $bottom] = $text->getPadding();
 
 			$width = $font->getTextWidth($text);
 			$height = $font->getTextHeight($text);
@@ -277,7 +277,7 @@ class awDrawer {
 			$rgb = $color->getColor($this->resource);
 			$thickness = $line->thickness;
 
-			list($p1, $p2) = $line->getLocation();
+			[$p1, $p2] = $line->getLocation();
 
 			$this->startThickness($thickness);
 
@@ -288,7 +288,7 @@ class awDrawer {
 					break;
 
 				case awLine::DOTTED :
-					$size = sqrt(pow($p2->y - $p1->y, 2) + pow($p2->x - $p1->x, 2));
+					$size = sqrt(($p2->y - $p1->y) ** 2 + ($p2->x - $p1->x) ** 2);
 					$cos = ($p2->x - $p1->x) / $size;
 					$sin = ($p2->y - $p1->y) / $size;
 					for($i = 0; $i <= $size; $i += 2) {
@@ -303,7 +303,7 @@ class awDrawer {
 				case awLine::DASHED :
 					$width = $p2->x - $p1->x;
 					$height = $p2->y - $p1->y;
-					$size = sqrt(pow($height, 2) + pow($width, 2));
+					$size = sqrt($height ** 2 + $width ** 2);
 
 					if($size == 0) {
 						return;
@@ -394,7 +394,7 @@ class awDrawer {
 	 */
 	public function ellipse(awColor $color, awPoint $center, $width, $height) {
 
-		list($x, $y) = $center->getLocation();
+		[$x, $y] = $center->getLocation();
 
 		$rgb = $color->getColor($this->resource);
 		imageellipse(
@@ -420,7 +420,7 @@ class awDrawer {
 
 		if($background instanceof awColor) {
 
-			list($x, $y) = $center->getLocation();
+			[$x, $y] = $center->getLocation();
 
 			$rgb = $background->getColor($this->resource);
 
@@ -435,7 +435,7 @@ class awDrawer {
 
 		} else if($background instanceof awGradient) {
 
-			list($x, $y) = $center->getLocation();
+			[$x, $y] = $center->getLocation();
 
 			$x1 = $x - round($width / 2);
 			$y1 = $y - round($height / 2);
@@ -540,7 +540,8 @@ class awDrawer {
 	 */
 	public function polygon(awColor $color, awPolygon $polygon) {
 
-		switch($polygon->getStyle()) {
+		$line = null;
+  switch($polygon->getStyle()) {
 
 			case awPolygon::SOLID :
 				$thickness = $line->getThickness();
@@ -595,7 +596,7 @@ class awDrawer {
 
 	private function getPolygonPoints(awPolygon $polygon) {
 
-		$points = array();
+		$points = [];
 
 		foreach($polygon->all() as $point) {
 			$points[] = $point->x + $this->x;
@@ -700,8 +701,8 @@ class awGradientDrawer {
 
 	public function filledRectangle(awGradient $gradient, awPoint $p1, awPoint $p2) {
 
-		list($x1, $y1) = $p1->getLocation();
-		list($x2, $y2) = $p2->getLocation();
+		[$x1, $y1] = $p1->getLocation();
+		[$x2, $y2] = $p2->getLocation();
 
 		if($y1 < $y2) {
 			$y1 ^= $y2 ^= $y1 ^= $y2;
@@ -731,8 +732,8 @@ class awGradientDrawer {
 
 	protected function rectangleLinearGradient(awLinearGradient $gradient, awPoint $p1, awPoint $p2) {
 
-		list($x1, $y1) = $p1->getLocation();
-		list($x2, $y2) = $p2->getLocation();
+		[$x1, $y1] = $p1->getLocation();
+		[$x2, $y2] = $p2->getLocation();
 
 		if($y1 - $y2 > 0) {
 
@@ -808,7 +809,7 @@ class awGradientDrawer {
 
 			$c = new awPoint($x1 + ($x2 - $x1) / 2, $y1 + ($y2 - $y1) / 2);
 			$r = ($x2 - $x1) / 2;
-			$ok = array();
+			$ok = [];
 
 			// Init gradient
 			$this->init($gradient, $r);
@@ -1081,13 +1082,9 @@ class awGradientDrawer {
 
 	private function init(awGradient $gradient, $size) {
 
-		list(
-			$this->r1, $this->g1, $this->b1, $this->a1
-		) = $gradient->from->rgba();
+		[$this->r1, $this->g1, $this->b1, $this->a1] = $gradient->from->rgba();
 
-		list(
-			$this->r2, $this->g2, $this->b2, $this->a2
-		) = $gradient->to->rgba();
+		[$this->r2, $this->g2, $this->b2, $this->a2] = $gradient->to->rgba();
 
 		$this->size = $size;
 	}

@@ -9,10 +9,10 @@
 /**#@+
  * include SimpleTest files
  */
-require_once(dirname(__FILE__) . '/expectation.php');
-require_once(dirname(__FILE__) . '/simpletest.php');
-require_once(dirname(__FILE__) . '/dumper.php');
-require_once(dirname(__FILE__) . '/reflection_php5.php');
+require_once(__DIR__ . '/expectation.php');
+require_once(__DIR__ . '/simpletest.php');
+require_once(__DIR__ . '/dumper.php');
+require_once(__DIR__ . '/reflection_php5.php');
 /**#@-*/
 
 /**
@@ -83,7 +83,7 @@ class ParametersExpectation extends SimpleExpectation {
      */
     function testMessage($parameters) {
         if ($this->test($parameters)) {
-            return "Expectation of " . count($this->expected) .
+            return "Expectation of " . (is_array($this->expected) || $this->expected instanceof \Countable ? count($this->expected) : 0) .
                     " arguments of [" . $this->renderArguments($this->expected) .
                     "] is correct";
         } else {
@@ -105,7 +105,7 @@ class ParametersExpectation extends SimpleExpectation {
                     "] but got " . count($parameters) .
                     " arguments of [" . $this->renderArguments($parameters) . "]";
         }
-        $messages = array();
+        $messages = [];
         for ($i = 0; $i < count($expected); $i++) {
             $comparison = $this->coerceToExpectation($expected[$i]);
             if (! $comparison->test($parameters[$i])) {
@@ -137,7 +137,7 @@ class ParametersExpectation extends SimpleExpectation {
      *    @return string        Simple description of type and value.
      */
     protected function renderArguments($args) {
-        $descriptions = array();
+        $descriptions = [];
         if (is_array($args)) {
             foreach ($args as $arg) {
                 $dumper = new SimpleDumper();
@@ -284,13 +284,13 @@ class MaximumCallCountExpectation extends SimpleExpectation {
  *    @subpackage MockObjects
  */
 class SimpleSignatureMap {
-    private $map;
+    private $map = [];
 
     /**
      *    Creates an empty call map.
      */
-    function __construct() {
-        $this->map = array();
+    function __construct()
+    {
     }
 
     /**
@@ -300,7 +300,7 @@ class SimpleSignatureMap {
      */
     function add($parameters, $action) {
         $place = count($this->map);
-        $this->map[$place] = array();
+        $this->map[$place] = [];
         $this->map[$place]['params'] = new ParametersExpectation($parameters);
         $this->map[$place]['content'] = $action;
     }
@@ -372,16 +372,15 @@ class SimpleSignatureMap {
  */
 class SimpleCallSchedule {
     private $wildcard = MOCK_ANYTHING;
-    private $always;
-    private $at;
+    private $always = [];
+    private $at = [];
 
     /**
      *    Sets up an empty response schedule.
      *    Creates an empty call map.
      */
-    function __construct() {
-        $this->always = array();
-        $this->at = array();
+    function __construct()
+    {
     }
 
     /**
@@ -414,7 +413,7 @@ class SimpleCallSchedule {
         $args = $this->replaceWildcards($args);
         $method = strtolower($method);
         if (! isset($this->at[$method])) {
-            $this->at[$method] = array();
+            $this->at[$method] = [];
         }
         if (! isset($this->at[$method][$step])) {
             $this->at[$method][$step] = new SimpleSignatureMap();
@@ -641,11 +640,11 @@ class SimpleMock {
     private $expectations;
     private $wildcard = MOCK_ANYTHING;
     private $is_strict = true;
-    private $call_counts;
-    private $expected_counts;
-    private $max_counts;
-    private $expected_args;
-    private $expected_args_at;
+    private $call_counts = [];
+    private $expected_counts = [];
+    private $max_counts = [];
+    private $expected_args = [];
+    private $expected_args_at = [];
 
     /**
      *    Creates an empty action list and expectation list.
@@ -654,11 +653,6 @@ class SimpleMock {
     function __construct() {
         $this->actions = new SimpleCallSchedule();
         $this->expectations = new SimpleCallSchedule();
-        $this->call_counts = array();
-        $this->expected_counts = array();
-        $this->max_counts = array();
-        $this->expected_args = array();
-        $this->expected_args_at = array();
         $this->getCurrentTestCase()->tell($this);
     }
 
@@ -901,7 +895,7 @@ class SimpleMock {
         $this->checkArgumentsIsArray($args, 'set expected arguments at time');
         $args = $this->replaceWildcards($args);
         if (! isset($this->expected_args_at[$timing])) {
-            $this->expected_args_at[$timing] = array();
+            $this->expected_args_at[$timing] = [];
         }
         $method = strtolower($method);
         $message .= Mock::getExpectationLine();
@@ -1010,7 +1004,7 @@ class SimpleMock {
     function throwOn($method, $exception = false, $args = false) {
         $this->dieOnNoMethod($method, "throw on");
         $this->actions->register($method, $args,
-                new SimpleThrower($exception ? $exception : new Exception()));
+                new SimpleThrower($exception ?: new Exception()));
     }
 
     /**
@@ -1034,7 +1028,7 @@ class SimpleMock {
     function throwAt($timing, $method, $exception = false, $args = false) {
         $this->dieOnNoMethod($method, "throw at");
         $this->actions->registerAt($timing, $method, $args,
-                new SimpleThrower($exception ? $exception : new Exception()));
+                new SimpleThrower($exception ?: new Exception()));
     }
 
     /**
@@ -1235,7 +1229,7 @@ class Mock {
      *    Uses a stack trace to find the line of an assertion.
      */
     static function getExpectationLine() {
-        $trace = new SimpleStackTrace(array('expect'));
+        $trace = new SimpleStackTrace(['expect']);
         return $trace->traceMethod();
     }
 }
@@ -1284,7 +1278,7 @@ class MockGenerator {
         if ($mock_reflection->classExistsSansAutoload()) {
             return false;
         }
-        $code = $this->createClassCode($methods ? $methods : array());
+        $code = $this->createClassCode($methods ?: []);
         return eval("$code return \$code;");
     }
 
@@ -1307,10 +1301,10 @@ class MockGenerator {
             return false;
         }
         if ($this->reflection->isInterface() || $this->reflection->hasFinal()) {
-            $code = $this->createClassCode($methods ? $methods : array());
+            $code = $this->createClassCode($methods ?: []);
             return eval("$code return \$code;");
         } else {
-            $code = $this->createSubclassCode($methods ? $methods : array());
+            $code = $this->createSubclassCode($methods ?: []);
             return eval("$code return \$code;");
         }
     }
@@ -1324,7 +1318,7 @@ class MockGenerator {
      *                                    with mock versions.
      */
     function generatePartial($methods) {
-        if (! $this->reflection->classExists($this->class)) {
+        if (! $this->reflection->classExists()) {
             return false;
         }
         $mock_reflection = new SimpleReflection($this->mock_class);
@@ -1345,9 +1339,9 @@ class MockGenerator {
         $implements = '';
         $interfaces = $this->reflection->getInterfaces();
         if (function_exists('spl_classes')) {
-            $interfaces = array_diff($interfaces, array('Traversable'));
+            $interfaces = array_diff($interfaces, ['Traversable']);
         }
-        if (count($interfaces) > 0) {
+        if ((is_array($interfaces) || $interfaces instanceof \Countable ? count($interfaces) : 0) > 0) {
             $implements = 'implements ' . implode(', ', $interfaces);
         }
         $code = "class " . $this->mock_class . " extends " . $this->mock_base . " $implements {\n";
@@ -1474,7 +1468,7 @@ class MockGenerator {
     protected function isConstructor($method) {
         return in_array(
                 strtolower($method),
-                array('__construct', '__destruct'));
+                ['__construct', '__destruct']);
     }
 
     /**

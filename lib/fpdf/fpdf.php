@@ -18,59 +18,59 @@ define('FPDF_VERSION','1.53');
 class FPDF
 {
 //Private properties
-var $page;               //current page number
-var $n;                  //current object number
-var $offsets;            //array of object offsets
-var $buffer;             //buffer holding in-memory PDF
-var $pages;              //array containing pages
-var $state;              //current document state
-var $compress;           //compression flag
-var $DefOrientation;     //default orientation
-var $CurOrientation;     //current orientation
-var $OrientationChanges; //array indicating orientation changes
-var $k;                  //scale factor (number of points in user unit)
-var $fwPt,$fhPt;         //dimensions of page format in points
-var $fw,$fh;             //dimensions of page format in user unit
-var $wPt,$hPt;           //current dimensions of page in points
-var $w,$h;               //current dimensions of page in user unit
-var $lMargin;            //left margin
-var $tMargin;            //top margin
-var $rMargin;            //right margin
-var $bMargin;            //page break margin
-var $cMargin;            //cell margin
-var $x,$y;               //current position in user unit for cell positioning
-var $lasth;              //height of last cell printed
-var $LineWidth;          //line width in user unit
-var $CoreFonts;          //array of standard font names
-var $fonts;              //array of used fonts
-var $FontFiles;          //array of font files
-var $diffs;              //array of encoding differences
-var $images;             //array of used images
-var $PageLinks;          //array of links in pages
-var $links;              //array of internal links
-var $FontFamily;         //current font family
-var $FontStyle;          //current font style
-var $underline;          //underlining flag
-var $CurrentFont;        //current font info
-var $FontSizePt;         //current font size in points
-var $FontSize;           //current font size in user unit
-var $DrawColor;          //commands for drawing color
-var $FillColor;          //commands for filling color
-var $TextColor;          //commands for text color
-var $ColorFlag;          //indicates whether fill and text colors are different
-var $ws;                 //word spacing
-var $AutoPageBreak;      //automatic page breaking
-var $PageBreakTrigger;   //threshold used to trigger page breaks
-var $InFooter;           //flag set when processing footer
-var $ZoomMode;           //zoom display mode
-var $LayoutMode;         //layout display mode
-var $title;              //title
-var $subject;            //subject
-var $author;             //author
-var $keywords;           //keywords
-var $creator;            //creator
-var $AliasNbPages;       //alias for total number of pages
-var $PDFVersion;         //PDF version number
+public $page = 0;               //current page number
+public $n = 2;                  //current object number
+public $offsets;            //array of object offsets
+public $buffer = '';             //buffer holding in-memory PDF
+public $pages = [];              //array containing pages
+public $state = 0;              //current document state
+public $compress;           //compression flag
+public $DefOrientation;     //default orientation
+public $CurOrientation;     //current orientation
+public $OrientationChanges = []; //array indicating orientation changes
+public $k;                  //scale factor (number of points in user unit)
+public $fwPt,$fhPt;         //dimensions of page format in points
+public $fw,$fh;             //dimensions of page format in user unit
+public $wPt,$hPt;           //current dimensions of page in points
+public $w,$h;               //current dimensions of page in user unit
+public $lMargin;            //left margin
+public $tMargin;            //top margin
+public $rMargin;            //right margin
+public $bMargin;            //page break margin
+public $cMargin;            //cell margin
+public $x,$y;               //current position in user unit for cell positioning
+public $lasth = 0;              //height of last cell printed
+public $LineWidth;          //line width in user unit
+public $CoreFonts = ['courier'=>'Courier', 'courierB'=>'Courier-Bold', 'courierI'=>'Courier-Oblique', 'courierBI'=>'Courier-BoldOblique', 'helvetica'=>'Helvetica', 'helveticaB'=>'Helvetica-Bold', 'helveticaI'=>'Helvetica-Oblique', 'helveticaBI'=>'Helvetica-BoldOblique', 'times'=>'Times-Roman', 'timesB'=>'Times-Bold', 'timesI'=>'Times-Italic', 'timesBI'=>'Times-BoldItalic', 'symbol'=>'Symbol', 'zapfdingbats'=>'ZapfDingbats'];          //array of standard font names
+public $fonts = [];              //array of used fonts
+public $FontFiles = [];          //array of font files
+public $diffs = [];              //array of encoding differences
+public $images = [];             //array of used images
+public $PageLinks;          //array of links in pages
+public $links = [];              //array of internal links
+public $FontFamily = '';         //current font family
+public $FontStyle = '';          //current font style
+public $underline = false;          //underlining flag
+public $CurrentFont;        //current font info
+public $FontSizePt = 12;         //current font size in points
+public $FontSize;           //current font size in user unit
+public $DrawColor = '0 G';          //commands for drawing color
+public $FillColor = '0 g';          //commands for filling color
+public $TextColor = '0 g';          //commands for text color
+public $ColorFlag = false;          //indicates whether fill and text colors are different
+public $ws = 0;                 //word spacing
+public $AutoPageBreak;      //automatic page breaking
+public $PageBreakTrigger;   //threshold used to trigger page breaks
+public $InFooter = false;           //flag set when processing footer
+public $ZoomMode;           //zoom display mode
+public $LayoutMode;         //layout display mode
+public $title;              //title
+public $subject;            //subject
+public $author;             //author
+public $keywords;           //keywords
+public $creator;            //creator
+public $AliasNbPages;       //alias for total number of pages
+public $PDFVersion;         //PDF version number
 
 /*******************************************************************************
 *                                                                              *
@@ -81,34 +81,6 @@ function __construct($orientation='P',$unit='mm',$format='A4')
 {
 	//Some checks
 	$this->_dochecks();
-	//Initialization of properties
-	$this->page=0;
-	$this->n=2;
-	$this->buffer='';
-	$this->pages=array();
-	$this->OrientationChanges=array();
-	$this->state=0;
-	$this->fonts=array();
-	$this->FontFiles=array();
-	$this->diffs=array();
-	$this->images=array();
-	$this->links=array();
-	$this->InFooter=false;
-	$this->lasth=0;
-	$this->FontFamily='';
-	$this->FontStyle='';
-	$this->FontSizePt=12;
-	$this->underline=false;
-	$this->DrawColor='0 G';
-	$this->FillColor='0 g';
-	$this->TextColor='0 g';
-	$this->ColorFlag=false;
-	$this->ws=0;
-	//Standard fonts
-	$this->CoreFonts=array('courier'=>'Courier','courierB'=>'Courier-Bold','courierI'=>'Courier-Oblique','courierBI'=>'Courier-BoldOblique',
-		'helvetica'=>'Helvetica','helveticaB'=>'Helvetica-Bold','helveticaI'=>'Helvetica-Oblique','helveticaBI'=>'Helvetica-BoldOblique',
-		'times'=>'Times-Roman','timesB'=>'Times-Bold','timesI'=>'Times-Italic','timesBI'=>'Times-BoldItalic',
-		'symbol'=>'Symbol','zapfdingbats'=>'ZapfDingbats');
 	//Scale factor
 	if($unit=='pt')
 		$this->k=1;
@@ -125,15 +97,15 @@ function __construct($orientation='P',$unit='mm',$format='A4')
 	{
 		$format=strtolower($format);
 		if($format=='a3')
-			$format=array(841.89,1190.55);
+			$format=[841.89, 1190.55];
 		elseif($format=='a4')
-			$format=array(595.28,841.89);
+			$format=[595.28, 841.89];
 		elseif($format=='a5')
-			$format=array(420.94,595.28);
+			$format=[420.94, 595.28];
 		elseif($format=='letter')
-			$format=array(612,792);
+			$format=[612, 792];
 		elseif($format=='legal')
-			$format=array(612,1008);
+			$format=[612, 1008];
 		else
 			$this->Error('Unknown page format: '.$format);
 		$this->fwPt=$format[0];
@@ -463,7 +435,9 @@ function Rect($x,$y,$w,$h,$style='')
 
 function AddFont($family,$style='',$file='')
 {
-	//Add a TrueType or Type1 font
+	$diff = null;
+ $type = null;
+ //Add a TrueType or Type1 font
 	$family=strtolower($family);
 	if($file=='')
 		$file=str_replace(' ','',$family).strtolower($style).'.php';
@@ -479,7 +453,7 @@ function AddFont($family,$style='',$file='')
 	if(!isset($name))
 		$this->Error('Could not include font definition file');
 	$i=count($this->fonts)+1;
-	$this->fonts[$fontkey]=array('i'=>$i,'type'=>$type,'name'=>$name,'desc'=>$desc,'up'=>$up,'ut'=>$ut,'cw'=>$cw,'enc'=>$enc,'file'=>$file);
+	$this->fonts[$fontkey]=['i'=>$i, 'type'=>$type, 'name'=>$name, 'desc'=>$desc, 'up'=>$up, 'ut'=>$ut, 'cw'=>$cw, 'enc'=>$enc, 'file'=>$file];
 	if($diff)
 	{
 		//Search existing encodings
@@ -503,9 +477,9 @@ function AddFont($family,$style='',$file='')
 	if($file)
 	{
 		if($type=='TrueType')
-			$this->FontFiles[$file]=array('length1'=>$originalsize);
+			$this->FontFiles[$file]=['length1'=>$originalsize];
 		else
-			$this->FontFiles[$file]=array('length1'=>$size1,'length2'=>$size2);
+			$this->FontFiles[$file]=['length1'=>$size1, 'length2'=>$size2];
 	}
 }
 
@@ -554,7 +528,7 @@ function SetFont($family,$style='',$size=0)
 					$this->Error('Could not include font metric file');
 			}
 			$i=count($this->fonts)+1;
-			$this->fonts[$fontkey]=array('i'=>$i,'type'=>'core','name'=>$this->CoreFonts[$fontkey],'up'=>-100,'ut'=>50,'cw'=>$fpdf_charwidths[$fontkey]);
+			$this->fonts[$fontkey]=['i'=>$i, 'type'=>'core', 'name'=>$this->CoreFonts[$fontkey], 'up'=>-100, 'ut'=>50, 'cw'=>$fpdf_charwidths[$fontkey]];
 		}
 		else
 			$this->Error('Undefined font: '.$family.' '.$style);
@@ -584,7 +558,7 @@ function AddLink()
 {
 	//Create a new internal link
 	$n=count($this->links)+1;
-	$this->links[$n]=array(0,0);
+	$this->links[$n]=[0, 0];
 	return $n;
 }
 
@@ -595,13 +569,13 @@ function SetLink($link,$y=0,$page=-1)
 		$y=$this->y;
 	if($page==-1)
 		$page=$this->page;
-	$this->links[$link]=array($page,$y);
+	$this->links[$link]=[$page, $y];
 }
 
 function Link($x,$y,$w,$h,$link)
 {
 	//Put a link on the page
-	$this->PageLinks[$this->page][]=array($x*$this->k,$this->hPt-$y*$this->k,$w*$this->k,$h*$this->k,$link);
+	$this->PageLinks[$this->page][]=[$x*$this->k, $this->hPt-$y*$this->k, $w*$this->k, $h*$this->k, $link];
 }
 
 function Text($x,$y,$txt)
@@ -702,7 +676,8 @@ function Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0,$link='')
 
 function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
 {
-	//Output text with automatic or explicit line breaks
+	$ls = null;
+ //Output text with automatic or explicit line breaks
 	$cw=&$this->CurrentFont['cw'];
 	if($w==0)
 		$w=$this->w-$this->rMargin-$this->x;
@@ -1081,8 +1056,8 @@ function _dochecks()
 
 function _getfontpath()
 {
-	if(!defined('FPDF_FONTPATH') && is_dir(dirname(__FILE__).'/font'))
-		define('FPDF_FONTPATH',dirname(__FILE__).'/font/');
+	if(!defined('FPDF_FONTPATH') && is_dir(__DIR__.'/font'))
+		define('FPDF_FONTPATH',__DIR__.'/font/');
 	return defined('FPDF_FONTPATH') ? FPDF_FONTPATH : '';
 }
 
@@ -1282,48 +1257,47 @@ function _putimages()
 {
 	$filter=($this->compress) ? '/Filter /FlateDecode ' : '';
 	reset($this->images);
-	while(list($file,$info)=each($this->images))
-	{
-		$this->_newobj();
-		$this->images[$file]['n']=$this->n;
-		$this->_out('<</Type /XObject');
-		$this->_out('/Subtype /Image');
-		$this->_out('/Width '.$info['w']);
-		$this->_out('/Height '.$info['h']);
-		if($info['cs']=='Indexed')
-			$this->_out('/ColorSpace [/Indexed /DeviceRGB '.(strlen($info['pal'])/3-1).' '.($this->n+1).' 0 R]');
-		else
-		{
-			$this->_out('/ColorSpace /'.$info['cs']);
-			if($info['cs']=='DeviceCMYK')
-				$this->_out('/Decode [1 0 1 0 1 0 1 0]');
-		}
-		$this->_out('/BitsPerComponent '.$info['bpc']);
-		if(isset($info['f']))
-			$this->_out('/Filter /'.$info['f']);
-		if(isset($info['parms']))
-			$this->_out($info['parms']);
-		if(isset($info['trns']) && is_array($info['trns']))
-		{
-			$trns='';
-			for($i=0;$i<count($info['trns']);$i++)
-				$trns.=$info['trns'][$i].' '.$info['trns'][$i].' ';
-			$this->_out('/Mask ['.$trns.']');
-		}
-		$this->_out('/Length '.strlen($info['data']).'>>');
-		$this->_putstream($info['data']);
-		unset($this->images[$file]['data']);
-		$this->_out('endobj');
-		//Palette
-		if($info['cs']=='Indexed')
-		{
-			$this->_newobj();
-			$pal=($this->compress) ? gzcompress($info['pal']) : $info['pal'];
-			$this->_out('<<'.$filter.'/Length '.strlen($pal).'>>');
-			$this->_putstream($pal);
-			$this->_out('endobj');
-		}
-	}
+	foreach ($this->images as $file => $info) {
+     $this->_newobj();
+     $this->images[$file]['n']=$this->n;
+     $this->_out('<</Type /XObject');
+     $this->_out('/Subtype /Image');
+     $this->_out('/Width '.$info['w']);
+     $this->_out('/Height '.$info['h']);
+     if($info['cs']=='Indexed')
+   			$this->_out('/ColorSpace [/Indexed /DeviceRGB '.(strlen($info['pal'])/3-1).' '.($this->n+1).' 0 R]');
+   		else
+   		{
+   			$this->_out('/ColorSpace /'.$info['cs']);
+   			if($info['cs']=='DeviceCMYK')
+   				$this->_out('/Decode [1 0 1 0 1 0 1 0]');
+   		}
+     $this->_out('/BitsPerComponent '.$info['bpc']);
+     if(isset($info['f']))
+   			$this->_out('/Filter /'.$info['f']);
+     if(isset($info['parms']))
+   			$this->_out($info['parms']);
+     if(isset($info['trns']) && is_array($info['trns']))
+   		{
+   			$trns='';
+   			for($i=0;$i<count($info['trns']);$i++)
+   				$trns.=$info['trns'][$i].' '.$info['trns'][$i].' ';
+   			$this->_out('/Mask ['.$trns.']');
+   		}
+     $this->_out('/Length '.strlen($info['data']).'>>');
+     $this->_putstream($info['data']);
+     unset($this->images[$file]['data']);
+     $this->_out('endobj');
+     //Palette
+     if($info['cs']=='Indexed')
+   		{
+   			$this->_newobj();
+   			$pal=($this->compress) ? gzcompress($info['pal']) : $info['pal'];
+   			$this->_out('<<'.$filter.'/Length '.strlen($pal).'>>');
+   			$this->_putstream($pal);
+   			$this->_out('endobj');
+   		}
+ }
 }
 
 function _putxobjectdict()
@@ -1516,19 +1490,20 @@ function _parsejpg($file)
 		$colspace='DeviceCMYK';
 	else
 		$colspace='DeviceGray';
-	$bpc=isset($a['bits']) ? $a['bits'] : 8;
+	$bpc=$a['bits'] ?? 8;
 	//Read whole file
 	$f=fopen($file,'rb');
 	$data='';
 	while(!feof($f))
 		$data.=fread($f,4096);
 	fclose($f);
-	return array('w'=>$a[0],'h'=>$a[1],'cs'=>$colspace,'bpc'=>$bpc,'f'=>'DCTDecode','data'=>$data);
+	return ['w'=>$a[0], 'h'=>$a[1], 'cs'=>$colspace, 'bpc'=>$bpc, 'f'=>'DCTDecode', 'data'=>$data];
 }
 
 function _parsepng($file)
 {
-	//Extract info from a PNG file
+	$colspace = null;
+ //Extract info from a PNG file
 	$f=fopen($file,'rb');
 	if(!$f)
 		$this->Error('Can\'t open image file: '.$file);
@@ -1580,14 +1555,14 @@ function _parsepng($file)
 			//Read transparency info
 			$t=fread($f,$n);
 			if($ct==0)
-				$trns=array(ord(substr($t,1,1)));
+				$trns=[ord(substr($t,1,1))];
 			elseif($ct==2)
-				$trns=array(ord(substr($t,1,1)),ord(substr($t,3,1)),ord(substr($t,5,1)));
+				$trns=[ord(substr($t,1,1)), ord(substr($t,3,1)), ord(substr($t,5,1))];
 			else
 			{
 				$pos=strpos($t,chr(0));
 				if($pos!==false)
-					$trns=array($pos);
+					$trns=[$pos];
 			}
 			fread($f,4);
 		}
@@ -1606,7 +1581,7 @@ function _parsepng($file)
 	if($colspace=='Indexed' && empty($pal))
 		$this->Error('Missing palette in '.$file);
 	fclose($f);
-	return array('w'=>$w,'h'=>$h,'cs'=>$colspace,'bpc'=>$bpc,'f'=>'FlateDecode','parms'=>$parms,'pal'=>$pal,'trns'=>$trns,'data'=>$data);
+	return ['w'=>$w, 'h'=>$h, 'cs'=>$colspace, 'bpc'=>$bpc, 'f'=>'FlateDecode', 'parms'=>$parms, 'pal'=>$pal, 'trns'=>$trns, 'data'=>$data];
 }
 
 function _freadint($f)

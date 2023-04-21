@@ -38,10 +38,10 @@ class ActivityUI extends UserInterface
     /* Maximum number of characters of a line in the regarding field to show
      * on the main listing.
      */
-    const TRUNCATE_REGARDING = 24;
+    public const TRUNCATE_REGARDING = 24;
 
     /* Maximum number of characters to display of an activity note. */
-    const ACTIVITY_NOTE_MAXLEN = 140;
+    public const ACTIVITY_NOTE_MAXLEN = 140;
 
 
     public function __construct()
@@ -90,13 +90,9 @@ class ActivityUI extends UserInterface
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
          * be empty.  Fill in some default values. */
-        if ($dataGridProperties == array())
+        if ($dataGridProperties == [])
         {
-            $dataGridProperties = array(
-                'rangeStart'    => 0,
-                'maxResults'    => 15,
-                'filterVisible' => false
-            );
+            $dataGridProperties = ['rangeStart'    => 0, 'maxResults'    => 15, 'filterVisible' => false];
         }
 
         /* Only show a month of activities. */
@@ -141,7 +137,7 @@ class ActivityUI extends UserInterface
     {
         $periodString = $this->getTrimmedInput('period', $_GET);
         if (!empty($periodString) &&
-            in_array($periodString, array('lastweek', 'lastmonth', 'lastsixmonths', 'lastyear', 'all')))
+            in_array($periodString, ['lastweek', 'lastmonth', 'lastsixmonths', 'lastyear', 'all']))
         {
             /* formats start and end date for searching */
             switch ($periodString)
@@ -236,13 +232,9 @@ class ActivityUI extends UserInterface
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
          * be empty.  Fill in some default values. */
-        if ($dataGridProperties == array())
+        if ($dataGridProperties == [])
         {
-            $dataGridProperties = array(
-                'rangeStart'    => 0,
-                'maxResults'    => 15,
-                'filterVisible' => false
-            );
+            $dataGridProperties = ['rangeStart'    => 0, 'maxResults'    => 15, 'filterVisible' => false];
         }
 
         $dataGridProperties['startDate'] = $startDate;
@@ -274,18 +266,11 @@ class ActivityUI extends UserInterface
      */
     private function getQuickLinks()
     {
-        $today = array(
-            'month' => date('n'),
-            'day'   => date('j'),
-            'year'  => date('Y')
-        );
+        $quickLinks = [];
+        $today = ['month' => date('n'), 'day'   => date('j'), 'year'  => date('Y')];
 
         $yesterdayTimeStamp = DateUtility::subtractDaysFromDate(time(), 1);
-        $yesterday = array(
-            'month' => date('n', $yesterdayTimeStamp),
-            'day'   => date('j', $yesterdayTimeStamp),
-            'year'  => date('Y', $yesterdayTimeStamp)
-        );
+        $yesterday = ['month' => date('n', $yesterdayTimeStamp), 'day'   => date('j', $yesterdayTimeStamp), 'year'  => date('Y', $yesterdayTimeStamp)];
 
         $baseURL = sprintf(
             '%s?m=activity&amp;a=viewByDate&amp;getback=getback',

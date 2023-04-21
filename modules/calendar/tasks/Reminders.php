@@ -49,8 +49,8 @@ class Reminders extends Task
 
     public function run($siteID, $args)
     {
-        Task::setName('Calendar Reminders');
-        Task::setDescription('Send out reminder e-mails from the CATS calendar.');
+        parent::setName('Calendar Reminders');
+        parent::setDescription('Send out reminder e-mails from the CATS calendar.');
 
         $calendar = new Calendar(0);
 
@@ -69,18 +69,8 @@ class Reminders extends Task
 
             $emailContents = $GLOBALS['eventReminderEmail'];
 
-            $stringsToFind = array(
-                '%FULLNAME%',
-                '%NOTES%',
-                '%EVENTNAME%',
-                '%DUETIME%',
-            );
-            $replacementStrings = array(
-                $data['enteredByFirstName'] . ' ' . $data['enteredByLastName'],
-                $data['description'],
-                $data['title'],
-                self::_getReminderTimeString($data['reminderTime'])
-            );
+            $stringsToFind = ['%FULLNAME%', '%NOTES%', '%EVENTNAME%', '%DUETIME%'];
+            $replacementStrings = [$data['enteredByFirstName'] . ' ' . $data['enteredByLastName'], $data['description'], $data['title'], self::_getReminderTimeString($data['reminderTime'])];
             $emailContents = str_replace(
                 $stringsToFind,
                 $replacementStrings,

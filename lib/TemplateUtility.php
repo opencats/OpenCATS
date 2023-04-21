@@ -61,7 +61,7 @@ class TemplateUtility
      * @param array JavaScript / CSS files to load
      * @return void
      */
-    public static function printHeader($pageTitle, $headIncludes = array())
+    public static function printHeader($pageTitle, $headIncludes = [])
     {
         self::_printCommonHeader($pageTitle, $headIncludes);
         echo '<body style="background: #fff">', "\n";
@@ -76,7 +76,7 @@ class TemplateUtility
      * @param array JavaScript / CSS files to load
      * @return void
      */
-    public static function printModalHeader($pageTitle, $headIncludes = array(), $title = '')
+    public static function printModalHeader($pageTitle, $headIncludes = [], $title = '')
     {
         self::_printCommonHeader($pageTitle, $headIncludes);
         echo '<body style="background: #eee;">', "\n";
@@ -365,8 +365,8 @@ class TemplateUtility
      */
     public static function printSavedSearch($savedSearchRS)
     {
-        $savedSearchRecent = array();
-        $savedSearchSaved = array();
+        $savedSearchRecent = [];
+        $savedSearchSaved = [];
 
         foreach ($savedSearchRS as $savedSearchRow)
         {
@@ -380,7 +380,7 @@ class TemplateUtility
             }
         }
 
-        $currentUrlGET = array();
+        $currentUrlGET = [];
         foreach ($_GET as $key => $value)
         {
             if ($key != 'savedSearchID')
@@ -839,7 +839,7 @@ class TemplateUtility
         echo '</body>', "\n";
         echo '</html>', "\n";
 
-        if (LicenseUtility::isProfessional() && !rand(0,10))
+        if (LicenseUtility::isProfessional() && !random_int(0,10))
         {
             if (!LicenseUtility::validateProfessionalKey(LICENSE_KEY))
             {
@@ -954,6 +954,7 @@ class TemplateUtility
      */
     public static function getRatingsArrayJS()
     {
+        $ratingsQuoted = [];
         $ratings = self::_getRatingImages();
 
         $HTML = '<script type="text/javascript">';
@@ -1156,11 +1157,11 @@ class TemplateUtility
      * @param array JavaScript / CSS files to load
      * @return void
      */
-    private static function _printCommonHeader($pageTitle, $headIncludes = array())
+    private static function _printCommonHeader($pageTitle, $headIncludes = [])
     {
         if (!is_array($headIncludes))
         {
-            $headIncludes = array($headIncludes);
+            $headIncludes = [$headIncludes];
         }
 
         $siteID = $_SESSION['CATS']->getSiteID();
@@ -1225,20 +1226,7 @@ class TemplateUtility
      */
     private static function _getRatingImages()
     {
-        return array(
-            0  => 'images/stars/star0.gif',
-            1  => 'images/stars/star1.gif',
-            2  => 'images/stars/star2.gif',
-            3  => 'images/stars/star3.gif',
-            4  => 'images/stars/star4.gif',
-            5  => 'images/stars/star5.gif',
-            -1 => 'images/stars/starneg1.gif',
-            -2 => 'images/stars/starneg2.gif',
-            -3 => 'images/stars/starneg3.gif',
-            -4 => 'images/stars/starneg4.gif',
-            -5 => 'images/stars/starneg5.gif',
-            -6 => 'images/stars/starneg6.gif'
-        );
+        return [0  => 'images/stars/star0.gif', 1  => 'images/stars/star1.gif', 2  => 'images/stars/star2.gif', 3  => 'images/stars/star3.gif', 4  => 'images/stars/star4.gif', 5  => 'images/stars/star5.gif', -1 => 'images/stars/starneg1.gif', -2 => 'images/stars/starneg2.gif', -3 => 'images/stars/starneg3.gif', -4 => 'images/stars/starneg4.gif', -5 => 'images/stars/starneg5.gif', -6 => 'images/stars/starneg6.gif'];
     }
 }
 

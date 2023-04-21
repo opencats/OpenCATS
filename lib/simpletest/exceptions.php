@@ -9,8 +9,8 @@
 /**#@+
  * Include required SimpleTest files
  */
-require_once dirname(__FILE__) . '/invoker.php';
-require_once dirname(__FILE__) . '/expectation.php';
+require_once __DIR__ . '/invoker.php';
+require_once __DIR__ . '/expectation.php';
 /**#@-*/
 
 /**
@@ -220,7 +220,7 @@ class SimpleExceptionTrap {
     function clear() {
         $this->expected = false;
         $this->message = false;
-        $this->ignored = array();
+        $this->ignored = [];
     }
 }
 ?>

@@ -9,7 +9,7 @@
 /**#@+
  *  include other SimpleTest class files
  */
-require_once(dirname(__FILE__) . '/test_case.php');
+require_once(__DIR__ . '/test_case.php');
 /**#@-*/
 
 /**
@@ -18,14 +18,14 @@ require_once(dirname(__FILE__) . '/test_case.php');
  *    @subpackage UnitTester
  */
 class SimpleShell {
-    private $output;
+    private $output = false;
 
     /**
      *    Executes the shell comand and stashes the output.
      *    @access public
      */
-    function __construct() {
-        $this->output = false;
+    function __construct()
+    {
     }
 
     /**
@@ -70,8 +70,8 @@ class SimpleShell {
  */
 class ShellTestCase extends SimpleTestCase {
     private $current_shell;
-    private $last_status;
-    private $last_command;
+    private $last_status = false;
+    private $last_command = '';
 
     /**
      *    Creates an empty test case. Should be subclassed
@@ -83,8 +83,6 @@ class ShellTestCase extends SimpleTestCase {
     function __construct($label = false) {
         parent::__construct($label);
         $this->current_shell = $this->createShell();
-        $this->last_status = false;
-        $this->last_command = '';
     }
 
     /**

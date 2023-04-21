@@ -9,7 +9,7 @@
 /**#@+
  *  include other SimpleTest class files
  */
-require_once(dirname(__FILE__) . '/encoding.php');
+require_once(__DIR__ . '/encoding.php');
 /**#@-*/
 
 /**
@@ -42,7 +42,7 @@ class SimpleUrl {
      *    @access public
      */
     function __construct($url = '') {
-        list($x, $y) = $this->chompCoordinates($url);
+        [$x, $y] = $this->chompCoordinates($url);
         $this->setCoordinates($x, $y);
         $this->scheme = $this->chompScheme($url);
         if ($this->scheme === 'file') {
@@ -53,7 +53,7 @@ class SimpleUrl {
             // the scheme is file.
             $url = str_replace('\\', '/', $url);
         }
-        list($this->username, $this->password) = $this->chompLogin($url);
+        [$this->username, $this->password] = $this->chompLogin($url);
         $this->host = $this->chompHost($url);
         $this->port = false;
         if (preg_match('/(.*?):(.*)/', $this->host, $host_parts)) {
@@ -82,9 +82,9 @@ class SimpleUrl {
     protected function chompCoordinates(&$url) {
         if (preg_match('/(.*)\?(\d+),(\d+)$/', $url, $matches)) {
             $url = $matches[1];
-            return array((integer)$matches[2], (integer)$matches[3]);
+            return [(integer)$matches[2], (integer)$matches[3]];
         }
-        return array(false, false);
+        return [false, false];
     }
 
     /**
@@ -121,12 +121,10 @@ class SimpleUrl {
         if (preg_match('#^([^/]*)@(.*)#', $url, $matches)) {
             $url = $prefix . $matches[2];
             $parts = explode(":", $matches[1]);
-            return array(
-                    urldecode($parts[0]),
-                    isset($parts[1]) ? urldecode($parts[1]) : false);
+            return [urldecode($parts[0]), isset($parts[1]) ? urldecode($parts[1]) : false];
         }
         $url = $prefix . $url;
-        return array(false, false);
+        return [false, false];
     }
 
     /**
@@ -169,7 +167,7 @@ class SimpleUrl {
     protected function chompPath(&$url) {
         if (preg_match('/(.*?)(\?|#|$)(.*)/', $url, $matches)) {
             $url = $matches[2] . $matches[3];
-            return ($matches[1] ? $matches[1] : '');
+            return ($matches[1] ?: '');
         }
         return '';
     }
@@ -215,7 +213,7 @@ class SimpleUrl {
      *    @access public
      */
     function getScheme($default = false) {
-        return $this->scheme ? $this->scheme : $default;
+        return $this->scheme ?: $default;
     }
 
     /**
@@ -243,7 +241,7 @@ class SimpleUrl {
      *    @access public
      */
     function getHost($default = false) {
-        return $this->host ? $this->host : $default;
+        return $this->host ?: $default;
     }
 
     /**
@@ -253,7 +251,7 @@ class SimpleUrl {
      */
     function getTld() {
         $path_parts = pathinfo($this->getHost());
-        return (isset($path_parts['extension']) ? $path_parts['extension'] : false);
+        return ($path_parts['extension'] ?? false);
     }
 
     /**
@@ -429,7 +427,7 @@ class SimpleUrl {
             $identity = $this->username . ':' . $this->password . '@';
         }
         if ($this->getHost()) {
-            $scheme = $this->getScheme() ? $this->getScheme() : 'http';
+            $scheme = $this->getScheme() ?: 'http';
             $scheme .= '://';
             $host = $this->getHost();
         } elseif ($this->getScheme() === 'file') {

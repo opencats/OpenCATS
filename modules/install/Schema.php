@@ -31,7 +31,7 @@ class CATSSchema
     public static function get()
     {
         /* Revision => code pairs */
-        return array(
+        return [
             '0' => '
             ',
             '1' => '
@@ -392,31 +392,31 @@ class CATSSchema
                         (!ISNULL(candidate.source) AND candidate.source != "")
                     ) AS sources_to_add;
              ',
-             '108' => '
+            '108' => '
                 UPDATE candidate SET candidate.source = "(none)" WHERE candidate.source = "(None)" OR candidate.source = "";
                 DELETE FROM candidate_source WHERE candidate_source.name = "(none)";
              ',
-             '109' => '
+            '109' => '
                 UPDATE user SET user_name = \'john@mycompany.net\' WHERE user_name = \'john@customsearch.com\';
                 UPDATE site SET name = \'MyCompany.NET\' WHERE name LIKE \'Custom Search,%\';
              ',
-             /* This update needs hand holding.
-             '124' => 'PHP:
-                include_once(\'modules/install/scripts/114.php\');
-                update_114($db);
-             ',*/
-             '150' => 'PHP:
+            /* This update needs hand holding.
+               '124' => 'PHP:
+                  include_once(\'modules/install/scripts/114.php\');
+                  update_114($db);
+               ',*/
+            '150' => 'PHP:
                 $badFileExtensions = array(\'shtml\', \'php\', \'php5\', \'php4\', \'cgi\', \'pl\', \'py\', \'phps\');
                 include_once(\'modules/install/scripts/150.php\');
                 update_150($db);
              ',
-             '153' => '
+            '153' => '
                 UPDATE dashboard_component SET module_parameters = REPLACE(module_parameters, \'<a href=\\"\\"http://www.cognizo.com\\"\\" target=\\"\\"_blank\\"\\">Cognizo Technologies</a>\', \'\');
              ',
-             '154' => '
+            '154' => '
                 UPDATE dashboard_component SET module_parameters = REPLACE(module_parameters, \'<a href=\\"\\"http://www.cognizo.com\\"\\" target=newwin2>Cognizo Technologies</a>\', \'\');
              ',
-             '156' => '
+            '156' => '
                 ALTER IGNORE TABLE `candidate_foreign_settings` CHANGE `alien_id` `candidate_foreign_settings_id` INT(11) ;
                 ALTER IGNORE TABLE `company_foreign_settings` CHANGE `alien_id` `company_foreign_settings_id` INT(11);
                 ALTER IGNORE TABLE `contact_foreign_settings` CHANGE `alien_id` `contact_foreign_settings_id` INT(11);
@@ -427,7 +427,7 @@ class CATSSchema
                 ALTER IGNORE TABLE `company_foreign` CHANGE `assoc_id` `company_id` INT(11);
                 ALTER IGNORE TABLE `contact_foreign` CHANGE `assoc_id` `contact_id` INT(11);
              ',
-             '157' => '
+            '157' => '
                 ALTER IGNORE TABLE `candidate_foreign_settings` CHANGE `candidate_foreign_settings_id` `candidate_foreign_settings_id` INT(11) NOT NULL auto_increment;
                 ALTER IGNORE TABLE `company_foreign_settings` CHANGE `company_foreign_settings_id` `company_foreign_settings_id` INT(11) NOT NULL auto_increment;
                 ALTER IGNORE TABLE `contact_foreign_settings` CHANGE `contact_foreign_settings_id` `contact_foreign_settings_id` INT(11) NOT NULL auto_increment;
@@ -435,7 +435,7 @@ class CATSSchema
                 ALTER IGNORE TABLE `company_foreign` CHANGE `company_foreign_id` `company_foreign_id` INT(11) NOT NULL auto_increment;
                 ALTER IGNORE TABLE `contact_foreign` CHANGE `contact_foreign_id` `contact_foreign_id` INT(11) NOT NULL auto_increment;
              ',
-             '158' => '
+            '158' => '
                 ALTER TABLE `user` RENAME `site_user`;
                 ALTER IGNORE TABLE `email_history` CHANGE `user_id` `site_user_id` INT(11);
                 ALTER IGNORE TABLE `feedback` CHANGE `user_id` `site_user_id` INT(11);
@@ -443,29 +443,29 @@ class CATSSchema
                 ALTER IGNORE TABLE `saved_search` CHANGE `user_id` `site_user_id` INT(11);
                 ALTER IGNORE TABLE `user_login` CHANGE `user_id` `site_user_id` INT(11);
              ',
-             '159' => '
+            '159' => '
                 ALTER IGNORE TABLE `site_user` CHANGE `user_id` `site_user_id` INT(11);
              ',
-             '160' => '
+            '160' => '
                 ALTER IGNORE TABLE `site_user` CHANGE `site_user_id` `site_user_id` INT(11) NOT NULL auto_increment;
              ',
-             '161' => '
+            '161' => '
                 DELETE FROM mailer_settings WHERE setting="SMTPHost" OR setting="SMTPPort" OR setting="SMTPAuth" OR setting="SMTPUser" OR setting="SMTPPass" OR setting="mode" OR setting="modeConfigurable";
              ',
-             '162' => '
+            '162' => '
                 DROP TABLE IF EXISTS `timecard_user`;
              ',
-             '163' => '
+            '163' => '
                 ALTER IGNORE TABLE `system` DROP COLUMN `schema_version`;
              ',
-             '164' => '
+            '164' => '
                 DROP TABLE IF EXISTS `work_status_type`;
              ',
-             '165' => '
+            '165' => '
                 ALTER IGNORE TABLE `system` CHANGE `date_version_checked` `date_version_checked` datetime NOT NULL default \'0000-00-00\';
              ',
-             '166' =>
-             '
+            '166' =>
+            '
                 ALTER TABLE `candidate_foreign` RENAME `extra_field`;
                 ALTER IGNORE TABLE `extra_field` ADD COLUMN `data_item_type` INT(11) DEFAULT 0;
                 ALTER IGNORE TABLE `extra_field` CHANGE `candidate_id` `data_item_id` INT(11) DEFAULT 0;
@@ -497,8 +497,8 @@ class CATSSchema
                 FROM
                     contact_foreign;
              ',
-             '167' =>
-             '
+            '167' =>
+            '
                 DROP TABLE `contact_foreign`;
                 DROP TABLE `company_foreign`;
 
@@ -506,8 +506,8 @@ class CATSSchema
                 ALTER IGNORE TABLE `extra_field_settings` ADD COLUMN `data_item_type` INT(11) DEFAULT 0;
                 UPDATE `extra_field_settings` SET `data_item_type` = 100;
              ',
-             '168' =>
-             '
+            '168' =>
+            '
                 INSERT INTO
                     extra_field_settings
                 SELECT
@@ -535,17 +535,17 @@ class CATSSchema
                 DROP TABLE `contact_foreign_settings`;
                 DROP TABLE `company_foreign_settings`;
              ',
-             '169' =>
-             '
+            '169' =>
+            '
                 ALTER IGNORE TABLE `extra_field` CHANGE `candidate_foreign_id` `extra_field_id` INT(11) NOT NULL auto_increment;
                 ALTER IGNORE TABLE `extra_field_settings` CHANGE `candidate_foreign_settings_id` `extra_field_settings_id` INT(11) NOT NULL auto_increment;
              ',
-             '170' =>
-             '
+            '170' =>
+            '
                 UPDATE data_item_type SET short_description = "Company" WHERE data_item_type_id = 200;
              ',
-             '172' =>
-             '
+            '172' =>
+            '
                 ALTER TABLE `job_board_settings` RENAME `career_portal_settings`;
                 ALTER TABLE `job_board_template` RENAME `career_portal_template`;
                 ALTER TABLE `job_board_template_site` RENAME `career_portal_template_site`;
@@ -555,16 +555,16 @@ class CATSSchema
                 ALTER IGNORE TABLE `career_portal_template_site` CHANGE `job_board_name` `career_portal_name` VARCHAR(255);
                 ALTER IGNORE TABLE `career_portal_template` CHANGE `job_board_name` `career_portal_name` VARCHAR(255);
              ',
-             '173' =>
-             '
+            '173' =>
+            '
                 ALTER TABLE `mailer_settings` RENAME `settings`;
                 ALTER IGNORE TABLE `settings` ADD COLUMN `settings_type` INT(11) DEFAULT 0;
                 UPDATE `settings` SET `settings_type` = 1;
                 INSERT INTO `settings` SELECT NULL, setting, value, site_id, 2 FROM calendar_settings;
                 DROP TABLE calendar_settings;
              ',
-             '174' =>
-             '
+            '174' =>
+            '
                 CREATE TABLE `eeo_ethnic_type` (
                   `eeo_ethnic_type_id` int(11) PRIMARY KEY NOT NULL auto_increment,
                   `type` varchar(128) NOT NULL default \'\'
@@ -574,8 +574,8 @@ class CATSSchema
                   `type` varchar(128) NOT NULL default \'\'
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
              ',
-             '175' =>
-             '
+            '175' =>
+            '
                 INSERT INTO `eeo_ethnic_type` values
                     (1, "American Indian"),
                     (2, "Asian or Pacific Islander"),
@@ -588,118 +588,117 @@ class CATSSchema
                     (3, "Disabled Veteran"),
                     (4, "Eligible and Disabled");
              ',
-             '176' =>
-             '
+            '176' =>
+            '
                 ALTER IGNORE TABLE `candidate` ADD COLUMN `eeo_ethnic_type_id` INT(11) DEFAULT 0;
                 ALTER IGNORE TABLE `candidate` ADD COLUMN `eeo_veteran_type_id` INT(11) DEFAULT 0;
                 ALTER IGNORE TABLE `candidate` ADD COLUMN `eeo_disability_status` VARCHAR(5) DEFAULT \'\';
                 ALTER IGNORE TABLE `candidate` ADD COLUMN `eeo_gender` VARCHAR(5) DEFAULT \'\';
              ',
-             '177' =>
-             '
+            '177' =>
+            '
                 UPDATE eeo_veteran_type SET type = "No Veteran Status" where eeo_veteran_type_id = 1;
              ',
-             '178' =>
-             '
+            '178' =>
+            '
                 ALTER IGNORE TABLE `attachment` CHANGE `attachment_id` `attachment_id` INT(11) NOT NULL auto_increment;
              ',
-             '179' =>
-             '
+            '179' =>
+            '
                 ALTER IGNORE TABLE `attachment` DROP INDEX IDX_text;
              ',
-             '180' =>
-             '
+            '180' =>
+            '
                 ALTER IGNORE TABLE `attachment` CHANGE `directory_name` `directory_name` VARCHAR(64);
              ',
-             '182' => '
+            '182' => '
                  ALTER IGNORE TABLE `attachment` ADD COLUMN `md5_sum_text` VARCHAR(40) NOT NULL DEFAULT \'\';
              ',
-             '185' =>
-             '
+            '185' =>
+            '
                 ALTER IGNORE TABLE `attachment` DROP INDEX IDX_date_modified;
              ',
-             '186' => '
+            '186' => '
                  ALTER IGNORE TABLE `site_user` ADD COLUMN `column_preferences` text;
              ',
-             '190' => '
+            '190' => '
                 ALTER IGNORE TABLE `candidate` CHANGE `address1` `address` text;
                 UPDATE candidate SET address = CONCAT(CONCAT(address, \'\n\'), address2) WHERE NOT address2 = \'\';
                 ALTER IGNORE TABLE `candidate` DROP COLUMN `address2`;
              ',
-             '191' => '
+            '191' => '
                 ALTER IGNORE TABLE `contact` CHANGE `address1` `address` text;
                 UPDATE contact SET address = CONCAT(CONCAT(address, \'\n\'), address2) WHERE NOT address2 = \'\';
                 ALTER IGNORE TABLE `contact` DROP COLUMN `address2`;
 
              ',
-             '192' => '
+            '192' => '
                 ALTER IGNORE TABLE `company` CHANGE `address1` `address` text;
                 UPDATE company SET address = CONCAT(CONCAT(address, \'\n\'), address2) WHERE NOT address2 = \'\';
                 ALTER IGNORE TABLE `company` DROP COLUMN `address2`;
                 UPDATE company SET address = CONCAT(CONCAT(address, \'\n\'), address3) WHERE NOT address3 = \'\';
                 ALTER IGNORE TABLE `company` DROP COLUMN `address3`;
              ',
-             '193' => 'PHP:
+            '193' => 'PHP:
                 $db->query(\'UPDATE career_portal_template SET value = REPLACE(value, "<input-address1>", "<input-address>");\');
                 $db->query(\'UPDATE career_portal_template SET value = REPLACE(value, "<input-address2>", "");\');
                 $db->query(\'UPDATE career_portal_template_site SET value = REPLACE(value, "<input-address1>", "<input-address>");\');
                 $db->query(\'UPDATE career_portal_template_site SET value = REPLACE(value, "<input-address2>", "");\');
              ',
-             '194' => '
+            '194' => '
                 ALTER IGNORE TABLE `candidate` ADD COLUMN desired_salary varchar(64);
                 ALTER IGNORE TABLE `candidate` ADD COLUMN current_salary varchar(64);
              ',
-             '196' => '
+            '196' => '
                 UPDATE access_level SET short_description = "Account Disabled" WHERE access_level_id = 0;
                 UPDATE access_level SET short_description = "Read Only" WHERE access_level_id = 100;
                 UPDATE access_level SET short_description = "Add / Edit" WHERE access_level_id = 200;
                 UPDATE access_level SET short_description = "Add / Edit / Delete" WHERE access_level_id = 300;
                 UPDATE access_level SET short_description = "Site Administrator" WHERE access_level_id = 400;
              ',
-             '197' => '
+            '197' => '
                 ALTER IGNORE TABLE `hot_list` RENAME `saved_list`;
                 ALTER IGNORE TABLE `hot_list_entry` RENAME `saved_list_entry`;
                 ALTER IGNORE TABLE `saved_list` CHANGE `hot_list_id` `saved_list_id` int(11) NOT NULL auto_increment;
              ',
-             '198' => '
+            '198' => '
                 ALTER IGNORE TABLE `saved_list_entry` CHANGE `hot_list_entry_id` `saved_list_entry_id` int(11) NOT NULL auto_increment;
              ',
-             '199' => '
+            '199' => '
                 ALTER IGNORE TABLE `saved_list_entry` CHANGE `hot_list_id` `saved_list_id` int(11) NOT NULL;
              ',
-             '200' => '
+            '200' => '
                 ALTER IGNORE TABLE `candidate` ADD COLUMN middle_name varchar(32) AFTER first_name;
              ',
-
-             /* Extra fields refactoring. */
-             '201' => '
+            /* Extra fields refactoring. */
+            '201' => '
                 ALTER IGNORE TABLE `extra_field_settings` ADD COLUMN `extra_field_type` INT(11) NOT NULL DEFAULT '.EXTRA_FIELD_TEXT.';
              ',
-             '202' => '
+            '202' => '
                 UPDATE `extra_field_settings` SET `extra_field_type` = '.EXTRA_FIELD_CHECKBOX.' WHERE field_name LIKE "(CB) %";
              ',
-             '203' => '
+            '203' => '
                 UPDATE `extra_field_settings` SET field_name = REPLACE(field_name, \'(CB) \', \'\') WHERE `extra_field_type`  = '.EXTRA_FIELD_CHECKBOX.';
                 UPDATE `extra_field` SET field_name = REPLACE(field_name, \'(CB) \', \'\') WHERE field_name LIKE "(CB) %";
              ',
-             '204' => '
+            '204' => '
                 ALTER IGNORE TABLE `extra_field_settings` ADD COLUMN `extra_field_parameters` text;
              ',
-             '205' => '
+            '205' => '
                 ALTER IGNORE TABLE `extra_field_settings` CHANGE `extra_field_parameters` `extra_field_options` text;
              ',
-             /* Add missing indexes to speed up job order queries. */
-             '222' => '
+            /* Add missing indexes to speed up job order queries. */
+            '222' => '
                 CREATE INDEX IDX_site_id ON candidate_joborder_status_history (site_id);
                 CREATE INDEX IDX_status_to ON candidate_joborder_status_history (status_to);
                 CREATE INDEX IDX_status_to_site_id ON candidate_joborder_status_history (status_to, site_id);
              ',
-             /* Remove table dashboard_module; this information is now stored in a static array. */
-             '224' => '
+            /* Remove table dashboard_module; this information is now stored in a static array. */
+            '224' => '
                 DROP TABLE IF EXISTS dashboard_module;
              ',
-             /* Convert dashboard component parameters to serialize()d arrays. */
-             '225' => 'PHP:
+            /* Convert dashboard component parameters to serialize()d arrays. */
+            '225' => 'PHP:
                 include_once(\'./lib/ListEditor.php\');
 
                 $rs = $db->getAllAssoc(
@@ -728,11 +727,11 @@ class CATSSchema
                     );
                 }
              ',
-             '226' => '
+            '226' => '
                 ALTER IGNORE TABLE `candidate` CHANGE `desired_salary` `desired_pay` varchar(64);
                 ALTER IGNORE TABLE `candidate` CHANGE `current_salary` `current_pay` varchar(64);
              ',
-             '227' => '
+            '227' => '
                 ALTER TABLE `site_user` RENAME `user`;
                 ALTER IGNORE TABLE `email_history` CHANGE `site_user_id` `user_id` INT(11);
                 ALTER IGNORE TABLE `feedback` CHANGE `site_user_id` `user_id` INT(11);
@@ -740,41 +739,41 @@ class CATSSchema
                 ALTER IGNORE TABLE `saved_search` CHANGE `site_user_id` `user_id` INT(11);
                 ALTER IGNORE TABLE `user_login` CHANGE `site_user_id` `user_id` INT(11);
              ',
-             '228' => '
+            '228' => '
                 ALTER IGNORE TABLE `user` CHANGE `site_user_id` `user_id` INT(11);
              ',
-             '229' => '
+            '229' => '
                 ALTER IGNORE TABLE `user` CHANGE `user_id` `user_id` INT(11) NOT NULL auto_increment;
              ',
-             '230' => '
+            '230' => '
                 ALTER IGNORE TABLE `contact` ADD COLUMN `reports_to` INT(11) default -1;
              ',
-             '231' => '
+            '231' => '
                 ALTER IGNORE TABLE `candidate` ADD COLUMN `is_active` INT(1) default 1;
              ',
-             '240' => '
+            '240' => '
                 UPDATE activity SET type = 400 WHERE type = 0;
              ',
-             '241' => '
+            '241' => '
                 ALTER IGNORE TABLE `user` ADD COLUMN `force_logout` INT(1) default 0;
              ',
-             '242' => '
+            '242' => '
                 UPDATE saved_list_entry,candidate SET saved_list_entry.site_id = candidate.site_id WHERE candidate.candidate_id = data_item_id;
              ',
-             '243' => '
+            '243' => '
                  ALTER IGNORE TABLE `candidate` ADD COLUMN `is_admin_hidden` INT(1) default 0;
                  ALTER IGNORE TABLE `joborder` ADD COLUMN `is_admin_hidden` INT(1) default 0;
              ',
-             '244' => '
+            '244' => '
                 ALTER IGNORE TABLE `site` ADD COLUMN `is_hr_mode` INT(1) default 0;
              ',
-             '247' => 'PHP:
+            '247' => 'PHP:
                 $db->query("UPDATE career_portal_template SET value = REPLACE(value, \'tr.rowHeading\r\n{\r\ntext-align:center;\r\n\', \'tr.rowHeading\r\n{\r\ntext-align:left;\r\n\') where setting=\'CSS\';");
              ',
-             '248' => 'PHP:
+            '248' => 'PHP:
                 $db->query("UPDATE career_portal_template_site SET value = REPLACE(value, \'tr.rowHeading\r\n{\r\ntext-align:center;\r\n\', \'tr.rowHeading\r\n{\r\ntext-align:left;\r\n\') where setting=\'CSS\';");
              ',
-             '249' => '
+            '249' => '
                 DROP TABLE IF EXISTS `http_log`;
                 DROP TABLE IF EXISTS `http_log_types`;
                 DROP TABLE IF EXISTS `queue`;
@@ -1328,8 +1327,7 @@ class CATSSchema
             '364' => '
                 UPDATE user SET password = md5(password) WHERE can_change_password=1;
             ',
-
-        );
+        ];
     }
 }
 

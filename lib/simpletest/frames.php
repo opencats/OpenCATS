@@ -9,8 +9,8 @@
 /**#@+
  *  include other SimpleTest class files
  */
-require_once(dirname(__FILE__) . '/page.php');
-require_once(dirname(__FILE__) . '/user_agent.php');
+require_once(__DIR__ . '/page.php');
+require_once(__DIR__ . '/user_agent.php');
 /**#@-*/
 
 /**
@@ -23,9 +23,9 @@ require_once(dirname(__FILE__) . '/user_agent.php');
  */
 class SimpleFrameset {
     private $frameset;
-    private $frames;
-    private $focus;
-    private $names;
+    private $frames = [];
+    private $focus = false;
+    private $names = [];
 
     /**
      *    Stashes the frameset page. Will make use of the
@@ -34,9 +34,6 @@ class SimpleFrameset {
      */
     function __construct($page) {
         $this->frameset = $page;
-        $this->frames = array();
-        $this->focus = false;
-        $this->names = array();
     }
 
     /**
@@ -83,10 +80,10 @@ class SimpleFrameset {
      */
     function getFrameFocus() {
         if ($this->focus === false) {
-            return array();
+            return [];
         }
         return array_merge(
-                array($this->getPublicNameFromIndex($this->focus)),
+                [$this->getPublicNameFromIndex($this->focus)],
                 $this->frames[$this->focus]->getFrameFocus());
     }
 
@@ -185,7 +182,7 @@ class SimpleFrameset {
      *    @access public
      */
     function getFrames() {
-        $report = array();
+        $report = [];
         for ($i = 0; $i < count($this->frames); $i++) {
             $report[$this->getPublicNameFromIndex($i)] =
                     $this->frames[$i]->getFrames();
@@ -395,7 +392,7 @@ class SimpleFrameset {
         if (is_integer($this->focus)) {
             return $this->frames[$this->focus]->getUrls();
         }
-        $urls = array();
+        $urls = [];
         foreach ($this->frames as $frame) {
             $urls = array_merge($urls, $frame->getUrls());
         }
@@ -415,7 +412,7 @@ class SimpleFrameset {
                     $this->frames[$this->focus]->getUrlsByLabel($label),
                     $this->focus);
         }
-        $urls = array();
+        $urls = [];
         foreach ($this->frames as $index => $frame) {
             $urls = array_merge(
                     $urls,
@@ -455,7 +452,7 @@ class SimpleFrameset {
      *    @access private
      */
     protected function tagUrlsWithFrame($urls, $frame) {
-        $tagged = array();
+        $tagged = [];
         foreach ($urls as $url) {
             if (! $url->getTarget()) {
                 $url->setTarget($this->getPublicNameFromIndex($frame));

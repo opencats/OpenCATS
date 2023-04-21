@@ -77,14 +77,14 @@ class SampleRecurring extends Task
 
     public function run($siteID, $args)
     {
-        Task::setName('Sample Recurring Task');
-        Task::setDescription('This is the description of this sample task.');
+        parent::setName('Sample Recurring Task');
+        parent::setDescription('This is the description of this sample task.');
 
         /**
          * The following are the possible return values of this function.
          * You should put the code you want to run in this function.
          */
-        switch (rand(0, 3))
+        switch (random_int(0, 3))
         {
             /**
              * TASKRET_ERROR

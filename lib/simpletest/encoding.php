@@ -9,7 +9,7 @@
 /**#@+
  *  include other SimpleTest class files
  */
-require_once(dirname(__FILE__) . '/socket.php');
+require_once(__DIR__ . '/socket.php');
 /**#@-*/
 
 /**
@@ -200,7 +200,7 @@ class SimpleEncoding {
      */
     function __construct($query = false) {
         if (! $query) {
-            $query = array();
+            $query = [];
         }
         $this->clear();
         $this->merge($query);
@@ -211,7 +211,7 @@ class SimpleEncoding {
      *    @access public
      */
     function clear() {
-        $this->request = array();
+        $this->request = [];
     }
 
     /**
@@ -279,7 +279,7 @@ class SimpleEncoding {
      *    @access public
      */
     function getValue($key) {
-        $values = array();
+        $values = [];
         foreach ($this->request as $pair) {
             if ($pair->isKey($key)) {
                 $values[] = $pair->getValue();
@@ -310,7 +310,7 @@ class SimpleEncoding {
      *    @access protected
      */
     protected function encode() {
-        $statements = array();
+        $statements = [];
         foreach ($this->request as $pair) {
             if ($statement = $pair->asRequest()) {
                 $statements[] = $statement;
@@ -489,7 +489,7 @@ class SimpleEntityEncoding extends SimpleEncoding {
      *    @access protected
      */
     protected function encode() {
-        return ($this->body) ? $this->body : parent::encode();
+        return $this->body ?: parent::encode();
     }
 }
 
@@ -525,7 +525,7 @@ class SimplePostEncoding extends SimpleEntityEncoding {
     }
 
     function rewriteArrayWithMultipleLevels($query) {
-        $query_ = array();
+        $query_ = [];
         foreach ($query as $key => $value) {
             if (is_array($value)) {
                 foreach ($value as $sub_key => $sub_value) {

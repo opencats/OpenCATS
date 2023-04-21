@@ -1,14 +1,14 @@
 <?php
 // $Id: web_tester_test.php 1748 2008-04-14 01:50:41Z lastcraft $
-require_once(dirname(__FILE__) . '/../autorun.php');
-require_once(dirname(__FILE__) . '/../web_tester.php');
+require_once(__DIR__ . '/../autorun.php');
+require_once(__DIR__ . '/../web_tester.php');
 
 class TestOfFieldExpectation extends UnitTestCase {
     
     function testStringMatchingIsCaseSensitive() {
         $expectation = new FieldExpectation('a');
         $this->assertTrue($expectation->test('a'));
-        $this->assertTrue($expectation->test(array('a')));
+        $this->assertTrue($expectation->test(['a']));
         $this->assertFalse($expectation->test('A'));
     }
     
@@ -16,8 +16,8 @@ class TestOfFieldExpectation extends UnitTestCase {
         $expectation = new FieldExpectation('1');
         $this->assertTrue($expectation->test('1'));
         $this->assertTrue($expectation->test(1));
-        $this->assertTrue($expectation->test(array('1')));
-        $this->assertTrue($expectation->test(array(1)));
+        $this->assertTrue($expectation->test(['1']));
+        $this->assertTrue($expectation->test([1]));
     }
     
     function testNonStringFailsExpectation() {
@@ -31,16 +31,16 @@ class TestOfFieldExpectation extends UnitTestCase {
     }
     
     function testMultipleValuesCanBeInAnyOrder() {
-        $expectation = new FieldExpectation(array('a', 'b'));
-        $this->assertTrue($expectation->test(array('a', 'b')));
-        $this->assertTrue($expectation->test(array('b', 'a')));
-        $this->assertFalse($expectation->test(array('a', 'a')));            
+        $expectation = new FieldExpectation(['a', 'b']);
+        $this->assertTrue($expectation->test(['a', 'b']));
+        $this->assertTrue($expectation->test(['b', 'a']));
+        $this->assertFalse($expectation->test(['a', 'a']));            
         $this->assertFalse($expectation->test('a'));            
     }
     
     function testSingleItemCanBeArrayOrString() {
-        $expectation = new FieldExpectation(array('a'));
-        $this->assertTrue($expectation->test(array('a')));
+        $expectation = new FieldExpectation(['a']);
+        $this->assertTrue($expectation->test(['a']));
         $this->assertTrue($expectation->test('a'));
     }
 }

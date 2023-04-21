@@ -10,14 +10,7 @@ class DatabaseConnectionTest extends DatabaseTestCase
     {
         $db = DatabaseConnection::getInstance();
 
-        $strings = array(
-            array('test string',  "'test string'"),
-            array('te\st', "'te\\\st'"),
-            array('te\s\t', "'te\\\s\\\\t'"),
-            array('te\'st',  "'te\\'st'"),
-            array('\'; DELETE FROM test_table; SELECT \'',  "'\'; DELETE FROM test_table; SELECT \''"),
-            array('te\'s`t',  "'te\\'s`t'")
-        );
+        $strings = [['test string', "'test string'"], ['te\st', "'te\\\st'"], ['te\s\t', "'te\\\s\\\\t'"], ['te\'st', "'te\\'st'"], ['\'; DELETE FROM test_table; SELECT \'', "'\'; DELETE FROM test_table; SELECT \''"], ['te\'s`t', "'te\\'s`t'"]];
 
         foreach ($strings as $key => $value)
         {
@@ -33,14 +26,7 @@ class DatabaseConnectionTest extends DatabaseTestCase
     {
         $db = DatabaseConnection::getInstance();
 
-        $strings = array(
-            array('test string',  "test string"),
-            array('te\st', "te\\\st"),
-            array('te\s\t', "te\\\s\\\\t"),
-            array('te\'st',  "te\\'st"),
-            array('\'; DELETE FROM test_table; SELECT \'',  "\'; DELETE FROM test_table; SELECT \'"),
-            array('te\'s`t',  "te\\'s`t")
-        );
+        $strings = [['test string', "test string"], ['te\st', "te\\\st"], ['te\s\t', "te\\\s\\\\t"], ['te\'st', "te\\'st"], ['\'; DELETE FROM test_table; SELECT \'', "\'; DELETE FROM test_table; SELECT \'"], ['te\'s`t', "te\\'s`t"]];
 
         foreach ($strings as $key => $value)
         {
@@ -56,18 +42,7 @@ class DatabaseConnectionTest extends DatabaseTestCase
     {
         $db = DatabaseConnection::getInstance();
 
-        $strings = array(
-            array('test string',  "'test string'"),
-            array('te\st', "'te\\\st'"),
-            array('te\s\t', "'te\\\s\\\\t'"),
-            array('te\'st',  "'te\\'st'"),
-            array('\'; DELETE FROM test_table; SELECT \'',  "'\'; DELETE FROM test_table; SELECT \''"),
-            array('te\'s`t',  "'te\\'s`t'"),
-            array('    ',  'NULL'),
-            array(' ',  'NULL'),
-            array('	 		',  'NULL'),
-            array('',  'NULL')
-        );
+        $strings = [['test string', "'test string'"], ['te\st', "'te\\\st'"], ['te\s\t', "'te\\\s\\\\t'"], ['te\'st', "'te\\'st'"], ['\'; DELETE FROM test_table; SELECT \'', "'\'; DELETE FROM test_table; SELECT \''"], ['te\'s`t', "'te\\'s`t'"], ['    ', 'NULL'], [' ', 'NULL'], ['	 		', 'NULL'], ['', 'NULL']];
 
         foreach ($strings as $key => $value)
         {
@@ -83,13 +58,7 @@ class DatabaseConnectionTest extends DatabaseTestCase
     {
         $db = DatabaseConnection::getInstance();
 
-        $strings = array(
-            array('1.5',  1),
-            array('not-a-double', 0),
-            array('1.999', 1),
-            array('1notastring', 1),
-            array('-22356', -22356)
-        );
+        $strings = [['1.5', 1], ['not-a-double', 0], ['1.999', 1], ['1notastring', 1], ['-22356', -22356]];
 
         foreach ($strings as $key => $value)
         {
@@ -105,14 +74,7 @@ class DatabaseConnectionTest extends DatabaseTestCase
     {
         $db = DatabaseConnection::getInstance();
 
-        $strings = array(
-            array('1.5',  1),
-            array('not-a-double', 0),
-            array('1.999', 1),
-            array('1notastring', 1),
-            array('-22356', -22356),
-            array('-1', 'NULL')
-        );
+        $strings = [['1.5', 1], ['not-a-double', 0], ['1.999', 1], ['1notastring', 1], ['-22356', -22356], ['-1', 'NULL']];
 
         foreach ($strings as $key => $value)
         {
@@ -128,13 +90,7 @@ class DatabaseConnectionTest extends DatabaseTestCase
     {
         $db = DatabaseConnection::getInstance();
 
-        $strings = array(
-            array('1.5',  '1.5'),
-            array('not-a-double', '0.0'),
-            array('1.99999999999999', '2', 2),
-            array('1.80123', '1.80', 2),
-            array('1.99999999999999', '1.99999999999999'),
-        );
+        $strings = [['1.5', '1.5'], ['not-a-double', '0.0'], ['1.99999999999999', '2', 2], ['1.80123', '1.80', 2], ['1.99999999999999', '1.99999999999999']];
 
         foreach ($strings as $key => $value)
         {

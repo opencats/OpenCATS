@@ -12,27 +12,7 @@ class FileUtilityTest extends TestCase
 {
     function testSizeToHuman()
     {
-        $tests = array(
-            array(1024,       false, 0, '1 KB'),
-            array(2048,       false, 0, '2 KB'),
-            array(1048576,    false, 0, '1 MB'),
-            array(2097152,    false, 0, '2 MB'),
-            array(1073741824, false, 0, '1 GB'),
-            array(1024,       2,     0, '1 KB'),
-            array(1048576,    2,     0, '1 MB'),
-            array(1073741824, 2,     0, '1 GB'),
-            array(1536,       1,     0, '1.5 KB'),
-            array(1536,       2,     0, '1.5 KB'),
-            array(1546,       2,     0, '1.51 KB'),
-            array(1024,       false, 0, '1 KB'),
-            array(1024,       3,     2, '0.001 MB'),
-            array(0,          false, 0, '0 B'),
-            array(0,          false, 1, '0 KB'),
-            array(0,          false, 2, '0 MB'),
-            array(0,          false, 3, '0 GB'),
-            array(0,          false, 4, '0 TB'),
-            array(0,          false, 5, '0 PB')
-        );
+        $tests = [[1024, false, 0, '1 KB'], [2048, false, 0, '2 KB'], [1048576, false, 0, '1 MB'], [2097152, false, 0, '2 MB'], [1073741824, false, 0, '1 GB'], [1024, 2, 0, '1 KB'], [1048576, 2, 0, '1 MB'], [1073741824, 2, 0, '1 GB'], [1536, 1, 0, '1.5 KB'], [1536, 2, 0, '1.5 KB'], [1546, 2, 0, '1.51 KB'], [1024, false, 0, '1 KB'], [1024, 3, 2, '0.001 MB'], [0, false, 0, '0 B'], [0, false, 1, '0 KB'], [0, false, 2, '0 MB'], [0, false, 3, '0 GB'], [0, false, 4, '0 TB'], [0, false, 5, '0 PB']];
 
         foreach ($tests as $key => $value)
         {

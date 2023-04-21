@@ -470,7 +470,7 @@ switch ($action)
         }
         else
         {
-            $record = array();
+            $record = [];
         }
 
         if (!isset($record['date_format_ddmmyy']) || $record['date_format_ddmmyy'] == 0)
@@ -565,7 +565,7 @@ switch ($action)
 
         echo '<script type="text/javascript">setActiveStep(3);</script>';
 
-        if (count($tables) == 0)
+        if ((is_array($tables) || $tables instanceof \Countable ? count($tables) : 0) == 0)
         {
             echo '<script type="text/javascript">
                       showTextBlock(\'emptyDatabase\');
@@ -575,7 +575,7 @@ switch ($action)
         }
 
         $rs = MySQLQuery('SELECT * FROM candidate', true);
-        $fields = array();
+        $fields = [];
         while ($meta = @mysqli_fetch_field($rs))
         {
             if ($meta)
@@ -761,7 +761,7 @@ switch ($action)
         MySQLQueryMultiple($schema, ";\n");
 
         //Check if we need to update from 0.6.0 to 0.7.0
-        $tables = array();
+        $tables = [];
         $result = MySQLQuery(sprintf("SHOW TABLES FROM `%s`", DATABASE_NAME));
         while ($row = mysqli_fetch_array($result, MYSQLI_NUM))
         {
@@ -846,7 +846,7 @@ switch ($action)
         MySQLConnect();
 
         /* This shouldn't be possible - there is no option to upgrade CATS if no tables are in the database. */
-        if (count($tables) == 0)
+        if ((is_array($tables) || $tables instanceof \Countable ? count($tables) : 0) == 0)
         {
             echo 'Error - no schema present.<br /><br /> ';
             echo '<input type="button" class="button" value="Retry Installation" onclick="Installpage_populate(\'a=detectConnectivity\', \'subFormBlock\', \'Checking database connectivity...\');">&nbsp;&nbsp;&nbsp;';
@@ -855,7 +855,7 @@ switch ($action)
 
         $revision = 0;
         $rs = MySQLQuery('SELECT * FROM candidate', true);
-        $fields = array();
+        $fields = [];
         while ($meta = mysqli_fetch_field($rs))
         {
             $fields[$meta->name] = true;
@@ -1085,7 +1085,7 @@ function MySQLConnect()
 
 
     /* Create an array of all tables in the database. */
-    $tables = array();
+    $tables = [];
     $result = MySQLQuery(sprintf("SHOW TABLES FROM `%s`", DATABASE_NAME));
     while ($row = mysqli_fetch_row($result))
     {

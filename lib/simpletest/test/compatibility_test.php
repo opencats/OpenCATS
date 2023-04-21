@@ -1,7 +1,7 @@
 <?php
 // $Id: compatibility_test.php 1748 2008-04-14 01:50:41Z lastcraft $
-require_once(dirname(__FILE__) . '/../autorun.php');
-require_once(dirname(__FILE__) . '/../compatibility.php');
+require_once(__DIR__ . '/../autorun.php');
+require_once(__DIR__ . '/../compatibility.php');
 
 class ComparisonClass { }
 class ComparisonSubclass extends ComparisonClass { }

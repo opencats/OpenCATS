@@ -1,7 +1,7 @@
 <?php
 // $Id: url_test.php 1998 2010-07-27 09:55:55Z pp11 $
-require_once(dirname(__FILE__) . '/../autorun.php');
-require_once(dirname(__FILE__) . '/../url.php');
+require_once(__DIR__ . '/../autorun.php');
+require_once(__DIR__ . '/../url.php');
 
 class TestOfUrl extends UnitTestCase {
     
@@ -206,53 +206,53 @@ class TestOfUrl extends UnitTestCase {
     function testBlitz() {
         $this->assertUrl(
                 "https://username:password@www.somewhere.com:243/this/that/here.php?a=1&b=2#anchor",
-                array("https", "username", "password", "www.somewhere.com", 243, "/this/that/here.php", "com", "?a=1&b=2", "anchor"),
-                array("a" => "1", "b" => "2"));
+                ["https", "username", "password", "www.somewhere.com", 243, "/this/that/here.php", "com", "?a=1&b=2", "anchor"],
+                ["a" => "1", "b" => "2"]);
         $this->assertUrl(
                 "username:password@www.somewhere.com/this/that/here.php?a=1",
-                array(false, "username", "password", "www.somewhere.com", false, "/this/that/here.php", "com", "?a=1", false),
-                array("a" => "1"));
+                [false, "username", "password", "www.somewhere.com", false, "/this/that/here.php", "com", "?a=1", false],
+                ["a" => "1"]);
         $this->assertUrl(
                 "username:password@somewhere.com:243?1,2",
-                array(false, "username", "password", "somewhere.com", 243, "/", "com", "", false),
-                array(),
-                array(1, 2));
+                [false, "username", "password", "somewhere.com", 243, "/", "com", "", false],
+                [],
+                [1, 2]);
         $this->assertUrl(
                 "https://www.somewhere.com",
-                array("https", false, false, "www.somewhere.com", false, "/", "com", "", false));
+                ["https", false, false, "www.somewhere.com", false, "/", "com", "", false]);
         $this->assertUrl(
                 "username@www.somewhere.com:243#anchor",
-                array(false, "username", false, "www.somewhere.com", 243, "/", "com", "", "anchor"));
+                [false, "username", false, "www.somewhere.com", 243, "/", "com", "", "anchor"]);
         $this->assertUrl(
                 "/this/that/here.php?a=1&b=2?3,4",
-                array(false, false, false, false, false, "/this/that/here.php", false, "?a=1&b=2", false),
-                array("a" => "1", "b" => "2"),
-                array(3, 4));
+                [false, false, false, false, false, "/this/that/here.php", false, "?a=1&b=2", false],
+                ["a" => "1", "b" => "2"],
+                [3, 4]);
         $this->assertUrl(
                 "username@/here.php?a=1&b=2",
-                array(false, "username", false, false, false, "/here.php", false, "?a=1&b=2", false),
-                array("a" => "1", "b" => "2"));
+                [false, "username", false, false, false, "/here.php", false, "?a=1&b=2", false],
+                ["a" => "1", "b" => "2"]);
     }
     
     function testAmbiguousHosts() {
         $this->assertUrl(
                 "tigger",
-                array(false, false, false, false, false, "tigger", false, "", false));
+                [false, false, false, false, false, "tigger", false, "", false]);
         $this->assertUrl(
                 "/tigger",
-                array(false, false, false, false, false, "/tigger", false, "", false));
+                [false, false, false, false, false, "/tigger", false, "", false]);
         $this->assertUrl(
                 "//tigger",
-                array(false, false, false, "tigger", false, "/", false, "", false));
+                [false, false, false, "tigger", false, "/", false, "", false]);
         $this->assertUrl(
                 "//tigger/",
-                array(false, false, false, "tigger", false, "/", false, "", false));
+                [false, false, false, "tigger", false, "/", false, "", false]);
         $this->assertUrl(
                 "tigger.com",
-                array(false, false, false, "tigger.com", false, "/", "com", "", false));
+                [false, false, false, "tigger.com", false, "/", "com", "", false]);
         $this->assertUrl(
                 "me.net/tigger",
-                array(false, false, false, "me.net", false, "/tigger", "net", "", false));
+                [false, false, false, "me.net", false, "/tigger", "net", "", false]);
     }
     
     function testAsString() {
@@ -295,7 +295,7 @@ class TestOfUrl extends UnitTestCase {
 
     function assertUrl($raw, $parts, $params = false, $coords = false) {
         if (! is_array($params)) {
-            $params = array();
+            $params = [];
         }
         $url = new SimpleUrl($raw);
         $this->assertIdentical($url->getScheme(), $parts[0], "[$raw] scheme -> %s");

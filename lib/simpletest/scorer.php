@@ -7,7 +7,7 @@
  */
 
 /**#@+*/
-require_once(dirname(__FILE__) . '/invoker.php');
+require_once(__DIR__ . '/invoker.php');
 /**#@-*/
 
 /**
@@ -19,20 +19,17 @@ require_once(dirname(__FILE__) . '/invoker.php');
  *    @abstract
  */
 class SimpleScorer {
-    private $passes;
-    private $fails;
-    private $exceptions;
-    private $is_dry_run;
+    private $passes = 0;
+    private $fails = 0;
+    private $exceptions = 0;
+    private $is_dry_run = false;
 
     /**
      *    Starts the test run with no results.
      *    @access public
      */
-    function __construct() {
-        $this->passes = 0;
-        $this->fails = 0;
-        $this->exceptions = 0;
-        $this->is_dry_run = false;
+    function __construct()
+    {
     }
 
     /**
@@ -239,9 +236,9 @@ class SimpleScorer {
  *    @subpackage UnitTester
  */
 class SimpleReporter extends SimpleScorer {
-    private $test_stack;
-    private $size;
-    private $progress;
+    private $test_stack = [];
+    private $size = null;
+    private $progress = 0;
 
     /**
      *    Starts the display with no results in.
@@ -249,9 +246,6 @@ class SimpleReporter extends SimpleScorer {
      */
     function __construct() {
         parent::__construct();
-        $this->test_stack = array();
-        $this->size = null;
-        $this->progress = 0;
     }
 
     /**
@@ -456,7 +450,7 @@ class SimpleReporterDecorator {
         if (method_exists($this->reporter, 'getTestList')) {
             return $this->reporter->getTestList();
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -632,7 +626,7 @@ class SimpleReporterDecorator {
  *    @subpackage UnitTester
  */
 class MultipleReporter {
-    private $reporters = array();
+    private $reporters = [];
 
     /**
      *    Adds a reporter to the subscriber list.

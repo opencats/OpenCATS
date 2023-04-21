@@ -61,51 +61,33 @@ define ( "SPH_GROUPBY_ATTR",		4 );
 /// sphinx searchd client class
 class SphinxClient
 {
-	var $_host;			///< searchd host (default is "localhost")
-	var $_port;			///< searchd port (default is 3312)
-	var $_offset;		///< how many records to seek from result-set start (default is 0)
-	var $_limit;		///< how many records to return from result-set starting at offset (default is 20)
-	var $_mode;			///< query matching mode (default is SPH_MATCH_ALL)
-	var $_weights;		///< per-field weights (default is 1 for all fields)
-	var $_sort;			///< match sorting mode (default is SPH_SORT_RELEVANCE)
-	var $_sortby;		///< attribute to sort by (defualt is "")
-	var $_min_id;		///< min ID to match (default is 0)
-	var $_max_id;		///< max ID to match (default is UINT_MAX)
-	var $_filters;		///< search filters
-	var $_groupby;		///< group-by attribute name
-	var $_groupfunc;	///< group-by function (to pre-process group-by attribute value with)
-	var $_groupsort;	///< group-by sorting clause (to sort groups in result set with)
-	var $_maxmatches;	///< max matches to retrieve
+	public $_host = "localhost";			///< searchd host (default is "localhost")
+	public $_port = 3312;			///< searchd port (default is 3312)
+	public $_offset = 0;		///< how many records to seek from result-set start (default is 0)
+	public $_limit = 20;		///< how many records to return from result-set starting at offset (default is 20)
+	public $_mode = SPH_MATCH_ALL;			///< query matching mode (default is SPH_MATCH_ALL)
+	public $_weights = [];		///< per-field weights (default is 1 for all fields)
+	public $_sort = SPH_SORT_RELEVANCE;			///< match sorting mode (default is SPH_SORT_RELEVANCE)
+	public $_sortby = "";		///< attribute to sort by (defualt is "")
+	public $_min_id = 0;		///< min ID to match (default is 0)
+	public $_max_id = 0xFFFFFFFF;		///< max ID to match (default is UINT_MAX)
+	public $_filters = [];		///< search filters
+	public $_groupby = "";		///< group-by attribute name
+	public $_groupfunc = SPH_GROUPBY_DAY;	///< group-by function (to pre-process group-by attribute value with)
+	public $_groupsort = "@group desc";	///< group-by sorting clause (to sort groups in result set with)
+	public $_maxmatches = 1000;	///< max matches to retrieve
 
-	var $_error;		///< last error message
-	var $_warning;		///< last warning message
+	public $_error = "";		///< last error message
+	public $_warning = "";		///< last warning message
 
 	/////////////////////////////////////////////////////////////////////////////
 	// common stuff
 	/////////////////////////////////////////////////////////////////////////////
 
 	/// create a new client object and fill defaults
-	function __construct ()
-	{
-		$this->_host		= "localhost";
-		$this->_port		= 3312;
-		$this->_offset		= 0;
-		$this->_limit		= 20;
-		$this->_mode		= SPH_MATCH_ALL;
-		$this->_weights		= array ();
-		$this->_sort		= SPH_SORT_RELEVANCE;
-		$this->_sortby		= "";
-		$this->_min_id		= 0;
-		$this->_max_id		= 0xFFFFFFFF;
-		$this->_filters		= array ();
-		$this->_groupby		= "";
-		$this->_groupfunc	= SPH_GROUPBY_DAY;
-		$this->_groupsort	= "@group desc";
-		$this->_maxmatches	= 1000;
-
-		$this->_error	= "";
-		$this->_warning	= "";
-	}
+	function __construct()
+ {
+ }
 
 	/// get last error message (string)
 	function GetLastError ()
@@ -140,7 +122,7 @@ class SphinxClient
 		}
 
 		// check version
-		list(,$v) = unpack ( "N*", fread ( $fp, 4 ) );
+		[, $v] = unpack ( "N*", fread ( $fp, 4 ) );
 		$v = (int)$v;
 		if ( $v<1 )
 		{
@@ -158,7 +140,7 @@ class SphinxClient
 	function _GetResponse ( $fp, $client_ver )
 	{
 		$header = fread ( $fp, 8 );
-		list ( $status, $ver, $len ) = array_values ( unpack ( "n2a/Nb", $header ) );
+		[$status, $ver, $len] = array_values ( unpack ( "n2a/Nb", $header ) );
 		$response = "";
 		$left = $len;
 		while ( $left>0 && !feof($fp) )
@@ -185,7 +167,7 @@ class SphinxClient
 		// check status
 		if ( $status==SEARCHD_WARNING )
 		{
-			list(,$wlen) = unpack ( "N*", substr ( $response, 0, 4 ) );
+			[, $wlen] = unpack ( "N*", substr ( $response, 0, 4 ) );
 			$this->_warning = substr ( $response, 4, $wlen );
 			return substr ( $response, 4+$wlen );
 		}
@@ -296,7 +278,7 @@ class SphinxClient
 			foreach ( $values as $value )
 				assert ( is_int($value) );
 
-			$this->_filters[] = array ( "attr"=>$attribute, "exclude"=>$exclude, "values"=>$values );
+			$this->_filters[] = ["attr"=>$attribute, "exclude"=>$exclude, "values"=>$values];
 		}
 	}
 
@@ -310,7 +292,7 @@ class SphinxClient
 		assert ( is_int($max) );
 		assert ( $min<=$max );
 
-		$this->_filters[] = array ( "attr"=>$attribute, "exclude"=>$exclude, "min"=>$min, "max"=>$max );
+		$this->_filters[] = ["attr"=>$attribute, "exclude"=>$exclude, "min"=>$min, "max"=>$max];
 	}
 
 	/// set grouping attribute and function
@@ -408,7 +390,7 @@ class SphinxClient
 			$req .= pack ( "N", strlen($filter["attr"]) ) . $filter["attr"];
 			if ( isset($filter["values"]) )
 			{
-				$req .= pack ( "N", count($filter["values"]) );
+				$req .= pack ( "N", is_array($filter["values"]) || $filter["values"] instanceof \Countable ? count($filter["values"]) : 0 );
 				foreach ( $filter["values"] as $value )
 					$req .= pack ( "N", $value );
 			} else
@@ -437,39 +419,39 @@ class SphinxClient
 		// parse response
 		//////////////////
 
-		$result = array();
+		$result = [];
 		$max = strlen($response); // protection from broken response
 
 		// read schema
 		$p = 0;
-		$fields = array ();
-		$attrs = array ();
+		$fields = [];
+		$attrs = [];
 
-		list(,$nfields) = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
+		[, $nfields] = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
 		while ( $nfields-->0 && $p<$max )
 		{
-			list(,$len) = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
+			[, $len] = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
 			$fields[] = substr ( $response, $p, $len ); $p += $len;
 		}
 		$result["fields"] = $fields;
 
-		list(,$nattrs) = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
+		[, $nattrs] = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
 		while ( $nattrs-->0 && $p<$max  )
 		{
-			list(,$len) = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
+			[, $len] = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
 			$attr = substr ( $response, $p, $len ); $p += $len;
-			list(,$type) = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
+			[, $type] = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
 			$attrs[$attr] = $type;
 		}
 		$result["attrs"] = $attrs;
 
 		// read match count
-		list(,$count) = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
+		[, $count] = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
 
 		// read matches
 		while ( $count-->0 && $p<$max )
 		{
-			list ( $doc, $weight ) = array_values ( unpack ( "N*N*",
+			[$doc, $weight] = array_values ( unpack ( "N*N*",
 				substr ( $response, $p, 8 ) ) );
 			$p += 8;
 
@@ -479,11 +461,11 @@ class SphinxClient
 			$result["matches"][$doc]["weight"] = $weight;
 			foreach ( $attrs as $attr=>$type )
 			{
-				list(,$val) = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
+				[, $val] = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
 				$result["matches"][$doc]["attrs"][$attr] = sprintf ( "%u", $val );
 			}
 		}
-		list ( $total, $total_found, $msecs, $words ) =
+		[$total, $total_found, $msecs, $words] =
 			array_values ( unpack ( "N*N*N*N*", substr ( $response, $p, 16 ) ) );
 		$result["total"] = sprintf ( "%u", $total );
 		$result["total_found"] = sprintf ( "%u", $total_found );
@@ -492,12 +474,10 @@ class SphinxClient
 
 		while ( $words-->0 )
 		{
-			list(,$len) = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
+			[, $len] = unpack ( "N*", substr ( $response, $p, 4 ) ); $p += 4;
 			$word = substr ( $response, $p, $len ); $p += $len;
-			list ( $docs, $hits ) = array_values ( unpack ( "N*N*", substr ( $response, $p, 8 ) ) ); $p += 8;
-			$result["words"][$word] = array (
-				"docs"=>sprintf ( "%u", $docs ),
-				"hits"=>sprintf ( "%u", $hits ) );
+			[$docs, $hits] = array_values ( unpack ( "N*N*", substr ( $response, $p, 8 ) ) ); $p += 8;
+			$result["words"][$word] = ["docs"=>sprintf ( "%u", $docs ), "hits"=>sprintf ( "%u", $hits )];
 		}
 
 		return $result;
@@ -527,7 +507,7 @@ class SphinxClient
 	///
 	/// returns false on failure
 	/// returns an array of string excerpts on success
-	function BuildExcerpts ( $docs, $index, $words, $opts=array() )
+	function BuildExcerpts ( $docs, $index, $words, $opts=[] )
 	{
 		assert ( is_array($docs) );
 		assert ( is_string($index) );
@@ -586,11 +566,11 @@ class SphinxClient
 		//////////////////
 
 		$pos = 0;
-		$res = array ();
+		$res = [];
 		$rlen = strlen($response);
 		for ( $i=0; $i<count($docs); $i++ )
 		{
-			list(,$len) = unpack ( "N*", substr ( $response, $pos, 4 ) );
+			[, $len] = unpack ( "N*", substr ( $response, $pos, 4 ) );
 			$pos += 4;
 
 			if ( $pos+$len > $rlen )
@@ -623,7 +603,8 @@ class SphinxClient
 	///		$cl->UpdateAttributes ( array("group"), array(123=>array(456)) );
 	function UpdateAttributes ( $index, $attrs, $values )
 	{
-		// verify everything
+		$p = null;
+  // verify everything
 		assert ( is_string($index) );
 
 		assert ( is_array($attrs) );
@@ -667,7 +648,7 @@ class SphinxClient
 			return -1;
 
 		// parse response
-		list(,$updated) = unpack ( "N*", substr ( $response, $p, 4 ) );
+		[, $updated] = unpack ( "N*", substr ( $response, $p, 4 ) );
 		return $updated;
 	}
 }

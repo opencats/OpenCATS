@@ -52,11 +52,7 @@ class ListsUI extends UserInterface
         $this->_moduleDirectory = 'lists';
         $this->_moduleName = 'lists';
         $this->_moduleTabText = 'Lists';
-        $this->_subTabs = array(
-            'Show Lists'     => CATSUtility::getIndexName() . '?m=lists'
-           /* 'New Static List' => CATSUtility::getIndexName() . '?m=lists&a=newListStatic*al=' . ACCESS_LEVEL_EDIT  . '@lists.newListStatic', */
-           /* 'New Dynamic List' => CATSUtility::getIndexName() . '?m=lists&a=newListDynamic*al=' . ACCESS_LEVEL_EDIT . '@lists.newListDynamic' */
-        );
+        $this->_subTabs = ['Show Lists'     => CATSUtility::getIndexName() . '?m=lists'];
     }
 
 
@@ -116,11 +112,9 @@ class ListsUI extends UserInterface
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
          * be empty.  Fill in some default values. */
-        if ($dataGridProperties == array())
+        if ($dataGridProperties == [])
         {
-            $dataGridProperties = array('rangeStart'    => 0,
-                                        'maxResults'    => 15,
-                                        'filterVisible' => false);
+            $dataGridProperties = ['rangeStart'    => 0, 'maxResults'    => 15, 'filterVisible' => false];
         }
 
         $dataGrid = DataGrid::get("lists:ListsDataGrid", $dataGridProperties);
@@ -184,12 +178,9 @@ class ListsUI extends UserInterface
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
          * be empty.  Fill in some default values. */
-        if ($dataGridProperties == array())
+        if ($dataGridProperties == [])
         {
-            $dataGridProperties = array('rangeStart'    => 0,
-                                        'maxResults'    => 15,
-                                        'filterVisible' => false,
-                                        'savedListStatic' => true);
+            $dataGridProperties = ['rangeStart'    => 0, 'maxResults'    => 15, 'filterVisible' => false, 'savedListStatic' => true];
         }
 
         /* Add an MRU entry. */
@@ -229,7 +220,7 @@ class ListsUI extends UserInterface
 
         $dataItemType = $_GET['dataItemType'];
         $dataItemID = $_GET['dataItemID'];
-        $dataItemIDArray = array($dataItemID);
+        $dataItemIDArray = [$dataItemID];
 
         $savedLists = new SavedLists($this->_siteID);
 
@@ -330,7 +321,7 @@ class ListsUI extends UserInterface
         /* Remove the items */
         $savedLists = new SavedLists($this->_siteID);
 
-        $dataItemIDArrayTemp = array();
+        $dataItemIDArrayTemp = [];
         foreach ($dataItemIDArray as $dataItemID)
         {
             $dataItemIDArrayTemp[] = $dataItemID;
@@ -338,10 +329,10 @@ class ListsUI extends UserInterface
             if (count($dataItemIDArrayTemp) > 200)
             {
                 $savedLists->removeEntryMany($savedListID, $dataItemIDArrayTemp);
-                $dataItemIDArrayTemp = array();
+                $dataItemIDArrayTemp = [];
             }
         }
-        if (count($dataItemIDArrayTemp) > 0)
+        if ((is_array($dataItemIDArrayTemp) || $dataItemIDArrayTemp instanceof \Countable ? count($dataItemIDArrayTemp) : 0) > 0)
         {
             $savedLists->removeEntryMany($savedListID, $dataItemIDArrayTemp);
         }

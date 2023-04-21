@@ -7,7 +7,7 @@
  *
  */
 
-require_once dirname(__FILE__)."/Plot.class.php";
+require_once __DIR__."/Plot.class.php";
 
 /**
  * ScatterPlot
@@ -204,7 +204,7 @@ class awScatterPlot extends awPlot implements awLegendable {
 		$count = count($this->datay);
 
 		// Get start and stop values
-		list($start, $stop) = $this->getLimit();
+		[$start, $stop] = $this->getLimit();
 
 		// Build the polygon
 		$polygon = new awPolygon;

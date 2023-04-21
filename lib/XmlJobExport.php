@@ -50,7 +50,7 @@ class XmlTemplate
      */
     public static function getTemplates()
     {
-        $templates = array();
+        $templates = [];
         $db = DatabaseConnection::getInstance();
 
         $sql = sprintf(
@@ -124,7 +124,7 @@ class XmlTemplate
      */
     public static function loadTemplate($templateName)
     {
-        $templateSections = array();
+        $templateSections = [];
 
         // Read the template file into a string
         $rawTemplate = file_get_contents(
@@ -183,7 +183,7 @@ class XmlTemplate
      */
     public static function loadTemplateTags($template)
     {
-        $tags = array();
+        $tags = [];
         for ( $i=0; $i<strlen($template)-4; $i++ )
         {
             if (!strcmp(substr($template, $i, 2), '$['))

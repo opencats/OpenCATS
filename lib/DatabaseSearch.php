@@ -37,12 +37,7 @@
  */
 class DatabaseSearch
 {
-    private $_simpleReplaceHash = array(
-        '+' => '_rPLUSr',
-        '#' => '_rPOUNDr',
-        '&' => '_rANDr',
-        '@' => '_rATr'
-    );
+    private $_simpleReplaceHash = ['+' => '_rPLUSr', '#' => '_rPOUNDr', '&' => '_rANDr', '@' => '_rATr'];
 
 
     /**
@@ -55,25 +50,13 @@ class DatabaseSearch
     public static function humanToSphinxBoolean($string)
     {
         /* Remove double operators. */
-        $regexSearch = array(
-            '/\bAND(?:\s+AND)+\b/i',
-            '/\bOR(?:\s+OR)+\b/i',
-            '/\bAND\s+NOT(?:\s+AND\s+NOT)+\b/i',
-            '/\bNOT(?:\s+NOT)+\b/i',
-            '/\bAND\s+NOT\b/i'
-        );
-        $regexReplace = array(
-            'AND',
-            'OR',
-            'NOT',
-            'NOT',
-            'NOT'
-        );
+        $regexSearch = ['/\bAND(?:\s+AND)+\b/i', '/\bOR(?:\s+OR)+\b/i', '/\bAND\s+NOT(?:\s+AND\s+NOT)+\b/i', '/\bNOT(?:\s+NOT)+\b/i', '/\bAND\s+NOT\b/i'];
+        $regexReplace = ['AND', 'OR', 'NOT', 'NOT', 'NOT'];
         $string = preg_replace($regexSearch, $regexReplace, $string);
 
         /* Translate AND/OR/NOT to +/-/!. */
-        $stringSearch  = array(' AND ', ' NOT ', ' OR ', ',');
-        $stringReplace = array(' +',    ' !',    ' | ',  ' | ');
+        $stringSearch  = [' AND ', ' NOT ', ' OR ', ','];
+        $stringReplace = [' +', ' !', ' | ', ' | '];
         $string = str_ireplace($stringSearch, $stringReplace,  $string);
 
         return $string;
@@ -91,12 +74,8 @@ class DatabaseSearch
     public static function makeREGEXPString($string)
     {
          /* FIXME: Test this! */
-        $search  = array(
-            '\\',   '+',   '.',   '*',   '(',   ')',   '[',   ']',   '?',   '^',   '$'
-        );
-        $replace = array(
-            '\\\\', '\\+', '\\.', '\\*', '\\(', '\\)', '\\[', '\\]', '\\?', '\\^', '\\$'
-        );
+        $search  = ['\\', '+', '.', '*', '(', ')', '[', ']', '?', '^', '$'];
+        $replace = ['\\\\', '\\+', '\\.', '\\*', '\\(', '\\)', '\\[', '\\]', '\\?', '\\^', '\\$'];
 
         return str_replace($search, $replace, $string);
     }
@@ -131,7 +110,7 @@ class DatabaseSearch
 
             /* Mark up the string that was inside the quotes. */
             $quoted = str_replace(
-                array(' ', ','), array('_QSPACEQ_', '_QCOMMAQ_'), $quoted
+                [' ', ','], ['_QSPACEQ_', '_QCOMMAQ_'], $quoted
             );
 
             /* Replace the string that was inside the quotes with the marked-up string. */
@@ -153,7 +132,7 @@ class DatabaseSearch
     public static function unMarkUpQuotes($string)
     {
         return str_replace(
-            array('_QSPACEQ_', '_QCOMMAQ_'), array(' ', ','), $string
+            ['_QSPACEQ_', '_QCOMMAQ_'], [' ', ','], $string
         );
     }
 
@@ -237,47 +216,13 @@ class DatabaseSearch
         $string = ' ' . $string . ' ';
 
         /* Special character handling. */
-        $stringSearch  = array(
-            ' -',
-            ' !',
-            ',',
-            '|',
-            '(',
-            ')',
-            '%'
-        );
-        $stringReplace = array(
-            ' NOT ',
-            ' NOT ',
-            ' OR ',
-            ' OR ',
-            ' OOOPENPARENTH ',
-            ' CCCLOSEPARENTH ',
-            ''
-        );
+        $stringSearch  = [' -', ' !', ',', '|', '(', ')', '%'];
+        $stringReplace = [' NOT ', ' NOT ', ' OR ', ' OR ', ' OOOPENPARENTH ', ' CCCLOSEPARENTH ', ''];
         $string = str_replace($stringSearch, $stringReplace, $string);
 
         /* Remove double operators and filter query. */
-        $regexSearch = array(
-            '/\bAND(?:\s+AND)+\b/i',
-            '/\b(?:AND|OR)(?:\s+OR)+\b/i',
-            '/\bOR(?:\s+AND)+\b/i',
-            '/\b(?:OR\s+)*AND\s+NOT(?:\s+AND\s+NOT)+\b/i',
-            '/\bAND\s+NOT\b/i',
-            '/\bNOT(?:\s+NOT)+\b/i',
-            '/\bOR\s+NOT\b/i',
-            '/\b(?:AND\s+)?NOT(?:\s+OR)+\b/i'
-        );
-        $regexReplace = array(
-            'AND',
-            'OR',
-            'OR',
-            'NOT',
-            'NOT',
-            'NOT',
-            'NOT',
-            ' '
-        );
+        $regexSearch = ['/\bAND(?:\s+AND)+\b/i', '/\b(?:AND|OR)(?:\s+OR)+\b/i', '/\bOR(?:\s+AND)+\b/i', '/\b(?:OR\s+)*AND\s+NOT(?:\s+AND\s+NOT)+\b/i', '/\bAND\s+NOT\b/i', '/\bNOT(?:\s+NOT)+\b/i', '/\bOR\s+NOT\b/i', '/\b(?:AND\s+)?NOT(?:\s+OR)+\b/i'];
+        $regexReplace = ['AND', 'OR', 'OR', 'NOT', 'NOT', 'NOT', 'NOT', ' '];
         $string = preg_replace($regexSearch, $regexReplace, $string);
 
         /* Clean up extra spaces. */
@@ -300,8 +245,8 @@ class DatabaseSearch
 
         /* Convert normal boolean operators to shortened syntax. */
         /* Translate AND/OR/NOT to +/,/-. */
-        $stringSearch  = array(' AND ', ' NOT ', ' OR ');
-        $stringReplace = array(' +',    ' -',    ',');
+        $stringSearch  = [' AND ', ' NOT ', ' OR '];
+        $stringReplace = [' +', ' -', ','];
         $string = str_ireplace($stringSearch, $stringReplace,  $string);
 
         /* Strip excessive whitespace. */
@@ -364,10 +309,7 @@ class DatabaseSearch
         );
 
         /* Wildcard searches. */
-        $search = array(
-            '/(?:word|wild)\[\(\'(.+?)\'\)\]wild/',
-            '/wild\[\(\'(.+?)\'\)\]full/'
-        );
+        $search = ['/(?:word|wild)\[\(\'(.+?)\'\)\]wild/', '/wild\[\(\'(.+?)\'\)\]full/'];
         $string = preg_replace(
             $search, '(' . $tableField . ' LIKE \'%\\1%\')', $string
         );
@@ -426,12 +368,7 @@ class DatabaseSearch
      */
     public static function fulltextEncode($text)
     {
-        $_simpleReplaceHash = array(
-            '+' => '_rPLUSr',
-            '#' => '_rPOUNDr',
-            '&' => '_rANDr',
-            '@' => '_rATr'
-        );
+        $_simpleReplaceHash = ['+' => '_rPLUSr', '#' => '_rPOUNDr', '&' => '_rANDr', '@' => '_rATr'];
 
         foreach ($_simpleReplaceHash as $find => $replace)
         {
@@ -449,12 +386,7 @@ class DatabaseSearch
      */
     public static function fulltextDecode($text)
     {
-        $_simpleReplaceHash = array(
-            '+' => '_rPLUSr',
-            '#' => '_rPOUNDr',
-            '&' => '_rANDr',
-            '@' => '_rATr'
-        );
+        $_simpleReplaceHash = ['+' => '_rPLUSr', '#' => '_rPOUNDr', '&' => '_rANDr', '@' => '_rATr'];
 
         foreach ($_simpleReplaceHash as $replace => $find)
         {

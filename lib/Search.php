@@ -69,10 +69,10 @@ class SearchUtility
          * at spaces. If the sum of all fragments is too short, we look for
          * second occurrences.
          */
-        $ranges = array();
-        $included = array();
+        $ranges = [];
+        $included = [];
         $length = 0;
-        while ($length < SEARCH_EXCERPT_LENGTH && count($workingKeys))
+        while ($length < SEARCH_EXCERPT_LENGTH && (is_array($workingKeys) || $workingKeys instanceof \Countable ? count($workingKeys) : 0))
         {
             foreach ($workingKeys as $keyOffset => $key)
             {
@@ -161,7 +161,7 @@ class SearchUtility
          * and test for overlapping ranges. Merge overlapping ranges togeather.
          * The ksort()ing makes this O(n).
          */
-        $newRanges = array();
+        $newRanges = [];
         foreach ($ranges as $rangeFrom => $rangeTo)
         {
             /* On the first loop, set the 'base range' to the first range's
@@ -203,7 +203,7 @@ class SearchUtility
         $newRanges[$baseRangeFrom] = $baseRangeTo;
 
         /* Fetch text. */
-        $out = array();
+        $out = [];
         foreach ($newRanges as $from => $to)
         {
             $out[] = substr($text, $from, $to - $from);
@@ -212,7 +212,7 @@ class SearchUtility
         $text = implode(' ... ', $out);
 
         /* Highlight wildcards differently. */
-        $keywordsWild = array();
+        $keywordsWild = [];
         foreach ($keywords as $keyOffset => $key)
         {
             if (strpos($key, '*') !== false)
@@ -285,7 +285,7 @@ class SearchUtility
         $keywords = self::makeKeywordsArray($keywords);
 
         /* Highlight wildcards differently. */
-        $keywordsWild = array();
+        $keywordsWild = [];
         foreach ($keywords as $keyOffset => $key)
         {
             if (strpos($key, '*') !== false)
@@ -332,14 +332,14 @@ class SearchUtility
         /* Split keywords into an array by "words" and fix quotes. */
         $keywords = explode(' ', $string);
         $keywords = array_map(
-            array('DatabaseSearch', 'unMarkUpQuotes'), $keywords
+            ['DatabaseSearch', 'unMarkUpQuotes'], $keywords
         );
 
         /* Escape special regex characters in keys, and filter out boolean words. */
         foreach ($keywords as $index => $keyword)
         {
             $keywords[$index] = str_replace(
-                array('(', ')'), '', $keywords[$index]
+                ['(', ')'], '', $keywords[$index]
             );
 
             if (strtoupper($keyword) == 'AND' ||
@@ -594,7 +594,7 @@ class SearchCandidates
     public function byPhone($wildCardString, $sortBy, $sortDirection)
     {
         $wildCardString = str_replace(
-            array('.', '-', '(', ')'),
+            ['.', '-', '(', ')'],
             '',
             $wildCardString
         );
@@ -1853,15 +1853,7 @@ class SearchByResumePager extends Pager
         $this->_db = DatabaseConnection::getInstance();
         $this->_siteID = $siteID;
 
-        $this->_sortByFields = array(
-            'firstName',
-            'lastName',
-            'city',
-            'state',
-            'dateModifiedSort',
-            'dateCreatedSort',
-            'ownerSort'
-        );
+        $this->_sortByFields = ['firstName', 'lastName', 'city', 'state', 'dateModifiedSort', 'dateCreatedSort', 'ownerSort'];
 
         if (ENABLE_SPHINX)
         {
@@ -1872,7 +1864,7 @@ class SearchByResumePager extends Pager
 
             $sphinx = new SphinxClient();
             $sphinx->SetServer(SPHINX_HOST, SPHINX_PORT);
-            $sphinx->SetWeights(array(0, 100, 0, 0, 50));
+            $sphinx->SetWeights([0, 100, 0, 0, 50]);
             $sphinx->SetMatchMode(SPH_MATCH_EXTENDED);
             $sphinx->SetLimits(0, 1000);
             $sphinx->SetSortMode(SPH_SORT_TIME_SEGMENTS, 'date_added');
@@ -1880,7 +1872,7 @@ class SearchByResumePager extends Pager
             // FIXME: This can be sped up a bit by actually grouping ranges of
             //        site IDs into their own index's. Maybe every 500 or so at
             //        least on the Hosted system.
-            $sphinx->SetFilter('site_id', array($this->_siteID));
+            $sphinx->SetFilter('site_id', [$this->_siteID]);
 
             /* Create the Sphinx query string. */
             $wildCardString = DatabaseSearch::humanToSphinxBoolean($wildCardString);
@@ -2066,27 +2058,7 @@ class SearchPager extends Pager
 
     public function __construct($rowsPerPage, $currentPage, $siteID)
     {
-        $this->_sortByFields = array(
-            'firstName',
-            'lastName',
-            'city',
-            'state',
-            'dateModified',
-            'dateCreated',
-            'owner',
-            'phone1',
-            'companyName',
-            'title',
-            'owner_user',
-            'owner_user.last_name',
-            'type',
-            'status',
-            'startDate',
-            'recruiterLastName',
-            'dateCreatedSort',
-            'dateModifiedSort',
-            'ownerSort'
-        );
+        $this->_sortByFields = ['firstName', 'lastName', 'city', 'state', 'dateModified', 'dateCreated', 'owner', 'phone1', 'companyName', 'title', 'owner_user', 'owner_user.last_name', 'type', 'status', 'startDate', 'recruiterLastName', 'dateCreatedSort', 'dateModifiedSort', 'ownerSort'];
 
         /* Pass "Search By Resume"-specific parameters to Pager constructor. */
         parent::__construct((is_array($this->_rs)?count($this->_rs):0), $rowsPerPage, $currentPage);

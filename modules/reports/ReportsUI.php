@@ -42,9 +42,7 @@ class ReportsUI extends UserInterface
         $this->_moduleDirectory = 'reports';
         $this->_moduleName = 'reports';
         $this->_moduleTabText = 'Reports';
-        $this->_subTabs = array(
-                'EEO Reports' => CATSUtility::getIndexName() . '?m=reports&amp;a=customizeEEOReport'
-            );
+        $this->_subTabs = ['EEO Reports' => CATSUtility::getIndexName() . '?m=reports&amp;a=customizeEEOReport'];
     }
 
 
@@ -92,6 +90,7 @@ class ReportsUI extends UserInterface
 
     private function reports()
     {
+        $statisticsData = [];
         /* Grab an instance of Statistics. */
         $statistics = new Statistics($this->_siteID);
 
@@ -254,7 +253,7 @@ class ReportsUI extends UserInterface
         {
             /* Querys inside loops are bad, but I don't think there is any avoiding this. */
             $submissionJobOrdersRS[$rowIndex]['submissionsRS'] = $statistics->getSubmissionsByJobOrder(
-                $period, $submissionJobOrdersData['jobOrderID'], $this->_siteID
+                $period, $submissionJobOrdersData['jobOrderID']
             );
         }
 
@@ -334,7 +333,7 @@ class ReportsUI extends UserInterface
         {
             /* Querys inside loops are bad, but I don't think there is any avoiding this. */
             $placementsJobOrdersRS[$rowIndex]['placementsRS'] = $statistics->getPlacementsByJobOrder(
-                $period, $placementsJobOrdersData['jobOrderID'], $this->_siteID
+                $period, $placementsJobOrdersData['jobOrderID']
             );
         }
 
@@ -347,6 +346,7 @@ class ReportsUI extends UserInterface
 
     private function customizeJobOrderReport()
     {
+        $reportParameters = [];
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_GET))
         {
@@ -384,12 +384,7 @@ class ReportsUI extends UserInterface
         $reportParameters['dataSet3'] = $data['pipelineInterving'];
         $reportParameters['dataSet4'] = $data['pipelinePlaced'];
 
-        $dataSet = array(
-            $reportParameters['dataSet4'],
-            $reportParameters['dataSet3'],
-            $reportParameters['dataSet2'],
-            $reportParameters['dataSet1']
-        );
+        $dataSet = [$reportParameters['dataSet4'], $reportParameters['dataSet3'], $reportParameters['dataSet2'], $reportParameters['dataSet1']];
 
         $this->_template->assign('reportParameters', $reportParameters);
         $this->_template->assign('active', $this);
@@ -434,7 +429,7 @@ class ReportsUI extends UserInterface
         }
         else
         {
-            $dataSet = array(4, 3, 2, 1);
+            $dataSet = [4, 3, 2, 1];
         }
 
 
@@ -605,8 +600,8 @@ class ReportsUI extends UserInterface
         }
 
         /* Produce the URL to the ethic statistics graph. */
-        $labels = array();
-        $data = array();
+        $labels = [];
+        $data = [];
 
         $rsEthnicStatistics = $EEOReportStatistics['rsEthnicStatistics'];
 
@@ -628,8 +623,8 @@ class ReportsUI extends UserInterface
 
 
         /* Produce the URL to the veteran status statistics graph. */
-        $labels = array();
-        $data = array();
+        $labels = [];
+        $data = [];
 
         $rsVeteranStatistics = $EEOReportStatistics['rsVeteranStatistics'];
 
@@ -650,8 +645,8 @@ class ReportsUI extends UserInterface
             ));
 
         /* Produce the URL to the gender statistics graph. */
-        $labels = array();
-        $data = array();
+        $labels = [];
+        $data = [];
 
         $rsGenderStatistics = $EEOReportStatistics['rsGenderStatistics'];
 
@@ -678,8 +673,8 @@ class ReportsUI extends UserInterface
         }
 
         /* Produce the URL to the disability statistics graph. */
-        $labels = array();
-        $data = array();
+        $labels = [];
+        $data = [];
 
         $rsDisabledStatistics = $EEOReportStatistics['rsDisabledStatistics'];
 

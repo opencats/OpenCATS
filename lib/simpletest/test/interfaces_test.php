@@ -1,11 +1,11 @@
 <?php
 // $Id: interfaces_test.php 1981 2010-03-23 23:29:56Z lastcraft $
-require_once(dirname(__FILE__) . '/../autorun.php');
+require_once(__DIR__ . '/../autorun.php');
 if (function_exists('spl_classes')) {
-    include(dirname(__FILE__) . '/support/spl_examples.php');
+    include(__DIR__ . '/support/spl_examples.php');
 }
 if (version_compare(PHP_VERSION, '5.1', '>=')) {
-    include(dirname(__FILE__) . '/interfaces_test_php5_1.php');
+    include(__DIR__ . '/interfaces_test_php5_1.php');
 }
 
 interface DummyInterface {
@@ -15,7 +15,7 @@ interface DummyInterface {
 }
 
 Mock::generate('DummyInterface');
-Mock::generatePartial('DummyInterface', 'PartialDummyInterface', array());
+Mock::generatePartial('DummyInterface', 'PartialDummyInterface', []);
 
 class TestOfMockInterfaces extends UnitTestCase {
 

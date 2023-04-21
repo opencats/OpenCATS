@@ -693,6 +693,7 @@ class Statistics
     
     public function getEEOReport($modePeriod, $modeStatus)
     {
+        $statistics = [];
         switch ($modePeriod)
         {
             case 'month':
@@ -936,18 +937,7 @@ class Statistics
 
         if (empty($rs))
         {
-            return array(
-                'totalPipeline' => 0,
-                'noStatus' => 0,
-                'noContact' => 0,
-                'contacted' => 0,
-                'qualifying' => 0,
-                'submitted' => 0,
-                'interviewing' => 0,
-                'offered' => 0,
-                'passedOn' => 0,
-                'placed' => 0
-            );
+            return ['totalPipeline' => 0, 'noStatus' => 0, 'noContact' => 0, 'contacted' => 0, 'qualifying' => 0, 'submitted' => 0, 'interviewing' => 0, 'offered' => 0, 'passedOn' => 0, 'placed' => 0];
         }
 
         return $rs;

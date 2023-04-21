@@ -36,10 +36,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
      */
     public function __construct()
     {
-        $this->roleData = array(
-            'Administrator' => new Role('admin', 'admin'),
-            'User' => new Role('john@mycompany.net', 'john99')
-        );
+        $this->roleData = ['Administrator' => new Role('admin', 'admin'), 'User' => new Role('john@mycompany.net', 'john99')];
     }
     
     /**
@@ -60,10 +57,10 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     public function thereIsAPersonCalledWith($fullName, $property)
     {
         $this->visitPath('/index.php?m=candidates&a=add');
-        list($firstName, $lastName) = explode(" ", $fullName);
+        [$firstName, $lastName] = explode(" ", $fullName);
         $this->fillField('firstName', $firstName);
         $this->fillField('lastName', $lastName);
-        list($key, $value) = explode("=", $property);
+        [$key, $value] = explode("=", $property);
         $this->fillField($key, $value);
         $this->pressButton('Add Candidate');
     }
@@ -240,7 +237,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
      * @Given There is a user :userName named :fullName with :password password
      */
     public function thereIsAUserWithParams($userName, $fullName, $password) {
-        list($firstName, $lastName) = explode(" ", $fullName);
+        [$firstName, $lastName] = explode(" ", $fullName);
         $siteId = $this->getSiteId();
         $users = new Users($siteId);
         $users->add(

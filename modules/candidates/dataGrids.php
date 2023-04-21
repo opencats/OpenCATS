@@ -21,17 +21,7 @@ class candidatesListByViewDataGrid extends CandidatesDataGrid
         $this->defaultSortBy = 'dateModifiedSort';
         $this->defaultSortDirection = 'DESC';
 
-        $this->_defaultColumns = array(
-            array('name' => 'Attachments', 'width' => 31),
-            array('name' => 'First Name', 'width' => 75),
-            array('name' => 'Last Name', 'width' => 85),
-            array('name' => 'City', 'width' => 75),
-            array('name' => 'State', 'width' => 50),
-            array('name' => 'Key Skills', 'width' => 215),
-            array('name' => 'Owner', 'width' => 65),
-            array('name' => 'Created', 'width' => 60),
-            array('name' => 'Modified', 'width' => 60),
-        );
+        $this->_defaultColumns = [['name' => 'Attachments', 'width' => 31], ['name' => 'First Name', 'width' => 75], ['name' => 'Last Name', 'width' => 85], ['name' => 'City', 'width' => 75], ['name' => 'State', 'width' => 50], ['name' => 'Key Skills', 'width' => 215], ['name' => 'Owner', 'width' => 65], ['name' => 'Created', 'width' => 60], ['name' => 'Modified', 'width' => 60]];
 
          parent::__construct("candidates:candidatesListByViewDataGrid",
                              $siteID, $parameters, $misc
@@ -87,17 +77,7 @@ class candidatesSavedListByViewDataGrid extends CandidatesDataGrid
         $this->defaultSortBy = 'dateModifiedSort';
         $this->defaultSortDirection = 'DESC';
 
-        $this->_defaultColumns = array(
-            array('name' => 'Attachments', 'width' => 31),
-            array('name' => 'First Name', 'width' => 75),
-            array('name' => 'Last Name', 'width' => 85),
-            array('name' => 'City', 'width' => 75),
-            array('name' => 'State', 'width' => 50),
-            array('name' => 'Key Skills', 'width' => 200),
-            array('name' => 'Owner', 'width' => 65),
-            array('name' => 'Modified', 'width' => 60),
-            array('name' => 'Added To List', 'width' => 75),
-        );
+        $this->_defaultColumns = [['name' => 'Attachments', 'width' => 31], ['name' => 'First Name', 'width' => 75], ['name' => 'Last Name', 'width' => 85], ['name' => 'City', 'width' => 75], ['name' => 'State', 'width' => 50], ['name' => 'Key Skills', 'width' => 200], ['name' => 'Owner', 'width' => 65], ['name' => 'Modified', 'width' => 60], ['name' => 'Added To List', 'width' => 75]];
 
          parent::__construct("candidates:candidatesSavedListByViewDataGrid",
                              $siteID, $parameters, $misc

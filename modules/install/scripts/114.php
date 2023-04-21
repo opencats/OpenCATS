@@ -27,12 +27,12 @@
 
 function getAllFilesInDirectory($directory)
 {
-    $files = array();
+    $files = [];
 
     $handle = @opendir($directory);
     if (!$handle)
     {
-        return array();
+        return [];
     }
 
     while (($file = readdir($handle)) !== false)
@@ -67,7 +67,7 @@ function update_114($db)
             $newFilename != $attachment['stored_filename'])
         {
             $filesInDirectory = getAllFilesInDirectory('attachments/'.$attachment['directory_name'].'/');
-            if (count($filesInDirectory) == 1)
+            if ((is_array($filesInDirectory) || $filesInDirectory instanceof \Countable ? count($filesInDirectory) : 0) == 1)
             {
                 rename ('attachments/'.$attachment['directory_name'].'/'.$filesInDirectory[0], 'attachments/'.$attachment['directory_name'].'/'.$newFilename);
                 $db->query('UPDATE attachment SET stored_filename = "' . addslashes($newFilename) . '" WHERE attachment_id = '.$attachment['attachment_id']);

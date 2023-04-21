@@ -271,21 +271,11 @@ class EmailTemplates
         }
 
         /* Variables to be replaced. */
-        $stringsToFind = array(
-            '%DATETIME%',
-            '%SITENAME%',
-            '%USERFULLNAME%',
-            '%USERMAIL%'
-        );
+        $stringsToFind = ['%DATETIME%', '%SITENAME%', '%USERFULLNAME%', '%USERMAIL%'];
 
         if ($isLoggedIn)
         {
-            $replacementStrings = array(
-                DateUtility::getAdjustedDate($dateFormat . ' g:i A'),
-                $siteName,
-                $fullName,
-                '<a href="mailto:'. $email .'">'. $email .'</a>'
-            );
+            $replacementStrings = [DateUtility::getAdjustedDate($dateFormat . ' g:i A'), $siteName, $fullName, '<a href="mailto:'. $email .'">'. $email .'</a>'];
         }
         else
         {
@@ -305,12 +295,7 @@ class EmailTemplates
 
             $siteName = $siteRS['name'];
 
-            $replacementStrings = array(
-                DateUtility::getAdjustedDate($dateFormat . ' g:i A'),
-                $siteName,
-                '',
-                '<a href="mailto:' . $email . '">' . $email . '</a>'
-            );
+            $replacementStrings = [DateUtility::getAdjustedDate($dateFormat . ' g:i A'), $siteName, '', '<a href="mailto:' . $email . '">' . $email . '</a>'];
         }
 
         return str_replace($stringsToFind, $replacementStrings, $text);

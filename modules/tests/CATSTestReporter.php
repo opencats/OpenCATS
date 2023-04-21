@@ -195,7 +195,7 @@ class CATSTestReporter extends SimpleReporter
         return preg_replace('/^test/', '', $testCaseMethod);
     }
 
-    public function printHeader($headIncludes = array())
+    public function printHeader($headIncludes = [])
     {
         echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"', "\n";
         echo '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">', "\n";

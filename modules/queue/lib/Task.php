@@ -44,6 +44,7 @@ class Task
 
     public function getName()
     {
+        $taskName = null;
         return $taskName;
     }
 
@@ -54,6 +55,7 @@ class Task
 
     public function getDescription()
     {
+        $taskDescription = null;
         return $taskDescription;
     }
 

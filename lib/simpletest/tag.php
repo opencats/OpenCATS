@@ -9,8 +9,8 @@
 /**#@+
  * include SimpleTest files
  */
-require_once(dirname(__FILE__) . '/page.php');
-require_once(dirname(__FILE__) . '/encoding.php');
+require_once(__DIR__ . '/page.php');
+require_once(__DIR__ . '/encoding.php');
 /**#@-*/
 
 /**
@@ -31,16 +31,7 @@ class SimpleTagBuilder {
      *    @access public
      */
     function createTag($name, $attributes) {
-        static $map = array(
-                'a' => 'SimpleAnchorTag',
-                'title' => 'SimpleTitleTag',
-                'base' => 'SimpleBaseTag',
-                'button' => 'SimpleButtonTag',
-                'textarea' => 'SimpleTextAreaTag',
-                'option' => 'SimpleOptionTag',
-                'label' => 'SimpleLabelTag',
-                'form' => 'SimpleFormTag',
-                'frame' => 'SimpleFrameTag');
+        static $map = ['a' => 'SimpleAnchorTag', 'title' => 'SimpleTitleTag', 'base' => 'SimpleBaseTag', 'button' => 'SimpleButtonTag', 'textarea' => 'SimpleTextAreaTag', 'option' => 'SimpleOptionTag', 'label' => 'SimpleLabelTag', 'form' => 'SimpleFormTag', 'frame' => 'SimpleFrameTag'];
         $attributes = $this->keysToLowerCase($attributes);
         if (array_key_exists($name, $map)) {
             $tag_class = $map[$name];
@@ -77,15 +68,7 @@ class SimpleTagBuilder {
             return new SimpleTextTag($attributes);
         }
         $type = strtolower(trim($attributes['type']));
-        $map = array(
-                'submit' => 'SimpleSubmitTag',
-                'image' => 'SimpleImageSubmitTag',
-                'checkbox' => 'SimpleCheckboxTag',
-                'radio' => 'SimpleRadioButtonTag',
-                'text' => 'SimpleTextTag',
-                'hidden' => 'SimpleTextTag',
-                'password' => 'SimpleTextTag',
-                'file' => 'SimpleUploadTag');
+        $map = ['submit' => 'SimpleSubmitTag', 'image' => 'SimpleImageSubmitTag', 'checkbox' => 'SimpleCheckboxTag', 'radio' => 'SimpleRadioButtonTag', 'text' => 'SimpleTextTag', 'hidden' => 'SimpleTextTag', 'password' => 'SimpleTextTag', 'file' => 'SimpleUploadTag'];
         if (array_key_exists($type, $map)) {
             $tag_class = $map[$type];
             return new $tag_class($attributes);
@@ -100,7 +83,7 @@ class SimpleTagBuilder {
      *    @access private
      */
     protected function keysToLowerCase($map) {
-        $lower = array();
+        $lower = [];
         foreach ($map as $key => $value) {
             $lower[strtolower($key)] = $value;
         }
@@ -116,7 +99,7 @@ class SimpleTagBuilder {
 class SimpleTag {
     private $name;
     private $attributes;
-    private $content;
+    private $content = '';
 
     /**
      *    Starts with a named tag with attributes only.
@@ -129,7 +112,6 @@ class SimpleTag {
     function __construct($name, $attributes) {
         $this->name = strtolower(trim($name));
         $this->attributes = $attributes;
-        $this->content = '';
     }
 
     /**
@@ -198,7 +180,7 @@ class SimpleTag {
      *    @access public
      */
     function getChildElements() {
-        return array();
+        return [];
     }
 
     /**
@@ -335,9 +317,9 @@ class SimpleAnchorTag extends SimpleTag {
  *    @subpackage WebTester
  */
 class SimpleWidget extends SimpleTag {
-    private $value;
-    private $label;
-    private $is_set;
+    private $value = false;
+    private $label = false;
+    private $is_set = false;
 
     /**
      *    Starts with a named tag with attributes only.
@@ -347,9 +329,6 @@ class SimpleWidget extends SimpleTag {
      */
     function __construct($name, $attributes) {
         parent::__construct($name, $attributes);
-        $this->value = false;
-        $this->label = false;
-        $this->is_set = false;
     }
 
     /**
@@ -804,8 +783,8 @@ class SimpleUploadTag extends SimpleWidget {
  *    @subpackage WebTester
  */
 class SimpleSelectionTag extends SimpleWidget {
-    private $options;
-    private $choice;
+    private $options = [];
+    private $choice = false;
 
     /**
      *    Starts with attributes only.
@@ -814,8 +793,6 @@ class SimpleSelectionTag extends SimpleWidget {
      */
     function __construct($attributes) {
         parent::__construct('select', $attributes);
-        $this->options = array();
-        $this->choice = false;
     }
 
     /**
@@ -892,8 +869,8 @@ class SimpleSelectionTag extends SimpleWidget {
  *    @subpackage WebTester
  */
 class MultipleSelectionTag extends SimpleWidget {
-    private $options;
-    private $values;
+    private $options = [];
+    private $values = false;
 
     /**
      *    Starts with attributes only.
@@ -902,8 +879,6 @@ class MultipleSelectionTag extends SimpleWidget {
      */
     function __construct($attributes) {
         parent::__construct('select', $attributes);
-        $this->options = array();
-        $this->values = false;
     }
 
     /**
@@ -933,7 +908,7 @@ class MultipleSelectionTag extends SimpleWidget {
      *    @access public
      */
     function getDefault() {
-        $default = array();
+        $default = [];
         for ($i = 0, $count = count($this->options); $i < $count; $i++) {
             if ($this->options[$i]->getAttribute('selected') !== false) {
                 $default[] = $this->options[$i]->getDefault();
@@ -951,7 +926,7 @@ class MultipleSelectionTag extends SimpleWidget {
      *    @access public
      */
     function setValue($desired) {
-        $achieved = array();
+        $achieved = [];
         foreach ($desired as $value) {
             $success = false;
             for ($i = 0, $count = count($this->options); $i < $count; $i++) {
@@ -1170,7 +1145,7 @@ class SimpleCheckboxTag extends SimpleWidget {
  *    @subpackage WebTester
  */
 class SimpleTagGroup {
-    private $widgets = array();
+    private $widgets = [];
 
     /**
      *    Adds a tag to the group.
@@ -1268,7 +1243,7 @@ class SimpleCheckboxGroup extends SimpleTagGroup {
      *    @access public
      */
     function getValue() {
-        $values = array();
+        $values = [];
         $widgets = $this->getWidgets();
         for ($i = 0, $count = count($widgets); $i < $count; $i++) {
             if ($widgets[$i]->getValue() !== false) {
@@ -1284,7 +1259,7 @@ class SimpleCheckboxGroup extends SimpleTagGroup {
      *    @access public
      */
     function getDefault() {
-        $values = array();
+        $values = [];
         $widgets = $this->getWidgets();
         for ($i = 0, $count = count($widgets); $i < $count; $i++) {
             if ($widgets[$i]->getDefault() !== false) {
@@ -1327,7 +1302,7 @@ class SimpleCheckboxGroup extends SimpleTagGroup {
      *    @access private
      */
     protected function valuesArePossible($values) {
-        $matches = array();
+        $matches = [];
         $widgets = &$this->getWidgets();
         for ($i = 0, $count = count($widgets); $i < $count; $i++) {
             $possible = $widgets[$i]->getAttribute('value');
@@ -1367,10 +1342,10 @@ class SimpleCheckboxGroup extends SimpleTagGroup {
      */
     protected function makeArray($value) {
         if ($value === false) {
-            return array();
+            return [];
         }
         if (is_string($value)) {
-            return array($value);
+            return [$value];
         }
         return $value;
     }

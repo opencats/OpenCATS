@@ -100,21 +100,21 @@ class awImage {
 	 *
 	 * @var int
 	 */
-	const JPEG = IMG_JPG;
+	public const JPEG = IMG_JPG;
 
 	/**
 	 * Use PNG for image
 	 *
 	 * @var int
 	 */
-	const PNG = IMG_PNG;
+	public const PNG = IMG_PNG;
 
 	/**
 	 * Use GIF for image
 	 *
 	 * @var int
 	 */
-	const GIF = IMG_GIF;
+	public const GIF = IMG_GIF;
 
 	/**
 	 * Build the image
@@ -278,7 +278,7 @@ class awImage {
 		// No absolute size specified
 		if($component->w === NULL and $component->h === NULL) {
 
-			list($width, $height) = $drawer->setSize($component->width, $component->height);
+			[$width, $height] = $drawer->setSize($component->width, $component->height);
 
 			// Set component size in pixels
 			$component->setAbsSize($width, $height);
@@ -300,12 +300,12 @@ class awImage {
 
 		$drawer->movePosition($border + $shadow->left, $border + $shadow->top);
 
-		list($x1, $y1, $x2, $y2) = $component->getPosition();
+		[$x1, $y1, $x2, $y2] = $component->getPosition();
 
 		$component->init($drawer);
 
 		$component->drawComponent($drawer, $x1, $y1, $x2, $y2, $this->antiAliasing);
-		$component->drawEnvelope($drawer, $x1, $y1, $x2, $y2);
+		$component->drawEnvelope($drawer);
 
 		$component->finalize($drawer);
 
@@ -331,7 +331,8 @@ class awImage {
 	 */
 	public function send($file = NULL) {
 
-		// Test if format is available
+		$function = null;
+  // Test if format is available
 		if((imagetypes() & $this->format) === FALSE) {
 			trigger_error("Format '".$this->format."' is not available on your system. Check that your PHP has been compiled with the good libraries.");
 		}
@@ -416,7 +417,7 @@ class awFileImage extends awImage {
 
 		$image = @getimagesize($file);
 
-		if($image and in_array($image[2], array(2, 3))) {
+		if($image and in_array($image[2], [2, 3])) {
 
 			$this->setSize($image[0], $image[1]);
 

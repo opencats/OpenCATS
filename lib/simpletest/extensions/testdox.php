@@ -13,7 +13,7 @@
  */
 class TestDoxReporter extends SimpleReporter
 {
-    var $_test_case_pattern = '/^TestOf(.*)$/';
+    public $_test_case_pattern = '/^TestOf(.*)$/';
 
     function __construct($test_case_pattern = '/^TestOf(.*)$/') {
         parent::__construct();

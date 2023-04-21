@@ -413,7 +413,7 @@ class SavedLists
             return;
         }  
         
-        $valuesArray = array();
+        $valuesArray = [];
         foreach ($dataItemIDs as $dataItemID)
         {
             $valuesArray[] = '(' . $this->_db->makeQueryInteger($savedListID) . ',' .

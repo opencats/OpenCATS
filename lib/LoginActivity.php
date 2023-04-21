@@ -51,13 +51,7 @@ class LoginActivityPager extends Pager
         $this->_siteID = $siteID;
         $this->_successful = $successful;
 
-        $this->_sortByFields = array(
-            'firstName',
-            'lastName',
-            'ip',
-            'shortUserAgent',
-            'dateSort'
-        );
+        $this->_sortByFields = ['firstName', 'lastName', 'ip', 'shortUserAgent', 'dateSort'];
 
         /* How many entries do we have? */
         $sql = sprintf(

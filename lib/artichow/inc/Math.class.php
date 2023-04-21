@@ -35,21 +35,21 @@ abstract class awShape {
 	 *
 	 * @var int
 	 */
-	const SOLID = 1;
+	public const SOLID = 1;
 
 	/**
 	 * Dotted shape
 	 *
 	 * @var int
 	 */
-	const DOTTED = 2;
+	public const DOTTED = 2;
 
 	/**
 	 * Dashed shape
 	 *
 	 * @var int
 	 */
-	const DASHED = 3;
+	public const DASHED = 3;
 
 	/**
 	 * Change shape style
@@ -186,7 +186,7 @@ class awPoint extends awShape {
 	 * @param array Point location
 	 */
 	public function getLocation() {
-		return array($this->x, $this->y);
+		return [$this->x, $this->y];
 	}
 
 	/**
@@ -197,7 +197,7 @@ class awPoint extends awShape {
 	 */
 	public function getDistance(awPoint $p) {
 
-		return sqrt(pow($p->x - $this->x, 2) + pow($p->y - $this->y, 2));
+		return sqrt(($p->x - $this->x) ** 2 + ($p->y - $this->y) ** 2);
 
 	}
 
@@ -317,7 +317,7 @@ class awLine extends awShape {
 	 * @param array Line location
 	 */
 	public function getLocation() {
-		return array($this->p1, $this->p2);
+		return [$this->p1, $this->p2];
 	}
 
 	/**
@@ -327,7 +327,7 @@ class awLine extends awShape {
 	 */
 	public function getSize() {
 
-		$square = pow($this->p2->x - $this->p1->x, 2) + pow($this->p2->y - $this->p1->y, 2);
+		$square = ($this->p2->x - $this->p1->x) ** 2 + ($this->p2->y - $this->p1->y) ** 2;
 		return sqrt($square);
 
 	}
@@ -419,7 +419,7 @@ class awPolygon extends awShape {
 	 *
 	 * @var array
 	 */
-	protected $points = array();
+	protected $points = [];
 
 	/**
 	 * Set a point in the polygon

@@ -61,9 +61,7 @@ class BrowserDetection
         /* Blank User Agent */
         if (empty($userAgent))
         {
-            return array(
-                'name' => 'Masked', 'version' => ''
-            );
+            return ['name' => 'Masked', 'version' => ''];
         }
 
         /* Firefox - Test this before Mozilla. */
@@ -72,9 +70,7 @@ class BrowserDetection
             preg_match('/Firefox\/([0-9\.]+)(\+)?/i', $userAgent, $b);
             unset($b[0]);
 
-            return array(
-                'name' => 'Firefox', 'version' => implode('', $b)
-            );
+            return ['name' => 'Firefox', 'version' => implode('', $b)];
         }
 
         /* AOL Browser - Test this before Internet Explorer. */
@@ -82,9 +78,7 @@ class BrowserDetection
         {
             preg_match('/America Online Browser ([0-9\.]+)/i', $userAgent, $b);
 
-            return array(
-                'name' => 'America Online Browser', 'version' => $b[1]
-            );
+            return ['name' => 'America Online Browser', 'version' => $b[1]];
         }
 
         /* AOL Builtin Browser - Test this before Internet Explorer. */
@@ -92,9 +86,7 @@ class BrowserDetection
         {
             preg_match('/AOL ([0-9\.]+)/i', $userAgent, $b);
 
-            return array(
-                'name' => 'AOL', 'version' => $b[1]
-            );
+            return ['name' => 'AOL', 'version' => $b[1]];
         }
 
         /* Internet Explorer - Test this before Mozilla. */
@@ -103,9 +95,7 @@ class BrowserDetection
             preg_match('/MSIE ([0-9\.]+)(b)?/i', $userAgent, $b);
             unset($b[0]);
 
-            return array(
-                'name' => 'Internet Explorer', 'version' => implode('', $b)
-            );
+            return ['name' => 'Internet Explorer', 'version' => implode('', $b)];
         }
 
         /* Opera */
@@ -114,9 +104,7 @@ class BrowserDetection
             preg_match('/Opera(\/| )([0-9\.]+)(u)?(\d+)?/i', $userAgent, $b);
             unset($b[0], $b[1]);
 
-            return array(
-                'name' => 'Opera', 'version' => implode('', $b)
-            );
+            return ['name' => 'Opera', 'version' => implode('', $b)];
         }
 
         /* Safari */
@@ -229,9 +217,7 @@ class BrowserDetection
                 }
             }
             
-            return array(
-                'name' => 'Safari', 'version' => $version
-            );
+            return ['name' => 'Safari', 'version' => $version];
         }
 
         /* Camino - Test this before Mozilla. */
@@ -240,9 +226,7 @@ class BrowserDetection
             preg_match('/Camino\/([0-9\.]+)(a|b)?(\d+)?(\+)?/i', $userAgent, $b);
             unset($b[0]);
 
-            return array(
-                'name' => 'Camino', 'version' => implode('', $b)
-            );
+            return ['name' => 'Camino', 'version' => implode('', $b)];
         }
 
         /* Netscape - Test this before Mozilla. */
@@ -250,9 +234,7 @@ class BrowserDetection
         {
             preg_match('/Mozilla\/([0-9\.]+)/i', $userAgent, $b);
 
-            return array(
-                'name' => 'Netscape', 'version' => $b[1]
-            );
+            return ['name' => 'Netscape', 'version' => $b[1]];
         }
 
         /* Konqueror */
@@ -261,9 +243,7 @@ class BrowserDetection
             preg_match('/Konqueror\/([0-9\.]+)(\-rc)?(\d+)?/i', $userAgent, $b);
             unset($b[0]);
 
-            return array(
-                'name' => 'Konqueror', 'version' => implode('', $b)
-            );
+            return ['name' => 'Konqueror', 'version' => implode('', $b)];
         }
 
         /* SeaMonkey - Test this before Mozilla. */
@@ -272,9 +252,7 @@ class BrowserDetection
             preg_match('/SeaMonkey\/([0-9\.]+)(a|b)?/i', $userAgent, $b);
             unset($b[0]);
 
-            return array(
-                'name' => 'SeaMonkey', 'version' => implode('', $b)
-            );
+            return ['name' => 'SeaMonkey', 'version' => implode('', $b)];
         }
 
         /* Googlebot - Test this before Mozilla. */
@@ -283,17 +261,13 @@ class BrowserDetection
             preg_match('/Googlebot\/([0-9\.]+)/i', $userAgent, $b);
             unset($b[0]);
 
-            return array(
-                'name' => 'Googlebot', 'version' => implode('', $b)
-            );
+            return ['name' => 'Googlebot', 'version' => implode('', $b)];
         }
 
         /* Yahoo Crawles - Test this before Mozilla. */
         if (stripos($userAgent, 'yahoo') !== false)
         {
-             return array(
-                'name' => 'Yahoo Crawler', 'version' => ''
-            );
+             return ['name' => 'Yahoo Crawler', 'version' => ''];
         }
 
         /* iCab - Test this before Mozilla. */
@@ -301,9 +275,7 @@ class BrowserDetection
         {
             preg_match('/iCab(?: |\/)([0-9\.]+)/i', $userAgent, $b);
 
-            return array(
-                'name' => 'iCab', 'version' => $b[1]
-            );
+            return ['name' => 'iCab', 'version' => $b[1]];
         }
 
         /* Mozilla */
@@ -313,18 +285,14 @@ class BrowserDetection
             preg_match('/rv(:| )([0-9\.]+)(a|b)?/i', $userAgent, $b);
             unset($b[0], $b[1]);
 
-            return array(
-                'name' => 'Mozilla', 'version' => implode('', $b)
-            );
+            return ['name' => 'Mozilla', 'version' => implode('', $b)];
         }
 
         /* Bots */
         if (stripos($userAgent, 'bot') !== false ||
             stripos($userAgent, 'crawl') !== false)
         {
-            return array(
-                'name' => 'Bot', 'version' => 'Unknown'
-            );
+            return ['name' => 'Bot', 'version' => 'Unknown'];
         }
 
         /* OmniWeb */
@@ -332,10 +300,7 @@ class BrowserDetection
         {
             preg_match('/OmniWeb\/([0-9\.]+)/i', $userAgent, $b);
 
-            return array(
-                'name' => 'OmniWeb',
-                'version' => (isset($b[1]) ? $b[1] : 'Unknown')
-            );
+            return ['name' => 'OmniWeb', 'version' => ($b[1] ?? 'Unknown')];
         }
 
         /* Flock */
@@ -344,9 +309,7 @@ class BrowserDetection
             preg_match('/Flock\/([0-9\.]+)(\+)?/i', $userAgent, $b);
             unset($b[0]);
 
-            return array(
-                'name' => 'Flock', 'version' => implode('', $b)
-            );
+            return ['name' => 'Flock', 'version' => implode('', $b)];
         }
 
         /* Firebird */
@@ -355,9 +318,7 @@ class BrowserDetection
             preg_match('/Firebird\/([0-9\.]+)(\+)?/i', $userAgent, $b);
             unset($b[0]);
 
-            return array(
-                'name' => 'Firebird', 'version' => implode('', $b)
-            );
+            return ['name' => 'Firebird', 'version' => implode('', $b)];
         }
 
         /* Phoenix */
@@ -366,9 +327,7 @@ class BrowserDetection
             preg_match('/Phoenix\/([0-9\.]+)(\+)?/i', $userAgent, $b);
             unset($b[0]);
 
-            return array(
-                'name' => 'Phoenix', 'version' => implode('', $b)
-            );
+            return ['name' => 'Phoenix', 'version' => implode('', $b)];
         }
 
         /* Chimera */
@@ -377,9 +336,7 @@ class BrowserDetection
             preg_match('/Chimera\/([0-9\.]+)(a|b)?(\d+)?(\+)?/i', $userAgent, $b);
             unset($b[0]);
 
-            return array(
-                'name' => 'Chimera', 'version' => implode('', $b)
-            );
+            return ['name' => 'Chimera', 'version' => implode('', $b)];
         }
 
         /* Galeon */
@@ -387,9 +344,7 @@ class BrowserDetection
         {
             preg_match('/Galeon\/([0-9\.]+)/i', $userAgent, $b);
 
-            return array(
-                'name' => 'Galeon', 'version' => $b[1]
-            );
+            return ['name' => 'Galeon', 'version' => $b[1]];
         }
 
         /* Epiphany */
@@ -397,9 +352,7 @@ class BrowserDetection
         {
             preg_match('/Epiphany\/([0-9\.]+)/i', $userAgent, $b);
 
-            return array(
-                'name' => 'Epiphany', 'version' => $b[1]
-            );
+            return ['name' => 'Epiphany', 'version' => $b[1]];
         }
 
         /* Lynx */
@@ -407,9 +360,7 @@ class BrowserDetection
         {
             preg_match('/Lynx\/([0-9\.]+)/i', $userAgent, $b);
 
-            return array(
-                'name' => 'Lynx', 'version' => $b[1]
-            );
+            return ['name' => 'Lynx', 'version' => $b[1]];
         }
 
         /* Links */
@@ -418,9 +369,7 @@ class BrowserDetection
             preg_match('/Links \(([0-9\.]+)(pre)?(\d+)?/i', $userAgent, $b);
             unset($b[0]);
 
-            return array(
-                'name' => 'Links', 'version' => implode('', $b)
-            );
+            return ['name' => 'Links', 'version' => implode('', $b)];
         }
 
         /* cURL */
@@ -428,9 +377,7 @@ class BrowserDetection
         {
             preg_match('/curl\/([0-9\.]+)/i', $userAgent, $b);
 
-            return array(
-                'name' => 'cURL', 'version' => $b[1]
-            );
+            return ['name' => 'cURL', 'version' => $b[1]];
         }
 
         /* Wget */
@@ -438,9 +385,7 @@ class BrowserDetection
         {
             preg_match('/Wget\/([0-9\.]+)/i', $userAgent, $b);
 
-            return array(
-                'name' => 'Wget', 'version' => $b[1]
-            );
+            return ['name' => 'Wget', 'version' => $b[1]];
         }
 
         /* W3C Validator */
@@ -448,9 +393,7 @@ class BrowserDetection
         {
             preg_match('/W3C_Validator\/([0-9\.]+)/i', $userAgent, $b);
 
-            return array(
-                'name' => 'W3C Validator', 'version' => $b[1]
-            );
+            return ['name' => 'W3C Validator', 'version' => $b[1]];
         }
 
         /* W3C Link Checker */
@@ -458,9 +401,7 @@ class BrowserDetection
         {
             preg_match('/W3C-checklink\/([0-9\.]+)/i', $userAgent, $b);
 
-            return array(
-                'name' => 'W3C Link Checker', 'version' => $b[1]
-            );
+            return ['name' => 'W3C Link Checker', 'version' => $b[1]];
         }
 
         /* W3C CSS Validator */
@@ -468,15 +409,11 @@ class BrowserDetection
         {
             preg_match('/W3C_CSS_Validator_JFouffa\/([0-9\.]+)/i', $userAgent, $b);
 
-            return array(
-                'name' => 'W3C CSS Validator', 'version' => $b[1]
-            );
+            return ['name' => 'W3C CSS Validator', 'version' => $b[1]];
         }
 
         /* Unknown */
-        return array(
-            'name' => 'Unknown', 'version' => ''
-        );
+        return ['name' => 'Unknown', 'version' => ''];
     }
 }
 

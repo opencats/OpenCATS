@@ -47,7 +47,7 @@ class WizardUI extends UserInterface
         $this->_moduleDirectory = 'wizard';
         $this->_moduleName = 'wizard';
         $this->_moduleTabText = '';
-        $this->_subTabs = array();
+        $this->_subTabs = [];
 
         /*
         $this->addPage('Welcome!', './modules/wizard/WizardIntroIntro.tpl', '', false, true);
@@ -102,7 +102,7 @@ class WizardUI extends UserInterface
 
         // Build the javascript for navigation
         $js = '';
-        for ($i=0; $i<count($_SESSION['CATS_WIZARD']['pages']); $i++)
+        for ($i=0; $i<(is_array($_SESSION['CATS_WIZARD']['pages']) || $_SESSION['CATS_WIZARD']['pages'] instanceof \Countable ? count($_SESSION['CATS_WIZARD']['pages']) : 0); $i++)
         {
             $js .= sprintf('addWizardPage("%s", %s, %s);%s',
                 addslashes($_SESSION['CATS_WIZARD']['pages'][$i]['title']),
@@ -141,7 +141,7 @@ class WizardUI extends UserInterface
 
         // Get the current page of the wizard
         if (isset($_GET['currentPage'])) $currentPage = intval($_GET['currentPage']); else $currentPage = 1;
-        if ($currentPage < 1 || $currentPage > count($_SESSION['CATS_WIZARD']['pages'])) $currentPage = 1;
+        if ($currentPage < 1 || $currentPage > (is_array($_SESSION['CATS_WIZARD']['pages']) || $_SESSION['CATS_WIZARD']['pages'] instanceof \Countable ? count($_SESSION['CATS_WIZARD']['pages']) : 0)) $currentPage = 1;
 
         if (isset($_GET['requestAction'])) $requestAction = $_GET['requestAction']; else $requestAction = '';
         switch ($requestAction)

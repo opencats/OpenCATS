@@ -20,42 +20,42 @@ class awMark {
 	 *
 	 * @var int
 	 */
-	const CIRCLE = 1;
+	public const CIRCLE = 1;
 
 	/**
 	 * Quare mark
 	 *
 	 * @var int
 	 */
-	const SQUARE = 2;
+	public const SQUARE = 2;
 
 	/**
 	 * Image mark
 	 *
 	 * @var int
 	 */
-	const IMAGE = 3;
+	public const IMAGE = 3;
 
 	/**
 	 * Star mark
 	 *
 	 * @var int
 	 */
-	const STAR = 4;
+	public const STAR = 4;
 
 	/**
 	 * Paperclip mark
 	 *
 	 * @var int
 	 */
-	const PAPERCLIP = 5;
+	public const PAPERCLIP = 5;
 
 	/**
 	 * Book mark
 	 *
 	 * @var int
 	 */
-	const BOOK = 6;
+	public const BOOK = 6;
 
 	/**
 	 * Must marks be hidden ?
@@ -276,7 +276,7 @@ class awMark {
 
 	protected function drawSquare(awPoint $point) {
 
-		list($x, $y) = $point->getLocation();
+		[$x, $y] = $point->getLocation();
 
 		$x1 = (int)($x - $this->size / 2);
 		$x2 = $x1 + $this->size;
@@ -304,7 +304,7 @@ class awMark {
 			$width = $this->image->width;
 			$height = $this->image->height;
 
-			list($x, $y) = $point->getLocation();
+			[$x, $y] = $point->getLocation();
 
 			$x1 = (int)($x - $width / 2);
 			$x2 = $x1 + $width;

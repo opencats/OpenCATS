@@ -30,7 +30,7 @@ class JobOrder
     private $questionnaire;
     private $siteId;
     private $status;
-    
+
     function __construct(
         $siteId,
         $title,
@@ -49,207 +49,207 @@ class JobOrder
         $this->state = $state;
         $this->isPublic = $isPublic;
     }
-    
+
     function getTitle()
     {
         return $this->title;
     }
-    
+
     function getCompanyJobId()
     {
         return $this->companyJobId;
     }
-    
+
     function setCompanyJobId($value)
     {
         $this->companyJobId = $value;
     }
-    
+
     function getCompanyId()
     {
         return $this->companyId;
     }
-    
+
     function setCompanyId($value)
     {
         $this->companyId = $value;
     }
-    
+
     function getContactId()
     {
         return $this->contactId;
     }
-    
+
     function setContactId($value)
     {
         $this->contactId = $value;
     }
-    
+
     function getDescription()
     {
         return $this->description;
     }
-    
+
     function setDescription($value)
     {
         $this->description = $value;
     }
-    
+
     function getNotes()
     {
         return $this->notes;
     }
-    
+
     function setNotes($value)
     {
         $this->notes = $value;
     }
-    
+
     function getDuration()
     {
         return $this->duration;
     }
-    
+
     function setDuration($value)
     {
         $this->duration = $value;
     }
-    
+
     function getMaxRate()
     {
         return $this->maxRate;
     }
-    
+
     function setMaxRate($value)
     {
         $this->maxRate = $value;
     }
-    
+
     function getType()
     {
         return $this->type;
     }
-    
+
     function setType($value)
     {
         $this->type = $value;
     }
-    
+
     function isHot()
     {
         return $this->isHot;
     }
-    
+
     function setIsHot($value)
     {
         $this->isHot = $value;
     }
-    
+
     function isPublic()
     {
         return $this->isPublic;
     }
-    
+
     function getOpenings()
     {
         return $this->openings;
     }
-    
+
     function setOpenings($value)
     {
         $this->openings = $value;
     }
-    
+
     function getAvailableOpenings()
     {
         return $this->availableOpenings;
     }
-    
+
     function setAvailableOpenings($value)
     {
         $this->availableOpenings = $value;
     }
-    
+
     function getSalary()
     {
         return $this->salary;
     }
-    
+
     function setSalary($value)
     {
         $this->salary = $value;
     }
-    
+
     function getCity()
     {
         return $this->city;
     }
-    
+
     function getState()
     {
         return $this->state;
     }
-    
+
     function getDepartmentId()
     {
         return $this->departmentId;
     }
-    
+
     function setDepartmemtId($value)
     {
         $this->departmentId = $value;
     }
-    
+
     function getStartDate()
     {
         return $this->startDate;
     }
-    
+
     function setStartDate($value)
     {
         $this->startDate = $value;
     }
-    
+
     function getEnteredBy()
     {
         return $this->enteredBy;
     }
-    
+
     function setEnteredBy($value)
     {
         $this->enteredBy = $value;
     }
-    
+
     function getRecruiter()
     {
         return $this->recruiter;
     }
-    
+
     function setRecruiter($value)
     {
         $this->recruiter = $value;
     }
-    
+
     function getOwner()
     {
         return $this->owner;
     }
-    
+
     function setOwner($value)
     {
         $this->owner = $value;
     }
-    
+
     function getSiteId()
     {
         return $this->siteId;
     }
-    
+
     function getQuestionnaire()
     {
         return $this->questionnaire;
     }
-    
+
     function setQuestionnaire($value)
     {
         $this->questionnaire = $value;
@@ -259,7 +259,7 @@ class JobOrder
     {
         return $this->status;
     }
-    
+
     static function create(
         $siteId,
         $title,

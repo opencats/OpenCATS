@@ -42,7 +42,7 @@ include_once(LEGACY_ROOT . '/lib/FileUtility.php');
 class InstallationTests
 {
     /* Set this to true to force all tests to fail for debugging. */
-    const DEBUG_FAIL = false;
+    public const DEBUG_FAIL = false;
 
     public static function runCoreTests()
     {

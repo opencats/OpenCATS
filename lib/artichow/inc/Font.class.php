@@ -259,7 +259,7 @@ class awTTFFont extends awFont {
 			return;
 		}
 
-		list(, , $x2, $y2, , , $x1, $y1) = $box;
+		[, , $x2, $y2, , , $x1, $y1] = $box;
 
 		return abs($x2 - $x1);
 
@@ -279,7 +279,7 @@ class awTTFFont extends awFont {
 			return;
 		}
 
-		list(, , $x2, $y2, , , $x1, $y1) = $box;
+		[, , $x2, $y2, , , $x1, $y1] = $box;
 
 		return abs($y2 - $y1);
 

@@ -195,7 +195,7 @@ class Companies
             //FIXME: Make subject configurable.
             $mailer = new Mailer($this->_siteID);
             $mailerStatus = $mailer->sendToOne(
-                array($emailAddress, ''),
+                [$emailAddress, ''],
                 'CATS Notification: Company Ownership Change',
                 $email,
                 true
@@ -753,9 +753,7 @@ class CompaniesDataGrid extends DataGrid
         $this->_assignedCriterion = "";
         $this->_dataItemIDColumn = 'company.company_id';
 
-        $this->_classColumns = array(
-            'Attachments' => array(  'select'   => 'IF(attachment_id, 1, 0) AS attachmentPresent',
-                                     'pagerRender' => '
+        $this->_classColumns = ['Attachments' => ['select'   => 'IF(attachment_id, 1, 0) AS attachmentPresent', 'pagerRender' => '
                                                     if ($rsData[\'attachmentPresent\'] == 1)
                                                     {
                                                         $return = \'<img src="images/paperclip.gif" alt="" width="16" height="16" title="Attachment Present" />\';
@@ -766,24 +764,7 @@ class CompaniesDataGrid extends DataGrid
                                                     }
 
                                                     return $return;
-                                                   ',
-
-                                     'pagerWidth'    => 10,
-                                     'pagerOptional' => true,
-                                     'pagerNoTitle' => true,
-                                     'sizable'  => false,
-                                     'exportable' => false,
-                                     'filterable' => false),
-
-            'Name' =>     array('select'         => 'company.name AS name',
-                                      'pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=companies&amp;a=show&amp;companyID=\'.$rsData[\'companyID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'name\']).\'</a>\';',
-                                      'sortableColumn' => 'name',
-                                      'pagerWidth'     => 60,
-                                      'pagerOptional'  => false,
-                                      'alphaNavigation'=> true,
-                                      'filter'         => 'company.name'),
-
-            'Jobs' =>       array('select'   => '(
+                                                   ', 'pagerWidth'    => 10, 'pagerOptional' => true, 'pagerNoTitle' => true, 'sizable'  => false, 'exportable' => false, 'filterable' => false], 'Name' =>     ['select'         => 'company.name AS name', 'pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=companies&amp;a=show&amp;companyID=\'.$rsData[\'companyID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'name\']).\'</a>\';', 'sortableColumn' => 'name', 'pagerWidth'     => 60, 'pagerOptional'  => false, 'alphaNavigation'=> true, 'filter'         => 'company.name'], 'Jobs' =>       ['select'   => '(
                                                             SELECT
                                                                 COUNT(*)
                                                             FROM
@@ -792,110 +773,17 @@ class CompaniesDataGrid extends DataGrid
                                                                 company_id = company.company_id
                                                             AND
                                                                 site_id = '.$this->_siteID.'
-                                                        ) AS jobs',
-                                     'pagerRender'      => 'if ($rsData[\'jobs\'] != 0) {return $rsData[\'jobs\'];} else {return \'\';}',
-                                     'sortableColumn'     => 'jobs',
-                                     'pagerWidth'    => 40,
-                                     'filterHaving'  => 'jobs',
-                                     'filterTypes'   => '===>=<'),
-
-            'Phone' =>     array('select'   => 'company.phone1 AS phone',
-                                     'sortableColumn'     => 'phone',
-                                     'pagerWidth'    => 80,
-                                     'filter'         => 'company.phone1'),
-
-            'Phone 2' =>     array('select'   => 'company.phone2 AS phone2',
-                                     'sortableColumn'     => 'phone2',
-                                     'pagerWidth'    => 80,
-                                     'filter'         => 'company.phone2'),
-
-
-            'City' =>           array('select'   => 'company.city AS city',
-                                     'sortableColumn'     => 'city',
-                                     'pagerWidth'    => 80,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'company.city'),
-
-
-            'State' =>          array('select'   => 'company.state AS state',
-                                     'sortableColumn'     => 'state',
-                                     'filterType' => 'dropDown',
-                                     'pagerWidth'    => 50,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'company.state'),
-
-            'Zip' =>            array('select'  => 'company.zip AS zip',
-                                     'sortableColumn'    => 'zip',
-                                     'pagerWidth'   => 50,
-                                     'filter'         => 'company.zip'),
-
-
-            'Web Site' =>      array('select'  => 'company.url AS webSite',
-                                     'pagerRender'     => 'return \'<a href="\'.htmlspecialchars($rsData[\'webSite\']).\'" target="_blank">\'.htmlspecialchars($rsData[\'webSite\']).\'</a>\';',
-                                     'sortableColumn'    => 'webSite',
-                                     'pagerWidth'   => 80,
-                                     'filter'         => 'company.url'),
-
-            'Owner' =>         array('select'   => 'owner_user.first_name AS ownerFirstName,' .
-                                                   'owner_user.last_name AS ownerLastName,' .
-                                                   'CONCAT(owner_user.last_name, owner_user.first_name) AS ownerSort',
-                                     'pagerRender'      => 'return StringUtility::makeInitialName($rsData[\'ownerFirstName\'], $rsData[\'ownerLastName\'], false, LAST_NAME_MAXLEN);',
-                                     'exportRender'     => 'return $rsData[\'ownerFirstName\'] . " " .$rsData[\'ownerLastName\'];',
-                                     'sortableColumn'     => 'ownerSort',
-                                     'pagerWidth'    => 75,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'CONCAT(owner_user.first_name, owner_user.last_name)'),
-
-            'Contact' =>       array('select'   => 'contact.first_name AS contactFirstName,' .
-                                                   'contact.last_name AS contactLastName,' .
-                                                   'CONCAT(contact.last_name, contact.first_name) AS contactSort,' .
-                                                   'contact.contact_id AS contactID',
-                                     'pagerRender'      => 'return \'<a href="'.CATSUtility::getIndexName().'?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'contactID\'].\'">\'.StringUtility::makeInitialName($rsData[\'contactFirstName\'], $rsData[\'contactLastName\'], false, LAST_NAME_MAXLEN).\'</a>\';',
-                                     'exportRender'     => 'return $rsData[\'contactFirstName\'] . " " .$rsData[\'contactLastName\'];',
-                                     'sortableColumn'     => 'contactSort',
-                                     'pagerWidth'    => 75,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'CONCAT(contact.first_name, contact.last_name)'),
-
-
-            'Created' =>       array('select'   => 'DATE_FORMAT(company.date_created, \'%m-%d-%y\') AS dateCreated',
-                                     'pagerRender'      => 'return $rsData[\'dateCreated\'];',
-                                     'sortableColumn'     => 'dateCreatedSort',
-                                     'pagerWidth'    => 60,
-                                     'filterHaving' => 'DATE_FORMAT(company.date_created, \'%m-%d-%y\')'),
-
-            'Modified' =>      array('select'   => 'DATE_FORMAT(company.date_modified, \'%m-%d-%y\') AS dateModified',
-                                     'pagerRender'      => 'return $rsData[\'dateModified\'];',
-                                     'sortableColumn'     => 'dateModifiedSort',
-                                     'pagerWidth'    => 60,
-                                     'pagerOptional' => false,
-                                     'filterHaving' => 'DATE_FORMAT(company.date_modified, \'%m-%d-%y\')'),
-
-            'Misc Notes' =>     array('select'  => 'company.notes AS notes',
-                                     'sortableColumn'    => 'notes',
-                                     'pagerWidth'   => 300,
-                                     'filter'         => 'company.notes'),
-
-            'OwnerID' =>       array('select'    => '',
-                                     'filter'    => 'company.owner',
-                                     'pagerOptional' => false,
-                                     'filterable' => false,
-                                     'filterDescription' => 'Only My Companies'),
-
-            'IsHot' =>         array('select'    => '',
-                                     'filter'    => 'company.is_hot',
-                                     'pagerOptional' => false,
-                                     'filterable' => false,
-                                     'filterDescription' => 'Only Hot Companies')
-        );
+                                                        ) AS jobs', 'pagerRender'      => 'if ($rsData[\'jobs\'] != 0) {return $rsData[\'jobs\'];} else {return \'\';}', 'sortableColumn'     => 'jobs', 'pagerWidth'    => 40, 'filterHaving'  => 'jobs', 'filterTypes'   => '===>=<'], 'Phone' =>     ['select'   => 'company.phone1 AS phone', 'sortableColumn'     => 'phone', 'pagerWidth'    => 80, 'filter'         => 'company.phone1'], 'Phone 2' =>     ['select'   => 'company.phone2 AS phone2', 'sortableColumn'     => 'phone2', 'pagerWidth'    => 80, 'filter'         => 'company.phone2'], 'City' =>           ['select'   => 'company.city AS city', 'sortableColumn'     => 'city', 'pagerWidth'    => 80, 'alphaNavigation' => true, 'filter'         => 'company.city'], 'State' =>          ['select'   => 'company.state AS state', 'sortableColumn'     => 'state', 'filterType' => 'dropDown', 'pagerWidth'    => 50, 'alphaNavigation' => true, 'filter'         => 'company.state'], 'Zip' =>            ['select'  => 'company.zip AS zip', 'sortableColumn'    => 'zip', 'pagerWidth'   => 50, 'filter'         => 'company.zip'], 'Web Site' =>      ['select'  => 'company.url AS webSite', 'pagerRender'     => 'return \'<a href="\'.htmlspecialchars($rsData[\'webSite\']).\'" target="_blank">\'.htmlspecialchars($rsData[\'webSite\']).\'</a>\';', 'sortableColumn'    => 'webSite', 'pagerWidth'   => 80, 'filter'         => 'company.url'], 'Owner' =>         ['select'   => 'owner_user.first_name AS ownerFirstName,' .
+                                               'owner_user.last_name AS ownerLastName,' .
+                                               'CONCAT(owner_user.last_name, owner_user.first_name) AS ownerSort', 'pagerRender'      => 'return StringUtility::makeInitialName($rsData[\'ownerFirstName\'], $rsData[\'ownerLastName\'], false, LAST_NAME_MAXLEN);', 'exportRender'     => 'return $rsData[\'ownerFirstName\'] . " " .$rsData[\'ownerLastName\'];', 'sortableColumn'     => 'ownerSort', 'pagerWidth'    => 75, 'alphaNavigation' => true, 'filter'         => 'CONCAT(owner_user.first_name, owner_user.last_name)'], 'Contact' =>       ['select'   => 'contact.first_name AS contactFirstName,' .
+                                               'contact.last_name AS contactLastName,' .
+                                               'CONCAT(contact.last_name, contact.first_name) AS contactSort,' .
+                                               'contact.contact_id AS contactID', 'pagerRender'      => 'return \'<a href="'.CATSUtility::getIndexName().'?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'contactID\'].\'">\'.StringUtility::makeInitialName($rsData[\'contactFirstName\'], $rsData[\'contactLastName\'], false, LAST_NAME_MAXLEN).\'</a>\';', 'exportRender'     => 'return $rsData[\'contactFirstName\'] . " " .$rsData[\'contactLastName\'];', 'sortableColumn'     => 'contactSort', 'pagerWidth'    => 75, 'alphaNavigation' => true, 'filter'         => 'CONCAT(contact.first_name, contact.last_name)'], 'Created' =>       ['select'   => 'DATE_FORMAT(company.date_created, \'%m-%d-%y\') AS dateCreated', 'pagerRender'      => 'return $rsData[\'dateCreated\'];', 'sortableColumn'     => 'dateCreatedSort', 'pagerWidth'    => 60, 'filterHaving' => 'DATE_FORMAT(company.date_created, \'%m-%d-%y\')'], 'Modified' =>      ['select'   => 'DATE_FORMAT(company.date_modified, \'%m-%d-%y\') AS dateModified', 'pagerRender'      => 'return $rsData[\'dateModified\'];', 'sortableColumn'     => 'dateModifiedSort', 'pagerWidth'    => 60, 'pagerOptional' => false, 'filterHaving' => 'DATE_FORMAT(company.date_modified, \'%m-%d-%y\')'], 'Misc Notes' =>     ['select'  => 'company.notes AS notes', 'sortableColumn'    => 'notes', 'pagerWidth'   => 300, 'filter'         => 'company.notes'], 'OwnerID' =>       ['select'    => '', 'filter'    => 'company.owner', 'pagerOptional' => false, 'filterable' => false, 'filterDescription' => 'Only My Companies'], 'IsHot' =>         ['select'    => '', 'filter'    => 'company.is_hot', 'pagerOptional' => false, 'filterable' => false, 'filterDescription' => 'Only Hot Companies']];
 
         if (US_ZIPS_ENABLED)
         {
             $this->_classColumns['Near Zipcode'] =
-                               array('select'  => 'company.zip AS zip',
-                                     'filter' => 'company.zip',
-                                     'pagerOptional' => false,
-                                     'filterTypes'   => '=@');
+                               ['select'  => 'company.zip AS zip', 'filter' => 'company.zip', 'pagerOptional' => false, 'filterTypes'   => '=@'];
         }
 
         /* Extra fields get added as columns here. */

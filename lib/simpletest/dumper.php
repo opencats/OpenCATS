@@ -33,7 +33,7 @@ class SimpleDumper {
             case "Boolean":
                 return "Boolean: " . ($value ? "true" : "false");
             case "Array":
-                return "Array: " . count($value) . " items";
+                return "Array: " . (is_array($value) || $value instanceof \Countable ? count($value) : 0) . " items";
             case "Object":
                 return "Object: of " . get_class($value);
             case "String":
@@ -323,7 +323,7 @@ class SimpleDumper {
      */
     protected function getMembers($object) {
         $reflection = new ReflectionObject($object);
-        $members = array();
+        $members = [];
         foreach ($reflection->getProperties() as $property) {
             if (method_exists($property, 'setAccessible')) {
                 $property->setAccessible(true);
@@ -377,7 +377,7 @@ class SimpleDumper {
             return 0;
         }
         if (strlen($first) < strlen($second)) {
-            list($first, $second) = array($second, $first);
+            [$first, $second] = [$second, $first];
         }
         $position = 0;
         $step = strlen($first);

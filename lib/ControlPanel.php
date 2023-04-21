@@ -58,54 +58,37 @@ define('CPPAGER_RESULTS_PER_PAGE',      14);
 class ControlPanel
 {
     private $_fields;
-    private $_tables;
-    private $_sections;
+    private $_tables = [];
+    private $_sections = [];
     private $_db;
     private $_wf;
-    private $_primaryKey;
-    private $_sortByField;
-    private $_linkField;
-    private $_permissions;
-    private $_selectBoundriesSql;
-    private $_insertBoundriesSql;
-    private $_deleteBoundriesSql;
-    private $_deleteBoundriesTable;
-    private $_showCurrencySums;
-    private $_callBacks;
-    private $_sortDesc;
-    private $_truncate;
-    private $_truncateID;
-    private $_fieldUrls;
-    private $_listViewLayout;
+    private $_primaryKey = '';
+    private $_sortByField = '';
+    private $_linkField = '';
+    private $_permissions = 0;
+    private $_selectBoundriesSql = '';
+    private $_insertBoundriesSql = '';
+    private $_deleteBoundriesSql = '';
+    private $_deleteBoundriesTable = '';
+    private $_showCurrencySums = false;
+    private $_callBacks = [];
+    private $_sortDesc = true;
+    private $_truncate = [];
+    private $_truncateID = 0;
+    private $_fieldUrls = [];
+    private $_listViewLayout = '';
 
 
     public function __construct()
     {
-        $this->_tables = array();
         $this->_db = DatabaseConnection::getInstance();
         $this->_wf = new WebForm();
-        $this->_sections = array();
-        $this->_primaryKey = '';
-        $this->_sortByField = '';
-        $this->_permissions = 0;
-        $this->_selectBoundriesSql = '';
-        $this->_insertBoundriesSql = '';
-        $this->_deleteBoundriesSql = '';
-        $this->_deleteBoundriesTable = '';
-        $this->_linkField = '';
-        $this->_showCurrencySums = false;
-        $this->_callBacks = array();
-        $this->_sortDesc = true;
-        $this->_truncate = array();
-        $this->_truncateID = 0;
-        $this->_fieldUrls = array();
-        $this->_listViewLayout = '';
     }
 
 
     public function getModal()
     {
-        $pageState = intval($this->getPostValue('cpPageState'));
+        $pageState = intval(static::getPostValue('cpPageState'));
         switch($pageState)
         {
             case CPPS_ADD:
@@ -141,8 +124,8 @@ class ControlPanel
                 . 'not support delete operations.');
         }
 
-        $uID = $this->getPostValue('uID');
-        $uIDName = $this->getPostValue('uIDName');
+        $uID = static::getPostValue('uID');
+        $uIDName = static::getPostValue('uIDName');
         $sql = $this->getTablesSQL(sprintf('%s = %d', addslashes($uIDName), addslashes($uID)));
         $rs = $this->_db->query($sql);
         if ($rs && mysqli_num_rows($rs) > 0)
@@ -188,15 +171,15 @@ class ControlPanel
         if ($addRecord)
         {
             $this->_wf->setVerifyForm(false);
-            $row = array();
+            $row = [];
         }
         else
         {
             $this->_wf->setVerifyForm(true);
 
             // This is an edit, lookup information
-            $uID = $this->getPostValue('uID');
-            $uIDName = $this->getPostValue('uIDName');
+            $uID = static::getPostValue('uID');
+            $uIDName = static::getPostValue('uIDName');
             $sql = $this->getTablesSQL(sprintf('%s = %d', addslashes($uIDName), addslashes($uID)));
             $rs = $this->_db->query($sql);
             if (!$rs)
@@ -255,8 +238,8 @@ class ControlPanel
         {
             foreach($tableData['fields'] as $fieldName => $fieldData)
             {
-                if (!isset($fieldData['section']) || count($fieldData['section']) == 0) continue;
-                if ($fieldData['section'][0] == CP_LISTVIEW && count($fieldData['section']) == 1) continue;
+                if (!isset($fieldData['section']) || (is_array($fieldData['section']) || $fieldData['section'] instanceof \Countable ? count($fieldData['section']) : 0) == 0) continue;
+                if ($fieldData['section'][0] == CP_LISTVIEW && (is_array($fieldData['section']) || $fieldData['section'] instanceof \Countable ? count($fieldData['section']) : 0) == 1) continue;
                 $this->_wf->addField($fieldData['webFormParams']['name'],
                     $fieldData['webFormParams']['caption'], $fieldData['webFormParams']['type'],
                     $fieldData['webFormParams']['required'], $fieldData['webFormParams']['size'],
@@ -268,11 +251,11 @@ class ControlPanel
             }
         }
 
-        if ($this->getPostValue('webFormPostBack') == '1')
+        if (static::getPostValue('webFormPostBack') == '1')
         {
-            $updateSql = array();
-            list($fields, $errors) = $this->_wf->getValidatedFields();
-            if (count($errors) > 0)
+            $updateSql = [];
+            [$fields, $errors] = str_split($this->_wf->getValidatedFields());
+            if ((is_array($errors) || $errors instanceof \Countable ? count($errors) : 0) > 0)
             {
                 $infoHtml = '<div style="padding: 10px; margin: 10px 0px 10px 0px; border: 1px solid #800000;">'
                     . '<table><tr><td valign="top" style="padding-right: 20px;"><img src="images/large_error.gif" border="0" /></td><td>'
@@ -296,7 +279,7 @@ class ControlPanel
                                 if ($addRecord)
                                 {
                                     // this is an addition, build the SQL
-                                    if (!isset($updateSql[$subTableName])) $updateSql[$subTableName] = array('', '');
+                                    if (!isset($updateSql[$subTableName])) $updateSql[$subTableName] = ['', ''];
                                     $sqlFields = $updateSql[$subTableName][0];
                                     $sqlValues = $updateSql[$subTableName][1];
                                     if ($sqlFields != '') $sqlFields .= ', ';
@@ -358,7 +341,7 @@ class ControlPanel
 
                         if ($this->_insertBoundriesSql != '')
                         {
-                            list($fieldName, $fieldValue) = explode('=', $this->_insertBoundriesSql);
+                            [$fieldName, $fieldValue] = explode('=', $this->_insertBoundriesSql);
                             $fieldName = trim($fieldName);
                             $fieldValue = trim($fieldValue);
                         }
@@ -473,7 +456,7 @@ class ControlPanel
             if ($sectionName != CP_LISTVIEW) // Reserved for the list view formatting
             {
                 $sectionFields = '';
-                $prefillData = array();
+                $prefillData = [];
                 foreach($this->_tables as $tableName => $tableData)
                 {
                     foreach($tableData['fields'] as $fieldName => $fieldData)
@@ -486,7 +469,7 @@ class ControlPanel
                             if (!$addRecord)
                             {
                                 // prefill the field with existing data for edits
-                                $rawData = $this->getFieldInputText($fieldData, $row[$fieldData['uniqueID']], '');
+                                $rawData = $this->getFieldInputText($fieldData, $row[$fieldData['uniqueID']]);
                                 $prefillData[$fieldData['uniqueID']] = $rawData;
                             }
                         }
@@ -581,7 +564,7 @@ class ControlPanel
                     return false;
                 if (strlen(trim($newText)) > 0)
                 {
-                    list($month, $year) = explode('/', $newText);
+                    [$month, $year] = explode('/', $newText);
                     if (strlen(strval($year)) == 2) $year += 2000;
                     $newTime = strtotime(sprintf('%04d-%02d-01', $year, $month));
                 }
@@ -754,12 +737,15 @@ class ControlPanel
 
     public function getListView()
     {
-        $currencySumData = array();
+        $uniqueRowID = null;
+        $uniqueRowIDName = null;
+        $numColumns = null;
+        $currencySumData = [];
 
         // ******************** SEARCH ***********************
         if (isset($_GET['cpSearchString']) || isset($_POST['cpSearchString']))
         {
-            $searchString = $this->getPostValue('cpSearchString');
+            $searchString = static::getPostValue('cpSearchString');
             $searchSql = '';
 
             foreach($this->_tables as $tableName => $tableData)
@@ -819,8 +805,8 @@ class ControlPanel
         }
 
         // ********************** PAGER **************************
-        $pager_ResultsPerPage = $this->getPostValue('cp_ResultsPerPage');
-        $pager_CurrentPage = $this->getPostValue('cp_CurrentPage');
+        $pager_ResultsPerPage = static::getPostValue('cp_ResultsPerPage');
+        $pager_CurrentPage = static::getPostValue('cp_CurrentPage');
 
         if ($pager_ResultsPerPage == '')
             $pager_ResultsPerPage = CPPAGER_RESULTS_PER_PAGE;
@@ -845,7 +831,7 @@ class ControlPanel
 
 
         $sql = $this->getTablesSQL($searchSql, $limitSql);
-        $rs = $this->_db->query($sql, $pager_ResultsPerPage, $pager_CurrentPage);
+        $rs = $this->_db->query($sql, $pager_ResultsPerPage);
         if (!$rs)
         {
             echo $sql;
@@ -866,14 +852,11 @@ class ControlPanel
             if ($headerComplete == false)
                 $headerHtml .= "<tr>\n";
 
-            $myRow = array('admin.row' => '');
-            $headerRow = array('admin.row' => '');
+            $myRow = ['admin.row' => ''];
+            $headerRow = ['admin.row' => ''];
 
             // for highlighting of mouseover rows
-            $highlightJS = array(
-                'onmouseover' => sprintf('cpMouseOverRow(\'%d\', true);', $rowNum),
-                'onmouseout' => sprintf('cpMouseOverRow(\'%d\', false);', $rowNum)
-            );
+            $highlightJS = ['onmouseover' => sprintf('cpMouseOverRow(\'%d\', true);', $rowNum), 'onmouseout' => sprintf('cpMouseOverRow(\'%d\', false);', $rowNum)];
             $highlightJSFlat = sprintf('onmouseover="%s" onmouseout="%s"',
                 $highlightJS['onmouseover'], $highlightJS['onmouseout']
             );
@@ -933,23 +916,16 @@ class ControlPanel
                         );
 
                         // Build the row display <td>
-                        $td = array(
-                            'id' => sprintf('cp_%s%d', $fieldData['uniqueID'], $rowNum),
-                            'onclick' => sprintf('document.location.href=\'%s\';', $viewUrl),
-                            'class' => sprintf('%s', ($fieldOffset ? 'cpField1' : 'cpField2')),
-                            'style' => 'cursor: pointer;',
-                            'valign' => 'center',
-                            'align' => $textAlign
-                        );
+                        $td = ['id' => sprintf('cp_%s%d', $fieldData['uniqueID'], $rowNum), 'onclick' => sprintf('document.location.href=\'%s\';', $viewUrl), 'class' => sprintf('%s', ($fieldOffset ? 'cpField1' : 'cpField2')), 'style' => 'cursor: pointer;', 'valign' => 'center', 'align' => $textAlign];
                         $td = array_merge($td, $highlightJS);
-                        $td_text = $this->getFieldHtmlText($fieldData, $row[$fieldData['uniqueID']], CPSTR_EMPTY_FIELD);
+                        $td_text = $this->getFieldHtmlText($fieldData, $row[$fieldData['uniqueID']]);
 
                         // Process the row display override (if exists) to modify the row's output
                         if (isset($this->_callBacks['td']) && ($func = $this->_callBacks['td']))
                         {
                             if (is_array($results = $func($fieldData['uniqueID'], $td, $td_text, $row)))
                             {
-                                list($td, $td_text) = $results;
+                                [$td, $td_text] = $results;
                             }
                         }
 
@@ -1057,7 +1033,7 @@ class ControlPanel
             );
 
             $infoHtml .= "<tr>\n";
-            $myRow = array();
+            $myRow = [];
             foreach($this->_tables as $tableName => $tableData)
             {
                 foreach($tableData['fields'] as $fieldName => $fieldData)
@@ -1184,7 +1160,7 @@ class ControlPanel
         switch($fieldData['webFormType'])
         {
             case WFT_CC_EXPIRATION:
-                list($expireMonth, $expireYear) = explode('/', $text);
+                [$expireMonth, $expireYear] = explode('/', $text);
                 return '"' . sprintf('%s-%s-01', $expireYear, $expireMonth) . '"';
             case WFT_CC_NUMBER:
                 return '"' . addslashes(EncryptionUtility::encryptCreditCardNumber($text)) . '"';
@@ -1282,12 +1258,7 @@ class ControlPanel
             else
                 $this->_listViewLayout = $sectionLayout;
         }
-        $this->_sections[$name] = array(
-            'caption' => $caption,
-            'webFormLayout' => $webFormLayout,
-            'sectionLayout' => $sectionLayout,
-            'fieldOrder' => $fields
-        );
+        $this->_sections[$name] = ['caption' => $caption, 'webFormLayout' => $webFormLayout, 'sectionLayout' => $sectionLayout, 'fieldOrder' => $fields];
         foreach($this->_tables as $tableName => $tableData)
         {
             foreach($tableData['fields'] as $fieldName => $fieldData)
@@ -1297,7 +1268,7 @@ class ControlPanel
                     if (isset($this->_tables[$tableName]['fields'][$fieldName]['section']))
                         $this->_tables[$tableName]['fields'][$fieldName]['section'][] = $name;
                     else
-                        $this->_tables[$tableName]['fields'][$fieldName]['section'] = array( $name );
+                        $this->_tables[$tableName]['fields'][$fieldName]['section'] = [$name];
                 }
             }
         }
@@ -1326,12 +1297,7 @@ class ControlPanel
                     $this->_tables[$tableName]['fields'][$fieldName]['activeField'] = true;
                     $this->_tables[$tableName]['fields'][$fieldName]['webFormType'] = $type;
                     $this->_tables[$tableName]['fields'][$fieldName]['caption'] = $caption;
-                    $this->_tables[$tableName]['fields'][$fieldName]['webFormParams'] = array(
-                        'name' => $name, 'caption' => $caption, 'type' => $type, 'required' => $required,
-                        'size' => $size, 'minlen' => $minlen, 'maxlen' => $maxlen, 'defaultValue' => $defaultValue,
-                        'regex_test' => $regex_test, 'regex_fail' => $regex_fail, 'helpBody' => $helpBody,
-                        'helpRules' => $helpRules
-                    );
+                    $this->_tables[$tableName]['fields'][$fieldName]['webFormParams'] = ['name' => $name, 'caption' => $caption, 'type' => $type, 'required' => $required, 'size' => $size, 'minlen' => $minlen, 'maxlen' => $maxlen, 'defaultValue' => $defaultValue, 'regex_test' => $regex_test, 'regex_fail' => $regex_fail, 'helpBody' => $helpBody, 'helpRules' => $helpRules];
                     return 1;
                 }
             }
@@ -1352,12 +1318,12 @@ class ControlPanel
         // check for sort-by field being passed by URI
         if (isset($_GET['cpSortByField']) || isset($_POST['cpSortByField']))
         {
-            $this->setSortByField($this->getPostValue('cpSortByField'));
+            $this->setSortByField(static::getPostValue('cpSortByField'));
         }
         // Sort ASC/DESC
         if (isset($_GET['cpSortDesc']) || isset($_POST['cpSortDesc']))
         {
-            $this->_sortDesc = (!strcmp($this->getPostValue('cpSortDesc'), 'false') ? false : true);
+            $this->_sortDesc = (!strcmp(static::getPostValue('cpSortDesc'), 'false') ? false : true);
         }
 
         foreach($this->_tables as $tableName => $tableData)
@@ -1439,20 +1405,13 @@ class ControlPanel
      */
     public function addMySQLTable($name)
     {
-        $this->_tables[$name] = array();
-        $this->_tables[$name]['fields'] = array();
+        $this->_tables[$name] = [];
+        $this->_tables[$name]['fields'] = [];
         // Fetch the fields from the table
         $rs = $this->_db->query('SHOW FIELDS FROM ' . $name);
         while ($row = mysqli_fetch_array($rs, MYSQLI_ASSOC))
         {
-            $this->_tables[$name]['fields'][$row['Field']] = array(
-                'type' => $row['Type'],
-                'allowNull' => (strcmp($row['Null'], 'NO') ? true : false),
-                'defaultValue' => $row['Default'],
-                'description' => $row['Extra'],
-                'uniqueID' => $this->getConvertUnderscoreToCamel($name . '_' . $row['Field']),
-                'primaryKey' => (!strcmp($row['Key'], 'PRI') ? true : false)
-            );
+            $this->_tables[$name]['fields'][$row['Field']] = ['type' => $row['Type'], 'allowNull' => (strcmp($row['Null'], 'NO') ? true : false), 'defaultValue' => $row['Default'], 'description' => $row['Extra'], 'uniqueID' => $this->getConvertUnderscoreToCamel($name . '_' . $row['Field']), 'primaryKey' => (!strcmp($row['Key'], 'PRI') ? true : false)];
             if (!strcmp($row['Key'], 'PRI'))
             {
                 $uniqueID = $this->_tables[$name]['fields'][$row['Field']]['uniqueID'];
@@ -1512,7 +1471,7 @@ class ControlPanel
 
     public function setFieldUrl($field, $url, $comments)
     {
-        $this->_fieldUrls[$field] = array( 'url' => $url, 'comments' => $comments );
+        $this->_fieldUrls[$field] = ['url' => $url, 'comments' => $comments];
     }
 
     public function setTruncate($field, $size)

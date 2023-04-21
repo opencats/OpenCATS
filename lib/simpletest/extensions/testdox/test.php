@@ -1,7 +1,7 @@
 <?php
 // $Id: test.php 1748 2008-04-14 01:50:41Z lastcraft $
-require_once dirname(__FILE__) . '/../../autorun.php';
-require_once dirname(__FILE__) . '/../testdox.php';
+require_once __DIR__ . '/../../autorun.php';
+require_once __DIR__ . '/../testdox.php';
 
 // uncomment to see test dox in action
 //SimpleTest::prefer(new TestDoxReporter());
@@ -54,7 +54,7 @@ class TestOfTestDoxReporter extends UnitTestCase
         $this->assertEqual("- some great test case", $buffer);
         unset($buffer);
 
-        $random = rand(100, 200);
+        $random = random_int(100, 200);
         ob_start();
         $dox->paintMethodStart("testRandomNumberIs{$random}");
         $buffer = ob_get_clean();

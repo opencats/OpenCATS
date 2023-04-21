@@ -370,7 +370,7 @@ class Pipelines
             //FIXME: Make subject configurable.
             $mailer = new Mailer($this->_siteID);
             $mailerStatus = $mailer->sendToOne(
-                array($emailAddress, ''),
+                [$emailAddress, ''],
                 CANDIDATE_STATUSCHANGE_SUBJECT,
                 $emailText,
                 true

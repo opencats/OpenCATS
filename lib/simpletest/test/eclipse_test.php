@@ -6,7 +6,7 @@
 //eclipse.php file below otherwise you end up with two "different" eclipse.php 
 //files included and that does not work...
 
-include_once(dirname(__FILE__) . '/../eclipse.php');
+include_once(__DIR__ . '/../eclipse.php');
 Mock::generate('SimpleSocket');
 
 class TestOfEclipse extends UnitTestCase {
@@ -14,7 +14,7 @@ class TestOfEclipse extends UnitTestCase {
 	function testPass() {
 		$listener = new MockSimpleSocket();
 		
-		$fullpath = realpath(dirname(__FILE__).'/support/test1.php');
+		$fullpath = realpath(__DIR__.'/support/test1.php');
 		$testpath = EclipseReporter::escapeVal($fullpath);
 		$expected = "{status:\"pass\",message:\"pass1 at [$testpath line 4]\",group:\"$testpath\",case:\"test1\",method:\"test_pass\"}";
 		//this should work...but it doesn't so the next line and the last line are the hacks

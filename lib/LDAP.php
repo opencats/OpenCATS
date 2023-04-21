@@ -92,7 +92,7 @@ class LDAP
 			}
 			else 
 			{
-				$trans = array('{$username}' => $username);
+				$trans = ['{$username}' => $username];
 				$username = strtr(LDAP_ACCOUNT, $trans);
 				$this->_bind = @ldap_bind($this->_connection, $username, $password);
 				if(!$this->_bind) 
@@ -132,7 +132,7 @@ class LDAP
 		if ($search)
 		{
 			$result = @ldap_get_entries( $this->_connection, $search);
-			$userInfo = array($result[0][LDAP_ATTRIBUTE_LASTNAME][0], $result[0][LDAP_ATTRIBUTE_FIRSTNAME][0], $result[0][LDAP_ATTRIBUTE_EMAIL][0], $result[0][LDAP_ATTRIBUTE_UID][0]);
+			$userInfo = [$result[0][LDAP_ATTRIBUTE_LASTNAME][0], $result[0][LDAP_ATTRIBUTE_FIRSTNAME][0], $result[0][LDAP_ATTRIBUTE_EMAIL][0], $result[0][LDAP_ATTRIBUTE_UID][0]];
 			return $userInfo;
 		}
 		error_log(ldap_error($this->_connection));

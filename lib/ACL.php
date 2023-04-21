@@ -14,8 +14,8 @@ class ACL
 
     /* Constant to define root secured object for retrieveing access level 
     */
-    const SECOBJ_ROOT = '';
-    const CATEGORY_EMPTY = '';
+    public const SECOBJ_ROOT = '';
+    public const CATEGORY_EMPTY = '';
 
     /* Access level map in form securedObject => category => accessLevel
      * Example:
@@ -58,7 +58,7 @@ class ACL
 
         $aclmap = ACL_SETUP::$ACCESS_LEVEL_MAP;
         $userCategory = ACL::CATEGORY_EMPTY;
-        if( isset($userCategories) && count($userCategories) > 0 && isset($userCategories[0]) )
+        if( isset($userCategories) && (is_array($userCategories) || $userCategories instanceof \Countable ? count($userCategories) : 0) > 0 && isset($userCategories[0]) )
         {
             // for now, only first category is used for evalualtion
             $userCategory = $userCategories[0];

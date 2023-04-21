@@ -21,7 +21,7 @@ class awLegend implements awPositionable {
 	 *
 	 * @var array
 	 */
-	protected $legends = array();
+	protected $legends = [];
 
 	/**
 	 * The current component
@@ -133,42 +133,42 @@ class awLegend implements awPositionable {
 	 *
 	 * @var int
 	 */
-	const LINE = 1;
+	public const LINE = 1;
 
 	/**
 	 * Color/Gradient background legend
 	 *
 	 * @var int
 	 */
-	const BACKGROUND = 2;
+	public const BACKGROUND = 2;
 
 	/**
 	 * Use marks and line as legend
 	 *
 	 * @var int
 	 */
-	const MARK = 3;
+	public const MARK = 3;
 
 	/**
 	 * Use marks as legend
 	 *
 	 * @var int
 	 */
-	const MARKONLY = 4;
+	public const MARKONLY = 4;
 
 	/**
 	 * Right side model
 	 *
 	 * @var int
 	 */
-	const MODEL_RIGHT = 1;
+	public const MODEL_RIGHT = 1;
 
 	/**
 	 * Bottom side model
 	 *
 	 * @var int
 	 */
-	const MODEL_BOTTOM = 2;
+	public const MODEL_BOTTOM = 2;
 
 	/**
 	 * Build the legend
@@ -253,7 +253,7 @@ class awLegend implements awPositionable {
 	 */
 	public function add(awLegendable $legendable, $title, $type = awLegend::LINE) {
 
-		$legend = array($legendable, $title, $type);
+		$legend = [$legendable, $title, $type];
 
 		$this->legends[] = $legend;
 
@@ -268,7 +268,7 @@ class awLegend implements awPositionable {
 	 * @param int $bottom
 	 */
 	public function setPadding($left, $right, $top, $bottom) {
-		$this->padding = array((int)$left, (int)$right, (int)$top, (int)$bottom);
+		$this->padding = [(int)$left, (int)$right, (int)$top, (int)$bottom];
 	}
 
 	/**
@@ -416,11 +416,11 @@ class awLegend implements awPositionable {
 		}
 
 		// Get text widths and heights of each element of the legend
-		$widths = array();
-		$heights = array();
-		$texts = array();
+		$widths = [];
+		$heights = [];
+		$texts = [];
 		for($i = 0; $i < $count; $i++) {
-			list(, $title, ) = $this->legends[$i];
+			[, $title, ] = $this->legends[$i];
 			$text = new awText(
 				$title,
 				$this->textFont,
@@ -449,7 +449,7 @@ class awLegend implements awPositionable {
 		$rows = (int)ceil($count / $columns);
 
 		// Get maximum with of each column
-		$widthMax = array();
+		$widthMax = [];
 		for($i = 0; $i < $count; $i++) {
 			// Get column width
 			$column = $i % $columns;
@@ -468,7 +468,7 @@ class awLegend implements awPositionable {
 		$height = ($heightMax + $this->space) * $rows - $this->space + $this->padding[2] + $this->padding[3];
 
 		// Look for legends position
-		list($x, $y) = $drawer->getSize();
+		[$x, $y] = $drawer->getSize();
 
 		$p = new awPoint(
 			$this->position->x * $x,
@@ -513,7 +513,7 @@ class awLegend implements awPositionable {
 		// Draw each legend
 		for($i = 0; $i < $count; $i++) {
 
-			list($component, $title, $type) = $this->legends[$i];
+			[$component, $title, $type] = $this->legends[$i];
 
 			$column = $i % $columns;
 			$row = (int)floor($i / $columns);

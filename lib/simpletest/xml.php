@@ -9,7 +9,7 @@
 /**#@+
  *  include other SimpleTest class files
  */
-require_once(dirname(__FILE__) . '/scorer.php');
+require_once(__DIR__ . '/scorer.php');
 /**#@-*/
 
 /**
@@ -56,8 +56,8 @@ class XmlReporter extends SimpleReporter {
      */
     function toParsedXml($text) {
         return str_replace(
-                array('&', '<', '>', '"', '\''),
-                array('&amp;', '&lt;', '&gt;', '&quot;', '&apos;'),
+                ['&', '<', '>', '"', '\''],
+                ['&amp;', '&lt;', '&gt;', '&quot;', '&apos;'],
                 $text);
     }
 
@@ -290,7 +290,7 @@ class XmlReporter extends SimpleReporter {
  *    @subpackage UnitTester
  */
 class NestingXmlTag {
-    private $name;
+    private $name = false;
     private $attributes;
 
     /**
@@ -300,7 +300,6 @@ class NestingXmlTag {
      *    @access public
      */
     function __construct($attributes) {
-        $this->name = false;
         $this->attributes = $attributes;
     }
 
@@ -474,10 +473,10 @@ class NestingGroupTag extends NestingXmlTag {
 class SimpleTestXmlParser {
     private $listener;
     private $expat;
-    private $tag_stack;
-    private $in_content_tag;
-    private $content;
-    private $attributes;
+    private $tag_stack = [];
+    private $in_content_tag = false;
+    private $content = '';
+    private $attributes = [];
 
     /**
      *    Loads a listener with the SimpleReporter
@@ -488,10 +487,6 @@ class SimpleTestXmlParser {
     function __construct(&$listener) {
         $this->listener = &$listener;
         $this->expat = &$this->createParser();
-        $this->tag_stack = array();
-        $this->in_content_tag = false;
-        $this->content = '';
-        $this->attributes = array();
     }
 
     /**
@@ -561,8 +556,7 @@ class SimpleTestXmlParser {
      *    @private
      */
     protected function isLeaf($tag) {
-        return in_array($tag, array(
-                'NAME', 'PASS', 'FAIL', 'EXCEPTION', 'SKIP', 'MESSAGE', 'FORMATTED', 'SIGNAL'));
+        return in_array($tag, ['NAME', 'PASS', 'FAIL', 'EXCEPTION', 'SKIP', 'MESSAGE', 'FORMATTED', 'SIGNAL']);
     }
 
     /**
@@ -596,7 +590,7 @@ class SimpleTestXmlParser {
      */
     protected function endElement($expat, $tag) {
         $this->in_content_tag = false;
-        if (in_array($tag, array('GROUP', 'CASE', 'TEST'))) {
+        if (in_array($tag, ['GROUP', 'CASE', 'TEST'])) {
             $nesting_tag = $this->popNestingTag();
             $nesting_tag->paintEnd($this->listener);
         } elseif ($tag == 'NAME') {

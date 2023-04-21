@@ -38,7 +38,7 @@ if (!isset($_SESSION['CATS']->massImportFiles) ||
     die ('No mass import in progress.');
 }
 
-if (count($_SESSION['CATS']->massImportFiles) == 0)
+if ((is_array($_SESSION['CATS']->massImportFiles) || $_SESSION['CATS']->massImportFiles instanceof \Countable ? count($_SESSION['CATS']->massImportFiles) : 0) == 0)
 {
     die ('done');
 }
@@ -50,7 +50,7 @@ $processed = 0;
 
 for ($i = 0; $i < 50; ++$i)
 {
-    if (count($_SESSION['CATS']->massImportFiles) == 0)
+    if ((is_array($_SESSION['CATS']->massImportFiles) || $_SESSION['CATS']->massImportFiles instanceof \Countable ? count($_SESSION['CATS']->massImportFiles) : 0) == 0)
     {
         continue;
     }

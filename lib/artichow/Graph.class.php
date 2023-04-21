@@ -9,8 +9,8 @@
 
 // Artichow configuration
 
-if(is_file(dirname(__FILE__)."/Artichow.cfg.php")) { // For PHP 4+5 version
-	require_once dirname(__FILE__)."/Artichow.cfg.php";
+if(is_file(__DIR__."/Artichow.cfg.php")) { // For PHP 4+5 version
+	require_once __DIR__."/Artichow.cfg.php";
 }
 
 
@@ -69,14 +69,14 @@ class awGraph extends awImage {
 	 *
 	 * @var array
 	 */
-	private $components = array();
+	private $components = [];
 
 	/**
 	 * Some labels to add to the component
 	 *
 	 * @var array
 	 */
-	protected $labels = array();
+	protected $labels = [];
 
 	/**
 	 * Graph title
@@ -103,7 +103,7 @@ class awGraph extends awImage {
 		$this->timeout = $timeout;
 
 		// Clean sometimes all the cache
-		if(mt_rand(0, 5000) ===  0) {
+		if(random_int(0, 5000) ===  0) {
 			awGraph::cleanCache();
 		}
 
@@ -217,9 +217,7 @@ class awGraph extends awImage {
 	 */
 	public function addLabel(awLabel $label, $x, $y) {
 
-		$this->labels[] = array(
-			$label, $x, $y
-		);
+		$this->labels[] = [$label, $x, $y];
 
 	}
 
@@ -231,9 +229,7 @@ class awGraph extends awImage {
 	 */
 	public function addAbsLabel(awLabel $label, awPoint $point) {
 
-		$this->labels[] = array(
-			$label, $point
-		);
+		$this->labels[] = [$label, $point];
 
 	}
 
@@ -295,10 +291,10 @@ class awGraph extends awImage {
 
 		foreach($this->labels as $array) {
 
-			if(count($array) === 3) {
+			if((is_array($array) || $array instanceof \Countable ? count($array) : 0) === 3) {
 
 				// Text in relative position
-				list($label, $x, $y) = $array;
+				[$label, $x, $y] = $array;
 
 				$point = new awPoint(
 					$x * $this->width,
@@ -308,7 +304,7 @@ class awGraph extends awImage {
 			} else {
 
 				// Text in absolute position
-				list($label, $point) = $array;
+				[$label, $point] = $array;
 
 			}
 
@@ -348,10 +344,7 @@ class awGraph extends awImage {
 
 	private static function cleanGraphCache($file) {
 
-		list(
-			$time,
-			$type
-		) = explode("\n", file_get_contents($file));
+		[$time, $type] = explode("\n", file_get_contents($file));
 
 		$time = (int)$time;
 
@@ -372,7 +365,7 @@ registerClass('Graph');
  * To preserve PHP 4 compatibility
  */
 function microtimeFloat() {
-	list($usec, $sec) = explode(" ", microtime());
+	[$usec, $sec] = explode(" ", microtime());
 	return (float)$usec + (float)$sec;
 }
 ?>

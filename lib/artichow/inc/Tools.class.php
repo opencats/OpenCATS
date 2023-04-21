@@ -19,42 +19,42 @@ interface awPositionable {
 	 *
 	 * @var int
 	 */
-	const LEFT = 1;
+	public const LEFT = 1;
 
 	/**
 	 * Right align
 	 *
 	 * @var int
 	 */
-	const RIGHT = 2;
+	public const RIGHT = 2;
 
 	/**
 	 * Center align
 	 *
 	 * @var int
 	 */
-	const CENTER = 3;
+	public const CENTER = 3;
 
 	/**
 	 * Top align
 	 *
 	 * @var int
 	 */
-	const TOP = 4;
+	public const TOP = 4;
 
 	/**
 	 * Bottom align
 	 *
 	 * @var int
 	 */
-	const BOTTOM = 5;
+	public const BOTTOM = 5;
 
 	/**
 	 * Middle align
 	 *
 	 * @var int
 	 */
-	const MIDDLE = 6;
+	public const MIDDLE = 6;
 
 	/**
 	 * Change alignment

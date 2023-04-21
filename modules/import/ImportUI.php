@@ -47,7 +47,7 @@ include_once(LEGACY_ROOT . '/lib/ContactsImport.php');
 
 class ImportUI extends UserInterface
 {
-    const MAX_ERRORS = 100;
+    public const MAX_ERRORS = 100;
 
 
     public function __construct()
@@ -57,7 +57,7 @@ class ImportUI extends UserInterface
         $this->_authenticationRequired = true;
         $this->_moduleDirectory = 'import';
         $this->_moduleName = 'import';
-        $this->_subTabs = array();
+        $this->_subTabs = [];
     }
 
 
@@ -227,70 +227,12 @@ class ImportUI extends UserInterface
     */
     private function setImportTypes()
     {
-        $this->candidatesTypes = array(
-            'Full Name',        'name',
-            'First Name',       'first_name',
-            'Last Name',        'last_name',
-            'Address',          'address',
-            'City',             'city',
-            'State',            'state',
-            'Zip',              'zip',
-            'Home Phone',       'phone_home',
-            'Cell Phone',       'phone_cell',
-            'Work Phone',       'phone_work',
-            'Notes',            'notes',
-            'Current Employer', 'current_employer',
-            'Email',            'email1',
-            'Email 2',          'email2',
-            'Web Site',         'web_site',
-            'Key Skills',       'key_skills'
-        );
+        $this->candidatesTypes = ['Full Name', 'name', 'First Name', 'first_name', 'Last Name', 'last_name', 'Address', 'address', 'City', 'city', 'State', 'state', 'Zip', 'zip', 'Home Phone', 'phone_home', 'Cell Phone', 'phone_cell', 'Work Phone', 'phone_work', 'Notes', 'notes', 'Current Employer', 'current_employer', 'Email', 'email1', 'Email 2', 'email2', 'Web Site', 'web_site', 'Key Skills', 'key_skills'];
         
-        $this->jobOrdersTypes = array(
-            'Reference',        'client_job_id',
-            'Title',            'title',
-            'Company',          'company',
-            'City',             'city',
-            'State',            'state',
-            'Type',             'type',
-            'Description',      'description',
-            'Notes',            'notes',
-            'Openings',         'openings',
-            'Public',           'public',
-            'Is Hot',           'is_hot'
-        );
+        $this->jobOrdersTypes = ['Reference', 'client_job_id', 'Title', 'title', 'Company', 'company', 'City', 'city', 'State', 'state', 'Type', 'type', 'Description', 'description', 'Notes', 'notes', 'Openings', 'openings', 'Public', 'public', 'Is Hot', 'is_hot'];
         
-        $this->contactsTypes = array(
-            'Company',      'company_id',
-            'Full Name',   'name',
-            'First Name',  'first_name',
-            'Last Name',   'last_name',
-            'Address',     'address',
-            'City',        'city',
-            'State',       'state',
-            'Zip',         'zip',
-            'Cell Phone',  'phone_cell',
-            'Work Phone',  'phone_work',
-            'Other Phone', 'phone_other',
-            'Notes',       'notes',
-            'Email',       'email1',
-            'Email 2',     'email2',
-            'Title',       'title'
-        );
-        $this->companiesTypes = array(
-            'Name',             'name',
-            'Billing Contact',  'billing_contact',
-            'Address',          'address',
-            'City',             'city',
-            'State',            'state',
-            'Zip',              'zip',
-            'Phone',            'phone1',
-            'Phone 2',          'phone2',
-            'URL',              'url',
-            'Key Technologies', 'key_technologies',
-            'Notes',            'notes',
-            'Fax Number',       'fax_number'
-        );
+        $this->contactsTypes = ['Company', 'company_id', 'Full Name', 'name', 'First Name', 'first_name', 'Last Name', 'last_name', 'Address', 'address', 'City', 'city', 'State', 'state', 'Zip', 'zip', 'Cell Phone', 'phone_cell', 'Work Phone', 'phone_work', 'Other Phone', 'phone_other', 'Notes', 'notes', 'Email', 'email1', 'Email 2', 'email2', 'Title', 'title'];
+        $this->companiesTypes = ['Name', 'name', 'Billing Contact', 'billing_contact', 'Address', 'address', 'City', 'city', 'State', 'state', 'Zip', 'zip', 'Phone', 'phone1', 'Phone 2', 'phone2', 'URL', 'url', 'Key Technologies', 'key_technologies', 'Notes', 'notes', 'Fax Number', 'fax_number'];
 
         if (!eval(Hooks::get('IMPORT_TYPES_2'))) return;
 
@@ -663,11 +605,11 @@ class ImportUI extends UserInterface
 
         /* Figure out what fields match already */
 
-        $matchingFields = array();
+        $matchingFields = [];
 
         foreach ($theFields AS $theField)
         {
-            for ($i = 0; $i < count($types); $i += 2)
+            for ($i = 0; $i < (is_array($types) || $types instanceof \Countable ? count($types) : 0); $i += 2)
             {
                 $lField = trim(strtolower($theField));
                 $lType  = strtolower($types[$i]);
@@ -683,7 +625,7 @@ class ImportUI extends UserInterface
         }
 
         /* Get some sample data */
-        $ArrayOfData = array();
+        $ArrayOfData = [];
         for ($i = 0; $i < 20; $i++)
         {
             if (feof($theFile))
@@ -760,7 +702,7 @@ class ImportUI extends UserInterface
         $totalImportedCompany = 0;
         $errorHtml = '';
 
-        $importErrors = array();
+        $importErrors = [];
 
         /* Parse data. */
 
@@ -775,7 +717,7 @@ class ImportUI extends UserInterface
         $contents = fread($theFile, filesize($filePath));
         rewind($theFile); //move pointer to the beginning of file so fgetcsv can read it too
 
-        if(defined('IMPORT_FILE_ENCODING') && count(IMPORT_FILE_ENCODING) > 0)
+        if(defined('IMPORT_FILE_ENCODING') && (is_array(IMPORT_FILE_ENCODING) || IMPORT_FILE_ENCODING instanceof \Countable ? count(IMPORT_FILE_ENCODING) : 0) > 0)
         {
             $encoding = mb_detect_encoding($contents, IMPORT_FILE_ENCODING);
         }
@@ -872,14 +814,14 @@ class ImportUI extends UserInterface
                 }
             }
 
-            $catsEntriesRows = array();
-            $catsEntriesValuesNamed = array();
-            $foreignEntries = array();
+            $catsEntriesRows = [];
+            $catsEntriesValuesNamed = [];
+            $foreignEntries = [];
 
             /* Put the data where the user picked for it to go. */
             foreach ($theFieldPreference AS $fieldID => $theFieldPreferenceValue)
             {
-                if (count($theData) <= $fieldID || trim($theData[$fieldID]) == '')
+                if (($theData === null ? 0 : count($theData)) <= $fieldID || trim($theData[$fieldID]) == '')
                 {
                     continue;
                 }
@@ -987,7 +929,7 @@ class ImportUI extends UserInterface
                 $errorHtml .= '<span id="errorId'.$totalRows.'" style="display:none;">';
                 foreach ($theFields AS $fieldID => $theField)
                 {
-                    if (count($theData) > $fieldID)
+                    if (($theData === null ? 0 : count($theData)) > $fieldID)
                     {
                         $errorHtml .= '<span class="bold">' . htmlspecialchars($theField) . ':</span> ' . htmlspecialchars($theData[$fieldID]) . '<br />';
                     }
@@ -1037,7 +979,7 @@ class ImportUI extends UserInterface
 
         /* Send off to the import template. */
         $this->_template->assign('successMessage', $message);
-        $this->import(strtolower($importInto));
+        $this->import();
     }
 
    /*
@@ -1188,7 +1130,7 @@ class ImportUI extends UserInterface
             if ($_POST['generateCompanies'] == 'yes')
             {
                 /* Build data for the new company. */
-                $dataCompany = array();
+                $dataCompany = [];
                 $dataCompany['name'] = $dataNamed['company_id'];
 
                 if (isset($dataNamed['phone_work']))
@@ -1196,7 +1138,7 @@ class ImportUI extends UserInterface
                     $dataCompany['phone1'] = $dataNamed['phone_work'];
                 }
 
-                foreach (array('address', 'city', 'state', 'zip') as $field)
+                foreach (['address', 'city', 'state', 'zip'] as $field)
                 {
                     if (isset($dataNamed[$field]))
                     {
@@ -1290,10 +1232,10 @@ class ImportUI extends UserInterface
     function showMassImport()
     {
         $directoryRoot = './upload/';
-        $foundFiles = array();
+        $foundFiles = [];
         $numberOfFiles = 0;
 
-        $directoriesToWalk = array('');
+        $directoriesToWalk = [''];
 
         while (count($directoriesToWalk) != 0)
         {
@@ -1358,16 +1300,10 @@ class ImportUI extends UserInterface
 
         if (!isset($_SESSION['CATS_PARSE_TEMP']))
         {
-            $_SESSION['CATS_PARSE_TEMP'] = array();
+            $_SESSION['CATS_PARSE_TEMP'] = [];
         }
 
-        $mp = array(
-            'name' => $name,
-            'realName' => $realName,
-            'ext' => $ext,
-            'type' => $type,
-            'cTime' => $cTime,
-        );
+        $mp = ['name' => $name, 'realName' => $realName, 'ext' => $ext, 'type' => $type, 'cTime' => $cTime];
 
         $doc2text = new DocumentToText();
         $pu = new ParseUtility();
@@ -1426,6 +1362,7 @@ class ImportUI extends UserInterface
 
     public function massImportEdit()
     {
+        $documentID = null;
         if (isset($_GET['documentID']))
         {
             $documentID = intval($_GET['documentID']);
@@ -1435,8 +1372,8 @@ class ImportUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this);
         }
 
-        list($documents, $success, $failed) = $this->getMassImportDocuments();
-        if (!count($documents))
+        [$documents, $success, $failed] = $this->getMassImportDocuments();
+        if (!(is_array($documents) || $documents instanceof \Countable ? count($documents) : 0))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this);
         }
@@ -1445,11 +1382,7 @@ class ImportUI extends UserInterface
         {
             // User is saving changes
             if (!isset($_SESSION['CATS_PARSE_TEMP'][$documentID]['parse']))
-                $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse'] = array(
-                    'firstName' => '', 'lastName' => '', 'address' => '', 'city' => '', 'state' => '',
-                    'zipCode' => '', 'email' => '', 'phone' => '', 'skills' => '', 'education' => '',
-                    'experience' => ''
-            );
+                $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse'] = ['firstName' => '', 'lastName' => '', 'address' => '', 'city' => '', 'state' => '', 'zipCode' => '', 'email' => '', 'phone' => '', 'skills' => '', 'education' => '', 'experience' => ''];
             if (isset($_POST['firstName']))
                 $_SESSION['CATS_PARSE_TEMP'][$documentID]['parse']['first_name'] = $_POST['firstName'];
             if (isset($_POST['lastName']))
@@ -1495,6 +1428,7 @@ class ImportUI extends UserInterface
 
     public function massImport($step = 1)
     {
+        $siteID = null;
         if (isset($_SESSION['CATS']) && !empty($_SESSION['CATS']))
         {
             $siteID = $_SESSION['CATS']->getSiteID();
@@ -1560,7 +1494,7 @@ class ImportUI extends UserInterface
                     . 'and select one or more files to import.'
                 );
 
-                $this->_template->assign('files', array());
+                $this->_template->assign('files', []);
                 $this->_template->assign('js', '');
             }
             else
@@ -1584,8 +1518,8 @@ class ImportUI extends UserInterface
         else if ($step == 3)
         {
             // Make sure the processed files exists, is an array, and is not empty
-            list($documents, $success, $failed) = $this->getMassImportDocuments();
-            if (!count($documents))
+            [$documents, $success, $failed] = $this->getMassImportDocuments();
+            if (!(is_array($documents) || $documents instanceof \Countable ? count($documents) : 0))
             {
                 $this->_template->assign('errorMessage', 'None of the files you uploaded were able '
                     . 'to be imported!'
@@ -1597,11 +1531,11 @@ class ImportUI extends UserInterface
         else if ($step == 4)
         {
             // Final step, import all applicable candidates
-            list($importedCandidates, $importedDocuments, $importedFailed, $importedDuplicates) =
+            [$importedCandidates, $importedDocuments, $importedFailed, $importedDuplicates] =
                 $this->getMassImportCandidates();
 
-            if (!count($importedCandidates) && !count($importedDocuments) && !count($importedFailed) &&
-                !count($importedDuplicates))
+            if (!(is_array($importedCandidates) || $importedCandidates instanceof \Countable ? count($importedCandidates) : 0) && !(is_array($importedDocuments) || $importedDocuments instanceof \Countable ? count($importedDocuments) : 0) && !(is_array($importedFailed) || $importedFailed instanceof \Countable ? count($importedFailed) : 0) &&
+                !(is_array($importedDuplicates) || $importedDuplicates instanceof \Countable ? count($importedDuplicates) : 0))
             {
                 $this->_template->assign('errorMessage', '<b style="font-size: 20px;">Information no Longer '
                     . 'Available</b><br /><br />'
@@ -1655,6 +1589,8 @@ class ImportUI extends UserInterface
 
     private function getMassImportCandidates()
     {
+        $siteID = null;
+        $userID = null;
         $db = DatabaseConnection::getInstance();
 
         // Find the files the user has uploaded and put them in an array
@@ -1668,23 +1604,23 @@ class ImportUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_NOTLOGGEDIN, $this);
         }
 
-        list($documents, $success, $failed) = $this->getMassImportDocuments();
-        if (!count($documents))
+        [$documents, $success, $failed] = $this->getMassImportDocuments();
+        if (!(is_array($documents) || $documents instanceof \Countable ? count($documents) : 0))
         {
-            return array( array(), array(), array(), array() );
+            return [[], [], [], []];
         }
 
-        $importedCandidates = array();
-        $importedDocuments = array();
-        $importedFailed = array();
-        $importedDuplicates = array();
+        $importedCandidates = [];
+        $importedDocuments = [];
+        $importedFailed = [];
+        $importedDuplicates = [];
 
-        for ($ind=0; $ind<count($_SESSION['CATS_PARSE_TEMP']); $ind++)
+        for ($ind=0; $ind<(is_array($_SESSION['CATS_PARSE_TEMP']) || $_SESSION['CATS_PARSE_TEMP'] instanceof \Countable ? count($_SESSION['CATS_PARSE_TEMP']) : 0); $ind++)
         {
             $doc = $_SESSION['CATS_PARSE_TEMP'][$ind];
 
             // Get parsed information instead (if available)
-            for ($ind2=0; $ind2<count($documents); $ind2++)
+            for ($ind2=0; $ind2<(is_array($documents) || $documents instanceof \Countable ? count($documents) : 0); $ind2++)
             {
                 if ($documents[$ind2]['id'] == $ind)
                 {
@@ -1815,24 +1751,16 @@ class ImportUI extends UserInterface
                                 // FIXME: error checking on fail?
                             }
 
-                            $importedCandidates[] = array(
-                                'name' => trim($doc['firstName'] . ' ' . $doc['lastName']),
-                                'resume' => $doc['realName'],
-                                'url' => sprintf(
-                                    '%s?m=candidates&a=show&candidateID=%d',
-                                    CATSUtility::getIndexName(),
-                                    $candidateID
-                                ),
-                                'location' => trim($doc['city'] . ' ' . $doc['state'] . ' ' . $doc['zipCode'])
-                            );
+                            $importedCandidates[] = ['name' => trim($doc['firstName'] . ' ' . $doc['lastName']), 'resume' => $doc['realName'], 'url' => sprintf(
+                                '%s?m=candidates&a=show&candidateID=%d',
+                                CATSUtility::getIndexName(),
+                                $candidateID
+                            ), 'location' => trim($doc['city'] . ' ' . $doc['state'] . ' ' . $doc['zipCode'])];
                         }
                     }
                     else
                     {
-                        $importedDuplicates[] = array(
-                            'name' => trim($doc['firstName'] . ' ' . $doc['lastName']),
-                            'resume' => $doc['realName']
-                        );
+                        $importedDuplicates[] = ['name' => trim($doc['firstName'] . ' ' . $doc['lastName']), 'resume' => $doc['realName']];
                         @unlink($doc['name']);
                         $candidateAdded = true;
                     }
@@ -1897,15 +1825,11 @@ class ImportUI extends UserInterface
 
                     if (!$error || $brExists)
                     {
-                        $importedDocuments[] = array(
-                            'name' => $doc['realName']
-                        );
+                        $importedDocuments[] = ['name' => $doc['realName']];
                     }
                     else
                     {
-                        $importedFailed[] = array(
-                            'name' => $doc['realName']
-                        );
+                        $importedFailed[] = ['name' => $doc['realName']];
                     }
                 }
                 /**
@@ -1941,9 +1865,7 @@ class ImportUI extends UserInterface
             else
             {
                 // This document failed to convert to a text-format using doc2text
-                $importedFailed[] = array(
-                    'name' => $doc['realName']
-                );
+                $importedFailed[] = ['name' => $doc['realName']];
 
                 // Make sure it's a safe filename to delete and located in the site's upload directory
                 if (FileUtility::isUploadFileSafe($siteID, 'massimport', $doc['name']))
@@ -1953,7 +1875,7 @@ class ImportUI extends UserInterface
             }
         }
 
-        return array($importedCandidates, $importedDocuments, $importedFailed, $importedDuplicates);
+        return [$importedCandidates, $importedDocuments, $importedFailed, $importedDuplicates];
     }
 
     private function getMassImportDocuments()
@@ -1961,13 +1883,13 @@ class ImportUI extends UserInterface
         if (!isset($_SESSION['CATS_PARSE_TEMP']) || empty($_SESSION['CATS_PARSE_TEMP']) ||
             !is_array($_SESSION['CATS_PARSE_TEMP']))
         {
-            return array(array(), 0, 0);
+            return [[], 0, 0];
         }
 
         $mp = $_SESSION['CATS_PARSE_TEMP'];
 
         // Clean up the documents for the next stage
-        $documents = array();
+        $documents = [];
         $failed = $success = 0;
         for ($ind=0; $ind<count($mp); $ind++)
         {
@@ -2015,7 +1937,7 @@ class ImportUI extends UserInterface
                 $failed++;
             }
         }
-        return array($documents, $success, $failed);
+        return [$documents, $success, $failed];
     }
 
     private function deleteBulkResumes()
@@ -2034,7 +1956,7 @@ class ImportUI extends UserInterface
         $attachments = new Attachments($this->_siteID);
         $bulkResumes = $attachments->getBulkAttachments();
 
-        if (!count($bulkResumes))
+        if (!(is_array($bulkResumes) || $bulkResumes instanceof \Countable ? count($bulkResumes) : 0))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this);
         }
@@ -2067,7 +1989,7 @@ class ImportUI extends UserInterface
         $attachments = new Attachments($this->_siteID);
         $bulkResumes = $attachments->getBulkAttachments();
 
-        if (!count($bulkResumes))
+        if (!(is_array($bulkResumes) || $bulkResumes instanceof \Countable ? count($bulkResumes) : 0))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this);
         }

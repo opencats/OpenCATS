@@ -86,7 +86,7 @@ $mailer = new Mailer($siteID);
 $mailer->overrideSetting('fromAddress', $fromAddress);
 
 $mailerStatus = $mailer->sendToOne(
-    array($testEmailAddress, ''),
+    [$testEmailAddress, ''],
     'CATS Test E-Mail',
     'This is a CATS test e-mail in HTML format.',
     true

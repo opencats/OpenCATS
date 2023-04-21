@@ -21,56 +21,7 @@ class DatabaseSearchTest extends DatabaseTestCase
 
     function testMakeBooleanSQLWhere()
     {
-        $tests = array(
-            array(
-                'java',
-                '((field REGEXP \'[[:<:]]java[[:>:]]\'))'
-            ),
-            array(
-                'java sql',
-                '((field REGEXP \'[[:<:]]java[[:>:]]\') AND (field REGEXP \'[[:<:]]sql[[:>:]]\'))'
-            ),
-            array(
-                'java | sql',
-                '((field REGEXP \'[[:<:]]java[[:>:]]\') OR (field REGEXP \'[[:<:]]sql[[:>:]]\'))'
-            ),
-            array(
-                'java,sql',
-                '((field REGEXP \'[[:<:]]java[[:>:]]\') OR (field REGEXP \'[[:<:]]sql[[:>:]]\'))'
-            ),
-            array(
-                'java, ,,sql',
-                '((field REGEXP \'[[:<:]]java[[:>:]]\') OR (field REGEXP \'[[:<:]]sql[[:>:]]\'))'
-            ),
-            array(
-                'java -sql',
-                '((field REGEXP \'[[:<:]]java[[:>:]]\') AND NOT (field REGEXP \'[[:<:]]sql[[:>:]]\'))'
-            ),
-            array(
-                'java !sql',
-                '((field REGEXP \'[[:<:]]java[[:>:]]\') AND NOT (field REGEXP \'[[:<:]]sql[[:>:]]\'))'
-            ),
-            array(
-                'java*',
-                '((field LIKE \'%java%\'))'
-            ),
-            array(
-                'java* sql*',
-                '((field LIKE \'%java%\') AND (field LIKE \'%sql%\'))'
-            ),
-            array(
-                'java (',
-                '0'
-            ),
-            array(
-                'java) (',
-                '0'
-            ),
-            array(
-                'java ()',
-                '((field REGEXP \'[[:<:]]java[[:>:]]\'))'
-            )
-        );
+        $tests = [['java', '((field REGEXP \'[[:<:]]java[[:>:]]\'))'], ['java sql', '((field REGEXP \'[[:<:]]java[[:>:]]\') AND (field REGEXP \'[[:<:]]sql[[:>:]]\'))'], ['java | sql', '((field REGEXP \'[[:<:]]java[[:>:]]\') OR (field REGEXP \'[[:<:]]sql[[:>:]]\'))'], ['java,sql', '((field REGEXP \'[[:<:]]java[[:>:]]\') OR (field REGEXP \'[[:<:]]sql[[:>:]]\'))'], ['java, ,,sql', '((field REGEXP \'[[:<:]]java[[:>:]]\') OR (field REGEXP \'[[:<:]]sql[[:>:]]\'))'], ['java -sql', '((field REGEXP \'[[:<:]]java[[:>:]]\') AND NOT (field REGEXP \'[[:<:]]sql[[:>:]]\'))'], ['java !sql', '((field REGEXP \'[[:<:]]java[[:>:]]\') AND NOT (field REGEXP \'[[:<:]]sql[[:>:]]\'))'], ['java*', '((field LIKE \'%java%\'))'], ['java* sql*', '((field LIKE \'%java%\') AND (field LIKE \'%sql%\'))'], ['java (', '0'], ['java) (', '0'], ['java ()', '((field REGEXP \'[[:<:]]java[[:>:]]\'))']];
 
         $db = DatabaseConnection::getInstance();
         foreach ($tests as $test)

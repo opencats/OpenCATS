@@ -344,7 +344,7 @@ class Candidates
             //FIXME: Make subject configurable.
             $mailer = new Mailer($this->_siteID);
             $mailerStatus = $mailer->sendToOne(
-                array($emailAddress, ''),
+                [$emailAddress, ''],
                 'CATS Notification: Candidate Ownership Change',
                 $email,
                 true
@@ -571,7 +571,7 @@ class Candidates
             $this->_db->makeQueryInteger($candidateID)
             );
         $rs = $this->_db->getAllAssoc($sql);
-        $temp = array();
+        $temp = [];
         if($rs && !$this->_db->isEOF())
         {
             foreach($rs as $row)
@@ -644,9 +644,9 @@ class Candidates
     // FIXME: Document me.
     public function getExport($IDs)
     {
-        if (count($IDs) != 0)
+        if ((is_array($IDs) || $IDs instanceof \Countable ? count($IDs) : 0) != 0)
         {
-            $IDsValidated = array();
+            $IDsValidated = [];
             
             foreach ($IDs as $id)
             {
@@ -1157,11 +1157,11 @@ class Candidates
         
         $rs = $this->_db->getAllAssoc($sql);
         
-        $duplicatesID = array();
+        $duplicatesID = [];
         
         if($rs && !$this->_db->isEOF())
         {
-            $phoneNumbers = array();
+            $phoneNumbers = [];
 
             if($phoneHome != ""){array_push($phoneNumbers, preg_replace('/\s+/', '', $phoneHome));}
             if($phoneCell != ""){array_push($phoneNumbers, preg_replace('/\s+/', '', $phoneCell));}
@@ -1173,7 +1173,7 @@ class Candidates
             
             foreach($rs as $row)
             {   
-                $phoneNumbersDB = array();
+                $phoneNumbersDB = [];
                 if($row['phoneHome'] != ""){array_push($phoneNumbersDB, preg_replace('/\s+/', '', $row['phoneHome']));}
                 if($row['phoneCell'] != ""){array_push($phoneNumbersDB, preg_replace('/\s+/', '', $row['phoneCell']));}
                 if($row['phoneWork'] != ""){array_push($phoneNumbersDB, preg_replace('/\s+/', '', $row['phoneWork']));}
@@ -1587,6 +1587,7 @@ class Candidates
     }
 
     private function mergeLists($oldCandidateID, $newCandidateID){
+        $lists = null;
         /* Get list IDs where both old and new candidate already are placed */
         $sql = sprintf("
             SELECT
@@ -1935,12 +1936,10 @@ class CandidatesDataGrid extends DataGrid
         $this->_assignedCriterion = "";
         $this->_dataItemIDColumn = 'candidate.candidate_id';
 
-        $this->_classColumns = array(
-            'Attachments' => array('select' => 'IF(candidate_joborder_submitted.candidate_joborder_id, 1, 0) AS submitted,
+        $this->_classColumns = [
+            'Attachments' => ['select' => 'IF(candidate_joborder_submitted.candidate_joborder_id, 1, 0) AS submitted,
                                                 IF(attachment_id, 1, 0) AS attachmentPresent,
-                                                IF(old_candidate_id, 1, 0) AS duplicatePresent',
-
-                                     'pagerRender' => 'if ($rsData[\'duplicatePresent\'] == 1 && $_SESSION[\'CATS\']->getAccessLevel(\'candidates.duplicates\') >= ACCESS_LEVEL_SA)
+                                                IF(old_candidate_id, 1, 0) AS duplicatePresent', 'pagerRender' => 'if ($rsData[\'duplicatePresent\'] == 1 && $_SESSION[\'CATS\']->getAccessLevel(\'candidates.duplicates\') >= ACCESS_LEVEL_SA)
                                                     {
                                                         $return = \'<img src="images/wf_error.gif" alt="" width="16" height="16" title="Possible Duplicate" />\';
                                                     }
@@ -1967,9 +1966,7 @@ class CandidatesDataGrid extends DataGrid
                                                         $return .= \'<img src="images/mru/blank.gif" alt="" width="16" height="16" />\';
                                                     }
                                                     return $return;
-                                                   ',
-
-                                     'join'     => 'LEFT JOIN attachment
+                                                   ', 'join'     => 'LEFT JOIN attachment
                                                         ON candidate.candidate_id = attachment.data_item_id
 														AND attachment.data_item_type = '.DATA_ITEM_CANDIDATE.'
                                                     LEFT JOIN candidate_joborder AS candidate_joborder_submitted
@@ -1978,100 +1975,22 @@ class CandidatesDataGrid extends DataGrid
                                                         AND candidate_joborder_submitted.site_id = '.$this->_siteID.'
                                                         AND candidate_joborder_submitted.status != '.PIPELINE_STATUS_NOTINCONSIDERATION.' LEFT JOIN candidate_duplicates 
                                                         ON candidate.candidate_id = 
-                                                        candidate_duplicates.new_candidate_id'
-                                                    
-                                   ,
-                                     'pagerWidth'    => 100,
-                                     'pagerOptional' => true,
-                                     'pagerNoTitle' => true,
-                                     'sizable'  => true,
-                                     'exportable' => false,
-                                     'filterable' => false),
-
-            'First Name' =>     array('select'         => 'candidate.first_name AS firstName',
-                                      'pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'candidateID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';',
-                                      'sortableColumn' => 'firstName',
-                                      'pagerWidth'     => 75,
-                                      'pagerOptional'  => false,
-                                      'alphaNavigation'=> true,
-                                      'filter'         => 'candidate.first_name'),
-
-            'Last Name' =>      array('select'         => 'candidate.last_name AS lastName',
-                                     'sortableColumn'  => 'lastName',
-                                     'pagerRender'     => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'candidateID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';',
-                                     'pagerWidth'      => 85,
-                                     'pagerOptional'   => false,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'candidate.last_name'),
-
-            'E-Mail' =>         array('select'   => 'candidate.email1 AS email1',
-                                     'sortableColumn'     => 'email1',
-                                     'pagerWidth'    => 80,
-                                     'filter'         => 'candidate.email1'),
-
-            '2nd E-Mail' =>     array('select'   => 'candidate.email2 AS email2',
-                                     'sortableColumn'     => 'email2',
-                                     'pagerWidth'    => 80,
-                                     'filter'         => 'candidate.email2'),
-
-            'Home Phone' =>     array('select'   => 'candidate.phone_home AS phoneHome',
-                                     'sortableColumn'     => 'phoneHome',
-                                     'pagerWidth'    => 80,
-                                     'filter'         => 'candidate.phone_home'),
-
-            'Cell Phone' =>     array('select'   => 'candidate.phone_cell AS phoneCell',
-                                     'sortableColumn'     => 'phoneCell',
-                                     'pagerWidth'    => 80,
-                                     'filter'         => 'candidate.phone_cell'),
-
-            'Work Phone' =>     array('select'   => 'candidate.phone_work AS phoneWork',
-                                     'sortableColumn'     => 'phoneWork',
-                                     'pagerWidth'    => 80,
-                                     'filter'         => 'candidate.phone_work'),
-
-            'Address' =>        array('select'   => 'candidate.address AS address',
-                                     'sortableColumn'     => 'address',
-                                     'pagerWidth'    => 250,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'candidate.address'),
-
-            'City' =>           array('select'   => 'candidate.city AS city',
-                                     'sortableColumn'     => 'city',
-                                     'pagerWidth'    => 80,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'candidate.city'),
-
-
-            'State' =>          array('select'   => 'candidate.state AS state',
-                                     'sortableColumn'     => 'state',
-                                     'filterType' => 'dropDown',
-                                     'pagerWidth'    => 50,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'candidate.state'),
-
-            'Zip' =>            array('select'  => 'candidate.zip AS zip',
-                                     'sortableColumn'    => 'zip',
-                                     'pagerWidth'   => 50,
-                                     'filter'         => 'candidate.zip'),
-
-            'Misc Notes' =>     array('select'  => 'candidate.notes AS notes',
-                                     'sortableColumn'    => 'notes',
-                                     'pagerWidth'   => 300,
-                                     'filter'         => 'candidate.notes'),
-
-            'Web Site' =>      array('select'  => 'candidate.web_site AS webSite',
-                                     'pagerRender'     => 'return \'<a href="\'.htmlspecialchars($rsData[\'webSite\']).\'">\'.htmlspecialchars($rsData[\'webSite\']).\'</a>\';',
-                                     'sortableColumn'    => 'webSite',
-                                     'pagerWidth'   => 80,
-                                     'filter'         => 'candidate.web_site'),
-
-            'Key Skills' =>    array('select'  => 'candidate.key_skills AS keySkills',
-                                     'pagerRender' => 'return substr(trim($rsData[\'keySkills\']), 0, 30) . (strlen(trim($rsData[\'keySkills\'])) > 30 ? \'...\' : \'\');',
-                                     'sortableColumn'    => 'keySkills',
-                                     'pagerWidth'   => 210,
-                                     'filter'         => 'candidate.key_skills'),
-
-            'Recent Status' => array('select'  => '(
+                                                        candidate_duplicates.new_candidate_id', 'pagerWidth'    => 100, 'pagerOptional' => true, 'pagerNoTitle' => true, 'sizable'  => true, 'exportable' => false, 'filterable' => false],
+            'First Name' =>     ['select'         => 'candidate.first_name AS firstName', 'pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'candidateID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';', 'sortableColumn' => 'firstName', 'pagerWidth'     => 75, 'pagerOptional'  => false, 'alphaNavigation'=> true, 'filter'         => 'candidate.first_name'],
+            'Last Name' =>      ['select'         => 'candidate.last_name AS lastName', 'sortableColumn'  => 'lastName', 'pagerRender'     => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'candidateID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';', 'pagerWidth'      => 85, 'pagerOptional'   => false, 'alphaNavigation' => true, 'filter'         => 'candidate.last_name'],
+            'E-Mail' =>         ['select'   => 'candidate.email1 AS email1', 'sortableColumn'     => 'email1', 'pagerWidth'    => 80, 'filter'         => 'candidate.email1'],
+            '2nd E-Mail' =>     ['select'   => 'candidate.email2 AS email2', 'sortableColumn'     => 'email2', 'pagerWidth'    => 80, 'filter'         => 'candidate.email2'],
+            'Home Phone' =>     ['select'   => 'candidate.phone_home AS phoneHome', 'sortableColumn'     => 'phoneHome', 'pagerWidth'    => 80, 'filter'         => 'candidate.phone_home'],
+            'Cell Phone' =>     ['select'   => 'candidate.phone_cell AS phoneCell', 'sortableColumn'     => 'phoneCell', 'pagerWidth'    => 80, 'filter'         => 'candidate.phone_cell'],
+            'Work Phone' =>     ['select'   => 'candidate.phone_work AS phoneWork', 'sortableColumn'     => 'phoneWork', 'pagerWidth'    => 80, 'filter'         => 'candidate.phone_work'],
+            'Address' =>        ['select'   => 'candidate.address AS address', 'sortableColumn'     => 'address', 'pagerWidth'    => 250, 'alphaNavigation' => true, 'filter'         => 'candidate.address'],
+            'City' =>           ['select'   => 'candidate.city AS city', 'sortableColumn'     => 'city', 'pagerWidth'    => 80, 'alphaNavigation' => true, 'filter'         => 'candidate.city'],
+            'State' =>          ['select'   => 'candidate.state AS state', 'sortableColumn'     => 'state', 'filterType' => 'dropDown', 'pagerWidth'    => 50, 'alphaNavigation' => true, 'filter'         => 'candidate.state'],
+            'Zip' =>            ['select'  => 'candidate.zip AS zip', 'sortableColumn'    => 'zip', 'pagerWidth'   => 50, 'filter'         => 'candidate.zip'],
+            'Misc Notes' =>     ['select'  => 'candidate.notes AS notes', 'sortableColumn'    => 'notes', 'pagerWidth'   => 300, 'filter'         => 'candidate.notes'],
+            'Web Site' =>      ['select'  => 'candidate.web_site AS webSite', 'pagerRender'     => 'return \'<a href="\'.htmlspecialchars($rsData[\'webSite\']).\'">\'.htmlspecialchars($rsData[\'webSite\']).\'</a>\';', 'sortableColumn'    => 'webSite', 'pagerWidth'   => 80, 'filter'         => 'candidate.web_site'],
+            'Key Skills' =>    ['select'  => 'candidate.key_skills AS keySkills', 'pagerRender' => 'return substr(trim($rsData[\'keySkills\']), 0, 30) . (strlen(trim($rsData[\'keySkills\'])) > 30 ? \'...\' : \'\');', 'sortableColumn'    => 'keySkills', 'pagerWidth'   => 210, 'filter'         => 'candidate.key_skills'],
+            'Recent Status' => ['select'  => '(
                                                     SELECT
                                                         CONCAT(
                                                             \'<a href="'.CATSUtility::getIndexName().'?m=joborders&amp;a=show&amp;jobOrderID=\',
@@ -2098,16 +2017,8 @@ class CandidatesDataGrid extends DataGrid
                                                         candidate_joborder.date_modified DESC
                                                     LIMIT 1
                                                 ) AS lastStatus
-                                                ',
-                                     'sort'    => 'lastStatus',
-                                     'pagerRender'     => 'return $rsData[\'lastStatus\'];',
-                                     'exportRender'     => 'return $rsData[\'lastStatus\'];',
-                                     'pagerWidth'   => 140,
-                                     'exportable' => false,
-                                     'filterHaving'  => 'lastStatus',
-                                     'filterTypes'   => '=~'),
-
-            'Recent Status (Extended)' => array('select'  => '(
+                                                ', 'sort'    => 'lastStatus', 'pagerRender'     => 'return $rsData[\'lastStatus\'];', 'exportRender'     => 'return $rsData[\'lastStatus\'];', 'pagerWidth'   => 140, 'exportable' => false, 'filterHaving'  => 'lastStatus', 'filterTypes'   => '=~'],
+            'Recent Status (Extended)' => ['select'  => '(
                                                     SELECT
                                                         CONCAT(
                                                             candidate_joborder_status.short_description,
@@ -2137,127 +2048,44 @@ class CandidatesDataGrid extends DataGrid
                                                         candidate_joborder.date_modified DESC
                                                     LIMIT 1
                                                 ) AS lastStatusLong
-                                                ',
-                                     'sortableColumn'    => 'lastStatusLong',
-                                     'pagerRender'     => 'return $rsData[\'lastStatusLong\'];',
-                                     'pagerWidth'   => 310,
-                                     'exportable' => false,
-                                     'filterable' => false),
-
-            'Source' =>        array('select'  => 'candidate.source AS source',
-                                     'sortableColumn'    => 'source',
-                                     'pagerWidth'   => 140,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'candidate.source'),
-
-            'Available' =>     array('select'   => 'DATE_FORMAT(candidate.date_available, \'%m-%d-%y\') AS dateAvailable',
-                                     'sortableColumn'     => 'dateAvailable',
-                                     'pagerWidth'    => 60),
-
-            'Current Employer' => array('select'  => 'candidate.current_employer AS currentEmployer',
-                                     'sortableColumn'    => 'currentEmployer',
-                                     'pagerWidth'   => 125,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'candidate.current_employer'),
-
-            'Current Pay' => array('select'  => 'candidate.current_pay AS currentPay',
-                                     'sortableColumn'    => 'currentPay',
-                                     'pagerWidth'   => 125,
-                                     'filter'         => 'candidate.current_pay',
-                                     'filterTypes'   => '===>=<'),
-
-            'Desired Pay' => array('select'  => 'candidate.desired_pay AS desiredPay',
-                                     'sortableColumn'    => 'desiredPay',
-                                     'pagerWidth'   => 125,
-                                     'filter'         => 'candidate.desired_pay',
-                                     'filterTypes'   => '===>=<'),
-
-            'Can Relocate'  => array('select'  => 'candidate.can_relocate AS canRelocate',
-                                     'pagerRender'     => 'return ($rsData[\'canRelocate\'] == 0 ? \'No\' : \'Yes\');',
-                                     'exportRender'     => 'return ($rsData[\'canRelocate\'] == 0 ? \'No\' : \'Yes\');',
-                                     'sortableColumn'    => 'canRelocate',
-                                     'pagerWidth'   => 80,
-                                     'filter'         => 'candidate.can_relocate'),
-
-            'Owner' =>         array('select'   => 'owner_user.first_name AS ownerFirstName,' .
+                                                ', 'sortableColumn'    => 'lastStatusLong', 'pagerRender'     => 'return $rsData[\'lastStatusLong\'];', 'pagerWidth'   => 310, 'exportable' => false, 'filterable' => false],
+            'Source' =>        ['select'  => 'candidate.source AS source', 'sortableColumn'    => 'source', 'pagerWidth'   => 140, 'alphaNavigation' => true, 'filter'         => 'candidate.source'],
+            'Available' =>     ['select'   => 'DATE_FORMAT(candidate.date_available, \'%m-%d-%y\') AS dateAvailable', 'sortableColumn'     => 'dateAvailable', 'pagerWidth'    => 60],
+            'Current Employer' => ['select'  => 'candidate.current_employer AS currentEmployer', 'sortableColumn'    => 'currentEmployer', 'pagerWidth'   => 125, 'alphaNavigation' => true, 'filter'         => 'candidate.current_employer'],
+            'Current Pay' => ['select'  => 'candidate.current_pay AS currentPay', 'sortableColumn'    => 'currentPay', 'pagerWidth'   => 125, 'filter'         => 'candidate.current_pay', 'filterTypes'   => '===>=<'],
+            'Desired Pay' => ['select'  => 'candidate.desired_pay AS desiredPay', 'sortableColumn'    => 'desiredPay', 'pagerWidth'   => 125, 'filter'         => 'candidate.desired_pay', 'filterTypes'   => '===>=<'],
+            'Can Relocate'  => ['select'  => 'candidate.can_relocate AS canRelocate', 'pagerRender'     => 'return ($rsData[\'canRelocate\'] == 0 ? \'No\' : \'Yes\');', 'exportRender'     => 'return ($rsData[\'canRelocate\'] == 0 ? \'No\' : \'Yes\');', 'sortableColumn'    => 'canRelocate', 'pagerWidth'   => 80, 'filter'         => 'candidate.can_relocate'],
+            'Owner' =>         ['select'   => 'owner_user.first_name AS ownerFirstName,' .
                                                    'owner_user.last_name AS ownerLastName,' .
-                                                   'CONCAT(owner_user.last_name, owner_user.first_name) AS ownerSort',
-                                     'join'     => 'LEFT JOIN user AS owner_user ON candidate.owner = owner_user.user_id',
-                                     'pagerRender'      => 'return StringUtility::makeInitialName($rsData[\'ownerFirstName\'], $rsData[\'ownerLastName\'], false, LAST_NAME_MAXLEN);',
-                                     'exportRender'     => 'return $rsData[\'ownerFirstName\'] . " " .$rsData[\'ownerLastName\'];',
-                                     'sortableColumn'     => 'ownerSort',
-                                     'pagerWidth'    => 75,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'CONCAT(owner_user.first_name, owner_user.last_name)'),
-
-            'Created' =>       array('select'   => 'DATE_FORMAT(candidate.date_created, \'%m-%d-%y\') AS dateCreated',
-                                     'pagerRender'      => 'return $rsData[\'dateCreated\'];',
-                                     'sortableColumn'     => 'dateCreatedSort',
-                                     'pagerWidth'    => 60,
-                                     'filterHaving' => 'DATE_FORMAT(candidate.date_created, \'%m-%d-%y\')'),
-
-            'Modified' =>      array('select'   => 'DATE_FORMAT(candidate.date_modified, \'%m-%d-%y\') AS dateModified',
-                                     'pagerRender'      => 'return $rsData[\'dateModified\'];',
-                                     'sortableColumn'     => 'dateModifiedSort',
-                                     'pagerWidth'    => 60,
-                                     'pagerOptional' => false,
-                                     'filterHaving' => 'DATE_FORMAT(candidate.date_modified, \'%m-%d-%y\')'),
-
+                                                   'CONCAT(owner_user.last_name, owner_user.first_name) AS ownerSort', 'join'     => 'LEFT JOIN user AS owner_user ON candidate.owner = owner_user.user_id', 'pagerRender'      => 'return StringUtility::makeInitialName($rsData[\'ownerFirstName\'], $rsData[\'ownerLastName\'], false, LAST_NAME_MAXLEN);', 'exportRender'     => 'return $rsData[\'ownerFirstName\'] . " " .$rsData[\'ownerLastName\'];', 'sortableColumn'     => 'ownerSort', 'pagerWidth'    => 75, 'alphaNavigation' => true, 'filter'         => 'CONCAT(owner_user.first_name, owner_user.last_name)'],
+            'Created' =>       ['select'   => 'DATE_FORMAT(candidate.date_created, \'%m-%d-%y\') AS dateCreated', 'pagerRender'      => 'return $rsData[\'dateCreated\'];', 'sortableColumn'     => 'dateCreatedSort', 'pagerWidth'    => 60, 'filterHaving' => 'DATE_FORMAT(candidate.date_created, \'%m-%d-%y\')'],
+            'Modified' =>      ['select'   => 'DATE_FORMAT(candidate.date_modified, \'%m-%d-%y\') AS dateModified', 'pagerRender'      => 'return $rsData[\'dateModified\'];', 'sortableColumn'     => 'dateModifiedSort', 'pagerWidth'    => 60, 'pagerOptional' => false, 'filterHaving' => 'DATE_FORMAT(candidate.date_modified, \'%m-%d-%y\')'],
             /* This one only works when called from the saved list view.  Thats why it is not optional, filterable, or exportable.
              * FIXME:  Somehow make this defined in the associated savedListDataGrid class child.
              */
-            'Added To List' =>  array('select'   => 'DATE_FORMAT(saved_list_entry.date_created, \'%m-%d-%y\') AS dateAddedToList,
-                                                     saved_list_entry.date_created AS dateAddedToListSort',
-                                     'pagerRender'      => 'return $rsData[\'dateAddedToList\'];',
-                                     'sortableColumn'     => 'dateAddedToListSort',
-                                     'pagerWidth'    => 60,
-                                     'pagerOptional' => false,
-                                     'filterable' => false,
-                                     'exportable' => false),
-
-            'OwnerID' =>       array('select'    => '',
-                                     'filter'    => 'candidate.owner',
-                                     'pagerOptional' => false,
-                                     'filterable' => false,
-                                     'filterDescription' => 'Only My Candidates'),
-
-            'IsHot' =>         array('select'    => '',
-                                     'filter'    => 'candidate.is_hot',
-                                     'pagerOptional' => false,
-                                     'filterable' => false,
-                                     'filterDescription' => 'Only Hot Candidates'),
-        // Tags filtering
-        	'Tags'	=>			array(
-                                     'select'	=> '(
+            'Added To List' =>  ['select'   => 'DATE_FORMAT(saved_list_entry.date_created, \'%m-%d-%y\') AS dateAddedToList,
+                                                     saved_list_entry.date_created AS dateAddedToListSort', 'pagerRender'      => 'return $rsData[\'dateAddedToList\'];', 'sortableColumn'     => 'dateAddedToListSort', 'pagerWidth'    => 60, 'pagerOptional' => false, 'filterable' => false, 'exportable' => false],
+            'OwnerID' =>       ['select'    => '', 'filter'    => 'candidate.owner', 'pagerOptional' => false, 'filterable' => false, 'filterDescription' => 'Only My Candidates'],
+            'IsHot' =>         ['select'    => '', 'filter'    => 'candidate.is_hot', 'pagerOptional' => false, 'filterable' => false, 'filterDescription' => 'Only Hot Candidates'],
+            // Tags filtering
+            'Tags'	=>			['select'	=> '(
                                                     SELECT TRIM(GROUP_CONCAT(\' \',t2.title))	FROM candidate_tag t1
                                                     LEFT JOIN tag t2 ON t1.tag_id = t2.tag_id
                                                     WHERE t1.candidate_id = candidate.candidate_id
                                                     GROUP BY candidate_id
                                                     ) as tags
-                                                    ',
-                                     'sortableColumn' => 'tags',
-                                     'pagerRender'    => 'return $rsData[\'tags\'];',
-                                     'pagerOptional' => false,
-                                     'pagerWidth'     => 310,
-                                     'exportable'     => false,
-                                     'filterable'     => false,
-
-                                     'filterTypes'    => '=#',
-                                     'filterRender=#' => '
+                                                    ', 'sortableColumn' => 'tags', 'pagerRender'    => 'return $rsData[\'tags\'];', 'pagerOptional' => false, 'pagerWidth'     => 310, 'exportable'     => false, 'filterable'     => false, 'filterTypes'    => '=#', 'filterRender=#' => '
                                       return "candidate.candidate_id IN (
                                          SELECT t1.candidate_id tags FROM candidate t1
                                          LEFT JOIN candidate_tag t2 ON t1.candidate_id = t2.candidate_id
                                          WHERE t2.site_id = 1 AND t2.tag_id IN (". implode(",",$arguments)."))";
-                                     ')
-        );
+                                     '],
+        ];
         
         if (US_ZIPS_ENABLED)
         {
             $this->_classColumns['Near Zipcode'] =
-                               array('select'  => 'candidate.zip AS zip',
-                                     'filter' => 'candidate.zip',
-                                     'pagerOptional' => false,
-                                     'filterTypes'   => '=@');
+                               ['select'  => 'candidate.zip AS zip', 'filter' => 'candidate.zip', 'pagerOptional' => false, 'filterTypes'   => '=@'];
         }
 
         /* Extra fields get added as columns here. */
@@ -2381,15 +2209,7 @@ class EEOSettings
     public function getAll()
     {
         /* Default values. */
-        $settings = array(
-            'enabled' => '0',
-            'genderTracking' => '0',
-            'ethnicTracking' => '0',
-            'veteranTracking' => '0',
-            'veteranTracking' => '0',
-            'disabilityTracking' => '0',
-            'canSeeEEOInfo' => false
-        );
+        $settings = ['enabled' => '0', 'genderTracking' => '0', 'ethnicTracking' => '0', 'veteranTracking' => '0', 'veteranTracking' => '0', 'disabilityTracking' => '0', 'canSeeEEOInfo' => false];
 
         $sql = sprintf(
             "SELECT

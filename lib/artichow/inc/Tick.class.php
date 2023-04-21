@@ -83,21 +83,21 @@ class awTick {
 	 *
 	 * @param int
 	 */
-	const IN = 0;
+	public const IN = 0;
 
 	/**
 	 * Out mode
 	 *
 	 * @param int
 	 */
-	const OUT = 1;
+	public const OUT = 1;
 
 	/**
 	 * In and out mode
 	 *
 	 * @param int
 	 */
-	const IN_OUT = 2;
+	public const IN_OUT = 2;
 
 	/**
 	 * Build the ticks
@@ -110,7 +110,6 @@ class awTick {
 		$this->setSize($size);
 		$this->setNumber($number);
 		$this->setColor(new awBlack);
-		$this->style = awTick::IN;
 
 	}
 
@@ -194,7 +193,7 @@ class awTick {
 	 */
 	public function setNumberByTick(awTick $tick, $number) {
 
-		$this->numberByTick = array($tick, (int)$number);
+		$this->numberByTick = [$tick, (int)$number];
 
 			}
 
@@ -234,7 +233,7 @@ class awTick {
 	public function draw(awDrawer $drawer, awVector $vector, $dashboardImageMode = false) {
 
 		if($this->numberByTick !== NULL) {
-			list($tick, $number) = $this->numberByTick;
+			[$tick, $number] = $this->numberByTick;
 			$this->number = 1 + ($tick->getNumber() - 1) * ($number + 1);
 			$this->interval = $tick->getInterval();
 		}

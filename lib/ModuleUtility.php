@@ -192,6 +192,7 @@ class ModuleUtility
      */
     private static function _refreshModuleList()
     {
+        $modulesCache = null;
         /* Modules array looks like this:
          *
          * $modules = array(
@@ -214,9 +215,9 @@ class ModuleUtility
             return $modulesCache->modules;
         }
 
-        $modules = array();
-        $moduleDirectories = array();
-        $hooks = array();
+        $modules = [];
+        $moduleDirectories = [];
+        $hooks = [];
 
         $directory = @opendir(MODULES_PATH) or self::_fatal(
             sprintf("Unable to open '%s'.", MODULES_PATH)
@@ -265,13 +266,7 @@ class ModuleUtility
                 $moduleClass = basename(substr($fullFilePath, 0, -4));
 
                 $module = new $moduleClass();
-                $modules[$moduleName] = array(
-                    $moduleClass,
-                    $module->getModuleTabText(),
-                    $module->getSubTabsExternal(),
-                    $module->getSettingsEntries(),
-                    $module->getSettingsUserCategories()
-                );
+                $modules[$moduleName] = [$moduleClass, $module->getModuleTabText(), $module->getSubTabsExternal(), $module->getSettingsEntries(), $module->getSettingsUserCategories()];
 
                 $moduleHooks = $module->getHooks();
                 foreach ($moduleHooks as $name => $data)
@@ -296,7 +291,7 @@ class ModuleUtility
         $_SESSION['hooks'] = $hooks;
 
         /* Sort the modules. */
-        uksort($modules , array('self', '_sortModules'));
+        uksort($modules , ['self', '_sortModules']);
 
         /* Verify that core modules are present. */
         self::_checkCoreModules($modules);
@@ -320,7 +315,7 @@ class ModuleUtility
      */
     private static function _checkCoreModules($modules)
     {
-        $missing = array();
+        $missing = [];
 
         foreach ($GLOBALS['coreModules'] as $key => $value)
         {

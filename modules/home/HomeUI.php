@@ -41,7 +41,7 @@ class HomeUI extends UserInterface
         $this->_moduleDirectory = 'home';
         $this->_moduleName = 'home';
         $this->_moduleTabText = 'Dashboard';
-        $this->_subTabs = array();
+        $this->_subTabs = [];
     }
 
 
@@ -105,21 +105,13 @@ class HomeUI extends UserInterface
 
         /* Important cand datagrid */
 
-        $dataGridProperties = array(
-            'rangeStart'    => 0,
-            'maxResults'    => 15,
-            'filterVisible' => false
-        );
+        $dataGridProperties = ['rangeStart'    => 0, 'maxResults'    => 15, 'filterVisible' => false];
 
         $dataGrid = DataGrid::get("home:ImportantPipelineDashboard", $dataGridProperties);
 
         $this->_template->assign('dataGrid', $dataGrid);
 
-        $dataGridProperties = array(
-            'rangeStart'    => 0,
-            'maxResults'    => 15,
-            'filterVisible' => false
-        );
+        $dataGridProperties = ['rangeStart'    => 0, 'maxResults'    => 15, 'filterVisible' => false];
 
         /* Only show a month of activities. */
         $dataGridProperties['startDate'] = '';

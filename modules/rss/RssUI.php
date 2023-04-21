@@ -50,7 +50,7 @@ class RssUI extends UserInterface
         $this->_moduleDirectory = 'rss';
         $this->_moduleName = 'rss';
         $this->_moduleTabText = '';
-        $this->_subTabs = array();
+        $this->_subTabs = [];
     }
 
 
