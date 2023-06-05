@@ -938,15 +938,6 @@ class AttachmentCreator
         $fileSize         = $_FILES[$fileField]['size'];
         $uploadError      = $_FILES[$fileField]['error'];
 
-        /* Recover from magic quotes. Note that tmp_name doesn't appear to
-         * get escaped, and stripslashes() on it breaks on Windows. - Will
-         */
-        if (get_magic_quotes_gpc())
-        {
-            $originalFilename = stripslashes($originalFilename);
-            $contentType      = stripslashes($contentType);
-        }
-
         /* Did a file upload error occur? */
         if ($uploadError != UPLOAD_ERR_OK)
         {

@@ -487,15 +487,6 @@ class ImportUI extends UserInterface
         $fileSize         = $_FILES['file']['size'];
         $fileUploadError  = $_FILES['file']['error'];
 
-        /* Recover from magic quotes. Note that tmp_name doesn't appear to
-         * get escaped, and stripslashes() on it breaks on Windows. - Will
-         */
-        if (get_magic_quotes_gpc())
-        {
-            $originalFilename = stripslashes($originalFilename);
-            $contentType      = stripslashes($contentType);
-        }
-
         if ($fileUploadError != UPLOAD_ERR_OK)
         {
             $this->_template->assign(
