@@ -539,7 +539,7 @@ CREATE TABLE `contact` (
   KEY `IDX_first_name` (`first_name`),
   KEY `IDX_last_name` (`last_name`),
   KEY `IDX_client_id` (`company_id`),
-  KEY ` IDX_title` (`title`),
+  KEY `IDX_title` (`title`),
   KEY `IDX_owner` (`owner`),
   KEY `IDX_date_created` (`date_created`),
   KEY `IDX_date_modified` (`date_modified`)
