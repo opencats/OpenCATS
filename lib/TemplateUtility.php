@@ -817,7 +817,7 @@ class TemplateUtility
            BY THE TERMS OF THE CPL FOR OpenCATS OPEN SOURCE EDITION.
 
              II) The following copyright notice must be retained and clearly legible
-             at the bottom of every rendered HTML document: Copyright (C) 2007-2020
+             at the bottom of every rendered HTML document: Copyright (C) 2007-2023
              OpenCATs All rights reserved.
 
              III) The "Powered by OpenCATS" text or logo must be retained and clearly

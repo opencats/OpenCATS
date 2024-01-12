@@ -231,7 +231,7 @@ ALTER TABLE `contact` ADD KEY `IDX_site_id` (`site_id`);
 ALTER TABLE `contact` ADD KEY `IDX_first_name` (`first_name`);
 ALTER TABLE `contact` ADD KEY `IDX_last_name` (`last_name`);
 ALTER TABLE `contact` ADD KEY `IDX_client_id` (`client_id`);
-ALTER TABLE `contact` ADD KEY ` IDX_title` (`title`);
+ALTER TABLE `contact` ADD KEY `IDX_title` (`title`);
 ALTER TABLE `contact` ADD KEY `IDX_owner` (`owner`);
 ALTER TABLE `contact` ADD KEY `IDX_date_created` (`date_created`);
 ALTER TABLE `contact` ADD KEY `IDX_date_modified` (`date_modified`);

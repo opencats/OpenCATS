@@ -189,7 +189,7 @@ class FileUtility
 /*
         if (!preg_match("/(?i)\.(pdf|docx?|rtf|odt?g?|txt|wpd|jpe?g|png|csv|xlsx?|ppt|msg|heic|tiff?|html?|bmp|wps|xps)$/i", $fileExtension))
 */
-        $GoodFileExtensions = array('bmp', 'csv', 'doc', 'docx', 'heic', 'html', 'jpeg', 'jpg', 'msg', 'odg', 'odt', 'pages', 'pdf', 'png', 'ppt', 'pptx', 'rtf', 'tiff', 'wpd', 'wps', 'xls', 'xlsx', 'xps');
+        $GoodFileExtensions = array('bmp', 'csv', 'doc', 'docx', 'heic', 'html', 'jpeg', 'jpg', 'msg', 'odg', 'odt', 'pages', 'pdf', 'png', 'ppt', 'pptx', 'rtf', 'tiff', 'wpd', 'wps', 'xls', 'xlsx', 'bak', 'xps');
         if (!in_array($fileExtension, $GoodFileExtensions))
         {
             $filename .= ".txt";

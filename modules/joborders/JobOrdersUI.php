@@ -766,7 +766,7 @@ class JobOrdersUI extends UserInterface
         $department  = $this->getTrimmedInput('department', $_POST);
         $maxRate     = $this->getSanitisedInput('maxRate', $_POST);
         $salary      = $this->getSanitisedInput('salary', $_POST);
-        $description = $this->getSanitisedInput('description', $_POST);
+        $description = $this->getTrimmedInput('description', $_POST);
         $notes       = $this->getSanitisedInput('notes', $_POST);
 
         /* Bail out if any of the required fields are empty. */
@@ -1110,7 +1110,7 @@ class JobOrdersUI extends UserInterface
         $department  = $this->getTrimmedInput('department', $_POST);
         $maxRate     = $this->getSanitisedInput('maxRate', $_POST);
         $salary      = $this->getSanitisedInput('salary', $_POST);
-        $description = $this->getSanitisedInput('description', $_POST);
+        $description = $this->getTrimmedInput('description', $_POST);
         $notes       = $this->getSanitisedInput('notes', $_POST);
 
         /* Bail out if any of the required fields are empty. */
