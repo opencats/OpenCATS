@@ -182,12 +182,12 @@ class InstallationTests
     /* magic_quotes_runtime cannot be enabled. */
     public static function checkMagicQuotes()
     {
-        if (!self::DEBUG_FAIL && !get_magic_quotes_runtime())
+        if (!self::DEBUG_FAIL && !ini_get('magic_quotes_runtime'))
         {
             echo '<tr class="pass"><td>PHP.ini: magic_quotes_runtime is disabled.</td></tr>';
             return true;
         }
-
+    
         echo '<tr class="fail"><td><strong>PHP.ini: magic_quotes_runtime must be set to Off in php.ini.</strong><br />'
             . 'Check your settings in php.ini.</td></tr>';
         return false;

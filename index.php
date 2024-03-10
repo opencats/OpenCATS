@@ -90,14 +90,13 @@ function stripslashes_deep($value)
 }
 
 /* Make sure we aren't getting screwed over by magic quotes. */
-if (get_magic_quotes_runtime())
-{
+if (ini_get('magic_quotes_runtime')) {
     if (function_exists('set_magic_quotes_runtime')) {
         set_magic_quotes_runtime(0);
     }
 }
-if (get_magic_quotes_gpc())
-{
+
+if (ini_get('magic_quotes_gpc')) {
     include_once(LEGACY_ROOT . '/lib/ArrayUtility.php');
 
     $_GET     = array_map('stripslashes_deep', $_GET);
