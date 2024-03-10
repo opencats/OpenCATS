@@ -1264,12 +1264,19 @@ class DataGrid
                 }
                 if (count($whereSQL_or) > 0)
                 {
+                    if (!is_array($whereSQL_or)) {
+                        $whereSQL_or = array($whereSQL_or); // Convert to array if it's not already
+                    }
                     $whereSQL[] = '(' . implode(' OR ', $whereSQL_or) . ')';
                 }
                 if (count($havingSQL_or) > 0)
                 {
+                    if (!is_array($havingSQL_or)) {
+                        $havingSQL_or = array($havingSQL_or); // Convert to array if it's not already
+                    }
                     $havingSQL[] = '(' . implode(' OR ', $havingSQL_or) . ')';
                 }
+                
             }
         }
 
@@ -1289,14 +1296,20 @@ class DataGrid
 
         if (count($selectSQL) > 0)
         {
-            $selectSQL = '' . implode($selectSQL, ','."\n");
+            if (!is_array($selectSQL)) {
+                $selectSQL = array($selectSQL); // Convert to array if it's not already
+            }
+            $selectSQL = '' . implode(',', $selectSQL) . ','."\n";
         }
         else
         {
             $selectSQL = '0 as __nothing';
         }
 
-        $joinSQL = implode($joinSQL, "\n");
+        if (!is_array($joinSQL)) {
+            $joinSQL = array($joinSQL); // Convert to array if it's not already
+        }
+        $joinSQL = implode("\n", $joinSQL);
         if ($this->_parameters['maxResults'] != -1)
         {
             if ($this->_parameters['rangeStart'] < 0)
@@ -1319,14 +1332,24 @@ class DataGrid
 
         if (isset($this->_parameters['exportIDs']) && isset($this->_dataItemIDColumn))
         {
+            if (!is_array($whereSQL)) {
+                $whereSQL = array($whereSQL); // Convert to array if it's not already
+            }
             $whereSQL[] = $this->_dataItemIDColumn .' IN ('.implode(',', $this->_parameters['exportIDs']).')';
-
+        
             //Make sure we do not apply the page results limit to this query.
             $limitSQL = '';
         }
 
-        $whereSQL = implode($whereSQL, ' AND '."\n");
-        $havingSQL = implode($havingSQL, ' AND '."\n");
+        if (!is_array($whereSQL)) {
+            $whereSQL = array($whereSQL); // Convert to array if it's not already
+        }
+        $whereSQL = implode(' AND '."\n", $whereSQL);
+        
+        if (!is_array($havingSQL)) {
+            $havingSQL = array($havingSQL); // Convert to array if it's not already
+        }
+        $havingSQL = implode(' AND '."\n", $havingSQL);
         $orderSQL = 'ORDER BY ' . $this->_parameters['sortBy'] . ' ' . $this->_parameters['sortDirection'];
 
         $sql = $this->getSQL($selectSQL, $joinSQL, $whereSQL, $havingSQL, $orderSQL, $limitSQL);
@@ -1422,10 +1445,11 @@ class DataGrid
             }
         }
 
-        $headerRow = implode(
-            ',', $exportableHeaders
-        ) . "\r\n";
-
+        if (!is_array($exportableHeaders)) {
+            $exportableHeaders = array($exportableHeaders); // Convert to array if it's not already
+        }
+        $headerRow = implode(',', $exportableHeaders) . "\r\n";
+        
         $length = strlen($headerRow);
         foreach ($this->_rs as $rowIndex => $rsData)
         {
@@ -1451,10 +1475,12 @@ class DataGrid
                 $rowColumns[] = '"' . str_replace('"', '""', $value) . '"';
             }
 
-            $this->_rs[$rowIndex] = implode(
-                ',', $rowColumns
-            ) . "\r\n";
+            if (!is_array($rowColumns)) {
+                $rowColumns = array($rowColumns); // Convert to array if it's not already
+            }
+            $this->_rs[$rowIndex] = implode(',', $rowColumns) . "\r\n";
             $length += strlen($this->_rs[$rowIndex]);
+            
         }
 
         header('Content-Disposition: attachment; filename="export.csv"');
@@ -1536,9 +1562,11 @@ class DataGrid
                 $rowColumns[] = $value;
             }
 
-            $this->_rs[$rowIndex] = implode(
-                '&nbsp;&nbsp;', $rowColumns
-            ) . "<br />";
+            if (!is_array($rowColumns)) {
+                $rowColumns = array($rowColumns); // Convert to array if it's not already
+            }
+            $this->_rs[$rowIndex] = implode('&nbsp;&nbsp;', $rowColumns) . "<br />";
+            
         }
 
         foreach ($this->_rs as $rowIndex => $row)
@@ -1841,17 +1869,20 @@ class DataGrid
                     . '\'table%s\', \'cell%s%s\', \'%s\', \'%s\', \'%s\', '
                     . '\'%s\', \'%s\', this.offsetWidth);">';
 
-                echo sprintf(
-                    $formatString,
-                    $md5InstanceName, $index,
-                    $md5InstanceName,
-                    $md5InstanceName, end($_keys_current_columns),
-                    $this->getTableWidth(),
-                    urlencode($this->_instanceName),
-                    $_SESSION['CATS']->getCookie(),
-                    $data['name'],
-                    implode(',', $cellIndexes)
-                );
+                    if (!is_array($cellIndexes)) {
+                        $cellIndexes = array($cellIndexes); // Convert to array if it's not already
+                    }
+                    echo sprintf(
+                        $formatString,
+                        $md5InstanceName, $index,
+                        $md5InstanceName,
+                        $md5InstanceName, end($_keys_current_columns),
+                        $this->getTableWidth(),
+                        urlencode($this->_instanceName),
+                        $_SESSION['CATS']->getCookie(),
+                        $data['name'],
+                        implode(',', $cellIndexes)
+                    );
 
                 echo '<div class="dataGridResizeAreaInnerDiv"></div></th>', "\n";
             }
@@ -2374,7 +2405,12 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
                 $getStrings[] = urlencode($index) . '=' . urlencode($data);
             }
 
-            return implode('&', $getStrings);
+            if (is_array($getStrings)) {
+                return implode('&', $getStrings);
+            } else {
+                return ''; // or any default value you want to return if $getStrings is not an array
+            }
+            
         }
     }
 
