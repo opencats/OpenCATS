@@ -5,7 +5,7 @@
 <?xml version="1.0"?>
 <source>
 <publisher>OPENCATS Applicant Tracking System</publisher>
-<publisherurl>http://www.catsone.com</publisherurl>
+<publisherurl>http://www.opencats.org</publisherurl>
 <lastBuildDate>$[date]</lastBuildDate>
 <<header
 
@@ -16,7 +16,7 @@
 <referencenumber><![CDATA[$[jobID]]]></referencenumber>
 <url><![CDATA[$[jobURL]]]></url>
 <company><![CDATA[$[hiringCompany]]]></company>
-<city><![CDATA[$[jobCity]]]>></city>
+<city><![CDATA[$[jobCity]]]></city>
 <state><![CDATA[$[jobState]]]></state>
 <country><![CDATA[$[jobCountry]]]></country>
 <postalcode><![CDATA[$[jobZipCode]]]></postalcode>
