@@ -885,22 +885,31 @@ class CATSSession
                     );
                     $rs = $db->query($sql);
                 }
+$cookieValue = $this->getCookie();
+$cookieOptions = [
+//    'expires' => time() + 3600, // Example expiration time, adjust as needed
+//    'path' => '/', // Example path, adjust as needed
+//    'domain' => 'example.com', // Example domain, adjust as needed
+//    'secure' => true, // Example secure flag, adjust as needed
+    'httponly' => true,
+    'samesite' => 'Strict',
+];
 
-                $cookie = $this->getCookie();
-                $sql = sprintf(
-                    "UPDATE
-                        user
-                     SET
-                        session_cookie = %s,
-                        force_logout = 0
-                     WHERE
-                        user_id = %s
-                     AND
-                        site_id = %s",
-                    $db->makeQueryString($cookie),
-                    $this->_userID,
-                    $this->_siteID
-                );
+setcookie('session_cookie', $cookieValue, $cookieOptions);
+
+// Update the user session in the database
+$sql = sprintf(
+    "UPDATE
+        user
+     SET
+        force_logout = 0
+     WHERE
+        user_id = %s
+     AND
+        site_id = %s",
+    $db->makeQueryString($this->_userID),
+    $this->_siteID
+);
                 $rs = $db->query($sql);
 
                 break;
