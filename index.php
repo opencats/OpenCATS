@@ -3,7 +3,7 @@
  * CATS
  * Index (Delegation Module)
  *
- * CATS Version: 0.9.7.2
+ * CATS Version: -s
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
