@@ -3,7 +3,7 @@
  * CATS
  * Companies Datagrid
  *
- * CATS Version: -s
+ * CATS Version: 0.9.7.4
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
