@@ -46,7 +46,7 @@ define('CATS_VERSION', '0.9.7.4');
 
 
 /* Copyright information at bottom of pages. */
-define('COPYRIGHT_HTML', '&copy; 2007-2023 OpenCATS.');
+define('COPYRIGHT_HTML', '');
 
 /* HTTP response codes. */
 define('HTTP_OK',             200);
