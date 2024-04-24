@@ -1,35 +1,34 @@
 sudo: required
 services:
-  - docker
-
+- docker
 env:
   COMPOSE_VERSION: v2.16.0
-
 before_install:
-    - sudo apt-get update -qq
-    - sudo apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install docker-ce
-    - curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-    - chmod +x docker-compose
-    - sudo mv docker-compose /usr/local/bin
-
+- sudo apt-get update -qq
+- sudo apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew
+  install docker-ce
+- curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname
+  -s`-`uname -m` > docker-compose
+- chmod +x docker-compose
+- sudo mv docker-compose /usr/local/bin
 language: php
 php:
 - 7.2
 script:
-    - composer self-update --2
-    - composer install
-    - ./vendor/bin/phpunit src/OpenCATS/Tests/UnitTests
-    - cd docker/; docker-compose --compatibility -f docker-compose-test.yml up -d
-    - docker-compose --compatibility -f docker-compose-test.yml exec php /var/www/public/test/runAllTests.sh
-    - cd ..; ./ci/package-code.sh 
-
+- composer self-update --2
+- composer install
+- "./vendor/bin/phpunit src/OpenCATS/Tests/UnitTests"
+- cd docker/; docker-compose --compatibility -f docker-compose-test.yml up -d
+- docker-compose --compatibility -f docker-compose-test.yml exec php /var/www/public/test/runAllTests.sh
+- cd ..; ./ci/package-code.sh
 deploy:
   provider: releases
   api_key:
-    secure: $GITHUB_TOKEN
+    secure: FH/2OR9OM9BT4DWAuroh4CLA7D3q8Fq/3/xvwxACXUQkQuHGRNLs65RdVlOhfBKIkNZuCYY4Aq5Vf8j0yo+Cp0H0tvFNIvuiihLQvxzjWhKt3VizeF5NeT/svjmz238ZDRrJU03eJWfSWt+n4DoHbz+bfL/NXy+vlcF/VauwurPSb2sWxbi2sf4Q4oQrAgqcXXY+Vk4uwGlmISDmyTx8csSIohKGx69+r80Tax5rVmFpeXpG9oCGZnzXOUjy81zeBMRYf2uhlfkuV9D0gAr6gQiIOqQcuKVbyIHR+Kx6LyFcQD3dRbDGb9kX73mQLR/QoCj+9KeroyoxM6Gd8qTJ7TKuWLFT0psy3d5XyMdwJOzxY5/P2IEgusIS6slQ3TpyFA4mja54OR5MbaR/tjCr2awmV1d3eQuH+SX71PeN21t2TsdGk2+3Qs1EbgrF94LqaoHLt3F6EWRzrUMuFQCorlWZs0of3Dc8MBKfrw+5ut6KNYESXmIRN172FB7WeppN8UeAHQIKBQtjC9QboG4NNHrM7aqvvERQgK+q1AOronyuX3d7yOpd9pKNnzwSIuNzwIn7JVorU1wHNTjjeIGtNIn0XUDQKoY4EEpq74K7kVZWzdCX5NSZNX/BZ5+sUvwgjEhECMbhm9tu91JxpLzXVWxfhLSzeQHt8ypseEqtJjo=
   file:
      - $TRAVIS_BUILD_DIR/opencats-$TRAVIS_TAG-full.tar.gz
      - $TRAVIS_BUILD_DIR/opencats-$TRAVIS_TAG-full.zip
-  skip_cleanup: true
   on:
+    repo: opencats/OpenCATS
     tags: true
+  skip_cleamup: true
