@@ -91,7 +91,7 @@ class CommonErrors
                 $errorTitle = 'Invalid Information';
                 $internalErrorTitle = 'Bad Input';
                 $errorMessage = 'Some of the information you provided doesn\'t follow the correct format and '
-                    . 'CATS can\'t interpret what it is. Please <a href="javascript:back()">go back</a> and '
+                    . 'CATS can\'t interpret what it is. Please <a href="javascript:history.back()">go back</a> and '
                     . 'complete each field paying close attention to any instructions provided. '
                     . '<p><b>' . $customMessage . '</b>';
                 break;
@@ -124,7 +124,7 @@ class CommonErrors
                     . 'traffic or older web browsers. The latest version of the <a href="http://www.getfirefox.com"> '
                     . 'Mozilla Firefox&copy;</a> browser '
                     . 'is recommended.<br /><br />The problem may be resolved by using the '
-                    . '<a href="javascript:back()">back button</a> on your browser and trying again.';
+                    . '<a href="javascript:history.back()">back button</a> on your browser and trying again.';
                 break;
             case COMMONERROR_BADINDEX:
                 $errorTitle = 'Bad Server Information';
@@ -139,7 +139,7 @@ class CommonErrors
                     . 'may have been provided to you.'
                     . '<br /><br />'
                     . '<b>It\'s ok!</b> CATS can\'t complete whatever action you requested; but chances are, '
-                    . 'if you click the <a href="javascript:back()">back button</a> and <b>refresh</b> the page '
+                    . 'if you click the <a href="javascript:history.back()">back button</a> and <b>refresh</b> the page '
                     . 'and try again it will work just fine.';
                 break;
 
@@ -148,7 +148,7 @@ class CommonErrors
                 $internalErrorTitle = 'Permission Denied';
                 $errorMessage = 'You don\'t have access to the action you\'re attempting to perform. If you '
                     . 'feel you should have access, contact your site administrator. '
-                    . 'You can click the <a href="javascript:back()">back</a> button on your browser to return '
+                    . 'You can click the <a href="javascript:history.back()">back button</a> on your browser to return '
                     . 'to where you came from.';
                 break;
 
@@ -169,7 +169,7 @@ class CommonErrors
                 $internalErrorTitle = 'Required Fields Missing';
                 $errorMessage = 'One or more of the input fields on the page you came from were required and '
                     . 'were left with blank or incorrect values. The action you\'re trying to perform cannot '
-                    . 'be completed without those fields. Please use the <a href="javascript:back()">back button</a> '
+                    . 'be completed without those fields. Please use the <a href="javascript:history.back()">back button</a> '
                     . 'on your browser to return to where you came from.'
                     . '<br /><br />';
 
@@ -189,7 +189,7 @@ class CommonErrors
                 $internalErrorTitle = 'Missing wild card string';
                 $errorMessage = 'One or more of the input fields on the page you came from were required and '
                     . 'were left with blank or incorrect values. The action you\'re trying to perform cannot '
-                    . 'be completed without those fields. Please use the <a href="javascript:back()">back button</a> '
+                    . 'be completed without those fields. Please use the <a href="javascript:history.back()">back button</a> '
                     . 'on your browser to return to where you came from.'
                     . '<br /><br />';
 
@@ -207,7 +207,7 @@ class CommonErrors
             case COMMONERROR_NOPASSWORDMATCH:
                 $errorTitle = 'Passwords do not Match';
                 $internalErrorTitle = 'Passwords do not match';
-                $errorMessage = 'The passwords you entered do not match. Please use the <a href="javascript:back()">'
+                $errorMessage = 'The passwords you entered do not match. Please use the <a href="javascript:history.back()">'
                     . 'back button</a> on your browser to return from where you came and enter the correct password '
                     . 'in all required fields.';
                 break;
@@ -216,7 +216,7 @@ class CommonErrors
                 $errorTitle = 'File Does Not Exist';
                 $internalErrorTitle = 'File Does Not Exist';
                 $errorMessage = 'The file you are requesting for does not exist. Please use the '
-                    . '<a href="javascript:back()">back button</a> on your browser to return to where '
+                    . '<a href="javascript:history.back()">back button</a> on your browser to return to where '
                     . 'you came from.<br /><br />';
 
                 if (!empty($customMessage))
@@ -229,7 +229,7 @@ class CommonErrors
                 $errorTitle = 'An Error Has Occurred';
                 $internalErrorTitle = 'Undefined';
                 $errorMessage = 'An error has occurred and the operation you were attempting to perform cannot be '
-                    . 'completed. Please use the <a href="javascript:back();">back</a> button on your web browser '
+                    . 'completed. Please use the <a href="javascript:history.back();">back button</a> on your web browser '
                     . 'to return from where you came. The administrators have been notified, so you may wish to '
                     . 'try again later.';
                 break;
