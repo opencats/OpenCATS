@@ -2066,7 +2066,7 @@ class CandidatesDataGrid extends DataGrid
                                      'filter'         => 'candidate.web_site'),
 
             'Key Skills' =>    array('select'  => 'candidate.key_skills AS keySkills',
-                                     'pagerRender' => 'return substr(trim($rsData[\'keySkills\']), 0, 30) . (strlen(trim($rsData[\'keySkills\'])) > 30 ? \'...\' : \'\');',
+                                     'pagerRender' => 'return mb_substr(trim($rsData[\'keySkills\']), 0, 30) . (strlen(trim($rsData[\'keySkills\'])) > 30 ? \'...\' : \'\');',
                                      'sortableColumn'    => 'keySkills',
                                      'pagerWidth'   => 210,
                                      'filter'         => 'candidate.key_skills'),
