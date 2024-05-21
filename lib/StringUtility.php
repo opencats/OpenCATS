@@ -499,24 +499,24 @@ class StringUtility
 
         if ($lastCommaFirst)
         {
-            $firstInitial = $firstName[0] . '.';
+            $firstInitial = mb_substr($firstName, 0, 1) . '.';
 
             if (strlen($lastName) > $maxLength)
             {
                 return ucwords(
-                    substr($lastName, 0, $maxLength) . ', ' . $firstInitial
+                    mb_substr($lastName, 0, $maxLength) . ', ' . $firstInitial
                 );
             }
 
             return ucwords($lastName . ', ' . $firstInitial);
         }
 
-        $lastInitial = $lastName[0] . '.';
+        $lastInitial = mb_substr($lastName, 0, 1) . '.';
 
         if (strlen($firstName) > $maxLength)
         {
             return ucwords(
-                substr($firstName, 0, $maxLength) . ' ' . $lastInitial
+                mb_substr($firstName, 0, $maxLength) . ' ' . $lastInitial
             );
         }
 
