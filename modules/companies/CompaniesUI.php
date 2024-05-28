@@ -888,7 +888,7 @@ class CompaniesUI extends UserInterface
 
         if ($rs['defaultCompany'] == 1)
         {
-            $this->listByView('Cannot delete internal postings company.');
+            $this->listByView('Cannot delete default company.');
             return;
         }
 
