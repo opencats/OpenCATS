@@ -11,6 +11,8 @@ before_install:
   -s`-`uname -m` > docker-compose
 - chmod +x docker-compose
 - sudo mv docker-compose /usr/local/bin
+  # Stop any service using port 80
+- sudo lsof -t -i:80 | sudo xargs kill -9
 language: php
 php:
 - 7.2
@@ -31,4 +33,4 @@ deploy:
   on:
     repo: opencats/OpenCATS
     tags: true
-  skip_cleamup: true
+  skip_cleanup: true
