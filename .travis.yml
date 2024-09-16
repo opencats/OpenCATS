@@ -33,4 +33,4 @@ deploy:
   on:
     repo: opencats/OpenCATS
     tags: true
-  skip_cleamup: true
+  skip_cleanup: true
