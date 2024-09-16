@@ -40,7 +40,7 @@ class AttachmentsUI extends UserInterface
     {
         parent::__construct();
 
-        $this->_authenticationRequired = false;
+        $this->_authenticationRequired = true;
         $this->_moduleDirectory = 'attachments';
         $this->_moduleName = 'attachments';
         $this->_moduleTabText = '';
