@@ -23,13 +23,12 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  * @version    $Id: JavaScriptCompressor.php 3587 2007-11-13 03:55:57Z will $
  */
- 
+
 include_once(LEGACY_ROOT . '/lib/StringUtility.php');
 
 /**
@@ -49,14 +48,13 @@ class JavaScriptCompressor
     public function compressFile($filename)
     {
         $string = @file_get_contents($filename);
-        if ($string === false)
-        {
+        if ($string === false) {
             return false;
         }
-        
+
         return $this->compress($string);
     }
-    
+
     /**
      * Compresses a string of JavaScript code, removing whitespace, extra
      * newlines, and extra whitespace.
@@ -68,7 +66,7 @@ class JavaScriptCompressor
     {
         return $this->compress($string);
     }
-    
+
     /**
      * Compresses a string of JavaScript code, removing whitespace, extra
      * newlines, and extra whitespace.
@@ -117,5 +115,3 @@ class JavaScriptCompressor
         return $string;
     }
 }
-
-?>

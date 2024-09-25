@@ -37,5 +37,3 @@
 /*************** ADD NEW TASKS HERE (scheduling is set inside the task) ****************/
 
 QueueProcessor::registerRecurringTask('./modules/calendar/tasks/Reminders.php');
-
-?>

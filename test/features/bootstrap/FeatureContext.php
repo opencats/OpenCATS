@@ -1,16 +1,16 @@
 <?php
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
+use Behat\Behat\Tester\Exception\PendingException;
+use Behat\Mink\Driver\Selenium2Driver;
+use Behat\Mink\Exception\ElementHtmlException;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Testwork\Tester\Result\TestResult;
-use Behat\Mink\Driver\Selenium2Driver;
 use OpenCATS\Entity\Company;
 use OpenCATS\Entity\CompanyRepository;
 use OpenCATS\Entity\JobOrder;
 use OpenCATS\Entity\JobOrderRepository;
-use Behat\Mink\Exception\ElementHtmlException;
 
 include_once('./config.php');
 include_once(LEGACY_ROOT . '/constants.php');
@@ -25,8 +25,11 @@ include_once(LEGACY_ROOT . '/lib/Users.php');
 class FeatureContext extends MinkContext implements Context, SnippetAcceptingContext
 {
     protected $scenarioTitle = null;
+
     protected static $wsendUser = null;
+
     private $roleData;
+
     /**
      * Initializes context.
      *
@@ -36,24 +39,24 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
      */
     public function __construct()
     {
-        $this->roleData = array(
+        $this->roleData = [
             'Administrator' => new Role('admin', 'admin'),
-            'User' => new Role('john@mycompany.net', 'john99')
-        );
+            'User' => new Role('john@mycompany.net', 'john99'),
+        ];
     }
-    
+
     /**
      * @Given I am authenticated as :role
      */
     public function iAmAuthenticatedAs($role)
     {
-        $roleData = empty($this->roleData[$role]) ? null : $this->roleData[$role]; 
-        if (!$roleData) {
+        $roleData = empty($this->roleData[$role]) ? null : $this->roleData[$role];
+        if (! $roleData) {
             throw new PendingException();
         }
         $this->iLoginAs($roleData->getUserName(), $roleData->getPassword());
     }
-    
+
     /**
      * @Given There is a person called :fullName with :property
      */
@@ -67,7 +70,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         $this->fillField($key, $value);
         $this->pressButton('Add Candidate');
     }
-    
+
     /**
      * @Given I am spoofing a session with :cookieValue cookie
      */
@@ -75,20 +78,20 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     {
         $this->getSession()->setCookie(CATS_SESSION_NAME, $cookieValue);
     }
-    
+
     /**
      * @Given I wait for :element
      */
     public function iWaitFor($element)
     {
-        $this->spins(function() use ($element) {
+        $this->spins(function () use ($element) {
             $field = $this->getSession()->getPage()->find('css', $element);
             if (null === $field) {
                 throw new Exception('form field ' . $element . 'id|name|label|value|placeholder');
             }
         });
     }
-    
+
     /**
      * @Then /^I wait for the activity note box to appear$/
      */
@@ -96,24 +99,24 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     {
         $this->getSession()->wait(5000, "$('iframe', parent.document).length > 0");
     }
-    
+
     public function spins($closure, $tries = 10)
     {
         for ($i = 0; $i <= $tries; $i++) {
             try {
                 $closure();
-    
+
                 return;
             } catch (\Exception $e) {
                 if ($i == $tries) {
                     throw $e;
                 }
             }
-    
+
             sleep(1);
         }
     }
-    
+
     /**
      * @BeforeScenario
      */
@@ -122,7 +125,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         // it's only to have a clean screenshot name later
         $this->scenarioTitle = $event->getScenario()->getTitle();
     }
-    
+
     /**
      * @AfterStep
      */
@@ -131,34 +134,34 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         if ($event->getTestResult()->getResultCode() !== TestResult::FAILED) {
             return;
         }
-    
+
         $this->takeAScreenshot();
     }
-    
+
     /**
      * @Then take a screenshot
      */
     public function takeAScreenshot()
     {
-        if (!$this->isJavascript()) {
+        if (! $this->isJavascript()) {
             print "Screenshot cannot be taken from non javascript scenario.\n";
-    
+
             return;
         }
-    
+
         $screenshot = $this->getSession()->getDriver()->getScreenshot();
-    
+
         $filename = $this->getScreenshotFilename();
         file_put_contents($filename, $screenshot);
-    
+
         $url = $this->getScreenshotUrl($filename);
-    
+
         print sprintf("Screenshot is available :\n%s", $url);
     }
-    
+
     protected function getScreenshotUrl($filename)
     {
-        if (!self::$wsendUser) {
+        if (! self::$wsendUser) {
             self::$wsendUser = $this->getWsendUser();
         }
         exec(sprintf(
@@ -169,33 +172,33 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         ), $output);
         return $output[0];
     }
-    
+
     protected function getWsendUser()
     {
         // create a wsend anonymous user
         $curl = curl_init('https://wsend.net/createunreg');
         curl_setopt($curl, CURLOPT_POSTFIELDS, 'start=1');
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    
+
         $wsendUser = curl_exec($curl);
         curl_close($curl);
-    
+
         return $wsendUser;
     }
-    
+
     protected function getScreenshotFilename()
     {
         $filename = $this->scenarioTitle;
         $filename = preg_replace("#[^a-zA-Z0-9\._-]#", '_', $filename);
-    
+
         return sprintf('%s/%s.png', sys_get_temp_dir(), $filename);
     }
-    
+
     protected function isJavascript()
     {
         return $this->getSession()->getDriver() instanceof Selenium2Driver;
     }
-    
+
     /**
      * @Given /^I switch to the iframe "([^"]*)"$/
      */
@@ -206,7 +209,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         } else {
             $this->getSession()->wait(5000, "$('iframe', parent.document).length > 0");
             $check = 1; //@todo need to check using js if exists
-            if($check <= 0) {
+            if ($check <= 0) {
                 throw new \Exception('Element not found');
             } else {
                 $javascript = "
@@ -221,38 +224,39 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
             $this->getSession()->switchToIframe("no_name_iframe");
         }
     }
-    
+
     /**
      * @Given There is a company called :companyName
      */
     public function thereIsACompanyCalled($companyName)
     {
         $siteId = $this->getSiteId();
-        $company= new Company(
+        $company = new Company(
             $siteId,
             $companyName
         );
         $CompanyRepository = new CompanyRepository(DatabaseConnection::getInstance());
         $CompanyRepository->persist($company, new Dummy_History($siteId));
     }
-    
+
     /**
      * @Given There is a user :userName named :fullName with :password password
      */
-    public function thereIsAUserWithParams($userName, $fullName, $password) {
+    public function thereIsAUserWithParams($userName, $fullName, $password)
+    {
         list($firstName, $lastName) = explode(" ", $fullName);
         $siteId = $this->getSiteId();
         $users = new Users($siteId);
         $users->add(
             $lastName,
             $firstName,
-            '', 
+            '',
             $userName,
             $password,
             ACCESS_LEVEL_DELETE
         );
     }
-    
+
     /**
      * @When /^(?:|I )should see "([^"]*)" in alert popup$/
      *
@@ -265,9 +269,9 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         return strpos(
             $this->getSession()->getDriver()->getWebDriverSession()->getAlert_text(),
             $message
-          ) != -1;
+        ) != -1;
     }
-    
+
     /**
      * @When /^(?:|I )confirm the popup$/
      */
@@ -275,7 +279,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     {
         $this->getSession()->getDriver()->getWebDriverSession()->accept_alert();
     }
-    
+
     /**
      * @Given I manually press :key
      */
@@ -284,7 +288,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         $script = "jQuery.event.trigger({ type : 'keypress', which : '" . $key . "' });";
         $this->getSession()->evaluateScript($script);
     }
-    
+
     /** Click on the element with the provided xpath query
      *
      * @When I click on the element :locator
@@ -293,7 +297,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     {
         $this->clickOnTheElement($locator);
     }
-        
+
     private function clickOnTheElement($locator, $retries = 15)
     {
         $element = $this->getSession()->getPage()->find('css', $locator); // runs the actual query and returns the element
@@ -303,22 +307,23 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         }
         try {
             $element->click();
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             if ($retries > 0) {
                 print_r("Retry stale element. Retries: " . $retries);
                 sleep(1);
-                $this->clickOnTheElement($locator, $retries -1);
+                $this->clickOnTheElement($locator, $retries - 1);
             } else {
                 print_r("Do not retry stale element. Retries: " . $retries);
                 throw $e;
             }
         }
     }
-    
+
     /**
      * @When I select :option in the :selectLocator select
      */
-    public function selectState($option, $selectLocator) {
+    public function selectState($option, $selectLocator)
+    {
         $page = $this->getSession()->getPage();
         $selectElement = $page->find('css', $selectLocator);
         if (null === $selectElement) {
@@ -327,13 +332,13 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         $selectElement->selectOption($option);
         sleep(1);
     }
-    
+
     private function getSiteId()
     {
         $site = new Site(-1);
         return $site->getFirstSiteID();
     }
-    
+
     /**
      * @Given There is a job order for a :jobTitle for :companyName
      */
@@ -370,7 +375,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         $JobOrderRepository = new JobOrderRepository(DatabaseConnection::getInstance());
         $JobOrderRepository->persist($jobOrder, new Dummy_History($siteId));
     }
-    
+
     /**
      * @Given I login as :username :password
      */
@@ -380,9 +385,8 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         $this->fillField('username', $username);
         $this->fillField('password', $password);
         $this->pressButton('Login');
-        
     }
-    
+
     /**
      * Looks for a table, then looks for a row that contains the given text.
      * Once it finds the right row, it clicks a link in that row.
@@ -397,12 +401,12 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     {
         /** @var $row \Behat\Mink\Element\NodeElement */
         $row = $this->getSession()->getPage()->find('css', sprintf('table tr:contains("%s")', $rowText));
-        if (!$row) {
+        if (! $row) {
             throw new \Exception(sprintf('Cannot find any row on the page containing the text "%s"', $rowText));
         }
         $row->clickLink($linkName);
     }
-    
+
     /**
      * @override: @Then /^the "(?P<element>[^"]*)" element should contain "(?P<value>(?:[^"]|\\")*)"$/
      */
@@ -412,15 +416,15 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         $html = $this->fixStepArgument($value);
         $element = $this->assertSession()->elementExists($selectorType, $selector);
         $actual = $element->getOuterHtml();
-        $regex = '/'.preg_quote($html, '/').'/umi';
-        
+        $regex = '/' . preg_quote($html, '/') . '/umi';
+
         $message = sprintf(
             'The regex "%s" does not matches HTML %s.',
             $regex,
             $actual
         );
-        
-        if (!preg_match($regex, $actual)) {
+
+        if (! preg_match($regex, $actual)) {
             throw new ElementHtmlException($message, $this->getSession()->getDriver(), $element);
         }
     }
@@ -429,20 +433,21 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
 class Role
 {
     private $userName;
+
     private $password;
-    
-    function __construct($userName, $password)
+
+    public function __construct($userName, $password)
     {
         $this->userName = $userName;
         $this->password = $password;
     }
-    
-    function getUserName()
+
+    public function getUserName()
     {
         return $this->userName;
     }
-    
-    function getPassword()
+
+    public function getPassword()
     {
         return $this->password;
     }
@@ -451,6 +456,11 @@ class Role
 // FIXME: Should abstract session from history
 class Dummy_History extends History
 {
-    public function __construct($siteID) {}
-    public function storeHistoryNew($dataItemType, $dataItemID) {}
+    public function __construct($siteID)
+    {
+    }
+
+    public function storeHistoryNew($dataItemType, $dataItemID)
+    {
+    }
 }

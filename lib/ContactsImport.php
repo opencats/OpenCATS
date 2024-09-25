@@ -6,7 +6,7 @@ class ContactImport extends ImportableEntity
 {
     public function __construct($siteID)
     {
-       parent::__construct($siteID);
+        parent::__construct($siteID);
     }
 
     /**
@@ -48,8 +48,7 @@ class ContactImport extends ImportableEntity
             $importID
         );
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return -1;
         }
 

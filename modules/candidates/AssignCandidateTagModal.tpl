@@ -12,7 +12,7 @@
 				//global $i;
 				foreach($data as $k => $v){
 					if ($v['tag_parent_id'] == $id){
-						?><li><input type="checkbox" name="candidate_tags[]" id="checkbox<?= $i ?>" value="<?= $v['tag_id'] ?>" <?= in_array($v['tag_id'], $assignedTags)?'checked="checked"':''; ?>><label for="checkbox<?= $i++ ?>"><?= $v['tag_title'] ?></label></li><?php 
+						?><li><input type="checkbox" name="candidate_tags[]" id="checkbox<?= $i ?>" value="<?= $v['tag_id'] ?>" <?= in_array($v['tag_id'], $assignedTags)?'checked':''; ?>><label for="checkbox<?= $i++ ?>"><?= $v['tag_title'] ?></label></li><?php 
 						echo "\n<ul>" ;
 						drw($data, $v['tag_id'],$assignedTags);
 						echo "\n</ul>";

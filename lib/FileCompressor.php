@@ -38,13 +38,13 @@
  *	@package    CATS
  *	@subpackage Library
  */
- 
+
 include_once(LEGACY_ROOT . '/lib/HashUtility.php');
 
-define('START_FILE_RECORD',             0x04034b50);
-define('START_DATA_DESCRIPTOR',         0x08074b50);
+define('START_FILE_RECORD', 0x04034b50);
+define('START_DATA_DESCRIPTOR', 0x08074b50);
 define('START_CENTRAL_DIRECTORY_ENTRY', 0x02014b50);
-define('END_CENTRAL_DIRECTORY',         0x06054b50);
+define('END_CENTRAL_DIRECTORY', 0x06054b50);
 
 /**
  *	Zip File Creator
@@ -54,21 +54,20 @@ define('END_CENTRAL_DIRECTORY',         0x06054b50);
 class ZipFileCreator
 {
     /* Full path (absolute or relative) to the zip file we're writing. Set by
-     * the constructor.
      */
     private $_filename = '';
-    
+
     /* Allow existing files by the same name as our zip file to be overwritten
      * by the new zip file? Set by the constructor.
      */
     private $_allowOverwrite = false;
-    
+
     /* Central Directory record data. The central directory gets written to the
-     * end of the zip file, so it must be stored in memory until we're done 
+     * end of the zip file, so it must be stored in memory until we're done
      * writing all the files we need to write.
      */
     private $_centralDirectory = '';
-    
+
     /* Total number of file records added to the zip file. */
     private $_fileRecordCount = 0;
 
@@ -76,28 +75,27 @@ class ZipFileCreator
      * file is added.
      */
     private $_lastOffset = 0;
-    
+
     /* Total length of file records. This will eventually point to the starting
      * offset of the Central Directory.
      */
     private $_fileRecordsLength = 0;
-    
+
     /* Total length of Central Directory. */
     private $_centralDirectoryLength = 0;
-    
+
     /* File handle for the open zip file we're writing as we're writing it. */
     private $_fileHandle = null;
-    
+
     /* Current error message. */
     private $_errorMessage = '';
-
 
     public function __construct($filename, $allowOverwrite = false)
     {
         $this->_filename = $filename;
         $this->_allowOverwrite = $allowOverwrite;
     }
-    
+
     /**
      * Opens an archive for writing. This must be called before any files can
      * be added. If overwriting is not allowed and the file exists, or the file
@@ -109,22 +107,20 @@ class ZipFileCreator
     public function open()
     {
         /* Return false if the specified filename is invalid. */
-        if (file_exists($this->_filename) && !$this->_allowOverwrite)
-        {
+        if (file_exists($this->_filename) && ! $this->_allowOverwrite) {
             return false;
         }
-        
+
         /* Open the new file for writing in binary mode. */
         $fileHandle = @fopen($this->_filename, 'wb');
-        if (!$fileHandle)
-        {
+        if (! $fileHandle) {
             return false;
         }
-        
+
         $this->_fileHandle = $fileHandle;
         return true;
     }
-    
+
     /**
      * Closes, destroys, and deletes the current archive (if called before
      * finalize()).
@@ -135,13 +131,13 @@ class ZipFileCreator
     {
         /* Free some memory. */
         $this->_centralDirectory = '';
-        
+
         /* Close the file handle if it's open. */
         @fclose($this->_fileHandle);
-        
+
         /* Remove the file. */
         @unlink($this->_filename);
-        
+
         return true;
     }
 
@@ -152,17 +148,15 @@ class ZipFileCreator
      *               optionally including the path.
      * @param string File data.
      * @param integer Last modified timestamp, or false for current time.
-     * @return void
      */
-    function addFileFromData($name, $data, $timestamp = false)
+    public function addFileFromData($name, $data, $timestamp = false)
     {
         /* Normally, we would split this into several methods, but this must be
          * optimized for minimal RAM usage, which presents a design challenge.
          */
 
         /* Do we still have a valid file handle? */
-        if (!$this->_fileHandle)
-        {
+        if (! $this->_fileHandle) {
             $this->_errorMessage = 'Unexpected end of file.';
             return false;
         }
@@ -171,26 +165,25 @@ class ZipFileCreator
         $name = str_replace('\\', '/', $name);
 
         /* If a timestamp wasn't specified, use the current time. */
-        if ($timestamp === false)
-        {
+        if ($timestamp === false) {
             $timestamp = time();
         }
-        
+
         /* Convert our UNIX timestamp to DOS format. */
         $DOSTime = FileCompressorUtility::UNIXToDOSTime($timestamp);
 
         /* Calculate the length of the file data before compression. */
         $uncompressedLength = strlen($data);
-        
+
         /* Calculate the CRC32 checksum of the file data to be compressed. */
         $CRC32 = crc32($data);
-        
+
         /* Compress the file data. */
         $data = gzdeflate($data);
-         
+
         /* Calculate the length of the file data after compression. */
         $compressedLength = strlen($data);
-        
+
         /* Version needed to extract.
          *
          * Store Only: 10
@@ -207,8 +200,8 @@ class ZipFileCreator
          * 2.0 - File is compressed using Deflate compression
          * 2.0 - File is encrypted using traditional PKWARE encryption
          * 2.1 - File is compressed using Deflate64(tm)
-         * 2.5 - File is compressed using PKWARE DCL Implode 
-         * 2.7 - File is a patch data set 
+         * 2.5 - File is compressed using PKWARE DCL Implode
+         * 2.7 - File is a patch data set
          * 4.5 - File uses ZIP64 format extensions
          * 4.6 - File is compressed using BZIP2 compression*
          * 5.0 - File is encrypted using DES
@@ -226,7 +219,7 @@ class ZipFileCreator
          * 6.3 - File is encrypted using Twofish
          */
         $versionNeededToExtract = 20;
-        
+
         /* General purpose bit-flag.
          *
          * From the ZIP format specification:
@@ -244,26 +237,26 @@ class ZipFileCreator
          *
          * <cut, irrelevant>
          *
-         * Bit 3: If this bit is set, the fields crc-32, compressed 
-         *        size and uncompressed size are set to zero in the 
-         *        local header.  The correct values are put in the 
+         * Bit 3: If this bit is set, the fields crc-32, compressed
+         *        size and uncompressed size are set to zero in the
+         *        local header.  The correct values are put in the
          *        data descriptor immediately following the compressed
-         *        data.  (Note: PKZIP version 2.04g for DOS only 
-         *        recognizes this bit for method 8 compression, newer 
-         *        versions of PKZIP recognize this bit for any 
+         *        data.  (Note: PKZIP version 2.04g for DOS only
+         *        recognizes this bit for method 8 compression, newer
+         *        versions of PKZIP recognize this bit for any
          *        compression method.)
          *
          * Bit 4: Reserved for use with method 8, for enhanced
-         *        deflating. 
+         *        deflating.
          *
-         * Bit 5: If this bit is set, this indicates that the file is 
-         *        compressed patched data.  (Note: Requires PKZIP 
+         * Bit 5: If this bit is set, this indicates that the file is
+         *        compressed patched data.  (Note: Requires PKZIP
          *        version 2.70 or greater)
          *
          * Bit 6: Strong encryption.  If this bit is set, you should
          *        set the version needed to extract value to at least
          *        50 and you must also set bit 0.  If AES encryption
-         *        is used, the version needed to extract value must 
+         *        is used, the version needed to extract value must
          *        be at least 51.
          *
          * Bit [7-10]: Currently unused.
@@ -274,15 +267,15 @@ class ZipFileCreator
          *
          * Bit 12: Reserved by PKWARE for enhanced compression.
          *
-         * Bit 13: Used when encrypting the Central Directory to indicate 
+         * Bit 13: Used when encrypting the Central Directory to indicate
          *         selected data values in the Local Header are masked to
-         *         hide their actual values.  See the section describing 
+         *         hide their actual values.  See the section describing
          *         the Strong Encryption Specification for details.
          *
          * Bit [14-15]: Reserved by PKWARE.
          */
         $generalPurposeBitFlag = 0;
-        
+
         /* Compression method.
          *
          * 0:  STORE
@@ -290,11 +283,11 @@ class ZipFileCreator
          * 12: BZIP2
          */
         $compressionMethod = 8;
-        
+
         /* Extra field length. */
         $extraFieldLength = 0;
-        
-        
+
+
         /* Format:
          *
          * [4B] [Start of File Record Marker]
@@ -316,22 +309,20 @@ class ZipFileCreator
             $versionNeededToExtract,
             $generalPurposeBitFlag,
             $compressionMethod,
-            
             $DOSTime,
             $CRC32,
             $compressedLength,
             $uncompressedLength,
-            
             strlen($name),
             $extraFieldLength
         );
-        
+
         /* Filename. */
         $fileRecord .= $name;
 
         /* File data segment. */
         $fileRecord .= $data;
-        
+
         /* We can free up some memory now. */
         unset($data);
 
@@ -353,18 +344,18 @@ class ZipFileCreator
          * was standard output or a non-seekable device.  For ZIP64(tm) format
          * archives, the compressed and uncompressed sizes are 8 bytes each.
          *
-         * When compressing files, compressed and uncompressed sizes 
-         * should be stored in ZIP64 format (as 8 byte values) when a 
-         * files size exceeds 0xFFFFFFFF.   However ZIP64 format may be 
-         * used regardless of the size of a file.  When extracting, if 
-         * the zip64 extended information extra field is present for 
+         * When compressing files, compressed and uncompressed sizes
+         * should be stored in ZIP64 format (as 8 byte values) when a
+         * files size exceeds 0xFFFFFFFF.   However ZIP64 format may be
+         * used regardless of the size of a file.  When extracting, if
+         * the zip64 extended information extra field is present for
          * the file the compressed and uncompressed sizes will be 8
-         * byte values.  
+         * byte values.
          *
-         * Although not originally assigned a signature, the value 
-         * 0x08074b50 has commonly been adopted as a signature value 
-         * for the data descriptor record.  Implementers should be 
-         * aware that ZIP files may be encountered with or without this 
+         * Although not originally assigned a signature, the value
+         * 0x08074b50 has commonly been adopted as a signature value
+         * for the data descriptor record.  Implementers should be
+         * aware that ZIP files may be encountered with or without this
          * signature marking data descriptors and should account for
          * either case when reading ZIP files to ensure compatibility.
          * When writing ZIP files, it is recommended to include the
@@ -386,21 +377,20 @@ class ZipFileCreator
          * $fileRecord .= pack('V', $compressedLength);
          * $fileRecord .= pack('V', $uncompressedLength);
          */
-         
+
         /* Get the length of this file record for use later on. */
         $fileRecordLength = strlen($fileRecord);
-         
+
         /* Add this file record to the zip file. */
-        if (fwrite($this->_fileHandle, $fileRecord) === false)
-        {
+        if (fwrite($this->_fileHandle, $fileRecord) === false) {
             return false;
         }
         unset($fileRecord);
-        
+
         /* Increment total compressed data length and file record count. */
         $this->_fileRecordsLength += $fileRecordLength;
         ++$this->_fileRecordCount;
-        
+
 
         /* Create the Central Directory entry for this file and append it
          * to the Central Directory (stored in memory for now until all file
@@ -414,10 +404,9 @@ class ZipFileCreator
             $uncompressedLength,
             $fileRecordLength
         );
-        
+
         return true;
     }
-    
 
     /**
      * Adds a file to the archive.
@@ -426,9 +415,8 @@ class ZipFileCreator
      *               optionally including the path.
      * @param string File data.
      * @param integer Last modified timestamp, or false for current time.
-     * @return void
      */
-    function addFileFromDisk($name, $filename, $timestamp = false)
+    public function addFileFromDisk($name, $filename, $timestamp = false)
     {
         /* Normally, we would split this into several methods, but this must be
          * optimized for minimal RAM usage, which presents a design challenge.
@@ -437,8 +425,7 @@ class ZipFileCreator
         $data = @file_get_contents($filename);
 
         /* Do we still have a valid file handle? */
-        if (!$this->_fileHandle)
-        {
+        if (! $this->_fileHandle) {
             $this->_errorMessage = 'Unexpected end of file.';
             return false;
         }
@@ -447,20 +434,19 @@ class ZipFileCreator
         $name = str_replace('\\', '/', $name);
 
         /* If a timestamp wasn't specified, use the current time. */
-        if ($timestamp === false)
-        {
+        if ($timestamp === false) {
             $timestamp = time();
         }
-        
+
         /* Convert our UNIX timestamp to DOS format. */
         $DOSTime = FileCompressorUtility::UNIXToDOSTime($timestamp);
 
         /* Calculate the length of the file data before compression. */
         $uncompressedLength = filesize($filename);
-        
+
         /* Calculate the CRC32 checksum of the file data to be compressed. */
         $CRC32 = HashUtility::crc32File($filename);
-        
+
         /* Version needed to extract.
          *
          * Store Only: 10
@@ -477,8 +463,8 @@ class ZipFileCreator
          * 2.0 - File is compressed using Deflate compression
          * 2.0 - File is encrypted using traditional PKWARE encryption
          * 2.1 - File is compressed using Deflate64(tm)
-         * 2.5 - File is compressed using PKWARE DCL Implode 
-         * 2.7 - File is a patch data set 
+         * 2.5 - File is compressed using PKWARE DCL Implode
+         * 2.7 - File is a patch data set
          * 4.5 - File uses ZIP64 format extensions
          * 4.6 - File is compressed using BZIP2 compression*
          * 5.0 - File is encrypted using DES
@@ -496,7 +482,7 @@ class ZipFileCreator
          * 6.3 - File is encrypted using Twofish
          */
         $versionNeededToExtract = 20;
-        
+
         /* General purpose bit-flag.
          *
          * From the ZIP format specification:
@@ -514,26 +500,26 @@ class ZipFileCreator
          *
          * <cut, irrelevant>
          *
-         * Bit 3: If this bit is set, the fields crc-32, compressed 
-         *        size and uncompressed size are set to zero in the 
-         *        local header.  The correct values are put in the 
+         * Bit 3: If this bit is set, the fields crc-32, compressed
+         *        size and uncompressed size are set to zero in the
+         *        local header.  The correct values are put in the
          *        data descriptor immediately following the compressed
-         *        data.  (Note: PKZIP version 2.04g for DOS only 
-         *        recognizes this bit for method 8 compression, newer 
-         *        versions of PKZIP recognize this bit for any 
+         *        data.  (Note: PKZIP version 2.04g for DOS only
+         *        recognizes this bit for method 8 compression, newer
+         *        versions of PKZIP recognize this bit for any
          *        compression method.)
          *
          * Bit 4: Reserved for use with method 8, for enhanced
-         *        deflating. 
+         *        deflating.
          *
-         * Bit 5: If this bit is set, this indicates that the file is 
-         *        compressed patched data.  (Note: Requires PKZIP 
+         * Bit 5: If this bit is set, this indicates that the file is
+         *        compressed patched data.  (Note: Requires PKZIP
          *        version 2.70 or greater)
          *
          * Bit 6: Strong encryption.  If this bit is set, you should
          *        set the version needed to extract value to at least
          *        50 and you must also set bit 0.  If AES encryption
-         *        is used, the version needed to extract value must 
+         *        is used, the version needed to extract value must
          *        be at least 51.
          *
          * Bit [7-10]: Currently unused.
@@ -544,15 +530,15 @@ class ZipFileCreator
          *
          * Bit 12: Reserved by PKWARE for enhanced compression.
          *
-         * Bit 13: Used when encrypting the Central Directory to indicate 
+         * Bit 13: Used when encrypting the Central Directory to indicate
          *         selected data values in the Local Header are masked to
-         *         hide their actual values.  See the section describing 
+         *         hide their actual values.  See the section describing
          *         the Strong Encryption Specification for details.
          *
          * Bit [14-15]: Reserved by PKWARE.
          */
         $generalPurposeBitFlag = 0;
-        
+
         /* Compression method.
          *
          * 0:  STORE
@@ -560,11 +546,11 @@ class ZipFileCreator
          * 12: BZIP2
          */
         $compressionMethod = 8;
-        
+
         /* Extra field length. */
         $extraFieldLength = 0;
-        
-        
+
+
         /* Format:
          *
          * [4B] [Start of File Record Marker]
@@ -586,16 +572,14 @@ class ZipFileCreator
             $versionNeededToExtract,
             $generalPurposeBitFlag,
             $compressionMethod,
-            
             $DOSTime,
             $CRC32,
             0,
             $uncompressedLength,
-            
             strlen($name),
             $extraFieldLength
         );
-        
+
         /* Filename. */
         $fileRecord .= $name;
 
@@ -617,18 +601,18 @@ class ZipFileCreator
          * was standard output or a non-seekable device.  For ZIP64(tm) format
          * archives, the compressed and uncompressed sizes are 8 bytes each.
          *
-         * When compressing files, compressed and uncompressed sizes 
-         * should be stored in ZIP64 format (as 8 byte values) when a 
-         * files size exceeds 0xFFFFFFFF.   However ZIP64 format may be 
-         * used regardless of the size of a file.  When extracting, if 
-         * the zip64 extended information extra field is present for 
+         * When compressing files, compressed and uncompressed sizes
+         * should be stored in ZIP64 format (as 8 byte values) when a
+         * files size exceeds 0xFFFFFFFF.   However ZIP64 format may be
+         * used regardless of the size of a file.  When extracting, if
+         * the zip64 extended information extra field is present for
          * the file the compressed and uncompressed sizes will be 8
-         * byte values.  
+         * byte values.
          *
-         * Although not originally assigned a signature, the value 
-         * 0x08074b50 has commonly been adopted as a signature value 
-         * for the data descriptor record.  Implementers should be 
-         * aware that ZIP files may be encountered with or without this 
+         * Although not originally assigned a signature, the value
+         * 0x08074b50 has commonly been adopted as a signature value
+         * for the data descriptor record.  Implementers should be
+         * aware that ZIP files may be encountered with or without this
          * signature marking data descriptors and should account for
          * either case when reading ZIP files to ensure compatibility.
          * When writing ZIP files, it is recommended to include the
@@ -650,13 +634,12 @@ class ZipFileCreator
          * $fileRecord .= pack('V', $compressedLength);
          * $fileRecord .= pack('V', $uncompressedLength);
          */
-         
+
         /* Get the length of this file record for use later on. */
         $fileRecordLength = strlen($fileRecord);
-         
+
         /* Add this file record to the zip file. */
-        if (fwrite($this->_fileHandle, $fileRecord) === false)
-        {
+        if (fwrite($this->_fileHandle, $fileRecord) === false) {
             return false;
         }
         unset($fileRecord);
@@ -664,17 +647,15 @@ class ZipFileCreator
         $tempFilename = FileUtility::makeRandomTemporaryFilePath();
 
         $compressedLength = 0;
-        $fhSource = fopen(realpath($filename), 'rb');        
+        $fhSource = fopen(realpath($filename), 'rb');
         $fhCompressor = gzopen($tempFilename, 'wb');
-        
-        if (!$fhSource or !$fhCompressor)
-        {
+
+        if (! $fhSource or ! $fhCompressor) {
             $this->_errorMessage = 'Unexpected end of file.';
             return false;
         }
-        
-        while(!feof($fhSource))
-        {
+
+        while (! feof($fhSource)) {
             $temp = fread($fhSource, 32767);
             gzwrite($fhCompressor, $temp);
         }
@@ -683,8 +664,7 @@ class ZipFileCreator
 
         $fhCompressed = fopen($tempFilename, 'rb');
 
-        if (!$fhCompressed)
-        {
+        if (! $fhCompressed) {
             $this->_errorMessage = 'Unexpected end of file.';
             return false;
         }
@@ -692,53 +672,49 @@ class ZipFileCreator
         /* Strip off the headers and footers. */
         $gzipHeaderLength = 10;
         $gzipFooterLength = 8;
-    
-        if (fseek($fhCompressed, $gzipHeaderLength, SEEK_SET)  === -1)
-        {
+
+        if (fseek($fhCompressed, $gzipHeaderLength, SEEK_SET) === -1) {
             $this->_errorMessage = 'Unexpected end of file.';
             return false;
         }
-    
-        while(!feof($fhCompressed))
-        {
+
+        while (! feof($fhCompressed)) {
             $temp = fread($fhCompressed, 8192);
             $compressedLength += strlen($temp);
             fwrite($this->_fileHandle, $temp);
         }
         fclose($fhCompressed);
-        
+
         @unlink($tempFilename);
-               
+
         /* Ignore last 8 bytes of compressed data. */
         $compressedLength -= $gzipFooterLength;
-                
-        /* We need to seek back into the file and correct the 4B representation
-           of how large the compressed data is. It is stored at 
-           pointer - $compressedSize - 12 bytes. */
-       if (fseek($this->_fileHandle, 0 - $compressedLength - strlen($name) - $gzipFooterLength - 12, SEEK_CUR) === -1)
-       {
-           $this->_errorMessage = 'Unexpected end of file.';
-           return false;
-       }       
-       
-       $compressedLengthPacked = pack('V', $compressedLength);
-       
-       fwrite($this->_fileHandle, $compressedLengthPacked);
 
-       /* Seek to the end of the file, but seek back 4 bytes to recover CRC bug for gzcompress. */
-       if (fseek($this->_fileHandle, 0 - $gzipFooterLength, SEEK_END) === -1)
-       {
-           $this->_errorMessage = 'Unexpected end of file.';
-           return false;
-       }        
-        
+        /* We need to seek back into the file and correct the 4B representation
+           of how large the compressed data is. It is stored at
+           pointer - $compressedSize - 12 bytes. */
+        if (fseek($this->_fileHandle, 0 - $compressedLength - strlen($name) - $gzipFooterLength - 12, SEEK_CUR) === -1) {
+            $this->_errorMessage = 'Unexpected end of file.';
+            return false;
+        }
+
+        $compressedLengthPacked = pack('V', $compressedLength);
+
+        fwrite($this->_fileHandle, $compressedLengthPacked);
+
+        /* Seek to the end of the file, but seek back 4 bytes to recover CRC bug for gzcompress. */
+        if (fseek($this->_fileHandle, 0 - $gzipFooterLength, SEEK_END) === -1) {
+            $this->_errorMessage = 'Unexpected end of file.';
+            return false;
+        }
+
         /* Increment total compressed data length and file record count. */
         $fileRecordLength += $compressedLength;
-        
+
         $this->_fileRecordsLength += $fileRecordLength;
 
         ++$this->_fileRecordCount;
-        
+
         /* Create the Central Directory entry for this file and append it
          * to the Central Directory (stored in memory for now until all file
          * records have been written).
@@ -751,39 +727,42 @@ class ZipFileCreator
             $uncompressedLength,
             $fileRecordLength
         );
-        
+
         return true;
     }
-    
-    
-    private function createCentralDirectoryEntry($name, $DOSTime, $CRC32,
-        $compressedLength, $uncompressedLength, $fileRecordLength)
-    {
-        
+
+    private function createCentralDirectoryEntry(
+        $name,
+        $DOSTime,
+        $CRC32,
+        $compressedLength,
+        $uncompressedLength,
+        $fileRecordLength
+    ) {
         /* External file attributes - archive bit set.
          * 0 for none. See the specification for details.
          */
         $externalFileAttributes = 32;
-        
+
         /* Internal file attributes.
          * 0 for none. See the specification for details.
          */
         $internalFileAttrbutes = 0;
-        
+
         /* Version needed to extract. See above. */
         $versionNeededToExtract = 20;
-        
+
         /* Version made by (and operating system). See above for version
-         * number information and below for operating system information. 
+         * number information and below for operating system information.
          *
          * From the ZIP format specification:
          *
          * The upper byte indicates the compatibility of the file
-         * attribute information.  If the external file attributes 
-         * are compatible with MS-DOS and can be read by PKZIP for 
-         * DOS version 2.04g then this value will be zero.  If these 
-         * attributes are not compatible, then this value will 
-         * identify the host system on which the attributes are 
+         * attribute information.  If the external file attributes
+         * are compatible with MS-DOS and can be read by PKZIP for
+         * DOS version 2.04g then this value will be zero.  If these
+         * attributes are not compatible, then this value will
+         * identify the host system on which the attributes are
          * compatible.  Software can use this information to determine
          * the line record format for text files etc.  The current
          * mappings are:
@@ -800,18 +779,18 @@ class ZipFileCreator
          * 17 - Tandem                   18 - OS/400
          * 19 - OS/X (Darwin)            20 thru 255 - unused
          *
-         * The lower byte indicates the ZIP specification version 
-         * (the version of this document) supported by the software 
-         * used to encode the file.  The value/10 indicates the major 
-         * version number, and the value mod 10 is the minor version 
+         * The lower byte indicates the ZIP specification version
+         * (the version of this document) supported by the software
+         * used to encode the file.  The value/10 indicates the major
+         * version number, and the value mod 10 is the minor version
          * number.
          */
         $madeByOS = 3;
         $madeByVersion = 20;
-        
+
         /* General purpose bit flag (see above). */
         $generalPurposeBitFlag = 0;
-        
+
         /* Compression method.
          *
          * 0:  STORE
@@ -819,17 +798,17 @@ class ZipFileCreator
          * 12: BZIP2
          */
         $compressionMethod = 8;
-        
+
         /* Disk number - used for archive spanning. */
         $diskNumber = 0;
-        
+
         /* Length of extra field data. */
         $extraFieldLength = 0;
-        
+
         /* Length of file comment. */
         $fileCommentLength = 0;
 
-         
+
         /* Format:
          *
          * [4B] [Start of Central Directory Entry Marker]
@@ -860,28 +839,24 @@ class ZipFileCreator
             $madeByVersion,
             $madeByOS,
             $versionNeededToExtract,
-            
             $generalPurposeBitFlag,
             $compressionMethod,
             $DOSTime,
             $CRC32,
-            
             $compressedLength,
             $uncompressedLength,
             strlen($name),
             $extraFieldLength,
-            
             $fileCommentLength,
             $diskNumber,
             $internalFileAttrbutes,
             $externalFileAttributes,
-            
             $this->_lastOffset
         );
 
         /* File name. */
         $centralDirectoryEntry .= $name;
-        
+
         /* Set last file record offeset to one byte after the end of this
          * entry's file record.
          */
@@ -889,11 +864,11 @@ class ZipFileCreator
 
         /* Add this entry to the Central Directory. */
         $this->_centralDirectory .= $centralDirectoryEntry;
-        
+
         /* Increment total Central Directory length. */
         $this->_centralDirectoryLength += strlen($centralDirectoryEntry);
     }
-    
+
     /**
      * Finishes writing the zip file to a file, frees resources, and closes
      * the file. After this point, it is safe to reuse the same ZipFileCreator
@@ -920,8 +895,7 @@ class ZipFileCreator
          */
 
         /* Write and free the Central Directory. */
-        if (fwrite($this->_fileHandle, $this->_centralDirectory) === false)
-        {
+        if (fwrite($this->_fileHandle, $this->_centralDirectory) === false) {
             return false;
         }
         $this->_centralDirectory = '';
@@ -941,11 +915,10 @@ class ZipFileCreator
             $this->_fileRecordsLength,
             0
         );
-        if (fwrite($this->_fileHandle, $footerFields) === false)
-        {
+        if (fwrite($this->_fileHandle, $footerFields) === false) {
             return false;
         }
-        
+
         /* Close the file handle. */
         @fclose($this->_fileHandle);
         $this->_fileHandle = null;
@@ -961,73 +934,67 @@ class ZipFileCreator
 class ZipFileExtractor
 {
     /* Full path (absolute or relative) to the zip file we're reading. Set by
-     * the constructor.
      */
     private $_filename = '';
-    
+
     /* File handle for the open zip file we're writing as we're writing it. */
     private $_fileHandle = null;
-    
+
     /* Meta data and Central Directory. */
-    private $_metaData = array();
-    
+    private $_metaData = [];
+
     /* Current error message. */
     private $_errorMessage = '';
-
 
     public function __construct($filename)
     {
         $this->_filename = $filename;
     }
-    
+
     private function getErrorMessage()
     {
         return $this->_errorMessage;
     }
-    
+
     public function open()
     {
         /* Return false if the specified filename is invalid. */
-        if (!file_exists($this->_filename) || !is_readable($this->_filename))
-        {
+        if (! file_exists($this->_filename) || ! is_readable($this->_filename)) {
             $this->_errorMessage = 'File does not exist.';
             return false;
         }
-        
+
         /* Open the new file for reading in binary mode. */
         $fileHandle = @fopen($this->_filename, 'rb');
-        if (!$fileHandle)
-        {
+        if (! $fileHandle) {
             $this->_errorMessage = 'Failed to open file for reading.';
             return false;
         }
-        
+
         $this->_fileHandle = $fileHandle;
-        
+
         /* Seek to the end of the file. */
-        if (fseek($fileHandle, 0, SEEK_END) === -1)
-        {
+        if (fseek($fileHandle, 0, SEEK_END) === -1) {
             $this->_errorMessage = 'Unexpected end of file.';
             return false;
         }
-        
+
         /* Find the length of the file (position of the end of the file). */
         $fileLength = ftell($fileHandle);
-        if (!$fileLength)
-        {
+        if (! $fileLength) {
             $this->_errorMessage = 'Unexpected end of file.';
             return false;
         }
-        
+
         /* Find the offset from the end of the file where the first byte of the
          * End of Central Directory marker is found. If false, we didn't find
          * an End of Central Directory marker and we can't read this file.
          */
         $position = $this->findEndCentralDirectoryMarker(
-            $fileHandle, $fileLength
+            $fileHandle,
+            $fileLength
         );
-        if (!$position)
-        {
+        if (! $position) {
             $this->_errorMessage = 'Could not find end of Central Directory.';
             return false;
         }
@@ -1035,25 +1002,23 @@ class ZipFileExtractor
         /* Seek to the start of the End of Central Directory record, right
          * after the End of Central Directory marker.
          */
-        if (fseek($fileHandle, ($position + 4), SEEK_END) == -1)
-        {
+        if (fseek($fileHandle, ($position + 4), SEEK_END) == -1) {
             $this->_errorMessage = 'Unexpected end of file.';
             return false;
         }
-        
+
         /* Read the next 18 bytes of the file (everything up to the start of
          * the variable-length comment field).
          */
         $string = fread($fileHandle, 18);
-        if (!$string)
-        {
+        if (! $string) {
             $this->_errorMessage = 'Unexpected end of file.';
             return false;
         }
-        
+
         /* Parse the metadata we just extracted. */
         $metaData = @unpack(
-              'vdiskNumber/'
+            'vdiskNumber/'
             . 'vcentralDirectoryDiskNumber/'
             . 'vdiskFileRecordCount/'
             . 'vfileRecordCount/'
@@ -1064,147 +1029,131 @@ class ZipFileExtractor
         );
 
         /* Was parsing successful? */
-        if (!$metaData)
-        {
+        if (! $metaData) {
             $this->_errorMessage = 'Failed to parse general meta information.';
             return false;
         }
-        
+
         /* Read the zip comment into a string. */
-        if ($metaData['commentLength'] > 0)
-        {
+        if ($metaData['commentLength'] > 0) {
             /* Read <comment-length> bytes and try to extract the comment. */
             $string = fread($fileHandle, $metaData['commentLength']);
-            if ($string === false)
-            {
+            if ($string === false) {
                 $this->_errorMessage = 'Invalid zip comment.';
                 return false;
             }
-            
+
             /* Attempt to extract the zip comment. */
             $commentData = @unpack('a*0', $string);
-        }
-        else
-        {
+        } else {
             $commentData = null;
         }
-        
+
         /* Add the zip comment to the metadata array. */
-        if (!$commentData)
-        {
-            $commentData = array('');
+        if (! $commentData) {
+            $commentData = [''];
         }
         list($metaData['comment']) = $commentData;
-        
+
         /* Is our central directory start offset valid? */
         $centralDirectoryOffset = $metaData['centralDirectoryStart'];
         if ($centralDirectoryOffset <= 0 ||
-            $centralDirectoryOffset >= $fileLength)
-        {
+            $centralDirectoryOffset >= $fileLength) {
             $this->_errorMessage = 'Invalid start of Central Directory.';
             return false;
         }
-        
+
         /* Parse the central directory into an array. */
         $metaData['centralDirectory'] = $this->parseCentralDirectory(
-            $centralDirectoryOffset, $metaData['centralDirectoryLength']
+            $centralDirectoryOffset,
+            $metaData['centralDirectoryLength']
         );
-        
-        if ($metaData['centralDirectory'] === false)
-        {
+
+        if ($metaData['centralDirectory'] === false) {
             /* Error message was set by parseCentralDirectory. */
             return false;
         }
-        
+
         /* Set our position to the start of the file again. */
-        if (fseek($fileHandle, 0, SEEK_SET) === -1)
-        {
+        if (fseek($fileHandle, 0, SEEK_SET) === -1) {
             $this->_errorMessage = 'Unexpected end of file.';
             return false;
         }
-        
+
         $this->_metaData = $metaData;
         return true;
     }
-    
+
     public function getMetaData()
     {
         return $this->_metaData;
     }
-    
+
     /* Returns a binary string containing the contents of the specified file.
      * For a text file, this can be used just like a normal string.
      * TODO:  Rework so the entire file doesn't need to be read into memory to extract.
      */
     public function getFile($fileID)
     {
-        if (!isset($this->_metaData['centralDirectory'][$fileID]))
-        {
+        if (! isset($this->_metaData['centralDirectory'][$fileID])) {
             return false;
         }
-        
+
         return $this->getFileByOffset($this->_metaData['centralDirectory'][$fileID]['fileRecordStart']);
     }
-    
+
     public function extractAll()
     {
-        foreach ($this->_metaData['centralDirectory'] as $index => $data)
-        {
+        foreach ($this->_metaData['centralDirectory'] as $index => $data) {
             $fileName = $data['filename'];
 
-            if (strpos($fileName, '/') !== false)
-            {
+            if (strpos($fileName, '/') !== false) {
                 $directorySplit = explode('/', $fileName);
-                unset($directorySplit[count($directorySplit)-1]);
+                unset($directorySplit[count($directorySplit) - 1]);
                 $directory = implode('/', $directorySplit);
                 @mkdir($directory, 0777, true);
             }
-            
+
             $fileContents = $this->getFile($index);
-            if ($fileContents === false)
-            {
+            if ($fileContents === false) {
                 return false;
             }
-            file_put_contents ($fileName, $fileContents);
+            file_put_contents($fileName, $fileContents);
         }
-        
+
         return true;
     }
-    
-    
+
     private function parseCentralDirectory($startOffset, $length)
     {
         /* Seek to the start of the central directory. */
-        if (fseek($this->_fileHandle, $startOffset, SEEK_SET) === -1)
-        {
+        if (fseek($this->_fileHandle, $startOffset, SEEK_SET) === -1) {
             $this->_errorMessage = 'Unexpected end of file.';
             return false;
         }
-        
+
         /* Read the entire central directory into memory. */
         // FIXME: Should we be doing this? It usually won't be *THAT* much ram...
         $bytes = fread($this->_fileHandle, $length);
-        if (!$bytes)
-        {
+        if (! $bytes) {
             $this->_errorMessage = 'Unexpected end of file.';
             return false;
         }
-        
+
         /* Get an array of central directory entries. */
         $entries = explode(
             pack('V', START_CENTRAL_DIRECTORY_ENTRY),
             $bytes
         );
         unset($bytes);
-        
+
         /* Remove the empty element at the start of the array caused by the
          * first start-of-entry marker.
          */
         array_shift($entries);
 
-        $metaData = array();
-        foreach ($entries as $index => $entry)
-        {   
+        $metaData = [];
+        foreach ($entries as $index => $entry) {
             /* Format:
              *
              * [4B] [Start of Central Directory Entry Marker] [REMOVED]
@@ -1229,10 +1178,10 @@ class ZipFileExtractor
              *
              * [4B] [Starting Offset of Associated File Record]
              */
-             
+
             /* Parse the metadata we just extracted. */
             $metaData[$index] = @unpack(
-                  'cversionMadeBy/'
+                'cversionMadeBy/'
                 . 'coperatingSystemMadeBy/'
                 . 'vversionNeededToExtract/'
                 . 'vgeneralPurposeBitFlag/'
@@ -1252,37 +1201,33 @@ class ZipFileExtractor
             );
 
             /* Was parsing successful? */
-            if (!$metaData)
-            {
+            if (! $metaData) {
                 $this->_errorMessage = sprintf(
                     'Failed to parse central directory entry %s.',
                     $index
                 );
                 return false;
             }
-            
+
             /* Read the filename into a string. */
-            if ($metaData[$index]['filenameLength'] > 0)
-            {
+            if ($metaData[$index]['filenameLength'] > 0) {
                 /* Attempt to extract the filename. */
                 list($metaData[$index]['filename']) = @unpack(
                     'a*0',
                     substr($entry, 42, $metaData[$index]['filenameLength'])
                 );
-            }
-            else
-            {
+            } else {
                 $metaData[$index]['filename'] = null;
             }
 
             unset($entries[$index]);
         }
-        
+
         return $metaData;
     }
-    
+
     /**
-     * Extracts a file record from the given file offset. 
+     * Extracts a file record from the given file offset.
      * //FIXME: Make private after testing.
      *
      * @param integer start offset
@@ -1291,23 +1236,21 @@ class ZipFileExtractor
     public function getFileByOffset($startOffset)
     {
         /* Seek to the start of the central directory. */
-        if (fseek($this->_fileHandle, $startOffset, SEEK_SET) === -1)
-        {
+        if (fseek($this->_fileHandle, $startOffset, SEEK_SET) === -1) {
             $this->_errorMessage = 'Unexpected end of file.';
             return false;
         }
-        
+
         /* Read the first 30 bytes into memory. */
         $bytes = fread($this->_fileHandle, 30);
-        if (!$bytes)
-        {
+        if (! $bytes) {
             $this->_errorMessage = 'Unexpected end of file.';
             return false;
         }
-        
+
         /* Remove the Start of File Record marker. */
         $bytes = substr($bytes, 4);
-        
+
         /* Format:
          *
          * [4B] [Start of File Record Marker] [REMOVED]
@@ -1323,10 +1266,10 @@ class ZipFileExtractor
          * [2B] [Filename Length]
          * [2B] [Extra Field Length]
          */
-        
+
         /* Parse the first 26 bytes (metadata). */
         $metaData = @unpack(
-              'vversionNeededToExtract/'
+            'vversionNeededToExtract/'
             . 'vgeneralPurposeBitFlag/'
             . 'vcompressionMethod/'
             . 'VlastModified/'
@@ -1339,126 +1282,115 @@ class ZipFileExtractor
         );
 
         /* Was parsing successful? */
-        if (!$metaData)
-        {
+        if (! $metaData) {
             $this->_errorMessage = 'Failed to parse file meta information.';
             return false;
         }
-        
+
         /* Make things a bit easier down below. */
         extract($metaData);
         unset($metaData);
-        
+
         /* Seek to the start of the compressed data. */
         $offset = $filenameLength + $extraFieldLength;
-        if (fseek($this->_fileHandle, $offset, SEEK_CUR) === -1)
-        {
+        if (fseek($this->_fileHandle, $offset, SEEK_CUR) === -1) {
             $this->_errorMessage = 'Unexpected end of file.';
             return false;
         }
-        
+
         /* Read the compressed data into memory. */
         $bytes = fread($this->_fileHandle, $compressedSize);
-        if (!$bytes)
-        {
+        if (! $bytes) {
             $this->_errorMessage = 'Unexpected end of file.';
             return false;
         }
 
         /* Decompress the compressed data. */
-        switch ($compressionMethod)
-        {
+        switch ($compressionMethod) {
             /* DEFLATE compression. */
             case 8:
                 $uncompressedData = gzinflate($bytes);
                 break;
-                
-            /* BZIP2 compression. See manual for reduced-memory method. */
+
+                /* BZIP2 compression. See manual for reduced-memory method. */
             case 12:
                 $uncompressedData = bzdecompress($bytes);
                 break;
-                
-            /* STORE (no compression). */
+
+                /* STORE (no compression). */
             case 0:
                 $uncompressedData = $bytes;
                 break;
-            
-            /* Something we don't know how to handle. There are several ZIP
-             * compression methods allowed for in the APPNOTE that we don't
-             * support.
-             */
+
+                /* Something we don't know how to handle. There are several ZIP
+                 * compression methods allowed for in the APPNOTE that we don't
+                 * support.
+                 */
             default:
                 $this->_errorMessage = 'Invalid / unknown compression method.';
                 return false;
                 break;
         }
-        
+
         /* Free up a bit of memory. */
         unset($bytes);
-        
+
         /* Calculate the CRC32 checksum of the file data to be compressed. */
-        if (crc32($uncompressedData) != $CRC32)
-        {
+        if (crc32($uncompressedData) != $CRC32) {
             $this->_errorMessage = 'CRC32 checksum does not match.';
             return false;
         }
-        
+
         return $uncompressedData;
     }
-    
+
     private function findEndCentralDirectoryMarker($fileHandle, $fileLength)
     {
         /* The marker we're looking for (a 4-byte sequence). */
         $markerBytes = pack('V', END_CENTRAL_DIRECTORY);
-        
+
         /* Loop through the file one byte at a time, starting from the end,
          * until we find an End of Central Directory marker.
          */
         $position = -1;
-        while (abs($position) <= $fileLength)
-        {
+        while (abs($position) <= $fileLength) {
             /* Seek to whatever position (from the end) we're set to go to.
              * This will be one byte from the end on the first loop.
              */
-            if (fseek($fileHandle, $position, SEEK_END) === -1)
-            {
+            if (fseek($fileHandle, $position, SEEK_END) === -1) {
                 return false;
             }
-            
+
             /* Read one byte into a buffer and see if it could be the last byte
              * of the End of Central Directory marker. If not, just continue
              * looping and read in another character.
              */
             $byte = fgetc($fileHandle);
-            if ($byte != $markerBytes[3])
-            {
+            if ($byte != $markerBytes[3]) {
                 --$position;
                 continue;
             }
-            
+
             /* Seek back another 3 bytes before the byte we just read and read
              * 4 bytes (including the current byte).
              */
-            if (fseek($fileHandle, ($position - 3), SEEK_END) === -1)
-            {
+            if (fseek($fileHandle, ($position - 3), SEEK_END) === -1) {
                 return false;
             }
-            
+
             $bytes = fread($fileHandle, 4);
-            if (!$bytes)
-            {
+            if (! $bytes) {
                 return false;
             }
-            
+
             /* Is the 4 byte string we just read an End of Central Directory
              * marker? If so, return the position of the first byte of the
              * marker.
              */
-            if ($bytes === $markerBytes)
-            {
+            if ($bytes === $markerBytes) {
                 return ($position - 3);
             }
-            
+
             /* We didn't really have an End of Central Directory marker, keep
              * looping backwards.
              */
@@ -1492,12 +1424,11 @@ class FileCompressorUtility
         $date = getdate($timestamp);
 
         /* Sanity check. */
-        if ($date['year'] < 1980)
-        {
-            $date['year']    = 1980;
-            $date['mon']     = 1;
-            $date['mday']    = 1;
-            $date['hours']   = 0;
+        if ($date['year'] < 1980) {
+            $date['year'] = 1980;
+            $date['mon'] = 1;
+            $date['mday'] = 1;
+            $date['hours'] = 0;
             $date['minutes'] = 0;
             $date['seconds'] = 0;
         }
@@ -1506,23 +1437,23 @@ class FileCompressorUtility
          * and not a full four-digit year.
          */
         $date['year'] -= 1980;
-        
+
         /* Do a bit of shifting to convert to the date parts to the 32-bit DOS-
          * formatted parts.
          */
-        $year   = $date['year']    << 25;
-        $month  = $date['mon']     << 21;
-        $day    = $date['mday']    << 16;
-        $hour   = $date['hours']   << 11;
+        $year = $date['year'] << 25;
+        $month = $date['mon'] << 21;
+        $day = $date['mday'] << 16;
+        $hour = $date['hours'] << 11;
         $minute = $date['minutes'] << 5;
         $second = $date['seconds'] >> 1;
-        
+
         /* OR the DOS-formatted parts to build the complete DOS timestamp. */
         $DOSTime = ($year | $month | $day | $hour | $minute | $second);
 
         return $DOSTime;
     }
-    
+
     /**
      * Converts a DOS time and date stamp into a UNIX timestamp. See
      * http://www.vsft.com/hal/dostime.htm for more information.
@@ -1530,7 +1461,7 @@ class FileCompressorUtility
      * Time Bits:
      *
      * 0-4     5-10    11-15
-     * Second  Minute  Hour  
+     * Second  Minute  Hour
      *
      * Date Bits:
      *
@@ -1546,26 +1477,22 @@ class FileCompressorUtility
          * but if we have a date but not a time, we can return the timestamp
          * for the specified date at midnight.
          */
-        if (!$date)
-        {
+        if (! $date) {
             return 0;
         }
-        
+
         /* Convert the date. */
-        $year  = (($date & 0xFE00) >> 9) + 1980;
-        $month =  ($date & 0x01E0) >> 5;
-        $day   =  ($date & 0x001F);
+        $year = (($date & 0xFE00) >> 9) + 1980;
+        $month = ($date & 0x01E0) >> 5;
+        $day = ($date & 0x001F);
 
         /* Convert the time. If we don't have one, use midnight. */
-        if ($time)
-        {
-            $hour   = ($time & 0xF800) >> 11;
+        if ($time) {
+            $hour = ($time & 0xF800) >> 11;
             $minute = ($time & 0x07E0) >> 5;
             $second = ($time & 0x001F) >> 1;
-        }
-        else
-        {
-            $hour   = 0;
+        } else {
+            $hour = 0;
             $minute = 0;
             $second = 0;
         }

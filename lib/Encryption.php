@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -39,43 +38,35 @@ class Encryption
 {
     private $_td;
 
-
     public function __construct($key, $algorithm, $mode = 'ecb', $iv = false)
     {
         /* In non-ECB mode, an initialization vector is required. */
-        if ($mode != 'ecb' && $iv === false)
-        {
+        if ($mode != 'ecb' && $iv === false) {
             return false;
         }
 
         /* Try to open the encryption module. */
         $this->_td = mcrypt_module_open($algorithm, '', $mode, '');
-        if ($this->_td === false)
-        {
+        if ($this->_td === false) {
             return false;
         }
 
         /* Use UNIX random number generator if available. */
-        if (strstr(PHP_OS, 'WIN') !== false)
-        {
+        if (strstr(PHP_OS, 'WIN') !== false) {
             $randomSeed = MCRYPT_RAND;
-        }
-        else
-        {
+        } else {
             $randomSeed = MCRYPT_DEV_RANDOM;
         }
 
         /* If an initialization vector was not specified, create one;
          * otherwise ensure that the specified IV is the proper size.
          */
-        if ($iv === false)
-        {
+        if ($iv === false) {
             $iv = mcrypt_create_iv(
-                mcrypt_enc_get_iv_size($this->_td), $randomSeed
+                mcrypt_enc_get_iv_size($this->_td),
+                $randomSeed
             );
-        }
-        else
-        {
+        } else {
             $iv = substr($iv, 0, mcrypt_enc_get_iv_size($this->_td));
         }
 
@@ -85,7 +76,6 @@ class Encryption
         /* Initialize the MCrypt library. */
         mcrypt_generic_init($this->_td, $key, $iv);
     }
-
 
     public function encrypt($plainText)
     {
@@ -102,7 +92,6 @@ class Encryption
         return rtrim($plainText, "\0");
     }
 
-
     public function __destruct()
     {
         /* Clean up after ourselves. */
@@ -110,5 +99,3 @@ class Encryption
         mcrypt_module_close($this->_td);
     }
 }
-
-?>

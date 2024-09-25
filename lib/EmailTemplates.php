@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -41,6 +40,7 @@ include_once(LEGACY_ROOT . '/lib/Site.php');
 class EmailTemplates
 {
     private $_db;
+
     private $_siteID;
 
     public function __construct($siteID)
@@ -48,7 +48,7 @@ class EmailTemplates
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
-    
+
     public function delete($templateID)
     {
         $sql = sprintf(
@@ -64,10 +64,10 @@ class EmailTemplates
             $this->_db->makeQueryInteger($templateID),
             $this->_db->makeQueryString("CUSTOM")
         );
-        
+
         $this->_db->query($sql);
     }
-    
+
     public function add($text, $title, $tag, $siteID, $possibleVariables)
     {
         $sql = sprintf(
@@ -96,16 +96,15 @@ class EmailTemplates
             $this->_db->makeQueryStringOrNULL($possibleVariables)
         );
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return -1;
         }
 
         $templateID = $this->_db->getLastInsertID();
-        
+
         return $templateID;
     }
-    
+
     /**
      * Updates an e-mail template.
      *
@@ -115,8 +114,7 @@ class EmailTemplates
      */
     public function update($emailTemplateID, $title, $text, $disabled)
     {
-        if($title != "")
-        {
+        if ($title != "") {
             $sql = sprintf(
                 "UPDATE
                     email_template
@@ -134,9 +132,7 @@ class EmailTemplates
                 $emailTemplateID,
                 $this->_siteID
             );
-        }
-        else 
-        {
+        } else {
             $sql = sprintf(
                 "UPDATE
                     email_template
@@ -153,11 +149,10 @@ class EmailTemplates
                 $this->_siteID
             );
         }
-        
+
 
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return false;
         }
 
@@ -187,13 +182,12 @@ class EmailTemplates
         );
 
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return false;
         }
 
         return true;
-    }    
+    }
 
     /**
      * Returns all relevent template data for a given e-mail template ID.
@@ -223,13 +217,13 @@ class EmailTemplates
         );
         $rs = $this->_db->getAssoc($sql);
 
-        if (!empty($rs))
-        {
+        if (! empty($rs)) {
             $mailerSettings = new MailerSettings($this->_siteID);
             $mailerSettingsRS = $mailerSettings->getAll();
 
-            if ($mailerSettingsRS['configured'] == '0' || $mailerSettingsRS['mode'] == 0)
-            {
+            if (isset($mailerSettingsRS['configured']) && $mailerSettingsRS['configured'] == '0' ||
+        MAIL_MAILER == 0 ||
+        (isset($mailerSettingsRS['mode']) && $mailerSettingsRS['mode'] == 0)) { // Add this check
                 $rs['disabled'] = '1';
             }
 
@@ -248,69 +242,60 @@ class EmailTemplates
      */
     public function replaceVariables($text)
     {
-        $email    = $_SESSION['CATS']->getEmail();
+        $email = $_SESSION['CATS']->getEmail();
         $siteName = $_SESSION['CATS']->getSiteName();
         $fullName = $_SESSION['CATS']->getFullName();
 
-        if ($_SESSION['CATS']->isDateDMY())
-        {
+        if ($_SESSION['CATS']->isDateDMY()) {
             $dateFormat = 'd-m-y';
-        }
-        else
-        {
+        } else {
             $dateFormat = 'm-d-y';
         }
 
-        if (isset($_SESSION['CATS']))
-        {
+        if (isset($_SESSION['CATS'])) {
             $isLoggedIn = $_SESSION['CATS']->isLoggedIn();
-        }
-        else
-        {
+        } else {
             $isLoggedIn = false;
         }
 
         /* Variables to be replaced. */
-        $stringsToFind = array(
+        $stringsToFind = [
             '%DATETIME%',
             '%SITENAME%',
             '%USERFULLNAME%',
-            '%USERMAIL%'
-        );
+            '%USERMAIL%',
+        ];
 
-        if ($isLoggedIn)
-        {
-            $replacementStrings = array(
+        if ($isLoggedIn) {
+            $replacementStrings = [
                 DateUtility::getAdjustedDate($dateFormat . ' g:i A'),
                 $siteName,
                 $fullName,
-                '<a href="mailto:'. $email .'">'. $email .'</a>'
-            );
-        }
-        else
-        {
-
+                '<a href="mailto:' . $email . '">' . $email . '</a>',
+            ];
+        } else {
             $site = new Site(-1);
 
             $siteID = $site->getFirstSiteID();
 
-            if (!eval(Hooks::get('CAREERS_SITEID'))) return;
+            if (! eval(Hooks::get('CAREERS_SITEID'))) {
+                return;
+            }
 
             $siteRS = $site->getSiteBySiteID($siteID);
 
-            if (!isset($siteRS['name']))
-            {
+            if (! isset($siteRS['name'])) {
                 die('An error has occurred: No site exists with this site name.');
             }
 
             $siteName = $siteRS['name'];
 
-            $replacementStrings = array(
+            $replacementStrings = [
                 DateUtility::getAdjustedDate($dateFormat . ' g:i A'),
                 $siteName,
                 '',
-                '<a href="mailto:' . $email . '">' . $email . '</a>'
-            );
+                '<a href="mailto:' . $email . '">' . $email . '</a>',
+            ];
         }
 
         return str_replace($stringsToFind, $replacementStrings, $text);
@@ -344,19 +329,16 @@ class EmailTemplates
         );
         $rs = $this->_db->getAssoc($sql);
 
-        if (!empty($rs))
-        {
+        if (! empty($rs)) {
             $mailerSettings = new MailerSettings($this->_siteID);
             $mailerSettingsRS = $mailerSettings->getAll();
 
-            if ($mailerSettingsRS['configured'] == '0' || 
+            if ($mailerSettingsRS['configured'] == '0' ||
                 MAIL_MAILER == 0 || (
-                    isset($rs['disabled']) && $rs['disabled'] == '1'))
-            {
+                    isset($rs['disabled']) && $rs['disabled'] == '1'
+                )) {
                 $rs['disabled'] = '1';
-            }
-            else
-            {
+            } else {
                 $rs['disabled'] = '0';
             }
 
@@ -391,7 +373,7 @@ class EmailTemplates
 
         return $this->_db->getAllAssoc($sql);
     }
-    
+
     public function getAllCustom()
     {
         $sql = sprintf(
@@ -416,5 +398,3 @@ class EmailTemplates
         return $this->_db->getAllAssoc($sql);
     }
 }
-
-?>

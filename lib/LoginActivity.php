@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -41,9 +40,10 @@ include_once(LEGACY_ROOT . '/lib/BrowserDetection.php');
 class LoginActivityPager extends Pager
 {
     private $_siteID;
-    private $_db;
-    private $_successful;
 
+    private $_db;
+
+    private $_successful;
 
     public function __construct($rowsPerPage, $currentPage, $siteID, $successful = true)
     {
@@ -51,13 +51,13 @@ class LoginActivityPager extends Pager
         $this->_siteID = $siteID;
         $this->_successful = $successful;
 
-        $this->_sortByFields = array(
+        $this->_sortByFields = [
             'firstName',
             'lastName',
             'ip',
             'shortUserAgent',
-            'dateSort'
-        );
+            'dateSort',
+        ];
 
         /* How many entries do we have? */
         $sql = sprintf(
@@ -79,7 +79,6 @@ class LoginActivityPager extends Pager
         $rs = $this->_db->getAssoc($sql);
 
         /* Pass "Login Activity By Most Recent"-specific parameters to Pager
-         * constructor.
          */
         parent::__construct($rs['count'], $rowsPerPage, $currentPage);
     }
@@ -91,8 +90,8 @@ class LoginActivityPager extends Pager
      * @param hostName
      * @return array contacts data
      */
-     public function updateHostName($userLoginID, $hostName)
-     {
+    public function updateHostName($userLoginID, $hostName)
+    {
         $sql = sprintf(
             "UPDATE
                 user_login
@@ -103,13 +102,13 @@ class LoginActivityPager extends Pager
              AND
                 user_login.site_id = %s
              ",
-             $this->_db->makeQueryString($hostName),
-             $userLoginID,
-             $this->_siteID
-          );
+            $this->_db->makeQueryString($hostName),
+            $userLoginID,
+            $this->_siteID
+        );
 
-          $this->_db->query($sql);
-     }
+        $this->_db->query($sql);
+    }
 
     /**
      * Returns the current page of login activity.
@@ -157,37 +156,30 @@ class LoginActivityPager extends Pager
 
         $rs = $this->_db->getAllAssoc($sql);
 
-        foreach ($rs as $rowIndex => $row)
-        {
-            if (empty($row['hostname']))
-            {
-                if (ENABLE_HOSTNAME_LOOKUP)
-                {
+        foreach ($rs as $rowIndex => $row) {
+            if (empty($row['hostname'])) {
+                if (ENABLE_HOSTNAME_LOOKUP) {
                     $rs[$rowIndex]['hostname'] = @gethostbyaddr($row['ip']);
-                    if (empty($rs[$rowIndex]['hostname']))
-                    {
+                    if (empty($rs[$rowIndex]['hostname'])) {
                         $rs[$rowIndex]['hostname'] = '(unresolvable)';
                     }
 
                     $this->updateHostName($row['userLoginID'], $row['hostname']);
-                }
-                else
-                {
+                } else {
                     $rs[$rowIndex]['hostname'] = $row['ip'];
                 }
             }
 
-            if ($row['hostname'] == '(unresolvable)')
-            {
-               $rs[$rowIndex]['hostname'] = '';
+            if ($row['hostname'] == '(unresolvable)') {
+                $rs[$rowIndex]['hostname'] = '';
             }
 
             $rs[$rowIndex]['shortUserAgent'] = implode(
-                ' ', BrowserDetection::detect($row['shortUserAgent'])
+                ' ',
+                BrowserDetection::detect($row['shortUserAgent'])
             );
         }
 
         return $rs;
     }
 }
-?>

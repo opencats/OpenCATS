@@ -45,18 +45,17 @@ class ContactsUI extends UserInterface
     /* Maximum number of characters of the job notes to show without the user
      * clicking "[More]"
      */
-    const NOTES_MAXLEN = 500;
+    public const NOTES_MAXLEN = 500;
 
     /* Maximum number of characters of the company name to show on the main
      * contacts listing.
      */
-    const TRUNCATE_CLIENT_NAME = 22;
+    public const TRUNCATE_CLIENT_NAME = 22;
 
     /* Maximum number of characters of the contact's title to show on the main
      * contacts listing.
      */
-    const TRUNCATE_TITLE = 24;
-
+    public const TRUNCATE_TITLE = 24;
 
     public function __construct()
     {
@@ -66,115 +65,95 @@ class ContactsUI extends UserInterface
         $this->_moduleDirectory = 'contacts';
         $this->_moduleName = 'contacts';
         $this->_moduleTabText = 'Contacts';
-        $this->_subTabs = array(
-            'Add Contact'     => CATSUtility::getIndexName() . '?m=contacts&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@contacts.add',
+        $this->_subTabs = [
+            'Add Contact' => CATSUtility::getIndexName() . '?m=contacts&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@contacts.add',
             'Search Contacts' => CATSUtility::getIndexName() . '?m=contacts&amp;a=search',
-            'Cold Call List'  => CATSUtility::getIndexName() . '?m=contacts&amp;a=showColdCallList'
-        );
+            'Cold Call List' => CATSUtility::getIndexName() . '?m=contacts&amp;a=showColdCallList',
+        ];
     }
-
 
     public function handleRequest()
     {
         $action = $this->getAction();
 
-        if (!eval(Hooks::get('CONTACTS_HANDLE_REQUEST'))) return;
+        if (! eval(Hooks::get('CONTACTS_HANDLE_REQUEST'))) {
+            return;
+        }
 
-        switch ($action)
-        {
+        switch ($action) {
             case 'show':
-                if ($this->getUserAccessLevel('contacts.show') < ACCESS_LEVEL_READ)
-                {
+                if ($this->getUserAccessLevel('contacts.show') < ACCESS_LEVEL_READ) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->show();
                 break;
 
             case 'add':
-                if ($this->getUserAccessLevel('contacts.add') < ACCESS_LEVEL_EDIT)
-                {
+                if ($this->getUserAccessLevel('contacts.add') < ACCESS_LEVEL_EDIT) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onAdd();
-                }
-                else
-                {
+                } else {
                     $this->add();
                 }
 
                 break;
 
             case 'edit':
-                if ($this->getUserAccessLevel('contacts.edit') < ACCESS_LEVEL_EDIT)
-                {
+                if ($this->getUserAccessLevel('contacts.edit') < ACCESS_LEVEL_EDIT) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onEdit();
-                }
-                else
-                {
+                } else {
                     $this->edit();
                 }
 
                 break;
 
             case 'delete':
-                if ($this->getUserAccessLevel('contacts.delete') < ACCESS_LEVEL_DELETE)
-                {
+                if ($this->getUserAccessLevel('contacts.delete') < ACCESS_LEVEL_DELETE) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->onDelete();
                 break;
 
             case 'search':
-                if ($this->getUserAccessLevel('contacts.search') < ACCESS_LEVEL_READ)
-                {
+                if ($this->getUserAccessLevel('contacts.search') < ACCESS_LEVEL_READ) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 include_once(LEGACY_ROOT . '/lib/Search.php');
 
-                if ($this->isGetBack())
-                {
+                if ($this->isGetBack()) {
                     $this->onSearch();
-                }
-                else
-                {
+                } else {
                     $this->search();
                 }
 
                 break;
 
             case 'addActivityScheduleEvent':
-                if ($this->getUserAccessLevel('contacts.addActivityScheduleEvent') < ACCESS_LEVEL_EDIT)
-                {
+                if ($this->getUserAccessLevel('contacts.addActivityScheduleEvent') < ACCESS_LEVEL_EDIT) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onAddActivityScheduleEvent();
-                }
-                else
-                {
+                } else {
                     $this->addActivityScheduleEvent();
                 }
 
                 break;
 
             case 'showColdCallList':
-                if ($this->getUserAccessLevel('contacts.showColdCallList') < ACCESS_LEVEL_READ)
-                {
+                if ($this->getUserAccessLevel('contacts.showColdCallList') < ACCESS_LEVEL_READ) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->showColdCallList();
                 break;
 
             case 'downloadVCard':
-                if ($this->getUserAccessLevel('contacts.downloadVCard') < ACCESS_LEVEL_READ)
-                {
+                if ($this->getUserAccessLevel('contacts.downloadVCard') < ACCESS_LEVEL_READ) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 include_once(LEGACY_ROOT . '/lib/VCard.php');
@@ -182,11 +161,10 @@ class ContactsUI extends UserInterface
                 $this->downloadVCard();
                 break;
 
-            /* Main contacts page. */
+                /* Main contacts page. */
             case 'listByView':
             default:
-                if ($this->getUserAccessLevel('contacts.list') < ACCESS_LEVEL_READ)
-                {
+                if ($this->getUserAccessLevel('contacts.list') < ACCESS_LEVEL_READ) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->listByView();
@@ -199,17 +177,20 @@ class ContactsUI extends UserInterface
      */
     private function listByView($errMessage = '')
     {
-        if (!eval(Hooks::get('CONTACTS_LIST_BY_VIEW_TOP'))) return;
+        if (! eval(Hooks::get('CONTACTS_LIST_BY_VIEW_TOP'))) {
+            return;
+        }
 
         $dataGridProperties = DataGrid::getRecentParamaters("contacts:ContactsListByViewDataGrid");
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
          * be empty.  Fill in some default values. */
-        if ($dataGridProperties == array())
-        {
-            $dataGridProperties = array('rangeStart'    => 0,
-                                        'maxResults'    => 15,
-                                        'filterVisible' => false);
+        if ($dataGridProperties == []) {
+            $dataGridProperties = [
+                'rangeStart' => 0,
+                'maxResults' => 15,
+                'filterVisible' => false,
+            ];
         }
 
         $dataGrid = DataGrid::get("contacts:ContactsListByViewDataGrid", $dataGridProperties);
@@ -222,7 +203,9 @@ class ContactsUI extends UserInterface
         $contacts = new Contacts($this->_siteID);
         $this->_template->assign('totalContacts', $contacts->getCount());
 
-        if (!eval(Hooks::get('CONTACTS_LIST_BY_VIEW'))) return;
+        if (! eval(Hooks::get('CONTACTS_LIST_BY_VIEW'))) {
+            return;
+        }
 
         $this->_template->display('./modules/contacts/Contacts.tpl');
     }
@@ -233,8 +216,7 @@ class ContactsUI extends UserInterface
     private function show()
     {
         /* Bail out if we don't have a valid contact ID. */
-        if (!$this->isRequiredIDValid('contactID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('contactID', $_GET)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid contact ID.');
         }
 
@@ -244,8 +226,7 @@ class ContactsUI extends UserInterface
         $data = $contacts->get($contactID);
 
         /* Bail out if we got an empty result set. */
-        if (empty($data))
-        {
+        if (empty($data)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified contact ID could not be found.');
         }
 
@@ -253,7 +234,8 @@ class ContactsUI extends UserInterface
          * of in the template.
          */
         $data['cityAndState'] = StringUtility::makeCityStateString(
-            $data['city'], $data['state']
+            $data['city'],
+            $data['state']
         );
 
         /*
@@ -265,46 +247,37 @@ class ContactsUI extends UserInterface
         );
 
         /* Chop $data['notes'] to make $data['shortNotes']. */
-        if (strlen($data['notes']) > self::NOTES_MAXLEN)
-        {
-            $data['shortNotes']  = substr(
-                $data['notes'], 0, self::NOTES_MAXLEN
+        if (strlen($data['notes']) > self::NOTES_MAXLEN) {
+            $data['shortNotes'] = substr(
+                $data['notes'],
+                0,
+                self::NOTES_MAXLEN
             );
             $isShortNotes = true;
-        }
-        else
-        {
+        } else {
             $data['shortNotes'] = $data['notes'];
             $isShortNotes = false;
         }
 
         /* Hot contacts [can] have different title styles than normal contacts. */
-        if ($data['isHotContact'] == 1)
-        {
+        if ($data['isHotContact'] == 1) {
             $data['titleClassContact'] = 'jobTitleHot';
-        }
-        else
-        {
+        } else {
             $data['titleClassContact'] = 'jobTitleCold';
         }
 
         /* Hot companies [can] also have different title styles than normal companies. */
-        if ($data['isHotCompany'] == 1)
-        {
+        if ($data['isHotCompany'] == 1) {
             $data['titleClassCompany'] = 'jobTitleHot';
-        }
-        else
-        {
+        } else {
             $data['titleClassCompany'] = 'jobTitleCold';
         }
 
-        $jobOrders   = new JobOrders($this->_siteID);
+        $jobOrders = new JobOrders($this->_siteID);
         $jobOrdersRS = $jobOrders->getAll(JOBORDERS_STATUS_ALL, -1, -1, $contactID);
 
-        if (!empty($jobOrdersRS))
-        {
-            foreach ($jobOrdersRS as $rowIndex => $row)
-            {
+        if (! empty($jobOrdersRS)) {
+            foreach ($jobOrdersRS as $rowIndex => $row) {
                 /* Convert '00-00-00' dates to empty strings. */
                 $jobOrdersRS[$rowIndex]['startDate'] = DateUtility::fixZeroDate(
                     $jobOrdersRS[$rowIndex]['startDate']
@@ -313,13 +286,9 @@ class ContactsUI extends UserInterface
                 /* Hot jobs [can] have different title styles than normal
                  * jobs.
                  */
-                if ($jobOrdersRS[$rowIndex]['isHot'] == 1)
-                {
-
+                if ($jobOrdersRS[$rowIndex]['isHot'] == 1) {
                     $jobOrdersRS[$rowIndex]['linkClass'] = 'jobLinkHot';
-                }
-                else
-                {
+                } else {
                     $jobOrdersRS[$rowIndex]['linkClass'] = 'jobLinkCold';
                 }
 
@@ -341,18 +310,14 @@ class ContactsUI extends UserInterface
 
         $activityEntries = new ActivityEntries($this->_siteID);
         $activityRS = $activityEntries->getAllByDataItem($contactID, DATA_ITEM_CONTACT);
-        if (!empty($activityRS))
-        {
-            foreach ($activityRS as $rowIndex => $row)
-            {
-                if (empty($activityRS[$rowIndex]['notes']))
-                {
+        if (! empty($activityRS)) {
+            foreach ($activityRS as $rowIndex => $row) {
+                if (empty($activityRS[$rowIndex]['notes'])) {
                     $activityRS[$rowIndex]['notes'] = '(No Notes)';
                 }
 
                 if (empty($activityRS[$rowIndex]['jobOrderID']) ||
-                    empty($activityRS[$rowIndex]['regarding']))
-                {
+                    empty($activityRS[$rowIndex]['regarding'])) {
                     $activityRS[$rowIndex]['regarding'] = 'General';
                 }
 
@@ -367,10 +332,8 @@ class ContactsUI extends UserInterface
 
         /* Get upcoming calendar entries. */
         $calendarRS = $contacts->getUpcomingEvents($contactID);
-        if (!empty($calendarRS))
-        {
-            foreach ($calendarRS as $rowIndex => $row)
-            {
+        if (! empty($calendarRS)) {
+            foreach ($calendarRS as $rowIndex => $row) {
                 $calendarRS[$rowIndex]['enteredByAbbrName'] = StringUtility::makeInitialName(
                     $calendarRS[$rowIndex]['enteredByFirstName'],
                     $calendarRS[$rowIndex]['enteredByLastName'],
@@ -382,19 +345,18 @@ class ContactsUI extends UserInterface
 
         /* Add an MRU entry. */
         $_SESSION['CATS']->getMRU()->addEntry(
-            DATA_ITEM_CONTACT, $contactID, $data['firstName'] . ' ' . $data['lastName']
+            DATA_ITEM_CONTACT,
+            $contactID,
+            $data['firstName'] . ' ' . $data['lastName']
         );
 
         /* Get extra fields. */
         $extraFieldRS = $contacts->extraFields->getValuesForShow($contactID);
 
         /* Is the user an admin - can user see history? */
-        if ($this->getUserAccessLevel('contacts.show') < ACCESS_LEVEL_DEMO)
-        {
+        if ($this->getUserAccessLevel('contacts.show') < ACCESS_LEVEL_DEMO) {
             $privledgedUser = false;
-        }
-        else
-        {
+        } else {
             $privledgedUser = true;
         }
 
@@ -409,7 +371,9 @@ class ContactsUI extends UserInterface
         $this->_template->assign('privledgedUser', $privledgedUser);
         $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
 
-        if (!eval(Hooks::get('CONTACTS_SHOW'))) return;
+        if (! eval(Hooks::get('CONTACTS_SHOW'))) {
+            return;
+        }
 
         $this->_template->display('./modules/contacts/Show.tpl');
     }
@@ -423,20 +387,15 @@ class ContactsUI extends UserInterface
         $contacts = new Contacts($this->_siteID);
 
         /* Do we have a selected_company_id? */
-        if ($_SESSION['CATS']->isHrMode())
-        {
+        if ($_SESSION['CATS']->isHrMode()) {
             $selectedCompanyID = $companies->getDefaultCompany();
             $companyRS = $companies->get($selectedCompanyID);
             $reportsToRS = $contacts->getAll(-1, $selectedCompanyID);
-        }
-        else if (!$this->isRequiredIDValid('selected_company_id', $_GET))
-        {
+        } elseif (! $this->isRequiredIDValid('selected_company_id', $_GET)) {
             $selectedCompanyID = false;
-            $companyRS = array();
-            $reportsToRS = array();
-        }
-        else
-        {
+            $companyRS = [];
+            $reportsToRS = [];
+        } else {
             $selectedCompanyID = $_GET['selected_company_id'];
             $companyRS = $companies->get($selectedCompanyID);
             $reportsToRS = $contacts->getAll(-1, $_GET['selected_company_id']);
@@ -446,16 +405,15 @@ class ContactsUI extends UserInterface
         $extraFieldRS = $contacts->extraFields->getValuesForAdd();
 
         $defaultCompanyID = $companies->getDefaultCompany();
-        if ($defaultCompanyID !== false)
-        {
+        if ($defaultCompanyID !== false) {
             $defaultCompanyRS = $companies->get($defaultCompanyID);
-        }
-        else
-        {
-            $defaultCompanyRS = array();
+        } else {
+            $defaultCompanyRS = [];
         }
 
-        if (!eval(Hooks::get('CONTACTS_ADD'))) return;
+        if (! eval(Hooks::get('CONTACTS_ADD'))) {
+            return;
+        }
 
         $this->_template->assign('defaultCompanyID', $defaultCompanyID);
         $this->_template->assign('defaultCompanyRS', $defaultCompanyRS);
@@ -475,71 +433,60 @@ class ContactsUI extends UserInterface
     private function onAdd()
     {
         /* Bail out if we don't have a valid company ID. */
-        if (!$this->isRequiredIDValid('companyID', $_POST))
-        {
+        if (! $this->isRequiredIDValid('companyID', $_POST)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid company ID.');
         }
 
         $formattedPhoneWork = StringUtility::extractPhoneNumber(
             $this->getSanitisedInput('phoneWork', $_POST)
         );
-        if (!empty($formattedPhoneWork))
-        {
+        if (! empty($formattedPhoneWork)) {
             $phoneWork = $formattedPhoneWork;
-        }
-        else
-        {
+        } else {
             $phoneWork = $this->getSanitisedInput('phoneWork', $_POST);
         }
 
         $formattedPhoneCell = StringUtility::extractPhoneNumber(
             $this->getSanitisedInput('phoneCell', $_POST)
         );
-        if (!empty($formattedPhoneCell))
-        {
+        if (! empty($formattedPhoneCell)) {
             $phoneCell = $formattedPhoneCell;
-        }
-        else
-        {
+        } else {
             $phoneCell = $this->getSanitisedInput('phoneCell', $_POST);
         }
 
         $formattedPhoneOther = StringUtility::extractPhoneNumber(
             $this->getSanitisedInput('phoneOther', $_POST)
         );
-        if (!empty($formattedPhoneOther))
-        {
+        if (! empty($formattedPhoneOther)) {
             $phoneOther = $formattedPhoneOther;
-        }
-        else
-        {
+        } else {
             $phoneOther = $this->getSanitisedInput('phoneOther', $_POST);
         }
 
         $companyID = $_POST['companyID'];
 
-        $firstName  = $this->getSanitisedInput('firstName', $_POST);
-        $lastName   = $this->getSanitisedInput('lastName', $_POST);
-        $title      = $this->getSanitisedInput('title', $_POST);
+        $firstName = $this->getSanitisedInput('firstName', $_POST);
+        $lastName = $this->getSanitisedInput('lastName', $_POST);
+        $title = $this->getSanitisedInput('title', $_POST);
         $department = $this->getTrimmedInput('department', $_POST);
-        $reportsTo  = $this->getTrimmedInput('reportsTo', $_POST);
-        $email1     = $this->getSanitisedInput('email1', $_POST);
-        $email2     = $this->getSanitisedInput('email2', $_POST);
-        $address    = $this->getSanitisedInput('address', $_POST);
-        $city       = $this->getSanitisedInput('city', $_POST);
-        $state      = $this->getSanitisedInput('state', $_POST);
-        $zip        = $this->getSanitisedInput('zip', $_POST);
-        $notes      = $this->getSanitisedInput('notes', $_POST);
+        $reportsTo = $this->getTrimmedInput('reportsTo', $_POST);
+        $email1 = $this->getSanitisedInput('email1', $_POST);
+        $email2 = $this->getSanitisedInput('email2', $_POST);
+        $address = $this->getSanitisedInput('address', $_POST);
+        $city = $this->getSanitisedInput('city', $_POST);
+        $state = $this->getSanitisedInput('state', $_POST);
+        $zip = $this->getSanitisedInput('zip', $_POST);
+        $notes = $this->getSanitisedInput('notes', $_POST);
 
-         /* Hot contact? */
+        /* Hot contact? */
         $isHot = $this->isChecked('isHot', $_POST);
 
         /* Departments list editor. */
         $departmentsCSV = $this->getTrimmedInput('departmentsCSV', $_POST);
 
         /* Bail out if any of the required fields are empty. */
-        if (empty($firstName) || empty($lastName) || empty($title))
-        {
+        if (empty($firstName) || empty($lastName) || empty($title)) {
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
         }
 
@@ -547,37 +494,56 @@ class ContactsUI extends UserInterface
         $companies = new Companies($this->_siteID);
         $departments = $companies->getDepartments($companyID);
         $departmentsDifferences = ListEditor::getDifferencesFromList(
-            $departments, 'name', 'departmentID', $departmentsCSV
+            $departments,
+            'name',
+            'departmentID',
+            $departmentsCSV
         );
         $companies->updateDepartments($companyID, $departmentsDifferences);
 
-        if (!eval(Hooks::get('CONTACTS_ON_ADD_PRE'))) return;
+        if (! eval(Hooks::get('CONTACTS_ON_ADD_PRE'))) {
+            return;
+        }
 
         $contacts = new Contacts($this->_siteID);
         $contactID = $contacts->add(
-            $companyID, $firstName, $lastName, $title, $department, $reportsTo,
-            $email1, $email2, $phoneWork, $phoneCell, $phoneOther, $address,
-            $city, $state, $zip, $isHot, $notes, $this->_userID, $this->_userID
+            $companyID,
+            $firstName,
+            $lastName,
+            $title,
+            $department,
+            $reportsTo,
+            $email1,
+            $email2,
+            $phoneWork,
+            $phoneCell,
+            $phoneOther,
+            $address,
+            $city,
+            $state,
+            $zip,
+            $isHot,
+            $notes,
+            $this->_userID,
+            $this->_userID
         );
 
-        if ($contactID <= 0)
-        {
+        if ($contactID <= 0) {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add contact.');
         }
 
         /* Update extra fields. */
         $contacts->extraFields->setValuesOnEdit($contactID);
 
-        if (!eval(Hooks::get('CONTACTS_ON_ADD_POST'))) return;
+        if (! eval(Hooks::get('CONTACTS_ON_ADD_POST'))) {
+            return;
+        }
 
-        if (isset($_GET['v']) && $_GET['v'] != -1)
-        {
+        if (isset($_GET['v']) && $_GET['v'] != -1) {
             CATSUtility::transferRelativeURI(
                 'm=companies&a=show&companyID=' . $_GET['v']
             );
-        }
-        else
-        {
+        } else {
             CATSUtility::transferRelativeURI(
                 'm=contacts&a=show&contactID=' . $contactID
             );
@@ -590,8 +556,7 @@ class ContactsUI extends UserInterface
     private function edit()
     {
         /* Bail out if we don't have a valid contact ID. */
-        if (!$this->isRequiredIDValid('contactID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('contactID', $_GET)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid contact ID.');
         }
 
@@ -601,8 +566,7 @@ class ContactsUI extends UserInterface
         $data = $contacts->getForEditing($contactID);
 
         /* Bail out if we got an empty result set. */
-        if (empty($data))
-        {
+        if (empty($data)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified contact ID could not be found.');
         }
 
@@ -614,7 +578,9 @@ class ContactsUI extends UserInterface
 
         /* Add an MRU entry. */
         $_SESSION['CATS']->getMRU()->addEntry(
-            DATA_ITEM_CONTACT, $contactID, $data['firstName'] . ' ' . $data['lastName']
+            DATA_ITEM_CONTACT,
+            $contactID,
+            $data['firstName'] . ' ' . $data['lastName']
         );
 
         /* Get extra fields. */
@@ -629,38 +595,31 @@ class ContactsUI extends UserInterface
             'EMAIL_TEMPLATE_OWNERSHIPASSIGNCONTACT'
         );
 
-        if (!isset($statusChangeTemplateRS['disabled']) || $statusChangeTemplateRS['disabled'] == 1)
-        {
+        if (! isset($statusChangeTemplateRS['disabled']) || $statusChangeTemplateRS['disabled'] == 1) {
             $emailTemplateDisabled = true;
-        }
-        else
-        {
+        } else {
             $emailTemplateDisabled = false;
         }
 
         $reportsToRS = $contacts->getAll(-1, $data['companyID']);
 
-        if ($this->getUserAccessLevel('contacts.emailContact') == ACCESS_LEVEL_DEMO)
-        {
+        if ($this->getUserAccessLevel('contacts.emailContact') == ACCESS_LEVEL_DEMO) {
             $canEmail = false;
-        }
-        else
-        {
+        } else {
             $canEmail = true;
         }
 
         $companies = new Companies($this->_siteID);
         $defaultCompanyID = $companies->getDefaultCompany();
-        if ($defaultCompanyID !== false)
-        {
+        if ($defaultCompanyID !== false) {
             $defaultCompanyRS = $companies->get($defaultCompanyID);
-        }
-        else
-        {
-            $defaultCompanyRS = array();
+        } else {
+            $defaultCompanyRS = [];
         }
 
-        if (!eval(Hooks::get('CONTACTS_EDIT'))) return;
+        if (! eval(Hooks::get('CONTACTS_EDIT'))) {
+            return;
+        }
 
         $this->_template->assign('defaultCompanyID', $defaultCompanyID);
         $this->_template->assign('defaultCompanyRS', $defaultCompanyRS);
@@ -685,74 +644,60 @@ class ContactsUI extends UserInterface
     private function onEdit()
     {
         /* Bail out if we don't have a valid contact ID. */
-        if (!$this->isRequiredIDValid('contactID', $_POST))
-        {
+        if (! $this->isRequiredIDValid('contactID', $_POST)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid contact ID.');
         }
 
         /* Bail out if we don't have a valid company ID. */
-        if (!$this->isRequiredIDValid('companyID', $_POST))
-        {
+        if (! $this->isRequiredIDValid('companyID', $_POST)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid company ID.');
         }
 
         /* Bail out if we don't have a valid owner user ID. */
-        if (!$this->isOptionalIDValid('owner', $_POST))
-        {
+        if (! $this->isOptionalIDValid('owner', $_POST)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid owner user ID.');
         }
 
-        $contactID  = $_POST['contactID'];
-        $companyID  = $_POST['companyID'];
-        $owner      = $_POST['owner'];
+        $contactID = $_POST['contactID'];
+        $companyID = $_POST['companyID'];
+        $owner = $_POST['owner'];
 
         $formattedPhoneWork = StringUtility::extractPhoneNumber(
             $this->getSanitisedInput('phoneWork', $_POST)
         );
-        if (!empty($formattedPhoneWork))
-        {
+        if (! empty($formattedPhoneWork)) {
             $phoneWork = $formattedPhoneWork;
-        }
-        else
-        {
+        } else {
             $phoneWork = $this->getSanitisedInput('phoneWork', $_POST);
         }
 
         $formattedPhoneCell = StringUtility::extractPhoneNumber(
             $this->getSanitisedInput('phoneCell', $_POST)
         );
-        if (!empty($formattedPhoneCell))
-        {
+        if (! empty($formattedPhoneCell)) {
             $phoneCell = $formattedPhoneCell;
-        }
-        else
-        {
+        } else {
             $phoneCell = $this->getSanitisedInput('phoneCell', $_POST);
         }
 
         $formattedPhoneOther = StringUtility::extractPhoneNumber(
             $this->getSanitisedInput('phoneOther', $_POST)
         );
-        if (!empty($formattedPhoneOther))
-        {
+        if (! empty($formattedPhoneOther)) {
             $phoneOther = $formattedPhoneOther;
-        }
-        else
-        {
+        } else {
             $phoneOther = $this->getSanitisedInput('phoneOther', $_POST);
         }
 
         $contacts = new Contacts($this->_siteID);
 
-        if ($this->isChecked('ownershipChange', $_POST) && $owner > 0)
-        {
+        if ($this->isChecked('ownershipChange', $_POST) && $owner > 0) {
             $contactDetails = $contacts->get($contactID);
 
             $users = new Users($this->_siteID);
             $ownerDetails = $users->get($owner);
 
-            if (!empty($ownerDetails))
-            {
+            if (! empty($ownerDetails)) {
                 $emailAddress = $ownerDetails['email'];
 
                 /* Get the change status email template. */
@@ -762,30 +707,27 @@ class ContactsUI extends UserInterface
                 );
 
                 if (empty($statusChangeTemplateRS) ||
-                    empty($statusChangeTemplateRS['textReplaced']))
-                {
+                    empty($statusChangeTemplateRS['textReplaced'])) {
                     $statusChangeTemplate = '';
-                }
-                else
-                {
+                } else {
                     $statusChangeTemplate = $statusChangeTemplateRS['textReplaced'];
                 }
                 /* Replace e-mail template variables. */
-                $stringsToFind = array(
+                $stringsToFind = [
                     '%CONTOWNER%',
                     '%CONTFIRSTNAME%',
                     '%CONTFULLNAME%',
                     '%CONTCLIENTNAME%',
-                    '%CONTCATSURL%'
-                );
-                $replacementStrings = array(
+                    '%CONTCATSURL%',
+                ];
+                $replacementStrings = [
                     $ownerDetails['fullName'],
                     $contactDetails['firstName'],
                     $contactDetails['firstName'] . ' ' . $contactDetails['lastName'],
                     $contactDetails['companyName'],
-                    '<a href="http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=contacts&amp;a=show&amp;contactID=' . $contactID . '">'.
-                        'http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=contacts&amp;a=show&amp;contactID=' . $contactID . '</a>'
-                );
+                    '<a href="http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=contacts&amp;a=show&amp;contactID=' . $contactID . '">' .
+                        'http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=contacts&amp;a=show&amp;contactID=' . $contactID . '</a>',
+                ];
                 $statusChangeTemplate = str_replace(
                     $stringsToFind,
                     $replacementStrings,
@@ -793,31 +735,27 @@ class ContactsUI extends UserInterface
                 );
 
                 $email = $statusChangeTemplate;
-            }
-            else
-            {
+            } else {
                 $email = '';
                 $emailAddress = '';
             }
-        }
-        else
-        {
+        } else {
             $email = '';
             $emailAddress = '';
         }
 
-        $firstName  = $this->getSanitisedInput('firstName', $_POST);
-        $lastName   = $this->getSanitisedInput('lastName', $_POST);
-        $title      = $this->getSanitisedInput('title', $_POST);
+        $firstName = $this->getSanitisedInput('firstName', $_POST);
+        $lastName = $this->getSanitisedInput('lastName', $_POST);
+        $title = $this->getSanitisedInput('title', $_POST);
         $department = $this->getTrimmedInput('department', $_POST);
-        $reportsTo  = $this->getTrimmedInput('reportsTo', $_POST);
-        $email1     = $this->getSanitisedInput('email1', $_POST);
-        $email2     = $this->getSanitisedInput('email2', $_POST);
-        $address    = $this->getSanitisedInput('address', $_POST);
-        $city       = $this->getSanitisedInput('city', $_POST);
-        $state      = $this->getSanitisedInput('state', $_POST);
-        $zip        = $this->getSanitisedInput('zip', $_POST);
-        $notes      = $this->getSanitisedInput('notes', $_POST);
+        $reportsTo = $this->getTrimmedInput('reportsTo', $_POST);
+        $email1 = $this->getSanitisedInput('email1', $_POST);
+        $email2 = $this->getSanitisedInput('email2', $_POST);
+        $address = $this->getSanitisedInput('address', $_POST);
+        $city = $this->getSanitisedInput('city', $_POST);
+        $state = $this->getSanitisedInput('state', $_POST);
+        $zip = $this->getSanitisedInput('zip', $_POST);
+        $notes = $this->getSanitisedInput('notes', $_POST);
 
         $isHot = $this->isChecked('isHot', $_POST);
         $leftCompany = $this->isChecked('leftCompany', $_POST);
@@ -826,33 +764,58 @@ class ContactsUI extends UserInterface
         $departmentsCSV = $this->getTrimmedInput('departmentsCSV', $_POST);
 
         /* Bail out if any of the required fields are empty. */
-        if (empty($firstName) || empty($lastName) || empty($title))
-        {
+        if (empty($firstName) || empty($lastName) || empty($title)) {
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
         }
 
-        if (!eval(Hooks::get('CONTACTS_ON_EDIT_PRE'))) return;
+        if (! eval(Hooks::get('CONTACTS_ON_EDIT_PRE'))) {
+            return;
+        }
 
         /* Update departments. */
         $companies = new Companies($this->_siteID);
         $departments = $companies->getDepartments($companyID);
         $departmentsDifferences = ListEditor::getDifferencesFromList(
-            $departments, 'name', 'departmentID', $departmentsCSV
+            $departments,
+            'name',
+            'departmentID',
+            $departmentsCSV
         );
         $companies->updateDepartments($companyID, $departmentsDifferences);
 
-        if (!$contacts->update($contactID, $companyID, $firstName, $lastName,
-            $title, $department, $reportsTo, $email1, $email2, $phoneWork, $phoneCell,
-            $phoneOther, $address, $city, $state, $zip, $isHot,
-            $leftCompany, $notes, $owner, $email, $emailAddress))
-        {
+        if (! $contacts->update(
+            $contactID,
+            $companyID,
+            $firstName,
+            $lastName,
+            $title,
+            $department,
+            $reportsTo,
+            $email1,
+            $email2,
+            $phoneWork,
+            $phoneCell,
+            $phoneOther,
+            $address,
+            $city,
+            $state,
+            $zip,
+            $isHot,
+            $leftCompany,
+            $notes,
+            $owner,
+            $email,
+            $emailAddress
+        )) {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update contact.');
         }
 
         /* Update extra fields. */
         $contacts->extraFields->setValuesOnEdit($contactID);
 
-        if (!eval(Hooks::get('CONTACTS_ON_EDIT_POST'))) return;
+        if (! eval(Hooks::get('CONTACTS_ON_EDIT_POST'))) {
+            return;
+        }
 
         CATSUtility::transferRelativeURI(
             'm=contacts&a=show&contactID=' . $contactID
@@ -864,26 +827,29 @@ class ContactsUI extends UserInterface
      */
     private function onDelete()
     {
-
         /* Bail out if we don't have a valid contact ID. */
-        if (!$this->isRequiredIDValid('contactID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('contactID', $_GET)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid contact ID.');
         }
 
         $contactID = $_GET['contactID'];
 
-        if (!eval(Hooks::get('CONTACTS_DELETE_PRE'))) return;
+        if (! eval(Hooks::get('CONTACTS_DELETE_PRE'))) {
+            return;
+        }
 
         $contacts = new Contacts($this->_siteID);
         $contacts->delete($contactID);
 
         /* Delete the MRU entry if present. */
         $_SESSION['CATS']->getMRU()->removeEntry(
-            DATA_ITEM_CONTACT, $contactID
+            DATA_ITEM_CONTACT,
+            $contactID
         );
 
-        if (!eval(Hooks::get('CONTACTS_DELETE_POST'))) return;
+        if (! eval(Hooks::get('CONTACTS_DELETE_POST'))) {
+            return;
+        }
 
         CATSUtility::transferRelativeURI('m=contacts&a=listByView');
     }
@@ -896,7 +862,9 @@ class ContactsUI extends UserInterface
         $savedSearches = new SavedSearches($this->_siteID);
         $savedSearchRS = $savedSearches->get(DATA_ITEM_CONTACT);
 
-        if (!eval(Hooks::get('CONTACTS_SEARCH'))) return;
+        if (! eval(Hooks::get('CONTACTS_SEARCH'))) {
+            return;
+        }
 
         $this->_template->assign('wildCardString', '');
         $this->_template->assign('savedSearchRS', $savedSearchRS);
@@ -922,47 +890,41 @@ class ContactsUI extends UserInterface
         /* Bail out to prevent an error if the GET string doesn't even contain
          * a field named 'wildCardString' at all.
          */
-        if (!isset($_GET['wildCardString']))
-        {
+        if (! isset($_GET['wildCardString'])) {
             CommonErrors::fatal(COMMONERROR_WILDCARDSTRING, $this, 'No wild card string specified.');
         }
 
         $query = trim($_GET['wildCardString']);
 
         /* Set up sorting. */
-        if ($this->isRequiredIDValid('page', $_GET))
-        {
+        if ($this->isRequiredIDValid('page', $_GET)) {
             $currentPage = $_GET['page'];
-        }
-        else
-        {
+        } else {
             $currentPage = 1;
         }
 
         $searchPager = new SearchPager(
-            CANDIDATES_PER_PAGE, $currentPage, $this->_siteID, $_GET
+            CANDIDATES_PER_PAGE,
+            $currentPage,
+            $this->_siteID,
+            $_GET
         );
 
-        if ($searchPager->isSortByValid('sortBy', $_GET))
-        {
+        if ($searchPager->isSortByValid('sortBy', $_GET)) {
             $sortBy = $_GET['sortBy'];
-        }
-        else
-        {
+        } else {
             $sortBy = 'lastName';
         }
 
-        if ($searchPager->isSortDirectionValid('sortDirection', $_GET))
-        {
+        if ($searchPager->isSortDirectionValid('sortDirection', $_GET)) {
             $sortDirection = $_GET['sortDirection'];
-        }
-        else
-        {
+        } else {
             $sortDirection = 'ASC';
         }
 
         $baseURL = CATSUtility::getFilteredGET(
-            array('sortBy', 'sortDirection', 'page'), '&amp;'
+            ['sortBy', 'sortDirection', 'page'],
+            '&amp;'
         );
         $searchPager->setSortByParameters($baseURL, $sortBy, $sortDirection);
 
@@ -971,8 +933,7 @@ class ContactsUI extends UserInterface
 
         /* Execute the search. */
         $search = new ContactsSearch($this->_siteID);
-        switch ($mode)
-        {
+        switch ($mode) {
             case 'searchByFullName':
                 $wildCardContactName = $query;
                 $rs = $search->byFullName($query, $sortBy, $sortDirection);
@@ -993,41 +954,29 @@ class ContactsUI extends UserInterface
                 break;
         }
 
-        foreach ($rs as $rowIndex => $row)
-        {
-            if ($row['isHotContact'] == 1)
-            {
+        foreach ($rs as $rowIndex => $row) {
+            if ($row['isHotContact'] == 1) {
                 $rs[$rowIndex]['linkClassContact'] = 'jobLinkHot';
-            }
-            else
-            {
+            } else {
                 $rs[$rowIndex]['linkClassContact'] = 'jobLinkCold';
             }
 
-            if ($row['leftCompany'] == 1)
-            {
-                 $rs[$rowIndex]['linkClassCompany'] = 'jobLinkDead';
-            }
-            else if ($row['isHotCompany'] == 1)
-            {
+            if ($row['leftCompany'] == 1) {
+                $rs[$rowIndex]['linkClassCompany'] = 'jobLinkDead';
+            } elseif ($row['isHotCompany'] == 1) {
                 $rs[$rowIndex]['linkClassCompany'] = 'jobLinkHot';
-            }
-            else
-            {
+            } else {
                 $rs[$rowIndex]['linkClassCompany'] = 'jobLinkCold';
             }
 
-            if (!empty($row['ownerFirstName']))
-            {
+            if (! empty($row['ownerFirstName'])) {
                 $rs[$rowIndex]['ownerAbbrName'] = StringUtility::makeInitialName(
                     $row['ownerFirstName'],
                     $row['ownerLastName'],
                     false,
                     LAST_NAME_MAXLEN
                 );
-            }
-            else
-            {
+            } else {
                 $rs[$rowIndex]['ownerAbbrName'] = 'None';
             }
         }
@@ -1035,7 +984,10 @@ class ContactsUI extends UserInterface
 
         $contactIDs = implode(',', ResultSetUtility::getColumnValues($rs, 'contactID'));
         $exportForm = ExportUtility::getForm(
-            DATA_ITEM_CONTACT, $contactIDs, 40, 15
+            DATA_ITEM_CONTACT,
+            $contactIDs,
+            40,
+            15
         );
 
         /* Save the search. */
@@ -1050,7 +1002,9 @@ class ContactsUI extends UserInterface
 
         $query = urlencode(htmlspecialchars($query));
 
-        if (!eval(Hooks::get('CONTACTS_ON_SEARCH'))) return;
+        if (! eval(Hooks::get('CONTACTS_ON_SEARCH'))) {
+            return;
+        }
 
         $this->_template->assign('savedSearchRS', $savedSearchRS);
         $this->_template->assign('active', $this);
@@ -1076,7 +1030,9 @@ class ContactsUI extends UserInterface
 
         $rs = $contacts->getColdCallList();
 
-        if (!eval(Hooks::get('CONTACTS_COLD_CALL_LIST'))) return;
+        if (! eval(Hooks::get('CONTACTS_COLD_CALL_LIST'))) {
+            return;
+        }
         $this->_template->assign('active', $this);
         $this->_template->assign('subActive', 'Cold Call List');
         $this->_template->assign('rs', $rs);
@@ -1087,8 +1043,7 @@ class ContactsUI extends UserInterface
     private function addActivityScheduleEvent()
     {
         /* Bail out if we don't have a valid candidate ID. */
-        if (!$this->isRequiredIDValid('contactID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('contactID', $_GET)) {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid contact ID.');
         }
 
@@ -1105,14 +1060,13 @@ class ContactsUI extends UserInterface
         /* Are we in "Only Schedule Event" mode? */
         $onlyScheduleEvent = $this->isChecked('onlyScheduleEvent', $_GET);
 
-        if (!eval(Hooks::get('CONTACTS_ADD_ACTIVITY_SCHEDULE_EVENT'))) return;
-
-        if (SystemUtility::isSchedulerEnabled() && !$_SESSION['CATS']->isDemo())
-        {
-            $allowEventReminders = true;
+        if (! eval(Hooks::get('CONTACTS_ADD_ACTIVITY_SCHEDULE_EVENT'))) {
+            return;
         }
-        else
-        {
+
+        if (SystemUtility::isSchedulerEnabled() && ! $_SESSION['CATS']->isDemo()) {
+            $allowEventReminders = true;
+        } else {
             $allowEventReminders = false;
         }
 
@@ -1132,8 +1086,7 @@ class ContactsUI extends UserInterface
     private function onAddActivityScheduleEvent()
     {
         /* Bail out if we don't have a valid regardingjob order ID. */
-        if (!$this->isOptionalIDValid('regardingID', $_POST))
-        {
+        if (! $this->isOptionalIDValid('regardingID', $_POST)) {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
         }
 
@@ -1150,8 +1103,7 @@ class ContactsUI extends UserInterface
     private function downloadVCard()
     {
         /* Bail out if we don't have a valid contact ID. */
-        if (!$this->isRequiredIDValid('contactID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('contactID', $_GET)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid contact ID.');
         }
 
@@ -1164,8 +1116,7 @@ class ContactsUI extends UserInterface
         $company = $companies->get($contact['companyID']);
 
         /* Bail out if we got an empty result set. */
-        if (empty($contact))
-        {
+        if (empty($contact)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified contact ID could not be found.');
         }
 
@@ -1174,13 +1125,11 @@ class ContactsUI extends UserInterface
 
         $vCard->setName($contact['lastName'], $contact['firstName']);
 
-        if (!empty($contact['phoneWork']))
-        {
+        if (! empty($contact['phoneWork'])) {
             $vCard->setPhoneNumber($contact['phoneWork'], 'PREF;WORK;VOICE');
         }
 
-        if (!empty($contact['phoneCell']))
-        {
+        if (! empty($contact['phoneCell'])) {
             $vCard->setPhoneNumber($contact['phoneCell'], 'CELL;VOICE');
         }
 
@@ -1189,38 +1138,37 @@ class ContactsUI extends UserInterface
         $addressLines = explode("\n", $contact['address']);
 
         $address1 = trim($addressLines[0]);
-        if (isset($addressLines[1]))
-        {
+        if (isset($addressLines[1])) {
             $address2 = trim($addressLines[1]);
-        }
-        else
-        {
+        } else {
             $address2 = '';
         }
 
         $vCard->setAddress(
-            $address1, $address2, $contact['city'],
-            $contact['state'], $contact['zip']
+            $address1,
+            $address2,
+            $contact['city'],
+            $contact['state'],
+            $contact['zip']
         );
 
-        if (!empty($contact['email1']))
-        {
+        if (! empty($contact['email1'])) {
             $vCard->setEmail($contact['email1']);
         }
 
-        if (!empty($company['url']))
-        {
+        if (! empty($company['url'])) {
             $vCard->setURL($company['url']);
         }
 
         $vCard->setTitle($contact['title']);
         $vCard->setOrganization($company['name']);
 
-        if (!eval(Hooks::get('CONTACTS_GET_VCARD'))) return;
+        if (! eval(Hooks::get('CONTACTS_GET_VCARD'))) {
+            return;
+        }
 
         $vCard->printVCardWithHeaders();
     }
-
 
     /**
      * Formats SQL result set for display. This is factored out for code
@@ -1231,73 +1179,64 @@ class ContactsUI extends UserInterface
      */
     private function _formatListByViewResults($resultSet)
     {
-        if (empty($resultSet))
-        {
+        if (empty($resultSet)) {
             return $resultSet;
         }
 
-        foreach ($resultSet as $rowIndex => $row)
-        {
-            if (!empty($resultSet[$rowIndex]['ownerFirstName']))
-            {
+        foreach ($resultSet as $rowIndex => $row) {
+            if (! empty($resultSet[$rowIndex]['ownerFirstName'])) {
                 $resultSet[$rowIndex]['ownerAbbrName'] = StringUtility::makeInitialName(
                     $resultSet[$rowIndex]['ownerFirstName'],
                     $resultSet[$rowIndex]['ownerLastName'],
                     false,
                     LAST_NAME_MAXLEN
                 );
-            }
-            else
-            {
+            } else {
                 $resultSet[$rowIndex]['ownerAbbrName'] = 'None';
             }
 
             /* Hot contacts [can] have different title styles than normal
              * companies.
              */
-            if ($resultSet[$rowIndex]['isHotContact'] == 1)
-            {
+            if ($resultSet[$rowIndex]['isHotContact'] == 1) {
                 $resultSet[$rowIndex]['linkClassContact'] = 'jobLinkHot';
-            }
-            else
-            {
+            } else {
                 $resultSet[$rowIndex]['linkClassContact'] = 'jobLinkCold';
             }
 
-           /* Strikethrough on no longer associated companies takes priority
-            * over hot companies.
-            */
-            if ($resultSet[$rowIndex]['leftCompany'] == 1)
-            {
+            /* Strikethrough on no longer associated companies takes priority
+             * over hot companies.
+             */
+            if ($resultSet[$rowIndex]['leftCompany'] == 1) {
                 $resultSet[$rowIndex]['linkClassCompany'] = 'jobLinkDead';
-            }
-            else if ($resultSet[$rowIndex]['isHotCompany'] == 1)
-            {
+            } elseif ($resultSet[$rowIndex]['isHotCompany'] == 1) {
                 $resultSet[$rowIndex]['linkClassCompany'] = 'jobLinkHot';
-            }
-            else
-            {
+            } else {
                 $resultSet[$rowIndex]['linkClassCompany'] = 'jobLinkCold';
             }
 
             /* Truncate Company Name column */
-            if (strlen($resultSet[$rowIndex]['companyName']) > self::TRUNCATE_CLIENT_NAME)
-            {
+            if (strlen($resultSet[$rowIndex]['companyName']) > self::TRUNCATE_CLIENT_NAME) {
                 $resultSet[$rowIndex]['companyName'] = substr(
-                    $resultSet[$rowIndex]['companyName'], 0, self::TRUNCATE_CLIENT_NAME
+                    $resultSet[$rowIndex]['companyName'],
+                    0,
+                    self::TRUNCATE_CLIENT_NAME
                 ) . "...";
             }
 
             /* Truncate Title column */
-            if (strlen($resultSet[$rowIndex]['title']) > self::TRUNCATE_TITLE)
-            {
+            if (strlen($resultSet[$rowIndex]['title']) > self::TRUNCATE_TITLE) {
                 $resultSet[$rowIndex]['title'] = substr(
-                    $resultSet[$rowIndex]['title'], 0, self::TRUNCATE_TITLE
+                    $resultSet[$rowIndex]['title'],
+                    0,
+                    self::TRUNCATE_TITLE
                 ) . "...";
             }
         }
 
-        if (!eval(Hooks::get('CONTACTS_FORMAT_LIST_BY_VIEW'))) return;
+        if (! eval(Hooks::get('CONTACTS_FORMAT_LIST_BY_VIEW'))) {
+            return;
+        }
 
         return $resultSet;
     }
@@ -1310,23 +1249,18 @@ class ContactsUI extends UserInterface
      * @param boolean from joborders module perspective
      * @param integer "regarding" job order ID or -1
      * @param string module directory
-     * @return void
      */
     private function _addActivityScheduleEvent($regardingID, $directoryOverride = '')
     {
         /* Module directory override for fatal() calls. */
-        if ($directoryOverride != '')
-        {
+        if ($directoryOverride != '') {
             $moduleDirectory = $directoryOverride;
-        }
-        else
-        {
+        } else {
             $moduleDirectory = $this->_moduleDirectory;
         }
 
         /* Bail out if we don't have a valid candidate ID. */
-        if (!$this->isRequiredIDValid('contactID', $_POST))
-        {
+        if (! $this->isRequiredIDValid('contactID', $_POST)) {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid contact ID.');
         }
 
@@ -1334,11 +1268,9 @@ class ContactsUI extends UserInterface
 
         //if (!eval(Hooks::get('CONTACT_ON_ADD_ACTIVITY_SCHEDULE_EVENT_PRE'))) return;
 
-        if ($this->isChecked('addActivity', $_POST))
-        {
+        if ($this->isChecked('addActivity', $_POST)) {
             /* Bail out if we don't have a valid job order ID. */
-            if (!$this->isOptionalIDValid('activityTypeID', $_POST))
-            {
+            if (! $this->isOptionalIDValid('activityTypeID', $_POST)) {
                 CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid activity type ID.');
             }
 
@@ -1360,49 +1292,43 @@ class ContactsUI extends UserInterface
             );
             $activityTypes = $activityEntries->getTypes();
             $activityTypeDescription = ResultSetUtility::getColumnValueByIDValue(
-                $activityTypes, 'typeID', $activityTypeID, 'type'
+                $activityTypes,
+                'typeID',
+                $activityTypeID,
+                'type'
             );
 
             $activityAdded = true;
-        }
-        else
-        {
+        } else {
             $activityAdded = false;
             $activityNote = '';
             $activityTypeDescription = '';
         }
 
-        if ($this->isChecked('scheduleEvent', $_POST))
-        {
+        if ($this->isChecked('scheduleEvent', $_POST)) {
             /* Bail out if we received an invalid date. */
             $trimmedDate = $this->getSanitisedInput('dateAdd', $_POST);
             if (empty($trimmedDate) ||
-                !DateUtility::validate('-', $trimmedDate, DATE_FORMAT_MMDDYY))
-            {
+                ! DateUtility::validate('-', $trimmedDate, DATE_FORMAT_MMDDYY)) {
                 CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid date.');
             }
 
             /* Bail out if we don't have a valid event type. */
-            if (!$this->isRequiredIDValid('eventTypeID', $_POST))
-            {
+            if (! $this->isRequiredIDValid('eventTypeID', $_POST)) {
                 CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid event type ID.');
             }
 
             /* Bail out if we don't have a valid time format ID. */
-            if (!isset($_POST['allDay']) ||
-                ($_POST['allDay'] != '0' && $_POST['allDay'] != '1'))
-            {
+            if (! isset($_POST['allDay']) ||
+                ($_POST['allDay'] != '0' && $_POST['allDay'] != '1')) {
                 CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid time format ID.');
             }
 
             $eventTypeID = $_POST['eventTypeID'];
 
-            if ($_POST['allDay'] == 1)
-            {
+            if ($_POST['allDay'] == 1) {
                 $allDay = true;
-            }
-            else
-            {
+            } else {
                 $allDay = false;
             }
 
@@ -1410,44 +1336,41 @@ class ContactsUI extends UserInterface
 
             $reminderEnabled = $this->isChecked('reminderToggle', $_POST);
             $reminderEmail = $this->getSanitisedInput('sendEmail', $_POST);
-            $reminderTime  = $this->getTrimmedInput('reminderTime', $_POST);
+            $reminderTime = $this->getTrimmedInput('reminderTime', $_POST);
 
             $duration = -1;
 
             /* Is this a scheduled event or an all day event? */
-            if ($allDay)
-            {
+            if ($allDay) {
                 $date = DateUtility::convert(
-                    '-', $trimmedDate, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+                    '-',
+                    $trimmedDate,
+                    DATE_FORMAT_MMDDYY,
+                    DATE_FORMAT_YYYYMMDD
                 );
 
                 $hour = 12;
                 $minute = 0;
                 $meridiem = 'AM';
-            }
-            else
-            {
+            } else {
                 /* Bail out if we don't have a valid hour. */
-                if (!isset($_POST['hour']))
-                {
+                if (! isset($_POST['hour'])) {
                     CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid hour.');
                 }
 
                 /* Bail out if we don't have a valid minute. */
-                if (!isset($_POST['minute']))
-                {
+                if (! isset($_POST['minute'])) {
                     CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid minute.');
                 }
 
                 /* Bail out if we don't have a valid meridiem value. */
-                if (!isset($_POST['meridiem']) ||
-                    ($_POST['meridiem'] != 'AM' && $_POST['meridiem'] != 'PM'))
-                {
+                if (! isset($_POST['meridiem']) ||
+                    ($_POST['meridiem'] != 'AM' && $_POST['meridiem'] != 'PM')) {
                     CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid meridiem value.');
                 }
 
-                $hour     = $_POST['hour'];
-                $minute   = $_POST['minute'];
+                $hour = $_POST['hour'];
+                $minute = $_POST['minute'];
                 $meridiem = $_POST['meridiem'];
 
                 /* Convert formatted time to UNIX timestamp. */
@@ -1469,33 +1392,39 @@ class ContactsUI extends UserInterface
             }
 
             $description = $this->getSanitisedInput('description', $_POST);
-            $title       = $this->getSanitisedInput('title', $_POST);
+            $title = $this->getSanitisedInput('title', $_POST);
 
             /* Bail out if any of the required fields are empty. */
-            if (empty($title))
-            {
+            if (empty($title)) {
                 CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
             }
 
-            if ($regardingID > 0)
-            {
+            if ($regardingID > 0) {
                 $eventJobOrderID = $regardingID;
-            }
-            else
-            {
+            } else {
                 $eventJobOrderID = -1;
             }
 
             $calendar = new Calendar($this->_siteID);
             $eventID = $calendar->addEvent(
-                $eventTypeID, $date, $description, $allDay, $this->_userID,
-                $contactID, DATA_ITEM_CONTACT, $eventJobOrderID, $title,
-                $duration, $reminderEnabled, $reminderEmail, $reminderTime,
-                $publicEntry, $_SESSION['CATS']->getTimeZoneOffset()
+                $eventTypeID,
+                $date,
+                $description,
+                $allDay,
+                $this->_userID,
+                $contactID,
+                DATA_ITEM_CONTACT,
+                $eventJobOrderID,
+                $title,
+                $duration,
+                $reminderEnabled,
+                $reminderEmail,
+                $reminderTime,
+                $publicEntry,
+                $_SESSION['CATS']->getTimeZoneOffset()
             );
 
-            if ($eventID <= 0)
-            {
+            if ($eventID <= 0) {
                 CommonErrors::fatalModal(COMMONERROR_RECORDERROR, $this, 'Failed to add calendar event.');
             }
 
@@ -1507,42 +1436,38 @@ class ContactsUI extends UserInterface
             $calendarEventTypes = $calendar->getAllEventTypes();
 
             $eventTypeDescription = ResultSetUtility::getColumnValueByIDValue(
-                $calendarEventTypes, 'typeID', $eventTypeID, 'description'
+                $calendarEventTypes,
+                'typeID',
+                $eventTypeID,
+                'description'
             );
 
             $eventHTML = sprintf(
                 '<p>An event of type <span class="bold">%s</span> has been scheduled on <span class="bold">%s</span>.</p>',
                 htmlspecialchars($eventTypeDescription),
                 htmlspecialchars($formattedDate)
-
             );
             $eventScheduled = true;
-        }
-        else
-        {
+        } else {
             $eventHTML = '<p>No event has been scheduled.</p>';
             $eventScheduled = false;
         }
 
-        if (isset($_GET['onlyScheduleEvent']))
-        {
+        if (isset($_GET['onlyScheduleEvent'])) {
             $onlyScheduleEvent = true;
-        }
-        else
-        {
+        } else {
             $onlyScheduleEvent = false;
         }
 
-        if (!$activityAdded && !$eventScheduled)
-        {
+        if (! $activityAdded && ! $eventScheduled) {
             $changesMade = false;
-        }
-        else
-        {
+        } else {
             $changesMade = true;
         }
 
-        if (!eval(Hooks::get('CANDIDATE_ON_ADD_ACTIVITY_CHANGE_STATUS_POST'))) return;
+        if (! eval(Hooks::get('CANDIDATE_ON_ADD_ACTIVITY_CHANGE_STATUS_POST'))) {
+            return;
+        }
 
         $this->_template->assign('contactID', $contactID);
         $this->_template->assign('regardingID', $regardingID);
@@ -1559,5 +1484,3 @@ class ContactsUI extends UserInterface
         );
     }
 }
-
-?>

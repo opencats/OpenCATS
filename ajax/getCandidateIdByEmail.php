@@ -29,11 +29,10 @@
 
 $interface = new SecureAJAXInterface();
 
-include (LEGACY_ROOT . '/lib/Candidates.php');
+include(LEGACY_ROOT . '/lib/Candidates.php');
 
-if (!isset($_REQUEST['email']))
-{
-    die ('Invalid E-Mail address.');
+if (! isset($_REQUEST['email'])) {
+    die('Invalid E-Mail address.');
 }
 
 $siteID = $interface->getSiteID();
@@ -46,21 +45,18 @@ $output = "<data>\n";
 
 $candidateID = $candidates->getIDByEmail($email);
 
-if ($candidateID == -1)
-{
+if ($candidateID == -1) {
     $output .=
         "    <candidate>\n" .
         "        <id>-1</id>\n" .
         "    </candidate>\n";
-}
-else
-{
+} else {
     $candidateRS = $candidates->get($candidateID);
-    
+
     $output .=
         "    <candidate>\n" .
-        "        <id>"         . $candidateID . "</id>\n" .
-        "        <name>"         . $candidateRS['candidateFullName'] . "</name>\n" .
+        "        <id>" . $candidateID . "</id>\n" .
+        "        <name>" . $candidateRS['candidateFullName'] . "</name>\n" .
         "    </candidate>\n";
 }
 
@@ -69,5 +65,3 @@ $output .=
 
 /* Send back the XML data. */
 $interface->outputXMLPage($output);
-
-?>

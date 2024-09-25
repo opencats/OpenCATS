@@ -7,7 +7,7 @@
  *
  */
 
-require_once dirname(__FILE__)."/Graph.class.php";
+require_once __DIR__ . "/Graph.class.php";
 
 /**
  * AntiSpam
@@ -15,209 +15,196 @@ require_once dirname(__FILE__)."/Graph.class.php";
  *
  * @package Artichow
  */
-class awAntiSpam extends awImage {
+class awAntiSpam extends awImage
+{
+    /**
+     * Anti-spam string
+     *
+     * @var string
+     */
+    protected $string;
 
-	/**
-	 * Anti-spam string
-	 *
-	 * @var string
-	 */
-	protected $string;
+    /**
+     * Noise intensity
+     *
+     * @var int
+     */
+    protected $noise = 0;
 
-	/**
-	 * Noise intensity
-	 *
-	 * @var int
-	 */
-	protected $noise = 0;
+    /**
+     * Construct a new awAntiSpam image
+     *
+     * @param string $string A string to display
+     */
+    public function __construct($string = '')
+    {
+        parent::__construct();
 
-	/**
-	 * Construct a new awAntiSpam image
-	 *
-	 * @param string $string A string to display
-	 */
-	public function __construct($string = '') {
+        $this->string = (string) $string;
+    }
 
-		parent::__construct();
+    /**
+     * Create a random string
+     *
+     * @param int $length String length
+     * @return string String created
+     */
+    public function setRand($length)
+    {
+        $length = (int) $length;
 
-		$this->string = (string)$string;
+        $this->string = '';
 
-	}
+        $letters = 'aAbBCDeEFgGhHJKLmMnNpPqQRsStTuVwWXYZz2345679';
+        $number = strlen($letters);
 
-	/**
-	 * Create a random string
-	 *
-	 * @param int $length String length
-	 * @return string String created
-	 */
-	public function setRand($length) {
+        for ($i = 0; $i < $length; $i++) {
+            $this->string .= $letters[mt_rand(0, $number - 1)];
+        }
 
-		$length = (int)$length;
+        return $this->string;
+    }
 
-		$this->string = '';
+    public function setText($text)
+    {
+        $this->string = $text;
 
-		$letters = 'aAbBCDeEFgGhHJKLmMnNpPqQRsStTuVwWXYZz2345679';
-		$number = strlen($letters);
+        return $this->string;
+    }
 
-		for($i = 0; $i < $length; $i++) {
-			$this->string .= $letters{mt_rand(0, $number - 1)};
-		}
+    /**
+     * Set noise on image
+     */
+    public function setNoise($noise)
+    {
+        if ($noise < 0) {
+            $noise = 0;
+        }
+        if ($noise > 10) {
+            $noise = 10;
+        }
+        $this->noise = (int) $noise;
+    }
 
-		return $this->string;
+    /**
+     * Save string value in session
+     * You can use check() to verify the value later
+     *
+     * @param string $qName A name that identify the anti-spam image
+     */
+    public function save($qName)
+    {
+        $this->session();
+        $session = 'artichow_' . (string) $qName;
+        $_SESSION[$session] = $this->string;
+    }
 
-	}
+    /**
+     * Verify user entry
+     *
+     * @param string $qName A name that identify the anti-spam image
+     * @param string $value User-defined value
+     * @param bool $case TRUE for case insensitive check, FALSE for case sensitive check ? (default to TRUE)
+     * @return bool TRUE if the value is correct, FALSE otherwise
+     */
+    public function check($qName, $value, $case = true)
+    {
+        $this->session();
 
-	public function setText($text) {
+        $session = 'artichow_' . (string) $qName;
 
-		$this->string = $text;
+        return (
+            array_key_exists($session, $_SESSION) === true and
+            $case ?
+                (strtolower((string) $_SESSION[$session]) === strtolower((string) $value)) :
+                ($_SESSION[$session] === (string) $value)
+        );
+    }
 
-		return $this->string;
+    /**
+     * Draw image
+     */
+    public function draw()
+    {
+        $fonts = [ARTICHOW_FONT . DIRECTORY_SEPARATOR . 'Tuffy.ttf', ARTICHOW_FONT . DIRECTORY_SEPARATOR . 'TuffyBold.ttf', ARTICHOW_FONT . DIRECTORY_SEPARATOR . 'TuffyItalic.ttf', ARTICHOW_FONT . DIRECTORY_SEPARATOR . 'TuffyBoldItalic.ttf'];
 
-	}
+        $sizes = [12, 12.5, 13, 13.5, 14, 15, 16, 17, 18, 19];
 
-	/**
-	 * Set noise on image
-	 *
-	 * @param int $nois Noise intensity (from 0 to 10)
-	 */
-	public function setNoise($noise) {
-		if($noise < 0) {
-			$noise = 0;
-		}
-		if($noise > 10) {
-			$noise = 10;
-		}
-		$this->noise = (int)$noise;
-	}
+        $widths = [];
+        $heights = [];
+        $texts = [];
 
-	/**
-	 * Save string value in session
-	 * You can use check() to verify the value later
-	 *
-	 * @param string $qName A name that identify the anti-spam image
-	 */
-	public function save($qName) {
-		$this->session();
-		$session = 'artichow_'.(string)$qName;
-		$_SESSION[$session] = $this->string;
-	}
+        for ($i = 0; $i < strlen($this->string); $i++) {
+            $fontKey = array_rand($fonts);
+            $sizeKey = array_rand($sizes);
 
-	/**
-	 * Verify user entry
-	 *
-	 * @param string $qName A name that identify the anti-spam image
-	 * @param string $value User-defined value
-	 * @param bool $case TRUE for case insensitive check, FALSE for case sensitive check ? (default to TRUE)
-	 * @return bool TRUE if the value is correct, FALSE otherwise
-	 */
-	public function check($qName, $value, $case = TRUE) {
+            $font = new awTTFFont(
+                $fonts[$fontKey],
+                $sizes[$sizeKey]
+            );
 
-		$this->session();
+            $text = new awText(
+                $this->string[$i],
+                $font,
+                null,
+                mt_rand(-15, 15)
+            );
 
-		$session = 'artichow_'.(string)$qName;
+            $widths[] = $font->getTextWidth($text);
+            $heights[] = $font->getTextHeight($text);
+            $texts[] = $text;
+        }
 
-		return (
-			array_key_exists($session, $_SESSION) === TRUE and
-			$case ?
-				(strtolower($_SESSION[$session]) === strtolower((string)$value)) :
-				($_SESSION[$session] === (string)$value)
-		);
+        $width = array_sum($widths);
+        $height = array_max($heights);
 
-	}
+        $totalWidth = $width + 10 + count($texts) * 10;
+        $totalHeight = $height + 20;
 
-	/**
-	 * Draw image
-	 */
-	public function draw() {
-		$fonts = array(
-			ARTICHOW_FONT.DIRECTORY_SEPARATOR.'Tuffy.ttf',
-			ARTICHOW_FONT.DIRECTORY_SEPARATOR.'TuffyBold.ttf',
-			ARTICHOW_FONT.DIRECTORY_SEPARATOR.'TuffyItalic.ttf',
-			ARTICHOW_FONT.DIRECTORY_SEPARATOR.'TuffyBoldItalic.ttf'
-		);
+        $this->setSize($totalWidth, $totalHeight);
 
-		$sizes = array(12, 12.5, 13, 13.5, 14, 15, 16, 17, 18, 19);
+        $this->create();
 
-		$widths = array();
-		$heights = array();
-		$texts = array();
+        for ($i = 0; $i < strlen($this->string); $i++) {
+            $this->drawer->string(
+                $texts[$i],
+                new awPoint(
+                    5 + array_sum(array_slice($widths, 0, $i)) + $widths[$i] / 2 + $i * 10,
+                    10 + ($height - $heights[$i]) / 2
+                )
+            );
+        }
 
-		for($i = 0; $i < strlen($this->string); $i++) {
+        $this->drawNoise($totalWidth, $totalHeight);
 
-			$fontKey = array_rand($fonts);
-			$sizeKey = array_rand($sizes);
+        $this->send();
+    }
 
-			$font = new awTTFFont(
-				$fonts[$fontKey], $sizes[$sizeKey]
-			);
+    protected function drawNoise($width, $height)
+    {
+        $points = $this->noise * 30;
+        $color = new awColor(0, 0, 0);
 
-			$text = new awText(
-				$this->string{$i},
-				$font,
-				NULL,
-				mt_rand(-15, 15)
-			);
+        for ($i = 0; $i < $points; $i++) {
+            $this->drawer->point(
+                $color,
+                new awPoint(
+                    mt_rand(0, $width),
+                    mt_rand(0, $height)
+                )
+            );
+        }
+    }
 
-			$widths[] = $font->getTextWidth($text);
-			$heights[] = $font->getTextHeight($text);
-			$texts[] = $text;
-		}
-
-		$width = array_sum($widths);
-		$height = array_max($heights);
-
-		$totalWidth = $width + 10 + count($texts) * 10;
-		$totalHeight = $height + 20;
-
-		$this->setSize($totalWidth, $totalHeight);
-
-		$this->create();
-
-		for($i = 0; $i < strlen($this->string); $i++) {
-
-			$this->drawer->string(
-				$texts[$i],
-				new awPoint(
-					5 + array_sum(array_slice($widths, 0, $i)) + $widths[$i] / 2 + $i * 10,
-					10 + ($height - $heights[$i]) / 2
-				)
-			);
-
-		}
-
-		$this->drawNoise($totalWidth, $totalHeight);
-
-		$this->send();
-
-	}
-
-	protected function drawNoise($width, $height) {
-
-		$points = $this->noise * 30;
-		$color = new awColor(0, 0, 0);
-
-		for($i = 0; $i < $points; $i++) {
-			$this->drawer->point(
-				$color,
-				new awPoint(
-					mt_rand(0, $width),
-					mt_rand(0, $height)
-				)
-			);
-		}
-
-	}
-
-	protected function session() {
-
-		// Start session if needed
-		if(!session_id()) {
-			/* CATS Hack. Ensure session uses proper name. */
-			@session_name(CATS_SESSION_NAME);
-			session_start();
-		}
-	}
+    protected function session()
+    {
+        // Start session if needed
+        if (! session_id()) {
+            /* CATS Hack. Ensure session uses proper name. */
+            @session_name(CATS_SESSION_NAME);
+            session_start();
+        }
+    }
 }
 
 registerClass('AntiSpam');
-?>

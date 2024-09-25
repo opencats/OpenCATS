@@ -28,7 +28,7 @@
  */
 
 /* License key. */
-define('LICENSE_KEY','3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
+define('LICENSE_KEY', '3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
 
 /* Database configuration. */
 define('DATABASE_USER', 'cats');
@@ -52,7 +52,7 @@ define('SSL_ENABLED', false);
 define('ANTIWORD_PATH', "/usr/bin/antiword");
 define('ANTIWORD_MAP', '8859-1.txt');
 
-define('DOCX2TXT_PATH','/usr/local/bin/docx2txt.pl');
+define('DOCX2TXT_PATH', '/usr/local/bin/docx2txt.pl');
 
 /* XPDF / pdftotext settings. Remember to use double backslashes (\) to represent
  * one backslash (\).
@@ -99,9 +99,9 @@ define('SPHINX_INDEX', 'cats catsdelta');
 
 
 /* Pager settings. These are the number of results per page. */
-define('CONTACTS_PER_PAGE',      150);
-define('CANDIDATES_PER_PAGE',    150);
-define('CLIENTS_PER_PAGE',       150);
+define('CONTACTS_PER_PAGE', 150);
+define('CANDIDATES_PER_PAGE', 150);
+define('CLIENTS_PER_PAGE', 150);
 define('LOGIN_ENTRIES_PER_PAGE', 150);
 
 /* Maximum number of characters of the owner/recruiter users' last names
@@ -157,8 +157,8 @@ define('CANDIDATE_STATUSCHANGE_SUBJECT', 'Job Application Status Change');
  * In FORGOT_PASSWORD_FROM, %s is the placeholder for the password.
  */
 define('FORGOT_PASSWORD_FROM_NAME', 'OpenCATS');
-define('FORGOT_PASSWORD_SUBJECT',   'OpenCATS - Password Retrieval Request');
-define('FORGOT_PASSWORD_BODY',      'You recently requested that your OpenCATS: Applicant Tracking System password be sent to you. Your current password is %s.');
+define('FORGOT_PASSWORD_SUBJECT', 'OpenCATS - Password Retrieval Request');
+define('FORGOT_PASSWORD_BODY', 'You recently requested that your OpenCATS: Applicant Tracking System password be sent to you. Your current password is %s.');
 
 /* Is this a demo site? */
 define('ENABLE_DEMO_MODE', false);
@@ -172,16 +172,16 @@ define('ENABLE_SINGLE_SESSION', false);
 /* Automated testing. This is only useful for the CATS core team at the moment;
  * don't worry about this yet.
  */
-define('TESTER_LOGIN',     'john@mycompany.net');
-define('TESTER_PASSWORD',  'john99');
+define('TESTER_LOGIN', 'john@mycompany.net');
+define('TESTER_PASSWORD', 'john99');
 define('TESTER_FIRSTNAME', 'John');
-define('TESTER_LASTNAME',  'Anderson');
-define('TESTER_FULLNAME',  'John Anderson');
-define('TESTER_USER_ID',   4);
+define('TESTER_LASTNAME', 'Anderson');
+define('TESTER_FULLNAME', 'John Anderson');
+define('TESTER_USER_ID', 4);
 
 /* Demo login. */
-define('DEMO_LOGIN',     'john@mycompany.net');
-define('DEMO_PASSWORD',  'john99');
+define('DEMO_LOGIN', 'john@mycompany.net');
+define('DEMO_PASSWORD', 'john99');
 
 /* This setting configures the method used to send e-mail from CATS. CATS
  * can send e-mail via SMTP, PHP's built-in mail support, or via Sendmail.
@@ -245,5 +245,3 @@ define('CACHE_MODULES', false);
  */
 
 define('US_ZIPS_ENABLED', false);
-
-?>

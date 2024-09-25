@@ -12,149 +12,135 @@
  *
  * @package Artichow
  */
-class awBorder {
+class awBorder
+{
+    /**
+     * Border color
+     *
+     * @var Color
+     */
+    protected $color;
 
-	/**
-	 * Border color
-	 *
-	 * @var Color
-	 */
-	protected $color;
+    /**
+     * Hide border ?
+     *
+     * @var bool
+     */
+    protected $hide = false;
 
-	/**
-	 * Hide border ?
-	 *
-	 * @var bool
-	 */
-	protected $hide = FALSE;
+    /**
+     * Border line style
+     *
+     * @var int
+     */
+    protected $style;
 
-	/**
-	 * Border line style
-	 *
-	 * @var int
-	 */
-	protected $style;
+    /**
+     * Build the border
+     *
+     * @param awColor $color Border color
+     * @param int $style Border style
+     */
+    public function __construct($color = null, $style = awLine::SOLID)
+    {
+        $this->setStyle($style);
 
-	/**
-	 * Build the border
-	 *
-	 * @param awColor $color Border color
-	 * @param int $style Border style
-	 */
-	public function __construct($color = NULL, $style = awLine::SOLID) {
+        if ($color instanceof awColor) {
+            $this->setColor($color);
+        } else {
+            $this->setColor(new awBlack());
+        }
+    }
 
-		$this->setStyle($style);
+    /**
+     * Change border color
+     * This method automatically shows the border if it is hidden
+     */
+    public function setColor(awColor $color)
+    {
+        $this->color = $color;
+        $this->show();
+    }
 
-		if($color instanceof awColor) {
-			$this->setColor($color);
-		} else {
-			$this->setColor(new awBlack);
-		}
+    /**
+     * Change border style
+     *
+     * @param int $style
+     */
+    public function setStyle($style)
+    {
+        $this->style = (int) $style;
+    }
 
-	}
+    /**
+     * Hide border ?
+     *
+     * @param bool $hide
+     */
+    public function hide($hide = true)
+    {
+        $this->hide = (bool) $hide;
+    }
 
-	/**
-	 * Change border color
-	 * This method automatically shows the border if it is hidden
-	 *
-	 * @param awColor $color
-	 */
-	public function setColor(awColor $color) {
-		$this->color = $color;
-		$this->show();
-	}
+    /**
+     * Show border ?
+     *
+     * @param bool $show
+     */
+    public function show($show = true)
+    {
+        $this->hide = (bool) ! $show;
+    }
 
-	/**
-	 * Change border style
-	 *
-	 * @param int $style
-	 */
-	public function setStyle($style) {
-		$this->style = (int)$style;
-	}
+    /**
+     * Is the border visible ?
+     *
+     * @return bool
+     */
+    public function visible()
+    {
+        return ! $this->hide;
+    }
 
-	/**
-	 * Hide border ?
-	 *
-	 * @param bool $hide
-	 */
-	public function hide($hide = TRUE) {
-		$this->hide = (bool)$hide;
-	}
+    /**
+     * Draw border as a rectangle
+     *
+     * @param awPoint $p1 Top-left corner
+     * @param awPoint $p2 Bottom-right corner
+     */
+    public function rectangle(awDrawer $drawer, awPoint $p1, awPoint $p2)
+    {
+        // Border is hidden
+        if ($this->hide) {
+            return;
+        }
 
-	/**
-	 * Show border ?
-	 *
-	 * @param bool $show
-	 */
-	public function show($show = TRUE) {
-		$this->hide = (bool)!$show;
-	}
+        $line = new awLine();
+        $line->setStyle($this->style);
+        $line->setLocation($p1, $p2);
 
-	/**
-	 * Is the border visible ?
-	 *
-	 * @return bool
-	 */
-	public function visible() {
-		return !$this->hide;
-	}
+        $drawer->rectangle($this->color, $line);
+    }
 
-	/**
-	 * Draw border as a rectangle
-	 *
-	 * @param awDrawer $drawer
-	 * @param awPoint $p1 Top-left corner
-	 * @param awPoint $p2 Bottom-right corner
-	 */
-	public function rectangle(awDrawer $drawer, awPoint $p1, awPoint $p2) {
+    /**
+     * Draw border as an ellipse
+     *
+     * @param awPoint $center Ellipse center
+     * @param int $width Ellipse width
+     * @param int $height Ellipse height
+     */
+    public function ellipse(awDrawer $drawer, awPoint $center, $width, $height)
+    {
+        // Border is hidden
+        if ($this->hide) {
+            return;
+        }
 
-        
-
-		// Border is hidden
-		if($this->hide) {
-			return;
-		}
-
-		$line = new awLine;
-		$line->setStyle($this->style);
-		$line->setLocation($p1, $p2);
-
-		$drawer->rectangle($this->color, $line);
-
-	}
-
-	/**
-	 * Draw border as an ellipse
-	 *
-	 * @param awDrawer $drawer
-	 * @param awPoint $center Ellipse center
-	 * @param int $width Ellipse width
-	 * @param int $height Ellipse height
-	 */
-	public function ellipse(awDrawer $drawer, awPoint $center, $width, $height) {
-
-		// Border is hidden
-		if($this->hide) {
-			return;
-		}
-
-		switch($this->style) {
-
-			case awLine::SOLID :
-				$drawer->ellipse($this->color, $center, $width, $height);
-				break;
-
-			default :
-				trigger_error("Dashed and dotted borders and not yet implemented on ellipses", E_USER_ERROR);
-				break;
-
-		}
-
-
-	}
-
+        match ($this->style) {
+            awLine::SOLID => $drawer->ellipse($this->color, $center, $width, $height),
+            default => trigger_error("Dashed and dotted borders and not yet implemented on ellipses", E_USER_ERROR),
+        };
+    }
 }
 
 registerClass('Border');
-?>

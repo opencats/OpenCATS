@@ -50,15 +50,13 @@ class RssUI extends UserInterface
         $this->_moduleDirectory = 'rss';
         $this->_moduleName = 'rss';
         $this->_moduleTabText = '';
-        $this->_subTabs = array();
+        $this->_subTabs = [];
     }
-
 
     public function handleRequest()
     {
         $action = $this->getAction();
-        switch ($action)
-        {
+        switch ($action) {
             case 'jobOrders':
             default:
                 $this->displayPublicJobOrders();
@@ -102,7 +100,9 @@ class RssUI extends UserInterface
 
         $careerPortalSiteID = $site->getFirstSiteID();
 
-        if (!eval(Hooks::get('RSS_SITEID'))) return;
+        if (! eval(Hooks::get('RSS_SITEID'))) {
+            return;
+        }
 
         $jobOrders = new JobOrders($careerPortalSiteID);
         $rs = $jobOrders->getAll(JOBORDERS_STATUS_SHARE, -1, -1, -1, false, true);
@@ -124,16 +124,15 @@ class RssUI extends UserInterface
             DateUtility::getRSSDate()
         );
 
-        foreach ($rs as $rowIndex => $row)
-        {
-            $uri = sprintf("%scareers/?p=showJob&amp;ID=%d",
+        foreach ($rs as $rowIndex => $row) {
+            $uri = sprintf(
+                "%scareers/?p=showJob&amp;ID=%d",
                 CATSUtility::getAbsoluteURI(),
                 $row['jobOrderID']
             );
 
             // Fix URL if viewing from /rss without using globals or dirup '../'
-            if (strpos($_SERVER['PHP_SELF'], '/rss/') !== false)
-            {
+            if (strpos($_SERVER['PHP_SELF'], '/rss/') !== false) {
                 $uri = str_replace('/rss/', '/', $uri);
             }
 
@@ -155,5 +154,3 @@ class RssUI extends UserInterface
         echo $stream;
     }
 }
-
-?>

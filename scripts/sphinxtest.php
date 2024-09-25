@@ -15,32 +15,26 @@ error_reporting(E_ERROR);
 $CATSHome = realpath(dirname(__FILE__) . '/../');
 include(realpath($CATSHome . '/config.php'));
 
-if (php_sapi_name() == 'cli')
-{
+if (php_sapi_name() == 'cli') {
     $stderr = STDERR;
     $stdout = STDOUT;
-}
-else
-{
+} else {
     $stderr = fopen('php://output', 'w');
     $stdout = fopen('php://output', 'w');
 }
 
-if (!defined('ENABLE_SPHINX'))
-{
+if (! defined('ENABLE_SPHINX')) {
     fwrite($stderr, "Config Error: ENABLE_SPHINX is not defined.\n");
     exit(1);
 }
 
-if (!ENABLE_SPHINX)
-{
+if (! ENABLE_SPHINX) {
     fwrite($stdout, "Sphinx is disabled in config.php.\n");
     exit(0);
 }
 
 $SphinxAPI = realpath($CATSHome . '/' . SPHINX_API);
-if (!file_exists($SphinxAPI))
-{
+if (! file_exists($SphinxAPI)) {
     fwrite($stderr, "Config Error: SPHINX_API could not be found.\n");
     exit(1);
 }
@@ -55,7 +49,7 @@ assert_options(ASSERT_WARNING, 0);
 /* Execute the Sphinx query. */
 $sphinx = new SphinxClient();
 $sphinx->SetServer(SPHINX_HOST, SPHINX_PORT);
-$sphinx->SetWeights(array(0, 100, 0, 0, 50));
+$sphinx->SetWeights([0, 100, 0, 0, 50]);
 $sphinx->SetMatchMode(SPH_MATCH_BOOLEAN);
 $sphinx->SetLimits(0, 10);
 $sphinx->SetSortMode(SPH_SORT_TIME_SEGMENTS, 'date_added');
@@ -65,34 +59,29 @@ $sphinx->SetFilter('site_id', TEST_SITE_ID);
  * maxed out. Retry up to 5 times.
  */
 $tries = 0;
-do
-{
+do {
     /* Wait for one second if this isn't out first attempt. */
-    if (++$tries > 1)
-    {
+    if (++$tries > 1) {
         sleep(1);
     }
-    
+
     $results = $sphinx->Query(TEST_QUERY, SPHINX_INDEX);
     $errorMessage = $sphinx->GetLastError();
-}
-while (
+} while (
     $results === false &&
     strpos($errorMessage, 'server maxed out, retry') !== false &&
     $tries <= 5
 );
 
 /* Throw a fatal error if Sphinx errors occurred. */
-if ($results === false)
-{
+if ($results === false) {
     fwrite($stderr, 'Sphinx Error: ' . ucfirst($errorMessage) . ".\n");
     exit(1);
 }
 
 /* Throw a fatal error (for now) if Sphinx warnings occurred. */
 $lastWarning = $sphinx->GetLastWarning();
-if (!empty($lastWarning))
-{
+if (! empty($lastWarning)) {
     fwrite($stderr, 'Sphinx Warning: ' . ucfirst($lastWarning) . ".\n");
     exit(1);
 }
@@ -100,5 +89,3 @@ if (!empty($lastWarning))
 
 fwrite($stdout, "Sphinx appears to be working properly.\n");
 exit(0);
-
-?>

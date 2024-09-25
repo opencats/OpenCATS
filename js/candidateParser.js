@@ -14,8 +14,8 @@ function loadDocumentFileContents()
     document.addCandidateForm.submit();
 }
 
-function parseDocumentFileContents()
-{
+function parseDocumentFileContents() {
+    console.log("Starting to parse document file contents..."); // Log this
     var text = document.getElementById('documentText');
     var file = document.getElementById('documentFile');
     var obj = document.getElementById('loadDocument');
@@ -25,15 +25,17 @@ function parseDocumentFileContents()
     obj.value = '';
     obj2.value = '';
 
-    if (text.value == '' && file.value == '')
-    {
+    if (text.value == '' && file.value == '') {
+        console.log("No text or file to parse."); // Add this
         return;
     }
 
     obj.value = 'true';
     obj2.value = 'true';
+    console.log("Form submitted for parsing."); // Add this
     document.addCandidateForm.submit();
 }
+
 
 function documentFileChange()
 {

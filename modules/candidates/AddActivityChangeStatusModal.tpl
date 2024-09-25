@@ -63,7 +63,7 @@
 
                         <?php foreach ($this->pipelineRS as $rowNumber => $pipelinesData): ?>
                             <?php if ($this->selectedJobOrderID == $pipelinesData['jobOrderID']): ?>
-                                <option selected="selected" value="<?php $this->_($pipelinesData['jobOrderID']) ?>"><?php $this->_($pipelinesData['title']) ?></option>
+                                <option selected value="<?php $this->_($pipelinesData['jobOrderID']) ?>"><?php $this->_($pipelinesData['title']) ?></option>
                             <?php else: ?>
                                 <option value="<?php $this->_($pipelinesData['jobOrderID']) ?>"><?php $this->_($pipelinesData['title']) ?> (<?php $this->_($pipelinesData['companyName']) ?>)</option>
                             <?php endif; ?>
@@ -117,11 +117,11 @@
                     <label id="addActivityLabel" for="addActivity">Activity:</label>
                 </td>
                 <td class="tdData">
-                    <input type="checkbox" name="addActivity" id="addActivity" style="margin-left: 0px;"<?php if (!$this->onlyScheduleEvent): ?> checked="checked"<?php endif; ?> onclick="AS_onAddActivityChange('addActivity', 'activityTypeID', 'activityNote', 'addActivitySpanA', 'addActivitySpanB');" />Log an Activity<br />
+                    <input type="checkbox" name="addActivity" id="addActivity" style="margin-left: 0px;"<?php if (!$this->onlyScheduleEvent): ?> checked<?php endif; ?> onclick="AS_onAddActivityChange('addActivity', 'activityTypeID', 'activityNote', 'addActivitySpanA', 'addActivitySpanB');" />Log an Activity<br />
                     <div id="activityNoteDiv" style="margin-top: 4px;">
                         <span id="addActivitySpanA">Activity Type</span><br />
                         <select id="activityTypeID" name="activityTypeID" class="inputbox" style="width: 150px; margin-bottom: 4px;">
-                            <option selected="selected" value="<?php echo(ACTIVITY_CALL); ?>">Call</option>
+                            <option selected value="<?php echo(ACTIVITY_CALL); ?>">Call</option>
                             <option value="<?php echo(ACTIVITY_CALL_TALKED); ?>">Call (Talked)</option>
                             <option value="<?php echo(ACTIVITY_CALL_LVM); ?>">Call (LVM)</option>
                             <option value="<?php echo(ACTIVITY_CALL_MISSED); ?>">Call (Missed)</option>
@@ -140,7 +140,7 @@
                     <label id="scheduleEventLabel" for="scheduleEvent">Schedule Event:</label>
                 </td>
                 <td class="tdData">
-                    <input type="checkbox" name="scheduleEvent" id="scheduleEvent" style="margin-left: 0px; <?php if ($this->onlyScheduleEvent): ?>display:none;<?php endif; ?>" onclick="AS_onScheduleEventChange('scheduleEvent', 'scheduleEventDiv');"<?php if ($this->onlyScheduleEvent): ?> checked="checked"<?php endif; ?> /><?php if (!$this->onlyScheduleEvent): ?>Schedule Event<?php endif; ?>
+                    <input type="checkbox" name="scheduleEvent" id="scheduleEvent" style="margin-left: 0px; <?php if ($this->onlyScheduleEvent): ?>display:none;<?php endif; ?>" onclick="AS_onScheduleEventChange('scheduleEvent', 'scheduleEventDiv');"<?php if ($this->onlyScheduleEvent): ?> checked<?php endif; ?> /><?php if (!$this->onlyScheduleEvent): ?>Schedule Event<?php endif; ?>
                     <div id="scheduleEventDiv" <?php if (!$this->onlyScheduleEvent): ?>style="display:none;"<?php endif; ?>>
                         <table style="border: none; margin: 0px; padding: 0px;">
                             <tr>
@@ -148,7 +148,7 @@
                                     <div style="margin-bottom: 4px;">
                                         <select id="eventTypeID" name="eventTypeID" class="inputbox" style="width: 150px;">
                                             <?php foreach ($this->calendarEventTypes as $eventType): ?>
-                                                <option <?php if ($eventType['typeID'] == CALENDAR_EVENT_INTERVIEW): ?>selected="selected" <?php endif; ?>value="<?php echo($eventType['typeID']); ?>"><?php $this->_($eventType['description']); ?></option>
+                                                <option <?php if ($eventType['typeID'] == CALENDAR_EVENT_INTERVIEW): ?>selected <?php endif; ?>value="<?php echo($eventType['typeID']); ?>"><?php $this->_($eventType['description']); ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -158,7 +158,7 @@
                                     </div>
 
                                     <div style="margin-bottom: 4px;">
-                                        <input type="radio" name="allDay" id="allDay0" value="0" style="margin-left: 0px" checked="checked" onchange="AS_onEventAllDayChange('allDay1');" />
+                                        <input type="radio" name="allDay" id="allDay0" value="0" style="margin-left: 0px" checked onchange="AS_onEventAllDayChange('allDay1');" />
                                         <select id="hour" name="hour" class="inputbox" style="width: 40px;">
                                             <?php for ($i = 1; $i <= 12; ++$i): ?>
                                                 <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
@@ -199,7 +199,7 @@
                                             <option value="15">15 minutes</option>
                                             <option value="30">30 minutes</option>
                                             <option value="45">45 minutes</option>
-                                            <option value="60" selected="selected">1 hour</option>
+                                            <option value="60" selected>1 hour</option>
                                             <option value="90">1.5 hours</option>
                                             <option value="120">2 hours</option>
                                             <option value="180">3 hours</option>

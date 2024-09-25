@@ -1,6 +1,6 @@
 <?php /* $Id: NewInstallWizard.tpl 2035 2007-02-28 17:32:27Z will $ */ ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
+
 <html>
     <head>
         <title>CATS - Initial Configuration Wizard</title>
@@ -75,7 +75,7 @@
                             <tr>
                                 <td>
                                     <select id="dateFormat" name="dateFormat" style="width: 150px;">
-                                        <option value="mdy" selected="selected">MM-DD-YYYY (US)</option>
+                                        <option value="mdy" selected>MM-DD-YYYY (US)</option>
                                         <option value="dmy">DD-MM-YYYY (UK)</option>
                                     </select>
                                 </td>

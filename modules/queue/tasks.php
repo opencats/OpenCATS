@@ -39,5 +39,3 @@
 include_once('config.php');
 
 QueueProcessor::registerRecurringTask('CleanExceptions');
-
-?>

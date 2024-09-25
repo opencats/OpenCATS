@@ -1,8 +1,8 @@
 <?php
+
 use PHPUnit\Framework\TestCase;
 
-if( !defined('LEGACY_ROOT') )
-{
+if (! defined('LEGACY_ROOT')) {
     define('LEGACY_ROOT', '.');
 }
 
@@ -10,12 +10,12 @@ include_once(LEGACY_ROOT . '/lib/VCard.php');
 
 class VCardTest extends TestCase
 {
-    function testVersion()
+    public function testVersion()
     {
         $this->assertSame(VCard::VCARD_VERSION, '2.1');
     }
 
-    function testVCard1()
+    public function testVCard1()
     {
         $vCard = new vCard();
 
@@ -34,7 +34,7 @@ class VCardTest extends TestCase
         $this->assertRegExp(
             '/^REV:\d{8}T\d{6}$/',
             $outputLines[4]
-            );
+        );
         $currentREVNumeric = date('YmdHis');
 
         $vCardREVNumeric = preg_replace('/REV:|T/', '', $outputLines[4]);
@@ -43,7 +43,7 @@ class VCardTest extends TestCase
             $vCardREVNumeric >= ($currentREVNumeric - 5) &&
             $vCardREVNumeric <= ($currentREVNumeric + 5),
             'REV is within +/-5 seconds of current timestamp'
-            );
+        );
 
         $this->assertSame($outputLines[5], 'MAILER:CATS');
         $this->assertSame($outputLines[6], 'END:VCARD');
@@ -51,7 +51,7 @@ class VCardTest extends TestCase
         $this->assertSame($vCard->getFilename(), 'John Smith.vcf');
     }
 
-    function testVCard2()
+    public function testVCard2()
     {
         $vCard = new vCard();
 
@@ -70,7 +70,7 @@ class VCardTest extends TestCase
             'USA',
             '',
             'HOME'
-            );
+        );
         $vCard->setNote('Test note.');
         $vCard->setURL('http://www.slashdot.org');
         $output = trim($vCard->getVCard());
@@ -94,7 +94,7 @@ class VCardTest extends TestCase
         $this->assertRegExp(
             '/^REV:\d{8}T\d{6}$/',
             $outputLines[11]
-            );
+        );
         $currentREVNumeric = date('YmdHis');
 
         $vCardREVNumeric = preg_replace('/REV:|T/', '', $outputLines[11]);
@@ -103,7 +103,7 @@ class VCardTest extends TestCase
             $vCardREVNumeric >= ($currentREVNumeric - 5) &&
             $vCardREVNumeric <= ($currentREVNumeric + 5),
             'REV is within +/-5 seconds of current timestamp'
-            );
+        );
 
         $this->assertSame($outputLines[12], 'MAILER:CATS');
         $this->assertSame($outputLines[13], 'END:VCARD');
@@ -111,4 +111,3 @@ class VCardTest extends TestCase
         $this->assertSame($vCard->getFilename(), 'John Smith.vcf');
     }
 }
-?>

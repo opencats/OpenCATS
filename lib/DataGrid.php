@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -224,12 +223,13 @@ class DataGrid
      *
      */
 
-     private $_rs;
+    private $_rs;
 
-     protected $_parameters;
-     protected $_instanceName;
-     protected $_currentColumns;
-     protected $_defaultColumns;
+    protected $_parameters;
+
+    protected $_currentColumns;
+
+    protected $_defaultColumns;
 
     /**
      * Static function returns an object to the DataGrid that is indicated by $indentifier
@@ -243,47 +243,46 @@ class DataGrid
     public static function get($indentifier, $parameters, $misc = 0)
     {
         /* This deals with loading a datagrid that was selected by use of the action / export box. */
-        if (isset($_REQUEST['dynamicArgument' . md5($indentifier)]))
-        {
-            foreach ($parameters as $index => $data)
-            {
-                if ($data !== '<dynamic>')
-                {
-                    continue;
-                }
+        if (isset($_REQUEST['dynamicArgument' . md5((string) $indentifier)])) {
+            // Ensure $parameters is an array before using it in foreach
+            if (is_array($parameters)) {
+                foreach ($parameters as $index => $data) {
+                    if ($data !== '<dynamic>') {
+                        continue;
+                    }
 
-                $parameters[$index] = $_REQUEST['dynamicArgument' . md5($indentifier)];
-                
-                if ($index = 'exportIDs')
-                {
-                   $parameters['exportIDs'] = json_decode(urldecode($parameters['exportIDs']), true);
+                    $parameters[$index] = $_REQUEST['dynamicArgument' . md5((string) $indentifier)];
+
+                    if ($index === 'exportIDs') {
+                        $parameters['exportIDs'] = json_decode(urldecode((string) $parameters['exportIDs']), true);
+                    }
                 }
             }
         }
-        
+
+
+
         /* Split function parameter into module name and function name. */
-        $indentifierParts = explode(':', $indentifier, 3);
+        $indentifierParts = explode(':', (string) $indentifier, 3);
 
         $module = preg_replace("[^A-Za-z0-9]", "", $indentifierParts[0]);
         $class = preg_replace("[^A-Za-z0-9]", "", $indentifierParts[1]);
 
-        if (isset($indentifierParts[2]))
-        {
+        if (isset($indentifierParts[2])) {
             $misc = json_decode($indentifierParts[2], true);
         }
 
-        if (!file_exists(sprintf('modules/%s/dataGrids.php', $module)))
-        {
-            trigger_error('No datagrid named: '.$indentifier);
+        if (! file_exists(sprintf('modules/%s/dataGrids.php', $module))) {
+            trigger_error('No datagrid named: ' . $indentifier);
         }
 
-        include_once (sprintf('modules/%s/dataGrids.php', $module));
+        include_once(sprintf('modules/%s/dataGrids.php', $module));
 
         $dg = new $class($_SESSION['CATS']->getSiteID(), $parameters, $misc);
 
         return $dg;
     }
-    
+
     /**
      * Static function returns an object to the DataGrid that is indicated by the request
      * variables i and p.
@@ -292,19 +291,19 @@ class DataGrid
      */
     public static function getFromRequest()
     {
-        if (!isset($_REQUEST['i']) || !isset($_REQUEST['p']))
-        {
+        if (! isset($_REQUEST['i']) || ! isset($_REQUEST['p'])) {
             trigger_error('getFromRequest datagrid failed : no request variables i or p set.');
         }
-        
+
         $indentifier = $_REQUEST['i'];
-        $parameters = json_decode($_REQUEST['p'], true);
+        $parameters = json_decode((string) $_REQUEST['p'], true);
 
         return self::get($indentifier, $parameters);
     }
-    
-    public function getInstanceName(){
-    	return $this->_instanceName;
+
+    public function getInstanceName()
+    {
+        return $this->_instanceName;
     }
 
     /**
@@ -316,25 +315,19 @@ class DataGrid
      */
     public static function getRecentParamaters($indentifier, $misc = 0)
     {
-        if ($misc != 0)
-        {
+        if ($misc != 0) {
             $indentifier .= ':' . json_encode($misc);
         }
-        
+
         return $_SESSION['CATS']->getDataGridParameters($indentifier);
     }
-    
+
     // TODO:  Document me.
     protected function getParamater($paramater)
     {
-        if (isset($this->_parameters[$paramater]))
-        {
-            return $this->_parameters[$paramater];
-        }
-        
-        return '';
+        return $this->_parameters[$paramater] ?? '';
     }
-    
+
     /**
      * A datagrid which is called with a serialized parameter (such as an
      * integer to specify the saved list ID) follows the instance naming format:
@@ -348,14 +341,11 @@ class DataGrid
     public function getMiscArgument()
     {
         /* Split function parameter into module name and function name. */
-        $instanceParts = explode(':', $this->_instanceName, 3);
+        $instanceParts = explode(':', (string) $this->_instanceName, 3);
 
-        if (isset($instanceParts[2]))
-        {
+        if (isset($instanceParts[2])) {
             return json_decode($instanceParts[2], true);
-        }
-        else
-        {
+        } else {
             return 0;
         }
     }
@@ -364,210 +354,170 @@ class DataGrid
      * Creates and configures the datagrid based off of the supplied parameters.
      * The supplied parameters could be sent by a browser, so they need to be validated before they
      * are used for any important features.
-     *
-     * @return void
      */
-     public function __construct($instanceName, $parameters, $misc = 0)
-     {
-         $this->_rs = false;
+    public function __construct(
+        protected $_instanceName,
+        $parameters,
+        $misc = 0
+    ) {
+        $this->_rs = false;
 
-         $this->_instanceName = $instanceName;
-         
-         if ($misc != 0)
-         {
-            $this->_instanceName .= ':'.json_encode($misc);
-         }
+        if ($misc != 0) {
+            $this->_instanceName .= ':' . json_encode($misc);
+        }
 
-         /* Allow _GET to override the supplied parameters array */
-         if (isset($_GET['parameters' . $this->_instanceName]))
-         {
-             $this->_parameters = json_decode($_GET['parameters' . $this->_instanceName], true);
-         }
-         else
-         {
-             $this->_parameters = $parameters;
-         }
-         
-         /* Allow _GET['dynamicArgument'.instance] to override <dynamic> */
-         if (isset($_GET['dynamicArgument' . $this->_instanceName]))
-         {
-            foreach ($this->_parameters as $index => $data)
-            {
-                if ($data === '<dynamic>')
-                {
+        /* Allow _GET to override the supplied parameters array */
+        if (isset($_GET['parameters' . $this->_instanceName])) {
+            $this->_parameters = json_decode((string) $_GET['parameters' . $this->_instanceName], true);
+        } else {
+            $this->_parameters = $parameters;
+        }
+
+        /* Allow _GET['dynamicArgument'.instance] to override <dynamic> */
+        if (isset($_GET['dynamicArgument' . $this->_instanceName])) {
+            foreach ($this->_parameters as $index => $data) {
+                if ($data === '<dynamic>') {
                     $this->_parameters[$index] = $_REQUEST['dynamicArgument' . $this->_instanceName];
                 }
             }
-         }
+        }
 
-         /* ------ VALIDATION PART 1 ----- */
-         //DefaultSortBy - should be set, should equal a sortable column.  If it doesn't, fatal.
-         if (!isset($this->defaultSortBy))
-         {
-             die ('defaultSortBy not set.');
-         }
+        /* ------ VALIDATION PART 1 ----- */
+        //DefaultSortBy - should be set, should equal a sortable column.  If it doesn't, fatal.
+        if (! isset($this->defaultSortBy)) {
+            die('defaultSortBy not set.');
+        }
 
-         $found = false;
-         foreach ($this->_classColumns as $index => $data)
-         {
-             if (isset($data['sortableColumn']) && $data['sortableColumn'] == $this->defaultSortBy)
-             {
-                 $found = true;
-             }
-         }
-         if (!$found)
-         {
-             die ('Parameter defaultSortBy is not a valid sortable column.');
-         }
-
-         //sortBy - If not set, set to defaultSortBy.  Should equal a sortable column.  If it doesn't, fatal.
-         if (!isset($this->_parameters['sortBy']))
-         {
-             $this->_parameters['sortBy'] = $this->defaultSortBy;
-             $this->_parameters['sortDirection'] = $this->defaultSortDirection;
-         }
-
-         $found = false;
-         foreach ($this->_classColumns as $index => $data)
-         {
-             if (isset($data['sortableColumn']) && $data['sortableColumn'] == $this->_parameters['sortBy'])
-             {
+        $found = false;
+        foreach ($this->_classColumns as $index => $data) {
+            if (isset($data['sortableColumn']) && $data['sortableColumn'] == $this->defaultSortBy) {
                 $found = true;
-             }
-         }
-         if (!$found)
-         {
-             die ('Parameter sortBy is not a valid sortable column.');
-         }
-
-         //rangeStart - should be an integer or a character between A and Z.  If not set, set to 0.
-         if (!isset($this->_parameters['rangeStart']))
-         {
-             $this->_parameters['rangeStart'] = 0;
-         }
-         else
-         {
-             $this->_parameters['rangeStart'] = (int) $this->_parameters['rangeStart'] * 1;
-         }
-
-         //maxResults - Should be an integer.  If not set, set to 15.
-         if (!isset($this->_parameters['maxResults']))
-         {
-             $this->_parameters['maxResults'] = 15;
-         }
-         else
-         {
-             $this->_parameters['maxResults'] = (int) $this->_parameters['maxResults'] * 1;
-             if ($this->_parameters['maxResults'] == 0)
-             {
-                 $this->_parameters['maxResults'] = 15;
-             }
-         }
-
-         // If clicked on the alphabet pager, filterAlpha is set.  Make sure it is valid.
-         if (isset($this->_parameters['filterAlpha']))
-         {
-             if (ord($this->_parameters['filterAlpha']) < ord('A') ||
-                 ord($this->_parameters['filterAlpha']) > ord('Z') ||
-              strlen($this->_parameters['filterAlpha']) != 1)
-             {
-                unset ($this->_parameters['filterAlpha']);
             }
-         }
+        }
+        if (! $found) {
+            die('Parameter defaultSortBy is not a valid sortable column.');
+        }
 
-         //If exportIDs is set, make sure it is an array and each array value is an integer.
-         if (isset($this->_parameters['exportIDs']))
-         {
-             if (!isset($this->_dataItemIDColumn))
-             {
-                 die ('$this->_dataItemIDColumn is not set (required for parameter exportIDs');
-             }
+        //sortBy - If not set, set to defaultSortBy.  Should equal a sortable column.  If it doesn't, fatal.
+        if (! isset($this->_parameters['sortBy'])) {
+            $this->_parameters['sortBy'] = $this->defaultSortBy;
+            $this->_parameters['sortDirection'] = $this->defaultSortDirection;
+        }
 
-             if (!is_array($this->_parameters['exportIDs']))
-             {
-                 unset ($this->_parameters['exportIDs']);
-             }
-             else
-             {
-                 foreach($this->_parameters['exportIDs'] as $index => $data)
-                 {
-                     $this->_parameters['exportIDs'][$index] = (int) $data;
-                 }
-             }
-         }
+        $found = false;
+        foreach ($this->_classColumns as $index => $data) {
+            if (isset($data['sortableColumn']) && $data['sortableColumn'] == $this->_parameters['sortBy']) {
+                $found = true;
+            }
+        }
+        if (! $found) {
+            die('Parameter sortBy is not a valid sortable column.');
+        }
 
-         //If filterVisible is set it must be boolean.
-         //if (isset($this->_parameters['filterVisible']))
-         //{
-         //    $this->_parameters['filterVisible'] = (boolean) $this->_parameters['filterVisible'];
-         //}
+        //rangeStart - should be an integer or a character between A and Z.  If not set, set to 0.
+        if (! isset($this->_parameters['rangeStart'])) {
+            $this->_parameters['rangeStart'] = 0;
+        } else {
+            $this->_parameters['rangeStart'] = (int) $this->_parameters['rangeStart'] * 1;
+        }
 
-         /* Set some properties and get column preferences. */
-         $this->buildColumns();
+        //maxResults - Should be an integer.  If not set, set to 15.
+        if (! isset($this->_parameters['maxResults'])) {
+            $this->_parameters['maxResults'] = 15;
+        } else {
+            $this->_parameters['maxResults'] = (int) $this->_parameters['maxResults'] * 1;
+            if ($this->_parameters['maxResults'] == 0) {
+                $this->_parameters['maxResults'] = 15;
+            }
+        }
 
-         //If a column is being sorted, it MUST be visible.
-         $sortByVisible = false;
-         foreach ($this->_currentColumns as $index => $data)
-         {
-             if (isset($data['data']['sortableColumn']) && $data['data']['sortableColumn'] == $this->_parameters['sortBy'])
-             {
-                 $sortByVisible = true;
-             }
-         }
+        // If clicked on the alphabet pager, filterAlpha is set.  Make sure it is valid.
+        if (isset($this->_parameters['filterAlpha'])) {
+            if (ord($this->_parameters['filterAlpha']) < ord('A') ||
+                ord($this->_parameters['filterAlpha']) > ord('Z') ||
+             strlen((string) $this->_parameters['filterAlpha']) != 1) {
+                unset($this->_parameters['filterAlpha']);
+            }
+        }
 
-         if (!$sortByVisible)
-         {
-             $this->_parameters['sortBy'] = $this->defaultSortBy;
+        //If exportIDs is set, make sure it is an array and each array value is an integer.
+        if (isset($this->_parameters['exportIDs'])) {
+            if (! isset($this->_dataItemIDColumn)) {
+                die('$this->_dataItemIDColumn is not set (required for parameter exportIDs');
+            }
 
-             if (isset($this->_parameters['filterAlpha']))
-             {
-                 unset ($this->_parameters['filterAlpha']);
-             }
-         }
+            if (! is_array($this->_parameters['exportIDs'])) {
+                unset($this->_parameters['exportIDs']);
+            } else {
+                foreach ($this->_parameters['exportIDs'] as $index => $data) {
+                    $this->_parameters['exportIDs'][$index] = (int) $data;
+                }
+            }
+        }
 
-         /* ---------- GET DATA (also populates total entries) -------- */
-         $this->_getData();
-         
-         /* If current page < 1 or current page > total pages, move around current page and get data again. */
-         /* Set properties */
-         $this->_currentPage = $this->getCurrentPage();
-         $this->_totalPages = floor($this->_totalEntries / $this->_parameters['maxResults']) + ($this->_totalEntries % $this->_parameters['maxResults'] == 0 ? 0 : 1);
-         
-         if ($this->_currentPage < 1)
-         {
-             $this->_currentPage = 1;
-         }
-         
-         if ($this->_currentPage > $this->_totalPages)
-         {
-             $this->_currentPage = $this->_totalPages;
-         }
+        //If filterVisible is set it must be boolean.
+        //if (isset($this->_parameters['filterVisible']))
+        //{
+        //    $this->_parameters['filterVisible'] = (boolean) $this->_parameters['filterVisible'];
+        //}
 
-         if ($this->_currentPage != $this->getCurrentPage())
-         {
-             $this->_parameters['rangeStart'] = ($this->_currentPage - 1) * $this->_parameters['maxResults'];
-             
-             $this->_rs = false;
-             $this->_getData();
-             
-             /* Reset properties */
-             $this->_currentPage = $this->getCurrentPage();
-             $this->_totalPages = floor($this->_totalEntries / $this->_parameters['maxResults']) + ($this->_totalEntries % $this->_parameters['maxResults'] == 0 ? 0 : 1);
-         }
+        /* Set some properties and get column preferences. */
+        $this->buildColumns();
+
+        //If a column is being sorted, it MUST be visible.
+        $sortByVisible = false;
+        foreach ($this->_currentColumns as $index => $data) {
+            if (isset($data['data']['sortableColumn']) && $data['data']['sortableColumn'] == $this->_parameters['sortBy']) {
+                $sortByVisible = true;
+            }
+        }
+
+        if (! $sortByVisible) {
+            $this->_parameters['sortBy'] = $this->defaultSortBy;
+
+            if (isset($this->_parameters['filterAlpha'])) {
+                unset($this->_parameters['filterAlpha']);
+            }
+        }
+
+        /* ---------- GET DATA (also populates total entries) -------- */
+        $this->_getData();
+
+        /* If current page < 1 or current page > total pages, move around current page and get data again. */
+        /* Set properties */
+        $this->_currentPage = $this->getCurrentPage();
+        $this->_totalPages = floor($this->_totalEntries / $this->_parameters['maxResults']) + ($this->_totalEntries % $this->_parameters['maxResults'] == 0 ? 0 : 1);
+
+        if ($this->_currentPage < 1) {
+            $this->_currentPage = 1;
+        }
+
+        if ($this->_currentPage > $this->_totalPages) {
+            $this->_currentPage = $this->_totalPages;
+        }
+
+        if ($this->_currentPage != $this->getCurrentPage()) {
+            $this->_parameters['rangeStart'] = ($this->_currentPage - 1) * $this->_parameters['maxResults'];
+
+            $this->_rs = false;
+            $this->_getData();
+
+            /* Reset properties */
+            $this->_currentPage = $this->getCurrentPage();
+            $this->_totalPages = floor($this->_totalEntries / $this->_parameters['maxResults']) + ($this->_totalEntries % $this->_parameters['maxResults'] == 0 ? 0 : 1);
+        }
 
 
-         /* Save current parameter array to session. */
-         if (!isset($this->_parameters['noSaveParameters']))
-         {
-             $_SESSION['CATS']->setDataGridParameters($this->_instanceName, $this->_parameters);
-         }
-         
-         /* If no globalStyle set, set one. */
-         if (!isset($this->globalStyle))
-         {
-             $this->globalStyle = '';
-         }
-     }
+        /* Save current parameter array to session. */
+        if (! isset($this->_parameters['noSaveParameters'])) {
+            $_SESSION['CATS']->setDataGridParameters($this->_instanceName, $this->_parameters);
+        }
+
+        /* If no globalStyle set, set one. */
+        if (! isset($this->globalStyle)) {
+            $this->globalStyle = '';
+        }
+    }
 
     /**
      * Retruns the current page number.
@@ -576,7 +526,7 @@ class DataGrid
      */
     public function getCurrentPage()
     {
-        return (int)($this->_parameters['rangeStart'] / $this->_parameters['maxResults']) + 1;
+        return (int) ($this->_parameters['rangeStart'] / $this->_parameters['maxResults']) + 1;
     }
 
     /**
@@ -587,7 +537,7 @@ class DataGrid
      */
     public function getJSRemoveFilter($columnName)
     {
-        return 'removeColumnFromFilter(\'filterArea'.md5($this->_instanceName).'\', urlDecode(\''.urlencode($columnName).'\')); submitFilter'. md5($this->_instanceName) .'();';
+        return 'removeColumnFromFilter(\'filterArea' . md5((string) $this->_instanceName) . '\', urlDecode(\'' . urlencode((string) $columnName) . '\')); submitFilter' . md5((string) $this->_instanceName) . '();';
     }
 
     /**
@@ -601,7 +551,7 @@ class DataGrid
      */
     public function getJSAddFilter($columnName, $operator, $value, $submitFilterArgument = '')
     {
-        return 'addColumnToFilter(\'filterArea'.md5($this->_instanceName).'\', urlDecode(\''.urlencode($columnName).'\'), \''.$operator.'\', '.$value.'); submitFilter'. md5($this->_instanceName) .'('.$submitFilterArgument.');';
+        return 'addColumnToFilter(\'filterArea' . md5((string) $this->_instanceName) . '\', urlDecode(\'' . urlencode((string) $columnName) . '\'), \'' . $operator . '\', ' . $value . '); submitFilter' . md5((string) $this->_instanceName) . '(' . $submitFilterArgument . ');';
     }
 
     /**
@@ -614,14 +564,14 @@ class DataGrid
      */
     public function getJSAddRemoveFilterFromCheckbox($columnName, $operator, $value)
     {
-        return 'if (this.checked) { '.
-                   'addColumnToFilter(\'filterArea'.md5($this->_instanceName).'\', urlDecode(\''.urlencode($columnName).'\'), \''.$operator.'\', '.$value.'); '.
-                   'submitFilter'. md5($this->_instanceName) .'(true); '.
-                '} '.
-                'else '.
-                '{ '.
-                    'removeColumnFromFilter(\'filterArea'.md5($this->_instanceName).'\', urlDecode(\''.urlencode($columnName).'\')); '.
-                    'submitFilter'. md5($this->_instanceName) .'(true);'.
+        return 'if (this.checked) { ' .
+                   'addColumnToFilter(\'filterArea' . md5((string) $this->_instanceName) . '\', urlDecode(\'' . urlencode((string) $columnName) . '\'), \'' . $operator . '\', ' . $value . '); ' .
+                   'submitFilter' . md5((string) $this->_instanceName) . '(true); ' .
+                '} ' .
+                'else ' .
+                '{ ' .
+                    'removeColumnFromFilter(\'filterArea' . md5((string) $this->_instanceName) . '\', urlDecode(\'' . urlencode((string) $columnName) . '\')); ' .
+                    'submitFilter' . md5((string) $this->_instanceName) . '(true);' .
                 '}';
     }
 
@@ -635,7 +585,7 @@ class DataGrid
      */
     public function getJSApplyFilter()
     {
-        return 'submitFilter'. md5($this->_instanceName) .'();';
+        return 'submitFilter' . md5((string) $this->_instanceName) . '();';
     }
 
     /**
@@ -646,21 +596,17 @@ class DataGrid
      */
     public function getFilterValue($columnName)
     {
-        if (isset($this->_parameters['filter']))
-        {
-            $filterStrings = explode(',', $this->_parameters['filter']);
+        if (isset($this->_parameters['filter'])) {
+            $filterStrings = explode(',', (string) $this->_parameters['filter']);
 
-            foreach ($filterStrings as $index => $data)
-            {
-                if (strpos($data, '=') === false)
-                {
+            foreach ($filterStrings as $index => $data) {
+                if (! str_contains($data, '=')) {
                     continue;
                 }
 
                 $dataColumnName = urldecode(substr($data, 0, strpos($data, '=')));
 
-                if ($columnName == $dataColumnName)
-                {
+                if ($columnName == $dataColumnName) {
                     return urldecode(substr($data, strpos($data, '=') + 2));
                 }
             }
@@ -676,21 +622,17 @@ class DataGrid
      */
     public function getFilterOperator($columnName)
     {
-        if (isset($this->_parameters['filter']))
-        {
-            $filterStrings = explode(',', $this->_parameters['filter']);
+        if (isset($this->_parameters['filter'])) {
+            $filterStrings = explode(',', (string) $this->_parameters['filter']);
 
-            foreach ($filterStrings as $index => $data)
-            {
-                if (strpos($data, '=') === false)
-                {
+            foreach ($filterStrings as $index => $data) {
+                if (! str_contains($data, '=')) {
                     continue;
                 }
 
                 $dataColumnName = urldecode(substr($data, 0, strpos($data, '=')));
 
-                if ($columnName == $dataColumnName)
-                {
+                if ($columnName == $dataColumnName) {
                     return urldecode(substr($data, strpos($data, '='), 2));
                 }
             }
@@ -706,20 +648,20 @@ class DataGrid
      */
     public function drawRowsPerPageSelector()
     {
-        echo '<a href="javascript:void(0);" class="button" style="text-decoration: none;" onclick="'.
-                  'var rowsPerPageSelector = document.getElementById(\'rowsPerPageSelectorFrame', md5($this->_instanceName), '\'); '.
-                  'if(rowsPerPageSelector.style.display==\'none\') { '.
-                    'rowsPerPageSelector.style.display=\'\'; '.
-                    'rowsPerPageSelector.style.left = (docjslib_getRealLeft(this) - 20) + \'px\'; '.
-                    'rowsPerPageSelector.style.top = (docjslib_getRealTop(this) + 17) + \'px\'; '.
-                  '} else '.
-                    'rowsPerPageSelector.style.display=\'none\'; '.
+        echo '<a href="javascript:void(0);" class="button" style="text-decoration: none;" onclick="' .
+                  'var rowsPerPageSelector = document.getElementById(\'rowsPerPageSelectorFrame', md5((string) $this->_instanceName), '\'); ' .
+                  'if(rowsPerPageSelector.style.display==\'none\') { ' .
+                    'rowsPerPageSelector.style.display=\'\'; ' .
+                    'rowsPerPageSelector.style.left = (docjslib_getRealLeft(this) - 20) + \'px\'; ' .
+                    'rowsPerPageSelector.style.top = (docjslib_getRealTop(this) + 17) + \'px\'; ' .
+                  '} else ' .
+                    'rowsPerPageSelector.style.display=\'none\'; ' .
              '">Rows Per Page</a>';
 
-        echo '<span style="position: absolute; text-align:left; display:none;" id="rowsPerPageSelectorFrame', md5($this->_instanceName), '">';
+        echo '<span style="position: absolute; text-align:left; display:none;" id="rowsPerPageSelectorFrame', md5((string) $this->_instanceName), '">';
         $this->_getData();
 
-        $md5InstanceName = md5($this->_instanceName);
+        $md5InstanceName = md5((string) $this->_instanceName);
 
         $newParameterArray = $this->_parameters;
         $newParameterArray['rangeStart'] = 0;
@@ -733,26 +675,23 @@ class DataGrid
             $md5InstanceName,      //Select Box ID
             CATSUtility::getIndexName(),
             $requestString,
-            urlencode($this->_instanceName),
+            urlencode((string) $this->_instanceName),
             "\n"
         );
 
-        foreach (array('15', '30', '50', '100') as $maxResults)
-        {
-            if ($this->_parameters['maxResults'] == $maxResults)
-            {
+        foreach (['15', '30', '50', '100'] as $maxResults) {
+            if ($this->_parameters['maxResults'] == $maxResults) {
                 echo sprintf(
                     '<option selected="selected" value="%s">%s entries per page</option>',
-                    $maxResults, $maxResults
+                    $maxResults,
+                    $maxResults
                 );
-            }
-            else
-            {
+            } else {
                 echo sprintf(
                     '<option value="%s">%s entries per page</option>',
-                    $maxResults, $maxResults
+                    $maxResults,
+                    $maxResults
                 );
-
             }
         }
 
@@ -768,7 +707,7 @@ class DataGrid
      */
     public function drawShowFilterControl()
     {
-        echo '<a href="javascript:void(0);" class="button" style="text-decoration: none;" onclick="var filterArea = document.getElementById(\'filterResultsArea', md5($this->_instanceName), '\'); if(filterArea.style.display==\'none\') {filterArea.style.display=\'\'; if (newFilterCounter', md5($this->_instanceName),' == 0){ showNewFilter', md5($this->_instanceName), '();}}else filterArea.style.display=\'none\';">Filter</a>';
+        echo '<a href="javascript:void(0);" class="button" style="text-decoration: none;" onclick="var filterArea = document.getElementById(\'filterResultsArea', md5((string) $this->_instanceName), '\'); if(filterArea.style.display==\'none\') {filterArea.style.display=\'\'; if (newFilterCounter', md5((string) $this->_instanceName),' == 0){ showNewFilter', md5((string) $this->_instanceName), '();}}else filterArea.style.display=\'none\';">Filter</a>';
     }
 
     /**
@@ -780,31 +719,25 @@ class DataGrid
      */
     public function drawFilterArea()
     {
-        $md5InstanceName = md5($this->_instanceName);
+        $md5InstanceName = md5((string) $this->_instanceName);
 
         $filterableColumns = array_keys($this->_classColumns);
 
-        if (isset($this->_parameters['filter']))
-        {
+        if (isset($this->_parameters['filter'])) {
             $currentFilterString = $this->_parameters['filter'];
-        }
-        else
-        {
+        } else {
             $currentFilterString = '';
         }
 
         $filtersApplied = false;
-        foreach ($this->_classColumns as $index => $data)
-        {
-            if (!$filtersApplied && $this->getFilterValue($index))
-            {
+        foreach ($this->_classColumns as $index => $data) {
+            if (! $filtersApplied && $this->getFilterValue($index)) {
                 $filtersApplied = true;
             }
         }
 
         echo '<fieldset class="filterAreaFieldSet" id="filterResultsArea', $md5InstanceName, '" ';
-        if (!$filtersApplied || (isset($this->_parameters['filterVisible']) && $this->_parameters['filterVisible'] == false))
-        {
+        if (! $filtersApplied || (isset($this->_parameters['filterVisible']) && $this->_parameters['filterVisible'] == false)) {
             echo 'style="display:none;"';
         }
         echo '><legend class="filterAreaLegend">Filter</legend>';
@@ -813,24 +746,20 @@ class DataGrid
 
         $counterFilters = 0;
 
-        foreach ($this->_classColumns as $index => $data)
-        {
+        foreach ($this->_classColumns as $index => $data) {
             $filterValue = $this->getFilterValue($index);
 
-            if ($filterValue != '')
-            {
+            if ($filterValue != '') {
                 $counterFilters++;
 
                 /* You can not apply another filter to a column already being filtered. */
-                if (array_search($index, $filterableColumns) !== false)
-                {
-                    unset ($filterableColumns[array_search($index, $filterableColumns)]);
+                if (array_search($index, $filterableColumns) !== false) {
+                    unset($filterableColumns[array_search($index, $filterableColumns)]);
                 }
 
                 $filterOperator = $this->getFilterOperator($index);
                 $filterOperatorHuman = '';
-                switch ($filterOperator)
-                {
+                switch ($filterOperator) {
                     case '==':
                         $filterOperatorHuman = ' is equal to';
                         break;
@@ -857,36 +786,27 @@ class DataGrid
                 echo '<img src="images/actions/delete_small.gif" style="padding:0px; margin:0px;" border="0" alt="" title="Remove this Filter" />';
                 echo '</a>&nbsp;';
 
-                if (!isset($data['filterDescription']))
-                {
+                if (! isset($data['filterDescription'])) {
                     echo '\'', $index, '\'', $filterOperatorHuman,': ';
                     echo '<input class="inputbox" style="width:180px;" value="', htmlspecialchars($filterValue), '" onChange="addColumnToFilter(\'filterArea', $md5InstanceName, '\', urlDecode(\'', urlencode($index), '\'), \'', $filterOperator, '\', this.value);" />';
-                }
-                else
-                {
-                    echo ($data['filterDescription']);
+                } else {
+                    echo($data['filterDescription']);
                 }
                 echo '</span>';
             }
         }
 
         /* Remove columns we can not apply a filter to, and set what kind of filters can be applied to each column. */
-        foreach ($filterableColumns as $index => $value)
-        {
+        foreach ($filterableColumns as $index => $value) {
             /* Remove column? */
-            if (isset($this->_classColumns[$value]['filterable']) && $this->_classColumns[$value]['filterable'] == false)
-            {
-                unset ($filterableColumns[$index]);
+            if (isset($this->_classColumns[$value]['filterable']) && $this->_classColumns[$value]['filterable'] == false) {
+                unset($filterableColumns[$index]);
             }
             /* Set filter types */
-            else
-            {
-                if (isset($this->_classColumns[$value]['filterTypes']))
-                {
+            else {
+                if (isset($this->_classColumns[$value]['filterTypes'])) {
                     $filterableColumns[$index] .= '!@!' . $this->_classColumns[$value]['filterTypes'];
-                }
-                else
-                {
+                } else {
                     $filterableColumns[$index] .= '!@!' . '===~';
                 }
             }
@@ -901,87 +821,71 @@ class DataGrid
     /**
      * Gets the current layout for this datagrid's columns.  If no layout is defined, uses default layout.
      * Also handles add/remove/reset columns.
-     *
-     * @return void
      */
     protected function buildColumns()
     {
         /* Get the current preferences from SESSION. */
-        if (!isset($this->ignoreSavedColumnLayouts) || $this->ignoreSavedColumnLayouts == false)
-        {
-            $this->_currentColumns = $_SESSION['CATS']->getColumnPreferences($this->_instanceName);   
-        }
-        else
-        {
-            $this->_currentColumns = array();
+        if (! isset($this->ignoreSavedColumnLayouts) || $this->ignoreSavedColumnLayouts == false) {
+            $this->_currentColumns = $_SESSION['CATS']->getColumnPreferences($this->_instanceName);
+        } else {
+            $this->_currentColumns = [];
         }
 
         /* Do we need to reset the columns?  This has to be first. */
-        if ($this->_currentColumns == array() || (isset($this->_parameters['resetColumns']) && $this->_parameters['resetColumns'] == true))
-        {
+        if ($this->_currentColumns == [] || (isset($this->_parameters['resetColumns']) && $this->_parameters['resetColumns'] == true)) {
             $this->_currentColumns = $this->_defaultColumns;
             $this->saveColumns();
 
-            if (isset($this->_parameters['resetColumns']))
-            {
-                unset ($this->_parameters['resetColumns']);
+            if (isset($this->_parameters['resetColumns'])) {
+                unset($this->_parameters['resetColumns']);
             }
         }
 
         /* Do we need to remove a column? */
-        if (isset($this->_parameters['removeColumn']))
-        {
-            foreach ($this->_classColumns as $index => $data)
-            {
-                if ($index == $this->_parameters['removeColumn'])
-                {
-                    foreach ($this->_currentColumns as $index2 => $data2)
-                    {
-                        if ($data2['name'] == $index)
-                        {
-                            unset ($this->_currentColumns[$index2]);
+        if (isset($this->_parameters['removeColumn'])) {
+            foreach ($this->_classColumns as $index => $data) {
+                if ($index == $this->_parameters['removeColumn']) {
+                    foreach ($this->_currentColumns as $index2 => $data2) {
+                        if ($data2['name'] == $index) {
+                            unset($this->_currentColumns[$index2]);
                         }
                     }
                 }
             }
             $this->saveColumns();
-            unset ($this->_parameters['removeColumn']);
+            unset($this->_parameters['removeColumn']);
         }
 
         /* Do we need to add a column? */
-        if (isset($this->_parameters['addColumn']))
-        {
+        if (isset($this->_parameters['addColumn'])) {
             /* Make sure the column isn't already added. */
-            foreach ($this->_currentColumns as $index => $data)
-            {
-                if ($data['name'] == $this->_parameters['addColumn'])
-                {
+            foreach ($this->_currentColumns as $index => $data) {
+                if ($data['name'] == $this->_parameters['addColumn']) {
                     unset($this->_currentColumns[$index]);
                 }
             }
 
-            foreach ($this->_classColumns as $index => $data)
-            {
-                if ($index == $this->_parameters['addColumn'])
-                {
-                    $this->_currentColumns[] = array('name' => $index, 'width' => $data['pagerWidth']);
+            foreach ($this->_classColumns as $index => $data) {
+                if ($index == $this->_parameters['addColumn']) {
+                    $this->_currentColumns[] = [
+                        'name' => $index,
+                        'width' => $data['pagerWidth'],
+                    ];
                 }
             }
             $this->saveColumns();
-            unset ($this->_parameters['addColumn']);
+            unset($this->_parameters['addColumn']);
         }
 
         /* Do we need to reorder the columns?. */
-        if (isset($this->_parameters['reorderColumns']))
-        {
-           $reorderColumns = explode(',', $this->_parameters['reorderColumns']);
+        if (isset($this->_parameters['reorderColumns'])) {
+            $reorderColumns = explode(',', (string) $this->_parameters['reorderColumns']);
 
             /* Parse input */
-            $reorderColumns[0] = (int) substr(urldecode($reorderColumns[0]), 4 + strlen(md5($this->_instanceName)));
+            $reorderColumns[0] = (int) substr(urldecode($reorderColumns[0]), 4 + strlen(md5((string) $this->_instanceName)));
 
-            if (urldecode($reorderColumns[1]) !== 'moveToEnd')
-            {
-                $reorderColumns[1] = (int) substr(urldecode($reorderColumns[1]), 4 + strlen(md5($this->_instanceName)));
+            if (urldecode($reorderColumns[1]) !== 'moveToEnd') {
+                $reorderColumns[1] = (int) substr(urldecode($reorderColumns[1]), 4 + strlen(md5((string) $this->_instanceName)));
             }
 
             /* Sort the array so indexes match. */
@@ -993,29 +897,24 @@ class DataGrid
             ksort($this->_currentColumns, SORT_NUMERIC);
 
             /* Move to end? */
-            if (urldecode($reorderColumns[1]) === 'moveToEnd')
-            {
+            if (urldecode($reorderColumns[1]) === 'moveToEnd') {
                 $reorderColumns[1] = sizeof($this->_currentColumns);
             }
 
             /* Insert column back into list. */
-            array_splice($this->_currentColumns, $reorderColumns[1], 0, array($columnMoving));
+            array_splice($this->_currentColumns, $reorderColumns[1], 0, [$columnMoving]);
 
             /* Write changes to database. */
             $this->saveColumns();
 
-            unset ($this->_parameters['reorderColumns']);
+            unset($this->_parameters['reorderColumns']);
         }
 
         /* Make sure each column we are getting data for is a valid coulumn.  Also set the 'data' property for each column. */
-        foreach ($this->_currentColumns as $index => $data)
-        {
-            if (isset($this->_classColumns[$data['name']]))
-            {
+        foreach ($this->_currentColumns as $index => $data) {
+            if (isset($this->_classColumns[$data['name']])) {
                 $this->_currentColumns[$index]['data'] = $this->_classColumns[$data['name']];
-            }
-            else
-            {
+            } else {
                 unset($this->_currentColumns[$index]);
             }
         }
@@ -1023,8 +922,6 @@ class DataGrid
 
     /**
      * Saves the current column layout to session (and ultimatly to database through session).
-     *
-     * @return void
      */
     protected function saveColumns()
     {
@@ -1034,13 +931,10 @@ class DataGrid
     /**
      * Populates $this->_rs with data based on the current dataGrid settings if $this->_rs is
      * not already populated.
-     *
-     * @return void
      */
     private function _getData()
     {
-        if ($this->_rs !== false)
-        {
+        if ($this->_rs !== false) {
             return;
         }
 
@@ -1049,35 +943,29 @@ class DataGrid
         $db = DatabaseConnection::getInstance();
 
         // Using MD5 hashing to detect duplicates.
-        $selectSQL = array();
-        $joinSQL = array();
-        $whereSQL = array();
-        $havingSQL = array();
+        $selectSQL = [];
+        $joinSQL = [];
+        $whereSQL = [];
+        $havingSQL = [];
 
         /* Get SELECT and JOIN paramaters for each column we want to collect data on. */
-        foreach ($this->_currentColumns as $index => $data)
-        {
-            if (isset($data['data']['select']) && !empty($data['data']['select']))
-            {
-                $selectSQL[md5($data['data']['select'])] = $data['data']['select'];
+        foreach ($this->_currentColumns as $index => $data) {
+            if (isset($data['data']['select']) && ! empty($data['data']['select'])) {
+                $selectSQL[md5((string) $data['data']['select'])] = $data['data']['select'];
             }
 
-            if (isset($data['data']['join']) && !empty($data['data']['join']))
-            {
-                $joinSQL[md5($data['data']['join'])] = $data['data']['join'];
+            if (isset($data['data']['join']) && ! empty($data['data']['join'])) {
+                $joinSQL[md5((string) $data['data']['join'])] = $data['data']['join'];
             }
         }
 
         /* Build filter logic. */
-        if (isset($this->_parameters['filter']))
-        {
-            $filterStrings = explode(',', $this->_parameters['filter']);
+        if (isset($this->_parameters['filter'])) {
+            $filterStrings = explode(',', (string) $this->_parameters['filter']);
             $columnName = '';
 
-            foreach ($filterStrings as $index => $data)
-            {
-                if (strpos($data, '=') === false)
-                {
+            foreach ($filterStrings as $index => $data) {
+                if (! str_contains($data, '=')) {
                     continue;
                 }
 
@@ -1085,271 +973,200 @@ class DataGrid
                 $argument = urldecode(substr($data, strpos($data, '=') + 2));
 
                 /* Is this a valid column? */
-                if (!isset($this->_classColumns[$columnName]))
-                {
+                if (! isset($this->_classColumns[$columnName])) {
                     continue;
                 }
 
-                if ($argument == '')
-                {
+                if ($argument == '') {
                     continue;
                 }
 
                 /* Add select and join columns for this column. */
                 $this->_classColumns[$columnName];
-                if (isset($this->_classColumns[$columnName]['select']) && !empty($this->_classColumns[$columnName]['select']))
-                {
-                    $selectSQL[md5($this->_classColumns[$columnName]['select'])] = $this->_classColumns[$columnName]['select'];
+                if (isset($this->_classColumns[$columnName]['select']) && ! empty($this->_classColumns[$columnName]['select'])) {
+                    $selectSQL[md5((string) $this->_classColumns[$columnName]['select'])] = $this->_classColumns[$columnName]['select'];
                 }
 
-                if (isset($this->_classColumns[$columnName]['join']) && !empty($this->_classColumns[$columnName]['join']))
-                {
-                    $joinSQL[md5($this->_classColumns[$columnName]['join'])] = $this->_classColumns[$columnName]['join'];
+                if (isset($this->_classColumns[$columnName]['join']) && ! empty($this->_classColumns[$columnName]['join'])) {
+                    $joinSQL[md5((string) $this->_classColumns[$columnName]['join'])] = $this->_classColumns[$columnName]['join'];
                 }
 
                 /* The / character works as an OR clause for filters, exclude url and web_site */
-                if((strpos($this->_classColumns[$columnName]['filter'], 'web_site') !== false) ||
-                   (strpos($this->_classColumns[$columnName]['filter'], 'url') !== false))
-                {
-                    $arguments = array($argument);
-                }
-                else
-                {
+                if ((str_contains((string) $this->_classColumns[$columnName]['filter'], 'web_site')) ||
+                   (str_contains((string) $this->_classColumns[$columnName]['filter'], 'url'))) {
+                    $arguments = [$argument];
+                } else {
                     $argument = str_replace(' or ', '/', $argument);
                     $argument = str_replace(' OR ', '/', $argument);
                     $arguments = explode('/', $argument);
                 }
 
-                $whereSQL_or = array();
-                $havingSQL_or = array();
-                foreach ($arguments as $argument)
-                {
+                $whereSQL_or = [];
+                $havingSQL_or = [];
+                foreach ($arguments as $argument) {
                     $argument = trim($argument);
 
                     /* Is equal to (==) */
-                    if (strpos($data, '==') !== false)
-                    {
-                        if (isset($this->_classColumns[$columnName]['filterInList']) && $this->_classColumns[$columnName]['filterInList'] == true)
-                        {
-                            if (isset($this->_classColumns[$columnName]['filter']))
-                            {
-                                $whereSQL_or[] =   $db->makeQueryString($argument) . ' IN (' .$this->_classColumns[$columnName]['filter'] . ')';
+                    if (str_contains($data, '==')) {
+                        if (isset($this->_classColumns[$columnName]['filterInList']) && $this->_classColumns[$columnName]['filterInList'] == true) {
+                            if (isset($this->_classColumns[$columnName]['filter'])) {
+                                $whereSQL_or[] = $db->makeQueryString($argument) . ' IN (' . $this->_classColumns[$columnName]['filter'] . ')';
                             }
 
-                            if (isset($this->_classColumns[$columnName]['filterHaving']))
-                            {
+                            if (isset($this->_classColumns[$columnName]['filterHaving'])) {
                                 $havingSQL_or[] = $this->_classColumns[$columnName]['filterHaving'] . ' = ' . $db->makeQueryString($argument) . ' ';
                             }
-                        }
-                        else
-                        {                            
-                            if (isset($this->_classColumns[$columnName]['filter']))
-                            {
+                        } else {
+                            if (isset($this->_classColumns[$columnName]['filter'])) {
                                 $whereSQL_or[] = $this->_classColumns[$columnName]['filter'] . ' = ' . $db->makeQueryString($argument) . ' ';
                             }
 
-                            if (isset($this->_classColumns[$columnName]['filterHaving']))
-                            {
+                            if (isset($this->_classColumns[$columnName]['filterHaving'])) {
                                 $havingSQL_or[] = $this->_classColumns[$columnName]['filterHaving'] . ' = ' . $db->makeQueryString($argument) . ' ';
                             }
                         }
                     }
 
                     /* Contains (=~) */
-                    if (strpos($data, '=~') !== false)
-                    {
-                        if (isset($this->_classColumns[$columnName]['filter']))
-                        {
-                            $whereSQL_or[] = $this->_classColumns[$columnName]['filter'] . ' LIKE ' . $db->makeQueryString('%' . $argument . '%') .' ';
+                    if (str_contains($data, '=~')) {
+                        if (isset($this->_classColumns[$columnName]['filter'])) {
+                            $whereSQL_or[] = $this->_classColumns[$columnName]['filter'] . ' LIKE ' . $db->makeQueryString('%' . $argument . '%') . ' ';
                         }
 
-                        if (isset($this->_classColumns[$columnName]['filterHaving']))
-                        {
-                            $havingSQL_or[] = $this->_classColumns[$columnName]['filterHaving'] . ' LIKE ' . $db->makeQueryString('%' . $argument . '%') .' ';
+                        if (isset($this->_classColumns[$columnName]['filterHaving'])) {
+                            $havingSQL_or[] = $this->_classColumns[$columnName]['filterHaving'] . ' LIKE ' . $db->makeQueryString('%' . $argument . '%') . ' ';
                         }
                     }
 
                     /* Is less than (=<) */
-                    if (strpos($data, '=<') !== false)
-                    {
-                        if (isset($this->_classColumns[$columnName]['filter']))
-                        {
-                            $whereSQL_or[] = $this->_classColumns[$columnName]['filter'] . ' <= ' . $db->makeQueryInteger($argument) .' ';
+                    if (str_contains($data, '=<')) {
+                        if (isset($this->_classColumns[$columnName]['filter'])) {
+                            $whereSQL_or[] = $this->_classColumns[$columnName]['filter'] . ' <= ' . $db->makeQueryInteger($argument) . ' ';
                         }
 
-                        if (isset($this->_classColumns[$columnName]['filterHaving']))
-                        {
-                            $havingSQL_or[] = $this->_classColumns[$columnName]['filterHaving'] . ' <= ' . $db->makeQueryInteger($argument)  .' ';
+                        if (isset($this->_classColumns[$columnName]['filterHaving'])) {
+                            $havingSQL_or[] = $this->_classColumns[$columnName]['filterHaving'] . ' <= ' . $db->makeQueryInteger($argument) . ' ';
                         }
                     }
 
                     /* Is greater than (=>) */
-                    if (strpos($data, '=>') !== false)
-                    {
-                        if (isset($this->_classColumns[$columnName]['filter']))
-                        {
-                            $whereSQL_or[] = $this->_classColumns[$columnName]['filter'] . ' >= ' . $db->makeQueryInteger($argument) .' ';
+                    if (str_contains($data, '=>')) {
+                        if (isset($this->_classColumns[$columnName]['filter'])) {
+                            $whereSQL_or[] = $this->_classColumns[$columnName]['filter'] . ' >= ' . $db->makeQueryInteger($argument) . ' ';
                         }
 
-                        if (isset($this->_classColumns[$columnName]['filterHaving']))
-                        {
-                            $havingSQL_or[] = $this->_classColumns[$columnName]['filterHaving'] . ' >= ' . $db->makeQueryInteger($argument)  .' ';
+                        if (isset($this->_classColumns[$columnName]['filterHaving'])) {
+                            $havingSQL_or[] = $this->_classColumns[$columnName]['filterHaving'] . ' >= ' . $db->makeQueryInteger($argument) . ' ';
                         }
                     }
 
                     /* Contains in list (=#) */
-                    if (strpos($data, '=#') !== false)
-                    {
+                    if (str_contains($data, '=#')) {
                         /* This is in case you need to use eval to build a where or having clause with subselects. */
-                        if (isset($this->_classColumns[$columnName]['filterRender=#']))
-                        {
+                        if (isset($this->_classColumns[$columnName]['filterRender=#'])) {
                             $whereSQL_or[] = eval($this->_classColumns[$columnName]['filterRender=#']);
                         }
 
-                        if (isset($this->_classColumns[$columnName]['filterHavingRender=#']))
-                        {
+                        if (isset($this->_classColumns[$columnName]['filterHavingRender=#'])) {
                             $havingSQL_or[] = eval($this->_classColumns[$columnName]['filterHavingRender=#']);
                         }
 
                         /* Standard filtering happens here. */
-                        if (isset($this->_classColumns[$columnName]['filter']))
-                        {
+                        if (isset($this->_classColumns[$columnName]['filter'])) {
                             $whereSQL_or[] = $this->_classColumns[$columnName]['filter'] . ' = ' . $db->makeQueryString($argument) . ' ';
                         }
 
-                        if (isset($this->_classColumns[$columnName]['filterHaving']))
-                        {
+                        if (isset($this->_classColumns[$columnName]['filterHaving'])) {
                             $havingSQL_or[] = $this->_classColumns[$columnName]['filterHaving'] . ' = ' . $db->makeQueryString($argument) . ' ';
                         }
                     }
-                    
+
                     /* Near Zipcode (=@) */
-                    if (strpos($data, '=@') !== false)
-                    {
+                    if (str_contains($data, '=@')) {
                         /* Try to determine lat/lng of provided zipcode, if can't find abort. */
                         $parts = explode(',', $argument);
-                        
-                        if (count($parts) != 2)
-                        {
+
+                        if (count($parts) != 2) {
                             continue;
                         }
-                        
+
                         $zipcode = (int) $parts[0];
                         $distance = (int) $parts[1];
-                        
-                        $zipcodeData = $db->getAssoc('SELECT * FROM zipcodes WHERE zipcode = '. $db->makeQueryInteger($zipcode));
-                        
-                        if (!isset($zipcodeData['lat']))
-                        {
+
+                        $zipcodeData = $db->getAssoc('SELECT * FROM zipcodes WHERE zipcode = ' . $db->makeQueryInteger($zipcode));
+
+                        if (! isset($zipcodeData['lat'])) {
                             continue;
                         }
-                        
+
                         $zipcodeLat = $zipcodeData['lat'];
                         $zipcodeLng = $zipcodeData['lng'];
-                        
-                        $joinSQL['zipsearching'] = 'LEFT JOIN zipcodes AS zipcode_search ON zipcode_search.zipcode = '.$this->_classColumns[$columnName]['filter'];
-                        
+
+                        $joinSQL['zipsearching'] = 'LEFT JOIN zipcodes AS zipcode_search ON zipcode_search.zipcode = ' . $this->_classColumns[$columnName]['filter'];
+
                         // Boundaries
-                        $whereSQL[] = 'zipcode_search.lat > '.($zipcodeLat - (float) $distance / MILES_PER_LATLNG);
-                        $whereSQL[] = 'zipcode_search.lat < '.($zipcodeLat + (float) $distance / MILES_PER_LATLNG);
-                        $whereSQL[] = 'zipcode_search.lng > '.($zipcodeLng - (float) $distance / MILES_PER_LATLNG);
-                        $whereSQL[] = 'zipcode_search.lng < '.($zipcodeLng + (float) $distance / MILES_PER_LATLNG);
-                        
+                        $whereSQL[] = 'zipcode_search.lat > ' . ($zipcodeLat - (float) $distance / MILES_PER_LATLNG);
+                        $whereSQL[] = 'zipcode_search.lat < ' . ($zipcodeLat + (float) $distance / MILES_PER_LATLNG);
+                        $whereSQL[] = 'zipcode_search.lng > ' . ($zipcodeLng - (float) $distance / MILES_PER_LATLNG);
+                        $whereSQL[] = 'zipcode_search.lng < ' . ($zipcodeLng + (float) $distance / MILES_PER_LATLNG);
+
                         // Abs Distance
-                        $whereSQL[] = 'sqrt(pow((zipcode_search.lng - '.$zipcodeLng.'),2) + pow((zipcode_search.lat - '.$zipcodeLat.'),2)) < '.((float) $distance / MILES_PER_LATLNG);
-                        
+                        $whereSQL[] = 'sqrt(pow((zipcode_search.lng - ' . $zipcodeLng . '),2) + pow((zipcode_search.lat - ' . $zipcodeLat . '),2)) < ' . ((float) $distance / MILES_PER_LATLNG);
+
                         // TODO:  Actual geographic search?
                     }
-
                 }
-                if (count($whereSQL_or) > 0)
-                {
-                    if (!is_array($whereSQL_or)) {
-                        $whereSQL_or = array($whereSQL_or); // Convert to array if it's not already
-                    }
+                if (count($whereSQL_or) > 0) {
                     $whereSQL[] = '(' . implode(' OR ', $whereSQL_or) . ')';
                 }
-                if (count($havingSQL_or) > 0)
-                {
-                    if (!is_array($havingSQL_or)) {
-                        $havingSQL_or = array($havingSQL_or); // Convert to array if it's not already
-                    }
+                if (count($havingSQL_or) > 0) {
                     $havingSQL[] = '(' . implode(' OR ', $havingSQL_or) . ')';
                 }
-                
             }
         }
 
         /* Get WHERE and HAVING paramaters for each column we want to collect data on. */
-        foreach ($this->_currentColumns as $index => $data)
-        {
-            if (isset($data['data']['where']) && !empty($data['data']['where']))
-            {
+        foreach ($this->_currentColumns as $index => $data) {
+            if (isset($data['data']['where']) && ! empty($data['data']['where'])) {
                 $whereSQL[] = '(' . $data['data']['where'] . ')';
             }
 
-            if (isset($data['data']['having']) && !empty($data['data']['having']))
-            {
+            if (isset($data['data']['having']) && ! empty($data['data']['having'])) {
                 $havingSQL[] = '(' . $data['data']['having'] . ')';
             }
         }
 
-        if (count($selectSQL) > 0)
-        {
-            if (!is_array($selectSQL)) {
-                $selectSQL = array($selectSQL); // Convert to array if it's not already
-            }
-            $selectSQL = '' . implode(',', $selectSQL) . ','."\n";
-        }
-        else
-        {
+        if (count($selectSQL) > 0) {
+            $selectSQL = '' . implode(',' . "\n", $selectSQL);
+        } else {
             $selectSQL = '0 as __nothing';
         }
 
-        if (!is_array($joinSQL)) {
-            $joinSQL = array($joinSQL); // Convert to array if it's not already
-        }
         $joinSQL = implode("\n", $joinSQL);
-        if ($this->_parameters['maxResults'] != -1)
-        {
-            if ($this->_parameters['rangeStart'] < 0)
-            {
+        if ($this->_parameters['maxResults'] != -1) {
+            if ($this->_parameters['rangeStart'] < 0) {
                 $this->_parameters['rangeStart'] = 0;
             }
-            
+
             $limitSQL = 'LIMIT ' . $this->_parameters['rangeStart'] . ', ' . $this->_parameters['maxResults'];
-        }
-        else
-        {
+        } else {
             $limitSQL = '';
         }
 
         /* Alpha navigation set? */
-        if (isset($this->_parameters['filterAlpha']))
-        {
-            $havingSQL[] = 'ORD(UPPER('.$this->_parameters['sortBy'].')) = ORD(UPPER(\''.$this->_parameters['filterAlpha'].'\'))';
+        if (isset($this->_parameters['filterAlpha'])) {
+            $havingSQL[] = 'ORD(UPPER(' . $this->_parameters['sortBy'] . ')) = ORD(UPPER(\'' . $this->_parameters['filterAlpha'] . '\'))';
         }
 
-        if (isset($this->_parameters['exportIDs']) && isset($this->_dataItemIDColumn))
-        {
-            if (!is_array($whereSQL)) {
-                $whereSQL = array($whereSQL); // Convert to array if it's not already
-            }
-            $whereSQL[] = $this->_dataItemIDColumn .' IN ('.implode(',', $this->_parameters['exportIDs']).')';
-        
+        if (isset($this->_parameters['exportIDs']) && isset($this->_dataItemIDColumn)) {
+            $whereSQL[] = $this->_dataItemIDColumn . ' IN (' . implode(',', $this->_parameters['exportIDs']) . ')';
+
             //Make sure we do not apply the page results limit to this query.
             $limitSQL = '';
         }
 
-        if (!is_array($whereSQL)) {
-            $whereSQL = array($whereSQL); // Convert to array if it's not already
-        }
-        $whereSQL = implode(' AND '."\n", $whereSQL);
-        
-        if (!is_array($havingSQL)) {
-            $havingSQL = array($havingSQL); // Convert to array if it's not already
-        }
-        $havingSQL = implode(' AND '."\n", $havingSQL);
+        $whereSQL = implode(' AND ' . "\n", $whereSQL);
+        $havingSQL = implode(' AND ' . "\n", $havingSQL);
         $orderSQL = 'ORDER BY ' . $this->_parameters['sortBy'] . ' ' . $this->_parameters['sortDirection'];
 
         $sql = $this->getSQL($selectSQL, $joinSQL, $whereSQL, $havingSQL, $orderSQL, $limitSQL);
@@ -1369,7 +1186,7 @@ class DataGrid
     public function getNumberOfRows()
     {
         $this->_getData();
-        
+
         return $this->_totalEntries;
     }
 
@@ -1382,24 +1199,21 @@ class DataGrid
     {
         // TODO:  Is this going to be too memory intensive?
         $this->_getData();
-        
-        $exportableIDs = array();
-        
-        foreach ($this->_rs as $rowIndex => $rsData)
-        {
+
+        $exportableIDs = [];
+
+        foreach ($this->_rs as $rowIndex => $rsData) {
             $exportableIDs[] = $rsData['exportID'];
         }
-        
+
         /* Free up the potentially massive result set. */
         unset($this->_rs);
-        
+
         return $exportableIDs;
     }
 
     /**
      * Outputs the current data in CSV format.
-     *
-     * @return void
      */
     public function drawCSV()
     {
@@ -1407,10 +1221,12 @@ class DataGrid
         $this->_getData();
 
         /* Figure out what columns we can export. */
-        $exportableColumns = array();
-        foreach ($this->_classColumns as $index => $data)
-        {
-            $exportableColumns[] = array('name' => $index, 'data' => $data);
+        $exportableColumns = [];
+        foreach ($this->_classColumns as $index => $data) {
+            $exportableColumns[] = [
+                'name' => $index,
+                'data' => $data,
+            ];
         }
         $this->_currentColumns = $exportableColumns;
 
@@ -1418,54 +1234,44 @@ class DataGrid
         $this->_rs = false;
         $this->_getData();
 
-        $exportableHeaders = array();
+        $exportableHeaders = [];
 
-        foreach ($exportableColumns as $index => $data)
-        {
+        foreach ($exportableColumns as $index => $data) {
             if ($data['name'] == '' ||
-                (isset($data['data']['exportable']) &&
+                (
+                    isset($data['data']['exportable']) &&
                 $data['data']['exportable'] == false
-                ) || (!isset($data['data']['sortableColumn']) &&
-                 !isset($data['data']['exportRender'])
+                ) || (
+                    ! isset($data['data']['sortableColumn']) &&
+                 ! isset($data['data']['exportRender'])
                 )
-            )
-            {
+            ) {
                 unset($exportableColumns[$index]);
-            }
-            else
-            {
-                if (isset($data['data']['exportColumnHeaderText']))
-                {
+            } else {
+                if (isset($data['data']['exportColumnHeaderText'])) {
                     $exportableHeaders[] = str_replace('"', '""', $data['data']['exportColumnHeaderText']);
-                }
-                else
-                {
+                } else {
                     $exportableHeaders[] = str_replace('"', '""', $data['name']);
                 }
             }
         }
 
-        if (!is_array($exportableHeaders)) {
-            $exportableHeaders = array($exportableHeaders); // Convert to array if it's not already
-        }
-        $headerRow = implode(',', $exportableHeaders) . "\r\n";
-        
-        $length = strlen($headerRow);
-        foreach ($this->_rs as $rowIndex => $rsData)
-        {
-            $rowColumns = array();
+        $headerRow = implode(
+            ',',
+            $exportableHeaders
+        ) . "\r\n";
 
-            foreach ($exportableColumns as $index => $data)
-            {
+        $length = strlen($headerRow);
+        foreach ($this->_rs as $rowIndex => $rsData) {
+            $rowColumns = [];
+
+            foreach ($exportableColumns as $index => $data) {
                 /* Populate $value for this column. */
                 $value = "";
 
-                if (isset($data['data']['exportRender']))
-                {
+                if (isset($data['data']['exportRender'])) {
                     $value = eval($data['data']['exportRender']);
-                }
-                else if (isset($data['data']['sortableColumn']))
-                {
+                } elseif (isset($data['data']['sortableColumn'])) {
                     $value = @$rsData[$data['data']['sortableColumn']];
                 }
 
@@ -1475,12 +1281,11 @@ class DataGrid
                 $rowColumns[] = '"' . str_replace('"', '""', $value) . '"';
             }
 
-            if (!is_array($rowColumns)) {
-                $rowColumns = array($rowColumns); // Convert to array if it's not already
-            }
-            $this->_rs[$rowIndex] = implode(',', $rowColumns) . "\r\n";
+            $this->_rs[$rowIndex] = implode(
+                ',',
+                $rowColumns
+            ) . "\r\n";
             $length += strlen($this->_rs[$rowIndex]);
-            
         }
 
         header('Content-Disposition: attachment; filename="export.csv"');
@@ -1488,27 +1293,22 @@ class DataGrid
         header('Connection: close');
         header('Content-Type: text/x-csv; name=export.csv; charset=utf-8');
 
-        if (defined('INSERT_BOM_CSV_LENGTH') && (INSERT_BOM_CSV_LENGTH > 0))
-        {
+        if (defined('INSERT_BOM_CSV_LENGTH') && (INSERT_BOM_CSV_LENGTH > 0)) {
             echo chr(INSERT_BOM_CSV_1);
-            if (INSERT_BOM_CSV_LENGTH > 1)
-            {
+            if (INSERT_BOM_CSV_LENGTH > 1) {
                 echo chr(INSERT_BOM_CSV_2);
             }
-            if (INSERT_BOM_CSV_LENGTH > 2)
-            {
+            if (INSERT_BOM_CSV_LENGTH > 2) {
                 echo chr(INSERT_BOM_CSV_3);
             }
-            if (INSERT_BOM_CSV_LENGTH > 3)
-            {
+            if (INSERT_BOM_CSV_LENGTH > 3) {
                 echo chr(INSERT_BOM_CSV_4);
             }
         }
 
         echo $headerRow;
 
-        foreach ($this->_rs as $rowIndex => $row)
-        {
+        foreach ($this->_rs as $rowIndex => $row) {
             echo $row;
             unset($this->_rs[$rowIndex]);
         }
@@ -1516,43 +1316,34 @@ class DataGrid
         die();
     }
 
-
     /**
      * Outputs the current data in an HTML list.
-     *
-     * @return void
      */
     public function drawHTML()
     {
         /* Get data. */
         $this->_getData();
 
-        $md5InstanceName = md5($this->_instanceName);
+        $md5InstanceName = md5((string) $this->_instanceName);
 
         $this->_totalColumnWidths = 0;
 
         /* Build cell indexes for cell headers. */
-        $cellIndexes = array();
-        foreach ($this->_currentColumns as $index => $data)
-        {
+        $cellIndexes = [];
+        foreach ($this->_currentColumns as $index => $data) {
             $cellIndexes[] = $index;
         }
 
-        foreach ($this->_rs as $rowIndex => $rsData)
-        {
-            $rowColumns = array();
+        foreach ($this->_rs as $rowIndex => $rsData) {
+            $rowColumns = [];
 
-            foreach ($this->_currentColumns as $index => $data)
-            {
+            foreach ($this->_currentColumns as $index => $data) {
                 /* Populate $value for this column. */
                 $value = "";
 
-                if (!isset($data['data']['pagerRender']))
-                {
+                if (! isset($data['data']['pagerRender'])) {
                     $value = ($rsData[$data['data']['sortableColumn']]);
-                }
-                else
-                {
+                } else {
                     $value = (eval($data['data']['pagerRender']));
                 }
 
@@ -1562,187 +1353,157 @@ class DataGrid
                 $rowColumns[] = $value;
             }
 
-            if (!is_array($rowColumns)) {
-                $rowColumns = array($rowColumns); // Convert to array if it's not already
-            }
-            $this->_rs[$rowIndex] = implode('&nbsp;&nbsp;', $rowColumns) . "<br />";
-            
+            $this->_rs[$rowIndex] = implode(
+                '&nbsp;&nbsp;',
+                $rowColumns
+            ) . "<br />";
         }
 
-        foreach ($this->_rs as $rowIndex => $row)
-        {
-            echo '<span style="'.$this->globalStyle.'">'.$row.'</span>';
+        foreach ($this->_rs as $rowIndex => $row) {
+            echo '<span style="' . $this->globalStyle . '">' . $row . '</span>';
             unset($this->_rs[$rowIndex]);
         }
     }
-
 
     /**
      * Draws the pager onto the current template (meant to be invoked from template or ajax
      * function).
      *
      * @param boolean don't draw the overflow contaner.
-     * @return void
      */
     public function draw($noOverflow = false)
     {
         /* Get data. */
         $this->_getData();
 
-        $md5InstanceName = md5($this->_instanceName);
+        $md5InstanceName = md5((string) $this->_instanceName);
 
         $this->_totalColumnWidths = 0;
 
         /* Build cell indexes for cell headers. */
-        $cellIndexes = array();
-        foreach ($this->_currentColumns as $index => $data)
-        {
+        $cellIndexes = [];
+        foreach ($this->_currentColumns as $index => $data) {
             $cellIndexes[] = $index;
         }
 
         /* Do not draw elements that exist outside of the OverflowDiv object (in the case of being called by the ajax redraw function) */
-        if (!$noOverflow)
-        {
-             /* Filters */
-            if (isset($this->_parameters['filter']))
-            {
+        if (! $noOverflow) {
+            /* Filters */
+            if (isset($this->_parameters['filter'])) {
                 $currentFilterString = $this->_parameters['filter'];
-            }
-            else
-            {
+            } else {
                 $currentFilterString = '';
             }
 
-            echo '<input type="hidden" id="filterArea'.$md5InstanceName.'" value="', htmlspecialchars($currentFilterString), '" />';
+            echo '<input type="hidden" id="filterArea' . $md5InstanceName . '" value="', htmlspecialchars((string) $currentFilterString), '" />';
             echo '<script type="text/javascript">', $this->_getApplyFilterFunctionDefinition(), '</script>';
 
             /* This makes the table able to be wider then the displayable area. */
-            echo '<div id="OverflowDiv'.$md5InstanceName.'" style="overflow: auto; width: ' , ($this->getTableWidth(true)) , 'px; padding-left: 1px; overflow-y: hidden; overflow-x: none; padding-bottom: expression(this.scrollWidth > this.offsetWidth ? 14 : 4); ' . $this->globalStyle . '">', "\n";
+            echo '<div id="OverflowDiv' . $md5InstanceName . '" style="overflow: auto; width: ' , ($this->getTableWidth(true)) , 'px; padding-left: 1px; overflow-y: hidden; overflow-x: none; padding-bottom: expression(this.scrollWidth > this.offsetWidth ? 14 : 4); ' . $this->globalStyle . '">', "\n";
         }
 
         /* IE fix for floating dialog boxes not floating over controls like dropdown lists. */
-        echo '<iframe id="helpShim'.$md5InstanceName.'" src="lib/IFrameBlank.html" scrolling="no" frameborder="0" style="position:absolute; display:none;"></iframe>', "\n";
+        echo '<iframe id="helpShim' . $md5InstanceName . '" src="lib/IFrameBlank.html" scrolling="no" frameborder="0" style="position:absolute; display:none;"></iframe>', "\n";
 
         /* Definition for the cell which appears to be showing when dragging a column into a new position (not resizing). */
-        echo ('<div class="moveableCell" style="cursor: move; position:absolute; width:100px; border:1px solid gray; display:none; zIndex:10000; filter:alpha(opacity=75);-moz-opacity:.75;opacity:.75; ' . $this->globalStyle . '" id="moveColumn'.$md5InstanceName.'"></div>' . "\n");
+        echo('<div class="moveableCell" style="cursor: move; position:absolute; width:100px; border:1px solid gray; display:none; zIndex:10000; filter:alpha(opacity=75);-moz-opacity:.75;opacity:.75; ' . $this->globalStyle . '" id="moveColumn' . $md5InstanceName . '"></div>' . "\n");
 
         /* Actuall definition for the table. */
-        if (isset($this->listStyle) && $this->listStyle == true)
-        {
-            echo ('<table class="sortable" width="'. $this->getTableWidth(true) .'" onmouseover="javascript:trackTableHighlight(event)" id="table'.$md5InstanceName.'" style="border:none;">' . "\n");
-            echo ('<thead style="-moz-user-select:none; -khtml-user-select:none; user-select:none; display:none; ' . $this->globalStyle . '">' . "\n");
+        if (isset($this->listStyle) && $this->listStyle == true) {
+            echo('<table class="sortable" width="' . $this->getTableWidth(true) . '" onmouseover="javascript:trackTableHighlight(event)" id="table' . $md5InstanceName . '" style="border:none;">' . "\n");
+            echo('<thead style="-moz-user-select:none; -khtml-user-select:none; user-select:none; display:none; ' . $this->globalStyle . '">' . "\n");
+        } else {
+            echo('<table class="sortable" width="' . $this->getTableWidth(true) . '" onmouseover="javascript:trackTableHighlight(event)" id="table' . $md5InstanceName . '">' . "\n");
+            echo('<thead style="-moz-user-select:none; -khtml-user-select:none; user-select:none; ' . $this->globalStyle . '">' . "\n");
         }
-        else
-        {
-            echo ('<table class="sortable" width="'. $this->getTableWidth(true) .'" onmouseover="javascript:trackTableHighlight(event)" id="table'.$md5InstanceName.'">' . "\n");
-            echo ('<thead style="-moz-user-select:none; -khtml-user-select:none; user-select:none; ' . $this->globalStyle . '">' . "\n");
-        }
-        echo ('<tr>' . "\n");
+        echo('<tr>' . "\n");
 
-        if (!isset($this->showExportColumn) || $this->showExportColumn)
-        {
+        if (! isset($this->showExportColumn) || $this->showExportColumn) {
             /* Column selector icon */ /**/
-            echo ('<th style="width:10px; border-right:1px solid gray; ' . $this->globalStyle . '" align="center" id="cellHideShow'.$md5InstanceName.'"><div style="width:10px;">' . "\n");
+            echo('<th style="width:10px; border-right:1px solid gray; ' . $this->globalStyle . '" align="center" id="cellHideShow' . $md5InstanceName . '"><div style="width:10px;">' . "\n");
 
             /* Choose column box */
-            if (isset($this->showChooseColumnsBox) && $this->showChooseColumnsBox == true)
-            {
-                echo ('<a href="javascript:void(0);" id="exportBoxLink'.$md5InstanceName.'" onclick="toggleHideShowControls(\''.$md5InstanceName.'\'); return false;">' . "\n");
-                echo ('<img src="images/tab_add.gif" border="0" alt="" />' . "\n");
-                echo ('</a></div>' . "\n");
+            if (isset($this->showChooseColumnsBox) && $this->showChooseColumnsBox == true) {
+                echo('<a href="javascript:void(0);" id="exportBoxLink' . $md5InstanceName . '" onclick="toggleHideShowControls(\'' . $md5InstanceName . '\'); return false;">' . "\n");
+                echo('<img src="images/tab_add.gif" border="0" alt="" />' . "\n");
+                echo('</a></div>' . "\n");
 
                 /* Dropdown selector to choose which columns are visible. */
-                echo ('<div class="ajaxSearchResults" id="ColumnBox'.$md5InstanceName.'" align="left" onclick="toggleHideShowControls(\''.$md5InstanceName.'\');" style="width:200px; ' . $this->globalStyle . '">' . "\n");
-                echo ('<span style="font-weight:bold; color:#000000;">Show Columns:</span><br/><br />' . "\n");
+                echo('<div class="ajaxSearchResults" id="ColumnBox' . $md5InstanceName . '" align="left" onclick="toggleHideShowControls(\'' . $md5InstanceName . '\');" style="width:200px; ' . $this->globalStyle . '">' . "\n");
+                echo('<span style="font-weight:bold; color:#000000;">Show Columns:</span><br/><br />' . "\n");
 
                 /* Contents of dropdown menu. */
-                foreach ($this->_classColumns as $index => $data)
-                {
+                foreach ($this->_classColumns as $index => $data) {
                     $selected = false;
-                    foreach ($this->_currentColumns as $index2 => $data2)
-                    {
-                        if ($data2['name'] == $index)
-                        {
+                    foreach ($this->_currentColumns as $index2 => $data2) {
+                        if ($data2['name'] == $index) {
                             $selected = true;
                         }
                     }
 
                     /* Add / remove columns */
-                    if (!isset($data['pagerOptional']) || $data['pagerOptional'] == true)
-                    {
-                        if ($selected)
-                        {
+                    if (! isset($data['pagerOptional']) || $data['pagerOptional'] == true) {
+                        if ($selected) {
                             $newParameterArray = $this->_parameters;
                             $newParameterArray['removeColumn'] = $index;
 
-                            echo ('<span style="font-weight:normal;">' . $this->_makeControlLink($newParameterArray) . '<img src="images/checkbox.gif" border="0" alt="" />&nbsp;&nbsp;&nbsp;&nbsp;'. $index . '</a></span><br />' . "\n");
-                        }
-                        else
-                        {
+                            echo('<span style="font-weight:normal;">' . $this->_makeControlLink($newParameterArray) . '<img src="images/checkbox.gif" border="0" alt="" />&nbsp;&nbsp;&nbsp;&nbsp;' . $index . '</a></span><br />' . "\n");
+                        } else {
                             $newParameterArray = $this->_parameters;
                             $newParameterArray['addColumn'] = $index;
 
-                            echo ('<span style="font-weight:normal;">' . $this->_makeControlLink($newParameterArray) . '<img src="images/checkbox_blank.gif" border="0" alt="" />&nbsp;&nbsp;&nbsp;&nbsp;'. $index . '</a></span><br />' . "\n");
+                            echo('<span style="font-weight:normal;">' . $this->_makeControlLink($newParameterArray) . '<img src="images/checkbox_blank.gif" border="0" alt="" />&nbsp;&nbsp;&nbsp;&nbsp;' . $index . '</a></span><br />' . "\n");
                         }
                     }
                 }
 
                 /* Single option to reset the column sizes / contents. */
-                echo ('<br />');
+                echo('<br />');
                 $newParameterArray = $this->_parameters;
                 $newParameterArray['resetColumns'] = true;
-                echo ('<span style="font-weight:bold;">' . $this->_makeControlLink($newParameterArray) . '<img src="images/checkbox_blank.gif" alt="" border="0" />&nbsp;&nbsp;&nbsp;&nbsp;Reset to Default Columns</a></span><br />' . "\n");
+                echo('<span style="font-weight:bold;">' . $this->_makeControlLink($newParameterArray) . '<img src="images/checkbox_blank.gif" alt="" border="0" />&nbsp;&nbsp;&nbsp;&nbsp;Reset to Default Columns</a></span><br />' . "\n");
 
-                echo ('</div>');
+                echo('</div>');
             }
 
             /* Ajax indicator. */
-            echo ('<span style="display:none;" id="ajaxTableIndicator'.$md5InstanceName.'"><img src="images/indicator_small.gif" alt="" /></span>');
+            echo('<span style="display:none;" id="ajaxTableIndicator' . $md5InstanceName . '"><img src="images/indicator_small.gif" alt="" /></span>');
 
             /* Selected Export ID's Array */
-            echo ('<script type="text/javascript">exportArray'.$md5InstanceName.' = new Array();</script>');
+            echo('<script type="text/javascript">exportArray' . $md5InstanceName . ' = new Array();</script>');
 
-            echo ('</th>');
-        }
-        else
-        {
+            echo('</th>');
+        } else {
             /* Ajax indicator. */
-            echo ('<span style="display:none;" id="ajaxTableIndicator'.$md5InstanceName.'"></span>');   
+            echo('<span style="display:none;" id="ajaxTableIndicator' . $md5InstanceName . '"></span>');
         }
 
         /* Column headers */
-        foreach ($this->_currentColumns as $index => $data)
-        {
+        foreach ($this->_currentColumns as $index => $data) {
             /* Is the column sizable?  If it is, then we need to make a second column to resize that appears to be part of the first column. */
-            if ((!isset($data['data']['sizable']) || $data['data']['sizable'] == true) &&
-                (isset($this->allowResizing) && $this->allowResizing == true))
-            {
+            if ((! isset($data['data']['sizable']) || $data['data']['sizable'] == true) &&
+                (isset($this->allowResizing) && $this->allowResizing == true)) {
                 $sizable = true;
                 $this->_totalColumnWidths += $data['width'] + 1;
-            }
-            else
-            {
+            } else {
                 $sizable = false;
                 $this->_totalColumnWidths += $data['width'];
             }
 
-           /* Opening of header cell. */
-           echo ('<th align="left" style="width:'.$data['width'].'px; border-collapse: collapse; ' . $this->globalStyle);
-           
-	   $currentColumnsKeys = array_keys($this->_currentColumns);
-           if (end($currentColumnsKeys) != $index && !$sizable)
-           {
-                   //Uncomment for gray resize bars
-                   echo 'border-right:1px solid gray;';
-           }
+            /* Opening of header cell. */
+            echo('<th align="left" style="width:' . $data['width'] . 'px; border-collapse: collapse; ' . $this->globalStyle);
 
-           $newParameterArray = $this->_parameters;
-           $newParameterArray['reorderColumns'] = '<dynamic>';
+            $currentColumnsKeys = array_keys($this->_currentColumns);
+            if (end($currentColumnsKeys) != $index && ! $sizable) {
+                //Uncomment for gray resize bars
+                echo 'border-right:1px solid gray;';
+            }
 
-           /* If $this->allowResizing is not set, prevent moving.  Otherwise, write the code to make the cell movable. */
-           if (isset($this->allowResizing) && $this->allowResizing == true)
-           {
+            $newParameterArray = $this->_parameters;
+            $newParameterArray['reorderColumns'] = '<dynamic>';
 
+            /* If $this->allowResizing is not set, prevent moving.  Otherwise, write the code to make the cell movable. */
+            if (isset($this->allowResizing) && $this->allowResizing == true) {
                 $formatString = '" id="cell%s%s" onmouseover="style.cursor = '
                     . '\'move\'" onmousedown="startMove(\'cell%s%s\', '
                     . '\'table%s\', \'cell%s%s\', \'%s\', \'%s\', \'%s\', '
@@ -1750,11 +1511,14 @@ class DataGrid
 
                 echo sprintf(
                     $formatString,
-                    $md5InstanceName, $index,
-                    $md5InstanceName, $index,
                     $md5InstanceName,
-                    $md5InstanceName, end($currentColumnsKeys),
-                    urlencode($this->_instanceName),
+                    $index,
+                    $md5InstanceName,
+                    $index,
+                    $md5InstanceName,
+                    $md5InstanceName,
+                    end($currentColumnsKeys),
+                    urlencode((string) $this->_instanceName),
                     $_SESSION['CATS']->getCookie(),
                     $data['name'],
                     $md5InstanceName,
@@ -1762,43 +1526,30 @@ class DataGrid
                     urlencode(json_encode($newParameterArray)),
                     urlencode($this->_getUnrelatedRequestString())
                 );
-            }
-            else
-            {
-               echo '" id="cell', $md5InstanceName, $index, '">';
+            } else {
+                echo '" id="cell', $md5InstanceName, $index, '">';
             }
 
-            echo ('<div id="cell'.$md5InstanceName.$index.'div" style="width:'.$data['width'].'px;">' . "\n");
+            echo('<div id="cell' . $md5InstanceName . $index . 'div" style="width:' . $data['width'] . 'px;">' . "\n");
 
             /* Header cell contents. */
-            if (isset($data['data']['pagerNoTitle']) && $data['data']['pagerNoTitle'] == true)
-            {
+            if (isset($data['data']['pagerNoTitle']) && $data['data']['pagerNoTitle'] == true) {
                 /* Do nothing */
-            }
-            else if (isset($data['data']['sortableColumn']))
-            {
+            } elseif (isset($data['data']['sortableColumn'])) {
                 /* If this field is not the current sort-by field, or if it is and the
                  * current sort direction is DESC, the link will use ASC sort order.
                  */
-                if ($this->_parameters['sortBy'] !== $data['data']['sortableColumn'] || $this->_parameters['sortDirection'] === 'DESC')
-                {
+                if ($this->_parameters['sortBy'] !== $data['data']['sortableColumn'] || $this->_parameters['sortDirection'] === 'DESC') {
                     $sortDirection = 'ASC';
-                }
-                else
-                {
+                } else {
                     $sortDirection = 'DESC';
                 }
 
-                if ($this->_parameters['sortBy'] == $data['data']['sortableColumn'] && $this->_parameters['sortDirection'] === 'ASC')
-                {
+                if ($this->_parameters['sortBy'] == $data['data']['sortableColumn'] && $this->_parameters['sortDirection'] === 'ASC') {
                     $sortImage = '&nbsp;<img src="images/downward.gif" style="border: none;" alt="" />';
-                }
-                else if ($this->_parameters['sortBy'] == $data['data']['sortableColumn'] && $this->_parameters['sortDirection'] === 'DESC')
-                {
+                } elseif ($this->_parameters['sortBy'] == $data['data']['sortableColumn'] && $this->_parameters['sortDirection'] === 'DESC') {
                     $sortImage = '&nbsp;<img src="images/upward.gif" style="border: none;" alt="" />';
-                }
-                else
-                {
+                } else {
                     $sortImage = '&nbsp;<img src="images/nosort.gif" style="border: none;" alt="" />';
                 }
 
@@ -1807,31 +1558,25 @@ class DataGrid
                 $newParameterArray['sortBy'] = $data['data']['sortableColumn'];
                 $newParameterArray['sortDirection'] = $sortDirection;
 
-                if (isset($newParameterArray['filterAlpha']))
-                {
+                if (isset($newParameterArray['filterAlpha'])) {
                     unset($newParameterArray['filterAlpha']);
                 }
 
-                if (isset($this->allowSorting) && $this->allowSorting == false)
-                {
+                if (isset($this->allowSorting) && $this->allowSorting == false) {
                     echo sprintf(
                         '<nobr>%s</nobr>',
-                        (!isset($data['data']['columnHeaderText']) ?
+                        (! isset($data['data']['columnHeaderText']) ?
                             $data['name'] :
                             $data['data']['columnHeaderText'])
                     );
-                }
-                else if (isset($data['data']['columnHeaderText']))
-                {
+                } elseif (isset($data['data']['columnHeaderText'])) {
                     echo sprintf(
                         '%s<nobr>%s%s</nobr></a>',
                         $this->_makeControlLink($newParameterArray),
                         $data['data']['columnHeaderText'],
                         $sortImage
                     );
-                }
-                else
-                {
+                } else {
                     echo sprintf(
                         '%s<nobr>%s%s</nobr></a>',
                         $this->_makeControlLink($newParameterArray),
@@ -1839,29 +1584,25 @@ class DataGrid
                         $sortImage
                     );
                 }
-            }
-            else
-            {
+            } else {
                 echo '<span style="font-weight:bold;"><nobr>',
-                    $data['name'], '</nobr></span>';
+                $data['name'], '</nobr></span>';
             }
 
             /* Draw the closing part of the cell. */
             echo '</div></th>', "\n";
 
             /* If this cell can be resized, make a cell next to it to move around. */
-            if ($sizable)
-            {
+            if ($sizable) {
                 $formatString = '<th align="left" class="resizeableCell" '
                     . 'style="width:5px; border-collapse: collapse; '
                     . '-moz-user-select: none; -khtml-user-select: none; ' . $this->globalStyle;
 
-				$_keys_current_columns = array_keys($this->_currentColumns);
-				if (end($_keys_current_columns) != $index)
-               {
-                   //Uncomment for gray resize bars
-                   $formatString .= 'border-right:1px solid gray;';
-               }
+                $_keys_current_columns = array_keys($this->_currentColumns);
+                if (end($_keys_current_columns) != $index) {
+                    //Uncomment for gray resize bars
+                    $formatString .= 'border-right:1px solid gray;';
+                }
 
                 $formatString .=
                       'user-select: none;" onmouseover="style.cursor = '
@@ -1869,20 +1610,19 @@ class DataGrid
                     . '\'table%s\', \'cell%s%s\', \'%s\', \'%s\', \'%s\', '
                     . '\'%s\', \'%s\', this.offsetWidth);">';
 
-                    if (!is_array($cellIndexes)) {
-                        $cellIndexes = array($cellIndexes); // Convert to array if it's not already
-                    }
-                    echo sprintf(
-                        $formatString,
-                        $md5InstanceName, $index,
-                        $md5InstanceName,
-                        $md5InstanceName, end($_keys_current_columns),
-                        $this->getTableWidth(),
-                        urlencode($this->_instanceName),
-                        $_SESSION['CATS']->getCookie(),
-                        $data['name'],
-                        implode(',', $cellIndexes)
-                    );
+                echo sprintf(
+                    $formatString,
+                    $md5InstanceName,
+                    $index,
+                    $md5InstanceName,
+                    $md5InstanceName,
+                    end($_keys_current_columns),
+                    $this->getTableWidth(),
+                    urlencode((string) $this->_instanceName),
+                    $_SESSION['CATS']->getCookie(),
+                    $data['name'],
+                    implode(',', $cellIndexes)
+                );
 
                 echo '<div class="dataGridResizeAreaInnerDiv"></div></th>', "\n";
             }
@@ -1891,94 +1631,75 @@ class DataGrid
         echo '</thead>', "\n";
 
         /* Table Data */
-        foreach ($this->_rs as $rsIndex => $rsData)
-        {
-            if (isset($this->listStyle) && $this->listStyle == true)
-            {
-                echo ('<tr>' . "\n");
-            }
-            else
-            {
-                echo ('<tr class="' . TemplateUtility::getAlternatingRowClass($rsIndex) . '">' . "\n");
+        foreach ($this->_rs as $rsIndex => $rsData) {
+            if (isset($this->listStyle) && $this->listStyle == true) {
+                echo('<tr>' . "\n");
+            } else {
+                echo('<tr class="' . TemplateUtility::getAlternatingRowClass($rsIndex) . '">' . "\n");
             }
 
-            if (!isset($this->showExportColumn) || $this->showExportColumn)
-            {
+            if (! isset($this->showExportColumn) || $this->showExportColumn) {
                 /* Action/Export */
-                echo ('<td style="' . $this->globalStyle . '">');
-                if (isset($rsData['exportID']) && isset($this->showExportCheckboxes) && $this->showExportCheckboxes == true)
-                {
-                    echo ('<input type="checkbox" id="checked_' . $rsData['exportID'] . '" name="checked_' . $rsData['exportID'] . '" onclick="addRemoveFromExportArray(exportArray'.$md5InstanceName.', '.$rsData['exportID'].');" />');
+                echo('<td style="' . $this->globalStyle . '">');
+                if (isset($rsData['exportID']) && isset($this->showExportCheckboxes) && $this->showExportCheckboxes == true) {
+                    echo('<input type="checkbox" id="checked_' . $rsData['exportID'] . '" name="checked_' . $rsData['exportID'] . '" onclick="addRemoveFromExportArray(exportArray' . $md5InstanceName . ', ' . $rsData['exportID'] . ');" />');
                 }
-                echo ('</td>');
+                echo('</td>');
             }
 
             /* 1 Column of data */
-            foreach ($this->_currentColumns as $index => $data)
-            {
-                if (isset($data['data']['pagerAlign']))
-                {
-                    echo ('<td valign="top" style="' . $this->globalStyle . '" align="' . $data['data']['pagerAlign'] . '"');
-                }
-                else
-                {
-                    echo ('<td valign="top" style="' . $this->globalStyle . '" align="left"');
+            foreach ($this->_currentColumns as $index => $data) {
+                if (isset($data['data']['pagerAlign'])) {
+                    echo('<td valign="top" style="' . $this->globalStyle . '" align="' . $data['data']['pagerAlign'] . '"');
+                } else {
+                    echo('<td valign="top" style="' . $this->globalStyle . '" align="left"');
                 }
 
-                if (isset($data['data']['sizable']) && $data['data']['sizable'] == false || (!isset($this->allowResizing) || $this->allowResizing == false))
-                {
-                     echo ('>');
-                }
-                else
-                {
-                    echo (' colspan="2">');
+                if (isset($data['data']['sizable']) && $data['data']['sizable'] == false || (! isset($this->allowResizing) || $this->allowResizing == false)) {
+                    echo('>');
+                } else {
+                    echo(' colspan="2">');
                 }
 
-                if (!isset($data['data']['pagerRender']))
-                {
-                    echo ($rsData[$data['data']['sortableColumn']]);
-                }
-                else
-                {
-                    echo (eval($data['data']['pagerRender']));
+                if (! isset($data['data']['pagerRender'])) {
+                    echo($rsData[$data['data']['sortableColumn']]);
+                } else {
+                    echo(eval($data['data']['pagerRender']));
                 }
 
-                echo ('</td>' . "\n");
+                echo('</td>' . "\n");
             }
 
-            echo ('</tr>' . "\n");
+            echo('</tr>' . "\n");
         }
 
-        echo ('</table>' . "\n");
+        echo('</table>' . "\n");
 
         /* If the table is smaller than the maximum width, JS will extend out the last cell so the table takes up all of its allocated space. */
-echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'", '.$this->_totalColumnWidths.', document.getElementById(\'cell'.$md5InstanceName.end($_keys_current_columns).'\'), document.getElementById(\'cell'.$md5InstanceName.end($_keys_current_columns).'div\'), \'' . $this->getTableWidth() . '\');</script>' . "\n");
+        echo('<script type="text/javascript">setTableWidth("table' . $md5InstanceName . '", ' . $this->_totalColumnWidths . ', document.getElementById(\'cell' . $md5InstanceName . end($_keys_current_columns) . '\'), document.getElementById(\'cell' . $md5InstanceName . end($_keys_current_columns) . 'div\'), \'' . $this->getTableWidth() . '\');</script>' . "\n");
 
         /* Close overflowdiv */
-        if (!$noOverflow)
-        {
-            echo ('</div>');
+        if (! $noOverflow) {
+            echo('</div>');
         }
     }
-    
+
     /**
      * echos the action area.
-     * @return void
      */
     public function printActionArea()
     {
-        echo '&nbsp;<input type="checkbox" name="allBox" title="Select All" onclick="toggleChecksAllDataGrid'.md5($this->_instanceName).'(this.checked);" />&nbsp;&nbsp;&nbsp;';
+        echo '&nbsp;<input type="checkbox" name="allBox" title="Select All" onclick="toggleChecksAllDataGrid' . md5((string) $this->_instanceName) . '(this.checked);" />&nbsp;&nbsp;&nbsp;';
 
         echo '<script type="text/javascript">', $this->_getCheckAllDefinition(), '</script>';
 
-        if (!isset($this->showActionArea) || $this->showActionArea == false)
-        {
+        if (! isset($this->showActionArea) || $this->showActionArea == false) {
             return;
         }
 
-        echo '<a href="javascript:void(0);" onclick="toggleHideShowAction(\''.md5($this->_instanceName).'\');">Action</a>';
+        echo '<a href="javascript:void(0);" onclick="toggleHideShowAction(\'' . md5((string) $this->_instanceName) . '\');">Action</a>';
 
-        echo '<div class="ajaxSearchResults" id="ActionArea'.md5($this->_instanceName).'" align="left" onclick="toggleHideShowAction(\''.md5($this->_instanceName).'\');" style="width:270px;">';
+        echo '<div class="ajaxSearchResults" id="ActionArea' . md5((string) $this->_instanceName) . '" align="left" onclick="toggleHideShowAction(\'' . md5((string) $this->_instanceName) . '\');" style="width:270px;">';
 
         echo $this->getInnerActionArea();
 
@@ -1996,7 +1717,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
     public function getInnerActionAreaItem($actionTitle, $actionURL, $allowAll = true)
     {
         //TODO:  If nothing is selected, display an error popup.
-        
+
         $newParameterArraySelected = $this->_parameters;
         $newParameterArraySelected['rangeStart'] = 0;
         $newParameterArraySelected['maxResults'] = 100000000;
@@ -2008,39 +1729,36 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         $newParameterArrayAll['maxResults'] = 100000000;
         $newParameterArrayAll['noSaveParameters'] = true;
 
-        if ($allowAll)
-        {
+        if ($allowAll) {
             $html = sprintf(
                 '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) window.location.href=\'%s&i=%s&p=%s&dynamicArgument%s=\' + urlEncode(serializeArray(exportArray%s)); else dataGridNoSelected();">Selected</a>&nbsp;|&nbsp;<a href="%s&i=%s&p=%s">All</a></div></div>',
-                htmlspecialchars($actionTitle),
-                md5($this->_instanceName),
+                htmlspecialchars((string) $actionTitle),
+                md5((string) $this->_instanceName),
                 $actionURL,
-                urlencode($this->_instanceName),
+                urlencode((string) $this->_instanceName),
                 urlencode(serialize($newParameterArraySelected)),
-                md5($this->_instanceName),
-                md5($this->_instanceName),
+                md5((string) $this->_instanceName),
+                md5((string) $this->_instanceName),
                 $actionURL,
-                urlencode($this->_instanceName),
+                urlencode((string) $this->_instanceName),
                 urlencode(serialize($newParameterArrayAll))
-            );        
-        }
-        else
-        {
+            );
+        } else {
             $html = sprintf(
                 '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) window.location.href=\'%s&i=%s&p=%s&dynamicArgument%s=\' + urlEncode(serializeArray(exportArray%s)); else dataGridNoSelected();">Selected</a></div></div>',
-                htmlspecialchars($actionTitle),
-                md5($this->_instanceName),
+                htmlspecialchars((string) $actionTitle),
+                md5((string) $this->_instanceName),
                 $actionURL,
-                urlencode($this->_instanceName),
+                urlencode((string) $this->_instanceName),
                 urlencode(json_encode($newParameterArraySelected)),
-                md5($this->_instanceName),
-                md5($this->_instanceName)
-            );        
+                md5((string) $this->_instanceName),
+                md5((string) $this->_instanceName)
+            );
         }
-        
+
         return $html;
     }
-    
+
     /**
      * Returns HTML to render an action under the action menu which generates
      * a popup rather than a new page.
@@ -2053,9 +1771,9 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
      * @return string generated HTML
      */
     public function getInnerActionAreaItemPopup($actionTitle, $actionURL, $width, $height, $allowAll = true)
-    {   
+    {
         //TODO:  If nothing is selected, display an error popup.
-        
+
         $newParameterArraySelected = $this->_parameters;
         $newParameterArraySelected['rangeStart'] = 0;
         $newParameterArraySelected['maxResults'] = 100000000;
@@ -2067,47 +1785,44 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         $newParameterArrayAll['maxResults'] = 100000000;
         $newParameterArrayAll['noSaveParameters'] = true;
 
-        if ($allowAll)
-        {
+        if ($allowAll) {
             $html = sprintf(
                 '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) showPopWin(\'%s&i=%s&p=%s&dynamicArgument%s=\' + urlEncode(serializeArray(exportArray%s)), %s, %s); else dataGridNoSelected();">Selected</a>&nbsp;|&nbsp;<a href="javascript:void(0);" onclick="showPopWin(\'%s&i=%s&p=%s\', %s, %s);">All</a></div></div>',
-                htmlspecialchars($actionTitle),
-                md5($this->_instanceName),
+                htmlspecialchars((string) $actionTitle),
+                md5((string) $this->_instanceName),
                 $actionURL,
-                urlencode($this->_instanceName),
+                urlencode((string) $this->_instanceName),
                 urlencode(json_encode($newParameterArraySelected)),
-                md5($this->_instanceName),
-                md5($this->_instanceName),
+                md5((string) $this->_instanceName),
+                md5((string) $this->_instanceName),
                 $width,
                 $height,
                 $actionURL,
-                urlencode($this->_instanceName),
+                urlencode((string) $this->_instanceName),
                 urlencode(json_encode($newParameterArrayAll)),
                 $width,
                 $height
-            );        
-        }
-        else
-        {
+            );
+        } else {
             $html = sprintf(
                 '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) showPopWin(\'%s&i=%s&p=%s&dynamicArgument%s=\' + urlEncode(serializeArray(exportArray%s)), %s, %s); else dataGridNoSelected();">Selected</a></div></div>',
-                htmlspecialchars($actionTitle),
-                md5($this->_instanceName),
+                htmlspecialchars((string) $actionTitle),
+                md5((string) $this->_instanceName),
                 $actionURL,
-                urlencode($this->_instanceName),
+                urlencode((string) $this->_instanceName),
                 urlencode(json_encode($newParameterArraySelected)),
-                md5($this->_instanceName),
-                md5($this->_instanceName),
+                md5((string) $this->_instanceName),
+                md5((string) $this->_instanceName),
                 $width,
                 $height
-            );      
+            );
         }
-        
+
         return $html;
     }
 
     /**
-     * This is an empty function which is overloaded by child classes.  It 
+     * This is an empty function which is overloaded by child classes.  It
      * outputs extra actions for each specific datagrid.
      *
      * @return string generated HTML
@@ -2123,8 +1838,6 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
     /**
      * Outputs the javascript necessary to change all the page navigation elements that aren't immediantly changed
      * by redrawing the Ajax Table (such as next / previous links).
-     *
-     * @return void
      */
     public function drawUpdatedNavigation()
     {
@@ -2137,11 +1850,11 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
 
         echo sprintf(
             'if (document.getElementById(\'ActionArea%s\') != null) document.getElementById(\'ActionArea%s\').innerHTML = urlDecode(\'%s\');',
-            urlencode($this->_instanceName),
-            urlencode($this->_instanceName),
+            urlencode((string) $this->_instanceName),
+            urlencode((string) $this->_instanceName),
             urlencode($this->getInnerActionArea())
         );
-        
+
         /*if ($this->_totalPages == 1)
         {
             $this->_drawUpdatedNavigationSet('pageInputArea', '');
@@ -2157,12 +1870,10 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
 
     /**
      * Returns the Current Page formatted with HTML that can be modified by Ajax.
-     *
-     * @return void
      */
     public function getCurrentPageHTML()
     {
-        return '<span id="pageNumberHTML1' . md5($this->_instanceName)
+        return '<span id="pageNumberHTML1' . md5((string) $this->_instanceName)
             . '">' . $this->getCurrentPage() . '</span>';
     }
 
@@ -2170,7 +1881,6 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
      * Prints pager navigation HTML.
      *
      * @param boolean Draw A-Z list?
-     * @return void
      */
     public function printNavigation($alphaNavigation = false)
     {
@@ -2181,12 +1891,14 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
 
         $this->_getData();
 
-        $md5InstanceName = md5($this->_instanceName);
+        $md5InstanceName = md5((string) $this->_instanceName);
 
         /* << PREV */
         echo sprintf(
             '<span id="prevLink%s%s">%s</span>',
-            $ID, $md5InstanceName, $this->_getPreviousLink()
+            $ID,
+            $md5InstanceName,
+            $this->_getPreviousLink()
         );
 
         /* Selection drop down menu. */
@@ -2198,42 +1910,43 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         $newParameterArray = $this->_parameters;
         $newParameterArray['rangeStart'] = '<dynamic>';
 
-        if ($this->_totalPages > 1)
-        {
-
-            if (isset($this->ajaxMode) && ($this->ajaxMode))
-            {
+        if ($this->_totalPages > 1) {
+            if (isset($this->ajaxMode) && ($this->ajaxMode)) {
                 echo sprintf(
                     '<span style="%s" id="pageInputArea%s%s">Page <input id="pageSelection%s%s" style="width: 32px;" onChange="populateAjaxPager(&quot;%s&quot;, \'%s\', &quot;%s&quot;, (this.value - 1) * %s);" value="%s"/> of %s%s</span>',
                     $this->globalStyle,
-                    $ID, $md5InstanceName,
-                    $ID, $md5InstanceName,      //Select Box ID
-                    urlencode($this->_instanceName),           //Instance name for ajax function itself
+                    $ID,
+                    $md5InstanceName,
+                    $ID,
+                    $md5InstanceName,      //Select Box ID
+                    urlencode((string) $this->_instanceName),           //Instance name for ajax function itself
                     urlencode(json_encode($newParameterArray)),  //New parameter array
                     $_SESSION['CATS']->getCookie(),            //Cookie
                     $newParameterArray['maxResults'],          //Used to help determine how many rows per page when changing pages
                     $this->_currentPage,
                     $this->_totalPages,
                     "\n"
-                );  
-            }
-            else
-            {
+                );
+            } else {
                 $requestString = $this->_getUnrelatedRequestString();
                 $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(json_encode($newParameterArray));
 
                 echo sprintf(
                     '<span style="%s">Page <input id="pageSelection%s%s" style="width: 32px;" value="%s" onkeypress="document.getElementById(\'pageSelectionButton%s%s\').style.display=\'\';"/> of %s&nbsp;<input id="pageSelectionButton%s%s" type="button"  class="button" style="display:none;" value="Go" onclick="document.location.href=\'%s?%s&dynamicArgument%s=\' + ((document.getElementById(\'pageSelection%s%s\').value -1 ) * %s);">%s</span>',
                     $this->globalStyle,
-                    $ID, $md5InstanceName,      //Select Box ID
+                    $ID,
+                    $md5InstanceName,      //Select Box ID
                     $this->_currentPage,
-                    $ID, $md5InstanceName,
+                    $ID,
+                    $md5InstanceName,
                     $this->_totalPages,
-                    $ID, $md5InstanceName,
+                    $ID,
+                    $md5InstanceName,
                     CATSUtility::getIndexName(),
                     $requestString,
-                    urlencode($this->_instanceName),
-                    $ID, $md5InstanceName,
+                    urlencode((string) $this->_instanceName),
+                    $ID,
+                    $md5InstanceName,
                     $newParameterArray['maxResults'],
                     "\n"
                 );
@@ -2243,73 +1956,59 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         /* NEXT >> */
         echo sprintf(
             '<span id="nextLink%s%s">%s</span>',
-            $ID, $md5InstanceName, $this->_getNextLink()
+            $ID,
+            $md5InstanceName,
+            $this->_getNextLink()
         );
 
         /* A-Z list */
-        if ($alphaNavigation)
-        {
-            if (isset($this->ajaxMode) && ($this->ajaxMode))
-            {
-                die ('Alpha navigation not supported under AJAX mode.');
+        if ($alphaNavigation) {
+            if (isset($this->ajaxMode) && ($this->ajaxMode)) {
+                die('Alpha navigation not supported under AJAX mode.');
             }
 
             /* Find which column is currently being sorted. */
             $validAlphabeticalSort = false;
-            foreach ($this->_classColumns as $index => $data)
-            {
+            foreach ($this->_classColumns as $index => $data) {
                 if (isset($data['sortableColumn']) &&
                     $data['sortableColumn'] == $this->_parameters['sortBy'] &&
                     isset($data['alphaNavigation']) &&
-                    $data['alphaNavigation'] == true)
-                {
+                    $data['alphaNavigation'] == true) {
                     $validAlphabeticalSort = true;
                 }
             }
 
             /* If we are not currently sorted by a column with alphabetical results,
              * use the default column. */
-            if (!$validAlphabeticalSort)
-            {
+            if (! $validAlphabeticalSort) {
                 $newParameterArray['sortBy'] = $this->_defaultAlphabeticalSortBy;
                 $newParameterArray['sortDirection'] = 'ASC';
             }
 
             /* Draw the characters. */
-            if ($newParameterArray['sortDirection'] == 'DESC')
-            {
-                for ($i = ord('Z'); $i >= ord('A'); $i--)
-                {
+            if ($newParameterArray['sortDirection'] == 'DESC') {
+                for ($i = ord('Z'); $i >= ord('A'); $i--) {
                     $newParameterArray['filterAlpha'] = chr($i);
                     $newParameterArray['rangeStart'] = 0;
 
                     $link = $this->_makeControlLink($newParameterArray);
 
-                    if (isset($this->_parameters['filterAlpha']) && $this->_parameters['filterAlpha'] == chr($i))
-                    {
+                    if (isset($this->_parameters['filterAlpha']) && $this->_parameters['filterAlpha'] == chr($i)) {
                         echo $link, '&nbsp;<span style="font-weight:bold;">', chr($i), '</span></a>';
-                    }
-                    else
-                    {
+                    } else {
                         echo $link, '&nbsp;', chr($i), '</a>';
                     }
                 }
-            }
-            else
-            {
-                for ($i = ord('A'); $i <= ord('Z'); $i++)
-                {
+            } else {
+                for ($i = ord('A'); $i <= ord('Z'); $i++) {
                     $newParameterArray['filterAlpha'] = chr($i);
                     $newParameterArray['rangeStart'] = 0;
 
                     $link = $this->_makeControlLink($newParameterArray);
 
-                    if (isset($this->_parameters['filterAlpha']) && $this->_parameters['filterAlpha'] == chr($i))
-                    {
+                    if (isset($this->_parameters['filterAlpha']) && $this->_parameters['filterAlpha'] == chr($i)) {
                         echo $link, '&nbsp;<span style="font-weight:bold;">', chr($i), '</span></a>';
-                    }
-                    else
-                    {
+                    } else {
                         echo $link, '&nbsp;', chr($i), '</a>';
                     }
                 }
@@ -2318,34 +2017,26 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
             /* Print ALL link. */
             $newParameterArray = $this->_parameters;
 
-            if (isset($newParameterArray['filterAlpha']))
-            {
+            if (isset($newParameterArray['filterAlpha'])) {
                 unset($newParameterArray['filterAlpha']);
             }
 
             $link = $this->_makeControlLink($newParameterArray);
 
-            if (!isset($this->_parameters['filterAlpha']))
-            {
+            if (! isset($this->_parameters['filterAlpha'])) {
                 echo $link . '&nbsp;&nbsp;<span style="font-weight:bold;">ALL</span></a>';
-            }
-            else
-            {
+            } else {
                 echo $link . '&nbsp;&nbsp;ALL</a>';
             }
         }
     }
 
-
     /**
      * Prints a link to show all entries on the table.
-     *
-     * @return void
      */
     public function printShowAll()
     {
-        if ($this->_totalPages <= 1)
-        {
+        if ($this->_totalPages <= 1) {
             return;
         }
 
@@ -2359,12 +2050,11 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
 
         echo sprintf(
             '%sShow All</a>%sPagenate</a>%s',
-            $this->_makeControlLink($newParameterArray, '', 'showAll'.md5($this->_instanceName), 'this.style.display=\'none\'; document.getElementById(\'pagenate'.md5($this->_instanceName).'\').style.display=\'\';'),
-            $this->_makeControlLink($newParameterArrayPagenate, '', 'pagenate'.md5($this->_instanceName), 'this.style.display=\'none\'; document.getElementById(\'showAll'.md5($this->_instanceName).'\').style.display=\'\';', 'display:none;'),
+            $this->_makeControlLink($newParameterArray, '', 'showAll' . md5((string) $this->_instanceName), 'this.style.display=\'none\'; document.getElementById(\'pagenate' . md5((string) $this->_instanceName) . '\').style.display=\'\';'),
+            $this->_makeControlLink($newParameterArrayPagenate, '', 'pagenate' . md5((string) $this->_instanceName), 'this.style.display=\'none\'; document.getElementById(\'showAll' . md5((string) $this->_instanceName) . '\').style.display=\'\';', 'display:none;'),
             "\n"
         );
     }
-
 
     /**
      * Returns all GET variables except for the serialized parameter array.  If
@@ -2381,36 +2071,25 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
      */
     private function _getUnrelatedRequestString()
     {
-        if (isset($_REQUEST['unrelatedRequestString']))
-        {
+        if (isset($_REQUEST['unrelatedRequestString'])) {
             return $_REQUEST['unrelatedRequestString'];
-        }
-        else
-        {
+        } else {
             $getVars = $_GET;
-            if (isset($getVars['parameters' . $this->_instanceName]))
-            {
+            if (isset($getVars['parameters' . $this->_instanceName])) {
                 unset($getVars['parameters' . $this->_instanceName]);
             }
 
-            if (isset($getVars['dynamicArgument' . $this->_instanceName]))
-            {
+            if (isset($getVars['dynamicArgument' . $this->_instanceName])) {
                 unset($getVars['dynamicArgument' . $this->_instanceName]);
             }
 
-            $getStrings = array();
+            $getStrings = [];
 
-            foreach ($getVars as $index => $data)
-            {
-                $getStrings[] = urlencode($index) . '=' . urlencode($data);
+            foreach ($getVars as $index => $data) {
+                $getStrings[] = urlencode($index) . '=' . urlencode((string) $data);
             }
 
-            if (is_array($getStrings)) {
-                return implode('&', $getStrings);
-            } else {
-                return ''; // or any default value you want to return if $getStrings is not an array
-            }
-            
+            return implode('&', $getStrings);
         }
     }
 
@@ -2422,26 +2101,22 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
      * @param array parameters
      * @param string optional classname
      * @param string optional id
-     * @return void
      */
-    private function _makeControlLink($newParameterArray, $className = "", $id = "", $javascript="", $style="")
+    private function _makeControlLink($newParameterArray, $className = "", $id = "", $javascript = "", $style = "")
     {
-        if (isset($this->ajaxMode) && ($this->ajaxMode))
-        {
+        if (isset($this->ajaxMode) && ($this->ajaxMode)) {
             return sprintf(
                 '<a href="javascript:void(0);" style="%s%s" onclick="%s populateAjaxPager(&quot;%s&quot;, &quot;%s&quot;, &quot;%s&quot;);" %s %s>',
                 $this->globalStyle,
                 $style,
                 $javascript,
-                urlencode($this->_instanceName),
+                urlencode((string) $this->_instanceName),
                 urlencode(json_encode($newParameterArray)),
                 $_SESSION['CATS']->getCookie(),
-                ($className != '' ? 'class="'.$className.'"' : ''),
-                ($id != '' ? 'id="'.$id.'"' : '')
+                ($className != '' ? 'class="' . $className . '"' : ''),
+                ($id != '' ? 'id="' . $id . '"' : '')
             );
-        }
-        else
-        {
+        } else {
             $requestString = $this->_getUnrelatedRequestString();
             $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(json_encode($newParameterArray));
 
@@ -2452,8 +2127,8 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
                 $this->globalStyle,
                 $style,
                 $javascript,
-                ($className != '' ? 'class="'.$className.'"' : ''),
-                ($id != '' ? 'id="'.$id.'"' : '')
+                ($className != '' ? 'class="' . $className . '"' : ''),
+                ($id != '' ? 'id="' . $id . '"' : '')
             );
         }
     }
@@ -2466,24 +2141,33 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
      * @param string element
      * @param string value to set the element to
      * @param string dom property to set (defaults to innerHTML, could be value in the case of select elements)
-     * @return void
      */
     private function _drawUpdatedNavigationSet($element, $value, $type = 'innerHTML')
     {
-        $md5InstanceName = md5($this->_instanceName);
+        $md5InstanceName = md5((string) $this->_instanceName);
 
         echo sprintf(
             'if (document.getElementById(\'%s%s%s\') != null) { document.getElementById(\'%s%s%s\').%s = urlDecode(\'%s\'); }',
-            $element, 1, $md5InstanceName,
-            $element, 1, $md5InstanceName,
-            $type, urlencode($value)
+            $element,
+            1,
+            $md5InstanceName,
+            $element,
+            1,
+            $md5InstanceName,
+            $type,
+            urlencode((string) $value)
         );
 
         echo sprintf(
             'if (document.getElementById(\'%s%s%s\') != null) { document.getElementById(\'%s%s%s\').%s = urlDecode(\'%s\'); }',
-            $element, 2, $md5InstanceName,
-            $element, 2, $md5InstanceName,
-            $type, urlencode($value)
+            $element,
+            2,
+            $md5InstanceName,
+            $element,
+            2,
+            $md5InstanceName,
+            $type,
+            urlencode((string) $value)
         );
     }
 
@@ -2494,24 +2178,21 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
      */
     private function _getNextLink()
     {
-        if ($this->_totalPages <= 1)
-        {
+        if ($this->_totalPages <= 1) {
             return '';
         }
 
         /* If this is the last page, don't make a link; just text. */
-        if ($this->_currentPage == $this->_totalPages)
-        {
+        if ($this->_currentPage == $this->_totalPages) {
             return '<span class="pagerPrevNext" style="' . $this->globalStyle . '">Next &gt;&gt;</span>&nbsp;&nbsp;<span class="pagerPrevNext" style="' . $this->globalStyle . '">Last &gt;</span>' . "\n";
         }
 
         $newParameterArray = $this->_parameters;
         $newParameterArray['rangeStart'] += $newParameterArray['maxResults'];
-        
+
         $newParameterArray2 = $this->_parameters;
         $newParameterArray2['rangeStart'] = ($this->_totalPages - 1) * $newParameterArray2['maxResults'];
-        if ($newParameterArray2['rangeStart'] < 0)
-        {
+        if ($newParameterArray2['rangeStart'] < 0) {
             $newParameterArray2['rangeStart'] = 0;
         }
 
@@ -2530,14 +2211,12 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
      */
     public function _getPreviousLink()
     {
-        if ($this->_totalPages <= 1)
-        {
+        if ($this->_totalPages <= 1) {
             return '';
         }
 
         /* If this is the first page, don't make a link; just text. */
-        if ($this->_currentPage == 1)
-        {
+        if ($this->_currentPage == 1) {
             return '<span class="pagerPrevNext" style="' . $this->globalStyle . '">&lt; First</span>&nbsp;&nbsp;<span class="pagerPrevNext" style="' . $this->globalStyle . '">&lt;&lt; Prev</span>' . "\n";
         }
 
@@ -2564,10 +2243,9 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
      *
      * @return string Javascript
      */
-
-     public function _getApplyFilterFunctionDefinition()
-     {
-        $md5InstanceName = md5($this->_instanceName);
+    public function _getApplyFilterFunctionDefinition()
+    {
+        $md5InstanceName = md5((string) $this->_instanceName);
 
         $newParameterArray = $this->_parameters;
         $newParameterArray['rangeStart'] = 0;
@@ -2576,64 +2254,61 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
 
         echo 'submitFilter', $md5InstanceName, ' = function(retainFilterVisible) { ';
 
-        if (isset($this->ajaxMode) && ($this->ajaxMode))
-        {
-           echo sprintf(
+        if (isset($this->ajaxMode) && ($this->ajaxMode)) {
+            echo sprintf(
                 'populateAjaxPager(\'%s\', \'%s\', \'%s\', document.getElementById(\'filterArea%s\').value);',
-                urlencode($this->_instanceName),
+                urlencode((string) $this->_instanceName),
                 urlencode(json_encode($newParameterArray)),  //New parameter array
                 $_SESSION['CATS']->getCookie(),            //Cookie
                 $md5InstanceName
             );
-        }
-        else
-        {
+        } else {
             $requestString = $this->_getUnrelatedRequestString();
             $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(json_encode($newParameterArray));
             echo 'if (typeof(retainFilterVisible) == \'undefined\') {';
 
-                echo sprintf(
-                    'document.location.href=\'%s?%s&dynamicArgument%s=\' + urlEncode(document.getElementById(\'filterArea%s\').value);',
-                    CATSUtility::getIndexName(),
-                    $requestString,
-                    urlencode($this->_instanceName),
-                    $md5InstanceName
-                );
+            echo sprintf(
+                'document.location.href=\'%s?%s&dynamicArgument%s=\' + urlEncode(document.getElementById(\'filterArea%s\').value);',
+                CATSUtility::getIndexName(),
+                $requestString,
+                urlencode((string) $this->_instanceName),
+                $md5InstanceName
+            );
 
             echo '} else if (typeof(retainFilterVisible) != \'undefined\' && retainFilterVisible == false) {';
 
-                $newParameterArray = $this->_parameters;
-                $newParameterArray['rangeStart'] = 0;
-                $newParameterArray['filter'] = '<dynamic>';
-                $newParameterArray['filterVisible'] = false;
+            $newParameterArray = $this->_parameters;
+            $newParameterArray['rangeStart'] = 0;
+            $newParameterArray['filter'] = '<dynamic>';
+            $newParameterArray['filterVisible'] = false;
 
-                $requestString = $this->_getUnrelatedRequestString();
-                $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(json_encode($newParameterArray));
+            $requestString = $this->_getUnrelatedRequestString();
+            $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(json_encode($newParameterArray));
 
-                echo sprintf(
-                    'document.location.href=\'%s?%s&dynamicArgument%s=\' + urlEncode(document.getElementById(\'filterArea%s\').value);',
-                    CATSUtility::getIndexName(),
-                    $requestString,
-                    urlencode($this->_instanceName),
-                    $md5InstanceName
-                );
+            echo sprintf(
+                'document.location.href=\'%s?%s&dynamicArgument%s=\' + urlEncode(document.getElementById(\'filterArea%s\').value);',
+                CATSUtility::getIndexName(),
+                $requestString,
+                urlencode((string) $this->_instanceName),
+                $md5InstanceName
+            );
 
             echo '} else {';
 
-                $newParameterArray = $this->_parameters;
-                $newParameterArray['rangeStart'] = 0;
-                $newParameterArray['filter'] = '<dynamic>';
+            $newParameterArray = $this->_parameters;
+            $newParameterArray['rangeStart'] = 0;
+            $newParameterArray['filter'] = '<dynamic>';
 
-                $requestString = $this->_getUnrelatedRequestString();
-                $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(json_encode($newParameterArray));
+            $requestString = $this->_getUnrelatedRequestString();
+            $requestString .= '&' . urlencode('parameters' . $this->_instanceName) . '=' . urlencode(json_encode($newParameterArray));
 
-                echo sprintf(
-                    'document.location.href=\'%s?%s&dynamicArgument%s=\' + urlEncode(document.getElementById(\'filterArea%s\').value);',
-                    CATSUtility::getIndexName(),
-                    $requestString,
-                    urlencode($this->_instanceName),
-                    $md5InstanceName
-                );
+            echo sprintf(
+                'document.location.href=\'%s?%s&dynamicArgument%s=\' + urlEncode(document.getElementById(\'filterArea%s\').value);',
+                CATSUtility::getIndexName(),
+                $requestString,
+                urlencode((string) $this->_instanceName),
+                $md5InstanceName
+            );
 
             echo '}';
         }
@@ -2646,10 +2321,9 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
      *
      * @return string Javascript
      */
-
-     public function _getCheckAllDefinition()
-     {
-        $md5InstanceName = md5($this->_instanceName);
+    public function _getCheckAllDefinition()
+    {
+        $md5InstanceName = md5((string) $this->_instanceName);
 
         $newParameterArray = $this->_parameters;
         $newParameterArray['rangeStart'] = 0;
@@ -2659,13 +2333,11 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         echo "\n";
         echo 'toggleChecksAllDataGrid', $md5InstanceName, ' = function(newValue) { ';
 
-        foreach ($this->_rs as $rsIndex => $rsData)
-        {
-            if (isset($rsData['exportID']))
-            {
-                echo ('if (document.getElementById("checked_' . $rsData['exportID'] . '").checked != newValue) {'.
-                'addRemoveFromExportArray(exportArray'.$md5InstanceName.', '.$rsData['exportID'].');'.
-                'document.getElementById("checked_' . $rsData['exportID'] . '").checked = newValue;'.
+        foreach ($this->_rs as $rsIndex => $rsData) {
+            if (isset($rsData['exportID'])) {
+                echo('if (document.getElementById("checked_' . $rsData['exportID'] . '").checked != newValue) {' .
+                'addRemoveFromExportArray(exportArray' . $md5InstanceName . ', ' . $rsData['exportID'] . ');' .
+                'document.getElementById("checked_' . $rsData['exportID'] . '").checked = newValue;' .
                 '}');
             }
         }
@@ -2677,9 +2349,4 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
     {
         return $this->_tableWidth->asString($makeLargerThanDisplayableArea);
     }
- }
-
-
-
-
- ?>
+}

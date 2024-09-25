@@ -7,44 +7,41 @@
  *
  */
 
-require_once ARTICHOW."/LinePlot.class.php";
+require_once ARTICHOW . "/LinePlot.class.php";
 
-class LightLinePattern extends Pattern {
+class LightLinePattern extends Pattern
+{
+    public function create()
+    {
+        $legend = $this->getArg('legend');
 
-	public function create() {
+        $y = $this->getArg('y');
 
-		$legend = $this->getArg('legend');
+        if ($y === null) {
+            trigger_error("Argument 'y' must not be NULL", E_USER_ERROR);
+        }
 
-		$y = $this->getArg('y');
+        $plot = new LinePlot($y);
+        $plot->setSize(0.7, 1);
+        $plot->setCenter(0.35, 0.5);
+        $plot->setPadding(35, 15, 35, 30);
+        $plot->setColor(new Orange());
+        $plot->setFillColor(new LightOrange(80));
 
-		if($y === NULL) {
-			trigger_error("Argument 'y' must not be NULL", E_USER_ERROR);
-		}
+        $plot->grid->setType(Line::DASHED);
 
-		$plot = new LinePlot($y);
-		$plot->setSize(0.7, 1);
-		$plot->setCenter(0.35, 0.5);
-		$plot->setPadding(35, 15, 35, 30);
-		$plot->setColor(new Orange());
-		$plot->setFillColor(new LightOrange(80));
+        $plot->mark->setType(Mark::CIRCLE);
+        $plot->mark->setFill(new MidRed());
+        $plot->mark->setSize(6);
 
-		$plot->grid->setType(Line::DASHED);
+        $plot->legend->setPosition(1, 0.5);
+        $plot->legend->setAlign(Legend::LEFT);
+        $plot->legend->shadow->smooth(true);
 
-		$plot->mark->setType(Mark::CIRCLE);
-		$plot->mark->setFill(new MidRed);
-		$plot->mark->setSize(6);
+        if ($legend !== null) {
+            $plot->legend->add($plot, $legend, Legend::MARK);
+        }
 
-		$plot->legend->setPosition(1, 0.5);
-		$plot->legend->setAlign(Legend::LEFT);
-		$plot->legend->shadow->smooth(TRUE);
-
-		if($legend !== NULL) {
-			$plot->legend->add($plot, $legend, Legend::MARK);
-		}
-
-		return $plot;
-
-	}
-
+        return $plot;
+    }
 }
-?>

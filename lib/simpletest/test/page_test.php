@@ -1,4 +1,5 @@
 <?php
+
 // $Id: page_test.php 1913 2009-07-29 16:50:56Z lastcraft $
 require_once(dirname(__FILE__) . '/../autorun.php');
 require_once(dirname(__FILE__) . '/../expectation.php');
@@ -7,8 +8,10 @@ require_once(dirname(__FILE__) . '/../page.php');
 Mock::generate('SimpleHttpHeaders');
 Mock::generate('SimpleHttpResponse');
 
-class TestOfPageInterface extends UnitTestCase {
-    function testInterfaceOnEmptyPage() {
+class TestOfPageInterface extends UnitTestCase
+{
+    public function testInterfaceOnEmptyPage()
+    {
         $page = new SimplePage();
         $this->assertEqual($page->getTransportError(), 'No page fetched yet');
         $this->assertIdentical($page->getRaw(), false);
@@ -18,29 +21,35 @@ class TestOfPageInterface extends UnitTestCase {
         $this->assertIdentical($page->getAuthentication(), false);
         $this->assertIdentical($page->getRealm(), false);
         $this->assertFalse($page->hasFrames());
-        $this->assertIdentical($page->getUrls(), array());
+        $this->assertIdentical($page->getUrls(), []);
         $this->assertIdentical($page->getTitle(), false);
     }
 }
 
-class TestOfPageHeaders extends UnitTestCase {
-
-    function testUrlAccessor() {
+class TestOfPageHeaders extends UnitTestCase
+{
+    public function testUrlAccessor()
+    {
         $headers = new MockSimpleHttpHeaders();
 
         $response = new MockSimpleHttpResponse();
         $response->setReturnValue('getHeaders', $headers);
         $response->setReturnValue('getMethod', 'POST');
         $response->setReturnValue('getUrl', new SimpleUrl('here'));
-        $response->setReturnValue('getRequestData', array('a' => 'A'));
+        $response->setReturnValue('getRequestData', [
+            'a' => 'A',
+        ]);
 
         $page = new SimplePage($response);
         $this->assertEqual($page->getMethod(), 'POST');
         $this->assertEqual($page->getUrl(), new SimpleUrl('here'));
-        $this->assertEqual($page->getRequestData(), array('a' => 'A'));
+        $this->assertEqual($page->getRequestData(), [
+            'a' => 'A',
+        ]);
     }
 
-    function testTransportError() {
+    public function testTransportError()
+    {
         $response = new MockSimpleHttpResponse();
         $response->setReturnValue('getError', 'Ouch');
 
@@ -48,7 +57,8 @@ class TestOfPageHeaders extends UnitTestCase {
         $this->assertEqual($page->getTransportError(), 'Ouch');
     }
 
-    function testHeadersAccessor() {
+    public function testHeadersAccessor()
+    {
         $headers = new MockSimpleHttpHeaders();
         $headers->setReturnValue('getRaw', 'My: Headers');
 
@@ -59,7 +69,8 @@ class TestOfPageHeaders extends UnitTestCase {
         $this->assertEqual($page->getHeaders(), 'My: Headers');
     }
 
-    function testMimeAccessor() {
+    public function testMimeAccessor()
+    {
         $headers = new MockSimpleHttpHeaders();
         $headers->setReturnValue('getMimeType', 'text/html');
 
@@ -70,7 +81,8 @@ class TestOfPageHeaders extends UnitTestCase {
         $this->assertEqual($page->getMimeType(), 'text/html');
     }
 
-    function testResponseAccessor() {
+    public function testResponseAccessor()
+    {
         $headers = new MockSimpleHttpHeaders();
         $headers->setReturnValue('getResponseCode', 301);
 
@@ -81,7 +93,8 @@ class TestOfPageHeaders extends UnitTestCase {
         $this->assertIdentical($page->getResponseCode(), 301);
     }
 
-    function testAuthenticationAccessors() {
+    public function testAuthenticationAccessors()
+    {
         $headers = new MockSimpleHttpHeaders();
         $headers->setReturnValue('getAuthentication', 'Basic');
         $headers->setReturnValue('getRealm', 'Secret stuff');
@@ -95,72 +108,93 @@ class TestOfPageHeaders extends UnitTestCase {
     }
 }
 
-class TestOfHtmlStrippingAndNormalisation extends UnitTestCase {
-
-	function testImageSuppressionWhileKeepingParagraphsAndAltText() {
+class TestOfHtmlStrippingAndNormalisation extends UnitTestCase
+{
+    public function testImageSuppressionWhileKeepingParagraphsAndAltText()
+    {
         $this->assertEqual(
-                SimplePage::normalise('<img src="foo.png" /><p>some text</p><img src="bar.png" alt="bar" />'),
-                'some text bar');
-	}
-
-    function testSpaceNormalisation() {
-        $this->assertEqual(
-                SimplePage::normalise("\nOne\tTwo   \nThree\t"),
-                'One Two Three');
+            SimplePage::normalise('<img src="foo.png" /><p>some text</p><img src="bar.png" alt="bar" />'),
+            'some text bar'
+        );
     }
 
-    function testMultilinesCommentSuppression() {
+    public function testSpaceNormalisation()
+    {
         $this->assertEqual(
-                SimplePage::normalise('<!--\n Hello \n-->'),
-                '');
+            SimplePage::normalise("\nOne\tTwo   \nThree\t"),
+            'One Two Three'
+        );
     }
 
-    function testCommentSuppression() {
+    public function testMultilinesCommentSuppression()
+    {
         $this->assertEqual(
-                SimplePage::normalise('<!--Hello-->'),
-                '');
+            SimplePage::normalise('<!--\n Hello \n-->'),
+            ''
+        );
     }
 
-    function testJavascriptSuppression() {
+    public function testCommentSuppression()
+    {
         $this->assertEqual(
-                SimplePage::normalise('<script attribute="test">\nHello\n</script>'),
-                '');
-        $this->assertEqual(
-                SimplePage::normalise('<script attribute="test">Hello</script>'),
-                '');
-        $this->assertEqual(
-                SimplePage::normalise('<script>Hello</script>'),
-                '');
+            SimplePage::normalise('<!--Hello-->'),
+            ''
+        );
     }
 
-    function testTagSuppression() {
+    public function testJavascriptSuppression()
+    {
         $this->assertEqual(
-                SimplePage::normalise('<b>Hello</b>'),
-                'Hello');
+            SimplePage::normalise('<script attribute="test">\nHello\n</script>'),
+            ''
+        );
+        $this->assertEqual(
+            SimplePage::normalise('<script attribute="test">Hello</script>'),
+            ''
+        );
+        $this->assertEqual(
+            SimplePage::normalise('<script>Hello</script>'),
+            ''
+        );
     }
 
-    function testAdjoiningTagSuppression() {
+    public function testTagSuppression()
+    {
         $this->assertEqual(
-                SimplePage::normalise('<b>Hello</b><em>Goodbye</em>'),
-                'HelloGoodbye');
+            SimplePage::normalise('<b>Hello</b>'),
+            'Hello'
+        );
     }
 
-    function testExtractImageAltTextWithDifferentQuotes() {
+    public function testAdjoiningTagSuppression()
+    {
         $this->assertEqual(
-                SimplePage::normalise('<img alt="One"><img alt=\'Two\'><img alt=Three>'),
-                'One Two Three');
+            SimplePage::normalise('<b>Hello</b><em>Goodbye</em>'),
+            'HelloGoodbye'
+        );
     }
 
-    function testExtractImageAltTextMultipleTimes() {
+    public function testExtractImageAltTextWithDifferentQuotes()
+    {
         $this->assertEqual(
-                SimplePage::normalise('<img alt="One"><img alt="Two"><img alt="Three">'),
-                'One Two Three');
+            SimplePage::normalise('<img alt="One"><img alt=\'Two\'><img alt=Three>'),
+            'One Two Three'
+        );
     }
 
-    function testHtmlEntityTranslation() {
+    public function testExtractImageAltTextMultipleTimes()
+    {
         $this->assertEqual(
-                SimplePage::normalise('&lt;&gt;&quot;&amp;&#039;'),
-                '<>"&\'');
+            SimplePage::normalise('<img alt="One"><img alt="Two"><img alt="Three">'),
+            'One Two Three'
+        );
+    }
+
+    public function testHtmlEntityTranslation()
+    {
+        $this->assertEqual(
+            SimplePage::normalise('&lt;&gt;&quot;&amp;&#039;'),
+            '<>"&\''
+        );
     }
 }
-?>

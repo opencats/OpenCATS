@@ -48,19 +48,15 @@ class LoginUI extends UserInterface
     public function handleRequest()
     {
         $action = $this->getAction();
-        switch ($action)
-        {
+        switch ($action) {
             case 'attemptLogin':
                 $this->attemptLogin();
                 break;
 
             case 'forgotPassword':
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onForgotPassword();
-                }
-                else
-                {
+                } else {
                     $this->forgotPassword();
                 }
                 break;
@@ -75,7 +71,6 @@ class LoginUI extends UserInterface
                 break;
         }
     }
-
 
     /*
      * Called by handleRequest() to handle displaying the initial login form.
@@ -99,22 +94,16 @@ class LoginUI extends UserInterface
          */
         $message = $this->getTrimmedInput('message', $_GET);
         if (isset($_GET['messageSuccess']) &&
-            $_GET['messageSuccess'] == 'true')
-        {
+            $_GET['messageSuccess'] == 'true') {
             $this->_template->assign('messageSuccess', true);
-        }
-        else
-        {
+        } else {
             $this->_template->assign('messageSuccess', false);
         }
 
         /* A site name can be specified in the URL via "&s=Name". */
-        if (isset($_GET['s']))
-        {
+        if (isset($_GET['s'])) {
             $siteName = $_GET['s'];
-        }
-        else
-        {
+        } else {
             $siteName = '';
         }
 
@@ -122,36 +111,33 @@ class LoginUI extends UserInterface
          * time.
          */
         if ($_SESSION['CATS']->isLoggedIn() &&
-            $_SESSION['CATS']->checkForceLogout())
-        {
+            $_SESSION['CATS']->checkForceLogout()) {
             $siteName = $_SESSION['CATS']->getUnixName();
         }
 
-        if (!eval(Hooks::get('SHOW_LOGIN_FORM_PRE'))) return;
+        if (! eval(Hooks::get('SHOW_LOGIN_FORM_PRE'))) {
+            return;
+        }
 
         /* If a site was specified, get the site's full name from its
          * unixname.
          */
-        if ($siteName != '')
-        {
+        if ($siteName != '') {
             $site = new Site(-1);
             $rs = $site->getSiteByUnixName($siteName);
 
-            if (!empty($rs))
-            {
+            if (! empty($rs)) {
                 $siteNameFull = $rs['name'];
-            }
-            else
-            {
+            } else {
                 $siteNameFull = 'error';
             }
-        }
-        else
-        {
+        } else {
             $siteNameFull = '';
         }
 
-        if (!eval(Hooks::get('SHOW_LOGIN_FORM_POST'))) return;
+        if (! eval(Hooks::get('SHOW_LOGIN_FORM_POST'))) {
+            return;
+        }
 
         /* Display the login page. */
         $this->_template->assign('message', $message);
@@ -161,14 +147,18 @@ class LoginUI extends UserInterface
         $this->_template->assign('siteNameFull', $siteNameFull);
         $this->_template->assign('dateString', date('l, F jS, Y'));
 
-        if (!eval(Hooks::get('SHOW_LOGIN_FORM_POST_2'))) return;
+        if (! eval(Hooks::get('SHOW_LOGIN_FORM_POST_2'))) {
+            return;
+        }
 
         $this->_template->display('./modules/login/Login.tpl');
     }
 
     private function noCookiesModal()
     {
-        if (!eval(Hooks::get('NO_COOKIES_MODAL'))) return;
+        if (! eval(Hooks::get('NO_COOKIES_MODAL'))) {
+            return;
+        }
 
         $this->_template->display('./modules/login/NoCookiesModal.tpl');
     }
@@ -179,40 +169,32 @@ class LoginUI extends UserInterface
     private function attemptLogin()
     {
         //FIXME: getTrimmedInput()!
-        if (isset($_POST['siteName']))
-        {
+        if (isset($_POST['siteName'])) {
             $siteName = $_POST['siteName'];
-        }
-        else
-        {
+        } else {
             $siteName = '';
         }
 
-        if (!isset($_POST['username']) || !isset($_POST['password']))
-        {
+        if (! isset($_POST['username']) || ! isset($_POST['password'])) {
             $message = 'Invalid username or password.';
 
-            if (isset($_GET['reloginVars']))
-            {
+            if (isset($_GET['reloginVars'])) {
                 $this->_template->assign('reloginVars', urlencode($_GET['reloginVars']));
-            }
-            else
-            {
+            } else {
                 $this->_template->assign('reloginVars', '');
             }
 
             $site = new Site(-1);
             $rs = $site->getSiteByUnixName($siteName);
-            if (isset($rs['name']))
-            {
+            if (isset($rs['name'])) {
                 $siteNameFull = $rs['name'];
-            }
-            else
-            {
+            } else {
                 $siteNameFull = $siteName;
             }
 
-            if (!eval(Hooks::get('LOGIN_NO_CREDENTIALS'))) return;
+            if (! eval(Hooks::get('LOGIN_NO_CREDENTIALS'))) {
+                return;
+            }
 
             $this->_template->assign('message', $message);
             $this->_template->assign('messageSuccess', false);
@@ -228,17 +210,14 @@ class LoginUI extends UserInterface
         $username = $this->getTrimmedInput('username', $_POST);
         $password = $this->getTrimmedInput('password', $_POST);
 
-        if (strpos($username, '@') !== false)
-        {
+        if (strpos($username, '@') !== false) {
             $siteName = '';
         }
 
-        if ($siteName != '')
-        {
+        if ($siteName != '') {
             $site = new Site(-1);
             $rs = $site->getSiteByUnixName($siteName);
-            if (isset($rs['siteID']))
-            {
+            if (isset($rs['siteID'])) {
                 $username .= '@' . $rs['siteID'];
             }
         }
@@ -247,31 +226,26 @@ class LoginUI extends UserInterface
         $_SESSION['CATS']->processLogin($username, $password);
 
         /* If unsuccessful, take the user back to the login page. */
-        if (!$_SESSION['CATS']->isLoggedIn())
-        {
+        if (! $_SESSION['CATS']->isLoggedIn()) {
             $message = $_SESSION['CATS']->getLoginError();
 
-            if (isset($_GET['reloginVars']))
-            {
+            if (isset($_GET['reloginVars'])) {
                 $this->_template->assign('reloginVars', urlencode($_GET['reloginVars']));
-            }
-            else
-            {
+            } else {
                 $this->_template->assign('reloginVars', '');
             }
 
             $site = new Site(-1);
             $rs = $site->getSiteByUnixName($siteName);
-            if (isset($rs['name']))
-            {
+            if (isset($rs['name'])) {
                 $siteNameFull = $rs['name'];
-            }
-            else
-            {
+            } else {
                 $siteNameFull = $siteName;
             }
 
-            if (!eval(Hooks::get('LOGIN_UNSUCCESSFUL'))) return;
+            if (! eval(Hooks::get('LOGIN_UNSUCCESSFUL'))) {
+                return;
+            }
 
             $this->_template->assign('message', $message);
             $this->_template->assign('messageSuccess', false);
@@ -297,30 +271,25 @@ class LoginUI extends UserInterface
          */
 
         $wizard = new Wizard(CATSUtility::getIndexName() . '?m=home', './js/wizardIntro.js');
-        if ($_SESSION['CATS']->isFirstTimeSetup())
-        {
+        if ($_SESSION['CATS']->isFirstTimeSetup()) {
             $wizard->addPage('Welcome!', './modules/login/wizard/Intro.tpl', '', false, true);
         }
 
-        if (!$_SESSION['CATS']->isAgreedToLicense())
-        {
+        if (! $_SESSION['CATS']->isAgreedToLicense()) {
             $phpeval = '';
-            if (!eval(Hooks::get('LICENSE_TERMS'))) return;
+            if (! eval(Hooks::get('LICENSE_TERMS'))) {
+                return;
+            }
             $wizard->addPage('License', './modules/login/wizard/License.tpl', $phpeval, true, true);
         }
 
-        if (defined('CATS_TEST_MODE') && CATS_TEST_MODE)
-        {
+        if (defined('CATS_TEST_MODE') && CATS_TEST_MODE) {
             // On-site wizard pages
-            if (!LicenseUtility::isLicenseValid())
-            {
-                if (defined('LICENSE_KEY') && LICENSE_KEY == '')
-                {
+            if (! LicenseUtility::isLicenseValid()) {
+                if (defined('LICENSE_KEY') && LICENSE_KEY == '') {
                     $template = 'Register.tpl';
                     $templateName = 'Register';
-                }
-                else
-                {
+                } else {
                     $template = 'Reregister.tpl';
                     $templateName = 'License Expired';
                 }
@@ -329,28 +298,26 @@ class LoginUI extends UserInterface
         }
 
         // if logged in for the first time, change password
-        if (strtolower($username) == 'admin' && $password === DEFAULT_ADMIN_PASSWORD)
-        {
+        if (strtolower($username) == 'admin' && $password === DEFAULT_ADMIN_PASSWORD) {
             $wizard->addPage('Password', './modules/login/wizard/Password.tpl', '', false, true);
         }
 
         // make user set an e-mail address
-        if (trim($_SESSION['CATS']->getEmail()) == '')
-        {
+        if (trim($_SESSION['CATS']->getEmail()) == '') {
             $wizard->addPage('E-mail', './modules/login/wizard/Email.tpl', '', false, true);
         }
 
         // if no site name set, make user set site name
-        if ($accessLevel >= ACCESS_LEVEL_SA && $_SESSION['CATS']->getSiteName() === 'default_site')
-        {
+        if ($accessLevel >= ACCESS_LEVEL_SA && $_SESSION['CATS']->getSiteName() === 'default_site') {
             $wizard->addPage('Site', './modules/login/wizard/SiteName.tpl', '', false, true);
         }
 
         // CATS Hosted Wizard Pages
-        if (!eval(Hooks::get('ASP_WIZARD_PAGES'))) return;
+        if (! eval(Hooks::get('ASP_WIZARD_PAGES'))) {
+            return;
+        }
 
-        if ($_SESSION['CATS']->isFirstTimeSetup())
-        {
+        if ($_SESSION['CATS']->isFirstTimeSetup()) {
             $wizard->addPage('Setup Users', './modules/login/wizard/Users.tpl', '
                 $users = new Users($siteID);
                 $mp = $users->getAll();
@@ -362,7 +329,9 @@ class LoginUI extends UserInterface
                 $this->_template->assign(\'accessLevels\', $users->getAccessLevels());
             ');
 
-            if (!eval(Hooks::get('ASP_WIZARD_IMPORT'))) return;
+            if (! eval(Hooks::get('ASP_WIZARD_IMPORT'))) {
+                return;
+            }
         }
 
         // The wizard will not display if no pages have been added.
@@ -378,34 +347,34 @@ class LoginUI extends UserInterface
         /* If we have a specific page to go to, go there. */
 
         /* These hooks are for important things, like disabling the site based on criteria. */
-        if (!eval(Hooks::get('LOGGED_IN'))) return;
+        if (! eval(Hooks::get('LOGGED_IN'))) {
+            return;
+        }
 
-        if (isset($_GET['reloginVars']))
-        {
+        if (isset($_GET['reloginVars'])) {
             CATSUtility::transferRelativeURI($_GET['reloginVars']);
         }
 
         /* LOGGED_IN_MESSAGES hooks are only for messages which show up on initial login (warnings, etc) */
-        if (!eval(Hooks::get('LOGGED_IN_MESSAGES'))) return;
+        if (! eval(Hooks::get('LOGGED_IN_MESSAGES'))) {
+            return;
+        }
 
         /* If logged in for the first time, make user change password. */
         if (strtolower($username) == 'admin' &&
-            $password === DEFAULT_ADMIN_PASSWORD)
-        {
+            $password === DEFAULT_ADMIN_PASSWORD) {
             CATSUtility::transferRelativeURI('m=settings&a=newInstallPassword');
         }
 
         /* If no site name set, make user set site name. */
-        else if ($accessLevel >= ACCESS_LEVEL_SA &&
-                 $_SESSION['CATS']->getSiteName() === 'default_site')
-        {
+        elseif ($accessLevel >= ACCESS_LEVEL_SA &&
+                 $_SESSION['CATS']->getSiteName() === 'default_site') {
             CATSUtility::transferRelativeURI('m=settings&a=upgradeSiteName');
         }
 
         /* If the default email is set in the configuration, complain to the admin. */
-        else if ($accessLevel >= ACCESS_LEVEL_SA &&
-                 $mailerSettingsRS['configured'] == '0')
-        {
+        elseif ($accessLevel >= ACCESS_LEVEL_SA &&
+                 $mailerSettingsRS['configured'] == '0') {
             NewVersionCheck::checkForUpdate();
 
             $this->_template->assign('inputType', 'conclusion');
@@ -417,15 +386,15 @@ class LoginUI extends UserInterface
         }
 
         /* If no E-Mail set for current user, make user set E-Mail address. */
-        else if (trim($_SESSION['CATS']->getEmail()) == '')
-        {
+        elseif (trim($_SESSION['CATS']->getEmail()) == '') {
             CATSUtility::transferRelativeURI('m=settings&a=forceEmail');
         }
 
         /* If nothing else has stopped us, just go to the home page. */
-        else
-        {
-            if (!eval(Hooks::get('LOGGED_IN_HOME_PAGE'))) return;
+        else {
+            if (! eval(Hooks::get('LOGGED_IN_HOME_PAGE'))) {
+                return;
+            }
             CATSUtility::transferRelativeURI('m=home');
         }
     }
@@ -436,7 +405,9 @@ class LoginUI extends UserInterface
      */
     private function forgotPassword()
     {
-        if (!eval(Hooks::get('FORGOT_PASSWORD'))) return;
+        if (! eval(Hooks::get('FORGOT_PASSWORD'))) {
+            return;
+        }
 
         $this->_template->display('./modules/login/ForgotPassword.tpl');
     }
@@ -449,32 +420,28 @@ class LoginUI extends UserInterface
     {
         $username = $this->getTrimmedInput('username', $_POST);
 
-        if (!eval(Hooks::get('ON_FORGOT_PASSWORD'))) return;
+        if (! eval(Hooks::get('ON_FORGOT_PASSWORD'))) {
+            return;
+        }
 
         $user = new Users($this->_siteID);
-        if ($password = $user->getPassword($username))
-        {
+        if ($password = $user->getPassword($username)) {
             $mailer = new Mailer($this->_siteID);
             $mailerStatus = $mailer->sendToOne(
-                array($username, $username),
+                [$username, $username],
                 PASSWORD_RESET_SUBJECT,
                 sprintf(PASSWORD_RESET_BODY, $password),
                 true
             );
 
-            if ($mailerStatus)
-            {
+            if ($mailerStatus) {
                 $this->_template->assign('username', $username);
                 $this->_template->assign('complete', true);
-            }
-            else
-            {
-                $this->_template->assign('message',' Unable to send password to address specified.');
+            } else {
+                $this->_template->assign('message', ' Unable to send password to address specified.');
                 $this->_template->assign('complete', false);
             }
-        }
-        else
-        {
+        } else {
             $this->_template->assign('message', 'No such username found.');
             $this->_template->assign('complete', false);
         }
@@ -482,22 +449,18 @@ class LoginUI extends UserInterface
         $this->_template->display('./modules/login/ForgotPassword.tpl');
     }
 
-
     // FIXME: Document me.
     private function _getReloginVars()
     {
-        if (empty($_GET))
-        {
+        if (empty($_GET)) {
             return '';
         }
 
-        $getFormatted = array();
-        foreach ($_GET as $key => $value)
-        {
+        $getFormatted = [];
+        foreach ($_GET as $key => $value) {
             if (($key == 'm' && $value == 'logout') ||
                 ($key == 'm' && $value == 'login') ||
-                ($key == 's'))
-            {
+                ($key == 's')) {
                 continue;
             }
 
@@ -507,5 +470,3 @@ class LoginUI extends UserInterface
         return urlencode(implode('&', $getFormatted));
     }
 }
-
-?>

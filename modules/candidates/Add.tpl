@@ -187,9 +187,13 @@
                             <label id="phoneHomeLabel" for="phoneHome">Home Phone:</label>
                         </td>
                         <td class="tdData">
-                            <input type="text" tabindex="6" name="phoneHome" id="phoneHome" class="inputbox" style="width: 150px;" value="<?php if (isset($this->preassignedFields['phoneHome'])) $this->_($this->preassignedFields['phoneHome']); ?>" onchange="checkPhoneAlreadyInSystem(this.value);"  />
+                            <input type="text" tabindex="6" name="phoneHome" id="phoneHome" class="inputbox" style="width: 150px;" 
+                            value="<?php if (isset($this->preassignedFields['phoneHome']) && is_array($this->preassignedFields)) $this->_($this->preassignedFields['phoneHome']); ?>" 
+                            onchange="checkPhoneAlreadyInSystem(this.value);" />
+
                             <?php if ($this->isParsingEnabled): ?>
-                                <?php if ($this->parsingStatus['parseLimit'] >= 0 && $this->parsingStatus['parseUsed'] >= $this->parsingStatus['parseLimit']): ?>
+                                <?php if (is_array($this->parsingStatus) && isset($this->parsingStatus['parseLimit'], $this->parsingStatus['parseUsed']) && 
+                                    $this->parsingStatus['parseLimit'] >= 0 && $this->parsingStatus['parseUsed'] >= $this->parsingStatus['parseLimit']): ?>
                                     &nbsp;
                                 <?php else: ?>
                                     <?php if ($this->isModal): ?>&nbsp;&nbsp;<?php else: ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php endif; ?>
@@ -328,7 +332,7 @@
                                 </td>
                                 <td class="tdData">
                                     <select id="gender" name="gender" class="inputbox" style="width:200px;" tabindex="<?php echo($tabIndex++); ?>">
-                                        <option selected="selected" value="">----</option>
+                                        <option selected value="">----</option>
                                         <option value="M"<?php if (isset($this->preassignedFields['gender']) && $this->preassignedFields['gender'] == 'M') echo ' selected'; ?>>Male</option>
                                         <option value="F"<?php if (isset($this->preassignedFields['gender']) && $this->preassignedFields['gender'] == 'F') echo ' selected'; ?>>Female</option>
                                     </select>
@@ -342,7 +346,7 @@
                                 </td>
                                 <td class="tdData">
                                     <select id="race" name="race" class="inputbox" style="width:200px;" tabindex="<?php echo($tabIndex++); ?>">
-                                        <option selected="selected" value="">----</option>
+                                        <option selected value="">----</option>
                                         <option value="1"<?php if (isset($this->preassignedFields['race']) && $this->preassignedFields['race'] == '1') echo ' selected'; ?>>American Indian</option>
                                         <option value="2"<?php if (isset($this->preassignedFields['race']) && $this->preassignedFields['race'] == '2') echo ' selected'; ?>>Asian or Pacific Islander</option>
                                         <option value="3"<?php if (isset($this->preassignedFields['race']) && $this->preassignedFields['race'] == '3') echo ' selected'; ?>>Hispanic or Latino</option>
@@ -359,7 +363,7 @@
                                 </td>
                                 <td class="tdData">
                                     <select id="veteran" name="veteran" class="inputbox" style="width:200px;" tabindex="<?php echo($tabIndex++); ?>">
-                                        <option selected="selected" value="">----</option>
+                                        <option selected value="">----</option>
                                         <option value="1"<?php if (isset($this->preassignedFields['veteran']) && $this->preassignedFields['veteran'] == '1') echo ' selected'; ?>>No</option>
                                         <option value="2"<?php if (isset($this->preassignedFields['veteran']) && $this->preassignedFields['veteran'] == '2') echo ' selected'; ?>>Eligible Veteran</option>
                                         <option valie="3"<?php if (isset($this->preassignedFields['veteran']) && $this->preassignedFields['veteran'] == '3') echo ' selected'; ?>>Disabled Veteran</option>
@@ -375,7 +379,7 @@
                                 </td>
                                 <td class="tdData">
                                     <select id="disability" name="disability" class="inputbox" style="width:200px;" tabindex="<?php echo($tabIndex++); ?>">
-                                        <option selected="selected" value="">----</option>
+                                        <option selected value="">----</option>
                                         <option value="No"<?php if (isset($this->preassignedFields['disability']) && $this->preassignedFields['disability'] == 'No') echo ' selected'; ?>>No</option>
                                         <option value="Yes"<?php if (isset($this->preassignedFields['disability']) && $this->preassignedFields['disability'] == 'Yes') echo ' selected'; ?>>Yes</option>
                                     </select>
@@ -462,9 +466,9 @@
                                 <option value="edit">(Edit Sources)</option>
                                 <option value="nullline">-------------------------------</option>
 <?php endif; ?>
-                                    <option value="(none)" <?php if (!isset($this->preassignedFields['source'])): ?>selected="selected"<?php endif; ?>>(None)</option>
+                                    <option value="(none)" <?php if (!isset($this->preassignedFields['source'])): ?>selected<?php endif; ?>>(None)</option>
                                     <?php if (isset($this->preassignedFields['source'])): ?>
-                                        <option value="<?php $this->_($this->_($this->preassignedFields['source'])); ?>" selected="selected"><?php $this->_($this->_($this->preassignedFields['source'])); ?></option>
+                                        <option value="<?php $this->_($this->_($this->preassignedFields['source'])); ?>" selected><?php $this->_($this->_($this->preassignedFields['source'])); ?></option>
                                     <?php endif; ?>
                                 <?php foreach ($this->sourcesRS AS $index => $source): ?>
                                     <option value="<?php $this->_($source['name']); ?>"><?php $this->_($source['name']); ?></option>

@@ -23,13 +23,12 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  * @version    $Id: Export.php 3813 2007-12-05 23:16:22Z brian $
  */
- 
+
 include_once(LEGACY_ROOT . '/lib/Candidates.php');
 include_once(LEGACY_ROOT . '/lib/Contacts.php');
 include_once(LEGACY_ROOT . '/lib/Companies.php');
@@ -59,7 +58,7 @@ class ExportUtility
             . $indexName . '" method="get">' . "\n"
             . '<input type="hidden" name="m" value="export" />' . "\n"
             . '<input type="hidden" name="onlySelected" value="true" />' . "\n"
-            . '<input type="hidden" name="dataItemType" value="'. $dataItemType . '" />' . "\n";
+            . '<input type="hidden" name="dataItemType" value="' . $dataItemType . '" />' . "\n";
 
         /* Build form menu. */
         $allRecordsURL = sprintf(
@@ -90,11 +89,11 @@ class ExportUtility
 
         $footer = '</form>';
 
-        return array(
+        return [
             'header' => $header,
             'footer' => $footer,
-            'menu'   => $menu
-        );
+            'menu' => $menu,
+        ];
     }
 }
 
@@ -107,11 +106,14 @@ class ExportUtility
 class Export
 {
     private $_siteID;
-    private $_dataItemType;
-    private $_separator;
-    private $_rs;
-    private $_IDs;
 
+    private $_dataItemType;
+
+    private $_separator;
+
+    private $_rs;
+
+    private $_IDs;
 
     public function __construct($dataItemType, $IDs, $separator, $siteID)
     {
@@ -121,7 +123,6 @@ class Export
         $this->_IDs = $IDs;
     }
 
-
     /**
      * Creates and returns output to be written to a CSV / etc. file.
      *
@@ -129,32 +130,29 @@ class Export
      */
     public function getFormattedOutput()
     {
-        switch ($this->_dataItemType)
-        {
+        switch ($this->_dataItemType) {
             case DATA_ITEM_CANDIDATE:
                 $dataItem = new Candidates($this->_siteID);
                 break;
-                
+
             default:
                 return false;
                 break;
         }
 
         $this->_rs = $dataItem->getExport($this->_IDs);
-        if (empty($this->_rs))
-        {
+        if (empty($this->_rs)) {
             return false;
         }
 
         /* Column names. */
         $outputString = implode(
-            $this->_separator, array_keys($this->_rs[0])
+            $this->_separator,
+            array_keys($this->_rs[0])
         ) . "\r\n";
 
-        foreach ($this->_rs as $rowIndex => $row)
-        {
-            foreach ($row as $key => $value)
-            {
+        foreach ($this->_rs as $rowIndex => $row) {
+            foreach ($row as $key => $value) {
                 /* Escape any double-quotes and place the value inside
                  * double quotes.
                  */
@@ -162,12 +160,11 @@ class Export
             }
 
             $outputString .= implode(
-                $this->_separator, $this->_rs[$rowIndex]
+                $this->_separator,
+                $this->_rs[$rowIndex]
             ) . "\r\n";
         }
 
         return $outputString;
     }
 }
-
-?>

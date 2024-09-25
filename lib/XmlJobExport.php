@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -38,9 +37,13 @@
 class XmlTemplate
 {
     /* Prevent this class from being instantiated. */
-    private function __construct() {}
-    private function __clone() {}
+    private function __construct()
+    {
+    }
 
+    private function __clone()
+    {
+    }
 
     /**
      * Returns a list of websites and their parameters that receive XML
@@ -50,7 +53,7 @@ class XmlTemplate
      */
     public static function getTemplates()
     {
-        $templates = array();
+        $templates = [];
         $db = DatabaseConnection::getInstance();
 
         $sql = sprintf(
@@ -107,7 +110,9 @@ class XmlTemplate
      */
     public static function submitXMLFeeds($siteID)
     {
-        if (!eval(Hooks::get('XML_SUBMIT_FEEDS_TO_QUEUE'))) return;
+        if (! eval(Hooks::get('XML_SUBMIT_FEEDS_TO_QUEUE'))) {
+            return;
+        }
     }
 
     /**
@@ -124,7 +129,7 @@ class XmlTemplate
      */
     public static function loadTemplate($templateName)
     {
-        $templateSections = array();
+        $templateSections = [];
 
         // Read the template file into a string
         $rawTemplate = file_get_contents(
@@ -135,35 +140,29 @@ class XmlTemplate
         $tplLines = explode("\n", $rawTemplate);
 
         // Browse the lines looking for section headers like ">>SECTION_HEADER_NAME"
-        for ( $i=0; $i<count($tplLines); $i++ )
-        {
+        for ($i = 0; $i < count($tplLines); $i++) {
             // Strip whitespace/line returns off the line
             $tplLine = trim($tplLines[$i]);
 
             // Ignore comments
-            if (!strcmp(substr($tplLine, 0, 1), "#"))
-            {
+            if (! strcmp(substr($tplLine, 0, 1), "#")) {
                 continue;
             }
 
             // New format sections begin like ">>FORMAT_SECTION_NAME"
-            if (preg_match("/\>\>([a-zA-Z0-9_-]+)/i", $tplLine, $matches) )
-            {
+            if (preg_match("/\>\>([a-zA-Z0-9_-]+)/i", $tplLine, $matches)) {
                 // $matches[1] is the tag's name
                 $templateTag = trim($matches[1]);
-                if (strlen($templateTag) > 0)
-                {
+                if (strlen($templateTag) > 0) {
                     // Start a new, blank section for this tag
                     $templateSections[$templateTag] = '';
 
                     // Add the following lines to the tag's body until a closing
                     //   "<<SECTION_HEADER_NAME" is found.
-                    for ( $i2=$i+1; $i2<count($tplLines); $i2++ )
-                    {
+                    for ($i2 = $i + 1; $i2 < count($tplLines); $i2++) {
                         $tplBodyLine = trim($tplLines[$i2]);
 
-                        if( !strcasecmp($tplBodyLine, sprintf('<<%s', $templateTag)) )
-                        {
+                        if (! strcasecmp($tplBodyLine, sprintf('<<%s', $templateTag))) {
                             break;
                         }
                         $templateSections[$templateTag] .= $tplBodyLine . "\n";
@@ -183,17 +182,13 @@ class XmlTemplate
      */
     public static function loadTemplateTags($template)
     {
-        $tags = array();
-        for ( $i=0; $i<strlen($template)-4; $i++ )
-        {
-            if (!strcmp(substr($template, $i, 2), '$['))
-            {
-                $x = strpos( $template, ']', $i+2 );
-                if ($x !== false)
-                {
-                    $tag = substr( $template, $i+2, $x-$i-2 );
-                    if (!in_array($tag, $tags))
-                    {
+        $tags = [];
+        for ($i = 0; $i < strlen($template) - 4; $i++) {
+            if (! strcmp(substr($template, $i, 2), '$[')) {
+                $x = strpos($template, ']', $i + 2);
+                if ($x !== false) {
+                    $tag = substr($template, $i + 2, $x - $i - 2);
+                    if (! in_array($tag, $tags)) {
                         $tags[] = $tag;
                     }
                 }
@@ -220,5 +215,3 @@ class XmlTemplate
         );
     }
 }
-
-?>

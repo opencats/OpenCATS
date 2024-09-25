@@ -14,17 +14,17 @@ include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
 
 class ActivityTest extends CATSAJAXTestCase
 {
-    function testActivity()
+    public function testActivity()
     {
         /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
+        if (! $this->login()) {
             return false;
         }
 
         /* Add a test candidate. */
         $testCandidateID = $this->addCandidate(
-            'TestCand', 'ATxyz'
+            'TestCand',
+            'ATxyz'
         );
 
         /* Add a test company. */
@@ -59,14 +59,14 @@ class ActivityTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
+            [
                 'f' => 'addActivity',
                 'dataItemID' => $testCandidateID,
                 'dataItemType' => (string) DATA_ITEM_CANDIDATE,
                 'type' => (string) ACTIVITY_CALL_TALKED,
                 'notes' => 'Test notes.',
-                'jobOrderID' => $testJobOrderID1
-            )
+                'jobOrderID' => $testJobOrderID1,
+            ]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -90,11 +90,15 @@ class ActivityTest extends CATSAJAXTestCase
         $this->assertEqual(
             (string) $xml->enteredby,
             StringUtility::makeInitialName(
-                TESTER_FIRSTNAME, TESTER_LASTNAME, false, LAST_NAME_MAXLEN
+                TESTER_FIRSTNAME,
+                TESTER_LASTNAME,
+                false,
+                LAST_NAME_MAXLEN
             )
         );
         $this->assertEqual(
-            (string) $xml->regarding, 'Test JobOrder ATxyz (Test Company ATxyz)'
+            (string) $xml->regarding,
+            'Test JobOrder ATxyz (Test Company ATxyz)'
         );
 
         /* We don't know what these values are going to be exactly, so we
@@ -117,13 +121,13 @@ class ActivityTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
+            [
                 'f' => 'editActivity',
                 'activityID' => $addedActivityID,
                 'type' => (string) ACTIVITY_CALL_LVM,
                 'notes' => 'Test notes that are now edited.',
-                'jobOrderID' => $testJobOrderID2
-            )
+                'jobOrderID' => $testJobOrderID2,
+            ]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -152,10 +156,10 @@ class ActivityTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
+            [
                 'f' => 'deleteActivity',
-                'activityID' => $addedActivityID
-            )
+                'activityID' => $addedActivityID,
+            ]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -182,11 +186,10 @@ class ActivityTest extends CATSAJAXTestCase
 
 class GetCompanyContactsTest extends CATSAJAXTestCase
 {
-    function testGetCompanyContacts()
+    public function testGetCompanyContacts()
     {
         /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
+        if (! $this->login()) {
             return false;
         }
 
@@ -217,10 +220,10 @@ class GetCompanyContactsTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
+            [
                 'f' => 'getCompanyContacts',
-                'companyID' => $testCompanyID
-            )
+                'companyID' => $testCompanyID,
+            ]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -265,11 +268,10 @@ class GetCompanyContactsTest extends CATSAJAXTestCase
 
 class GetCompanyLocationTest extends CATSAJAXTestCase
 {
-    function testGetCompanyLocation()
+    public function testGetCompanyLocation()
     {
         /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
+        if (! $this->login()) {
             return false;
         }
 
@@ -285,10 +287,10 @@ class GetCompanyLocationTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
+            [
                 'f' => 'getCompanyLocation',
-                'companyID' => $testCompanyID
-            )
+                'companyID' => $testCompanyID,
+            ]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -320,11 +322,10 @@ class GetCompanyLocationTest extends CATSAJAXTestCase
 
 class GetCompanyLocationAndDepartmentsTest extends CATSAJAXTestCase
 {
-    function testGetCompanyLocationAndDepartments()
+    public function testGetCompanyLocationAndDepartments()
     {
         /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
+        if (! $this->login()) {
             return false;
         }
 
@@ -340,10 +341,10 @@ class GetCompanyLocationAndDepartmentsTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
+            [
                 'f' => 'getCompanyLocationAndDepartments',
-                'companyID' => $testCompanyID
-            )
+                'companyID' => $testCompanyID,
+            ]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -379,11 +380,10 @@ class GetCompanyLocationAndDepartmentsTest extends CATSAJAXTestCase
 
 class GetCompanyNamesTest extends CATSAJAXTestCase
 {
-    function testGetCompanyNames()
+    public function testGetCompanyNames()
     {
         /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
+        if (! $this->login()) {
             return false;
         }
     }
@@ -391,11 +391,10 @@ class GetCompanyNamesTest extends CATSAJAXTestCase
 
 class GetDataItemJobOrdersTest extends CATSAJAXTestCase
 {
-    function testGetDataItemJobOrders()
+    public function testGetDataItemJobOrders()
     {
         /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
+        if (! $this->login()) {
             return false;
         }
 
@@ -456,12 +455,12 @@ class GetDataItemJobOrdersTest extends CATSAJAXTestCase
 
         /* Consider the test candidate for the first test job order. */
         $this->assertGET(
-            CATSUtility::getAbsoluteURI(CATSUtility::getIndexName() .'?m=joborders&a=addToPipeline'),
-            array(
+            CATSUtility::getAbsoluteURI(CATSUtility::getIndexName() . '?m=joborders&a=addToPipeline'),
+            [
                 'getback' => 'getback',
                 'jobOrderID' => $testJobOrderID1,
-                'candidateID' => $testCandidateID
-            ),
+                'candidateID' => $testCandidateID,
+            ],
             'Considering test candidate for test job order should succees'
         );
         $this->runPageLoadAssertions(false);
@@ -469,11 +468,11 @@ class GetDataItemJobOrdersTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
+            [
                 'f' => 'getDataItemJobOrders',
                 'dataItemID' => $testCompanyID,
-                'dataItemType' => DATA_ITEM_COMPANY
-            )
+                'dataItemType' => DATA_ITEM_COMPANY,
+            ]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -536,11 +535,11 @@ class GetDataItemJobOrdersTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
+            [
                 'f' => 'getDataItemJobOrders',
                 'dataItemID' => $testContactID,
-                'dataItemType' => DATA_ITEM_CONTACT
-            )
+                'dataItemType' => DATA_ITEM_CONTACT,
+            ]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -603,11 +602,11 @@ class GetDataItemJobOrdersTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
+            [
                 'f' => 'getDataItemJobOrders',
                 'dataItemID' => $testCandidateID,
-                'dataItemType' => DATA_ITEM_CANDIDATE
-            )
+                'dataItemType' => DATA_ITEM_CANDIDATE,
+            ]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -646,7 +645,7 @@ class GetDataItemJobOrdersTest extends CATSAJAXTestCase
 
 class GetParsedAddressTest extends CATSAJAXTestCase
 {
-    function testGetParsedAddress1()
+    public function testGetParsedAddress1()
     {
         $address = <<<EOF
 Enock R. Chamberlin
@@ -666,11 +665,11 @@ EOF;
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
+            [
                 'f' => 'getParsedAddress',
                 'mode' => 'person',
-                'addressBlock' => $address
-            )
+                'addressBlock' => $address,
+            ]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -729,7 +728,7 @@ EOF;
         );
     }
 
-    function testGetParsedAddress2()
+    public function testGetParsedAddress2()
     {
         $address = <<<EOF
 
@@ -742,11 +741,11 @@ EOF;
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
+            [
                 'f' => 'getParsedAddress',
                 'mode' => 'person',
-                'addressBlock' => $address
-            )
+                'addressBlock' => $address,
+            ]
         );
 
         /* Use SimpleXML to parse the XML response. */
@@ -764,11 +763,10 @@ EOF;
 
 class GetPipelineDetailsTest extends CATSAJAXTestCase
 {
-    function testGetPipelineDetails()
+    public function testGetPipelineDetails()
     {
         /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
+        if (! $this->login()) {
             return false;
         }
 
@@ -809,12 +807,12 @@ class GetPipelineDetailsTest extends CATSAJAXTestCase
 
         /* Consider the test candidate for the first test job order. */
         $this->assertGET(
-            CATSUtility::getAbsoluteURI(CATSUtility::getIndexName() .'?m=joborders&a=addToPipeline'),
-            array(
+            CATSUtility::getAbsoluteURI(CATSUtility::getIndexName() . '?m=joborders&a=addToPipeline'),
+            [
                 'getback' => 'getback',
                 'candidateID' => $testCandidateID,
-                'jobOrderID' => $testJobOrderID1
-            ),
+                'jobOrderID' => $testJobOrderID1,
+            ],
             'Considering test candidate for test job order should succees'
         );
         $this->runPageLoadAssertions(false);
@@ -822,11 +820,11 @@ class GetPipelineDetailsTest extends CATSAJAXTestCase
         /* Get the candidate-joborder ID of the pipeline entry we just created. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
+            [
                 'f' => 'tests:getCandidateJobOrderID',
                 'candidateID' => $testCandidateID,
-                'jobOrderID' => $testJobOrderID1
-            )
+                'jobOrderID' => $testJobOrderID1,
+            ]
         );
         $xml = $this->getSimpleXML();
         $this->runXMLLoadAssertions($xml, false);
@@ -835,10 +833,10 @@ class GetPipelineDetailsTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
+            [
                 'f' => 'getPipelineDetails',
-                'candidateJobOrderID' => $candidateJobOrderID
-            )
+                'candidateJobOrderID' => $candidateJobOrderID,
+            ]
         );
         $this->runPageLoadAssertions(false);
 
@@ -856,10 +854,10 @@ class GetPipelineDetailsTest extends CATSAJAXTestCase
         /* POST the AJAX call to ajax.php. */
         $this->post(
             CATSUtility::getAbsoluteURI('ajax.php'),
-            array(
+            [
                 'f' => 'getPipelineDetails',
-                'candidateJobOrderID' => $candidateJobOrderID
-            )
+                'candidateJobOrderID' => $candidateJobOrderID,
+            ]
         );
         $this->runPageLoadAssertions(false);
 
@@ -883,11 +881,10 @@ class GetPipelineDetailsTest extends CATSAJAXTestCase
 
 class GetPipelineJobOrderTest extends CATSAJAXTestCase
 {
-    function testGetPipelineJobOrder()
+    public function testGetPipelineJobOrder()
     {
         /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
+        if (! $this->login()) {
             return false;
         }
     }
@@ -895,11 +892,10 @@ class GetPipelineJobOrderTest extends CATSAJAXTestCase
 
 class SetCandidateJobOrderRatingTest extends CATSAJAXTestCase
 {
-    function testSetCandidateJobOrderRating()
+    public function testSetCandidateJobOrderRating()
     {
         /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
+        if (! $this->login()) {
             return false;
         }
     }
@@ -907,11 +903,10 @@ class SetCandidateJobOrderRatingTest extends CATSAJAXTestCase
 
 class TestEmailSettingsTest extends CATSAJAXTestCase
 {
-    function testTestEmailSettings()
+    public function testTestEmailSettings()
     {
         /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
+        if (! $this->login()) {
             return false;
         }
     }
@@ -919,9 +914,7 @@ class TestEmailSettingsTest extends CATSAJAXTestCase
 
 class ZipLookupTest extends CATSAJAXTestCase
 {
-    function testZipLookup()
+    public function testZipLookup()
     {
     }
 }
-
-?>

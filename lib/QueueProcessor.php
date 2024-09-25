@@ -30,7 +30,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -47,8 +46,13 @@ include_once(LEGACY_ROOT . '/modules/queue/constants.php');
 class QueueProcessor
 {
     /* Prevent this class from being instantiated. */
-    private function __construct() {}
-    private function __clone() {}
+    private function __construct()
+    {
+    }
+
+    private function __clone()
+    {
+    }
 
     // FIXME: Document me.
     public static function setTaskLock($taskID, $lockCode = 1)
@@ -87,9 +91,10 @@ class QueueProcessor
 
         $rs = $db->query($sql);
 
-        if ($errorCode == 1)
-        {
-            if (!eval(Hooks::get('QUEUEERROR_NOTIFY_DEV'))) return;
+        if ($errorCode == 1) {
+            if (! eval(Hooks::get('QUEUEERROR_NOTIFY_DEV'))) {
+                return;
+            }
         }
 
         return $rs;
@@ -120,8 +125,6 @@ class QueueProcessor
      * A recurring task is one that runs on a defined schedule (every minute, every 5, etc.)
      * without needing to be added to the queue table. Recurring events will never run at the
      * same time.
-     *
-     * @param string $taskName Name of the task (from the tasks directory)
      */
     public static function registerRecurringTask($taskPath)
     {
@@ -131,7 +134,9 @@ class QueueProcessor
         $task = self::getInstantiatedTask($taskPath);
 
         // recurring tasks need a getSchedule() function that returns a crontab string, i.e.: "0,1,5 * * * *", etc.
-        if (!self::isTaskReady($task->getSchedule())) return;
+        if (! self::isTaskReady($task->getSchedule())) {
+            return;
+        }
 
         // Check if an old instance of this SAME recurring task is running, do not run over the top of it
         $sql = sprintf(
@@ -147,8 +152,7 @@ class QueueProcessor
         );
         $cnt = $db->getColumn($sql, 0, 0);
 
-        if ($cnt > 0)
-        {
+        if ($cnt > 0) {
             // Instance of this task is running
             return;
         }
@@ -183,16 +187,17 @@ class QueueProcessor
 
         $rs = $db->getAssoc($sql);
 
-        if (!count($rs))
-        {
+        if (! count($rs)) {
             // There are no current appropriate queues to process, quit
             return TASKRET_NO_TASKS;
-        }
-        else
-        {
+        } else {
             // Process the same return value to the CLI
-            return self::startTask($rs['site_id'], $rs['task'], $rs['args'],
-                $rs['priority'], $rs['queue_id']
+            return self::startTask(
+                $rs['site_id'],
+                $rs['task'],
+                $rs['args'],
+                $rs['priority'],
+                $rs['queue_id']
             );
         }
     }
@@ -203,11 +208,10 @@ class QueueProcessor
         // Figure out the name from the path
         $taskName = self::getTaskNameFromPath($taskPath);
 
-        if ($taskName != '' && file_exists($taskPath))
-        {
+        if ($taskName != '' && file_exists($taskPath)) {
             // Include the task file and instantiate an instance of the class
             include_once($taskPath);
-            eval (sprintf('$curTask = new %s();', $taskName));
+            eval(sprintf('$curTask = new %s();', $taskName));
 
             return $curTask;
         }
@@ -218,8 +222,7 @@ class QueueProcessor
     // FIXME: Document me.
     public static function getTaskNameFromPath($taskPath)
     {
-        if (preg_match('/\/([^\/\.]+)\.php$/', $taskPath, $matches))
-        {
+        if (preg_match('/\/([^\/\.]+)\.php$/', $taskPath, $matches)) {
             return $matches[1];
         }
         return '';
@@ -233,11 +236,11 @@ class QueueProcessor
         $taskName = self::getTaskNameFromPath($taskPath);
         $curTask = self::getInstantiatedTask($taskPath);
 
-        if (!$curTask)
-        {
+        if (! $curTask) {
             self::setTaskResponse($taskID, sprintf(
                 'Cannot load task "%s" from "%s".',
-                $taskName, $taskPath
+                $taskName,
+                $taskPath
             ));
             self::setTaskError($taskID);
             return;
@@ -249,8 +252,7 @@ class QueueProcessor
         self::setTaskLock($taskID, 0);
 
         // Handle the return of the process
-        switch ($retVal)
-        {
+        switch ($retVal) {
             case TASKRET_SUCCESS:
                 self::setTaskCompleted($taskID);
                 break;
@@ -279,7 +281,7 @@ class QueueProcessor
     {
         $db = DatabaseConnection::getInstance();
 
-        $timeoutDate = date('c', time()+(DEFAULT_QUEUE_TIMEOUT_MINUTES * 60));
+        $timeoutDate = date('c', time() + (DEFAULT_QUEUE_TIMEOUT_MINUTES * 60));
 
         $sql = sprintf(
             "INSERT INTO
@@ -356,12 +358,9 @@ class QueueProcessor
 
         $rs = $db->query($sql);
 
-        if (($response = $db->getColumn($sql, 0, 0)) !== false)
-        {
+        if (($response = $db->getColumn($sql, 0, 0)) !== false) {
             return $response;
-        }
-        else
-        {
+        } else {
             return '';
         }
     }
@@ -384,12 +383,9 @@ class QueueProcessor
                 ISNULL(date_completed)"
         );
 
-        if (($num = $db->getColumn($sql, 0, 0)) !== false)
-        {
+        if (($num = $db->getColumn($sql, 0, 0)) !== false) {
             return $num;
-        }
-        else
-        {
+        } else {
             return 0;
         }
     }
@@ -408,12 +404,9 @@ class QueueProcessor
                 locked = 1"
         );
 
-        if (($num = $db->getColumn($sql, 0, 0)) !== false)
-        {
+        if (($num = $db->getColumn($sql, 0, 0)) !== false) {
             return $num;
-        }
-        else
-        {
+        } else {
             return 0;
         }
     }
@@ -432,12 +425,9 @@ class QueueProcessor
                 error = 1"
         );
 
-        if (($num = $db->getColumn($sql, 0, 0)) !== false)
-        {
+        if (($num = $db->getColumn($sql, 0, 0)) !== false) {
             return $num;
-        }
-        else
-        {
+        } else {
             return 0;
         }
     }
@@ -492,10 +482,8 @@ class QueueProcessor
      */
     public static function getLastRunTime()
     {
-        if (@file_exists(QUEUE_STATUS_FILE))
-        {
-            if (($mTime = @filemtime(QUEUE_STATUS_FILE)) !== false)
-            {
+        if (@file_exists(QUEUE_STATUS_FILE)) {
+            if (($mTime = @filemtime(QUEUE_STATUS_FILE)) !== false) {
                 return $mTime;
             }
         }
@@ -507,19 +495,15 @@ class QueueProcessor
      * is currently active and running. This is determined if the last run
      * time noted is within the last 5 minutes.
      *
-     * @param unknown_type $schedule
      * @return unknown
      */
     public static function isActive()
     {
         $lastRunTime = self::getLastRunTime();
 
-        if ((time() - $lastRunTime) < (60*5))
-        {
+        if ((time() - $lastRunTime) < (60 * 5)) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -528,90 +512,119 @@ class QueueProcessor
     public static function isTaskReady($schedule)
     {
         $valid = true;
-        list ($minute, $hour, $dayofmonth, $month, $dayofweek) = explode(' ', $schedule);
-        if ($minute != '*')
-        {
+        list($minute, $hour, $dayofmonth, $month, $dayofweek) = explode(' ', $schedule);
+        if ($minute != '*') {
             $match = false;
-            foreach (explode(',', $minute) as $_minute)
-                if (intval($_minute) == self::getMinute()) $match = true;
-            if (!$match) $valid = false;
+            foreach (explode(',', $minute) as $_minute) {
+                if (intval($_minute) == self::getMinute()) {
+                    $match = true;
+                }
+            }
+            if (! $match) {
+                $valid = false;
+            }
         }
-        if ($hour != '*')
-        {
+        if ($hour != '*') {
             $match = false;
-            foreach (explode(',', $hour) as $_hour)
-                if (intval($_hour) == self::getHour()) $match = true;
-
-            if ($minute == '*')
-            {
-                if (self::getMinute() != 1) $match = false;
+            foreach (explode(',', $hour) as $_hour) {
+                if (intval($_hour) == self::getHour()) {
+                    $match = true;
+                }
             }
 
-            if (!$match) $valid = false;
+            if ($minute == '*') {
+                if (self::getMinute() != 1) {
+                    $match = false;
+                }
+            }
+
+            if (! $match) {
+                $valid = false;
+            }
         }
-        if ($dayofmonth != '*')
-        {
+        if ($dayofmonth != '*') {
             $match = false;
-            foreach (explode(',', $dayofmonth) as $_dayofmonth)
-                if (intval($_dayofmonth) == self::getDayOfMonth()) $match = true;
-
-            if ($minute == '*')
-            {
-                if (self::getMinute() != 1) $match = false;
+            foreach (explode(',', $dayofmonth) as $_dayofmonth) {
+                if (intval($_dayofmonth) == self::getDayOfMonth()) {
+                    $match = true;
+                }
             }
 
-            if ($hour == '*')
-            {
-                if (self::getHour() != 1) $match = false;
+            if ($minute == '*') {
+                if (self::getMinute() != 1) {
+                    $match = false;
+                }
             }
 
-            if (!$match) $valid = false;
+            if ($hour == '*') {
+                if (self::getHour() != 1) {
+                    $match = false;
+                }
+            }
+
+            if (! $match) {
+                $valid = false;
+            }
         }
-        if ($month != '*')
-        {
+        if ($month != '*') {
             $match = false;
-            foreach (explode(',', $month) as $_month)
-                if (intval($_month) == self::getMonth()) $match = true;
-
-            if ($minute == '*')
-            {
-                if (self::getMinute() != 1) $match = false;
+            foreach (explode(',', $month) as $_month) {
+                if (intval($_month) == self::getMonth()) {
+                    $match = true;
+                }
             }
 
-            if ($hour == '*')
-            {
-                if (self::getHour() != 1) $match = false;
+            if ($minute == '*') {
+                if (self::getMinute() != 1) {
+                    $match = false;
+                }
             }
 
-            if ($dayofmonth == '*')
-            {
-                if (self::getDayOfMonth() != 1) $match = false;
+            if ($hour == '*') {
+                if (self::getHour() != 1) {
+                    $match = false;
+                }
             }
 
-            if (!$match) $valid = false;
+            if ($dayofmonth == '*') {
+                if (self::getDayOfMonth() != 1) {
+                    $match = false;
+                }
+            }
+
+            if (! $match) {
+                $valid = false;
+            }
         }
-        if ($dayofweek != '*')
-        {
+        if ($dayofweek != '*') {
             $match = false;
-            foreach (explode(',', $dayofweek) as $_dayofweek)
-                if (intval($_dayofweek) == self::getDayOfWeek()) $match = true;
-
-            if ($minute == '*')
-            {
-                if (self::getMinute() != 1) $match = false;
+            foreach (explode(',', $dayofweek) as $_dayofweek) {
+                if (intval($_dayofweek) == self::getDayOfWeek()) {
+                    $match = true;
+                }
             }
 
-            if ($hour == '*')
-            {
-                if (self::getHour() != 1) $match = false;
+            if ($minute == '*') {
+                if (self::getMinute() != 1) {
+                    $match = false;
+                }
             }
 
-            if ($dayofmonth == '*')
-            {
-                if (self::getDayOfMonth() != 1) $match = false;
+            if ($hour == '*') {
+                if (self::getHour() != 1) {
+                    $match = false;
+                }
             }
 
-            if (!$match) $valid = false;
+            if ($dayofmonth == '*') {
+                if (self::getDayOfMonth() != 1) {
+                    $match = false;
+                }
+            }
+
+            if (! $match) {
+                $valid = false;
+            }
         }
         return $valid;
     }
@@ -652,7 +665,3 @@ class QueueProcessor
         return intval(date('i'));
     }
 }
-
-
-
-?>

@@ -1,82 +1,89 @@
 <?php
-/**
-* Google API Zip Code Lookup library
-*/
+
+include_once('./vendor/autoload.php'); // Google API Client Library Autoloader
+
 class ZipLookup
 {
+    private $apiKey;
 
-     public static function makeSearchableUSZip($zipString)
-     {
+    // Constructor now uses the API key from config.php
+    public function __construct($apiKey)
+    {
+        $this->apiKey = $apiKey;
+    }
 
-	return str_replace(' ', '', $zipString);
-     }
+    /**
+     * Make the US Zip code searchable by removing spaces
+     */
+    public static function makeSearchableUSZip($zipString)
+    {
+        return str_replace(' ', '', $zipString); // Remove spaces from ZIP code
+    }
 
+    /**
+     * Get City and State by Zip Code using Google Geocoding API
+     */
     public function getCityStateByZip($zip)
     {
+        $client = new \GuzzleHttp\Client();
 
+        // Log the request for debugging
+        // file_put_contents('/var/www/html/opencats-sync/OpenCATS/logfile.txt', "Requesting zip: $zip\n", FILE_APPEND);
 
-	$aAddress[0] = 0;
-	$aAddress[1] = '';
-	$aAddress[2] = '';
-	$aAddress[3] = '';
+        // Make the request to Google Geocoding API
+        try {
+            $response = $client->request('GET', 'https://maps.googleapis.com/maps/api/geocode/json', [
+                'query' => [
+                    'address' => $zip,
+                    'key' => $this->apiKey,
+                ],
+            ]);
+        } catch (Exception $e) {
+            // Log the exception
+            // file_put_contents('/var/www/html/opencats-sync/OpenCATS/logfile.txt', "Error in API request: " . $e->getMessage() . "\n", FILE_APPEND);
+            return null; // Return null if API call fails
+        }
 
-	$sUrl = 'http://maps.googleapis.com/maps/api/geocode/xml?sensor=false&address=';
+        $data = json_decode($response->getBody(), true);
 
-	if ($zip != '') {
-		if (($oXml = simplexml_load_file($sUrl . $zip))) {
-			foreach($oXml->result->address_component as $value) {
-				if ($value->type == 'route') {
-					$aAddress[1] = (string) $value->long_name;
-				}
-				if ($value->type[0] == 'postal_town') {
-					$loc_level_1 = (string) $value->long_name;
-				}
-				if ($value->type[0] == 'locality') {
-					$loc_level_1 = (string) $value->long_name;
-				}
-				if ($value->type[0] == 'administrative_area_level_1') {
-					$loc_level_2 = (string) $value->long_name;
-				}
-				if ($value->type[0] == 'administrative_area_level_2') {
-					$loc_level_3 = (string) $value->long_name;
-				}
-				if ($value->type[0] == 'country') {
-					$loc_level_4 = (string) $value->long_name;	
-				}
-			}
-		} else {
-			$aAddress[0] = 1;
-		}
-	} else {
-		$aAddress[0] = 2;
-	}
+        // Log the response for debugging
+        // file_put_contents('/var/www/html/opencats-sync/OpenCATS/logfile.txt', print_r($data, true), FILE_APPEND);
 
-	// Set the state based on US or non-US location
-	$aAddress[2] = $loc_level_1;
-	if ($loc_level_4 == 'United States') {
-		$aAddress[3] = $loc_level_3;
-	} else {
-		$aAddress[3] = $loc_level_2;
-	}
-	    
-	return $aAddress;
+        // Check if valid data is received
+        if (isset($data['results'][0])) {
+            $addressComponents = $data['results'][0]['address_components'];
+            $city = '';
+            $state = '';
+            $country = '';
 
-    }
-    
-    /**
-     * Returns an array of SQL clauses that returns the distance from a zipcode for each record.
-     *
-     * @param integer United States Zip code (55303)
-     * @param string record Zip Code Column (candidate.zip)
-     * @return string SQL select clause
-     */
-    public function getDistanceFromPointQuery($zipcode, $zipcodeColumn)
-    {
-        //based on kilometers = (3958*3.1415926*sqrt(($lat2-$lat1)*($lat2-$lat1) + cos($lat2/57.29578)*cos($lat1/57.29578)*($lon2-$lon1)*($lon2-$lon1))/180);
-        
-        $select = "(3958*3.1415926*sqrt((zipcode_searching.lat-zipcode_record.lat)*(zipcode_searching.lat-zipcode_record.lat) + cos(zipcode_searching.lat/57.29578)*cos(zipcode_record.lat/57.29578)*(zipcode_searching.lng-zipcode_record.lng)*(zipcode_searching.lng-zipcode_record.lng))/180) as distance_km";
-        $join = "LEFT JOIN zipcodes as zipcode_searching ON zipcode_searching.zipcode = ".$zipcode." LEFT JOIN zipcodes as zipcode_record ON zipcode_record.zipcode = ".$zipcodeColumn;
-        return array("select" => $select, "join" => $join);
+            // Extract city, state, and country from address components
+            foreach ($addressComponents as $component) {
+                if (in_array('locality', $component['types'])) {
+                    $city = $component['long_name'];
+                }
+                if (in_array('administrative_area_level_1', $component['types'])) {
+                    $state = $component['long_name'];
+                }
+                if (in_array('country', $component['types'])) {
+                    $country = $component['long_name'];
+                }
+            }
+
+            // Log the extracted city and state
+            // file_put_contents('/var/www/html/opencats-sync/OpenCATS/logfile.txt', "City: $city, State: $state, Country: $country\n", FILE_APPEND);
+
+            // Return the location details
+            return [
+                'city' => $city,
+                'state' => $state,
+                'country' => $country,
+            ];
+        }
+
+        // Log the case where no valid results were found
+        // file_put_contents('/var/www/html/opencats-sync/OpenCATS/logfile.txt', "No valid results found for zip: $zip\n", FILE_APPEND);
+
+        // Return null if no results are found
+        return null;
     }
 }
-?>

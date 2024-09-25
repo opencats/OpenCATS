@@ -1,53 +1,61 @@
 <?php
+
 // $Id: web_tester_test.php 1748 2008-04-14 01:50:41Z lastcraft $
 require_once(dirname(__FILE__) . '/../autorun.php');
 require_once(dirname(__FILE__) . '/../web_tester.php');
 
-class TestOfFieldExpectation extends UnitTestCase {
-    
-    function testStringMatchingIsCaseSensitive() {
+class TestOfFieldExpectation extends UnitTestCase
+{
+    public function testStringMatchingIsCaseSensitive()
+    {
         $expectation = new FieldExpectation('a');
         $this->assertTrue($expectation->test('a'));
-        $this->assertTrue($expectation->test(array('a')));
+        $this->assertTrue($expectation->test(['a']));
         $this->assertFalse($expectation->test('A'));
     }
-    
-    function testMatchesInteger() {
+
+    public function testMatchesInteger()
+    {
         $expectation = new FieldExpectation('1');
         $this->assertTrue($expectation->test('1'));
         $this->assertTrue($expectation->test(1));
-        $this->assertTrue($expectation->test(array('1')));
-        $this->assertTrue($expectation->test(array(1)));
+        $this->assertTrue($expectation->test(['1']));
+        $this->assertTrue($expectation->test([1]));
     }
-    
-    function testNonStringFailsExpectation() {
+
+    public function testNonStringFailsExpectation()
+    {
         $expectation = new FieldExpectation('a');
         $this->assertFalse($expectation->test(null));
     }
-    
-    function testUnsetFieldCanBeTestedFor() {
+
+    public function testUnsetFieldCanBeTestedFor()
+    {
         $expectation = new FieldExpectation(false);
         $this->assertTrue($expectation->test(false));
     }
-    
-    function testMultipleValuesCanBeInAnyOrder() {
-        $expectation = new FieldExpectation(array('a', 'b'));
-        $this->assertTrue($expectation->test(array('a', 'b')));
-        $this->assertTrue($expectation->test(array('b', 'a')));
-        $this->assertFalse($expectation->test(array('a', 'a')));            
-        $this->assertFalse($expectation->test('a'));            
+
+    public function testMultipleValuesCanBeInAnyOrder()
+    {
+        $expectation = new FieldExpectation(['a', 'b']);
+        $this->assertTrue($expectation->test(['a', 'b']));
+        $this->assertTrue($expectation->test(['b', 'a']));
+        $this->assertFalse($expectation->test(['a', 'a']));
+        $this->assertFalse($expectation->test('a'));
     }
-    
-    function testSingleItemCanBeArrayOrString() {
-        $expectation = new FieldExpectation(array('a'));
-        $this->assertTrue($expectation->test(array('a')));
+
+    public function testSingleItemCanBeArrayOrString()
+    {
+        $expectation = new FieldExpectation(['a']);
+        $this->assertTrue($expectation->test(['a']));
         $this->assertTrue($expectation->test('a'));
     }
 }
 
-class TestOfHeaderExpectations extends UnitTestCase {
-    
-    function testExpectingOnlyTheHeaderName() {
+class TestOfHeaderExpectations extends UnitTestCase
+{
+    public function testExpectingOnlyTheHeaderName()
+    {
         $expectation = new HttpHeaderExpectation('a');
         $this->assertIdentical($expectation->test(false), false);
         $this->assertIdentical($expectation->test('a: A'), true);
@@ -55,8 +63,9 @@ class TestOfHeaderExpectations extends UnitTestCase {
         $this->assertIdentical($expectation->test('a: B'), true);
         $this->assertIdentical($expectation->test(' a : A '), true);
     }
-    
-    function testHeaderValueAsWell() {
+
+    public function testHeaderValueAsWell()
+    {
         $expectation = new HttpHeaderExpectation('a', 'A');
         $this->assertIdentical($expectation->test(false), false);
         $this->assertIdentical($expectation->test('a: A'), true);
@@ -66,28 +75,32 @@ class TestOfHeaderExpectations extends UnitTestCase {
         $this->assertIdentical($expectation->test(' a : A '), true);
         $this->assertIdentical($expectation->test(' a : AB '), false);
     }
-    
-    function testHeaderValueWithColons() {
+
+    public function testHeaderValueWithColons()
+    {
         $expectation = new HttpHeaderExpectation('a', 'A:B:C');
         $this->assertIdentical($expectation->test('a: A'), false);
         $this->assertIdentical($expectation->test('a: A:B'), false);
         $this->assertIdentical($expectation->test('a: A:B:C'), true);
         $this->assertIdentical($expectation->test('a: A:B:C:D'), false);
     }
-    
-    function testMultilineSearch() {
+
+    public function testMultilineSearch()
+    {
         $expectation = new HttpHeaderExpectation('a', 'A');
         $this->assertIdentical($expectation->test("aa: A\r\nb: B\r\nc: C"), false);
         $this->assertIdentical($expectation->test("aa: A\r\na: A\r\nb: B"), true);
     }
-    
-    function testMultilineSearchWithPadding() {
+
+    public function testMultilineSearchWithPadding()
+    {
         $expectation = new HttpHeaderExpectation('a', ' A ');
         $this->assertIdentical($expectation->test("aa:A\r\nb:B\r\nc:C"), false);
         $this->assertIdentical($expectation->test("aa:A\r\na:A\r\nb:B"), true);
     }
-    
-    function testPatternMatching() {
+
+    public function testPatternMatching()
+    {
         $expectation = new HttpHeaderExpectation('a', new PatternExpectation('/A/'));
         $this->assertIdentical($expectation->test('a: A'), true);
         $this->assertIdentical($expectation->test('A: A'), true);
@@ -96,8 +109,9 @@ class TestOfHeaderExpectations extends UnitTestCase {
         $this->assertIdentical($expectation->test(' a : A '), true);
         $this->assertIdentical($expectation->test(' a : AB '), true);
     }
-    
-    function testCaseInsensitivePatternMatching() {
+
+    public function testCaseInsensitivePatternMatching()
+    {
         $expectation = new HttpHeaderExpectation('a', new PatternExpectation('/A/i'));
         $this->assertIdentical($expectation->test('a: a'), true);
         $this->assertIdentical($expectation->test('a: B'), false);
@@ -105,8 +119,9 @@ class TestOfHeaderExpectations extends UnitTestCase {
         $this->assertIdentical($expectation->test(' a : BAB '), true);
         $this->assertIdentical($expectation->test(' a : bab '), true);
     }
-    
-    function testUnwantedHeader() {
+
+    public function testUnwantedHeader()
+    {
         $expectation = new NoHttpHeaderExpectation('a');
         $this->assertIdentical($expectation->test(''), true);
         $this->assertIdentical($expectation->test('stuff'), true);
@@ -114,30 +129,34 @@ class TestOfHeaderExpectations extends UnitTestCase {
         $this->assertIdentical($expectation->test('a: A'), false);
         $this->assertIdentical($expectation->test('A: A'), false);
     }
-    
-    function testMultilineUnwantedSearch() {
+
+    public function testMultilineUnwantedSearch()
+    {
         $expectation = new NoHttpHeaderExpectation('a');
         $this->assertIdentical($expectation->test("aa:A\r\nb:B\r\nc:C"), true);
         $this->assertIdentical($expectation->test("aa:A\r\na:A\r\nb:B"), false);
     }
-    
-    function testLocationHeaderSplitsCorrectly() {
+
+    public function testLocationHeaderSplitsCorrectly()
+    {
         $expectation = new HttpHeaderExpectation('Location', 'http://here/');
         $this->assertIdentical($expectation->test('Location: http://here/'), true);
     }
 }
 
-class TestOfTextExpectations extends UnitTestCase {
-    
-    function testMatchingSubString() {
+class TestOfTextExpectations extends UnitTestCase
+{
+    public function testMatchingSubString()
+    {
         $expectation = new TextExpectation('wanted');
         $this->assertIdentical($expectation->test(''), false);
         $this->assertIdentical($expectation->test('Wanted'), false);
         $this->assertIdentical($expectation->test('wanted'), true);
         $this->assertIdentical($expectation->test('the wanted text is here'), true);
     }
-    
-    function testNotMatchingSubString() {
+
+    public function testNotMatchingSubString()
+    {
         $expectation = new NoTextExpectation('wanted');
         $this->assertIdentical($expectation->test(''), true);
         $this->assertIdentical($expectation->test('Wanted'), true);
@@ -146,10 +165,11 @@ class TestOfTextExpectations extends UnitTestCase {
     }
 }
 
-class TestOfGenericAssertionsInWebTester extends WebTestCase {
-    function testEquality() {
+class TestOfGenericAssertionsInWebTester extends WebTestCase
+{
+    public function testEquality()
+    {
         $this->assertEqual('a', 'a');
         $this->assertNotEqual('a', 'A');
     }
 }
-?>

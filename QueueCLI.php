@@ -55,22 +55,7 @@ include_once(LEGACY_ROOT . '/modules/queue/constants.php');
 @session_name(CATS_SESSION_NAME);
 session_start();
 
-/* Make sure we aren't getting screwed over by magic quotes. */
-if (get_magic_quotes_runtime())
-{
-    if (function_exists('set_magic_quotes_runtime')) {
-        set_magic_quotes_runtime(0);
-    }
-}
-if (get_magic_quotes_gpc())
-{
-    $_GET     = array_map('stripslashes', $_GET);
-    $_POST    = array_map('stripslashes', $_POST);
-    $_REQUEST = array_map('stripslashes', $_REQUEST);
-}
-
-if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-{
+if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
     $_SESSION['CATS'] = new CATSSession();
 }
 
@@ -85,24 +70,20 @@ $retVal = QueueProcessor::startNextTask();
 // Mark the queue processor last-run time
 touch(QUEUE_STATUS_FILE);
 
-if (file_exists(QUEUE_CLEANUP_FILE))
-{
+if (file_exists(QUEUE_CLEANUP_FILE)) {
     $lastCleanupTime = @filemtime(QUEUE_CLEANUP_FILE);
-}
-else {
+} else {
     $lastCleanupTime = 0;
 }
 
-if( ((time() - $lastCleanupTime) > QUEUE_CLEANUP_HOURS*60*60) || !$lastCleanupTime )
-{
+if (((time() - $lastCleanupTime) > QUEUE_CLEANUP_HOURS * 60 * 60) || ! $lastCleanupTime) {
     @touch(QUEUE_CLEANUP_FILE);
     QueueProcessor::cleanUpErroredTasks();
     QueueProcessor::cleanUpOldQueues();
 }
 
 echo "CATS Queue Processor status: ";
-switch($retVal)
-{
+switch ($retVal) {
     case TASKRET_ERROR:
         echo "ERROR";
         break;
@@ -120,5 +101,3 @@ switch($retVal)
         break;
 }
 echo "\n";
-
-?>

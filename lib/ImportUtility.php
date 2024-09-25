@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -40,46 +39,51 @@ class ImportUtility
     // FIXME: Document me.
     public static function getDirectoryFiles($dirName)
     {
-        $files = array();
-        
+        $files = [];
+
         $handle = opendir($dirName);
-        if (!$handle)
-        {
+        if (! $handle) {
             return -1;
         }
-        
-        while (false !== ($file = readdir($handle)))
-        {
-            if ($file == '.' || $file == '..') continue;
+
+        while (false !== ($file = readdir($handle))) {
+            if ($file == '.' || $file == '..') {
+                continue;
+            }
             $fileName = $dirName . '/' . $file;
 
-            if (is_dir($fileName))
-            {
+            if (is_dir($fileName)) {
                 $mp = self::getDirectoryFiles($fileName);
                 $tmp = array_merge($files, $mp);
                 $files = $tmp;
-            }
-            else
-            {
-                if (!($info = stat($fileName))) continue;
+            } else {
+                if (! ($info = stat($fileName))) {
+                    continue;
+                }
                 $fileSize = filesize($fileName);
 
-                if ($fileSize <= 50) continue;
-                if (!($fileExt = strchr($file, '.'))) continue;
+                if ($fileSize <= 50) {
+                    continue;
+                }
+                if (! ($fileExt = strchr($file, '.'))) {
+                    continue;
+                }
                 $fileExt = strtolower(substr($fileExt, 1));
 
                 // Make sure it's a document type we can get text from
-                if (($docType = FileUtility::getDocumentType($file)) == DOCUMENT_TYPE_UNKNOWN) continue;
+                if (($docType = FileUtility::getDocumentType($file)) == DOCUMENT_TYPE_UNKNOWN) {
+                    continue;
+                }
 
-                $fileMp = array(
+                $fileMp = [
                     'realName' => $file,
                     'name' => $fileName,
                     'size' => $fileSize,
                     'ext' => $fileExt,
                     'type' => $docType,
                     'cTime' => $info['ctime'],
-                    'parsed' => false
-                );
+                    'parsed' => false,
+                ];
 
                 $files[] = $fileMp;
             }
@@ -88,5 +92,3 @@ class ImportUtility
         return $files;
     }
 }
-
-?>

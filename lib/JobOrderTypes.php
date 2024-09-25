@@ -1,24 +1,24 @@
 <?php
 
 /**
-* Job Order Types Library
-* @package OpenCATS
-* @subpackage Library
-* @copyright (C) OpenCats
-*/
+ * Job Order Types Library
+ * @package OpenCATS
+ * @subpackage Library
+ * @copyright (C) OpenCats
+ */
 
 class JobOrderTypes
 {
     private $_defaultTypes;
-        
 
-    public function __construct() {
-        $this->_defaultTypes = array(
+    public function __construct()
+    {
+        $this->_defaultTypes = [
             'C' => 'Contract',
             'C2H' => 'Contract To Hire',
             'FL' => 'Freelance',
-            'H' => 'Hire'
-        );
+            'H' => 'Hire',
+        ];
     }
 
     /**
@@ -28,14 +28,10 @@ class JobOrderTypes
      */
     public function getAll()
     {
-        if( class_exists('JOB_TYPES') && !empty(JOB_TYPES::$LIST) )
-        {
+        if (class_exists('JOB_TYPES') && ! empty(JOB_TYPES::$LIST)) {
             return JOB_TYPES::$LIST;
-        } 
-        else 
-        {
+        } else {
             return $this->_defaultTypes;
         }
     }
 }
-

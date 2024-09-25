@@ -35,10 +35,8 @@ $columnWidth = $_REQUEST['columnWidth'];
 
 $columnPreferences = $_SESSION['CATS']->getColumnPreferences($instance);
 
-foreach ($columnPreferences as $index => $data)
-{
-    if ($data['name'] == $columnName)
-    {
+foreach ($columnPreferences as $index => $data) {
+    if ($data['name'] == $columnName) {
         $columnPreferences[$index]['width'] = $columnWidth;
     }
 }
@@ -53,5 +51,3 @@ $output =
 
 /* Send back the XML data. */
 $interface->outputXMLPage($output);
-
-?>

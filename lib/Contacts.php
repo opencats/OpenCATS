@@ -22,7 +22,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -42,10 +41,10 @@ include_once(LEGACY_ROOT . '/lib/Calendar.php');
 class Contacts
 {
     private $_db;
+
     private $_siteID;
 
     public $extraFields;
-
 
     public function __construct($siteID)
     {
@@ -53,7 +52,6 @@ class Contacts
         $this->_db = DatabaseConnection::getInstance();
         $this->extraFields = new ExtraFields($siteID, DATA_ITEM_CONTACT);
     }
-
 
     /**
      * Adds a contact to the database and returns its contact ID.
@@ -78,13 +76,32 @@ class Contacts
      * @param integer owner user
      * @return new contact ID, or -1 on failure.
      */
-    public function add($companyID, $firstName, $lastName, $title, $department,
-        $reportsTo, $email1, $email2, $phoneWork, $phoneCell, $phoneOther, $address,
-        $city, $state, $zip, $isHot, $notes, $enteredBy, $owner)
-    {
+    public function add(
+        $companyID,
+        $firstName,
+        $lastName,
+        $title,
+        $department,
+        $reportsTo,
+        $email1,
+        $email2,
+        $phoneWork,
+        $phoneCell,
+        $phoneOther,
+        $address,
+        $city,
+        $state,
+        $zip,
+        $isHot,
+        $notes,
+        $enteredBy,
+        $owner
+    ) {
         /* Get the department ID of the selected department. */
         $departmentID = $this->getDepartmentIDByName(
-            $department, $companyID, $this->_db
+            $department,
+            $companyID,
+            $this->_db
         );
 
         $sql = sprintf(
@@ -161,8 +178,7 @@ class Contacts
         );
 
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return -1;
         }
 
@@ -201,14 +217,35 @@ class Contacts
      * @param string e-mail notification address
      * @return boolean True if successful; false otherwise.
      */
-    public function update($contactID, $companyID, $firstName, $lastName,
-        $title, $department, $reportsTo, $email1, $email2, $phoneWork, $phoneCell,
-        $phoneOther, $address, $city, $state, $zip, $isHot,
-        $leftCompany, $notes, $owner, $email, $emailAddress)
-    {
+    public function update(
+        $contactID,
+        $companyID,
+        $firstName,
+        $lastName,
+        $title,
+        $department,
+        $reportsTo,
+        $email1,
+        $email2,
+        $phoneWork,
+        $phoneCell,
+        $phoneOther,
+        $address,
+        $city,
+        $state,
+        $zip,
+        $isHot,
+        $leftCompany,
+        $notes,
+        $owner,
+        $email,
+        $emailAddress
+    ) {
         /* Get the department ID of the selected department. */
         $departmentID = $this->getDepartmentIDByName(
-            $department, $companyID, $this->_db
+            $department,
+            $companyID,
+            $this->_db
         );
 
         $sql = sprintf(
@@ -266,23 +303,24 @@ class Contacts
         $queryResult = $this->_db->query($sql);
         $postHistory = $this->get($contactID);
 
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return false;
         }
 
         $history = new History($this->_siteID);
         $history->storeHistoryChanges(
-            DATA_ITEM_CONTACT, $contactID, $preHistory, $postHistory
+            DATA_ITEM_CONTACT,
+            $contactID,
+            $preHistory,
+            $postHistory
         );
 
-        if (!empty($emailAddress))
-        {
+        if (! empty($emailAddress)) {
             /* Send e-mail notification. */
             //FIXME: Make subject configurable.
             $mailer = new Mailer($this->_siteID);
             $mailerStatus = $mailer->sendToOne(
-                array($emailAddress, ''),
+                [$emailAddress, ''],
                 'CATS Notification: Contact Ownership Change',
                 $email,
                 true
@@ -291,7 +329,6 @@ class Contacts
 
         return true;
     }
-
 
     /**
      * Updates all contacts for a company (called when changing company details).
@@ -303,9 +340,13 @@ class Contacts
      * @param string zip code
      * @return boolean True if successful; false otherwise.
      */
-    public function updateByCompany($companyID, $address, $city,
-        $state, $zip)
-    {
+    public function updateByCompany(
+        $companyID,
+        $address,
+        $city,
+        $state,
+        $zip
+    ) {
         $sql = sprintf(
             "UPDATE
                 contact
@@ -330,8 +371,7 @@ class Contacts
         );
 
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return false;
         }
 
@@ -342,7 +382,6 @@ class Contacts
      * Removes a contact and all associated records from the system.
      *
      * @param integer contact ID
-     * @return void
      */
     public function delete($contactID)
     {
@@ -547,25 +586,22 @@ class Contacts
      */
     public function getAll($userID = -1, $companyID = -1)
     {
-        if ($userID >= 0)
-        {
+        if ($userID >= 0) {
             $userCriterion = sprintf(
-                'AND contact.owner = %s', $userID, $userID
+                'AND contact.owner = %s',
+                $userID,
+                $userID
             );
-        }
-        else
-        {
+        } else {
             $userCriterion = '';
         }
 
-        if ($companyID >= 0)
-        {
+        if ($companyID >= 0) {
             $companyCriterion = sprintf(
-                'AND company.company_id = %s', $companyID
+                'AND company.company_id = %s',
+                $companyID
             );
-        }
-        else
-        {
+        } else {
             $companyCriterion = '';
         }
 
@@ -626,7 +662,8 @@ class Contacts
     {
         $calendar = new Calendar($this->_siteID);
         return $calendar->getUpcomingEventsByDataItem(
-            DATA_ITEM_CONTACT, $contactID
+            DATA_ITEM_CONTACT,
+            $contactID
         );
     }
 
@@ -651,7 +688,7 @@ class Contacts
             $this->_siteID
         );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     /**
@@ -688,7 +725,7 @@ class Contacts
         );
 
         return $this->_db->getAllAssoc($sql);
-     }
+    }
 
     /**
      * Returns the entire contacts list.
@@ -697,25 +734,22 @@ class Contacts
      */
     public function getColdCallList($userID = -1, $companyID = -1)
     {
-        if ($userID >= 0)
-        {
+        if ($userID >= 0) {
             $userCriterion = sprintf(
-                "AND contact.owner = %s", $userID, $userID
+                "AND contact.owner = %s",
+                $userID,
+                $userID
             );
-        }
-        else
-        {
+        } else {
             $userCriterion = '';
         }
 
-        if ($companyID >= 0)
-        {
+        if ($companyID >= 0) {
             $companyCriterion = sprintf(
-                "AND company.company_id = %s", $companyID
+                "AND company.company_id = %s",
+                $companyID
             );
-        }
-        else
-        {
+        } else {
             $companyCriterion = '';
         }
 
@@ -755,7 +789,6 @@ class Contacts
         return $this->_db->getAllAssoc($sql);
     }
 
-
     /**
      * Returns department ID for the given company by department name.
      * FIXME:  Shouldn't this be in companies?
@@ -769,8 +802,7 @@ class Contacts
     public function getDepartmentIDByName($departmentName, $companyID, $db)
     {
         /* (none) always has an ID of 0. */
-        if ($departmentName === '(none)')
-        {
+        if ($departmentName === '(none)') {
             return 0;
         }
 
@@ -785,14 +817,13 @@ class Contacts
                 company_id = %s
              AND
                 site_id = %s",
-             $this->_db->makeQueryString($departmentName),
-             $companyID,
-             $this->_siteID
+            $this->_db->makeQueryString($departmentName),
+            $companyID,
+            $this->_siteID
         );
         $rs = $db->getAssoc($sql);
 
-        if (empty($rs))
-        {
+        if (empty($rs)) {
             return 0;
         }
 
@@ -805,7 +836,6 @@ class ContactsDataGrid extends DataGrid
 {
     protected $_siteID;
 
-
     // FIXME: Fix ugly indenting - ~400 character lines = bad.
     public function __construct($instanceName, $siteID, $parameters, $misc = 0)
     {
@@ -814,166 +844,204 @@ class ContactsDataGrid extends DataGrid
         $this->_assignedCriterion = "";
         $this->_dataItemIDColumn = 'contact.contact_id';
 
-        $this->_classColumns = array(
-            'First Name' =>     array('select'         => 'contact.first_name AS firstName',
-                                      'pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'contactID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';',
-                                      'sortableColumn' => 'firstName',
-                                      'pagerWidth'     => 75,
-                                      'pagerOptional'  => false,
-                                      'alphaNavigation'=> true,
-                                      'filter'         => 'contact.first_name'),
+        $this->_classColumns = [
+            'First Name' => [
+                'select' => 'contact.first_name AS firstName',
+                'pagerRender' => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="' . CATSUtility::getIndexName() . '?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'contactID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';',
+                'sortableColumn' => 'firstName',
+                'pagerWidth' => 75,
+                'pagerOptional' => false,
+                'alphaNavigation' => true,
+                'filter' => 'contact.first_name',
+            ],
 
-            'Last Name' =>      array('select'         => 'contact.last_name AS lastName',
-                                     'sortableColumn'  => 'lastName',
-                                     'pagerRender'     => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'contactID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';',
-                                     'pagerWidth'      => 85,
-                                     'pagerOptional'   => false,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'contact.last_name'),
+            'Last Name' => [
+                'select' => 'contact.last_name AS lastName',
+                'sortableColumn' => 'lastName',
+                'pagerRender' => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="' . CATSUtility::getIndexName() . '?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'contactID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';',
+                'pagerWidth' => 85,
+                'pagerOptional' => false,
+                'alphaNavigation' => true,
+                'filter' => 'contact.last_name',
+            ],
 
-            'Company' =>     array('select'         => 'company.name AS name,'.
-                                                       'company.company_id as companyID',
-                                      'pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=companies&amp;a=show&amp;companyID=\'.$rsData[\'companyID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'name\']).\'</a>\';',
-                                      'sortableColumn' => 'name',
-                                      'pagerWidth'     => 60,
-                                      'pagerOptional'  => true,
-                                      'alphaNavigation'=> true,
-                                      'filter'         => 'company.name'),
+            'Company' => [
+                'select' => 'company.name AS name,' .
+                                                                       'company.company_id as companyID',
+                'pagerRender' => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="' . CATSUtility::getIndexName() . '?m=companies&amp;a=show&amp;companyID=\'.$rsData[\'companyID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'name\']).\'</a>\';',
+                'sortableColumn' => 'name',
+                'pagerWidth' => 60,
+                'pagerOptional' => true,
+                'alphaNavigation' => true,
+                'filter' => 'company.name',
+            ],
 
-            'Title' =>        array('select'  => 'contact.title AS title',
-                                     'sortableColumn'    => 'title',
-                                     'pagerWidth'   => 140,
-                                     'alphaNavigation' => true,
-                                     'pagerOptional'  => true,
-                                     'filter'         => 'contact.title'),
+            'Title' => [
+                'select' => 'contact.title AS title',
+                'sortableColumn' => 'title',
+                'pagerWidth' => 140,
+                'alphaNavigation' => true,
+                'pagerOptional' => true,
+                'filter' => 'contact.title',
+            ],
 
-            'Department' =>  array('select'  => 'company_department.company_department_id AS companyDepartmentID, company_department.name as department',
-                                     'join'     => 'LEFT JOIN company_department on company_department.company_department_id = contact.company_department_id',
-                                     'sortableColumn'    => 'department',
-                                     'pagerWidth'   => 120,
-                                     'alphaNavigation' => true,
-                                     'pagerOptional'  => true,
-                                     'filter'         => 'company_department.department'),
+            'Department' => [
+                'select' => 'company_department.company_department_id AS companyDepartmentID, company_department.name as department',
+                'join' => 'LEFT JOIN company_department on company_department.company_department_id = contact.company_department_id',
+                'sortableColumn' => 'department',
+                'pagerWidth' => 120,
+                'alphaNavigation' => true,
+                'pagerOptional' => true,
+                'filter' => 'company_department.department',
+            ],
 
-            'Work Phone' =>   array('select'  => 'contact.phone_work AS workPhone',
-                                     'sortableColumn'    => 'workPhone',
-                                     'pagerWidth'   => 140,
-                                     'alphaNavigation' => false,
-                                     'pagerOptional'  => true,
-                                     'filter'         => 'contact.work_phone'),
+            'Work Phone' => [
+                'select' => 'contact.phone_work AS workPhone',
+                'sortableColumn' => 'workPhone',
+                'pagerWidth' => 140,
+                'alphaNavigation' => false,
+                'pagerOptional' => true,
+                'filter' => 'contact.work_phone',
+            ],
 
-            'Cell Phone' =>    array('select'  => 'contact.phone_cell AS cellPhone',
-                                     'sortableColumn'    => 'cellPhone',
-                                     'pagerWidth'   => 140,
-                                     'alphaNavigation' => false,
-                                     'pagerOptional'  => true,
-                                     'filter'         => 'contact.phone_cell'),
+            'Cell Phone' => [
+                'select' => 'contact.phone_cell AS cellPhone',
+                'sortableColumn' => 'cellPhone',
+                'pagerWidth' => 140,
+                'alphaNavigation' => false,
+                'pagerOptional' => true,
+                'filter' => 'contact.phone_cell',
+            ],
 
-            'Other Phone' =>   array('select'  => 'contact.phone_other AS otherPhone',
-                                     'sortableColumn'    => 'otherPhone',
-                                     'pagerWidth'   => 140,
-                                     'alphaNavigation' => false,
-                                     'pagerOptional'  => true,
-                                     'filter'         => 'contact.phone_other'),
+            'Other Phone' => [
+                'select' => 'contact.phone_other AS otherPhone',
+                'sortableColumn' => 'otherPhone',
+                'pagerWidth' => 140,
+                'alphaNavigation' => false,
+                'pagerOptional' => true,
+                'filter' => 'contact.phone_other',
+            ],
 
-            'E-Mail' =>         array('select'   => 'contact.email1 AS email1',
-                                     'sortableColumn'     => 'email1',
-                                     'pagerWidth'    => 80,
-                                     'filter'         => 'contact.email1'),
+            'E-Mail' => [
+                'select' => 'contact.email1 AS email1',
+                'sortableColumn' => 'email1',
+                'pagerWidth' => 80,
+                'filter' => 'contact.email1',
+            ],
 
-            '2nd E-Mail' =>     array('select'   => 'contact.email2 AS email2',
-                                     'sortableColumn'     => 'email2',
-                                     'pagerWidth'    => 80,
-                                     'filter'         => 'contact.email2'),
+            '2nd E-Mail' => [
+                'select' => 'contact.email2 AS email2',
+                'sortableColumn' => 'email2',
+                'pagerWidth' => 80,
+                'filter' => 'contact.email2',
+            ],
 
-            'Address' =>        array('select'   => 'contact.address AS address',
-                                     'sortableColumn'     => 'address',
-                                     'pagerWidth'    => 250,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'contact.address'),
+            'Address' => [
+                'select' => 'contact.address AS address',
+                'sortableColumn' => 'address',
+                'pagerWidth' => 250,
+                'alphaNavigation' => true,
+                'filter' => 'contact.address',
+            ],
 
-            'City' =>           array('select'   => 'contact.city AS city',
-                                     'sortableColumn'     => 'city',
-                                     'pagerWidth'    => 80,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'contact.city'),
+            'City' => [
+                'select' => 'contact.city AS city',
+                'sortableColumn' => 'city',
+                'pagerWidth' => 80,
+                'alphaNavigation' => true,
+                'filter' => 'contact.city',
+            ],
 
 
-            'State' =>          array('select'   => 'contact.state AS state',
-                                     'sortableColumn'     => 'state',
-                                     'filterType' => 'dropDown',
-                                     'pagerWidth'    => 50,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'contact.state'),
+            'State' => [
+                'select' => 'contact.state AS state',
+                'sortableColumn' => 'state',
+                'filterType' => 'dropDown',
+                'pagerWidth' => 50,
+                'alphaNavigation' => true,
+                'filter' => 'contact.state',
+            ],
 
-            'Zip' =>            array('select'  => 'contact.zip AS zip',
-                                     'sortableColumn'    => 'zip',
-                                     'pagerWidth'   => 50,
-                                     'filter'         => 'contact.zip'),
+            'Zip' => [
+                'select' => 'contact.zip AS zip',
+                'sortableColumn' => 'zip',
+                'pagerWidth' => 50,
+                'filter' => 'contact.zip',
+            ],
 
-            'Misc Notes' =>     array('select'  => 'contact.notes AS notes',
-                                     'sortableColumn'    => 'notes',
-                                     'pagerWidth'   => 300,
-                                     'filter'         => 'contact.notes'),
+            'Misc Notes' => [
+                'select' => 'contact.notes AS notes',
+                'sortableColumn' => 'notes',
+                'pagerWidth' => 300,
+                'filter' => 'contact.notes',
+            ],
 
-            'Owner' =>         array('pagerRender'      => 'return StringUtility::makeInitialName($rsData[\'ownerFirstName\'], $rsData[\'ownerLastName\'], false, LAST_NAME_MAXLEN);',
-                                     'exportRender'     => 'return $rsData[\'ownerFirstName\'] . " " .$rsData[\'ownerLastName\'];',
-                                     'sortableColumn'     => 'ownerSort',
-                                     'pagerWidth'    => 75,
-                                     'alphaNavigation' => true,
-                                     'pagerOptional'  => true,
-                                     'filter'         => 'CONCAT(owner_user.first_name, owner_user.last_name)'),
+            'Owner' => [
+                'pagerRender' => 'return StringUtility::makeInitialName($rsData[\'ownerFirstName\'], $rsData[\'ownerLastName\'], false, LAST_NAME_MAXLEN);',
+                'exportRender' => 'return $rsData[\'ownerFirstName\'] . " " .$rsData[\'ownerLastName\'];',
+                'sortableColumn' => 'ownerSort',
+                'pagerWidth' => 75,
+                'alphaNavigation' => true,
+                'pagerOptional' => true,
+                'filter' => 'CONCAT(owner_user.first_name, owner_user.last_name)',
+            ],
 
-            'Created' =>       array('select'   => 'DATE_FORMAT(contact.date_created, \'%m-%d-%y\') AS dateCreated',
-                                     'pagerRender'      => 'return $rsData[\'dateCreated\'];',
-                                     'sortableColumn'     => 'dateCreatedSort',
-                                     'pagerWidth'    => 60,
-                                     'filterHaving' => 'DATE_FORMAT(contact.date_created, \'%m-%d-%y\')'),
+            'Created' => [
+                'select' => 'DATE_FORMAT(contact.date_created, \'%m-%d-%y\') AS dateCreated',
+                'pagerRender' => 'return $rsData[\'dateCreated\'];',
+                'sortableColumn' => 'dateCreatedSort',
+                'pagerWidth' => 60,
+                'filterHaving' => 'DATE_FORMAT(contact.date_created, \'%m-%d-%y\')',
+            ],
 
-            'Modified' =>      array('select'   => 'DATE_FORMAT(contact.date_modified, \'%m-%d-%y\') AS dateModified',
-                                     'pagerRender'      => 'return $rsData[\'dateModified\'];',
-                                     'sortableColumn'     => 'dateModifiedSort',
-                                     'pagerWidth'    => 60,
-                                     'pagerOptional' => false,
-                                     'filterHaving' => 'DATE_FORMAT(contact.date_modified, \'%m-%d-%y\')'),
+            'Modified' => [
+                'select' => 'DATE_FORMAT(contact.date_modified, \'%m-%d-%y\') AS dateModified',
+                'pagerRender' => 'return $rsData[\'dateModified\'];',
+                'sortableColumn' => 'dateModifiedSort',
+                'pagerWidth' => 60,
+                'pagerOptional' => false,
+                'filterHaving' => 'DATE_FORMAT(contact.date_modified, \'%m-%d-%y\')',
+            ],
 
-            'OwnerID' =>       array('select'    => '',
-                                     'filter'    => 'contact.owner',
-                                     'pagerOptional' => false,
-                                     'filterable' => false,
-                                     'filterDescription' => 'Only My Contacts'),
+            'OwnerID' => [
+                'select' => '',
+                'filter' => 'contact.owner',
+                'pagerOptional' => false,
+                'filterable' => false,
+                'filterDescription' => 'Only My Contacts',
+            ],
 
-            'IsHot' =>         array('select'    => '',
-                                     'filter'    => 'contact.is_hot',
-                                     'pagerOptional' => false,
-                                     'filterable' => false,
-                                     'filterDescription' => 'Only Hot Contacts')
+            'IsHot' => [
+                'select' => '',
+                'filter' => 'contact.is_hot',
+                'pagerOptional' => false,
+                'filterable' => false,
+                'filterDescription' => 'Only Hot Contacts',
+            ],
 
-        );
+        ];
 
-        if (US_ZIPS_ENABLED)
-        {
+        if (US_ZIPS_ENABLED) {
             $this->_classColumns['Near Zipcode'] =
-                               array('select'  => 'contact.zip AS zip',
-                                     'filter' => 'contact.zip',
-                                     'pagerOptional' => false,
-                                     'filterTypes'   => '=@');
+                               [
+                                   'select' => 'contact.zip AS zip',
+                                   'filter' => 'contact.zip',
+                                   'pagerOptional' => false,
+                                   'filterTypes' => '=@',
+                               ];
         }
 
         /* Extra fields get added as columns here. */
         $contacts = new Contacts($this->_siteID);
         $extraFieldsRS = $contacts->extraFields->getSettings();
-        foreach ($extraFieldsRS as $index => $data)
-        {
+        foreach ($extraFieldsRS as $index => $data) {
             $fieldName = $data['fieldName'];
 
-            if (!isset($this->_classColumns[$fieldName]))
-            {
+            if (! isset($this->_classColumns[$fieldName])) {
                 $columnDefinition = $contacts->extraFields->getDataGridDefinition($index, $data, $this->_db);
 
                 /* Return false for extra fields that should not be columns. */
-                if ($columnDefinition !== false)
-                {
+                if ($columnDefinition !== false) {
                     $this->_classColumns[$fieldName] = $columnDefinition;
                 }
             }
@@ -989,21 +1057,18 @@ class ContactsDataGrid extends DataGrid
      */
     public function getSQL($selectSQL, $joinSQL, $whereSQL, $havingSQL, $orderSQL, $limitSQL, $distinct = '')
     {
-        if ($this->getMiscArgument() != 0)
-        {
+        if ($this->getMiscArgument() != 0) {
             $savedListID = (int) $this->getMiscArgument();
-            $joinSQL  .= ' INNER JOIN saved_list_entry
-                                    ON saved_list_entry.data_item_type = '.DATA_ITEM_CONTACT.'
+            $joinSQL .= ' INNER JOIN saved_list_entry
+                                    ON saved_list_entry.data_item_type = ' . DATA_ITEM_CONTACT . '
                                     AND saved_list_entry.data_item_id = contact.contact_id
-                                    AND saved_list_entry.site_id = '.$this->_siteID.'
-                                    AND saved_list_entry.saved_list_id = '.$savedListID;
-        }
-        else
-        {
-            $joinSQL  .= ' LEFT JOIN saved_list_entry
-                                    ON saved_list_entry.data_item_type = '.DATA_ITEM_CONTACT.'
+                                    AND saved_list_entry.site_id = ' . $this->_siteID . '
+                                    AND saved_list_entry.saved_list_id = ' . $savedListID;
+        } else {
+            $joinSQL .= ' LEFT JOIN saved_list_entry
+                                    ON saved_list_entry.data_item_type = ' . DATA_ITEM_CONTACT . '
                                     AND saved_list_entry.data_item_id = contact.contact_id
-                                    AND saved_list_entry.site_id = '.$this->_siteID;
+                                    AND saved_list_entry.site_id = ' . $this->_siteID;
         }
 
         $sql = sprintf(
@@ -1046,5 +1111,3 @@ class ContactsDataGrid extends DataGrid
         return $sql;
     }
 }
-
-?>

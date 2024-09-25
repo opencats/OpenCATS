@@ -28,30 +28,29 @@
  */
 
 /* License key. */
-define('LICENSE_KEY','3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
+define('LICENSE_KEY', '3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
 
 /* legacy root. */
-if( !defined('LEGACY_ROOT') )
-{
+if (! defined('LEGACY_ROOT')) {
     define('LEGACY_ROOT', '.');
 }
 
 /* Database configuration. */
-define('DATABASE_USER', 'cats');
+define('DATABASE_USER', 'opencats');
 define('DATABASE_PASS', 'password');
 define('DATABASE_HOST', 'localhost');
-define('DATABASE_NAME', 'cats_dev');
+define('DATABASE_NAME', 'opencats');
 
 /* Authentication Configuration
  * Options are sql, ldap, sql+ldap
  */
-define ('AUTH_MODE', 'sql');
+define('AUTH_MODE', 'sql');
 
 /* Resfly.com Resume Import Services Enabled */
 define('PARSING_ENABLED', false);
 
 /* If you have an SSL compatible server, you can enable SSL for all of CATS. */
-define('SSL_ENABLED', false);
+define('SSL_ENABLED', true);
 
 /* Text parser settings. Remember to use double backslashes (\) to represent
  * one backslash (\). On Windows, installing in C:\antiword\ is
@@ -104,9 +103,9 @@ define('SPHINX_INDEX', 'cats catsdelta');
 
 
 /* Pager settings. These are the number of results per page. */
-define('CONTACTS_PER_PAGE',      15);
-define('CANDIDATES_PER_PAGE',    15);
-define('CLIENTS_PER_PAGE',       15);
+define('CONTACTS_PER_PAGE', 15);
+define('CANDIDATES_PER_PAGE', 15);
+define('CLIENTS_PER_PAGE', 15);
 define('LOGIN_ENTRIES_PER_PAGE', 15);
 
 /* Maximum number of characters of the owner/recruiter users' last names
@@ -170,14 +169,14 @@ define('CANDIDATE_STATUSCHANGE_SUBJECT', 'Job Application Status Change');
  * In FORGOT_PASSWORD_FROM, %s is the placeholder for the password.
  */
 define('FORGOT_PASSWORD_FROM_NAME', 'CATS');
-define('FORGOT_PASSWORD_SUBJECT',   'CATS - Password Retrieval Request');
-define('FORGOT_PASSWORD_BODY',      'You recently requested that your OpenCATS: Applicant Tracking System password be sent to you. Your current password is %s.');
+define('FORGOT_PASSWORD_SUBJECT', 'CATS - Password Retrieval Request');
+define('FORGOT_PASSWORD_BODY', 'You recently requested that your OpenCATS: Applicant Tracking System password be sent to you. Your current password is %s.');
 
 /* Is this a demo site? */
 define('ENABLE_DEMO_MODE', false);
 
 /* Offset to GMT Time. */
-define('OFFSET_GMT', 2);
+define('OFFSET_GMT', 0);
 
 /* Should we enforce only one session per user (excluding demo)? */
 define('ENABLE_SINGLE_SESSION', false);
@@ -185,16 +184,16 @@ define('ENABLE_SINGLE_SESSION', false);
 /* Automated testing. This is only useful for the CATS core team at the moment;
  * don't worry about this yet.
  */
-define('TESTER_LOGIN',     'john@mycompany.net');
-define('TESTER_PASSWORD',  'john99');
+define('TESTER_LOGIN', 'john@mycompany.net');
+define('TESTER_PASSWORD', 'john99');
 define('TESTER_FIRSTNAME', 'John');
-define('TESTER_LASTNAME',  'Anderson');
-define('TESTER_FULLNAME',  'John Anderson');
-define('TESTER_USER_ID',   4);
+define('TESTER_LASTNAME', 'Anderson');
+define('TESTER_FULLNAME', 'John Anderson');
+define('TESTER_USER_ID', 4);
 
 /* Demo login. */
-define('DEMO_LOGIN',     'john@mycompany.net');
-define('DEMO_PASSWORD',  'john99');
+define('DEMO_LOGIN', 'john@mycompany.net');
+define('DEMO_PASSWORD', 'john99');
 
 /* This setting configures the method used to send e-mail from CATS. CATS
  * can send e-mail via SMTP, PHP's built-in mail support, or via Sendmail.
@@ -216,11 +215,11 @@ define('MAIL_SENDMAIL_PATH', "/usr/sbin/sendmail");
  * set to 3. If your server requires authentication, set MAIL_SMTP_AUTH to
  * true and configure MAIL_SMTP_USER and MAIL_SMTP_PASS.
  */
-define('MAIL_SMTP_HOST', "localhost");
+define('MAIL_SMTP_HOST', "smtp.gmail.com");
 define('MAIL_SMTP_PORT', 587);
 define('MAIL_SMTP_AUTH', true);
-define('MAIL_SMTP_USER', "user");
-define('MAIL_SMTP_PASS', "password");
+define('MAIL_SMTP_USER', "russellh@ysmail.net");
+define('MAIL_SMTP_PASS', "fmxuwwjtghxibqkk");
 //Options: '', 'ssl' or 'tls'
 define('MAIL_SMTP_SECURE', "tls");
 
@@ -263,25 +262,25 @@ define('US_ZIPS_ENABLED', false);
 
 /* LDAP Configuration
  */
-define ('LDAP_HOST', 'ldap.forumsys.com');
-define ('LDAP_PORT', '389');
-define ('LDAP_PROTOCOL_VERSION', 3);
+define('LDAP_HOST', 'ldap.forumsys.com');
+define('LDAP_PORT', '389');
+define('LDAP_PROTOCOL_VERSION', 3);
 
-define ('LDAP_BASEDN', 'dc=example,dc=com');
+define('LDAP_BASEDN', 'dc=example,dc=com');
 
-define ('LDAP_BIND_DN', 'cn=read-only-admin,dc=example,dc=com');
-define ('LDAP_BIND_PASSWORD', 'password');
+define('LDAP_BIND_DN', 'cn=read-only-admin,dc=example,dc=com');
+define('LDAP_BIND_PASSWORD', 'password');
 
-define ('LDAP_ACCOUNT', 'cn={$username},dc=example,dc=com'); // '{$username}' cannot be changed, else can
+define('LDAP_ACCOUNT', 'cn={$username},dc=example,dc=com'); // '{$username}' cannot be changed, else can
 
-define ('LDAP_ATTRIBUTE_UID', 'uid');
-define ('LDAP_ATTRIBUTE_DN', 'dn');
-define ('LDAP_ATTRIBUTE_LASTNAME', 'sn');
-define ('LDAP_ATTRIBUTE_FIRSTNAME', 'givenname');
-define ('LDAP_ATTRIBUTE_EMAIL', 'mail');
+define('LDAP_ATTRIBUTE_UID', 'uid');
+define('LDAP_ATTRIBUTE_DN', 'dn');
+define('LDAP_ATTRIBUTE_LASTNAME', 'sn');
+define('LDAP_ATTRIBUTE_FIRSTNAME', 'givenname');
+define('LDAP_ATTRIBUTE_EMAIL', 'mail');
 
-define ('LDAP_SITEID', 1);
-define ('LDAP_AD', false); // use for AD and Samba LDAP servers
+define('LDAP_SITEID', 1);
+define('LDAP_AD', false); // use for AD and Samba LDAP servers
 
 /* Encodings available during Data Import */
 /*const IMPORT_FILE_ENCODING = array(
@@ -328,30 +327,27 @@ define ('LDAP_AD', false); // use for AD and Samba LDAP servers
  *
  * Uncomment bellow if you want custom mapping */
 
- /*
+/*
 class JOB_TYPES {
-    public static $LIST = array(
-        'PT' => 'Part-Time',
-        'FT' => 'Full-Time',
-        'ST' => 'Student',
-        'FL' => 'Freelance'
-    );
+   public static $LIST = array(
+       'PT' => 'Part-Time',
+       'FT' => 'Full-Time',
+       'ST' => 'Student',
+       'FL' => 'Freelance'
+   );
 };
 */
 
 
 /*
 require_once(LEGACY_ROOT . '/constants.php');
-
 class ACL_SETUP {
-
     // defining user roles
     public static $USER_ROLES = array(
         'candidate' => array('Candidate', 'candidate', 'This is a candidate.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ),
         'demo' => array('Demo', 'demo', 'This is a demo user.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
     );
-   
-    // defining access levels different from the default access level    
+    // defining access levels different from the default access level
     public static $ACCESS_LEVEL_MAP = array(
         'candidate' => array(
         ),
@@ -365,9 +361,9 @@ class ACL_SETUP {
         )
     );
 };
-*/
+ */
 
-/* All possible secure object names 
+/* All possible secure object names
             'candidates.history'
             'settings.administration'
             'joborders.editRating'
@@ -497,4 +493,7 @@ class ACL_SETUP {
             'calendar.deleteEvent'
             */
 
-?>
+
+
+// Define the Google API Key in config.php
+define('GOOGLE_API_KEY', 'AIzaSyCnJp-zz36QaKVMGptsza0AMSCQDrpstZo');

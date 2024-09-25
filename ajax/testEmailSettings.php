@@ -34,35 +34,35 @@ $interface = new SecureAJAXInterface();
 
 $siteID = $interface->getSiteID();
 
-if (!isset($_REQUEST['testEmailAddress']) ||
-    empty($_REQUEST['testEmailAddress']))
-{
+if (! isset($_REQUEST['testEmailAddress']) ||
+    empty($_REQUEST['testEmailAddress'])) {
     $interface->outputXMLErrorPage(
-        -1, 'Invalid test e-mail address.'
+        -1,
+        'Invalid test e-mail address.'
     );
 
     die();
 }
 
-if (!isset($_REQUEST['fromAddress']) ||
-    empty($_REQUEST['fromAddress']))
-{
+if (! isset($_REQUEST['fromAddress']) ||
+    empty($_REQUEST['fromAddress'])) {
     $interface->outputXMLErrorPage(
-        -1, 'Invalid from e-mail address.'
+        -1,
+        'Invalid from e-mail address.'
     );
 
     die();
 }
 
 $testEmailAddress = $_REQUEST['testEmailAddress'];
-$fromAddress      = $_REQUEST['fromAddress'];
+$fromAddress = $_REQUEST['fromAddress'];
 
 /* Is the test e-mail address specified valid? */
 // FIXME: Validate properly.
-if (strpos($testEmailAddress, '@') === false)
-{
+if (strpos($testEmailAddress, '@') === false) {
     $interface->outputXMLErrorPage(
-        -2, 'Invalid test e-mail address.'
+        -2,
+        'Invalid test e-mail address.'
     );
 
     die();
@@ -70,10 +70,10 @@ if (strpos($testEmailAddress, '@') === false)
 
 /* Is the from e-mail address specified valid? */
 // FIXME: Validate properly.
-if (strpos($fromAddress, '@') === false)
-{
+if (strpos($fromAddress, '@') === false) {
     $interface->outputXMLErrorPage(
-        -2, 'Invalid from e-mail address.'
+        -2,
+        'Invalid from e-mail address.'
     );
 
     die();
@@ -86,25 +86,25 @@ $mailer = new Mailer($siteID);
 $mailer->overrideSetting('fromAddress', $fromAddress);
 
 $mailerStatus = $mailer->sendToOne(
-    array($testEmailAddress, ''),
+    [$testEmailAddress, ''],
     'CATS Test E-Mail',
     'This is a CATS test e-mail in HTML format.',
     true
 );
 
-if (!$mailerStatus)
-{
+if (! $mailerStatus) {
     $interface->outputXMLErrorPage(
-        -2, $mailer->getError()
+        -2,
+        $mailer->getError()
     );
     die();
 }
 
 $errorMessage = $mailer->getError();
-if (!empty($errorMessage))
-{
+if (! empty($errorMessage)) {
     $interface->outputXMLErrorPage(
-        -2, $errorMessage
+        -2,
+        $errorMessage
     );
 
     die();
@@ -112,5 +112,3 @@ if (!empty($errorMessage))
 
 /* Send back the XML data. */
 $interface->outputXMLSuccessPage();
-
-?>

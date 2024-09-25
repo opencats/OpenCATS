@@ -51,8 +51,7 @@ class CandidatesImport extends ImportableEntity
             $importID
         );
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return -1;
         }
 

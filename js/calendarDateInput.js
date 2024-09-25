@@ -629,7 +629,7 @@ function DateInput(DateName, Required, DateFormat, DefaultDate, TabIndex)
         {
             if (DefaultDate == '')
             {
-                writeln('<option selected="selected" value="">None</option>');
+                writeln('<option selected value="">None</option>');
             }
             else
             {
@@ -641,7 +641,7 @@ function DateInput(DateName, Required, DateFormat, DefaultDate, TabIndex)
         {
             if (object.picked.monthIndex == i && DefaultDate != '')
             {
-                MonthSelected = ' selected="selected"';
+                MonthSelected = ' selected';
             }
             else
             {
@@ -661,7 +661,7 @@ function DateInput(DateName, Required, DateFormat, DefaultDate, TabIndex)
         {
             if (object.picked.day == j && DefaultDate != '')
             {
-                DaySelected = ' selected="selected"';
+                DaySelected = ' selected';
             }
             else
             {
@@ -785,7 +785,7 @@ function DateInputForDOM(DateName, Required, DateFormat, DefaultDate, TabIndex)
     {
         if (DefaultDate == '')
         {
-            outCode += ('<option selected="selected" value="">None</option>');
+            outCode += ('<option selected value="">None</option>');
         }
         else
         {
@@ -797,7 +797,7 @@ function DateInputForDOM(DateName, Required, DateFormat, DefaultDate, TabIndex)
     {
         if (object.picked.monthIndex == i && DefaultDate != '')
         {
-            MonthSelected = ' selected="selected"';
+            MonthSelected = ' selected';
         }
         else
         {
@@ -817,7 +817,7 @@ function DateInputForDOM(DateName, Required, DateFormat, DefaultDate, TabIndex)
     {
         if (object.picked.day == j && DefaultDate != '')
         {
-            DaySelected = ' selected="selected"';
+            DaySelected = ' selected';
         }
         else
         {

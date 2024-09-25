@@ -3,7 +3,6 @@
  * CATS
  * Mail Transfer Library
  *
- *
  * The contents of this file are subject to the CATS Public License
  * Version 1.1a (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -21,7 +20,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -34,24 +32,23 @@
  *	@subpackage Library
  */
 
- // Import PHPMailer classes into the global namespace
- // These must be at the top of your script, not inside a function
- use PHPMailer\PHPMailer\PHPMailer;
- use PHPMailer\PHPMailer\Exception;
+// Import PHPMailer classes into the global namespace
+// These must be at the top of your script, not inside a function
+use PHPMailer\PHPMailer\PHPMailer;
 
- // Load Composer's autoloader
- require './vendor/autoload.php';
+// Load Composer's autoloader
+require './vendor/autoload.php';
 
 // FIXME: Remove this dependency! Bad bad bad!
 include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 
 define('MAILER_MODE_DISABLED', 0);
-define('MAILER_MODE_PHP',      1);
+define('MAILER_MODE_PHP', 1);
 define('MAILER_MODE_SENDMAIL', 2);
-define('MAILER_MODE_SMTP',     3);
+define('MAILER_MODE_SMTP', 3);
 
 $errorReporting = error_reporting();
-error_reporting($errorReporting & ~ E_STRICT);
+error_reporting($errorReporting & ~E_STRICT);
 
 /**
  *	E-Mail Abstraction Layer
@@ -61,12 +58,16 @@ error_reporting($errorReporting & ~ E_STRICT);
 class Mailer
 {
     private $_mailer;
-    private $_errorMessage = '';
-    private $_settings;
-    private $_siteID;
-    private $_userID;
-    private $_db;
 
+    private $_errorMessage = '';
+
+    private $_settings;
+
+    private $_siteID;
+
+    private $_userID;
+
+    private $_db;
 
     public function __construct($siteID, $userID = -1)
     {
@@ -87,18 +88,14 @@ class Mailer
         /* Stuff for E-Mail logging. */
         // FIXME: Do this in the UserInterface. Session dependencied in
         //        libraries are bad.
-        if ($userID != -1)
-        {
+        if ($userID != -1) {
             $this->_userID = $userID;
-        }
-        else
-        {
+        } else {
             $this->_userID = $_SESSION['CATS']->getUserID();
         }
 
         $this->_db = DatabaseConnection::getInstance();
     }
-
 
     /**
      * Sends an e-mail message from the CATS system to one recipient. The
@@ -119,12 +116,18 @@ class Mailer
      * @param integer Wrap lines at X characters.
      * @return boolean Was the message successfully sent to all recipients?
      */
-    public function sendToOne($recipient, $subject, $body, $isHTML = false,
-        $logMessage = true, $replyTo = array(), $wrapLinesAt = 78)
-    {
+    public function sendToOne(
+        $recipient,
+        $subject,
+        $body,
+        $isHTML = false,
+        $logMessage = true,
+        $replyTo = [],
+        $wrapLinesAt = 78
+    ) {
         return $this->send(
-            array($this->_settings['fromAddress'], ''),
-            array($recipient),
+            [$this->_settings['fromAddress'], ''],
+            [$recipient],
             $subject,
             $body,
             $isHTML,
@@ -154,11 +157,17 @@ class Mailer
      * @param integer Wrap lines at X characters.
      * @return boolean Was the message successfully sent to all recipients?
      */
-    public function sendToMany($recipients, $subject, $body, $isHTML = false,
-        $logMessage = true, $replyTo = array(), $wrapLinesAt = 78)
-    {
+    public function sendToMany(
+        $recipients,
+        $subject,
+        $body,
+        $isHTML = false,
+        $logMessage = true,
+        $replyTo = [],
+        $wrapLinesAt = 78
+    ) {
         return $this->send(
-            array($this->_settings['fromAddress'], ''),
+            [$this->_settings['fromAddress'], ''],
             $recipients,
             $subject,
             $body,
@@ -190,24 +199,28 @@ class Mailer
      * @param boolean Include CATS e-mail signature?
      * @return boolean Was the message successfully sent to all recipients?
      */
-    public function send($from, $recipients, $subject, $body, $isHTML = false,
-        $logMessage = true, $replyTo = array(), $wrapLinesAt = 78,
-        $signature = false)
-    {
-
-        $this->_mailer->From     = $from[0];
+    public function send(
+        $from,
+        $recipients,
+        $subject,
+        $body,
+        $isHTML = false,
+        $logMessage = true,
+        $replyTo = [],
+        $wrapLinesAt = 78,
+        $signature = false
+    ) {
+        $this->_mailer->From = $from[0];
         $this->_mailer->FromName = $from[1];
 
         $this->_mailer->WordWrap = $wrapLinesAt;
 
         $this->_mailer->Subject = $subject;
 
-        if ($isHTML)
-        {
+        if ($isHTML) {
             $this->_mailer->isHTML(true);
 
-            if ($signature)
-            {
+            if ($signature) {
                 $body .= '\n<br />\n<br /><span style=\"font-size: 10pt;\">Powered by <a href=\"http://www.opencats.org" alt=\"OpenCATS "
                     . "Applicant Tracking System\">OpenCATS</a> (Free ATS)</span>';
             }
@@ -216,11 +229,8 @@ class Mailer
                 . str_replace('<br>', "<br />\n", str_replace('<br />', '<br>', str_replace("\n", "<br>", $body))) . '</div>';
 
             $this->_mailer->AltBody = strip_tags($body);
-        }
-        else
-        {
-            if ($signature)
-            {
+        } else {
+            if ($signature) {
                 $body .= "\n\nPowered by OpenCATS (http://www.opencats.org) Free ATS";
             }
 
@@ -228,25 +238,20 @@ class Mailer
             $this->_mailer->Body = $body;
         }
 
-        $failedRecipients = array();
-        foreach ($recipients as $key => $value)
-        {
+        $failedRecipients = [];
+        foreach ($recipients as $key => $value) {
             $this->_mailer->AddAddress($recipients[$key][0], $recipients[$key][1]);
 
-            if (!empty($replyTo))
-            {
+            if (! empty($replyTo)) {
                 $this->_mailer->AddReplyTo($replyTo[0], $replyTo[1]);
             }
             $this->_mailer->CharSet = 'UTF-8';
-            if (!$this->_mailer->Send())
-            {
-                $failedRecipients[] = array(
-                    'recipient'    => $recipients[$key],
-                    'errorMessage' => $this->_mailer->ErrorInfo
-                );
-            }
-            else if ($logMessage)
-            {
+            if (! $this->_mailer->Send()) {
+                $failedRecipients[] = [
+                    'recipient' => $recipients[$key],
+                    'errorMessage' => $this->_mailer->ErrorInfo,
+                ];
+            } elseif ($logMessage) {
                 // FIXME: Log all recipients in one log entry?
                 // FIXME: Make sure all callers are passing an array of e-mails and not just a CSV string...
                 $this->logMessage($from[0], $recipients[$key][0], $subject, $body);
@@ -259,12 +264,10 @@ class Mailer
         /* Return false if we had any failures. getError() will return the
          * specific error message.
          */
-        if (!empty($failedRecipients))
-        {
+        if (! empty($failedRecipients)) {
             $this->_errorMessage = "Errors occurred while attempting to send mail to one or more provided addresses:\n\n";
 
-            foreach ($failedRecipients as $key => $value)
-            {
+            foreach ($failedRecipients as $key => $value) {
                 $this->_errorMessage .= sprintf(
                     "%s (%s): %s\n",
                     $failedRecipients[$key]['recipient'][0],
@@ -296,7 +299,6 @@ class Mailer
      *
      * @param string Setting name.
      * @param string Setting value.
-     * @return void
      */
     public function overrideSetting($setting, $value)
     {
@@ -306,13 +308,10 @@ class Mailer
     /**
      * (Re)configures PHPMailer settings based on CATS settings (from the
      * config file and any other sources).
-     *
-     * @return void
      */
     public function refreshSettings()
     {
-        switch (MAIL_MAILER)
-        {
+        switch (MAIL_MAILER) {
             case MAILER_MODE_DISABLED:
                 break;
 
@@ -323,21 +322,17 @@ class Mailer
 
             case MAILER_MODE_SMTP:
                 $this->_mailer->isSMTP();
-                $this->_mailer->Host   = MAIL_SMTP_HOST;
-                $this->_mailer->Port   = MAIL_SMTP_PORT;
-                $this->_mailer->SMTPSecure  = MAIL_SMTP_SECURE;
-                if (!MAIL_SMTP_SECURE)
-                {
+                $this->_mailer->Host = MAIL_SMTP_HOST;
+                $this->_mailer->Port = MAIL_SMTP_PORT;
+                $this->_mailer->SMTPSecure = MAIL_SMTP_SECURE;
+                if (! MAIL_SMTP_SECURE) {
                     $this->_mailer->SMTPAutoTLS = false;
                 }
-                if (MAIL_SMTP_AUTH == true)
-                {
+                if (MAIL_SMTP_AUTH == true) {
                     $this->_mailer->SMTPAuth = MAIL_SMTP_AUTH;
                     $this->_mailer->Username = MAIL_SMTP_USER;
                     $this->_mailer->Password = MAIL_SMTP_PASS;
-                }
-                else
-                {
+                } else {
                     $this->_mailer->SMTPAuth = false;
                 }
 
@@ -358,7 +353,6 @@ class Mailer
      * @param string E-mail recipient(s).
      * @param string E-mail subject.
      * @param string E-mail body.
-     * @return void
      */
     private function logMessage($from, $to, $subject, $body)
     {
@@ -386,9 +380,9 @@ class Mailer
             $this->_db->makeQueryString($messageText),
             $this->_userID,
             $this->_siteID
-         );
+        );
 
-         $this->_db->query($sql);
+        $this->_db->query($sql);
     }
 }
 
@@ -400,8 +394,8 @@ class Mailer
 class MailerSettings
 {
     private $_db;
-    private $_siteID;
 
+    private $_siteID;
 
     public function __construct($siteID)
     {
@@ -422,18 +416,17 @@ class MailerSettings
         $pipelines = new Pipelines($this->_siteID);
         $statuses = $pipelines->getStatuses();
 
-        $candidateJoborderStatusSendsMessage = array();
-        foreach ($statuses as $status)
-        {
+        $candidateJoborderStatusSendsMessage = [];
+        foreach ($statuses as $status) {
             $candidateJoborderStatusSendsMessage[$status['statusID']] = $status['triggersEmail'];
         }
 
-        $settings = array(
-            'fromAddress'       => 'noreply@yourdomain.com',
-            'configured'        => '0',
-            'modeConfigurable'  => '1',
-            'candidateJoborderStatusSendsMessage' => serialize($candidateJoborderStatusSendsMessage)
-        );
+        $settings = [
+            'fromAddress' => 'noreply@yourdomain.com',
+            'configured' => '0',
+            'modeConfigurable' => '1',
+            'candidateJoborderStatusSendsMessage' => serialize($candidateJoborderStatusSendsMessage),
+        ];
 
         $sql = sprintf(
             "SELECT
@@ -452,12 +445,9 @@ class MailerSettings
         $rs = $this->_db->getAllAssoc($sql);
 
         /* Override default settings with settings from the database. */
-        foreach ($rs as $rowIndex => $row)
-        {
-            foreach ($settings as $setting => $value)
-            {
-                if ($row['setting'] == $setting)
-                {
+        foreach ($rs as $rowIndex => $row) {
+            foreach ($settings as $setting => $value) {
+                if ($row['setting'] == $setting) {
                     $settings[$setting] = $row['value'];
                 }
             }
@@ -471,7 +461,6 @@ class MailerSettings
      *
      * @param string Setting name.
      * @param string Setting value.
-     * @return void
      */
     public function set($setting, $value)
     {
@@ -509,9 +498,7 @@ class MailerSettings
             $this->_db->makeQueryStringOrNULL($value),
             $this->_siteID,
             SETTINGS_MAILER
-         );
-         $this->_db->query($sql);
+        );
+        $this->_db->query($sql);
     }
 }
-
-?>

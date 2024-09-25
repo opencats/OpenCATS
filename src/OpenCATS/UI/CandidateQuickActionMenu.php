@@ -1,4 +1,5 @@
 <?php
+
 namespace OpenCATS\UI;
 
 class CandidateQuickActionMenu extends QuickActionMenu

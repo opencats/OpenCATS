@@ -58,29 +58,27 @@ class Reminders extends Task
         $dueEvents = $calendar->getAllDueReminders();
 
         // Do/log nothing if no events exist
-        if (!count($dueEvents))
-        {
+        if (! count($dueEvents)) {
             return TASKRET_SUCCESS_NOLOG;
         }
 
-        foreach ($dueEvents as $index => $data)
-        {
+        foreach ($dueEvents as $index => $data) {
             $emailSubject = 'CATS Event Reminder: ' . $data['title'];
 
             $emailContents = $GLOBALS['eventReminderEmail'];
 
-            $stringsToFind = array(
+            $stringsToFind = [
                 '%FULLNAME%',
                 '%NOTES%',
                 '%EVENTNAME%',
                 '%DUETIME%',
-            );
-            $replacementStrings = array(
+            ];
+            $replacementStrings = [
                 $data['enteredByFirstName'] . ' ' . $data['enteredByLastName'],
                 $data['description'],
                 $data['title'],
-                self::_getReminderTimeString($data['reminderTime'])
-            );
+                self::_getReminderTimeString($data['reminderTime']),
+            ];
             $emailContents = str_replace(
                 $stringsToFind,
                 $replacementStrings,
@@ -113,35 +111,22 @@ class Reminders extends Task
 
     private function _getReminderTimeString($reminderTime)
     {
-        if ($reminderTime < 1)
-        {
+        if ($reminderTime < 1) {
             $string = 'immediately';
-        }
-        else if ($reminderTime == 1)
-        {
+        } elseif ($reminderTime == 1) {
             $string = 'in 1 minute';
-        }
-        else if ($reminderTime < 60)
-        {
+        } elseif ($reminderTime < 60) {
             $string = 'in ' . $reminderTime . ' minutes';
-        }
-        else if ($reminderTime == 60)
-        {
+        } elseif ($reminderTime == 60) {
             $string = 'in 1 hour';
-        }
-        else if ($reminderTime < 1440)
-        {
+        } elseif ($reminderTime < 1440) {
             $string = 'in ' . (($reminderTime * 1.0) / 60) . ' hours';
-        }
-        else if ($reminderTime == 1440)
-        {
+        } elseif ($reminderTime == 1440) {
             $string = 'in 1 day';
-        }
-        else
-        {
+        } else {
             $string = 'in ' . (($reminderTime * 1.0) / 1440) . ' days';
         }
 
-    	return $string;
+        return $string;
     }
 }

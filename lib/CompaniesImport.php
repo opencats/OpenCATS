@@ -18,7 +18,6 @@ class CompaniesImport extends ImportableEntity
      * @param encoding
      * @return companyID
      */
-
     public function add($dataNamed, $userID, $importID)
     {
         $data = $this->prepareData($dataNamed);
@@ -50,8 +49,7 @@ class CompaniesImport extends ImportableEntity
             $importID
         );
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return -1;
         }
 

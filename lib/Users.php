@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -32,28 +31,27 @@
 
 include_once(LEGACY_ROOT . '/lib/License.php');
 
-if (AUTH_MODE == "ldap" || AUTH_MODE == "sql+ldap") 
-{
+if (AUTH_MODE == "ldap" || AUTH_MODE == "sql+ldap") {
     require_once(LEGACY_ROOT . '/lib/LDAP.php');
 }
 
 /* Login status flags. */
-define('LOGIN_SUCCESS',               1);
-define('LOGIN_INVALID_USER',         -1);
-define('LOGIN_INVALID_PASSWORD',     -2);
-define('LOGIN_DISABLED',             -3);
+define('LOGIN_SUCCESS', 1);
+define('LOGIN_INVALID_USER', -1);
+define('LOGIN_INVALID_PASSWORD', -2);
+define('LOGIN_DISABLED', -3);
 define('LOGIN_CANT_CHANGE_PASSWORD', -4);
-define('LOGIN_ROOT_ONLY',            -5);
-define('LOGIN_PENDING_APPROVAL',     -6);
+define('LOGIN_ROOT_ONLY', -5);
+define('LOGIN_PENDING_APPROVAL', -6);
 
 /* Add User status flags. */
-define('ADD_USER_SUCCESS',            1);
-define('ADD_USER_BAD_PASS',          -1);
-define('ADD_USER_EXISTS',            -2);
-define('ADD_USER_DB_ERROR',          -3);
+define('ADD_USER_SUCCESS', 1);
+define('ADD_USER_BAD_PASS', -1);
+define('ADD_USER_EXISTS', -2);
+define('ADD_USER_DB_ERROR', -3);
 
-/* Password for user authenticated against LDAP */ 
-define('LDAPUSER_PASSWORD',          '_LDAPUSER_');
+/* Password for user authenticated against LDAP */
+define('LDAPUSER_PASSWORD', '_LDAPUSER_');
 
 /**
  *	Users Library
@@ -63,16 +61,16 @@ define('LDAPUSER_PASSWORD',          '_LDAPUSER_');
 class Users
 {
     private $_db;
-    private $_siteID;
-    private $_ldap;
 
+    private $_siteID;
+
+    private $_ldap;
 
     public function __construct($siteID)
     {
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
-
 
     /**
      * Adds a user to the database.
@@ -86,14 +84,20 @@ class Users
      * @param bool eeo information visible (false)
      * @return new user ID, or -1 on failure.
      */
-    public function add($lastName, $firstName, $email, $username, $password,
-            $accessLevel, $eeoIsVisible = false, $userSiteID = -1)
-    {
-
+    public function add(
+        $lastName,
+        $firstName,
+        $email,
+        $username,
+        $password,
+        $accessLevel,
+        $eeoIsVisible = false,
+        $userSiteID = -1
+    ) {
         $md5pwd = $password == LDAPUSER_PASSWORD ? $password : md5($password);
         $userSiteID = $userSiteID < 0 ? $this->_siteID : $userSiteID;
         $sql = sprintf(
-                "INSERT INTO user (
+            "INSERT INTO user (
             user_name,
         password,
         access_level,
@@ -117,19 +121,18 @@ class Users
                     %s,
                     %s
                     )",
-        $this->_db->makeQueryString($username),
-        $this->_db->makeQueryString($md5pwd),
-        $this->_db->makeQueryInteger($accessLevel),
-        $this->_db->makeQueryString($email),
-        $this->_db->makeQueryString($firstName),
-        $this->_db->makeQueryString($lastName),
-        $userSiteID,
-        ($eeoIsVisible ? 1 : 0)
-            );
+            $this->_db->makeQueryString($username),
+            $this->_db->makeQueryString($md5pwd),
+            $this->_db->makeQueryInteger($accessLevel),
+            $this->_db->makeQueryString($email),
+            $this->_db->makeQueryString($firstName),
+            $this->_db->makeQueryString($lastName),
+            $userSiteID,
+            ($eeoIsVisible ? 1 : 0)
+        );
 
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return -1;
         }
 
@@ -147,26 +150,29 @@ class Users
      * @param bool eeo information visible (false)
      * @return boolean True if successful; false otherwise.
      */
-    public function update($userID, $lastName, $firstName, $email,
-            $username, $accessLevel = -1, $eeoIsVisible = false)
-    {
+    public function update(
+        $userID,
+        $lastName,
+        $firstName,
+        $email,
+        $username,
+        $accessLevel = -1,
+        $eeoIsVisible = false
+    ) {
         /* If an access level was specified, make sure the access level is
          * updated by the query.
          */
-        if ($accessLevel != -1)
-        {
+        if ($accessLevel != -1) {
             $accessLevelSQL = sprintf(
-                    ", access_level = %s",
-                    $this->_db->makeQueryInteger($accessLevel)
-                    );
-        }
-        else
-        {
+                ", access_level = %s",
+                $this->_db->makeQueryInteger($accessLevel)
+            );
+        } else {
             $accessLevelSQL = '';
         }
 
         $sql = sprintf(
-                "UPDATE
+            "UPDATE
                 user
                 SET
                 last_name        = %s,
@@ -179,17 +185,17 @@ class Users
                 user_id = %s
                 AND
                 site_id = %s",
-                $this->_db->makeQueryString($lastName),
-                $this->_db->makeQueryString($firstName),
-                $this->_db->makeQueryString($email),
-                $this->_db->makeQueryString($username),
-                ($eeoIsVisible ? 1 : 0),
-                $accessLevelSQL,
-                $this->_db->makeQueryInteger($userID),
-                $this->_siteID
-                    );
+            $this->_db->makeQueryString($lastName),
+            $this->_db->makeQueryString($firstName),
+            $this->_db->makeQueryString($email),
+            $this->_db->makeQueryString($username),
+            ($eeoIsVisible ? 1 : 0),
+            $accessLevelSQL,
+            $this->_db->makeQueryInteger($userID),
+            $this->_siteID
+        );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     /**
@@ -202,7 +208,7 @@ class Users
     public function updateSelfEmail($userID, $email)
     {
         $sql = sprintf(
-                "UPDATE
+            "UPDATE
                 user
                 SET
                 email = %s
@@ -210,12 +216,12 @@ class Users
                 user_id = %s
                 AND
                 site_id = %s",
-                $this->_db->makeQueryString($email),
-                $this->_db->makeQueryInteger($userID),
-                $this->_siteID
-                );
+            $this->_db->makeQueryString($email),
+            $this->_db->makeQueryInteger($userID),
+            $this->_siteID
+        );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     /**
@@ -228,7 +234,7 @@ class Users
     public function updateCategories($userID, $categories)
     {
         $sql = sprintf(
-                "UPDATE
+            "UPDATE
                 user
                 SET
                 categories = %s
@@ -236,12 +242,12 @@ class Users
                 user_id = %s
                 AND
                 site_id = %s",
-                $this->_db->makeQueryString($categories),
-                $this->_db->makeQueryInteger($userID),
-                $this->_siteID
-                );
+            $this->_db->makeQueryString($categories),
+            $this->_db->makeQueryInteger($userID),
+            $this->_siteID
+        );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     /**
@@ -251,21 +257,20 @@ class Users
      * which will clean up after itself before calling this.
      *
      * @param integer user ID
-     * @return void
      */
     public function delete($userID)
     {
         /* Delete the user. */
         $sql = sprintf(
-                "DELETE FROM
+            "DELETE FROM
                 user
                 WHERE
                 user_id = %s
                 AND
                 site_id = %s",
-                $this->_db->makeQueryInteger($userID),
-                $this->_siteID
-                );
+            $this->_db->makeQueryInteger($userID),
+            $this->_siteID
+        );
         $this->_db->query($sql);
     }
 
@@ -278,7 +283,7 @@ class Users
     public function get($userID)
     {
         $sql = sprintf(
-                "SELECT
+            "SELECT
                 user.user_name AS username,
                 user.access_level AS accessLevel,
                 access_level.short_description AS accessLevelDescription,
@@ -326,9 +331,9 @@ class Users
                     user.user_id = %s
                     GROUP BY
                     user.user_id",
-                $this->_siteID,
-                $this->_db->makeQueryInteger($userID)
-                    );
+            $this->_siteID,
+            $this->_db->makeQueryInteger($userID)
+        );
 
         return $this->_db->getAssoc($sql);
     }
@@ -340,7 +345,8 @@ class Users
      */
     public function getForAdministration($userID, $aspSiteRule)
     {
-        $sql = sprintf("SELECT
+        $sql = sprintf(
+            "SELECT
                 user.user_name AS username,
                 user.access_level AS accessLevel,
                 access_level.short_description AS accessLevelDescription,
@@ -396,9 +402,9 @@ class Users
                     user.user_id = %s
                     GROUP BY
                     user.user_id",
-                $aspSiteRule,
-                $this->_db->makeQueryInteger($userID)
-                    );
+            $aspSiteRule,
+            $this->_db->makeQueryInteger($userID)
+        );
 
         return $this->_db->getAssoc($sql);
     }
@@ -406,11 +412,20 @@ class Users
     /**
      * TODO: DOCUMENT ME.
      */
-    public function updateForAdministration($userID, $firstName, $lastName, $email,
-            $title, $phone_work, $phone_cell, $phone_other, $notes, $aspSiteRule)
-    {
+    public function updateForAdministration(
+        $userID,
+        $firstName,
+        $lastName,
+        $email,
+        $title,
+        $phone_work,
+        $phone_cell,
+        $phone_other,
+        $notes,
+        $aspSiteRule
+    ) {
         $sql = sprintf(
-                "UPDATE
+            "UPDATE
                 user
                 SET
                 last_name    = %s,
@@ -425,20 +440,20 @@ class Users
                 user_id = %s
                 AND
                 %s",
-                $this->_db->makeQueryString($lastName),
-                $this->_db->makeQueryString($firstName),
-                $this->_db->makeQueryString($email),
-                $this->_db->makeQueryString($title),
-                $this->_db->makeQueryString($phone_work),
-                $this->_db->makeQueryString($phone_cell),
-                $this->_db->makeQueryString($phone_other),
-                $this->_db->makeQueryString($notes),
-                $this->_db->makeQueryInteger($userID),
-                $this->_siteID,
-                $aspSiteRule
-                    );
+            $this->_db->makeQueryString($lastName),
+            $this->_db->makeQueryString($firstName),
+            $this->_db->makeQueryString($email),
+            $this->_db->makeQueryString($title),
+            $this->_db->makeQueryString($phone_work),
+            $this->_db->makeQueryString($phone_cell),
+            $this->_db->makeQueryString($phone_other),
+            $this->_db->makeQueryString($notes),
+            $this->_db->makeQueryInteger($userID),
+            $this->_siteID,
+            $aspSiteRule
+        );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     /**
@@ -450,7 +465,7 @@ class Users
     public function getForceLogoutData($userID)
     {
         $sql = sprintf(
-                "SELECT
+            "SELECT
                 user.access_level AS accessLevel,
                 force_logout as forceLogout
                 FROM
@@ -459,9 +474,9 @@ class Users
                 user.site_id = %s
                 AND
                 user.user_id = %s",
-                $this->_siteID,
-                $this->_db->makeQueryInteger($userID)
-                );
+            $this->_siteID,
+            $this->_db->makeQueryInteger($userID)
+        );
 
         return $this->_db->getAssoc($sql);
     }
@@ -474,7 +489,7 @@ class Users
     public function getAll()
     {
         $sql = sprintf(
-                "SELECT
+            "SELECT
                 user.user_name AS username,
                 user.password AS password,
                 user.access_level AS accessLevel,
@@ -516,8 +531,8 @@ class Users
                     user.access_level DESC,
                 user.last_name ASC,
                 user.first_name ASC",
-                $this->_siteID
-                    );
+            $this->_siteID
+        );
 
         return $this->_db->getAllAssoc($sql);
     }
@@ -532,7 +547,7 @@ class Users
     public function getIDByUsername($username)
     {
         $sql = sprintf(
-                "SELECT
+            "SELECT
                 user_id AS userID
                 FROM
                 user
@@ -540,13 +555,12 @@ class Users
                 user_name = %s
                 AND
                 site_id = %s",
-                $this->_db->makeQueryString($username),
-                $this->_siteID
-                );
+            $this->_db->makeQueryString($username),
+            $this->_siteID
+        );
         $data = $this->_db->getAssoc($sql);
 
-        if (empty($data))
-        {
+        if (empty($data)) {
             return false;
         }
 
@@ -561,7 +575,7 @@ class Users
     public function getAccessLevels()
     {
         $sql = sprintf(
-                "SELECT
+            "SELECT
                 access_level.access_level_id AS accessID,
                 access_level.short_description AS shortDescription,
                 access_level.long_description AS longDescription
@@ -569,7 +583,7 @@ class Users
                 access_level
                 ORDER BY
                 access_level.access_level_id ASC"
-                );
+        );
 
         return $this->_db->getAllAssoc($sql);
     }
@@ -584,7 +598,7 @@ class Users
     public function getLastLoginAttempts($userID, $limit)
     {
         $sql = sprintf(
-                "SELECT
+            "SELECT
                 user_login.ip AS ip,
                 user_login.user_agent AS userAgent,
                 user_login.date AS date,
@@ -598,9 +612,9 @@ class Users
                 user_login.date DESC
                 LIMIT
                 %s",
-                $userID,
-                $this->_db->makeQueryInteger($limit)
-                );
+            $userID,
+            $this->_db->makeQueryInteger($limit)
+        );
 
         return $this->_db->getAllAssoc($sql);
     }
@@ -614,7 +628,7 @@ class Users
     public function getSelectList()
     {
         $sql = sprintf(
-                "SELECT
+            "SELECT
                 user.user_name AS username,
                 user.first_name AS firstName,
                 user.last_name AS lastName,
@@ -629,11 +643,13 @@ class Users
                 ORDER BY
                 user.last_name ASC,
                 user.first_name ASC",
-                $this->_siteID,
-                ACCESS_LEVEL_DISABLED
-                );
+            $this->_siteID,
+            ACCESS_LEVEL_DISABLED
+        );
 
-        if (!eval(Hooks::get('USERS_GET_SELECT_SQL'))) return;
+        if (! eval(Hooks::get('USERS_GET_SELECT_SQL'))) {
+            return;
+        }
 
         return $this->_db->getAllAssoc($sql);
     }
@@ -648,14 +664,13 @@ class Users
      */
     public function changePassword($userID, $currentPassword, $newPassword)
     {
-        if( $this->isUserLDAP($userID))
-        {
+        if ($this->isUserLDAP($userID)) {
             /* LDAP user not allowed to change password */
             return LOGIN_CANT_CHANGE_PASSWORD;
         }
 
         $sql = sprintf(
-                "SELECT
+            "SELECT
                 user.password AS password,
                 user.access_level AS accessLevel,
                 user.can_change_password AS canChangePassword
@@ -663,47 +678,43 @@ class Users
                 user
                 WHERE
                 user.user_id = %s",
-                $this->_db->makeQueryInteger($userID)
-                );
+            $this->_db->makeQueryInteger($userID)
+        );
         $rs = $this->_db->getAssoc($sql);
 
         /* No results? Shouldn't happen, but it could if the user just got
          * deleted or something.
          */
-        if (!$rs || $this->_db->isEOF())
-        {
+        if (! $rs || $this->_db->isEOF()) {
             return LOGIN_INVALID_USER;
         }
 
         /* Is the user's supplied password correct? */
-        if ($rs['password'] !== md5($currentPassword))
-        {
+        if ($rs['password'] !== md5($currentPassword)) {
             return LOGIN_INVALID_PASSWORD;
         }
 
         /* Is the user's account disabled? */
-        if ($rs['accessLevel'] <= ACCESS_LEVEL_DISABLED)
-        {
+        if ($rs['accessLevel'] <= ACCESS_LEVEL_DISABLED) {
             return LOGIN_DISABLED;
         }
 
         /* Is the user allowed to change his/her password? */
-        if ($rs['canChangePassword'] != '1')
-        {
+        if ($rs['canChangePassword'] != '1') {
             return LOGIN_CANT_CHANGE_PASSWORD;
         }
 
         /* Change the user's password. */
         $sql = sprintf(
-                "UPDATE
+            "UPDATE
                 user
                 SET
                 password = md5(%s)
                 WHERE
                 user.user_id = %s",
-                $this->_db->makeQueryString($newPassword),
-                $this->_db->makeQueryInteger($userID)
-                );
+            $this->_db->makeQueryString($newPassword),
+            $this->_db->makeQueryInteger($userID)
+        );
         $this->_db->query($sql);
         // FIXME: Did the above query succeed? If not, fail.
 
@@ -720,14 +731,13 @@ class Users
      */
     public function resetPassword($userID, $newPassword)
     {
-        if( $this->isUserLDAP($userID))
-        {
+        if ($this->isUserLDAP($userID)) {
             /* LDAP user not allowed to reset password */
             return false;
         }
 
         $sql = sprintf(
-                "SELECT
+            "SELECT
                 user.password AS password,
                 user.access_level AS accessLevel,
                 user.can_change_password AS canChangePassword
@@ -735,29 +745,28 @@ class Users
                 user
                 WHERE
                 user.user_id = %s",
-                $this->_db->makeQueryInteger($userID)
-                );
+            $this->_db->makeQueryInteger($userID)
+        );
         $rs = $this->_db->getAssoc($sql);
 
         /* No results? Shouldn't happen, but it could if the user just got
          * deleted or something.
          */
-        if (empty($rs))
-        {
+        if (empty($rs)) {
             return false;
         }
 
         /* Change the user's password. */
         $sql = sprintf(
-                "UPDATE
+            "UPDATE
                 user
                 SET
                 password = md5(%s)
                 WHERE
                 user.user_id = %s",
-                $this->_db->makeQueryString($newPassword),
-                $this->_db->makeQueryInteger($userID)
-                );
+            $this->_db->makeQueryString($newPassword),
+            $this->_db->makeQueryInteger($userID)
+        );
         $this->_db->query($sql);
         // FIXME: Did the above query succeed? If not, fail.
 
@@ -783,19 +792,17 @@ class Users
     {
         $existsInLDAP = false;
         $existsInDB = false;
-        
-        if (empty($username))
-        {
+
+        if (empty($username)) {
             return LOGIN_INVALID_USER;
         }
 
-        if (empty($password))
-        {
+        if (empty($password)) {
             return LOGIN_INVALID_PASSWORD;
         }
 
         $sql = sprintf(
-                "SELECT
+            "SELECT
                 user.user_name AS username,
                 user.password AS password,
                 user.access_level AS accessLevel
@@ -803,62 +810,53 @@ class Users
                 user
                 WHERE
                 user.user_name = %s",
-                $this->_db->makeQueryString($username)
-                );
+            $this->_db->makeQueryString($username)
+        );
         $rs = $this->_db->getAssoc($sql);
 
         /* No results? Invalid user or new LDAP user. */
-        if(!$rs || $this->_db->isEOF())
-        {
-            if(AUTH_MODE == 'sql')
-            {
+        if (! $rs || $this->_db->isEOF()) {
+            if (AUTH_MODE == 'sql') {
                 return LOGIN_INVALID_USER;
             }
-        } 
-        else 
-        {
+        } else {
             $existsInDB = true;
         }
 
-        if((AUTH_MODE == 'ldap' || AUTH_MODE == 'sql+ldap')
-            && (($existsInDB && $rs['password'] == LDAPUSER_PASSWORD) || !$existsInDB) ) {
+        if ((AUTH_MODE == 'ldap' || AUTH_MODE == 'sql+ldap')
+            && (($existsInDB && $rs['password'] == LDAPUSER_PASSWORD) || ! $existsInDB)) {
             $this->_ldap = LDAP::getInstance($username, $password);
-            if($this->_ldap == NULL)
-            {
+            if ($this->_ldap == null) {
                 return LOGIN_INVALID_USER;
             }
-            if(!$this->_ldap->authenticate($username, $password)) 
-            {
+            if (! $this->_ldap->authenticate($username, $password)) {
                 return LOGIN_INVALID_PASSWORD;
-            } 
+            }
             $existsInLDAP = true;
-        } else if(AUTH_MODE == 'ldap'){
+        } elseif (AUTH_MODE == 'ldap') {
             /*  incorrect LDAP user in db */
             return LOGIN_INVALID_USER;
         } else {
             /* Is the user's supplied password correct? */
-            if ($rs['password'] !== md5($password))
-            {
+            if ($rs['password'] !== md5($password)) {
                 return LOGIN_INVALID_PASSWORD;
             }
         }
-        
-        if (!$existsInDB && $existsInLDAP) {
+
+        if (! $existsInDB && $existsInLDAP) {
             /* ldap user not created in local db -> create one as disabled */
             $userInfo = $this->_ldap->getUserInfo($username);
-            $userID = $this->add($userInfo[0], $userInfo[1], $userInfo[2], $userInfo[3], LDAPUSER_PASSWORD, '0', false, LDAP_SITEID);            
+            $userID = $this->add($userInfo[0], $userInfo[1], $userInfo[2], $userInfo[3], LDAPUSER_PASSWORD, '0', false, LDAP_SITEID);
             return LOGIN_PENDING_APPROVAL;
         }
 
         /* Is the user's account disabled? */
-        if ($rs['accessLevel'] <= ACCESS_LEVEL_DISABLED)
-        {
+        if ($rs['accessLevel'] <= ACCESS_LEVEL_DISABLED) {
             return LOGIN_DISABLED;
         }
 
         /* If in slave mode, only allow root login. */
-        if (CATS_SLAVE && $rs['accessLevel'] < ACCESS_LEVEL_ROOT)
-        {
+        if (CATS_SLAVE && $rs['accessLevel'] < ACCESS_LEVEL_ROOT) {
             return LOGIN_ROOT_ONLY;
         }
 
@@ -873,7 +871,7 @@ class Users
     public function getLicenseData()
     {
         $sql = sprintf(
-                "SELECT
+            "SELECT
                 COUNT(user.site_id) AS totalUsers,
                 user.access_level,
                 site.user_licenses AS userLicenses
@@ -887,13 +885,12 @@ class Users
                 user.access_level > %s
                 GROUP BY
                 user.site_id",
-                $this->_siteID,
-                ACCESS_LEVEL_READ
-                );
+            $this->_siteID,
+            ACCESS_LEVEL_READ
+        );
         $license = $this->_db->getAssoc($sql);
 
-        if (empty($license))
-        {
+        if (empty($license)) {
             $license['totalUsers'] = 0;
             $license['userLicenses'] = 0;
         }
@@ -902,13 +899,10 @@ class Users
         $license['unlimited'] = 0;
         $license['canAdd'] = 0;
 
-        if ($license['userLicenses'] == 0)
-        {
+        if ($license['userLicenses'] == 0) {
             $license['unlimited'] = 1;
             $license['canAdd'] = 1;
-        }
-        else if ($license['diff'] > 0)
-        {
+        } elseif ($license['diff'] > 0) {
             $license['canAdd'] = 1;
         }
 
@@ -925,18 +919,17 @@ class Users
     {
         // FIXME: COUNT() not needed.
         $sql = sprintf(
-                "SELECT
+            "SELECT
                 COUNT(user.user_name) AS userExists
                 FROM
                 user
                 WHERE
                 user.user_name = %s",
-                $this->_db->makeQueryString($username)
-                );
+            $this->_db->makeQueryString($username)
+        );
         $rs = $this->_db->getAssoc($sql);
 
-        if (!empty($rs) || $rs['userExists'] <= 0)
-        {
+        if (! empty($rs) || $rs['userExists'] <= 0) {
             return false;
         }
 
@@ -953,20 +946,21 @@ class Users
      * @param boolean Was the login successful?
      * @return integer This login's User Login ID.
      */
-    public function addLoginHistory($userID, $siteID, $ip, $userAgent,
-            $wasSuccessful)
-    {
-        if (ENABLE_HOSTNAME_LOOKUP)
-        {
+    public function addLoginHistory(
+        $userID,
+        $siteID,
+        $ip,
+        $userAgent,
+        $wasSuccessful
+    ) {
+        if (ENABLE_HOSTNAME_LOOKUP) {
             $hostname = @gethostbyaddr($ip);
-        }
-        else
-        {
+        } else {
             $hostname = $ip;
         }
 
         $sql = sprintf(
-                "INSERT INTO user_login (
+            "INSERT INTO user_login (
             user_id,
             site_id,
             ip,
@@ -992,11 +986,10 @@ class Users
             $this->_db->makeQueryString($userAgent),
             $this->_db->makeQueryString($hostname),
             ($wasSuccessful ? '1' : '0')
-                );
+        );
 
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return -1;
         }
 
@@ -1014,7 +1007,7 @@ class Users
     public function updateLastRefresh($userLoginID, $siteID)
     {
         $sql = sprintf(
-                "UPDATE
+            "UPDATE
                 user_login
                 SET
                 date_refreshed = NOW()
@@ -1022,22 +1015,22 @@ class Users
                 user_login_id = %s
                 AND
                 site_id = %s",
-                $this->_db->makeQueryInteger($userLoginID),
-                $this->_db->makeQueryInteger($siteID)
-                );
+            $this->_db->makeQueryInteger($userLoginID),
+            $this->_db->makeQueryInteger($siteID)
+        );
 
         $this->_db->query($sql);
 
         // FIXME: Don't hit "site" on each request. Lets make a new table.
         $sql = sprintf(
-                "UPDATE
+            "UPDATE
                 site
                 SET
                 page_views = page_views + 1
                 WHERE
                 site_id = %s",
-                $this->_db->makeQueryInteger($siteID)
-                );
+            $this->_db->makeQueryInteger($siteID)
+        );
 
         $this->_db->query($sql);
     }
@@ -1053,7 +1046,7 @@ class Users
     {
         // FIXME: This definatly has to need some optimization.
         $sql = sprintf(
-                "SELECT
+            "SELECT
                 COUNT(DISTINCT user_login.user_id) AS loggedInUsers,
                 COUNT(
                     DISTINCT IF(
@@ -1066,17 +1059,15 @@ class Users
                 user_login
                 WHERE
                 date_refreshed > DATE_SUB(NOW(), INTERVAL 10 MINUTE)"
-                );
+        );
 
         $rs = $this->_db->getAssoc($sql);
 
-        if (!isset($rs['loggedInUsers']) || empty($rs['loggedInUsers']))
-        {
+        if (! isset($rs['loggedInUsers']) || empty($rs['loggedInUsers'])) {
             $rs['loggedInUsers'] = 0;
         }
 
-        if (!isset($rs['activeUsers']) || empty($rs['activeUsers']))
-        {
+        if (! isset($rs['activeUsers']) || empty($rs['activeUsers'])) {
             $rs['activeUsers'] = 0;
         }
 
@@ -1093,18 +1084,17 @@ class Users
     {
         // FIXME: This definatly has to need some optimization.
         $sql = sprintf(
-                "SELECT
+            "SELECT
                 COUNT(DISTINCT user_login.user_id) AS inUseUsers
                 FROM
                 user_login
                 WHERE
                 date_refreshed > DATE_SUB(NOW(), INTERVAL 14 DAY)"
-                );
+        );
 
         $rs = $this->_db->getAssoc($sql);
 
-        if (!isset($rs['inUseUsers']) || empty($rs['inUseUsers']))
-        {
+        if (! isset($rs['inUseUsers']) || empty($rs['inUseUsers'])) {
             $rs['inUseUsers'] = 0;
         }
 
@@ -1121,30 +1111,26 @@ class Users
      */
     public function getLoggedInUsers($limit, $siteID)
     {
-        if ($limit > 0)
-        {
+        if ($limit > 0) {
             $limitSQL = sprintf(
-                    'LIMIT %s', $this->_db->makeQueryInteger($limit)
-                    );
-        }
-        else
-        {
+                'LIMIT %s',
+                $this->_db->makeQueryInteger($limit)
+            );
+        } else {
             $limitSQL = '';
         }
 
-        if ($siteID > 0)
-        {
+        if ($siteID > 0) {
             $siteCriterion = sprintf(
-                    'AND user.site_id = %s', $this->_db->makeQueryInteger($siteID)
-                    );
-        }
-        else
-        {
+                'AND user.site_id = %s',
+                $this->_db->makeQueryInteger($siteID)
+            );
+        } else {
             $siteCriterion = '';
         }
 
         $sql = sprintf(
-                "SELECT
+            "SELECT
                 MAX(user_login.user_login_id) AS userLoginID,
                 user.user_id AS userID,
                 user.site_id AS siteID,
@@ -1175,7 +1161,7 @@ class Users
                 %s",
             $siteCriterion,
             $limitSQL
-                );
+        );
 
         return $this->_db->getAllAssoc($sql);
     }
@@ -1189,7 +1175,7 @@ class Users
     public function getAutomatedUser()
     {
         $sql = sprintf(
-                "SELECT
+            "SELECT
                 user.user_id AS userID
                 FROM
                 user
@@ -1197,14 +1183,13 @@ class Users
                 user.site_id = %s
                 AND
                 user.user_name = 'cats@rootadmin'",
-                CATS_ADMIN_SITE
-                );
+            CATS_ADMIN_SITE
+        );
         $rs = $this->_db->getAssoc($sql);
 
-        if (!isset($rs['userID']))
-        {
+        if (! isset($rs['userID'])) {
             $sql = sprintf(
-                    "INSERT INTO user (
+                "INSERT INTO user (
                 user_name,
                 password,
                 access_level,
@@ -1227,7 +1212,7 @@ class Users
                         %s
                         )",
                 CATS_ADMIN_SITE
-                    );
+            );
             $this->_db->query($sql);
 
             $rs = $this->getAutomatedUser();
@@ -1239,19 +1224,16 @@ class Users
     public function isUserLDAP($userID)
     {
         $sql = sprintf(
-                "SELECT
+            "SELECT
                 user.password AS password
                 FROM
                 user
                 WHERE
                 user.user_id = %s",
-                $this->_db->makeQueryString($userID)
-                );
+            $this->_db->makeQueryString($userID)
+        );
         $rs = $this->_db->getAssoc($sql);
-        
+
         return ($rs['password'] == LDAPUSER_PASSWORD);
     }
-    
 }
-
-?>

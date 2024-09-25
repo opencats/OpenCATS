@@ -35,14 +35,12 @@ include_once(LEGACY_ROOT . '/lib/SavedLists.php');
 
 $interface = new SecureAJAXInterface();
 
-if (!$interface->isRequiredIDValid('dataItemType'))
-{
+if (! $interface->isRequiredIDValid('dataItemType')) {
     $interface->outputXMLErrorPage(-1, 'Invalid saved list type.');
     die();
 }
 
-if (!isset($_REQUEST['description']))
-{
+if (! isset($_REQUEST['description'])) {
     $interface->outputXMLErrorPage(-1, 'Invalid name.');
     die();
 }
@@ -55,28 +53,26 @@ $dataItemType = $_REQUEST['dataItemType'];
 $savedLists = new SavedLists($siteID);
 
 /* Validate the lists - if name is in use or name is blank, fail. */
-if ($savedLists->getIDByDescription($savedListName) != -1)
-{
+if ($savedLists->getIDByDescription($savedListName) != -1) {
     $interface->outputXMLPage(
         "<data>\n" .
         "    <errorcode>0</errorcode>\n" .
         "    <errormessage></errormessage>\n" .
         "    <response>collision</response>\n" .
         "</data>\n"
-    );  
-    die;  
+    );
+    die;
 }
 
-if ($savedListName == '')
-{
+if ($savedListName == '') {
     $interface->outputXMLPage(
         "<data>\n" .
         "    <errorcode>0</errorcode>\n" .
         "    <errormessage></errormessage>\n" .
         "    <response>badName</response>\n" .
         "</data>\n"
-    );  
-    die;  
+    );
+    die;
 }
 
 /* Write changes. */
@@ -89,5 +85,3 @@ $interface->outputXMLPage(
     "    <response>success</response>\n" .
     "</data>\n"
 );
-
-?>

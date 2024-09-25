@@ -38,11 +38,10 @@ class ActivityUI extends UserInterface
     /* Maximum number of characters of a line in the regarding field to show
      * on the main listing.
      */
-    const TRUNCATE_REGARDING = 24;
+    public const TRUNCATE_REGARDING = 24;
 
     /* Maximum number of characters to display of an activity note. */
-    const ACTIVITY_NOTE_MAXLEN = 140;
-
+    public const ACTIVITY_NOTE_MAXLEN = 140;
 
     public function __construct()
     {
@@ -58,17 +57,15 @@ class ActivityUI extends UserInterface
     {
         $action = $this->getAction();
 
-        if (!eval(Hooks::get('ACTIVITY_HANDLE_REQUEST'))) return;
+        if (! eval(Hooks::get('ACTIVITY_HANDLE_REQUEST'))) {
+            return;
+        }
 
-        switch ($action)
-        {
+        switch ($action) {
             case 'viewByDate':
-                if ($this->isGetBack())
-                {
+                if ($this->isGetBack()) {
                     $this->onSearch();
-                }
-                else
-                {
+                } else {
                     $this->Search();
                 }
 
@@ -90,13 +87,12 @@ class ActivityUI extends UserInterface
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
          * be empty.  Fill in some default values. */
-        if ($dataGridProperties == array())
-        {
-            $dataGridProperties = array(
-                'rangeStart'    => 0,
-                'maxResults'    => 15,
-                'filterVisible' => false
-            );
+        if ($dataGridProperties == []) {
+            $dataGridProperties = [
+                'rangeStart' => 0,
+                'maxResults' => 15,
+                'filterVisible' => false,
+            ];
         }
 
         /* Only show a month of activities. */
@@ -108,7 +104,9 @@ class ActivityUI extends UserInterface
 
         $quickLinks = $this->getQuickLinks();
 
-        if (!eval(Hooks::get('ACTIVITY_LIST_BY_VIEW_DG'))) return;
+        if (! eval(Hooks::get('ACTIVITY_LIST_BY_VIEW_DG'))) {
+            return;
+        }
 
         $this->_template->assign('quickLinks', $quickLinks);
         $this->_template->assign('active', $this);
@@ -126,7 +124,9 @@ class ActivityUI extends UserInterface
      */
     private function search()
     {
-        if (!eval(Hooks::get('ACTIVITY_SEARCH'))) return;
+        if (! eval(Hooks::get('ACTIVITY_SEARCH'))) {
+            return;
+        }
 
         $this->_template->assign('isResultsMode', false);
         $this->_template->assign('wildCardString', '');
@@ -140,12 +140,10 @@ class ActivityUI extends UserInterface
     private function onSearch()
     {
         $periodString = $this->getTrimmedInput('period', $_GET);
-        if (!empty($periodString) &&
-            in_array($periodString, array('lastweek', 'lastmonth', 'lastsixmonths', 'lastyear', 'all')))
-        {
+        if (! empty($periodString) &&
+            in_array($periodString, ['lastweek', 'lastmonth', 'lastsixmonths', 'lastyear', 'all'])) {
             /* formats start and end date for searching */
-            switch ($periodString)
-            {
+            switch ($periodString) {
                 case 'lastweek':
                     $period = 'DATE_SUB(CURDATE(), INTERVAL 1 WEEK)';
                     break;
@@ -172,42 +170,40 @@ class ActivityUI extends UserInterface
             $endDate = '';
 
             $startDateURLString = '';
-            $endDateURLString   = '';
-        }
-        else
-        {
+            $endDateURLString = '';
+        } else {
             /* Do we have a valid starting date? */
-            if (!$this->isRequiredIDValid('startDay', $_GET) ||
-                !$this->isRequiredIDValid('startMonth', $_GET) ||
-                !$this->isRequiredIDValid('startYear', $_GET))
-            {
+            if (! $this->isRequiredIDValid('startDay', $_GET) ||
+                ! $this->isRequiredIDValid('startMonth', $_GET) ||
+                ! $this->isRequiredIDValid('startYear', $_GET)) {
                 CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid starting date.');
             }
 
             /* Do we have a valid ending date? */
-            if (!$this->isRequiredIDValid('endDay', $_GET) ||
-                !$this->isRequiredIDValid('endMonth', $_GET) ||
-                !$this->isRequiredIDValid('endYear', $_GET))
-            {
+            if (! $this->isRequiredIDValid('endDay', $_GET) ||
+                ! $this->isRequiredIDValid('endMonth', $_GET) ||
+                ! $this->isRequiredIDValid('endYear', $_GET)) {
                 CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid ending date.');
             }
 
-            if (!checkdate($_GET['startMonth'], $_GET['startDay'], $_GET['startYear']))
-            {
+            if (! checkdate($_GET['startMonth'], $_GET['startDay'], $_GET['startYear'])) {
                 CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid starting date.');
             }
 
-            if (!checkdate($_GET['endMonth'], $_GET['endDay'], $_GET['endYear']))
-            {
+            if (! checkdate($_GET['endMonth'], $_GET['endDay'], $_GET['endYear'])) {
                 CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid ending date.');
             }
 
             /* formats start and end date for searching */
             $startDate = DateUtility::formatSearchDate(
-                $_GET['startMonth'], $_GET['startDay'], $_GET['startYear']
+                $_GET['startMonth'],
+                $_GET['startDay'],
+                $_GET['startYear']
             );
             $endDate = DateUtility::formatSearchDate(
-                $_GET['endMonth'], $_GET['endDay']+1, $_GET['endYear']
+                $_GET['endMonth'],
+                $_GET['endDay'] + 1,
+                $_GET['endYear']
             );
 
             $startDateURLString = sprintf(
@@ -229,37 +225,39 @@ class ActivityUI extends UserInterface
 
         $baseURL = sprintf(
             'm=activity&amp;a=viewByDate&amp;getback=getback%s%s',
-            $startDateURLString, $endDateURLString
+            $startDateURLString,
+            $endDateURLString
         );
 
         $dataGridProperties = DataGrid::getRecentParamaters("activity:ActivityDataGrid");
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
          * be empty.  Fill in some default values. */
-        if ($dataGridProperties == array())
-        {
-            $dataGridProperties = array(
-                'rangeStart'    => 0,
-                'maxResults'    => 15,
-                'filterVisible' => false
-            );
+        if ($dataGridProperties == []) {
+            $dataGridProperties = [
+                'rangeStart' => 0,
+                'maxResults' => 15,
+                'filterVisible' => false,
+            ];
         }
 
         $dataGridProperties['startDate'] = $startDate;
-        $dataGridProperties['endDate']   = $endDate;
-        $dataGridProperties['period']    = $period;
+        $dataGridProperties['endDate'] = $endDate;
+        $dataGridProperties['period'] = $period;
 
         $dataGrid = DataGrid::get("activity:ActivityDataGrid", $dataGridProperties);
 
         $quickLinks = $this->getQuickLinks();
 
-        if (!eval(Hooks::get('ACTIVITY_LIST_BY_VIEW_DG'))) return;
+        if (! eval(Hooks::get('ACTIVITY_LIST_BY_VIEW_DG'))) {
+            return;
+        }
 
         $this->_template->assign('quickLinks', $quickLinks);
         $this->_template->assign('active', $this);
         $this->_template->assign('dataGrid', $dataGrid);
         $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
-        
+
         $activityEntries = new ActivityEntries($this->_siteID);
         $this->_template->assign('numActivities', $activityEntries->getCount());
 
@@ -274,18 +272,18 @@ class ActivityUI extends UserInterface
      */
     private function getQuickLinks()
     {
-        $today = array(
+        $today = [
             'month' => date('n'),
-            'day'   => date('j'),
-            'year'  => date('Y')
-        );
+            'day' => date('j'),
+            'year' => date('Y'),
+        ];
 
         $yesterdayTimeStamp = DateUtility::subtractDaysFromDate(time(), 1);
-        $yesterday = array(
+        $yesterday = [
             'month' => date('n', $yesterdayTimeStamp),
-            'day'   => date('j', $yesterdayTimeStamp),
-            'year'  => date('Y', $yesterdayTimeStamp)
-        );
+            'day' => date('j', $yesterdayTimeStamp),
+            'year' => date('Y', $yesterdayTimeStamp),
+        ];
 
         $baseURL = sprintf(
             '%s?m=activity&amp;a=viewByDate&amp;getback=getback',
@@ -337,4 +335,3 @@ class ActivityUI extends UserInterface
         return implode(' | ', $quickLinks);
     }
 }
-?>

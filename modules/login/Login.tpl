@@ -1,6 +1,6 @@
 <?php /* $Id: Login.tpl 3530 2007-11-09 18:28:10Z brian $ */ ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
+
 <html>
     <head>
         <title>opencats - Login</title>

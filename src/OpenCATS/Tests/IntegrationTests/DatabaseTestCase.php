@@ -1,4 +1,5 @@
 <?php
+
 namespace OpenCATS\Tests\IntegrationTests;
 
 use PHPUnit\Framework\TestCase;
@@ -7,7 +8,7 @@ class DatabaseTestCase extends TestCase
 {
     private $connection;
 
-    function setUp()
+    public function setUp()
     {
         global $mySQLConnection;
         parent::setUp();
@@ -18,10 +19,11 @@ class DatabaseTestCase extends TestCase
         include_once('./config.php');
         include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
         $mySQLConnection = @mysqli_connect(
-            DATABASE_HOST, DATABASE_USER, DATABASE_PASS
-            );
-        if (!$mySQLConnection)
-        {
+            DATABASE_HOST,
+            DATABASE_USER,
+            DATABASE_PASS
+        );
+        if (! $mySQLConnection) {
             throw new \Exception('Error connecting to the mysql server');
         }
         $this->mySQLQuery('DROP DATABASE IF EXISTS ' . DATABASE_NAME);
@@ -37,12 +39,10 @@ class DatabaseTestCase extends TestCase
     {
         $SQLStatments = explode($delimiter, $SQLData);
 
-        foreach ($SQLStatments as $SQL)
-        {
+        foreach ($SQLStatments as $SQL) {
             $SQL = trim($SQL);
 
-            if (empty($SQL))
-            {
+            if (empty($SQL)) {
                 continue;
             }
 
@@ -55,31 +55,27 @@ class DatabaseTestCase extends TestCase
         global $mySQLConnection;
 
         $queryResult = mysqli_query($mySQLConnection, $query);
-        if (!$queryResult && !$ignoreErrors)
-        {
-    				$error = "errno: " . $queryResult->connect_errno . ", ";
-    				$error .= "error: " . $queryResult->connect_error;
+        if (! $queryResult && ! $ignoreErrors) {
+            $error = "errno: " . $queryResult->connect_errno . ", ";
+            $error .= "error: " . $queryResult->connect_error;
 
-            if ($error == 'Query was empty')
-            {
+            if ($error == 'Query was empty') {
                 return $queryResult;
             }
 
-            die (
+            die(
                 '<p style="background: #ec3737; padding: 4px; margin-top: 0; font:'
                 . ' normal normal bold 12px/130% Arial, Tahoma, sans-serif;">Query'
                 . " Error -- Please Report This Bug!</p><pre>\n\nMySQL Query "
                 . "Failed: " . $error . "\n\n" . $query . "</pre>\n\n"
-                );
+            );
         }
 
         return $queryResult;
     }
 
-
-    function tearDown()
+    public function tearDown()
     {
         $this->mySQLQuery('DROP DATABASE IF EXISTS ' . DATABASE_NAME);
     }
 }
-?>

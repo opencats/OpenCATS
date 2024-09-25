@@ -13,118 +13,105 @@
  *
  * @package Artichow
  */
-class awFont {
+class awFont
+{
+    /**
+     * Build the font
+     *
+     * @param int $font Font identifier
+     */
+    public function __construct(
+        public $font
+    ) {
+    }
 
-	/**
-	 * Used font
-	 *
-	 * @param int $font
-	 */
-	public $font;
+    /**
+     * Draw a text
+     *
+     * @param awPoint $p Draw text at this point
+     * @param awText $text The text
+     */
+    public function draw(awDrawer $drawer, awPoint $p, awText $text)
+    {
+        $angle = $text->getAngle();
 
-	/**
-	 * Build the font
-	 *
-	 * @param int $font Font identifier
-	 */
-	public function __construct($font) {
+        if ($angle !== 90 and $angle !== 0) {
+            trigger_error("You can only use 0° and 90°", E_USER_ERROR);
+        }
 
-		$this->font = $font;
+        if ($angle === 90) {
+            $function = 'imagestringup';
+        } else {
+            $function = 'imagestring';
+        }
 
-	}
+        if ($angle === 90) {
+            $add = $this->getTextHeight($text);
+        } else {
+            $add = 0;
+        }
 
-	/**
-	 * Draw a text
-	 *
-	 * @param awDrawer $drawer
-	 * @param awPoint $p Draw text at this point
-	 * @param awText $text The text
-	 */
-	public function draw(awDrawer $drawer, awPoint $p, awText $text) {
-
-		$angle = $text->getAngle();
-
-		if($angle !== 90 and $angle !== 0) {
-			trigger_error("You can only use 0° and 90°", E_USER_ERROR);
-		}
-
-		if($angle === 90) {
-			$function = 'imagestringup';
-		} else {
-			$function = 'imagestring';
-		}
-
-		if($angle === 90) {
-			$add = $this->getTextHeight($text);
-		} else {
-			$add = 0;
-		}
-
-		$color = $text->getColor();
-		$rgb = $color->getColor($drawer->resource);
+        $color = $text->getColor();
+        $rgb = $color->getColor($drawer->resource);
 
 
-	    $function(
-			$drawer->resource,
-		    $this->font,
-    		$drawer->x + $p->x,
-		    $drawer->y + $p->y + $add,
-		    $text->getText(),
-			$rgb
-	    );
+        $function(
+            $drawer->resource,
+            $this->font,
+            $drawer->x + $p->x,
+            $drawer->y + $p->y + $add,
+            $text->getText(),
+            $rgb
+        );
+    }
 
-	}
+    /**
+     * Get the width of a string
+     *
+     * @param awText $text A string
+     */
+    public function getTextWidth(awText $text)
+    {
+        if ($text->getAngle() === 90) {
+            $text->setAngle(45);
+            return $this->getTextHeight($text);
+        } elseif ($text->getAngle() === 45) {
+            $text->setAngle(90);
+        }
 
-	/**
-	 * Get the width of a string
-	 *
-	 * @param awText $text A string
-	 */
-	public function getTextWidth(awText $text) {
+        $font = $text->getFont();
+        $fontWidth = imagefontwidth($font->font);
 
-		if($text->getAngle() === 90) {
-			$text->setAngle(45);
-			return $this->getTextHeight($text);
-		} else if($text->getAngle() === 45) {
-			$text->setAngle(90);
-		}
+        if ($fontWidth === false) {
+            trigger_error("Unable to get font size", E_USER_ERROR);
+        }
 
-		$font = $text->getFont();
-		$fontWidth = imagefontwidth($font->font);
+        return (int) $fontWidth * strlen($text->getText());
+    }
 
-		if($fontWidth === FALSE) {
-			trigger_error("Unable to get font size", E_USER_ERROR);
-		}
+    /**
+     * Get the height of a string
+     *
+     * @param awText $text A string
+     */
+    public function getTextHeight(awText $text)
+    {
+        if ($text->getAngle() === 90) {
+            $text->setAngle(45);
+            return $this->getTextWidth($text);
+        } elseif ($text->getAngle() === 45) {
+            $text->setAngle(90);
+        }
 
-		return (int)$fontWidth * strlen($text->getText());
+        $font = $text->getFont();
+        $fontHeight = imagefontheight($font->font);
 
-	}
+        if ($fontHeight === false) {
+            trigger_error("Unable to get font size", E_USER_ERROR);
+        }
 
-	/**
-	 * Get the height of a string
-	 *
-	 * @param awText $text A string
-	 */
-	public function getTextHeight(awText $text) {
-
-		if($text->getAngle() === 90) {
-			$text->setAngle(45);
-			return $this->getTextWidth($text);
-		} else if($text->getAngle() === 45) {
-			$text->setAngle(90);
-		}
-
-		$font = $text->getFont();
-		$fontHeight = imagefontheight($font->font);
-
-		if($fontHeight === FALSE) {
-			trigger_error("Unable to get font size", E_USER_ERROR);
-		}
-
-		return (int)$fontHeight;
-
-	}
-
+        return (int) $fontHeight;
+    }
 }
 
 registerClass('Font');
@@ -134,157 +121,142 @@ registerClass('Font');
  *
  * @package Artichow
  */
-class awTTFFont extends awFont {
+class awTTFFont extends awFont
+{
+    /**
+     * Font size
+     *
+     * @var int
+     */
+    public $size;
 
-	/**
-	 * Font size
-	 *
-	 * @var int
-	 */
-	public $size;
+    /**
+     * Font file
+     *
+     * @param string $font Font file
+     * @param int $size Font size
+     */
+    public function __construct(
+        $font,
+        $size
+    ) {
+        parent::__construct($font);
 
-	/**
-	 * Font file
-	 *
-	 * @param string $font Font file
-	 * @param int $size Font size
-	 */
-	public function __construct($font, $size) {
+        $this->size = (int) $size;
+    }
 
-		parent::__construct($font);
+    /**
+     * Draw a text
+     *
+     * @param awPoint $p Draw text at this point
+     * @param awText $text The text
+     */
+    public function draw(awDrawer $drawer, awPoint $p, awText $text)
+    {
+        // Make easier font positionment
+        $textWorking = $text->getText();
+        $offsetTop = 0;
+        $offsetRight = 0;
 
-		$this->size = (int)$size;
+        /* Ugly font repositioning hack. FIXME:  Make me not ugly.*/
+        if (str_starts_with($textWorking, "||")) {
+            $textWorking = substr($textWorking, 2);
+            $offsetTop += 10;
+            $offsetRight += 2;
+        } elseif (str_starts_with($textWorking, "|")) {
+            $textWorking = substr($textWorking, 1);
+            $offsetTop += 12;
+            $offsetRight += 2;
+        } elseif (str_starts_with($textWorking, "}")) {
+            $textWorking = substr($textWorking, 1);
+            $offsetTop += 3;
+            $offsetRight -= 7;
+        }
 
-	}
+        $textParts = explode("\n", $textWorking);
+        $textFirstPart = $textParts[0];
 
-	/**
-	 * Draw a text
-	 *
-	 * @param awDrawer $drawer
-	 * @param awPoint $p Draw text at this point
-	 * @param awText $text The text
-	 */
-	public function draw(awDrawer $drawer, awPoint $p, awText $text) {
+        $text->setText($textWorking . " ");
 
-		// Make easier font positionment
-		$textWorking = $text->getText();
-		$offsetTop = 0;
-		$offsetRight = 0;
+        $color = $text->getColor();
+        $rgb = $color->getColor($drawer->resource);
 
-		/* Ugly font repositioning hack. FIXME:  Make me not ugly.*/
-  		if(strpos($textWorking, "||") === 0)
-   		{
-       		$textWorking = substr($textWorking, 2);
-       		$offsetTop += 10;
-       		$offsetRight += 2;
-   		}
-  		else if(strpos($textWorking, "|") === 0)
-   		{
-       		$textWorking = substr($textWorking, 1);
-       		$offsetTop += 12;
-       		$offsetRight += 2;
-   		}
+        $box = imagettfbbox($this->size, $text->getAngle(), $this->font, $textWorking);
 
-  		else if(strpos($textWorking, "}") === 0)
-   		{
-       		$textWorking = substr($textWorking, 1);
-       		$offsetTop += 3;
-       		$offsetRight -= 7;
-   		}
-   		
-		$textParts = explode("\n", $textWorking);
-		$textFirstPart = $textParts[0];
-   		
-		$text->setText($textWorking." ");
+        $height = -$box[5];
 
-		$color = $text->getColor();
-		$rgb = $color->getColor($drawer->resource);
+        $box = imagettfbbox($this->size, 90, $this->font, $textWorking);
+        $width = abs($box[6] - $box[2]);
 
-		$box = imagettfbbox($this->size, $text->getAngle(), $this->font, $textWorking);
+        // Restore old text
+        $text->setText(substr($textWorking, 0, strlen($textWorking) - 1));
 
-		$height =  - $box[5];
+        do {
+            if (str_contains($textWorking, "\n")) {
+                $theText = substr($textWorking, 0, strpos($textWorking, "\n"));
+                $textWorking = substr($textWorking, strpos($textWorking, "\n") + 1);
+            } else {
+                $theText = $textWorking;
+                $textWorking = '';
+            }
 
-		$box = imagettfbbox($this->size, 90, $this->font, $textWorking);
-		$width = abs($box[6] - $box[2]);
+            if ($theText != '') {
+                imagettftext(
+                    $drawer->resource,
+                    $this->size,
+                    $text->getAngle(),
+                    $drawer->x + $p->x + $width * sin($text->getAngle() / 180 * M_PI) + $offsetRight,
+                    $drawer->y + $p->y + $height + $offsetTop,
+                    $rgb,
+                    $this->font,
+                    $theText
+                );
+            }
+            $offsetTop += 15;
+        } while ($textWorking != '');
+    }
 
-		// Restore old text
-		$text->setText(substr($textWorking, 0, strlen($textWorking) - 1));
-
-		do
-		{
-    		if(strpos($textWorking, "\n") !== false)
-    		{
-        		$theText = substr($textWorking, 0, strpos($textWorking, "\n"));
-        		$textWorking = substr($textWorking, strpos($textWorking, "\n") + 1);
-    		}
-    		else
-    		{
-        		$theText = $textWorking;
-        		$textWorking = '';
-    		}
-
-    		if($theText != '')
-    		{
-    		    imagettftext(
-    		    	$drawer->resource,
-    	    		$this->size,
-        			$text->getAngle(),
-    			    $drawer->x + $p->x + $width  * sin($text->getAngle() / 180 * M_PI) + $offsetRight,
-        			$drawer->y + $p->y + $height + $offsetTop,
-    			    $rgb,
-    			    $this->font,
-        			$theText
-    		    );
- 		    }
-      		$offsetTop += 15;
-	    } while ($textWorking != '');
-
-	}
-
-	/**
-	 * Get the width of a string
-	 *
-	 * @param awText $text A string
-	 */
-	public function getTextWidth(awText $text) {
-
+    /**
+     * Get the width of a string
+     *
+     * @param awText $text A string
+     */
+    public function getTextWidth(awText $text)
+    {
         $theText = $text->getText();
         $theTextParts = explode("\n", $theText);
         $theTextFirstPart = $theTextParts[0];
 
-		$box = imagettfbbox($this->size, $text->getAngle(), $this->font, $theTextFirstPart);
+        $box = imagettfbbox($this->size, $text->getAngle(), $this->font, $theTextFirstPart);
 
-		if($box === FALSE) {
-			trigger_error("Unable to get font size", E_USER_ERROR);
-			return;
-		}
+        if ($box === false) {
+            trigger_error("Unable to get font size", E_USER_ERROR);
+            return;
+        }
 
-		list(, , $x2, $y2, , , $x1, $y1) = $box;
+        [, , $x2, $y2, , , $x1, $y1] = $box;
 
-		return abs($x2 - $x1);
+        return abs($x2 - $x1);
+    }
 
-	}
+    /**
+     * Get the height of a string
+     *
+     * @param awText $text A string
+     */
+    public function getTextHeight(awText $text)
+    {
+        $box = imagettfbbox($this->size, $text->getAngle(), $this->font, $text->getText());
 
-	/**
-	 * Get the height of a string
-	 *
-	 * @param awText $text A string
-	 */
-	public function getTextHeight(awText $text) {
+        if ($box === false) {
+            trigger_error("Unable to get font size", E_USER_ERROR);
+            return;
+        }
 
-		$box = imagettfbbox($this->size, $text->getAngle(), $this->font, $text->getText());
+        [, , $x2, $y2, , , $x1, $y1] = $box;
 
-		if($box === FALSE) {
-			trigger_error("Unable to get font size", E_USER_ERROR);
-			return;
-		}
-
-		list(, , $x2, $y2, , , $x1, $y1) = $box;
-
-		return abs($y2 - $y1);
-
-	}
-
+        return abs($y2 - $y1);
+    }
 }
 
 registerClass('TTFFont');
@@ -293,54 +265,46 @@ registerClass('TTFFont');
 
 $php = '';
 
-for($i = 1; $i <= 5; $i++) {
-
-	$php .= '
-	class awFont'.$i.' extends awFont {
+for ($i = 1; $i <= 5; $i++) {
+    $php .= '
+	class awFont' . $i . ' extends awFont {
 
 		public function __construct() {
-			parent::__construct('.$i.');
+			parent::__construct(' . $i . ');
 		}
 
 	}
 	';
 
-	if(ARTICHOW_PREFIX !== 'aw') {
-		$php .= '
-		class '.ARTICHOW_PREFIX.'Font'.$i.' extends awFont'.$i.' {
+    if (ARTICHOW_PREFIX !== 'aw') {
+        $php .= '
+		class ' . ARTICHOW_PREFIX . 'Font' . $i . ' extends awFont' . $i . ' {
 		}
 		';
-	}
-
+    }
 }
 
 eval($php);
 
 $php = '';
 
-foreach($fonts as $font) {
-
-	$php .= '
-	class aw'.$font.' extends awTTFFont {
+foreach ($fonts as $font) {
+    $php .= '
+	class aw' . $font . ' extends awTTFFont {
 
 		public function __construct($size) {
-			parent::__construct(\''.(ARTICHOW_FONT.DIRECTORY_SEPARATOR.$font.'.ttf').'\', $size);
+			parent::__construct(\'' . (ARTICHOW_FONT . DIRECTORY_SEPARATOR . $font . '.ttf') . '\', $size);
 		}
 
 	}
 	';
 
-	if(ARTICHOW_PREFIX !== 'aw') {
-		$php .= '
-		class '.ARTICHOW_PREFIX.$font.' extends aw'.$font.' {
+    if (ARTICHOW_PREFIX !== 'aw') {
+        $php .= '
+		class ' . ARTICHOW_PREFIX . $font . ' extends aw' . $font . ' {
 		}
 		';
-	}
-
+    }
 }
 
 eval($php);
-
-
-
-?>

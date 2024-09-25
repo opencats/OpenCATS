@@ -3,7 +3,7 @@
  * CATS
  * Index (Delegation Module)
  *
- * CATS Version: 0.9.7.2
+ * CATS Version: 0.9.8.2
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
@@ -41,19 +41,17 @@
 
 include_once('./config.php');
 
-if (!file_exists('INSTALL_BLOCK') && !isset($_POST['performMaintenence']))
-{
+if (! file_exists('INSTALL_BLOCK') && ! isset($_POST['performMaintenence'])) {
     include(LEGACY_ROOT . '/modules/install/notinstalled.php');
     die();
 }
 
 // FIXME: Config file setting.
-@ini_set('memory_limit', '64M');
+ini_set('memory_limit', '64M');
 
 /* Hack to make CATS work with E_STRICT. */
-if (function_exists('date_default_timezone_set'))
-{
-    @date_default_timezone_set(date_default_timezone_get());
+if (function_exists('date_default_timezone_set')) {
+    date_default_timezone_set(date_default_timezone_get());
 }
 
 include_once(LEGACY_ROOT . '/constants.php');
@@ -71,7 +69,7 @@ include_once(LEGACY_ROOT . '/lib/TemplateUtility.php'); /* Depends: ModuleUtilit
 
 
 /* Give the session a unique name to avoid conflicts and start the session. */
-@session_name(CATS_SESSION_NAME);
+session_name(CATS_SESSION_NAME);
 session_start();
 
 /* Try to prevent caching. */
@@ -99,30 +97,27 @@ if (ini_get('magic_quotes_runtime')) {
 if (ini_get('magic_quotes_gpc')) {
     include_once(LEGACY_ROOT . '/lib/ArrayUtility.php');
 
-    $_GET     = array_map('stripslashes_deep', $_GET);
-    $_POST    = array_map('stripslashes_deep', $_POST);
+    $_GET = array_map('stripslashes_deep', $_GET);
+    $_POST = array_map('stripslashes_deep', $_POST);
     $_REQUEST = array_map('stripslashes_deep', $_REQUEST);
-    $_GET     = ArrayUtility::arrayMapKeys('stripslashes_deep', $_GET);
-    $_POST    = ArrayUtility::arrayMapKeys('stripslashes_deep', $_POST);
+    $_GET = ArrayUtility::arrayMapKeys('stripslashes_deep', $_GET);
+    $_POST = ArrayUtility::arrayMapKeys('stripslashes_deep', $_POST);
     $_REQUEST = ArrayUtility::arrayMapKeys('stripslashes_deep', $_REQUEST);
 }
 
 /* Objects can't be stored in the session if session.auto_start is enabled. */
 if (ini_get('session.auto_start') !== '0' &&
-    ini_get('session.auto_start') !== 'Off')
-{
+    ini_get('session.auto_start') !== 'Off') {
     die('CATS Error: session.auto_start must be set to 0 in php.ini.');
 }
 
 /* Proper extensions loaded?! */
-if (!function_exists('mysqli_connect') || !function_exists('session_start'))
-{
+if (! function_exists('mysqli_connect') || ! function_exists('session_start')) {
     die('OpenCATS Error: Either PHP Sessions extension or MySQLi extension is not loaded.');
 }
 
 /* Make sure we have a Session object stored in the user's session. */
-if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-{
+if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
     $_SESSION['CATS'] = new CATSSession();
 }
 
@@ -138,19 +133,16 @@ $_SESSION['CATS']->checkForcedUpdate();
  * also log the user out.
  */
 // FIXME: This is slow!
-if ($_SESSION['CATS']->isLoggedIn())
-{
+if ($_SESSION['CATS']->isLoggedIn()) {
     $users = new Users($_SESSION['CATS']->getSiteID());
     $forceLogoutData = $users->getForceLogoutData($_SESSION['CATS']->getUserID());
 
-    if (!empty($forceLogoutData) && ($forceLogoutData['forceLogout'] == 1 ||
-        $_SESSION['CATS']->getRealAccessLevel() != $forceLogoutData['accessLevel']))
-    {
+    if (! empty($forceLogoutData) && ($forceLogoutData['forceLogout'] == 1 ||
+        $_SESSION['CATS']->getRealAccessLevel() != $forceLogoutData['accessLevel'])) {
         $_SESSION['CATS']->setRealAccessLevel($forceLogoutData['accessLevel']);
 
         if ($forceLogoutData['accessLevel'] == ACCESS_LEVEL_DISABLED ||
-            $forceLogoutData['forceLogout'] == 1)
-        {
+            $forceLogoutData['forceLogout'] == 1) {
             /* Log the user out. */
             $unixName = $_SESSION['CATS']->getUnixName();
 
@@ -160,8 +152,7 @@ if ($_SESSION['CATS']->isLoggedIn())
 
             $URI = 'm=login';
 
-            if (!empty($unixName) && $unixName != 'demo')
-            {
+            if (! empty($unixName) && $unixName != 'demo') {
                 $URI .= '&s=' . $unixName;
             }
 
@@ -173,51 +164,40 @@ if ($_SESSION['CATS']->isLoggedIn())
 
 /* Check to see if we are supposed to display the career page. */
 if (((isset($careerPage) && $careerPage) ||
-    (isset($_GET['showCareerPortal']) && $_GET['showCareerPortal'] == '1')))
-{
+    (isset($_GET['showCareerPortal']) && $_GET['showCareerPortal'] == '1'))) {
     ModuleUtility::loadModule('careers');
 }
 
 /* Check to see if we are supposed to display an rss page. */
-else if (isset($rssPage) && $rssPage)
-{
+elseif (isset($rssPage) && $rssPage) {
     ModuleUtility::loadModule('rss');
-}
-
-else if (isset($xmlPage) && $xmlPage)
-{
+} elseif (isset($xmlPage) && $xmlPage) {
     ModuleUtility::loadModule('xml');
 }
 
 /* Check to see if the user was forcibly logged out (logged in from another browser). */
-else if ($_SESSION['CATS']->isLoggedIn() &&
-    (!isset($_GET['m']) || ModuleUtility::moduleRequiresAuthentication($_GET['m'])) &&
-    $_SESSION['CATS']->checkForceLogout())
-{
+elseif ($_SESSION['CATS']->isLoggedIn() &&
+    (! isset($_GET['m']) || ModuleUtility::moduleRequiresAuthentication($_GET['m'])) &&
+    $_SESSION['CATS']->checkForceLogout()) {
     // FIXME: Unset session / etc.?
     ModuleUtility::loadModule('login');
 }
 
 /* If user specified a module, load it; otherwise, load the home module. */
-else if (!isset($_GET['m']) || empty($_GET['m']))
-{
-    if ($_SESSION['CATS']->isLoggedIn())
-    {
+elseif (! isset($_GET['m']) || empty($_GET['m'])) {
+    if ($_SESSION['CATS']->isLoggedIn()) {
         $_SESSION['CATS']->logPageView();
 
-        if (!eval(Hooks::get('INDEX_LOAD_HOME'))) return;
+        if (! eval(Hooks::get('INDEX_LOAD_HOME'))) {
+            return;
+        }
 
         ModuleUtility::loadModule('home');
-    }
-    else
-    {
+    } else {
         ModuleUtility::loadModule('login');
     }
-}
-else
-{
-    if ($_GET['m'] == 'logout')
-    {
+} else {
+    if ($_GET['m'] == 'logout') {
         /* There isn't really a logout module. It's just a few lines. */
         $unixName = $_SESSION['CATS']->getUnixName();
 
@@ -226,50 +206,36 @@ else
         unset($_SESSION['modules']);
 
         $URI = 'm=login';
-                                 /* Local demo account doesn't relogin. */
-        if (!empty($unixName) && $unixName != 'demo')
-        {
+        /* Local demo account doesn't relogin. */
+        if (! empty($unixName) && $unixName != 'demo') {
             $URI .= '&s=' . $unixName;
         }
 
-        if (isset($_GET['message']))
-        {
+        if (isset($_GET['message'])) {
             $URI .= '&message=' . urlencode($_GET['message']);
         }
 
-        if (isset($_GET['messageSuccess']))
-        {
+        if (isset($_GET['messageSuccess'])) {
             $URI .= '&messageSuccess=' . urlencode($_GET['messageSuccess']);
         }
 
         /* catsone.com demo domain doesn't relogin. */
-        if (strpos(CATSUtility::getIndexName(), '://demo.catsone.com') !== false)
-        {
+        if (strpos(CATSUtility::getIndexName(), '://demo.catsone.com') !== false) {
             CATSUtility::transferURL('http://www.catsone.com');
-        }
-        else
-        {
+        } else {
             CATSUtility::transferRelativeURI($URI);
         }
-    }
-    else if (!ModuleUtility::moduleRequiresAuthentication($_GET['m']))
-    {
+    } elseif (! ModuleUtility::moduleRequiresAuthentication($_GET['m'])) {
         /* No authentication required; load the module. */
         ModuleUtility::loadModule($_GET['m']);
-    }
-    else if (!$_SESSION['CATS']->isLoggedIn())
-    {
+    } elseif (! $_SESSION['CATS']->isLoggedIn()) {
         /* User isn't logged in and authentication is required; send the user
          * to the login page.
          */
         ModuleUtility::loadModule('login');
-    }
-    else
-    {
+    } else {
         /* Everything's good; load the requested module. */
         $_SESSION['CATS']->logPageView();
         ModuleUtility::loadModule($_GET['m']);
     }
 }
-
-?>

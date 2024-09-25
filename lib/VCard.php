@@ -33,7 +33,6 @@
  *   * A vCard MUST contain a Name and Formatted Name according to the
  *     specifications and the implementation in this application.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -47,12 +46,12 @@
  */
 class VCard
 {
-    private $_properties = array();
+    private $_properties = [];
+
     private $_filename;
 
     /* vCard specification version. */
-    const VCARD_VERSION = '2.1';
-
+    public const VCARD_VERSION = '2.1';
 
     /**
      * Adds a name to a vCard (REQUIRED!). Multiple additional names are
@@ -66,11 +65,15 @@ class VCard
      * @param string Name prefix ('Dr.', etc.).
      * @param string Name suffix ('Jr.', etc.).
      * @param string Formatted name ('Will G. Buckner', etc.).
-     * @return void
      */
-    public function setName($lastName, $firstName, $additionalNames = '',
-                            $prefix = '', $suffix = '', $formattedName = '')
-    {
+    public function setName(
+        $lastName,
+        $firstName,
+        $additionalNames = '',
+        $prefix = '',
+        $suffix = '',
+        $formattedName = ''
+    ) {
         /* From the vCard 2.1 specification:
          *   The property value is a concatenation of the Family Name (first
          *   field), Given Name (second field), Additional Names (third field),
@@ -93,17 +96,16 @@ class VCard
             $this->_encode($suffix)
         );
 
-        $this->_properties[] = array(
+        $this->_properties[] = [
             'N',
-            $name
-        );
+            $name,
+        ];
 
         /* Filename is 'First Last.vcf'. */
         $this->_filename = sprintf('%s %s.vcf', $firstName, $lastName);
 
         /* Create a formatted name if none was specified. */
-        if ($formattedName == '')
-        {
+        if ($formattedName == '') {
             $formattedName = trim(
                 sprintf(
                     '%s %s %s %s %s',
@@ -117,10 +119,10 @@ class VCard
             $formattedName = str_replace('  ', ' ', $formattedName);
         }
 
-        $this->_properties[] = array(
+        $this->_properties[] = [
             'FN',
-            $this->_encode($formattedName)
-        );
+            $this->_encode($formattedName),
+        ];
     }
 
     /**
@@ -132,56 +134,52 @@ class VCard
      *
      * @param string Phone number.
      * @param string Phone number type.
-     * @return void
      */
     public function setPhoneNumber($phoneNumber, $type = 'VOICE')
     {
-        $this->_properties[] = array(
+        $this->_properties[] = [
             'TEL;' . $type,
-            $phoneNumber
-        );
+            $phoneNumber,
+        ];
     }
 
     /**
      * Adds an e-mail address to the vCard.
      *
      * @param string E-mail address.
-     * @return void
      */
     public function setEmail($emailAddress)
     {
-        $this->_properties[] = array(
+        $this->_properties[] = [
             'EMAIL;INTERNET',
-            $emailAddress
-        );
+            $emailAddress,
+        ];
     }
 
     /**
      * Adds a contact title to the vCard.
      *
      * @param string Title.
-     * @return void
      */
     public function setTitle($title)
     {
-        $this->_properties[] = array(
+        $this->_properties[] = [
             'TITLE;ENCODING=QUOTED-PRINTABLE',
-            $this->_encode($title)
-        );
+            $this->_encode($title),
+        ];
     }
 
     /**
      * Adds a organization name to the vCard.
      *
      * @param string Organization name.
-     * @return void
      */
     public function setOrganization($organization)
     {
-        $this->_properties[] = array(
+        $this->_properties[] = [
             'ORG;ENCODING=QUOTED-PRINTABLE',
-            $this->_encode($organization)
-        );
+            $this->_encode($organization),
+        ];
     }
 
     /**
@@ -198,18 +196,21 @@ class VCard
      * @param string X.500 post office address (e.g. P.O. Box 10101).
      * @param string Country.
      * @param string Address type.
-     * @return void
      */
-    public function setAddress($streetAddress, $extendedAddress, $city,
-        $region, $postalCode, $postOfficeAddress = '', $country = '',
-        $label = '', $type = '')
-    {
-        if ($type != '')
-        {
+    public function setAddress(
+        $streetAddress,
+        $extendedAddress,
+        $city,
+        $region,
+        $postalCode,
+        $postOfficeAddress = '',
+        $country = '',
+        $label = '',
+        $type = ''
+    ) {
+        if ($type != '') {
             $property = 'ADR;' . $type . ';ENCODING=QUOTED-PRINTABLE';
-        }
-        else
-        {
+        } else {
             $property = 'ADR;ENCODING=QUOTED-PRINTABLE';
         }
 
@@ -236,24 +237,23 @@ class VCard
             )
         );
 
-        $this->_properties[] = array(
+        $this->_properties[] = [
             $property,
-            $address
-        );
+            $address,
+        ];
     }
 
     /**
      * Adds a note to the vCard.
      *
      * @param string Note.
-     * @return void
      */
     public function setNote($note)
     {
-        $this->_properties[] = array(
+        $this->_properties[] = [
             'ORG;ENCODING=QUOTED-PRINTABLE',
-            $this->_encode($note)
-        );
+            $this->_encode($note),
+        ];
     }
 
     /**
@@ -263,23 +263,19 @@ class VCard
      *
      * @param string URL.
      * @param string URL type.
-     * @return void
      */
     public function setURL($url, $type = '')
     {
-        if ($type != '')
-        {
+        if ($type != '') {
             $property = 'URL;' . $type;
-        }
-        else
-        {
+        } else {
             $property = 'URL';
         }
 
-        $this->_properties[] = array(
+        $this->_properties[] = [
             $property,
-            $url
-        );
+            $url,
+        ];
     }
 
     /**
@@ -289,14 +285,13 @@ class VCard
      *
      * @param string Binary photo data.
      * @param string Photo type.
-     * @return void
      */
     public function setPhoto($photo, $type = 'JPEG')
     {
-        $this->_properties[] = array(
+        $this->_properties[] = [
             'PHOTO;TYPE=' . $type . ';ENCODING=BASE64',
-            base64_encode($photo)
-        );
+            base64_encode($photo),
+        ];
     }
 
     /**
@@ -304,14 +299,13 @@ class VCard
      * (ISO 8601 basic or extended formats).
      *
      * @param string Bitchday date.
-     * @return void
      */
     public function setBirthday($date)
     {
-        $this->_properties[] = array(
+        $this->_properties[] = [
             'BDAY',
-            $date
-        );
+            $date,
+        ];
     }
 
     /**
@@ -324,8 +318,7 @@ class VCard
         $vCard = sprintf("BEGIN:VCARD\r\nVERSION:%s\r\n", self::VCARD_VERSION);
 
         /* Add all other properties (set via setter methods) to the vCard. */
-        foreach ($this->_properties as $key => $value)
-        {
+        foreach ($this->_properties as $key => $value) {
             $vCard .= sprintf("%s:%s\r\n", $value[0], $value[1]);
         }
 
@@ -362,8 +355,6 @@ class VCard
     /**
      * Prints the vCard and all attachment Content / Connection headers.
      * Headers to disable caching are already sent by index.php.
-     *
-     * @return void
      */
     public function printVCardWithHeaders()
     {
@@ -377,14 +368,13 @@ class VCard
         echo $output;
     }
 
-
     // FIXME: Document me.
     private function _encode($string)
     {
         return str_replace(
-            ';', '\;', StringUtility::quotedPrintableEncode($string)
+            ';',
+            '\;',
+            StringUtility::quotedPrintableEncode($string)
         );
     }
 }
-
-?>

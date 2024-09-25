@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -46,6 +45,7 @@ define('QUESTIONNAIRE_QUESTION_TYPE_RADIO', 4);
 class Questionnaire
 {
     private $_siteID;
+
     private $_db;
 
     public function __construct($siteID)
@@ -124,12 +124,9 @@ class Questionnaire
             $this->_siteID
         );
 
-        if ($this->_db->query($sql))
-        {
+        if ($this->_db->query($sql)) {
             return $this->_db->getLastInsertID();
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -193,30 +190,27 @@ class Questionnaire
 
         // Put the data into a well-formatted php array
         for (
-            $rowIndex = 0, $questions = array(), $questionIndex = $questionID = -1;
+            $rowIndex = 0, $questions = [], $questionIndex = $questionID = -1;
             $rowIndex < count($rs);
             $rowIndex++
-        )
-        {
-            if ($questionID != ($newID = $rs[$rowIndex]['questionID']))
-            {
+        ) {
+            if ($questionID != ($newID = $rs[$rowIndex]['questionID'])) {
                 $questionID = $newID;
-                $questions[++$questionIndex] = array(
+                $questions[++$questionIndex] = [
                     'questionID' => $newID,
                     'questionType' => $rs[$rowIndex]['questionType'],
                     'questionText' => $rs[$rowIndex]['questionText'],
                     'minimumLength' => $rs[$rowIndex]['minimumLength'],
                     'maximumLength' => $rs[$rowIndex]['maximumLength'],
                     'questionPosition' => $rs[$rowIndex]['questionPosition'],
-                    'answers' => array()
-                );
+                    'answers' => [],
+                ];
             }
-            if ($questions[$questionIndex]['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_TEXT)
-            {
+            if ($questions[$questionIndex]['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_TEXT) {
                 continue;
             }
 
-            $questions[$questionIndex]['answers'][] = array(
+            $questions[$questionIndex]['answers'][] = [
                 'answerID' => $rs[$rowIndex]['answerID'],
                 'answerText' => $rs[$rowIndex]['answerText'],
                 'actionSource' => $rs[$rowIndex]['actionSource'],
@@ -225,8 +219,8 @@ class Questionnaire
                 'actionIsActive' => $rs[$rowIndex]['actionIsActive'],
                 'actionCanRelocate' => $rs[$rowIndex]['actionCanRelocate'],
                 'actionKeySkills' => $rs[$rowIndex]['actionKeySkills'],
-                'answerPosition' => $rs[$rowIndex]['answerPosition']
-            );
+                'answerPosition' => $rs[$rowIndex]['answerPosition'],
+            ];
         }
 
         return $questions;
@@ -293,22 +287,19 @@ class Questionnaire
      */
     public function addQuestions($questionnaireID, $questions)
     {
-        foreach ($questions as $question)
-        {
+        foreach ($questions as $question) {
             $questionID = $this->addQuestion(
                 $questionnaireID,
                 $question['questionText'],
-                isset($question[$id='minimumLength']) ? $question[$id] : 0,
-                isset($question[$id='maximumLength']) ? $question[$id] : 255,
+                isset($question[$id = 'minimumLength']) ? $question[$id] : 0,
+                isset($question[$id = 'maximumLength']) ? $question[$id] : 255,
                 true,
                 $question['questionPosition'],
                 $question['questionType']
             );
 
-            if ($questionID !== false)
-            {
-                if ($question['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_TEXT)
-                {
+            if ($questionID !== false) {
+                if ($question['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_TEXT) {
                     $this->addAnswer(
                         $questionnaireID,
                         $questionID,
@@ -321,21 +312,18 @@ class Questionnaire
                         '',
                         1
                     );
-                }
-                else
-                {
-                    foreach ($question['answers'] as $answer)
-                    {
+                } else {
+                    foreach ($question['answers'] as $answer) {
                         $this->addAnswer(
                             $questionnaireID,
                             $questionID,
                             $answer['answerText'],
-                            isset($answer[$id='actionSource']) ? $answer[$id] : '',
-                            isset($answer[$id='actionNotes']) ? $answer[$id] : '',
-                            isset($answer[$id='actionIsHot']) ? $answer[$id] : 0,
-                            isset($answer[$id='actionIsActive']) ? $answer[$id] : 1,
-                            isset($answer[$id='actionCanRelocate']) ? $answer[$id] : 0,
-                            isset($answer[$id='actionKeySkills']) ? $answer[$id] : '',
+                            isset($answer[$id = 'actionSource']) ? $answer[$id] : '',
+                            isset($answer[$id = 'actionNotes']) ? $answer[$id] : '',
+                            isset($answer[$id = 'actionIsHot']) ? $answer[$id] : 0,
+                            isset($answer[$id = 'actionIsActive']) ? $answer[$id] : 1,
+                            isset($answer[$id = 'actionCanRelocate']) ? $answer[$id] : 0,
+                            isset($answer[$id = 'actionKeySkills']) ? $answer[$id] : '',
                             $answer['answerPosition']
                         );
                     }
@@ -346,9 +334,15 @@ class Questionnaire
         return true;
     }
 
-    public function addQuestion($id, $text, $minimumLength, $maximumLength, $required,
-        $position, $type)
-    {
+    public function addQuestion(
+        $id,
+        $text,
+        $minimumLength,
+        $maximumLength,
+        $required,
+        $position,
+        $type
+    ) {
         $sql = sprintf(
             "INSERT INTO
                 career_portal_questionnaire_question (
@@ -374,12 +368,9 @@ class Questionnaire
             $this->_db->makeQueryInteger($type)
         );
 
-        if ($this->_db->query($sql))
-        {
+        if ($this->_db->query($sql)) {
             return $this->_db->getLastInsertID();
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -397,7 +388,6 @@ class Questionnaire
      * @param integer $actionCanRelocate
      * @param string $actionKeySkills
      * @param integer $position
-     * @param integer $siteID
      * @return boolean
      */
     public function addAnswer(
@@ -411,8 +401,7 @@ class Questionnaire
         $actionCanRelocate,  // Set candidate can_relocate
         $actionKeySkills,    // Append to candidate skills
         $position           // Position in the question (1,2,3,4, etc.)
-    )
-    {
+    ) {
         $sql = sprintf(
             "INSERT INTO
                 career_portal_questionnaire_answer (
@@ -444,20 +433,16 @@ class Questionnaire
             $this->_siteID
         );
 
-        if ($this->_db->query($sql))
-        {
+        if ($this->_db->query($sql)) {
             return $this->_db->getLastInsertID();
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
     public function convertQuestionTypeToConstant($type)
     {
-        switch ($type)
-        {
+        switch ($type) {
             case 'checkbox': return QUESTIONNAIRE_QUESTION_TYPE_CHECKBOX;
             case 'select': return QUESTIONNAIRE_QUESTION_TYPE_SELECT;
             case 'radio': return QUESTIONNAIRE_QUESTION_TYPE_RADIO;
@@ -467,8 +452,7 @@ class Questionnaire
 
     public function convertQuestionConstantToType($type)
     {
-        switch ($type)
-        {
+        switch ($type) {
             case QUESTIONNAIRE_QUESTION_TYPE_CHECKBOX: return 'Checkboxes';
             case QUESTIONNAIRE_QUESTION_TYPE_SELECT: return 'Drop-down List';
             case QUESTIONNAIRE_QUESTION_TYPE_RADIO: return 'Radio Buttons';
@@ -498,11 +482,9 @@ class Questionnaire
 
         $rs = $this->_db->getAllAssoc($sql);
         $lastTitle = '';
-        $results = array();
-        foreach ($rs as $row)
-        {
-            if (strcmp($lastTitle, $row[$id='questionnaireTitle']))
-            {
+        $results = [];
+        foreach ($rs as $row) {
+            if (strcmp($lastTitle, $row[$id = 'questionnaireTitle'])) {
                 $results[] = $row;
                 $lastTitle = $row[$id];
             }
@@ -515,7 +497,6 @@ class Questionnaire
      * Get all questions and answers to a given questionnaire.
      *
      * @param integer $candidateID
-     * @param integer $questionnaireID
      * @return array
      */
     public function getCandidateQuestionnaire($candidateID, $questionnaireTitle)
@@ -578,13 +559,14 @@ class Questionnaire
      *
      * @param ID of the attached questionnaire ID
      * @param integer candidate_id from candidate table
-     * @param array $_POST equivilent data
      */
     public function doActions($questionnaireID, $candidateID, $postData)
     {
         // Get the candidate (if exists)
         $candidate = new Candidates($this->_siteID);
-        if (!count($cData = $candidate->get($candidateID))) return false;
+        if (! count($cData = $candidate->get($candidateID))) {
+            return false;
+        }
 
         // Default values (which may be changed by actions)
         $source = $notes = $keySkills = '';
@@ -592,28 +574,26 @@ class Questionnaire
         $isActive = 1;
 
         $qData = $this->get($questionnaireID);
-        if (is_array($qData) && !empty($qData))
-        {
-            if (!count($questions = $this->getQuestions($qData['questionnaireID']))) return false;
+        if (is_array($qData) && ! empty($qData)) {
+            if (! count($questions = $this->getQuestions($qData['questionnaireID']))) {
+                return false;
+            }
 
-            foreach ($questions as $question)
-            {
+            foreach ($questions as $question) {
                 $answerText = '';
 
-                switch ($question['questionType'])
-                {
+                switch ($question['questionType']) {
                     case QUESTIONNAIRE_QUESTION_TYPE_CHECKBOX:
                         // Multiple answers possible
-                        $answerIDs = array();
-                        foreach ($question['answers'] as $answer)
-                        {
-                            $index = sprintf('questionnaire%dQuestion%dAnswer%d',
+                        $answerIDs = [];
+                        foreach ($question['answers'] as $answer) {
+                            $index = sprintf(
+                                'questionnaire%dQuestion%dAnswer%d',
                                 $qData['questionnaireID'],
                                 $question['questionID'],
                                 $answer['answerID']
                             );
-                            if (isset($postData[$index]))
-                            {
+                            if (isset($postData[$index])) {
                                 $answerIDs[] = $answer['answerID'];
                             }
                         }
@@ -621,60 +601,74 @@ class Questionnaire
                     case QUESTIONNAIRE_QUESTION_TYPE_RADIO:
                     case QUESTIONNAIRE_QUESTION_TYPE_SELECT:
                         // One answer
-                        $index = sprintf('questionnaire%dQuestion%d',
+                        $index = sprintf(
+                            'questionnaire%dQuestion%d',
                             $qData['questionnaireID'],
                             $question['questionID']
                         );
-                        $answerIDs = array(isset($postData[$index]) ? intval($postData[$index]) : false);
+                        $answerIDs = [isset($postData[$index]) ? intval($postData[$index]) : false];
                         break;
                     case QUESTIONNAIRE_QUESTION_TYPE_TEXT:
                     default:
                         // text answer
-                        $index = sprintf('questionnaire%dQuestion%d',
+                        $index = sprintf(
+                            'questionnaire%dQuestion%d',
                             $qData['questionnaireID'],
                             $question['questionID']
                         );
                         $answerText = substr(trim(isset($postData[$index]) ? $postData[$index] : ''), 0, 255);
-                        $answerIDs = array();
+                        $answerIDs = [];
                         break;
                 }
 
-                foreach ($answerIDs as $answerID)
-                {
-                    foreach ($question['answers'] as $answer)
-                    {
-                        if ($answer['answerID'] == $answerID)
-                        {
-                            if ($answerText != '') $answerText .= ', ';
+                foreach ($answerIDs as $answerID) {
+                    foreach ($question['answers'] as $answer) {
+                        if ($answer['answerID'] == $answerID) {
+                            if ($answerText != '') {
+                                $answerText .= ', ';
+                            }
                             $answerText .= $answer['answerText'];
 
                             // Perform any actions (if there are any)
-                            if (strlen($answer['actionSource']))
-                            {
-                                if (strlen($source)) $source .= ', ';
+                            if (strlen($answer['actionSource'])) {
+                                if (strlen($source)) {
+                                    $source .= ', ';
+                                }
                                 $source .= $answer['actionSource'];
                             }
-                            if (strlen($answer['actionNotes']))
-                            {
-                                if (strlen($notes)) $notes .= ', ';
+                            if (strlen($answer['actionNotes'])) {
+                                if (strlen($notes)) {
+                                    $notes .= ', ';
+                                }
                                 $notes .= $answer['actionNotes'];
                             }
-                            if (strlen($answer['actionKeySkills']))
-                            {
-                                if (strlen($keySkills)) $keySkills .= ', ';
+                            if (strlen($answer['actionKeySkills'])) {
+                                if (strlen($keySkills)) {
+                                    $keySkills .= ', ';
+                                }
                                 $keySkills .= $answer['actionKeySkills'];
                             }
-                            if ($answer['actionIsHot']) $isHot = 1;
-                            if (!$answer['actionIsActive']) $isActive = 0;
-                            if ($answer['actionCanRelocate']) $canRelocate = 1;
+                            if ($answer['actionIsHot']) {
+                                $isHot = 1;
+                            }
+                            if (! $answer['actionIsActive']) {
+                                $isActive = 0;
+                            }
+                            if ($answer['actionCanRelocate']) {
+                                $canRelocate = 1;
+                            }
                         }
                     }
                 }
 
                 // Log textual response (not multiple choice)
                 // Save this candidates response
-                $this->log($candidateID, $qData['title'], $qData['description'],
-                    $question['questionText'], $answerText
+                $this->log(
+                    $candidateID,
+                    $qData['title'],
+                    $qData['description'],
+                    $question['questionText'],
+                    $answerText
                 );
             }
         }
@@ -711,27 +705,3 @@ class Questionnaire
         );
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

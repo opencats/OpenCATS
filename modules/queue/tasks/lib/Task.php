@@ -26,9 +26,12 @@
  * $Id: Task.php 3078 2007-09-21 20:25:28Z will $
  */
 
-class Task {
+class Task
+{
     protected $taskName;
+
     protected $taskDescription;
+
     protected $taskID;
 
     public function setTaskID($id)
@@ -91,6 +94,3 @@ class Task {
         return intval(date('i'));
     }
 }
-
-
-?>

@@ -45,8 +45,7 @@ class CompaniesUI extends UserInterface
     /* Maximum number of characters of the job notes to show without the user
      * clicking "[More]"
      */
-    const NOTES_MAXLEN = 500;
-
+    public const NOTES_MAXLEN = 500;
 
     public function __construct()
     {
@@ -56,136 +55,114 @@ class CompaniesUI extends UserInterface
         $this->_moduleDirectory = 'companies';
         $this->_moduleName = 'companies';
         $this->_moduleTabText = 'Companies';
-        $this->_subTabs = array(
-            'Add Company'     => CATSUtility::getIndexName() . '?m=companies&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@companies.add' . '*hrmode=0',
+        $this->_subTabs = [
+            'Add Company' => CATSUtility::getIndexName() . '?m=companies&amp;a=add*al=' . ACCESS_LEVEL_EDIT . '@companies.add' . '*hrmode=0',
             'Search Companies' => CATSUtility::getIndexName() . '?m=companies&amp;a=search*hrmode=0',
-            'Go To My Company' => CATSUtility::getIndexName() . '?m=companies&amp;a=internalPostings*hrmode=0'
-        );
+            'Go To My Company' => CATSUtility::getIndexName() . '?m=companies&amp;a=internalPostings*hrmode=0',
+        ];
     }
-
 
     public function handleRequest()
     {
         $action = $this->getAction();
 
-        if (!eval(Hooks::get('CLIENTS_HANDLE_REQUEST'))) return;
+        if (! eval(Hooks::get('CLIENTS_HANDLE_REQUEST'))) {
+            return;
+        }
 
-        switch ($action)
-        {
+        switch ($action) {
             case 'show':
-                if ($this->getUserAccessLevel('companies.show') < ACCESS_LEVEL_READ)
-                {
+                if ($this->getUserAccessLevel('companies.show') < ACCESS_LEVEL_READ) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->show();
                 break;
 
             case 'internalPostings':
-                if ($this->getUserAccessLevel('companies.internalPostings') < ACCESS_LEVEL_READ)
-                {
+                if ($this->getUserAccessLevel('companies.internalPostings') < ACCESS_LEVEL_READ) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->internalPostings();
                 break;
 
             case 'add':
-                if ($this->getUserAccessLevel('companies.add') < ACCESS_LEVEL_EDIT)
-                {
+                if ($this->getUserAccessLevel('companies.add') < ACCESS_LEVEL_EDIT) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onAdd();
-                }
-                else
-                {
+                } else {
                     $this->add();
                 }
 
                 break;
 
             case 'edit':
-                if ($this->getUserAccessLevel('companies.edit') < ACCESS_LEVEL_EDIT)
-                {
+                if ($this->getUserAccessLevel('companies.edit') < ACCESS_LEVEL_EDIT) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onEdit();
-                }
-                else
-                {
+                } else {
                     $this->edit();
                 }
 
                 break;
 
             case 'delete':
-                if ($this->getUserAccessLevel('companies.delete') < ACCESS_LEVEL_DELETE)
-                {
+                if ($this->getUserAccessLevel('companies.delete') < ACCESS_LEVEL_DELETE) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->onDelete();
                 break;
 
             case 'search':
-                if ($this->getUserAccessLevel('companies.search') < ACCESS_LEVEL_READ)
-                {
+                if ($this->getUserAccessLevel('companies.search') < ACCESS_LEVEL_READ) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 include_once(LEGACY_ROOT . '/lib/Search.php');
 
-                if ($this->isGetBack())
-                {
+                if ($this->isGetBack()) {
                     $this->onSearch();
-                }
-                else
-                {
+                } else {
                     $this->search();
                 }
 
                 break;
 
-            /* Add an attachment */
+                /* Add an attachment */
             case 'createAttachment':
-                if ($this->getUserAccessLevel('companies.createAttachment') < ACCESS_LEVEL_EDIT)
-                {
+                if ($this->getUserAccessLevel('companies.createAttachment') < ACCESS_LEVEL_EDIT) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
 
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onCreateAttachment();
-                }
-                else
-                {
+                } else {
                     $this->createAttachment();
                 }
 
                 break;
 
-            /* Delete an attachment */
+                /* Delete an attachment */
             case 'deleteAttachment':
-                if ($this->getUserAccessLevel('companies.deleteAttachment') < ACCESS_LEVEL_DELETE)
-                {
+                if ($this->getUserAccessLevel('companies.deleteAttachment') < ACCESS_LEVEL_DELETE) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->onDeleteAttachment();
                 break;
 
-            /* Main companies page. */
+                /* Main companies page. */
             case 'listByView':
             default:
-                if ($this->getUserAccessLevel('companies.list') < ACCESS_LEVEL_READ)
-                {
+                if ($this->getUserAccessLevel('companies.list') < ACCESS_LEVEL_READ) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->listByView();
                 break;
         }
     }
-
 
     /*
      * Called by handleRequest() to process loading the list / main page.
@@ -195,8 +172,7 @@ class CompaniesUI extends UserInterface
         /* First, if we are operating in HR mode we will never see the
            companies pager.  Immediantly forward to My Company. */
 
-        if ($_SESSION['CATS']->isHrMode())
-        {
+        if ($_SESSION['CATS']->isHrMode()) {
             $this->internalPostings();
             die();
         }
@@ -205,11 +181,12 @@ class CompaniesUI extends UserInterface
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
          * be empty.  Fill in some default values. */
-        if ($dataGridProperties == array())
-        {
-            $dataGridProperties = array('rangeStart'    => 0,
-                                        'maxResults'    => 15,
-                                        'filterVisible' => false);
+        if ($dataGridProperties == []) {
+            $dataGridProperties = [
+                'rangeStart' => 0,
+                'maxResults' => 15,
+                'filterVisible' => false,
+            ];
         }
 
         $dataGrid = DataGrid::get("companies:CompaniesListByViewDataGrid", $dataGridProperties);
@@ -219,7 +196,9 @@ class CompaniesUI extends UserInterface
         $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
         $this->_template->assign('errMessage', $errMessage);
 
-        if (!eval(Hooks::get('CLIENTS_LIST_BY_VIEW'))) return;
+        if (! eval(Hooks::get('CLIENTS_LIST_BY_VIEW'))) {
+            return;
+        }
 
         $this->_template->display('./modules/companies/Companies.tpl');
     }
@@ -230,8 +209,7 @@ class CompaniesUI extends UserInterface
     private function show()
     {
         /* Bail out if we don't have a valid company ID. */
-        if (!$this->isRequiredIDValid('companyID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('companyID', $_GET)) {
             $this->listByView('Invalid company ID.');
             return;
         }
@@ -242,8 +220,7 @@ class CompaniesUI extends UserInterface
         $data = $companies->get($companyID);
 
         /* Bail out if we got an empty result set. */
-        if (empty($data))
-        {
+        if (empty($data)) {
             $this->listByView('The specified company ID could not be found.');
             return;
         }
@@ -252,7 +229,8 @@ class CompaniesUI extends UserInterface
          * of in the template.
          */
         $data['cityAndState'] = StringUtility::makeCityStateString(
-            $data['city'], $data['state']
+            $data['city'],
+            $data['state']
         );
 
         /*
@@ -264,58 +242,50 @@ class CompaniesUI extends UserInterface
         );
 
         /* Chop $data['notes'] to make $data['shortNotes']. */
-        if (strlen($data['notes']) > self::NOTES_MAXLEN)
-        {
-            $data['shortNotes']  = substr(
-                $data['notes'], 0, self::NOTES_MAXLEN
+        if (strlen($data['notes']) > self::NOTES_MAXLEN) {
+            $data['shortNotes'] = substr(
+                $data['notes'],
+                0,
+                self::NOTES_MAXLEN
             );
             $isShortNotes = true;
-        }
-        else
-        {
+        } else {
             $data['shortNotes'] = $data['notes'];
             $isShortNotes = false;
         }
 
         /* Hot companies [can] have different title styles than normal companies. */
-        if ($data['isHot'] == 1)
-        {
+        if ($data['isHot'] == 1) {
             $data['titleClass'] = 'jobTitleHot';
-        }
-        else
-        {
+        } else {
             $data['titleClass'] = 'jobTitleCold';
         }
 
         /* Link to Google Maps for this address */
-        if (!empty($data['address']) && !empty($data['city']) && !empty($data['state']))
-        {
+        if (! empty($data['address']) && ! empty($data['city']) && ! empty($data['state'])) {
             $data['googleMaps'] = '<a href="http://maps.google.com/maps?q=' .
                      urlencode($data['address']) . '+' .
-                     urlencode($data['city'])     . '+' .
+                     urlencode($data['city']) . '+' .
                      urlencode($data['state']);
 
             /* Google Maps will find an address without Zip. */
-            if (!empty($data['zip']))
-            {
+            if (! empty($data['zip'])) {
                 $data['googleMaps'] .= '+' . $data['zip'];
             }
 
             $data['googleMaps'] .= '" target=_blank><img src="images/google_maps.gif" style="border: none;" class="absmiddle" /></a>';
-        }
-        else
-        {
+        } else {
             $data['googleMaps'] = '';
         }
 
         /* Attachments */
         $attachments = new Attachments($this->_siteID);
         $attachmentsRS = $attachments->getAll(
-            DATA_ITEM_COMPANY, $companyID
+            DATA_ITEM_COMPANY,
+            $companyID
         );
 
-        foreach ($attachmentsRS as $rowNumber => $attachmentsData)
-        {
+        foreach ($attachmentsRS as $rowNumber => $attachmentsData) {
             /* Show an attachment icon based on the document's file type. */
             $attachmentIcon = strtolower(
                 FileUtility::getAttachmentIcon(
@@ -327,15 +297,16 @@ class CompaniesUI extends UserInterface
         }
 
         /* Job Orders for this company */
-        $jobOrders   = new JobOrders($this->_siteID);
+        $jobOrders = new JobOrders($this->_siteID);
         $jobOrdersRS = $jobOrders->getAll(
-            JOBORDERS_STATUS_ALL, -1, $companyID, -1
+            JOBORDERS_STATUS_ALL,
+            -1,
+            $companyID,
+            -1
         );
 
-        if (!empty($jobOrdersRS))
-        {
-            foreach ($jobOrdersRS as $rowIndex => $row)
-            {
+        if (! empty($jobOrdersRS)) {
+            foreach ($jobOrdersRS as $rowIndex => $row) {
                 /* Convert '00-00-00' dates to empty strings. */
                 $jobOrdersRS[$rowIndex]['startDate'] = DateUtility::fixZeroDate(
                     $jobOrdersRS[$rowIndex]['startDate']
@@ -344,12 +315,9 @@ class CompaniesUI extends UserInterface
                 /* Hot jobs [can] have different title styles than normal
                  * jobs.
                  */
-                if ($jobOrdersRS[$rowIndex]['isHot'] == 1)
-                {
+                if ($jobOrdersRS[$rowIndex]['isHot'] == 1) {
                     $jobOrdersRS[$rowIndex]['linkClass'] = 'jobLinkHot';
-                }
-                else
-                {
+                } else {
                     $jobOrdersRS[$rowIndex]['linkClass'] = 'jobLinkCold';
                 }
 
@@ -370,45 +338,33 @@ class CompaniesUI extends UserInterface
         }
 
         /* Contacts for this company */
-        $contacts   = new Contacts($this->_siteID);
+        $contacts = new Contacts($this->_siteID);
         $contactsRS = $contacts->getAll(-1, $companyID);
         $contactsRSWC = null;
 
-        if (!empty($contactsRS))
-        {
-            foreach ($contactsRS as $rowIndex => $row)
-            {
-
+        if (! empty($contactsRS)) {
+            foreach ($contactsRS as $rowIndex => $row) {
                 /* Hot contacts [can] have different title styles than normal contacts. */
-                if ($contactsRS[$rowIndex]['isHot'] == 1)
-                {
+                if ($contactsRS[$rowIndex]['isHot'] == 1) {
                     $contactsRS[$rowIndex]['linkClass'] = 'jobLinkHot';
-                }
-                else
-                {
+                } else {
                     $contactsRS[$rowIndex]['linkClass'] = 'jobLinkCold';
                 }
 
-                if (!empty($contactsRS[$rowIndex]['ownerFirstName']))
-                {
+                if (! empty($contactsRS[$rowIndex]['ownerFirstName'])) {
                     $contactsRS[$rowIndex]['ownerAbbrName'] = StringUtility::makeInitialName(
                         $contactsRS[$rowIndex]['ownerFirstName'],
                         $contactsRS[$rowIndex]['ownerLastName'],
                         false,
                         LAST_NAME_MAXLEN
                     );
-                }
-                else
-                {
+                } else {
                     $contactsRS[$rowIndex]['ownerAbbrName'] = 'None';
                 }
 
-                if ($contactsRS[$rowIndex]['leftCompany'] == 0)
-                {
+                if ($contactsRS[$rowIndex]['leftCompany'] == 0) {
                     $contactsRSWC[] = $contactsRS[$rowIndex];
-                }
-                else
-                {
+                } else {
                     $contactsRS[$rowIndex]['linkClass'] = 'jobLinkDead';
                 }
             }
@@ -416,7 +372,9 @@ class CompaniesUI extends UserInterface
 
         /* Add an MRU entry. */
         $_SESSION['CATS']->getMRU()->addEntry(
-            DATA_ITEM_COMPANY, $companyID, $data['name']
+            DATA_ITEM_COMPANY,
+            $companyID,
+            $data['name']
         );
 
         /* Get extra fields. */
@@ -426,12 +384,9 @@ class CompaniesUI extends UserInterface
         $departmentsRS = $companies->getDepartments($companyID);
 
         /* Is the user an admin - can user see history? */
-        if ($this->getUserAccessLevel('companies.show') < ACCESS_LEVEL_DEMO)
-        {
+        if ($this->getUserAccessLevel('companies.show') < ACCESS_LEVEL_DEMO) {
             $privledgedUser = false;
-        }
-        else
-        {
+        } else {
             $privledgedUser = true;
         }
 
@@ -447,7 +402,9 @@ class CompaniesUI extends UserInterface
         $this->_template->assign('privledgedUser', $privledgedUser);
         $this->_template->assign('companyID', $companyID);
 
-        if (!eval(Hooks::get('CLIENTS_SHOW'))) return;
+        if (! eval(Hooks::get('CLIENTS_SHOW'))) {
+            return;
+        }
 
         $this->_template->display('./modules/companies/Show.tpl');
     }
@@ -475,7 +432,9 @@ class CompaniesUI extends UserInterface
         /* Get extra fields. */
         $extraFieldRS = $companies->extraFields->getValuesForAdd();
 
-        if (!eval(Hooks::get('CLIENTS_ADD'))) return;
+        if (! eval(Hooks::get('CLIENTS_ADD'))) {
+            return;
+        }
 
         $this->_template->assign('extraFieldRS', $extraFieldRS);
         $this->_template->assign('active', $this);
@@ -491,46 +450,35 @@ class CompaniesUI extends UserInterface
         $formattedPhone1 = StringUtility::extractPhoneNumber(
             $this->getSanitisedInput('phone1', $_POST)
         );
-        if (!empty($formattedPhone1))
-        {
+        if (! empty($formattedPhone1)) {
             $phone1 = $formattedPhone1;
-        }
-        else
-        {
+        } else {
             $phone1 = $this->getSanitisedInput('phone1', $_POST);
         }
 
         $formattedPhone2 = StringUtility::extractPhoneNumber(
             $this->getSanitisedInput('phone2', $_POST)
         );
-        if (!empty($formattedPhone2))
-        {
+        if (! empty($formattedPhone2)) {
             $phone2 = $formattedPhone2;
-        }
-        else
-        {
+        } else {
             $phone2 = $this->getSanitisedInput('phone2', $_POST);
         }
 
         $formattedFaxNumber = StringUtility::extractPhoneNumber(
             $this->getSanitisedInput('faxNumber', $_POST)
         );
-        if (!empty($formattedFaxNumber))
-        {
+        if (! empty($formattedFaxNumber)) {
             $faxNumber = $formattedFaxNumber;
-        }
-        else
-        {
+        } else {
             $faxNumber = $this->getSanitisedInput('faxNumber', $_POST);
         }
 
         $url = $this->getSanitisedInput('url', $_POST);
-        if (!empty($url))
-        {
+        if (! empty($url)) {
             $formattedURL = StringUtility::extractURL($url);
 
-            if (!empty($formattedURL))
-            {
+            if (! empty($formattedURL)) {
                 $url = $formattedURL;
             }
         }
@@ -538,47 +486,63 @@ class CompaniesUI extends UserInterface
         /* Hot company? */
         $isHot = $this->isChecked('isHot', $_POST);
 
-        $name            = $this->getSanitisedInput('name', $_POST);
-        $address         = $this->getSanitisedInput('address', $_POST);
-        $city            = $this->getSanitisedInput('city', $_POST);
-        $state           = $this->getSanitisedInput('state', $_POST);
-        $zip             = $this->getSanitisedInput('zip', $_POST);
+        $name = $this->getSanitisedInput('name', $_POST);
+        $address = $this->getSanitisedInput('address', $_POST);
+        $city = $this->getSanitisedInput('city', $_POST);
+        $state = $this->getSanitisedInput('state', $_POST);
+        $zip = $this->getSanitisedInput('zip', $_POST);
         $keyTechnologies = $this->getSanitisedInput('keyTechnologies', $_POST);
-        $notes           = $this->getSanitisedInput('notes', $_POST);
+        $notes = $this->getSanitisedInput('notes', $_POST);
 
         /* Departments list editor. */
         $departmentsCSV = $this->getTrimmedInput('departmentsCSV', $_POST);
 
         /* Bail out if any of the required fields are empty. */
-        if (empty($name))
-        {
+        if (empty($name)) {
             $this->listByView('Required fields are missing.');
             return;
         }
 
-        if (!eval(Hooks::get('CLIENTS_ON_ADD_PRE'))) return;
+        if (! eval(Hooks::get('CLIENTS_ON_ADD_PRE'))) {
+            return;
+        }
 
         $companies = new Companies($this->_siteID);
         $companyID = $companies->add(
-            $name, $address, $city, $state, $zip, $phone1,
-            $phone2, $faxNumber, $url, $keyTechnologies, $isHot,
-            $notes, $this->_userID, $this->_userID
+            $name,
+            $address,
+            $city,
+            $state,
+            $zip,
+            $phone1,
+            $phone2,
+            $faxNumber,
+            $url,
+            $keyTechnologies,
+            $isHot,
+            $notes,
+            $this->_userID,
+            $this->_userID
         );
 
-        if ($companyID <= 0)
-        {
+        if ($companyID <= 0) {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add company.');
         }
 
-        if (!eval(Hooks::get('CLIENTS_ON_ADD_POST'))) return;
+        if (! eval(Hooks::get('CLIENTS_ON_ADD_POST'))) {
+            return;
+        }
 
         /* Update extra fields. */
         $companies->extraFields->setValuesOnEdit($companyID);
 
         /* Add departments */
-        $departments = array();
+        $departments = [];
         $departmentsDifferences = ListEditor::getDifferencesFromList(
-            $departments, 'name', 'departmentID', $departmentsCSV
+            $departments,
+            'name',
+            'departmentID',
+            $departmentsCSV
         );
 
         $companies->updateDepartments($companyID, $departmentsDifferences);
@@ -594,8 +558,7 @@ class CompaniesUI extends UserInterface
     private function edit()
     {
         /* Bail out if we don't have a valid company ID. */
-        if (!$this->isRequiredIDValid('companyID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('companyID', $_GET)) {
             $this->listByView('Invalid company ID.');
             return;
         }
@@ -606,8 +569,7 @@ class CompaniesUI extends UserInterface
         $data = $companies->getForEditing($companyID);
 
         /* Bail out if we got an empty result set. */
-        if (empty($data))
-        {
+        if (empty($data)) {
             $this->listByView('The specified company ID could not be found.');
             return;
         }
@@ -620,7 +582,9 @@ class CompaniesUI extends UserInterface
 
         /* Add an MRU entry. */
         $_SESSION['CATS']->getMRU()->addEntry(
-            DATA_ITEM_COMPANY, $companyID, $data['name']
+            DATA_ITEM_COMPANY,
+            $companyID,
+            $data['name']
         );
 
         /* Get extra fields. */
@@ -635,25 +599,21 @@ class CompaniesUI extends UserInterface
             'EMAIL_TEMPLATE_OWNERSHIPASSIGNCLIENT'
         );
 
-        if (!isset($statusChangeTemplateRS['disabled']) || $statusChangeTemplateRS['disabled'] == 1)
-        {
+        if (! isset($statusChangeTemplateRS['disabled']) || $statusChangeTemplateRS['disabled'] == 1) {
             $emailTemplateDisabled = true;
-        }
-        else
-        {
+        } else {
             $emailTemplateDisabled = false;
         }
 
-        if ($this->getUserAccessLevel('companies.email') == ACCESS_LEVEL_DEMO)
-        {
+        if ($this->getUserAccessLevel('companies.email') == ACCESS_LEVEL_DEMO) {
             $canEmail = false;
-        }
-        else
-        {
+        } else {
             $canEmail = true;
         }
 
-        if (!eval(Hooks::get('CLIENTS_EDIT'))) return;
+        if (! eval(Hooks::get('CLIENTS_EDIT'))) {
+            return;
+        }
 
         $this->_template->assign('canEmail', $canEmail);
         $this->_template->assign('active', $this);
@@ -676,22 +636,19 @@ class CompaniesUI extends UserInterface
         $companies = new Companies($this->_siteID);
 
         /* Bail out if we don't have a valid company ID. */
-        if (!$this->isRequiredIDValid('companyID', $_POST))
-        {
+        if (! $this->isRequiredIDValid('companyID', $_POST)) {
             $this->listByView('Invalid company ID.');
             return;
         }
 
         /* Bail out if we don't have a valid owner user ID. */
-        if (!$this->isOptionalIDValid('owner', $_POST))
-        {
+        if (! $this->isOptionalIDValid('owner', $_POST)) {
             $this->listByView('Invalid owner user ID.');
             return;
         }
 
         /* Bail out if we don't have a valid billing contact ID. */
-        if (!$this->isOptionalIDValid('billingContact', $_POST))
-        {
+        if (! $this->isOptionalIDValid('billingContact', $_POST)) {
             $this->listByView('Invalid billing contact ID.');
             return;
         }
@@ -699,46 +656,35 @@ class CompaniesUI extends UserInterface
         $formattedPhone1 = StringUtility::extractPhoneNumber(
             $this->getSanitisedInput('phone1', $_POST)
         );
-        if (!empty($formattedPhone1))
-        {
+        if (! empty($formattedPhone1)) {
             $phone1 = $formattedPhone1;
-        }
-        else
-        {
+        } else {
             $phone1 = $this->getSanitisedInput('phone1', $_POST);
         }
 
         $formattedPhone2 = StringUtility::extractPhoneNumber(
             $this->getSanitisedInput('phone2', $_POST)
         );
-        if (!empty($formattedPhone2))
-        {
+        if (! empty($formattedPhone2)) {
             $phone2 = $formattedPhone2;
-        }
-        else
-        {
+        } else {
             $phone2 = $this->getSanitisedInput('phone2', $_POST);
         }
 
         $formattedFaxNumber = StringUtility::extractPhoneNumber(
             $this->getSanitisedInput('faxNumber', $_POST)
         );
-        if (!empty($formattedFaxNumber))
-        {
+        if (! empty($formattedFaxNumber)) {
             $faxNumber = $formattedFaxNumber;
-        }
-        else
-        {
+        } else {
             $faxNumber = $this->getSanitisedInput('faxNumber', $_POST);
         }
 
         $url = $this->getSanitisedInput('url', $_POST);
-        if (!empty($url))
-        {
+        if (! empty($url)) {
             $formattedURL = StringUtility::extractURL($url);
 
-            if (!empty($formattedURL))
-            {
+            if (! empty($formattedURL)) {
                 $url = $formattedURL;
             }
         }
@@ -746,20 +692,18 @@ class CompaniesUI extends UserInterface
         /* Hot company? */
         $isHot = $this->isChecked('isHot', $_POST);
 
-        $companyID       = $_POST['companyID'];
-        $owner           = $_POST['owner'];
-        $billingContact  = $_POST['billingContact'];
+        $companyID = $_POST['companyID'];
+        $owner = $_POST['owner'];
+        $billingContact = $_POST['billingContact'];
 
         /* Change ownership email? */
-        if ($this->isChecked('ownershipChange', $_POST) && $owner > 0)
-        {
+        if ($this->isChecked('ownershipChange', $_POST) && $owner > 0) {
             $companyDetails = $companies->get($companyID);
 
             $users = new Users($this->_siteID);
             $ownerDetails = $users->get($_POST['owner']);
 
-            if (!empty($ownerDetails))
-            {
+            if (! empty($ownerDetails)) {
                 $emailAddress = $ownerDetails['email'];
 
                 /* Get the change status email template. */
@@ -769,26 +713,23 @@ class CompaniesUI extends UserInterface
                 );
 
                 if (empty($statusChangeTemplateRS) ||
-                    empty($statusChangeTemplateRS['textReplaced']))
-                {
+                    empty($statusChangeTemplateRS['textReplaced'])) {
                     $statusChangeTemplate = '';
-                }
-                else
-                {
+                } else {
                     $statusChangeTemplate = $statusChangeTemplateRS['textReplaced'];
                 }
                 /* Replace e-mail template variables. */
-                $stringsToFind = array(
+                $stringsToFind = [
                     '%CLNTOWNER%',
                     '%CLNTNAME%',
-                    '%CLNTCATSURL%'
-                );
-                $replacementStrings = array(
+                    '%CLNTCATSURL%',
+                ];
+                $replacementStrings = [
                     $ownerDetails['fullName'],
                     $companyDetails['name'],
-                    '<a href="http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=companies&amp;a=show&amp;companyID=' . $companyID . '">'.
-                        'http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=companies&amp;a=show&amp;companyID=' . $companyID . '</a>'
-                );
+                    '<a href="http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=companies&amp;a=show&amp;companyID=' . $companyID . '">' .
+                        'http://' . $_SERVER['HTTP_HOST'] . substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')) . '?m=companies&amp;a=show&amp;companyID=' . $companyID . '</a>',
+                ];
                 $statusChangeTemplate = str_replace(
                     $stringsToFind,
                     $replacementStrings,
@@ -796,69 +737,84 @@ class CompaniesUI extends UserInterface
                 );
 
                 $email = $statusChangeTemplate;
-            }
-            else
-            {
+            } else {
                 $email = '';
                 $emailAddress = '';
             }
-        }
-        else
-        {
+        } else {
             $email = '';
             $emailAddress = '';
         }
 
-        $name            = $this->getSanitisedInput('name', $_POST);
-        $address         = $this->getSanitisedInput('address', $_POST);
-        $city            = $this->getSanitisedInput('city', $_POST);
-        $state           = $this->getSanitisedInput('state', $_POST);
-        $zip             = $this->getSanitisedInput('zip', $_POST);
+        $name = $this->getSanitisedInput('name', $_POST);
+        $address = $this->getSanitisedInput('address', $_POST);
+        $city = $this->getSanitisedInput('city', $_POST);
+        $state = $this->getSanitisedInput('state', $_POST);
+        $zip = $this->getSanitisedInput('zip', $_POST);
         $keyTechnologies = $this->getSanitisedInput('keyTechnologies', $_POST);
-        $notes           = $this->getSanitisedInput('notes', $_POST);
+        $notes = $this->getSanitisedInput('notes', $_POST);
 
         /* Departments list editor. */
         $departmentsCSV = $this->getTrimmedInput('departmentsCSV', $_POST);
 
         /* Bail out if any of the required fields are empty. */
-        if (empty($name))
-        {
+        if (empty($name)) {
             $this->listByView('Required fields are missing.');
             return;
         }
 
-       if (!eval(Hooks::get('CLIENTS_ON_EDIT_PRE'))) return;
+        if (! eval(Hooks::get('CLIENTS_ON_EDIT_PRE'))) {
+            return;
+        }
 
         $departments = $companies->getDepartments($companyID);
         $departmentsDifferences = ListEditor::getDifferencesFromList(
-            $departments, 'name', 'departmentID', $departmentsCSV
+            $departments,
+            'name',
+            'departmentID',
+            $departmentsCSV
         );
         $companies->updateDepartments($companyID, $departmentsDifferences);
 
-        if (!$companies->update($companyID, $name, $address, $city, $state,
-            $zip, $phone1, $phone2, $faxNumber, $url, $keyTechnologies,
-            $isHot, $notes, $owner, $billingContact, $email, $emailAddress))
-        {
+        if (! $companies->update(
+            $companyID,
+            $name,
+            $address,
+            $city,
+            $state,
+            $zip,
+            $phone1,
+            $phone2,
+            $faxNumber,
+            $url,
+            $keyTechnologies,
+            $isHot,
+            $notes,
+            $owner,
+            $billingContact,
+            $email,
+            $emailAddress
+        )) {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update company.');
         }
 
-       if (!eval(Hooks::get('CLIENTS_ON_EDIT_POST'))) return;
+        if (! eval(Hooks::get('CLIENTS_ON_EDIT_POST'))) {
+            return;
+        }
 
         /* Update extra fields. */
         $companies->extraFields->setValuesOnEdit($companyID);
 
         /* Update contacts? */
-        if (isset($_POST['updateContacts']))
-        {
-            if ($_POST['updateContacts'] == 'yes')
-            {
+        if (isset($_POST['updateContacts'])) {
+            if ($_POST['updateContacts'] == 'yes') {
                 $contacts = new Contacts($this->_siteID);
                 $contacts->updateByCompany($companyID, $address, $city, $state, $zip);
             }
         }
 
 
-       CATSUtility::transferRelativeURI(
+        CATSUtility::transferRelativeURI(
             'm=companies&a=show&companyID=' . $companyID
         );
     }
@@ -869,8 +825,7 @@ class CompaniesUI extends UserInterface
     private function onDelete()
     {
         /* Bail out if we don't have a valid company ID. */
-        if (!$this->isRequiredIDValid('companyID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('companyID', $_GET)) {
             $this->listByView('Invalid company ID.');
             return;
         }
@@ -880,28 +835,31 @@ class CompaniesUI extends UserInterface
         $companies = new Companies($this->_siteID);
         $rs = $companies->get($companyID);
 
-        if (empty($rs))
-        {
+        if (empty($rs)) {
             $this->listByView('The specified company ID could not be found.');
             return;
         }
 
-        if ($rs['defaultCompany'] == 1)
-        {
+        if ($rs['defaultCompany'] == 1) {
             $this->listByView('Cannot delete internal postings company.');
             return;
         }
 
-       if (!eval(Hooks::get('CLIENTS_ON_DELETE_PRE'))) return;
+        if (! eval(Hooks::get('CLIENTS_ON_DELETE_PRE'))) {
+            return;
+        }
 
         $companies->delete($companyID);
 
         /* Delete the MRU entry if present. */
         $_SESSION['CATS']->getMRU()->removeEntry(
-            DATA_ITEM_COMPANY, $companyID
+            DATA_ITEM_COMPANY,
+            $companyID
         );
 
-       if (!eval(Hooks::get('CLIENTS_ON_DELETE_POST'))) return;
+        if (! eval(Hooks::get('CLIENTS_ON_DELETE_POST'))) {
+            return;
+        }
 
         CATSUtility::transferRelativeURI('m=companies&a=listByView');
     }
@@ -914,14 +872,16 @@ class CompaniesUI extends UserInterface
         $savedSearches = new SavedSearches($this->_siteID);
         $savedSearchRS = $savedSearches->get(DATA_ITEM_COMPANY);
 
-        if (!eval(Hooks::get('CLIENTS_SEARCH'))) return;
+        if (! eval(Hooks::get('CLIENTS_SEARCH'))) {
+            return;
+        }
 
         $this->_template->assign('wildCardString', '');
         $this->_template->assign('savedSearchRS', $savedSearchRS);
         $this->_template->assign('active', $this);
         $this->_template->assign('subActive', 'Search Companies');
         $this->_template->assign('isResultsMode', false);
-        $this->_template->assign('wildCardCompanyName' , '');
+        $this->_template->assign('wildCardCompanyName', '');
         $this->_template->assign('wildCardKeyTechnologies', '');
         $this->_template->assign('mode', '');
         $this->_template->display('./modules/companies/Search.tpl');
@@ -938,8 +898,7 @@ class CompaniesUI extends UserInterface
         /* Bail out to prevent an error if the GET string doesn't even contain
          * a field named 'wildCardString' at all.
          */
-        if (!isset($_GET['wildCardString']))
-        {
+        if (! isset($_GET['wildCardString'])) {
             $this->listByView('No wild card string specified.');
             return;
         }
@@ -947,51 +906,47 @@ class CompaniesUI extends UserInterface
         $query = trim($_GET['wildCardString']);
 
         /* Set up sorting. */
-        if ($this->isRequiredIDValid('page', $_GET))
-        {
+        if ($this->isRequiredIDValid('page', $_GET)) {
             $currentPage = $_GET['page'];
-        }
-        else
-        {
+        } else {
             $currentPage = 1;
         }
 
         $searchPager = new SearchPager(
-            CANDIDATES_PER_PAGE, $currentPage, $this->_siteID, $_GET
+            CANDIDATES_PER_PAGE,
+            $currentPage,
+            $this->_siteID,
+            $_GET
         );
 
-        if ($searchPager->isSortByValid('sortBy', $_GET))
-        {
+        if ($searchPager->isSortByValid('sortBy', $_GET)) {
             $sortBy = $_GET['sortBy'];
-        }
-        else
-        {
+        } else {
             $sortBy = 'name';
         }
 
-        if ($searchPager->isSortDirectionValid('sortDirection', $_GET))
-        {
+        if ($searchPager->isSortDirectionValid('sortDirection', $_GET)) {
             $sortDirection = $_GET['sortDirection'];
-        }
-        else
-        {
+        } else {
             $sortDirection = 'ASC';
         }
 
         $baseURL = CATSUtility::getFilteredGET(
-            array('sortBy', 'sortDirection', 'page'), '&amp;'
+            ['sortBy', 'sortDirection', 'page'],
+            '&amp;'
         );
         $searchPager->setSortByParameters($baseURL, $sortBy, $sortDirection);
 
-        if (!eval(Hooks::get('CLIENTS_ON_SEARCH_PRE'))) return;
+        if (! eval(Hooks::get('CLIENTS_ON_SEARCH_PRE'))) {
+            return;
+        }
 
         /* Get our current searching mode. */
         $mode = $this->getSanitisedInput('mode', $_GET);
 
         /* Execute the search. */
         $search = new SearchCompanies($this->_siteID);
-        switch ($mode)
-        {
+        switch ($mode) {
             case 'searchByName':
                 $wildCardCompanyName = $query;
                 $rs = $search->byName($query, $sortBy, $sortDirection);
@@ -1008,35 +963,31 @@ class CompaniesUI extends UserInterface
                 break;
         }
 
-        foreach ($rs as $rowIndex => $row)
-        {
-            if ($row['isHot'] == 1)
-            {
+        foreach ($rs as $rowIndex => $row) {
+            if ($row['isHot'] == 1) {
                 $rs[$rowIndex]['linkClass'] = 'jobLinkHot';
-            }
-            else
-            {
+            } else {
                 $rs[$rowIndex]['linkClass'] = 'jobLinkCold';
             }
 
-            if (!empty($row['ownerFirstName']))
-            {
+            if (! empty($row['ownerFirstName'])) {
                 $rs[$rowIndex]['ownerAbbrName'] = StringUtility::makeInitialName(
                     $row['ownerFirstName'],
                     $row['ownerLastName'],
                     false,
                     LAST_NAME_MAXLEN
                 );
-            }
-            else
-            {
+            } else {
                 $rs[$rowIndex]['ownerAbbrName'] = 'None';
             }
         }
 
         $companyIDs = implode(',', ResultSetUtility::getColumnValues($rs, 'companyID'));
         $exportForm = ExportUtility::getForm(
-            DATA_ITEM_COMPANY, $companyIDs, 40, 15
+            DATA_ITEM_COMPANY,
+            $companyIDs,
+            40,
+            15
         );
 
         /* Save the search. */
@@ -1051,7 +1002,9 @@ class CompaniesUI extends UserInterface
 
         $query = urlencode(htmlspecialchars($query));
 
-        if (!eval(Hooks::get('CLIENTS_ON_SEARCH_POST'))) return;
+        if (! eval(Hooks::get('CLIENTS_ON_SEARCH_POST'))) {
+            return;
+        }
 
         $this->_template->assign('savedSearchRS', $savedSearchRS);
         $this->_template->assign('active', $this);
@@ -1074,14 +1027,15 @@ class CompaniesUI extends UserInterface
     private function createAttachment()
     {
         /* Bail out if we don't have a valid joborder ID. */
-        if (!$this->isRequiredIDValid('companyID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('companyID', $_GET)) {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
         }
 
         $companyID = $_GET['companyID'];
 
-        if (!eval(Hooks::get('CLIENTS_CREATE_ATTACHMENT'))) return;
+        if (! eval(Hooks::get('CLIENTS_CREATE_ATTACHMENT'))) {
+            return;
+        }
 
         $this->_template->assign('isFinishedMode', false);
         $this->_template->assign('companyID', $companyID);
@@ -1096,26 +1050,32 @@ class CompaniesUI extends UserInterface
     private function onCreateAttachment()
     {
         /* Bail out if we don't have a valid joborder ID. */
-        if (!$this->isRequiredIDValid('companyID', $_POST))
-        {
+        if (! $this->isRequiredIDValid('companyID', $_POST)) {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid company ID.');
         }
 
         $companyID = $_POST['companyID'];
 
-        if (!eval(Hooks::get('CLIENTS_ON_CREATE_ATTACHMENT_PRE'))) return;
+        if (! eval(Hooks::get('CLIENTS_ON_CREATE_ATTACHMENT_PRE'))) {
+            return;
+        }
 
         $attachmentCreator = new AttachmentCreator($this->_siteID);
         $attachmentCreator->createFromUpload(
-            DATA_ITEM_COMPANY, $companyID, 'file', false, false
+            DATA_ITEM_COMPANY,
+            $companyID,
+            'file',
+            false,
+            false
         );
 
-        if ($attachmentCreator->isError())
-        {
+        if ($attachmentCreator->isError()) {
             CommonErrors::fatalModal(COMMONERROR_FILEERROR, $this, $attachmentCreator->getError());
         }
 
-        if (!eval(Hooks::get('CLIENTS_ON_CREATE_ATTACHMENT_POST'))) return;
+        if (! eval(Hooks::get('CLIENTS_ON_CREATE_ATTACHMENT_POST'))) {
+            return;
+        }
 
         $this->_template->assign('isFinishedMode', true);
         $this->_template->assign('companyID', $companyID);
@@ -1130,32 +1090,33 @@ class CompaniesUI extends UserInterface
     private function onDeleteAttachment()
     {
         /* Bail out if we don't have a valid attachment ID. */
-        if (!$this->isRequiredIDValid('attachmentID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('attachmentID', $_GET)) {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid attachment ID.');
         }
 
         /* Bail out if we don't have a valid joborder ID. */
-        if (!$this->isRequiredIDValid('companyID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('companyID', $_GET)) {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid company ID.');
         }
 
-        $companyID  = $_GET['companyID'];
+        $companyID = $_GET['companyID'];
         $attachmentID = $_GET['attachmentID'];
 
-        if (!eval(Hooks::get('CLIENTS_ON_DELETE_ATTACHMENT_PRE'))) return;
+        if (! eval(Hooks::get('CLIENTS_ON_DELETE_ATTACHMENT_PRE'))) {
+            return;
+        }
 
         $attachments = new Attachments($this->_siteID);
         $attachments->delete($attachmentID);
 
-        if (!eval(Hooks::get('CLIENTS_ON_DELETE_ATTACHMENT_POST'))) return;
+        if (! eval(Hooks::get('CLIENTS_ON_DELETE_ATTACHMENT_POST'))) {
+            return;
+        }
 
         CATSUtility::transferRelativeURI(
             'm=companies&a=show&companyID=' . $companyID
         );
     }
-
 
     /**
      * Formats SQL result set for display. This is factored out for code
@@ -1166,53 +1127,41 @@ class CompaniesUI extends UserInterface
      */
     private function _formatListByViewResults($resultSet)
     {
-        if (empty($resultSet))
-        {
+        if (empty($resultSet)) {
             return $resultSet;
         }
 
-        foreach ($resultSet as $rowIndex => $row)
-        {
+        foreach ($resultSet as $rowIndex => $row) {
             /* Hot companies [can] have different title styles than normal
              * companies.
              */
-            if ($resultSet[$rowIndex]['isHot'] == 1)
-            {
+            if ($resultSet[$rowIndex]['isHot'] == 1) {
                 $resultSet[$rowIndex]['linkClass'] = 'jobLinkHot';
-            }
-            else
-            {
+            } else {
                 $resultSet[$rowIndex]['linkClass'] = 'jobLinkCold';
             }
 
-            if (!empty($resultSet[$rowIndex]['ownerFirstName']))
-            {
+            if (! empty($resultSet[$rowIndex]['ownerFirstName'])) {
                 $resultSet[$rowIndex]['ownerAbbrName'] = StringUtility::makeInitialName(
                     $resultSet[$rowIndex]['ownerFirstName'],
                     $resultSet[$rowIndex]['ownerLastName'],
                     false,
                     LAST_NAME_MAXLEN
                 );
-            }
-            else
-            {
+            } else {
                 $resultSet[$rowIndex]['ownerAbbrName'] = 'None';
             }
 
-            if ($resultSet[$rowIndex]['attachmentPresent'] == 1)
-            {
+            if ($resultSet[$rowIndex]['attachmentPresent'] == 1) {
                 $resultSet[$rowIndex]['iconTag'] = '<img src="images/paperclip.gif" alt="" width="16" height="16" />';
-            }
-            else
-            {
+            } else {
                 $resultSet[$rowIndex]['iconTag'] = '&nbsp;';
             }
 
             /* Display nothing instead of zero's for Job Order Count on Companies
              * display page.
              */
-            if ($resultSet[$rowIndex]['jobOrdersCount'] == 0)
-            {
+            if ($resultSet[$rowIndex]['jobOrdersCount'] == 0) {
                 $resultSet[$rowIndex]['jobOrdersCount'] = '&nbsp;';
             }
         }
@@ -1220,5 +1169,3 @@ class CompaniesUI extends UserInterface
         return $resultSet;
     }
 }
-
-?>

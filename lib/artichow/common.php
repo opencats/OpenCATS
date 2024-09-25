@@ -10,100 +10,90 @@
 /*
  * Get the minimum of an array and ignore non numeric values
  */
-function array_min($array) {
+function array_min($array)
+{
+    if (is_array($array) and count($array) > 0) {
+        do {
+            $min = array_pop($array);
+            if (is_numeric($min === false)) {
+                $min = null;
+            }
+        } while (count($array) > 0 and $min === null);
 
-	if(is_array($array) and count($array) > 0) {
+        if ($min !== null) {
+            $min = (float) $min;
+        }
 
-		do {
-			$min = array_pop($array);
-			if(is_numeric($min === FALSE)) {
-				$min = NULL;
-			}
-		} while(count($array) > 0 and $min === NULL);
+        foreach ($array as $value) {
+            if (is_numeric($value) and (float) $value < $min) {
+                $min = (float) $value;
+            }
+        }
 
-		if($min !== NULL) {
-			$min = (float)$min;
-		}
+        return $min;
+    }
 
-		foreach($array as $value) {
-			if(is_numeric($value) and (float)$value < $min) {
-				$min = (float)$value;
-			}
-		}
-
-		return $min;
-
-	}
-
-	return NULL;
-
+    return null;
 }
 
 /*
  * Get the maximum of an array and ignore non numeric values
  */
-function array_max($array) {
+function array_max($array)
+{
+    if (is_array($array) and count($array) > 0) {
+        do {
+            $max = array_pop($array);
+            if (is_numeric($max === false)) {
+                $max = null;
+            }
+        } while (count($array) > 0 and $max === null);
 
-	if(is_array($array) and count($array) > 0) {
+        if ($max !== null) {
+            $max = (float) $max;
+        }
 
-		do {
-			$max = array_pop($array);
-			if(is_numeric($max === FALSE)) {
-				$max = NULL;
-			}
-		} while(count($array) > 0 and $max === NULL);
+        foreach ($array as $value) {
+            if (is_numeric($value) and (float) $value > $max) {
+                $max = (float) $value;
+            }
+        }
 
-		if($max !== NULL) {
-			$max = (float)$max;
-		}
+        return $max;
+    }
 
-		foreach($array as $value) {
-			if(is_numeric($value) and (float)$value > $max) {
-				$max = (float)$value;
-			}
-		}
-
-		return $max;
-
-	}
-
-	return NULL;
-
+    return null;
 }
 
 /*
  * Register a class with the prefix in configuration file
  */
-function registerClass($class, $abstract = FALSE) {
-
-	if(ARTICHOW_PREFIX === 'aw') {
-		return;
-	}
-
-
-	if($abstract) {
-		$abstract = 'abstract';
-	} else {
-		$abstract = '';
-	}
+function registerClass($class, $abstract = false)
+{
+    if (ARTICHOW_PREFIX === 'aw') {
+        return;
+    }
 
 
-	eval($abstract." class ".ARTICHOW_PREFIX.$class." extends aw".$class." { }");
+    if ($abstract) {
+        $abstract = 'abstract';
+    } else {
+        $abstract = '';
+    }
 
+
+    eval($abstract . " class " . ARTICHOW_PREFIX . $class . " extends aw" . $class . " { }");
 }
 
 /*
  * Register an interface with the prefix in configuration file
  */
-function registerInterface($interface) {
-
-	if(ARTICHOW_PREFIX === 'aw') {
-		return;
-	}
-
-
-	eval("interface ".ARTICHOW_PREFIX.$interface." extends aw".$interface." { }");
+function registerInterface($interface)
+{
+    if (ARTICHOW_PREFIX === 'aw') {
+        return;
+    }
 
 
+    eval("interface " . ARTICHOW_PREFIX . $interface . " extends aw" . $interface . " { }");
 }
-?>

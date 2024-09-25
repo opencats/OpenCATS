@@ -3,6 +3,7 @@
 abstract class ImportableEntity
 {
     protected $_db;
+
     protected $_siteID;
 
     abstract protected function add($dataNamed, $userID, $importID);
@@ -15,14 +16,16 @@ abstract class ImportableEntity
 
     public function prepareData($dataNamed)
     {
-        $dataColumns = array();
-        $data = array();
+        $dataColumns = [];
+        $data = [];
 
-        foreach ($dataNamed AS $dataColumn => $value) {
+        foreach ($dataNamed as $dataColumn => $value) {
             $dataColumns[] = $dataColumn;
             $data[] = $this->_db->makeQueryStringOrNULL($value);
         }
-        return array('data' => $data, 'dataColumns' => $dataColumns);
+        return [
+            'data' => $data,
+            'dataColumns' => $dataColumns,
+        ];
     }
 }
-

@@ -27,18 +27,15 @@
 
 function getAllFilesInDirectory150($directory)
 {
-    $files = array();
+    $files = [];
 
     $handle = @opendir($directory);
-    if (!$handle)
-    {
-        return array();
+    if (! $handle) {
+        return [];
     }
 
-    while (($file = readdir($handle)) !== false)
-    {
-        if ($file != '.' && $file != '..')
-        {
+    while (($file = readdir($handle)) !== false) {
+        if ($file != '.' && $file != '..') {
             $files[] = $file;
         }
     }
@@ -53,15 +50,13 @@ function update_150($db)
     global $badFileExtensions;
 
     $attachments = $db->query('SELECT * FROM attachment');
-    while ($attachment = mysqli_fetch_assoc($attachments))
-    {
+    while ($attachment = mysqli_fetch_assoc($attachments)) {
         $fileExtension = substr(
             $attachment['stored_filename'],
             strrpos($attachment['stored_filename'], '.') + 1
         );
 
-        if (!in_array($fileExtension, $badFileExtensions))
-        {
+        if (! in_array($fileExtension, $badFileExtensions)) {
             continue;
         }
 
@@ -72,8 +67,7 @@ function update_150($db)
             'attachments/' . $attachment['directory_name'] . '/' . $oldFilename,
             'attachments/' . $attachment['directory_name'] . '/' . $newFilename
         );
-        if ($status)
-        {
+        if ($status) {
             $db->query(
                 'UPDATE attachment SET stored_filename = '
                 . $db->makeQueryString($newFilename)
@@ -82,6 +76,3 @@ function update_150($db)
         }
     }
 }
-
-
-?>

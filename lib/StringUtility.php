@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -37,46 +36,72 @@
  */
 class StringUtility
 {
-    const matchPHSeparator    = '[\s\/.-]*';                            /* PCRE */
-    const matchPHCountryCode  = '[(]?[+]?\d{0,3}[)]?';                  /* PCRE */
-    const matchPHECountryCode = '[(]?[+]?(?P<countryCode>\d{0,3})[)]?'; /* PCRE */
-    const matchPHAreaCode     = '[(]?[2-9]{1}\d{2}[)]?';                /* PCRE */
-    const matchPHEAreaCode    = '[(]?(?P<areaCode>[2-9]{1}\d{2})[)]?';  /* PCRE */
-    const matchPHExchange     = '\d{3}';                                /* PCRE */
-    const matchPHEExchange    = '(?P<exchange>\d{3})';                  /* PCRE */
-    const matchPHNumber       = '\d{4}';                                /* PCRE */
-    const matchPHENumber      = '(?P<number>\d{4})';                    /* PCRE */
+    public const matchPHSeparator = '[\s\/.-]*';                            /* PCRE */
 
-    const matchPHExtension  = '([(]?(?:e?xt?(?:ension|)|#|[*]|)[)]?[\s\/.-]*\d{1,6}[)]?)?';                /* PCRE */
-    const matchPHEExtension = '([(]?(?:e?xt?(?:ension|)|#|[*]|)[)]?[\s\/.-]*(?P<extension>\d{1,6})[)]?)?'; /* PCRE */
+    public const matchPHCountryCode = '[(]?[+]?\d{0,3}[)]?';                  /* PCRE */
 
-    const matchEmailDot   = '(?:\.|\s*\(?\[?dot\)?\]?\s*)';                             /* PCRE */
-    const matchEmailAt    = '(?:@|\s*\(?\[?at\)?\]?\s*)';                               /* PCRE */
-    const matchEmailTLD   = '[a-z]{2,}';                                                /* PCRE */
-    const matchEmailETLD  = '(?P<tld>[a-z]{2,})';                                       /* PCRE */
-    const matchEmailHost  = '([a-z0-9_-]+(?:\.|\s*\(?\[?dot\)?\]?\s*)?)+';              /* PCRE */
-    const matchEmailEHost = '(?P<host>(?:[a-z0-9_-]+(?:\.|\s*\(?\[?dot\)?\]?\s*)?)+)';  /* PCRE */
-    const matchEmailUser  = '[a-z0-9._-]+';                                             /* PCRE */
-    const matchEmailEUser = '(?P<user>[a-z0-9._-]+)';                                   /* PCRE */
+    public const matchPHECountryCode = '[(]?[+]?(?P<countryCode>\d{0,3})[)]?'; /* PCRE */
 
-    const matchURLDomain  = '(?:localhost|(?:\d{1,3}\.){3}\d{1,3}|(?:[a-z\d-]+\.)*[a-z\d-]+\.[a-z]{2,6})';         /* PCRE */
-    const matchEURLDomain = '(?P<domain>localhost|(?:\d{1,3}\.){3}\d{1,3}|(?:[a-z\d-]+\.)*[a-z\d-]+\.[a-z]{2,6})'; /* PCRE */
+    public const matchPHAreaCode = '[(]?[2-9]{1}\d{2}[)]?';                /* PCRE */
 
-    const matchEURLProtocol     = '(?:(?P<protocol>[a-z]+)(?:\:\/\/))?';                           /* PCRE */
-    const matchEURLUserPassword = '(?:(?P<user>[a-z\d.-]+)(?:\:(?P<password>[a-z&%\$\d.-]+))*@)?'; /* PCRE */
-    const matchEURLPort         = '\:?(?P<port>\d+)?';                                             /* PCRE */
-    const matchEURLExtras       = '(?P<extras>[\/][a-z\d.,\x27?\/+&%\$#=~_@-]*)*';                 /* PCRE */
+    public const matchPHEAreaCode = '[(]?(?P<areaCode>[2-9]{1}\d{2})[)]?';  /* PCRE */
 
-    const matchURLProtocol     = '(?:[a-z]+\:\/\/|)';                     /* PCRE */
-    const matchURLUserPassword = '(?:[a-z\d.-]+(?:\:[a-z&%\$\d.-]+)*@|)'; /* PCRE */
-    const matchURLPort         = '\:?(\d+)?';                             /* PCRE */
-    const matchURLExtras       = '([\/][a-z\d.,\x27?\/+&%\$#=~_@-]*)*';   /* PCRE */
+    public const matchPHExchange = '\d{3}';                                /* PCRE */
 
+    public const matchPHEExchange = '(?P<exchange>\d{3})';                  /* PCRE */
+
+    public const matchPHNumber = '\d{4}';                                /* PCRE */
+
+    public const matchPHENumber = '(?P<number>\d{4})';                    /* PCRE */
+
+    public const matchPHExtension = '([(]?(?:e?xt?(?:ension|)|#|[*]|)[)]?[\s\/.-]*\d{1,6}[)]?)?';                /* PCRE */
+
+    public const matchPHEExtension = '([(]?(?:e?xt?(?:ension|)|#|[*]|)[)]?[\s\/.-]*(?P<extension>\d{1,6})[)]?)?'; /* PCRE */
+
+    public const matchEmailDot = '(?:\.|\s*\(?\[?dot\)?\]?\s*)';                             /* PCRE */
+
+    public const matchEmailAt = '(?:@|\s*\(?\[?at\)?\]?\s*)';                               /* PCRE */
+
+    public const matchEmailTLD = '[a-z]{2,}';                                                /* PCRE */
+
+    public const matchEmailETLD = '(?P<tld>[a-z]{2,})';                                       /* PCRE */
+
+    public const matchEmailHost = '([a-z0-9_-]+(?:\.|\s*\(?\[?dot\)?\]?\s*)?)+';              /* PCRE */
+
+    public const matchEmailEHost = '(?P<host>(?:[a-z0-9_-]+(?:\.|\s*\(?\[?dot\)?\]?\s*)?)+)';  /* PCRE */
+
+    public const matchEmailUser = '[a-z0-9._-]+';                                             /* PCRE */
+
+    public const matchEmailEUser = '(?P<user>[a-z0-9._-]+)';                                   /* PCRE */
+
+    public const matchURLDomain = '(?:localhost|(?:\d{1,3}\.){3}\d{1,3}|(?:[a-z\d-]+\.)*[a-z\d-]+\.[a-z]{2,6})';         /* PCRE */
+
+    public const matchEURLDomain = '(?P<domain>localhost|(?:\d{1,3}\.){3}\d{1,3}|(?:[a-z\d-]+\.)*[a-z\d-]+\.[a-z]{2,6})'; /* PCRE */
+
+    public const matchEURLProtocol = '(?:(?P<protocol>[a-z]+)(?:\:\/\/))?';                           /* PCRE */
+
+    public const matchEURLUserPassword = '(?:(?P<user>[a-z\d.-]+)(?:\:(?P<password>[a-z&%\$\d.-]+))*@)?'; /* PCRE */
+
+    public const matchEURLPort = '\:?(?P<port>\d+)?';                                             /* PCRE */
+
+    public const matchEURLExtras = '(?P<extras>[\/][a-z\d.,\x27?\/+&%\$#=~_@-]*)*';                 /* PCRE */
+
+    public const matchURLProtocol = '(?:[a-z]+\:\/\/|)';                     /* PCRE */
+
+    public const matchURLUserPassword = '(?:[a-z\d.-]+(?:\:[a-z&%\$\d.-]+)*@|)'; /* PCRE */
+
+    public const matchURLPort = '\:?(\d+)?';                             /* PCRE */
+
+    public const matchURLExtras = '([\/][a-z\d.,\x27?\/+&%\$#=~_@-]*)*';   /* PCRE */
 
     /* Prevent this class from being instantiated. */
-    private function __construct() {}
-    private function __clone() {}
+    private function __construct()
+    {
+    }
 
+    private function __clone()
+    {
+    }
 
     /**
      * Returns true if the string appears to be a phone number. Leading /
@@ -89,10 +114,9 @@ class StringUtility
     {
         if (preg_match('/^'
             . self::matchPHCountryCode . self::matchPHSeparator . self::matchPHAreaCode
-            . self::matchPHSeparator   . self::matchPHExchange  . self::matchPHSeparator
-            . self::matchPHNumber      . self::matchPHSeparator . self::matchPHExtension
-            . '$/i', $string))
-        {
+            . self::matchPHSeparator . self::matchPHExchange . self::matchPHSeparator
+            . self::matchPHNumber . self::matchPHSeparator . self::matchPHExtension
+            . '$/i', $string)) {
             return true;
         }
 
@@ -109,10 +133,9 @@ class StringUtility
     {
         if (preg_match('/'
             . self::matchPHCountryCode . self::matchPHSeparator . self::matchPHAreaCode
-            . self::matchPHSeparator   . self::matchPHExchange  . self::matchPHSeparator
-            . self::matchPHNumber      . self::matchPHSeparator . self::matchPHExtension
-            . '/i', $string))
-        {
+            . self::matchPHSeparator . self::matchPHExchange . self::matchPHSeparator
+            . self::matchPHNumber . self::matchPHSeparator . self::matchPHExtension
+            . '/i', $string)) {
             return true;
         }
 
@@ -129,15 +152,13 @@ class StringUtility
     {
         if (preg_match('/'
             . self::matchPHECountryCode . self::matchPHSeparator . self::matchPHEAreaCode
-            . self::matchPHSeparator    . self::matchPHEExchange . self::matchPHSeparator
-            . self::matchPHENumber      . self::matchPHSeparator . self::matchPHEExtension
-            . '/i', $string, $matches))
-        {
+            . self::matchPHSeparator . self::matchPHEExchange . self::matchPHSeparator
+            . self::matchPHENumber . self::matchPHSeparator . self::matchPHEExtension
+            . '/i', $string, $matches)) {
             //print_r($matches);
 
             /* Don't format international phone numbers. */
-            if (!empty($matches['countryCode']) && ($matches['countryCode'] != '1'))
-            {
+            if (! empty($matches['countryCode']) && ($matches['countryCode'] != '1')) {
                 return $string;
             }
 
@@ -148,8 +169,7 @@ class StringUtility
                 $matches['number']
             );
 
-            if (isset($matches['extension']) && !empty($matches['extension']))
-            {
+            if (isset($matches['extension']) && ! empty($matches['extension'])) {
                 $formattedPhoneNumber .= ' x ' . $matches['extension'];
             }
 
@@ -179,18 +199,16 @@ class StringUtility
      */
     public static function extractAllPhoneNumbers($string)
     {
-        $formattedPhoneNumbers = array();
+        $formattedPhoneNumbers = [];
 
         if (preg_match_all('/'
             . self::matchPHECountryCode . self::matchPHSeparator . self::matchPHEAreaCode
-            . self::matchPHSeparator    . self::matchPHEExchange . self::matchPHSeparator
-            . self::matchPHENumber      . self::matchPHSeparator . self::matchPHEExtension
-            . '/i', $string, $matches, PREG_SET_ORDER))
-        {
+            . self::matchPHSeparator . self::matchPHEExchange . self::matchPHSeparator
+            . self::matchPHENumber . self::matchPHSeparator . self::matchPHEExtension
+            . '/i', $string, $matches, PREG_SET_ORDER)) {
             //print_r($matches);
 
-            foreach ($matches as $matchIndex => $match)
-            {
+            foreach ($matches as $matchIndex => $match) {
                 $formattedPhoneNumbers[$matchIndex]['unformatted'] = $match[0];
 
                 $formattedPhoneNumbers[$matchIndex]['formatted'] = sprintf(
@@ -200,8 +218,7 @@ class StringUtility
                     $match['number']
                 );
 
-                if (isset($match['extension']) && !empty($match['extension']))
-                {
+                if (isset($match['extension']) && ! empty($match['extension'])) {
                     $formattedPhoneNumbers[$matchIndex]['formatted'] .= ' x ' . $match['extension'];
                 }
             }
@@ -221,8 +238,7 @@ class StringUtility
     {
         if (preg_match('/^' . self::matchEmailUser . self::matchEmailAt
             . self::matchEmailHost . self::matchEmailDot
-            . self::matchEmailTLD . '$/i', $string))
-        {
+            . self::matchEmailTLD . '$/i', $string)) {
             return true;
         }
 
@@ -240,8 +256,7 @@ class StringUtility
     {
         if (preg_match('/' . self::matchEmailUser . self::matchEmailAt
             . self::matchEmailHost . self::matchEmailDot
-            . self::matchEmailTLD . '/i', $string))
-        {
+            . self::matchEmailTLD . '/i', $string)) {
             return true;
         }
 
@@ -258,8 +273,7 @@ class StringUtility
     {
         if (preg_match('/' . self::matchEmailEUser . self::matchEmailAt
             . self::matchEmailEHost . self::matchEmailDot
-            . self::matchEmailETLD . '/i', $string, $matches))
-        {
+            . self::matchEmailETLD . '/i', $string, $matches)) {
             $formattedEmailAddress = sprintf(
                 "%s@%s.%s",
                 $matches['user'],
@@ -268,7 +282,9 @@ class StringUtility
             );
 
             $formattedEmailAddress = preg_replace(
-                '/' . self::matchEmailDot . '/i', '.', $formattedEmailAddress
+                '/' . self::matchEmailDot . '/i',
+                '.',
+                $formattedEmailAddress
             );
 
             return $formattedEmailAddress;
@@ -291,8 +307,7 @@ class StringUtility
                 . self::matchEmailHost . self::matchEmailDot
                 . self::matchEmailTLD . '/i', '', $string);
 
-        if ($trim)
-        {
+        if ($trim) {
             $string = trim($string);
         }
 
@@ -307,11 +322,13 @@ class StringUtility
      */
     public static function isURL($string)
     {
-        if (preg_match('/^' . self::matchURLProtocol .
+        if (preg_match(
+            '/^' . self::matchURLProtocol .
             self::matchURLUserPassword . self::matchURLDomain .
             self::matchURLPort . self::matchURLExtras . '$/i',
-            $string, $matches))
-        {
+            $string,
+            $matches
+        )) {
             return true;
         }
 
@@ -329,50 +346,34 @@ class StringUtility
         if (preg_match('/^(|.*\s+)' . self::matchEURLProtocol .
             self::matchEURLUserPassword . self::matchEURLDomain .
             self::matchEURLPort . self::matchEURLExtras .
-            '/i', $string, $matches))
-        {
-            if (!empty($matches['protocol']))
-            {
+            '/i', $string, $matches)) {
+            if (! empty($matches['protocol'])) {
                 $protocol = $matches['protocol'];
-            }
-            else
-            {
+            } else {
                 $protocol = 'http';
             }
 
-            if (!empty($matches['user']))
-            {
-                if (!empty($matches['password']))
-                {
+            if (! empty($matches['user'])) {
+                if (! empty($matches['password'])) {
                     $userPassword = $matches['user'] . ':' .
                                     $matches['password'] . '@';
-                }
-                else
-                {
+                } else {
                     $userPassword = $matches['user'] . '@';
                 }
-            }
-            else
-            {
+            } else {
                 $userPassword = '';
             }
 
-            if (isset($matches['port']) && !empty($matches['port']) &&
-                $matches['port'] != 80)
-            {
+            if (isset($matches['port']) && ! empty($matches['port']) &&
+                $matches['port'] != 80) {
                 $port = ':' . $matches['port'];
-            }
-            else
-            {
+            } else {
                 $port = '';
             }
 
-            if (isset($matches['extras']) && !empty($matches['extras']))
-            {
+            if (isset($matches['extras']) && ! empty($matches['extras'])) {
                 $extras = $matches['extras'];
-            }
-            else
-            {
+            } else {
                 $extras = '/';
             }
 
@@ -397,17 +398,16 @@ class StringUtility
      * @param string string to test
      * @return boolean is valid IP address
      */
-     public static function isIPAddress($string)
-     {
-         $octet = '(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])';
+    public static function isIPAddress($string)
+    {
+        $octet = '(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])';
 
-         if (preg_match('/^' . $octet . '\.' . $octet . '\.' . $octet . '\.' . $octet . '$/', $string))
-         {
-             return true;
-         }
+        if (preg_match('/^' . $octet . '\.' . $octet . '\.' . $octet . '\.' . $octet . '$/', $string)) {
+            return true;
+        }
 
-         return false;
-     }
+        return false;
+    }
 
     /**
      * Removes all blank lines from a string.
@@ -431,14 +431,12 @@ class StringUtility
      */
     public static function countTokens($splitCharacters, $string)
     {
-        if (!strtok($string, $splitCharacters))
-        {
+        if (! strtok($string, $splitCharacters)) {
             return 0;
         }
 
         $tokenCount = 1;
-        while (strtok($splitCharacters))
-        {
+        while (strtok($splitCharacters)) {
             ++$tokenCount;
         }
 
@@ -459,23 +457,18 @@ class StringUtility
 
         $tokens[$tokenIndex] = strtok($string, $splitCharacters);
 
-        if ($tokens[$tokenIndex] === false || empty($tokens[$tokenIndex]))
-        {
-            return array();
+        if ($tokens[$tokenIndex] === false || empty($tokens[$tokenIndex])) {
+            return [];
         }
 
-        while (true)
-        {
+        while (true) {
             ++$tokenIndex;
 
             $tempToken = strtok($splitCharacters);
 
-            if ($tempToken === false || empty($tempToken))
-            {
+            if ($tempToken === false || empty($tempToken)) {
                 break;
-            }
-            else
-            {
+            } else {
                 $tokens[$tokenIndex] = $tempToken;
             }
         }
@@ -489,20 +482,20 @@ class StringUtility
      *
      * @return formatted first initial and last name.
      */
-    public static function makeInitialName($firstName, $lastName,
-        $lastCommaFirst = false, $maxLength = 1000)
-    {
-        if (empty($firstName) && empty($lastName))
-        {
+    public static function makeInitialName(
+        $firstName,
+        $lastName,
+        $lastCommaFirst = false,
+        $maxLength = 1000
+    ) {
+        if (empty($firstName) && empty($lastName)) {
             return '';
         }
 
-        if ($lastCommaFirst)
-        {
+        if ($lastCommaFirst) {
             $firstInitial = $firstName[0] . '.';
 
-            if (strlen($lastName) > $maxLength)
-            {
+            if (strlen($lastName) > $maxLength) {
                 return ucwords(
                     substr($lastName, 0, $maxLength) . ', ' . $firstInitial
                 );
@@ -513,8 +506,7 @@ class StringUtility
 
         $lastInitial = $lastName[0] . '.';
 
-        if (strlen($firstName) > $maxLength)
-        {
+        if (strlen($firstName) > $maxLength) {
             return ucwords(
                 substr($firstName, 0, $maxLength) . ' ' . $lastInitial
             );
@@ -531,15 +523,13 @@ class StringUtility
      */
     public static function makeCityStateString($city, $state)
     {
-        $city  = trim($city);
+        $city = trim($city);
         $state = trim($state);
 
-        if (!empty($city))
-        {
+        if (! empty($city)) {
             $string = $city;
 
-            if (!empty($state))
-            {
+            if (! empty($state)) {
                 $string .= ', ' . $state;
             }
 
@@ -562,17 +552,17 @@ class StringUtility
     {
         $string = preg_replace_callback(
             '/[^\x21-\x3C\x3E-\x7E\x09\x20]/',
-            function($result) {
-                return sprintf("=%02X", ord($result[0])); 
+            function ($result) {
+                return sprintf("=%02X", ord($result[0]));
             },
             $string
         );
-       /* Prevent the splitting of lines from interfering with escaped
-        * characters.
-        */
-       preg_match_all('/.{1,73}([^=]{0,3})?/', $string, $matches);
+        /* Prevent the splitting of lines from interfering with escaped
+         * characters.
+         */
+        preg_match_all('/.{1,73}([^=]{0,3})?/', $string, $matches);
 
-       return implode("=\r\n", $matches[0]);
+        return implode("=\r\n", $matches[0]);
     }
 
     /**
@@ -595,9 +585,8 @@ class StringUtility
         $string .= '';
         $string = trim($string);
 
-        if (empty($string))
-        {
-            return array();
+        if (empty($string)) {
+            return [];
         }
 
         $results = preg_split(
@@ -627,8 +616,7 @@ class StringUtility
     {
         $potision = strpos($haystack, $needle);
 
-        if ($potision === false)
-        {
+        if ($potision === false) {
             return $haystack;
         }
 
@@ -637,73 +625,94 @@ class StringUtility
 
     public static function cardinal($x)
     {
-        if ($x <= 0) return 'zero';
+        if ($x <= 0) {
+            return 'zero';
+        }
         $y = ($x % 20);
 
-        if ($x >= 10000000) return number_format(strval($x),0);
+        if ($x >= 10000000) {
+            return number_format(strval($x), 0);
+        }
 
-        if (($y=floor($x/1000000)) > 0 && $y <= 9)
-        {
+        if (($y = floor($x / 1000000)) > 0 && $y <= 9) {
             $val = '';
-            $z = $x - ($y*1000000);
-            if ($z > 0) $val = ' ' . StringUtility::cardinal($z);
+            $z = $x - ($y * 1000000);
+            if ($z > 0) {
+                $val = ' ' . StringUtility::cardinal($z);
+            }
             return StringUtility::cardinal($y) . ' million' . $val;
         }
 
-        if (($y=floor($x/1000)) > 0 && $y <= 999)
-        {
+        if (($y = floor($x / 1000)) > 0 && $y <= 999) {
             $val = '';
-            $z = $x - ($y*1000);
-            if ($z > 0) $val = ' ' . StringUtility::cardinal($z);
+            $z = $x - ($y * 1000);
+            if ($z > 0) {
+                $val = ' ' . StringUtility::cardinal($z);
+            }
             return StringUtility::cardinal($y) . ' thousand' . $val;
         }
 
-        if (($y=floor($x/100)) > 0 && $y <= 9)
-        {
+        if (($y = floor($x / 100)) > 0 && $y <= 9) {
             $val = '';
-            $z = $x - ($y*100);
-            if ($z > 0) $val = ' and ' . StringUtility::cardinal($z);
+            $z = $x - ($y * 100);
+            if ($z > 0) {
+                $val = ' and ' . StringUtility::cardinal($z);
+            }
             return StringUtility::cardinal($y) . ' hundred' . $val;
         }
 
-        switch($y=floor($x/10))
-        {
+        switch ($y = floor($x / 10)) {
             case 2:
                 $val = 'twenty';
-                if (($z = $x % ($y*10)) > 0 && $z <= 9) $val .= ' ' . StringUtility::cardinal($z);
+                if (($z = $x % ($y * 10)) > 0 && $z <= 9) {
+                    $val .= ' ' . StringUtility::cardinal($z);
+                }
                 return $val;
             case 3:
                 $val = 'thirty';
-                if (($z = $x % ($y*10)) > 0 && $z <= 9) $val .= ' ' . StringUtility::cardinal($z);
+                if (($z = $x % ($y * 10)) > 0 && $z <= 9) {
+                    $val .= ' ' . StringUtility::cardinal($z);
+                }
                 return $val;
             case 4:
                 $val = 'fourty';
-                if (($z = $x % ($y*10)) > 0 && $z <= 9) $val .= ' ' . StringUtility::cardinal($z);
+                if (($z = $x % ($y * 10)) > 0 && $z <= 9) {
+                    $val .= ' ' . StringUtility::cardinal($z);
+                }
                 return $val;
             case 5:
                 $val = 'fifty';
-                if (($z = $x % ($y*10)) > 0 && $z <= 9) $val .= ' ' . StringUtility::cardinal($z);
+                if (($z = $x % ($y * 10)) > 0 && $z <= 9) {
+                    $val .= ' ' . StringUtility::cardinal($z);
+                }
                 return $val;
             case 6:
                 $val = 'sixty';
-                if (($z = $x % ($y*10)) > 0 && $z <= 9) $val .= ' ' . StringUtility::cardinal($z);
+                if (($z = $x % ($y * 10)) > 0 && $z <= 9) {
+                    $val .= ' ' . StringUtility::cardinal($z);
+                }
                 return $val;
             case 7:
                 $val = 'seventy';
-                if (($z = $x % ($y*10)) > 0 && $z <= 9) $val .= ' ' . StringUtility::cardinal($z);
+                if (($z = $x % ($y * 10)) > 0 && $z <= 9) {
+                    $val .= ' ' . StringUtility::cardinal($z);
+                }
                 return $val;
             case 8:
                 $val = 'eighty';
-                if (($z = $x % ($y*10)) > 0 && $z <= 9) $val .= ' ' . StringUtility::cardinal($z);
+                if (($z = $x % ($y * 10)) > 0 && $z <= 9) {
+                    $val .= ' ' . StringUtility::cardinal($z);
+                }
                 return $val;
             case 9:
                 $val = 'ninety';
-                if (($z = $x % ($y*10)) > 0 && $z <= 9) $val .= ' ' . StringUtility::cardinal($z);
+                if (($z = $x % ($y * 10)) > 0 && $z <= 9) {
+                    $val .= ' ' . StringUtility::cardinal($z);
+                }
                 return $val;
         }
 
-        switch($x)
-        {
+        switch ($x) {
             case 1: return 'one';
             case 2: return 'two';
             case 3: return 'three';
@@ -726,5 +735,3 @@ class StringUtility
         }
     }
 }
-
-?>

@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -33,8 +32,7 @@
 include_once(LEGACY_ROOT . '/lib/Pager.php');
 include_once(LEGACY_ROOT . '/lib/DatabaseSearch.php');
 
-if (ENABLE_SPHINX)
-{
+if (ENABLE_SPHINX) {
     include_once(SPHINX_API);
 }
 
@@ -68,15 +66,12 @@ class SearchUtility
          * at spaces. If the sum of all fragments is too short, we look for
          * second occurrences.
          */
-        $ranges = array();
-        $included = array();
+        $ranges = [];
+        $included = [];
         $length = 0;
-        while ($length < SEARCH_EXCERPT_LENGTH && count($workingKeys))
-        {
-            foreach ($workingKeys as $keyOffset => $key)
-            {
-                if ($length >= SEARCH_EXCERPT_LENGTH)
-                {
+        while ($length < SEARCH_EXCERPT_LENGTH && count($workingKeys)) {
+            foreach ($workingKeys as $keyOffset => $key) {
+                if ($length >= SEARCH_EXCERPT_LENGTH) {
                     break;
                 }
 
@@ -86,58 +81,51 @@ class SearchUtility
                 /* Remember occurrence of key so we can skip over it if more occurrnces
                  * are desired.
                  */
-                if (!isset($included[$key]))
-                {
+                if (! isset($included[$key])) {
                     $included[$key] = 0;
                 }
 
                 $regExPass = false;
 
                 /* Check for wildcards */
-                if (strpos($key, '*') !== false)
-                {
+                if (strpos($key, '*') !== false) {
                     $newKey = str_replace('\*', '', $key);
                     $regExPass = preg_match(
-                        '/' . $newKey . '/i', $text, $matches,
-                        PREG_OFFSET_CAPTURE, $included[$key]
+                        '/' . $newKey . '/i',
+                        $text,
+                        $matches,
+                        PREG_OFFSET_CAPTURE,
+                        $included[$key]
                     );
-                }
-                else
-                {
+                } else {
                     $regExPass = preg_match(
-                        '/\b' . $key . '\b/i', $text, $matches,
-                        PREG_OFFSET_CAPTURE, $included[$key]
+                        '/\b' . $key . '\b/i',
+                        $text,
+                        $matches,
+                        PREG_OFFSET_CAPTURE,
+                        $included[$key]
                     );
                 }
 
-                if ($regExPass)
-                {
+                if ($regExPass) {
                     $firstMatchOffset = $matches[0][1];
 
                     $firstSpaceInRange = strpos($text, ' ', max(0, $firstMatchOffset - 60));
-                    if ($firstSpaceInRange !== false)
-                    {
+                    if ($firstSpaceInRange !== false) {
                         $end = substr($text, $firstMatchOffset, 80);
                         $lastSpaceInRange = strrpos($end, ' ');
 
-                        if ($lastSpaceInRange !== false)
-                        {
+                        if ($lastSpaceInRange !== false) {
                             $ranges[$firstSpaceInRange] = $firstMatchOffset + $lastSpaceInRange;
                             $length += $firstMatchOffset + $lastSpaceInRange - $firstSpaceInRange;
                             $included[$key] = $firstMatchOffset + 1;
-                        }
-                        else
-                        {
+                        } else {
                             unset($workingKeys[$keyOffset]);
                         }
-                    }
-                    else
-                    {
+                    } else {
                         unset($workingKeys[$keyOffset]);
                     }
-                }
-                else
-                {
+                } else {
                     unset($workingKeys[$keyOffset]);
                 }
             }
@@ -146,9 +134,7 @@ class SearchUtility
         /* If we didn't find anything, return the beginning of the text up to
          * SEARCH_EXCERPT_LENGTH.
          */
-        if (sizeof($ranges) == 0)
-        {
-
+        if (sizeof($ranges) == 0) {
             $text = DatabaseSearch::fulltextDecode($text);
             return substr($text, 0, SEARCH_EXCERPT_LENGTH);
         }
@@ -160,14 +146,12 @@ class SearchUtility
          * and test for overlapping ranges. Merge overlapping ranges togeather.
          * The ksort()ing makes this O(n).
          */
-        $newRanges = array();
-        foreach ($ranges as $rangeFrom => $rangeTo)
-        {
+        $newRanges = [];
+        foreach ($ranges as $rangeFrom => $rangeTo) {
             /* On the first loop, set the 'base range' to the first range's
              * limits and continue on to the next loop.
              */
-            if (!isset($baseRangeFrom))
-            {
+            if (! isset($baseRangeFrom)) {
                 $baseRangeFrom = $rangeFrom;
                 $baseRangeTo = $rangeTo;
 
@@ -179,12 +163,9 @@ class SearchUtility
              * well. Otherwise, start the 'base range' over at the limits for
              * the current range.
              */
-            if ($rangeFrom <= $baseRangeTo)
-            {
+            if ($rangeFrom <= $baseRangeTo) {
                 $baseRangeTo = max($baseRangeTo, $rangeTo);
-            }
-            else
-            {
+            } else {
                 /* Every time we start the 'base range' over, store the
                  * previous combined range that we just calculated in the
                  * 'new ranges' array.
@@ -202,42 +183,39 @@ class SearchUtility
         $newRanges[$baseRangeFrom] = $baseRangeTo;
 
         /* Fetch text. */
-        $out = array();
-        foreach ($newRanges as $from => $to)
-        {
+        $out = [];
+        foreach ($newRanges as $from => $to) {
             $out[] = substr($text, $from, $to - $from);
         }
 
         $text = implode(' ... ', $out);
 
         /* Highlight wildcards differently. */
-        $keywordsWild = array();
-        foreach ($keywords as $keyOffset => $key)
-        {
-            if (strpos($key, '*') !== false)
-            {
+        $keywordsWild = [];
+        foreach ($keywords as $keyOffset => $key) {
+            if (strpos($key, '*') !== false) {
                 $keywordsWild[] = str_replace('*', '', $key);
                 unset($keywords[$keyOffset]);
             }
         }
         $keywords = array_merge($keywords);
 
-        if (!empty($keywordsWild))
-        {
+        if (! empty($keywordsWild)) {
             $regex = implode('|', array_map(
-                create_function('$string','return preg_quote($string, \'/\');'), $keywordsWild
+                create_function('$string', 'return preg_quote($string, \'/\');'),
+                $keywordsWild
             ));
             $text = preg_replace(
                 '/(' . $regex . ')/i',
                 '<span style="background-color: #ffff99">\1</span>',
                 $text
-           );
+            );
         }
 
-        if (!empty($keywords))
-        {
+        if (! empty($keywords)) {
             $regex = implode('|', array_map(
-                create_function('$string','return preg_quote($string, \'/\');'), $keywords
+                create_function('$string', 'return preg_quote($string, \'/\');'),
+                $keywords
             ));
             $text = preg_replace(
                 '/\b(' . $regex . ')\b/i',
@@ -246,12 +224,9 @@ class SearchUtility
             );
         }
 
-        if (isset($newRanges[0]))
-        {
+        if (isset($newRanges[0])) {
             $text = $text . ' ...';
-        }
-        else
-        {
+        } else {
             $text = '... ' . $text . ' ...';
         }
 
@@ -272,8 +247,7 @@ class SearchUtility
      */
     public static function makePreview($keywords, $text)
     {
-        if (empty($keywords))
-        {
+        if (empty($keywords)) {
             return DatabaseSearch::fulltextDecode($text);
         }
 
@@ -284,33 +258,31 @@ class SearchUtility
         $keywords = self::makeKeywordsArray($keywords);
 
         /* Highlight wildcards differently. */
-        $keywordsWild = array();
-        foreach ($keywords as $keyOffset => $key)
-        {
-            if (strpos($key, '*') !== false)
-            {
+        $keywordsWild = [];
+        foreach ($keywords as $keyOffset => $key) {
+            if (strpos($key, '*') !== false) {
                 $keywordsWild[] = str_replace('*', '', $key);
                 unset($keywords[$keyOffset]);
             }
         }
         $keywords = array_merge($keywords);
 
-        if (!empty($keywordsWild))
-        {
+        if (! empty($keywordsWild)) {
             $regex = implode('|', array_map(
-                create_function('$string','return preg_quote($string, \'/\');'), $keywordsWild
+                create_function('$string', 'return preg_quote($string, \'/\');'),
+                $keywordsWild
             ));
             $text = preg_replace(
                 '/(' . $regex . ')/i',
                 '<span style="background-color: #ffff99">\1</span>',
                 $text
-           );
+            );
         }
 
-        if (!empty($keywords))
-        {
+        if (! empty($keywords)) {
             $regex = implode('|', array_map(
-                create_function('$string','return preg_quote($string, \'/\');'), $keywords
+                create_function('$string', 'return preg_quote($string, \'/\');'),
+                $keywords
             ));
             $text = preg_replace(
                 '/\b(' . $regex . ')\b/i',
@@ -331,20 +303,21 @@ class SearchUtility
         /* Split keywords into an array by "words" and fix quotes. */
         $keywords = explode(' ', $string);
         $keywords = array_map(
-            array('DatabaseSearch', 'unMarkUpQuotes'), $keywords
+            ['DatabaseSearch', 'unMarkUpQuotes'],
+            $keywords
         );
 
         /* Escape special regex characters in keys, and filter out boolean words. */
-        foreach ($keywords as $index => $keyword)
-        {
+        foreach ($keywords as $index => $keyword) {
             $keywords[$index] = str_replace(
-                array('(', ')'), '', $keywords[$index]
+                ['(', ')'],
+                '',
+                $keywords[$index]
             );
 
             if (strtoupper($keyword) == 'AND' ||
                 strtoupper($keyword) == 'OR' ||
-                strtoupper($keyword) == 'NOT')
-            {
+                strtoupper($keyword) == 'NOT') {
                 unset($keywords[$index]);
                 continue;
             }
@@ -363,9 +336,10 @@ class SearchUtility
 class SearchCandidates
 {
     private $_db;
-    private $_siteID;
-    protected $_userID = -1;
 
+    private $_siteID;
+
+    protected $_userID = -1;
 
     public function __construct($siteID)
     {
@@ -374,96 +348,86 @@ class SearchCandidates
         //FIXME: Library code Session dependencies suck.
         $this->_userID = $_SESSION['CATS']->getUserID();
     }
-    
-	public function get_attachment_ids_str($keywordstr)
+
+    public function get_attachment_ids_str($keywordstr)
     {
         $this->_db = DatabaseConnection::getInstance();
         $this->_siteID = $siteID;
 
-		$result = "0";
-		$bypass = false;
-		
-        if (ENABLE_SPHINX && strlen($keywordstr)>0)
-        {
+        $result = "0";
+        $bypass = false;
+
+        if (ENABLE_SPHINX && strlen($keywordstr) > 0) {
             /* Sphinx API likes to throw PHP errors *AND* use it's own error
              * handling.
              */
-			//die("<p>SPHINX-".$keywordstr."-</p>");
-            
-			assert_options(ASSERT_WARNING, 0);
+            //die("<p>SPHINX-".$keywordstr."-</p>");
+
+            assert_options(ASSERT_WARNING, 0);
 
             $sphinx = new SphinxClient();
             $sphinx->SetServer(SPHINX_HOST, SPHINX_PORT);
-            $sphinx->SetWeights(array(0, 100, 0, 0, 50));
+            $sphinx->SetWeights([0, 100, 0, 0, 50]);
             $sphinx->SetMatchMode(SPH_MATCH_PHRASE);
             $sphinx->SetLimits(0, 30000);
-			$sphinx->SetArrayResult(false);
+            $sphinx->SetArrayResult(false);
             $sphinx->SetSortMode(SPH_SORT_TIME_SEGMENTS, 'date_added');
 
             //$sphinx->SetFilter('site_id', array($this->_siteID));
 
-			$wildCardString = '"'.DatabaseSearch::humanToSphinxBoolean($keywordstr).'"';
-            
-			
+            $wildCardString = '"' . DatabaseSearch::humanToSphinxBoolean($keywordstr) . '"';
+
+
             $tries = 0;
-            do
-            {
+            do {
                 /* Wait for one second if this isn't out first attempt. */
-                if (++$tries > 1)
-                {
+                if (++$tries > 1) {
                     sleep(1);
                 }
                 //$wildCardString = '"php"';
                 $results = $sphinx->Query($wildCardString, SPHINX_INDEX);
-				//print_r($results);
-				//die("-");
-				
+                //print_r($results);
+                //die("-");
+
                 $errorMessage = $sphinx->GetLastError();
-            }
-            while (
+            } while (
                 $results === false &&
                 strpos($errorMessage, 'server maxed out, retry') !== false &&
                 $tries <= 5
             );
-			//echo("<p>".SPHINX_HOST.", ".SPHINX_PORT."</p>");
-			//die($errorMessage);
-			//die("1) --->[".($results===false)."]");
-			
+            //echo("<p>".SPHINX_HOST.", ".SPHINX_PORT."</p>");
+            //die($errorMessage);
+            //die("1) --->[".($results===false)."]");
+
             /* Throw a fatal error if Sphinx errors occurred. */
-            if ($results === false)
-            {   
+            if ($results === false) {
                 $this->fatal('Sphinx Error: ' . ucfirst($errorMessage) . '.');
             }
 
             /* Throw a fatal error (for now) if Sphinx warnings occurred. */
             $lastWarning = $sphinx->GetLastWarning();
-            if (!empty($lastWarning))
-            {
+            if (! empty($lastWarning)) {
                 // FIXME: Just display a warning, and notify dev team.
                 $this->fatal('Sphinx Warning: ' . ucfirst($lastWarning) . '.');
             }
 
             /* Show warnings for assert()s again. */
             assert_options(ASSERT_WARNING, 1);
-			
-			//$wildCardString = $wildCardString_orig;
-            if (empty($results['matches']))
-            {
-				//empty, do nothing
-				//echo "<p>(no results)".print_r($results, true)."</p>";
-            }
-            else
-            {
-				//die(print_r($results['matches']));
+
+            //$wildCardString = $wildCardString_orig;
+            if (empty($results['matches'])) {
+                //empty, do nothing
+                //echo "<p>(no results)".print_r($results, true)."</p>";
+            } else {
+                //die(print_r($results['matches']));
                 $attachmentIDs = implode(',', array_keys($results['matches']));
-                $result = 'attachment.attachment_id IN(' . $attachmentIDs . ')';				
+                $result = 'attachment.attachment_id IN(' . $attachmentIDs . ')';
             }
-			
         }
         return $result;
     }
-	
-	public function byState($wildCardString, $sortBy, $sortDirection)
+
+    public function byState($wildCardString, $sortBy, $sortDirection)
     {
         $wildCardString = strtolower('%' . str_replace('*', '%', $wildCardString) . '%');
         $wildCardString = $this->_db->makeQueryString($wildCardString);
@@ -500,7 +464,7 @@ class SearchCandidates
             AND
                 candidate.site_id = %s
             ORDER BY
-                %s %s",            
+                %s %s",
             $wildCardString,
             $this->_siteID,
             $sortBy,
@@ -508,69 +472,78 @@ class SearchCandidates
         );
         return $this->_db->getAllAssoc($sql);
     }
-	
-	public function get_inclusive_zipcodes($distance, $distance_unit, $zip_code) {		 
-		 $sql = sprintf(
+
+    public function get_inclusive_zipcodes($distance, $distance_unit, $zip_code)
+    {
+        $sql = sprintf(
             "SELECT
                 latitude, longitude
             FROM
                 geoip_details            
             WHERE
-                LOWER(geoip_details.postalcode) = '%s'",                        
+                LOWER(geoip_details.postalcode) = '%s'",
             strtolower($zip_code)
-         );
-		 
+        );
 
-		 $rs = $this->_db->getAllAssoc($sql);
-		 
-		 if($rs) {
-			foreach ($rs as $rowIndex => $row) {
-				$latitude = $row["latitude"];
-				$longitude = $row["longitude"];
-			    switch (strtolower($distance_unit)) {		
-					case 'miles': /*** miles ***/
-						$unit = 3963;
-						break;		
-					case 'nauticalmiles': /*** nautical miles ***/
-						$unit = 3444;
-						break;
-					case 'kilometers':
-					default: /*** kilometers ***/			
-						$unit = 6371;
-				}				
-				$sql_zip = "SELECT postalcode, 
-		                           (".$unit." * ACOS( COS( RADIANS(".$latitude.") ) * COS( RADIANS( latitude ) ) * COS( RADIANS( longitude ) - RADIANS(".$longitude.") ) + SIN( RADIANS(".$latitude.") ) * SIN( RADIANS( latitude ) ) ) ) AS distance 
+
+        $rs = $this->_db->getAllAssoc($sql);
+
+        if ($rs) {
+            foreach ($rs as $rowIndex => $row) {
+                $latitude = $row["latitude"];
+                $longitude = $row["longitude"];
+                switch (strtolower($distance_unit)) {
+                    case 'miles': /*** miles ***/
+                        $unit = 3963;
+                        break;
+                    case 'nauticalmiles': /*** nautical miles ***/
+                        $unit = 3444;
+                        break;
+                    case 'kilometers':
+                    default: /*** kilometers ***/
+                        $unit = 6371;
+                }
+                $sql_zip = "SELECT postalcode, 
+		                           (" . $unit . " * ACOS( COS( RADIANS(" . $latitude . ") ) * COS( RADIANS( latitude ) ) * COS( RADIANS( longitude ) - RADIANS(" . $longitude . ") ) + SIN( RADIANS(" . $latitude . ") ) * SIN( RADIANS( latitude ) ) ) ) AS distance 
 		                    FROM geoip_details 
-				            HAVING distance < ".$distance."";	
-				$rs_zips = $this->_db->getAllAssoc($sql_zip);
-				return $rs_zips;
-				break;	
-			}
-		 }
-		return false;
-	}
-	
-	function get_countries() {
-		/*
-		$sql = sprintf(
+				            HAVING distance < " . $distance . "";
+                $rs_zips = $this->_db->getAllAssoc($sql_zip);
+                return $rs_zips;
+                break;
+            }
+        }
+        return false;
+    }
+
+    public function get_countries()
+    {
+        /*
+        $sql = sprintf(
             "SELECT
-                abbrev as value, 
-				country as text 
+                abbrev as value,
+                country as text
             FROM
-                geoip_countries            
+                geoip_countries
             ORDER BY
-                country");		
+                country");
         return $this->_db->getAllAssoc($sql);
-		*/
-		$result = array(
-					"1"	=> array("value"	=> "US", "text"	=> "United States"),
-					"0"	=> array("value"	=> "CA", "text"	=> "Canada")										
-				  );
-		return $result;              
-	}
-	
-	function get_zip_codes($country, $state, $city) {
-		$sql = sprintf(
+        */
+        $result = [
+            "1" => [
+                "value" => "US",
+                "text" => "United States",
+            ],
+            "0" => [
+                "value" => "CA",
+                "text" => "Canada",
+            ],
+        ];
+        return $result;
+    }
+
+    public function get_zip_codes($country, $state, $city)
+    {
+        $sql = sprintf(
             "SELECT DISTINCT
                 postalcode as value, 
 				UPPER(postalcode) as text 
@@ -584,14 +557,16 @@ class SearchCandidates
 				city = '%s'  
             ORDER BY
                 postalcode",
-				$country,
-				$state,
-				$city);
+            $country,
+            $state,
+            $city
+        );
         return $this->_db->getAllAssoc($sql);
-	}
-	
-	function get_cities($country, $state) {
-		$sql = sprintf(
+    }
+
+    public function get_cities($country, $state)
+    {
+        $sql = sprintf(
             "SELECT DISTINCT 
                 city as value, 
 				city as text 
@@ -603,13 +578,15 @@ class SearchCandidates
 				region = '%s'				
             ORDER BY
                 city",
-				$country,
-				$state);
-        return $this->_db->getAllAssoc($sql);		
-	}
-	
-	function get_states($country) {
-		$sql = sprintf(
+            $country,
+            $state
+        );
+        return $this->_db->getAllAssoc($sql);
+    }
+
+    public function get_states($country)
+    {
+        $sql = sprintf(
             "SELECT DISTINCT
                 abbrev as value, 
 				state as text 
@@ -618,15 +595,16 @@ class SearchCandidates
 			 WHERE
 				country = '%s' 							
              ORDER BY state",
-				$country);
-		return $this->_db->getAllAssoc($sql);		
-	}
-	
-	public function byMultiple($wildCardString, $sortBy, $sortDirection, $return_sql = false)
+            $country
+        );
+        return $this->_db->getAllAssoc($sql);
+    }
+
+    public function byMultiple($wildCardString, $sortBy, $sortDirection, $return_sql = false)
     {
         //$wildCardString = strtolower('%' . str_replace('*', '%', $wildCardString) . '%');
         //$wildCardString = $this->_db->makeQueryString($wildCardString);
-		$wildCardString = str_replace('%', '%%', $wildCardString);
+        $wildCardString = str_replace('%', '%%', $wildCardString);
         $sql = sprintf(
             "SELECT
                 candidate.candidate_id AS candidateID,
@@ -651,26 +629,27 @@ class SearchCandidates
             LEFT JOIN user AS owner_user
                 ON candidate.owner = owner_user.user_id
             WHERE
-            ( ".$wildCardString." )
+            ( " . $wildCardString . " )
             AND
                 candidate.is_admin_hidden = 0
             AND
                 candidate.site_id = %s
             ORDER BY
                 %s %s
-			LIMIT 1000",            
+			LIMIT 1000",
             $this->_siteID,
             $sortBy,
             $sortDirection
         );
-		//die($sql);
-		if($return_sql == true)
-			return $sql;
-		else
-        	return $this->_db->getAllAssoc($sql);
+        //die($sql);
+        if ($return_sql == true) {
+            return $sql;
+        } else {
+            return $this->_db->getAllAssoc($sql);
+        }
     }
-	
-	public function byCity($wildCardString, $sortBy, $sortDirection)
+
+    public function byCity($wildCardString, $sortBy, $sortDirection)
     {
         $wildCardString = strtolower('%' . str_replace('*', '%', $wildCardString) . '%');
         $wildCardString = $this->_db->makeQueryString($wildCardString);
@@ -707,7 +686,7 @@ class SearchCandidates
             AND
                 candidate.site_id = %s
             ORDER BY
-                %s %s",            
+                %s %s",
             $wildCardString,
             $this->_siteID,
             $sortBy,
@@ -715,7 +694,7 @@ class SearchCandidates
         );
         return $this->_db->getAllAssoc($sql);
     }
-    
+
     /**
      * Returns all candidates with full names matching $wildCardString.
      *
@@ -782,7 +761,9 @@ class SearchCandidates
     public function byKeySkills($wildCardString, $sortBy, $sortDirection)
     {
         $WHERE = DatabaseSearch::makeBooleanSQLWhere(
-            $wildCardString, $this->_db, 'candidate.key_skills'
+            $wildCardString,
+            $this->_db,
+            'candidate.key_skills'
         );
 
         $sql = sprintf(
@@ -887,7 +868,7 @@ class SearchCandidates
     public function byPhone($wildCardString, $sortBy, $sortDirection)
     {
         $wildCardString = str_replace(
-            array('.', '-', '(', ')'),
+            ['.', '-', '(', ')'],
             '',
             $wildCardString
         );
@@ -959,9 +940,10 @@ class SearchCandidates
 class SearchCompanies
 {
     private $_db;
-    private $_siteID;
-    protected $_userID = -1;
 
+    private $_siteID;
+
+    protected $_userID = -1;
 
     public function __construct($siteID)
     {
@@ -970,60 +952,61 @@ class SearchCompanies
         //FIXME: Library code Session dependencies suck.
         $this->_userID = $_SESSION['CATS']->getUserID();
     }
-    
-    public function get_inclusive_zipcodes($distance, $distance_unit, $zip_code) {		 
-		 $sql = sprintf(
+
+    public function get_inclusive_zipcodes($distance, $distance_unit, $zip_code)
+    {
+        $sql = sprintf(
             "SELECT
                 latitude, longitude
             FROM
                 geoip_details            
             WHERE
-                LOWER(geoip_details.postalcode) = '%s'",                        
+                LOWER(geoip_details.postalcode) = '%s'",
             strtolower($zip_code)
-         );
-		 
+        );
 
-		 $rs = $this->_db->getAllAssoc($sql);
-		 
-		 if($rs) {
-			foreach ($rs as $rowIndex => $row) {
-				$latitude = $row["latitude"];
-				$longitude = $row["longitude"];
-			    switch (strtolower($distance_unit)) {		
-					case 'miles': /*** miles ***/
-						$unit = 3963;
-						break;		
-					case 'nauticalmiles': /*** nautical miles ***/
-						$unit = 3444;
-						break;
-					case 'kilometers':
-					default: /*** kilometers ***/			
-						$unit = 6371;
-				}				
-				$sql_zip = "SELECT postalcode, 
-		                           (".$unit." * ACOS( COS( RADIANS(".$latitude.") ) * COS( RADIANS( latitude ) ) * COS( RADIANS( longitude ) - RADIANS(".$longitude.") ) + SIN( RADIANS(".$latitude.") ) * SIN( RADIANS( latitude ) ) ) ) AS distance 
+
+        $rs = $this->_db->getAllAssoc($sql);
+
+        if ($rs) {
+            foreach ($rs as $rowIndex => $row) {
+                $latitude = $row["latitude"];
+                $longitude = $row["longitude"];
+                switch (strtolower($distance_unit)) {
+                    case 'miles': /*** miles ***/
+                        $unit = 3963;
+                        break;
+                    case 'nauticalmiles': /*** nautical miles ***/
+                        $unit = 3444;
+                        break;
+                    case 'kilometers':
+                    default: /*** kilometers ***/
+                        $unit = 6371;
+                }
+                $sql_zip = "SELECT postalcode, 
+		                           (" . $unit . " * ACOS( COS( RADIANS(" . $latitude . ") ) * COS( RADIANS( latitude ) ) * COS( RADIANS( longitude ) - RADIANS(" . $longitude . ") ) + SIN( RADIANS(" . $latitude . ") ) * SIN( RADIANS( latitude ) ) ) ) AS distance 
 		                    FROM geoip_details 
-				            HAVING distance < ".$distance."";	
-				$rs_zips = $this->_db->getAllAssoc($sql_zip);
-				return $rs_zips;
-				break;	
-			}
-		 }
-		return false;
-	}
-	
+				            HAVING distance < " . $distance . "";
+                $rs_zips = $this->_db->getAllAssoc($sql_zip);
+                return $rs_zips;
+                break;
+            }
+        }
+        return false;
+    }
+
     /**
      * Returns all companies with names matching $wildCardString.
      *
      * @param string wildcard match string
      * @return array companies data
      */
-	public function byMultiple($wildCardString, $sortBy, $sortDirection)
+    public function byMultiple($wildCardString, $sortBy, $sortDirection)
     {
         //$wildCardString = str_replace('*', '%', $wildCardString) . '%';
         //$wildCardString = $this->_db->makeQueryString($wildCardString);
-		$wildCardString = str_replace('%', '%%', $wildCardString);
-		
+        $wildCardString = str_replace('%', '%%', $wildCardString);
+
         $sql = sprintf(
             "SELECT
                 company.company_id AS companyID,
@@ -1047,7 +1030,7 @@ class SearchCompanies
             LEFT JOIN user AS owner_user
                 ON company.owner = owner_user.user_id
             WHERE
-                (".$wildCardString.")
+                (" . $wildCardString . ")
             AND
                 company.site_id = %s
             ORDER BY
@@ -1057,11 +1040,11 @@ class SearchCompanies
             $sortBy,
             $sortDirection
         );
-		//die($sql);
-		
+        //die($sql);
+
         return $this->_db->getAllAssoc($sql);
     }
-	
+
     public function byName($wildCardString, $sortBy, $sortDirection)
     {
         $wildCardString = str_replace('*', '%', $wildCardString) . '%';
@@ -1100,7 +1083,7 @@ class SearchCompanies
             $sortBy,
             $sortDirection
         );
-		
+
         return $this->_db->getAllAssoc($sql);
     }
 
@@ -1113,7 +1096,9 @@ class SearchCompanies
     public function byKeyTechnologies($wildCardString)
     {
         $WHERE = DatabaseSearch::makeBooleanSQLWhere(
-            $wildCardString, $this->_db, 'company.key_technologies'
+            $wildCardString,
+            $this->_db,
+            'company.key_technologies'
         );
 
         $sql = sprintf(
@@ -1160,9 +1145,10 @@ class SearchCompanies
 class SearchJobOrders
 {
     private $_db;
-    private $_siteID;
-    protected $_userID = -1;
 
+    private $_siteID;
+
+    protected $_userID = -1;
 
     public function __construct($siteID)
     {
@@ -1171,8 +1157,7 @@ class SearchJobOrders
         //FIXME: Library code Session dependencies suck.
         $this->_userID = $_SESSION['CATS']->getUserID();
     }
-    
-    
+
     /**
      * Returns all job orders with titles matching $wildCardString. If
      * activeOnly is true, only Active/OnHold/Full job orders will be shown.
@@ -1181,28 +1166,27 @@ class SearchJobOrders
      * @param boolean return active job orders only
      * @return array job orders data
      */
-    public function byTitle($wildCardString, $sortBy, $sortDirection,
-        $activeOnly)
-    {
-        if ($activeOnly)
-        {
+    public function byTitle(
+        $wildCardString,
+        $sortBy,
+        $sortDirection,
+        $activeOnly
+    ) {
+        if ($activeOnly) {
             //FIXME:  Remove session dependancy.
-            if ($_SESSION['CATS']->isFree())
-            {
+            if ($_SESSION['CATS']->isFree()) {
                 $activeCriterion = "AND joborder.status = 'Active'";
-            }
-            else
-            {
+            } else {
                 $activeCriterion = "AND (joborder.status IN ('Active', 'OnHold', 'Full'))";
             }
-        }
-        else
-        {
+        } else {
             $activeCriterion = "";
         }
 
         $WHERE = DatabaseSearch::makeBooleanSQLWhere(
-            $wildCardString, $this->_db, 'joborder.title'
+            $wildCardString,
+            $this->_db,
+            'joborder.title'
         );
 
         $sql = sprintf(
@@ -1254,8 +1238,12 @@ class SearchJobOrders
             $sortDirection
         );
 
-        if (!eval(Hooks::get('JO_SEARCH_SQL'))) return;
-        if (!eval(Hooks::get('JO_SEARCH_BY_TITLE'))) return;
+        if (! eval(Hooks::get('JO_SEARCH_SQL'))) {
+            return;
+        }
+        if (! eval(Hooks::get('JO_SEARCH_BY_TITLE'))) {
+            return;
+        }
 
         return $this->_db->getAllAssoc($sql);
     }
@@ -1273,20 +1261,14 @@ class SearchJobOrders
         $wildCardString = str_replace('*', '%', $wildCardString) . '%';
         $wildCardString = $this->_db->makeQueryString($wildCardString);
 
-        if ($activeOnly)
-        {
+        if ($activeOnly) {
             //FIXME:  Remove session dependancy.
-            if ($_SESSION['CATS']->isFree())
-            {
+            if ($_SESSION['CATS']->isFree()) {
                 $activeCriterion = "AND joborder.status = 'Active'";
-            }
-            else
-            {
+            } else {
                 $activeCriterion = "AND (joborder.status IN ('Active', 'OnHold', 'Full'))";
             }
-        }
-        else
-        {
+        } else {
             $activeCriterion = "";
         }
 
@@ -1342,14 +1324,18 @@ class SearchJobOrders
             $sortDirection
         );
 
-        if (!eval(Hooks::get('JO_SEARCH_SQL'))) return;
-        if (!eval(Hooks::get('JO_SEARCH_BY_CLIENT_NAME'))) return;
+        if (! eval(Hooks::get('JO_SEARCH_SQL'))) {
+            return;
+        }
+        if (! eval(Hooks::get('JO_SEARCH_BY_CLIENT_NAME'))) {
+            return;
+        }
 
         return $this->_db->getAllAssoc($sql);
     }
-    
+
     /**
-     * Returns all recently modified job orders. If activeOnly is true, 
+     * Returns all recently modified job orders. If activeOnly is true,
      * only Active/OnHold/Full job orders will be shown.
      *
      * @param boolean return active job orders only
@@ -1357,20 +1343,14 @@ class SearchJobOrders
      */
     public function recentlyModified($sortDirection, $activeOnly, $limit)
     {
-        if ($activeOnly)
-        {
+        if ($activeOnly) {
             //FIXME:  Remove session dependancy.
-            if ($_SESSION['CATS']->isFree())
-            {
+            if ($_SESSION['CATS']->isFree()) {
                 $activeCriterion = "AND joborder.status = 'Active'";
-            }
-            else
-            {
+            } else {
                 $activeCriterion = "AND (joborder.status IN ('Active', 'OnHold', 'Full'))";
             }
-        }
-        else
-        {
+        } else {
             $activeCriterion = "";
         }
 
@@ -1425,7 +1405,9 @@ class SearchJobOrders
             $limit
         );
 
-        if (!eval(Hooks::get('JO_SEARCH_SQL'))) return;
+        if (! eval(Hooks::get('JO_SEARCH_SQL'))) {
+            return;
+        }
 
         return $this->_db->getAllAssoc($sql);
     }
@@ -1440,9 +1422,10 @@ class SearchJobOrders
 class ContactsSearch
 {
     private $_db;
-    private $_siteID;
-    protected $_userID = -1;
 
+    private $_siteID;
+
+    protected $_userID = -1;
 
     public function __construct($siteID)
     {
@@ -1451,8 +1434,7 @@ class ContactsSearch
         //FIXME: Library code Session dependencies suck.
         $this->_userID = $_SESSION['CATS']->getUserID();
     }
-    
-	
+
     /**
      * Returns all contacts with full names matching $wildCardString.
      *
@@ -1524,9 +1506,11 @@ class ContactsSearch
      * @param string wildcard match string
      * @return array contacts data
      */
-    public function byCompanyName($wildCardString, $sortBy,
-        $sortDirection)
-    {
+    public function byCompanyName(
+        $wildCardString,
+        $sortBy,
+        $sortDirection
+    ) {
         $wildCardString = str_replace('*', '%', $wildCardString) . '%';
         $wildCardString = $this->_db->makeQueryString($wildCardString);
 
@@ -1647,9 +1631,10 @@ class ContactsSearch
 class QuickSearch
 {
     private $_db;
-    private $_siteID;
-    protected $_userID = -1;
 
+    private $_siteID;
+
+    protected $_userID = -1;
 
     public function __construct($siteID)
     {
@@ -1658,8 +1643,7 @@ class QuickSearch
         //FIXME: Library code Session dependencies suck.
         $this->_userID = $_SESSION['CATS']->getUserID();
     }
-    
-    
+
     /**
      * Support function for Quick Search code. Searches all relevant fields for
      * $wildCardString.
@@ -1669,12 +1653,12 @@ class QuickSearch
      */
     public function candidates($wildCardString)
     {
-		$wildCardStringRaw = $wildCardString;
-		
-        $wildCardString = str_replace('*', '%', $wildCardString) . '%';		
+        $wildCardStringRaw = $wildCardString;
+
+        $wildCardString = str_replace('*', '%', $wildCardString) . '%';
         $wildCardString = $this->_db->makeQueryString($wildCardString);
-				
-		$wildCardStringWholeCaseInsensitive = $this->_db->makeQueryString(strtolower('%'.str_replace('*', '%',$wildCardStringRaw).'%'));
+
+        $wildCardStringWholeCaseInsensitive = $this->_db->makeQueryString(strtolower('%' . str_replace('*', '%', $wildCardStringRaw) . '%'));
 
         $sql = sprintf(
             "SELECT
@@ -1730,9 +1714,9 @@ class QuickSearch
                 candidate.first_name ASC,
                 candidate.last_name ASC",
             $wildCardStringWholeCaseInsensitive,
-			$wildCardStringWholeCaseInsensitive,
-			$wildCardStringWholeCaseInsensitive,
-			$wildCardString,
+            $wildCardStringWholeCaseInsensitive,
+            $wildCardStringWholeCaseInsensitive,
+            $wildCardString,
             $wildCardString,
             $wildCardString,
             $wildCardString,
@@ -1740,11 +1724,11 @@ class QuickSearch
             $wildCardString,
             $this->_siteID
         );
-		//die($sql);
+        //die($sql);
 
         return $this->_db->getAllAssoc($sql);
     }
-    
+
     /**
      * Support function for Quick Search code. Searches all relevant fields for
      * $wildCardString.
@@ -1799,7 +1783,7 @@ class QuickSearch
 
         return $this->_db->getAllAssoc($sql);
     }
-    
+
     /**
      * Support function for Quick Search code. Searches all relevant fields for
      * $wildCardString.
@@ -1887,7 +1871,7 @@ class QuickSearch
 
         return $this->_db->getAllAssoc($sql);
     }
-    
+
     /**
      * Support function for Quick Search code. Searches all relevant fields for
      * $wildCardString.
@@ -1954,8 +1938,12 @@ class QuickSearch
             $this->_siteID
         );
 
-        if (!eval(Hooks::get('JO_SEARCH_SQL'))) return;
-        if (!eval(Hooks::get('JO_SEARCH_BY_EVERYTHING'))) return;
+        if (! eval(Hooks::get('JO_SEARCH_SQL'))) {
+            return;
+        }
+        if (! eval(Hooks::get('JO_SEARCH_BY_EVERYTHING'))) {
+            return;
+        }
 
         return $this->_db->getAllAssoc($sql);
     }
@@ -1969,9 +1957,10 @@ class QuickSearch
 class SavedSearches
 {
     private $_db;
-    private $_siteID;
-    protected $_userID = -1;
 
+    private $_siteID;
+
+    protected $_userID = -1;
 
     public function __construct($siteID)
     {
@@ -1980,13 +1969,11 @@ class SavedSearches
         //FIXME: Library code Session dependencies suck.
         $this->_userID = $_SESSION['CATS']->getUserID();
     }
-    
-    
+
     /**
      * Removes a saved search entry.
      *
      * @param integer search ID
-     * @return void
      */
     public function remove($searchID)
     {
@@ -2030,7 +2017,7 @@ class SavedSearches
             $this->_siteID
         );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     //FIXME: Document me.
@@ -2123,8 +2110,6 @@ class SavedSearches
 
     /**
      * Removes old saved search entries for a user.
-     *
-     * @return void
      */
     private function prune()
     {
@@ -2147,8 +2132,7 @@ class SavedSearches
         $count = $rs['count'];
 
         // FIXME: Remove multiple entries at onceif we're more than one over?
-        while ($count > RECENT_SEARCH_MAX_ITEMS)
-        {
+        while ($count > RECENT_SEARCH_MAX_ITEMS) {
             /* Remove the least recent entry. */
             $sql = sprintf(
                 "SELECT
@@ -2192,28 +2176,34 @@ class SavedSearches
 class SearchByResumePager extends Pager
 {
     private $_siteID;
+
     private $_db;
+
     private $_WHERE;
 
-
-    public function __construct($rowsPerPage, $currentPage, $siteID,
-        $wildCardString, $sortBy, $sortDirection, $single_resume_text)
-    {
+    public function __construct(
+        $rowsPerPage,
+        $currentPage,
+        $siteID,
+        $wildCardString,
+        $sortBy,
+        $sortDirection,
+        $single_resume_text
+    ) {
         $this->_db = DatabaseConnection::getInstance();
         $this->_siteID = $siteID;
 
-        $this->_sortByFields = array(
+        $this->_sortByFields = [
             'firstName',
             'lastName',
             'city',
             'state',
             'dateModifiedSort',
             'dateCreatedSort',
-            'ownerSort'
-        );
+            'ownerSort',
+        ];
 
-        if (ENABLE_SPHINX && strlen($single_resume_text)>0)
-        {
+        if (ENABLE_SPHINX && strlen($single_resume_text) > 0) {
             /* Sphinx API likes to throw PHP errors *AND* use it's own error
              * handling.
              */
@@ -2221,115 +2211,102 @@ class SearchByResumePager extends Pager
 
             $sphinx = new SphinxClient();
             $sphinx->SetServer(SPHINX_HOST, SPHINX_PORT);
-            $sphinx->SetWeights(array(0, 100, 0, 0, 50));
+            $sphinx->SetWeights([0, 100, 0, 0, 50]);
             $sphinx->SetMatchMode(SPH_MATCH_ANY);
             $sphinx->SetLimits(0, 30000);
-			$sphinx->SetArrayResult(true);
+            $sphinx->SetArrayResult(true);
             $sphinx->SetSortMode(SPH_SORT_TIME_SEGMENTS, 'date_added');
 
             // FIXME: This can be sped up a bit by actually grouping ranges of
             //        site IDs into their own index's. Maybe every 500 or so at
             //        least on the Hosted system.
-            $sphinx->SetFilter('site_id', array($this->_siteID));
+            $sphinx->SetFilter('site_id', [$this->_siteID]);
 
             /* Create the Sphinx query string. */
             //$wildCardString = DatabaseSearch::humanToSphinxBoolean($wildCardString);
-			//die($wildCardString);
-			
-			$wildCardString_orig = $wildCardString;
-			$wildCardString = '"'.DatabaseSearch::humanToSphinxBoolean($single_resume_text).'"';
-            
-			//die($wildCardString);
-			
+            //die($wildCardString);
+
+            $wildCardString_orig = $wildCardString;
+            $wildCardString = '"' . DatabaseSearch::humanToSphinxBoolean($single_resume_text) . '"';
+
+            //die($wildCardString);
+
             /* Execute the Sphinx query. Sphinx can ask us to retry if its
              * maxed out. Retry up to 5 times.
              */
             $tries = 0;
-            do
-            {
+            do {
                 /* Wait for one second if this isn't out first attempt. */
-                if (++$tries > 1)
-                {
+                if (++$tries > 1) {
                     sleep(1);
                 }
-                
-				//$wildCardString = '"php"';
+
+                //$wildCardString = '"php"';
                 $results = $sphinx->Query($wildCardString, SPHINX_INDEX);
-				//print_r($results);
-				//die("-");
-				
+                //print_r($results);
+                //die("-");
+
                 $errorMessage = $sphinx->GetLastError();
-            }
-            while (
+            } while (
                 $results === false &&
                 strpos($errorMessage, 'server maxed out, retry') !== false &&
                 $tries <= 5
             );
 
             /* Throw a fatal error if Sphinx errors occurred. */
-            if ($results === false)
-            {   
+            if ($results === false) {
                 $this->fatal('Sphinx Error: ' . ucfirst($errorMessage) . '.');
             }
 
             /* Throw a fatal error (for now) if Sphinx warnings occurred. */
             $lastWarning = $sphinx->GetLastWarning();
-            if (!empty($lastWarning))
-            {
+            if (! empty($lastWarning)) {
                 // FIXME: Just display a warning, and notify dev team.
                 $this->fatal('Sphinx Warning: ' . ucfirst($lastWarning) . '.');
             }
 
             /* Show warnings for assert()s again. */
             assert_options(ASSERT_WARNING, 1);
-			
-			//print_r($results);
-			//die("end");
-			
-			$wildCardString = $wildCardString_orig;
-            if (empty($results['matches']))
-            {
-				
-				if(strlen($wildCardString)>0)
-					$this->_WHERE = "(".$wildCardString.")";
-				else {
-                	$this->_WHERE = '0';
-					$wildCardString = "0";
-				}
-				
-				//echo("<p>passA - ".$this->_WHERE."</p>");
-            }
-            else
-            {
-				
+
+            //print_r($results);
+            //die("end");
+
+            $wildCardString = $wildCardString_orig;
+            if (empty($results['matches'])) {
+                if (strlen($wildCardString) > 0) {
+                    $this->_WHERE = "(" . $wildCardString . ")";
+                } else {
+                    $this->_WHERE = '0';
+                    $wildCardString = "0";
+                }
+
+                //echo("<p>passA - ".$this->_WHERE."</p>");
+            } else {
                 $attachmentIDs = implode(',', array_keys($results['matches']));
                 $this->_WHERE = 'attachment.attachment_id IN(' . $attachmentIDs . ')';
-				if(strlen($wildCardString)>0)
-					$this->_WHERE .= " AND (".$wildCardString.")";
-				else
-					$wildCardString = "0";
-					
-				//echo("<p>passB - ".$this->_WHERE."</p>");
+                if (strlen($wildCardString) > 0) {
+                    $this->_WHERE .= " AND (" . $wildCardString . ")";
+                } else {
+                    $wildCardString = "0";
+                }
+
+                //echo("<p>passB - ".$this->_WHERE."</p>");
             }
-			
-        }
-        else
-        {
-			/*
-			$wildCardString = str_replace("(", "", $wildCardString);
-			$wildCardString = str_replace(")", "", $wildCardString);
-			
+        } else {
+            /*
+            $wildCardString = str_replace("(", "", $wildCardString);
+            $wildCardString = str_replace(")", "", $wildCardString);
             $this->_WHERE = DatabaseSearch::makeBooleanSQLWhere(
                 DatabaseSearch::fulltextEncode($wildCardString),
                 $this->_db,
                 'attachment.text'
             );
-			*/
-			$this->_WHERE = "(".$wildCardString.")";
+             */
+            $this->_WHERE = "(" . $wildCardString . ")";
         }
-		
-		//die($this->_WHERE);
-		
+
+        //die($this->_WHERE);
+
         /* How many companies do we have? */
         $sql = sprintf(
             "SELECT
@@ -2356,15 +2333,13 @@ class SearchByResumePager extends Pager
             $this->_WHERE,
             $this->_siteID
         );
-		
-		//die($sql);
+
+        //die($sql);
         $rs = $this->_db->getAssoc($sql);
 
         /* Pass "Search By Resume"-specific parameters to Pager constructor. */
         parent::__construct($rs['count'], $rowsPerPage, $currentPage);
     }
-
-	
 
     //FIXME: Document me.
     public function getPage()
@@ -2412,7 +2387,6 @@ class SearchByResumePager extends Pager
             ORDER BY
                 %s %s
             LIMIT %s, %s",
-
             $this->_WHERE,
             DATA_ITEM_CANDIDATE,
             DATA_ITEM_BULKRESUME,
@@ -2422,8 +2396,8 @@ class SearchByResumePager extends Pager
             $this->_thisPageStartRow,
             $this->_rowsPerPage
         );
-		//die($sql);
-		
+        //die($sql);
+
         return $this->_db->getAllAssoc($sql);
     }
 
@@ -2431,7 +2405,6 @@ class SearchByResumePager extends Pager
      * Print a fatal error and die.
      *
      * @param string error message
-     * @return void
      */
     protected function fatal($error)
     {
@@ -2451,13 +2424,14 @@ class SearchByResumePager extends Pager
 class SearchPager extends Pager
 {
     private $_siteID;
-    private $_db;
-    private $_rs;
 
+    private $_db;
+
+    private $_rs;
 
     public function __construct($rowsPerPage, $currentPage, $siteID)
     {
-        $this->_sortByFields = array(
+        $this->_sortByFields = [
             'firstName',
             'lastName',
             'city',
@@ -2476,12 +2450,10 @@ class SearchPager extends Pager
             'recruiterLastName',
             'dateCreatedSort',
             'dateModifiedSort',
-            'ownerSort'
-        );
+            'ownerSort',
+        ];
 
         /* Pass "Search By Resume"-specific parameters to Pager constructor. */
         parent::__construct(count($this->_rs), $rowsPerPage, $currentPage);
     }
 }
-
-?>

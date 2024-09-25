@@ -23,25 +23,24 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  * @version    $Id: CommonErrors.php 3784 2007-12-03 21:57:10Z brian $
  */
 
-define('COMMONERROR_PERMISSION',                            1);
-define('COMMONERROR_NOTLOGGEDIN',                           2);
-define('COMMONERROR_BADINDEX',                              3);
-define('COMMONERROR_MISSINGFIELDS',                         4);
-define('COMMONERROR_NOPASSWORDMATCH',                       5);
-define('COMMONERROR_FILEERROR',                             6);
-define('COMMONERROR_INVALIDMODULE',                         7);
-define('COMMONERROR_RECORDERROR',                           8);
-define('COMMONERROR_WILDCARDSTRING',                        9);
-define('COMMONERROR_BADFIELDS',                             10);
-define('COMMONERROR_RESTRICTEDEXTENSION',                   11);
-define('COMMONERROR_FILENOTFOUND',                          12);
+define('COMMONERROR_PERMISSION', 1);
+define('COMMONERROR_NOTLOGGEDIN', 2);
+define('COMMONERROR_BADINDEX', 3);
+define('COMMONERROR_MISSINGFIELDS', 4);
+define('COMMONERROR_NOPASSWORDMATCH', 5);
+define('COMMONERROR_FILEERROR', 6);
+define('COMMONERROR_INVALIDMODULE', 7);
+define('COMMONERROR_RECORDERROR', 8);
+define('COMMONERROR_WILDCARDSTRING', 9);
+define('COMMONERROR_BADFIELDS', 10);
+define('COMMONERROR_RESTRICTEDEXTENSION', 11);
+define('COMMONERROR_FILENOTFOUND', 12);
 
 /**
  *	Common Errors Friendly Display Library
@@ -51,8 +50,13 @@ define('COMMONERROR_FILENOTFOUND',                          12);
 class CommonErrors
 {
     /* Prevent this class from being instantiated. */
-    private function __construct() {}
-    private function __clone() {}
+    private function __construct()
+    {
+    }
+
+    private function __clone()
+    {
+    }
 
     public static function isDemo()
     {
@@ -69,8 +73,7 @@ class CommonErrors
     {
         $template = new Template();
         $internalErrorTitle = '';
-        switch ($code)
-        {
+        switch ($code) {
             case COMMONERROR_RESTRICTEDEXTENSION:
                 $errorTitle = 'Upgrade to Professional for Plug-ins';
                 $internalErrorTitle = 'Unauthorized Use of an Extension';
@@ -113,7 +116,7 @@ class CommonErrors
                     . 'in the blink of an eye. Modules are like plug-ins, and perform specific tasks like integrating with '
                     . 'job boards or keeping your calendar up to date. You\'re getting this message because you followed '
                     . 'an old link, a bad link, or the module you\'re asking for no longer exists.<p>'
-                    . '<a href="'.CATSUtility::getIndexName().'?m=home">Click here</a> to view the home module.';
+                    . '<a href="' . CATSUtility::getIndexName() . '?m=home">Click here</a> to view the home module.';
                 break;
 
             case COMMONERROR_FILEERROR:
@@ -173,8 +176,7 @@ class CommonErrors
                     . 'on your browser to return to where you came from.'
                     . '<br /><br />';
 
-                if (!empty($customMessage))
-                {
+                if (! empty($customMessage)) {
                     $errorMessage .= $customMessage . '<br /><br />';
                 }
 
@@ -193,8 +195,7 @@ class CommonErrors
                     . 'on your browser to return to where you came from.'
                     . '<br /><br />';
 
-                if (!empty($customMessage))
-                {
+                if (! empty($customMessage)) {
                     $errorMessage .= $customMessage . '<br /><br />';
                 }
 
@@ -219,8 +220,7 @@ class CommonErrors
                     . '<a href="javascript:back()">back button</a> on your browser to return to where '
                     . 'you came from.<br /><br />';
 
-                if (!empty($customMessage))
-                {
+                if (! empty($customMessage)) {
                     $errorMessage .= $customMessage;
                 }
                 break;
@@ -237,8 +237,7 @@ class CommonErrors
 
         //self::sendEmail($internalErrorTitle, $customMessage);
 
-        if (isset($_SESSION['CATS']) && !empty($_SESSION['CATS']))
-        {
+        if (isset($_SESSION['CATS']) && ! empty($_SESSION['CATS'])) {
             /* Get the current user's user ID. */
             $userID = $_SESSION['CATS']->getUserID();
 
@@ -252,8 +251,7 @@ class CommonErrors
             $isDemo = $_SESSION['CATS']->isDemo();
 
             // Save log if a session is present and it's not a demo, and exceptions are logged
-            if (!$isDemo && self::isExceptionLoggingEnabled())
-            {
+            if (! $isDemo && self::isExceptionLoggingEnabled()) {
                 self::saveLog($siteID, $userID, $accessLevel, $internalErrorTitle, $customMessage);
             }
 
@@ -262,9 +260,7 @@ class CommonErrors
             $template->assign('siteID', $siteID);
             $template->assign('userID', $userID);
             $template->assign('isDemo', $isDemo);
-        }
-        else
-        {
+        } else {
             $template->assign('isDemo', true); // no session might as well be a demo
             $template->assign('siteID', -1);
             $template->assign('userID', -1);
@@ -282,11 +278,16 @@ class CommonErrors
     private static function isExceptionLoggingEnabled()
     {
         $db = DatabaseConnection::getInstance();
-        $tables = array();
+        $tables = [];
         $rs = $db->query('show tables');
-        while ($tbl = mysqli_fetch_array($rs)) $tables[] = $tbl[0];
-        if (in_array('exceptions', $tables)) return true;
-        else return false;
+        while ($tbl = mysqli_fetch_array($rs)) {
+            $tables[] = $tbl[0];
+        }
+        if (in_array('exceptions', $tables)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private static function getBacktrace()
@@ -302,22 +303,32 @@ class CommonErrors
     {
         $db = DatabaseConnection::getInstance();
 
-        $sql = sprintf('INSERT INTO exceptions (site_id, user_id, title, message, access_level, script, '
+        $sql = sprintf(
+            'INSERT INTO exceptions (site_id, user_id, title, message, access_level, script, '
             . 'domain, request, backtrace, date) VALUES (%d, %d, "%s", "%s", %d, "%s", "%s", "%s", "%s", NOW())',
-            $siteID, $userID, addslashes($internalErrorTitle), addslashes($customMessage),
-            $accessLevel, addslashes($_SERVER['SCRIPT_NAME']), addslashes($_SERVER['SERVER_NAME']),
-            addslashes($_SERVER['QUERY_STRING']), addslashes(self::getBacktrace())
+            $siteID,
+            $userID,
+            addslashes($internalErrorTitle),
+            addslashes($customMessage),
+            $accessLevel,
+            addslashes($_SERVER['SCRIPT_NAME']),
+            addslashes($_SERVER['SERVER_NAME']),
+            addslashes($_SERVER['QUERY_STRING']),
+            addslashes(self::getBacktrace())
         );
 
         $rs = $db->query($sql);
-        if ($rs) return true;
-        else return false;
+        if ($rs) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private static function sendEmail($subject, $body)
     {
-        if (!eval(Hooks::get('EXCEPTION_NOTIFY_DEV'))) return;
+        if (! eval(Hooks::get('EXCEPTION_NOTIFY_DEV'))) {
+            return;
+        }
     }
 };
-
-?>

@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -47,9 +46,13 @@ include_once(LEGACY_ROOT . '/lib/StringUtility.php');
 class ListEditor
 {
     /* Prevent this class from being instantiated. */
-    private function __construct() {}
-    private function __clone() {}
+    private function __construct()
+    {
+    }
 
+    private function __clone()
+    {
+    }
 
     /**
      * Returns an array of values from CSV list.
@@ -63,23 +66,20 @@ class ListEditor
         $string .= '';
         $string = trim($string);
 
-        if (empty($string))
-        {
-            return array();
+        if (empty($string)) {
+            return [];
         }
 
         $string = str_replace('""', '!!DOUBLEQUOTE!!', $string);
         $string = str_replace('^', '!!EXPONENT!!', $string);
 
-        while (strpos($string, '"') !== false)
-        {
+        while (strpos($string, '"') !== false) {
             $pos = strpos($string, '"');
             $string = StringUtility::JSSubString($string, 0, $pos) . '^'
                 . StringUtility::JSSubString($string, ($pos + 1), strlen($string));
 
             $pos2 = strpos($string, '"');
-            if ($pos2 !== false)
-            {
+            if ($pos2 !== false) {
                 $string = StringUtility::JSSubString($string, 0, $pos) . '^'
                     . StringUtility::JSSubString($string, ($pos + 1), strlen($string));
 
@@ -97,8 +97,7 @@ class ListEditor
 
         $tArray = explode(',', $string);
 
-        for ($i = 0; $i < count($tArray); $i++)
-        {
+        for ($i = 0; $i < count($tArray); $i++) {
             $tArray[$i] = str_replace('!!DOUBLEQUOTE!!', '"', $tArray[$i]);
             $tArray[$i] = str_replace('!!EXPONENT!!', '^', $tArray[$i]);
             $tArray[$i] = str_replace('!!COMMA!!', ',', $tArray[$i]);
@@ -106,7 +105,7 @@ class ListEditor
 
         return $tArray;
     }
-    
+
     /**
      * Returns an CSV list from a 2 dimensional array with parameter 2 being
      * the index value for dimension 2.
@@ -117,28 +116,22 @@ class ListEditor
      */
     public static function getStringFromList($rs, $index)
     {
-        if (empty($rs) || $rs == -1)
-        {
+        if (empty($rs) || $rs == -1) {
             return '';
         }
 
         $output = '';
-        foreach ($rs as $rsIndex => $rsEntry)
-        {
+        foreach ($rs as $rsIndex => $rsEntry) {
             $string = '"' . str_replace('"', '""', $rsEntry[$index]) . '"';
-            if ($rsIndex != count($rs) - 1)
-            {
+            if ($rsIndex != count($rs) - 1) {
                 $output .= $string . ',';
-            }
-            else
-            {
+            } else {
                 $output .= $string;
             }
         }
 
         return $output;
     }
-
 
     /**
      * Returns an array of the 'add' values from a listEditor.js array.
@@ -148,12 +141,10 @@ class ListEditor
      */
     public static function getAddValues($theArray)
     {
-        $theArrayValues = array();
+        $theArrayValues = [];
 
-        for ($i = 0; $i < count($theArray); $i++)
-        {
-            if (strpos($theArray[$i], '!!EDIT!!') === false)
-            {
+        for ($i = 0; $i < count($theArray); $i++) {
+            if (strpos($theArray[$i], '!!EDIT!!') === false) {
                 $theArrayValues[] = $theArray[$i];
             }
         }
@@ -169,12 +160,10 @@ class ListEditor
      */
     public static function getEditValues($theArray)
     {
-        $theArrayValues = array();
+        $theArrayValues = [];
 
-        for ($i = 0; $i < count($theArray); $i++)
-        {
-            if (strpos($theArray[$i], '!!EDIT!!') === 0)
-            {
+        for ($i = 0; $i < count($theArray); $i++) {
+            if (strpos($theArray[$i], '!!EDIT!!') === 0) {
                 $from = StringUtility::JSSubString(
                     $theArray[$i],
                     8,
@@ -185,7 +174,7 @@ class ListEditor
                     strpos($theArray[$i], '!!INTO!!') + 8,
                     strlen($theArray[$i])
                 );
-                $theArrayValues[] = array($from, $into);
+                $theArrayValues[] = [$from, $into];
             }
         }
 
@@ -208,79 +197,66 @@ class ListEditor
      *       LIST_EDITOR_REMOVE
      *       LIST_EDITOR_MODIFY
      */
-    public static function getDifferencesFromList($rsOriginal,
-        $rsFieldNameOriginal, $rsFieldIndexOriginal, $stringListEditor)
-    {
+    public static function getDifferencesFromList(
+        $rsOriginal,
+        $rsFieldNameOriginal,
+        $rsFieldIndexOriginal,
+        $stringListEditor
+    ) {
         /* Safeguard:  Do not delete anything unless we KNOW that the user did a delete. */
         $allowDelete = false;
-        
-        if (strpos($stringListEditor, '&DELETEALLOWED&') !== false)
-        {
+
+        if (strpos($stringListEditor, '&DELETEALLOWED&') !== false) {
             $allowDelete = true;
             $stringListEditor = substr($stringListEditor, 0, strpos($stringListEditor, '&DELETEALLOWED&'));
         }
-        
-        $arrayDiff = array();
+
+        $arrayDiff = [];
 
         $values = self::getArrayVaulesfromCSV($stringListEditor);
         $addValues = self::getAddValues($values);
         $editValues = self::getEditValues($values);
 
-        if ($rsOriginal != -1)
-        {
-            foreach ($rsOriginal as $rsLine)
-            {
-                   $arrayDiff[] = array(
+        if ($rsOriginal != -1) {
+            foreach ($rsOriginal as $rsLine) {
+                $arrayDiff[] = [
                     $rsLine[$rsFieldNameOriginal],
                     $rsLine[$rsFieldIndexOriginal],
-                    LIST_EDITOR_UNKNOWN
-                );
+                    LIST_EDITOR_UNKNOWN,
+                ];
             }
         }
 
-        foreach ($editValues as $editLine)
-        {
-            for ($i = 0; $i < count($arrayDiff); $i++)
-            {
-                if ($arrayDiff[$i][0] == $editLine[0])
-                {
+        foreach ($editValues as $editLine) {
+            for ($i = 0; $i < count($arrayDiff); $i++) {
+                if ($arrayDiff[$i][0] == $editLine[0]) {
                     $arrayDiff[$i][0] = $editLine[1];
                     $arrayDiff[$i][2] = LIST_EDITOR_MODIFY;
                 }
             }
         }
 
-        foreach ($addValues as $addLine)
-        {
+        foreach ($addValues as $addLine) {
             $foundValue = false;
-            for ($i = 0; $i < count($arrayDiff); $i++)
-            {
-                if ($arrayDiff[$i][0] == $addLine)
-                {
+            for ($i = 0; $i < count($arrayDiff); $i++) {
+                if ($arrayDiff[$i][0] == $addLine) {
                     $foundValue = true;
-                    if ($arrayDiff[$i][2] == LIST_EDITOR_UNKNOWN)
-                    {
+                    if ($arrayDiff[$i][2] == LIST_EDITOR_UNKNOWN) {
                         $arrayDiff[$i][2] = LIST_EDITOR_UNCHANGED;
                     }
                 }
             }
-            if (!$foundValue)
-            {
-                $arrayDiff[] = array($addLine, 0, LIST_EDITOR_ADD);
+            if (! $foundValue) {
+                $arrayDiff[] = [$addLine, 0, LIST_EDITOR_ADD];
             }
         }
 
-        foreach ($arrayDiff as $arrayDiffIndex => $arrayDiffLine)
-        {
-            if ($arrayDiffLine[2] == LIST_EDITOR_UNKNOWN)
-            {
+        foreach ($arrayDiff as $arrayDiffIndex => $arrayDiffLine) {
+            if ($arrayDiffLine[2] == LIST_EDITOR_UNKNOWN) {
                 /* Safeguard:  Do not delete anything unless we KNOW that the user did a delete. */
-                if ($allowDelete == true)
-                {
+                if ($allowDelete == true) {
                     $arrayDiff[$arrayDiffIndex][2] = LIST_EDITOR_REMOVE;
-                }
-                else
-                {
+                } else {
                     $arrayDiff[$arrayDiffIndex][2] = LIST_EDITOR_UNCHANGED;
                 }
             }
@@ -289,5 +265,3 @@ class ListEditor
         return $arrayDiff;
     }
 }
-
-?>

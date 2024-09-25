@@ -1,9 +1,10 @@
-<?php 
+<?php
+
 /*
  * CATS
  * Contacts Datagrid
  *
- * CATS Version: 0.9.7.2
+ * CATS Version: 0.9.8.2
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
@@ -30,7 +31,7 @@
  *
  * $Id: dataGrids.php 3096 2007-09-25 19:27:04Z brian $
  */
- 
+
 include_once(LEGACY_ROOT . '/lib/Contacts.php');
 include_once(LEGACY_ROOT . '/lib/Hooks.php');
 include_once(LEGACY_ROOT . '/lib/Width.php');
@@ -50,42 +51,70 @@ class ContactsListByViewDataGrid extends ContactsDataGrid
 
         $this->defaultSortBy = 'dateCreatedSort';
         $this->defaultSortDirection = 'DESC';
-   
-        $this->_defaultColumns = array( 
-            array('name' => 'Attachments', 'width' => 10),
-            array('name' => 'First Name', 'width' => 80),
-            array('name' => 'Last Name', 'width' => 80),
-            array('name' => 'Company', 'width' => 135),
-            array('name' => 'Title', 'width' => 135),
-            array('name' => 'Work Phone', 'width' => 85),
-            array('name' => 'Owner', 'width' => 85),
-            array('name' => 'Created', 'width' => 60),
-            array('name' => 'Modified', 'width' => 60),
+
+        $this->_defaultColumns = [
+            [
+                'name' => 'Attachments',
+                'width' => 10,
+            ],
+            [
+                'name' => 'First Name',
+                'width' => 80,
+            ],
+            [
+                'name' => 'Last Name',
+                'width' => 80,
+            ],
+            [
+                'name' => 'Company',
+                'width' => 135,
+            ],
+            [
+                'name' => 'Title',
+                'width' => 135,
+            ],
+            [
+                'name' => 'Work Phone',
+                'width' => 85,
+            ],
+            [
+                'name' => 'Owner',
+                'width' => 85,
+            ],
+            [
+                'name' => 'Created',
+                'width' => 60,
+            ],
+            [
+                'name' => 'Modified',
+                'width' => 60,
+            ],
+        ];
+
+        parent::__construct(
+            "contacts:ContactsListByViewDataGrid",
+            $siteID,
+            $parameters,
+            $misc
         );
-   
-        parent::__construct("contacts:ContactsListByViewDataGrid", 
-                             $siteID, $parameters, $misc
-                        );
     }
-    
 
     /**
-     * Adds more options to the action area on the pager.  Overloads 
+     * Adds more options to the action area on the pager.  Overloads
      * DataGrid Inner Action Area function.
      *
      * @return html innerActionArea commands.
-     */    
+     */
     public function getInnerActionArea()
     {
         $html = '';
 
-        $html .= $this->getInnerActionAreaItemPopup('Add To List', CATSUtility::getIndexName().'?m=lists&amp;a=addToListFromDatagridModal&amp;dataItemType='.DATA_ITEM_CONTACT, 450, 350);
-        $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
+        $html .= $this->getInnerActionAreaItemPopup('Add To List', CATSUtility::getIndexName() . '?m=lists&amp;a=addToListFromDatagridModal&amp;dataItemType=' . DATA_ITEM_CONTACT, 450, 350);
+        $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName() . '?m=export&amp;a=exportByDataGrid');
 
         $html .= parent::getInnerActionArea();
 
         return $html;
-
     }
 }
 
@@ -104,43 +133,69 @@ class contactSavedListByViewDataGrid extends ContactsDataGrid
 
         $this->defaultSortBy = 'dateCreatedSort';
         $this->defaultSortDirection = 'DESC';
-   
-        $this->_defaultColumns = array( 
-            array('name' => 'Attachments', 'width' => 10),
-            array('name' => 'First Name', 'width' => 80),
-            array('name' => 'Last Name', 'width' => 80),
-            array('name' => 'Company', 'width' => 135),
-            array('name' => 'Title', 'width' => 135),
-            array('name' => 'Work Phone', 'width' => 85),
-            array('name' => 'Owner', 'width' => 85),
-            array('name' => 'Created', 'width' => 60),
-            array('name' => 'Modified', 'width' => 60),
+
+        $this->_defaultColumns = [
+            [
+                'name' => 'Attachments',
+                'width' => 10,
+            ],
+            [
+                'name' => 'First Name',
+                'width' => 80,
+            ],
+            [
+                'name' => 'Last Name',
+                'width' => 80,
+            ],
+            [
+                'name' => 'Company',
+                'width' => 135,
+            ],
+            [
+                'name' => 'Title',
+                'width' => 135,
+            ],
+            [
+                'name' => 'Work Phone',
+                'width' => 85,
+            ],
+            [
+                'name' => 'Owner',
+                'width' => 85,
+            ],
+            [
+                'name' => 'Created',
+                'width' => 60,
+            ],
+            [
+                'name' => 'Modified',
+                'width' => 60,
+            ],
+        ];
+
+        parent::__construct(
+            "contacts:contactSavedListByViewDataGrid",
+            $siteID,
+            $parameters,
+            $misc
         );
-   
-        parent::__construct("contacts:contactSavedListByViewDataGrid", 
-                             $siteID, $parameters, $misc
-                        );
     }
-    
 
     /**
-     * Adds more options to the action area on the pager.  Overloads 
+     * Adds more options to the action area on the pager.  Overloads
      * DataGrid Inner Action Area function.
      *
      * @return html innerActionArea commands.
-     */    
+     */
     public function getInnerActionArea()
     {
         $html = '';
 
-        $html .= $this->getInnerActionAreaItem('Remove From This List', CATSUtility::getIndexName().'?m=lists&amp;a=removeFromListDatagrid&amp;dataItemType='.DATA_ITEM_CONTACT.'&amp;savedListID='.$this->getMiscArgument(), false);
-        $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
+        $html .= $this->getInnerActionAreaItem('Remove From This List', CATSUtility::getIndexName() . '?m=lists&amp;a=removeFromListDatagrid&amp;dataItemType=' . DATA_ITEM_CONTACT . '&amp;savedListID=' . $this->getMiscArgument(), false);
+        $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName() . '?m=export&amp;a=exportByDataGrid');
 
         $html .= parent::getInnerActionArea();
 
         return $html;
-
     }
 }
-
-?>

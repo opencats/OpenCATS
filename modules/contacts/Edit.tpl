@@ -79,7 +79,7 @@
                                             <option value="edit">(Edit Departments)</option>
                                             <option value="nullline">-------------------------------</option>
                                             <?php if ($this->data['departmentID'] == 0): ?>
-                                                <option value="(none)" selected="selected">(None)</option>
+                                                <option value="(none)" selected>(None)</option>
                                             <?php else: ?>
                                                 <option value="(none)">(None)</option>
                                             <?php endif; ?>
@@ -98,7 +98,7 @@
                                     <td class="tdData">
                                         <select id="reportsTo" name="reportsTo" class="inputbox" style="width: 150px;" >
                                             <?php if ($this->data['reportsTo'] == -1): ?>
-                                                <option value="(none)" selected="selected">(None)</option>
+                                                <option value="(none)" selected>(None)</option>
                                             <?php else: ?>
                                                 <option value="(none)">(None)</option>
                                             <?php endif; ?>

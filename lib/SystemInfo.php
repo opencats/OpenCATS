@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -39,17 +38,13 @@ class SystemInfo
 {
     private $_db;
 
-
     public function __construct()
     {
         $this->_db = DatabaseConnection::getInstance();
     }
 
-
     /**
      * Returns all entries for the system table.
-     *
-     * @return void
      */
     public function getSystemInfo()
     {
@@ -70,7 +65,6 @@ class SystemInfo
      * Updates the UID for the installed system.
      *
      * @param uid (int)
-     * @return void
      */
     public function updateUID($uid)
     {
@@ -90,7 +84,6 @@ class SystemInfo
      * Updates the new version check preference.
      *
      * @param boolean (new value)
-     * @return void
      */
     public function updateVersionCheckPrefs($enableNewVersionCheck)
     {
@@ -112,7 +105,6 @@ class SystemInfo
      * @param integer
      * @param newsHtml
      * @param date
-     * @return void
      */
     public function updateRemoteVersion($version, $newsRelease, $date)
     {
@@ -132,5 +124,3 @@ class SystemInfo
         $this->_db->query($sql);
     }
 }
-
-?>

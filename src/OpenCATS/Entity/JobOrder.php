@@ -1,4 +1,5 @@
 <?php
+
 namespace OpenCATS\Entity;
 
 include_once('./lib/JobOrderStatuses.php');
@@ -6,32 +7,56 @@ include_once('./lib/JobOrderStatuses.php');
 class JobOrder
 {
     private $id;
+
     private $title;
+
     private $companyId;
+
     private $contactId;
+
     private $description;
+
     private $notes;
+
     private $duration;
+
     private $maxRate;
+
     private $type;
+
     private $isHot;
+
     private $isPublic;
+
     private $openings;
+
     private $availableOpenings;
+
     private $companyJobId;
+
     private $salary;
+
     private $city;
+
     private $state;
+
     private $startDate;
+
     private $enteredBy;
+
     private $recruiter;
+
     private $owner;
+
     private $departmentId;
+
     private $questionnaire;
+
     private $siteId;
+
     private $status;
-    
-    function __construct(
+
+    public function __construct(
         $siteId,
         $title,
         $type,
@@ -49,218 +74,218 @@ class JobOrder
         $this->state = $state;
         $this->isPublic = $isPublic;
     }
-    
-    function getTitle()
+
+    public function getTitle()
     {
         return $this->title;
     }
-    
-    function getCompanyJobId()
+
+    public function getCompanyJobId()
     {
         return $this->companyJobId;
     }
-    
-    function setCompanyJobId($value)
+
+    public function setCompanyJobId($value)
     {
         $this->companyJobId = $value;
     }
-    
-    function getCompanyId()
+
+    public function getCompanyId()
     {
         return $this->companyId;
     }
-    
-    function setCompanyId($value)
+
+    public function setCompanyId($value)
     {
         $this->companyId = $value;
     }
-    
-    function getContactId()
+
+    public function getContactId()
     {
         return $this->contactId;
     }
-    
-    function setContactId($value)
+
+    public function setContactId($value)
     {
         $this->contactId = $value;
     }
-    
-    function getDescription()
+
+    public function getDescription()
     {
         return $this->description;
     }
-    
-    function setDescription($value)
+
+    public function setDescription($value)
     {
         $this->description = $value;
     }
-    
-    function getNotes()
+
+    public function getNotes()
     {
         return $this->notes;
     }
-    
-    function setNotes($value)
+
+    public function setNotes($value)
     {
         $this->notes = $value;
     }
-    
-    function getDuration()
+
+    public function getDuration()
     {
         return $this->duration;
     }
-    
-    function setDuration($value)
+
+    public function setDuration($value)
     {
         $this->duration = $value;
     }
-    
-    function getMaxRate()
+
+    public function getMaxRate()
     {
         return $this->maxRate;
     }
-    
-    function setMaxRate($value)
+
+    public function setMaxRate($value)
     {
         $this->maxRate = $value;
     }
-    
-    function getType()
+
+    public function getType()
     {
         return $this->type;
     }
-    
-    function setType($value)
+
+    public function setType($value)
     {
         $this->type = $value;
     }
-    
-    function isHot()
+
+    public function isHot()
     {
         return $this->isHot;
     }
-    
-    function setIsHot($value)
+
+    public function setIsHot($value)
     {
         $this->isHot = $value;
     }
-    
-    function isPublic()
+
+    public function isPublic()
     {
         return $this->isPublic;
     }
-    
-    function getOpenings()
+
+    public function getOpenings()
     {
         return $this->openings;
     }
-    
-    function setOpenings($value)
+
+    public function setOpenings($value)
     {
         $this->openings = $value;
     }
-    
-    function getAvailableOpenings()
+
+    public function getAvailableOpenings()
     {
         return $this->availableOpenings;
     }
-    
-    function setAvailableOpenings($value)
+
+    public function setAvailableOpenings($value)
     {
         $this->availableOpenings = $value;
     }
-    
-    function getSalary()
+
+    public function getSalary()
     {
         return $this->salary;
     }
-    
-    function setSalary($value)
+
+    public function setSalary($value)
     {
         $this->salary = $value;
     }
-    
-    function getCity()
+
+    public function getCity()
     {
         return $this->city;
     }
-    
-    function getState()
+
+    public function getState()
     {
         return $this->state;
     }
-    
-    function getDepartmentId()
+
+    public function getDepartmentId()
     {
         return $this->departmentId;
     }
-    
-    function setDepartmemtId($value)
+
+    public function setDepartmemtId($value)
     {
         $this->departmentId = $value;
     }
-    
-    function getStartDate()
+
+    public function getStartDate()
     {
         return $this->startDate;
     }
-    
-    function setStartDate($value)
+
+    public function setStartDate($value)
     {
         $this->startDate = $value;
     }
-    
-    function getEnteredBy()
+
+    public function getEnteredBy()
     {
         return $this->enteredBy;
     }
-    
-    function setEnteredBy($value)
+
+    public function setEnteredBy($value)
     {
         $this->enteredBy = $value;
     }
-    
-    function getRecruiter()
+
+    public function getRecruiter()
     {
         return $this->recruiter;
     }
-    
-    function setRecruiter($value)
+
+    public function setRecruiter($value)
     {
         $this->recruiter = $value;
     }
-    
-    function getOwner()
+
+    public function getOwner()
     {
         return $this->owner;
     }
-    
-    function setOwner($value)
+
+    public function setOwner($value)
     {
         $this->owner = $value;
     }
-    
-    function getSiteId()
+
+    public function getSiteId()
     {
         return $this->siteId;
     }
-    
-    function getQuestionnaire()
+
+    public function getQuestionnaire()
     {
         return $this->questionnaire;
     }
-    
-    function setQuestionnaire($value)
+
+    public function setQuestionnaire($value)
     {
         $this->questionnaire = $value;
     }
 
-    function getStatus()
+    public function getStatus()
     {
         return $this->status;
     }
-    
-    static function create(
+
+    public static function create(
         $siteId,
         $title,
         $companyId,

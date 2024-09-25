@@ -29,7 +29,9 @@
 class Task
 {
     protected $taskName;
+
     protected $taskDescription;
+
     protected $taskID;
 
     public function setTaskID($id)
@@ -92,6 +94,3 @@ class Task
         return intval(date('i'));
     }
 }
-
-
-?>

@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -44,8 +43,8 @@ include_once(LEGACY_ROOT . '/lib/Hooks.php');
 class Attachments
 {
     private $_db;
-    private $_siteID;
 
+    private $_siteID;
 
     public function __construct($siteID)
     {
@@ -70,28 +69,33 @@ class Attachments
      * @param string Attachment md5sum.
      * @return integer New attachment ID, or -1 on failure.
      */
-    public function add($dataItemType, $dataItemID, $attachmentTitle,
-        $originalFilename, $storedFilename, $contentType, $isResume,
-        $resumeText, $isProfileImage, $directoryName, $fileSize = 0,
-        $md5sum = '')
-    {
+    public function add(
+        $dataItemType,
+        $dataItemID,
+        $attachmentTitle,
+        $originalFilename,
+        $storedFilename,
+        $contentType,
+        $isResume,
+        $resumeText,
+        $isProfileImage,
+        $directoryName,
+        $fileSize = 0,
+        $md5sum = ''
+    ) {
         /* If this is a profile image, delete all other profile images (users
          * can only have one).
          */
-        if ($isProfileImage)
-        {
+        if ($isProfileImage) {
             $this->deleteProfileImages($dataItemType, $dataItemID);
         }
 
         // FIXME: Will: Remove DatabaseSearch dependency.
         $resumeText = DatabaseSearch::fulltextEncode($resumeText);
 
-        if ($resumeText != '')
-        {
+        if ($resumeText != '') {
             $md5sumText = md5($resumeText);
-        }
-        else
-        {
+        } else {
             $md5sumText = '';
         }
 
@@ -149,8 +153,7 @@ class Attachments
         );
 
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return -1;
         }
 
@@ -172,7 +175,9 @@ class Attachments
      */
     public function forceAttachmentLocal($attachmentID)
     {
-        if (!eval(Hooks::get('FORCE_ATTACHMENT_LOCAL'))) return;
+        if (! eval(Hooks::get('FORCE_ATTACHMENT_LOCAL'))) {
+            return;
+        }
     }
 
     /**
@@ -189,7 +194,9 @@ class Attachments
      */
     public function forceAttachmentRemote($attachmentID)
     {
-        if (!eval(Hooks::get('FORCE_ATTACHMENT_REMOTE'))) return;
+        if (! eval(Hooks::get('FORCE_ATTACHMENT_REMOTE'))) {
+            return;
+        }
     }
 
     /**
@@ -199,7 +206,9 @@ class Attachments
      */
     public function forceRemoteDeleteAttachment($attachmentID)
     {
-        if (!eval(Hooks::get('FORCE_ATTACHMENT_DELETE'))) return;
+        if (! eval(Hooks::get('FORCE_ATTACHMENT_DELETE'))) {
+            return;
+        }
     }
 
     /**
@@ -229,7 +238,7 @@ class Attachments
             $this->_siteID
         );
 
-        $queryResult = (boolean) $this->_db->query($sql);
+        $queryResult = (bool) $this->_db->query($sql);
 
         $this->updateSiteSize();
 
@@ -238,8 +247,6 @@ class Attachments
 
     /**
      * Recalculates the current site's total stored file size.
-     *
-     * @return void
      */
     public function updateSiteSize()
     {
@@ -290,7 +297,7 @@ class Attachments
             $this->_siteID
         );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     /**
@@ -319,8 +326,7 @@ class Attachments
         );
         $rs = $this->_db->getAssoc($sql);
 
-        if (isset($rs['siteID']))
-        {
+        if (isset($rs['siteID'])) {
             $this->forceRemoteDeleteAttachment($attachmentID);
         }
 
@@ -337,28 +343,24 @@ class Attachments
         $queryResult = $this->_db->query($sql);
 
         /* Was the delete successful? */
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return false;
         }
 
         /* Should we even try to remove any directories? */
-        if (!$removeFile || empty($rs))
-        {
+        if (! $removeFile || empty($rs)) {
             return true;
         }
 
         /* Sanity check. Don't delete the whole attachments directory. */
         $directoryName = trim($rs['directoryName']);
-        if (empty($directoryName) || $directoryName == '.')
-        {
+        if (empty($directoryName) || $directoryName == '.') {
             return true;
         }
 
         /* Remove the directory. */
         $directoryName = 'attachments/' . $directoryName;
-        if (is_dir($directoryName))
-        {
+        if (is_dir($directoryName)) {
             FileUtility::recursivelyRemoveDirectory($directoryName);
         }
 
@@ -372,7 +374,6 @@ class Attachments
      * @param flag Data Item type.
      * @param integer Data Item ID.
      * @param string Extra SQL criteria to apply to the SELECT / DELETE query.
-     * @return void
      */
     public function deleteAll($dataItemType, $dataItemID, $criteria = '')
     {
@@ -398,24 +399,20 @@ class Attachments
         $rs = $this->_db->getAllAssoc($sql);
 
         /* Return if we have no attachments. */
-        if (empty($rs))
-        {
+        if (empty($rs)) {
             return;
         }
 
-        foreach ($rs as $rowNumber => $row)
-        {
+        foreach ($rs as $rowNumber => $row) {
             /* Sanity check. Don't delete the whole attachments directory. */
             $directoryName = trim($row['directoryName']);
-            if (empty($directoryName) || $directoryName = '.')
-            {
+            if (empty($directoryName) || $directoryName = '.') {
                 continue;
             }
 
             $directory = 'attachments/' . $directoryName;
 
-            if (is_dir($directory))
-            {
+            if (is_dir($directory)) {
                 FileUtility::recursivelyRemoveDirectory($directory);
             }
         }
@@ -467,8 +464,7 @@ class Attachments
         );
         $rs = $this->_db->getAllAssoc($sql);
 
-        foreach ($rs as $data)
-        {
+        foreach ($rs as $data) {
             $this->delete($data['attachmentID']);
         }
 
@@ -499,7 +495,7 @@ class Attachments
             $this->_siteID
         );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     /**
@@ -541,8 +537,7 @@ class Attachments
         );
         $rs = $this->_db->getAllAssoc($sql);
 
-        foreach ($rs as $index => $data)
-        {
+        foreach ($rs as $index => $data) {
             $rs[$index]['retrievalURL'] = sprintf(
                 '%s?m=attachments&amp;a=getAttachment&amp;id=%s&amp;directoryNameHash=%s',
                 CATSUtility::getIndexName(),
@@ -551,8 +546,8 @@ class Attachments
             );
 
             $directoryName = $data['directoryName'];
-            $fileName      = $data['storedFilename'];
-            $filePath      = sprintf('attachments/%s/%s', $directoryName, $fileName);
+            $fileName = $data['storedFilename'];
+            $filePath = sprintf('attachments/%s/%s', $directoryName, $fileName);
 
             $rs[$index]['retrievalURLLocal'] = $filePath;
 
@@ -607,13 +602,10 @@ class Attachments
 
         // FIXME: This doesn't follow the normal paradigm. Normally, we return
         //        array() on failed queries so upper layers know the query failed.
-        if (empty($rs))
-        {
+        if (empty($rs)) {
             /* This url is designed for failure. */
             $rs['retrievalURL'] = 'index.php?m=attachments&amp;a=getAttachment';
-        }
-        else
-        {
+        } else {
             $rs['retrievalURL'] = sprintf(
                 '%s?m=attachments&amp;a=getAttachment&amp;id=%s&amp;directoryNameHash=%s',
                 CATSUtility::getIndexName(),
@@ -637,18 +629,19 @@ class Attachments
      * @param string Extracted text.
      * @return resultset Found attachments data.
      */
-    public function getMatching($dataItemType, $dataItemID, $fileSize, $md5sum,
-        $text = '')
-    {
-        if (empty($text))
-        {
+    public function getMatching(
+        $dataItemType,
+        $dataItemID,
+        $fileSize,
+        $md5sum,
+        $text = ''
+    ) {
+        if (empty($text)) {
             $md5Criterion = sprintf(
                 'AND md5_sum = %s AND md5_sum != \'\'',
                 $this->_db->makeQueryString($md5sum)
             );
-        }
-        else
-        {
+        } else {
             $md5 = md5(DatabaseSearch::fulltextEncode($text));
             $md5Criterion = sprintf(
                 'AND md5_sum_text = %s AND md5_sum_text != \'\'',
@@ -684,7 +677,6 @@ class Attachments
         return $this->_db->getAllAssoc($sql);
     }
 
-
     /**
      * Generates an attachment retrieval link.
      *
@@ -709,11 +701,9 @@ class Attachments
     {
         $extension = FileUtility::getFileExtension($filename);
 
-        foreach (file('lib/mime.types') as $line)
-        {
+        foreach (file('lib/mime.types') as $line) {
             $line = str_replace(' ', "\t", $line);
-            if (strpos($line, "\t" . $extension) !== false)
-            {
+            if (strpos($line, "\t" . $extension) !== false) {
                 $array = explode("\t", $line);
                 return $array[0];
             }
@@ -724,7 +714,6 @@ class Attachments
 
     /**
      * Get basic summary statistics about bulk attachments.
-     *
      */
     public function getBulkAttachmentsInfo()
     {
@@ -750,7 +739,6 @@ class Attachments
     /**
      * Get information about bulk attachments that have been saved to the
      * site attached to this class by siteID.
-     *
      */
     public function getBulkAttachments()
     {
@@ -793,23 +781,30 @@ class Attachments
 class AttachmentCreator
 {
     private $_isError = false;
-    private $_error = '';
-    private $_isTextExtractionError = false;
-    private $_textExtractionError = '';
-    private $_extractedText = '';
-    private $_siteID = -1;
-    private $_duplicatesOccurred = false;
-    private $_newFilePath = '';
-    private $_containingDirectory = '';
-    private $_attachmentID = -1;
 
+    private $_error = '';
+
+    private $_isTextExtractionError = false;
+
+    private $_textExtractionError = '';
+
+    private $_extractedText = '';
+
+    private $_siteID = -1;
+
+    private $_duplicatesOccurred = false;
+
+    private $_newFilePath = '';
+
+    private $_containingDirectory = '';
+
+    private $_attachmentID = -1;
 
     // FIXME: Document me.
     public function __construct($siteID)
     {
         $this->_siteID = $siteID;
     }
-
 
     /**
      * Returns true if an error occurred during attachment creation. Errors
@@ -928,44 +923,49 @@ class AttachmentCreator
      *                text?
      * @return boolean Was the attachment created successfully?
      */
-    public function createFromUpload($dataItemType, $dataItemID, $fileField,
-        $isProfileImage, $extractText)
-    {
+    public function createFromUpload(
+        $dataItemType,
+        $dataItemID,
+        $fileField,
+        $isProfileImage,
+        $extractText
+    ) {
         /* Get file upload metadata. */
         $originalFilename = $_FILES[$fileField]['name'];
-        $tempFilename     = $_FILES[$fileField]['tmp_name'];
-        $contentType      = $_FILES[$fileField]['type'];
-        $fileSize         = $_FILES[$fileField]['size'];
-        $uploadError      = $_FILES[$fileField]['error'];
+        $tempFilename = $_FILES[$fileField]['tmp_name'];
+        $contentType = $_FILES[$fileField]['type'];
+        $fileSize = $_FILES[$fileField]['size'];
+        $uploadError = $_FILES[$fileField]['error'];
 
         /* Recover from magic quotes. Note that tmp_name doesn't appear to
          * get escaped, and stripslashes() on it breaks on Windows. - Will
          */
-        if (get_magic_quotes_gpc())
-        {
-            $originalFilename = stripslashes($originalFilename);
-            $contentType      = stripslashes($contentType);
-        }
 
         /* Did a file upload error occur? */
-        if ($uploadError != UPLOAD_ERR_OK)
-        {
+        if ($uploadError != UPLOAD_ERR_OK) {
             $this->_isError = true;
             $this->_error = FileUtility::getErrorMessage($uploadError);
             return false;
         }
 
         /* This usually indicates an error. */
-        if ($fileSize <= 0)
-        {
+        if ($fileSize <= 0) {
             $this->_isError = true;
             $this->_error = 'File size is less than 1 byte.';
             return false;
         }
 
         return $this->createGeneric(
-            $dataItemType, $dataItemID, $isProfileImage, $extractText, false,
-            $originalFilename, $tempFilename, $contentType, false, true
+            $dataItemType,
+            $dataItemID,
+            $isProfileImage,
+            $extractText,
+            false,
+            $originalFilename,
+            $tempFilename,
+            $contentType,
+            false,
+            true
         );
     }
 
@@ -990,15 +990,28 @@ class AttachmentCreator
      *                If false, the caller is responsible.
      * @return boolean Was the attachment created successfully?
      */
-    public function createFromFile($dataItemType, $dataItemID, $filePath,
-        $title, $contentType, $extractText, $fileExists)
-    {
+    public function createFromFile(
+        $dataItemType,
+        $dataItemID,
+        $filePath,
+        $title,
+        $contentType,
+        $extractText,
+        $fileExists
+    ) {
         $filePathParts = explode('/', $filePath);
         $originalFilename = end($filePathParts);
 
         return $this->createGeneric(
-            $dataItemType, $dataItemID, false, $extractText, $title,
-            $originalFilename, $filePath, $contentType, false,
+            $dataItemType,
+            $dataItemID,
+            false,
+            $extractText,
+            $title,
+            $originalFilename,
+            $filePath,
+            $contentType,
+            false,
             $fileExists
         );
     }
@@ -1016,12 +1029,24 @@ class AttachmentCreator
      *                text?
      * @return boolean Was the attachment created successfully?
      */
-    public function createFromText($dataItemType, $dataItemID, $text,
-        $fileName, $extractText)
-    {
+    public function createFromText(
+        $dataItemType,
+        $dataItemID,
+        $text,
+        $fileName,
+        $extractText
+    ) {
         return $this->createGeneric(
-            $dataItemType, $dataItemID, false, $extractText, false,
-            $fileName, false, 'text/plain', $text, false
+            $dataItemType,
+            $dataItemID,
+            false,
+            $extractText,
+            false,
+            $fileName,
+            false,
+            'text/plain',
+            $text,
+            false
         );
     }
 
@@ -1051,10 +1076,18 @@ class AttachmentCreator
      *                if $fileContents is not false.
      * @return boolean Was the attachment created successfully?
      */
-    public function createGeneric($dataItemType, $dataItemID, $isProfileImage,
-        $extractText, $title, $originalFilename, $tempFilename,
-        $contentType, $fileContents, $fileExists)
-    {
+    public function createGeneric(
+        $dataItemType,
+        $dataItemID,
+        $isProfileImage,
+        $extractText,
+        $title,
+        $originalFilename,
+        $tempFilename,
+        $contentType,
+        $fileContents,
+        $fileExists
+    ) {
         /* Make a 'safe' filename with only standard ASCII characters. */
         $storedFilename = FileUtility::makeSafeFilename($originalFilename);
 
@@ -1064,48 +1097,36 @@ class AttachmentCreator
         );
 
         /* Make attachment searchable. */
-        if (!$extractText)
-        {
+        if (! $extractText) {
             $extractedText = '';
-        }
-        else
-        {
+        } else {
             $documentToText = new DocumentToText();
             $documentType = $documentToText->getDocumentType(
-                $storedFilename, $contentType
+                $storedFilename,
+                $contentType
             );
 
             /* If we're creating a file from text contents, we can skip
              * extracting because we already know the text contents.
              */
-            if ($fileContents !== false && $documentType == DOCUMENT_TYPE_TEXT)
-            {
+            if ($fileContents !== false && $documentType == DOCUMENT_TYPE_TEXT) {
                 $extractedText = $fileContents;
-            }
-            else if ($fileContents !== false)
-            {
+            } elseif ($fileContents !== false) {
                 /* If it's not text and we are creating a file from contents,
                  * don't try to extract text.
                  */
                 $extractedText = '';
-            }
-            else if (!$fileExists)
-            {
+            } elseif (! $fileExists) {
                 /* Can't extract text from a file that doesn't exist. */
                 $extractedText = '';
-            }
-            else
-            {
+            } else {
                 $documentToText->convert($tempFilename, $documentType);
 
-                if ($documentToText->isError())
-                {
+                if ($documentToText->isError()) {
                     $this->_isTextExtractionError = true;
                     $this->_textExtractionError = $documentToText->getError();
                     $extractedText = '';
-                }
-                else
-                {
+                } else {
                     $extractedText = $documentToText->getString();
                 }
 
@@ -1113,8 +1134,7 @@ class AttachmentCreator
                  * a fatal error.
                  */
                 if ($dataItemType == DATA_ITEM_BULKRESUME &&
-                    $this->_isTextExtractionError)
-                {
+                    $this->_isTextExtractionError) {
                     $this->_isError = true;
                     $this->_error = $this->_textExtractionError;
                     return false;
@@ -1127,8 +1147,7 @@ class AttachmentCreator
         /* We can only check for duplicates right now if the file actually
          * exists. We'll do it again later below.
          */
-        if ($fileExists && !$fileContents)
-        {
+        if ($fileExists && ! $fileContents) {
             /* We store file size in KB, rounded to nearest KB. */
             $fileSize = round(@filesize($tempFilename) / 1024);
 
@@ -1137,27 +1156,27 @@ class AttachmentCreator
 
             /* Check for duplicates. */
             $duplicates = $attachments->getMatching(
-                $dataItemType, $dataItemID, $fileSize, $md5sum, $extractedText
+                $dataItemType,
+                $dataItemID,
+                $fileSize,
+                $md5sum,
+                $extractedText
             );
 
             /* Duplicate attachments are never added, but this is not a fatal
              * error. We will set a property to notify the caller that a
              * duplicate occurred.
              */
-            if (!empty($duplicates))
-            {
+            if (! empty($duplicates)) {
                 $this->_duplicatesOccurred = true;
 
-                if (file_exists($tempFilename))
-                {
+                if (file_exists($tempFilename)) {
                     unlink($tempFilename);
                 }
 
                 return false;
             }
-        }
-        else
-        {
+        } else {
             $fileSize = 0;
             $md5sum = '';
         }
@@ -1166,14 +1185,22 @@ class AttachmentCreator
          * associated directory / full file path.
          */
         $attachmentID = $attachments->add(
-            $dataItemType, $dataItemID, $attachmentTitle, $originalFilename,
-            $storedFilename, $contentType, $extractText, $extractedText,
-            $isProfileImage, '', $fileSize, $md5sum
+            $dataItemType,
+            $dataItemID,
+            $attachmentTitle,
+            $originalFilename,
+            $storedFilename,
+            $contentType,
+            $extractText,
+            $extractedText,
+            $isProfileImage,
+            '',
+            $fileSize,
+            $md5sum
         );
 
         /* Were we successful? */
-        if (!$attachmentID)
-        {
+        if (! $attachmentID) {
             $this->_isError = true;
             $this->_error = 'Error adding attachment to the database.';
             @unlink($tempFilename);
@@ -1184,14 +1211,14 @@ class AttachmentCreator
          * access.
          */
         $this->_extractedText = $extractedText;
-        $this->_attachmentID  = $attachmentID;
+        $this->_attachmentID = $attachmentID;
 
         /* Create the attachment directory. */
         $uniqueDirectory = $this->_createDirectory(
-            $attachmentID, $storedFilename
+            $attachmentID,
+            $storedFilename
         );
-        if (!$uniqueDirectory)
-        {
+        if (! $uniqueDirectory) {
             $attachments->delete($attachmentID, false);
             return false;
         }
@@ -1202,14 +1229,13 @@ class AttachmentCreator
         /* Are we creating a new file from file contents, or are we moving a
          * temporary file?
          */
-        if ($fileContents !== false)
-        {
+        if ($fileContents !== false) {
             $status = @file_put_contents($newFileFullPath, $fileContents);
-            if (!$status)
-            {
+            if (! $status) {
                 $this->_isError = true;
                 $this->_error = sprintf(
-                    'Cannot create file %s.', $newFileFullPath
+                    'Cannot create file %s.',
+                    $newFileFullPath
                 );
                 $attachments->delete($attachmentID, false);
                 @unlink($uniqueDirectory);
@@ -1224,27 +1250,27 @@ class AttachmentCreator
 
             /* Check for duplicates. */
             $duplicates = $attachments->getMatching(
-                $dataItemType, $dataItemID, $fileSize, $md5sum, $extractedText
+                $dataItemType,
+                $dataItemID,
+                $fileSize,
+                $md5sum,
+                $extractedText
             );
 
             /* Duplicate attachments are never added, but this is not a fatal
              * error. We will set a property to notify the caller that a
              * duplicate occurred.
              */
-            if (!empty($duplicates))
-            {
+            if (! empty($duplicates)) {
                 $this->_duplicatesOccurred = true;
                 $attachments->delete($attachmentID, false);
                 @unlink($newFileFullPath);
                 @unlink($uniqueDirectory);
                 return false;
             }
-        }
-        else if ($fileExists)
-        {
+        } elseif ($fileExists) {
             /* Copy the temp file to the new path. */
-            if (!@copy($tempFilename, $newFileFullPath))
-            {
+            if (! @copy($tempFilename, $newFileFullPath)) {
                 $this->_isError = true;
                 $this->_error = sprintf(
                     'Cannot copy temporary file %s to %s.',
@@ -1273,7 +1299,9 @@ class AttachmentCreator
             str_replace('./attachments/', '', $uniqueDirectory)
         );
 
-        if (!eval(Hooks::get('CREATE_ATTACHMENT_FINISHED'))) return;
+        if (! eval(Hooks::get('CREATE_ATTACHMENT_FINISHED'))) {
+            return;
+        }
 
         return true;
     }
@@ -1282,8 +1310,7 @@ class AttachmentCreator
     private function _createDirectory($attachmentID, $storedFilename)
     {
         /* Make sure attachments exists. */
-        if (!is_dir('./attachments'))
-        {
+        if (! is_dir('./attachments')) {
             /* No? Create it. */
             @mkdir('./attachments', 0777);
             @touch('./attachments/index.php');
@@ -1293,8 +1320,7 @@ class AttachmentCreator
         $siteDirectory = './attachments/site_' . $this->_siteID;
 
         /* Make sure the site directory exists. */
-        if (!is_dir($siteDirectory))
-        {
+        if (! is_dir($siteDirectory)) {
             /* No? Create it. */
             @mkdir($siteDirectory, 0777);
         }
@@ -1307,8 +1333,7 @@ class AttachmentCreator
         );
 
         /* Make sure the attachment ID group directory exists. */
-        if (!is_dir($IDGroupDirectory))
-        {
+        if (! is_dir($IDGroupDirectory)) {
             /* No? Create it. */
             @mkdir($IDGroupDirectory, 0777);
         }
@@ -1316,8 +1341,7 @@ class AttachmentCreator
         /* If we had to create directories above, make sure that the creation
          * was successful.
          */
-        if (!is_dir($IDGroupDirectory))
-        {
+        if (! is_dir($IDGroupDirectory)) {
             $this->_isError = true;
             $this->_error = sprintf(
                 'Cannot create directory %s, and it does not already exist.',
@@ -1327,12 +1351,10 @@ class AttachmentCreator
         }
 
         /* Prevent webserver listing of new directories. */
-        if (!file_exists($siteDirectory . '/index.php'))
-        {
+        if (! file_exists($siteDirectory . '/index.php')) {
             @file_put_contents($siteDirectory . '/index.php', "\n");
         }
-        if (!file_exists($IDGroupDirectory . '/index.php'))
-        {
+        if (! file_exists($IDGroupDirectory . '/index.php')) {
             @file_put_contents($IDGroupDirectory . '/index.php', "\n");
         }
 
@@ -1344,14 +1366,12 @@ class AttachmentCreator
         );
 
         /* Attempt to create a directory for this attachment ID. */
-        if (!is_dir($uniqueDirectory))
-        {
+        if (! is_dir($uniqueDirectory)) {
             @mkdir($uniqueDirectory, 0777);
         }
 
         /* Was creation successful? */
-        if (!is_dir($uniqueDirectory))
-        {
+        if (! is_dir($uniqueDirectory)) {
             $this->_isError = true;
             $this->_error = sprintf(
                 'Cannot create directory %s, and it does not already exist.',
@@ -1370,8 +1390,7 @@ class AttachmentCreator
     private function _sanityCheck()
     {
         /* Does the attachments directory even exist? */
-        if (!is_dir('./attachments/'))
-        {
+        if (! is_dir('./attachments/')) {
             $this->_isError = true;
             $this->_error = 'Directory \'./attachments/\' does not '
                 . 'exist. CATS is not configured correctly.';
@@ -1382,5 +1401,3 @@ class AttachmentCreator
         @chmod('./attachments/', 0777);
     }
 }
-
-?>

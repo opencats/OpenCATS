@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -37,13 +36,17 @@
  */
 class DatabaseConnection
 {
-    static private $_instance;
-    private $_connection = null;
-    private $_queryResult = null;
-    private $_timeZone;
-    private $_dateDMY;
-    private $_inTransaction;
+    private static ?\DatabaseConnection $_instance = null;
 
+    private $_connection = null;
+
+    private $_queryResult = null;
+
+    private $_timeZone;
+
+    private $_dateDMY;
+
+    private $_inTransaction;
 
     /**
      * Returns an instance of DatabaseConnection.
@@ -52,21 +55,17 @@ class DatabaseConnection
      */
     public static function getInstance()
     {
-        if (self::$_instance == null)
-        {
+        if (self::$_instance == null) {
             self::$_instance = new DatabaseConnection();
             self::$_instance->connect();
             self::$_instance->setInTransaction(false);
         }
 
         // FIXME: Remove Session tight-coupling here.
-        if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn())
-        {
+        if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn()) {
             self::$_instance->_timeZone = $_SESSION['CATS']->getTimeZoneOffset();
             self::$_instance->_dateDMY = $_SESSION['CATS']->isDateDMY();
-        }
-        else
-        {
+        } else {
             self::$_instance->_timeZone = OFFSET_GMT * -1;
             self::$_instance->_dateDMY = false;
         }
@@ -74,18 +73,21 @@ class DatabaseConnection
         return self::$_instance;
     }
 
-
     /* Prevent this class from being instantiated by any means other
      * than getInstance().
      */
-    private function __construct() {}
-    private function __clone() {}
+    private function __construct()
+    {
+    }
+
+    private function __clone()
+    {
+    }
 
     public function setInTransaction($tf)
     {
         return ($this->_inTransaction = $tf);
     }
-
 
     /**
      * Returns this instance's connection resource, or null if nonexistant.
@@ -100,7 +102,6 @@ class DatabaseConnection
 
     /**
      * Initiate a connection with the MySQL database. This is called by the
-     * constructor.
      *
      * @param string MySQL query or null to operate on the last executed query
      *               for this instance.
@@ -109,11 +110,12 @@ class DatabaseConnection
     public function connect()
     {
         $this->_connection = @mysqli_connect(
-            DATABASE_HOST, DATABASE_USER, DATABASE_PASS
+            DATABASE_HOST,
+            DATABASE_USER,
+            DATABASE_PASS
         );
         // handle connection failures
-        if (!$this->_connection)
-        {
+        if (! $this->_connection) {
             $error = "errno: " . mysqli_connect_errno() . ", ";
             $error .= "error: " . mysqli_connect_error();
 
@@ -127,8 +129,7 @@ class DatabaseConnection
         }
         mysqli_set_charset($this->_connection, SQL_CHARACTER_SET);
         $isDBSelected = @mysqli_select_db($this->_connection, DATABASE_NAME);
-        if (!$isDBSelected)
-        {
+        if (! $isDBSelected) {
             $error = "errno: " . mysqli_connect_errno() . ", ";
             $error .= "error: " . mysqli_connect_error();
 
@@ -159,8 +160,7 @@ class DatabaseConnection
     public function query($query, $ignoreErrors = false)
     {
         /* Does our current configuration allow the execution of this query? */
-        if (!$this->allowQuery($query))
-        {
+        if (! $this->allowQuery($query)) {
             return false;
         }
 
@@ -168,12 +168,9 @@ class DatabaseConnection
         // FIXME: I don't like rewriting queries....
         $query = $this->_localizationFilter($query);
 
-        if( ini_get('safe_mode') )
-        {
-    			//don't do anything in safe mode
-    		}
-    		else
-        {
+        if (ini_get('safe_mode')) {
+            //don't do anything in safe mode
+        } else {
             /* Don't limit the execution time of queries. */
             set_time_limit(0);
         }
@@ -185,7 +182,7 @@ class DatabaseConnection
             $error = "errno: " . $this->_queryResult->connect_errno . ", ";
             $error .= "error: " . $this->_queryResult->connect_error;
 
-            die (
+            die(
                 '<!-- NOSPACEFILTER --><p style="background: #ec3737; padding:'
                 . ' 4px; margin-top: 0; font: normal normal bold 12px/130%'
                 . ' Arial, Tahoma, sans-serif;">Query Error -- Report to System'
@@ -195,12 +192,11 @@ class DatabaseConnection
             return false;
         }
 
-        if (!$this->_queryResult && isset($this->_queryResult->connect_errno) && !$ignoreErrors)
-        {
+        if (! $this->_queryResult && isset($this->_queryResult->connect_errno) && ! $ignoreErrors) {
             $error = "errno: " . $this->_queryResult->connect_errno . ", ";
             $error .= "error: " . $this->_queryResult->connect_error;
 
-            echo (
+            echo(
                 '<!-- NOSPACEFILTER --><p style="background: #ec3737; padding:'
                 . ' 4px; margin-top: 0; font: normal normal bold 12px/130%'
                 . ' Arial, Tahoma, sans-serif;">Query Error -- Report to System'
@@ -229,18 +225,15 @@ class DatabaseConnection
      * @param string MySQL query or null to operate on the last executed query
      *               for this instance.
      * @param string Delimiter to use to split the SQL commands (usually ';')
-     * @return void
      */
     public function queryMultiple($string, $delimiter = ';')
     {
         $SQLStatments = explode($delimiter, str_replace("\r\n", "\n", $string));
 
-        foreach ($SQLStatments as $SQL)
-        {
+        foreach ($SQLStatments as $SQL) {
             $SQL = trim($SQL);
 
-            if (empty($SQL))
-            {
+            if (empty($SQL)) {
                 continue;
             }
 
@@ -261,26 +254,20 @@ class DatabaseConnection
      */
     public function getColumn($query = null, $row, $column)
     {
-        if ($query != null)
-        {
+        if ($query != null) {
             $this->query($query);
         }
 
         $numRows = mysqli_num_rows($this->_queryResult);
-        if ($numRows === false)
-        {
+        if ($numRows === false) {
             return false;
-        }
-        else if ($row >= $numRows)
-        {
+        } elseif ($row >= $numRows) {
             return false;
-        }
-        else if ($row < 0)
-        {
+        } elseif ($row < 0) {
             return false;
         }
 
-		mysqli_data_seek($this->_queryResult, $row);
+        mysqli_data_seek($this->_queryResult, $row);
         return mysqli_fetch_row($this->_queryResult);
     }
 
@@ -313,16 +300,14 @@ class DatabaseConnection
      */
     public function getAssoc($query = null)
     {
-        if ($query != null)
-        {
+        if ($query != null) {
             $this->query($query);
         }
 
         $recordSet = mysqli_fetch_assoc($this->_queryResult);
 
-        if (empty($recordSet))
-        {
-            $recordSet = array();
+        if (empty($recordSet)) {
+            $recordSet = [];
         }
 
         return $recordSet;
@@ -355,19 +340,16 @@ class DatabaseConnection
      */
     public function getAllAssoc($query = null)
     {
-        if ($query != null)
-        {
+        if ($query != null) {
             $this->query($query);
         }
 
         /* Make sure we always return an array. */
-        $recordSetArray = array();
-        
-        if($this->_queryResult)
-        {
+        $recordSetArray = [];
+
+        if ($this->_queryResult) {
             /* Store all rows in $recordSetArray; */
-            while (($recordSet = mysqli_fetch_assoc($this->_queryResult)))
-            {
+            while (($recordSet = mysqli_fetch_assoc($this->_queryResult))) {
                 $recordSetArray[] = $recordSet;
             }
         }
@@ -384,8 +366,7 @@ class DatabaseConnection
      */
     public function getNumRows($query = null)
     {
-        if ($query != null)
-        {
+        if ($query != null) {
             $this->query($query);
         }
 
@@ -401,8 +382,7 @@ class DatabaseConnection
     public function isEOF()
     {
         $rowCount = mysqli_num_rows($this->_queryResult);
-        if (!$rowCount)
-        {
+        if (! $rowCount) {
             return true;
         }
 
@@ -417,7 +397,6 @@ class DatabaseConnection
      *
      * @param string Name to assign to the lock.
      * @param integer Lock timeout.
-     * @return void
      */
     public function getAdvisoryLock($lockName, $timeout = 120)
     {
@@ -429,7 +408,6 @@ class DatabaseConnection
         );
         $this->query($sql);
     }
-
 
     /**
      * Returns true if the blocking advisory lock is free.
@@ -446,8 +424,7 @@ class DatabaseConnection
         );
         $rs = $this->getAssoc($sql);
 
-        if ($rs['isFreeLock'] == 1)
-        {
+        if ($rs['isFreeLock'] == 1) {
             return true;
         }
 
@@ -459,7 +436,6 @@ class DatabaseConnection
      * $this->getAdvisoryLock(). This currently only works with MySQL.
      *
      * @param string Name of lock to be released.
-     * @return void
      */
     public function releaseAdvisoryLock($lockName)
     {
@@ -509,8 +485,7 @@ class DatabaseConnection
     {
         $string = trim($string);
 
-        if (empty($string))
-        {
+        if (empty($string)) {
             return 'NULL';
         }
 
@@ -527,12 +502,11 @@ class DatabaseConnection
      */
     public function makeQueryIntegerOrNULL($value)
     {
-        if ($value == '-1')
-        {
+        if ($value == '-1') {
             return 'NULL';
         }
 
-        return (integer) $value;
+        return (int) $value;
     }
 
     /**
@@ -545,7 +519,7 @@ class DatabaseConnection
      */
     public function makeQueryInteger($value)
     {
-        return (integer) $value;
+        return (int) $value;
     }
 
     /**
@@ -559,13 +533,11 @@ class DatabaseConnection
     {
         $value = trim($value);
 
-        if (empty($value) || !preg_match('/^-?[0-9]+(?:\.[0-9]+)?$/', $value))
-        {
+        if (empty($value) || ! preg_match('/^-?[0-9]+(?:\.[0-9]+)?$/', $value)) {
             return '0.0';
         }
 
-        if ($precision !== false)
-        {
+        if ($precision !== false) {
             $valueAsDouble = round($value, $precision);
             $isAWholeNumber = fmod($valueAsDouble, 1) == 0;
             return number_format($valueAsDouble, $isAWholeNumber ? 0 : 2);
@@ -635,21 +607,18 @@ class DatabaseConnection
     public function allowQuery($query)
     {
         if (CATS_SLAVE &&
-            preg_match('/^\s*(?:UPDATE|INSERT|DELETE)\s/i', trim($query)))
-        {
+            preg_match('/^\s*(?:UPDATE|INSERT|DELETE)\s/i', trim($query))) {
             return false;
         }
 
         return true;
     }
 
-
     // FIXME: Document me.
     private function _localizationFilter($query)
     {
         /* Fix query to allow time results to be offset by $_timeZone. */
-        if (strpos($query , 'SELECT') !== 0)
-        {
+        if (strpos($query, 'SELECT') !== 0) {
             return $query;
         }
 
@@ -658,38 +627,31 @@ class DatabaseConnection
         // FIXME: Document this. Any string-manipulation things like this can
         //        get fairly confusing if not documented.
         $newQuery = '';
-        while ($query != '')
-        {
+        while ($query != '') {
             /* Does the query contain a DATE_FORMAT()? */
             $dateFormatPosition = strpos($query, 'DATE_FORMAT(');
-            if ($dateFormatPosition === false)
-            {
+            if ($dateFormatPosition === false) {
                 $newQuery .= $query;
                 $query = '';
                 continue;
             }
 
-            if ($dateFormatPosition > 0)
-            {
+            if ($dateFormatPosition > 0) {
                 $newQuery .= substr($query, 0, strpos($query, 'DATE_FORMAT('));
                 $query = substr($query, strpos($query, 'DATE_FORMAT('));
             }
 
             $working = substr($query, 0, strpos($query, ','));
             $query = substr($query, strpos($query, ','));
-            if (strpos(substr($working, 13), '(') === false)
-            {
+            if (strpos(substr($working, 13), '(') === false) {
                 /* Add or subtract time before the date format depeidng on the
                  * time zone offset. We don't have to do any replacement if the
                  * offset is 0.
                  */
-                if ($this->_timeZone > 0)
-                {
+                if ($this->_timeZone > 0) {
                     $working = str_replace('DATE_FORMAT(', 'DATE_FORMAT(DATE_ADD(', $working);
                     $working .= ', INTERVAL ' . $this->_timeZone . ' HOUR)';
-                }
-                else if ($this->_timeZone < 0)
-                {
+                } elseif ($this->_timeZone < 0) {
                     $working = str_replace('DATE_FORMAT(', 'DATE_FORMAT(DATE_SUB(', $working);
                     $working .= ', INTERVAL ' . ($this->_timeZone * -1) . ' HOUR)';
                 }
@@ -700,8 +662,7 @@ class DatabaseConnection
         $query = $newQuery;
 
         /* Replace m-d-y dates with d-m-y dates if we're in dmy mode. */
-        if ($this->_dateDMY)
-        {
+        if ($this->_dateDMY) {
             $query = str_replace('%m-%d-%y', '%d-%m-%y', $query);
             $query = str_replace('%m-%d-%Y', '%d-%m-%Y', $query);
             $query = str_replace('%m/%d/%Y', '%d/%m/%Y', $query);
@@ -714,17 +675,13 @@ class DatabaseConnection
     /**
      * Transaction functions for InnoDB tables.
      */
-
     public function beginTransaction()
     {
-        if (!$this->_inTransaction)
-        {
+        if (! $this->_inTransaction) {
             // Ignore errors (if called for MyISAM, for example)
             $this->query('BEGIN', true);
             return ($this->_inTransaction = true);
-        }
-        else
-        {
+        } else {
             // Already in a transaction
             return false;
         }
@@ -732,14 +689,11 @@ class DatabaseConnection
 
     public function commitTransaction()
     {
-        if ($this->_inTransaction)
-        {
+        if ($this->_inTransaction) {
             $this->query('COMMIT', true);
             $this->_inTransaction = false;
             return true;
-        }
-        else
-        {
+        } else {
             // We're not in a transaction
             return false;
         }
@@ -747,18 +701,13 @@ class DatabaseConnection
 
     public function rollbackTransaction()
     {
-        if ($this->_inTransaction)
-        {
+        if ($this->_inTransaction) {
             $this->query('ROLLBACK', true);
             $this->_inTransaction = false;
             return true;
-        }
-        else
-        {
+        } else {
             // We're not in a transaction
             return false;
         }
     }
 }
-
-?>

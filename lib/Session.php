@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -40,48 +39,91 @@ include(LEGACY_ROOT . '/lib/ACL.php');
 class CATSSession
 {
     private $_siteID = -1;
+
     private $_userID = -1;
+
     private $_siteCompanyID = -1;
+
     private $_userLoginID = -1;
+
     private $_accessLevel = -1;
+
     private $_realAccessLevel = -1;
+
     private $_isLoggedIn = false;
+
     private $_isDemo = false;
+
     private $_isASP = false;
+
     private $_isFree = false;
+
     private $_isHrMode = false;
+
     private $_accountActive = true;
+
     private $_accountDeleted = false;
+
     private $_siteName = '';
+
     private $_unixName = '';
+
     private $_username = '';
+
     private $_password = '';
+
     private $_firstName = '';
+
     private $_lastName = '';
+
     private $_email = '';
+
     private $_ip = '';
+
     private $_userAgent = '';
+
     private $_userLicenses = 0;
+
     private $_loginError = '';
-    private $_checkBoxes = array();
-    private $_dropdowns = array();
-    private $_categories = array();
+
+    private $_checkBoxes = [];
+
+    private $_dropdowns = [];
+
+    private $_categories = [];
+
     private $_startTime;
+
     private $_endTime;
+
     private $_backupDirectory;
+
     private $_storedBuild = -1;
+
     private $_timeZoneOffset = 0;
+
     private $_timeZone = 0;
+
     private $_dateDMY = false;
+
     private $_pipelineEntriesPerPage = 15;
-    private $_storedData = array();
-    private $_storedValues = array();
+
+    private $_storedData = [];
+
+    private $_storedValues = [];
+
     private $_MRU = null;
-    private $_dataGridColumnPreferences = array();
-    private $_dataGridParameters = array();
+
+    private $_dataGridColumnPreferences = [];
+
+    private $_dataGridParameters = [];
+
     private $_isFirstTimeSetup = false;
+
     private $_isAgreedToLicense = false;
+
     private $_isLocalizationConfigured = false;
+
     private $_loggedInDirectory = '';
 
     /**
@@ -91,8 +133,7 @@ class CATSSession
      */
     public function getMRU()
     {
-        if (!isset($this->_MRU) || $this->_MRU === null)
-        {
+        if (! isset($this->_MRU) || $this->_MRU === null) {
             $this->_MRU = new MRU($this->_userID, $this->_siteID);
         }
 
@@ -108,12 +149,11 @@ class CATSSession
      */
     public function getCachedBuild()
     {
-        if ($this->_storedBuild == -1)
-        {
+        if ($this->_storedBuild == -1) {
             $this->_storedBuild = CATSUtility::getBuild();
         }
 
-        return (integer) $this->_storedBuild;
+        return (int) $this->_storedBuild;
     }
 
     /**
@@ -121,37 +161,31 @@ class CATSSession
      * has changed since the last call. The build number is then cached in
      * $this->_storedBuild so that multiple filesystem accesses are not
      * required.
-     *
-     * @return void
      */
     public function checkForcedUpdate()
     {
-       $build = CATSUtility::getBuild();
+        $build = CATSUtility::getBuild();
 
-       /* We don't want to force an update on the first check (when the stored
-        * build -1), because we just reloaded all of the modules anyway.
-        * CATSUtility::getBuild() should never return -1, but just in case...
-        */
-       if ($this->_storedBuild != -1 && $this->_storedBuild != $build)
-       {
-           $this->forceUpdate();
-       }
+        /* We don't want to force an update on the first check (when the stored
+         * build -1), because we just reloaded all of the modules anyway.
+         * CATSUtility::getBuild() should never return -1, but just in case...
+         */
+        if ($this->_storedBuild != -1 && $this->_storedBuild != $build) {
+            $this->forceUpdate();
+        }
 
-       $this->_storedBuild = $build;
+        $this->_storedBuild = $build;
     }
 
     /**
      * Forces all modules, hooks, filters, etc. to be reloaded. This is called
      * by checkForcedUpdate() whenever the development build number changes.
-     *
-     * @return void
      */
     public function forceUpdate()
     {
         /* Force the current session to reload everything (hooks, etc). */
-        if (isset($_SESSION['modules']))
-        {
-             unset($_SESSION['modules']);
+        if (isset($_SESSION['modules'])) {
+            unset($_SESSION['modules']);
         }
     }
 
@@ -169,26 +203,22 @@ class CATSSession
     public function checkForceLogout()
     {
         /* Sanity check. */
-        if (!$this->_isLoggedIn)
-        {
+        if (! $this->_isLoggedIn) {
             return false;
         }
 
         /* Is _loggedInDirectory equal getDirectoryName?  If not, logout. */
-        if ($this->_loggedInDirectory != '' && $this->_loggedInDirectory != CATSUtility::getDirectoryName())
-        {
+        if ($this->_loggedInDirectory != '' && $this->_loggedInDirectory != CATSUtility::getDirectoryName()) {
             return true;
         }
-        
+
         /* Sanity check. */
-        if ($this->getUnixName() == '')
-        {
+        if ($this->getUnixName() == '') {
             return false;
         }
-        
+
         /* Forced logouts can only occur if Single Session mode is enabled. */
-        if (!ENABLE_SINGLE_SESSION)
-        {
+        if (! ENABLE_SINGLE_SESSION) {
             return false;
         }
 
@@ -198,33 +228,29 @@ class CATSSession
         if ($this->isDemo() ||
             $this->getAccessLevel(ACL::SECOBJ_ROOT) == ACCESS_LEVEL_READ ||
             $this->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_ROOT ||
-            $this->_unixName == 'cognizo')
-        {
+            $this->_unixName == 'cognizo') {
             return false;
         }
 
         /* Don't force logout for site 200.
          * TODO:  Remove me.
          */
-        if ($this->getSiteID() == 200)
-        {
+        if ($this->getSiteID() == 200) {
             return false;
         }
 
         /* Get the current user's session cookie from the database. */
         $users = new Users($this->_siteID);
         $userRS = $users->get($this->_userID);
-        if (empty($userRS) || !isset($userRS['sessionCookie']) ||
-            empty($userRS['sessionCookie']))
-        {
+        if (empty($userRS) || ! isset($userRS['sessionCookie']) ||
+            empty($userRS['sessionCookie'])) {
             return false;
         }
 
         /* Does this session's session cookie match the one stored in the
          * database? If not, this is probably a duplicate login.
          */
-        if ($userRS['sessionCookie'] != $this->getCookie())
-        {
+        if ($userRS['sessionCookie'] != $this->getCookie()) {
             return true;
         }
 
@@ -245,8 +271,6 @@ class CATSSession
 
     /**
      * Marks a session as logged out.
-     *
-     * @return void
      */
     public function logout()
     {
@@ -317,8 +341,7 @@ class CATSSession
      */
     public function getSiteID()
     {
-        if (isset($this->_siteID) && !empty($this->_siteID))
-        {
+        if (isset($this->_siteID) && ! empty($this->_siteID)) {
             return $this->_siteID;
         }
 
@@ -420,8 +443,7 @@ class CATSSession
     {
         $this->_realAccessLevel = $accessLevel;
 
-        if ($accessLevel < $this->_accessLevel)
-        {
+        if ($accessLevel < $this->_accessLevel) {
             $this->_accessLevel = $accessLevel;
         }
     }
@@ -429,8 +451,6 @@ class CATSSession
     /**
      * Sets the current site's site name stored in the session. The
      * database is not accessed.
-     *
-     * @return void
      */
     public function setSiteName($newSiteName)
     {
@@ -512,8 +532,7 @@ class CATSSession
      */
     public function getTimeZoneOffset()
     {
-        if ($this->isLoggedIn())
-        {
+        if ($this->isLoggedIn()) {
             return $this->_timeZoneOffset;
         }
 
@@ -546,7 +565,7 @@ class CATSSession
     // FIXME: Document me!
     public function getPipelineEntriesPerPage()
     {
-         return $this->_pipelineEntriesPerPage;
+        return $this->_pipelineEntriesPerPage;
     }
 
     // FIXME: Document me!
@@ -558,9 +577,8 @@ class CATSSession
     // FIXME: Document me!
     public function getCheckBox($name)
     {
-        if (isset($this->_checkBoxes[$name]))
-        {
-            return (boolean) $this->_checkBoxes[$name];
+        if (isset($this->_checkBoxes[$name])) {
+            return (bool) $this->_checkBoxes[$name];
         }
 
         return false;
@@ -575,8 +593,7 @@ class CATSSession
     // FIXME: Document me!
     public function getDropdown($name)
     {
-        if (isset($this->_dropdowns[$name]))
-        {
+        if (isset($this->_dropdowns[$name])) {
             return $this->_dropdowns[$name];
         }
 
@@ -595,28 +612,24 @@ class CATSSession
      *
      * @param integer Time zone offset from GMT.
      * @param boolean Display dates in D-M-Y format?
-     * @return void
      */
     public function setTimeDateLocalization($timeZone, $isDMY)
     {
-        $timeZone = (integer) $timeZone;
+        $timeZone = (int) $timeZone;
 
-        $this->_timeZone       = $timeZone;
+        $this->_timeZone = $timeZone;
         $this->_timeZoneOffset = $timeZone - OFFSET_GMT;
-        $this->_dateDMY        = $isDMY;
+        $this->_dateDMY = $isDMY;
     }
 
     /**
      * This is called whenever a page is loaded to update "active" statistics
      * for the currently logged-in user. The last refresh timestamp in the
      * user_login table is updated.
-     *
-     * @return void
      */
     public function logPageView()
     {
-        if (!$this->isLoggedIn())
-        {
+        if (! $this->isLoggedIn()) {
             return;
         }
 
@@ -635,7 +648,6 @@ class CATSSession
      * @param string User's username.
      * @param string User's password.
      * @param boolean Log this login attempt in Login History?
-     * @return void
      */
     public function processLogin($username, $password, $addToHistory = true)
     {
@@ -645,8 +657,7 @@ class CATSSession
         $users = new Users(-1);
         $loginStatus = $users->isCorrectLogin($username, $password);
 
-        if ($loginStatus == LOGIN_INVALID_USER)
-        {
+        if ($loginStatus == LOGIN_INVALID_USER) {
             $this->_isLoggedIn = false;
             $this->_loginError = 'Invalid username or password.';
 
@@ -694,40 +705,31 @@ class CATSSession
         $rs = $db->getAssoc($sql);
 
         /* Invalid username or password. */
-        if (!$rs || $db->isEOF())
-        {
+        if (! $rs || $db->isEOF()) {
             $this->_isLoggedIn = false;
             $this->_loginError = 'Invalid username or password.';
             return;
         }
 
-        if (isset($_SERVER['REMOTE_ADDR']))
-        {
+        if (isset($_SERVER['REMOTE_ADDR'])) {
             $ip = $_SERVER['REMOTE_ADDR'];
-        }
-        else
-        {
+        } else {
             $ip = '';
         }
 
-        if (isset($_SERVER['HTTP_USER_AGENT']))
-        {
+        if (isset($_SERVER['HTTP_USER_AGENT'])) {
             $userAgent = $_SERVER['HTTP_USER_AGENT'];
-        }
-        else
-        {
+        } else {
             $userAgent = '';
         }
 
-        switch ($loginStatus)
-        {
+        switch ($loginStatus) {
             case LOGIN_INVALID_PASSWORD:
                 $this->_isLoggedIn = false;
                 $this->_loginError = 'Invalid username or password.';
 
                 /* Log the login as unsuccessful. */
-                if ($addToHistory)
-                {
+                if ($addToHistory) {
                     $users->addLoginHistory(
                         $rs['userID'],
                         $rs['userSiteID'],
@@ -744,8 +746,7 @@ class CATSSession
                 $this->_loginError = 'Only root administrators can login at this time.';
 
                 /* Log the login as unsuccessful. */
-                if ($addToHistory)
-                {
+                if ($addToHistory) {
                     $users->addLoginHistory(
                         $rs['userID'],
                         $rs['userSiteID'],
@@ -762,8 +763,7 @@ class CATSSession
                 $this->_loginError = 'Your account is disabled or pending approval.';
 
                 /* Log the login as unsuccessful. */
-                if ($addToHistory)
-                {
+                if ($addToHistory) {
                     $users->addLoginHistory(
                         $rs['userID'],
                         $rs['userSiteID'],
@@ -774,87 +774,77 @@ class CATSSession
                 }
 
                 break;
-                
+
             case LOGIN_PENDING_APPROVAL:
                 $this->_isLoggedIn = false;
                 $this->_loginError = 'Your account has been created and is pending approval.';
 
                 break;
-                
+
             case LOGIN_SUCCESS:
-                $this->_username               = $rs['username'];
-                $this->_password               = $rs['password'];
-                $this->_userID                 = $rs['userID'];
-                $this->_siteID                 = $rs['userSiteID'];
-                $this->_firstName              = $rs['firstName'];
-                $this->_lastName               = $rs['lastName'];
-                $this->_siteName               = $rs['siteName'];
-                $this->_unixName               = $rs['unixName'];
-                $this->_userLicenses           = $rs['userLicenses'];
-                $this->_accessLevel            = $rs['accessLevel'];
-                $this->_realAccessLevel        = $rs['accessLevel'];
-                $this->_categories             = explode(',', $rs['categories']);
-                $this->_isASP                  = ($rs['companyID'] != 0 ? true : false);
-                $this->_isHrMode               = ($rs['isHrMode'] != 0 ? true : false);
-                $this->_siteCompanyID          = ($rs['companyID'] != 0 ? $rs['companyID'] : -1);
-                $this->_isFree                 = ($rs['isFree'] == 0 ? false : true);
-                $this->_isFirstTimeSetup       = ($rs['isFirstTimeSetup'] == 0 ? false : true);
+                $this->_username = $rs['username'];
+                $this->_password = $rs['password'];
+                $this->_userID = $rs['userID'];
+                $this->_siteID = $rs['userSiteID'];
+                $this->_firstName = $rs['firstName'];
+                $this->_lastName = $rs['lastName'];
+                $this->_siteName = $rs['siteName'];
+                $this->_unixName = $rs['unixName'];
+                $this->_userLicenses = $rs['userLicenses'];
+                $this->_accessLevel = $rs['accessLevel'];
+                $this->_realAccessLevel = $rs['accessLevel'];
+                $this->_categories = explode(',', $rs['categories']);
+                $this->_isASP = ($rs['companyID'] != 0 ? true : false);
+                $this->_isHrMode = ($rs['isHrMode'] != 0 ? true : false);
+                $this->_siteCompanyID = ($rs['companyID'] != 0 ? $rs['companyID'] : -1);
+                $this->_isFree = ($rs['isFree'] == 0 ? false : true);
+                $this->_isFirstTimeSetup = ($rs['isFirstTimeSetup'] == 0 ? false : true);
                 $this->_isLocalizationConfigured = ($rs['isLocalizationConfigured'] == 0 ? false : true);
-                $this->_isAgreedToLicense      = ($rs['isAgreedToLicense'] == 0 ? false : true);
-                $this->_accountActive          = ($rs['accountActive'] == 0 ? false : true);
-                $this->_accountDeleted         = ($rs['accountDeleted'] == 0 ? false : true);
-                $this->_email                  = $rs['email'];
-                $this->_ip                     = $ip;
-                $this->_userAgent              = $userAgent;
-                $this->_timeZoneOffset         = $rs['timeZone'] - OFFSET_GMT;
-                $this->_timeZone               = $rs['timeZone'];
-                $this->_dateDMY                = ($rs['dateFormatDMY'] == 0 ? false : true);
-                $this->_canSeeEEOInfo          = ($rs['canSeeEEOInfo'] == 0 ? false : true);
+                $this->_isAgreedToLicense = ($rs['isAgreedToLicense'] == 0 ? false : true);
+                $this->_accountActive = ($rs['accountActive'] == 0 ? false : true);
+                $this->_accountDeleted = ($rs['accountDeleted'] == 0 ? false : true);
+                $this->_email = $rs['email'];
+                $this->_ip = $ip;
+                $this->_userAgent = $userAgent;
+                $this->_timeZoneOffset = $rs['timeZone'] - OFFSET_GMT;
+                $this->_timeZone = $rs['timeZone'];
+                $this->_dateDMY = ($rs['dateFormatDMY'] == 0 ? false : true);
+                $this->_canSeeEEOInfo = ($rs['canSeeEEOInfo'] == 0 ? false : true);
                 $this->_pipelineEntriesPerPage = $rs['pipelineEntriesPerPage'];
-                $this->_loggedInScript         = CATSUtility::getDirectoryName(); 
+                $this->_loggedInScript = CATSUtility::getDirectoryName();
 
                 /* SA's can always see EEO Info. */
-                if ($this->_accessLevel >= ACCESS_LEVEL_SA)
-                {
+                if ($this->_accessLevel >= ACCESS_LEVEL_SA) {
                     $this->_canSeeEEOInfo = true;
                 }
 
                 if ($rs['isDemo'] == '1' &&
                     $_SERVER['REMOTE_ADDR'] != '127.0.0.1' &&
-                    ENABLE_DEMO_MODE && $rs['isDemoUser'] == 1)
-                {
+                    ENABLE_DEMO_MODE && $rs['isDemoUser'] == 1) {
                     $this->_isDemo = true;
                     $this->_accessLevel = ACCESS_LEVEL_DEMO;
-                }
-                else
-                {
+                } else {
                     $this->_isDemo = false;
                 }
 
                 /* Account inactive. */
-                if ($this->_accountActive == 0)
-                {
+                if ($this->_accountActive == 0) {
                     $this->_accessLevel = ACCESS_LEVEL_READ;
                 }
 
                 /* Account deleted. */
-                if ($this->_accountDeleted == 1)
-                {
+                if ($this->_accountDeleted == 1) {
                     $this->_accessLevel = ACCESS_LEVEL_DISABLED;
                 }
 
-                if (strlen($rs['columnPreferences']) > 0 && $this->_isDemo == false)
-                {
+                if (strlen($rs['columnPreferences']) > 0 && $this->_isDemo == false) {
                     $this->__dataGridColumnPreferences = unserialize($rs['columnPreferences']);
-                }
-                else
-                {
-                    $this->__dataGridColumnPreferences = array();
+                } else {
+                    $this->__dataGridColumnPreferences = [];
                 }
 
                 /* Log the login as successful. */
-                if ($addToHistory)
-                {
+                if ($addToHistory) {
                     $userLoginID = $users->addLoginHistory(
                         $this->_userID,
                         $this->_siteID,
@@ -862,17 +852,14 @@ class CATSSession
                         $this->_userAgent,
                         true
                     );
-                }
-                else
-                {
+                } else {
                     $userLoginID = -1;
                 }
 
                 $this->_userLoginID = $userLoginID;
                 $this->_isLoggedIn = true;
 
-                if ($rs['lastViewedDayIsToday'] == 0)
-                {
+                if ($rs['lastViewedDayIsToday'] == 0) {
                     $sql = sprintf(
                         "UPDATE
                             site
@@ -885,21 +872,21 @@ class CATSSession
                     );
                     $rs = $db->query($sql);
                 }
-$cookieValue = $this->getCookie();
-$cookieOptions = [
-//    'expires' => time() + 3600, // Example expiration time, adjust as needed
-//    'path' => '/', // Example path, adjust as needed
-//    'domain' => 'example.com', // Example domain, adjust as needed
-//    'secure' => true, // Example secure flag, adjust as needed
-    'httponly' => true,
-    'samesite' => 'Strict',
-];
+                $cookieValue = $this->getCookie();
+                $cookieOptions = [
+                    //    'expires' => time() + 3600, // Example expiration time, adjust as needed
+                    //    'path' => '/', // Example path, adjust as needed
+                    //    'domain' => 'example.com', // Example domain, adjust as needed
+                    //    'secure' => true, // Example secure flag, adjust as needed
+                    'httponly' => true,
+                    'samesite' => 'Strict',
+                ];
 
-setcookie('session_cookie', $cookieValue, $cookieOptions);
+                setcookie('session_cookie', $cookieValue, $cookieOptions);
 
-// Update the user session in the database
-$sql = sprintf(
-    "UPDATE
+                // Update the user session in the database
+                $sql = sprintf(
+                    "UPDATE
         user
      SET
         force_logout = 0
@@ -907,9 +894,9 @@ $sql = sprintf(
         user_id = %s
      AND
         site_id = %s",
-    $db->makeQueryString($this->_userID),
-    $this->_siteID
-);
+                    $db->makeQueryString($this->_userID),
+                    $this->_siteID
+                );
                 $rs = $db->query($sql);
 
                 break;
@@ -924,13 +911,12 @@ $sql = sprintf(
      * @param integer New Site ID to login to.
      * @param integer User ID with which to login to the new site.
      * @param integer Site ID associated with $asUserID
-     * @return void
      */
     public function transparentLogin($toSiteID, $asUserID, $asSiteID)
     {
-         $db = DatabaseConnection::getInstance();
+        $db = DatabaseConnection::getInstance();
 
-         $sql = sprintf(
+        $sql = sprintf(
             "SELECT
                 user.user_id AS userID,
                 user.user_name AS username,
@@ -964,25 +950,25 @@ $sql = sprintf(
         );
         $rs = $db->getAssoc($sql);
 
-        $this->_username        = $rs['username'];
-        $this->_userID          = $rs['userID'];
-        $this->_siteID          = $toSiteID;
-        $this->_firstName       = $rs['firstName'];
-        $this->_lastName        = $rs['lastName'];
-        $this->_siteName        = $rs['siteName'];
-        $this->_unixName        = $rs['unixName'];
-        $this->_accessLevel     = $rs['accessLevel'];
+        $this->_username = $rs['username'];
+        $this->_userID = $rs['userID'];
+        $this->_siteID = $toSiteID;
+        $this->_firstName = $rs['firstName'];
+        $this->_lastName = $rs['lastName'];
+        $this->_siteName = $rs['siteName'];
+        $this->_unixName = $rs['unixName'];
+        $this->_accessLevel = $rs['accessLevel'];
         $this->_realAccessLevel = $rs['accessLevel'];
-        $this->_categories      = array();
-        $this->_isASP           = ($rs['companyID'] != 0 ? true : false);
-        $this->_siteCompanyID   = ($rs['companyID'] != 0 ? $rs['companyID'] : -1);
-        $this->_isFree          = ($rs['isFree'] == 0 ? false : true);
-        $this->_isHrMode        = ($rs['isHrMode'] != 0 ? true : false);
-        $this->_accountActive   = ($rs['accountActive'] == 0 ? false : true);
-        $this->_accountDeleted  = ($rs['accountDeleted'] == 0 ? false : true);
-        $this->_email           = $rs['email'];
-        $this->_timeZone        = $rs['timeZone'];
-        $this->_dateDMY         = ($rs['dateFormatDMY'] == 0 ? false : true);
+        $this->_categories = [];
+        $this->_isASP = ($rs['companyID'] != 0 ? true : false);
+        $this->_siteCompanyID = ($rs['companyID'] != 0 ? $rs['companyID'] : -1);
+        $this->_isFree = ($rs['isFree'] == 0 ? false : true);
+        $this->_isHrMode = ($rs['isHrMode'] != 0 ? true : false);
+        $this->_accountActive = ($rs['accountActive'] == 0 ? false : true);
+        $this->_accountDeleted = ($rs['accountDeleted'] == 0 ? false : true);
+        $this->_email = $rs['email'];
+        $this->_timeZone = $rs['timeZone'];
+        $this->_dateDMY = ($rs['dateFormatDMY'] == 0 ? false : true);
         $this->_isFirstTimeSetup = true;
         $this->_isAgreedToLicense = true;
         $this->_isLocalizationConfigured = true;
@@ -994,7 +980,9 @@ $sql = sprintf(
         /* Force a new MRU object to be created. */
         $this->_MRU = null;
 
-        if (!eval(Hooks::get('TRANSPARENT_LOGIN_POST'))) return;
+        if (! eval(Hooks::get('TRANSPARENT_LOGIN_POST'))) {
+            return;
+        }
 
         $cookie = $this->getCookie();
         $sql = sprintf(
@@ -1010,7 +998,7 @@ $sql = sprintf(
             $asUserID,
             $asSiteID
         );
-       $db->query($sql);
+        $db->query($sql);
     }
 
     /**
@@ -1026,8 +1014,6 @@ $sql = sprintf(
 
     /**
      * Starts the server response time timer.
-     *
-     * @return void
      */
     public function startTimer()
     {
@@ -1044,8 +1030,7 @@ $sql = sprintf(
     {
         $this->_endTime = microtime();
 
-        if (!isset($this->_startTime) || empty($this->_startTime))
-        {
+        if (! isset($this->_startTime) || empty($this->_startTime)) {
             $this->_startTime = $this->_endTime;
         }
 
@@ -1063,7 +1048,6 @@ $sql = sprintf(
      * user to session and the database.
      *
      * @param integer Number of pipeline entries to display per page.
-     * @return void
      */
     public function setPipelineEntriesPerPage($entriesPerPage)
     {
@@ -1105,10 +1089,8 @@ $sql = sprintf(
      */
     public function storeData($data)
     {
-        foreach ($this->_storedData as $index => $storedData)
-        {
-            if ($storedData === $data)
-            {
+        foreach ($this->_storedData as $index => $storedData) {
+            if ($storedData === $data) {
                 return $index;
             }
         }
@@ -1128,8 +1110,7 @@ $sql = sprintf(
      */
     public function retrieveData($id)
     {
-        if (!isset($this->_storedData[$id]))
-        {
+        if (! isset($this->_storedData[$id])) {
             return null;
         }
 
@@ -1141,7 +1122,6 @@ $sql = sprintf(
      *
      * @param string name
      * @param mixed value
-     * @return void
      */
     public function storeValueByName($name, $value)
     {
@@ -1156,8 +1136,7 @@ $sql = sprintf(
      */
     public function retrieveValueByName($name)
     {
-        if (!isset($this->_storedValues[$name]))
-        {
+        if (! isset($this->_storedValues[$name])) {
             return null;
         }
 
@@ -1172,20 +1151,15 @@ $sql = sprintf(
      */
     public function getColumnPreferences($instance)
     {
-        if (isset($this->__dataGridColumnPreferences[$instance]))
-        {
+        if (isset($this->__dataGridColumnPreferences[$instance])) {
             return $this->__dataGridColumnPreferences[$instance];
-        }
-        else
-        {
-            return array();
+        } else {
+            return [];
         }
     }
 
     /**
      * Saves a column layout.  Only called by the datagrid class.
-     *
-     * @return void
      */
     public function setColumnPreferences($instance, $columnPreferences)
     {
@@ -1221,13 +1195,10 @@ $sql = sprintf(
      */
     public function getDataGridParameters($instance)
     {
-        if (isset($this->_dataGridColumnPreferences[md5($instance)]))
-        {
+        if (isset($this->_dataGridColumnPreferences[md5($instance)])) {
             return $this->_dataGridColumnPreferences[md5($instance)];
-        }
-        else
-        {
-            return array();
+        } else {
+            return [];
         }
     }
 
@@ -1235,13 +1206,9 @@ $sql = sprintf(
      * Saves the current parameters a datagrid is invoked with.
      *
      * Called by datagrid class.
-     *
-     * @return void
      */
     public function setDataGridParameters($instance, $parameters)
     {
         $this->_dataGridColumnPreferences[md5($instance)] = $parameters;
     }
 }
-
-?>

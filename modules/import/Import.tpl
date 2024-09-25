@@ -156,7 +156,7 @@
 
                         <span class="bold">Should CATS generate the company data automatically?</span><br />
                         <select id="generateCompanies" name="generateCompanies" class ="inputBox" style="width: 260px;" onchange="evaluateUnnamedContacts();">
-                            <option value="yes" selected="selected">Yes, generate assocated company data.</option>
+                            <option value="yes" selected>Yes, generate assocated company data.</option>
                             <option value="no">No, just import the contacts.</option>
                         </select>
                         <br />
@@ -164,7 +164,7 @@
                         <br />
                         <span class="bold">If there is no name for the companies contact, should CATS name the contact 'nobody' and add it to the company?</span><br />
                         <select id="unnamedContacts" name="unnamedContacts" class ="inputBox" style="width: 260px;">
-                            <option value="yes" selected="selected">Yes, add a name as necessary.</option>
+                            <option value="yes" selected>Yes, add a name as necessary.</option>
                             <option value="no">No, throw out these records.</option>
                         </select>
                         </span>

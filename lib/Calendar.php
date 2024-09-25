@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -31,12 +30,12 @@
  */
 
 /* Calendar event type flags. */
-define('CALENDAR_EVENT_CALL',      100);
-define('CALENDAR_EVENT_EMAIL',     200);
-define('CALENDAR_EVENT_MEETING',   300);
+define('CALENDAR_EVENT_CALL', 100);
+define('CALENDAR_EVENT_EMAIL', 200);
+define('CALENDAR_EVENT_MEETING', 300);
 define('CALENDAR_EVENT_INTERVIEW', 400);
-define('CALENDAR_EVENT_PERSONAL',  500);
-define('CALENDAR_EVENT_OTHER',     600);
+define('CALENDAR_EVENT_PERSONAL', 500);
+define('CALENDAR_EVENT_OTHER', 600);
 
 
 include_once(LEGACY_ROOT . '/lib/ResultSetUtility.php');
@@ -56,9 +55,10 @@ include_once(LEGACY_ROOT . '/lib/Mailer.php');
 class Calendar
 {
     private $_db;
-    private $_siteID;
-    private $_userID;
 
+    private $_siteID;
+
+    private $_userID;
 
     public function __construct($siteID)
     {
@@ -68,7 +68,6 @@ class Calendar
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
-
 
     /**
      * Returns an array of events in a month, keyed by each day of the month.
@@ -153,27 +152,27 @@ class Calendar
          * Days without any events scheduled will have an empty array.
          */
         $daysInMonth = DateUtility::getDaysInMonth($month, $year);
-        for ($i = 1; $i <= $daysInMonth; ++$i)
-        {
+        for ($i = 1; $i <= $daysInMonth; ++$i) {
             /* See if we can find a row in the result set that has 'day' set
              * to $i.
              */
             $firstOffset = ResultSetUtility::findRowByColumnValue(
-                $rs, 'day', $i
+                $rs,
+                'day',
+                $i
             );
 
             /* Found? If yes, $firstOffset now contains the offset of the row;
              * otherwise false.
              */
-            if ($firstOffset === false)
-            {
+            if ($firstOffset === false) {
                 /* No events for this date. */
-                $array[$i] = array();
+                $array[$i] = [];
                 continue;
             }
 
             /* Store the first row we found that has 'day' set to $i. */
-            $array[$i] = array($rs[$firstOffset]);
+            $array[$i] = [$rs[$firstOffset]];
 
             /* There could be more than one row that has 'day' set to $i
              * (multiple events on the same day). We are going to tell
@@ -181,13 +180,14 @@ class Calendar
              * and stored it already), and then keep increasing the number
              * of rows to skip until we can't find any more rows.
              */
-            for ($skip = 1; ; ++$skip)
-            {
+            for ($skip = 1; ; ++$skip) {
                 $nextOffset = ResultSetUtility::findRowByColumnValue(
-                    $rs, 'day', $i, $skip
+                    $rs,
+                    'day',
+                    $i,
+                    $skip
                 );
-                if ($nextOffset === false)
-                {
+                if ($nextOffset === false) {
                     /* No more rows for this date. */
                     break;
                 }
@@ -294,11 +294,23 @@ class Calendar
      * @return integer New Calendar Event ID, or -1 on failure.
      */
     // FIXME: Time Zone Offset probably shouldn't be paramaterized.
-    public function addEvent($type, $date, $description, $allDay, $enteredBy,
-        $dataItemID, $dataItemType, $jobOrderID, $title, $duration,
-        $reminderEnabled, $reminderEmail, $reminderTime, $isPublic,
-        $timeZoneOffset)
-    {
+    public function addEvent(
+        $type,
+        $date,
+        $description,
+        $allDay,
+        $enteredBy,
+        $dataItemID,
+        $dataItemType,
+        $jobOrderID,
+        $title,
+        $duration,
+        $reminderEnabled,
+        $reminderEmail,
+        $reminderTime,
+        $isPublic,
+        $timeZoneOffset
+    ) {
         $sql = sprintf(
             "INSERT INTO calendar_event (
                 type,
@@ -357,8 +369,7 @@ class Calendar
         );
 
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return -1;
         }
 
@@ -389,11 +400,23 @@ class Calendar
      * @return boolean True if successful; false otherwise.
      */
     // FIXME: Time Zone Offset probably shouldn't be paramaterized.
-    public function updateEvent($eventID, $type, $date, $description, $allDay,
-        $dataItemID, $dataItemType, $jobOrderID, $title, $duration,
-        $reminderEnabled, $reminderEmail, $reminderTime, $isPublic,
-        $timeZoneOffset)
-    {
+    public function updateEvent(
+        $eventID,
+        $type,
+        $date,
+        $description,
+        $allDay,
+        $dataItemID,
+        $dataItemType,
+        $jobOrderID,
+        $title,
+        $duration,
+        $reminderEnabled,
+        $reminderEmail,
+        $reminderTime,
+        $isPublic,
+        $timeZoneOffset
+    ) {
         $sql = sprintf(
             "UPDATE
                 calendar_event
@@ -434,7 +457,7 @@ class Calendar
             $this->_siteID
         );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     /**
@@ -459,7 +482,7 @@ class Calendar
             $this->_db->makeQueryInteger($eventID)
         );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     /**
@@ -481,7 +504,7 @@ class Calendar
             $this->_siteID
         );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     /**
@@ -498,16 +521,17 @@ class Calendar
      * @param boolean Show events from EVERYONE?
      * @return string Event data string for calendar.js to parse.
      */
-    public function makeEventString($eventArray, $month, $year,
-        $showAllUsersEvents = true)
-    {
-        $stringArray = array();
+    public function makeEventString(
+        $eventArray,
+        $month,
+        $year,
+        $showAllUsersEvents = true
+    ) {
+        $stringArray = [];
 
-        foreach ($eventArray as $day => $dayData)
-        {
-            foreach ($dayData as $event)
-            {
-                $eventParameters = array();
+        foreach ($eventArray as $day => $dayData) {
+            foreach ($dayData as $event) {
+                $eventParameters = [];
                 $eventParameters[] = sprintf(
                     'datetime|%s,%s,%s,%s,%s',
                     $event['year'] + 2000,
@@ -523,39 +547,40 @@ class Calendar
                 unset($event['hour']);
                 unset($event['minute']);
 
-                if ($event['dataItemType'] > 0)
-                {
+                if ($event['dataItemType'] > 0) {
                     $event['displayDataItemSmall'] = $this->getHTMLOfLink(
-                        $event['dataItemID'], $event['dataItemType'], false
+                        $event['dataItemID'],
+                        $event['dataItemType'],
+                        false
                     );
                     $event['displayDataItemLarge'] = $this->getHTMLOfLink(
-                        $event['dataItemID'], $event['dataItemType'], true
+                        $event['dataItemID'],
+                        $event['dataItemType'],
+                        true
                     );
                 }
 
-                foreach ($event AS $field => $value)
-                {
-                    if (empty($value))
-                    {
+                foreach ($event as $field => $value) {
+                    if (empty($value)) {
                         continue;
                     }
 
                     $eventParameters[] = $field . '|' . str_replace(
-                        '+', ' ', urlencode($value)
+                        '+',
+                        ' ',
+                        urlencode($value)
                     );
                 }
 
                 /* Filter out events user should not see here. */
                 if ($showAllUsersEvents || $event['public'] == '1' ||
-                    $event['userID'] == $this->_userID)
-                {
+                    $event['userID'] == $this->_userID) {
                     $stringArray[] = implode('*', $eventParameters);
                 }
             }
         }
 
-        if (empty($stringArray))
-        {
+        if (empty($stringArray)) {
             return 'noentries|' . $year . ',' . $month;
         }
 
@@ -640,8 +665,7 @@ class Calendar
      */
     public function getUpcomingEventsHTML($limit, $flag = UPCOMING_FOR_CALENDAR)
     {
-        switch ($flag)
-        {
+        switch ($flag) {
             case UPCOMING_FOR_CALENDAR:
                 $HTML = '<div class="noteUnsizedSpan">My Upcoming Events / Calls</div>';
                 $style = '';
@@ -767,14 +791,10 @@ class Calendar
 
         $indexName = CATSUtility::getIndexName();
 
-        foreach ($todayRS as $rowIndex => $row)
-        {
-            if ($row['allDay'] == '1')
-            {
+        foreach ($todayRS as $rowIndex => $row) {
+            if ($row['allDay'] == '1') {
                 $time = 'All Day';
-            }
-            else
-            {
+            } else {
                 $time = $row['time'];
             }
 
@@ -798,14 +818,10 @@ class Calendar
             );
         }
 
-        foreach ($futureRS as $rowIndex => $row)
-        {
-            if ($row['allDay'] == '1')
-            {
+        foreach ($futureRS as $rowIndex => $row) {
+            if ($row['allDay'] == '1') {
                 $time = 'All Day';
-            }
-            else
-            {
+            } else {
                 $time = $row['time'];
             }
 
@@ -845,21 +861,16 @@ class Calendar
     {
         $string = '<a href="' . CATSUtility::getIndexName();
 
-        switch ($dataItemType)
-        {
+        switch ($dataItemType) {
             case DATA_ITEM_CANDIDATE:
                 $candidates = new Candidates($this->_siteID);
                 $string .= '?m=candidates&amp;a=show&amp;candidateID=' . $dataItemID . '">';
                 $string .= '<img src="images/mru/candidate.gif" alt="" style="border: none;" title="Candidate" />';
-                if ($showTitle)
-                {
+                if ($showTitle) {
                     $data = $candidates->get($dataItemID);
-                    if (!isset($data['firstName']))
-                    {
+                    if (! isset($data['firstName'])) {
                         $string = '<img src="images/mru/company.gif" alt="" style="border: none;" /> (Candidate Deleted)<a>';
-                    }
-                    else
-                    {
+                    } else {
                         $string .= '&nbsp;' . $data['firstName'] . ' ' . $data['lastName'];
                     }
                 }
@@ -870,15 +881,11 @@ class Calendar
                 $companies = new Companies($this->_siteID);
                 $string .= '?m=companies&amp;a=show&amp;companyID=' . $dataItemID . '">';
                 $string .= '<img src="images/mru/company.gif" alt="" style="border: none;" title="Company" />';
-                if ($showTitle)
-                {
+                if ($showTitle) {
                     $data = $companies->get($dataItemID);
-                    if (!isset($data['name']))
-                    {
+                    if (! isset($data['name'])) {
                         $string = '<img src="images/mru/company.gif" alt="" style="border: none;" /> (Company Deleted)<a>';
-                    }
-                    else
-                    {
+                    } else {
                         $string .= '&nbsp;' . $data['name'];
                     }
                 }
@@ -888,15 +895,11 @@ class Calendar
                 $contacts = new Contacts($this->_siteID);
                 $string .= '?m=contacts&amp;a=show&amp;contactID=' . $dataItemID . '">';
                 $string .= '<img src="images/mru/contact.gif" alt="" style="border: none;" title="Contact" />';
-                if ($showTitle)
-                {
+                if ($showTitle) {
                     $data = $contacts->get($dataItemID);
-                    if (!isset($data['firstName']))
-                    {
+                    if (! isset($data['firstName'])) {
                         $string = '<img src="images/mru/contact.gif" alt="" style="border: none;" /> (Contact Deleted)<a>';
-                    }
-                    else
-                    {
+                    } else {
                         $string .= '&nbsp;' . $data['firstName'] . ' ' . $data['lastName'];
                     }
                 }
@@ -906,15 +909,11 @@ class Calendar
                 $jobOrders = new JobOrders($this->_siteID);
                 $string .= '?m=joborders&amp;a=show&amp;jobOrderID=' . $dataItemID . '">';
                 $string .= '<img src="images/mru/job_order.gif" alt="" style="border: none;" title="Job Order" />';
-                if ($showTitle)
-                {
+                if ($showTitle) {
                     $data = $jobOrders->get($dataItemID);
-                    if (!isset($data['title']))
-                    {
+                    if (! isset($data['title'])) {
                         $string = '<img src="images/mru/job_order.gif" alt="" style="border: none;" /> (Job Order Deleted)<a>';
-                    }
-                    else
-                    {
+                    } else {
                         $string .= '&nbsp;' . $data['title'];
                     }
                 }
@@ -939,12 +938,10 @@ class Calendar
      * @param string Destination e-mail address(es), separated by ',' or ';'.
      * @param string E-mail subject.
      * @param string E-mail body.
-     * @return void
      */
     public function sendEmail($siteID, $userID, $destination, $subject, $body)
     {
-        if (empty($destination))
-        {
+        if (empty($destination)) {
             return;
         }
 
@@ -954,10 +951,9 @@ class Calendar
         $destination = str_replace(',', ';', $destination);
         $destinations = explode(';', $destination);
 
-        foreach ($destinations as $address)
-        {
+        foreach ($destinations as $address) {
             $mailerStatus = $mailer->sendToOne(
-                array($address, ''),
+                [$address, ''],
                 $subject,
                 $body,
                 true
@@ -974,9 +970,10 @@ class Calendar
 class CalendarSettings
 {
     private $_db;
-    private $_siteID;
-    private $_userID;
 
+    private $_siteID;
+
+    private $_userID;
 
     public function __construct($siteID)
     {
@@ -986,7 +983,6 @@ class CalendarSettings
         $this->_db = DatabaseConnection::getInstance();
     }
 
-
     /**
      * Returns all calendar settings for a site.
      *
@@ -995,14 +991,14 @@ class CalendarSettings
     public function getAll()
     {
         /* Default values. */
-        $settings = array(
+        $settings = [
             'noAjax' => '0',
             'defaultPublic' => '0',
             'dayStart' => '8',
             'dayStop' => '18',
             'firstDayMonday' => '1',
-            'calendarView' => 'MONTHVIEW'
-        );
+            'calendarView' => 'MONTHVIEW',
+        ];
 
         $sql = sprintf(
             "SELECT
@@ -1021,12 +1017,9 @@ class CalendarSettings
         $rs = $this->_db->getAllAssoc($sql);
 
         /* Override default settings with settings from the database. */
-        foreach ($rs as $rowIndex => $row)
-        {
-            foreach ($settings as $setting => $value)
-            {
-                if ($row['setting'] == $setting)
-                {
+        foreach ($rs as $rowIndex => $row) {
+            foreach ($settings as $setting => $value) {
+                if ($row['setting'] == $setting) {
                     $settings[$setting] = $row['value'];
                 }
             }
@@ -1040,7 +1033,6 @@ class CalendarSettings
      *
      * @param string setting name
      * @param string setting value
-     * @return void
      */
     public function set($setting, $value)
     {
@@ -1076,9 +1068,7 @@ class CalendarSettings
             $this->_db->makeQueryStringOrNULL($value),
             $this->_siteID,
             SETTINGS_CALENDAR
-         );
-         $this->_db->query($sql);
+        );
+        $this->_db->query($sql);
     }
 }
-
-?>

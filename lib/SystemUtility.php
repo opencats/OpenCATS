@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -40,9 +39,13 @@ include_once(LEGACY_ROOT . '/lib/QueueProcessor.php');
 class SystemUtility
 {
     /* Prevent this class from being instantiated. */
-    private function __construct() {}
-    private function __clone() {}
+    private function __construct()
+    {
+    }
 
+    private function __clone()
+    {
+    }
 
     /**
      * Returns true if PHP is running on Microsoft Windows.
@@ -52,8 +55,7 @@ class SystemUtility
     public static function isWindows()
     {
         /* Check for either Windows, WinNT, or Win32. */
-        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN')
-        {
+        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
             return true;
         }
 
@@ -67,8 +69,7 @@ class SystemUtility
      */
     public static function isMacOSX()
     {
-        if (PHP_OS == 'Darwin')
-        {
+        if (PHP_OS == 'Darwin') {
             return true;
         }
 
@@ -87,5 +88,3 @@ class SystemUtility
         return QueueProcessor::isActive();
     }
 }
-
-?>

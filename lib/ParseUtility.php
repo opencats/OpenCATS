@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -33,9 +32,9 @@
 // FIXME: Document me! Explain how external parsers can integrate.
 
 define('PARSE_CODE_SUCCESS', 'ok');
-define('PARSE_CODE_FAILED',  'failed');
-define('PARSE_CODE_ERROR',   'error');
-define('PARSE_CODE_NOAUTH',  'noauth');
+define('PARSE_CODE_FAILED', 'failed');
+define('PARSE_CODE_ERROR', 'error');
+define('PARSE_CODE_NOAUTH', 'noauth');
 
 /**
  *  SOAP Resume Parser Interface Library
@@ -45,15 +44,14 @@ define('PARSE_CODE_NOAUTH',  'noauth');
 class ParseUtility
 {
     private $_wsdl;
-    private $_client;
 
+    private $_client;
 
     public function __construct()
     {
         $this->_wsdl = 'wsdl/parse.wsdl';
         $this->_client = null;
     }
-
 
     public function startClient()
     {
@@ -84,25 +82,20 @@ class ParseUtility
      */
     public function documentParse($name, $size, $mimeType, $contents)
     {
-        if (!$this->_client) $this->startClient();
-        if (!defined('CATS_TEST_MODE') || !CATS_TEST_MODE)
-        {
-            try
-            {
+        if (! $this->_client) {
+            $this->startClient();
+        }
+        if (! defined('CATS_TEST_MODE') || ! CATS_TEST_MODE) {
+            try {
                 $res = $this->_client->DocumentParse(LICENSE_KEY, $name, $size, $mimeType, self::cleanText($contents));
-            }
-            catch (SoapFault $exception)
-            {
+            } catch (SoapFault $exception) {
                 return false;
             }
-        }
-        else
-        {
+        } else {
             $res = $this->_client->DocumentParse(LICENSE_KEY, $name, $size, $mimeType, self::cleanText($contents));
         }
 
-        switch($res->message)
-        {
+        switch ($res->message) {
             case PARSE_CODE_SUCCESS:
                 break;
             case PARSE_CODE_ERROR:
@@ -112,7 +105,7 @@ class ParseUtility
                 return false;
         }
 
-        $ret = array(
+        $ret = [
             'first_name' => $res->firstName,
             'last_name' => $res->lastName,
             'us_address' => $res->address,
@@ -123,34 +116,29 @@ class ParseUtility
             'phone_number' => $res->phone,
             'skills' => $res->skills,
             'education' => $res->education,
-            'experience' => $res->experience
-        );
+            'experience' => $res->experience,
+        ];
 
         return $ret;
     }
 
     public function status($key)
     {
-        if (!CATSUtility::isSOAPEnabled()) return false;
+        if (! CATSUtility::isSOAPEnabled()) {
+            return false;
+        }
         $client = new SoapClient('wsdl/status.wsdl');
-        if (!defined('CATS_TEST_MODE') || !CATS_TEST_MODE)
-        {
-            try
-            {
+        if (! defined('CATS_TEST_MODE') || ! CATS_TEST_MODE) {
+            try {
                 $res = $client->Status($key);
-            }
-            catch (SoapFault $exception)
-            {
+            } catch (SoapFault $exception) {
                 return false;
             }
-        }
-        else
-        {
+        } else {
             $res = $client->Status($key);
         }
 
-        switch($res->message)
-        {
+        switch ($res->message) {
             case PARSE_CODE_SUCCESS:
                 break;
             case PARSE_CODE_ERROR:
@@ -160,39 +148,40 @@ class ParseUtility
                 return false;
         }
 
-        $ret = array(
+        $ret = [
             'version' => $res->version,
             'name' => $res->name,
             'lastUse' => $res->lastUse,
             'parseUsed' => $res->parseUsed,
             'parseLimit' => $res->parseLimit,
-            'parseLimitReset' => $res->parseLimitReset
-        );
+            'parseLimitReset' => $res->parseLimitReset,
+        ];
 
         return $ret;
     }
 
-
     // Destroy unicode before it contaminates our soap, what's next? our children and our candy?
     public static function cleanText($txt)
     {
-        for ($i=0; $i<strlen($txt); $i++)
-        {
+        for ($i = 0; $i < strlen($txt); $i++) {
             $ch = ord($txt[$i]);
 
             // ASCII control characters (character code 0-31)
             // PHP 5 SOAP Libraries partially supported
-            if ($ch == 9 || $ch == 10 || $ch == 13) continue;
+            if ($ch == 9 || $ch == 10 || $ch == 13) {
+                continue;
+            }
 
             // ASCII Printable characters (character code 32-127)
-            else if ($ch >= 32 && $ch <= 127) continue;
+            elseif ($ch >= 32 && $ch <= 127) {
+                continue;
+            }
 
             // Extended ASCII codes (character code 128-255)
             // These are NOT SUPPORTED by the PHP 5 SOAP Libraries
 
             // Anything not supported:
-            else
-            {
+            else {
                 // Replace unrecognizable characters with a space
                 $txt[$i] = ' ';
             }
@@ -201,8 +190,13 @@ class ParseUtility
     }
 
     // Get/sets
-    public function setWSDL($wsdl) { return ($this->_wsdl = $wsdl); }
-    public function getWSDL() { return $this->_wsdl; }
-}
+    public function setWSDL($wsdl)
+    {
+        return ($this->_wsdl = $wsdl);
+    }
 
-?>
+    public function getWSDL()
+    {
+        return $this->_wsdl;
+    }
+}

@@ -55,8 +55,7 @@ eval(Hooks::get('XML_FEED_SUBMISSION_SETTINGS_HEADERS'));
 class SettingsUI extends UserInterface
 {
     /* Maximum number of login history entries to display on User Details. */
-    const MAX_RECENT_LOGINS = 15;
-
+    public const MAX_RECENT_LOGINS = 15;
 
     public function __construct()
     {
@@ -69,24 +68,23 @@ class SettingsUI extends UserInterface
         $this->_moduleTabText = 'Settings';
 
         /* Only CATS professional on site gets to make career portal customizer users. */
-        if( class_exists('ACL_SETUP') && !empty(ACL_SETUP::$USER_ROLES) )
-        {
+        if (class_exists('ACL_SETUP') && ! empty(ACL_SETUP::$USER_ROLES)) {
             $this->_settingsUserCategories = ACL_SETUP::$USER_ROLES;
         }
 
-        $mp = array(
+        $mp = [
             'Administration' => CATSUtility::getIndexName() . '?m=settings&amp;a=administration',
-            'My Profile'     => CATSUtility::getIndexName() . '?m=settings'
-        );
+            'My Profile' => CATSUtility::getIndexName() . '?m=settings',
+        ];
 
         $this->_subTabs = $mp;
-        
+
         $this->_hooks = $this->defineHooks();
     }
 
     public function defineHooks()
     {
-        return array(
+        return [
             /* Hide all tabs in career portal mode. */
             'TEMPLATE_UTILITY_EVALUATE_TAB_VISIBLE' => '
                 if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\'))
@@ -97,7 +95,7 @@ class SettingsUI extends UserInterface
                     }
                 }
             ',
-            
+
             /* Home goes to settings in career portal mode. */
             'HOME' => '
                 if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\'))
@@ -106,7 +104,7 @@ class SettingsUI extends UserInterface
                     return false;
                 }
             ',
-            
+
             /* My Profile goes to administration in career portal mode. */
             'SETTINGS_DISPLAY_PROFILE_SETTINGS' => '
                 if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\'))
@@ -117,36 +115,40 @@ class SettingsUI extends UserInterface
             ',
 
             /* Deny access to all modules in career portal mode but settings. */
-            'CLIENTS_HANDLE_REQUEST' =>    'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
-            'CONTACTS_HANDLE_REQUEST' =>   'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
-            'CALENDAR_HANDLE_REQUEST' =>   'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
-            'JO_HANDLE_REQUEST' =>         'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
+            'CLIENTS_HANDLE_REQUEST' => 'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
+            'CONTACTS_HANDLE_REQUEST' => 'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
+            'CALENDAR_HANDLE_REQUEST' => 'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
+            'JO_HANDLE_REQUEST' => 'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
             'CANDIDATES_HANDLE_REQUEST' => 'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
-            'ACTIVITY_HANDLE_REQUEST' =>   'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
-            'REPORTS_HANDLE_REQUEST' =>    'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");'
-        );
+            'ACTIVITY_HANDLE_REQUEST' => 'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
+            'REPORTS_HANDLE_REQUEST' => 'if ($_SESSION[\'CATS\']->hasUserCategory(\'careerportal\')) $this->fatal("' . ERROR_NO_PERMISSION . '");',
+        ];
     }
-    
+
     private function onAddNewTag()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-        {
+        if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
             echo 'CATS has lost your session data!';
             return;
         }
         $tags = new Tags($this->_siteID);
-        $arr = $tags->add((isset($_POST['tag_parent_id'])?$_POST['tag_parent_id']:null),$_POST['tag_title'], "-");
-        if (isset($_POST['tag_parent_id']))
-        {
-	        printf('
+        $arr = $tags->add((isset($_POST['tag_parent_id']) ? $_POST['tag_parent_id'] : null), $_POST['tag_title'], "-");
+        if (isset($_POST['tag_parent_id'])) {
+            printf(
+                '
 				<li id="id_li_tag_%d">
 					<a href="javascript:;" onclick="doDelete(%d);"><img src="images/actions/delete.gif" /></a>
 					<div id="id_tag_%d"><a href="javascript:;" onclick="editTag(%d);">%s</a><div></div></div>
 				</li>',
-	        $arr['id'],$arr['id'],$arr['id'],$arr['id'],$arr['tag_title']);
-        }else
-        {
-	        printf('
+                $arr['id'],
+                $arr['id'],
+                $arr['id'],
+                $arr['id'],
+                $arr['tag_title']
+            );
+        } else {
+            printf(
+                '
 				<li id="id_li_tag_%d">
 					<a href="javascript:;" onclick="doDelete(%d);"><img src="images/actions/delete.gif" /></a> %s
 					<ul>
@@ -160,29 +162,32 @@ class SettingsUI extends UserInterface
 						</li>
 					</ul>
 				</li>',
-	        $arr['id'],$arr['id'],$arr['tag_title'], CATSUtility::getIndexName(), $arr['id']);        	
+                $arr['id'],
+                $arr['id'],
+                $arr['tag_title'],
+                CATSUtility::getIndexName(),
+                $arr['id']
+            );
         }
-        
-        
-        return; 
+
+
+        return;
     }
-    
+
     private function onRemoveTag()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-        {
+        if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
             echo 'CATS has lost your session data!';
             return;
         }
         $tags = new Tags($this->_siteID);
         $tags->delete($_POST['tag_id']);
-        return; 
+        return;
     }
-    
+
     private function onChangeTag()
     {
-        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-        {
+        if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
             echo 'CATS has lost your session data!';
             return;
         }
@@ -192,8 +197,7 @@ class SettingsUI extends UserInterface
         echo htmlspecialchars($_POST['tag_title'], ENT_QUOTES, 'UTF-8');
         return;
     }
-    
-    
+
     /**
      * This function make changes to tags
      * @return unknown_type
@@ -201,7 +205,6 @@ class SettingsUI extends UserInterface
     private function onChangeTags()
     {
         // TODO: Add tags changing code
- 
     }
 
     /**
@@ -225,140 +228,111 @@ class SettingsUI extends UserInterface
     {
         $action = $this->getAction();
 
-        if (!eval(Hooks::get('SETTINGS_HANDLE_REQUEST'))) return;
+        if (! eval(Hooks::get('SETTINGS_HANDLE_REQUEST'))) {
+            return;
+        }
 
-        switch ($action)
-        {
+        switch ($action) {
             case 'tags':
                 /* Bail out if the user is demo. */
-                if ($this->getUserAccessLevel('settings.tags') < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-                {
+                if ($this->getUserAccessLevel('settings.tags') < ACCESS_LEVEL_SA && ! $_SESSION['CATS']->hasUserCategory('careerportal')) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You are not allowed to edit tags.');
                 }
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onChangeTags();
-                }
-                else
-                {
+                } else {
                     $this->changeTags();
                 }
                 break;
-            
+
             case 'changePassword':
                 /* Bail out if the user is demo. */
-                if ($this->getUserAccessLevel('settings.changePassword') == ACCESS_LEVEL_DEMO)
-                {
+                if ($this->getUserAccessLevel('settings.changePassword') == ACCESS_LEVEL_DEMO) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You are not allowed to change your password.');
                 }
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onChangePassword();
                 }
                 break;
 
             case 'newInstallPassword':
-                if ($this->getUserAccessLevel("settings.newInstallPassword") < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel("settings.newInstallPassword") < ACCESS_LEVEL_SA) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onNewInstallPassword();
-                }
-                else
-                {
+                } else {
                     $this->newInstallPassword();
                 }
                 break;
 
             case 'forceEmail':
-                if ($this->getUserAccessLevel("settings.forceEmail") < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel("settings.forceEmail") < ACCESS_LEVEL_SA) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onForceEmail();
-                }
-                else
-                {
+                } else {
                     $this->forceEmail();
                 }
                 break;
 
             case 'newSiteName':
-                if ($this->getUserAccessLevel('settings.newSiteName') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.newSiteName') < ACCESS_LEVEL_SA) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onNewSiteName();
-                }
-                else
-                {
+                } else {
                     $this->newSiteName();
                 }
                 break;
 
             case 'upgradeSiteName':
-                if ($this->getUserAccessLevel('settings.upgradeSiteName') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.upgradeSiteName') < ACCESS_LEVEL_SA) {
                     CATSUtility::transferRelativeURI('m=settings&a=newInstallFinished');
                 }
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onNewSiteName();
-                }
-                else
-                {
+                } else {
                     $this->upgradeSiteName();
                 }
                 break;
 
             case 'newInstallFinished':
-                if ($this->getUserAccessLevel('settings.newSiteName') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.newSiteName') < ACCESS_LEVEL_SA) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onNewInstallFinished();
-                }
-                else
-                {
+                } else {
                     $this->newInstallFinished();
                 }
                 break;
 
             case 'manageUsers':
-                if ($this->getUserAccessLevel('settings.manageUsers') < ACCESS_LEVEL_DEMO)
-                {
+                if ($this->getUserAccessLevel('settings.manageUsers') < ACCESS_LEVEL_DEMO) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->manageUsers();
                 break;
 
             case 'professional':
-                if ($this->getUserAccessLevel('settings.professional') < ACCESS_LEVEL_DEMO)
-                {
+                if ($this->getUserAccessLevel('settings.professional') < ACCESS_LEVEL_DEMO) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->manageProfessional();
                 break;
 
             case 'previewPage':
-                if ($this->getUserAccessLevel('settings.previewPage') < ACCESS_LEVEL_READ)
-                {
+                if ($this->getUserAccessLevel('settings.previewPage') < ACCESS_LEVEL_READ) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->previewPage();
                 break;
 
             case 'previewPageTop':
-                if ($this->getUserAccessLevel('settings.previewPageTop') < ACCESS_LEVEL_READ)
-                {
+                if ($this->getUserAccessLevel('settings.previewPageTop') < ACCESS_LEVEL_READ) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->previewPageTop();
@@ -366,26 +340,20 @@ class SettingsUI extends UserInterface
 
             case 'showUser':
                 if ($this->getUserAccessLevel('settings.showUser') < ACCESS_LEVEL_DEMO
-                    && $this->_userID != $_GET['userID'])
-                {
+                    && $this->_userID != $_GET['userID']) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->showUser();
                 break;
 
             case 'addUser':
-                if ($this->isPostBack())
-                {
-                    if ($this->getUserAccessLevel('settings.addUser.POST') < ACCESS_LEVEL_SA)
-                    {
+                if ($this->isPostBack()) {
+                    if ($this->getUserAccessLevel('settings.addUser.POST') < ACCESS_LEVEL_SA) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->onAddUser();
-                }
-                else
-                {
-                    if ($this->getUserAccessLevel('settings.addUser.GET') < ACCESS_LEVEL_DEMO)
-                    {
+                } else {
+                    if ($this->getUserAccessLevel('settings.addUser.GET') < ACCESS_LEVEL_DEMO) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->addUser();
@@ -395,18 +363,13 @@ class SettingsUI extends UserInterface
 
             case 'editUser':
 
-                if ($this->isPostBack())
-                {
-                    if ($this->getUserAccessLevel('settings.editUser.POST') < ACCESS_LEVEL_SA)
-                    {
+                if ($this->isPostBack()) {
+                    if ($this->getUserAccessLevel('settings.editUser.POST') < ACCESS_LEVEL_SA) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->onEditUser();
-                }
-                else
-                {
-                    if ($this->getUserAccessLevel('settings.editUser.GET') < ACCESS_LEVEL_DEMO)
-                    {
+                } else {
+                    if ($this->getUserAccessLevel('settings.editUser.GET') < ACCESS_LEVEL_DEMO) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->editUser();
@@ -415,35 +378,28 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'createBackup':
-                if ($this->getUserAccessLevel('settings.createBackup') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.createBackup') < ACCESS_LEVEL_SA) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->createBackup();
                 break;
 
             case 'deleteBackup':
-                if ($this->getUserAccessLevel('settings.deleteBackup') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.deleteBackup') < ACCESS_LEVEL_SA) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->deleteBackup();
                 break;
 
             case 'customizeExtraFields':
-                
-                if ($this->isPostBack())
-                {
-                    if ($this->getUserAccessLevel('settings.customizeExtraFields.POST') < ACCESS_LEVEL_SA)
-                    {
+
+                if ($this->isPostBack()) {
+                    if ($this->getUserAccessLevel('settings.customizeExtraFields.POST') < ACCESS_LEVEL_SA) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->onCustomizeExtraFields();
-                }
-                else
-                {
-                    if ($this->getUserAccessLevel('settings.customizeExtraFields.GET') < ACCESS_LEVEL_DEMO)
-                    {
+                } else {
+                    if ($this->getUserAccessLevel('settings.customizeExtraFields.GET') < ACCESS_LEVEL_DEMO) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->customizeExtraFields();
@@ -451,19 +407,14 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'customizeCalendar':
-                
-                if ($this->isPostBack())
-                {
-                    if ($this->getUserAccessLevel('settings.customizeCalendar.POST') < ACCESS_LEVEL_SA)
-                    {
+
+                if ($this->isPostBack()) {
+                    if ($this->getUserAccessLevel('settings.customizeCalendar.POST') < ACCESS_LEVEL_SA) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->onCustomizeCalendar();
-                }
-                else
-                {
-                    if ($this->getUserAccessLevel('settings.customizeCalendar.GET') < ACCESS_LEVEL_DEMO)
-                    {
+                } else {
+                    if ($this->getUserAccessLevel('settings.customizeCalendar.GET') < ACCESS_LEVEL_DEMO) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->customizeCalendar();
@@ -471,34 +422,24 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'reports':
-                if ($this->getUserAccessLevel('settings.reports') < ACCESS_LEVEL_DEMO)
-                {
+                if ($this->getUserAccessLevel('settings.reports') < ACCESS_LEVEL_DEMO) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                if ($this->isPostBack())
-                {
-
-                }
-                else
-                {
+                if ($this->isPostBack()) {
+                } else {
                     $this->reports();
                 }
                 break;
 
             case 'emailSettings':
-                
-                if ($this->isPostBack())
-                {
-                    if ($this->getUserAccessLevel('settings.emailSettings.POST') < ACCESS_LEVEL_SA)
-                    {
+
+                if ($this->isPostBack()) {
+                    if ($this->getUserAccessLevel('settings.emailSettings.POST') < ACCESS_LEVEL_SA) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->onEmailSettings();
-                }
-                else
-                {
-                    if ($this->getUserAccessLevel('settings.emailSettings.GET') < ACCESS_LEVEL_DEMO)
-                    {
+                } else {
+                    if ($this->getUserAccessLevel('settings.emailSettings.GET') < ACCESS_LEVEL_DEMO) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->emailSettings();
@@ -506,8 +447,7 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'careerPortalQuestionnairePreview':
-                if ($this->getUserAccessLevel('settings.careerPortalQuestionnairePreview') < ACCESS_LEVEL_DEMO)
-                {
+                if ($this->getUserAccessLevel('settings.careerPortalQuestionnairePreview') < ACCESS_LEVEL_DEMO) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->careerPortalQuestionnairePreview();
@@ -515,42 +455,32 @@ class SettingsUI extends UserInterface
 
             case 'careerPortalQuestionnaire':
 
-                if ($this->getUserAccessLevel('settings.careerPortalQuestionnaire') < ACCESS_LEVEL_DEMO)
-                {
+                if ($this->getUserAccessLevel('settings.careerPortalQuestionnaire') < ACCESS_LEVEL_DEMO) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onCareerPortalQuestionnaire();
-                }
-                else
-                {
+                } else {
                     $this->careerPortalQuestionnaire();
                 }
                 break;
 
             case 'careerPortalQuestionnaireUpdate':
-                if ($this->getUserAccessLevel('settings.careerPortalQuestionnaireUpdate') < ACCESS_LEVEL_DEMO)
-                {
+                if ($this->getUserAccessLevel('settings.careerPortalQuestionnaireUpdate') < ACCESS_LEVEL_DEMO) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->careerPortalQuestionnaireUpdate();
                 break;
 
             case 'careerPortalTemplateEdit':
-                
-                if ($this->isPostBack())
-                {
-                    if ($this->getUserAccessLevel('settings.careerPortalTemplateEdit.POST') < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-                    {
+
+                if ($this->isPostBack()) {
+                    if ($this->getUserAccessLevel('settings.careerPortalTemplateEdit.POST') < ACCESS_LEVEL_SA && ! $_SESSION['CATS']->hasUserCategory('careerportal')) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->onCareerPortalTemplateEdit();
-                }
-                else
-                {
-                    if ($this->getUserAccessLevel('settings.careerPortalTemplateEdit') < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-                    {
+                } else {
+                    if ($this->getUserAccessLevel('settings.careerPortalTemplateEdit') < ACCESS_LEVEL_DEMO && ! $_SESSION['CATS']->hasUserCategory('careerportal')) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->careerPortalTemplateEdit();
@@ -558,22 +488,16 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'careerPortalSettings':
-                if ($this->getUserAccessLevel('settings.careerPortalSettings') < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-                {
+                if ($this->getUserAccessLevel('settings.careerPortalSettings') < ACCESS_LEVEL_DEMO && ! $_SESSION['CATS']->hasUserCategory('careerportal')) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                if ($this->isPostBack())
-                {
-                    if ($this->getUserAccessLevel('settings.careerPortalSettings.POST') < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-                    {
+                if ($this->isPostBack()) {
+                    if ($this->getUserAccessLevel('settings.careerPortalSettings.POST') < ACCESS_LEVEL_SA && ! $_SESSION['CATS']->hasUserCategory('careerportal')) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->onCareerPortalSettings();
-                }
-                else
-                {
-                    if ($this->getUserAccessLevel('settings.careerPortalSettings.GET') < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-                    {
+                } else {
+                    if ($this->getUserAccessLevel('settings.careerPortalSettings.GET') < ACCESS_LEVEL_DEMO && ! $_SESSION['CATS']->hasUserCategory('careerportal')) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->careerPortalSettings();
@@ -581,19 +505,14 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'eeo':
-                
-                if ($this->isPostBack())
-                {
-                    if ($this->getUserAccessLevel('settings.eeo.POST') < ACCESS_LEVEL_SA)
-                    {
+
+                if ($this->isPostBack()) {
+                    if ($this->getUserAccessLevel('settings.eeo.POST') < ACCESS_LEVEL_SA) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->onEEOEOCSettings();
-                }
-                else
-                {
-                    if ($this->getUserAccessLevel('settings.eeo.GET') < ACCESS_LEVEL_DEMO)
-                    {
+                } else {
+                    if ($this->getUserAccessLevel('settings.eeo.GET') < ACCESS_LEVEL_DEMO) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->EEOEOCSettings();
@@ -601,57 +520,47 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'onCareerPortalTweak':
-                if ($this->getUserAccessLevel('settings.careerPortalTweak') < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-                {
+                if ($this->getUserAccessLevel('settings.careerPortalTweak') < ACCESS_LEVEL_SA && ! $_SESSION['CATS']->hasUserCategory('careerportal')) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
 
                 $this->onCareerPortalTweak();
                 break;
 
-            /* This really only exists for automated testing at this point. */
+                /* This really only exists for automated testing at this point. */
             case 'deleteUser':
-                if ($this->getUserAccessLevel('settings.deleteUser') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.deleteUser') < ACCESS_LEVEL_SA) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->onDeleteUser();
                 break;
 
             case 'emailTemplates':
-                
-                if ($this->isPostBack())
-                {
-                    if ($this->getUserAccessLevel('settings.emailTemplates.POST') < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-                    {
+
+                if ($this->isPostBack()) {
+                    if ($this->getUserAccessLevel('settings.emailTemplates.POST') < ACCESS_LEVEL_SA && ! $_SESSION['CATS']->hasUserCategory('careerportal')) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->onEmailTemplates();
-                }
-                else
-                {
-                    if ($this->getUserAccessLevel('settings.emailTemplates.GET') < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-                    {
+                } else {
+                    if ($this->getUserAccessLevel('settings.emailTemplates.GET') < ACCESS_LEVEL_DEMO && ! $_SESSION['CATS']->hasUserCategory('careerportal')) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->emailTemplates();
                 }
                 break;
 
-           case 'aspLocalization':
-                if ($this->getUserAccessLevel('settings.aspLocalization') < ACCESS_LEVEL_SA)
-                {
+            case 'aspLocalization':
+                if ($this->getUserAccessLevel('settings.aspLocalization') < ACCESS_LEVEL_SA) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onAspLocalization();
                 }
                 break;
 
-           case 'loginActivity':
-                if ($this->getUserAccessLevel('settings.loginActivity') < ACCESS_LEVEL_DEMO)
-                {
+            case 'loginActivity':
+                if ($this->getUserAccessLevel('settings.loginActivity') < ACCESS_LEVEL_DEMO) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
 
@@ -661,8 +570,7 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'viewItemHistory':
-                if ($this->getUserAccessLevel('settings.viewItemHistory') < ACCESS_LEVEL_DEMO)
-                {
+                if ($this->getUserAccessLevel('settings.viewItemHistory') < ACCESS_LEVEL_DEMO) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->viewItemHistory();
@@ -673,17 +581,15 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'ajax_tags_add':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
+                if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
                     echo 'CATS has lost your session data!';
                     return;
                 }
                 $this->onAddNewTag();
                 break;
-            
+
             case 'ajax_tags_del':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
+                if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
                     echo 'CATS has lost your session data!';
                     return;
                 }
@@ -691,22 +597,19 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'ajax_tags_upd':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
+                if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
                     echo 'CATS has lost your session data!';
                     return;
                 }
                 $this->onChangeTag();
                 break;
-               
+
             case 'ajax_wizardAddUser':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
+                if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                if ($this->getUserAccessLevel('settings.addUser') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.addUser') < ACCESS_LEVEL_SA) {
                     echo 'You do not have access to add a user.';
                     return;
                 }
@@ -714,13 +617,11 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'ajax_wizardDeleteUser':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
+                if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                if ($this->getUserAccessLevel('settings.deleteUser') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.deleteUser') < ACCESS_LEVEL_SA) {
                     echo 'You do not have access to delete a user.';
                     return;
                 }
@@ -728,13 +629,11 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'ajax_wizardCheckKey':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
+                if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                if ($this->getUserAccessLevel('settings.checkKey') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.checkKey') < ACCESS_LEVEL_SA) {
                     echo 'You do not have access to set the key.';
                     return;
                 }
@@ -742,13 +641,11 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'ajax_wizardLocalization':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
+                if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                if ($this->getUserAccessLevel('settings.localization') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.localization') < ACCESS_LEVEL_SA) {
                     echo 'You do not have access to change your localization settings.';
                     return;
                 }
@@ -756,13 +653,11 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'ajax_wizardFirstTimeSetup':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
+                if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                if ($this->getUserAccessLevel('settings.firstTimeSetup') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.firstTimeSetup') < ACCESS_LEVEL_SA) {
                     echo 'You do not has access to this first-time-setup wizard.';
                     return;
                 }
@@ -770,13 +665,11 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'ajax_wizardLicense':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
+                if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                if ($this->getUserAccessLevel('settings.license') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.license') < ACCESS_LEVEL_SA) {
                     echo 'You do not have access to accept the license agreement.';
                     return;
                 }
@@ -784,13 +677,11 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'ajax_wizardPassword':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
+                if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                if ($this->getUserAccessLevel('settings.password') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.password') < ACCESS_LEVEL_SA) {
                     echo 'You do not have acess to set the site password.';
                     return;
                 }
@@ -798,13 +689,11 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'ajax_wizardSiteName':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
+                if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                if ($this->getUserAccessLevel('settings.siteName') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.siteName') < ACCESS_LEVEL_SA) {
                     echo 'You do not have permission to change the site name.';
                     return;
                 }
@@ -812,13 +701,11 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'ajax_wizardEmail':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
+                if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                if ($this->getUserAccessLevel('settings.setEmail') < ACCESS_LEVEL_READ)
-                {
+                if ($this->getUserAccessLevel('settings.setEmail') < ACCESS_LEVEL_READ) {
                     echo 'You do not have permission to set the email.';
                     return;
                 }
@@ -826,13 +713,11 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'ajax_wizardImport':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
+                if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                if ($this->getUserAccessLevel('settings.import') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.import') < ACCESS_LEVEL_SA) {
                     echo 'You do not have permission to import.';
                     return;
                 }
@@ -840,13 +725,11 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'ajax_wizardWebsite':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
+                if (! isset($_SESSION['CATS']) || empty($_SESSION['CATS'])) {
                     echo 'CATS has lost your session data!';
                     return;
                 }
-                if ($this->getUserAccessLevel('settings.website') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.website') < ACCESS_LEVEL_SA) {
                     echo 'You do not have permission.';
                     return;
                 }
@@ -854,37 +737,31 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'administration':
-                if ($this->isPostBack())
-                {
-                    if ($this->getUserAccessLevel('settings.administration.POST') < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-                    {
+                if ($this->isPostBack()) {
+                    if ($this->getUserAccessLevel('settings.administration.POST') < ACCESS_LEVEL_SA && ! $_SESSION['CATS']->hasUserCategory('careerportal')) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->onAdministration();
-                }
-                else
-                {
-                    if ($this->getUserAccessLevel('settings.administration.GET') < ACCESS_LEVEL_DEMO && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-                    {
+                } else {
+                    if ($this->getUserAccessLevel('settings.administration.GET') < ACCESS_LEVEL_DEMO && ! $_SESSION['CATS']->hasUserCategory('careerportal')) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                     }
                     $this->administration();
                 }
                 break;
-            
+
             case 'addEmailTemplate':
                 $this->addEmailTemplate();
                 break;
-                
+
             case 'deleteEmailTemplate':
                 $this->deleteEmailTemplate();
                 break;
 
-            /* Main settings page. */
+                /* Main settings page. */
             case 'myProfile':
             default:
-                if ($this->getUserAccessLevel('settings.myProfile') < ACCESS_LEVEL_READ)
-                {
+                if ($this->getUserAccessLevel('settings.myProfile') < ACCESS_LEVEL_READ) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->myProfile();
@@ -892,42 +769,37 @@ class SettingsUI extends UserInterface
         }
     }
 
-    private function deleteEmailTemplate() 
+    private function deleteEmailTemplate()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
+        if ($this->_realAccessLevel < ACCESS_LEVEL_SA) {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
             return;
         }
-        
+
         $emailTemplates = new EmailTemplates($this->_siteID);
         $templateID = $_GET['id'];
         $emailTemplates->delete($templateID);
-       
+
         $this->emailTemplates();
     }
-    
+
     private function addEmailTemplate()
     {
-        if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
-        {
+        if ($this->_realAccessLevel < ACCESS_LEVEL_SA) {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
             return;
         }
-        
+
         $possibleVariables = "%CANDSTATUS%%CANDOWNER%%CANDFIRSTNAME%%CANDFULLNAME%%CANDPREVSTATUS%";
         $emailTemplates = new EmailTemplates($this->_siteID);
         $emailTemplateID = $emailTemplates->add("", "New Email Template", "CUSTOM", $this->_siteID, $possibleVariables);
-        if($emailTemplateID < 1)
-        {
+        if ($emailTemplateID < 1) {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add template.');
-        }
-        else
-        {
+        } else {
             $this->emailTemplates();
         }
     }
-    
+
     /*
      * Called by handleRequest() to process loading the get firefox modal dialog.
      */
@@ -945,10 +817,8 @@ class SettingsUI extends UserInterface
     {
         $isDemoUser = $_SESSION['CATS']->isDemo();
 
-        if (isset($_GET['s']))
-        {
-            switch($_GET['s'])
-            {
+        if (isset($_GET['s'])) {
+            switch ($_GET['s']) {
                 case 'changePassword':
                     $templateFile = './modules/settings/ChangePassword.tpl';
                     break;
@@ -957,13 +827,13 @@ class SettingsUI extends UserInterface
                     $templateFile = './modules/settings/MyProfile.tpl';
                     break;
             }
-        }
-        else
-        {
+        } else {
             $templateFile = './modules/settings/MyProfile.tpl';
         }
 
-        if (!eval(Hooks::get('SETTINGS_DISPLAY_PROFILE_SETTINGS'))) return;
+        if (! eval(Hooks::get('SETTINGS_DISPLAY_PROFILE_SETTINGS'))) {
+            return;
+        }
 
         $this->_template->assign('isDemoUser', $isDemoUser);
         $this->_template->assign('userID', $this->_userID);
@@ -979,13 +849,10 @@ class SettingsUI extends UserInterface
     private function showUser()
     {
         // FIXME: Does $_GET['userID'] exist?
-        if (isset($_GET['privledged']) &&  $_GET['privledged'] == 'false' &&
-            $this->_userID == $_GET['userID'])
-        {
+        if (isset($_GET['privledged']) && $_GET['privledged'] == 'false' &&
+            $this->_userID == $_GET['userID']) {
             $privledged = false;
-        }
-        else
-        {
+        } else {
             $privledged = true;
         }
 
@@ -994,39 +861,37 @@ class SettingsUI extends UserInterface
         $users = new Users($this->_siteID);
         $data = $users->get($userID);
 
-        if (empty($data))
-        {
+        if (empty($data)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'No user found with selected ID.');
         }
 
         $data['successfulDate'] = DateUtility::fixZeroDate(
-            $data['successfulDate'], 'Never'
+            $data['successfulDate'],
+            'Never'
         );
 
         $data['unsuccessfulDate'] = DateUtility::fixZeroDate(
-            $data['unsuccessfulDate'], 'Never'
+            $data['unsuccessfulDate'],
+            'Never'
         );
 
         $accessLevels = $users->getAccessLevels();
 
         $loginAttempts = $users->getLastLoginAttempts(
-            $userID, self::MAX_RECENT_LOGINS
+            $userID,
+            self::MAX_RECENT_LOGINS
         );
 
-        if (!empty($loginAttempts))
-        {
-            foreach ($loginAttempts as $rowIndex => $row)
-            {
+        if (! empty($loginAttempts)) {
+            foreach ($loginAttempts as $rowIndex => $row) {
                 $loginAttempts[$rowIndex]['shortUserAgent'] = implode(
-                    ' ', BrowserDetection::detect($loginAttempts[$rowIndex]['userAgent'])
+                    ' ',
+                    BrowserDetection::detect($loginAttempts[$rowIndex]['userAgent'])
                 );
 
-                if ($loginAttempts[$rowIndex]['successful'] == 0)
-                {
+                if ($loginAttempts[$rowIndex]['successful'] == 0) {
                     $loginAttempts[$rowIndex]['successful'] = 'No';
-                }
-                else
-                {
+                } else {
                     $loginAttempts[$rowIndex]['successful'] = 'Yes';
                 }
             }
@@ -1036,24 +901,22 @@ class SettingsUI extends UserInterface
 
         // FIXME: The last test here might be redundant.
         if ($siteIDPosition !== false &&
-            substr($data['username'], $siteIDPosition) == '@' . $_SESSION['CATS']->getSiteID())
-        {
-           $data['username'] = str_replace(
-               '@' . $_SESSION['CATS']->getSiteID(), '', $data['username']
-           );
+            substr($data['username'], $siteIDPosition) == '@' . $_SESSION['CATS']->getSiteID()) {
+            $data['username'] = str_replace(
+                '@' . $_SESSION['CATS']->getSiteID(),
+                '',
+                $data['username']
+            );
         }
 
         /* Get user categories, if any. */
         $modules = ModuleUtility::getModules();
-        $categories = array();
-        foreach ($modules as $moduleName => $parameters)
-        {
+        $categories = [];
+        foreach ($modules as $moduleName => $parameters) {
             $moduleCategories = $parameters[MODULE_SETTINGS_USER_CATEGORIES];
 
-            if ($moduleCategories != false)
-            {
-                foreach ($moduleCategories as $category)
-                {
+            if ($moduleCategories != false) {
+                foreach ($moduleCategories as $category) {
                     $categories[] = $category;
                 }
             }
@@ -1088,18 +951,14 @@ class SettingsUI extends UserInterface
 
         /* Get user categories, if any. */
         $modules = ModuleUtility::getModules();
-        $categories = array();
-        foreach ($modules as $moduleName => $parameters)
-        {
+        $categories = [];
+        foreach ($modules as $moduleName => $parameters) {
             $moduleCategories = $parameters[MODULE_SETTINGS_USER_CATEGORIES];
 
-            if ($moduleCategories != false)
-            {
-                foreach ($moduleCategories as $category)
-                {
+            if ($moduleCategories != false) {
+                foreach ($moduleCategories as $category) {
                     /* index 3 is the user level required to assign this type of category. */
-                    if (!isset($category[3]) || $category[3] <= $this->_realAccessLevel)
-                    {
+                    if (! isset($category[3]) || $category[3] <= $this->_realAccessLevel) {
                         $categories[] = $category;
                     }
                 }
@@ -1119,7 +978,9 @@ class SettingsUI extends UserInterface
         $this->_template->assign('categories', $categories);
         $this->_template->assign('auth_mode', AUTH_MODE);
 
-        if (!eval(Hooks::get('SETTINGS_ADD_USER'))) return;
+        if (! eval(Hooks::get('SETTINGS_ADD_USER'))) {
+            return;
+        }
 
         $this->_template->display('./modules/settings/AddUser.tpl');
     }
@@ -1129,27 +990,25 @@ class SettingsUI extends UserInterface
      */
     private function onAddUser()
     {
-        if (AUTH_MODE == "ldap")
-        {
+        if (AUTH_MODE == "ldap") {
             /* LDAP users are not allowed to be created in DB manualy */
             return;
         }
 
-        $firstName      = $this->getSanitisedInput('firstName', $_POST);
-        $lastName       = $this->getSanitisedInput('lastName', $_POST);
-        $email          = $this->getSanitisedInput('email', $_POST);
-        $username       = $this->getSanitisedInput('username', $_POST);
-        $accessLevel    = $this->getTrimmedInput('accessLevel', $_POST);
-        $password       = $this->getTrimmedInput('password', $_POST);
+        $firstName = $this->getSanitisedInput('firstName', $_POST);
+        $lastName = $this->getSanitisedInput('lastName', $_POST);
+        $email = $this->getSanitisedInput('email', $_POST);
+        $username = $this->getSanitisedInput('username', $_POST);
+        $accessLevel = $this->getTrimmedInput('accessLevel', $_POST);
+        $password = $this->getTrimmedInput('password', $_POST);
         $retypePassword = $this->getTrimmedInput('retypePassword', $_POST);
-        $role           = $this->getTrimmedInput('role', $_POST);
-        $eeoIsVisible   = $this->isChecked('eeoIsVisible', $_POST);
+        $role = $this->getTrimmedInput('role', $_POST);
+        $eeoIsVisible = $this->isChecked('eeoIsVisible', $_POST);
 
         $users = new Users($this->_siteID);
         $license = $users->getLicenseData();
 
-        if (!$license['canAdd'] && $accessLevel > ACCESS_LEVEL_READ)
-        {
+        if (! $license['canAdd'] && $accessLevel > ACCESS_LEVEL_READ) {
             // FIXME: Shouldn't be a fatal, should go to ugprade
             $this->fatal(
                 'You have no remaining user account allotments. Please upgrade your license or disable another user.'
@@ -1158,55 +1017,51 @@ class SettingsUI extends UserInterface
 
         /* Bail out if any of the required fields are empty. */
         if (empty($firstName) || empty($lastName) || empty($username) ||
-            empty($accessLevel) || empty($password) || empty($retypePassword))
-        {
+            empty($accessLevel) || empty($password) || empty($retypePassword)) {
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
         }
 
         /* Bail out if the two passwords don't match. */
-        if ($password !== $retypePassword)
-        {
+        if ($password !== $retypePassword) {
             CommonErrors::fatal(COMMONERROR_NOPASSWORDMATCH, $this, 'Passwords do not match.');
         }
 
         /* If adding an e-mail username, verify it is a valid e-mail. */
-        if (strpos($username, '@') !== false && filter_var($username, FILTER_VALIDATE_EMAIL) === false)
-        {
+        if (strpos($username, '@') !== false && filter_var($username, FILTER_VALIDATE_EMAIL) === false) {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Username is in improper format for an E-Mail address.');
         }
 
         /* Make it a multisite user name if the user is part of a hosted site. */
         $unixName = $_SESSION['CATS']->getUnixName();
-        if (strpos($username, '@') === false && !empty($unixName))
-        {
-           $username .= '@' . $_SESSION['CATS']->getSiteID();
+        if (strpos($username, '@') === false && ! empty($unixName)) {
+            $username .= '@' . $_SESSION['CATS']->getSiteID();
         }
 
         /* Bail out if the specified username already exists. */
-        if ($users->usernameExists($username))
-        {
+        if ($users->usernameExists($username)) {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'The specified username already exists.');
         }
 
         $userID = $users->add(
-            $lastName, $firstName, $email, $username, $password, $accessLevel, $eeoIsVisible
+            $lastName,
+            $firstName,
+            $email,
+            $username,
+            $password,
+            $accessLevel,
+            $eeoIsVisible
         );
 
         /* Check role (category) to make sure that the role is allowed to be set. */
         $modules = ModuleUtility::getModules();
-        foreach ($modules as $moduleName => $parameters)
-        {
+        foreach ($modules as $moduleName => $parameters) {
             $moduleCategories = $parameters[MODULE_SETTINGS_USER_CATEGORIES];
 
-            if ($moduleCategories != false)
-            {
-                foreach ($moduleCategories as $category)
-                {
-                    if ($category[1] == $role)
-                    {
+            if ($moduleCategories != false) {
+                foreach ($moduleCategories as $category) {
+                    if ($category[1] == $role) {
                         /* index 3 is the user level required to assign this type of category. */
-                        if (!isset($category[3]) || $category[3] <= $this->_realAccessLevel)
-                        {
+                        if (! isset($category[3]) || $category[3] <= $this->_realAccessLevel) {
                             /* Set this category. */
                             $users->updateCategories($userID, $role);
                         }
@@ -1215,12 +1070,13 @@ class SettingsUI extends UserInterface
             }
         }
 
-        if ($userID <= 0)
-        {
+        if ($userID <= 0) {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add user.');
         }
 
-        if (!eval(Hooks::get('SETTINGS_ON_ADD_USER'))) return;
+        if (! eval(Hooks::get('SETTINGS_ON_ADD_USER'))) {
+            return;
+        }
 
         CATSUtility::transferRelativeURI(
             'm=settings&a=showUser&userID=' . $userID
@@ -1233,8 +1089,7 @@ class SettingsUI extends UserInterface
     private function editUser()
     {
         /* Bail out if we don't have a valid user ID. */
-        if (!$this->isRequiredIDValid('userID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('userID', $_GET)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid user ID.');
         }
 
@@ -1245,23 +1100,17 @@ class SettingsUI extends UserInterface
         $accessLevels = $users->getAccessLevels();
         $data = $users->get($userID);
 
-        if (empty($data))
-        {
+        if (empty($data)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'No user found with that ID.');
         }
 
-        if ($this->_userID == $userID)
-        {
+        if ($this->_userID == $userID) {
             $disableAccessChange = true;
             $cannotEnableMessage = false;
-        }
-        else if (($data['accessLevel'] <= ACCESS_LEVEL_READ) && ($license['diff'] < 1) && ($license['userLicenses'] != 0))
-        {
+        } elseif (($data['accessLevel'] <= ACCESS_LEVEL_READ) && ($license['diff'] < 1) && ($license['userLicenses'] != 0)) {
             $disableAccessChange = true;
             $cannotEnableMessage = true;
-        }
-        else
-        {
+        } else {
             $disableAccessChange = false;
             $cannotEnableMessage = false;
         }
@@ -1272,27 +1121,24 @@ class SettingsUI extends UserInterface
         $siteIDPosition = strpos($data['username'], '@' . $_SESSION['CATS']->getSiteID());
 
         if ($siteIDPosition !== false &&
-            substr($data['username'], $siteIDPosition) == '@' . $_SESSION['CATS']->getSiteID())
-        {
-           $data['username'] = str_replace(
-               '@' . $_SESSION['CATS']->getSiteID(), '', $data['username']
-           );
+            substr($data['username'], $siteIDPosition) == '@' . $_SESSION['CATS']->getSiteID()) {
+            $data['username'] = str_replace(
+                '@' . $_SESSION['CATS']->getSiteID(),
+                '',
+                $data['username']
+            );
         }
 
         /* Get user categories, if any. */
         $modules = ModuleUtility::getModules();
-        $categories = array();
-        foreach ($modules as $moduleName => $parameters)
-        {
+        $categories = [];
+        foreach ($modules as $moduleName => $parameters) {
             $moduleCategories = $parameters[MODULE_SETTINGS_USER_CATEGORIES];
 
-            if ($moduleCategories != false)
-            {
-                foreach ($moduleCategories as $category)
-                {
+            if ($moduleCategories != false) {
+                foreach ($moduleCategories as $category) {
                     /* index 3 is the user level required to assign this type of category. */
-                    if (!isset($category[3]) || $category[3] <= $this->_realAccessLevel)
-                    {
+                    if (! isset($category[3]) || $category[3] <= $this->_realAccessLevel) {
                         $categories[] = $category;
                     }
                 }
@@ -1323,90 +1169,83 @@ class SettingsUI extends UserInterface
     private function onEditUser()
     {
         /* Bail out if we don't have a valid user ID. */
-        if (!$this->isRequiredIDValid('userID', $_POST))
-        {
+        if (! $this->isRequiredIDValid('userID', $_POST)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid user ID.');
         }
 
-        if ($this->isRequiredIDValid('accessLevel', $_POST, true))
-        {
+        if ($this->isRequiredIDValid('accessLevel', $_POST, true)) {
             $accessLevel = $_POST['accessLevel'];
-        }
-        else
-        {
+        } else {
             $accessLevel = -1;
         }
 
         $userID = $_POST['userID'];
 
-        $firstName   = $this->getSanitisedInput('firstName', $_POST);
-        $lastName    = $this->getSanitisedInput('lastName', $_POST);
-        $email       = $this->getSanitisedInput('email', $_POST);
-        $username    = $this->getSanitisedInput('username', $_POST);
-        $password1   = $this->getTrimmedInput('password1', $_POST);
-        $password2   = $this->getTrimmedInput('password2', $_POST);
+        $firstName = $this->getSanitisedInput('firstName', $_POST);
+        $lastName = $this->getSanitisedInput('lastName', $_POST);
+        $email = $this->getSanitisedInput('email', $_POST);
+        $username = $this->getSanitisedInput('username', $_POST);
+        $password1 = $this->getTrimmedInput('password1', $_POST);
+        $password2 = $this->getTrimmedInput('password2', $_POST);
         $passwordRst = $this->getTrimmedInput('passwordIsReset', $_POST);
-        $role        = $this->getTrimmedInput('role', $_POST);
-        $eeoIsVisible   = $this->isChecked('eeoIsVisible', $_POST);
+        $role = $this->getTrimmedInput('role', $_POST);
+        $eeoIsVisible = $this->isChecked('eeoIsVisible', $_POST);
 
         /* Bail out if any of the required fields are empty. */
-        if (empty($firstName) || empty($lastName) || empty($username))
-        {
+        if (empty($firstName) || empty($lastName) || empty($username)) {
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'First name, last name and username are required.');
         }
 
         /* Bail out if reseting password to null. */
-        if (trim($password1) == '' && $passwordRst == 1)
-        {
+        if (trim($password1) == '' && $passwordRst == 1) {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Cannot set a blank password.');
         }
 
         /* Bail out if the two passwords don't match. */
-        if ($password1 !== $password2)
-        {
+        if ($password1 !== $password2) {
             CommonErrors::fatal(COMMONERROR_NOPASSWORDMATCH, $this, 'Passwords do not match.');
         }
 
         /* Don't allow access level changes to the currently logged-in user's
          * account.
          */
-        if ($userID == $this->_userID)
-        {
+        if ($userID == $this->_userID) {
             $accessLevel = $this->_realAccessLevel;
         }
 
         /* If adding an e-mail username, verify it is a valid e-mail. */
         // FIXME: PREG!
-        if (strpos($username, '@') !== false && filter_var($username, FILTER_VALIDATE_EMAIL) === false)
-        {
+        if (strpos($username, '@') !== false && filter_var($username, FILTER_VALIDATE_EMAIL) === false) {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Username is in improper format for an E-Mail address.');
         }
 
         /* Make it a multisite user name if the user is part of a hosted site. */
         $unixName = $_SESSION['CATS']->getUnixName();
-        if (strpos($username, '@') === false && !empty($unixName))
-        {
-           $username .= '@' . $_SESSION['CATS']->getSiteID();
+        if (strpos($username, '@') === false && ! empty($unixName)) {
+            $username .= '@' . $_SESSION['CATS']->getSiteID();
         }
 
         $users = new Users($this->_siteID);
 
-        if (!$users->update($userID, $lastName, $firstName, $email, $username,
-            $accessLevel, $eeoIsVisible))
-        {
+        if (! $users->update(
+            $userID,
+            $lastName,
+            $firstName,
+            $email,
+            $username,
+            $accessLevel,
+            $eeoIsVisible
+        )) {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update user.');
         }
 
-        if (trim($password1) !== '')
-        {
+        if (trim($password1) !== '') {
             /* Bail out if the password is 'cats'. */
-            if ($password1 == 'cats')
-            {
+            if ($password1 == 'cats') {
                 CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'New password can not equal \'cats\'.');
             }
 
-            if (!$users->resetPassword($userID, $password1))
-            {
+            if (! $users->resetPassword($userID, $password1)) {
                 CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to reset password.');
             }
         }
@@ -1414,19 +1253,14 @@ class SettingsUI extends UserInterface
         /* Set categories. */
         $modules = ModuleUtility::getModules();
         $users->updateCategories($userID, '');
-        foreach ($modules as $moduleName => $parameters)
-        {
+        foreach ($modules as $moduleName => $parameters) {
             $moduleCategories = $parameters[MODULE_SETTINGS_USER_CATEGORIES];
 
-            if ($moduleCategories != false)
-            {
-                foreach ($moduleCategories as $category)
-                {
-                    if ($category[1] == $role)
-                    {
-                       /* index 3 is the user level required to assign this type of category. */
-                        if (!isset($category[3]) || $category[3] <= $this->_realAccessLevel)
-                        {
+            if ($moduleCategories != false) {
+                foreach ($moduleCategories as $category) {
+                    if ($category[1] == $role) {
+                        /* index 3 is the user level required to assign this type of category. */
+                        if (! isset($category[3]) || $category[3] <= $this->_realAccessLevel) {
                             /* Set this category. */
                             $users->updateCategories($userID, $role);
                         }
@@ -1449,14 +1283,12 @@ class SettingsUI extends UserInterface
     private function onDeleteUser()
     {
         /* Bail out if we don't have a valid user ID. */
-        if (!$this->isRequiredIDValid('userID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('userID', $_GET)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid user ID.');
         }
 
         /* Keep users other than the automated tester from trying this. */
-        if (!$this->isRequiredIDValid('iAmTheAutomatedTester', $_GET))
-        {
+        if (! $this->isRequiredIDValid('iAmTheAutomatedTester', $_GET)) {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You are not the automated tester.');
         }
 
@@ -1504,18 +1336,15 @@ class SettingsUI extends UserInterface
         $extraFieldsMaintScript = $this->getTrimmedInput('commandList', $_POST);
         $extraFieldsMaintScriptArray = explode(',', $extraFieldsMaintScript);
 
-        foreach($extraFieldsMaintScriptArray as $index => $commandEncoded)
-        {
+        foreach ($extraFieldsMaintScriptArray as $index => $commandEncoded) {
             $command = urldecode($commandEncoded);
             $args = explode(' ', $command);
 
-            if (!isset($args[0]))
-            {
+            if (! isset($args[0])) {
                 continue;
             }
 
-            switch ($args[0])
-            {
+            switch ($args[0]) {
                 case 'ADDFIELD':
                     $args = explode(' ', $command, 4);
                     $extraFields = new ExtraFields($this->_siteID, intval($args[1]));
@@ -1571,7 +1400,9 @@ class SettingsUI extends UserInterface
         $emailTemplates = new EmailTemplates($this->_siteID);
         $emailTemplatesRS = $emailTemplates->getAll();
 
-        if (!eval(Hooks::get('SETTINGS_EMAIL_TEMPLATES'))) return;
+        if (! eval(Hooks::get('SETTINGS_EMAIL_TEMPLATES'))) {
+            return;
+        }
 
         $this->_template->assign('active', $this);
         $this->_template->assign('subActive', 'Administration');
@@ -1582,42 +1413,33 @@ class SettingsUI extends UserInterface
     //FIXME: Document me.
     private function onEmailTemplates()
     {
-        if (!$this->isRequiredIDValid('templateID', $_POST))
-        {
+        if (! $this->isRequiredIDValid('templateID', $_POST)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid template ID.');
         }
 
-        if (!isset($_POST['templateID']))
-        {
+        if (! isset($_POST['templateID'])) {
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
         }
 
         $templateID = $_POST['templateID'];
-        
-        if(isset($_POST['emailTemplateTitle']))
-        {
-             $templateTitle = $_POST['emailTemplateTitle'];
+
+        if (isset($_POST['emailTemplateTitle'])) {
+            $templateTitle = $_POST['emailTemplateTitle'];
+        } else {
+            $templateTitle = "";
         }
-        else
-        {
-             $templateTitle = "";
-        }
-        
+
         $useThisTemplate = isset($_POST['useThisTemplate']);
 
-        if ($useThisTemplate)
-        {
+        if ($useThisTemplate) {
             $text = $this->getTrimmedInput('messageText', $_POST);
             $disabled = 0;
-        }
-        else
-        {
+        } else {
             $text = $this->getTrimmedInput('messageTextOrigional', $_POST);
             $disabled = 1;
         }
 
-        if (!isset($_POST['templateID']))
-        {
+        if (! isset($_POST['templateID'])) {
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
         }
 
@@ -1657,45 +1479,36 @@ class SettingsUI extends UserInterface
     private function careerPortalTemplateEdit()
     {
         $templateName = $this->getTrimmedInput('templateName', $_GET);
-        if (empty($templateName))
-        {
+        if (empty($templateName)) {
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
         }
 
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
 
         $templateSource = $careerPortalSettings->getAllFromCustomTemplate($templateName);
-        if (empty($templateSource))
-        {
+        if (empty($templateSource)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'No custom template with that name exists.');
         }
 
-        $templateBySetting = array();
-        foreach ($templateSource as $templateLine)
-        {
+        $templateBySetting = [];
+        foreach ($templateSource as $templateLine) {
             $templateBySetting[$templateLine['setting']] = $templateLine['value'];
         }
 
         /* Arrange the array entries in a way that makes sense. */
         $desiredOrder = $careerPortalSettings->requiredTemplateFields;
 
-        $template = array();
-        foreach ($desiredOrder as $item)
-        {
-            if (isset($templateBySetting[$item]))
-            {
+        $template = [];
+        foreach ($desiredOrder as $item) {
+            if (isset($templateBySetting[$item])) {
                 $template[$item] = $templateBySetting[$item];
-            }
-            else
-            {
+            } else {
                 $template[$item] = '';
             }
         }
 
-        foreach ($templateBySetting as $item => $value)
-        {
-            if (!isset($template[$item]) && $item != '')
-            {
+        foreach ($templateBySetting as $item => $value) {
+            if (! isset($template[$item]) && $item != '') {
                 $template[$item] = $templateBySetting[$item];
             }
         }
@@ -1727,8 +1540,7 @@ class SettingsUI extends UserInterface
     private function onCareerPortalTemplateEdit()
     {
         $templateName = $this->getTrimmedInput('templateName', $_POST);
-        if (empty($templateName) || !isset($_POST['continueEdit']))
-        {
+        if (empty($templateName) || ! isset($_POST['continueEdit'])) {
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
         }
 
@@ -1739,10 +1551,8 @@ class SettingsUI extends UserInterface
         $templateSource = $careerPortalSettings->getAllFromCustomTemplate($templateName);
 
         // FIXME: Document this md5() stuff.
-        foreach ($templateSource as $templateLine)
-        {
-            if ($templateLine['setting'] != '')
-            {
+        foreach ($templateSource as $templateLine) {
+            if ($templateLine['setting'] != '') {
                 $careerPortalSettings->setForTemplate(
                     $templateLine['setting'],
                     $_POST[md5($templateLine['setting'])],
@@ -1751,10 +1561,8 @@ class SettingsUI extends UserInterface
             }
         }
 
-        foreach ($careerPortalSettings->requiredTemplateFields as $field)
-        {
-            if ($field != '' && isset($_POST[md5($field)]))
-            {
+        foreach ($careerPortalSettings->requiredTemplateFields as $field) {
+            if ($field != '' && isset($_POST[md5($field)])) {
                 $careerPortalSettings->setForTemplate(
                     $field,
                     $_POST[md5($field)],
@@ -1763,14 +1571,11 @@ class SettingsUI extends UserInterface
             }
         }
 
-        if ($continueEdit == '1')
-        {
+        if ($continueEdit == '1') {
             CATSUtility::transferRelativeURI(
                 'm=settings&a=careerPortalTemplateEdit&templateName=' . urlencode($templateName)
             );
-        }
-        else
-        {
+        } else {
             CATSUtility::transferRelativeURI(
                 'm=settings&a=careerPortalSettings&templateName=' . urlencode($templateName)
             );
@@ -1789,7 +1594,9 @@ class SettingsUI extends UserInterface
 
         $careerPortalURL = CATSUtility::getAbsoluteURI() . 'careers/';
 
-        if (!eval(Hooks::get('SETTINGS_CAREER_PORTAL'))) return;
+        if (! eval(Hooks::get('SETTINGS_CAREER_PORTAL'))) {
+            return;
+        }
 
         $questionnaires = new Questionnaire($this->_siteID);
         $data = $questionnaires->getAll(true);
@@ -1811,76 +1618,46 @@ class SettingsUI extends UserInterface
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
         $careerPortalSettingsRS = $careerPortalSettings->getAll();
 
-        foreach ($careerPortalSettingsRS as $setting => $value)
-        {
+        foreach ($careerPortalSettingsRS as $setting => $value) {
             eval(Hooks::get('XML_FEED_SUBMISSION_SETTINGS_BODY'));
-            if ($setting == 'enabled')
-            {
-                if ($this->isChecked($setting, $_POST))
-                {
+            if ($setting == 'enabled') {
+                if ($this->isChecked($setting, $_POST)) {
                     $careerPortalSettings->set($setting, '1');
-                    if($value != '1')
-                    {
+                    if ($value != '1') {
+                        CATSUtility::transferRelativeURI('m=settings&a=careerPortalSettings');
+                    }
+                } else {
+                    $careerPortalSettings->set($setting, '0');
+                    if ($value != '0') {
                         CATSUtility::transferRelativeURI('m=settings&a=careerPortalSettings');
                     }
                 }
-                else
-                {
-                    $careerPortalSettings->set($setting, '0');
-                    if($value != '0')
-                    {
-                        CATSUtility::transferRelativeURI('m=settings&a=careerPortalSettings');
-                    }
-                }
-            }
-            else if ($setting == 'allowBrowse')
-            {
-                if ($this->isChecked($setting, $_POST))
-                {
+            } elseif ($setting == 'allowBrowse') {
+                if ($this->isChecked($setting, $_POST)) {
                     $careerPortalSettings->set($setting, '1');
-                }
-                else
-                {
+                } else {
                     $careerPortalSettings->set($setting, '0');
                 }
-            }
-            else if ($setting == 'candidateRegistration')
-            {
-                if ($this->isChecked($setting, $_POST))
-                {
+            } elseif ($setting == 'candidateRegistration') {
+                if ($this->isChecked($setting, $_POST)) {
                     $careerPortalSettings->set($setting, '1');
-                }
-                else
-                {
+                } else {
                     $careerPortalSettings->set($setting, '0');
                 }
-            }
-            else if ($setting == 'showDepartment')
-            {
-                if ($this->isChecked($setting, $_POST))
-                {
+            } elseif ($setting == 'showDepartment') {
+                if ($this->isChecked($setting, $_POST)) {
                     $careerPortalSettings->set($setting, '1');
-                }
-                else
-                {
+                } else {
                     $careerPortalSettings->set($setting, '0');
                 }
-            }
-            else if ($setting == 'showCompany')
-            {
-                if ($this->isChecked($setting, $_POST))
-                {
+            } elseif ($setting == 'showCompany') {
+                if ($this->isChecked($setting, $_POST)) {
                     $careerPortalSettings->set($setting, '1');
-                }
-                else
-                {
+                } else {
                     $careerPortalSettings->set($setting, '0');
                 }
-            }
-            else
-            {
-                if (isset($_POST[$setting]))
-                {
+            } else {
+                if (isset($_POST[$setting])) {
                     $careerPortalSettings->set($setting, $_POST[$setting]);
                 }
             }
@@ -1891,8 +1668,7 @@ class SettingsUI extends UserInterface
 
     private function onCareerPortalTweak()
     {
-        if (!isset($_GET['p']))
-        {
+        if (! isset($_GET['p'])) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid page.');
         }
 
@@ -1900,8 +1676,7 @@ class SettingsUI extends UserInterface
 
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
 
-        switch ($page)
-        {
+        switch ($page) {
             case 'new':
                 $origName = 'Blank Page';
                 $duplicateName = $this->getTrimmedInput('newName', $_POST);
@@ -1912,8 +1687,7 @@ class SettingsUI extends UserInterface
 
                 $templateSource = array_merge($templateSource1, $templateSource2);
 
-                foreach ($templateSource as $setting)
-                {
+                foreach ($templateSource as $setting) {
                     $careerPortalSettings->setForTemplate(
                         $setting['setting'],
                         $setting['value'],
@@ -1923,11 +1697,10 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'duplicate':
-                $origName      = $this->getTrimmedInput('origName', $_POST);
+                $origName = $this->getTrimmedInput('origName', $_POST);
                 $duplicateName = $this->getTrimmedInput('duplicateName', $_POST);
 
-                if (empty($origName) || empty($duplicateName))
-                {
+                if (empty($origName) || empty($duplicateName)) {
                     CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
                 }
 
@@ -1937,8 +1710,7 @@ class SettingsUI extends UserInterface
 
                 $templateSource = array_merge($templateSource1, $templateSource2);
 
-                foreach ($templateSource as $setting)
-                {
+                foreach ($templateSource as $setting) {
                     $careerPortalSettings->setForTemplate(
                         $setting['setting'],
                         $setting['value'],
@@ -1984,14 +1756,10 @@ class SettingsUI extends UserInterface
         $EEOSettings = new EEOSettings($this->_siteID);
         $EEOSettingsRS = $EEOSettings->getAll();
 
-        foreach ($EEOSettingsRS as $setting => $value)
-        {
-            if ($this->isChecked($setting, $_POST))
-            {
+        foreach ($EEOSettingsRS as $setting => $value) {
+            if ($this->isChecked($setting, $_POST)) {
                 $EEOSettings->set($setting, '1');
-            }
-            else
-            {
+            } else {
                 $EEOSettings->set($setting, '0');
             }
         }
@@ -2029,10 +1797,8 @@ class SettingsUI extends UserInterface
         $mailerSettings = new MailerSettings($this->_siteID);
         $mailerSettingsRS = $mailerSettings->getAll();
 
-        foreach ($mailerSettingsRS as $setting => $value)
-        {
-            if (isset($_POST[$setting]))
-            {
+        foreach ($mailerSettingsRS as $setting => $value) {
+            if (isset($_POST[$setting])) {
                 $mailerSettings->set($setting, $_POST[$setting]);
             }
         }
@@ -2053,9 +1819,8 @@ class SettingsUI extends UserInterface
         $emailTemplates = new EmailTemplates($this->_siteID);
         $emailTemplatesRS = $emailTemplates->getAll();
 
-        foreach ($emailTemplatesRS as $index => $data)
-        {
-            $emailTemplates->updateIsActive($data['emailTemplateID'], (UserInterface::isChecked('useThisTemplate'.$data['emailTemplateID'], $_POST) ? 0 : 1));
+        foreach ($emailTemplatesRS as $index => $data) {
+            $emailTemplates->updateIsActive($data['emailTemplateID'], (UserInterface::isChecked('useThisTemplate' . $data['emailTemplateID'], $_POST) ? 0 : 1));
         }
 
         $this->_template->assign('active', $this);
@@ -2076,7 +1841,6 @@ class SettingsUI extends UserInterface
         $this->_template->display('./modules/settings/CustomizeCalendar.tpl');
     }
 
-
     /*
      * Called by handleRequest() to process the customize calendar template.
      */
@@ -2085,23 +1849,15 @@ class SettingsUI extends UserInterface
         $calendarSettings = new CalendarSettings($this->_siteID);
         $calendarSettingsRS = $calendarSettings->getAll();
 
-        foreach ($calendarSettingsRS as $setting => $value)
-        {
-            if ($setting == 'noAjax' || $setting == 'defaultPublic' || $setting == 'firstDayMonday')
-            {
-                if ($this->isChecked($setting, $_POST))
-                {
+        foreach ($calendarSettingsRS as $setting => $value) {
+            if ($setting == 'noAjax' || $setting == 'defaultPublic' || $setting == 'firstDayMonday') {
+                if ($this->isChecked($setting, $_POST)) {
                     $calendarSettings->set($setting, '1');
-                }
-                else
-                {
+                } else {
                     $calendarSettings->set($setting, '0');
                 }
-            }
-            else
-            {
-                if (isset($_POST[$setting]))
-                {
+            } else {
+                if (isset($_POST[$setting])) {
                     $calendarSettings->set($setting, $_POST[$setting]);
                 }
             }
@@ -2161,13 +1917,15 @@ class SettingsUI extends UserInterface
         /* Attachments */
         $attachments = new Attachments(CATS_ADMIN_SITE);
         $attachmentsRS = $attachments->getAll(
-            DATA_ITEM_COMPANY, $_SESSION['CATS']->getSiteCompanyID()
+            DATA_ITEM_COMPANY,
+            $_SESSION['CATS']->getSiteCompanyID()
         );
 
-        foreach ($attachmentsRS as $index => $data)
-        {
+        foreach ($attachmentsRS as $index => $data) {
             $attachmentsRS[$index]['fileSize'] = FileUtility::sizeToHuman(
-                filesize($data['retrievalURLLocal']), 2, 1
+                filesize($data['retrievalURLLocal']),
+                2,
+                1
             );
         }
 
@@ -2204,14 +1962,11 @@ class SettingsUI extends UserInterface
     {
         $emailAddress = $this->getTrimmedInput('siteName', $_POST);
 
-        if (empty($emailAddress))
-        {
+        if (empty($emailAddress)) {
             $this->_template->assign('message', 'Please enter an e-mail address.');
             $this->_template->assign('messageSuccess', false);
             $this->forceEmail();
-        }
-        else
-        {
+        } else {
             $site = new Users($this->_siteID);
             $site->updateSelfEmail($this->_userID, $emailAddress);
 
@@ -2237,12 +1992,9 @@ class SettingsUI extends UserInterface
         $this->_template->assign('title', 'Settings Saved');
 
         if ($mailerSettingsRS['configured'] == '0' &&
-            $accessLevel >= ACCESS_LEVEL_SA)
-        {
+            $accessLevel >= ACCESS_LEVEL_SA) {
             $this->_template->assign('prompt', 'Your site name has been saved. This concludes the required CATS configuration wizard.<BR><BR><span style="font-weight: bold;">Warning:</span><BR><BR> E-mail features are disabled. In order to enable e-mail features (such as e-mail notifications), please configure your e-mail settings by clicking on the Settings tab and then clicking on Administration.');
-        }
-        else
-        {
+        } else {
             $this->_template->assign('prompt', 'Your site name has been saved. This concludes the required CATS configuration wizard.');
         }
 
@@ -2268,35 +2020,28 @@ class SettingsUI extends UserInterface
         );
 
         /* Bail out if the two passwords don't match. */
-        if ($retypeNewPassword !== $newPassword)
-        {
+        if ($retypeNewPassword !== $newPassword) {
             $error = 'New passwords do not match.';
         }
 
         /* Bail out if the password is 'cats'. */
-        if ($newPassword == 'cats')
-        {
+        if ($newPassword == 'cats') {
             $error = 'New password cannot equal \'cats\'.';
         }
 
         /* Attempt to change the user's password. */
-        if (!$error)
-        {
+        if (! $error) {
             $users = new Users($this->_siteID);
-            if ($users->changePassword($this->_userID, 'cats', $newPassword) != LOGIN_SUCCESS)
-            {
+            if ($users->changePassword($this->_userID, 'cats', $newPassword) != LOGIN_SUCCESS) {
                 $error = 'Unable to reset password.';
             }
         }
 
-        if ($error)
-        {
+        if ($error) {
             $this->_template->assign('message', $error);
             $this->_template->assign('messageSuccess', false);
             $this->newInstallPassword();
-        }
-        else
-        {
+        } else {
             CATSUtility::transferRelativeURI('m=settings&a=newSiteName');
         }
     }
@@ -2305,21 +2050,32 @@ class SettingsUI extends UserInterface
     {
         $newSiteName = $this->getTrimmedInput('siteName', $_POST);
 
-        if (empty($newSiteName) || $newSiteName === 'default_site')
-        {
+        if (empty($newSiteName) || $newSiteName === 'default_site') {
             $this->_template->assign('message', "Please enter a site name.");
             $this->_template->assign('messageSuccess', false);
             $this->upgradeSiteName();
-        }
-        else
-        {
+        } else {
             $site = new Site($this->_siteID);
             $site->setName($newSiteName);
 
             $companies = new Companies($this->_siteID);
             $companyIDInternal = $companies->add(
-                'Internal Postings', '', '', '', '', '', '', '', '', '', '',
-                '', '', 'Internal postings.', $this->_userID, $this->_userID
+                'Internal Postings',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                'Internal postings.',
+                $this->_userID,
+                $this->_userID
             );
 
             $companies->setCompanyDefault($companyIDInternal);
@@ -2327,12 +2083,9 @@ class SettingsUI extends UserInterface
             $_SESSION['CATS']->setSiteName($newSiteName);
 
             /* If no E-Mail set for current user, make user set E-Mail address. */
-            if (trim($_SESSION['CATS']->getEmail()) == '')
-            {
+            if (trim($_SESSION['CATS']->getEmail()) == '') {
                 CATSUtility::transferRelativeURI('m=settings&a=forceEmail');
-            }
-            else
-            {
+            } else {
                 CATSUtility::transferRelativeURI('m=settings&a=newInstallFinished');
             }
         }
@@ -2351,45 +2104,33 @@ class SettingsUI extends UserInterface
         $systemInfo = new SystemInfo();
         $systemInfoData = $systemInfo->getSystemInfo();
 
-        if (isset($systemInfoData['available_version']) && $systemInfoData['available_version'] > CATSUtility::getVersionAsInteger())
-        {
+        if (isset($systemInfoData['available_version']) && $systemInfoData['available_version'] > CATSUtility::getVersionAsInteger()) {
             $newVersion = true;
-        }
-        else
-        {
+        } else {
             $newVersion = false;
         }
 
-        if (isset($systemInfoData['disable_version_check']) && $systemInfoData['disable_version_check'])
-        {
+        if (isset($systemInfoData['disable_version_check']) && $systemInfoData['disable_version_check']) {
             $versionCheckPref = false;
-        }
-        else
-        {
+        } else {
             $versionCheckPref = true;
         }
 
-        if ($this->getUserAccessLevel('settings.administration') >= ACCESS_LEVEL_ROOT || $this->getUserAccessLevel('settings.administration') == ACCESS_LEVEL_DEMO)
-        {
+        if ($this->getUserAccessLevel('settings.administration') >= ACCESS_LEVEL_ROOT || $this->getUserAccessLevel('settings.administration') == ACCESS_LEVEL_DEMO) {
             $systemAdministration = true;
-        }
-        else
-        {
+        } else {
             $systemAdministration = false;
         }
 
         // FIXME: 's' isn't a good variable name.
-        if (isset($_GET['s']))
-        {
-            switch($_GET['s'])
-            {
+        if (isset($_GET['s'])) {
+            switch ($_GET['s']) {
                 case 'siteName':
                     $templateFile = './modules/settings/SiteName.tpl';
                     break;
 
                 case 'newVersionCheck':
-                    if (!$systemAdministration)
-                    {
+                    if (! $systemAdministration) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                     }
 
@@ -2401,8 +2142,7 @@ class SettingsUI extends UserInterface
                     break;
 
                 case 'passwords':
-                    if (!$systemAdministration)
-                    {
+                    if (! $systemAdministration) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                     }
 
@@ -2410,8 +2150,7 @@ class SettingsUI extends UserInterface
                     break;
 
                 case 'localization':
-                    if ($this->getUserAccessLevel('settings.administration.localization') < ACCESS_LEVEL_SA)
-                    {
+                    if ($this->getUserAccessLevel('settings.administration.localization') < ACCESS_LEVEL_SA) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                     }
 
@@ -2421,8 +2160,7 @@ class SettingsUI extends UserInterface
                     break;
 
                 case 'systemInformation':
-                    if ($this->getUserAccessLevel('settings.administration.systemInformation') < ACCESS_LEVEL_SA)
-                    {
+                    if ($this->getUserAccessLevel('settings.administration.systemInformation') < ACCESS_LEVEL_SA) {
                         CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                     }
 
@@ -2431,16 +2169,11 @@ class SettingsUI extends UserInterface
 
                     $installationDirectory = realpath('./');
 
-                    if (SystemUtility::isWindows())
-                    {
+                    if (SystemUtility::isWindows()) {
                         $OSType = 'Windows';
-                    }
-                    else if (SystemUtility::isMacOSX())
-                    {
+                    } elseif (SystemUtility::isMacOSX()) {
                         $OSType = 'Mac OS X';
-                    }
-                    else
-                    {
+                    } else {
                         $OSType = 'UNIX';
                     }
 
@@ -2457,25 +2190,19 @@ class SettingsUI extends UserInterface
                     $templateFile = './modules/settings/Administration.tpl';
                     break;
             }
-        }
-        else
-        {
+        } else {
             $templateFile = './modules/settings/Administration.tpl';
 
             /* Load extra settings. */
-            $extraSettings = array();
+            $extraSettings = [];
 
             $modules = ModuleUtility::getModules();
-            foreach ($modules as $moduleName => $parameters)
-            {
+            foreach ($modules as $moduleName => $parameters) {
                 $extraSettingsModule = $parameters[MODULE_SETTINGS_ENTRIES];
 
-                if ($extraSettingsModule != false)
-                {
-                    foreach ($extraSettingsModule as $extraSettingsModuleData)
-                    {
-                        if ($extraSettingsModuleData[2] <= $this->_realAccessLevel)
-                        {
+                if ($extraSettingsModule != false) {
+                    foreach ($extraSettingsModule as $extraSettingsModuleData) {
+                        if ($extraSettingsModuleData[2] <= $this->_realAccessLevel) {
                             $extraSettings[] = $extraSettingsModuleData;
                         }
                     }
@@ -2484,22 +2211,22 @@ class SettingsUI extends UserInterface
             $this->_template->assign('extraSettings', $extraSettings);
         }
 
-        if (!strcmp($templateFile, './modules/settings/Administration.tpl'))
-        {
+        if (! strcmp($templateFile, './modules/settings/Administration.tpl')) {
             // Highlight certain rows of importance based on criteria
             $candidates = new Candidates($this->_siteID);
             $this->_template->assign('totalCandidates', $candidates->getCount());
         }
 
-        if (!eval(Hooks::get('SETTINGS_DISPLAY_ADMINISTRATION'))) return;
+        if (! eval(Hooks::get('SETTINGS_DISPLAY_ADMINISTRATION'))) {
+            return;
+        }
 
         /* Check if careers website is enabled or can be enabled */
         $careerPortalUnlock = false;
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
         $cpData = $careerPortalSettings->getAll();
-        if (intval($cpData['enabled']) || !$_SESSION['CATS']->isFree() ||
-            LicenseUtility::isProfessional())
-        {
+        if (intval($cpData['enabled']) || ! $_SESSION['CATS']->isFree() ||
+            LicenseUtility::isProfessional()) {
             $careerPortalUnlock = true;
         }
 
@@ -2520,11 +2247,9 @@ class SettingsUI extends UserInterface
             $_POST
         );
 
-        switch ($administrationMode)
-        {
+        switch ($administrationMode) {
             case 'changeSiteName':
-                if ($this->getUserAccessLevel('settings.administration.changeSiteName') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.administration.changeSiteName') < ACCESS_LEVEL_SA) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                 }
                 $siteName = $this->getTrimmedInput(
@@ -2532,8 +2257,7 @@ class SettingsUI extends UserInterface
                     $_POST
                 );
 
-                if (empty($siteName))
-                {
+                if (empty($siteName)) {
                     CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
                 }
 
@@ -2542,8 +2266,7 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'changeVersionCheck':
-                if ($this->getUserAccessLevel('settings.administration.changeVersionName') < ACCESS_LEVEL_ROOT)
-                {
+                if ($this->getUserAccessLevel('settings.administration.changeVersionName') < ACCESS_LEVEL_ROOT) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                 }
 
@@ -2556,19 +2279,15 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'localization':
-                if ($this->getUserAccessLevel('settings.administration.localization') < ACCESS_LEVEL_SA)
-                {
+                if ($this->getUserAccessLevel('settings.administration.localization') < ACCESS_LEVEL_SA) {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for administration.');
                 }
                 //FIXME: Validation (escaped at lib level anyway)
                 $timeZone = $_POST['timeZone'];
                 $dateFormat = $_POST['dateFormat'];
-                if ($dateFormat == 'mdy')
-                {
+                if ($dateFormat == 'mdy') {
                     $isDMY = false;
-                }
-                else
-                {
+                } else {
                     $isDMY = true;
                 }
 
@@ -2578,7 +2297,7 @@ class SettingsUI extends UserInterface
                 $_SESSION['CATS']->logout();
                 unset($_SESSION['CATS']);
 
-                CATSUtility::transferRelativeURI('?m=settings&a=administration&messageSuccess=true&message='.urlencode('Localization settings saved!  Please log back in for the settings to take effect.'));
+                CATSUtility::transferRelativeURI('?m=settings&a=administration&messageSuccess=true&message=' . urlencode('Localization settings saved!  Please log back in for the settings to take effect.'));
                 break;
 
             default:
@@ -2596,12 +2315,9 @@ class SettingsUI extends UserInterface
 
         $timeZone = $_POST['timeZone'];
         $dateFormat = $_POST['dateFormat'];
-        if ($dateFormat == 'mdy')
-        {
+        if ($dateFormat == 'mdy') {
             $isDMY = false;
-        }
-        else
-        {
+        } else {
             $isDMY = true;
         }
 
@@ -2651,26 +2367,28 @@ class SettingsUI extends UserInterface
         $rs = $users->getAll();
         $license = $users->getLicenseData();
 
-        foreach ($rs as $rowIndex => $row)
-        {
+        foreach ($rs as $rowIndex => $row) {
             $rs[$rowIndex]['successfulDate'] = DateUtility::fixZeroDate(
-                $rs[$rowIndex]['successfulDate'], 'Never'
+                $rs[$rowIndex]['successfulDate'],
+                'Never'
             );
 
             $rs[$rowIndex]['unsuccessfulDate'] = DateUtility::fixZeroDate(
-                $rs[$rowIndex]['unsuccessfulDate'], 'Never'
+                $rs[$rowIndex]['unsuccessfulDate'],
+                'Never'
             );
 
             // FIXME: The last test here might be redundant.
             // FIXME: Put this in a private method. It is duplicated twice so far.
-            $siteIDPosition = strpos($row['username'], '@' .  $_SESSION['CATS']->getSiteID());
+            $siteIDPosition = strpos($row['username'], '@' . $_SESSION['CATS']->getSiteID());
 
             if ($siteIDPosition !== false &&
-                substr($row['username'], $siteIDPosition) == '@' . $_SESSION['CATS']->getSiteID())
-            {
-               $rs[$rowIndex]['username'] = str_replace(
-                   '@' . $_SESSION['CATS']->getSiteID(), '', $row['username']
-               );
+                substr($row['username'], $siteIDPosition) == '@' . $_SESSION['CATS']->getSiteID()) {
+                $rs[$rowIndex]['username'] = str_replace(
+                    '@' . $_SESSION['CATS']->getSiteID(),
+                    '',
+                    $row['username']
+                );
             }
         }
 
@@ -2684,30 +2402,37 @@ class SettingsUI extends UserInterface
     private function manageProfessional()
     {
         $wf = new WebForm();
-        $wf->addField('licenseKey', 'License Key', WFT_TEXT, true, 60, 30, 190, '', '/[A-Za-z0-9 ]+/',
-            'That is not a valid license key!');
+        $wf->addField(
+            'licenseKey',
+            'License Key',
+            WFT_TEXT,
+            true,
+            60,
+            30,
+            190,
+            '',
+            '/[A-Za-z0-9 ]+/',
+            'That is not a valid license key!'
+        );
         $message = '';
         $license = new License();
 
         $upgradeStatus = false;
 
-        if (isset($_GET['webFormPostBack']))
-        {
-            list ($fields, $errors) = $wf->getValidatedFields();
-            if (count($errors) > 0) $message = 'Please enter a license key in order to continue.';
+        if (isset($_GET['webFormPostBack'])) {
+            list($fields, $errors) = $wf->getValidatedFields();
+            if (count($errors) > 0) {
+                $message = 'Please enter a license key in order to continue.';
+            }
 
             $key = trim($fields['licenseKey']);
 
             $configWritten = false;
 
-            if ($license->setKey($key) === false)
-            {
+            if ($license->setKey($key) === false) {
                 $message = 'That is not a valid license key<br /><span style="font-size: 16px; color: #000000;">Please verify that you have the correct key and try again.</span>';
-            }
-            else if ($license->isProfessional())
-            {
-                if (!CATSUtility::isSOAPEnabled())
-                {
+            } elseif ($license->isProfessional()) {
+                if (! CATSUtility::isSOAPEnabled()) {
                     $message = 'CATS Professional requires the PHP SOAP library which isn\'t currently installed.<br /><br />'
                         . 'Installation Instructions:<br /><br />'
                         . 'WAMP/Windows Users:<dl>'
@@ -2720,24 +2445,17 @@ class SettingsUI extends UserInterface
                         . 'Re-install PHP with the --enable-soap configuration option.<br /><br />'
                         . 'Please visit http://www.catsone.com for more support options.';
                 }
-                if (!LicenseUtility::validateProfessionalKey($key))
-                {
+                if (! LicenseUtility::validateProfessionalKey($key)) {
                     $message = 'That is not a valid Professional membership key<br /><span style="font-size: 16px; color: #000000;">Please verify that you have the correct key and try again.</span>';
-                }
-                else if (!CATSUtility::changeConfigSetting('LICENSE_KEY', "'" . $key . "'"))
-                {
+                } elseif (! CATSUtility::changeConfigSetting('LICENSE_KEY', "'" . $key . "'")) {
                     $message = 'Internal Permissions Error<br /><span style="font-size: 12px; color: #000000;">CATS is unable '
                         . 'to write changes to your <b>config.php</b> file. Please change the file permissions or contact us '
                         . 'for support. Our support e-mail is <a href="mailto:support@catsone.com">support@catsone.com</a> '
                         . 'and our office number if (952) 417-0067.</span>';
-                }
-                else
-                {
+                } else {
                     $upgradeStatus = true;
                 }
-            }
-            else
-            {
+            } else {
                 $message = 'That is not a valid Professional membership key<br /><span style="font-size: 16px; color: #000000;">Please verify that you have the correct key and try again.</span>';
             }
         }
@@ -2757,9 +2475,8 @@ class SettingsUI extends UserInterface
     private function onChangePassword()
     {
         $users = new Users($this->_siteID);
-        if(AUTH_MODE == 'ldap' || AUTH_MODE == 'sql+ldap')
-        {
-            if($users->isUserLDAP($this->_userID)) {
+        if (AUTH_MODE == 'ldap' || AUTH_MODE == 'sql+ldap') {
+            if ($users->isUserLDAP($this->_userID)) {
                 $this->fatal(
                     'LDAP authentication is enabled. You are not allowed to change your password.'
                 );
@@ -2769,46 +2486,46 @@ class SettingsUI extends UserInterface
         $logout = false;
 
         $currentPassword = $this->getTrimmedInput(
-            'currentPassword', $_POST
+            'currentPassword',
+            $_POST
         );
         $newPassword = $this->getTrimmedInput(
-            'newPassword', $_POST
+            'newPassword',
+            $_POST
         );
         $retypeNewPassword = $this->getTrimmedInput(
-            'retypeNewPassword', $_POST
+            'retypeNewPassword',
+            $_POST
         );
 
         /* Bail out if we don't have a current password. */
-        if (empty($currentPassword))
-        {
+        if (empty($currentPassword)) {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid current password.');
         }
 
         /* Bail out if we don't have a new password. */
-        if (empty($newPassword))
-        {
+        if (empty($newPassword)) {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid new password.');
         }
 
         /* Bail out if we don't have a retyped new password. */
-        if (empty($retypeNewPassword))
-        {
+        if (empty($retypeNewPassword)) {
             CommonErrors::fatal(COMMONERROR_NOPASSWORDMATCH, $this, 'Invalid retyped new password.');
         }
 
         /* Bail out if the two passwords don't match. */
-        if ($retypeNewPassword !== $newPassword)
-        {
+        if ($retypeNewPassword !== $newPassword) {
             CommonErrors::fatal(COMMONERROR_NOPASSWORDMATCH, $this, 'Passwords do not match.');
         }
 
         /* Attempt to change the user's password. */
         $status = $users->changePassword(
-            $this->_userID, $currentPassword, $newPassword
+            $this->_userID,
+            $currentPassword,
+            $newPassword
         );
 
-        switch ($status)
-        {
+        switch ($status) {
             case LOGIN_INVALID_PASSWORD:
                 /* FIXME: No fatal()... we need a back button. */
                 $error[] = 'The password that you specified for "Current Password" is incorrect.';
@@ -2844,15 +2561,12 @@ class SettingsUI extends UserInterface
                 break;
         }
 
-        if ($logout)
-        {
+        if ($logout) {
             CATSUtility::transferRelativeURI(
                 'm=logout&message=' . urlencode($message) .
                 '&messageSuccess=' . urlencode($messageSuccess)
             );
-        }
-        else
-        {
+        } else {
             $isDemoUser = $_SESSION['CATS']->isDemo();
             $this->_template->assign('userID', $this->_userID);
             $this->_template->assign('isDemoUser', $isDemoUser);
@@ -2869,26 +2583,19 @@ class SettingsUI extends UserInterface
      */
     private function loginActivity()
     {
-        if (isset($_GET['view']) && !empty($_GET['view']))
-        {
+        if (isset($_GET['view']) && ! empty($_GET['view'])) {
             $view = $_GET['view'];
-        }
-        else
-        {
+        } else {
             $view = '';
         }
 
-        if ($this->isRequiredIDValid('page', $_GET))
-        {
+        if ($this->isRequiredIDValid('page', $_GET)) {
             $currentPage = $_GET['page'];
-        }
-        else
-        {
+        } else {
             $currentPage = 1;
         }
 
-        switch ($view)
-        {
+        switch ($view) {
             case 'unsuccessful':
                 $successful = false;
                 break;
@@ -2899,24 +2606,21 @@ class SettingsUI extends UserInterface
         }
 
         $loginActivityPager = new LoginActivityPager(
-            LOGIN_ENTRIES_PER_PAGE, $currentPage, $this->_siteID, $successful
+            LOGIN_ENTRIES_PER_PAGE,
+            $currentPage,
+            $this->_siteID,
+            $successful
         );
 
-        if ($loginActivityPager->isSortByValid('sortBy', $_GET))
-        {
+        if ($loginActivityPager->isSortByValid('sortBy', $_GET)) {
             $sortBy = $_GET['sortBy'];
-        }
-        else
-        {
+        } else {
             $sortBy = 'dateSort';
         }
 
-        if ($loginActivityPager->isSortDirectionValid('sortDirection', $_GET))
-        {
+        if ($loginActivityPager->isSortDirectionValid('sortDirection', $_GET)) {
             $sortDirection = $_GET['sortDirection'];
-        }
-        else
-        {
+        } else {
             $sortDirection = 'DESC';
         }
 
@@ -2926,8 +2630,8 @@ class SettingsUI extends UserInterface
             $sortDirection
         );
 
-        $currentPage       = $loginActivityPager->getCurrentPage();
-        $totalPages        = $loginActivityPager->getTotalPages();
+        $currentPage = $loginActivityPager->getCurrentPage();
+        $totalPages = $loginActivityPager->getTotalPages();
         $validSortByFields = $loginActivityPager->getSortByFields();
 
         $rs = $loginActivityPager->getPage();
@@ -2948,22 +2652,19 @@ class SettingsUI extends UserInterface
     private function viewItemHistory()
     {
         /* Bail out if we don't have a valid data item type. */
-        if (!$this->isRequiredIDValid('dataItemType', $_GET))
-        {
+        if (! $this->isRequiredIDValid('dataItemType', $_GET)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid data item type.');
         }
 
         /* Bail out if we don't have a valid data item ID. */
-        if (!$this->isRequiredIDValid('dataItemID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('dataItemID', $_GET)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid data item ID.');
         }
 
         $dataItemType = $_GET['dataItemType'];
-        $dataItemID   = $_GET['dataItemID'];
+        $dataItemID = $_GET['dataItemID'];
 
-        switch ($dataItemType)
-        {
+        switch ($dataItemType) {
             case DATA_ITEM_CANDIDATE:
                 $candidates = new Candidates($this->_siteID);
                 $data = $candidates->get($dataItemID);
@@ -3002,16 +2703,38 @@ class SettingsUI extends UserInterface
 
     private function wizard_addUser()
     {
-        if (isset($_GET[$id = 'firstName'])) $firstName = $_GET[$id]; else $firstName = '';
-        if (isset($_GET[$id = 'lastName'])) $lastName = $_GET[$id]; else $lastName = '';
-        if (isset($_GET[$id = 'password'])) $password = $_GET[$id]; else $password = '';
-        if (isset($_GET[$id = 'loginName'])) $loginName = $_GET[$id]; else $loginName = '';
-        if (isset($_GET[$id = 'email'])) $email = $_GET[$id]; else $email = '';
-        if (isset($_GET[$id = 'accessLevel']) && intval($_GET[$id]) < ACCESS_LEVEL_SA)
-            $accessLevel = intval($_GET[$id]); else $accessLevel = ACCESS_LEVEL_READ;
+        if (isset($_GET[$id = 'firstName'])) {
+            $firstName = $_GET[$id];
+        } else {
+            $firstName = '';
+        }
+        if (isset($_GET[$id = 'lastName'])) {
+            $lastName = $_GET[$id];
+        } else {
+            $lastName = '';
+        }
+        if (isset($_GET[$id = 'password'])) {
+            $password = $_GET[$id];
+        } else {
+            $password = '';
+        }
+        if (isset($_GET[$id = 'loginName'])) {
+            $loginName = $_GET[$id];
+        } else {
+            $loginName = '';
+        }
+        if (isset($_GET[$id = 'email'])) {
+            $email = $_GET[$id];
+        } else {
+            $email = '';
+        }
+        if (isset($_GET[$id = 'accessLevel']) && intval($_GET[$id]) < ACCESS_LEVEL_SA) {
+            $accessLevel = intval($_GET[$id]);
+        } else {
+            $accessLevel = ACCESS_LEVEL_READ;
+        }
 
-        if (strlen($firstName) < 2 || strlen($lastName) < 2 || strlen($loginName) < 2 || strlen($password) < 2)
-        {
+        if (strlen($firstName) < 2 || strlen($lastName) < 2 || strlen($loginName) < 2 || strlen($password) < 2) {
             echo 'First and last name are too short.';
             return;
         }
@@ -3019,40 +2742,33 @@ class SettingsUI extends UserInterface
         $users = new Users($this->_siteID);
 
         /* If adding an e-mail username, verify it is a valid e-mail. */
-        if (strpos($loginName, '@') !== false && filter_var($loginName, FILTER_VALIDATE_EMAIL) === false)
-        {
+        if (strpos($loginName, '@') !== false && filter_var($loginName, FILTER_VALIDATE_EMAIL) === false) {
             echo 'That is not a valid login name.';
             return;
         }
 
         /* Make it a multisite user name if the user is part of a hosted site. */
         $unixName = $_SESSION['CATS']->getUnixName();
-        if (strpos($loginName, '@') === false && !empty($unixName))
-        {
-           $loginName .= '@' . $_SESSION['CATS']->getSiteID();
+        if (strpos($loginName, '@') === false && ! empty($unixName)) {
+            $loginName .= '@' . $_SESSION['CATS']->getSiteID();
         }
 
         /* Bail out if the specified username already exists. */
-        if ($users->usernameExists($loginName))
-        {
+        if ($users->usernameExists($loginName)) {
             echo 'That username already exists.';
             return;
         }
 
         $data = $users->getLicenseData();
-        if ($data['totalUsers'] >= $data['userLicenses'])
-        {
+        if ($data['totalUsers'] >= $data['userLicenses']) {
             echo 'You cannot add any more users with your license.';
             return;
         }
 
-        if ($users->add($lastName, $firstName, $email, $loginName, $password, $accessLevel, false) !== -1)
-        {
+        if ($users->add($lastName, $firstName, $email, $loginName, $password, $accessLevel, false) !== -1) {
             echo 'Ok';
             return;
-        }
-        else
-        {
+        } else {
             echo 'Unable to add user. One of the fields you entered may have been formatted incorrectly.';
             return;
         }
@@ -3060,15 +2776,14 @@ class SettingsUI extends UserInterface
 
     private function wizard_deleteUser()
     {
-        if (isset($_GET[$id = 'userID'])) $userID = intval($_GET[$id]);
-        else
-        {
+        if (isset($_GET[$id = 'userID'])) {
+            $userID = intval($_GET[$id]);
+        } else {
             echo 'Unable to find the user you are trying to delete.';
             return;
         }
 
-        if ($userID == $_SESSION['CATS']->getUserID())
-        {
+        if ($userID == $_SESSION['CATS']->getUserID()) {
             echo 'You cannot delete yourself!';
             return;
         }
@@ -3082,19 +2797,15 @@ class SettingsUI extends UserInterface
     {
         $fileError = false;
 
-        if (isset($_GET[$id = 'key']) && $_GET[$id] != '')
-        {
+        if (isset($_GET[$id = 'key']) && $_GET[$id] != '') {
             $license = new License();
             $key = strtoupper(trim($_GET[$id]));
 
             $configWritten = false;
 
-            if ($license->setKey($key) !== false)
-            {
-                if ($license->isProfessional())
-                {
-                    if (!CATSUtility::isSOAPEnabled())
-                    {
+            if ($license->setKey($key) !== false) {
+                if ($license->isProfessional()) {
+                    if (! CATSUtility::isSOAPEnabled()) {
                         echo "CATS Professional requires the PHP SOAP library which isn't currently installed.\n\n"
                             . "Installation Instructions:\n\n"
                             . "WAMP/Windows Users:\n"
@@ -3107,11 +2818,8 @@ class SettingsUI extends UserInterface
                             . "Re-install PHP with the --enable-soap configuration option.\n\n"
                             . "Please visit http://www.catsone.com for more support options.";
                         return;
-                    }
-                    else
-                    {
-                        if (!LicenseUtility::validateProfessionalKey($key))
-                        {
+                    } else {
+                        if (! LicenseUtility::validateProfessionalKey($key)) {
                             echo "That is not a valid CATS Professional license key. Please visit "
                                 . "http://www.catsone.com/professional for more information about CATS Professional.\n\n"
                                 . "For a free open-source key, please visit http://www.catsone.com/ and "
@@ -3121,31 +2829,27 @@ class SettingsUI extends UserInterface
                     }
                 }
 
-                if (CATSUtility::changeConfigSetting('LICENSE_KEY', "'" . $key . "'"))
-                {
+                if (CATSUtility::changeConfigSetting('LICENSE_KEY', "'" . $key . "'")) {
                     $configWritten = true;
                 }
             }
 
-            if ($configWritten)
-            {
+            if ($configWritten) {
                 echo 'Ok';
                 return;
             }
         }
 
         // The key hasn't been written. But they may have manually inserted the key into their config.php, check
-        if (LicenseUtility::isLicenseValid())
-        {
+        if (LicenseUtility::isLicenseValid()) {
             echo 'Ok';
             return;
         }
 
-        if ($fileError)
-        {
+        if ($fileError) {
             echo 'You entered a valid key, but this wizard is unable to write to your config.php file! You have '
                 . 'two choices: ' . "\n\n"
-                . '1) Change the file permissions of your config.php file.'."\n".'If you\'re using unix, try:' . "\n" . 'chmod 777 config.php' . "\n\n"
+                . '1) Change the file permissions of your config.php file.' . "\n" . 'If you\'re using unix, try:' . "\n" . 'chmod 777 config.php' . "\n\n"
                 . '2) Edit your config.php file manually and enter your valid key near this line: ' . "\n"
                 . 'define(\'LICENSE_KEY\', \'ENTER YOUR KEY HERE\');' . "\n" . 'Once you\'ve done this, refresh your browser.' . "\n\n"
                 . 'For more help, visit our website at http://www.catsone.com for support options.';
@@ -3158,20 +2862,16 @@ class SettingsUI extends UserInterface
 
     private function wizard_localization()
     {
-        if (!isset($_GET['timeZone']) || !isset($_GET['dateFormat']))
-        {
+        if (! isset($_GET['timeZone']) || ! isset($_GET['dateFormat'])) {
             echo 'You didn\'t provide a time zone or date format.';
             return;
         }
 
         $timeZone = $_GET['timeZone'];
         $dateFormat = $_GET['dateFormat'];
-        if ($dateFormat == 'mdy')
-        {
+        if ($dateFormat == 'mdy') {
             $isDMY = false;
-        }
-        else
-        {
+        } else {
             $isDMY = true;
         }
 
@@ -3200,18 +2900,19 @@ class SettingsUI extends UserInterface
 
     private function wizard_password()
     {
-        if (isset($_GET['password']) && !empty($_GET['password'])) $password = $_GET['password'];
-        else $password = '';
+        if (isset($_GET['password']) && ! empty($_GET['password'])) {
+            $password = $_GET['password'];
+        } else {
+            $password = '';
+        }
 
-        if (strlen($password) < 5)
-        {
+        if (strlen($password) < 5) {
             echo 'Your password length must be at least 5 characters long.';
             return;
         }
 
         $users = new Users($this->_siteID);
-        if ($users->changePassword($this->_userID, 'cats', $password) != LOGIN_SUCCESS)
-        {
+        if ($users->changePassword($this->_userID, 'cats', $password) != LOGIN_SUCCESS) {
             echo 'Cannot change your site password!';
             return;
         }
@@ -3221,11 +2922,13 @@ class SettingsUI extends UserInterface
 
     private function wizard_email()
     {
-        if (isset($_GET['email']) && !empty($_GET['email'])) $email = $_GET['email'];
-        else $email = '';
+        if (isset($_GET['email']) && ! empty($_GET['email'])) {
+            $email = $_GET['email'];
+        } else {
+            $email = '';
+        }
 
-        if (strlen($email) < 5)
-        {
+        if (strlen($email) < 5) {
             echo 'Your e-mail address must be at least 5 characters long.';
             return;
         }
@@ -3238,11 +2941,13 @@ class SettingsUI extends UserInterface
 
     private function wizard_siteName()
     {
-        if (isset($_GET['siteName']) && !empty($_GET['siteName'])) $siteName = $_GET['siteName'];
-        else $siteName = '';
+        if (isset($_GET['siteName']) && ! empty($_GET['siteName'])) {
+            $siteName = $_GET['siteName'];
+        } else {
+            $siteName = '';
+        }
 
-        if ($siteName == 'default_site' || strlen($siteName) <= 0)
-        {
+        if ($siteName == 'default_site' || strlen($siteName) <= 0) {
             echo 'That is not a valid site name. Please choose a different one.';
             return;
         }
@@ -3252,8 +2957,22 @@ class SettingsUI extends UserInterface
 
         $companies = new Companies($this->_siteID);
         $companyIDInternal = $companies->add(
-            'Internal Postings', '', '', '', '', '', '', '', '', '', '',
-            '', '', 'Internal postings.', $this->_userID, $this->_userID
+            'Internal Postings',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            'Internal postings.',
+            $this->_userID,
+            $this->_userID
         );
 
         $companies->setCompanyDefault($companyIDInternal);
@@ -3270,16 +2989,20 @@ class SettingsUI extends UserInterface
         // Echos Ok to redirect to the import stage, or Fail to go to home module
         $files = ImportUtility::getDirectoryFiles(FileUtility::getUploadPath($siteID, 'massimport'));
 
-        if (count($files)) echo 'Ok';
-        else echo 'Fail';
+        if (count($files)) {
+            echo 'Ok';
+        } else {
+            echo 'Fail';
+        }
     }
 
     private function wizard_website()
     {
-        $website = trim(isset($_GET[$id='website']) ? $_GET[$id] : '');
-        if (strlen($website) > 10)
-        {
-            if (!eval(Hooks::get('SETTINGS_CP_REQUEST'))) return;
+        $website = trim(isset($_GET[$id = 'website']) ? $_GET[$id] : '');
+        if (strlen($website) > 10) {
+            if (! eval(Hooks::get('SETTINGS_CP_REQUEST'))) {
+                return;
+            }
         }
 
         echo 'Ok';
@@ -3288,25 +3011,21 @@ class SettingsUI extends UserInterface
     private function careerPortalQuestionnaire($fromPostback = false)
     {
         // Get the ID if provided, otherwise we're adding a questionnaire
-        $questionnaireID = isset($_GET[$id='questionnaireID']) ? $_GET[$id] : '';
+        $questionnaireID = isset($_GET[$id = 'questionnaireID']) ? $_GET[$id] : '';
 
-        $questions = array();
+        $questions = [];
 
-        if (!$fromPostback)
-        {
+        if (! $fromPostback) {
             $title = $description = '';
             $isActive = 1;
 
             // If questionairreID is provided, this is an edit
-            if ($questionnaireID != '')
-            {
+            if ($questionnaireID != '') {
                 $questionnaire = new Questionnaire($this->_siteID);
-                if (count($data = $questionnaire->get($questionnaireID)))
-                {
+                if (count($data = $questionnaire->get($questionnaireID))) {
                     $questions = $questionnaire->getQuestions($questionnaireID);
 
-                    for ($i=0; $i<count($questions); $i++)
-                    {
+                    for ($i = 0; $i < count($questions); $i++) {
                         $questions[$i]['questionTypeLabel'] = $questionnaire->convertQuestionConstantToType(
                             $questions[$i]['questionType']
                         );
@@ -3316,9 +3035,7 @@ class SettingsUI extends UserInterface
                     $this->_template->assign('description', $description = $data['description']);
                     $this->_template->assign('isActive', $isActive = $data['isActive']);
                     $this->_template->assign('questions', $questions);
-                }
-                else
-                {
+                } else {
                     $questionnaireID = '';
                 }
             }
@@ -3326,21 +3043,20 @@ class SettingsUI extends UserInterface
             // Store the questionnaire in a sesssion. That way we can make post changes
             // without changing the database data. Only save the session to the DB if the
             // user requests it.
-            if (isset($_SESSION['CATS_QUESTIONNAIRE'])) unset($_SESSION['CATS_QUESTIONNAIRE']);
-            $_SESSION['CATS_QUESTIONNAIRE'] = array(
+            if (isset($_SESSION['CATS_QUESTIONNAIRE'])) {
+                unset($_SESSION['CATS_QUESTIONNAIRE']);
+            }
+            $_SESSION['CATS_QUESTIONNAIRE'] = [
                 'id' => $questionnaireID,
                 'title' => $title,
                 'description' => $description,
                 'questions' => $questions,
-                'isActive' => $isActive
-            );
-        }
-        else
-        {
+                'isActive' => $isActive,
+            ];
+        } else {
             // This is being called from a postback, so we're actively working out of the
             // session. Postback will handle saves.
-            if (!isset($_SESSION['CATS_QUESTIONNAIRE']) || empty($_SESSION['CATS_QUESTIONNAIRE']))
-            {
+            if (! isset($_SESSION['CATS_QUESTIONNAIRE']) || empty($_SESSION['CATS_QUESTIONNAIRE'])) {
                 CommonErrors::fatal(COMMONERROR_BADINDEX, 'Please return to your careers website '
                     . 'and load the questionnaire a second time as your session has '
                     . 'expired.');
@@ -3369,8 +3085,7 @@ class SettingsUI extends UserInterface
 
     private function onCareerPortalQuestionnaire()
     {
-        if (!isset($_SESSION['CATS_QUESTIONNAIRE']) || empty($_SESSION['CATS_QUESTIONNAIRE']))
-        {
+        if (! isset($_SESSION['CATS_QUESTIONNAIRE']) || empty($_SESSION['CATS_QUESTIONNAIRE'])) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, 'Please return to your careers website '
                 . 'and load the questionnaire a second time as your session has '
                 . 'expired.');
@@ -3378,14 +3093,18 @@ class SettingsUI extends UserInterface
 
         // Get the title
         $title = isset($_POST[$id = 'title']) ? substr(trim($_POST[$id]), 0, 255) : '';
-        if (!strlen($title)) $title = '';
+        if (! strlen($title)) {
+            $title = '';
+        }
 
         // Get the description
         $description = isset($_POST[$id = 'description']) ? substr(trim($_POST[$id]), 0, 255) : '';
-        if (!strlen($description)) $description = '';
+        if (! strlen($description)) {
+            $description = '';
+        }
 
         // Is this active?
-        $active = isset($_POST[$id = 'isActive']) ? !strcasecmp($_POST[$id], 'yes') : 0;
+        $active = isset($_POST[$id = 'isActive']) ? ! strcasecmp($_POST[$id], 'yes') : 0;
 
         $_SESSION['CATS_QUESTIONNAIRE']['title'] = $title;
         $_SESSION['CATS_QUESTIONNAIRE']['description'] = $description;
@@ -3400,30 +3119,25 @@ class SettingsUI extends UserInterface
          * answers that the user specified to remove as "remove" which will be done
          * in the final step to prevent index changes.
          */
-        for ($questionIndex=0; $questionIndex<count($questions); $questionIndex++)
-        {
+        for ($questionIndex = 0; $questionIndex < count($questions); $questionIndex++) {
             // Update the position of the question
             $field = sprintf('question%dPosition', $questionIndex);
-            if (isset($_POST[$field]))
-            {
+            if (isset($_POST[$field])) {
                 $position = intval(trim($_POST[$field]));
                 $questions[$questionIndex]['questionPosition'] = $position;
             }
 
             // Update the text of the question
             $field = sprintf('question%dTextValue', $questionIndex);
-            if (isset($_POST[$field]))
-            {
-                if (strlen($text = substr(trim($_POST[$field]), 0, 255)))
-                {
+            if (isset($_POST[$field])) {
+                if (strlen($text = substr(trim($_POST[$field]), 0, 255))) {
                     $questions[$questionIndex]['questionText'] = $text;
                 }
             }
 
             // Update the type of the question
             $field = sprintf('question%dTypeValue', $questionIndex);
-            if (isset($_POST[$field]))
-            {
+            if (isset($_POST[$field])) {
                 $type = $questionnaire->convertQuestionTypeToConstant($_POST[$field]);
                 $questions[$questionIndex]['questionType'] = $type;
                 $questions[$questionIndex]['questionTypeLabel'] = (
@@ -3433,64 +3147,66 @@ class SettingsUI extends UserInterface
 
             // Check if this question should be removed (user checked the box)
             $field = sprintf('question%dRemove', $questionIndex);
-            if (isset($_POST[$field]) && !strcasecmp($_POST[$field], 'yes'))
-            {
+            if (isset($_POST[$field]) && ! strcasecmp($_POST[$field], 'yes')) {
                 $questions[$questionIndex]['remove'] = true;
-            }
-            else
-            {
+            } else {
                 $questions[$questionIndex]['remove'] = false;
             }
 
-            for ($answerIndex=0; $answerIndex<count($questions[$questionIndex]['answers']); $answerIndex++)
-            {
+            for ($answerIndex = 0; $answerIndex < count($questions[$questionIndex]['answers']); $answerIndex++) {
                 // Update the position of the question
                 $field = sprintf('question%dAnswer%dPosition', $questionIndex, $answerIndex);
-                if (isset($_POST[$field]))
-                {
+                if (isset($_POST[$field])) {
                     $position = intval(trim($_POST[$field]));
                     $questions[$questionIndex]['answers'][$answerIndex]['answerPosition'] = $position;
                 }
 
                 // Update the text of the answer
                 $field = sprintf('question%dAnswer%dTextValue', $questionIndex, $answerIndex);
-                if (isset($_POST[$field]))
-                {
-                    if (strlen($text = substr(trim($_POST[$field]), 0, 255)))
-                    {
+                if (isset($_POST[$field])) {
+                    if (strlen($text = substr(trim($_POST[$field]), 0, 255))) {
                         $questions[$questionIndex]['answers'][$answerIndex]['answerText'] = $text;
                     }
                 }
 
                 // Check if this answer should be removed (user checked the box)
                 $field = sprintf('question%dAnswer%dRemove', $questionIndex, $answerIndex);
-                if (isset($_POST[$field]) && !strcasecmp($_POST[$field], 'yes'))
-                {
+                if (isset($_POST[$field]) && ! strcasecmp($_POST[$field], 'yes')) {
                     $questions[$questionIndex]['answers'][$answerIndex]['remove'] = true;
-                }
-                else
-                {
+                } else {
                     $questions[$questionIndex]['answers'][$answerIndex]['remove'] = false;
                 }
 
                 // Check the actions for whether or not they should exist
-                $actionSourceField = sprintf('question%dAnswer%dActionSource',
-                    $questionIndex, $answerIndex
+                $actionSourceField = sprintf(
+                    'question%dAnswer%dActionSource',
+                    $questionIndex,
+                    $answerIndex
                 );
-                $actionNotesField = sprintf('question%dAnswer%dActionNotes',
-                    $questionIndex, $answerIndex
+                $actionNotesField = sprintf(
+                    'question%dAnswer%dActionNotes',
+                    $questionIndex,
+                    $answerIndex
                 );
-                $actionIsHotField = sprintf('question%dAnswer%dActionIsHot',
-                    $questionIndex, $answerIndex
+                $actionIsHotField = sprintf(
+                    'question%dAnswer%dActionIsHot',
+                    $questionIndex,
+                    $answerIndex
                 );
-                $actionIsActiveField = sprintf('question%dAnswer%dActionIsActive',
-                    $questionIndex, $answerIndex
+                $actionIsActiveField = sprintf(
+                    'question%dAnswer%dActionIsActive',
+                    $questionIndex,
+                    $answerIndex
                 );
-                $actionCanRelocateField = sprintf('question%dAnswer%dActionCanRelocate',
-                    $questionIndex, $answerIndex
+                $actionCanRelocateField = sprintf(
+                    'question%dAnswer%dActionCanRelocate',
+                    $questionIndex,
+                    $answerIndex
                 );
-                $actionKeySkillsField = sprintf('question%dAnswer%dActionKeySkills',
-                    $questionIndex, $answerIndex
+                $actionKeySkillsField = sprintf(
+                    'question%dAnswer%dActionKeySkills',
+                    $questionIndex,
+                    $answerIndex
                 );
 
                 $actionSourceActive = isset($_POST[$id = $actionSourceField . 'Active']) ? $_POST[$id] : '';
@@ -3551,24 +3267,20 @@ class SettingsUI extends UserInterface
         $restrictQuestionID = isset($_POST[$id = 'restrictActionQuestionID']) ? intval($_POST[$id]) : '';
         $restrictAnswerID = isset($_POST[$id = 'restrictActionAnswerID']) ? intval($_POST[$id]) : '';
 
-        if (!strcasecmp($restrictAction, 'question'))
-        {
+        if (! strcasecmp($restrictAction, 'question')) {
             // Adding a new question to the questionnaire
             $questionText = isset($_POST[$id = 'questionText']) ? trim($_POST[$id]) : '';
             $questionTypeText = isset($_POST[$id = 'questionType']) ? $_POST[$id] : '';
 
             // Make sure the question doesn't already exist (re-submit)
-            for ($i = 0, $exists = false; $i < count($questions); $i++)
-            {
-                if (!strcmp($questions[$i]['questionText'], $questionText))
-                {
+            for ($i = 0, $exists = false; $i < count($questions); $i++) {
+                if (! strcmp($questions[$i]['questionText'], $questionText)) {
                     $exists = true;
                 }
             }
 
-            if (strlen($questionText) && !$exists)
-            {
-                $questions[] = array(
+            if (strlen($questionText) && ! $exists) {
+                $questions[] = [
                     'questionID' => -1, // -1 indicates a record needs to be added
                     'questionType' => QUESTIONNAIRE_QUESTION_TYPE_TEXT,
                     'questionTypeLabel' =>
@@ -3577,20 +3289,17 @@ class SettingsUI extends UserInterface
                     'minimumLength' => 0,
                     'maximumLength' => 255,
                     'questionPosition' => 1000, // should be positioned last (users can't enter higher than 999)
-                    'answers' => array()
-                );
+                    'answers' => [],
+                ];
             }
-        }
-        else if (!strcasecmp($restrictAction, 'answer') &&
-            isset($questions[$restrictQuestionID]))
-        {
+        } elseif (! strcasecmp($restrictAction, 'answer') &&
+            isset($questions[$restrictQuestionID])) {
             // Adding a new answer to an existing question
             $field = sprintf('question%dAnswerText', $restrictQuestionID);
             $answerText = substr(trim(isset($_POST[$field]) ? $_POST[$field] : ''), 0, 255);
 
-            if (strlen($answerText))
-            {
-                $questions[$restrictQuestionID]['answers'][] = array(
+            if (strlen($answerText)) {
+                $questions[$restrictQuestionID]['answers'][] = [
                     'answerID' => -1, // append to the db
                     'answerText' => $answerText,
                     'actionSource' => '',
@@ -3599,23 +3308,19 @@ class SettingsUI extends UserInterface
                     'actionIsActive' => 1,
                     'actionCanRelocate' => 0,
                     'actionKeySkills' => '',
-                    'answerPosition' => 1000 // should be positioned last (see above)
-                );
+                    'answerPosition' => 1000, // should be positioned last (see above)
+                ];
             }
-        }
-        else if (!strcasecmp($restrictAction, 'action') &&
+        } elseif (! strcasecmp($restrictAction, 'action') &&
             isset($questions[$restrictQuestionID]) &&
-            isset($questions[$restrictQuestionID]['answers'][$restrictAnswerID]))
-        {
+            isset($questions[$restrictQuestionID]['answers'][$restrictAnswerID])) {
             // Adding a new action to an existing answer of an existing question
             $field = sprintf('question%dAnswer%d', $restrictQuestionID, $restrictAnswerID);
             $newAction = isset($_POST[$id = $field . 'NewAction']) ? $_POST[$id] : '';
             $actionText = substr(trim(isset($_POST[$id = $field . 'NewActionText']) ? $_POST[$id] : ''), 0, 255);
 
-            if (isset($questions[$restrictQuestionID]['answers'][$restrictAnswerID][$newAction]))
-            {
-                switch ($newAction)
-                {
+            if (isset($questions[$restrictQuestionID]['answers'][$restrictAnswerID][$newAction])) {
+                switch ($newAction) {
                     case 'actionSource': case 'actionNotes': case 'actionKeySkills':
                         $value = $actionText;
                         break;
@@ -3637,19 +3342,21 @@ class SettingsUI extends UserInterface
          * STEP 5
          * Remove any questions/answers that have "remove" checked prior to sorting/positioning
          */
-        $savedQuestions = array();
+        $savedQuestions = [];
         for ($questionIndex = 0, $savedQuestionIndex = 0;
-             $questionIndex < count($questions);
-             $questionIndex++)
-        {
-            if (isset($questions[$questionIndex]['remove']) && $questions[$questionIndex]['remove']) continue;
+            $questionIndex < count($questions);
+            $questionIndex++) {
+            if (isset($questions[$questionIndex]['remove']) && $questions[$questionIndex]['remove']) {
+                continue;
+            }
             $savedQuestions[$savedQuestionIndex] = $questions[$questionIndex];
-            $savedQuestions[$savedQuestionIndex]['answers'] = array();
+            $savedQuestions[$savedQuestionIndex]['answers'] = [];
 
-            for ($answerIndex = 0; $answerIndex < count($questions[$questionIndex]['answers']); $answerIndex++)
-            {
+            for ($answerIndex = 0; $answerIndex < count($questions[$questionIndex]['answers']); $answerIndex++) {
                 if (isset($questions[$questionIndex]['answers'][$answerIndex]['remove']) &&
-                    $questions[$questionIndex]['answers'][$answerIndex]['remove']) continue;
+                    $questions[$questionIndex]['answers'][$answerIndex]['remove']) {
+                    continue;
+                }
                 $savedQuestions[$savedQuestionIndex]['answers'][] =
                     $questions[$questionIndex]['answers'][$answerIndex];
             }
@@ -3663,18 +3370,15 @@ class SettingsUI extends UserInterface
          * Corrections. Any removals or changes that have altered the "way of things" need to
          * be fixed before sort.
          */
-        for ($questionIndex = 0; $questionIndex < count($questions); $questionIndex++)
-        {
+        for ($questionIndex = 0; $questionIndex < count($questions); $questionIndex++) {
             // If the question has no answers it is a TEXT automatically
-            if (!count($questions[$questionIndex]['answers']))
-            {
+            if (! count($questions[$questionIndex]['answers'])) {
                 $questions[$questionIndex]['questionType'] = QUESTIONNAIRE_QUESTION_TYPE_TEXT;
                 $questions[$questionIndex]['questionTypeLabel'] =
                     $questionnaire->convertQuestionConstantToType(QUESTIONNAIRE_QUESTION_TYPE_TEXT);
             }
             // Otherwise, if there are answers, it cannot be a TEXT
-            else if ($questions[$questionIndex]['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_TEXT)
-            {
+            elseif ($questions[$questionIndex]['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_TEXT) {
                 $questions[$questionIndex]['questionType'] = QUESTIONNAIRE_QUESTION_TYPE_SELECT;
                 $questions[$questionIndex]['questionTypeLabel'] =
                     $questionnaire->convertQuestionConstantToType(QUESTIONNAIRE_QUESTION_TYPE_SELECT);
@@ -3687,41 +3391,34 @@ class SettingsUI extends UserInterface
          * (1, 2, 3) based on the results.
          */
         for ($questionIndex2 = 0;
-             $questionIndex2 < count($questions);
-             $questionIndex2++)
-        {
-            if ($questionIndex2 < count($questions) - 1)
-            {
+            $questionIndex2 < count($questions);
+            $questionIndex2++) {
+            if ($questionIndex2 < count($questions) - 1) {
                 for ($questionIndex3 = 0;
-                     $questionIndex3 < count($questions) - 1;
-                     $questionIndex3++)
-                {
+                    $questionIndex3 < count($questions) - 1;
+                    $questionIndex3++) {
                     if (intval($questions[$questionIndex3]['questionPosition']) >
-                        intval($questions[$questionIndex3+1]['questionPosition']))
-                    {
+                        intval($questions[$questionIndex3 + 1]['questionPosition'])) {
                         $tmp = $questions[$questionIndex3];
-                        $questions[$questionIndex3] = $questions[$questionIndex3+1];
-                        $questions[$questionIndex3+1] = $tmp;
+                        $questions[$questionIndex3] = $questions[$questionIndex3 + 1];
+                        $questions[$questionIndex3 + 1] = $tmp;
                     }
                 }
             }
 
             // Bubble sort the answers for each question using the same method
             for ($answerIndex2 = 0;
-                 $answerIndex2 < count($questions[$questionIndex2]['answers']) - 1;
-                 $answerIndex2++)
-            {
+                $answerIndex2 < count($questions[$questionIndex2]['answers']) - 1;
+                $answerIndex2++) {
                 for ($answerIndex3 = 0;
-                     $answerIndex3 < count($questions[$questionIndex2]['answers']) - 1;
-                     $answerIndex3++)
-                {
+                    $answerIndex3 < count($questions[$questionIndex2]['answers']) - 1;
+                    $answerIndex3++) {
                     if (intval($questions[$questionIndex2]['answers'][$answerIndex3]['answerPosition']) >
-                        intval($questions[$questionIndex2]['answers'][$answerIndex3+1]['answerPosition']))
-                    {
+                        intval($questions[$questionIndex2]['answers'][$answerIndex3 + 1]['answerPosition'])) {
                         $tmp = $questions[$questionIndex2]['answers'][$answerIndex3];
                         $questions[$questionIndex2]['answers'][$answerIndex3] =
-                            $questions[$questionIndex2]['answers'][$answerIndex3+1];
-                        $questions[$questionIndex2]['answers'][$answerIndex3+1] = $tmp;
+                            $questions[$questionIndex2]['answers'][$answerIndex3 + 1];
+                        $questions[$questionIndex2]['answers'][$answerIndex3 + 1] = $tmp;
                     }
                 }
             }
@@ -3729,29 +3426,23 @@ class SettingsUI extends UserInterface
 
         // Now define real position values (never trust the naughty user)
         for ($questionIndex2 = 0;
-             $questionIndex2 < count($questions);
-             $questionIndex2++)
-        {
+            $questionIndex2 < count($questions);
+            $questionIndex2++) {
             $questions[$questionIndex2]['questionPosition'] = $questionIndex2 + 1;
 
             for ($answerIndex2 = 0;
-                 $answerIndex2 < count($questions[$questionIndex2]['answers']);
-                 $answerIndex2++)
-            {
+                $answerIndex2 < count($questions[$questionIndex2]['answers']);
+                $answerIndex2++) {
                 $questions[$questionIndex2]['answers'][$answerIndex2]['answerPosition'] = ($answerIndex2 + 1);
             }
         }
 
-        if (isset($_POST[$id = 'startOver']) && !strcasecmp($_POST[$id], 'yes'))
-        {
+        if (isset($_POST[$id = 'startOver']) && ! strcasecmp($_POST[$id], 'yes')) {
             // User wants to start over
-            $_SESSION['CATS_QUESTIONNAIRE']['questions'] = array();
-        }
-        else if (isset($_POST[$id = 'saveChanges']) && !strcasecmp($_POST[$id], 'yes'))
-        {
+            $_SESSION['CATS_QUESTIONNAIRE']['questions'] = [];
+        } elseif (isset($_POST[$id = 'saveChanges']) && ! strcasecmp($_POST[$id], 'yes')) {
             // User wants to add the new questionnaire
-            if (($id = intval($_SESSION['CATS_QUESTIONNAIRE']['id'])) != 0)
-            {
+            if (($id = intval($_SESSION['CATS_QUESTIONNAIRE']['id'])) != 0) {
                 $questionnaire->update(
                     $id, // the questionnaire id to update
                     $_SESSION['CATS_QUESTIONNAIRE']['title'],
@@ -3760,8 +3451,7 @@ class SettingsUI extends UserInterface
                 );
             }
             // User is editting an existing questionnaire
-            else
-            {
+            else {
                 $id = $questionnaire->add(
                     $_SESSION['CATS_QUESTIONNAIRE']['title'],
                     $_SESSION['CATS_QUESTIONNAIRE']['description'],
@@ -3769,8 +3459,7 @@ class SettingsUI extends UserInterface
                 );
             }
 
-            if ($id !== false)
-            {
+            if ($id !== false) {
                 // Delete all existing questions/answers (replace with session values)
                 $questionnaire->deleteQuestions($id);
 
@@ -3783,9 +3472,7 @@ class SettingsUI extends UserInterface
                 CATSUtility::transferRelativeURI('m=settings&a=careerPortalSettings');
                 return;
             }
-        }
-        else
-        {
+        } else {
             // Now save changes to the session
             $_SESSION['CATS_QUESTIONNAIRE']['questions'] = $questions;
         }
@@ -3799,11 +3486,9 @@ class SettingsUI extends UserInterface
         $questionnaire = new Questionnaire($this->_siteID);
         $data = $questionnaire->getAll(true);
 
-        for ($i = 0; $i < count($data); $i++)
-        {
+        for ($i = 0; $i < count($data); $i++) {
             if (isset($_POST[$id = 'removeQuestionnaire' . $i]) &&
-                !strcasecmp($_POST[$id], 'yes'))
-            {
+                ! strcasecmp($_POST[$id], 'yes')) {
                 $questionnaire->delete($data[$i]['questionnaireID']);
             }
         }
@@ -3813,8 +3498,7 @@ class SettingsUI extends UserInterface
 
     private function careerPortalQuestionnairePreview()
     {
-        if (!isset($_GET['questionnaireID']))
-        {
+        if (! isset($_GET['questionnaireID'])) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Bad index.');
         }
 
@@ -3822,8 +3506,7 @@ class SettingsUI extends UserInterface
         $questionnaire = new Questionnaire($this->_siteID);
         $data = $questionnaire->get($questionnaireID);
 
-        if (empty($data))
-        {
+        if (empty($data)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX);
         }
 
@@ -3838,5 +3521,3 @@ class SettingsUI extends UserInterface
         $this->_template->display('./modules/settings/CareerPortalQuestionnaireShow.tpl');
     }
 }
-
-?>

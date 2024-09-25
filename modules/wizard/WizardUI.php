@@ -47,7 +47,7 @@ class WizardUI extends UserInterface
         $this->_moduleDirectory = 'wizard';
         $this->_moduleName = 'wizard';
         $this->_moduleTabText = '';
-        $this->_subTabs = array();
+        $this->_subTabs = [];
 
         /*
         $this->addPage('Welcome!', './modules/wizard/WizardIntroIntro.tpl', '', false, true);
@@ -57,7 +57,6 @@ class WizardUI extends UserInterface
             $users = new Users($siteID);
             $mp = $users->getAll();
             $data = $users->getLicenseData();
-
             $this->_template->assign(\'users\', $mp);
             $this->_template->assign(\'totalUsers\', $data[\'totalUsers\']);
             $this->_template->assign(\'userLicenses\', $data[\'userLicenses\']);
@@ -67,18 +66,15 @@ class WizardUI extends UserInterface
             $this->_template->assign(\'timeZone\', $_SESSION[\'CATS\']->getTimeZone());
             $this->_template->assign(\'isDateDMY\', $_SESSION[\'CATS\']->isDateDMY());
         ');
-
         $this->addJsInclude('./js/wizardIntro.js');
         $this->setFinishURL('?m=home');
         */
     }
 
-
     public function handleRequest()
     {
         $action = $this->getAction();
-        switch ($action)
-        {
+        switch ($action) {
             case 'ajax_getPage':
                 $this->ajax_getPage();
                 break;
@@ -91,9 +87,8 @@ class WizardUI extends UserInterface
 
     public function show()
     {
-        if (!isset($_SESSION['CATS_WIZARD']) || empty($_SESSION['CATS_WIZARD']) ||
-            !is_array($_SESSION['CATS_WIZARD']))
-        {
+        if (! isset($_SESSION['CATS_WIZARD']) || empty($_SESSION['CATS_WIZARD']) ||
+            ! is_array($_SESSION['CATS_WIZARD'])) {
             // The user has removed or the session for the wizard has been lost,
             // redirect to rebuild it
             CATSUtility::transferRelativeURI(CATSUtility::getIndexName() . 'm=home');
@@ -102,9 +97,9 @@ class WizardUI extends UserInterface
 
         // Build the javascript for navigation
         $js = '';
-        for ($i=0; $i<count($_SESSION['CATS_WIZARD']['pages']); $i++)
-        {
-            $js .= sprintf('addWizardPage("%s", %s, %s);%s',
+        for ($i = 0; $i < count($_SESSION['CATS_WIZARD']['pages']); $i++) {
+            $js .= sprintf(
+                'addWizardPage("%s", %s, %s);%s',
                 addslashes($_SESSION['CATS_WIZARD']['pages'][$i]['title']),
                 $_SESSION['CATS_WIZARD']['pages'][$i]['disableNext'] ? 'true' : 'false',
                 $_SESSION['CATS_WIZARD']['pages'][$i]['disableSkip'] ? 'true' : 'false',
@@ -115,16 +110,19 @@ class WizardUI extends UserInterface
         $js .= sprintf('var currentPage = %d;%s', $_SESSION['CATS_WIZARD']['curPage'], "\n");
         $this->_template->assign('js', $js);
 
-        if (isset($_SESSION['CATS_WIZARD']['js'])) $jsInclude = $_SESSION['CATS_WIZARD']['js'];
-        else $jsInclude = '';
+        if (isset($_SESSION['CATS_WIZARD']['js'])) {
+            $jsInclude = $_SESSION['CATS_WIZARD']['js'];
+        } else {
+            $jsInclude = '';
+        }
 
         $this->_template->assign('jsInclude', $jsInclude);
         $this->_template->assign('pages', $_SESSION['CATS_WIZARD']['pages']);
-        $this->_template->assign('currentPage', $_SESSION['CATS_WIZARD']['pages'][$_SESSION['CATS_WIZARD']['curPage']-1]);
-        $this->_template->assign('currentPageIndex', $_SESSION['CATS_WIZARD']['curPage']-1);
+        $this->_template->assign('currentPage', $_SESSION['CATS_WIZARD']['pages'][$_SESSION['CATS_WIZARD']['curPage'] - 1]);
+        $this->_template->assign('currentPageIndex', $_SESSION['CATS_WIZARD']['curPage'] - 1);
         $this->_template->assign('active', $this);
         $this->_template->assign('enableSkip', true);
-        $this->_template->assign('enablePrevious', $_SESSION['CATS_WIZARD']['curPage']==1 ? false : true);
+        $this->_template->assign('enablePrevious', $_SESSION['CATS_WIZARD']['curPage'] == 1 ? false : true);
         $this->_template->assign('enableNext', true);
 
         $this->_template->display('./modules/wizard/Show.tpl');
@@ -132,20 +130,28 @@ class WizardUI extends UserInterface
 
     public function ajax_getPage()
     {
-        if (!isset($_SESSION['CATS_WIZARD']) || !is_array($_SESSION['CATS_WIZARD']) ||
-            !count($_SESSION['CATS_WIZARD']))
-        {
+        if (! isset($_SESSION['CATS_WIZARD']) || ! is_array($_SESSION['CATS_WIZARD']) ||
+            ! count($_SESSION['CATS_WIZARD'])) {
             echo 'This wizard has no pages.';
             return;
         }
 
         // Get the current page of the wizard
-        if (isset($_GET['currentPage'])) $currentPage = intval($_GET['currentPage']); else $currentPage = 1;
-        if ($currentPage < 1 || $currentPage > count($_SESSION['CATS_WIZARD']['pages'])) $currentPage = 1;
+        if (isset($_GET['currentPage'])) {
+            $currentPage = intval($_GET['currentPage']);
+        } else {
+            $currentPage = 1;
+        }
+        if ($currentPage < 1 || $currentPage > count($_SESSION['CATS_WIZARD']['pages'])) {
+            $currentPage = 1;
+        }
 
-        if (isset($_GET['requestAction'])) $requestAction = $_GET['requestAction']; else $requestAction = '';
-        switch ($requestAction)
-        {
+        if (isset($_GET['requestAction'])) {
+            $requestAction = $_GET['requestAction'];
+        } else {
+            $requestAction = '';
+        }
+        switch ($requestAction) {
             case 'next':
                 $requestPage = $currentPage + 1;
                 break;
@@ -162,8 +168,7 @@ class WizardUI extends UserInterface
         }
 
         // Set session variables (if they exist)
-        if (isset($_SESSION['CATS']) && !empty($_SESSION['CATS']))
-        {
+        if (isset($_SESSION['CATS']) && ! empty($_SESSION['CATS'])) {
             $session = $_SESSION['CATS'];
             $this->_template->assign('userID', $userID = $session->getUserID());
             $this->_template->assign('userName', $userName = $session->getUserName());
@@ -172,17 +177,16 @@ class WizardUI extends UserInterface
         }
 
         // Figure out which template to display
-        if (!isset($_SESSION['CATS_WIZARD']['pages'][$requestPage -= 1])) $requestPage = 0;
+        if (! isset($_SESSION['CATS_WIZARD']['pages'][$requestPage -= 1])) {
+            $requestPage = 0;
+        }
         $template = $_SESSION['CATS_WIZARD']['pages'][$requestPage]['template'];
         $_SESSION['CATS_WIZARD']['curPage'] = $requestPage + 1;
 
-        if (($php = $_SESSION['CATS_WIZARD']['pages'][$requestPage]['php']) != '')
-        {
+        if (($php = $_SESSION['CATS_WIZARD']['pages'][$requestPage]['php']) != '') {
             eval($php);
         }
 
         $this->_template->display($template);
     }
 }
-
-?>

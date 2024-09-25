@@ -13,9 +13,9 @@
 
 require_once 'config.php';
 
-function rebuild_old_docs() {
-
-	global $con;
+function rebuild_old_docs()
+{
+    global $con;
     $result = mysqli_query($con, 'SELECT * FROM `attachment` WHERE `text` IS NULL');
 
     include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
@@ -24,29 +24,28 @@ function rebuild_old_docs() {
     $countError = 0;
     while ($attachment = mysqli_fetch_object($result)) {
         $doc2txt = new DocumentToText();
-        $doc2txt->convert('attachments/' . $attachment->directory_name . $attachment->stored_filename,
-                $doc2txt->getDocumentType('attachments/' . $attachment->directory_name . $attachment->stored_filename));
-        if ($doc2txt->isError())
-        {
+        $doc2txt->convert(
+            'attachments/' . $attachment->directory_name . $attachment->stored_filename,
+            $doc2txt->getDocumentType('attachments/' . $attachment->directory_name . $attachment->stored_filename)
+        );
+        if ($doc2txt->isError()) {
             $countError++;
             print('Error while converting ' . $attachment->stored_filename . " file\n");
-        }
-        else
-        {
+        } else {
             $extractedText = $doc2txt->getString();
-            print('File ' . $attachment->stored_filename." reindexed.\n");
+            print('File ' . $attachment->stored_filename . " reindexed.\n");
             $sql = 'UPDATE `attachment` SET `text` = \'' . addslashes($extractedText) . '\', `md5_sum_text` = \'' . md5($extractedText) . '\'  WHERE `attachment_id` = ' . $attachment->attachment_id;
             $upd = mysqli_query($con, $sql);
-            if (!$upd) {
-               $countError++;
-				 				$error = "errno: " . $upd->connect_errno . ", ";
-				 				$error .= "error: " . $upd->connect_error;
+            if (! $upd) {
+                $countError++;
+                $error = "errno: " . $upd->connect_errno . ", ";
+                $error .= "error: " . $upd->connect_error;
                 print('DB error: ' . $error);
             } else {
-               $countOK++;
+                $countOK++;
             }
-       }
-       unset($doc2txt);
+        }
+        unset($doc2txt);
     }
     print('Success/Fail counters:' . $countOK . '/' . $countError);
 }
@@ -54,13 +53,11 @@ function rebuild_old_docs() {
 
 //$con = mysql_connect("localhost","root","root");
 $con = mysqli_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS);
-if (!$con)
-{
-		$error = "errno: " . mysqli_connect_errno() . ", ";
-		$error .= "error: " . mysqli_connect_error();
-		die('Could not connect: ' . $error);
+if (! $con) {
+    $error = "errno: " . mysqli_connect_errno() . ", ";
+    $error .= "error: " . mysqli_connect_error();
+    die('Could not connect: ' . $error);
 }
 mysqli_select_db($con, DATABASE_NAME);
 
 rebuild_old_docs();
-?>

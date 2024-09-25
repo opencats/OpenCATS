@@ -41,9 +41,9 @@ include_once(LEGACY_ROOT . '/lib/XmlJobExport.php');
 include_once(LEGACY_ROOT . '/lib/HttpLogger.php');
 include_once(LEGACY_ROOT . '/lib/CareerPortal.php');
 
-define('XTPL_HEADER_STRING',    'header');
-define('XTPL_FOOTER_STRING',    'footer');
-define('XTPL_JOB_STRING',       'job');
+define('XTPL_HEADER_STRING', 'header');
+define('XTPL_FOOTER_STRING', 'footer');
+define('XTPL_JOB_STRING', 'job');
 
 class XmlUI extends UserInterface
 {
@@ -55,15 +55,13 @@ class XmlUI extends UserInterface
         $this->_moduleDirectory = 'xml';
         $this->_moduleName = 'xml';
         $this->_moduleTabText = '';
-        $this->_subTabs = array();
+        $this->_subTabs = [];
     }
-
 
     public function handleRequest()
     {
         $action = $this->getAction();
-        switch ($action)
-        {
+        switch ($action) {
             case 'jobOrders':
             default:
                 $this->displayPublicJobOrders();
@@ -106,7 +104,9 @@ class XmlUI extends UserInterface
 
         $careerPortalSiteID = $site->getFirstSiteID();
 
-        if (!eval(Hooks::get('RSS_SITEID'))) return;
+        if (! eval(Hooks::get('RSS_SITEID'))) {
+            return;
+        }
 
         $jobOrders = new JobOrders($careerPortalSiteID);
         $rs = $jobOrders->getAll(JOBORDERS_STATUS_SHARE, -1, -1, -1, false, true);
@@ -126,22 +126,18 @@ class XmlUI extends UserInterface
 
         $availTemplates = XmlTemplate::getTemplates();
 
-        if (isset($_GET['t']))
-        {
+        if (isset($_GET['t'])) {
             $templateName = $_GET['t'];
             // Check if the template exists
-            foreach ($availTemplates as $template)
-            {
-                if (!strcasecmp($template['xml_template_name'], $templateName))
-                {
+            foreach ($availTemplates as $template) {
+                if (! strcasecmp($template['xml_template_name'], $templateName)) {
                     $templateSections = XmlTemplate::loadTemplate($templateName);
                 }
             }
         }
 
         // no template exists, load the default (which will always be first)
-        if (!isset($templateSections))
-        {
+        if (! isset($templateSections)) {
             $templateSections = XmlTemplate::loadTemplate(
                 $templateName = $availTemplates[0]["xml_template_name"]
             );
@@ -153,10 +149,8 @@ class XmlUI extends UserInterface
         $templateFooter = $templateSections[XTPL_FOOTER_STRING];
 
         $tags = XmlTemplate::loadTemplateTags($templateHeader);
-        foreach ($tags as $tag)
-        {
-            switch ($tag)
-            {
+        foreach ($tags as $tag) {
+            switch ($tag) {
                 case 'date':
                     $templateHeader = XmlTemplate::replaceTemplateTags(
                         $tag,
@@ -182,29 +176,24 @@ class XmlUI extends UserInterface
         $settings = $careerPortalSettings->getAll();
 
         $url = CATSUtility::getAbsoluteURI();
-        if(strrpos($url, 'xml') == (strlen($url) - 4))
-        {
+        if (strrpos($url, 'xml') == (strlen($url) - 4)) {
             $url = substr($url, 0, -4);
         }
 
-        if ($settings['allowBrowse'] == 1)
-        {
+        if ($settings['allowBrowse'] == 1) {
             // browse the jobs, adding a section body for each job
-            foreach ($rs as $rowIndex => $row)
-            {
+            foreach ($rs as $rowIndex => $row) {
                 $txtJobPosting = $templateJob;
 
-                foreach ($tags as $tag)
-                {
-                    switch ($tag)
-                    {
+                foreach ($tags as $tag) {
+                    switch ($tag) {
                         case 'siteURL':
                             $txtJobPosting = XmlTemplate::replaceTemplateTags(
                                 $tag,
                                 $url,
                                 $txtJobPosting
-                        );
-                        break;
+                            );
+                            break;
 
                         case 'jobTitle':
                             $txtJobPosting = XmlTemplate::replaceTemplateTags(
@@ -223,7 +212,8 @@ class XmlUI extends UserInterface
                             break;
 
                         case 'jobURL':
-                            $uri = sprintf("%scareers/?p=showJob&ID=%d&ref=%s",
+                            $uri = sprintf(
+                                "%scareers/?p=showJob&ID=%d&ref=%s",
                                 $url,
                                 $row['jobOrderID'],
                                 $templateName
@@ -243,7 +233,7 @@ class XmlUI extends UserInterface
                                 $txtJobPosting
                             );
                             break;
-                            
+
                         case 'jobID':
                             $txtJobPosting = XmlTemplate::replaceTemplateTags(
                                 $tag,
@@ -276,7 +266,7 @@ class XmlUI extends UserInterface
                             );
                             break;
 
-                        // FIXME: Make this expandable to non-US?
+                            // FIXME: Make this expandable to non-US?
                         case 'jobCountry':
                             $txtJobPosting = XmlTemplate::replaceTemplateTags(
                                 $tag,
@@ -300,7 +290,7 @@ class XmlUI extends UserInterface
                                 $txtJobPosting
                             );
                             break;
-                            
+
                         case 'notes':
                             $txtJobPosting = XmlTemplate::replaceTemplateTags(
                                 $tag,
@@ -327,5 +317,3 @@ class XmlUI extends UserInterface
         echo $stream;
     }
 }
-
-?>

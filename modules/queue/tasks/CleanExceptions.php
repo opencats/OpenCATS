@@ -68,22 +68,16 @@ class CleanExceptions extends Task
             EXCEPTIONS_TTL_DAYS
         );
 
-        if (!($rs = $db->query($sql)))
-        {
+        if (! ($rs = $db->query($sql))) {
             $message = 'Query "' . $sql . '" failed!';
             $ret = TASKRET_ERROR;
-        }
-        else
-        {
+        } else {
             $num = $db->getAffectedRows();
 
-            if ($num > 0)
-            {
+            if ($num > 0) {
                 $message = 'Cleaned up ' . number_format($num, 0) . ' exception logs.';
                 $ret = TASKRET_SUCCESS;
-            }
-            else
-            {
+            } else {
                 // Do not log if nothing was done
                 $message = 'No logs were cleaned.';
                 $ret = TASKRET_SUCCESS_NOLOG;

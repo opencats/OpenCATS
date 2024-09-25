@@ -28,22 +28,32 @@ if (! defined('DEFAULT_CONNECTION_TIMEOUT')) {
  *    @package SimpleTest
  *    @subpackage WebTester
  */
-class SimpleUserAgent {
+class SimpleUserAgent
+{
     private $cookie_jar;
+
     private $cookies_enabled = true;
+
     private $authenticator;
+
     private $max_redirects = DEFAULT_MAX_REDIRECTS;
+
     private $proxy = false;
+
     private $proxy_username = false;
+
     private $proxy_password = false;
+
     private $connection_timeout = DEFAULT_CONNECTION_TIMEOUT;
-    private $additional_headers = array();
+
+    private $additional_headers = [];
 
     /**
      *    Starts with no cookies, realms or proxies.
      *    @access public
      */
-    function __construct() {
+    public function __construct()
+    {
         $this->cookie_jar = new SimpleCookieJar();
         $this->authenticator = new SimpleAuthenticator();
     }
@@ -57,7 +67,8 @@ class SimpleUserAgent {
      *                                  cookies are kept.
      *    @access public
      */
-    function restart($date = false) {
+    public function restart($date = false)
+    {
         $this->cookie_jar->restartSession($date);
         $this->authenticator->restartSession();
     }
@@ -68,7 +79,8 @@ class SimpleUserAgent {
      *                                request until cleared.
      *    @access public
      */
-    function addHeader($header) {
+    public function addHeader($header)
+    {
         $this->additional_headers[] = $header;
     }
 
@@ -77,7 +89,8 @@ class SimpleUserAgent {
      *    @param integer $interval    Amount in seconds.
      *    @access public
      */
-    function ageCookies($interval) {
+    public function ageCookies($interval)
+    {
         $this->cookie_jar->agePrematurely($interval);
     }
 
@@ -91,7 +104,8 @@ class SimpleUserAgent {
      *    @param string $expiry          Expiry date.
      *    @access public
      */
-    function setCookie($name, $value, $host = false, $path = '/', $expiry = false) {
+    public function setCookie($name, $value, $host = false, $path = '/', $expiry = false)
+    {
         $this->cookie_jar->setCookie($name, $value, $host, $path, $expiry);
     }
 
@@ -105,7 +119,8 @@ class SimpleUserAgent {
      *                               value as a string.
      *    @access public
      */
-    function getCookieValue($host, $path, $name) {
+    public function getCookieValue($host, $path, $name)
+    {
         return $this->cookie_jar->getCookieValue($host, $path, $name);
     }
 
@@ -117,7 +132,8 @@ class SimpleUserAgent {
      *                            if the cookie is not set.
      *    @access public
      */
-    function getBaseCookieValue($name, $base) {
+    public function getBaseCookieValue($name, $base)
+    {
         if (! $base) {
             return null;
         }
@@ -128,7 +144,8 @@ class SimpleUserAgent {
      *    Switches off cookie sending and recieving.
      *    @access public
      */
-    function ignoreCookies() {
+    public function ignoreCookies()
+    {
         $this->cookies_enabled = false;
     }
 
@@ -136,7 +153,8 @@ class SimpleUserAgent {
      *    Switches back on the cookie sending and recieving.
      *    @access public
      */
-    function useCookies() {
+    public function useCookies()
+    {
         $this->cookies_enabled = true;
     }
 
@@ -145,7 +163,8 @@ class SimpleUserAgent {
      *    @param integer $timeout      Maximum time in seconds.
      *    @access public
      */
-    function setConnectionTimeout($timeout) {
+    public function setConnectionTimeout($timeout)
+    {
         $this->connection_timeout = $timeout;
     }
 
@@ -155,7 +174,8 @@ class SimpleUserAgent {
      *    @param integer $max        Most hops allowed.
      *    @access public
      */
-    function setMaximumRedirects($max) {
+    public function setMaximumRedirects($max)
+    {
         $this->max_redirects = $max;
     }
 
@@ -168,13 +188,14 @@ class SimpleUserAgent {
      *    @param string $password     Proxy password for authentication.
      *    @access public
      */
-    function useProxy($proxy, $username, $password) {
+    public function useProxy($proxy, $username, $password)
+    {
         if (! $proxy) {
             $this->proxy = false;
             return;
         }
         if ((strncmp($proxy, 'http://', 7) != 0) && (strncmp($proxy, 'https://', 8) != 0)) {
-            $proxy = 'http://'. $proxy;
+            $proxy = 'http://' . $proxy;
         }
         $this->proxy = new SimpleUrl($proxy);
         $this->proxy_username = $username;
@@ -187,7 +208,8 @@ class SimpleUserAgent {
      *    @return boolean                  True if over.
      *    @access private
      */
-    protected function isTooManyRedirects($redirects) {
+    protected function isTooManyRedirects($redirects)
+    {
         return ($redirects > $this->max_redirects);
     }
 
@@ -199,7 +221,8 @@ class SimpleUserAgent {
      *    @param string $password    Password for realm.
      *    @access public
      */
-    function setIdentity($host, $realm, $username, $password) {
+    public function setIdentity($host, $realm, $username, $password)
+    {
         $this->authenticator->setIdentityForRealm($host, $realm, $username, $password);
     }
 
@@ -211,7 +234,8 @@ class SimpleUserAgent {
      *    @return SimpleHttpResponse        Hopefully the target page.
      *    @access public
      */
-    function fetchResponse($url, $encoding) {
+    public function fetchResponse($url, $encoding)
+    {
         if ($encoding->getMethod() != 'POST') {
             $url->addRequestParameters($encoding);
             $encoding->clear();
@@ -220,9 +244,10 @@ class SimpleUserAgent {
         if ($headers = $response->getHeaders()) {
             if ($headers->isChallenge()) {
                 $this->authenticator->addRealm(
-                        $url,
-                        $headers->getAuthentication(),
-                        $headers->getRealm());
+                    $url,
+                    $headers->getAuthentication(),
+                    $headers->getRealm()
+                );
             }
         }
         return $response;
@@ -236,7 +261,8 @@ class SimpleUserAgent {
      *    @return SimpleHttpResponse             Hopefully the target page.
      *    @access private
      */
-    protected function fetchWhileRedirected($url, $encoding) {
+    protected function fetchWhileRedirected($url, $encoding)
+    {
         $redirects = 0;
         do {
             $response = $this->fetch($url, $encoding);
@@ -264,7 +290,8 @@ class SimpleUserAgent {
      *    @return SimpleHttpResponse              Headers and hopefully content.
      *    @access protected
      */
-    protected function fetch($url, $encoding) {
+    protected function fetch($url, $encoding)
+    {
         $request = $this->createRequest($url, $encoding);
         return $request->fetch($this->connection_timeout);
     }
@@ -276,7 +303,8 @@ class SimpleUserAgent {
      *    @return SimpleHttpRequest             New request.
      *    @access private
      */
-    protected function createRequest($url, $encoding) {
+    protected function createRequest($url, $encoding)
+    {
         $request = $this->createHttpRequest($url, $encoding);
         $this->addAdditionalHeaders($request);
         if ($this->cookies_enabled) {
@@ -289,11 +317,11 @@ class SimpleUserAgent {
     /**
      *    Builds the appropriate HTTP request object.
      *    @param SimpleUrl $url                  Target to fetch as url object.
-     *    @param SimpleFormEncoding $parameters  POST/GET parameters.
      *    @return SimpleHttpRequest              New request object.
      *    @access protected
      */
-    protected function createHttpRequest($url, $encoding) {
+    protected function createHttpRequest($url, $encoding)
+    {
         return new SimpleHttpRequest($this->createRoute($url), $encoding);
     }
 
@@ -303,13 +331,15 @@ class SimpleUserAgent {
      *    @return SimpleRoute     Route to take to fetch URL.
      *    @access protected
      */
-    protected function createRoute($url) {
+    protected function createRoute($url)
+    {
         if ($this->proxy) {
             return new SimpleProxyRoute(
-                    $url,
-                    $this->proxy,
-                    $this->proxy_username,
-                    $this->proxy_password);
+                $url,
+                $this->proxy,
+                $this->proxy_username,
+                $this->proxy_password
+            );
         }
         return new SimpleRoute($url);
     }
@@ -319,10 +349,10 @@ class SimpleUserAgent {
      *    @param SimpleHttpRequest $request    Outgoing request.
      *    @access private
      */
-    protected function addAdditionalHeaders(&$request) {
+    protected function addAdditionalHeaders(&$request)
+    {
         foreach ($this->additional_headers as $header) {
             $request->addHeaderLine($header);
         }
     }
 }
-?>

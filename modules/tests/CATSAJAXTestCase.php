@@ -11,24 +11,22 @@
 
 class CATSAJAXTestCase extends CATSWebTestCase
 {
-    public function runXMLLoadAssertions($xml, $AJAXErrors = false,
-        $noAJAXAssertions = false)
-    {
+    public function runXMLLoadAssertions(
+        $xml,
+        $AJAXErrors = false,
+        $noAJAXAssertions = false
+    ) {
         $this->assertHTTPResponseOk();
         $this->assertNoQueryErrors();
         $this->assertNoPHPErrors();
 
-        if ($noAJAXAssertions)
-        {
+        if ($noAJAXAssertions) {
             return;
         }
 
-        if (!$AJAXErrors)
-        {
+        if (! $AJAXErrors) {
             $this->assertNoAJAXErrors($xml);
-        }
-        else
-        {
+        } else {
             $this->assertAJAXErrors($xml);
         }
     }
@@ -56,5 +54,3 @@ class CATSAJAXTestCase extends CATSWebTestCase
         );
     }
 }
-
-?>

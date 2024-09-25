@@ -14,7 +14,7 @@
                 <tr>
                     <td class="tdVertical">Resume:</td>
                     <td>
-                        <input type="radio" id="resume" name="resume" value="1" checked="checked" />Yes
+                        <input type="radio" id="resume" name="resume" value="1" checked />Yes
                         <input type="radio" id="resume" name="resume" value="0" />No
                     </td>
                 </tr>

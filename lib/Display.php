@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -38,13 +37,19 @@ $profileStylesheet = false;
 class Display
 {
     private $_siteID;
+
     private $_db;
+
     private $_profileLib;
+
     private $_profilePage;
 
     private $_table;
+
     private $_rowIndex;
+
     private $_columnIndex;
+
     private $_currentColumn;
 
     public function __construct($siteID, $profileLib, $profilePage)
@@ -77,7 +82,7 @@ class Display
         return $this->_profileLib->getField(false, $this->_profilePage['page'], $columnName);
     }
 
-    private function getTemplate($template, $flags = array())
+    private function getTemplate($template, $flags = [])
     {
         $templateFile = sprintf(
             './profile/%s/%s.tpl',
@@ -85,16 +90,12 @@ class Display
             $template
         );
 
-        if (@file_exists($templateFile))
-        {
+        if (@file_exists($templateFile)) {
             $templateContents = @file_get_contents($templateFile);
-            foreach ($flags as $flag => $value)
-            {
-                $templateContents = str_replace('<'.$flag.'>', $value, $templateContents);
+            foreach ($flags as $flag => $value) {
+                $templateContents = str_replace('<' . $flag . '>', $value, $templateContents);
             }
-        }
-        else
-        {
+        } else {
             $templateContents = '';
         }
 
@@ -106,13 +107,12 @@ class Display
         global $profileStylesheet;
         // Check if the current profile's style has been included, include if it hasn't
         $sheet = $this->_profileLib->getProfileStylesheet();
-        if ($profileStylesheet === false || strcmp($profileStylesheet, $sheet))
-        {
+        if ($profileStylesheet === false || strcmp($profileStylesheet, $sheet)) {
             echo sprintf('<link rel="stylesheet" type="text/css" href="%s" />', $sheet);
             $profileStylesheet = $sheet;
         }
 
-        $this->_table = array();
+        $this->_table = [];
         $this->_rowIndex = $this->_columnIndex = 0;
         $this->_currentColumn = false;
     }
@@ -122,8 +122,11 @@ class Display
         $pageContent = $this->getTemplate('page');
         list($pageTopContent, $pageBottomContent) = explode('<sections>', $pageContent);
 
-        $sectionContent = $this->getTemplate('pageSection',
-            array('sectionWidth' => $this->_profilePage['columnWidth'])
+        $sectionContent = $this->getTemplate(
+            'pageSection',
+            [
+                'sectionWidth' => $this->_profilePage['columnWidth'],
+            ]
         );
         list($sectionTopContent, $sectionBottomContent) = explode('<columns>', $sectionContent);
 
@@ -137,22 +140,18 @@ class Display
         echo $pageTopContent;
 
         for ($fieldIndex = 0, $curColumn = -1, $inSection = false;
-             $fieldIndex < count($fields);
-             $fieldIndex++)
-        {
+            $fieldIndex < count($fields);
+            $fieldIndex++) {
             $field = $fields[$fieldIndex];
 
-            if (!isset($this->_table[$field['columnName']]))
-            {
+            if (! isset($this->_table[$field['columnName']])) {
                 continue;
             }
 
-            if ($curColumn != $field['xPosition'])
-            {
+            if ($curColumn != $field['xPosition']) {
                 $curColumn = $field['xPosition'];
 
-                if ($inSection)
-                {
+                if ($inSection) {
                     echo $sectionBottomContent;
                 }
 
@@ -201,8 +200,7 @@ class Display
 
     public function startColumnLabel($columnName = false)
     {
-        if ($columnName !== false)
-        {
+        if ($columnName !== false) {
             $this->_currentColumn = $columnName;
         }
         ob_start();
@@ -216,8 +214,7 @@ class Display
 
     public function startColumnContent($columnName = false)
     {
-        if ($columnName !== false)
-        {
+        if ($columnName !== false) {
             $this->_currentColumn = $columnName;
         }
         ob_start();

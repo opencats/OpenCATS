@@ -75,7 +75,7 @@
                                         <select id="departmentSelect" name="department" class="inputbox" style="width: 150px;" onchange="if (this.value == 'edit') { listEditor('Departments', 'departmentSelect', 'departmentsCSV', false); this.value = '(none)'; } if (this.value == 'nullline') { this.value = '(none)'; }">
                                             <option value="edit">(Edit Departments)</option>
                                             <option value="nullline">-------------------------------</option>
-                                            <option value="(none)" selected="selected">(None)</option>
+                                            <option value="(none)" selected>(None)</option>
                                         </select>
                                         <input type="hidden" id="departmentsCSV" name="departmentsCSV" value="" />
                                     </td>
@@ -87,7 +87,7 @@
                                     </td>
                                     <td class="tdData">
                                         <select id="reportsTo" name="reportsTo" class="inputbox" style="width: 150px;" >
-                                            <option value="(none)" selected="selected">(None)</option>
+                                            <option value="(none)" selected>(None)</option>
                                             <?php foreach ($this->reportsToRS as $index => $contact): ?>
                                                 <option value="<?php $this->_($contact['contactID']); ?>"><?php $this->_($contact['firstName'] . ' ' . $contact['lastName']); ?></option>
                                             <?php endforeach; ?>

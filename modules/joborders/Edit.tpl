@@ -97,7 +97,7 @@
                         <td class="tdData">
                             <select id="departmentSelect" name="department" class="inputbox" style="width: 150px;" onchange="if (this.value == 'edit') { listEditor('Departments', 'departmentSelect', 'departmentsCSV', false); this.value = '(none)'; } if (this.value == 'nullline') { this.value = '(none)'; }">
                                 <?php if ($this->data['departmentID'] == 0): ?>
-                                    <option value="(none)" selected="selected">None</option>
+                                    <option value="(none)" selected>None</option>
                                 <?php else: ?>
                                     <option value="(none)">None</option>
                                 <?php endif; ?>
@@ -142,7 +142,7 @@
                                 <?php foreach($this->jobTypes as $jobTypeShort => $jobTypeLong): ?>
                                     <option value="<?php echo $jobTypeShort;?>" 
                                             <?php if($this->data['type'] == $jobTypeShort): ?>
-                                                selected="selected"
+                                                selected
                                             <?php endif; ?>
                                             ><?php echo $jobTypeShort." (".$jobTypeLong.")";?>
                                     </option>

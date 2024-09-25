@@ -49,7 +49,7 @@
 
                                             <?php foreach ($this->contactsRS as $rowNumber => $contactsData): ?>
                                                 <?php if ($this->data['billingContact'] == $contactsData['contactID']): ?>
-                                                    <option selected="selected" value="<?php $this->_($contactsData['contactID']) ?>"><?php $this->_($contactsData['lastName']) ?>, <?php $this->_($contactsData['firstName']) ?></option>
+                                                    <option selected value="<?php $this->_($contactsData['contactID']) ?>"><?php $this->_($contactsData['lastName']) ?>, <?php $this->_($contactsData['firstName']) ?></option>
                                                 <?php else: ?>
                                                     <option value="<?php $this->_($contactsData['contactID']) ?>"><?php $this->_($contactsData['lastName']) ?>, <?php $this->_($contactsData['firstName']) ?></option>
                                                 <?php endif; ?>
@@ -65,7 +65,7 @@
                                     <td class="tdData">
                                         <select tabindex="3" id="departmentsSelect" name="departmentsSelect" class="inputbox" style="width: 150px;" onchange="if (this.value == 'edit') { listEditor('Departments', 'departmentsSelect', 'departmentsCSV'); } this.value = 'num';">
                                             <option value="edit">(Edit Departments)</option>
-                                            <option value="num" selected="selected"><?php echo(count($this->departmentsRS)); ?> Departments</option>
+                                            <option value="num" selected><?php echo(count($this->departmentsRS)); ?> Departments</option>
                                             <option value="nullline">-------------------------------</option>
                                             <?php foreach ($this->departmentsRS AS $index => $department): ?>
                                                 <option value="<?php $this->_($department['name']); ?>"><?php $this->_($department['name']); ?></option>
@@ -175,7 +175,7 @@
                                         Edit all contacts address information to match company address?<br />
                                         <select id="updateContacts" name="updateContacts" class="inputbox">
                                             <option value="yes">Yes, synchronize addresses.</option>
-                                            <option value="no" selected="selected">No, leave addresses unmodified.</option>
+                                            <option value="no" selected>No, leave addresses unmodified.</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -211,7 +211,7 @@
 
                                 <?php foreach ($this->usersRS as $rowNumber => $usersData): ?>
                                     <?php if ($this->data['owner'] == $usersData['userID']): ?>
-                                        <option selected="selected" value="<?php $this->_($usersData['userID']) ?>"><?php $this->_($usersData['lastName']) ?>, <?php $this->_($usersData['firstName']) ?></option>
+                                        <option selected value="<?php $this->_($usersData['userID']) ?>"><?php $this->_($usersData['lastName']) ?>, <?php $this->_($usersData['firstName']) ?></option>
                                     <?php else: ?>
                                         <option value="<?php $this->_($usersData['userID']) ?>"><?php $this->_($usersData['lastName']) ?>, <?php $this->_($usersData['firstName']) ?></option>
                                     <?php endif; ?>

@@ -12,8 +12,8 @@
 class CATSWebTestCase extends WebTestCase
 {
     private $_indexName;
-    private $_indexURL;
 
+    private $_indexURL;
 
     public function __construct()
     {
@@ -22,43 +22,34 @@ class CATSWebTestCase extends WebTestCase
         parent::__construct();
     }
 
-
-    public function runPageLoadAssertions($fatalErrors = false,
-        $noFatalAssertions = false)
-    {
-        if (!$this->assertHTTPResponseOk())
-        {
+    public function runPageLoadAssertions(
+        $fatalErrors = false,
+        $noFatalAssertions = false
+    ) {
+        if (! $this->assertHTTPResponseOk()) {
             return false;
         }
 
-        if (!$this->assertNoQueryErrors())
-        {
+        if (! $this->assertNoQueryErrors()) {
             $this->showSource();
             return false;
         }
 
-        if (!$this->assertNoPHPErrors())
-        {
+        if (! $this->assertNoPHPErrors()) {
             return false;
         }
 
-        if ($noFatalAssertions)
-        {
+        if ($noFatalAssertions) {
             return true;
         }
 
-        if (!$fatalErrors)
-        {
-            if (!$this->assertNoCATSFatalErrors())
-            {
+        if (! $fatalErrors) {
+            if (! $this->assertNoCATSFatalErrors()) {
                 $this->showSource();
                 return false;
             }
-        }
-        else
-        {
-            if (!$this->assertCATSFatalErrors())
-            {
+        } else {
+            if (! $this->assertCATSFatalErrors()) {
                 return false;
             }
         }
@@ -70,20 +61,18 @@ class CATSWebTestCase extends WebTestCase
     {
         $success = $this->assertPOST(
             $this->_indexURL . '?m=login&a=attemptLogin',
-            array(
+            [
                 'username' => TESTER_LOGIN,
-                'password' => TESTER_PASSWORD
-            ),
+                'password' => TESTER_PASSWORD,
+            ],
             'Login should succeed'
         );
 
-        if (!$success)
-        {
+        if (! $success) {
             return false;
         }
 
-        if (!$this->runPageLoadAssertions(false))
-        {
+        if (! $this->runPageLoadAssertions(false)) {
             return false;
         }
 
@@ -97,19 +86,19 @@ class CATSWebTestCase extends WebTestCase
 
         /* Are we on an Initial Configuration Wizard page? */
         $initialConfiguration = preg_match(
-            '/<title>CATS - Initial Configuration Wizard<\/title>/', $rawHTML
+            '/<title>CATS - Initial Configuration Wizard<\/title>/',
+            $rawHTML
         );
-        if ($initialConfiguration)
-        {
+        if ($initialConfiguration) {
             /* We are on the E-Mail Features Disabled page. */
             $this->assertPattern(
-                '/E-Mail Disabled/i', 'At E-Mail Features Disabled page'
+                '/E-Mail Disabled/i',
+                'At E-Mail Features Disabled page'
             );
             $this->assertClickSubmit('Continue Using CATS');
         }
 
-        if (!$success)
-        {
+        if (! $success) {
             return false;
         }
 
@@ -127,38 +116,45 @@ class CATSWebTestCase extends WebTestCase
         return $this->_browser->getContent();
     }
 
-    public function addJobOrder($title, $companyID, $contactID, $type,
-        $recruiter, $openings, $city, $state)
-    {
+    public function addJobOrder(
+        $title,
+        $companyID,
+        $contactID,
+        $type,
+        $recruiter,
+        $openings,
+        $city,
+        $state
+    ) {
         /* Add the job order. */
         $this->assertPOST(
             $this->_indexURL . '?m=joborders&a=add',
-            array(
-                'postback'  => 'postback',
-                'title'     => $title,
-                'companyID'  => $companyID,
+            [
+                'postback' => 'postback',
+                'title' => $title,
+                'companyID' => $companyID,
                 'contactID' => $contactID,
-                'type'      => $type,
+                'type' => $type,
                 'recruiter' => $recruiter,
-                'openings'  => $openings,
-                'city'      => $city,
-                'state'     => $state
-            ),
+                'openings' => $openings,
+                'city' => $city,
+                'state' => $state,
+            ],
             'Adding test job order should succeed'
         );
-        if (!$this->runPageLoadAssertions(false))
-        {
+        if (! $this->runPageLoadAssertions(false)) {
             return false;
         }
 
         /* Get the job order ID. */
         $matchResult = preg_match(
-            '/jobOrderID=(?P<jobOrderID>\d+)/', $this->getUrl(), $matches
+            '/jobOrderID=(?P<jobOrderID>\d+)/',
+            $this->getUrl(),
+            $matches
         );
         $this->assertTrue($matchResult, 'URL should contain jobOrderID=');
 
-        if ($matchResult)
-        {
+        if ($matchResult) {
             return $matches['jobOrderID'];
         }
 
@@ -170,54 +166,54 @@ class CATSWebTestCase extends WebTestCase
         /* Add the candidate. */
         $this->assertPOST(
             $this->_indexURL . '?m=candidates&a=add',
-            array(
-                'postback'  => 'postback',
+            [
+                'postback' => 'postback',
                 'firstName' => $firstName,
-                'lastName'  => $lastName
-            ),
+                'lastName' => $lastName,
+            ],
             'Adding test candidate should succeed'
         );
-        if (!$this->runPageLoadAssertions(false))
-        {
+        if (! $this->runPageLoadAssertions(false)) {
             return false;
         }
 
         /* Get the candidate ID. */
         $matchResult = preg_match(
-            '/candidateID=(?P<candidateID>\d+)/', $this->getUrl(), $matches
+            '/candidateID=(?P<candidateID>\d+)/',
+            $this->getUrl(),
+            $matches
         );
         $this->assertTrue($matchResult, 'URL should contain candidateID=');
 
-        if ($matchResult)
-        {
+        if ($matchResult) {
             return $matches['candidateID'];
         }
 
         return false;
     }
 
-    public function addCompany($name, $city = false, $state = false,
-        $zip = false, $departmentsCSV = false)
-    {
+    public function addCompany(
+        $name,
+        $city = false,
+        $state = false,
+        $zip = false,
+        $departmentsCSV = false
+    ) {
         /* Build POST data. */
-        $POSTData = array(
+        $POSTData = [
             'postback' => 'postback',
-            'name'     => $name
-        );
-        if ($city !== false)
-        {
+            'name' => $name,
+        ];
+        if ($city !== false) {
             $POSTData['city'] = $city;
         }
-        if ($state !== false)
-        {
+        if ($state !== false) {
             $POSTData['state'] = $state;
         }
-        if ($zip !== false)
-        {
+        if ($zip !== false) {
             $POSTData['zip'] = $zip;
         }
-        if ($departmentsCSV !== false)
-        {
+        if ($departmentsCSV !== false) {
             $POSTData['departmentsCSV'] = $departmentsCSV;
         }
 
@@ -227,19 +223,19 @@ class CATSWebTestCase extends WebTestCase
             $POSTData,
             'Adding test company should succeed'
         );
-        if (!$this->runPageLoadAssertions(false))
-        {
+        if (! $this->runPageLoadAssertions(false)) {
             return false;
         }
 
         /* Get the company ID. */
         $matchResult = preg_match(
-            '/companyID=(?P<companyID>\d+)/', $this->getUrl(), $matches
+            '/companyID=(?P<companyID>\d+)/',
+            $this->getUrl(),
+            $matches
         );
         $this->assertTrue($matchResult, 'URL should contain companyID=');
 
-        if ($matchResult)
-        {
+        if ($matchResult) {
             return $matches['companyID'];
         }
 
@@ -251,52 +247,54 @@ class CATSWebTestCase extends WebTestCase
         /* Add the contact. */
         $this->assertPOST(
             $this->_indexURL . '?m=contacts&a=add',
-            array(
-                'postback'  => 'postback',
+            [
+                'postback' => 'postback',
                 'firstName' => $firstName,
-                'lastName'  => $lastName,
-                'companyID'  => $companyID,
-                'title'     => $title
-            ),
+                'lastName' => $lastName,
+                'companyID' => $companyID,
+                'title' => $title,
+            ],
             'Adding test contact should succeed'
         );
-        if (!$this->runPageLoadAssertions(false))
-        {
+        if (! $this->runPageLoadAssertions(false)) {
             return false;
         }
 
         /* Get the contact ID. */
         $matchResult = preg_match(
-            '/contactID=(?P<contactID>\d+)/', $this->getUrl(), $matches
+            '/contactID=(?P<contactID>\d+)/',
+            $this->getUrl(),
+            $matches
         );
         $this->assertTrue($matchResult, 'URL should contain contactID=');
 
-        if ($matchResult)
-        {
+        if ($matchResult) {
             return $matches['contactID'];
         }
 
         return false;
     }
 
-    public function addPipelineActivity($candidateID, $jobOrderID,
-        $activityTypeID, $activityNote)
-    {
+    public function addPipelineActivity(
+        $candidateID,
+        $jobOrderID,
+        $activityTypeID,
+        $activityNote
+    ) {
         /* Add the candidate. */
         $this->assertPOST(
             $this->_indexURL . '?m=candidates&a=addActivityChangeStatus',
-            array(
-                'postback'       => 'postback',
-                'addActivity'    => 'on',
-                'candidateID'    => $candidateID,
-                'regardingID'    => $jobOrderID,
+            [
+                'postback' => 'postback',
+                'addActivity' => 'on',
+                'candidateID' => $candidateID,
+                'regardingID' => $jobOrderID,
                 'activityTypeID' => $activityTypeID,
-                'activityNote'   => $activityNote
-            ),
+                'activityNote' => $activityNote,
+            ],
             'Adding pipeline activity note should succeed'
         );
-        if (!$this->runPageLoadAssertions(false))
-        {
+        if (! $this->runPageLoadAssertions(false)) {
             return false;
         }
 
@@ -307,25 +305,28 @@ class CATSWebTestCase extends WebTestCase
         return true;
     }
 
-    public function addUser($firstName, $lastName, $username, $accessLevel,
-                            $password)
-    {
+    public function addUser(
+        $firstName,
+        $lastName,
+        $username,
+        $accessLevel,
+        $password
+    ) {
         /* Add the user. */
         $this->assertPOST(
             $this->_indexURL . '?m=settings&a=addUser',
-            array(
-                'postback'       => 'postback',
-                'firstName'      => $firstName,
-                'lastName'       => $lastName,
-                'username'       => $username,
-                'accessLevel'    => $accessLevel,
-                'password'       => $password,
-                'retypePassword' => $password
-            ),
+            [
+                'postback' => 'postback',
+                'firstName' => $firstName,
+                'lastName' => $lastName,
+                'username' => $username,
+                'accessLevel' => $accessLevel,
+                'password' => $password,
+                'retypePassword' => $password,
+            ],
             'Adding test user should succeed'
         );
-        if (!$this->runPageLoadAssertions(false))
-        {
+        if (! $this->runPageLoadAssertions(false)) {
             return false;
         }
 
@@ -333,21 +334,22 @@ class CATSWebTestCase extends WebTestCase
             '/The specified username already exists./',
             sprintf('User \'%s\' should not exist', $username)
         );
-        if (!$doesNotExist)
-        {
+        if (! $doesNotExist) {
             return false;
         }
 
         /* Get the user ID. */
         $matchResult = preg_match(
-            '/userID=(?P<userID>\d+)/', $this->getUrl(), $matches
+            '/userID=(?P<userID>\d+)/',
+            $this->getUrl(),
+            $matches
         );
         $this->assertTrue(
-            $matchResult, 'URL should contain userID='
+            $matchResult,
+            'URL should contain userID='
         );
 
-        if (!$matchResult)
-        {
+        if (! $matchResult) {
             return false;
         }
 
@@ -361,8 +363,7 @@ class CATSWebTestCase extends WebTestCase
             false,
             'Deleting job order [' . $jobOrderID . '] should succeed'
         );
-        if (!$this->runPageLoadAssertions(false))
-        {
+        if (! $this->runPageLoadAssertions(false)) {
             return false;
         }
     }
@@ -374,8 +375,7 @@ class CATSWebTestCase extends WebTestCase
             false,
             'Deleting candidate [' . $candidateID . '] should succeed'
         );
-        if (!$this->runPageLoadAssertions(false))
-        {
+        if (! $this->runPageLoadAssertions(false)) {
             return false;
         }
     }
@@ -387,8 +387,7 @@ class CATSWebTestCase extends WebTestCase
             false,
             'Deleting company [' . $companyID . '] should succeed'
         );
-        if (!$this->runPageLoadAssertions(false))
-        {
+        if (! $this->runPageLoadAssertions(false)) {
             return false;
         }
     }
@@ -400,8 +399,7 @@ class CATSWebTestCase extends WebTestCase
             false,
             'Deleting contact [' . $contactID . '] should succeed'
         );
-        if (!$this->runPageLoadAssertions(false))
-        {
+        if (! $this->runPageLoadAssertions(false)) {
             return false;
         }
     }
@@ -413,8 +411,7 @@ class CATSWebTestCase extends WebTestCase
             false,
             'Deleting user [' . $userID . '] should succeed'
         );
-        if (!$this->runPageLoadAssertions(false))
-        {
+        if (! $this->runPageLoadAssertions(false)) {
             return false;
         }
     }
@@ -476,7 +473,8 @@ class CATSWebTestCase extends WebTestCase
     public function assertClickLink($label, $index = 0, $message = '%s')
     {
         $message = sprintf(
-            $message, "Clicking link [$label ($index)] should succeed"
+            $message,
+            "Clicking link [$label ($index)] should succeed"
         );
         return $this->assertTrue(
             $this->clickLink($label, $index),
@@ -487,7 +485,8 @@ class CATSWebTestCase extends WebTestCase
     public function assertClickLinkById($id, $message = '%s')
     {
         $message = sprintf(
-            $message, "Clicking link of ID [$id] should succeed"
+            $message,
+            "Clicking link of ID [$id] should succeed"
         );
         return $this->assertTrue(
             $this->clickLinkById($id),
@@ -495,11 +494,14 @@ class CATSWebTestCase extends WebTestCase
         );
     }
 
-    public function assertClickSubmit($label = 'Submit',
-                                      $additional = false, $message = '%s')
-    {
+    public function assertClickSubmit(
+        $label = 'Submit',
+        $additional = false,
+        $message = '%s'
+    ) {
         $message = sprintf(
-            $message, "Clicking submit [$label] should succeed"
+            $message,
+            "Clicking submit [$label] should succeed"
         );
         return $this->assertTrue(
             $this->clickSubmit($label, $additional),
@@ -507,11 +509,14 @@ class CATSWebTestCase extends WebTestCase
         );
     }
 
-    public function assertClickSubmitById($id, $additional = false,
-                                          $message = '%s')
-    {
+    public function assertClickSubmitById(
+        $id,
+        $additional = false,
+        $message = '%s'
+    ) {
         $message = sprintf(
-            $message, "Clicking submit of ID [$id] should succeed"
+            $message,
+            "Clicking submit of ID [$id] should succeed"
         );
         return $this->assertTrue(
             $this->clickSubmitById($id, $additional),
@@ -522,7 +527,8 @@ class CATSWebTestCase extends WebTestCase
     public function assertNoQueryErrors($message = '%s')
     {
         $message = sprintf(
-            $message, "No query errors should occur -- %s"
+            $message,
+            "No query errors should occur -- %s"
         );
         return $this->assertNoPattern(
             '/Query Error -- Report to System Administrator ASAP/i',
@@ -533,7 +539,8 @@ class CATSWebTestCase extends WebTestCase
     public function assertNoPHPErrors($message = '%s')
     {
         $message = sprintf(
-            $message, "No PHP errors should occur -- %s"
+            $message,
+            "No PHP errors should occur -- %s"
         );
         return $this->assertNoPattern(
             '/<\/b> on line <[b]>/i',
@@ -544,17 +551,20 @@ class CATSWebTestCase extends WebTestCase
     public function assertHTTPResponseOk($message = '%s')
     {
         $message = sprintf(
-            $message, "HTTP response code should be [200]"
+            $message,
+            "HTTP response code should be [200]"
         );
         return $this->assertResponse(
-            HTTP_OK, $message
+            HTTP_OK,
+            $message
         );
     }
 
     public function assertCATSFatalErrors($message = '%s')
     {
         $message = sprintf(
-            $message, "CATS fatal errors should occur -- %s"
+            $message,
+            "CATS fatal errors should occur -- %s"
         );
         return $this->assertPattern(
             '/A fatal error has occurred./i',
@@ -565,7 +575,8 @@ class CATSWebTestCase extends WebTestCase
     public function assertNoCATSFatalErrors($message = '%s')
     {
         $message = sprintf(
-            $message, "No CATS fatal errors should occur -- %s"
+            $message,
+            "No CATS fatal errors should occur -- %s"
         );
         return $this->assertNoPattern(
             '/A fatal error has occurred./i',
@@ -573,29 +584,27 @@ class CATSWebTestCase extends WebTestCase
         );
     }
 
-    public function assertDateInputExists($name, $required, $dateFormat,
-                                          $defaultDate = false)
-    {
-        if ($defaultDate === false)
-        {
+    public function assertDateInputExists(
+        $name,
+        $required,
+        $dateFormat,
+        $defaultDate = false
+    ) {
+        if ($defaultDate === false) {
             $pattern = sprintf(
                 "/DateInput\('%s', %s, '%s', '', (:?-1|\d+)\);/",
                 $name,
                 $required,
                 $dateFormat
             );
-        }
-        else if ($defaultDate === true)
-        {
+        } elseif ($defaultDate === true) {
             $pattern = sprintf(
                 "/DateInput\('%s', %s, '%s', '\d{2}-\d{2}-\d{2}', (:?-1|\d+)\);/",
                 $name,
                 $required,
                 $dateFormat
             );
-        }
-        else
-        {
+        } else {
             $pattern = sprintf(
                 "/DateInput\('%s', %s, '%s', '%s', (:?-1|\d+)\);/",
                 $name,
@@ -611,7 +620,8 @@ class CATSWebTestCase extends WebTestCase
     public function assertPOST($url, $parameters = false, $message = '%s')
     {
         $message = sprintf(
-            $message, "POST should succeed"
+            $message,
+            "POST should succeed"
         );
         return $this->assertTrue(
             $this->post($url, $parameters),
@@ -622,7 +632,8 @@ class CATSWebTestCase extends WebTestCase
     public function assertGET($url, $parameters = false, $message = '%s')
     {
         $message = sprintf(
-            $message, "GET should succeed"
+            $message,
+            "GET should succeed"
         );
         return $this->assertTrue(
             $this->get($url, $parameters),
@@ -630,5 +641,3 @@ class CATSWebTestCase extends WebTestCase
         );
     }
 }
-
-?>

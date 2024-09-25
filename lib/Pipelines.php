@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -40,15 +39,14 @@ include_once(LEGACY_ROOT . '/lib/History.php');
 class Pipelines
 {
     private $_db;
-    private $_siteID;
 
+    private $_siteID;
 
     public function __construct($siteID)
     {
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
-
 
     /**
      * Adds a candidate to the pipeline for a job order.
@@ -76,14 +74,12 @@ class Pipelines
         );
         $rs = $this->_db->getAssoc($sql);
 
-        if (empty($rs))
-        {
+        if (empty($rs)) {
             return false;
         }
 
         $count = $rs['candidateIDCount'];
-        if ($count > 0)
-        {
+        if ($count > 0) {
             /* Candidate already exists in the pipeline. */
             return false;
         }
@@ -91,7 +87,9 @@ class Pipelines
         $extraFields = '';
         $extraValues = '';
 
-        if (!eval(Hooks::get('PIPELINES_ADD_SQL'))) return;
+        if (! eval(Hooks::get('PIPELINES_ADD_SQL'))) {
+            return;
+        }
 
         $sql = sprintf(
             "INSERT INTO candidate_joborder (
@@ -121,8 +119,7 @@ class Pipelines
         );
 
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return false;
         }
 
@@ -134,7 +131,6 @@ class Pipelines
      *
      * @param integer candidate ID
      * @param integer job order ID
-     * @return void
      */
     public function remove($candidateID, $jobOrderID)
     {
@@ -282,8 +278,7 @@ class Pipelines
         );
         $rs = $this->_db->getAssoc($sql);
 
-        if (empty($rs))
-        {
+        if (empty($rs)) {
             return -1;
         }
 
@@ -291,9 +286,13 @@ class Pipelines
     }
 
     // FIXME: Document me.
-    public function setStatus($candidateID, $jobOrderID, $statusID,
-                              $emailAddress, $emailText)
-    {
+    public function setStatus(
+        $candidateID,
+        $jobOrderID,
+        $statusID,
+        $emailAddress,
+        $emailText
+    ) {
         /* Get existing status. */
         $sql = sprintf(
             "SELECT
@@ -313,16 +312,14 @@ class Pipelines
         );
         $rs = $this->_db->getAssoc($sql);
 
-        if (empty($rs))
-        {
+        if (empty($rs)) {
             return;
         }
 
         $candidateJobOrderID = $rs['candidateJobOrderID'];
-        $oldStatusID         = $rs['oldStatusID'];
+        $oldStatusID = $rs['oldStatusID'];
 
-        if ($oldStatusID == $statusID)
-        {
+        if ($oldStatusID == $statusID) {
             /* No need to update the database and scew the history if there is
              * no actual change.
              */
@@ -348,7 +345,10 @@ class Pipelines
 
         /* Add history. */
         $historyID = $this->addStatusHistory(
-            $candidateID, $jobOrderID, $statusID, $oldStatusID
+            $candidateID,
+            $jobOrderID,
+            $statusID,
+            $oldStatusID
         );
 
         /* Add auditing history. */
@@ -364,13 +364,12 @@ class Pipelines
             $historyDescription
         );
 
-        if (!empty($emailAddress))
-        {
+        if (! empty($emailAddress)) {
             /* Send e-mail notification. */
             //FIXME: Make subject configurable.
             $mailer = new Mailer($this->_siteID);
             $mailerStatus = $mailer->sendToOne(
-                array($emailAddress, ''),
+                [$emailAddress, ''],
                 CANDIDATE_STATUSCHANGE_SUBJECT,
                 $emailText,
                 true
@@ -424,9 +423,12 @@ class Pipelines
     }
 
     // FIXME: Document me.
-    public function addStatusHistory($candidateID, $jobOrderID, $statusToID,
-                                     $statusFromID)
-    {
+    public function addStatusHistory(
+        $candidateID,
+        $jobOrderID,
+        $statusToID,
+        $statusFromID
+    ) {
         $sql = sprintf(
             "INSERT INTO candidate_joborder_status_history (
                 joborder_id,
@@ -452,8 +454,7 @@ class Pipelines
         );
 
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return -1;
         }
 
@@ -662,8 +663,7 @@ class Pipelines
         );
 
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return -1;
         }
     }
@@ -685,8 +685,7 @@ class Pipelines
         );
         $rs = $this->_db->getAssoc($sql);
 
-        if (!isset($rs['ratingValue']) || empty($rs['ratingValue']))
-        {
+        if (! isset($rs['ratingValue']) || empty($rs['ratingValue'])) {
             return 0;
         }
 
@@ -735,7 +734,4 @@ class Pipelines
 
         return $this->_db->getAllAssoc($sql);
     }
-
 }
-
-?>

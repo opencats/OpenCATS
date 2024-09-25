@@ -36,25 +36,24 @@ include_once(LEGACY_ROOT . '/lib/JobOrders.php');
 
 $interface = new SecureAJAXInterface();
 
-if (!isset($_REQUEST['joborderID']) ||
-    !isset($_REQUEST['page']) ||
-    !isset($_REQUEST['entriesPerPage']) ||
-    !isset($_REQUEST['sortBy']) ||
-    !isset($_REQUEST['sortDirection']))
-{
+if (! isset($_REQUEST['joborderID']) ||
+    ! isset($_REQUEST['page']) ||
+    ! isset($_REQUEST['entriesPerPage']) ||
+    ! isset($_REQUEST['sortBy']) ||
+    ! isset($_REQUEST['sortDirection'])) {
     $interface->outputXMLErrorPage(-1, 'Invalid input.');
     die();
 }
 
 $siteID = $interface->getSiteID();
 
-$jobOrderID     = trim(htmlspecialchars($_REQUEST['joborderID']));
-$page           = trim(htmlspecialchars($_REQUEST['page']));
+$jobOrderID = trim(htmlspecialchars($_REQUEST['joborderID']));
+$page = trim(htmlspecialchars($_REQUEST['page']));
 $entriesPerPage = trim(htmlspecialchars($_REQUEST['entriesPerPage']));
-$sortBy         = trim(htmlspecialchars($_REQUEST['sortBy']));
-$sortDirection  = trim(htmlspecialchars($_REQUEST['sortDirection']));
-$indexFile      = trim(htmlspecialchars($_REQUEST['indexFile']));
-$isPopup        = $_REQUEST['isPopup'] == 1 ? true : false;
+$sortBy = trim(htmlspecialchars($_REQUEST['sortBy']));
+$sortDirection = trim(htmlspecialchars($_REQUEST['sortDirection']));
+$indexFile = trim(htmlspecialchars($_REQUEST['indexFile']));
+$isPopup = $_REQUEST['isPopup'] == 1 ? true : false;
 
 $_SESSION['CATS']->setPipelineEntriesPerPage($entriesPerPage);
 
@@ -66,18 +65,12 @@ $pipelines = new Pipelines($siteID);
 $pipelinesRS = $pipelines->getJobOrderPipeline($jobOrderID);
 
 /* Format pipeline data. */
-foreach ($pipelinesRS as $rowIndex => $row)
-{
-    if ($row['submitted'] == '1')
-    {
+foreach ($pipelinesRS as $rowIndex => $row) {
+    if ($row['submitted'] == '1') {
         $pipelinesRS[$rowIndex]['highlightStyle'] = 'jobLinkSubmitted';
-    }
-    else if($row['isHotCandidate'] == '1')
-    {
+    } elseif($row['isHotCandidate'] == '1') {
         $pipelinesRS[$rowIndex]['highlightStyle'] = 'jobLinkHot';
-    }
-    else
-    {
+    } else {
         $pipelinesRS[$rowIndex]['highlightStyle'] = 'jobLinkCold';
     }
 
@@ -87,22 +80,17 @@ foreach ($pipelinesRS as $rowIndex => $row)
         LAST_NAME_MAXLEN
     );
 
-    if ($row['attachmentPresent'] == 1)
-    {
+    if ($row['attachmentPresent'] == 1) {
         $pipelinesRS[$rowIndex]['iconTag'] = '<img src="images/paperclip.gif" alt="" width="16" height="16" />';
-    }
-    else
-    {
+    } else {
         $pipelinesRS[$rowIndex]['iconTag'] = '<img src="images/mru/blank.gif" alt="" width="16" height="16" />';
     }
 
-    if ($row['isDuplicateCandidate'] == 1)
-    {
+    if ($row['isDuplicateCandidate'] == 1) {
         $pipelinesRS[$rowIndex]['iconTag'] .= '<img src="images/wf_error.gif" alt="" width="16" height="16" title="Duplicate Candidate"/>';
     }
 
-    if($pipelinesRS[$rowIndex]['iconTag'] == '')
-    {
+    if($pipelinesRS[$rowIndex]['iconTag'] == '') {
         $pipelinesRS[$rowIndex]['iconTag'] .= '&nbsp;';
     }
 
@@ -114,28 +102,22 @@ foreach ($pipelinesRS as $rowIndex => $row)
 }
 
 /* Sort the data. */
-if ($sortBy !== '' && $sortBy !== 'undefined')
-{
-    $sorting = array();
-    foreach ($pipelinesRS as $p)
-    {
+if ($sortBy !== '' && $sortBy !== 'undefined') {
+    $sorting = [];
+    foreach ($pipelinesRS as $p) {
         $sorting[] = $p[$sortBy];
     }
-    if ($sortBy == 'ratingValue')
-    {
-        array_multisort($sorting, $sortDirection == 'desc' ? SORT_DESC : SORT_ASC , SORT_NUMERIC, $pipelinesRS);
-    }
-    else
-    {
-        array_multisort($sorting, $sortDirection == 'desc' ? SORT_DESC : SORT_ASC , SORT_STRING, $pipelinesRS);
+    if ($sortBy == 'ratingValue') {
+        array_multisort($sorting, $sortDirection == 'desc' ? SORT_DESC : SORT_ASC, SORT_NUMERIC, $pipelinesRS);
+    } else {
+        array_multisort($sorting, $sortDirection == 'desc' ? SORT_DESC : SORT_ASC, SORT_STRING, $pipelinesRS);
     }
 }
 
 $minEntry = $entriesPerPage * $page;
 $maxEntry = $minEntry + $entriesPerPage;
 
-if ($maxEntry > count($pipelinesRS))
-{
+if ($maxEntry > count($pipelinesRS)) {
     $maxEntry = count($pipelinesRS);
 }
 
@@ -146,38 +128,28 @@ function printSortLink($field, $delimiter = "'", $changeDirection = true)
 
     echo $delimiter, $field, $delimiter, ', ';
 
-    if ($changeDirection)
-    {
-        if ($sortBy == $field)
-        {
-            if ($sortDirection == 'desc' || $sortDirection == '')
-            {
+    if ($changeDirection) {
+        if ($sortBy == $field) {
+            if ($sortDirection == 'desc' || $sortDirection == '') {
                 echo $delimiter, 'asc', $delimiter;
-            }
-            else
-            {
+            } else {
                 echo $delimiter, 'desc', $delimiter;
             }
-        }
-        else
-        {
+        } else {
             echo $delimiter, 'asc', $delimiter;
         }
-    }
-    else
-    {
-        if ($sortDirection == 'desc' || $sortDirection == '')
-        {
+    } else {
+        if ($sortDirection == 'desc' || $sortDirection == '') {
             echo $delimiter, 'desc', $delimiter;
-        }
-        else
-        {
+        } else {
             echo $delimiter, 'asc', $delimiter;
         }
     }
 }
 
-if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
+if (! eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) {
+    return;
+}
 
 ?>
 
@@ -188,10 +160,18 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
     var s = '';
     s += 'Showing entries <?php echo($minEntry + 1); ?> through <?php echo($maxEntry); ?> of <?php echo(count($pipelinesRS)) ?>: ';
     <?php if ($minEntry != 0): ?>
-        s += '&nbsp;&nbsp;<a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page - 1); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink($sortBy, "\'", false); ?>, <?php if ($isPopup) echo(1); else echo(0); ?>, \'ajaxPipelineTable\', \'<?php echo($_SESSION['CATS']->getCookie()); ?>\', \'ajaxPipelineTableIndicator\', \'<?php echo($indexFile); ?>\');">&lt; Previous Page</a>';
+        s += '&nbsp;&nbsp;<a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page - 1); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink($sortBy, "\'", false); ?>, <?php if ($isPopup) {
+            echo(1);
+        } else {
+            echo(0);
+        } ?>, \'ajaxPipelineTable\', \'<?php echo($_SESSION['CATS']->getCookie()); ?>\', \'ajaxPipelineTableIndicator\', \'<?php echo($indexFile); ?>\');">&lt; Previous Page</a>';
     <?php endif; ?>
     <?php if ($maxEntry < count($pipelinesRS)): ?>
-        s += '&nbsp;&nbsp;<a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page + 1); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink($sortBy, "\'", false); ?>, <?php if ($isPopup) echo(1); else echo(0); ?>, \'ajaxPipelineTable\', \'<?php echo($_SESSION['CATS']->getCookie()); ?>\', \'ajaxPipelineTableIndicator\', \'<?php echo($indexFile); ?>\');">Next Page &gt;</a>';
+        s += '&nbsp;&nbsp;<a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page + 1); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink($sortBy, "\'", false); ?>, <?php if ($isPopup) {
+            echo(1);
+        } else {
+            echo(0);
+        } ?>, \'ajaxPipelineTable\', \'<?php echo($_SESSION['CATS']->getCookie()); ?>\', \'ajaxPipelineTableIndicator\', \'<?php echo($indexFile); ?>\');">Next Page &gt;</a>';
     <?php endif; ?>
 	<?php if (count($pipelinesRS) <= 15): ?>
         document.getElementById('ajaxPipelineControl').style.display='none';
@@ -205,52 +185,85 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
         <th></th>
         <th align="left" width="32" nowrap="nowrap"></th>
         <th align="left" width="62" nowrap="nowrap">
-            <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('ratingValue'); ?>, <?php if ($isPopup) echo(1); else echo(0); ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
+            <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('ratingValue'); ?>, <?php if ($isPopup) {
+                echo(1);
+            } else {
+                echo(0);
+            } ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
                 Match
             </a>
         </th>
         <th align="left" width="80" nowrap="nowrap">
-            <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('firstName'); ?>, <?php if ($isPopup) echo(1); else echo(0); ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
+            <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('firstName'); ?>, <?php if ($isPopup) {
+                echo(1);
+            } else {
+                echo(0);
+            } ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
                 First Name
             </a>
         </th>
         <th align="left" width="100" nowrap="nowrap">
-            <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('lastName'); ?>, <?php if ($isPopup) echo(1); else echo(0); ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
+            <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('lastName'); ?>, <?php if ($isPopup) {
+                echo(1);
+            } else {
+                echo(0);
+            } ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
                 Last Name
             </a>
         </th>
         <th align="left" width="40" nowrap="nowrap">
-            <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('state'); ?>, <?php if ($isPopup) echo(1); else echo(0); ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
+            <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('state'); ?>, <?php if ($isPopup) {
+                echo(1);
+            } else {
+                echo(0);
+            } ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
                 Loc
             </a>
         </th>
         <th align="left" width="60" nowrap="nowrap">
-            <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('dateCreatedInt'); ?>, <?php if ($isPopup) echo(1); else echo(0); ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
+            <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('dateCreatedInt'); ?>, <?php if ($isPopup) {
+                echo(1);
+            } else {
+                echo(0);
+            } ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
                 Added
             </a>
         </th>
         <th align="left" width="70" nowrap="nowrap">
-            <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('addedByAbbrName'); ?>, <?php if ($isPopup) echo(1); else echo(0); ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
+            <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('addedByAbbrName'); ?>, <?php if ($isPopup) {
+                echo(1);
+            } else {
+                echo(0);
+            } ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
                 Entered By
             </a>
         </th>
         <th align="left" width="65" nowrap="nowrap">
-            <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('status'); ?>, <?php if ($isPopup) echo(1); else echo(0); ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
+            <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('status'); ?>, <?php if ($isPopup) {
+                echo(1);
+            } else {
+                echo(0);
+            } ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
                 Status
             </a>
         </th>
         <th align="left" nowrap="nowrap">
-            <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('lastActivity'); ?>, <?php if ($isPopup) echo(1); else echo(0); ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
+            <a href="javascript:void(0);" onclick="PipelineJobOrder_populate(<?php echo($jobOrderID); ?>, <?php echo($page); ?>, <?php echo($entriesPerPage); ?>, <?php printSortLink('lastActivity'); ?>, <?php if ($isPopup) {
+                echo(1);
+            } else {
+                echo(0);
+            } ?>, 'ajaxPipelineTable', '<?php echo($_SESSION['CATS']->getCookie()); ?>', 'ajaxPipelineTableIndicator', '<?php echo($indexFile); ?>');">
                 Last Activity
             </a>
         </th>
-<?php if (!$isPopup): ?>
+<?php if (! $isPopup): ?>
         <th align="center">Action</th>
 <?php endif; ?>
     </tr>
 
     <?php for ($i = $minEntry; $i < $maxEntry; $i++): ?>
-        <?php $pipelinesData = $pipelinesRS[$i]; $rowNumber = $i - $minEntry; ?>
+        <?php $pipelinesData = $pipelinesRS[$i];
+        $rowNumber = $i - $minEntry; ?>
         <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>" id="pipelineRow<?php echo($rowNumber); ?>">
         	<td>
         		<input type="checkbox" id="checked_<?php echo($pipelinesData['candidateID']); ?>" name="checked" value="<?php echo($pipelinesData['candidateID']); ?>"/>
@@ -288,9 +301,9 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
             <td valign="top" nowrap="nowrap"><?php echo(htmlspecialchars($pipelinesData['addedByAbbrName'])); ?></td>
             <td valign="top" nowrap="nowrap"><?php echo(htmlspecialchars($pipelinesData['status'])); ?></td>
             <td valign="top"><?php echo($pipelinesData['lastActivity']); ?></td>
-<?php if (!$isPopup): ?>
+<?php if (! $isPopup): ?>
             <td align="center" nowrap="nowrap">
-                <?php if ($_SESSION['CATS']->getAccessLevel('pipelines.screening') >= ACCESS_LEVEL_EDIT && !$_SESSION['CATS']->hasUserCategory('sourcer')): ?>
+                <?php if ($_SESSION['CATS']->getAccessLevel('pipelines.screening') >= ACCESS_LEVEL_EDIT && ! $_SESSION['CATS']->hasUserCategory('sourcer')): ?>
                     <?php if ($pipelinesData['ratingValue'] < 0): ?>
                         <a href="#" id="screenLink<?php echo($pipelinesData['candidateJobOrderID']); ?>" onclick="moImageValue<?php echo($pipelinesData['candidateJobOrderID']); ?> = 0; setRating(<?php echo($pipelinesData['candidateJobOrderID']); ?>, 0, 'moImage<?php echo($pipelinesData['candidateJobOrderID']); ?>', '<?php echo($_SESSION['CATS']->getCookie()); ?> '); return false;" >
                             <img id="screenImage<?php echo($pipelinesData['candidateJobOrderID']); ?>" src="images/actions/screen.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Mark as Screened"/>
@@ -299,7 +312,7 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
                         <img src="images/actions/blank.gif" width="16" height="16" class="absmiddle" alt="" style="border: none;" />
                     <?php endif; ?>
                 <?php endif; ?>
-                <?php if (!isset($frozen)): ?>
+                <?php if (! isset($frozen)): ?>
                     <?php if ($_SESSION['CATS']->getAccessLevel('pipelines.addActivityChangeStatus') >= ACCESS_LEVEL_EDIT): ?>
                         <a href="#" onclick="showPopWin('<?php echo($indexFile); ?>?m=joborders&amp;a=addActivityChangeStatus&amp;jobOrderID=<?php echo($jobOrderID); ?>&amp;candidateID=<?php echo($pipelinesData['candidateID']); ?>', 600, 550, null); return false;">
                             <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="" style="border: none;"  title="Log an Activity / Change Status" />

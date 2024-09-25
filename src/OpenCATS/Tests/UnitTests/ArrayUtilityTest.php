@@ -1,8 +1,8 @@
 <?php
+
 use PHPUnit\Framework\TestCase;
 
-if( !defined('LEGACY_ROOT') )
-{
+if (! defined('LEGACY_ROOT')) {
     define('LEGACY_ROOT', '.');
 }
 
@@ -11,16 +11,16 @@ include_once(LEGACY_ROOT . '/lib/ArrayUtility.php');
 class ArrayUtilityTest extends TestCase
 {
     /* Tests for implodeRange(). */
-    function testImplodeRange()
+    public function testImplodeRange()
     {
-        $pieces = array(
+        $pieces = [
             'Zero',
             'One',
             'Two',
             'Three',
             'Four',
-            'Five'
-        );
+            'Five',
+        ];
 
         $result = ArrayUtility::implodeRange(' ', $pieces, 0, 5);
         $this->assertSame($result, 'Zero One Two Three Four Five');

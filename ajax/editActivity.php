@@ -35,26 +35,22 @@ include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 
 $interface = new SecureAJAXInterface();
 
-if (!$interface->isRequiredIDValid('activityID'))
-{
+if (! $interface->isRequiredIDValid('activityID')) {
     $interface->outputXMLErrorPage(-1, 'Invalid activity ID.');
     die();
 }
 
-if (!$interface->isRequiredIDValid('type'))
-{
+if (! $interface->isRequiredIDValid('type')) {
     $interface->outputXMLErrorPage(-1, 'Invalid activity entry type.');
     die();
 }
 
-if (!$interface->isOptionalIDValid('jobOrderID'))
-{
+if (! $interface->isOptionalIDValid('jobOrderID')) {
     $interface->outputXMLErrorPage(-1, 'Invalid job order ID.');
     die();
 }
 
-if (!isset($_REQUEST['notes']))
-{
+if (! isset($_REQUEST['notes'])) {
     $interface->outputXMLErrorPage(-1, 'Invalid notes.');
     die();
 }
@@ -62,7 +58,7 @@ if (!isset($_REQUEST['notes']))
 $siteID = $interface->getSiteID();
 
 $activityID = $_REQUEST['activityID'];
-$type       = $_REQUEST['type'];
+$type = $_REQUEST['type'];
 $jobOrderID = $_REQUEST['jobOrderID'];
 
 /* Decode and trim the activity notes from the company. */
@@ -72,8 +68,7 @@ $activityHour = trim(urldecode($_REQUEST['hour']));
 $activityMinute = trim(urldecode($_REQUEST['minute']));
 $activityAMPM = trim(urldecode($_REQUEST['ampm']));
 
-if (!DateUtility::validate('-', $activityDate, DATE_FORMAT_MMDDYY))
-{
+if (! DateUtility::validate('-', $activityDate, DATE_FORMAT_MMDDYY)) {
     die('Invalid availability date.');
     return;
 }
@@ -87,19 +82,20 @@ $time = strtotime(
 $date = sprintf(
     '%s %s',
     DateUtility::convert(
-        '-', $activityDate, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+        '-',
+        $activityDate,
+        DATE_FORMAT_MMDDYY,
+        DATE_FORMAT_YYYYMMDD
     ),
     date('H:i:00', $time)
 );
 
 /* Highlight what needs highlighting. */
-if (strpos($activityNote, 'Status change: ') === 0)
-{
+if (strpos($activityNote, 'Status change: ') === 0) {
     $pipelines = new Pipelines($siteID);
 
     $statusRS = $pipelines->getStatusesForPicking();
-    foreach ($statusRS as $data)
-    {
+    foreach ($statusRS as $data) {
         $activityNote = StringUtility::replaceOnce(
             $data['status'],
             '<span style="color: #ff6c00;">' . $data['status'] . '</span>',
@@ -116,8 +112,7 @@ $activityEntries->update($activityID, $type, $activityNote, $jobOrderID, $date, 
 $activityEntry = $activityEntries->get($activityID);
 
 /* Send back "(No Notes)" to be displayed if we don't have any. */
-if (empty($activityEntry['notes']))
-{
+if (empty($activityEntry['notes'])) {
     $activityEntry['notes'] = '(No Notes)';
 }
 
@@ -126,12 +121,10 @@ $interface->outputXMLPage(
     "<data>\n" .
     "    <errorcode>0</errorcode>\n" .
     "    <errormessage></errormessage>\n" .
-    "    <type>"            . $activityEntry['type'] . "</type>\n" .
+    "    <type>" . $activityEntry['type'] . "</type>\n" .
     "    <typedescription>" . $activityEntry['typeDescription'] . "</typedescription>\n" .
-    "    <notes>"           . htmlspecialchars($activityEntry['notes']) . "</notes>\n" .
-    "    <regarding>"       . htmlspecialchars($activityEntry['regarding']) . "</regarding>\n" .
-    "    <date>"            . htmlspecialchars($activityEntry['dateCreated']) . "</date>\n" .
+    "    <notes>" . htmlspecialchars($activityEntry['notes']) . "</notes>\n" .
+    "    <regarding>" . htmlspecialchars($activityEntry['regarding']) . "</regarding>\n" .
+    "    <date>" . htmlspecialchars($activityEntry['dateCreated']) . "</date>\n" .
     "</data>\n"
 );
-
-?>

@@ -23,13 +23,12 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  * @version    $Id: DateUtility.php 3592 2007-11-13 17:30:46Z brian $
  */
- 
+
 /**
  *	Date Utility Library
  *	@package    CATS
@@ -38,9 +37,13 @@
 class DateUtility
 {
     /* Prevent this class from being instantiated. */
-    private function __construct() {}
-    private function __clone() {}
+    private function __construct()
+    {
+    }
 
+    private function __clone()
+    {
+    }
 
     /**
      * Returns the number of days in the month for the specified month in
@@ -96,10 +99,8 @@ class DateUtility
         $dateFields = explode($separator, $date);
 
         /* Make sure explode() didn't fail. */
-        if (sizeof($dateFields) < 3)
-        {
-            if ($toFormat == DATE_FORMAT_YYYYMMDD)
-            {
+        if (sizeof($dateFields) < 3) {
+            if ($toFormat == DATE_FORMAT_YYYYMMDD) {
                 return '0000-00-00';
             }
 
@@ -108,29 +109,27 @@ class DateUtility
 
         $dateFields = self::_removeLeadingZeros($dateFields);
 
-        switch ($fromFormat)
-        {
+        switch ($fromFormat) {
             case DATE_FORMAT_YYYYMMDD:
-                $year  = $dateFields[0];
+                $year = $dateFields[0];
                 $month = $dateFields[1];
-                $day   = $dateFields[2];
+                $day = $dateFields[2];
                 break;
 
             case DATE_FORMAT_MMDDYY:
                 $month = $dateFields[0];
-                $day   = $dateFields[1];
-                $year  = $dateFields[2];
+                $day = $dateFields[1];
+                $year = $dateFields[2];
                 break;
 
             case DATE_FORMAT_DDMMYY:
-                $day   = $dateFields[0];
+                $day = $dateFields[0];
                 $month = $dateFields[1];
-                $year  = $dateFields[2];
+                $year = $dateFields[2];
                 break;
         }
 
-        switch ($toFormat)
-        {
+        switch ($toFormat) {
             case DATE_FORMAT_YYYYMMDD:
                 $dateFormat = '%Y' . $separator . '%m' . $separator . '%d';
                 break;
@@ -147,7 +146,6 @@ class DateUtility
         /* Return the date in the correct format. */
         return strftime($dateFormat, mktime(0, 0, 0, $month, $day, $year));
     }
-  
 
     /**
      * Returns true if the specified date string is a valid date in
@@ -161,14 +159,12 @@ class DateUtility
     public static function validate($separator, $dateString, $format)
     {
         /* Make sure the string is numeric except for separators. */
-        if (!ctype_digit((string) str_replace($separator, '', $dateString)))
-        {
+        if (! ctype_digit((string) str_replace($separator, '', $dateString))) {
             return false;
         }
 
         /* Make sure we have exactly two separators. */
-        if (substr_count($dateString, $separator) != 2)
-        {
+        if (substr_count($dateString, $separator) != 2) {
             return false;
         }
 
@@ -176,26 +172,22 @@ class DateUtility
         $dateFields = explode($separator, $dateString);
 
         /* Make sure explode() didn't fail. */
-        if (sizeof($dateFields) < 3)
-        {
+        if (sizeof($dateFields) < 3) {
             return false;
         }
 
         /* Check the length of individual date fields. */
-        switch ($format)
-        {
+        switch ($format) {
             case DATE_FORMAT_YYYYMMDD:
                 if (strlen($dateFields[0]) != 4 || strlen($dateFields[1]) != 2 ||
-                    strlen($dateFields[2]) != 2)
-                {
+                    strlen($dateFields[2]) != 2) {
                     return false;
                 }
                 break;
 
             default:
                 if (strlen($dateFields[0]) != 2 || strlen($dateFields[1]) != 2 ||
-                    strlen($dateFields[2]) != 2)
-                {
+                    strlen($dateFields[2]) != 2) {
                     return false;
                 }
                 break;
@@ -205,31 +197,29 @@ class DateUtility
         $dateFields = self::_removeLeadingZeros($dateFields);
 
         /* Extract ields. */
-        switch ($format)
-        {
+        switch ($format) {
             case DATE_FORMAT_YYYYMMDD:
-                $year  = $dateFields[0];
+                $year = $dateFields[0];
                 $month = $dateFields[1];
-                $day   = $dateFields[2];
+                $day = $dateFields[2];
                 break;
 
             case DATE_FORMAT_MMDDYY:
                 $month = $dateFields[0];
-                $day   = $dateFields[1];
-                $year  = $dateFields[2];
+                $day = $dateFields[1];
+                $year = $dateFields[2];
                 break;
 
             case DATE_FORMAT_DDMMYY:
-                $day   = $dateFields[0];
+                $day = $dateFields[0];
                 $month = $dateFields[1];
-                $year  = $dateFields[2];
+                $year = $dateFields[2];
                 break;
         }
 
         /* Validate day and month numbers. */
         if ($month < 1 || $month > 12 || $day < 1 ||
-            $day > self::getDaysInMonth($month, $year))
-        {
+            $day > self::getDaysInMonth($month, $year)) {
             return false;
         }
 
@@ -248,8 +238,7 @@ class DateUtility
     public static function fixZeroDate($date, $replacement = '')
     {
         if (empty($date) || $date == '00-00-00' || $date == '0000-00-00' ||
-            $date == '00-00-00 (12:00 AM)')
-        {
+            $date == '00-00-00 (12:00 AM)') {
             return $replacement;
         }
 
@@ -311,10 +300,8 @@ class DateUtility
      */
     public static function getWeekNumber($date = false)
     {
-        if ($date === false)
-        {
-            if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn())
-            {
+        if ($date === false) {
+            if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn()) {
                 $timeZoneOffset = $_SESSION['CATS']->getTimeZoneOffset();
                 $date = mktime(
                     date('H') + $timeZoneOffset,
@@ -324,9 +311,7 @@ class DateUtility
                     date('d'),
                     date('Y')
                 );
-            }
-            else
-            {
+            } else {
                 $date = time();
             }
         }
@@ -347,18 +332,19 @@ class DateUtility
      * @param integer UNIX time (optional)
      * @return string RSS format date
      */
-    static public function getRSSDate($unixTime = false)
+    public static function getRSSDate($unixTime = false)
     {
-        if ($unixTime === false)
-        {
+        if ($unixTime === false) {
             $unixTime = time();
         }
 
-        $RFC2822  = date('r', $unixTime);
+        $RFC2822 = date('r', $unixTime);
         $timeZone = date('T', $unixTime);
 
         return preg_replace(
-            '/[+-][0-9]{4}\s*$/', $timeZone, $RFC2822
+            '/[+-][0-9]{4}\s*$/',
+            $timeZone,
+            $RFC2822
         );
     }
 
@@ -371,8 +357,7 @@ class DateUtility
      */
     public static function getAdjustedDate($format = 'U', $date = false)
     {
-        if ($date === false)
-        {
+        if ($date === false) {
             $date = time();
         }
 
@@ -387,7 +372,7 @@ class DateUtility
 
         return date($format, $unixTime);
     }
-    
+
     /**
      * Returns a human readable representation of a period of time in seconds.
      *
@@ -398,65 +383,57 @@ class DateUtility
      */
     public static function getFormattedDuration($seconds, $short = false, $round = false)
     {
-        $abbreviations = array(
-            'year'   => 'yr',
-            'week'   => 'wk',
-            'day'    => 'day',
-            'hour'   => 'hr',
+        $abbreviations = [
+            'year' => 'yr',
+            'week' => 'wk',
+            'day' => 'day',
+            'hour' => 'hr',
             'minute' => 'min',
-            'second' => 'sec'
-        );
-    
-        $periods = array(
-            'year'   => (60 * 60 * 24 * 365),
-            'week'   => (60 * 60 * 24 * 7),
-            'day'    => (60 * 60 * 24),
-            'hour'   => (60 * 60),
+            'second' => 'sec',
+        ];
+
+        $periods = [
+            'year' => (60 * 60 * 24 * 365),
+            'week' => (60 * 60 * 24 * 7),
+            'day' => (60 * 60 * 24),
+            'hour' => (60 * 60),
             'minute' => (60),
-            'second' => (1)
-        );
-    
+            'second' => (1),
+        ];
+
         $seconds = (float) $seconds;
-        foreach ($periods as $period => $divisor)
-        {   
+        foreach ($periods as $period => $divisor) {
             $value = floor($seconds / $divisor);
-            if ($value == 0)
-            {
+            if ($value == 0) {
                 continue;
             }
-        
+
             $seconds = ($seconds % $divisor);
-        
-            if ($short)
-            {
+
+            if ($short) {
                 $segment = $value . $abbreviations[$period];
-            }
-            else
-            {
+            } else {
                 $segment = $value . ' ' . $period;
             }
 
-            if ($value != 1)
-            {
+            if ($value != 1) {
                 $segment .= 's';
             }
 
             $segments[] = $segment;
-        
-            if ($round === $period)
-            {
+
+            if ($round === $period) {
                 break;
             }
         }
-    
-        if ($short)
-        {
+
+        if ($short) {
             return implode(' ', $segments);
         }
-    
+
         return implode(', ', $segments);
     }
-    
+
     /**
      * Returns a human readable representation of a UNIX date.
      *
@@ -466,8 +443,7 @@ class DateUtility
      */
     public function getFormattedDate($unixTime, $format)
     {
-        switch ($format)
-        {
+        switch ($format) {
             case DATE_FORMAT_YYYYMMDD:
                 return strftime('%Y-%m-%d', $unixTime);
                 break;
@@ -494,7 +470,7 @@ class DateUtility
                 );
                 break;
         }
-        
+
         return false;
     }
 
@@ -508,21 +484,19 @@ class DateUtility
      */
     public function getPeriodDateRange($period, $dateFormat = false)
     {
-        if ($dateFormat === false)
-        {
+        if ($dateFormat === false) {
             $dateFormat = DATE_FORMAT_YYYYMMDD;
         }
-        
+
         $currentUnixTime = time();
-        $currentDay      = date('j', $currentUnixTime);
-        $currentMonth    = date('m', $currentUnixTime);
-        $currentYear     = date('Y', $currentUnixTime);
-        
-        switch ($period)
-        {
+        $currentDay = date('j', $currentUnixTime);
+        $currentMonth = date('m', $currentUnixTime);
+        $currentYear = date('Y', $currentUnixTime);
+
+        switch ($period) {
             case TIME_PERIOD_TODAY:
                 $startDate = self::getFormattedDate($currentUnixTime, $dateFormat);
-                $endDate   = $startDate;
+                $endDate = $startDate;
                 break;
 
             case TIME_PERIOD_YESTERDAY:
@@ -534,9 +508,9 @@ class DateUtility
                     date('j', $currentUnixTime) - 1,
                     date('Y', $currentUnixTime)
                 );
-                
+
                 $startDate = self::getFormattedDate($startUnixTime, $dateFormat);
-                $endDate   = $startDate;
+                $endDate = $startDate;
                 break;
 
             case TIME_PERIOD_THISWEEK:
@@ -549,7 +523,7 @@ class DateUtility
                     date('j', $currentUnixTime) - $currentWeekday,
                     date('Y', $currentUnixTime)
                 );
-                
+
                 $endUnixTime = mktime(
                     0,
                     0,
@@ -558,9 +532,9 @@ class DateUtility
                     date('j', $currentUnixTime) - $currentWeekday + 6,
                     date('Y', $currentUnixTime)
                 );
-                
+
                 $startDate = self::getFormattedDate($startUnixTime, $dateFormat);
-                $endDate   = self::getFormattedDate($endUnixTime, $dateFormat);
+                $endDate = self::getFormattedDate($endUnixTime, $dateFormat);
                 break;
 
             case TIME_PERIOD_LASTWEEK:
@@ -573,7 +547,7 @@ class DateUtility
                     date('j', $currentUnixTime) - $currentWeekday - 7,
                     date('Y', $currentUnixTime)
                 );
-                
+
                 $endUnixTime = mktime(
                     0,
                     0,
@@ -582,9 +556,9 @@ class DateUtility
                     date('j', $currentUnixTime) - $currentWeekday - 1,
                     date('Y', $currentUnixTime)
                 );
-                
+
                 $startDate = self::getFormattedDate($startUnixTime, $dateFormat);
-                $endDate   = self::getFormattedDate($endUnixTime, $dateFormat);
+                $endDate = self::getFormattedDate($endUnixTime, $dateFormat);
                 break;
 
             case TIME_PERIOD_LASTTWOWEEKS:
@@ -597,7 +571,7 @@ class DateUtility
                     date('j', $currentUnixTime) - $currentWeekday - 7,
                     date('Y', $currentUnixTime)
                 );
-                
+
                 $endUnixTime = mktime(
                     0,
                     0,
@@ -606,9 +580,9 @@ class DateUtility
                     date('j', $currentUnixTime) - $currentWeekday + 6,
                     date('Y', $currentUnixTime)
                 );
-                
+
                 $startDate = self::getFormattedDate($startUnixTime, $dateFormat);
-                $endDate   = self::getFormattedDate($endUnixTime, $dateFormat);
+                $endDate = self::getFormattedDate($endUnixTime, $dateFormat);
                 break;
 
             case TIME_PERIOD_THISMONTH:
@@ -620,7 +594,7 @@ class DateUtility
                     1,
                     date('Y', $currentUnixTime)
                 );
-                
+
                 $lastDayOfMonth = self::getDaysInMonth(
                     $currentMonth,
                     $currentYear
@@ -633,9 +607,9 @@ class DateUtility
                     $lastDayOfMonth,
                     date('Y', $currentUnixTime)
                 );
-                
+
                 $startDate = self::getFormattedDate($startUnixTime, $dateFormat);
-                $endDate   = self::getFormattedDate($endUnixTime, $dateFormat);
+                $endDate = self::getFormattedDate($endUnixTime, $dateFormat);
                 break;
 
             case TIME_PERIOD_LASTMONTH:
@@ -648,7 +622,7 @@ class DateUtility
                     1,
                     date('Y', $currentUnixTime)
                 );
-                
+
                 /* The last day of 1 month ago. */
                 $lastDayOfMonth = self::getDaysInMonth(
                     date('m', $startUnixTime),
@@ -662,9 +636,9 @@ class DateUtility
                     $lastDayOfMonth,
                     date('Y', $currentUnixTime)
                 );
-                
+
                 $startDate = self::getFormattedDate($startUnixTime, $dateFormat);
-                $endDate   = self::getFormattedDate($endUnixTime, $dateFormat);
+                $endDate = self::getFormattedDate($endUnixTime, $dateFormat);
                 break;
 
             case TIME_PERIOD_THISYEAR:
@@ -677,7 +651,7 @@ class DateUtility
                     1,
                     date('Y', $currentUnixTime)
                 );
-                
+
                 /* December 31st of the current year. */
                 $endUnixTime = mktime(
                     0,
@@ -687,9 +661,9 @@ class DateUtility
                     31,
                     date('Y', $currentUnixTime)
                 );
-                
+
                 $startDate = self::getFormattedDate($startUnixTime, $dateFormat);
-                $endDate   = self::getFormattedDate($endUnixTime, $dateFormat);
+                $endDate = self::getFormattedDate($endUnixTime, $dateFormat);
                 break;
 
             case TIME_PERIOD_LASTYEAR:
@@ -702,7 +676,7 @@ class DateUtility
                     1,
                     date('Y', $currentUnixTime) - 1
                 );
-                
+
                 /* December 31st of the previous year. */
                 $endUnixTime = mktime(
                     0,
@@ -712,31 +686,29 @@ class DateUtility
                     31,
                     date('Y', $currentUnixTime) - 1
                 );
-                
+
                 $startDate = self::getFormattedDate($startUnixTime, $dateFormat);
-                $endDate   = self::getFormattedDate($endUnixTime, $dateFormat);
+                $endDate = self::getFormattedDate($endUnixTime, $dateFormat);
                 break;
 
             case TIME_PERIOD_TODATE:
             default:
                 $startDate = false;
-                $endDate   = false;
+                $endDate = false;
                 break;
         }
-        
-        return array(
+
+        return [
             'startDate' => $startDate,
-            'endDate'   => $endDate
-        );
+            'endDate' => $endDate,
+        ];
     }
 
     private static function _removeLeadingZeros($array)
     {
-        foreach ($array as $key => $value)
-        {
+        foreach ($array as $key => $value) {
             /* Remove leading '0's from fields. */
-            if ($array[$key][0] == '0')
-            {
+            if ($array[$key][0] == '0') {
                 $array[$key] = substr($array[$key], 1);
             }
         }
@@ -744,4 +716,3 @@ class DateUtility
         return $array;
     }
 }
-?>

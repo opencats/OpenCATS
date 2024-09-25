@@ -50,5 +50,3 @@ $optionalComponents['usZipCodes']['detectCode'] = '
         return false;
     }
 ';
-
-?>

@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -37,12 +36,12 @@ include_once(LEGACY_ROOT . '/lib/Calendar.php');
  *	@package    CATS
  *	@subpackage Library
  */
-class Dashboard 
+class Dashboard
 {
-
     private $_db;
+
     private $_siteID;
-    
+
     public function __construct($siteID)
     {
         $this->_siteID = $siteID;
@@ -98,37 +97,33 @@ class Dashboard
     }
 
     /**
-     * Returns an associative array with 4 rows of either the last 4 weeks or 4 months 
+     * Returns an associative array with 4 rows of either the last 4 weeks or 4 months
      * statistics on submitted, interviewing, and placed candidates.
      *
      * @param integer pipeline view indentifier
      * @return array pipeline graph data
      */
     public function getPipelineData($view)
-    {   
+    {
         $oneUnixDay = 86400;
-        
+
         $calendarSettings = new CalendarSettings($this->_siteID);
         $calendarSettingsRS = $calendarSettings->getAll();
 
-        if ($calendarSettingsRS['firstDayMonday'] == 1)
-        {
+        if ($calendarSettingsRS['firstDayMonday'] == 1) {
             $firstDayMonday = true;
             $firstDayModifierPlus = ' + 1';
             $dateNowForWeeks = 'DATE_SUB(NOW(), INTERVAL 1 DAY)';
             $dateEventForWeeks = 'DATE_SUB(candidate_joborder_status_history.date, INTERVAL 1 DAY)';
-        }
-        else
-        {
+        } else {
             $firstDayMonday = false;
             $firstDayModifierPlus = '';
             $firstDayModifierMinus = '';
             $dateNowForWeeks = 'NOW()';
             $dateEventForWeeks = 'candidate_joborder_status_history.date';
-        }        
-        
-        switch ($view)
-        {
+        }
+
+        switch ($view) {
             case DASHBOARD_GRAPH_YEARLY:
                 $select = 'YEAR(candidate_joborder_status_history.date) as unixdate';
                 break;
@@ -136,20 +131,20 @@ class Dashboard
             case DASHBOARD_GRAPH_MONTHLY:
                 $select = 'UNIX_TIMESTAMP(FROM_DAYS(TO_DAYS(candidate_joborder_status_history.date) - DAYOFMONTH(candidate_joborder_status_history.date) + 1)) as unixdate';
                 break;
-                
+
             case DASHBOARD_GRAPH_WEEKLY:
-		    default:
-                $select = 'UNIX_TIMESTAMP(FROM_DAYS(TO_DAYS('.$dateEventForWeeks.') - DAYOFWEEK('.$dateEventForWeeks.') + 1 '.$firstDayModifierPlus.')) as unixdate';
+            default:
+                $select = 'UNIX_TIMESTAMP(FROM_DAYS(TO_DAYS(' . $dateEventForWeeks . ') - DAYOFWEEK(' . $dateEventForWeeks . ') + 1 ' . $firstDayModifierPlus . ')) as unixdate';
                 break;
         }
-        
-        /* This SQL query either returns 1 row per week or 1 row per month for the total 
+
+        /* This SQL query either returns 1 row per week or 1 row per month for the total
          * count of sub, int, and pla status changes in the system.
          */
-        
+
         /* Limit 20 because if time was skewed, there may be events in the future that
          * the PHP function will throw out, but future events will prevent past events
-         * from loading properly.  We don't need a limit at all, but limiting 20 results 
+         * from loading properly.  We don't need a limit at all, but limiting 20 results
          * back should guarantee we will always at least get the relavant rows we want.
          */
         $sql = sprintf(
@@ -172,10 +167,10 @@ class Dashboard
             PIPELINE_STATUS_PLACED,
             $this->_siteID
         );
-        
+
         $rs = $this->_db->getAllAssoc($sql);
-        
-        /* Gets some numbers as to what week and month MySQL thinks it is. */ 
+
+        /* Gets some numbers as to what week and month MySQL thinks it is. */
         $sql = sprintf(
             "SELECT 
                 YEAR(NOW()) as currentYearNumber,
@@ -205,69 +200,84 @@ class Dashboard
             $dateNowForWeeks,
             $firstDayModifierPlus
         );
-        
+
         $rsCurrentTime = $this->_db->getAssoc($sql);
-        
-        $data = array();
-        
-        switch ($view)
-        {
+
+        $data = [];
+
+        switch ($view) {
             case DASHBOARD_GRAPH_YEARLY:
-                $data[$rsCurrentTime['currentYearNumber']] = array('label' => $rsCurrentTime['currentYearNumber']);
-                $data[$rsCurrentTime['currentYearNumber'] - 1] = array('label' => $rsCurrentTime['currentYearNumber'] - 1);
-                $data[$rsCurrentTime['currentYearNumber'] - 2] = array('label' => $rsCurrentTime['currentYearNumber'] - 2);
-                $data[$rsCurrentTime['currentYearNumber'] - 3] = array('label' => $rsCurrentTime['currentYearNumber'] - 3);
+                $data[$rsCurrentTime['currentYearNumber']] = [
+                    'label' => $rsCurrentTime['currentYearNumber'],
+                ];
+                $data[$rsCurrentTime['currentYearNumber'] - 1] = [
+                    'label' => $rsCurrentTime['currentYearNumber'] - 1,
+                ];
+                $data[$rsCurrentTime['currentYearNumber'] - 2] = [
+                    'label' => $rsCurrentTime['currentYearNumber'] - 2,
+                ];
+                $data[$rsCurrentTime['currentYearNumber'] - 3] = [
+                    'label' => $rsCurrentTime['currentYearNumber'] - 3,
+                ];
                 break;
-            
+
             case DASHBOARD_GRAPH_MONTHLY:
-                $data[$rsCurrentTime['currentMonthNumber']] = array('label' => $rsCurrentTime['currentMonthName']);
-                $data[$rsCurrentTime['oneMonthAgoNumber']] = array('label' => $rsCurrentTime['oneMonthAgoName']);
-                $data[$rsCurrentTime['twoMonthAgoNumber']] = array('label' => $rsCurrentTime['twoMonthAgoName']);
-                $data[$rsCurrentTime['threeMonthAgoNumber']] = array('label' => $rsCurrentTime['threeMonthAgoName']);
+                $data[$rsCurrentTime['currentMonthNumber']] = [
+                    'label' => $rsCurrentTime['currentMonthName'],
+                ];
+                $data[$rsCurrentTime['oneMonthAgoNumber']] = [
+                    'label' => $rsCurrentTime['oneMonthAgoName'],
+                ];
+                $data[$rsCurrentTime['twoMonthAgoNumber']] = [
+                    'label' => $rsCurrentTime['twoMonthAgoName'],
+                ];
+                $data[$rsCurrentTime['threeMonthAgoNumber']] = [
+                    'label' => $rsCurrentTime['threeMonthAgoName'],
+                ];
                 break;
-                
+
             case DASHBOARD_GRAPH_WEEKLY:
-		    default:
-              // TODO:   Localization d/m, week starts on monday
-                if ($_SESSION['CATS']->isDateDMY())
-                {
+            default:
+                // TODO:   Localization d/m, week starts on monday
+                if ($_SESSION['CATS']->isDateDMY()) {
                     $pattern = "d/m";
-                }
-                else
-                {
+                } else {
                     $pattern = "m/d";
-                }            
-            
+                }
+
                 /* * 6 at the end gives us the last day in the week (first day in week plus 6 days) */
-                $data[$rsCurrentTime['currentWeekNumber']] = array('label' => date($pattern, $rsCurrentTime['currentWeekNumber']) . ' - ' . date($pattern, $rsCurrentTime['currentWeekNumber'] + $oneUnixDay * 6));
-                $data[$rsCurrentTime['oneWeekAgoNumber']] = array('label' => date($pattern, $rsCurrentTime['oneWeekAgoNumber']) . ' - ' . date($pattern, $rsCurrentTime['oneWeekAgoNumber'] + $oneUnixDay * 6));
-                $data[$rsCurrentTime['twoWeekAgoNumber']] = array('label' => date($pattern, $rsCurrentTime['twoWeekAgoNumber']) . ' - ' . date($pattern, $rsCurrentTime['twoWeekAgoNumber'] + $oneUnixDay * 6));
-                $data[$rsCurrentTime['threeWeekAgoNumber']] = array('label' => date($pattern, $rsCurrentTime['threeWeekAgoNumber']) . ' - ' . date($pattern, $rsCurrentTime['threeWeekAgoNumber'] + $oneUnixDay * 6));
+                $data[$rsCurrentTime['currentWeekNumber']] = [
+                    'label' => date($pattern, $rsCurrentTime['currentWeekNumber']) . ' - ' . date($pattern, $rsCurrentTime['currentWeekNumber'] + $oneUnixDay * 6),
+                ];
+                $data[$rsCurrentTime['oneWeekAgoNumber']] = [
+                    'label' => date($pattern, $rsCurrentTime['oneWeekAgoNumber']) . ' - ' . date($pattern, $rsCurrentTime['oneWeekAgoNumber'] + $oneUnixDay * 6),
+                ];
+                $data[$rsCurrentTime['twoWeekAgoNumber']] = [
+                    'label' => date($pattern, $rsCurrentTime['twoWeekAgoNumber']) . ' - ' . date($pattern, $rsCurrentTime['twoWeekAgoNumber'] + $oneUnixDay * 6),
+                ];
+                $data[$rsCurrentTime['threeWeekAgoNumber']] = [
+                    'label' => date($pattern, $rsCurrentTime['threeWeekAgoNumber']) . ' - ' . date($pattern, $rsCurrentTime['threeWeekAgoNumber'] + $oneUnixDay * 6),
+                ];
                 break;
-        }  
-        
+        }
+
         /* Fill the array with data. */
-        foreach ($data as $indexData => $rowData)
-        {
+        foreach ($data as $indexData => $rowData) {
             $data[$indexData]['submitted'] = 0;
             $data[$indexData]['interviewing'] = 0;
             $data[$indexData]['placed'] = 0;
-            
-            foreach ($rs as $indexRS => $rowRS)
-            {
-                if ($rowRS['unixdate'] == $indexData)
-                {
+
+            foreach ($rs as $indexRS => $rowRS) {
+                if ($rowRS['unixdate'] == $indexData) {
                     $data[$indexData]['submitted'] = $rowRS['submitted'];
                     $data[$indexData]['interviewing'] = $rowRS['interviewing'];
                     $data[$indexData]['placed'] = $rowRS['placed'];
                 }
             }
         }
-        
+
         ksort($data, SORT_NUMERIC);
-        
+
         return $data;
     }
 }
-    
-?>

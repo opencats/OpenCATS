@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -38,31 +37,41 @@
 class UserInterface
 {
     protected $_moduleName = '';
+
     protected $_moduleTabText = '';
-    protected $_subTabs = array();
-    protected $_subTabsExternal = array();
-    protected $_settingsEntries = array();
-    protected $_settingsUserCategories = array();
+
+    protected $_subTabs = [];
+
+    protected $_subTabsExternal = [];
+
+    protected $_settingsEntries = [];
+
+    protected $_settingsUserCategories = [];
+
     protected $_template;
+
     protected $_moduleDirectory = '';
+
     protected $_userID = -1;
+
     protected $_siteID = -1;
+
     protected $_authenticationRequired = true;
-    protected $_hooks = array();
-    protected $_schema = array();
+
+    protected $_hooks = [];
+
+    protected $_schema = [];
 
     public function __construct()
     {
         $this->_template = new Template();
 
-        if (isset($_SESSION['CATS']) && !empty($_SESSION['CATS']))
-        {
+        if (isset($_SESSION['CATS']) && ! empty($_SESSION['CATS'])) {
             /* Get the current user's user ID. */
             $this->_userID = $_SESSION['CATS']->getUserID();
 
             /* Get the current user's site ID. */
             $this->_siteID = $_SESSION['CATS']->getSiteID();
-
         }
     }
 
@@ -111,10 +120,9 @@ class UserInterface
      *
      * @return array subtab items for this module
      */
-    public function getSubTabs($modules = array())
+    public function getSubTabs($modules = [])
     {
-        if (empty($modules))
-        {
+        if (empty($modules)) {
             return $this->_subTabs;
         }
 
@@ -129,8 +137,7 @@ class UserInterface
      */
     public function getSubTabsExternal()
     {
-        if (isset($this->_subTabsExternal))
-        {
+        if (isset($this->_subTabsExternal)) {
             return $this->_subTabsExternal;
         }
 
@@ -145,8 +152,7 @@ class UserInterface
      */
     public function getSettingsEntries()
     {
-        if (isset($this->_settingsEntries))
-        {
+        if (isset($this->_settingsEntries)) {
             return $this->_settingsEntries;
         }
 
@@ -161,8 +167,7 @@ class UserInterface
      */
     public function getSettingsUserCategories()
     {
-        if (isset($this->_settingsUserCategories))
-        {
+        if (isset($this->_settingsUserCategories)) {
             return $this->_settingsUserCategories;
         }
 
@@ -176,8 +181,7 @@ class UserInterface
      */
     public function requiresAuthentication()
     {
-        if (isset($this->_authenticationRequired))
-        {
+        if (isset($this->_authenticationRequired)) {
             return $this->_authenticationRequired;
         }
 
@@ -192,8 +196,7 @@ class UserInterface
      */
     protected function getAction()
     {
-        if (isset($_GET['a']) && !empty($_GET['a']))
-        {
+        if (isset($_GET['a']) && ! empty($_GET['a'])) {
             return $_GET['a'];
         }
 
@@ -208,8 +211,7 @@ class UserInterface
      */
     protected function isPostBack()
     {
-        if (isset($_POST['postback']))
-        {
+        if (isset($_POST['postback'])) {
             return true;
         }
 
@@ -224,8 +226,7 @@ class UserInterface
      */
     protected function isGetBack()
     {
-        if (isset($_GET['getback']))
-        {
+        if (isset($_GET['getback'])) {
             return true;
         }
 
@@ -237,16 +238,12 @@ class UserInterface
      *
      * @param string error message
      * @param string module directory from which to load templates (optional)
-     * @return void
      */
     protected function fatal($error, $directoryOverride = '')
     {
-        if ($directoryOverride != '')
-        {
+        if ($directoryOverride != '') {
             $moduleDirectory = $directoryOverride;
-        }
-        else
-        {
+        } else {
             $moduleDirectory = $this->_moduleDirectory;
         }
 
@@ -256,17 +253,16 @@ class UserInterface
             './modules/' . $moduleDirectory . '/Error.tpl'
         );
 
-        $getArray = array();
-        foreach ($_REQUEST as $index => $data)
-        {
+        $getArray = [];
+        foreach ($_REQUEST as $index => $data) {
             $getArray[] = urlencode($index) . '=' . urlencode($data);
         }
 
         echo '<!--';
-         trigger_error(
-             str_replace("\n", " ", 'Fatal Error raised: ' . $error)
-         );
-        echo ' REQUEST: '.implode('&', $getArray).'-->';
+        trigger_error(
+            str_replace("\n", " ", 'Fatal Error raised: ' . $error)
+        );
+        echo ' REQUEST: ' . implode('&', $getArray) . '-->';
 
         die();
     }
@@ -276,16 +272,12 @@ class UserInterface
      *
      * @param string error message
      * @param string module directory from which to load templates (optional)
-     * @return void
      */
     protected function fatalModal($error, $directoryOverride = '')
     {
-        if ($directoryOverride != '')
-        {
+        if ($directoryOverride != '') {
             $moduleDirectory = $directoryOverride;
-        }
-        else
-        {
+        } else {
             $moduleDirectory = $this->_moduleDirectory;
         }
 
@@ -311,16 +303,13 @@ class UserInterface
      * $allowZero is true.
      *
      * @param string request key name of ID
-     * @param array $_GET, $_POST, or $_REQUEST
      * @param boolean allow ID to be 0
-     * @return void
      */
     protected function isRequiredIDValid($key, $request, $allowZero = false)
     {
-        if (isset($request[$key]) && (!empty($request[$key]) ||
+        if (isset($request[$key]) && (! empty($request[$key]) ||
             ($allowZero && $request[$key] == '0')) &&
-            ctype_digit((string) trim($request[$key])))
-        {
+            ctype_digit((string) trim($request[$key]))) {
             return true;
         }
 
@@ -332,14 +321,11 @@ class UserInterface
      * b) not empty, and c) a digit / whole number, or -1.
      *
      * @param string request key name of ID
-     * @param array $_GET, $_POST, or $_REQUEST
-     * @return void
      */
     protected function isOptionalIDValid($key, $request)
     {
-        if (isset($request[$key]) && !empty($request[$key]) &&
-            ($request[$key] == '-1' || ctype_digit((string) $request[$key])))
-        {
+        if (isset($request[$key]) && ! empty($request[$key]) &&
+            ($request[$key] == '-1' || ctype_digit((string) $request[$key]))) {
             return true;
         }
 
@@ -350,14 +336,12 @@ class UserInterface
      * Returns true if a checkbox by the name of $key is checked in $request.
      *
      * @param string Request variable name / key.
-     * @param array $_GET, $_POST, or $_REQUEST
      * @return boolean Is checkbox checked?
      */
     protected function isChecked($key, $request)
     {
-        if (isset($request[$key]) && !empty($request[$key]) &&
-            $request[$key] != 'false' && $request[$key] != 'off')
-        {
+        if (isset($request[$key]) && ! empty($request[$key]) &&
+            $request[$key] != 'false' && $request[$key] != 'off') {
             return true;
         }
 
@@ -368,13 +352,11 @@ class UserInterface
      * Returns trim()'d form input if $key is in $request; otherwise ''.
      *
      * @param string Request variable name / key.
-     * @param array $_GET, $_POST, or $_REQUEST
      * @return string Trimmed value or ''.
      */
     protected function getTrimmedInput($key, $request)
     {
-        if (isset($request[$key]))
-        {
+        if (isset($request[$key])) {
             return trim($request[$key]);
         }
 
@@ -384,16 +366,14 @@ class UserInterface
     /**
      * getSanitisedInput is getTrimmedInput but with XSS protection for public facing career portal
      */
-    
-   protected function getSanitisedInput($key, $request)
+    protected function getSanitisedInput($key, $request)
     {
-        if (isset($request[$key]))
-        {
-		return trim(htmlspecialchars($request[$key], ENT_QUOTES, FALSE));
-		}
+        if (isset($request[$key])) {
+            return trim(htmlspecialchars($request[$key], ENT_QUOTES, false));
+        }
         return '';
-    } 
-    
+    }
+
     /**
      * Returns valid subtabs for this module.
      *
@@ -401,18 +381,14 @@ class UserInterface
      */
     public function getThisSubTabsExternal($modules)
     {
-        $ret = array();
+        $ret = [];
 
-        foreach ($modules as $moduleName => $parameters)
-        {
+        foreach ($modules as $moduleName => $parameters) {
             $subTabsExternal = $parameters[2];
 
-            if ($subTabsExternal != false)
-            {
-                foreach ($subTabsExternal as $moduleNameTab => $theSubTab)
-                {
-                    if ($moduleNameTab === $this->_moduleName)
-                    {
+            if ($subTabsExternal != false) {
+                foreach ($subTabsExternal as $moduleNameTab => $theSubTab) {
+                    if ($moduleNameTab === $this->_moduleName) {
                         $ret = array_merge($ret, $theSubTab);
                     }
                 }
@@ -421,8 +397,8 @@ class UserInterface
 
         return $ret;
     }
-    
-     /**
+
+    /**
      * Returns access level of logged in user for securedObject
      * Intended to be used in UI classes (deriving from UserInterface) to check if user has acces to particular module and it's action.
      */
@@ -431,5 +407,3 @@ class UserInterface
         return $_SESSION['CATS']->getAccessLevel($securedObjectName);
     }
 }
-
-?>

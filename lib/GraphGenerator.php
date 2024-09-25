@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -33,8 +32,7 @@
 define('GRAPH_TREND_LINES', false);
 
 /* Is GD2 installed? */
-if (function_exists('ImageCreateFromJpeg'))
-{
+if (function_exists('ImageCreateFromJpeg')) {
     include_once(LEGACY_ROOT . '/lib/artichow/LinePlot.class.php');
     include_once(LEGACY_ROOT . '/lib/artichow/BarPlot.class.php');
     include_once(LEGACY_ROOT . '/lib/artichow/inc/Label.class.php');
@@ -52,8 +50,11 @@ if (function_exists('ImageCreateFromJpeg'))
 class GraphSimple
 {
     private $xLabels;
+
     private $xValues;
+
     private $color;
+
     private $title;
 
     public function __construct($xLabels, $xValues, $color, $title, $width, $height)
@@ -70,13 +71,11 @@ class GraphSimple
     public function draw($format = false)
     {
         /* Make sure we have GD support. */
-        if (!function_exists('imagecreatefromjpeg'))
-        {
+        if (! function_exists('imagecreatefromjpeg')) {
             die();
         }
 
-        if ($format === false)
-        {
+        if ($format === false) {
             $format = IMG_PNG;
         }
 
@@ -93,20 +92,19 @@ class GraphSimple
         $graph->border->setColor(new Color(187, 187, 187, 15));
 
         $plot = new BarPlot($this->xValues);
-        $plot->setBarColor(new $this->color);
+        $plot->setBarColor(new $this->color());
         $plot->barBorder->hide(true);
-        $plot->setBarGradient(new LinearGradient(new $this->color, new White, 0));
+        $plot->setBarGradient(new LinearGradient(new $this->color(), new White(), 0));
         $plot->setBarPadding(0.2, 0.2);
 
         $group->axis->bottom->setLabelText($this->xLabels);
         $group->axis->bottom->label->setFont(new Tuffy(8));
 
         $plot2 = new LinePlot($this->xValues, LinePlot::MIDDLE);
-        $plot2->setColor(new DarkBlue);
+        $plot2->setColor(new DarkBlue());
         $plot2->setThickness(1);
 
-        if (GRAPH_TREND_LINES)
-        {
+        if (GRAPH_TREND_LINES) {
             $group->add($plot2);
         }
 
@@ -126,7 +124,9 @@ class GraphSimple
 class GraphPie
 {
     private $xLabels;
+
     private $xValues;
+
     private $title;
 
     public function __construct($xLabels, $xValues, $title, $width, $height)
@@ -142,22 +142,20 @@ class GraphPie
     public function draw($format = false)
     {
         /* Make sure we have GD support. */
-        if (!function_exists('imagecreatefromjpeg'))
-        {
+        if (! function_exists('imagecreatefromjpeg')) {
             die();
         }
 
-        if ($format === false)
-        {
+        if ($format === false) {
             $format = IMG_PNG;
         }
 
         $graph = new Graph($this->width, $this->height);
 
-        $colors = array (
-                new Green,
-                new Orange
-            );
+        $colors = [
+            new Green(),
+            new Orange(),
+        ];
 
         $graph->setFormat($format);
         $graph->setBackgroundColor(new Color(0xF4, 0xF4, 0xF4));
@@ -171,10 +169,10 @@ class GraphPie
         $plot = new Pie($this->xValues, $colors);
         $plot->setCenter(0.5, 0.45);
         $plot->setAbsSize(160, 160);
-        
+
         $plot->setLegend($this->xLabels);
         $plot->legend->setModel(Legend::MODEL_BOTTOM);
-        $plot->legend->setPosition(NULL, 1.25); /*$this->legendOffset*/
+        $plot->legend->setPosition(null, 1.25); /*$this->legendOffset*/
         $plot->legend->shadow->setSize(0);
 
         $graph->add($plot);
@@ -191,11 +189,14 @@ class GraphPie
 class GraphComparisonChart
 {
     private $xLabels;
-    private $xValues;
-    private $color;
-    private $title;
-    private $totalValue;
 
+    private $xValues;
+
+    private $color;
+
+    private $title;
+
+    private $totalValue;
 
     public function __construct($xLabels, $xValues, $colorArray, $title, $width, $height, $totalValue)
     {
@@ -212,13 +213,11 @@ class GraphComparisonChart
     public function draw($format = false)
     {
         /* Make sure we have GD support. */
-        if (!function_exists('imagecreatefromjpeg'))
-        {
+        if (! function_exists('imagecreatefromjpeg')) {
             die();
         }
 
-        if ($format === false)
-        {
+        if ($format === false) {
             $format = IMG_PNG;
         }
 
@@ -237,7 +236,7 @@ class GraphComparisonChart
 
         $plot = new BarPlotPipeline($this->xValues, 1, 1, 0, $this->totalValue);
         $plot->setPadding(15, 15, 35, 29);
-        $plot->setBarColor(new DarkGreen);
+        $plot->setBarColor(new DarkGreen());
         $plot->barBorder->hide(true);
 
         $plot->arrayBarBackground = $this->colorArray;
@@ -270,15 +269,22 @@ class GraphComparisonChart
 class pipelineStatisticsGraph
 {
     private $xLabels;
+
     private $xValues;
+
     private $color;
+
     private $totalValue;
+
     private $legend1;
+
     private $legend2;
+
     private $legend3;
+
     private $view;
+
     private $noData;
-    
 
     public function __construct($xLabels, $xValues, $colorArray, $width, $height, $legend1, $legend2, $legend3, $view, $noData)
     {
@@ -294,22 +300,19 @@ class pipelineStatisticsGraph
         $this->noData = $noData;
     }
 
-
     // FIXME: Document me.
     public function draw($format = false)
     {
         /* Make sure we have GD support. */
-        if (!function_exists('imagecreatefromjpeg'))
-        {
+        if (! function_exists('imagecreatefromjpeg')) {
             die();
         }
 
-        if ($format === false)
-        {
+        if ($format === false) {
             $format = IMG_PNG;
         }
 
-        $graph = new Graph($this->width, $this->height, NULL, 0, $this->width-95);
+        $graph = new Graph($this->width, $this->height, null, 0, $this->width - 95);
 
         $graph->setFormat($format);
         $graph->setBackgroundColor(new Color(0xF4, 0xF4, 0xF4));
@@ -319,7 +322,7 @@ class pipelineStatisticsGraph
 
         $plot = new BarPlotDashboard($this->xValues, 1, 1, 0, $this->totalValue, true, $this->noData);
         $plot->setPadding(25, 105, 10, 22);
-        $plot->setBarColor(new DarkGreen);
+        $plot->setBarColor(new DarkGreen());
         $plot->barBorder->hide(true);
 
         $plot->arrayBarBackground = $this->colorArray;
@@ -366,11 +369,14 @@ class pipelineStatisticsGraph
 class jobOrderReportGraph
 {
     private $xLabels;
-    private $xValues;
-    private $color;
-    private $title;
-    private $totalValue;
 
+    private $xValues;
+
+    private $color;
+
+    private $title;
+
+    private $totalValue;
 
     public function __construct($xLabels, $xValues, $colorArray, $title, $width, $height)
     {
@@ -382,18 +388,15 @@ class jobOrderReportGraph
         $this->height = $height;
     }
 
-
     // FIXME: Document me.
     public function draw($format = false)
     {
         /* Make sure we have GD support. */
-        if (!function_exists('imagecreatefromjpeg'))
-        {
+        if (! function_exists('imagecreatefromjpeg')) {
             die();
         }
 
-        if ($format === false)
-        {
+        if ($format === false) {
             $format = IMG_JPEG;
         }
 
@@ -410,7 +413,7 @@ class jobOrderReportGraph
 
         $plot = new BarPlotPipeline($this->xValues, 1, 1, 0, $this->totalValue, false);
         $plot->setPadding(40, 40, 15, 45);
-        $plot->setBarColor(new DarkGreen);
+        $plot->setBarColor(new DarkGreen());
         $plot->barBorder->hide(true);
 
         $plot->arrayBarBackground = $this->colorArray;
@@ -437,7 +440,6 @@ class WordVerify
 {
     private $text;
 
-
     public function __construct($text)
     {
         $this->text = $text;
@@ -451,5 +453,3 @@ class WordVerify
         $object->draw();
     }
 }
-
-?>

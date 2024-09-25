@@ -1,22 +1,21 @@
 <?php
+
 namespace OpenCATS\Entity;
-use OpenCATS\Entity\JobOrder;
-use OpenCATS\Entity\JobOrderRepositoryException;
 
 include_once(LEGACY_ROOT . '/lib/History.php');
 
 // FIXME: It's way too similar to CompanyRepository
-// Remove duplicated code 
+// Remove duplicated code
 class JobOrderRepository
 {
     private $databaseConnection;
-    
-    function __construct(\DatabaseConnection $databaseConnection)
+
+    public function __construct(\DatabaseConnection $databaseConnection)
     {
         $this->databaseConnection = $databaseConnection;
     }
-    
-    function persist(JobOrder $jobOrder, \History $history)
+
+    public function persist(JobOrder $jobOrder, \History $history)
     {
         // FIXME: Is the OrNULL usage below correct? Can these fields be NULL?
         $sql = sprintf(

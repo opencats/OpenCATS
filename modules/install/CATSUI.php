@@ -43,5 +43,3 @@ class CATSUI extends UserInterface
     {
     }
 }
-
-?>

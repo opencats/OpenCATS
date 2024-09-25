@@ -22,7 +22,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -39,7 +38,7 @@ include_once(LEGACY_ROOT . '/lib/Mailer.php');
 class CareerPortalSettings
 {
     // FIXME: Make this private and use a getter.
-    public $requiredTemplateFields = array(
+    public $requiredTemplateFields = [
         'Header',
         'Content - Main',
         'Content - Search Results',
@@ -50,18 +49,18 @@ class CareerPortalSettings
         'Content - Questionnaire',
         'Content - Thanks for your Submission',
         'Footer',
-        'CSS'
-    );
-    private $_db;
-    private $_siteID;
+        'CSS',
+    ];
 
+    private $_db;
+
+    private $_siteID;
 
     public function __construct($siteID)
     {
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
-
 
     /**
      * Returns all career portal settings and their current values as an
@@ -73,16 +72,16 @@ class CareerPortalSettings
     public function getAll()
     {
         /* Default values. */
-        $settings = array(
-            'enabled'               => '0', /* false */
-            'allowBrowse'           => '1', /* true */
+        $settings = [
+            'enabled' => '0', /* false */
+            'allowBrowse' => '1', /* true */
             'candidateRegistration' => '0', /* false */
-            'showDepartment'        => '1', /* true */
-            'showCompany'           => '0', /* false */
-            'activeBoard'           => 'CATS 2.0',
-            'allowXMLSubmit'        => '1', /* true */
-            'useCATSTemplate'       => ''
-        );
+            'showDepartment' => '1', /* true */
+            'showCompany' => '0', /* false */
+            'activeBoard' => 'CATS 2.0',
+            'allowXMLSubmit' => '1', /* true */
+            'useCATSTemplate' => '',
+        ];
 
         /* Get all career portal settings for this site from the database. */
         $sql = sprintf(
@@ -102,10 +101,8 @@ class CareerPortalSettings
         $rs = $this->_db->getAllAssoc($sql);
 
         // Override default settings with settings from the database.
-        foreach ($rs as $rowIndex => $row)
-        {
-            if (isset($settings[$id=$row['setting']]))
-            {
+        foreach ($rs as $rowIndex => $row) {
+            if (isset($settings[$id = $row['setting']])) {
                 $settings[$id] = $row['value'];
             }
         }
@@ -114,10 +111,8 @@ class CareerPortalSettings
          * Retrieve all setting, value pairs for default or custom template
          * for the activeBoard (if any).
          */
-        foreach ($rs as $rowIndex => $row)
-        {
-            if (!strcmp($row['setting'], 'activeBoard'))
-            {
+        foreach ($rs as $rowIndex => $row) {
+            if (! strcmp($row['setting'], 'activeBoard')) {
                 $activeBoard = $row['value'];
 
                 $templateSource1 = $this->getAllFromDefaultTemplate($activeBoard);
@@ -125,8 +120,7 @@ class CareerPortalSettings
 
                 $templateSource = array_merge($templateSource1, $templateSource2);
 
-                foreach ($templateSource as $templateLine)
-                {
+                foreach ($templateSource as $templateLine) {
                     $settings[$templateLine['setting']] = $templateLine['value'];
                 }
             }
@@ -308,16 +302,13 @@ class CareerPortalSettings
     {
         $rs = $this->getAllFromTemplate($templateName);
 
-        $template = array();
-        foreach ($rs as $rowIndex => $row)
-        {
+        $template = [];
+        foreach ($rs as $rowIndex => $row) {
             $template[$row['setting']] = $row['value'];
         }
 
-        foreach ($this->requiredTemplateFields as $index => $value)
-        {
-            if (!isset($template[$value]))
-            {
+        foreach ($this->requiredTemplateFields as $index => $value) {
+            if (! isset($template[$value])) {
                 $template[$value] = '';
             }
         }
@@ -344,7 +335,7 @@ class CareerPortalSettings
             $this->_db->makeQueryString($template)
         );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     /**
@@ -353,7 +344,6 @@ class CareerPortalSettings
      * @param string Setting name.
      * @param string Setting value.
      * @param string Template name.
-     * @return void
      */
     public function setForTemplate($setting, $value, $template)
     {
@@ -389,8 +379,8 @@ class CareerPortalSettings
             $this->_db->makeQueryString($value),
             $this->_siteID,
             $this->_db->makeQueryString($template)
-         );
-         $this->_db->query($sql);
+        );
+        $this->_db->query($sql);
     }
 
     /**
@@ -398,7 +388,6 @@ class CareerPortalSettings
      *
      * @param string Setting name.
      * @param string Setting value.
-     * @return void
      */
     public function set($setting, $value)
     {
@@ -436,8 +425,8 @@ class CareerPortalSettings
             $this->_db->makeQueryString($setting),
             $this->_db->makeQueryString($value),
             $this->_siteID
-         );
-         $this->_db->query($sql);
+        );
+        $this->_db->query($sql);
     }
 
     /**
@@ -447,12 +436,10 @@ class CareerPortalSettings
      * @param string Destination e-mail address.
      * @param string E-mail subject.
      * @param string E-mail body.
-     * @return void
      */
     public function sendEmail($userID, $destination, $subject, $body)
     {
-        if (empty($destination))
-        {
+        if (empty($destination)) {
             return;
         }
 
@@ -460,12 +447,10 @@ class CareerPortalSettings
         //FIXME: Make subject configurable.
         $mailer = new Mailer($this->_siteID, $userID);
         $mailerStatus = $mailer->sendToOne(
-            array($destination, ''),
+            [$destination, ''],
             $subject,
             $body,
             true
         );
     }
 }
-
-?>

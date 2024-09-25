@@ -3,7 +3,7 @@
  * CATS
  * Careers Page Display Module
  *
- * CATS Version: 0.9.7.2
+ * CATS Version: 0.9.8.2
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
@@ -34,8 +34,6 @@
 $careerPage = true;
 
 chdir('..');
-include_once('config.php') ;
+include_once('config.php');
 include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
 include_once(CATSUtility::getIndexName());
-
-?>

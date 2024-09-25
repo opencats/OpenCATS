@@ -11,8 +11,9 @@
  *    @package  SimpleTest
  *    @subpackage   UnitTester
  */
-class SimpleArguments {
-    private $all = array();
+class SimpleArguments
+{
+    private $all = [];
 
     /**
      * Parses the command line arguments. The usual formats
@@ -25,7 +26,8 @@ class SimpleArguments {
      * --flag       (true)
      * @param array $arguments      Normally the PHP $argv.
      */
-    function __construct($arguments) {
+    public function __construct($arguments)
+    {
         array_shift($arguments);
         while (count($arguments) > 0) {
             list($key, $value) = $this->parseArgument($arguments);
@@ -41,11 +43,12 @@ class SimpleArguments {
      * @param string value   The value that would norally
      *                       be colected on the command line.
      */
-    function assign($key, $value) {
+    public function assign($key, $value)
+    {
         if ($this->$key === false) {
             $this->all[$key] = $value;
         } elseif (! is_array($this->$key)) {
-            $this->all[$key] = array($this->$key, $value);
+            $this->all[$key] = [$this->$key, $value];
         } else {
             $this->all[$key][] = $value;
         }
@@ -59,16 +62,17 @@ class SimpleArguments {
      *                              If no value can be found it will
      *                              have the value true assigned instead.
      */
-    private function parseArgument(&$arguments) {
+    private function parseArgument(&$arguments)
+    {
         $argument = array_shift($arguments);
         if (preg_match('/^-(\w)=(.+)$/', $argument, $matches)) {
-            return array($matches[1], $matches[2]);
+            return [$matches[1], $matches[2]];
         } elseif (preg_match('/^-(\w)$/', $argument, $matches)) {
-            return array($matches[1], $this->nextNonFlagElseTrue($arguments));
+            return [$matches[1], $this->nextNonFlagElseTrue($arguments)];
         } elseif (preg_match('/^--(\w+)=(.+)$/', $argument, $matches)) {
-            return array($matches[1], $matches[2]);
+            return [$matches[1], $matches[2]];
         } elseif (preg_match('/^--(\w+)$/', $argument, $matches)) {
-            return array($matches[1], $this->nextNonFlagElseTrue($arguments));
+            return [$matches[1], $this->nextNonFlagElseTrue($arguments)];
         }
     }
 
@@ -80,7 +84,8 @@ class SimpleArguments {
      *                            is a value to be extracted.
      * @return string/boolean     The next value unless it's a flag.
      */
-    private function nextNonFlagElseTrue(&$arguments) {
+    private function nextNonFlagElseTrue(&$arguments)
+    {
         return $this->valueIsNext($arguments) ? array_shift($arguments) : true;
     }
 
@@ -91,7 +96,8 @@ class SimpleArguments {
      *                            Not affected by this call.
      * boolean                    True if valid value.
      */
-    function valueIsNext($arguments) {
+    public function valueIsNext($arguments)
+    {
         return isset($arguments[0]) && ! $this->isFlag($arguments[0]);
     }
 
@@ -100,7 +106,8 @@ class SimpleArguments {
      * @param string $argument       Value to be tested.
      * @return boolean               True if it's a flag.
      */
-    function isFlag($argument) {
+    public function isFlag($argument)
+    {
         return strncmp($argument, '-', 1) == 0;
     }
 
@@ -114,7 +121,8 @@ class SimpleArguments {
      *                                 the flag had been specified more
      *                                 than once.
      */
-    function __get($key) {
+    public function __get($key)
+    {
         if (isset($this->all[$key])) {
             return $this->all[$key];
         }
@@ -125,7 +133,8 @@ class SimpleArguments {
      * The entire argument set as a hash.
      * @return hash         Each argument and it's value(s).
      */
-    function all() {
+    public function all()
+    {
         return $this->all;
     }
 }
@@ -135,16 +144,20 @@ class SimpleArguments {
  *    @package  SimpleTest
  *    @subpackage   UnitTester
  */
-class SimpleHelp {
+class SimpleHelp
+{
     private $overview;
-    private $flag_sets = array();
-    private $explanations = array();
+
+    private $flag_sets = [];
+
+    private $explanations = [];
 
     /**
      * Sets up the top level explanation for the program.
      * @param string $overview        Summary of program.
      */
-    function __construct($overview = '') {
+    public function __construct($overview = '')
+    {
         $this->overview = $overview;
     }
 
@@ -156,8 +169,9 @@ class SimpleHelp {
      *                                  as these are inserted automatically.
      * @param string $explanation       What that flag group does.
      */
-    function explainFlag($flags, $explanation) {
-        $flags = is_array($flags) ? $flags : array($flags);
+    public function explainFlag($flags, $explanation)
+    {
+        $flags = is_array($flags) ? $flags : [$flags];
         $this->flag_sets[] = $flags;
         $this->explanations[] = $explanation;
     }
@@ -166,7 +180,8 @@ class SimpleHelp {
      * Generates the help text.
      * @returns string      The complete formatted text.
      */
-    function render() {
+    public function render()
+    {
         $tab_stop = $this->longestFlag($this->flag_sets) + 4;
         $text = $this->overview . "\n";
         for ($i = 0; $i < count($this->flag_sets); $i++) {
@@ -179,7 +194,8 @@ class SimpleHelp {
      * Works out the longest flag for formatting purposes.
      * @param array $flag_sets      The internal flag set list.
      */
-    private function longestFlag($flag_sets) {
+    private function longestFlag($flag_sets)
+    {
         $longest = 0;
         foreach ($flag_sets as $flags) {
             foreach ($flags as $flag) {
@@ -193,7 +209,8 @@ class SimpleHelp {
      * Generates the text for a single flag and it's alternate flags.
      * @returns string           Help text for that flag group.
      */
-    private function renderFlagSet($flags, $explanation, $tab_stop) {
+    private function renderFlagSet($flags, $explanation, $tab_stop)
+    {
         $flag = array_shift($flags);
         $text = str_pad($this->renderFlag($flag), $tab_stop, ' ') . $explanation . "\n";
         foreach ($flags as $flag) {
@@ -207,7 +224,8 @@ class SimpleHelp {
      * @param string $flag          Just the name.
      * @returns                     Fag with apropriate dashes.
      */
-    private function renderFlag($flag) {
+    private function renderFlag($flag)
+    {
         return (strlen($flag) == 1 ? '-' : '--') . $flag;
     }
 
@@ -217,8 +235,8 @@ class SimpleHelp {
      * @param string $text      Text to clean up.
      * @returns string          Text with no blank lines.
      */
-    private function noDuplicateNewLines($text) {
+    private function noDuplicateNewLines($text)
+    {
         return preg_replace('/(\n+)/', "\n", $text);
     }
 }
-?>

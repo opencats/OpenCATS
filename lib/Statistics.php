@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -41,9 +40,10 @@ include_once(LEGACY_ROOT . '/lib/JobOrderStatuses.php');
 class Statistics
 {
     private $_db;
-    private $_siteID;
-    private $_timeZoneOffset;
 
+    private $_siteID;
+
+    private $_timeZoneOffset;
 
     public function __construct($siteID)
     {
@@ -53,7 +53,6 @@ class Statistics
         // FIXME: Session coupling...
         $this->_timeZoneOffset = $_SESSION['CATS']->getTimeZoneOffset();
     }
-
 
     /**
      * Returns the total number of candidates created in the given period.
@@ -114,7 +113,7 @@ class Statistics
         return $rs['submissionCount'];
     }
 
-	/**
+    /**
      * Returns the total number of placements in the given period.
      *
      * @param flag statistics period flag
@@ -229,7 +228,8 @@ class Statistics
     public function getSubmissionJobOrders($period)
     {
         $criterion = $this->makePeriodCriterion(
-            'candidate_joborder_status_history.date', $period
+            'candidate_joborder_status_history.date',
+            $period
         );
 
         $sql = sprintf(
@@ -279,7 +279,8 @@ class Statistics
     public function getSubmissionsByJobOrder($period, $jobOrderID)
     {
         $criterion = $this->makePeriodCriterion(
-            'candidate_joborder_status_history.date', $period
+            'candidate_joborder_status_history.date',
+            $period
         );
 
         $sql = sprintf(
@@ -329,7 +330,7 @@ class Statistics
 
         return $this->_db->getAllAssoc($sql);
     }
-    
+
     /**
      * Returns all job orders with placements created in the given period.
      *
@@ -339,7 +340,8 @@ class Statistics
     public function getPlacementsJobOrders($period)
     {
         $criterion = $this->makePeriodCriterion(
-            'candidate_joborder_status_history.date', $period
+            'candidate_joborder_status_history.date',
+            $period
         );
 
         $sql = sprintf(
@@ -378,7 +380,7 @@ class Statistics
 
         return $this->_db->getAllAssoc($sql);
     }
-    
+
     /**
      * Returns all placements for the specified job order created in the
      * given period.
@@ -389,7 +391,8 @@ class Statistics
     public function getPlacementsByJobOrder($period, $jobOrderID)
     {
         $criterion = $this->makePeriodCriterion(
-            'candidate_joborder_status_history.date', $period
+            'candidate_joborder_status_history.date',
+            $period
         );
 
         $sql = sprintf(
@@ -439,12 +442,13 @@ class Statistics
 
         return $this->_db->getAllAssoc($sql);
     }
-    
+
     // FIXME: Document me.
     public function getActivitiesByPeriod($period)
     {
         $criterion = $this->makePeriodCriterion(
-            'activity.date_created', $period
+            'activity.date_created',
+            $period
         );
 
         $sql = sprintf(
@@ -475,7 +479,8 @@ class Statistics
     public function getCandidatesByPeriod($period)
     {
         $criterion = $this->makePeriodCriterion(
-            'candidate.date_created', $period
+            'candidate.date_created',
+            $period
         );
 
         $sql = sprintf(
@@ -506,7 +511,8 @@ class Statistics
     public function getJobOrdersByPeriod($period)
     {
         $criterion = $this->makePeriodCriterion(
-            'joborder.date_created', $period
+            'joborder.date_created',
+            $period
         );
 
         $sql = sprintf(
@@ -537,7 +543,8 @@ class Statistics
     public function getSubmissionsByPeriod($period)
     {
         $criterion = $this->makePeriodCriterion(
-            'candidate_joborder_status_history.date', $period
+            'candidate_joborder_status_history.date',
+            $period
         );
 
         $sql = sprintf(
@@ -565,11 +572,12 @@ class Statistics
         return $this->_db->getAllAssoc($sql);
     }
 
-	// FIXME: Document me.
+    // FIXME: Document me.
     public function getPlacementsByPeriod($period)
     {
         $criterion = $this->makePeriodCriterion(
-            'candidate_joborder_status_history.date', $period
+            'candidate_joborder_status_history.date',
+            $period
         );
 
         $sql = sprintf(
@@ -690,52 +698,50 @@ class Statistics
 
         return $this->_db->getAssoc($sql);
     }
-    
+
     public function getEEOReport($modePeriod, $modeStatus)
     {
-        switch ($modePeriod)
-        {
+        switch ($modePeriod) {
             case 'month':
                 $periodChriterion = 'AND TO_DAYS(candidate.date_modified) >= TO_DAYS(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))';
                 break;
-                
+
             case 'week':
                 $periodChriterion = 'AND TO_DAYS(candidate.date_modified) >= TO_DAYS(DATE_SUB(CURDATE(), INTERVAL 7 DAY))';
                 break;
-            
+
             default:
                 $periodChriterion = '';
                 break;
         }
-        
-        switch ($modeStatus)
-        {
+
+        switch ($modeStatus) {
             case 'placed':
                 $statusChriterion = 'AND IF(candidate_joborder_status.candidate_joborder_id, 1, 0) = 1';
                 $join = 'LEFT JOIN candidate_joborder AS candidate_joborder_status
                             ON candidate_joborder_status.candidate_id = candidate.candidate_id
-                            AND candidate_joborder_status.status >= '.PIPELINE_STATUS_PLACED.'
-                            AND candidate_joborder_status.site_id = '.$this->_siteID.'
+                            AND candidate_joborder_status.status >= ' . PIPELINE_STATUS_PLACED . '
+                            AND candidate_joborder_status.site_id = ' . $this->_siteID . '
                         ';
                 break;
-                
+
             case 'rejected':
                 $statusChriterion = 'AND IF(candidate_joborder_status.candidate_joborder_id, 1, 0) = 1';
                 $join = 'LEFT JOIN candidate_joborder AS candidate_joborder_status
                             ON candidate_joborder_status.candidate_id = candidate.candidate_id
-                            AND candidate_joborder_status.status = '.PIPELINE_STATUS_NOTINCONSIDERATION.'
-                            AND candidate_joborder_status.site_id = '.$this->_siteID.'
+                            AND candidate_joborder_status.status = ' . PIPELINE_STATUS_NOTINCONSIDERATION . '
+                            AND candidate_joborder_status.site_id = ' . $this->_siteID . '
                         ';
                 break;
-            
+
             default:
                 $statusChriterion = '';
                 $join = '';
                 break;
         }
-        
+
         $chriterion = $periodChriterion . $statusChriterion;
-        
+
         $sql = sprintf(
             "SELECT
                 COUNT(candidate.candidate_id) AS totalCandidates
@@ -750,9 +756,9 @@ class Statistics
             $this->_siteID,
             $chriterion
         );
-        
+
         $statistics['rsTotalCandidates'] = $this->_db->getAssoc($sql);
-        
+
         $sql = sprintf(
             "SELECT
                 (
@@ -776,7 +782,7 @@ class Statistics
             $this->_siteID,
             $chriterion
         );
-             
+
         $statistics['rsEthnicStatistics'] = $this->_db->getAllAssoc($sql);
 
         $sql = sprintf(
@@ -802,7 +808,7 @@ class Statistics
             $this->_siteID,
             $chriterion
         );
-             
+
         $statistics['rsVeteranStatistics'] = $this->_db->getAllAssoc($sql);
 
         $sql = sprintf(
@@ -841,9 +847,9 @@ class Statistics
             $this->_siteID,
             $chriterion
         );
-             
+
         $statistics['rsDisabledStatistics'] = $this->_db->getAssoc($sql);
-        
+
         $sql = sprintf(
             "SELECT
                 (
@@ -880,12 +886,11 @@ class Statistics
             $this->_siteID,
             $chriterion
         );
-             
+
         $statistics['rsGenderStatistics'] = $this->_db->getAssoc($sql);
-        
+
         return $statistics;
     }
-    
 
     /**
      * Returns an array containing the number of candidates currently in each
@@ -930,13 +935,12 @@ class Statistics
             PIPELINE_STATUS_PLACED,
             PIPELINE_STATUS_CANDIDATE_REPLIED,
             $this->_siteID,
-            ($jobOrderID != -1 ? "AND candidate_joborder.joborder_id = ".$jobOrderID : "")
+            ($jobOrderID != -1 ? "AND candidate_joborder.joborder_id = " . $jobOrderID : "")
         );
         $rs = $this->_db->getAssoc($sql);
 
-        if (empty($rs))
-        {
-            return array(
+        if (empty($rs)) {
+            return [
                 'totalPipeline' => 0,
                 'noStatus' => 0,
                 'noContact' => 0,
@@ -946,13 +950,12 @@ class Statistics
                 'interviewing' => 0,
                 'offered' => 0,
                 'passedOn' => 0,
-                'placed' => 0
-            );
+                'placed' => 0,
+            ];
         }
 
         return $rs;
     }
-
 
     // FIXME: Document me.
     private function makePeriodCriterion($dateField, $period)
@@ -963,8 +966,7 @@ class Statistics
          * any rows.
          */
         $criteria = '';
-        switch ($period)
-        {
+        switch ($period) {
             case TIME_PERIOD_TODAY:
                 $criteria = sprintf(
                     'AND %s > \'1900-01-01\' AND DATE(%s) = CURDATE()',
@@ -998,7 +1000,7 @@ class Statistics
                 break;
 
             case TIME_PERIOD_LASTTWOWEEKS:
-                $criteria =sprintf(
+                $criteria = sprintf(
                     'AND %s > \'1900-01-01\' AND (YEARWEEK(%s) = YEARWEEK(NOW()) OR YEARWEEK(%s) = YEARWEEK(NOW() - INTERVAL 7 DAY))',
                     $dateField,
                     $dateField,
@@ -1044,8 +1046,7 @@ class Statistics
                 break;
         }
 
-        if ($this->_timeZoneOffset != 0)
-        {
+        if ($this->_timeZoneOffset != 0) {
             $criteria = str_replace('CURDATE()', 'DATE_ADD(CURDATE(), INTERVAL ' . $this->_timeZoneOffset . ' HOUR)', $criteria);
             $criteria = str_replace('NOW()', 'DATE_ADD(NOW(), INTERVAL ' . $this->_timeZoneOffset . ' HOUR)', $criteria);
             $criteria = str_replace($dateField, 'DATE_ADD(' . $dateField . ', INTERVAL ' . $this->_timeZoneOffset . ' HOUR)', $criteria);
@@ -1054,5 +1055,3 @@ class Statistics
         return $criteria;
     }
 }
-
-?>

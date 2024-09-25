@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -50,15 +49,17 @@ class Wizard
      */
     public function __construct($finishURL = '', $jsInclude = '')
     {
-        if (isset($_SESSION['CATS_WIZARD'])) unset($_SESSION['CATS_WIZARD']);
+        if (isset($_SESSION['CATS_WIZARD'])) {
+            unset($_SESSION['CATS_WIZARD']);
+        }
 
         // Initialize the session that will store information regarding the wizard
-        $_SESSION['CATS_WIZARD'] = array(
-            'pages' => array(),
+        $_SESSION['CATS_WIZARD'] = [
+            'pages' => [],
             'curPage' => 1,
             'js' => $jsInclude,
-            'finishURL' => $finishURL
-        );
+            'finishURL' => $finishURL,
+        ];
     }
 
     /**
@@ -74,13 +75,13 @@ class Wizard
      */
     public function addPage($pageTitle, $templateFile, $phpEval = '', $disableNext = false, $disableSkip = false)
     {
-        $_SESSION['CATS_WIZARD']['pages'][] = array(
+        $_SESSION['CATS_WIZARD']['pages'][] = [
             'title' => $pageTitle,
             'php' => $phpEval,
             'template' => $templateFile,
             'disableNext' => $disableNext,
-            'disableSkip' => $disableSkip
-        );
+            'disableSkip' => $disableSkip,
+        ];
         return true;
     }
 
@@ -93,10 +94,10 @@ class Wizard
      */
     public function doModal()
     {
-        if (!isset($_SESSION['CATS_WIZARD']) || !count($_SESSION['CATS_WIZARD']['pages'])) return;
+        if (! isset($_SESSION['CATS_WIZARD']) || ! count($_SESSION['CATS_WIZARD']['pages'])) {
+            return;
+        }
         CATSUtility::transferRelativeURI('m=wizard');
         return true;
     }
 }
-
-?>

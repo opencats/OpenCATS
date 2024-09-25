@@ -1,9 +1,10 @@
-<?php 
+<?php
+
 /*
  * CATS
  * Contacts Datagrid
  *
- * CATS Version: 0.9.7.2
+ * CATS Version: 0.9.8.2
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
@@ -30,7 +31,7 @@
  *
  * $Id: dataGrids.php 3566 2007-11-12 09:46:35Z will $
  */
- 
+
 include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
 include_once(LEGACY_ROOT . '/lib/Hooks.php');
 include_once(LEGACY_ROOT . '/lib/InfoString.php');
@@ -40,10 +41,9 @@ class ActivityDataGrid extends DataGrid
 {
     protected $_siteID;
 
-
     // FIXME: Fix ugly indenting - ~400 character lines = bad.
     public function __construct($siteID, $parameters)
-    {   
+    {
         /* Pager configuration. */
         $this->_tableWidth = new Width(100, '%');
         $this->_defaultAlphabeticalSortBy = 'lastName';
@@ -53,36 +53,52 @@ class ActivityDataGrid extends DataGrid
         $this->showChooseColumnsBox = true;
         $this->allowResizing = true;
         $this->dateCriterion = '';
-        
-        if (isset($parameters['period']) && !empty($parameters['period']))
-        {
+
+        if (isset($parameters['period']) && ! empty($parameters['period'])) {
             $this->dateCriterion .= ' AND activity.date_created >= ' . $parameters['period'] . ' ';
-        }
-        else
-        {
-            if (isset($parameters['startDate']) && !empty($parameters['startDate']))
-            {
-                $this->dateCriterion .= ' AND activity.date_created >= \'' .$parameters['startDate'].'\' ';
+        } else {
+            if (isset($parameters['startDate']) && ! empty($parameters['startDate'])) {
+                $this->dateCriterion .= ' AND activity.date_created >= \'' . $parameters['startDate'] . '\' ';
             }
-            
-            if (isset($parameters['endDate']) && !empty($parameters['endDate']))
-            {
-                $this->dateCriterion .= ' AND activity.date_created <= \''.$parameters['endDate'].'\' ';
+
+            if (isset($parameters['endDate']) && ! empty($parameters['endDate'])) {
+                $this->dateCriterion .= ' AND activity.date_created <= \'' . $parameters['endDate'] . '\' ';
             }
         }
 
         $this->defaultSortBy = 'dateCreatedSort';
         $this->defaultSortDirection = 'DESC';
-   
-        $this->_defaultColumns = array( 
-            array('name' => 'Date', 'width' => 110),
-            array('name' => 'First Name', 'width' => 85),
-            array('name' => 'Last Name', 'width' => 75),
-            array('name' => 'Regarding', 'width' => 125),
-            array('name' => 'Activity', 'width' => 65),
-            array('name' => 'Notes', 'width' => 240),
-            array('name' => 'Entered By', 'width' => 60),
-        );
+
+        $this->_defaultColumns = [
+            [
+                'name' => 'Date',
+                'width' => 110,
+            ],
+            [
+                'name' => 'First Name',
+                'width' => 85,
+            ],
+            [
+                'name' => 'Last Name',
+                'width' => 75,
+            ],
+            [
+                'name' => 'Regarding',
+                'width' => 125,
+            ],
+            [
+                'name' => 'Activity',
+                'width' => 65,
+            ],
+            [
+                'name' => 'Notes',
+                'width' => 240,
+            ],
+            [
+                'name' => 'Entered By',
+                'width' => 60,
+            ],
+        ];
 
 
         $this->_db = DatabaseConnection::getInstance();
@@ -90,70 +106,83 @@ class ActivityDataGrid extends DataGrid
         $this->_assignedCriterion = "";
         $this->_dataItemIDColumn = 'company.company_id';
 
-        $this->_classColumns = array( 
-            'Date' =>           array('pagerRender'    => 'return $rsData[\'dateCreated\'];', 
-                                      'sortableColumn' => 'dateCreatedSort',
-                                      'pagerWidth'     => 110,
-                                      'pagerOptional'  => true,
-                                      'alphaNavigation'=> true,
-                                      'filter' => 'activity.date_created'),
+        $this->_classColumns = [
+            'Date' => [
+                'pagerRender' => 'return $rsData[\'dateCreated\'];',
+                'sortableColumn' => 'dateCreatedSort',
+                'pagerWidth' => 110,
+                'pagerOptional' => true,
+                'alphaNavigation' => true,
+                'filter' => 'activity.date_created',
+            ],
 
-            'First Name' =>     array('pagerRender'    => 'if ($rsData[\'dataItemType\']=='.DATA_ITEM_CANDIDATE.') {$ret = \'<img src="images/mru/candidate.gif" height="12" alt="" />\';} else if ($rsData[\'dataItemType\']=='.DATA_ITEM_CONTACT.') {$ret = \'<img src="images/mru/contact.gif" height="12">\';} else {$ret = \'<img src="images/mru/blank.gif">\';} if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; if ($rsData[\'dataItemType\']=='.DATA_ITEM_CANDIDATE.') {return $ret.\'&nbsp;<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';} else {return  $ret.\'&nbsp;<a href="'.CATSUtility::getIndexName().'?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';}', 
-                                     'sortableColumn'  => 'firstName',
-                                     'pagerWidth'      => 85,
-                                     'pagerOptional'   => false,
-                                     'alphaNavigation' => true,
-									 'filterable' 	   => false,
-                                     'filterHaving'    => 'firstName'),
+            'First Name' => [
+                'pagerRender' => 'if ($rsData[\'dataItemType\']==' . DATA_ITEM_CANDIDATE . ') {$ret = \'<img src="images/mru/candidate.gif" height="12" alt="" />\';} else if ($rsData[\'dataItemType\']==' . DATA_ITEM_CONTACT . ') {$ret = \'<img src="images/mru/contact.gif" height="12">\';} else {$ret = \'<img src="images/mru/blank.gif">\';} if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; if ($rsData[\'dataItemType\']==' . DATA_ITEM_CANDIDATE . ') {return $ret.\'&nbsp;<a href="' . CATSUtility::getIndexName() . '?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';} else {return  $ret.\'&nbsp;<a href="' . CATSUtility::getIndexName() . '?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';}',
+                'sortableColumn' => 'firstName',
+                'pagerWidth' => 85,
+                'pagerOptional' => false,
+                'alphaNavigation' => true,
+                'filterable' => false,
+                'filterHaving' => 'firstName',
+            ],
 
-            'Last Name' =>      array('pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; if ($rsData[\'dataItemType\']=='.DATA_ITEM_CANDIDATE.') {return \'<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'"> \'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';} else {return \'<a href="'.CATSUtility::getIndexName().'?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'"> \'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';}', 
-                                     'sortableColumn'  => 'lastName',
-                                     'pagerWidth'      => 75,
-                                     'pagerOptional'   => false,
-                                     'alphaNavigation' => true,
-									 'filterable'      => false,
-                                     'filterHaving'    => 'lastName'),
-                                                             
-             'Regarding' =>      array('pagerRender'   => 'if ($rsData[\'jobIsHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; if ($rsData[\'companyIsHot\'] == 1) $companyClassName =  \'jobLinkHot\'; else $companyClassName = \'jobLinkCold\';  if ($rsData[\'regardingJobTitle\'] == \'\') {$ret = \'General\'; } else {$ret = \'<a href="'.CATSUtility::getIndexName().'?m=joborders&amp;a=show&amp;jobOrderID=\'.$rsData[\'jobOrderID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'regardingJobTitle\']).\'</a>\'; if($rsData[\'regardingCompanyName\'] != \'\') {$ret .= \' <a href="'.CATSUtility::getIndexName().'?m=companies&amp;a=show&amp;companyID=\'.$rsData[\'companyID\'].\'" class="\'.$companyClassName.\'">(\'.htmlspecialchars($rsData[\'regardingCompanyName\']).\')\';}} return $ret;', 
-                                     'sortableColumn'  => 'regarding',
-                                     'pagerWidth'      => 125,
-                                     'pagerOptional'   => true,
-                                     'alphaNavigation' => true,
-									 'filter' 		   => 'CONCAT(joborder.title, company.name)'),        
+            'Last Name' => [
+                'pagerRender' => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; if ($rsData[\'dataItemType\']==' . DATA_ITEM_CANDIDATE . ') {return \'<a href="' . CATSUtility::getIndexName() . '?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'"> \'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';} else {return \'<a href="' . CATSUtility::getIndexName() . '?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'"> \'.htmlspecialchars($rsData[\'lastName\']).\'</a>\';}',
+                'sortableColumn' => 'lastName',
+                'pagerWidth' => 75,
+                'pagerOptional' => false,
+                'alphaNavigation' => true,
+                'filterable' => false,
+                'filterHaving' => 'lastName',
+            ],
 
-             'Activity' =>      array('pagerRender'    => '$ret = $rsData[\'typeDescription\']; return $ret;', 
-                                     'sortableColumn'  => 'typeDescription',
-                                     'pagerWidth'      => 65,
-                                     'pagerOptional'   => true,
-                                     'alphaNavigation' => true,
-                                     'filter'          => 'activity_type.short_description'),  
-                                     
-             'Notes' =>      array('pagerRender'    => 'return $rsData[\'notes\'];', 
-                                     'sortableColumn'  => 'notes',
-                                     'pagerWidth'      => 240,
-                                     'pagerOptional'   => true,
-                                     'alphaNavigation' => true,
-                                     'filter'    => 'activity.notes'),
+            'Regarding' => [
+                'pagerRender' => 'if ($rsData[\'jobIsHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; if ($rsData[\'companyIsHot\'] == 1) $companyClassName =  \'jobLinkHot\'; else $companyClassName = \'jobLinkCold\';  if ($rsData[\'regardingJobTitle\'] == \'\') {$ret = \'General\'; } else {$ret = \'<a href="' . CATSUtility::getIndexName() . '?m=joborders&amp;a=show&amp;jobOrderID=\'.$rsData[\'jobOrderID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'regardingJobTitle\']).\'</a>\'; if($rsData[\'regardingCompanyName\'] != \'\') {$ret .= \' <a href="' . CATSUtility::getIndexName() . '?m=companies&amp;a=show&amp;companyID=\'.$rsData[\'companyID\'].\'" class="\'.$companyClassName.\'">(\'.htmlspecialchars($rsData[\'regardingCompanyName\']).\')\';}} return $ret;',
+                'sortableColumn' => 'regarding',
+                'pagerWidth' => 125,
+                'pagerOptional' => true,
+                'alphaNavigation' => true,
+                'filter' => 'CONCAT(joborder.title, company.name)',
+            ],
 
-            'Entered By' =>         array(
-                                     'pagerRender'      => 'return StringUtility::makeInitialName($rsData[\'enteredByFirstName\'], $rsData[\'enteredByLastName\'], false, LAST_NAME_MAXLEN);',
-                                     'exportRender'     => 'return $rsData[\'enteredByFirstName\'] . " " .$rsData[\'enteredByLastName\'];',
-                                     'sortableColumn'     => 'enteredBySort',
-                                     'pagerWidth'    => 60,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'CONCAT(entered_by_user.last_name, entered_by_user.first_name)'), 
-        );
-        
+            'Activity' => [
+                'pagerRender' => '$ret = $rsData[\'typeDescription\']; return $ret;',
+                'sortableColumn' => 'typeDescription',
+                'pagerWidth' => 65,
+                'pagerOptional' => true,
+                'alphaNavigation' => true,
+                'filter' => 'activity_type.short_description',
+            ],
+
+            'Notes' => [
+                'pagerRender' => 'return $rsData[\'notes\'];',
+                'sortableColumn' => 'notes',
+                'pagerWidth' => 240,
+                'pagerOptional' => true,
+                'alphaNavigation' => true,
+                'filter' => 'activity.notes',
+            ],
+
+            'Entered By' => [
+                'pagerRender' => 'return StringUtility::makeInitialName($rsData[\'enteredByFirstName\'], $rsData[\'enteredByLastName\'], false, LAST_NAME_MAXLEN);',
+                'exportRender' => 'return $rsData[\'enteredByFirstName\'] . " " .$rsData[\'enteredByLastName\'];',
+                'sortableColumn' => 'enteredBySort',
+                'pagerWidth' => 60,
+                'alphaNavigation' => true,
+                'filter' => 'CONCAT(entered_by_user.last_name, entered_by_user.first_name)',
+            ],
+        ];
+
         parent::__construct("activity:ActivityDataGrid", $parameters);
     }
-        
+
     /**
      * Returns the sql statment for the pager.
      *
      * @return array clients data
      */
     public function getSQL($selectSQL, $joinSQL, $whereSQL, $havingSQL, $orderSQL, $limitSQL, $distinct = '')
-    {   
+    {
         $sql = sprintf(
             "SELECT SQL_CALC_FOUND_ROWS %s
                 activity.activity_id AS activityID,
@@ -273,5 +302,3 @@ class ActivityDataGrid extends DataGrid
         return $sql;
     }
 }
-
-?>

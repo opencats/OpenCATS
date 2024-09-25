@@ -43,7 +43,6 @@ include_once(LEGACY_ROOT . '/lib/ExtraFields.php');
 
 class ListsUI extends UserInterface
 {
-
     public function __construct()
     {
         parent::__construct();
@@ -52,22 +51,22 @@ class ListsUI extends UserInterface
         $this->_moduleDirectory = 'lists';
         $this->_moduleName = 'lists';
         $this->_moduleTabText = 'Lists';
-        $this->_subTabs = array(
-            'Show Lists'     => CATSUtility::getIndexName() . '?m=lists'
-           /* 'New Static List' => CATSUtility::getIndexName() . '?m=lists&a=newListStatic*al=' . ACCESS_LEVEL_EDIT  . '@lists.newListStatic', */
-           /* 'New Dynamic List' => CATSUtility::getIndexName() . '?m=lists&a=newListDynamic*al=' . ACCESS_LEVEL_EDIT . '@lists.newListDynamic' */
-        );
+        $this->_subTabs = [
+            'Show Lists' => CATSUtility::getIndexName() . '?m=lists',
+            /* 'New Static List' => CATSUtility::getIndexName() . '?m=lists&a=newListStatic*al=' . ACCESS_LEVEL_EDIT  . '@lists.newListStatic', */
+            /* 'New Dynamic List' => CATSUtility::getIndexName() . '?m=lists&a=newListDynamic*al=' . ACCESS_LEVEL_EDIT . '@lists.newListDynamic' */
+        ];
     }
-
 
     public function handleRequest()
     {
         $action = $this->getAction();
 
-        if (!eval(Hooks::get('LISTS_HANDLE_REQUEST'))) return;
+        if (! eval(Hooks::get('LISTS_HANDLE_REQUEST'))) {
+            return;
+        }
 
-        switch ($action)
-        {
+        switch ($action) {
             /* FIXME: function show() undefined
             case 'show':
                 $this->show();
@@ -78,12 +77,12 @@ class ListsUI extends UserInterface
                 $this->showList();
                 break;
 
-            /* Add to list popup. */
+                /* Add to list popup. */
             case 'quickActionAddToListModal':
                 $this->quickActionAddToListModal();
                 break;
 
-            /* Add to list popup via datagrid. */
+                /* Add to list popup via datagrid. */
             case 'addToListFromDatagridModal':
                 $this->addToListFromDatagridModal();
                 break;
@@ -96,7 +95,7 @@ class ListsUI extends UserInterface
                 $this->onDeleteStaticList();
                 break;
 
-            /* Main list page. */
+                /* Main list page. */
             case 'listByView':
             default:
                 $this->listByView();
@@ -116,11 +115,12 @@ class ListsUI extends UserInterface
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
          * be empty.  Fill in some default values. */
-        if ($dataGridProperties == array())
-        {
-            $dataGridProperties = array('rangeStart'    => 0,
-                                        'maxResults'    => 15,
-                                        'filterVisible' => false);
+        if ($dataGridProperties == []) {
+            $dataGridProperties = [
+                'rangeStart' => 0,
+                'maxResults' => 15,
+                'filterVisible' => false,
+            ];
         }
 
         $dataGrid = DataGrid::get("lists:ListsDataGrid", $dataGridProperties);
@@ -129,7 +129,9 @@ class ListsUI extends UserInterface
         $this->_template->assign('dataGrid', $dataGrid);
         $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
 
-        if (!eval(Hooks::get('LISTS_LIST_BY_VIEW'))) return;
+        if (! eval(Hooks::get('LISTS_LIST_BY_VIEW'))) {
+            return;
+        }
 
         $this->_template->display('./modules/lists/Lists.tpl');
     }
@@ -141,8 +143,7 @@ class ListsUI extends UserInterface
     private function showList()
     {
         /* Bail out if we don't have a valid candidate ID. */
-        if (!$this->isRequiredIDValid('savedListID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('savedListID', $_GET)) {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);
             return;
             //$this->fatalModal('Invalid saved list ID.');
@@ -156,12 +157,10 @@ class ListsUI extends UserInterface
 
         $listRS = $savedLists->get($savedListID);
 
-        if ($listRS['isDynamic'] == 0)
-        {
+        if ($listRS['isDynamic'] == 0) {
             // Handle each kind of static list here:
 
-            switch($listRS['dataItemType'])
-            {
+            switch ($listRS['dataItemType']) {
                 case DATA_ITEM_CANDIDATE:
                     $dataGridInstance = 'candidates:candidatesSavedListByViewDataGrid';
                     break;
@@ -184,17 +183,20 @@ class ListsUI extends UserInterface
 
         /* If this is the first time we visited the datagrid this session, the recent paramaters will
          * be empty.  Fill in some default values. */
-        if ($dataGridProperties == array())
-        {
-            $dataGridProperties = array('rangeStart'    => 0,
-                                        'maxResults'    => 15,
-                                        'filterVisible' => false,
-                                        'savedListStatic' => true);
+        if ($dataGridProperties == []) {
+            $dataGridProperties = [
+                'rangeStart' => 0,
+                'maxResults' => 15,
+                'filterVisible' => false,
+                'savedListStatic' => true,
+            ];
         }
 
         /* Add an MRU entry. */
         $_SESSION['CATS']->getMRU()->addEntry(
-            DATA_ITEM_LIST, $savedListID, $listRS['description']
+            DATA_ITEM_LIST,
+            $savedListID,
+            $listRS['description']
         );
 
         $dataGrid = DataGrid::get($dataGridInstance, $dataGridProperties, $savedListID);
@@ -205,7 +207,6 @@ class ListsUI extends UserInterface
         $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
 
         $this->_template->display('./modules/lists/List.tpl');
-
     }
 
     /*
@@ -214,22 +215,20 @@ class ListsUI extends UserInterface
     private function quickActionAddToListModal()
     {
         /* Bail out if we don't have a valid type. */
-        if (!$this->isRequiredIDValid('dataItemType', $_GET))
-        {
+        if (! $this->isRequiredIDValid('dataItemType', $_GET)) {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);
             return;
         }
 
         /* Bail out if we don't have a valid id. */
-        if (!$this->isRequiredIDValid('dataItemID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('dataItemID', $_GET)) {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);
             return;
         }
 
         $dataItemType = $_GET['dataItemType'];
         $dataItemID = $_GET['dataItemID'];
-        $dataItemIDArray = array($dataItemID);
+        $dataItemIDArray = [$dataItemID];
 
         $savedLists = new SavedLists($this->_siteID);
 
@@ -252,8 +251,7 @@ class ListsUI extends UserInterface
     private function addToListFromDatagridModal()
     {
         /* Bail out if we don't have a valid type. */
-        if (!$this->isRequiredIDValid('dataItemType', $_GET))
-        {
+        if (! $this->isRequiredIDValid('dataItemType', $_GET)) {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);
             return;
         }
@@ -263,10 +261,8 @@ class ListsUI extends UserInterface
         $dataItemIDArray = $dataGrid->getExportIDs();
 
         /* Validate each ID */
-        foreach ($dataItemIDArray as $index => $dataItemID)
-        {
-            if (!$this->isRequiredIDValid($index, $dataItemIDArray))
-            {
+        foreach ($dataItemIDArray as $index => $dataItemID) {
+            if (! $this->isRequiredIDValid($index, $dataItemIDArray)) {
                 CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid data item ID.');
                 return;
             }
@@ -295,8 +291,7 @@ class ListsUI extends UserInterface
     private function removeFromListDatagrid()
     {
         /* Bail out if we don't have a valid type. */
-        if (!$this->isRequiredIDValid('dataItemType', $_GET))
-        {
+        if (! $this->isRequiredIDValid('dataItemType', $_GET)) {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);
             return;
         }
@@ -306,10 +301,8 @@ class ListsUI extends UserInterface
         $dataItemIDArray = $dataGrid->getExportIDs();
 
         /* Validate each ID */
-        foreach ($dataItemIDArray as $index => $dataItemID)
-        {
-            if (!$this->isRequiredIDValid($index, $dataItemIDArray))
-            {
+        foreach ($dataItemIDArray as $index => $dataItemID) {
+            if (! $this->isRequiredIDValid($index, $dataItemIDArray)) {
                 CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid data item ID.');
                 return;
             }
@@ -319,8 +312,7 @@ class ListsUI extends UserInterface
 
         $dataItemDesc = TemplateUtility::getDataItemTypeDescription($dataItemType);
 
-        if (!$this->isRequiredIDValid('savedListID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('savedListID', $_GET)) {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid saved list ID.');
             return;
         }
@@ -330,25 +322,22 @@ class ListsUI extends UserInterface
         /* Remove the items */
         $savedLists = new SavedLists($this->_siteID);
 
-        $dataItemIDArrayTemp = array();
-        foreach ($dataItemIDArray as $dataItemID)
-        {
+        $dataItemIDArrayTemp = [];
+        foreach ($dataItemIDArray as $dataItemID) {
             $dataItemIDArrayTemp[] = $dataItemID;
             /* Because its too slow adding 1 item at a time, we do it in spurts of 200 items. */
-            if (count($dataItemIDArrayTemp) > 200)
-            {
+            if (count($dataItemIDArrayTemp) > 200) {
                 $savedLists->removeEntryMany($savedListID, $dataItemIDArrayTemp);
-                $dataItemIDArrayTemp = array();
+                $dataItemIDArrayTemp = [];
             }
         }
-        if (count($dataItemIDArrayTemp) > 0)
-        {
+        if (count($dataItemIDArrayTemp) > 0) {
             $savedLists->removeEntryMany($savedListID, $dataItemIDArrayTemp);
         }
 
         /* Redirect to the saved list page we were on. */
         /* FIXME: What if we are on the last page? */
-        CATSUtility::transferRelativeURI('m=lists&a=showList&savedListID='.$savedListID);
+        CATSUtility::transferRelativeURI('m=lists&a=showList&savedListID=' . $savedListID);
     }
 
     /*
@@ -357,8 +346,7 @@ class ListsUI extends UserInterface
     private function onDeleteStaticList()
     {
         /* Bail out if we don't have a valid type. */
-        if (!$this->isRequiredIDValid('savedListID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('savedListID', $_GET)) {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);
             return;
         }
@@ -374,5 +362,3 @@ class ListsUI extends UserInterface
         CATSUtility::transferRelativeURI('m=lists');
     }
 }
-
-?>

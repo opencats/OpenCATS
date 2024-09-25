@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -38,15 +37,14 @@
 class Site
 {
     private $_db;
-    private $_siteID;
 
+    private $_siteID;
 
     public function __construct($siteID)
     {
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
-
 
     /**
      * Sets the site name for the current site.
@@ -67,7 +65,7 @@ class Site
             $this->_siteID
         );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     /**
@@ -92,7 +90,7 @@ class Site
             $this->_siteID
         );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     /**
@@ -117,10 +115,10 @@ class Site
                 unix_name = %s
             AND
                 account_deleted = 0",
-           $this->_db->makeQueryStringOrNULL($unixName)
-       );
+            $this->_db->makeQueryStringOrNULL($unixName)
+        );
 
-       return $this->_db->getAssoc($sql);
+        return $this->_db->getAssoc($sql);
     }
 
     /**
@@ -146,10 +144,10 @@ class Site
                 site_id = %s
             AND
                 account_deleted = 0",
-           $this->_db->makeQueryInteger($siteID)
-       );
+            $this->_db->makeQueryInteger($siteID)
+        );
 
-       return $this->_db->getAssoc($sql);
+        return $this->_db->getAssoc($sql);
     }
 
     /**
@@ -160,7 +158,8 @@ class Site
      */
     public function getFirstSiteID()
     {
-        $sql = sprintf("
+        $sql = sprintf(
+            "
             SELECT
                 site_id AS siteID
             FROM
@@ -174,11 +173,11 @@ class Site
             LIMIT 1
         ",
             CATS_ADMIN_SITE
-       );
+        );
 
-       $rs = $this->_db->getAssoc($sql);
+        $rs = $this->_db->getAssoc($sql);
 
-       return $rs['siteID'];
+        return $rs['siteID'];
     }
 
     public function setAgreedToLicense()
@@ -192,8 +191,7 @@ class Site
                 site.site_id = %d",
             $this->_siteID
         );
-        if (!$this->_db->query($sql))
-        {
+        if (! $this->_db->query($sql)) {
             return false;
         }
         return true;
@@ -210,8 +208,7 @@ class Site
                 site.site_id = %d",
             $this->_siteID
         );
-        if (!$this->_db->query($sql))
-        {
+        if (! $this->_db->query($sql)) {
             return false;
         }
         return true;
@@ -219,7 +216,7 @@ class Site
 
     public function setFirstTimeSetup()
     {
-        $db =  DatabaseConnection::getInstance();
+        $db = DatabaseConnection::getInstance();
         $sql = sprintf(
             "UPDATE
                 site
@@ -229,12 +226,9 @@ class Site
                 site.site_id = %d",
             $this->_siteID
         );
-        if (!$this->_db->query($sql))
-        {
+        if (! $this->_db->query($sql)) {
             return false;
         }
         return true;
     }
 }
-
-?>

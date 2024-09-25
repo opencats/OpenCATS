@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -38,9 +37,13 @@
 class ResultSetUtility
 {
     /* Prevent this class from being instantiated. */
-    private function __construct() {}
-    private function __clone() {}
+    private function __construct()
+    {
+    }
 
+    private function __clone()
+    {
+    }
 
     /**
      * Searches for a row where the specified column name has a value matching
@@ -53,21 +56,20 @@ class ResultSetUtility
      * @param integer number of matches to skip before returning a match
      * @return mixed integer row index if found, boolean false otherwise
      */
-    public static function findRowByColumnValue($resultSet, $columnName,
-        $value, $skip = 0)
-    {
+    public static function findRowByColumnValue(
+        $resultSet,
+        $columnName,
+        $value,
+        $skip = 0
+    ) {
         /* If the column name doesn't exist, fail. */
-        if (!isset($resultSet[0][$columnName]))
-        {
+        if (! isset($resultSet[0][$columnName])) {
             return false;
         }
 
-        foreach ($resultSet as $rowIndex => $row)
-        {
-            if (isset($row[$columnName]) && $row[$columnName] == $value)
-            {
-                if ($skip > 0)
-                {
+        foreach ($resultSet as $rowIndex => $row) {
+            if (isset($row[$columnName]) && $row[$columnName] == $value) {
+                if ($skip > 0) {
                     --$skip;
                     continue;
                 }
@@ -90,21 +92,20 @@ class ResultSetUtility
      * @param integer number of matches to skip before returning a match
      * @return mixed integer row index if found, boolean false otherwise
      */
-    public static function findRowByColumnValueStrict($resultSet, $columnName,
-        $value, $skip = 0)
-    {
+    public static function findRowByColumnValueStrict(
+        $resultSet,
+        $columnName,
+        $value,
+        $skip = 0
+    ) {
         /* If the column name doesn't exist, fail. */
-        if (!isset($resultSet[0][$columnName]))
-        {
+        if (! isset($resultSet[0][$columnName])) {
             return false;
         }
 
-        foreach ($resultSet as $rowIndex => $row)
-        {
-            if (isset($row[$columnName]) && $row[$columnName] === $value)
-            {
-                if ($skip > 0)
-                {
+        foreach ($resultSet as $rowIndex => $row) {
+            if (isset($row[$columnName]) && $row[$columnName] === $value) {
+                if ($skip > 0) {
                     --$skip;
                     continue;
                 }
@@ -142,10 +143,9 @@ class ResultSetUtility
      */
     public static function getColumnValues($resultSet, $columnName)
     {
-        $outputArray = array();
+        $outputArray = [];
 
-        foreach ($resultSet as $value)
-        {
+        foreach ($resultSet as $value) {
             $outputArray[] = $value[$columnName];
         }
 
@@ -171,23 +171,23 @@ class ResultSetUtility
      * @param string return column name
      * @return mixed return column value
      */
-    public static function getColumnValueByIDValue($resultSet, $IDColumnName,
-        $IDValue, $returnColumnName)
-    {
+    public static function getColumnValueByIDValue(
+        $resultSet,
+        $IDColumnName,
+        $IDValue,
+        $returnColumnName
+    ) {
         /* If the ID column or return column name doesn't exist, fail. */
-        if (!isset($resultSet[0][$IDColumnName]) ||
-            !isset($resultSet[0][$returnColumnName]))
-        {
+        if (! isset($resultSet[0][$IDColumnName]) ||
+            ! isset($resultSet[0][$returnColumnName])) {
             return false;
         }
 
-        foreach ($resultSet as $rowIndex => $row)
-        {
+        foreach ($resultSet as $rowIndex => $row) {
             /* If this isn't the row with the ID column value we're looking
              * for, fail.
              */
-            if ($row[$IDColumnName] != $IDValue)
-            {
+            if ($row[$IDColumnName] != $IDValue) {
                 continue;
             }
 
@@ -207,28 +207,23 @@ class ResultSetUtility
     public static function sortByColumn($resultSet, $columnName)
     {
         /* If the sort-by column name doesn't exist, fail. */
-        if (!isset($resultSet[0][$columnName]))
-        {
+        if (! isset($resultSet[0][$columnName])) {
             return false;
         }
 
-        $sortArray = array();
-        $outArray = array();
+        $sortArray = [];
+        $outArray = [];
 
-        foreach ($resultSet as $rowIndex => $row)
-        {
+        foreach ($resultSet as $rowIndex => $row) {
             $sortArray[$rowIndex] = $row[$columnName];
         }
 
         asort($sortArray);
 
-        foreach ($sortArray as $key => $value)
-        {
+        foreach ($sortArray as $key => $value) {
             $outArray[$key] = $resultSet[$key];
         }
 
         return $outArray;
     }
 }
-
-?>

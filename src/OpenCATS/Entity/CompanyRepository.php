@@ -1,19 +1,19 @@
 <?php
+
 namespace OpenCATS\Entity;
-use OpenCATS\Entity\Company;
 
 include_once(LEGACY_ROOT . '/lib/History.php');
 
 class CompanyRepository
 {
     private $databaseConnection;
-    
-    function __construct(\DatabaseConnection $databaseConnection)
+
+    public function __construct(\DatabaseConnection $databaseConnection)
     {
         $this->databaseConnection = $databaseConnection;
     }
-    
-    function persist(Company $company, \History $history)
+
+    public function persist(Company $company, \History $history)
     {
         $sql = sprintf(
             "INSERT INTO company (
@@ -73,9 +73,9 @@ class CompanyRepository
         if ($result = $this->databaseConnection->query($sql)) {
             $companyId = $this->databaseConnection->getLastInsertID();
             // FIXME: History should be split in HistoryService and History (Entity)
-            // Also, the action of saving a history should not be explicitely done 
-            // by each Entity Service, but instead, each Entity Service should 
-            // dispatch a hook and the History Service should listen to all 
+            // Also, the action of saving a history should not be explicitely done
+            // by each Entity Service, but instead, each Entity Service should
+            // dispatch a hook and the History Service should listen to all
             // hooks and persist the History entities.
             // That way, the code is more mantainable as not all Entities need to
             // be aware of History and vice-versa
@@ -85,13 +85,13 @@ class CompanyRepository
             throw new CompanyRepositoryException('errorPersistingCompany');
         }
     }
-    
+
     // FIXME: Consolidate with Search.php code
-    function findByName($siteId, $companyName)
+    public function findByName($siteId, $companyName)
     {
         $wildCardString = str_replace('*', '%', $companyName) . '%';
         $wildCardString = $this->databaseConnection->makeQueryString($wildCardString);
-        
+
         $sql = sprintf(
             "SELECT
                 company.company_id AS companyID,

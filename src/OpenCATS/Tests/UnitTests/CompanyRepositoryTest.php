@@ -1,11 +1,12 @@
 <?php
-namespace OpenCATS\Tests\UnitTests;
-use PHPUnit\Framework\TestCase;
-use OpenCATS\Entity\CompanyRepository;
-use OpenCATS\Entity\Company;
 
-if( !defined('LEGACY_ROOT') )
-{
+namespace OpenCATS\Tests\UnitTests;
+
+use OpenCATS\Entity\Company;
+use OpenCATS\Entity\CompanyRepository;
+use PHPUnit\Framework\TestCase;
+
+if (! defined('LEGACY_ROOT')) {
     define('LEGACY_ROOT', '.');
 }
 
@@ -13,24 +14,39 @@ include_once(LEGACY_ROOT . '/lib/History.php');
 
 class CompanyRepositoryTests extends TestCase
 {
-    const COMPANY_NAME = "Test Company Name";
-    const SITE_ID = -1;
-    const ADDRESS = "O'Higgins 123";
-    const CITY = "Colonia";
-    const STATE = "Maldonado";
-    const ZIP_CODE = "31337";
-    const PHONE_NUMBER_ONE = "+53 123 45678";
-    const PHONE_NUMBER_TWO = "+53 987 65432";
-    const FAX_NUMBER = '+53 123 65432';
-    const URL = 'http://www.testcompany.com/';
-    const KEY_TECHNOLOGIES = 'PHP and Javascript';
-    const IS_HOT = 1;
-    const NOTES = "This is a note";
-    const ENTERED_BY = 1; // USER ID
-    const OWNER = 1; // USER ID
-    const COMPANY_ID = 1;
-    
-    function test_persist_CreatesNewCompany_InputValuesAreEscaped()
+    public const COMPANY_NAME = "Test Company Name";
+
+    public const SITE_ID = -1;
+
+    public const ADDRESS = "O'Higgins 123";
+
+    public const CITY = "Colonia";
+
+    public const STATE = "Maldonado";
+
+    public const ZIP_CODE = "31337";
+
+    public const PHONE_NUMBER_ONE = "+53 123 45678";
+
+    public const PHONE_NUMBER_TWO = "+53 987 65432";
+
+    public const FAX_NUMBER = '+53 123 65432';
+
+    public const URL = 'http://www.testcompany.com/';
+
+    public const KEY_TECHNOLOGIES = 'PHP and Javascript';
+
+    public const IS_HOT = 1;
+
+    public const NOTES = "This is a note";
+
+    public const ENTERED_BY = 1; // USER ID
+
+    public const OWNER = 1; // USER ID
+
+    public const COMPANY_ID = 1;
+
+    public function test_persist_CreatesNewCompany_InputValuesAreEscaped()
     {
         $databaseConnectionMock = $this->getDatabaseConnectionMock();
         $databaseConnectionMock->expects($this->exactly(11))
@@ -62,8 +78,8 @@ class CompanyRepositoryTests extends TestCase
         $CompanyRepository = new CompanyRepository($databaseConnectionMock);
         $CompanyRepository->persist($this->createCompany(), $historyMock);
     }
-    
-    function test_persist_CreateNewCompany_ExecutesSqlQuery()
+
+    public function test_persist_CreateNewCompany_ExecutesSqlQuery()
     {
         $databaseConnectionMock = $this->getDatabaseConnectionMock();
         $databaseConnectionMock->expects($this->exactly(1))
@@ -73,8 +89,8 @@ class CompanyRepositoryTests extends TestCase
         $CompanyRepository = new CompanyRepository($databaseConnectionMock);
         $CompanyRepository->persist($this->createCompany(), $historyMock);
     }
-    
-    function test_persist_CreateNewCompany_StoresHistoryWithCompanyId()
+
+    public function test_persist_CreateNewCompany_StoresHistoryWithCompanyId()
     {
         $databaseConnectionMock = $this->getDatabaseConnectionMock();
         $databaseConnectionMock->method('query')
@@ -90,11 +106,11 @@ class CompanyRepositoryTests extends TestCase
         $CompanyRepository = new CompanyRepository($databaseConnectionMock);
         $CompanyRepository->persist($this->createCompany(), $historyMock);
     }
-    
+
     /**
      * @expectedException OpenCATS\Entity\CompanyRepositoryException
      */
-    function test_persist_FailToCreateNewCompany_ThrowsException()
+    public function test_persist_FailToCreateNewCompany_ThrowsException()
     {
         $databaseConnectionMock = $this->getDatabaseConnectionMock();
         $databaseConnectionMock->method('query')
@@ -103,19 +119,19 @@ class CompanyRepositoryTests extends TestCase
         $CompanyRepository = new CompanyRepository($databaseConnectionMock);
         $CompanyRepository->persist($this->createCompany(), $historyMock);
     }
-    
+
     private function getHistoryMock()
     {
         return $this->createMock(\History::class);
     }
-    
+
     private function getDatabaseConnectionMock()
     {
         return $this->getMockBuilder('\DatabaseConnection')
             ->setMethods(['makeQueryString', 'makeQueryInteger', 'query', 'getLastInsertID'])
             ->getMock();
     }
-    
+
     private function createCompany()
     {
         return Company::create(
@@ -125,9 +141,9 @@ class CompanyRepositoryTests extends TestCase
             self::CITY,
             self::STATE,
             self::ZIP_CODE,
-            self::PHONE_NUMBER_ONE, 
+            self::PHONE_NUMBER_ONE,
             self::PHONE_NUMBER_TWO,
-            self::FAX_NUMBER, 
+            self::FAX_NUMBER,
             self::URL,
             self::KEY_TECHNOLOGIES,
             self::IS_HOT,

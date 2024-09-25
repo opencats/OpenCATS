@@ -1,8 +1,8 @@
 <?php
+
 include_once('./vendor/autoload.php');
 use OpenCATS\Entity\Company;
 use OpenCATS\Entity\CompanyRepository;
-
 
 /**
  * CATS
@@ -28,7 +28,6 @@ use OpenCATS\Entity\CompanyRepository;
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -51,10 +50,10 @@ include_once(LEGACY_ROOT . '/lib/Contacts.php');
 class Companies
 {
     private $_db;
+
     private $_siteID;
 
     public $extraFields;
-
 
     public function __construct($siteID)
     {
@@ -62,7 +61,6 @@ class Companies
         $this->_db = DatabaseConnection::getInstance();
         $this->extraFields = new ExtraFields($siteID, DATA_ITEM_COMPANY);
     }
-
 
     /**
      * Adds a company to the database and returns its company ID.
@@ -82,11 +80,23 @@ class Companies
      * @param integer Owner user
      * @return new Company ID, or -1 on failure.
      */
-    public function add($name, $address, $city, $state, $zip, $phone1,
-                        $phone2, $faxNumber, $url, $keyTechnologies, $isHot,
-                        $notes, $enteredBy, $owner)
-    {
-        $company= Company::create(
+    public function add(
+        $name,
+        $address,
+        $city,
+        $state,
+        $zip,
+        $phone1,
+        $phone2,
+        $faxNumber,
+        $url,
+        $keyTechnologies,
+        $isHot,
+        $notes,
+        $enteredBy,
+        $owner
+    ) {
+        $company = Company::create(
             $this->_siteID,
             $name,
             $address,
@@ -106,7 +116,7 @@ class Companies
         $CompanyRepository = new CompanyRepository($this->_db);
         try {
             $companyId = $CompanyRepository->persist($company, new History($this->_siteID));
-        } catch(CompanyRepositoryException $e) {
+        } catch (CompanyRepositoryException $e) {
             return -1;
         }
         return $companyId;
@@ -131,11 +141,25 @@ class Companies
      * @param integer Billing contact ID
      * @return boolean True if successful; false otherwise.
      */
-    public function update($companyID, $name, $address, $city, $state,
-                           $zip, $phone1, $phone2, $faxNumber, $url,
-                           $keyTechnologies, $isHot, $notes, $owner,
-                           $billingContact, $email, $emailAddress)
-    {
+    public function update(
+        $companyID,
+        $name,
+        $address,
+        $city,
+        $state,
+        $zip,
+        $phone1,
+        $phone2,
+        $faxNumber,
+        $url,
+        $keyTechnologies,
+        $isHot,
+        $notes,
+        $owner,
+        $billingContact,
+        $email,
+        $emailAddress
+    ) {
         $sql = sprintf(
             "UPDATE
                 company
@@ -181,21 +205,19 @@ class Companies
         $queryResult = $this->_db->query($sql);
         $postHistory = $this->get($companyID);
 
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return false;
         }
 
         $history = new History($this->_siteID);
         $history->storeHistoryChanges(DATA_ITEM_COMPANY, $companyID, $preHistory, $postHistory);
 
-        if (!empty($emailAddress))
-        {
+        if (! empty($emailAddress)) {
             /* Send e-mail notification. */
             //FIXME: Make subject configurable.
             $mailer = new Mailer($this->_siteID);
             $mailerStatus = $mailer->sendToOne(
-                array($emailAddress, ''),
+                [$emailAddress, ''],
                 'CATS Notification: Company Ownership Change',
                 $email,
                 true
@@ -209,7 +231,6 @@ class Companies
      * Removes a company and all associated records from the system.
      *
      * @param integer Company ID
-     * @return void
      */
     public function delete($companyID)
     {
@@ -262,26 +283,24 @@ class Companies
         /* Find associated attachments. */
         $attachments = new Attachments($this->_siteID);
         $attachmentsRS = $attachments->getAll(
-            DATA_ITEM_COMPANY, $companyID
+            DATA_ITEM_COMPANY,
+            $companyID
         );
 
         /* Delete associated contacts. */
         $contacts = new Contacts($this->_siteID);
-        foreach ($contactsRS as $rowIndex => $row)
-        {
+        foreach ($contactsRS as $rowIndex => $row) {
             $contacts->delete($row['contactID']);
         }
 
         /* Delete associated job orders. */
         $jobOrders = new JobOrders($this->_siteID);
-        foreach ($jobOrdersRS as $rowIndex => $row)
-        {
+        foreach ($jobOrdersRS as $rowIndex => $row) {
             $jobOrders->delete($row['jobOrderID']);
         }
 
         /* Delete associated attachments. */
-        foreach ($attachmentsRS as $rowNumber => $row)
-        {
+        foreach ($attachmentsRS as $rowNumber => $row) {
             $attachments->delete($row['attachmentID']);
         }
 
@@ -430,14 +449,16 @@ class Companies
         $queryResult = $this->_db->query($sql);
         $postHistory = $this->get($companyID);
 
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return false;
         }
 
         $history = new History($this->_siteID);
         $history->storeHistoryChanges(
-            DATA_ITEM_COMPANY, $companyID, $preHistory, $postHistory
+            DATA_ITEM_COMPANY,
+            $companyID,
+            $preHistory,
+            $postHistory
         );
 
         return true;
@@ -464,8 +485,7 @@ class Companies
         );
         $rs = $this->_db->getAssoc($sql);
 
-        if (empty($rs))
-        {
+        if (empty($rs)) {
             return false;
         }
 
@@ -494,7 +514,7 @@ class Companies
         );
 
         return $this->_db->getAllAssoc($sql);
-     }
+    }
 
     /**
      * Returns an array of location data (city, state, zip) for the specified
@@ -522,7 +542,7 @@ class Companies
         );
 
         return $this->_db->getAssoc($sql);
-     }
+    }
 
     /**
      * Returns an array of contacts data (contactID, firstName, lastName)
@@ -552,7 +572,7 @@ class Companies
         );
 
         return $this->_db->getAllAssoc($sql);
-     }
+    }
 
     /**
      * Returns an array of job orders data (jobOrderID, title, companyName)
@@ -583,7 +603,7 @@ class Companies
         );
 
         return $this->_db->getAllAssoc($sql);
-     }
+    }
 
     /**
      * Returns a response array of all departments for a company.
@@ -619,16 +639,13 @@ class Companies
      *
      * @param integer Company ID
      * @param array getDifferencesFromList
-     * @return void
      */
     public function updateDepartments($companyID, $updates)
     {
         $history = new History($this->_siteID);
 
-        foreach ($updates as $update)
-        {
-            switch ($update[2])
-            {
+        foreach ($updates as $update) {
+            switch ($update[2]) {
                 case LIST_EDITOR_ADD:
                     $sql = sprintf(
                         "INSERT INTO company_department (
@@ -643,9 +660,9 @@ class Companies
                             %s,
                             NOW()
                          )",
-                         $this->_db->makeQueryString($update[0]),
-                         $this->_db->makeQueryInteger($companyID),
-                         $this->_siteID
+                        $this->_db->makeQueryString($update[0]),
+                        $this->_db->makeQueryInteger($companyID),
+                        $this->_siteID
                     );
                     $this->_db->query($sql);
 
@@ -665,8 +682,8 @@ class Companies
                             company_department_id = %s
                          AND
                             site_id = %s",
-                         $this->_db->makeQueryInteger($update[1]),
-                         $this->_siteID
+                        $this->_db->makeQueryInteger($update[1]),
+                        $this->_siteID
                     );
                     $this->_db->query($sql);
 
@@ -688,9 +705,9 @@ class Companies
                             company_department_id = %s
                          AND
                             site_id = %s",
-                         $this->_db->makeQueryString($update[0]),
-                         $this->_db->makeQueryInteger($update[1]),
-                         $this->_siteID
+                        $this->_db->makeQueryString($update[0]),
+                        $this->_db->makeQueryInteger($update[1]),
+                        $this->_siteID
                     );
                     $this->_db->query($sql);
 
@@ -744,7 +761,6 @@ class CompaniesDataGrid extends DataGrid
 {
     protected $_siteID;
 
-
     // FIXME: Fix ugly indenting - ~400 character lines = bad.
     public function __construct($instanceName, $siteID, $parameters, $misc)
     {
@@ -753,9 +769,10 @@ class CompaniesDataGrid extends DataGrid
         $this->_assignedCriterion = "";
         $this->_dataItemIDColumn = 'company.company_id';
 
-        $this->_classColumns = array(
-            'Attachments' => array(  'select'   => 'IF(attachment_id, 1, 0) AS attachmentPresent',
-                                     'pagerRender' => '
+        $this->_classColumns = [
+            'Attachments' => [
+                'select' => 'IF(attachment_id, 1, 0) AS attachmentPresent',
+                'pagerRender' => '
                                                     if ($rsData[\'attachmentPresent\'] == 1)
                                                     {
                                                         $return = \'<img src="images/paperclip.gif" alt="" width="16" height="16" title="Attachment Present" />\';
@@ -768,22 +785,26 @@ class CompaniesDataGrid extends DataGrid
                                                     return $return;
                                                    ',
 
-                                     'pagerWidth'    => 10,
-                                     'pagerOptional' => true,
-                                     'pagerNoTitle' => true,
-                                     'sizable'  => false,
-                                     'exportable' => false,
-                                     'filterable' => false),
+                'pagerWidth' => 10,
+                'pagerOptional' => true,
+                'pagerNoTitle' => true,
+                'sizable' => false,
+                'exportable' => false,
+                'filterable' => false,
+            ],
 
-            'Name' =>     array('select'         => 'company.name AS name',
-                                      'pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="'.CATSUtility::getIndexName().'?m=companies&amp;a=show&amp;companyID=\'.$rsData[\'companyID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'name\']).\'</a>\';',
-                                      'sortableColumn' => 'name',
-                                      'pagerWidth'     => 60,
-                                      'pagerOptional'  => false,
-                                      'alphaNavigation'=> true,
-                                      'filter'         => 'company.name'),
+            'Name' => [
+                'select' => 'company.name AS name',
+                'pagerRender' => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return \'<a href="' . CATSUtility::getIndexName() . '?m=companies&amp;a=show&amp;companyID=\'.$rsData[\'companyID\'].\'" class="\'.$className.\'">\'.htmlspecialchars($rsData[\'name\']).\'</a>\';',
+                'sortableColumn' => 'name',
+                'pagerWidth' => 60,
+                'pagerOptional' => false,
+                'alphaNavigation' => true,
+                'filter' => 'company.name',
+            ],
 
-            'Jobs' =>       array('select'   => '(
+            'Jobs' => [
+                'select' => '(
                                                             SELECT
                                                                 COUNT(*)
                                                             FROM
@@ -791,127 +812,152 @@ class CompaniesDataGrid extends DataGrid
                                                             WHERE
                                                                 company_id = company.company_id
                                                             AND
-                                                                site_id = '.$this->_siteID.'
+                                                                site_id = ' . $this->_siteID . '
                                                         ) AS jobs',
-                                     'pagerRender'      => 'if ($rsData[\'jobs\'] != 0) {return $rsData[\'jobs\'];} else {return \'\';}',
-                                     'sortableColumn'     => 'jobs',
-                                     'pagerWidth'    => 40,
-                                     'filterHaving'  => 'jobs',
-                                     'filterTypes'   => '===>=<'),
+                'pagerRender' => 'if ($rsData[\'jobs\'] != 0) {return $rsData[\'jobs\'];} else {return \'\';}',
+                'sortableColumn' => 'jobs',
+                'pagerWidth' => 40,
+                'filterHaving' => 'jobs',
+                'filterTypes' => '===>=<',
+            ],
 
-            'Phone' =>     array('select'   => 'company.phone1 AS phone',
-                                     'sortableColumn'     => 'phone',
-                                     'pagerWidth'    => 80,
-                                     'filter'         => 'company.phone1'),
+            'Phone' => [
+                'select' => 'company.phone1 AS phone',
+                'sortableColumn' => 'phone',
+                'pagerWidth' => 80,
+                'filter' => 'company.phone1',
+            ],
 
-            'Phone 2' =>     array('select'   => 'company.phone2 AS phone2',
-                                     'sortableColumn'     => 'phone2',
-                                     'pagerWidth'    => 80,
-                                     'filter'         => 'company.phone2'),
-
-
-            'City' =>           array('select'   => 'company.city AS city',
-                                     'sortableColumn'     => 'city',
-                                     'pagerWidth'    => 80,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'company.city'),
+            'Phone 2' => [
+                'select' => 'company.phone2 AS phone2',
+                'sortableColumn' => 'phone2',
+                'pagerWidth' => 80,
+                'filter' => 'company.phone2',
+            ],
 
 
-            'State' =>          array('select'   => 'company.state AS state',
-                                     'sortableColumn'     => 'state',
-                                     'filterType' => 'dropDown',
-                                     'pagerWidth'    => 50,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'company.state'),
-
-            'Zip' =>            array('select'  => 'company.zip AS zip',
-                                     'sortableColumn'    => 'zip',
-                                     'pagerWidth'   => 50,
-                                     'filter'         => 'company.zip'),
+            'City' => [
+                'select' => 'company.city AS city',
+                'sortableColumn' => 'city',
+                'pagerWidth' => 80,
+                'alphaNavigation' => true,
+                'filter' => 'company.city',
+            ],
 
 
-            'Web Site' =>      array('select'  => 'company.url AS webSite',
-                                     'pagerRender'     => 'return \'<a href="\'.htmlspecialchars($rsData[\'webSite\']).\'" target="_blank">\'.htmlspecialchars($rsData[\'webSite\']).\'</a>\';',
-                                     'sortableColumn'    => 'webSite',
-                                     'pagerWidth'   => 80,
-                                     'filter'         => 'company.url'),
+            'State' => [
+                'select' => 'company.state AS state',
+                'sortableColumn' => 'state',
+                'filterType' => 'dropDown',
+                'pagerWidth' => 50,
+                'alphaNavigation' => true,
+                'filter' => 'company.state',
+            ],
 
-            'Owner' =>         array('select'   => 'owner_user.first_name AS ownerFirstName,' .
-                                                   'owner_user.last_name AS ownerLastName,' .
-                                                   'CONCAT(owner_user.last_name, owner_user.first_name) AS ownerSort',
-                                     'pagerRender'      => 'return StringUtility::makeInitialName($rsData[\'ownerFirstName\'], $rsData[\'ownerLastName\'], false, LAST_NAME_MAXLEN);',
-                                     'exportRender'     => 'return $rsData[\'ownerFirstName\'] . " " .$rsData[\'ownerLastName\'];',
-                                     'sortableColumn'     => 'ownerSort',
-                                     'pagerWidth'    => 75,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'CONCAT(owner_user.first_name, owner_user.last_name)'),
-
-            'Contact' =>       array('select'   => 'contact.first_name AS contactFirstName,' .
-                                                   'contact.last_name AS contactLastName,' .
-                                                   'CONCAT(contact.last_name, contact.first_name) AS contactSort,' .
-                                                   'contact.contact_id AS contactID',
-                                     'pagerRender'      => 'return \'<a href="'.CATSUtility::getIndexName().'?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'contactID\'].\'">\'.StringUtility::makeInitialName($rsData[\'contactFirstName\'], $rsData[\'contactLastName\'], false, LAST_NAME_MAXLEN).\'</a>\';',
-                                     'exportRender'     => 'return $rsData[\'contactFirstName\'] . " " .$rsData[\'contactLastName\'];',
-                                     'sortableColumn'     => 'contactSort',
-                                     'pagerWidth'    => 75,
-                                     'alphaNavigation' => true,
-                                     'filter'         => 'CONCAT(contact.first_name, contact.last_name)'),
+            'Zip' => [
+                'select' => 'company.zip AS zip',
+                'sortableColumn' => 'zip',
+                'pagerWidth' => 50,
+                'filter' => 'company.zip',
+            ],
 
 
-            'Created' =>       array('select'   => 'DATE_FORMAT(company.date_created, \'%m-%d-%y\') AS dateCreated',
-                                     'pagerRender'      => 'return $rsData[\'dateCreated\'];',
-                                     'sortableColumn'     => 'dateCreatedSort',
-                                     'pagerWidth'    => 60,
-                                     'filterHaving' => 'DATE_FORMAT(company.date_created, \'%m-%d-%y\')'),
+            'Web Site' => [
+                'select' => 'company.url AS webSite',
+                'pagerRender' => 'return \'<a href="\'.htmlspecialchars($rsData[\'webSite\']).\'" target="_blank">\'.htmlspecialchars($rsData[\'webSite\']).\'</a>\';',
+                'sortableColumn' => 'webSite',
+                'pagerWidth' => 80,
+                'filter' => 'company.url',
+            ],
 
-            'Modified' =>      array('select'   => 'DATE_FORMAT(company.date_modified, \'%m-%d-%y\') AS dateModified',
-                                     'pagerRender'      => 'return $rsData[\'dateModified\'];',
-                                     'sortableColumn'     => 'dateModifiedSort',
-                                     'pagerWidth'    => 60,
-                                     'pagerOptional' => false,
-                                     'filterHaving' => 'DATE_FORMAT(company.date_modified, \'%m-%d-%y\')'),
+            'Owner' => [
+                'select' => 'owner_user.first_name AS ownerFirstName,' .
+                                                                   'owner_user.last_name AS ownerLastName,' .
+                                                                   'CONCAT(owner_user.last_name, owner_user.first_name) AS ownerSort',
+                'pagerRender' => 'return StringUtility::makeInitialName($rsData[\'ownerFirstName\'], $rsData[\'ownerLastName\'], false, LAST_NAME_MAXLEN);',
+                'exportRender' => 'return $rsData[\'ownerFirstName\'] . " " .$rsData[\'ownerLastName\'];',
+                'sortableColumn' => 'ownerSort',
+                'pagerWidth' => 75,
+                'alphaNavigation' => true,
+                'filter' => 'CONCAT(owner_user.first_name, owner_user.last_name)',
+            ],
 
-            'Misc Notes' =>     array('select'  => 'company.notes AS notes',
-                                     'sortableColumn'    => 'notes',
-                                     'pagerWidth'   => 300,
-                                     'filter'         => 'company.notes'),
+            'Contact' => [
+                'select' => 'contact.first_name AS contactFirstName,' .
+                                                                   'contact.last_name AS contactLastName,' .
+                                                                   'CONCAT(contact.last_name, contact.first_name) AS contactSort,' .
+                                                                   'contact.contact_id AS contactID',
+                'pagerRender' => 'return \'<a href="' . CATSUtility::getIndexName() . '?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'contactID\'].\'">\'.StringUtility::makeInitialName($rsData[\'contactFirstName\'], $rsData[\'contactLastName\'], false, LAST_NAME_MAXLEN).\'</a>\';',
+                'exportRender' => 'return $rsData[\'contactFirstName\'] . " " .$rsData[\'contactLastName\'];',
+                'sortableColumn' => 'contactSort',
+                'pagerWidth' => 75,
+                'alphaNavigation' => true,
+                'filter' => 'CONCAT(contact.first_name, contact.last_name)',
+            ],
 
-            'OwnerID' =>       array('select'    => '',
-                                     'filter'    => 'company.owner',
-                                     'pagerOptional' => false,
-                                     'filterable' => false,
-                                     'filterDescription' => 'Only My Companies'),
 
-            'IsHot' =>         array('select'    => '',
-                                     'filter'    => 'company.is_hot',
-                                     'pagerOptional' => false,
-                                     'filterable' => false,
-                                     'filterDescription' => 'Only Hot Companies')
-        );
+            'Created' => [
+                'select' => 'DATE_FORMAT(company.date_created, \'%m-%d-%y\') AS dateCreated',
+                'pagerRender' => 'return $rsData[\'dateCreated\'];',
+                'sortableColumn' => 'dateCreatedSort',
+                'pagerWidth' => 60,
+                'filterHaving' => 'DATE_FORMAT(company.date_created, \'%m-%d-%y\')',
+            ],
 
-        if (US_ZIPS_ENABLED)
-        {
+            'Modified' => [
+                'select' => 'DATE_FORMAT(company.date_modified, \'%m-%d-%y\') AS dateModified',
+                'pagerRender' => 'return $rsData[\'dateModified\'];',
+                'sortableColumn' => 'dateModifiedSort',
+                'pagerWidth' => 60,
+                'pagerOptional' => false,
+                'filterHaving' => 'DATE_FORMAT(company.date_modified, \'%m-%d-%y\')',
+            ],
+
+            'Misc Notes' => [
+                'select' => 'company.notes AS notes',
+                'sortableColumn' => 'notes',
+                'pagerWidth' => 300,
+                'filter' => 'company.notes',
+            ],
+
+            'OwnerID' => [
+                'select' => '',
+                'filter' => 'company.owner',
+                'pagerOptional' => false,
+                'filterable' => false,
+                'filterDescription' => 'Only My Companies',
+            ],
+
+            'IsHot' => [
+                'select' => '',
+                'filter' => 'company.is_hot',
+                'pagerOptional' => false,
+                'filterable' => false,
+                'filterDescription' => 'Only Hot Companies',
+            ],
+        ];
+
+        if (US_ZIPS_ENABLED) {
             $this->_classColumns['Near Zipcode'] =
-                               array('select'  => 'company.zip AS zip',
-                                     'filter' => 'company.zip',
-                                     'pagerOptional' => false,
-                                     'filterTypes'   => '=@');
+                               [
+                                   'select' => 'company.zip AS zip',
+                                   'filter' => 'company.zip',
+                                   'pagerOptional' => false,
+                                   'filterTypes' => '=@',
+                               ];
         }
 
         /* Extra fields get added as columns here. */
         $companies = new Companies($this->_siteID);
         $extraFieldsRS = $companies->extraFields->getSettings();
-        foreach ($extraFieldsRS as $index => $data)
-        {
+        foreach ($extraFieldsRS as $index => $data) {
             $fieldName = $data['fieldName'];
 
-            if (!isset($this->_classColumns[$fieldName]))
-            {
+            if (! isset($this->_classColumns[$fieldName])) {
                 $columnDefinition = $companies->extraFields->getDataGridDefinition($index, $data, $this->_db);
 
                 /* Return false for extra fields that should not be columns. */
-                if ($columnDefinition !== false)
-                {
+                if ($columnDefinition !== false) {
                     $this->_classColumns[$fieldName] = $columnDefinition;
                 }
             }
@@ -927,21 +973,18 @@ class CompaniesDataGrid extends DataGrid
      */
     public function getSQL($selectSQL, $joinSQL, $whereSQL, $havingSQL, $orderSQL, $limitSQL, $distinct = '')
     {
-        if ($this->getMiscArgument() != 0)
-        {
+        if ($this->getMiscArgument() != 0) {
             $savedListID = (int) $this->getMiscArgument();
-            $joinSQL  .= ' INNER JOIN saved_list_entry
-                                    ON saved_list_entry.data_item_type = '.DATA_ITEM_COMPANY.'
+            $joinSQL .= ' INNER JOIN saved_list_entry
+                                    ON saved_list_entry.data_item_type = ' . DATA_ITEM_COMPANY . '
                                     AND saved_list_entry.data_item_id = company.company_id
-                                    AND saved_list_entry.site_id = '.$this->_siteID.'
-                                    AND saved_list_entry.saved_list_id = '.$savedListID;
-        }
-        else
-        {
-            $joinSQL  .= ' LEFT JOIN saved_list_entry
-                                    ON saved_list_entry.data_item_type = '.DATA_ITEM_COMPANY.'
+                                    AND saved_list_entry.site_id = ' . $this->_siteID . '
+                                    AND saved_list_entry.saved_list_id = ' . $savedListID;
+        } else {
+            $joinSQL .= ' LEFT JOIN saved_list_entry
+                                    ON saved_list_entry.data_item_type = ' . DATA_ITEM_COMPANY . '
                                     AND saved_list_entry.data_item_id = company.company_id
-                                    AND saved_list_entry.site_id = '.$this->_siteID;
+                                    AND saved_list_entry.site_id = ' . $this->_siteID;
         }
 
         $sql = sprintf(
@@ -989,6 +1032,3 @@ class CompaniesDataGrid extends DataGrid
         return $sql;
     }
 }
-
-
-?>

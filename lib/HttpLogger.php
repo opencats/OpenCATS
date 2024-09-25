@@ -23,14 +23,13 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  * @version    $Id: HttpLogger.php 3587 2007-11-13 03:55:57Z will $
  */
 
- /**
+/**
  *	HTTPLogger Library
  *	@package    CATS
  *	@subpackage Library
@@ -39,9 +38,13 @@ class HTTPLogger
 {
     /* Prevent this class from being instantiated. */
     // FIXME: Make me not static.
-    private function __construct() {}
-    private function __clone() {}
+    private function __construct()
+    {
+    }
 
+    private function __clone()
+    {
+    }
 
     /**
      * Adds an entry to the HTTP access log table.
@@ -90,8 +93,8 @@ class HTTPLogger
             $db->makeQueryInteger($siteID),
             $db->makeQueryString(date("Y-m-d H:i:s"))
         );
-        
-        return (boolean) $db->query($sql);
+
+        return (bool) $db->query($sql);
     }
 
     /**
@@ -118,15 +121,12 @@ class HTTPLogger
                 default_log_type DESC",
             $db->makeQueryString($logTypeName)
         );
-        
+
         $result = $db->getColumn($sql, 0, 0);
-        if ($result === false)
-        {
+        if ($result === false) {
             return -1;
         }
-        
+
         return $result;
     }
 }
-
-?>

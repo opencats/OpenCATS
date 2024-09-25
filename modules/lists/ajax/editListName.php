@@ -35,14 +35,12 @@ include_once(LEGACY_ROOT . '/lib/SavedLists.php');
 
 $interface = new SecureAJAXInterface();
 
-if (!$interface->isRequiredIDValid('savedListID'))
-{
+if (! $interface->isRequiredIDValid('savedListID')) {
     $interface->outputXMLErrorPage(-1, 'Invalid saved list ID.');
     die();
 }
 
-if (!isset($_REQUEST['savedListName']))
-{
+if (! isset($_REQUEST['savedListName'])) {
     $interface->outputXMLErrorPage(-1, 'Invalid name.');
     die();
 }
@@ -55,28 +53,26 @@ $savedListName = $_REQUEST['savedListName'];
 $savedLists = new SavedLists($siteID);
 
 /* Validate the lists - if name is in use or name is blank, fail. */
-if ($savedLists->getIDByDescription($savedListName) != -1 && $savedLists->getIDByDescription($savedListName) != $savedListID)
-{
+if ($savedLists->getIDByDescription($savedListName) != -1 && $savedLists->getIDByDescription($savedListName) != $savedListID) {
     $interface->outputXMLPage(
         "<data>\n" .
         "    <errorcode>0</errorcode>\n" .
         "    <errormessage></errormessage>\n" .
         "    <response>collision</response>\n" .
         "</data>\n"
-    );  
-    die;  
+    );
+    die;
 }
 
-if ($savedListName == '')
-{
+if ($savedListName == '') {
     $interface->outputXMLPage(
         "<data>\n" .
         "    <errorcode>0</errorcode>\n" .
         "    <errormessage></errormessage>\n" .
         "    <response>badName</response>\n" .
         "</data>\n"
-    );  
-    die;  
+    );
+    die;
 }
 
 /* Write changes. */
@@ -89,5 +85,3 @@ $interface->outputXMLPage(
     "    <response>success</response>\n" .
     "</data>\n"
 );
-
-?>

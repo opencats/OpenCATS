@@ -7,297 +7,287 @@
  *
  */
 
-require_once dirname(__FILE__)."/Plot.class.php";
+require_once __DIR__ . "/Plot.class.php";
 
 /**
  * ScatterPlot
  *
  * @package Artichow
  */
-class awScatterPlot extends awPlot implements awLegendable {
+class awScatterPlot extends awPlot implements awLegendable
+{
+    /**
+     * Add marks to the scatter plot
+     *
+     * @var Mark
+     */
+    public $mark;
 
-	/**
-	 * Add marks to the scatter plot
-	 *
-	 * @var Mark
-	 */
-	public $mark;
+    /**
+     * Labels on the plot
+     *
+     * @var Label
+     */
+    public $label;
 
-	/**
-	 * Labels on the plot
-	 *
-	 * @var Label
-	 */
-	public $label;
+    /**
+     * Link points ?
+     *
+     * @var bool
+     */
+    protected $link = false;
 
-	/**
-	 * Link points ?
-	 *
-	 * @var bool
-	 */
-	protected $link = FALSE;
+    /**
+     * Display impulses
+     *
+     * @var bool
+     */
+    protected $impulse = null;
 
-	/**
-	 * Display impulses
-	 *
-	 * @var bool
-	 */
-	protected $impulse = NULL;
+    /**
+     * Link NULL points ?
+     *
+     * @var bool
+     */
+    protected $linkNull = false;
 
-	/**
-	 * Link NULL points ?
-	 *
-	 * @var bool
-	 */
-	protected $linkNull = FALSE;
+    /**
+     * Line color
+     *
+     * @var Color
+     */
+    protected $lineColor;
 
-	/**
-	 * Line color
-	 *
-	 * @var Color
-	 */
-	protected $lineColor;
+    /**
+     * Line type
+     *
+     * @var int
+     */
+    protected $lineStyle = awLine::SOLID;
 
-	/**
-	 * Line type
-	 *
-	 * @var int
-	 */
-	protected $lineStyle = awLine::SOLID;
+    /**
+     * Line thickness
+     *
+     * @var int
+     */
+    protected $lineThickness = 1;
 
-	/**
-	 * Line thickness
-	 *
-	 * @var int
-	 */
-	protected $lineThickness = 1;
+    /**
+     * Construct a new awScatterPlot
+     *
+     * @param array $datay Numeric values for Y axis
+     * @param array $datax Numeric values for X axis
+     */
+    public function __construct($datay, $datax = null)
+    {
+        parent::__construct();
 
-	/**
-	 * Construct a new awScatterPlot
-	 *
-	 * @param array $datay Numeric values for Y axis
-	 * @param array $datax Numeric values for X axis
-	 * @param int $mode
-	 */
-	public function __construct($datay, $datax = NULL) {
+        // Defaults marks
+        $this->mark = new awMark();
+        $this->mark->setType(awMark::CIRCLE);
+        $this->mark->setSize(7);
+        $this->mark->border->show();
 
-		parent::__construct();
+        $this->label = new awLabel();
 
-		// Defaults marks
-		$this->mark = new awMark;
-		$this->mark->setType(awMark::CIRCLE);
-		$this->mark->setSize(7);
-		$this->mark->border->show();
+        $this->setValues($datay, $datax);
+        $this->setColor(new awBlack());
+    }
 
-		$this->label = new awLabel;
+    /**
+     * Display plot as impulses
+     */
+    public function setImpulse($color)
+    {
+        $this->impulse = $color;
+    }
 
-		$this->setValues($datay, $datax);
-		$this->setColor(new awBlack);
+    /**
+     * Link scatter plot points
+     *
+     * @param bool $link
+     * @param awColor $color Line color (default to black)
+     */
+    public function link($link, $color = null)
+    {
+        $this->link = (bool) $link;
+        if ($color instanceof awColor) {
+            $this->setColor($color);
+        }
+    }
 
-	}
+    /**
+     * Ignore null values for Y data and continue linking
+     *
+     * @param bool $link
+     */
+    public function linkNull($link)
+    {
+        $this->linkNull = (bool) $link;
+    }
 
-	/**
-	 * Display plot as impulses
-	 *
-	 * @param awColor $impulse Impulses color (or NULL to disable impulses)
-	 */
-	public function setImpulse($color) {
-		$this->impulse = $color;
-	}
+    /**
+     * Change line color
+     */
+    public function setColor(awColor $color)
+    {
+        $this->lineColor = $color;
+    }
 
-	/**
-	 * Link scatter plot points
-	 *
-	 * @param bool $link
-	 * @param awColor $color Line color (default to black)
-	 */
-	public function link($link, $color = NULL) {
-		$this->link = (bool)$link;
-		if($color instanceof awColor) {
-			$this->setColor($color);
-		}
-	}
+    /**
+     * Change line style
+     *
+     * @param int $style
+     */
+    public function setStyle($style)
+    {
+        $this->lineStyle = (int) $style;
+    }
 
-	/**
-	 * Ignore null values for Y data and continue linking
-	 *
-	 * @param bool $link
-	 */
-	public function linkNull($link) {
-		$this->linkNull = (bool)$link;
-	}
+    /**
+     * Change line tickness
+     *
+     * @param int $tickness
+     */
+    public function setThickness($tickness)
+    {
+        $this->lineThickness = (int) $tickness;
+    }
 
-	/**
-	 * Change line color
-	 *
-	 * @param awColor $color
-	 */
-	public function setColor(awColor $color) {
-		$this->lineColor = $color;
-	}
+    /**
+     * Get the line thickness
+     *
+     * @return int
+     */
+    public function getLegendLineThickness()
+    {
+        return $this->lineThickness;
+    }
 
-	/**
-	 * Change line style
-	 *
-	 * @param int $style
-	 */
-	public function setStyle($style) {
-		$this->lineStyle = (int)$style;
-	}
+    /**
+     * Get the line type
+     *
+     * @return int
+     */
+    public function getLegendLineStyle()
+    {
+        return $this->lineStyle;
+    }
 
-	/**
-	 * Change line tickness
-	 *
-	 * @param int $tickness
-	 */
-	public function setThickness($tickness) {
-		$this->lineThickness = (int)$tickness;
-	}
+    /**
+     * Get the color of line
+     *
+     * @return Color
+     */
+    public function getLegendLineColor()
+    {
+        return $this->lineColor;
+    }
 
-	/**
-	 * Get the line thickness
-	 *
-	 * @return int
-	 */
-	public function getLegendLineThickness() {
-		return $this->lineThickness;
-	}
+    /**
+     * Get the background color or gradient of an element of the component
+     *
+     * @return Color, Gradient
+     */
+    public function getLegendBackground()
+    {
+        return null;
+    }
 
-	/**
-	 * Get the line type
-	 *
-	 * @return int
-	 */
-	public function getLegendLineStyle() {
-		return $this->lineStyle;
-	}
+    /**
+     * Get a mark object
+     *
+     * @return Mark
+     */
+    public function getLegendMark()
+    {
+        return $this->mark;
+    }
 
-	/**
-	 * Get the color of line
-	 *
-	 * @return Color
-	 */
-	public function getLegendLineColor() {
-		return $this->lineColor;
-	}
+    public function drawComponent(awDrawer $drawer, $x1, $y1, $x2, $y2, $aliasing)
+    {
+        $count = count($this->datay);
 
-	/**
-	 * Get the background color or gradient of an element of the component
-	 *
-	 * @return Color, Gradient
-	 */
-	public function getLegendBackground() {
-		return NULL;
-	}
+        // Get start and stop values
+        [$start, $stop] = $this->getLimit();
 
-	/**
-	 * Get a mark object
-	 *
-	 * @return Mark
-	 */
-	public function getLegendMark() {
-		return $this->mark;
-	}
+        // Build the polygon
+        $polygon = new awPolygon();
 
-	public function drawComponent(awDrawer $drawer, $x1, $y1, $x2, $y2, $aliasing) {
+        for ($key = 0; $key < $count; $key++) {
+            $x = $this->datax[$key];
+            $y = $this->datay[$key];
 
-		$count = count($this->datay);
+            if ($y !== null) {
+                $p = awAxis::toPosition($this->xAxis, $this->yAxis, new awPoint($x, $y));
+                $polygon->set($key, $p);
+            } elseif ($this->linkNull === false) {
+                $polygon->set($key, null);
+            }
+        }
 
-		// Get start and stop values
-		list($start, $stop) = $this->getLimit();
+        // Link points if needed
+        if ($this->link) {
+            $prev = null;
 
-		// Build the polygon
-		$polygon = new awPolygon;
+            foreach ($polygon->all() as $point) {
+                if ($prev !== null and $point !== null) {
+                    $drawer->line(
+                        $this->lineColor,
+                        new awLine(
+                            $prev,
+                            $point,
+                            $this->lineStyle,
+                            $this->lineThickness
+                        )
+                    );
+                }
+                $prev = $point;
+            }
 
-		for($key = 0; $key < $count; $key++) {
+            $this->lineColor->free();
+        }
 
-			$x = $this->datax[$key];
-			$y = $this->datay[$key];
+        // Draw impulses
+        if ($this->impulse instanceof awColor) {
+            foreach ($polygon->all() as $key => $point) {
+                if ($point !== null) {
+                    $zero = awAxis::toPosition(
+                        $this->xAxis,
+                        $this->yAxis,
+                        new awPoint($key, 0)
+                    );
 
-			if($y !== NULL) {
-				$p = awAxis::toPosition($this->xAxis, $this->yAxis, new awPoint($x, $y));
-				$polygon->set($key, $p);
-			} else if($this->linkNull === FALSE) {
-				$polygon->set($key, NULL);
-			}
+                    $drawer->line(
+                        $this->impulse,
+                        new awLine(
+                            $zero,
+                            $point,
+                            awLine::SOLID,
+                            1
+                        )
+                    );
+                }
+            }
+        }
 
-		}
+        // Draw marks and labels
+        foreach ($polygon->all() as $key => $point) {
+            $this->mark->draw($drawer, $point);
+            $this->label->draw($drawer, $point, $key);
+        }
+    }
 
-		// Link points if needed
-		if($this->link) {
+    protected function xAxisPoint($position)
+    {
+        $y = $this->xAxisZero ? 0 : $this->getRealYMin();
+        return awAxis::toPosition($this->xAxis, $this->yAxis, new awPoint($position, $y));
+    }
 
-			$prev = NULL;
-
-			foreach($polygon->all() as $point) {
-
-				if($prev !== NULL and $point !== NULL) {
-					$drawer->line(
-						$this->lineColor,
-						new awLine(
-							$prev,
-							$point,
-							$this->lineStyle,
-							$this->lineThickness
-						)
-					);
-				}
-				$prev = $point;
-
-			}
-
-			$this->lineColor->free();
-
-		}
-
-		// Draw impulses
-		if($this->impulse instanceof awColor) {
-
-			foreach($polygon->all() as $key => $point) {
-
-				if($point !== NULL) {
-
-					$zero = awAxis::toPosition(
-						$this->xAxis,
-						$this->yAxis,
-						new awPoint($key, 0)
-					);
-
-					$drawer->line(
-						$this->impulse,
-						new awLine(
-							$zero,
-							$point,
-							awLine::SOLID,
-							1
-						)
-					);
-
-				}
-
-			}
-
-		}
-
-		// Draw marks and labels
-		foreach($polygon->all() as $key => $point) {
-
-			$this->mark->draw($drawer, $point);
-			$this->label->draw($drawer, $point, $key);
-
-		}
-
-	}
-
-	protected function xAxisPoint($position) {
-		$y = $this->xAxisZero ? 0 : $this->getRealYMin();
-		return awAxis::toPosition($this->xAxis, $this->yAxis, new awPoint($position, $y));
-	}
-
-	public function getXCenter() {
-		return FALSE;
-	}
-
+    public function getXCenter()
+    {
+        return false;
+    }
 }
 
 registerClass('ScatterPlot');
-?>

@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -37,13 +36,12 @@
  */
 class DatabaseSearch
 {
-    private $_simpleReplaceHash = array(
+    private $_simpleReplaceHash = [
         '+' => '_rPLUSr',
         '#' => '_rPOUNDr',
         '&' => '_rANDr',
-        '@' => '_rATr'
-    );
-
+        '@' => '_rATr',
+    ];
 
     /**
      * Translates a traditional AND/OR/NOT boolean query string into a
@@ -55,26 +53,26 @@ class DatabaseSearch
     public static function humanToSphinxBoolean($string)
     {
         /* Remove double operators. */
-        $regexSearch = array(
+        $regexSearch = [
             '/\bAND(?:\s+AND)+\b/i',
             '/\bOR(?:\s+OR)+\b/i',
             '/\bAND\s+NOT(?:\s+AND\s+NOT)+\b/i',
             '/\bNOT(?:\s+NOT)+\b/i',
-            '/\bAND\s+NOT\b/i'
-        );
-        $regexReplace = array(
+            '/\bAND\s+NOT\b/i',
+        ];
+        $regexReplace = [
             'AND',
             'OR',
             'NOT',
             'NOT',
-            'NOT'
-        );
+            'NOT',
+        ];
         $string = preg_replace($regexSearch, $regexReplace, $string);
 
         /* Translate AND/OR/NOT to +/-/!. */
-        $stringSearch  = array(' AND ', ' NOT ', ' OR ', ',');
-        $stringReplace = array(' +',    ' !',    ' | ',  ' | ');
-        $string = str_ireplace($stringSearch, $stringReplace,  $string);
+        $stringSearch = [' AND ', ' NOT ', ' OR ', ','];
+        $stringReplace = [' +',    ' !',    ' | ',  ' | '];
+        $string = str_ireplace($stringSearch, $stringReplace, $string);
 
         return $string;
     }
@@ -90,13 +88,13 @@ class DatabaseSearch
      */
     public static function makeREGEXPString($string)
     {
-         /* FIXME: Test this! */
-        $search  = array(
-            '\\',   '+',   '.',   '*',   '(',   ')',   '[',   ']',   '?',   '^',   '$'
-        );
-        $replace = array(
-            '\\\\', '\\+', '\\.', '\\*', '\\(', '\\)', '\\[', '\\]', '\\?', '\\^', '\\$'
-        );
+        /* FIXME: Test this! */
+        $search = [
+            '\\',   '+',   '.',   '*',   '(',   ')',   '[',   ']',   '?',   '^',   '$',
+        ];
+        $replace = [
+            '\\\\', '\\+', '\\.', '\\*', '\\(', '\\)', '\\[', '\\]', '\\?', '\\^', '\\$',
+        ];
 
         return str_replace($search, $replace, $string);
     }
@@ -110,16 +108,14 @@ class DatabaseSearch
      */
     public static function markUpQuotes($string)
     {
-        while (strpos($string, '"') !== false)
-        {
+        while (strpos($string, '"') !== false) {
             /* Find the first quote. */
             $quoteStart = strpos($string, '"');
             $string = substr_replace($string, '', $quoteStart, 1);
 
             /* Find the second quote; if there isn't one, break out. */
             $quoteEnd = strpos($string, '"');
-            if ($quoteEnd === false)
-            {
+            if ($quoteEnd === false) {
                 break;
             }
 
@@ -131,7 +127,9 @@ class DatabaseSearch
 
             /* Mark up the string that was inside the quotes. */
             $quoted = str_replace(
-                array(' ', ','), array('_QSPACEQ_', '_QCOMMAQ_'), $quoted
+                [' ', ','],
+                ['_QSPACEQ_', '_QCOMMAQ_'],
+                $quoted
             );
 
             /* Replace the string that was inside the quotes with the marked-up string. */
@@ -153,7 +151,9 @@ class DatabaseSearch
     public static function unMarkUpQuotes($string)
     {
         return str_replace(
-            array('_QSPACEQ_', '_QCOMMAQ_'), array(' ', ','), $string
+            ['_QSPACEQ_', '_QCOMMAQ_'],
+            [' ', ','],
+            $string
         );
     }
 
@@ -166,27 +166,23 @@ class DatabaseSearch
     public static function containsUnmatchedParenthesis($string)
     {
         /* Counters for open and close paranthesis. */
-        $open  = 0;
+        $open = 0;
         $close = 0;
 
         /* Loop through each character of the string and ensure all paranthesis
          * are matched.
          */
         $length = strlen($string);
-        for ($i = 0; $i < $length; ++$i)
-        {
+        for ($i = 0; $i < $length; ++$i) {
             /* Open paranthesis. */
-            if ($string[$i] == '(')
-            {
+            if ($string[$i] == '(') {
                 ++$open;
             }
 
             /* Close paranthesis. */
-            if ($string[$i] == ')')
-            {
+            if ($string[$i] == ')') {
                 /* If we found a ')' without any unclosed '(' before it... */
-                if ($open < 1)
-                {
+                if ($open < 1) {
                     return true;
                 }
 
@@ -195,8 +191,7 @@ class DatabaseSearch
         }
 
         /* If we don't have the same number of ('s as )'s, fail. */
-        if ($open != $close)
-        {
+        if ($open != $close) {
             return true;
         }
 
@@ -211,15 +206,16 @@ class DatabaseSearch
      * @param string Field name in query to search.
      * @return string SQL WHERE clause.
      */
-    public static function makeBooleanSQLWhere($string, $databaseConnection,
-        $tableField)
-    {
+    public static function makeBooleanSQLWhere(
+        $string,
+        $databaseConnection,
+        $tableField
+    ) {
         /* Empty string handling. This makes the query "WHERE 0", thus no
          * results are returned.
          */
         $string = trim($string);
-        if (empty($string))
-        {
+        if (empty($string)) {
             return '0';
         }
 
@@ -228,8 +224,7 @@ class DatabaseSearch
 
         /* Clean up ()'s. */
         $string = preg_replace('/\(\s*\)/', '', $string);
-        if (self::containsUnmatchedParenthesis($string))
-        {
+        if (self::containsUnmatchedParenthesis($string)) {
             return '0';
         }
 
@@ -237,28 +232,28 @@ class DatabaseSearch
         $string = ' ' . $string . ' ';
 
         /* Special character handling. */
-        $stringSearch  = array(
+        $stringSearch = [
             ' -',
             ' !',
             ',',
             '|',
             '(',
             ')',
-            '%'
-        );
-        $stringReplace = array(
+            '%',
+        ];
+        $stringReplace = [
             ' NOT ',
             ' NOT ',
             ' OR ',
             ' OR ',
             ' OOOPENPARENTH ',
             ' CCCLOSEPARENTH ',
-            ''
-        );
+            '',
+        ];
         $string = str_replace($stringSearch, $stringReplace, $string);
 
         /* Remove double operators and filter query. */
-        $regexSearch = array(
+        $regexSearch = [
             '/\bAND(?:\s+AND)+\b/i',
             '/\b(?:AND|OR)(?:\s+OR)+\b/i',
             '/\bOR(?:\s+AND)+\b/i',
@@ -266,9 +261,9 @@ class DatabaseSearch
             '/\bAND\s+NOT\b/i',
             '/\bNOT(?:\s+NOT)+\b/i',
             '/\bOR\s+NOT\b/i',
-            '/\b(?:AND\s+)?NOT(?:\s+OR)+\b/i'
-        );
-        $regexReplace = array(
+            '/\b(?:AND\s+)?NOT(?:\s+OR)+\b/i',
+        ];
+        $regexReplace = [
             'AND',
             'OR',
             'OR',
@@ -276,13 +271,12 @@ class DatabaseSearch
             'NOT',
             'NOT',
             'NOT',
-            ' '
-        );
+            ' ',
+        ];
         $string = preg_replace($regexSearch, $regexReplace, $string);
 
         /* Clean up extra spaces. */
-        while (strpos($string, '  ') !== false)
-        {
+        while (strpos($string, '  ') !== false) {
             $string = str_replace('  ', ' ', $string);
         }
 
@@ -300,9 +294,9 @@ class DatabaseSearch
 
         /* Convert normal boolean operators to shortened syntax. */
         /* Translate AND/OR/NOT to +/,/-. */
-        $stringSearch  = array(' AND ', ' NOT ', ' OR ');
-        $stringReplace = array(' +',    ' -',    ',');
-        $string = str_ireplace($stringSearch, $stringReplace,  $string);
+        $stringSearch = [' AND ', ' NOT ', ' OR '];
+        $stringReplace = [' +',    ' -',    ','];
+        $string = str_ireplace($stringSearch, $stringReplace, $string);
 
         /* Strip excessive whitespace. */
         $string = str_replace('OOOPENPARENTH', '(', $string);
@@ -337,14 +331,13 @@ class DatabaseSearch
         $string = str_replace('*', '', $string);
 
         /* Clean up extra spaces again. */
-        while (strpos($string, '  ') !== false)
-        {
+        while (strpos($string, '  ') !== false) {
             $string = str_replace('  ', ' ', $string);
         }
 
         /* Dispatch symbols. */
-        $string = str_replace(' ',  ' AND ', $string);
-        $string = str_replace(',',  ' OR ', $string);
+        $string = str_replace(' ', ' AND ', $string);
+        $string = str_replace(',', ' OR ', $string);
         $string = str_replace(' -', ' NOT ', $string);
         $string = preg_replace('/^-/', 'NOT ', $string);
 
@@ -364,17 +357,18 @@ class DatabaseSearch
         );
 
         /* Wildcard searches. */
-        $search = array(
+        $search = [
             '/(?:word|wild)\[\(\'(.+?)\'\)\]wild/',
-            '/wild\[\(\'(.+?)\'\)\]full/'
-        );
+            '/wild\[\(\'(.+?)\'\)\]full/',
+        ];
         $string = preg_replace(
-            $search, '(' . $tableField . ' LIKE \'%\\1%\')', $string
+            $search,
+            '(' . $tableField . ' LIKE \'%\\1%\')',
+            $string
         );
 
         /* WHERE clauses cannot start with NOT. */
-        if (preg_match('/^\s*NOT/i', $string))
-        {
+        if (preg_match('/^\s*NOT/i', $string)) {
             return '0';
         }
 
@@ -387,11 +381,9 @@ class DatabaseSearch
         /* Move around NOT. */
         $array = explode(' ', $string);
         $count = count($array);
-        for ($i = 0; $i < ($count - 1); $i++)
-        {
+        for ($i = 0; $i < ($count - 1); $i++) {
             if ($array[$i] == 'NOT' && isset($array[$i + 2]) &&
-                trim($array[$i + 2]) == 'LIKE')
-            {
+                trim($array[$i + 2]) == 'LIKE') {
                 $array[$i] = $array[$i + 1];
                 $array[$i + 1] = 'NOT';
                 $i++;
@@ -406,8 +398,7 @@ class DatabaseSearch
          * results are returned.
          */
         $string = trim($string);
-        if (empty($string))
-        {
+        if (empty($string)) {
             return '0';
         }
 
@@ -426,15 +417,14 @@ class DatabaseSearch
      */
     public static function fulltextEncode($text)
     {
-        $_simpleReplaceHash = array(
+        $_simpleReplaceHash = [
             '+' => '_rPLUSr',
             '#' => '_rPOUNDr',
             '&' => '_rANDr',
-            '@' => '_rATr'
-        );
+            '@' => '_rATr',
+        ];
 
-        foreach ($_simpleReplaceHash as $find => $replace)
-        {
+        foreach ($_simpleReplaceHash as $find => $replace) {
             $text = str_replace($find, $replace, $text);
         }
 
@@ -449,20 +439,17 @@ class DatabaseSearch
      */
     public static function fulltextDecode($text)
     {
-        $_simpleReplaceHash = array(
+        $_simpleReplaceHash = [
             '+' => '_rPLUSr',
             '#' => '_rPOUNDr',
             '&' => '_rANDr',
-            '@' => '_rATr'
-        );
+            '@' => '_rATr',
+        ];
 
-        foreach ($_simpleReplaceHash as $replace => $find)
-        {
+        foreach ($_simpleReplaceHash as $replace => $find) {
             $text = str_replace($find, $replace, $text);
         }
 
         return str_replace('_rDOTr', '.', $text);
     }
 }
-
-?>

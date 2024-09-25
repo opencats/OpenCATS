@@ -30,15 +30,14 @@
 class Import
 {
     private $_db;
-    private $_siteID;
 
+    private $_siteID;
 
     public function __construct($siteID)
     {
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
-
 
     /**
      * Adds a record for an import group into the database.
@@ -66,8 +65,7 @@ class Import
         );
 
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return -1;
         }
 
@@ -110,9 +108,7 @@ class Import
      * Effectively finalizes an import.
      *
      * @param importID
-     * @return void
      */
-
     public function delete($importID)
     {
         $sql = sprintf(
@@ -127,8 +123,7 @@ class Import
         );
         $queryResult = $this->_db->query($sql);
 
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return false;
         }
 
@@ -198,7 +193,6 @@ class Import
      *
      * @param string table name - company / contact / candidate
      * @param integer importID
-     * @return void
      */
     public function revert($tableName, $importID)
     {
@@ -239,8 +233,7 @@ class Import
         );
         $this->_db->query($sql);
 
-        if ($tableName == 'contact')
-        {
+        if ($tableName == 'contact') {
             $sql = sprintf(
                 "DELETE FROM
                     company
@@ -262,12 +255,11 @@ class Import
      * @param foreign table
      * @param field name
      * @param importID
-     * @return void
      */
     public function addForeignSettingUnique($type, $field, $importID)
     {
         $sql = sprintf(
-           "SELECT
+            "SELECT
                 extra_field_settings.field_name AS fieldName
             FROM
                 extra_field_settings
@@ -283,8 +275,7 @@ class Import
         );
         $rs = $this->_db->getAssoc($sql);
 
-        if (!isset($rs['fieldName']))
-        {
+        if (! isset($rs['fieldName'])) {
             $sql = sprintf(
                 "INSERT INTO extra_field_settings (
                     field_name,
@@ -300,10 +291,10 @@ class Import
                     %s,
                     %s
                  )",
-                 $this->_db->makeQueryStringOrNULL($field),
-                 $this->_siteID,
-                 $importID,
-                 $type
+                $this->_db->makeQueryStringOrNULL($field),
+                $this->_siteID,
+                $importID,
+                $type
             );
 
             $rs = $this->_db->query($sql);
@@ -324,23 +315,20 @@ class Import
      */
     public function addForeign($type, $data, $assocID, $importID)
     {
-        $ar = array();
+        $ar = [];
         $dataS = '';
 
-        foreach ($data AS $field => $value)
-        {
-            if ($value != '')
-            {
+        foreach ($data as $field => $value) {
+            if ($value != '') {
                 $ar[] = '(' . $assocID . ', '
                     . $this->_db->makeQueryStringOrNULL($field) . ', '
                     . $this->_db->makeQueryStringOrNULL($value) . ', '
-                    .  $importID . ',' .$this->_siteID . ', ' . $type . ')';
+                    . $importID . ',' . $this->_siteID . ', ' . $type . ')';
             }
         }
         $dataS = implode(',', $ar);
 
-        if (!empty($dataS))
-        {
+        if (! empty($dataS)) {
             $sql = sprintf(
                 "INSERT INTO extra_field (
                     data_item_id,
@@ -355,8 +343,7 @@ class Import
             );
 
             $queryResult = $this->_db->query($sql);
-            if (!$queryResult)
-            {
+            if (! $queryResult) {
                 return -1;
             }
 
@@ -368,15 +355,14 @@ class Import
 class JobOrdersImport
 {
     private $_db;
-    private $_siteID;
 
+    private $_siteID;
 
     public function __construct($siteID)
     {
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
-
 
     /**
      * Adds a record to the joborder table.
@@ -400,32 +386,25 @@ class JobOrdersImport
             $this->_siteID,
             $this->_db->makeQueryString($dataNamed['company'])
         );
-        
+
         $rs = $this->_db->getAllAssoc($sql);
-        
-        if(!$rs)
-        {
+
+        if (! $rs) {
             $companyID = -1;
-        }
-        else
-        {
+        } else {
             $companyID = $rs[0]['companyID'];
         }
         unset($dataNamed['company']);
-        
-        $dataColumns = array();
-        $data = array();
 
-        foreach ($dataNamed AS $dataColumn => $d)
-        {
+        $dataColumns = [];
+        $data = [];
+
+        foreach ($dataNamed as $dataColumn => $d) {
             $dataColumns[] = $dataColumn;
-            if(in_array($dataColumn, array("is_hot", "openings", "public")))
-            {
+            if (in_array($dataColumn, ["is_hot", "openings", "public"])) {
                 $data[] = $this->_db->makeQueryInteger($d);
-            }
-            else
-            {
-                $data[] = $this->_db->makeQueryStringOrNULL($d);   
+            } else {
+                $data[] = $this->_db->makeQueryStringOrNULL($d);
             }
         }
 
@@ -474,14 +453,10 @@ class JobOrdersImport
             $importID
         );
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return -1;
         }
 
         return $this->_db->getLastInsertID();
     }
-
 }
-
-?>

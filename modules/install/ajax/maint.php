@@ -27,8 +27,7 @@
  * $Id: maint.php 3346 2007-10-29 22:40:53Z brian $
  */
 
-if (file_exists('./modules.cache'))
-{
+if (file_exists('./modules.cache')) {
     @unlink('./modules.cache');
 }
 

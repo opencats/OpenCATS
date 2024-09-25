@@ -11,390 +11,368 @@
 /*
  * Check for GD2
  */
-if(function_exists('imagecreatetruecolor') === FALSE) {
-	trigger_error("You must compile PHP with GD2 support to use Artichow", E_USER_ERROR);
+if (function_exists('imagecreatetruecolor') === false) {
+    trigger_error("You must compile PHP with GD2 support to use Artichow", E_USER_ERROR);
 }
 
-require_once ARTICHOW."/inc/Shadow.class.php";
-require_once ARTICHOW."/inc/Border.class.php";
+require_once ARTICHOW . "/inc/Shadow.class.php";
+require_once ARTICHOW . "/inc/Border.class.php";
 
 /**
  * An image for a graph
  *
  * @package Artichow
  */
-class awImage {
+class awImage
+{
+    /**
+     * Graph width
+     *
+     * @var int
+     */
+    public $width;
 
-	/**
-	 * Graph width
-	 *
-	 * @var int
-	 */
-	public $width;
+    /**
+     * Graph height
+     *
+     * @var int
+     */
+    public $height;
 
-	/**
-	 * Graph height
-	 *
-	 * @var int
-	 */
-	public $height;
-	
-	/**
-	 * Background width:
-	 *
-	 * @var int
-	 */
-	public $alternativeSize;
+    /**
+     * Background width:
+     *
+     * @var int
+     */
+    public $alternativeSize;
 
-	/**
-	 * Use anti-aliasing ?
-	 *
-	 * @var bool
-	 */
-	protected $antiAliasing = FALSE;
+    /**
+     * Use anti-aliasing ?
+     *
+     * @var bool
+     */
+    protected $antiAliasing = false;
 
-	/**
-	 * Image format
-	 *
-	 * @var int
-	 */
-	protected $format = awImage::PNG;
+    /**
+     * Image format
+     *
+     * @var int
+     */
+    protected $format = awImage::PNG;
 
-	/**
-	 * Image background color
-	 *
-	 * @var Color
-	 */
-	protected $background;
+    /**
+     * Image background color
+     *
+     * @var Color
+     */
+    protected $background;
 
-	/**
-	 * GD resource
-	 *
-	 * @var resource
-	 */
-	protected $resource;
+    /**
+     * GD resource
+     *
+     * @var resource
+     */
+    protected $resource;
 
-	/**
-	 * Image drawer
-	 *
-	 * @var Drawer
-	 */
-	protected $drawer;
+    /**
+     * Image drawer
+     *
+     * @var Drawer
+     */
+    protected $drawer;
 
-	/**
-	 * Shadow
-	 *
-	 * @var Shadow
-	 */
-	public $shadow;
+    /**
+     * Shadow
+     *
+     * @var Shadow
+     */
+    public $shadow;
 
-	/**
-	 * Image border
-	 *
-	 * @var Border
-	 */
-	public $border;
+    /**
+     * Image border
+     *
+     * @var Border
+     */
+    public $border;
 
-	/**
-	 * Use JPEG for image
-	 *
-	 * @var int
-	 */
-	const JPEG = IMG_JPG;
+    /**
+     * Use JPEG for image
+     *
+     * @var int
+     */
+    public const JPEG = IMG_JPG;
 
-	/**
-	 * Use PNG for image
-	 *
-	 * @var int
-	 */
-	const PNG = IMG_PNG;
+    /**
+     * Use PNG for image
+     *
+     * @var int
+     */
+    public const PNG = IMG_PNG;
 
-	/**
-	 * Use GIF for image
-	 *
-	 * @var int
-	 */
-	const GIF = IMG_GIF;
+    /**
+     * Use GIF for image
+     *
+     * @var int
+     */
+    public const GIF = IMG_GIF;
 
-	/**
-	 * Build the image
-	 */
-	public function __construct() {
+    /**
+     * Build the image
+     */
+    public function __construct()
+    {
+        $this->background = new awColor(255, 255, 255);
+        $this->shadow = new awShadow(awShadow::RIGHT_BOTTOM);
+        $this->border = new awBorder();
+    }
 
-		$this->background = new awColor(255, 255, 255);
-		$this->shadow = new awShadow(awShadow::RIGHT_BOTTOM);
-		$this->border = new awBorder;
+    /**
+     * Get drawer of the image
+     *
+     * @param int $w Drawer width (from 0 to 1) (default to 1)
+     * @param int $h Drawer height (from 0 to 1) (default to 1)
+     * @param float $x Position on X axis of the center of the drawer (default to 0.5)
+     * @param float $y Position on Y axis of the center of the drawer (default to 0.5)
+     * @return Drawer
+     */
+    public function getDrawer($w = 1, $h = 1, $x = 0.5, $y = 0.5)
+    {
+        $this->create();
+        $this->drawer->setSize($w, $h);
+        $this->drawer->setPosition($x, $y);
+        return $this->drawer;
+    }
 
-	}
-
-	/**
-	 * Get drawer of the image
-	 *
-	 * @param int $w Drawer width (from 0 to 1) (default to 1)
-	 * @param int $h Drawer height (from 0 to 1) (default to 1)
-	 * @param float $x Position on X axis of the center of the drawer (default to 0.5)
-	 * @param float $y Position on Y axis of the center of the drawer (default to 0.5)
-	 * @return Drawer
-	 */
-	public function getDrawer($w = 1, $h = 1, $x = 0.5, $y = 0.5) {
-		$this->create();
-		$this->drawer->setSize($w, $h);
-		$this->drawer->setPosition($x, $y);
-		return $this->drawer;
-	}
-
-	/**
-	 * Change the image size
-	 *
-	 * @var int $width Image width
-	 * @var int $height Image height
-	 */
-	public function setSize($width, $height, $alternativeSize = 0) {
-	    if ($alternativeSize != 0) {
-	        $this->alternativeSize = (int)$alternativeSize;
+    /**
+     * Change the image size
+     *
+     * @var int Image width
+     * @var int Image height
+     */
+    public function setSize($width, $height, $alternativeSize = 0)
+    {
+        if ($alternativeSize != 0) {
+            $this->alternativeSize = (int) $alternativeSize;
         } else {
             $this->alternativeSize = $this->width;
         }
-		if($width !== NULL) {
-			$this->width = (int)$width;
-		}
-		if($height !== NULL) {
-			$this->height = (int)$height;
-		}
-	}
-
-	/**
-	 * Change image background color
-	 *
-	 * @param awColor $color
-	 */
-	public function setBackgroundColor(awColor $color) {
-		$this->background = $color;
-	}
-
-	/**
-	 * Change image background gradient
-	 *
-	 * @param awGradient $gradient
-	 */
-	public function setBackgroundGradient(awGradient $gradient) {
-		$this->background = $gradient;
-	}
-
-	/**
-	 * Can we use anti-aliasing ?
-	 *
-	 * @var bool $bool
-	 */
-	public function setAntiAliasing($bool) {
-		$this->antiAliasing = (bool)$bool;
-	}
-
-	/**
-	 * Change image format
-	 *
-	 * @var int $format New image format
-	 */
-	public function setFormat($format) {
-		if($format === awImage::JPEG or $format === awImage::PNG or $format === awImage::GIF) {
-			$this->format = $format;
-		}
-	}
-
-	/**
-	 * Create a new awimage
-	 */
-	public function create() {
-
-		if($this->resource === NULL) {
-
-			// Create image
-
-			$this->resource = imagecreatetruecolor($this->width, $this->height);
-			if(!$this->resource) {
-				trigger_error("Unable to create a graph", E_USER_ERROR);
-			}
-
-			imagealphablending($this->resource, TRUE);
-
-			if($this->antiAliasing and function_exists('imageantialias')) {
-				imageantialias($this->resource, TRUE);
-			}
-
-			$this->drawer = new awDrawer($this->resource);
-			$this->drawer->setImageSize($this->width, $this->height);
-
-			// Original color
-			$this->drawer->filledRectangle(
-				new awWhite,
-				new awLine(
-					new awPoint(0, 0),
-					new awPoint($this->alternativeSize, $this->height)
-				)
-			);
-
-			$shadow = $this->shadow->getSpace();
-
-			$p1 = new awPoint($shadow->left, $shadow->top);
-			$p2 = new awPoint($this->alternativeSize - $shadow->right - 1, $this->height - $shadow->bottom - 1);
-			$p3 = new awPoint($this->width - $shadow->right - 1, $this->height - $shadow->bottom - 1);
-
-			// Draw image background
-			$this->drawer->filledRectangle(new Color(255, 255, 255, 0), new awLine($p1, $p3));
-			
-			if (!isset($this->noBorder))
-			{
-			    $this->drawer->filledRectangle($this->background, new awLine($p1, $p2));
-		    }
-		    
-			$this->background->free();
-
-			// Draw image border
-			if (!isset($this->noBorder))
-			{
-			    $this->border->rectangle($this->drawer, $p1, $p2);
-		    }
-
-		}
-
-	}
-
-	/**
-	 * Draw a component on the image
-	 *
-	 * @var awComponent $component A component
-	 */
-	public function drawComponent(awComponent $component) {
-
-		$shadow = $this->shadow->getSpace(); // Image shadow
-		$border = $this->border->visible() ? 1 : 0; // Image border size
-
-		$drawer = clone $this->drawer;
-		$drawer->setImageSize(
-			$this->width - $shadow->left - $shadow->right - $border * 2,
-			$this->height - $shadow->top - $shadow->bottom - $border * 2
-		);
-
-		// No absolute size specified
-		if($component->w === NULL and $component->h === NULL) {
-
-			list($width, $height) = $drawer->setSize($component->width, $component->height);
-
-			// Set component size in pixels
-			$component->setAbsSize($width, $height);
-
-		} else {
-
-			$drawer->setAbsSize($component->w, $component->h);
-
-		}
-
-		if($component->top !== NULL and $component->left !== NULL) {
-			$drawer->setAbsPosition(
-				$border + $shadow->left + $component->left,
-				$border + $shadow->top + $component->top
-			);
-		} else {
-			$drawer->setPosition($component->x, $component->y);
-		}
-
-		$drawer->movePosition($border + $shadow->left, $border + $shadow->top);
-
-		list($x1, $y1, $x2, $y2) = $component->getPosition();
-
-		$component->init($drawer);
-
-		$component->drawComponent($drawer, $x1, $y1, $x2, $y2, $this->antiAliasing);
-		$component->drawEnvelope($drawer, $x1, $y1, $x2, $y2);
-
-		$component->finalize($drawer);
-
-	}
-
-	protected function drawShadow() {
-
-		$drawer = $this->getDrawer();
-
-		$this->shadow->draw(
-			$drawer,
-			new awPoint(0, 0),
-			new awPoint($this->width, $this->height),
-			awShadow::IN
-		);
-
-	}
-
-	/**
-	 * Send the image into a file or to the user browser
-	 *
-	 * @var string $file Save image into a file if you provide a file name
-	 */
-	public function send($file = NULL) {
-
-		// Test if format is available
-		if((imagetypes() & $this->format) === FALSE) {
-			trigger_error("Format '".$this->format."' is not available on your system. Check that your PHP has been compiled with the good libraries.");
-		}
-
-		// Get some infos about this image
-
-        if($GLOBALS['jpegGraph'])
-        {
-			$function = 'imagejpeg';
-
+        if ($width !== null) {
+            $this->width = (int) $width;
         }
-        else
-        {
+        if ($height !== null) {
+            $this->height = (int) $height;
+        }
+    }
 
-    		switch($this->format) {
-    			case awImage::JPEG :
-    				$function = 'imagejpeg';
-    				break;
-    			case awImage::PNG :
-    				$function = 'imagepng';
-    				break;
-    			case awImage::GIF :
-    				$function = 'imagegif';
-    				break;
-		    }
-	    }
+    /**
+     * Change image background color
+     */
+    public function setBackgroundColor(awColor $color)
+    {
+        $this->background = $color;
+    }
 
-		// Create image
+    /**
+     * Change image background gradient
+     */
+    public function setBackgroundGradient(awGradient $gradient)
+    {
+        $this->background = $gradient;
+    }
 
-		if($file !== NULL) {
+    /**
+     * Can we use anti-aliasing ?
+     *
+     * @var bool
+     */
+    public function setAntiAliasing($bool)
+    {
+        $this->antiAliasing = (bool) $bool;
+    }
 
-			$function($this->resource, $file, 95);
+    /**
+     * Change image format
+     *
+     * @var int New image format
+     */
+    public function setFormat($format)
+    {
+        if ($format === awImage::JPEG or $format === awImage::PNG or $format === awImage::GIF) {
+            $this->format = $format;
+        }
+    }
 
-		} else {
+    /**
+     * Create a new awimage
+     */
+    public function create()
+    {
+        if ($this->resource === null) {
+            // Create image
 
-			// Test some text has been printed
-			$data = ob_get_contents();
-			if($data !== '') {
-				exit;
-			}
+            $this->resource = imagecreatetruecolor($this->width, $this->height);
+            if (! $this->resource) {
+                trigger_error("Unable to create a graph", E_USER_ERROR);
+            }
 
-			// Send headers to the browser
-			header("Content-type: image/".$this->getFormat());
+            imagealphablending($this->resource, true);
 
-			imagejpeg($this->resource, NULL, 95);
+            if ($this->antiAliasing and function_exists('imageantialias')) {
+                imageantialias($this->resource, true);
+            }
 
-		}
+            $this->drawer = new awDrawer($this->resource);
+            $this->drawer->setImageSize($this->width, $this->height);
 
-	}
+            // Original color
+            $this->drawer->filledRectangle(
+                new awWhite(),
+                new awLine(
+                    new awPoint(0, 0),
+                    new awPoint($this->alternativeSize, $this->height)
+                )
+            );
 
-	protected function getFormat() {
+            $shadow = $this->shadow->getSpace();
 
-		switch($this->format) {
-			case awImage::JPEG :
-				return 'jpeg';
-			case awImage::PNG :
-				return 'png';
-			case awImage::GIF :
-				return 'gif';
-		}
+            $p1 = new awPoint($shadow->left, $shadow->top);
+            $p2 = new awPoint($this->alternativeSize - $shadow->right - 1, $this->height - $shadow->bottom - 1);
+            $p3 = new awPoint($this->width - $shadow->right - 1, $this->height - $shadow->bottom - 1);
 
-	}
+            // Draw image background
+            $this->drawer->filledRectangle(new Color(255, 255, 255, 0), new awLine($p1, $p3));
 
+            if (! isset($this->noBorder)) {
+                $this->drawer->filledRectangle($this->background, new awLine($p1, $p2));
+            }
+
+            $this->background->free();
+
+            // Draw image border
+            if (! isset($this->noBorder)) {
+                $this->border->rectangle($this->drawer, $p1, $p2);
+            }
+        }
+    }
+
+    /**
+     * Draw a component on the image
+     *
+     * @var awComponent A component
+     */
+    public function drawComponent(awComponent $component)
+    {
+        $shadow = $this->shadow->getSpace(); // Image shadow
+        $border = $this->border->visible() ? 1 : 0; // Image border size
+
+        $drawer = clone $this->drawer;
+        $drawer->setImageSize(
+            $this->width - $shadow->left - $shadow->right - $border * 2,
+            $this->height - $shadow->top - $shadow->bottom - $border * 2
+        );
+
+        // No absolute size specified
+        if ($component->w === null and $component->h === null) {
+            [$width, $height] = $drawer->setSize($component->width, $component->height);
+
+            // Set component size in pixels
+            $component->setAbsSize($width, $height);
+        } else {
+            $drawer->setAbsSize($component->w, $component->h);
+        }
+
+        if ($component->top !== null and $component->left !== null) {
+            $drawer->setAbsPosition(
+                $border + $shadow->left + $component->left,
+                $border + $shadow->top + $component->top
+            );
+        } else {
+            $drawer->setPosition($component->x, $component->y);
+        }
+
+        $drawer->movePosition($border + $shadow->left, $border + $shadow->top);
+
+        [$x1, $y1, $x2, $y2] = $component->getPosition();
+
+        $component->init($drawer);
+
+        $component->drawComponent($drawer, $x1, $y1, $x2, $y2, $this->antiAliasing);
+        $component->drawEnvelope($drawer);
+
+        $component->finalize($drawer);
+    }
+
+    protected function drawShadow()
+    {
+        $drawer = $this->getDrawer();
+
+        $this->shadow->draw(
+            $drawer,
+            new awPoint(0, 0),
+            new awPoint($this->width, $this->height),
+            awShadow::IN
+        );
+    }
+
+    /**
+     * Send the image into a file or to the user browser
+     *
+     * @var string Save image into a file if you provide a file name
+     */
+    public function send($file = null)
+    {
+        // Test if format is available
+        if ((imagetypes() & $this->format) === false) {
+            trigger_error("Format '" . $this->format . "' is not available on your system. Check that your PHP has been compiled with the good libraries.");
+        }
+
+        // Get some infos about this image
+
+        if ($GLOBALS['jpegGraph']) {
+            $function = 'imagejpeg';
+        } else {
+            switch ($this->format) {
+                case awImage::JPEG:
+                    $function = 'imagejpeg';
+                    break;
+                case awImage::PNG:
+                    $function = 'imagepng';
+                    break;
+                case awImage::GIF:
+                    $function = 'imagegif';
+                    break;
+            }
+        }
+
+        // Create image
+
+        if ($file !== null) {
+            $function($this->resource, $file, 95);
+        } else {
+            // Test some text has been printed
+            $data = ob_get_contents();
+            if ($data !== '') {
+                exit;
+            }
+
+            // Send headers to the browser
+            header("Content-type: image/" . $this->getFormat());
+
+            imagejpeg($this->resource, null, 95);
+        }
+    }
+
+    protected function getFormat()
+    {
+        switch ($this->format) {
+            case awImage::JPEG:
+                return 'jpeg';
+            case awImage::PNG:
+                return 'png';
+            case awImage::GIF:
+                return 'gif';
+        }
+    }
 }
 
 registerClass('Image');
@@ -405,43 +383,36 @@ registerClass('Image');
  *
  * @package Artichow
  */
-class awFileImage extends awImage {
+class awFileImage extends awImage
+{
+    /**
+     * Build a new awimage
+     *
+     * @param string $file Image file name
+     */
+    public function __construct($file)
+    {
+        $image = @getimagesize($file);
 
-	/**
-	 * Build a new awimage
-	 *
-	 * @param string $file Image file name
-	 */
-	public function __construct($file) {
+        if ($image and in_array($image[2], [2, 3])) {
+            $this->setSize($image[0], $image[1]);
 
-		$image = @getimagesize($file);
+            switch ($image[2]) {
+                case 2:
+                    $this->resource = imagecreatefromjpeg($file);
+                    break;
 
-		if($image and in_array($image[2], array(2, 3))) {
+                case 3:
+                    $this->resource = imagecreatefrompng($file);
+                    break;
+            }
 
-			$this->setSize($image[0], $image[1]);
-
-			switch($image[2]) {
-
-				case 2 :
-					$this->resource = imagecreatefromjpeg($file);
-					break;
-
-				case 3 :
-					$this->resource = imagecreatefrompng($file);
-					break;
-
-			}
-
-			$this->drawer = new awDrawer($this->resource);
-			$this->drawer->setImageSize($this->width, $this->height);
-
-		} else {
-			trigger_error("Artichow does not support this image (must be in PNG or JPEG)", E_USER_ERROR);
-		}
-
-	}
-
+            $this->drawer = new awDrawer($this->resource);
+            $this->drawer->setImageSize($this->width, $this->height);
+        } else {
+            trigger_error("Artichow does not support this image (must be in PNG or JPEG)", E_USER_ERROR);
+        }
+    }
 }
 
 registerClass('FileImage');
-?>

@@ -1,4 +1,7 @@
 <?php
+
 namespace OpenCATS\Entity;
 
-class CompanyRepositoryException extends \Exception {}
+class CompanyRepositoryException extends \Exception
+{
+}

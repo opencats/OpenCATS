@@ -42,32 +42,30 @@ class CalendarUI extends UserInterface
         $this->_moduleDirectory = 'calendar';
         $this->_moduleName = 'calendar';
         $this->_moduleTabText = 'Calendar*al=' . ACCESS_LEVEL_READ . '@calendar';
-        $this->_subTabs = array(
+        $this->_subTabs = [
             'My Upcoming Events' => 'javascript:void(0);*js=calendarUpcomingEvents();*al=' . ACCESS_LEVEL_READ . '@calendar',
             'Add Event' => 'javascript:void(0);*js=userCalendarAddEvent();*al=' . ACCESS_LEVEL_EDIT . '@calendar',
-            'Goto Today' => 'javascript:void(0);*js=goToToday();*al=' . ACCESS_LEVEL_READ . '@calendar'
-        );
+            'Goto Today' => 'javascript:void(0);*js=goToToday();*al=' . ACCESS_LEVEL_READ . '@calendar',
+        ];
     }
-
 
     public function handleRequest()
     {
         $action = $this->getAction();
 
-        if (!eval(Hooks::get('CALENDAR_HANDLE_REQUEST'))) return;
+        if (! eval(Hooks::get('CALENDAR_HANDLE_REQUEST'))) {
+            return;
+        }
 
-        switch ($action)
-        {
+        switch ($action) {
             case 'addEvent':
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onAddEvent();
                 }
                 break;
 
             case 'editEvent':
-                if ($this->isPostBack())
-                {
+                if ($this->isPostBack()) {
                     $this->onEditEvent();
                 }
                 break;
@@ -92,14 +90,14 @@ class CalendarUI extends UserInterface
      */
     private function showCalendar()
     {
-        $currentHour     = DateUtility::getAdjustedDate('H');
-        $currentDay      = DateUtility::getAdjustedDate('j');
-        $currentMonth    = DateUtility::getAdjustedDate('n');
-        $currentYear     = DateUtility::getAdjustedDate('Y');
+        $currentHour = DateUtility::getAdjustedDate('H');
+        $currentDay = DateUtility::getAdjustedDate('j');
+        $currentMonth = DateUtility::getAdjustedDate('n');
+        $currentYear = DateUtility::getAdjustedDate('Y');
         $currentUnixTime = DateUtility::getAdjustedDate();
-        $currentDateMDY  = DateUtility::getAdjustedDate('m-d-y');
+        $currentDateMDY = DateUtility::getAdjustedDate('m-d-y');
 
-        $currentWeek  = DateUtility::getWeekNumber($currentUnixTime) - DateUtility::getWeekNumber(
+        $currentWeek = DateUtility::getWeekNumber($currentUnixTime) - DateUtility::getWeekNumber(
             mktime(0, 0, 0, $currentMonth, 1, $currentYear)
         );
 
@@ -108,96 +106,72 @@ class CalendarUI extends UserInterface
          * month.
          */
         if ($this->isRequiredIDValid('month', $_GET) &&
-            $this->isRequiredIDValid('year', $_GET))
-        {
+            $this->isRequiredIDValid('year', $_GET)) {
             $month = $_GET['month'];
-            $year  = $_GET['year'];
+            $year = $_GET['year'];
 
-            if (!checkdate($month, 1, $year))
-            {
+            if (! checkdate($month, 1, $year)) {
                 CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid date.');
             }
 
-            if ($month == $currentMonth && $year == $currentYear)
-            {
+            if ($month == $currentMonth && $year == $currentYear) {
                 $isCurrentMonth = true;
-            }
-            else
-            {
+            } else {
                 $isCurrentMonth = false;
             }
-        }
-        else
-        {
+        } else {
             $month = $currentMonth;
-            $year  = $currentYear;
+            $year = $currentYear;
             $isCurrentMonth = true;
         }
 
-        if (isset($_GET['view']))
-        {
+        if (isset($_GET['view'])) {
             $view = $_GET['view'];
-        }
-        else
-        {
+        } else {
             $view = 'DEFAULT_VIEW';
         }
 
-        if (isset($_GET['week']))
-        {
+        if (isset($_GET['week'])) {
             $week = $_GET['week'];
-        }
-        else
-        {
-            $week = $currentWeek+1;
+        } else {
+            $week = $currentWeek + 1;
         }
 
-        if (isset($_GET['day']))
-        {
+        if (isset($_GET['day'])) {
             $day = $_GET['day'];
-        }
-        else
-        {
+        } else {
             $day = $currentDay;
         }
 
-        if (isset($_GET['showEvent']))
-        {
+        if (isset($_GET['showEvent'])) {
             $showEvent = $_GET['showEvent'];
-        }
-        else
-        {
+        } else {
             $showEvent = null;
         }
 
         $userIsSuperUser = ($this->getUserAccessLevel('calendar.show') < ACCESS_LEVEL_SA ? 0 : 1);
-        if ($userIsSuperUser && isset($_GET['superuser']) && $_GET['superuser'] == 1)
-        {
+        if ($userIsSuperUser && isset($_GET['superuser']) && $_GET['superuser'] == 1) {
             $superUserActive = true;
-        }
-        else
-        {
+        } else {
             $superUserActive = false;
         }
 
         $startingWeekday = DateUtility::getStartingWeekday($month, $year);
-        $daysInMonth     = DateUtility::getDaysInMonth($month, $year);
+        $daysInMonth = DateUtility::getDaysInMonth($month, $year);
 
         $calendar = new Calendar($this->_siteID);
 
         $monthBefore = $month - 1;
-        $monthAfter  = $month + 1;
-        $yearBefore  = $year;
-        $yearAfter   = $year;
+        $monthAfter = $month + 1;
+        $yearBefore = $year;
+        $yearAfter = $year;
 
-        if ($monthAfter > 12)
-        {
+        if ($monthAfter > 12) {
             $monthAfter = 1;
             $yearAfter = $year + 1;
         }
 
-        if ($monthBefore < 1)
-        {
+        if ($monthBefore < 1) {
             $monthBefore = 12;
             $yearBefore = $year - 1;
         }
@@ -222,7 +196,7 @@ class CalendarUI extends UserInterface
 
         $eventsString = implode(
             '@',
-            array($eventsStringNow, $eventsStringBefore, $eventsStringAfter, $userIsSuperUser)
+            [$eventsStringNow, $eventsStringBefore, $eventsStringAfter, $userIsSuperUser]
         );
 
         /* Textual representation of the month and year. */
@@ -244,21 +218,19 @@ class CalendarUI extends UserInterface
         $calendarSettings = new CalendarSettings($this->_siteID);
         $calendarSettingsRS = $calendarSettings->getAll();
 
-        if ($view == 'DEFAULT_VIEW')
-        {
+        if ($view == 'DEFAULT_VIEW') {
             $view = $calendarSettingsRS['calendarView'];
         }
 
         $summaryHTML = $calendar->getUpcomingEventsHTML(12, UPCOMING_FOR_CALENDAR);
 
-        if (!eval(Hooks::get('CALENDAR_SHOW'))) return;
-
-        if (SystemUtility::isSchedulerEnabled() && !$_SESSION['CATS']->isDemo())
-        {
-            $allowEventReminders = true;
+        if (! eval(Hooks::get('CALENDAR_SHOW'))) {
+            return;
         }
-        else
-        {
+
+        if (SystemUtility::isSchedulerEnabled() && ! $_SESSION['CATS']->isDemo()) {
+            $allowEventReminders = true;
+        } else {
             $allowEventReminders = false;
         }
 
@@ -309,18 +281,14 @@ class CalendarUI extends UserInterface
          * month.
          */
         if ($this->isRequiredIDValid('month', $_GET) &&
-            $this->isRequiredIDValid('year', $_GET))
-        {
+            $this->isRequiredIDValid('year', $_GET)) {
             $month = $_GET['month'];
-            $year  = $_GET['year'];
+            $year = $_GET['year'];
 
-            if (!checkdate($month, 1, $year))
-            {
+            if (! checkdate($month, 1, $year)) {
                 CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid date.');
             }
-        }
-        else
-        {
+        } else {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid date.');
         }
 
@@ -332,7 +300,9 @@ class CalendarUI extends UserInterface
             $year
         );
 
-        if (!eval(Hooks::get('CALENDAR_DATA'))) return;
+        if (! eval(Hooks::get('CALENDAR_DATA'))) {
+            return;
+        }
 
         echo $eventsString;
     }
@@ -342,103 +312,89 @@ class CalendarUI extends UserInterface
      */
     private function onAddEvent()
     {
-        if ($this->getUserAccessLevel('calendar.addEvent') < ACCESS_LEVEL_EDIT)
-        {
+        if ($this->getUserAccessLevel('calendar.addEvent') < ACCESS_LEVEL_EDIT) {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
 
         /* Bail out if we received an invalid date. */
         $trimmedDate = $this->getTrimmedInput('dateAdd', $_POST);
         if (empty($trimmedDate) ||
-            !DateUtility::validate('-', $trimmedDate, DATE_FORMAT_MMDDYY))
-        {
+            ! DateUtility::validate('-', $trimmedDate, DATE_FORMAT_MMDDYY)) {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid date.');
         }
 
         // FIXME: typeID
         /* Bail out if we don't have a valid event type. */
-        if (!$this->isRequiredIDValid('type', $_POST))
-        {
+        if (! $this->isRequiredIDValid('type', $_POST)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid event type ID.');
         }
 
         /* If we don't have a valid event duration, set dur = 30. */
-        if (!$this->isOptionalIDValid('duration', $_POST))
-        {
+        if (! $this->isOptionalIDValid('duration', $_POST)) {
             $duration = 30;
-        }
-        else
-        {
+        } else {
             $duration = $_POST['duration'];
         }
 
         /* Bail out if we don't have a valid time format ID. */
-        if (!isset($_POST['allDay']) ||
-            ($_POST['allDay'] != '0' && $_POST['allDay'] != '1'))
-        {
+        if (! isset($_POST['allDay']) ||
+            ($_POST['allDay'] != '0' && $_POST['allDay'] != '1')) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid time format ID.');
         }
 
         $type = $_POST['type'];
 
-        if ($_POST['allDay'] == 1)
-        {
+        if ($_POST['allDay'] == 1) {
             $allDay = true;
-        }
-        else
-        {
+        } else {
             $allDay = false;
         }
 
-        $publicEntry     = $this->isChecked('publicEntry', $_POST);
+        $publicEntry = $this->isChecked('publicEntry', $_POST);
         $reminderEnabled = $this->isChecked('reminderToggle', $_POST);
-        $description   = $this->getSanitisedInput('description', $_POST);
-        $title         = $this->getSanitisedInput('title', $_POST);
+        $description = $this->getSanitisedInput('description', $_POST);
+        $title = $this->getSanitisedInput('title', $_POST);
         $reminderEmail = $this->getSanitisedInput('sendEmail', $_POST);
-        $reminderTime  = $this->getSanitisedInput('reminderTime', $_POST);
+        $reminderTime = $this->getSanitisedInput('reminderTime', $_POST);
 
         // FIXME: Reminder time must be an integer!
 
         /* Bail out if any of the required fields are empty. */
-        if (empty($title))
-        {
+        if (empty($title)) {
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
         }
 
         /* Is this a scheduled event or an all day event? */
-        if ($allDay)
-        {
+        if ($allDay) {
             $date = DateUtility::convert(
-                '-', $trimmedDate, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+                '-',
+                $trimmedDate,
+                DATE_FORMAT_MMDDYY,
+                DATE_FORMAT_YYYYMMDD
             );
 
             $hour = 12;
             $minute = 0;
             $meridiem = 'AM';
-        }
-        else
-        {
+        } else {
             /* Bail out if we don't have a valid hour. */
-            if (!isset($_POST['hour']))
-            {
+            if (! isset($_POST['hour'])) {
                 CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid hour.');
             }
 
             /* Bail out if we don't have a valid minute. */
-            if (!isset($_POST['minute']))
-            {
+            if (! isset($_POST['minute'])) {
                 CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid minute.');
             }
 
             /* Bail out if we don't have a valid meridiem value. */
-            if (!isset($_POST['meridiem']) ||
-                ($_POST['meridiem'] != 'AM' && $_POST['meridiem'] != 'PM'))
-            {
+            if (! isset($_POST['meridiem']) ||
+                ($_POST['meridiem'] != 'AM' && $_POST['meridiem'] != 'PM')) {
                 CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid meridiem value.');
             }
 
-            $hour     = $_POST['hour'];
-            $minute   = $_POST['minute'];
+            $hour = $_POST['hour'];
+            $minute = $_POST['minute'];
             $meridiem = $_POST['meridiem'];
 
             /* Convert formatted time to UNIX timestamp. */
@@ -450,7 +406,10 @@ class CalendarUI extends UserInterface
             $date = sprintf(
                 '%s %s',
                 DateUtility::convert(
-                    '-', $trimmedDate, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+                    '-',
+                    $trimmedDate,
+                    DATE_FORMAT_MMDDYY,
+                    DATE_FORMAT_YYYYMMDD
                 ),
                 date('H:i:00', $time)
             );
@@ -458,177 +417,169 @@ class CalendarUI extends UserInterface
 
         $timeZoneOffset = $_SESSION['CATS']->getTimeZoneOffset();
 
-        if (!eval(Hooks::get('CALENDAR_ADD_PRE'))) return;
+        if (! eval(Hooks::get('CALENDAR_ADD_PRE'))) {
+            return;
+        }
 
         $calendar = new Calendar($this->_siteID);
         $eventID = $calendar->addEvent(
-            $type, $date, $description, $allDay, $this->_userID, -1, -1, -1,
-            $title, $duration, $reminderEnabled, $reminderEmail, $reminderTime,
-            $publicEntry, $timeZoneOffset
+            $type,
+            $date,
+            $description,
+            $allDay,
+            $this->_userID,
+            -1,
+            -1,
+            -1,
+            $title,
+            $duration,
+            $reminderEnabled,
+            $reminderEmail,
+            $reminderTime,
+            $publicEntry,
+            $timeZoneOffset
         );
 
-        if ($eventID <= 0)
-        {
+        if ($eventID <= 0) {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add calendar event.');
         }
 
         /* Extract the date parts from the specified date. */
         $parsedDate = strtotime($date);
-        $day   = date('j', $parsedDate);
+        $day = date('j', $parsedDate);
         $month = date('n', $parsedDate);
-        $year  = date('Y', $parsedDate);
+        $year = date('Y', $parsedDate);
 
         /* Transfer to same url without a=addEvent. */
         $newGet = $_GET;
-        $newParams = array();
+        $newParams = [];
 
         unset($newGet['a']);
         $newGet['showEvent'] = $eventID;
 
-        foreach ($newGet AS $name => $value)
-        {
+        foreach ($newGet as $name => $value) {
             $newParams[] = urlencode($name) . '=' . urlencode($value);
         }
 
-        if (!eval(Hooks::get('CALENDAR_ADD_POST'))) return;
+        if (! eval(Hooks::get('CALENDAR_ADD_POST'))) {
+            return;
+        }
 
         CATSUtility::transferRelativeURI(implode('&', $newParams));
     }
-
 
     /*
      * Called by handleRequest() to process editing an event.
      */
     private function onEditEvent()
     {
-        if ($this->getUserAccessLevel('calendar.editEvent') < ACCESS_LEVEL_EDIT)
-        {
+        if ($this->getUserAccessLevel('calendar.editEvent') < ACCESS_LEVEL_EDIT) {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
 
         /* Bail out if we don't have a valid event ID. */
-        if (!$this->isRequiredIDValid('eventID', $_POST))
-        {
+        if (! $this->isRequiredIDValid('eventID', $_POST)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid event ID.');
         }
 
         // FIXME: typeID
         /* Bail out if we don't have a valid event type. */
-        if (!$this->isRequiredIDValid('type', $_POST))
-        {
+        if (! $this->isRequiredIDValid('type', $_POST)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid event type ID.');
         }
 
         /* If we don't have a valid event duration, set duration to 30. */
-        if (!$this->isOptionalIDValid('duration', $_POST))
-        {
+        if (! $this->isOptionalIDValid('duration', $_POST)) {
             $duration = 30;
-        }
-        else
-        {
+        } else {
             $duration = $_POST['duration'];
         }
 
         /* If we have a valid data item type / ID, associate it. */
         if ($this->isRequiredIDValid('dataItemID', $_POST) &&
-            $this->isRequiredIDValid('dataItemType', $_POST))
-        {
-            $dataItemID   = $_POST['dataItemID'];
+            $this->isRequiredIDValid('dataItemType', $_POST)) {
+            $dataItemID = $_POST['dataItemID'];
             $dataItemType = $_POST['dataItemType'];
-        }
-        else
-        {
-            $dataItemID   = 'NULL';
+        } else {
+            $dataItemID = 'NULL';
             $dataItemType = 'NULL';
         }
 
         /* If we have a valid job order ID, associate it. */
-        if ($this->isRequiredIDValid('jobOrderID', $_POST))
-        {
-            $jobOrderID   = $_POST['jobOrderID'];
-        }
-        else
-        {
-            $jobOrderID   = 'NULL';
+        if ($this->isRequiredIDValid('jobOrderID', $_POST)) {
+            $jobOrderID = $_POST['jobOrderID'];
+        } else {
+            $jobOrderID = 'NULL';
         }
 
         /* Bail out if we received an invalid date. */
         $trimmedDate = $this->getTrimmedInput('dateEdit', $_POST);
         if (empty($trimmedDate) ||
-            !DateUtility::validate('-', $trimmedDate, DATE_FORMAT_MMDDYY))
-        {
+            ! DateUtility::validate('-', $trimmedDate, DATE_FORMAT_MMDDYY)) {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid date.');
         }
 
         /* Bail out if we don't have a valid time format ID. */
-        if (!isset($_POST['allDay']) ||
-            ($_POST['allDay'] != '0' && $_POST['allDay'] != '1'))
-        {
+        if (! isset($_POST['allDay']) ||
+            ($_POST['allDay'] != '0' && $_POST['allDay'] != '1')) {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid time format ID.');
         }
 
-        $eventID  = $_POST['eventID'];
-        $type     = $_POST['type'];
+        $eventID = $_POST['eventID'];
+        $type = $_POST['type'];
 
-        if ($_POST['allDay'] == 1)
-        {
+        if ($_POST['allDay'] == 1) {
             $allDay = true;
-        }
-        else
-        {
+        } else {
             $allDay = false;
         }
 
-        $publicEntry     = $this->isChecked('publicEntry', $_POST);
+        $publicEntry = $this->isChecked('publicEntry', $_POST);
         $reminderEnabled = $this->isChecked('reminderToggle', $_POST);
 
-        $description   = $this->getSanitisedInput('description', $_POST);
-        $title         = $this->getSanitisedInput('title', $_POST);
+        $description = $this->getSanitisedInput('description', $_POST);
+        $title = $this->getSanitisedInput('title', $_POST);
         $reminderEmail = $this->getSanitisedInput('sendEmail', $_POST);
-        $reminderTime  = $this->getTrimmedInput('reminderTime', $_POST);
+        $reminderTime = $this->getTrimmedInput('reminderTime', $_POST);
 
         // FIXME: Reminder time must be an integer!
 
         /* Bail out if any of the required fields are empty. */
-        if (empty($title))
-        {
+        if (empty($title)) {
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
         }
 
         /* Is this a scheduled event or an all day event? */
-        if ($allDay)
-        {
+        if ($allDay) {
             $date = DateUtility::convert(
-                '-', $trimmedDate, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+                '-',
+                $trimmedDate,
+                DATE_FORMAT_MMDDYY,
+                DATE_FORMAT_YYYYMMDD
             );
 
             $hour = 12;
             $minute = 0;
             $meridiem = 'AM';
-        }
-        else
-        {
+        } else {
             /* Bail out if we don't have a valid hour. */
-            if (!isset($_POST['hour']))
-            {
+            if (! isset($_POST['hour'])) {
                 CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid hour.');
             }
 
             /* Bail out if we don't have a valid minute. */
-            if (!isset($_POST['minute']))
-            {
+            if (! isset($_POST['minute'])) {
                 CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid minute.');
             }
 
             /* Bail out if we don't have a valid meridiem value. */
-            if (!isset($_POST['meridiem']) ||
-                ($_POST['meridiem'] != 'AM' && $_POST['meridiem'] != 'PM'))
-            {
+            if (! isset($_POST['meridiem']) ||
+                ($_POST['meridiem'] != 'AM' && $_POST['meridiem'] != 'PM')) {
                 CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid meridiem value.');
             }
 
-            $hour     = $_POST['hour'];
-            $minute   = $_POST['minute'];
+            $hour = $_POST['hour'];
+            $minute = $_POST['minute'];
             $meridiem = $_POST['meridiem'];
 
             /* Convert formatted time to UNIX timestamp. */
@@ -640,41 +591,59 @@ class CalendarUI extends UserInterface
             $date = sprintf(
                 '%s %s',
                 DateUtility::convert(
-                    '-', $trimmedDate, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+                    '-',
+                    $trimmedDate,
+                    DATE_FORMAT_MMDDYY,
+                    DATE_FORMAT_YYYYMMDD
                 ),
                 date('H:i:00', $time)
             );
         }
 
-        if (!eval(Hooks::get('CALENDAR_EDIT_PRE'))) return;
+        if (! eval(Hooks::get('CALENDAR_EDIT_PRE'))) {
+            return;
+        }
 
         /* Update the event. */
         $calendar = new Calendar($this->_siteID);
-        if (!$calendar->updateEvent($eventID, $type, $date, $description,
-            $allDay, $dataItemID, $dataItemType, 'NULL', $title, $duration,
-            $reminderEnabled, $reminderEmail, $reminderTime, $publicEntry,
-            $_SESSION['CATS']->getTimeZoneOffset()))
-        {
+        if (! $calendar->updateEvent(
+            $eventID,
+            $type,
+            $date,
+            $description,
+            $allDay,
+            $dataItemID,
+            $dataItemType,
+            'NULL',
+            $title,
+            $duration,
+            $reminderEnabled,
+            $reminderEmail,
+            $reminderTime,
+            $publicEntry,
+            $_SESSION['CATS']->getTimeZoneOffset()
+        )) {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update calendar event.');
         }
 
-        if (!eval(Hooks::get('CALENDAR_EDIT_POST'))) return;
+        if (! eval(Hooks::get('CALENDAR_EDIT_POST'))) {
+            return;
+        }
 
         /* Extract the date parts from the specified date. */
         $parsedDate = strtotime($date);
-        $day   = date('j', $parsedDate);
+        $day = date('j', $parsedDate);
         $month = date('n', $parsedDate);
-        $year  = date('Y', $parsedDate);
+        $year = date('Y', $parsedDate);
 
         /* Transfer to same url without a=editEvent. */
         $newGet = $_GET;
-        $newParams = array();
+        $newParams = [];
 
         unset($newGet['a']);
         $newGet['showEvent'] = $eventID;
 
-        foreach ($newGet AS $name => $value)
-        {
+        foreach ($newGet as $name => $value) {
             $newParams[] = urlencode($name) . '=' . urlencode($value);
         }
 
@@ -686,36 +655,37 @@ class CalendarUI extends UserInterface
      */
     private function onDeleteEvent()
     {
-        if ($this->getUserAccessLevel('calendar.deleteEvent') < ACCESS_LEVEL_DELETE)
-        {
+        if ($this->getUserAccessLevel('calendar.deleteEvent') < ACCESS_LEVEL_DELETE) {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
 
         /* Bail out if we don't have a valid event ID. */
-        if (!$this->isRequiredIDValid('eventID', $_GET))
-        {
+        if (! $this->isRequiredIDValid('eventID', $_GET)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid event ID.');
         }
 
         $eventID = $_GET['eventID'];
 
-        if (!eval(Hooks::get('CALENDAR_DELETE_PRE'))) return;
+        if (! eval(Hooks::get('CALENDAR_DELETE_PRE'))) {
+            return;
+        }
 
         $calendar = new Calendar($this->_siteID);
         $calendar->deleteEvent($eventID);
 
-        if (!eval(Hooks::get('CALENDAR_DELETE_POST'))) return;
+        if (! eval(Hooks::get('CALENDAR_DELETE_POST'))) {
+            return;
+        }
 
         /* Transfer to same url without a=deleteEvent or eventID. */
         $newGet = $_GET;
-        $newParams = array();
+        $newParams = [];
 
         unset($newGet['a']);
         unset($newGet['eventID']);
 
-        foreach ($newGet AS $name => $value)
-        {
-            $newParams[] = urlencode($name).'='.urlencode($value);
+        foreach ($newGet as $name => $value) {
+            $newParams[] = urlencode($name) . '=' . urlencode($value);
         }
 
         CATSUtility::transferRelativeURI(implode('&', $newParams));
@@ -724,37 +694,22 @@ class CalendarUI extends UserInterface
     // TODO: Document me.
     private function _getReminderTimeString($reminderTime)
     {
-        if ($reminderTime < 1)
-        {
+        if ($reminderTime < 1) {
             $string = 'immediately';
-        }
-        else if ($reminderTime == 1)
-        {
+        } elseif ($reminderTime == 1) {
             $string = 'in 1 minute';
-        }
-        else if ($reminderTime < 60)
-        {
+        } elseif ($reminderTime < 60) {
             $string = 'in ' . $reminderTime . ' minutes';
-        }
-        else if ($reminderTime == 60)
-        {
+        } elseif ($reminderTime == 60) {
             $string = 'in 1 hour';
-        }
-        else if ($reminderTime < 1440)
-        {
+        } elseif ($reminderTime < 1440) {
             $string = 'in ' . (($reminderTime * 1.0) / 60) . ' hours';
-        }
-        else if ($reminderTime == 1440)
-        {
+        } elseif ($reminderTime == 1440) {
             $string = 'in 1 day';
-        }
-        else
-        {
+        } else {
             $string = 'in ' . (($reminderTime * 1.0) / 1440) . ' days';
         }
 
-    	return $string;
+        return $string;
     }
 }
-
-?>

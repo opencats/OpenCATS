@@ -54,8 +54,7 @@ class ToolbarUI extends UserInterface
 
         $action = $this->getAction();
 
-        switch ($action)
-        {
+        switch ($action) {
             case 'attemptLogin':
                 $this->attemptLogin();
                 break;
@@ -95,24 +94,25 @@ class ToolbarUI extends UserInterface
         $username = $this->getTrimmedInput('CATSUser', $_GET);
         $password = $this->getTrimmedInput('CATSPassword', $_GET);
 
-        if (!eval(Hooks::get('TOOLBAR_AUTHENTICATE_PRE'))) return;
+        if (! eval(Hooks::get('TOOLBAR_AUTHENTICATE_PRE'))) {
+            return;
+        }
 
-        if(!$_SESSION['CATS']->isLoggedIn())
-        {
+        if (! $_SESSION['CATS']->isLoggedIn()) {
             $_SESSION['CATS']->processLogin($username, $password);
         }
 
-        if (!eval(Hooks::get('TOOLBAR_AUTHENTICATE_POST'))) return;
+        if (! eval(Hooks::get('TOOLBAR_AUTHENTICATE_POST'))) {
+            return;
+        }
 
-        if (!$_SESSION['CATS']->isLoggedIn())
-        {
+        if (! $_SESSION['CATS']->isLoggedIn()) {
             //echo 'cats_authenticationFailed(); Message:You do not have permision to use the toolbar.';
-            echo 'cats_authenticationFailed(); Message:'.$_SESSION['CATS']->getLoginError();
+            echo 'cats_authenticationFailed(); Message:' . $_SESSION['CATS']->getLoginError();
             die();
         }
 
-        if (!LicenseUtility::isProfessional())
-        {
+        if (! LicenseUtility::isProfessional()) {
             echo 'cats_authenticationFailed(); Message:The FireFox toolbar extension '
                 . 'is only available to CATS Professional users. See catsone.com/Professional for '
                 . 'more information.';
@@ -124,15 +124,13 @@ class ToolbarUI extends UserInterface
 
     private function authenticate()
     {
-        if (!$this->_authenticate())
-        {
+        if (! $this->_authenticate()) {
             // FIXME: Do something here?
         }
 
         // FIXME: Make protocol less bandwidth-intensive.
         echo 'cats_connected = true';
-        if (isset($_GET['callback']))
-        {
+        if (isset($_GET['callback'])) {
             echo ' EVAL=', trim(htmlspecialchars($_GET['callback']));
         }
     }
@@ -143,7 +141,6 @@ class ToolbarUI extends UserInterface
         // FIXME:  Remove me after toolbar migration is finished.
         echo 99999;
     }
-
 
     private function getJavaScriptLibLegacy()
     {
@@ -157,13 +154,14 @@ class ToolbarUI extends UserInterface
 
     private function checkEmailIsInSystem()
     {
-        if (!eval(Hooks::get('TOOLBAR_CHECK_EMAIL'))) return;
+        if (! eval(Hooks::get('TOOLBAR_CHECK_EMAIL'))) {
+            return;
+        }
 
         $this->_authenticate();
 
         $email = htmlspecialchars($this->getTrimmedInput('email', $_GET));
-        if (empty($email))
-        {
+        if (empty($email)) {
             $this->fatal('No e-mail address.');
         }
 
@@ -171,12 +169,9 @@ class ToolbarUI extends UserInterface
 
         $candidates = new Candidates($this->_siteID);
         $candidateID = $candidates->getIDByEmail($email);
-        if ($candidateID < 0)
-        {
+        if ($candidateID < 0) {
             echo ':0';
-        }
-        else
-        {
+        } else {
             echo ':1';
         }
 
@@ -187,8 +182,7 @@ class ToolbarUI extends UserInterface
     {
         $this->_authenticate();
 
-        if (!isset($_POST['resumeText']))
-        {
+        if (! isset($_POST['resumeText'])) {
             $this->fatal('No resume.');
         }
 
@@ -199,8 +193,7 @@ class ToolbarUI extends UserInterface
          */
         $temporaryFile = FileUtility::makeRandomTemporaryFilePath() . '.html';
 
-        if (file_put_contents($temporaryFile, $resumeText) === false)
-        {
+        if (file_put_contents($temporaryFile, $resumeText) === false) {
             $this->fatal('Failed to save data for parsing.');
         }
 
@@ -209,14 +202,11 @@ class ToolbarUI extends UserInterface
         $documentType = $documentToText->getDocumentType($temporaryFile, 'text/html');
         $documentToText->convert($temporaryFile, $documentType);
 
-        if ($documentToText->isError())
-        {
+        if ($documentToText->isError()) {
             $this->_isTextExtractionError = true;
             $this->_textExtractionError = $documentToText->getError();
             $parsedText = '';
-        }
-        else
-        {
+        } else {
             $parsedText = $documentToText->getString();
         }
 
@@ -231,21 +221,18 @@ class ToolbarUI extends UserInterface
         $firstLine = 0;
         $lastLine = count($parsedTextArray) - 1;
 
-        foreach ($parsedTextArray as $line => $data)
-        {
+        foreach ($parsedTextArray as $line => $data) {
             /* Find first line */
             if ((strpos($data, 'RESUME') !== false || strpos($data, 'CV') !== false) &&
                 strpos($data, '^BACK_TO_TOP') !== false &&
-                $firstLine == 0)
-            {
+                $firstLine == 0) {
                 $firstLine = $line + 1;
             }
 
             /* Find last line */
             if (strpos($data, '^BACK_TO_TOP') !== false ||
                 strpos($data, 'Back_to_top') !== false ||
-                strpos($data, 'Back to top') !== false)
-            {
+                strpos($data, 'Back to top') !== false) {
                 $lastLine = $line - 1;
             }
 
@@ -254,8 +241,7 @@ class ToolbarUI extends UserInterface
              */
 
             /* Remove the back to top links from the resume to prevent indexing */
-            if (strpos($data, '^BACK_TO_TOP') !== false)
-            {
+            if (strpos($data, '^BACK_TO_TOP') !== false) {
                 $data = str_replace('^BACK TO TOP', '', $data);
             }
 
@@ -281,8 +267,6 @@ class ToolbarUI extends UserInterface
 
     public function getLicenseKey()
     {
-        echo (defined('LICENSE_KEY') ? LICENSE_KEY : '');
+        echo(defined('LICENSE_KEY') ? LICENSE_KEY : '');
     }
 }
-
-?>

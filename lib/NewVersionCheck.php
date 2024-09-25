@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -41,16 +40,18 @@ include_once(LEGACY_ROOT . '/lib/Users.php');
 class NewVersionCheck
 {
     /* Prevent this class from being instantiated. */
-    private function __construct() {}
-    private function __clone() {}
+    private function __construct()
+    {
+    }
 
+    private function __clone()
+    {
+    }
 
     /**
      * Checks remote server for a new version of CATS.  Also submits
      * usage information and license key for statistics tracking
      * purposes.
-     *
-     * @return void
      */
     public static function checkForUpdate()
     {
@@ -58,11 +59,9 @@ class NewVersionCheck
         $systemInfo = $systemInfoDb->getSystemInfo();
 
         /* Set a UID number if it does not exist. */
-        if ($systemInfo['uid'] == 0)
-        {
+        if ($systemInfo['uid'] == 0) {
             $randMax = mt_getrandmax();
-            if ($randMax >= 100000000)
-            {
+            if ($randMax >= 100000000) {
                 $randMax = 100000000;
             }
 
@@ -70,29 +69,24 @@ class NewVersionCheck
             $systemInfoDb->updateUID($systemInfo['uid']);
         }
 
-        if (!eval(Hooks::get('NEW_VERSION_CHECK_CHECK_FOR_UPDATE'))) return;
-
-        /* Bail if the user disabled new version checking. */
-        if ($systemInfo['disable_version_check'])
-        {
+        if (! eval(Hooks::get('NEW_VERSION_CHECK_CHECK_FOR_UPDATE'))) {
             return;
         }
 
-        if (isset($_SERVER['SERVER_SOFTWARE']))
-        {
-            $serverSoftware = $_SERVER['SERVER_SOFTWARE'];
+        /* Bail if the user disabled new version checking. */
+        if ($systemInfo['disable_version_check']) {
+            return;
         }
-        else
-        {
+
+        if (isset($_SERVER['SERVER_SOFTWARE'])) {
+            $serverSoftware = $_SERVER['SERVER_SOFTWARE'];
+        } else {
             $serverSoftware = '';
         }
 
-        if (isset($_SERVER['HTTP_USER_AGENT']))
-        {
+        if (isset($_SERVER['HTTP_USER_AGENT'])) {
             $userAgent = $_SERVER['HTTP_USER_AGENT'];
-        }
-        else
-        {
+        } else {
             $userAgent = '';
         }
 
@@ -102,39 +96,38 @@ class NewVersionCheck
 
         $users = new Users(1);
         $numberOfActiveUsers = $users->getUsageData();
-        
+
         $licenseKey = LICENSE_KEY;
 
         /* Build POST data. */
-        $postData  = 'CatsVersion='     . urlencode($catsVersion);
-        $postData .= '&CatsUID='        . urlencode($systemInfo['uid']);
-        $postData .= '&PHPVersion='     . urlencode(phpversion());
+        $postData = 'CatsVersion=' . urlencode($catsVersion);
+        $postData .= '&CatsUID=' . urlencode($systemInfo['uid']);
+        $postData .= '&PHPVersion=' . urlencode(phpversion());
         $postData .= '&ServerSoftware=' . urlencode($serverSoftware);
-        $postData .= '&UserAgent='      . urlencode($userAgent);
-        $postData .= '&SiteName='       . urlencode($siteName);
-        $postData .= '&activeUsers='    . urlencode($numberOfActiveUsers);
-        $postData .= '&licenseKey='     . urlencode($licenseKey);
- 
+        $postData .= '&UserAgent=' . urlencode($userAgent);
+        $postData .= '&SiteName=' . urlencode($siteName);
+        $postData .= '&activeUsers=' . urlencode($numberOfActiveUsers);
+        $postData .= '&licenseKey=' . urlencode($licenseKey);
+
         /* Hack for compatability with older CATS versions. */
         $postData .= '&CatsVersionAgain=' . urlencode($catsVersion);
 
         $theData = self::getDataFromServer(
-            'www.catsone.com', 80, '/catsnewversion.php', $postData
+            'www.catsone.com',
+            80,
+            '/catsnewversion.php',
+            $postData
         );
 
         /* Check to see if getting information failed, if it did reset the weekly counter */
-        if (strpos($theData, '(end of CATS version info)') == 0)
-        {
-            if (!empty($systemInfo['available_version']))
-            {
+        if (strpos($theData, '(end of CATS version info)') == 0) {
+            if (! empty($systemInfo['available_version'])) {
                 $systemInfoDb->updateRemoteVersion(
                     $systemInfo['available_version'],
                     $systemInfo['available_version_description'],
                     date('Y-m-d')
                 );
-            }
-            else
-            {
+            } else {
                 $systemInfoDb->updateRemoteVersion(
                     0,
                     $systemInfo['available_version_description'],
@@ -146,14 +139,16 @@ class NewVersionCheck
         }
 
         /* Strip down the data into $remoteVersion and $newVersionNotice. */
-        $temp             = substr($theData, strpos($theData, '{<') + 2);
+        $temp = substr($theData, strpos($theData, '{<') + 2);
         $newVersionNotice = substr($temp, strpos($temp, '{<') + 2);
-        $remoteVersion    = substr($newVersionNotice, strpos($newVersionNotice, '{<') + 2);
+        $remoteVersion = substr($newVersionNotice, strpos($newVersionNotice, '{<') + 2);
         $newVersionNotice = substr($newVersionNotice, 0, strpos($newVersionNotice, '>}'));
-        $remoteVersion    = substr($remoteVersion, 0, strpos($remoteVersion, '>}'));
+        $remoteVersion = substr($remoteVersion, 0, strpos($remoteVersion, '>}'));
 
         $systemInfoDb->updateRemoteVersion(
-            $remoteVersion, $newVersionNotice, date('Y-m-d')
+            $remoteVersion,
+            $newVersionNotice,
+            date('Y-m-d')
         );
     }
 
@@ -170,16 +165,14 @@ class NewVersionCheck
         /* Update daily. */
         $lastWeeksDate = time() - (SECONDS_IN_A_DAY);
         $lastCheck = strtotime($systemInfo['date_version_checked']);
-        if ($lastWeeksDate > $lastCheck)
-        {
+        if ($lastWeeksDate > $lastCheck) {
             self::checkForUpdate();
             /* Refresh the new information. */
             $systemInfo = $systemInfoDb->getSystemInfo();
         }
 
         /* Only display new version news if a new version is available. */
-        if ($systemInfo['available_version'] > CATSUtility::getVersionAsInteger())
-        {
+        if ($systemInfo['available_version'] > CATSUtility::getVersionAsInteger()) {
             return urldecode($systemInfo['available_version_description']);
         }
 
@@ -193,13 +186,11 @@ class NewVersionCheck
      * @param integer port number
      * @param string resource path
      * @param string GET data
-     * @return void
      */
     private static function getDataFromServer($host, $port, $path, $data)
     {
         $socket = @fsockopen($host, $port, $errorno, $errorstr, 5);
-        if ($socket === false)
-        {
+        if ($socket === false) {
             return false;
         }
 
@@ -213,8 +204,7 @@ class NewVersionCheck
 
         $buffer = '';
 
-        while (!feof($socket))
-        {
+        while (! feof($socket)) {
             $buffer .= fgets($socket, 128);
         }
 
@@ -223,5 +213,3 @@ class NewVersionCheck
         return $buffer;
     }
 }
-
-?>

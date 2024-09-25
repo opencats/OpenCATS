@@ -33,12 +33,12 @@
                                                 foreach($this->jobOrderFilters as $filter){
                                                     echo '<option value="'.$filter.'"';
                                                     if($this->dataGrid->getFilterValue('Status') == $filter){
-                                                        echo ' selected="selected"';
+                                                        echo ' selected';
                                                     }
                                                     echo ">".$filter."</option>";
                                                 }
                                             ?>
-                                            <option value=""<?php if ($this->dataGrid->getFilterValue('Status') == ''): ?> selected="selected"<?php endif; ?>>All</option>
+                                            <option value=""<?php if ($this->dataGrid->getFilterValue('Status') == ''): ?> selected<?php endif; ?>>All</option>
                                         </select>
                                     </td>
 

@@ -48,15 +48,14 @@ class ExportUI extends UserInterface
         $this->_moduleDirectory = 'export';
         $this->_moduleName = 'export';
         $this->_moduleTabText = '';
-        $this->_subTabs = array();
+        $this->_subTabs = [];
     }
 
     public function handleRequest()
     {
         $action = $this->getAction();
 
-        switch ($action)
-        {
+        switch ($action) {
             case 'exportByDataGrid':
                 $this->onExportByDataGrid();
                 break;
@@ -68,56 +67,46 @@ class ExportUI extends UserInterface
         }
     }
 
-
     /**
      * Sets up export options and exports items
-     *
-     * @return void
      */
     public function onExport()
     {
         $filename = 'export.csv';
 
         /* Bail out if we don't have a valid data item type. */
-        if (!$this->isRequiredIDValid('dataItemType', $_GET))
-        {
+        if (! $this->isRequiredIDValid('dataItemType', $_GET)) {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid data item type.');
         }
 
         $dataItemType = $_GET['dataItemType'];
 
         /* Are we in "Only Selected" mode? */
-        if ($this->isChecked('onlySelected', $_GET))
-        {
-            foreach ($_GET as $key => $value)
-            {
-                if (!strstr($key, 'checked_'))
-                {
+        if ($this->isChecked('onlySelected', $_GET)) {
+            foreach ($_GET as $key => $value) {
+                if (! strstr($key, 'checked_')) {
                     continue;
                 }
 
                 $IDs[] = str_replace('checked_', '', $key);
             }
-        }
-        else
-        {
+        } else {
             /* No; do we have a list of IDs to export (Page Mode)? */
             $tempIDs = $this->getTrimmedInput('ids', $_GET);
-            if (!empty($tempIDs))
-            {
+            if (! empty($tempIDs)) {
                 $IDs = explode(',', $tempIDs);
-            }
-            else
-            {
+            } else {
                 /* No; All Records Mode. */
-                $IDs = array();
+                $IDs = [];
             }
         }
 
         $export = new Export($dataItemType, $IDs, ',', $this->_siteID);
         $output = $export->getFormattedOutput();
 
-        if (!eval(Hooks::get('EXPORT'))) return;
+        if (! eval(Hooks::get('EXPORT'))) {
+            return;
+        }
 
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         header('Content-Length: ' . strlen($output));
@@ -128,13 +117,14 @@ class ExportUI extends UserInterface
 
     /**
      * Gets a datagrid and calls its drawCSV member function to output a CSV file.
-     *
-     * @return void
      */
-
     public function onExportByDataGrid()
     {
         $dataGrid = DataGrid::getFromRequest();
+
+        if ($dataGrid === null) {
+            $this->fatal('DataGrid is null in onExportByDataGrid. Request parameters: ' . print_r($_REQUEST, true));
+        }
 
         $dataGrid->drawCSV();
     }
@@ -144,12 +134,9 @@ class ExportUI extends UserInterface
      *
      * @param string error message
      * @param string module directory from which to load templates (optional)
-     * @return void
      */
     protected function fatal($error, $directoryOverride = '')
     {
         die("Fatal Error\n\n" . $error);
     }
 }
-
-?>

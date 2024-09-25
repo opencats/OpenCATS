@@ -124,7 +124,7 @@
                         <td class="tdData">
                             <select tabindex="3" id="departmentsSelect" name="departmentsSelect" class="inputbox" style="width: 150px;" onchange="if (this.value == 'edit') { listEditor('Departments', 'departmentsSelect', 'departmentsCSV'); } this.value = 'num';">
                                 <option value="edit">(Edit Departments)</option>
-                                <option value="num" selected="selected">No Departments</option>
+                                <option value="num" selected>No Departments</option>
                                 <option value="nullline">-------------------------------</option>
                             </select>
                             <input type="hidden" id="departmentsCSV" name="departmentsCSV" value="" />

@@ -1,175 +1,190 @@
 <?php
+
 namespace OpenCATS\Entity;
 
 class Company
 {
     private $siteId;
+
     private $name;
+
     private $address;
+
     private $city;
+
     private $state;
+
     private $zipCode;
+
     private $phoneNumberOne;
+
     private $phoneNumberTwo;
+
     private $faxNumber;
+
     private $url;
+
     private $keyTechnologies;
+
     private $isHot;
+
     private $notes;
+
     private $enteredBy;
+
     private $owner;
-    
-    function __construct($siteId, $name)
+
+    public function __construct($siteId, $name)
     {
         $this->siteId = $siteId;
         $this->name = $name;
     }
-    
-    function getSiteId()
+
+    public function getSiteId()
     {
         return $this->siteId;
     }
-    
-    function getName()
+
+    public function getName()
     {
         return $this->name;
     }
-    
-    function setAddress($value)
+
+    public function setAddress($value)
     {
         $this->address = $value;
     }
-    
-    function getAddress()
+
+    public function getAddress()
     {
         return $this->address;
     }
-    
-    function setCity($value)
+
+    public function setCity($value)
     {
         $this->city = $value;
     }
-    
-    function getCity()
+
+    public function getCity()
     {
         return $this->city;
     }
-    
-    function setState($value)
+
+    public function setState($value)
     {
         $this->state = $value;
     }
-    
-    function getState()
+
+    public function getState()
     {
         return $this->state;
     }
-    
-    function setZipCode($value)
+
+    public function setZipCode($value)
     {
         $this->zipCode = $value;
     }
-    
-    function getZipCode()
+
+    public function getZipCode()
     {
         return $this->zipCode;
     }
-    
-    function setPhoneNumberOne($value)
+
+    public function setPhoneNumberOne($value)
     {
         $this->phoneNumberOne = $value;
     }
-    
-    function getPhoneNumberOne()
+
+    public function getPhoneNumberOne()
     {
         return $this->phoneNumberOne;
     }
-    
-    function setPhoneNumberTwo($value)
+
+    public function setPhoneNumberTwo($value)
     {
         $this->phoneNumberTwo = $value;
     }
-    
-    function getPhoneNumberTwo()
+
+    public function getPhoneNumberTwo()
     {
         return $this->phoneNumberTwo;
     }
-    
-    function setFaxNumber($value)
+
+    public function setFaxNumber($value)
     {
         $this->faxNumber = $value;
     }
-    
-    function getFaxNumber()
+
+    public function getFaxNumber()
     {
         return $this->faxNumber;
     }
 
     // TODO: URL should be renamed to Website as URL is a technical but a business concept
-    function setUrl($value)
+    public function setUrl($value)
     {
         $this->url = $value;
     }
-    
-    function getUrl()
+
+    public function getUrl()
     {
         return $this->url;
     }
-    
-    function setKeyTechnologies($value)
+
+    public function setKeyTechnologies($value)
     {
         $this->keyTechnologies = $value;
     }
-    
-    function getKeyTechnologies()
+
+    public function getKeyTechnologies()
     {
         return $this->keyTechnologies;
     }
-    
-    function setIsHot($value)
+
+    public function setIsHot($value)
     {
         $this->isHot = $value;
     }
-    
-    function isHot()
+
+    public function isHot()
     {
         return $this->isHot;
     }
-    
-    function setNotes($value)
+
+    public function setNotes($value)
     {
         $this->notes = $value;
     }
-    
-    function getNotes()
+
+    public function getNotes()
     {
         return $this->notes;
     }
-    
+
     // TODO: Rename EnteredBy to EnteredByUser, to make it explicit that's
     // awaiting for a user id
-    function setEnteredBy($value)
+    public function setEnteredBy($value)
     {
         $this->enteredBy = $value;
     }
-    
-    function getEnteredBy()
+
+    public function getEnteredBy()
     {
         return $this->enteredBy;
     }
-    
+
     // TODO: Make explicit that the owner is a user
-    function setOwner($value)
+    public function setOwner($value)
     {
         $this->owner = $value;
     }
-    
-    function getOwner()
+
+    public function getOwner()
     {
         return $this->owner;
     }
-    
-    static function create(
+
+    public static function create(
         $siteId,
         $name,
         $address,
@@ -185,8 +200,7 @@ class Company
         $notes,
         $enteredBy,
         $owner
-    )
-    {
+    ) {
         $company = new Company($siteId, $name);
         $company->setAddress($address);
         $company->setCity($city);

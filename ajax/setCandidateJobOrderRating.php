@@ -32,21 +32,18 @@ include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 
 $interface = new SecureAJAXInterface();
 
-if ($_SESSION['CATS']->getAccessLevel('pipelines.editRating') < ACCESS_LEVEL_EDIT)
-{
+if ($_SESSION['CATS']->getAccessLevel('pipelines.editRating') < ACCESS_LEVEL_EDIT) {
     $interface->outputXMLErrorPage(-1, ERROR_NO_PERMISSION);
     die();
 }
 
-if (!$interface->isRequiredIDValid('candidateJobOrderID'))
-{
+if (! $interface->isRequiredIDValid('candidateJobOrderID')) {
     $interface->outputXMLErrorPage(-1, 'Invalid candidate-joborder ID.');
     die();
 }
 
-if (!$interface->isRequiredIDValid('rating', true, true) ||
-    $_REQUEST['rating'] < -6 || $_REQUEST['rating'] > 5)
-{
+if (! $interface->isRequiredIDValid('rating', true, true) ||
+    $_REQUEST['rating'] < -6 || $_REQUEST['rating'] > 5) {
     $interface->outputXMLErrorPage(-1, 'Invalid rating.');
     die();
 }
@@ -54,7 +51,7 @@ if (!$interface->isRequiredIDValid('rating', true, true) ||
 $siteID = $interface->getSiteID();
 
 $candidateJobOrderID = $_REQUEST['candidateJobOrderID'];
-$rating              = $_REQUEST['rating'];
+$rating = $_REQUEST['rating'];
 
 $pipelines = new Pipelines($siteID);
 $pipelines->updateRatingValue($candidateJobOrderID, $rating);
@@ -70,5 +67,3 @@ $output =
 
 /* Send back the XML data. */
 $interface->outputXMLPage($output);
-
-?>

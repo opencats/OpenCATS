@@ -38,20 +38,17 @@ function isRequiredValueValid($value)
     /* Return false if the key is empty, or if the key is zero and
      * zero-values are not allowed.
      */
-    if (empty($value) && ($value !== '0' || !$allowZero))
-    {
+    if (empty($value) && ($value !== '0' || ! $allowZero)) {
         return false;
     }
 
     /* -0 should not be allowed. */
-    if ($value === '-0')
-    {
+    if ($value === '-0') {
         return false;
     }
 
     /* Only allow digits. */
-    if (!ctype_digit($value))
-    {
+    if (! ctype_digit($value)) {
         return false;
     }
 
@@ -62,20 +59,17 @@ function isRequiredValueValid($value)
 
 $interface = new SecureAJAXInterface();
 
-if (!isset($_REQUEST['listsToAdd']))
-{
+if (! isset($_REQUEST['listsToAdd'])) {
     $interface->outputXMLErrorPage(-1, 'No listsToAdd passed.');
     die();
 }
 
-if (!isset($_REQUEST['itemsToAdd']))
-{
+if (! isset($_REQUEST['itemsToAdd'])) {
     $interface->outputXMLErrorPage(-1, 'No itemsToAdd passed.');
     die();
 }
 
-if (!$interface->isRequiredIDValid('dataItemType'))
-{
+if (! $interface->isRequiredIDValid('dataItemType')) {
     $interface->outputXMLErrorPage(-1, 'Invalid saved list type.');
     die();
 }
@@ -86,32 +80,22 @@ $listsToAdd = explode(',', $_REQUEST['listsToAdd']);
 $itemsToAdd = explode(',', $_REQUEST['itemsToAdd']);
 $dataItemType = $_REQUEST['dataItemType'];
 
-foreach ($listsToAdd as $index => $data)
-{
-    if ($data == '')
-    {
+foreach ($listsToAdd as $index => $data) {
+    if ($data == '') {
         unset($listsToAdd[$index]);
-    }
-    else
-    {
-        if (isRequiredValueValid($data) == false)
-        {
-            $interface->outputXMLErrorPage(-1, 'Invalid lists value. ('.$data.')');
+    } else {
+        if (isRequiredValueValid($data) == false) {
+            $interface->outputXMLErrorPage(-1, 'Invalid lists value. (' . $data . ')');
             die;
         }
     }
 }
 
-foreach ($itemsToAdd as $index => $data)
-{
-    if ($data == '')
-    {
+foreach ($itemsToAdd as $index => $data) {
+    if ($data == '') {
         unset($itemsToAdd[$index]);
-    }
-    else
-    {
-        if (isRequiredValueValid($data) == false)
-        {
+    } else {
+        if (isRequiredValueValid($data) == false) {
             $interface->outputXMLErrorPage(-1, 'Invalid items value.');
             die;
         }
@@ -121,21 +105,17 @@ foreach ($itemsToAdd as $index => $data)
 $savedLists = new SavedLists($siteID);
 
 /* Write changes. */
-foreach ($listsToAdd as $list)
-{
-    $itemsToAddTemp = array();
-    foreach ($itemsToAdd as $item)
-    {
+foreach ($listsToAdd as $list) {
+    $itemsToAddTemp = [];
+    foreach ($itemsToAdd as $item) {
         $itemsToAddTemp[] = $item;
         /* Because its too slow adding 1 item at a time, we do it in spurts of 200 items. */
-        if (count($itemsToAddTemp) > 200)
-        {
+        if (count($itemsToAddTemp) > 200) {
             $savedLists->addEntryMany($list, $dataItemType, $itemsToAddTemp);
-            $itemsToAddTemp = array();
+            $itemsToAddTemp = [];
         }
     }
-    if (count($itemsToAddTemp) > 0)
-    {
+    if (count($itemsToAddTemp) > 0) {
         $savedLists->addEntryMany($list, $dataItemType, $itemsToAddTemp);
     }
 }
@@ -147,5 +127,3 @@ $interface->outputXMLPage(
     "    <response>success</response>\n" .
     "</data>\n"
 );
-
-?>

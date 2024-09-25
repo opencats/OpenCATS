@@ -32,8 +32,7 @@ include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 
 $interface = new SecureAJAXInterface();
 
-if (!$interface->isRequiredIDValid('candidateJobOrderID', false))
-{
+if (! $interface->isRequiredIDValid('candidateJobOrderID', false)) {
     $interface->outputXMLErrorPage(-1, 'Invalid candidate-joborder ID.');
     die();
 }
@@ -46,43 +45,34 @@ $candidateJobOrderID = $_REQUEST['candidateJobOrderID'];
 $pipelines = new Pipelines($siteID);
 $pipelineActivitiesRS = $pipelines->getPipelineDetails($candidateJobOrderID);
 
-foreach ($pipelineActivitiesRS as $rowIndex => $row)
-{
-    if (empty($pipelineActivitiesRS[$rowIndex]['notes']))
-    {
+foreach ($pipelineActivitiesRS as $rowIndex => $row) {
+    if (empty($pipelineActivitiesRS[$rowIndex]['notes'])) {
         $pipelineActivitiesRS[$rowIndex]['notes'] = '(No Notes)';
     }
 }
 
 /* Output HTML. */
 echo '<div class="noteUnsizedSpan">Activity History:</div>',
-     '<table>';
+'<table>';
 
-if (empty($pipelineActivitiesRS))
-{
+if (empty($pipelineActivitiesRS)) {
     echo '<tr><td>No activity entries could be found.</td></tr>';
-}
-else
-{
-    foreach ($pipelineActivitiesRS as $activity)
-    {
-
+} else {
+    foreach ($pipelineActivitiesRS as $activity) {
         echo '<tr>';
         echo '<td style="padding-right: 6px; width: 160px;">',
-             $activity['dateModified'],
-             '</td>';
+        $activity['dateModified'],
+        '</td>';
         echo '<td style="padding-right: 6px; width: 125px">(',
-             $activity['enteredByFirstName'],
-             ' ',
-             $activity['enteredByLastName'],
-             ')</td>';
+        $activity['enteredByFirstName'],
+        ' ',
+        $activity['enteredByLastName'],
+        ')</td>';
         echo '<td style="padding-right: 6px; width: 625px;">',
-             $activity['notes'],
-             '<br /></td>';
+        $activity['notes'],
+        '<br /></td>';
         echo '</tr>';
     }
 }
 
 echo '</table>';
-
-?>

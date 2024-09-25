@@ -31,29 +31,26 @@ include_once('./config.php');
 include_once(LEGACY_ROOT . '/lib/InstallationTests.php');
 include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
 
-if( ini_get('safe_mode') )
-{
-	//don't do anything in safe mode
-}
-else
-{
-	/* limit the execution time to 300 secs. */
-	set_time_limit(300);
+if (ini_get('safe_mode')) {
+    //don't do anything in safe mode
+} else {
+    /* limit the execution time to 300 secs. */
+    set_time_limit(300);
 }
 @ini_set('memory_limit', '192M');
 
-if (file_exists('modules.cache')) @unlink('modules.cache');
+if (file_exists('modules.cache')) {
+    @unlink('modules.cache');
+}
 
-if (!isset($_REQUEST['a']) || empty($_REQUEST['a']))
-{
+if (! isset($_REQUEST['a']) || empty($_REQUEST['a'])) {
     die('Invalid action.');
 }
 
 $action = $_REQUEST['a'];
 
 /* Don't allow installation if ./INSTALL_BLOCK exists. */
-if (file_exists('INSTALL_BLOCK'))
-{
+if (file_exists('INSTALL_BLOCK')) {
     echo '
         <script type="text/javascript">
             setActiveStep(1);
@@ -62,8 +59,7 @@ if (file_exists('INSTALL_BLOCK'))
     die();
 }
 
-switch ($action)
-{
+switch ($action) {
     case 'startInstall':
         echo '
             <script type="text/javascript">
@@ -78,31 +74,21 @@ switch ($action)
         $warningsOccurred = false;
 
         echo '<br />',
-             '<span style="font-weight: bold;">Test Results</span>',
-             '<table class="test_output">';
+        '<span style="font-weight: bold;">Test Results</span>',
+        '<table class="test_output">';
 
 
         InstallationTests::runInstallerTests();
 
-        if (!$result)
-        {
-            if ($warningsOccurred)
-            {
+        if (! $result) {
+            if ($warningsOccurred) {
                 echo '<script type="text/javascript">showTextBlock(\'testFailedWarning\');</script>';
-
-            }
-            else
-            {
+            } else {
                 echo '<script type="text/javascript">showTextBlock(\'testFailed\');</script>';
             }
-        }
-        else if ($warningsOccurred)
-        {
+        } elseif ($warningsOccurred) {
             echo '<script type="text/javascript">showTextBlock(\'testWarning\');</script>';
-
-        }
-        else
-        {
+        } else {
             echo '<script type="text/javascript">showTextBlock(\'testPassed\');</script>';
         }
 
@@ -113,25 +99,20 @@ switch ($action)
         /* If $_REQUEST['user'] is set, we have been passed parameters to test
          * the connection.
          */
-        if (isset($_REQUEST['user']))
-        {
-            if (isset($_REQUEST['user']) && !empty($_REQUEST['user']))
-            {
+        if (isset($_REQUEST['user'])) {
+            if (isset($_REQUEST['user']) && ! empty($_REQUEST['user'])) {
                 CATSUtility::changeConfigSetting('DATABASE_USER', "'" . $_REQUEST['user'] . "'");
             }
 
-            if (isset($_REQUEST['pass']))
-            {
+            if (isset($_REQUEST['pass'])) {
                 CATSUtility::changeConfigSetting('DATABASE_PASS', "'" . $_REQUEST['pass'] . "'");
             }
 
-            if (isset($_REQUEST['host']) && !empty($_REQUEST['host']))
-            {
+            if (isset($_REQUEST['host']) && ! empty($_REQUEST['host'])) {
                 CATSUtility::changeConfigSetting('DATABASE_HOST', "'" . $_REQUEST['host'] . "'");
             }
 
-            if (isset($_REQUEST['name']) && !empty($_REQUEST['name']))
-            {
+            if (isset($_REQUEST['name']) && ! empty($_REQUEST['name'])) {
                 CATSUtility::changeConfigSetting('DATABASE_NAME', "'" . $_REQUEST['name'] . "'");
             }
 
@@ -160,17 +141,18 @@ switch ($action)
     case 'mailSettings':
         MySQLConnect();
 
-        if (MAIL_MAILER == 3 && MAIL_SMTP_AUTH == 1)
+        if (MAIL_MAILER == 3 && MAIL_SMTP_AUTH == 1) {
             $mailOption = '4';
-        else
+        } else {
             $mailOption = '';
+        }
 
         $mailFromAddress = '';
-        if (isset($tables['settings']))
-        {
+        if (isset($tables['settings'])) {
             $rs = MySQLQuery('SELECT value FROM settings WHERE setting = "fromAddress" LIMIT 1');
-            if (mysqli_num_rows($rs) > 0)
+            if (mysqli_num_rows($rs) > 0) {
                 $mailFromAddress = mysqli_fetch_row($rs);
+            }
         }
 
         echo '
@@ -198,8 +180,7 @@ switch ($action)
         $fromAddress = substr(trim($_REQUEST['mailFromAddress']), 0, 255);
 
         // validate e-mail address reply-to field
-        if(strlen($fromAddress) < 4)
-        {
+        if (strlen($fromAddress) < 4) {
             echo('
                 <script type="text/javascript">
                     setActiveStep(5);
@@ -211,21 +192,15 @@ switch ($action)
                 </script>
                 '
             );
-        }
-        else
-        {
-            if(strlen($mailSupportTxt) == 4)
-            {
+        } else {
+            if (strlen($mailSupportTxt) == 4) {
                 $mailSupport = intval(substr($mailSupportTxt, 3, 1));
             }
 
-            if ($mailSupport == 4)
-            {
+            if ($mailSupport == 4) {
                 CATSUtility::changeConfigSetting('MAIL_MAILER', '3');
                 CATSUtility::changeConfigSetting('MAIL_SMTP_AUTH', 'true');
-            }
-            else
-            {
+            } else {
                 CATSUtility::changeConfigSetting('MAIL_MAILER', sprintf('%d', $mailSupport));
                 CATSUtility::changeConfigSetting('MAIL_SMTP_AUTH', 'false');
             }
@@ -254,12 +229,9 @@ switch ($action)
 
         echo '<table class="test_output">';
 
-        if (InstallationTests::checkMySQL(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME))
-        {
+        if (InstallationTests::checkMySQL(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME)) {
             echo '<script type="text/javascript">showTextBlock(\'MySQLTestPassed\');</script>';
-        }
-        else
-        {
+        } else {
             echo '<script type="text/javascript">showTextBlock(\'MySQLTestFailed\');</script>';
         }
 
@@ -275,8 +247,7 @@ switch ($action)
     case 'resumeParsing':
         echo '<script type="text/javascript">setActiveStep(4);</script>';
 
-        if (ANTIWORD_PATH == '')
-        {
+        if (ANTIWORD_PATH == '') {
             echo '
                 <script type="text/javascript">
                     document.getElementById(\'docEnabled\').checked = false;
@@ -284,15 +255,12 @@ switch ($action)
                     document.getElementById(\'docExecutable\').value = \'\';
                     document.getElementById(\'docExecutableOrg\').value = \'\';
                 </script>';
-        }
-        else
-        {
+        } else {
             $antiwordWithSlashes = str_replace('\\', '\\\\', ANTIWORD_PATH);
 
-            include_once ('lib/SystemUtility.php');
+            include_once('lib/SystemUtility.php');
             /* Change Windows default command to UNIX default command hack. */
-            if (strpos(strtolower($antiwordWithSlashes), "c:\\") === 0 && !SystemUtility::isWindows())
-            {
+            if (strpos(strtolower($antiwordWithSlashes), "c:\\") === 0 && ! SystemUtility::isWindows()) {
                 $antiwordWithSlashes = '/usr/bin/antiword';
             }
 
@@ -305,8 +273,7 @@ switch ($action)
                 </script>';
         }
 
-        if (PDFTOTEXT_PATH == '')
-        {
+        if (PDFTOTEXT_PATH == '') {
             echo '
                 <script type="text/javascript">
                     document.getElementById(\'pdfEnabled\').checked = false;
@@ -314,15 +281,12 @@ switch ($action)
                     document.getElementById(\'pdfExecutable\').value = \'\';
                     document.getElementById(\'pdfExecutableOrg\').value = \'\';
                 </script>';
-        }
-        else
-        {
+        } else {
             $pdftotextWithSlashes = str_replace('\\', '\\\\', PDFTOTEXT_PATH);
 
-            include_once ('lib/SystemUtility.php');
+            include_once('lib/SystemUtility.php');
             /* Change Windows default command to UNIX default command hack. */
-            if (strpos(strtolower($pdftotextWithSlashes), "c:\\") === 0 && !SystemUtility::isWindows())
-            {
+            if (strpos(strtolower($pdftotextWithSlashes), "c:\\") === 0 && ! SystemUtility::isWindows()) {
                 $pdftotextWithSlashes = '/usr/bin/pdftotext';
             }
 
@@ -335,8 +299,7 @@ switch ($action)
                 </script>';
         }
 
-        if (HTML2TEXT_PATH == '')
-        {
+        if (HTML2TEXT_PATH == '') {
             echo '
                 <script type="text/javascript">
                     document.getElementById(\'htmlEnabled\').checked = false;
@@ -344,15 +307,12 @@ switch ($action)
                     document.getElementById(\'htmlExecutable\').value = \'\';
                     document.getElementById(\'htmlExecutableOrg\').value = \'\';
                 </script>';
-        }
-        else
-        {
+        } else {
             $html2textWithSlashes = str_replace('\\', '\\\\', HTML2TEXT_PATH);
 
-            include_once ('lib/SystemUtility.php');
+            include_once('lib/SystemUtility.php');
             /* Change Windows default command to UNIX default command hack. */
-            if (strpos(strtolower($html2textWithSlashes), "c:\\") === 0 && !SystemUtility::isWindows())
-            {
+            if (strpos(strtolower($html2textWithSlashes), "c:\\") === 0 && ! SystemUtility::isWindows()) {
                 $html2textWithSlashes = '/usr/bin/html2text';
             }
 
@@ -365,8 +325,7 @@ switch ($action)
                 </script>';
         }
 
-        if (UNRTF_PATH == '')
-        {
+        if (UNRTF_PATH == '') {
             echo '
                 <script type="text/javascript">
                     document.getElementById(\'rtfEnabled\').checked = false;
@@ -374,15 +333,12 @@ switch ($action)
                     document.getElementById(\'rtfExecutable\').value = \'\';
                     document.getElementById(\'rtfExecutableOrg\').value = \'\';
                 </script>';
-        }
-        else
-        {
+        } else {
             $unrtfWithSlashes = str_replace('\\', '\\\\', UNRTF_PATH);
 
-            include_once ('lib/SystemUtility.php');
+            include_once('lib/SystemUtility.php');
             /* Change Windows default command to UNIX default command hack. */
-            if (strpos(strtolower($unrtfWithSlashes), "c:\\") === 0 && !SystemUtility::isWindows())
-            {
+            if (strpos(strtolower($unrtfWithSlashes), "c:\\") === 0 && ! SystemUtility::isWindows()) {
                 $unrtfWithSlashes = '/usr/bin/unrtf';
             }
 
@@ -429,28 +385,22 @@ switch ($action)
         $result = true;
 
         echo '<br />',
-             '<span style="font-weight: bold;">Test Results</span>',
-             '<table class="test_output">';
+        '<span style="font-weight: bold;">Test Results</span>',
+        '<table class="test_output">';
 
-        $antiwordResults = !(ANTIWORD_PATH != '' && !InstallationTests::checkAntiword());
-        $pdftotextResults = !(PDFTOTEXT_PATH != '' && !InstallationTests::checkPdftotext());
-        $html2textResults = !(HTML2TEXT_PATH != '' && !InstallationTests::checkHtml2text());
-        if (UNRTF_PATH != '' && !$html2textResults)
-        {
+        $antiwordResults = ! (ANTIWORD_PATH != '' && ! InstallationTests::checkAntiword());
+        $pdftotextResults = ! (PDFTOTEXT_PATH != '' && ! InstallationTests::checkPdftotext());
+        $html2textResults = ! (HTML2TEXT_PATH != '' && ! InstallationTests::checkHtml2text());
+        if (UNRTF_PATH != '' && ! $html2textResults) {
             echo '<tr class="fail"><td>UnRTF depends on Html2Text and can not execute.</td></tr>';
             $unrtfResults = false;
-        }
-        else
-        {
-            $unrtfResults = !(UNRTF_PATH != '' && !InstallationTests::checkUnrtf());
+        } else {
+            $unrtfResults = ! (UNRTF_PATH != '' && ! InstallationTests::checkUnrtf());
         }
 
-        if (!$antiwordResults || !$pdftotextResults)
-        {
+        if (! $antiwordResults || ! $pdftotextResults) {
             echo '<script type="text/javascript">showTextBlock(\'testFailed\');</script>';
-        }
-        else
-        {
+        } else {
             echo '<script type="text/javascript">showTextBlock(\'testPassedParsing\');</script>';
         }
 
@@ -464,21 +414,15 @@ switch ($action)
 
         /* Detect date format preferences. */
         $rs = MySQLQuery('SELECT date_format_ddmmyy FROM site', true);
-        if ($rs)
-        {
+        if ($rs) {
             $record = mysqli_fetch_assoc($rs);
-        }
-        else
-        {
-            $record = array();
+        } else {
+            $record = [];
         }
 
-        if (!isset($record['date_format_ddmmyy']) || $record['date_format_ddmmyy'] == 0)
-        {
+        if (! isset($record['date_format_ddmmyy']) || $record['date_format_ddmmyy'] == 0) {
             echo 'document.getElementById(\'dateFormat\').value = \'mdy\';';
-        }
-        else
-        {
+        } else {
             echo 'document.getElementById(\'dateFormat\').value = \'dmy\';';
         }
 
@@ -486,11 +430,10 @@ switch ($action)
         echo 'showTextBlock(\'pickOptionalComponents\');';
         echo '</script>';
 
-        $onClick  = 'document.getElementById(\'pickOptionalComponents\').style.display = \'none\'; ';
+        $onClick = 'document.getElementById(\'pickOptionalComponents\').style.display = \'none\'; ';
         $onClick .= 'showTextBlock(\'installingComponentsExtra\'); ';
         $onClick .= 'Installpage_populate(\'a=setupOptional&list=';
-        foreach ($optionalComponents as $index => $component)
-        {
+        foreach ($optionalComponents as $index => $component) {
             $onClick .= htmlspecialchars($index) . ',\' + encodeURIComponent(getCheckedValue(document.getElementsByName(\'' . htmlspecialchars($index) . '\'))) + \',';
         }
         $onClick .= '&timeZone=\' + encodeURIComponent(document.getElementById(\'timeZone\').value) + \'&dateFormat=\' + encodeURIComponent(document.getElementById(\'dateFormat\').value) + \'\');';
@@ -498,8 +441,7 @@ switch ($action)
         echo '<script type="text/javascript">';
         echo 'var onClick = \'' . addslashes($onClick) . '\';';
         echo 'document.getElementById(\'extrasList\').innerHTML = \'<table style="width: 450px;"><tr><td style="font-weight: bold;">Feature Name</td><td style="width: 85px; font-weight: bold">Install</td><td style="width: 85px; font-weight: bold">Do Not Install</td></tr>';
-        foreach ($optionalComponents as $index => $component)
-        {
+        foreach ($optionalComponents as $index => $component) {
             echo '<tr>';
             echo '<td><a href="javascript:void(0);" onclick="function HTML' . htmlspecialchars($index) . '() { return \\\'<p style=\\\' + String.fromCharCode(34) + \\\'font-weight: bold; padding-left: 8px; padding-right: 8px;\\\' + String.fromCharCode(34) + \\\'>' . htmlspecialchars($component['name']) . '</p><p style=\\\' + String.fromCharCode(34) + \\\'padding-left: 8px; padding-right: 8px;\\\' + String.fromCharCode(34) + \\\'>' . htmlspecialchars($component['description']) . '</p>\\\'; } showPopWinHTML(HTML' . htmlspecialchars($index) . '(), 400, 100, null); return false;">' . htmlspecialchars($component['name']) . '</a>&nbsp;&nbsp;&nbsp;</td>';
             echo '<td><input type="radio" name="' . htmlspecialchars($index) . '" value="true"' . ($component['componentExists'] ? ' checked' : '') . '></td>';
@@ -530,24 +472,17 @@ switch ($action)
 
         $list = explode(',', $_REQUEST['list']);
 
-        for ($i = 0; $i < count($list); $i+=2)
-        {
-            if (!isset($list[$i+1]))
-            {
+        for ($i = 0; $i < count($list); $i += 2) {
+            if (! isset($list[$i + 1])) {
                 continue;
             }
 
-            if ($optionalComponents[$list[$i]]['componentExists'] == false)
-            {
-                if ($list[$i+1] == 'true')
-                {
+            if ($optionalComponents[$list[$i]]['componentExists'] == false) {
+                if ($list[$i + 1] == 'true') {
                     eval($optionalComponents[$list[$i]]['installCode']);
                 }
-            }
-            else
-            {
-                if ($list[$i+1] == 'false')
-                {
+            } else {
+                if ($list[$i + 1] == 'false') {
                     eval($optionalComponents[$list[$i]]['removeCode']);
                 }
             }
@@ -565,8 +500,7 @@ switch ($action)
 
         echo '<script type="text/javascript">setActiveStep(3);</script>';
 
-        if (count($tables) == 0)
-        {
+        if (count($tables) == 0) {
             echo '<script type="text/javascript">
                       showTextBlock(\'emptyDatabase\');
                       document.getElementById(\'emptyCheckBox\').checked = true;
@@ -575,11 +509,9 @@ switch ($action)
         }
 
         $rs = MySQLQuery('SELECT * FROM candidate', true);
-        $fields = array();
-        while ($meta = @mysqli_fetch_field($rs))
-        {
-            if ($meta)
-            {
+        $fields = [];
+        while ($meta = @mysqli_fetch_field($rs)) {
+            if ($meta) {
                 $fields[$meta->name] = true;
             }
         }
@@ -587,24 +519,15 @@ switch ($action)
         $catsVersion = '';
 
         /* Look for more versions here. */
-        if (!isset($fields['date_available']) && isset($tables['client']))
-        {
+        if (! isset($fields['date_available']) && isset($tables['client'])) {
             $catsVersion = 'CATS 0.5.0.';
-        }
-        else if (!isset($tables['candidate_joborder_status']) && isset($tables['client']))
-        {
+        } elseif (! isset($tables['candidate_joborder_status']) && isset($tables['client'])) {
             $catsVersion = 'CATS 0.5.1 or 0.5.2.';
-        }
-        else if (!isset($tables['candidate_foreign']) && isset($tables['client']))
-        {
+        } elseif (! isset($tables['candidate_foreign']) && isset($tables['client'])) {
             $catsVersion = 'CATS 0.5.5.';
-        }
-        else if (!isset($tables['history']) && isset($tables['client']))
-        {
+        } elseif (! isset($tables['history']) && isset($tables['client'])) {
             $catsVersion = 'CATS 0.6.x.';
-        }
-        else if (isset($tables['history']))
-        {
+        } elseif (isset($tables['history'])) {
             echo '
                 <script type="text/javascript">
                     showTextBlock(\'catsUpToDate\');
@@ -615,21 +538,17 @@ switch ($action)
             die();
         }
 
-        if ($catsVersion == '')
-        {
+        if ($catsVersion == '') {
             echo '
                 <script type="text/javascript">
                     showTextBlock(\'unknownDataInDatabase\');
                     document.getElementById(\'tableNamesUnknown\').innerHTML = \'\';
                 </script>';
 
-            foreach ($tables as $table => $data)
-            {
-                echo '<script type="text/javascript">document.getElementById(\'tableNamesUnknown\').innerHTML += \'' . htmlspecialchars($table ) . ', \';</script>';
+            foreach ($tables as $table => $data) {
+                echo '<script type="text/javascript">document.getElementById(\'tableNamesUnknown\').innerHTML += \'' . htmlspecialchars($table) . ', \';</script>';
             }
-        }
-        else
-        {
+        } else {
             echo '
                 <script type="text/javascript">
                     showTextBlock(\'databaseUpgrade\');
@@ -645,17 +564,13 @@ switch ($action)
     case 'resetDatabase':
         MySQLConnect();
 
-        foreach ($tables as $table => $data)
-        {
+        foreach ($tables as $table => $data) {
             $queryResult = MySQLQuery(sprintf("DROP TABLE %s", $table));
         }
 
-        if(!isset($_REQUEST['type']))
-        {
+        if (! isset($_REQUEST['type'])) {
             echo '<script type="text/javascript">Installpage_populate(\'a=detectRevision\');</script>';
-        }
-        else
-        {
+        } else {
             echo '<script type="text/javascript">Installpage_populate(\'a=selectDBType&type=' . urlencode($_REQUEST['type']) . '\');</script>';
         }
         break;
@@ -663,8 +578,7 @@ switch ($action)
     case 'selectDBType':
         $type = $_REQUEST['type'];
 
-        switch ($type)
-        {
+        switch ($type) {
             case 'empty':
                 echo '<script type="text/javascript">
                           showTextBlock(\'installingComponents\');
@@ -706,42 +620,36 @@ switch ($action)
             }
         */
 
-        if (!$extractor->open())
-        {
+        if (! $extractor->open()) {
             echo($extractor->getErrorMessage());
         }
 
         $metaData = $extractor->getMetaData();
 
-        foreach ($metaData['centralDirectory'] as $index => $data)
-        {
+        foreach ($metaData['centralDirectory'] as $index => $data) {
             $fileName = $data['filename'];
 
             /* Execute all sql files */
-            if (strpos($fileName, 'db/catsbackup.sql.') === 0)
-            {
+            if (strpos($fileName, 'db/catsbackup.sql.') === 0) {
                 $fileContents = $extractor->getFile($index);
                 MySQLQueryMultiple($fileContents, '((ENDOFQUERY))');
             }
             /* Extract everything else but ./database */
-            else if ($fileName != 'database')
-            {
-                if (strpos($fileName, '/') !== false)
-                {
+            elseif ($fileName != 'database') {
+                if (strpos($fileName, '/') !== false) {
                     $directorySplit = explode('/', $fileName);
-                    unset($directorySplit[count($directorySplit)-1]);
+                    unset($directorySplit[count($directorySplit) - 1]);
                     $directory = implode('/', $directorySplit);
                     @mkdir($directory, 0777, true);
                 }
 
                 $fileContents = $extractor->getFile($index);
 
-                if ($fileContents === false)
-                {
+                if ($fileContents === false) {
                     /* Report error? */
                 }
 
-                file_put_contents ($fileName, $fileContents);
+                file_put_contents($fileName, $fileContents);
             }
         }
 
@@ -761,15 +669,13 @@ switch ($action)
         MySQLQueryMultiple($schema, ";\n");
 
         //Check if we need to update from 0.6.0 to 0.7.0
-        $tables = array();
+        $tables = [];
         $result = MySQLQuery(sprintf("SHOW TABLES FROM `%s`", DATABASE_NAME));
-        while ($row = mysqli_fetch_array($result, MYSQLI_NUM))
-        {
+        while ($row = mysqli_fetch_array($result, MYSQLI_NUM)) {
             $tables[$row[0]] = true;
         }
 
-        if (!isset($tables['history']))
-        {
+        if (! isset($tables['history'])) {
             // FIXME: File exists?!
             $schema = file_get_contents('db/upgrade-0.6.x-0.7.0.sql');
             MySQLQueryMultiple($schema);
@@ -796,42 +702,36 @@ switch ($action)
             }
         */
 
-        if (!$extractor->open())
-        {
+        if (! $extractor->open()) {
             echo($extractor->getErrorMessage());
         }
 
         $metaData = $extractor->getMetaData();
 
-        foreach ($metaData['centralDirectory'] as $index => $data)
-        {
+        foreach ($metaData['centralDirectory'] as $index => $data) {
             $fileName = $data['filename'];
 
             /* Execute all sql files */
-            if (strpos($fileName, 'db/catsbackup.sql.') === 0)
-            {
+            if (strpos($fileName, 'db/catsbackup.sql.') === 0) {
                 $fileContents = $extractor->getFile($index);
                 MySQLQueryMultiple($fileContents, '((ENDOFQUERY))');
             }
             /* Extract everything else but ./database */
-            else if ($fileName != 'database')
-            {
-                if (strpos($fileName, '/') !== false)
-                {
+            elseif ($fileName != 'database') {
+                if (strpos($fileName, '/') !== false) {
                     $directorySplit = explode('/', $fileName);
-                    unset($directorySplit[count($directorySplit)-1]);
+                    unset($directorySplit[count($directorySplit) - 1]);
                     $directory = implode('/', $directorySplit);
                     @mkdir($directory, 0777, true);
                 }
 
                 $fileContents = $extractor->getFile($index);
 
-                if ($fileContents === false)
-                {
+                if ($fileContents === false) {
                     /* Report error? */
                 }
 
-                file_put_contents ($fileName, $fileContents);
+                file_put_contents($fileName, $fileContents);
             }
         }
 
@@ -846,8 +746,7 @@ switch ($action)
         MySQLConnect();
 
         /* This shouldn't be possible - there is no option to upgrade CATS if no tables are in the database. */
-        if (count($tables) == 0)
-        {
+        if (count($tables) == 0) {
             echo 'Error - no schema present.<br /><br /> ';
             echo '<input type="button" class="button" value="Retry Installation" onclick="Installpage_populate(\'a=detectConnectivity\', \'subFormBlock\', \'Checking database connectivity...\');">&nbsp;&nbsp;&nbsp;';
             die();
@@ -855,70 +754,53 @@ switch ($action)
 
         $revision = 0;
         $rs = MySQLQuery('SELECT * FROM candidate', true);
-        $fields = array();
-        while ($meta = mysqli_fetch_field($rs))
-        {
+        $fields = [];
+        while ($meta = mysqli_fetch_field($rs)) {
             $fields[$meta->name] = true;
         }
 
         /* Look for more versions here. */
-        if (!isset($fields['date_available']))
-        {
+        if (! isset($fields['date_available'])) {
             /* 0.5.0 */
             $revision = 50;
-        }
-        else if (!isset($tables['candidate_joborder_status']))
-        {
+        } elseif (! isset($tables['candidate_joborder_status'])) {
             /* 0.5.2 */
             $revision = 52;
-        }
-        else if (!isset($tables['candidate_foreign']) && !isset($tables['extra_field']))
-        {
+        } elseif (! isset($tables['candidate_foreign']) && ! isset($tables['extra_field'])) {
             /* 0.5.5 */
             $revision = 55;
-        }
-        else if (!isset($tables['history']))
-        {
+        } elseif (! isset($tables['history'])) {
             /* 0.6.0 */
             $revision = 60;
-        }
-        else if (!isset($tables['candidate_duplicates']))
-        {
+        } elseif (! isset($tables['candidate_duplicates'])) {
             /* 0.9.4 */
             $revision = 94;
-        }
-        else if (isset($tables['candidate_duplicates']))
-        {
+        } elseif (isset($tables['candidate_duplicates'])) {
             /* 0.9.5 */
             $revision = 95;
         }
 
-        if ($revision <= 50)
-        {
+        if ($revision <= 50) {
             // FIXME: File exists?!
             $schema = file_get_contents('db/upgrade-0.5.0-0.5.1.sql');
             MySQLQueryMultiple($schema);
         }
-        if ($revision <= 52)
-        {
+        if ($revision <= 52) {
             // FIXME: File exists?!
             $schema = file_get_contents('db/upgrade-0.5.2-0.5.5.sql');
             MySQLQueryMultiple($schema);
         }
-        if ($revision <= 55)
-        {
+        if ($revision <= 55) {
             // FIXME: File exists?!
             $schema = file_get_contents('db/upgrade-0.5.5-0.6.x.sql');
             MySQLQueryMultiple($schema);
         }
-        if ($revision <= 60)
-        {
+        if ($revision <= 60) {
             // FIXME: File exists?!
             $schema = file_get_contents('db/upgrade-0.6.x-0.7.0.sql');
             MySQLQueryMultiple($schema);
         }
-        if ($revision <= 94)
-        {
+        if ($revision <= 94) {
             // FIXME: File exists?!
             $schema = file_get_contents('db/upgrade-0.9.4-0.9.5.sql');
             MySQLQueryMultiple($schema);
@@ -935,13 +817,11 @@ switch ($action)
         @session_name(CATS_SESSION_NAME);
         session_start();
 
-        if (isset($_SESSION['CATS']))
-        {
+        if (isset($_SESSION['CATS'])) {
             unset($_SESSION['CATS']);
         }
 
-        if (isset($_SESSION['modules']))
-        {
+        if (isset($_SESSION['modules'])) {
             unset($_SESSION['modules']);
         }
 
@@ -985,8 +865,7 @@ switch ($action)
         // If this is an existing database, just set all the fromAddress settings to new
         MySQLQuery(sprintf('UPDATE settings SET value = "%s" WHERE setting = "fromAddress"', $fromAddress));
         // This is a new install, insert a settings value for each site in the database
-        if(mysqli_affected_rows($mySQLConnection) == 0)
-        {
+        if (mysqli_affected_rows($mySQLConnection) == 0) {
             // Insert a "fromAddress" = $fromAddress for each site
             MySQLQuery(sprintf(
                 'INSERT INTO settings (setting, value, site_id, settings_type) '
@@ -1006,12 +885,9 @@ switch ($action)
 
         $dateFormat = $_SESSION['dateFormatInstaller'];
 
-        if ($dateFormat == 'mdy')
-        {
+        if ($dateFormat == 'mdy') {
             MySQLQuery('UPDATE site SET date_format_ddmmyy = 0');
-        }
-        else
-        {
+        } else {
             MySQLQuery('UPDATE site SET date_format_ddmmyy = 1');
         }
 
@@ -1019,24 +895,19 @@ switch ($action)
 
         MySQLQuery(sprintf("UPDATE site SET time_zone = %s", $timeZone));
 
-        if (isset($_SESSION['CATS']))
-        {
+        if (isset($_SESSION['CATS'])) {
             unset($_SESSION['CATS']);
         }
 
-        if (isset($_SESSION['modules']))
-        {
+        if (isset($_SESSION['modules'])) {
             unset($_SESSION['modules']);
         }
 
         echo '<script type="text/javascript">setActiveStep(7);</script>';
 
-        if (ENABLE_DEMO_MODE)
-        {
+        if (ENABLE_DEMO_MODE) {
             echo '<script type="text/javascript">showTextBlock("installCompleteDemo");</script>';
-        }
-        else
-        {
+        } else {
             echo '<script type="text/javascript">showTextBlock("installCompleteProd");</script>';
         }
         break;
@@ -1046,13 +917,10 @@ switch ($action)
 
         /* Determine if a default user is set. */
         $rs = MySQLQuery("SELECT * FROM user WHERE user_name = 'admin' AND password = 'cats'");
-        if ($rs && mysqli_fetch_row($rs))
-        {
+        if ($rs && mysqli_fetch_row($rs)) {
             //Default user set
             echo '<script type="text/javascript">document.location.href="index.php?defaultlogin=true";</script>';
-        }
-        else
-        {
+        } else {
             echo '<script type="text/javascript">document.location.href="index.php";</script>';
         }
         break;
@@ -1067,13 +935,14 @@ function MySQLConnect()
     global $tables, $mySQLConnection;
 
     $mySQLConnection = @mysqli_connect(
-        DATABASE_HOST, DATABASE_USER, DATABASE_PASS
+        DATABASE_HOST,
+        DATABASE_USER,
+        DATABASE_PASS
     );
 
-    if (!$mySQLConnection)
-    {
-				$error = "errno: " . mysqli_connect_errno() . ", ";
-				$error .= "error: " . mysqli_connect_error();
+    if (! $mySQLConnection) {
+        $error = "errno: " . mysqli_connect_errno() . ", ";
+        $error .= "error: " . mysqli_connect_error();
 
         die(
             '<p style="background: #ec3737; padding: 4px; margin-top: 0; font:'
@@ -1085,19 +954,17 @@ function MySQLConnect()
 
 
     /* Create an array of all tables in the database. */
-    $tables = array();
+    $tables = [];
     $result = MySQLQuery(sprintf("SHOW TABLES FROM `%s`", DATABASE_NAME));
-    while ($row = mysqli_fetch_row($result))
-    {
+    while ($row = mysqli_fetch_row($result)) {
         $tables[$row[0]] = true;
     }
 
     /* Select CATS database. */
     $isDBSelected = @mysqli_select_db($mySQLConnection, DATABASE_NAME);
-    if (!$isDBSelected)
-    {
-				$error = "errno: " . mysqli_connect_errno() . ", ";
-				$error .= "error: " . mysqli_connect_error();
+    if (! $isDBSelected) {
+        $error = "errno: " . mysqli_connect_errno() . ", ";
+        $error .= "error: " . mysqli_connect_error();
 
         die(
             '<p style="background: #ec3737; padding: 4px; margin-top: 0; font:'
@@ -1114,12 +981,11 @@ function MySQLQuery($query, $ignoreErrors = false)
 
     $queryResult = mysqli_query($mySQLConnection, $query);
 
-    if (!$mySQLConnection)
-    {
-		$error = "errno: " . mysqli_connect_errno() . ", ";
-		$error .= "error: " . mysqli_connect_error();
+    if (! $mySQLConnection) {
+        $error = "errno: " . mysqli_connect_errno() . ", ";
+        $error .= "error: " . mysqli_connect_error();
 
-        die (
+        die(
             '<p style="background: #ec3737; padding: 4px; margin-top: 0; font:'
             . ' normal normal bold 12px/130% Arial, Tahoma, sans-serif;">Query'
             . " Error -- Please Report This Bug!</p><pre>\n\nMySQL Query "
@@ -1135,12 +1001,10 @@ function MySQLQueryMultiple($SQLData, $delimiter = ';')
 {
     $SQLStatments = explode($delimiter, $SQLData);
 
-    foreach ($SQLStatments as $SQL)
-    {
+    foreach ($SQLStatments as $SQL) {
         $SQL = trim($SQL);
 
-        if (empty($SQL))
-        {
+        if (empty($SQL)) {
             continue;
         }
 
@@ -1155,17 +1019,11 @@ function initializeOptionalComponents()
     //Detect which components are installed and which ones are not
     include_once(LEGACY_ROOT . '/modules/install/OptionalComponents.php');
 
-    foreach ($optionalComponents as $index => $data)
-    {
-        if (isset($data['detectCode']))
-        {
+    foreach ($optionalComponents as $index => $data) {
+        if (isset($data['detectCode'])) {
             $optionalComponents[$index]['componentExists'] = eval($data['detectCode']);
-        }
-        else
-        {
+        } else {
             $optionalComponents[$index]['componentExists'] = false;
         }
     }
 }
-
-?>

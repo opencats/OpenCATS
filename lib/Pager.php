@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -38,17 +37,26 @@
 class Pager
 {
     protected $_totalPages = 1;
-    protected $_thisPageStartRow = 0;
-    protected $_rowsPerPage = 15;
-    protected $_currentPage = 1;
-    protected $_totalRows;
-    protected $_navigationData;
-    protected $_sortByFields = array();
-    protected $_baseURL = '';
-    protected $_sortBy = '';
-    protected $_sortDirection = '';
-    protected $_cachedNavigation = null;
 
+    protected $_thisPageStartRow = 0;
+
+    protected $_rowsPerPage = 15;
+
+    protected $_currentPage = 1;
+
+    protected $_totalRows;
+
+    protected $_navigationData;
+
+    protected $_sortByFields = [];
+
+    protected $_baseURL = '';
+
+    protected $_sortBy = '';
+
+    protected $_sortDirection = '';
+
+    protected $_cachedNavigation = null;
 
     public function __construct($totalRows, $rowsPerPage, $currentPage)
     {
@@ -60,24 +68,18 @@ class Pager
         $this->_totalPages = ceil($totalRows / $rowsPerPage);
 
         /* We must have at least one page. */
-        if ($this->_totalPages < 1)
-        {
+        if ($this->_totalPages < 1) {
             $this->_totalPages = 1;
         }
 
         /* The current page must always be greater than zero and no greater
          * than the total number of pages.
          */
-        if ($currentPage < 1)
-        {
+        if ($currentPage < 1) {
             $this->_currentPage = 1;
-        }
-        else if ($currentPage > $this->_totalPages)
-        {
+        } elseif ($currentPage > $this->_totalPages) {
             $this->_currentPage = $this->_totalPages;
-        }
-        else
-        {
+        } else {
             $this->_currentPage = $currentPage;
         }
 
@@ -88,19 +90,17 @@ class Pager
         $this->_thisPageStartRow = (($this->_currentPage - 1) * $this->_rowsPerPage);
     }
 
-
     /**
      * Sets parameters for generating sorting links on sortable pagertables.
      *
      * @param string base URL
      * @param string sort-by database field
      * @param string sort direction (ASC or DESC)
-     * @return void
      */
     public function setSortByParameters($baseURL, $sortBy, $sortDirection)
     {
-        $this->_baseURL       = $baseURL;
-        $this->_sortBy        = $sortBy;
+        $this->_baseURL = $baseURL;
+        $this->_sortBy = $sortBy;
         $this->_sortDirection = $sortDirection;
     }
 
@@ -169,14 +169,12 @@ class Pager
      * or 'DESC' in $request.
      *
      * @param string request key
-     * @param array $_GET, $_POST, or $_REQUEST
      * @return boolean is sort-direction valid
      */
     public function isSortDirectionValid($key, $request)
     {
-        if (isset($request[$key]) && !empty($request[$key]) &&
-            ($request[$key] === 'ASC' || $request[$key] === 'DESC'))
-        {
+        if (isset($request[$key]) && ! empty($request[$key]) &&
+            ($request[$key] === 'ASC' || $request[$key] === 'DESC')) {
             return true;
         }
 
@@ -188,14 +186,12 @@ class Pager
      * in the valid keys array.
      *
      * @param string request key
-     * @param array $_GET, $_POST, or $_REQUEST
      * @return boolean is sort-by valid
      */
     public function isSortByValid($key, $request)
     {
-        if (isset($request[$key]) && !empty($request[$key]) &&
-            in_array($request[$key], $this->_sortByFields))
-        {
+        if (isset($request[$key]) && ! empty($request[$key]) &&
+            in_array($request[$key], $this->_sortByFields)) {
             return true;
         }
 
@@ -207,32 +203,23 @@ class Pager
      *
      * @param string database field
      * @param string link text
-     * @return void
      */
     public function printSortLink($headerField, $headerText)
     {
         /* If this field is not the current sort-by field, or if it is and the
          * current sort direction is DESC, the link will use ASC sort order.
          */
-        if ($this->_sortBy !== $headerField || $this->_sortDirection === 'DESC')
-        {
+        if ($this->_sortBy !== $headerField || $this->_sortDirection === 'DESC') {
             $sortDirection = 'ASC';
-        }
-        else
-        {
+        } else {
             $sortDirection = 'DESC';
         }
 
-        if ($this->_sortBy == $headerField && $this->_sortDirection === 'ASC')
-        {
+        if ($this->_sortBy == $headerField && $this->_sortDirection === 'ASC') {
             $sortImage = '&nbsp;<img src="images/downward.gif" style="border: none;" alt="" />';
-        }
-        else if ($this->_sortBy == $headerField && $this->_sortDirection === 'DESC')
-        {
+        } elseif ($this->_sortBy == $headerField && $this->_sortDirection === 'DESC') {
             $sortImage = '&nbsp;<img src="images/upward.gif" style="border: none;" alt="" />';
-        }
-        else
-        {
+        } else {
             $sortImage = '&nbsp;<img src="images/nosort.gif" style="border: none;" alt="" />';
         }
 
@@ -248,11 +235,8 @@ class Pager
         );
     }
 
-
     /**
      * Prints pager navigation HTML.
-     *
-     * @return void
      */
     public function printNavigation($defaultSortBy = '', $drawAlpha2 = true, $maxPagesSetting = -1)
     {
@@ -262,49 +246,41 @@ class Pager
         $ID++;
 
         /* Don't show pager navigation if there is only one page. */
-        if ($this->_totalPages <= 1)
-        {
+        if ($this->_totalPages <= 1) {
             return;
         }
 
-        $valid = array(
-            'name', 'city', 'state', 'clientName', 'title', 'firstName', 'lastName'
-        );
+        $valid = [
+            'name', 'city', 'state', 'clientName', 'title', 'firstName', 'lastName',
+        ];
 
-        
+
         /* Try to get default column data if not on an alpha column. */
-        if ($defaultSortBy != '' && (method_exists($this, 'getNavigation') || method_exists($this, '_getNavigation')))
-        {
+        if ($defaultSortBy != '' && (method_exists($this, 'getNavigation') || method_exists($this, '_getNavigation'))) {
             $sortBy = $defaultSortBy;
             $sortDirection = 'ASC';
 
-            if (method_exists($this, '_getNavigation'))
-            {
+            if (method_exists($this, '_getNavigation')) {
                 $this->_cachedNavigation = $this->_getNavigation($sortBy, $sortDirection);
-            }
-            else
-            {
+            } else {
                 $this->_cachedNavigation = $this->getNavigation($sortBy, $sortDirection);
             }
 
             $rsNavAlpha = $this->_cachedNavigation;
             $drawAlpha = true;
-        }
-        else
-        {
+        } else {
             $drawAlpha = false;
             $sortBy = '';
         }
 
         $rsNav = null;
-            
+
         $indexName = CATSUtility::getIndexName();
 
         /* If there is a previous page, show "<< Previous" as a link; otherwise
          * just as text.
          */
-        if ($this->_currentPage != 1)
-        {
+        if ($this->_currentPage != 1) {
             echo sprintf(
                 '<a class="pagerPrevNext" href="%s?%s&amp;page=%s&amp;sortBy=%s&amp;sortDirection=%s">&lt;&lt; Previous</a>%s',
                 $indexName,
@@ -314,9 +290,7 @@ class Pager
                 $this->_sortDirection,
                 "\n"
             );
-        }
-        else
-        {
+        } else {
             echo '<span class="pagerPrevNext">&lt;&lt; Previous</span>', "\n";
         }
 
@@ -334,55 +308,50 @@ class Pager
         /* Selection drop down menu. */
         echo sprintf(
             '<select id="pageSelection%s" style="width: 95px;" onChange="%s" class="selectBox">%s',
-            $ID, $javaScript, "\n"
+            $ID,
+            $javaScript,
+            "\n"
         );
 
         /* Generate the <option> tags. */
-        for ($i = 1; $i <= $this->_totalPages; ++$i)
-        {
-            if ($maxPagesSetting != -1 && $i > $maxPagesSetting)
-            {
+        for ($i = 1; $i <= $this->_totalPages; ++$i) {
+            if ($maxPagesSetting != -1 && $i > $maxPagesSetting) {
                 break;
             }
 
             $navText = '';
 
             /* Try to generate helper range data for drop down. */
-            if ($rsNav != null && isset($rsNav[($i * 2) - 2]) && isset($rsNav[($i * 2) - 1]))
-            {
-                $navLeftData  = $rsNav[($i * 2) - 2];
+            if ($rsNav != null && isset($rsNav[($i * 2) - 2]) && isset($rsNav[($i * 2) - 1])) {
+                $navLeftData = $rsNav[($i * 2) - 2];
                 $navRightData = $rsNav[($i * 2) - 1];
 
                 $sortField = str_replace('Sort', '', $this->_sortBy);
                 $navLeft = $navLeftData[$sortField];
                 $navRight = $navRightData[$sortField];
 
-                if ($navLeft)
-                {
-                    if ($navRight)
-                    {
+                if ($navLeft) {
+                    if ($navRight) {
                         $navText = sprintf('%s(%s - %s)', str_repeat('&nbsp;', 16), $navLeft, $navRight);
-                    }
-                    else
-                    {
+                    } else {
                         $navText = sprintf('%s(%s)', str_repeat('&nbsp;', 16), $navLeft);
                     }
                 }
             }
 
             /* This is the actual content. */
-            if ($i == $this->_currentPage)
-            {
+            if ($i == $this->_currentPage) {
                 echo sprintf(
-                    '<option selected="selected" value="">Page %s%s</option>',
-                    $i, $navText
+                    '<option selected value="">Page %s%s</option>',
+                    $i,
+                    $navText
                 );
-            }
-            else
-            {
+            } else {
                 echo sprintf(
                     '<option value="%s">Page %s%s</option>',
-                    $i, $i, $navText
+                    $i,
+                    $i,
+                    $navText
                 );
             }
         }
@@ -393,8 +362,7 @@ class Pager
         /* If there is a next page, show "Next >>" as a link; otherwise just
          * as text.
          */
-        if ($this->_currentPage != $this->_totalPages)
-        {
+        if ($this->_currentPage != $this->_totalPages) {
             echo sprintf(
                 '<a class="pagerPrevNext" href="%s?%s&amp;page=%s&amp;sortBy=%s&amp;sortDirection=%s">Next &gt;&gt;</a>%s',
                 $indexName,
@@ -404,15 +372,12 @@ class Pager
                 $this->_sortDirection,
                 "\n"
             );
-        }
-        else
-        {
+        } else {
             echo '<span class="pagerPrevNext">Next &gt;&gt;</span>', "\n";
         }
 
         /* If we have any alpha data, draw the alpha bar */
-        if ($drawAlpha && $drawAlpha2)
-        {
+        if ($drawAlpha && $drawAlpha2) {
             $rsNav = $rsNavAlpha;
 
             echo(str_repeat('&nbsp;', 7));
@@ -420,27 +385,22 @@ class Pager
             /* Set the initial value of what letter is being printed based on
              * sort order.
              */
-            if ($sortDirection == 'ASC')
-            {
+            if ($sortDirection == 'ASC') {
                 $onChar = ord('A') - 1;
-            }
-            else
-            {
+            } else {
                 $onChar = ord('Z') + 1;
             }
 
             /* $i+2, because every pair of records indicates the first and
              * last entry on a page.
              */
-            for ($i = 0; $i < count($rsNav); $i += 2)
-            {
+            for ($i = 0; $i < count($rsNav); $i += 2) {
                 $output = '';
 
                 /* If no corresponding 2nd entry, make one (1 entry on last
                  * page for example).
                  */
-                if (count($rsNav) == $i+1)
-                {
+                if (count($rsNav) == $i + 1) {
                     $rsNav[$i + 1] = $rsNav[$i];
                 }
 
@@ -452,31 +412,22 @@ class Pager
                 /* If it is the last entry, go to the first or last letter
                  * in the alphabet.
                  */
-                if (count($rsNav) == $i + 2)
-                {
-                    if ($sortDirection == 'ASC')
-                    {
+                if (count($rsNav) == $i + 2) {
+                    if ($sortDirection == 'ASC') {
                         $lastChar = ord('Z');
-                    }
-                    else
-                    {
+                    } else {
                         $lastChar = ord('A');
                     }
                 }
 
                 if (($lastChar > $onChar && $sortDirection == 'ASC') ||
-                    ($lastChar < $onChar && $sortDirection == 'DESC'))
-                {
+                    ($lastChar < $onChar && $sortDirection == 'DESC')) {
                     while ($onChar != $lastChar &&
-                           !($onChar == ord('Z') && $sortDirection == 'ASC') &&
-                           !($onChar == ord('A') && $sortDirection == 'DESC'))
-                    {
-                        if ($sortDirection == 'ASC')
-                        {
+                           ! ($onChar == ord('Z') && $sortDirection == 'ASC') &&
+                           ! ($onChar == ord('A') && $sortDirection == 'DESC')) {
+                        if ($sortDirection == 'ASC') {
                             $onChar++;
-                        }
-                        else
-                        {
+                        } else {
                             $onChar--;
                         }
                         $output = sprintf('%s%s&nbsp;', $output, chr($onChar));
@@ -486,8 +437,7 @@ class Pager
                 /* If any letters output at all, encase them in a hyperlink and
                  * display them.
                  */
-                if ($output)
-                {
+                if ($output) {
                     echo sprintf(
                         '<a class="pagerPrevNext" href="%s?%s&amp;page=%s&amp;sortBy=%s&amp;sortDirection=%s" title="Page %s (%s - %s)">%s</a>',
                         $indexName,
@@ -505,5 +455,3 @@ class Pager
         }
     }
 }
-
-?>

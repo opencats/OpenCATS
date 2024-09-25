@@ -181,7 +181,7 @@
                                     <?php if ($this->data['source'] != '(none)'): ?>
                                         <option value="(none)">(None)</option>
                                     <?php endif; ?>
-                                    <option value="<?php $this->_($this->data['source']); ?>" selected="selected"><?php $this->_($this->data['source']); ?></option>
+                                    <option value="<?php $this->_($this->data['source']); ?>" selected><?php $this->_($this->data['source']); ?></option>
                                 <?php else: ?>
                                     <option value="(none)">(None)</option>
                                 <?php endif; ?>
@@ -204,7 +204,7 @@
 
                                 <?php foreach ($this->usersRS as $rowNumber => $usersData): ?>
                                     <?php if ($this->data['owner'] == $usersData['userID']): ?>
-                                        <option selected="selected" value="<?php $this->_($usersData['userID']) ?>"><?php $this->_($usersData['lastName']) ?>, <?php $this->_($usersData['firstName']) ?></option>
+                                        <option selected value="<?php $this->_($usersData['userID']) ?>"><?php $this->_($usersData['lastName']) ?>, <?php $this->_($usersData['firstName']) ?></option>
                                     <?php else: ?>
                                         <option value="<?php $this->_($usersData['userID']) ?>"><?php $this->_($usersData['lastName']) ?>, <?php $this->_($usersData['firstName']) ?></option>
                                     <?php endif; ?>

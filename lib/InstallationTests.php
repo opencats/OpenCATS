@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright  Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -42,7 +41,7 @@ include_once(LEGACY_ROOT . '/lib/FileUtility.php');
 class InstallationTests
 {
     /* Set this to true to force all tests to fail for debugging. */
-    const DEBUG_FAIL = false;
+    public const DEBUG_FAIL = false;
 
     public static function runCoreTests()
     {
@@ -69,78 +68,63 @@ class InstallationTests
     {
         global $result;
 
-        if (!isset($result))
-        {
+        if (! isset($result)) {
             $result = true;
         }
 
-        if (!InstallationTests::checkPHPVersion())
-        {
+        if (! InstallationTests::checkPHPVersion()) {
             $result = false;
         }
 
-        if (!InstallationTests::checkMagicQuotes())
-        {
+        if (! InstallationTests::checkMagicQuotes()) {
             $result = false;
         }
 
-        if (!InstallationTests::checkRegisterGlobals())
-        {
+        if (! InstallationTests::checkRegisterGlobals()) {
             $result = false;
         }
 
-        if (!InstallationTests::checkMySQLExtension())
-        {
+        if (! InstallationTests::checkMySQLExtension()) {
             $result = false;
         }
 
-        if (!InstallationTests::checkSessionExtension())
-        {
+        if (! InstallationTests::checkSessionExtension()) {
             $result = false;
         }
 
-        if (!InstallationTests::checkPCREExtension())
-        {
+        if (! InstallationTests::checkPCREExtension()) {
             $result = false;
         }
 
-        if (!InstallationTests::checkCTypeExtension())
-        {
+        if (! InstallationTests::checkCTypeExtension()) {
             $result = false;
         }
 
-        if (!InstallationTests::checkGD2Extension())
-        {
+        if (! InstallationTests::checkGD2Extension()) {
             $result = false;
         }
 
-        if (!InstallationTests::checkLDAPExtension())
-        {
+        if (! InstallationTests::checkLDAPExtension()) {
             $result = false;
         }
 
-        if (!InstallationTests::checkSOAPExtension())
-        {
+        if (! InstallationTests::checkSOAPExtension()) {
             $result = false;
         }
 
-        if (!InstallationTests::checkZipExtension())
-        {
+        if (! InstallationTests::checkZipExtension()) {
             $result = false;
         }
 
-        if (!InstallationTests::checkAttachmentsDir())
-        {
+        if (! InstallationTests::checkAttachmentsDir()) {
             $result = false;
         }
 
-        if (!InstallationTests::checkConfigWritable())
-        {
+        if (! InstallationTests::checkConfigWritable()) {
             $result = false;
         }
 
-        if (!InstallationTests::checkDirectoryWritable())
-        {
+        if (! InstallationTests::checkDirectoryWritable()) {
             $result = false;
         }
     }
@@ -161,8 +145,7 @@ class InstallationTests
     /* Check PHP version. */
     public static function checkPHPVersion()
     {
-        if (!self::DEBUG_FAIL && version_compare(PHP_VERSION, '5.0.0', '>='))
-        {
+        if (! self::DEBUG_FAIL && version_compare(PHP_VERSION, '5.0.0', '>=')) {
             echo sprintf(
                 '<tr class="pass"><td>PHP version is %s.</td></tr>',
                 PHP_VERSION
@@ -182,12 +165,11 @@ class InstallationTests
     /* magic_quotes_runtime cannot be enabled. */
     public static function checkMagicQuotes()
     {
-        if (!self::DEBUG_FAIL && !ini_get('magic_quotes_runtime'))
-        {
+        if (! self::DEBUG_FAIL && ! ini_get('magic_quotes_runtime')) {
             echo '<tr class="pass"><td>PHP.ini: magic_quotes_runtime is disabled.</td></tr>';
             return true;
         }
-    
+
         echo '<tr class="fail"><td><strong>PHP.ini: magic_quotes_runtime must be set to Off in php.ini.</strong><br />'
             . 'Check your settings in php.ini.</td></tr>';
         return false;
@@ -196,8 +178,7 @@ class InstallationTests
     /* Warn if register_globals is on. */
     public static function checkRegisterGlobals()
     {
-        if (!self::DEBUG_FAIL && !ini_get('register_globals'))
-        {
+        if (! self::DEBUG_FAIL && ! ini_get('register_globals')) {
             echo '<tr class="pass"><td>PHP.ini: register_globals is disabled.</td></tr>';
             return true;
         }
@@ -212,8 +193,7 @@ class InstallationTests
     /* Objects can't be stored in the session if session.auto_start is enabled. */
     public static function checkSessionAutoStart()
     {
-        if (!self::DEBUG_FAIL && !ini_get('session.auto_start'))
-        {
+        if (! self::DEBUG_FAIL && ! ini_get('session.auto_start')) {
             echo '<tr class="pass"><td>PHP.ini: session.auto_start is disabled.</td></tr>';
             return true;
         }
@@ -226,8 +206,7 @@ class InstallationTests
     /* Is MySQL extension loaded?. */
     public static function checkMySQLExtension()
     {
-        if (!self::DEBUG_FAIL && extension_loaded('mysqli') && function_exists('mysqli_connect'))
-        {
+        if (! self::DEBUG_FAIL && extension_loaded('mysqli') && function_exists('mysqli_connect')) {
             echo '<tr class="pass"><td>PHP MySQLi extension (mysqli) is loaded.</td></tr>';
             return true;
         }
@@ -244,8 +223,7 @@ class InstallationTests
     /* Is the session extension loaded?. */
     public static function checkSessionExtension()
     {
-        if (!self::DEBUG_FAIL && extension_loaded('session') && function_exists('session_start'))
-        {
+        if (! self::DEBUG_FAIL && extension_loaded('session') && function_exists('session_start')) {
             echo '<tr class="pass"><td>PHP Sessions extension (session) is loaded.</td></tr>';
             return true;
         }
@@ -262,8 +240,7 @@ class InstallationTests
     /* Check for ctype_*() support. */
     public static function checkCTypeExtension()
     {
-        if (!self::DEBUG_FAIL && extension_loaded('ctype') && function_exists('ctype_digit'))
-        {
+        if (! self::DEBUG_FAIL && extension_loaded('ctype') && function_exists('ctype_digit')) {
             echo '<tr class="pass"><td>PHP CType string classification extension (ctype) is loaded.</td></tr>';
             return true;
         }
@@ -281,8 +258,7 @@ class InstallationTests
     /* Check for preg_*() support. */
     public static function checkPCREExtension()
     {
-        if (!self::DEBUG_FAIL && extension_loaded('pcre') && function_exists('preg_match'))
-        {
+        if (! self::DEBUG_FAIL && extension_loaded('pcre') && function_exists('preg_match')) {
             echo '<tr class="pass"><td>PHP PCRE regular expressions extension (pcre) is loaded.</td></tr>';
             return true;
         }
@@ -300,8 +276,7 @@ class InstallationTests
     public static function checkGD2Extension()
     {
         /* Is the GD2 extension loaded?. */
-        if (!self::DEBUG_FAIL && extension_loaded('gd') && function_exists('ImageCreateFromJpeg'))
-        {
+        if (! self::DEBUG_FAIL && extension_loaded('gd') && function_exists('ImageCreateFromJpeg')) {
             echo '<tr class="pass"><td>PHP GD image manipulation library extension (gd) is loaded.</td></tr>';
             return true;
         }
@@ -322,8 +297,7 @@ class InstallationTests
     public static function checkLDAPExtension()
     {
         /* Is the GD2 extension loaded?. */
-        if (!self::DEBUG_FAIL && extension_loaded('ldap') && function_exists('ldap_connect'))
-        {
+        if (! self::DEBUG_FAIL && extension_loaded('ldap') && function_exists('ldap_connect')) {
             echo '<tr class="pass"><td>PHP LDAP library extension (ldap) is loaded.</td></tr>';
             return true;
         }
@@ -343,10 +317,9 @@ class InstallationTests
     {
         /* Is the SOAP extension loaded?. */
         /* The is_callable function seems to work with   */
-        if (!self::DEBUG_FAIL && extension_loaded('soap') && class_exists('SoapClient') &&
+        if (! self::DEBUG_FAIL && extension_loaded('soap') && class_exists('SoapClient') &&
             (method_exists('SoapClient', '__soapCall') ||
-            method_exists('SoapClient', '__call')))
-        {
+            method_exists('SoapClient', '__call'))) {
             echo '<tr class="pass"><td>PHP SOAP extension (soap) is loaded.</td></tr>';
             return true;
         }
@@ -368,8 +341,7 @@ class InstallationTests
     public static function checkZipExtension()
     {
         /* Is the ZIP extension loaded?. */
-        if (!self::DEBUG_FAIL && extension_loaded('zip') && class_exists('ZipArchive'))
-        {
+        if (! self::DEBUG_FAIL && extension_loaded('zip') && class_exists('ZipArchive')) {
             echo '<tr class="pass"><td>PHP zip extension is loaded.</td></tr>';
             return true;
         }
@@ -387,9 +359,8 @@ class InstallationTests
     public static function checkMySQL($host, $user, $pass, $name)
     {
         /* Check MySQL connection. */
-		$db = @mysqli_connect($host, $user, $pass);
-        if (self::DEBUG_FAIL || !$db)
-        {
+        $db = @mysqli_connect($host, $user, $pass);
+        if (self::DEBUG_FAIL || ! $db) {
             echo sprintf(
                 '<tr class="fail"><td>Cannot connect to database.<pre class="fail">%s</pre></td></tr>',
                 mysqli_connect_error()
@@ -400,14 +371,12 @@ class InstallationTests
         echo '<tr class="pass"><td>MySQL connection was successful.</td></tr>';
 
         /* Check MySQL version number. */
-        if (!self::_checkMySQLVersion($db))
-        {
+        if (! self::_checkMySQLVersion($db)) {
             return false;
         }
 
         /* Try to switch to the CATS database. */
-        if (!@mysqli_select_db($db, $name))
-        {
+        if (! @mysqli_select_db($db, $name)) {
             echo sprintf(
                 '<tr class="fail"><td>Failed to select database \'%s\'.<pre class="fail">%s</pre></td></tr>',
                 $name,
@@ -423,13 +392,11 @@ class InstallationTests
 
         /* Check CREATE TABLE permissions. */
         $queryResult = @mysqli_query($db, 'CREATE TABLE `testtable` (`id` int(11) NOT NULL default \'0\') ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             mysqli_query($db, 'DROP TABLE testtable');
             $queryResult = @mysqli_query($db, 'CREATE TABLE `testtable` (`id` int(11) NOT NULL default \'0\') ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
         }
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             echo sprintf(
                 '<tr class="fail"><td>Cannot create table \'testtable\'. Please verify that '
                 . '\'ALL PERMISSIONS\' were granted to the \'%s\' user for the \'%s\' database. '
@@ -445,8 +412,7 @@ class InstallationTests
         );
 
         /* Check INSERT permissions. */
-        if (!@mysqli_query($db, 'INSERT INTO testtable (id) VALUES (1)'))
-        {
+        if (! @mysqli_query($db, 'INSERT INTO testtable (id) VALUES (1)')) {
             echo sprintf(
                 '<tr class="fail"><td>Cannot insert into \'testtable\' table. Please verify that '
                 . '\'ALL PERMISSIONS\' were granted to the \'%s\' user for the \'%s\' database. '
@@ -460,8 +426,7 @@ class InstallationTests
         echo '<tr class="pass"><td>Can insert into \'testtable\' table.</td></tr>';
 
         /* Check UPDATE permissions. */
-        if (!@mysqli_query($db, 'UPDATE testtable SET id = 5 WHERE id = 1'))
-        {
+        if (! @mysqli_query($db, 'UPDATE testtable SET id = 5 WHERE id = 1')) {
             echo sprintf(
                 '<tr class="fail"><td>Cannot update \'testtable\' table. Please verify that '
                 . '\'ALL PERMISSIONS\' were granted to the \'%s\' user for the \'%s\' database. '
@@ -475,8 +440,7 @@ class InstallationTests
         echo '<tr class="pass"><td>Can update \'testtable\' table.</td></tr>';
 
         /* Check DELETE permissions. */
-        if (!@mysqli_query($db, 'DELETE FROM testtable WHERE id = 5'))
-        {
+        if (! @mysqli_query($db, 'DELETE FROM testtable WHERE id = 5')) {
             echo sprintf(
                 '<tr class="fail"><td>Cannot delete from \'testtable\' table. Please verify that '
                 . '\'ALL PERMISSIONS\' were granted to the \'%s\' user for the \'%s\' database. '
@@ -490,8 +454,7 @@ class InstallationTests
         echo '<tr class="pass"><td>Can delete from \'testtable\' table.</td></tr>';
 
         /* Check DROP TABLES permissions. */
-        if (!@mysqli_query($db, 'DROP TABLE testtable'))
-        {
+        if (! @mysqli_query($db, 'DROP TABLE testtable')) {
             echo sprintf(
                 '<tr class="fail"><td>Cannot drop table \'testtable\'. Please verify that '
                 . '\'ALL PERMISSIONS\' were granted to the \'%s\' user for the \'%s\' database. '
@@ -509,29 +472,25 @@ class InstallationTests
 
     public static function checkAttachmentsDir()
     {
-        return (!self::DEBUG_FAIL && self::_checkReadWrite('./attachments'));
+        return (! self::DEBUG_FAIL && self::_checkReadWrite('./attachments'));
     }
 
     public static function checkTempDir()
     {
-        return (!self::DEBUG_FAIL && self::_checkReadWrite('./temp'));
+        return (! self::DEBUG_FAIL && self::_checkReadWrite('./temp'));
     }
 
     /* Check for Antiword. */
     public static function checkAntiword()
     {
-        if (self::DEBUG_FAIL || !is_executable(ANTIWORD_PATH))
-        {
-            if (file_exists(ANTIWORD_PATH))
-            {
+        if (self::DEBUG_FAIL || ! is_executable(ANTIWORD_PATH)) {
+            if (file_exists(ANTIWORD_PATH)) {
                 echo sprintf(
                     '<tr class="fail"><td>Antiword binary %s is not executable (permissions: %s).</td></tr>',
                     ANTIWORD_PATH,
                     FileUtility::getOctalPermissions(ANTIWORD_PATH)
                 );
-            }
-            else
-            {
+            } else {
                 echo sprintf(
                     '<tr class="fail"><td>Antiword binary %s does not exist.</td></tr>',
                     ANTIWORD_PATH
@@ -543,22 +502,16 @@ class InstallationTests
 
         include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
         $documentToText = new DocumentToText();
-        if ($documentToText->convert('modules/install/testdocs/test.doc', DOCUMENT_TYPE_DOC))
-        {
+        if ($documentToText->convert('modules/install/testdocs/test.doc', DOCUMENT_TYPE_DOC)) {
             $resumeText = $documentToText->getString();
-        }
-        else
-        {
+        } else {
             $resumeText = '';
         }
 
-        if (strpos($resumeText, 'This is a test document.') === false)
-        {
+        if (strpos($resumeText, 'This is a test document.') === false) {
             echo '<tr class="fail"><td>Antiword binary failed to convert a DOC file to text properly (Should have returned \'This is a test document\', returned \'', htmlspecialchars($resumeText), '\').</td></tr>';
             return false;
-        }
-        else
-        {
+        } else {
             echo sprintf(
                 '<tr class="pass"><td>Antiword binary %s can convert DOC files to text.</td></tr>',
                 ANTIWORD_PATH
@@ -570,18 +523,14 @@ class InstallationTests
     /* Check for PdfToText. */
     public static function checkPdftotext()
     {
-        if (self::DEBUG_FAIL || !is_executable(PDFTOTEXT_PATH))
-        {
-            if (file_exists(PDFTOTEXT_PATH))
-            {
+        if (self::DEBUG_FAIL || ! is_executable(PDFTOTEXT_PATH)) {
+            if (file_exists(PDFTOTEXT_PATH)) {
                 echo sprintf(
                     '<tr class="fail"><td>Pdftotext binary %s is not executable (permissions: %s).</td></tr>',
                     PDFTOTEXT_PATH,
                     FileUtility::getOctalPermissions(PDFTOTEXT_PATH)
                 );
-            }
-            else
-            {
+            } else {
                 echo sprintf(
                     '<tr class="fail"><td>Pdftotext binary %s does not exist.</td></tr>',
                     PDFTOTEXT_PATH
@@ -593,22 +542,16 @@ class InstallationTests
 
         include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
         $documentToText = new DocumentToText();
-        if ($documentToText->convert('modules/install/testdocs/test.pdf', DOCUMENT_TYPE_PDF))
-        {
+        if ($documentToText->convert('modules/install/testdocs/test.pdf', DOCUMENT_TYPE_PDF)) {
             $resumeText = $documentToText->getString();
-        }
-        else
-        {
+        } else {
             $resumeText = '';
         }
 
-        if (strpos($resumeText, 'This is a test document.') === false)
-        {
+        if (strpos($resumeText, 'This is a test document.') === false) {
             echo '<tr class="fail"><td>Pdftotext binary failed to convert a PDF file to text properly (Should have returned \'This is a test document\', returned \'', htmlspecialchars($resumeText), '\').</td></tr>';
             return false;
-        }
-        else
-        {
+        } else {
             echo sprintf(
                 '<tr class="pass"><td>Pdftotext binary %s can convert PDF files to text.</td></tr>',
                 PDFTOTEXT_PATH
@@ -620,18 +563,14 @@ class InstallationTests
     /* Check for Html2text. */
     public static function checkHtml2text()
     {
-        if (self::DEBUG_FAIL || !is_executable(HTML2TEXT_PATH))
-        {
-            if (file_exists(HTML2TEXT_PATH))
-            {
+        if (self::DEBUG_FAIL || ! is_executable(HTML2TEXT_PATH)) {
+            if (file_exists(HTML2TEXT_PATH)) {
                 echo sprintf(
                     '<tr class="fail"><td>Html2Text binary %s is not executable (permissions: %s).</td></tr>',
                     HTML2TEXT_PATH,
                     FileUtility::getOctalPermissions(HTML2TEXT_PATH)
                 );
-            }
-            else
-            {
+            } else {
                 echo sprintf(
                     '<tr class="fail"><td>Html2Text binary %s does not exist.</td></tr>',
                     HTML2TEXT_PATH
@@ -643,22 +582,16 @@ class InstallationTests
 
         include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
         $documentToText = new DocumentToText();
-        if ($documentToText->convert('modules/install/testdocs/test.html', DOCUMENT_TYPE_HTML))
-        {
+        if ($documentToText->convert('modules/install/testdocs/test.html', DOCUMENT_TYPE_HTML)) {
             $resumeText = $documentToText->getString();
-        }
-        else
-        {
+        } else {
             $resumeText = '';
         }
 
-        if (strpos($resumeText, 'This is a test document.') === false)
-        {
+        if (strpos($resumeText, 'This is a test document.') === false) {
             echo '<tr class="fail"><td>Html2Text binary failed to convert a HTML file to text properly (Should have returned \'This is a test document\', returned \'', htmlspecialchars($resumeText), '\').</td></tr>';
             return false;
-        }
-        else
-        {
+        } else {
             echo sprintf(
                 '<tr class="pass"><td>Html2Text binary %s can convert HTML files to text.</td></tr>',
                 HTML2TEXT_PATH
@@ -670,18 +603,14 @@ class InstallationTests
     /* Check for Unrtf. */
     public static function checkUnrtf()
     {
-        if (self::DEBUG_FAIL || !is_executable(UNRTF_PATH))
-        {
-            if (file_exists(UNRTF_PATH))
-            {
+        if (self::DEBUG_FAIL || ! is_executable(UNRTF_PATH)) {
+            if (file_exists(UNRTF_PATH)) {
                 echo sprintf(
                     '<tr class="fail"><td>UnRTF binary %s is not executable (permissions: %s).</td></tr>',
                     HTML2TEXT_PATH,
                     FileUtility::getOctalPermissions(HTML2TEXT_PATH)
                 );
-            }
-            else
-            {
+            } else {
                 echo sprintf(
                     '<tr class="fail"><td>UnRTF binary %s does not exist.</td></tr>',
                     HTML2TEXT_PATH
@@ -693,22 +622,16 @@ class InstallationTests
 
         include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
         $documentToText = new DocumentToText();
-        if ($documentToText->convert('modules/install/testdocs/test.rtf', DOCUMENT_TYPE_RTF))
-        {
+        if ($documentToText->convert('modules/install/testdocs/test.rtf', DOCUMENT_TYPE_RTF)) {
             $resumeText = $documentToText->getString();
-        }
-        else
-        {
+        } else {
             $resumeText = '';
         }
 
-        if (strpos($resumeText, 'This is a test document.') === false)
-        {
+        if (strpos($resumeText, 'This is a test document.') === false) {
             echo '<tr class="fail"><td>UnRTF binary failed to convert a RTF file to text properly (Should have returned \'This is a test document\', returned \'', htmlspecialchars($resumeText), '\').</td></tr>';
             return false;
-        }
-        else
-        {
+        } else {
             echo sprintf(
                 '<tr class="pass"><td>UnRTF binary %s can convert RTF files to text.</td></tr>',
                 UNRTF_PATH
@@ -720,14 +643,11 @@ class InstallationTests
     public static function checkConfigWritable()
     {
         $proceed = true;
-        if (!self::DEBUG_FAIL && is_writable('config.php'))
-        {
+        if (! self::DEBUG_FAIL && is_writable('config.php')) {
             echo sprintf(
                 '<tr class="pass"><td>Configuration file ./config.php is writable.</td></tr>'
             );
-        }
-        else
-        {
+        } else {
             echo sprintf(
                 '<tr class="fail"><td><strong>Configuration file ./config.php is not writable!</strong><br />'
                 . 'Please check your permissions and try again.</td></tr>'
@@ -740,14 +660,11 @@ class InstallationTests
     public static function checkDirectoryWritable()
     {
         $proceed = true;
-        if (!self::DEBUG_FAIL && FileUtility::isDirectoryWritable('./'))
-        {
+        if (! self::DEBUG_FAIL && FileUtility::isDirectoryWritable('./')) {
             echo sprintf(
                 '<tr class="pass"><td>Creating a file within ./ succeeded.</td></tr>'
             );
-        }
-        else
-        {
+        } else {
             echo sprintf(
                 '<tr class="fail"><td><strong>Creating a file within ./ failed!</strong><br />'
                 . 'Please check your permissions and try again.</td></tr>'
@@ -758,13 +675,11 @@ class InstallationTests
         return $proceed;
     }
 
-
     private static function _checkMySQLVersion($db)
     {
         /* Check MySQL version. */
         $queryResult = mysqli_query($db, 'SELECT VERSION()');
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             echo sprintf(
                 '<tr class="fail"><td>Cannot retrieve MySQL version number. <pre class="fail">%s</pre></td></tr>',
                 $queryResult->connect_error
@@ -777,8 +692,7 @@ class InstallationTests
         $versionParts = explode('-', $row[0]);
         $version = $versionParts[0];
 
-        if (version_compare($version, '4.1.0', '>='))
-        {
+        if (version_compare($version, '4.1.0', '>=')) {
             echo sprintf(
                 '<tr class="pass"><td>MySQL version is %s.</td></tr>',
                 $version
@@ -798,8 +712,7 @@ class InstallationTests
     {
         $directory .= '/';
 
-        if (!is_dir($directory))
-        {
+        if (! is_dir($directory)) {
             echo sprintf(
                 '<tr class="fail"><td><strong>Directory %s does not exist or is not a directory.</strong></td></tr>',
                 $directory
@@ -812,16 +725,13 @@ class InstallationTests
         $proceed = true;
 
         /* Check for read. */
-        if (is_readable($directory))
-        {
+        if (is_readable($directory)) {
             echo sprintf(
                 '<tr class="pass"><td>Directory %s is readable (permissions: %s).</td></tr>',
                 $directory,
                 $octalPermissions
             );
-        }
-        else
-        {
+        } else {
             echo sprintf(
                 '<tr class="fail"><td><strong>Directory %s is not readable (permissions: %s).</strong></td></tr>',
                 $directory,
@@ -831,16 +741,13 @@ class InstallationTests
         }
 
         /* Check for write. */
-        if (is_writeable($directory))
-        {
+        if (is_writeable($directory)) {
             echo sprintf(
                 '<tr class="pass"><td>Directory %s is writeable (permissions: %s).</td></tr>',
                 $directory,
                 $octalPermissions
             );
-        }
-        else
-        {
+        } else {
             echo sprintf(
                 '<tr class="fail"><td><strong>Directory %s is not writeable (permissions: %s).</strong></td></tr>',
                 $directory,
@@ -852,15 +759,12 @@ class InstallationTests
         /* Test ACTUAL writeability by creating a file, not relying on is_writable()
          * as it sometimes returns a false positive.
          */
-        if (FileUtility::isDirectoryWritable($directory))
-        {
+        if (FileUtility::isDirectoryWritable($directory)) {
             echo sprintf(
                 '<tr class="pass"><td>Creating a file within %s succeeded.</td></tr>',
                 $directory
             );
-        }
-        else
-        {
+        } else {
             echo sprintf(
                 '<tr class="fail"><td><strong>Creating a file within %s failed. Check your permissions.</strong></td></tr>',
                 $directory
@@ -871,20 +775,16 @@ class InstallationTests
         /* Check for create directory ability. */
         $testPath = $directory . 'testdir';
 
-        if (is_dir($testPath))
-        {
+        if (is_dir($testPath)) {
             FileUtility::recursivelyRemoveDirectory($testPath);
         }
 
-        if (@mkdir($testPath, 0777))
-        {
+        if (@mkdir($testPath, 0777)) {
             echo sprintf(
                 '<tr class="pass"><td>Directories can be created inside %s/.</td></tr>',
                 $directory
             );
-        }
-        else
-        {
+        } else {
             echo sprintf(
                 '<tr class="fail"><td><strong>Directories cannot be created inside %s/.</strong></td></tr>',
                 $directory
@@ -892,13 +792,10 @@ class InstallationTests
             $proceed = false;
         }
 
-        if (is_dir($testPath))
-        {
+        if (is_dir($testPath)) {
             FileUtility::recursivelyRemoveDirectory($testPath);
         }
 
         return $proceed;
     }
 }
-
-?>

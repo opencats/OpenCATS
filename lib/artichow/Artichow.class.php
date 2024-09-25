@@ -9,29 +9,29 @@
 
 // Artichow configuration
 
-if(is_file(dirname(__FILE__)."/Artichow.cfg.php")) { // For PHP 4+5 version
-	require_once dirname(__FILE__)."/Artichow.cfg.php";
+if (is_file(__DIR__ . "/Artichow.cfg.php")) { // For PHP 4+5 version
+    require_once __DIR__ . "/Artichow.cfg.php";
 }
 
 
 // Some useful files
-require_once ARTICHOW."/Component.class.php";
-require_once ARTICHOW."/Image.class.php";
-require_once ARTICHOW."/common.php";
+require_once ARTICHOW . "/Component.class.php";
+require_once ARTICHOW . "/Image.class.php";
+require_once ARTICHOW . "/common.php";
 
-require_once ARTICHOW."/inc/Grid.class.php";
-require_once ARTICHOW."/inc/Tools.class.php";
-require_once ARTICHOW."/inc/Drawer.class.php";
-require_once ARTICHOW."/inc/Math.class.php";
-require_once ARTICHOW."/inc/Tick.class.php";
-require_once ARTICHOW."/inc/Axis.class.php";
-require_once ARTICHOW."/inc/Legend.class.php";
-require_once ARTICHOW."/inc/Mark.class.php";
-require_once ARTICHOW."/inc/Label.class.php";
-require_once ARTICHOW."/inc/Text.class.php";
-require_once ARTICHOW."/inc/Color.class.php";
-require_once ARTICHOW."/inc/Font.class.php";
-require_once ARTICHOW."/inc/Gradient.class.php";
+require_once ARTICHOW . "/inc/Grid.class.php";
+require_once ARTICHOW . "/inc/Tools.class.php";
+require_once ARTICHOW . "/inc/Drawer.class.php";
+require_once ARTICHOW . "/inc/Math.class.php";
+require_once ARTICHOW . "/inc/Tick.class.php";
+require_once ARTICHOW . "/inc/Axis.class.php";
+require_once ARTICHOW . "/inc/Legend.class.php";
+require_once ARTICHOW . "/inc/Mark.class.php";
+require_once ARTICHOW . "/inc/Label.class.php";
+require_once ARTICHOW . "/inc/Text.class.php";
+require_once ARTICHOW . "/inc/Color.class.php";
+require_once ARTICHOW . "/inc/Font.class.php";
+require_once ARTICHOW . "/inc/Gradient.class.php";
 
 // Catch all errors
 ob_start();
@@ -41,277 +41,242 @@ ob_start();
  *
  * @package Artichow
  */
-class awGraph extends awImage {
+class awGraph extends awImage
+{
+    /**
+     * Graph name
+     *
+     * @var string
+     */
+    protected $name;
 
-	/**
-	 * Graph name
-	 *
-	 * @var string
-	 */
-	protected $name;
+    /**
+     * Cache timeout
+     *
+     * @var int
+     */
+    protected $timeout = 0;
 
-	/**
-	 * Cache timeout
-	 *
-	 * @var int
-	 */
-	protected $timeout = 0;
+    /**
+     * Graph timing ?
+     *
+     * @var bool
+     */
+    protected $timing;
 
-	/**
-	 * Graph timing ?
-	 *
-	 * @var bool
-	 */
-	protected $timing;
+    /**
+     * Components
+     *
+     * @var array
+     */
+    private $components = [];
 
-	/**
-	 * Components
-	 *
-	 * @var array
-	 */
-	private $components = array();
+    /**
+     * Graph title
+     *
+     * @var Label
+     */
+    public $title;
 
-	/**
-	 * Graph title
-	 *
-	 * @var Label
-	 */
-	public $title;
+    /**
+     * Construct a new awgraph
+     *
+     * @param int $width Graph width
+     * @param int $height Graph height
+     * @param string $name Graph name for the cache (must be unique). Let it null to not use the cache.
+     * @param int $timeout Cache timeout (unix timestamp)
+     */
+    public function __construct($width = null, $height = null, $name = null, $timeout = 0)
+    {
+        parent::__construct();
 
-	/**
-	 * Construct a new awgraph
-	 *
-	 * @param int $width Graph width
-	 * @param int $height Graph height
-	 * @param string $name Graph name for the cache (must be unique). Let it null to not use the cache.
-	 * @param int $timeout Cache timeout (unix timestamp)
-	 */
-	public function __construct($width = NULL, $height = NULL, $name = NULL, $timeout = 0) {
+        $this->setSize($width, $height);
 
-		parent::__construct();
+        if (ARTICHOW_CACHE) {
+            $this->name = $name;
+            $this->timeout = $timeout;
 
-		$this->setSize($width, $height);
+            // Clean sometimes all the cache
+            if (mt_rand(0, 5000) === 0) {
+                awGraph::cleanCache();
+            }
 
-		if(ARTICHOW_CACHE) {
+            if ($this->name !== null) {
+                $file = ARTICHOW . "/cache/" . $this->name . "-time";
 
-			$this->name = $name;
-			$this->timeout = $timeout;
+                if (is_file($file)) {
+                    $type = awGraph::cleanGraphCache($file);
 
-			// Clean sometimes all the cache
-			if(mt_rand(0, 5000) ===  0) {
-				awGraph::cleanCache();
-			}
-
-			if($this->name !== NULL) {
-
-				$file = ARTICHOW."/cache/".$this->name."-time";
-
-				if(is_file($file)) {
-
-					$type = awGraph::cleanGraphCache($file);
-
-					if($type === NULL) {
-						awGraph::deleteFromCache($this->name);
-					} else {
-						header("Content-Type: image/".$type);
-						readfile(ARTICHOW."/cache/".$this->name."");
-						exit;
-					}
-
-				}
-
-			}
-
-		}
+                    if ($type === null) {
+                        awGraph::deleteFromCache($this->name);
+                    } else {
+                        header("Content-Type: image/" . $type);
+                        readfile(ARTICHOW . "/cache/" . $this->name . "");
+                        exit;
+                    }
+                }
+            }
+        }
 
 
-		$this->title = new awLabel(
-			NULL,
-			new awTuffy(16),
-			NULL,
-			0
-		);
-		$this->title->setAlign(awLabel::CENTER, awLabel::BOTTOM);
+        $this->title = new awLabel(
+            null,
+            new awTuffy(16),
+            null,
+            0
+        );
+        $this->title->setAlign(awLabel::CENTER, awLabel::BOTTOM);
+    }
 
-	}
+    /**
+     * Delete a graph from the cache
+     *
+     * @param string $name Graph name
+     * @return bool TRUE on success, FALSE on failure
+     */
+    public static function deleteFromCache($name)
+    {
+        if (ARTICHOW_CACHE) {
+            if (is_file(ARTICHOW . "/cache/" . $name . "-time")) {
+                unlink(ARTICHOW . "/cache/" . $name . "");
+                unlink(ARTICHOW . "/cache/" . $name . "-time");
+            }
+        }
+    }
 
-	/**
-	 * Delete a graph from the cache
-	 *
-	 * @param string $name Graph name
-	 * @return bool TRUE on success, FALSE on failure
-	 */
-	public static function deleteFromCache($name) {
+    /**
+     * Delete all graphs from the cache
+     */
+    public static function deleteAllCache()
+    {
+        if (ARTICHOW_CACHE) {
+            $dp = opendir(ARTICHOW . "/cache");
 
-		if(ARTICHOW_CACHE) {
+            while ($file = readdir($dp)) {
+                if ($file !== '.' and $file != '..') {
+                    unlink(ARTICHOW . "/cache/" . $file);
+                }
+            }
+        }
+    }
 
-			if(is_file(ARTICHOW."/cache/".$name."-time")) {
-				unlink(ARTICHOW."/cache/".$name."");
-				unlink(ARTICHOW."/cache/".$name."-time");
-			}
+    /**
+     * Clean cache
+     */
+    public static function cleanCache()
+    {
+        if (ARTICHOW_CACHE) {
+            $glob = glob(ARTICHOW . "/cache/*-time");
 
-		}
+            foreach ($glob as $file) {
+                $type = awGraph::cleanGraphCache($file);
 
-	}
-
-	/**
-	 * Delete all graphs from the cache
-	 */
-	public static function deleteAllCache() {
-
-		if(ARTICHOW_CACHE) {
-
-			$dp = opendir(ARTICHOW."/cache");
-
-			while($file = readdir($dp)) {
-				if($file !== '.' and $file != '..') {
-					unlink(ARTICHOW."/cache/".$file);
-				}
-			}
-
-		}
-
-	}
-
-	/**
-	 * Clean cache
-	 */
-	public static function cleanCache() {
-
-		if(ARTICHOW_CACHE) {
-
-			$glob = glob(ARTICHOW."/cache/*-time");
-
-			foreach($glob as $file) {
-
-				$type = awGraph::cleanGraphCache($file);
-
-				if($type === NULL) {
+                if ($type === null) {
                     $name = preg_replace('#.*/(.*)\-time#', '$1', $file);
-					awGraph::deleteFromCache($name);
-				}
+                    awGraph::deleteFromCache($name);
+                }
+            }
+        }
+    }
 
-			}
+    /**
+     * Enable/Disable graph timing
+     *
+     * @param bool $timing
+     */
+    public function setTiming($timing)
+    {
+        $this->timing = (bool) $timing;
+    }
 
-		}
+    /**
+     * Add a component to the graph
+     */
+    public function add(awComponent $component)
+    {
+        $this->components[] = $component;
+    }
 
-	}
+    /**
+     * Build the graph and draw component on it
+     * Image is sent to the user browser
+     */
+    public function draw()
+    {
+        if ($this->timing) {
+            $time = microtimeFloat();
+        }
 
-	/**
-	 * Enable/Disable graph timing
-	 *
-	 * @param bool $timing
-	 */
-	public function setTiming($timing) {
-		$this->timing = (bool)$timing;
-	}
+        $this->create();
 
-	/**
-	 * Add a component to the graph
-	 *
-	 * @param awComponent $component
-	 */
-	public function add(awComponent $component) {
+        foreach ($this->components as $component) {
+            $this->drawComponent($component);
+        }
 
-		$this->components[] = $component;
+        $this->drawTitle();
+        $this->drawShadow();
 
-	}
+        if ($this->timing) {
+            $this->drawTiming(microtimeFloat() - $time);
+        }
 
-	/**
-	 * Build the graph and draw component on it
-	 * Image is sent to the user browser
-	 */
-	public function draw() {
+        $this->send();
 
-		if($this->timing) {
-			$time = microtimeFloat();
-		}
+        if (ARTICHOW_CACHE) {
+            if ($this->name !== null) {
+                $data = ob_get_contents();
 
-		$this->create();
+                if (is_writable(ARTICHOW . "/cache") === false) {
+                    trigger_error("Cache directory is not writable");
+                }
 
-		foreach($this->components as $component) {
+                $file = ARTICHOW . "/cache/" . $this->name . "";
+                file_put_contents($file, $data);
 
-			$this->drawComponent($component);
+                $file .= "-time";
+                file_put_contents($file, $this->timeout . "\n" . $this->getFormat());
+            }
+        }
+    }
 
-		}
+    private function drawTitle()
+    {
+        $drawer = $this->getDrawer();
 
-		$this->drawTitle();
-		$this->drawShadow();
+        $point = new awPoint(
+            $this->width / 2,
+            10
+        );
 
-		if($this->timing) {
-			$this->drawTiming(microtimeFloat() - $time);
-		}
+        $this->title->draw($drawer, $point);
+    }
 
-		$this->send();
+    private function drawTiming($time)
+    {
+        $drawer = $this->getDrawer();
 
-		if(ARTICHOW_CACHE) {
+        $label = new awLabel();
+        $label->set("(" . sprintf("%.3f", $time) . " s)");
+        $label->setAlign(awLabel::LEFT, awLabel::TOP);
+        $label->border->show();
+        $label->setPadding(1, 0, 0, 0);
+        $label->setBackgroundColor(new awColor(230, 230, 230, 25));
 
-			if($this->name !== NULL) {
+        $label->draw($drawer, new awPoint(5, $drawer->height - 5));
+    }
 
-				$data = ob_get_contents();
+    private static function cleanGraphCache($file)
+    {
+        [$time, $type] = explode("\n", file_get_contents($file));
 
-				if(is_writable(ARTICHOW."/cache") === FALSE) {
-					trigger_error("Cache directory is not writable");
-				}
+        $time = (int) $time;
 
-				$file = ARTICHOW."/cache/".$this->name."";
-				file_put_contents($file, $data);
-
-				$file .= "-time";
-				file_put_contents($file, $this->timeout."\n".$this->getFormat());
-
-			}
-
-		}
-
-	}
-
-	private function drawTitle() {
-
-		$drawer = $this->getDrawer();
-
-		$point = new awPoint(
-			$this->width / 2,
-			10
-		);
-
-		$this->title->draw($drawer, $point);
-
-	}
-
-	private function drawTiming($time) {
-
-		$drawer = $this->getDrawer();
-
-		$label = new awLabel;
-		$label->set("(".sprintf("%.3f", $time)." s)");
-		$label->setAlign(awLabel::LEFT, awLabel::TOP);
-		$label->border->show();
-		$label->setPadding(1, 0, 0, 0);
-		$label->setBackgroundColor(new awColor(230, 230, 230, 25));
-
-		$label->draw($drawer, new awPoint(5, $drawer->height - 5));
-
-	}
-
-	private static function cleanGraphCache($file) {
-
-		list(
-			$time,
-			$type
-		) = explode("\n", file_get_contents($file));
-
-		$time = (int)$time;
-
-		if($time !== 0 and $time < time()) {
-			return NULL;
-		} else {
-			return $type;
-		}
-
-
-	}
-
+        if ($time !== 0 and $time < time()) {
+            return null;
+        } else {
+            return $type;
+        }
+    }
 }
 
 registerClass('Graph');
@@ -319,8 +284,8 @@ registerClass('Graph');
 /*
  * To preserve PHP 4 compatibility
  */
-function microtimeFloat() {
-	list($usec, $sec) = explode(" ", microtime());
-	return (float)$usec + (float)$sec;
+function microtimeFloat()
+{
+    [$usec, $sec] = explode(" ", microtime());
+    return (float) $usec + (float) $sec;
 }
-?>

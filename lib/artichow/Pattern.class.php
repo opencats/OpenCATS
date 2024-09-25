@@ -7,91 +7,87 @@
  *
  */
 
-require_once dirname(__FILE__)."/Graph.class.php";
+require_once __DIR__ . "/Graph.class.php";
 
 /**
  * All patterns must derivate from this class
  *
  * @package Artichow
  */
-abstract class awPattern {
+abstract class awPattern
+{
+    /**
+     * Pattern arguments
+     *
+     * @var array
+     */
+    protected $args = [];
 
-	/**
-	 * Pattern arguments
-	 *
-	 * @var array
-	 */
-	protected $args = array();
+    /**
+     * Load a pattern
+     *
+     * @param string $pattern Pattern name
+     * @return Component
+     */
+    public static function get($pattern)
+    {
+        $file = ARTICHOW_PATTERN . DIRECTORY_SEPARATOR . $pattern . '.php';
 
-	/**
-	 * Load a pattern
-	 *
-	 * @param string $pattern Pattern name
-	 * @return Component
-	 */
-	public static function get($pattern) {
+        if (is_file($file)) {
+            require_once $file;
 
-		$file = ARTICHOW_PATTERN.DIRECTORY_SEPARATOR.$pattern.'.php';
+            $class = $pattern . 'Pattern';
 
-		if(is_file($file)) {
+            if (class_exists($class)) {
+                return new $class();
+            } else {
+                trigger_error("Class '" . $class . "' does not exist", E_USER_ERROR);
+            }
+        } else {
+            trigger_error("Pattern '" . $pattern . "' does not exist", E_USER_ERROR);
+        }
+    }
 
-			require_once $file;
+    /**
+     * Change pattern argument
+     *
+     * @param string $name Argument name
+     */
+    public function setArg($name, mixed $value)
+    {
+        if (is_string($name)) {
+            $this->args[$name] = $value;
+        }
+    }
 
-			$class = $pattern.'Pattern';
+    /**
+     * Get an argument
+     *
+     * @param string $name
+     * @return mixed Argument value
+     */
+    protected function getArg($name, mixed $default = null)
+    {
+        if (array_key_exists($name, $this->args)) {
+            return $this->args[$name];
+        } else {
+            return $default;
+        }
+    }
 
-			if(class_exists($class)) {
-				return new $class;
-			} else {
-				trigger_error("Class '".$class."' does not exist", E_USER_ERROR);
-			}
-
-		} else {
-			trigger_error("Pattern '".$pattern."' does not exist", E_USER_ERROR);
-		}
-
-	}
-
-	/**
-	 * Change pattern argument
-	 *
-	 * @param string $name Argument name
-	 * @param mixed $value Argument value
-	 */
-	public function setArg($name, $value) {
-		if(is_string($name)) {
-			$this->args[$name] = $value;
-		}
-	}
-
-	/**
-	 * Get an argument
-	 *
-	 * @param string $name
-	 * @param mixed $default Default value if the argument does not exist (default to NULL)
-	 * @return mixed Argument value
-	 */
-	protected function getArg($name, $default = NULL) {
-		if(array_key_exists($name, $this->args)) {
-			return $this->args[$name];
-		} else {
-			return $default;
-		}
-	}
-
-	/**
-	 * Change several arguments
-	 *
-	 * @param array $args New arguments
-	 */
-	public function setArgs($args) {
-		if(is_array($args)) {
-			foreach($args as $name => $value) {
-				$this->setArg($name, $value);
-			}
-		}
-	}
-
+    /**
+     * Change several arguments
+     *
+     * @param array $args New arguments
+     */
+    public function setArgs($args)
+    {
+        if (is_array($args)) {
+            foreach ($args as $name => $value) {
+                $this->setArg($name, $value);
+            }
+        }
+    }
 }
 
-registerClass('Pattern', TRUE);
-?>
+registerClass('Pattern', true);

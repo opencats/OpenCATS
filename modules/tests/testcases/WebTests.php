@@ -16,11 +16,10 @@
 
 class CandidatesWebTest extends CATSWebTestCase
 {
-    function testCandidates()
+    public function testCandidates()
     {
         /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
+        if (! $this->login()) {
             /* Abort. */
             return false;
         }
@@ -35,8 +34,7 @@ class CandidatesWebTest extends CATSWebTestCase
         );
 
         /* Abort if setting up the test failed. */
-        if ($testUserID === false)
-        {
+        if ($testUserID === false) {
             return false;
         }
 
@@ -61,7 +59,9 @@ class CandidatesWebTest extends CATSWebTestCase
         $this->assertField('firstName');
         $this->assertField('lastName');
         $this->assertDateInputExists(
-            'dateAvailable', 'false', 'MM-DD-YY'
+            'dateAvailable',
+            'false',
+            'MM-DD-YY'
         );
         $this->assertField('email1');
         $this->assertField('email2');
@@ -115,7 +115,9 @@ class CandidatesWebTest extends CATSWebTestCase
         $this->assertField('firstName');
         $this->assertField('lastName');
         $this->assertDateInputExists(
-            'dateAvailable', 'false', 'MM-DD-YY'
+            'dateAvailable',
+            'false',
+            'MM-DD-YY'
         );
         $this->assertField('email1');
         $this->assertField('email2');
@@ -209,11 +211,10 @@ class CandidatesWebTest extends CATSWebTestCase
 
 class CompaniesWebTest extends CATSWebTestCase
 {
-    function testCompanies()
+    public function testCompanies()
     {
         /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
+        if (! $this->login()) {
             /* Abort. */
             return false;
         }
@@ -228,8 +229,7 @@ class CompaniesWebTest extends CATSWebTestCase
         );
 
         /* Abort if setting up the test failed. */
-        if ($testUserID === false)
-        {
+        if ($testUserID === false) {
             return false;
         }
 
@@ -369,11 +369,10 @@ class CompaniesWebTest extends CATSWebTestCase
 
 class ContactsWebTest extends CATSWebTestCase
 {
-    function testContacts()
+    public function testContacts()
     {
         /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
+        if (! $this->login()) {
             /* Abort. */
             return false;
         }
@@ -591,7 +590,8 @@ class ContactsWebTest extends CATSWebTestCase
             'MAILER:CATS'
         );
         $this->assertIdentical(
-            $outputLines[9], 'END:VCARD'
+            $outputLines[9],
+            'END:VCARD'
         );
 
         $this->back();
@@ -613,11 +613,10 @@ class ContactsWebTest extends CATSWebTestCase
 
 class CalendarWebTest extends CATSWebTestCase
 {
-    function testCalendar()
+    public function testCalendar()
     {
         /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
+        if (! $this->login()) {
             /* Abort. */
             return false;
         }
@@ -636,7 +635,10 @@ class CalendarWebTest extends CATSWebTestCase
 
         /* Check Add Form */
         $this->assertDateInputExists(
-            'dateAdd', 'true', 'MM-DD-YY', true
+            'dateAdd',
+            'true',
+            'MM-DD-YY',
+            true
         );
         $this->assertFieldById('type');
         $this->assertFieldById('allDay0');
@@ -660,7 +662,10 @@ class CalendarWebTest extends CATSWebTestCase
 
         /* Check Edit Form */
         $this->assertDateInputExists(
-            'dateEdit', 'true', 'MM-DD-YY', true
+            'dateEdit',
+            'true',
+            'MM-DD-YY',
+            true
         );
         $this->assertFieldById('typeEdit');
         $this->assertFieldById('allDayEdit0');
@@ -686,11 +691,10 @@ class CalendarWebTest extends CATSWebTestCase
 
 class ReportsWebTest extends CATSWebTestCase
 {
-    function testReports()
+    public function testReports()
     {
         /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
+        if (! $this->login()) {
             /* Abort. */
             return false;
         }
@@ -765,11 +769,10 @@ class ReportsWebTest extends CATSWebTestCase
 
 class SettingsWebTest extends CATSWebTestCase
 {
-    function testSettings()
+    public function testSettings()
     {
         /* Log in and make sure no errors occurred. */
-        if (!$this->login())
-        {
+        if (! $this->login()) {
             /* Abort. */
             return false;
         }
@@ -859,7 +862,9 @@ class SettingsWebTest extends CATSWebTestCase
 
         /* Get the user ID. */
         $matchResult = preg_match(
-            '/userID=(?P<userID>\d+)/', $this->getUrl(), $matches
+            '/userID=(?P<userID>\d+)/',
+            $this->getUrl(),
+            $matches
         );
         $this->assertTrue($matchResult, 'URL should contain userID=');
         $userID = $matches['userID'];
@@ -914,6 +919,3 @@ class SettingsWebTest extends CATSWebTestCase
         $this->logout();
     }
 }
-
-
-?>

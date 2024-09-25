@@ -1,24 +1,21 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
+
 <?php
     include_once('constants.php');
-    include_once('config.php');
+include_once('config.php');
 
-    /* We aren't using any TemplateUtility methods that require us to pull in
-     * any of its dependencies.
-     */
-    /* Version check before we include this. */
-   
-    $phpVersion = phpversion();
-    $phpVersionParts = explode('.', $phpVersion);
-    if ($phpVersionParts[0] >= 5)
-    {
-        include_once(LEGACY_ROOT . '/lib/TemplateUtility.php');
-    }
-    else
-    {
-        $php4 = true;
-    }
+/* We aren't using any TemplateUtility methods that require us to pull in
+ * any of its dependencies.
+ */
+/* Version check before we include this. */
+
+$phpVersion = phpversion();
+$phpVersionParts = explode('.', $phpVersion);
+if ($phpVersionParts[0] >= 5) {
+    include_once(LEGACY_ROOT . '/lib/TemplateUtility.php');
+} else {
+    $php4 = true;
+}
 ?>
 <html>
     <head>
@@ -454,7 +451,9 @@
                                                     <td>Please choose your time zone.</td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="padding-bottom: 10px;"><?php if (!isset($php4)) TemplateUtility::printTimeZoneSelect('timeZone', 'width: 420px;', '', OFFSET_GMT); ?></td>
+                                                    <td style="padding-bottom: 10px;"><?php if (! isset($php4)) {
+                                                        TemplateUtility::printTimeZoneSelect('timeZone', 'width: 420px;', '', OFFSET_GMT);
+                                                    } ?></td>
                                                 </tr>
 
                                                 <tr>
@@ -463,7 +462,7 @@
                                                 <tr>
                                                     <td>
                                                         <select id="dateFormat" name="dateFormat" style="width: 150px;" class="selectBox">
-                                                            <option value="mdy" selected="selected">MM-DD-YYYY (US)</option>
+                                                            <option value="mdy" selected>MM-DD-YYYY (US)</option>
                                                             <option value="dmy">DD-MM-YYYY (UK)</option>
                                                         </select>
                                                     </td>
@@ -534,7 +533,7 @@
                             </table>
 
                             <script type="text/javascript">
-                                <?php if (!isset($php4)): ?>
+                                <?php if (! isset($php4)): ?>
                                     Installpage_populate('a=startInstall');
                                 <?php else: ?>
                                     setActiveStep(1);

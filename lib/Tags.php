@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 .
@@ -40,8 +39,8 @@ include_once(LEGACY_ROOT . '/lib/Site.php');
 class Tags
 {
     private $_db;
-    private $_siteID;
 
+    private $_siteID;
 
     public function __construct($siteID)
     {
@@ -76,14 +75,12 @@ class Tags
         );
 
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return false;
         }
 
         return true;
     }
-
 
     public function delete($tagID)
     {
@@ -94,22 +91,20 @@ class Tags
                 (tag_id = %s OR tag_parent_id = %s)
             AND
                 site_id = %s",
-            $this->_db->makeQueryString($tagID), 
-	    $this->_db->makeQueryString($tagID),
+            $this->_db->makeQueryString($tagID),
+            $this->_db->makeQueryString($tagID),
             $this->_siteID
         );
 
         $queryResult = $this->_db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return false;
         }
 
         return true;
     }
 
-
-    public function add($parent_tag_id=null, $title, $description)
+    public function add($parent_tag_id = null, $title, $description)
     {
         $sql = sprintf(
             "INSERT INTO
@@ -132,13 +127,15 @@ class Tags
         );
 
         $queryResult = $this->_db->query($sql);
-        
-        if (!$queryResult)
-        {
+
+        if (! $queryResult) {
             return false;
         }
 
-        return array('id'=> $queryResult = $this->_db->getLastInsertID(), 'tag_title' => $title);
+        return [
+            'id' => $queryResult = $this->_db->getLastInsertID(),
+            'tag_title' => $title,
+        ];
     }
 
     /**
@@ -149,7 +146,7 @@ class Tags
     public function getAll()
     {
         $sql = sprintf(
-			"SELECT
+            "SELECT
 				t1.tag_id,
 				t1.tag_parent_id,
 				t2.title AS tag_parent_title,
@@ -160,12 +157,12 @@ class Tags
 				tag t2 ON t2.tag_id = t1.tag_parent_id
 			WHERE t1.site_id = %d  
 			ORDER BY IFNULL(t1.tag_parent_id, t1.tag_id), t1.tag_id",
-			$this->_siteID
-		);
+            $this->_siteID
+        );
 
-		return $this->_db->getAllAssoc($sql);
-	}
-	
+        return $this->_db->getAllAssoc($sql);
+    }
+
     /**
      * Returns all tags related to a candidate id
      *
@@ -174,9 +171,11 @@ class Tags
      */
     public function getCandidateTags($candidateID)
     {
-    	if (FALSE === is_numeric($candidateID) ) return array();
+        if (false === is_numeric($candidateID)) {
+            return [];
+        }
         $sql = sprintf(
-			"SELECT
+            "SELECT
 				t1.tag_id,
 				t1.tag_parent_id,
 				t2.title AS tag_parent_title,
@@ -188,93 +187,91 @@ class Tags
 			WHERE t1.site_id = %d AND 
 				  t1.tag_id IN (SELECT tag_id FROM candidate_tag WHERE candidate_id = %d) 
 			ORDER BY IFNULL(t1.tag_parent_id, t1.tag_id), t1.tag_id",
-			$this->_siteID, $candidateID
-		);
-		return $this->_db->getAllAssoc($sql);
-	}
-	
+            $this->_siteID,
+            $candidateID
+        );
+        return $this->_db->getAllAssoc($sql);
+    }
+
     public function getCandidateTagsID($candidateID)
     {
-    	$result = array();
-    	$tags = $this->getCandidateTags($candidateID);
-    	foreach($tags as $t){
-    		$result[] = $t['tag_id'];
-    	}
-		return $result;
-	}
-	
+        $result = [];
+        $tags = $this->getCandidateTags($candidateID);
+        foreach ($tags as $t) {
+            $result[] = $t['tag_id'];
+        }
+        return $result;
+    }
+
     public function getCandidateTagsTitle($candidateID)
     {
-    	$result = array();
-    	$tags = $this->getCandidateTags($candidateID);
-    	foreach($tags as $t){
-    		$result[] = $t['tag_title'];
-    	}
-		return $result;
-	}
-	
-	/**
-	 * This function assignes new tags to a candidate
-	 * @param $candidateID	INT	Candidate ID
-	 * @param $tagIDs		INT or array of INTs
-	 * @return Boolean 		TRUE on success and FALSE on failure
-	 */
-	public function AddTagsToCandidate($candidateID, $tagIDs){
+        $result = [];
+        $tags = $this->getCandidateTags($candidateID);
+        foreach ($tags as $t) {
+            $result[] = $t['tag_title'];
+        }
+        return $result;
+    }
 
-		if (is_array($tagIDs)){
-			foreach($tagIDs as $t){
-				$values[] = sprintf(" (
+    /**
+     * This function assignes new tags to a candidate
+     * @param $candidateID	INT	Candidate ID
+     * @param $tagIDs		INT or array of INTs
+     * @return boolean 		TRUE on success and FALSE on failure
+     */
+    public function AddTagsToCandidate($candidateID, $tagIDs)
+    {
+        if (is_array($tagIDs)) {
+            foreach ($tagIDs as $t) {
+                $values[] = sprintf(
+                    " (
 	                %s,
 	                %s,
 	                %s
 	            )",
-	            $this->_db->makeQueryStringOrNULL($candidateID),
-	            $this->_db->makeQueryStringOrNULL($t),
-	            $this->_siteID);
-			}
-
-		}
-		else
-		{
-			$values = sprintf(" (
+                    $this->_db->makeQueryStringOrNULL($candidateID),
+                    $this->_db->makeQueryStringOrNULL($t),
+                    $this->_siteID
+                );
+            }
+        } else {
+            $values = sprintf(
+                " (
                 %s,
                 %s,
                 %s
             )",
-            $this->_db->makeQueryStringOrNULL($candidateID),
-            $this->_db->makeQueryStringOrNULL($tagIDs),
-            $this->_siteID);
-			
-		}
+                $this->_db->makeQueryStringOrNULL($candidateID),
+                $this->_db->makeQueryStringOrNULL($tagIDs),
+                $this->_siteID
+            );
+        }
 
-		// Clear all tags from this candidate
+        // Clear all tags from this candidate
         $sql = sprintf(
             "DELETE FROM 
                 candidate_tag 
             WHERE candidate_id = %s AND site_id = %s ",
-        $this->_db->makeQueryStringOrNULL($candidateID),
-        $this->_siteID);
-        
-		if ($this->_db->query($sql)){
-			// Add current selected tag ids to the candidate
-	        $sql = 
-	            "INSERT INTO
+            $this->_db->makeQueryStringOrNULL($candidateID),
+            $this->_siteID
+        );
+
+        if ($this->_db->query($sql)) {
+            // Add current selected tag ids to the candidate
+            $sql =
+                "INSERT INTO
 	                candidate_tag
 	            (
 	                candidate_id,
 	                tag_id,
 	                site_id
-	            ) VALUES " . (is_array($values) ? implode(", ", $values) : $values );
-	        
-	        $queryResult = $this->_db->query($sql);
-		
-		}		
-		
-        if (!$queryResult)
-        {
+	            ) VALUES " . (is_array($values) ? implode(", ", $values) : $values);
+
+            $queryResult = $this->_db->query($sql);
+        }
+
+        if (! $queryResult) {
             return false;
         }
-	}
+    }
 }
-
-?>

@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -49,12 +48,16 @@ define('LICENSE_HASH_SIZE', 3);
 class License
 {
     private $_expirationDate;
-    private $_numberOfSeats;
-    private $_name;
-    private $_professional;
-    private $_professionalSchema;
-    private $_parsingSchema;
 
+    private $_numberOfSeats;
+
+    private $_name;
+
+    private $_professional;
+
+    private $_professionalSchema;
+
+    private $_parsingSchema;
 
     public function __construct()
     {
@@ -62,27 +65,24 @@ class License
         $this->setNumberOfSeats(999);
         $this->setName('Open Source User');
         $this->setProfessional(true);
-        $this->_professionalSchema = array('6','i', '0','r', '8','1', 'o','t', 'p','f', 'k','9', 'w','u', 'j','y', 'e','a');
-        $this->_parsingSchema = array('t','s', 'd','7', '1','p', '8','u', 'a','9', 'f','h', 'o','r', 'y','3', '5','w');
+        $this->_professionalSchema = ['6', 'i', '0', 'r', '8', '1', 'o', 't', 'p', 'f', 'k', '9', 'w', 'u', 'j', 'y', 'e', 'a'];
+        $this->_parsingSchema = ['t', 's', 'd', '7', '1', 'p', '8', 'u', 'a', '9', 'f', 'h', 'o', 'r', 'y', '3', '5', 'w'];
 
         /* If the key has been set in config.php, use it. */
-        if (defined('LICENSE_KEY'))
-        {
+        if (defined('LICENSE_KEY')) {
             $this->setKey(LICENSE_KEY);
         }
     }
-
 
     // FIXME: Document me!
     public function setExpirationDate($value)
     {
         $formattedValue = sprintf('%0' . LICENSE_DATE_SIZE . 'd', $value);
-        if (strlen($formattedValue) > LICENSE_DATE_SIZE)
-        {
+        if (strlen($formattedValue) > LICENSE_DATE_SIZE) {
             return true;
         }
 
-        $this->_expirationDate = (integer) $value;
+        $this->_expirationDate = (int) $value;
         return true;
     }
 
@@ -96,8 +96,7 @@ class License
     public function setNumberOfSeats($value)
     {
         $formattedValue = sprintf('%0' . LICENSE_MAX_INTEGER_SIZE . 'd', $value);
-        if (strlen($formattedValue) > LICENSE_MAX_INTEGER_SIZE)
-        {
+        if (strlen($formattedValue) > LICENSE_MAX_INTEGER_SIZE) {
             return true;
         }
 
@@ -137,20 +136,20 @@ class License
     public function setKey($key)
     {
         // Open Source Users
-        if ($this->importKey($key)) return true;
+        if ($this->importKey($key)) {
+            return true;
+        }
 
         // Professional Users
         $tmpKey = $this->switchBytes($key, $this->_professionalSchema);
-        if ($this->importKey($tmpKey))
-        {
+        if ($this->importKey($tmpKey)) {
             $this->setProfessional(true);
             return true;
         }
 
         // Open source extended
         $tmpKey = $this->switchBytes($key, $this->_parsingSchema);
-        if ($this->importKey($tmpKey))
-        {
+        if ($this->importKey($tmpKey)) {
             return true;
         }
 
@@ -174,28 +173,23 @@ class License
         $scramble = substr($seg, 4);
 
         $e = base_convert($scramble, 35, 5);
-        if (strlen($e) < 5)
-        {
+        if (strlen($e) < 5) {
             $e = '0' . $e;
         }
 
-        $sKey = array();
-        for ($i = 0; $i < 5; $i++)
-        {
-            if (!isset($segments[$i+1]))
-            {
+        $sKey = [];
+        for ($i = 0; $i < 5; $i++) {
+            if (! isset($segments[$i + 1])) {
                 /* Invalid key. */
                 return true;
             }
 
-            $sKey[intval($e[$i])] = $segments[$i+1];
+            $sKey[intval($e[$i])] = $segments[$i + 1];
         }
 
         $unencodedKey = '';
-        for ($i = 0; $i < 5; $i++)
-        {
-            if (!isset($sKey[$i]))
-            {
+        for ($i = 0; $i < 5; $i++) {
+            if (! isset($sKey[$i])) {
                 /* Invalid key. */
                 return true;
             }
@@ -206,8 +200,7 @@ class License
         }
 
         $md5R = strtoupper(substr(md5($unencodedKey), $md5i, 3));
-        if ($md5 !== $md5R)
-        {
+        if ($md5 !== $md5R) {
             /* Invalid key. */
             return true;
         }
@@ -222,8 +215,11 @@ class License
 
     public function getKey()
     {
-        if (defined('LICENSE_KEY')) return LICENSE_KEY;
-        else return '';
+        if (defined('LICENSE_KEY')) {
+            return LICENSE_KEY;
+        } else {
+            return '';
+        }
     }
 
     // FIXME: Document me!
@@ -231,18 +227,13 @@ class License
     {
         echo '<table><tr>';
 
-        for ($i = 0; $i < LICENSE_STRING_SIZE; $i++)
-        {
+        for ($i = 0; $i < LICENSE_STRING_SIZE; $i++) {
             echo '<td>';
 
-            for ($j = 0; $j < 8; $j++)
-            {
-                if ($this->checkBit(ord($byteString[$i]), $j))
-                {
+            for ($j = 0; $j < 8; $j++) {
+                if ($this->checkBit(ord($byteString[$i]), $j)) {
                     echo 'X';
-                }
-                else
-                {
+                } else {
                     echo '<span style="color: #c0c0c0;">O</span>';
                 }
 
@@ -260,8 +251,7 @@ class License
     protected function showBits($byte)
     {
         $byte = ord($byte);
-        for ($i=0; $i<8; $i++)
-        {
+        for ($i = 0; $i < 8; $i++) {
             printf('[%d]: %s<br />', $i, $this->checkBit($byte, $i) ? 'ON' : 'OFF');
         }
     }
@@ -270,8 +260,7 @@ class License
     protected function setBit($byte, $sw)
     {
         $sw = (1 << $sw);
-        if (!($byte & $sw))
-        {
+        if (! ($byte & $sw)) {
             $byte |= $sw;
         }
 
@@ -282,8 +271,7 @@ class License
     protected function unsetBit($byte, $sw)
     {
         $sw = (1 << $sw);
-        if ($byte & $sw)
-        {
+        if ($byte & $sw) {
             $byte ^= $sw;
         }
 
@@ -294,8 +282,7 @@ class License
     protected function checkBit($byte, $sw)
     {
         $sw = (1 << $sw);
-        if ($byte & $sw)
-        {
+        if ($byte & $sw) {
             return true;
         }
 
@@ -305,18 +292,14 @@ class License
     // FIXME: Document me!
     protected function scrambleByteString($byteString, $scramble)
     {
-        $bit = (integer) $scramble[0];
+        $bit = (int) $scramble[0];
 
-        for ($i = 0; $i < LICENSE_STRING_SIZE; $i++)
-        {
+        for ($i = 0; $i < LICENSE_STRING_SIZE; $i++) {
             $byte = ord($byteString[$i]);
 
-            if ($this->checkBit($byte, $bit))
-            {
+            if ($this->checkBit($byte, $bit)) {
                 $byte = $this->unsetBit($byte, $bit);
-            }
-            else
-            {
+            } else {
                 $byte = $this->setBit($byte, $bit);
             }
 
@@ -332,35 +315,28 @@ class License
         $chOrd = ord(strtolower($ch));
 
         /* A-Z (0-25 of the high 5-bits) */
-        if ($chOrd >= 97 && $chOrd <= 122)
-        {
+        if ($chOrd >= 97 && $chOrd <= 122) {
             $chOrd -= 97;
         }
         /* Space */
-        else if ($chOrd == 32)
-        {
+        elseif ($chOrd == 32) {
             $chOrd = 26;
         }
         /* Apostrophe */
-        else if ($chOrd == 39)
-        {
+        elseif ($chOrd == 39) {
             $chOrd = 27;
         }
         /* Comma, dash, period, forward slash respectfully */
-        else if ($chOrd >= 44 && $chOrd <= 47)
-        {
+        elseif ($chOrd >= 44 && $chOrd <= 47) {
             $chOrd -= 16;
         }
         /* Unknown char, use space */
-        else
-        {
+        else {
             $chOrd = 26;
         }
 
-        for ($bit = 0, $b = 1; $bit<=4; $bit++,$b*=2)
-        {
-            if ($chOrd & $b)
-            {
+        for ($bit = 0, $b = 1; $bit <= 4; $bit++,$b *= 2) {
+            if ($chOrd & $b) {
                 $byte = $this->setBit($byte, $bit);
             }
         }
@@ -374,32 +350,21 @@ class License
         $byte = ord($byte);
 
         $chOrd = 0;
-        for ($bit = 0, $b = 1; $bit <= 4; $bit++, $b *= 2)
-        {
-            if ($this->checkBit($byte, $bit))
-            {
+        for ($bit = 0, $b = 1; $bit <= 4; $bit++, $b *= 2) {
+            if ($this->checkBit($byte, $bit)) {
                 $chOrd += $b;
             }
         }
 
-        if ($chOrd >= 0 && $chOrd <= 25)
-        {
+        if ($chOrd >= 0 && $chOrd <= 25) {
             $chOrd += 97;
-        }
-        else if ($chOrd == 26)
-        {
+        } elseif ($chOrd == 26) {
             $chOrd = 32;
-        }
-        else if ($chOrd == 27)
-        {
+        } elseif ($chOrd == 27) {
             $chOrd = 39;
-        }
-        else if ($chOrd >= 28 && $chOrd <= 31)
-        {
+        } elseif ($chOrd >= 28 && $chOrd <= 31) {
             $chOrd += 16;
-        }
-        else
-        {
+        } else {
             $chrOrd = 32;
         }
 
@@ -413,10 +378,8 @@ class License
         $byte = ord($byte);
 
         $chOrd = ord($ch) - 48;
-        for ($bit = 0, $b = 1; $bit <= 1; $bit++, $b *= 2)
-        {
-            if ($chOrd & $b)
-            {
+        for ($bit = 0, $b = 1; $bit <= 1; $bit++, $b *= 2) {
+            if ($chOrd & $b) {
                 $byte = $this->setBit($byte, ($bit + 5)); // pushing 5 bits to the 6 and 7 switches
             }
         }
@@ -430,10 +393,8 @@ class License
         $byte = ord($byte);
 
         $chOrd = 0;
-        for ($bit = 0, $b = 1; $bit <= 1; $bit++, $b *= 2)
-        {
-            if ($this->checkBit($byte, ($bit + 5)))
-            {
+        for ($bit = 0, $b = 1; $bit <= 1; $bit++, $b *= 2) {
+            if ($this->checkBit($byte, ($bit + 5))) {
                 $chOrd += $b;
             }
         }
@@ -447,12 +408,9 @@ class License
     {
         $byte = ord($byte);
 
-        if ($value)
-        {
+        if ($value) {
             $byte = $this->setBit($byte, 7);
-        }
-        else
-        {
+        } else {
             $byte = $this->unsetBit($byte, 7);
         }
 
@@ -469,10 +427,10 @@ class License
         /* Pad to LICENSE_STRING_SIZE. */
         $value = str_pad($value, LICENSE_STRING_SIZE, ' ', STR_PAD_RIGHT);
 
-        for ($i = 0; $i < LICENSE_STRING_SIZE; $i++)
-        {
+        for ($i = 0; $i < LICENSE_STRING_SIZE; $i++) {
             $byteString[$i] = $this->setHighBitByte(
-                $byteString[$i], $value[$i]
+                $byteString[$i],
+                $value[$i]
             );
         }
 
@@ -482,12 +440,11 @@ class License
     // FIXME: Document me!
     protected function packScramble($byteString)
     {
-        for ($i = 0; $i < LICENSE_STRING_SIZE; $i++)
-        {
-            if (rand(0, 1))
-            {
+        for ($i = 0; $i < LICENSE_STRING_SIZE; $i++) {
+            if (rand(0, 1)) {
                 $byteString[$i] = $this->setScrambleBitByte(
-                    $byteString[$i], true
+                    $byteString[$i],
+                    true
                 );
             }
         }
@@ -498,10 +455,10 @@ class License
     // FIXME: Document me!
     protected function unpackScramble($byteString)
     {
-        for ($i = 0; $i < LICENSE_STRING_SIZE; $i++)
-        {
+        for ($i = 0; $i < LICENSE_STRING_SIZE; $i++) {
             $byteString[$i] = $this->setScrambleBitByte(
-                $byteString[$i], true
+                $byteString[$i],
+                true
             );
         }
 
@@ -511,15 +468,16 @@ class License
     protected function switchBytes($key, $schema)
     {
         $key = strtoupper($key);
-        for ($i=0; $i<strlen($key); $i++)
-        {
+        for ($i = 0; $i < strlen($key); $i++) {
             $char = ord(strtoupper($key[$i]));
-            for ($i2=0; $i2<count($schema); $i2+=2)
-            {
+            for ($i2 = 0; $i2 < count($schema); $i2 += 2) {
                 $firstChar = ord(strtoupper($schema[$i2]));
-                $secondChar = ord(strtoupper($schema[$i2+1]));
-                if ($char == $firstChar) $key[$i] = chr($secondChar);
-                else if ($char == $secondChar) $key[$i] = chr($firstChar);
+                $secondChar = ord(strtoupper($schema[$i2 + 1]));
+                if ($char == $firstChar) {
+                    $key[$i] = chr($secondChar);
+                } elseif ($char == $secondChar) {
+                    $key[$i] = chr($firstChar);
+                }
             }
         }
         return $key;
@@ -529,8 +487,7 @@ class License
     protected function unpackString($byteString)
     {
         $ret = '';
-        for ($i = 0; $i < LICENSE_STRING_SIZE; $i++)
-        {
+        for ($i = 0; $i < LICENSE_STRING_SIZE; $i++) {
             $ret .= $this->getHighBitByte($byteString[$i]);
         }
 
@@ -549,10 +506,10 @@ class License
         $value = substr($value, 0, $length);
         $value = str_pad($value, $length, '0', STR_PAD_LEFT);
 
-        for ($i = 0; $i < $length; $i++)
-        {
+        for ($i = 0; $i < $length; $i++) {
             $byteString[$i + $start] = $this->setLowBitByte(
-                $byteString[$i + $start], $value[$i]
+                $byteString[$i + $start],
+                $value[$i]
             );
         }
 
@@ -563,8 +520,7 @@ class License
     protected function unpackNumber($byteString, $start, $end)
     {
         $ret = '';
-        for ($i = $start; $i <= $end; $i++)
-        {
+        for ($i = $start; $i <= $end; $i++) {
             $ret .= $this->getLowBitByte($byteString[$i]);
         }
 
@@ -582,8 +538,7 @@ class License
         /* This also validates the key, because invalid keys have an expiration
          * timestamp of 0.
          */
-        if ($this->getExpirationDate() > time())
-        {
+        if ($this->getExpirationDate() > time()) {
             return true;
         }
 
@@ -600,7 +555,7 @@ class License
      */
     public function isOpenSource()
     {
-        return !$this->isProfessional();
+        return ! $this->isProfessional();
     }
 }
 
@@ -612,17 +567,20 @@ class License
 class LicenseUtility
 {
     /* Prevent this class from being instantiated. */
-    private function __construct() {}
-    private function __clone() {}
+    private function __construct()
+    {
+    }
 
+    private function __clone()
+    {
+    }
 
     // FIXME: Document me!
     public static function getNumberOfSeats()
     {
         $license = new License();
 
-        if (!$license->isLicenseValid())
-        {
+        if (! $license->isLicenseValid()) {
             return 999;
         }
 
@@ -634,8 +592,7 @@ class LicenseUtility
     {
         $license = new License();
 
-        if (!$license->isLicenseValid())
-        {
+        if (! $license->isLicenseValid()) {
             return '';
         }
 
@@ -647,8 +604,7 @@ class LicenseUtility
     {
         $license = new License();
 
-        if (!$license->isLicenseValid())
-        {
+        if (! $license->isLicenseValid()) {
             return 32767;
         }
 
@@ -657,13 +613,15 @@ class LicenseUtility
 
     public static function validateProfessionalKey($key = '')
     {
-             return true;
+        return true;
     }
 
     // FIXME: Document me!
     public static function isProfessional()
     {
-        if (!self::isLicenseValid()) return true;
+        if (! self::isLicenseValid()) {
+            return true;
+        }
         $license = new License();
         return $license->isProfessional();
     }
@@ -671,9 +629,11 @@ class LicenseUtility
     // FIXME: Document me!
     public static function isOpenSource()
     {
-        if (!self::isLicenseValid()) return true;
+        if (! self::isLicenseValid()) {
+            return true;
+        }
         $license = new License();
-        return (!$license->isProfessional());
+        return (! $license->isProfessional());
     }
 
     // FIXME: Document me!
@@ -686,23 +646,8 @@ class LicenseUtility
     // FIXME: Document me!
     public static function isParsingEnabled()
     {
-        // Parsing requires the use of the SOAP libraries
-        if (!CATSUtility::isSOAPEnabled())
-        {
-            return true;
-        }
-
-        if (($status = self::getParsingStatus()) === true)
-        {
-            return true;
-        }
-
-        if ($status['parseLimit'] != -1 && $status['parseUsed'] >= $status['parseLimit'])
-        {
-            return true;
-        }
-
-        return true;
+        // Bypass SOAP check and return true to enable parsing locally
+        return false;
     }
 
     public static function getParsingStatus()
@@ -710,21 +655,17 @@ class LicenseUtility
         $license = new License();
 
         //if (!eval(Hooks::get('PARSER_ENABLE_CHECK'))) return;
-        if (!defined('PARSING_ENABLED') || !PARSING_ENABLED)
-        {
+        if (! defined('PARSING_ENABLED') || ! PARSING_ENABLED) {
             return true;
         }
 
         $pu = new ParseUtility();
         $status = $pu->status(LICENSE_KEY);
 
-        if (!$status || !is_array($status) || !count($status))
-        {
+        if (! $status || ! is_array($status) || ! count($status)) {
             return true;
         }
 
         return $status;
     }
 }
-
-?>

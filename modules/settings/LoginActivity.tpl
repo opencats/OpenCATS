@@ -26,11 +26,11 @@
                         <td>
                             <select name="view" id="view" onchange="document.loginActivityViewSelectorForm.submit();">
                                 <?php if ($this->view == 'successful'): ?>
-                                    <option value="successful" selected="selected">Successful Logins</option>
+                                    <option value="successful" selected>Successful Logins</option>
                                     <option value="unsuccessful">Unsuccessful Logins</option>
                                 <?php elseif ($this->view == 'unsuccessful'): ?>
                                     <option value="successful">Successful Logins</option>
-                                    <option value="unsuccessful" selected="selected">Unsuccessful Logins</option>
+                                    <option value="unsuccessful" selected>Unsuccessful Logins</option>
                                 <?php else: ?>
                                     <option value="successful">Successful Logins</option>
                                     <option value="unsuccessful">Unsuccessful Logins</option>

@@ -13,313 +13,305 @@
  *
  * @package Artichow
  */
-class awMark {
+class awMark
+{
+    /**
+     * Circle mark
+     *
+     * @var int
+     */
+    public const CIRCLE = 1;
 
-	/**
-	 * Circle mark
-	 *
-	 * @var int
-	 */
-	const CIRCLE = 1;
+    /**
+     * Quare mark
+     *
+     * @var int
+     */
+    public const SQUARE = 2;
 
-	/**
-	 * Quare mark
-	 *
-	 * @var int
-	 */
-	const SQUARE = 2;
+    /**
+     * Image mark
+     *
+     * @var int
+     */
+    public const IMAGE = 3;
 
-	/**
-	 * Image mark
-	 *
-	 * @var int
-	 */
-	const IMAGE = 3;
+    /**
+     * Star mark
+     *
+     * @var int
+     */
+    public const STAR = 4;
 
-	/**
-	 * Star mark
-	 *
-	 * @var int
-	 */
-	const STAR = 4;
+    /**
+     * Paperclip mark
+     *
+     * @var int
+     */
+    public const PAPERCLIP = 5;
 
-	/**
-	 * Paperclip mark
-	 *
-	 * @var int
-	 */
-	const PAPERCLIP = 5;
+    /**
+     * Book mark
+     *
+     * @var int
+     */
+    public const BOOK = 6;
 
-	/**
-	 * Book mark
-	 *
-	 * @var int
-	 */
-	const BOOK = 6;
+    /**
+     * Must marks be hidden ?
+     *
+     * @var bool
+     */
+    protected $hide;
 
-	/**
-	 * Must marks be hidden ?
-	 *
-	 * @var bool
-	 */
-	protected $hide;
+    /**
+     * Mark type
+     *
+     * @var int
+     */
+    protected $type;
 
-	/**
-	 * Mark type
-	 *
-	 * @var int
-	 */
-	protected $type;
+    /**
+     * Mark size
+     *
+     * @var int
+     */
+    protected $size = 8;
 
-	/**
-	 * Mark size
-	 *
-	 * @var int
-	 */
-	protected $size = 8;
+    /**
+     * Fill mark
+     *
+     * @var Color, Gradient
+     */
+    protected $fill;
 
-	/**
-	 * Fill mark
-	 *
-	 * @var Color, Gradient
-	 */
-	protected $fill;
+    /**
+     * Mark image
+     *
+     * @var Image
+     */
+    protected $image;
 
-	/**
-	 * Mark image
-	 *
-	 * @var Image
-	 */
-	protected $image;
+    /**
+     * To draw marks
+     *
+     * @var Drawer
+     */
+    protected $drawer;
 
-	/**
-	 * To draw marks
-	 *
-	 * @var Drawer
-	 */
-	protected $drawer;
+    /**
+     * Move position from this vector
+     *
+     * @var Point
+     */
+    protected $move;
 
-	/**
-	 * Move position from this vector
-	 *
-	 * @var Point
-	 */
-	protected $move;
+    /**
+     * Marks border
+     *
+     * @var Border
+     */
+    public $border;
 
-	/**
-	 * Marks border
-	 *
-	 * @var Border
-	 */
-	public $border;
+    /**
+     * Build the mark
+     */
+    public function __construct()
+    {
+        $this->fill = new awColor(255, 0, 0, 0);
+        $this->border = new awBorder();
+        $this->border->hide();
 
-	/**
-	 * Build the mark
-	 */
-	public function __construct() {
+        $this->move = new awPoint(0, 0);
+    }
 
-		$this->fill = new awColor(255, 0, 0, 0);
-		$this->border = new awBorder;
-		$this->border->hide();
+    /**
+     * Change mark position
+     *
+     * @param int $x Add this interval to X coord
+     * @param int $y Add this interval to Y coord
+     */
+    public function move($x, $y)
+    {
+        $this->move = $this->move->move($x, $y);
+    }
 
-		$this->move = new awPoint(0, 0);
+    /**
+     * Hide marks ?
+     *
+     * @param bool $hide TRUE to hide marks, FALSE otherwise
+     */
+    public function hide($hide = true)
+    {
+        $this->hide = (bool) $hide;
+    }
 
-	}
+    /**
+     * Show marks ?
+     *
+     * @param bool $show
+     */
+    public function show($show = true)
+    {
+        $this->hide = (bool) ! $show;
+    }
 
-	/**
-	 * Change mark position
-	 *
-	 * @param int $x Add this interval to X coord
-	 * @param int $y Add this interval to Y coord
-	 */
-	public function move($x, $y) {
+    /**
+     * Change mark type
+     *
+     * @param int $size Size in pixels
+     */
+    public function setSize($size)
+    {
+        $this->size = (int) $size;
+    }
 
-		$this->move = $this->move->move($x, $y);
+    /**
+     * Change mark type
+     *
+     * @param int $type New mark type
+     * @param int $size Mark size (can be NULL)
+     */
+    public function setType($type, $size = null)
+    {
+        $this->type = (int) $type;
+        if ($size !== null) {
+            $this->setSize($size);
+        }
+    }
 
-	}
+    /**
+     * Fill the mark with a color or a gradient
+     */
+    public function setFill(mixed $fill)
+    {
+        if ($fill instanceof awColor or $fill instanceof awGradient) {
+            $this->fill = $fill;
+        }
+    }
 
-	/**
-	 * Hide marks ?
-	 *
-	 * @param bool $hide TRUE to hide marks, FALSE otherwise
-	 */
-	public function hide($hide = TRUE) {
-		$this->hide = (bool)$hide;
-	}
+    /**
+     * Set an image
+     * Only for awMark::IMAGE type.
+     *
+     * @param Image An image
+     */
+    public function setImage(awImage $image)
+    {
+        $this->image = $image;
+    }
 
-	/**
-	 * Show marks ?
-	 *
-	 * @param bool $show
-	 */
-	public function show($show = TRUE) {
-		$this->hide = (bool)!$show;
-	}
+    /**
+     * Draw the mark
+     *
+     * @param awPoint $point Mark center
+     */
+    public function draw(awDrawer $drawer, awPoint $point)
+    {
+        // Hide marks ?
+        if ($this->hide) {
+            return;
+        }
 
-	/**
-	 * Change mark type
-	 *
-	 * @param int $size Size in pixels
-	 */
-	public function setSize($size) {
-		$this->size = (int)$size;
-	}
+        // Check if we can print marks
+        if ($this->type !== null) {
+            $this->drawer = $drawer;
+            $realPoint = $this->move->move($point->x, $point->y);
 
-	/**
-	 * Change mark type
-	 *
-	 * @param int $type New mark type
-	 * @param int $size Mark size (can be NULL)
-	 */
-	public function setType($type, $size = NULL) {
-		$this->type = (int)$type;
-		if($size !== NULL) {
-			$this->setSize($size);
-		}
-	}
+            switch ($this->type) {
+                case awMark::CIRCLE:
+                    $this->drawCircle($realPoint);
+                    break;
 
-	/**
-	 * Fill the mark with a color or a gradient
-	 *
-	 * @param mixed $fill A color or a gradient
-	 */
-	public function setFill($fill) {
-		if($fill instanceof awColor or $fill instanceof awGradient) {
-			$this->fill = $fill;
-		}
-	}
+                case awMark::SQUARE:
+                    $this->drawSquare($realPoint);
+                    break;
 
-	/**
-	 * Set an image
-	 * Only for awMark::IMAGE type.
-	 *
-	 * @param Image An image
-	 */
-	public function setImage(awImage $image) {
-		$this->image = $image;
-	}
+                case awMark::IMAGE:
+                    $this->drawImage($realPoint);
+                    break;
 
-	/**
-	 * Draw the mark
-	 *
-	 * @param awDrawer $drawer
-	 * @param awPoint $point Mark center
-	 */
-	public function draw(awDrawer $drawer, awPoint $point) {
+                case awMark::STAR:
+                    $this->changeType('star');
+                    $this->draw($drawer, $point);
+                    break;
 
-		// Hide marks ?
-		if($this->hide) {
-			return;
-		}
+                case awMark::PAPERCLIP:
+                    $this->changeType('paperclip');
+                    $this->draw($drawer, $point);
+                    break;
 
-		// Check if we can print marks
-		if($this->type !== NULL) {
+                case awMark::BOOK:
+                    $this->changeType('book');
+                    $this->draw($drawer, $point);
+                    break;
+            }
+        }
+    }
 
-			$this->drawer = $drawer;
-			$realPoint = $this->move->move($point->x, $point->y);
+    protected function changeType($image)
+    {
+        $this->setType(awMARK::IMAGE);
+        $this->setImage(new awFileImage(ARTICHOW_IMAGE . DIRECTORY_SEPARATOR . $image . '.png'));
+    }
 
-			switch($this->type) {
+    protected function drawCircle(awPoint $point)
+    {
+        $this->drawer->filledEllipse(
+            $this->fill,
+            $point,
+            $this->size,
+            $this->size
+        );
 
-				case awMark::CIRCLE :
-					$this->drawCircle($realPoint);
-					break;
+        $this->border->ellipse(
+            $this->drawer,
+            $point,
+            $this->size,
+            $this->size
+        );
+    }
 
-				case awMark::SQUARE :
-					$this->drawSquare($realPoint);
-					break;
+    protected function drawSquare(awPoint $point)
+    {
+        [$x, $y] = $point->getLocation();
 
-				case awMark::IMAGE :
-					$this->drawImage($realPoint);
-					break;
+        $x1 = (int) ($x - $this->size / 2);
+        $x2 = $x1 + $this->size;
+        $y1 = (int) ($y - $this->size / 2);
+        $y2 = $y1 + $this->size;
 
-				case awMark::STAR :
-					$this->changeType('star');
-					$this->draw($drawer, $point);
-					break;
+        $this->border->rectangle($this->drawer, new awPoint($x1, $y1), new awPoint($x2, $y2));
 
-				case awMark::PAPERCLIP :
-					$this->changeType('paperclip');
-					$this->draw($drawer, $point);
-					break;
+        $size = $this->border->visible() ? 1 : 0;
 
-				case awMark::BOOK :
-					$this->changeType('book');
-					$this->draw($drawer, $point);
-					break;
+        $this->drawer->filledRectangle(
+            $this->fill,
+            new awLine(
+                new awPoint($x1 + $size, $y1 + $size),
+                new awPoint($x2 - $size, $y2 - $size)
+            )
+        );
+    }
 
-			}
+    protected function drawImage(awPoint $point)
+    {
+        if ($this->image instanceof awImage) {
+            $width = $this->image->width;
+            $height = $this->image->height;
 
-		}
+            [$x, $y] = $point->getLocation();
 
-	}
+            $x1 = (int) ($x - $width / 2);
+            $x2 = $x1 + $width;
+            $y1 = (int) ($y - $width / 2);
+            $y2 = $y1 + $height;
 
-	protected function changeType($image) {
-		$this->setType(awMARK::IMAGE);
-		$this->setImage(new awFileImage(ARTICHOW_IMAGE.DIRECTORY_SEPARATOR.$image.'.png'));
-	}
+            $this->border->rectangle($this->drawer, new awPoint($x1 - 1, $y1 - 1), new awPoint($x2 + 1, $y2 + 1));
 
-	protected function drawCircle(awPoint $point) {
-
-		$this->drawer->filledEllipse(
-			$this->fill,
-			$point,
-			$this->size, $this->size
-		);
-
-		$this->border->ellipse(
-			$this->drawer,
-			$point,
-			$this->size, $this->size
-		);
-
-	}
-
-	protected function drawSquare(awPoint $point) {
-
-		list($x, $y) = $point->getLocation();
-
-		$x1 = (int)($x - $this->size / 2);
-		$x2 = $x1 + $this->size;
-		$y1 = (int)($y - $this->size / 2);
-		$y2 = $y1 + $this->size;
-
-		$this->border->rectangle($this->drawer, new awPoint($x1, $y1), new awPoint($x2, $y2));
-
-		$size = $this->border->visible() ? 1 : 0;
-
-		$this->drawer->filledRectangle(
-			$this->fill,
-			new awLine(
-				new awPoint($x1 + $size, $y1 + $size),
-				new awPoint($x2 - $size, $y2 - $size)
-			)
-		);
-
-	}
-
-	protected function drawImage(awPoint $point) {
-
-		if($this->image instanceof awImage) {
-
-			$width = $this->image->width;
-			$height = $this->image->height;
-
-			list($x, $y) = $point->getLocation();
-
-			$x1 = (int)($x - $width / 2);
-			$x2 = $x1 + $width;
-			$y1 = (int)($y - $width / 2);
-			$y2 = $y1 + $height;
-
-			$this->border->rectangle($this->drawer, new awPoint($x1 - 1, $y1 - 1), new awPoint($x2 + 1, $y2 + 1));
-
-			$this->drawer->copyImage($this->image, new awPoint($x1, $y1), new awPoint($x2, $y2));
-
-		}
-
-	}
-
+            $this->drawer->copyImage($this->image, new awPoint($x1, $y1), new awPoint($x2, $y2));
+        }
+    }
 }
 
 registerClass('Mark');
-?>

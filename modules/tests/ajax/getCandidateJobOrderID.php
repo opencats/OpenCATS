@@ -32,14 +32,12 @@ include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 
 $interface = new SecureAJAXInterface();
 
-if (!$interface->isRequiredIDValid('candidateID', false))
-{
+if (! $interface->isRequiredIDValid('candidateID', false)) {
     $interface->outputXMLErrorPage(-1, 'Invalid candidate ID.');
     die();
 }
 
-if (!$interface->isRequiredIDValid('jobOrderID', false))
-{
+if (! $interface->isRequiredIDValid('jobOrderID', false)) {
     $interface->outputXMLErrorPage(-1, 'Invalid job order ID.');
     die();
 }
@@ -47,7 +45,7 @@ if (!$interface->isRequiredIDValid('jobOrderID', false))
 $siteID = $interface->getSiteID();
 
 $candidateID = $_REQUEST['candidateID'];
-$jobOrderID  = $_REQUEST['jobOrderID'];
+$jobOrderID = $_REQUEST['jobOrderID'];
 
 /* Get the candidate-joborder ID. */
 $pipelines = new Pipelines($siteID);
@@ -61,4 +59,3 @@ $interface->outputXMLPage(
     "    <id>" . $candidateJobOrderID . "</id>\n" .
     "</data>\n"
 );
-

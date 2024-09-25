@@ -46,7 +46,6 @@ include_once(LEGACY_ROOT . '/modules/queue/lib/Task.php');
  *                      //    (i.e.: ./modules/MODULE_NAME/tasks/TASKNAME.php)
  *      $args,          // Mixed variable type
  *      $priority,      // 1-5 (5 being lowest priority)
- *
  */
 
 class SampleRecurring extends Task
@@ -60,8 +59,7 @@ class SampleRecurring extends Task
          * The following are the possible return values of this function.
          * You should put the code you want to run in this function.
          */
-        switch (rand(0, 3))
-        {
+        switch (rand(0, 3)) {
             /**
              * TASKRET_ERROR
              *   This task will not be attempted again. It will be marked as an error
@@ -72,29 +70,29 @@ class SampleRecurring extends Task
                 $ret = TASKRET_ERROR;
                 break;
 
-            /**
-             * TASKRET_FAILURE
-             *   This task will be tried again a few times. If it continues to fail, it
-             *   will be marked as an error (see above).
-             */
+                /**
+                 * TASKRET_FAILURE
+                 *   This task will be tried again a few times. If it continues to fail, it
+                 *   will be marked as an error (see above).
+                 */
             case 1:
                 $message = 'Failure (will try again)';
                 $ret = TASKRET_FAILURE;
                 break;
 
-            /**
-             * TASKRET_SUCCESS
-             *   This task completed successfully and will be logged.
-             */
+                /**
+                 * TASKRET_SUCCESS
+                 *   This task completed successfully and will be logged.
+                 */
             case 2:
                 $message = 'Success';
                 $ret = TASKRET_SUCCESS;
                 break;
 
-            /**
-             * TASKRET_SUCCESS_NOLOG
-             *   The task completed successfully but will not save a log.
-             */
+                /**
+                 * TASKRET_SUCCESS_NOLOG
+                 *   The task completed successfully but will not save a log.
+                 */
             default:
                 $message = 'Success (no log)';
                 $ret = TASKRET_SUCCESS_NOLOG;

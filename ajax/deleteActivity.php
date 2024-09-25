@@ -32,8 +32,7 @@ include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
 
 $interface = new SecureAJAXInterface();
 
-if (!$interface->isRequiredIDValid('activityID'))
-{
+if (! $interface->isRequiredIDValid('activityID')) {
     $interface->outputXMLErrorPage(-1, 'Invalid activity ID.');
     die();
 }
@@ -48,5 +47,3 @@ $activityEntries->delete($activityID);
 
 /* Send back the XML data. */
 $interface->outputXMLSuccessPage();
-
-?>

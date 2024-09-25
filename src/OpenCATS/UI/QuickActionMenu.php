@@ -1,9 +1,11 @@
 <?php
+
 namespace OpenCATS\UI;
 
 class QuickActionMenu
 {
     private $dataItemType;
+
     private $dataItemId;
 
     public function __construct($dataItemType, $dataItemId, $accessLevel)
@@ -15,11 +17,11 @@ class QuickActionMenu
 
     public function getHtml()
     {
-        if( $this->accessLevel >= ACCESS_LEVEL_READ) {
+        if ($this->accessLevel >= ACCESS_LEVEL_READ) {
             $onClick = 'showHideSingleQuickActionMenu(';
-            $onClick .= 'new ' . $this->getMenuType() . '('. implode(', ',  $this->getParameters()) .')';
+            $onClick .= 'new ' . $this->getMenuType() . '(' . implode(', ', $this->getParameters()) . ')';
             $onClick .= ');';
-            echo '<a href="javascript:void(0);" onclick="'. $onClick . '"><img src="images/downward.gif" border="0"></a>';
+            echo '<a href="javascript:void(0);" onclick="' . $onClick . '"><img src="images/downward.gif" border="0"></a>';
         }
     }
 
@@ -28,14 +30,14 @@ class QuickActionMenu
         $addToPipeline = ($_SESSION['CATS']->getAccessLevel('pipelines.addToPipeline') > ACCESS_LEVEL_READ) ? 1 : 0;
         $editCandidate = ($_SESSION['CATS']->getAccessLevel('candidates.edit') > ACCESS_LEVEL_READ) ? 1 : 0;
         $mergeCandidates = ($_SESSION['CATS']->getAccessLevel('candidates.duplicates') >= ACCESS_LEVEL_SA) ? 1 : 0;
-        
-        return array(
+
+        return [
             $this->dataItemType,
             $this->dataItemId,
             'docjslib_getRealLeft(this)-20',
             'docjslib_getRealTop(this)+20',
-            '{pipelines_addToPipeline: '.$addToPipeline.', candidates_merge: '.$mergeCandidates.'}'
-        );
+            '{pipelines_addToPipeline: ' . $addToPipeline . ', candidates_merge: ' . $mergeCandidates . '}',
+        ];
     }
 
     protected function getMenuType()

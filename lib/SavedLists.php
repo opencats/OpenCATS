@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -38,15 +37,14 @@
 class SavedLists
 {
     private $_db;
-    private $_siteID;
 
+    private $_siteID;
 
     public function __construct($siteID)
     {
         $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
-
 
     /**
      * Returns all saved lists that the specified data item belongs to.
@@ -90,28 +88,22 @@ class SavedLists
      * @param flag data item type
      * @return array saved lists data
      */
-     
     public function getAll($dataItemType = -1, $listType = ALL_LISTS)
     {
-        if ($dataItemType != -1)
-        {
+        if ($dataItemType != -1) {
             $typeCriterion = sprintf(
                 'AND data_item_type = %s',
                 $this->_db->makeQueryInteger($dataItemType)
             );
-        }
-        else
-        {
+        } else {
             $typeCriterion = '';
         }
-        
-        if ($listType == STATIC_LISTS)
-        {
+
+        if ($listType == STATIC_LISTS) {
             $typeCriterion .= ' AND is_dynamic = false';
         }
 
-        if ($listType == DYNAMIC_LISTS)
-        {
+        if ($listType == DYNAMIC_LISTS) {
             $typeCriterion .= ' AND is_dynamic = true';
         }
 
@@ -161,8 +153,7 @@ class SavedLists
         );
         $rs = $this->_db->getAssoc($sql);
 
-        if (empty($rs))
-        {
+        if (empty($rs)) {
             return -1;
         }
 
@@ -174,7 +165,6 @@ class SavedLists
      *
      * @param integer savedListID
      * @param string description
-     * @return void
      */
     public function updateListName($savedListID, $description)
     {
@@ -193,13 +183,12 @@ class SavedLists
             $this->_siteID
         );
         $rs = $this->_db->query($sql);
-    }     
-    
+    }
+
     /**
      * Adds a list.
      *
      * @param string list name
-     * @return void
      */
     public function newListName($description, $dataItemType)
     {
@@ -220,14 +209,13 @@ class SavedLists
             $this->_siteID,
             $_SESSION['CATS']->getUserID()
         );
-        $rs = $this->_db->query($sql);       
+        $rs = $this->_db->query($sql);
     }
 
     /**
      * Deletes a list.
      *
      * @param string list name
-     * @return void
      */
     public function delete($savedListID)
     {
@@ -241,8 +229,8 @@ class SavedLists
             $savedListID,
             $this->_siteID
         );
-        $rs = $this->_db->query($sql);       
-        
+        $rs = $this->_db->query($sql);
+
         $sql = sprintf(
             "DELETE FROM
                 saved_list_entry
@@ -253,7 +241,7 @@ class SavedLists
             $savedListID,
             $this->_siteID
         );
-        $rs = $this->_db->query($sql);    
+        $rs = $this->_db->query($sql);
     }
 
     /**
@@ -296,14 +284,11 @@ class SavedLists
      *
      * @param array list editor data
      * @param flag data item type
-     * @return void
      */
     public function updateSavedLists($updates, $dataItemType)
     {
-        foreach ($updates as $update)
-        {
-            switch ($update[2])
-            {
+        foreach ($updates as $update) {
+            switch ($update[2]) {
                 case LIST_EDITOR_ADD:
                     $sql = sprintf(
                         "INSERT INTO saved_list (
@@ -351,8 +336,8 @@ class SavedLists
                             saved_list_id = %s
                          AND
                             site_id = %s",
-                         $this->_db->makeQueryInteger($update[1]),
-                         $this->_siteID
+                        $this->_db->makeQueryInteger($update[1]),
+                        $this->_siteID
                     );
                     $this->_db->query($sql);
 
@@ -369,9 +354,9 @@ class SavedLists
                             saved_list_id = %s
                          AND
                             site_id = %s",
-                         $this->_db->makeQueryString($update[0]),
-                         $this->_db->makeQueryInteger($update[1]),
-                         $this->_siteID
+                        $this->_db->makeQueryString($update[0]),
+                        $this->_db->makeQueryInteger($update[1]),
+                        $this->_siteID
                     );
                     $this->_db->query($sql);
 
@@ -384,11 +369,11 @@ class SavedLists
             }
         }
     }
-    
+
     /*
      * TODO: Document Me!
-     */ 
-    function addEntryMany($savedListID, $dataItemType, $dataItemIDs)
+     */
+    public function addEntryMany($savedListID, $dataItemType, $dataItemIDs)
     {
         $sql = sprintf(
             "SELECT
@@ -406,23 +391,21 @@ class SavedLists
             implode(',', $dataItemIDs)
         );
 
-        $rs = $this->_db->getAssoc($sql);     
-        
-        if (isset($rs['savedListID']))
-        {
+        $rs = $this->_db->getAssoc($sql);
+
+        if (isset($rs['savedListID'])) {
             return;
-        }  
-        
-        $valuesArray = array();
-        foreach ($dataItemIDs as $dataItemID)
-        {
+        }
+
+        $valuesArray = [];
+        foreach ($dataItemIDs as $dataItemID) {
             $valuesArray[] = '(' . $this->_db->makeQueryInteger($savedListID) . ',' .
                                   $this->_db->makeQueryInteger($dataItemType) . ',' .
                                   $this->_db->makeQueryInteger($dataItemID) . ',' .
-                                  $this->_siteID .','.
+                                  $this->_siteID . ',' .
                                   'NOW())';
         }
-        
+
         $sql = sprintf(
             "INSERT INTO saved_list_entry (
                 saved_list_id,
@@ -435,15 +418,15 @@ class SavedLists
             implode(',', $valuesArray)
         );
         $this->_db->query($sql);
-        
+
         $this->updateSavedListItemCountAndTimeStamp($savedListID);
     }
-    
+
     /*
      * TODO: Document Me!
-     */ 
-    function removeEntryMany($savedListID, $dataItemIDs)
-    {        
+     */
+    public function removeEntryMany($savedListID, $dataItemIDs)
+    {
         $sql = sprintf(
             "DELETE FROM
                 saved_list_entry 
@@ -459,10 +442,10 @@ class SavedLists
             implode(',', $dataItemIDs)
         );
         $this->_db->query($sql);
-        
+
         $this->updateSavedListItemCountAndTimeStamp($savedListID);
-    }    
-    
+    }
+
     /*
      * Immediantly regenerates the number of entries count for a static list.
      * Execute this EVERY TIME any change is made to the static list (except for
@@ -477,9 +460,9 @@ class SavedLists
                 saved_list_entry
              WHERE
                 saved_list_id = %s",
-             $savedListID
+            $savedListID
         );
-                         
+
         $countRS = $this->_db->getAssoc($sql);
 
         $sql = sprintf(
@@ -492,9 +475,9 @@ class SavedLists
             $countRS['numberOfEntries'],
             $savedListID
         );
-        
+
         $this->_db->query($sql);
-        
+
         $sql = sprintf(
             "UPDATE 
                 saved_list
@@ -507,7 +490,7 @@ class SavedLists
             $this->_siteID,
             $savedListID
         );
-        
+
         $this->_db->query($sql);
     }
 
@@ -517,20 +500,16 @@ class SavedLists
      * @param array list editor data
      * @param integer data item ID
      * @param flag data item type
-     * @return void
      */
     public function updateDataItemSavedLists($updates, $dataItemID, $dataItemType)
     {
-        foreach ($updates as $update)
-        {
-            switch ($update[2])
-            {
+        foreach ($updates as $update) {
+            switch ($update[2]) {
                 case LIST_EDITOR_ADD:
                     // FIXME: There has to be some way to already know the ID...
                     $savedListID = $this->getIDByDescription($update[0]);
 
-                    if ($savedListID == -1)
-                    {
+                    if ($savedListID == -1) {
                         return;
                         break;
                     }
@@ -556,7 +535,7 @@ class SavedLists
                         $this->_siteID
                     );
                     $this->_db->query($sql);
-                    
+
                     $this->updateSavedListItemCountAndTimeStamp($savedListID);
 
                     break;
@@ -571,12 +550,12 @@ class SavedLists
                             saved_list_entry_id = %s
                          AND
                             site_id = %s",
-                         $this->_db->makeQueryInteger($update[1]),
-                         $this->_siteID
+                        $this->_db->makeQueryInteger($update[1]),
+                        $this->_siteID
                     );
-                    
+
                     $rs = $this->_db->getAssoc($sql);
-                
+
                     $sql = sprintf(
                         "DELETE FROM
                             saved_list_entry
@@ -584,20 +563,19 @@ class SavedLists
                             saved_list_entry_id = %s
                          AND
                             site_id = %s",
-                         $this->_db->makeQueryInteger($update[1]),
-                         $this->_siteID
+                        $this->_db->makeQueryInteger($update[1]),
+                        $this->_siteID
                     );
 
                     $this->_db->query($sql);
-                    
-                    if (isset($rs['savedListID']))
-                    {
+
+                    if (isset($rs['savedListID'])) {
                         $this->updateSavedListItemCountAndTimeStamp($rs['savedListID']);
                     }
 
                     break;
 
-                /* This shouldn't happen. */
+                    /* This shouldn't happen. */
                 case LIST_EDITOR_MODIFY:
                     $this->fatal(
                         'Tried to modify left side of double list. This '
@@ -613,5 +591,3 @@ class SavedLists
         }
     }
 }
-
-?>

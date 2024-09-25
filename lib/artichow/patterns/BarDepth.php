@@ -7,79 +7,73 @@
  *
  */
 
-require_once ARTICHOW."/BarPlot.class.php";
+require_once ARTICHOW . "/BarPlot.class.php";
 
-class BarDepthPattern extends Pattern {
+class BarDepthPattern extends Pattern
+{
+    protected function getPlot($y, $depth)
+    {
+        $plot = new BarPlot($y, 1, 1, $depth);
 
-	protected function getPlot($y, $depth) {
+        $plot->barShadow->setSize(2);
+        $plot->barShadow->smooth(true);
+        $plot->barShadow->setColor(new Color(160, 160, 160, 10));
 
-		$plot = new BarPlot($y, 1, 1, $depth);
+        return $plot;
+    }
 
-		$plot->barShadow->setSize(2);
-		$plot->barShadow->smooth(TRUE);
-		$plot->barShadow->setColor(new Color(160, 160, 160, 10));
+    public function create()
+    {
+        $group = new PlotGroup();
+        $group->setSpace(2, 2, 2, 0);
+        $group->setPadding(30, 10, null, null);
 
-		return $plot;
+        $group->grid->hideVertical(true);
+        $group->grid->setType(Line::DASHED);
 
-	}
+        $yForeground = $this->getArg('yForeground');
+        $yBackground = $this->getArg('yBackground');
 
-	public function create() {
+        $legendForeground = $this->getArg('legendForeground');
+        $legendBackground = $this->getArg('legendBackground');
 
-		$group = new PlotGroup;
-		$group->setSpace(2, 2, 2, 0);
-		$group->setPadding(30, 10, NULL, NULL);
+        $colorForeground = $this->getArg('colorForeground', new LightBlue(10));
+        $colorBackground = $this->getArg('colorBackground', new Orange(25));
 
-		$group->grid->hideVertical(TRUE);
-		$group->grid->setType(Line::DASHED);
+        if ($yForeground === null) {
+            trigger_error("Argument 'yForeground' must not be NULL", E_USER_ERROR);
+        }
 
-		$yForeground = $this->getArg('yForeground');
-		$yBackground = $this->getArg('yBackground');
+        // Background
+        if ($yBackground !== null) {
+            $plot = $this->getPlot($yBackground, 6);
+            $plot->setBarColor($colorBackground);
 
-		$legendForeground = $this->getArg('legendForeground');
-		$legendBackground = $this->getArg('legendBackground');
+            $group->add($plot);
+            if ($legendBackground !== null) {
+                $group->legend->add($plot, $legendBackground, Legend::BACKGROUND);
+            }
+        }
 
-		$colorForeground = $this->getArg('colorForeground', new LightBlue(10));
-		$colorBackground = $this->getArg('colorBackground', new Orange(25));
+        // Foreground
+        $plot = $this->getPlot($yForeground, 0);
+        $plot->setBarColor($colorForeground);
 
-		if($yForeground === NULL) {
-			trigger_error("Argument 'yForeground' must not be NULL", E_USER_ERROR);
-		}
+        $group->add($plot);
+        if ($legendForeground !== null) {
+            $group->legend->add($plot, $legendForeground, Legend::BACKGROUND);
+        }
 
-		// Background
-		if($yBackground !== NULL) {
+        $group->axis->bottom->hideTicks(true);
 
-			$plot = $this->getPlot($yBackground, 6);
-			$plot->setBarColor($colorBackground);
+        $group->legend->shadow->setSize(0);
+        $group->legend->setAlign(Legend::CENTER);
+        $group->legend->setSpace(6);
+        $group->legend->setTextFont(new Tuffy(8));
+        $group->legend->setPosition(0.50, 0.10);
+        $group->legend->setBackgroundColor(new Color(255, 255, 255, 10));
+        $group->legend->setColumns(2);
 
-			$group->add($plot);
-			if($legendBackground !== NULL) {
-				$group->legend->add($plot, $legendBackground, Legend::BACKGROUND);
-			}
-
-		}
-
-		// Foreground
-		$plot = $this->getPlot($yForeground, 0);
-		$plot->setBarColor($colorForeground);
-
-		$group->add($plot);
-		if($legendForeground !== NULL) {
-			$group->legend->add($plot, $legendForeground, Legend::BACKGROUND);
-		}
-
-		$group->axis->bottom->hideTicks(TRUE);
-
-		$group->legend->shadow->setSize(0);
-		$group->legend->setAlign(Legend::CENTER);
-		$group->legend->setSpace(6);
-		$group->legend->setTextFont(new Tuffy(8));
-		$group->legend->setPosition(0.50, 0.10);
-		$group->legend->setBackgroundColor(new Color(255, 255, 255, 10));
-		$group->legend->setColumns(2);
-
-		return $group;
-
-	}
-
+        return $group;
+    }
 }
-?>

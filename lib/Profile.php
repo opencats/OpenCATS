@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -36,9 +35,13 @@ include_once(LEGACY_ROOT . '/lib/Site.php');
 class Profile
 {
     private $_siteID;
+
     private $_db;
+
     private $_savedProfileID;
+
     private $_savedProfile;
+
     private $_titleCache;
 
     public function __construct($siteID, $profileID = false)
@@ -62,24 +65,18 @@ class Profile
 
     public function getProfile()
     {
-        if ($this->_savedProfileID !== false && $this->_savedProfile !== false)
-        {
+        if ($this->_savedProfileID !== false && $this->_savedProfile !== false) {
             return $this->_savedProfile['profile'];
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
     public function getProfileStylesheet()
     {
-        if ($this->_savedProfileID !== false && $this->_savedProfile !== false)
-        {
+        if ($this->_savedProfileID !== false && $this->_savedProfile !== false) {
             return sprintf('./profile/%s/style.css', $this->_savedProfile['profile']);
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -104,8 +101,7 @@ class Profile
      */
     public function cacheTitles($profileID = false)
     {
-        if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
-        {
+        if (! ($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID))) {
             return false;
         }
 
@@ -155,8 +151,7 @@ class Profile
      */
     public function get($profileID = false, $userID = false, $cacheTitles = true)
     {
-        if ($userID !== false)
-        {
+        if ($userID !== false) {
             $critereon1 =
                 "RIGHT JOIN user
                     ON user.profile_id = profile.profile_id";
@@ -165,25 +160,20 @@ class Profile
                     user.user_id = %s",
                 $this->_db->makeQueryInteger($userID)
             );
-        }
-        else
-        {
+        } else {
             $critereon1 =
                 "RIGHT JOIN site
                     ON (site.site_id = profile.site_id AND site.profile_id = profile.profile_id)";
             $critereon2 = '';
         }
 
-        if ($profileID !== false)
-        {
+        if ($profileID !== false) {
             $profileCritereon = sprintf(
                 "AND
                     profile.profile_id = %s",
                 $this->_db->makeQueryInteger($profileID)
             );
-        }
-        else
-        {
+        } else {
             $profileCritereon = sprintf(
                 "AND
                     profile.active = 1"
@@ -209,34 +199,28 @@ class Profile
         $rs = $this->_db->getAssoc($sql);
 
         // Provided a user_id but found no profile, try getting the site profile
-        if (empty($rs) && $userID !== false && $profileID === false)
-        {
+        if (empty($rs) && $userID !== false && $profileID === false) {
             return $this->get(false, false);
         }
 
         // No profile exists for site or provided profile_id
-        if (empty($rs))
-        {
+        if (empty($rs)) {
             // Make an empty profile and attach it to the site
             $id = $this->add('Default Profile', true);
-            if ($id !== false)
-            {
+            if ($id !== false) {
                 $site = new Site($this->_siteID);
-                if ($site->setProfile($id) !== false)
-                {
+                if ($site->setProfile($id) !== false) {
                     return $this->get(false, false);
                 }
             }
         }
 
         // Save the profile ID to an internal variable for later use (if requested)
-        if (!empty($rs))
-        {
+        if (! empty($rs)) {
             $this->_savedProfileID = $rs['profileID'];
             $this->_savedProfile = $rs;
 
-            if ($cacheTitles)
-            {
+            if ($cacheTitles) {
                 $this->cacheTitles();
             }
 
@@ -248,7 +232,6 @@ class Profile
 
     /**
      * Get all profiles for a site with the users that own them (if available)
-     *
      */
     public function getAll()
     {
@@ -278,7 +261,6 @@ class Profile
 
     /**
      * Get all user and site-public profiles (not attached to other users).
-     *
      */
     public function getAllUser($userID)
     {
@@ -330,8 +312,7 @@ class Profile
         // Error handling on, primary key is auto_increment
         $rs = $this->_db->query($sql);
 
-        if (!$rs || $this->_db->getAffectedRows() <= 0)
-        {
+        if (! $rs || $this->_db->getAffectedRows() <= 0) {
             return false;
         }
 
@@ -348,8 +329,7 @@ class Profile
      */
     public function update($profileID, $title, $active = true, $profile = 'Default')
     {
-        if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
-        {
+        if (! ($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID))) {
             return false;
         }
 
@@ -382,8 +362,7 @@ class Profile
      */
     public function delete($profileID = false)
     {
-        if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
-        {
+        if (! ($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID))) {
             return false;
         }
 
@@ -404,23 +383,16 @@ class Profile
 
         $rs = $this->_db->query($sql);
 
-        if (!$rs || $this->_db->getAffectedRows() <= 0)
-        {
+        if (! $rs || $this->_db->getAffectedRows() <= 0) {
             $inTransaction && $this->_db->rollBackTransaction();
             return false;
-        }
-        else if (!$this->deletePage($profileID))
-        {
+        } elseif (! $this->deletePage($profileID)) {
             $inTransaction && $this->_db->rollbackTransaction();
             return false;
-        }
-        else if (!$this->deleteField($profileID))
-        {
+        } elseif (! $this->deleteField($profileID)) {
             $inTransaction && $this->_db->rollbackTransaction();
             return false;
-        }
-        else if (!$this->deleteTitle($profileID))
-        {
+        } elseif (! $this->deleteTitle($profileID)) {
             $inTransaction && $this->_db->rollbackTransaction();
             return false;
         }
@@ -447,8 +419,7 @@ class Profile
      */
     public function getPage($profileID = false, $page)
     {
-        if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
-        {
+        if (! ($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID))) {
             return false;
         }
 
@@ -475,12 +446,9 @@ class Profile
 
         $rs = $this->_db->getAssoc($sql);
 
-        if (empty($rs))
-        {
+        if (empty($rs)) {
             return false;
-        }
-        else
-        {
+        } else {
             return $rs;
         }
     }
@@ -528,8 +496,7 @@ class Profile
      */
     public function addPage($profileID = false, $page, $numColumns, $columnWidth, $columnHeight)
     {
-        if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
-        {
+        if (! ($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID))) {
             return false;
         }
 
@@ -548,8 +515,7 @@ class Profile
         // No errors, primary key violations indicate page exists
         $rs = $this->_db->query($sql, true);
 
-        if (!$rs || $this->_db->getAffectedRows() <= 0)
-        {
+        if (! $rs || $this->_db->getAffectedRows() <= 0) {
             return false;
         }
 
@@ -568,8 +534,7 @@ class Profile
      */
     public function updatePage($profileID = false, $page, $numColumns, $columnWidth, $columnHeight)
     {
-        if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
-        {
+        if (! ($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID))) {
             return false;
         }
 
@@ -607,23 +572,19 @@ class Profile
      */
     public function deletePage($profileID = false, $page = false)
     {
-        if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
-        {
+        if (! ($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID))) {
             return false;
         }
 
         $inTransaction = $this->_db->beginTransaction();
 
-        if ($page !== false)
-        {
+        if ($page !== false) {
             $criterion = sprintf(
                 "AND
                     page = %s",
                 $this->_db->makeQueryString($page)
             );
-        }
-        else
-        {
+        } else {
             $criterion = '';
         }
 
@@ -641,13 +602,10 @@ class Profile
         );
 
         $rs = $this->_db->query($sql);
-        if (!$rs)
-        {
+        if (! $rs) {
             $inTransaction && $this->_db->rollbackTransaction();
             return false;
-        }
-        else if (!$this->deleteField($profileID))
-        {
+        } elseif (! $this->deleteField($profileID)) {
             $inTransaction && $this->_db->rollbackTransaction();
             return false;
         }
@@ -675,8 +633,7 @@ class Profile
      */
     public function getField($profileID = false, $page, $columnName)
     {
-        if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
-        {
+        if (! ($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID))) {
             return false;
         }
 
@@ -708,8 +665,7 @@ class Profile
 
         $rs = $this->_db->getAssoc($sql);
 
-        if (empty($rs))
-        {
+        if (empty($rs)) {
             return false;
         }
 
@@ -731,30 +687,32 @@ class Profile
      * @param integer Number of rows this field should span
      * @param boolean true if the field should be shown, false if hidden
      */
-    public function addField($profileID = false, $page, $columnName, $title = false, $xPosition = 0,
-        $yPosition = 0, $columnSpan = 1, $rowSpan = 1)
-    {
-        if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
-        {
+    public function addField(
+        $profileID = false,
+        $page,
+        $columnName,
+        $title = false,
+        $xPosition = 0,
+        $yPosition = 0,
+        $columnSpan = 1,
+        $rowSpan = 1
+    ) {
+        if (! ($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID))) {
             return false;
         }
 
         // We're adding to two tables, make this transactional (fail on either)
         $inTransaction = $this->_db->beginTransaction();
 
-        if (!$title)
-        {
+        if (! $title) {
             // Add column name as the column text, failure means it's already set
             $result = $this->addTitle($profileID, $columnName, $columnName, false);
-        }
-        else
-        {
+        } else {
             // Try to insert title text
             $result = $this->addTitle($profileID, $columnName, $title, false);
 
             // It's ok to fail, that means it already exists. Update it.
-            if (!$result)
-            {
+            if (! $result) {
                 // If the update fails, that means nothing was changed, so no need to check.
                 $this->updateTitle($profileID, $columnName, $title, false);
             }
@@ -778,8 +736,7 @@ class Profile
         // No errors, primary key violations indicate field exists
         $rs = $this->_db->query($sql, true);
 
-        if (!$rs || $this->_db->getAffectedRows() <= 0)
-        {
+        if (! $rs || $this->_db->getAffectedRows() <= 0) {
             $inTransaction && $this->_db->rollbackTransaction();
             return false;
         }
@@ -803,16 +760,21 @@ class Profile
      * @param integer Number of rows this field should span
      * @param boolean true if the field should be shown, false if hidden
      */
-    public function updateField($profileID = false, $page, $columnName, $title = false,
-        $xPosition = 0, $yPosition = 0, $columnSpan = 1, $rowSpan = 1)
-    {
-        if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
-        {
+    public function updateField(
+        $profileID = false,
+        $page,
+        $columnName,
+        $title = false,
+        $xPosition = 0,
+        $yPosition = 0,
+        $columnSpan = 1,
+        $rowSpan = 1
+    ) {
+        if (! ($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID))) {
             return false;
         }
 
-        if ($title !== false)
-        {
+        if ($title !== false) {
             // Update all occurances of this column name title
             // No need to error check, false just means nothing was changed
             $this->updateTitle($profileID, $columnName, $title, false);
@@ -856,15 +818,13 @@ class Profile
      */
     public function deleteField($profileID = false, $page = false, $columnName = false)
     {
-        if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
-        {
+        if (! ($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID))) {
             return false;
         }
 
         $inTransaction = $this->_db->beginTransaction();
 
-        if ($page !== false && $columnName !== false)
-        {
+        if ($page !== false && $columnName !== false) {
             $criterion = sprintf(
                 "AND
                     page = %s
@@ -873,10 +833,8 @@ class Profile
                 $this->_db->makeQueryString($page),
                 $this->_db->makeQueryString($columnName)
             );
-        }
-        else if ($page === false || $columnName === false) {}
-        else
-        {
+        } elseif ($page === false || $columnName === false) {
+        } else {
             // Cannot do a selective page/column only delete
             $inTransaction && $this->_db->rollbackTransaction();
             return false;
@@ -897,8 +855,7 @@ class Profile
 
         $rs = $this->_db->query($sql);
 
-        if (!$rs)
-        {
+        if (! $rs) {
             $inTransaction && $this->_db->rollbackTransaction();
             return false;
         }
@@ -949,20 +906,16 @@ class Profile
      */
     public function getTitle($profileID = false, $columnName)
     {
-        if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
-        {
+        if (! ($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID))) {
             return false;
         }
 
         // If title cacheing is enabled and we're using the internal profile ID,
         // then return the value from the cache instead of running another query.
         if ($this->_savedProfileID !== false && $this->_savedProfileID == $profileID &&
-            $this->_titleCache !== false)
-        {
-            foreach ($this->_titleCache as $item)
-            {
-                if (!strcmp($item['columnName'], $columnName))
-                {
+            $this->_titleCache !== false) {
+            foreach ($this->_titleCache as $item) {
+                if (! strcmp($item['columnName'], $columnName)) {
                     return $item;
                 }
             }
@@ -988,20 +941,16 @@ class Profile
 
     public function getTitleText($profileID = false, $columnName)
     {
-        if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
-        {
+        if (! ($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID))) {
             return false;
         }
 
         // If title cacheing is enabled and we're using the internal profile ID,
         // then return the value from the cache instead of running another query.
         if ($this->_savedProfileID !== false && $this->_savedProfileID == $profileID &&
-            $this->_titleCache !== false)
-        {
-            foreach ($this->_titleCache as $item)
-            {
-                if (!strcmp($item['columnName'], $columnName))
-                {
+            $this->_titleCache !== false) {
+            foreach ($this->_titleCache as $item) {
+                if (! strcmp($item['columnName'], $columnName)) {
                     return $item['title'];
                 }
             }
@@ -1026,8 +975,7 @@ class Profile
         );
 
         $rs = $this->_db->getAssoc($sql);
-        if (!$rs || empty($rs) || !isset($rs['title']))
-        {
+        if (! $rs || empty($rs) || ! isset($rs['title'])) {
             // Try to add the new title text since it doesn't seem to exist
             $this->addTitle($profileID, $columnName, $columnName, false);
 
@@ -1045,16 +993,14 @@ class Profile
      */
     public function getAllTitles($profileID = false)
     {
-        if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
-        {
+        if (! ($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID))) {
             return false;
         }
 
         // If title cacheing is enabled and we're using the internal profile ID,
         // then return the value from the cache instead of running another query.
         if ($this->_savedProfileID !== false && $this->_savedProfileID == $profileID &&
-            $this->_titleCache !== false)
-        {
+            $this->_titleCache !== false) {
             return $this->_titleCache;
         }
 
@@ -1080,8 +1026,7 @@ class Profile
      */
     public function addTitle($profileID = false, $columnName, $title, $note = false)
     {
-        if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
-        {
+        if (! ($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID))) {
             return false;
         }
 
@@ -1093,27 +1038,25 @@ class Profile
             $this->_db->makeQueryInteger($profileID),
             $this->_db->makeQueryString($columnName),
             $this->_db->makeQueryString($title),
-            $note !== false && !empty($note) ? $this->_db->makeQueryString($note) : 'NULL',
+            $note !== false && ! empty($note) ? $this->_db->makeQueryString($note) : 'NULL',
             $this->_siteID
         );
 
         // No errors, as primary key "duplicates" errors indicate title exists
         $rs = $this->_db->query($sql, true);
 
-        if (!$rs || $this->_db->getAffectedRows() <= 0)
-        {
+        if (! $rs || $this->_db->getAffectedRows() <= 0) {
             return false;
         }
 
         // If cacheing is enabled, add it the new title to the local cache
-        if ($this->_savedProfileID !== false && $this->_titleCache !== false)
-        {
-            $this->_titleCache[] = array(
+        if ($this->_savedProfileID !== false && $this->_titleCache !== false) {
+            $this->_titleCache[] = [
                 'profileID' => $profileID,
                 'column_name' => $columnName,
                 'title' => $title,
-                'note' => $note !== false ? $note : ''
-            );
+                'note' => $note !== false ? $note : '',
+            ];
         }
 
         return true;
@@ -1130,8 +1073,7 @@ class Profile
      */
     public function updateTitle($profileID = false, $columnName, $title, $note = false)
     {
-        if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
-        {
+        if (! ($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID))) {
             return false;
         }
 
@@ -1148,7 +1090,7 @@ class Profile
             AND
                 profile_title.site_id = %d",
             $this->_db->makeQueryString($title),
-            $note !== false && !empty($note) ? $this->_db->makeQueryString($note) : 'NULL',
+            $note !== false && ! empty($note) ? $this->_db->makeQueryString($note) : 'NULL',
             $this->_db->makeQueryInteger($profileID),
             $this->_db->makeQueryString($columnName),
             $this->_siteID
@@ -1156,12 +1098,9 @@ class Profile
 
         $rs = $this->_db->query($sql);
 
-        if (!$rs || $this->_db->getAffectedRows() <= 0)
-        {
+        if (! $rs || $this->_db->getAffectedRows() <= 0) {
             return false;
-        }
-        else
-        {
+        } else {
             return true;
         }
     }
@@ -1175,8 +1114,7 @@ class Profile
      */
     public function deleteTitle($profileID = false, $columnName = false)
     {
-        if (!($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID)))
-        {
+        if (! ($profileID = ($profileID !== false ? $profileID : $this->_savedProfileID))) {
             return false;
         }
 
@@ -1198,8 +1136,7 @@ class Profile
 
         $rs = $this->_db->query($sql);
 
-        if (!$rs)
-        {
+        if (! $rs) {
             $inTransaction && $this->_db->rollbackTransaction();
             return false;
         }
@@ -1215,5 +1152,4 @@ class Profile
      * THE FOLLOWING FUNCTIONS ARE TABLE IN-SPECIFIC/GENERAL FUNCTIONS
      *
      *********************************************************************************************/
-
 }

@@ -1,8 +1,8 @@
 <?php
+
 use PHPUnit\Framework\TestCase;
 
-if( !defined('LEGACY_ROOT') )
-{
+if (! defined('LEGACY_ROOT')) {
     define('LEGACY_ROOT', '.');
 }
 
@@ -13,74 +13,68 @@ class AddressParserTest extends TestCase
 {
     private $addressParser;
 
-    function makePhoneNumberArray($phoneNumbers)
+    public function makePhoneNumberArray($phoneNumbers)
     {
         $homePhoneRow = ResultSetUtility::findRowByColumnValue(
-            $phoneNumbers, 'type', 'home'
-            );
+            $phoneNumbers,
+            'type',
+            'home'
+        );
         $workPhoneRow = ResultSetUtility::findRowByColumnValue(
-            $phoneNumbers, 'type', 'work'
-            );
+            $phoneNumbers,
+            'type',
+            'work'
+        );
         $cellPhoneRow = ResultSetUtility::findRowByColumnValue(
-            $phoneNumbers, 'type', 'cell'
-            );
+            $phoneNumbers,
+            'type',
+            'cell'
+        );
         $faxRow = ResultSetUtility::findRowByColumnValue(
-            $phoneNumbers, 'type', 'fax'
-            );
+            $phoneNumbers,
+            'type',
+            'fax'
+        );
 
 
-        if ($homePhoneRow !== false)
-        {
+        if ($homePhoneRow !== false) {
             $homePhone = $phoneNumbers[$homePhoneRow]['number'];
-        }
-        else
-        {
+        } else {
             $homePhone = '';
         }
 
-        if ($cellPhoneRow !== false)
-        {
+        if ($cellPhoneRow !== false) {
             $cellPhone = $phoneNumbers[$cellPhoneRow]['number'];
-        }
-        else
-        {
+        } else {
             $cellPhone = '';
         }
 
-        if ($workPhoneRow !== false)
-        {
+        if ($workPhoneRow !== false) {
             $workPhone = $phoneNumbers[$workPhoneRow]['number'];
-        }
-        else
-        {
+        } else {
             $workPhone = '';
         }
 
-        if ($faxRow !== false)
-        {
+        if ($faxRow !== false) {
             $fax = $phoneNumbers[$faxRow]['number'];
-        }
-        else
-        {
+        } else {
             $fax = '';
         }
 
-        return array(
+        return [
             'homePhone' => $homePhone,
             'workPhone' => $workPhone,
             'cellPhone' => $cellPhone,
-            'fax'  => $fax
-        );
+            'fax' => $fax,
+        ];
     }
 
-
-    function setUp()
+    public function setUp()
     {
         $this->addressParser = new AddressParser();
     }
 
-
-    function testSampleAddress1()
+    public function testSampleAddress1()
     {
         $address = <<<EOF
 
@@ -110,14 +104,14 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '743-959-6344');
         $this->assertSame($phoneNumbers['homePhone'], '743-450-3855');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '743-450-3333');
     }
 
-    function testSampleAddress2()
+    public function testSampleAddress2()
     {
         $address = <<<EOF
 Lee Ann Chambers
@@ -144,14 +138,14 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '');
         $this->assertSame($phoneNumbers['homePhone'], '962-398-0687');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '');
     }
 
-    function testSampleAddress3()
+    public function testSampleAddress3()
     {
         $address = <<<EOF
 Michael Nicholas O'Mercurio
@@ -182,14 +176,14 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '586-299-2513');
         $this->assertSame($phoneNumbers['homePhone'], '');
         $this->assertSame($phoneNumbers['workPhone'], '444-300-2929');
         $this->assertSame($phoneNumbers['fax'], '');
     }
 
-    function testSampleAddress4()
+    public function testSampleAddress4()
     {
         $address = <<<EOF
 Enock Chamberlin
@@ -220,16 +214,15 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '817-715-6875');
         $this->assertSame($phoneNumbers['homePhone'], '817-303-3864');
         $this->assertSame($phoneNumbers['workPhone'], '817-393-3899');
         $this->assertSame($phoneNumbers['fax'], '');
     }
 
-    function testSampleAddress5()
+    public function testSampleAddress5()
     {
-
         $address = <<<EOF
 Horacio Alfonzo
 PO BOX 422428
@@ -257,16 +250,15 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '');
         $this->assertSame($phoneNumbers['homePhone'], '305-777-1222');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '');
     }
 
-    function testSampleAddress6()
+    public function testSampleAddress6()
     {
-
         $address = <<<EOF
 EHhn nunbiv $%&%*$* !!!!!!! I am < wcc@nospammonkeys.org > NOT a valid address! RH%
 EOF;
@@ -286,16 +278,15 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '');
         $this->assertSame($phoneNumbers['homePhone'], '');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '');
     }
 
-    function testSampleAddress7()
+    public function testSampleAddress7()
     {
-
         $address = <<<EOF
 EHhn nunbiv $%&%*$* !!!!!!! I am NOT a valid address! RH%
 EOF;
@@ -315,16 +306,15 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '');
         $this->assertSame($phoneNumbers['homePhone'], '');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '');
     }
 
-    function testSampleAddress8()
+    public function testSampleAddress8()
     {
-
         $address = <<<EOF
 Will G. Buckner
 wcc@nospammonkeys.org
@@ -345,16 +335,15 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '');
         $this->assertSame($phoneNumbers['homePhone'], '');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '');
     }
 
-    function testSampleAddress9()
+    public function testSampleAddress9()
     {
-
         $address = <<<EOF
 Roger B. Pickler
 2073 Physics Ct. E
@@ -378,14 +367,14 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '641-244-8444');
         $this->assertSame($phoneNumbers['homePhone'], '641-748-2441');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '');
     }
 
-    function testSampleAddress10()
+    public function testSampleAddress10()
     {
         $address = <<<EOF
 Mike Jackson
@@ -408,16 +397,15 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '');
         $this->assertSame($phoneNumbers['homePhone'], '');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '');
     }
 
-    function testSampleAddress11()
+    public function testSampleAddress11()
     {
-
         $address = <<<EOF
 Mike Jackson
 RR 2
@@ -440,16 +428,15 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '');
         $this->assertSame($phoneNumbers['homePhone'], '');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '');
     }
 
-    function testSampleAddress12()
+    public function testSampleAddress12()
     {
-
         $address = <<<EOF
 Mike Jackson
 RR 2
@@ -472,14 +459,14 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '');
         $this->assertSame($phoneNumbers['homePhone'], '');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '');
     }
 
-    function testSampleAddress13()
+    public function testSampleAddress13()
     {
         $address = <<<EOF
 Roger B. Pickler
@@ -503,14 +490,14 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '');
         $this->assertSame($phoneNumbers['homePhone'], '641-748-2441');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '');
     }
 
-    function testSampleAddress14()
+    public function testSampleAddress14()
     {
         $address = <<<EOF
 Roger B. Pickler
@@ -535,14 +522,14 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '');
         $this->assertSame($phoneNumbers['homePhone'], '641-748-2441');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '555-444-5555');
     }
 
-    function testSampleAddress15()
+    public function testSampleAddress15()
     {
         $address = <<<EOF
 Roger B. Pickler
@@ -568,15 +555,14 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '');
         $this->assertSame($phoneNumbers['homePhone'], '641-748-2441');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '444-345-4444');
     }
 
-
-    function testSampleAddressCompany1()
+    public function testSampleAddressCompany1()
     {
         $address = <<<EOF
 CompuServe, Inc.
@@ -605,14 +591,14 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '');
         $this->assertSame($phoneNumbers['homePhone'], '');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '614-444-4555');
     }
 
-    function testSampleAddressCompany2()
+    public function testSampleAddressCompany2()
     {
         $address = <<<EOF
 Graphical Brass Interfaces, Inc.
@@ -637,14 +623,14 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '');
         $this->assertSame($phoneNumbers['homePhone'], '');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '');
     }
 
-    function testSampleAddressCompany3()
+    public function testSampleAddressCompany3()
     {
         $address = <<<EOF
 1st Tech Systems, Inc.
@@ -670,11 +656,10 @@ EOF;
         /* Test phone numbers. */
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
-            );
+        );
         $this->assertSame($phoneNumbers['cellPhone'], '');
         $this->assertSame($phoneNumbers['homePhone'], '');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '');
     }
 }
-?>

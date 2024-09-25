@@ -35,8 +35,7 @@ include_once(LEGACY_ROOT . '/lib/SavedLists.php');
 
 $interface = new SecureAJAXInterface();
 
-if (!$interface->isRequiredIDValid('savedListID'))
-{
+if (! $interface->isRequiredIDValid('savedListID')) {
     $interface->outputXMLErrorPage(-1, 'Invalid saved list ID.');
     die();
 }
@@ -57,5 +56,3 @@ $interface->outputXMLPage(
     "    <response>success</response>\n" .
     "</data>\n"
 );
-
-?>

@@ -32,8 +32,7 @@ include_once(LEGACY_ROOT . '/lib/Companies.php');
 
 $interface = new SecureAJAXInterface();
 
-if (!$interface->isRequiredIDValid('companyID', false))
-{
+if (! $interface->isRequiredIDValid('companyID', false)) {
     $interface->outputXMLErrorPage(-1, 'Invalid company ID.');
     die();
 }
@@ -46,8 +45,7 @@ $companyID = $_REQUEST['companyID'];
 $companies = new Companies($siteID);
 $locationArray = $companies->getLocationArray($companyID);
 
-if (empty($locationArray))
-{
+if (empty($locationArray)) {
     $interface->outputXMLErrorPage(-2, 'No location data.');
     die();
 }
@@ -58,10 +56,8 @@ $interface->outputXMLPage(
     "    <errorcode>0</errorcode>\n" .
     "    <errormessage></errormessage>\n" .
     "    <address>" . $locationArray['address'] . "</address>\n" .
-    "    <city>"    . $locationArray['city'] . "</city>\n" .
-    "    <state>"   . $locationArray['state'] . "</state>\n" .
-    "    <zip>"     . $locationArray['zip'] . "</zip>\n" .
+    "    <city>" . $locationArray['city'] . "</city>\n" .
+    "    <state>" . $locationArray['state'] . "</state>\n" .
+    "    <zip>" . $locationArray['zip'] . "</zip>\n" .
     "</data>\n"
 );
-
-?>

@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -38,29 +37,28 @@
 class ModuleUtility
 {
     /* Prevent this class from being instantiated. */
-    private function __construct() {}
-    private function __clone() {}
+    private function __construct()
+    {
+    }
 
+    private function __clone()
+    {
+    }
 
     /**
      * Loads a module.
      *
      * @param string module name
-     * @return void
      */
     public static function loadModule($moduleName)
     {
         $modules = self::getModules();
 
-        if (!isset($modules[$moduleName]))
-        {
-            if (class_exists('CommonErrors'))
-            {
-                CommonErrors::fatal(COMMONERROR_INVALIDMODULE, NULL, $moduleName);
-            }
-            else
-            {
-                echo ('Invalid module name \'' . htmlspecialchars($moduleName)
+        if (! isset($modules[$moduleName])) {
+            if (class_exists('CommonErrors')) {
+                CommonErrors::fatal(COMMONERROR_INVALIDMODULE, null, $moduleName);
+            } else {
+                echo('Invalid module name \'' . htmlspecialchars((string) $moduleName)
                      . '\'.<br />Is the module installed?!');
                 die();
             }
@@ -68,12 +66,14 @@ class ModuleUtility
 
         $moduleClass = $modules[$moduleName][0];
 
-        include_once(LEGACY_ROOT . 
+        include_once(LEGACY_ROOT .
             '/modules/' . $moduleName . '/'
             . $moduleClass . '.php'
         );
 
-        if (!eval(Hooks::get('LOAD_MODULE'))) return;
+        if (! eval(Hooks::get('LOAD_MODULE'))) {
+            return;
+        }
 
         $module = new $moduleClass();
         $module->handleRequest();
@@ -87,14 +87,14 @@ class ModuleUtility
     {
         $modules = self::getModules();
 
-        foreach ($modules as $moduleName => $moduleData)
-        {
+        foreach ($modules as $moduleName => $moduleData) {
             $moduleClass = $moduleData[0];
 
             if (file_exists($taskFile =
-                sprintf(LEGACY_ROOT . '/modules/%s/tasks/tasks.php',
-                    $moduleName)))
-            {
+                sprintf(
+                    LEGACY_ROOT . '/modules/%s/tasks/tasks.php',
+                    $moduleName
+                ))) {
                 include_once($taskFile);
             }
         }
@@ -110,8 +110,7 @@ class ModuleUtility
     {
         $modules = self::getModules();
 
-        if (!isset($modules[$moduleName]))
-        {
+        if (! isset($modules[$moduleName])) {
             /* Module doesn't exist; take them to the login page if not
              * logged in. If they are logged in, self::loadModule will throw
              * an invalid module error.
@@ -121,15 +120,14 @@ class ModuleUtility
 
         $moduleClass = $modules[$moduleName][0];
 
-        include_once(LEGACY_ROOT . 
+        include_once(LEGACY_ROOT .
             '/modules/' . $moduleName . '/'
             . $moduleClass . '.php'
         );
 
         $module = new $moduleClass();
 
-        if (!method_exists($module, 'requiresAuthentication'))
-        {
+        if (! method_exists($module, 'requiresAuthentication')) {
             /* If the module doesn't specify, assume it requires
              * authentication.
              */
@@ -149,15 +147,13 @@ class ModuleUtility
         /* Should already be in the session, if not rescan modules dir and add to
          * current session.
          */
-        if (!isset($_SESSION['modules']) || empty($_SESSION['modules']))
-        {
+        if (! isset($_SESSION['modules']) || empty($_SESSION['modules'])) {
             $modules = self::_refreshModuleList();
             $_SESSION['modules'] = $modules;
         }
 
         /* This shouldn't happen... sanity check. */
-        if (empty($_SESSION['modules']))
-        {
+        if (empty($_SESSION['modules'])) {
             self::_fatal('No modules found.');
         }
 
@@ -174,10 +170,8 @@ class ModuleUtility
     {
         $modules = self::getModules();
 
-        foreach ($modules as $name => $data)
-        {
-            if ($name == $moduleName)
-            {
+        foreach ($modules as $name => $data) {
+            if ($name == $moduleName) {
                 return true;
             }
         }
@@ -204,9 +198,8 @@ class ModuleUtility
          * );
          */
 
-         /* Attempt to load the list of modules from a temporary file. */
-        if (file_exists('modules.cache') && !isset($_POST['performMaintenence']) && CACHE_MODULES)
-        {
+        /* Attempt to load the list of modules from a temporary file. */
+        if (file_exists('modules.cache') && ! isset($_POST['performMaintenence']) && CACHE_MODULES) {
             $modulesCache = unserialize(file_get_contents('modules.cache'));
 
             $_SESSION['hooks'] = $modulesCache->hooks;
@@ -214,24 +207,22 @@ class ModuleUtility
             return $modulesCache->modules;
         }
 
-        $modules = array();
-        $moduleDirectories = array();
-        $hooks = array();
+        $modules = [];
+        $moduleDirectories = [];
+        $hooks = [];
 
         $directory = @opendir(MODULES_PATH) or self::_fatal(
             sprintf("Unable to open '%s'.", MODULES_PATH)
         );
 
         /* Loop through files / directories inside MODULES_PATH. */
-        while ($filename = readdir($directory))
-        {
+        while ($filename = readdir($directory)) {
             $fullModulePath = MODULES_PATH . $filename;
 
             /* Ignore files / directories that begin with '.', and any
              * non-directories.
              */
-            if ($filename[0] !== '.' && is_dir($fullModulePath))
-            {
+            if ($filename[0] !== '.' && is_dir($fullModulePath)) {
                 $moduleDirectories[] = $fullModulePath;
             }
         }
@@ -243,19 +234,16 @@ class ModuleUtility
         $db->getAdvisoryLock('CATSUpdateLock', 120);
 
         /* FIXME: There has to be a better way to locate the UI filename. */
-        foreach ($moduleDirectories as $directoryName)
-        {
+        foreach ($moduleDirectories as $directoryName) {
             $directory = @opendir($directoryName) or self::_fatal(
                 sprintf("Unable to open '%s'.", $directoryName)
             );
 
-            while ($filename = readdir($directory))
-            {
+            while ($filename = readdir($directory)) {
                 $fullFilePath = $directoryName . '/' . $filename;
 
                 /* Search for UI file. */
-                if (substr($filename, -6) !== 'UI.php')
-                {
+                if (! str_ends_with($filename, 'UI.php')) {
                     continue;
                 }
 
@@ -265,17 +253,10 @@ class ModuleUtility
                 $moduleClass = basename(substr($fullFilePath, 0, -4));
 
                 $module = new $moduleClass();
-                $modules[$moduleName] = array(
-                    $moduleClass,
-                    $module->getModuleTabText(),
-                    $module->getSubTabsExternal(),
-                    $module->getSettingsEntries(),
-                    $module->getSettingsUserCategories()
-                );
+                $modules[$moduleName] = [$moduleClass, $module->getModuleTabText(), $module->getSubTabsExternal(), $module->getSettingsEntries(), $module->getSettingsUserCategories()];
 
                 $moduleHooks = $module->getHooks();
-                foreach ($moduleHooks as $name => $data)
-                {
+                foreach ($moduleHooks as $name => $data) {
                     $hooks[$name][] = $data;
                 }
 
@@ -288,22 +269,20 @@ class ModuleUtility
         $db->releaseAdvisoryLock('CATSUpdateLock');
 
         /* Is called by installer? */
-        if (isset($_POST['performMaintenence']))
-        {
+        if (isset($_POST['performMaintenence'])) {
             die();
         }
 
         $_SESSION['hooks'] = $hooks;
 
         /* Sort the modules. */
-        uksort($modules , array('self', '_sortModules'));
+        uksort($modules, ['ModuleUtility', '_sortModules']);
 
         /* Verify that core modules are present. */
         self::_checkCoreModules($modules);
 
         /* Try to store the modules for future use. */
-        if (CACHE_MODULES)
-        {
+        if (CACHE_MODULES) {
             $modulesCache->modules = $modules;
             $modulesCache->hooks = $hooks;
             @file_put_contents('modules.cache', serialize($modulesCache));
@@ -316,26 +295,21 @@ class ModuleUtility
      * Verifies that core modules are installed and fatal()s out if not.
      *
      * @param array detected modules
-     * @return void
      */
     private static function _checkCoreModules($modules)
     {
-        $missing = array();
+        $missing = [];
 
-        foreach ($GLOBALS['coreModules'] as $key => $value)
-        {
-            if (!isset($modules[$key]))
-            {
+        foreach ($GLOBALS['coreModules'] as $key => $value) {
+            if (! isset($modules[$key])) {
                 $missing[] = $key;
             }
         }
 
-        if (count($missing) > 0)
-        {
+        if (count($missing) > 0) {
             $error = 'One or more of CATS\' core modules is missing.<br />';
 
-            foreach ($missing as $module)
-            {
+            foreach ($missing as $module) {
                 $error .= 'Module "' . $module . '" not found.<br />';
             }
 
@@ -347,9 +321,8 @@ class ModuleUtility
      * Print a fatal error and die.
      *
      * @param string error message
-     * @return void
      */
-    private static function _fatal($error)
+    private static function _fatal($error): never
     {
         $template = new Template();
 
@@ -357,9 +330,9 @@ class ModuleUtility
         $template->display('./Error.tpl');
 
         echo '<!--';
-         trigger_error(
-             str_replace("\n", " ", 'Fatal Error raised: ' . $error)
-         );
+        trigger_error(
+            str_replace("\n", " ", 'Fatal Error raised: ' . $error)
+        );
         echo '-->';
 
         die();
@@ -381,20 +354,20 @@ class ModuleUtility
      */
     private static function _sortModules($a, $b)
     {
-        if (!eval(Hooks::get('SORT_MODULES_RETURN_POS'))) return 1;
-        if (!eval(Hooks::get('SORT_MODULES_RETURN_NEG'))) return -1;
+        if (! eval(Hooks::get('SORT_MODULES_RETURN_POS'))) {
+            return 1;
+        }
+        if (! eval(Hooks::get('SORT_MODULES_RETURN_NEG'))) {
+            return -1;
+        }
 
-        if (isset($GLOBALS['coreModules'][$a]))
-        {
-            if (isset($GLOBALS['coreModules'][$b]))
-            {
-                if ($GLOBALS['coreModules'][$a] > $GLOBALS['coreModules'][$b])
-                {
+        if (isset($GLOBALS['coreModules'][$a])) {
+            if (isset($GLOBALS['coreModules'][$b])) {
+                if ($GLOBALS['coreModules'][$a] > $GLOBALS['coreModules'][$b]) {
                     return 1;
                 }
 
-                if ($GLOBALS['coreModules'][$a] == $GLOBALS['coreModules'][$b])
-                {
+                if ($GLOBALS['coreModules'][$a] == $GLOBALS['coreModules'][$b]) {
                     return 0;
                 }
 
@@ -427,7 +400,7 @@ class ModuleUtility
             ORDER BY
                 name ASC"
         );
-        
+
         return $db->getAllAssoc($sql);
     }
 
@@ -438,21 +411,17 @@ class ModuleUtility
      *
      * @param string Module name for which to process schema changes.
      * @param array Module schema updates array.
-     * @return void
      */
     private static function processModuleSchema($moduleName, $schema)
     {
-        if( ini_get('safe_mode') )
-        {
-			//don't do anything in safe mode
-		}
-		else
-        {
+        if (ini_get('safe_mode')) {
+            //don't do anything in safe mode
+        } else {
             /* Don't limit the execution time of queries. */
             set_time_limit(0);
         }
 
-		$executedQuery = false;
+        $executedQuery = false;
 
         $db = DatabaseConnection::getInstance();
 
@@ -467,12 +436,9 @@ class ModuleUtility
         );
         $rs = $db->getAssoc($sql);
 
-        if (!empty($rs))
-        {
+        if (! empty($rs)) {
             $currentVersion = $rs['version'];
-        }
-        else
-        {
+        } else {
             $sql = sprintf(
                 "INSERT INTO module_schema (
                     name,
@@ -491,66 +457,51 @@ class ModuleUtility
 
         /* Get the latest schema revision. */
         $schemaVersions = array_keys($schema);
-        if (!empty($schemaVersions))
-        {
+        if (! empty($schemaVersions)) {
             $newestVersion = max($schemaVersions);
-        }
-        else
-        {
+        } else {
             $newestVersion = 0;
         }
 
         /* Do we have any updates to process? */
-        if ($newestVersion <= $currentVersion)
-        {
+        if ($newestVersion <= $currentVersion) {
             return;
         }
 
         ksort($schema, SORT_NUMERIC);
-        foreach ($schema as $version => $sql)
-        {
-            if ($version <= $currentVersion)
-            {
+        foreach ($schema as $version => $sql) {
+            if ($version <= $currentVersion) {
                 continue;
             }
 
-			/* if maintPage, execute 1 query, output the next query and progress, and terminate. */
-			global $maintPage;
-			if ((isset($maintPage) && $maintPage === true))
-			{
-				if ($executedQuery == false)
-				{
-					$executedQuery = true;
-				}
-				else
-				{
-					$keys = array_keys($schema);
-					rsort($keys, SORT_NUMERIC);
-					$maxVersion = $keys[0];
-					echo '<script>';
-					echo 'setProgressUpdating(decode64("'.base64_encode($sql).'"), '.$version.', '.$maxVersion.', "'.$moduleName.'");';
-					echo 'setTimeout("Installpage_maint();", 50);';
-					echo '</script>';
-					die();
-				}
-			}
-
-            if (strpos($sql, 'PHP:') === 0)
-            {
-                /* Strip off the 'PHP:' and execute the code. */
-                $PHPCode = substr($sql, 4);
-                eval($PHPCode);
+            /* if maintPage, execute 1 query, output the next query and progress, and terminate. */
+            global $maintPage;
+            if ((isset($maintPage) && $maintPage === true)) {
+                if ($executedQuery == false) {
+                    $executedQuery = true;
+                } else {
+                    $keys = array_keys($schema);
+                    rsort($keys, SORT_NUMERIC);
+                    $maxVersion = $keys[0];
+                    echo '<script>';
+                    echo 'setProgressUpdating(decode64("' . base64_encode((string) $sql) . '"), ' . $version . ', ' . $maxVersion . ', "' . $moduleName . '");';
+                    echo 'setTimeout("Installpage_maint();", 50);';
+                    echo '</script>';
+                    die();
+                }
             }
-            else
-            {
-                $SQLStatments = explode(';', $sql);
 
-                foreach ($SQLStatments as $SQL)
-                {
+            if (str_starts_with((string) $sql, 'PHP:')) {
+                /* Strip off the 'PHP:' and execute the code. */
+                $PHPCode = substr((string) $sql, 4);
+                eval($PHPCode);
+            } else {
+                $SQLStatments = explode(';', (string) $sql);
+
+                foreach ($SQLStatments as $SQL) {
                     $SQL = trim($SQL);
 
-                   	if (!empty($SQL))
-                    {
+                    if (! empty($SQL)) {
                         $db->query($SQL);
                     }
                 }
@@ -572,5 +523,3 @@ class ModuleUtility
         }
     }
 }
-
-?>

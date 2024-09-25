@@ -12,58 +12,57 @@
  *
  * @package Artichow
  */
-interface awPositionable {
+interface awPositionable
+{
+    /**
+     * Left align
+     *
+     * @var int
+     */
+    public const LEFT = 1;
 
-	/**
-	 * Left align
-	 *
-	 * @var int
-	 */
-	const LEFT = 1;
+    /**
+     * Right align
+     *
+     * @var int
+     */
+    public const RIGHT = 2;
 
-	/**
-	 * Right align
-	 *
-	 * @var int
-	 */
-	const RIGHT = 2;
+    /**
+     * Center align
+     *
+     * @var int
+     */
+    public const CENTER = 3;
 
-	/**
-	 * Center align
-	 *
-	 * @var int
-	 */
-	const CENTER = 3;
+    /**
+     * Top align
+     *
+     * @var int
+     */
+    public const TOP = 4;
 
-	/**
-	 * Top align
-	 *
-	 * @var int
-	 */
-	const TOP = 4;
+    /**
+     * Bottom align
+     *
+     * @var int
+     */
+    public const BOTTOM = 5;
 
-	/**
-	 * Bottom align
-	 *
-	 * @var int
-	 */
-	const BOTTOM = 5;
+    /**
+     * Middle align
+     *
+     * @var int
+     */
+    public const MIDDLE = 6;
 
-	/**
-	 * Middle align
-	 *
-	 * @var int
-	 */
-	const MIDDLE = 6;
-
-	/**
-	 * Change alignment
-	 *
-	 * @param int $h Horizontal alignment
-	 * @param int $v Vertical alignment
-	 */
-	public function setAlign($h = NULL, $v = NULL);
-
+    /**
+     * Change alignment
+     *
+     * @param int $h Horizontal alignment
+     * @param int $v Vertical alignment
+     */
+    public function setAlign($h = null, $v = null);
 }
 
 registerInterface('Positionable');
@@ -73,101 +72,81 @@ registerInterface('Positionable');
  *
  * @package Artichow
  */
-class awSide {
+class awSide
+{
+    /**
+     * Left side
+     *
+     * @var int
+     */
+    public $left = 0;
 
-	/**
-	 * Left side
-	 *
-	 * @var int
-	 */
-	public $left = 0;
+    /**
+     * Right side
+     *
+     * @var int
+     */
+    public $right = 0;
 
-	/**
-	 * Right side
-	 *
-	 * @var int
-	 */
-	public $right = 0;
+    /**
+     * Top side
+     *
+     * @var int
+     */
+    public $top = 0;
 
-	/**
-	 * Top side
-	 *
-	 * @var int
-	 */
-	public $top = 0;
+    /**
+     * Bottom side
+     *
+     * @var int
+     */
+    public $bottom = 0;
 
-	/**
-	 * Bottom side
-	 *
-	 * @var int
-	 */
-	public $bottom = 0;
+    /**
+     * Build the side
+     */
+    public function __construct(mixed $left = null, mixed $right = null, mixed $top = null, mixed $bottom = null)
+    {
+        $this->set($left, $right, $top, $bottom);
+    }
 
-	/**
-	 * Build the side
-	 *
-	 * @param mixed $left
-	 * @param mixed $right
-	 * @param mixed $top
-	 * @param mixed $bottom
-	 */
-	public function __construct($left = NULL, $right = NULL, $top = NULL, $bottom = NULL) {
-		$this->set($left, $right, $top, $bottom);
-	}
+    /**
+     * Change side values
+     */
+    public function set(mixed $left = null, mixed $right = null, mixed $top = null, mixed $bottom = null)
+    {
+        if ($left !== null) {
+            $this->left = (float) $left;
+        }
+        if ($right !== null) {
+            $this->right = (float) $right;
+        }
+        if ($top !== null) {
+            $this->top = (float) $top;
+        }
+        if ($bottom !== null) {
+            $this->bottom = (float) $bottom;
+        }
+    }
 
-
-	/**
-	 * Change side values
-	 *
-	 * @param mixed $left
-	 * @param mixed $right
-	 * @param mixed $top
-	 * @param mixed $bottom
-	 */
-	public function set($left = NULL, $right = NULL, $top = NULL, $bottom = NULL) {
-
-		if($left !== NULL) {
-			$this->left = (float)$left;
-		}
-		if($right !== NULL) {
-			$this->right = (float)$right;
-		}
-		if($top !== NULL) {
-			$this->top = (float)$top;
-		}
-		if($bottom !== NULL) {
-			$this->bottom = (float)$bottom;
-		}
-
-	}
-
-
-	/**
-	 * Add values to each side
-	 *
-	 * @param mixed $left
-	 * @param mixed $right
-	 * @param mixed $top
-	 * @param mixed $bottom
-	 */
-	public function add($left = NULL, $right = NULL, $top = NULL, $bottom = NULL) {
-
-		if($left !== NULL) {
-			$this->left += (float)$left;
-		}
-		if($right !== NULL) {
-			$this->right += (float)$right;
-		}
-		if($top !== NULL) {
-			$this->top += (float)$top;
-		}
-		if($bottom !== NULL) {
-			$this->bottom += (float)$bottom;
-		}
-
-	}
-
+    /**
+     * Add values to each side
+     */
+    public function add(mixed $left = null, mixed $right = null, mixed $top = null, mixed $bottom = null)
+    {
+        if ($left !== null) {
+            $this->left += (float) $left;
+        }
+        if ($right !== null) {
+            $this->right += (float) $right;
+        }
+        if ($top !== null) {
+            $this->top += (float) $top;
+        }
+        if ($bottom !== null) {
+            $this->bottom += (float) $bottom;
+        }
+    }
 }
 
 registerClass('Side');
-?>

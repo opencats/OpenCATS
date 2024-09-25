@@ -28,12 +28,11 @@
  */
 
 /* License key. */
-define('LICENSE_KEY','3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
+define('LICENSE_KEY', '3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
 
 
 /* legacy root. */
-if( !defined('LEGACY_ROOT') )
-{
+if (! defined('LEGACY_ROOT')) {
     define('LEGACY_ROOT', '.');
 }
 
@@ -46,7 +45,7 @@ define('DATABASE_NAME', 'cats_test');
 /* Authentication Configuration
  * Options are sql and ldap
  */
-define ('AUTH_MODE', 'sql');
+define('AUTH_MODE', 'sql');
 
 /* Resfly.com Resume Import Services Enabled */
 define('PARSING_ENABLED', false);
@@ -105,9 +104,9 @@ define('SPHINX_INDEX', 'cats catsdelta');
 
 
 /* Pager settings. These are the number of results per page. */
-define('CONTACTS_PER_PAGE',      15);
-define('CANDIDATES_PER_PAGE',    15);
-define('CLIENTS_PER_PAGE',       15);
+define('CONTACTS_PER_PAGE', 15);
+define('CANDIDATES_PER_PAGE', 15);
+define('CLIENTS_PER_PAGE', 15);
 define('LOGIN_ENTRIES_PER_PAGE', 15);
 
 /* Maximum number of characters of the owner/recruiter users' last names
@@ -171,8 +170,8 @@ define('CANDIDATE_STATUSCHANGE_SUBJECT', 'Job Application Status Change');
  * In FORGOT_PASSWORD_FROM, %s is the placeholder for the password.
  */
 define('FORGOT_PASSWORD_FROM_NAME', 'CATS');
-define('FORGOT_PASSWORD_SUBJECT',   'CATS - Password Retrieval Request');
-define('FORGOT_PASSWORD_BODY',      'You recently requested that your OpenCATS: Applicant Tracking System password be sent to you. Your current password is %s.');
+define('FORGOT_PASSWORD_SUBJECT', 'CATS - Password Retrieval Request');
+define('FORGOT_PASSWORD_BODY', 'You recently requested that your OpenCATS: Applicant Tracking System password be sent to you. Your current password is %s.');
 
 /* Is this a demo site? */
 define('ENABLE_DEMO_MODE', false);
@@ -186,16 +185,16 @@ define('ENABLE_SINGLE_SESSION', false);
 /* Automated testing. This is only useful for the CATS core team at the moment;
  * don't worry about this yet.
  */
-define('TESTER_LOGIN',     'john@mycompany.net');
-define('TESTER_PASSWORD',  'john99');
+define('TESTER_LOGIN', 'john@mycompany.net');
+define('TESTER_PASSWORD', 'john99');
 define('TESTER_FIRSTNAME', 'John');
-define('TESTER_LASTNAME',  'Anderson');
-define('TESTER_FULLNAME',  'John Anderson');
-define('TESTER_USER_ID',   4);
+define('TESTER_LASTNAME', 'Anderson');
+define('TESTER_FULLNAME', 'John Anderson');
+define('TESTER_USER_ID', 4);
 
 /* Demo login. */
-define('DEMO_LOGIN',     'john@mycompany.net');
-define('DEMO_PASSWORD',  'john99');
+define('DEMO_LOGIN', 'john@mycompany.net');
+define('DEMO_PASSWORD', 'john99');
 
 /* This setting configures the method used to send e-mail from CATS. CATS
  * can send e-mail via SMTP, PHP's built-in mail support, or via Sendmail.
@@ -264,21 +263,20 @@ define('US_ZIPS_ENABLED', true);
 
 /* LDAP Configuration
  */
-define ('LDAP_HOST', 'ldap.forumsys.com');
-define ('LDAP_PORT', '389');
-define ('LDAP_BASEDN', 'dc=example,dc=com');
-define ('LDAP_UID', 'uid');
-define ('LDAP_BIND_DN', 'cn=read-only-admin,dc=example,dc=com');
-define ('LDAP_BIND_PASSWORD', 'password');
-define ('LDAP_PROTOCOL_VERSION', 3);
+define('LDAP_HOST', 'ldap.forumsys.com');
+define('LDAP_PORT', '389');
+define('LDAP_BASEDN', 'dc=example,dc=com');
+define('LDAP_UID', 'uid');
+define('LDAP_BIND_DN', 'cn=read-only-admin,dc=example,dc=com');
+define('LDAP_BIND_PASSWORD', 'password');
+define('LDAP_PROTOCOL_VERSION', 3);
 
-class JOB_TYPES {
-    public static $LIST = array(
+class JOB_TYPES
+{
+    public static $LIST = [
         'H' => 'Hire',
         'C' => 'Contract',
         'C2H' => 'Contract To Hire',
-        'FL' => 'Freelance'       
-    );
+        'FL' => 'Freelance',
+    ];
 };
-
-?>

@@ -41,18 +41,18 @@ class HomeUI extends UserInterface
         $this->_moduleDirectory = 'home';
         $this->_moduleName = 'home';
         $this->_moduleTabText = 'Dashboard';
-        $this->_subTabs = array();
+        $this->_subTabs = [];
     }
-
 
     public function handleRequest()
     {
         $action = $this->getAction();
 
-        if (!eval(Hooks::get('HOME_HANDLE_REQUEST'))) return;
+        if (! eval(Hooks::get('HOME_HANDLE_REQUEST'))) {
+            return;
+        }
 
-        switch ($action)
-        {
+        switch ($action) {
             case 'quickSearch':
                 include_once(LEGACY_ROOT . '/lib/Search.php');
                 include_once(LEGACY_ROOT . '/lib/StringUtility.php');
@@ -72,13 +72,9 @@ class HomeUI extends UserInterface
                 $this->addSavedSearch();
                 break;
 
-            /* FIXME: undefined function getAttachment()
-            case 'getAttachment':
-                include_once(LEGACY_ROOT . '/lib/Attachments.php');
-
-                $this->getAttachment();
-                break;
-            */     
+                /* FIXME: undefined function getAttachment()
+                    break;
+                 */
 
             case 'home':
             default:
@@ -87,39 +83,40 @@ class HomeUI extends UserInterface
         }
     }
 
-
     private function home()
-    {        
-         if (!eval(Hooks::get('HOME'))) return;
-        
+    {
+        if (! eval(Hooks::get('HOME'))) {
+            return;
+        }
+
         NewVersionCheck::getNews();
-        
+
         $dashboard = new Dashboard($this->_siteID);
         $placedRS = $dashboard->getPlacements();
-        
+
         $calendar = new Calendar($this->_siteID);
         $upcomingEventsHTML = $calendar->getUpcomingEventsHTML(7, UPCOMING_FOR_DASHBOARD);
-        
+
         $calendar = new Calendar($this->_siteID);
-        $upcomingEventsFupHTML = $calendar->getUpcomingEventsHTML(7, UPCOMING_FOR_DASHBOARD_FUP);        
+        $upcomingEventsFupHTML = $calendar->getUpcomingEventsHTML(7, UPCOMING_FOR_DASHBOARD_FUP);
 
         /* Important cand datagrid */
 
-        $dataGridProperties = array(
-            'rangeStart'    => 0,
-            'maxResults'    => 15,
-            'filterVisible' => false
-        );
+        $dataGridProperties = [
+            'rangeStart' => 0,
+            'maxResults' => 15,
+            'filterVisible' => false,
+        ];
 
         $dataGrid = DataGrid::get("home:ImportantPipelineDashboard", $dataGridProperties);
 
         $this->_template->assign('dataGrid', $dataGrid);
 
-        $dataGridProperties = array(
-            'rangeStart'    => 0,
-            'maxResults'    => 15,
-            'filterVisible' => false
-        );
+        $dataGridProperties = [
+            'rangeStart' => 0,
+            'maxResults' => 15,
+            'filterVisible' => false,
+        ];
 
         /* Only show a month of activities. */
         $dataGridProperties['startDate'] = '';
@@ -129,7 +126,7 @@ class HomeUI extends UserInterface
         $dataGrid2 = DataGrid::get("home:CallsDataGrid", $dataGridProperties);
 
         $this->_template->assign('dataGrid2', $dataGrid2);
-        
+
         $this->_template->assign('active', $this);
         $this->_template->assign('placedRS', $placedRS);
         $this->_template->assign('upcomingEventsHTML', $upcomingEventsHTML);
@@ -140,50 +137,54 @@ class HomeUI extends UserInterface
 
     private function deleteSavedSearch()
     {
-        if (!isset($_GET['searchID']))
-        {
+        if (! isset($_GET['searchID'])) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'No search ID specified.');
         }
 
-        if (!isset($_GET['currentURL']))
-        {
+        if (! isset($_GET['currentURL'])) {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'No current URL specified.');
         }
 
-        $searchID   = $_GET['searchID'];
+        $searchID = $_GET['searchID'];
         $currentURL = $_GET['currentURL'];
 
-        if (!eval(Hooks::get('HOME_DELETE_SAVED_SEARCH_PRE'))) return;
+        if (! eval(Hooks::get('HOME_DELETE_SAVED_SEARCH_PRE'))) {
+            return;
+        }
 
         $savedSearches = new SavedSearches($this->_siteID);
         $savedSearches->remove($searchID);
 
-        if (!eval(Hooks::get('HOME_DELETE_SAVED_SEARCH_POST'))) return;
+        if (! eval(Hooks::get('HOME_DELETE_SAVED_SEARCH_POST'))) {
+            return;
+        }
 
         CATSUtility::transferRelativeURI($currentURL);
     }
 
     private function addSavedSearch()
     {
-        if (!isset($_GET['searchID']))
-        {
+        if (! isset($_GET['searchID'])) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'No search ID specified.');
         }
 
-        if (!isset($_GET['currentURL']))
-        {
+        if (! isset($_GET['currentURL'])) {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'No current URL specified.');
         }
 
-        $searchID   = $_GET['searchID'];
+        $searchID = $_GET['searchID'];
         $currentURL = $_GET['currentURL'];
 
-        if (!eval(Hooks::get('HOME_ADD_SAVED_SEARCH_PRE'))) return;
+        if (! eval(Hooks::get('HOME_ADD_SAVED_SEARCH_PRE'))) {
+            return;
+        }
 
         $savedSearches = new SavedSearches($this->_siteID);
         $savedSearches->save($searchID);
 
-        if (!eval(Hooks::get('HOME_ADD_SAVED_SEARCH_POST'))) return;
+        if (! eval(Hooks::get('HOME_ADD_SAVED_SEARCH_POST'))) {
+            return;
+        }
 
         CATSUtility::transferRelativeURI($currentURL);
     }
@@ -193,8 +194,7 @@ class HomeUI extends UserInterface
         /* Bail out to prevent an error if the GET string doesn't even contain
          * a field named 'quickSearchFor' at all.
          */
-        if (!isset($_GET['quickSearchFor']))
-        {
+        if (! isset($_GET['quickSearchFor'])) {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'No query string specified.');
         }
 
@@ -203,162 +203,121 @@ class HomeUI extends UserInterface
 
         $search = new QuickSearch($this->_siteID);
         $candidatesRS = $search->candidates($query);
-        $companiesRS  = $search->companies($query);
-        $contactsRS   = $search->contacts($query);
-        $jobOrdersRS  = $search->jobOrders($query);
+        $companiesRS = $search->companies($query);
+        $contactsRS = $search->contacts($query);
+        $jobOrdersRS = $search->jobOrders($query);
         //$listsRS      = $search->lists($query);
 
-        if (!empty($candidatesRS))
-        {
-            foreach ($candidatesRS as $rowIndex => $row)
-            {
-                if (!empty($candidatesRS[$rowIndex]['ownerFirstName']))
-                {
+        if (! empty($candidatesRS)) {
+            foreach ($candidatesRS as $rowIndex => $row) {
+                if (! empty($candidatesRS[$rowIndex]['ownerFirstName'])) {
                     $candidatesRS[$rowIndex]['ownerAbbrName'] = StringUtility::makeInitialName(
                         $candidatesRS[$rowIndex]['ownerFirstName'],
                         $candidatesRS[$rowIndex]['ownerLastName'],
                         false,
                         LAST_NAME_MAXLEN
                     );
-                }
-                else
-                {
+                } else {
                     $candidatesRS[$rowIndex]['ownerAbbrName'] = 'None';
                 }
 
-                if (empty($candidatesRS[$rowIndex]['phoneHome']))
-                {
+                if (empty($candidatesRS[$rowIndex]['phoneHome'])) {
                     $candidatesRS[$rowIndex]['phoneHome'] = 'None';
                 }
 
-                if (empty($candidatesRS[$rowIndex]['phoneCell']))
-                {
+                if (empty($candidatesRS[$rowIndex]['phoneCell'])) {
                     $candidatesRS[$rowIndex]['phoneCell'] = 'None';
                 }
             }
         }
 
-        if (!empty($companiesRS))
-        {
-            foreach ($companiesRS as $rowIndex => $row)
-            {
-                if (!empty($companiesRS[$rowIndex]['ownerFirstName']))
-                {
+        if (! empty($companiesRS)) {
+            foreach ($companiesRS as $rowIndex => $row) {
+                if (! empty($companiesRS[$rowIndex]['ownerFirstName'])) {
                     $companiesRS[$rowIndex]['ownerAbbrName'] = StringUtility::makeInitialName(
                         $companiesRS[$rowIndex]['ownerFirstName'],
                         $companiesRS[$rowIndex]['ownerLastName'],
                         false,
                         LAST_NAME_MAXLEN
                     );
-                }
-                else
-                {
+                } else {
                     $companiesRS[$rowIndex]['ownerAbbrName'] = 'None';
                 }
 
-                if (empty($companiesRS[$rowIndex]['phone1']))
-                {
+                if (empty($companiesRS[$rowIndex]['phone1'])) {
                     $companiesRS[$rowIndex]['phone1'] = 'None';
                 }
             }
         }
 
-        if (!empty($contactsRS))
-        {
-            foreach ($contactsRS as $rowIndex => $row)
-            {
-
-                if ($contactsRS[$rowIndex]['isHotContact'] == 1)
-                {
+        if (! empty($contactsRS)) {
+            foreach ($contactsRS as $rowIndex => $row) {
+                if ($contactsRS[$rowIndex]['isHotContact'] == 1) {
                     $contactsRS[$rowIndex]['linkClassContact'] = 'jobLinkHot';
-                }
-                else
-                {
+                } else {
                     $contactsRS[$rowIndex]['linkClassContact'] = 'jobLinkCold';
                 }
 
-                if ($contactsRS[$rowIndex]['leftCompany'] == 1)
-                {
+                if ($contactsRS[$rowIndex]['leftCompany'] == 1) {
                     $contactsRS[$rowIndex]['linkClassCompany'] = 'jobLinkDead';
-                }
-                else if ($contactsRS[$rowIndex]['isHotCompany'] == 1)
-                {
+                } elseif ($contactsRS[$rowIndex]['isHotCompany'] == 1) {
                     $contactsRS[$rowIndex]['linkClassCompany'] = 'jobLinkHot';
-                }
-                else
-                {
+                } else {
                     $contactsRS[$rowIndex]['linkClassCompany'] = 'jobLinkCold';
                 }
 
-                if (!empty($contactsRS[$rowIndex]['ownerFirstName']))
-                {
+                if (! empty($contactsRS[$rowIndex]['ownerFirstName'])) {
                     $contactsRS[$rowIndex]['ownerAbbrName'] = StringUtility::makeInitialName(
                         $contactsRS[$rowIndex]['ownerFirstName'],
                         $contactsRS[$rowIndex]['ownerLastName'],
                         false,
                         LAST_NAME_MAXLEN
                     );
-                }
-                else
-                {
+                } else {
                     $contactsRS[$rowIndex]['ownerAbbrName'] = 'None';
                 }
 
-                if (empty($contactsRS[$rowIndex]['phoneWork']))
-                {
+                if (empty($contactsRS[$rowIndex]['phoneWork'])) {
                     $contactsRS[$rowIndex]['phoneWork'] = 'None';
                 }
 
-                if (empty($contactsRS[$rowIndex]['phoneCell']))
-                {
+                if (empty($contactsRS[$rowIndex]['phoneCell'])) {
                     $contactsRS[$rowIndex]['phoneCell'] = 'None';
                 }
             }
         }
 
-        if (!empty($jobOrdersRS))
-        {
-            foreach ($jobOrdersRS as $rowIndex => $row)
-            {
-                if ($jobOrdersRS[$rowIndex]['startDate'] == '00-00-00')
-                {
+        if (! empty($jobOrdersRS)) {
+            foreach ($jobOrdersRS as $rowIndex => $row) {
+                if ($jobOrdersRS[$rowIndex]['startDate'] == '00-00-00') {
                     $jobOrdersRS[$rowIndex]['startDate'] = '';
                 }
 
-                if ($jobOrdersRS[$rowIndex]['isHot'] == 1)
-                {
+                if ($jobOrdersRS[$rowIndex]['isHot'] == 1) {
                     $jobOrdersRS[$rowIndex]['linkClass'] = 'jobLinkHot';
-                }
-                else
-                {
+                } else {
                     $jobOrdersRS[$rowIndex]['linkClass'] = 'jobLinkCold';
                 }
 
-                if (!empty($jobOrdersRS[$rowIndex]['recruiterAbbrName']))
-                {
+                if (! empty($jobOrdersRS[$rowIndex]['recruiterAbbrName'])) {
                     $jobOrdersRS[$rowIndex]['recruiterAbbrName'] = StringUtility::makeInitialName(
                         $jobOrdersRS[$rowIndex]['recruiterFirstName'],
                         $jobOrdersRS[$rowIndex]['recruiterLastName'],
                         false,
                         LAST_NAME_MAXLEN
                     );
-                }
-                else
-                {
+                } else {
                     $jobOrdersRS[$rowIndex]['recruiterAbbrName'] = 'None';
                 }
 
-                if (!empty($jobOrdersRS[$rowIndex]['ownerFirstName']))
-                {
+                if (! empty($jobOrdersRS[$rowIndex]['ownerFirstName'])) {
                     $jobOrdersRS[$rowIndex]['ownerAbbrName'] = StringUtility::makeInitialName(
                         $jobOrdersRS[$rowIndex]['ownerFirstName'],
                         $jobOrdersRS[$rowIndex]['ownerLastName'],
                         false,
                         LAST_NAME_MAXLEN
                     );
-                }
-                else
-                {
+                } else {
                     $jobOrdersRS[$rowIndex]['ownerAbbrName'] = 'None';
                 }
             }
@@ -372,10 +331,10 @@ class HomeUI extends UserInterface
         //$this->_template->assign('listsRS', $listsRS);
         $this->_template->assign('wildCardQuickSearch', $wildCardQuickSearch);
 
-        if (!eval(Hooks::get('HOME_QUICK_SEARCH'))) return;
+        if (! eval(Hooks::get('HOME_QUICK_SEARCH'))) {
+            return;
+        }
 
         $this->_template->display('./modules/home/SearchEverything.tpl');
     }
 }
-
-?>

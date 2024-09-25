@@ -28,14 +28,11 @@
  */
 
 /* Allow this script to run as long as possible. */
-if( ini_get('safe_mode') )
-{
-	//don't do anything in safe mode
-}
-else
-{
-	/* Allow this script to run longer. */
-	set_time_limit(300);
+if (ini_get('safe_mode')) {
+    //don't do anything in safe mode
+} else {
+    /* Allow this script to run longer. */
+    set_time_limit(300);
 }
 
 /* SimpleTest */
@@ -55,8 +52,8 @@ include_once(LEGACY_ROOT . '/modules/tests/TestCaseList.php');
 class TestsUI extends UserInterface
 {
     private $_testCaseList;
-    private $reporter;
 
+    private $reporter;
 
     public function __construct()
     {
@@ -66,26 +63,24 @@ class TestsUI extends UserInterface
         $this->_moduleName = 'tests';
         $this->_moduleDirectory = 'tests';
         $this->_testCaseList = new TestCaseList();
-        
+
         $microTimeArray = explode(' ', microtime());
         $microTimeStart = $microTimeArray[1] + $microTimeArray[0];
-        
+
         $this->reporter = new CATSTestReporter($microTimeStart);
         $this->reporter->showPasses = true;
         $this->reporter->showFails = true;
     }
 
-
     public function handleRequest()
     {
         $action = $this->getAction();
-        switch ($action)
-        {
+        switch ($action) {
             case 'runSelectedTests':
                 $this->runSelectedTests();
                 break;
 
-            /* Main tests page. */
+                /* Main tests page. */
             case 'selectTests':
             default:
                 $this->selectTests();
@@ -109,17 +104,13 @@ class TestsUI extends UserInterface
         /* FIXME: 2 groups! Web, AJAX. */
         $testSuite = new TestSuite('CATS Test Suite');
 
-        foreach ($this->_testCaseList->getSystemTests() as $offset => $value)
-        {
-            if ($this->isChecked($value[0], $_POST))
-            {
+        foreach ($this->_testCaseList->getSystemTests() as $offset => $value) {
+            if ($this->isChecked($value[0], $_POST)) {
                 $testSuite->add(new $value[0]());
             }
         }
-        foreach ($this->_testCaseList->getAjaxTests() as $offset => $value)
-        {
-            if ($this->isChecked($value[0], $_POST))
-            {
+        foreach ($this->_testCaseList->getAjaxTests() as $offset => $value) {
+            if ($this->isChecked($value[0], $_POST)) {
                 $testSuite->add(new $value[0]());
             }
         }
@@ -127,5 +118,3 @@ class TestsUI extends UserInterface
         $testSuite->run($this->reporter);
     }
 }
-
-?>

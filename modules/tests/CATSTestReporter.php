@@ -12,9 +12,10 @@
 class CATSTestReporter extends SimpleReporter
 {
     public $showPasses = true;
-    public $showFails = true;
-    private $_microTimeStart;
 
+    public $showFails = true;
+
+    private $_microTimeStart;
 
     public function __construct($microTimeStart)
     {
@@ -23,11 +24,9 @@ class CATSTestReporter extends SimpleReporter
         $this->_microTimeStart = $microTimeStart;
     }
 
-
     public function paintHeader($testName)
     {
-        if (!headers_sent())
-        {
+        if (! headers_sent()) {
             header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
             header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
             header('Cache-Control: no-store, no-cache, must-revalidate');
@@ -52,8 +51,7 @@ class CATSTestReporter extends SimpleReporter
     {
         parent::paintPass($message);
 
-        if (!$this->showPasses)
-        {
+        if (! $this->showPasses) {
             return;
         }
 
@@ -69,8 +67,7 @@ class CATSTestReporter extends SimpleReporter
     {
         parent::paintFail($message);
 
-        if (!$this->showFails)
-        {
+        if (! $this->showFails) {
             return;
         }
 
@@ -137,23 +134,20 @@ class CATSTestReporter extends SimpleReporter
         parent::paintFooter($testName);
 
         $passes = $this->getPassCount();
-        $fails  = $this->getFailCount();
+        $fails = $this->getFailCount();
         $errors = $this->getExceptionCount();
 
         $testsComplete = $this->getTestCaseProgress();
-        $testsTotal    = $this->getTestCaseCount();
+        $testsTotal = $this->getTestCaseCount();
 
-        if (($fails + $errors) > 0)
-        {
+        if (($fails + $errors) > 0) {
             $id = 'footer_fail';
-        }
-        else
-        {
+        } else {
             $id = 'footer_pass';
         }
 
         $microTimeArray = explode(' ', microtime());
-        $executionTime  = (($microTimeArray[1] + $microTimeArray[0]) - $this->_microTimeStart);
+        $executionTime = (($microTimeArray[1] + $microTimeArray[0]) - $this->_microTimeStart);
 
         echo '<div id="', $id, '">';
         echo '    <span class="bold">', $testsComplete, '/', $testsTotal, '</span> test cases complete:', "\n";
@@ -176,12 +170,10 @@ class CATSTestReporter extends SimpleReporter
         echo '<pre>' . $this->_htmlEntities($message) . '</pre>';
     }
 
-
     private function _htmlEntities($message)
     {
         return htmlentities($message, ENT_COMPAT, HTML_ENCODING);
     }
-
 
     private function _getTestCase()
     {
@@ -195,18 +187,17 @@ class CATSTestReporter extends SimpleReporter
         return preg_replace('/^test/', '', $testCaseMethod);
     }
 
-    public function printHeader($headIncludes = array())
+    public function printHeader($headIncludes = [])
     {
-        echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"', "\n";
-        echo '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">', "\n";
+        echo '<!DOCTYPE html>', "\n";
+        echo '', "\n";
         echo '<html>', "\n";
         echo '    <head>', "\n";
         echo '        <title>CATS - Tests</title>', "\n";
         echo '        <meta http-equiv="Content-Type" content="text/html; charset=', HTML_ENCODING, '">', "\n";
         echo '        <style type="text/css" media="all">@import "modules/tests/tests.css";</style>', "\n";
 
-        foreach ($headIncludes as $key => $value)
-        {
+        foreach ($headIncludes as $key => $value) {
             echo '        <script type="text/javascript" src="', $value, '"></script>', "\n";
         }
 
@@ -219,5 +210,3 @@ class CATSTestReporter extends SimpleReporter
         TemplateUtility::printHeaderBlock(false);
     }
 }
-
-?>

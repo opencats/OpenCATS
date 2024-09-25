@@ -32,8 +32,7 @@ include_once(LEGACY_ROOT . '/lib/Companies.php');
 
 $interface = new SecureAJAXInterface();
 
-if (!$interface->isRequiredIDValid('companyID', false))
-{
+if (! $interface->isRequiredIDValid('companyID', false)) {
     $interface->outputXMLErrorPage(-1, 'Invalid company ID.');
     die();
 }
@@ -46,8 +45,7 @@ $companyID = $_REQUEST['companyID'];
 $companies = new Companies($siteID);
 $contactsArray = $companies->getContactsArray($companyID);
 
-if (empty($contactsArray))
-{
+if (empty($contactsArray)) {
     $interface->outputXMLErrorPage(-2, 'No contacts data.');
     die();
 }
@@ -57,13 +55,12 @@ $output =
     "    <errorcode>0</errorcode>\n" .
     "    <errormessage></errormessage>\n";
 
-foreach ($contactsArray as $rowIndex => $row)
-{
+foreach ($contactsArray as $rowIndex => $row) {
     $output .=
         "    <contact>\n" .
-        "        <id>"        . $contactsArray[$rowIndex]['contactID'] . "</id>\n" .
+        "        <id>" . $contactsArray[$rowIndex]['contactID'] . "</id>\n" .
         "        <firstname>" . $contactsArray[$rowIndex]['firstName'] . "</firstname>\n" .
-        "        <lastname>"  . $contactsArray[$rowIndex]['lastName']  . "</lastname>\n" .
+        "        <lastname>" . $contactsArray[$rowIndex]['lastName'] . "</lastname>\n" .
         "    </contact>\n";
 }
 
@@ -72,5 +69,3 @@ $output .=
 
 /* Send back the XML data. */
 $interface->outputXMLPage($output);
-
-?>

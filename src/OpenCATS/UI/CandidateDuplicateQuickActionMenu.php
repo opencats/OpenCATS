@@ -1,9 +1,11 @@
 <?php
+
 namespace OpenCATS\UI;
 
 class CandidateDuplicateQuickActionMenu extends QuickActionMenu
 {
     private $mergeUrl;
+
     private $removeUrl;
 
     public function __construct($dataItemType, $dataItemId, $accessLevel, $mergeUrl, $removeUrl)
@@ -21,8 +23,8 @@ class CandidateDuplicateQuickActionMenu extends QuickActionMenu
     protected function getParameters()
     {
         $parameters = parent::getParameters();
-        $parameters[] = "'". $this->mergeUrl ."'";
-        $parameters[] = "'". $this->removeUrl ."'";
+        $parameters[] = "'" . $this->mergeUrl . "'";
+        $parameters[] = "'" . $this->removeUrl . "'";
         return $parameters;
     }
 }

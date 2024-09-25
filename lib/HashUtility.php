@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -37,12 +36,17 @@
  */
 class HashUtility
 {
-    const CRC32_CRCPOLY = 0xEDB88320;
-    const CRC32_CRCINV = 0x5B358FD3;
-    const CRC32_INITXOR = 0xFFFFFFFF;
-    const CRC32_FINALXOR = 0xFFFFFFFF;
-    const CRC32_READ_BLOCKSIZE = 1048576;
-    const INT_MAX = 0x7fffffff;
+    public const CRC32_CRCPOLY = 0xEDB88320;
+
+    public const CRC32_CRCINV = 0x5B358FD3;
+
+    public const CRC32_INITXOR = 0xFFFFFFFF;
+
+    public const CRC32_FINALXOR = 0xFFFFFFFF;
+
+    public const CRC32_READ_BLOCKSIZE = 1048576;
+
+    public const INT_MAX = 0x7fffffff;
 
     /**
      * A reasonably fast pure-PHP CRC algorithm that doesn't require the
@@ -67,86 +71,73 @@ class HashUtility
     public function crc32File($filename, $forcePHPImplementation = false)
     {
         /* PHP's hash_file() is faster if available (PHP 5.2.1+). */
-        if (function_exists('hash_file') && !$forcePHPImplementation && false)
-        {            
+        if (function_exists('hash_file') && ! $forcePHPImplementation && false) {
             $rawHash = @hash_file('crc32b', $filename, true);
-            if ($rawHash === false)
-            {
+            if ($rawHash === false) {
                 return false;
             }
-            
+
             // FIXME: Should this be in machine byte order, or always little endian?
-            list(,$hash) = unpack('V', $rawHash);
+            list(, $hash) = unpack('V', $rawHash);
             return $hash;
         }
 
         $bytesLeftToRead = @filesize($filename);
-        
-        $fileHandle = @fopen($filename,'rb');
-        if ($fileHandle === false)
-        {
+
+        $fileHandle = @fopen($filename, 'rb');
+        if ($fileHandle === false) {
             return false;
         }
 
         $crc32 = 0;
         $crc32String = '';
-        while ($bytesLeftToRead > 0)
-        {
+        while ($bytesLeftToRead > 0) {
             $maxBytesToRead = min($bytesLeftToRead, self::CRC32_READ_BLOCKSIZE);
-            
+
             $buffer = @fread($fileHandle, $maxBytesToRead);
-            if ($buffer === false)
-            {
+            if ($buffer === false) {
                 return false;
             }
-            
+
             $crc32 = crc32($crc32String . $buffer);
-            
+
             $bytesLeftToRead -= $maxBytesToRead;
-            if ($bytesLeftToRead)
-            {
+            if ($bytesLeftToRead) {
                 $crc32String = self::crc32Reverse($crc32);
             }
         }
-        
+
         @fclose($fileHandle);
 
         return $crc32;
-   }
-    
+    }
+
     private static function crc32Reverse($crc)
     {
         $crc ^= self::CRC32_INITXOR;
 
         $newCRC = 0;
-        for ($i = 0; $i < 32; ++$i)
-        {
-            if (($newCRC & 1) != 0)
-            {
+        for ($i = 0; $i < 32; ++$i) {
+            if (($newCRC & 1) != 0) {
                 $newCRC = self::CRC32_CRCPOLY ^ (($newCRC >> 1) & self::INT_MAX);
-            }
-            else
-            {
+            } else {
                 $newCRC = (($newCRC >> 1) & self::INT_MAX);
             }
-    
-            if (($crc & 1) != 0)
-            {
+
+            if (($crc & 1) != 0) {
                 $newCRC ^= self::CRC32_CRCINV;
             }
-            
+
             $crc = (($crc >> 1) & self::INT_MAX);
         }
 
         $newCRC ^= self::CRC32_FINALXOR;
-        
-        $buffer  = chr($newCRC & 0xFF);
+
+        $buffer = chr($newCRC & 0xFF);
         $buffer .= chr($newCRC >> 8 & 0xFF);
         $buffer .= chr($newCRC >> 16 & 0xFF);
         $buffer .= chr($newCRC >> 24 & 0xFF);
-        
+
         return $buffer;
     }
 }
-
-?>

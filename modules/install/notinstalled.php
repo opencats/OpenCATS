@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE html>
 "http://www.w3.org/TR/html4/transitional.dtd">
 <?php include_once('config.php'); ?>
 <html>

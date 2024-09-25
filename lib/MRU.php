@@ -26,7 +26,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -41,15 +40,14 @@
 class MRU
 {
     protected $_userID = -1;
-    protected $_siteID = -1;
 
+    protected $_siteID = -1;
 
     public function __construct($userID, $siteID)
     {
         $this->_userID = $userID;
         $this->_siteID = $siteID;
     }
-
 
     /**
      * Add an item to the MRU list and prune old entries.
@@ -65,7 +63,7 @@ class MRU
         and database references can not be stored in the session. */
         $db = DatabaseConnection::getInstance();
 
-        
+
         $URL = self::makeMRUURL($dataItemType, $dataItemID);
 
         /* If this item is already in the MRU, remove it. */
@@ -96,8 +94,7 @@ class MRU
         );
 
         $queryResult = $db->query($sql);
-        if (!$queryResult)
-        {
+        if (! $queryResult) {
             return -1;
         }
 
@@ -117,8 +114,8 @@ class MRU
         /* Locally initiated because the MRU object is stored in the session,
         and database references can not be stored in the session. */
         $db = DatabaseConnection::getInstance();
-        
-        $HTML = array();
+
+        $HTML = [];
 
         $sql = sprintf(
             "SELECT
@@ -135,15 +132,15 @@ class MRU
             $this->_siteID,
             $this->_userID
         );
-        
+
         $rs = $db->getAllAssoc($sql);
 
-        foreach ($rs as $rowIndex => $row)
-        {
-            if (mb_strlen($row['dataItemText']) > MRU_ITEM_LENGTH)
-            {
+        foreach ($rs as $rowIndex => $row) {
+            if (mb_strlen($row['dataItemText']) > MRU_ITEM_LENGTH) {
                 $rs[$rowIndex]['dataItemText'] = mb_substr(
-                    $row['dataItemText'], 0, MRU_ITEM_LENGTH
+                    $row['dataItemText'],
+                    0,
+                    MRU_ITEM_LENGTH
                 ) . "..";
             }
 
@@ -162,7 +159,6 @@ class MRU
             // Handle the case when $HTML is not an array
             return ''; // Or any other default value you want to return
         }
-        
     }
 
     /**
@@ -170,14 +166,13 @@ class MRU
      *
      * @param flag data item type
      * @param integer data item ID
-     * @return void
      */
-     public function removeEntry($dataItemType, $dataItemID)
-     {
+    public function removeEntry($dataItemType, $dataItemID)
+    {
         /* Locally initiated because the MRU object is stored in the session,
         and database references can not be stored in the session. */
         $db = DatabaseConnection::getInstance();
-        
+
         $URL = self::makeMRUURL($dataItemType, $dataItemID);
 
         $sql = sprintf(
@@ -195,19 +190,17 @@ class MRU
         );
 
         $db->query($sql);
-     }
+    }
 
     /**
      * Removes old MRU entries.
-     *
-     * @return void
      */
     private function pruneMRU()
     {
         /* Locally initiated because the MRU object is stored in the session,
         and database references can not be stored in the session. */
         $db = DatabaseConnection::getInstance();
-        
+
         $sql = sprintf(
             "SELECT
                 COUNT(*) AS count
@@ -227,8 +220,7 @@ class MRU
          * Should be fairly easy; just find how much over we are, order ASC by
          * mruID, limit by how much over, then delete them all.
          */
-        while ($count > MRU_MAX_ITEMS)
-        {
+        while ($count > MRU_MAX_ITEMS) {
             /* Remove the least recent entry. */
             $sql = sprintf(
                 "SELECT
@@ -248,8 +240,7 @@ class MRU
             $rs = $db->getAssoc($sql);
 
             /* Should never be empty, but just in case... */
-            if (!empty($rs))
-            {
+            if (! empty($rs)) {
                 $sql = sprintf(
                     "DELETE FROM
                         mru
@@ -275,8 +266,7 @@ class MRU
     {
         $URL = CATSUtility::getIndexName();
 
-        switch ($dataItemType)
-        {
+        switch ($dataItemType) {
             case DATA_ITEM_CANDIDATE:
                 $URL .= '?m=candidates&amp;a=show&amp;candidateID=';
                 break;
@@ -306,5 +296,3 @@ class MRU
         return $URL;
     }
 }
-
-?>

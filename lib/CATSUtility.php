@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -42,9 +41,13 @@ include_once(LEGACY_ROOT . '/lib/FileUtility.php');
 class CATSUtility
 {
     /* Prevent this class from being instantiated. */
-    private function __construct() {}
-    private function __clone() {}
+    private function __construct()
+    {
+    }
 
+    private function __clone()
+    {
+    }
 
     /**
      * Returns the current CATS version string from the .version file in the
@@ -73,8 +76,7 @@ class CATSUtility
          * version data.
          */
         $spacePosition = strpos($versionString, ' ');
-        if ($spacePosition !== false)
-        {
+        if ($spacePosition !== false) {
             $versionString = substr($versionString, 0, $spacePosition);
         }
 
@@ -83,7 +85,7 @@ class CATSUtility
          * mathematically than older versions.
          */
         $versionIntegers = explode('.', $versionString);
-        $versionInteger =  $versionIntegers[0] * 10000;
+        $versionInteger = $versionIntegers[0] * 10000;
         $versionInteger += $versionIntegers[1] * 100;
         $versionInteger += $versionIntegers[2] * 1;
 
@@ -97,19 +99,16 @@ class CATSUtility
      */
     public static function getBuild()
     {
-        if (!file_exists('.svn/entries'))
-        {
+        if (! file_exists('.svn/entries')) {
             return 0;
         }
 
-        $data = @file_get_contents('.svn/entries');
+        $data = file_get_contents('.svn/entries');
 
         /* XML Data? */
-        if ($data[0] === '<')
-        {
-            $xml = @simplexml_load_string($data);
-            if (!$xml || !isset($xml->entry[0]['committed-rev']))
-            {
+        if ($data[0] === '<') {
+            $xml = simplexml_load_string($data);
+            if (! $xml || ! isset($xml->entry[0]['committed-rev'])) {
                 return 0;
             }
 
@@ -119,15 +118,14 @@ class CATSUtility
         /* If the data is not XML, there is a version number at the first
          * character of the string. We can handle versions 7 and 8.
          */
-        if ((int) $data[0] > 6 && (int) $data[0] < 9)
-        {
+        if ((int) $data[0] > 6 && (int) $data[0] < 9) {
             /* Return the text between the end of the first "dir" line and
              * the next linefeed.
              */
             $data = substr($data, strpos($data, "dir\n") + 4);
             $data = substr($data, 0, strpos($data, "\n"));
 
-            return (integer) $data;
+            return (int) $data;
         }
     }
 
@@ -142,36 +140,30 @@ class CATSUtility
     public static function changeConfigSetting($name, $value)
     {
         /* Make sure we can read and write to config.php. */
-        if (!is_readable('config.php') || !is_writeable('config.php'))
-        {
+        if (! is_readable('config.php') || ! is_writeable('config.php')) {
             return false;
         }
 
         /* Try to read the existing config file. */
-        $config = @file('config.php');
-        if ($config === false)
-        {
+        $config = file('config.php');
+        if ($config === false) {
             return false;
         }
 
-        $newconfig = array();
-        foreach ($config as $index => $line)
-        {
-            if (strpos($line, 'define(\'' . $name . '\'') === 0)
-            {
+        $newconfig = [];
+        foreach ($config as $index => $line) {
+            if (strpos($line, 'define(\'' . $name . '\'') === 0) {
                 $newconfig[] = sprintf("define('%s', %s);", $name, $value);
-            }
-            else
-            {
+            } else {
                 $newconfig[] = rtrim($line);
             }
         }
 
-        $result = @file_put_contents(
-            'config.php', implode("\n", $newconfig) . "\n"
+        $result = file_put_contents(
+            'config.php',
+            implode("\n", $newconfig) . "\n"
         );
-        if (!$result)
-        {
+        if (! $result) {
             /* We either completely failed or wrote 0 bytes. */
             return false;
         }
@@ -187,21 +179,18 @@ class CATSUtility
      * @param array GET variable separator.
      * @return string Filtered GET query string.
      */
-    public static function getFilteredGET($remove = array(), $separator = '&')
+    public static function getFilteredGET($remove = [], $separator = '&')
     {
         $getVars = $_GET;
 
-        foreach ($remove as $name)
-        {
-            if (isset($getVars[$name]))
-            {
+        foreach ($remove as $name) {
+            if (isset($getVars[$name])) {
                 unset($getVars[$name]);
             }
         }
 
-        $newParameters = array();
-        foreach ($getVars as $name => $value)
-        {
+        $newParameters = [];
+        foreach ($getVars as $name => $value) {
             $newParameters[] = urlencode($name) . '=' . urlencode($value);
         }
 
@@ -220,14 +209,11 @@ class CATSUtility
     public static function getAbsoluteURI($relativePath = '')
     {
         //FIXME: This causes problems on IIS. Check forums for reporters. bradoyler and one more...
-        if (!isset($_SERVER['HTTPS']) || empty($_SERVER['HTTPS']) ||
-            strtolower($_SERVER['HTTPS']) != 'on')
-        {
-            $absoluteURI  = 'http://';
-        }
-        else
-        {
-            $absoluteURI  = 'https://';
+        if (! isset($_SERVER['HTTPS']) || empty($_SERVER['HTTPS']) ||
+            strtolower($_SERVER['HTTPS']) != 'on') {
+            $absoluteURI = 'http://';
+        } else {
+            $absoluteURI = 'https://';
         }
 
         $absoluteURI .= $_SERVER['HTTP_HOST']
@@ -240,7 +226,7 @@ class CATSUtility
 
         /* Clean up extra /'s. */
         $absoluteURI = str_replace('//', '/', $absoluteURI);
-        $absoluteURI = str_replace('http:/',  'http://',  $absoluteURI);
+        $absoluteURI = str_replace('http:/', 'http://', $absoluteURI);
         $absoluteURI = str_replace('https:/', 'https://', $absoluteURI);
 
         return $absoluteURI;
@@ -251,7 +237,6 @@ class CATSUtility
      * is relative to index.php?.
      *
      * @param string Relative URI.
-     * @return void
      */
     public static function transferRelativeURI($relativePath)
     {
@@ -266,7 +251,6 @@ class CATSUtility
      * Transfers, via a Location: header, to an URL.
      *
      * @param string URL.
-     * @return void
      */
     public static function transferURL($URL)
     {
@@ -304,8 +288,7 @@ class CATSUtility
     public static function getIndexName()
     {
         /* This shouldn't happen, but try to recover gracefully if it does. */
-        if (!isset($_SERVER['PHP_SELF']))
-        {
+        if (! isset($_SERVER['PHP_SELF'])) {
             return 'index.php';
         }
 
@@ -314,14 +297,12 @@ class CATSUtility
 
         /* Handle ajax.php. */
         $indexParts = explode('.', $index);
-        if ($indexParts[0] == 'ajax')
-        {
+        if ($indexParts[0] == 'ajax') {
             return 'index.' . $indexParts[1];
         }
 
         /* Older versions of apache sometimes don't concatinate script name by default. */
-        if ($index == '')
-        {
+        if ($index == '') {
             return 'index.php';
         }
 
@@ -336,7 +317,7 @@ class CATSUtility
     public static function getDirectoryName()
     {
         $parts = explode('/', $_SERVER['PHP_SELF']);
-        unset ($parts[count($parts)-1]);
+        unset($parts[count($parts) - 1]);
 
         $directory = implode('/', $parts);
 
@@ -378,19 +359,15 @@ class CATSUtility
      */
     public static function getSSLIndexURL($cutTopDir = false)
     {
-        if (!SSL_ENABLED || !isset($_SERVER['HTTP_HOST']))
-        {
+        if (! SSL_ENABLED || ! isset($_SERVER['HTTP_HOST'])) {
             return self::getIndexName();
         }
 
         // FIXME: Document / clean up cut top dir stuff.
-        if ($cutTopDir)
-        {
+        if ($cutTopDir) {
             $dirs = explode('/', $_SERVER['PHP_SELF']);
             $path = '/' . implode('/', array_slice($dirs, 1, -2)) . '/' . implode('/', array_slice($dirs, -1, 1));
-        }
-        else
-        {
+        } else {
             $path = $_SERVER['PHP_SELF'];
         }
 
@@ -405,8 +382,6 @@ class CATSUtility
 
     /**
      * Prints Network Solutions' SSL seal.
-     *
-     * @return void
      */
     public static function printSSLSeals()
     {
@@ -427,8 +402,7 @@ class CATSUtility
      */
     public static function isSSL()
     {
-        if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on')
-        {
+        if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') {
             return true;
         }
 
@@ -442,13 +416,10 @@ class CATSUtility
      */
     public static function isSOAPEnabled()
     {
-        if (extension_loaded('soap') && class_exists('SoapClient'))
-        {
+        if (extension_loaded('soap') && class_exists('SoapClient')) {
             return true;
         }
 
         return false;
     }
 }
-
-?>

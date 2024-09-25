@@ -87,7 +87,7 @@
                             </td>
                             <td class="tdData">
                                 <select id="departmentSelect" name="department" class="inputbox" style="width: 150px;" onchange="if (this.value == 'edit') { listEditor('Departments', 'departmentSelect', 'departmentsCSV', false); this.value = '(none)'; } if (this.value == 'nullline') { this.value = '(none)'; }">
-                                    <option value="(none)" selected="selected">None</option>
+                                    <option value="(none)" selected>None</option>
                                 </select>
                                 <input type="hidden" id="departmentsCSV" name="departmentsCSV" value="<?php if ($this->selectedCompanyID !== false): $this->_($this->selectedDepartmentsString); endif; ?>" />
                                 <?php if ($this->selectedCompanyID !== false): ?>
