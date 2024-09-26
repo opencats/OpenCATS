@@ -10,6 +10,12 @@ include_once(LEGACY_ROOT . '/lib/ArrayUtility.php');
 
 class ArrayUtilityTest extends TestCase
 {
+    /* Optional: Add setup if needed in the future */
+    protected function setUp(): void
+    {
+        // Add setup logic if needed
+    }
+
     /* Tests for implodeRange(). */
     public function testImplodeRange()
     {

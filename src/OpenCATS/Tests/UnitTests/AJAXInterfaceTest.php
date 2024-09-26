@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-if (! defined('LEGACY_ROOT')) {
+if (!defined('LEGACY_ROOT')) {
     define('LEGACY_ROOT', '.');
 }
 
@@ -10,14 +10,19 @@ include_once(LEGACY_ROOT . '/lib/AJAXInterface.php');
 
 class AJAXInterfaceTest extends TestCase
 {
+    private $AJAXInterface;
+
+    protected function setUp(): void
+    {
+        $this->AJAXInterface = new AJAXInterface();
+    }
+
     public function testIsRequiredIDValid()
     {
-        $AJAXInterface = new AJAXInterface();
-
         /* Make sure an unset key does not pass. */
         $random = md5('random' . time());
         $this->assertFalse(
-            $AJAXInterface->isRequiredIDValid($random, true, true),
+            $this->AJAXInterface->isRequiredIDValid($random, true, true),
             sprintf("\$_POST['%s'] should not exist and should not be a valid required ID", $random)
         );
 
@@ -26,19 +31,19 @@ class AJAXInterfaceTest extends TestCase
         foreach ($invalidIDs as $ID) {
             $_REQUEST['isRequiredIDValidTest'] = $ID;
             $this->assertFalse(
-                $AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', true, true),
+                $this->AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', true, true),
                 sprintf("'%s' should not be a valid required ID", $ID)
             );
             $this->assertFalse(
-                $AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', true, false),
+                $this->AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', true, false),
                 sprintf("'%s' should not be a valid required ID", $ID)
             );
             $this->assertFalse(
-                $AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', false, true),
+                $this->AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', false, true),
                 sprintf("'%s' should not be a valid required ID", $ID)
             );
             $this->assertFalse(
-                $AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', false, false),
+                $this->AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', false, false),
                 sprintf("'%s' should not be a valid required ID", $ID)
             );
         }
@@ -48,11 +53,11 @@ class AJAXInterfaceTest extends TestCase
         foreach ($invalidIDs as $ID) {
             $_REQUEST['isRequiredIDValidTest'] = $ID;
             $this->assertFalse(
-                $AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', false, true),
+                $this->AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', false, true),
                 sprintf("'%s' should not be a valid required ID with \$allowZero false", $ID)
             );
             $this->assertFalse(
-                $AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', false, false),
+                $this->AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', false, false),
                 sprintf("'%s' should not be a valid required ID with \$allowZero false", $ID)
             );
         }
@@ -62,11 +67,11 @@ class AJAXInterfaceTest extends TestCase
         foreach ($invalidIDs as $ID) {
             $_REQUEST['isRequiredIDValidTest'] = $ID;
             $this->assertFalse(
-                $AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', true, false),
+                $this->AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', true, false),
                 sprintf("'%s' should not be a valid required ID with \$allowNegative false", $ID)
             );
             $this->assertFalse(
-                $AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', false, false),
+                $this->AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', false, false),
                 sprintf("'%s' should not be a valid required ID with \$allowNegative false", $ID)
             );
         }
@@ -78,7 +83,7 @@ class AJAXInterfaceTest extends TestCase
         foreach ($validIDs as $ID) {
             $_REQUEST['isRequiredIDValidTest'] = $ID;
             $this->assertTrue(
-                $AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', true, true),
+                $this->AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', true, true),
                 sprintf("'%s' should be a valid required ID", $ID)
             );
         }
@@ -90,7 +95,7 @@ class AJAXInterfaceTest extends TestCase
         foreach ($validIDs as $ID) {
             $_REQUEST['isRequiredIDValidTest'] = $ID;
             $this->assertTrue(
-                $AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', false, false),
+                $this->AJAXInterface->isRequiredIDValid('isRequiredIDValidTest', false, false),
                 sprintf("'%s' should be a valid required ID", $ID)
             );
         }
@@ -98,26 +103,19 @@ class AJAXInterfaceTest extends TestCase
 
     public function testIsOptionalIDValid()
     {
-        $AJAXInterface = new AJAXInterface();
-
         /* Make sure an unset key does not pass. */
         $random = md5('random' . time());
         $this->assertFalse(
-            $AJAXInterface->isOptionalIDValid($random),
+            $this->AJAXInterface->isOptionalIDValid($random),
             sprintf("\$_POST['%s'] should not exist and should not be a valid optional ID", $random)
         );
 
-        /* Make sure 0, -0, negative numbers, non-numeric strings, and symbols
-         * never pass.
-         */
-        $invalidIDs = [
-            0, -1, -100, '0', '-0', '-1', '-100',
-            'test', '0abc', '1abc', '-abc', '$',
-        ];
+        /* Make sure 0, -0, negative numbers, non-numeric strings, and symbols never pass. */
+        $invalidIDs = [0, -1, -100, '0', '-0', '-1', '-100', 'test', '0abc', '1abc', '-abc', '$'];
         foreach ($invalidIDs as $ID) {
             $_REQUEST['isRequiredIDValidTest'] = $ID;
             $this->assertFalse(
-                $AJAXInterface->isOptionalIDValid('isOptionalIDValidTest'),
+                $this->AJAXInterface->isOptionalIDValid('isRequiredIDValidTest'),
                 sprintf("'%s' should not be a valid optional ID", $ID)
             );
         }
@@ -127,7 +125,7 @@ class AJAXInterfaceTest extends TestCase
         foreach ($validIDs as $ID) {
             $_REQUEST['isOptionalIDValidValidTest'] = $ID;
             $this->assertTrue(
-                $AJAXInterface->isOptionalIDValid('isOptionalIDValidValidTest'),
+                $this->AJAXInterface->isOptionalIDValid('isOptionalIDValidValidTest'),
                 sprintf("'%s' should be a valid optional ID", $ID)
             );
         }
@@ -135,7 +133,7 @@ class AJAXInterfaceTest extends TestCase
         /* Make sure 'NULL' always passes. */
         $_REQUEST['isOptionalIDValidValidTest'] = 'NULL';
         $this->assertTrue(
-            $AJAXInterface->isOptionalIDValid('isOptionalIDValidValidTest'),
+            $this->AJAXInterface->isOptionalIDValid('isOptionalIDValidValidTest'),
             "'NULL' should be a valid optional ID"
         );
     }

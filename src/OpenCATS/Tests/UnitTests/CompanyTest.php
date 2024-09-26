@@ -6,41 +6,27 @@ use PHPUnit\Framework\TestCase;
 class CompanyTest extends TestCase
 {
     public const COMPANY_NAME = "Test Company Name";
-
     public const SITE_ID = -1;
-
     public const ADDRESS = "O'Higgins 123";
-
     public const CITY = "Colonia";
-
     public const STATE = "Maldonado";
-
     public const ZIP_CODE = "31337";
-
     public const PHONE_NUMBER_ONE = "+53 123 45678";
-
     public const PHONE_NUMBER_TWO = "+53 987 65432";
-
     public const FAX_NUMBER = '+53 123 65432';
-
     public const URL = 'http://www.testcompany.com/';
-
     public const KEY_TECHNOLOGIES = 'PHP and Javascript';
-
     public const IS_HOT = 1;
-
     public const NOTES = "This is a note";
-
     public const ENTERED_BY = 1; // USER ID
-
     public const OWNER = 1; // USER ID
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->company = new Company(self::SITE_ID, self::COMPANY_NAME);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         $this->company = null;
     }
@@ -93,7 +79,6 @@ class CompanyTest extends TestCase
         $this->assertEquals(self::FAX_NUMBER, $this->company->getFaxNumber());
     }
 
-    // TODO: URL should be renamed to Website as URL is a technical but a business concept
     public function test_Company_SetUrl_CompanyInstanceHasUrl()
     {
         $this->company->setUrl(self::URL);
@@ -118,8 +103,6 @@ class CompanyTest extends TestCase
         $this->assertEquals(self::NOTES, $this->company->getNotes());
     }
 
-    // TODO: Rename EnteredBy to EnteredByUser, to make it explicit that's
-    // awaiting for a user id
     public function test_Company_SetEnteredBy_CompanyInstanceHasEnteredBy()
     {
         $this->company->setEnteredBy(self::ENTERED_BY);

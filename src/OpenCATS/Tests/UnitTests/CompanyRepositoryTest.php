@@ -112,6 +112,8 @@ class CompanyRepositoryTests extends TestCase
      */
     public function test_persist_FailToCreateNewCompany_ThrowsException()
     {
+        $this->expectException(\OpenCATS\Entity\CompanyRepositoryException::class);
+
         $databaseConnectionMock = $this->getDatabaseConnectionMock();
         $databaseConnectionMock->method('query')
             ->willReturn(false);

@@ -11,7 +11,7 @@ include_once(LEGACY_ROOT . '/lib/ResultSetUtility.php');
 class ResultSetUtilityTest extends TestCase
 {
     /* Tests for findRowByColumnValue(). */
-    public function testFindRowByColumnValue()
+    public function testFindRowByColumnValue(): void
     {
         $input = [
             0 => [

@@ -13,6 +13,11 @@ class AddressParserTest extends TestCase
 {
     private $addressParser;
 
+    protected function setUp(): void
+    {
+        $this->addressParser = new AddressParser();
+    }
+    
     public function makePhoneNumberArray($phoneNumbers)
     {
         $homePhoneRow = ResultSetUtility::findRowByColumnValue(

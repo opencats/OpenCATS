@@ -3,79 +3,83 @@
 namespace OpenCATS\Tests\IntegrationTests;
 
 use PHPUnit\Framework\TestCase;
+use mysqli;
 
 class DatabaseTestCase extends TestCase
 {
     private $connection;
 
-    public function setUp()
+    protected function setUp(): void
     {
-        global $mySQLConnection;
         parent::setUp();
+
+        // Include necessary files
         include_once('./constants.php');
+        include_once('./config.php');
+        include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
+
+        // Define database constants
         define('DATABASE_NAME', 'cats_integrationtest');
         define('DATABASE_HOST', 'integrationtestdb');
 
-        include_once('./config.php');
-        include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
-        $mySQLConnection = @mysqli_connect(
+        // Initialize MySQL connection
+        $this->connection = new mysqli(
             DATABASE_HOST,
             DATABASE_USER,
             DATABASE_PASS
         );
-        if (! $mySQLConnection) {
-            throw new \Exception('Error connecting to the mysql server');
+
+        if ($this->connection->connect_error) {
+            throw new \Exception('Error connecting to the MySQL server: ' . $this->connection->connect_error);
         }
+
+        // Drop and recreate the test database
         $this->mySQLQuery('DROP DATABASE IF EXISTS ' . DATABASE_NAME);
         $this->mySQLQuery('CREATE DATABASE ' . DATABASE_NAME);
 
-        @mysqli_select_db(DATABASE_NAME, $mySQLConnection);
+        // Select the test database
+        if (! $this->connection->select_db(DATABASE_NAME)) {
+            throw new \Exception('Failed to select database: ' . $this->connection->error);
+        }
 
+        // Import the schema
         $this->mySQLQueryMultiple(file_get_contents('db/cats_schema.sql'), ";\n");
     }
 
-    // TODO: remove duplicated code
-    private function MySQLQueryMultiple($SQLData, $delimiter = ';')
+    private function mySQLQueryMultiple(string $SQLData, string $delimiter = ';'): void
     {
-        $SQLStatments = explode($delimiter, $SQLData);
+        $SQLStatements = explode($delimiter, $SQLData);
 
-        foreach ($SQLStatments as $SQL) {
+        foreach ($SQLStatements as $SQL) {
             $SQL = trim($SQL);
 
-            if (empty($SQL)) {
-                continue;
+            if (!empty($SQL)) {
+                $this->mySQLQuery($SQL);
             }
-
-            $this->mySQLQuery($SQL);
         }
     }
 
-    private function mySQLQuery($query, $ignoreErrors = false)
+    private function mySQLQuery(string $query, bool $ignoreErrors = false): bool
     {
-        global $mySQLConnection;
+        $result = $this->connection->query($query);
 
-        $queryResult = mysqli_query($mySQLConnection, $query);
-        if (! $queryResult && ! $ignoreErrors) {
-            $error = "errno: " . $queryResult->connect_errno . ", ";
-            $error .= "error: " . $queryResult->connect_error;
-
-            if ($error == 'Query was empty') {
-                return $queryResult;
-            }
-
-            die(
-                '<p style="background: #ec3737; padding: 4px; margin-top: 0; font:'
-                . ' normal normal bold 12px/130% Arial, Tahoma, sans-serif;">Query'
-                . " Error -- Please Report This Bug!</p><pre>\n\nMySQL Query "
-                . "Failed: " . $error . "\n\n" . $query . "</pre>\n\n"
-            );
+        if (!$result && !$ignoreErrors) {
+            throw new \Exception('MySQL Query Failed: ' . $this->connection->error . "\nQuery: " . $query);
         }
 
-        return $queryResult;
+        return (bool) $result;
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
+        // Drop the test database after each test
         $this->mySQLQuery('DROP DATABASE IF EXISTS ' . DATABASE_NAME);
+
+        // Close the connection
+        if ($this->connection) {
+            $this->connection->close();
+        }
+
+        parent::tearDown();
     }
 }

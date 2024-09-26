@@ -160,7 +160,7 @@ class JobOrderTest extends TestCase
     public function test_create_CreateAndGetStartDate_ReturnsStartDate()
     {
         $jobOrder = $this->createJobOrder();
-        $this->assertEquals(null, $jobOrder->getStartDate());
+        $this->assertNull($jobOrder->getStartDate());
     }
 
     public function test_create_CreateAndGetEnteredBy_ReturnsEnteredBy()

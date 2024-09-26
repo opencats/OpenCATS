@@ -4,6 +4,7 @@ namespace OpenCATS\Tests\IntegrationTests;
 
 use DatabaseConnection;
 use DatabaseSearch;
+use PHPUnit\Framework\TestCase;
 
 if (! defined('LEGACY_ROOT')) {
     define('LEGACY_ROOT', '.');
@@ -11,11 +12,24 @@ if (! defined('LEGACY_ROOT')) {
 
 include_once(LEGACY_ROOT . '/lib/DatabaseSearch.php');
 
-class DatabaseSearchTest extends DatabaseTestCase
+class DatabaseSearchTest extends TestCase
 {
     public function testMakeREGEXPString()
     {
-        //FIXME: Write me!
+        $tests = [
+            ['java', '[[:<:]]java[[:>:]]'],
+            ['sql', '[[:<:]]sql[[:>:]]'],
+            ['java*', 'java.*'],
+            ['java|sql', '[[:<:]]java[[:>:]]|[[:<:]]sql[[:>:]]'],
+        ];
+
+        foreach ($tests as $test) {
+            $this->assertSame(
+                DatabaseSearch::makeREGEXPString($test[0]),
+                $test[1],
+                sprintf("Input '%s' should generate REGEXP string '%s'", $test[0], $test[1])
+            );
+        }
     }
 
     public function testMakeBooleanSQLWhere()
