@@ -496,4 +496,4 @@ class ACL_SETUP {
 
 
 // Define the Google API Key in config.php
-define('GOOGLE_API_KEY', 'AIzaSyCnJp-zz36QaKVMGptsza0AMSCQDrpstZo');
+define('GOOGLE_API_KEY', '');
