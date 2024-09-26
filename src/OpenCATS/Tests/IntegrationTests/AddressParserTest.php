@@ -12,6 +12,11 @@ include_once(LEGACY_ROOT . '/lib/AddressParser.php'); /* Depends on StringUtilit
 class AddressParserTest extends TestCase
 {
     private $addressParser;
+
+        protected function setUp(): void
+    {
+        $this->addressParser = new AddressParser();
+    }
     
     public function makePhoneNumberArray($phoneNumbers)
     {
@@ -69,11 +74,6 @@ class AddressParserTest extends TestCase
         ];
     }
 
-
-protected function setUp(): void
-    {
-        $this->addressParser = new AddressParser();
-    }
 
     public function testSampleAddress1()
     {
