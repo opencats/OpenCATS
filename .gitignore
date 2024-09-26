@@ -12,3 +12,5 @@ temp/*
 /vendor/
 *.diff
 *.rej
+
+upload/addcandidate/jay cv_Copy2.docx
