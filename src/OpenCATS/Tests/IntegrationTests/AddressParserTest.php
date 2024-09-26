@@ -73,9 +73,11 @@ class AddressParserTest extends TestCase
             'fax' => $fax,
         ];
     }
+
+    public function setUp()
     {
         $this->addressParser = new AddressParser();
-}
+    }
 
     public function testSampleAddress1()
     {
