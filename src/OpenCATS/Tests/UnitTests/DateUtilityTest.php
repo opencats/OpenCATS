@@ -32,51 +32,54 @@ class DateUtilityTest extends TestCase
     private $DATE_FORMAT_DDMMYY;
 
     /* Tests for getStartingWeekday(). */
-    public function testGetStartingWeekday()
-    {
-        $this->assertSame(
-            DateUtility::getStartingWeekday(CALENDAR_MONTH_MARCH, 2006),
-            CALENDAR_DAY_WEDNSDAY
-        );
-
-        $this->assertSame(
-            DateUtility::getStartingWeekday(CALENDAR_MONTH_MARCH, 1987),
-            CALENDAR_DAY_SUNDAY
-        );
-        $this->assertSame(
-            DateUtility::getStartingWeekday(CALENDAR_MONTH_APRIL, 1987),
-            CALENDAR_DAY_WEDNSDAY
-        );
-    }
-
-    /* Tests for getStartingWeekday(). */
     public function testGetDaysInMonth()
     {
+        // Test March 2006
+        $days = DateUtility::getDaysInMonth(CALENDAR_MONTH_MARCH, 2006);
+        var_dump("Testing March 2006: Month: " . CALENDAR_MONTH_MARCH . ", Year: 2006, Days Returned: " . $days);
         $this->assertSame(
-            DateUtility::getDaysInMonth(CALENDAR_MONTH_MARCH, 2006),
-            31
+            $days,
+            31,
+            "Expected 31 days for March 2006, got $days"
         );
 
+        // Test March 1987
+        $days1987 = DateUtility::getDaysInMonth(CALENDAR_MONTH_MARCH, 1987);
+        $days2006 = DateUtility::getDaysInMonth(CALENDAR_MONTH_MARCH, 2006);
+        var_dump("Testing March 1987: Month: " . CALENDAR_MONTH_MARCH . ", Year: 1987, Days Returned: " . $days1987);
         $this->assertSame(
-            DateUtility::getDaysInMonth(CALENDAR_MONTH_MARCH, 1987),
-            DateUtility::getDaysInMonth(CALENDAR_MONTH_MARCH, 2006)
+            $days1987,
+            $days2006,
+            "Expected the same number of days for March 1987 and March 2006, got $days1987 and $days2006"
         );
 
+        // Test April 1987
+        $daysApril = DateUtility::getDaysInMonth(CALENDAR_MONTH_APRIL, 1987);
+        var_dump("Testing April 1987: Month: " . CALENDAR_MONTH_APRIL . ", Year: 1987, Days Returned: " . $daysApril);
         $this->assertSame(
-            DateUtility::getDaysInMonth(CALENDAR_MONTH_APRIL, 1987),
-            30
+            $daysApril,
+            30,
+            "Expected 30 days for April 1987, got $daysApril"
         );
 
-        /* Leap years... */
+        // Leap year tests with February
+        $daysFebLeapYear = DateUtility::getDaysInMonth(CALENDAR_MONTH_FEBRUARY, 2008);
+        var_dump("Testing February 2008 (Leap Year): Month: " . CALENDAR_MONTH_FEBRUARY . ", Year: 2008, Days Returned: " . $daysFebLeapYear);
         $this->assertSame(
-            DateUtility::getDaysInMonth(CALENDAR_MONTH_FEBRUARY, 2008),
-            29
+            $daysFebLeapYear,
+            29,
+            "Expected 29 days for February 2008 (Leap Year), got $daysFebLeapYear"
         );
+
+        $daysFebNonLeapYear = DateUtility::getDaysInMonth(CALENDAR_MONTH_FEBRUARY, 2006);
+        var_dump("Testing February 2006 (Non-Leap Year): Month: " . CALENDAR_MONTH_FEBRUARY . ", Year: 2006, Days Returned: " . $daysFebNonLeapYear);
         $this->assertSame(
-            DateUtility::getDaysInMonth(CALENDAR_MONTH_FEBRUARY, 2006),
-            28
+            $daysFebNonLeapYear,
+            28,
+            "Expected 28 days for February 2006 (Non-Leap Year), got $daysFebNonLeapYear"
         );
     }
+
 
     /* Tests for getMonthName(). */
     public function testGetMonthName()

@@ -10,6 +10,7 @@ if (! defined('LEGACY_ROOT')) {
     define('LEGACY_ROOT', '.');
 }
 
+include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
 include_once(LEGACY_ROOT . '/lib/DatabaseSearch.php');
 
 class DatabaseSearchTest extends TestCase

@@ -2,6 +2,8 @@
 
 namespace OpenCATS\Tests\UnitTests;
 
+
+
 use OpenCATS\Entity\Company;
 use OpenCATS\Entity\CompanyRepository;
 use PHPUnit\Framework\TestCase;
@@ -9,7 +11,8 @@ use PHPUnit\Framework\TestCase;
 if (! defined('LEGACY_ROOT')) {
     define('LEGACY_ROOT', '.');
 }
-
+// Add this line to include the constants
+include_once(LEGACY_ROOT . '/constants.php');
 include_once(LEGACY_ROOT . '/lib/History.php');
 
 class CompanyRepositoryTest extends TestCase
@@ -94,18 +97,21 @@ class CompanyRepositoryTest extends TestCase
     {
         $databaseConnectionMock = $this->getDatabaseConnectionMock();
         $databaseConnectionMock->method('query')
-            ->willReturn(true);
+        ->willReturn(true);
         $databaseConnectionMock->method('getLastInsertID')
-            ->willReturn(self::COMPANY_ID);
+        ->willReturn(self::COMPANY_ID);
+
         $historyMock = $this->getHistoryMock();
         $historyMock->expects($this->exactly(1))
-            ->method('storeHistoryNew')
-            ->withConsecutive(
-                [DATA_ITEM_COMPANY, self::COMPANY_ID]
-            );
+        ->method('storeHistoryNew')
+        ->withConsecutive(
+            [DATA_ITEM_COMPANY, self::COMPANY_ID]  // Ensure DATA_ITEM_COMPANY is defined
+        );
+
         $CompanyRepository = new CompanyRepository($databaseConnectionMock);
         $CompanyRepository->persist($this->createCompany(), $historyMock);
     }
+
 
     /**
      * @expectedException OpenCATS\Entity\CompanyRepositoryException

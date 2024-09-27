@@ -3,6 +3,7 @@
 namespace OpenCATS\Entity;
 
 include_once(LEGACY_ROOT . '/lib/History.php');
+include_once(LEGACY_ROOT . '/constants.php');
 
 class CompanyRepository
 {
