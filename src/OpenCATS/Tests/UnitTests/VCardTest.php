@@ -8,13 +8,14 @@ if (!defined('LEGACY_ROOT')) {
 
 include_once(LEGACY_ROOT . '/lib/StringUtility.php');
 
-class StringUtilityTest extends TestCase
+class VCardTest extends TestCase
 {
     /* Tests for isURL(). */
     public function testIsURL(): void
     {
         $validURLs = [
-            'http://www.nospammonkeys.org',
+            'http://www.nospammonkeys.org',class VCardTest extends TestCase
+
             'http://www.eggheads.org/~wcc/test.txt',
             'ftp://ftp.eggheads.org/wcc/test.txt',
             'http://wcc:test@www.nospammonkeys.org',
