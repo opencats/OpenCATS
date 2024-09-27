@@ -19,6 +19,9 @@ class DatabaseTestCase extends TestCase
         include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
 
         // Define database constants
+        if (!defined('DATABASE_NAME')) {
+            define('DATABASE_NAME', 'cats_integrationtest');
+        }
         define('DATABASE_NAME', 'cats_integrationtest');
         define('DATABASE_HOST', 'integrationtestdb');
 

@@ -24,8 +24,15 @@ class DatabaseSearchTest extends TestCase
         ];
 
         foreach ($tests as $test) {
+            // Capture the actual result from the function
+            $actualResult = DatabaseSearch::makeREGEXPString($test[0]);
+
+            // Print out the actual result for debugging purposes
+            echo "Input: '{$test[0]}', Expected: '{$test[1]}', Actual: '$actualResult'\n";
+
+            // Assert the result
             $this->assertSame(
-                DatabaseSearch::makeREGEXPString($test[0]),
+                $actualResult,
                 $test[1],
                 sprintf("Input '%s' should generate REGEXP string '%s'", $test[0], $test[1])
             );

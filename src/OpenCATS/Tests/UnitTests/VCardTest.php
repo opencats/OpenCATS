@@ -14,9 +14,7 @@ class VCardTest extends TestCase
     public function testIsURL(): void
     {
         $validURLs = [
-            'http://www.nospammonkeys.org',class VCardTest extends TestCase
-
-            'http://www.eggheads.org/~wcc/test.txt',
+            'http://www.nospammonkeys.org',
             'ftp://ftp.eggheads.org/wcc/test.txt',
             'http://wcc:test@www.nospammonkeys.org',
             'http://test@www.nospammonkeys.org',
