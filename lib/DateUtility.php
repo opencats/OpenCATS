@@ -445,15 +445,15 @@ class DateUtility
     {
         switch ($format) {
             case DATE_FORMAT_YYYYMMDD:
-                return strftime('%Y-%m-%d', $unixTime);
+                return date('Y-m-d', $unixTime);  // Replacing strftime with date
                 break;
 
             case DATE_FORMAT_MMDDYY:
-                return strftime('%m-%d-%y', $unixTime);
+                return date('m-d-y', $unixTime);  // Replacing strftime with date
                 break;
 
             case DATE_FORMAT_DDMMYY:
-                return strftime('%d-%m-%y', $unixTime);
+                return date('d-m-y', $unixTime);  // Replacing strftime with date
                 break;
 
             case DATE_FORMAT_SECONDS:
@@ -465,14 +465,15 @@ class DateUtility
                     0,
                     0,
                     date('m', $unixTime),
-                    date('j', $unixTime),
-                    date('Y', $unixTime)
+                              date('j', $unixTime),
+                              date('Y', $unixTime)
                 );
                 break;
         }
 
         return false;
     }
+
 
     /**
      * Returns a human readable representation of a period of time relative

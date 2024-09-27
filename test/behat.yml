@@ -5,13 +5,13 @@ default:
             contexts:
                 - FeatureContext
             filters:
-                tags: @core 
+                tags: "@core"
         security:
             paths: [ "%paths.base%/features" ]
             contexts:
                 - SecurityContext
             filters:
-                tags: @security 
+                tags: "@security"
     extensions:
         Behat\MinkExtension:
             base_url: http://opencats
