@@ -99,53 +99,60 @@ class DateUtility
         $dateFields = explode($separator, $date);
 
         /* Make sure explode() didn't fail. */
-        if (sizeof($dateFields) < 3) {
-            if ($toFormat == DATE_FORMAT_YYYYMMDD) {
-                return '0000-00-00';
-            }
-
-            return '00-00-00';
+        if (count($dateFields) < 3) {
+            return $toFormat === DATE_FORMAT_YYYYMMDD ? '0000-00-00' : '00-00-00';
         }
 
         $dateFields = self::_removeLeadingZeros($dateFields);
 
+        // Initialize date components based on input format
         switch ($fromFormat) {
             case DATE_FORMAT_YYYYMMDD:
                 $year = $dateFields[0];
                 $month = $dateFields[1];
                 $day = $dateFields[2];
                 break;
-
             case DATE_FORMAT_MMDDYY:
                 $month = $dateFields[0];
                 $day = $dateFields[1];
                 $year = $dateFields[2];
                 break;
-
             case DATE_FORMAT_DDMMYY:
                 $day = $dateFields[0];
                 $month = $dateFields[1];
                 $year = $dateFields[2];
                 break;
+            default:
+                return false;  // Unsupported format
         }
 
+        // Create a DateTime object
+        try {
+            $dateTime = new DateTime();
+            $dateTime->setDate($year, $month, $day);
+        } catch (Exception $e) {
+            return false;  // Invalid date
+        }
+
+        // Determine output format
         switch ($toFormat) {
             case DATE_FORMAT_YYYYMMDD:
-                $dateFormat = '%Y' . $separator . '%m' . $separator . '%d';
+                $dateFormat = 'Y' . $separator . 'm' . $separator . 'd';
                 break;
-
             case DATE_FORMAT_DDMMYY:
-                $dateFormat = '%d' . $separator . '%m' . $separator . '%y';
+                $dateFormat = 'd' . $separator . 'm' . $separator . 'y';
                 break;
-
             case DATE_FORMAT_MMDDYY:
-                $dateFormat = '%m' . $separator . '%d' . $separator . '%y';
+                $dateFormat = 'm' . $separator . 'd' . $separator . 'y';
                 break;
+            default:
+                return false;  // Unsupported output format
         }
 
         /* Return the date in the correct format. */
-        return strftime($dateFormat, mktime(0, 0, 0, $month, $day, $year));
+        return $dateTime->format($dateFormat);
     }
+
 
     /**
      * Returns true if the specified date string is a valid date in
@@ -158,58 +165,52 @@ class DateUtility
      */
     public static function validate($separator, $dateString, $format)
     {
-        /* Make sure the string is numeric except for separators. */
-        if (! ctype_digit((string) str_replace($separator, '', $dateString))) {
+        // Check if the string contains only digits and separators
+        if (!ctype_digit(str_replace($separator, '', $dateString))) {
             return false;
         }
 
-        /* Make sure we have exactly two separators. */
+        // Ensure exactly two separators
         if (substr_count($dateString, $separator) != 2) {
             return false;
         }
 
-        /* Extract the three date fields. */
+        // Extract the three date fields
         $dateFields = explode($separator, $dateString);
-
-        /* Make sure explode() didn't fail. */
-        if (sizeof($dateFields) < 3) {
+        if (count($dateFields) !== 3) {
             return false;
         }
 
-        /* Check the length of individual date fields. */
+        // Check the length of the date fields based on the format
         switch ($format) {
             case DATE_FORMAT_YYYYMMDD:
-                if (strlen($dateFields[0]) != 4 || strlen($dateFields[1]) != 2 ||
-                    strlen($dateFields[2]) != 2) {
+                if (strlen($dateFields[0]) !== 4 || strlen($dateFields[1]) !== 2 || strlen($dateFields[2]) !== 2) {
                     return false;
                 }
                 break;
 
             default:
-                if (strlen($dateFields[0]) != 2 || strlen($dateFields[1]) != 2 ||
-                    strlen($dateFields[2]) != 2) {
+                if (strlen($dateFields[0]) !== 2 || strlen($dateFields[1]) !== 2 || strlen($dateFields[2]) !== 2) {
                     return false;
                 }
                 break;
         }
 
-        /* Remove leading '0's from fields. */
+        // Remove leading zeros
         $dateFields = self::_removeLeadingZeros($dateFields);
 
-        /* Extract ields. */
+        // Extract the year, month, and day based on the format
         switch ($format) {
             case DATE_FORMAT_YYYYMMDD:
                 $year = $dateFields[0];
                 $month = $dateFields[1];
                 $day = $dateFields[2];
                 break;
-
             case DATE_FORMAT_MMDDYY:
                 $month = $dateFields[0];
                 $day = $dateFields[1];
                 $year = $dateFields[2];
                 break;
-
             case DATE_FORMAT_DDMMYY:
                 $day = $dateFields[0];
                 $month = $dateFields[1];
@@ -217,14 +218,14 @@ class DateUtility
                 break;
         }
 
-        /* Validate day and month numbers. */
-        if ($month < 1 || $month > 12 || $day < 1 ||
-            $day > self::getDaysInMonth($month, $year)) {
+        // Validate day and month numbers
+        if ($month < 1 || $month > 12 || $day < 1 || $day > self::getDaysInMonth($month, $year)) {
             return false;
         }
 
         return true;
     }
+
 
     /**
      * If a date string is equal to '00-00-00', '0000-00-00', '', or
