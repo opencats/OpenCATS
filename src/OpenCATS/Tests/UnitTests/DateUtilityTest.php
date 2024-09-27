@@ -12,6 +12,25 @@ include_once(LEGACY_ROOT . '/lib/DateUtility.php');   /* Depends on StringUtilit
 
 class DateUtilityTest extends TestCase
 {
+    // Declare the properties
+    private $CALENDAR_MONTH_JANUARY;
+    private $CALENDAR_MONTH_FEBRUARY;
+    private $CALENDAR_MONTH_MARCH;
+    private $CALENDAR_MONTH_APRIL;
+    private $CALENDAR_MONTH_MAY;
+    private $CALENDAR_MONTH_JUNE;
+    private $CALENDAR_MONTH_JULY;
+    private $CALENDAR_MONTH_AUGUST;
+    private $CALENDAR_MONTH_SEPTEMBER;
+    private $CALENDAR_MONTH_OCTOBER;
+    private $CALENDAR_MONTH_NOVEMBER;
+    private $CALENDAR_MONTH_DECEMBER;
+    private $CALENDAR_DAY_WEDNSDAY;
+    private $CALENDAR_DAY_SUNDAY;
+    private $DATE_FORMAT_MMDDYY;
+    private $DATE_FORMAT_YYYYMMDD;
+    private $DATE_FORMAT_DDMMYY;
+
     /* Tests for getStartingWeekday(). */
     public function testGetStartingWeekday()
     {

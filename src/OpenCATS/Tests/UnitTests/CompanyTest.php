@@ -20,6 +20,7 @@ class CompanyTest extends TestCase
     public const NOTES = "This is a note";
     public const ENTERED_BY = 1; // USER ID
     public const OWNER = 1; // USER ID
+    private $company;
 
     protected function setUp(): void
     {

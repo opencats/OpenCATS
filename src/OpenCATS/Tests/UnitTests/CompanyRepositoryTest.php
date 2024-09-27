@@ -12,7 +12,7 @@ if (! defined('LEGACY_ROOT')) {
 
 include_once(LEGACY_ROOT . '/lib/History.php');
 
-class CompanyRepositoryTests extends TestCase
+class CompanyRepositoryTest extends TestCase
 {
     public const COMPANY_NAME = "Test Company Name";
 
