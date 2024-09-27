@@ -74,11 +74,6 @@ class AddressParserTest extends TestCase
         ];
     }
 
-    public function setUp()
-    {
-        $this->addressParser = new AddressParser();
-    }
-
     public function testSampleAddress1()
     {
         $address = <<<EOF
