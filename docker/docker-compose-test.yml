@@ -52,13 +52,7 @@ services:
   integrationtestdb:
     image: mariadb:10.7
     ports:
-      - 3307:3306command: >
-      sh -c "apt-get update &&
-             apt-get install -y wget &&
-             wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz &&
-             tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz &&
-             docker-php-ext-install mysqli &&
-             php-fpm"
+      - 3307:3306
     environment:
       - MYSQL_ROOT_PASSWORD=dev
       - MYSQL_USER=dev
