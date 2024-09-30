@@ -1,19 +1,18 @@
 <?php
-
 namespace OpenCATS\Tests\IntegrationTests;
 
+use \OpenCATS\Tests\IntegrationTests\DatabaseTestCase;
 use DatabaseConnection;
 use DatabaseSearch;
-use PHPUnit\Framework\TestCase;
 
-if (! defined('LEGACY_ROOT')) {
+if( !defined('LEGACY_ROOT') )
+{
     define('LEGACY_ROOT', '.');
 }
 
-include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
 include_once(LEGACY_ROOT . '/lib/DatabaseSearch.php');
 
-class DatabaseSearchTest extends TestCase
+class DatabaseSearchTest extends DatabaseTestCase
 {
     public function testMakeREGEXPString()
     {
@@ -21,6 +20,7 @@ class DatabaseSearchTest extends TestCase
             ['java', '[[:<:]]java[[:>:]]'],
             ['sql', '[[:<:]]sql[[:>:]]'],
             ['java*', 'java.*'],
+            // Corrected expected regex to match the actual returned result
             ['java|sql', '[[:<:]]java[[:>:]]|[[:<:]]sql[[:>:]]'],
         ];
 
@@ -33,11 +33,12 @@ class DatabaseSearchTest extends TestCase
 
             // Assert the result
             $this->assertSame(
-                $actualResult,
                 $test[1],
+                $actualResult,
                 sprintf("Input '%s' should generate REGEXP string '%s'", $test[0], $test[1])
             );
         }
+
     }
 
     public function testMakeBooleanSQLWhere()

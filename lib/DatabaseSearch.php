@@ -59,24 +59,39 @@ class DatabaseSearch
      * @param string $string Text to escape
      * @return string REGEXP parameter for SQL query
      */
-    public static function makeREGEXPString(string $string): string
+    public static function makeREGEXPString($string)
     {
-        // Search and replace regex special characters
+        // Escape special characters that should be treated literally in the regex
         $search = [
-            '\\', '+', '.', '*', '(', ')', '[', ']', '?', '^', '$',
+            '\\',   '+',   '.',   '(',   ')',   '[',   ']',   '?',   '^',   '$',
         ];
         $replace = [
-            '\\\\', '\\+', '\\.', '.*', '\\(', '\\)', '\\[', '\\]', '\\?', '\\^', '\\$',
+            '\\\\', '\\+', '\\.', '\\(', '\\)', '\\[', '\\]', '\\?', '\\^', '\\$',
         ];
+        $string = str_replace($search, $replace, $string);
 
-        // Handle wildcards and word boundaries for non-wildcard queries
+        // Handle wildcard '*' conversion to '.*'
         if (strpos($string, '*') !== false) {
-            return str_replace($search, $replace, $string);
-        } else {
-            // Add word boundaries
-            return '[[:<:]]' . str_replace($search, $replace, $string) . '[[:>:]]';
+            $string = str_replace('*', '.*', $string);
+            return $string;
         }
+
+        // Split the string if it contains '|', handle each part separately
+        if (strpos($string, '|') !== false) {
+            $parts = explode('|', $string);
+            foreach ($parts as &$part) {
+                $part = '[[:<:]]' . trim($part) . '[[:>:]]';
+            }
+            return implode('|', $parts);
+        }
+
+        // Add word boundaries if there is no wildcard or '|' operator
+        return '[[:<:]]' . $string . '[[:>:]]';
     }
+
+
+
+
 
     /**
      * Changes commas and spaces in quoted strings with special markers.
