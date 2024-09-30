@@ -10,17 +10,19 @@ services:
         - opencatsdata
 
     php:
-      container_name: opencats_test_php
-      image: library/php:8.2.1-fpm
-      volumes_from:
+    container_name: opencats_test_php
+    image: library/php:8.2.1-fpm
+    volumes_from:
         - opencatsdata
-      command: >
-        sh -c "apt-get update &&
-               apt-get install -y wget &&
-               wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz &&
-               tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz &&
-               docker-php-ext-install mysqli &&
-               php-fpm"
+    command: >
+    sh -c "apt-get update &&
+            apt-get install -y wget &&
+            wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz &&
+            tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz &&
+            apt-get install -y libmariadb-dev &&
+            docker-php-ext-install mysqli &&
+            php-fpm"
+
 
     opencatsdata:
       container_name: opencats_test_data

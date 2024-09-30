@@ -252,7 +252,7 @@ class DatabaseConnection
      * @param integer Column number.
      * @return array Multi-dimensional associative result set array, or array()
      */
-    public function getColumn($query = null, $row, $column)
+    public function getColumn($row, $column, $query = null)
     {
         if ($query != null) {
             $this->query($query);
@@ -270,6 +270,7 @@ class DatabaseConnection
         mysqli_data_seek($this->_queryResult, $row);
         return mysqli_fetch_row($this->_queryResult);
     }
+
 
     /**
      * Returns one row from a query's result set in an associative array,
