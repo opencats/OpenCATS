@@ -1,62 +1,66 @@
 version: '2'
 services:
-    opencats:
-      container_name: opencats_test_web
-      image: prooph/nginx:www
-      ports:
-          - "80:80"
-          - "443:443"
-      volumes_from:
-        - opencatsdata
+  opencats:
+    container_name: opencats_test_web
+    image: prooph/nginx:www
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes_from:
+      - opencatsdata
 
-    php:
+  php:
     container_name: opencats_test_php
     image: library/php:8.2.1-fpm
     volumes_from:
-        - opencatsdata
-    command: sh -c "apt-get update && apt-get install -y wget && wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && apt-get install -y libmariadb-dev && docker-php-ext-install mysqli && php-fpm"
+      - opencatsdata
+    command: >
+      sh -c "apt-get update &&
+             apt-get install -y wget &&
+             wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz &&
+             tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz &&
+             docker-php-ext-install mysqli &&
+             php-fpm"
 
-    opencatsdata:
-      container_name: opencats_test_data
-      image: busybox
-      volumes:
-        - ..:/var/www/public
-        - ../test/config.php:/var/www/public/config.php
-        - ../test/INSTALL_BLOCK:/var/www/public/INSTALL_BLOCK
-      command: "true"
+  opencatsdata:
+    container_name: opencats_test_data
+    image: busybox
+    volumes:
+      - ..:/var/www/public
+      - ../test/config.php:/var/www/public/config.php
+      - ../test/INSTALL_BLOCK:/var/www/public/INSTALL_BLOCK
+    command: "true"
 
-    opencatsdb:
-      container_name: opencats_test_mariadb
-      image: mariadb:10.7
-      ports:
-        - 3306
-      environment:
-        - MYSQL_ROOT_PASSWORD=dev
-        - MYSQL_USER=dev
-        - MYSQL_PASSWORD=dev
-        - MYSQL_DATABASE=cats_test
-      volumes:
-        - ../test/data/:/test/data/
-        - ../test/scripts/:/test/scripts
-        - ../test/data/test.sql:/docker-entrypoint-initdb.d/000_initDB.sql
-        - ../test/data/securityTests.sql:/docker-entrypoint-initdb.d/001_addUsers.sql
+  opencatsdb:
+    container_name: opencats_test_mariadb
+    image: mariadb:10.7
+    ports:
+      - 3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=dev
+      - MYSQL_USER=dev
+      - MYSQL_PASSWORD=dev
+      - MYSQL_DATABASE=cats_test
+    volumes:
+      - ../test/data/:/test/data/
+      - ../test/scripts/:/test/scripts
+      - ../test/data/test.sql:/docker-entrypoint-initdb.d/000_initDB.sql
+      - ../test/data/securityTests.sql:/docker-entrypoint-initdb.d/001_addUsers.sql
 
-    integrationtestdb:
-      image: mariadb:10.7
-      ports:
-        - 3307:3306
-      environment:
-        - MYSQL_ROOT_PASSWORD=dev
-        - MYSQL_USER=dev
-        - MYSQL_PASSWORD=dev
-        - MYSQL_DATABASE=cats_integrationtest
+  integrationtestdb:
+    image: mariadb:10.7
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=dev
+      - MYSQL_USER=dev
+      - MYSQL_PASSWORD=dev
+      - MYSQL_DATABASE=cats_integrationtest
 
-    selenium:
-      container_name: selenium_test
-      image: mlespiau/standalone-chrome:2.53.1-cd2.23
-      environment:
-        # Required to avoid container startup hanging sometimes in
-        # some environments
-        JAVA_OPTS: -Djava.security.egd=file:/dev/./urandom
-      ports:
-        - 4444
+  selenium:
+    container_name: selenium_test
+    image: mlespiau/standalone-chrome:2.53.1-cd2.23
+    environment:
+      JAVA_OPTS: -Djava.security.egd=file:/dev/./urandom
+    ports:
+      - 4444
