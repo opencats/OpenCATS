@@ -9,8 +9,8 @@
         "rector/rector": "^1.2",
         "symplify/easy-coding-standard": ">=11.3",
         "friends-of-behat/mink-extension": "^2.7",
-        "behat/mink-browserkit-driver": "^2.2",
-        "amenadiel/jpgraph": "^4.1"
+        "amenadiel/jpgraph": "^4.1",
+        "fabpot/goutte": "^4.0"
 
     },
     "autoload": {
