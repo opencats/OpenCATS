@@ -10,7 +10,8 @@
         "symplify/easy-coding-standard": ">=11.3",
         "friends-of-behat/mink-extension": "^2.7",
         "amenadiel/jpgraph": "^4.1",
-        "fabpot/goutte": "^4.0"
+        "fabpot/goutte": "^4.0",
+        "behat/mink-goutte-driver": "^2.0"
 
     },
     "autoload": {
