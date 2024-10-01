@@ -57,11 +57,13 @@ class DatabaseConnection
     {
         if (self::$_instance == null) {
             self::$_instance = new DatabaseConnection();
-            self::$_instance->connect();
+            if (!self::$_instance->connect()) {
+                throw new \RuntimeException('Unable to connect to database');
+            }
             self::$_instance->setInTransaction(false);
         }
 
-        // FIXME: Remove Session tight-coupling here.
+        // Handle session-related settings safely.
         if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn()) {
             self::$_instance->_timeZone = $_SESSION['CATS']->getTimeZoneOffset();
             self::$_instance->_dateDMY = $_SESSION['CATS']->isDateDMY();
@@ -109,41 +111,27 @@ class DatabaseConnection
      */
     public function connect()
     {
-        $this->_connection = @mysqli_connect(
-            DATABASE_HOST,
-            DATABASE_USER,
-            DATABASE_PASS
-        );
-        // handle connection failures
-        if (! $this->_connection) {
-            $error = "errno: " . mysqli_connect_errno() . ", ";
-            $error .= "error: " . mysqli_connect_error();
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-            die(
-                '<!-- NOSPACEFILTER --><p style="background: #ec3737; padding:'
-                . ' 4px; margin-top: 0; font: normal normal bold 12px/130% '
-                . 'Arial, Tahoma, sans-serif;">Error Connecting '
-                . "to Database</p><pre>\n\n" . $error . "</pre>\n\n"
-            );
-            return false;
-        }
-        mysqli_set_charset($this->_connection, SQL_CHARACTER_SET);
-        $isDBSelected = @mysqli_select_db($this->_connection, DATABASE_NAME);
-        if (! $isDBSelected) {
-            $error = "errno: " . mysqli_connect_errno() . ", ";
-            $error .= "error: " . mysqli_connect_error();
+        try {
+            $this->_connection = mysqli_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASS);
 
-            die(
-                '<!-- NOSPACEFILTER --><p style="background: #ec3737; '
-                . 'padding: 4px; margin-top: 0; font: normal normal bold '
-                . '12px/130% Arial, Tahoma, sans-serif;">Error Selecting '
-                . "Database</p><pre>\n\n" . $error . "</pre>\n\n"
+            mysqli_set_charset($this->_connection, SQL_CHARACTER_SET);
+            $isDBSelected = mysqli_select_db($this->_connection, DATABASE_NAME);
+
+            if (!$isDBSelected) {
+                throw new \mysqli_sql_exception('Error selecting database: ' . DATABASE_NAME);
+            }
+        } catch (\mysqli_sql_exception $e) {
+            die('<p style="background: #ec3737; padding: 4px; margin-top: 0; font: normal normal bold 12px/130% Arial, Tahoma, sans-serif;">'
+            . 'Error Connecting to Database</p><pre>' . $e->getMessage() . '</pre>'
             );
             return false;
         }
 
         return true;
     }
+
 
     /**
      * Executes a MySQL query against the current connection. Unless
