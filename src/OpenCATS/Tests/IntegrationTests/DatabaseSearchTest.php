@@ -94,12 +94,10 @@ class DatabaseSearchTest extends DatabaseTestCase
             ],
         ];
 
-        $db = DatabaseConnection::getInstance();
         foreach ($tests as $test) {
-            $this->assertSame(
-                DatabaseSearch::makeBooleanSQLWhere($test[0], $db, 'field'),
-                $test[1]
-            );
+            $actual = DatabaseSearch::makeBooleanSQLWhere($test[0], $db, 'field');
+            echo "Input: '{$test[0]}', Expected: '{$test[1]}', Actual: '{$actual}'\n";
+            $this->assertSame($actual, $test[1]);
         }
     }
 }
