@@ -14,8 +14,6 @@ services:
     image: opencats/php-base:8.2.1-fpm-mysqli
     volumes_from:
       - opencatsdata
-    command: php-fpm
-
 
   opencatsdata:
     container_name: opencats_test_data
