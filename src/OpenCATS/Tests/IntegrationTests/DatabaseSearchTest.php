@@ -46,7 +46,7 @@ class DatabaseSearchTest extends DatabaseTestCase
         $tests = [
             [
                 'java',
-                '((field REGEXP \'[[:<:]]java[[:>:]]\'))',
+                '(field REGEXP \'[[:<:]]java[[:>:]]\')',
             ],
             // Other test cases...
         ];
