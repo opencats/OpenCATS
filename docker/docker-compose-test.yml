@@ -11,7 +11,7 @@ services:
 
   php:
     container_name: opencats_test_php
-    image: opencats/php-base:8.2.1-fpm-mysqli
+    image: opencats/php-base:8.2.1-fpm-alpine-mysqli
     volumes_from:
       - opencatsdata
 
