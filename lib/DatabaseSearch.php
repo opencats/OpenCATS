@@ -203,22 +203,13 @@ class DatabaseSearch
         }
 
         // Use makeREGEXPString to create the regex for search term
-        $string = self::makeREGEXPString($string);
-        $string = $databaseConnection->escapeString($string);
+        $regexString = self::makeREGEXPString($string);
+        $escapedRegex = $databaseConnection->escapeString($regexString);
 
-        // Directly construct the REGEXP clause without adding boundaries around the field name
-        $string = preg_replace(
-            "/([A-Za-z0-9_]+[A-Za-z0-9\._-]*)/",
-                               '(' . $tableField . ' REGEXP \'\\1\')',
-                               $string
-        );
+        // Construct the REGEXP clause without adding boundaries around the field name
+        $finalString = '(' . $tableField . ' REGEXP \'' . $escapedRegex . '\')';
 
-        $string = trim($string);
-        if (empty($string)) {
-            return '0';
-        }
-
-        return $string;
+        return $finalString;
     }
 
 
