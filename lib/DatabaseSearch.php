@@ -202,14 +202,14 @@ class DatabaseSearch
             $string = str_replace('  ', ' ', $string);
         }
 
-        // Use makeREGEXPString to create the regex without adding "field" boundaries
+        // Use makeREGEXPString to create the regex for search term
         $string = self::makeREGEXPString($string);
         $string = $databaseConnection->escapeString($string);
 
-        // Directly construct the REGEXP without the word boundaries on "field"
+        // Directly construct the REGEXP clause without adding boundaries around the field name
         $string = preg_replace(
             "/([A-Za-z0-9_]+[A-Za-z0-9\._-]*)/",
-                               '(' . $tableField . ' REGEXP \'\\0\')',
+                               '(' . $tableField . ' REGEXP \'\\1\')',
                                $string
         );
 
@@ -218,7 +218,7 @@ class DatabaseSearch
             return '0';
         }
 
-        return '(' . $string . ')';
+        return $string;
     }
 
 
