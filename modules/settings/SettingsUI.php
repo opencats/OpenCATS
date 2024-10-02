@@ -54,6 +54,8 @@ eval(Hooks::get('XML_FEED_SUBMISSION_SETTINGS_HEADERS'));
 
 class SettingsUI extends UserInterface
 {
+    public $_realAccessLevel;
+
     /* Maximum number of login history entries to display on User Details. */
     public const MAX_RECENT_LOGINS = 15;
 

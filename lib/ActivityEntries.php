@@ -164,9 +164,10 @@ class ActivityEntries
         $activityID,
         $activityType,
         $activityNotes,
+        $timezoneOffset,
         $jobOrderID = false,
-        $date = false,
-        $timezoneOffset
+        $date = false
+
     ) {
         /* Get some extra information about the activity entry that we'll
          * need later on.

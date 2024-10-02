@@ -38,6 +38,12 @@ include(LEGACY_ROOT . '/lib/ACL.php');
  */
 class CATSSession
 {
+    public $_canSeeEEOInfo = false;
+
+    public $_loggedInScript = '';
+
+    public $__dataGridColumnPreferences = [];
+
     private $_siteID = -1;
 
     private $_userID = -1;
