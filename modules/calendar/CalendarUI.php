@@ -90,16 +90,16 @@ class CalendarUI extends UserInterface
      */
     private function showCalendar()
     {
-        $currentHour = DateUtility::getAdjustedDate('H');
-        $currentDay = DateUtility::getAdjustedDate('j');
-        $currentMonth = DateUtility::getAdjustedDate('n');
-        $currentYear = DateUtility::getAdjustedDate('Y');
-        $currentUnixTime = DateUtility::getAdjustedDate();
-        $currentDateMDY = DateUtility::getAdjustedDate('m-d-y');
+        $currentHour = date('H');
+        $currentDay = date('j');
+        $currentMonth = date('n');
+        $currentYear = date('Y');
+        $currentUnixTime = time();
+        $currentDateMDY = date('m-d-y');
 
-        $currentWeek = DateUtility::getWeekNumber($currentUnixTime) - DateUtility::getWeekNumber(
-            mktime(0, 0, 0, $currentMonth, 1, $currentYear)
-        );
+
+        $currentWeek = date('W', $currentUnixTime) - date('W', mktime(0, 0, 0, $currentMonth, 1, $currentYear));
+
 
         /* Do we have a valid date argument? If a month was specified and
          * isn't valid, fatal() out. If none was specified, use the current

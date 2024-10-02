@@ -278,7 +278,8 @@ class ActivityUI extends UserInterface
             'year' => date('Y'),
         ];
 
-        $yesterdayTimeStamp = DateUtility::subtractDaysFromDate(time(), 1);
+        $yesterdayTimeStamp = strtotime('-1 day');
+
         $yesterday = [
             'month' => date('n', $yesterdayTimeStamp),
             'day' => date('j', $yesterdayTimeStamp),
