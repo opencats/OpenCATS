@@ -83,6 +83,9 @@ class CATSSession
     private $_isAgreedToLicense = false;
     private $_isLocalizationConfigured = false;
     private $_loggedInDirectory = '';
+    private $_canSeeEEOInfo = false;
+    private $_loggedInScript = '';
+    private $__dataGridColumnPreferences = array();
 
     /**
      * Returns this session's MRU object, and creates one if it doesn't exist.
@@ -896,8 +899,9 @@ class CATSSession
                 $httponly = true;
                 $samesite = 'Strict';
 
-                // Manually append SameSite to the cookie header for PHP 7.2
-                setcookie('session_cookie', $cookieValue, $expires, "$path; SameSite=$samesite", $domain, $secure, $httponly);
+                // Fixed setcookie call - define domain variable and remove invalid path format
+                $domain = '';  // Use empty string for current domain
+                setcookie('session_cookie', $cookieValue, $expires, $path, $domain, $secure, $httponly);
 
                 // Update the user session in the database
                 $sql = sprintf(
