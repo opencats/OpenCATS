@@ -85,7 +85,6 @@ class CATSSession
     private $_loggedInDirectory = '';
     private $_canSeeEEOInfo = false;
     private $_loggedInScript = '';
-    private $__dataGridColumnPreferences = array();
 
     /**
      * Returns this session's MRU object, and creates one if it doesn't exist.
@@ -848,11 +847,11 @@ class CATSSession
 
                 if (strlen($rs['columnPreferences']) > 0 && $this->_isDemo == false)
                 {
-                    $this->__dataGridColumnPreferences = unserialize($rs['columnPreferences']);
+                    $this->_ = unserialize($rs['columnPreferences']);
                 }
                 else
                 {
-                    $this->__dataGridColumnPreferences = array();
+                    $this->_dataGridColumnPreferences = array();
                 }
 
                 /* Log the login as successful. */
@@ -1183,9 +1182,9 @@ class CATSSession
      */
     public function getColumnPreferences($instance)
     {
-        if (isset($this->__dataGridColumnPreferences[$instance]))
+        if (isset($this->_dataGridColumnPreferences[$instance]))
         {
-            return $this->__dataGridColumnPreferences[$instance];
+            return $this->_dataGridColumnPreferences[$instance];
         }
         else
         {
@@ -1200,9 +1199,9 @@ class CATSSession
      */
     public function setColumnPreferences($instance, $columnPreferences)
     {
-        $this->__dataGridColumnPreferences[$instance] = $columnPreferences;
+        $this->_dataGridColumnPreferences[$instance] = $columnPreferences;
 
-        $columnString = serialize($this->__dataGridColumnPreferences);
+        $columnString = serialize($this->_dataGridColumnPreferences);
 
         $db = DatabaseConnection::getInstance();
 
