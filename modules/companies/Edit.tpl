@@ -21,10 +21,10 @@
 
                 <table width="100%">
                     <tr>
-                        <td valign="top" width="50%" height="285">
+                        <td valign="top" width="50%" height="100%">
                             <p class="noteUnsized">Basic Information</p>
 
-                            <table class="editTable" width="100%" height="100%">
+                            <table class="editTable" width="100%" height="285">
                                 <tr>
                                     <td class="tdVertical">
                                         <label id="nameLabel" for="name">Company Name:</label>
@@ -105,10 +105,10 @@
                             </table>
                         </td>
 
-                        <td width="50%" valign="top" height="285">
+                        <td width="50%" valign="top" height="100%">
                             <p class="noteUnsized">Contact Information</p>
 
-                            <table class="editTable" width="100%" height="100%">
+                            <table class="editTable" width="100%" height="285">
                                 <tr>
                                     <td class="tdVertical">
                                         <label id="phone1Label" for="phone1">Primary Phone:</label>
