@@ -75,7 +75,7 @@
                             <label id="addressLabel" for="address">Address:</label>
                         </td>
                         <td class="tdData">
-                            <textarea name="address" id="address" class="inputbox" style="width: 150px"></textarea>
+                            <input type="text" name="address" id="address" class="inputbox" style="width: 150px" />
                         </td>
                     </tr>
 

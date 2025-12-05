@@ -141,7 +141,7 @@
                                         <label id="addressLabel" for="address">Address:</label>
                                     </td>
                                     <td class="tdData">
-                                        <textarea name="address" id="address" class="inputbox" style="width: 150px" onkeydown="document.getElementById('changeAddress').style.display='';"/><?php $this->_($this->data['address']); ?></textarea>
+                                        <input type="text" name="address" id="address" class="inputbox" style="width: 150px" onkeydown="document.getElementById('changeAddress').style.display='';" value="<?php $this->_($this->data['address']); ?>" />
                                     </td>
                                 </tr>
 

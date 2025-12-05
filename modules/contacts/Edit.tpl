@@ -188,7 +188,7 @@
                                         <label id="addressLabel" for="address">Address:</label>
                                     </td>
                                     <td class="tdData">
-                                        <textarea name="address" id="address" class="inputbox" style="width: 150px"><?php $this->_($this->data['address']); ?></textarea>
+                                        <input type="text" name="address" id="address" class="inputbox" style="width: 150px" value="<?php $this->_($this->data['address']); ?>" />
                                     </td>
                                 </tr>
 
