@@ -980,6 +980,7 @@ class CareersUI extends UserInterface
     {
         $validator = '';
 
+        // First name is always required if the field is present in the template.
         if (strpos($template['Content'], '<input-firstName>') !== false || strpos($template['Content'], '<input-firstName req>') !== false)
         {
             $validator .= '
@@ -991,6 +992,7 @@ class CareersUI extends UserInterface
                 }';
         }
 
+        // Last name is always required if the field is present in the template.
         if (strpos($template['Content'], '<input-lastName>') !== false || strpos($template['Content'], '<input-lastName req>') !== false)
         {
             $validator .= '
@@ -1002,6 +1004,7 @@ class CareersUI extends UserInterface
                 }';
         }
 
+        // Email confirmation must match the primary email if the field is present.
         if (strpos($template['Content'], '<input-emailconfirm>') !== false || strpos($template['Content'], '<input-emailconfirm req>') !== false)
         {
             $validator .= '
@@ -1013,6 +1016,7 @@ class CareersUI extends UserInterface
                 }';
         }
 
+        // Primary email must be present and must look somewhat valid.
         if (strpos($template['Content'], '<input-email>') !== false || strpos($template['Content'], '<input-email req>') !== false)
         {
             $validator .= '
@@ -1030,6 +1034,11 @@ class CareersUI extends UserInterface
                     return false;
                 }';
         }
+
+        /*
+         * Optional fields that can be made required by using the "req" marker
+         * in the template, for example <input-phone-cell req>.
+         */
 
         if (strpos($template['Content'], '<input-address req>') !== false)
         {
@@ -1196,6 +1205,10 @@ class CareersUI extends UserInterface
                     return false;
                 }';
         }
+
+        /*
+         * EEO fields (if enabled and placed in the template).
+         */
 
         if (strpos($template['Content'], '<input-eeo-gender req>') !== false)
         {
