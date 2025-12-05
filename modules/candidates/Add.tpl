@@ -224,7 +224,7 @@
                             <label id="addressLabel" for="address">Address:</label>
                         </td>
                         <td class="tdData">
-                            <input type="text" tabindex="9" name="address" id="address" class="inputbox" style="width: 150px" value="<?php if(isset($this->preassignedFields['address'])) $this->_($this->preassignedFields['address']); if(isset($this->preassignedFields['address2'])) $this->_(', ' . $this->preassignedFields['address2']); ?>" />
+                            <input type="text" tabindex="9" name="address" id="address" class="inputbox" style="width: 150px" value="<?php if (isset($this->preassignedFields['address'])) $this->_($this->preassignedFields['address']); ?>" />
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="images/indicator2.gif" id="addressParserIndicator" alt="" style="visibility: hidden; margin-left: 10px;" height="16" width="16" />
                         </td>
                     </tr>
