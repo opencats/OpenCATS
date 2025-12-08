@@ -1376,8 +1376,11 @@ class ContactsUI extends UserInterface
         {
             /* Bail out if we received an invalid date. */
             $trimmedDate = $this->getSanitisedInput('dateAdd', $_POST);
+            $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
+                ? DATE_FORMAT_DDMMYY
+                : DATE_FORMAT_MMDDYY;
             if (empty($trimmedDate) ||
-                !DateUtility::validate('-', $trimmedDate, DATE_FORMAT_MMDDYY))
+                !DateUtility::validate('-', $trimmedDate, $dateFormatFlag))
             {
                 CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid date.');
             }
@@ -1418,7 +1421,7 @@ class ContactsUI extends UserInterface
             if ($allDay)
             {
                 $date = DateUtility::convert(
-                    '-', $trimmedDate, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+                    '-', $trimmedDate, $dateFormatFlag, DATE_FORMAT_YYYYMMDD
                 );
 
                 $hour = 12;
@@ -1461,7 +1464,7 @@ class ContactsUI extends UserInterface
                     DateUtility::convert(
                         '-',
                         $trimmedDate,
-                        DATE_FORMAT_MMDDYY,
+                        $dateFormatFlag,
                         DATE_FORMAT_YYYYMMDD
                     ),
                     date('H:i:00', $time)
