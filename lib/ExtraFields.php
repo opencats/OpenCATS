@@ -28,6 +28,7 @@
  */
  
 include_once(LEGACY_ROOT . '/lib/Site.php');
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
  
 /**
  *	Extra Fields Library
@@ -555,26 +556,7 @@ class ExtraFields
                 break;
                 
                 case EXTRA_FIELD_DATE:
-                    $dmy = false;
-                    
-                    if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn())
-                    {
-                        if ($_SESSION['CATS']->isDateDMY())
-                        {
-                            $dmy = true;
-                        }
-                    } 
-                    else 
-                    {
-                        // Look up the sites preference. (This would happen on careersUI)
-                        $site = new Site($this->_siteID);
-                        $siteRS = $site->getSiteBySiteID($this->_siteID);
-                        
-                        if ($siteRS['dateFormatDDMMYY'] == 1)
-                        {
-                            $dmy = true; 
-                        }
-                    }
+                    $dmy = $this->_isDateDMY();
                     
                     if ($dmy)
                     {
@@ -677,7 +659,8 @@ class ExtraFields
                 break;
                 
                 case EXTRA_FIELD_DATE:
-                    $extraFields[$index]['addHTML'] = '<script type="text/javascript">DateInput(\'extraField'.$index.'\', false, \'MM-DD-YY\', \'\');</script>';
+                    $dateFormat = $this->_isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY';
+                    $extraFields[$index]['addHTML'] = '<script type="text/javascript">DateInput(\'extraField'.$index.'\', false, \''.$dateFormat.'\', \'\');</script>';
                 break;
                 
                 case EXTRA_FIELD_TEXT:
@@ -867,7 +850,15 @@ class ExtraFields
                 break;
                 
                 case EXTRA_FIELD_DATE:
-                    $extraFields[$index]['editHTML'] = '<script type="text/javascript">DateInput(\'extraField'.$index.'\', false, \'MM-DD-YY\', \''.$data['value'].'\');</script>';
+                    $userDateFormat = $this->_isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY';
+                    $userDateValue = $data['value'];
+                    if (!empty($userDateValue) && $userDateFormat == 'DD-MM-YY')
+                    {
+                        $userDateValue = DateUtility::convert(
+                            '-', $userDateValue, DATE_FORMAT_MMDDYY, DATE_FORMAT_DDMMYY
+                        );
+                    }
+                    $extraFields[$index]['editHTML'] = '<script type="text/javascript">DateInput(\'extraField'.$index.'\', false, \''.$userDateFormat.'\', \''.htmlspecialchars($userDateValue, ENT_QUOTES).'\');</script>';
                 break;
                                     
                 case EXTRA_FIELD_TEXT:
@@ -893,11 +884,40 @@ class ExtraFields
     {
         $extraFields = $this->_getValuesWithSettings($dataItemID);
 
+        $dateFormatFlag = $this->_isDateDMY()
+            ? DATE_FORMAT_DDMMYY
+            : DATE_FORMAT_MMDDYY;
+
         for ($i = 0; $i < count($extraFields); $i++)
         {
-            if (isset($_POST['extraField' . $i]) && $extraFields[$i]['value'] != $_POST['extraField' . $i])
+            if (!isset($_POST['extraField' . $i]))
             {
-               $this->setValue($extraFields[$i]['fieldName'], $_POST['extraField' . $i], $dataItemID);
+                continue;
+            }
+
+            $newValue = $_POST['extraField' . $i];
+
+            if ($extraFields[$i]['extraFieldType'] == EXTRA_FIELD_DATE)
+            {
+                $newValue = trim($newValue);
+
+                if (!empty($newValue) &&
+                    !DateUtility::validate('-', $newValue, $dateFormatFlag))
+                {
+                    continue;
+                }
+
+                if (!empty($newValue))
+                {
+                    $newValue = DateUtility::convert(
+                        '-', $newValue, $dateFormatFlag, DATE_FORMAT_MMDDYY
+                    );
+                }
+            }
+
+            if ($extraFields[$i]['value'] != $newValue)
+            {
+               $this->setValue($extraFields[$i]['fieldName'], $newValue, $dataItemID);
             }
         }
     }
@@ -908,6 +928,20 @@ class ExtraFields
      *
      * @return array extra fields
      */
+    private function _isDateDMY()
+    {
+        if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn())
+        {
+            return $_SESSION['CATS']->isDateDMY();
+        }
+
+        /* Careers portal / unauthenticated: fall back to site preference. */
+        $site = new Site($this->_siteID);
+        $siteRS = $site->getSiteBySiteID($this->_siteID);
+
+        return ($siteRS['dateFormatDDMMYY'] == 1);
+    }
+
     public static function getValuesTypes()
     {
         return array (
