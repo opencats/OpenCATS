@@ -14,6 +14,10 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
             <?php TemplateUtility::printQuickSearch(); ?>
 <?php endif; ?>
 
+        <script type="text/javascript">
+            window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
+        </script>
+
         <div id="contents">
             <table>
                 <tr>
