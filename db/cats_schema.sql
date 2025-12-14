@@ -859,7 +859,7 @@ insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (9,'ext
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (10,'graphs',0);
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (11,'home',0);
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (12,'import',0);
-insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (13,'install',363);
+insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (13,'install',365);
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (14,'joborders',0);
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (15,'lists',0);
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (16,'login',0);
@@ -1072,7 +1072,7 @@ CREATE TABLE `user` (
   `site_id` int(11) NOT NULL DEFAULT '0',
   `user_name` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `email` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `password` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `access_level` int(11) NOT NULL DEFAULT '100',
   `can_change_password` int(1) NOT NULL DEFAULT '1',
   `is_test_user` int(1) NOT NULL DEFAULT '0',
