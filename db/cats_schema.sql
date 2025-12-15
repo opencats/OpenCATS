@@ -483,7 +483,7 @@ CREATE TABLE `company` (
 
 /*Data for the table `company` */
 
-insert  into `company`(`company_id`,`site_id`,`billing_contact`,`name`,`address`,`city`,`state`,`zip`,`phone1`,`phone2`,`url`,`key_technologies`,`notes`,`entered_by`,`owner`,`date_created`,`date_modified`,`is_hot`,`fax_number`,`import_id`,`default_company`) values (1,1,NULL,'Internal Postings','','','','','','','','','',0,0,'2009-11-19 10:00:20','2009-11-19 10:00:20',0,'',NULL,1);
+insert  into `company`(`company_id`,`site_id`,`billing_contact`,`name`,`address`,`city`,`state`,`zip`,`phone1`,`phone2`,`url`,`key_technologies`,`notes`,`entered_by`,`owner`,`date_created`,`date_modified`,`is_hot`,`fax_number`,`import_id`,`default_company`) values (1,1,NULL,'Internal Postings','','','','','','','','','',0,0,'1000-01-01 00:00:00','1000-01-01 00:00:00',0,'',NULL,1);
 
 /*Table structure for table `company_department` */
 
@@ -676,10 +676,10 @@ CREATE TABLE `extra_field_settings` (
 
 /*Data for the table `extra_field_settings` */
 
-insert  into `extra_field_settings`(`extra_field_settings_id`,`field_name`,`import_id`,`site_id`,`date_created`,`data_item_type`,`extra_field_type`,`extra_field_options`,`position`) values (1,'AdminUser',NULL,180,'2005-06-01 00:00:00',200,1,NULL,1);
-insert  into `extra_field_settings`(`extra_field_settings_id`,`field_name`,`import_id`,`site_id`,`date_created`,`data_item_type`,`extra_field_type`,`extra_field_options`,`position`) values (2,'UnixName',NULL,180,'2005-06-01 00:00:00',200,1,NULL,2);
-insert  into `extra_field_settings`(`extra_field_settings_id`,`field_name`,`import_id`,`site_id`,`date_created`,`data_item_type`,`extra_field_type`,`extra_field_options`,`position`) values (3,'BillingNotes',NULL,180,'2005-06-01 00:00:00',200,1,NULL,3);
-insert  into `extra_field_settings`(`extra_field_settings_id`,`field_name`,`import_id`,`site_id`,`date_created`,`data_item_type`,`extra_field_type`,`extra_field_options`,`position`) values (4,'IPAddress',NULL,180,'2005-06-01 00:00:00',300,1,NULL,4);
+insert  into `extra_field_settings`(`extra_field_settings_id`,`field_name`,`import_id`,`site_id`,`date_created`,`data_item_type`,`extra_field_type`,`extra_field_options`,`position`) values (1,'AdminUser',NULL,180,'1000-01-01 00:00:00',200,1,NULL,1);
+insert  into `extra_field_settings`(`extra_field_settings_id`,`field_name`,`import_id`,`site_id`,`date_created`,`data_item_type`,`extra_field_type`,`extra_field_options`,`position`) values (2,'UnixName',NULL,180,'1000-01-01 00:00:00',200,1,NULL,2);
+insert  into `extra_field_settings`(`extra_field_settings_id`,`field_name`,`import_id`,`site_id`,`date_created`,`data_item_type`,`extra_field_type`,`extra_field_options`,`position`) values (3,'BillingNotes',NULL,180,'1000-01-01 00:00:00',200,1,NULL,3);
+insert  into `extra_field_settings`(`extra_field_settings_id`,`field_name`,`import_id`,`site_id`,`date_created`,`data_item_type`,`extra_field_type`,`extra_field_options`,`position`) values (4,'IPAddress',NULL,180,'1000-01-01 00:00:00',300,1,NULL,4);
 
 /*Table structure for table `feedback` */
 
@@ -1002,8 +1002,8 @@ CREATE TABLE `site` (
 
 /*Data for the table `site` */
 
-insert  into `site`(`site_id`,`name`,`is_demo`,`user_licenses`,`entered_by`,`date_created`,`unix_name`,`company_id`,`is_free`,`account_active`,`account_deleted`,`reason_disabled`,`time_zone`,`time_format_24`,`date_format_ddmmyy`,`is_hr_mode`,`file_size_kb`,`page_views`,`page_view_days`,`last_viewed_day`,`first_time_setup`,`localization_configured`,`agreed_to_license`,`limit_warning`) values (1,'testdomain.com',0,0,0,'2005-06-01 00:00:00',NULL,NULL,0,1,0,NULL,2,0,1,0,0,574,1,'2009-11-19',0,0,1,0);
-insert  into `site`(`site_id`,`name`,`is_demo`,`user_licenses`,`entered_by`,`date_created`,`unix_name`,`company_id`,`is_free`,`account_active`,`account_deleted`,`reason_disabled`,`time_zone`,`time_format_24`,`date_format_ddmmyy`,`is_hr_mode`,`file_size_kb`,`page_views`,`page_view_days`,`last_viewed_day`,`first_time_setup`,`localization_configured`,`agreed_to_license`,`limit_warning`) values (180,'CATS_ADMIN',0,0,0,'2005-06-01 00:00:00','catsadmin',NULL,0,1,0,NULL,2,0,1,0,0,0,0,NULL,0,0,0,0);
+insert  into `site`(`site_id`,`name`,`is_demo`,`user_licenses`,`entered_by`,`date_created`,`unix_name`,`company_id`,`is_free`,`account_active`,`account_deleted`,`reason_disabled`,`time_zone`,`time_format_24`,`date_format_ddmmyy`,`is_hr_mode`,`file_size_kb`,`page_views`,`page_view_days`,`last_viewed_day`,`first_time_setup`,`localization_configured`,`agreed_to_license`,`limit_warning`) values (1,'testdomain.com',0,0,0,'1000-01-01 00:00:00',NULL,NULL,0,1,0,NULL,2,0,1,0,0,0,0,'2009-11-19',0,0,1,0);
+insert  into `site`(`site_id`,`name`,`is_demo`,`user_licenses`,`entered_by`,`date_created`,`unix_name`,`company_id`,`is_free`,`account_active`,`account_deleted`,`reason_disabled`,`time_zone`,`time_format_24`,`date_format_ddmmyy`,`is_hr_mode`,`file_size_kb`,`page_views`,`page_view_days`,`last_viewed_day`,`first_time_setup`,`localization_configured`,`agreed_to_license`,`limit_warning`) values (180,'CATS_ADMIN',0,0,0,'1000-01-01 00:00:00','catsadmin',NULL,0,1,0,NULL,2,0,1,0,0,0,0,NULL,0,0,0,0);
 
 /*Table structure for table `sph_counter` */
 
@@ -1029,7 +1029,7 @@ CREATE TABLE `system` (
 
 /*Data for the table `system` */
 
-insert  into `system`(`system_id`,`uid`,`available_version`,`date_version_checked`,`available_version_description`,`disable_version_check`) values (0,2618174,900,'2009-11-19 00:00:00','',1);
+insert  into `system`(`system_id`,`uid`,`available_version`,`date_version_checked`,`available_version_description`,`disable_version_check`) values (0,2618174,900,'1000-01-01 00:00:00','',1);
 
 /*Table structure for table `tag` */
 
