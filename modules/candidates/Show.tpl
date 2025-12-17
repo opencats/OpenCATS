@@ -586,7 +586,7 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                 <tr>
                     <th align="left" width="125">Date</th>
                     <th align="left" width="90">Type</th>
-                    <th align="left" width="90">Entered</th>
+                    <th align="left" width="90">Entered By</th>
                     <th align="left" width="250">Regarding</th>
                     <th align="left">Notes</th>
 <?php if (!$this->isPopup): ?>
