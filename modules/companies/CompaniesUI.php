@@ -33,6 +33,7 @@ include_once(LEGACY_ROOT . '/lib/ResultSetUtility.php');
 include_once(LEGACY_ROOT . '/lib/Companies.php');
 include_once(LEGACY_ROOT . '/lib/Contacts.php');
 include_once(LEGACY_ROOT . '/lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
 include_once(LEGACY_ROOT . '/lib/Attachments.php');
 include_once(LEGACY_ROOT . '/lib/Export.php');
 include_once(LEGACY_ROOT . '/lib/ListEditor.php');
@@ -414,6 +415,42 @@ class CompaniesUI extends UserInterface
             }
         }
 
+        $activityEntries = new ActivityEntries($this->_siteID);
+        $activityRS = $activityEntries->getAllByCompany($companyID);
+        if (!empty($activityRS))
+        {
+            foreach ($activityRS as $rowIndex => $row)
+            {
+                if (empty($activityRS[$rowIndex]['notes']))
+                {
+                    $activityRS[$rowIndex]['notes'] = '(No Notes)';
+                }
+
+                if (empty($activityRS[$rowIndex]['jobOrderID']) ||
+                    empty($activityRS[$rowIndex]['regarding']))
+                {
+                    $activityRS[$rowIndex]['regarding'] = 'General';
+                }
+
+                $activityRS[$rowIndex]['enteredByAbbrName'] = StringUtility::makeInitialName(
+                    $activityRS[$rowIndex]['enteredByFirstName'],
+                    $activityRS[$rowIndex]['enteredByLastName'],
+                    false,
+                    LAST_NAME_MAXLEN
+                );
+
+                $activityRS[$rowIndex]['contactFullName'] = trim(
+                    $activityRS[$rowIndex]['contactFirstName'] . ' ' .
+                    $activityRS[$rowIndex]['contactLastName']
+                );
+
+                if ($activityRS[$rowIndex]['contactFullName'] == '')
+                {
+                    $activityRS[$rowIndex]['contactFullName'] = '(Unknown Contact)';
+                }
+            }
+        }
+
         /* Add an MRU entry. */
         $_SESSION['CATS']->getMRU()->addEntry(
             DATA_ITEM_COMPANY, $companyID, $data['name']
@@ -446,6 +483,7 @@ class CompaniesUI extends UserInterface
         $this->_template->assign('contactsRSWC', $contactsRSWC);
         $this->_template->assign('privledgedUser', $privledgedUser);
         $this->_template->assign('companyID', $companyID);
+        $this->_template->assign('activityRS', $activityRS);
 
         if (!eval(Hooks::get('CLIENTS_SHOW'))) return;
 
