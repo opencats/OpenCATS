@@ -479,11 +479,12 @@ class CompaniesUI extends UserInterface
         $this->_template->assign('extraFieldRS', $extraFieldRS);
         $this->_template->assign('isShortNotes', $isShortNotes);
         $this->_template->assign('jobOrdersRS', $jobOrdersRS);
+        $this->_template->assign('activityRS', $activityRS);
         $this->_template->assign('contactsRS', $contactsRS);
         $this->_template->assign('contactsRSWC', $contactsRSWC);
         $this->_template->assign('privledgedUser', $privledgedUser);
         $this->_template->assign('companyID', $companyID);
-        $this->_template->assign('activityRS', $activityRS);
+        $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
 
         if (!eval(Hooks::get('CLIENTS_SHOW'))) return;
 

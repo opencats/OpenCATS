@@ -224,7 +224,8 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
 
         /* Create the cell that will contain the edit form. */
         var editTD = document.createElement('td');
-        editTD.setAttribute('colspan', '6');
+        var columnCount = editRow.cells.length;
+        editTD.setAttribute('colspan', columnCount.toString());
         editTD.setAttribute('valign', 'top');
         editTD.setAttribute('align',  'left');
 
