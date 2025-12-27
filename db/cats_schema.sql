@@ -1023,7 +1023,7 @@ CREATE TABLE `system` (
   `available_version` int(11) DEFAULT '0',
   `date_version_checked` datetime NOT NULL DEFAULT '1000-01-01 00:00:00',
   `available_version_description` text COLLATE utf8_unicode_ci,
-  `disable_version_check` int(1) DEFAULT "0",
+  `disable_version_check` int(1) DEFAULT '0',
   PRIMARY KEY (`system_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
