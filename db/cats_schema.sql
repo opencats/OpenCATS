@@ -964,8 +964,8 @@ CREATE TABLE `settings` (
 
 /*Data for the table `settings` */
 
-insert  into `settings`(`settings_id`,`setting`,`value`,`site_id`,`settings_type`) values (1,'fromAddress','admin@testdomain.com',1,1);
-insert  into `settings`(`settings_id`,`setting`,`value`,`site_id`,`settings_type`) values (2,'fromAddress','admin@testdomain.com',180,1);
+insert  into `settings`(`settings_id`,`setting`,`value`,`site_id`,`settings_type`) values (1,'fromAddress','admin@example.com',1,1);
+insert  into `settings`(`settings_id`,`setting`,`value`,`site_id`,`settings_type`) values (2,'fromAddress','admin@example.com',180,1);
 insert  into `settings`(`settings_id`,`setting`,`value`,`site_id`,`settings_type`) values (3,'configured','1',1,1);
 insert  into `settings`(`settings_id`,`setting`,`value`,`site_id`,`settings_type`) values (4,'configured','1',180,1);
 
@@ -1002,7 +1002,7 @@ CREATE TABLE `site` (
 
 /*Data for the table `site` */
 
-insert  into `site`(`site_id`,`name`,`is_demo`,`user_licenses`,`entered_by`,`date_created`,`unix_name`,`company_id`,`is_free`,`account_active`,`account_deleted`,`reason_disabled`,`time_zone`,`time_format_24`,`date_format_ddmmyy`,`is_hr_mode`,`file_size_kb`,`page_views`,`page_view_days`,`last_viewed_day`,`first_time_setup`,`localization_configured`,`agreed_to_license`,`limit_warning`) values (1,'testdomain.com',0,0,0,'1000-01-01 00:00:00',NULL,NULL,0,1,0,NULL,2,0,1,0,0,574,1,'1000-01-01',0,0,1,0);
+insert  into `site`(`site_id`,`name`,`is_demo`,`user_licenses`,`entered_by`,`date_created`,`unix_name`,`company_id`,`is_free`,`account_active`,`account_deleted`,`reason_disabled`,`time_zone`,`time_format_24`,`date_format_ddmmyy`,`is_hr_mode`,`file_size_kb`,`page_views`,`page_view_days`,`last_viewed_day`,`first_time_setup`,`localization_configured`,`agreed_to_license`,`limit_warning`) values (1,'example.com',0,0,0,'1000-01-01 00:00:00',NULL,NULL,0,1,0,NULL,2,0,1,0,0,574,1,'1000-01-01',0,0,1,0);
 insert  into `site`(`site_id`,`name`,`is_demo`,`user_licenses`,`entered_by`,`date_created`,`unix_name`,`company_id`,`is_free`,`account_active`,`account_deleted`,`reason_disabled`,`time_zone`,`time_format_24`,`date_format_ddmmyy`,`is_hr_mode`,`file_size_kb`,`page_views`,`page_view_days`,`last_viewed_day`,`first_time_setup`,`localization_configured`,`agreed_to_license`,`limit_warning`) values (180,'CATS_ADMIN',0,0,0,'1000-01-01 00:00:00','catsadmin',NULL,0,1,0,NULL,2,0,1,0,0,0,0,'1000-01-01',0,0,0,0);
 
 /*Table structure for table `sph_counter` */
@@ -1085,7 +1085,7 @@ CREATE TABLE `user` (
 
 /*Data for the table `user` */
 
-insert  into `user`(`user_id`,`site_id`,`user_name`,`email`,`password`,`access_level`,`can_change_password`,`is_test_user`,`last_name`,`first_name`,`is_demo`,`categories`,`session_cookie`,`pipeline_entries_per_page`,`column_preferences`,`force_logout`,`title`,`phone_work`,`phone_cell`,`phone_other`,`address`,`notes`,`company`,`city`,`state`,`zip_code`,`country`,`can_see_eeo_info`) values (1,1,'admin','admin@testdomain.com','admin',500,1,0,'Administrator','CATS',0,NULL,NULL,15,NULL,0,'','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
+insert  into `user`(`user_id`,`site_id`,`user_name`,`email`,`password`,`access_level`,`can_change_password`,`is_test_user`,`last_name`,`first_name`,`is_demo`,`categories`,`session_cookie`,`pipeline_entries_per_page`,`column_preferences`,`force_logout`,`title`,`phone_work`,`phone_cell`,`phone_other`,`address`,`notes`,`company`,`city`,`state`,`zip_code`,`country`,`can_see_eeo_info`) values (1,1,'admin','admin@example.com','admin',500,1,0,'Administrator','CATS',0,NULL,NULL,15,NULL,0,'','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
 insert  into `user`(`user_id`,`site_id`,`user_name`,`email`,`password`,`access_level`,`can_change_password`,`is_test_user`,`last_name`,`first_name`,`is_demo`,`categories`,`session_cookie`,`pipeline_entries_per_page`,`column_preferences`,`force_logout`,`title`,`phone_work`,`phone_cell`,`phone_other`,`address`,`notes`,`company`,`city`,`state`,`zip_code`,`country`,`can_see_eeo_info`) values (1250,180,'cats@rootadmin','0','cantlogin',0,0,0,'Automated','CATS',0,NULL,NULL,15,NULL,0,'','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
 
 /*Table structure for table `user_login` */
