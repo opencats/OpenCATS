@@ -1045,7 +1045,7 @@ switch ($action)
         MySQLConnect();
 
         /* Determine if a default user is set. */
-        $rs = MySQLQuery("SELECT * FROM user WHERE user_name = 'admin' AND password = 'cats'");
+        $rs = MySQLQuery("SELECT * FROM user WHERE user_name = 'admin' AND password = md5('cats')");
         if ($rs && mysqli_fetch_row($rs))
         {
             //Default user set

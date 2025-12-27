@@ -416,7 +416,7 @@
                                             <br />
                                             You may now login to OpenCATS. If it is a new installation, use the following logon information:<br /><br />
                                             Username: admin<br />
-                                            Password: admin<br />
+                                            Password: cats<br />
                                             <br />
                                             <br />
                                             OpenCATS will periodically check for new versions of the software from catsone.com, and will send non confidential information about your
