@@ -1328,6 +1328,25 @@ class CATSSchema
             '364' => '
                 UPDATE user SET password = md5(password) WHERE can_change_password=1;
             ',
+            '365' => 'PHP:
+                $col = $db->getAssoc("SHOW COLUMNS FROM `site` LIKE \'last_viewed_day\'");
+
+                if (!empty($col))
+                {
+                    $db->query(
+                        "UPDATE `site`
+                         SET `last_viewed_day` = \'1000-01-01\'
+                         WHERE `last_viewed_day` IS NULL OR `last_viewed_day` = \'0000-00-00\'",
+                        true
+                    );
+
+                    $db->query(
+                        "ALTER TABLE `site`
+                         MODIFY `last_viewed_day` DATE NOT NULL DEFAULT \'1000-01-01\'",
+                        true
+                    );
+                }
+            ',
 
         );
     }
