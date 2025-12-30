@@ -1528,7 +1528,7 @@ class ImportUI extends UserInterface
                     'errorMessage',
                     'You didn\'t upload any files or there was a '
                     . 'problem working with any files you uploaded. Please use the '
-                    . '<a href="javascript:back()"><strong>Back</strong></a> button on your web browser '
+                    . '<a href="javascript:history.back()"><strong>Back</strong></a> button on your web browser '
                     . 'and select one or more files to import.'
                 );
 

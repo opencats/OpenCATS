@@ -37,7 +37,7 @@
                             <label id="firstNameLabel" for="firstName">First Name:</label>
                         </td>
                         <td class="tdData">
-                            <input type="text" class="inputbox" id="firstName" name="firstName" value="<?php $this->_($this->data['firstName']); ?>" style="width: 150px;" />
+                            <input type="text" class="inputbox" id="firstName" name="firstName" value="<?php $this->_($this->data['firstName']); ?>" style="width: 150px;" />&nbsp;*
                         </td>
                     </tr>
 
@@ -55,7 +55,7 @@
                             <label id="lastNameLabel" for="lastName">Last Name:</label>
                         </td>
                         <td class="tdData">
-                            <input type="text" class="inputbox" id="lastName" name="lastName" value="<?php $this->_($this->data['lastName']); ?>" style="width: 150px;" />
+                            <input type="text" class="inputbox" id="lastName" name="lastName" value="<?php $this->_($this->data['lastName']); ?>" style="width: 150px;" />&nbsp;*
                         </td>
                     </tr>
 

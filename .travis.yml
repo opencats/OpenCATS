@@ -41,6 +41,7 @@ deploy:
   file:
      - $TRAVIS_BUILD_DIR/opencats-$TRAVIS_TAG-full.tar.gz
      - $TRAVIS_BUILD_DIR/opencats-$TRAVIS_TAG-full.zip
-  skip_cleanup: true
   on:
+    repo: opencats/OpenCATS
     tags: true
+  skip_cleanup: true

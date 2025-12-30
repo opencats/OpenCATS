@@ -30,6 +30,7 @@ function checkEditForm(form)
 
     errorMessage += checkFirstName();
     errorMessage += checkLastName();
+    errorMessage += checkOwner();
 
     if (errorMessage != '')
     {
@@ -162,6 +163,26 @@ function checkLastName()
     if (fieldValue == '')
     {
         errorMessage = "    - You must enter a last name.\n";
+
+        fieldLabel.style.color = '#ff0000';
+    }
+    else
+    {
+        fieldLabel.style.color = '#000';
+    }
+
+    return errorMessage;
+}
+
+function checkOwner()
+{
+    var errorMessage = '';
+
+    fieldValue = document.getElementById('owner').selectedIndex;
+    fieldLabel = document.getElementById('ownerLabel');
+    if (fieldValue == '')
+    {
+        errorMessage = "    - You must select an owner.\n";
 
         fieldLabel.style.color = '#ff0000';
     }
