@@ -123,7 +123,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td nowrap="nowrap">Database Password:</td>
-                                                    <td valign="top"><input type="text" size="20" id="dbpass" value="" /></td>
+                                                    <td valign="top"><input type="password" size="20" id="dbpass" value="" /></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Database Host: <span style="color: #ff0000">*</span></td>

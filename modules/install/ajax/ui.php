@@ -120,7 +120,7 @@ switch ($action)
                 CATSUtility::changeConfigSetting('DATABASE_USER', "'" . $_REQUEST['user'] . "'");
             }
 
-            if (isset($_REQUEST['pass']))
+            if (isset($_REQUEST['pass']) && $_REQUEST['pass'] !== '')
             {
                 CATSUtility::changeConfigSetting('DATABASE_PASS', "'" . $_REQUEST['pass'] . "'");
             }
@@ -146,13 +146,20 @@ switch ($action)
             die();
         }
 
+        $dbPassPlaceholder = '';
+        if (DATABASE_PASS !== '')
+        {
+            $dbPassPlaceholder = 'Leave blank to keep existing password';
+        }
+
         echo '
             <script type="text/javascript">
                 setActiveStep(2);
                 showTextBlock(\'databaseConnectivity\');
                 document.getElementById(\'dbname\').value = \'' . htmlspecialchars(DATABASE_NAME) . '\';
                 document.getElementById(\'dbuser\').value = \'' . htmlspecialchars(DATABASE_USER) . '\';
-                document.getElementById(\'dbpass\').value = \'' . htmlspecialchars(DATABASE_PASS) . '\';
+                document.getElementById(\'dbpass\').value = \'\';
+                document.getElementById(\'dbpass\').placeholder = \'' . $dbPassPlaceholder . '\';
                 document.getElementById(\'dbhost\').value = \'' . htmlspecialchars(DATABASE_HOST) . '\';
             </script>';
         break;
