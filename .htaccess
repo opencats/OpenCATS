@@ -1,4 +1,14 @@
- 
 IndexIgnore *
 
 Options -Indexes
+
+# Basic security headers.
+# These defaults are intentionally conservative to avoid breaking common customizations.
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+
+    # Prevent clickjacking on the OpenCATS UI.
+    Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>
