@@ -10,5 +10,6 @@ Options -Indexes
     Header set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
 
     # Prevent clickjacking on the OpenCATS UI.
+    # Note: /careers/ intentionally unsets this header in careers/.htaccess to allow embedding Career Portal into external websites using an iframe.
     Header set X-Frame-Options "SAMEORIGIN"
 </IfModule>
