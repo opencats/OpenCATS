@@ -39,32 +39,40 @@ jobs:
         run: composer install --no-progress --prefer-dist
 
       - name: Create Reports Directory
-        run: mkdir -p reports
+        run: mkdir -p reports/behat-default reports/behat-security
 
       - name: Run PHPUnit (Unit Tests)
         run: ./vendor/bin/phpunit --log-junit reports/unit-report.xml src/OpenCATS/Tests/UnitTests
 
-      - name: Run Integration Tests (Docker)
+- name: Run Integration Tests (Docker)
         run: |
           cd docker/
-          # Start environment
           docker compose -f docker-compose-test.yml up -d
 
-          # Wait for database (mirroring your script's logic)
+          # 1. Wait for DB
           docker compose -f docker-compose-test.yml exec -T php php modules/tests/waitForDb.php
 
-          # Run Integration tests with reporting
+          # 2. Run Integration PHPUnit
           docker compose -f docker-compose-test.yml exec -T php ./vendor/bin/phpunit --log-junit /var/www/public/reports/integration-report.xml src/OpenCATS/Tests/IntegrationTests
 
-          # Run the rest of the original script (Behat, etc.)
-          docker compose -f docker-compose-test.yml exec -T php /var/www/public/test/runAllTests.sh
+          # 3. Run Behat "Default" Suite with JUnit output
+          # We use --format junit --out [directory]
+          docker compose -f docker-compose-test.yml exec -T php ./vendor/bin/behat -v -c ./test/behat.yml --suite="default" --format=pretty --out=std --format=junit --out=/var/www/public/reports/behat-default
+
+          # 4. Run Behat "Security" Suite with JUnit output
+          docker compose -f docker-compose-test.yml exec -T php ./vendor/bin/behat -v -c ./test/behat.yml --suite="security" --format=pretty --out=std --format=junit --out=/var/www/public/reports/behat-security
         continue-on-error: true
 
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
         if: always()
         with:
-          report_paths: 'reports/*.xml'
+          # This glob pattern '**/*.xml' will now find:
+          # - reports/unit-report.xml
+          # - reports/integration-report.xml
+          # - reports/behat-default/*.xml (multiple files)
+          # - reports/behat-security/*.xml (multiple files)
+          report_paths: 'reports/**/*.xml'
           detailed_summary: true
           include_passed: true
           check_name: "Test Results - PHP ${{ matrix.php-version }}"
