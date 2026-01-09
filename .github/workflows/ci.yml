@@ -59,8 +59,8 @@ jobs:
           docker compose -f docker-compose-test.yml up -d
 
           # Give MariaDB more time to initialize the MyISAM tables
-          echo "Waiting 15 seconds for database to initialize..."
-          sleep 15
+          echo "Waiting 30 seconds for database to initialize..."
+          sleep 30
 
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php php modules/tests/waitForDb.php
 
@@ -68,8 +68,8 @@ jobs:
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/phpunit --log-junit /var/www/public/reports/integration-report.xml src/OpenCATS/Tests/IntegrationTests
 
           # Run Behat Suites
-          docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="default" --format=pretty --out=std --format=junit --out=/var/www/public/reports/behat-default
-          docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="security" --format=pretty --out=std --format=junit --out=/var/www/public/reports/behat-security
+          docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="default" --format=progress --out=std --format=junit --out=/var/www/public/reports/behat-default
+          docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="security" --format=progress --out=std --format=junit --out=/var/www/public/reports/behat-security
         continue-on-error: true
 
       - name: Publish Test Report
