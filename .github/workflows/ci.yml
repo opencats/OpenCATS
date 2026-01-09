@@ -31,9 +31,10 @@ jobs:
       - name: Install Dependencies
         run: composer install --no-progress --prefer-dist
 
-      - name: Create Reports Directory
+      - name: Create Reports and Screenshots Directory
         # We create the subdirectories specifically for Behat
-        run: mkdir -p reports/behat-default reports/behat-security
+        run: mkdir -p reports/behat-default reports/behat-security && mkdir -p test/screenshots
+
 
       - name: Run PHPUnit (Unit Tests)
         run: ./vendor/bin/phpunit --log-junit reports/unit-report.xml src/OpenCATS/Tests/UnitTests
@@ -55,6 +56,14 @@ jobs:
           # 4. Behat Security Suite (Added --workdir)
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="security" --format=pretty --out=std --format=junit --out=/var/www/public/reports/behat-security
         continue-on-error: true
+      - name: Upload Behat Screenshots
+        if: failure() # Only run this if the previous tests failed
+        uses: actions/upload-artifact@v4
+        with:
+          name: behat-screenshots-php${{ matrix.php-version }}
+          # This path must match where Behat saves them locally
+          path: test/screenshots/
+          retention-days: 5
 
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
