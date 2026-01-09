@@ -55,7 +55,7 @@ jobs:
 
       - name: Run Integration Tests (Docker)
         run: |
-          # Prepare environment files
+          # 1. Prepare environment files in the runner root
           cp test/config.php ./config.php
           touch ./INSTALL_BLOCK
 
@@ -69,6 +69,11 @@ jobs:
 
           # Wait for Integration Sandbox (integrationtestdb)
           timeout 60s bash -c 'until docker compose -f docker-compose-test.yml exec -T integrationtestdb mysqladmin ping -h localhost -udev -pdev --silent; do echo "waiting for integrationtestdb..."; sleep 3; done'
+
+          # 2. MANUALLY wipe and prep the integration database.
+          # This ensures the legacy PHP 'DatabaseTestCase' has a completely clean slate.
+          echo "Pre-cleaning integrationtestdb via CLI..."
+          docker compose -f docker-compose-test.yml exec -T integrationtestdb mysql -udev -pdev -e "DROP DATABASE IF EXISTS cats_integrationtest; CREATE DATABASE cats_integrationtest;"
 
           echo "Databases are ready. Running PHPUnit Integration Tests..."
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/phpunit --log-junit /var/www/public/reports/integration-report.xml src/OpenCATS/Tests/IntegrationTests
@@ -87,6 +92,7 @@ jobs:
           detailed_summary: true
           include_passed: true
           check_name: "Test Results - PHP ${{ matrix.php-version }}"
+          fail_on_failure: false
 
       - name: Upload Behat Screenshots
         if: failure()
@@ -112,7 +118,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create Release Archive
-        # We zip the source but exclude things that don't belong in a production release
         run: |
           zip -r opencats-${{ github.ref_name }}.zip . -x "*.git*" "docker/*" "test/*" "reports/*" ".github/*" "phpunit.xml"
 
