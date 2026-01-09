@@ -2,16 +2,9 @@ name: CI Build
 
 on:
   push:
-    branches:
-      - master
-      - develop
-      - Feature-php8.2_compat
-      - feature/migrate-ci-to-github-actions
+    branches: [ master, develop, Feature-php8.2_compat, feature/migrate-ci-to-github-actions ]
   pull_request:
-    branches:
-      - master
-      - develop
-      - feature/migrate-ci-to-github-actions
+    branches: [ master, develop, feature/migrate-ci-to-github-actions ]
   workflow_dispatch:
 
 jobs:
@@ -39,6 +32,7 @@ jobs:
         run: composer install --no-progress --prefer-dist
 
       - name: Create Reports Directory
+        # We create the subdirectories specifically for Behat
         run: mkdir -p reports/behat-default reports/behat-security
 
       - name: Run PHPUnit (Unit Tests)
@@ -49,17 +43,16 @@ jobs:
           cd docker/
           docker compose -f docker-compose-test.yml up -d
 
-          # 1. Wait for DB
+          # Wait for DB
           docker compose -f docker-compose-test.yml exec -T php php modules/tests/waitForDb.php
 
-          # 2. Run Integration PHPUnit
+          # 1. Integration PHPUnit
           docker compose -f docker-compose-test.yml exec -T php ./vendor/bin/phpunit --log-junit /var/www/public/reports/integration-report.xml src/OpenCATS/Tests/IntegrationTests
 
-          # 3. Run Behat "Default" Suite with JUnit output
-          # We use --format junit --out [directory]
+          # 2. Behat Default Suite
           docker compose -f docker-compose-test.yml exec -T php ./vendor/bin/behat -v -c ./test/behat.yml --suite="default" --format=pretty --out=std --format=junit --out=/var/www/public/reports/behat-default
 
-          # 4. Run Behat "Security" Suite with JUnit output
+          # 3. Behat Security Suite
           docker compose -f docker-compose-test.yml exec -T php ./vendor/bin/behat -v -c ./test/behat.yml --suite="security" --format=pretty --out=std --format=junit --out=/var/www/public/reports/behat-security
         continue-on-error: true
 
@@ -67,11 +60,7 @@ jobs:
         uses: mikepenz/action-junit-report@v4
         if: always()
         with:
-          # This glob pattern '**/*.xml' will now find:
-          # - reports/unit-report.xml
-          # - reports/integration-report.xml
-          # - reports/behat-default/*.xml (multiple files)
-          # - reports/behat-security/*.xml (multiple files)
+          # The double star ** is crucial here to find files in subdirectories
           report_paths: 'reports/**/*.xml'
           detailed_summary: true
           include_passed: true
@@ -79,6 +68,4 @@ jobs:
 
       - name: Shutdown Docker
         if: always()
-        run: |
-          cd docker
-          docker compose -f docker-compose-test.yml down
+        run: cd docker && docker compose -f docker-compose-test.yml down
