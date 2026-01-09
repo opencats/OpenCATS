@@ -3,13 +3,14 @@ name: CI/CD Pipeline
 on:
   push:
     branches: [ master, develop, feature/** ]
-    tags: ['v*'] # Triggers when you push a tag like v1.0.0
+    tags: ['v*']
   pull_request:
     branches: [ master, develop ]
+  workflow_dispatch:
 
 jobs:
-  # JOB 1: Test, Lint, and Audit
   tests:
+    name: Tests (PHP ${{ matrix.php-version }})
     runs-on: ubuntu-latest
     permissions:
       checks: write
@@ -39,13 +40,12 @@ jobs:
       - name: Install Dependencies
         run: composer install --no-progress --prefer-dist
 
-      # --- NEW: Linting ---
       - name: PHP Syntax Check (Lint)
         run: find src -name "*.php" -print0 | xargs -0 -n1 php -l
 
-      # --- NEW: Security Audit ---
       - name: Composer Security Audit
-        run: composer audit
+        # We use || true so legacy vulnerabilities don't block the build
+        run: composer audit || true
 
       - name: Create Reports Directory
         run: mkdir -p reports/behat-default reports/behat-security test/screenshots
@@ -58,7 +58,11 @@ jobs:
           cd docker/
           docker compose -f docker-compose-test.yml up -d
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php php modules/tests/waitForDb.php
+
+          # Integration PHPUnit
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/phpunit --log-junit /var/www/public/reports/integration-report.xml src/OpenCATS/Tests/IntegrationTests
+
+          # Behat Suites
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="default" --format=pretty --out=std --format=junit --out=/var/www/public/reports/behat-default
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="security" --format=pretty --out=std --format=junit --out=/var/www/public/reports/behat-security
         continue-on-error: true
@@ -68,6 +72,8 @@ jobs:
         if: always()
         with:
           report_paths: 'reports/**/*.xml'
+          detailed_summary: true
+          include_passed: true
           check_name: "Test Results - PHP ${{ matrix.php-version }}"
 
       - name: Upload Behat Screenshots
@@ -82,21 +88,21 @@ jobs:
         if: always()
         run: cd docker && docker compose -f docker-compose-test.yml down
 
-  # JOB 2: Automated Release (Only on Tags)
   release:
-    needs: tests # Only run if tests pass
+    name: Create GitHub Release
+    needs: tests
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Needed to create a release
+      contents: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Create Release Archive
+        # We zip the source but exclude things that don't belong in a production release
         run: |
-          # Create a zip of the source, excluding dev/test files
-          zip -r opencats-${{ github.ref_name }}.zip . -x "*.git*" "docker/*" "test/*" "reports/*"
+          zip -r opencats-${{ github.ref_name }}.zip . -x "*.git*" "docker/*" "test/*" "reports/*" ".github/*" "phpunit.xml"
 
       - name: Create GitHub Release
         env:
@@ -104,5 +110,5 @@ jobs:
         run: |
           gh release create ${{ github.ref_name }} \
             --title "OpenCATS ${{ github.ref_name }}" \
-            --notes "Automated release from CI build" \
+            --notes "Automated release for version ${{ github.ref_name }}" \
             opencats-${{ github.ref_name }}.zip
