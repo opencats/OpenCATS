@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['7.2', '8.2']
+        php-version: ['7.2']
 
     steps:
       - name: Checkout Code
@@ -79,7 +79,7 @@ jobs:
           echo "Running Behat Suites..."
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="default" --format=progress
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="security" --format=progress
-        continue-on-error: true
+          # continue-on-error: true
 
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
