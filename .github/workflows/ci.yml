@@ -55,20 +55,26 @@ jobs:
 
       - name: Run Integration Tests (Docker)
         run: |
+          # Prepare environment files
+          cp test/config.php ./config.php
+          touch ./INSTALL_BLOCK
+
           cd docker/
           docker compose -f docker-compose-test.yml up -d
 
-          # Give MariaDB more time to initialize the MyISAM tables
-          echo "Waiting 30 seconds for database to initialize..."
-          sleep 30
+          echo "Waiting for BOTH databases to be healthy..."
 
-          docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php php modules/tests/waitForDb.php
+          # Wait for Main Database (opencatsdb)
+          timeout 60s bash -c 'until docker compose -f docker-compose-test.yml exec -T opencatsdb mysqladmin ping -h localhost -udev -pdev --silent; do echo "waiting for opencatsdb..."; sleep 3; done'
 
-          # Run Integration Tests
+          # Wait for Integration Sandbox (integrationtestdb)
+          timeout 60s bash -c 'until docker compose -f docker-compose-test.yml exec -T integrationtestdb mysqladmin ping -h localhost -udev -pdev --silent; do echo "waiting for integrationtestdb..."; sleep 3; done'
+
+          echo "Databases are ready. Running PHPUnit Integration Tests..."
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/phpunit --log-junit /var/www/public/reports/integration-report.xml src/OpenCATS/Tests/IntegrationTests
 
-          # Run Behat Suites
-          # Run Behat Suites - We use 'progress' because 'junit' is not installed
+          echo "Running Behat Suites..."
+          # Note: We use progress format because the junit formatter extension is missing
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="default" --format=progress
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="security" --format=progress
         continue-on-error: true
