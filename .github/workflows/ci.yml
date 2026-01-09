@@ -55,31 +55,28 @@ jobs:
 
       - name: Run Integration Tests (Docker)
         run: |
-          # 1. Prepare environment files in the runner root
+          # 1. Prepare environment files
           cp test/config.php ./config.php
           touch ./INSTALL_BLOCK
 
           cd docker/
           docker compose -f docker-compose-test.yml up -d
 
-          echo "Waiting for BOTH databases to be healthy..."
+          echo "Waiting for BOTH databases..."
+          timeout 60s bash -c 'until docker compose -f docker-compose-test.yml exec -T opencatsdb mysqladmin ping -h localhost -udev -pdev --silent; do sleep 3; done'
+          timeout 60s bash -c 'until docker compose -f docker-compose-test.yml exec -T integrationtestdb mysqladmin ping -h localhost -udev -pdev --silent; do sleep 3; done'
 
-          # Wait for Main Database (opencatsdb)
-          timeout 60s bash -c 'until docker compose -f docker-compose-test.yml exec -T opencatsdb mysqladmin ping -h localhost -udev -pdev --silent; do echo "waiting for opencatsdb..."; sleep 3; done'
-
-          # Wait for Integration Sandbox (integrationtestdb)
-          timeout 60s bash -c 'until docker compose -f docker-compose-test.yml exec -T integrationtestdb mysqladmin ping -h localhost -udev -pdev --silent; do echo "waiting for integrationtestdb..."; sleep 3; done'
-
-          # 2. MANUALLY wipe and prep the integration database.
-          # This ensures the legacy PHP 'DatabaseTestCase' has a completely clean slate.
-          echo "Pre-cleaning integrationtestdb via CLI..."
+          # 2. Pre-clean the integration database
           docker compose -f docker-compose-test.yml exec -T integrationtestdb mysql -udev -pdev -e "DROP DATABASE IF EXISTS cats_integrationtest; CREATE DATABASE cats_integrationtest;"
 
-          echo "Databases are ready. Running PHPUnit Integration Tests..."
+          # 3. DIAGNOSTIC: Check if PHP can resolve the database hostname
+          echo "Diagnostic: Resolving integrationtestdb from PHP container..."
+          docker compose -f docker-compose-test.yml exec -T php php -r "echo 'IP for integrationtestdb: ' . gethostbyname('integrationtestdb') . PHP_EOL;"
+
+          echo "Running PHPUnit Integration Tests..."
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/phpunit --log-junit /var/www/public/reports/integration-report.xml src/OpenCATS/Tests/IntegrationTests
 
           echo "Running Behat Suites..."
-          # Note: We use progress format because the junit formatter extension is missing
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="default" --format=progress
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="security" --format=progress
         continue-on-error: true
