@@ -1,0 +1,43 @@
+name: CI Build
+
+on:
+  push:
+    branches: [ master, develop, Feature-php8.2_compat ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false # Keep running other PHP versions even if one fails
+      matrix:
+        php-version: ['7.2', '8.2']
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: composer:v2
+
+      - name: Install Dependencies
+        run: composer install --no-progress --prefer-dist
+
+      - name: Run PHPUnit (Unit Tests)
+        run: ./vendor/bin/phpunit src/OpenCATS/Tests/UnitTests
+
+      - name: Run Integration Tests (Docker)
+        run: |
+          cd docker/
+          # Start the environment defined in the repo
+          docker compose -f docker-compose-test.yml up -d
+          # Execute the test script inside the PHP container
+          docker compose -f docker-compose-test.yml exec -T php /var/www/public/test/runAllTests.sh
+
+      - name: Shutdown Docker
+        if: always() # Ensure docker stops even if tests fail
+        run: cd docker && docker compose -f docker-compose-test.yml down
