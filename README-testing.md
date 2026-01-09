@@ -1,37 +1,40 @@
-CI/CD Testing Infrastructure Notes
-Overview of Databases
+# CI/CD Testing Infrastructure Notes
+
+## Overview of Databases
 This project uses two distinct MariaDB instances during the testing phase to ensure data isolation:
 
-opencatsdb (Port 3306):
+### 1. opencatsdb (Port 3306)
+* **Purpose:** Primary application database for functional testing.
+* **Data:** Pre-seeded with `test.sql` and `securityTests.sql` via Docker's `initdb.d`.
+* **Used By:** Manual development, Behat (Gherkin/Selenium) suites.
 
-Purpose: Primary application database.
+### 2. integrationtestdb (Port 3307)
+* **Purpose:** A "Disposable Sandbox" for PHPUnit Integration Tests.
+* **Behavior:** The `DatabaseTestCase.php` class drops and recreates this database for every test run to ensure a clean schema build from `db/cats_schema.sql`.
 
-Data: Pre-seeded with test.sql and securityTests.sql via Docker's initdb.d.
+---
 
-Used By: Manual dev testing, Behat (Gherkin/Selenium) functional tests.
+## Running Tests Locally
+To mirror the CI environment on your machine:
 
-Persistence: Persistent during the life of the container.
+1. **Prepare the environment:**
+   ```bash
+   cp test/config.php ./config.php
+   touch ./INSTALL_BLOCK
+   ```
 
-integrationtestdb (Port 3307):
+2. **Start the containers:**
+   ```bash
+   cd docker/
+   docker compose -f docker-compose-test.yml up -d
+   ```
 
-Purpose: A "Disposable Sandbox" for PHPUnit Integration Tests.
+3. **Run the suites:**
+   * **PHPUnit:** `docker exec -it opencats_test_php ./vendor/bin/phpunit src/OpenCATS/Tests/IntegrationTests`
+   * **Behat:** `docker exec -it opencats_test_php ./vendor/bin/behat -c ./test/behat.yml`
 
-Data: None at startup.
+---
 
-Used By: src/OpenCATS/Tests/IntegrationTests/ via DatabaseTestCase.php.
-
-Behavior: The PHP code drops and recreates this database for every single test class to ensure a clean schema build from db/cats_schema.sql.
-
-Critical CI Synchronization
-Because the Integration Tests call die() if the connection to integrationtestdb fails, the GitHub Action MUST wait for both containers to be healthy. We use mysqladmin ping in the workflow because:
-
-Docker saying "Started" only means the process exists.
-
-mysqladmin ping confirms the database has finished its internal initialization (like MyISAM table checks) and is actually ready for the PHP mysqli_connect call.
-
-Troubleshooting "Query Failed" in CI
-If you see the Red Error box in logs:
-
-Check Hostnames: Ensure DatabaseTestCase.php points to integrationtestdb (the service name, not localhost).
-
-Check Timing: Increase the timeout in ci.yml if the runner is slow.
+## Troubleshooting
+* **Connection Errors:** If tests fail to connect, verify the `integrationtestdb` container is healthy. The CI uses `mysqladmin ping` to ensure the DB is ready before PHP attempts to connect.
+* **Risky Tests:** PHPUnit may flag empty test methods (placeholders) as "Risky." These do not fail the build but should be implemented in future PRs.
