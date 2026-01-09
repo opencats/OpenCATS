@@ -2,10 +2,17 @@ name: CI Build
 
 on:
   push:
-    branches: [ master, develop, Feature-php8.2_compat ]
+    branches:
+      - master
+      - develop
+      - Feature-php8.2_compat
+      - feature/migrate-ci-to-github-actions
   pull_request:
-    branches: [ master, develop ]
-  workflow_dispatch: # This adds a "Run workflow" button to the UI
+    branches:
+      - master
+      - develop
+      - feature/migrate-ci-to-github-actions
+  workflow_dispatch:
 
 jobs:
   tests:
