@@ -37,7 +37,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     public function __construct()
     {
         $this->roleData = array(
-            'Administrator' => new Role('admin', 'admin'),
+            'Administrator' => new Role('admin', 'cats'),
             'User' => new Role('john@mycompany.net', 'john99')
         );
     }
