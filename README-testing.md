@@ -35,7 +35,8 @@ To mirror the CI environment on your machine:
    ```
 
 4. **Run the suites:**
-   * **PHPUnit:** `docker exec -it opencats_test_php ./vendor/bin/phpunit src/OpenCATS/Tests/IntegrationTests`
+   * **PHPUnit Unit Tests:** `docker exec -it opencats_test_php ./vendor/bin/phpunit src/OpenCATS/Tests/UnitTests`
+   * **PHPUnit Integration Tests:** `docker exec -it opencats_test_php ./vendor/bin/phpunit src/OpenCATS/Tests/IntegrationTests`
    * **Behat:** `docker exec -it opencats_test_php ./vendor/bin/behat -c ./test/behat.yml`
 
 ---
