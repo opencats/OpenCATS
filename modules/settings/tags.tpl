@@ -90,7 +90,15 @@ function editTag(id){
                                     <td class="tdData">
                                     	<div  class="lst">
 										<ul>
-										<?php $f = true; $parent=""; foreach($this->tagsRS as $index => $data){ ?>
+										<?php if (empty($this->tagsRS)) { ?>
+											<li><img src="images/actions/add.gif" />
+												<form method="post" action="<?= CATSUtility::getIndexName() ?>?m=settings&amp;a=ajax_tags_add">
+													<input type="text" name="tag_title" value="" />
+													<input type="button" value="Add" onclick="doAdd(this.form);" />
+												</form>
+											</li>
+										<?php } else { ?>
+										<?php $f = true; $parent=""; $tag_parent_id = 0; foreach($this->tagsRS as $index => $data){ ?>
 											<?php if ($data['tag_parent_id'] == ""){ ?>
 											<?php if (!$f) {?>
 													<li><img src="images/actions/add.gif" />
@@ -138,6 +146,7 @@ function editTag(id){
 												<input type="button" value="Add" onclick="doAdd(this.form);" />
 											</form>
 										</li>
+										<?php } ?>
 									</div>
                                   </td>
                                 </tr>
