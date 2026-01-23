@@ -46,7 +46,7 @@ class AJAXInterface
      */
     public function outputXMLPage($xmlString)
     {
-        header('Content-type: text/xml');
+        header('Content-type: text/xml; charset=' . AJAX_ENCODING);
 
         echo '<?xml version="1.0" encoding="', AJAX_ENCODING, '"?>', "\n";
         echo $xmlString;
