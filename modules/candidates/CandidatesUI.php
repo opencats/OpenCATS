@@ -3037,13 +3037,20 @@ class CandidatesUI extends UserInterface
 
         if ($this->isChecked('addActivity', $_POST))
         {
-            /* Bail out if we don't have a valid job order ID. */
-            if (!$this->isOptionalIDValid('activityTypeID', $_POST))
+            if (!$this->isRequiredIDValid('activityTypeID', $_POST))
+            {
+                $this->fatalModal('You must select an activity type.');
+            }
+
+            $activityTypeID = (int) $_POST['activityTypeID'];
+            $activityEntries = new ActivityEntries($this->_siteID);
+            $activityTypes = $activityEntries->getTypes();
+            if (ResultSetUtility::findRowByColumnValue(
+                $activityTypes, 'typeID', $activityTypeID
+            ) === false)
             {
                 CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid activity type ID.');
             }
-
-            $activityTypeID = $_POST['activityTypeID'];
 
             $activityNote = $this->getTrimmedInput('activityNote', $_POST);
 
@@ -3063,7 +3070,6 @@ class CandidatesUI extends UserInterface
             }
 
             /* Add the activity entry. */
-            $activityEntries = new ActivityEntries($this->_siteID);
             $activityID = $activityEntries->add(
                 $candidateID,
                 DATA_ITEM_CANDIDATE,
@@ -3072,7 +3078,6 @@ class CandidatesUI extends UserInterface
                 $this->_userID,
                 $regardingID
             );
-            $activityTypes = $activityEntries->getTypes();
             $activityTypeDescription = ResultSetUtility::getColumnValueByIDValue(
                 $activityTypes, 'typeID', $activityTypeID, 'type'
             );
