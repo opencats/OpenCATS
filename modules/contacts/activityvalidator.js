@@ -1,11 +1,11 @@
 /*
  * CATS
- * Candidates Form Validation
+ * Contacts Form Validation
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  * All rights reserved.
  *
- * $Id: activityvalidator.js 2336 2007-04-14 22:01:51Z will $
+ * $Id$
  */
 
 function checkActivityForm(form)
