@@ -13,6 +13,7 @@ Feature: Activities
     And I follow "Log an Activity"
     And I wait for the activity note box to appear
     And I switch to the iframe "popupInner"
+    And I select "Call" from "activityTypeID"
     And fill in "activityNote" with "Call Gandalf"
     And press "Save"
     And press "Close"
