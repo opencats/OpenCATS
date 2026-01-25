@@ -21,6 +21,18 @@ curl -H "X-Api-Key: key" "?m=api&a=tearsheets"
 curl -H "X-Api-Key: key" "?m=api&a=tearsheets&id=1&sub=joborders"
 ```
 
+## API Response Format
+
+Each tearsheet includes a `job_count` showing total jobs:
+```json
+{
+  "id": 1,
+  "name": "Active Jobs",
+  "jobOrders": {"total": 15},
+  "isPublic": true
+}
+```
+
 ## Database Schema
 
 ```sql
