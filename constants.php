@@ -63,6 +63,8 @@ define('DATA_ITEM_USER',        600);
 define('DATA_ITEM_LIST',        700);
 define('DATA_ITEM_PIPELINE',    800);
 define('DATA_ITEM_DUPLICATE',   900);
+define('DATA_ITEM_PLACEMENT',   1000);
+define('DATA_ITEM_JOBSUBMISSION', 1100);
 
 /* Settings types. */
 define('SETTINGS_MAILER',        1);
