@@ -124,14 +124,15 @@ class ApiUI extends UserInterface
                 return;
             }
 
-            // Check rate limits after authentication
-            if (class_exists('ApiRateLimiter') && $this->_apiKeyID) {
+            // Check rate limits after authentication (supports both API key and OAuth)
+            $rateLimitIdentifier = $this->_apiKeyID ?: ($this->_authType === 'oauth' && $this->_userID ? 'oauth_user_' . $this->_userID : null);
+            if (class_exists('ApiRateLimiter') && $rateLimitIdentifier) {
                 $rateEnabled = !defined('API_RATE_LIMIT_ENABLED') || API_RATE_LIMIT_ENABLED;
                 if ($rateEnabled) {
                     $ratePerMinute = defined('API_RATE_LIMIT_PER_MINUTE') ? API_RATE_LIMIT_PER_MINUTE : 60;
                     $ratePerHour = defined('API_RATE_LIMIT_PER_HOUR') ? API_RATE_LIMIT_PER_HOUR : 1000;
 
-                    $this->_rateLimiter = new ApiRateLimiter($this->_apiKeyID, $ratePerMinute, $ratePerHour);
+                    $this->_rateLimiter = new ApiRateLimiter($rateLimitIdentifier, $ratePerMinute, $ratePerHour);
                     $limitInfo = $this->_rateLimiter->checkLimit();
 
                     // Add rate limit headers to all responses
