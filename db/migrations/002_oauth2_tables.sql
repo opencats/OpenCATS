@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS oauth_clients (
     date_created DATETIME NOT NULL COMMENT 'When the client was registered',
 
     PRIMARY KEY (client_id),
+    UNIQUE KEY idx_client_secret (client_secret),
     KEY idx_user_id (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   COMMENT='OAuth 2.0 registered applications/clients';
@@ -47,7 +48,8 @@ CREATE TABLE IF NOT EXISTS oauth_access_tokens (
 
     PRIMARY KEY (access_token),
     KEY idx_client_id (client_id),
-    KEY idx_expires (expires)
+    KEY idx_expires (expires),
+    CONSTRAINT fk_access_tokens_client FOREIGN KEY (client_id) REFERENCES oauth_clients(client_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   COMMENT='OAuth 2.0 access tokens';
 
@@ -65,7 +67,8 @@ CREATE TABLE IF NOT EXISTS oauth_refresh_tokens (
 
     PRIMARY KEY (refresh_token),
     KEY idx_client_id (client_id),
-    KEY idx_expires (expires)
+    KEY idx_expires (expires),
+    CONSTRAINT fk_refresh_tokens_client FOREIGN KEY (client_id) REFERENCES oauth_clients(client_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   COMMENT='OAuth 2.0 refresh tokens';
 
@@ -85,7 +88,8 @@ CREATE TABLE IF NOT EXISTS oauth_authorization_codes (
 
     PRIMARY KEY (authorization_code),
     KEY idx_client_id (client_id),
-    KEY idx_expires (expires)
+    KEY idx_expires (expires),
+    CONSTRAINT fk_auth_codes_client FOREIGN KEY (client_id) REFERENCES oauth_clients(client_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   COMMENT='OAuth 2.0 authorization codes (temporary, for auth code flow)';
 
