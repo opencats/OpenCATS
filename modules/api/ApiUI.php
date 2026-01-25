@@ -56,6 +56,8 @@ include_once(dirname(__FILE__) . '/handlers/CompanyHandler.php');
 include_once(dirname(__FILE__) . '/handlers/ContactHandler.php');
 include_once(dirname(__FILE__) . '/handlers/MetaHandler.php');
 include_once(dirname(__FILE__) . '/handlers/OAuthHandler.php');
+include_once(dirname(__FILE__) . '/handlers/JobSubmissionHandler.php');
+include_once(dirname(__FILE__) . '/handlers/PlacementHandler.php');
 include_once(dirname(__FILE__) . '/traits/ApiHelpers.php');
 
 class ApiUI extends UserInterface
@@ -204,6 +206,18 @@ class ApiUI extends UserInterface
             case 'oauth':
                 // OAuth endpoints don't require prior auth
                 $handler = new OAuthHandler($this->_requestLogger);
+                $handler->handle();
+                break;
+
+            case 'jobsubmissions':
+            case 'jobsubmission':
+                $handler = new JobSubmissionHandler($this->_siteID, $this->_userID, $this->_requestLogger);
+                $handler->handle();
+                break;
+
+            case 'placements':
+            case 'placement':
+                $handler = new PlacementHandler($this->_siteID, $this->_userID, $this->_requestLogger);
                 $handler->handle();
                 break;
 
