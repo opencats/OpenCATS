@@ -159,4 +159,83 @@ class EntityFormatter
             'dateAdded' => $contact['dateCreated'] ?? $contact['date_created'] ?? ''
         ];
     }
+
+    /**
+     * Format placement for API response (Bullhorn-compatible)
+     * @param array $placement Placement data
+     * @return array Formatted placement
+     */
+    public static function formatPlacement($placement)
+    {
+        // Format candidate nested object
+        $candidate = null;
+        if (!empty($placement['candidateID'])) {
+            $candidate = [
+                'id' => intval($placement['candidateID']),
+                'firstName' => $placement['candidateFirstName'] ?? '',
+                'lastName' => $placement['candidateLastName'] ?? '',
+                'email' => $placement['candidateEmail'] ?? ''
+            ];
+        }
+
+        // Format job order nested object
+        $jobOrder = null;
+        if (!empty($placement['jobOrderID'])) {
+            $jobOrder = [
+                'id' => intval($placement['jobOrderID']),
+                'title' => $placement['jobOrderTitle'] ?? ''
+            ];
+        }
+
+        // Format client corporation nested object
+        $clientCorporation = null;
+        if (!empty($placement['companyID'])) {
+            $clientCorporation = [
+                'id' => intval($placement['companyID']),
+                'name' => $placement['companyName'] ?? ''
+            ];
+        }
+
+        // Format client contact nested object (nullable)
+        $clientContact = null;
+        if (!empty($placement['contactID'])) {
+            $clientContact = [
+                'id' => intval($placement['contactID']),
+                'firstName' => $placement['contactFirstName'] ?? '',
+                'lastName' => $placement['contactLastName'] ?? ''
+            ];
+        }
+
+        // Format owner nested object
+        $owner = null;
+        if (!empty($placement['ownerID'])) {
+            $owner = [
+                'id' => intval($placement['ownerID']),
+                'firstName' => $placement['ownerFirstName'] ?? '',
+                'lastName' => $placement['ownerLastName'] ?? ''
+            ];
+        }
+
+        return [
+            'id' => intval($placement['placementID'] ?? 0),
+            'candidate' => $candidate,
+            'jobOrder' => $jobOrder,
+            'clientCorporation' => $clientCorporation,
+            'clientContact' => $clientContact,
+            'status' => $placement['status'] ?? '',
+            'startDate' => $placement['startDate'] ?? null,
+            'endDate' => $placement['endDate'] ?? null,
+            'salary' => isset($placement['salary']) && $placement['salary'] !== null ? floatval($placement['salary']) : null,
+            'salaryType' => $placement['salaryType'] ?? 'Yearly',
+            'fee' => isset($placement['fee']) && $placement['fee'] !== null ? floatval($placement['fee']) : null,
+            'feeType' => $placement['feeType'] ?? 'Percentage',
+            'billRate' => isset($placement['billRate']) && $placement['billRate'] !== null ? floatval($placement['billRate']) : null,
+            'payRate' => isset($placement['payRate']) && $placement['payRate'] !== null ? floatval($placement['payRate']) : null,
+            'referralFee' => isset($placement['referralFee']) && $placement['referralFee'] !== null ? floatval($placement['referralFee']) : null,
+            'notes' => $placement['notes'] ?? '',
+            'owner' => $owner,
+            'dateAdded' => $placement['dateCreated'] ?? '',
+            'dateLastModified' => $placement['dateModified'] ?? ''
+        ];
+    }
 }
