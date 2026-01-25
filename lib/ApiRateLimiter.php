@@ -50,14 +50,23 @@ class ApiRateLimiter
     /**
      * Constructor
      *
-     * @param int $apiKeyID           API Key ID to track
-     * @param int $requestsPerMinute  Requests allowed per minute
-     * @param int $requestsPerHour    Requests allowed per hour
+     * @param int|string $identifier      API Key ID (int) or OAuth identifier (string) to track
+     * @param int $requestsPerMinute      Requests allowed per minute
+     * @param int $requestsPerHour        Requests allowed per hour
      */
-    public function __construct($apiKeyID, $requestsPerMinute = null, $requestsPerHour = null)
+    public function __construct($identifier, $requestsPerMinute = null, $requestsPerHour = null)
     {
         $this->_db = DatabaseConnection::getInstance();
-        $this->_apiKeyID = intval($apiKeyID);
+
+        // Support both integer API key IDs and string OAuth identifiers
+        if (is_numeric($identifier)) {
+            $this->_apiKeyID = intval($identifier);
+        } else {
+            // For string identifiers (OAuth), generate a negative hash to avoid collision with API keys
+            // crc32 returns unsigned int, we negate it to keep it separate from positive API key IDs
+            $this->_apiKeyID = -abs(crc32($identifier));
+        }
+
         $this->_requestsPerMinute = $requestsPerMinute ?: self::DEFAULT_REQUESTS_PER_MINUTE;
         $this->_requestsPerHour = $requestsPerHour ?: self::DEFAULT_REQUESTS_PER_HOUR;
     }
