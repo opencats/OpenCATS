@@ -3,9 +3,12 @@
 -- Feature: REST API + Tearsheets
 -- Version: 1.0.0
 -- Date: 2026-01-25
--- 
+--
 -- Run this migration with:
 -- mysql -u opencats -p opencats < 001_add_api_and_tearsheets.sql
+--
+-- NOTE: Uses MyISAM engine to match existing OpenCATS tables.
+-- Foreign keys are enforced at application level.
 -- ============================================================
 
 -- ============================================================
@@ -23,16 +26,12 @@ CREATE TABLE IF NOT EXISTS api_keys (
     is_active TINYINT(1) NOT NULL DEFAULT 1,
     created_date DATETIME NOT NULL,
     last_used DATETIME DEFAULT NULL,
-    
+
     PRIMARY KEY (api_key_id),
     UNIQUE KEY idx_api_key (api_key),
     KEY idx_user_id (user_id),
-    KEY idx_site_id (site_id),
-    
-    CONSTRAINT fk_api_keys_user 
-        FOREIGN KEY (user_id) REFERENCES user(user_id) 
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 
+    KEY idx_site_id (site_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
   COMMENT='API authentication keys for REST API access';
 
 -- ============================================================
@@ -48,16 +47,12 @@ CREATE TABLE IF NOT EXISTS api_sessions (
     expires_date DATETIME NOT NULL,
     ip_address VARCHAR(45) DEFAULT NULL,
     user_agent VARCHAR(255) DEFAULT NULL,
-    
+
     PRIMARY KEY (session_id),
     UNIQUE KEY idx_session_token (session_token),
     KEY idx_api_key_id (api_key_id),
-    KEY idx_expires (expires_date),
-    
-    CONSTRAINT fk_api_sessions_key 
-        FOREIGN KEY (api_key_id) REFERENCES api_keys(api_key_id) 
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    KEY idx_expires (expires_date)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
   COMMENT='Temporary API session tokens';
 
 -- ============================================================
@@ -74,16 +69,12 @@ CREATE TABLE IF NOT EXISTS tearsheet (
     is_public TINYINT(1) NOT NULL DEFAULT 0 COMMENT '1=visible to all users',
     date_created DATETIME NOT NULL,
     date_modified DATETIME DEFAULT NULL,
-    
+
     PRIMARY KEY (tearsheet_id),
     KEY idx_user_id (user_id),
     KEY idx_site_id (site_id),
-    KEY idx_name (name),
-    
-    CONSTRAINT fk_tearsheet_user 
-        FOREIGN KEY (user_id) REFERENCES user(user_id) 
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    KEY idx_name (name)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
   COMMENT='Saved job order lists';
 
 -- ============================================================
@@ -98,19 +89,12 @@ CREATE TABLE IF NOT EXISTS tearsheet_joborder (
     date_added DATETIME NOT NULL,
     added_by INT(11) DEFAULT NULL COMMENT 'User who added this job',
     notes TEXT DEFAULT NULL COMMENT 'Optional notes for this job in this tearsheet',
-    
+
     PRIMARY KEY (tearsheet_joborder_id),
     UNIQUE KEY idx_tearsheet_job (tearsheet_id, joborder_id),
     KEY idx_joborder_id (joborder_id),
-    KEY idx_date_added (date_added),
-    
-    CONSTRAINT fk_tj_tearsheet 
-        FOREIGN KEY (tearsheet_id) REFERENCES tearsheet(tearsheet_id) 
-        ON DELETE CASCADE,
-    CONSTRAINT fk_tj_joborder 
-        FOREIGN KEY (joborder_id) REFERENCES joborder(joborder_id) 
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    KEY idx_date_added (date_added)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
   COMMENT='Jobs contained in tearsheets';
 
 -- ============================================================
@@ -132,12 +116,8 @@ CREATE TABLE IF NOT EXISTS api_request_log (
     PRIMARY KEY (log_id),
     KEY idx_api_key_id (api_key_id),
     KEY idx_request_time (request_time),
-    KEY idx_endpoint (endpoint),
-
-    CONSTRAINT fk_api_request_log_key
-        FOREIGN KEY (api_key_id) REFERENCES api_keys(api_key_id)
-        ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    KEY idx_endpoint (endpoint)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
   COMMENT='API request logging for debugging';
 
 -- ============================================================
@@ -148,20 +128,20 @@ CREATE TABLE IF NOT EXISTS api_request_log (
 -- WARNING: Change or remove this in production!
 INSERT INTO api_keys (site_id, user_id, api_key, api_secret, description, created_date)
 SELECT 1, user_id, 'dev-test-key-12345', 'dev-test-secret', 'Development testing key - REMOVE IN PRODUCTION', NOW()
-FROM user 
-WHERE access_level >= 500 
+FROM user
+WHERE access_level >= 500
 LIMIT 1;
 
 -- Create a sample public tearsheet
 INSERT INTO tearsheet (site_id, user_id, name, description, is_public, date_created)
 SELECT 1, user_id, 'Active Job Postings', 'Primary list of active jobs for distribution to job boards', 1, NOW()
-FROM user 
-WHERE access_level >= 400 
+FROM user
+WHERE access_level >= 400
 LIMIT 1;
 
 -- Add some jobs to the sample tearsheet (if jobs exist)
 INSERT INTO tearsheet_joborder (tearsheet_id, joborder_id, date_added)
-SELECT 
+SELECT
     (SELECT tearsheet_id FROM tearsheet WHERE name = 'Active Job Postings' LIMIT 1),
     joborder_id,
     NOW()
@@ -176,7 +156,7 @@ LIMIT 10;
 
 -- View: Tearsheets with job counts
 CREATE OR REPLACE VIEW v_tearsheets_summary AS
-SELECT 
+SELECT
     t.tearsheet_id,
     t.name,
     t.description,
@@ -194,7 +174,7 @@ GROUP BY t.tearsheet_id;
 
 -- View: API keys with usage stats
 CREATE OR REPLACE VIEW v_api_keys_summary AS
-SELECT 
+SELECT
     ak.api_key_id,
     ak.api_key,
     ak.description,

@@ -25,9 +25,8 @@ if (file_exists('./lib/ApiKeys.php')) {
 
 class ApiUI extends UserInterface
 {
-    private $_siteID;
-    private $_userID;
-    private $_accessLevel;
+    // $_siteID and $_userID are inherited from UserInterface (protected)
+    protected $_accessLevel = 0;
     private $_authenticated = false;
 
     public function __construct()
@@ -36,6 +35,17 @@ class ApiUI extends UserInterface
         $this->_moduleDirectory = 'api';
         $this->_moduleName = 'api';
         $this->_siteID = CATS_ADMIN_SITE;
+    }
+
+    /**
+     * API module handles its own authentication via API keys.
+     * This tells OpenCATS not to require session-based login.
+     *
+     * @return boolean false - API handles its own auth
+     */
+    public function requiresAuthentication()
+    {
+        return false;
     }
 
     public function handleRequest()
@@ -212,16 +222,18 @@ class ApiUI extends UserInterface
                 $this->_sendError('Job order not found', 404);
             }
         } else {
-            // GET list of job orders
-            $rs = $jobOrders->getAll(
+            // GET list of job orders - getAll() returns an array
+            $jobsData = $jobOrders->getAll(
                 JOBORDERS_STATUS_ALL,  // All job orders for authenticated user
                 -1,  // No limit
                 -1   // No offset
             );
 
             $jobs = [];
-            while ($row = $rs->getNextRow()) {
-                $jobs[] = $this->_formatJobOrder($row);
+            if (is_array($jobsData)) {
+                foreach ($jobsData as $row) {
+                    $jobs[] = $this->_formatJobOrder($row);
+                }
             }
 
             $this->_sendSuccess([
