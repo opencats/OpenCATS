@@ -661,7 +661,7 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'apiKeys':
-                if ($this->_accessLevel < ACCESS_LEVEL_SA)
+                if ($this->_realAccessLevel < ACCESS_LEVEL_SA)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
