@@ -55,6 +55,7 @@ include_once(dirname(__FILE__) . '/handlers/CandidateHandler.php');
 include_once(dirname(__FILE__) . '/handlers/CompanyHandler.php');
 include_once(dirname(__FILE__) . '/handlers/ContactHandler.php');
 include_once(dirname(__FILE__) . '/handlers/MetaHandler.php');
+include_once(dirname(__FILE__) . '/handlers/OAuthHandler.php');
 include_once(dirname(__FILE__) . '/traits/ApiHelpers.php');
 
 class ApiUI extends UserInterface
@@ -64,6 +65,7 @@ class ApiUI extends UserInterface
     protected $_accessLevel = 0;
     private $_authenticated = false;
     private $_apiKeyID = null;
+    private $_authType = null;
     private $_rateLimiter = null;
     protected $_requestLogger = null;
 
@@ -115,8 +117,8 @@ class ApiUI extends UserInterface
             );
         }
 
-        // Auth endpoint doesn't require authentication
-        if ($action !== 'auth' && $action !== 'ping') {
+        // Auth and OAuth endpoints don't require authentication
+        if ($action !== 'auth' && $action !== 'ping' && $action !== 'oauth') {
             if (!$this->_authenticate()) {
                 $this->sendError('Unauthorized. Provide valid API key.', 401);
                 return;
@@ -198,6 +200,12 @@ class ApiUI extends UserInterface
                 $handler->handle();
                 break;
 
+            case 'oauth':
+                // OAuth endpoints don't require prior auth
+                $handler = new OAuthHandler($this->_requestLogger);
+                $handler->handle();
+                break;
+
             default:
                 // Sanitize action to prevent XSS in error response
                 $safeAction = htmlspecialchars($action, ENT_QUOTES, 'UTF-8');
@@ -220,6 +228,13 @@ class ApiUI extends UserInterface
 
     /**
      * Authenticate the request
+     *
+     * Supports both API Key authentication and OAuth 2.0 Bearer tokens.
+     * Authentication methods tried in order:
+     * 1. X-Api-Key header (API Key auth)
+     * 2. Authorization: Bearer header (OAuth 2.0 or API Key)
+     * 3. api_key query parameter (API Key auth)
+     * 4. access_token query parameter (OAuth 2.0)
      */
     private function _authenticate()
     {
@@ -227,43 +242,131 @@ class ApiUI extends UserInterface
         $headers = $this->getRequestHeaders();
 
         $apiKey = null;
+        $bearerToken = null;
 
-        // Try X-Api-Key header first
+        // Try X-Api-Key header first (API Key auth)
         if (isset($headers['X-Api-Key'])) {
             $apiKey = $headers['X-Api-Key'];
         }
-        // Then try Authorization: Bearer token
-        elseif (isset($headers['Authorization'])) {
+
+        // Try Authorization: Bearer header
+        if (isset($headers['Authorization'])) {
             if (preg_match('/Bearer\s+(.+)/i', $headers['Authorization'], $matches)) {
-                $apiKey = $matches[1];
+                $bearerToken = $matches[1];
             }
         }
-        // Finally try query parameter (less secure, for testing)
-        elseif (isset($_GET['api_key'])) {
-            $apiKey = $_GET['api_key'];
+
+        // Try query parameters (less secure, for testing)
+        if (isset($_GET['api_key'])) {
+            $apiKey = $apiKey ?: $_GET['api_key'];
+        }
+        if (isset($_GET['access_token'])) {
+            $bearerToken = $bearerToken ?: $_GET['access_token'];
         }
 
-        if (!$apiKey) {
+        // First try OAuth 2.0 Bearer token validation
+        if ($bearerToken) {
+            if ($this->_authenticateOAuth($bearerToken)) {
+                return true;
+            }
+        }
+
+        // Fall back to API Key authentication
+        if ($apiKey) {
+            if ($this->_authenticateApiKey($apiKey)) {
+                return true;
+            }
+        }
+
+        // If bearer token was provided but no API key, also try bearer as API key
+        // This maintains backward compatibility where Bearer tokens were treated as API keys
+        if ($bearerToken && !$apiKey) {
+            if ($this->_authenticateApiKey($bearerToken)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Authenticate using OAuth 2.0 access token
+     *
+     * @param string $token The OAuth access token
+     * @return bool True if authentication successful
+     */
+    private function _authenticateOAuth($token)
+    {
+        // Include OAuth2Server library if not already loaded
+        if (!class_exists('OAuth2Server')) {
+            $oauthPath = './lib/OAuth2Server.php';
+            if (file_exists($oauthPath)) {
+                include_once($oauthPath);
+            } else {
+                return false;
+            }
+        }
+
+        if (!class_exists('OAuth2Server')) {
             return false;
         }
 
-        // Check database for API key
-        if (class_exists('ApiKeys')) {
-            $apiKeys = new ApiKeys($this->_siteID);
-            $result = $apiKeys->validate($apiKey);
-            if ($result) {
+        try {
+            $oauth = new OAuth2Server($this->_siteID);
+            $result = $oauth->validateAccessToken($token);
+
+            if ($result && isset($result['user_id'])) {
                 $this->_authenticated = true;
                 $this->_userID = $result['user_id'];
-                $this->_accessLevel = $result['access_level'];
-                $this->_apiKeyID = $result['api_key_id'];
+                $this->_authType = 'oauth';
 
-                // Update request logger with authenticated API key
+                // OAuth tokens may have scope-based access levels
+                // Default to full access if user_id is valid
+                $this->_accessLevel = ACCESS_LEVEL_SA;
+
+                // Update request logger
                 if ($this->_requestLogger) {
-                    $this->_requestLogger->setApiKeyID($this->_apiKeyID);
+                    $this->_requestLogger->setApiKeyID(null);
                 }
 
                 return true;
             }
+        } catch (Exception $e) {
+            // OAuth validation failed, continue to API key auth
+            error_log('OAuth authentication error: ' . $e->getMessage());
+        }
+
+        return false;
+    }
+
+    /**
+     * Authenticate using API Key
+     *
+     * @param string $apiKey The API key
+     * @return bool True if authentication successful
+     */
+    private function _authenticateApiKey($apiKey)
+    {
+        if (!class_exists('ApiKeys')) {
+            return false;
+        }
+
+        $apiKeys = new ApiKeys($this->_siteID);
+        $result = $apiKeys->validate($apiKey);
+
+        if ($result) {
+            $this->_authenticated = true;
+            $this->_userID = $result['user_id'];
+            $this->_accessLevel = $result['access_level'];
+            $this->_apiKeyID = $result['api_key_id'];
+            $this->_authType = 'apikey';
+
+            // Update request logger with authenticated API key
+            if ($this->_requestLogger) {
+                $this->_requestLogger->setApiKeyID($this->_apiKeyID);
+            }
+
+            return true;
         }
 
         return false;
