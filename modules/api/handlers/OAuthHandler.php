@@ -25,7 +25,7 @@
  */
 
 include_once(dirname(__FILE__) . '/../traits/ApiHelpers.php');
-include_once(dirname(__FILE__) . '/../lib/OAuth2Server.php');
+include_once(dirname(__FILE__) . '/../../../lib/OAuth2Server.php');
 
 class OAuthHandler
 {
@@ -45,11 +45,21 @@ class OAuthHandler
      * Constructor
      *
      * @param mixed $requestLogger Optional request logger instance
+     * @throws Exception If OAuth2Server cannot be instantiated
      */
     public function __construct($requestLogger = null)
     {
         $this->_requestLogger = $requestLogger;
-        $this->_oauth = new OAuth2Server();
+
+        if (!class_exists('OAuth2Server')) {
+            throw new Exception('OAuth2Server class not found. Check include path.');
+        }
+
+        try {
+            $this->_oauth = new OAuth2Server();
+        } catch (Exception $e) {
+            throw new Exception('Failed to initialize OAuth2Server: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -282,7 +292,7 @@ class OAuthHandler
     {
         $clientId = isset($input['client_id']) ? $input['client_id'] : '';
         $clientSecret = isset($input['client_secret']) ? $input['client_secret'] : '';
-        $scope = isset($input['scope']) ? $input['scope'] : '';
+        $scope = isset($input['scope']) ? trim($input['scope']) : '';
 
         // Check for Basic auth credentials
         $authHeader = $this->getBasicAuthCredentials();
@@ -294,6 +304,19 @@ class OAuthHandler
         if (empty($clientId) || empty($clientSecret)) {
             $this->sendOAuthError('invalid_request', 'Missing client credentials');
             return;
+        }
+
+        // Validate scopes if provided
+        if (!empty($scope)) {
+            $requestedScopes = explode(' ', $scope);
+            $availableScopes = $this->_oauth->getAvailableScopes();
+
+            foreach ($requestedScopes as $requestedScope) {
+                if (!in_array($requestedScope, $availableScopes)) {
+                    $this->sendOAuthError('invalid_scope', 'Invalid scope: ' . $requestedScope);
+                    return;
+                }
+            }
         }
 
         $result = $this->_oauth->clientCredentialsGrant(
@@ -320,7 +343,7 @@ class OAuthHandler
         $refreshToken = isset($input['refresh_token']) ? $input['refresh_token'] : '';
         $clientId = isset($input['client_id']) ? $input['client_id'] : '';
         $clientSecret = isset($input['client_secret']) ? $input['client_secret'] : '';
-        $scope = isset($input['scope']) ? $input['scope'] : '';
+        $scope = isset($input['scope']) ? trim($input['scope']) : '';
 
         // Check for Basic auth credentials
         $authHeader = $this->getBasicAuthCredentials();
@@ -337,6 +360,19 @@ class OAuthHandler
         if (empty($clientId)) {
             $this->sendOAuthError('invalid_request', 'Missing required parameter: client_id');
             return;
+        }
+
+        // Validate scopes if provided
+        if (!empty($scope)) {
+            $requestedScopes = explode(' ', $scope);
+            $availableScopes = $this->_oauth->getAvailableScopes();
+
+            foreach ($requestedScopes as $requestedScope) {
+                if (!in_array($requestedScope, $availableScopes)) {
+                    $this->sendOAuthError('invalid_scope', 'Invalid scope: ' . $requestedScope);
+                    return;
+                }
+            }
         }
 
         $result = $this->_oauth->refreshAccessToken(
@@ -426,6 +462,12 @@ class OAuthHandler
             return;
         }
 
+        // Validate user_id if provided
+        if ($userId !== null && $userId <= 0) {
+            $this->sendError('Invalid user_id: must be a positive integer', 400);
+            return;
+        }
+
         // Create new client
         $result = $this->_oauth->createClient(
             $clientName,
@@ -503,7 +545,7 @@ class OAuthHandler
         }
 
         http_response_code($statusCode);
-        header('Content-Type: application/json');
+        header('Content-Type: application/json; charset=UTF-8');
         header('Cache-Control: no-store');
         header('Pragma: no-cache');
 
@@ -527,7 +569,7 @@ class OAuthHandler
         }
 
         http_response_code(200);
-        header('Content-Type: application/json');
+        header('Content-Type: application/json; charset=UTF-8');
         header('Cache-Control: no-store');
         header('Pragma: no-cache');
 
