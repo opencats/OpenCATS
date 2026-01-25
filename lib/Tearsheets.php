@@ -245,7 +245,7 @@ class Tearsheets
                     j.city,
                     j.state,
                     j.status,
-                    j.is_public,
+                    j.public,
                     j.date_created,
                     j.date_modified,
                     j.salary,

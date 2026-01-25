@@ -214,7 +214,7 @@ class ApiUI extends UserInterface
         } else {
             // GET list of job orders
             $rs = $jobOrders->getAll(
-                JOBORDERS_STATUS_ACTIVE,  // Only active jobs
+                JOBORDERS_STATUS_ALL,  // All job orders for authenticated user
                 -1,  // No limit
                 -1   // No offset
             );

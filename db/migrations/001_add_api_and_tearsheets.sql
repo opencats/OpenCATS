@@ -128,11 +128,15 @@ CREATE TABLE IF NOT EXISTS api_request_log (
     response_time_ms INT(11) DEFAULT NULL,
     ip_address VARCHAR(45) DEFAULT NULL,
     error_message TEXT DEFAULT NULL,
-    
+
     PRIMARY KEY (log_id),
     KEY idx_api_key_id (api_key_id),
     KEY idx_request_time (request_time),
-    KEY idx_endpoint (endpoint)
+    KEY idx_endpoint (endpoint),
+
+    CONSTRAINT fk_api_request_log_key
+        FOREIGN KEY (api_key_id) REFERENCES api_keys(api_key_id)
+        ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
   COMMENT='API request logging for debugging';
 
@@ -161,9 +165,9 @@ SELECT
     (SELECT tearsheet_id FROM tearsheet WHERE name = 'Active Job Postings' LIMIT 1),
     joborder_id,
     NOW()
-FROM joborder 
-WHERE status = 'Active' 
-  AND is_public = 1
+FROM joborder
+WHERE status = 'Active'
+  AND public = 1
 LIMIT 10;
 
 -- ============================================================

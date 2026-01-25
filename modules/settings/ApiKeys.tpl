@@ -1,204 +1,219 @@
-{* OpenCATS API Keys Management Template *}
-{* File: modules/settings/ApiKeys.tpl *}
+<?php /* OpenCATS API Keys Management Template */ ?>
+<?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js')); ?>
+<?php TemplateUtility::printHeaderBlock(); ?>
+<?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
+    <div id="main">
+        <?php TemplateUtility::printQuickSearch(); ?>
 
-{include file="./modules/settings/Header.tpl" title="API Keys Management"}
+        <div id="contents">
+            <table>
+                <tr>
+                    <td width="3%">
+                        <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
+                    </td>
+                    <td><h2>Settings: API Keys Management</h2></td>
+                </tr>
+            </table>
 
-<div id="contents">
-    <table>
-        <tr>
-            <td width="3%">&nbsp;</td>
-            <td width="94%">
-            
-                <h2>API Keys Management (Sandbox Accounts)</h2>
-                <p>Create and manage API keys for REST API access. These function like "sandbox accounts" for developers.</p>
-                
-                {* Success/Error Messages *}
-                {if $message}
-                <div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 10px; margin: 10px 0; border-radius: 4px;">
-                    <strong>✓</strong> {$message|escape}
-                </div>
-                {/if}
-                
-                {if $error}
-                <div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 10px; margin: 10px 0; border-radius: 4px;">
-                    <strong>✗</strong> {$error|escape}
-                </div>
-                {/if}
-                
-                {* Display New Credentials (One Time Only!) *}
-                {if $newCredentials}
-                <div style="background: #fff3cd; border: 2px solid #ffc107; padding: 20px; margin: 20px 0; border-radius: 4px;">
-                    <h3 style="margin-top: 0; color: #856404;">⚠️ New API Key Created - SAVE THESE NOW!</h3>
-                    <p><strong>These credentials will only be shown once.</strong></p>
-                    <table style="background: #fff; padding: 10px; width: 100%;">
-                        <tr>
-                            <td style="width: 120px;"><strong>API Key:</strong></td>
-                            <td><code style="background: #f5f5f5; padding: 5px 10px; font-size: 14px;">{$newCredentials.api_key|escape}</code></td>
-                        </tr>
-                        <tr>
-                            <td><strong>API Secret:</strong></td>
-                            <td><code style="background: #f5f5f5; padding: 5px 10px; font-size: 14px;">{$newCredentials.api_secret|escape}</code></td>
-                        </tr>
-                    </table>
-                    <p style="margin-bottom: 0; margin-top: 15px;">
-                        <strong>Test your API:</strong><br>
-                        <code>curl -X POST "{$newCredentials.base_url|default:'http://your-opencats-url'}/index.php?m=api&a=auth" \<br>
-                        &nbsp;&nbsp;-H "Content-Type: application/json" \<br>
-                        &nbsp;&nbsp;-d '{literal}{"api_key": "{/literal}{$newCredentials.api_key|escape}{literal}", "api_secret": "{/literal}{$newCredentials.api_secret|escape}{literal}"}{/literal}'</code>
-                    </p>
-                </div>
-                {/if}
-                
-                {* Display Regenerated Secret *}
-                {if $regeneratedSecret}
-                <div style="background: #fff3cd; border: 2px solid #ffc107; padding: 20px; margin: 20px 0; border-radius: 4px;">
-                    <h3 style="margin-top: 0; color: #856404;">⚠️ New Secret Generated - SAVE IT NOW!</h3>
-                    <p><strong>New API Secret:</strong> 
-                        <code style="background: #f5f5f5; padding: 5px 10px; font-size: 14px;">{$regeneratedSecret|escape}</code>
-                    </p>
-                    <p style="margin-bottom: 0;">This secret will only be shown once. The old secret no longer works.</p>
-                </div>
-                {/if}
-                
-                <hr style="margin: 30px 0;">
-                
-                {* Create New API Key Form *}
-                <h3>Create New API Key</h3>
-                <form method="post" action="index.php?m=settings&a=apiKeys&action=create">
-                    <table>
-                        <tr>
-                            <td style="width: 120px;"><label for="description">Description:</label></td>
-                            <td>
-                                <input type="text" name="description" id="description" 
-                                       placeholder="e.g., JobPulse Development, Testing, Production"
-                                       style="width: 400px; padding: 8px;" required>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>
-                                <input type="submit" value="Create API Key" class="button" 
-                                       style="margin-top: 10px; padding: 10px 20px;">
-                            </td>
-                        </tr>
-                    </table>
-                </form>
-                
-                <hr style="margin: 30px 0;">
-                
-                {* List All API Keys *}
-                <h3>Existing API Keys</h3>
-                
-                {if $apiKeys|@count > 0}
-                <table class="sortable" style="width: 100%;">
-                    <thead>
-                        <tr>
-                            <th style="width: 50px;">ID</th>
-                            <th style="width: 280px;">API Key</th>
-                            <th>Description</th>
-                            <th style="width: 120px;">Owner</th>
-                            <th style="width: 100px;">Status</th>
-                            <th style="width: 140px;">Last Used</th>
-                            <th style="width: 180px;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {foreach from=$apiKeys item=key}
-                        <tr>
-                            <td>{$key.api_key_id}</td>
-                            <td><code style="font-size: 11px;">{$key.api_key|escape}</code></td>
-                            <td>{$key.description|escape|default:'(No description)'}</td>
-                            <td>{$key.first_name|escape} {$key.last_name|escape}</td>
-                            <td>
-                                {if $key.is_active}
-                                    <span style="color: green; font-weight: bold;">● Active</span>
-                                {else}
-                                    <span style="color: red;">○ Inactive</span>
-                                {/if}
-                            </td>
-                            <td>
-                                {if $key.last_used}
-                                    {$key.last_used|date_format:"%Y-%m-%d %H:%M"}
-                                {else}
-                                    <em style="color: #999;">Never</em>
-                                {/if}
-                            </td>
-                            <td>
-                                {if $key.is_active}
-                                    <a href="index.php?m=settings&a=apiKeys&action=deactivate&keyID={$key.api_key_id}"
-                                       onclick="return confirm('Deactivate this API key?');"
-                                       style="color: orange;">Deactivate</a>
-                                {else}
-                                    <a href="index.php?m=settings&a=apiKeys&action=activate&keyID={$key.api_key_id}"
-                                       style="color: green;">Activate</a>
-                                {/if}
-                                | 
-                                <a href="index.php?m=settings&a=apiKeys&action=regenerate&keyID={$key.api_key_id}"
-                                   onclick="return confirm('Regenerate secret? The old secret will stop working immediately.');"
-                                   style="color: blue;">New Secret</a>
-                                |
-                                <a href="index.php?m=settings&a=apiKeys&action=delete&keyID={$key.api_key_id}"
-                                   onclick="return confirm('DELETE this API key permanently? This cannot be undone.');"
-                                   style="color: red;">Delete</a>
-                            </td>
-                        </tr>
-                        {/foreach}
-                    </tbody>
-                </table>
-                {else}
-                <p><em>No API keys exist yet. Create one above to get started.</em></p>
-                {/if}
-                
-                <hr style="margin: 30px 0;">
-                
-                {* API Documentation Quick Reference *}
-                <h3>API Quick Reference</h3>
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tr style="background: #f5f5f5;">
-                        <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Endpoint</th>
-                        <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Method</th>
-                        <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Description</th>
+            <p class="note">Create and manage API keys for REST API access (sandbox accounts for developers)</p>
+
+            <?php if (!empty($this->message)): ?>
+            <div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 10px; margin: 10px 0; border-radius: 4px;">
+                <strong>Success:</strong> <?php $this->_($this->message); ?>
+            </div>
+            <?php endif; ?>
+
+            <?php if (!empty($this->error)): ?>
+            <div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 10px; margin: 10px 0; border-radius: 4px;">
+                <strong>Error:</strong> <?php $this->_($this->error); ?>
+            </div>
+            <?php endif; ?>
+
+            <?php if (!empty($this->newCredentials)): ?>
+            <div style="background: #fff3cd; border: 2px solid #ffc107; padding: 20px; margin: 20px 0; border-radius: 4px;">
+                <h3 style="margin-top: 0; color: #856404;">New API Key Created - SAVE THESE NOW!</h3>
+                <p><strong>These credentials will only be shown once.</strong></p>
+                <table style="background: #fff; padding: 10px; width: 100%;">
+                    <tr>
+                        <td style="width: 120px;"><strong>API Key:</strong></td>
+                        <td><code style="background: #f5f5f5; padding: 5px 10px; font-size: 14px;"><?php $this->_($this->newCredentials['api_key']); ?></code></td>
                     </tr>
                     <tr>
-                        <td style="padding: 10px; border: 1px solid #ddd;"><code>/index.php?m=api&a=auth</code></td>
-                        <td style="padding: 10px; border: 1px solid #ddd;">POST</td>
-                        <td style="padding: 10px; border: 1px solid #ddd;">Authenticate and get access token</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; border: 1px solid #ddd;"><code>/index.php?m=api&a=joborders</code></td>
-                        <td style="padding: 10px; border: 1px solid #ddd;">GET</td>
-                        <td style="padding: 10px; border: 1px solid #ddd;">List all job orders</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; border: 1px solid #ddd;"><code>/index.php?m=api&a=joborders&id=123</code></td>
-                        <td style="padding: 10px; border: 1px solid #ddd;">GET</td>
-                        <td style="padding: 10px; border: 1px solid #ddd;">Get single job order</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; border: 1px solid #ddd;"><code>/index.php?m=api&a=tearsheets</code></td>
-                        <td style="padding: 10px; border: 1px solid #ddd;">GET</td>
-                        <td style="padding: 10px; border: 1px solid #ddd;">List all tearsheets</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; border: 1px solid #ddd;"><code>/index.php?m=api&a=tearsheets&id=1&sub=joborders</code></td>
-                        <td style="padding: 10px; border: 1px solid #ddd;">GET</td>
-                        <td style="padding: 10px; border: 1px solid #ddd;">Get jobs in a tearsheet</td>
+                        <td><strong>API Secret:</strong></td>
+                        <td><code style="background: #f5f5f5; padding: 5px 10px; font-size: 14px;"><?php $this->_($this->newCredentials['api_secret']); ?></code></td>
                     </tr>
                 </table>
-                
-                <p style="margin-top: 20px;">
-                    <strong>Authentication:</strong> Include the API key in requests using one of these methods:
+                <p style="margin-bottom: 0; margin-top: 15px;">
+                    <strong>Test your API:</strong><br>
+                    <code>curl -H "X-Api-Key: <?php $this->_($this->newCredentials['api_key']); ?>" "<?php echo(CATSUtility::getAbsoluteURI()); ?>index.php?m=api&amp;a=ping"</code>
                 </p>
-                <ul>
-                    <li>Header: <code>X-Api-Key: your-api-key</code></li>
-                    <li>Header: <code>Authorization: Bearer your-api-key</code></li>
-                    <li>Query parameter: <code>?api_key=your-api-key</code> (less secure)</li>
-                </ul>
-                
-            </td>
-            <td width="3%">&nbsp;</td>
-        </tr>
-    </table>
-</div>
+            </div>
+            <?php endif; ?>
 
-{include file="./modules/settings/Footer.tpl"}
+            <?php if (!empty($this->regeneratedSecret)): ?>
+            <div style="background: #fff3cd; border: 2px solid #ffc107; padding: 20px; margin: 20px 0; border-radius: 4px;">
+                <h3 style="margin-top: 0; color: #856404;">New Secret Generated - SAVE IT NOW!</h3>
+                <p><strong>New API Secret:</strong>
+                    <code style="background: #f5f5f5; padding: 5px 10px; font-size: 14px;"><?php $this->_($this->regeneratedSecret); ?></code>
+                </p>
+                <p style="margin-bottom: 0;">This secret will only be shown once. The old secret no longer works.</p>
+            </div>
+            <?php endif; ?>
+
+            <br />
+
+            <p class="noteUnsized">Create New API Key</p>
+
+            <form name="createApiKeyForm" id="createApiKeyForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=apiKeys&amp;action=create" method="post">
+                <table class="editTable" width="700">
+                    <tr>
+                        <td class="tdVertical" style="width: 150px;">
+                            <label for="description">Description:</label>
+                        </td>
+                        <td class="tdData">
+                            <input type="text" class="inputbox" name="description" id="description"
+                                   placeholder="e.g., JobPulse Development, Testing, Production"
+                                   style="width: 400px;" required />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdVertical">&nbsp;</td>
+                        <td class="tdData">
+                            <input type="submit" class="button" value="Create API Key" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+
+            <br />
+
+            <p class="noteUnsized">Existing API Keys</p>
+
+            <?php if (!empty($this->apiKeys) && count($this->apiKeys) > 0): ?>
+            <table class="sortable" width="100%">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">ID</th>
+                        <th style="width: 280px;">API Key</th>
+                        <th>Description</th>
+                        <th style="width: 120px;">Owner</th>
+                        <th style="width: 80px;">Status</th>
+                        <th style="width: 130px;">Last Used</th>
+                        <th style="width: 180px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->apiKeys as $key): ?>
+                    <tr>
+                        <td><?php $this->_($key['api_key_id']); ?></td>
+                        <td><code style="font-size: 11px;"><?php $this->_($key['api_key']); ?></code></td>
+                        <td><?php echo(!empty($key['description']) ? htmlspecialchars($key['description']) : '<em>(No description)</em>'); ?></td>
+                        <td><?php $this->_($key['first_name']); ?> <?php $this->_($key['last_name']); ?></td>
+                        <td>
+                            <?php if ($key['is_active']): ?>
+                                <span style="color: green; font-weight: bold;">Active</span>
+                            <?php else: ?>
+                                <span style="color: red;">Inactive</span>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?php if (!empty($key['last_used'])): ?>
+                                <?php $this->_($key['last_used']); ?>
+                            <?php else: ?>
+                                <em style="color: #999;">Never</em>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?php if ($key['is_active']): ?>
+                                <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=apiKeys&amp;action=deactivate&amp;keyID=<?php $this->_($key['api_key_id']); ?>"
+                                   onclick="return confirm('Deactivate this API key?');"
+                                   style="color: orange;">Deactivate</a>
+                            <?php else: ?>
+                                <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=apiKeys&amp;action=activate&amp;keyID=<?php $this->_($key['api_key_id']); ?>"
+                                   style="color: green;">Activate</a>
+                            <?php endif; ?>
+                            |
+                            <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=apiKeys&amp;action=regenerate&amp;keyID=<?php $this->_($key['api_key_id']); ?>"
+                               onclick="return confirm('Regenerate secret? The old secret will stop working immediately.');"
+                               style="color: blue;">New Secret</a>
+                            |
+                            <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=apiKeys&amp;action=delete&amp;keyID=<?php $this->_($key['api_key_id']); ?>"
+                               onclick="return confirm('DELETE this API key permanently? This cannot be undone.');"
+                               style="color: red;">Delete</a>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            <?php else: ?>
+            <p><em>No API keys exist yet. Create one above to get started.</em></p>
+            <?php endif; ?>
+
+            <br />
+
+            <p class="noteUnsized">API Quick Reference</p>
+
+            <table class="sortable" width="100%">
+                <thead>
+                    <tr>
+                        <th>Endpoint</th>
+                        <th style="width: 80px;">Method</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>?m=api&amp;a=ping</code></td>
+                        <td>GET</td>
+                        <td>Health check (no auth required)</td>
+                    </tr>
+                    <tr>
+                        <td><code>?m=api&amp;a=auth</code></td>
+                        <td>POST</td>
+                        <td>Authenticate and get access token</td>
+                    </tr>
+                    <tr>
+                        <td><code>?m=api&amp;a=joborders</code></td>
+                        <td>GET</td>
+                        <td>List all job orders</td>
+                    </tr>
+                    <tr>
+                        <td><code>?m=api&amp;a=joborders&amp;id=123</code></td>
+                        <td>GET</td>
+                        <td>Get single job order</td>
+                    </tr>
+                    <tr>
+                        <td><code>?m=api&amp;a=tearsheets</code></td>
+                        <td>GET</td>
+                        <td>List all tearsheets</td>
+                    </tr>
+                    <tr>
+                        <td><code>?m=api&amp;a=tearsheets&amp;id=1&amp;sub=joborders</code></td>
+                        <td>GET</td>
+                        <td>Get jobs in a tearsheet</td>
+                    </tr>
+                    <tr>
+                        <td><code>?m=api&amp;a=candidates</code></td>
+                        <td>GET</td>
+                        <td>List/search candidates</td>
+                    </tr>
+                    <tr>
+                        <td><code>?m=api&amp;a=companies</code></td>
+                        <td>GET</td>
+                        <td>List/search companies</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <br />
+
+            <p class="note">Authentication Methods</p>
+            <ul>
+                <li>Header: <code>X-Api-Key: your-api-key</code> (Recommended)</li>
+                <li>Header: <code>Authorization: Bearer your-api-key</code></li>
+                <li>Query parameter: <code>?api_key=your-api-key</code> (Less secure)</li>
+            </ul>
+
+        </div>
+    </div>
+<?php TemplateUtility::printFooter(); ?>
