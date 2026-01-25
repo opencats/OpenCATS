@@ -170,6 +170,17 @@
                                     Add/Remove tags, description for tags
                                 </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    <img src="images/bullet_black.gif" alt="" />
+                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=apiKeys">
+                                        API Keys
+                                    </a>
+                                </td>
+                                <td>
+                                    Manage REST API keys for external integrations (JobPulse, etc.)
+                                </td>
+                            </tr>
                         </table>
                         <br />
 
