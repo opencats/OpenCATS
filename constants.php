@@ -65,6 +65,9 @@ define('DATA_ITEM_PIPELINE',    800);
 define('DATA_ITEM_DUPLICATE',   900);
 define('DATA_ITEM_PLACEMENT',   1000);
 define('DATA_ITEM_JOBSUBMISSION', 1100);
+define('DATA_ITEM_TASK',        1200);
+define('DATA_ITEM_APPOINTMENT', 1300);
+define('DATA_ITEM_NOTE',        1400);
 
 /* Settings types. */
 define('SETTINGS_MAILER',        1);

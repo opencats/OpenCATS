@@ -1,6 +1,10 @@
 
 function placeCkEditorIn(nodeId)
 {
+    // Suppress CKEditor license key warning (cosmetic only - editor works fine)
+    if (typeof CKEDITOR !== 'undefined') {
+        CKEDITOR.verbosity = CKEDITOR.verbosity || 0;
+    }
     CKEDITOR.replace(nodeId, { extraPlugins: 'font' } );
     CKEDITOR.on('instanceReady', function(ev)
     {

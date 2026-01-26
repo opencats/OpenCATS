@@ -57,7 +57,7 @@ var maxInitialResults = 10;
 var maxTotalResults = 50;
 
 var dataNodes;
-var selectedIndex;
+var selectedIndex = -1;
 var lastLookup;
 var dataValidInput;
 var moreResults;
@@ -212,14 +212,14 @@ function suggestListPopulate(focusID, sessionCookie, lookupText, maxResults, def
             var nameNodeValue = urlDecode(nameNode.firstChild.nodeValue);
 
             output += '<div id="suggest' + i + '" onclick="'
-                    + 'document.getElementById(textInputID).value=\''
+                    + 'document.getElementById(\'' + textInputID + '\').value=\''
                     + trim(nameNodeValue.replace(/'/g,"\\'")) + '\'; '
-                    + 'document.getElementById(resultsElementID).style.display = \'none\'; '
-                    + 'document.getElementById(IDElementID).value='
+                    + 'document.getElementById(\'' + resultsElementID + '\').style.display = \'none\'; '
+                    + 'document.getElementById(\'' + IDElementID + '\').value='
                     + IDNode.firstChild.nodeValue + ';'
                     + 'dataValidInput = true;"'
-                    + 'onmouseover="this.className += highlightClass" '
-                    + 'onmouseout="this.className = this.className.replace(highlightClass, \'\')">'
+                    + 'onmouseover="this.className += \'' + highlightClass + '\'" '
+                    + 'onmouseout="this.className = this.className.replace(\'' + highlightClass + '\', \'\')">'
                     + nameNodeValue + '</div>';
         }
 
@@ -238,8 +238,8 @@ function suggestListPopulate(focusID, sessionCookie, lookupText, maxResults, def
             output += '<div id="suggestmore" onclick="'
                     + 'suggestListPopulate(' + focusID + ', \''
                     + sessionCookie + '\', lastLookup, maxTotalResults, -1);"'
-                    + 'onmouseover="this.className += highlightClass"'
-                    + ' onmouseout="this.className = this.className.replace(highlightClass, \'\')">'
+                    + 'onmouseover="this.className += \'' + highlightClass + '\'"'
+                    + ' onmouseout="this.className = this.className.replace(\'' + highlightClass + '\', \'\')">'
                     + '(More Results)</div>';
             moreResults = true;
         }
@@ -414,36 +414,39 @@ function parseKeyUp(evt)
     if (typeof(evt.keyCode) == 'number')
     {
         /* Up arrow key or down arrow key was pressed, and selectedIndex != -1. */
-        if (evt.keyCode == 38 || evt.keyCode == 40 && selectedIndex != -1)
+        if ((evt.keyCode == 38 || evt.keyCode == 40) && selectedIndex != -1)
         {
             suggestListItemDiv = document.getElementById('suggest' + selectedIndex);
 
             /* Remove any previous highlighting. */
-            suggestListItemDiv.className = suggestListItemDiv.className.replace(
-                highlightClass, ''
-            );
+            if (suggestListItemDiv)
+            {
+                suggestListItemDiv.className = suggestListItemDiv.className.replace(
+                    highlightClass, ''
+                );
+            }
         }
 
-        /* Up arrow key was pressed. */
+        /* Down arrow key was pressed. */
         if (evt.keyCode == 40)
         {
             upDownEnterPressed = true;
 
-            if (selectedIndex == (dataNodes.length - 1) && moreResults == true)
+            if (dataNodes && selectedIndex == (dataNodes.length - 1) && moreResults == true)
             {
                 /* We have keyed down to more results; load them. */
                 suggestListPopulate(
                     focusID, sessionCookie, lastLookup, maxTotalResults, selectedIndex + 1
                 );
             }
-            else if (selectedIndex < dataNodes.length-1)
+            else if (dataNodes && selectedIndex < dataNodes.length-1)
             {
                 /* Just scrolling down... */
                 selectedIndex++;
             }
         }
 
-        /* Down arrow key was pressed. */
+        /* Up arrow key was pressed. */
         if (evt.keyCode == 38)
         {
             upDownEnterPressed = true;
@@ -456,7 +459,7 @@ function parseKeyUp(evt)
         }
 
         /* Up arrow key or down arrow key was pressed, and selectedIndex != -1. */
-        if (evt.keyCode == 38 || evt.keyCode == 40 && selectedIndex != -1)
+        if ((evt.keyCode == 38 || evt.keyCode == 40) && selectedIndex != -1 && dataNodes && dataNodes[selectedIndex])
         {
             suggestListItemDiv = document.getElementById('suggest' + selectedIndex);
 
@@ -465,7 +468,10 @@ function parseKeyUp(evt)
             ).item(0).firstChild.nodeValue;
 
             /* Apply new formatting and place select entry in the textbox. */
-            suggestListItemDiv.className += highlightClass;
+            if (suggestListItemDiv)
+            {
+                suggestListItemDiv.className += highlightClass;
+            }
             textInput.value = urlDecode(trim(selectedDataNodeNameValue));
         }
 
