@@ -80,6 +80,9 @@ class EntityFormatter
             'jobOrders' => [
                 'total' => intval($ts['job_count'] ?? 0)
             ],
+            'candidates' => [
+                'total' => intval($ts['candidate_count'] ?? 0)
+            ],
             'owner' => [
                 'id' => intval($ts['user_id'] ?? 0)
             ]
@@ -410,6 +413,53 @@ class EntityFormatter
             'dateCompleted' => $task['dateCompleted'] ?? $task['date_completed'] ?? null,
             'dateAdded' => $task['dateCreated'] ?? $task['date_created'] ?? '',
             'dateLastModified' => $task['dateModified'] ?? $task['date_modified'] ?? ''
+        ];
+    }
+
+    /**
+     * Format attachment for API response
+     * @param array $attachment Attachment data
+     * @return array Formatted attachment
+     */
+    public static function formatAttachment($attachment)
+    {
+        // Data item type mapping for human-readable names
+        $dataItemTypeNames = [
+            100 => 'Candidate',
+            200 => 'Company',
+            300 => 'Contact',
+            400 => 'JobOrder',
+            500 => 'BulkResume',
+            600 => 'User',
+            700 => 'List',
+            800 => 'Pipeline',
+            900 => 'Duplicate',
+            1000 => 'Placement',
+            1100 => 'JobSubmission',
+            1200 => 'Task',
+            1300 => 'Appointment',
+            1400 => 'Note'
+        ];
+
+        $dataItemType = intval($attachment['dataItemType'] ?? $attachment['data_item_type'] ?? 0);
+        $dataItemTypeName = isset($dataItemTypeNames[$dataItemType]) ? $dataItemTypeNames[$dataItemType] : 'Unknown';
+
+        return [
+            'id' => intval($attachment['attachmentID'] ?? $attachment['attachment_id'] ?? 0),
+            'title' => $attachment['title'] ?? '',
+            'originalFilename' => $attachment['originalFilename'] ?? $attachment['original_filename'] ?? '',
+            'storedFilename' => $attachment['storedFilename'] ?? $attachment['stored_filename'] ?? '',
+            'contentType' => $attachment['contentType'] ?? $attachment['content_type'] ?? 'application/octet-stream',
+            'fileSize' => intval($attachment['fileSizeKB'] ?? $attachment['file_size_kb'] ?? 0) * 1024,
+            'fileSizeKB' => intval($attachment['fileSizeKB'] ?? $attachment['file_size_kb'] ?? 0),
+            'dataItemType' => $dataItemType,
+            'dataItemTypeName' => $dataItemTypeName,
+            'dataItemId' => intval($attachment['dataItemID'] ?? $attachment['data_item_id'] ?? 0),
+            'isResume' => isset($attachment['hasText']) ? (bool)$attachment['hasText'] : false,
+            'isProfileImage' => (bool)($attachment['isProfileImage'] ?? $attachment['profile_image'] ?? 0),
+            'md5sum' => $attachment['md5sum'] ?? $attachment['md5_sum'] ?? '',
+            'dateCreated' => $attachment['dateCreated'] ?? $attachment['date_created'] ?? '',
+            'downloadUrl' => sprintf('/api/v1/attachments?id=%d&download=1', intval($attachment['attachmentID'] ?? $attachment['attachment_id'] ?? 0))
         ];
     }
 }

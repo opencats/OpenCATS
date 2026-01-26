@@ -87,12 +87,15 @@ class Tearsheets
     public function get($tearsheetID)
     {
         $sql = sprintf(
-            "SELECT t.*, 
+            "SELECT t.*,
                     u.first_name as owner_first_name,
                     u.last_name as owner_last_name,
-                    (SELECT COUNT(*) 
-                     FROM tearsheet_joborder tj 
-                     WHERE tj.tearsheet_id = t.tearsheet_id) as job_count
+                    (SELECT COUNT(*)
+                     FROM tearsheet_joborder tj
+                     WHERE tj.tearsheet_id = t.tearsheet_id) as job_count,
+                    (SELECT COUNT(*)
+                     FROM tearsheet_candidate tc
+                     WHERE tc.tearsheet_id = t.tearsheet_id) as candidate_count
              FROM tearsheet t
              LEFT JOIN user u ON t.user_id = u.user_id
              WHERE t.tearsheet_id = %d
@@ -102,7 +105,7 @@ class Tearsheets
         );
 
         $result = $this->_db->getAssoc($sql);
-        
+
         if (!$result || empty($result)) {
             return null;
         }
@@ -119,12 +122,15 @@ class Tearsheets
     public function getAll($userID = null)
     {
         $sql = sprintf(
-            "SELECT t.*, 
+            "SELECT t.*,
                     u.first_name as owner_first_name,
                     u.last_name as owner_last_name,
-                    (SELECT COUNT(*) 
-                     FROM tearsheet_joborder tj 
-                     WHERE tj.tearsheet_id = t.tearsheet_id) as job_count
+                    (SELECT COUNT(*)
+                     FROM tearsheet_joborder tj
+                     WHERE tj.tearsheet_id = t.tearsheet_id) as job_count,
+                    (SELECT COUNT(*)
+                     FROM tearsheet_candidate tc
+                     WHERE tc.tearsheet_id = t.tearsheet_id) as candidate_count
              FROM tearsheet t
              LEFT JOIN user u ON t.user_id = u.user_id
              WHERE t.site_id = %d",
@@ -380,7 +386,7 @@ class Tearsheets
     }
 
     /**
-     * Clone a tearsheet with all its job orders
+     * Clone a tearsheet with all its job orders and candidates
      *
      * @param int    $tearsheetID Source tearsheet ID
      * @param int    $userID      New owner user ID
@@ -395,7 +401,7 @@ class Tearsheets
         }
 
         $name = $newName ?: $original['name'] . ' (Copy)';
-        
+
         $newID = $this->create(
             $userID,
             $name,
@@ -409,6 +415,200 @@ class Tearsheets
             $this->addJobOrder($newID, $jobOrderID, $userID);
         }
 
+        // Copy all candidates
+        $candidates = $this->getCandidateIDs($tearsheetID);
+        foreach ($candidates as $candidateID) {
+            $this->addCandidate($newID, $candidateID, $userID);
+        }
+
         return $newID;
+    }
+
+    // ========================================================================
+    // CANDIDATE ASSOCIATION METHODS
+    // ========================================================================
+
+    /**
+     * Add a candidate to a tearsheet
+     *
+     * @param int $tearsheetID Tearsheet ID
+     * @param int $candidateID Candidate ID
+     * @param int $addedBy     User ID who added it
+     * @return bool            Success
+     */
+    public function addCandidate($tearsheetID, $candidateID, $addedBy = null)
+    {
+        $sql = sprintf(
+            "INSERT IGNORE INTO tearsheet_candidate
+             (tearsheet_id, candidate_id, date_added, added_by)
+             VALUES (%d, %d, NOW(), %s)",
+            intval($tearsheetID),
+            intval($candidateID),
+            $addedBy ? intval($addedBy) : 'NULL'
+        );
+
+        return $this->_db->query($sql);
+    }
+
+    /**
+     * Add multiple candidates to a tearsheet
+     *
+     * @param int   $tearsheetID  Tearsheet ID
+     * @param array $candidateIDs Array of Candidate IDs
+     * @param int   $addedBy      User ID who added them
+     * @return int                Number of candidates added
+     */
+    public function addCandidates($tearsheetID, array $candidateIDs, $addedBy = null)
+    {
+        $added = 0;
+        foreach ($candidateIDs as $candidateID) {
+            if ($this->addCandidate($tearsheetID, $candidateID, $addedBy)) {
+                $added++;
+            }
+        }
+        return $added;
+    }
+
+    /**
+     * Remove a candidate from a tearsheet
+     *
+     * @param int $tearsheetID Tearsheet ID
+     * @param int $candidateID Candidate ID
+     * @return bool            Success
+     */
+    public function removeCandidate($tearsheetID, $candidateID)
+    {
+        $sql = sprintf(
+            "DELETE FROM tearsheet_candidate
+             WHERE tearsheet_id = %d
+               AND candidate_id = %d",
+            intval($tearsheetID),
+            intval($candidateID)
+        );
+
+        return $this->_db->query($sql);
+    }
+
+    /**
+     * Get all candidates in a tearsheet
+     *
+     * @param int $tearsheetID Tearsheet ID
+     * @return array           Array of candidate records
+     */
+    public function getCandidates($tearsheetID)
+    {
+        $sql = sprintf(
+            "SELECT c.candidate_id,
+                    c.first_name,
+                    c.last_name,
+                    c.email1,
+                    c.phone_home,
+                    c.phone_cell,
+                    c.city,
+                    c.state,
+                    c.current_employer,
+                    c.current_pay,
+                    c.desired_pay,
+                    c.can_relocate,
+                    c.is_hot,
+                    c.date_created,
+                    c.date_modified,
+                    tc.date_added as added_to_tearsheet,
+                    tc.added_by
+             FROM tearsheet_candidate tc
+             INNER JOIN candidate c ON tc.candidate_id = c.candidate_id
+             WHERE tc.tearsheet_id = %d
+             ORDER BY tc.date_added DESC",
+            intval($tearsheetID)
+        );
+
+        return $this->_db->getAllAssoc($sql);
+    }
+
+    /**
+     * Get candidate IDs in a tearsheet
+     *
+     * @param int $tearsheetID Tearsheet ID
+     * @return array           Array of candidate IDs
+     */
+    public function getCandidateIDs($tearsheetID)
+    {
+        $sql = sprintf(
+            "SELECT candidate_id
+             FROM tearsheet_candidate
+             WHERE tearsheet_id = %d",
+            intval($tearsheetID)
+        );
+
+        $results = $this->_db->getAllAssoc($sql);
+        return array_column($results, 'candidate_id');
+    }
+
+    /**
+     * Check if a candidate is in a tearsheet
+     *
+     * @param int $tearsheetID Tearsheet ID
+     * @param int $candidateID Candidate ID
+     * @return bool            True if candidate is in tearsheet
+     */
+    public function hasCandidate($tearsheetID, $candidateID)
+    {
+        $sql = sprintf(
+            "SELECT COUNT(*) as count
+             FROM tearsheet_candidate
+             WHERE tearsheet_id = %d
+               AND candidate_id = %d",
+            intval($tearsheetID),
+            intval($candidateID)
+        );
+
+        $result = $this->_db->getAssoc($sql);
+        return intval($result['count']) > 0;
+    }
+
+    /**
+     * Get count of candidates in a tearsheet
+     *
+     * @param int $tearsheetID Tearsheet ID
+     * @return int             Candidate count
+     */
+    public function getCandidateCount($tearsheetID)
+    {
+        $sql = sprintf(
+            "SELECT COUNT(*) as count
+             FROM tearsheet_candidate
+             WHERE tearsheet_id = %d",
+            intval($tearsheetID)
+        );
+
+        $result = $this->_db->getAssoc($sql);
+        return intval($result['count']);
+    }
+
+    /**
+     * Find tearsheets containing a specific candidate
+     *
+     * @param int $candidateID Candidate ID
+     * @return array           Array of tearsheet records
+     */
+    public function findByCandidate($candidateID)
+    {
+        $sql = sprintf(
+            "SELECT t.*,
+                    (SELECT COUNT(*)
+                     FROM tearsheet_joborder tj2
+                     WHERE tj2.tearsheet_id = t.tearsheet_id) as job_count,
+                    (SELECT COUNT(*)
+                     FROM tearsheet_candidate tc2
+                     WHERE tc2.tearsheet_id = t.tearsheet_id) as candidate_count
+             FROM tearsheet t
+             INNER JOIN tearsheet_candidate tc ON t.tearsheet_id = tc.tearsheet_id
+             WHERE tc.candidate_id = %d
+               AND t.site_id = %d",
+            intval($candidateID),
+            $this->_siteID
+        );
+
+        return $this->_db->getAllAssoc($sql);
     }
 }

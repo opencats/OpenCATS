@@ -47,6 +47,7 @@ class TearsheetHandler
     /**
      * Handle tearsheets endpoint
      * Supports: GET (list/single), POST (create), PUT (update), DELETE
+     * Sub-actions: addjobs, removejobs, addcandidates, removecandidates, joborders, candidates
      */
     public function handle()
     {
@@ -69,6 +70,17 @@ class TearsheetHandler
 
         if ($id && $subAction === 'removejobs' && $method === 'DELETE') {
             $this->handleRemoveJobs($tearsheets, $id);
+            return;
+        }
+
+        // Handle candidate association sub-actions
+        if ($id && $subAction === 'addcandidates' && $method === 'PUT') {
+            $this->handleAddCandidates($tearsheets, $id);
+            return;
+        }
+
+        if ($id && $subAction === 'removecandidates' && $method === 'DELETE') {
+            $this->handleRemoveCandidates($tearsheets, $id);
             return;
         }
 
@@ -104,10 +116,49 @@ class TearsheetHandler
                     'total' => count($formatted),
                     'data' => $formatted
                 ]);
+            } elseif ($subAction === 'candidates') {
+                $candidates = $tearsheets->getCandidates($id);
+                $formatted = [];
+                foreach ($candidates as $candidate) {
+                    $formatted[] = EntityFormatter::formatCandidate($candidate);
+                }
+                $this->sendSuccess([
+                    'total' => count($formatted),
+                    'data' => $formatted
+                ]);
             } else {
                 $tearsheet = $tearsheets->get($id);
                 if ($tearsheet) {
-                    $this->sendSuccess(EntityFormatter::formatTearsheet($tearsheet));
+                    $response = EntityFormatter::formatTearsheet($tearsheet);
+
+                    // Include candidates if requested
+                    $include = isset($_GET['include']) ? strtolower($_GET['include']) : '';
+                    if (strpos($include, 'candidates') !== false) {
+                        $candidates = $tearsheets->getCandidates($id);
+                        $formattedCandidates = [];
+                        foreach ($candidates as $candidate) {
+                            $formattedCandidates[] = EntityFormatter::formatCandidate($candidate);
+                        }
+                        $response['candidates'] = [
+                            'total' => count($formattedCandidates),
+                            'data' => $formattedCandidates
+                        ];
+                    }
+
+                    // Include job orders if requested
+                    if (strpos($include, 'joborders') !== false) {
+                        $jobs = $tearsheets->getJobOrders($id);
+                        $formattedJobs = [];
+                        foreach ($jobs as $job) {
+                            $formattedJobs[] = EntityFormatter::formatJobOrder($job);
+                        }
+                        $response['jobOrders'] = [
+                            'total' => count($formattedJobs),
+                            'data' => $formattedJobs
+                        ];
+                    }
+
+                    $this->sendSuccess($response);
                 } else {
                     $this->sendError('Tearsheet not found', 404);
                 }
@@ -283,6 +334,106 @@ class TearsheetHandler
             'removed' => $removed,
             'failed' => $failed,
             'message' => $removed . ' job order(s) removed from tearsheet'
+        ]);
+    }
+
+    /**
+     * Handle adding candidates to a tearsheet
+     * PUT /tearsheets?id={id}&sub=addcandidates
+     * Body: {"candidateIds": [1, 2, 3]} or {"ids": [1, 2, 3]}
+     */
+    private function handleAddCandidates($tearsheets, $tearsheetID)
+    {
+        $existing = $tearsheets->get($tearsheetID);
+        if (!$existing) {
+            $this->sendError('Tearsheet not found', 404);
+            return;
+        }
+
+        $input = $this->getRequestBody();
+
+        // Support both "candidateIds" and "ids" field names
+        $candidateIds = [];
+        if (!empty($input['candidateIds']) && is_array($input['candidateIds'])) {
+            $candidateIds = $input['candidateIds'];
+        } elseif (!empty($input['ids']) && is_array($input['ids'])) {
+            $candidateIds = $input['ids'];
+        }
+
+        if (empty($candidateIds)) {
+            $this->sendError('Missing required field: candidateIds or ids (array)', 400);
+            return;
+        }
+
+        $added = 0;
+        $failed = [];
+
+        foreach ($candidateIds as $candidateId) {
+            $candidateId = intval($candidateId);
+            if ($tearsheets->addCandidate($tearsheetID, $candidateId, $this->_userID)) {
+                $added++;
+            } else {
+                $failed[] = $candidateId;
+            }
+        }
+
+        $this->sendSuccess([
+            'tearsheetId' => $tearsheetID,
+            'added' => $added,
+            'failed' => $failed,
+            'message' => $added . ' candidate(s) added to tearsheet'
+        ]);
+    }
+
+    /**
+     * Handle removing candidates from a tearsheet
+     * DELETE /tearsheets?id={id}&sub=removecandidates
+     * Body: {"candidateIds": [1, 2, 3]} or {"ids": [1, 2, 3]}
+     */
+    private function handleRemoveCandidates($tearsheets, $tearsheetID)
+    {
+        $existing = $tearsheets->get($tearsheetID);
+        if (!$existing) {
+            $this->sendError('Tearsheet not found', 404);
+            return;
+        }
+
+        $input = $this->getRequestBody();
+        $candidateIds = [];
+
+        // Support both "candidateIds" and "ids" field names
+        if (!empty($input['candidateIds'])) {
+            $candidateIds = $input['candidateIds'];
+        } elseif (!empty($input['ids'])) {
+            $candidateIds = $input['ids'];
+        } elseif (!empty($_GET['candidateIds'])) {
+            $candidateIds = explode(',', $_GET['candidateIds']);
+        } elseif (!empty($_GET['ids'])) {
+            $candidateIds = explode(',', $_GET['ids']);
+        }
+
+        if (empty($candidateIds)) {
+            $this->sendError('Missing required: candidateIds or ids', 400);
+            return;
+        }
+
+        $removed = 0;
+        $failed = [];
+
+        foreach ($candidateIds as $candidateId) {
+            $candidateId = intval($candidateId);
+            if ($tearsheets->removeCandidate($tearsheetID, $candidateId)) {
+                $removed++;
+            } else {
+                $failed[] = $candidateId;
+            }
+        }
+
+        $this->sendSuccess([
+            'tearsheetId' => $tearsheetID,
+            'removed' => $removed,
+            'failed' => $failed,
+            'message' => $removed . ' candidate(s) removed from tearsheet'
         ]);
     }
 }
