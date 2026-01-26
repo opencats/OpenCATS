@@ -20,7 +20,7 @@ This PR adds two highly-requested features to OpenCATS:
 - `lib/ApiKeys.php` - API key management (569 lines)
 - `lib/Tearsheets.php` - Tearsheet business logic (391 lines)
 - `lib/ApiResponse.php` - JSON response helper (69 lines)
-- `db/migrations/001_add_api_and_tearsheets.sql` - Database schema (214 lines)
+- `modules/install/Schema.php 001_add_api_and_tearsheets.sql` - Database schema (214 lines)
 - `modules/settings/ApiKeys.tpl` - API Keys admin template (204 lines)
 - `setup-dev.sh` - Development environment setup script
 
@@ -77,7 +77,7 @@ Access via: **Settings > API Keys**
 
 1. Run database migration:
    ```bash
-   mysql -u opencats -p opencats < db/migrations/001_add_api_and_tearsheets.sql
+   mysql -u opencats -p opencats < modules/install/Schema.php 001_add_api_and_tearsheets.sql
    ```
 
 2. Create first API key (CLI):

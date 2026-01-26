@@ -1329,6 +1329,230 @@ class CATSSchema
                 UPDATE user SET password = md5(password) WHERE can_change_password=1;
             ',
 
+            /* ============================================================
+             * REST API and Tearsheets Feature (365-370)
+             * Adds programmatic API access and job list management
+             * ============================================================ */
+
+            '365' => '
+                CREATE TABLE IF NOT EXISTS api_keys (
+                    api_key_id INT(11) NOT NULL AUTO_INCREMENT,
+                    site_id INT(11) NOT NULL DEFAULT 1,
+                    user_id INT(11) NOT NULL,
+                    api_key VARCHAR(64) NOT NULL,
+                    api_secret VARCHAR(64) NOT NULL,
+                    description VARCHAR(255) DEFAULT NULL,
+                    is_active TINYINT(1) NOT NULL DEFAULT 1,
+                    created_date DATETIME NOT NULL,
+                    last_used DATETIME DEFAULT NULL,
+                    PRIMARY KEY (api_key_id),
+                    UNIQUE KEY idx_api_key (api_key),
+                    KEY idx_user_id (user_id),
+                    KEY idx_site_id (site_id)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+                CREATE TABLE IF NOT EXISTS api_sessions (
+                    session_id INT(11) NOT NULL AUTO_INCREMENT,
+                    api_key_id INT(11) NOT NULL,
+                    session_token VARCHAR(128) NOT NULL,
+                    created_date DATETIME NOT NULL,
+                    expires_date DATETIME NOT NULL,
+                    ip_address VARCHAR(45) DEFAULT NULL,
+                    user_agent VARCHAR(255) DEFAULT NULL,
+                    PRIMARY KEY (session_id),
+                    UNIQUE KEY idx_session_token (session_token),
+                    KEY idx_api_key_id (api_key_id),
+                    KEY idx_expires (expires_date)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+                CREATE TABLE IF NOT EXISTS api_request_log (
+                    log_id INT(11) NOT NULL AUTO_INCREMENT,
+                    api_key_id INT(11) DEFAULT NULL,
+                    endpoint VARCHAR(100) NOT NULL,
+                    method VARCHAR(10) NOT NULL,
+                    status_code INT(3) NOT NULL,
+                    request_time DATETIME NOT NULL,
+                    response_time_ms INT(11) DEFAULT NULL,
+                    ip_address VARCHAR(45) DEFAULT NULL,
+                    error_message TEXT DEFAULT NULL,
+                    PRIMARY KEY (log_id),
+                    KEY idx_api_key_id (api_key_id),
+                    KEY idx_request_time (request_time),
+                    KEY idx_endpoint (endpoint)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+            ',
+
+            '366' => '
+                CREATE TABLE IF NOT EXISTS tearsheet (
+                    tearsheet_id INT(11) NOT NULL AUTO_INCREMENT,
+                    site_id INT(11) NOT NULL DEFAULT 1,
+                    user_id INT(11) NOT NULL,
+                    name VARCHAR(255) NOT NULL,
+                    description TEXT DEFAULT NULL,
+                    is_public TINYINT(1) NOT NULL DEFAULT 0,
+                    date_created DATETIME NOT NULL,
+                    date_modified DATETIME DEFAULT NULL,
+                    PRIMARY KEY (tearsheet_id),
+                    KEY idx_user_id (user_id),
+                    KEY idx_site_id (site_id),
+                    KEY idx_name (name)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+                CREATE TABLE IF NOT EXISTS tearsheet_joborder (
+                    tearsheet_joborder_id INT(11) NOT NULL AUTO_INCREMENT,
+                    tearsheet_id INT(11) NOT NULL,
+                    joborder_id INT(11) NOT NULL,
+                    date_added DATETIME NOT NULL,
+                    added_by INT(11) DEFAULT NULL,
+                    notes TEXT DEFAULT NULL,
+                    PRIMARY KEY (tearsheet_joborder_id),
+                    UNIQUE KEY idx_tearsheet_job (tearsheet_id, joborder_id),
+                    KEY idx_joborder_id (joborder_id),
+                    KEY idx_date_added (date_added)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+                CREATE TABLE IF NOT EXISTS tearsheet_candidate (
+                    tearsheet_candidate_id INT(11) NOT NULL AUTO_INCREMENT,
+                    tearsheet_id INT(11) NOT NULL,
+                    candidate_id INT(11) NOT NULL,
+                    date_added DATETIME NOT NULL,
+                    added_by INT(11) DEFAULT NULL,
+                    notes TEXT DEFAULT NULL,
+                    PRIMARY KEY (tearsheet_candidate_id),
+                    UNIQUE KEY idx_tearsheet_candidate (tearsheet_id, candidate_id),
+                    KEY idx_candidate_id (candidate_id),
+                    KEY idx_date_added (date_added)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+            ',
+
+            '367' => '
+                CREATE TABLE IF NOT EXISTS oauth_clients (
+                    client_id VARCHAR(80) NOT NULL,
+                    client_secret VARCHAR(80) NOT NULL,
+                    redirect_uri VARCHAR(2000) DEFAULT NULL,
+                    grant_types VARCHAR(80) DEFAULT \'authorization_code refresh_token\',
+                    scope VARCHAR(4000) DEFAULT NULL,
+                    user_id INT(11) DEFAULT NULL,
+                    client_name VARCHAR(255) NOT NULL,
+                    is_confidential TINYINT(1) DEFAULT 1,
+                    date_created DATETIME NOT NULL,
+                    PRIMARY KEY (client_id),
+                    UNIQUE KEY idx_client_secret (client_secret),
+                    KEY idx_user_id (user_id)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+                CREATE TABLE IF NOT EXISTS oauth_access_tokens (
+                    access_token VARCHAR(40) NOT NULL,
+                    client_id VARCHAR(80) NOT NULL,
+                    user_id INT(11) DEFAULT NULL,
+                    expires DATETIME NOT NULL,
+                    scope VARCHAR(4000) DEFAULT NULL,
+                    PRIMARY KEY (access_token),
+                    KEY idx_client_id (client_id),
+                    KEY idx_expires (expires)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+                CREATE TABLE IF NOT EXISTS oauth_refresh_tokens (
+                    refresh_token VARCHAR(40) NOT NULL,
+                    client_id VARCHAR(80) NOT NULL,
+                    user_id INT(11) DEFAULT NULL,
+                    expires DATETIME NOT NULL,
+                    scope VARCHAR(4000) DEFAULT NULL,
+                    PRIMARY KEY (refresh_token),
+                    KEY idx_client_id (client_id),
+                    KEY idx_expires (expires)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+                CREATE TABLE IF NOT EXISTS oauth_authorization_codes (
+                    authorization_code VARCHAR(40) NOT NULL,
+                    client_id VARCHAR(80) NOT NULL,
+                    user_id INT(11) DEFAULT NULL,
+                    redirect_uri VARCHAR(2000) DEFAULT NULL,
+                    expires DATETIME NOT NULL,
+                    scope VARCHAR(4000) DEFAULT NULL,
+                    PRIMARY KEY (authorization_code),
+                    KEY idx_client_id (client_id),
+                    KEY idx_expires (expires)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+                CREATE TABLE IF NOT EXISTS oauth_scopes (
+                    scope VARCHAR(80) NOT NULL,
+                    is_default TINYINT(1) DEFAULT 0,
+                    description VARCHAR(255) DEFAULT NULL,
+                    PRIMARY KEY (scope)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+            ',
+
+            '368' => '
+                INSERT IGNORE INTO oauth_scopes (scope, is_default, description) VALUES
+                    (\'read\', 1, \'Read access to candidates, jobs, companies, and contacts\'),
+                    (\'write\', 0, \'Create and update candidates, jobs, companies, and contacts\'),
+                    (\'admin\', 0, \'Administrative access including user management and settings\');
+            ',
+
+            '369' => '
+                CREATE TABLE IF NOT EXISTS webhook_subscriptions (
+                    subscription_id INT(11) NOT NULL AUTO_INCREMENT,
+                    site_id INT(11) NOT NULL,
+                    name VARCHAR(255) NOT NULL,
+                    entity_type VARCHAR(50) NOT NULL,
+                    event_types VARCHAR(255) NOT NULL,
+                    callback_url VARCHAR(2048) NOT NULL,
+                    secret VARCHAR(255) DEFAULT NULL,
+                    is_active TINYINT(1) NOT NULL DEFAULT 1,
+                    created_by INT(11) NOT NULL,
+                    date_created DATETIME NOT NULL,
+                    date_modified DATETIME DEFAULT NULL,
+                    PRIMARY KEY (subscription_id),
+                    KEY idx_site_entity (site_id, entity_type),
+                    KEY idx_is_active (is_active)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+                CREATE TABLE IF NOT EXISTS webhook_delivery_log (
+                    log_id INT(11) NOT NULL AUTO_INCREMENT,
+                    subscription_id INT(11) NOT NULL,
+                    event_type VARCHAR(50) NOT NULL,
+                    entity_id INT(11) NOT NULL,
+                    payload TEXT NOT NULL,
+                    response_code INT(11) DEFAULT NULL,
+                    response_body TEXT DEFAULT NULL,
+                    attempt_count INT(11) NOT NULL DEFAULT 1,
+                    status VARCHAR(20) NOT NULL DEFAULT \'pending\',
+                    date_created DATETIME NOT NULL,
+                    date_completed DATETIME DEFAULT NULL,
+                    PRIMARY KEY (log_id),
+                    KEY idx_subscription_id (subscription_id),
+                    KEY idx_status (status)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+                CREATE TABLE IF NOT EXISTS webhook_event_queue (
+                    queue_id INT(11) NOT NULL AUTO_INCREMENT,
+                    subscription_id INT(11) NOT NULL,
+                    event_type VARCHAR(50) NOT NULL,
+                    entity_type VARCHAR(50) NOT NULL,
+                    entity_id INT(11) NOT NULL,
+                    payload TEXT NOT NULL,
+                    priority INT(11) NOT NULL DEFAULT 5,
+                    scheduled_at DATETIME NOT NULL,
+                    date_created DATETIME NOT NULL,
+                    PRIMARY KEY (queue_id),
+                    KEY idx_scheduled_priority (scheduled_at, priority)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+            ',
+
+            '370' => '
+                CREATE TABLE IF NOT EXISTS api_rate_limits (
+                    rate_limit_id INT(11) NOT NULL AUTO_INCREMENT,
+                    api_key_id INT(11) NOT NULL,
+                    endpoint VARCHAR(100) DEFAULT NULL,
+                    requests_count INT(11) NOT NULL DEFAULT 0,
+                    window_start DATETIME NOT NULL,
+                    PRIMARY KEY (rate_limit_id),
+                    UNIQUE KEY idx_key_endpoint_window (api_key_id, endpoint, window_start),
+                    KEY idx_window_start (window_start)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+            ',
+
         );
     }
 }

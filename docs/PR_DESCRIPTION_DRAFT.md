@@ -104,7 +104,7 @@ lib/
 ### Database Migrations
 
 ```
-db/migrations/
+modules/install/Schema.php 
 ├── 001_add_api_and_tearsheets.sql   # Core API and tearsheets tables
 ├── 002_oauth2_tables.sql            # OAuth 2.0 tables
 ├── 003_job_submission_placement.sql # Job submission and placement tables
@@ -331,12 +331,12 @@ X-RateLimit-Reset: 1706180400
 ### 1. Run Database Migrations
 
 ```bash
-mysql -u opencats -p opencats < db/migrations/001_add_api_and_tearsheets.sql
-mysql -u opencats -p opencats < db/migrations/002_oauth2_tables.sql
-mysql -u opencats -p opencats < db/migrations/003_job_submission_placement.sql
-mysql -u opencats -p opencats < db/migrations/004_extended_entities.sql
-mysql -u opencats -p opencats < db/migrations/005_tearsheet_candidates.sql
-mysql -u opencats -p opencats < db/migrations/006_webhooks.sql
+mysql -u opencats -p opencats < modules/install/Schema.php 001_add_api_and_tearsheets.sql
+mysql -u opencats -p opencats < modules/install/Schema.php 002_oauth2_tables.sql
+mysql -u opencats -p opencats < modules/install/Schema.php 003_job_submission_placement.sql
+mysql -u opencats -p opencats < modules/install/Schema.php 004_extended_entities.sql
+mysql -u opencats -p opencats < modules/install/Schema.php 005_tearsheet_candidates.sql
+mysql -u opencats -p opencats < modules/install/Schema.php 006_webhooks.sql
 ```
 
 ### 2. Create API Key

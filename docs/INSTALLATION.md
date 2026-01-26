@@ -30,7 +30,7 @@ Navigate to your OpenCATS installation directory and run the migration:
 cd /var/www/opencats
 
 # Run the migration
-mysql -u opencats -p opencats < db/migrations/001_add_api_and_tearsheets.sql
+mysql -u opencats -p opencats < modules/install/Schema.php 001_add_api_and_tearsheets.sql
 ```
 
 This creates the following tables:
@@ -57,7 +57,7 @@ opencats/
 │   ├── SettingsUI.php             # (modified - includes apiKeys method)
 │   ├── Administration.tpl         # (modified - includes API Keys link)
 │   └── ApiKeys.tpl                # API Keys admin template
-├── db/migrations/
+├── modules/install/Schema.php 
 │   └── 001_add_api_and_tearsheets.sql
 └── docs/
     ├── API.md
@@ -131,7 +131,7 @@ curl -H "X-Api-Key: YOUR_API_KEY_HERE" \
 The migration didn't run. Execute:
 
 ```bash
-mysql -u opencats -p opencats < db/migrations/001_add_api_and_tearsheets.sql
+mysql -u opencats -p opencats < modules/install/Schema.php 001_add_api_and_tearsheets.sql
 ```
 
 ### "Class not found" Error

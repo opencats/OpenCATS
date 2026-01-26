@@ -776,12 +776,12 @@ exit($totalIssues > 0 ? 1 : 0);
 ### Task 3.1: Schema Integrity Audit
 
 **Files to Audit:**
-- `db/migrations/001_add_api_and_tearsheets.sql`
-- `db/migrations/002_oauth2_tables.sql`
-- `db/migrations/003_job_submission_placement.sql`
-- `db/migrations/004_extended_entities.sql`
-- `db/migrations/005_tearsheet_candidates.sql`
-- `db/migrations/006_webhooks.sql`
+- `modules/install/Schema.php` (revisions 365-370)
+- `modules/install/Schema.php` (revisions 365-370)
+- `modules/install/Schema.php` (revisions 365-370)
+- `modules/install/Schema.php` (revisions 365-370)
+- `modules/install/Schema.php` (revisions 365-370)
+- `modules/install/Schema.php` (revisions 365-370)
 
 **Audit Criteria:**
 1. All tables have PRIMARY KEY
@@ -800,7 +800,7 @@ Create: `test/database/schema_audit.sh`
 #!/bin/bash
 # Database Schema Audit Script
 
-MIGRATION_DIR="db/migrations"
+# Migrations are now in modules/install/Schema.php
 FINDINGS=0
 
 echo "=== DATABASE SCHEMA AUDIT ==="
@@ -874,7 +874,7 @@ Create: `test/database/migration_order_audit.php`
  * Migration Order Validation Script
  */
 
-$migrationDir = dirname(__DIR__, 2) . '/opencats/db/migrations/';
+$migrationDir = # Migrations integrated into Schema.php;
 $migrations = glob($migrationDir . '*.sql');
 sort($migrations);
 

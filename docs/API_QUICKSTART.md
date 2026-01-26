@@ -10,12 +10,12 @@ Get up and running with the OpenCATS REST API in 5 minutes.
 cd /path/to/opencats
 
 # Run all migrations in order
-mysql -u YOUR_USER -p YOUR_DATABASE < db/migrations/001_add_api_and_tearsheets.sql
-mysql -u YOUR_USER -p YOUR_DATABASE < db/migrations/002_oauth2_tables.sql
-mysql -u YOUR_USER -p YOUR_DATABASE < db/migrations/003_job_submission_placement.sql
-mysql -u YOUR_USER -p YOUR_DATABASE < db/migrations/004_extended_entities.sql
-mysql -u YOUR_USER -p YOUR_DATABASE < db/migrations/005_tearsheet_candidates.sql
-mysql -u YOUR_USER -p YOUR_DATABASE < db/migrations/006_webhooks.sql
+mysql -u YOUR_USER -p YOUR_DATABASE < modules/install/Schema.php 001_add_api_and_tearsheets.sql
+mysql -u YOUR_USER -p YOUR_DATABASE < modules/install/Schema.php 002_oauth2_tables.sql
+mysql -u YOUR_USER -p YOUR_DATABASE < modules/install/Schema.php 003_job_submission_placement.sql
+mysql -u YOUR_USER -p YOUR_DATABASE < modules/install/Schema.php 004_extended_entities.sql
+mysql -u YOUR_USER -p YOUR_DATABASE < modules/install/Schema.php 005_tearsheet_candidates.sql
+mysql -u YOUR_USER -p YOUR_DATABASE < modules/install/Schema.php 006_webhooks.sql
 ```
 
 ---

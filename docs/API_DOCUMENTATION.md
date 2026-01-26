@@ -75,12 +75,12 @@ Error responses:
 
 ```bash
 cd opencats
-mysql -u username -p database_name < db/migrations/001_add_api_and_tearsheets.sql
-mysql -u username -p database_name < db/migrations/002_oauth2_tables.sql
-mysql -u username -p database_name < db/migrations/003_job_submission_placement.sql
-mysql -u username -p database_name < db/migrations/004_extended_entities.sql
-mysql -u username -p database_name < db/migrations/005_tearsheet_candidates.sql
-mysql -u username -p database_name < db/migrations/006_webhooks.sql
+mysql -u username -p database_name < modules/install/Schema.php 001_add_api_and_tearsheets.sql
+mysql -u username -p database_name < modules/install/Schema.php 002_oauth2_tables.sql
+mysql -u username -p database_name < modules/install/Schema.php 003_job_submission_placement.sql
+mysql -u username -p database_name < modules/install/Schema.php 004_extended_entities.sql
+mysql -u username -p database_name < modules/install/Schema.php 005_tearsheet_candidates.sql
+mysql -u username -p database_name < modules/install/Schema.php 006_webhooks.sql
 ```
 
 2. **Configure API Settings** (optional - in `config.php`)
@@ -1593,12 +1593,12 @@ Most fields use identical names. Key differences:
 Run migrations in order:
 
 ```bash
-mysql -u user -p db < db/migrations/001_add_api_and_tearsheets.sql
-mysql -u user -p db < db/migrations/002_oauth2_tables.sql
-mysql -u user -p db < db/migrations/003_job_submission_placement.sql
-mysql -u user -p db < db/migrations/004_extended_entities.sql
-mysql -u user -p db < db/migrations/005_tearsheet_candidates.sql
-mysql -u user -p db < db/migrations/006_webhooks.sql
+mysql -u user -p db < modules/install/Schema.php 001_add_api_and_tearsheets.sql
+mysql -u user -p db < modules/install/Schema.php 002_oauth2_tables.sql
+mysql -u user -p db < modules/install/Schema.php 003_job_submission_placement.sql
+mysql -u user -p db < modules/install/Schema.php 004_extended_entities.sql
+mysql -u user -p db < modules/install/Schema.php 005_tearsheet_candidates.sql
+mysql -u user -p db < modules/install/Schema.php 006_webhooks.sql
 ```
 
 ### 11.3 API Key Migration
