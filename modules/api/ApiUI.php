@@ -58,6 +58,9 @@ include_once(dirname(__FILE__) . '/handlers/MetaHandler.php');
 include_once(dirname(__FILE__) . '/handlers/OAuthHandler.php');
 include_once(dirname(__FILE__) . '/handlers/JobSubmissionHandler.php');
 include_once(dirname(__FILE__) . '/handlers/PlacementHandler.php');
+include_once(dirname(__FILE__) . '/handlers/NoteHandler.php');
+include_once(dirname(__FILE__) . '/handlers/AppointmentHandler.php');
+include_once(dirname(__FILE__) . '/handlers/TaskHandler.php');
 include_once(dirname(__FILE__) . '/traits/ApiHelpers.php');
 
 class ApiUI extends UserInterface
@@ -218,6 +221,24 @@ class ApiUI extends UserInterface
             case 'placements':
             case 'placement':
                 $handler = new PlacementHandler($this->_siteID, $this->_userID, $this->_requestLogger);
+                $handler->handle();
+                break;
+
+            case 'notes':
+            case 'note':
+                $handler = new NoteHandler($this->_siteID, $this->_userID, $this->_requestLogger);
+                $handler->handle();
+                break;
+
+            case 'appointments':
+            case 'appointment':
+                $handler = new AppointmentHandler($this->_siteID, $this->_userID, $this->_requestLogger);
+                $handler->handle();
+                break;
+
+            case 'tasks':
+            case 'task':
+                $handler = new TaskHandler($this->_siteID, $this->_userID, $this->_requestLogger);
                 $handler->handle();
                 break;
 
