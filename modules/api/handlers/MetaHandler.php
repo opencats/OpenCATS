@@ -31,6 +31,11 @@ class MetaHandler
 
     protected $_requestLogger;
 
+    /**
+     * Constructor
+     *
+     * @param object|null $requestLogger Optional request logger instance
+     */
     public function __construct($requestLogger = null)
     {
         $this->_requestLogger = $requestLogger;

@@ -270,7 +270,8 @@ trait ApiHelpers
             return ['where' => '', 'params' => []];
         }
 
-        $query = $_GET['query'];
+        // Sanitize the query input - strip any potential HTML/script tags and trim
+        $query = trim(strip_tags($_GET['query']));
         $conditions = explode(',', $query);
         $whereParts = [];
         $params = [];

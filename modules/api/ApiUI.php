@@ -78,6 +78,11 @@ class ApiUI extends UserInterface
     private $_rateLimiter = null;
     protected $_requestLogger = null;
 
+    /**
+     * Constructor
+     *
+     * Initializes the API module with default settings.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -98,6 +103,14 @@ class ApiUI extends UserInterface
         return false;
     }
 
+    /**
+     * Handle incoming API request
+     *
+     * Routes requests to appropriate handlers based on action.
+     * Handles CORS, authentication, and rate limiting.
+     *
+     * @return void
+     */
     public function handleRequest()
     {
         // Set JSON headers

@@ -40,6 +40,13 @@ class PlacementHandler
     private $_userID;
     protected $_requestLogger;
 
+    /**
+     * Constructor
+     *
+     * @param int $siteID Site ID for multi-tenant isolation
+     * @param int $userID User ID making the request
+     * @param object|null $requestLogger Optional request logger instance
+     */
     public function __construct($siteID, $userID, $requestLogger = null)
     {
         $this->_siteID = $siteID;
