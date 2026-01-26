@@ -61,6 +61,10 @@ include_once(dirname(__FILE__) . '/handlers/PlacementHandler.php');
 include_once(dirname(__FILE__) . '/handlers/NoteHandler.php');
 include_once(dirname(__FILE__) . '/handlers/AppointmentHandler.php');
 include_once(dirname(__FILE__) . '/handlers/TaskHandler.php');
+include_once(dirname(__FILE__) . '/handlers/AttachmentHandler.php');
+include_once(dirname(__FILE__) . '/handlers/MassUpdateHandler.php');
+include_once(dirname(__FILE__) . '/handlers/AssociationHandler.php');
+include_once(dirname(__FILE__) . '/handlers/SubscriptionHandler.php');
 include_once(dirname(__FILE__) . '/traits/ApiHelpers.php');
 
 class ApiUI extends UserInterface
@@ -239,6 +243,36 @@ class ApiUI extends UserInterface
             case 'tasks':
             case 'task':
                 $handler = new TaskHandler($this->_siteID, $this->_userID, $this->_requestLogger);
+                $handler->handle();
+                break;
+
+            case 'attachments':
+            case 'attachment':
+                $handler = new AttachmentHandler($this->_siteID, $this->_userID, $this->_requestLogger);
+                $handler->handle();
+                break;
+
+            case 'massupdate':
+            case 'mass-update':
+            case 'bulkupdate':
+            case 'bulk-update':
+                $handler = new MassUpdateHandler($this->_siteID, $this->_userID, $this->_requestLogger);
+                $handler->handle();
+                break;
+
+            case 'associations':
+            case 'association':
+            case 'entitytomanyassociation':
+                $handler = new AssociationHandler($this->_siteID, $this->_userID, $this->_requestLogger);
+                $handler->handle();
+                break;
+
+            case 'subscriptions':
+            case 'subscription':
+            case 'webhooks':
+            case 'webhook':
+            case 'eventsubscription':
+                $handler = new SubscriptionHandler($this->_siteID, $this->_userID, $this->_requestLogger);
                 $handler->handle();
                 break;
 
