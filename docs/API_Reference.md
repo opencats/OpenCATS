@@ -2,7 +2,7 @@
 
 ## Overview
 
-The OpenCATS REST API provides programmatic access to your applicant tracking system data. It's designed to be compatible with Bullhorn API patterns for easy integration with tools like JobPulse.
+The OpenCATS REST API provides programmatic access to your applicant tracking system data. It's designed to be compatible with Bullhorn API patterns for easy integration with tools like job distribution tools.
 
 **Base URL:** `http://your-server/opencats/index.php?m=api`
 
@@ -1312,7 +1312,7 @@ OpenCATS uses the same field names and nested object structure as Bullhorn:
 
 ## Integration Examples
 
-### JobPulse Configuration
+### external applications Configuration
 
 ```env
 ATS_TYPE=opencats

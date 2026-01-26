@@ -6,7 +6,7 @@ This document analyzes the compatibility between OpenCATS REST API and the Bullh
 
 **Current Compatibility Level: ~95%**
 
-OpenCATS now provides near-complete Bullhorn API parity, enabling seamless integration with tools designed for Bullhorn, such as JobPulse, without the $12,000/year sandbox cost.
+OpenCATS now provides near-complete Bullhorn API parity, enabling seamless integration with tools designed for Bullhorn, such as job distribution tools, without the $12,000/year sandbox cost.
 
 ### Key Highlights
 
@@ -283,7 +283,7 @@ OpenCATS maintains Bullhorn-compatible response formats:
 
 OpenCATS REST API now provides **~95% compatibility** with Bullhorn REST API, enabling organizations to:
 
-1. **Integrate with Bullhorn-compatible tools** like JobPulse without modification
+1. **Integrate with Bullhorn-compatible tools** like job distribution tools without modification
 2. **Avoid the $12,000/year Bullhorn sandbox cost** while developing integrations
 3. **Use industry-standard OAuth 2.0** or simpler API key authentication
 4. **Track the full recruiting pipeline** from candidate to placement
@@ -303,7 +303,7 @@ These gaps are unlikely to impact most integrations and represent edge cases or 
 
 ### Recommendation
 
-For organizations using tools like JobPulse or building custom integrations, the OpenCATS API provides a production-ready, Bullhorn-compatible interface that covers all essential recruiting workflows at zero licensing cost.
+For organizations using tools like job distribution tools or building custom integrations, the OpenCATS API provides a production-ready, Bullhorn-compatible interface that covers all essential recruiting workflows at zero licensing cost.
 
 ---
 

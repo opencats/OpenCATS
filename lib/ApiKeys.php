@@ -583,7 +583,7 @@ if (php_sapi_name() === 'cli' && basename(__FILE__) === basename($_SERVER['PHP_S
             echo "  php lib/ApiKeys.php delete [api_key_id]             - Delete an API key\n";
             echo "\n";
             echo "Examples:\n";
-            echo "  php lib/ApiKeys.php create 1 \"JobPulse Development\"\n";
+            echo "  php lib/ApiKeys.php create 1 \"API Development\"\n";
             echo "  php lib/ApiKeys.php create 1 \"Testing Sandbox\"\n";
             echo "  php lib/ApiKeys.php list\n";
             echo "\n";

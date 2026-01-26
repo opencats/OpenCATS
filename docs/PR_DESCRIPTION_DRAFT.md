@@ -2,12 +2,12 @@
 
 ## Summary
 
-This PR introduces a comprehensive REST API module and full Tearsheets feature to OpenCATS, enabling seamless integration with external applications like JobPulse. The implementation follows Bullhorn-compatible response formats for maximum interoperability with existing ATS integrations.
+This PR introduces a comprehensive REST API module and full Tearsheets feature to OpenCATS, enabling seamless integration with external applications like job distribution tools. The implementation follows Bullhorn-compatible response formats for maximum interoperability with existing ATS integrations.
 
 ### Key Features
 
 - **Comprehensive REST API** with 16+ endpoints covering all major OpenCATS entities
-- **Bullhorn-compatible response format** for JobPulse and similar integrations
+- **Bullhorn-compatible response format** for job distribution and similar integrations
 - **Full Tearsheets feature** with CRUD operations and candidate associations
 - **Dual authentication support**: API Key and OAuth 2.0
 - **Rate limiting** to protect against API abuse
@@ -414,7 +414,7 @@ Planned for future releases:
 
 - Closes #XXX - REST API for external integrations
 - Closes #XXX - Tearsheets feature request
-- Addresses #XXX - JobPulse integration requirements
+- Addresses #XXX - external integration requirements
 
 ---
 

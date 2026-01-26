@@ -8,7 +8,7 @@ This PR adds two highly-requested features to OpenCATS:
 
 ### Why These Features?
 
-- REST API enables integration with external tools (job boards, automation, JobPulse)
+- REST API enables integration with external tools (job boards, automation, job distribution)
 - Tearsheets is a standard staffing industry feature (popularized by Bullhorn)
 - Both features maintain backward compatibility with existing installations
 - Web UI allows admins to manage API keys without CLI access
@@ -94,4 +94,4 @@ Closes #479 (Job board integrations)
 
 ---
 
-*This contribution makes OpenCATS compatible with JobPulse and similar job distribution tools!*
+*This contribution makes OpenCATS compatible with Bullhorn-compatible job distribution tools!*

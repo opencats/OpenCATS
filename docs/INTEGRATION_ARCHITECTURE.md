@@ -1,4 +1,4 @@
-# OpenCATS + JobPulse Integration Architecture
+# OpenCATS + External Integration Architecture
 
 ## How It All Connects
 
@@ -62,7 +62,7 @@
 
 ```bash
 cd /var/www/opencats
-php lib/ApiKeys.php create 1 "JobPulse Integration"
+php lib/ApiKeys.php create 1 "External Integration"
 ```
 
 **Output:**
@@ -78,10 +78,10 @@ php lib/ApiKeys.php create 1 "JobPulse Integration"
 ========================================
 ```
 
-### 2. Configure JobPulse
+### 2. Configure Your Application
 
 ```env
-# In JobPulse .env file
+# In your application .env file
 OPENCATS_URL=http://localhost/opencats
 OPENCATS_API_KEY=abc123def456...
 OPENCATS_API_SECRET=xyz789ghi012...
@@ -119,13 +119,13 @@ curl -H "X-Api-Key: abc123def456..." \
         │
         ▼
 4. Every 30 minutes:
-   ├── JobPulse calls: GET /api/tearsheets/{id}/joborders
+   ├── Application calls: GET /api/tearsheets/{id}/joborders
    │       │
    │       ▼
    ├── OpenCATS returns job data (JSON)
    │       │
    │       ▼
-   ├── JobPulse generates fresh XML
+   ├── Application generates fresh XML
    │       │
    │       ▼
    └── Upload to Job Boards via SFTP
@@ -157,7 +157,7 @@ php lib/ApiKeys.php create 1 "DEV - Local Testing"
 php lib/ApiKeys.php create 1 "STAGING - QA Environment"
 
 # Production
-php lib/ApiKeys.php create 1 "PROD - Live JobPulse"
+php lib/ApiKeys.php create 1 "PROD - Live Integration"
 
 # CI/CD
 php lib/ApiKeys.php create 1 "CI/CD - Automated Tests"

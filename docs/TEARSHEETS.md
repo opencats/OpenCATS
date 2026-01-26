@@ -42,4 +42,4 @@ tearsheet_joborder (tearsheet_id, joborder_id, date_added, added_by)
 
 ## Integration
 
-Tearsheets integrate with the REST API to provide Bullhorn-compatible job list functionality for tools like JobPulse.
+Tearsheets integrate with the REST API to provide Bullhorn-compatible job list functionality for tools like job distribution tools.

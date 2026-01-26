@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide explains how to create and manage API keys (sandbox accounts) for the OpenCATS REST API. API keys are required for any external application (like JobPulse) to access OpenCATS data programmatically.
+This guide explains how to create and manage API keys (sandbox accounts) for the OpenCATS REST API. API keys are required for any external application (like job distribution tools) to access OpenCATS data programmatically.
 
 ---
 
@@ -15,7 +15,7 @@ This guide explains how to create and manage API keys (sandbox accounts) for the
 cd /var/www/opencats
 
 # Create a new API key
-php lib/ApiKeys.php create 1 "JobPulse Development"
+php lib/ApiKeys.php create 1 "API Development"
 ```
 
 Output:
@@ -38,7 +38,7 @@ Output:
 
 1. Log in to OpenCATS as an administrator
 2. Go to **Settings** → **API Keys** 
-3. Enter a description (e.g., "JobPulse Development")
+3. Enter a description (e.g., "API Development")
 4. Click **Create API Key**
 5. **IMMEDIATELY** copy and save the displayed credentials
 
@@ -72,7 +72,7 @@ php lib/ApiKeys.php help
 
 ```bash
 # Create key for user ID 1 (usually admin)
-php lib/ApiKeys.php create 1 "JobPulse Production"
+php lib/ApiKeys.php create 1 "API Production"
 
 # Create multiple sandbox accounts
 php lib/ApiKeys.php create 1 "Development Environment"
@@ -150,11 +150,11 @@ curl "http://localhost/opencats/index.php?m=api&a=joborders" \
 
 ---
 
-## Integration with JobPulse
+## Integration with External Tools
 
 ### Configuration Example
 
-In your JobPulse `.env` or configuration:
+In your application `.env` or configuration:
 
 ```env
 # OpenCATS API Configuration
