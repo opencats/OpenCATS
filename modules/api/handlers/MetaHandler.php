@@ -74,7 +74,32 @@ class MetaHandler
                 'endpoint' => '?m=api&a=' . $key . 's'
             ];
         }
-        $this->sendSuccess(['entities' => $entities]);
+
+        $this->sendSuccess([
+            'entities' => $entities,
+            'search' => [
+                'fieldsParam' => 'fields',
+                'fieldsDescription' => 'Comma-separated list of fields to return. Supports nested fields like candidate.firstName',
+                'fieldsExample' => '?fields=id,title,status',
+                'sortParam' => 'sort',
+                'orderParam' => 'order',
+                'sortDescription' => 'Field to sort by (use entity.sortable for valid fields)',
+                'orderValues' => ['ASC', 'DESC'],
+                'sortExample' => '?sort=dateCreated&order=DESC',
+                'queryParam' => 'query',
+                'queryDescription' => 'Filter conditions in format: field=value,field>value,field:pattern',
+                'queryOperators' => [
+                    '=' => 'Equals',
+                    '!=' => 'Not equals',
+                    '>' => 'Greater than',
+                    '<' => 'Less than',
+                    '>=' => 'Greater than or equal',
+                    '<=' => 'Less than or equal',
+                    ':' => 'Contains (LIKE %value%)'
+                ],
+                'queryExample' => '?query=status=Active,city:Austin,salary>50000'
+            ]
+        ]);
     }
 
     private function getEntitySchemas()
@@ -107,7 +132,11 @@ class MetaHandler
                     ['name' => 'isHot', 'type' => 'Boolean', 'label' => 'Is Hot', 'required' => false],
                     ['name' => 'dateAdded', 'type' => 'DateTime', 'label' => 'Date Added', 'readOnly' => true],
                     ['name' => 'dateLastModified', 'type' => 'DateTime', 'label' => 'Date Modified', 'readOnly' => true]
-                ]
+                ],
+                'searchable' => ['title', 'description', 'city', 'state', 'status', 'type'],
+                'sortable' => ['title', 'dateAdded', 'dateLastModified', 'status', 'city'],
+                'defaultSort' => ['field' => 'dateAdded', 'order' => 'DESC'],
+                'queryOperators' => ['=', '!=', '>', '<', '>=', '<=', ':']
             ],
             'tearsheet' => [
                 'entity' => 'Tearsheet',
@@ -120,7 +149,11 @@ class MetaHandler
                     ['name' => 'owner', 'type' => 'Association', 'label' => 'Owner', 'associatedEntity' => 'User', 'readOnly' => true],
                     ['name' => 'dateCreated', 'type' => 'DateTime', 'label' => 'Date Created', 'readOnly' => true],
                     ['name' => 'jobOrders', 'type' => 'ToMany', 'label' => 'Job Orders', 'associatedEntity' => 'JobOrder']
-                ]
+                ],
+                'searchable' => ['name', 'description'],
+                'sortable' => ['name', 'dateCreated'],
+                'defaultSort' => ['field' => 'dateCreated', 'order' => 'DESC'],
+                'queryOperators' => ['=', ':']
             ],
             'candidate' => [
                 'entity' => 'Candidate',
@@ -147,7 +180,11 @@ class MetaHandler
                     ['name' => 'ownerID', 'type' => 'Integer', 'label' => 'Owner ID', 'associatedEntity' => 'User'],
                     ['name' => 'dateAdded', 'type' => 'DateTime', 'label' => 'Date Added', 'readOnly' => true],
                     ['name' => 'dateLastModified', 'type' => 'DateTime', 'label' => 'Date Modified', 'readOnly' => true]
-                ]
+                ],
+                'searchable' => ['firstName', 'lastName', 'email1', 'city', 'state', 'keySkills'],
+                'sortable' => ['firstName', 'lastName', 'dateAdded', 'dateLastModified'],
+                'defaultSort' => ['field' => 'dateAdded', 'order' => 'DESC'],
+                'queryOperators' => ['=', '!=', '>', '<', '>=', '<=', ':']
             ],
             'company' => [
                 'entity' => 'Company',
@@ -169,7 +206,11 @@ class MetaHandler
                     ['name' => 'ownerID', 'type' => 'Integer', 'label' => 'Owner ID', 'associatedEntity' => 'User'],
                     ['name' => 'dateAdded', 'type' => 'DateTime', 'label' => 'Date Added', 'readOnly' => true],
                     ['name' => 'dateLastModified', 'type' => 'DateTime', 'label' => 'Date Modified', 'readOnly' => true]
-                ]
+                ],
+                'searchable' => ['name', 'city', 'state', 'phone', 'url'],
+                'sortable' => ['name', 'dateAdded', 'dateLastModified', 'city'],
+                'defaultSort' => ['field' => 'name', 'order' => 'ASC'],
+                'queryOperators' => ['=', '!=', ':']
             ],
             'contact' => [
                 'entity' => 'Contact',
@@ -188,7 +229,124 @@ class MetaHandler
                     ['name' => 'notes', 'type' => 'Text', 'label' => 'Notes', 'required' => false],
                     ['name' => 'ownerID', 'type' => 'Integer', 'label' => 'Owner ID', 'associatedEntity' => 'User'],
                     ['name' => 'dateAdded', 'type' => 'DateTime', 'label' => 'Date Added', 'readOnly' => true]
-                ]
+                ],
+                'searchable' => ['firstName', 'lastName', 'email1', 'title'],
+                'sortable' => ['firstName', 'lastName', 'dateAdded'],
+                'defaultSort' => ['field' => 'lastName', 'order' => 'ASC'],
+                'queryOperators' => ['=', '!=', ':']
+            ],
+            'jobsubmission' => [
+                'entity' => 'JobSubmission',
+                'label' => 'Job Submission',
+                'fields' => [
+                    ['name' => 'id', 'type' => 'Integer', 'label' => 'ID', 'readOnly' => true],
+                    ['name' => 'candidateID', 'type' => 'Integer', 'label' => 'Candidate ID', 'associatedEntity' => 'Candidate', 'required' => true],
+                    ['name' => 'jobOrderID', 'type' => 'Integer', 'label' => 'Job Order ID', 'associatedEntity' => 'JobOrder', 'required' => true],
+                    ['name' => 'status', 'type' => 'String', 'label' => 'Status', 'required' => false],
+                    ['name' => 'source', 'type' => 'String', 'label' => 'Source', 'required' => false],
+                    ['name' => 'dateSubmitted', 'type' => 'DateTime', 'label' => 'Date Submitted', 'required' => false],
+                    ['name' => 'dateAdded', 'type' => 'DateTime', 'label' => 'Date Added', 'readOnly' => true]
+                ],
+                'searchable' => ['status', 'source'],
+                'sortable' => ['dateSubmitted', 'dateAdded', 'status'],
+                'defaultSort' => ['field' => 'dateAdded', 'order' => 'DESC'],
+                'queryOperators' => ['=', '!=']
+            ],
+            'placement' => [
+                'entity' => 'Placement',
+                'label' => 'Placement',
+                'fields' => [
+                    ['name' => 'id', 'type' => 'Integer', 'label' => 'ID', 'readOnly' => true],
+                    ['name' => 'candidateID', 'type' => 'Integer', 'label' => 'Candidate ID', 'associatedEntity' => 'Candidate', 'required' => true],
+                    ['name' => 'jobOrderID', 'type' => 'Integer', 'label' => 'Job Order ID', 'associatedEntity' => 'JobOrder', 'required' => true],
+                    ['name' => 'status', 'type' => 'String', 'label' => 'Status', 'required' => false],
+                    ['name' => 'salary', 'type' => 'Double', 'label' => 'Salary', 'required' => false],
+                    ['name' => 'startDate', 'type' => 'Date', 'label' => 'Start Date', 'required' => false],
+                    ['name' => 'endDate', 'type' => 'Date', 'label' => 'End Date', 'required' => false],
+                    ['name' => 'dateAdded', 'type' => 'DateTime', 'label' => 'Date Added', 'readOnly' => true]
+                ],
+                'searchable' => ['status'],
+                'sortable' => ['startDate', 'endDate', 'dateAdded', 'status', 'salary'],
+                'defaultSort' => ['field' => 'startDate', 'order' => 'DESC'],
+                'queryOperators' => ['=', '!=', '>', '<', '>=', '<=']
+            ],
+            'note' => [
+                'entity' => 'Note',
+                'label' => 'Note',
+                'fields' => [
+                    ['name' => 'id', 'type' => 'Integer', 'label' => 'ID', 'readOnly' => true],
+                    ['name' => 'action', 'type' => 'String', 'label' => 'Action', 'required' => false],
+                    ['name' => 'comments', 'type' => 'Text', 'label' => 'Comments', 'required' => false],
+                    ['name' => 'dataItemID', 'type' => 'Integer', 'label' => 'Data Item ID', 'required' => true],
+                    ['name' => 'dataItemType', 'type' => 'Integer', 'label' => 'Data Item Type', 'required' => true],
+                    ['name' => 'enteredByID', 'type' => 'Integer', 'label' => 'Entered By ID', 'associatedEntity' => 'User', 'readOnly' => true],
+                    ['name' => 'dateAdded', 'type' => 'DateTime', 'label' => 'Date Added', 'readOnly' => true]
+                ],
+                'searchable' => ['action', 'comments'],
+                'sortable' => ['dateAdded'],
+                'defaultSort' => ['field' => 'dateAdded', 'order' => 'DESC'],
+                'queryOperators' => ['=', ':']
+            ],
+            'appointment' => [
+                'entity' => 'Appointment',
+                'label' => 'Appointment',
+                'fields' => [
+                    ['name' => 'id', 'type' => 'Integer', 'label' => 'ID', 'readOnly' => true],
+                    ['name' => 'title', 'type' => 'String', 'label' => 'Title', 'required' => true, 'maxLength' => 255],
+                    ['name' => 'description', 'type' => 'Text', 'label' => 'Description', 'required' => false],
+                    ['name' => 'type', 'type' => 'String', 'label' => 'Type', 'required' => false],
+                    ['name' => 'location', 'type' => 'String', 'label' => 'Location', 'required' => false],
+                    ['name' => 'startDate', 'type' => 'DateTime', 'label' => 'Start Date', 'required' => true],
+                    ['name' => 'endDate', 'type' => 'DateTime', 'label' => 'End Date', 'required' => true],
+                    ['name' => 'allDay', 'type' => 'Boolean', 'label' => 'All Day', 'required' => false],
+                    ['name' => 'dataItemID', 'type' => 'Integer', 'label' => 'Data Item ID', 'required' => false],
+                    ['name' => 'dataItemType', 'type' => 'Integer', 'label' => 'Data Item Type', 'required' => false],
+                    ['name' => 'ownerID', 'type' => 'Integer', 'label' => 'Owner ID', 'associatedEntity' => 'User'],
+                    ['name' => 'dateAdded', 'type' => 'DateTime', 'label' => 'Date Added', 'readOnly' => true]
+                ],
+                'searchable' => ['title', 'description', 'type', 'location'],
+                'sortable' => ['startDate', 'endDate', 'title', 'dateAdded'],
+                'defaultSort' => ['field' => 'startDate', 'order' => 'ASC'],
+                'queryOperators' => ['=', '!=', '>', '<', '>=', '<=', ':']
+            ],
+            'task' => [
+                'entity' => 'Task',
+                'label' => 'Task',
+                'fields' => [
+                    ['name' => 'id', 'type' => 'Integer', 'label' => 'ID', 'readOnly' => true],
+                    ['name' => 'subject', 'type' => 'String', 'label' => 'Subject', 'required' => true, 'maxLength' => 255],
+                    ['name' => 'description', 'type' => 'Text', 'label' => 'Description', 'required' => false],
+                    ['name' => 'status', 'type' => 'String', 'label' => 'Status', 'required' => false],
+                    ['name' => 'priority', 'type' => 'String', 'label' => 'Priority', 'required' => false],
+                    ['name' => 'dueDate', 'type' => 'DateTime', 'label' => 'Due Date', 'required' => false],
+                    ['name' => 'dataItemID', 'type' => 'Integer', 'label' => 'Data Item ID', 'required' => false],
+                    ['name' => 'dataItemType', 'type' => 'Integer', 'label' => 'Data Item Type', 'required' => false],
+                    ['name' => 'ownerID', 'type' => 'Integer', 'label' => 'Owner ID', 'associatedEntity' => 'User'],
+                    ['name' => 'dateAdded', 'type' => 'DateTime', 'label' => 'Date Added', 'readOnly' => true]
+                ],
+                'searchable' => ['subject', 'description', 'status', 'priority'],
+                'sortable' => ['dueDate', 'priority', 'status', 'dateAdded'],
+                'defaultSort' => ['field' => 'dueDate', 'order' => 'ASC'],
+                'queryOperators' => ['=', '!=', ':']
+            ],
+            'attachment' => [
+                'entity' => 'Attachment',
+                'label' => 'Attachment',
+                'fields' => [
+                    ['name' => 'id', 'type' => 'Integer', 'label' => 'ID', 'readOnly' => true],
+                    ['name' => 'title', 'type' => 'String', 'label' => 'Title', 'required' => true, 'maxLength' => 255],
+                    ['name' => 'contentType', 'type' => 'String', 'label' => 'Content Type', 'readOnly' => true],
+                    ['name' => 'dataItemID', 'type' => 'Integer', 'label' => 'Data Item ID', 'required' => true],
+                    ['name' => 'dataItemType', 'type' => 'Integer', 'label' => 'Data Item Type', 'required' => true],
+                    ['name' => 'directory', 'type' => 'String', 'label' => 'Directory', 'readOnly' => true],
+                    ['name' => 'storedFilename', 'type' => 'String', 'label' => 'Stored Filename', 'readOnly' => true],
+                    ['name' => 'originalFilename', 'type' => 'String', 'label' => 'Original Filename', 'readOnly' => true],
+                    ['name' => 'dateAdded', 'type' => 'DateTime', 'label' => 'Date Added', 'readOnly' => true]
+                ],
+                'searchable' => ['title', 'contentType'],
+                'sortable' => ['dateAdded', 'title'],
+                'defaultSort' => ['field' => 'dateAdded', 'order' => 'DESC'],
+                'queryOperators' => ['=', ':']
             ]
         ];
     }
