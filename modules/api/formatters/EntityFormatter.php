@@ -238,4 +238,178 @@ class EntityFormatter
             'dateLastModified' => $placement['dateModified'] ?? ''
         ];
     }
+
+    /**
+     * Format note for API response (Bullhorn-compatible)
+     * @param array $note Note data
+     * @return array Formatted note
+     */
+    public static function formatNote($note)
+    {
+        // Format commentingPerson (who the note is about)
+        $commentingPerson = null;
+        if (!empty($note['personType']) && !empty($note['personID'])) {
+            $commentingPerson = [
+                'type' => $note['personType'],
+                'id' => intval($note['personID'])
+            ];
+        }
+
+        // Format personReference (who entered the note)
+        $personReference = null;
+        if (!empty($note['enteredBy'])) {
+            $personReference = [
+                'id' => intval($note['enteredBy']),
+                'firstName' => $note['enteredByFirstName'] ?? '',
+                'lastName' => $note['enteredByLastName'] ?? '',
+                'name' => $note['enteredByName'] ?? ''
+            ];
+        }
+
+        // Format job order reference (optional)
+        $jobOrder = null;
+        if (!empty($note['jobOrderID'])) {
+            $jobOrder = [
+                'id' => intval($note['jobOrderID']),
+                'title' => $note['jobOrderTitle'] ?? ''
+            ];
+        }
+
+        return [
+            'id' => intval($note['noteID'] ?? $note['note_id'] ?? 0),
+            'action' => $note['action'] ?? '',
+            'comments' => $note['comments'] ?? '',
+            'commentingPerson' => $commentingPerson,
+            'personReference' => $personReference,
+            'jobOrder' => $jobOrder,
+            'activityType' => [
+                'id' => intval($note['activityType'] ?? $note['activity_type'] ?? 400),
+                'name' => $note['activityTypeName'] ?? $note['activity_type_name'] ?? 'Other'
+            ],
+            'dateAdded' => $note['dateCreated'] ?? $note['date_created'] ?? '',
+            'dateLastModified' => $note['dateModified'] ?? $note['date_modified'] ?? ''
+        ];
+    }
+
+    /**
+     * Format appointment for API response (Bullhorn-compatible)
+     * @param array $appointment Appointment data
+     * @return array Formatted appointment
+     */
+    public static function formatAppointment($appointment)
+    {
+        // Format associated person/entity
+        $associatedPerson = null;
+        if (!empty($appointment['personType']) && !empty($appointment['personID'])) {
+            $associatedPerson = [
+                'type' => $appointment['personType'],
+                'id' => intval($appointment['personID'])
+            ];
+        }
+
+        // Format owner
+        $owner = null;
+        if (!empty($appointment['owner'])) {
+            $owner = [
+                'id' => intval($appointment['owner']),
+                'firstName' => $appointment['ownerFirstName'] ?? '',
+                'lastName' => $appointment['ownerLastName'] ?? '',
+                'name' => $appointment['ownerName'] ?? ''
+            ];
+        }
+
+        // Format job order reference (optional)
+        $jobOrder = null;
+        if (!empty($appointment['jobOrderID'])) {
+            $jobOrder = [
+                'id' => intval($appointment['jobOrderID']),
+                'title' => $appointment['jobOrderTitle'] ?? ''
+            ];
+        }
+
+        return [
+            'id' => intval($appointment['appointmentID'] ?? $appointment['appointment_id'] ?? 0),
+            'title' => $appointment['title'] ?? '',
+            'description' => $appointment['description'] ?? '',
+            'type' => $appointment['type'] ?? 'Meeting',
+            'startDate' => $appointment['startDate'] ?? $appointment['start_date'] ?? '',
+            'endDate' => $appointment['endDate'] ?? $appointment['end_date'] ?? '',
+            'allDay' => (bool)($appointment['allDay'] ?? $appointment['all_day'] ?? 0),
+            'location' => $appointment['location'] ?? '',
+            'status' => $appointment['status'] ?? 'Scheduled',
+            'reminderMinutes' => isset($appointment['reminderMinutes']) ? intval($appointment['reminderMinutes']) : null,
+            'associatedPerson' => $associatedPerson,
+            'jobOrder' => $jobOrder,
+            'owner' => $owner,
+            'dateAdded' => $appointment['dateCreated'] ?? $appointment['date_created'] ?? '',
+            'dateLastModified' => $appointment['dateModified'] ?? $appointment['date_modified'] ?? ''
+        ];
+    }
+
+    /**
+     * Format task for API response (Bullhorn-compatible)
+     * @param array $task Task data
+     * @return array Formatted task
+     */
+    public static function formatTask($task)
+    {
+        // Format associated person/entity
+        $associatedPerson = null;
+        if (!empty($task['personType']) && !empty($task['personID'])) {
+            $associatedPerson = [
+                'type' => $task['personType'],
+                'id' => intval($task['personID'])
+            ];
+        }
+
+        // Format owner
+        $owner = null;
+        if (!empty($task['owner'])) {
+            $owner = [
+                'id' => intval($task['owner']),
+                'firstName' => $task['ownerFirstName'] ?? '',
+                'lastName' => $task['ownerLastName'] ?? '',
+                'name' => $task['ownerName'] ?? ''
+            ];
+        }
+
+        // Format assigned to (may be different from owner)
+        $assignedTo = null;
+        if (!empty($task['assignedTo'])) {
+            $assignedTo = [
+                'id' => intval($task['assignedTo']),
+                'firstName' => $task['assignedToFirstName'] ?? '',
+                'lastName' => $task['assignedToLastName'] ?? '',
+                'name' => $task['assignedToName'] ?? ''
+            ];
+        }
+
+        // Format job order reference (optional)
+        $jobOrder = null;
+        if (!empty($task['jobOrderID'])) {
+            $jobOrder = [
+                'id' => intval($task['jobOrderID']),
+                'title' => $task['jobOrderTitle'] ?? ''
+            ];
+        }
+
+        return [
+            'id' => intval($task['taskID'] ?? $task['task_id'] ?? 0),
+            'subject' => $task['subject'] ?? '',
+            'description' => $task['description'] ?? '',
+            'status' => $task['status'] ?? 'Not Started',
+            'priority' => $task['priority'] ?? 'Normal',
+            'dueDate' => $task['dueDate'] ?? $task['due_date'] ?? null,
+            'startDate' => $task['startDate'] ?? $task['start_date'] ?? null,
+            'reminderDate' => $task['reminderDate'] ?? $task['reminder_date'] ?? null,
+            'associatedPerson' => $associatedPerson,
+            'jobOrder' => $jobOrder,
+            'owner' => $owner,
+            'assignedTo' => $assignedTo,
+            'isCompleted' => ($task['status'] ?? '') === 'Completed',
+            'dateCompleted' => $task['dateCompleted'] ?? $task['date_completed'] ?? null,
+            'dateAdded' => $task['dateCreated'] ?? $task['date_created'] ?? '',
+            'dateLastModified' => $task['dateModified'] ?? $task['date_modified'] ?? ''
+        ];
+    }
 }
