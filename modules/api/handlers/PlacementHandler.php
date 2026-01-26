@@ -29,10 +29,12 @@ if (file_exists('./lib/Placements.php')) {
 }
 include_once(dirname(__FILE__) . '/../formatters/EntityFormatter.php');
 include_once(dirname(__FILE__) . '/../traits/ApiHelpers.php');
+include_once(dirname(__FILE__) . '/../traits/WebhookTrigger.php');
 
 class PlacementHandler
 {
     use ApiHelpers;
+    use WebhookTrigger;
 
     private $_siteID;
     private $_userID;
@@ -238,7 +240,9 @@ class PlacementHandler
 
         // Get and return the created placement
         $newPlacement = $placements->get($placementID);
-        $this->sendSuccess($this->formatPlacement($newPlacement), 201);
+        $formattedPlacement = $this->formatPlacement($newPlacement);
+        $this->sendSuccess($formattedPlacement, 201);
+        $this->triggerWebhook('placement', 'create', $placementID, $formattedPlacement);
     }
 
     /**
@@ -336,7 +340,9 @@ class PlacementHandler
         }
 
         $updated = $placements->get($id);
-        $this->sendSuccess($this->formatPlacement($updated));
+        $formattedPlacement = $this->formatPlacement($updated);
+        $this->sendSuccess($formattedPlacement);
+        $this->triggerWebhook('placement', 'update', $id, $formattedPlacement);
     }
 
     /**
@@ -369,6 +375,7 @@ class PlacementHandler
             'message' => 'Placement deleted successfully',
             'id' => $id
         ]);
+        $this->triggerWebhook('placement', 'delete', $id, ['id' => $id]);
     }
 
     /**

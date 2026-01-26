@@ -27,10 +27,12 @@
 include_once('./lib/Notes.php');
 include_once(dirname(__FILE__) . '/../formatters/EntityFormatter.php');
 include_once(dirname(__FILE__) . '/../traits/ApiHelpers.php');
+include_once(dirname(__FILE__) . '/../traits/WebhookTrigger.php');
 
 class NoteHandler
 {
     use ApiHelpers;
+    use WebhookTrigger;
 
     private $_siteID;
     private $_userID;
@@ -197,7 +199,9 @@ class NoteHandler
 
         // Return the created note
         $newNote = $notes->get($noteID);
-        $this->sendSuccess(EntityFormatter::formatNote($newNote), 201);
+        $formattedNote = EntityFormatter::formatNote($newNote);
+        $this->sendSuccess($formattedNote, 201);
+        $this->triggerWebhook('note', 'create', $noteID, $formattedNote);
     }
 
     /**
@@ -269,7 +273,9 @@ class NoteHandler
 
         // Return updated note
         $updatedNote = $notes->get($id);
-        $this->sendSuccess(EntityFormatter::formatNote($updatedNote));
+        $formattedNote = EntityFormatter::formatNote($updatedNote);
+        $this->sendSuccess($formattedNote);
+        $this->triggerWebhook('note', 'update', $id, $formattedNote);
     }
 
     /**
@@ -304,5 +310,6 @@ class NoteHandler
             'message' => 'Note deleted successfully',
             'id' => $id
         ]);
+        $this->triggerWebhook('note', 'delete', $id, ['id' => $id]);
     }
 }

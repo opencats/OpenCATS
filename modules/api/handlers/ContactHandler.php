@@ -26,10 +26,12 @@
 include_once('./lib/Contacts.php');
 include_once(dirname(__FILE__) . '/../formatters/EntityFormatter.php');
 include_once(dirname(__FILE__) . '/../traits/ApiHelpers.php');
+include_once(dirname(__FILE__) . '/../traits/WebhookTrigger.php');
 
 class ContactHandler
 {
     use ApiHelpers;
+    use WebhookTrigger;
 
     private $_siteID;
     private $_userID;
@@ -196,9 +198,12 @@ class ContactHandler
         // Fetch and return the newly created contact
         $newContact = $contacts->get($contactID);
         if ($newContact && is_array($newContact) && count($newContact) > 0) {
-            $this->sendSuccess(EntityFormatter::formatContact($newContact), 201);
+            $formattedContact = EntityFormatter::formatContact($newContact);
+            $this->sendSuccess($formattedContact, 201);
+            $this->triggerWebhook('contact', 'create', $contactID, $formattedContact);
         } else {
             $this->sendSuccess(['id' => $contactID, 'message' => 'Contact created successfully'], 201);
+            $this->triggerWebhook('contact', 'create', $contactID, ['id' => $contactID]);
         }
     }
 
@@ -284,9 +289,12 @@ class ContactHandler
         // Fetch and return the updated contact
         $updatedContact = $contacts->get($id);
         if ($updatedContact && is_array($updatedContact) && count($updatedContact) > 0) {
-            $this->sendSuccess(EntityFormatter::formatContact($updatedContact));
+            $formattedContact = EntityFormatter::formatContact($updatedContact);
+            $this->sendSuccess($formattedContact);
+            $this->triggerWebhook('contact', 'update', $id, $formattedContact);
         } else {
             $this->sendSuccess(['id' => $id, 'message' => 'Contact updated successfully']);
+            $this->triggerWebhook('contact', 'update', $id, ['id' => $id]);
         }
     }
 
@@ -315,5 +323,6 @@ class ContactHandler
             'message' => 'Contact deleted successfully',
             'id' => $id
         ]);
+        $this->triggerWebhook('contact', 'delete', $id, ['id' => $id]);
     }
 }

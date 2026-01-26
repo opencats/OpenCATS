@@ -26,10 +26,12 @@
 include_once('./lib/Candidates.php');
 include_once(dirname(__FILE__) . '/../formatters/EntityFormatter.php');
 include_once(dirname(__FILE__) . '/../traits/ApiHelpers.php');
+include_once(dirname(__FILE__) . '/../traits/WebhookTrigger.php');
 
 class CandidateHandler
 {
     use ApiHelpers;
+    use WebhookTrigger;
 
     private $_siteID;
     private $_userID;
@@ -161,7 +163,9 @@ class CandidateHandler
         }
 
         $newCandidate = $candidates->get($candidateID);
-        $this->sendSuccess(EntityFormatter::formatCandidate($newCandidate), 201);
+        $formattedCandidate = EntityFormatter::formatCandidate($newCandidate);
+        $this->sendSuccess($formattedCandidate, 201);
+        $this->triggerWebhook('candidate', 'create', $candidateID, $formattedCandidate);
     }
 
     private function handlePut($candidates, $id)
@@ -222,7 +226,9 @@ class CandidateHandler
         }
 
         $updated = $candidates->get($id);
-        $this->sendSuccess(EntityFormatter::formatCandidate($updated));
+        $formattedCandidate = EntityFormatter::formatCandidate($updated);
+        $this->sendSuccess($formattedCandidate);
+        $this->triggerWebhook('candidate', 'update', $id, $formattedCandidate);
     }
 
     private function handleDelete($candidates, $id)
@@ -249,5 +255,6 @@ class CandidateHandler
             'message' => 'Candidate deleted successfully',
             'id' => $id
         ]);
+        $this->triggerWebhook('candidate', 'delete', $id, ['id' => $id]);
     }
 }

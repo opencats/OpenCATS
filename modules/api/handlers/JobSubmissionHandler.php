@@ -29,10 +29,12 @@ if (file_exists('./lib/JobSubmissions.php')) {
 }
 include_once(dirname(__FILE__) . '/../formatters/EntityFormatter.php');
 include_once(dirname(__FILE__) . '/../traits/ApiHelpers.php');
+include_once(dirname(__FILE__) . '/../traits/WebhookTrigger.php');
 
 class JobSubmissionHandler
 {
     use ApiHelpers;
+    use WebhookTrigger;
 
     private $_siteID;
     private $_userID;
@@ -196,7 +198,9 @@ class JobSubmissionHandler
 
         /* Return the created submission */
         $newSubmission = $jobSubmissions->get($submissionID);
-        $this->sendSuccess($this->formatSubmission($newSubmission), 201);
+        $formattedSubmission = $this->formatSubmission($newSubmission);
+        $this->sendSuccess($formattedSubmission, 201);
+        $this->triggerWebhook('jobsubmission', 'create', $submissionID, $formattedSubmission);
     }
 
     /**
@@ -268,7 +272,9 @@ class JobSubmissionHandler
 
         /* Return updated submission */
         $updated = $jobSubmissions->get($id);
-        $this->sendSuccess($this->formatSubmission($updated));
+        $formattedSubmission = $this->formatSubmission($updated);
+        $this->sendSuccess($formattedSubmission);
+        $this->triggerWebhook('jobsubmission', 'update', $id, $formattedSubmission);
     }
 
     /**
@@ -301,6 +307,7 @@ class JobSubmissionHandler
             'message' => 'Submission deleted successfully',
             'id' => $id
         ]);
+        $this->triggerWebhook('jobsubmission', 'delete', $id, ['id' => $id]);
     }
 
     /**

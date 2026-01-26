@@ -30,10 +30,12 @@ if (file_exists('./lib/Appointments.php')) {
 }
 include_once(dirname(__FILE__) . '/../formatters/EntityFormatter.php');
 include_once(dirname(__FILE__) . '/../traits/ApiHelpers.php');
+include_once(dirname(__FILE__) . '/../traits/WebhookTrigger.php');
 
 class AppointmentHandler
 {
     use ApiHelpers;
+    use WebhookTrigger;
 
     private $_siteID;
     private $_userID;
@@ -244,7 +246,9 @@ class AppointmentHandler
 
         /* Return the created appointment */
         $newAppointment = $appointments->get($appointmentID);
-        $this->sendSuccess($this->formatAppointment($newAppointment), 201);
+        $formattedAppointment = $this->formatAppointment($newAppointment);
+        $this->sendSuccess($formattedAppointment, 201);
+        $this->triggerWebhook('appointment', 'create', $appointmentID, $formattedAppointment);
     }
 
     /**
@@ -330,7 +334,9 @@ class AppointmentHandler
 
         /* Return updated appointment */
         $updated = $appointments->get($id);
-        $this->sendSuccess($this->formatAppointment($updated));
+        $formattedAppointment = $this->formatAppointment($updated);
+        $this->sendSuccess($formattedAppointment);
+        $this->triggerWebhook('appointment', 'update', $id, $formattedAppointment);
     }
 
     /**
@@ -363,6 +369,7 @@ class AppointmentHandler
             'message' => 'Appointment deleted successfully',
             'id' => $id
         ]);
+        $this->triggerWebhook('appointment', 'delete', $id, ['id' => $id]);
     }
 
     /**

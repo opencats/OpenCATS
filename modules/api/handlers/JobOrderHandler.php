@@ -26,10 +26,12 @@
 include_once('./lib/JobOrders.php');
 include_once(dirname(__FILE__) . '/../formatters/EntityFormatter.php');
 include_once(dirname(__FILE__) . '/../traits/ApiHelpers.php');
+include_once(dirname(__FILE__) . '/../traits/WebhookTrigger.php');
 
 class JobOrderHandler
 {
     use ApiHelpers;
+    use WebhookTrigger;
 
     private $_siteID;
     private $_userID;
@@ -161,7 +163,9 @@ class JobOrderHandler
         }
 
         $newJob = $jobOrders->get($jobOrderID);
-        $this->sendSuccess(EntityFormatter::formatJobOrder($newJob), 201);
+        $formattedJobOrder = EntityFormatter::formatJobOrder($newJob);
+        $this->sendSuccess($formattedJobOrder, 201);
+        $this->triggerWebhook('joborder', 'create', $jobOrderID, $formattedJobOrder);
     }
 
     private function handlePut($jobOrders, $id)
@@ -217,7 +221,9 @@ class JobOrderHandler
         }
 
         $updated = $jobOrders->get($id);
-        $this->sendSuccess(EntityFormatter::formatJobOrder($updated));
+        $formattedJobOrder = EntityFormatter::formatJobOrder($updated);
+        $this->sendSuccess($formattedJobOrder);
+        $this->triggerWebhook('joborder', 'update', $id, $formattedJobOrder);
     }
 
     private function handleDelete($jobOrders, $id)
@@ -244,5 +250,6 @@ class JobOrderHandler
             'message' => 'Job Order deleted successfully',
             'id' => $id
         ]);
+        $this->triggerWebhook('joborder', 'delete', $id, ['id' => $id]);
     }
 }

@@ -26,10 +26,12 @@
 include_once('./lib/Companies.php');
 include_once(dirname(__FILE__) . '/../formatters/EntityFormatter.php');
 include_once(dirname(__FILE__) . '/../traits/ApiHelpers.php');
+include_once(dirname(__FILE__) . '/../traits/WebhookTrigger.php');
 
 class CompanyHandler
 {
     use ApiHelpers;
+    use WebhookTrigger;
 
     private $_siteID;
     private $_userID;
@@ -149,7 +151,9 @@ class CompanyHandler
         }
 
         $newCompany = $companies->get($companyID);
-        $this->sendSuccess(EntityFormatter::formatCompany($newCompany), 201);
+        $formattedCompany = EntityFormatter::formatCompany($newCompany);
+        $this->sendSuccess($formattedCompany, 201);
+        $this->triggerWebhook('company', 'create', $companyID, $formattedCompany);
     }
 
     private function handlePut($companies, $id)
@@ -196,7 +200,9 @@ class CompanyHandler
         }
 
         $updated = $companies->get($id);
-        $this->sendSuccess(EntityFormatter::formatCompany($updated));
+        $formattedCompany = EntityFormatter::formatCompany($updated);
+        $this->sendSuccess($formattedCompany);
+        $this->triggerWebhook('company', 'update', $id, $formattedCompany);
     }
 
     private function handleDelete($companies, $id)
@@ -223,5 +229,6 @@ class CompanyHandler
             'message' => 'Company deleted successfully',
             'id' => $id
         ]);
+        $this->triggerWebhook('company', 'delete', $id, ['id' => $id]);
     }
 }
