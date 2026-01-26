@@ -1,0 +1,45 @@
+version: '3'
+services:
+    opencats:
+      container_name: opencats_web
+      image: prooph/nginx:www
+      ports:
+          - "8888:80"
+      depends_on:
+        - php
+        - opencatsdb
+      volumes:
+        - ../:/var/www/public
+
+    php:
+      container_name: opencats_php
+      image: opencats/php-base:7.2-fpm-alpine
+      volumes:
+        - ../:/var/www/public
+      depends_on:
+        - opencatsdb
+
+    opencatsdb:
+      container_name: opencats_mariadb
+      image: mariadb:10.6
+      ports:
+        - 3307:3306
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_USER=dev
+        - MYSQL_PASSWORD=dev
+        - MYSQL_DATABASE=opencats
+      volumes:
+        - ./persist/mysql:/var/lib/mysql
+
+    phpmyadmin:
+      container_name: opencats_phpmyadmin
+      image: phpmyadmin/phpmyadmin
+      ports:
+        - 8889:80
+      links:
+        - opencatsdb:db
+      environment:
+        - PMA_HOST=db
+        - PMA_USER=root
+        - PMA_PASSWORD=root

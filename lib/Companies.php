@@ -497,6 +497,47 @@ class Companies
      }
 
     /**
+     * Returns all companies with full details for API usage.
+     *
+     * @return array All companies with full data
+     */
+    public function getAll()
+    {
+        $sql = sprintf(
+            "SELECT
+                company.company_id AS companyID,
+                company.name AS name,
+                company.address AS address,
+                company.city AS city,
+                company.state AS state,
+                company.zip AS zip,
+                company.phone1 AS phone1,
+                company.phone2 AS phone2,
+                company.fax_number AS faxNumber,
+                company.url AS url,
+                company.key_technologies AS keyTechnologies,
+                company.is_hot AS isHot,
+                company.notes AS notes,
+                company.entered_by AS enteredBy,
+                company.owner AS owner,
+                company.date_created AS dateCreated,
+                company.date_modified AS dateModified,
+                CONCAT(owner_user.first_name, ' ', owner_user.last_name) AS ownerFullName
+            FROM
+                company
+            LEFT JOIN user AS owner_user
+                ON company.owner = owner_user.user_id
+            WHERE
+                company.site_id = %s
+            ORDER BY
+                company.name ASC",
+            $this->_siteID
+        );
+
+        return $this->_db->getAllAssoc($sql);
+    }
+
+    /**
      * Returns an array of location data (city, state, zip) for the specified
      * company ID.
      *
