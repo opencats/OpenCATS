@@ -1333,6 +1333,37 @@ class CATSSchema
                 ALTER IGNORE TABLE `contact` ADD COLUMN `address2` TEXT COLLATE utf8_unicode_ci AFTER `address`;
                 ALTER IGNORE TABLE `company` ADD COLUMN `address2` TEXT COLLATE utf8_unicode_ci AFTER `address`;
             ',
+            '366' => '
+                UPDATE candidate
+                SET address = REPLACE(address, \'\\r\\n\', \'\\n\')
+                WHERE address LIKE \'%\\r\\n%\';
+                UPDATE candidate
+                SET
+                    address2 = TRIM(REPLACE(SUBSTRING(address, INSTR(address, \'\\n\') + 1), \'\\n\', \', \')),
+                    address  = TRIM(SUBSTRING_INDEX(address, \'\\n\', 1))
+                WHERE address IS NOT NULL
+                  AND INSTR(address, \'\\n\') > 0;
+
+                UPDATE contact
+                SET address = REPLACE(address, \'\\r\\n\', \'\\n\')
+                WHERE address LIKE \'%\\r\\n%\';
+                UPDATE contact
+                SET
+                    address2 = TRIM(REPLACE(SUBSTRING(address, INSTR(address, \'\\n\') + 1), \'\\n\', \', \')),
+                    address  = TRIM(SUBSTRING_INDEX(address, \'\\n\', 1))
+                WHERE address IS NOT NULL
+                  AND INSTR(address, \'\\n\') > 0;
+
+                UPDATE company
+                SET address = REPLACE(address, \'\\r\\n\', \'\\n\')
+                WHERE address LIKE \'%\\r\\n%\';
+                UPDATE company
+                SET
+                    address2 = TRIM(REPLACE(SUBSTRING(address, INSTR(address, \'\\n\') + 1), \'\\n\', \', \')),
+                    address  = TRIM(SUBSTRING_INDEX(address, \'\\n\', 1))
+                WHERE address IS NOT NULL
+                  AND INSTR(address, \'\\n\') > 0;
+            ',
 
         );
     }
