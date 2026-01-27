@@ -1,0 +1,19 @@
+# By default, block crawling of the main application backend and only expose the public careers portal.
+
+User-agent: *
+Disallow: /
+
+# Public careers portal (job listings, job details, applications)
+
+# Canonical public entry point for job listings and job details
+Allow: /careers/
+
+# Static assets required by the public careers portal
+
+# Common static asset directories (adjust to match your installation if needed)
+Allow: /js/
+Allow: /images/
+Allow: /main.css
+Allow: /careersPage.css
+Allow: /ie.css
+Allow: /not-ie.css
