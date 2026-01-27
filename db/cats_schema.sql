@@ -167,6 +167,7 @@ CREATE TABLE `candidate` (
   `phone_cell` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
   `phone_work` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
   `address` text COLLATE utf8_unicode_ci,
+  `address2` text COLLATE utf8_unicode_ci,
   `city` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   `state` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   `zip` varchar(16) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -461,6 +462,7 @@ CREATE TABLE `company` (
   `billing_contact` int(11) DEFAULT NULL,
   `name` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `address` text COLLATE utf8_unicode_ci,
+  `address2` text COLLATE utf8_unicode_ci,
   `city` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   `state` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   `zip` varchar(16) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -490,7 +492,7 @@ CREATE TABLE `company` (
 
 /*Data for the table `company` */
 
-insert  into `company`(`company_id`,`site_id`,`billing_contact`,`name`,`address`,`city`,`state`,`zip`,`phone1`,`phone2`,`url`,`key_technologies`,`notes`,`entered_by`,`owner`,`date_created`,`date_modified`,`is_hot`,`fax_number`,`import_id`,`default_company`) values (1,1,NULL,'Internal Postings','','','','','','','','','',0,0,'2009-11-19 10:00:20','2009-11-19 10:00:20',0,'',NULL,1);
+insert  into `company`(`company_id`,`site_id`,`billing_contact`,`name`,`address`,`address2`,`city`,`state`,`zip`,`phone1`,`phone2`,`url`,`key_technologies`,`notes`,`entered_by`,`owner`,`date_created`,`date_modified`,`is_hot`,`fax_number`,`import_id`,`default_company`) values (1,1,NULL,'Internal Postings','','','','','','','','','','',0,0,'2009-11-19 10:00:20','2009-11-19 10:00:20',0,'',NULL,1);
 
 /*Table structure for table `company_department` */
 
@@ -521,6 +523,7 @@ CREATE TABLE `contact` (
   `phone_cell` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
   `phone_other` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
   `address` text COLLATE utf8_unicode_ci,
+  `address2` text COLLATE utf8_unicode_ci,
   `city` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   `state` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   `zip` varchar(16) COLLATE utf8_unicode_ci DEFAULT NULL,
