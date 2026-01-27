@@ -2318,8 +2318,8 @@ class SettingsUI extends UserInterface
 
             $companies = new Companies($this->_siteID);
             $companyIDInternal = $companies->add(
-                'Internal Postings', '', '', '', '', '', '', '', '', '', '',
-                '', '', 'Internal postings.', $this->_userID, $this->_userID
+                'Internal Postings', '', '', '', '', '', '', '', '', '', '', 0,
+                'Internal postings.', $this->_userID, $this->_userID
             );
 
             $companies->setCompanyDefault($companyIDInternal);
@@ -3252,8 +3252,8 @@ class SettingsUI extends UserInterface
 
         $companies = new Companies($this->_siteID);
         $companyIDInternal = $companies->add(
-            'Internal Postings', '', '', '', '', '', '', '', '', '', '',
-            '', '', 'Internal postings.', $this->_userID, $this->_userID
+            'Internal Postings', '', '', '', '', '', '', '', '', '', '', 0,
+            'Internal postings.', $this->_userID, $this->_userID
         );
 
         $companies->setCompanyDefault($companyIDInternal);

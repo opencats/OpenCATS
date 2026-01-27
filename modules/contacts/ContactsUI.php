@@ -526,6 +526,7 @@ class ContactsUI extends UserInterface
         $email1     = $this->getSanitisedInput('email1', $_POST);
         $email2     = $this->getSanitisedInput('email2', $_POST);
         $address    = $this->getSanitisedInput('address', $_POST);
+        $address2   = $this->getSanitisedInput('address2', $_POST);
         $city       = $this->getSanitisedInput('city', $_POST);
         $state      = $this->getSanitisedInput('state', $_POST);
         $zip        = $this->getSanitisedInput('zip', $_POST);
@@ -556,7 +557,7 @@ class ContactsUI extends UserInterface
         $contacts = new Contacts($this->_siteID);
         $contactID = $contacts->add(
             $companyID, $firstName, $lastName, $title, $department, $reportsTo,
-            $email1, $email2, $phoneWork, $phoneCell, $phoneOther, $address,
+            $email1, $email2, $phoneWork, $phoneCell, $phoneOther, $address, $address2,
             $city, $state, $zip, $isHot, $notes, $this->_userID, $this->_userID
         );
 
@@ -814,6 +815,7 @@ class ContactsUI extends UserInterface
         $email1     = $this->getSanitisedInput('email1', $_POST);
         $email2     = $this->getSanitisedInput('email2', $_POST);
         $address    = $this->getSanitisedInput('address', $_POST);
+        $address2   = $this->getSanitisedInput('address2', $_POST);
         $city       = $this->getSanitisedInput('city', $_POST);
         $state      = $this->getSanitisedInput('state', $_POST);
         $zip        = $this->getSanitisedInput('zip', $_POST);
@@ -843,7 +845,7 @@ class ContactsUI extends UserInterface
 
         if (!$contacts->update($contactID, $companyID, $firstName, $lastName,
             $title, $department, $reportsTo, $email1, $email2, $phoneWork, $phoneCell,
-            $phoneOther, $address, $city, $state, $zip, $isHot,
+            $phoneOther, $address, $address2, $city, $state, $zip, $isHot,
             $leftCompany, $notes, $owner, $email, $emailAddress))
         {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update contact.');
@@ -1186,16 +1188,17 @@ class ContactsUI extends UserInterface
 
         /* FIXME: Add fax to contacts and use setPhoneNumber('WORK;FAX') here */
 
-        $addressLines = explode("\n", $contact['address']);
+        $address1 = trim($contact['address']);
+        $address2 = trim($contact['address2']);
 
-        $address1 = trim($addressLines[0]);
-        if (isset($addressLines[1]))
+        if (empty($address2) && strpos($address1, "\n") !== false)
         {
-            $address2 = trim($addressLines[1]);
-        }
-        else
-        {
-            $address2 = '';
+            $addressLines = explode("\n", $address1);
+            $address1 = trim($addressLines[0]);
+            if (isset($addressLines[1]))
+            {
+                $address2 = trim($addressLines[1]);
+            }
         }
 
         $vCard->setAddress(

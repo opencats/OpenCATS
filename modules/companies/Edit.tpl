@@ -147,6 +147,15 @@
 
                                 <tr>
                                     <td class="tdVertical">
+                                        <label id="address2Label" for="address2">Address 2:</label>
+                                    </td>
+                                    <td class="tdData">
+                                        <input type="text" name="address2" id="address2" class="inputbox" style="width: 150px" onkeydown="document.getElementById('changeAddress').style.display='';" value="<?php $this->_($this->data['address2']); ?>" />
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="tdVertical">
                                         <label id="cityLabel" for="city">City:</label>
                                     </td>
                                     <td class="tdData"><input type="text" name="city" id="city" value="<?php $this->_($this->data['city']); ?>" class="inputbox" style="width: 150px" onkeydown="document.getElementById('changeAddress').style.display='';"/></td>

@@ -118,14 +118,24 @@
                     <?php if($this->rsOld['address'] == "" && $this->rsOld['city'] == "" && $this->rsOld['state'] == "" && $this->rsOld['zip'] == ""): ?>
                         <td align="right"><?php echo "(none)"; ?></td>
                     <?php else: ?>
-                        <td align="right"><?php echo($this->rsOld['address'].'<br/>'.$this->rsOld['city']." ".$this->rsOld['zip'].'<br/>'.$this->rsOld['state']); ?></td>
+                        <td align="right">
+                            <?php echo($this->rsOld['address']); ?>
+                            <?php if (!empty($this->rsOld['address2'])): ?><br /><?php echo($this->rsOld['address2']); ?><?php endif; ?>
+                            <br /><?php echo($this->rsOld['city']." ".$this->rsOld['zip']); ?>
+                            <br /><?php echo($this->rsOld['state']); ?>
+                        </td>
                     <?php endif; ?>
                     <td align="center"><input type="radio" name="address" value=0 /></td>
                     <td align="center"><input type="radio" name="address" value=1 checked/></td>
                     <?php if($this->rsNew['address'] == "" && $this->rsNew['city'] == "" && $this->rsNew['state'] == "" && $this->rsNew['zip'] == ""): ?>
                         <td align="left"><?php echo "(none)";  ?></td>
                     <?php else: ?>
-                        <td align="left"><?php echo($this->rsNew['address'].'<br/>'.$this->rsNew['city']." ".$this->rsNew['zip'].'<br/>'.$this->rsNew['state']);  ?></td>
+                        <td align="left">
+                            <?php echo($this->rsNew['address']); ?>
+                            <?php if (!empty($this->rsNew['address2'])): ?><br /><?php echo($this->rsNew['address2']); ?><?php endif; ?>
+                            <br /><?php echo($this->rsNew['city']." ".$this->rsNew['zip']); ?>
+                            <br /><?php echo($this->rsNew['state']); ?>
+                        </td>
                     <?php endif; ?>
                 </tr>
                 

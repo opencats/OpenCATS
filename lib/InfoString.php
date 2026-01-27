@@ -172,6 +172,14 @@ class InfoString
                 htmlspecialchars($infoRS['address'])
             );
 
+            if (!empty($infoRS['address2']))
+            {
+                $infoString .= sprintf(
+                    '<br />&nbsp;&nbsp;%s',
+                    htmlspecialchars($infoRS['address2'])
+                );
+            }
+
             if (!empty($infoRS['city']))
             {
                 $infoString .= sprintf(
@@ -276,6 +284,14 @@ class InfoString
                 '<br /><span class="bold">Address:</span><br />&nbsp;&nbsp;%s',
                 htmlspecialchars($infoRS['address'])
             );
+
+            if (!empty($infoRS['address2']))
+            {
+                $infoString .= sprintf(
+                    '<br />&nbsp;&nbsp;%s',
+                    htmlspecialchars($infoRS['address2'])
+                );
+            }
 
             if (!empty($infoRS['city']))
             {

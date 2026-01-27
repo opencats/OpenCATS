@@ -908,6 +908,7 @@ class CandidatesUI extends UserInterface
                 'phoneCell'       => $this->getSanitisedInput('phoneCell', $_POST),
                 'phoneWork'       => $this->getSanitisedInput('phoneWork', $_POST),
                 'address'         => $this->getSanitisedInput('address', $_POST),
+                'address2'        => $this->getSanitisedInput('address2', $_POST),
                 'city'            => $this->getSanitisedInput('city', $_POST),
                 'state'           => $this->getSanitisedInput('state', $_POST),
                 'zip'             => $this->getSanitisedInput('zip', $_POST),
@@ -1316,6 +1317,7 @@ class CandidatesUI extends UserInterface
         $email1          = $this->getSanitisedInput('email1', $_POST);
         $email2          = $this->getSanitisedInput('email2', $_POST);
         $address         = $this->getSanitisedInput('address', $_POST);
+        $address2        = $this->getSanitisedInput('address2', $_POST);
         $city            = $this->getSanitisedInput('city', $_POST);
         $state           = $this->getSanitisedInput('state', $_POST);
         $zip             = $this->getSanitisedInput('zip', $_POST);
@@ -1356,6 +1358,7 @@ class CandidatesUI extends UserInterface
             $phoneCell,
             $phoneWork,
             $address,
+            $address2,
             $city,
             $state,
             $zip,
@@ -2590,6 +2593,7 @@ class CandidatesUI extends UserInterface
         $email1          = $this->getTrimmedInput('email1', $_POST);
         $email2          = $this->getTrimmedInput('email2', $_POST);
         $address         = $this->getTrimmedInput('address', $_POST);
+        $address2        = $this->getTrimmedInput('address2', $_POST);
         $city            = $this->getTrimmedInput('city', $_POST);
         $state           = $this->getTrimmedInput('state', $_POST);
         $zip             = $this->getTrimmedInput('zip', $_POST);
@@ -2638,6 +2642,7 @@ class CandidatesUI extends UserInterface
             $phoneCell,
             $phoneWork,
             $address,
+            $address2,
             $city,
             $state,
             $zip,
