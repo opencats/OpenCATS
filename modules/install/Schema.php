@@ -1328,6 +1328,11 @@ class CATSSchema
             '364' => '
                 UPDATE user SET password = md5(password) WHERE can_change_password=1;
             ',
+            '365' => '
+                ALTER IGNORE TABLE `candidate` ADD COLUMN `address2` TEXT COLLATE utf8_unicode_ci AFTER `address`;
+                ALTER IGNORE TABLE `contact` ADD COLUMN `address2` TEXT COLLATE utf8_unicode_ci AFTER `address`;
+                ALTER IGNORE TABLE `company` ADD COLUMN `address2` TEXT COLLATE utf8_unicode_ci AFTER `address`;
+            ',
 
         );
     }
