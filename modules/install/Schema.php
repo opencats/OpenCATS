@@ -1420,6 +1420,11 @@ class CATSSchema
             '373' => '
                 INSERT IGNORE INTO `activity_type` (`activity_type_id`, `short_description`) VALUES (800, \'Status Change\');
             ',
+            '374' => '
+                UPDATE `activity`
+                SET `joborder_id` = NULL
+                WHERE `joborder_id` IN (0, -1);
+            ',
 
         );
     }
