@@ -69,7 +69,7 @@ $siteID = $interface->getSiteID();
 
 $activityID = $_POST['activityID'];
 $type       = $_POST['type'];
-$jobOrderID = $_POST['jobOrderID'];
+$jobOrderID = isset($_POST['jobOrderID']) ? trim($_POST['jobOrderID']) : null;
 
 /* Decode and trim the activity notes from the company. */
 $activityNote = trim(urldecode($_POST['notes']));
@@ -86,6 +86,13 @@ if (!DateUtility::validate('-', $activityDate, $dateFormatFlag))
 {
     die('Invalid availability date.');
     return;
+}
+
+if ($jobOrderID === null || $jobOrderID === '' || $jobOrderID === 'NULL' ||
+    $jobOrderID === '0' || $jobOrderID === '-1' || !is_numeric($jobOrderID) ||
+    (int) $jobOrderID <= 0)
+{
+    $jobOrderID = -1;
 }
 
 /* Convert formatted time to UNIX timestamp. */

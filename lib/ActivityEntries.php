@@ -80,12 +80,17 @@ class ActivityEntries
      * @param flag Activity type flag.
      * @param string Activity notes.
      * @param integer Entered-by user ID.
-     * @param integer Job Order ID; -1 for general.
+     * @param integer Job Order ID; -1 for general (stored as NULL).
      * @return integer New Activity ID; -1 on failure.
      */
     public function add($dataItemID, $dataItemType, $activityType,
         $activityNotes, $enteredBy, $jobOrderID = -1)
     {
+        if (!ctype_digit((string) $jobOrderID) || (int) $jobOrderID <= 0)
+        {
+            $jobOrderID = -1;
+        }
+
         $sql = sprintf(
             "INSERT INTO activity (
                 data_item_id,
@@ -111,7 +116,7 @@ class ActivityEntries
             )",
             $this->_db->makeQueryInteger($dataItemID),
             $this->_db->makeQueryInteger($dataItemType),
-            $this->_db->makeQueryInteger($jobOrderID),
+            $this->_db->makeQueryIntegerOrNULL($jobOrderID),
             $this->_db->makeQueryInteger($enteredBy),
             $this->_db->makeQueryInteger($activityType),
             $this->_db->makeQueryString($activityNotes),
@@ -142,7 +147,8 @@ class ActivityEntries
         /* If there is a job order being associated, update it's modified
          * timestamp, too.
          */
-        if ($jobOrderID != -1)
+        if (!empty($jobOrderID) && ctype_digit((string) $jobOrderID) &&
+            (int) $jobOrderID > 0)
         {
             $this->_updateDataItemModified($jobOrderID, DATA_ITEM_JOBORDER);
         }
@@ -156,7 +162,7 @@ class ActivityEntries
      * @param integer Activity ID to update.
      * @param flag New activity type flag.
      * @param string New activity notes.
-     * @param integer New Job Order ID; -1 for general.
+     * @param integer New Job Order ID; -1 for general (stored as NULL).
      * @return boolean True if successful; false otherwise.
      */
     public function update($activityID, $activityType, $activityNotes,
@@ -203,6 +209,11 @@ class ActivityEntries
             $newJobOrderID = $jobOrderID;
         }
 
+        if (!ctype_digit((string) $newJobOrderID) || (int) $newJobOrderID <= 0)
+        {
+            $newJobOrderID = -1;
+        }
+
         $sql = sprintf(
             "UPDATE
                 activity
@@ -217,7 +228,7 @@ class ActivityEntries
                 site_id = %s",
             $this->_db->makeQueryInteger($activityType),
             $this->_db->makeQueryString($activityNotes),
-            $this->_db->makeQueryInteger($newJobOrderID),
+            $this->_db->makeQueryIntegerOrNULL($newJobOrderID),
             $this->_db->makeQueryInteger($activityID),
             $this->_siteID
         );
@@ -267,7 +278,8 @@ class ActivityEntries
         /* If there is a job order being associated, update it's modified
          * timestamp, too.
          */
-        if (!empty($jobOrderID) && ctype_digit((string) $jobOrderID))
+        if (!empty($jobOrderID) && ctype_digit((string) $jobOrderID) &&
+            (int) $jobOrderID > 0)
         {
             $this->_updateDataItemModified($jobOrderID, DATA_ITEM_JOBORDER);
         }
@@ -276,7 +288,7 @@ class ActivityEntries
          * is valid, update its modified timestamp, too.
          */
         if (!empty($newJobOrderID) && ctype_digit((string) $newJobOrderID) &&
-            $jobOrderID != $newJobOrderID)
+            (int) $newJobOrderID > 0 && $jobOrderID != $newJobOrderID)
         {
             $this->_updateDataItemModified($newJobOrderID, DATA_ITEM_JOBORDER);
         }
