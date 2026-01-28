@@ -116,13 +116,20 @@ function Activity_fillTypeSelect(selectList, selectedText)
     }
 }
 
-function Activity_fillRegardingSelect(selectList, jobOrderNodes, selectedText)
+function Activity_fillRegardingSelect(selectList, jobOrderNodes, selectedText, selectedJobOrderID)
 {
+    var hasValidJobOrderID = false;
+
+    if (selectedJobOrderID && selectedJobOrderID.match(/^\d+$/) && selectedJobOrderID != '0')
+    {
+        hasValidJobOrderID = true;
+    }
+
     /* General option. */
     generalOption = document.createElement("option");
     generalOption.value = "NULL";
     generalOption.appendChild(document.createTextNode("General"));
-    if (selectedText == "General")
+    if (!hasValidJobOrderID)
     {
         generalOption.setAttribute("selected", "selected");
     }
@@ -153,8 +160,13 @@ function Activity_fillRegardingSelect(selectList, jobOrderNodes, selectedText)
 
         option.value = IDNode.firstChild.nodeValue;
         option.appendChild(document.createTextNode(optionText));
-        if (selectedText == optionText)
+        if (hasValidJobOrderID && option.value == selectedJobOrderID)
         {
+            option.setAttribute("selected", "selected");
+        }
+        else if (!hasValidJobOrderID && selectedText == optionText)
+        {
+            generalOption.removeAttribute("selected");
             option.setAttribute("selected", "selected");
         }
         selectList.appendChild(option);
@@ -236,10 +248,16 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
 
         /* Create the "Regarding" select list and add options to it. */
         var regardingSelectList = document.createElement("select");
+        var selectedJobOrderID = "";
+        if (regardingTD && regardingTD.getAttribute)
+        {
+            selectedJobOrderID = regardingTD.getAttribute("data-joborder-id");
+        }
         Activity_fillRegardingSelect(
             regardingSelectList,
             http.responseXML.getElementsByTagName("joborder"),
-            regardingTD.firstChild.nodeValue
+            regardingTD.firstChild.nodeValue,
+            selectedJobOrderID
         );
         regardingSelectList.className = "inputbox";
 
