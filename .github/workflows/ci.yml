@@ -1,0 +1,128 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ master, develop, feature/** ]
+    tags: ['v*']
+  pull_request:
+    branches: [ master, develop ]
+  workflow_dispatch:
+
+jobs:
+  tests:
+    name: Tests (PHP ${{ matrix.php-version }})
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['7.2']
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: composer:v2
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-php-
+
+      - name: Install Dependencies
+        run: composer install --no-progress --prefer-dist
+
+      - name: PHP Syntax Check (Lint)
+        run: find src -name "*.php" -print0 | xargs -0 -n1 php -l
+
+      - name: Composer Security Audit
+        # We use || true so legacy vulnerabilities don't block the build
+        run: composer audit || true
+
+      - name: Create Reports Directory
+        run: mkdir -p reports/behat-default reports/behat-security test/screenshots
+
+      - name: Run PHPUnit (Unit Tests)
+        run: ./vendor/bin/phpunit --log-junit reports/unit-report.xml src/OpenCATS/Tests/UnitTests
+
+      - name: Run Integration Tests (Docker)
+        run: |
+          # 1. Prepare environment files
+          cp test/config.php ./config.php
+          touch ./INSTALL_BLOCK
+
+          cd docker/
+          docker compose -f docker-compose-test.yml up -d
+
+          echo "Waiting for BOTH databases..."
+          timeout 60s bash -c 'until docker compose -f docker-compose-test.yml exec -T opencatsdb mysqladmin ping -h localhost -udev -pdev --silent; do sleep 3; done'
+          timeout 60s bash -c 'until docker compose -f docker-compose-test.yml exec -T integrationtestdb mysqladmin ping -h localhost -udev -pdev --silent; do sleep 3; done'
+
+          # 2. Pre-clean the integration database
+          docker compose -f docker-compose-test.yml exec -T integrationtestdb mysql -udev -pdev -e "DROP DATABASE IF EXISTS cats_integrationtest; CREATE DATABASE cats_integrationtest;"
+
+          # 3. DIAGNOSTIC: Check if PHP can resolve the database hostname
+          echo "Diagnostic: Resolving integrationtestdb from PHP container..."
+          docker compose -f docker-compose-test.yml exec -T php php -r "echo 'IP for integrationtestdb: ' . gethostbyname('integrationtestdb') . PHP_EOL;"
+
+          echo "Running PHPUnit Integration Tests..."
+          docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/phpunit --log-junit /var/www/public/reports/integration-report.xml src/OpenCATS/Tests/IntegrationTests
+
+          echo "Running Behat Suites..."
+          docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="default" --format=progress
+          docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="security" --format=progress
+          # continue-on-error: true
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v4
+        if: always()
+        with:
+          report_paths: 'reports/**/*.xml'
+          detailed_summary: true
+          include_passed: true
+          check_name: "Test Results - PHP ${{ matrix.php-version }}"
+          fail_on_failure: false
+
+      - name: Upload Behat Screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: behat-screenshots-php${{ matrix.php-version }}
+          path: test/screenshots/
+          retention-days: 5
+
+      - name: Shutdown Docker
+        if: always()
+        run: cd docker && docker compose -f docker-compose-test.yml down
+
+  release:
+    name: Create GitHub Release
+    needs: tests
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Create Release Archive
+        run: |
+          zip -r opencats-${{ github.ref_name }}.zip . -x "*.git*" "docker/*" "test/*" "reports/*" ".github/*" "phpunit.xml"
+
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create ${{ github.ref_name }} \
+            --title "OpenCATS ${{ github.ref_name }}" \
+            --notes "Automated release for version ${{ github.ref_name }}" \
+            opencats-${{ github.ref_name }}.zip
