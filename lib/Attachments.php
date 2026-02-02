@@ -955,6 +955,27 @@ class AttachmentCreator
             return false;
         }
 
+        /* Restrict uploads to a whitelist of allowed file extensions.
+         * This is a server-side validation which cannot be bypassed by
+         * manipulating client-side restrictions.
+         */
+        $allowedExtensions = array(
+            'bmp', 'csv', 'doc', 'docx', 'heic',
+            'jpeg', 'jpg', 'msg', 'odg', 'odt',
+            'pages', 'pdf', 'png', 'ppt', 'pptx',
+            'rtf', 'tiff', 'wpd', 'wps', 'xls',
+            'xlsx', 'xps'
+        );
+
+        $extension = FileUtility::getFileExtension($originalFilename);
+
+        if (!in_array($extension, $allowedExtensions, true))
+        {
+            $this->_isError = true;
+            $this->_error = 'This file type is not allowed for upload.';
+            return false;
+        }
+
         /* This usually indicates an error. */
         if ($fileSize <= 0)
         {

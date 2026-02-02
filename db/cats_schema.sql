@@ -859,7 +859,7 @@ insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (9,'ext
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (10,'graphs',0);
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (11,'home',0);
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (12,'import',0);
-insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (13,'install',363);
+insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (13,'install',365);
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (14,'joborders',0);
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (15,'lists',0);
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (16,'login',0);
@@ -999,6 +999,7 @@ CREATE TABLE `site` (
   `time_zone` int(5) DEFAULT '0',
   `time_format_24` int(1) DEFAULT '0',
   `date_format_ddmmyy` int(1) DEFAULT '0',
+  `default_phone_country_code` varchar(8) COLLATE utf8_unicode_ci NOT NULL DEFAULT '+1',
   `is_hr_mode` int(1) DEFAULT '0',
   `file_size_kb` int(11) DEFAULT '0',
   `page_views` bigint(20) DEFAULT '0',
@@ -1014,8 +1015,8 @@ CREATE TABLE `site` (
 
 /*Data for the table `site` */
 
-insert  into `site`(`site_id`,`name`,`is_demo`,`user_licenses`,`entered_by`,`date_created`,`unix_name`,`company_id`,`is_free`,`account_active`,`account_deleted`,`reason_disabled`,`time_zone`,`time_format_24`,`date_format_ddmmyy`,`is_hr_mode`,`file_size_kb`,`page_views`,`page_view_days`,`last_viewed_day`,`first_time_setup`,`localization_configured`,`agreed_to_license`,`limit_warning`) values (1,'testdomain.com',0,0,0,'2005-06-01 00:00:00',NULL,NULL,0,1,0,NULL,2,0,1,0,0,574,1,'2009-11-19',0,0,1,0);
-insert  into `site`(`site_id`,`name`,`is_demo`,`user_licenses`,`entered_by`,`date_created`,`unix_name`,`company_id`,`is_free`,`account_active`,`account_deleted`,`reason_disabled`,`time_zone`,`time_format_24`,`date_format_ddmmyy`,`is_hr_mode`,`file_size_kb`,`page_views`,`page_view_days`,`last_viewed_day`,`first_time_setup`,`localization_configured`,`agreed_to_license`,`limit_warning`) values (180,'CATS_ADMIN',0,0,0,'2005-06-01 00:00:00','catsadmin',NULL,0,1,0,NULL,2,0,1,0,0,0,0,NULL,0,0,0,0);
+insert  into `site`(`site_id`,`name`,`is_demo`,`user_licenses`,`entered_by`,`date_created`,`unix_name`,`company_id`,`is_free`,`account_active`,`account_deleted`,`reason_disabled`,`time_zone`,`time_format_24`,`date_format_ddmmyy`,`default_phone_country_code`,`is_hr_mode`,`file_size_kb`,`page_views`,`page_view_days`,`last_viewed_day`,`first_time_setup`,`localization_configured`,`agreed_to_license`,`limit_warning`) values (1,'testdomain.com',0,0,0,'2005-06-01 00:00:00',NULL,NULL,0,1,0,NULL,2,0,1,'+1',0,0,574,1,'2009-11-19',0,0,1,0);
+insert  into `site`(`site_id`,`name`,`is_demo`,`user_licenses`,`entered_by`,`date_created`,`unix_name`,`company_id`,`is_free`,`account_active`,`account_deleted`,`reason_disabled`,`time_zone`,`time_format_24`,`date_format_ddmmyy`,`default_phone_country_code`,`is_hr_mode`,`file_size_kb`,`page_views`,`page_view_days`,`last_viewed_day`,`first_time_setup`,`localization_configured`,`agreed_to_license`,`limit_warning`) values (180,'CATS_ADMIN',0,0,0,'2005-06-01 00:00:00','catsadmin',NULL,0,1,0,NULL,2,0,1,'+1',0,0,0,0,NULL,0,0,0,0);
 
 /*Table structure for table `sph_counter` */
 

@@ -19,3 +19,6 @@ default:
             selenium2:
                wd_host: 'http://selenium:4444/wd/hub'
                browser: 'chrome'
+            show_auto: false
+
+

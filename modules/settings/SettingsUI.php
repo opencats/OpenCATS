@@ -2417,6 +2417,19 @@ class SettingsUI extends UserInterface
 
                     $this->_template->assign('timeZone', $_SESSION['CATS']->getTimeZone());
                     $this->_template->assign('isDateDMY', $_SESSION['CATS']->isDateDMY());
+
+                    // Default phone country calling code for the localization settings page.
+                    $defaultPhoneCountryCode = $_SESSION['CATS']->getDefaultPhoneCountryCode();
+                    $defaultPhoneCountryCodeDigits = preg_replace('/[^0-9]/', '', (string) $defaultPhoneCountryCode);
+
+                    if ($defaultPhoneCountryCodeDigits === '')
+                    {
+                        // Fall back to "1" for display if nothing is configured in the database.
+                        $defaultPhoneCountryCodeDigits = '1';
+                    }
+
+                    $this->_template->assign('defaultPhoneCountryCodeDigits', $defaultPhoneCountryCodeDigits);
+
                     $templateFile = './modules/settings/Localization.tpl';
                     break;
 
@@ -2574,6 +2587,27 @@ class SettingsUI extends UserInterface
 
                 $site = new Site($this->_siteID);
                 $site->setLocalization($timeZone, $isDMY);
+
+                // Default phone country calling code (E.164) for the site.
+                if (isset($_POST['defaultPhoneCountryCodeDigits']))
+                {
+                    $defaultPhoneCountryCodeDigits = trim($_POST['defaultPhoneCountryCodeDigits']);
+
+                    // Keep digits only; any other characters are ignored.
+                    $defaultPhoneCountryCodeDigits = preg_replace('/[^0-9]/', '', $defaultPhoneCountryCodeDigits);
+
+                    if ($defaultPhoneCountryCodeDigits !== '')
+                    {
+                        $defaultPhoneCountryCode = '+' . $defaultPhoneCountryCodeDigits;
+
+                        // Persist to the site table.
+                        $site->setDefaultPhoneCountryCode($defaultPhoneCountryCode);
+
+                        // Update the session helper so the new value is available immediately.
+                        $_SESSION['CATS']->setDefaultPhoneCountryCode($defaultPhoneCountryCode);
+                    }
+                    // If no digits are submitted, keep the existing value in the database/session.
+                }
 
                 $_SESSION['CATS']->logout();
                 unset($_SESSION['CATS']);

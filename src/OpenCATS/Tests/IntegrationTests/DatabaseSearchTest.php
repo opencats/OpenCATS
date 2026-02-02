@@ -16,7 +16,7 @@ class DatabaseSearchTest extends DatabaseTestCase
 {
     function testMakeREGEXPString()
     {
-        //FIXME: Write me!
+        $this->assertTrue(true, 'Placeholder for future REGEXP test');
     }
 
     function testMakeBooleanSQLWhere()

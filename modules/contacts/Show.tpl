@@ -3,7 +3,7 @@
 include_once('./vendor/autoload.php');
 use OpenCATS\UI\QuickActionMenu;
 ?>
-<?php TemplateUtility::printHeader('Contact - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js', 'js/attachment.js')); ?>
+<?php TemplateUtility::printHeader('Contact - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">

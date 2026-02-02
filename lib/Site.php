@@ -96,6 +96,28 @@ class Site
     }
 
     /**
+     * Sets the default phone country calling code for the current site.
+     *
+     * @param string $countryCode E.164 country calling code (for example "+49").
+     * @return boolean True if successful; false otherwise.
+     */
+    public function setDefaultPhoneCountryCode($countryCode)
+    {
+        $sql = sprintf(
+            "UPDATE
+                 site
+             SET
+                 default_phone_country_code = %s
+             WHERE
+                 site_id = %s",
+            $this->_db->makeQueryString($countryCode),
+            $this->_siteID
+        );
+
+        return (boolean) $this->_db->query($sql);
+    }
+
+    /**
      * Get site information by unix name.
      *
      * @param integer site ID
