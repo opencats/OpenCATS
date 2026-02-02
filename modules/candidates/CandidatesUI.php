@@ -288,7 +288,7 @@ class CandidatesUI extends UserInterface
 
             /* Administrators can hide a candidate from a site with this action. */
             case 'administrativeHideShow':
-                if ($this->getUserAccessLevel('candidates.hidden') < ACCESS_LEVEL_MULTI_SA)
+                if ($this->getUserAccessLevel('candidates.hidden') < ACCESS_LEVEL_SA)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
@@ -580,9 +580,9 @@ class CandidatesUI extends UserInterface
             return;
         }
 
-        if ($data['isAdminHidden'] == 1 && $this->getUserAccessLevel('candidates.hidden') < ACCESS_LEVEL_MULTI_SA)
+        if ($data['isAdminHidden'] == 1 && $this->getUserAccessLevel('candidates.hidden') < ACCESS_LEVEL_SA)
         {
-            $this->listByView('This candidate is hidden - only a CATS Administrator can unlock the candidate.');
+            $this->listByView('This candidate is hidden - only a Site Administrator can unlock the candidate.');
             return;
         }
 
@@ -1169,9 +1169,9 @@ class CandidatesUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified candidate ID could not be found.');
         }
 
-        if ($data['isAdminHidden'] == 1 && $this->getUserAccessLevel('candidates.hidden') < ACCESS_LEVEL_MULTI_SA)
+        if ($data['isAdminHidden'] == 1 && $this->getUserAccessLevel('candidates.hidden') < ACCESS_LEVEL_SA)
         {
-            $this->listByView('This candidate is hidden - only a CATS Administrator can unlock the candidate.');
+            $this->listByView('This candidate is hidden - only a Site Administrator can unlock the candidate.');
             return;
         }
 

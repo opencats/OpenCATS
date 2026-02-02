@@ -48,7 +48,7 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
 
             <?php if ($this->data['isAdminHidden'] == 1): ?>
                 <div class="warning">
-                    This Candidate is hidden.  Only CATS Administrators can view it or search for it.  To make it visible by the site users, click
+                    This Candidate is hidden.  Only Site Administrators can view it or search for it.  To make it visible by the site users, click
                     <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=administrativeHideShow" style="display:inline;">
                         <input type="hidden" name="postback" value="postback" />
                         <input type="hidden" name="candidateID" value="<?php echo($this->candidateID); ?>" />
@@ -467,7 +467,7 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                 </a>
                 &nbsp;&nbsp;&nbsp;&nbsp;
             <?php endif; ?>
-            <?php if ($this->getUserAccessLevel('candidates.administrativeHideShow') >= ACCESS_LEVEL_MULTI_SA): ?>
+            <?php if ($this->getUserAccessLevel('candidates.administrativeHideShow') >= ACCESS_LEVEL_SA): ?>
                 <?php if ($this->data['isAdminHidden'] == 1): ?>
                     <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=administrativeHideShow" style="display:inline;">
                         <input type="hidden" name="postback" value="postback" />

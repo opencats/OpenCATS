@@ -318,7 +318,7 @@ class JobOrdersUI extends UserInterface
             */
 
             case 'administrativeHideShow':
-                if ($this->getUserAccessLevel('joborders.administrativeHideShow') < ACCESS_LEVEL_MULTI_SA)
+                if ($this->getUserAccessLevel('joborders.administrativeHideShow') < ACCESS_LEVEL_SA)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
@@ -414,9 +414,9 @@ class JobOrdersUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified job order ID could not be found.');
         }
 
-        if ($data['isAdminHidden'] == 1 && $this->getUserAccessLevel('joborders.hidden') < ACCESS_LEVEL_MULTI_SA)
+        if ($data['isAdminHidden'] == 1 && $this->getUserAccessLevel('joborders.hidden') < ACCESS_LEVEL_SA)
         {
-            $this->listByView('This Job Order is hidden - only a CATS Administrator can unlock the Job Order.');
+            $this->listByView('This Job Order is hidden - only a Site Administrator can unlock the Job Order.');
             return;
         }
 
