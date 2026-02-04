@@ -72,7 +72,11 @@ $activityHour = trim(urldecode($_REQUEST['hour']));
 $activityMinute = trim(urldecode($_REQUEST['minute']));
 $activityAMPM = trim(urldecode($_REQUEST['ampm']));
 
-if (!DateUtility::validate('-', $activityDate, DATE_FORMAT_MMDDYY))
+$dateFormatFlag = $_SESSION['CATS']->isDateDMY()
+    ? DATE_FORMAT_DDMMYY
+    : DATE_FORMAT_MMDDYY;
+
+if (!DateUtility::validate('-', $activityDate, $dateFormatFlag))
 {
     die('Invalid availability date.');
     return;
@@ -87,7 +91,7 @@ $time = strtotime(
 $date = sprintf(
     '%s %s',
     DateUtility::convert(
-        '-', $activityDate, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+        '-', $activityDate, $dateFormatFlag, DATE_FORMAT_YYYYMMDD
     ),
     date('H:i:00', $time)
 );

@@ -349,8 +349,11 @@ class CalendarUI extends UserInterface
 
         /* Bail out if we received an invalid date. */
         $trimmedDate = $this->getTrimmedInput('dateAdd', $_POST);
+        $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
+            ? DATE_FORMAT_DDMMYY
+            : DATE_FORMAT_MMDDYY;
         if (empty($trimmedDate) ||
-            !DateUtility::validate('-', $trimmedDate, DATE_FORMAT_MMDDYY))
+            !DateUtility::validate('-', $trimmedDate, $dateFormatFlag))
         {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid date.');
         }
@@ -409,7 +412,7 @@ class CalendarUI extends UserInterface
         if ($allDay)
         {
             $date = DateUtility::convert(
-                '-', $trimmedDate, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+                '-', $trimmedDate, $dateFormatFlag, DATE_FORMAT_YYYYMMDD
             );
 
             $hour = 12;
@@ -450,7 +453,7 @@ class CalendarUI extends UserInterface
             $date = sprintf(
                 '%s %s',
                 DateUtility::convert(
-                    '-', $trimmedDate, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+                    '-', $trimmedDate, $dateFormatFlag, DATE_FORMAT_YYYYMMDD
                 ),
                 date('H:i:00', $time)
             );
@@ -554,8 +557,11 @@ class CalendarUI extends UserInterface
 
         /* Bail out if we received an invalid date. */
         $trimmedDate = $this->getTrimmedInput('dateEdit', $_POST);
+        $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
+            ? DATE_FORMAT_DDMMYY
+            : DATE_FORMAT_MMDDYY;
         if (empty($trimmedDate) ||
-            !DateUtility::validate('-', $trimmedDate, DATE_FORMAT_MMDDYY))
+            !DateUtility::validate('-', $trimmedDate, $dateFormatFlag))
         {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid date.');
         }
@@ -599,7 +605,7 @@ class CalendarUI extends UserInterface
         if ($allDay)
         {
             $date = DateUtility::convert(
-                '-', $trimmedDate, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+                '-', $trimmedDate, $dateFormatFlag, DATE_FORMAT_YYYYMMDD
             );
 
             $hour = 12;
@@ -640,7 +646,7 @@ class CalendarUI extends UserInterface
             $date = sprintf(
                 '%s %s',
                 DateUtility::convert(
-                    '-', $trimmedDate, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+                    '-', $trimmedDate, $dateFormatFlag, DATE_FORMAT_YYYYMMDD
                 ),
                 date('H:i:00', $time)
             );

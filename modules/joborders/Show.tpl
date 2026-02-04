@@ -3,9 +3,9 @@ include_once('./vendor/autoload.php');
 use OpenCATS\UI\QuickActionMenu;
 ?>
 <?php if ($this->isPopup): ?>
-    <?php TemplateUtility::printHeader('Job Order - '.$this->data['title'], array('js/sorttable.js', 'js/match.js', 'js/pipeline.js', 'js/attachment.js')); ?>
+    <?php TemplateUtility::printHeader('Job Order - '.$this->data['title'], array('js/sorttable.js', 'js/match.js', 'js/pipeline.js')); ?>
 <?php else: ?>
-    <?php TemplateUtility::printHeader('Job Order - '.$this->data['title'], array( 'js/sorttable.js', 'js/match.js', 'js/pipeline.js', 'js/attachment.js')); ?>
+    <?php TemplateUtility::printHeader('Job Order - '.$this->data['title'], array( 'js/sorttable.js', 'js/match.js', 'js/pipeline.js')); ?>
     <?php TemplateUtility::printHeaderBlock(); ?>
     <?php TemplateUtility::printTabs($this->active); ?>
         <div id="main">

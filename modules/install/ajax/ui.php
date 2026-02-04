@@ -493,7 +493,9 @@ switch ($action)
         {
             $onClick .= htmlspecialchars($index) . ',\' + encodeURIComponent(getCheckedValue(document.getElementsByName(\'' . htmlspecialchars($index) . '\'))) + \',';
         }
-        $onClick .= '&timeZone=\' + encodeURIComponent(document.getElementById(\'timeZone\').value) + \'&dateFormat=\' + encodeURIComponent(document.getElementById(\'dateFormat\').value) + \'\');';
+        $onClick .= '&timeZone=\' + encodeURIComponent(document.getElementById(\'timeZone\').value) + \'';
+        $onClick .= '&dateFormat=\' + encodeURIComponent(document.getElementById(\'dateFormat\').value) + \'';
+        $onClick .= '&defaultPhoneCountryCodeDigits=\' + encodeURIComponent(document.getElementById(\'defaultPhoneCountryCodeDigits\').value));';
 
         echo '<script type="text/javascript">';
         echo 'var onClick = \'' . addslashes($onClick) . '\';';
@@ -527,6 +529,30 @@ switch ($action)
 
         $_SESSION['timeZoneInstaller'] = $timeZone;
         $_SESSION['dateFormatInstaller'] = $dateFormat;
+
+        // Default phone country calling code collected in the installer.
+        if (isset($_REQUEST['defaultPhoneCountryCodeDigits']))
+        {
+            $defaultPhoneCountryCodeDigits = trim($_REQUEST['defaultPhoneCountryCodeDigits']);
+
+            // Keep digits only; client-side JavaScript should already enforce this.
+            $defaultPhoneCountryCodeDigits = preg_replace('/[^0-9]/', '', $defaultPhoneCountryCodeDigits);
+
+            if ($defaultPhoneCountryCodeDigits !== '')
+            {
+                $_SESSION['defaultPhoneCountryCodeInstaller'] = '+' . $defaultPhoneCountryCodeDigits;
+            }
+            else
+            {
+                // Fall back to the historical default if nothing was provided.
+                $_SESSION['defaultPhoneCountryCodeInstaller'] = '+1';
+            }
+        }
+        else
+        {
+            // No value provided in the request, keep the historical default.
+            $_SESSION['defaultPhoneCountryCodeInstaller'] = '+1';
+        }
 
         $list = explode(',', $_REQUEST['list']);
 
@@ -1018,6 +1044,18 @@ switch ($action)
         $timeZone = $_SESSION['timeZoneInstaller'];
 
         MySQLQuery(sprintf("UPDATE site SET time_zone = %s", $timeZone));
+
+        if (isset($_SESSION['defaultPhoneCountryCodeInstaller'])
+            && $_SESSION['defaultPhoneCountryCodeInstaller'] !== '')
+        {
+            $defaultPhoneCountryCode = $_SESSION['defaultPhoneCountryCodeInstaller'];
+
+            // The value is expected to be in the form "+1", "+49", "+44", etc.
+            MySQLQuery(sprintf(
+                "UPDATE site SET default_phone_country_code = '%s'",
+                $defaultPhoneCountryCode
+            ));
+        }
 
         if (isset($_SESSION['CATS']))
         {

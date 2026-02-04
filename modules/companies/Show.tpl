@@ -2,7 +2,7 @@
 include_once('./vendor/autoload.php');
 use OpenCATS\UI\QuickActionMenu;
 ?>
-<?php TemplateUtility::printHeader('Company - '.$this->data['name'], array( 'js/sorttable.js', 'js/attachment.js')); ?>
+<?php TemplateUtility::printHeader('Company - '.$this->data['name'], array( 'js/sorttable.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">

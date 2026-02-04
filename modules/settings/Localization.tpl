@@ -45,6 +45,24 @@
                                         </select>
                                     </td>
                                 </tr>
+
+                                <tr>
+                                    <td>Please enter your default phone country calling code.</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-bottom: 5px;">
+                                        <span>+</span>
+                                        <input
+                                            type="text"
+                                            name="defaultPhoneCountryCodeDigits"
+                                            id="defaultPhoneCountryCodeDigits"
+                                            value="<?php echo($this->defaultPhoneCountryCodeDigits); ?>"
+                                            size="5"
+                                            maxlength="5"
+                                            oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                        />
+                                    </td>
+                                </tr>
                             </table>
                         <input type="submit" class="button" value="Save (And Logout)" />&nbsp;
                         <input type="button" name="back" class="button" value="Back" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=administration';" />

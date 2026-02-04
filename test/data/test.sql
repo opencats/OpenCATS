@@ -1466,6 +1466,7 @@ CREATE TABLE `site` (
   `time_zone` int(5) DEFAULT '0',
   `time_format_24` int(1) DEFAULT '0',
   `date_format_ddmmyy` int(1) DEFAULT '0',
+  `default_phone_country_code` varchar(8) COLLATE utf8_unicode_ci NOT NULL DEFAULT '+1',
   `is_hr_mode` int(1) DEFAULT '0',
   `file_size_kb` int(11) DEFAULT '0',
   `page_views` bigint(20) DEFAULT '0',
@@ -1486,7 +1487,7 @@ CREATE TABLE `site` (
 
 LOCK TABLES `site` WRITE;
 /*!40000 ALTER TABLE `site` DISABLE KEYS */;
-INSERT INTO `site` VALUES (1,'testdomain.com',0,0,0,'2005-06-01 00:00:00',NULL,NULL,0,1,0,NULL,-3,0,1,0,465,1780,14,'2016-07-04',0,0,1,0),(180,'CATS_ADMIN',0,0,0,'2005-06-01 00:00:00','catsadmin',NULL,0,1,0,NULL,-3,0,1,0,0,0,0,NULL,0,0,0,0);
+INSERT INTO `site` VALUES (1,'testdomain.com',0,0,0,'2005-06-01 00:00:00',NULL,NULL,0,1,0,NULL,-3,0,1,'+1',0,465,1780,14,'2016-07-04',0,0,1,0),(180,'CATS_ADMIN',0,0,0,'2005-06-01 00:00:00','catsadmin',NULL,0,1,0,NULL,-3,0,1,'+1',0,0,0,0,NULL,0,0,0,0);
 /*!40000 ALTER TABLE `site` ENABLE KEYS */;
 UNLOCK TABLES;
 

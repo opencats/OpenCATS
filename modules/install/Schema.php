@@ -1329,11 +1329,17 @@ class CATSSchema
                 UPDATE user SET password = md5(password) WHERE can_change_password=1;
             ',
             '365' => '
+                ALTER IGNORE TABLE `site`
+                ADD COLUMN `default_phone_country_code` varchar(8)
+                COLLATE utf8_unicode_ci NOT NULL DEFAULT \'+1\'
+                AFTER `date_format_ddmmyy`;
+            ',
+            '366' => '
                 ALTER IGNORE TABLE `candidate` ADD COLUMN `address2` TEXT COLLATE utf8_unicode_ci AFTER `address`;
                 ALTER IGNORE TABLE `contact` ADD COLUMN `address2` TEXT COLLATE utf8_unicode_ci AFTER `address`;
                 ALTER IGNORE TABLE `company` ADD COLUMN `address2` TEXT COLLATE utf8_unicode_ci AFTER `address`;
             ',
-            '366' => '
+            '367' => '
                 UPDATE candidate
                 SET address = REPLACE(address, \'\\r\\n\', \'\\n\')
                 WHERE address LIKE \'%\\r\\n%\';

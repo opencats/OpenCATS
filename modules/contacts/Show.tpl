@@ -3,9 +3,12 @@
 include_once('./vendor/autoload.php');
 use OpenCATS\UI\QuickActionMenu;
 ?>
-<?php TemplateUtility::printHeader('Contact - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js', 'js/attachment.js')); ?>
+<?php TemplateUtility::printHeader('Contact - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
+    <script type="text/javascript">
+        window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
+    </script>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 

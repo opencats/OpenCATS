@@ -1,4 +1,3 @@
-version: '2'
 services:
     opencats:
       container_name: opencats_web

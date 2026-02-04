@@ -162,6 +162,7 @@ class DateUtilityTest extends TestCase
             array('-', '12-31-05', DATE_FORMAT_MMDDYY),
             array('-', '02-29-00', DATE_FORMAT_MMDDYY),
             array('-', '22-02-07', DATE_FORMAT_DDMMYY),
+            array('-', '29-02-04', DATE_FORMAT_DDMMYY),
             array('-', '2007-03-25', DATE_FORMAT_YYYYMMDD)
         );
 
@@ -180,6 +181,8 @@ class DateUtilityTest extends TestCase
             array('-', '000105', DATE_FORMAT_MMDDYY),
             array('-', 'Test!', DATE_FORMAT_MMDDYY),
             array('-', '02-29-07', DATE_FORMAT_DDMMYY),
+            array('-', '29-02-05', DATE_FORMAT_DDMMYY),
+            array('-', '31-04-05', DATE_FORMAT_DDMMYY),
             array('-', '2007-03-40', DATE_FORMAT_YYYYMMDD),
             array('-', 'This sentence contains 12-01-05.', DATE_FORMAT_MMDDYY)
         );
@@ -209,7 +212,14 @@ class DateUtilityTest extends TestCase
             array('/', '02/27/01', DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD, '2001/02/27'),
             array('-', '01-01-01', DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD, '2001-01-01'),
             array('-', '02-27-01', DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD, '2001-02-27'),
+            array('/', '22/02/07', DATE_FORMAT_DDMMYY, DATE_FORMAT_YYYYMMDD, '2007/02/22'),
+            array('-', '22-02-07', DATE_FORMAT_DDMMYY, DATE_FORMAT_YYYYMMDD, '2007-02-22'),
             array('-', '2002-01-30', DATE_FORMAT_YYYYMMDD, DATE_FORMAT_MMDDYY, '01-30-02'),
+            array('-', '2007-02-22', DATE_FORMAT_YYYYMMDD, DATE_FORMAT_DDMMYY, '22-02-07'),
+            array('-', '31-12-05', DATE_FORMAT_DDMMYY, DATE_FORMAT_MMDDYY, '12-31-05'),
+            array('-', '12-31-05', DATE_FORMAT_MMDDYY, DATE_FORMAT_DDMMYY, '31-12-05'),
+            array('-', 'invalid', DATE_FORMAT_DDMMYY, DATE_FORMAT_YYYYMMDD, '0000-00-00'),
+            array('-', 'invalid', DATE_FORMAT_DDMMYY, DATE_FORMAT_MMDDYY, '00-00-00'),
         );
 
         foreach ($dates as $key => $value)

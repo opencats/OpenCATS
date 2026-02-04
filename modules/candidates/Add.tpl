@@ -22,6 +22,10 @@
 
 <?php endif; ?>
 
+<script type="text/javascript">
+    window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
+</script>
+
             <p class="note<?php if ($this->isModal): ?>Unsized<?php endif; ?>">Basic Information</p>
 
             <table style="font-weight:bold; border: 1px solid #000; background-color: #ffed1a; padding:5px; display:none; margin-bottom:7px;" width="100%" id="candidateAlreadyInSystemTable">
@@ -298,10 +302,10 @@
                                     </a>
                                 </nobr>
                              <?php else: ?>
-                                <a href="<?php echo $this->associatedAttachmentRS['retrievalURL']; ?>">
+                                <a href="<?php echo htmlspecialchars($this->associatedAttachmentRS['retrievalURL'], ENT_QUOTES, HTML_ENCODING, false); ?>">
                                     <img src="<?php $this->_($this->associatedAttachmentRS['attachmentIcon']) ?>" alt="" width="16" height="16" style="border: none;" />
                                 </a>
-                                <a href="<?php echo $this->associatedAttachmentRS['retrievalURL']; ?>">
+                                <a href="<?php echo htmlspecialchars($this->associatedAttachmentRS['retrievalURL'], ENT_QUOTES, HTML_ENCODING, false); ?>">
                                     <?php $this->_($this->associatedAttachmentRS['originalFilename']) ?>
                                 </a>
                                 <?php echo($this->associatedAttachmentRS['previewLink']); ?>
@@ -425,7 +429,7 @@
                             <label id="dateAvailableLabel" for="dateAvailable">Date Available:</label>
                         </td>
                         <td class="tdData">
-                            <script type="text/javascript">DateInput('dateAvailable', false, 'MM-DD-YY', '', <?php echo($tabIndex++); ?>);</script>
+                            <script type="text/javascript">DateInput('dateAvailable', false, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '', <?php echo($tabIndex++); ?>);</script>
 
                             <?php /* DateInput()s take up 3 tabindexes. */ ?>
                             <?php $tabIndex += 2; ?>
