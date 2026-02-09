@@ -96,22 +96,6 @@ $date = sprintf(
     date('H:i:00', $time)
 );
 
-/* Highlight what needs highlighting. */
-if (strpos($activityNote, 'Status change: ') === 0)
-{
-    $pipelines = new Pipelines($siteID);
-
-    $statusRS = $pipelines->getStatusesForPicking();
-    foreach ($statusRS as $data)
-    {
-        $activityNote = StringUtility::replaceOnce(
-            $data['status'],
-            '<span style="color: #ff6c00;">' . $data['status'] . '</span>',
-            $activityNote
-        );
-    }
-}
-
 /* Save the new activity entry. */
 $activityEntries = new ActivityEntries($siteID);
 $activityEntries->update($activityID, $type, $activityNote, $jobOrderID, $date, $_SESSION['CATS']->getTimeZoneOffset());

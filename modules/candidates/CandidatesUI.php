@@ -2957,19 +2957,6 @@ class CandidatesUI extends UserInterface
 
             $activityNote = htmlspecialchars($activityNote);
 
-            // FIXME: Move this to a highlighter-method? */
-            if (strpos($activityNote, 'Status change: ') === 0)
-            {
-                foreach ($statusRS as $data)
-                {
-                    $activityNote = StringUtility::replaceOnce(
-                        $data['status'],
-                        '<span style="color: #ff6c00;">' . $data['status'] . '</span>',
-                        $activityNote
-                    );
-                }
-            }
-
             /* Add the activity entry. */
             $activityEntries = new ActivityEntries($this->_siteID);
             $activityID = $activityEntries->add(
