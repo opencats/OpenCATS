@@ -1059,6 +1059,32 @@ class TemplateUtility
     }
 
     /**
+     * Highlights status change activity notes for HTML output.
+     *
+     * @param string activity note text
+     * @return string updated activity note
+     */
+    public static function highlightStatusChangeActivityNote($notes)
+    {
+        $prefix = 'Status change: ';
+        if (strpos($notes, $prefix) !== 0)
+        {
+            return htmlspecialchars($notes, ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
+        }
+
+        $statusText = ltrim(substr($notes, strlen($prefix)));
+        if ($statusText === '')
+        {
+            return htmlspecialchars($notes, ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
+        }
+
+        return htmlspecialchars($prefix, ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING) .
+            '<span class="statusChangeHighlight">' .
+            htmlspecialchars($statusText, ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING) .
+            '</span>';
+    }
+
+    /**
      * Removes from $text everything from starting block through ending block.
      * Optionally also removes a following piece of text indicated by closing
      * tag.

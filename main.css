@@ -881,6 +881,11 @@ span.jobLinkSubmitted
     color: #ff6c00;
 }
 
+span.statusChangeHighlight
+{
+    color: #ff6c00;
+}
+
 a.jobLinkSubmitted:hover
 {
     text-decoration: underline;
