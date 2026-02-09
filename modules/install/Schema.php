@@ -1334,6 +1334,56 @@ class CATSSchema
                 COLLATE utf8_unicode_ci NOT NULL DEFAULT \'+1\'
                 AFTER `date_format_ddmmyy`;
             ',
+            '366' => 'PHP:
+                $lastActivityID = 0;
+                $batchSize = 200;
+                $highlightPattern = "/<span\\b(?=[^>]*\\bstyle\\s*=\\s*([\\\"\\\']).*?\\bcolor\\s*:\\s*#ff6c00\\s*;?.*?\\1)[^>]*>(.*?)<\\/span>/is";
+
+                while (true)
+                {
+                    $activityRS = $db->getAllAssoc(
+                        "SELECT
+                            activity_id,
+                            notes
+                         FROM
+                            activity
+                         WHERE
+                            activity_id > " . $lastActivityID . "
+                            AND notes LIKE \'%<span%\'
+                            AND notes LIKE \'%#ff6c00%\'
+                         ORDER BY
+                            activity_id ASC
+                         LIMIT " . $batchSize
+                    );
+
+                    if (empty($activityRS))
+                    {
+                        break;
+                    }
+
+                    foreach ($activityRS as $rowIndex => $row)
+                    {
+                        $updatedNotes = preg_replace($highlightPattern, \'$2\', $row[\'notes\']);
+
+                        if ($updatedNotes === null)
+                        {
+                            $lastActivityID = (int) $row[\'activity_id\'];
+                            continue;
+                        }
+
+                        if ($updatedNotes !== $row[\'notes\'])
+                        {
+                            $db->query(
+                                "UPDATE activity
+                                 SET notes = " . $db->makeQueryString($updatedNotes) . "
+                                 WHERE activity_id = " . (int) $row[\'activity_id\']
+                            );
+                        }
+
+                        $lastActivityID = (int) $row[\'activity_id\'];
+                    }
+                }
+            ',
 
         );
     }
