@@ -1056,7 +1056,7 @@ class CareersUI extends UserInterface
             $validator .= '
                 if (document.getElementById(\'address2\').value == \'\')
                 {
-                    alert(\'Please enter an address.\');
+                    alert(\'Please enter address line 2.\');
                     document.getElementById(\'address2\').focus();
                     return false;
                 }';
