@@ -327,7 +327,15 @@ class FileUtility
      */
     public static function getFileExtension($filename)
     {
-        return strtolower(substr($filename, strrpos($filename, '.') + 1));
+        $lastDotPosition = strrpos($filename, '.');
+
+        // Treat dotless names and dotfiles as having no extension.
+        if ($lastDotPosition === false || $lastDotPosition === 0)
+        {
+            return '';
+        }
+
+        return strtolower(substr($filename, $lastDotPosition + 1));
     }
 
     /**

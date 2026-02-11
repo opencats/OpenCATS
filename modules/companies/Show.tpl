@@ -2,7 +2,7 @@
 include_once('./vendor/autoload.php');
 use OpenCATS\UI\QuickActionMenu;
 ?>
-<?php TemplateUtility::printHeader('Company - '.$this->data['name'], array( 'js/sorttable.js', 'js/attachment.js')); ?>
+<?php TemplateUtility::printHeader('Company - '.$this->data['name'], array( 'js/sorttable.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">
@@ -51,8 +51,13 @@ use OpenCATS\UI\QuickActionMenu;
 
                             <tr>
                                 <td class="vertical">Address:</td>
-                                <td class="data"><?php echo(nl2br(htmlspecialchars($this->data['address']))); ?>&nbsp;
-                                <?php echo($this->data['googleMaps']); ?></td>
+                                <td class="data">
+                                    <?php echo(nl2br(htmlspecialchars($this->data['address']))); ?>
+                                    <?php if (!empty($this->data['address2'])): ?>
+                                        <br /><?php $this->_($this->data['address2']); ?>
+                                    <?php endif; ?>
+                                    &nbsp;<?php echo($this->data['googleMaps']); ?>
+                                </td>
                             </tr>
 
                             <tr>

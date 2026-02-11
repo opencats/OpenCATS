@@ -290,8 +290,10 @@ class CompaniesUI extends UserInterface
         /* Link to Google Maps for this address */
         if (!empty($data['address']) && !empty($data['city']) && !empty($data['state']))
         {
+            $addressParts = array($data['address']);
+            if (!empty($data['address2'])) $addressParts[] = $data['address2'];
             $data['googleMaps'] = '<a href="http://maps.google.com/maps?q=' .
-                     urlencode($data['address']) . '+' .
+                     urlencode(implode(' ', $addressParts)) . '+' .
                      urlencode($data['city'])     . '+' .
                      urlencode($data['state']);
 
@@ -540,6 +542,7 @@ class CompaniesUI extends UserInterface
 
         $name            = $this->getSanitisedInput('name', $_POST);
         $address         = $this->getSanitisedInput('address', $_POST);
+        $address2        = $this->getSanitisedInput('address2', $_POST);
         $city            = $this->getSanitisedInput('city', $_POST);
         $state           = $this->getSanitisedInput('state', $_POST);
         $zip             = $this->getSanitisedInput('zip', $_POST);
@@ -560,7 +563,7 @@ class CompaniesUI extends UserInterface
 
         $companies = new Companies($this->_siteID);
         $companyID = $companies->add(
-            $name, $address, $city, $state, $zip, $phone1,
+            $name, $address, $address2, $city, $state, $zip, $phone1,
             $phone2, $faxNumber, $url, $keyTechnologies, $isHot,
             $notes, $this->_userID, $this->_userID
         );
@@ -811,6 +814,7 @@ class CompaniesUI extends UserInterface
 
         $name            = $this->getSanitisedInput('name', $_POST);
         $address         = $this->getSanitisedInput('address', $_POST);
+        $address2        = $this->getSanitisedInput('address2', $_POST);
         $city            = $this->getSanitisedInput('city', $_POST);
         $state           = $this->getSanitisedInput('state', $_POST);
         $zip             = $this->getSanitisedInput('zip', $_POST);
@@ -835,7 +839,7 @@ class CompaniesUI extends UserInterface
         );
         $companies->updateDepartments($companyID, $departmentsDifferences);
 
-        if (!$companies->update($companyID, $name, $address, $city, $state,
+        if (!$companies->update($companyID, $name, $address, $address2, $city, $state,
             $zip, $phone1, $phone2, $faxNumber, $url, $keyTechnologies,
             $isHot, $notes, $owner, $billingContact, $email, $emailAddress))
         {
@@ -853,7 +857,7 @@ class CompaniesUI extends UserInterface
             if ($_POST['updateContacts'] == 'yes')
             {
                 $contacts = new Contacts($this->_siteID);
-                $contacts->updateByCompany($companyID, $address, $city, $state, $zip);
+                $contacts->updateByCompany($companyID, $address, $address2, $city, $state, $zip);
             }
         }
 

@@ -224,7 +224,8 @@ class CareersUI extends UserInterface
             /* Replace input fields. */
             $content = str_replace('<input-firstName>', '<input name="firstName" id="firstName" class="inputBoxName" value="' . $candidate['firstName'] . '" />', $content);
             $content = str_replace('<input-lastName>', '<input name="lastName" id="lastName" class="inputBoxName" value="' . $candidate['lastName'] . '" />', $content);
-            $content = str_replace('<input-address>', '<textarea name="address" class="inputBoxArea">'. $candidate['address'] .'</textarea>', $content);
+            $content = str_replace('<input-address>', '<input name="address" id="address" class="inputBoxNormal" value="' . $candidate['address'] . '" />', $content);
+            $content = str_replace('<input-address2>', '<input name="address2" id="address2" class="inputBoxNormal" value="' . $candidate['address2'] . '" />', $content);
             $content = str_replace('<input-city>', '<input name="city" id="city" class="inputBoxNormal" value="' . $candidate['city'] . '" />', $content);
             $content = str_replace('<input-state>', '<input name="state" id="state" class="inputBoxNormal" value="' . $candidate['state'] . '" />', $content);
             $content = str_replace('<input-zip>', '<input name="zip" id="zip" class="inputBoxNormal" value="' . $candidate['zip'] . '" />', $content);
@@ -268,7 +269,7 @@ class CareersUI extends UserInterface
             }
 
             // Get the fields (if included in the template) to update
-            $fields = array('firstName', 'lastName', 'email1', 'phoneHome', 'phoneCell', 'phoneWork', 'address',
+            $fields = array('firstName', 'lastName', 'email1', 'phoneHome', 'phoneCell', 'phoneWork', 'address', 'address2',
                 'city', 'state', 'zip', 'keySkills', 'currentEmployer', 'bestTimeToCall'
             );
             $fieldValues = array();
@@ -307,6 +308,7 @@ class CareersUI extends UserInterface
                 $phoneCell,
                 $phoneWork,
                 $address,
+                $address2,
                 $city,
                 $state,
                 $zip,
@@ -415,6 +417,7 @@ class CareersUI extends UserInterface
             $firstName = isset($_POST[$id='firstName']) ? $_POST[$id] : '';
             $lastName = isset($_POST[$id='lastName']) ? $_POST[$id] : '';
             $address = isset($_POST[$id='address']) ? $_POST[$id] : '';
+            $address2 = isset($_POST[$id='address2']) ? $_POST[$id] : '';
             $city = isset($_POST[$id='city']) ? $_POST[$id] : '';
             $state = isset($_POST[$id='state']) ? $_POST[$id] : '';
             $zip = isset($_POST[$id='zip']) ? $_POST[$id] : '';
@@ -444,6 +447,7 @@ class CareersUI extends UserInterface
                     // The candidate is registered
                     $firstName = $candidate['firstName']; $lastName = $candidate['lastName'];
                     $address = $candidate['address'];
+                    $address2 = $candidate['address2'];
                     $city = $candidate['city'];
                     $state = $candidate['state'];
                     $zip = $candidate['zip'];
@@ -478,6 +482,7 @@ class CareersUI extends UserInterface
                         // Rewrite here, I'll fix it later
                         $firstName = $candidate['firstName']; $lastName = $candidate['lastName'];
                         $address = $candidate['address'];
+                        $address2 = $candidate['address2'];
                         $city = $candidate['city'];
                         $state = $candidate['state'];
                         $zip = $candidate['zip'];
@@ -581,7 +586,8 @@ class CareersUI extends UserInterface
             $template['Content'] = str_replace('<title>', $jobOrderData['title'], $template['Content']);
             $template['Content'] = str_replace('<input-firstName>', '<input name="firstName" id="firstName" class="inputBoxName" value="' . $firstName . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-lastName>', '<input name="lastName" id="lastName" class="inputBoxName" value="' . $lastName . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-address>', '<textarea name="address" class="inputBoxArea">'. $address .'</textarea>', $template['Content']);
+            $template['Content'] = str_replace('<input-address>', '<input name="address" id="address" class="inputBoxNormal" value="' . $address . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-address2>', '<input name="address2" id="address2" class="inputBoxNormal" value="' . $address2 . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-city>', '<input name="city" id="city" class="inputBoxNormal" value="' . $city . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-state>', '<input name="state" id="state" class="inputBoxNormal" value="' . $state . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-zip>', '<input name="zip" id="zip" class="inputBoxNormal" value="' . $zip . '" />', $template['Content']);
@@ -1036,6 +1042,17 @@ class CareersUI extends UserInterface
                 }';
         }
 
+        if (strpos($template['Content'], '<input-address2 req>') !== false)
+        {
+            $validator .= '
+                if (document.getElementById(\'address2\').value == \'\')
+                {
+                    alert(\'Please enter an address.\');
+                    document.getElementById(\'address2\').focus();
+                    return false;
+                }';
+        }
+
         if (strpos($template['Content'], '<input-city req>') !== false)
         {
             $validator .= '
@@ -1214,6 +1231,7 @@ class CareersUI extends UserInterface
         $email          = $this->getSanitisedInput('email', $_POST);
         $email2         = $this->getSanitisedInput('email2', $_POST);
         $address        = $this->getSanitisedInput('address', $_POST);
+        $address2       = $this->getSanitisedInput('address2', $_POST);
         $city           = $this->getSanitisedInput('city', $_POST);
         $state          = $this->getSanitisedInput('state', $_POST);
         $zip            = $this->getSanitisedInput('zip', $_POST);
@@ -1263,7 +1281,7 @@ class CareersUI extends UserInterface
          * Save basic information in a cookie in case the site is using registration to
          * process repeated postings, etc.
          */
-        $fields = array('firstName', 'lastName', 'email', 'address', 'city', 'state', 'zip', 'phone',
+        $fields = array('firstName', 'lastName', 'email', 'address', 'address2', 'city', 'state', 'zip', 'phone',
             'phoneHome', 'phoneCell'
         );
         $storedVal = '';
@@ -1283,7 +1301,7 @@ class CareersUI extends UserInterface
             // Candidate exists and registered. Update their profile with new values (if provided)
             $candidates->update(
                 $candidateID, $candidate['isActive'] ? true : false, $firstName, $middleName,
-                $lastName, $email, $email2, $phoneHome, $phoneCell, $phone, $address, $city,
+                $lastName, $email, $email2, $phoneHome, $phoneCell, $phone, $address, $address2, $city,
                 $state, $zip, $source, $keySkills, '', $employer, '', '', '', $candidate['notes'],
                 '', $bestTimeToCall, $automatedUser['userID'], $automatedUser['userID'], $gender,
                 $race, $veteran, $disability
@@ -1311,6 +1329,7 @@ class CareersUI extends UserInterface
                 $phoneCell,
                 $phone,
                 $address,
+                $address2,
                 $city,
                 $state,
                 $zip,

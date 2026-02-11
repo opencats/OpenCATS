@@ -1,5 +1,5 @@
 <?php /* $Id: Questionnaire.tpl 3668 2007-11-21 00:38:50Z brian $ */ ?>
-<?php TemplateUtility::printHeader('Candidate - '.$this->cData['firstName'].' '.$this->cData['lastName'] . ' Questionnaire', array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js', 'js/attachment.js')); ?>
+<?php TemplateUtility::printHeader('Candidate - '.$this->cData['firstName'].' '.$this->cData['lastName'] . ' Questionnaire', array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js')); ?>
 <?php if (!$this->print): ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
@@ -43,6 +43,9 @@
                         <b>Candidate Information:</b><br />
                         <?php echo $this->cData['lastName'] . ', ' . $this->cData['firstName']; ?><br />
                         <?php echo $this->cData['address']; ?><br />
+                        <?php if (!empty($this->cData['address2'])): ?>
+                            <?php echo $this->cData['address2']; ?><br />
+                        <?php endif; ?>
                         <?php echo ($str = $this->cData['city'] . ' ' . $this->cData['state'] . ' ' . $this->cData['zip']) . strlen($str) > 2 ? '<br />' : ''; ?>
                         <?php echo ($str = $this->cData['phoneHome'] . ' ' . $this->cData['phoneWork'] . ' ' . $this->cData['phoneCell']) . strlen($str) > 2 ? '<br />' : ''; ?>
                         <a style="font-size: 16px;" href="mailto:<?php echo ($str = $this->cData['email1']); ?>"><?php echo $this->cData['email1']; ?></a><?php echo strlen($str) > 0 ? '<br />' : ''; ?>

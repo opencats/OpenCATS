@@ -468,6 +468,16 @@
                                                         </select>
                                                     </td>
                                                 </tr>
+                                                <tr>
+                                                    <td>Please enter your default phone country calling code.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <span>+</span>
+                                                        <input type="text" name="defaultPhoneCountryCodeDigits" id="defaultPhoneCountryCodeDigits" value="" size="5" maxlength="5" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                                        />
+                                                    </td>
+                                                </tr>
                                             </table>
                                             <br />
                                             <br />

@@ -111,10 +111,10 @@ EOF;
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
             );
-        $this->assertSame($phoneNumbers['cellPhone'], '743-959-6344');
-        $this->assertSame($phoneNumbers['homePhone'], '743-450-3855');
+        $this->assertSame($phoneNumbers['cellPhone'], '+17439596344');
+        $this->assertSame($phoneNumbers['homePhone'], '+17434503855');
         $this->assertSame($phoneNumbers['workPhone'], '');
-        $this->assertSame($phoneNumbers['fax'], '743-450-3333');
+        $this->assertSame($phoneNumbers['fax'], '+17434503333');
     }
 
     function testSampleAddress2()
@@ -146,7 +146,7 @@ EOF;
             $parsedAddressArray['phoneNumbers']
             );
         $this->assertSame($phoneNumbers['cellPhone'], '');
-        $this->assertSame($phoneNumbers['homePhone'], '962-398-0687');
+        $this->assertSame($phoneNumbers['homePhone'], '+19623980687');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '');
     }
@@ -183,9 +183,9 @@ EOF;
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
             );
-        $this->assertSame($phoneNumbers['cellPhone'], '586-299-2513');
+        $this->assertSame($phoneNumbers['cellPhone'], '+15862992513');
         $this->assertSame($phoneNumbers['homePhone'], '');
-        $this->assertSame($phoneNumbers['workPhone'], '444-300-2929');
+        $this->assertSame($phoneNumbers['workPhone'], '+14443002929');
         $this->assertSame($phoneNumbers['fax'], '');
     }
 
@@ -221,9 +221,9 @@ EOF;
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
             );
-        $this->assertSame($phoneNumbers['cellPhone'], '817-715-6875');
-        $this->assertSame($phoneNumbers['homePhone'], '817-303-3864');
-        $this->assertSame($phoneNumbers['workPhone'], '817-393-3899');
+        $this->assertSame($phoneNumbers['cellPhone'], '+18177156875');
+        $this->assertSame($phoneNumbers['homePhone'], '+18173033864');
+        $this->assertSame($phoneNumbers['workPhone'], '+18173933899');
         $this->assertSame($phoneNumbers['fax'], '');
     }
 
@@ -259,7 +259,7 @@ EOF;
             $parsedAddressArray['phoneNumbers']
             );
         $this->assertSame($phoneNumbers['cellPhone'], '');
-        $this->assertSame($phoneNumbers['homePhone'], '305-777-1222');
+        $this->assertSame($phoneNumbers['homePhone'], '+13057771222');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '');
     }
@@ -379,8 +379,8 @@ EOF;
         $phoneNumbers = $this->makePhoneNumberArray(
             $parsedAddressArray['phoneNumbers']
             );
-        $this->assertSame($phoneNumbers['cellPhone'], '641-244-8444');
-        $this->assertSame($phoneNumbers['homePhone'], '641-748-2441');
+        $this->assertSame($phoneNumbers['cellPhone'], '+16412448444');
+        $this->assertSame($phoneNumbers['homePhone'], '+16417482441');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '');
     }
@@ -505,7 +505,7 @@ EOF;
             $parsedAddressArray['phoneNumbers']
             );
         $this->assertSame($phoneNumbers['cellPhone'], '');
-        $this->assertSame($phoneNumbers['homePhone'], '641-748-2441');
+        $this->assertSame($phoneNumbers['homePhone'], '+16417482441');
         $this->assertSame($phoneNumbers['workPhone'], '');
         $this->assertSame($phoneNumbers['fax'], '');
     }
@@ -537,9 +537,9 @@ EOF;
             $parsedAddressArray['phoneNumbers']
             );
         $this->assertSame($phoneNumbers['cellPhone'], '');
-        $this->assertSame($phoneNumbers['homePhone'], '641-748-2441');
+        $this->assertSame($phoneNumbers['homePhone'], '+16417482441');
         $this->assertSame($phoneNumbers['workPhone'], '');
-        $this->assertSame($phoneNumbers['fax'], '555-444-5555');
+        $this->assertSame($phoneNumbers['fax'], '+15554445555');
     }
 
     function testSampleAddress15()
@@ -570,9 +570,9 @@ EOF;
             $parsedAddressArray['phoneNumbers']
             );
         $this->assertSame($phoneNumbers['cellPhone'], '');
-        $this->assertSame($phoneNumbers['homePhone'], '641-748-2441');
+        $this->assertSame($phoneNumbers['homePhone'], '+16417482441');
         $this->assertSame($phoneNumbers['workPhone'], '');
-        $this->assertSame($phoneNumbers['fax'], '444-345-4444');
+        $this->assertSame($phoneNumbers['fax'], '+14443454444');
     }
 
 
@@ -609,7 +609,7 @@ EOF;
         $this->assertSame($phoneNumbers['cellPhone'], '');
         $this->assertSame($phoneNumbers['homePhone'], '');
         $this->assertSame($phoneNumbers['workPhone'], '');
-        $this->assertSame($phoneNumbers['fax'], '614-444-4555');
+        $this->assertSame($phoneNumbers['fax'], '+16144444555');
     }
 
     function testSampleAddressCompany2()

@@ -40,13 +40,13 @@
                             <?php foreach ($this->attachmentsRS as $rowNumber => $attachmentsData): ?>
                                 <tr>
                                     <td>
-                                        <a href="<?php echo $attachmentsData['retrievalURL']; ?>">
+                                        <a href="<?php echo htmlspecialchars($attachmentsData['retrievalURL'], ENT_QUOTES, HTML_ENCODING, false); ?>">
                                             <img src="images/file/zip.gif" alt="" width="16" height="16" border="0" />
                                         </a>
                                     </td>
                                     <td>
                                         (<?php $this->_($attachmentsData['fileSize']) ?>)&nbsp;
-                                        <a href="<?php echo $attachmentsData['retrievalURLLocal']; ?>">
+                                        <a href="<?php echo htmlspecialchars($attachmentsData['retrievalURL'], ENT_QUOTES, HTML_ENCODING, false); ?>">
                                             <?php $this->_($attachmentsData['originalFilename']) ?>
                                         </a>
                                     </td>
