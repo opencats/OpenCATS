@@ -2,6 +2,9 @@
 <?php TemplateUtility::printHeader('Calendar', array('modules/calendar/Calendar.css', 'js/highlightrows.js', 'modules/calendar/Calendar.js', 'modules/calendar/CalendarUI.js', 'modules/calendar/validator.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
+    <script type="text/javascript">
+        window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
+    </script>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -84,7 +87,7 @@
                                                     <label id="dateLabel" for="date">Date:</label>
                                                 </td>
                                                 <td nowrap="nowrap" class="tdData">
-                                                    <script type="text/javascript">DateInput('dateAdd', true, 'MM-DD-YY', '<?php echo($this->currentDateMDY); ?>', -1);</script>
+                                                    <script type="text/javascript">DateInput('dateAdd', true, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '<?php echo($_SESSION['CATS']->isDateDMY() ? DateUtility::getAdjustedDate('d-m-y') : $this->currentDateMDY); ?>', -1);</script>
                                                 </td>
                                             </tr>
 
@@ -234,7 +237,7 @@
                                                     <label id="dateLabel" for="date">Date:</label>
                                                 </td>
                                                 <td nowrap="nowrap" class="tdData">
-                                                    <script type="text/javascript">DateInput('dateEdit', true, 'MM-DD-YY', '<?php echo($this->currentDateMDY); ?>', -1);</script>
+                                                    <script type="text/javascript">DateInput('dateEdit', true, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '<?php echo($_SESSION['CATS']->isDateDMY() ? DateUtility::getAdjustedDate('d-m-y') : $this->currentDateMDY); ?>', -1);</script>
                                                 </td>
                                             </tr>
 

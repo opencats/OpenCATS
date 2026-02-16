@@ -8,7 +8,7 @@ In order to give the community time to respond and upgrade we strongly urge you 
 
 ### Password Storage
 
-OpenCATS uses MD5 hashing to store passwords. This will be replaced in future versions
+OpenCATS hashes user passwords using PHP’s password_hash() and verifies them with password_verify(), using PASSWORD_DEFAULT (the default algorithm selected by the running PHP version).
 
 ### XSS
 

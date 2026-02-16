@@ -34,7 +34,7 @@ Feature: Login
   Scenario: Login as administrator
     Given I am on "/"
     And I fill in "Username" with "admin"
-    And I fill in "Password" with "admin"
+    And I fill in "Password" with "cats"
     When I press "Login"
     Then I should not see "Invalid username or password"
     And I should see "Administrator"

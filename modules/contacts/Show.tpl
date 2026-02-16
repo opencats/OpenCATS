@@ -3,9 +3,12 @@
 include_once('./vendor/autoload.php');
 use OpenCATS\UI\QuickActionMenu;
 ?>
-<?php TemplateUtility::printHeader('Contact - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js', 'js/attachment.js')); ?>
+<?php TemplateUtility::printHeader('Contact - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
+    <script type="text/javascript">
+        window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
+    </script>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -123,7 +126,12 @@ use OpenCATS\UI\QuickActionMenu;
 
                             <tr>
                                 <td class="vertical">Address:</td>
-                                <td class="data"><?php echo(nl2br(htmlspecialchars($this->data['address']))); ?></td>
+                                <td class="data">
+                                    <?php echo(nl2br(htmlspecialchars($this->data['address']))); ?>
+                                    <?php if (!empty($this->data['address2'])): ?>
+                                        <br /><?php $this->_($this->data['address2']); ?>
+                                    <?php endif; ?>
+                                </td>
                             </tr>
 
                             <tr>
@@ -265,7 +273,7 @@ use OpenCATS\UI\QuickActionMenu;
                 <tr>
                     <th align="left" width="125">Date</th>
                     <th align="left" width="90">Type</th>
-                    <th align="left" width="90">Entered</th>
+                    <th align="left" width="90">Entered By</th>
                     <th align="left" width="250">Regarding</th>
                     <th align="left">Notes</th>
                     <th align="left" width="40">Action</th>

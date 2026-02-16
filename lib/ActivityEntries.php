@@ -493,6 +493,69 @@ class ActivityEntries
     }
 
     /**
+     * Returns all activity entries for contacts belonging to a company.
+     *
+     * @param integer Company ID.
+     * @return resultset Activity entries data.
+     */
+    public function getAllByCompany($companyID)
+    {
+        $sql = sprintf(
+            "SELECT
+                activity.activity_id AS activityID,
+                activity.data_item_id AS dataItemID,
+                activity.joborder_id AS jobOrderID,
+                activity.notes AS notes,
+                DATE_FORMAT(
+                    activity.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                ) AS dateCreated,
+                activity.date_created AS dateCreatedSort,
+                activity.type AS type,
+                activity_type.short_description AS typeDescription,
+                entered_by_user.first_name AS enteredByFirstName,
+                entered_by_user.last_name AS enteredByLastName,
+                contact.contact_id AS contactID,
+                contact.first_name AS contactFirstName,
+                contact.last_name AS contactLastName,
+                IF(
+                    ISNULL(joborder.title),
+                    'General',
+                    CONCAT(joborder.title, ' (', company.name, ')')
+                ) AS regarding,
+                joborder.title AS regardingJobTitle,
+                company.name AS regardingCompanyName
+            FROM
+                activity
+            LEFT JOIN user AS entered_by_user
+                ON activity.entered_by = entered_by_user.user_id
+            LEFT JOIN activity_type
+                ON activity.type = activity_type.activity_type_id
+            LEFT JOIN joborder
+                ON activity.joborder_id = joborder.joborder_id
+            LEFT JOIN company
+                ON joborder.company_id = company.company_id
+            INNER JOIN contact
+                ON activity.data_item_id = contact.contact_id
+            WHERE
+                contact.company_id = %s
+            AND
+                activity.data_item_type = %s
+            AND
+                activity.site_id = %s
+            AND
+                contact.site_id = %s
+            ORDER BY
+                dateCreatedSort ASC",
+            $this->_db->makeQueryInteger($companyID),
+            $this->_db->makeQueryInteger(DATA_ITEM_CONTACT),
+            $this->_db->makeQueryInteger($this->_siteID),
+            $this->_db->makeQueryInteger($this->_siteID)
+        );
+
+        return $this->_db->getAllAssoc($sql);
+    }
+
+    /**
      * Returns all activity types and their descriptions.
      *
      * @return resultset Activity type IDs and descriptions.

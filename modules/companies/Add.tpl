@@ -19,7 +19,7 @@
                 <input type="hidden" name="postback" id="postback" value="postback" />
 
                 <p class="noteUnsized">Basic Information</p>
-                <table class="editTable" width="100%">
+                <table class="editTable">
                     <tr>
                         <td class="tdVertical">
                             <label id="nameLabel" for="name">Company Name:</label>
@@ -38,7 +38,6 @@
                             <?php eval(Hooks::get('CANDIDATE_TEMPLATE_BELOW_FREEFORM')); ?>
                             <?php echo($freeformBottom); ?>
                         </td>
-                        <td width="200"></td>
                     </tr>
                     
                     <tr>
@@ -75,7 +74,16 @@
                             <label id="addressLabel" for="address">Address:</label>
                         </td>
                         <td class="tdData">
-                            <textarea name="address" id="address" class="inputbox" style="width: 150px"></textarea>
+                            <input type="text" name="address" id="address" class="inputbox" style="width: 150px" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="tdVertical">
+                            <label id="address2Label" for="address2">Address 2:</label>
+                        </td>
+                        <td class="tdData">
+                            <input type="text" name="address2" id="address2" class="inputbox" style="width: 150px" />
                         </td>
                     </tr>
 
@@ -141,9 +149,9 @@
                     </tr>
                 </table>
 
-                <p class="noteUnsized" style="margin-top: 5px;">Other</p>
+                <p class="note">Other</p>
 
-                <table class="editTable" width="100%">
+                <table class="editTable">
                     
                     <?php for ($i = 0; $i < count($this->extraFieldRS); $i++): ?>
                         <tr>

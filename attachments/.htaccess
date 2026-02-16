@@ -1,8 +1,15 @@
-AddHandler cgi-script .php .php2 .php3 .php4 .php5 .php6 .php7 .php8 .php9 .pl .py .js .jsp .asp .htm .html .$
-
 Options -ExecCGI -Indexes
 
-#grant access only if files with specific extensions are uploaded
-  <FilesMatch "(?i)\.(bmp|csv|doc|docx|heic|html|jpeg|jpg|msg|odg|odt|pages|pdf|png|ppt|pptx|rtf|tiff|wpd|wps|xls|xlsx|xps)$">
-    Require all granted
-  </FilesMatch>
+# Deny all direct HTTP access to files stored in this directory.
+# Attachments must be served through the application (AttachmentsUI) so that authentication and authorization checks are always enforced.
+
+# For Apache 2.4 and later (using mod_authz_core): deny all requests to this directory.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+
+# For older Apache versions or when mod_authz_core is not available: use the legacy access control syntax to deny all requests to this directory.
+<IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+</IfModule>

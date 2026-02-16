@@ -224,7 +224,8 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
 
         /* Create the cell that will contain the edit form. */
         var editTD = document.createElement('td');
-        editTD.setAttribute('colspan', '6');
+        var columnCount = editRow.cells.length;
+        editTD.setAttribute('colspan', columnCount.toString());
         editTD.setAttribute('valign', 'top');
         editTD.setAttribute('align',  'left');
 
@@ -274,7 +275,8 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
         /* Date editor. */
         var dateSpan = document.createElement('span');
         var dateAndTime = unEscapeHTML(dateTD.innerHTML.replace(/(<([^>]+)>)/ig,""));
-        dateSpan.innerHTML = DateInputForDOM('dateEditActivity' + activityID, true, 'MM-DD-YY', dateAndTime.substr(0,dateAndTime.indexOf(' ')), -1);
+        var userDateFormat = (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY');
+        dateSpan.innerHTML = DateInputForDOM('dateEditActivity' + activityID, true, userDateFormat, dateAndTime.substr(0,dateAndTime.indexOf(' ')), -1);
 
         var timeString = dateAndTime.substr(dateAndTime.indexOf(' ')+2);
         var hourString = timeString.substr(0,timeString.indexOf(':'));

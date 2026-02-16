@@ -6,6 +6,7 @@ class Company
     private $siteId;
     private $name;
     private $address;
+    private $address2;
     private $city;
     private $state;
     private $zipCode;
@@ -43,6 +44,16 @@ class Company
     function getAddress()
     {
         return $this->address;
+    }
+
+    function setAddress2($value)
+    {
+        $this->address2 = $value;
+    }
+
+    function getAddress2()
+    {
+        return $this->address2;
     }
     
     function setCity($value)
@@ -173,6 +184,7 @@ class Company
         $siteId,
         $name,
         $address,
+        $address2,
         $city,
         $state,
         $zipCode,
@@ -189,6 +201,7 @@ class Company
     {
         $company = new Company($siteId, $name);
         $company->setAddress($address);
+        $company->setAddress2($address2);
         $company->setCity($city);
         $company->setState($state);
         $company->setZipCode($zipCode);

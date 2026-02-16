@@ -119,44 +119,167 @@ class StringUtility
         return false;
     }
 
+	/**
+	 * Returns the first phone number that could be extracted from a string.
+	 *
+	 * Uses the new E.164-based implementation. The previous NANP-specific
+	 * implementation is kept below as commented legacy code to support
+	 * future refactoring.
+	 *
+	 * @param string $string String to test.
+	 * @return string Phone number or '' if not found.
+	 */
+	public static function extractPhoneNumber($string)
+	{
+		/*
+		 * Legacy NANP-based implementation kept for reference during
+		 * refactoring.
+		 *
+		 * if (preg_match('/'
+		 *     . self::matchPHECountryCode . self::matchPHSeparator . self::matchPHEAreaCode
+		 *     . self::matchPHSeparator    . self::matchPHEExchange . self::matchPHSeparator
+		 *     . self::matchPHENumber      . self::matchPHSeparator . self::matchPHEExtension
+		 *     . '/i', $string, $matches))
+		 * {
+		 *     // Do not format international phone numbers.
+		 *     if (!empty($matches['countryCode']) && ($matches['countryCode'] != '1'))
+		 *     {
+		 *         return $string;
+		 *     }
+		 *
+		 *     $formattedPhoneNumber = sprintf(
+		 *         '%s-%s-%s',
+		 *         $matches['areaCode'],
+		 *         $matches['exchange'],
+		 *         $matches['number']
+		 *     );
+		 *
+		 *     if (isset($matches['extension']) && !empty($matches['extension']))
+		 *     {
+		 *         $formattedPhoneNumber .= ' x ' . $matches['extension'];
+		 *     }
+		 *
+		 *     return $formattedPhoneNumber;
+		 * }
+		 *
+		 * return '';
+		 */
+
+		return self::extractPhoneNumberE164($string);
+	}
+
     /**
-     * Returns the first phone number that could be extracted from a string.
+     * Returns the first phone number that could be extracted from a string
+     * and normalizes it to E.164 where possible.
      *
-     * @param string to test
-     * @return string phone number or '' if not found
+     * @param string $string String to test.
+     * @return string Normalized E.164 phone number or '' if not found.
      */
-    public static function extractPhoneNumber($string)
+    private static function extractPhoneNumberE164($string)
     {
-        if (preg_match('/'
-            . self::matchPHECountryCode . self::matchPHSeparator . self::matchPHEAreaCode
-            . self::matchPHSeparator    . self::matchPHEExchange . self::matchPHSeparator
-            . self::matchPHENumber      . self::matchPHSeparator . self::matchPHEExtension
-            . '/i', $string, $matches))
+        /* 1) Trim leading / trailing whitespace. */
+        $string = trim((string) $string);
+
+        /* 2) Replace leading "00" with "+" (0049... -> +49...). */
+        if (strpos($string, '00') === 0)
         {
-            //print_r($matches);
-
-            /* Don't format international phone numbers. */
-            if (!empty($matches['countryCode']) && ($matches['countryCode'] != '1'))
-            {
-                return $string;
-            }
-
-            $formattedPhoneNumber = sprintf(
-                "%s-%s-%s",
-                $matches['areaCode'],
-                $matches['exchange'],
-                $matches['number']
-            );
-
-            if (isset($matches['extension']) && !empty($matches['extension']))
-            {
-                $formattedPhoneNumber .= ' x ' . $matches['extension'];
-            }
-
-            return $formattedPhoneNumber;
+            $string = '+' . substr($string, 2);
         }
 
-        return '';
+        /*
+         * 3) Remove all characters except digits and '+'.
+         *    This strips spaces, '-', '/', '()', '.', etc.
+         */
+        $string = preg_replace('/[^0-9+]/', '', $string);
+
+        /*
+         * 4) If there are no digits (and no '+' sign) left after normalization,
+         * we treat this as "no phone number found".
+         */
+        if ($string === '')
+        {
+            return '';
+        }
+
+        /*
+         * 5) If the value already starts with '+', assume that the caller
+         *    provided a full international number in E.164 format.
+         */
+        if ($string[0] === '+')
+        {
+            return $string;
+        }
+
+        /*
+         * 6) Local number:
+         *    - determine the default country calling code
+         *    - strip leading trunk zeros
+         *    - build the E.164 representation
+         */
+        $countryCode = self::getDefaultPhoneCountryCode();
+
+        if ($countryCode === '')
+        {
+            /*
+             * No configuration available; we cannot safely build an
+             * E.164 number. Returning an empty string makes this
+             * failure explicit.
+             */
+            return '';
+        }
+
+        $nationalNumber = ltrim($string, '0');
+
+        if ($nationalNumber === '')
+        {
+            /* Input consisted only of zeros – treat as invalid. */
+            return '';
+        }
+
+        return $countryCode . $nationalNumber;
+    }
+
+    /**
+     * Returns the default phone country calling code (E.164) for the
+     * current site.
+     *
+     * The value is obtained from the active session if available. If no
+     * usable configuration can be read, a hard-coded fallback is returned
+     * to keep the behaviour predictable.
+     *
+     * @return string E.164 country calling code (for example "+49").
+     */
+    private static function getDefaultPhoneCountryCode()
+    {
+        /*
+         * Try to read the default phone country code from the current
+         * session. This requires the Session class to expose a
+         * getDefaultPhoneCountryCode() method which returns the value
+         * stored in the "site" table.
+         */
+        if (isset($_SESSION['CATS'])
+            && method_exists($_SESSION['CATS'], 'getDefaultPhoneCountryCode'))
+        {
+            $code = trim((string) $_SESSION['CATS']->getDefaultPhoneCountryCode());
+
+            /*
+             * Basic sanity check: the value must start with '+' and
+             * contain at least one digit. More strict validation is
+             * performed when the value is saved in the administration UI.
+             */
+            if ($code !== '' && preg_match('/^\+[0-9]+$/', $code))
+            {
+                return $code;
+            }
+        }
+
+        /*
+         * Fallback: if no usable configuration is available we return the
+         * original NANP-style default of "+1". This keeps behaviour
+         * predictable for existing installations that have not yet
+         * configured a different default.
+         */
+        return '+1';
     }
 
     /**

@@ -1,4 +1,3 @@
-version: '2'
 services:
     opencats:
       container_name: opencats_test_web
@@ -20,8 +19,6 @@ services:
       image: busybox
       volumes:
         - ..:/var/www/public
-        - ../test/config.php:/var/www/public/config.php
-        - ../test/INSTALL_BLOCK:/var/www/public/INSTALL_BLOCK
       command: "true"
 
     opencatsdb:

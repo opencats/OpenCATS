@@ -7,6 +7,7 @@ class CompanyTest extends TestCase
     const COMPANY_NAME = "Test Company Name";
     const SITE_ID = -1;
     const ADDRESS = "O'Higgins 123";
+    const ADDRESS2 = "Apt 4B";
     const CITY = "Colonia";
     const STATE = "Maldonado";
     const ZIP_CODE = "31337";
@@ -40,6 +41,12 @@ class CompanyTest extends TestCase
     {
         $this->company->setAddress(self::ADDRESS);
         $this->assertEquals(self::ADDRESS, $this->company->getAddress());
+    }
+
+    function test_Company_SetAddress2_CompanyInstanceHasAddress2()
+    {
+        $this->company->setAddress2(self::ADDRESS2);
+        $this->assertEquals(self::ADDRESS2, $this->company->getAddress2());
     }
     
     function test_Company_SetCity_CompanyInstanceHasCity()

@@ -2,7 +2,7 @@
 include_once('./vendor/autoload.php');
 use OpenCATS\UI\QuickActionMenu;
 ?>
-<?php TemplateUtility::printHeader('Company - '.$this->data['name'], array( 'js/sorttable.js', 'js/attachment.js')); ?>
+<?php TemplateUtility::printHeader('Company - '.$this->data['name'], array( 'js/activity.js', 'js/sorttable.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <div id="main">
@@ -51,8 +51,13 @@ use OpenCATS\UI\QuickActionMenu;
 
                             <tr>
                                 <td class="vertical">Address:</td>
-                                <td class="data"><?php echo(nl2br(htmlspecialchars($this->data['address']))); ?>&nbsp;
-                                <?php echo($this->data['googleMaps']); ?></td>
+                                <td class="data">
+                                    <?php echo(nl2br(htmlspecialchars($this->data['address']))); ?>
+                                    <?php if (!empty($this->data['address2'])): ?>
+                                        <br /><?php $this->_($this->data['address2']); ?>
+                                    <?php endif; ?>
+                                    &nbsp;<?php echo($this->data['googleMaps']); ?>
+                                </td>
                             </tr>
 
                             <tr>
@@ -402,6 +407,53 @@ use OpenCATS\UI\QuickActionMenu;
                 </a>
             <?php endif; ?>
             <!-- /CONTACT INFO -->
+
+            <br clear="all" />
+            <br />
+
+            <p class="note">Activity</p>
+            <table id="activityTable" class="sortable">
+                <tr>
+                    <th align="left" width="125">Date</th>
+                    <th align="left" width="90">Type</th>
+                    <th align="left" width="140">Contact</th>
+                    <th align="left" width="90">Entered By</th>
+                    <th align="left" width="250">Regarding</th>
+                    <th align="left">Notes</th>
+                    <th align="left" width="40">Action</th>
+                </tr>
+
+                <?php foreach ($this->activityRS as $rowNumber => $activityData): ?>
+                    <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
+                        <td align="left" valign="top" id="activityDate<?php echo($activityData['activityID']); ?>"><?php $this->_($activityData['dateCreated']); ?></td>
+                        <td align="left" valign="top" id="activityType<?php echo($activityData['activityID']); ?>"><?php $this->_($activityData['typeDescription']); ?></td>
+                        <td align="left" valign="top">
+                            <?php if (!empty($activityData['contactID'])): ?>
+                                <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=contacts&amp;a=show&amp;contactID=<?php $this->_($activityData['contactID']); ?>">
+                                    <?php $this->_($activityData['contactFullName']); ?>
+                                </a>
+                            <?php else: ?>
+                                <?php $this->_($activityData['contactFullName']); ?>
+                            <?php endif; ?>
+                        </td>
+                        <td align="left" valign="top"><?php $this->_($activityData['enteredByAbbrName']); ?></td>
+                        <td align="left" valign="top" id="activityRegarding<?php echo($activityData['activityID']); ?>"><?php $this->_($activityData['regarding']); ?></td>
+                        <td align="left" valign="top" id="activityNotes<?php echo($activityData['activityID']); ?>"><?php $this->_($activityData['notes']); ?></td>
+                        <td align="center">
+                            <?php if ($this->getUserAccessLevel('contacts.editActivity') >= ACCESS_LEVEL_EDIT): ?>
+                                <a href="#" id="editActivity<?php echo($activityData['activityID']); ?>" onclick="Activity_editEntry(<?php echo($activityData['activityID']); ?>, <?php echo($activityData['contactID']); ?>, <?php echo(DATA_ITEM_CONTACT); ?>, '<?php echo($this->sessionCookie); ?>'); return false;">
+                                    <img src="images/actions/edit.gif" width="16" height="16" alt="" class="absmiddle" border="0" title="Edit"/>
+                                </a>
+                            <?php endif; ?>
+                            <?php if ($this->getUserAccessLevel('contacts.deleteActivity') >= ACCESS_LEVEL_EDIT): ?>
+                                <a href="#" id="deleteActivity<?php echo($activityData['activityID']); ?>" onclick="Activity_deleteEntry(<?php echo($activityData['activityID']); ?>, '<?php echo($this->sessionCookie); ?>'); return false;">
+                                    <img src="images/actions/delete.gif" width="16" height="16" alt="" class="absmiddle" border="0" title="Delete"/>
+                                </a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
         </div>
     </div>
 

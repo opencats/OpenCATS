@@ -416,7 +416,7 @@
                                             <br />
                                             You may now login to OpenCATS. If it is a new installation, use the following logon information:<br /><br />
                                             Username: admin<br />
-                                            Password: admin<br />
+                                            Password: cats<br />
                                             <br />
                                             <br />
                                             OpenCATS will periodically check for new versions of the software from catsone.com, and will send non confidential information about your
@@ -466,6 +466,16 @@
                                                             <option value="mdy" selected="selected">MM-DD-YYYY (US)</option>
                                                             <option value="dmy">DD-MM-YYYY (UK)</option>
                                                         </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Please enter your default phone country calling code.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <span>+</span>
+                                                        <input type="text" name="defaultPhoneCountryCodeDigits" id="defaultPhoneCountryCodeDigits" value="" size="5" maxlength="5" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                                        />
                                                     </td>
                                                 </tr>
                                             </table>

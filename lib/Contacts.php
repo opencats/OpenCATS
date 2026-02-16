@@ -68,7 +68,8 @@ class Contacts
      * @param string work phone number
      * @param string cell phone number
      * @param string other phone number
-     * @param string address line
+     * @param string address line 1
+     * @param string address line 2
      * @param string city
      * @param string state
      * @param string zip code
@@ -79,7 +80,7 @@ class Contacts
      * @return new contact ID, or -1 on failure.
      */
     public function add($companyID, $firstName, $lastName, $title, $department,
-        $reportsTo, $email1, $email2, $phoneWork, $phoneCell, $phoneOther, $address,
+        $reportsTo, $email1, $email2, $phoneWork, $phoneCell, $phoneOther, $address, $address2,
         $city, $state, $zip, $isHot, $notes, $enteredBy, $owner)
     {
         /* Get the department ID of the selected department. */
@@ -101,6 +102,7 @@ class Contacts
                 phone_cell,
                 phone_other,
                 address,
+                address2,
                 city,
                 state,
                 zip,
@@ -114,6 +116,7 @@ class Contacts
                 date_modified
             )
             VALUES (
+                %s,
                 %s,
                 %s,
                 %s,
@@ -150,6 +153,7 @@ class Contacts
             $this->_db->makeQueryString($phoneCell),
             $this->_db->makeQueryString($phoneOther),
             $this->_db->makeQueryString($address),
+            $this->_db->makeQueryString($address2),
             $this->_db->makeQueryString($city),
             $this->_db->makeQueryString($state),
             $this->_db->makeQueryString($zip),
@@ -188,7 +192,8 @@ class Contacts
      * @param string work phone number
      * @param string cell phone number
      * @param string other phone number
-     * @param string address line
+     * @param string address line 1
+     * @param string address line 2
      * @param string city
      * @param string state
      * @param string zip code
@@ -203,7 +208,7 @@ class Contacts
      */
     public function update($contactID, $companyID, $firstName, $lastName,
         $title, $department, $reportsTo, $email1, $email2, $phoneWork, $phoneCell,
-        $phoneOther, $address, $city, $state, $zip, $isHot,
+        $phoneOther, $address, $address2, $city, $state, $zip, $isHot,
         $leftCompany, $notes, $owner, $email, $emailAddress)
     {
         /* Get the department ID of the selected department. */
@@ -227,6 +232,7 @@ class Contacts
                 contact.phone_cell    = %s,
                 contact.phone_other   = %s,
                 contact.address       = %s,
+                contact.address2      = %s,
                 contact.city          = %s,
                 contact.state         = %s,
                 contact.zip           = %s,
@@ -251,6 +257,7 @@ class Contacts
             $this->_db->makeQueryString($phoneCell),
             $this->_db->makeQueryString($phoneOther),
             $this->_db->makeQueryString($address),
+            $this->_db->makeQueryString($address2),
             $this->_db->makeQueryString($city),
             $this->_db->makeQueryString($state),
             $this->_db->makeQueryString($zip),
@@ -297,13 +304,14 @@ class Contacts
      * Updates all contacts for a company (called when changing company details).
      *
      * @param integer company ID
-     * @param string address line
+     * @param string address line 1
+     * @param string address line 2
      * @param string city
      * @param string state
      * @param string zip code
      * @return boolean True if successful; false otherwise.
      */
-    public function updateByCompany($companyID, $address, $city,
+    public function updateByCompany($companyID, $address, $address2, $city,
         $state, $zip)
     {
         $sql = sprintf(
@@ -311,6 +319,7 @@ class Contacts
                 contact
             SET
                 address      = %s,
+                address2     = %s,
                 city          = %s,
                 state         = %s,
                 zip           = %s,
@@ -322,6 +331,7 @@ class Contacts
             AND
                 site_id = %s",
             $this->_db->makeQueryString($address),
+            $this->_db->makeQueryString($address2),
             $this->_db->makeQueryString($city),
             $this->_db->makeQueryString($state),
             $this->_db->makeQueryString($zip),
@@ -437,6 +447,7 @@ class Contacts
                 contact.phone_cell AS phoneCell,
                 contact.phone_other AS phoneOther,
                 contact.address AS address,
+                contact.address2 AS address2,
                 contact.city AS city,
                 contact.state AS state,
                 contact.zip AS zip,
@@ -512,6 +523,7 @@ class Contacts
                 contact.phone_cell AS phoneCell,
                 contact.phone_other AS phoneOther,
                 contact.address AS address,
+                contact.address2 AS address2,
                 contact.city AS city,
                 contact.state AS state,
                 contact.zip AS zip,

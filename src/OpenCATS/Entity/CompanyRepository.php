@@ -19,6 +19,7 @@ class CompanyRepository
             "INSERT INTO company (
                 name,
                 address,
+                address2,
                 city,
                 state,
                 zip,
@@ -51,11 +52,13 @@ class CompanyRepository
                 %s,
                 %s,
                 %s,
+                %s,
                 NOW(),
                 NOW()
             )",
             $this->databaseConnection->makeQueryString($company->getName()),
             $this->databaseConnection->makeQueryString($company->getAddress()),
+            $this->databaseConnection->makeQueryString($company->getAddress2()),
             $this->databaseConnection->makeQueryString($company->getCity()),
             $this->databaseConnection->makeQueryString($company->getState()),
             $this->databaseConnection->makeQueryString($company->getZipCode()),

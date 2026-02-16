@@ -296,6 +296,9 @@ class LoginUI extends UserInterface
          * all old-style wizards will no longer be shown.
          */
 
+        // Intentionally disabled for now to skip the first-login wizard flow.
+        // TODO: Decide whether to remove the first-login wizard entirely or re-enable it and update the Behat tests accordingly.
+        /*
         $wizard = new Wizard(CATSUtility::getIndexName() . '?m=home', './js/wizardIntro.js');
         if ($_SESSION['CATS']->isFirstTimeSetup())
         {
@@ -367,6 +370,7 @@ class LoginUI extends UserInterface
 
         // The wizard will not display if no pages have been added.
         $wizard->doModal();
+        */
 
         /******************************* END NEW WIZARD *******************************************/
 
@@ -388,8 +392,9 @@ class LoginUI extends UserInterface
         /* LOGGED_IN_MESSAGES hooks are only for messages which show up on initial login (warnings, etc) */
         if (!eval(Hooks::get('LOGGED_IN_MESSAGES'))) return;
 
+        // TODO: Decide whether to remove the first-login wizard entirely, or re-enable it and update the Behat tests accordingly.
         /* If logged in for the first time, make user change password. */
-        if (strtolower($username) == 'admin' &&
+        if (false && strtolower($username) == 'admin' &&
             $password === DEFAULT_ADMIN_PASSWORD)
         {
             CATSUtility::transferRelativeURI('m=settings&a=newInstallPassword');
