@@ -35,7 +35,8 @@ services:
       volumes:
         - ../test/data/:/test/data/
         - ../test/scripts/:/test/scripts
-        - ../test/data/test.sql:/docker-entrypoint-initdb.d/000_initDB.sql
+        - ../db:/db
+        - ../db/cats_schema.sql:/docker-entrypoint-initdb.d/000_initDB.sql
         - ../test/data/securityTests.sql:/docker-entrypoint-initdb.d/001_addUsers.sql
 
     integrationtestdb:

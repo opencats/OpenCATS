@@ -5,7 +5,7 @@ This project uses two distinct MariaDB instances during the testing phase to ens
 
 ### 1. opencatsdb (Port 3306)
 * **Purpose:** Primary application database for functional testing.
-* **Data:** Pre-seeded with `test.sql` and `securityTests.sql` via Docker's `initdb.d`.
+* **Data:** Pre-seeded with `db/cats_schema.sql` and `test/data/securityTests.sql` via Docker's `initdb.d`.
 * **Used By:** Manual development, Behat (Gherkin/Selenium) suites.
 
 ### 2. integrationtestdb (Port 3307)
