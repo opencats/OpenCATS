@@ -495,7 +495,8 @@ class ActivityEntries
             AND
                 activity.site_id = %s
             ORDER BY
-                dateCreatedSort DESC",
+                dateCreatedSort DESC,
+                activity.activity_id DESC",
             $this->_db->makeQueryInteger($dataItemID),
             $this->_db->makeQueryInteger($dataItemType),
             $this->_siteID
@@ -557,7 +558,8 @@ class ActivityEntries
             AND
                 contact.site_id = %s
             ORDER BY
-                dateCreatedSort DESC",
+                dateCreatedSort DESC,
+                activity.activity_id DESC",
             $this->_db->makeQueryInteger($companyID),
             $this->_db->makeQueryInteger(DATA_ITEM_CONTACT),
             $this->_db->makeQueryInteger($this->_siteID),
