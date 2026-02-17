@@ -1089,7 +1089,7 @@ CREATE TABLE `user` (
 
 /*Data for the table `user` */
 
-insert  into `user`(`user_id`,`site_id`,`user_name`,`email`,`password`,`access_level`,`can_change_password`,`is_test_user`,`last_name`,`first_name`,`is_demo`,`categories`,`session_cookie`,`pipeline_entries_per_page`,`column_preferences`,`force_logout`,`title`,`phone_work`,`phone_cell`,`phone_other`,`address`,`notes`,`company`,`city`,`state`,`zip_code`,`country`,`can_see_eeo_info`) values (1,1,'admin','admin@example.com','admin',500,1,0,'Administrator','CATS',0,NULL,NULL,15,NULL,0,'','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
+insert  into `user`(`user_id`,`site_id`,`user_name`,`email`,`password`,`access_level`,`can_change_password`,`is_test_user`,`last_name`,`first_name`,`is_demo`,`categories`,`session_cookie`,`pipeline_entries_per_page`,`column_preferences`,`force_logout`,`title`,`phone_work`,`phone_cell`,`phone_other`,`address`,`notes`,`company`,`city`,`state`,`zip_code`,`country`,`can_see_eeo_info`) values (1,1,'admin','admin@example.com',md5('cats'),500,1,0,'Administrator','CATS',0,NULL,NULL,15,NULL,0,'','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
 insert  into `user`(`user_id`,`site_id`,`user_name`,`email`,`password`,`access_level`,`can_change_password`,`is_test_user`,`last_name`,`first_name`,`is_demo`,`categories`,`session_cookie`,`pipeline_entries_per_page`,`column_preferences`,`force_logout`,`title`,`phone_work`,`phone_cell`,`phone_other`,`address`,`notes`,`company`,`city`,`state`,`zip_code`,`country`,`can_see_eeo_info`) values (1250,180,'cats@rootadmin','0','cantlogin',0,0,0,'Automated','CATS',0,NULL,NULL,15,NULL,0,'','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
 
 /*Table structure for table `user_login` */
