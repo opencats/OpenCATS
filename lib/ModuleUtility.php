@@ -500,6 +500,24 @@ class ModuleUtility
             $newestVersion = 0;
         }
 
+        if ($moduleName === 'install' && ($currentVersion === NULL || $currentVersion === ''))
+        {
+            /* A NULL install module version means the database came from cats_schema.sql and should not replay historical install migrations. */
+            $sql = sprintf(
+                "UPDATE
+                    module_schema
+                SET
+                    version = %s
+                WHERE
+                    name = %s",
+                (int) $newestVersion,
+                $db->makeQueryString($moduleName)
+            );
+            $db->query($sql);
+
+            return;
+        }
+
         /* Do we have any updates to process? */
         if ($newestVersion <= $currentVersion)
         {
