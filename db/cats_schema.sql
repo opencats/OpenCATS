@@ -850,7 +850,7 @@ insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (9,'ext
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (10,'graphs',0);
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (11,'home',0);
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (12,'import',0);
-insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (13,'install',366);
+insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (13,'install',370);
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (14,'joborders',0);
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (15,'lists',0);
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (16,'login',0);
