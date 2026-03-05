@@ -70,15 +70,25 @@
                             <?php endif; ?>
                             <?php if (!$data['inPipeline']): ?>
                                 <td valign="top" align="left">
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=addToPipeline&amp;getback=getback&amp;jobOrderID=<?php echo($this->jobOrderID); ?>&amp;candidateID=<?php $this->_($data['candidateID']); ?>">
-                                        <?php $this->_($data['firstName']); ?>
-                                    </a>
+                                    <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=addToPipeline&amp;getback=getback" style="display:inline;">
+                                        <input type="hidden" name="postback" value="postback" />
+                                        <input type="hidden" name="jobOrderID" value="<?php echo($this->jobOrderID); ?>" />
+                                        <input type="hidden" name="candidateID" value="<?php $this->_($data['candidateID']); ?>" />
+                                        <button type="submit" class="linkButton">
+                                            <?php $this->_($data['firstName']); ?>
+                                        </button>
+                                    </form>
                                     &nbsp;
                                 </td>
                                 <td valign="top" align="left">
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=addToPipeline&amp;getback=getback&amp;jobOrderID=<?php echo($this->jobOrderID); ?>&amp;candidateID=<?php $this->_($data['candidateID']); ?>">
-                                        <?php $this->_($data['lastName']); ?>
-                                    </a>
+                                    <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=addToPipeline&amp;getback=getback" style="display:inline;">
+                                        <input type="hidden" name="postback" value="postback" />
+                                        <input type="hidden" name="jobOrderID" value="<?php echo($this->jobOrderID); ?>" />
+                                        <input type="hidden" name="candidateID" value="<?php $this->_($data['candidateID']); ?>" />
+                                        <button type="submit" class="linkButton">
+                                            <?php $this->_($data['lastName']); ?>
+                                        </button>
+                                    </form>
                                     &nbsp;
                                 </td>
                             <?php else: ?>
@@ -109,4 +119,3 @@
     <?php endif; ?>
     </body>
 </html>
-

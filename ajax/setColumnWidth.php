@@ -29,9 +29,21 @@
 
 $interface = new SecureAJAXInterface();
 
-$instance = $_REQUEST['instance'];
-$columnName = $_REQUEST['columnName'];
-$columnWidth = $_REQUEST['columnWidth'];
+if ($_SERVER['REQUEST_METHOD'] !== 'POST')
+{
+    $interface->outputXMLErrorPage(-1, 'Invalid request.');
+    die();
+}
+
+if (!isset($_POST['instance']) || !isset($_POST['columnName']) || !isset($_POST['columnWidth']))
+{
+    $interface->outputXMLErrorPage(-1, 'Invalid request.');
+    die();
+}
+
+$instance = $_POST['instance'];
+$columnName = $_POST['columnName'];
+$columnWidth = $_POST['columnWidth'];
 
 $columnPreferences = $_SESSION['CATS']->getColumnPreferences($instance);
 

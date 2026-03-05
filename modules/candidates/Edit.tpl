@@ -2,6 +2,9 @@
 <?php TemplateUtility::printHeader('Candidates', array('modules/candidates/validator.js', 'js/sweetTitles.js', 'js/listEditor.js', 'js/doubleListEditor.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
+    <script type="text/javascript">
+        window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
+    </script>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -117,7 +120,16 @@
                             <label id="addressLabel" for="address1">Address:</label>
                         </td>
                         <td class="tdData">
-                            <textarea class="inputbox" id="address" name="address" style="width: 150px;"><?php $this->_($this->data['address']); ?></textarea>
+                            <input type="text" class="inputbox" id="address" name="address" style="width: 150px;" value="<?php $this->_($this->data['address']); ?>" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="tdVertical">
+                            <label id="address2Label" for="address2">Address 2:</label>
+                        </td>
+                        <td class="tdData">
+                            <input type="text" class="inputbox" id="address2" name="address2" style="width: 150px;" value="<?php $this->_($this->data['address2']); ?>" />
                         </td>
                     </tr>
 
@@ -334,10 +346,10 @@
                             <label id="dateAvailableLabel" for="dateAvailable">Date Available:</label>
                         </td>
                         <td class="tdData">
-                            <?php if (!empty($this->data['dateAvailable'])): ?>
-                                <script type="text/javascript">DateInput('dateAvailable', false, 'MM-DD-YY', '<?php echo($this->data['dateAvailableMDY']); ?>', -1);</script>
+<?php if (!empty($this->data['dateAvailable'])): ?>
+                                <script type="text/javascript">DateInput('dateAvailable', false, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '<?php echo($this->data['dateAvailableUser']); ?>', -1);</script>
                             <?php else: ?>
-                                <script type="text/javascript">DateInput('dateAvailable', false, 'MM-DD-YY', '', -1);</script>
+                                <script type="text/javascript">DateInput('dateAvailable', false, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '', -1);</script>
                             <?php endif; ?>
                         </td>
                     </tr>

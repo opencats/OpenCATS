@@ -151,9 +151,17 @@ class TemplateUtility
                 }
             }
 
-            echo '<a href="', $indexName, '?m=logout">';
+            echo '<form id="logoutForm" name="logoutForm" method="post" action="', $indexName, '?m=logout" '
+                . 'style="display: inline; padding: 0; margin: 0; border: 0;">';
+            if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn())
+            {
+                $csrfToken = htmlspecialchars($_SESSION['CATS']->getCSRFToken(), ENT_QUOTES, 'UTF-8');
+                echo '<input type="hidden" name="csrfToken" value="', $csrfToken, '" />';
+            }
+            echo '<button type="submit" class="linkButton">';
             echo '<img src="images/tabs/small_logout.jpg" border="0" /> ';
-            echo 'Logout</a>', "\n";
+            echo 'Logout</button>', "\n";
+            echo '</form>', "\n";
             echo '</div>', "\n";
             // End top-right action block
 
@@ -417,16 +425,24 @@ class TemplateUtility
 
                 if (count($savedSearchSaved) >= RECENT_SEARCH_MAX_ITEMS)
                 {
-                    echo '<a href="javascript:void(0);" onclick="alert(\'The maximum amount of saved searches is ',
-                         RECENT_SEARCH_MAX_ITEMS, '. To save this search, delete another saved search.\');">';
+                    $openTag = '<a href="javascript:void(0);" onclick="alert(\'The maximum amount of saved searches is ' .
+                               RECENT_SEARCH_MAX_ITEMS . '. To save this search, delete another saved search.\');">';
+                    $closeTag = '</a>';
                 }
                 else
                 {
-                    echo '<a href="', $indexName, '?m=home&amp;a=addSavedSearch&amp;searchID=',
-                         $savedSearchRow['searchID'], '&amp;currentURL=', $currentUrlGETString, '">';
+                    $openTag = '<form method="post" action="' . $indexName . '?m=home&amp;a=addSavedSearch" style="display:inline;">'
+                             . '<input type="hidden" name="postback" value="postback" />'
+                             . '<input type="hidden" name="searchID" value="' . $savedSearchRow['searchID'] . '" />'
+                             . '<input type="hidden" name="currentURL" value="' . $currentUrlGETString . '" />'
+                             . '<button type="submit" class="linkButton">';
+                    $closeTag = '</button></form>';
                 }
 
-                echo '<img src="images/actions/add_small.gif" alt="" style="border: none;" title="Save This Search" /></a>&nbsp;', "\n";
+                echo $openTag,
+                     '<img src="images/actions/add_small.gif" alt="" style="border: none;" title="Save This Search" />',
+                     $closeTag,
+                     '&nbsp;', "\n";
 
                 $escapedURL  = htmlspecialchars($savedSearchRow['URL']);
 
@@ -481,9 +497,12 @@ class TemplateUtility
                 }
                 $escapedURL = '/'.$escapedURL;
 
-                echo '<a href="', $indexName, '?m=home&amp;a=deleteSavedSearch&amp;searchID=',
-                     $savedSearchRow['searchID'], '&currentURL=', $currentUrlGETString, '">',
-                     '<img src="images/actions/delete_small.gif" style="border: none;" title="Delete This Search" /></a>&nbsp;';
+                echo '<form method="post" action="', $indexName, '?m=home&amp;a=deleteSavedSearch" style="display:inline;">',
+                     '<input type="hidden" name="postback" value="postback" />',
+                     '<input type="hidden" name="searchID" value="', $savedSearchRow['searchID'], '" />',
+                     '<input type="hidden" name="currentURL" value="', $currentUrlGETString, '" />',
+                     '<button type="submit" class="linkButton">',
+                     '<img src="images/actions/delete_small.gif" style="border: none;" title="Delete This Search" /></button></form>&nbsp;';
 
                 echo '<a href="', $escapedURL, '&amp;savedSearchID=', $savedSearchRow['searchID'],
                      '" onclick="gotoSearch(\'', $escapedText, "', '", $escapedURL,
@@ -828,7 +847,7 @@ class TemplateUtility
 
         echo '<div class="footerBlock">', "\n";
         echo '<p id="footerText">OpenCATS Version ', CATS_VERSION, $buildString,
-             '. <span id="toolbarVersion"></span>Powered by <a href="http://www.opencats.org/"><strong>OpenCATS</strong></a>.</p>', "\n";
+             '. Powered by <a href="http://www.opencats.org/"><strong>OpenCATS</strong></a>.</p>', "\n";
         echo '<span id="footerResponse">Server Response Time: ', $loadTime, ' seconds.</span><br />';
         echo '<span id="footerCopyright">', COPYRIGHT_HTML, '</span>', "\n";
         if (!eval(Hooks::get('TEMPLATEUTILITY_SHOWPRIVACYPOLICY'))) return;
@@ -1193,6 +1212,71 @@ class TemplateUtility
         echo '<script type="text/javascript" src="js/submodal/subModal.js'.$javascriptAntiCache.'"></script>', "\n";
         echo '<script type="text/javascript" src="js/jquery-1.3.2.min.js'.$javascriptAntiCache.'"></script>', "\n";
         echo '<script type="text/javascript">CATSIndexName = "'.CATSUtility::getIndexName().'";</script>', "\n";
+        if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn())
+        {
+            $csrfToken = $_SESSION['CATS']->getCSRFToken();
+            echo '<script type="text/javascript">CATSCsrfToken = ',
+                 json_encode($csrfToken), ';</script>', "\n";
+            echo '<script type="text/javascript">', "\n";
+            echo 'function catsInjectCSRFToken()', "\n";
+            echo '{', "\n";
+            echo '    if (typeof CATSCsrfToken == "undefined" || CATSCsrfToken === null || CATSCsrfToken === "")', "\n";
+            echo '    {', "\n";
+            echo '        return;', "\n";
+            echo '    }', "\n";
+            echo '    var forms = document.getElementsByTagName("form");', "\n";
+            echo '    for (var i = 0; i < forms.length; i++)', "\n";
+            echo '    {', "\n";
+            echo '        var form = forms[i];', "\n";
+            echo '        var method = form.method;', "\n";
+            echo '        if (!method || method.toLowerCase() != "post")', "\n";
+            echo '        {', "\n";
+            echo '            continue;', "\n";
+            echo '        }', "\n";
+            echo '        var action = form.action;', "\n";
+            echo '        if (action && (action.indexOf("http://") == 0 || action.indexOf("https://") == 0))', "\n";
+            echo '        {', "\n";
+            echo '            var parser = document.createElement("a");', "\n";
+            echo '            parser.href = action;', "\n";
+            echo '            if (parser.host && parser.host.toLowerCase() != window.location.host.toLowerCase())', "\n";
+            echo '            {', "\n";
+            echo '                continue;', "\n";
+            echo '            }', "\n";
+            echo '        }', "\n";
+            echo '        var hasToken = false;', "\n";
+            echo '        if (form.elements)', "\n";
+            echo '        {', "\n";
+            echo '            for (var j = 0; j < form.elements.length; j++)', "\n";
+            echo '            {', "\n";
+            echo '                if (form.elements[j].name == "csrfToken")', "\n";
+            echo '                {', "\n";
+            echo '                    hasToken = true;', "\n";
+            echo '                    break;', "\n";
+            echo '                }', "\n";
+            echo '            }', "\n";
+            echo '        }', "\n";
+            echo '        if (hasToken)', "\n";
+            echo '        {', "\n";
+            echo '            continue;', "\n";
+            echo '        }', "\n";
+            echo '        var input = document.createElement("input");', "\n";
+            echo '        input.type = "hidden";', "\n";
+            echo '        input.name = "csrfToken";', "\n";
+            echo '        input.value = CATSCsrfToken;', "\n";
+            echo '        form.appendChild(input);', "\n";
+            echo '    }', "\n";
+            echo '}', "\n";
+            echo 'var catsOldOnload = window.onload;', "\n";
+            echo 'window.onload = function()', "\n";
+            echo '{', "\n";
+            echo '    if (catsOldOnload)', "\n";
+            echo '    {', "\n";
+            echo '        catsOldOnload();', "\n";
+            echo '    }', "\n";
+            echo '    catsInjectCSRFToken();', "\n";
+            echo '};', "\n";
+            echo '</script>', "\n";
+        }
 
        $headIncludes[] = 'main.css';
 

@@ -306,9 +306,12 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
                         </a>
                     <?php endif; ?>
                     <?php if ($_SESSION['CATS']->getAccessLevel('pipelines.removeFromPipeline') >= ACCESS_LEVEL_DELETE): ?>
-                        <a href="<?php echo($indexFile); ?>?m=joborders&amp;a=removeFromPipeline&amp;jobOrderID=<?php echo($jobOrderID); ?>&amp;candidateID=<?php echo($pipelinesData['candidateID']); ?>" onclick="javascript:return confirm('Remove <?php echo(str_replace('\'', '\\\'', htmlspecialchars($pipelinesData['firstName']))); ?> <?php echo(str_replace('\'', '\\\'', htmlspecialchars($pipelinesData['lastName']))); ?> from the pipeline?')">
-                            <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="remove" style="border: none;" title="Remove from Job Order"  />
-                        </a>
+                        <form method="post" action="<?php echo($indexFile); ?>?m=joborders&amp;a=removeFromPipeline" style="display:inline;" onsubmit="return confirm('Remove <?php echo(str_replace('\'', '\\\'', htmlspecialchars($pipelinesData['firstName']))); ?> <?php echo(str_replace('\'', '\\\'', htmlspecialchars($pipelinesData['lastName']))); ?> from the pipeline?')">
+                            <input type="hidden" name="postback" value="postback" />
+                            <input type="hidden" name="jobOrderID" value="<?php echo($jobOrderID); ?>" />
+                            <input type="hidden" name="candidateID" value="<?php echo($pipelinesData['candidateID']); ?>" />
+                            <input type="image" src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="remove" style="border: none;" title="Remove from Job Order" />
+                        </form>
                     <?php endif; ?>
                 <?php endif; ?>
             </td>

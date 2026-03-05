@@ -46,6 +46,13 @@ include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 
+/* Only start a session for POST requests so CSRF validation can determine logged-in state. */
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST')
+{
+    @session_name(CATS_SESSION_NAME);
+    session_start();
+}
+
 /* Make sure we aren't getting screwed over by magic quotes. */
 if (get_magic_quotes_runtime())
 {
@@ -58,6 +65,31 @@ if (get_magic_quotes_gpc())
     $_GET     = array_map('stripslashes', $_GET);
     $_POST    = array_map('stripslashes', $_POST);
     $_REQUEST = array_map('stripslashes', $_REQUEST);
+}
+
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &&
+    isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn())
+{
+    $token = null;
+
+    if (isset($_POST['csrfToken']))
+    {
+        $token = $_POST['csrfToken'];
+    }
+
+    if (!$_SESSION['CATS']->isCSRFTokenValid($token))
+    {
+        header('Content-type: text/xml');
+        echo '<?xml version="1.0" encoding="', AJAX_ENCODING, '"?>', "\n";
+        echo(
+            "<data>\n" .
+            "    <errorcode>-1</errorcode>\n" .
+            "    <errormessage>Invalid request.</errormessage>\n" .
+            "</data>\n"
+        );
+
+        die();
+    }
 }
 
 if (!isset($_REQUEST['f']) || empty($_REQUEST['f']))

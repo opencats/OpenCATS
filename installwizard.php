@@ -123,7 +123,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td nowrap="nowrap">Database Password:</td>
-                                                    <td valign="top"><input type="text" size="20" id="dbpass" value="" /></td>
+                                                    <td valign="top"><input type="password" size="20" id="dbpass" value="" /></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Database Host: <span style="color: #ff0000">*</span></td>
@@ -416,7 +416,7 @@
                                             <br />
                                             You may now login to OpenCATS. If it is a new installation, use the following logon information:<br /><br />
                                             Username: admin<br />
-                                            Password: admin<br />
+                                            Password: cats<br />
                                             <br />
                                             <br />
                                             OpenCATS will periodically check for new versions of the software from catsone.com, and will send non confidential information about your

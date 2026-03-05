@@ -25,7 +25,15 @@ use OpenCATS\UI\QuickActionMenu;
             <p class="note">Job Order Details</p>
 
             <?php if ($this->data['isAdminHidden'] == 1): ?>
-                <p class="warning">This Job Order is hidden.  Only CATS Administrators can view it or search for it.  To make it visible by the site users, click <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=administrativeHideShow&amp;jobOrderID=<?php echo($this->jobOrderID); ?>&amp;state=0" style="font-weight:bold;">Here.</a></p>
+                <div class="warning">
+                    This Job Order is hidden.  Only CATS Administrators can view it or search for it.  To make it visible by the site users, click
+                    <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=administrativeHideShow" style="display:inline;">
+                        <input type="hidden" name="postback" value="postback" />
+                        <input type="hidden" name="jobOrderID" value="<?php echo($this->jobOrderID); ?>" />
+                        <input type="hidden" name="state" value="0" />
+                        <button type="submit" class="linkButton">Here.</button>
+                    </form>
+                </div>
             <?php endif; ?>
 
             <?php if (isset($this->frozen)): ?>
@@ -252,9 +260,12 @@ use OpenCATS\UI\QuickActionMenu;
                                                 <td>
                                                     <?php if (!$this->isPopup): ?>
                                                         <?php if ($this->getUserAccessLevel('joborders.deleteAttachment') >= ACCESS_LEVEL_DELETE): ?>
-                                                            <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=deleteAttachment&amp;jobOrderID=<?php echo($this->jobOrderID); ?>&amp;attachmentID=<?php $this->_($attachmentsData['attachmentID']) ?>"  title="Delete" onclick="javascript:return confirm('Delete this attachment?');">
-                                                                <img src="images/actions/delete.gif" alt="" width="16" height="16" border="0" />
-                                                            </a>
+                                                            <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=deleteAttachment" style="display:inline;" onsubmit="return confirm('Delete this attachment?');">
+                                                                <input type="hidden" name="postback" value="postback" />
+                                                                <input type="hidden" name="jobOrderID" value="<?php echo($this->jobOrderID); ?>" />
+                                                                <input type="hidden" name="attachmentID" value="<?php $this->_($attachmentsData['attachmentID']) ?>" />
+                                                                <input type="image" src="images/actions/delete.gif" alt="" width="16" height="16" border="0" />
+                                                            </form>
                                                         <?php endif; ?>
                                                     <?php endif; ?>
                                                 </td>
@@ -327,20 +338,34 @@ use OpenCATS\UI\QuickActionMenu;
                         &nbsp;&nbsp;&nbsp;&nbsp;
                     <?php endif; ?>
                     <?php if ($this->getUserAccessLevel('joborders.delete') >= ACCESS_LEVEL_DELETE): ?>
-                        <a id="delete_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=delete&amp;jobOrderID=<?php echo($this->jobOrderID); ?>" onclick="javascript:return confirm('Delete this job order?');">
-                            <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;Delete
-                        </a>
+                        <form id="delete_link" method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=delete" style="display:inline;" onsubmit="return confirm('Delete this job order?');">
+                            <input type="hidden" name="postback" value="postback" />
+                            <input type="hidden" name="jobOrderID" value="<?php echo($this->jobOrderID); ?>" />
+                            <button type="submit" class="linkButton">
+                                <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;Delete
+                            </button>
+                        </form>
                         &nbsp;&nbsp;&nbsp;&nbsp;
                     <?php endif; ?>
                     <?php if ($this->getUserAccessLevel('joborders.hidden') >= ACCESS_LEVEL_MULTI_SA): ?>
                         <?php if ($this->data['isAdminHidden'] == 1): ?>
-                            <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=administrativeHideShow&amp;jobOrderID=<?php echo($this->jobOrderID); ?>&amp;state=0">
-                                <img src="images/resume_preview_inline.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;Administrative Show
-                            </a>
+                            <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=administrativeHideShow" style="display:inline;">
+                                <input type="hidden" name="postback" value="postback" />
+                                <input type="hidden" name="jobOrderID" value="<?php echo($this->jobOrderID); ?>" />
+                                <input type="hidden" name="state" value="0" />
+                                <button type="submit" class="linkButton">
+                                    <img src="images/resume_preview_inline.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;Administrative Show
+                                </button>
+                            </form>
                             <?php else: ?>
-                            <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=administrativeHideShow&amp;jobOrderID=<?php echo($this->jobOrderID); ?>&amp;state=1">
-                                <img src="images/resume_preview_inline.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;Administrative Hide
-                            </a>
+                            <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=administrativeHideShow" style="display:inline;">
+                                <input type="hidden" name="postback" value="postback" />
+                                <input type="hidden" name="jobOrderID" value="<?php echo($this->jobOrderID); ?>" />
+                                <input type="hidden" name="state" value="1" />
+                                <button type="submit" class="linkButton">
+                                    <img src="images/resume_preview_inline.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;Administrative Hide
+                                </button>
+                            </form>
                         <?php endif; ?>
                         &nbsp;&nbsp;&nbsp;&nbsp;
                     <?php endif; ?>
@@ -402,7 +427,7 @@ use OpenCATS\UI\QuickActionMenu;
 ?>
 					var exportArray<?= $instance_md5 ?> = getSelected_candidates();
             		if (exportArray<?= $instance_md5 ?>.length>0) {
-                		window.location.href='<?= CATSUtility::getIndexName()?>?m=export&a=exportByDataGrid&i=<?= urlencode($instance_name); ?>&p=<?= urlencode(serialize($params)) ?>&dynamicArgument<?= $instance_md5 ?>=' + urlEncode(serializeArray(exportArray<?= $instance_md5 ?>));
+                		window.location.href='<?= CATSUtility::getIndexName()?>?m=export&a=exportByDataGrid&i=<?= urlencode($instance_name); ?>&p=<?= urlencode(json_encode($params)) ?>&dynamicArgument<?= $instance_md5 ?>=' + serializeArray(exportArray<?= $instance_md5 ?>);
             		} else {
                 		alert('No data selected');
             		}

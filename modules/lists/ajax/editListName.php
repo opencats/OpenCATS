@@ -35,13 +35,19 @@ include_once(LEGACY_ROOT . '/lib/SavedLists.php');
 
 $interface = new SecureAJAXInterface();
 
-if (!$interface->isRequiredIDValid('savedListID'))
+if ($_SERVER['REQUEST_METHOD'] !== 'POST')
+{
+    $interface->outputXMLErrorPage(-1, 'Invalid request.');
+    die();
+}
+
+if (!isset($_POST['savedListID']) || !ctype_digit((string) $_POST['savedListID']))
 {
     $interface->outputXMLErrorPage(-1, 'Invalid saved list ID.');
     die();
 }
 
-if (!isset($_REQUEST['savedListName']))
+if (!isset($_POST['savedListName']))
 {
     $interface->outputXMLErrorPage(-1, 'Invalid name.');
     die();
@@ -49,8 +55,8 @@ if (!isset($_REQUEST['savedListName']))
 
 $siteID = $interface->getSiteID();
 
-$savedListID = $_REQUEST['savedListID'];
-$savedListName = $_REQUEST['savedListName'];
+$savedListID = $_POST['savedListID'];
+$savedListName = $_POST['savedListName'];
 
 $savedLists = new SavedLists($siteID);
 

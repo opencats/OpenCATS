@@ -215,6 +215,22 @@ class SecureAJAXInterface extends AJAXInterface
             die();
         }
 
+        if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST')
+        {
+            $token = null;
+
+            if (isset($_POST['csrfToken']))
+            {
+                $token = $_POST['csrfToken'];
+            }
+
+            if (!$_SESSION['CATS']->isCSRFTokenValid($token))
+            {
+                $this->outputXMLErrorPage(-1, 'Invalid request.');
+                die();
+            }
+        }
+
         /* Grab the current user's site ID. */
         $this->_siteID = $_SESSION['CATS']->getSiteID();
 

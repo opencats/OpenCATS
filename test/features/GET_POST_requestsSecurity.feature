@@ -38,6 +38,8 @@ Scenario Outline: Candidate module actions
   | DISABLED    | POST    | index.php?m=candidates&a=addActivityChangeStatus | not     |
   | DISABLED    | POST    | index.php?m=candidates&a=addEditImage            | not     |
   | DISABLED    | POST    | index.php?m=candidates&a=createAttachment        | not     |
+  | DISABLED    | POST    | index.php?m=candidates&a=delete                  | not     |
+  | DISABLED    | POST    | index.php?m=candidates&a=deleteAttachment        | not     |
   | READONLY    | GET     | index.php?m=candidates&a=show                    |         |
   | READONLY    | GET     | index.php?m=candidates&a=add                     | not     |
   | READONLY    | GET     | index.php?m=candidates&a=edit                    | not     |
@@ -64,6 +66,8 @@ Scenario Outline: Candidate module actions
   | READONLY    | POST    | index.php?m=candidates&a=addActivityChangeStatus | not     |
   | READONLY    | POST    | index.php?m=candidates&a=addEditImage            | not     |
   | READONLY    | POST    | index.php?m=candidates&a=createAttachment        | not     |
+  | READONLY    | POST    | index.php?m=candidates&a=delete                  | not     |
+  | READONLY    | POST    | index.php?m=candidates&a=deleteAttachment        | not     |
   | EDIT        | GET     | index.php?m=candidates&a=show                    |         |
   | EDIT        | GET     | index.php?m=candidates&a=add                     |         |
   | EDIT        | GET     | index.php?m=candidates&a=edit                    |         |
@@ -90,10 +94,12 @@ Scenario Outline: Candidate module actions
   | EDIT        | POST    | index.php?m=candidates&a=addActivityChangeStatus |         |
   | EDIT        | POST    | index.php?m=candidates&a=addEditImage            |         |
   | EDIT        | POST    | index.php?m=candidates&a=createAttachment        |         |
+  | EDIT        | POST    | index.php?m=candidates&a=delete                  | not     |
+  | EDIT        | POST    | index.php?m=candidates&a=deleteAttachment        | not     |
   | DELETE      | GET     | index.php?m=candidates&a=show                    |         |
   | DELETE      | GET     | index.php?m=candidates&a=add                     |         |
   | DELETE      | GET     | index.php?m=candidates&a=edit                    |         |
-  | DELETE      | GET     | index.php?m=candidates&a=delete                  |         |
+  | DELETE      | GET     | index.php?m=candidates&a=delete                  | not     |
   | DELETE      | GET     | index.php?m=candidates&a=search                  |         |
   | DELETE      | GET     | index.php?m=candidates&a=search&getback=getback  |         |
   | DELETE      | GET     | index.php?m=candidates&a=viewResume              |         |
@@ -105,7 +111,7 @@ Scenario Outline: Candidate module actions
   | DELETE      | GET     | index.php?m=candidates&a=addEditImage            |         |
   | DELETE      | GET     | index.php?m=candidates&a=createAttachment        |         |
   | DELETE      | GET     | index.php?m=candidates&a=administrativeHideShow  | not     |
-  | DELETE      | GET     | index.php?m=candidates&a=deleteAttachment        |         |
+  | DELETE      | GET     | index.php?m=candidates&a=deleteAttachment        | not     |
   | DELETE      | GET     | index.php?m=candidates&a=savedLists              |         |
   | DELETE      | GET     | index.php?m=candidates&a=emailCandidates         | not     |
   | DELETE      | GET     | index.php?m=candidates&a=show_questionnaire      |         |
@@ -116,10 +122,12 @@ Scenario Outline: Candidate module actions
   | DELETE      | POST    | index.php?m=candidates&a=addActivityChangeStatus |         |
   | DELETE      | POST    | index.php?m=candidates&a=addEditImage            |         |
   | DELETE      | POST    | index.php?m=candidates&a=createAttachment        |         |
+  | DELETE      | POST    | index.php?m=candidates&a=delete                  |         |
+  | DELETE      | POST    | index.php?m=candidates&a=deleteAttachment        |         |
   | DEMO        | GET     | index.php?m=candidates&a=show                    |         |
   | DEMO        | GET     | index.php?m=candidates&a=add                     |         |
   | DEMO        | GET     | index.php?m=candidates&a=edit                    |         |
-  | DEMO        | GET     | index.php?m=candidates&a=delete                  |         |
+  | DEMO        | GET     | index.php?m=candidates&a=delete                  | not     |
   | DEMO        | GET     | index.php?m=candidates&a=search                  |         |
   | DEMO        | GET     | index.php?m=candidates&a=search&getback=getback  |         |
   | DEMO        | GET     | index.php?m=candidates&a=viewResume              |         |
@@ -131,7 +139,7 @@ Scenario Outline: Candidate module actions
   | DEMO        | GET     | index.php?m=candidates&a=addEditImage            |         |
   | DEMO        | GET     | index.php?m=candidates&a=createAttachment        |         |
   | DEMO        | GET     | index.php?m=candidates&a=administrativeHideShow  | not     |
-  | DEMO        | GET     | index.php?m=candidates&a=deleteAttachment        |         |
+  | DEMO        | GET     | index.php?m=candidates&a=deleteAttachment        | not     |
   | DEMO        | GET     | index.php?m=candidates&a=savedLists              |         |
   | DEMO        | GET     | index.php?m=candidates&a=emailCandidates         | not     |
   | DEMO        | GET     | index.php?m=candidates&a=show_questionnaire      |         |
@@ -142,10 +150,12 @@ Scenario Outline: Candidate module actions
   | DEMO        | POST    | index.php?m=candidates&a=addActivityChangeStatus |         |
   | DEMO        | POST    | index.php?m=candidates&a=addEditImage            |         |
   | DEMO        | POST    | index.php?m=candidates&a=createAttachment        |         |
+  | DEMO        | POST    | index.php?m=candidates&a=delete                  |         |
+  | DEMO        | POST    | index.php?m=candidates&a=deleteAttachment        |         |
   | ADMIN       | GET     | index.php?m=candidates&a=show                    |         |
   | ADMIN       | GET     | index.php?m=candidates&a=add                     |         |
   | ADMIN       | GET     | index.php?m=candidates&a=edit                    |         |
-  | ADMIN       | GET     | index.php?m=candidates&a=delete                  |         |
+  | ADMIN       | GET     | index.php?m=candidates&a=delete                  | not     |
   | ADMIN       | GET     | index.php?m=candidates&a=search                  |         |
   | ADMIN       | GET     | index.php?m=candidates&a=search&getback=getback  |         |
   | ADMIN       | GET     | index.php?m=candidates&a=viewResume              |         |
@@ -157,7 +167,7 @@ Scenario Outline: Candidate module actions
   | ADMIN       | GET     | index.php?m=candidates&a=addEditImage            |         |
   | ADMIN       | GET     | index.php?m=candidates&a=createAttachment        |         |
   | ADMIN       | GET     | index.php?m=candidates&a=administrativeHideShow  | not     |
-  | ADMIN       | GET     | index.php?m=candidates&a=deleteAttachment        |         |
+  | ADMIN       | GET     | index.php?m=candidates&a=deleteAttachment        | not     |
   | ADMIN       | GET     | index.php?m=candidates&a=savedLists              |         |
   | ADMIN       | GET     | index.php?m=candidates&a=emailCandidates         |         |
   | ADMIN       | GET     | index.php?m=candidates&a=show_questionnaire      |         |
@@ -168,10 +178,12 @@ Scenario Outline: Candidate module actions
   | ADMIN       | POST    | index.php?m=candidates&a=addActivityChangeStatus |         |
   | ADMIN       | POST    | index.php?m=candidates&a=addEditImage            |         |
   | ADMIN       | POST    | index.php?m=candidates&a=createAttachment        |         |
+  | ADMIN       | POST    | index.php?m=candidates&a=delete                  |         |
+  | ADMIN       | POST    | index.php?m=candidates&a=deleteAttachment        |         |
   | MULTI_ADMIN | GET     | index.php?m=candidates&a=show                    |         |
   | MULTI_ADMIN | GET     | index.php?m=candidates&a=add                     |         |
   | MULTI_ADMIN | GET     | index.php?m=candidates&a=edit                    |         |
-  | MULTI_ADMIN | GET     | index.php?m=candidates&a=delete                  |         |
+  | MULTI_ADMIN | GET     | index.php?m=candidates&a=delete                  | not     |
   | MULTI_ADMIN | GET     | index.php?m=candidates&a=search                  |         |
   | MULTI_ADMIN | GET     | index.php?m=candidates&a=search&getback=getback  |         |
   | MULTI_ADMIN | GET     | index.php?m=candidates&a=viewResume              |         |
@@ -183,7 +195,7 @@ Scenario Outline: Candidate module actions
   | MULTI_ADMIN | GET     | index.php?m=candidates&a=addEditImage            |         |
   | MULTI_ADMIN | GET     | index.php?m=candidates&a=createAttachment        |         |
   | MULTI_ADMIN | GET     | index.php?m=candidates&a=administrativeHideShow  |         |
-  | MULTI_ADMIN | GET     | index.php?m=candidates&a=deleteAttachment        |         |
+  | MULTI_ADMIN | GET     | index.php?m=candidates&a=deleteAttachment        | not     |
   | MULTI_ADMIN | GET     | index.php?m=candidates&a=savedLists              |         |
   | MULTI_ADMIN | GET     | index.php?m=candidates&a=emailCandidates         |         |
   | MULTI_ADMIN | GET     | index.php?m=candidates&a=show_questionnaire      |         |
@@ -194,10 +206,12 @@ Scenario Outline: Candidate module actions
   | MULTI_ADMIN | POST    | index.php?m=candidates&a=addActivityChangeStatus |         |
   | MULTI_ADMIN | POST    | index.php?m=candidates&a=addEditImage            |         |
   | MULTI_ADMIN | POST    | index.php?m=candidates&a=createAttachment        |         |
+  | MULTI_ADMIN | POST    | index.php?m=candidates&a=delete                  |         |
+  | MULTI_ADMIN | POST    | index.php?m=candidates&a=deleteAttachment        |         |
   | ROOT        | GET     | index.php?m=candidates&a=show                    |         |
   | ROOT        | GET     | index.php?m=candidates&a=add                     |         |
   | ROOT        | GET     | index.php?m=candidates&a=edit                    |         |
-  | ROOT        | GET     | index.php?m=candidates&a=delete                  |         |
+  | ROOT        | GET     | index.php?m=candidates&a=delete                  | not     |
   | ROOT        | GET     | index.php?m=candidates&a=search                  |         |
   | ROOT        | GET     | index.php?m=candidates&a=search&getback=getback  |         |
   | ROOT        | GET     | index.php?m=candidates&a=viewResume              |         |
@@ -209,7 +223,7 @@ Scenario Outline: Candidate module actions
   | ROOT        | GET     | index.php?m=candidates&a=addEditImage            |         |
   | ROOT        | GET     | index.php?m=candidates&a=createAttachment        |         |
   | ROOT        | GET     | index.php?m=candidates&a=administrativeHideShow  |         |
-  | ROOT        | GET     | index.php?m=candidates&a=deleteAttachment        |         |
+  | ROOT        | GET     | index.php?m=candidates&a=deleteAttachment        | not     |
   | ROOT        | GET     | index.php?m=candidates&a=savedLists              |         |
   | ROOT        | GET     | index.php?m=candidates&a=emailCandidates         |         |
   | ROOT        | GET     | index.php?m=candidates&a=show_questionnaire      |         |
@@ -220,6 +234,8 @@ Scenario Outline: Candidate module actions
   | ROOT        | POST    | index.php?m=candidates&a=addActivityChangeStatus |         |
   | ROOT        | POST    | index.php?m=candidates&a=addEditImage            |         |
   | ROOT        | POST    | index.php?m=candidates&a=createAttachment        |         |
+  | ROOT        | POST    | index.php?m=candidates&a=delete                  |         |
+  | ROOT        | POST    | index.php?m=candidates&a=deleteAttachment        |         |
   
   
 
@@ -254,6 +270,8 @@ Scenario Outline: Job Order module actions
   | DISABLED    | POST    | index.php?m=joborders&a=addActivityChangeStatus | not  |
   | DISABLED    | POST    | index.php?m=joborders&a=considerCandidateSearch | not  |
   | DISABLED    | POST    | index.php?m=joborders&a=createAttachment        | not  |
+  | DISABLED    | POST    | index.php?m=joborders&a=delete                  | not  |
+  | DISABLED    | POST    | index.php?m=joborders&a=deleteAttachment        | not  |
   | READONLY    | GET     | index.php?m=joborders&a=show                    |      |
   | READONLY    | GET     | index.php?m=joborders&a=addJobOrderPopup        | not  |
   | READONLY    | GET     | index.php?m=joborders&a=add                     | not  |
@@ -276,6 +294,8 @@ Scenario Outline: Job Order module actions
   | READONLY    | POST    | index.php?m=joborders&a=addActivityChangeStatus | not  | 
   | READONLY    | POST    | index.php?m=joborders&a=considerCandidateSearch | not  | 
   | READONLY    | POST    | index.php?m=joborders&a=createAttachment        | not  | 
+  | READONLY    | POST    | index.php?m=joborders&a=delete                  | not  |
+  | READONLY    | POST    | index.php?m=joborders&a=deleteAttachment        | not  |
   | EDIT        | GET     | index.php?m=joborders&a=show                    |      |
   | EDIT        | GET     | index.php?m=joborders&a=addJobOrderPopup        |      |
   | EDIT        | GET     | index.php?m=joborders&a=add                     |      |
@@ -298,12 +318,14 @@ Scenario Outline: Job Order module actions
   | EDIT        | POST    | index.php?m=joborders&a=addActivityChangeStatus |      |
   | EDIT        | POST    | index.php?m=joborders&a=considerCandidateSearch |      |
   | EDIT        | POST    | index.php?m=joborders&a=createAttachment        |      |
+  | EDIT        | POST    | index.php?m=joborders&a=delete                  | not  |
+  | EDIT        | POST    | index.php?m=joborders&a=deleteAttachment        | not  |
   | DELETE      | GET     | index.php?m=joborders&a=show                    |      |
   | DELETE      | GET     | index.php?m=joborders&a=addJobOrderPopup        |      |
   | DELETE      | GET     | index.php?m=joborders&a=add                     |      |
   | DELETE      | GET     | index.php?m=joborders&a=addCandidateModal       |      |
   | DELETE      | GET     | index.php?m=joborders&a=edit                    |      |
-  | DELETE      | GET     | index.php?m=joborders&a=delete                  |      |
+  | DELETE      | GET     | index.php?m=joborders&a=delete                  | not  |
   | DELETE      | GET     | index.php?m=joborders&a=search                  |      |
   | DELETE      | GET     | index.php?m=joborders&a=search&getback=getback  |      |
   | DELETE      | GET     | index.php?m=joborders&a=addActivityChangeStatus |      |
@@ -313,19 +335,21 @@ Scenario Outline: Job Order module actions
   | DELETE      | GET     | index.php?m=joborders&a=addToPipeline           |      |
   | DELETE      | GET     | index.php?m=joborders&a=removeFromPipeline      |      |
   | DELETE      | GET     | index.php?m=joborders&a=createAttachment        |      |
-  | DELETE      | GET     | index.php?m=joborders&a=deleteAttachment        |      |
+  | DELETE      | GET     | index.php?m=joborders&a=deleteAttachment        | not  |
   | DELETE      | POST    | index.php?m=joborders&a=add                     |      |
   | DELETE      | POST    | index.php?m=joborders&a=addCandidateModal       |      |
   | DELETE      | POST    | index.php?m=joborders&a=edit                    |      |
   | DELETE      | POST    | index.php?m=joborders&a=addActivityChangeStatus |      |
   | DELETE      | POST    | index.php?m=joborders&a=considerCandidateSearch |      |
   | DELETE      | POST    | index.php?m=joborders&a=createAttachment        |      |
+  | DELETE      | POST    | index.php?m=joborders&a=delete                  |      |
+  | DELETE      | POST    | index.php?m=joborders&a=deleteAttachment        |      |
   | DEMO        | GET     | index.php?m=joborders&a=show                    |      |
   | DEMO        | GET     | index.php?m=joborders&a=addJobOrderPopup        |      |
   | DEMO        | GET     | index.php?m=joborders&a=add                     |      |
   | DEMO        | GET     | index.php?m=joborders&a=addCandidateModal       |      |
   | DEMO        | GET     | index.php?m=joborders&a=edit                    |      |
-  | DEMO        | GET     | index.php?m=joborders&a=delete                  |      |
+  | DEMO        | GET     | index.php?m=joborders&a=delete                  | not  |
   | DEMO        | GET     | index.php?m=joborders&a=search                  |      |
   | DEMO        | GET     | index.php?m=joborders&a=search&getback=getback  |      |
   | DEMO        | GET     | index.php?m=joborders&a=addActivityChangeStatus |      |
@@ -335,19 +359,21 @@ Scenario Outline: Job Order module actions
   | DEMO        | GET     | index.php?m=joborders&a=addToPipeline           |      |
   | DEMO        | GET     | index.php?m=joborders&a=removeFromPipeline      |      |
   | DEMO        | GET     | index.php?m=joborders&a=createAttachment        |      |
-  | DEMO        | GET     | index.php?m=joborders&a=deleteAttachment        |      |
+  | DEMO        | GET     | index.php?m=joborders&a=deleteAttachment        | not  |
   | DEMO        | POST    | index.php?m=joborders&a=add                     |      |
   | DEMO        | POST    | index.php?m=joborders&a=addCandidateModal       |      |
   | DEMO        | POST    | index.php?m=joborders&a=edit                    |      |
   | DEMO        | POST    | index.php?m=joborders&a=addActivityChangeStatus |      |
   | DEMO        | POST    | index.php?m=joborders&a=considerCandidateSearch |      |
   | DEMO        | POST    | index.php?m=joborders&a=createAttachment        |      |
+  | DEMO        | POST    | index.php?m=joborders&a=delete                  |      |
+  | DEMO        | POST    | index.php?m=joborders&a=deleteAttachment        |      |
   | ADMIN       | GET     | index.php?m=joborders&a=show                    |      |
   | ADMIN       | GET     | index.php?m=joborders&a=addJobOrderPopup        |      |
   | ADMIN       | GET     | index.php?m=joborders&a=add                     |      |
   | ADMIN       | GET     | index.php?m=joborders&a=addCandidateModal       |      |
   | ADMIN       | GET     | index.php?m=joborders&a=edit                    |      |
-  | ADMIN       | GET     | index.php?m=joborders&a=delete                  |      |
+  | ADMIN       | GET     | index.php?m=joborders&a=delete                  | not  |
   | ADMIN       | GET     | index.php?m=joborders&a=search                  |      |
   | ADMIN       | GET     | index.php?m=joborders&a=search&getback=getback  |      |
   | ADMIN       | GET     | index.php?m=joborders&a=addActivityChangeStatus |      |
@@ -357,19 +383,21 @@ Scenario Outline: Job Order module actions
   | ADMIN       | GET     | index.php?m=joborders&a=addToPipeline           |      |
   | ADMIN       | GET     | index.php?m=joborders&a=removeFromPipeline      |      |
   | ADMIN       | GET     | index.php?m=joborders&a=createAttachment        |      |
-  | ADMIN       | GET     | index.php?m=joborders&a=deleteAttachment        |      |
+  | ADMIN       | GET     | index.php?m=joborders&a=deleteAttachment        | not  |
   | ADMIN       | POST    | index.php?m=joborders&a=add                     |      |
   | ADMIN       | POST    | index.php?m=joborders&a=addCandidateModal       |      |
   | ADMIN       | POST    | index.php?m=joborders&a=edit                    |      |
   | ADMIN       | POST    | index.php?m=joborders&a=addActivityChangeStatus |      |
   | ADMIN       | POST    | index.php?m=joborders&a=considerCandidateSearch |      |
   | ADMIN       | POST    | index.php?m=joborders&a=createAttachment        |      |
+  | ADMIN       | POST    | index.php?m=joborders&a=delete                  |      |
+  | ADMIN       | POST    | index.php?m=joborders&a=deleteAttachment        |      |
   | MULTI_ADMIN | GET     | index.php?m=joborders&a=show                    |      |
   | MULTI_ADMIN | GET     | index.php?m=joborders&a=addJobOrderPopup        |      |
   | MULTI_ADMIN | GET     | index.php?m=joborders&a=add                     |      |
   | MULTI_ADMIN | GET     | index.php?m=joborders&a=addCandidateModal       |      |
   | MULTI_ADMIN | GET     | index.php?m=joborders&a=edit                    |      |
-  | MULTI_ADMIN | GET     | index.php?m=joborders&a=delete                  |      |
+  | MULTI_ADMIN | GET     | index.php?m=joborders&a=delete                  | not  |
   | MULTI_ADMIN | GET     | index.php?m=joborders&a=search                  |      |
   | MULTI_ADMIN | GET     | index.php?m=joborders&a=search&getback=getback  |      |
   | MULTI_ADMIN | GET     | index.php?m=joborders&a=addActivityChangeStatus |      |
@@ -379,19 +407,21 @@ Scenario Outline: Job Order module actions
   | MULTI_ADMIN | GET     | index.php?m=joborders&a=addToPipeline           |      |
   | MULTI_ADMIN | GET     | index.php?m=joborders&a=removeFromPipeline      |      |
   | MULTI_ADMIN | GET     | index.php?m=joborders&a=createAttachment        |      |
-  | MULTI_ADMIN | GET     | index.php?m=joborders&a=deleteAttachment        |      |
+  | MULTI_ADMIN | GET     | index.php?m=joborders&a=deleteAttachment        | not  |
   | MULTI_ADMIN | POST    | index.php?m=joborders&a=add                     |      |
   | MULTI_ADMIN | POST    | index.php?m=joborders&a=addCandidateModal       |      |
   | MULTI_ADMIN | POST    | index.php?m=joborders&a=edit                    |      |
   | MULTI_ADMIN | POST    | index.php?m=joborders&a=addActivityChangeStatus |      |
   | MULTI_ADMIN | POST    | index.php?m=joborders&a=considerCandidateSearch |      |
   | MULTI_ADMIN | POST    | index.php?m=joborders&a=createAttachment        |      |
+  | MULTI_ADMIN | POST    | index.php?m=joborders&a=delete                  |      |
+  | MULTI_ADMIN | POST    | index.php?m=joborders&a=deleteAttachment        |      |
   | ROOT        | GET     | index.php?m=joborders&a=show                    |      |
   | ROOT        | GET     | index.php?m=joborders&a=addJobOrderPopup        |      |
   | ROOT        | GET     | index.php?m=joborders&a=add                     |      |
   | ROOT        | GET     | index.php?m=joborders&a=addCandidateModal       |      |
   | ROOT        | GET     | index.php?m=joborders&a=edit                    |      |
-  | ROOT        | GET     | index.php?m=joborders&a=delete                  |      |
+  | ROOT        | GET     | index.php?m=joborders&a=delete                  | not  |
   | ROOT        | GET     | index.php?m=joborders&a=search                  |      |
   | ROOT        | GET     | index.php?m=joborders&a=search&getback=getback  |      |
   | ROOT        | GET     | index.php?m=joborders&a=addActivityChangeStatus |      |
@@ -401,13 +431,15 @@ Scenario Outline: Job Order module actions
   | ROOT        | GET     | index.php?m=joborders&a=addToPipeline           |      |
   | ROOT        | GET     | index.php?m=joborders&a=removeFromPipeline      |      |
   | ROOT        | GET     | index.php?m=joborders&a=createAttachment        |      |
-  | ROOT        | GET     | index.php?m=joborders&a=deleteAttachment        |      |
+  | ROOT        | GET     | index.php?m=joborders&a=deleteAttachment        | not  |
   | ROOT        | POST    | index.php?m=joborders&a=add                     |      |
   | ROOT        | POST    | index.php?m=joborders&a=addCandidateModal       |      |
   | ROOT        | POST    | index.php?m=joborders&a=edit                    |      |
   | ROOT        | POST    | index.php?m=joborders&a=addActivityChangeStatus |      |
   | ROOT        | POST    | index.php?m=joborders&a=considerCandidateSearch |      |
   | ROOT        | POST    | index.php?m=joborders&a=createAttachment        |      |
+  | ROOT        | POST    | index.php?m=joborders&a=delete                  |      |
+  | ROOT        | POST    | index.php?m=joborders&a=deleteAttachment        |      |
   
  
   
@@ -433,6 +465,8 @@ Examples:
   | DISABLED    | POST | index.php?m=companies&a=add                | not  |                                                   
   | DISABLED    | POST | index.php?m=companies&a=edit               | not  |                                                 
   | DISABLED    | POST | index.php?m=companies&a=createAttachment   | not  |         
+  | DISABLED    | POST | index.php?m=companies&a=delete             | not  |
+  | DISABLED    | POST | index.php?m=companies&a=deleteAttachment   | not  |
   | READONLY    | GET  | index.php?m=companies&a=show               |      |    
   | READONLY    | GET  | index.php?m=companies&a=internalPostings   |      |    
   | READONLY    | GET  | index.php?m=companies&a=add                | not  |    
@@ -446,6 +480,8 @@ Examples:
   | READONLY    | POST | index.php?m=companies&a=add                | not  |                                                                        
   | READONLY    | POST | index.php?m=companies&a=edit               | not  |                                                                      
   | READONLY    | POST | index.php?m=companies&a=createAttachment   | not  |                                                                     
+  | READONLY    | POST | index.php?m=companies&a=delete             | not  |
+  | READONLY    | POST | index.php?m=companies&a=deleteAttachment   | not  |
   | EDIT        | GET  | index.php?m=companies&a=show               |      |    
   | EDIT        | GET  | index.php?m=companies&a=internalPostings   |      |    
   | EDIT        | GET  | index.php?m=companies&a=add                |      |    
@@ -459,71 +495,83 @@ Examples:
   | EDIT        | POST | index.php?m=companies&a=add                |      |                                                                        
   | EDIT        | POST | index.php?m=companies&a=edit               |      |                                                                      
   | EDIT        | POST | index.php?m=companies&a=createAttachment   |      |                                                                     
+  | EDIT        | POST | index.php?m=companies&a=delete             | not  |
+  | EDIT        | POST | index.php?m=companies&a=deleteAttachment   | not  |
   | DELETE      | GET  | index.php?m=companies&a=show               |      |
   | DELETE      | GET  | index.php?m=companies&a=internalPostings   |      |
   | DELETE      | GET  | index.php?m=companies&a=add                |      |
   | DELETE      | GET  | index.php?m=companies&a=edit               |      |
-  | DELETE      | GET  | index.php?m=companies&a=delete             |      |
+  | DELETE      | GET  | index.php?m=companies&a=delete             | not  |
   | DELETE      | GET  | index.php?m=companies&a=search             |      |
   | DELETE      | GET  | index.php?m=companies&a=search             |      |
   | DELETE      | GET  | index.php?m=companies&a=listByView         |      |
   | DELETE      | GET  | index.php?m=companies&a=createAttachment   |      |
-  | DELETE      | GET  | index.php?m=companies&a=deleteAttachment   |      |
+  | DELETE      | GET  | index.php?m=companies&a=deleteAttachment   | not  |
   | DELETE      | POST | index.php?m=companies&a=add                |      |                                                                        
   | DELETE      | POST | index.php?m=companies&a=edit               |      |                                                                      
   | DELETE      | POST | index.php?m=companies&a=createAttachment   |      |        
+  | DELETE      | POST | index.php?m=companies&a=delete             |      |
+  | DELETE      | POST | index.php?m=companies&a=deleteAttachment   |      |
   | DEMO        | GET  | index.php?m=companies&a=show               |      |
   | DEMO        | GET  | index.php?m=companies&a=internalPostings   |      |
   | DEMO        | GET  | index.php?m=companies&a=add                |      |
   | DEMO        | GET  | index.php?m=companies&a=edit               |      |
-  | DEMO        | GET  | index.php?m=companies&a=delete             |      |
+  | DEMO        | GET  | index.php?m=companies&a=delete             | not  |
   | DEMO        | GET  | index.php?m=companies&a=search             |      |
   | DEMO        | GET  | index.php?m=companies&a=search             |      |
   | DEMO        | GET  | index.php?m=companies&a=listByView         |      |
   | DEMO        | GET  | index.php?m=companies&a=createAttachment   |      |
-  | DEMO        | GET  | index.php?m=companies&a=deleteAttachment   |      |
+  | DEMO        | GET  | index.php?m=companies&a=deleteAttachment   | not  |
   | DEMO        | POST | index.php?m=companies&a=add                |      |                                                                        
   | DEMO        | POST | index.php?m=companies&a=edit               |      |                                                                      
   | DEMO        | POST | index.php?m=companies&a=createAttachment   |      |                                                                     
+  | DEMO        | POST | index.php?m=companies&a=delete             |      |
+  | DEMO        | POST | index.php?m=companies&a=deleteAttachment   |      |
   | ADMIN       | GET  | index.php?m=companies&a=show               |      |
   | ADMIN       | GET  | index.php?m=companies&a=internalPostings   |      |
   | ADMIN       | GET  | index.php?m=companies&a=add                |      |
   | ADMIN       | GET  | index.php?m=companies&a=edit               |      |
-  | ADMIN       | GET  | index.php?m=companies&a=delete             |      |
+  | ADMIN       | GET  | index.php?m=companies&a=delete             | not  |
   | ADMIN       | GET  | index.php?m=companies&a=search             |      |
   | ADMIN       | GET  | index.php?m=companies&a=search             |      |
   | ADMIN       | GET  | index.php?m=companies&a=listByView         |      |
   | ADMIN       | GET  | index.php?m=companies&a=createAttachment   |      |
-  | ADMIN       | GET  | index.php?m=companies&a=deleteAttachment   |      |
+  | ADMIN       | GET  | index.php?m=companies&a=deleteAttachment   | not  |
   | ADMIN       | POST | index.php?m=companies&a=add                |      |                                                                        
   | ADMIN       | POST | index.php?m=companies&a=edit               |      |                                                                      
   | ADMIN       | POST | index.php?m=companies&a=createAttachment   |      |          
+  | ADMIN       | POST | index.php?m=companies&a=delete             |      |
+  | ADMIN       | POST | index.php?m=companies&a=deleteAttachment   |      |
   | MULTI_ADMIN | GET  | index.php?m=companies&a=show               |      |
   | MULTI_ADMIN | GET  | index.php?m=companies&a=internalPostings   |      |
   | MULTI_ADMIN | GET  | index.php?m=companies&a=add                |      |
   | MULTI_ADMIN | GET  | index.php?m=companies&a=edit               |      |
-  | MULTI_ADMIN | GET  | index.php?m=companies&a=delete             |      |
+  | MULTI_ADMIN | GET  | index.php?m=companies&a=delete             | not  |
   | MULTI_ADMIN | GET  | index.php?m=companies&a=search             |      |
   | MULTI_ADMIN | GET  | index.php?m=companies&a=search             |      |
   | MULTI_ADMIN | GET  | index.php?m=companies&a=listByView         |      |
   | MULTI_ADMIN | GET  | index.php?m=companies&a=createAttachment   |      |
-  | MULTI_ADMIN | GET  | index.php?m=companies&a=deleteAttachment   |      |
+  | MULTI_ADMIN | GET  | index.php?m=companies&a=deleteAttachment   | not  |
   | MULTI_ADMIN | POST | index.php?m=companies&a=add                |      |                                                                        
   | MULTI_ADMIN | POST | index.php?m=companies&a=edit               |      |                                                                      
   | MULTI_ADMIN | POST | index.php?m=companies&a=createAttachment   |      |                                                                     
+  | MULTI_ADMIN | POST | index.php?m=companies&a=delete             |      |
+  | MULTI_ADMIN | POST | index.php?m=companies&a=deleteAttachment   |      |
   | ROOT        | GET  | index.php?m=companies&a=show               |      |
   | ROOT        | GET  | index.php?m=companies&a=internalPostings   |      |
   | ROOT        | GET  | index.php?m=companies&a=add                |      |
   | ROOT        | GET  | index.php?m=companies&a=edit               |      |
-  | ROOT        | GET  | index.php?m=companies&a=delete             |      |
+  | ROOT        | GET  | index.php?m=companies&a=delete             | not  |
   | ROOT        | GET  | index.php?m=companies&a=search             |      |
   | ROOT        | GET  | index.php?m=companies&a=search             |      |
   | ROOT        | GET  | index.php?m=companies&a=listByView         |      |
   | ROOT        | GET  | index.php?m=companies&a=createAttachment   |      |
-  | ROOT        | GET  | index.php?m=companies&a=deleteAttachment   |      |
+  | ROOT        | GET  | index.php?m=companies&a=deleteAttachment   | not  |
   | ROOT        | POST | index.php?m=companies&a=add                |      |                                                                        
   | ROOT        | POST | index.php?m=companies&a=edit               |      |                                                                      
   | ROOT        | POST | index.php?m=companies&a=createAttachment   |      |          
+  | ROOT        | POST | index.php?m=companies&a=delete             |      |
+  | ROOT        | POST | index.php?m=companies&a=deleteAttachment   |      |
 
 
 @contacts @actions
@@ -548,6 +596,7 @@ Scenario Outline: Contacts module actions
   | DISABLED    | POST    | index.php?m=contacts&a=add                      | not   |                                                   
   | DISABLED    | POST    | index.php?m=contacts&a=edit                     | not   |                                                 
   | DISABLED    | POST    | index.php?m=contacts&a=addActivityScheduleEvent | not   |    
+  | DISABLED    | POST    | index.php?m=contacts&a=delete                   | not   |
   | READONLY    | GET     | index.php?m=contacts&a=show                     |       |
   | READONLY    | GET     | index.php?m=contacts&a=add                      | not   |
   | READONLY    | GET     | index.php?m=contacts&a=edit                     | not   |
@@ -561,6 +610,7 @@ Scenario Outline: Contacts module actions
   | READONLY    | POST    | index.php?m=contacts&a=add                      | not   |                                                                        
   | READONLY    | POST    | index.php?m=contacts&a=edit                     | not   |                                                                      
   | READONLY    | POST    | index.php?m=contacts&a=addActivityScheduleEvent | not   |    
+  | READONLY    | POST    | index.php?m=contacts&a=delete                   | not   |
   | EDIT        | GET     | index.php?m=contacts&a=show                     |       |
   | EDIT        | GET     | index.php?m=contacts&a=add                      |       |
   | EDIT        | GET     | index.php?m=contacts&a=edit                     |       |
@@ -574,10 +624,11 @@ Scenario Outline: Contacts module actions
   | EDIT        | POST    | index.php?m=contacts&a=add                      |       |                                                                        
   | EDIT        | POST    | index.php?m=contacts&a=edit                     |       |                                                                      
   | EDIT        | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |    
+  | EDIT        | POST    | index.php?m=contacts&a=delete                   | not   |
   | DELETE      | GET     | index.php?m=contacts&a=show                     |       |
   | DELETE      | GET     | index.php?m=contacts&a=add                      |       |
   | DELETE      | GET     | index.php?m=contacts&a=edit                     |       |
-  | DELETE      | GET     | index.php?m=contacts&a=delete                   |       |
+  | DELETE      | GET     | index.php?m=contacts&a=delete                   | not   |
   | DELETE      | GET     | index.php?m=contacts&a=search                   |       |
   | DELETE      | GET     | index.php?m=contacts&a=search                   |       |
   | DELETE      | GET     | index.php?m=contacts&a=listByView               |       |
@@ -587,10 +638,11 @@ Scenario Outline: Contacts module actions
   | DELETE      | POST    | index.php?m=contacts&a=add                      |       |                                                                        
   | DELETE      | POST    | index.php?m=contacts&a=edit                     |       |                                                                      
   | DELETE      | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |    
+  | DELETE      | POST    | index.php?m=contacts&a=delete                   |       |
   | DEMO        | GET     | index.php?m=contacts&a=show                     |       |
   | DEMO        | GET     | index.php?m=contacts&a=add                      |       |
   | DEMO        | GET     | index.php?m=contacts&a=edit                     |       |
-  | DEMO        | GET     | index.php?m=contacts&a=delete                   |       |
+  | DEMO        | GET     | index.php?m=contacts&a=delete                   | not   |
   | DEMO        | GET     | index.php?m=contacts&a=search                   |       |
   | DEMO        | GET     | index.php?m=contacts&a=search                   |       |
   | DEMO        | GET     | index.php?m=contacts&a=listByView               |       |
@@ -600,10 +652,11 @@ Scenario Outline: Contacts module actions
   | DEMO        | POST    | index.php?m=contacts&a=add                      |       |                                                                        
   | DEMO        | POST    | index.php?m=contacts&a=edit                     |       |                                                                      
   | DEMO        | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |    
+  | DEMO        | POST    | index.php?m=contacts&a=delete                   |       |
   | ADMIN       | GET     | index.php?m=contacts&a=show                     |       |
   | ADMIN       | GET     | index.php?m=contacts&a=add                      |       |
   | ADMIN       | GET     | index.php?m=contacts&a=edit                     |       |
-  | ADMIN       | GET     | index.php?m=contacts&a=delete                   |       |
+  | ADMIN       | GET     | index.php?m=contacts&a=delete                   | not   |
   | ADMIN       | GET     | index.php?m=contacts&a=search                   |       |
   | ADMIN       | GET     | index.php?m=contacts&a=search                   |       |
   | ADMIN       | GET     | index.php?m=contacts&a=listByView               |       |
@@ -613,10 +666,11 @@ Scenario Outline: Contacts module actions
   | ADMIN       | POST    | index.php?m=contacts&a=add                      |       |                                                                        
   | ADMIN       | POST    | index.php?m=contacts&a=edit                     |       |                                                                      
   | ADMIN       | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |    
+  | ADMIN       | POST    | index.php?m=contacts&a=delete                   |       |
   | MULTI_ADMIN | GET     | index.php?m=contacts&a=show                     |       |
   | MULTI_ADMIN | GET     | index.php?m=contacts&a=add                      |       |
   | MULTI_ADMIN | GET     | index.php?m=contacts&a=edit                     |       |
-  | MULTI_ADMIN | GET     | index.php?m=contacts&a=delete                   |       |
+  | MULTI_ADMIN | GET     | index.php?m=contacts&a=delete                   | not   |
   | MULTI_ADMIN | GET     | index.php?m=contacts&a=search                   |       |
   | MULTI_ADMIN | GET     | index.php?m=contacts&a=search                   |       |
   | MULTI_ADMIN | GET     | index.php?m=contacts&a=listByView               |       |
@@ -626,10 +680,11 @@ Scenario Outline: Contacts module actions
   | MULTI_ADMIN | POST    | index.php?m=contacts&a=add                      |       |                                                                        
   | MULTI_ADMIN | POST    | index.php?m=contacts&a=edit                     |       |                                                                      
   | MULTI_ADMIN | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |    
+  | MULTI_ADMIN | POST    | index.php?m=contacts&a=delete                   |       |
   | ROOT        | GET     | index.php?m=contacts&a=show                     |       |
   | ROOT        | GET     | index.php?m=contacts&a=add                      |       |
   | ROOT        | GET     | index.php?m=contacts&a=edit                     |       |
-  | ROOT        | GET     | index.php?m=contacts&a=delete                   |       |
+  | ROOT        | GET     | index.php?m=contacts&a=delete                   | not   |
   | ROOT        | GET     | index.php?m=contacts&a=search                   |       |
   | ROOT        | GET     | index.php?m=contacts&a=search                   |       |
   | ROOT        | GET     | index.php?m=contacts&a=listByView               |       |
@@ -639,6 +694,7 @@ Scenario Outline: Contacts module actions
   | ROOT        | POST    | index.php?m=contacts&a=add                      |       |                                                                        
   | ROOT        | POST    | index.php?m=contacts&a=edit                     |       |                                                                      
   | ROOT        | POST    | index.php?m=contacts&a=addActivityScheduleEvent |       |    
+  | ROOT        | POST    | index.php?m=contacts&a=delete                   |       |
   
 @activities @actions
 Scenario Outline: Activity module actions
@@ -688,41 +744,57 @@ Scenario Outline: Home module actions
   | DISABLED    | GET  | index.php?m=home&a=addSavedSearch      | not  |
   | DISABLED    | GET  | index.php?m=home&a=getAttachment       | not  |
   | DISABLED    | GET  | index.php?m=home&a=home                | not  |
+  | DISABLED    | POST | index.php?m=home&a=deleteSavedSearch   | not  |
+  | DISABLED    | POST | index.php?m=home&a=addSavedSearch      | not  |
   | READONLY    | GET  | index.php?m=home&a=quickSearch         |      |
-  | READONLY    | GET  | index.php?m=home&a=deleteSavedSearch   |      |
-  | READONLY    | GET  | index.php?m=home&a=addSavedSearch      |      |
+  | READONLY    | GET  | index.php?m=home&a=deleteSavedSearch   | not  |
+  | READONLY    | GET  | index.php?m=home&a=addSavedSearch      | not  |
   | READONLY    | GET  | index.php?m=home&a=getAttachment       |      |
   | READONLY    | GET  | index.php?m=home&a=home                |      |
+  | READONLY    | POST | index.php?m=home&a=deleteSavedSearch   |      |
+  | READONLY    | POST | index.php?m=home&a=addSavedSearch      |      |
   | EDIT        | GET  | index.php?m=home&a=quickSearch         |      |
-  | EDIT        | GET  | index.php?m=home&a=deleteSavedSearch   |      |
-  | EDIT        | GET  | index.php?m=home&a=addSavedSearch      |      |
+  | EDIT        | GET  | index.php?m=home&a=deleteSavedSearch   | not  |
+  | EDIT        | GET  | index.php?m=home&a=addSavedSearch      | not  |
   | EDIT        | GET  | index.php?m=home&a=getAttachment       |      |
   | EDIT        | GET  | index.php?m=home&a=home                |      |
+  | EDIT        | POST | index.php?m=home&a=deleteSavedSearch   |      |
+  | EDIT        | POST | index.php?m=home&a=addSavedSearch      |      |
   | DELETE      | GET  | index.php?m=home&a=quickSearch         |      |
-  | DELETE      | GET  | index.php?m=home&a=deleteSavedSearch   |      |
-  | DELETE      | GET  | index.php?m=home&a=addSavedSearch      |      |
+  | DELETE      | GET  | index.php?m=home&a=deleteSavedSearch   | not  |
+  | DELETE      | GET  | index.php?m=home&a=addSavedSearch      | not  |
   | DELETE      | GET  | index.php?m=home&a=getAttachment       |      |
   | DELETE      | GET  | index.php?m=home&a=home                |      |
+  | DELETE      | POST | index.php?m=home&a=deleteSavedSearch   |      |
+  | DELETE      | POST | index.php?m=home&a=addSavedSearch      |      |
   | DEMO        | GET  | index.php?m=home&a=quickSearch         |      |
-  | DEMO        | GET  | index.php?m=home&a=deleteSavedSearch   |      |
-  | DEMO        | GET  | index.php?m=home&a=addSavedSearch      |      |
+  | DEMO        | GET  | index.php?m=home&a=deleteSavedSearch   | not  |
+  | DEMO        | GET  | index.php?m=home&a=addSavedSearch      | not  |
   | DEMO        | GET  | index.php?m=home&a=getAttachment       |      |
   | DEMO        | GET  | index.php?m=home&a=home                |      |
+  | DEMO        | POST | index.php?m=home&a=deleteSavedSearch   |      |
+  | DEMO        | POST | index.php?m=home&a=addSavedSearch      |      |
   | ADMIN       | GET  | index.php?m=home&a=quickSearch         |      |
-  | ADMIN       | GET  | index.php?m=home&a=deleteSavedSearch   |      |
-  | ADMIN       | GET  | index.php?m=home&a=addSavedSearch      |      |
+  | ADMIN       | GET  | index.php?m=home&a=deleteSavedSearch   | not  |
+  | ADMIN       | GET  | index.php?m=home&a=addSavedSearch      | not  |
   | ADMIN       | GET  | index.php?m=home&a=getAttachment       |      |
   | ADMIN       | GET  | index.php?m=home&a=home                |      |
+  | ADMIN       | POST | index.php?m=home&a=deleteSavedSearch   |      |
+  | ADMIN       | POST | index.php?m=home&a=addSavedSearch      |      |
   | MULTI_ADMIN | GET  | index.php?m=home&a=quickSearch         |      |
-  | MULTI_ADMIN | GET  | index.php?m=home&a=deleteSavedSearch   |      |
-  | MULTI_ADMIN | GET  | index.php?m=home&a=addSavedSearch      |      |
+  | MULTI_ADMIN | GET  | index.php?m=home&a=deleteSavedSearch   | not  |
+  | MULTI_ADMIN | GET  | index.php?m=home&a=addSavedSearch      | not  |
   | MULTI_ADMIN | GET  | index.php?m=home&a=getAttachment       |      |
   | MULTI_ADMIN | GET  | index.php?m=home&a=home                |      |
+  | MULTI_ADMIN | POST | index.php?m=home&a=deleteSavedSearch   |      |
+  | MULTI_ADMIN | POST | index.php?m=home&a=addSavedSearch      |      |
   | ROOT        | GET  | index.php?m=home&a=quickSearch         |      |
-  | ROOT        | GET  | index.php?m=home&a=deleteSavedSearch   |      |
-  | ROOT        | GET  | index.php?m=home&a=addSavedSearch      |      |
+  | ROOT        | GET  | index.php?m=home&a=deleteSavedSearch   | not  |
+  | ROOT        | GET  | index.php?m=home&a=addSavedSearch      | not  |
   | ROOT        | GET  | index.php?m=home&a=getAttachment       |      |
   | ROOT        | GET  | index.php?m=home&a=home                |      |
+  | ROOT        | POST | index.php?m=home&a=deleteSavedSearch   |      |
+  | ROOT        | POST | index.php?m=home&a=addSavedSearch      |      |
   
 @lists @actions
 Scenario Outline: Lists module actions
@@ -738,48 +810,64 @@ Scenario Outline: Lists module actions
   | DISABLED    | GET  | index.php?m=lists&a=addToListFromDatagridModal | not  |
   | DISABLED    | GET  | index.php?m=lists&a=removeFromListDatagrid     | not  |
   | DISABLED    | GET  | index.php?m=lists&a=deleteStaticList           | not  |
+  | DISABLED    | POST | index.php?m=lists&a=removeFromListDatagrid     | not  |
+  | DISABLED    | POST | index.php?m=lists&a=deleteStaticList           | not  |
   | DISABLED    | GET  | index.php?m=lists&a=listByView                 | not  |
   | READONLY    | GET  | index.php?m=lists&a=showList                   |      |
   | READONLY    | GET  | index.php?m=lists&a=quickActionAddToListModal  |      |
   | READONLY    | GET  | index.php?m=lists&a=addToListFromDatagridModal |      |
-  | READONLY    | GET  | index.php?m=lists&a=removeFromListDatagrid     |      |
-  | READONLY    | GET  | index.php?m=lists&a=deleteStaticList           |      |
+  | READONLY    | GET  | index.php?m=lists&a=removeFromListDatagrid     | not  |
+  | READONLY    | GET  | index.php?m=lists&a=deleteStaticList           | not  |
+  | READONLY    | POST | index.php?m=lists&a=removeFromListDatagrid     |      |
+  | READONLY    | POST | index.php?m=lists&a=deleteStaticList           |      |
   | READONLY    | GET  | index.php?m=lists&a=listByView                 |      |
   | EDIT        | GET  | index.php?m=lists&a=showList                   |      |
   | EDIT        | GET  | index.php?m=lists&a=quickActionAddToListModal  |      |
   | EDIT        | GET  | index.php?m=lists&a=addToListFromDatagridModal |      |
-  | EDIT        | GET  | index.php?m=lists&a=removeFromListDatagrid     |      |
-  | EDIT        | GET  | index.php?m=lists&a=deleteStaticList           |      |
+  | EDIT        | GET  | index.php?m=lists&a=removeFromListDatagrid     | not  |
+  | EDIT        | GET  | index.php?m=lists&a=deleteStaticList           | not  |
+  | EDIT        | POST | index.php?m=lists&a=removeFromListDatagrid     |      |
+  | EDIT        | POST | index.php?m=lists&a=deleteStaticList           |      |
   | EDIT        | GET  | index.php?m=lists&a=listByView                 |      |
   | DELETE      | GET  | index.php?m=lists&a=showList                   |      |
   | DELETE      | GET  | index.php?m=lists&a=quickActionAddToListModal  |      |
   | DELETE      | GET  | index.php?m=lists&a=addToListFromDatagridModal |      |
-  | DELETE      | GET  | index.php?m=lists&a=removeFromListDatagrid     |      |
-  | DELETE      | GET  | index.php?m=lists&a=deleteStaticList           |      |
+  | DELETE      | GET  | index.php?m=lists&a=removeFromListDatagrid     | not  |
+  | DELETE      | GET  | index.php?m=lists&a=deleteStaticList           | not  |
+  | DELETE      | POST | index.php?m=lists&a=removeFromListDatagrid     |      |
+  | DELETE      | POST | index.php?m=lists&a=deleteStaticList           |      |
   | DELETE      | GET  | index.php?m=lists&a=listByView                 |      |
   | DEMO        | GET  | index.php?m=lists&a=showList                   |      |
   | DEMO        | GET  | index.php?m=lists&a=quickActionAddToListModal  |      |
   | DEMO        | GET  | index.php?m=lists&a=addToListFromDatagridModal |      |
-  | DEMO        | GET  | index.php?m=lists&a=removeFromListDatagrid     |      |
-  | DEMO        | GET  | index.php?m=lists&a=deleteStaticList           |      |
+  | DEMO        | GET  | index.php?m=lists&a=removeFromListDatagrid     | not  |
+  | DEMO        | GET  | index.php?m=lists&a=deleteStaticList           | not  |
+  | DEMO        | POST | index.php?m=lists&a=removeFromListDatagrid     |      |
+  | DEMO        | POST | index.php?m=lists&a=deleteStaticList           |      |
   | DEMO        | GET  | index.php?m=lists&a=listByView                 |      |
   | ADMIN       | GET  | index.php?m=lists&a=showList                   |      |
   | ADMIN       | GET  | index.php?m=lists&a=quickActionAddToListModal  |      |
   | ADMIN       | GET  | index.php?m=lists&a=addToListFromDatagridModal |      |
-  | ADMIN       | GET  | index.php?m=lists&a=removeFromListDatagrid     |      |
-  | ADMIN       | GET  | index.php?m=lists&a=deleteStaticList           |      |
+  | ADMIN       | GET  | index.php?m=lists&a=removeFromListDatagrid     | not  |
+  | ADMIN       | GET  | index.php?m=lists&a=deleteStaticList           | not  |
+  | ADMIN       | POST | index.php?m=lists&a=removeFromListDatagrid     |      |
+  | ADMIN       | POST | index.php?m=lists&a=deleteStaticList           |      |
   | ADMIN       | GET  | index.php?m=lists&a=listByView                 |      |
   | MULTI_ADMIN | GET  | index.php?m=lists&a=showList                   |      |
   | MULTI_ADMIN | GET  | index.php?m=lists&a=quickActionAddToListModal  |      | 
   | MULTI_ADMIN | GET  | index.php?m=lists&a=addToListFromDatagridModal |      | 
-  | MULTI_ADMIN | GET  | index.php?m=lists&a=removeFromListDatagrid     |      | 
-  | MULTI_ADMIN | GET  | index.php?m=lists&a=deleteStaticList           |      | 
+  | MULTI_ADMIN | GET  | index.php?m=lists&a=removeFromListDatagrid     | not  | 
+  | MULTI_ADMIN | GET  | index.php?m=lists&a=deleteStaticList           | not  | 
+  | MULTI_ADMIN | POST | index.php?m=lists&a=removeFromListDatagrid     |      | 
+  | MULTI_ADMIN | POST | index.php?m=lists&a=deleteStaticList           |      | 
   | MULTI_ADMIN | GET  | index.php?m=lists&a=listByView                 |      | 
   | ROOT        | GET  | index.php?m=lists&a=showList                   |      |
   | ROOT        | GET  | index.php?m=lists&a=quickActionAddToListModal  |      |
   | ROOT        | GET  | index.php?m=lists&a=addToListFromDatagridModal |      |
-  | ROOT        | GET  | index.php?m=lists&a=removeFromListDatagrid     |      |
-  | ROOT        | GET  | index.php?m=lists&a=deleteStaticList           |      |
+  | ROOT        | GET  | index.php?m=lists&a=removeFromListDatagrid     | not  |
+  | ROOT        | GET  | index.php?m=lists&a=deleteStaticList           | not  |
+  | ROOT        | POST | index.php?m=lists&a=removeFromListDatagrid     |      |
+  | ROOT        | POST | index.php?m=lists&a=deleteStaticList           |      |
   | ROOT        | GET  | index.php?m=lists&a=listByView                 |      |
   
  
@@ -930,6 +1018,7 @@ Scenario Outline: Reports module actions
   | DISABLED    | POST | index.php?m=settings&a=editUser            | not  | 
   | DISABLED    | GET  | index.php?m=settings&a=createBackup        | not  |
   | DISABLED    | GET  | index.php?m=settings&a=deleteBackup        | not  |
+  | DISABLED    | POST | index.php?m=settings&a=deleteBackup        | not  |
   | DISABLED    | GET  | index.php?m=settings&a=customizeExtraFields| not  |
   | DISABLED    | POST | index.php?m=settings&a=customizeExtraFields| not  |
   | DISABLED    | GET  | index.php?m=settings&a=customizeCalendar   | not  |
@@ -954,7 +1043,6 @@ Scenario Outline: Reports module actions
   | DISABLED    | POST | index.php?m=settings&a=aspLocalization     | not  |
   | DISABLED    | GET  | index.php?m=settings&a=loginActivity       | not  |
   | DISABLED    | GET  | index.php?m=settings&a=viewItemHistory     | not  |
-  | DISABLED    | GET  | index.php?m=settings&a=getFirefoxModal     | not  |
   | DISABLED    | GET  | index.php?m=settings&a=administration      | not  |
   | DISABLED    | POST | index.php?m=settings&a=administration      | not  |
   | DISABLED    | GET  | index.php?m=settings&a=myProfile           | not  |
@@ -971,6 +1059,7 @@ Scenario Outline: Reports module actions
   | READONLY    | POST | index.php?m=settings&a=editUser            | not  |
   | READONLY    | GET  | index.php?m=settings&a=createBackup        | not  |
   | READONLY    | GET  | index.php?m=settings&a=deleteBackup        | not  |
+  | READONLY    | POST | index.php?m=settings&a=deleteBackup        | not  |
   | READONLY    | GET  | index.php?m=settings&a=customizeExtraFields| not  |
   | READONLY    | POST | index.php?m=settings&a=customizeExtraFields| not  |
   | READONLY    | GET  | index.php?m=settings&a=customizeCalendar   | not  |
@@ -995,7 +1084,6 @@ Scenario Outline: Reports module actions
   | READONLY    | POST | index.php?m=settings&a=aspLocalization     | not  |
   | READONLY    | GET  | index.php?m=settings&a=loginActivity       | not  |
   | READONLY    | GET  | index.php?m=settings&a=viewItemHistory     | not  |
-  | READONLY    | GET  | index.php?m=settings&a=getFirefoxModal     |      |
   | READONLY    | GET  | index.php?m=settings&a=administration      | not  |
   | READONLY    | POST | index.php?m=settings&a=administration      | not  |
   | READONLY    | GET  | index.php?m=settings&a=myProfile           |      |
@@ -1012,6 +1100,7 @@ Scenario Outline: Reports module actions
   | EDIT        | POST | index.php?m=settings&a=editUser            | not  |
   | EDIT        | GET  | index.php?m=settings&a=createBackup        | not  |
   | EDIT        | GET  | index.php?m=settings&a=deleteBackup        | not  |
+  | EDIT        | POST | index.php?m=settings&a=deleteBackup        | not  |
   | EDIT        | GET  | index.php?m=settings&a=customizeExtraFields| not  |
   | EDIT        | POST | index.php?m=settings&a=customizeExtraFields| not  |
   | EDIT        | GET  | index.php?m=settings&a=customizeCalendar   | not  |
@@ -1036,7 +1125,6 @@ Scenario Outline: Reports module actions
   | EDIT        | POST | index.php?m=settings&a=aspLocalization     | not  |
   | EDIT        | GET  | index.php?m=settings&a=loginActivity       | not  |
   | EDIT        | GET  | index.php?m=settings&a=viewItemHistory     | not  |
-  | EDIT        | GET  | index.php?m=settings&a=getFirefoxModal     |      |
   | EDIT        | GET  | index.php?m=settings&a=administration      | not  |
   | EDIT        | POST | index.php?m=settings&a=administration      | not  |
   | EDIT        | GET  | index.php?m=settings&a=myProfile           |      |
@@ -1053,6 +1141,7 @@ Scenario Outline: Reports module actions
   | DELETE      | POST | index.php?m=settings&a=editUser            | not  |
   | DELETE      | GET  | index.php?m=settings&a=createBackup        | not  |
   | DELETE      | GET  | index.php?m=settings&a=deleteBackup        | not  |
+  | DELETE      | POST | index.php?m=settings&a=deleteBackup        | not  |
   | DELETE      | GET  | index.php?m=settings&a=customizeExtraFields| not  |
   | DELETE      | POST | index.php?m=settings&a=customizeExtraFields| not  |
   | DELETE      | GET  | index.php?m=settings&a=customizeCalendar   | not  |
@@ -1077,7 +1166,6 @@ Scenario Outline: Reports module actions
   | DELETE      | POST | index.php?m=settings&a=aspLocalization     | not  |
   | DELETE      | GET  | index.php?m=settings&a=loginActivity       | not  |
   | DELETE      | GET  | index.php?m=settings&a=viewItemHistory     | not  |
-  | DELETE      | GET  | index.php?m=settings&a=getFirefoxModal     |      |
   | DELETE      | GET  | index.php?m=settings&a=administration      | not  |
   | DELETE      | POST | index.php?m=settings&a=administration      | not  |
   | DELETE      | GET  | index.php?m=settings&a=myProfile           |      |
@@ -1094,6 +1182,7 @@ Scenario Outline: Reports module actions
   | DEMO        | POST | index.php?m=settings&a=editUser            | not  |
   | DEMO        | GET  | index.php?m=settings&a=createBackup        | not  |
   | DEMO        | GET  | index.php?m=settings&a=deleteBackup        | not  |
+  | DEMO        | POST | index.php?m=settings&a=deleteBackup        | not  |
   | DEMO        | GET  | index.php?m=settings&a=customizeExtraFields|      |
   | DEMO        | POST | index.php?m=settings&a=customizeExtraFields| not  |
   | DEMO        | GET  | index.php?m=settings&a=customizeCalendar   |      |
@@ -1118,7 +1207,6 @@ Scenario Outline: Reports module actions
   | DEMO        | POST | index.php?m=settings&a=aspLocalization     | not  |
   | DEMO        | GET  | index.php?m=settings&a=loginActivity       |      |
   | DEMO        | GET  | index.php?m=settings&a=viewItemHistory     |      |
-  | DEMO        | GET  | index.php?m=settings&a=getFirefoxModal     |      |
   | DEMO        | GET  | index.php?m=settings&a=administration      |      |
   | DEMO        | POST | index.php?m=settings&a=administration      | not  |
   | DEMO        | GET  | index.php?m=settings&a=myProfile           |      |
@@ -1134,7 +1222,8 @@ Scenario Outline: Reports module actions
   | ADMIN       | GET  | index.php?m=settings&a=editUser            |      |
   | ADMIN       | POST | index.php?m=settings&a=editUser            |      |
   | ADMIN       | GET  | index.php?m=settings&a=createBackup        |      |
-  | ADMIN       | GET  | index.php?m=settings&a=deleteBackup        |      |
+  | ADMIN       | GET  | index.php?m=settings&a=deleteBackup        | not  |
+  | ADMIN       | POST | index.php?m=settings&a=deleteBackup        |      |
   | ADMIN       | GET  | index.php?m=settings&a=customizeExtraFields|      |
   | ADMIN       | POST | index.php?m=settings&a=customizeExtraFields|      |
   | ADMIN       | GET  | index.php?m=settings&a=customizeCalendar   |      |
@@ -1153,13 +1242,13 @@ Scenario Outline: Reports module actions
   | ADMIN       | GET  | index.php?m=settings&a=eeo                 |      |
   | ADMIN       | POST | index.php?m=settings&a=eeo                 |      |
   | ADMIN       | GET  | index.php?m=settings&a=onCareerPortalTweak |      |
-  | ADMIN       | GET  | index.php?m=settings&a=deleteUser          |      |
+  | ADMIN       | GET  | index.php?m=settings&a=deleteUser          | not  |
+  | ADMIN       | POST | index.php?m=settings&a=deleteUser          |      |
   | ADMIN       | GET  | index.php?m=settings&a=emailTemplates      |      |
   | ADMIN       | POST | index.php?m=settings&a=emailTemplates      |      |
   | ADMIN       | POST | index.php?m=settings&a=aspLocalization     |      |
   | ADMIN       | GET  | index.php?m=settings&a=loginActivity       |      |
   | ADMIN       | GET  | index.php?m=settings&a=viewItemHistory     |      |
-  | ADMIN       | GET  | index.php?m=settings&a=getFirefoxModal     |      |
   | ADMIN       | GET  | index.php?m=settings&a=administration      |      |
   | ADMIN       | POST | index.php?m=settings&a=administration      |      |
   | ADMIN       | GET  | index.php?m=settings&a=myProfile           |      |
@@ -1175,7 +1264,8 @@ Scenario Outline: Reports module actions
   | MULTI_ADMIN | GET  | index.php?m=settings&a=editUser            |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=editUser            |      |
   | MULTI_ADMIN | GET  | index.php?m=settings&a=createBackup        |      |
-  | MULTI_ADMIN | GET  | index.php?m=settings&a=deleteBackup        |      |
+  | MULTI_ADMIN | GET  | index.php?m=settings&a=deleteBackup        | not  |
+  | MULTI_ADMIN | POST | index.php?m=settings&a=deleteBackup        |      |
   | MULTI_ADMIN | GET  | index.php?m=settings&a=customizeExtraFields|      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=customizeExtraFields|      |
   | MULTI_ADMIN | GET  | index.php?m=settings&a=customizeCalendar   |      |
@@ -1194,13 +1284,13 @@ Scenario Outline: Reports module actions
   | MULTI_ADMIN | GET  | index.php?m=settings&a=eeo                 |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=eeo                 |      |
   | MULTI_ADMIN | GET  | index.php?m=settings&a=onCareerPortalTweak |      |
-  | MULTI_ADMIN | GET  | index.php?m=settings&a=deleteUser          |      |
+  | MULTI_ADMIN | GET  | index.php?m=settings&a=deleteUser          | not  |
+  | MULTI_ADMIN | POST | index.php?m=settings&a=deleteUser          |      |
   | MULTI_ADMIN | GET  | index.php?m=settings&a=emailTemplates      |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=emailTemplates      |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=aspLocalization     |      |
   | MULTI_ADMIN | GET  | index.php?m=settings&a=loginActivity       |      |
   | MULTI_ADMIN | GET  | index.php?m=settings&a=viewItemHistory     |      |
-  | MULTI_ADMIN | GET  | index.php?m=settings&a=getFirefoxModal     |      |
   | MULTI_ADMIN | GET  | index.php?m=settings&a=administration      |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=administration      |      |
   | MULTI_ADMIN | GET  | index.php?m=settings&a=myProfile           |      |
@@ -1216,7 +1306,8 @@ Scenario Outline: Reports module actions
   | ROOT        | GET  | index.php?m=settings&a=editUser            |      |
   | ROOT        | POST | index.php?m=settings&a=editUser            |      |
   | ROOT        | GET  | index.php?m=settings&a=createBackup        |      |
-  | ROOT        | GET  | index.php?m=settings&a=deleteBackup        |      |
+  | ROOT        | GET  | index.php?m=settings&a=deleteBackup        | not  |
+  | ROOT        | POST | index.php?m=settings&a=deleteBackup        |      |
   | ROOT        | GET  | index.php?m=settings&a=customizeExtraFields|      |
   | ROOT        | POST | index.php?m=settings&a=customizeExtraFields|      |
   | ROOT        | GET  | index.php?m=settings&a=customizeCalendar   |      |
@@ -1235,13 +1326,13 @@ Scenario Outline: Reports module actions
   | ROOT        | GET  | index.php?m=settings&a=eeo                 |      |
   | ROOT        | POST | index.php?m=settings&a=eeo                 |      |
   | ROOT        | GET  | index.php?m=settings&a=onCareerPortalTweak |      |
-  | ROOT        | GET  | index.php?m=settings&a=deleteUser          |      |
+  | ROOT        | GET  | index.php?m=settings&a=deleteUser          | not  |
+  | ROOT        | POST | index.php?m=settings&a=deleteUser          |      |
   | ROOT        | GET  | index.php?m=settings&a=emailTemplates      |      |
   | ROOT        | POST | index.php?m=settings&a=emailTemplates      |      |
   | ROOT        | POST | index.php?m=settings&a=aspLocalization     |      |
   | ROOT        | GET  | index.php?m=settings&a=loginActivity       |      |
   | ROOT        | GET  | index.php?m=settings&a=viewItemHistory     |      |
-  | ROOT        | GET  | index.php?m=settings&a=getFirefoxModal     |      |
   | ROOT        | GET  | index.php?m=settings&a=administration      |      |
   | ROOT        | POST | index.php?m=settings&a=administration      |      |
   | ROOT        | GET  | index.php?m=settings&a=myProfile           |      |

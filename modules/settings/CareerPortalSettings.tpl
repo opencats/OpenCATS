@@ -213,7 +213,8 @@
                                             </td>
                                             <td valign="top" nowrap="nowrap">
                                                 <div id="confirmNew" style="display: none;">
-                                                    <form name="careerPortalSettingsForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=onCareerPortalTweak&amp;p=new" method="post" onsubmit="if (detectInputIsValid(document.getElementById('templateName').value)) {alert('This template name is already in use, please use another.'); return false;}" >
+                                                    <form name="careerPortalSettingsForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=onCareerPortalTweak" method="post" onsubmit="if (detectInputIsValid(document.getElementById('templateName').value)) {alert('This template name is already in use, please use another.'); return false;}" >
+                                                        <input name="p" type="hidden" value="new" />
                                                         New Template Name:<br />
                                                         <input name="newName" id="templateName" value="Unnamed" style="width: 160px;" />&nbsp;
                                                         <input type="submit" class="button" value="OK" />
@@ -249,7 +250,8 @@
                                     <input type="button" class="button" value="Delete" id="buttonDelete" onclick="showDeleteInput();" />
                                     <input type="button" class="button" value="Duplicate" onclick="showDuplicateInput();" />
                                     <input type="button" class="button" value="Set as Active" onclick="setAsActive();" />
-                                    <form name="setAsActiveForm" id="setAsActiveForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=onCareerPortalTweak&amp;p=setAsActive" method="post">
+                                    <form name="setAsActiveForm" id="setAsActiveForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=onCareerPortalTweak" method="post">
+                                        <input name="p" type="hidden" value="setAsActive" />
                                         <input name="activeName" id="activeName" type="hidden" value="" />
                                         <input type="submit" class="button" value="OK" style="display: none;" />
                                     </form>
@@ -257,7 +259,8 @@
                                     <div id="confirmDuplicate" style="display: none; text-align: left;">
                                         <br />
                                         New Name
-                                        <form name="careerPortalSettingsForm" id="careerPortalSettingsForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=onCareerPortalTweak&amp;p=duplicate" method="post" onsubmit="if (detectInputIsValid(document.getElementById('duplicateName').value)) {alert('This template name is already in use, please use another.'); return false;}" >
+                                        <form name="careerPortalSettingsForm" id="careerPortalSettingsForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=onCareerPortalTweak" method="post" onsubmit="if (detectInputIsValid(document.getElementById('duplicateName').value)) {alert('This template name is already in use, please use another.'); return false;}" >
+                                            <input name="p" type="hidden" value="duplicate" />
                                             <input name="origName" id="origName" type="hidden" value="" />
                                             <input name="duplicateName" id="duplicateName" style="width: 200px;" />&nbsp;
                                             <input type="submit" class="button" value="OK" />
@@ -268,7 +271,8 @@
                                     <div id="confirmDelete" style="display: none;">
                                         <br />
                                         Are you sure you want to delete this template?
-                                        <form name="careerPortalSettingsForm" id="careerPortalSettingsForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=onCareerPortalTweak&amp;p=delete" method="post">
+                                        <form name="careerPortalSettingsForm" id="careerPortalSettingsForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=onCareerPortalTweak" method="post">
+                                            <input name="p" type="hidden" value="delete" />
                                             <input name="delName" id="delName" type="hidden" value="">
                                             <input type="submit" class="button" value="OK">
                                             <input type="button" class="button" value="Cancel" onclick="hideAllEditingFields();">

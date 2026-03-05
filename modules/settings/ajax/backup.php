@@ -33,17 +33,22 @@ include_once(LEGACY_ROOT . '/lib/Attachments.php');
 
 $interface = new SecureAJAXInterface();
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST')
+{
+    die('Invalid request.');
+}
+
 if ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) < ACCESS_LEVEL_SA)
 {
     die('No permision.');
 }
 
-if (!isset($_REQUEST['a']))
+if (!isset($_POST['a']))
 {
     die('No action.');
 }
 
-$action = $_REQUEST['a'];
+$action = $_POST['a'];
 
 $completedTasks = '';
 function markCompleted($task)
@@ -70,7 +75,8 @@ function setStatusBackup($status, $progress)
 if ($action == 'start')
 {
     $companyID = $_SESSION['CATS']->getSiteCompanyID();
-    $attachmentsOnly = $interface->isChecked('attachmentsOnly');
+    $attachmentsOnly = (isset($_POST['attachmentsOnly']) && !empty($_POST['attachmentsOnly']) &&
+        $_POST['attachmentsOnly'] != 'false' && $_POST['attachmentsOnly'] != 'off');
 
     /* Delete any old backups. */
     $attachments = new Attachments(CATS_ADMIN_SITE);
@@ -134,13 +140,14 @@ if ($action == 'backup')
     // FIXME: Make this configurable.
     @ini_set('memory_limit', '192M');
 
-    if (!$interface->isRequiredIDValid('attachmentID'))
+    if (!isset($_POST['attachmentID']) || !ctype_digit((string) $_POST['attachmentID']))
     {
         die('Error: Invalid attachment ID.');
     }
 
-    $attachmentID    = $_REQUEST['attachmentID'];
-    $attachmentsOnly = $interface->isChecked('attachmentsOnly');
+    $attachmentID    = $_POST['attachmentID'];
+    $attachmentsOnly = (isset($_POST['attachmentsOnly']) && !empty($_POST['attachmentsOnly']) &&
+        $_POST['attachmentsOnly'] != 'false' && $_POST['attachmentsOnly'] != 'off');
     
     $siteID = $_SESSION['CATS']->getSiteID();
     $db = DatabaseConnection::getInstance();

@@ -72,9 +72,14 @@
                             <td align="left" valign="top"><?php $this->_($data['jobID']); ?></td>
                             <td align="left" valign="top">
                                 <?php if (!$data['inPipeline']): ?>
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addToPipeline&amp;getback=getback&amp;candidateIDArrayStored=<?php echo($this->candidateIDArrayStored); ?>&amp;jobOrderID=<?php $this->_($data['jobOrderID']); ?>" class="<?php $this->_($data['linkClass']); ?>">
-                                        <?php $this->_($data['title']); ?>
-                                    </a>
+                                    <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addToPipeline&amp;getback=getback" style="display:inline;">
+                                        <input type="hidden" name="postback" value="postback" />
+                                        <input type="hidden" name="candidateIDArrayStored" value="<?php echo($this->candidateIDArrayStored); ?>" />
+                                        <input type="hidden" name="jobOrderID" value="<?php $this->_($data['jobOrderID']); ?>" />
+                                        <button type="submit" class="<?php $this->_($data['linkClass']); ?> linkButton">
+                                            <?php $this->_($data['title']); ?>
+                                        </button>
+                                    </form>
                                 <?php else: ?>
                                     <span class="<?php $this->_($data['linkClass']); ?>"><?php $this->_($data['title']); ?></span>
                                 <?php endif; ?>
@@ -122,9 +127,14 @@
                             <td align="left" valign="top"><?php $this->_($data['jobID']); ?></td>
                             <td align="left" valign="top">
                                 <?php if (!$data['inPipeline']): ?>
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addToPipeline&amp;getback=getback&amp;candidateIDArrayStored=<?php echo($this->candidateIDArrayStored); ?>&amp;jobOrderID=<?php $this->_($data['jobOrderID']); ?>" class="<?php $this->_($data['linkClass']); ?>">
-                                        <?php $this->_($data['title']); ?>
-                                    </a>
+                                    <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addToPipeline&amp;getback=getback" style="display:inline;">
+                                        <input type="hidden" name="postback" value="postback" />
+                                        <input type="hidden" name="candidateIDArrayStored" value="<?php echo($this->candidateIDArrayStored); ?>" />
+                                        <input type="hidden" name="jobOrderID" value="<?php $this->_($data['jobOrderID']); ?>" />
+                                        <button type="submit" class="<?php $this->_($data['linkClass']); ?> linkButton">
+                                            <?php $this->_($data['title']); ?>
+                                        </button>
+                                    </form>
                                 <?php else: ?>
                                     <span class="<?php $this->_($data['linkClass']); ?>"><?php $this->_($data['title']); ?></span>
                                 <?php endif; ?>

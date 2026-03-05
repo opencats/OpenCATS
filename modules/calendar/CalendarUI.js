@@ -188,8 +188,11 @@ function calendarEditEvent(entry)
         dayString = '0' + dayString;
     }
 
-    var dateString = monthString + '-' + dayString + '-' + yearString;
-    SetDateInputDate('dateEdit', 'MM-DD-YY', dateString);
+    var userDateFormat = (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY');
+    var dateString = (userDateFormat == 'DD-MM-YY'
+        ? dayString + '-' + monthString + '-' + yearString
+        : monthString + '-' + dayString + '-' + yearString);
+    SetDateInputDate('dateEdit', userDateFormat, dateString);
 
     if (entry.getData('allDay') != '1')
     {
@@ -377,8 +380,11 @@ function addEventByDay(year, month, day, hour)
         dayString = '0' + dayString;
     }
 
-    var dateString = monthString + '-' + dayString + '-' + yearString;
-    SetDateInputDate('dateAdd', 'MM-DD-YY', dateString);
+    var userDateFormat = (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY');
+    var dateString = (userDateFormat == 'DD-MM-YY'
+        ? dayString + '-' + monthString + '-' + yearString
+        : monthString + '-' + dayString + '-' + yearString);
+    SetDateInputDate('dateAdd', userDateFormat, dateString);
 
     document.getElementById('publicEntry').checked = defaultPublic;
 
@@ -424,8 +430,34 @@ function confirmDeleteEntry()
         return;
     }
 
-    document.location = getCurrentCalendarUrl() + '&a=deleteEvent&eventID='
-        + document.getElementById('eventIDEdit').value;
+    var form = document.createElement('form');
+    form.method = 'post';
+    form.action = getCurrentCalendarUrl() + '&a=deleteEvent';
+
+    var postback = document.createElement('input');
+    postback.type = 'hidden';
+    postback.name = 'postback';
+    postback.value = 'postback';
+    form.appendChild(postback);
+
+    var eventID = document.createElement('input');
+    eventID.type = 'hidden';
+    eventID.name = 'eventID';
+    eventID.value = document.getElementById('eventIDEdit').value;
+    form.appendChild(eventID);
+
+    if (typeof CATSCsrfToken != 'undefined' && CATSCsrfToken !== null &&
+        CATSCsrfToken !== '')
+    {
+        var csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = 'csrfToken';
+        csrfToken.value = CATSCsrfToken;
+        form.appendChild(csrfToken);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
 }
 
 /* Hides all the main window views (month, week, day, etc). */

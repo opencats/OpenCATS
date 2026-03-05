@@ -247,7 +247,7 @@ Feature: Job Orders
     And I fill in "searchText" with "PHP developer"
     And press "Search" 
     When I click on "PHP developer" on the row containing "Active"
-    And follow "Delete"
+    And press "Delete"
     And I should see "Delete this job order?" in alert popup
     And I confirm the popup
     Then I should see "Job Orders: Home"

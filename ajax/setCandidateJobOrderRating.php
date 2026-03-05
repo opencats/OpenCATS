@@ -32,6 +32,12 @@ include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 
 $interface = new SecureAJAXInterface();
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST')
+{
+    $interface->outputXMLErrorPage(-1, 'Invalid request.');
+    die();
+}
+
 if ($_SESSION['CATS']->getAccessLevel('pipelines.editRating') < ACCESS_LEVEL_EDIT)
 {
     $interface->outputXMLErrorPage(-1, ERROR_NO_PERMISSION);
@@ -45,7 +51,7 @@ if (!$interface->isRequiredIDValid('candidateJobOrderID'))
 }
 
 if (!$interface->isRequiredIDValid('rating', true, true) ||
-    $_REQUEST['rating'] < -6 || $_REQUEST['rating'] > 5)
+    $_POST['rating'] < -6 || $_POST['rating'] > 5)
 {
     $interface->outputXMLErrorPage(-1, 'Invalid rating.');
     die();
@@ -53,8 +59,8 @@ if (!$interface->isRequiredIDValid('rating', true, true) ||
 
 $siteID = $interface->getSiteID();
 
-$candidateJobOrderID = $_REQUEST['candidateJobOrderID'];
-$rating              = $_REQUEST['rating'];
+$candidateJobOrderID = $_POST['candidateJobOrderID'];
+$rating              = $_POST['rating'];
 
 $pipelines = new Pipelines($siteID);
 $pipelines->updateRatingValue($candidateJobOrderID, $rating);

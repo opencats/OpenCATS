@@ -132,6 +132,11 @@ class CareersUI extends UserInterface
         switch ($pa)
         {
             case 'logout':
+                if ($_SERVER['REQUEST_METHOD'] !== 'POST')
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
+
                 if ($isRegistrationEnabled)
                 {
                     // Remove the saved information cookie
@@ -224,7 +229,8 @@ class CareersUI extends UserInterface
             /* Replace input fields. */
             $content = str_replace('<input-firstName>', '<input name="firstName" id="firstName" class="inputBoxName" value="' . $candidate['firstName'] . '" />', $content);
             $content = str_replace('<input-lastName>', '<input name="lastName" id="lastName" class="inputBoxName" value="' . $candidate['lastName'] . '" />', $content);
-            $content = str_replace('<input-address>', '<textarea name="address" class="inputBoxArea">'. $candidate['address'] .'</textarea>', $content);
+            $content = str_replace('<input-address>', '<input name="address" id="address" class="inputBoxNormal" value="' . $candidate['address'] . '" />', $content);
+            $content = str_replace('<input-address2>', '<input name="address2" id="address2" class="inputBoxNormal" value="' . $candidate['address2'] . '" />', $content);
             $content = str_replace('<input-city>', '<input name="city" id="city" class="inputBoxNormal" value="' . $candidate['city'] . '" />', $content);
             $content = str_replace('<input-state>', '<input name="state" id="state" class="inputBoxNormal" value="' . $candidate['state'] . '" />', $content);
             $content = str_replace('<input-zip>', '<input name="zip" id="zip" class="inputBoxNormal" value="' . $candidate['zip'] . '" />', $content);
@@ -246,18 +252,24 @@ class CareersUI extends UserInterface
             );
             $content = str_replace('<input-submit>', '<input type="submit" name="submitButton" id="submitButton" class="submitButton" onclick="document.getElementById(\'submitButton\').disabled=true;" value="Save Profile" style="width: 150px;" />', $content);
 
+            $attachmentIDValue = $latestAttachment ? $latestAttachment : -1;
             $content = sprintf(
                 '<form name="updateForm" id="updateForm" enctype="multipart/form-data" method="post" '
-                . 'action="%s?m=careers&p=onRegisteredCandidateProfile&attachmentID=%d">',
-                CATSUtility::getIndexName(),
-                $latestAttachment ? $latestAttachment : -1
-            ) . $content . '</form>'
+                . 'action="%s?m=careers&p=onRegisteredCandidateProfile">',
+                CATSUtility::getIndexName()
+            ) . '<input type="hidden" name="attachmentID" value="' . $attachmentIDValue . '" />'
+            . $content . '</form>'
             . (isset($_GET[$id='isPostBack']) && !strcmp($_GET[$id], 'yes') ? '<script language="javascript" type="text/javascript">setTimeout(\'alert("Your changes have been saved!")\',25);</script>' : '');
 
             $template['Content'] = $content;
         }
         else if ($p == 'onRegisteredCandidateProfile' && $isRegistrationEnabled)
         {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST')
+            {
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+            }
+
             // Get information about the candidate from the cookie
             $fields = $this->getCookieFields($siteID);
             $candidate = $this->ProcessCandidateRegistration($siteID, $template['Content - Candidate Registration'], $fields, true);
@@ -268,7 +280,7 @@ class CareersUI extends UserInterface
             }
 
             // Get the fields (if included in the template) to update
-            $fields = array('firstName', 'lastName', 'email1', 'phoneHome', 'phoneCell', 'phoneWork', 'address',
+            $fields = array('firstName', 'lastName', 'email1', 'phoneHome', 'phoneCell', 'phoneWork', 'address', 'address2',
                 'city', 'state', 'zip', 'keySkills', 'currentEmployer', 'bestTimeToCall'
             );
             $fieldValues = array();
@@ -288,8 +300,16 @@ class CareersUI extends UserInterface
             }
 
             // Get the attachment to replace (if exists)
-            $attachmentID = isset($_GET[$id='attachmentID']) ? $_GET[$id] : -1;
-            $attachmentID = $attachmentID != -1 ? $attachmentID : false;
+            $attachmentID = false;
+            if (isset($_POST['attachmentID']))
+            {
+                if (!$this->isOptionalIDValid('attachmentID', $_POST))
+                {
+                    CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid attachment ID.');
+                }
+
+                $attachmentID = $_POST['attachmentID'] != '-1' ? $_POST['attachmentID'] : false;
+            }
 
             $attachmentsLib = new Attachments($siteID);
             $candidatesLib = new Candidates($siteID);
@@ -307,6 +327,7 @@ class CareersUI extends UserInterface
                 $phoneCell,
                 $phoneWork,
                 $address,
+                $address2,
                 $city,
                 $state,
                 $zip,
@@ -415,6 +436,7 @@ class CareersUI extends UserInterface
             $firstName = isset($_POST[$id='firstName']) ? $_POST[$id] : '';
             $lastName = isset($_POST[$id='lastName']) ? $_POST[$id] : '';
             $address = isset($_POST[$id='address']) ? $_POST[$id] : '';
+            $address2 = isset($_POST[$id='address2']) ? $_POST[$id] : '';
             $city = isset($_POST[$id='city']) ? $_POST[$id] : '';
             $state = isset($_POST[$id='state']) ? $_POST[$id] : '';
             $zip = isset($_POST[$id='zip']) ? $_POST[$id] : '';
@@ -444,6 +466,7 @@ class CareersUI extends UserInterface
                     // The candidate is registered
                     $firstName = $candidate['firstName']; $lastName = $candidate['lastName'];
                     $address = $candidate['address'];
+                    $address2 = $candidate['address2'];
                     $city = $candidate['city'];
                     $state = $candidate['state'];
                     $zip = $candidate['zip'];
@@ -478,6 +501,7 @@ class CareersUI extends UserInterface
                         // Rewrite here, I'll fix it later
                         $firstName = $candidate['firstName']; $lastName = $candidate['lastName'];
                         $address = $candidate['address'];
+                        $address2 = $candidate['address2'];
                         $city = $candidate['city'];
                         $state = $candidate['state'];
                         $zip = $candidate['zip'];
@@ -581,7 +605,8 @@ class CareersUI extends UserInterface
             $template['Content'] = str_replace('<title>', $jobOrderData['title'], $template['Content']);
             $template['Content'] = str_replace('<input-firstName>', '<input name="firstName" id="firstName" class="inputBoxName" value="' . $firstName . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-lastName>', '<input name="lastName" id="lastName" class="inputBoxName" value="' . $lastName . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-address>', '<textarea name="address" class="inputBoxArea">'. $address .'</textarea>', $template['Content']);
+            $template['Content'] = str_replace('<input-address>', '<input name="address" id="address" class="inputBoxNormal" value="' . $address . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-address2>', '<input name="address2" id="address2" class="inputBoxNormal" value="' . $address2 . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-city>', '<input name="city" id="city" class="inputBoxNormal" value="' . $city . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-state>', '<input name="state" id="state" class="inputBoxNormal" value="' . $state . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-zip>', '<input name="zip" id="zip" class="inputBoxNormal" value="' . $zip . '" />', $template['Content']);
@@ -974,6 +999,7 @@ class CareersUI extends UserInterface
     {
         $validator = '';
 
+        // First name is always required if the field is present in the template.
         if (strpos($template['Content'], '<input-firstName>') !== false || strpos($template['Content'], '<input-firstName req>') !== false)
         {
             $validator .= '
@@ -985,6 +1011,7 @@ class CareersUI extends UserInterface
                 }';
         }
 
+        // Last name is always required if the field is present in the template.
         if (strpos($template['Content'], '<input-lastName>') !== false || strpos($template['Content'], '<input-lastName req>') !== false)
         {
             $validator .= '
@@ -996,6 +1023,7 @@ class CareersUI extends UserInterface
                 }';
         }
 
+        // Email confirmation must match the primary email if the field is present.
         if (strpos($template['Content'], '<input-emailconfirm>') !== false || strpos($template['Content'], '<input-emailconfirm req>') !== false)
         {
             $validator .= '
@@ -1007,6 +1035,7 @@ class CareersUI extends UserInterface
                 }';
         }
 
+        // Primary email must be present and must look somewhat valid.
         if (strpos($template['Content'], '<input-email>') !== false || strpos($template['Content'], '<input-email req>') !== false)
         {
             $validator .= '
@@ -1025,6 +1054,11 @@ class CareersUI extends UserInterface
                 }';
         }
 
+        /*
+         * Optional fields that can be made required by using the "req" marker
+         * in the template, for example <input-phone-cell req>.
+         */
+
         if (strpos($template['Content'], '<input-address req>') !== false)
         {
             $validator .= '
@@ -1032,6 +1066,17 @@ class CareersUI extends UserInterface
                 {
                     alert(\'Please enter an address.\');
                     document.getElementById(\'address\').focus();
+                    return false;
+                }';
+        }
+
+        if (strpos($template['Content'], '<input-address2 req>') !== false)
+        {
+            $validator .= '
+                if (document.getElementById(\'address2\').value == \'\')
+                {
+                    alert(\'Please enter address line 2.\');
+                    document.getElementById(\'address2\').focus();
                     return false;
                 }';
         }
@@ -1080,6 +1125,84 @@ class CareersUI extends UserInterface
                 }';
         }
 
+        if (strpos($template['Content'], '<input-phone-cell req>') !== false)
+        {
+            $validator .= '
+                if (document.getElementById(\'phoneCell\').value == \'\')
+                {
+                    alert(\'Please enter a mobile phone number.\');
+                    document.getElementById(\'phoneCell\').focus();
+                    return false;
+                }';
+        }
+
+        if (strpos($template['Content'], '<input-phone-home req>') !== false)
+        {
+            $validator .= '
+                if (document.getElementById(\'phoneHome\').value == \'\')
+                {
+                    alert(\'Please enter a home phone number.\');
+                    document.getElementById(\'phoneHome\').focus();
+                    return false;
+                }';
+        }
+
+        if (strpos($template['Content'], '<input-best-time-to-call req>') !== false ||
+            strpos($template['Content'], '<input-bestTimeToCall req>') !== false)
+        {
+            $validator .= '
+                if (document.getElementById(\'bestTimeToCall\').value == \'\')
+                {
+                    alert(\'Please enter the best time to call.\');
+                    document.getElementById(\'bestTimeToCall\').focus();
+                    return false;
+                }';
+        }
+
+        if (strpos($template['Content'], '<input-email2 req>') !== false)
+        {
+            $validator .= '
+                if (document.getElementById(\'email2\').value == \'\')
+                {
+                    alert(\'Please enter an E-Mail address.\');
+                    document.getElementById(\'email2\').focus();
+                    return false;
+                }';
+        }
+
+        if (strpos($template['Content'], '<input-source req>') !== false)
+        {
+            $validator .= '
+                if (document.getElementById(\'source\').value == \'\')
+                {
+                    alert(\'Please enter a source.\');
+                    document.getElementById(\'source\').focus();
+                    return false;
+                }';
+        }
+
+        if (strpos($template['Content'], '<input-employer req>') !== false)
+        {
+            $validator .= '
+                if (document.getElementById(\'employer\').value == \'\')
+                {
+                    alert(\'Please enter your current employer.\');
+                    document.getElementById(\'employer\').focus();
+                    return false;
+                }';
+        }
+
+        if (strpos($template['Content'], '<input-resumeUpload req>') !== false)
+        {
+            $validator .= '
+                if (document.getElementById(\'resume\').value == \'\')
+                {
+                    alert(\'Please upload your resume.\');
+                    document.getElementById(\'resume\').focus();
+                    return false;
+                }';
+        }
+
         if (strpos($template['Content'], '<input-keySkills req>') !== false)
         {
             $validator .= '
@@ -1098,6 +1221,54 @@ class CareersUI extends UserInterface
                 {
                     alert(\'Please enter some extra notes.\');
                     document.getElementById(\'extraNotes\').focus();
+                    return false;
+                }';
+        }
+
+        /*
+         * EEO fields (if enabled and placed in the template).
+         */
+
+        if (strpos($template['Content'], '<input-eeo-gender req>') !== false)
+        {
+            $validator .= '
+                if (document.getElementById(\'eeogender\').value == \'\')
+                {
+                    alert(\'Please select your gender.\');
+                    document.getElementById(\'eeogender\').focus();
+                    return false;
+                }';
+        }
+
+        if (strpos($template['Content'], '<input-eeo-race req>') !== false)
+        {
+            $validator .= '
+                if (document.getElementById(\'eeorace\').value == \'\')
+                {
+                    alert(\'Please select your race.\');
+                    document.getElementById(\'eeorace\').focus();
+                    return false;
+                }';
+        }
+
+        if (strpos($template['Content'], '<input-eeo-veteran req>') !== false)
+        {
+            $validator .= '
+                if (document.getElementById(\'eeoveteran\').value == \'\')
+                {
+                    alert(\'Please select your veteran status.\');
+                    document.getElementById(\'eeoveteran\').focus();
+                    return false;
+                }';
+        }
+
+        if (strpos($template['Content'], '<input-eeo-disability req>') !== false)
+        {
+            $validator .= '
+                if (document.getElementById(\'eeodisability\').value == \'\')
+                {
+                    alert(\'Please select your disability status.\');
+                    document.getElementById(\'eeodisability\').focus();
                     return false;
                 }';
         }
@@ -1214,6 +1385,7 @@ class CareersUI extends UserInterface
         $email          = $this->getSanitisedInput('email', $_POST);
         $email2         = $this->getSanitisedInput('email2', $_POST);
         $address        = $this->getSanitisedInput('address', $_POST);
+        $address2       = $this->getSanitisedInput('address2', $_POST);
         $city           = $this->getSanitisedInput('city', $_POST);
         $state          = $this->getSanitisedInput('state', $_POST);
         $zip            = $this->getSanitisedInput('zip', $_POST);
@@ -1263,7 +1435,7 @@ class CareersUI extends UserInterface
          * Save basic information in a cookie in case the site is using registration to
          * process repeated postings, etc.
          */
-        $fields = array('firstName', 'lastName', 'email', 'address', 'city', 'state', 'zip', 'phone',
+        $fields = array('firstName', 'lastName', 'email', 'address', 'address2', 'city', 'state', 'zip', 'phone',
             'phoneHome', 'phoneCell'
         );
         $storedVal = '';
@@ -1283,7 +1455,7 @@ class CareersUI extends UserInterface
             // Candidate exists and registered. Update their profile with new values (if provided)
             $candidates->update(
                 $candidateID, $candidate['isActive'] ? true : false, $firstName, $middleName,
-                $lastName, $email, $email2, $phoneHome, $phoneCell, $phone, $address, $city,
+                $lastName, $email, $email2, $phoneHome, $phoneCell, $phone, $address, $address2, $city,
                 $state, $zip, $source, $keySkills, '', $employer, '', '', '', $candidate['notes'],
                 '', $bestTimeToCall, $automatedUser['userID'], $automatedUser['userID'], $gender,
                 $race, $veteran, $disability
@@ -1311,6 +1483,7 @@ class CareersUI extends UserInterface
                 $phoneCell,
                 $phone,
                 $address,
+                $address2,
                 $city,
                 $state,
                 $zip,

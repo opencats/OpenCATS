@@ -52,9 +52,10 @@
                                     </td>
                                     <td><?php $this->_($attachmentsData['dateCreated']) ?></td>
                                     <td>
-                                        <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=deleteBackup" title="Delete" onclick="javascript:return confirm('Delete this backup?');">
-                                            <img src="images/actions/delete.gif" alt="" width="16" height="16" border="0" />
-                                        </a>
+                                        <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=deleteBackup" style="display:inline;" onsubmit="return confirm('Delete this backup?');">
+                                            <input type="hidden" name="postback" value="postback" />
+                                            <input type="image" src="images/actions/delete.gif" alt="" width="16" height="16" border="0" />
+                                        </form>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

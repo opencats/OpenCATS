@@ -10,6 +10,7 @@
 <?php if (!$this->isFinishedMode): ?>
 
 <script type="text/javascript">
+    window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
     <?php if ($this->isJobOrdersMode): ?>
         statusesArray = new Array(1);
         jobOrdersArray = new Array(1);
@@ -154,7 +155,7 @@
                                     </div>
 
                                     <div style="margin-bottom: 4px;">
-                                        <script type="text/javascript">DateInput('dateAdd', true, 'MM-DD-YY', '', -1);</script>
+                                        <script type="text/javascript">DateInput('dateAdd', true, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '', -1);</script>
                                     </div>
 
                                     <div style="margin-bottom: 4px;">

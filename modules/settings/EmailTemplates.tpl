@@ -74,7 +74,10 @@
             <table style="width:850px;" class="searchTable">
                 <tr>
                     <td>
-                        <input type="button" value="Add a Template" onclick="window.location='index.php?m=settings&a=addEmailTemplate'">
+                        <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=addEmailTemplate" style="display:inline;">
+                            <input type="hidden" name="postback" value="postback" />
+                            <input type="submit" class="button" value="Add a Template" />
+                        </form>
                     </td>
                 </tr>
                 <tr>
@@ -132,7 +135,8 @@
                                                 <tr>
                                                     <td>
                                                         <input type="text" name="emailTemplateTitle" value="<?php echo($data['emailTemplateTitle']); ?>"/>
-                                                        <input type="button" value="Delete Template" onclick="window.location='index.php?m=settings&a=deleteEmailTemplate&id=<?php echo $data['emailTemplateID']?>'">
+                                                        <input type="hidden" name="id" value="<?php echo $data['emailTemplateID']?>"/>
+                                                        <input type="submit" value="Delete Template" onclick="if (!confirm('Delete this template?')) { return false; } this.form.action='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=deleteEmailTemplate';" />
                                                     </td>
                                                 </tr>
                                                 <?php endif; ?>

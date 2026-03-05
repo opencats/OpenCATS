@@ -35,6 +35,12 @@ include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 
 $interface = new SecureAJAXInterface();
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST')
+{
+    $interface->outputXMLErrorPage(-1, 'Invalid request.');
+    die();
+}
+
 if (!$interface->isRequiredIDValid('activityID'))
 {
     $interface->outputXMLErrorPage(-1, 'Invalid activity ID.');
@@ -53,7 +59,7 @@ if (!$interface->isOptionalIDValid('jobOrderID'))
     die();
 }
 
-if (!isset($_REQUEST['notes']))
+if (!isset($_POST['notes']))
 {
     $interface->outputXMLErrorPage(-1, 'Invalid notes.');
     die();
@@ -61,18 +67,22 @@ if (!isset($_REQUEST['notes']))
 
 $siteID = $interface->getSiteID();
 
-$activityID = $_REQUEST['activityID'];
-$type       = $_REQUEST['type'];
-$jobOrderID = $_REQUEST['jobOrderID'];
+$activityID = $_POST['activityID'];
+$type       = $_POST['type'];
+$jobOrderID = $_POST['jobOrderID'];
 
 /* Decode and trim the activity notes from the company. */
-$activityNote = trim(urldecode($_REQUEST['notes']));
-$activityDate = trim(urldecode($_REQUEST['date']));
-$activityHour = trim(urldecode($_REQUEST['hour']));
-$activityMinute = trim(urldecode($_REQUEST['minute']));
-$activityAMPM = trim(urldecode($_REQUEST['ampm']));
+$activityNote = trim(urldecode($_POST['notes']));
+$activityDate = trim(urldecode($_POST['date']));
+$activityHour = trim(urldecode($_POST['hour']));
+$activityMinute = trim(urldecode($_POST['minute']));
+$activityAMPM = trim(urldecode($_POST['ampm']));
 
-if (!DateUtility::validate('-', $activityDate, DATE_FORMAT_MMDDYY))
+$dateFormatFlag = $_SESSION['CATS']->isDateDMY()
+    ? DATE_FORMAT_DDMMYY
+    : DATE_FORMAT_MMDDYY;
+
+if (!DateUtility::validate('-', $activityDate, $dateFormatFlag))
 {
     die('Invalid availability date.');
     return;
@@ -87,7 +97,7 @@ $time = strtotime(
 $date = sprintf(
     '%s %s',
     DateUtility::convert(
-        '-', $activityDate, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+        '-', $activityDate, $dateFormatFlag, DATE_FORMAT_YYYYMMDD
     ),
     date('H:i:00', $time)
 );

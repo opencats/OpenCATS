@@ -253,10 +253,32 @@ class DataGrid
                 }
 
                 $parameters[$index] = $_REQUEST['dynamicArgument' . md5($indentifier)];
-                
-                if ($index = 'exportIDs')
+
+                if ($index === 'exportIDs')
                 {
-                   $parameters['exportIDs'] = json_decode(urldecode($parameters['exportIDs']), true);
+                    $decoded = json_decode($parameters['exportIDs'], true);
+                    if (!is_array($decoded))
+                    {
+                        $decoded = array();
+                    }
+
+                    $parameters['exportIDs'] = array();
+                    foreach ($decoded as $value)
+                    {
+                        if (is_scalar($value))
+                        {
+                            $intValue = (int) $value;
+                            if ($intValue > 0 && !in_array($intValue, $parameters['exportIDs']))
+                            {
+                                $parameters['exportIDs'][] = $intValue;
+                            }
+                        }
+                    }
+
+                    if (empty($parameters['exportIDs']))
+                    {
+                        $parameters['exportIDs'] = array(0);
+                    }
                 }
             }
         }
@@ -292,13 +314,24 @@ class DataGrid
      */
     public static function getFromRequest()
     {
-        if (!isset($_REQUEST['i']) || !isset($_REQUEST['p']))
+        if (!isset($_REQUEST['i']) || $_REQUEST['i'] === '')
         {
-            trigger_error('getFromRequest datagrid failed : no request variables i or p set.');
+            trigger_error('getFromRequest datagrid failed : no request variables i set.');
+            return null;
         }
         
         $indentifier = $_REQUEST['i'];
-        $parameters = json_decode($_REQUEST['p'], true);
+        $parameters = array();
+
+        if (isset($_REQUEST['p']))
+        {
+            $decoded = json_decode($_REQUEST['p'], true);
+
+            if (is_array($decoded))
+            {
+                $parameters = $decoded;
+            }
+        }
 
         return self::get($indentifier, $parameters);
     }
@@ -1980,23 +2013,23 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         if ($allowAll)
         {
             $html = sprintf(
-                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) window.location.href=\'%s&i=%s&p=%s&dynamicArgument%s=\' + urlEncode(serializeArray(exportArray%s)); else dataGridNoSelected();">Selected</a>&nbsp;|&nbsp;<a href="%s&i=%s&p=%s">All</a></div></div>',
+                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) window.location.href=\'%s&i=%s&p=%s&dynamicArgument%s=\' + serializeArray(exportArray%s); else dataGridNoSelected();">Selected</a>&nbsp;|&nbsp;<a href="%s&i=%s&p=%s">All</a></div></div>',
                 htmlspecialchars($actionTitle),
                 md5($this->_instanceName),
                 $actionURL,
                 urlencode($this->_instanceName),
-                urlencode(serialize($newParameterArraySelected)),
+                urlencode(json_encode($newParameterArraySelected)),
                 md5($this->_instanceName),
                 md5($this->_instanceName),
                 $actionURL,
                 urlencode($this->_instanceName),
-                urlencode(serialize($newParameterArrayAll))
+                urlencode(json_encode($newParameterArrayAll))
             );        
         }
         else
         {
             $html = sprintf(
-                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) window.location.href=\'%s&i=%s&p=%s&dynamicArgument%s=\' + urlEncode(serializeArray(exportArray%s)); else dataGridNoSelected();">Selected</a></div></div>',
+                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) window.location.href=\'%s&i=%s&p=%s&dynamicArgument%s=\' + serializeArray(exportArray%s); else dataGridNoSelected();">Selected</a></div></div>',
                 htmlspecialchars($actionTitle),
                 md5($this->_instanceName),
                 $actionURL,
@@ -2007,6 +2040,80 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
             );        
         }
         
+        return $html;
+    }
+
+    /**
+     * Returns HTML to render a POST action under the action menu.
+     *
+     * @param string action title
+     * @param string action URL
+     * @param boolean (true) action can be applied to all items across every page
+     * @return string generated HTML
+     */
+    public function getInnerActionAreaItemPost($actionTitle, $actionURL, $allowAll = true)
+    {
+        //TODO:  If nothing is selected, display an error popup.
+
+        $newParameterArraySelected = $this->_parameters;
+        $newParameterArraySelected['rangeStart'] = 0;
+        $newParameterArraySelected['maxResults'] = 100000000;
+        $newParameterArraySelected['exportIDs'] = '<dynamic>';
+        $newParameterArraySelected['noSaveParameters'] = true;
+
+        $newParameterArrayAll = $this->_parameters;
+        $newParameterArrayAll['rangeStart'] = 0;
+        $newParameterArrayAll['maxResults'] = 100000000;
+        $newParameterArrayAll['noSaveParameters'] = true;
+
+        $instanceHash = md5($this->_instanceName);
+        $selectedParams = json_encode($newParameterArraySelected);
+        $allParams = json_encode($newParameterArrayAll);
+
+        $actionSeparator = (strpos($actionURL, '?') !== false) ? '&amp;' : '?';
+        $selectedURL = $actionURL
+            . $actionSeparator . 'i=' . urlencode($this->_instanceName)
+            . '&amp;p=' . urlencode($selectedParams)
+            . '&amp;dynamicArgument' . $instanceHash . '=';
+        $allURL = $actionURL
+            . $actionSeparator . 'i=' . urlencode($this->_instanceName)
+            . '&amp;p=' . urlencode($allParams);
+
+        $selectedURL = str_replace(array('\\', '\''), array('\\\\', '\\\''), $selectedURL);
+        $allURL = str_replace(array('\\', '\''), array('\\\\', '\\\''), $allURL);
+
+        $selectedPostJS = sprintf(
+            "var url='%s' + serializeArray(exportArray%s);"
+            . "return quickActionPostFromUrl(url);",
+            $selectedURL,
+            $instanceHash
+        );
+
+        $allPostJS = sprintf(
+            "return quickActionPostFromUrl('%s');",
+            $allURL
+        );
+
+        if ($allowAll)
+        {
+            $html = sprintf(
+                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) {%s} else { dataGridNoSelected(); } return false;">Selected</a>&nbsp;|&nbsp;<a href="javascript:void(0);" onclick="%s">All</a></div></div>',
+                htmlspecialchars($actionTitle),
+                $instanceHash,
+                $selectedPostJS,
+                $allPostJS
+            );
+        }
+        else
+        {
+            $html = sprintf(
+                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) {%s} else { dataGridNoSelected(); } return false;">Selected</a></div></div>',
+                htmlspecialchars($actionTitle),
+                $instanceHash,
+                $selectedPostJS
+            );
+        }
+
         return $html;
     }
     
@@ -2039,7 +2146,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         if ($allowAll)
         {
             $html = sprintf(
-                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) showPopWin(\'%s&i=%s&p=%s&dynamicArgument%s=\' + urlEncode(serializeArray(exportArray%s)), %s, %s); else dataGridNoSelected();">Selected</a>&nbsp;|&nbsp;<a href="javascript:void(0);" onclick="showPopWin(\'%s&i=%s&p=%s\', %s, %s);">All</a></div></div>',
+                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) showPopWin(\'%s&i=%s&p=%s&dynamicArgument%s=\' + serializeArray(exportArray%s), %s, %s); else dataGridNoSelected();">Selected</a>&nbsp;|&nbsp;<a href="javascript:void(0);" onclick="showPopWin(\'%s&i=%s&p=%s\', %s, %s);">All</a></div></div>',
                 htmlspecialchars($actionTitle),
                 md5($this->_instanceName),
                 $actionURL,
@@ -2059,7 +2166,7 @@ echo ('<script type="text/javascript">setTableWidth("table'.$md5InstanceName.'",
         else
         {
             $html = sprintf(
-                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) showPopWin(\'%s&i=%s&p=%s&dynamicArgument%s=\' + urlEncode(serializeArray(exportArray%s)), %s, %s); else dataGridNoSelected();">Selected</a></div></div>',
+                '<div><div style="float:left; width:170px;">%s</div><div style="float:right; width:95px;"><a href="javascript:void(0);" onclick="if (exportArray%s.length>0) showPopWin(\'%s&i=%s&p=%s&dynamicArgument%s=\' + serializeArray(exportArray%s), %s, %s); else dataGridNoSelected();">Selected</a></div></div>',
                 htmlspecialchars($actionTitle),
                 md5($this->_instanceName),
                 $actionURL,

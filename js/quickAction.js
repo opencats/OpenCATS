@@ -121,3 +121,72 @@ function showQuickActionAddToPipeline(menuDataItemId)
     /* Create a popup window for adding this candidate to the job order / pipeline */
     showPopWin(CATSIndexName + '?m=candidates&a=considerForJobSearch&candidateID=' + menuDataItemId, 750, 390, null);
 };
+
+function quickActionPostFromUrl(url, confirmMessage)
+{
+    if (confirmMessage && !confirm(confirmMessage))
+    {
+        return false;
+    }
+
+    var parts = url.split('?');
+    var action = parts[0];
+    var query = (parts.length > 1) ? parts[1] : '';
+    var params = {};
+    var actionParams = [];
+
+    if (query.length > 0)
+    {
+        var pairs = query.split('&');
+        for (var i = 0; i < pairs.length; i++)
+        {
+            if (pairs[i] === '')
+            {
+                continue;
+            }
+
+            var keyValue = pairs[i].split('=');
+            var key = decodeURIComponent(keyValue[0].replace(/\+/g, ' '));
+            var value = keyValue.length > 1 ? decodeURIComponent(keyValue[1].replace(/\+/g, ' ')) : '';
+
+            if (key === 'm' || key === 'a')
+            {
+                actionParams.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
+            }
+            else
+            {
+                params[key] = value;
+            }
+        }
+    }
+
+    params.postback = 'postback';
+
+    if (typeof CATSCsrfToken != 'undefined' && CATSCsrfToken !== null &&
+        CATSCsrfToken !== '' && typeof params.csrfToken == 'undefined')
+    {
+        params.csrfToken = CATSCsrfToken;
+    }
+
+    var form = document.createElement('form');
+    form.method = 'post';
+    form.action = action + (actionParams.length ? ('?' + actionParams.join('&')) : '');
+
+    for (var name in params)
+    {
+        if (!params.hasOwnProperty(name))
+        {
+            continue;
+        }
+
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = params[name];
+        form.appendChild(input);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+    return false;
+}

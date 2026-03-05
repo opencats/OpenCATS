@@ -150,7 +150,14 @@ class JobOrdersUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                $this->onDelete();
+                if ($this->isPostBack())
+                {
+                    $this->onDelete();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             case 'search':
@@ -219,7 +226,14 @@ class JobOrdersUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                $this->onAddToPipeline();
+                if ($this->isPostBack())
+                {
+                    $this->onAddToPipeline();
+                }
+                else
+                {
+                    CommonErrors::fatalModal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             /*
@@ -247,7 +261,14 @@ class JobOrdersUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                $this->onRemoveFromPipeline();
+                if ($this->isPostBack())
+                {
+                    $this->onRemoveFromPipeline();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             /* Add an attachment */
@@ -276,7 +297,14 @@ class JobOrdersUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                $this->onDeleteAttachment();
+                if ($this->isPostBack())
+                {
+                    $this->onDeleteAttachment();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             /* FIXME: function setCandidateJobOrder() does not exist
@@ -294,7 +322,14 @@ class JobOrdersUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                $this->administrativeHideShow();
+                if ($this->isPostBack())
+                {
+                    $this->administrativeHideShow();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             /* Main job orders page. */
@@ -722,16 +757,19 @@ class JobOrdersUI extends UserInterface
          * convert the date to MySQL format.
          */
         $startDate = $this->getTrimmedInput('startDate', $_POST);
+        $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
+            ? DATE_FORMAT_DDMMYY
+            : DATE_FORMAT_MMDDYY;
         if (!empty($startDate))
         {
-            if (!DateUtility::validate('-', $startDate, DATE_FORMAT_MMDDYY))
+            if (!DateUtility::validate('-', $startDate, $dateFormatFlag))
             {
                 CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid start date.');
             }
 
             /* Convert start_date to something MySQL can understand. */
             $startDate = DateUtility::convert(
-                '-', $startDate, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+                '-', $startDate, $dateFormatFlag, DATE_FORMAT_YYYYMMDD
             );
         }
 
@@ -873,16 +911,7 @@ class JobOrdersUI extends UserInterface
         $departmentsString = ListEditor::getStringFromList($departmentsRS, 'name');
 
         /* Date format for DateInput()s. */
-        if ($_SESSION['CATS']->isDateDMY())
-        {
-            $data['startDateMDY'] = DateUtility::convert(
-                '-', $data['startDate'], DATE_FORMAT_DDMMYY, DATE_FORMAT_MMDDYY
-            );
-        }
-        else
-        {
-            $data['startDateMDY'] = $data['startDate'];
-        }
+        $data['startDateUser'] = $data['startDate'];
 
         /* Get extra fields. */
         $extraFieldRS = $jobOrders->extraFields->getValuesForEdit($jobOrderID);
@@ -986,9 +1015,12 @@ class JobOrdersUI extends UserInterface
          * convert the date to MySQL format.
          */
         $startDate = $this->getTrimmedInput('startDate', $_POST);
+        $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
+            ? DATE_FORMAT_DDMMYY
+            : DATE_FORMAT_MMDDYY;
         if (!empty($startDate))
         {
-            if (!DateUtility::validate('-', $startDate, DATE_FORMAT_MMDDYY))
+            if (!DateUtility::validate('-', $startDate, $dateFormatFlag))
             {
                 CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid start date.');
                 return;
@@ -996,7 +1028,7 @@ class JobOrdersUI extends UserInterface
 
             /* Convert start_date to something MySQL can understand. */
             $startDate = DateUtility::convert(
-                '-', $startDate, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+                '-', $startDate, $dateFormatFlag, DATE_FORMAT_YYYYMMDD
             );
         }
 
@@ -1145,12 +1177,12 @@ class JobOrdersUI extends UserInterface
     private function onDelete()
     {
         /* Bail out if we don't have a valid job order ID. */
-        if (!$this->isRequiredIDValid('jobOrderID', $_GET))
+        if (!$this->isRequiredIDValid('jobOrderID', $_POST))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
         }
 
-        $jobOrderID = $_GET['jobOrderID'];
+        $jobOrderID = $_POST['jobOrderID'];
 
         if (!eval(Hooks::get('JO_ON_DELETE_PRE'))) return;
 
@@ -1271,19 +1303,19 @@ class JobOrdersUI extends UserInterface
     private function onAddToPipeline()
     {
         /* Bail out if we don't have a valid job order ID. */
-        if (!$this->isRequiredIDValid('jobOrderID', $_GET))
+        if (!$this->isRequiredIDValid('jobOrderID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
         }
 
         /* Bail out if we don't have a valid candidate ID. */
-        if (!$this->isRequiredIDValid('candidateID', $_GET))
+        if (!$this->isRequiredIDValid('candidateID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
         }
 
-        $jobOrderID  = $_GET['jobOrderID'];
-        $candidateID = $_GET['candidateID'];
+        $jobOrderID  = $_POST['jobOrderID'];
+        $candidateID = $_POST['candidateID'];
 
         if (!eval(Hooks::get('JO_ON_ADD_PIPELINE'))) return;
 
@@ -1562,19 +1594,19 @@ class JobOrdersUI extends UserInterface
     {
 
         /* Bail out if we don't have a valid candidate ID. */
-        if (!$this->isRequiredIDValid('candidateID', $_GET))
+        if (!$this->isRequiredIDValid('candidateID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
         }
 
         /* Bail out if we don't have a valid job order ID. */
-        if (!$this->isRequiredIDValid('jobOrderID', $_GET))
+        if (!$this->isRequiredIDValid('jobOrderID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
         }
 
-        $candidateID = $_GET['candidateID'];
-        $jobOrderID  = $_GET['jobOrderID'];
+        $candidateID = $_POST['candidateID'];
+        $jobOrderID  = $_POST['jobOrderID'];
 
         if (!eval(Hooks::get('JO_ON_REMOVE_PIPELINE'))) return;
 
@@ -1821,19 +1853,19 @@ class JobOrdersUI extends UserInterface
     private function onDeleteAttachment()
     {
         /* Bail out if we don't have a valid attachment ID. */
-        if (!$this->isRequiredIDValid('attachmentID', $_GET))
+        if (!$this->isRequiredIDValid('attachmentID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid attachment ID.');
         }
 
         /* Bail out if we don't have a valid joborder ID. */
-        if (!$this->isRequiredIDValid('jobOrderID', $_GET))
+        if (!$this->isRequiredIDValid('jobOrderID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid Job Order ID.');
         }
 
-        $jobOrderID  = $_GET['jobOrderID'];
-        $attachmentID = $_GET['attachmentID'];
+        $jobOrderID  = $_POST['jobOrderID'];
+        $attachmentID = $_POST['attachmentID'];
 
         if (!eval(Hooks::get('JO_ON_DELETE_ATTACHMENT_PRE'))) return;
 
@@ -1852,21 +1884,21 @@ class JobOrdersUI extends UserInterface
     private function administrativeHideShow()
     {
         /* Bail out if we don't have a valid joborder ID. */
-        if (!$this->isRequiredIDValid('jobOrderID', $_GET))
+        if (!$this->isRequiredIDValid('jobOrderID', $_POST))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid Job Order ID.');
         }
 
         /* Bail out if we don't have a valid status ID. */
-        if (!$this->isRequiredIDValid('state', $_GET, true))
+        if (!$this->isRequiredIDValid('state', $_POST, true))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid state ID.');
         }
 
-        $jobOrderID = $_GET['jobOrderID'];
+        $jobOrderID = $_POST['jobOrderID'];
 
         // FIXME: Checkbox?
-        (boolean) $state = $_GET['state'];
+        $state = (boolean) $_POST['state'];
 
         $joborders = new JobOrders($this->_siteID);
         $joborders->administrativeHideShow($jobOrderID, $state);

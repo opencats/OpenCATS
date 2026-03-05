@@ -3,12 +3,13 @@
 <?php if(!$this->onlyScheduleEvent): ?>
 <?php TemplateUtility::printModalHeader('Contacts', array('modules/contacts/activityvalidator.js', 'js/activity.js'), 'Contacts: Log Activity'); ?>
 <?php else: ?>
-    <?php TemplateUtility::printModalHeader('Contacts', array('modules/contacts/activityvalidator.js', 'js/activity.js'), 'Contacts: Schedule Event'); ?>
+<?php TemplateUtility::printModalHeader('Contacts', array('modules/contacts/activityvalidator.js', 'js/activity.js'), 'Contacts: Schedule Event'); ?>
 <?php endif; ?>
 
 <?php if (!$this->isFinishedMode): ?>
 
 <script type="text/javascript">
+    window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
 </script>
 
     <form name="logActivityForm" id="logActivityForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=contacts&amp;a=addActivityScheduleEvent<?php if($this->onlyScheduleEvent): ?>&amp;onlyScheduleEvent=true<?php endif; ?>" method="post" autocomplete="off">
@@ -73,7 +74,7 @@
                                     </div>
 
                                     <div style="margin-bottom: 4px;">
-                                        <script type="text/javascript">DateInput('dateAdd', true, 'MM-DD-YY', '', -1);</script>
+                                        <script type="text/javascript">DateInput('dateAdd', true, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '', -1);</script>
                                     </div>
 
                                     <div style="margin-bottom: 4px;">

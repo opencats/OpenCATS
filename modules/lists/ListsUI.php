@@ -89,11 +89,25 @@ class ListsUI extends UserInterface
                 break;
 
             case 'removeFromListDatagrid':
-                $this->removeFromListDatagrid();
+                if ($this->isPostBack())
+                {
+                    $this->removeFromListDatagrid();
+                }
+                else
+                {
+                    CommonErrors::fatalModal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             case 'deleteStaticList':
-                $this->onDeleteStaticList();
+                if ($this->isPostBack())
+                {
+                    $this->onDeleteStaticList();
+                }
+                else
+                {
+                    CommonErrors::fatalModal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             /* Main list page. */
@@ -295,7 +309,7 @@ class ListsUI extends UserInterface
     private function removeFromListDatagrid()
     {
         /* Bail out if we don't have a valid type. */
-        if (!$this->isRequiredIDValid('dataItemType', $_GET))
+        if (!$this->isRequiredIDValid('dataItemType', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);
             return;
@@ -315,17 +329,17 @@ class ListsUI extends UserInterface
             }
         }
 
-        $dataItemType = $_GET['dataItemType'];
+        $dataItemType = $_POST['dataItemType'];
 
         $dataItemDesc = TemplateUtility::getDataItemTypeDescription($dataItemType);
 
-        if (!$this->isRequiredIDValid('savedListID', $_GET))
+        if (!$this->isRequiredIDValid('savedListID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid saved list ID.');
             return;
         }
 
-        $savedListID = $_GET['savedListID'];
+        $savedListID = $_POST['savedListID'];
 
         /* Remove the items */
         $savedLists = new SavedLists($this->_siteID);
@@ -357,13 +371,13 @@ class ListsUI extends UserInterface
     private function onDeleteStaticList()
     {
         /* Bail out if we don't have a valid type. */
-        if (!$this->isRequiredIDValid('savedListID', $_GET))
+        if (!$this->isRequiredIDValid('savedListID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);
             return;
         }
 
-        $savedListID = $_GET['savedListID'];
+        $savedListID = $_POST['savedListID'];
 
         $savedLists = new SavedLists($this->_siteID);
 

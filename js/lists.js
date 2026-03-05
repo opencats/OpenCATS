@@ -205,7 +205,34 @@ function deleteListFromListView(savedListID, numberEntries)
          return;
     }
     
-    document.location.href = CATSIndexName + '?m=lists&a=deleteStaticList&savedListID=' + savedListID;
+    var form = document.createElement('form');
+    form.method = 'post';
+    form.action = CATSIndexName + '?m=lists&a=deleteStaticList';
+
+    var postback = document.createElement('input');
+    postback.type = 'hidden';
+    postback.name = 'postback';
+    postback.value = 'postback';
+    form.appendChild(postback);
+
+    var savedListInput = document.createElement('input');
+    savedListInput.type = 'hidden';
+    savedListInput.name = 'savedListID';
+    savedListInput.value = savedListID;
+    form.appendChild(savedListInput);
+
+    if (typeof CATSCsrfToken != 'undefined' && CATSCsrfToken !== null &&
+        CATSCsrfToken !== '')
+    {
+        var csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = 'csrfToken';
+        csrfToken.value = CATSCsrfToken;
+        form.appendChild(csrfToken);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
 }
 
 function deleteListRow(savedListID, sessionCookie, numberEntries)
@@ -350,4 +377,3 @@ function addItemsToList(sessionCookie, dataItemType)
         false
     );
 }
-

@@ -922,11 +922,26 @@ class CATSSession
                 // $domain = 'example.com';   // Adjust as needed
                 $secure = true;            // Adjust based on your environment
                 $httponly = true;
-                $samesite = 'Strict';
+                $samesite = 'Lax';
 
                 // Fixed setcookie call - define domain variable and remove invalid path format
                 $domain = '';  // Use empty string for current domain
-                setcookie('session_cookie', $cookieValue, $expires, $path, $domain, $secure, $httponly);
+                // TODO: Drop PHP < 7.3 fallback and always use setcookie() options array once legacy PHP is no longer supported.
+                if (PHP_VERSION_ID >= 70300)
+                {
+                    setcookie('session_cookie', $cookieValue, array(
+                        'expires' => $expires,
+                        'path' => $path,
+                        'domain' => $domain,
+                        'secure' => $secure,
+                        'httponly' => $httponly,
+                        'samesite' => $samesite
+                    ));
+                }
+                else
+                {
+                    setcookie('session_cookie', $cookieValue, $expires, $path, $domain, $secure, $httponly);
+                }
 
                 // Update the user session in the database
                 $sql = sprintf(
@@ -1200,6 +1215,56 @@ class CATSSession
         }
 
         return $this->_storedValues[$name];
+    }
+
+    /**
+     * Returns the current session CSRF token. If no token exists yet,
+     * a new token is generated and stored.
+     *
+     * @return string CSRF token
+     */
+    public function getCSRFToken()
+    {
+        $token = $this->retrieveValueByName('csrfToken');
+
+        if (!is_string($token) || $token === '')
+        {
+            $token = $this->rotateCSRFToken();
+        }
+
+        return $token;
+    }
+
+    /**
+     * Generates a new CSRF token and stores it in the session.
+     *
+     * @return string new CSRF token
+     */
+    public function rotateCSRFToken()
+    {
+        $token = bin2hex(random_bytes(32));
+
+        $this->storeValueByName('csrfToken', $token);
+
+        return $token;
+    }
+
+    /**
+     * Validates a CSRF token against the current session token.
+     *
+     * @param string token
+     * @return boolean valid token
+     */
+    public function isCSRFTokenValid($token)
+    {
+        $storedToken = $this->retrieveValueByName('csrfToken');
+
+        if (!is_string($storedToken) || $storedToken === '' || !is_string($token))
+        {
+            return false;
+        }
+
+        return hash_equals($storedToken, $token);
     }
 
     /**

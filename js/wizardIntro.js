@@ -60,7 +60,7 @@ function deleteUser(id)
 {
     failAction = 'alert("Unable to delete that user.");';
     userActionSuccess = 'cancelAddUser(); loadPage("current");';
-    userAction('DeleteUser&userID=' + id);
+    userActionPost('DeleteUser', 'userID=' + id);
 }
 
 function keyGood()
@@ -252,4 +252,68 @@ function userAction(action)
 
     ajaxObj.open("GET",url,true);
     ajaxObj.send(null);
+}
+
+function userActionPost(action, postData)
+{
+    var ajaxObj;
+    var url = '?m=settings&a=ajax_wizard' + action;
+    var payload = 'postback=postback&' + postData;
+
+    if (typeof CATSCsrfToken != 'undefined' && CATSCsrfToken !== null &&
+        CATSCsrfToken !== '' && payload.indexOf('csrfToken=') == -1)
+    {
+        payload += '&csrfToken=' + encodeURIComponent(CATSCsrfToken);
+    }
+
+    try
+    {
+        // Firefox, Opera 8.0+, Safari
+        ajaxObj = new XMLHttpRequest();
+    }
+    catch (e)
+    {
+        // Internet Explorer
+        try
+        {
+            ajaxObj = new ActiveXObject("Msxml2.XMLHTTP");
+        }
+        catch (e)
+        {
+            try
+            {
+                ajaxObj = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            catch (e)
+            {
+                alert("Your browser does not support AJAX!");
+                return false;
+            }
+        }
+    }
+    ajaxObj.onreadystatechange = function()
+    {
+        if (ajaxObj.readyState == 4)
+        {
+            if (ajaxObj.responseText == 'Ok')
+            {
+                if (userActionSuccess != '') eval(userActionSuccess);
+            }
+            else
+            {
+                if (failAction != '')
+                {
+                    eval(failAction);
+                }
+                else
+                {
+                    alert(ajaxObj.responseText);
+                }
+            }
+        }
+    }
+
+    ajaxObj.open("POST", url, true);
+    ajaxObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    ajaxObj.send(payload);
 }

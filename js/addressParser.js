@@ -70,6 +70,7 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
         var lastNameField   = document.getElementById('lastName');
         var nameField       = document.getElementById('name');
         var addressField    = document.getElementById('address');
+        var address2Field   = document.getElementById('address2');
         var phoneHomeField  = document.getElementById('phoneHome');
         var phoneCellField  = document.getElementById('phoneCell');
         var phoneWorkField  = document.getElementById('phoneWork');
@@ -99,6 +100,7 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
             if (lastNameField)   lastNameField.value   = '';
             if (nameField)       nameField.value       = '';
             if (addressField)    addressField.value    = '';
+            if (address2Field)   address2Field.value   = '';
             if (phoneHomeField)  phoneHomeField.value  = '';
             if (phoneCellField)  phoneCellField.value  = '';
             if (phoneWorkField)  phoneWorkField.value  = '';
@@ -182,8 +184,19 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
             if (addressLineOneNode.firstChild)
             {
                 addressField.value = addressLineOneNode.firstChild.nodeValue;
-                
-                if (addressLineTwoNode.firstChild && addressLineOneNode.firstChild != '')
+
+                if (address2Field)
+                {
+                    if (addressLineTwoNode.firstChild && addressLineOneNode.firstChild != '')
+                    {
+                        address2Field.value = addressLineTwoNode.firstChild.nodeValue;
+                    }
+                    else
+                    {
+                        address2Field.value = '';
+                    }
+                }
+                else if (addressLineTwoNode.firstChild && addressLineOneNode.firstChild != '')
                 {
                     addressField.value += "\n" + addressLineTwoNode.firstChild.nodeValue;
                 }
@@ -191,6 +204,7 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
             else
             {
                 addressField.value = '';
+                if (address2Field) address2Field.value = '';
             }
         }
 

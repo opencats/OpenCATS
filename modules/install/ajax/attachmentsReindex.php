@@ -25,6 +25,24 @@
  *
  */
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST')
+{
+    header('Content-Type: text/html; charset=UTF-8');
+
+    $actionURL = htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');
+
+    echo '<!DOCTYPE html>',
+         '<html><head><title>OpenCATS Attachment Reindex</title></head><body>',
+         '<p>This maintenance action must be triggered via POST.</p>',
+         '<p>This starts the attachment reindex process.</p>',
+         '<form method="post" action="', $actionURL, '">',
+         '<input type="hidden" name="postback" value="postback" />',
+         '<button type="submit">Run maintenance now</button>',
+         '</form>',
+         '</body></html>';
+    die();
+}
+
 include_once('./config.php');
 include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
 include_once(LEGACY_ROOT . '/lib/ModuleUtility.php');

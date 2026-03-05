@@ -220,25 +220,19 @@ function urlDecode(text)
 }
 
 /**
- * Converts a JavaScript array to a seralize()-formatted PHP array in string
- * format.
+ * Converts a JavaScript array to a URL-safe JSON string.
  *
- * PHP: $myArray = unserialize(urldecode($_POST['myArray']));
- * Remember this is unsafe input and it should not be trusted!
- *
- * Pass this through urlEncode() (above) before adding to a request.
+ * Used for DataGrid "Selected" bulk actions; the server expects JSON for
+ * exportIDs in dynamicArgument.
  */
 function serializeArray(array)
 {
-    var string = 'a:' + array.length + ':{';
-    
-    for (var i = 0; i < array.length; ++i)
+    if (!(array instanceof Array))
     {
-        string += 'i:' + i + ';s:' + String(array[i]).length + ':"'
-            + String(array[i]) + '";';
+        array = [];
     }
-    
-    return string + '}';
+
+    return encodeURIComponent(JSON.stringify(array));
 }
 
 /**
@@ -342,6 +336,20 @@ function AJAX_getPOSTSessionID(sessionCookie)
 function AJAX_POST(http, url, POSTData, callBack, timeout, sessionCookie,
     silentTimeout)
 {
+    if (POSTData == null)
+    {
+        POSTData = '';
+    }
+
+    if (typeof CATSCsrfToken != 'undefined' && CATSCsrfToken !== null &&
+        CATSCsrfToken !== '')
+    {
+        if (POSTData.indexOf('csrfToken=') == -1)
+        {
+            POSTData += '&csrfToken=' + encodeURIComponent(CATSCsrfToken);
+        }
+    }
+
     /* Add a random hash to the POST data to keep IE from caching it. */
     POSTData += AJAX_getRandomPOSTHash();
 

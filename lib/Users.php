@@ -90,7 +90,7 @@ class Users
             $accessLevel, $eeoIsVisible = false, $userSiteID = -1)
     {
 
-        $md5pwd = $password == LDAPUSER_PASSWORD ? $password : md5($password);
+        $hashedPassword = $password == LDAPUSER_PASSWORD ? $password : $this->hashPassword($password);
         $userSiteID = $userSiteID < 0 ? $this->_siteID : $userSiteID;
         $sql = sprintf(
                 "INSERT INTO user (
@@ -118,7 +118,7 @@ class Users
                     %s
                     )",
         $this->_db->makeQueryString($username),
-        $this->_db->makeQueryString($md5pwd),
+        $this->_db->makeQueryString($hashedPassword),
         $this->_db->makeQueryInteger($accessLevel),
         $this->_db->makeQueryString($email),
         $this->_db->makeQueryString($firstName),
@@ -676,7 +676,19 @@ class Users
         }
 
         /* Is the user's supplied password correct? */
-        if ($rs['password'] !== md5($currentPassword))
+        /* FIXME: This code relies on verifyAndMigratePassword() to handle both legacy
+         * MD5 hashes and modern password_hash() output. If verifyAndMigratePassword()
+         * is changed in a future release (for example when removing MD5 support or
+         * switching to a different algorithm), this password check must be reviewed
+         * and adjusted accordingly.
+         *
+         * Previous MD5-only implementation for reference:
+         * if ($rs['password'] !== md5($currentPassword))
+         * {
+         *     return LOGIN_INVALID_PASSWORD;
+         * }
+         */
+        if (!$this->verifyAndMigratePassword($userID, $currentPassword, $rs['password']))
         {
             return LOGIN_INVALID_PASSWORD;
         }
@@ -694,14 +706,15 @@ class Users
         }
 
         /* Change the user's password. */
+        $newPasswordHash = $this->hashPassword($newPassword);
         $sql = sprintf(
                 "UPDATE
                 user
                 SET
-                password = md5(%s)
+                password = %s
                 WHERE
                 user.user_id = %s",
-                $this->_db->makeQueryString($newPassword),
+                $this->_db->makeQueryString($newPasswordHash),
                 $this->_db->makeQueryInteger($userID)
                 );
         $this->_db->query($sql);
@@ -748,14 +761,15 @@ class Users
         }
 
         /* Change the user's password. */
+        $newPasswordHash = $this->hashPassword($newPassword);
         $sql = sprintf(
                 "UPDATE
                 user
                 SET
-                password = md5(%s)
+                password = %s
                 WHERE
                 user.user_id = %s",
-                $this->_db->makeQueryString($newPassword),
+                $this->_db->makeQueryString($newPasswordHash),
                 $this->_db->makeQueryInteger($userID)
                 );
         $this->_db->query($sql);
@@ -798,7 +812,8 @@ class Users
                 "SELECT
                 user.user_name AS username,
                 user.password AS password,
-                user.access_level AS accessLevel
+                user.access_level AS accessLevel,
+                user.user_id AS userID
                 FROM
                 user
                 WHERE
@@ -837,10 +852,12 @@ class Users
             return LOGIN_INVALID_USER;
         } else {
             /* Is the user's supplied password correct? */
-            if ($rs['password'] !== md5($password))
+            if (!$this->verifyAndMigratePassword((int) $rs['userID'], $password, $rs['password']))
             {
                 return LOGIN_INVALID_PASSWORD;
             }
+
+            $this->rehashPasswordIfNeeded((int) $rs['userID'], $rs['password'], $password);
         }
         
         if (!$existsInDB && $existsInLDAP) {
@@ -1235,6 +1252,81 @@ class Users
 
         return $rs;
     }
+
+    private function hashPassword($password)
+    {
+        return password_hash($password, PASSWORD_DEFAULT);
+    }
+
+    /**
+     * Upgrades an existing password hash to the current PASSWORD_DEFAULT algorithm/options
+     * after a successful login, if password_needs_rehash() indicates that an update
+     * is required.
+     *
+     * @param int    $userID     ID of the user whose password hash may be updated.
+     * @param string $storedHash Hash value as it was read from the database before verification.
+     * @param string $password   Plain-text password that was just successfully verified.
+     *
+     * @return void
+     */
+    private function rehashPasswordIfNeeded($userID, $storedHash, $password)
+    {
+        if ($this->isLegacyPasswordHash($storedHash) || $storedHash === LDAPUSER_PASSWORD)
+        {
+            return;
+        }
+
+        if (password_needs_rehash($storedHash, PASSWORD_DEFAULT))
+        {
+            $this->updatePasswordHash($userID, $password);
+        }
+    }
+
+    /* FIXME: The following methods exist only for backwards compatibility with legacy MD5 password hashes.
+     * They also perform a one-time lazy migration from MD5 to password_hash().
+     * After several releases with the new algorithm in place, this MD5-related code should be removed
+     * from the codebase.
+     */
+
+    private function isLegacyPasswordHash($hash)
+    {
+        return (bool) preg_match('/^[0-9a-f]{32}$/i', $hash);
+    }
+
+    private function verifyAndMigratePassword($userID, $password, $storedHash)
+    {
+        if ($this->isLegacyPasswordHash($storedHash))
+        {
+            if (md5($password) !== $storedHash)
+            {
+                return false;
+            }
+
+            $this->updatePasswordHash($userID, $password);
+
+            return true;
+        }
+
+        return password_verify($password, $storedHash);
+    }
+
+    private function updatePasswordHash($userID, $password)
+    {
+        $sql = sprintf(
+                "UPDATE
+                user
+                SET
+                password = %s
+                WHERE
+                user.user_id = %s",
+                $this->_db->makeQueryString($this->hashPassword($password)),
+                $this->_db->makeQueryInteger($userID)
+                );
+
+        $this->_db->query($sql);
+    }
+
+    // End of temporary MD5 compatibility and lazy migration code.
 
     public function isUserLDAP($userID)
     {

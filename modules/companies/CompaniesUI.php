@@ -33,6 +33,7 @@ include_once(LEGACY_ROOT . '/lib/ResultSetUtility.php');
 include_once(LEGACY_ROOT . '/lib/Companies.php');
 include_once(LEGACY_ROOT . '/lib/Contacts.php');
 include_once(LEGACY_ROOT . '/lib/JobOrders.php');
+include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
 include_once(LEGACY_ROOT . '/lib/Attachments.php');
 include_once(LEGACY_ROOT . '/lib/Export.php');
 include_once(LEGACY_ROOT . '/lib/ListEditor.php');
@@ -125,7 +126,14 @@ class CompaniesUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                $this->onDelete();
+                if ($this->isPostBack())
+                {
+                    $this->onDelete();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             case 'search':
@@ -171,7 +179,14 @@ class CompaniesUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                $this->onDeleteAttachment();
+                if ($this->isPostBack())
+                {
+                    $this->onDeleteAttachment();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             /* Main companies page. */
@@ -290,8 +305,10 @@ class CompaniesUI extends UserInterface
         /* Link to Google Maps for this address */
         if (!empty($data['address']) && !empty($data['city']) && !empty($data['state']))
         {
+            $addressParts = array($data['address']);
+            if (!empty($data['address2'])) $addressParts[] = $data['address2'];
             $data['googleMaps'] = '<a href="http://maps.google.com/maps?q=' .
-                     urlencode($data['address']) . '+' .
+                     urlencode(implode(' ', $addressParts)) . '+' .
                      urlencode($data['city'])     . '+' .
                      urlencode($data['state']);
 
@@ -414,6 +431,42 @@ class CompaniesUI extends UserInterface
             }
         }
 
+        $activityEntries = new ActivityEntries($this->_siteID);
+        $activityRS = $activityEntries->getAllByCompany($companyID);
+        if (!empty($activityRS))
+        {
+            foreach ($activityRS as $rowIndex => $row)
+            {
+                if (empty($activityRS[$rowIndex]['notes']))
+                {
+                    $activityRS[$rowIndex]['notes'] = '(No Notes)';
+                }
+
+                if (empty($activityRS[$rowIndex]['jobOrderID']) ||
+                    empty($activityRS[$rowIndex]['regarding']))
+                {
+                    $activityRS[$rowIndex]['regarding'] = 'General';
+                }
+
+                $activityRS[$rowIndex]['enteredByAbbrName'] = StringUtility::makeInitialName(
+                    $activityRS[$rowIndex]['enteredByFirstName'],
+                    $activityRS[$rowIndex]['enteredByLastName'],
+                    false,
+                    LAST_NAME_MAXLEN
+                );
+
+                $activityRS[$rowIndex]['contactFullName'] = trim(
+                    $activityRS[$rowIndex]['contactFirstName'] . ' ' .
+                    $activityRS[$rowIndex]['contactLastName']
+                );
+
+                if ($activityRS[$rowIndex]['contactFullName'] == '')
+                {
+                    $activityRS[$rowIndex]['contactFullName'] = '(Unknown Contact)';
+                }
+            }
+        }
+
         /* Add an MRU entry. */
         $_SESSION['CATS']->getMRU()->addEntry(
             DATA_ITEM_COMPANY, $companyID, $data['name']
@@ -442,10 +495,12 @@ class CompaniesUI extends UserInterface
         $this->_template->assign('extraFieldRS', $extraFieldRS);
         $this->_template->assign('isShortNotes', $isShortNotes);
         $this->_template->assign('jobOrdersRS', $jobOrdersRS);
+        $this->_template->assign('activityRS', $activityRS);
         $this->_template->assign('contactsRS', $contactsRS);
         $this->_template->assign('contactsRSWC', $contactsRSWC);
         $this->_template->assign('privledgedUser', $privledgedUser);
         $this->_template->assign('companyID', $companyID);
+        $this->_template->assign('sessionCookie', $_SESSION['CATS']->getCookie());
 
         if (!eval(Hooks::get('CLIENTS_SHOW'))) return;
 
@@ -540,6 +595,7 @@ class CompaniesUI extends UserInterface
 
         $name            = $this->getSanitisedInput('name', $_POST);
         $address         = $this->getSanitisedInput('address', $_POST);
+        $address2        = $this->getSanitisedInput('address2', $_POST);
         $city            = $this->getSanitisedInput('city', $_POST);
         $state           = $this->getSanitisedInput('state', $_POST);
         $zip             = $this->getSanitisedInput('zip', $_POST);
@@ -560,7 +616,7 @@ class CompaniesUI extends UserInterface
 
         $companies = new Companies($this->_siteID);
         $companyID = $companies->add(
-            $name, $address, $city, $state, $zip, $phone1,
+            $name, $address, $address2, $city, $state, $zip, $phone1,
             $phone2, $faxNumber, $url, $keyTechnologies, $isHot,
             $notes, $this->_userID, $this->_userID
         );
@@ -811,6 +867,7 @@ class CompaniesUI extends UserInterface
 
         $name            = $this->getSanitisedInput('name', $_POST);
         $address         = $this->getSanitisedInput('address', $_POST);
+        $address2        = $this->getSanitisedInput('address2', $_POST);
         $city            = $this->getSanitisedInput('city', $_POST);
         $state           = $this->getSanitisedInput('state', $_POST);
         $zip             = $this->getSanitisedInput('zip', $_POST);
@@ -835,7 +892,7 @@ class CompaniesUI extends UserInterface
         );
         $companies->updateDepartments($companyID, $departmentsDifferences);
 
-        if (!$companies->update($companyID, $name, $address, $city, $state,
+        if (!$companies->update($companyID, $name, $address, $address2, $city, $state,
             $zip, $phone1, $phone2, $faxNumber, $url, $keyTechnologies,
             $isHot, $notes, $owner, $billingContact, $email, $emailAddress))
         {
@@ -853,7 +910,7 @@ class CompaniesUI extends UserInterface
             if ($_POST['updateContacts'] == 'yes')
             {
                 $contacts = new Contacts($this->_siteID);
-                $contacts->updateByCompany($companyID, $address, $city, $state, $zip);
+                $contacts->updateByCompany($companyID, $address, $address2, $city, $state, $zip);
             }
         }
 
@@ -869,13 +926,13 @@ class CompaniesUI extends UserInterface
     private function onDelete()
     {
         /* Bail out if we don't have a valid company ID. */
-        if (!$this->isRequiredIDValid('companyID', $_GET))
+        if (!$this->isRequiredIDValid('companyID', $_POST))
         {
             $this->listByView('Invalid company ID.');
             return;
         }
 
-        $companyID = $_GET['companyID'];
+        $companyID = $_POST['companyID'];
 
         $companies = new Companies($this->_siteID);
         $rs = $companies->get($companyID);
@@ -1130,19 +1187,19 @@ class CompaniesUI extends UserInterface
     private function onDeleteAttachment()
     {
         /* Bail out if we don't have a valid attachment ID. */
-        if (!$this->isRequiredIDValid('attachmentID', $_GET))
+        if (!$this->isRequiredIDValid('attachmentID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid attachment ID.');
         }
 
         /* Bail out if we don't have a valid joborder ID. */
-        if (!$this->isRequiredIDValid('companyID', $_GET))
+        if (!$this->isRequiredIDValid('companyID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid company ID.');
         }
 
-        $companyID  = $_GET['companyID'];
-        $attachmentID = $_GET['attachmentID'];
+        $companyID  = $_POST['companyID'];
+        $attachmentID = $_POST['attachmentID'];
 
         if (!eval(Hooks::get('CLIENTS_ON_DELETE_ATTACHMENT_PRE'))) return;
 

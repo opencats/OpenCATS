@@ -1334,6 +1334,68 @@ class CATSSchema
                 COLLATE utf8_unicode_ci NOT NULL DEFAULT \'+1\'
                 AFTER `date_format_ddmmyy`;
             ',
+            '366' => '
+                ALTER IGNORE TABLE `candidate` ADD COLUMN `address2` TEXT COLLATE utf8_unicode_ci AFTER `address`;
+                ALTER IGNORE TABLE `contact` ADD COLUMN `address2` TEXT COLLATE utf8_unicode_ci AFTER `address`;
+                ALTER IGNORE TABLE `company` ADD COLUMN `address2` TEXT COLLATE utf8_unicode_ci AFTER `address`;
+            ',
+            '367' => '
+                UPDATE candidate
+                SET address = REPLACE(address, \'\\r\\n\', \'\\n\')
+                WHERE address LIKE \'%\\r\\n%\';
+                UPDATE candidate
+                SET
+                    address2 = TRIM(REPLACE(SUBSTRING(address, INSTR(address, \'\\n\') + 1), \'\\n\', \', \')),
+                    address  = TRIM(SUBSTRING_INDEX(address, \'\\n\', 1))
+                WHERE address IS NOT NULL
+                  AND INSTR(address, \'\\n\') > 0;
+
+                UPDATE contact
+                SET address = REPLACE(address, \'\\r\\n\', \'\\n\')
+                WHERE address LIKE \'%\\r\\n%\';
+                UPDATE contact
+                SET
+                    address2 = TRIM(REPLACE(SUBSTRING(address, INSTR(address, \'\\n\') + 1), \'\\n\', \', \')),
+                    address  = TRIM(SUBSTRING_INDEX(address, \'\\n\', 1))
+                WHERE address IS NOT NULL
+                  AND INSTR(address, \'\\n\') > 0;
+
+                UPDATE company
+                SET address = REPLACE(address, \'\\r\\n\', \'\\n\')
+                WHERE address LIKE \'%\\r\\n%\';
+                UPDATE company
+                SET
+                    address2 = TRIM(REPLACE(SUBSTRING(address, INSTR(address, \'\\n\') + 1), \'\\n\', \', \')),
+                    address  = TRIM(SUBSTRING_INDEX(address, \'\\n\', 1))
+                WHERE address IS NOT NULL
+                  AND INSTR(address, \'\\n\') > 0;
+            ',
+            '368' => '
+                ALTER TABLE `user`
+                    MODIFY `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT \'\';
+            ',
+            '369' => 'PHP:
+                $col = $db->getAssoc("SHOW COLUMNS FROM `site` LIKE \'last_viewed_day\'");
+
+                if (!empty($col))
+                {
+                    $db->query(
+                        "UPDATE `site`
+                         SET `last_viewed_day` = \'1000-01-01\'
+                         WHERE `last_viewed_day` IS NULL OR `last_viewed_day` = \'0000-00-00\'",
+                        true
+                    );
+
+                    $db->query(
+                        "ALTER TABLE `site`
+                         MODIFY `last_viewed_day` DATE NOT NULL DEFAULT \'1000-01-01\'",
+                        true
+                    );
+                }
+            ',
+            '366' => '
+                DELETE FROM module_schema WHERE name = \'toolbar\';
+            ',
 
         );
     }

@@ -34,7 +34,7 @@ Feature: Login
   Scenario: Login as administrator
     Given I am on "/"
     And I fill in "Username" with "admin"
-    And I fill in "Password" with "admin"
+    And I fill in "Password" with "cats"
     When I press "Login"
     Then I should not see "Invalid username or password"
     And I should see "Administrator"
@@ -43,7 +43,7 @@ Feature: Login
   Scenario: Logout
     Given I am authenticated as "Administrator"
     And I am on "/"
-    When I follow "Logout"
+    When I press "Logout"
     Then I should not see "Logout"
     And I should not see "Administrator"
     And I should see "Login"
@@ -53,7 +53,7 @@ Feature: Login
   Scenario: Access page after logout redirects to login
     Given I am authenticated as "Administrator"
     And I am on "/"
-    And I follow "Logout"
+    And I press "Logout"
     And I am on "/index.php?m=joborders"
     And I should see "Username"
     And I should see "Password"

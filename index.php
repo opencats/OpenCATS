@@ -172,6 +172,26 @@ if ($_SESSION['CATS']->isLoggedIn())
     }
 }
 
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &&
+    $_SESSION['CATS']->isLoggedIn() &&
+    (!isset($careerPage) || !$careerPage) &&
+    (!isset($_GET['showCareerPortal']) || $_GET['showCareerPortal'] != '1') &&
+    (!isset($rssPage) || !$rssPage) &&
+    (!isset($xmlPage) || !$xmlPage))
+{
+    $token = null;
+
+    if (isset($_POST['csrfToken']))
+    {
+        $token = $_POST['csrfToken'];
+    }
+
+    if (!$_SESSION['CATS']->isCSRFTokenValid($token))
+    {
+        CommonErrors::fatal(COMMONERROR_BADFIELDS, null, 'Invalid request.');
+    }
+}
+
 /* Check to see if we are supposed to display the career page. */
 if (((isset($careerPage) && $careerPage) ||
     (isset($_GET['showCareerPortal']) && $_GET['showCareerPortal'] == '1')))
@@ -219,6 +239,11 @@ else
 {
     if ($_GET['m'] == 'logout')
     {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST')
+        {
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, null, 'Invalid request.');
+        }
+
         /* There isn't really a logout module. It's just a few lines. */
         $unixName = $_SESSION['CATS']->getUnixName();
 
@@ -233,12 +258,20 @@ else
             $URI .= '&s=' . $unixName;
         }
 
-        if (isset($_GET['message']))
+        if (isset($_POST['message']))
+        {
+            $URI .= '&message=' . urlencode($_POST['message']);
+        }
+        else if (isset($_GET['message']))
         {
             $URI .= '&message=' . urlencode($_GET['message']);
         }
 
-        if (isset($_GET['messageSuccess']))
+        if (isset($_POST['messageSuccess']))
+        {
+            $URI .= '&messageSuccess=' . urlencode($_POST['messageSuccess']);
+        }
+        else if (isset($_GET['messageSuccess']))
         {
             $URI .= '&messageSuccess=' . urlencode($_GET['messageSuccess']);
         }
