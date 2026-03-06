@@ -42,12 +42,12 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
     /* Disable the arrow button and edit box. */
     arrowButton.disabled = true;
     editBox.disabled = true;
-    indicator.style.visibility = 'visible';
+    indicator.style.visibility = "visible";
 
     /* Build HTTP POST data. */
-    var POSTData = '';
-    POSTData += '&addressBlock=' + urlEncode(editBox.value);
-    POSTData += '&mode=' + urlEncode(mode);
+    var POSTData = "";
+    POSTData += "&addressBlock=" + urlEncode(editBox.value);
+    POSTData += "&mode=" + urlEncode(mode);
 
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
@@ -65,28 +65,28 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
             return;
         }
     
-        var firstNameField  = document.getElementById('firstName');
-        var middleNameField = document.getElementById('middleName');
-        var lastNameField   = document.getElementById('lastName');
-        var nameField       = document.getElementById('name');
-        var addressField    = document.getElementById('address');
-        var address2Field   = document.getElementById('address2');
-        var phoneHomeField  = document.getElementById('phoneHome');
-        var phoneCellField  = document.getElementById('phoneCell');
-        var phoneWorkField  = document.getElementById('phoneWork');
-        var cityField       = document.getElementById('city');
-        var stateField      = document.getElementById('state');
-        var zipField        = document.getElementById('zip');
-        var emailField      = document.getElementById('email1');
-        var faxField        = document.getElementById('faxNumber');
+        var firstNameField  = document.getElementById("firstName");
+        var middleNameField = document.getElementById("middleName");
+        var lastNameField   = document.getElementById("lastName");
+        var nameField       = document.getElementById("name");
+        var addressField    = document.getElementById("address");
+        var address2Field   = document.getElementById("address2");
+        var phoneHomeField  = document.getElementById("phoneHome");
+        var phoneCellField  = document.getElementById("phoneCell");
+        var phoneWorkField  = document.getElementById("phoneWork");
+        var cityField       = document.getElementById("city");
+        var stateField      = document.getElementById("state");
+        var zipField        = document.getElementById("zip");
+        var emailField      = document.getElementById("email1");
+        var faxField        = document.getElementById("faxNumber");
 
         //alert(http.responseText);
         
         /* Return if we have any errors. */
-        var errorCodeNode = http.responseXML.getElementsByTagName('errorcode').item(0);
-        var errorMessageNode = http.responseXML.getElementsByTagName('errormessage').item(0);
+        var errorCodeNode = http.responseXML.getElementsByTagName("errorcode").item(0);
+        var errorMessageNode = http.responseXML.getElementsByTagName("errormessage").item(0);
         if (!errorCodeNode || !errorCodeNode.firstChild ||
-            errorCodeNode.firstChild.nodeValue != '0')
+            errorCodeNode.firstChild.nodeValue != "0")
         {
             if (errorMessageNode && errorMessageNode.firstChild)
             {
@@ -95,51 +95,51 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
                 alert(errorMessage);
             }
 
-            if (firstNameField)  firstNameField.value  = '';
-            if (middleNameField) middleNameField.value = '';
-            if (lastNameField)   lastNameField.value   = '';
-            if (nameField)       nameField.value       = '';
-            if (addressField)    addressField.value    = '';
-            if (address2Field)   address2Field.value   = '';
-            if (phoneHomeField)  phoneHomeField.value  = '';
-            if (phoneCellField)  phoneCellField.value  = '';
-            if (phoneWorkField)  phoneWorkField.value  = '';
-            if (cityField)       cityField.value       = '';
-            if (stateField)      stateField.value      = '';
-            if (zipField)        zipField.value        = '';
-            if (emailField)      emailField.value      = '';
-            if (faxField)        faxField.value        = '';
+            if (firstNameField)  firstNameField.value  = "";
+            if (middleNameField) middleNameField.value = "";
+            if (lastNameField)   lastNameField.value   = "";
+            if (nameField)       nameField.value       = "";
+            if (addressField)    addressField.value    = "";
+            if (address2Field)   address2Field.value   = "";
+            if (phoneHomeField)  phoneHomeField.value  = "";
+            if (phoneCellField)  phoneCellField.value  = "";
+            if (phoneWorkField)  phoneWorkField.value  = "";
+            if (cityField)       cityField.value       = "";
+            if (stateField)      stateField.value      = "";
+            if (zipField)        zipField.value        = "";
+            if (emailField)      emailField.value      = "";
+            if (faxField)        faxField.value        = "";
 
             /* Enable the arrow button and edit box. */
             arrowButton.disabled = false;
             editBox.disabled = false;
-            indicator.style.visibility = 'hidden';
+            indicator.style.visibility = "hidden";
 
             return;
         }
 
         /* Locate the nodes we need in the XML response data. */
-        var cityNode    = http.responseXML.getElementsByTagName('city').item(0);
-        var stateNode   = http.responseXML.getElementsByTagName('state').item(0);
-        var zipNode     = http.responseXML.getElementsByTagName('zip').item(0);
-        var emailNode   = http.responseXML.getElementsByTagName('email').item(0);
-        var companyNode = http.responseXML.getElementsByTagName('company').item(0);
+        var cityNode    = http.responseXML.getElementsByTagName("city").item(0);
+        var stateNode   = http.responseXML.getElementsByTagName("state").item(0);
+        var zipNode     = http.responseXML.getElementsByTagName("zip").item(0);
+        var emailNode   = http.responseXML.getElementsByTagName("email").item(0);
+        var companyNode = http.responseXML.getElementsByTagName("company").item(0);
 
-        var addressNode        = http.responseXML.getElementsByTagName('address').item(0);
-        var addressLineNodes   = addressNode.getElementsByTagName('line');
+        var addressNode        = http.responseXML.getElementsByTagName("address").item(0);
+        var addressLineNodes   = addressNode.getElementsByTagName("line");
         var addressLineOneNode = addressLineNodes.item(0);
         var addressLineTwoNode = addressLineNodes.item(1);
 
-        var nameNode       = http.responseXML.getElementsByTagName('name').item(0);
-        var firstNameNode  = nameNode.getElementsByTagName('first').item(0);
-        var middleNameNode = nameNode.getElementsByTagName('middle').item(0);
-        var lastNameNode   = nameNode.getElementsByTagName('last').item(0);
+        var nameNode       = http.responseXML.getElementsByTagName("name").item(0);
+        var firstNameNode  = nameNode.getElementsByTagName("first").item(0);
+        var middleNameNode = nameNode.getElementsByTagName("middle").item(0);
+        var lastNameNode   = nameNode.getElementsByTagName("last").item(0);
 
-        var phoneNumbersNode = http.responseXML.getElementsByTagName('phonenumbers').item(0);
-        var homePhoneNode    = phoneNumbersNode.getElementsByTagName('home').item(0);
-        var cellPhoneNode    = phoneNumbersNode.getElementsByTagName('cell').item(0);
-        var workPhoneNode    = phoneNumbersNode.getElementsByTagName('work').item(0);
-        var faxNode          = phoneNumbersNode.getElementsByTagName('fax').item(0);
+        var phoneNumbersNode = http.responseXML.getElementsByTagName("phonenumbers").item(0);
+        var homePhoneNode    = phoneNumbersNode.getElementsByTagName("home").item(0);
+        var cellPhoneNode    = phoneNumbersNode.getElementsByTagName("cell").item(0);
+        var workPhoneNode    = phoneNumbersNode.getElementsByTagName("work").item(0);
+        var faxNode          = phoneNumbersNode.getElementsByTagName("fax").item(0);
 
 
         /* Use the data from the XML response to fill the form fields. */
@@ -149,7 +149,7 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
         }
         else if (nameField)
         {
-            nameField.value = '';
+            nameField.value = "";
         }
         
         if (firstNameField && firstNameNode.firstChild)
@@ -158,7 +158,7 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
         }
         else if (firstNameField)
         {
-            firstNameField.value = '';
+            firstNameField.value = "";
         }
         
         if (middleNameField && middleNameNode.firstChild)
@@ -167,7 +167,7 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
         }
         else if (middleNameField)
         {
-            middleNameField.value = '';
+            middleNameField.value = "";
         }
 
         if (lastNameField && lastNameNode.firstChild)
@@ -176,7 +176,7 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
         }
         else if (lastNameField)
         {
-            lastNameField.value = '';
+            lastNameField.value = "";
         }
 
         if (addressField)
@@ -187,24 +187,24 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
 
                 if (address2Field)
                 {
-                    if (addressLineTwoNode.firstChild && addressLineOneNode.firstChild != '')
+                    if (addressLineTwoNode.firstChild && addressLineOneNode.firstChild != "")
                     {
                         address2Field.value = addressLineTwoNode.firstChild.nodeValue;
                     }
                     else
                     {
-                        address2Field.value = '';
+                        address2Field.value = "";
                     }
                 }
-                else if (addressLineTwoNode.firstChild && addressLineOneNode.firstChild != '')
+                else if (addressLineTwoNode.firstChild && addressLineOneNode.firstChild != "")
                 {
                     addressField.value += "\n" + addressLineTwoNode.firstChild.nodeValue;
                 }
             }
             else
             {
-                addressField.value = '';
-                if (address2Field) address2Field.value = '';
+                addressField.value = "";
+                if (address2Field) address2Field.value = "";
             }
         }
 
@@ -214,7 +214,7 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
         }
         else if (phoneHomeField)
         {
-            phoneHomeField.value = '';
+            phoneHomeField.value = "";
         }
 
         if (phoneCellField && cellPhoneNode.firstChild)
@@ -223,7 +223,7 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
         }
         else if (phoneCellField)
         {
-            phoneCellField.value = '';
+            phoneCellField.value = "";
         }
 
         if (phoneWorkField && workPhoneNode.firstChild)
@@ -232,7 +232,7 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
         }
         else if (phoneWorkField)
         {
-            phoneWorkField.value = '';
+            phoneWorkField.value = "";
         }
 
         if (faxField && faxNode.firstChild)
@@ -241,7 +241,7 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
         }
         else if (faxField)
         {
-            faxField.value = '';
+            faxField.value = "";
         }
 
         if (cityField && cityNode.firstChild)
@@ -250,7 +250,7 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
         }
         else if (cityField)
         {
-            cityField.value = '';
+            cityField.value = "";
         }
 
         if (stateField && stateNode.firstChild)
@@ -259,7 +259,7 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
         }
         else if (stateField)
         {
-            stateField.value = '';
+            stateField.value = "";
         }
 
         if (zipField && zipNode.firstChild)
@@ -268,7 +268,7 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
         }
         else if (zipField)
         {
-            zipField.value = '';
+            zipField.value = "";
         }
 
         if (emailField && emailNode.firstChild)
@@ -276,7 +276,7 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
             emailField.value = emailNode.firstChild.nodeValue;
             
             /* Check for duplicate candidate records for candidates page. */
-            if (typeof(document.getElementById('candidateAlreadyInSystemTable')) != 'undefined')
+            if (typeof(document.getElementById("candidateAlreadyInSystemTable")) != "undefined")
             {
                 checkEmailAlreadyInSystem(emailNode.firstChild.nodeValue);
             }
@@ -284,18 +284,18 @@ function AddressParser_parse(editBoxID, mode, indicatorID, arrowButtonID)
         }
         else if (emailField)
         {
-            emailField.value = '';
+            emailField.value = "";
         }
 
         /* Enable the arrow button and edit box. */
         arrowButton.disabled = false;
         editBox.disabled = false;
-        indicator.style.visibility = 'hidden';
+        indicator.style.visibility = "hidden";
     }
 
     AJAX_callCATSFunction(
         http,
-        'getParsedAddress',
+        "getParsedAddress",
         POSTData,
         callBack,
         0,

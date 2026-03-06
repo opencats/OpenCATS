@@ -19,7 +19,7 @@ quickAction.MenuOption.prototype.getAction = function()
 
 quickAction.MenuOption.prototype.getHtml = function()
 {
-    return '<a href="javascript:void(0);" onclick="' + this.getAction() + '">' + this.getTitle() + '</a><br />';
+    return "<a href=\"javascript:void(0);\" onclick=\"" + this.getAction() + "\">" + this.getTitle() + "</a><br />";
 };
 
 quickAction.LinkMenuOption = function(title, action, option)
@@ -43,11 +43,11 @@ quickAction.LinkMenuOption.prototype.getHtml = function()
     {
         case 0:
             var itemAction = "'" + this.getAction() + "'";
-            result = '<a href=# onclick="showPopWin(' + itemAction + ', 750, 540, null); return false;">' + this.getTitle() + '</a><br />';
+            result = "<a href=# onclick=\"showPopWin(" + itemAction + ", 750, 540, null); return false;\">" + this.getTitle() + "</a><br />";
             break;
         case 1:
         default:
-            result = '<a href="' + this.getAction() + '" onclick="return confirm(' + message + ')">' + this.getTitle() + '</a><br />';
+            result = "<a href=\"" + this.getAction() + "\" onclick=\"return confirm(" + message + ")\">" + this.getTitle() + "</a><br />";
             break;
     }
     return result;
@@ -56,7 +56,7 @@ quickAction.LinkMenuOption.prototype.getHtml = function()
 
 quickAction.DefaultMenu = function(menuDataItemType, menuDataItemId, menuX, menuY, permissions)
 {
-    this.element = document.getElementById('singleQuickActionMenu');
+    this.element = document.getElementById("singleQuickActionMenu");
     this.menuDataItemType = menuDataItemType;
     this.menuDataItemId = menuDataItemId;
     this.menuX = menuX;
@@ -82,18 +82,18 @@ quickAction.DefaultMenu.prototype.getId = function()
 quickAction.DefaultMenu.prototype.getOptions = function()
 {
     return [
-        new quickAction.MenuOption('Add To List', 'showQuickActionAddToList(' +  this.menuDataItemType + ', ' + this.menuDataItemId + ');')
+        new quickAction.MenuOption("Add To List", "showQuickActionAddToList(" +  this.menuDataItemType + ", " + this.menuDataItemId + ");")
     ];
 };
 
 quickAction.DefaultMenu.prototype.toggle = function()
 {
-    if (this.element.style.display != 'block')
+    if (this.element.style.display != "block")
     {
-        this.element.style.display = 'block';
-        this.element.style.left = this.menuX + 'px';
-        this.element.style.top = this.menuY + 'px';
-        this.element.innerHTML = '';
+        this.element.style.display = "block";
+        this.element.style.left = this.menuX + "px";
+        this.element.style.top = this.menuY + "px";
+        this.element.innerHTML = "";
         var options = this.getOptions();
         for (var i = 0; i < options.length; ++i)
         {
@@ -112,14 +112,14 @@ function showHideSingleQuickActionMenu(menu)
 function showQuickActionAddToList(menuDataItemType, menuDataItemId)
 {
     /* Create a popup window for adding this data item type to a list (content loaded from server) */
-    showPopWin(CATSIndexName + '?m=lists&a=quickActionAddToListModal&dataItemType='+ menuDataItemType +'&dataItemID='+ menuDataItemId, 450, 350, null);
+    showPopWin(CATSIndexName + "?m=lists&a=quickActionAddToListModal&dataItemType="+ menuDataItemType +"&dataItemID="+ menuDataItemId, 450, 350, null);
 };
 
 /* Shows a popup for adding a item to a list. */
 function showQuickActionAddToPipeline(menuDataItemId)
 {
     /* Create a popup window for adding this candidate to the job order / pipeline */
-    showPopWin(CATSIndexName + '?m=candidates&a=considerForJobSearch&candidateID=' + menuDataItemId, 750, 390, null);
+    showPopWin(CATSIndexName + "?m=candidates&a=considerForJobSearch&candidateID=" + menuDataItemId, 750, 390, null);
 };
 
 function quickActionPostFromUrl(url, confirmMessage)
@@ -129,29 +129,29 @@ function quickActionPostFromUrl(url, confirmMessage)
         return false;
     }
 
-    var parts = url.split('?');
+    var parts = url.split("?");
     var action = parts[0];
-    var query = (parts.length > 1) ? parts[1] : '';
+    var query = (parts.length > 1) ? parts[1] : "";
     var params = {};
     var actionParams = [];
 
     if (query.length > 0)
     {
-        var pairs = query.split('&');
+        var pairs = query.split("&");
         for (var i = 0; i < pairs.length; i++)
         {
-            if (pairs[i] === '')
+            if (pairs[i] === "")
             {
                 continue;
             }
 
-            var keyValue = pairs[i].split('=');
-            var key = decodeURIComponent(keyValue[0].replace(/\+/g, ' '));
-            var value = keyValue.length > 1 ? decodeURIComponent(keyValue[1].replace(/\+/g, ' ')) : '';
+            var keyValue = pairs[i].split("=");
+            var key = decodeURIComponent(keyValue[0].replace(/\+/g, " "));
+            var value = keyValue.length > 1 ? decodeURIComponent(keyValue[1].replace(/\+/g, " ")) : "";
 
-            if (key === 'm' || key === 'a')
+            if (key === "m" || key === "a")
             {
-                actionParams.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
+                actionParams.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
             }
             else
             {
@@ -160,17 +160,17 @@ function quickActionPostFromUrl(url, confirmMessage)
         }
     }
 
-    params.postback = 'postback';
+    params.postback = "postback";
 
-    if (typeof CATSCsrfToken != 'undefined' && CATSCsrfToken !== null &&
-        CATSCsrfToken !== '' && typeof params.csrfToken == 'undefined')
+    if (typeof CATSCsrfToken != "undefined" && CATSCsrfToken !== null &&
+        CATSCsrfToken !== "" && typeof params.csrfToken == "undefined")
     {
         params.csrfToken = CATSCsrfToken;
     }
 
-    var form = document.createElement('form');
-    form.method = 'post';
-    form.action = action + (actionParams.length ? ('?' + actionParams.join('&')) : '');
+    var form = document.createElement("form");
+    form.method = "post";
+    form.action = action + (actionParams.length ? ("?" + actionParams.join("&")) : "");
 
     for (var name in params)
     {
@@ -179,8 +179,8 @@ function quickActionPostFromUrl(url, confirmMessage)
             continue;
         }
 
-        var input = document.createElement('input');
-        input.type = 'hidden';
+        var input = document.createElement("input");
+        input.type = "hidden";
         input.name = name;
         input.value = params[name];
         form.appendChild(input);

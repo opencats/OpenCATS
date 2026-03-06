@@ -29,12 +29,12 @@
 
 function checkLoginForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkUsername();
     errorMessage += checkPassword();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -45,19 +45,19 @@ function checkLoginForm(form)
 
 function checkUsername()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('username');
-    fieldLabel = document.getElementById('usernameLabel');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("username");
+    fieldLabel = document.getElementById("usernameLabel");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a username.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -65,19 +65,19 @@ function checkUsername()
 
 function checkPassword()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('password');
-    fieldLabel = document.getElementById('passwordLabel');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("password");
+    fieldLabel = document.getElementById("passwordLabel");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a password.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;

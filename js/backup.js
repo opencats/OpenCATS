@@ -36,16 +36,16 @@ var progressFile = null;
 /* Calls settings -> backup.  startBackup will output JS. */
 function startBackup(AJAXFunction, extraPOSTData)
 {
-    document.getElementById('backupRunning').style.display = '';
-    document.getElementById('progress').innerHTML = '';
+    document.getElementById("backupRunning").style.display = "";
+    document.getElementById("progress").innerHTML = "";
     
     
-    var htmlObjectID = 'tempJs';
+    var htmlObjectID = "tempJs";
     var http = AJAX_getXMLHttpObject();
     
     /* Build HTTP POST data. */
-    var POSTData = '';
-    POSTData += '&a=start';
+    var POSTData = "";
+    POSTData += "&a=start";
     POSTData += extraPOSTData;
 
     /* Anonymous callback function triggered when HTTP response is received. */
@@ -60,7 +60,7 @@ function startBackup(AJAXFunction, extraPOSTData)
 
         if (AJAX_isPHPError(response))
         {
-            alert('PHP Error: ' + response);
+            alert("PHP Error: " + response);
             return;
         }
 
@@ -86,11 +86,11 @@ function watchBackup(directoryName, extraPOSTData, AJAXFunction)
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '';
-    POSTData += '&a=backup';
+    var POSTData = "";
+    POSTData += "&a=backup";
     POSTData += extraPOSTData;
 
-    progressFile =  directoryName + 'progress.txt';
+    progressFile =  directoryName + "progress.txt";
 
     var callback = function ()
     {
@@ -103,7 +103,7 @@ function watchBackup(directoryName, extraPOSTData, AJAXFunction)
 
         if (AJAX_isPHPError(response))
         {
-            alert('PHP Error: ' + response);
+            alert("PHP Error: " + response);
             return;
         }
 
@@ -133,14 +133,14 @@ function watchBackup(directoryName, extraPOSTData, AJAXFunction)
 /* Called by PHP to show what the progress is. */
 function setStatus(theStatus)
 {
-    document.getElementById('backupRunning').style.display = '';
-    document.getElementById('progress').innerHTML = '&nbsp;' + theStatus;
+    document.getElementById("backupRunning").style.display = "";
+    document.getElementById("progress").innerHTML = "&nbsp;" + theStatus;
 }
 
 function setProgress(theProgress)
 {
     theProgress = Math.round(theProgress * 100);
-    document.getElementById('progressBar').style.display = '';
+    document.getElementById("progressBar").style.display = "";
 
     if (theProgress > 100)
     {
@@ -149,22 +149,22 @@ function setProgress(theProgress)
 
     if (theProgress > 12)
     {
-        document.getElementById('d1').innerHTML = parseInt(theProgress) + '%';
+        document.getElementById("d1").innerHTML = parseInt(theProgress) + "%";
     }
     else
     {
-        document.getElementById('d1').innerHTML = '';
+        document.getElementById("d1").innerHTML = "";
     }
 
     if (theProgress > 0)
     {
-        document.getElementById('d2').style.width = (theProgress * 3) + 'px';
+        document.getElementById("d2").style.width = (theProgress * 3) + "px";
     }
 }
 
 function progressComplete(theProgress)
 {
-    document.getElementById('progressHistory').innerHTML = '<table>' + theProgress + '</table>';
+    document.getElementById("progressHistory").innerHTML = "<table>" + theProgress + "</table>";
 }
 
 /* The following is a crude implementation of AJAX for the purpose of
@@ -176,19 +176,19 @@ function refreshBackup()
 
     var handleResponse = function()
     {
-        var htmlObjectID = 'tempJs';
+        var htmlObjectID = "tempJs";
     
         if (httpGet.readyState == 4)
         {
             response = httpGet.responseText;
             document.getElementById(htmlObjectID).innerHTML = response;
-            if (response.indexOf('setProgress') != -1)
+            if (response.indexOf("setProgress") != -1)
             {
                 execJS(response);
             }
     
             httpGet = AJAX_getXMLHttpObject();
-            setTimeout('refreshBackup()', 1000);
+            setTimeout("refreshBackup()", 1000);
         }
     }
 
@@ -199,7 +199,7 @@ function refreshBackup()
 
     refreshCounter++;
 
-    httpGet.open('post', progressFile + '?n=' + refreshCounter);
+    httpGet.open("post", progressFile + "?n=" + refreshCounter);
     httpGet.onreadystatechange = handleResponse;
     httpGet.send(null);
 }
@@ -208,7 +208,7 @@ function backupFinished()
 {
     backingUp = false;
 
-    setTimeout('alert("Backup Complete!"); document.location.href = document.location.href+" ";', 500);
+    setTimeout("alert(\"Backup Complete!\"); document.location.href = document.location.href+\" \";", 500);
 }
 
 

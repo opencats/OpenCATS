@@ -51,8 +51,8 @@ var AJAX_TIMEOUT = 15000;
 
 function toggleVisibility()
 {
-    var singleQuickActionMenu = document.getElementById('singleQuickActionMenu');
-    singleQuickActionMenu.style.display = singleQuickActionMenu.style.display == 'block' ? 'none' : 'block';
+    var singleQuickActionMenu = document.getElementById("singleQuickActionMenu");
+    singleQuickActionMenu.style.display = singleQuickActionMenu.style.display == "block" ? "none" : "block";
 }
 
 /**
@@ -96,10 +96,10 @@ function openCenteredPopup(url, name, width, height, scrollBars)
 {
     var optionString;
 
-    optionString  = 'width=' + width + ',height=' + height;
-    optionString += ',top=' + ((screen.availHeight - height) / 2) + ',left=' + ((screen.availWidth - width) / 2);
-    optionString += ',scrollbars=';
-    optionString += (scrollBars ? 'yes' : 'no');
+    optionString  = "width=" + width + ",height=" + height;
+    optionString += ",top=" + ((screen.availHeight - height) / 2) + ",left=" + ((screen.availWidth - width) / 2);
+    optionString += ",scrollbars=";
+    optionString += (scrollBars ? "yes" : "no");
 
     /* Open the new window. */
     newWindow = window.open(url, name, optionString);
@@ -154,11 +154,11 @@ function parentSetPopTitle(title)
  */
 function escapeHTML(text)
 {
-    text = text.replace('&', '&amp;');
-    text = text.replace('<', '&lt;');
-    text = text.replace('>', '&gt;');
-    text = text.replace('"', '&quot;');
-    text = text.replace("'", '&apos;');
+    text = text.replace("&", "&amp;");
+    text = text.replace("<", "&lt;");
+    text = text.replace(">", "&gt;");
+    text = text.replace("\"", "&quot;");
+    text = text.replace("'", "&apos;");
 
     return text;
 }
@@ -171,11 +171,11 @@ function escapeHTML(text)
  */
 function unEscapeHTML(text)
 {
-    text = text.replace('&amp;', '&');
-    text = text.replace('&lt;', '<');
-    text = text.replace('&gt;', '>');
-    text = text.replace('&quot;', '"');
-    text = text.replace('&apos;', "'");
+    text = text.replace("&amp;", "&");
+    text = text.replace("&lt;", "<");
+    text = text.replace("&gt;", ">");
+    text = text.replace("&quot;", "\"");
+    text = text.replace("&apos;", "'");
 
     return text;
 }
@@ -189,10 +189,10 @@ function unEscapeHTML(text)
 function urlEncode(text)
 {
     /* Force JavaScript to always treat 'text' as a string. */
-    text += '';
+    text += "";
 
     /* encodeURIComponent() doesn't handle the ' character. */
-    text = text.replace(/\'/g, '%27');
+    text = text.replace(/\'/g, "%27");
     
     /* Don't use escape(), as it doesn't properly handle UTF-8. */
     text = encodeURIComponent(text);
@@ -208,9 +208,9 @@ function urlEncode(text)
  */
 function urlDecode(text)
 {
-	while (text.indexOf('+') != -1)
+	while (text.indexOf("+") != -1)
 	{
-    	text = text.replace('+', '%20');
+    	text = text.replace("+", "%20");
 	}
 	
     /* Don't use unescape(), as it doesn't properly handle UTF-8. */
@@ -243,7 +243,7 @@ function serializeArray(array)
  */
 function trim(text)
 {
-    return text.replace(/^\s*|\s*$/g, '');
+    return text.replace(/^\s*|\s*$/g, "");
 }
 
 /**
@@ -255,11 +255,11 @@ function AJAX_getXMLHttpObject()
 {
     /* Array of possible names for the Microsoft XMLHTTP ActiveX. */
     var MSXML_XMLHTTP_PROGIDS = new Array(
-        'Microsoft.XMLHTTP',
-        'MSXML2.XMLHTTP',
-        'MSXML2.XMLHTTP.5.0',
-        'MSXML2.XMLHTTP.4.0',
-        'MSXML2.XMLHTTP.3.0'
+        "Microsoft.XMLHTTP",
+        "MSXML2.XMLHTTP",
+        "MSXML2.XMLHTTP.5.0",
+        "MSXML2.XMLHTTP.4.0",
+        "MSXML2.XMLHTTP.3.0"
     );
 
     var xmlHttp;
@@ -301,7 +301,7 @@ function AJAX_getXMLHttpObject()
  */
 function AJAX_sendPOSTHeaders(http, contentLength)
 {
-    http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     /* No more allowed! */
     //http.setRequestHeader('Content-length', contentLength);
     //http.setRequestHeader('Connection', 'close');
@@ -315,7 +315,7 @@ function AJAX_sendPOSTHeaders(http, contentLength)
  */
 function AJAX_getRandomPOSTHash()
 {
-    return '&rhash=' + urlEncode(parseInt(Math.random() * 99999999).toString());
+    return "&rhash=" + urlEncode(parseInt(Math.random() * 99999999).toString());
 }
 
 /**
@@ -325,7 +325,7 @@ function AJAX_getRandomPOSTHash()
  */
 function AJAX_getPOSTSessionID(sessionCookie)
 {
-    return '&' + sessionCookie;
+    return "&" + sessionCookie;
 }
 
 /**
@@ -338,15 +338,15 @@ function AJAX_POST(http, url, POSTData, callBack, timeout, sessionCookie,
 {
     if (POSTData == null)
     {
-        POSTData = '';
+        POSTData = "";
     }
 
-    if (typeof CATSCsrfToken != 'undefined' && CATSCsrfToken !== null &&
-        CATSCsrfToken !== '')
+    if (typeof CATSCsrfToken != "undefined" && CATSCsrfToken !== null &&
+        CATSCsrfToken !== "")
     {
-        if (POSTData.indexOf('csrfToken=') == -1)
+        if (POSTData.indexOf("csrfToken=") == -1)
         {
-            POSTData += '&csrfToken=' + encodeURIComponent(CATSCsrfToken);
+            POSTData += "&csrfToken=" + encodeURIComponent(CATSCsrfToken);
         }
     }
 
@@ -363,7 +363,7 @@ function AJAX_POST(http, url, POSTData, callBack, timeout, sessionCookie,
     //alert(POSTData);
 
     /* Open the socket and send POST headers. */
-    http.open('POST', url, true);
+    http.open("POST", url, true);
     AJAX_sendPOSTHeaders(http, POSTData.length);
 
     /* Callback function. */
@@ -387,8 +387,8 @@ function AJAX_POST(http, url, POSTData, callBack, timeout, sessionCookie,
            if (!silentTimeout)
            {
                alert(
-                   'Timeout on AJAX query after ' + (timeout / 1000) +
-                   ' seconds. Please refresh the page and try again.'
+                   "Timeout on AJAX query after " + (timeout / 1000) +
+                   " seconds. Please refresh the page and try again."
                );
            }
         }
@@ -406,16 +406,16 @@ function AJAX_callCATSFunction(http, funcName, POSTData, callBack,
     extraTimeout, sessionCookie, silentTimeout, disableBuffering)
 {
     /* Prepend the function name to the postdata. */
-    var newPOSTData = 'f=' + funcName + POSTData;
+    var newPOSTData = "f=" + funcName + POSTData;
 
     if (disableBuffering)
     {
-        newPOSTData += '&nobuffer=true';
+        newPOSTData += "&nobuffer=true";
     }
 
     AJAX_POST(
         http,
-        'ajax.php',
+        "ajax.php",
         newPOSTData,
         callBack,
         (AJAX_TIMEOUT + extraTimeout),
@@ -450,7 +450,7 @@ function AJAX_isCallInProgress(http)
  */
 function AJAX_isPHPError(responseText)
 {
-    return (responseText.indexOf('</b> on line <b>') != -1);
+    return (responseText.indexOf("</b> on line <b>") != -1);
 }
 
 
@@ -466,8 +466,8 @@ showFullNotes       = false;
 
 function toggleDescription()
 {
-    var shortNode = document.getElementById('shortDescription');
-    var fullNode  = document.getElementById('fullDescription');
+    var shortNode = document.getElementById("shortDescription");
+    var fullNode  = document.getElementById("fullDescription");
 
     toggleNode(showFullDescription, shortNode, fullNode);
 
@@ -483,8 +483,8 @@ function toggleDescription()
 
 function toggleNotes()
 {
-    var shortNode = document.getElementById('shortNotes');
-    var fullNode  = document.getElementById('fullNotes');
+    var shortNode = document.getElementById("shortNotes");
+    var fullNode  = document.getElementById("fullNotes");
 
     toggleNode(showFullNotes, shortNode, fullNode);
 
@@ -502,13 +502,13 @@ function toggleNode(showFull, shortNode, fullNode)
 {
     if (showFull == true)
     {
-        shortNode.style.display = 'block';
-        fullNode.style.display  = 'none';
+        shortNode.style.display = "block";
+        fullNode.style.display  = "none";
     }
     else
     {
-        shortNode.style.display = 'none';
-        fullNode.style.display  = 'block';
+        shortNode.style.display = "none";
+        fullNode.style.display  = "block";
     }
 }
 
@@ -524,10 +524,10 @@ function CityState_populate(zipEditID, indicatorID)
     var zip = document.getElementById(zipEditID).value;
     var indicator = document.getElementById(indicatorID);
 
-    indicator.style.visibility = 'visible';
+    indicator.style.visibility = "visible";
 
      /* Build HTTP POST data. */
-    var POSTData = '&zip=' + urlEncode(zip);
+    var POSTData = "&zip=" + urlEncode(zip);
 
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
@@ -542,7 +542,7 @@ function CityState_populate(zipEditID, indicatorID)
             var errorMessage = "An error occurred while receiving a response from the server.\n\n"
                              + http.responseText;
             alert(errorMessage);
-            indicator.style.visibility = 'hidden';
+            indicator.style.visibility = "hidden";
 
             return;
         }
@@ -550,11 +550,11 @@ function CityState_populate(zipEditID, indicatorID)
         //alert(http.responseText);
 
         /* Return if we have any errors. */
-        var errorCodeNode    = http.responseXML.getElementsByTagName('errorcode').item(0);
-        var errorMessageNode = http.responseXML.getElementsByTagName('errormessage').item(0);
-        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != '0')
+        var errorCodeNode    = http.responseXML.getElementsByTagName("errorcode").item(0);
+        var errorMessageNode = http.responseXML.getElementsByTagName("errormessage").item(0);
+        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != "0")
         {
-            if (errorCodeNode.firstChild.nodeValue != '-2')
+            if (errorCodeNode.firstChild.nodeValue != "-2")
             {
                 var errorMessage = "An error occurred while receiving a response from the server.\n\n"
                                  + errorMessageNode.firstChild.nodeValue;
@@ -562,54 +562,54 @@ function CityState_populate(zipEditID, indicatorID)
                  * Do we have to popup an error dialog, if the zip lookup AJAX request fails?
                  */
                 //alert(errorMessage);
-                indicator.style.visibility = 'hidden';
+                indicator.style.visibility = "hidden";
             }
             return;
         }
 
-	var addressNode = http.responseXML.getElementsByTagName('address').item(0);
-        var cityNode  = http.responseXML.getElementsByTagName('city').item(0);
-        var stateNode = http.responseXML.getElementsByTagName('state').item(0);
+	var addressNode = http.responseXML.getElementsByTagName("address").item(0);
+        var cityNode  = http.responseXML.getElementsByTagName("city").item(0);
+        var stateNode = http.responseXML.getElementsByTagName("state").item(0);
 
-	if (document.getElementById('address'))
+	if (document.getElementById("address"))
         {
             if (addressNode.firstChild)
             {
-                document.getElementById('address').value = addressNode.firstChild.nodeValue;
+                document.getElementById("address").value = addressNode.firstChild.nodeValue;
             }
             else
             {
-                document.getElementById('address').value = '';
+                document.getElementById("address").value = "";
             }
         }
 
-        if (document.getElementById('city'))
+        if (document.getElementById("city"))
         {
             if (cityNode.firstChild)
             {
-                document.getElementById('city').value = cityNode.firstChild.nodeValue;
+                document.getElementById("city").value = cityNode.firstChild.nodeValue;
             }
             else
             {
-                document.getElementById('city').value = '';
+                document.getElementById("city").value = "";
             }
         }
 
-        if (document.getElementById('state'))
+        if (document.getElementById("state"))
         {
             if (stateNode.firstChild)
             {
-                document.getElementById('state').value = stateNode.firstChild.nodeValue;
+                document.getElementById("state").value = stateNode.firstChild.nodeValue;
             }
             else
             {
-                document.getElementById('state').value = '';
+                document.getElementById("state").value = "";
             }
         }
-        indicator.style.visibility = 'hidden';
+        indicator.style.visibility = "hidden";
     }
 
-    AJAX_callCATSFunction(http, 'zipLookup', POSTData, callBack, 0, null, false, false);
+    AJAX_callCATSFunction(http, "zipLookup", POSTData, callBack, 0, null, false, false);
 }
 
 /* Returns the value of the radio button that is selected from a radio button
@@ -619,18 +619,18 @@ function getCheckedValue(radioObj)
 {
     if (!radioObj)
     {
-        return '';
+        return "";
     }
 
     var radioLength = radioObj.length;
-    if (typeof(radioLength) == 'undefined')
+    if (typeof(radioLength) == "undefined")
     {
         if (radioObj.checked)
         {
             return radioObj.value;
         }
 
-        return '';
+        return "";
     }
 
     for (var i = 0; i < radioLength; i++)
@@ -641,7 +641,7 @@ function getCheckedValue(radioObj)
         }
     }
 
-    return '';
+    return "";
 }
 
 /* Checks the specified radio button out of the radio button group by value. */
@@ -653,7 +653,7 @@ function setCheckedValue(radioObj, newValue)
     }
 
     var radioLength = radioObj.length;
-    if (typeof(radioLength) == 'undefined')
+    if (typeof(radioLength) == "undefined")
     {
         radioObj.checked = (radioObj.value == newValue.toString());
         return;
@@ -785,9 +785,9 @@ var EventCache = function()
 
                 /* From this point on we need the event names to be prefixed
                  * with 'on". */
-                if (item[1].substring(0, 2) != 'on')
+                if (item[1].substring(0, 2) != "on")
                 {
-                    item[1] = 'on' + item[1];
+                    item[1] = "on" + item[1];
                 };
 
                 if (item[0].detachEvent)
@@ -810,12 +810,12 @@ function addEvent(obj, type, fn, useCapture)
     }
     else if (obj.attachEvent)
     {
-        obj['e' + type + fn] = fn;
+        obj["e" + type + fn] = fn;
         obj[type + fn] = function()
         {
-            obj['e' + type + fn](window.event);
+            obj["e" + type + fn](window.event);
         }
-        obj.attachEvent('on' + type, obj[type + fn]);
+        obj.attachEvent("on" + type, obj[type + fn]);
         EventCache.add(obj, type, fn, useCapture);
     }
     else
@@ -834,7 +834,7 @@ function removeEvent(obj, type, fn, useCapture)
 
     if (obj.detachEvent)
     {
-        return obj.detachEvent('on' + type, fn);
+        return obj.detachEvent("on" + type, fn);
     }
 
     //alert('Handler could not be removed.');
@@ -842,16 +842,16 @@ function removeEvent(obj, type, fn, useCapture)
 
 function checkQuickSearchForm(form)
 {
-    var fieldValue = document.getElementById('quickSearchFor').value;
-    var fieldLabel = document.getElementById('quickSearchLabel');
+    var fieldValue = document.getElementById("quickSearchFor").value;
+    var fieldLabel = document.getElementById("quickSearchLabel");
 
-    if (fieldValue == '')
+    if (fieldValue == "")
     {
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
         return false;
     }
 
-    fieldLabel.style.color = '#000';
+    fieldLabel.style.color = "#000";
 
     return true;
 }
@@ -861,20 +861,20 @@ function execJS(text)
 {
     var working = text;
 
-    var pos = working.indexOf('<script');
+    var pos = working.indexOf("<script");
     while (pos != -1)
     {
         working = working.substring(pos);
-        pos = working.indexOf('>');
+        pos = working.indexOf(">");
         if (pos == -1)
         {
             return;
         }
         working = working.substring(pos);
-        pos = working.indexOf('</script>');
+        pos = working.indexOf("</script>");
         var js = working.substring(1,pos);
         working = working.substring(pos);
-        pos = working.indexOf('<script');
+        pos = working.indexOf("<script");
         eval(js);
     }
 }

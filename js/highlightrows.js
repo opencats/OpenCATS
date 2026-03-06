@@ -12,7 +12,7 @@
 
 var savedStates = new Array();
 var savedStateCount = 0;
-var highlightColor = '#ffffcc';
+var highlightColor = "#ffffcc";
 
 function deSelect()
 {
@@ -32,14 +32,14 @@ function saveBackgroundStyle(currentElement)
 
     saved.element         = currentElement;
     saved.className       = currentElement.className;
-    saved.backgroundColor = currentElement.style['backgroundColor'];
+    saved.backgroundColor = currentElement.style["backgroundColor"];
 
     return saved;
 }
 
 function restoreBackgroundStyle(savedState)
 {
-    savedState.element.style['backgroundColor'] = savedState.backgroundColor;
+    savedState.element.style["backgroundColor"] = savedState.backgroundColor;
 
     if (savedState.className)
     {
@@ -79,12 +79,12 @@ function highlightTableRow(currentElement)
 
     savedStateCount = 0;
 
-    while (currentElement && ((currentElement.tagName && currentElement.tagName != 'TR') || !currentElement.tagName))
+    while (currentElement && ((currentElement.tagName && currentElement.tagName != "TR") || !currentElement.tagName))
     {
         currentElement = currentElement.parentNode;
     }
 
-    if (!currentElement || (currentElement && currentElement.id && currentElement.id == 'header'))
+    if (!currentElement || (currentElement && currentElement.id && currentElement.id == "header"))
     {
         return;
     }
@@ -102,11 +102,11 @@ function highlightTableRow(currentElement)
         savedStateCount++;
     }
 
-    var tableCell = findNode(currentElement, 'TD');
+    var tableCell = findNode(currentElement, "TD");
 
     while (tableCell)
     {
-        if (tableCell.tagName == 'TD')
+        if (tableCell.tagName == "TD")
         {
             if (!tableCell.style)
             {
@@ -118,8 +118,8 @@ function highlightTableRow(currentElement)
                 savedStateCount++;
             }
 
-            tableCell.style['backgroundColor'] = highlightColor;
-            tableCell.style.cursor = 'default';
+            tableCell.style["backgroundColor"] = highlightColor;
+            tableCell.style.cursor = "default";
         }
 
         tableCell = tableCell.nextSibling;
@@ -150,14 +150,14 @@ function trackTableHighlight(mEvent)
 /* The following is for selecting a row. */
 var savedStatesSelected = new Array();
 var savedStateCountSelected = 0;
-var selectedColor = '#bde7ff';
-var selectedColorChild = '#88d4ff';
+var selectedColor = "#bde7ff";
+var selectedColorChild = "#88d4ff";
 var selectedTableRow = 0;
 var selectedTableCell = 0;
 
 function restoreBackgroundStyleSelected(savedState)
 {
-    savedState.element.style['backgroundColor'] = savedState.backgroundColor;
+    savedState.element.style["backgroundColor"] = savedState.backgroundColor;
 
     if (savedState.className)
     {
@@ -207,12 +207,12 @@ function highlightTableRowSelected(currentElement, customSelectedColor)
 
     savedStateCountSelected = 0;
 
-    while (currentElement && ((currentElement.tagName && currentElement.tagName != 'TR') || !currentElement.tagName))
+    while (currentElement && ((currentElement.tagName && currentElement.tagName != "TR") || !currentElement.tagName))
     {
         currentElement = currentElement.parentNode;
     }
 
-    if (!currentElement || (currentElement && currentElement.id && currentElement.id == 'header'))
+    if (!currentElement || (currentElement && currentElement.id && currentElement.id == "header"))
     {
         return;
     }
@@ -226,11 +226,11 @@ function highlightTableRowSelected(currentElement, customSelectedColor)
         savedStateCountSelected++;
     }
 
-    var tableCell = findNode(currentElement, 'TD');
+    var tableCell = findNode(currentElement, "TD");
 
     while (tableCell)
     {
-        if (tableCell.tagName == 'TD')
+        if (tableCell.tagName == "TD")
         {
             if (!tableCell.style)
             {
@@ -244,20 +244,20 @@ function highlightTableRowSelected(currentElement, customSelectedColor)
 
             if (tableCell == selectedTableCell || tableCell == selectedTableCell.parentNode)
             {
-                tableCell.style['backgroundColor'] = selectedColorChild;
+                tableCell.style["backgroundColor"] = selectedColorChild;
             }
             else
             {
                 if (customSelectedColor != null)
                 {
-                    tableCell.style['backgroundColor'] = customSelectedColor;
+                    tableCell.style["backgroundColor"] = customSelectedColor;
                 }
                 else
                 {
-                    tableCell.style['backgroundColor'] = selectedColor;
+                    tableCell.style["backgroundColor"] = selectedColor;
                 }
             }
-            tableCell.style.cursor = 'default';
+            tableCell.style.cursor = "default";
         }
 
         tableCell = tableCell.nextSibling;

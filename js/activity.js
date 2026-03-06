@@ -42,70 +42,70 @@ function Activity_fillTypeSelect(selectList, selectedText)
     var optionElements = new Array();
 
     /* Call option. */
-    optionElements[0] = document.createElement('option');
+    optionElements[0] = document.createElement("option");
     optionElements[0].value = ACTIVITY_CALL;
-    optionElements[0].appendChild(document.createTextNode('Call'));
+    optionElements[0].appendChild(document.createTextNode("Call"));
 
     /* Call (Talked) option. */
-    optionElements[1] = document.createElement('option');
+    optionElements[1] = document.createElement("option");
     optionElements[1].value = ACTIVITY_CALL_TALKED;
-    optionElements[1].appendChild(document.createTextNode('Call (Talked)'));
+    optionElements[1].appendChild(document.createTextNode("Call (Talked)"));
 
     /* Call (LVM) option. */
-    optionElements[2] = document.createElement('option');
+    optionElements[2] = document.createElement("option");
     optionElements[2].value = ACTIVITY_CALL_LVM;
-    optionElements[2].appendChild(document.createTextNode('Call (LVM)'));
+    optionElements[2].appendChild(document.createTextNode("Call (LVM)"));
 
     /* Call (Missed) option. */
-    optionElements[3] = document.createElement('option');
+    optionElements[3] = document.createElement("option");
     optionElements[3].value = ACTIVITY_CALL_MISSED;
-    optionElements[3].appendChild(document.createTextNode('Call (Missed)'));
+    optionElements[3].appendChild(document.createTextNode("Call (Missed)"));
 
     /* Email option. */
-    optionElements[4] = document.createElement('option');
+    optionElements[4] = document.createElement("option");
     optionElements[4].value = ACTIVITY_EMAIL;
-    optionElements[4].appendChild(document.createTextNode('Email'));
+    optionElements[4].appendChild(document.createTextNode("Email"));
 
     /* Meeting option. */
-    optionElements[5] = document.createElement('option');
+    optionElements[5] = document.createElement("option");
     optionElements[5].value = ACTIVITY_MEETING;
-    optionElements[5].appendChild(document.createTextNode('Meeting'));
+    optionElements[5].appendChild(document.createTextNode("Meeting"));
 
     /* Other option. */
-    optionElements[6] = document.createElement('option');
+    optionElements[6] = document.createElement("option");
     optionElements[6].value = ACTIVITY_OTHER;
-    optionElements[6].appendChild(document.createTextNode('Other'));
+    optionElements[6].appendChild(document.createTextNode("Other"));
 
     /* Select the correct option. */
     if (selectedText)
     {
-        if (selectedText == 'Call')
+        if (selectedText == "Call")
         {
-            optionElements[0].setAttribute('selected', 'selected');
+            optionElements[0].setAttribute("selected", "selected");
         }
-        else if (selectedText == 'Call (Talked)')
+        else if (selectedText == "Call (Talked)")
         {
-            optionElements[1].setAttribute('selected', 'selected');
+            optionElements[1].setAttribute("selected", "selected");
         }
-        else if (selectedText == 'Call (LVM)')
+        else if (selectedText == "Call (LVM)")
         {
-            optionElements[2].setAttribute('selected', 'selected');
+            optionElements[2].setAttribute("selected", "selected");
         }
-        else if (selectedText == 'Call (Missed)')
+        else if (selectedText == "Call (Missed)")
         {
-            optionElements[3].setAttribute('selected', 'selected');
+            optionElements[3].setAttribute("selected", "selected");
         }
-        else if (selectedText == 'Email')
+        else if (selectedText == "Email")
         {
-            optionElements[4].setAttribute('selected', 'selected');
+            optionElements[4].setAttribute("selected", "selected");
         }
-        else if (selectedText == 'Meeting')
+        else if (selectedText == "Meeting")
         {
-            optionElements[5].setAttribute('selected', 'selected');
+            optionElements[5].setAttribute("selected", "selected");
         }
-        else if (selectedText == 'Other')
+        else if (selectedText == "Other")
         {
-            optionElements[6].setAttribute('selected', 'selected');
+            optionElements[6].setAttribute("selected", "selected");
         }
     }
 
@@ -119,22 +119,22 @@ function Activity_fillTypeSelect(selectList, selectedText)
 function Activity_fillRegardingSelect(selectList, jobOrderNodes, selectedText)
 {
     /* General option. */
-    generalOption = document.createElement('option');
-    generalOption.value = 'NULL';
-    generalOption.appendChild(document.createTextNode('General'));
-    if (selectedText == 'General')
+    generalOption = document.createElement("option");
+    generalOption.value = "NULL";
+    generalOption.appendChild(document.createTextNode("General"));
+    if (selectedText == "General")
     {
-        generalOption.setAttribute('selected', 'selected');
+        generalOption.setAttribute("selected", "selected");
     }
     selectList.appendChild(generalOption);
 
     /* Loop through all of the <joborder> nodes. */
     for (var i = 0; i < jobOrderNodes.length; i++)
     {
-        var IDNode          = jobOrderNodes[i].getElementsByTagName('id').item(0);
-        var titleNode       = jobOrderNodes[i].getElementsByTagName('title').item(0);
-        var companyNameNode = jobOrderNodes[i].getElementsByTagName('companyname').item(0);
-        var assignedNode    = jobOrderNodes[i].getElementsByTagName('assigned').item(0);
+        var IDNode          = jobOrderNodes[i].getElementsByTagName("id").item(0);
+        var titleNode       = jobOrderNodes[i].getElementsByTagName("title").item(0);
+        var companyNameNode = jobOrderNodes[i].getElementsByTagName("companyname").item(0);
+        var assignedNode    = jobOrderNodes[i].getElementsByTagName("assigned").item(0);
 
         if (!IDNode.firstChild || !titleNode.firstChild ||
             !companyNameNode.firstChild || !assignedNode.firstChild)
@@ -142,20 +142,20 @@ function Activity_fillRegardingSelect(selectList, jobOrderNodes, selectedText)
             continue;
         }
 
-        var option = document.createElement('option');
-        var optionText = titleNode.firstChild.nodeValue + ' (' + companyNameNode.firstChild.nodeValue + ')';
+        var option = document.createElement("option");
+        var optionText = titleNode.firstChild.nodeValue + " (" + companyNameNode.firstChild.nodeValue + ")";
 
         /* Append a '*' for assigned job orders. */
-        if (assignedNode.firstChild.nodeValue == '1')
+        if (assignedNode.firstChild.nodeValue == "1")
         {
-            optionText += ' (*)';
+            optionText += " (*)";
         }
 
         option.value = IDNode.firstChild.nodeValue;
         option.appendChild(document.createTextNode(optionText));
         if (selectedText == optionText)
         {
-            option.setAttribute('selected', 'selected');
+            option.setAttribute("selected", "selected");
         }
         selectList.appendChild(option);
     }
@@ -166,9 +166,9 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '';
-    POSTData += '&dataItemID='   + dataItemID;
-    POSTData += '&dataItemType=' + dataItemType;
+    var POSTData = "";
+    POSTData += "&dataItemID="   + dataItemID;
+    POSTData += "&dataItemType=" + dataItemType;
 
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
@@ -189,10 +189,10 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
         //alert(http.responseText);
 
         /* Return if we have any errors. */
-        var errorCodeNode    = http.responseXML.getElementsByTagName('errorcode').item(0);
-        var errorMessageNode = http.responseXML.getElementsByTagName('errormessage').item(0);
-        if (!errorCodeNode.firstChild || (errorCodeNode.firstChild.nodeValue != '0' &&
-            errorCodeNode.firstChild.nodeValue != '-2'))
+        var errorCodeNode    = http.responseXML.getElementsByTagName("errorcode").item(0);
+        var errorMessageNode = http.responseXML.getElementsByTagName("errormessage").item(0);
+        if (!errorCodeNode.firstChild || (errorCodeNode.firstChild.nodeValue != "0" &&
+            errorCodeNode.firstChild.nodeValue != "-2"))
         {
             if (errorMessageNode.firstChild)
             {
@@ -205,53 +205,53 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
         }
 
         /* Grab references to TDs we need information from. */
-        var typeTD      = document.getElementById('activityType' + activityID);
-        var regardingTD = document.getElementById('activityRegarding' + activityID);
-        var notesTD     = document.getElementById('activityNotes' + activityID);
-        var dateTD      = document.getElementById('activityDate' + activityID);
+        var typeTD      = document.getElementById("activityType" + activityID);
+        var regardingTD = document.getElementById("activityRegarding" + activityID);
+        var notesTD     = document.getElementById("activityNotes" + activityID);
+        var dateTD      = document.getElementById("activityDate" + activityID);
 
         /* Find the TR we want to swap out and create a deep clone of it. */
         var editRow    = typeTD.parentNode;
         var oldEditRow = editRow.cloneNode(true);
-        var newEditRow = document.createElement('tr');
+        var newEditRow = document.createElement("tr");
 
         /* Find and disable the activity entry's action icons. */
-        var editAction = document.getElementById('editActivity' + activityID);
-        var deleteAction = document.getElementById('deleteActivity' + activityID);
+        var editAction = document.getElementById("editActivity" + activityID);
+        var deleteAction = document.getElementById("deleteActivity" + activityID);
         //editAction.style.visibility = 'hidden';
         //deleteAction.style.visibility = 'hidden';
         /* FIXME: Spinner? */
 
         /* Create the cell that will contain the edit form. */
-        var editTD = document.createElement('td');
+        var editTD = document.createElement("td");
         var columnCount = editRow.cells.length;
-        editTD.setAttribute('colspan', columnCount.toString());
-        editTD.setAttribute('valign', 'top');
-        editTD.setAttribute('align',  'left');
+        editTD.setAttribute("colspan", columnCount.toString());
+        editTD.setAttribute("valign", "top");
+        editTD.setAttribute("align",  "left");
 
         /* Create the "Type" select list and add options to it. */
-        var typeSelectList = document.createElement('select');
+        var typeSelectList = document.createElement("select");
         Activity_fillTypeSelect(typeSelectList, typeTD.firstChild.nodeValue);
-        typeSelectList.className = 'inputbox';
+        typeSelectList.className = "inputbox";
 
         /* Create the "Regarding" select list and add options to it. */
-        var regardingSelectList = document.createElement('select');
+        var regardingSelectList = document.createElement("select");
         Activity_fillRegardingSelect(
             regardingSelectList,
-            http.responseXML.getElementsByTagName('joborder'),
+            http.responseXML.getElementsByTagName("joborder"),
             regardingTD.firstChild.nodeValue
         );
-        regardingSelectList.className = 'inputbox';
+        regardingSelectList.className = "inputbox";
 
         /* Create the "Notes" TEXTAREA and fill it with the text from the cell,
          * as long as that text isn't "(No Notes)".
          */
-        var notesTextArea = document.createElement('textarea');
-        notesTextArea.setAttribute('cols', '60');
-        notesTextArea.className = 'inputbox';
+        var notesTextArea = document.createElement("textarea");
+        notesTextArea.setAttribute("cols", "60");
+        notesTextArea.className = "inputbox";
 
         /* The .replace regex strips HTML. */
-        if (notesTD.firstChild && notesTD.innerHTML != '(No Notes)')
+        if (notesTD.firstChild && notesTD.innerHTML != "(No Notes)")
         {
             notesTextArea.appendChild(
                 document.createTextNode(
@@ -261,36 +261,36 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
         }
 
         /* Create a submit button. */
-        var submitButton = document.createElement('input');
-        submitButton.setAttribute('type', 'submit');
-        submitButton.setAttribute('value', 'Submit');
-        submitButton.className = 'input-button';
+        var submitButton = document.createElement("input");
+        submitButton.setAttribute("type", "submit");
+        submitButton.setAttribute("value", "Submit");
+        submitButton.className = "input-button";
 
         /* Create a cancel button. */
-        var cancelButton = document.createElement('input');
-        cancelButton.setAttribute('type', 'button');
-        cancelButton.setAttribute('value', 'Cancel');
-        cancelButton.className = 'input-button';
+        var cancelButton = document.createElement("input");
+        cancelButton.setAttribute("type", "button");
+        cancelButton.setAttribute("value", "Cancel");
+        cancelButton.className = "input-button";
 
         /* Date editor. */
-        var dateSpan = document.createElement('span');
+        var dateSpan = document.createElement("span");
         var dateAndTime = unEscapeHTML(dateTD.innerHTML.replace(/(<([^>]+)>)/ig,""));
-        var userDateFormat = (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY');
-        dateSpan.innerHTML = DateInputForDOM('dateEditActivity' + activityID, true, userDateFormat, dateAndTime.substr(0,dateAndTime.indexOf(' ')), -1);
+        var userDateFormat = (typeof window.CATSUserDateFormat !== "undefined" ? window.CATSUserDateFormat : "MM-DD-YY");
+        dateSpan.innerHTML = DateInputForDOM("dateEditActivity" + activityID, true, userDateFormat, dateAndTime.substr(0,dateAndTime.indexOf(" ")), -1);
 
-        var timeString = dateAndTime.substr(dateAndTime.indexOf(' ')+2);
-        var hourString = timeString.substr(0,timeString.indexOf(':'));
-        var timeString = timeString.substr(timeString.indexOf(':')+1);
-        var minuteString = timeString.substr(0,timeString.indexOf(' '));
-        var timeString = timeString.substr(timeString.indexOf(' ')+1);
-        var amPmString = timeString.substr(0,timeString.indexOf(')'));
+        var timeString = dateAndTime.substr(dateAndTime.indexOf(" ")+2);
+        var hourString = timeString.substr(0,timeString.indexOf(":"));
+        var timeString = timeString.substr(timeString.indexOf(":")+1);
+        var minuteString = timeString.substr(0,timeString.indexOf(" "));
+        var timeString = timeString.substr(timeString.indexOf(" ")+1);
+        var amPmString = timeString.substr(0,timeString.indexOf(")"));
         
         /* Time editor. */
-        var hourSelect = document.createElement('select');
-        hourSelect.setAttribute('id', 'hourEditActivity' + activityID);
+        var hourSelect = document.createElement("select");
+        hourSelect.setAttribute("id", "hourEditActivity" + activityID);
         for (var i = 1; i<= 12; ++i)
         {
-            var hourSelectOption = document.createElement('option');
+            var hourSelectOption = document.createElement("option");
             hourSelectOption.value = i;
             hourSelectOption.innerHTML = i;
             if (hourString * 1 == i)
@@ -300,11 +300,11 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
             hourSelect.appendChild(hourSelectOption);
         }
         
-        var minuteSelect = document.createElement('select');
-        minuteSelect.setAttribute('id', 'minuteEditActivity' + activityID);
+        var minuteSelect = document.createElement("select");
+        minuteSelect.setAttribute("id", "minuteEditActivity" + activityID);
         for (var i = 0; i<= 59; ++i)
         {
-            var minuteSelectOption = document.createElement('option');
+            var minuteSelectOption = document.createElement("option");
             minuteSelectOption.value = i;
             minuteSelectOption.innerHTML = i;
             if (minuteString * 1 == i)
@@ -314,31 +314,31 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
             minuteSelect.appendChild(minuteSelectOption);
         }
         
-        var AMPMSelect = document.createElement('select');
-        AMPMSelect.setAttribute('id', 'ampmEditActivity' + activityID);
+        var AMPMSelect = document.createElement("select");
+        AMPMSelect.setAttribute("id", "ampmEditActivity" + activityID);
         
-        var AMPMSelectOptionAM = document.createElement('option');
-        AMPMSelectOptionAM.value = 'AM';
-        AMPMSelectOptionAM.innerHTML = 'AM';
-        if (amPmString == 'AM')
+        var AMPMSelectOptionAM = document.createElement("option");
+        AMPMSelectOptionAM.value = "AM";
+        AMPMSelectOptionAM.innerHTML = "AM";
+        if (amPmString == "AM")
         {
             AMPMSelectOptionAM.selected = true;
         }
         AMPMSelect.appendChild(AMPMSelectOptionAM);
         
-        var AMPMSelectOptionPM = document.createElement('option');
-        AMPMSelectOptionPM.value = 'PM';
-        AMPMSelectOptionPM.innerHTML = 'PM';
-        if (amPmString == 'PM')
+        var AMPMSelectOptionPM = document.createElement("option");
+        AMPMSelectOptionPM.value = "PM";
+        AMPMSelectOptionPM.innerHTML = "PM";
+        if (amPmString == "PM")
         {
             AMPMSelectOptionPM.selected = true;
         }
         AMPMSelect.appendChild(AMPMSelectOptionPM);
         
-        var dateTimeTable = document.createElement('table');
-        var dateTimeTableTr = document.createElement('tr');
-        var dateTimeTableTdLeft = document.createElement('td');
-        var dateTimeTableTdRight = document.createElement('td');
+        var dateTimeTable = document.createElement("table");
+        var dateTimeTableTr = document.createElement("tr");
+        var dateTimeTableTdLeft = document.createElement("td");
+        var dateTimeTableTdRight = document.createElement("td");
         
         dateTimeTableTdLeft.appendChild(dateSpan);    
         dateTimeTableTdRight.appendChild(hourSelect);    
@@ -352,9 +352,9 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
         editTD.appendChild(typeSelectList);
         editTD.appendChild(document.createTextNode("\u00a0"));
         editTD.appendChild(regardingSelectList);
-        editTD.appendChild(document.createElement('br'));
+        editTD.appendChild(document.createElement("br"));
         editTD.appendChild(notesTextArea);
-        editTD.appendChild(document.createElement('br'));
+        editTD.appendChild(document.createElement("br"));
         editTD.appendChild(submitButton);
         editTD.appendChild(document.createTextNode("\u00a0"));
         editTD.appendChild(cancelButton);
@@ -369,10 +369,10 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
             /* Submit the edited entry back to the server on submit. */
             Activity_submitEditedEntry(
                 notesTextArea.value,
-                document.getElementById('dateEditActivity' + activityID).value,
-                document.getElementById('hourEditActivity' + activityID).value,
-                document.getElementById('minuteEditActivity' + activityID).value,
-                document.getElementById('ampmEditActivity' + activityID).value,
+                document.getElementById("dateEditActivity" + activityID).value,
+                document.getElementById("hourEditActivity" + activityID).value,
+                document.getElementById("minuteEditActivity" + activityID).value,
+                document.getElementById("ampmEditActivity" + activityID).value,
                 oldEditRow,
                 newEditRow,
                 activityID,
@@ -390,8 +390,8 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
             newEditRow.parentNode.replaceChild(oldEditRow, newEditRow);
 
             /* Re-enable the activity entry's action icons. */
-            editAction.style.visibility = 'visible';
-            deleteAction.style.visibility = 'visible';
+            editAction.style.visibility = "visible";
+            deleteAction.style.visibility = "visible";
             return true;
         }
 
@@ -401,7 +401,7 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
 
     AJAX_callCATSFunction(
         http,
-        'getDataItemJobOrders',
+        "getDataItemJobOrders",
         POSTData,
         callBack,
         0,
@@ -423,15 +423,15 @@ function Activity_submitEditedEntry(notes, date, hour, minute, ampm,
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '';
-    POSTData += '&notes='      + urlEncode(escapeHTML(notes));
-    POSTData += '&date='       + urlEncode(date);
-    POSTData += '&hour='       + urlEncode(hour);
-    POSTData += '&minute='     + urlEncode(minute);
-    POSTData += '&ampm='       + urlEncode(ampm);
-    POSTData += '&activityID=' + activityID;
-    POSTData += '&type='       + selectedType;
-    POSTData += '&jobOrderID=' + jobOrderID;
+    var POSTData = "";
+    POSTData += "&notes="      + urlEncode(escapeHTML(notes));
+    POSTData += "&date="       + urlEncode(date);
+    POSTData += "&hour="       + urlEncode(hour);
+    POSTData += "&minute="     + urlEncode(minute);
+    POSTData += "&ampm="       + urlEncode(ampm);
+    POSTData += "&activityID=" + activityID;
+    POSTData += "&type="       + selectedType;
+    POSTData += "&jobOrderID=" + jobOrderID;
 
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
@@ -447,15 +447,15 @@ function Activity_submitEditedEntry(notes, date, hour, minute, ampm,
         newEditRow.parentNode.replaceChild(oldEditRow, newEditRow);
 
         /* Grab references to TDs in which we need to replace information. */
-        var typeTD      = document.getElementById('activityType' + activityID);
-        var regardingTD = document.getElementById('activityRegarding' + activityID);
-        var notesTD     = document.getElementById('activityNotes' + activityID);
-        var dateTD     = document.getElementById('activityDate' + activityID);
+        var typeTD      = document.getElementById("activityType" + activityID);
+        var regardingTD = document.getElementById("activityRegarding" + activityID);
+        var notesTD     = document.getElementById("activityNotes" + activityID);
+        var dateTD     = document.getElementById("activityDate" + activityID);
         
         /* Return if we have any errors. */
-        var errorCodeNode    = http.responseXML.getElementsByTagName('errorcode').item(0);
-        var errorMessageNode = http.responseXML.getElementsByTagName('errormessage').item(0);
-        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != '0')
+        var errorCodeNode    = http.responseXML.getElementsByTagName("errorcode").item(0);
+        var errorMessageNode = http.responseXML.getElementsByTagName("errormessage").item(0);
+        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != "0")
         {
             if (errorMessageNode.firstChild)
             {
@@ -467,10 +467,10 @@ function Activity_submitEditedEntry(notes, date, hour, minute, ampm,
             return;
         }
 
-        var typeNode      = http.responseXML.getElementsByTagName('typedescription').item(0);
-        var notesNode     = http.responseXML.getElementsByTagName('notes').item(0);
-        var regardingNode = http.responseXML.getElementsByTagName('regarding').item(0);
-        var dateNode      = http.responseXML.getElementsByTagName('date').item(0);
+        var typeNode      = http.responseXML.getElementsByTagName("typedescription").item(0);
+        var notesNode     = http.responseXML.getElementsByTagName("notes").item(0);
+        var regardingNode = http.responseXML.getElementsByTagName("regarding").item(0);
+        var dateNode      = http.responseXML.getElementsByTagName("date").item(0);
 
         /* Replace the text inside the "Type" TD. */
         if (typeTD.firstChild && typeNode.firstChild)
@@ -497,13 +497,13 @@ function Activity_submitEditedEntry(notes, date, hour, minute, ampm,
         }        
 
         /* Re-enable the activity entry's action icons. */
-        editAction.style.visibility = 'visible';
-        deleteAction.style.visibility = 'visible';
+        editAction.style.visibility = "visible";
+        deleteAction.style.visibility = "visible";
     }
 
     AJAX_callCATSFunction(
         http,
-        'editActivity',
+        "editActivity",
         POSTData,
         callBack,
         0,
@@ -515,22 +515,22 @@ function Activity_submitEditedEntry(notes, date, hour, minute, ampm,
 
 function Activity_deleteEntry(activityID, sessionCookie)
 {
-    if (!confirm('Delete this activity?'))
+    if (!confirm("Delete this activity?"))
     {
         return false;
     }
 
     /* Find and disable the activity entry's action icons. */
-    var editAction = document.getElementById('editActivity' + activityID);
-    var deleteAction = document.getElementById('deleteActivity' + activityID);
-    editAction.style.visibility = 'hidden';
-    deleteAction.style.visibility = 'hidden';
+    var editAction = document.getElementById("editActivity" + activityID);
+    var deleteAction = document.getElementById("deleteActivity" + activityID);
+    editAction.style.visibility = "hidden";
+    deleteAction.style.visibility = "hidden";
     /* FIXME: Spinner? */
 
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '&activityID=' + activityID;
+    var POSTData = "&activityID=" + activityID;
 
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
@@ -543,9 +543,9 @@ function Activity_deleteEntry(activityID, sessionCookie)
         //alert(http.responseText);
 
         /* Return if we have any errors. */
-        var errorCodeNode    = http.responseXML.getElementsByTagName('errorcode').item(0);
-        var errorMessageNode = http.responseXML.getElementsByTagName('errormessage').item(0);
-        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != '0')
+        var errorCodeNode    = http.responseXML.getElementsByTagName("errorcode").item(0);
+        var errorMessageNode = http.responseXML.getElementsByTagName("errormessage").item(0);
+        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != "0")
         {
             if (errorMessageNode.firstChild)
             {
@@ -558,7 +558,7 @@ function Activity_deleteEntry(activityID, sessionCookie)
         }
 
         /* Figure out what row this is. */
-        var typeTD  = document.getElementById('activityType' + activityID);
+        var typeTD  = document.getElementById("activityType" + activityID);
         var typeRow = typeTD.parentNode;
 
         /* Remove the row. */
@@ -567,7 +567,7 @@ function Activity_deleteEntry(activityID, sessionCookie)
 
     AJAX_callCATSFunction(
         http,
-        'deleteActivity',
+        "deleteActivity",
         POSTData,
         callBack,
         0,
@@ -596,17 +596,17 @@ function AS_onRegardingChange(statusesArray, jobOrdersArray, regardingSelectID,
         regardingSelectList.selectedIndex
     ].value;
 
-    if (regardingID != '-1')
+    if (regardingID != "-1")
     {
         changeStatus.disabled = false;
         changeStatus.checked = false;
         statusSelectList.disabled = true;
         statusSelectList[0].selected = true;
-        sendEmailRow.style.display = 'none';
+        sendEmailRow.style.display = "none";
         sendEmailCheckbox.checked = false;
-        sendEmailSpan.style.display = 'none';
-        changeStatusSpanA.style.color = '#000';
-        changeStatusSpanB.style.color = '#aaa';
+        sendEmailSpan.style.display = "none";
+        changeStatusSpanA.style.color = "#000";
+        changeStatusSpanB.style.color = "#aaa";
 
         var statusIndex = findValueInArray(jobOrdersArray, regardingID);
 
@@ -631,15 +631,15 @@ function AS_onRegardingChange(statusesArray, jobOrdersArray, regardingSelectID,
     }
     else
     {
-        changeStatusSpanA.style.color = '#aaa';
-        changeStatusSpanB.style.color = '#aaa';
+        changeStatusSpanA.style.color = "#aaa";
+        changeStatusSpanB.style.color = "#aaa";
         statusSelectList[0].selected = true;
         changeStatus.checked = false;
         changeStatus.disabled = true;
         statusSelectList.disabled = true;
-        sendEmailRow.style.display = 'none';
+        sendEmailRow.style.display = "none";
         sendEmailCheckbox.checked = false;
-        sendEmailSpan.style.display = 'none';
+        sendEmailSpan.style.display = "none";
     }
 }
 
@@ -671,8 +671,8 @@ function AS_onStatusChange(statusesArray, jobOrdersArray, regardingSelectID,
         var regardingID = regardingIDOverride;
     }
 
-    if (statusSelectList[statusSelectList.selectedIndex].value != '-1' &&
-        regardingID != '-1')
+    if (statusSelectList[statusSelectList.selectedIndex].value != "-1" &&
+        regardingID != "-1")
     {
         /* Find the jobOrdersArray index of the selected Job Order. This index
          * is the same index as the job in statusesArray.
@@ -682,7 +682,7 @@ function AS_onStatusChange(statusesArray, jobOrdersArray, regardingSelectID,
         /* This shouldn't happen, but, just in case... */
         if (statusIndex == -1)
         {
-            sendEmailSpan.style.display = 'inline';
+            sendEmailSpan.style.display = "inline";
             return;
         }
 
@@ -691,22 +691,22 @@ function AS_onStatusChange(statusesArray, jobOrdersArray, regardingSelectID,
          */
         if (statusesArray[statusIndex] == statusSelectList[statusSelectList.selectedIndex].value)
         {
-            sendEmailSpan.style.display = 'none';
+            sendEmailSpan.style.display = "none";
             triggerEmail.checked = false;
         }
         else
         {
             if (statusTriggersEmailArray[statusSelectList.selectedIndex-1] == 1 && emailIsDisabled.value == "0")
             {
-                sendEmailSpan.style.display = 'inline';
+                sendEmailSpan.style.display = "inline";
                 triggerEmail.checked = true;
             }
             else
             {
-                sendEmailSpan.style.display = 'inline';
+                sendEmailSpan.style.display = "inline";
                 triggerEmail.checked = false;
             }
-            AS_onSendEmailChange('triggerEmail', 'sendEmailCheckTR', 'visibleTR');
+            AS_onSendEmailChange("triggerEmail", "sendEmailCheckTR", "visibleTR");
             AS_onChangeStatusChangeGenerateEmail(
                 emailText,
                 emailTextOrigional,
@@ -715,9 +715,9 @@ function AS_onStatusChange(statusesArray, jobOrdersArray, regardingSelectID,
                 jobOrdersArrayStringTitle[statusIndex],
                 jobOrdersArrayStringCompany[statusIndex]
             );
-            if (activityEntry.value == '' || activityEntry.value.indexOf('Status change: ') != -1)
+            if (activityEntry.value == "" || activityEntry.value.indexOf("Status change: ") != -1)
             {
-                activityEntry.value = 'Status change: ' +
+                activityEntry.value = "Status change: " +
                     statusSelectList[statusSelectList.selectedIndex].text;
             }
         }
@@ -761,12 +761,12 @@ function AS_onChangeStatusChange(changeStatusCheckboxID, statusSelectID,
     if (changeStatusCheckbox.checked)
     {
         statusSelect.disabled = false;
-        changeStatusSpanB.style.color = '#000';
+        changeStatusSpanB.style.color = "#000";
     }
     else
     {
         statusSelect.disabled = true;
-        changeStatusSpanB.style.color = '#aaa';
+        changeStatusSpanB.style.color = "#aaa";
     }
 }
 
@@ -783,7 +783,7 @@ function AS_onSendEmailChange(triggersEmailCheckboxID, sendEmailRowID, visibleRo
     }
     else
     {
-        sendEmailRow.style.display = 'none';
+        sendEmailRow.style.display = "none";
     }
 }
 
@@ -801,15 +801,15 @@ function AS_onAddActivityChange(addActivityCheckboxID, activityTypeSelectID,
     {
         activityTypeSelect.disabled = false;
         activityNote.disabled = false;
-        spanA.style.color = '#000';
-        spanB.style.color = '#000';
+        spanA.style.color = "#000";
+        spanB.style.color = "#000";
     }
     else
     {
         activityTypeSelect.disabled = true;
         activityNote.disabled = true;
-        spanA.style.color = '#aaa';
-        spanB.style.color = '#aaa';
+        spanA.style.color = "#aaa";
+        spanB.style.color = "#aaa";
     }
 }
 
@@ -820,11 +820,11 @@ function AS_onScheduleEventChange(scheduleEventCheckboxID, scheduleEventDivID)
 
     if (scheduleEventCheckbox.checked)
     {
-        scheduleEventDiv.style.display = 'block';
+        scheduleEventDiv.style.display = "block";
     }
     else
     {
-        scheduleEventDiv.style.display = 'none';
+        scheduleEventDiv.style.display = "none";
     }
 }
 
@@ -841,8 +841,8 @@ function AS_onEventAllDayChange(allDayRadioID)
         var disableTime = false;
     }
 
-    document.getElementById('hour').disabled = disableTime;
-    document.getElementById('minute').disabled = disableTime;
-    document.getElementById('meridiem').disabled = disableTime;
-    document.getElementById('duration').disabled = disableTime;
+    document.getElementById("hour").disabled = disableTime;
+    document.getElementById("minute").disabled = disableTime;
+    document.getElementById("meridiem").disabled = disableTime;
+    document.getElementById("duration").disabled = disableTime;
 }

@@ -130,12 +130,12 @@ function suggestListPopulate(focusID, sessionCookie, lookupText, maxResults, def
     var IDElement      = document.getElementById(IDElementID);
 
     /* Bail if the input box is empty or contains only whitespace. */
-    if (trimmedLookupText == '')
+    if (trimmedLookupText == "")
     {
         /* Clean up a bit. */
         dataNodes = null;
-        resultsElement.style.display = 'none';
-        resultsElement.innerHTML = '';
+        resultsElement.style.display = "none";
+        resultsElement.innerHTML = "";
 
         return;
     }
@@ -144,8 +144,8 @@ function suggestListPopulate(focusID, sessionCookie, lookupText, maxResults, def
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '&focusID=' + urlEncode(focusID) + '&dataName='
-                 + urlEncode(lookupText) + '&maxResults='
+    var POSTData = "&focusID=" + urlEncode(focusID) + "&dataName="
+                 + urlEncode(lookupText) + "&maxResults="
                  + urlEncode(maxResults);
 
     /* Anonymous callback function triggered when HTTP response is received. */
@@ -157,13 +157,13 @@ function suggestListPopulate(focusID, sessionCookie, lookupText, maxResults, def
         }
 
         /* Bail if there is no responseText. This shouldn't happen. */
-        if (trim(http.responseText) == '')
+        if (trim(http.responseText) == "")
         {
             return;
         }
 
-        var errorCodeNode    = http.responseXML.getElementsByTagName('errorcode').item(0);
-        var errorMessageNode = http.responseXML.getElementsByTagName('errormessage').item(0);
+        var errorCodeNode    = http.responseXML.getElementsByTagName("errorcode").item(0);
+        var errorMessageNode = http.responseXML.getElementsByTagName("errormessage").item(0);
 
         /* Bail if there is no errorCodeNode. This shouldn't happen. */
         if (!errorCodeNode || !errorCodeNode.firstChild)
@@ -172,15 +172,15 @@ function suggestListPopulate(focusID, sessionCookie, lookupText, maxResults, def
         }
 
         /* Error returned from CATS AJAX function. */
-        if (errorCodeNode.firstChild.nodeValue != '0')
+        if (errorCodeNode.firstChild.nodeValue != "0")
         {
             return;
         }
 
         /* Initialize output to something safe. */
-        var output = '';
+        var output = "";
 
-        var resultTags = http.responseXML.getElementsByTagName('result');
+        var resultTags = http.responseXML.getElementsByTagName("result");
         if (resultTags.length == 0)
         {
             /* There are no matching responses. Return and leave the input box
@@ -201,8 +201,8 @@ function suggestListPopulate(focusID, sessionCookie, lookupText, maxResults, def
 
         for (var i = 0; i < dataNodes.length; i++)
         {
-            var IDNode   = dataNodes[i].getElementsByTagName('id').item(0);
-            var nameNode = dataNodes[i].getElementsByTagName('name').item(0);
+            var IDNode   = dataNodes[i].getElementsByTagName("id").item(0);
+            var nameNode = dataNodes[i].getElementsByTagName("name").item(0);
 
             if (!IDNode.firstChild || !nameNode.firstChild)
             {
@@ -211,20 +211,20 @@ function suggestListPopulate(focusID, sessionCookie, lookupText, maxResults, def
 
             var nameNodeValue = urlDecode(nameNode.firstChild.nodeValue);
 
-            output += '<div id="suggest' + i + '" onclick="'
-                    + 'document.getElementById(textInputID).value=\''
-                    + trim(nameNodeValue.replace(/'/g,"\\'")) + '\'; '
-                    + 'document.getElementById(resultsElementID).style.display = \'none\'; '
-                    + 'document.getElementById(IDElementID).value='
-                    + IDNode.firstChild.nodeValue + ';'
-                    + 'dataValidInput = true;"'
-                    + 'onmouseover="this.className += highlightClass" '
-                    + 'onmouseout="this.className = this.className.replace(highlightClass, \'\')">'
-                    + nameNodeValue + '</div>';
+            output += "<div id=\"suggest" + i + "\" onclick=\""
+                    + "document.getElementById(textInputID).value=\'"
+                    + trim(nameNodeValue.replace(/'/g,"\\'")) + "\'; "
+                    + "document.getElementById(resultsElementID).style.display = \'none\'; "
+                    + "document.getElementById(IDElementID).value="
+                    + IDNode.firstChild.nodeValue + ";"
+                    + "dataValidInput = true;\""
+                    + "onmouseover=\"this.className += highlightClass\" "
+                    + "onmouseout=\"this.className = this.className.replace(highlightClass, \'\')\">"
+                    + nameNodeValue + "</div>";
         }
 
         var totalElements = http.responseXML.getElementsByTagName(
-            'totalelements'
+            "totalelements"
         ).item(0).firstChild.nodeValue;
 
         /* FIXME: Why are we checking to see if maxResults < maxTotalResults?
@@ -235,12 +235,12 @@ function suggestListPopulate(focusID, sessionCookie, lookupText, maxResults, def
         if (totalElements > maxResults && maxResults < maxTotalResults)
         {
             /* Append an item that retreives more elements when selected. */
-            output += '<div id="suggestmore" onclick="'
-                    + 'suggestListPopulate(' + focusID + ', \''
-                    + sessionCookie + '\', lastLookup, maxTotalResults, -1);"'
-                    + 'onmouseover="this.className += highlightClass"'
-                    + ' onmouseout="this.className = this.className.replace(highlightClass, \'\')">'
-                    + '(More Results)</div>';
+            output += "<div id=\"suggestmore\" onclick=\""
+                    + "suggestListPopulate(" + focusID + ", \'"
+                    + sessionCookie + "\', lastLookup, maxTotalResults, -1);\""
+                    + "onmouseover=\"this.className += highlightClass\""
+                    + " onmouseout=\"this.className = this.className.replace(highlightClass, \'\')\">"
+                    + "(More Results)</div>";
             moreResults = true;
         }
         else
@@ -257,13 +257,13 @@ function suggestListPopulate(focusID, sessionCookie, lookupText, maxResults, def
             /* This happens when the user keys down to more options... */
 
             /* Get the selected item DIV. */
-            suggestListItemDiv = document.getElementById('suggest' + selectedIndex);
+            suggestListItemDiv = document.getElementById("suggest" + selectedIndex);
 
             /* Hilight the selected item DIV. */
             suggestListItemDiv.className += highlightClass;
 
             var selectedDataNodeNameValue = dataNodes[selectedIndex].getElementsByTagName(
-                'name'
+                "name"
             ).item(0).firstChild.nodeValue;
 
             /* Put the selected item name in the input box. */
@@ -286,7 +286,7 @@ function suggestListPopulate(focusID, sessionCookie, lookupText, maxResults, def
     IDElement.value = -1;
 
     /* Display the results element. */
-    resultsElement.style.display = 'block';
+    resultsElement.style.display = "block";
 
     followResultsElement(resultsElementID);
 }
@@ -294,23 +294,23 @@ function suggestListPopulate(focusID, sessionCookie, lookupText, maxResults, def
 function followResultsElement(resultsID)
 {
     var resultsElement = document.getElementById(resultsID);
-    if (resultsElement.style.display == 'block' && helpShimSet)
+    if (resultsElement.style.display == "block" && helpShimSet)
     {
         var theTop = docjslib_getRealTop(resultsElement);
         var theLeft = docjslib_getRealLeft(resultsElement);
-        helpShim.style.display = 'block';
+        helpShim.style.display = "block";
         helpShim.style.zIndex = 1;
-        helpShim.style.top = '' + theTop + 'px';
-        helpShim.style.left = '' + theLeft + 'px';
-        helpShim.style.width = '' + resultsElement.offsetWidth + '';
-        helpShim.style.height = '' + resultsElement.offsetHeight + '';
+        helpShim.style.top = "" + theTop + "px";
+        helpShim.style.left = "" + theLeft + "px";
+        helpShim.style.width = "" + resultsElement.offsetWidth + "";
+        helpShim.style.height = "" + resultsElement.offsetHeight + "";
         setTimeout("followResultsElement('"+resultsID+"');", 500);
     }
     else
     {
         if (helpShimSet)
         {
-            helpShim.style.display = 'none';
+            helpShim.style.display = "none";
         }
     }
 }
@@ -336,9 +336,9 @@ function suggestListVerify()
     /* If there is no text in the input box, hide the results list and flag the
      * ID as a bad value.
      */
-    if (trimmedTextInputValue == '')
+    if (trimmedTextInputValue == "")
     {
-        resultsElement.style.display = 'none';
+        resultsElement.style.display = "none";
         IDElement.value = -1;
     }
 
@@ -349,10 +349,10 @@ function suggestListVerify()
     if (dataNodes && dataNodes.length == 1)
     {
         var firstDataNodeNameValue = urlDecode(dataNodes[0].getElementsByTagName(
-            'name'
+            "name"
         ).item(0).firstChild.nodeValue);
         var firstDataNodeIDValue = dataNodes[0].getElementsByTagName(
-            'id'
+            "id"
         ).item(0).firstChild.nodeValue;
 
         /* Are they identical? If so, set the input box to the trimmed item
@@ -360,7 +360,7 @@ function suggestListVerify()
          */
         if (trim(firstDataNodeNameValue.toUpperCase()) == trim(textInput.value.toUpperCase()))
         {
-            resultsElement.style.display = 'none';
+            resultsElement.style.display = "none";
             textInput.value = trim(firstDataNodeNameValue);
             IDElement.value = trim(firstDataNodeIDValue);
 
@@ -372,15 +372,15 @@ function suggestListVerify()
     if (dataNodes && selectedIndex >= 0)
     {
         var selectedDataNodeNameValue = urlDecode(dataNodes[selectedIndex].getElementsByTagName(
-            'name'
+            "name"
         ).item(0).firstChild.nodeValue);
         var selectedDataNodeIDValue = dataNodes[selectedIndex].getElementsByTagName(
-            'id'
+            "id"
         ).item(0).firstChild.nodeValue;
 
         if (trim(selectedDataNodeNameValue).toUpperCase() == trim(textInput.value.toUpperCase()))
         {
-            resultsElement.style.display = 'none';
+            resultsElement.style.display = "none";
             IDElement.value = trim(selectedDataNodeIDValue);
             dataValidInput = true;
         }
@@ -411,16 +411,16 @@ function parseKeyUp(evt)
     /* Selected "drop-down item". */
     var suggestListItemDiv;
 
-    if (typeof(evt.keyCode) == 'number')
+    if (typeof(evt.keyCode) == "number")
     {
         /* Up arrow key or down arrow key was pressed, and selectedIndex != -1. */
         if (evt.keyCode == 38 || evt.keyCode == 40 && selectedIndex != -1)
         {
-            suggestListItemDiv = document.getElementById('suggest' + selectedIndex);
+            suggestListItemDiv = document.getElementById("suggest" + selectedIndex);
 
             /* Remove any previous highlighting. */
             suggestListItemDiv.className = suggestListItemDiv.className.replace(
-                highlightClass, ''
+                highlightClass, ""
             );
         }
 
@@ -458,10 +458,10 @@ function parseKeyUp(evt)
         /* Up arrow key or down arrow key was pressed, and selectedIndex != -1. */
         if (evt.keyCode == 38 || evt.keyCode == 40 && selectedIndex != -1)
         {
-            suggestListItemDiv = document.getElementById('suggest' + selectedIndex);
+            suggestListItemDiv = document.getElementById("suggest" + selectedIndex);
 
             var selectedDataNodeNameValue = dataNodes[selectedIndex].getElementsByTagName(
-                'name'
+                "name"
             ).item(0).firstChild.nodeValue;
 
             /* Apply new formatting and place select entry in the textbox. */
@@ -503,7 +503,7 @@ function parseKeyDown(evt)
         evt = window.event;
     }
 
-    if (typeof(evt.keyCode) == 'number')
+    if (typeof(evt.keyCode) == "number")
     {
         /* Intercept keydown enter, and prevent form submission by returning
          * false.

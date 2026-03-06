@@ -13,12 +13,12 @@ var MODE_EDIT = 1;
 
 function checkAddForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkEvent(MODE_ADD);
     errorMessage += checkDescription(MODE_ADD);
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -28,13 +28,13 @@ function checkAddForm(form)
 
 function checkEditForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkEvent(MODE_EDIT);
     errorMessage += checkDescription(MODE_EDIT);
 
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -44,27 +44,27 @@ function checkEditForm(form)
 
 function checkEvent(mode)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     if (mode == MODE_ADD)
     {
-        fieldValue = document.getElementById('type').selectedIndex;
-        fieldLabel = document.getElementById('eventTypeLabel');
+        fieldValue = document.getElementById("type").selectedIndex;
+        fieldLabel = document.getElementById("eventTypeLabel");
     }
     else
     {
-        fieldValue = document.getElementById('typeEdit').selectedIndex;
-        fieldLabel = document.getElementById('eventTypeLabelEdit');
+        fieldValue = document.getElementById("typeEdit").selectedIndex;
+        fieldLabel = document.getElementById("eventTypeLabelEdit");
     }
-    if (fieldValue == '')
+    if (fieldValue == "")
     {
         errorMessage = "    - You must select an Event Type.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -72,27 +72,27 @@ function checkEvent(mode)
 
 function checkDescription(mode)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     if (mode == MODE_ADD)
     {
-        fieldValue = document.getElementById('title').value;
-        fieldLabel = document.getElementById('titleLabel');
+        fieldValue = document.getElementById("title").value;
+        fieldLabel = document.getElementById("titleLabel");
     }
     else
     {
-        fieldValue = document.getElementById('titleEdit').value;
-        fieldLabel = document.getElementById('titleLabelEdit');
+        fieldValue = document.getElementById("titleEdit").value;
+        fieldLabel = document.getElementById("titleLabelEdit");
     }
-    if (fieldValue == '')
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a Description.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;

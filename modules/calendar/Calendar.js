@@ -47,8 +47,8 @@ var totalRecordsInMemory = 0;
 
 var allowAjax = true;
 
-var indexName = '';
-var userEmail = '';
+var indexName = "";
+var userEmail = "";
 
 var currentViewMode = -1;
 var noAddEvent = false;
@@ -346,7 +346,7 @@ function getImageByType(entryType)
         }
     }
 
-    return '';
+    return "";
 }
 
 function getShortDescriptionByType(entryType)
@@ -359,18 +359,18 @@ function getShortDescriptionByType(entryType)
         }
     }
 
-    return '';
+    return "";
 }
 
 function considerCheckBox(element, elementVisible)
 {
     if (document.getElementById(element).checked )
     {
-        document.getElementById(elementVisible).style.display = '';
+        document.getElementById(elementVisible).style.display = "";
     }
     else
     {
-        document.getElementById(elementVisible).style.display = 'none';
+        document.getElementById(elementVisible).style.display = "none";
     }
 }
 
@@ -395,7 +395,7 @@ function CalendarEntry()
 
     this.hour = -1;
     this.minute = -1;
-    this.description = '';
+    this.description = "";
     this.dataHidden = 0;
     this.otherData = Array();
 
@@ -413,7 +413,7 @@ function CalendarEntry()
                 return this.otherData[i][1];
             }
         }
-        return '';
+        return "";
     }
 }
 
@@ -501,31 +501,31 @@ var httpLookup = AJAX_getXMLHttpObject();
 
 function getCurrentCalendarUrl()
 {
-    var superuser = '';
-    if (document.getElementById('hideNonPublic').checked)
+    var superuser = "";
+    if (document.getElementById("hideNonPublic").checked)
     {
-        superuser = '&superuser=1';
+        superuser = "&superuser=1";
     }
 
-    var viewString = '';
+    var viewString = "";
     switch (currentViewMode)
     {
         case (MONTH_VIEW):
-            viewString = 'MONTHVIEW';
+            viewString = "MONTHVIEW";
             break;
 
         case (WEEK_VIEW):
-            viewString = 'WEEKVIEW';
+            viewString = "WEEKVIEW";
             break;
 
         case (DAY_VIEW):
-            viewString = 'DAYVIEW';
+            viewString = "DAYVIEW";
             break;
     }
 
-    return indexName + '?m=calendar&view=' + viewString + '&month='
-        + currentMonth + '&year=' + currentYear + '&week=' + currentWeek
-        + '&day=' + currentDay + '' + superuser;
+    return indexName + "?m=calendar&view=" + viewString + "&month="
+        + currentMonth + "&year=" + currentYear + "&week=" + currentWeek
+        + "&day=" + currentDay + "" + superuser;
 }
 
 /* Pulls a string from the server to populate the calendar. */
@@ -535,8 +535,8 @@ function calendarDataPopulateServer(year, month)
     {
         // FIXME: Use lib.js AJAX code?
         httpLookup.open(
-            'get', indexName + '?m=calendar&a=dynamicData&month=' + month
-            + '&year=' + year
+            "get", indexName + "?m=calendar&a=dynamicData&month=" + month
+            + "&year=" + year
         );
         httpLookup.onreadystatechange = handleResponse;
         httpLookup.send(null);
@@ -555,7 +555,7 @@ function handleResponse()
     }
 
     var response = httpLookup.responseText;
-    if (response != '')
+    if (response != "")
     {
         calendarDataPopulateString(response);
         refreshView();
@@ -591,32 +591,32 @@ function calendarDataPopulateString(theData)
     var dateTimeVIndex = -1;
 
     /* Break the data down */
-    var entriesArray = theData.split('@');
+    var entriesArray = theData.split("@");
     for (var i = 0; i < entriesArray.length; i++)
     {
-        if (entriesArray[i] == '')
+        if (entriesArray[i] == "")
         {
             continue;
         }
 
-        valuesArray = entriesArray[i].split('*');
+        valuesArray = entriesArray[i].split("*");
         dateTime = [];
         dateTimeIndex = -1;
         dateTimeNoEntriesIndex = -1;
 
         for (var j = 0; j < valuesArray.length; j++)
         {
-            record = valuesArray[j].split('|');
+            record = valuesArray[j].split("|");
             record[1] = decodeURIComponent(record[1]);
 
-            if (record[0] == 'datetime')
+            if (record[0] == "datetime")
             {
-                dateTime = record[1].split(',');
+                dateTime = record[1].split(",");
                 dateTimeIndex = j;
             }
-            if (record[0] == 'noentries')
+            if (record[0] == "noentries")
             {
-                dateTime = record[1].split(',');
+                dateTime = record[1].split(",");
                 dateTimeNoEntriesIndex = j;
             }
             valuesArray.splice(j, 1, record);
@@ -707,7 +707,7 @@ function calendarDataPopulate(year, month, day, hour, minute, valuesArray)
     entryObject.hour = hour;
     entryObject.minute = minute;
     entryObject.setDataByArray(valuesArray);
-    entryObject.description = entryObject.getData('description');
+    entryObject.description = entryObject.getData("description");
 
     totalRecordsInMemory++;
 
@@ -772,7 +772,7 @@ function setCalendarViewMonth(year, month)
         currentViewMode = MONTH_VIEW;
     }
 
-    document.getElementById('calendarMonthParent').style.display = '';
+    document.getElementById("calendarMonthParent").style.display = "";
 
     currentYear = year;
     currentMonth = month;
@@ -791,7 +791,7 @@ function setCalendarViewWeek(year, month, week)
         currentViewMode = WEEK_VIEW;
     }
 
-    document.getElementById('calendarWeekParent').style.display = '';
+    document.getElementById("calendarWeekParent").style.display = "";
 
     currentYear = year;
     currentMonth = month;
@@ -812,7 +812,7 @@ function setCalendarViewDay(year, month, day)
         currentViewMode = DAY_VIEW;
     }
 
-    document.getElementById('calendarDayParent').style.display = '';
+    document.getElementById("calendarDayParent").style.display = "";
 
     currentYear = year;
     currentMonth = month;
@@ -839,18 +839,18 @@ function updateCalendarViewMonth()
 
     var monthData = -1;
 
-    document.getElementById('calendarTitle').innerHTML = 'Calendar: '
-        + monthNameWrap(currentMonth) + ' ' + currentYear;
+    document.getElementById("calendarTitle").innerHTML = "Calendar: "
+        + monthNameWrap(currentMonth) + " " + currentYear;
 
-    document.getElementById('linkMonthBack').innerHTML = '<a href="javascript:setCalendarViewMonth('
-        + yearBackwardsByMonth(currentYear, currentMonth) + ', '
+    document.getElementById("linkMonthBack").innerHTML = "<a href=\"javascript:setCalendarViewMonth("
+        + yearBackwardsByMonth(currentYear, currentMonth) + ", "
         + monthBackwardsByMonth(currentMonth)
-        + ');"><img src="images/arrow_left_24.gif" style="border:none;" />&nbsp;</a>';
+        + ");\"><img src=\"images/arrow_left_24.gif\" style=\"border:none;\" />&nbsp;</a>";
 
-    document.getElementById('linkMonthForeward').innerHTML = '<a href="javascript:setCalendarViewMonth('
-        + yearForewardsByMonth(currentYear, currentMonth) + ', '
+    document.getElementById("linkMonthForeward").innerHTML = "<a href=\"javascript:setCalendarViewMonth("
+        + yearForewardsByMonth(currentYear, currentMonth) + ", "
         + monthForewardsByMonth(currentMonth)
-        + ');">&nbsp;<img src="images/arrow_right_24.gif" style="border:none;" /></a>';
+        + ");\">&nbsp;<img src=\"images/arrow_right_24.gif\" style=\"border:none;\" /></a>";
 
     for (i = 0; i < calendarData.length; i++)
     {
@@ -867,35 +867,35 @@ function updateCalendarViewMonth()
         for (i = 0; i < 42; i++)
         {
             offset = i;
-            document.getElementById('calendarMonthCell' + offset).innerHTML = '';
+            document.getElementById("calendarMonthCell" + offset).innerHTML = "";
         }
 
         /* Trigger loading more data here. */
-        document.getElementById('monthNotice').innerHTML = 'Loading '
-            + monthNameWrap(currentMonth) + ' ' + currentYear + '...';
-        document.getElementById('linkMonthBack').innerHTML = '';
-        document.getElementById('linkMonthForeward').innerHTML = '';
+        document.getElementById("monthNotice").innerHTML = "Loading "
+            + monthNameWrap(currentMonth) + " " + currentYear + "...";
+        document.getElementById("linkMonthBack").innerHTML = "";
+        document.getElementById("linkMonthForeward").innerHTML = "";
         calendarDataPopulateServer(currentYear, currentMonth);
         return;
     }
 
     if (monthData.days.length == 0)
     {
-        string = monthNameWrap(currentMonth) + ' ' + currentYear + ' (No Entries)';
-        document.getElementById('monthNotice').innerHTML = string;
+        string = monthNameWrap(currentMonth) + " " + currentYear + " (No Entries)";
+        document.getElementById("monthNotice").innerHTML = string;
     }
     else
     {
-        string = monthNameWrap(currentMonth) + ' ' + currentYear + '';
-        document.getElementById('monthNotice').innerHTML = string;
+        string = monthNameWrap(currentMonth) + " " + currentYear + "";
+        document.getElementById("monthNotice").innerHTML = string;
     }
 
     for (i = 0; i < _firstDayOfMonth; i++)
     {
         offset = i;
-        document.getElementById('calendarMonthCell' + offset).className = 'empty';
-        document.getElementById('calendarMonthCell' + offset).style.display = '';
-        document.getElementById('calendarMonthCell' + offset).innerHTML = '';
+        document.getElementById("calendarMonthCell" + offset).className = "empty";
+        document.getElementById("calendarMonthCell" + offset).style.display = "";
+        document.getElementById("calendarMonthCell" + offset).innerHTML = "";
     }
 
     for (i = 0; i < _daysInMonth; i++)
@@ -903,13 +903,13 @@ function updateCalendarViewMonth()
         offset = i + _firstDayOfMonth;
         if (currentYear == todayYear && currentMonth == todayMonth && i + 1 == todayDay)
         {
-            document.getElementById('calendarMonthCell' + offset).className = 'today';
+            document.getElementById("calendarMonthCell" + offset).className = "today";
         }
         else
         {
-            document.getElementById('calendarMonthCell' + offset).className = 'day';
+            document.getElementById("calendarMonthCell" + offset).className = "day";
         }
-        document.getElementById('calendarMonthCell' + offset).style.display = '';
+        document.getElementById("calendarMonthCell" + offset).style.display = "";
 
         /* Fill in day data. */
         updateCalendarViewMonthCell(currentYear, currentMonth, i + 1, offset, monthData);
@@ -921,12 +921,12 @@ function updateCalendarViewMonth()
         /* Get rid of 6th row if we can */
         if ((_daysInMonth + _firstDayOfMonth < 36) && (i >= 35))
         {
-            document.getElementById('calendarMonthCell' + offset).style.display = 'none';
+            document.getElementById("calendarMonthCell" + offset).style.display = "none";
         }
         else
         {
-            document.getElementById('calendarMonthCell' + offset).className = 'empty';
-            document.getElementById('calendarMonthCell' + offset).innerHTML = '';
+            document.getElementById("calendarMonthCell" + offset).className = "empty";
+            document.getElementById("calendarMonthCell" + offset).innerHTML = "";
         }
     }
 }
@@ -934,9 +934,9 @@ function updateCalendarViewMonth()
 
 function updateCalendarViewMonthCell(year, month, day, cellID, monthData)
 {
-    var daylink = '<a class="dateLink" href="javascript:void(0);" onclick="setCalendarViewDay('
-        + year + ', ' + month + ', ' + day + ');"'
-    var string = daylink + '>' + day + '</a><br />';
+    var daylink = "<a class=\"dateLink\" href=\"javascript:void(0);\" onclick=\"setCalendarViewDay("
+        + year + ", " + month + ", " + day + ");\""
+    var string = daylink + ">" + day + "</a><br />";
 
 
     if (monthData != -1)
@@ -958,9 +958,9 @@ function updateCalendarViewMonthCell(year, month, day, cellID, monthData)
             var validDayEntriesCount = 0;
             for (i = 0; i < dayData.entries.length; i++)
             {
-                if (dayData.entries[i].getData('userID') != userID &&
-                    dayData.entries[i].getData('public') == 0 &&
-                    document.getElementById('hideNonPublic').checked == false)
+                if (dayData.entries[i].getData("userID") != userID &&
+                    dayData.entries[i].getData("public") == 0 &&
+                    document.getElementById("hideNonPublic").checked == false)
                 {
                     continue;
                 }
@@ -973,7 +973,7 @@ function updateCalendarViewMonthCell(year, month, day, cellID, monthData)
             if (validDayEntriesCount > 1)
             {
                 string += generateCalendarEntryGrouped(
-                    daylink + ' style="font-weight: bold;">' + validDayEntriesCount + ' Events' + '</a>'
+                    daylink + " style=\"font-weight: bold;\">" + validDayEntriesCount + " Events" + "</a>"
                 );
             }
             else
@@ -981,17 +981,17 @@ function updateCalendarViewMonthCell(year, month, day, cellID, monthData)
                 /* Fill in events */
                 for (i = 0; i < dayData.entries.length; i++)
                 {
-                    if (dayData.entries[i].getData('userID') != userID &&
-                        dayData.entries[i].getData('public') == 0 &&
-                        document.getElementById('hideNonPublic').checked == false)
+                    if (dayData.entries[i].getData("userID") != userID &&
+                        dayData.entries[i].getData("public") == 0 &&
+                        document.getElementById("hideNonPublic").checked == false)
                     {
                         continue;
                     }
 
                     string += generateCalendarEntrySmall(
-                        dayData.entries[i].getData('time'),
-                        dayData.entries[i].getData('title'),
-                        '<br />',
+                        dayData.entries[i].getData("time"),
+                        dayData.entries[i].getData("title"),
+                        "<br />",
                         dayData.entries[i]
                     );
                 }
@@ -999,8 +999,8 @@ function updateCalendarViewMonthCell(year, month, day, cellID, monthData)
         }
     }
 
-    document.getElementById('calendarMonthCell' + cellID).onclick  = function() { addEventByDay(year, month, day); };
-    document.getElementById('calendarMonthCell' + cellID).innerHTML = string;
+    document.getElementById("calendarMonthCell" + cellID).onclick  = function() { addEventByDay(year, month, day); };
+    document.getElementById("calendarMonthCell" + cellID).innerHTML = string;
 }
 
 
@@ -1020,32 +1020,32 @@ function updateCalendarViewWeek()
     var theDay = 0;
     var totalEntries = 0;
 
-    weekNames = Array('1st', '2nd', '3rd', '4th', '5th', '6th');
+    weekNames = Array("1st", "2nd", "3rd", "4th", "5th", "6th");
 
-    document.getElementById('calendarTitle').innerHTML = 'Calendar: '
-        + weekNames[currentWeek-1] + ' week of ' + monthNameWrap(currentMonth)
-        + ' ' + currentYear;
+    document.getElementById("calendarTitle").innerHTML = "Calendar: "
+        + weekNames[currentWeek-1] + " week of " + monthNameWrap(currentMonth)
+        + " " + currentYear;
 
-    document.getElementById('linkWeekBack').innerHTML = '<a href="javascript:setCalendarViewWeek('
+    document.getElementById("linkWeekBack").innerHTML = "<a href=\"javascript:setCalendarViewWeek("
         + yearBackwardsByWeek(currentYear, currentMonth, currentWeek)
-        + ', ' + monthBackwardsByWeek(currentYear, currentMonth, currentWeek)
-        + ', ' + weekBackwardsByWeek(currentYear, currentMonth, currentWeek)
-        + ');"><img src="images/arrow_left_24.gif" style="border:none;" />&nbsp;</a>';
+        + ", " + monthBackwardsByWeek(currentYear, currentMonth, currentWeek)
+        + ", " + weekBackwardsByWeek(currentYear, currentMonth, currentWeek)
+        + ");\"><img src=\"images/arrow_left_24.gif\" style=\"border:none;\" />&nbsp;</a>";
 
-    document.getElementById('linkWeekForeward').innerHTML = '<a href="javascript:setCalendarViewWeek('
+    document.getElementById("linkWeekForeward").innerHTML = "<a href=\"javascript:setCalendarViewWeek("
         + yearForewardsByWeek(currentYear, currentMonth, currentWeek)
-        + ', ' + monthForewardsByWeek(currentYear, currentMonth, currentWeek)
-        + ', ' + weekForewardsByWeek(currentYear, currentMonth, currentWeek)
-        + ');">&nbsp;<img src="images/arrow_right_24.gif" style="border:none;" /></a>';
+        + ", " + monthForewardsByWeek(currentYear, currentMonth, currentWeek)
+        + ", " + weekForewardsByWeek(currentYear, currentMonth, currentWeek)
+        + ");\">&nbsp;<img src=\"images/arrow_right_24.gif\" style=\"border:none;\" /></a>";
 
     for (i = 0; i < 7 ; i++)
     {
         theDay = i + 1 - (_firstDayOfMonth) + ((currentWeek - 1) * 7);
         dayData = getDataByDay(currentYear, currentMonth, theDay);
 
-        document.getElementById('calendarWeekCell' + i).onclick  = function()
+        document.getElementById("calendarWeekCell" + i).onclick  = function()
         {
-            var day = (this.id.substring('calendarWeekCell'.length) * 1)
+            var day = (this.id.substring("calendarWeekCell".length) * 1)
                 + 1
                 - (firstDayOfMonth(currentYear, currentMonth))
                 + ((currentWeek - 1) * 7);
@@ -1059,59 +1059,59 @@ function updateCalendarViewWeek()
         if (dayData == -1)
         {
             /* Populate more data. */
-            document.getElementById('weekNotice').innerHTML = 'Loading '
+            document.getElementById("weekNotice").innerHTML = "Loading "
                 + monthNameWrap(getMonthByDay(currentYear, currentMonth, theDay))
-                + ' ' + getYearByDay(currentYear, currentMonth, theDay) + '...';
-            document.getElementById('linkWeekBack').innerHTML = '';
-            document.getElementById('linkWeekForeward').innerHTML = '';
+                + " " + getYearByDay(currentYear, currentMonth, theDay) + "...";
+            document.getElementById("linkWeekBack").innerHTML = "";
+            document.getElementById("linkWeekForeward").innerHTML = "";
             calendarDataPopulateServer(getYearByDay(currentYear, currentMonth, theDay), getMonthByDay(currentYear, currentMonth, theDay));
             return;
         }
         else if (dayData == -2)
         {
             /* Nothing. */
-            document.getElementById('calendarWeekCell' + i).innerHTML = '';
+            document.getElementById("calendarWeekCell" + i).innerHTML = "";
         }
         else
         {
             totalEntries += dayData.entries.length;
-            updateCalendarViewWeekCell('calendarWeekCell' + i, dayData);
+            updateCalendarViewWeekCell("calendarWeekCell" + i, dayData);
         }
 
         if (getDayByDay(currentYear, currentMonth, theDay) == todayDay &&
             getMonthByDay(currentYear, currentMonth, theDay) == todayMonth &&
             getYearByDay(currentYear, currentMonth, theDay) == currentYear)
         {
-            document.getElementById('calendarWeekCell' + i).className = 'today';
+            document.getElementById("calendarWeekCell" + i).className = "today";
         }
         else
         {
-            document.getElementById('calendarWeekCell' + i).className = 'day';
+            document.getElementById("calendarWeekCell" + i).className = "day";
         }
-        document.getElementById('weekDay' + i).innerHTML = monthNameAbreiv[getMonthByDay(currentYear, currentMonth, theDay) - 1]
+        document.getElementById("weekDay" + i).innerHTML = monthNameAbreiv[getMonthByDay(currentYear, currentMonth, theDay) - 1]
             + getDayByDay(currentYear, currentMonth, theDay);
     }
 
-    document.getElementById('weekNotice').innerHTML = totalEntries + ' entries for ' + weekNames[currentWeek - 1] + ' week of ' + monthNameWrap(currentMonth) + ' ' + currentYear;
+    document.getElementById("weekNotice").innerHTML = totalEntries + " entries for " + weekNames[currentWeek - 1] + " week of " + monthNameWrap(currentMonth) + " " + currentYear;
 }
 
 function updateCalendarViewWeekCell(cellID, dayData)
 {
-    var string = '';
+    var string = "";
 
     for (var i = 0; i < dayData.entries.length; i++)
     {
-        if (dayData.entries[i].getData('userID') != userID &&
-            dayData.entries[i].getData('public') == 0 &&
-            document.getElementById('hideNonPublic').checked == false)
+        if (dayData.entries[i].getData("userID") != userID &&
+            dayData.entries[i].getData("public") == 0 &&
+            document.getElementById("hideNonPublic").checked == false)
         {
             continue;
         }
 
         string += generateCalendarEntrySmall(
-            dayData.entries[i].getData('time'),
-            dayData.entries[i].getData('title'),
-            '&nbsp;-',
+            dayData.entries[i].getData("time"),
+            dayData.entries[i].getData("title"),
+            "&nbsp;-",
             dayData.entries[i]
         );
     }
@@ -1124,16 +1124,16 @@ function getDayCellByHour(hour)
     if (hour < dayHourStart)
     {
         /* Morning. */
-        return document.getElementById('calendarDayCell0');
+        return document.getElementById("calendarDayCell0");
     }
     if (hour > dayHourEnd)
     {
         /* Evening. */
-        return document.getElementById('calendarDayCell' + (dayTotalCells - 1));
+        return document.getElementById("calendarDayCell" + (dayTotalCells - 1));
     }
 
     /* Mid day. */
-    return document.getElementById('calendarDayCell' + (hour - dayHourStart + 1));
+    return document.getElementById("calendarDayCell" + (hour - dayHourStart + 1));
 }
 
 function getDayHourByCell(id)
@@ -1168,24 +1168,24 @@ function updateCalendarViewDay()
 
     dayPositionData = Array();
 
-    document.getElementById('calendarTitle').innerHTML = 'Calendar: ' + monthNameWrap(currentMonth) + ' ' + currentDay + ', ' + currentYear;
+    document.getElementById("calendarTitle").innerHTML = "Calendar: " + monthNameWrap(currentMonth) + " " + currentDay + ", " + currentYear;
 
-    document.getElementById('linkDayBack').innerHTML = '<a href="javascript:setCalendarViewDay(' + getYearByDay(currentYear, currentMonth, currentDay - 1) + ', ' + getMonthByDay(currentYear, currentMonth, currentDay - 1) + ', ' + getDayByDay(currentYear, currentMonth, currentDay - 1) + ');"><img src="images/arrow_left_24.gif" style="border:none;" />&nbsp;</a>';
-    document.getElementById('linkDayForeward').innerHTML = '<a href="javascript:setCalendarViewDay(' + getYearByDay(currentYear, currentMonth, currentDay + 1) + ', ' + getMonthByDay(currentYear, currentMonth, currentDay + 1) + ', ' + getDayByDay(currentYear, currentMonth, currentDay + 1) + ');">&nbsp;<img src="images/arrow_right_24.gif" style="border:none;" /></a>';
+    document.getElementById("linkDayBack").innerHTML = "<a href=\"javascript:setCalendarViewDay(" + getYearByDay(currentYear, currentMonth, currentDay - 1) + ", " + getMonthByDay(currentYear, currentMonth, currentDay - 1) + ", " + getDayByDay(currentYear, currentMonth, currentDay - 1) + ");\"><img src=\"images/arrow_left_24.gif\" style=\"border:none;\" />&nbsp;</a>";
+    document.getElementById("linkDayForeward").innerHTML = "<a href=\"javascript:setCalendarViewDay(" + getYearByDay(currentYear, currentMonth, currentDay + 1) + ", " + getMonthByDay(currentYear, currentMonth, currentDay + 1) + ", " + getDayByDay(currentYear, currentMonth, currentDay + 1) + ");\">&nbsp;<img src=\"images/arrow_right_24.gif\" style=\"border:none;\" /></a>";
 
     /* Reset view */
     for (i = 0; i < dayTotalCells; i++)
     {
-        document.getElementById('calendarDayCell' + i).innerHTML = '';
+        document.getElementById("calendarDayCell" + i).innerHTML = "";
     }
 
     dayData = getDataByDay(currentYear, currentMonth, theDay)
     if (dayData == -1)
     {
         /* Populate more data */
-        document.getElementById('dayNotice').innerHTML = 'Loading ' + monthNameWrap(getMonthByDay(currentYear, currentMonth, theDay)) + ' ' + getYearByDay(currentYear, currentMonth, theDay) + '...'
-        document.getElementById('linkDayBack').innerHTML = '';
-        document.getElementById('linkDayForeward').innerHTML = '';
+        document.getElementById("dayNotice").innerHTML = "Loading " + monthNameWrap(getMonthByDay(currentYear, currentMonth, theDay)) + " " + getYearByDay(currentYear, currentMonth, theDay) + "..."
+        document.getElementById("linkDayBack").innerHTML = "";
+        document.getElementById("linkDayForeward").innerHTML = "";
         calendarDataPopulateServer(getYearByDay(currentYear, currentMonth, theDay), getMonthByDay(currentYear, currentMonth, theDay));
         return;
     }
@@ -1204,49 +1204,49 @@ function updateCalendarViewDay()
 
     for (i = 0; i < dayTotalCells; i++)
     {
-        document.getElementById('calendarDayCell' + i).className = 'day';
-        document.getElementById('calendarDayCell' + i).onclick  = function()
+        document.getElementById("calendarDayCell" + i).className = "day";
+        document.getElementById("calendarDayCell" + i).onclick  = function()
         {
             addEventByDay(
                 currentYear,
                 currentMonth,
                 currentDay,
-                getDayHourByCell(this.id.substring('calendarDayCell'.length) * 1)
+                getDayHourByCell(this.id.substring("calendarDayCell".length) * 1)
             );
         };
     }
 
     if (currentDay == todayDay && currentMonth == todayMonth && currentYear == currentYear)
     {
-        getDayCellByHour(todayHour).className = 'today';
+        getDayCellByHour(todayHour).className = "today";
     }
 
 
-    document.getElementById('dayNotice').innerHTML = totalEntries + ' entries for ' + monthNameWrap(currentMonth) + ' ' + currentDay + ', ' + currentYear;
+    document.getElementById("dayNotice").innerHTML = totalEntries + " entries for " + monthNameWrap(currentMonth) + " " + currentDay + ", " + currentYear;
 
 }
 
 
 function updateCalendarViewDayCell(cell, entry)
 {
-    if (entry.getData('userID') != userID && entry.getData('public') == 0 && document.getElementById('hideNonPublic').checked == false)
+    if (entry.getData("userID") != userID && entry.getData("public") == 0 && document.getElementById("hideNonPublic").checked == false)
     {
         return;
     }
 
     var border = 5;
 
-    string = '';
+    string = "";
 
-    var idEntry = 'dayCell' + dayPositionData.length;
+    var idEntry = "dayCell" + dayPositionData.length;
 
     string += generateCalendarEntryDayView(
-        entry.getData('time'),
-        entry.getData('title'),
+        entry.getData("time"),
+        entry.getData("title"),
         0,
         0,
         idEntry,
-        '',
+        "",
         entry,
         0
     );
@@ -1267,7 +1267,7 @@ function userCalendarViewWeek()
     /* Determine current week.*/
     if (selectedTableRow != 0 && currentViewMode == MONTH_VIEW)
     {
-        currentWeek = selectedTableRow.id.substring('calendarRow'.length);
+        currentWeek = selectedTableRow.id.substring("calendarRow".length);
         setCalendarViewWeek(currentYear, currentMonth, currentWeek);
     }
     else if (currentViewMode == MONTH_VIEW)
@@ -1311,9 +1311,9 @@ function userCalendarViewWeek()
 function userCalendarViewDay()
 {
     /* Determine current day */
-    if (selectedTableCell != 0 && currentViewMode == MONTH_VIEW && selectedTableCell.id.indexOf('calendarMonthCell') == 0)
+    if (selectedTableCell != 0 && currentViewMode == MONTH_VIEW && selectedTableCell.id.indexOf("calendarMonthCell") == 0)
     {
-        currentDay = (selectedTableCell.id.substring('calendarMonthCell'.length) * 1);
+        currentDay = (selectedTableCell.id.substring("calendarMonthCell".length) * 1);
         currentDay -= firstDayOfMonth(currentYear, currentMonth) - 1;
         if (currentDay < 1)
         {
@@ -1344,9 +1344,9 @@ function userCalendarViewDay()
         }
         setCalendarViewDay(currentYear, currentMonth, currentDay);
     }
-    else if (selectedTableCell != 0 && currentViewMode == WEEK_VIEW && selectedTableCell.id.indexOf('calendarWeekCell') == 0)
+    else if (selectedTableCell != 0 && currentViewMode == WEEK_VIEW && selectedTableCell.id.indexOf("calendarWeekCell") == 0)
     {
-        var i = (selectedTableCell.id.substring('calendarWeekCell'.length) * 1);
+        var i = (selectedTableCell.id.substring("calendarWeekCell".length) * 1);
         var _firstDayOfMonth = firstDayOfMonth(currentYear, currentMonth);
         theDay = i + 1 - (_firstDayOfMonth) + ((currentWeek-1) * 7);
 

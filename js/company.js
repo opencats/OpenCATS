@@ -37,17 +37,17 @@ function CompanyLocation_populate(companySelectID, sessionCookie)
     var companySelectList = document.getElementById(companySelectID);
     var companyID         = companySelectList.value;
 
-    if (companyID == '' || !stringIsNumeric(companyID))
+    if (companyID == "" || !stringIsNumeric(companyID))
     {
-        document.getElementById('city').value  = '';
-        document.getElementById('state').value = '';
+        document.getElementById("city").value  = "";
+        document.getElementById("state").value = "";
         return;
     }
 
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '&companyID=' + urlEncode(companyID);
+    var POSTData = "&companyID=" + urlEncode(companyID);
 
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
@@ -68,13 +68,13 @@ function CompanyLocation_populate(companySelectID, sessionCookie)
         //alert(http.responseText);
 
         /* Return if we have any errors. */
-        var errorCodeNode    = http.responseXML.getElementsByTagName('errorcode').item(0);
-        var errorMessageNode = http.responseXML.getElementsByTagName('errormessage').item(0);
+        var errorCodeNode    = http.responseXML.getElementsByTagName("errorcode").item(0);
+        var errorMessageNode = http.responseXML.getElementsByTagName("errormessage").item(0);
         if (!errorCodeNode || !errorCodeNode.firstChild ||
-            errorCodeNode.firstChild.nodeValue != '0')
+            errorCodeNode.firstChild.nodeValue != "0")
         {
             if (errorCodeNode && errorCodeNode.firstChild &&
-                errorCodeNode.firstChild.nodeValue != '-2' && errorMessageNode &&
+                errorCodeNode.firstChild.nodeValue != "-2" && errorMessageNode &&
                 errorMessageNode.firstChild)
             {
                 var errorMessage = "An error occurred while receiving a response from the server.\n\n"
@@ -85,73 +85,73 @@ function CompanyLocation_populate(companySelectID, sessionCookie)
             /* Make sure that the elements exist in the page.
              * FIXME: Explain; why would these fields ever not exist? -Will
              */
-            if (document.getElementById('address'))
+            if (document.getElementById("address"))
             {
-                document.getElementById('address').value  = '';
+                document.getElementById("address").value  = "";
             }
 
-            document.getElementById('city').value  = '';
-            document.getElementById('state').value = '';
+            document.getElementById("city").value  = "";
+            document.getElementById("state").value = "";
 
-            if (document.getElementById('zip'))
+            if (document.getElementById("zip"))
             {
-                document.getElementById('zip').value = '';
+                document.getElementById("zip").value = "";
             }
 
             return;
         }
 
-        var addressNode  = http.responseXML.getElementsByTagName('address').item(0);
-        var cityNode      = http.responseXML.getElementsByTagName('city').item(0);
-        var stateNode     = http.responseXML.getElementsByTagName('state').item(0);
-        var zipNode       = http.responseXML.getElementsByTagName('zip').item(0);
+        var addressNode  = http.responseXML.getElementsByTagName("address").item(0);
+        var cityNode      = http.responseXML.getElementsByTagName("city").item(0);
+        var stateNode     = http.responseXML.getElementsByTagName("state").item(0);
+        var zipNode       = http.responseXML.getElementsByTagName("zip").item(0);
 
-        if (document.getElementById('address'))
+        if (document.getElementById("address"))
         {
             if (addressNode.firstChild)
             {
-                document.getElementById('address').value = addressNode.firstChild.nodeValue;
+                document.getElementById("address").value = addressNode.firstChild.nodeValue;
             }
             else
             {
-                document.getElementById('address').value = '';
+                document.getElementById("address").value = "";
             }
         }
 
         if (cityNode.firstChild)
         {
-            document.getElementById('city').value = cityNode.firstChild.nodeValue;
+            document.getElementById("city").value = cityNode.firstChild.nodeValue;
         }
         else
         {
-            document.getElementById('city').value = '';
+            document.getElementById("city").value = "";
         }
 
         if (stateNode.firstChild)
         {
-            document.getElementById('state').value = stateNode.firstChild.nodeValue;
+            document.getElementById("state").value = stateNode.firstChild.nodeValue;
         }
         else
         {
-            document.getElementById('state').value = '';
+            document.getElementById("state").value = "";
         }
 
-        if (document.getElementById('zip'))
+        if (document.getElementById("zip"))
         {
             if (zipNode.firstChild)
             {
-                document.getElementById('zip').value = zipNode.firstChild.nodeValue;
+                document.getElementById("zip").value = zipNode.firstChild.nodeValue;
             }
             else
             {
-                document.getElementById('zip').value = '';
+                document.getElementById("zip").value = "";
             }
         }
     }
 
     AJAX_callCATSFunction(
         http,
-        'getCompanyLocation',
+        "getCompanyLocation",
         POSTData,
         callBack,
         0,
@@ -184,26 +184,26 @@ function CompanyContacts_populate_byCompanyID(companyID, contactSelectID, indica
     var contactIndicator  = document.getElementById(indicatorID);
 
     /* Create a 'None' option to add to the contact select list. */
-    var noneOption = document.createElement('option');
-    noneOption.value = '-1';
-    noneOption.appendChild(document.createTextNode('None'));
+    var noneOption = document.createElement("option");
+    noneOption.value = "-1";
+    noneOption.appendChild(document.createTextNode("None"));
 
     /* Clear the contact select list and add the 'None' option. */
     contactSelectList.options.length = 0;
     contactSelectList.appendChild(noneOption);
 
-    if (companyID == '' || companyID == '-1' || !stringIsNumeric(companyID))
+    if (companyID == "" || companyID == "-1" || !stringIsNumeric(companyID))
     {
         return;
     }
 
     contactSelectList.disabled = true;
-    contactIndicator.style.visibility = 'visible';
+    contactIndicator.style.visibility = "visible";
 
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '&companyID=' + urlEncode(companyID);
+    var POSTData = "&companyID=" + urlEncode(companyID);
 
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
@@ -224,11 +224,11 @@ function CompanyContacts_populate_byCompanyID(companyID, contactSelectID, indica
         //alert(http.responseText);
 
         /* Return if we have any errors. */
-        var errorCodeNode    = http.responseXML.getElementsByTagName('errorcode').item(0);
-        var errorMessageNode = http.responseXML.getElementsByTagName('errormessage').item(0);
-        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != '0')
+        var errorCodeNode    = http.responseXML.getElementsByTagName("errorcode").item(0);
+        var errorMessageNode = http.responseXML.getElementsByTagName("errormessage").item(0);
+        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != "0")
         {
-            if (errorCodeNode.firstChild.nodeValue != '-2')
+            if (errorCodeNode.firstChild.nodeValue != "-2")
             {
                 var errorMessage = "An error occurred while receiving a response from the server.\n\n"
                                  + errorMessageNode.firstChild.nodeValue;
@@ -236,18 +236,18 @@ function CompanyContacts_populate_byCompanyID(companyID, contactSelectID, indica
             }
 
             contactSelectList.disabled = false;
-            contactIndicator.style.visibility = 'hidden';
+            contactIndicator.style.visibility = "hidden";
 
             return;
         }
 
         /* Loop through all of the <contact> nodes. */
-        contactNodes = http.responseXML.getElementsByTagName('contact')
+        contactNodes = http.responseXML.getElementsByTagName("contact")
         for (var i = 0; i < contactNodes.length; i++)
         {
-            var IDNode        = contactNodes[i].getElementsByTagName('id').item(0);
-            var firstNameNode = contactNodes[i].getElementsByTagName('firstname').item(0);
-            var lastNameNode  = contactNodes[i].getElementsByTagName('lastname').item(0);
+            var IDNode        = contactNodes[i].getElementsByTagName("id").item(0);
+            var firstNameNode = contactNodes[i].getElementsByTagName("firstname").item(0);
+            var lastNameNode  = contactNodes[i].getElementsByTagName("lastname").item(0);
 
             if (!IDNode.firstChild || !firstNameNode.firstChild ||
                 !lastNameNode.firstChild)
@@ -255,11 +255,11 @@ function CompanyContacts_populate_byCompanyID(companyID, contactSelectID, indica
                 continue;
             }
 
-            var option = document.createElement('option');
+            var option = document.createElement("option");
             option.value = IDNode.firstChild.nodeValue;
             option.appendChild(
                 document.createTextNode(
-                    lastNameNode.firstChild.nodeValue + ', ' +
+                    lastNameNode.firstChild.nodeValue + ", " +
                     firstNameNode.firstChild.nodeValue
                 )
             );
@@ -267,12 +267,12 @@ function CompanyContacts_populate_byCompanyID(companyID, contactSelectID, indica
         }
 
         contactSelectList.disabled = false;
-        contactIndicator.style.visibility = 'hidden';
+        contactIndicator.style.visibility = "hidden";
     }
 
     AJAX_callCATSFunction(
         http,
-        'getCompanyContacts',
+        "getCompanyContacts",
         POSTData,
         callBack,
         0,

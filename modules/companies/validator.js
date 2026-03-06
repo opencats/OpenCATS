@@ -10,11 +10,11 @@
 
 function checkAddForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkName();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -25,11 +25,11 @@ function checkAddForm(form)
 
 function checkEditForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkName();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -40,11 +40,11 @@ function checkEditForm(form)
 
 function checkAttachmentForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkFilename();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -55,11 +55,11 @@ function checkAttachmentForm(form)
 
 function checkSearchByNameForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkSearchName();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -70,11 +70,11 @@ function checkSearchByNameForm(form)
 
 function checkSearchByKeyTechnologiesForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkSearchKeyTechnologies();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -85,19 +85,19 @@ function checkSearchByKeyTechnologiesForm(form)
 
 function checkName()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('name').value;
-    fieldLabel = document.getElementById('nameLabel');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("name").value;
+    fieldLabel = document.getElementById("nameLabel");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a name.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -105,19 +105,19 @@ function checkName()
 
 function checkSearchName()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('wildCardString_name').value;
-    fieldLabel = document.getElementById('wildCardStringLabel_name');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("wildCardString_name").value;
+    fieldLabel = document.getElementById("wildCardStringLabel_name");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter some search text.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -125,19 +125,19 @@ function checkSearchName()
 
 function checkSearchKeyTechnologies()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('wildCardString_keyTechnologies').value;
-    fieldLabel = document.getElementById('wildCardStringLabel_keyTechnologies');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("wildCardString_keyTechnologies").value;
+    fieldLabel = document.getElementById("wildCardStringLabel_keyTechnologies");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter some search text.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -145,19 +145,19 @@ function checkSearchKeyTechnologies()
 
 function checkFilename()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('file').value;
-    fieldLabel = document.getElementById('file');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("file").value;
+    fieldLabel = document.getElementById("file");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a file to upload.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;

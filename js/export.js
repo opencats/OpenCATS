@@ -46,14 +46,14 @@ function showBox(boxID)
     var box = document.getElementById(boxID);
 
     box.style.left = docjslib_getRealLeftExport(
-        document.getElementById('exportBoxLink')
-    ) + 'px';
-    box.style.display = 'block';
+        document.getElementById("exportBoxLink")
+    ) + "px";
+    box.style.display = "block";
 }
 
 function hideBox(boxID)
 {
-    document.getElementById(boxID).style.display = 'none';
+    document.getElementById(boxID).style.display = "none";
 }
 
 function toggleChecksAll()
@@ -65,7 +65,7 @@ function toggleChecksAll()
         e = document.selectedObjects.elements[i];
         if (document.selectAll.allBox.checked == true)
         {
-            if (e.type == 'checkbox')
+            if (e.type == "checkbox")
             {
                 e.checked = true;
             }

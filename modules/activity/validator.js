@@ -28,17 +28,17 @@
 
 function checkDate(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    startMonth = document.getElementById('startMonth').value;
-    startDay = document.getElementById('startDay').value;
-    startYear = document.getElementById('startYear').value;
+    startMonth = document.getElementById("startMonth").value;
+    startDay = document.getElementById("startDay").value;
+    startYear = document.getElementById("startYear").value;
 
     startMonth--;
 
-    endMonth = document.getElementById('endMonth').value;
-    endDay = document.getElementById('endDay').value;
-    endYear = document.getElementById('endYear').value;
+    endMonth = document.getElementById("endMonth").value;
+    endDay = document.getElementById("endDay").value;
+    endYear = document.getElementById("endYear").value;
 
     endMonth--;
 
