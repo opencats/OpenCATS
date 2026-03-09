@@ -232,6 +232,7 @@ class CareersUI extends UserInterface
             $firstNameEscaped = htmlspecialchars((string) $candidate['firstName'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $lastNameEscaped = htmlspecialchars((string) $candidate['lastName'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $addressEscaped = htmlspecialchars((string) $candidate['address'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
+            $address2Escaped = htmlspecialchars((string) $candidate['address2'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $cityEscaped = htmlspecialchars((string) $candidate['city'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $stateEscaped = htmlspecialchars((string) $candidate['state'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $zipEscaped = htmlspecialchars((string) $candidate['zip'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
@@ -249,7 +250,7 @@ class CareersUI extends UserInterface
             $content = str_replace('<input-firstName>', '<input name="firstName" id="firstName" class="inputBoxName" value="' . $firstNameEscaped . '" />', $content);
             $content = str_replace('<input-lastName>', '<input name="lastName" id="lastName" class="inputBoxName" value="' . $lastNameEscaped . '" />', $content);
             $content = str_replace('<input-address>', '<input name="address" id="address" class="inputBoxNormal" value="' . $addressEscaped . '" />', $content);
-            $content = str_replace('<input-address2>', '<input name="address2" id="address2" class="inputBoxNormal" value="' . $candidate['address2'] . '" />', $content);
+            $content = str_replace('<input-address2>', '<input name="address2" id="address2" class="inputBoxNormal" value="' . $address2Escaped . '" />', $content);
             $content = str_replace('<input-city>', '<input name="city" id="city" class="inputBoxNormal" value="' . $cityEscaped . '" />', $content);
             $content = str_replace('<input-state>', '<input name="state" id="state" class="inputBoxNormal" value="' . $stateEscaped . '" />', $content);
             $content = str_replace('<input-zip>', '<input name="zip" id="zip" class="inputBoxNormal" value="' . $zipEscaped . '" />', $content);
@@ -627,6 +628,7 @@ class CareersUI extends UserInterface
             $firstNameEscaped = htmlspecialchars((string) $firstName, ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $lastNameEscaped = htmlspecialchars((string) $lastName, ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $addressEscaped = htmlspecialchars((string) $address, ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
+            $address2Escaped = htmlspecialchars((string) $address2, ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $cityEscaped = htmlspecialchars((string) $city, ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $stateEscaped = htmlspecialchars((string) $state, ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $zipEscaped = htmlspecialchars((string) $zip, ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
@@ -648,7 +650,7 @@ class CareersUI extends UserInterface
             $template['Content'] = str_replace('<input-firstName>', '<input name="firstName" id="firstName" class="inputBoxName" value="' . $firstNameEscaped . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-lastName>', '<input name="lastName" id="lastName" class="inputBoxName" value="' . $lastNameEscaped . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-address>', '<input name="address" id="address" class="inputBoxNormal" value="' . $addressEscaped . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-address2>', '<input name="address2" id="address2" class="inputBoxNormal" value="' . $address2 . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-address2>', '<input name="address2" id="address2" class="inputBoxNormal" value="' . $address2Escaped . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-city>', '<input name="city" id="city" class="inputBoxNormal" value="' . $cityEscaped . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-state>', '<input name="state" id="state" class="inputBoxNormal" value="' . $stateEscaped . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-zip>', '<input name="zip" id="zip" class="inputBoxNormal" value="' . $zipEscaped . '" />', $template['Content']);
