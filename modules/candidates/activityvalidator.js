@@ -1,11 +1,6 @@
 /*
- * CATS
+ * OpenCATS
  * Candidates Form Validation
- *
- * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
- * All rights reserved.
- *
- * $Id: activityvalidator.js 2336 2007-04-14 22:01:51Z will $
  */
 
 function checkActivityForm(form)
@@ -28,14 +23,14 @@ function checkActivityType()
 {
     var errorMessage = '';
 
-    addActivity = document.getElementById('addActivity').checked;
+    var addActivity = document.getElementById('addActivity').checked;
     if (!addActivity)
     {
         return '';
     }
 
-    fieldValue = document.getElementById('activityTypeID').value;
-    fieldLabel = document.getElementById('addActivitySpanA');
+    var fieldValue = document.getElementById('activityTypeID').value;
+    var fieldLabel = document.getElementById('addActivitySpanA');
     if (fieldValue == '')
     {
         errorMessage = "    - You must select an activity type.\n";
@@ -54,14 +49,14 @@ function checkEventTitle()
 {
     var errorMessage = '';
 
-    scheduleEvent = document.getElementById('scheduleEvent').checked;
+    var scheduleEvent = document.getElementById('scheduleEvent').checked;
     if (!scheduleEvent)
     {
         return '';
     }
 
-    fieldValue = document.getElementById('title').value;
-    fieldLabel = document.getElementById('titleLabel');
+    var fieldValue = document.getElementById('title').value;
+    var fieldLabel = document.getElementById('titleLabel');
     if (fieldValue == '')
     {
         errorMessage = "    - You must enter an event title.\n";
