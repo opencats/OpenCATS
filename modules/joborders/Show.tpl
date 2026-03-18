@@ -3,9 +3,9 @@ include_once('./vendor/autoload.php');
 use OpenCATS\UI\QuickActionMenu;
 ?>
 <?php if ($this->isPopup): ?>
-    <?php TemplateUtility::printHeader('Job Order - '.$this->data['title'], array('js/sorttable.js', 'js/match.js', 'js/pipeline.js')); ?>
+    <?php TemplateUtility::printHeader('Job Order - ' . htmlspecialchars($this->data['title'], ENT_QUOTES, HTML_ENCODING), array('js/sorttable.js', 'js/match.js', 'js/pipeline.js', 'js/attachment.js')); ?>
 <?php else: ?>
-    <?php TemplateUtility::printHeader('Job Order - '.$this->data['title'], array( 'js/sorttable.js', 'js/match.js', 'js/pipeline.js')); ?>
+    <?php TemplateUtility::printHeader('Job Order - ' . htmlspecialchars($this->data['title'], ENT_QUOTES, HTML_ENCODING), array( 'js/sorttable.js', 'js/match.js', 'js/pipeline.js', 'js/attachment.js')); ?>
     <?php TemplateUtility::printHeaderBlock(); ?>
     <?php TemplateUtility::printTabs($this->active); ?>
         <div id="main">
@@ -69,7 +69,7 @@ use OpenCATS\UI\QuickActionMenu;
                                 <td class="vertical">Company Name:</td>
                                 <td class="data">
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=companies&amp;a=show&amp;companyID=<?php echo($this->data['companyID']); ?>">
-                                        <?php echo($this->data['companyName']); ?>
+                                        <?php $this->_($this->data['companyName']); ?>
                                     </a>
                                 </td>
                             </tr>
@@ -77,7 +77,7 @@ use OpenCATS\UI\QuickActionMenu;
                             <tr>
                                 <td class="vertical">Department:</td>
                                 <td class="data">
-                                    <?php echo($this->data['department']); ?>
+                                    <?php $this->_($this->data['department']); ?>
                                 </td>
                             </tr>
 
@@ -88,7 +88,7 @@ use OpenCATS\UI\QuickActionMenu;
 
                             <tr>
                                 <td class="vertical">Company Job ID:</td>
-                                <td class="data"><?php echo($this->data['companyJobID']); ?></td>
+                                <td class="data"><?php $this->_($this->data['companyJobID']); ?></td>
                             </tr>
 
                             <!-- CONTACT INFO -->
@@ -96,14 +96,14 @@ use OpenCATS\UI\QuickActionMenu;
                                 <td class="vertical">Contact Name:</td>
                                 <td class="data">
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=contacts&amp;a=show&amp;contactID=<?php echo($this->data['contactID']); ?>">
-                                        <?php echo($this->data['contactFullName']); ?>
+                                        <?php $this->_($this->data['contactFullName']); ?>
                                     </a>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td class="vertical">Contact Phone:</td>
-                                <td class="data"><?php echo($this->data['contactWorkPhone']); ?></td>
+                                <td class="data"><?php $this->_($this->data['contactWorkPhone']); ?></td>
                             </tr>
 
                             <tr>
@@ -227,7 +227,7 @@ use OpenCATS\UI\QuickActionMenu;
                 <?php endif; ?>
 
                 <?php if ($this->questionnaireID !== false): ?>
-                    <br />Applicants must complete the "<i><?php echo $this->questionnaireData['title']; ?></i>" (<a href="<?php echo CATSUtility::getIndexName(); ?>?m=settings&a=careerPortalQuestionnaire&questionnaireID=<?php echo $this->questionnaireID; ?>">edit</a>) questionnaire when applying.
+                    <br />Applicants must complete the "<i><?php $this->_($this->questionnaireData['title']); ?></i>" (<a href="<?php echo CATSUtility::getIndexName(); ?>?m=settings&a=careerPortalQuestionnaire&questionnaireID=<?php echo $this->questionnaireID; ?>">edit</a>) questionnaire when applying.
                 <?php else: ?>
                     <br />You have not attached any
                     <?php if ($this->getUserAccessLevel('setting.carrerPortalSettings') >= ACCESS_LEVEL_SA): ?>

@@ -3,7 +3,7 @@
 include_once('./vendor/autoload.php');
 use OpenCATS\UI\QuickActionMenu;
 ?>
-<?php TemplateUtility::printHeader('Contact - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js')); ?>
+<?php TemplateUtility::printHeader('Contact - ' . htmlspecialchars($this->data['firstName'], ENT_QUOTES, HTML_ENCODING) . ' ' . htmlspecialchars($this->data['lastName'], ENT_QUOTES, HTML_ENCODING), array( 'js/activity.js', 'js/attachment.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <script type="text/javascript">
@@ -50,7 +50,7 @@ use OpenCATS\UI\QuickActionMenu;
                                 <td class="data">
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=companies&amp;a=show&amp;companyID=<?php echo($this->data['companyID']); ?>">
                                         <span class="<?php echo($this->data['titleClassCompany']);?>">
-                                            <?php echo($this->data['companyName']); ?>
+                                            <?php $this->_($this->data['companyName']); ?>
                                         </span>
                                     </a>
                                     <?php if ($this->data['leftCompany']): ?>

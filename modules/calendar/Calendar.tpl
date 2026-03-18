@@ -67,7 +67,7 @@
                                                     <select id="type" name="type" class="inputbox" style="width: 150px;">
                                                         <option value="">(Select a Type)</option>
                                                         <?php foreach ($this->calendarEventTypes as $type): ?>
-                                                            <option value="<?php echo($type['typeID']); ?>"><?php echo($type['description']); ?></option>
+                                                            <option value="<?php echo($type['typeID']); ?>"><?php $this->_($type['description']); ?></option>
                                                         <?php endforeach; ?>
                                                     </select>&nbsp;*
                                                 </td>
@@ -217,7 +217,7 @@
                                                     <select id="typeEdit" name="type" class="inputbox" style="width: 150px;">
                                                         <option value="">(Select a Type)</option>
                                                         <?php foreach ($this->calendarEventTypes as $type): ?>
-                                                            <option value="<?php echo($type['typeID']); ?>"><?php echo($type['description']); ?></option>
+                                                            <option value="<?php echo($type['typeID']); ?>"><?php $this->_($type['description']); ?></option>
                                                         <?php endforeach; ?>
                                                     </select>&nbsp;*
                                                 </td>

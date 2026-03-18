@@ -4,9 +4,9 @@ use OpenCATS\UI\CandidateQuickActionMenu;
 use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
 ?>
 <?php if ($this->isPopup): ?>
-    <?php TemplateUtility::printHeader('Candidate - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js', 'modules/candidates/quickAction-candidates.js')); ?>
+    <?php TemplateUtility::printHeader('Candidate - ' . htmlspecialchars($this->data['firstName'], ENT_QUOTES, HTML_ENCODING) . ' ' . htmlspecialchars($this->data['lastName'], ENT_QUOTES, HTML_ENCODING), array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js', 'js/attachment.js', 'modules/candidates/quickAction-candidates.js')); ?>
 <?php else: ?>
-    <?php TemplateUtility::printHeader('Candidate - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js', 'modules/candidates/quickAction-candidates.js', 'modules/candidates/quickAction-duplicates.js')); ?>
+    <?php TemplateUtility::printHeader('Candidate - ' . htmlspecialchars($this->data['firstName'], ENT_QUOTES, HTML_ENCODING) . ' ' . htmlspecialchars($this->data['lastName'], ENT_QUOTES, HTML_ENCODING), array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js', 'js/attachment.js', 'modules/candidates/quickAction-candidates.js', 'modules/candidates/quickAction-duplicates.js')); ?>
     
     <?php TemplateUtility::printHeaderBlock(); ?>
     <?php TemplateUtility::printTabs($this->active); ?>
@@ -614,7 +614,7 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                 <?php foreach($this->lists as $rowNumber => $list): ?>
                     <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
                         <td>
-                            <a href="index.php?m=lists&a=showList&savedListID=<?php echo $list['listID']; ?>"><?php echo $list['name']; ?></a>
+                            <a href="index.php?m=lists&a=showList&savedListID=<?php echo $list['listID']; ?>"><?php $this->_($list['name']); ?></a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
