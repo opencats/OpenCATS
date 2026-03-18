@@ -1511,7 +1511,8 @@ class CareersUI extends UserInterface
             return;
         }
 	    
-    /* funciton getSanitisedInput used to fix XSS vuln in public portal */
+        // NOTE: Careers Portal renders these values into HTML without consistent output escaping.
+        // TODO (security/xss-hardening): Escape attributes/textarea/title consistently, then switch to getTrimmedInput().
         $lastName       = $this->getSanitisedInput('lastName', $_POST);
         $middleName     = $this->getSanitisedInput('middleName', $_POST);
         $firstName      = $this->getSanitisedInput('firstName', $_POST);

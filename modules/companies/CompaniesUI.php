@@ -544,7 +544,7 @@ class CompaniesUI extends UserInterface
     private function onAdd()
     {
         $formattedPhone1 = StringUtility::extractPhoneNumber(
-            $this->getSanitisedInput('phone1', $_POST)
+            $this->getTrimmedInput('phone1', $_POST)
         );
         if (!empty($formattedPhone1))
         {
@@ -552,11 +552,11 @@ class CompaniesUI extends UserInterface
         }
         else
         {
-            $phone1 = $this->getSanitisedInput('phone1', $_POST);
+            $phone1 = $this->getTrimmedInput('phone1', $_POST);
         }
 
         $formattedPhone2 = StringUtility::extractPhoneNumber(
-            $this->getSanitisedInput('phone2', $_POST)
+            $this->getTrimmedInput('phone2', $_POST)
         );
         if (!empty($formattedPhone2))
         {
@@ -564,11 +564,11 @@ class CompaniesUI extends UserInterface
         }
         else
         {
-            $phone2 = $this->getSanitisedInput('phone2', $_POST);
+            $phone2 = $this->getTrimmedInput('phone2', $_POST);
         }
 
         $formattedFaxNumber = StringUtility::extractPhoneNumber(
-            $this->getSanitisedInput('faxNumber', $_POST)
+            $this->getTrimmedInput('faxNumber', $_POST)
         );
         if (!empty($formattedFaxNumber))
         {
@@ -576,10 +576,10 @@ class CompaniesUI extends UserInterface
         }
         else
         {
-            $faxNumber = $this->getSanitisedInput('faxNumber', $_POST);
+            $faxNumber = $this->getTrimmedInput('faxNumber', $_POST);
         }
 
-        $url = $this->getSanitisedInput('url', $_POST);
+        $url = $this->getTrimmedInput('url', $_POST);
         if (!empty($url))
         {
             $formattedURL = StringUtility::extractURL($url);
@@ -593,14 +593,14 @@ class CompaniesUI extends UserInterface
         /* Hot company? */
         $isHot = $this->isChecked('isHot', $_POST);
 
-        $name            = $this->getSanitisedInput('name', $_POST);
-        $address         = $this->getSanitisedInput('address', $_POST);
-        $address2        = $this->getSanitisedInput('address2', $_POST);
-        $city            = $this->getSanitisedInput('city', $_POST);
-        $state           = $this->getSanitisedInput('state', $_POST);
-        $zip             = $this->getSanitisedInput('zip', $_POST);
-        $keyTechnologies = $this->getSanitisedInput('keyTechnologies', $_POST);
-        $notes           = $this->getSanitisedInput('notes', $_POST);
+        $name            = $this->getTrimmedInput('name', $_POST);
+        $address         = $this->getTrimmedInput('address', $_POST);
+        $address2        = $this->getTrimmedInput('address2', $_POST);
+        $city            = $this->getTrimmedInput('city', $_POST);
+        $state           = $this->getTrimmedInput('state', $_POST);
+        $zip             = $this->getTrimmedInput('zip', $_POST);
+        $keyTechnologies = $this->getTrimmedInput('keyTechnologies', $_POST);
+        $notes           = $this->getTrimmedInput('notes', $_POST);
 
         /* Departments list editor. */
         $departmentsCSV = $this->getTrimmedInput('departmentsCSV', $_POST);
@@ -753,7 +753,7 @@ class CompaniesUI extends UserInterface
         }
 
         $formattedPhone1 = StringUtility::extractPhoneNumber(
-            $this->getSanitisedInput('phone1', $_POST)
+            $this->getTrimmedInput('phone1', $_POST)
         );
         if (!empty($formattedPhone1))
         {
@@ -761,11 +761,11 @@ class CompaniesUI extends UserInterface
         }
         else
         {
-            $phone1 = $this->getSanitisedInput('phone1', $_POST);
+            $phone1 = $this->getTrimmedInput('phone1', $_POST);
         }
 
         $formattedPhone2 = StringUtility::extractPhoneNumber(
-            $this->getSanitisedInput('phone2', $_POST)
+            $this->getTrimmedInput('phone2', $_POST)
         );
         if (!empty($formattedPhone2))
         {
@@ -773,11 +773,11 @@ class CompaniesUI extends UserInterface
         }
         else
         {
-            $phone2 = $this->getSanitisedInput('phone2', $_POST);
+            $phone2 = $this->getTrimmedInput('phone2', $_POST);
         }
 
         $formattedFaxNumber = StringUtility::extractPhoneNumber(
-            $this->getSanitisedInput('faxNumber', $_POST)
+            $this->getTrimmedInput('faxNumber', $_POST)
         );
         if (!empty($formattedFaxNumber))
         {
@@ -785,10 +785,10 @@ class CompaniesUI extends UserInterface
         }
         else
         {
-            $faxNumber = $this->getSanitisedInput('faxNumber', $_POST);
+            $faxNumber = $this->getTrimmedInput('faxNumber', $_POST);
         }
 
-        $url = $this->getSanitisedInput('url', $_POST);
+        $url = $this->getTrimmedInput('url', $_POST);
         if (!empty($url))
         {
             $formattedURL = StringUtility::extractURL($url);
@@ -865,14 +865,14 @@ class CompaniesUI extends UserInterface
             $emailAddress = '';
         }
 
-        $name            = $this->getSanitisedInput('name', $_POST);
-        $address         = $this->getSanitisedInput('address', $_POST);
-        $address2        = $this->getSanitisedInput('address2', $_POST);
-        $city            = $this->getSanitisedInput('city', $_POST);
-        $state           = $this->getSanitisedInput('state', $_POST);
-        $zip             = $this->getSanitisedInput('zip', $_POST);
-        $keyTechnologies = $this->getSanitisedInput('keyTechnologies', $_POST);
-        $notes           = $this->getSanitisedInput('notes', $_POST);
+        $name            = $this->getTrimmedInput('name', $_POST);
+        $address         = $this->getTrimmedInput('address', $_POST);
+        $address2        = $this->getTrimmedInput('address2', $_POST);
+        $city            = $this->getTrimmedInput('city', $_POST);
+        $state           = $this->getTrimmedInput('state', $_POST);
+        $zip             = $this->getTrimmedInput('zip', $_POST);
+        $keyTechnologies = $this->getTrimmedInput('keyTechnologies', $_POST);
+        $notes           = $this->getTrimmedInput('notes', $_POST);
 
         /* Departments list editor. */
         $departmentsCSV = $this->getTrimmedInput('departmentsCSV', $_POST);
