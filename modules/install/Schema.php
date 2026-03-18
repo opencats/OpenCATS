@@ -1413,6 +1413,10 @@ class CATSSchema
                 WHERE data_item_type = 400
                 AND data_item_id NOT IN (SELECT joborder_id FROM joborder);
             ',
+            '372' => 'PHP:
+                include_once(\'modules/install/scripts/372.php\');
+                update_372($db);
+            ',
 
         );
     }
