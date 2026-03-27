@@ -41,10 +41,10 @@ function Activity_fillTypeSelect(selectList, selectedText)
 {
     var optionElements = new Array();
 
-    /* Call option. */
+    /* Not reached option. */
     optionElements[0] = document.createElement("option");
     optionElements[0].value = ACTIVITY_CALL;
-    optionElements[0].appendChild(document.createTextNode("Call"));
+    optionElements[0].appendChild(document.createTextNode("Not reached"));
 
     /* Call (Talked) option. */
     optionElements[1] = document.createElement("option");
@@ -79,7 +79,7 @@ function Activity_fillTypeSelect(selectList, selectedText)
     /* Select the correct option. */
     if (selectedText)
     {
-        if (selectedText == "Call")
+        if (selectedText == "Not reached")
         {
             optionElements[0].setAttribute("selected", "selected");
         }

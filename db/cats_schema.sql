@@ -70,7 +70,7 @@ CREATE TABLE `activity_type` (
 
 /*Data for the table `activity_type` */
 
-insert  into `activity_type`(`activity_type_id`,`short_description`) values (100,'Call');
+insert  into `activity_type`(`activity_type_id`,`short_description`) values (100,'Not reached');
 insert  into `activity_type`(`activity_type_id`,`short_description`) values (200,'Email');
 insert  into `activity_type`(`activity_type_id`,`short_description`) values (300,'Meeting');
 insert  into `activity_type`(`activity_type_id`,`short_description`) values (400,'Other');
