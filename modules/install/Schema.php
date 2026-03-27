@@ -1442,6 +1442,11 @@ class CATSSchema
                     $db->query("ALTER TABLE `".$row[\'table_name\']."` ENGINE=InnoDB");
                 }
             ',
+            '376' => '
+                UPDATE activity_type
+                SET short_description = \'Not reached\'
+                WHERE activity_type_id = 100;
+            ',
 
         );
     }
