@@ -252,6 +252,7 @@ INSERT INTO `candidate_joborder_status` (`candidate_joborder_status_id`, `short_
 INSERT INTO `candidate_joborder_status` (`candidate_joborder_status_id`, `short_description`, `can_be_scheduled`, `triggers_email`, `is_enabled`) VALUES (500, 'Interviewing', 0, 1, 1);
 INSERT INTO `candidate_joborder_status` (`candidate_joborder_status_id`, `short_description`, `can_be_scheduled`, `triggers_email`, `is_enabled`) VALUES (600, 'Offered', 0, 1, 1);
 INSERT INTO `candidate_joborder_status` (`candidate_joborder_status_id`, `short_description`, `can_be_scheduled`, `triggers_email`, `is_enabled`) VALUES (650, 'Not in Consideration', 0, 0, 1);
+INSERT INTO `candidate_joborder_status` (`candidate_joborder_status_id`, `short_description`, `can_be_scheduled`, `triggers_email`, `is_enabled`) VALUES (675, 'Candidate Declined', 0, 0, 1);
 INSERT INTO `candidate_joborder_status` (`candidate_joborder_status_id`, `short_description`, `can_be_scheduled`, `triggers_email`, `is_enabled`) VALUES (700, 'Client Declined', 0, 0, 1);
 INSERT INTO `candidate_joborder_status` (`candidate_joborder_status_id`, `short_description`, `can_be_scheduled`, `triggers_email`, `is_enabled`) VALUES (800, 'Placed', 0, 1, 1);
 
