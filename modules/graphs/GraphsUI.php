@@ -483,7 +483,8 @@ class GraphsUI extends UserInterface
                 "Submitted",
                 "Interviewing",
                 "Offered",
-                "Declined",
+                "Candidate Declined",
+                "Client Declined",
                 "Placed"
             );
         }
@@ -497,14 +498,16 @@ class GraphsUI extends UserInterface
                 "Submitted",
                 "|Interviewing",
                 "Offered",
-                "|Declined",
+                "|Cand Declined",
+                "Client Declined",
                 "Placed"
             );
         }
 
-        $x[8] = $statisticsData['placed'];
-        $x[7] = $statisticsData['passedOn'];
-        $x[6] = $statisticsData['offered'] + $x[8];
+        $x[9] = $statisticsData['placed'];
+        $x[8] = $statisticsData['passedOn'];
+        $x[7] = $statisticsData['candidateDeclined'];
+        $x[6] = $statisticsData['offered'] + $x[9];
         $x[5] = $statisticsData['interviewing'] + $x[6];
         $x[4] = $statisticsData['submitted'] + $x[5];
         $x[3] = $statisticsData['qualifying'] + $x[4];
@@ -515,12 +518,13 @@ class GraphsUI extends UserInterface
         $colorOptions = Graphs::getColorOptions();
         $colorArray = array();
 
-        for ($i = 0; $i < 9; $i++)
+        for ($i = 0; $i < 10; $i++)
         {
             $colorArray[] = new LinearGradient(new DarkGreen, new White, 0);
         }
         $colorArray[4] = new LinearGradient(new Orange, new White, 0);
         $colorArray[7] = new LinearGradient(new AlmostBlack, new White, 0);
+        $colorArray[8] = new LinearGradient(new AlmostBlack, new White, 0);
 
         $graph = new GraphComparisonChart(
             $y, $x, $colorArray, 'Status of Candidates', $this->width,

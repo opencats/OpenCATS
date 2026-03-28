@@ -828,6 +828,7 @@ class Statistics
                 SUM(IF(candidate_joborder.status = %s, 1, 0)) AS submitted,
                 SUM(IF(candidate_joborder.status = %s, 1, 0)) AS interviewing,
                 SUM(IF(candidate_joborder.status = %s, 1, 0)) AS offered,
+                SUM(IF(candidate_joborder.status = %s, 1, 0)) AS candidateDeclined,
                 SUM(IF(candidate_joborder.status = %s, 1, 0)) AS passedOn,
                 SUM(IF(candidate_joborder.status = %s, 1, 0)) AS placed,
                 SUM(IF(candidate_joborder.status = %s, 1, 0)) AS replied
@@ -846,6 +847,7 @@ class Statistics
             PIPELINE_STATUS_SUBMITTED,
             PIPELINE_STATUS_INTERVIEWING,
             PIPELINE_STATUS_OFFERED,
+            PIPELINE_STATUS_CANDIDATEDECLINED,
             PIPELINE_STATUS_CLIENTDECLINED,
             PIPELINE_STATUS_PLACED,
             PIPELINE_STATUS_CANDIDATE_REPLIED,
@@ -864,6 +866,7 @@ class Statistics
                 'submitted' => 0,
                 'interviewing' => 0,
                 'offered' => 0,
+                'candidateDeclined' => 0,
                 'passedOn' => 0,
                 'placed' => 0
             );
