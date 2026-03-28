@@ -232,22 +232,6 @@ class Companies
      */
     public function delete($companyID)
     {
-        /* Delete the company. */
-        $sql = sprintf(
-            "DELETE FROM
-                company
-            WHERE
-                company_id = %s
-            AND
-                site_id = %s",
-            $companyID,
-            $this->_siteID
-        );
-        $this->_db->query($sql);
-
-        $history = new History($this->_siteID);
-        $history->storeHistoryDeleted(DATA_ITEM_COMPANY, $companyID);
-
         /* Find associated contacts. */
         $sql = sprintf(
             "SELECT
@@ -304,6 +288,51 @@ class Companies
             $attachments->delete($row['attachmentID']);
         }
 
+        /* Delete company activity entries. */
+        $sql = sprintf(
+            "DELETE FROM
+                activity
+            WHERE
+                data_item_type = %s
+            AND
+                data_item_id = %s
+            AND
+                site_id = %s",
+            DATA_ITEM_COMPANY,
+            $this->_db->makeQueryInteger($companyID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
+        /* Delete company calendar events. */
+        $sql = sprintf(
+            "DELETE FROM
+                calendar_event
+            WHERE
+                data_item_type = %s
+            AND
+                data_item_id = %s
+            AND
+                site_id = %s",
+            DATA_ITEM_COMPANY,
+            $this->_db->makeQueryInteger($companyID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
+        /* Delete company departments. */
+        $sql = sprintf(
+            "DELETE FROM
+                company_department
+            WHERE
+                company_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($companyID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
         /* Delete from saved lists. */
         $sql = sprintf(
             "DELETE FROM
@@ -322,6 +351,22 @@ class Companies
 
         /* Delete extra fields. */
         $this->extraFields->deleteValueByDataItemID($companyID);
+
+        /* Delete the company. */
+        $sql = sprintf(
+            "DELETE FROM
+                company
+            WHERE
+                company_id = %s
+            AND
+                site_id = %s",
+            $companyID,
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
+        $history = new History($this->_siteID);
+        $history->storeHistoryDeleted(DATA_ITEM_COMPANY, $companyID);
     }
 
     /**
