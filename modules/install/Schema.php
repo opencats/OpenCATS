@@ -1657,6 +1657,10 @@ class CATSSchema
                         )
                     );
             ',
+            '384' => 'PHP:
+                include_once(\'modules/install/scripts/384.php\');
+                update_384($db);
+            ',
 
         );
     }
