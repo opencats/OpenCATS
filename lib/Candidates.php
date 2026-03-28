@@ -385,22 +385,6 @@ class Candidates
      */
     public function delete($candidateID)
     {
-        /* Delete the candidate from candidate. */
-        $sql = sprintf(
-            "DELETE FROM
-                candidate
-            WHERE
-                candidate_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
-        );
-        $this->_db->query($sql);
-
-        $history = new History($this->_siteID);
-        $history->storeHistoryDeleted(DATA_ITEM_CANDIDATE, $candidateID);
-
         /* Delete pipeline entries from candidate_joborder. */
         $sql = sprintf(
             "DELETE FROM
@@ -418,6 +402,64 @@ class Candidates
         $sql = sprintf(
             "DELETE FROM
                 candidate_joborder_status_history
+            WHERE
+                candidate_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($candidateID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
+        /* Delete candidate activity entries. */
+        $sql = sprintf(
+            "DELETE FROM
+                activity
+            WHERE
+                data_item_type = %s
+            AND
+                data_item_id = %s
+            AND
+                site_id = %s",
+            DATA_ITEM_CANDIDATE,
+            $this->_db->makeQueryInteger($candidateID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
+        /* Delete candidate calendar events. */
+        $sql = sprintf(
+            "DELETE FROM
+                calendar_event
+            WHERE
+                data_item_type = %s
+            AND
+                data_item_id = %s
+            AND
+                site_id = %s",
+            DATA_ITEM_CANDIDATE,
+            $this->_db->makeQueryInteger($candidateID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
+        /* Delete candidate tags. */
+        $sql = sprintf(
+            "DELETE FROM
+                candidate_tag
+            WHERE
+                candidate_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($candidateID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
+        /* Delete candidate questionnaire history. */
+        $sql = sprintf(
+            "DELETE FROM
+                career_portal_questionnaire_history
             WHERE
                 candidate_id = %s
             AND
@@ -469,6 +511,22 @@ class Candidates
 
         /* Delete extra fields. */
         $this->extraFields->deleteValueByDataItemID($candidateID);
+
+        /* Delete the candidate from candidate. */
+        $sql = sprintf(
+            "DELETE FROM
+                candidate
+            WHERE
+                candidate_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($candidateID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
+        $history = new History($this->_siteID);
+        $history->storeHistoryDeleted(DATA_ITEM_CANDIDATE, $candidateID);
     }
 
     /**
