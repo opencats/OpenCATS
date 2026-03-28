@@ -387,18 +387,6 @@ class Contacts
     public function delete($contactID)
     {
         $sql = sprintf(
-            "DELETE FROM
-                contact
-            WHERE
-                contact_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($contactID),
-            $this->_siteID
-        );
-        $this->_db->query($sql);
-
-        $sql = sprintf(
             "UPDATE
                 contact
             SET
@@ -411,6 +399,77 @@ class Contacts
             $this->_siteID
         );
         $this->_db->query($sql);
+
+        $sql = sprintf(
+            "UPDATE
+                joborder
+            SET
+                contact_id = -1
+            WHERE
+                contact_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($contactID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
+        $sql = sprintf(
+            "UPDATE
+                company
+            SET
+                billing_contact = -1
+            WHERE
+                billing_contact = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($contactID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
+        /* Delete contact activity entries. */
+        $sql = sprintf(
+            "DELETE FROM
+                activity
+            WHERE
+                data_item_type = %s
+            AND
+                data_item_id = %s
+            AND
+                site_id = %s",
+            DATA_ITEM_CONTACT,
+            $this->_db->makeQueryInteger($contactID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
+        /* Delete contact calendar events. */
+        $sql = sprintf(
+            "DELETE FROM
+                calendar_event
+            WHERE
+                data_item_type = %s
+            AND
+                data_item_id = %s
+            AND
+                site_id = %s",
+            DATA_ITEM_CONTACT,
+            $this->_db->makeQueryInteger($contactID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
+        /* Delete attachments. */
+        $attachments = new Attachments($this->_siteID);
+        $attachmentsRS = $attachments->getAll(
+            DATA_ITEM_CONTACT, $contactID
+        );
+
+        foreach ($attachmentsRS as $row)
+        {
+            $attachments->delete($row['attachmentID']);
+        }
 
         /* Delete from saved lists. */
         $sql = sprintf(
@@ -430,6 +489,18 @@ class Contacts
 
         /* Delete extra fields. */
         $this->extraFields->deleteValueByDataItemID($contactID);
+
+        $sql = sprintf(
+            "DELETE FROM
+                contact
+            WHERE
+                contact_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($contactID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
 
         $history = new History($this->_siteID);
         $history->storeHistoryDeleted(DATA_ITEM_CONTACT, $contactID);
