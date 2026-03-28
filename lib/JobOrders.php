@@ -285,38 +285,6 @@ class JobOrders
      */
     public function delete($jobOrderID)
     {
-        /* Delete the job order. */
-        $sql = sprintf(
-            "DELETE FROM
-                joborder
-            WHERE
-                joborder_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($jobOrderID),
-            $this->_siteID
-        );
-        $this->_db->query($sql);
-
-        /* Store history. */
-        $history = new History($this->_siteID);
-        $history->storeHistoryDeleted(DATA_ITEM_JOBORDER, $jobOrderID);
-
-        /* Clear calendar event associations for this job order. */
-        $sql = sprintf(
-            "UPDATE
-                calendar_event
-            SET
-                joborder_id = NULL
-            WHERE
-                joborder_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($jobOrderID),
-            $this->_siteID
-        );
-        $this->_db->query($sql);
-
         /* Delete pipeline entries from candidate_joborder. */
         $sql = sprintf(
             "DELETE FROM
@@ -334,6 +302,66 @@ class JobOrders
         $sql = sprintf(
             "DELETE FROM
                 candidate_joborder_status_history
+            WHERE
+                joborder_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($jobOrderID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
+        /* Delete job order activity entries. */
+        $sql = sprintf(
+            "DELETE FROM
+                activity
+            WHERE
+                data_item_type = %s
+            AND
+                data_item_id = %s
+            AND
+                site_id = %s",
+            DATA_ITEM_JOBORDER,
+            $this->_db->makeQueryInteger($jobOrderID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
+        /* Delete job order calendar events. */
+        $sql = sprintf(
+            "DELETE FROM
+                calendar_event
+            WHERE
+                data_item_type = %s
+            AND
+                data_item_id = %s
+            AND
+                site_id = %s",
+            DATA_ITEM_JOBORDER,
+            $this->_db->makeQueryInteger($jobOrderID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
+        $sql = sprintf(
+            "UPDATE
+                activity
+            SET
+                joborder_id = NULL
+            WHERE
+                joborder_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($jobOrderID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
+        $sql = sprintf(
+            "UPDATE
+                calendar_event
+            SET
+                joborder_id = -1
             WHERE
                 joborder_id = %s
             AND
@@ -372,6 +400,23 @@ class JobOrders
 
         /* Delete extra fields. */
         $this->extraFields->deleteValueByDataItemID($jobOrderID);
+
+        /* Delete the job order. */
+        $sql = sprintf(
+            "DELETE FROM
+                joborder
+            WHERE
+                joborder_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($jobOrderID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
+        /* Store history. */
+        $history = new History($this->_siteID);
+        $history->storeHistoryDeleted(DATA_ITEM_JOBORDER, $jobOrderID);
     }
 
     /**
