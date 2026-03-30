@@ -136,6 +136,21 @@ class ExtraFields
     {
         $sql = sprintf(
             "DELETE FROM
+                extra_field
+             WHERE
+                field_name = %s
+             AND
+                site_id = %s
+             AND
+                data_item_type = %s",
+             $this->_db->makeQueryString($fieldName),
+             $this->_siteID,
+             $this->_dataItemType
+        );
+        $this->_db->query($sql);
+
+        $sql = sprintf(
+            "DELETE FROM
                 extra_field_settings
              WHERE
                 field_name = %s
