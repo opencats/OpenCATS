@@ -1396,6 +1396,23 @@ class CATSSchema
             '370' => '
                 DELETE FROM module_schema WHERE name = \'toolbar\';
             ',
+            '371' => '
+                DELETE FROM extra_field
+                WHERE data_item_type = 100
+                AND data_item_id NOT IN (SELECT candidate_id FROM candidate);
+
+                DELETE FROM extra_field
+                WHERE data_item_type = 200
+                AND data_item_id NOT IN (SELECT company_id FROM company);
+
+                DELETE FROM extra_field
+                WHERE data_item_type = 300
+                AND data_item_id NOT IN (SELECT contact_id FROM contact);
+
+                DELETE FROM extra_field
+                WHERE data_item_type = 400
+                AND data_item_id NOT IN (SELECT joborder_id FROM joborder);
+            ',
 
         );
     }
