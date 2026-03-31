@@ -59,7 +59,7 @@ class CATSWebTestCase extends WebTestCase
         return $result;
     }
 
-    public function post($url, $parameters = false)
+    public function post($url, $parameters = false, $content_type = false)
     {
         if ($parameters === false)
         {
@@ -73,7 +73,7 @@ class CATSWebTestCase extends WebTestCase
             $parameters['csrfToken'] = $this->_csrfToken;
         }
 
-        $result = parent::post($url, $parameters);
+        $result = parent::post($url, $parameters, $content_type);
         $this->updateCSRFTokenFromHTML($this->getRawSource());
         return $result;
     }
