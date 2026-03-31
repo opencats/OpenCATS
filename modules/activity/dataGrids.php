@@ -128,7 +128,7 @@ class ActivityDataGrid extends DataGrid
                                      'alphaNavigation' => true,
                                      'filter'          => 'activity_type.short_description'),  
                                      
-             'Notes' =>      array('pagerRender'    => 'return $rsData[\'notes\'];', 
+             'Notes' =>      array('pagerRender'    => 'return nl2br($rsData[\'notes\']);', 
                                      'sortableColumn'  => 'notes',
                                      'pagerWidth'      => 240,
                                      'pagerOptional'   => true,
