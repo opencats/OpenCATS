@@ -77,6 +77,7 @@ insert  into `activity_type`(`activity_type_id`,`short_description`) values (400
 insert  into `activity_type`(`activity_type_id`,`short_description`) values (500,'Call (Talked)');
 insert  into `activity_type`(`activity_type_id`,`short_description`) values (600,'Call (LVM)');
 insert  into `activity_type`(`activity_type_id`,`short_description`) values (700,'Call (Missed)');
+insert  into `activity_type`(`activity_type_id`,`short_description`) values (800,'Status Change');
 
 /*Table structure for table `attachment` */
 
