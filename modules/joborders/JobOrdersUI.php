@@ -178,19 +178,19 @@ class JobOrdersUI extends UserInterface
 
                 break;
 
-            /* Change candidate-joborder status. */
-            case 'addActivityChangeStatus':
-                if ($this->getUserAccessLevel('pipelines.addActivityChangeStatus') < ACCESS_LEVEL_EDIT)
+            /* Add candidate activity / schedule event. */
+            case 'addActivity':
+                if ($this->getUserAccessLevel('pipelines.addActivity') < ACCESS_LEVEL_EDIT)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 if ($this->isPostBack())
                 {
-                    $this->onAddActivityChangeStatus();
+                    $this->onAddActivity();
                 }
                 else
                 {
-                    $this->addActivityChangeStatus();
+                    $this->addActivity();
                 }
 
                 break;
@@ -1465,7 +1465,7 @@ class JobOrdersUI extends UserInterface
         );
     }
 
-    private function addActivityChangeStatus()
+    private function addActivity()
     {
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_GET))
@@ -1500,57 +1500,6 @@ class JobOrdersUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified pipeline entry could not be found.');
         }
 
-        $statusRS = $pipelines->getStatusesForPicking();
-
-        $selectedStatusID = $pipelineData['statusID'];
-
-        /* Override default send email behavior with site specific send email behavior. */
-        $mailerSettings = new MailerSettings($this->_siteID);
-        $mailerSettingsRS = $mailerSettings->getAll();
-
-        $candidateJoborderStatusSendsMessage = unserialize($mailerSettingsRS['candidateJoborderStatusSendsMessage']);
-
-        foreach ($statusRS as $index => $status)
-        {
-            $statusRS[$index]['triggersEmail'] = $candidateJoborderStatusSendsMessage[$status['statusID']];
-        }
-
-        /* Get the change status email template. */
-        $emailTemplates = new EmailTemplates($this->_siteID);
-        $statusChangeTemplateRS = $emailTemplates->getByTag(
-            'EMAIL_TEMPLATE_STATUSCHANGE'
-        );
-        if (empty($statusChangeTemplateRS) ||
-            empty($statusChangeTemplateRS['textReplaced']))
-        {
-            $statusChangeTemplate = '';
-            $emailDisabled = empty($statusChangeTemplateRS) ? '1' : $statusChangeTemplateRS['disabled'];
-        }
-        else
-        {
-            $statusChangeTemplate = $statusChangeTemplateRS['textReplaced'];
-            $emailDisabled = $statusChangeTemplateRS['disabled'];
-        }
-
-        /* Replace e-mail template variables. '%CANDSTATUS%', '%JBODTITLE%',
-         * '%JBODCLIENT%' are replaced by JavaScript.
-         */
-        $stringsToFind = array(
-            '%CANDOWNER%',
-            '%CANDFIRSTNAME%',
-            '%CANDFULLNAME%'
-        );
-        $replacementStrings = array(
-            $candidateData['ownerFullName'],
-            $candidateData['firstName'],
-            $candidateData['firstName'] . ' ' . $candidateData['lastName']
-        );
-        $statusChangeTemplate = str_replace(
-            $stringsToFind,
-            $replacementStrings,
-            $statusChangeTemplate
-        );
-
         $calendar = new Calendar($this->_siteID);
         $calendarEventTypes = $calendar->getAllEventTypes();
 
@@ -1565,22 +1514,18 @@ class JobOrdersUI extends UserInterface
 
         $this->_template->assign('candidateID', $candidateID);
         $this->_template->assign('pipelineData', $pipelineData);
-        $this->_template->assign('statusRS', $statusRS);
         $this->_template->assign('selectedJobOrderID', $jobOrderID);
-        $this->_template->assign('selectedStatusID', $selectedStatusID);
         $this->_template->assign('calendarEventTypes', $calendarEventTypes);
         $this->_template->assign('allowEventReminders', $allowEventReminders);
         $this->_template->assign('userEmail', $_SESSION['CATS']->getEmail());
         $this->_template->assign('onlyScheduleEvent', false);
-        $this->_template->assign('statusChangeTemplate', $statusChangeTemplate);
-        $this->_template->assign('emailDisabled', $emailDisabled);
         $this->_template->assign('isFinishedMode', false);
         $this->_template->assign('isJobOrdersMode', true);
 
         if (!eval(Hooks::get('JO_ADD_ACTIVITY_CHANGE_STATUS'))) return;
 
         $this->_template->display(
-            './modules/candidates/AddActivityChangeStatusModal.tpl'
+            './modules/candidates/AddActivityScheduleEventModal.tpl'
         );
     }
 
@@ -1687,7 +1632,7 @@ class JobOrdersUI extends UserInterface
         );
     }
 
-    private function onAddActivityChangeStatus()
+    private function onAddActivity()
     {
         /* Bail out if we don't have a valid regarding job order ID. */
         if (!$this->isRequiredIDValid('regardingID', $_POST))
@@ -1701,7 +1646,7 @@ class JobOrdersUI extends UserInterface
 
         include_once(LEGACY_ROOT . '/modules/candidates/CandidatesUI.php');
         $candidatesUI = new CandidatesUI();
-        $candidatesUI->publicAddActivityChangeStatus(
+        $candidatesUI->publicAddActivity(
             true, $regardingID, $this->_moduleDirectory
         );
     }

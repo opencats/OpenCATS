@@ -1,5 +1,7 @@
-<?php /* $Id: AddActivityChangeStatusModal.tpl 3799 2007-12-04 17:54:36Z brian $ */ ?>
-<?php if ($this->isJobOrdersMode): ?>
+<?php /* $Id: AddActivityScheduleEventModal.tpl $ */ ?>
+<?php if ($this->isJobOrdersMode && $this->onlyScheduleEvent): ?>
+    <?php TemplateUtility::printModalHeader('Job Orders', array('modules/candidates/activityvalidator.js', 'js/activity.js'), 'Job Orders: Schedule Event'); ?>
+<?php elseif ($this->isJobOrdersMode): ?>
     <?php TemplateUtility::printModalHeader('Job Orders', array('modules/candidates/activityvalidator.js', 'js/activity.js'), 'Job Orders: Log Activity'); ?>
 <?php elseif ($this->onlyScheduleEvent): ?>
     <?php TemplateUtility::printModalHeader('Candidates', array('modules/candidates/activityvalidator.js', 'js/activity.js'), 'Candidates: Schedule Event'); ?>
@@ -11,39 +13,9 @@
 
 <script type="text/javascript">
     window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
-    <?php if ($this->isJobOrdersMode): ?>
-        statusesArray = new Array(1);
-        jobOrdersArray = new Array(1);
-        statusesArrayString = new Array(1);
-        jobOrdersArrayStringTitle = new Array(1);
-        jobOrdersArrayStringCompany = new Array(1);
-        statusesArray[0] = <?php echo($this->pipelineData['statusID']); ?>;
-        statusesArrayString[0] = '<?php echo($this->pipelineData['status']); ?>';
-        jobOrdersArray[0] = <?php echo($this->pipelineData['jobOrderID']); ?>;
-        jobOrdersArrayStringTitle[0] = '<?php echo(str_replace("'", "\\'", $this->pipelineData['title'])); ?>';
-        jobOrdersArrayStringCompany[0] = '<?php echo(str_replace("'", "\\'", $this->pipelineData['companyName'])); ?>';
-    <?php else: ?>
-        <?php $count = count($this->pipelineRS); ?>
-        statusesArray = new Array(<?php echo($count); ?>);
-        jobOrdersArray = new Array(<?php echo($count); ?>);
-        statusesArrayString = new Array(<?php echo($count); ?>);
-        jobOrdersArrayStringTitle = new Array(<?php echo($count); ?>);
-        jobOrdersArrayStringCompany = new Array(<?php echo($count); ?>);
-        <?php for ($i = 0; $i < $count; ++$i): ?>
-            statusesArray[<?php echo($i); ?>] = <?php echo($this->pipelineRS[$i]['statusID']); ?>;
-            statusesArrayString[<?php echo($i); ?>] = '<?php echo($this->pipelineRS[$i]['status']); ?>';
-            jobOrdersArray[<?php echo($i); ?>] = <?php echo($this->pipelineRS[$i]['jobOrderID']); ?>;
-            jobOrdersArrayStringTitle[<?php echo($i); ?>] = '<?php echo(str_replace("'", "\\'", $this->pipelineRS[$i]['title'])); ?>';
-            jobOrdersArrayStringCompany[<?php echo($i); ?>] = '<?php echo(str_replace("'", "\\'", $this->pipelineRS[$i]['companyName'])); ?>';
-        <?php endfor; ?>
-    <?php endif; ?>
-    statusTriggersEmailArray = new Array(<?php echo(count($this->statusRS)); ?>);
-    <?php foreach ($this->statusRS as $rowNumber => $statusData): ?>
-       statusTriggersEmailArray[<?php echo($rowNumber); ?>] = <?php echo($statusData['triggersEmail']); ?>;
-    <?php endforeach; ?>
 </script>
 
-    <form name="changePipelineStatusForm" id="changePipelineStatusForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=<?php if ($this->isJobOrdersMode): ?>joborders<?php else: ?>candidates<?php endif; ?>&amp;a=addActivityChangeStatus<?php if ($this->onlyScheduleEvent): ?>&amp;onlyScheduleEvent=true<?php endif; ?>" method="post" onsubmit="return checkActivityForm(document.changePipelineStatusForm);" autocomplete="off">
+    <form name="logActivityForm" id="logActivityForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=<?php if ($this->isJobOrdersMode): ?>joborders<?php else: ?>candidates<?php endif; ?>&amp;a=addActivity<?php if ($this->onlyScheduleEvent): ?>&amp;onlyScheduleEvent=true<?php endif; ?>" method="post" onsubmit="return checkActivityForm(document.logActivityForm);" autocomplete="off">
         <input type="hidden" name="postback" id="postback" value="postback" />
         <input type="hidden" id="candidateID" name="candidateID" value="<?php echo($this->candidateID); ?>" />
 <?php if ($this->isJobOrdersMode): ?>
@@ -59,9 +31,8 @@
 <?php if ($this->isJobOrdersMode): ?>
                     <span><?php $this->_($this->pipelineData['title']); ?></span>
 <?php else: ?>
-                    <select id="regardingID" name="regardingID" class="inputbox" style="width: 150px;" onchange="AS_onRegardingChange(statusesArray, jobOrdersArray, 'regardingID', 'statusID', 'statusTR', 'sendEmailCheckTR', 'triggerEmail', 'triggerEmailSpan', 'changeStatus', 'changeStatusSpanA', 'changeStatusSpanB');">
+                    <select id="regardingID" name="regardingID" class="inputbox" style="width: 150px;">
                         <option value="-1">General</option>
-
                         <?php foreach ($this->pipelineRS as $rowNumber => $pipelinesData): ?>
                             <?php if ($this->selectedJobOrderID == $pipelinesData['jobOrderID']): ?>
                                 <option selected="selected" value="<?php $this->_($pipelinesData['jobOrderID']) ?>"><?php $this->_($pipelinesData['title']) ?></option>
@@ -74,46 +45,7 @@
                 </td>
             </tr>
 
-            <tr id="statusTR" <?php if ($this->onlyScheduleEvent): ?>style="display:none;"<?php endif; ?>>
-                <td class="tdVertical">
-                    <label id="statusIDLabel" for="statusID">Status:</label>
-                </td>
-                <td class="tdData">
-                    <input type="checkbox" name="changeStatus" id="changeStatus" style="margin-left: 0px" onclick="AS_onChangeStatusChange('changeStatus', 'statusID', 'changeStatusSpanB');"<?php if ($this->selectedJobOrderID == -1 || $this->onlyScheduleEvent): ?> disabled<?php endif; ?> />
-                    <span id="changeStatusSpanA"<?php if ($this->selectedJobOrderID == -1): ?> style="color: #aaaaaa;"<?php endif;?>>Change Status</span><br />
-
-                    <div id="changeStatusDiv" style="margin-top: 4px;">
-                        <select id="statusID" name="statusID" class="inputbox" style="width: 150px;" onchange="AS_onStatusChange(statusesArray, jobOrdersArray, 'regardingID', 'statusID', 'sendEmailCheckTR', 'triggerEmailSpan', 'activityNote', 'activityTypeID', <?php if ($this->isJobOrdersMode): echo $this->selectedJobOrderID; else: ?>null<?php endif; ?>, 'customMessage', 'origionalCustomMessage', 'triggerEmail', statusesArrayString, jobOrdersArrayStringTitle, jobOrdersArrayStringCompany, statusTriggersEmailArray, 'emailIsDisabled');" disabled>
-                            <option value="-1">(Select a Status)</option>
-
-                            <?php if ($this->selectedStatusID == -1): ?>
-                                <?php foreach ($this->statusRS as $rowNumber => $statusData): ?>
-                                    <option value="<?php $this->_($statusData['statusID']) ?>"><?php $this->_($statusData['status']) ?></option>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <?php foreach ($this->statusRS as $rowNumber => $statusData): ?>
-                                    <option <?php if ($this->selectedStatusID == $statusData['statusID']): ?>selected <?php endif; ?>value="<?php $this->_($statusData['statusID']) ?>"><?php $this->_($statusData['status']) ?></option>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </select>
-                        <span id="changeStatusSpanB" style="color: #aaaaaa;">&nbsp;*</span>&nbsp;&nbsp;
-                        <span id="triggerEmailSpan" style="display: none;"><input type="checkbox" name="triggerEmail" id="triggerEmail" onclick="AS_onSendEmailChange('triggerEmail', 'sendEmailCheckTR', 'visibleTR');" />Send E-Mail Notification to Candidate</span>
-                    </div>
-                </td>
-            </tr>
-
-            <tr id="sendEmailCheckTR" style="display: none;">
-                <td class="tdVertical">
-                    <label id="triggerEmailLabel" for="triggerEmail">E-Mail:</label>
-                </td>
-                <td class="tdData">
-                    Custom Message<br />
-                    <input type="hidden" id="origionalCustomMessage" value="<?php $this->_($this->statusChangeTemplate); ?>" />
-                    <input type="hidden" id="emailIsDisabled" value="<?php echo($this->emailDisabled); ?>" />
-                    <textarea style="height:135px; width:375px;" name="customMessage" id="customMessage" cols="50" class="inputbox"></textarea>
-                </td>
-            </tr>
-           <tr id="addActivityTR" <?php if ($this->onlyScheduleEvent): ?>style="display:none;"<?php endif; ?>>
+            <tr id="addActivityTR" <?php if ($this->onlyScheduleEvent): ?>style="display:none;"<?php endif; ?>>
                 <td class="tdVertical">
                     <label id="addActivityLabel" for="addActivity">Activity:</label>
                 </td>
@@ -253,7 +185,10 @@
     </form>
 
     <script type="text/javascript">
-        document.changePipelineStatusForm.activityNote.focus();
+        if (!<?php echo($this->onlyScheduleEvent ? 'true' : 'false'); ?>)
+        {
+            document.logActivityForm.activityNote.focus();
+        }
     </script>
 
 <?php else: ?>
@@ -261,13 +196,6 @@
         <p>No changes have been made.</p>
     <?php else: ?>
          <?php if (!$this->onlyScheduleEvent): ?>
-            <?php //FIXME: E-mail stuff. ?>
-            <?php if ($this->statusChanged): ?>
-                <p>The candidate's status has been changed from <span class="bold"><?php $this->_($this->oldStatusDescription); ?></span> to <span class="bold"><?php $this->_($this->newStatusDescription); ?></span>.</p>
-            <?php else: ?>
-                <p>The candidate's status has not been changed.</p>
-            <?php endif; ?>
-
             <?php if ($this->activityAdded): ?>
                 <?php if (!empty($this->activityDescription)): ?>
                     <p>An activity entry of type <span class="bold"><?php $this->_($this->activityType); ?></span> has been added with the following note: &quot;<?php echo($this->activityDescription); ?>&quot;.</p>
@@ -281,8 +209,6 @@
     <?php endif; ?>
 
     <?php echo($this->eventHTML); ?>
-
-    <?php echo($this->notificationHTML); ?>
 
     <form>
 <?php if ($this->isJobOrdersMode): ?>

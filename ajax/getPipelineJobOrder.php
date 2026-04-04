@@ -300,6 +300,11 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
                     <?php endif; ?>
                 <?php endif; ?>
                 <?php if (!isset($frozen)): ?>
+                    <?php if ($_SESSION['CATS']->getAccessLevel('pipelines.addActivity') >= ACCESS_LEVEL_EDIT): ?>
+                        <a href="#" onclick="showPopWin('<?php echo($indexFile); ?>?m=joborders&amp;a=addActivity&amp;jobOrderID=<?php echo($jobOrderID); ?>&amp;candidateID=<?php echo($pipelinesData['candidateID']); ?>', 600, 480, null); return false;">
+                            <img src="images/new_activity_inline.gif" width="16" height="16" class="absmiddle" alt="" style="border: none;" title="Log an Activity" />
+                        </a>
+                    <?php endif; ?>
                     <?php if ($_SESSION['CATS']->getAccessLevel('pipelines.changeStatus') >= ACCESS_LEVEL_EDIT): ?>
                         <a href="#" onclick="showPopWin('<?php echo($indexFile); ?>?m=joborders&amp;a=changeStatus&amp;jobOrderID=<?php echo($jobOrderID); ?>&amp;candidateID=<?php echo($pipelinesData['candidateID']); ?>', 600, 430, null); return false;">
                             <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="" style="border: none;"  title="Change Status" />
