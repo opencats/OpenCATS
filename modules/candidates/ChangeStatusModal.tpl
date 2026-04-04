@@ -158,6 +158,7 @@
 <form name="changeStatusForm" id="changeStatusForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=<?php if ($this->isJobOrdersMode): ?>joborders<?php else: ?>candidates<?php endif; ?>&amp;a=changeStatus" method="post" onsubmit="return CS_checkForm();" autocomplete="off">
     <input type="hidden" name="postback" id="postback" value="postback" />
     <input type="hidden" id="candidateID" name="candidateID" value="<?php echo($this->candidateID); ?>" />
+    <input type="hidden" id="addActivityProvided" name="addActivityProvided" value="1" />
 <?php if ($this->isJobOrdersMode): ?>
     <input type="hidden" id="regardingIDHidden" name="regardingID" value="<?php echo($this->selectedJobOrderID); ?>" />
 <?php endif; ?>
@@ -207,6 +208,14 @@
             </td>
         </tr>
 
+        <tr id="addActivityTR">
+            <td class="tdVertical">
+                <label id="addActivityLabel" for="addActivity">Activity:</label>
+            </td>
+            <td class="tdData">
+                <input type="checkbox" name="addActivity" id="addActivity" style="margin-left: 0px;" checked="checked" />Log an Activity
+            </td>
+        </tr>
     </table>
 
     <input type="submit" class="button" name="submit" id="submit" value="Save" />&nbsp;
@@ -238,6 +247,12 @@
         <?php else: ?>
             <p>The candidate's status has not been changed.</p>
         <?php endif; ?>
+    <?php endif; ?>
+
+    <?php if ($this->activityAdded): ?>
+        <p>An activity entry of type <span class="bold"><?php $this->_($this->activityType); ?></span> has been added.</p>
+    <?php else: ?>
+        <p>No activity entries have been added.</p>
     <?php endif; ?>
 
     <?php echo($this->notificationHTML); ?>

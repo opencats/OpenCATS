@@ -3589,6 +3589,9 @@ class CandidatesUI extends UserInterface
         $directoryOverride = '')
     {
         $notificationHTML = '';
+        $activityAdded = false;
+        $activityNote = '';
+        $activityTypeDescription = '';
 
         $pipelines = new Pipelines($this->_siteID);
         $statusRS = $pipelines->getStatusesForPicking();
@@ -3708,6 +3711,42 @@ class CandidatesUI extends UserInterface
                 $jobOrders = new JobOrders($this->_siteID);
                 $jobOrders->updateOpeningsAvailable($regardingID, $data['openingsAvailable'] + 1);
             }
+            /* addActivity defaults to enabled for compatibility with legacy callers. */
+            if (isset($_POST['addActivityProvided']))
+            {
+                $addActivity = $this->isChecked('addActivity', $_POST);
+            }
+            else
+            {
+                $addActivity = true;
+            }
+
+            if ($addActivity)
+            {
+                /* Log status changes as activities in the dedicated status flow. */
+                $activityEntries = new ActivityEntries($this->_siteID);
+                $activityNote = htmlspecialchars(
+                    sprintf('Status change: %s', $newStatusDescription)
+                );
+                foreach ($statusRS as $statusData)
+                {
+                    $activityNote = StringUtility::replaceOnce(
+                        $statusData['status'],
+                        '<span style="color: #ff6c00;">' . $statusData['status'] . '</span>',
+                        $activityNote
+                    );
+                }
+                $activityEntries->add(
+                    $candidateID,
+                    DATA_ITEM_CANDIDATE,
+                    ACTIVITY_STATUS_CHANGE,
+                    $activityNote,
+                    $this->_userID,
+                    $regardingID
+                );
+                $activityAdded = true;
+                $activityTypeDescription = 'Status Change';
+            }
         }
 
         $changesMade = $statusChanged;
@@ -3719,6 +3758,9 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('oldStatusDescription', $oldStatusDescription);
         $this->_template->assign('newStatusDescription', $newStatusDescription);
         $this->_template->assign('statusChanged', $statusChanged);
+        $this->_template->assign('activityAdded', $activityAdded);
+        $this->_template->assign('activityDescription', $activityNote);
+        $this->_template->assign('activityType', $activityTypeDescription);
         $this->_template->assign('notificationHTML', $notificationHTML);
         $this->_template->assign('changesMade', $changesMade);
         $this->_template->assign('isFinishedMode', true);
