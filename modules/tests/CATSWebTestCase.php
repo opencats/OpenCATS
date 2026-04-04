@@ -368,6 +368,45 @@ class CATSWebTestCase extends WebTestCase
         return true;
     }
 
+    public function changePipelineStatus($moduleName, $candidateID, $jobOrderID,
+        $statusID, $addActivityProvided = false, $addActivity = true)
+    {
+        $postData = array(
+            'postback'    => 'postback',
+            'candidateID' => $candidateID,
+            'regardingID' => $jobOrderID,
+            'statusID'    => $statusID
+        );
+
+        if ($addActivityProvided)
+        {
+            $postData['addActivityProvided'] = '1';
+            $postData['addActivity'] = ($addActivity ? 'on' : 'off');
+        }
+
+        /* Change candidate-job order pipeline status through the dedicated modal flow. */
+        $this->assertPOST(
+            $this->_indexURL . '?m=' . $moduleName . '&a=changeStatus',
+            $postData,
+            'Changing pipeline status should succeed'
+        );
+        if (!$this->runPageLoadAssertions(false))
+        {
+            return false;
+        }
+
+        if ($moduleName == 'joborders')
+        {
+            $this->assertPattern('/The pipeline status has been changed from/');
+        }
+        else
+        {
+            $this->assertPattern('/The candidate\'s status has been changed from/');
+        }
+
+        return true;
+    }
+
     public function addUser($firstName, $lastName, $username, $accessLevel,
                             $password)
     {

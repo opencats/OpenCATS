@@ -844,6 +844,7 @@ class GetPipelineDetailsTest extends CATSAJAXTestCase
 
         /* There aren't any activity entries yet. */
         $this->assertPattern('/Added candidate to job order./');
+        $this->assertNoPattern('/Status change:/');
 
         /* Add an activity. */
         $this->addPipelineActivity(
@@ -851,6 +852,14 @@ class GetPipelineDetailsTest extends CATSAJAXTestCase
             $testJobOrderID1,
             ACTIVITY_CALL_TALKED,
             'Test notes.'
+        );
+
+        /* Change status through the dedicated Candidates modal action. */
+        $this->changePipelineStatus(
+            'candidates',
+            $testCandidateID,
+            $testJobOrderID1,
+            PIPELINE_STATUS_SUBMITTED
         );
 
         /* POST the AJAX call to ajax.php. */
@@ -868,7 +877,31 @@ class GetPipelineDetailsTest extends CATSAJAXTestCase
         $this->assertPattern('/>Test notes.</');
         $this->assertPattern('/\(' . TESTER_FULLNAME . '\)/');
         $this->assertPattern('/>Activity History:</');
+        $this->assertPattern('/Status change:.*Submitted/');
         $this->assertPattern('/' . date('m-d-y') . '/');
+
+        /* Change status through the dedicated Job Orders modal action, with activity opt-out. */
+        $this->changePipelineStatus(
+            'joborders',
+            $testCandidateID,
+            $testJobOrderID1,
+            PIPELINE_STATUS_INTERVIEWING,
+            true,
+            false
+        );
+
+        /* POST the AJAX call to ajax.php. */
+        $this->post(
+            CATSUtility::getAbsoluteURI('ajax.php'),
+            array(
+                'f' => 'getPipelineDetails',
+                'candidateJobOrderID' => $candidateJobOrderID
+            )
+        );
+        $this->runPageLoadAssertions(false);
+
+        $this->assertPattern('/Status change:.*Submitted/');
+        $this->assertNoPattern('/Status change:.*Interviewing/');
 
         /* Delete the test candidate. */
         $this->deleteCandidate($testCandidateID);
