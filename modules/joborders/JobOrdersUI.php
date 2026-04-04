@@ -1524,7 +1524,7 @@ class JobOrdersUI extends UserInterface
             empty($statusChangeTemplateRS['textReplaced']))
         {
             $statusChangeTemplate = '';
-            $emailDisabled = $statusChangeTemplateRS['disabled'];
+            $emailDisabled = empty($statusChangeTemplateRS) ? '1' : $statusChangeTemplateRS['disabled'];
         }
         else
         {
@@ -1643,7 +1643,7 @@ class JobOrdersUI extends UserInterface
             empty($statusChangeTemplateRS['textReplaced']))
         {
             $statusChangeTemplate = '';
-            $emailDisabled = $statusChangeTemplateRS['disabled'];
+            $emailDisabled = empty($statusChangeTemplateRS) ? '1' : $statusChangeTemplateRS['disabled'];
         }
         else
         {

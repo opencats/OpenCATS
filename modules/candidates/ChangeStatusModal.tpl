@@ -1,129 +1,117 @@
 <?php /* $Id: ChangeStatusModal.tpl $ */ ?>
 <?php if ($this->isJobOrdersMode): ?>
-    <?php TemplateUtility::printModalHeader('Job Orders', array('js/activity.js'), 'Job Orders: Change Status'); ?>
+    <?php TemplateUtility::printModalHeader('Job Orders', array(), 'Job Orders: Change Status'); ?>
 <?php else: ?>
-    <?php TemplateUtility::printModalHeader('Candidates', array('js/activity.js'), 'Candidates: Change Status'); ?>
+    <?php TemplateUtility::printModalHeader('Candidates', array(), 'Candidates: Change Status'); ?>
 <?php endif; ?>
 
 <?php if (!$this->isFinishedMode): ?>
 
 <script type="text/javascript">
+    var statusByJobOrderID = {};
+    var statusDescriptionByJobOrderID = {};
+    var jobOrderTitleByID = {};
+    var jobOrderCompanyByID = {};
+
     <?php if ($this->isJobOrdersMode): ?>
-        statusesArray = new Array(1);
-        jobOrdersArray = new Array(1);
-        statusesArrayString = new Array(1);
-        jobOrdersArrayStringTitle = new Array(1);
-        jobOrdersArrayStringCompany = new Array(1);
-        statusesArray[0] = <?php echo($this->pipelineData['statusID']); ?>;
-        statusesArrayString[0] = '<?php echo($this->pipelineData['status']); ?>';
-        jobOrdersArray[0] = <?php echo($this->pipelineData['jobOrderID']); ?>;
-        jobOrdersArrayStringTitle[0] = '<?php echo(str_replace("'", "\\'", $this->pipelineData['title'])); ?>';
-        jobOrdersArrayStringCompany[0] = '<?php echo(str_replace("'", "\\'", $this->pipelineData['companyName'])); ?>';
+        statusByJobOrderID[<?php echo((int) $this->pipelineData['jobOrderID']); ?>] = <?php echo((int) $this->pipelineData['statusID']); ?>;
+        statusDescriptionByJobOrderID[<?php echo((int) $this->pipelineData['jobOrderID']); ?>] = '<?php echo(str_replace("'", "\\'", $this->pipelineData['status'])); ?>';
+        jobOrderTitleByID[<?php echo((int) $this->pipelineData['jobOrderID']); ?>] = '<?php echo(str_replace("'", "\\'", $this->pipelineData['title'])); ?>';
+        jobOrderCompanyByID[<?php echo((int) $this->pipelineData['jobOrderID']); ?>] = '<?php echo(str_replace("'", "\\'", $this->pipelineData['companyName'])); ?>';
     <?php else: ?>
-        <?php $count = count($this->pipelineRS); ?>
-        statusesArray = new Array(<?php echo($count); ?>);
-        jobOrdersArray = new Array(<?php echo($count); ?>);
-        statusesArrayString = new Array(<?php echo($count); ?>);
-        jobOrdersArrayStringTitle = new Array(<?php echo($count); ?>);
-        jobOrdersArrayStringCompany = new Array(<?php echo($count); ?>);
-        <?php for ($i = 0; $i < $count; ++$i): ?>
-            statusesArray[<?php echo($i); ?>] = <?php echo($this->pipelineRS[$i]['statusID']); ?>;
-            statusesArrayString[<?php echo($i); ?>] = '<?php echo($this->pipelineRS[$i]['status']); ?>';
-            jobOrdersArray[<?php echo($i); ?>] = <?php echo($this->pipelineRS[$i]['jobOrderID']); ?>;
-            jobOrdersArrayStringTitle[<?php echo($i); ?>] = '<?php echo(str_replace("'", "\\'", $this->pipelineRS[$i]['title'])); ?>';
-            jobOrdersArrayStringCompany[<?php echo($i); ?>] = '<?php echo(str_replace("'", "\\'", $this->pipelineRS[$i]['companyName'])); ?>';
-        <?php endfor; ?>
+        <?php foreach ($this->pipelineRS as $pipelinesData): ?>
+            statusByJobOrderID[<?php echo((int) $pipelinesData['jobOrderID']); ?>] = <?php echo((int) $pipelinesData['statusID']); ?>;
+            statusDescriptionByJobOrderID[<?php echo((int) $pipelinesData['jobOrderID']); ?>] = '<?php echo(str_replace("'", "\\'", $pipelinesData['status'])); ?>';
+            jobOrderTitleByID[<?php echo((int) $pipelinesData['jobOrderID']); ?>] = '<?php echo(str_replace("'", "\\'", $pipelinesData['title'])); ?>';
+            jobOrderCompanyByID[<?php echo((int) $pipelinesData['jobOrderID']); ?>] = '<?php echo(str_replace("'", "\\'", $pipelinesData['companyName'])); ?>';
+        <?php endforeach; ?>
     <?php endif; ?>
-    statusTriggersEmailArray = new Array(<?php echo(count($this->statusRS)); ?>);
-    <?php foreach ($this->statusRS as $rowNumber => $statusData): ?>
-        statusTriggersEmailArray[<?php echo($rowNumber); ?>] = <?php echo($statusData['triggersEmail']); ?>;
+
+    var statusTriggersEmailMap = {};
+    <?php foreach ($this->statusRS as $statusData): ?>
+        statusTriggersEmailMap[<?php echo((int) $statusData['statusID']); ?>] = <?php echo((int) $statusData['triggersEmail']); ?>;
     <?php endforeach; ?>
+
+    function CS_getRegardingID()
+    {
+        var regardingSelect = document.getElementById('regardingID');
+        if (regardingSelect)
+        {
+            return parseInt(regardingSelect.options[regardingSelect.selectedIndex].value, 10);
+        }
+
+        return parseInt(document.getElementById('regardingIDHidden').value, 10);
+    }
+
+    function CS_selectStatus(statusID)
+    {
+        var statusSelect = document.getElementById('statusID');
+        for (var i = 0; i < statusSelect.options.length; i++)
+        {
+            if (parseInt(statusSelect.options[i].value, 10) === statusID)
+            {
+                statusSelect.selectedIndex = i;
+                return;
+            }
+        }
+    }
+
+    function CS_onSendEmailChange()
+    {
+        var triggerEmail = document.getElementById('triggerEmail');
+        var sendEmailRow = document.getElementById('sendEmailCheckTR');
+
+        if (triggerEmail.checked)
+        {
+            sendEmailRow.style.display = '';
+        }
+        else
+        {
+            sendEmailRow.style.display = 'none';
+        }
+    }
 
     function CS_clearEmail()
     {
-        var sendEmailRow = document.getElementById("sendEmailCheckTR");
-        var triggerEmailSpan = document.getElementById("triggerEmailSpan");
-        var triggerEmail = document.getElementById("triggerEmail");
+        var triggerEmailSpan = document.getElementById('triggerEmailSpan');
+        var triggerEmail = document.getElementById('triggerEmail');
+        var sendEmailRow = document.getElementById('sendEmailCheckTR');
 
+        triggerEmailSpan.style.display = 'none';
         triggerEmail.checked = false;
-        triggerEmailSpan.style.display = "none";
-        sendEmailRow.style.display = "none";
+        sendEmailRow.style.display = 'none';
     }
 
-    function CS_onRegardingChange()
+    function CS_generateEmail(regardingID)
     {
-        var regardingSelectList = document.getElementById("regardingID");
-        var statusSelectList = document.getElementById("statusID");
-        var regardingID = regardingSelectList[regardingSelectList.selectedIndex].value;
+        var statusSelect = document.getElementById('statusID');
+        var template = document.getElementById('origionalCustomMessage').value;
+        template = template.replace(/%CANDSTATUS%/g, statusSelect.options[statusSelect.selectedIndex].text);
+        template = template.replace(/%CANDPREVSTATUS%/g, statusDescriptionByJobOrderID[regardingID]);
+        template = template.replace(/%JBODTITLE%/g, jobOrderTitleByID[regardingID]);
+        template = template.replace(/%JBODCLIENT%/g, jobOrderCompanyByID[regardingID]);
 
-        if (regardingID == "-1")
-        {
-            statusSelectList.selectedIndex = 0;
-            statusSelectList.disabled = true;
-            CS_clearEmail();
-            return;
-        }
-
-        statusSelectList.disabled = false;
-
-        var statusIndex = findValueInArray(jobOrdersArray, regardingID);
-        if (statusIndex == -1)
-        {
-            statusSelectList.selectedIndex = 0;
-            CS_clearEmail();
-            return;
-        }
-
-        var statusSelectIndex = findValueInSelectList(statusSelectList, statusesArray[statusIndex]);
-        if (statusSelectIndex == -1)
-        {
-            statusSelectList.selectedIndex = 0;
-            CS_clearEmail();
-            return;
-        }
-
-        statusSelectList[statusSelectIndex].selected = true;
-        CS_onStatusChange();
+        document.getElementById('customMessage').value = template;
     }
 
     function CS_onStatusChange()
     {
-        var statusSelectList = document.getElementById("statusID");
-        var triggerEmailSpan = document.getElementById("triggerEmailSpan");
-        var triggerEmail = document.getElementById("triggerEmail");
-        var emailText = document.getElementById("customMessage");
-        var emailTextOrigional = document.getElementById("origionalCustomMessage");
-        var emailIsDisabled = document.getElementById("emailIsDisabled");
-        var regardingID;
+        var regardingID = CS_getRegardingID();
+        var statusSelect = document.getElementById('statusID');
+        var triggerEmail = document.getElementById('triggerEmail');
+        var triggerEmailSpan = document.getElementById('triggerEmailSpan');
+        var emailIsDisabled = document.getElementById('emailIsDisabled');
+        var selectedStatusID = parseInt(statusSelect.value, 10);
+        var currentStatusID = parseInt(statusByJobOrderID[regardingID], 10);
 
-        <?php if ($this->isJobOrdersMode): ?>
-            regardingID = "<?php echo($this->selectedJobOrderID); ?>";
-        <?php else: ?>
-            var regardingSelectList = document.getElementById("regardingID");
-            regardingID = regardingSelectList[regardingSelectList.selectedIndex].value;
-        <?php endif; ?>
-
-        if (statusSelectList.value == "-1" || regardingID == "-1")
+        if (isNaN(regardingID) || isNaN(selectedStatusID) || selectedStatusID <= 0 || selectedStatusID === currentStatusID)
         {
             CS_clearEmail();
             return;
         }
 
-        var statusIndex = findValueInArray(jobOrdersArray, regardingID);
-        if (statusIndex == -1)
-        {
-            CS_clearEmail();
-            return;
-        }
-
-        if (statusesArray[statusIndex] == statusSelectList.value)
-        {
-            CS_clearEmail();
-            return;
-        }
-
-        triggerEmailSpan.style.display = "inline";
-        if (statusTriggersEmailArray[statusSelectList.selectedIndex - 1] == 1 && emailIsDisabled.value == "0")
+        triggerEmailSpan.style.display = 'inline';
+        if (statusTriggersEmailMap[selectedStatusID] == 1 && emailIsDisabled.value == '0')
         {
             triggerEmail.checked = true;
         }
@@ -132,38 +120,34 @@
             triggerEmail.checked = false;
         }
 
-        AS_onSendEmailChange("triggerEmail", "sendEmailCheckTR", "visibleTR");
-        AS_onChangeStatusChangeGenerateEmail(
-            emailText,
-            emailTextOrigional,
-            statusSelectList[statusSelectList.selectedIndex].text,
-            statusesArrayString[statusIndex],
-            jobOrdersArrayStringTitle[statusIndex],
-            jobOrdersArrayStringCompany[statusIndex]
-        );
+        CS_onSendEmailChange();
+        CS_generateEmail(regardingID);
+    }
+
+    function CS_onRegardingChange()
+    {
+        var regardingID = CS_getRegardingID();
+        var statusSelect = document.getElementById('statusID');
+        var currentStatusID = parseInt(statusByJobOrderID[regardingID], 10);
+
+        if (isNaN(currentStatusID))
+        {
+            statusSelect.disabled = true;
+            CS_clearEmail();
+            return;
+        }
+
+        statusSelect.disabled = false;
+        CS_selectStatus(currentStatusID);
+        CS_onStatusChange();
     }
 
     function CS_checkForm()
     {
-        var errorMessage = "";
-        var statusSelectList = document.getElementById("statusID");
-
-        <?php if (!$this->isJobOrdersMode): ?>
-            var regardingSelectList = document.getElementById("regardingID");
-            if (regardingSelectList[regardingSelectList.selectedIndex].value == "-1")
-            {
-                errorMessage += "    - You must select a job order.\n";
-            }
-        <?php endif; ?>
-
-        if (statusSelectList.value == "-1")
+        var statusSelect = document.getElementById('statusID');
+        if (statusSelect.disabled)
         {
-            errorMessage += "    - You must select a status.\n";
-        }
-
-        if (errorMessage != "")
-        {
-            alert("Form Error:\n" + errorMessage);
+            alert('Form Error:\n    - You must select a job order.');
             return false;
         }
 
@@ -175,22 +159,21 @@
     <input type="hidden" name="postback" id="postback" value="postback" />
     <input type="hidden" id="candidateID" name="candidateID" value="<?php echo($this->candidateID); ?>" />
 <?php if ($this->isJobOrdersMode): ?>
-    <input type="hidden" id="regardingID" name="regardingID" value="<?php echo($this->selectedJobOrderID); ?>" />
+    <input type="hidden" id="regardingIDHidden" name="regardingID" value="<?php echo($this->selectedJobOrderID); ?>" />
 <?php endif; ?>
 
     <table class="editTable" width="560">
-        <tr id="visibleTR">
+        <tr>
             <td class="tdVertical">
                 <label id="regardingIDLabel" for="regardingID">Regarding:</label>
             </td>
             <td class="tdData">
 <?php if ($this->isJobOrdersMode): ?>
-                <span><?php $this->_($this->pipelineData['title']); ?></span>
+                <span><?php $this->_($this->pipelineData['title']); ?></span> (<?php $this->_($this->pipelineData['companyName']); ?>)
 <?php else: ?>
-                <select id="regardingID" name="regardingID" class="inputbox" style="width: 260px;" onchange="CS_onRegardingChange();">
-                    <option value="-1">-- Select --</option>
-                    <?php foreach ($this->pipelineRS as $rowNumber => $pipelinesData): ?>
-                        <option<?php if ($this->selectedJobOrderID == $pipelinesData['jobOrderID']): ?> selected="selected"<?php endif; ?> value="<?php $this->_($pipelinesData['jobOrderID']) ?>"><?php $this->_($pipelinesData['title']) ?> (<?php $this->_($pipelinesData['companyName']) ?>)</option>
+                <select id="regardingID" name="regardingID" class="inputbox" style="width: 220px;" onchange="CS_onRegardingChange();">
+                    <?php foreach ($this->pipelineRS as $pipelinesData): ?>
+                        <option <?php if ($this->selectedJobOrderID == $pipelinesData['jobOrderID']): ?>selected="selected" <?php endif; ?>value="<?php $this->_($pipelinesData['jobOrderID']) ?>"><?php $this->_($pipelinesData['title']) ?> (<?php $this->_($pipelinesData['companyName']) ?>)</option>
                     <?php endforeach; ?>
                 </select>
 <?php endif; ?>
@@ -202,14 +185,13 @@
                 <label id="statusIDLabel" for="statusID">Status:</label>
             </td>
             <td class="tdData">
-                <select id="statusID" name="statusID" class="inputbox" style="width: 160px;" onchange="CS_onStatusChange();"<?php if (!$this->isJobOrdersMode && $this->selectedJobOrderID == -1): ?> disabled="disabled"<?php endif; ?>>
-                    <option value="-1">(Select a Status)</option>
-                    <?php foreach ($this->statusRS as $rowNumber => $statusData): ?>
+                <select id="statusID" name="statusID" class="inputbox" style="width: 180px;" onchange="CS_onStatusChange();"<?php if (!$this->isJobOrdersMode && $this->selectedJobOrderID == -1): ?> disabled<?php endif; ?>>
+                    <?php foreach ($this->statusRS as $statusData): ?>
                         <option<?php if ($this->selectedStatusID == $statusData['statusID']): ?> selected="selected"<?php endif; ?> value="<?php $this->_($statusData['statusID']) ?>"><?php $this->_($statusData['status']) ?></option>
                     <?php endforeach; ?>
                 </select>
                 &nbsp;&nbsp;
-                <span id="triggerEmailSpan" style="display: none;"><input type="checkbox" name="triggerEmail" id="triggerEmail" onclick="AS_onSendEmailChange('triggerEmail', 'sendEmailCheckTR', 'visibleTR');" />Send E-Mail Notification to Candidate</span>
+                <span id="triggerEmailSpan" style="display: none;"><input type="checkbox" name="triggerEmail" id="triggerEmail" onclick="CS_onSendEmailChange();" />Send E-Mail Notification to Candidate</span>
             </td>
         </tr>
 
@@ -224,6 +206,7 @@
                 <textarea style="height:135px; width:375px;" name="customMessage" id="customMessage" cols="50" class="inputbox"></textarea>
             </td>
         </tr>
+
     </table>
 
     <input type="submit" class="button" name="submit" id="submit" value="Save" />&nbsp;
@@ -235,18 +218,26 @@
 </form>
 
 <script type="text/javascript">
-    <?php if ($this->isJobOrdersMode): ?>
-        CS_onStatusChange();
-    <?php elseif ($this->selectedJobOrderID != -1): ?>
-        CS_onRegardingChange();
-    <?php endif; ?>
+<?php if ($this->isJobOrdersMode): ?>
+    CS_onStatusChange();
+<?php else: ?>
+    CS_onRegardingChange();
+<?php endif; ?>
 </script>
 
 <?php else: ?>
     <?php if ($this->statusChanged): ?>
-        <p>The candidate's status has been changed from <span class="bold"><?php $this->_($this->oldStatusDescription); ?></span> to <span class="bold"><?php $this->_($this->newStatusDescription); ?></span>.</p>
+        <?php if ($this->isJobOrdersMode): ?>
+            <p>The pipeline status has been changed from <span class="bold"><?php $this->_($this->oldStatusDescription); ?></span> to <span class="bold"><?php $this->_($this->newStatusDescription); ?></span>.</p>
+        <?php else: ?>
+            <p>The candidate's status has been changed from <span class="bold"><?php $this->_($this->oldStatusDescription); ?></span> to <span class="bold"><?php $this->_($this->newStatusDescription); ?></span>.</p>
+        <?php endif; ?>
     <?php else: ?>
-        <p>The candidate's status has not been changed.</p>
+        <?php if ($this->isJobOrdersMode): ?>
+            <p>The pipeline status has not been changed.</p>
+        <?php else: ?>
+            <p>The candidate's status has not been changed.</p>
+        <?php endif; ?>
     <?php endif; ?>
 
     <?php echo($this->notificationHTML); ?>

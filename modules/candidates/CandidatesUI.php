@@ -1930,18 +1930,41 @@ class CandidatesUI extends UserInterface
 
         $pipelines = new Pipelines($this->_siteID);
         $pipelineRS = $pipelines->getCandidatePipeline($candidateID);
+        if (empty($pipelineRS))
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'The candidate is not in any pipeline entries.');
+            return;
+        }
 
         $statusRS = $pipelines->getStatusesForPicking();
-
         if ($selectedJobOrderID != -1)
         {
-            $selectedStatusID = ResultSetUtility::getColumnValueByIDValue(
-                $pipelineRS, 'jobOrderID', $selectedJobOrderID, 'statusID'
+            $pipelineData = ResultSetUtility::findRowByColumnValue(
+                $pipelineRS,
+                'jobOrderID',
+                $selectedJobOrderID
             );
+            if ($pipelineData === false)
+            {
+                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'The specified pipeline entry could not be found.');
+                return;
+            }
+
+            $selectedStatusID = $pipelineData['statusID'];
         }
         else
         {
+            $pipelineData = $pipelineRS[0];
             $selectedStatusID = -1;
+        }
+
+        /* Override default send email behavior with site specific send email behavior. */
+        $mailerSettings = new MailerSettings($this->_siteID);
+        $mailerSettingsRS = $mailerSettings->getAll();
+        $candidateJoborderStatusSendsMessage = unserialize($mailerSettingsRS['candidateJoborderStatusSendsMessage']);
+        foreach ($statusRS as $index => $status)
+        {
+            $statusRS[$index]['triggersEmail'] = $candidateJoborderStatusSendsMessage[$status['statusID']];
         }
 
         /* Get the change status email template. */
@@ -1953,7 +1976,7 @@ class CandidatesUI extends UserInterface
             empty($statusChangeTemplateRS['textReplaced']))
         {
             $statusChangeTemplate = '';
-            $emailDisabled = '1';
+            $emailDisabled = empty($statusChangeTemplateRS) ? '1' : $statusChangeTemplateRS['disabled'];
         }
         else
         {
@@ -1986,6 +2009,7 @@ class CandidatesUI extends UserInterface
 
         $this->_template->assign('candidateID', $candidateID);
         $this->_template->assign('pipelineRS', $pipelineRS);
+        $this->_template->assign('pipelineData', $pipelineData);
         $this->_template->assign('statusRS', $statusRS);
         $this->_template->assign('selectedJobOrderID', $selectedJobOrderID);
         $this->_template->assign('selectedStatusID', $selectedStatusID);
