@@ -343,9 +343,9 @@ class CATSWebTestCase extends WebTestCase
     public function addPipelineActivity($candidateID, $jobOrderID,
         $activityTypeID, $activityNote)
     {
-        /* Add the candidate. */
+        /* Add the activity entry. */
         $this->assertPOST(
-            $this->_indexURL . '?m=candidates&a=addActivityChangeStatus',
+            $this->_indexURL . '?m=candidates&a=addActivity',
             array(
                 'postback'       => 'postback',
                 'addActivity'    => 'on',
