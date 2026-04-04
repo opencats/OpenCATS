@@ -195,6 +195,23 @@ class JobOrdersUI extends UserInterface
 
                 break;
 
+            /* Change candidate-joborder status (dedicated modal). */
+            case 'changeStatus':
+                if ($this->getUserAccessLevel('pipelines.changeStatus') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
+                if ($this->isPostBack())
+                {
+                    $this->onChangeStatus();
+                }
+                else
+                {
+                    $this->changeStatus();
+                }
+
+                break;
+
             /*
              * Search for a candidate (in the modal window) for which to
              * consider for this job order.
@@ -1567,6 +1584,109 @@ class JobOrdersUI extends UserInterface
         );
     }
 
+    private function changeStatus()
+    {
+        /* Bail out if we don't have a valid candidate ID. */
+        if (!$this->isRequiredIDValid('candidateID', $_GET))
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+        }
+
+        /* Bail out if we don't have a valid job order ID. */
+        if (!$this->isRequiredIDValid('jobOrderID', $_GET))
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+        }
+
+        $candidateID = $_GET['candidateID'];
+        $jobOrderID  = $_GET['jobOrderID'];
+
+        $candidates = new Candidates($this->_siteID);
+        $candidateData = $candidates->get($candidateID);
+
+        /* Bail out if we got an empty result set. */
+        if (empty($candidateData))
+        {
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified candidate ID could not be found.');
+        }
+
+        $pipelines = new Pipelines($this->_siteID);
+        $pipelineData = $pipelines->get($candidateID, $jobOrderID);
+
+        /* Bail out if we got an empty result set. */
+        if (empty($pipelineData))
+        {
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified pipeline entry could not be found.');
+        }
+
+        $statusRS = $pipelines->getStatusesForPicking();
+
+        $selectedStatusID = $pipelineData['statusID'];
+
+        /* Override default send email behavior with site specific send email behavior. */
+        $mailerSettings = new MailerSettings($this->_siteID);
+        $mailerSettingsRS = $mailerSettings->getAll();
+
+        $candidateJoborderStatusSendsMessage = unserialize($mailerSettingsRS['candidateJoborderStatusSendsMessage']);
+
+        foreach ($statusRS as $index => $status)
+        {
+            $statusRS[$index]['triggersEmail'] = $candidateJoborderStatusSendsMessage[$status['statusID']];
+        }
+
+        /* Get the change status email template. */
+        $emailTemplates = new EmailTemplates($this->_siteID);
+        $statusChangeTemplateRS = $emailTemplates->getByTag(
+            'EMAIL_TEMPLATE_STATUSCHANGE'
+        );
+        if (empty($statusChangeTemplateRS) ||
+            empty($statusChangeTemplateRS['textReplaced']))
+        {
+            $statusChangeTemplate = '';
+            $emailDisabled = $statusChangeTemplateRS['disabled'];
+        }
+        else
+        {
+            $statusChangeTemplate = $statusChangeTemplateRS['textReplaced'];
+            $emailDisabled = $statusChangeTemplateRS['disabled'];
+        }
+
+        /* Replace e-mail template variables. '%CANDSTATUS%', '%JBODTITLE%',
+         * '%JBODCLIENT%' are replaced by JavaScript.
+         */
+        $stringsToFind = array(
+            '%CANDOWNER%',
+            '%CANDFIRSTNAME%',
+            '%CANDFULLNAME%'
+        );
+        $replacementStrings = array(
+            $candidateData['ownerFullName'],
+            $candidateData['firstName'],
+            $candidateData['firstName'] . ' ' . $candidateData['lastName']
+        );
+        $statusChangeTemplate = str_replace(
+            $stringsToFind,
+            $replacementStrings,
+            $statusChangeTemplate
+        );
+
+        $this->_template->assign('candidateID', $candidateID);
+        $this->_template->assign('pipelineData', $pipelineData);
+        $this->_template->assign('statusRS', $statusRS);
+        $this->_template->assign('selectedJobOrderID', $jobOrderID);
+        $this->_template->assign('selectedStatusID', $selectedStatusID);
+        $this->_template->assign('statusChangeTemplate', $statusChangeTemplate);
+        $this->_template->assign('emailDisabled', $emailDisabled);
+        $this->_template->assign('isFinishedMode', false);
+        $this->_template->assign('isJobOrdersMode', true);
+
+        if (!eval(Hooks::get('JO_ADD_ACTIVITY_CHANGE_STATUS'))) return;
+
+        $this->_template->display(
+            './modules/candidates/ChangeStatusModal.tpl'
+        );
+    }
+
     private function onAddActivityChangeStatus()
     {
         /* Bail out if we don't have a valid regarding job order ID. */
@@ -1582,6 +1702,25 @@ class JobOrdersUI extends UserInterface
         include_once(LEGACY_ROOT . '/modules/candidates/CandidatesUI.php');
         $candidatesUI = new CandidatesUI();
         $candidatesUI->publicAddActivityChangeStatus(
+            true, $regardingID, $this->_moduleDirectory
+        );
+    }
+
+    private function onChangeStatus()
+    {
+        /* Bail out if we don't have a valid regarding job order ID. */
+        if (!$this->isRequiredIDValid('regardingID', $_POST))
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+        }
+
+        $regardingID = $_POST['regardingID'];
+
+        if (!eval(Hooks::get('JO_ON_ADD_ACTIVITY_CHANGE_STATUS'))) return;
+
+        include_once(LEGACY_ROOT . '/modules/candidates/CandidatesUI.php');
+        $candidatesUI = new CandidatesUI();
+        $candidatesUI->publicChangeStatus(
             true, $regardingID, $this->_moduleDirectory
         );
     }

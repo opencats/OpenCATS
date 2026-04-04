@@ -234,6 +234,23 @@ class CandidatesUI extends UserInterface
 
                 break;
 
+            /* Change candidate-joborder status (dedicated modal). */
+            case 'changeStatus':
+                if ($this->getUserAccessLevel('pipelines.changeStatus') < ACCESS_LEVEL_EDIT)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
+                if ($this->isPostBack())
+                {
+                    $this->onChangeStatus();
+                }
+                else
+                {
+                    $this->changeStatus();
+                }
+
+                break;
+
             /* Remove a candidate from a pipeline. */
             case 'removeFromPipeline':
                 if ($this->getUserAccessLevel('pipelines.removeFromPipeline') < ACCESS_LEVEL_DELETE)
@@ -494,6 +511,21 @@ class CandidatesUI extends UserInterface
         }
 
         $this->_AddActivityChangeStatus(
+            $isJobOrdersMode, $regardingID, $moduleDirectory
+        );
+    }
+
+    /*
+     * Called by external modules for processing the change status dialog.
+     */
+    public function publicChangeStatus($isJobOrdersMode, $regardingID, $moduleDirectory)
+    {
+        if ($this->getUserAccessLevel('pipelines.changeStatus') < ACCESS_LEVEL_EDIT)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+
+        $this->_changeStatus(
             $isJobOrdersMode, $regardingID, $moduleDirectory
         );
     }
@@ -1753,7 +1785,14 @@ class CandidatesUI extends UserInterface
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
         }
 
-        $selectedJobOrderID = $_GET['jobOrderID'];
+        if (isset($_GET['jobOrderID']))
+        {
+            $selectedJobOrderID = (int) $_GET['jobOrderID'];
+        }
+        else
+        {
+            $selectedJobOrderID = -1;
+        }
         $candidateID        = $_GET['candidateID'];
 
         $candidates = new Candidates($this->_siteID);
@@ -1855,6 +1894,110 @@ class CandidatesUI extends UserInterface
         );
     }
 
+    private function changeStatus()
+    {
+        /* Bail out if we don't have a valid candidate ID. */
+        if (!$this->isRequiredIDValid('candidateID', $_GET))
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+        }
+
+        /* Bail out if we don't have a valid job order ID. */
+        if (!$this->isOptionalIDValid('jobOrderID', $_GET))
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+        }
+
+        if (isset($_GET['jobOrderID']))
+        {
+            $selectedJobOrderID = (int) $_GET['jobOrderID'];
+        }
+        else
+        {
+            $selectedJobOrderID = -1;
+        }
+        $candidateID        = $_GET['candidateID'];
+
+        $candidates = new Candidates($this->_siteID);
+        $candidateData = $candidates->get($candidateID);
+
+        /* Bail out if we got an empty result set. */
+        if (empty($candidateData))
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);
+            return;
+        }
+
+        $pipelines = new Pipelines($this->_siteID);
+        $pipelineRS = $pipelines->getCandidatePipeline($candidateID);
+
+        $statusRS = $pipelines->getStatusesForPicking();
+
+        if ($selectedJobOrderID != -1)
+        {
+            $selectedStatusID = ResultSetUtility::getColumnValueByIDValue(
+                $pipelineRS, 'jobOrderID', $selectedJobOrderID, 'statusID'
+            );
+        }
+        else
+        {
+            $selectedStatusID = -1;
+        }
+
+        /* Get the change status email template. */
+        $emailTemplates = new EmailTemplates($this->_siteID);
+        $statusChangeTemplateRS = $emailTemplates->getByTag(
+            'EMAIL_TEMPLATE_STATUSCHANGE'
+        );
+        if (empty($statusChangeTemplateRS) ||
+            empty($statusChangeTemplateRS['textReplaced']))
+        {
+            $statusChangeTemplate = '';
+            $emailDisabled = '1';
+        }
+        else
+        {
+            $statusChangeTemplate = $statusChangeTemplateRS['textReplaced'];
+            $emailDisabled = $statusChangeTemplateRS['disabled'];
+        }
+
+        /* Replace e-mail template variables. '%CANDSTATUS%', '%JBODTITLE%',
+         * '%JBODCLIENT%' are replaced by JavaScript.
+         */
+        $stringsToFind = array(
+            '%CANDOWNER%',
+            '%CANDFIRSTNAME%',
+            '%CANDFULLNAME%'
+        );
+        $replacementStrings = array(
+            $candidateData['ownerFullName'],
+            $candidateData['firstName'],
+            $candidateData['firstName'] . ' ' . $candidateData['lastName'],
+            $candidateData['firstName'],
+            $candidateData['firstName']
+        );
+        $statusChangeTemplate = str_replace(
+            $stringsToFind,
+            $replacementStrings,
+            $statusChangeTemplate
+        );
+
+        if (!eval(Hooks::get('CANDIDATE_ADD_ACTIVITY_CHANGE_STATUS'))) return;
+
+        $this->_template->assign('candidateID', $candidateID);
+        $this->_template->assign('pipelineRS', $pipelineRS);
+        $this->_template->assign('statusRS', $statusRS);
+        $this->_template->assign('selectedJobOrderID', $selectedJobOrderID);
+        $this->_template->assign('selectedStatusID', $selectedStatusID);
+        $this->_template->assign('statusChangeTemplate', $statusChangeTemplate);
+        $this->_template->assign('emailDisabled', $emailDisabled);
+        $this->_template->assign('isFinishedMode', false);
+        $this->_template->assign('isJobOrdersMode', false);
+        $this->_template->display(
+            './modules/candidates/ChangeStatusModal.tpl'
+        );
+    }
+
     private function onAddCandidateTags()
     {
         /* Bail out if we don't have a valid regardingjob order ID. */
@@ -1933,6 +2076,19 @@ class CandidatesUI extends UserInterface
         $regardingID = $_POST['regardingID'];
 
         $this->_addActivityChangeStatus(false, $regardingID);
+    }
+
+    private function onChangeStatus()
+    {
+        /* Bail out if we don't have a valid regarding job order ID. */
+        if (!$this->isRequiredIDValid('regardingID', $_POST))
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+        }
+
+        $regardingID = $_POST['regardingID'];
+
+        $this->_changeStatus(false, $regardingID);
     }
 
     /*
@@ -3393,6 +3549,158 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('isJobOrdersMode', $isJobOrdersMode);
         $this->_template->display(
             './modules/candidates/AddActivityChangeStatusModal.tpl'
+        );
+    }
+
+    /**
+     * Processes a dedicated status change form and displays
+     * candidates/ChangeStatusModal.tpl.
+     *
+     * @param boolean from joborders module perspective
+     * @param integer "regarding" job order ID
+     * @param string module directory
+     * @return void
+     */
+    private function _changeStatus($isJobOrdersMode, $regardingID,
+        $directoryOverride = '')
+    {
+        $notificationHTML = '';
+
+        $pipelines = new Pipelines($this->_siteID);
+        $statusRS = $pipelines->getStatusesForPicking();
+
+        /* Module directory override for fatal() calls. */
+        if ($directoryOverride != '')
+        {
+            $moduleDirectory = $directoryOverride;
+        }
+        else
+        {
+            $moduleDirectory = $this->_moduleDirectory;
+        }
+
+        /* Bail out if we don't have a valid candidate ID. */
+        if (!$this->isRequiredIDValid('candidateID', $_POST))
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+        }
+
+        /* Bail out if we don't have a valid status ID. */
+        if (!$this->isRequiredIDValid('statusID', $_POST))
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid status ID.');
+        }
+
+        $statusID = (int) $_POST['statusID'];
+        $validStatus = ResultSetUtility::findRowByColumnValue(
+            $statusRS, 'statusID', $statusID
+        );
+        if ($validStatus === false)
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid status ID.');
+        }
+
+        /* Bail out if we don't have a valid job order ID. */
+        if (!$this->isRequiredIDValid('regardingID', $_POST) || $regardingID <= 0)
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
+        }
+
+        $candidateID = $_POST['candidateID'];
+
+        if (!eval(Hooks::get('CANDIDATE_ON_ADD_ACTIVITY_CHANGE_STATUS_PRE'))) return;
+
+        $data = $pipelines->get($candidateID, $regardingID);
+
+        /* Bail out if we got an empty result set. */
+        if (empty($data))
+        {
+            $this->fatalModal(
+                'The specified pipeline entry could not be found.',
+                $moduleDirectory
+            );
+        }
+
+        $oldStatusDescription = $data['status'];
+        $newStatusDescription = ResultSetUtility::getColumnValueByIDValue(
+            $statusRS, 'statusID', $statusID, 'status'
+        );
+        $statusChanged = ($statusID != $data['statusID']);
+
+        if ($statusChanged && $this->isChecked('triggerEmail', $_POST))
+        {
+            $customMessage = $this->getTrimmedInput('customMessage', $_POST);
+
+            // FIXME: Actually validate the e-mail address?
+            if (empty($data['candidateEmail']))
+            {
+                $email = '';
+                $notificationHTML = '<p><span class="bold">Error:</span> An e-mail notification'
+                    . ' could not be sent to the candidate because the candidate'
+                    . ' does not have a valid e-mail address.</p>';
+            }
+            else if (empty($customMessage))
+            {
+                $email = '';
+                $notificationHTML = '<p><span class="bold">Error:</span> An e-mail notification'
+                    . ' will not be sent because the message text specified was blank.</p>';
+            }
+            else if ($this->getUserAccessLevel('candidates.emailCandidates') == ACCESS_LEVEL_DEMO)
+            {
+                $email = '';
+                $notificationHTML = '<p><span class="bold">Error:</span> Demo users can not send'
+                    . ' E-Mails.  No E-Mail was sent.</p>';
+            }
+            else
+            {
+                $email = $data['candidateEmail'];
+                $notificationHTML = '<p>An e-mail notification has been sent to the candidate.</p>';
+            }
+        }
+        else
+        {
+            $email = '';
+            $customMessage = '';
+            $notificationHTML = '<p>No e-mail notification has been sent to the candidate.</p>';
+        }
+
+        if ($statusChanged)
+        {
+            /* Set the pipeline entry's status, but don't send e-mails for now. */
+            $pipelines->setStatus(
+                $candidateID, $regardingID, $statusID, $email, $customMessage
+            );
+
+            /* If status = placed, and open positions > 0, reduce number of open positions by one. */
+            if ($statusID == PIPELINE_STATUS_PLACED && is_numeric($data['openingsAvailable']) && $data['openingsAvailable'] > 0)
+            {
+                $jobOrders = new JobOrders($this->_siteID);
+                $jobOrders->updateOpeningsAvailable($regardingID, $data['openingsAvailable'] - 1);
+            }
+
+            /* If status is changed from placed to something else, increase number of open positions by one. */
+            if ($statusID != PIPELINE_STATUS_PLACED && $data['statusID'] == PIPELINE_STATUS_PLACED)
+            {
+                $jobOrders = new JobOrders($this->_siteID);
+                $jobOrders->updateOpeningsAvailable($regardingID, $data['openingsAvailable'] + 1);
+            }
+        }
+
+        $changesMade = $statusChanged;
+
+        if (!eval(Hooks::get('CANDIDATE_ON_ADD_ACTIVITY_CHANGE_STATUS_POST'))) return;
+
+        $this->_template->assign('candidateID', $candidateID);
+        $this->_template->assign('regardingID', $regardingID);
+        $this->_template->assign('oldStatusDescription', $oldStatusDescription);
+        $this->_template->assign('newStatusDescription', $newStatusDescription);
+        $this->_template->assign('statusChanged', $statusChanged);
+        $this->_template->assign('notificationHTML', $notificationHTML);
+        $this->_template->assign('changesMade', $changesMade);
+        $this->_template->assign('isFinishedMode', true);
+        $this->_template->assign('isJobOrdersMode', $isJobOrdersMode);
+        $this->_template->display(
+            './modules/candidates/ChangeStatusModal.tpl'
         );
     }
 

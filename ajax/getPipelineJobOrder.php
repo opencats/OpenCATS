@@ -300,9 +300,9 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
                     <?php endif; ?>
                 <?php endif; ?>
                 <?php if (!isset($frozen)): ?>
-                    <?php if ($_SESSION['CATS']->getAccessLevel('pipelines.addActivityChangeStatus') >= ACCESS_LEVEL_EDIT): ?>
-                        <a href="#" onclick="showPopWin('<?php echo($indexFile); ?>?m=joborders&amp;a=addActivityChangeStatus&amp;jobOrderID=<?php echo($jobOrderID); ?>&amp;candidateID=<?php echo($pipelinesData['candidateID']); ?>', 600, 550, null); return false;">
-                            <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="" style="border: none;"  title="Log an Activity / Change Status" />
+                    <?php if ($_SESSION['CATS']->getAccessLevel('pipelines.changeStatus') >= ACCESS_LEVEL_EDIT): ?>
+                        <a href="#" onclick="showPopWin('<?php echo($indexFile); ?>?m=joborders&amp;a=changeStatus&amp;jobOrderID=<?php echo($jobOrderID); ?>&amp;candidateID=<?php echo($pipelinesData['candidateID']); ?>', 600, 430, null); return false;">
+                            <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="" style="border: none;"  title="Change Status" />
                         </a>
                     <?php endif; ?>
                     <?php if ($_SESSION['CATS']->getAccessLevel('pipelines.removeFromPipeline') >= ACCESS_LEVEL_DELETE): ?>
@@ -334,4 +334,3 @@ if (!eval(Hooks::get('JO_AJAX_GET_PIPELINE'))) return;
         </tr>
     <?php endfor; ?>
 </table>
-

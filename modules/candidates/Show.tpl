@@ -562,9 +562,9 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                                     <img src="images/actions/blank.gif" width="16" height="16" class="absmiddle" alt="" border="0" />
                                 <?php endif; ?>
                             <?php endif; ?>
-                            <?php if ($this->getUserAccessLevel('pipelines.addActivityChangeStatus') >= ACCESS_LEVEL_EDIT): ?>
-                                <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addActivityChangeStatus&amp;candidateID=<?php echo($this->candidateID); ?>&amp;jobOrderID=<?php echo($pipelinesData['jobOrderID']); ?>', 600, 480, null); return false;" >
-                                    <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Log an Activity / Change Status"/>
+                            <?php if ($this->getUserAccessLevel('pipelines.changeStatus') >= ACCESS_LEVEL_EDIT): ?>
+                                <a href="#" onclick="showPopWin('<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=changeStatus&amp;candidateID=<?php echo($this->candidateID); ?>&amp;jobOrderID=<?php echo($pipelinesData['jobOrderID']); ?>', 600, 430, null); return false;" >
+                                    <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Change Status"/>
                                 </a>
                             <?php endif; ?>
                             <?php if ($this->getUserAccessLevel('pipelines.removeFromPipeline') >= ACCESS_LEVEL_DELETE): ?>

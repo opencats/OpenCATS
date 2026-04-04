@@ -375,6 +375,7 @@ class ACL_SETUP {
             'pipelines.editActivity'
             'pipelines.removeFromPipeline'
             'pipelines.addActivityChangeStatus'
+            'pipelines.changeStatus'
             'pipelines.addToPipeline'
             'settings.tags'
             'settings.changePassword'
