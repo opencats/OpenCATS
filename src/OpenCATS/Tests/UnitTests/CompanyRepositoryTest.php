@@ -16,6 +16,7 @@ class CompanyRepositoryTest extends TestCase
     const CITY = "Colonia";
     const STATE = "Maldonado";
     const ZIP_CODE = "31337";
+    const COUNTRY = "US";
     const PHONE_NUMBER_ONE = "+53 123 45678";
     const PHONE_NUMBER_TWO = "+53 987 65432";
     const FAX_NUMBER = '+53 123 65432';
@@ -57,6 +58,12 @@ class CompanyRepositoryTest extends TestCase
             self::OWNER
         ];
         $integerCallIndex = 0;
+        $databaseConnectionMock->expects($this->exactly(1))
+            ->method('makeQueryStringOrNULL')
+            ->willReturnCallback(function($value) {
+                $this->assertSame(self::COUNTRY, $value);
+                return "'" . $value . "'";
+            });
         $databaseConnectionMock->expects($this->exactly(2))
             ->method('makeQueryInteger')
             ->willReturnCallback(function($value) use ($expectedIntegerValues, &$integerCallIndex) {
@@ -122,7 +129,7 @@ class CompanyRepositoryTest extends TestCase
     {
         return $this->getMockBuilder('\DatabaseConnection')
             ->disableOriginalConstructor()
-            ->onlyMethods(['makeQueryString', 'makeQueryInteger', 'query', 'getLastInsertID'])
+            ->onlyMethods(['makeQueryString', 'makeQueryStringOrNULL', 'makeQueryInteger', 'query', 'getLastInsertID'])
             ->getMock();
     }
     
@@ -136,6 +143,7 @@ class CompanyRepositoryTest extends TestCase
             self::CITY,
             self::STATE,
             self::ZIP_CODE,
+            self::COUNTRY,
             self::PHONE_NUMBER_ONE, 
             self::PHONE_NUMBER_TWO,
             self::FAX_NUMBER, 

@@ -191,6 +191,17 @@
 
                     <tr>
                         <td class="tdVertical">
+                            <label id="countryLabel" for="country">Country:</label>
+                        </td>
+                        <td class="tdData">
+                            <?php TemplateUtility::printCountrySelect('country', $this->data['country'], true); ?>
+                        </td>
+                        <td class="tdVertical">&nbsp;</td>
+                        <td class="tdData">&nbsp;</td>
+                    </tr>
+
+                    <tr>
+                        <td class="tdVertical">
                             <label id="recruiterLabel" for="recruiter">Recruiter:</label>
                         </td>
                         <td class="tdData">

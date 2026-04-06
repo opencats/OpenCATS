@@ -537,6 +537,11 @@ class ContactsUI extends UserInterface
         $city       = $this->getTrimmedInput('city', $_POST);
         $state      = $this->getTrimmedInput('state', $_POST);
         $zip        = $this->getTrimmedInput('zip', $_POST);
+        $country    = strtoupper($this->getTrimmedInput('country', $_POST));
+        if ($country != '' && !isset($GLOBALS['countries'][$country]))
+        {
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid country.');
+        }
         $notes      = $this->getTrimmedInput('notes', $_POST);
 
          /* Hot contact? */
@@ -565,7 +570,8 @@ class ContactsUI extends UserInterface
         $contactID = $contacts->add(
             $companyID, $firstName, $lastName, $title, $department, $reportsTo,
             $email1, $email2, $phoneWork, $phoneCell, $phoneOther, $address, $address2,
-            $city, $state, $zip, $isHot, $notes, $this->_userID, $this->_userID
+            $city, $state, $zip, $isHot, $notes, $this->_userID, $this->_userID,
+            $country
         );
 
         if ($contactID <= 0)
@@ -826,6 +832,11 @@ class ContactsUI extends UserInterface
         $city       = $this->getTrimmedInput('city', $_POST);
         $state      = $this->getTrimmedInput('state', $_POST);
         $zip        = $this->getTrimmedInput('zip', $_POST);
+        $country    = strtoupper($this->getTrimmedInput('country', $_POST));
+        if ($country != '' && !isset($GLOBALS['countries'][$country]))
+        {
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid country.');
+        }
         $notes      = $this->getTrimmedInput('notes', $_POST);
 
         $isHot = $this->isChecked('isHot', $_POST);
@@ -853,7 +864,8 @@ class ContactsUI extends UserInterface
         if (!$contacts->update($contactID, $companyID, $firstName, $lastName,
             $title, $department, $reportsTo, $email1, $email2, $phoneWork, $phoneCell,
             $phoneOther, $address, $address2, $city, $state, $zip, $isHot,
-            $leftCompany, $notes, $owner, $email, $emailAddress))
+            $leftCompany, $notes, $owner, $email, $emailAddress,
+            $country))
         {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update contact.');
         }
@@ -1614,6 +1626,7 @@ class ContactsUI extends UserInterface
             './modules/contacts/AddActivityScheduleEventModal.tpl'
         );
     }
+
 }
 
 ?>

@@ -85,7 +85,7 @@ class Companies
      */
     public function add($name, $address, $address2, $city, $state, $zip, $phone1,
                         $phone2, $faxNumber, $url, $keyTechnologies, $isHot,
-                        $notes, $enteredBy, $owner)
+                        $notes, $enteredBy, $owner, $country = '')
     {
         $company= Company::create(
             $this->_siteID,
@@ -95,6 +95,7 @@ class Companies
             $city,
             $state,
             $zip,
+            $country,
             $phone1,
             $phone2,
             $faxNumber,
@@ -137,8 +138,20 @@ class Companies
     public function update($companyID, $name, $address, $address2, $city, $state,
                            $zip, $phone1, $phone2, $faxNumber, $url,
                            $keyTechnologies, $isHot, $notes, $owner,
-                           $billingContact, $email, $emailAddress)
+                           $billingContact, $email, $emailAddress, $country = false)
     {
+        if ($country === false)
+        {
+            $countrySQL = ",\n";
+        }
+        else
+        {
+            $countrySQL = sprintf(
+                ",\n                country          = %s,\n",
+                $this->_db->makeQueryStringOrNULL($country)
+            );
+        }
+
         $sql = sprintf(
             "UPDATE
                 company
@@ -148,7 +161,7 @@ class Companies
                 address2        = %s,
                 city             = %s,
                 state            = %s,
-                zip              = %s,
+                zip              = %s%s
                 phone1           = %s,
                 phone2           = %s,
                 fax_number       = %s,
@@ -169,6 +182,7 @@ class Companies
             $this->_db->makeQueryString($city),
             $this->_db->makeQueryString($state),
             $this->_db->makeQueryString($zip),
+            $countrySQL,
             $this->_db->makeQueryString($phone1),
             $this->_db->makeQueryString($phone2),
             $this->_db->makeQueryString($faxNumber),
@@ -329,6 +343,7 @@ class Companies
                 company.city AS city,
                 company.state AS state,
                 company.zip AS zip,
+                company.country AS country,
                 company.phone1 AS phone1,
                 company.phone2 AS phone2,
                 company.fax_number AS faxNumber,
@@ -389,6 +404,7 @@ class Companies
                 company.city AS city,
                 company.state AS state,
                 company.zip AS zip,
+                company.country AS country,
                 company.phone1 AS phone1,
                 company.phone2 AS phone2,
                 company.fax_number AS faxNumber,
@@ -517,7 +533,8 @@ class Companies
                 company.address AS address,
                 company.city AS city,
                 company.state AS state,
-                company.zip AS zip
+                company.zip AS zip,
+                company.country AS country
             FROM
                 company
             WHERE

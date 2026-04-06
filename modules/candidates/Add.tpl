@@ -263,6 +263,15 @@
 
                     <tr>
                         <td class="tdVertical">
+                            <label id="countryLabel" for="country">Country:</label>
+                        </td>
+                        <td class="tdData">
+                            <?php TemplateUtility::printCountrySelect('country', (isset($this->preassignedFields['country']) ? $this->preassignedFields['country'] : ''), true); ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="tdVertical">
                             <label id="stateLabel" for="state">Best Time to Call:</label>
                         </td>
                         <td class="tdData">

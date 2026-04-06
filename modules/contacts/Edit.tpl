@@ -229,6 +229,15 @@
                                         <img src="images/indicator2.gif" alt="AJAX" id="ajaxIndicator" style="vertical-align: middle; visibility: hidden; margin-left: 5px;" />
                                     </td>
                                 </tr>
+
+                                <tr>
+                                    <td class="tdVertical">
+                                        <label id="countryLabel" for="country">Country:</label>
+                                    </td>
+                                    <td class="tdData">
+                                        <?php TemplateUtility::printCountrySelect('country', $this->data['country'], true); ?>
+                                    </td>
+                                </tr>
                             </table>
                         </td>
                     </tr>

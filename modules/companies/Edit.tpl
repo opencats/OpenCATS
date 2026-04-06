@@ -179,6 +179,15 @@
                                     </td>
                                 </tr>
 
+                                <tr>
+                                    <td class="tdVertical">
+                                        <label id="countryLabel" for="country">Country:</label>
+                                    </td>
+                                    <td class="tdData">
+                                        <?php TemplateUtility::printCountrySelect('country', $this->data['country'], true); ?>
+                                    </td>
+                                </tr>
+
                                 <tr id="changeAddress" style="display:none;">
                                     <td colspan="2" style="text-align:center;">
                                         Edit all contacts address information to match company address?<br />

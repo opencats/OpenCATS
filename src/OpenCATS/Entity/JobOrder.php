@@ -22,6 +22,7 @@ class JobOrder
     private $salary;
     private $city;
     private $state;
+    private $country;
     private $startDate;
     private $enteredBy;
     private $recruiter;
@@ -189,6 +190,16 @@ class JobOrder
     {
         return $this->state;
     }
+
+    function setCountry($value)
+    {
+        $this->country = $value;
+    }
+
+    function getCountry()
+    {
+        return $this->country;
+    }
     
     function getDepartmentId()
     {
@@ -277,6 +288,7 @@ class JobOrder
         $salary,
         $city,
         $state,
+        $country,
         $startDate,
         $enteredBy,
         $recruiter,
@@ -305,6 +317,7 @@ class JobOrder
         $instance->setOpenings($openings);
         $instance->setAvailableOpenings($openings);
         $instance->setSalary($salary);
+        $instance->setCountry($country);
         $instance->setDepartmemtId($departmentId);
         $instance->setEnteredBy($enteredBy);
         $instance->setRecruiter($recruiter);

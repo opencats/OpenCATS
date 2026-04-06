@@ -282,6 +282,57 @@ $timeZones = array(
     array(12,   'GMT+13:00 Nuku`alofa')
 );
 
+/* Countries */
+$countries = array(
+    'AE' => 'United Arab Emirates',
+    'AR' => 'Argentina',
+    'AT' => 'Austria',
+    'AU' => 'Australia',
+    'BE' => 'Belgium',
+    'BG' => 'Bulgaria',
+    'BR' => 'Brazil',
+    'CA' => 'Canada',
+    'CH' => 'Switzerland',
+    'CL' => 'Chile',
+    'CN' => 'China',
+    'CO' => 'Colombia',
+    'CZ' => 'Czech Republic',
+    'DE' => 'Germany',
+    'DK' => 'Denmark',
+    'EG' => 'Egypt',
+    'ES' => 'Spain',
+    'FI' => 'Finland',
+    'FR' => 'France',
+    'GB' => 'United Kingdom',
+    'GR' => 'Greece',
+    'HK' => 'Hong Kong',
+    'HU' => 'Hungary',
+    'IE' => 'Ireland',
+    'IL' => 'Israel',
+    'IN' => 'India',
+    'IT' => 'Italy',
+    'JP' => 'Japan',
+    'KR' => 'South Korea',
+    'MA' => 'Morocco',
+    'MX' => 'Mexico',
+    'NL' => 'Netherlands',
+    'NO' => 'Norway',
+    'NZ' => 'New Zealand',
+    'PE' => 'Peru',
+    'PL' => 'Poland',
+    'PT' => 'Portugal',
+    'RO' => 'Romania',
+    'SA' => 'Saudi Arabia',
+    'SE' => 'Sweden',
+    'SG' => 'Singapore',
+    'SK' => 'Slovakia',
+    'TN' => 'Tunisia',
+    'TR' => 'Turkey',
+    'TW' => 'Taiwan',
+    'US' => 'United States',
+    'ZA' => 'South Africa'
+);
+
 /* These file extensions will have '.txt' appended to them on upload. */
 $badFileExtensions = array(
     'shtml',

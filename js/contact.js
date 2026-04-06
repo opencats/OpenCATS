@@ -90,6 +90,10 @@ function ContactDepartments_populate(companyID, sessionCookie)
             document.getElementById("city").value  = "";
             document.getElementById("state").value = "";
             document.getElementById("zip").value = "";
+            if (document.getElementById("country"))
+            {
+                document.getElementById("country").value = "";
+            }
             return;
         }
 
@@ -97,6 +101,7 @@ function ContactDepartments_populate(companyID, sessionCookie)
         var cityNode        = http.responseXML.getElementsByTagName("city").item(0);
         var stateNode       = http.responseXML.getElementsByTagName("state").item(0);
         var zipNode         = http.responseXML.getElementsByTagName("zip").item(0);
+        var countryNode     = http.responseXML.getElementsByTagName("country").item(0);
         var departmentsNode = http.responseXML.getElementsByTagName("departments").item(0);
 
         if (document.getElementById("address"))
@@ -142,6 +147,18 @@ function ContactDepartments_populate(companyID, sessionCookie)
             }
         }
 
+        if (document.getElementById("country"))
+        {
+            if (countryNode.firstChild)
+            {
+                document.getElementById("country").value = countryNode.firstChild.nodeValue;
+            }
+            else
+            {
+                document.getElementById("country").value = "";
+            }
+        }
+
         if (departmentsNode.firstChild)
         {
             document.getElementById("departmentsCSV").value = departmentsNode.firstChild.nodeValue;
@@ -166,4 +183,3 @@ function ContactDepartments_populate(companyID, sessionCookie)
         false
     );
 }
-

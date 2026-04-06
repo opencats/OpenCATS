@@ -247,6 +247,72 @@ class TemplateUtility
     }
 
     /**
+     * Returns a country selection dropdown list as HTML.
+     *
+     * @param string ID and name attributes of the country select input
+     * @param string selected country code
+     * @param boolean include blank option
+     * @param string CSS class name for the select element
+     * @param string inline style for the select element
+     * @return string
+     */
+    public static function getCountrySelectHTML(
+        $selectID,
+        $selectedCode,
+        $includeBlank = true,
+        $className = 'inputbox',
+        $style = 'width: 150px;'
+    )
+    {
+        $selectedCode = strtoupper(trim($selectedCode));
+        if (strlen($selectedCode) != 2 || !isset($GLOBALS['countries'][$selectedCode]))
+        {
+            $selectedCode = '';
+        }
+
+        $selectHTML = '<select id="' . Template::escapeAttr($selectID)
+            . '" name="' . Template::escapeAttr($selectID)
+            . '" class="' . Template::escapeAttr($className) . '"';
+        if ($style !== '')
+        {
+            $selectHTML .= ' style="' . Template::escapeAttr($style) . '"';
+        }
+        $selectHTML .= '>';
+
+        if ($includeBlank)
+        {
+            $selectHTML .= '<option value=""></option>';
+        }
+
+        foreach ($GLOBALS['countries'] as $countryCode => $countryName)
+        {
+            $selectHTML .= '<option value="' . Template::escapeAttr($countryCode) . '"';
+            if ($countryCode == $selectedCode)
+            {
+                $selectHTML .= ' selected="selected"';
+            }
+            $selectHTML .= '>' . Template::escapeHtml($countryName) . '</option>';
+        }
+
+        $selectHTML .= '</select>';
+
+        return $selectHTML;
+    }
+
+    /**
+     * Prints a country selection dropdown list.
+     *
+     * @param string ID and name attributes of the country select input
+     * @param string selected country code
+     * @param boolean include blank option
+     * @return void
+     */
+    public static function printCountrySelect($selectID, $selectedCode, $includeBlank = true)
+    {
+        echo self::getCountrySelectHTML($selectID, $selectedCode, $includeBlank);
+    }
+
+    /**
      * Prints the Quick Search box and MRU list.
      *
      * @return void
