@@ -1538,6 +1538,59 @@ class CATSSchema
                 ALTER TABLE `contact` ADD COLUMN `country` VARCHAR(2) DEFAULT NULL AFTER `zip`;
                 ALTER TABLE `joborder` ADD COLUMN `country` VARCHAR(2) DEFAULT NULL AFTER `state`;
             ',
+            '382' => '
+                UPDATE
+                    career_portal_template
+                SET
+                    value = REPLACE(value, \'<td><input-state></td>\', \'<td><input-state><br /><input-country></td>\')
+                WHERE
+                    career_portal_name = \'CATS 2.0\'
+                    AND setting = \'Content - Apply for Position\'
+                    AND value NOT LIKE \'%<input-country>%\'
+                    AND value LIKE \'%<h1>Applying to: <title></h1>%\'
+                    AND value LIKE \'%<label id="stateCountryLabel" for="stateCountry">*State/Country:</label>%\'
+                    AND value LIKE \'%<label id="zipPostalLabel" for="zipPostal">*Zip/Postal Code:</label>%\'
+                    AND value LIKE \'%<td><input-state></td>%\';
+
+                UPDATE
+                    career_portal_template_site
+                SET
+                    value = REPLACE(value, \'<td><input-state></td>\', \'<td><input-state><br /><input-country></td>\')
+                WHERE
+                    career_portal_name = \'CATS 2.0\'
+                    AND setting = \'Content - Apply for Position\'
+                    AND value NOT LIKE \'%<input-country>%\'
+                    AND value LIKE \'%<h1>Applying to: <title></h1>%\'
+                    AND value LIKE \'%<label id="stateCountryLabel" for="stateCountry">*State/Country:</label>%\'
+                    AND value LIKE \'%<label id="zipPostalLabel" for="zipPostal">*Zip/Postal Code:</label>%\'
+                    AND value LIKE \'%<td><input-state></td>%\';
+
+                UPDATE
+                    career_portal_template
+                SET
+                    value = REPLACE(value, \'<td><input-state></td>\', \'<td><input-state><br /><input-country></td>\')
+                WHERE
+                    career_portal_name = \'CATS 2.0\'
+                    AND setting = \'Content - Candidate Profile\'
+                    AND value NOT LIKE \'%<input-country>%\'
+                    AND value LIKE \'%<h1 style="padding: 0; margin: 0; border: 0;">My Profile</h1>%\'
+                    AND value LIKE \'%<label id="stateCountryLabel" for="stateCountry">*State/Country:</label>%\'
+                    AND value LIKE \'%<label id="zipPostalLabel" for="zipPostal">*Zip/Postal Code:</label>%\'
+                    AND value LIKE \'%<td><input-state></td>%\';
+
+                UPDATE
+                    career_portal_template_site
+                SET
+                    value = REPLACE(value, \'<td><input-state></td>\', \'<td><input-state><br /><input-country></td>\')
+                WHERE
+                    career_portal_name = \'CATS 2.0\'
+                    AND setting = \'Content - Candidate Profile\'
+                    AND value NOT LIKE \'%<input-country>%\'
+                    AND value LIKE \'%<h1 style="padding: 0; margin: 0; border: 0;">My Profile</h1>%\'
+                    AND value LIKE \'%<label id="stateCountryLabel" for="stateCountry">*State/Country:</label>%\'
+                    AND value LIKE \'%<label id="zipPostalLabel" for="zipPostal">*Zip/Postal Code:</label>%\'
+                    AND value LIKE \'%<td><input-state></td>%\';
+            ',
 
         );
     }
