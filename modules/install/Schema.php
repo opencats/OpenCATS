@@ -1532,6 +1532,12 @@ class CATSSchema
                     ADD COLUMN `time_zone_iana` varchar(64) NOT NULL DEFAULT \'UTC\'
                     AFTER `time_zone`", true);
             ',
+            '382' => '
+                ALTER TABLE `candidate` ADD COLUMN `country` VARCHAR(2) DEFAULT NULL AFTER `zip`;
+                ALTER TABLE `company` ADD COLUMN `country` VARCHAR(2) DEFAULT NULL AFTER `zip`;
+                ALTER TABLE `contact` ADD COLUMN `country` VARCHAR(2) DEFAULT NULL AFTER `zip`;
+                ALTER TABLE `joborder` ADD COLUMN `country` VARCHAR(2) DEFAULT NULL AFTER `state`;
+            ',
 
         );
     }
