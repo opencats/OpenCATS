@@ -254,6 +254,15 @@ class CareersUI extends UserInterface
             $content = str_replace('<input-city>', '<input name="city" id="city" class="inputBoxNormal" value="' . $cityEscaped . '" />', $content);
             $content = str_replace('<input-state>', '<input name="state" id="state" class="inputBoxNormal" value="' . $stateEscaped . '" />', $content);
             $content = str_replace('<input-zip>', '<input name="zip" id="zip" class="inputBoxNormal" value="' . $zipEscaped . '" />', $content);
+            $countrySelectHTML = TemplateUtility::getCountrySelectHTML(
+                'country',
+                (string) $candidate['country'],
+                true,
+                'inputBoxNormal',
+                ''
+            );
+            $content = str_replace('<input-country>', $countrySelectHTML, $content);
+            $content = str_replace('<input-country req>', $countrySelectHTML, $content);
             $content = str_replace('<input-phoneWork>', '<input name="phoneWork" id="phoneWork" class="inputBoxNormal" value="' . $phoneWorkEscaped . '" />', $content);
             $content = str_replace('<input-email1>', '<input name="email1" id="email1" class="inputBoxNormal" value="' . $email1Escaped . '" />', $content);
             $content = str_replace('<input-phoneHome>', '<input name="phoneHome" id="phoneHome" class="inputBoxNormal" value="' . $phoneHomeEscaped . '" />', $content);
@@ -301,7 +310,7 @@ class CareersUI extends UserInterface
 
             // Get the fields (if included in the template) to update
             $fields = array('firstName', 'lastName', 'email1', 'phoneHome', 'phoneCell', 'phoneWork', 'address', 'address2',
-                'city', 'state', 'zip', 'keySkills', 'currentEmployer', 'bestTimeToCall'
+                'country', 'city', 'state', 'zip', 'keySkills', 'currentEmployer', 'bestTimeToCall'
             );
             $fieldValues = array();
 
@@ -318,6 +327,12 @@ class CareersUI extends UserInterface
                     $fieldValues[$field] = $candidate[$field];
                 }
             }
+            $country = strtoupper(trim((string) $country));
+            if ($country != '' && !isset($GLOBALS['countries'][$country]))
+            {
+                $country = '';
+            }
+            $fieldValues['country'] = $country;
 
             // Get the attachment to replace (if exists)
             $attachmentID = false;
@@ -368,7 +383,8 @@ class CareersUI extends UserInterface
                 $candidate['eeoGender'],
                 $candidate['eeoEthnicType'],
                 $candidate['eeoVeteranType'],
-                $candidate['eeoDisabilityStatus']
+                $candidate['eeoDisabilityStatus'],
+                $country
             );
 
             $uploadResume = FileUtility::getUploadFileFromPost($siteID, 'careerportaladd', 'file');
@@ -461,6 +477,7 @@ class CareersUI extends UserInterface
             $city = isset($_POST[$id='city']) ? $_POST[$id] : '';
             $state = isset($_POST[$id='state']) ? $_POST[$id] : '';
             $zip = isset($_POST[$id='zip']) ? $_POST[$id] : '';
+            $country = isset($_POST[$id='country']) ? $_POST[$id] : '';
             $phone = isset($_POST[$id='phone']) ? $_POST[$id] : '';
             $email = isset($_POST[$id='email']) ? $_POST[$id] : '';
             $phoneHome = isset($_POST[$id='phoneHome']) ? $_POST[$id] : '';
@@ -491,6 +508,10 @@ class CareersUI extends UserInterface
                     $city = $candidate['city'];
                     $state = $candidate['state'];
                     $zip = $candidate['zip'];
+                    if (!isset($_POST['country']))
+                    {
+                        $country = $candidate['country'];
+                    }
                     $phone = $candidate['phoneWork'];
                     $phoneHome = $candidate['phoneHome'];
                     $phoneCell = $candidate['phoneCell'];
@@ -526,6 +547,10 @@ class CareersUI extends UserInterface
                         $city = $candidate['city'];
                         $state = $candidate['state'];
                         $zip = $candidate['zip'];
+                        if (!isset($_POST['country']))
+                        {
+                            $country = $candidate['country'];
+                        }
                         $phone = $candidate['phoneWork'];
                         $phoneHome = $candidate['phoneHome'];
                         $phoneCell = $candidate['phoneCell'];
@@ -651,6 +676,15 @@ class CareersUI extends UserInterface
             $template['Content'] = str_replace('<input-city>', '<input name="city" id="city" class="inputBoxNormal" value="' . $cityEscaped . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-state>', '<input name="state" id="state" class="inputBoxNormal" value="' . $stateEscaped . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-zip>', '<input name="zip" id="zip" class="inputBoxNormal" value="' . $zipEscaped . '" />', $template['Content']);
+            $countrySelectHTML = TemplateUtility::getCountrySelectHTML(
+                'country',
+                (string) $country,
+                true,
+                'inputBoxNormal',
+                ''
+            );
+            $template['Content'] = str_replace('<input-country>', $countrySelectHTML, $template['Content']);
+            $template['Content'] = str_replace('<input-country req>', $countrySelectHTML, $template['Content']);
             $template['Content'] = str_replace('<input-phone>', '<input name="phone" id="phone" class="inputBoxNormal" value="' . $phoneEscaped . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-email>', '<input name="email" id="email" class="inputBoxNormal" value="' . $emailEscaped . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-phone-home>', '<input name="phoneHome" id="phoneHome" class="inputBoxNormal" value="' . $phoneHomeEscaped . '" />', $template['Content']);
@@ -1240,6 +1274,17 @@ class CareersUI extends UserInterface
                 }';
         }
 
+        if (strpos($template['Content'], '<input-country req>') !== false)
+        {
+            $validator .= '
+                if (document.getElementById(\'country\').value == \'\')
+                {
+                    alert(\'Please select a country.\');
+                    document.getElementById(\'country\').focus();
+                    return false;
+                }';
+        }
+
         if (strpos($template['Content'], '<input-phone req>') !== false)
         {
             $validator .= '
@@ -1516,6 +1561,15 @@ class CareersUI extends UserInterface
         $city           = $this->getSanitisedInput('city', $_POST);
         $state          = $this->getSanitisedInput('state', $_POST);
         $zip            = $this->getSanitisedInput('zip', $_POST);
+        $country        = false;
+        if (isset($_POST['country']))
+        {
+            $country = strtoupper($this->getTrimmedInput('country', $_POST));
+            if ($country != '' && !isset($GLOBALS['countries'][$country]))
+            {
+                $country = '';
+            }
+        }
         $source         = $this->getSanitisedInput('source', $_POST);
         $phone          = $this->getSanitisedInput('phone', $_POST);
         $phoneHome      = $this->getSanitisedInput('phoneHome', $_POST);
@@ -1562,7 +1616,7 @@ class CareersUI extends UserInterface
          * Save basic information in a cookie in case the site is using registration to
          * process repeated postings, etc.
          */
-        $fields = array('firstName', 'lastName', 'email', 'address', 'address2', 'city', 'state', 'zip', 'phone',
+        $fields = array('firstName', 'lastName', 'email', 'address', 'address2', 'city', 'state', 'zip', 'country', 'phone',
             'phoneHome', 'phoneCell'
         );
         $storedVal = '';
@@ -1585,7 +1639,7 @@ class CareersUI extends UserInterface
                 $lastName, $email, $email2, $phoneHome, $phoneCell, $phone, $address, $address2, $city,
                 $state, $zip, $source, $keySkills, '', $employer, '', '', '', $candidate['notes'],
                 '', $bestTimeToCall, $automatedUser['userID'], false,
-                '', '', $gender, $race, $veteran, $disability
+                '', '', $gender, $race, $veteran, $disability, $country
             );
 
             /* Update extra feilds */
@@ -1630,7 +1684,9 @@ class CareersUI extends UserInterface
                 $gender,
                 $race,
                 $veteran,
-                $disability
+                $disability,
+                false,
+                $country === false ? '' : $country
             );
 
             /* Update extra fields. */
