@@ -1494,6 +1494,10 @@ class CATSSchema
                     }
                 }
             ',
+            '378' => '
+                ALTER TABLE `joborder`
+                CHANGE `state` `state` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+            ',
 
         );
     }

@@ -507,9 +507,9 @@ class DatabaseConnection
      */
     public function makeQueryStringOrNULL($string)
     {
-        $string = trim($string);
+        $string = trim((string) $string);
 
-        if (empty($string))
+        if ($string === '')
         {
             return 'NULL';
         }

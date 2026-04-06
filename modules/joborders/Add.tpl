@@ -167,9 +167,9 @@
                             </td>
                             <td class="tdData">
                                 <?php if ($this->selectedCompanyID !== false): ?>
-                                    <input type="text" tabindex="5" class="inputbox" id="state" name="state" value="<?php $this->_($this->selectedCompanyLocation['state']); ?>" style="width: 150px;" />&nbsp;*
+                                    <input type="text" tabindex="5" class="inputbox" id="state" name="state" value="<?php $this->_($this->selectedCompanyLocation['state']); ?>" style="width: 150px;" />
                                 <?php else: ?>
-                                    <input type="text" tabindex="5" class="inputbox" id="state" name="state" style="width: 150px;" />&nbsp;*
+                                    <input type="text" tabindex="5" class="inputbox" id="state" name="state" style="width: 150px;" />
                                 <?php endif; ?>
                             </td>
 

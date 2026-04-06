@@ -801,7 +801,7 @@ CREATE TABLE `joborder` (
   `is_hot` int(1) NOT NULL DEFAULT '0',
   `openings` int(11) DEFAULT NULL,
   `city` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `state` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `state` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   `start_date` datetime DEFAULT NULL,
   `date_created` datetime NOT NULL DEFAULT '1000-01-01 00:00:00',
   `date_modified` datetime NOT NULL DEFAULT '1000-01-01 00:00:00',

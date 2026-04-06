@@ -221,7 +221,7 @@ class JobOrders
             $this->_db->makeQueryString($status),
             $this->_db->makeQueryString($salary),
             $this->_db->makeQueryString($city),
-            $this->_db->makeQueryString($state),
+            $this->_db->makeQueryStringOrNULL($state),
             $this->_db->makeQueryInteger($departmentID),
             $this->_db->makeQueryInteger($recruiter),
             $this->_db->makeQueryInteger($owner),

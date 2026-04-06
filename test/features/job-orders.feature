@@ -49,7 +49,6 @@ Feature: Job Orders
     Then I should see "Form Error" in alert popup
     And I should see "You must select a company" in alert popup
     And I should see "You must enter a city" in alert popup
-    And I should see "You must enter a state" in alert popup
     And I confirm the popup
     
   @javascript

@@ -178,7 +178,7 @@
                             <label id="stateLabel" for="state">State:</label>
                         </td>
                         <td class="tdData">
-                            <input type="text" tabindex="5" class="inputbox" id="state" name="state" value="<?php $this->_($this->data['state']); ?>" style="width: 150px;" />&nbsp;*
+                            <input type="text" tabindex="5" class="inputbox" id="state" name="state" value="<?php $this->_($this->data['state']); ?>" style="width: 150px;" />
                         </td>
 
                         <td class="tdVertical">

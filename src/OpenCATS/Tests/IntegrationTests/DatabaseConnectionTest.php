@@ -63,10 +63,12 @@ class DatabaseConnectionTest extends DatabaseTestCase
             array('te\'st',  "'te\\'st'"),
             array('\'; DELETE FROM test_table; SELECT \'',  "'\'; DELETE FROM test_table; SELECT \''"),
             array('te\'s`t',  "'te\\'s`t'"),
+            array('0', "'0'"),
             array('    ',  'NULL'),
             array(' ',  'NULL'),
             array('	 		',  'NULL'),
-            array('',  'NULL')
+            array('',  'NULL'),
+            array(null, 'NULL')
         );
 
         foreach ($strings as $key => $value)

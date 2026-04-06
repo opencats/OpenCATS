@@ -556,6 +556,44 @@ class StringUtilityTest extends TestCase
             );
     }
 
+    function testMakeCityStateString()
+    {
+        $this->assertSame(
+            'Chicago, IL',
+            StringUtility::makeCityStateString('Chicago', 'IL')
+            );
+
+        $this->assertSame(
+            'Chicago',
+            StringUtility::makeCityStateString('Chicago', '')
+            );
+
+        $this->assertSame(
+            'IL',
+            StringUtility::makeCityStateString('', 'IL')
+            );
+
+        $this->assertSame(
+            '',
+            StringUtility::makeCityStateString('', '')
+            );
+
+        $this->assertSame(
+            'Chicago',
+            StringUtility::makeCityStateString('Chicago', null)
+            );
+
+        $this->assertSame(
+            'IL',
+            StringUtility::makeCityStateString(null, 'IL')
+            );
+
+        $this->assertSame(
+            '',
+            StringUtility::makeCityStateString(null, null)
+            );
+    }
+
     /* Tests for escapeSingleQuotes(). */
     function testEscapeSingleQuotes()
     {

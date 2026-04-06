@@ -605,8 +605,8 @@ class StringUtility
      */
     public static function makeCityStateString($city, $state)
     {
-        $city  = trim($city);
-        $state = trim($state);
+        $city  = trim((string) $city);
+        $state = trim((string) $state);
 
         if (!empty($city))
         {
