@@ -669,6 +669,7 @@ class JobOrders
                 joborder.duration AS duration,
                 joborder.city AS city,
                 joborder.state AS state,
+                joborder.country AS country,
                 joborder.status AS status,
                 joborder.company_department_id AS departmentID,
                 joborder.questionnaire_id as questionnaireID,

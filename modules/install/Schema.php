@@ -1591,6 +1591,72 @@ class CATSSchema
                     AND value LIKE \'%<label id="zipPostalLabel" for="zipPostal">*Zip/Postal Code:</label>%\'
                     AND value LIKE \'%<td><input-state></td>%\';
             ',
+            '383' => '
+                UPDATE
+                    career_portal_template
+                SET
+                    value = REPLACE(
+                        REPLACE(
+                            REPLACE(value, \'<td><city>, <state></td>\', \'<td><location></td>\'),
+                            \'<city>, <state>\',
+                            \'<location>\'
+                        ),
+                        \'<city>,<state>\',
+                        \'<location>\'
+                    )
+                WHERE
+                    setting = \'Content - Job Details\'
+                    AND value NOT LIKE \'%<location>%\'
+                    AND
+                    (
+                        (
+                            career_portal_name = \'CATS 2.0\'
+                            AND value LIKE \'%<h1>Position Details: <title></h1>%\'
+                            AND value LIKE \'%<td class="detailsHeader"><strong>Location:</strong></td>%\'
+                            AND value LIKE \'%<td class="detailsHeader"><strong>Openings:</strong></td>%\'
+                            AND value LIKE \'%<td class="detailsHeader"><strong>Salary Range:</strong></td>%\'
+                            AND value LIKE \'%<a-applyToJob onmouseover="buttonMouseOver(\'\'applyToPosition\'\',true);" onmouseout="buttonMouseOver(\'\'applyToPosition\'\',false);"><img src="images/careers_apply.gif" id="applyToPosition" alt="IMAGE: Apply to Position" /></a>%\'
+                        )
+                        OR
+                        (
+                            value LIKE \'%<p class="noteUnsized">Job Details</p>%\'
+                            AND value LIKE \'%Date Created:%\'
+                            AND value LIKE \'%Location:%\'
+                        )
+                    );
+
+                UPDATE
+                    career_portal_template_site
+                SET
+                    value = REPLACE(
+                        REPLACE(
+                            REPLACE(value, \'<td><city>, <state></td>\', \'<td><location></td>\'),
+                            \'<city>, <state>\',
+                            \'<location>\'
+                        ),
+                        \'<city>,<state>\',
+                        \'<location>\'
+                    )
+                WHERE
+                    setting = \'Content - Job Details\'
+                    AND value NOT LIKE \'%<location>%\'
+                    AND
+                    (
+                        (
+                            value LIKE \'%<h1>Position Details: <title></h1>%\'
+                            AND value LIKE \'%<td class="detailsHeader"><strong>Location:</strong></td>%\'
+                            AND value LIKE \'%<td class="detailsHeader"><strong>Openings:</strong></td>%\'
+                            AND value LIKE \'%<td class="detailsHeader"><strong>Salary Range:</strong></td>%\'
+                            AND value LIKE \'%<a-applyToJob onmouseover="buttonMouseOver(\'\'applyToPosition\'\',true);" onmouseout="buttonMouseOver(\'\'applyToPosition\'\',false);"><img src="images/careers_apply.gif" id="applyToPosition" alt="IMAGE: Apply to Position" /></a>%\'
+                        )
+                        OR
+                        (
+                            value LIKE \'%<p class="noteUnsized">Job Details</p>%\'
+                            AND value LIKE \'%Date Created:%\'
+                            AND value LIKE \'%Location:%\'
+                        )
+                    );
+            ',
 
         );
     }
