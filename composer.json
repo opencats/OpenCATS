@@ -1,5 +1,7 @@
 {
     "name": "opencats/opencats",
+    "description": "Free and open source candidate/applicant tracking system for recruiters.",
+    "type": "project",
     "require": {
         "php": ">=7.2",
         "ckeditor/ckeditor": "^4.16.0",
