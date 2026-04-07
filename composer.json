@@ -1,6 +1,7 @@
 {
     "name": "opencats/opencats",
     "require": {
+        "php": ">=7.2",
         "ckeditor/ckeditor": "^4.16.0",
         "phpmailer/phpmailer": "^6.5.0"
     },
