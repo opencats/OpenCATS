@@ -42,6 +42,13 @@ else
 }
 @ini_set('memory_limit', '192M');
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST')
+{
+    die('Invalid request.');
+}
+
+$_REQUEST = $_POST;
+
 if (file_exists('modules.cache')) @unlink('modules.cache');
 
 if (!isset($_REQUEST['a']) || empty($_REQUEST['a']))
@@ -120,7 +127,7 @@ switch ($action)
                 CATSUtility::changeConfigSetting('DATABASE_USER', "'" . $_REQUEST['user'] . "'");
             }
 
-            if (isset($_REQUEST['pass']))
+            if (isset($_REQUEST['pass']) && $_REQUEST['pass'] !== '')
             {
                 CATSUtility::changeConfigSetting('DATABASE_PASS', "'" . $_REQUEST['pass'] . "'");
             }
@@ -146,13 +153,20 @@ switch ($action)
             die();
         }
 
+        $dbPassPlaceholder = '';
+        if (DATABASE_PASS !== '')
+        {
+            $dbPassPlaceholder = 'Leave blank to keep existing password';
+        }
+
         echo '
             <script type="text/javascript">
                 setActiveStep(2);
                 showTextBlock(\'databaseConnectivity\');
                 document.getElementById(\'dbname\').value = \'' . htmlspecialchars(DATABASE_NAME) . '\';
                 document.getElementById(\'dbuser\').value = \'' . htmlspecialchars(DATABASE_USER) . '\';
-                document.getElementById(\'dbpass\').value = \'' . htmlspecialchars(DATABASE_PASS) . '\';
+                document.getElementById(\'dbpass\').value = \'\';
+                document.getElementById(\'dbpass\').placeholder = \'' . $dbPassPlaceholder . '\';
                 document.getElementById(\'dbhost\').value = \'' . htmlspecialchars(DATABASE_HOST) . '\';
             </script>';
         break;
@@ -493,7 +507,9 @@ switch ($action)
         {
             $onClick .= htmlspecialchars($index) . ',\' + encodeURIComponent(getCheckedValue(document.getElementsByName(\'' . htmlspecialchars($index) . '\'))) + \',';
         }
-        $onClick .= '&timeZone=\' + encodeURIComponent(document.getElementById(\'timeZone\').value) + \'&dateFormat=\' + encodeURIComponent(document.getElementById(\'dateFormat\').value) + \'\');';
+        $onClick .= '&timeZone=\' + encodeURIComponent(document.getElementById(\'timeZone\').value) + \'';
+        $onClick .= '&dateFormat=\' + encodeURIComponent(document.getElementById(\'dateFormat\').value) + \'';
+        $onClick .= '&defaultPhoneCountryCodeDigits=\' + encodeURIComponent(document.getElementById(\'defaultPhoneCountryCodeDigits\').value));';
 
         echo '<script type="text/javascript">';
         echo 'var onClick = \'' . addslashes($onClick) . '\';';
@@ -527,6 +543,30 @@ switch ($action)
 
         $_SESSION['timeZoneInstaller'] = $timeZone;
         $_SESSION['dateFormatInstaller'] = $dateFormat;
+
+        // Default phone country calling code collected in the installer.
+        if (isset($_REQUEST['defaultPhoneCountryCodeDigits']))
+        {
+            $defaultPhoneCountryCodeDigits = trim($_REQUEST['defaultPhoneCountryCodeDigits']);
+
+            // Keep digits only; client-side JavaScript should already enforce this.
+            $defaultPhoneCountryCodeDigits = preg_replace('/[^0-9]/', '', $defaultPhoneCountryCodeDigits);
+
+            if ($defaultPhoneCountryCodeDigits !== '')
+            {
+                $_SESSION['defaultPhoneCountryCodeInstaller'] = '+' . $defaultPhoneCountryCodeDigits;
+            }
+            else
+            {
+                // Fall back to the historical default if nothing was provided.
+                $_SESSION['defaultPhoneCountryCodeInstaller'] = '+1';
+            }
+        }
+        else
+        {
+            // No value provided in the request, keep the historical default.
+            $_SESSION['defaultPhoneCountryCodeInstaller'] = '+1';
+        }
 
         $list = explode(',', $_REQUEST['list']);
 
@@ -1019,6 +1059,18 @@ switch ($action)
 
         MySQLQuery(sprintf("UPDATE site SET time_zone = %s", $timeZone));
 
+        if (isset($_SESSION['defaultPhoneCountryCodeInstaller'])
+            && $_SESSION['defaultPhoneCountryCodeInstaller'] !== '')
+        {
+            $defaultPhoneCountryCode = $_SESSION['defaultPhoneCountryCodeInstaller'];
+
+            // The value is expected to be in the form "+1", "+49", "+44", etc.
+            MySQLQuery(sprintf(
+                "UPDATE site SET default_phone_country_code = '%s'",
+                $defaultPhoneCountryCode
+            ));
+        }
+
         if (isset($_SESSION['CATS']))
         {
             unset($_SESSION['CATS']);
@@ -1045,7 +1097,7 @@ switch ($action)
         MySQLConnect();
 
         /* Determine if a default user is set. */
-        $rs = MySQLQuery("SELECT * FROM user WHERE user_name = 'admin' AND password = 'cats'");
+        $rs = MySQLQuery("SELECT * FROM user WHERE user_name = 'admin' AND password = md5('cats')");
         if ($rs && mysqli_fetch_row($rs))
         {
             //Default user set

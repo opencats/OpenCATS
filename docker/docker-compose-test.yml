@@ -1,4 +1,3 @@
-version: '2'
 services:
     opencats:
       container_name: opencats_test_web
@@ -12,6 +11,7 @@ services:
     php:
       container_name: opencats_test_php
       image: opencats/php-base:7.2-fpm-alpine
+      working_dir: /var/www/public
       volumes_from:
         - opencatsdata
 
@@ -35,7 +35,8 @@ services:
       volumes:
         - ../test/data/:/test/data/
         - ../test/scripts/:/test/scripts
-        - ../test/data/test.sql:/docker-entrypoint-initdb.d/000_initDB.sql
+        - ../db:/db
+        - ../db/cats_schema.sql:/docker-entrypoint-initdb.d/000_initDB.sql
         - ../test/data/securityTests.sql:/docker-entrypoint-initdb.d/001_addUsers.sql
 
     integrationtestdb:

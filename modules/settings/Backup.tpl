@@ -40,21 +40,22 @@
                             <?php foreach ($this->attachmentsRS as $rowNumber => $attachmentsData): ?>
                                 <tr>
                                     <td>
-                                        <a href="<?php echo $attachmentsData['retrievalURL']; ?>">
+                                        <a href="<?php echo htmlspecialchars($attachmentsData['retrievalURL'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING, false); ?>">
                                             <img src="images/file/zip.gif" alt="" width="16" height="16" border="0" />
                                         </a>
                                     </td>
                                     <td>
                                         (<?php $this->_($attachmentsData['fileSize']) ?>)&nbsp;
-                                        <a href="<?php echo $attachmentsData['retrievalURLLocal']; ?>">
+                                        <a href="<?php echo htmlspecialchars($attachmentsData['retrievalURL'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING, false); ?>">
                                             <?php $this->_($attachmentsData['originalFilename']) ?>
                                         </a>
                                     </td>
                                     <td><?php $this->_($attachmentsData['dateCreated']) ?></td>
                                     <td>
-                                        <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=deleteBackup" title="Delete" onclick="javascript:return confirm('Delete this backup?');">
-                                            <img src="images/actions/delete.gif" alt="" width="16" height="16" border="0" />
-                                        </a>
+                                        <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=deleteBackup" style="display:inline;" onsubmit="return confirm('Delete this backup?');">
+                                            <input type="hidden" name="postback" value="postback" />
+                                            <input type="image" src="images/actions/delete.gif" alt="" width="16" height="16" border="0" />
+                                        </form>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

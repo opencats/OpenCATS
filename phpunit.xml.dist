@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit>
+  <php>
+    <!-- Define HTML_ENCODING for PHPUnit because config.php is not loaded in unit tests. -->
+    <const name="HTML_ENCODING" value="UTF-8"/>
+  </php>
+</phpunit>

@@ -93,10 +93,10 @@ function startResize(objectResizingID, objectTableResizingID,
     columnName, cellIDs, sizeOfResizingCell)
 {
      _objectResizing = document.getElementById(objectResizingID);
-     _objectResizingDiv = document.getElementById(objectResizingID + 'div');
+     _objectResizingDiv = document.getElementById(objectResizingID + "div");
      _objectTableResizing = document.getElementById(objectTableResizingID);
      _objectOverrideCell = document.getElementById(objectOverrideCellID);
-     _objectOverrideDiv = document.getElementById(objectOverrideCellID + 'div');
+     _objectOverrideDiv = document.getElementById(objectOverrideCellID + "div");
      
      _instance = instance;
      _sessionCookie = sessionCookie;
@@ -110,7 +110,7 @@ function startResize(objectResizingID, objectTableResizingID,
      _isResizing = true;
      _isMoving = false;
      
-     var filterRow = document.getElementById('filterRow' + instance);
+     var filterRow = document.getElementById("filterRow" + instance);
 }
 
 function startMove(objectResizingID, objectTableResizingID,
@@ -118,11 +118,11 @@ function startMove(objectResizingID, objectTableResizingID,
     objectMovableCellID, objectOverFlowDivID, baseParameters, unrelatedRequestString)
 {
     _objectResizing = document.getElementById(objectResizingID);
-    _objectResizingDiv = document.getElementById(objectResizingID + 'div');
+    _objectResizingDiv = document.getElementById(objectResizingID + "div");
     _objectTableResizing = document.getElementById(objectTableResizingID);
     _objectOverflow = document.getElementById(objectOverFlowDivID);
     _objectOverrideCell = document.getElementById(objectOverrideCellID);
-    _objectOverrideDiv = document.getElementById(objectOverrideCellID + 'div');
+    _objectOverrideDiv = document.getElementById(objectOverrideCellID + "div");
     _objectMovableCell = document.getElementById(objectMovableCellID);
     
     _instance = instance;
@@ -134,7 +134,7 @@ function startMove(objectResizingID, objectTableResizingID,
     _mouseStartPos = _mouse_x;
     _isResizing = false;
  
-    window.setTimeout('startMoveAfterDelay();', 450)
+    window.setTimeout("startMoveAfterDelay();", 450)
 }
 
 /* If the mouse is still clicked after .45 seconds, execute the move script. */
@@ -148,12 +148,12 @@ function startMoveAfterDelay()
     _isMoving = true;
     /* Remove label on item, create duplicate column floating above everything */
     _origInnerHTML = _objectResizingDiv.innerHTML;
-    _objectResizingDiv.innerHTML = '';
-    _objectMovableCell.style.width = _objectResizing.offsetWidth + 'px';
+    _objectResizingDiv.innerHTML = "";
+    _objectMovableCell.style.width = _objectResizing.offsetWidth + "px";
     _objectMovableCell.innerHTML = _origInnerHTML;
-    _objectMovableCell.style.display = '';
-    _objectMovableCell.style.left = docjslib_getRealLeft(_objectResizing) + 'px';
-    _objectMovableCell.style.top = docjslib_getRealTop(_objectResizing) + 'px';
+    _objectMovableCell.style.display = "";
+    _objectMovableCell.style.left = docjslib_getRealLeft(_objectResizing) + "px";
+    _objectMovableCell.style.top = docjslib_getRealTop(_objectResizing) + "px";
     _start_x = docjslib_getRealLeft(_objectResizing);
 }
 
@@ -202,19 +202,19 @@ function finishMoving()
     /* Create 2 arrays containing cell positions and actions for moving to that position */
     for (var i=0; i < tblHeadRowObj.cells.length; i++) 
     {
-        if ((' ' + tblHeadRowObj.cells[i].className + ' ').indexOf('resizeableCell') == -1 && 
+        if ((" " + tblHeadRowObj.cells[i].className + " ").indexOf("resizeableCell") == -1 && 
             docjslib_getRealLeft(tblHeadRowObj.cells[i]) != 0 && 
-            tblHeadRowObj.cells[i].id != '')
+            tblHeadRowObj.cells[i].id != "")
         {
             cellPositions[positionArrayCounter] = docjslib_getRealLeft(tblHeadRowObj.cells[i]);
             
             if (tblHeadRowObj.cells[i].id == _objectResizing.id)
             {
-                cellActions[positionArrayCounter] = 'nothing - left side';
+                cellActions[positionArrayCounter] = "nothing - left side";
             } 
-            else if (positionArrayCounter != 0 && cellActions[positionArrayCounter - 1] == 'nothing - left side')
+            else if (positionArrayCounter != 0 && cellActions[positionArrayCounter - 1] == "nothing - left side")
             {
-                cellActions[positionArrayCounter] = 'nothing - right side';
+                cellActions[positionArrayCounter] = "nothing - right side";
             }
             else
             {
@@ -228,7 +228,7 @@ function finishMoving()
     if (positionArrayCounter != 0)
     {
         cellPositions[positionArrayCounter] = docjslib_getRealLeft(_objectOverrideCell) + _objectOverrideCell.offsetWidth;
-        cellActions[positionArrayCounter] = 'moveToEnd';
+        cellActions[positionArrayCounter] = "moveToEnd";
     }
     
     /* Determine smallest distance away from middle of cell. */
@@ -245,14 +245,14 @@ function finishMoving()
     }
 
     /* Submit the move to the server if there is any action to be done. */
-    if ((' ' + cellActions[smallestIndex] + ' ').indexOf('nothing') == -1)
+    if ((" " + cellActions[smallestIndex] + " ").indexOf("nothing") == -1)
     {
-        _objectResizingDiv.innerHTML = '';
-        populateAjaxPager(_instance, _baseParameters, _sessionCookie, urlEncode(_objectResizing.id) + ',' + urlEncode(cellActions[smallestIndex]), _unrelatedRequestString)
+        _objectResizingDiv.innerHTML = "";
+        populateAjaxPager(_instance, _baseParameters, _sessionCookie, urlEncode(_objectResizing.id) + "," + urlEncode(cellActions[smallestIndex]), _unrelatedRequestString)
     }
     else
     {
-        _objectMovableCell.style.display = 'none';
+        _objectMovableCell.style.display = "none";
         _objectResizingDiv.innerHTML = _origInnerHTML;
     }
 }
@@ -263,10 +263,10 @@ function saveColumnSize()
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '';
-    POSTData += '&columnName=' + urlEncode(_columnName);
-    POSTData += '&columnWidth=' + _objectResizing.style.width.substring(0, _objectResizing.style.width.length-2);
-    POSTData += '&instance=' + _instance;
+    var POSTData = "";
+    POSTData += "&columnName=" + urlEncode(_columnName);
+    POSTData += "&columnWidth=" + _objectResizing.style.width.substring(0, _objectResizing.style.width.length-2);
+    POSTData += "&instance=" + _instance;
 
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
@@ -287,9 +287,9 @@ function saveColumnSize()
         }
 
         /* Return if we have any errors. */
-        var errorCodeNode    = http.responseXML.getElementsByTagName('errorcode').item(0);
-        var errorMessageNode = http.responseXML.getElementsByTagName('errormessage').item(0);
-        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != '0')
+        var errorCodeNode    = http.responseXML.getElementsByTagName("errorcode").item(0);
+        var errorMessageNode = http.responseXML.getElementsByTagName("errormessage").item(0);
+        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != "0")
         {
             var errorMessage = "An error occurred while receiving a response from the server.\n\n"
                              + errorMessageNode.firstChild.nodeValue;
@@ -300,7 +300,7 @@ function saveColumnSize()
 
     AJAX_callCATSFunction(
         http,
-        'setColumnWidth',
+        "setColumnWidth",
         POSTData,
         callBack,
         0,
@@ -349,15 +349,15 @@ function updateResize()
         newWidth = _startWidthResizing - (_mouseStartPos - _mouse_x);
         newTableWidth = _startTableWidthResizing - (_mouseStartPos - _mouse_x);
     }
-    _objectResizing.style.width = newWidth + 'px';
-    _objectResizingDiv.style.width = newWidth + 'px';
-    _objectTableResizing.style.width = newTableWidth + 'px';
+    _objectResizing.style.width = newWidth + "px";
+    _objectResizingDiv.style.width = newWidth + "px";
+    _objectTableResizing.style.width = newTableWidth + "px";
 }
 
 function updateMove()
 {
     newXPos = _start_x - (_mouseStartPos - _mouse_x) - _objectOverflow.scrollLeft ;
-    _objectMovableCell.style.left = (newXPos) + 'px';
+    _objectMovableCell.style.left = (newXPos) + "px";
 }
  
 
@@ -400,9 +400,9 @@ function enforceMinimumTableWidth()
     {
         var sizeMod = _minimumTableWidth - tableWidth;
         var newCellWidth = cellCurrentWidth + sizeMod;
-        _objectOverrideCell.style.width = newCellWidth + 'px'; 
-        _objectOverrideDiv.style.width = newCellWidth + 'px';
-        _objectTableResizing.style.width = (tableWidth + sizeMod) + 'px';
+        _objectOverrideCell.style.width = newCellWidth + "px"; 
+        _objectOverrideDiv.style.width = newCellWidth + "px";
+        _objectTableResizing.style.width = (tableWidth + sizeMod) + "px";
         overflow = false;
     }
     
@@ -412,9 +412,9 @@ function enforceMinimumTableWidth()
         var sizeMod = _lastCellRealWidth - cellCurrentWidth;
         if (_lastCellRealWidth-4 > 10)
         {
-            _objectOverrideCell.style.width = (_lastCellRealWidth-4) + 'px'; 
-            _objectOverrideDiv.style.width = (_lastCellRealWidth-4) + 'px';  
-            _objectTableResizing.style.width = (tableWidth + sizeMod) + 'px';   
+            _objectOverrideCell.style.width = (_lastCellRealWidth-4) + "px"; 
+            _objectOverrideDiv.style.width = (_lastCellRealWidth-4) + "px";  
+            _objectTableResizing.style.width = (tableWidth + sizeMod) + "px";   
         }          
     }
     
@@ -426,8 +426,8 @@ function enforceMinimumTableWidth()
 
     if (tableWidth < _minimumTableWidth)
     {
-        _objectOverrideCell.style.width = (cellCurrentWidth + (_minimumTableWidth - tableWidth)) + 'px';
-        _objectOverrideDiv.style.width = (cellCurrentWidth + (_minimumTableWidth - tableWidth)) + 'px';
+        _objectOverrideCell.style.width = (cellCurrentWidth + (_minimumTableWidth - tableWidth)) + "px";
+        _objectOverrideDiv.style.width = (cellCurrentWidth + (_minimumTableWidth - tableWidth)) + "px";
         overflow = false;
     }
     
@@ -440,92 +440,92 @@ function enforceMinimumTableWidth()
 /* Helper for add/remove column window. */
 function toggleHideShowControls(md5InstanceName) 
 {
-    var cellHideShow = document.getElementById('cellHideShow' + md5InstanceName);
-    var ColumnBox = document.getElementById('ColumnBox' + md5InstanceName);
-    var helpShim = document.getElementById('helpShim' + md5InstanceName);
+    var cellHideShow = document.getElementById("cellHideShow" + md5InstanceName);
+    var ColumnBox = document.getElementById("ColumnBox" + md5InstanceName);
+    var helpShim = document.getElementById("helpShim" + md5InstanceName);
     
-    if (ColumnBox.style.display=='block') 
+    if (ColumnBox.style.display=="block") 
     {
-        ColumnBox.style.display = 'none';
-        helpShim.style.display = 'none';
+        ColumnBox.style.display = "none";
+        helpShim.style.display = "none";
     } 
     else 
     {
-        ColumnBox.style.display = 'block';
-        ColumnBox.style.left = docjslib_getRealLeft(cellHideShow) + 'px';
-        helpShim.style.display = 'block';
+        ColumnBox.style.display = "block";
+        ColumnBox.style.left = docjslib_getRealLeft(cellHideShow) + "px";
+        helpShim.style.display = "block";
         helpShim.style.zIndex = 1;
-        helpShim.style.left = docjslib_getRealLeft(ColumnBox) + 'px';
-        helpShim.style.top = docjslib_getRealTop(ColumnBox) + 'px';
-        helpShim.style.width = ColumnBox.offsetWidth + 'px';
-        helpShim.style.height = ColumnBox.offsetHeight + 'px';
+        helpShim.style.left = docjslib_getRealLeft(ColumnBox) + "px";
+        helpShim.style.top = docjslib_getRealTop(ColumnBox) + "px";
+        helpShim.style.width = ColumnBox.offsetWidth + "px";
+        helpShim.style.height = ColumnBox.offsetHeight + "px";
     }
 }
 
 /* Helper for add/remove column window. */
 function toggleHideShowAction(md5InstanceName) 
 {
-    var cellHideShow = document.getElementById('cellHideShow' + md5InstanceName);
-    var ActionArea = document.getElementById('ActionArea' + md5InstanceName);
-    var helpShim = document.getElementById('helpShim' + md5InstanceName);
+    var cellHideShow = document.getElementById("cellHideShow" + md5InstanceName);
+    var ActionArea = document.getElementById("ActionArea" + md5InstanceName);
+    var helpShim = document.getElementById("helpShim" + md5InstanceName);
     
-    if (ActionArea.style.display=='block') 
+    if (ActionArea.style.display=="block") 
     {
-        ActionArea.style.display = 'none';
-        helpShim.style.display = 'none';
+        ActionArea.style.display = "none";
+        helpShim.style.display = "none";
     } 
     else 
     {
-        ActionArea.style.display = 'block';
-        ActionArea.style.left = docjslib_getRealLeft(cellHideShow) + 'px';
-        helpShim.style.display = 'block';
+        ActionArea.style.display = "block";
+        ActionArea.style.left = docjslib_getRealLeft(cellHideShow) + "px";
+        helpShim.style.display = "block";
         helpShim.style.zIndex = 1;
-        helpShim.style.left = docjslib_getRealLeft(ActionArea) + 'px';
-        helpShim.style.top = docjslib_getRealTop(ActionArea) + 'px';
-        helpShim.style.width = ActionArea.offsetWidth + 'px';
-        helpShim.style.height = ActionArea.offsetHeight + 'px';
+        helpShim.style.left = docjslib_getRealLeft(ActionArea) + "px";
+        helpShim.style.top = docjslib_getRealTop(ActionArea) + "px";
+        helpShim.style.width = ActionArea.offsetWidth + "px";
+        helpShim.style.height = ActionArea.offsetHeight + "px";
     }
 }
 
 /* Helpers for the show/hide filter control. */
 function showFilterSet(cellIndexes, instanceName)
 {
-    var filterRow = document.getElementById('filterRow' + instanceName);
+    var filterRow = document.getElementById("filterRow" + instanceName);
     var widthEval = 0;
-    filterRow.style.display = '';
-    filterRow.style.height = '20px';
+    filterRow.style.display = "";
+    filterRow.style.height = "20px";
     
-    var cellIndexArray = cellIndexes.split(',');
+    var cellIndexArray = cellIndexes.split(",");
     for (var i = 0; i < cellIndexArray.length; i++)
     {        
         if (i < cellIndexArray.length - 1)
         {
             //FIXME: Clean up.
-            widthEval = (docjslib_getRealLeft(document.getElementById('cell' + instanceName + cellIndexArray[i+1])) - docjslib_getRealLeft(document.getElementById('cell' + instanceName + cellIndexArray[i])) - 2);
+            widthEval = (docjslib_getRealLeft(document.getElementById("cell" + instanceName + cellIndexArray[i+1])) - docjslib_getRealLeft(document.getElementById("cell" + instanceName + cellIndexArray[i])) - 2);
             if (widthEval < 0)
             {
                 widthEval = 0;
             }
-            document.getElementById('filter_cell' + i + instanceName).style.width = widthEval + 'px';
+            document.getElementById("filter_cell" + i + instanceName).style.width = widthEval + "px";
         }
         else
         {
-            widthEval = ((docjslib_getRealLeft(document.getElementById('table' + instanceName)) + document.getElementById('table' + instanceName).offsetWidth) - docjslib_getRealLeft(document.getElementById('cell' + instanceName + cellIndexArray[i])) - 2)
+            widthEval = ((docjslib_getRealLeft(document.getElementById("table" + instanceName)) + document.getElementById("table" + instanceName).offsetWidth) - docjslib_getRealLeft(document.getElementById("cell" + instanceName + cellIndexArray[i])) - 2)
             if (widthEval < 0)
             {
                 widthEval = 0;
             }
-            document.getElementById('filter_cell' + i + instanceName).style.width = widthEval + 'px';
+            document.getElementById("filter_cell" + i + instanceName).style.width = widthEval + "px";
         }
-        document.getElementById('filter_cell' + i + instanceName).style.top = '-3px';
+        document.getElementById("filter_cell" + i + instanceName).style.top = "-3px";
     }
-    filterRow.style.height = document.getElementById('filter_cell' + cellIndexArray[0] + instanceName).offsetHeight + 'px';
+    filterRow.style.height = document.getElementById("filter_cell" + cellIndexArray[0] + instanceName).offsetHeight + "px";
 }
 
 function hideFilterSet(instanceName)
 {
-    var filterRow = document.getElementById('filterRow' + instanceName);
-    filterRow.style.display = 'none';      
+    var filterRow = document.getElementById("filterRow" + instanceName);
+    filterRow.style.display = "none";      
 }
 
 /* Called by stopResize to store in the database the new column widths. */
@@ -534,26 +534,26 @@ function populateAjaxPager(instance, parameters, sessionCookie, dynamicArgument,
 {
     md5instance = md5(urlDecode(instance));
     
-    if (document.getElementById('exportBoxLink' + md5instance) != null)
+    if (document.getElementById("exportBoxLink" + md5instance) != null)
     {
-        document.getElementById('exportBoxLink' + md5instance).style.display = 'none';
+        document.getElementById("exportBoxLink" + md5instance).style.display = "none";
     }
     
-    document.getElementById('ajaxTableIndicator' + md5instance).style.display = '';
+    document.getElementById("ajaxTableIndicator" + md5instance).style.display = "";
     
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '&i=' + instance + '&p=' + parameters;
+    var POSTData = "&i=" + instance + "&p=" + parameters;
     
-    if (typeof(dynamicArgument) != 'undefined')
+    if (typeof(dynamicArgument) != "undefined")
     {
-        POSTData += '&dynamicArgument=' + urlEncode(dynamicArgument);
+        POSTData += "&dynamicArgument=" + urlEncode(dynamicArgument);
     }
     
-    if (typeof(unrelatedRequestString) != 'undefined')
+    if (typeof(unrelatedRequestString) != "undefined")
     {
-        POSTData += '&unrelatedRequestString=' + urlEncode(unrelatedRequestString);
+        POSTData += "&unrelatedRequestString=" + urlEncode(unrelatedRequestString);
     }
 
     /* Anonymous callback function triggered when HTTP response is received. */
@@ -564,14 +564,14 @@ function populateAjaxPager(instance, parameters, sessionCookie, dynamicArgument,
             return;
         }
 
-        document.getElementById('OverflowDiv' + md5instance).innerHTML = http.responseText;
+        document.getElementById("OverflowDiv" + md5instance).innerHTML = http.responseText;
         
         execJS(http.responseText);
     }
 
     AJAX_callCATSFunction(
         http,
-        'getDataGridPager',
+        "getDataGridPager",
         POSTData,
         callBack,
         0,
@@ -602,14 +602,14 @@ function addRemoveFromExportArray(arrayObject, theValue)
 /* Removes a column from a filter. */
 function removeColumnFromFilter(filterElementID, columnName)
 {
-    var arguments = document.getElementById(filterElementID).value.split(',');
-    var newArguments = '';
+    var arguments = document.getElementById(filterElementID).value.split(",");
+    var newArguments = "";
     
     for (var i = 0; i < arguments.length; i++)
     {   
-        if ((arguments[i].indexOf('=') == -1 || urlDecode(arguments[i].substr(0, arguments[i].indexOf('='))) != columnName) && arguments[i] != '')
+        if ((arguments[i].indexOf("=") == -1 || urlDecode(arguments[i].substr(0, arguments[i].indexOf("="))) != columnName) && arguments[i] != "")
         {
-            newArguments += arguments[i] + ',';
+            newArguments += arguments[i] + ",";
         }
     }
     
@@ -621,25 +621,25 @@ function addColumnToFilter(filterElementID, columnName, operator, value)
 {
     removeColumnFromFilter(filterElementID, columnName);
     
-    document.getElementById(filterElementID).value += urlEncode(columnName) + operator + urlEncode(value) + ',';
+    document.getElementById(filterElementID).value += urlEncode(columnName) + operator + urlEncode(value) + ",";
 }
 
 /* Clears the filter. */
 function clearFilter(filterElementID)
 {
-    document.getElementById(filterElementID).value = '';
+    document.getElementById(filterElementID).value = "";
 }
 
 /* DHTML filter options are encoded into column name!@!filter type pairs.  Ex:  First Name!@!===~ returns First Name. */
 function getFilterColumnNameFromOptionValue(theValue)
 {
-    return theValue.substr(0, theValue.indexOf('!@!'));
+    return theValue.substr(0, theValue.indexOf("!@!"));
 }
 
 /* DHTML filter options are encoded into column name!@!filter type pairs.  Ex:  First Name!@!===~ returns '===~'; */
 function getFilterColumnTypesFromOptionValue(theValue)
 {
-    return theValue.substr(theValue.indexOf('!@!') + 3);
+    return theValue.substr(theValue.indexOf("!@!") + 3);
 }
 
 
@@ -666,13 +666,13 @@ function showNewFilter(
     );
     filterArea.appendChild(currentFilter.render());
     var disableAddFilterButton = selectableColumns.length > 1 ? false : true;
-    document.getElementsByName('addFilterButton' + instanceName)[0].disabled = disableAddFilterButton;
+    document.getElementsByName("addFilterButton" + instanceName)[0].disabled = disableAddFilterButton;
 }
 
 /* Generic message to display when a user tries to export selected, but nothing is selected. */
 function dataGridNoSelected()
 {
-    alert ('You have not selected any items!');
+    alert ("You have not selected any items!");
 }
 
 /* Mouse handler hooks. */

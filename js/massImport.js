@@ -2,7 +2,7 @@ var documentOk = 0;
 var documentFail = 0;
 var progressBarWidth = 868;
 var parsingBlock = false;
-var parseURL = '?m=import&a=massImportDocument';
+var parseURL = "?m=import&a=massImportDocument";
 var parseSent = 0;
 var parseReceived = 0;
 
@@ -15,20 +15,20 @@ var documentCTime = Array();
 
 function goStep4()
 {
-    var btn = document.getElementById('nextStep');
-    btn.disabled = 'true';
-    btn.value = 'Please wait...';
-    document.location.href='?m=import&a=massImport&step=4';
+    var btn = document.getElementById("nextStep");
+    btn.disabled = "true";
+    btn.value = "Please wait...";
+    document.location.href="?m=import&a=massImport&step=4";
 }
 
 function setProgressBar(x, fileName)
 {
-    var barObj = document.getElementById('statusBar');
-    var fileNameObj = document.getElementById('fileName');
+    var barObj = document.getElementById("statusBar");
+    var fileNameObj = document.getElementById("fileName");
     var width = Math.floor(progressBarWidth * x / 100);
 
     fileNameObj.innerHTML = fileName;
-    barObj.style.width = width + 'px';
+    barObj.style.width = width + "px";
 }
 
 function addDocument(name, realName, ext, type, cTime)
@@ -52,7 +52,7 @@ function startDocumentParsing()
         {
             // Process is complete.
             //alert('Success: ' + documentOk + '  Failed: ' + documentFail);
-            document.location.href = '?m=import&a=massImport&step=3';
+            document.location.href = "?m=import&a=massImport&step=3";
             return;
         }
 
@@ -61,13 +61,13 @@ function startDocumentParsing()
 
     var d = new Date();
     parseSent = d.getTime();
-    setTimeout('startDocumentParsing()', 10);
+    setTimeout("startDocumentParsing()", 10);
 }
 
 function deleteUploadFiles()
 {
     var ajaxObj;
-    var url = '?m=import&a=massImport&step=99';
+    var url = "?m=import&a=massImport&step=99";
 
     try
     {
@@ -98,10 +98,10 @@ function deleteUploadFiles()
     {
         if (ajaxObj.readyState == 4)
         {
-            var obj = document.getElementById('uploadQueue');
+            var obj = document.getElementById("uploadQueue");
             if (obj)
             {
-                obj.style.display = 'none';
+                obj.style.display = "none";
             }
         }
     }
@@ -115,11 +115,11 @@ function parseDocument()
     var ajaxObj;
     var d = new Date();
     
-    var url = parseURL + '&name=' + urlEncode(documentName[currentDocument])
-        + '&realName=' + urlEncode(documentRealName[currentDocument])
-        + '&ext=' + urlEncode(documentExt[currentDocument])
-        + '&type=' + urlEncode(documentType[currentDocument])
-        + '&cTime=' + urlEncode(documentCTime[currentDocument]);
+    var url = parseURL + "&name=" + urlEncode(documentName[currentDocument])
+        + "&realName=" + urlEncode(documentRealName[currentDocument])
+        + "&ext=" + urlEncode(documentExt[currentDocument])
+        + "&type=" + urlEncode(documentType[currentDocument])
+        + "&cTime=" + urlEncode(documentCTime[currentDocument]);
 
     // FIXME: USE CATS AJAX CODE!
     try
@@ -151,7 +151,7 @@ function parseDocument()
     {
         if (ajaxObj.readyState == 4)
         {
-            if (ajaxObj.responseText == 'Ok')
+            if (ajaxObj.responseText == "Ok")
             {
                 documentOk++;
             }
@@ -174,30 +174,30 @@ function parseDocument()
 
 function validation()
 {
-    if (typeof runResumeParserValidation == 'function') runResumeParserValidation();
+    if (typeof runResumeParserValidation == "function") runResumeParserValidation();
 }
 
 function documentNext()
 {
-    setDocumentAction('next');
+    setDocumentAction("next");
     document.verifyForm.submit();
 }
 
 function documentPrevious()
 {
-    setDocumentAction('previous');
+    setDocumentAction("previous");
     document.verifyForm.submit();
 }
 
 function documentSkip()
 {
-    setDocumentAction('skip');
+    setDocumentAction("skip");
     document.verifyForm.submit();
 }
 
 function setDocumentAction(action)
 {
-    var obj = getObj('documentAction');
+    var obj = getObj("documentAction");
     if (obj)
     {
         obj.value = action;
@@ -211,14 +211,14 @@ var copyBlockHeights = new Array();
 function fieldCopy(name)
 {
     if (!enableFieldCopy) return;
-    var targ = getObj('document');
+    var targ = getObj("document");
     var dest = getObj(name);
     var selText = (targ.value).substring(targ.selectionStart, targ.selectionEnd);
 
     // Remove double spacing
-    while (selText.indexOf('  ') != -1)
+    while (selText.indexOf("  ") != -1)
     {
-        selText = selText.replace(/  /, ' ');
+        selText = selText.replace(/  /, " ");
     }
 
     // Remove double line-returns
@@ -228,7 +228,7 @@ function fieldCopy(name)
     }
 
     // Some... special touches for skills
-    if (name == 'skills')
+    if (name == "skills")
     {
         selText = selText.replace(/[\n\r\t\-\* ]{2,}/g, "\n");
     }
@@ -247,8 +247,8 @@ function fieldCopy(name)
     {
         dest.value = selText;
 
-        getObj('document').selectionStart = 0;
-        getObj('document').selectionEnd = 0;
+        getObj("document").selectionStart = 0;
+        getObj("document").selectionEnd = 0;
         enableFieldCopy = false;
         checkCopyBlocks();
     }
@@ -258,8 +258,8 @@ function fieldCopy(name)
 
 function addCopyBlock(name, height)
 {
-    var block = getObj(name + 'CopyBlock');
-    var greyBlock = getObj('copyBlockGrey');
+    var block = getObj(name + "CopyBlock");
+    var greyBlock = getObj("copyBlockGrey");
     if (block)
     {
         copyBlocks.push(name);
@@ -289,15 +289,15 @@ function documentMouseUp(obj)
         switch (height)
         {
             case 0:
-                greyBlock = getObj('copyBlockGreyMini');
-                activeBlock = getObj('copyBlockActiveMini');
+                greyBlock = getObj("copyBlockGreyMini");
+                activeBlock = getObj("copyBlockActiveMini");
                 break;
             case 1:
-                greyBlock = getObj('copyBlockGrey');
-                activeBlock = getObj('copyBlockActive');
+                greyBlock = getObj("copyBlockGrey");
+                activeBlock = getObj("copyBlockActive");
                 break;
         }
-        block = getObj(copyBlocks[i] + 'CopyBlock');
+        block = getObj(copyBlocks[i] + "CopyBlock");
 
         if (enableFieldCopy)
         {
@@ -312,8 +312,8 @@ function documentMouseUp(obj)
 
 function checkCopyBlocks()
 {
-    documentMouseUp(getObj('document'));
-    setTimeout('checkCopyBlocks()', 1000);
+    documentMouseUp(getObj("document"));
+    setTimeout("checkCopyBlocks()", 1000);
 }
 
 
@@ -328,10 +328,10 @@ function gridBrowse()
     {
         for (col=0; col<15; col++)
         {
-            targ = document.getElementById('grid_row_' + row + '_column_' + col);
-            dataItem = document.getElementById('data_' + (row + offset) + '_column_' + col);
+            targ = document.getElementById("grid_row_" + row + "_column_" + col);
+            dataItem = document.getElementById("data_" + (row + offset) + "_column_" + col);
 
-            if (targ) targ.innerHTML = '&nbsp;';
+            if (targ) targ.innerHTML = "&nbsp;";
 
             if (targ && !dataItem) return;
 
@@ -339,11 +339,11 @@ function gridBrowse()
             {
                 if (row % 2)
                 {
-                    targ.className = 'dataColumnEven';
+                    targ.className = "dataColumnEven";
                 }
                 else
                 {
-                    targ.className = 'dataColumnOdd';
+                    targ.className = "dataColumnOdd";
                 }
                 targ.innerHTML = dataItem.innerHTML;
                 success = true;
@@ -362,7 +362,7 @@ function gridScrollUp()
     gridBrowse();
     if (isGridScrollUp)
     {
-        setTimeout('gridScrollUp()', 40);
+        setTimeout("gridScrollUp()", 40);
     }
 }
 
@@ -373,7 +373,7 @@ function gridScrollDown()
     gridBrowse();
     if (isGridScrollDown)
     {
-        setTimeout('gridScrollDown()', 40);
+        setTimeout("gridScrollDown()", 40);
     }
 }
 

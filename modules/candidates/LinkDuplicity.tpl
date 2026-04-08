@@ -63,18 +63,28 @@
                         <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
                             <td align="left" valign="top">
                                 <?php if (!$data['linked']): ?>
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addDuplicates&amp;getback=getback&amp;candidateID=<?php $this->_($data['candidateID']); ?>&amp;duplicateCandidateID=<?php $this->_($data['duplicateCandidateID']); ?>" class="<?php $this->_($data['linkClass']); ?>">
-                                        <?php $this->_($data['firstName']); ?>
-                                    </a>
+                                    <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addDuplicates&amp;getback=getback" style="display:inline;">
+                                        <input type="hidden" name="postback" value="postback" />
+                                        <input type="hidden" name="candidateID" value="<?php $this->_($data['candidateID']); ?>" />
+                                        <input type="hidden" name="duplicateCandidateID" value="<?php $this->_($data['duplicateCandidateID']); ?>" />
+                                        <button type="submit" class="<?php $this->_($data['linkClass']); ?> linkButton">
+                                            <?php $this->_($data['firstName']); ?>
+                                        </button>
+                                    </form>
                                 <?php else: ?>
                                     <span class="<?php $this->_($data['linkClass']); ?>"><?php $this->_($data['firstName']); ?></span>
                                 <?php endif; ?>
                             </td>
                             <td align="left" valign="top">
                                 <?php if (!$data['linked']): ?>
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addDuplicates&amp;getback=getback&amp;candidateID=<?php $this->_($data['candidateID']); ?>&amp;duplicateCandidateID=<?php $this->_($data['duplicateCandidateID']); ?>" class="<?php $this->_($data['linkClass']); ?>">
-                                        <?php $this->_($data['lastName']); ?>
-                                    </a>
+                                    <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addDuplicates&amp;getback=getback" style="display:inline;">
+                                        <input type="hidden" name="postback" value="postback" />
+                                        <input type="hidden" name="candidateID" value="<?php $this->_($data['candidateID']); ?>" />
+                                        <input type="hidden" name="duplicateCandidateID" value="<?php $this->_($data['duplicateCandidateID']); ?>" />
+                                        <button type="submit" class="<?php $this->_($data['linkClass']); ?> linkButton">
+                                            <?php $this->_($data['lastName']); ?>
+                                        </button>
+                                    </form>
                                 <?php else: ?>
                                     <span class="<?php $this->_($data['linkClass']); ?>"><?php $this->_($data['lastName']); ?></span>
                                 <?php endif; ?>
@@ -116,18 +126,28 @@
                         <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
                             <td align="left" valign="top">
                                 <?php if (!$data['linked']): ?>
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addDuplicates&amp;getback=getback&amp;candidateID=<?php $this->_($data['candidateID']); ?>&amp;duplicateCandidateID=<?php $this->_($data['duplicateCandidateID']); ?>" class="<?php $this->_($data['linkClass']); ?>">
-                                        <?php $this->_($data['firstName']); ?>
-                                    </a>
+                                    <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addDuplicates&amp;getback=getback" style="display:inline;">
+                                        <input type="hidden" name="postback" value="postback" />
+                                        <input type="hidden" name="candidateID" value="<?php $this->_($data['candidateID']); ?>" />
+                                        <input type="hidden" name="duplicateCandidateID" value="<?php $this->_($data['duplicateCandidateID']); ?>" />
+                                        <button type="submit" class="<?php $this->_($data['linkClass']); ?> linkButton">
+                                            <?php $this->_($data['firstName']); ?>
+                                        </button>
+                                    </form>
                                 <?php else: ?>
                                     <span class="<?php $this->_($data['linkClass']); ?>"><?php $this->_($data['firstName']); ?></span>
                                 <?php endif; ?>
                             </td>
                             <td align="left" valign="top">
                                 <?php if (!$data['linked']): ?>
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addDuplicates&amp;getback=getback&amp;candidateID=<?php $this->_($data['candidateID']); ?>&amp;duplicateCandidateID=<?php $this->_($data['duplicateCandidateID']); ?>" class="<?php $this->_($data['linkClass']); ?>">
-                                        <?php $this->_($data['lastName']); ?>
-                                    </a>
+                                    <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=addDuplicates&amp;getback=getback" style="display:inline;">
+                                        <input type="hidden" name="postback" value="postback" />
+                                        <input type="hidden" name="candidateID" value="<?php $this->_($data['candidateID']); ?>" />
+                                        <input type="hidden" name="duplicateCandidateID" value="<?php $this->_($data['duplicateCandidateID']); ?>" />
+                                        <button type="submit" class="<?php $this->_($data['linkClass']); ?> linkButton">
+                                            <?php $this->_($data['lastName']); ?>
+                                        </button>
+                                    </form>
                                 <?php else: ?>
                                     <span class="<?php $this->_($data['linkClass']); ?>"><?php $this->_($data['lastName']); ?></span>
                                 <?php endif; ?>

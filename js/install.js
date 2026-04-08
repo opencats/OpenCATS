@@ -36,11 +36,11 @@ function setActiveStep(step)
     {
         if (i == step)
         {
-            document.getElementById('step' + i).style.fontWeight = 'bold';
+            document.getElementById("step" + i).style.fontWeight = "bold";
         }
         else
         {
-            document.getElementById('step' + i).style.fontWeight = '';
+            document.getElementById("step" + i).style.fontWeight = "";
         }
 
     }
@@ -48,25 +48,25 @@ function setActiveStep(step)
 
 function hideDivsWithin(node)
 {
-    var divNodes = node.getElementsByTagName('div');
+    var divNodes = node.getElementsByTagName("div");
 
     for (var i = 0; i < divNodes.length; i++)
     {
-        divNodes[i].style.display = 'none';
+        divNodes[i].style.display = "none";
     }
 }
 
 function showTextBlock(textBlock)
 {
-    document.getElementById(textBlock).style.display = '';
+    document.getElementById(textBlock).style.display = "";
 }
 
 function Installpage_populate(postData, message)
 {
-    var htmlObjectID = 'subFormBlock';
+    var htmlObjectID = "subFormBlock";
     var http = AJAX_getXMLHttpObject();
 
-    if (typeof(message) != 'undefined')
+    if (typeof(message) != "undefined")
     {
         document.getElementById(htmlObjectID).innerHTML += message;
     }
@@ -81,7 +81,7 @@ function Installpage_populate(postData, message)
 
         response = http.responseText;
 
-        hideDivsWithin(document.getElementById('allSpans'));
+        hideDivsWithin(document.getElementById("allSpans"));
         document.getElementById(htmlObjectID).innerHTML = response;
         execJS(response);
 
@@ -89,8 +89,8 @@ function Installpage_populate(postData, message)
 
     AJAX_callCATSFunction(
         http,
-        'install:ui',
-        '&' + postData,
+        "install:ui",
+        "&" + postData,
         callBack,
         10*60000, /* Ten minutes */
         null,
@@ -101,10 +101,10 @@ function Installpage_populate(postData, message)
 
 function Installpage_maint()
 {
-    var htmlObjectID = 'subFormBlock';
+    var htmlObjectID = "subFormBlock";
     var http = AJAX_getXMLHttpObject();
 
-    if (typeof(message) != 'undefined')
+    if (typeof(message) != "undefined")
     {
         document.getElementById(htmlObjectID).innerHTML += message;
     }
@@ -119,9 +119,9 @@ function Installpage_maint()
 
         response = http.responseText;
 
-        if (response.indexOf('setProgressUpdating') == -1)
+        if (response.indexOf("setProgressUpdating") == -1)
  		{	
-	        Installpage_populate('a=reindexResumes');
+	        Installpage_populate("a=reindexResumes");
         }
         else
         {
@@ -131,8 +131,8 @@ function Installpage_maint()
 
     AJAX_callCATSFunction(
         http,
-        'install:maint',
-        '&performMaintenence=yes',
+        "install:maint",
+        "&performMaintenence=yes",
         callBack,
         10*60000, /* Ten minutes */
         null,
@@ -143,10 +143,10 @@ function Installpage_maint()
 
 function Installpage_append(postData, message)
 {
-    var htmlObjectID = 'subFormBlock';
+    var htmlObjectID = "subFormBlock";
     var http = AJAX_getXMLHttpObject();
     var currentText = document.getElementById(htmlObjectID).innerHTML;
-    if (typeof(message) != 'undefined')
+    if (typeof(message) != "undefined")
     {
         document.getElementById(htmlObjectID).innerHTML += message;
     }
@@ -162,15 +162,15 @@ function Installpage_append(postData, message)
         response = http.responseText;
 
         document.getElementById(htmlObjectID).innerHTML = currentText + response;
-        document.getElementById('execute').innerHTML = response;
+        document.getElementById("execute").innerHTML = response;
 
         execJS(response);
     }
 
     AJAX_callCATSFunction(
         http,
-        'install:ui',
-        '&' + postData,
+        "install:ui",
+        "&" + postData,
         callBack,
         10*60000, /* Ten minutes */
         null,
@@ -183,34 +183,34 @@ function changeMailForm()
 {
     var selectBox = document.mailForm.mailSupport;
     var mailOption = selectBox.options[selectBox.selectedIndex].value;
-    var sendmailBox = document.getElementById('mailSendmailBox');
-    var smtpBox = document.getElementById('mailSmtpBox');
-    var smtpAuthBox = document.getElementById('mailSmtpAuthorizationBox');
+    var sendmailBox = document.getElementById("mailSendmailBox");
+    var smtpBox = document.getElementById("mailSmtpBox");
+    var smtpAuthBox = document.getElementById("mailSmtpAuthorizationBox");
 
 
-    if (mailOption == 'opt2')
+    if (mailOption == "opt2")
     {
-        smtpBox.style.display = 'none';
-        smtpAuthBox.style.display = 'none';
-        sendmailBox.style.display = '';
+        smtpBox.style.display = "none";
+        smtpAuthBox.style.display = "none";
+        sendmailBox.style.display = "";
     }
-    else if (mailOption == 'opt3')
+    else if (mailOption == "opt3")
     {
-        smtpBox.style.display = '';
-        smtpAuthBox.style.display = 'none';
-        sendmailBox.style.display = 'none';
+        smtpBox.style.display = "";
+        smtpAuthBox.style.display = "none";
+        sendmailBox.style.display = "none";
     }
     else if (mailOption == "opt4")
     {
-        smtpBox.style.display = '';
-        smtpAuthBox.style.display = '';
-        sendmailBox.style.display = 'none';
+        smtpBox.style.display = "";
+        smtpAuthBox.style.display = "";
+        sendmailBox.style.display = "none";
     }
     else
     {
-        sendmailBox.style.display = 'none';
-        smtpBox.style.display = 'none';
-        smtpAuthBox.style.display = 'none';
+        sendmailBox.style.display = "none";
+        smtpBox.style.display = "none";
+        smtpAuthBox.style.display = "none";
     }
 }
 
@@ -219,8 +219,8 @@ var totalProgressInstall = 0;
 
 function setProgressUpdating(progress, currentVersion, maxVersion, module)
 {
-	document.getElementById('upToDateSqlQuery').innerHTML = progress;
-	document.getElementById('upToDateModuleName').innerHTML = 'Processing Module:  ' + module + ' (' + currentVersion + ')';
+	document.getElementById("upToDateSqlQuery").innerHTML = progress;
+	document.getElementById("upToDateModuleName").innerHTML = "Processing Module:  " + module + " (" + currentVersion + ")";
 	
 	if (totalProgressInstall != maxVersion)
 	{
@@ -235,24 +235,24 @@ function setProgressUpdating(progress, currentVersion, maxVersion, module)
         return;
     }
     
-    document.getElementById('d1').style.display = '';
-    document.getElementById('d2').style.display = '';
-    document.getElementById('d3').style.display = '';
-    document.getElementById('upToDateSqlQuery').style.display = '';
-    document.getElementById('upToDateSqlQueryLabel').style.display = '';
+    document.getElementById("d1").style.display = "";
+    document.getElementById("d2").style.display = "";
+    document.getElementById("d3").style.display = "";
+    document.getElementById("upToDateSqlQuery").style.display = "";
+    document.getElementById("upToDateSqlQueryLabel").style.display = "";
 
     if (theProgress > 12)
     {
-        document.getElementById('d1').innerHTML = parseInt(theProgress) + '%';
+        document.getElementById("d1").innerHTML = parseInt(theProgress) + "%";
     }
     else
     {
-        document.getElementById('d1').innerHTML = '';
+        document.getElementById("d1").innerHTML = "";
     }
 
     if (theProgress > 0)
     {
-        document.getElementById('d2').style.width = (theProgress * 3) + 'px';
+        document.getElementById("d2").style.width = (theProgress * 3) + "px";
     }
 }
 

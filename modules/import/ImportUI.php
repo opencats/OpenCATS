@@ -67,7 +67,14 @@ class ImportUI extends UserInterface
         switch ($action)
         {
             case 'revert':
-                $this->revert();
+                if ($this->isPostBack())
+                {
+                    $this->revert();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             case 'viewerrors':
@@ -107,11 +114,25 @@ class ImportUI extends UserInterface
                 break;
 
             case 'importBulkResumes':
-                $this->importBulkResumes();
+                if ($this->isPostBack())
+                {
+                    $this->importBulkResumes();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             case 'deleteBulkResumes':
-                $this->deleteBulkResumes();
+                if ($this->isPostBack())
+                {
+                    $this->deleteBulkResumes();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             case 'import':
@@ -133,13 +154,13 @@ class ImportUI extends UserInterface
     */
     private function revert()
     {
-        if (!$this->isRequiredIDValid('importID', $_GET))
+        if (!$this->isRequiredIDValid('importID', $_POST))
         {
             $this->import();
             return;
         }
 
-        $importID = $_GET['importID'];
+        $importID = $_POST['importID'];
 
         $import = new Import($this->_siteID);
         $tableName = $import->get($importID);
@@ -184,7 +205,7 @@ class ImportUI extends UserInterface
     
         if (isset($importData['importErrors']))
         {
-            $importErrors = htmlspecialchars($importData['importErrors'], ENT_QUOTES, 'UTF-8');
+            $importErrors = htmlspecialchars($importData['importErrors'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $this->_template->assign('importErrors', $importErrors);
         }
         else
@@ -192,7 +213,7 @@ class ImportUI extends UserInterface
             $this->_template->assign('importErrors', '');
         }
     
-        $importID = htmlspecialchars($importID, ENT_QUOTES, 'UTF-8');
+        $importID = htmlspecialchars($importID, ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
         $this->_template->assign('importID', $importID);
         $this->viewPending();
         return;
@@ -1764,6 +1785,10 @@ class ImportUI extends UserInterface
                     {
                         // This was parsed data
                         $candidates = new Candidates($siteID);
+                        list($address1, $address2) = self::splitAddressForImport(
+                            $doc['address'],
+                            isset($doc['address2']) ? $doc['address2'] : ''
+                        );
 
                         $candidateID = $candidates->add(
                             $doc['firstName'],
@@ -1774,7 +1799,8 @@ class ImportUI extends UserInterface
                             $doc['phone'],
                             '',
                             '',
-                            $doc['address'],
+                            $address1,
+                            $address2,
                             $doc['city'],
                             $doc['state'],
                             $doc['zipCode'],
@@ -1983,6 +2009,16 @@ class ImportUI extends UserInterface
                         $doc['lastName'] = $doc['parse'][$id]; else $doc['lastName'] = '';
                     if (isset($doc['parse'][$id = 'us_address']))
                         $doc['address'] = $doc['parse'][$id]; else $doc['address'] = '';
+                    if (isset($doc['parse'][$id = 'address2']))
+                        $doc['address2'] = $doc['parse'][$id];
+                    else if (isset($doc['parse'][$id = 'address_line_2']))
+                        $doc['address2'] = $doc['parse'][$id];
+                    else if (isset($doc['parse'][$id = 'addressLineTwo']))
+                        $doc['address2'] = $doc['parse'][$id];
+                    else if (isset($doc['parse'][$id = 'address_line_two']))
+                        $doc['address2'] = $doc['parse'][$id];
+                    else
+                        $doc['address2'] = '';
                     if (isset($doc['parse'][$id = 'city']))
                         $doc['city'] = $doc['parse'][$id]; else $doc['city'] = '';
                     if (isset($doc['parse'][$id = 'state']))
@@ -2005,6 +2041,7 @@ class ImportUI extends UserInterface
                     $doc['firstName'] = $doc['lastName'] = $doc['address'] = $doc['city'] =
                         $doc['state'] = $doc['zipCode'] = $doc['email'] = $doc['phone'] =
                         $doc['education'] = $doc['skills'] = $doc['experience'] = '';
+                    $doc['address2'] = '';
                 }
                 $doc['id'] = $ind;
                 $documents[] = $doc;
@@ -2016,6 +2053,32 @@ class ImportUI extends UserInterface
             }
         }
         return array($documents, $success, $failed);
+    }
+
+    private static function splitAddressForImport($address, $address2 = '')
+    {
+        $address = str_replace("\r\n", "\n", $address);
+        $address = trim($address);
+        $address2 = trim($address2);
+
+        if ($address2 !== '')
+        {
+            $address2 = str_replace("\r\n", "\n", $address2);
+            $address2 = trim(str_replace("\n", ", ", $address2));
+            return array($address, $address2);
+        }
+
+        $parts = explode("\n", $address, 2);
+        $address1 = trim($parts[0]);
+        $address2 = '';
+        if (isset($parts[1]))
+        {
+            $address2 = trim(str_replace("\n", ", ", $parts[1]));
+        }
+
+        $address2 = str_replace("\r\n", "\n", $address2);
+        $address2 = trim(str_replace("\n", ", ", $address2));
+        return array($address1, $address2);
     }
 
     private function deleteBulkResumes()

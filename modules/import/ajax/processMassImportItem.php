@@ -32,6 +32,11 @@ include_once(LEGACY_ROOT . '/lib/Attachments.php');
 
 $interface = new SecureAJAXInterface();
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST')
+{
+    die('Invalid request.');
+}
+
 if (!isset($_SESSION['CATS']->massImportFiles) ||
     !isset($_SESSION['CATS']->massImportDirectory))
 {

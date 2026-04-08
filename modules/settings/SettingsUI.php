@@ -189,7 +189,7 @@ class SettingsUI extends UserInterface
         $tags = new Tags($this->_siteID);
         //$tags->update($_POST['tag_id'], $_POST['title'], $_POST['description']);
         $tags->update($_POST['tag_id'], $_POST['tag_title'], "-");
-        echo htmlspecialchars($_POST['tag_title'], ENT_QUOTES, 'UTF-8');
+        echo htmlspecialchars($_POST['tag_title'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
         return;
     }
     
@@ -427,7 +427,14 @@ class SettingsUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                $this->deleteBackup();
+                if ($this->isPostBack())
+                {
+                    $this->deleteBackup();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             case 'customizeExtraFields':
@@ -606,7 +613,14 @@ class SettingsUI extends UserInterface
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
 
-                $this->onCareerPortalTweak();
+                if ($_SERVER['REQUEST_METHOD'] === 'POST')
+                {
+                    $this->onCareerPortalTweak();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             /* This really only exists for automated testing at this point. */
@@ -615,7 +629,14 @@ class SettingsUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                $this->onDeleteUser();
+                if ($this->isPostBack())
+                {
+                    $this->onDeleteUser();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             case 'emailTemplates':
@@ -676,14 +697,15 @@ class SettingsUI extends UserInterface
                 $this->viewItemHistory();
                 break;
 
-            case 'getFirefoxModal':
-                $this->getFirefoxModal();
-                break;
-
             case 'ajax_tags_add':
                 if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
                 {
                     echo 'CATS has lost your session data!';
+                    return;
+                }
+                if ($_SERVER['REQUEST_METHOD'] !== 'POST')
+                {
+                    echo 'Invalid request.';
                     return;
                 }
                 $this->onAddNewTag();
@@ -695,6 +717,11 @@ class SettingsUI extends UserInterface
                     echo 'CATS has lost your session data!';
                     return;
                 }
+                if ($_SERVER['REQUEST_METHOD'] !== 'POST')
+                {
+                    echo 'Invalid request.';
+                    return;
+                }
                 $this->onRemoveTag();
                 break;
 
@@ -702,6 +729,11 @@ class SettingsUI extends UserInterface
                 if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
                 {
                     echo 'CATS has lost your session data!';
+                    return;
+                }
+                if ($_SERVER['REQUEST_METHOD'] !== 'POST')
+                {
+                    echo 'Invalid request.';
                     return;
                 }
                 $this->onChangeTag();
@@ -725,6 +757,11 @@ class SettingsUI extends UserInterface
                 if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
                 {
                     echo 'CATS has lost your session data!';
+                    return;
+                }
+                if (!$this->isPostBack())
+                {
+                    echo 'Invalid request.';
                     return;
                 }
                 if ($this->getUserAccessLevel('settings.deleteUser') < ACCESS_LEVEL_SA)
@@ -881,11 +918,25 @@ class SettingsUI extends UserInterface
                 break;
             
             case 'addEmailTemplate':
-                $this->addEmailTemplate();
+                if ($this->isPostBack())
+                {
+                    $this->addEmailTemplate();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
                 
             case 'deleteEmailTemplate':
-                $this->deleteEmailTemplate();
+                if ($this->isPostBack())
+                {
+                    $this->deleteEmailTemplate();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             /* Main settings page. */
@@ -909,7 +960,12 @@ class SettingsUI extends UserInterface
         }
         
         $emailTemplates = new EmailTemplates($this->_siteID);
-        $templateID = $_GET['id'];
+        if (!$this->isRequiredIDValid('id', $_POST))
+        {
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid template ID.');
+        }
+
+        $templateID = $_POST['id'];
         $emailTemplates->delete($templateID);
        
         $this->emailTemplates();
@@ -936,16 +992,6 @@ class SettingsUI extends UserInterface
         }
     }
     
-    /*
-     * Called by handleRequest() to process loading the get firefox modal dialog.
-     */
-    private function getFirefoxModal()
-    {
-        $this->_template->display(
-            './modules/settings/getFirefoxModal.tpl'
-        );
-    }
-
     /*
      * Called by handleRequest() to process loading the my profile page.
      */
@@ -1143,10 +1189,10 @@ class SettingsUI extends UserInterface
             return;
         }
 
-        $firstName      = $this->getSanitisedInput('firstName', $_POST);
-        $lastName       = $this->getSanitisedInput('lastName', $_POST);
-        $email          = $this->getSanitisedInput('email', $_POST);
-        $username       = $this->getSanitisedInput('username', $_POST);
+        $firstName      = $this->getTrimmedInput('firstName', $_POST);
+        $lastName       = $this->getTrimmedInput('lastName', $_POST);
+        $email          = $this->getTrimmedInput('email', $_POST);
+        $username       = $this->getTrimmedInput('username', $_POST);
         $accessLevel    = $this->getTrimmedInput('accessLevel', $_POST);
         $password       = $this->getTrimmedInput('password', $_POST);
         $retypePassword = $this->getTrimmedInput('retypePassword', $_POST);
@@ -1347,10 +1393,10 @@ class SettingsUI extends UserInterface
 
         $userID = $_POST['userID'];
 
-        $firstName   = $this->getSanitisedInput('firstName', $_POST);
-        $lastName    = $this->getSanitisedInput('lastName', $_POST);
-        $email       = $this->getSanitisedInput('email', $_POST);
-        $username    = $this->getSanitisedInput('username', $_POST);
+        $firstName   = $this->getTrimmedInput('firstName', $_POST);
+        $lastName    = $this->getTrimmedInput('lastName', $_POST);
+        $email       = $this->getTrimmedInput('email', $_POST);
+        $username    = $this->getTrimmedInput('username', $_POST);
         $password1   = $this->getTrimmedInput('password1', $_POST);
         $password2   = $this->getTrimmedInput('password2', $_POST);
         $passwordRst = $this->getTrimmedInput('passwordIsReset', $_POST);
@@ -1457,18 +1503,18 @@ class SettingsUI extends UserInterface
     private function onDeleteUser()
     {
         /* Bail out if we don't have a valid user ID. */
-        if (!$this->isRequiredIDValid('userID', $_GET))
+        if (!$this->isRequiredIDValid('userID', $_POST))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid user ID.');
         }
 
         /* Keep users other than the automated tester from trying this. */
-        if (!$this->isRequiredIDValid('iAmTheAutomatedTester', $_GET))
+        if (!$this->isRequiredIDValid('iAmTheAutomatedTester', $_POST))
         {
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You are not the automated tester.');
         }
 
-        $userID = $_GET['userID'];
+        $userID = $_POST['userID'];
 
         $users = new Users($this->_siteID);
         $users->delete($userID);
@@ -1899,12 +1945,12 @@ class SettingsUI extends UserInterface
 
     private function onCareerPortalTweak()
     {
-        if (!isset($_GET['p']))
+        if (!isset($_POST['p']))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid page.');
         }
 
-        $page = $_GET['p'];
+        $page = $_POST['p'];
 
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
 
@@ -1913,6 +1959,10 @@ class SettingsUI extends UserInterface
             case 'new':
                 $origName = 'Blank Page';
                 $duplicateName = $this->getTrimmedInput('newName', $_POST);
+                if (empty($duplicateName))
+                {
+                    CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
+                }
 
                 /* Copy default templates or existing customized templates from orig to duplicate. */
                 $templateSource1 = $careerPortalSettings->getAllFromDefaultTemplate($origName);
@@ -1956,14 +2006,20 @@ class SettingsUI extends UserInterface
                 break;
 
             case 'delete':
-                //FIXME: Input validation.
-                $delName = $_POST['delName'];
+                $delName = $this->getTrimmedInput('delName', $_POST);
+                if (empty($delName))
+                {
+                    CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
+                }
                 $careerPortalSettings->deleteCustomTemplate($delName);
                 break;
 
             case 'setAsActive':
-                //FIXME: Input validation.
-                $activeName = $_POST['activeName'];
+                $activeName = $this->getTrimmedInput('activeName', $_POST);
+                if (empty($activeName))
+                {
+                    CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
+                }
                 $careerPortalSettings->set('activeBoard', $activeName);
                 break;
         }
@@ -2326,8 +2382,8 @@ class SettingsUI extends UserInterface
 
             $companies = new Companies($this->_siteID);
             $companyIDInternal = $companies->add(
-                'Internal Postings', '', '', '', '', '', '', '', '', '', '',
-                '', '', 'Internal postings.', $this->_userID, $this->_userID
+                'Internal Postings', '', '', '', '', '', '', '', '', '', '', 0,
+                'Internal postings.', $this->_userID, $this->_userID
             );
 
             $companies->setCompanyDefault($companyIDInternal);
@@ -2425,6 +2481,19 @@ class SettingsUI extends UserInterface
 
                     $this->_template->assign('timeZone', $_SESSION['CATS']->getTimeZone());
                     $this->_template->assign('isDateDMY', $_SESSION['CATS']->isDateDMY());
+
+                    // Default phone country calling code for the localization settings page.
+                    $defaultPhoneCountryCode = $_SESSION['CATS']->getDefaultPhoneCountryCode();
+                    $defaultPhoneCountryCodeDigits = preg_replace('/[^0-9]/', '', (string) $defaultPhoneCountryCode);
+
+                    if ($defaultPhoneCountryCodeDigits === '')
+                    {
+                        // Fall back to "1" for display if nothing is configured in the database.
+                        $defaultPhoneCountryCodeDigits = '1';
+                    }
+
+                    $this->_template->assign('defaultPhoneCountryCodeDigits', $defaultPhoneCountryCodeDigits);
+
                     $templateFile = './modules/settings/Localization.tpl';
                     break;
 
@@ -2582,6 +2651,27 @@ class SettingsUI extends UserInterface
 
                 $site = new Site($this->_siteID);
                 $site->setLocalization($timeZone, $isDMY);
+
+                // Default phone country calling code (E.164) for the site.
+                if (isset($_POST['defaultPhoneCountryCodeDigits']))
+                {
+                    $defaultPhoneCountryCodeDigits = trim($_POST['defaultPhoneCountryCodeDigits']);
+
+                    // Keep digits only; any other characters are ignored.
+                    $defaultPhoneCountryCodeDigits = preg_replace('/[^0-9]/', '', $defaultPhoneCountryCodeDigits);
+
+                    if ($defaultPhoneCountryCodeDigits !== '')
+                    {
+                        $defaultPhoneCountryCode = '+' . $defaultPhoneCountryCodeDigits;
+
+                        // Persist to the site table.
+                        $site->setDefaultPhoneCountryCode($defaultPhoneCountryCode);
+
+                        // Update the session helper so the new value is available immediately.
+                        $_SESSION['CATS']->setDefaultPhoneCountryCode($defaultPhoneCountryCode);
+                    }
+                    // If no digits are submitted, keep the existing value in the database/session.
+                }
 
                 $_SESSION['CATS']->logout();
                 unset($_SESSION['CATS']);
@@ -2854,10 +2944,26 @@ class SettingsUI extends UserInterface
 
         if ($logout)
         {
-            CATSUtility::transferRelativeURI(
-                'm=logout&message=' . urlencode($message) .
-                '&messageSuccess=' . urlencode($messageSuccess)
-            );
+            $indexName = CATSUtility::getIndexName();
+
+            echo '<html><body>';
+            echo '<form id="logoutForm" method="post" action="', $indexName, '?m=logout">';
+            if (isset($_SESSION['CATS']))
+            {
+                echo '<input type="hidden" name="csrfToken" value="',
+                    htmlspecialchars($_SESSION['CATS']->getCSRFToken(), ENT_QUOTES, 'UTF-8'),
+                    '" />';
+            }
+            echo '<input type="hidden" name="message" value="',
+                htmlspecialchars($message, ENT_QUOTES, 'UTF-8'),
+                '" />';
+            echo '<input type="hidden" name="messageSuccess" value="',
+                htmlspecialchars($messageSuccess, ENT_QUOTES, 'UTF-8'),
+                '" />';
+            echo '</form>';
+            echo '<script type="text/javascript">document.getElementById("logoutForm").submit();</script>';
+            echo '</body></html>';
+            die();
         }
         else
         {
@@ -3156,12 +3262,12 @@ class SettingsUI extends UserInterface
 
     private function wizard_deleteUser()
     {
-        if (isset($_GET[$id = 'userID'])) $userID = intval($_GET[$id]);
-        else
+        if (!$this->isRequiredIDValid('userID', $_POST))
         {
             echo 'Unable to find the user you are trying to delete.';
             return;
         }
+        $userID = intval($_POST['userID']);
 
         if ($userID == $_SESSION['CATS']->getUserID())
         {
@@ -3348,8 +3454,8 @@ class SettingsUI extends UserInterface
 
         $companies = new Companies($this->_siteID);
         $companyIDInternal = $companies->add(
-            'Internal Postings', '', '', '', '', '', '', '', '', '', '',
-            '', '', 'Internal postings.', $this->_userID, $this->_userID
+            'Internal Postings', '', '', '', '', '', '', '', '', '', '', 0,
+            'Internal postings.', $this->_userID, $this->_userID
         );
 
         $companies->setCompanyDefault($companyIDInternal);

@@ -140,7 +140,7 @@ class companiesSavedListByViewDataGrid extends CompaniesDataGrid
         //  - Mass set rank (depends on each candidate having their own personal rank - are we going to do this?)
         $html = '';
 
-        $html .= $this->getInnerActionAreaItem('Remove From This List', CATSUtility::getIndexName().'?m=lists&amp;a=removeFromListDatagrid&amp;dataItemType='.DATA_ITEM_COMPANY.'&amp;savedListID='.$this->getMiscArgument(), false);
+        $html .= $this->getInnerActionAreaItemPost('Remove From This List', CATSUtility::getIndexName().'?m=lists&amp;a=removeFromListDatagrid&amp;dataItemType='.DATA_ITEM_COMPANY.'&amp;savedListID='.$this->getMiscArgument(), false);
         $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
 
         $html .= parent::getInnerActionArea();

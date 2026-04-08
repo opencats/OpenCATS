@@ -3,9 +3,12 @@
 include_once('./vendor/autoload.php');
 use OpenCATS\UI\QuickActionMenu;
 ?>
-<?php TemplateUtility::printHeader('Contact - '.$this->data['firstName'].' '.$this->data['lastName'], array( 'js/activity.js', 'js/attachment.js')); ?>
+<?php TemplateUtility::printHeader('Contact - ' . htmlspecialchars($this->data['firstName'], ENT_QUOTES, HTML_ENCODING) . ' ' . htmlspecialchars($this->data['lastName'], ENT_QUOTES, HTML_ENCODING), array( 'js/activity.js', 'js/attachment.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
+    <script type="text/javascript">
+        window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
+    </script>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 
@@ -47,7 +50,7 @@ use OpenCATS\UI\QuickActionMenu;
                                 <td class="data">
                                     <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=companies&amp;a=show&amp;companyID=<?php echo($this->data['companyID']); ?>">
                                         <span class="<?php echo($this->data['titleClassCompany']);?>">
-                                            <?php echo($this->data['companyName']); ?>
+                                            <?php $this->_($this->data['companyName']); ?>
                                         </span>
                                     </a>
                                     <?php if ($this->data['leftCompany']): ?>
@@ -123,7 +126,12 @@ use OpenCATS\UI\QuickActionMenu;
 
                             <tr>
                                 <td class="vertical">Address:</td>
-                                <td class="data"><?php echo(nl2br(htmlspecialchars($this->data['address']))); ?></td>
+                                <td class="data">
+                                    <?php echo(nl2br(htmlspecialchars($this->data['address']))); ?>
+                                    <?php if (!empty($this->data['address2'])): ?>
+                                        <br /><?php $this->_($this->data['address2']); ?>
+                                    <?php endif; ?>
+                                </td>
                             </tr>
 
                             <tr>
@@ -206,9 +214,13 @@ use OpenCATS\UI\QuickActionMenu;
                 &nbsp;&nbsp;&nbsp;&nbsp;
             <?php endif; ?>
             <?php if ($this->getUserAccessLevel('contacts.delete') >= ACCESS_LEVEL_DELETE): ?>
-                <a id="delete_link" href="<?php echo(CATSUtility::getIndexName()); ?>?m=contacts&amp;a=delete&amp;contactID=<?php echo($this->contactID); ?>" onclick="javascript:return confirm('Delete this candidate?');">
-                    <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;Delete
-                </a>
+                <form id="delete_link" method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=contacts&amp;a=delete" style="display:inline;" onsubmit="return confirm('Delete this contact?');">
+                    <input type="hidden" name="postback" value="postback" />
+                    <input type="hidden" name="contactID" value="<?php echo($this->contactID); ?>" />
+                    <button type="submit" class="linkButton">
+                        <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;Delete
+                    </button>
+                </form>
                 &nbsp;&nbsp;&nbsp;&nbsp;
             <?php endif; ?>
             <?php if ($this->privledgedUser): ?>
@@ -265,7 +277,7 @@ use OpenCATS\UI\QuickActionMenu;
                 <tr>
                     <th align="left" width="125">Date</th>
                     <th align="left" width="90">Type</th>
-                    <th align="left" width="90">Entered</th>
+                    <th align="left" width="90">Entered By</th>
                     <th align="left" width="250">Regarding</th>
                     <th align="left">Notes</th>
                     <th align="left" width="40">Action</th>
@@ -277,7 +289,7 @@ use OpenCATS\UI\QuickActionMenu;
                         <td align="left" valign="top" id="activityType<?php echo($activityData['activityID']); ?>"><?php $this->_($activityData['typeDescription']) ?></td>
                         <td align="left" valign="top"><?php $this->_($activityData['enteredByAbbrName']) ?></td>
                         <td align="left" valign="top" id="activityRegarding<?php echo($activityData['activityID']); ?>"><?php $this->_($activityData['regarding']) ?></td>
-                        <td align="left" valign="top" id="activityNotes<?php echo($activityData['activityID']); ?>"><?php $this->_($activityData['notes']) ?></td>
+                        <td align="left" valign="top" id="activityNotes<?php echo($activityData['activityID']); ?>"><?php echo(nl2br(htmlspecialchars($activityData['notes'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING))); ?></td>
                         <td align="center" >
                             <?php if ($this->getUserAccessLevel('contacts.editActivity') >= ACCESS_LEVEL_EDIT): ?>
                                 <a href="#" id="editActivity<?php echo($activityData['activityID']); ?>" onclick="Activity_editEntry(<?php echo($activityData['activityID']); ?>, <?php echo($this->contactID); ?>, <?php echo(DATA_ITEM_CONTACT); ?>, '<?php echo($this->sessionCookie); ?>'); return false;">

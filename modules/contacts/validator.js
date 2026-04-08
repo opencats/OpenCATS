@@ -10,14 +10,14 @@
 
 function checkAddForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkFirstName();
     errorMessage += checkLastName();
     errorMessage += checkCompany();
     errorMessage += checkTitle();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -28,14 +28,14 @@ function checkAddForm(form)
 
 function checkEditForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkFirstName();
     errorMessage += checkLastName();
     errorMessage += checkCompany();
     errorMessage += checkTitle();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -46,11 +46,11 @@ function checkEditForm(form)
 
 function checkSearchByFullNameForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkSearchFullName();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -61,11 +61,11 @@ function checkSearchByFullNameForm(form)
 
 function checkSearchByCompanyNameForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkSearchCompanyName();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -76,19 +76,19 @@ function checkSearchByCompanyNameForm(form)
 
 function checkFirstName()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('firstName').value;
-    fieldLabel = document.getElementById('firstNameLabel');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("firstName").value;
+    fieldLabel = document.getElementById("firstNameLabel");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a first name.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -96,19 +96,19 @@ function checkFirstName()
 
 function checkLastName()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('lastName').value;
-    fieldLabel = document.getElementById('lastNameLabel');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("lastName").value;
+    fieldLabel = document.getElementById("lastNameLabel");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a last name.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -116,20 +116,20 @@ function checkLastName()
 
 function checkCompany()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = parseInt(document.getElementById('companyID').value);
-    fieldLabel = document.getElementById('companyIDLabel');
+    fieldValue = parseInt(document.getElementById("companyID").value);
+    fieldLabel = document.getElementById("companyIDLabel");
 
     if (isNaN(fieldValue) || fieldValue <= 0)
     {
         errorMessage = "    - You must select a company.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -137,19 +137,19 @@ function checkCompany()
 
 function checkTitle()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('title').value;
-    fieldLabel = document.getElementById('titleLabel');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("title").value;
+    fieldLabel = document.getElementById("titleLabel");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a title.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -157,19 +157,19 @@ function checkTitle()
 
 function checkSearchFullName()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('wildCardString_fullName').value;
-    fieldLabel = document.getElementById('wildCardStringLabel_fullName');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("wildCardString_fullName").value;
+    fieldLabel = document.getElementById("wildCardStringLabel_fullName");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter some search text.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -177,19 +177,19 @@ function checkSearchFullName()
 
 function checkSearchCompanyName()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('wildCardString_companyName').value;
-    fieldLabel = document.getElementById('wildCardStringLabel_companyName');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("wildCardString_companyName").value;
+    fieldLabel = document.getElementById("wildCardStringLabel_companyName");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter some search text.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;

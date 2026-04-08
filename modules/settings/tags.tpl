@@ -34,11 +34,42 @@
 <script type="text/javascript" language="javascript"><!--
 
 var lastEdited=null;
+function appendCSRFToken(data)
+{
+    if (typeof CATSCsrfToken == 'undefined' || CATSCsrfToken === null ||
+        CATSCsrfToken === '')
+    {
+        return data;
+    }
+
+    if (typeof data == 'string')
+    {
+        if (data.indexOf('csrfToken=') == -1)
+        {
+            if (data.length > 0 && data.charAt(data.length - 1) != '&')
+            {
+                data += '&';
+            }
+            data += 'csrfToken=' + encodeURIComponent(CATSCsrfToken);
+        }
+    }
+    else if (typeof data == 'object' && data !== null)
+    {
+        if (typeof data.csrfToken == 'undefined')
+        {
+            data.csrfToken = CATSCsrfToken;
+        }
+    }
+
+    return data;
+}
+
 function doAdd(frm){
+    var data = appendCSRFToken($(frm).serialize());
 	$.ajax({
 		type: frm.method,
 		url: frm.action,
-		data: $(frm).serialize(),
+		data: data,
 		success: function(data,textStatus){
 			showNew(frm,data);
 			}
@@ -55,17 +86,27 @@ function doDelete(id){
 	//alert($('#id_li_tag_'+id).html());return;
 	
 	if (!confirm('Are you sure you want to delete this tag?')) return;
+    var data = appendCSRFToken({tag_id:id});
 	$.ajax({
 		type: 'POST',
 		url: '<?= CATSUtility::getIndexName() ?>?m=settings&a=ajax_tags_del',
-		data: ({tag_id:id}),
+		data: data,
 		success: function(data,textStatus){
 				$('#id_li_tag_'+id).remove();
 			}
 	});
 }
 
-function doSave(frm){ $.ajax({type: frm.method, url: frm.action, data: $(frm).serialize(), success: function(data,textStatus){ endEdit(data);}});}
+function doSave(frm)
+{
+    var data = appendCSRFToken($(frm).serialize());
+    $.ajax({
+        type: frm.method,
+        url: frm.action,
+        data: data,
+        success: function(data,textStatus){ endEdit(data);}
+    });
+}
 
 function endEdit(data){ if (lastEdited){ $(lastEdited).find("div").html(""); $(lastEdited).find("a").html(data);$(lastEdited).find("a").show(); }}
 function editTag(id){
@@ -90,7 +131,15 @@ function editTag(id){
                                     <td class="tdData">
                                     	<div  class="lst">
 										<ul>
-										<?php $f = true; $parent=""; foreach($this->tagsRS as $index => $data){ ?>
+										<?php if (empty($this->tagsRS)) { ?>
+											<li><img src="images/actions/add.gif" />
+												<form method="post" action="<?= CATSUtility::getIndexName() ?>?m=settings&amp;a=ajax_tags_add">
+													<input type="text" name="tag_title" value="" />
+													<input type="button" value="Add" onclick="doAdd(this.form);" />
+												</form>
+											</li>
+										<?php } else { ?>
+										<?php $f = true; $parent=""; $tag_parent_id = 0; foreach($this->tagsRS as $index => $data){ ?>
 											<?php if ($data['tag_parent_id'] == ""){ ?>
 											<?php if (!$f) {?>
 													<li><img src="images/actions/add.gif" />
@@ -138,6 +187,7 @@ function editTag(id){
 												<input type="button" value="Add" onclick="doAdd(this.form);" />
 											</form>
 										</li>
+										<?php } ?>
 									</div>
                                   </td>
                                 </tr>

@@ -28,7 +28,7 @@
 
 function swapHomeGraph(view)
 {
-    var homeGraphImage = document.getElementById('homeGraph');
+    var homeGraphImage = document.getElementById("homeGraph");
     
     homeGraphImage.src = CATSIndexName + "?m=graphs&a=miniPlacementStatistics&width=495&height=230&view=" + view;
 }

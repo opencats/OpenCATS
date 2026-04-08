@@ -68,7 +68,8 @@ class Companies
      * Adds a company to the database and returns its company ID.
      *
      * @param string Name
-     * @param string Address line
+     * @param string Address line 1
+     * @param string Address line 2
      * @param string City
      * @param string State
      * @param string Zip code
@@ -82,7 +83,7 @@ class Companies
      * @param integer Owner user
      * @return new Company ID, or -1 on failure.
      */
-    public function add($name, $address, $city, $state, $zip, $phone1,
+    public function add($name, $address, $address2, $city, $state, $zip, $phone1,
                         $phone2, $faxNumber, $url, $keyTechnologies, $isHot,
                         $notes, $enteredBy, $owner)
     {
@@ -90,6 +91,7 @@ class Companies
             $this->_siteID,
             $name,
             $address,
+            $address2,
             $city,
             $state,
             $zip,
@@ -117,7 +119,8 @@ class Companies
      *
      * @param integer Company ID
      * @param string Name
-     * @param string Address line
+     * @param string Address line 1
+     * @param string Address line 2
      * @param string City
      * @param string State
      * @param string Zip Code
@@ -131,7 +134,7 @@ class Companies
      * @param integer Billing contact ID
      * @return boolean True if successful; false otherwise.
      */
-    public function update($companyID, $name, $address, $city, $state,
+    public function update($companyID, $name, $address, $address2, $city, $state,
                            $zip, $phone1, $phone2, $faxNumber, $url,
                            $keyTechnologies, $isHot, $notes, $owner,
                            $billingContact, $email, $emailAddress)
@@ -142,6 +145,7 @@ class Companies
              SET
                 name             = %s,
                 address         = %s,
+                address2        = %s,
                 city             = %s,
                 state            = %s,
                 zip              = %s,
@@ -161,6 +165,7 @@ class Companies
                 site_id = %s",
             $this->_db->makeQueryString($name),
             $this->_db->makeQueryString($address),
+            $this->_db->makeQueryString($address2),
             $this->_db->makeQueryString($city),
             $this->_db->makeQueryString($state),
             $this->_db->makeQueryString($zip),
@@ -320,6 +325,7 @@ class Companies
                 company.name AS name,
                 company.is_hot AS isHot,
                 company.address AS address,
+                company.address2 AS address2,
                 company.city AS city,
                 company.state AS state,
                 company.zip AS zip,
@@ -379,6 +385,7 @@ class Companies
                 company.name AS name,
                 company.is_hot AS isHot,
                 company.address AS address,
+                company.address2 AS address2,
                 company.city AS city,
                 company.state AS state,
                 company.zip AS zip,

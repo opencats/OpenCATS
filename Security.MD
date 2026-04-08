@@ -8,11 +8,11 @@ In order to give the community time to respond and upgrade we strongly urge you 
 
 ### Password Storage
 
-OpenCATS uses MD5 hashing to store passwords. This will be replaced in future versions
+OpenCATS hashes user passwords using PHP’s password_hash() and verifies them with password_verify(), using PASSWORD_DEFAULT (the default algorithm selected by the running PHP version).
 
 ### XSS
 
-The main vector for [XSS](https://en.wikipedia.org/wiki/Cross-site_scripting) attacks is via the career portal (which is disabled by default). htmlspecialchars is used to protect career portal form submissions. Back-end (non-public) web-pages remain vulnerable to XSS. This internal page protection was deployed in v0.9.7.2
+The main vector for [XSS](https://en.wikipedia.org/wiki/Cross-site_scripting) attacks is via the career portal (which is disabled by default). htmlspecialchars is used to protect career portal form submissions. This internal page protection was deployed in v0.9.7.2. XSS hardening has been improved over time, but any custom templates and third-party modifications can reintroduce issues.
 
 ### Malicious uploads
 

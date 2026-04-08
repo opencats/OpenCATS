@@ -45,12 +45,17 @@ class Template
      *
      * Ex: 'If x < 2 & x > 0, x = 1.' -> 'If x &lt; 2 &amp; x &gt; 0, x = 1.'.
      *
-     * @param string input
+     * @param mixed $string
      * @return void
      */
     public function _($string)
     {
-        echo(htmlspecialchars($string));
+        if (!is_scalar($string) && !(is_object($string) && method_exists($string, '__toString')))
+        {
+            $string = '';
+        }
+
+        echo(htmlspecialchars((string) $string, ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING));
     }
 
     /**

@@ -46,7 +46,7 @@ class AJAXInterface
      */
     public function outputXMLPage($xmlString)
     {
-        header('Content-type: text/xml');
+        header('Content-type: text/xml; charset=' . AJAX_ENCODING);
 
         echo '<?xml version="1.0" encoding="', AJAX_ENCODING, '"?>', "\n";
         echo $xmlString;
@@ -213,6 +213,22 @@ class SecureAJAXInterface extends AJAXInterface
                 -1, 'You are not logged in. Please log out and log back in.'
             );
             die();
+        }
+
+        if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST')
+        {
+            $token = null;
+
+            if (isset($_POST['csrfToken']))
+            {
+                $token = $_POST['csrfToken'];
+            }
+
+            if (!$_SESSION['CATS']->isCSRFTokenValid($token))
+            {
+                $this->outputXMLErrorPage(-1, 'Invalid request.');
+                die();
+            }
         }
 
         /* Grab the current user's site ID. */

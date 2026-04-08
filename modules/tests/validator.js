@@ -10,12 +10,12 @@
 
 function selectAllCheckboxes(formID)
 {
-    var inputs = document.getElementById(formID).getElementsByTagName('input');
-    var selectAllCheckBox = document.getElementById('selectAll');
+    var inputs = document.getElementById(formID).getElementsByTagName("input");
+    var selectAllCheckBox = document.getElementById("selectAll");
 
     for (var i = 0; i < inputs.length; i++)
     {
-        if (inputs[i].id != 'selectAll' && inputs[i].type == 'checkbox')
+        if (inputs[i].id != "selectAll" && inputs[i].type == "checkbox")
         {
             inputs[i].checked = selectAllCheckBox.checked;
         }
@@ -24,12 +24,12 @@ function selectAllCheckboxes(formID)
 
 function selectAllCheckboxesByClassName(formID, selectAll, className)
 {
-    var inputs = document.getElementById(formID).getElementsByTagName('input');
+    var inputs = document.getElementById(formID).getElementsByTagName("input");
     var selectAllCheckBox = document.getElementById(selectAll);
 
     for (var i = 0; i < inputs.length; i++)
     {
-        if (inputs[i].className == className && inputs[i].type == 'checkbox')
+        if (inputs[i].className == className && inputs[i].type == "checkbox")
         {
             inputs[i].checked = selectAllCheckBox.checked;
         }
@@ -38,9 +38,9 @@ function selectAllCheckboxesByClassName(formID, selectAll, className)
 
 function checkSelectForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;

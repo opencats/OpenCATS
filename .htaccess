@@ -1,4 +1,16 @@
- 
 IndexIgnore *
 
 Options -Indexes
+
+# Security headers (requires mod_headers; AllowOverride FileInfo or All).
+# Basic security headers.
+# These defaults are intentionally conservative to avoid breaking common customizations.
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+
+    # Prevent clickjacking on the OpenCATS UI.
+    # Note: /careers/ intentionally unsets this header in careers/.htaccess to allow embedding Career Portal into external websites using an iframe.
+    Header always set X-Frame-Options "SAMEORIGIN"
+</IfModule>

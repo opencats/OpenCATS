@@ -389,7 +389,7 @@ class UserInterface
     {
         if (isset($request[$key]))
         {
-		return trim(htmlspecialchars($request[$key], ENT_QUOTES, FALSE));
+		return trim(htmlspecialchars($request[$key], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING));
 		}
         return '';
     } 

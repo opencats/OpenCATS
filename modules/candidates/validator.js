@@ -10,12 +10,12 @@
 
 function checkAddForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkFirstName();
     errorMessage += checkLastName();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -26,13 +26,13 @@ function checkAddForm(form)
 
 function checkEditForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkFirstName();
     errorMessage += checkLastName();
     errorMessage += checkOwner();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -43,11 +43,11 @@ function checkEditForm(form)
 
 function checkCreateAttachmentForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkAttachmentFile();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -58,11 +58,11 @@ function checkCreateAttachmentForm(form)
 
 function checkSearchByFullNameForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkSearchFullName();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -73,11 +73,11 @@ function checkSearchByFullNameForm(form)
 
 function checkSearchPhoneNumberForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkPhoneNumber();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -88,11 +88,11 @@ function checkSearchPhoneNumberForm(form)
 
 function checkSearchByKeySkillsForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkSearchKeySkills();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -103,11 +103,11 @@ function checkSearchByKeySkillsForm(form)
 
 function checkSearchResumeForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkSearchResume();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -118,14 +118,14 @@ function checkSearchResumeForm(form)
 
 function checkEmailForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkEmailSubject();
     
     /* this check sometimes returns empty even if there is text in ckeditor */
     //errorMessage += checkEmailBody();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -136,19 +136,19 @@ function checkEmailForm(form)
 
 function checkFirstName()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('firstName').value;
-    fieldLabel = document.getElementById('firstNameLabel');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("firstName").value;
+    fieldLabel = document.getElementById("firstNameLabel");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a first name.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -156,19 +156,19 @@ function checkFirstName()
 
 function checkLastName()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('lastName').value;
-    fieldLabel = document.getElementById('lastNameLabel');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("lastName").value;
+    fieldLabel = document.getElementById("lastNameLabel");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a last name.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -176,19 +176,19 @@ function checkLastName()
 
 function checkOwner()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('owner').selectedIndex;
-    fieldLabel = document.getElementById('ownerLabel');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("owner").selectedIndex;
+    fieldLabel = document.getElementById("ownerLabel");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must select an owner.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -196,19 +196,19 @@ function checkOwner()
 
 function checkSearchFullName()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('wildCardString_fullName').value;
-    fieldLabel = document.getElementById('wildCardStringLabel_fullName');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("wildCardString_fullName").value;
+    fieldLabel = document.getElementById("wildCardStringLabel_fullName");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter some search text.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -216,19 +216,19 @@ function checkSearchFullName()
 
 function checkSearchKeySkills()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('wildCardString_keySkills').value;
-    fieldLabel = document.getElementById('wildCardStringLabel_keySkills');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("wildCardString_keySkills").value;
+    fieldLabel = document.getElementById("wildCardStringLabel_keySkills");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter some search text.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -236,19 +236,19 @@ function checkSearchKeySkills()
 
 function checkSearchResume()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('wildCardString_resume').value;
-    fieldLabel = document.getElementById('wildCardStringLabel_resume');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("wildCardString_resume").value;
+    fieldLabel = document.getElementById("wildCardStringLabel_resume");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter some search text.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -256,19 +256,19 @@ function checkSearchResume()
 
 function checkAttachmentFile()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('file').value;
-    fieldLabel = document.getElementById('file');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("file").value;
+    fieldLabel = document.getElementById("file");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a file to upload.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -276,20 +276,20 @@ function checkAttachmentFile()
 
 function checkPhoneNumber()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('wildCardString_phoneNumber').value;
-    fieldLabel = document.getElementById('wildCardStringLabel_phoneNumber');
+    fieldValue = document.getElementById("wildCardString_phoneNumber").value;
+    fieldLabel = document.getElementById("wildCardStringLabel_phoneNumber");
 
-    if (fieldValue == '')
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter numbers to search.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -297,20 +297,20 @@ function checkPhoneNumber()
 
 function checkEmailSubject()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('emailSubject').value;
-    fieldLabel = document.getElementById('emailSubjectLabel');
+    fieldValue = document.getElementById("emailSubject").value;
+    fieldLabel = document.getElementById("emailSubjectLabel");
 
-    if (fieldValue == '')
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a subject for your e-mail.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -318,20 +318,20 @@ function checkEmailSubject()
 
 function checkEmailBody()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('emailBody').value;
-    fieldLabel = document.getElementById('emailBodyLabel');
+    fieldValue = document.getElementById("emailBody").value;
+    fieldLabel = document.getElementById("emailBodyLabel");
 
-    if (fieldValue == '')
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a body for your e-mail.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;

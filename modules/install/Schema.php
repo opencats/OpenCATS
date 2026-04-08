@@ -1328,6 +1328,98 @@ class CATSSchema
             '364' => '
                 UPDATE user SET password = md5(password) WHERE can_change_password=1;
             ',
+            '365' => '
+                ALTER IGNORE TABLE `site`
+                ADD COLUMN `default_phone_country_code` varchar(8)
+                COLLATE utf8_unicode_ci NOT NULL DEFAULT \'+1\'
+                AFTER `date_format_ddmmyy`;
+            ',
+            '366' => '
+                ALTER IGNORE TABLE `candidate` ADD COLUMN `address2` TEXT COLLATE utf8_unicode_ci AFTER `address`;
+                ALTER IGNORE TABLE `contact` ADD COLUMN `address2` TEXT COLLATE utf8_unicode_ci AFTER `address`;
+                ALTER IGNORE TABLE `company` ADD COLUMN `address2` TEXT COLLATE utf8_unicode_ci AFTER `address`;
+            ',
+            '367' => '
+                UPDATE candidate
+                SET address = REPLACE(address, \'\\r\\n\', \'\\n\')
+                WHERE address LIKE \'%\\r\\n%\';
+                UPDATE candidate
+                SET
+                    address2 = TRIM(REPLACE(SUBSTRING(address, INSTR(address, \'\\n\') + 1), \'\\n\', \', \')),
+                    address  = TRIM(SUBSTRING_INDEX(address, \'\\n\', 1))
+                WHERE address IS NOT NULL
+                  AND INSTR(address, \'\\n\') > 0;
+
+                UPDATE contact
+                SET address = REPLACE(address, \'\\r\\n\', \'\\n\')
+                WHERE address LIKE \'%\\r\\n%\';
+                UPDATE contact
+                SET
+                    address2 = TRIM(REPLACE(SUBSTRING(address, INSTR(address, \'\\n\') + 1), \'\\n\', \', \')),
+                    address  = TRIM(SUBSTRING_INDEX(address, \'\\n\', 1))
+                WHERE address IS NOT NULL
+                  AND INSTR(address, \'\\n\') > 0;
+
+                UPDATE company
+                SET address = REPLACE(address, \'\\r\\n\', \'\\n\')
+                WHERE address LIKE \'%\\r\\n%\';
+                UPDATE company
+                SET
+                    address2 = TRIM(REPLACE(SUBSTRING(address, INSTR(address, \'\\n\') + 1), \'\\n\', \', \')),
+                    address  = TRIM(SUBSTRING_INDEX(address, \'\\n\', 1))
+                WHERE address IS NOT NULL
+                  AND INSTR(address, \'\\n\') > 0;
+            ',
+            '368' => '
+                ALTER TABLE `user`
+                    MODIFY `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT \'\';
+            ',
+            '369' => 'PHP:
+                $col = $db->getAssoc("SHOW COLUMNS FROM `site` LIKE \'last_viewed_day\'");
+
+                if (!empty($col))
+                {
+                    $db->query(
+                        "UPDATE `site`
+                         SET `last_viewed_day` = \'1000-01-01\'
+                         WHERE `last_viewed_day` IS NULL OR `last_viewed_day` = \'0000-00-00\'",
+                        true
+                    );
+
+                    $db->query(
+                        "ALTER TABLE `site`
+                         MODIFY `last_viewed_day` DATE NOT NULL DEFAULT \'1000-01-01\'",
+                        true
+                    );
+                }
+            ',
+            '370' => '
+                DELETE FROM module_schema WHERE name = \'toolbar\';
+            ',
+            '371' => '
+                DELETE FROM extra_field
+                WHERE data_item_type = 100
+                AND data_item_id NOT IN (SELECT candidate_id FROM candidate);
+
+                DELETE FROM extra_field
+                WHERE data_item_type = 200
+                AND data_item_id NOT IN (SELECT company_id FROM company);
+
+                DELETE FROM extra_field
+                WHERE data_item_type = 300
+                AND data_item_id NOT IN (SELECT contact_id FROM contact);
+
+                DELETE FROM extra_field
+                WHERE data_item_type = 400
+                AND data_item_id NOT IN (SELECT joborder_id FROM joborder);
+            ',
+            '372' => 'PHP:
+                include_once(\'modules/install/scripts/372.php\');
+                update_372($db);
+            ',
+            '373' => '
+                INSERT IGNORE INTO `activity_type` (`activity_type_id`, `short_description`) VALUES (800, \'Status Change\');
+            ',
 
             /* ============================================================
              * REST API and Tearsheets Feature (365-370)

@@ -5,7 +5,7 @@ This project uses two distinct MariaDB instances during the testing phase to ens
 
 ### 1. opencatsdb (Port 3306)
 * **Purpose:** Primary application database for functional testing.
-* **Data:** Pre-seeded with `test.sql` and `securityTests.sql` via Docker's `initdb.d`.
+* **Data:** Pre-seeded with `db/cats_schema.sql` and `test/data/securityTests.sql` via Docker's `initdb.d`.
 * **Used By:** Manual development, Behat (Gherkin/Selenium) suites.
 
 ### 2. integrationtestdb (Port 3307)
@@ -29,8 +29,14 @@ To mirror the CI environment on your machine:
    docker compose -f docker-compose-test.yml up -d
    ```
 
-3. **Run the suites:**
-   * **PHPUnit:** `docker exec -it opencats_test_php ./vendor/bin/phpunit src/OpenCATS/Tests/IntegrationTests`
+3. **Install PHP dependencies (Composer):**
+   ```bash
+   docker run --rm -v "$(pwd)/..":/app -w /app composer:2 composer install --no-interaction --prefer-dist --ignore-platform-reqs
+   ```
+
+4. **Run the suites:**
+   * **PHPUnit Unit Tests:** `docker exec -it opencats_test_php ./vendor/bin/phpunit src/OpenCATS/Tests/UnitTests`
+   * **PHPUnit Integration Tests:** `docker exec -it opencats_test_php ./vendor/bin/phpunit src/OpenCATS/Tests/IntegrationTests`
    * **Behat:** `docker exec -it opencats_test_php ./vendor/bin/behat -c ./test/behat.yml`
 
 ---

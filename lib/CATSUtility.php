@@ -209,6 +209,198 @@ class CATSUtility
     }
 
     /**
+     * Sanitizes an HTML fragment using a strict allowlist.
+     *
+     * @param string $html HTML fragment to sanitize.
+     * @return string Sanitized HTML fragment.
+     */
+    public static function sanitizeHtmlAllowlist($html)
+    {
+        if ($html === null)
+        {
+            return '';
+        }
+
+        $html = (string) $html;
+        if ($html === '')
+        {
+            return '';
+        }
+
+        $allowedTags = array(
+            'p' => true, 'br' => true, 'div' => true, 'span' => true,
+            'strong' => true, 'b' => true, 'em' => true, 'i' => true, 'u' => true, 's' => true,
+            'ul' => true, 'ol' => true, 'li' => true,
+            'blockquote' => true, 'pre' => true, 'code' => true, 'hr' => true,
+            'h1' => true, 'h2' => true, 'h3' => true, 'h4' => true, 'h5' => true, 'h6' => true,
+            'table' => true, 'thead' => true, 'tbody' => true, 'tr' => true, 'th' => true, 'td' => true,
+            'a' => true
+        );
+        $dropTags = array(
+            'script' => true, 'style' => true, 'iframe' => true, 'object' => true,
+            'embed' => true, 'svg' => true, 'math' => true
+        );
+        $allowedAttrsGlobal = array('class' => true, 'title' => true);
+        $allowedAttrsByTag = array(
+            'a' => array('href' => true, 'title' => true, 'target' => true, 'rel' => true)
+        );
+
+        $dom = new DOMDocument();
+        $previousUseInternal = libxml_use_internal_errors(true);
+        $wrappedHtml = '<div>' . $html . '</div>';
+        $flags = 0;
+        if (defined('LIBXML_HTML_NOIMPLIED'))
+        {
+            $flags |= LIBXML_HTML_NOIMPLIED;
+        }
+        if (defined('LIBXML_HTML_NODEFDTD'))
+        {
+            $flags |= LIBXML_HTML_NODEFDTD;
+        }
+        if ($flags)
+        {
+            $loaded = $dom->loadHTML($wrappedHtml, $flags);
+        }
+        else
+        {
+            $loaded = $dom->loadHTML($wrappedHtml);
+        }
+        libxml_clear_errors();
+        libxml_use_internal_errors($previousUseInternal);
+        if ($loaded === false)
+        {
+            return htmlspecialchars((string) $html, ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
+        }
+
+        $container = $dom->getElementsByTagName('div')->item(0);
+        if ($container === null)
+        {
+            return htmlspecialchars((string) $html, ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
+        }
+
+        $sanitizeNode = function ($node) use (&$sanitizeNode, $allowedTags, $dropTags, $allowedAttrsGlobal, $allowedAttrsByTag)
+        {
+            for ($child = $node->firstChild; $child !== null; $child = $next)
+            {
+                $next = $child->nextSibling;
+
+                if ($child->nodeType !== XML_ELEMENT_NODE)
+                {
+                    continue;
+                }
+
+                $tagName = strtolower($child->nodeName);
+                if (!isset($allowedTags[$tagName]))
+                {
+                    if (isset($dropTags[$tagName]))
+                    {
+                        $node->removeChild($child);
+                        continue;
+                    }
+
+                    $promoted = $child->firstChild;
+                    while ($child->firstChild !== null)
+                    {
+                        $node->insertBefore($child->firstChild, $child);
+                    }
+                    $node->removeChild($child);
+                    if ($promoted !== null)
+                    {
+                        $next = $promoted;
+                    }
+                    continue;
+                }
+
+                if ($child->hasAttributes())
+                {
+                    for ($i = $child->attributes->length - 1; $i >= 0; $i--)
+                    {
+                        $attr = $child->attributes->item($i);
+                        if ($attr === null)
+                        {
+                            continue;
+                        }
+                        $attrName = strtolower($attr->name);
+                        if (strpos($attrName, 'on') === 0 || $attrName === 'style')
+                        {
+                            $child->removeAttributeNode($attr);
+                            continue;
+                        }
+                        $allowed = isset($allowedAttrsGlobal[$attrName]);
+                        if (!$allowed && isset($allowedAttrsByTag[$tagName][$attrName]))
+                        {
+                            $allowed = true;
+                        }
+                        if (!$allowed)
+                        {
+                            $child->removeAttributeNode($attr);
+                        }
+                    }
+                }
+
+                if ($tagName === 'a')
+                {
+                    if ($child->hasAttribute('href'))
+                    {
+                        $href = trim($child->getAttribute('href'));
+                        $isUnsafe = false;
+                        if (preg_match('/^\s*javascript:/i', $href))
+                        {
+                            $isUnsafe = true;
+                        }
+                        else if (preg_match('/^\s*[a-z][a-z0-9+\-.]*:/i', $href) &&
+                            !preg_match('/^\s*(https?|mailto|tel):/i', $href))
+                        {
+                            $isUnsafe = true;
+                        }
+                        if ($isUnsafe)
+                        {
+                            $child->removeAttribute('href');
+                        }
+                        else
+                        {
+                            $child->setAttribute('href', $href);
+                        }
+                    }
+
+                    if ($child->hasAttribute('target') && !strcasecmp($child->getAttribute('target'), '_blank'))
+                    {
+                        $rel = $child->getAttribute('rel');
+                        $relParts = preg_split('/\s+/', trim($rel));
+                        $relParts = array_filter($relParts, 'strlen');
+                        $relLower = array();
+                        foreach ($relParts as $part)
+                        {
+                            $relLower[strtolower($part)] = true;
+                        }
+                        if (!isset($relLower['noopener']))
+                        {
+                            $relParts[] = 'noopener';
+                        }
+                        if (!isset($relLower['noreferrer']))
+                        {
+                            $relParts[] = 'noreferrer';
+                        }
+                        $child->setAttribute('rel', trim(implode(' ', $relParts)));
+                    }
+                }
+
+                $sanitizeNode($child);
+            }
+        };
+
+        $sanitizeNode($container);
+
+        $output = '';
+        for ($child = $container->firstChild; $child !== null; $child = $child->nextSibling)
+        {
+            $output .= $dom->saveHTML($child);
+        }
+
+        return $output;
+    }
+
+    /**
      * Returns the "absolute" version of a URI that is relative to the CATS
      * root directory.
      *
@@ -316,11 +508,23 @@ class CATSUtility
         $indexParts = explode('.', $index);
         if ($indexParts[0] == 'ajax')
         {
-            return 'index.' . $indexParts[1];
+            if (isset($indexParts[1]) && $indexParts[1] !== '')
+            {
+                $index = 'index.' . $indexParts[1];
+            }
+            else
+            {
+                $index = 'index.php';
+            }
         }
 
         /* Older versions of apache sometimes don't concatinate script name by default. */
         if ($index == '')
+        {
+            return 'index.php';
+        }
+
+        if (!preg_match('/^[A-Za-z0-9_.-]+$/', $index))
         {
             return 'index.php';
         }

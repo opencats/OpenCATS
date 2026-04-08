@@ -1,7 +1,7 @@
 var wizardPages = Array();
 var optionDisableNext = Array();
 var optionDisableSkip = Array();
-var lastRequestAction = '';
+var lastRequestAction = "";
 var nextDisabled = false;
 var previousDisabled = false;
 
@@ -10,60 +10,60 @@ var loadingBarShown = false;
 
 function enableNext()
 {
-    var obj = document.getElementById('next');
+    var obj = document.getElementById("next");
     if (currentPage <= wizardPages.length)
     {
         if (obj)
         {
             nextDisabled = false;
-            obj.style.color = '#000000';
+            obj.style.color = "#000000";
         }
     }
 }
 
 function disableNext()
 {
-    var obj = document.getElementById('next');
+    var obj = document.getElementById("next");
     if (obj)
     {
         nextDisabled = true;
-        obj.style.color = '#c0c0c0';
+        obj.style.color = "#c0c0c0";
     }
 }
 
 function enablePrevious()
 {
-    var obj = document.getElementById('previous');
+    var obj = document.getElementById("previous");
     if (currentPage < wizardPages.length)
     {
         if (obj)
         {
             previousDisabled = false;
-            obj.style.color = '#000000';
+            obj.style.color = "#000000";
         }
     }
 }
 
 function disablePrevious()
 {
-    var obj = document.getElementById('previous');
+    var obj = document.getElementById("previous");
     if (obj)
     {
         previousDisabled = true;
-        obj.style.color = '#c0c0c0';
+        obj.style.color = "#c0c0c0";
     }
 }
 
 function enableSkip()
 {
-    var obj = document.getElementById('skip');
-    obj.style.display = 'inline';
+    var obj = document.getElementById("skip");
+    obj.style.display = "inline";
 }
 
 function disableSkip()
 {
-    var obj = document.getElementById('skip');
-    obj.style.display = 'none';
+    var obj = document.getElementById("skip");
+    obj.style.display = "none";
 }
 
 function addWizardPage(title, nonext, noskip)
@@ -77,7 +77,7 @@ function next()
 {
     if (nextDisabled) return;
 
-    if (typeof extendedNext == 'function')
+    if (typeof extendedNext == "function")
     {
         if (!extendedNext()) return;
     }
@@ -88,7 +88,7 @@ function next()
     }
     else if (currentPage < wizardPages.length)
     {
-        loadPage('next');
+        loadPage("next");
     }
 }
 
@@ -100,7 +100,7 @@ function funcNext()
     }
     else if (currentPage < wizardPages.length)
     {
-        loadPage('next');
+        loadPage("next");
     }
 }
 
@@ -110,7 +110,7 @@ function previous()
 
     if (currentPage > 1)
     {
-        loadPage('previous');
+        loadPage("previous");
     }
 }
 
@@ -121,18 +121,18 @@ function skip()
 
 function current()
 {
-    loadPage('current');
+    loadPage("current");
 }
 
 function loadPage(requestAction)
 {
     var ajaxObj;
-    var url = '?m=wizard&a=ajax_getPage&currentPage=' + currentPage + '&requestAction=' + requestAction;
+    var url = "?m=wizard&a=ajax_getPage&currentPage=" + currentPage + "&requestAction=" + requestAction;
     lastRequestAction = requestAction;
 
     // If the wizard page takes longer than 1.5 seconds, show a loading bar.
     loadingBarShown = true;
-    setTimeout('showLoadingBar()', 1500);
+    setTimeout("showLoadingBar()", 1500);
 
     try
     {
@@ -163,19 +163,19 @@ function loadPage(requestAction)
     {
         if (ajaxObj.readyState == 4)
         {
-            var wizardBody = document.getElementById('wizardContainerBody');
+            var wizardBody = document.getElementById("wizardContainerBody");
 
             hideLoadingBar();
 
-            if (lastRequestAction != '')
+            if (lastRequestAction != "")
             {
                 switch (lastRequestAction)
                 {
-                    case 'next':
+                    case "next":
                         currentPage++;
                         break;
 
-                    case 'previous':
+                    case "previous":
                         currentPage--;
                         break;
                 }
@@ -183,7 +183,7 @@ function loadPage(requestAction)
 
             if (wizardBody)
             {
-                var title = document.getElementById('pageTitle');
+                var title = document.getElementById("pageTitle");
                 title.innerHTML = wizardPages[currentPage-1];
                 if (optionDisableNext[currentPage-1])
                 {
@@ -202,16 +202,16 @@ function loadPage(requestAction)
                     enableSkip();
                 }
 
-                var obj = document.getElementById('next');
+                var obj = document.getElementById("next");
                 if (obj)
                 {
                     if (currentPage == wizardPages.length)
                     {
-                        obj.value = 'Finish';
+                        obj.value = "Finish";
                     }
                     else
                     {
-                        obj.value = 'Next';
+                        obj.value = "Next";
                     }
                 }
 
@@ -227,9 +227,9 @@ function loadPage(requestAction)
                 // Change the top tabs
                 for (var i=0; i<wizardPages.length; i++)
                 {
-                    var sectionObj = document.getElementById('section' + (i+1));
-                    if (currentPage == (i+1)) sectionObj.className = 'sectionTitleCurrent';
-                    else sectionObj.className = 'sectionTitle';
+                    var sectionObj = document.getElementById("section" + (i+1));
+                    if (currentPage == (i+1)) sectionObj.className = "sectionTitleCurrent";
+                    else sectionObj.className = "sectionTitle";
                 }
 
                 wizardBody.innerHTML = ajaxObj.responseText;
@@ -244,28 +244,28 @@ function loadPage(requestAction)
 
 function loadingBarDotDance()
 {
-    var dot1 = document.getElementById('loading1Dot');
-    var dot2 = document.getElementById('loading2Dot');
-    var dot3 = document.getElementById('loading3Dot');
+    var dot1 = document.getElementById("loading1Dot");
+    var dot2 = document.getElementById("loading2Dot");
+    var dot3 = document.getElementById("loading3Dot");
 
     if (dot1 && dot2 && dot3)
     {
         switch (dotDanceStage)
         {
             case 0:
-                dot1.style.color = '#666666';
-                dot2.style.color = '#d0d0d0';
-                dot3.style.color = '#d0d0d0';
+                dot1.style.color = "#666666";
+                dot2.style.color = "#d0d0d0";
+                dot3.style.color = "#d0d0d0";
                 break;
             case 1:
-                dot1.style.color = '#666666';
-                dot2.style.color = '#666666';
-                dot3.style.color = '#d0d0d0';
+                dot1.style.color = "#666666";
+                dot2.style.color = "#666666";
+                dot3.style.color = "#d0d0d0";
                 break;
             case 2:
-                dot1.style.color = '#666666';
-                dot2.style.color = '#666666';
-                dot3.style.color = '#666666';
+                dot1.style.color = "#666666";
+                dot2.style.color = "#666666";
+                dot3.style.color = "#666666";
                 break;
         }
         dotDanceStage++;
@@ -273,27 +273,27 @@ function loadingBarDotDance()
         {
             dotDanceStage = 0;
         }
-        setTimeout('loadingBarDotDance()', 500);
+        setTimeout("loadingBarDotDance()", 500);
     }
 }
 
 function showLoadingBar()
 {
     if (!loadingBarShown) return;
-    var obj = document.getElementById('loadingBar');
+    var obj = document.getElementById("loadingBar");
     if (obj)
     {
-        obj.style.visibility = 'visible';
+        obj.style.visibility = "visible";
         loadingBarDotDance();
     }
 }
 
 function hideLoadingBar()
 {
-    var obj = document.getElementById('loadingBar');
+    var obj = document.getElementById("loadingBar");
     loadingBarShown = false;
     if (obj)
     {
-        obj.style.visibility = 'hidden';
+        obj.style.visibility = "hidden";
     }
 }

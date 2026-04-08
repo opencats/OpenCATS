@@ -104,10 +104,16 @@
                 <table cellpadding="0" cellspacing="0" border="0">
                     <tr>
                         <td style="padding-right: 10px;">
-                            <input type="button" value="Rescan Documents" name="rescan" id="rescanButton" class="button" onclick="document.location.href='<?php echo CATSUtility::getIndexName(); ?>?m=import&a=importBulkResumes';" />
+                            <form method="post" action="<?php echo CATSUtility::getIndexName(); ?>?m=import&amp;a=importBulkResumes" style="display:inline;">
+                                <input type="hidden" name="postback" value="postback" />
+                                <input type="submit" value="Rescan Documents" name="rescan" id="rescanButton" class="button" />
+                            </form>
                         </td>
                         <td>
-                            <input type="button" value="Delete Documents" name="delete" id="deleteButton" class="button" onclick="if (confirm('This will delete all searchable attachments that have not been associated with candidates. This action cannot be undone. Are you sure you want to continue?')) document.location.href='<?php echo CATSUtility::getIndexName(); ?>?m=import&a=deleteBulkResumes';" />
+                            <form method="post" action="<?php echo CATSUtility::getIndexName(); ?>?m=import&amp;a=deleteBulkResumes" style="display:inline;" onsubmit="return confirm('This will delete all searchable attachments that have not been associated with candidates. This action cannot be undone. Are you sure you want to continue?');">
+                                <input type="hidden" name="postback" value="postback" />
+                                <input type="submit" value="Delete Documents" name="delete" id="deleteButton" class="button" />
+                            </form>
                         </td>
                     </tr>
                 </table>

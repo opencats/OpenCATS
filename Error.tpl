@@ -6,7 +6,7 @@
 <p class="fatalError">
     A fatal error has occurred.<br />
     <br />
-    <?php echo($this->errorMessage); ?>
+    <?php $this->_($this->errorMessage); ?>
 </p>
 
 <?php TemplateUtility::printFooter(); ?>

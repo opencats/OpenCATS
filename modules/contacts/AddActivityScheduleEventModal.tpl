@@ -3,15 +3,16 @@
 <?php if(!$this->onlyScheduleEvent): ?>
 <?php TemplateUtility::printModalHeader('Contacts', array('modules/contacts/activityvalidator.js', 'js/activity.js'), 'Contacts: Log Activity'); ?>
 <?php else: ?>
-    <?php TemplateUtility::printModalHeader('Contacts', array('modules/contacts/activityvalidator.js', 'js/activity.js'), 'Contacts: Schedule Event'); ?>
+<?php TemplateUtility::printModalHeader('Contacts', array('modules/contacts/activityvalidator.js', 'js/activity.js'), 'Contacts: Schedule Event'); ?>
 <?php endif; ?>
 
 <?php if (!$this->isFinishedMode): ?>
 
 <script type="text/javascript">
+    window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
 </script>
 
-    <form name="logActivityForm" id="logActivityForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=contacts&amp;a=addActivityScheduleEvent<?php if($this->onlyScheduleEvent): ?>&amp;onlyScheduleEvent=true<?php endif; ?>" method="post" autocomplete="off">
+    <form name="logActivityForm" id="logActivityForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=contacts&amp;a=addActivityScheduleEvent<?php if($this->onlyScheduleEvent): ?>&amp;onlyScheduleEvent=true<?php endif; ?>" method="post" onsubmit="return checkActivityForm(document.logActivityForm);" autocomplete="off">
         <input type="hidden" name="postback" id="postback" value="postback" />
         <input type="hidden" id="contactID" name="contactID" value="<?php echo($this->contactID); ?>" />
 
@@ -40,11 +41,12 @@
                     <div id="activityNoteDiv" style="margin-top: 4px;">
                         <span id="addActivitySpanA">Activity Type</span><br />
                         <select id="activityTypeID" name="activityTypeID" class="inputbox" style="width: 150px; margin-bottom: 4px;">
-                            <option selected="selected" value="<?php echo(ACTIVITY_CALL); ?>">Call</option>
+                            <option selected="selected" value="">-- Select --</option>
+                            <option value="<?php echo(ACTIVITY_CALL); ?>">Call</option>
                             <option value="<?php echo(ACTIVITY_CALL_TALKED); ?>">Call (Talked)</option>
                             <option value="<?php echo(ACTIVITY_CALL_LVM); ?>">Call (LVM)</option>
                             <option value="<?php echo(ACTIVITY_CALL_MISSED); ?>">Call (Missed)</option>
-                            <option value="<?php echo(ACTIVITY_EMAIL); ?>">E-Mail</option>
+                            <option value="<?php echo(ACTIVITY_EMAIL); ?>">Email</option>
                             <option value="<?php echo(ACTIVITY_MEETING); ?>">Meeting</option>
                             <option value="<?php echo(ACTIVITY_OTHER); ?>">Other</option>
                         </select><br />
@@ -73,7 +75,7 @@
                                     </div>
 
                                     <div style="margin-bottom: 4px;">
-                                        <script type="text/javascript">DateInput('dateAdd', true, 'MM-DD-YY', '', -1);</script>
+                                        <script type="text/javascript">DateInput('dateAdd', true, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '', -1);</script>
                                     </div>
 
                                     <div style="margin-bottom: 4px;">
@@ -121,7 +123,7 @@
                                     
                                     <div style="display:none;" id="reminderArea">
                                         <div>
-                                            <label>E-Mail To:</label><br />
+                                            <label>Email To:</label><br />
                                             <input type="text" id="sendEmail" name="sendEmail" class="inputbox" style="width: 150px" value="<?php $this->_($this->userEmail); ?>" />
                                         </div>
                                         <div>

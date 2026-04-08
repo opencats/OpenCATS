@@ -1,20 +1,16 @@
 /*
- * CATS
+ * OpenCATS
  * Candidates Form Validation
- *
- * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
- * All rights reserved.
- *
- * $Id: activityvalidator.js 2336 2007-04-14 22:01:51Z will $
  */
 
 function checkActivityForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
+    errorMessage += checkActivityType();
     errorMessage += checkEventTitle();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -23,27 +19,53 @@ function checkActivityForm(form)
     return true;
 }
 
-function checkEventTitle()
+function checkActivityType()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    scheduleEvent = document.getElementById('scheduleEvent').checked;
-    if (!scheduleEvent)
+    var addActivity = document.getElementById("addActivity").checked;
+    if (!addActivity)
     {
-        return '';
+        return "";
     }
 
-    fieldValue = document.getElementById('title').value;
-    fieldLabel = document.getElementById('titleLabel');
-    if (fieldValue == '')
+    var fieldValue = document.getElementById("activityTypeID").value;
+    var fieldLabel = document.getElementById("addActivitySpanA");
+    if (fieldValue == "")
     {
-        errorMessage = "    - You must enter an event title.\n";
+        errorMessage = "    - You must select an activity type.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
+    }
+
+    return errorMessage;
+}
+
+function checkEventTitle()
+{
+    var errorMessage = "";
+
+    var scheduleEvent = document.getElementById("scheduleEvent").checked;
+    if (!scheduleEvent)
+    {
+        return "";
+    }
+
+    var fieldValue = document.getElementById("title").value;
+    var fieldLabel = document.getElementById("titleLabel");
+    if (fieldValue == "")
+    {
+        errorMessage = "    - You must enter an event title.\n";
+
+        fieldLabel.style.color = "#ff0000";
+    }
+    else
+    {
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;

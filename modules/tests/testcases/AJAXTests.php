@@ -455,10 +455,10 @@ class GetDataItemJobOrdersTest extends CATSAJAXTestCase
         );
 
         /* Consider the test candidate for the first test job order. */
-        $this->assertGET(
-            CATSUtility::getAbsoluteURI(CATSUtility::getIndexName() .'?m=joborders&a=addToPipeline'),
+        $this->assertPOST(
+            CATSUtility::getAbsoluteURI(CATSUtility::getIndexName() .'?m=joborders&a=addToPipeline&getback=getback'),
             array(
-                'getback' => 'getback',
+                'postback' => 'postback',
                 'jobOrderID' => $testJobOrderID1,
                 'candidateID' => $testCandidateID
             ),
@@ -808,10 +808,10 @@ class GetPipelineDetailsTest extends CATSAJAXTestCase
         );
 
         /* Consider the test candidate for the first test job order. */
-        $this->assertGET(
-            CATSUtility::getAbsoluteURI(CATSUtility::getIndexName() .'?m=joborders&a=addToPipeline'),
+        $this->assertPOST(
+            CATSUtility::getAbsoluteURI(CATSUtility::getIndexName() .'?m=joborders&a=addToPipeline&getback=getback'),
             array(
-                'getback' => 'getback',
+                'postback' => 'postback',
                 'candidateID' => $testCandidateID,
                 'jobOrderID' => $testJobOrderID1
             ),

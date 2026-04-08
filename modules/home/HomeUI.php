@@ -63,13 +63,27 @@ class HomeUI extends UserInterface
             case 'deleteSavedSearch':
                 include_once(LEGACY_ROOT . '/lib/Search.php');
 
-                $this->deleteSavedSearch();
+                if ($this->isPostBack())
+                {
+                    $this->deleteSavedSearch();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             case 'addSavedSearch':
                 include_once(LEGACY_ROOT . '/lib/Search.php');
 
-                $this->addSavedSearch();
+                if ($this->isPostBack())
+                {
+                    $this->addSavedSearch();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             /* FIXME: undefined function getAttachment()
@@ -140,18 +154,18 @@ class HomeUI extends UserInterface
 
     private function deleteSavedSearch()
     {
-        if (!isset($_GET['searchID']))
+        if (!isset($_POST['searchID']))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'No search ID specified.');
         }
 
-        if (!isset($_GET['currentURL']))
+        if (!isset($_POST['currentURL']))
         {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'No current URL specified.');
         }
 
-        $searchID   = $_GET['searchID'];
-        $currentURL = $_GET['currentURL'];
+        $searchID   = $_POST['searchID'];
+        $currentURL = $_POST['currentURL'];
 
         if (!eval(Hooks::get('HOME_DELETE_SAVED_SEARCH_PRE'))) return;
 
@@ -165,18 +179,18 @@ class HomeUI extends UserInterface
 
     private function addSavedSearch()
     {
-        if (!isset($_GET['searchID']))
+        if (!isset($_POST['searchID']))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'No search ID specified.');
         }
 
-        if (!isset($_GET['currentURL']))
+        if (!isset($_POST['currentURL']))
         {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'No current URL specified.');
         }
 
-        $searchID   = $_GET['searchID'];
-        $currentURL = $_GET['currentURL'];
+        $searchID   = $_POST['searchID'];
+        $currentURL = $_POST['currentURL'];
 
         if (!eval(Hooks::get('HOME_ADD_SAVED_SEARCH_PRE'))) return;
 

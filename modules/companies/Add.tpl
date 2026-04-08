@@ -74,7 +74,16 @@
                             <label id="addressLabel" for="address">Address:</label>
                         </td>
                         <td class="tdData">
-                            <textarea name="address" id="address" class="inputbox" style="width: 150px"></textarea>
+                            <input type="text" name="address" id="address" class="inputbox" style="width: 150px" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="tdVertical">
+                            <label id="address2Label" for="address2">Address 2:</label>
+                        </td>
+                        <td class="tdData">
+                            <input type="text" name="address2" id="address2" class="inputbox" style="width: 150px" />
                         </td>
                     </tr>
 

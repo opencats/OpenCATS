@@ -273,9 +273,11 @@ class SearchUtility
      */
     public static function makePreview($keywords, $text)
     {
+        $decoded = DatabaseSearch::fulltextDecode($text);
+
         if (empty($keywords))
         {
-            return DatabaseSearch::fulltextDecode($text);
+            return htmlspecialchars((string) $decoded, ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
         }
 
         /* CATS fulltext encode the search string. */
@@ -296,16 +298,26 @@ class SearchUtility
         }
         $keywords = array_merge($keywords);
 
+        $matches = array();
+        $matchIndex = 0;
+
         if (!empty($keywordsWild))
         {
             $regex = implode('|', array_map(
                 function($string){return preg_quote($string, '/');}, $keywordsWild
             ));
-            $text = preg_replace(
-                '/(' . $regex . ')/i',
-                '<span style="background-color: #ffff99">\1</span>',
-                $text
-           );
+            if (preg_match_all('/(' . $regex . ')/i', $decoded, $wildMatches, PREG_OFFSET_CAPTURE))
+            {
+                foreach ($wildMatches[0] as $match)
+                {
+                    $matches[] = array(
+                        'start'  => $match[1],
+                        'length' => strlen($match[0]),
+                        'index'  => $matchIndex++,
+                        'text'   => $match[0]
+                    );
+                }
+            }
         }
 
         if (!empty($keywords))
@@ -313,14 +325,62 @@ class SearchUtility
             $regex = implode('|', array_map(
                 function($string){return preg_quote($string, '/');}, $keywords
             ));
-            $text = preg_replace(
-                '/\b(' . $regex . ')\b/i',
-                '<span style="background-color: #ffff99">\1</span>',
-                $text
-            );
+            if (preg_match_all('/\b(' . $regex . ')\b/i', $decoded, $wordMatches, PREG_OFFSET_CAPTURE))
+            {
+                foreach ($wordMatches[0] as $match)
+                {
+                    $matches[] = array(
+                        'start'  => $match[1],
+                        'length' => strlen($match[0]),
+                        'index'  => $matchIndex++,
+                        'text'   => $match[0]
+                    );
+                }
+            }
         }
 
-        return DatabaseSearch::fulltextDecode($text);
+        if (empty($matches))
+        {
+            return htmlspecialchars((string) $decoded, ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
+        }
+
+        usort($matches, function($a, $b)
+        {
+            if ($a['start'] == $b['start'])
+            {
+                return $a['index'] - $b['index'];
+            }
+            return $a['start'] - $b['start'];
+        });
+
+        $result = '';
+        $cursor = 0;
+
+        foreach ($matches as $match)
+        {
+            if ($match['start'] < $cursor)
+            {
+                continue;
+            }
+
+            $result .= htmlspecialchars(
+                (string) substr($decoded, $cursor, $match['start'] - $cursor),
+                ENT_QUOTES,
+                'UTF-8'
+            );
+            $result .= '<span style="background-color: #ffff99">' .
+                htmlspecialchars((string) $match['text'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING) .
+                '</span>';
+            $cursor = $match['start'] + $match['length'];
+        }
+
+        $result .= htmlspecialchars(
+            (string) substr($decoded, $cursor),
+            ENT_QUOTES,
+            'UTF-8'
+        );
+
+        return $result;
     }
 
     // FIXME: Document me.

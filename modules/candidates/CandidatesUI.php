@@ -130,7 +130,14 @@ class CandidatesUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                $this->onDelete();
+                if ($this->isPostBack())
+                {
+                    $this->onDelete();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             case 'search':
@@ -185,7 +192,14 @@ class CandidatesUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                $this->onAddToPipeline();
+                if ($this->isPostBack())
+                {
+                    $this->onAddToPipeline();
+                }
+                else
+                {
+                    CommonErrors::fatalModal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             case 'addCandidateTags':
@@ -226,7 +240,14 @@ class CandidatesUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                $this->onRemoveFromPipeline();
+                if ($this->isPostBack())
+                {
+                    $this->onRemoveFromPipeline();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             case 'addEditImage':
@@ -271,7 +292,14 @@ class CandidatesUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                $this->administrativeHideShow();
+                if ($this->isPostBack())
+                {
+                    $this->administrativeHideShow();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             /* Delete a candidate attachment */
@@ -280,7 +308,14 @@ class CandidatesUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                $this->onDeleteAttachment();
+                if ($this->isPostBack())
+                {
+                    $this->onDeleteAttachment();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             /* Hot List Page */
@@ -336,7 +371,14 @@ class CandidatesUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                $this->mergeDuplicatesInfo();
+                if ($this->isPostBack())
+                {
+                    $this->mergeDuplicatesInfo();
+                }
+                else
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
             
             /* Remove duplicity warning from a new candidate */
@@ -345,7 +387,14 @@ class CandidatesUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                $this->removeDuplicity();
+                if ($this->isPostBack())
+                {
+                    $this->removeDuplicity();
+                }
+                else
+                {
+                    CommonErrors::fatalModal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
             
             case 'addDuplicates':
@@ -353,7 +402,14 @@ class CandidatesUI extends UserInterface
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
-                $this->addDuplicates();
+                if ($this->isPostBack())
+                {
+                    $this->addDuplicates();
+                }
+                else
+                {
+                    CommonErrors::fatalModal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
+                }
                 break;
 
             /* Main candidates page. */
@@ -391,6 +447,37 @@ class CandidatesUI extends UserInterface
         $transferURI = str_replace(
             '__CANDIDATE_ID__', $candidateID, $transferURI
         );
+
+        if (strpos($transferURI, 'a=addToPipeline') !== false)
+        {
+            parse_str($transferURI, $params);
+            $action = CATSUtility::getIndexName();
+            if (isset($params['m']) && isset($params['a']))
+            {
+                $action .= '?m=' . urlencode($params['m']) . '&a=' . urlencode($params['a']);
+                unset($params['m']);
+                unset($params['a']);
+            }
+
+            echo '<html><body>';
+            echo '<form id="postRedirect" method="post" action="', $action, '">';
+            echo '<input type="hidden" name="postback" value="postback" />';
+            if (isset($_SESSION['CATS']))
+            {
+                echo '<input type="hidden" name="csrfToken" value="',
+                    htmlspecialchars($_SESSION['CATS']->getCSRFToken(), ENT_QUOTES, 'UTF-8'),
+                    '" />';
+            }
+            foreach ($params as $key => $value)
+            {
+                echo '<input type="hidden" name="', htmlspecialchars($key, ENT_QUOTES, 'UTF-8'), '" value="', htmlspecialchars($value, ENT_QUOTES, 'UTF-8'), '" />';
+            }
+            echo '</form>';
+            echo '<script type="text/javascript">document.getElementById(\'postRedirect\').submit();</script>';
+            echo '</body></html>';
+            return;
+        }
+
         CATSUtility::transferRelativeURI($transferURI);
     }
 
@@ -842,8 +929,8 @@ class CandidatesUI extends UserInterface
         {
             $isParsingEnabled = false;
         }
-        /* For CATS Toolbar, if e-mail has been sent and it wasn't set by
-         * parser, it's toolbar and it needs the old format.
+        /* If e-mail has been sent and it wasn't set by the parser, it needs
+         * the old format.
          */
         else if (!isset($preassignedFields['email']))
         {
@@ -899,27 +986,28 @@ class CandidatesUI extends UserInterface
 
             // Retain all field data since this isn't done over AJAX (yet)
             $fields = array(
-                'firstName'       => $this->getSanitisedInput('firstName', $_POST),
-                'middleName'      => $this->getSanitisedInput('middleName', $_POST),
-                'lastName'        => $this->getSanitisedInput('lastName', $_POST),
-                'email1'          => $this->getSanitisedInput('email1', $_POST),
-                'email2'          => $this->getSanitisedInput('email2', $_POST),
-                'phoneHome'       => $this->getSanitisedInput('phoneHome', $_POST),
-                'phoneCell'       => $this->getSanitisedInput('phoneCell', $_POST),
-                'phoneWork'       => $this->getSanitisedInput('phoneWork', $_POST),
-                'address'         => $this->getSanitisedInput('address', $_POST),
-                'city'            => $this->getSanitisedInput('city', $_POST),
-                'state'           => $this->getSanitisedInput('state', $_POST),
-                'zip'             => $this->getSanitisedInput('zip', $_POST),
+                'firstName'       => $this->getTrimmedInput('firstName', $_POST),
+                'middleName'      => $this->getTrimmedInput('middleName', $_POST),
+                'lastName'        => $this->getTrimmedInput('lastName', $_POST),
+                'email1'          => $this->getTrimmedInput('email1', $_POST),
+                'email2'          => $this->getTrimmedInput('email2', $_POST),
+                'phoneHome'       => $this->getTrimmedInput('phoneHome', $_POST),
+                'phoneCell'       => $this->getTrimmedInput('phoneCell', $_POST),
+                'phoneWork'       => $this->getTrimmedInput('phoneWork', $_POST),
+                'address'         => $this->getTrimmedInput('address', $_POST),
+                'address2'        => $this->getTrimmedInput('address2', $_POST),
+                'city'            => $this->getTrimmedInput('city', $_POST),
+                'state'           => $this->getTrimmedInput('state', $_POST),
+                'zip'             => $this->getTrimmedInput('zip', $_POST),
                 'source'          => $this->getTrimmedInput('source', $_POST),
-                'keySkills'       => $this->getSanitisedInput('keySkills', $_POST),
-                'currentEmployer' => $this->getSanitisedInput('currentEmployer', $_POST),
-                'currentPay'      => $this->getSanitisedInput('currentPay', $_POST),
-                'desiredPay'      => $this->getSanitisedInput('desiredPay', $_POST),
-                'notes'           => $this->getSanitisedInput('notes', $_POST),
-                'canRelocate'     => $this->getSanitisedInput('canRelocate', $_POST),
-                'webSite'         => $this->getSanitisedInput('webSite', $_POST),
-                'bestTimeToCall'  => $this->getSanitisedInput('bestTimeToCall', $_POST),
+                'keySkills'       => $this->getTrimmedInput('keySkills', $_POST),
+                'currentEmployer' => $this->getTrimmedInput('currentEmployer', $_POST),
+                'currentPay'      => $this->getTrimmedInput('currentPay', $_POST),
+                'desiredPay'      => $this->getTrimmedInput('desiredPay', $_POST),
+                'notes'           => $this->getTrimmedInput('notes', $_POST),
+                'canRelocate'     => $this->getTrimmedInput('canRelocate', $_POST),
+                'webSite'         => $this->getTrimmedInput('webSite', $_POST),
+                'bestTimeToCall'  => $this->getTrimmedInput('bestTimeToCall', $_POST),
                 'gender'          => $this->getTrimmedInput('gender', $_POST),
                 'race'            => $this->getTrimmedInput('race', $_POST),
                 'veteran'         => $this->getTrimmedInput('veteran', $_POST),
@@ -1137,16 +1225,7 @@ class CandidatesUI extends UserInterface
         }
 
         /* Date format for DateInput()s. */
-        if ($_SESSION['CATS']->isDateDMY())
-        {
-            $data['dateAvailableMDY'] = DateUtility::convert(
-                '-', $data['dateAvailable'], DATE_FORMAT_DDMMYY, DATE_FORMAT_MMDDYY
-            );
-        }
-        else
-        {
-            $data['dateAvailableMDY'] = $data['dateAvailable'];
-        }
+        $data['dateAvailableUser'] = $data['dateAvailable'];
 
         if (!eval(Hooks::get('CANDIDATE_EDIT'))) return;
 
@@ -1191,21 +1270,24 @@ class CandidatesUI extends UserInterface
          * ahead and convert the date to MySQL format.
          */
         $dateAvailable = $this->getTrimmedInput('dateAvailable', $_POST);
+        $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
+            ? DATE_FORMAT_DDMMYY
+            : DATE_FORMAT_MMDDYY;
         if (!empty($dateAvailable))
         {
-            if (!DateUtility::validate('-', $dateAvailable, DATE_FORMAT_MMDDYY))
+            if (!DateUtility::validate('-', $dateAvailable, $dateFormatFlag))
             {
                 CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid availability date.');
             }
 
             /* Convert start_date to something MySQL can understand. */
             $dateAvailable = DateUtility::convert(
-                '-', $dateAvailable, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+                '-', $dateAvailable, $dateFormatFlag, DATE_FORMAT_YYYYMMDD
             );
         }
 
         $formattedPhoneHome = StringUtility::extractPhoneNumber(
-            $this->getSanitisedInput('phoneHome', $_POST)
+            $this->getTrimmedInput('phoneHome', $_POST)
         );
         if (!empty($formattedPhoneHome))
         {
@@ -1213,11 +1295,11 @@ class CandidatesUI extends UserInterface
         }
         else
         {
-            $phoneHome = $this->getSanitisedInput('phoneHome', $_POST);
+            $phoneHome = $this->getTrimmedInput('phoneHome', $_POST);
         }
 
         $formattedPhoneCell = StringUtility::extractPhoneNumber(
-            $this->getSanitisedInput('phoneCell', $_POST)
+            $this->getTrimmedInput('phoneCell', $_POST)
         );
         if (!empty($formattedPhoneCell))
         {
@@ -1225,11 +1307,11 @@ class CandidatesUI extends UserInterface
         }
         else
         {
-            $phoneCell = $this->getSanitisedInput('phoneCell', $_POST);
+            $phoneCell = $this->getTrimmedInput('phoneCell', $_POST);
         }
 
         $formattedPhoneWork = StringUtility::extractPhoneNumber(
-            $this->getSanitisedInput('phoneWork', $_POST)
+            $this->getTrimmedInput('phoneWork', $_POST)
         );
         if (!empty($formattedPhoneWork))
         {
@@ -1237,7 +1319,7 @@ class CandidatesUI extends UserInterface
         }
         else
         {
-            $phoneWork = $this->getSanitisedInput('phoneWork', $_POST);
+            $phoneWork = $this->getTrimmedInput('phoneWork', $_POST);
         }
 
         $candidateID = $_POST['candidateID'];
@@ -1310,22 +1392,23 @@ class CandidatesUI extends UserInterface
         }
 
         $isActive        = $this->isChecked('isActive', $_POST);
-        $firstName       = $this->getSanitisedInput('firstName', $_POST);
-        $middleName      = $this->getSanitisedInput('middleName', $_POST);
-        $lastName        = $this->getSanitisedInput('lastName', $_POST);
-        $email1          = $this->getSanitisedInput('email1', $_POST);
-        $email2          = $this->getSanitisedInput('email2', $_POST);
-        $address         = $this->getSanitisedInput('address', $_POST);
-        $city            = $this->getSanitisedInput('city', $_POST);
-        $state           = $this->getSanitisedInput('state', $_POST);
-        $zip             = $this->getSanitisedInput('zip', $_POST);
-        $source          = $this->getSanitisedInput('source', $_POST);
-        $keySkills       = $this->getSanitisedInput('keySkills', $_POST);
-        $currentEmployer = $this->getSanitisedInput('currentEmployer', $_POST);
-        $currentPay      = $this->getSanitisedInput('currentPay', $_POST);
-        $desiredPay      = $this->getSanitisedInput('desiredPay', $_POST);
-        $notes           = $this->getSanitisedInput('notes', $_POST);
-        $webSite         = $this->getSanitisedInput('webSite', $_POST);
+        $firstName       = $this->getTrimmedInput('firstName', $_POST);
+        $middleName      = $this->getTrimmedInput('middleName', $_POST);
+        $lastName        = $this->getTrimmedInput('lastName', $_POST);
+        $email1          = $this->getTrimmedInput('email1', $_POST);
+        $email2          = $this->getTrimmedInput('email2', $_POST);
+        $address         = $this->getTrimmedInput('address', $_POST);
+        $address2        = $this->getTrimmedInput('address2', $_POST);
+        $city            = $this->getTrimmedInput('city', $_POST);
+        $state           = $this->getTrimmedInput('state', $_POST);
+        $zip             = $this->getTrimmedInput('zip', $_POST);
+        $source          = $this->getTrimmedInput('source', $_POST);
+        $keySkills       = $this->getTrimmedInput('keySkills', $_POST);
+        $currentEmployer = $this->getTrimmedInput('currentEmployer', $_POST);
+        $currentPay      = $this->getTrimmedInput('currentPay', $_POST);
+        $desiredPay      = $this->getTrimmedInput('desiredPay', $_POST);
+        $notes           = $this->getTrimmedInput('notes', $_POST);
+        $webSite         = $this->getTrimmedInput('webSite', $_POST);
         $bestTimeToCall  = $this->getTrimmedInput('bestTimeToCall', $_POST);
         $gender          = $this->getTrimmedInput('gender', $_POST);
         $race            = $this->getTrimmedInput('race', $_POST);
@@ -1356,6 +1439,7 @@ class CandidatesUI extends UserInterface
             $phoneCell,
             $phoneWork,
             $address,
+            $address2,
             $city,
             $state,
             $zip,
@@ -1407,12 +1491,12 @@ class CandidatesUI extends UserInterface
     private function onDelete()
     {
         /* Bail out if we don't have a valid candidate ID. */
-        if (!$this->isRequiredIDValid('candidateID', $_GET))
+        if (!$this->isRequiredIDValid('candidateID', $_POST))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
         }
 
-        $candidateID = $_GET['candidateID'];
+        $candidateID = $_POST['candidateID'];
 
         if (!eval(Hooks::get('CANDIDATE_DELETE'))) return;
 
@@ -1561,30 +1645,30 @@ class CandidatesUI extends UserInterface
     private function onAddToPipeline()
     {
         /* Bail out if we don't have a valid job order ID. */
-        if (!$this->isRequiredIDValid('jobOrderID', $_GET))
+        if (!$this->isRequiredIDValid('jobOrderID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
         }
 
-        if (isset($_GET['candidateID']))
+        if (isset($_POST['candidateID']))
         {
             /* Bail out if we don't have a valid candidate ID. */
-            if (!$this->isRequiredIDValid('candidateID', $_GET))
+            if (!$this->isRequiredIDValid('candidateID', $_POST))
             {
                 CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
             }
 
-            $candidateIDArray = array($_GET['candidateID']);
+            $candidateIDArray = array($_POST['candidateID']);
         }
         else
         {
-            if (!isset($_REQUEST['candidateIDArrayStored']) || !$this->isRequiredIDValid('candidateIDArrayStored', $_REQUEST, true))
+            if (!isset($_POST['candidateIDArrayStored']) || !$this->isRequiredIDValid('candidateIDArrayStored', $_POST, true))
             {
                 CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidateIDArrayStored parameter.');
                 return;
             }
 
-            $candidateIDArray = $_SESSION['CATS']->retrieveData($_REQUEST['candidateIDArrayStored']);
+            $candidateIDArray = $_SESSION['CATS']->retrieveData($_POST['candidateIDArrayStored']);
 
             if (!is_array($candidateIDArray))
             {
@@ -1606,7 +1690,7 @@ class CandidatesUI extends UserInterface
         }
 
 
-        $jobOrderID  = $_GET['jobOrderID'];
+        $jobOrderID  = $_POST['jobOrderID'];
 
         if (!eval(Hooks::get('CANDIDATE_ADD_TO_PIPELINE_PRE'))) return;
 
@@ -1858,19 +1942,19 @@ class CandidatesUI extends UserInterface
     private function onRemoveFromPipeline()
     {
         /* Bail out if we don't have a valid candidate ID. */
-        if (!$this->isRequiredIDValid('candidateID', $_GET))
+        if (!$this->isRequiredIDValid('candidateID', $_POST))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
         }
 
         /* Bail out if we don't have a valid job order ID. */
-        if (!$this->isRequiredIDValid('jobOrderID', $_GET))
+        if (!$this->isRequiredIDValid('jobOrderID', $_POST))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
         }
 
-        $candidateID = $_GET['candidateID'];
-        $jobOrderID  = $_GET['jobOrderID'];
+        $candidateID = $_POST['candidateID'];
+        $jobOrderID  = $_POST['jobOrderID'];
 
         if (!eval(Hooks::get('CANDIDATE_REMOVE_FROM_PIPELINE_PRE'))) return;
 
@@ -1904,6 +1988,7 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('keySkillsWildCardString', '');
         $this->_template->assign('fullNameWildCardString', '');
         $this->_template->assign('phoneNumberWildCardString', '');
+        $this->_template->assign('cityWildCardString', '');
         $this->_template->assign('mode', '');
         $this->_template->display('./modules/candidates/Search.tpl');
     }
@@ -1929,6 +2014,7 @@ class CandidatesUI extends UserInterface
         $keySkillsWildCardString   = '';
         $phoneNumberWildCardString = '';
         $fullNameWildCardString    = '';
+        $cityWildCardString        = '';
 
         /* Set up sorting. */
         if ($this->isRequiredIDValid('page', $_GET))
@@ -2106,6 +2192,37 @@ class CandidatesUI extends UserInterface
                 $resumeWildCardString = $query;
                 break;
 
+            case 'searchByCity':
+                $rs = $search->byCity($query, $sortBy, $sortDirection);
+
+                foreach ($rs as $rowIndex => $row)
+                {
+                    if (!empty($row['ownerFirstName']))
+                    {
+                        $rs[$rowIndex]['ownerAbbrName'] = StringUtility::makeInitialName(
+                            $row['ownerFirstName'],
+                            $row['ownerLastName'],
+                            false,
+                            LAST_NAME_MAXLEN
+                        );
+                    }
+                    else
+                    {
+                        $rs[$rowIndex]['ownerAbbrName'] = 'None';
+                    }
+
+                    $rsResume = $candidates->getResumes($row['candidateID']);
+                    if (isset($rsResume[0]))
+                    {
+                        $rs[$rowIndex]['resumeID'] = $rsResume[0]['attachmentID'];
+                    }
+                }
+
+                $isResumeMode = false;
+
+                $cityWildCardString = $query;
+                break;
+            
             case 'phoneNumber':
                 $rs = $search->byPhone($query, $sortBy, $sortDirection);
 
@@ -2172,6 +2289,7 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('keySkillsWildCardString', $keySkillsWildCardString);
         $this->_template->assign('fullNameWildCardString', $fullNameWildCardString);
         $this->_template->assign('phoneNumberWildCardString', $phoneNumberWildCardString);
+        $this->_template->assign('cityWildCardString', $cityWildCardString);
         $this->_template->assign('mode', $mode);
         $this->_template->display('./modules/candidates/Search.tpl');
     }
@@ -2363,19 +2481,19 @@ class CandidatesUI extends UserInterface
     private function onDeleteAttachment()
     {
         /* Bail out if we don't have a valid attachment ID. */
-        if (!$this->isRequiredIDValid('attachmentID', $_GET))
+        if (!$this->isRequiredIDValid('attachmentID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid attachment ID.');
         }
 
         /* Bail out if we don't have a valid candidate ID. */
-        if (!$this->isRequiredIDValid('candidateID', $_GET))
+        if (!$this->isRequiredIDValid('candidateID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
         }
 
-        $candidateID  = $_GET['candidateID'];
-        $attachmentID = $_GET['attachmentID'];
+        $candidateID  = $_POST['candidateID'];
+        $attachmentID = $_POST['attachmentID'];
 
         if (!eval(Hooks::get('CANDIDATE_ON_DELETE_ATTACHMENT_PRE'))) return;
 
@@ -2394,21 +2512,21 @@ class CandidatesUI extends UserInterface
     private function administrativeHideShow()
     {
         /* Bail out if we don't have a valid joborder ID. */
-        if (!$this->isRequiredIDValid('candidateID', $_GET))
+        if (!$this->isRequiredIDValid('candidateID', $_POST))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid Job Order ID.');
         }
 
         /* Bail out if we don't have a valid status ID. */
-        if (!$this->isRequiredIDValid('state', $_GET, true))
+        if (!$this->isRequiredIDValid('state', $_POST, true))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid state ID.');
         }
 
-        $candidateID = $_GET['candidateID'];
+        $candidateID = $_POST['candidateID'];
 
         // FIXME: Checkbox?
-        $state = (boolean) $_GET['state'];
+        $state = (boolean) $_POST['state'];
 
         $candidates = new Candidates($this->_siteID);
         $candidates->administrativeHideShow($candidateID, $state);
@@ -2532,16 +2650,19 @@ class CandidatesUI extends UserInterface
          * ahead and convert the date to MySQL format.
          */
         $dateAvailable = $this->getTrimmedInput('dateAvailable', $_POST);
+        $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
+            ? DATE_FORMAT_DDMMYY
+            : DATE_FORMAT_MMDDYY;
         if (!empty($dateAvailable))
         {
-            if (!DateUtility::validate('-', $dateAvailable, DATE_FORMAT_MMDDYY))
+            if (!DateUtility::validate('-', $dateAvailable, $dateFormatFlag))
             {
                 $this->$fatal('Invalid availability date.', $moduleDirectory);
             }
 
             /* Convert start_date to something MySQL can understand. */
             $dateAvailable = DateUtility::convert(
-                '-', $dateAvailable, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+                '-', $dateAvailable, $dateFormatFlag, DATE_FORMAT_YYYYMMDD
             );
         }
 
@@ -2590,6 +2711,7 @@ class CandidatesUI extends UserInterface
         $email1          = $this->getTrimmedInput('email1', $_POST);
         $email2          = $this->getTrimmedInput('email2', $_POST);
         $address         = $this->getTrimmedInput('address', $_POST);
+        $address2        = $this->getTrimmedInput('address2', $_POST);
         $city            = $this->getTrimmedInput('city', $_POST);
         $state           = $this->getTrimmedInput('state', $_POST);
         $zip             = $this->getTrimmedInput('zip', $_POST);
@@ -2638,6 +2760,7 @@ class CandidatesUI extends UserInterface
             $phoneCell,
             $phoneWork,
             $address,
+            $address2,
             $city,
             $state,
             $zip,
@@ -2914,13 +3037,20 @@ class CandidatesUI extends UserInterface
 
         if ($this->isChecked('addActivity', $_POST))
         {
-            /* Bail out if we don't have a valid job order ID. */
-            if (!$this->isOptionalIDValid('activityTypeID', $_POST))
+            if (!$this->isRequiredIDValid('activityTypeID', $_POST))
+            {
+                $this->fatalModal('You must select an activity type.');
+            }
+
+            $activityTypeID = (int) $_POST['activityTypeID'];
+            $activityEntries = new ActivityEntries($this->_siteID);
+            $activityTypes = $activityEntries->getTypes();
+            if (ResultSetUtility::findRowByColumnValue(
+                $activityTypes, 'typeID', $activityTypeID
+            ) === false)
             {
                 CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid activity type ID.');
             }
-
-            $activityTypeID = $_POST['activityTypeID'];
 
             $activityNote = $this->getTrimmedInput('activityNote', $_POST);
 
@@ -2940,7 +3070,6 @@ class CandidatesUI extends UserInterface
             }
 
             /* Add the activity entry. */
-            $activityEntries = new ActivityEntries($this->_siteID);
             $activityID = $activityEntries->add(
                 $candidateID,
                 DATA_ITEM_CANDIDATE,
@@ -2949,7 +3078,6 @@ class CandidatesUI extends UserInterface
                 $this->_userID,
                 $regardingID
             );
-            $activityTypes = $activityEntries->getTypes();
             $activityTypeDescription = ResultSetUtility::getColumnValueByIDValue(
                 $activityTypes, 'typeID', $activityTypeID, 'type'
             );
@@ -3070,8 +3198,11 @@ class CandidatesUI extends UserInterface
         {
             /* Bail out if we received an invalid date. */
             $trimmedDate = $this->getTrimmedInput('dateAdd', $_POST);
+            $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
+                ? DATE_FORMAT_DDMMYY
+                : DATE_FORMAT_MMDDYY;
             if (empty($trimmedDate) ||
-                !DateUtility::validate('-', $trimmedDate, DATE_FORMAT_MMDDYY))
+                !DateUtility::validate('-', $trimmedDate, $dateFormatFlag))
             {
                 CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid date.');
             }
@@ -3111,7 +3242,7 @@ class CandidatesUI extends UserInterface
             if ($allDay)
             {
                 $date = DateUtility::convert(
-                    '-', $trimmedDate, DATE_FORMAT_MMDDYY, DATE_FORMAT_YYYYMMDD
+                    '-', $trimmedDate, $dateFormatFlag, DATE_FORMAT_YYYYMMDD
                 );
 
                 $hour = 12;
@@ -3156,7 +3287,7 @@ class CandidatesUI extends UserInterface
                     DateUtility::convert(
                         '-',
                         $trimmedDate,
-                        DATE_FORMAT_MMDDYY,
+                        $dateFormatFlag,
                         DATE_FORMAT_YYYYMMDD
                     ),
                     date('H:i:00', $time)
@@ -3479,6 +3610,15 @@ class CandidatesUI extends UserInterface
     
     private function mergeDuplicates()
     {
+        if (!$this->isRequiredIDValid('oldCandidateID', $_GET))
+        {
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+        }
+        if (!$this->isRequiredIDValid('newCandidateID', $_GET))
+        {
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+        }
+
         $candidates = new Candidates($this->_siteID);
         $oldCandidateID = $_GET['oldCandidateID'];
         $newCandidateID = $_GET['newCandidateID'];
@@ -3497,6 +3637,15 @@ class CandidatesUI extends UserInterface
     private function mergeDuplicatesInfo()
     {
         $candidates = new Candidates($this->_siteID);
+        if (!$this->isRequiredIDValid('oldCandidateID', $_POST))
+        {
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+        }
+        if (!$this->isRequiredIDValid('newCandidateID', $_POST))
+        {
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+        }
+
         $params = array();
         $params['firstName'] = $_POST['firstName'];
         $params['middleName'] =  $_POST['middleName'];
@@ -3518,15 +3667,24 @@ class CandidatesUI extends UserInterface
         $params['newCandidateID'] = $_POST['newCandidateID'];
         
         $candidates->mergeDuplicates($params, $candidates->getWithDuplicity($params['newCandidateID']));
-        $this->_template->assign('isFinishedMode', true); 
-        $this->_template->display('./modules/candidates/Merge.tpl');
+        CATSUtility::transferRelativeURI(
+            'm=candidates&a=show&candidateID=' . $params['oldCandidateID']
+        );
     }
     
     private function removeDuplicity()
     {
         $candidates = new Candidates($this->_siteID);
-        $oldCandidateID = $_GET['oldCandidateID'];
-        $newCandidateID = $_GET['newCandidateID'];
+        if (!$this->isRequiredIDValid('oldCandidateID', $_POST))
+        {
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+        }
+        if (!$this->isRequiredIDValid('newCandidateID', $_POST))
+        {
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+        }
+        $oldCandidateID = $_POST['oldCandidateID'];
+        $newCandidateID = $_POST['newCandidateID'];
         $candidates->removeDuplicity($oldCandidateID, $newCandidateID);
         $url = CATSUtility::getIndexName()."?m=candidates";
         header("Location: " . $url); /* Redirect browser */
@@ -3537,8 +3695,16 @@ class CandidatesUI extends UserInterface
     private function addDuplicates()
     {
         $candidates = new Candidates($this->_siteID);
-        $oldCandidateID = $_GET['candidateID'];
-        $newCandidateID = $_GET['duplicateCandidateID'];
+        if (!$this->isRequiredIDValid('candidateID', $_POST))
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+        }
+        if (!$this->isRequiredIDValid('duplicateCandidateID', $_POST))
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
+        }
+        $oldCandidateID = $_POST['candidateID'];
+        $newCandidateID = $_POST['duplicateCandidateID'];
         $candidates->addDuplicates($newCandidateID, $oldCandidateID);
         $this->_template->assign('isFinishedMode', true);
         $this->_template->display('./modules/candidates/LinkDuplicity.tpl');

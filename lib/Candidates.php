@@ -69,7 +69,8 @@ class Candidates
      * @param string Home phone number.
      * @param string Mobile phone number.
      * @param string Work phone number.
-     * @param string Address (can be multiple lines).
+     * @param string Address line 1.
+     * @param string Address line 2.
      * @param string City.
      * @param string State / province.
      * @param string Postal code.
@@ -92,7 +93,7 @@ class Candidates
      * @return integer Candidate ID of new candidate, or -1 on failure.
      */
     public function add($firstName, $middleName, $lastName, $email1, $email2,
-        $phoneHome, $phoneCell, $phoneWork, $address, $city, $state, $zip,
+        $phoneHome, $phoneCell, $phoneWork, $address, $address2, $city, $state, $zip,
         $source, $keySkills, $dateAvailable, $currentEmployer, $canRelocate,
         $currentPay, $desiredPay, $notes, $webSite, $bestTimeToCall, $enteredBy, $owner,
         $gender = '', $race = '', $veteran = '', $disability = '',
@@ -109,6 +110,7 @@ class Candidates
                 phone_cell,
                 phone_work,
                 address,
+                address2,
                 city,
                 state,
                 zip,
@@ -157,6 +159,7 @@ class Candidates
                 %s,
                 %s,
                 %s,
+                %s,
                 0,
                 %s,
                 %s,
@@ -176,6 +179,7 @@ class Candidates
             $this->_db->makeQueryString($phoneCell),
             $this->_db->makeQueryString($phoneWork),
             $this->_db->makeQueryString($address),
+            $this->_db->makeQueryString($address2),
             $this->_db->makeQueryString($city),
             $this->_db->makeQueryString($state),
             $this->_db->makeQueryString($zip),
@@ -226,7 +230,8 @@ class Candidates
      * @param string Home phone number.
      * @param string Mobile phone number.
      * @param string Work phone number.
-     * @param string Address (can be multiple lines).
+     * @param string Address line 1.
+     * @param string Address line 2.
      * @param string City.
      * @param string State / province.
      * @param string Postal code.
@@ -247,7 +252,7 @@ class Candidates
      * @return boolean True if successful; false otherwise.
      */
     public function update($candidateID, $isActive, $firstName, $middleName, $lastName,
-        $email1, $email2, $phoneHome, $phoneCell, $phoneWork, $address,
+        $email1, $email2, $phoneHome, $phoneCell, $phoneWork, $address, $address2,
         $city, $state, $zip, $source, $keySkills, $dateAvailable,
         $currentEmployer, $canRelocate, $currentPay, $desiredPay,
         $notes, $webSite, $bestTimeToCall, $owner, $isHot, $email, $emailAddress,
@@ -267,6 +272,7 @@ class Candidates
                 phone_work            = %s,
                 phone_cell            = %s,
                 address               = %s,
+                address2              = %s,
                 city                  = %s,
                 state                 = %s,
                 zip                   = %s,
@@ -301,6 +307,7 @@ class Candidates
             $this->_db->makeQueryString($phoneWork),
             $this->_db->makeQueryString($phoneCell),
             $this->_db->makeQueryString($address),
+            $this->_db->makeQueryString($address2),
             $this->_db->makeQueryString($city),
             $this->_db->makeQueryString($state),
             $this->_db->makeQueryString($zip),
@@ -470,6 +477,7 @@ class Candidates
                 candidate.phone_work AS phoneWork,
                 candidate.phone_cell AS phoneCell,
                 candidate.address AS address,
+                candidate.address2 AS address2,
                 candidate.city AS city,
                 candidate.state AS state,
                 candidate.zip AS zip,
@@ -606,6 +614,7 @@ class Candidates
                 candidate.phone_work AS phoneWork,
                 candidate.phone_cell AS phoneCell,
                 candidate.address AS address,
+                candidate.address2 AS address2,
                 candidate.city AS city,
                 candidate.state AS state,
                 candidate.zip AS zip,
@@ -1489,7 +1498,7 @@ class Candidates
             {
                 $update .= ", ";
             }
-            $update .= "address = '" . $rs['address'] . "', city = '" . $rs['city'] . "', zip = '" . $rs['zip'] . "', state = '" . $rs['state'] . "'";
+            $update .= "address = '" . $rs['address'] . "', address2 = '" . $rs['address2'] . "', city = '" . $rs['city'] . "', zip = '" . $rs['zip'] . "', state = '" . $rs['state'] . "'";
             $comma = true;
         }
         if($params['website'] == "1")

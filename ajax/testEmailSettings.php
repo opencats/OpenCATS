@@ -32,10 +32,16 @@ include_once(LEGACY_ROOT . '/lib/Mailer.php');
 
 $interface = new SecureAJAXInterface();
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST')
+{
+    $interface->outputXMLErrorPage(-1, 'Invalid request.');
+    die();
+}
+
 $siteID = $interface->getSiteID();
 
-if (!isset($_REQUEST['testEmailAddress']) ||
-    empty($_REQUEST['testEmailAddress']))
+if (!isset($_POST['testEmailAddress']) ||
+    empty($_POST['testEmailAddress']))
 {
     $interface->outputXMLErrorPage(
         -1, 'Invalid test e-mail address.'
@@ -44,8 +50,8 @@ if (!isset($_REQUEST['testEmailAddress']) ||
     die();
 }
 
-if (!isset($_REQUEST['fromAddress']) ||
-    empty($_REQUEST['fromAddress']))
+if (!isset($_POST['fromAddress']) ||
+    empty($_POST['fromAddress']))
 {
     $interface->outputXMLErrorPage(
         -1, 'Invalid from e-mail address.'
@@ -54,8 +60,8 @@ if (!isset($_REQUEST['fromAddress']) ||
     die();
 }
 
-$testEmailAddress = $_REQUEST['testEmailAddress'];
-$fromAddress      = $_REQUEST['fromAddress'];
+$testEmailAddress = $_POST['testEmailAddress'];
+$fromAddress      = $_POST['fromAddress'];
 
 /* Is the test e-mail address specified valid? */
 // FIXME: Validate properly.

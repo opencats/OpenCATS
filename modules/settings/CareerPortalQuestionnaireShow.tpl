@@ -36,7 +36,7 @@
     <div style="padding: 0 15px 0 15px;">
 
     <span style="font-size: 18px; font-weight: bold;">
-    <?php echo $this->data['description']; ?>
+    <?php $this->_($this->data['description']); ?>
     </span>
 
     <br /><br />
@@ -47,7 +47,7 @@
         <?php $highlightRow = !$highlightRow; ?>
 
         <tr>
-            <td class="QAquestionText QAhighlight<?php echo $highlightRow ? 'On' : 'Off'; ?>" width="50%" align="left" valign="top"><?php echo $question['questionText']; ?></td>
+            <td class="QAquestionText QAhighlight<?php echo $highlightRow ? 'On' : 'Off'; ?>" width="50%" align="left" valign="top"><?php $this->_($question['questionText']); ?></td>
             <td class="QAanswerText QAhighlight<?php echo $highlightRow ? 'On' : 'Off'; ?>" width="50%" align="left" valign="top">
                 <?php if ($question['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_TEXT || empty($question['answers'])): ?>
                     <textarea name="questionnaire<?php echo $this->questionnaireID; ?>Question<?php echo $question['questionID']; ?>" id="questionnaire<?php echo $this->questionnaireID; ?>Question<?php echo $question['questionID']; ?>" maxlength="<?php echo $question['maximumLength']; ?>" class="QAtextarea"></textarea>
@@ -56,21 +56,21 @@
                     <?php $nochecked = true; ?>
                     <?php foreach ($question['answers'] as $answer): ?>
                         <div style="padding: 2px 0 2px 0;" class="QAinput">
-                        <input type="radio" name="questionnaire<?php echo $this->questionnaireID; ?>Question<?php echo $question['questionID']; ?>" value="<?php echo $answer['answerID']; ?>" id="questionnaire<?php echo $this->questionnaireID; ?>Question<?php echo $question['questionID']; ?>"<?php if ($nochecked) { $nochecked = false; echo ' checked'; } ?> /> <?php echo $answer['answerText']; ?>
+                        <input type="radio" name="questionnaire<?php echo $this->questionnaireID; ?>Question<?php echo $question['questionID']; ?>" value="<?php echo $answer['answerID']; ?>" id="questionnaire<?php echo $this->questionnaireID; ?>Question<?php echo $question['questionID']; ?>"<?php if ($nochecked) { $nochecked = false; echo ' checked'; } ?> /> <?php $this->_($answer['answerText']); ?>
                         </div>
                     <?php endforeach; ?>
 
                 <?php elseif ($question['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_CHECKBOX): ?>
                     <?php foreach ($question['answers'] as $answer): ?>
                         <div style="padding: 2px 0 2px 0;" class="QAinput">
-                        <input type="checkbox" name="questionnaire<?php echo $this->questionnaireID; ?>Question<?php echo $question['questionID']; ?>Answer<?php echo $answer['answerID']; ?>" id="questionnaire<?php echo $this->questionnaireID; ?>Question<?php echo $question['questionID']; ?>Answer<?php echo $answer['answerID']; ?>" value="yes" /> <?php echo $answer['answerText']; ?>
+                        <input type="checkbox" name="questionnaire<?php echo $this->questionnaireID; ?>Question<?php echo $question['questionID']; ?>Answer<?php echo $answer['answerID']; ?>" id="questionnaire<?php echo $this->questionnaireID; ?>Question<?php echo $question['questionID']; ?>Answer<?php echo $answer['answerID']; ?>" value="yes" /> <?php $this->_($answer['answerText']); ?>
                         </div>
                     <?php endforeach; ?>
 
                 <?php elseif ($question['questionType'] == QUESTIONNAIRE_QUESTION_TYPE_SELECT): ?>
                     <select name="questionnaire<?php echo $this->questionnaireID; ?>Question<?php echo $question['questionID']; ?>" id="questionnaire<?php echo $this->questionnaireID; ?>Question<?php echo $question['questionID']; ?>" class="QASelect">
                     <?php foreach ($question['answers'] as $answer): ?>
-                        <option value="<?php echo $answer['answerID']; ?>"><?php echo $answer['answerText']; ?></option>
+                        <option value="<?php echo $answer['answerID']; ?>"><?php $this->_($answer['answerText']); ?></option>
                     <?php endforeach; ?>
                     </select>
                 <?php endif; ?>

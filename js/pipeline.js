@@ -34,7 +34,7 @@ function PipelineDetails_populate(candidateJobOrderID, htmlObjectID, sessionCook
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '&candidateJobOrderID=' + urlEncode(candidateJobOrderID);
+    var POSTData = "&candidateJobOrderID=" + urlEncode(candidateJobOrderID);
 
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
@@ -49,7 +49,7 @@ function PipelineDetails_populate(candidateJobOrderID, htmlObjectID, sessionCook
 
     AJAX_callCATSFunction(
         http,
-        'getPipelineDetails',
+        "getPipelineDetails",
         POSTData,
         callBack,
         0,
@@ -76,15 +76,15 @@ function PipelineJobOrder_populate(joborderID, page, entriesPerPage, sortBy,
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '&joborderID=' + joborderID;
-    POSTData += '&page=' + page;
-    POSTData += '&entriesPerPage=' + entriesPerPage;
-    POSTData += '&sortBy=' + urlEncode(sortBy);
-    POSTData += '&sortDirection=' + urlEncode(sortDirection);
-    POSTData += '&indexFile=' + urlEncode(indexFile);
-    POSTData += '&isPopup=' + urlEncode(isPopup);
+    var POSTData = "&joborderID=" + joborderID;
+    POSTData += "&page=" + page;
+    POSTData += "&entriesPerPage=" + entriesPerPage;
+    POSTData += "&sortBy=" + urlEncode(sortBy);
+    POSTData += "&sortDirection=" + urlEncode(sortDirection);
+    POSTData += "&indexFile=" + urlEncode(indexFile);
+    POSTData += "&isPopup=" + urlEncode(isPopup);
 
-    document.getElementById(indicatorID).style.display = '';
+    document.getElementById(indicatorID).style.display = "";
 
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
@@ -94,7 +94,7 @@ function PipelineJobOrder_populate(joborderID, page, entriesPerPage, sortBy,
             return;
         }
 
-        document.getElementById(indicatorID).style.display = 'none';
+        document.getElementById(indicatorID).style.display = "none";
 
         document.getElementById(htmlObjectID).innerHTML = http.responseText;
 
@@ -103,7 +103,7 @@ function PipelineJobOrder_populate(joborderID, page, entriesPerPage, sortBy,
 
     AJAX_callCATSFunction(
         http,
-        'getPipelineJobOrder',
+        "getPipelineJobOrder",
         POSTData,
         callBack,
         55000,
@@ -115,7 +115,7 @@ function PipelineJobOrder_populate(joborderID, page, entriesPerPage, sortBy,
 
 
 function selectAll_candidates(el){
-	var pipeline=document.getElementsByName('checked');
+	var pipeline=document.getElementsByName("checked");
 	for(var i=0;i<pipeline.length;i++){
 		pipeline[i].checked=el.checked;
 	}
@@ -123,7 +123,7 @@ function selectAll_candidates(el){
 
 function getSelected_candidates(){
 	var exportArray=[];
-	var pipeline=document.getElementsByName('checked');
+	var pipeline=document.getElementsByName("checked");
 
 	for(var i=0;i<pipeline.length;i++){
 		if (pipeline[i].checked){

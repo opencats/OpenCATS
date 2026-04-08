@@ -28,18 +28,18 @@
 
 function checkChangePasswordForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkCurrentPassword();
     errorMessage += checkNewPassword();
     errorMessage += checkRetypeNewPassword();
 
-    if (errorMessage == '')
+    if (errorMessage == "")
     {
         errorMessage += checkPasswordsMatch();
     }
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -50,7 +50,7 @@ function checkChangePasswordForm(form)
 
 function checkAddUserForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkUserFirstName();
     errorMessage += checkUserLastName();
@@ -58,12 +58,12 @@ function checkAddUserForm(form)
     errorMessage += checkUserPassword();
     errorMessage += checkUserRetypePassword();
 
-    if (errorMessage == '')
+    if (errorMessage == "")
     {
         errorMessage += checkUserPasswordsMatch();
     }
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -74,13 +74,13 @@ function checkAddUserForm(form)
 
 function checkEditUserForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkUserFirstName();
     errorMessage += checkUserLastName();
     errorMessage += checkUserUsername();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -91,11 +91,11 @@ function checkEditUserForm(form)
 
 function checkSiteNameForm(form)
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
     errorMessage += checkValidSiteName();
 
-    if (errorMessage != '')
+    if (errorMessage != "")
     {
         alert("Form Error:\n" + errorMessage);
         return false;
@@ -107,19 +107,19 @@ function checkSiteNameForm(form)
 
 function checkUserFirstName()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('firstName').value;
-    fieldLabel = document.getElementById('firstNameLabel');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("firstName").value;
+    fieldLabel = document.getElementById("firstNameLabel");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a first name.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -127,19 +127,19 @@ function checkUserFirstName()
 
 function checkUserLastName()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('lastName').value;
-    fieldLabel = document.getElementById('lastNameLabel');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("lastName").value;
+    fieldLabel = document.getElementById("lastNameLabel");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a last name.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -147,19 +147,19 @@ function checkUserLastName()
 
 function checkUserUsername()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('username').value;
-    fieldLabel = document.getElementById('usernameLabel');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("username").value;
+    fieldLabel = document.getElementById("usernameLabel");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a username.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -167,19 +167,19 @@ function checkUserUsername()
 
 function checkUserPassword()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('password').value;
-    fieldLabel = document.getElementById('passwordLabel');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("password").value;
+    fieldLabel = document.getElementById("passwordLabel");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a password.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -187,19 +187,19 @@ function checkUserPassword()
 
 function checkUserRetypePassword()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('retypePassword').value;
-    fieldLabel = document.getElementById('retypePasswordLabel');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("retypePassword").value;
+    fieldLabel = document.getElementById("retypePasswordLabel");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a password in both fields.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -207,25 +207,25 @@ function checkUserRetypePassword()
 
 function checkUserPasswordsMatch()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue1 = document.getElementById('password').value;
-    fieldValue2 = document.getElementById('retypePassword').value;
+    fieldValue1 = document.getElementById("password").value;
+    fieldValue2 = document.getElementById("retypePassword").value;
 
-    fieldLabel1 = document.getElementById('passwordLabel');
-    fieldLabel2 = document.getElementById('retypePasswordLabel');
+    fieldLabel1 = document.getElementById("passwordLabel");
+    fieldLabel2 = document.getElementById("retypePasswordLabel");
 
     if (fieldValue1 != fieldValue2)
     {
         errorMessage = "    - The two passwords you entered do not match.\n";
 
-        fieldLabel1.style.color = '#ff0000';
-        fieldLabel2.style.color = '#ff0000';
+        fieldLabel1.style.color = "#ff0000";
+        fieldLabel2.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel1.style.color = '#000';
-        fieldLabel2.style.color = '#000';
+        fieldLabel1.style.color = "#000";
+        fieldLabel2.style.color = "#000";
     }
 
     return errorMessage;
@@ -233,19 +233,19 @@ function checkUserPasswordsMatch()
 
 function checkCurrentPassword()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('currentPassword').value;
-    fieldLabel = document.getElementById('currentPasswordLabel');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("currentPassword").value;
+    fieldLabel = document.getElementById("currentPasswordLabel");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter your current password.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -253,19 +253,19 @@ function checkCurrentPassword()
 
 function checkNewPassword()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('newPassword').value;
-    fieldLabel = document.getElementById('newPasswordLabel');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("newPassword").value;
+    fieldLabel = document.getElementById("newPasswordLabel");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a new password.\n";
 
-        fieldLabel.style.color = '#FF0000';
+        fieldLabel.style.color = "#FF0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -273,19 +273,19 @@ function checkNewPassword()
 
 function checkRetypeNewPassword()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue = document.getElementById('retypeNewPassword').value;
-    fieldLabel = document.getElementById('retypeNewPasswordLabel');
-    if (fieldValue == '')
+    fieldValue = document.getElementById("retypeNewPassword").value;
+    fieldLabel = document.getElementById("retypeNewPasswordLabel");
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter your new password in both fields.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel.style.color = '#000';
+        fieldLabel.style.color = "#000";
     }
 
     return errorMessage;
@@ -293,25 +293,25 @@ function checkRetypeNewPassword()
 
 function checkPasswordsMatch()
 {
-    var errorMessage = '';
+    var errorMessage = "";
 
-    fieldValue1 = document.getElementById('newPassword').value;
-    fieldValue2 = document.getElementById('retypeNewPassword').value;
+    fieldValue1 = document.getElementById("newPassword").value;
+    fieldValue2 = document.getElementById("retypeNewPassword").value;
 
-    fieldLabel1 = document.getElementById('newPasswordLabel');
-    fieldLabel2 = document.getElementById('retypeNewPasswordLabel');
+    fieldLabel1 = document.getElementById("newPasswordLabel");
+    fieldLabel2 = document.getElementById("retypeNewPasswordLabel");
 
     if (fieldValue1 != fieldValue2)
     {
         errorMessage = "    - The two passwords you entered do not match.\n";
 
-        fieldLabel1.style.color = '#ff0000';
-        fieldLabel2.style.color = '#ff0000';
+        fieldLabel1.style.color = "#ff0000";
+        fieldLabel2.style.color = "#ff0000";
     }
     else
     {
-        fieldLabel1.style.color = '#000';
-        fieldLabel2.style.color = '#000';
+        fieldLabel1.style.color = "#000";
+        fieldLabel2.style.color = "#000";
     }
 
     return errorMessage;
@@ -319,19 +319,19 @@ function checkPasswordsMatch()
 
 function checkValidSiteName()
 {
-    var errorMessage = '';
-    fieldValue = document.getElementById('siteName').value;
-    fieldLabel = document.getElementById('siteNameLabel');
+    var errorMessage = "";
+    fieldValue = document.getElementById("siteName").value;
+    fieldLabel = document.getElementById("siteNameLabel");
 
-    if (fieldValue == '')
+    if (fieldValue == "")
     {
         errorMessage = "    - You must enter a Site Name.\n";
 
-        fieldLabel.style.color = '#ff0000';
+        fieldLabel.style.color = "#ff0000";
     }
     else
     {
-       fieldLabel.style.color = '#000';
+       fieldLabel.style.color = "#000";
     }
     return errorMessage;
 }

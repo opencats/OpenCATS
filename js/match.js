@@ -52,9 +52,9 @@ function showImage(itemID, imageIndex)
 function setRating(candidateJobOrderID, rating, imageID, sessionCookie)
 {
     starElement = document.getElementById(imageID);
-    starElement.src = 'images/stars/starsave.gif';
+    starElement.src = "images/stars/starsave.gif";
 
-    if (candidateJobOrderID == '' || !stringIsNumeric(candidateJobOrderID))
+    if (candidateJobOrderID == "" || !stringIsNumeric(candidateJobOrderID))
     {
         return;
     }
@@ -62,9 +62,9 @@ function setRating(candidateJobOrderID, rating, imageID, sessionCookie)
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '';
-    POSTData += '&candidateJobOrderID=' + candidateJobOrderID;
-    POSTData += '&rating='              + rating;
+    var POSTData = "";
+    POSTData += "&candidateJobOrderID=" + candidateJobOrderID;
+    POSTData += "&rating="              + rating;
 
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
@@ -85,9 +85,9 @@ function setRating(candidateJobOrderID, rating, imageID, sessionCookie)
         }
 
         /* Return if we have any errors. */
-        var errorCodeNode    = http.responseXML.getElementsByTagName('errorcode').item(0);
-        var errorMessageNode = http.responseXML.getElementsByTagName('errormessage').item(0);
-        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != '0')
+        var errorCodeNode    = http.responseXML.getElementsByTagName("errorcode").item(0);
+        var errorMessageNode = http.responseXML.getElementsByTagName("errormessage").item(0);
+        if (!errorCodeNode.firstChild || errorCodeNode.firstChild.nodeValue != "0")
         {
             var errorMessage = "An error occurred while receiving a response from the server.\n\n"
                              + errorMessageNode.firstChild.nodeValue;
@@ -96,7 +96,7 @@ function setRating(candidateJobOrderID, rating, imageID, sessionCookie)
         }
 
         /* Locate the node we need in the XML response data. */
-        var ratingNode = http.responseXML.getElementsByTagName('newrating').item(0);
+        var ratingNode = http.responseXML.getElementsByTagName("newrating").item(0);
 
         /* Use the data from the XML response to fill the form fields. */
         if (!ratingNode || !ratingNode.firstChild)
@@ -110,13 +110,13 @@ function setRating(candidateJobOrderID, rating, imageID, sessionCookie)
         /* Remove 'screen' action icon (if exists) if rating is >=0. */
         if (newRatingValue >= 0)
         {
-            screenImage = document.getElementById('screenImage' + candidateJobOrderID);
-            screenLink  = document.getElementById('screenLink'  + candidateJobOrderID);
+            screenImage = document.getElementById("screenImage" + candidateJobOrderID);
+            screenLink  = document.getElementById("screenLink"  + candidateJobOrderID);
 
             if (screenImage && screenLink)
             {
                 /* Replace the entire link with a blank icon. */
-                screenImage.src = 'images/actions/blank.gif';
+                screenImage.src = "images/actions/blank.gif";
                 var screenImageClone = screenImage.cloneNode(true);
                 screenLink.parentNode.replaceChild(screenImageClone, screenLink);
             }
@@ -127,7 +127,7 @@ function setRating(candidateJobOrderID, rating, imageID, sessionCookie)
 
     AJAX_callCATSFunction(
         http,
-        'setCandidateJobOrderRating',
+        "setCandidateJobOrderRating",
         POSTData,
         callBack,
         0,

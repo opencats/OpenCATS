@@ -28,11 +28,11 @@
 
 var candidateIsAlreadyInSystem = false;
 var candidateIsAlreadyInSystemID = -1;
-var candidateIsAlreadyInSystemName = '';
+var candidateIsAlreadyInSystemName = "";
 
 function checkEmailAlreadyInSystem(email, sessionCookie)
 {
-    if (email == '')
+    if (email == "")
     {
         return;
     }
@@ -40,7 +40,7 @@ function checkEmailAlreadyInSystem(email, sessionCookie)
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '&email=' + urlEncode(email);
+    var POSTData = "&email=" + urlEncode(email);
 
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
@@ -58,27 +58,27 @@ function checkEmailAlreadyInSystem(email, sessionCookie)
             return;
         }
 
-        var idNode = http.responseXML.getElementsByTagName('id').item(0);
+        var idNode = http.responseXML.getElementsByTagName("id").item(0);
 
         if (idNode.firstChild.nodeValue != -1)
         {
             candidateIsAlreadyInSystem = true;
             candidateIsAlreadyInSystemID = idNode.firstChild.nodeValue;
-            candidateIsAlreadyInSystemName = http.responseXML.getElementsByTagName('name').item(0).firstChild.nodeValue;
+            candidateIsAlreadyInSystemName = http.responseXML.getElementsByTagName("name").item(0).firstChild.nodeValue;
             
-            document.getElementById('candidateAlreadyInSystemName').innerHTML = candidateIsAlreadyInSystemName;
-            document.getElementById('candidateAlreadyInSystemTable').style.display = '';
+            document.getElementById("candidateAlreadyInSystemName").innerHTML = candidateIsAlreadyInSystemName;
+            document.getElementById("candidateAlreadyInSystemTable").style.display = "";
         }
         else
         {
             candidateIsAlreadyInSystem = false;
-            document.getElementById('candidateAlreadyInSystemTable').style.display = 'none';
+            document.getElementById("candidateAlreadyInSystemTable").style.display = "none";
         }
     }
 
     AJAX_callCATSFunction(
         http,
-        'getCandidateIdByEmail',
+        "getCandidateIdByEmail",
         POSTData,
         callBack,
         0,
@@ -102,7 +102,7 @@ function onSubmitEmailInSystem()
 
 function checkPhoneAlreadyInSystem(phone, sessionCookie)
 {
-    if (phone == '')
+    if (phone == "")
     {
         return;
     }
@@ -110,7 +110,7 @@ function checkPhoneAlreadyInSystem(phone, sessionCookie)
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '&phone=' + urlEncode(phone);
+    var POSTData = "&phone=" + urlEncode(phone);
 
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
@@ -128,27 +128,27 @@ function checkPhoneAlreadyInSystem(phone, sessionCookie)
             return;
         }
 
-        var idNode = http.responseXML.getElementsByTagName('id').item(0);
+        var idNode = http.responseXML.getElementsByTagName("id").item(0);
 
         if (idNode.firstChild.nodeValue != -1)
         {
             candidateIsAlreadyInSystem = true;
             candidateIsAlreadyInSystemID = idNode.firstChild.nodeValue;
-            candidateIsAlreadyInSystemName = http.responseXML.getElementsByTagName('name').item(0).firstChild.nodeValue;
+            candidateIsAlreadyInSystemName = http.responseXML.getElementsByTagName("name").item(0).firstChild.nodeValue;
             
-            document.getElementById('candidateAlreadyInSystemName').innerHTML = candidateIsAlreadyInSystemName;
-            document.getElementById('candidateAlreadyInSystemTable').style.display = '';
+            document.getElementById("candidateAlreadyInSystemName").innerHTML = candidateIsAlreadyInSystemName;
+            document.getElementById("candidateAlreadyInSystemTable").style.display = "";
         }
         else
         {
             candidateIsAlreadyInSystem = false;
-            document.getElementById('candidateAlreadyInSystemTable').style.display = 'none';
+            document.getElementById("candidateAlreadyInSystemTable").style.display = "none";
         }
     }
 
     AJAX_callCATSFunction(
         http,
-        'getCandidateIdByPhone',
+        "getCandidateIdByPhone",
         POSTData,
         callBack,
         0,

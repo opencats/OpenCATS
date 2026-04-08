@@ -10,6 +10,7 @@
 <?php if (!$this->isFinishedMode): ?>
 
 <script type="text/javascript">
+    window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
     <?php if ($this->isJobOrdersMode): ?>
         statusesArray = new Array(1);
         jobOrdersArray = new Array(1);
@@ -121,11 +122,12 @@
                     <div id="activityNoteDiv" style="margin-top: 4px;">
                         <span id="addActivitySpanA">Activity Type</span><br />
                         <select id="activityTypeID" name="activityTypeID" class="inputbox" style="width: 150px; margin-bottom: 4px;">
-                            <option selected="selected" value="<?php echo(ACTIVITY_CALL); ?>">Call</option>
+                            <option selected="selected" value="">-- Select --</option>
+                            <option value="<?php echo(ACTIVITY_CALL); ?>">Call</option>
                             <option value="<?php echo(ACTIVITY_CALL_TALKED); ?>">Call (Talked)</option>
                             <option value="<?php echo(ACTIVITY_CALL_LVM); ?>">Call (LVM)</option>
                             <option value="<?php echo(ACTIVITY_CALL_MISSED); ?>">Call (Missed)</option>
-                            <option value="<?php echo(ACTIVITY_EMAIL); ?>">E-Mail</option>
+                            <option value="<?php echo(ACTIVITY_EMAIL); ?>">Email</option>
                             <option value="<?php echo(ACTIVITY_MEETING); ?>">Meeting</option>
                             <option value="<?php echo(ACTIVITY_OTHER); ?>">Other</option>
                         </select><br />
@@ -154,7 +156,7 @@
                                     </div>
 
                                     <div style="margin-bottom: 4px;">
-                                        <script type="text/javascript">DateInput('dateAdd', true, 'MM-DD-YY', '', -1);</script>
+                                        <script type="text/javascript">DateInput('dateAdd', true, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '', -1);</script>
                                     </div>
 
                                     <div style="margin-bottom: 4px;">

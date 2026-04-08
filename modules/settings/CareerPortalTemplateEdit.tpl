@@ -91,6 +91,7 @@
                                 <option value="<input-firstName>">First Name *</option>
                                 <option value="<input-lastName>">Last Name *</option>
                                 <option value="<input-address>">Address Line</option>
+                                <option value="<input-address2>">Address Line 2</option>
                                 <option value="<input-city>">City</option>
                                 <option value="<input-state>">State</option>
                                 <option value="<input-zip>">Zip Code</option>

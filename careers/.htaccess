@@ -1,0 +1,5 @@
+# The Career Portal might be embedded into external websites using an iframe.
+# Allow embedding by unsetting the clickjacking protection header that is set globally.
+<IfModule mod_headers.c>
+    Header always unset X-Frame-Options
+</IfModule>

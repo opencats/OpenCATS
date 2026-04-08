@@ -37,40 +37,40 @@ function evauluateImportDataType()
 {
     for (var i = 0; i < dataTypeList.length; i += 2)
     {
-        if (document.getElementById('dataType').value == dataTypeList[i])
+        if (document.getElementById("dataType").value == dataTypeList[i])
         {
-            document.getElementById(dataTypeList[i+1]+'td1').style.display = '';
-            document.getElementById(dataTypeList[i+1]+'td2').style.display = '';
+            document.getElementById(dataTypeList[i+1]+"td1").style.display = "";
+            document.getElementById(dataTypeList[i+1]+"td2").style.display = "";
         }
         else
         {
-            document.getElementById(dataTypeList[i+1]+'td1').style.display = 'none';
-            document.getElementById(dataTypeList[i+1]+'td2').style.display = 'none';
+            document.getElementById(dataTypeList[i+1]+"td1").style.display = "none";
+            document.getElementById(dataTypeList[i+1]+"td2").style.display = "none";
         }
     }
 }
 
 function evaluateFieldSelection(theID)
 {
-    if (document.getElementById('importType'+theID).value == 'cats')
+    if (document.getElementById("importType"+theID).value == "cats")
     {
-        document.getElementById('importIntoSpan'+theID).style.display = '';
+        document.getElementById("importIntoSpan"+theID).style.display = "";
     }
     else
     {
-        document.getElementById('importIntoSpan'+theID).style.display = 'none';
+        document.getElementById("importIntoSpan"+theID).style.display = "none";
     }
 }
 
 function showSampleData(theID)
 {
-    document.getElementById('importSample' + theID).style.display = '';
+    document.getElementById("importSample" + theID).style.display = "";
 }
 
 
 function hideSampleData(theID)
 {
-    document.getElementById('importSample' + theID).style.display = 'none';
+    document.getElementById("importSample" + theID).style.display = "none";
 }
 
 function registerImportDataType(theName, theDiv)
@@ -82,8 +82,8 @@ function checkField(numberOfFields, FieldName, theMessage)
 {
     for (var i = 0; i < numberOfFields; i++)
     {
-        if (document.getElementById('importType'+i).value == 'cats' &&
-           document.getElementById('importIntoField'+i).value == FieldName)
+        if (document.getElementById("importType"+i).value == "cats" &&
+           document.getElementById("importIntoField"+i).value == FieldName)
         {
             return true;        }
 
@@ -97,17 +97,17 @@ function showLoading()
 {
     for (var i = 0; i < 2; i++)
     {
-        if (document.getElementById('importShow'+i))
+        if (document.getElementById("importShow"+i))
         {
-            document.getElementById('importShow'+i).style.display = '';
+            document.getElementById("importShow"+i).style.display = "";
         }
     }
 
     for (var i = 0; i < 11; i++)
     {
-        if (document.getElementById('importHide'+i))
+        if (document.getElementById("importHide"+i))
         {
-            document.getElementById('importHide'+i).style.display = 'none';
+            document.getElementById("importHide"+i).style.display = "none";
         }
     }
     return true;
@@ -115,27 +115,27 @@ function showLoading()
 
 function showErrorId(theID)
 {
-    document.getElementById('errorId'+theID).style.display = '';
-    document.getElementById('errorMinus'+theID).style.display = '';
-    document.getElementById('errorPlus'+theID).style.display = 'none';
+    document.getElementById("errorId"+theID).style.display = "";
+    document.getElementById("errorMinus"+theID).style.display = "";
+    document.getElementById("errorPlus"+theID).style.display = "none";
 }
 
 function hideErrorId(theID)
 {
-    document.getElementById('errorId'+theID).style.display = 'none';
-    document.getElementById('errorMinus'+theID).style.display = 'none';
-    document.getElementById('errorPlus'+theID).style.display = '';
+    document.getElementById("errorId"+theID).style.display = "none";
+    document.getElementById("errorMinus"+theID).style.display = "none";
+    document.getElementById("errorPlus"+theID).style.display = "";
 }
 
 function evaluateUnnamedContacts()
 {
-    if (document.getElementById('generateCompanies').value == 'yes')
+    if (document.getElementById("generateCompanies").value == "yes")
     {
-        document.getElementById('unnamedContactsSpan').style.display = '';
+        document.getElementById("unnamedContactsSpan").style.display = "";
     }
     else
     {
-        document.getElementById('unnamedContactsSpan').style.display = 'none';
+        document.getElementById("unnamedContactsSpan").style.display = "none";
     }
 }
 
@@ -147,10 +147,10 @@ function startMassImport()
 	abortImport = false;
     if (confirm("Are you sure you want to import the files?  The source files will be deleted!"))
     {
-        document.getElementById('startImport').style.display='none'; 
-        document.getElementById('pleaseWaitImport').style.display=''; 
-        document.getElementById('back').style.display='none';
-        document.getElementById('foundFilesSpan').style.display='none';
+        document.getElementById("startImport").style.display="none"; 
+        document.getElementById("pleaseWaitImport").style.display=""; 
+        document.getElementById("back").style.display="none";
+        document.getElementById("foundFilesSpan").style.display="none";
         totalFilesTried = 0;
         numberOfImports = 0; 
         numberOfDuplicates = 0; 
@@ -162,13 +162,13 @@ function importFile()
 {
     /* Update Progress bar. */
     setProgress(totalFilesTried / totalFiles);
-    document.getElementById('processingResumeNumber').innerHTML = totalFilesTried;
+    document.getElementById("processingResumeNumber").innerHTML = totalFilesTried;
 
     /* Set up AJAX. */
     var http = AJAX_getXMLHttpObject();
 
     /* Build HTTP POST data. */
-    var POSTData = '';
+    var POSTData = "";
 
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
@@ -180,14 +180,14 @@ function importFile()
 
         var result = http.responseText;
         
-        if (result != 'done')
+        if (result != "done")
         {
-			var args = result.split(',');
+			var args = result.split(",");
 			
 			if (!args || args.length != 3)
 			{
-			    alert('Error: Invalid response from server: ' + result);
-            	finishImportNotice('pleaseWaitImport', totalFilesTried);
+			    alert("Error: Invalid response from server: " + result);
+            	finishImportNotice("pleaseWaitImport", totalFilesTried);
 			    return;
 		    }
 			
@@ -197,8 +197,8 @@ function importFile()
 
             if (isNaN(numberOfDuplicates) || isNaN(numberOfImports) || isNaN(totalFilesTried))
             {
-			    alert('Error: Invalid response from server: ' + result);
-            	finishImportNotice('pleaseWaitImport', totalFilesTried);
+			    alert("Error: Invalid response from server: " + result);
+            	finishImportNotice("pleaseWaitImport", totalFilesTried);
 			    return;
             }
             
@@ -208,20 +208,20 @@ function importFile()
 			}
 			else
 			{
-            	finishImportNotice('pleaseWaitImport', totalFilesTried);
+            	finishImportNotice("pleaseWaitImport", totalFilesTried);
             	alert("Import interupted.");				
 			}
         }
         else
         {
-            finishImportNotice('pleaseWaitImport', totalFilesTried);
+            finishImportNotice("pleaseWaitImport", totalFilesTried);
             alert("Import complete!");
         }
     }
 
     AJAX_callCATSFunction(
         http,
-        'import:processMassImportItem',
+        "import:processMassImportItem",
         POSTData,
         callBack,
         10000000,
@@ -234,27 +234,27 @@ function finishImportNotice(importStatusID, totalPossibleResumes)
 {
     importStatus = document.getElementById(importStatusID);
     
-    var html = '<br /><br /><span style="font-weight:bold;">Resume import complete!<br />' +
-               '<br />' +
-               'Out of '+totalPossibleResumes+' possible resumes, '+numberOfImports+
-               ' new resumes were added';
+    var html = "<br /><br /><span style=\"font-weight:bold;\">Resume import complete!<br />" +
+               "<br />" +
+               "Out of "+totalPossibleResumes+" possible resumes, "+numberOfImports+
+               " new resumes were added";
     
     if (numberOfDuplicates > 0)
     {
-        html += ' and '+numberOfDuplicates+' already exsisted in the system';
+        html += " and "+numberOfDuplicates+" already exsisted in the system";
     }
     
-    html += '.</span>';
+    html += ".</span>";
     
     importStatus.innerHTML = html;
                              
-    document.getElementById('back').style.display='';
+    document.getElementById("back").style.display="";
 }
 
 function setProgress(theProgress)
 {
     theProgress = Math.round(theProgress * 100);
-    document.getElementById('progressBar').style.display = '';
+    document.getElementById("progressBar").style.display = "";
 
     if (theProgress > 100)
     {
@@ -263,15 +263,15 @@ function setProgress(theProgress)
 
     if (theProgress > 12)
     {
-        document.getElementById('d1').innerHTML = parseInt(theProgress) + '%';
+        document.getElementById("d1").innerHTML = parseInt(theProgress) + "%";
     }
     else
     {
-        document.getElementById('d1').innerHTML = '';
+        document.getElementById("d1").innerHTML = "";
     }
 
     if (theProgress > 0)
     {
-        document.getElementById('d2').style.width = (theProgress * 3) + 'px';
+        document.getElementById("d2").style.width = (theProgress * 3) + "px";
     }
 }
