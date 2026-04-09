@@ -63,8 +63,12 @@ jobs:
           docker compose -f docker-compose-test.yml up -d
 
           echo "Waiting for BOTH databases..."
-          timeout 60s bash -c 'until docker compose -f docker-compose-test.yml exec -T opencatsdb mysqladmin ping -h localhost -udev -pdev --silent; do sleep 3; done'
-          timeout 60s bash -c 'until docker compose -f docker-compose-test.yml exec -T integrationtestdb mysqladmin ping -h localhost -udev -pdev --silent; do sleep 3; done'
+          opencatsdb_container="$(docker compose -f docker-compose-test.yml ps -q opencatsdb)"
+          [ -n "$opencatsdb_container" ] || { echo "opencatsdb container ID not found"; exit 1; }
+          timeout 180s bash -c "until [ \"\$(docker inspect --format '{{.State.Health.Status}}' \"${opencatsdb_container}\" 2>/dev/null)\" = \"healthy\" ]; do sleep 3; done"
+          integrationtestdb_container="$(docker compose -f docker-compose-test.yml ps -q integrationtestdb)"
+          [ -n "$integrationtestdb_container" ] || { echo "integrationtestdb container ID not found"; exit 1; }
+          timeout 180s bash -c "until [ \"\$(docker inspect --format '{{.State.Health.Status}}' \"${integrationtestdb_container}\" 2>/dev/null)\" = \"healthy\" ]; do sleep 3; done"
 
           # 2. Pre-clean the integration database
           docker compose -f docker-compose-test.yml exec -T integrationtestdb mysql -udev -pdev -e "DROP DATABASE IF EXISTS cats_integrationtest; CREATE DATABASE cats_integrationtest;"
