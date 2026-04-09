@@ -1989,6 +1989,20 @@ class SettingsUI extends UserInterface
         $mailerSettingsRS = $mailerSettings->getAll();
 
         $candidateJoborderStatusSendsMessage = unserialize($mailerSettingsRS['candidateJoborderStatusSendsMessage']);
+        if (!is_array($candidateJoborderStatusSendsMessage))
+        {
+            $candidateJoborderStatusSendsMessage = array();
+        }
+
+        $pipelines = new Pipelines($this->_siteID);
+        $statusRS = $pipelines->getStatusesForPicking();
+        foreach ($statusRS as $status)
+        {
+            if (!isset($candidateJoborderStatusSendsMessage[$status['statusID']]))
+            {
+                $candidateJoborderStatusSendsMessage[$status['statusID']] = $status['triggersEmail'];
+            }
+        }
 
         $emailTemplates = new EmailTemplates();
         $emailTemplatesRS = $emailTemplates->getAll();
@@ -2019,6 +2033,10 @@ class SettingsUI extends UserInterface
         }
 
         $candidateJoborderStatusSendsMessage = unserialize($mailerSettingsRS['candidateJoborderStatusSendsMessage']);
+        if (!is_array($candidateJoborderStatusSendsMessage))
+        {
+            $candidateJoborderStatusSendsMessage = array();
+        }
 
         $candidateJoborderStatusSendsMessage[PIPELINE_STATUS_CONTACTED] = (UserInterface::isChecked('statusChangeContacted', $_POST) ? 1 : 0);
         $candidateJoborderStatusSendsMessage[PIPELINE_STATUS_CANDIDATE_REPLIED] = (UserInterface::isChecked('statusChangeReplied', $_POST) ? 1 : 0);
@@ -2026,7 +2044,22 @@ class SettingsUI extends UserInterface
         $candidateJoborderStatusSendsMessage[PIPELINE_STATUS_SUBMITTED] = (UserInterface::isChecked('statusChangeSubmitted', $_POST) ? 1 : 0);
         $candidateJoborderStatusSendsMessage[PIPELINE_STATUS_INTERVIEWING] = (UserInterface::isChecked('statusChangeInterviewing', $_POST) ? 1 : 0);
         $candidateJoborderStatusSendsMessage[PIPELINE_STATUS_OFFERED] = (UserInterface::isChecked('statusChangeOffered', $_POST) ? 1 : 0);
-        $candidateJoborderStatusSendsMessage[PIPELINE_STATUS_CLIENTDECLINED] = (UserInterface::isChecked('statusChangeDeclined', $_POST) ? 1 : 0);
+        if (isset($_POST['statusChangeCandidateDeclined']))
+        {
+            $candidateJoborderStatusSendsMessage[PIPELINE_STATUS_CANDIDATEDECLINED] = (UserInterface::isChecked('statusChangeCandidateDeclined', $_POST) ? 1 : 0);
+        }
+        else
+        {
+            $candidateJoborderStatusSendsMessage[PIPELINE_STATUS_CANDIDATEDECLINED] = (UserInterface::isChecked('statusChangeDeclined', $_POST) ? 1 : 0);
+        }
+        if (isset($_POST['statusChangeClientDeclined']))
+        {
+            $candidateJoborderStatusSendsMessage[PIPELINE_STATUS_CLIENTDECLINED] = (UserInterface::isChecked('statusChangeClientDeclined', $_POST) ? 1 : 0);
+        }
+        else
+        {
+            $candidateJoborderStatusSendsMessage[PIPELINE_STATUS_CLIENTDECLINED] = (UserInterface::isChecked('statusChangeDeclined', $_POST) ? 1 : 0);
+        }
         $candidateJoborderStatusSendsMessage[PIPELINE_STATUS_PLACED] = (UserInterface::isChecked('statusChangePlaced', $_POST) ? 1 : 0);
 
         $mailerSettings->set('candidateJoborderStatusSendsMessage', serialize($candidateJoborderStatusSendsMessage));
