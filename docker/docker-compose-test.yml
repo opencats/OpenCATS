@@ -32,6 +32,12 @@ services:
         - MYSQL_USER=dev
         - MYSQL_PASSWORD=dev
         - MYSQL_DATABASE=cats_test
+      healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-udev", "-pdev", "--silent"]
+        interval: 5s
+        timeout: 5s
+        retries: 30
+        start_period: 20s
       volumes:
         - ../test/data/:/test/data/
         - ../test/scripts/:/test/scripts
@@ -48,6 +54,12 @@ services:
         - MYSQL_USER=dev
         - MYSQL_PASSWORD=dev
         - MYSQL_DATABASE=cats_integrationtest
+      healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-udev", "-pdev", "--silent"]
+        interval: 5s
+        timeout: 5s
+        retries: 30
+        start_period: 20s
 
     selenium:
       container_name: selenium_test
