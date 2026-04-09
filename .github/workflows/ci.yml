@@ -85,6 +85,13 @@ jobs:
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="security" --format=progress
           # continue-on-error: true
 
+      - name: Docker Diagnostics
+        if: failure()
+        run: |
+          cd docker/
+          docker compose -f docker-compose-test.yml ps
+          docker compose -f docker-compose-test.yml logs --tail=200 opencatsdb integrationtestdb php
+
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
         if: always()
