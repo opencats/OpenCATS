@@ -13,12 +13,15 @@ default:
             filters:
                 tags: "@security"
     extensions:
-        Behat\MinkExtension:
+        OpenCATS\Tests\Behat\ServiceContainer\MinkExtension:
             base_url: http://opencats
-            goutte: ~
-            selenium2:
-               wd_host: 'http://selenium:4444/wd/hub'
-               browser: 'chrome'
+            default_session: browserkit
+            javascript_session: selenium2
+            sessions:
+                browserkit:
+                    browserkit: ~
+                selenium2:
+                    selenium2:
+                        wd_host: 'http://selenium:4444/wd/hub'
+                        browser: 'chrome'
             show_auto: false
-
-
