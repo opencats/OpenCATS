@@ -72,7 +72,11 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
 
     private function logoutIfPossible()
     {
-        $this->getSession()->reset();
+        $session = $this->getSession();
+        if ($session->isStarted())
+        {
+            $session->reset();
+        }
         $this->csrfToken = '';
     }
 
