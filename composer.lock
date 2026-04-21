@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2f24ff6811d775d3fea506b86c469de9",
+    "content-hash": "40cd89a80c9b6b627180d6f78f4446c7",
     "packages": [
         {
             "name": "ckeditor/ckeditor",
@@ -613,24 +613,25 @@
         },
         {
             "name": "codacy/coverage",
-            "version": "1.4.2",
+            "version": "1.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/codacy/php-codacy-coverage.git",
-                "reference": "4988cd098db4d578681bfd3176071931ad475150"
+                "reference": "1852ca987c91ef466ebcfdbdd4e1788b653eaf1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/codacy/php-codacy-coverage/zipball/4988cd098db4d578681bfd3176071931ad475150",
-                "reference": "4988cd098db4d578681bfd3176071931ad475150",
+                "url": "https://api.github.com/repos/codacy/php-codacy-coverage/zipball/1852ca987c91ef466ebcfdbdd4e1788b653eaf1d",
+                "reference": "1852ca987c91ef466ebcfdbdd4e1788b653eaf1d",
                 "shasum": ""
             },
             "require": {
                 "gitonomy/gitlib": ">=1.0",
                 "php": ">=5.3.3",
-                "symfony/console": "~2.5|~3.0|~4.0"
+                "symfony/console": "~2.5|~3.0|~4.0|~5.0"
             },
             "require-dev": {
+                "clue/phar-composer": "^1.1",
                 "phpunit/phpunit": "~6.5"
             },
             "bin": [
@@ -654,7 +655,12 @@
             ],
             "description": "Sends PHP test coverage information to Codacy.",
             "homepage": "https://github.com/codacy/php-codacy-coverage",
-            "time": "2018-03-22T16:43:39+00:00"
+            "support": {
+                "issues": "https://github.com/codacy/php-codacy-coverage/issues",
+                "source": "https://github.com/codacy/php-codacy-coverage/tree/master"
+            },
+            "abandoned": true,
+            "time": "2020-01-10T10:52:12+00:00"
         },
         {
             "name": "doctrine/instantiator",
