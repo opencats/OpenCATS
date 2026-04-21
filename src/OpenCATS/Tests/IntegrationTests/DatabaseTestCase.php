@@ -7,7 +7,7 @@ class DatabaseTestCase extends TestCase
 {
     private $connection;
 
-    function setUp()
+    protected function setUp(): void
     {
         global $mySQLConnection;
         parent::setUp();
@@ -92,7 +92,7 @@ class DatabaseTestCase extends TestCase
         return $queryResult;
     }
 
-    function tearDown()
+    protected function tearDown(): void
     {
         $this->mySQLQuery('DROP DATABASE IF EXISTS ' . DATABASE_NAME);
     }

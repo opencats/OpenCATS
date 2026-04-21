@@ -74,7 +74,7 @@ class AddressParserTest extends TestCase
     }
 
 
-    function setUp()
+    protected function setUp(): void
     {
         $this->addressParser = new AddressParser();
     }

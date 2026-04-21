@@ -21,12 +21,12 @@ class CompanyTest extends TestCase
     const ENTERED_BY = 1; // USER ID
     const OWNER = 1; // USER ID
     
-    function setUp()
+    protected function setUp(): void
     {
         $this->company = new Company(self::SITE_ID, self::COMPANY_NAME);
     }
     
-    function tearDown()
+    protected function tearDown(): void
     {
         $this->company = null;
     }
