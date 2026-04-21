@@ -14,7 +14,7 @@
         "behat/mink-browserkit-driver": "^2.3.0",
         "behat/mink-selenium2-driver": "^1.7.0",
         "codacy/coverage": "^1.4.3",
-        "phpunit/phpunit": "^7.5.20"
+        "phpunit/phpunit": "^8.5.52"
     },
     "autoload": {
         "psr-4": {
