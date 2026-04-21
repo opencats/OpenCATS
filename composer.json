@@ -5,7 +5,7 @@
     "require": {
         "php": ">=7.2",
         "ckeditor/ckeditor": "^4.25.1",
-        "phpmailer/phpmailer": "^6.5.0"
+        "phpmailer/phpmailer": "^7.0.2"
     },
     "require-dev": {
         "behat/behat": "~3.0.4",
