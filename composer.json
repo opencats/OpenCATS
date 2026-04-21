@@ -4,7 +4,7 @@
     "type": "project",
     "require": {
         "php": ">=7.2",
-        "ckeditor/ckeditor": "^4.16.0",
+        "ckeditor/ckeditor": "^4.25.1",
         "phpmailer/phpmailer": "^6.5.0"
     },
     "require-dev": {
