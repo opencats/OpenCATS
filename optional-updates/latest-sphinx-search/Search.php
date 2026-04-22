@@ -225,7 +225,7 @@ class SearchUtility
         if (!empty($keywordsWild))
         {
             $regex = implode('|', array_map(
-                create_function('$string','return preg_quote($string, \'/\');'), $keywordsWild
+                function ($string) { return preg_quote($string, '/'); }, $keywordsWild
             ));
             $text = preg_replace(
                 '/(' . $regex . ')/i',
@@ -237,7 +237,7 @@ class SearchUtility
         if (!empty($keywords))
         {
             $regex = implode('|', array_map(
-                create_function('$string','return preg_quote($string, \'/\');'), $keywords
+                function ($string) { return preg_quote($string, '/'); }, $keywords
             ));
             $text = preg_replace(
                 '/\b(' . $regex . ')\b/i',
@@ -298,7 +298,7 @@ class SearchUtility
         if (!empty($keywordsWild))
         {
             $regex = implode('|', array_map(
-                create_function('$string','return preg_quote($string, \'/\');'), $keywordsWild
+                function ($string) { return preg_quote($string, '/'); }, $keywordsWild
             ));
             $text = preg_replace(
                 '/(' . $regex . ')/i',
@@ -310,7 +310,7 @@ class SearchUtility
         if (!empty($keywords))
         {
             $regex = implode('|', array_map(
-                create_function('$string','return preg_quote($string, \'/\');'), $keywords
+                function ($string) { return preg_quote($string, '/'); }, $keywords
             ));
             $text = preg_replace(
                 '/\b(' . $regex . ')\b/i',
