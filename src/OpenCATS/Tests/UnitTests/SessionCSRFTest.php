@@ -26,7 +26,7 @@ class SessionCSRFTest extends TestCase
         $t1 = $this->_session->getCSRFToken();
         $t2 = $this->_session->getCSRFToken();
 
-        $this->assertEquals($t1, $t2);
+        $this->assertSame($t1, $t2);
     }
 
     function testRotateCSRFTokenChangesToken()
@@ -34,8 +34,8 @@ class SessionCSRFTest extends TestCase
         $old = $this->_session->getCSRFToken();
         $new = $this->_session->rotateCSRFToken();
 
-        $this->assertNotEquals($old, $new);
-        $this->assertEquals($new, $this->_session->getCSRFToken());
+        $this->assertNotSame($old, $new);
+        $this->assertSame($new, $this->_session->getCSRFToken());
         $this->assertSame(64, strlen($new));
         $this->assertTrue(ctype_xdigit($new));
     }
