@@ -112,7 +112,7 @@ class CompanyRepositoryTests extends TestCase
     private function getDatabaseConnectionMock()
     {
         return $this->getMockBuilder('\DatabaseConnection')
-            ->setMethods(['makeQueryString', 'makeQueryInteger', 'query', 'getLastInsertID'])
+            ->onlyMethods(['makeQueryString', 'makeQueryInteger', 'query', 'getLastInsertID'])
             ->getMock();
     }
     
