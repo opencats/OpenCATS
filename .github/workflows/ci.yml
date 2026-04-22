@@ -52,7 +52,7 @@ jobs:
         run: mkdir -p reports/behat-default reports/behat-security test/screenshots
 
       - name: Run PHPUnit (Unit Tests)
-        run: ./vendor/bin/phpunit --log-junit reports/unit-report.xml src/OpenCATS/Tests/UnitTests
+        run: ./vendor/bin/phpunit --log-junit reports/unit-report.xml --testsuite UnitTests
 
       - name: Run Integration Tests (Docker)
         run: |
@@ -79,7 +79,7 @@ jobs:
           docker compose -f docker-compose-test.yml exec -T php php -r "echo 'IP for integrationtestdb: ' . gethostbyname('integrationtestdb') . PHP_EOL;"
 
           echo "Running PHPUnit Integration Tests..."
-          docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/phpunit --log-junit /var/www/public/reports/integration-report.xml src/OpenCATS/Tests/IntegrationTests
+          docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/phpunit --log-junit /var/www/public/reports/integration-report.xml --testsuite IntegrationTests
 
           echo "Running Behat Suites..."
           docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php ./vendor/bin/behat -v -c ./test/behat.yml --suite="default" --format=progress
