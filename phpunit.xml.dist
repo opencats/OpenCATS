@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="vendor/autoload.php">
+<phpunit bootstrap="src/OpenCATS/Tests/bootstrap.php">
   <testsuites>
     <testsuite name="UnitTests">
       <directory>src/OpenCATS/Tests/UnitTests</directory>

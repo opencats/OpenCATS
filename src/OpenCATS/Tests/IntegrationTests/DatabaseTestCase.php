@@ -11,12 +11,6 @@ class DatabaseTestCase extends TestCase
     {
         global $mySQLConnection;
         parent::setUp();
-
-        // Ensure roots are defined for legacy includes
-        if (!defined('LEGACY_ROOT')) {
-            define('LEGACY_ROOT', '.');
-        }
-
         include_once('./constants.php');
 
         // We define these for the rest of the app logic,
