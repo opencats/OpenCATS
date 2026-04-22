@@ -15,15 +15,15 @@
 
     <?php if ($this->isJobOrdersMode): ?>
         statusByJobOrderID[<?php echo((int) $this->pipelineData['jobOrderID']); ?>] = <?php echo((int) $this->pipelineData['statusID']); ?>;
-        statusDescriptionByJobOrderID[<?php echo((int) $this->pipelineData['jobOrderID']); ?>] = '<?php echo(str_replace("'", "\\'", $this->pipelineData['status'])); ?>';
-        jobOrderTitleByID[<?php echo((int) $this->pipelineData['jobOrderID']); ?>] = '<?php echo(str_replace("'", "\\'", $this->pipelineData['title'])); ?>';
-        jobOrderCompanyByID[<?php echo((int) $this->pipelineData['jobOrderID']); ?>] = '<?php echo(str_replace("'", "\\'", $this->pipelineData['companyName'])); ?>';
+        statusDescriptionByJobOrderID[<?php echo((int) $this->pipelineData['jobOrderID']); ?>] = <?php echo(json_encode((string) $this->pipelineData['status'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)); ?>;
+        jobOrderTitleByID[<?php echo((int) $this->pipelineData['jobOrderID']); ?>] = <?php echo(json_encode((string) $this->pipelineData['title'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)); ?>;
+        jobOrderCompanyByID[<?php echo((int) $this->pipelineData['jobOrderID']); ?>] = <?php echo(json_encode((string) $this->pipelineData['companyName'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)); ?>;
     <?php else: ?>
         <?php foreach ($this->pipelineRS as $pipelinesData): ?>
             statusByJobOrderID[<?php echo((int) $pipelinesData['jobOrderID']); ?>] = <?php echo((int) $pipelinesData['statusID']); ?>;
-            statusDescriptionByJobOrderID[<?php echo((int) $pipelinesData['jobOrderID']); ?>] = '<?php echo(str_replace("'", "\\'", $pipelinesData['status'])); ?>';
-            jobOrderTitleByID[<?php echo((int) $pipelinesData['jobOrderID']); ?>] = '<?php echo(str_replace("'", "\\'", $pipelinesData['title'])); ?>';
-            jobOrderCompanyByID[<?php echo((int) $pipelinesData['jobOrderID']); ?>] = '<?php echo(str_replace("'", "\\'", $pipelinesData['companyName'])); ?>';
+            statusDescriptionByJobOrderID[<?php echo((int) $pipelinesData['jobOrderID']); ?>] = <?php echo(json_encode((string) $pipelinesData['status'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)); ?>;
+            jobOrderTitleByID[<?php echo((int) $pipelinesData['jobOrderID']); ?>] = <?php echo(json_encode((string) $pipelinesData['title'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)); ?>;
+            jobOrderCompanyByID[<?php echo((int) $pipelinesData['jobOrderID']); ?>] = <?php echo(json_encode((string) $pipelinesData['companyName'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)); ?>;
         <?php endforeach; ?>
     <?php endif; ?>
 
