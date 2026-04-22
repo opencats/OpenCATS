@@ -3715,7 +3715,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.2"
+        "php": "^7.4"
     },
     "platform-dev": {},
     "plugin-api-version": "2.9.0"

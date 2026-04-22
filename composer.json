@@ -3,7 +3,7 @@
     "description": "Free and open source candidate/applicant tracking system for recruiters.",
     "type": "project",
     "require": {
-        "php": ">=7.2",
+        "php": "^7.4",
         "ckeditor/ckeditor": "^4.25.1",
         "neutron/sphinxsearch-api": "^2.0.8",
         "phpmailer/phpmailer": "^7.0.2",
