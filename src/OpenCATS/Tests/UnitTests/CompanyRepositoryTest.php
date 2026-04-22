@@ -34,28 +34,40 @@ class CompanyRepositoryTests extends TestCase
     function test_persist_CreatesNewCompany_InputValuesAreEscaped()
     {
         $databaseConnectionMock = $this->getDatabaseConnectionMock();
+        $expectedStringValues = [
+            self::COMPANY_NAME,
+            self::ADDRESS,
+            self::ADDRESS2,
+            self::CITY,
+            self::STATE,
+            self::ZIP_CODE,
+            self::PHONE_NUMBER_ONE,
+            self::PHONE_NUMBER_TWO,
+            self::FAX_NUMBER,
+            self::URL,
+            self::KEY_TECHNOLOGIES,
+            self::NOTES
+        ];
+        $stringCallIndex = 0;
         $databaseConnectionMock->expects($this->exactly(12))
             ->method('makeQueryString')
-            ->withConsecutive(
-                [$this->equalTo(self::COMPANY_NAME)],
-                [$this->equalTo(self::ADDRESS)],
-                [$this->equalTo(self::ADDRESS2)],
-                [$this->equalTo(self::CITY)],
-                [$this->equalTo(self::STATE)],
-                [$this->equalTo(self::ZIP_CODE)],
-                [$this->equalTo(self::PHONE_NUMBER_ONE)],
-                [$this->equalTo(self::PHONE_NUMBER_TWO)],
-                [$this->equalTo(self::FAX_NUMBER)],
-                [$this->equalTo(self::URL)],
-                [$this->equalTo(self::KEY_TECHNOLOGIES)],
-                [$this->equalTo(self::NOTES)]
-            );
+            ->willReturnCallback(function($value) use ($expectedStringValues, &$stringCallIndex) {
+                $this->assertSame($expectedStringValues[$stringCallIndex], $value);
+                $stringCallIndex++;
+                return "'" . $value . "'";
+            });
+        $expectedIntegerValues = [
+            self::ENTERED_BY,
+            self::OWNER
+        ];
+        $integerCallIndex = 0;
         $databaseConnectionMock->expects($this->exactly(2))
             ->method('makeQueryInteger')
-            ->withConsecutive(
-                [$this->equalTo(self::ENTERED_BY)],
-                [$this->equalTo(self::OWNER)]
-            );
+            ->willReturnCallback(function($value) use ($expectedIntegerValues, &$integerCallIndex) {
+                $this->assertSame($expectedIntegerValues[$integerCallIndex], $value);
+                $integerCallIndex++;
+                return (string) $value;
+            });
         $databaseConnectionMock->method('query')
             ->willReturn(true);
         $databaseConnectionMock->method('getLastInsertID')
@@ -86,8 +98,9 @@ class CompanyRepositoryTests extends TestCase
         $historyMock = $this->getHistoryMock();
         $historyMock->expects($this->exactly(1))
             ->method('storeHistoryNew')
-            ->withConsecutive(
-                [DATA_ITEM_COMPANY, self::COMPANY_ID]
+            ->with(
+                $this->equalTo(DATA_ITEM_COMPANY),
+                $this->equalTo(self::COMPANY_ID)
             );
         $CompanyRepository = new CompanyRepository($databaseConnectionMock);
         $CompanyRepository->persist($this->createCompany(), $historyMock);
