@@ -93,9 +93,6 @@ class CompanyRepositoryTests extends TestCase
         $CompanyRepository->persist($this->createCompany(), $historyMock);
     }
     
-    /**
-     * @expectedException OpenCATS\Entity\CompanyRepositoryException
-     */
     function test_persist_FailToCreateNewCompany_ThrowsException()
     {
         $databaseConnectionMock = $this->getDatabaseConnectionMock();
@@ -103,6 +100,7 @@ class CompanyRepositoryTests extends TestCase
             ->willReturn(false);
         $historyMock = $this->getHistoryMock();
         $CompanyRepository = new CompanyRepository($databaseConnectionMock);
+        $this->expectException(\OpenCATS\Entity\CompanyRepositoryException::class);
         $CompanyRepository->persist($this->createCompany(), $historyMock);
     }
     
