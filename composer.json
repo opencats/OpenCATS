@@ -12,10 +12,10 @@
     "require-dev": {
         "behat/behat": "^3.15.0",
         "behat/mink": "^1.13.0",
-        "friends-of-behat/mink-extension": "^2.3.1",
+        "friends-of-behat/mink-extension": "^2.7.5",
         "behat/mink-browserkit-driver": "^2.3.0",
         "behat/mink-selenium2-driver": "^1.7.0",
-        "phpunit/phpunit": "^8.5.52"
+        "phpunit/phpunit": "^9.6.34"
     },
     "autoload": {
         "psr-4": {
