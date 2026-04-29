@@ -1447,6 +1447,53 @@ class CATSSchema
                 SET short_description = \'Not reached\'
                 WHERE activity_type_id = 100;
             ',
+            '377' => 'PHP:
+                $lastActivityID = 0;
+                $batchSize = 200;
+
+                while (true)
+                {
+                    $rows = $db->getAllAssoc(
+                        "SELECT activity_id, notes
+                         FROM activity
+                         WHERE activity_id > " . (int) $lastActivityID . "
+                           AND notes LIKE \'Status change: %\'
+                           AND notes LIKE \'%<span%\'
+                           AND notes LIKE \'%#ff6c00%\'
+                         ORDER BY activity_id ASC
+                         LIMIT " . (int) $batchSize
+                    );
+
+                    if (empty($rows))
+                    {
+                        break;
+                    }
+
+                    foreach ($rows as $row)
+                    {
+                        $activityID = (int) $row[\'activity_id\'];
+                        $lastActivityID = $activityID;
+                        $notes = $row[\'notes\'];
+
+                        $cleanedNotes = preg_replace(
+                            "/<span\\b(?=[^>]*\\bstyle\\s*=\\s*([\\\"\\\'])[^\\\"\\\']*\\bcolor\\s*:\\s*#ff6c00\\b[^\\\"\\\']*\\1)[^>]*>(.*?)<\\/span>/is",
+                            "$2",
+                            $notes
+                        );
+
+                        if ($cleanedNotes === null || $cleanedNotes === $notes)
+                        {
+                            continue;
+                        }
+
+                        $db->query(
+                            "UPDATE activity
+                             SET notes = " . $db->makeQueryString($cleanedNotes) . "
+                             WHERE activity_id = " . $activityID
+                        );
+                    }
+                }
+            ',
 
         );
     }
