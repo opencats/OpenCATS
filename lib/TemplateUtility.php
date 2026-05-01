@@ -1080,6 +1080,32 @@ class TemplateUtility
     }
 
     /**
+     * Escapes activity notes and highlights status change text at render time.
+     *
+     * @param string activity note text
+     * @return string escaped notes with optional status text highlight
+     */
+    public static function highlightStatusChangeActivityNote($notes)
+    {
+        $statusPrefix = 'Status change: ';
+        if (strpos($notes, $statusPrefix) !== 0)
+        {
+            return Template::escapeHtml($notes);
+        }
+
+        $statusText = substr($notes, strlen($statusPrefix));
+        if ($statusText === '')
+        {
+            return Template::escapeHtml($notes);
+        }
+
+        return Template::escapeHtml($statusPrefix)
+            . '<span class="statusChangeHighlight">'
+            . Template::escapeHtml($statusText)
+            . '</span>';
+    }
+
+    /**
      * Removes from $text everything from starting block through ending block.
      * Optionally also removes a following piece of text indicated by closing
      * tag.
