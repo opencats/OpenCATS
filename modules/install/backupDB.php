@@ -75,16 +75,12 @@ function dumpDB($db, $file, $useStatus = false, $splitFiles = true, $siteID = -1
     $len = 0;
     $fileNumber = 0;
 
-    $connection = $db->getConnection();
-
     $text = '';
 
-    $result = mysqli_query($connection,
-        sprintf("SHOW TABLES FROM `%s`", DATABASE_NAME)
-    );
-    while ($row = mysqli_fetch_array($result, MYSQLI_NUM))
+    $resultSet = $db->getAllAssoc(sprintf("SHOW TABLES FROM `%s`", DATABASE_NAME));
+    foreach ($resultSet as $row)
     {
-        $tables[] = $row[0];
+        $tables[] = reset($row);
     }
     
     if ($splitFiles) $fh = fopen($file . '.' . $fileNumber, 'w');
@@ -107,13 +103,10 @@ function dumpDB($db, $file, $useStatus = false, $splitFiles = true, $siteID = -1
 
         $text .= 'DROP TABLE IF EXISTS `' . $table . '`((ENDOFQUERY))'."\n";
         $sql = 'SHOW CREATE TABLE ' . $table;
-        $rs = mysqli_query($connection, $sql);
-        if ($rs)
+        $row = $db->getAssoc($sql);
+        if (!empty($row))
         {
-            if ($row = mysqli_fetch_assoc($rs))
-            {
-                $text .= $row['Create Table'] . "((ENDOFQUERY))\n\n";
-            }
+            $text .= $row['Create Table'] . "((ENDOFQUERY))\n\n";
         }
 
         if ($table == 'word_verification') continue;
@@ -131,14 +124,14 @@ function dumpDB($db, $file, $useStatus = false, $splitFiles = true, $siteID = -1
 
         $isSiteIdColumn = false;
         $sql = sprintf("SHOW COLUMNS FROM %s", $table);
-        $rs = mysqli_query($connection, $sql);
-        while ($recordSet = mysqli_fetch_assoc($rs))    
+        $columnRecordSet = $db->getAllAssoc($sql);
+        foreach ($columnRecordSet as $recordSet)
         {
             if ($recordSet['Field'] == 'site_id')
             {
                 $isSiteIdColumn = true;
             }
-        }    
+        }
         
         if ($isSiteIdColumn)
         {
@@ -149,10 +142,16 @@ function dumpDB($db, $file, $useStatus = false, $splitFiles = true, $siteID = -1
             $sql = 'SELECT * FROM ' . $table . '';
         }
 
-        $rs = mysqli_query($sql, $connection);
         $index = 0;
-        while ($recordSet = mysqli_fetch_assoc($rs))
+        $db->query($sql);
+        while (true)
         {
+            $recordSet = $db->getAssoc();
+            if (empty($recordSet))
+            {
+                break;
+            }
+
             $continue = true;
 
             if (isset($recordSet['site_id']))
@@ -227,7 +226,7 @@ function dumpDB($db, $file, $useStatus = false, $splitFiles = true, $siteID = -1
                 $i = 0;
                 foreach ($recordSet as $field)
                 {
-                    $text .= "'".mysqli_real_escape_string($connection, $field)."'";
+                    $text .= $db->makeQueryString($field);
                     $i++;
                     if ($i != count($recordSet))
                     {

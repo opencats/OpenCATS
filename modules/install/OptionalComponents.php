@@ -39,9 +39,9 @@ $optionalComponents['usZipCodes']['removeCode'] = '
     CATSUtility::changeConfigSetting(\'US_ZIPS_ENABLED\', "false");
 ';
 $optionalComponents['usZipCodes']['detectCode'] = '
-    $rs = MySQLQuery(\'SELECT * FROM zipcodes\');
+    $recordSet = MySQLGetAssoc(\'SELECT zipcode FROM zipcodes LIMIT 1\');
 
-    if ($rs && mysqli_fetch_row($rs))
+    if (!empty($recordSet))
     {
         return true;
     }
