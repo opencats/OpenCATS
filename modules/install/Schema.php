@@ -722,7 +722,7 @@ class CATSSchema
                         "UPDATE
                             dashboard_component
                         SET
-                            module_parameters = \'" . mysql_real_escape_string($serializedValue) . "\'
+                            module_parameters = " . $db->makeQueryString($serializedValue) . "
                         WHERE
                             dashboard_component_id = " . $row[\'dashboard_component_id\']
                     );
@@ -849,9 +849,9 @@ class CATSSchema
                 UPDATE system SET disable_version_check = 1;
             ',
             '253' => 'PHP:
-                $rs = $db->query(\'SELECT * FROM zipcodes\');
+                $rs = $db->getAssoc(\'SELECT zipcode FROM zipcodes LIMIT 1\');
 
-                if ($rs && mysql_fetch_row($rs))
+                if (!empty($rs))
                 {
                     $db->query(\'DELETE FROM zipcodes\');
                     $schemaZipcodes = @file_get_contents(\'db/upgrade-zipcodes.sql\');
@@ -1233,7 +1233,7 @@ class CATSSchema
                 $lists = $db->getAllAssoc("SELECT * FROM saved_list");
                 foreach($lists as $list)
                 {
-                    $db->query(sprintf("UPDATE saved_list SET description = \"%s\" WHERE saved_list_id = %s", mysql_real_escape_string(urldecode($list[\'description\'])), $list[\'saved_list_id\']));
+                    $db->query(sprintf("UPDATE saved_list SET description = %s WHERE saved_list_id = %s", $db->makeQueryString(urldecode($list[\'description\'])), $list[\'saved_list_id\']));
                 }
             ',
             '343' => '
