@@ -378,14 +378,6 @@
                                             <input type="button" class="button" value="Remove Non-OpenCATS Tables" onclick="Installpage_populate('a=resetDatabase');">&nbsp;&nbsp;&nbsp;&nbsp;
                                             <input type="button" class="button" value="Do Nothing and Retry Installation" onclick="Installpage_populate('a=startInstall');">
                                         </div>
-                                        <div id="databaseUpgrade" style="display: none;">
-                                            <span style="font-weight:bold;">Loading Data - Upgrade</span><br />
-                                            <br />
-                                            The installer has scanned the database and found an older version of OpenCATS in the database (<span id="upgradeVersion"></span>). The installer
-                                            will upgrade your database version to the latest version automatically.<br />
-                                            <br />
-                                            <input style="float: right;" type="button" class="button" value="Next -->" onclick="document.getElementById('databaseUpgrade').style.display='none';showTextBlock('installingComponentsMaint');Installpage_populate('a=upgradeCats');" />
-                                        </div>
                                         <div id="catsUpToDate" style="display: none;">
                                             <span style="font-weight: bold;">Loading Data - Existing Database</span><br />
                                             <br />

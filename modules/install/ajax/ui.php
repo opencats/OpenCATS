@@ -623,28 +623,7 @@ switch ($action)
             die();
         }
 
-        $fields = getInstalledTableFields('candidate');
-
-        $catsVersion = '';
-
-        /* Look for more versions here. */
-        if (!isset($fields['date_available']) && isset($tables['client']))
-        {
-            $catsVersion = 'CATS 0.5.0.';
-        }
-        else if (!isset($tables['candidate_joborder_status']) && isset($tables['client']))
-        {
-            $catsVersion = 'CATS 0.5.1 or 0.5.2.';
-        }
-        else if (!isset($tables['candidate_foreign']) && isset($tables['client']))
-        {
-            $catsVersion = 'CATS 0.5.5.';
-        }
-        else if (!isset($tables['history']) && isset($tables['client']))
-        {
-            $catsVersion = 'CATS 0.6.x.';
-        }
-        else if (isset($tables['history']))
+        if (isset($tables['site']) && isset($tables['candidate']) && isset($tables['history']))
         {
             echo '
                 <script type="text/javascript">
@@ -655,27 +634,15 @@ switch ($action)
             echo '<br /><br />';
             die();
         }
+        echo '
+            <script type="text/javascript">
+                showTextBlock(\'unknownDataInDatabase\');
+                document.getElementById(\'tableNamesUnknown\').innerHTML = \'\';
+            </script>';
 
-        if ($catsVersion == '')
+        foreach ($tables as $table => $data)
         {
-            echo '
-                <script type="text/javascript">
-                    showTextBlock(\'unknownDataInDatabase\');
-                    document.getElementById(\'tableNamesUnknown\').innerHTML = \'\';
-                </script>';
-
-            foreach ($tables as $table => $data)
-            {
-                echo '<script type="text/javascript">document.getElementById(\'tableNamesUnknown\').innerHTML += \'' . htmlspecialchars($table ) . ', \';</script>';
-            }
-        }
-        else
-        {
-            echo '
-                <script type="text/javascript">
-                    showTextBlock(\'databaseUpgrade\');
-                    document.getElementById(\'upgradeVersion\').innerHTML = \'' . htmlspecialchars($catsVersion) . '\';
-                </script>';
+            echo '<script type="text/javascript">document.getElementById(\'tableNamesUnknown\').innerHTML += \'' . htmlspecialchars($table ) . ', \';</script>';
         }
         break;
 
@@ -786,7 +753,7 @@ switch ($action)
             }
         }
 
-        echo '<script type="text/javascript">Installpage_populate(\'a=upgradeCats\');</script>';
+        echo '<script type="text/javascript">Installpage_populate(\'a=resumeParsing\');</script>';
         break;
 
     case 'doDeleteBackup':
@@ -800,22 +767,6 @@ switch ($action)
 
         $schema = file_get_contents('db/cats_schema.sql');
         MySQLQueryMultiple($schema, ";\n");
-
-        //Check if we need to update from 0.6.0 to 0.7.0
-        $tables = array();
-        $resultSet = MySQLGetAllAssoc(sprintf("SHOW TABLES FROM `%s`", DATABASE_NAME));
-        foreach ($resultSet as $row)
-        {
-            $tableName = reset($row);
-            $tables[$tableName] = true;
-        }
-
-        if (!isset($tables['history']))
-        {
-            // FIXME: File exists?!
-            $schema = file_get_contents('db/upgrade-0.6.x-0.7.0.sql');
-            MySQLQueryMultiple($schema);
-        }
 
         echo '<script type="text/javascript">Installpage_populate(\'a=resumeParsing\');</script>';
         break;
@@ -880,92 +831,8 @@ switch ($action)
         echo '
             <script type="text/javascript">
                 showTextBlock(\'installingComponents\');
-                Installpage_populate(\'a=upgradeCats\');
+                Installpage_populate(\'a=resumeParsing\');
             </script>';
-        break;
-
-    case 'upgradeCats':
-        MySQLConnect();
-
-        /* This shouldn't be possible - there is no option to upgrade CATS if no tables are in the database. */
-        if (count($tables) == 0)
-        {
-            echo 'Error - no schema present.<br /><br /> ';
-            echo '<input type="button" class="button" value="Retry Installation" onclick="Installpage_populate(\'a=detectConnectivity\', \'subFormBlock\', \'Checking database connectivity...\');">&nbsp;&nbsp;&nbsp;';
-            die();
-        }
-
-        $revision = 0;
-        $fields = getInstalledTableFields('candidate');
-
-        /* Look for more versions here. */
-        if (!isset($fields['date_available']))
-        {
-            /* 0.5.0 */
-            $revision = 50;
-        }
-        else if (!isset($tables['candidate_joborder_status']))
-        {
-            /* 0.5.2 */
-            $revision = 52;
-        }
-        else if (!isset($tables['candidate_foreign']) && !isset($tables['extra_field']))
-        {
-            /* 0.5.5 */
-            $revision = 55;
-        }
-        else if (!isset($tables['history']))
-        {
-            /* 0.6.0 */
-            $revision = 60;
-        }
-        else if (!isset($tables['candidate_duplicates']))
-        {
-            /* 0.9.4 */
-            $revision = 94;
-        }
-        else if (isset($tables['candidate_duplicates']))
-        {
-            /* 0.9.5 */
-            $revision = 95;
-        }
-
-        if ($revision <= 50)
-        {
-            // FIXME: File exists?!
-            $schema = file_get_contents('db/upgrade-0.5.0-0.5.1.sql');
-            MySQLQueryMultiple($schema);
-        }
-        if ($revision <= 52)
-        {
-            // FIXME: File exists?!
-            $schema = file_get_contents('db/upgrade-0.5.2-0.5.5.sql');
-            MySQLQueryMultiple($schema);
-        }
-        if ($revision <= 55)
-        {
-            // FIXME: File exists?!
-            $schema = file_get_contents('db/upgrade-0.5.5-0.6.x.sql');
-            MySQLQueryMultiple($schema);
-        }
-        if ($revision <= 60)
-        {
-            // FIXME: File exists?!
-            $schema = file_get_contents('db/upgrade-0.6.x-0.7.0.sql');
-            MySQLQueryMultiple($schema);
-        }
-        if ($revision <= 94)
-        {
-            // FIXME: File exists?!
-            $schema = file_get_contents('db/upgrade-0.9.4-0.9.5.sql');
-            MySQLQueryMultiple($schema);
-        }
-
-        // FIXME: File exists?!
-        $schema = @file_get_contents('db/upgrade-zipcodes.sql');
-        MySQLQueryMultiple($schema);
-
-        echo '<script type="text/javascript">Installpage_populate(\'a=resumeParsing\');</script>';
         break;
 
     case 'maint':
