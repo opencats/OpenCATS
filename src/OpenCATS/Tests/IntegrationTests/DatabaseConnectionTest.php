@@ -198,6 +198,121 @@ class DatabaseConnectionTest extends DatabaseTestCase
             'DELETE query should succeed'
             );
     }
+
+    function testGetAssocWithoutQueryUsesActiveResultSetAndAdvances()
+    {
+        $db = DatabaseConnection::getInstance();
+
+        $db->query('INSERT INTO installtest (id) VALUES (101), (102)');
+        $db->query('SELECT id FROM installtest ORDER BY id ASC');
+
+        $firstRow = $db->getAssoc();
+        $secondRow = $db->getAssoc();
+        $thirdRow = $db->getAssoc();
+
+        $this->assertSame(
+            array('id' => '101'),
+            $firstRow,
+            'First row should be returned from the active result set.'
+        );
+        $this->assertSame(
+            array('id' => '102'),
+            $secondRow,
+            'Second call should advance to the next row in the active result set.'
+        );
+        $this->assertSame(
+            array(),
+            $thirdRow,
+            'Exhausted active result sets should return an empty array.'
+        );
+    }
+
+    function testGetAssocWithoutQuerySupportsCountRowAfterQuery()
+    {
+        $db = DatabaseConnection::getInstance();
+
+        $db->query('INSERT INTO installtest (id) VALUES (201), (202), (203)');
+        $db->query('SELECT COUNT(*) AS totalRows FROM installtest');
+
+        $countRow = $db->getAssoc();
+
+        $this->assertSame(
+            array('totalRows' => '3'),
+            $countRow,
+            'No-argument getAssoc() should read the count-like row from the active result set.'
+        );
+    }
+
+    function testGetNumRowsReturnsRowCountForActiveSelectResult()
+    {
+        $db = DatabaseConnection::getInstance();
+
+        $db->query('INSERT INTO installtest (id) VALUES (301), (302), (303)');
+        $db->query('SELECT id FROM installtest ORDER BY id ASC');
+
+        $this->assertSame(
+            3,
+            $db->getNumRows(),
+            'getNumRows() should return row count from the active SELECT result set.'
+        );
+    }
+
+    function testGetAffectedRowsReflectsInsertUpdateAndDelete()
+    {
+        $db = DatabaseConnection::getInstance();
+
+        $db->query('INSERT INTO installtest (id) VALUES (401), (402)');
+        $this->assertSame(
+            2,
+            $db->getAffectedRows(),
+            'getAffectedRows() should return inserted row count.'
+        );
+
+        $db->query('UPDATE installtest SET id = id + 1000 WHERE id IN (401, 402)');
+        $this->assertSame(
+            2,
+            $db->getAffectedRows(),
+            'getAffectedRows() should return updated row count.'
+        );
+
+        $db->query('DELETE FROM installtest WHERE id IN (1401, 1402)');
+        $this->assertSame(
+            2,
+            $db->getAffectedRows(),
+            'getAffectedRows() should return deleted row count.'
+        );
+    }
+
+    function testGetLastInsertIDReturnsAutoIncrementValue()
+    {
+        $db = DatabaseConnection::getInstance();
+
+        $db->query(
+            'CREATE TABLE test_autoincrement ('
+            . 'id INT NOT NULL AUTO_INCREMENT, '
+            . 'label VARCHAR(32) NOT NULL, '
+            . 'PRIMARY KEY (id)'
+            . ') ENGINE=InnoDB DEFAULT CHARSET=utf8'
+        );
+
+        $db->query("INSERT INTO test_autoincrement (label) VALUES ('first row')");
+        $firstInsertId = $db->getLastInsertID();
+
+        $db->query("INSERT INTO test_autoincrement (label) VALUES ('second row')");
+        $secondInsertId = $db->getLastInsertID();
+
+        $this->assertSame(
+            1,
+            (int) $firstInsertId,
+            'First insert should return auto-increment ID 1.'
+        );
+        $this->assertSame(
+            2,
+            (int) $secondInsertId,
+            'Second insert should return auto-increment ID 2.'
+        );
+    }
+
 }
 
 ?>
