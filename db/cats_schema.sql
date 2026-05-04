@@ -123,7 +123,7 @@ CREATE TABLE `calendar_event` (
   `date_created` datetime NOT NULL DEFAULT '1000-01-01 00:00:00',
   `date_modified` datetime NOT NULL DEFAULT '1000-01-01 00:00:00',
   `site_id` int(11) NOT NULL DEFAULT '0',
-  `joborder_id` int(11) NOT NULL DEFAULT '-1',
+  `joborder_id` int(11) DEFAULT NULL,
   `description` text COLLATE utf8_unicode_ci,
   `duration` int(11) NOT NULL DEFAULT '60',
   `reminder_enabled` int(1) NOT NULL DEFAULT '0',
