@@ -288,6 +288,21 @@ class JobOrders
         $history = new History($this->_siteID);
         $history->storeHistoryDeleted(DATA_ITEM_JOBORDER, $jobOrderID);
 
+        /* Clear calendar event associations for this job order. */
+        $sql = sprintf(
+            "UPDATE
+                calendar_event
+            SET
+                joborder_id = NULL
+            WHERE
+                joborder_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($jobOrderID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
+
         /* Delete pipeline entries from candidate_joborder. */
         $sql = sprintf(
             "DELETE FROM

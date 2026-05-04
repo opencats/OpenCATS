@@ -472,7 +472,7 @@ class CalendarUI extends UserInterface
 
         $calendar = new Calendar($this->_siteID);
         $eventID = $calendar->addEvent(
-            $type, $date, $description, $allDay, $this->_userID, -1, -1, -1,
+            $type, $date, $description, $allDay, $this->_userID, -1, -1, null,
             $title, $duration, $reminderEnabled, $reminderEmail, $reminderTime,
             $publicEntry, $timeZoneOffset
         );
@@ -559,7 +559,7 @@ class CalendarUI extends UserInterface
         }
         else
         {
-            $jobOrderID   = 'NULL';
+            $jobOrderID   = null;
         }
 
         /* Bail out if we received an invalid date. */
@@ -676,7 +676,7 @@ class CalendarUI extends UserInterface
 
         /* Update the event. */
         if (!$calendar->updateEvent($eventID, $type, $date, $description,
-            $allDay, $dataItemID, $dataItemType, 'NULL', $title, $duration,
+            $allDay, $dataItemID, $dataItemType, $jobOrderID, $title, $duration,
             $reminderEnabled, $reminderEmail, $reminderTime, $publicEntry,
             $_SESSION['CATS']->getTimeZoneOffset()))
         {
