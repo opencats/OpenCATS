@@ -25,7 +25,6 @@ include_once(LEGACY_ROOT . '/lib/Users.php');
 class FeatureContext extends MinkContext implements Context, SnippetAcceptingContext
 {
     protected $scenarioTitle = null;
-    protected static $wsendUser = null;
     private $roleData;
     /**
      * Initializes context.
@@ -167,43 +166,20 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         $filename = $this->getScreenshotFilename();
         file_put_contents($filename, $screenshot);
     
-        $url = $this->getScreenshotUrl($filename);
-    
-        print sprintf("Screenshot is available :\n%s", $url);
-    }
-    
-    protected function getScreenshotUrl($filename)
-    {
-        if (!self::$wsendUser) {
-            self::$wsendUser = $this->getWsendUser();
-        }
-        exec(sprintf(
-            'curl -F "uid=%s" -F "filehandle=@%s" %s 2>/dev/null',
-            self::$wsendUser,
-            $filename,
-            'https://wsend.net/upload_cli'
-        ), $output);
-        return $output[0];
-    }
-    
-    protected function getWsendUser()
-    {
-        // create a wsend anonymous user
-        $curl = curl_init('https://wsend.net/createunreg');
-        curl_setopt($curl, CURLOPT_POSTFIELDS, 'start=1');
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    
-        $wsendUser = curl_exec($curl);
-    
-        return $wsendUser;
+        print sprintf("Screenshot is available :\n%s\n", $filename);
     }
     
     protected function getScreenshotFilename()
     {
         $filename = $this->scenarioTitle;
         $filename = preg_replace("#[^a-zA-Z0-9\._-]#", '_', $filename);
+
+        $directory = __DIR__ . '/../../screenshots';
+        if (!is_dir($directory)) {
+            mkdir($directory, 0777, true);
+        }
     
-        return sprintf('%s/%s.png', sys_get_temp_dir(), $filename);
+        return sprintf('%s/%s.png', $directory, $filename);
     }
     
     protected function isJavascript()
