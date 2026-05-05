@@ -700,6 +700,7 @@ class CATSSchema
              ',
              /* Convert dashboard component parameters to serialize()d arrays. */
              '225' => 'PHP:
+                global $mySQLConnection;
                 include_once(\'./lib/ListEditor.php\');
 
                 $rs = $db->getAllAssoc(
@@ -722,7 +723,7 @@ class CATSSchema
                         "UPDATE
                             dashboard_component
                         SET
-                            module_parameters = \'" . mysql_real_escape_string($serializedValue) . "\'
+                            module_parameters = \'" . mysqli_real_escape_string($mySQLConnection, $serializedValue) . "\'
                         WHERE
                             dashboard_component_id = " . $row[\'dashboard_component_id\']
                     );
@@ -851,7 +852,7 @@ class CATSSchema
             '253' => 'PHP:
                 $rs = $db->query(\'SELECT * FROM zipcodes\');
 
-                if ($rs && mysql_fetch_row($rs))
+                if ($rs && mysqli_fetch_row($rs))
                 {
                     $db->query(\'DELETE FROM zipcodes\');
                     $schemaZipcodes = @file_get_contents(\'db/upgrade-zipcodes.sql\');
@@ -1230,10 +1231,11 @@ class CATSSchema
                 UPDATE extra_field_settings SET position = extra_field_settings_id;
             ',
             '341' => 'PHP:
+                global $mySQLConnection;
                 $lists = $db->getAllAssoc("SELECT * FROM saved_list");
                 foreach($lists as $list)
                 {
-                    $db->query(sprintf("UPDATE saved_list SET description = \"%s\" WHERE saved_list_id = %s", mysql_real_escape_string(urldecode($list[\'description\'])), $list[\'saved_list_id\']));
+                    $db->query(sprintf("UPDATE saved_list SET description = \"%s\" WHERE saved_list_id = %s", mysqli_real_escape_string($mySQLConnection, urldecode($list[\'description\'])), $list[\'saved_list_id\']));
                 }
             ',
             '343' => '
