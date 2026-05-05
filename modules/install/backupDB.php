@@ -98,7 +98,6 @@ function dumpDB($db, $file, $useStatus = false, $splitFiles = true, $siteID = -1
         if ($table == 'address_parser_failures') continue;
         if ($table == 'admin_user') continue;
         if ($table == 'admin_user_login') continue;
-        if ($table == 'candidate_joborder_status_type') continue;
         if ($table == 'timecard_user') continue;
 
         $text .= 'DROP TABLE IF EXISTS `' . $table . '`((ENDOFQUERY))'."\n";
