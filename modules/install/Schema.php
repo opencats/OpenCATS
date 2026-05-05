@@ -1661,6 +1661,10 @@ class CATSSchema
                 include_once(\'modules/install/scripts/384.php\');
                 update_384($db);
             ',
+            '385' => '
+                DROP TABLE IF EXISTS `candidate_jobordrer_status_type`;
+                DROP TABLE IF EXISTS `candidate_joborder_status_type`;
+            ',
 
         );
     }

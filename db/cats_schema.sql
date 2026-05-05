@@ -304,18 +304,6 @@ CREATE TABLE `candidate_joborder_status_history` (
 
 /*Data for the table `candidate_joborder_status_history` */
 
-/*Table structure for table `candidate_jobordrer_status_type` */
-
-CREATE TABLE `candidate_jobordrer_status_type` (
-  `candidate_status_type_id` int(11) NOT NULL DEFAULT '0',
-  `short_description` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `can_be_scheduled` int(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`candidate_status_type_id`),
-  KEY `IDX_short_description` (`short_description`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Data for the table `candidate_jobordrer_status_type` */
-
 /*Table structure for table `candidate_source` */
 
 CREATE TABLE `candidate_source` (
