@@ -1,17 +1,10 @@
-/*
-SQLyog Enterprise - MySQL GUI v8.02 RC
-MySQL - 5.1.31-community : Database - cats_dev
-*********************************************************************
-*/
-
-
 /*!40101 SET NAMES utf8 */;
 
 /*!40101 SET SQL_MODE=''*/;
 
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
-/*Table structure for table `access_level` */
+/* Table structure for table `access_level` */
 
 CREATE TABLE `access_level` (
   `access_level_id` int(11) NOT NULL DEFAULT '0',
@@ -21,7 +14,7 @@ CREATE TABLE `access_level` (
   KEY `IDX_access_level` (`short_description`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `access_level` */
+/* Data for the table `access_level` */
 
 insert  into `access_level`(`access_level_id`,`short_description`,`long_description`) values (0,'Account Disabled','Disabled - The lowest access level. User cannot log in.');
 insert  into `access_level`(`access_level_id`,`short_description`,`long_description`) values (100,'Read Only','Read Only - A standard user that can view data on the system in a read-only mode.');
@@ -30,7 +23,7 @@ insert  into `access_level`(`access_level_id`,`short_description`,`long_descript
 insert  into `access_level`(`access_level_id`,`short_description`,`long_description`) values (400,'Site Administrator','Site Administrator - All lower access, plus the ability to add, edit, and remove site users, as well as the ability to edit site settings.');
 insert  into `access_level`(`access_level_id`,`short_description`,`long_description`) values (500,'Root','Root Administrator - All lower access, plus the ability to add, edit, and remove sites, as well as the ability to assign Site Administrator status to a user.');
 
-/*Table structure for table `activity` */
+/* Table structure for table `activity` */
 
 CREATE TABLE `activity` (
   `activity_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -61,9 +54,9 @@ CREATE TABLE `activity` (
   KEY `IDX_activity_site_type_occurred_job` (`site_id`,`data_item_type`,`date_occurred`,`entered_by`,`joborder_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `activity` */
+/* Data for the table `activity` */
 
-/*Table structure for table `activity_type` */
+/* Table structure for table `activity_type` */
 
 CREATE TABLE `activity_type` (
   `activity_type_id` int(11) NOT NULL DEFAULT '0',
@@ -72,7 +65,7 @@ CREATE TABLE `activity_type` (
   KEY `IDX_activity_type1` (`short_description`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `activity_type` */
+/* Data for the table `activity_type` */
 
 insert  into `activity_type`(`activity_type_id`,`short_description`) values (100,'Not reached');
 insert  into `activity_type`(`activity_type_id`,`short_description`) values (200,'Email');
@@ -83,7 +76,7 @@ insert  into `activity_type`(`activity_type_id`,`short_description`) values (600
 insert  into `activity_type`(`activity_type_id`,`short_description`) values (700,'Call (Missed)');
 insert  into `activity_type`(`activity_type_id`,`short_description`) values (800,'Status Change');
 
-/*Table structure for table `attachment` */
+/* Table structure for table `attachment` */
 
 CREATE TABLE `attachment` (
   `attachment_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -111,9 +104,9 @@ CREATE TABLE `attachment` (
   KEY `IDX_site_file_size_created` (`site_id`,`file_size_kb`,`date_created`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `attachment` */
+/* Data for the table `attachment` */
 
-/*Table structure for table `calendar_event` */
+/* Table structure for table `calendar_event` */
 
 CREATE TABLE `calendar_event` (
   `calendar_event_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -139,9 +132,9 @@ CREATE TABLE `calendar_event` (
   KEY `IDX_site_data_item_type_id` (`site_id`,`data_item_type`,`data_item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `calendar_event` */
+/* Data for the table `calendar_event` */
 
-/*Table structure for table `calendar_event_type` */
+/* Table structure for table `calendar_event_type` */
 
 CREATE TABLE `calendar_event_type` (
   `calendar_event_type_id` int(11) NOT NULL DEFAULT '0',
@@ -151,7 +144,7 @@ CREATE TABLE `calendar_event_type` (
   KEY `IDX_short_description` (`short_description`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `calendar_event_type` */
+/* Data for the table `calendar_event_type` */
 
 insert  into `calendar_event_type`(`calendar_event_type_id`,`short_description`,`icon_image`) values (100,'Call','images/phone.gif');
 insert  into `calendar_event_type`(`calendar_event_type_id`,`short_description`,`icon_image`) values (200,'Email','images/email.gif');
@@ -160,7 +153,7 @@ insert  into `calendar_event_type`(`calendar_event_type_id`,`short_description`,
 insert  into `calendar_event_type`(`calendar_event_type_id`,`short_description`,`icon_image`) values (500,'Personal','images/personal.gif');
 insert  into `calendar_event_type`(`calendar_event_type_id`,`short_description`,`icon_image`) values (600,'Other','');
 
-/*Table structure for table `candidate` */
+/* Table structure for table `candidate` */
 
 CREATE TABLE `candidate` (
   `candidate_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -216,9 +209,9 @@ CREATE TABLE `candidate` (
   KEY `IDX_site_id_email_1_2` (`site_id`,`email1`(8),`email2`(8))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `candidate` */
+/* Data for the table `candidate` */
 
-/*Table structure for table `candidate_duplicates` */
+/* Table structure for table `candidate_duplicates` */
 
 CREATE TABLE `candidate_duplicates` (
   `old_candidate_id` int(11) NOT NULL,
@@ -229,9 +222,9 @@ CREATE TABLE `candidate_duplicates` (
   KEY `IDX_new_candidate_id` (`new_candidate_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `candidate_duplicates` */
+/* Data for the table `candidate_duplicates` */
 
-/*Table structure for table `candidate_joborder` */
+/* Table structure for table `candidate_joborder` */
 
 CREATE TABLE `candidate_joborder` (
   `candidate_joborder_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -255,9 +248,9 @@ CREATE TABLE `candidate_joborder` (
   KEY `IDX_joborder_id` (`joborder_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `candidate_joborder` */
+/* Data for the table `candidate_joborder` */
 
-/*Table structure for table `candidate_joborder_status` */
+/* Table structure for table `candidate_joborder_status` */
 
 CREATE TABLE `candidate_joborder_status` (
   `candidate_joborder_status_id` int(11) NOT NULL DEFAULT '0',
@@ -269,7 +262,7 @@ CREATE TABLE `candidate_joborder_status` (
   KEY `IDX_short_description` (`short_description`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `candidate_joborder_status` */
+/* Data for the table `candidate_joborder_status` */
 
 insert  into `candidate_joborder_status`(`candidate_joborder_status_id`,`short_description`,`can_be_scheduled`,`triggers_email`,`is_enabled`) values (0,'No Status',0,0,1);
 insert  into `candidate_joborder_status`(`candidate_joborder_status_id`,`short_description`,`can_be_scheduled`,`triggers_email`,`is_enabled`) values (100,'No Contact',0,0,1);
@@ -283,7 +276,7 @@ insert  into `candidate_joborder_status`(`candidate_joborder_status_id`,`short_d
 insert  into `candidate_joborder_status`(`candidate_joborder_status_id`,`short_description`,`can_be_scheduled`,`triggers_email`,`is_enabled`) values (700,'Client Declined',0,0,1);
 insert  into `candidate_joborder_status`(`candidate_joborder_status_id`,`short_description`,`can_be_scheduled`,`triggers_email`,`is_enabled`) values (800,'Placed',0,1,1);
 
-/*Table structure for table `candidate_joborder_status_history` */
+/* Table structure for table `candidate_joborder_status_history` */
 
 CREATE TABLE `candidate_joborder_status_history` (
   `candidate_joborder_status_history_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -302,9 +295,9 @@ CREATE TABLE `candidate_joborder_status_history` (
   KEY `IDX_site_joborder_status_to` (`site_id`,`joborder_id`,`status_to`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `candidate_joborder_status_history` */
+/* Data for the table `candidate_joborder_status_history` */
 
-/*Table structure for table `candidate_source` */
+/* Table structure for table `candidate_source` */
 
 CREATE TABLE `candidate_source` (
   `source_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -315,9 +308,9 @@ CREATE TABLE `candidate_source` (
   KEY `siteID` (`site_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `candidate_source` */
+/* Data for the table `candidate_source` */
 
-/*Table structure for table `candidate_tag` */
+/* Table structure for table `candidate_tag` */
 
 CREATE TABLE `candidate_tag` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -327,7 +320,7 @@ CREATE TABLE `candidate_tag` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Table structure for table `career_portal_questionnaire` */
+/* Table structure for table `career_portal_questionnaire` */
 
 CREATE TABLE `career_portal_questionnaire` (
   `career_portal_questionnaire_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -338,9 +331,9 @@ CREATE TABLE `career_portal_questionnaire` (
   PRIMARY KEY (`career_portal_questionnaire_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Data for the table `career_portal_questionnaire` */
+/* Data for the table `career_portal_questionnaire` */
 
-/*Table structure for table `career_portal_questionnaire_answer` */
+/* Table structure for table `career_portal_questionnaire_answer` */
 
 CREATE TABLE `career_portal_questionnaire_answer` (
   `career_portal_questionnaire_answer_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -358,9 +351,9 @@ CREATE TABLE `career_portal_questionnaire_answer` (
   PRIMARY KEY (`career_portal_questionnaire_answer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Data for the table `career_portal_questionnaire_answer` */
+/* Data for the table `career_portal_questionnaire_answer` */
 
-/*Table structure for table `career_portal_questionnaire_history` */
+/* Table structure for table `career_portal_questionnaire_history` */
 
 CREATE TABLE `career_portal_questionnaire_history` (
   `career_portal_questionnaire_history_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -374,9 +367,9 @@ CREATE TABLE `career_portal_questionnaire_history` (
   PRIMARY KEY (`career_portal_questionnaire_history_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Data for the table `career_portal_questionnaire_history` */
+/* Data for the table `career_portal_questionnaire_history` */
 
-/*Table structure for table `career_portal_questionnaire_question` */
+/* Table structure for table `career_portal_questionnaire_question` */
 
 CREATE TABLE `career_portal_questionnaire_question` (
   `career_portal_questionnaire_question_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -391,9 +384,9 @@ CREATE TABLE `career_portal_questionnaire_question` (
   PRIMARY KEY (`career_portal_questionnaire_question_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Data for the table `career_portal_questionnaire_question` */
+/* Data for the table `career_portal_questionnaire_question` */
 
-/*Table structure for table `career_portal_template` */
+/* Table structure for table `career_portal_template` */
 
 CREATE TABLE `career_portal_template` (
   `career_portal_template_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -403,7 +396,7 @@ CREATE TABLE `career_portal_template` (
   PRIMARY KEY (`career_portal_template_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 
-/*Data for the table `career_portal_template` */
+/* Data for the table `career_portal_template` */
 
 insert  into `career_portal_template`(`career_portal_template_id`,`career_portal_name`,`setting`,`value`) values (1,'Blank Page','Left','');
 insert  into `career_portal_template`(`career_portal_template_id`,`career_portal_name`,`setting`,`value`) values (2,'Blank Page','Footer','');
@@ -428,7 +421,7 @@ insert  into `career_portal_template`(`career_portal_template_id`,`career_portal
 insert  into `career_portal_template`(`career_portal_template_id`,`career_portal_name`,`setting`,`value`) values (21,'CATS 2.0','Content - Candidate Registration','<div id=\"careerContent\">\r\n    <h1><applyContent>Applying to <title></applyContent></h1>\r\n    <center>\r\n    <table cellpadding=\"0\" cellspacing=\"0\">\r\n        <tr>\r\n            <td><label id=\"emailLabel\" for=\"email\"><h2>Enter your e-mail address:</h2></label></td>\r\n            <td><input-email></td>\r\n        </tr>\r\n        <tr>\r\n            <td align=\"right\" valign=\"top\"><input-new></td>\r\n            <td style=\"line-height: 18px;\">\r\n                <applyContent>\r\n                <strong>I have not registered on this website.</strong><br />\r\n                (I haven\'t applied to any jobs online)\r\n                </applyContent>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td align=\"right\" valign=\"top\"><input-registered></td>\r\n            <td style=\"line-height: 20px;\">\r\n                <strong>I have registered before</strong><br />\r\n                and my last name is:<br />\r\n                <input-lastName><br />\r\n                and my zip code is:<br />\r\n                <input-zip><br /><br />\r\n                <input-rememberMe> Remember my information for future visits<br /><br />\r\n                <input-submit><br /><br />\r\n            </td>\r\n        </tr>\r\n    </table>\r\n    </center>\r\n</div>\r\n');
 insert  into `career_portal_template`(`career_portal_template_id`,`career_portal_name`,`setting`,`value`) values (22,'CATS 2.0','Content - Candidate Profile','<div id=\"careerContent\">    <h1 style=\"padding: 0; margin: 0; border: 0;\">My Profile</h1><h3 style=\"font-weight: normal;\">Any changes you make to your profile will be updated on our website for all    past and future jobs you apply for.</h3>    <br />    <div class=\"applyBoxLeft\">        <div><h3>1. Tell us about yourself</h3></div>        <p class=\"instructions\">All fields marked with asterisk (*) are required.</p>        <table>            <tr>                <td class=\"label\"><label id=\"firstNameLabel\" for=\"firstName\">*First Name:</label></td>                <td><input-firstName></td>            </tr>            <tr>                <td class=\"label\"><label id=\"lastNameLabel\" for=\"lastName\">*Last Name:</label></td>                <td><input-lastName></td>            </tr>            <tr>                <td class=\"label\"><label id=\"emailLabel\" for=\"email\">*Email Adddress:</label></td>                <td><input-email1></td>            </tr>            <tr>                <td colspan=\"2\">                    <input-resume>                </td>            </tr>        </table>    </div>    <div class=\"applyBoxRight\">        <div><h3>2. How may we contact you?</h3></div>        <table>            <tr>                <td class=\"label\"><label id=\"homePhoneLabel\" for=\"homePhone\">Home Phone:</label></td>                <td><input-phoneHome></td>            </tr>            <tr>                <td class=\"label\"><label id=\"mobilePhoneLabel\" for=\"mobilePhone\">Mobile Phone:</label></td>                <td><input-phoneCell></td>            </tr>            <tr>                <td class=\"label\"><label id=\"workPhoneLabel\" for=\"workPhone\">Work Phone:</label></td>                <td><input-phoneWork></td>            </tr>            <tr>                <td class=\"label\"><label id=\"bestTimeLabel\" for=\"bestTime\">*Best time to call:</label></td>                <td><input-bestTimeToCall></td>            </tr>            <tr>                <td class=\"label\"><label id=\"mailingAddressLabel\" for=\"mailingAddress\">Mailing Address:</label></td>                <td><input-address></td>            </tr>            <tr>                <td class=\"label\"><label id=\"cityProvinceLabel\" for=\"cityProvince\">*City/Province:</label></td>                <td><input-city></td>            </tr>            <tr>                <td class=\"label\"><label id=\"stateCountryLabel\" for=\"stateCountry\">*State/Country:</label></td>                <td><input-state><br /><input-country></td>            </tr>            <tr>                <td class=\"label\"><label id=\"zipPostalLabel\" for=\"zipPostal\">*Zip/Postal Code:</label></td>                <td><input-zip></td>            </tr>        </table>        <br />        <div><h3>3. Additional Information</h3></div>        <table>            <tr>                <td class=\"label\"><label id=\"keySkillsLabel\" for=\"keySkills\">*Key Skills:</label></td>                <td><input-keySkills></td>            </tr>            <tr>                <td>&nbsp;</td>                <td style=\"padding-top: 40px;\"><input-submit></td>            </tr>        </table>    </div></div>');
 
-/*Table structure for table `career_portal_template_site` */
+/* Table structure for table `career_portal_template_site` */
 
 CREATE TABLE `career_portal_template_site` (
   `career_portal_template_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -439,9 +432,9 @@ CREATE TABLE `career_portal_template_site` (
   PRIMARY KEY (`career_portal_template_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Data for the table `career_portal_template_site` */
+/* Data for the table `career_portal_template_site` */
 
-/*Table structure for table `company` */
+/* Table structure for table `company` */
 
 CREATE TABLE `company` (
   `company_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -478,11 +471,11 @@ CREATE TABLE `company` (
   KEY `IDX_is_hot` (`is_hot`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `company` */
+/* Data for the table `company` */
 
 insert  into `company`(`company_id`,`site_id`,`billing_contact`,`name`,`address`,`city`,`state`,`zip`,`country`,`phone1`,`phone2`,`url`,`key_technologies`,`notes`,`entered_by`,`owner`,`date_created`,`date_modified`,`is_hot`,`fax_number`,`import_id`,`default_company`) values (1,1,NULL,'Internal Postings','','','','',NULL,'','','','','',0,0,'1000-01-01 00:00:00','1000-01-01 00:00:00',0,'',NULL,1);
 
-/*Table structure for table `company_department` */
+/* Table structure for table `company_department` */
 
 CREATE TABLE `company_department` (
   `company_department_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -494,9 +487,9 @@ CREATE TABLE `company_department` (
   PRIMARY KEY (`company_department_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `company_department` */
+/* Data for the table `company_department` */
 
-/*Table structure for table `contact` */
+/* Table structure for table `contact` */
 
 CREATE TABLE `contact` (
   `contact_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -537,9 +530,9 @@ CREATE TABLE `contact` (
   KEY `IDX_date_modified` (`date_modified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `contact` */
+/* Data for the table `contact` */
 
-/*Table structure for table `data_item_type` */
+/* Table structure for table `data_item_type` */
 
 CREATE TABLE `data_item_type` (
   `data_item_type_id` int(11) NOT NULL DEFAULT '0',
@@ -548,14 +541,14 @@ CREATE TABLE `data_item_type` (
   KEY `IDX_short_description` (`short_description`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `data_item_type` */
+/* Data for the table `data_item_type` */
 
 insert  into `data_item_type`(`data_item_type_id`,`short_description`) values (100,'Candidate');
 insert  into `data_item_type`(`data_item_type_id`,`short_description`) values (200,'Company');
 insert  into `data_item_type`(`data_item_type_id`,`short_description`) values (300,'Contact');
 insert  into `data_item_type`(`data_item_type_id`,`short_description`) values (400,'Job Order');
 
-/*Table structure for table `eeo_ethnic_type` */
+/* Table structure for table `eeo_ethnic_type` */
 
 CREATE TABLE `eeo_ethnic_type` (
   `eeo_ethnic_type_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -563,7 +556,7 @@ CREATE TABLE `eeo_ethnic_type` (
   PRIMARY KEY (`eeo_ethnic_type_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
-/*Data for the table `eeo_ethnic_type` */
+/* Data for the table `eeo_ethnic_type` */
 
 insert  into `eeo_ethnic_type`(`eeo_ethnic_type_id`,`type`) values (1,'American Indian');
 insert  into `eeo_ethnic_type`(`eeo_ethnic_type_id`,`type`) values (2,'Asian or Pacific Islander');
@@ -571,7 +564,7 @@ insert  into `eeo_ethnic_type`(`eeo_ethnic_type_id`,`type`) values (3,'Hispanic 
 insert  into `eeo_ethnic_type`(`eeo_ethnic_type_id`,`type`) values (4,'Non-Hispanic Black');
 insert  into `eeo_ethnic_type`(`eeo_ethnic_type_id`,`type`) values (5,'Non-Hispanic White');
 
-/*Table structure for table `eeo_veteran_type` */
+/* Table structure for table `eeo_veteran_type` */
 
 CREATE TABLE `eeo_veteran_type` (
   `eeo_veteran_type_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -579,14 +572,14 @@ CREATE TABLE `eeo_veteran_type` (
   PRIMARY KEY (`eeo_veteran_type_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
-/*Data for the table `eeo_veteran_type` */
+/* Data for the table `eeo_veteran_type` */
 
 insert  into `eeo_veteran_type`(`eeo_veteran_type_id`,`type`) values (1,'No Veteran Status');
 insert  into `eeo_veteran_type`(`eeo_veteran_type_id`,`type`) values (2,'Eligible Veteran');
 insert  into `eeo_veteran_type`(`eeo_veteran_type_id`,`type`) values (3,'Disabled Veteran');
 insert  into `eeo_veteran_type`(`eeo_veteran_type_id`,`type`) values (4,'Eligible and Disabled');
 
-/*Table structure for table `email_history` */
+/* Table structure for table `email_history` */
 
 CREATE TABLE `email_history` (
   `email_history_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -602,9 +595,9 @@ CREATE TABLE `email_history` (
   KEY `IDX_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `email_history` */
+/* Data for the table `email_history` */
 
-/*Table structure for table `email_template` */
+/* Table structure for table `email_template` */
 
 CREATE TABLE `email_template` (
   `email_template_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -618,7 +611,7 @@ CREATE TABLE `email_template` (
   PRIMARY KEY (`email_template_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `email_template` */
+/* Data for the table `email_template` */
 
 insert  into `email_template`(`email_template_id`,`text`,`allow_substitution`,`site_id`,`tag`,`title`,`possible_variables`,`disabled`) values (1,'* Auto generated message. Please DO NOT reply *\r\n%DATETIME%\r\n\r\nDear %CANDFULLNAME%,\r\n\r\nThis E-Mail is a notification that your status in our database has been changed for the position %JBODTITLE% (%JBODCLIENT%).\r\n\r\nYour previous status was <B>%CANDPREVSTATUS%</B>.\r\nYour new status is <B>%CANDSTATUS%</B>.\r\n\r\nTake care,\r\n%USERFULLNAME%\r\n%SITENAME%',1,1,'EMAIL_TEMPLATE_STATUSCHANGE','Status Changed (Sent to Candidate)','%CANDSTATUS%%CANDOWNER%%CANDFIRSTNAME%%CANDFULLNAME%%CANDPREVSTATUS%%JBODCLIENT%%JBODTITLE%',0);
 insert  into `email_template`(`email_template_id`,`text`,`allow_substitution`,`site_id`,`tag`,`title`,`possible_variables`,`disabled`) values (2,'%DATETIME%\r\n\r\nDear %CANDOWNER%,\r\n\r\nThis E-Mail is a notification that a Candidate has been assigned to you.\r\n\r\nCandidate Name: %CANDFULLNAME%\r\nCandidate URL: %CANDCATSURL%\r\n\r\nTake care,\r\nCATS \r\n%SITENAME%',1,1,'EMAIL_TEMPLATE_OWNERSHIPASSIGNCANDIDATE','Candidate Assigned (Sent to Assigned Recruiter)','%CANDOWNER%%CANDFIRSTNAME%%CANDFULLNAME%%CANDCATSURL%',0);
@@ -628,7 +621,7 @@ insert  into `email_template`(`email_template_id`,`text`,`allow_substitution`,`s
 insert  into `email_template`(`email_template_id`,`text`,`allow_substitution`,`site_id`,`tag`,`title`,`possible_variables`,`disabled`) values (6,'* This is an auto-generated message. Please do not reply. *\r\n%DATETIME%\r\n\r\nDear %CANDFULLNAME%,\r\n\r\nThank you for applying to the %JBODTITLE% position with our online career portal! Your application has been entered into our system and someone will review it shortly.\r\n\r\n--\r\n%SITENAME%',1,1,'EMAIL_TEMPLATE_CANDIDATEAPPLY','Candidate Application Received (Sent to Candidate using Career Portal)','%CANDFIRSTNAME%%CANDFULLNAME%%JBODCLIENT%%JBODTITLE%%JBODOWNER%',0);
 insert  into `email_template`(`email_template_id`,`text`,`allow_substitution`,`site_id`,`tag`,`title`,`possible_variables`,`disabled`) values (7,'%DATETIME%\r\n\r\nDear %JBODOWNER%,\r\n\r\nThis e-mail is a notification that a candidate has applied to your job order through the online candidate portal.\r\n\r\nJob Order: %JBODTITLE%\r\nCandidate Name: %CANDFULLNAME%\r\nCandidate URL: %CANDCATSURL%\r\nJob Order URL: %JBODCATSURL%\r\n\r\n--\r\nCATS\r\n%SITENAME%',1,1,'EMAIL_TEMPLATE_CANDIDATEPORTALNEW','Candidate Application Received (Sent to Owner of Job Order from Career Portal)','%CANDFIRSTNAME%%CANDFULLNAME%%JBODOWNER%%JBODTITLE%%JBODCLIENT%%JBODCATSURL%%JBODID%%CANDCATSURL%',0);
 
-/*Table structure for table `extension_statistics` */
+/* Table structure for table `extension_statistics` */
 
 CREATE TABLE `extension_statistics` (
   `extension_statistics_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -639,9 +632,9 @@ CREATE TABLE `extension_statistics` (
   PRIMARY KEY (`extension_statistics_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Data for the table `extension_statistics` */
+/* Data for the table `extension_statistics` */
 
-/*Table structure for table `extra_field` */
+/* Table structure for table `extra_field` */
 
 CREATE TABLE `extra_field` (
   `extra_field_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -656,9 +649,9 @@ CREATE TABLE `extra_field` (
   KEY `IDX_site_id` (`site_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Data for the table `extra_field` */
+/* Data for the table `extra_field` */
 
-/*Table structure for table `extra_field_settings` */
+/* Table structure for table `extra_field_settings` */
 
 CREATE TABLE `extra_field_settings` (
   `extra_field_settings_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -673,14 +666,14 @@ CREATE TABLE `extra_field_settings` (
   PRIMARY KEY (`extra_field_settings_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `extra_field_settings` */
+/* Data for the table `extra_field_settings` */
 
 insert  into `extra_field_settings`(`extra_field_settings_id`,`field_name`,`import_id`,`site_id`,`date_created`,`data_item_type`,`extra_field_type`,`extra_field_options`,`position`) values (1,'AdminUser',NULL,180,'1000-01-01 00:00:00',200,1,NULL,1);
 insert  into `extra_field_settings`(`extra_field_settings_id`,`field_name`,`import_id`,`site_id`,`date_created`,`data_item_type`,`extra_field_type`,`extra_field_options`,`position`) values (2,'UnixName',NULL,180,'1000-01-01 00:00:00',200,1,NULL,2);
 insert  into `extra_field_settings`(`extra_field_settings_id`,`field_name`,`import_id`,`site_id`,`date_created`,`data_item_type`,`extra_field_type`,`extra_field_options`,`position`) values (3,'BillingNotes',NULL,180,'1000-01-01 00:00:00',200,1,NULL,3);
 insert  into `extra_field_settings`(`extra_field_settings_id`,`field_name`,`import_id`,`site_id`,`date_created`,`data_item_type`,`extra_field_type`,`extra_field_options`,`position`) values (4,'IPAddress',NULL,180,'1000-01-01 00:00:00',300,1,NULL,4);
 
-/*Table structure for table `feedback` */
+/* Table structure for table `feedback` */
 
 CREATE TABLE `feedback` (
   `feedback_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -695,9 +688,9 @@ CREATE TABLE `feedback` (
   PRIMARY KEY (`feedback_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `feedback` */
+/* Data for the table `feedback` */
 
-/*Table structure for table `history` */
+/* Table structure for table `history` */
 
 CREATE TABLE `history` (
   `history_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -715,9 +708,9 @@ CREATE TABLE `history` (
   KEY `IDX_data_item_id_type_site` (`data_item_id`,`data_item_type`,`site_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `history` */
+/* Data for the table `history` */
 
-/*Table structure for table `http_log` */
+/* Table structure for table `http_log` */
 
 CREATE TABLE `http_log` (
   `log_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -734,9 +727,9 @@ CREATE TABLE `http_log` (
   PRIMARY KEY (`log_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Data for the table `http_log` */
+/* Data for the table `http_log` */
 
-/*Table structure for table `http_log_types` */
+/* Table structure for table `http_log_types` */
 
 CREATE TABLE `http_log_types` (
   `log_type_id` int(11) NOT NULL,
@@ -746,11 +739,11 @@ CREATE TABLE `http_log_types` (
   PRIMARY KEY (`log_type_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-/*Data for the table `http_log_types` */
+/* Data for the table `http_log_types` */
 
 insert  into `http_log_types`(`log_type_id`,`name`,`description`,`default_log_type`) values (1,'XML','XML Job Feed',0);
 
-/*Table structure for table `import` */
+/* Table structure for table `import` */
 
 CREATE TABLE `import` (
   `import_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -763,18 +756,18 @@ CREATE TABLE `import` (
   PRIMARY KEY (`import_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `import` */
+/* Data for the table `import` */
 
-/*Table structure for table `installtest` */
+/* Table structure for table `installtest` */
 
 CREATE TABLE `installtest` (
   `id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `installtest` */
+/* Data for the table `installtest` */
 
-/*Table structure for table `joborder` */
+/* Table structure for table `joborder` */
 
 CREATE TABLE `joborder` (
   `joborder_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -822,9 +815,9 @@ CREATE TABLE `joborder` (
   KEY `IDX_site_id_status` (`site_id`,`status`(8))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `joborder` */
+/* Data for the table `joborder` */
 
-/*Table structure for table `module_schema` */
+/* Table structure for table `module_schema` */
 
 CREATE TABLE `module_schema` (
   `module_schema_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -833,7 +826,7 @@ CREATE TABLE `module_schema` (
   PRIMARY KEY (`module_schema_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `module_schema` */
+/* Data for the table `module_schema` */
 
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (1,'activity',0);
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (2,'attachments',0);
@@ -859,7 +852,7 @@ insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (21,'te
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (22,'wizard',0);
 insert  into `module_schema`(`module_schema_id`,`name`,`version`) values (23,'xml',0);
 
-/*Table structure for table `mru` */
+/* Table structure for table `mru` */
 
 CREATE TABLE `mru` (
   `mru_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -873,9 +866,9 @@ CREATE TABLE `mru` (
   KEY `IDX_user_site` (`user_id`,`site_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `mru` */
+/* Data for the table `mru` */
 
-/*Table structure for table `queue` */
+/* Table structure for table `queue` */
 
 CREATE TABLE `queue` (
   `queue_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -892,9 +885,9 @@ CREATE TABLE `queue` (
   PRIMARY KEY (`queue_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Data for the table `queue` */
+/* Data for the table `queue` */
 
-/*Table structure for table `saved_list` */
+/* Table structure for table `saved_list` */
 
 CREATE TABLE `saved_list` (
   `saved_list_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -914,9 +907,9 @@ CREATE TABLE `saved_list` (
   KEY `IDX_site_id` (`site_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `saved_list` */
+/* Data for the table `saved_list` */
 
-/*Table structure for table `saved_list_entry` */
+/* Table structure for table `saved_list_entry` */
 
 CREATE TABLE `saved_list_entry` (
   `saved_list_entry_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -932,9 +925,9 @@ CREATE TABLE `saved_list_entry` (
   KEY `IDX_hot_list_id` (`saved_list_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `saved_list_entry` */
+/* Data for the table `saved_list_entry` */
 
-/*Table structure for table `saved_search` */
+/* Table structure for table `saved_search` */
 
 CREATE TABLE `saved_search` (
   `search_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -948,9 +941,9 @@ CREATE TABLE `saved_search` (
   PRIMARY KEY (`search_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `saved_search` */
+/* Data for the table `saved_search` */
 
-/*Table structure for table `settings` */
+/* Table structure for table `settings` */
 
 CREATE TABLE `settings` (
   `settings_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -961,14 +954,14 @@ CREATE TABLE `settings` (
   PRIMARY KEY (`settings_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `settings` */
+/* Data for the table `settings` */
 
 insert  into `settings`(`settings_id`,`setting`,`value`,`site_id`,`settings_type`) values (1,'fromAddress','admin@example.com',1,1);
 insert  into `settings`(`settings_id`,`setting`,`value`,`site_id`,`settings_type`) values (2,'fromAddress','admin@example.com',180,1);
 insert  into `settings`(`settings_id`,`setting`,`value`,`site_id`,`settings_type`) values (3,'configured','1',1,1);
 insert  into `settings`(`settings_id`,`setting`,`value`,`site_id`,`settings_type`) values (4,'configured','1',180,1);
 
-/*Table structure for table `site` */
+/* Table structure for table `site` */
 
 CREATE TABLE `site` (
   `site_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1001,12 +994,12 @@ CREATE TABLE `site` (
   KEY `IDX_account_deleted` (`account_deleted`)
 ) ENGINE=InnoDB AUTO_INCREMENT=181 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `site` */
+/* Data for the table `site` */
 
 insert  into `site`(`site_id`,`name`,`is_demo`,`user_licenses`,`entered_by`,`date_created`,`unix_name`,`company_id`,`is_free`,`account_active`,`account_deleted`,`reason_disabled`,`time_zone`,`time_zone_iana`,`time_format_24`,`date_format_ddmmyy`,`is_hr_mode`,`file_size_kb`,`page_views`,`page_view_days`,`last_viewed_day`,`first_time_setup`,`localization_configured`,`agreed_to_license`,`limit_warning`) values (1,'example.com',0,0,0,'1000-01-01 00:00:00',NULL,NULL,0,1,0,NULL,2,'UTC',0,1,0,0,574,1,'1000-01-01',0,0,1,0);
 insert  into `site`(`site_id`,`name`,`is_demo`,`user_licenses`,`entered_by`,`date_created`,`unix_name`,`company_id`,`is_free`,`account_active`,`account_deleted`,`reason_disabled`,`time_zone`,`time_zone_iana`,`time_format_24`,`date_format_ddmmyy`,`is_hr_mode`,`file_size_kb`,`page_views`,`page_view_days`,`last_viewed_day`,`first_time_setup`,`localization_configured`,`agreed_to_license`,`limit_warning`) values (180,'CATS_ADMIN',0,0,0,'1000-01-01 00:00:00','catsadmin',NULL,0,1,0,NULL,2,'UTC',0,1,0,0,0,0,'1000-01-01',0,0,0,0);
 
-/*Table structure for table `sph_counter` */
+/* Table structure for table `sph_counter` */
 
 CREATE TABLE `sph_counter` (
   `counter_id` int(11) NOT NULL,
@@ -1014,9 +1007,9 @@ CREATE TABLE `sph_counter` (
   PRIMARY KEY (`counter_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Data for the table `sph_counter` */
+/* Data for the table `sph_counter` */
 
-/*Table structure for table `system` */
+/* Table structure for table `system` */
 
 CREATE TABLE `system` (
   `system_id` int(20) NOT NULL DEFAULT '0',
@@ -1028,11 +1021,11 @@ CREATE TABLE `system` (
   PRIMARY KEY (`system_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `system` */
+/* Data for the table `system` */
 
 insert  into `system`(`system_id`,`uid`,`available_version`,`date_version_checked`,`available_version_description`,`disable_version_check`) values (0,0,0,'1000-01-01 00:00:00','',1);
 
-/*Table structure for table `tag` */
+/* Table structure for table `tag` */
 
 CREATE TABLE `tag` (
   `tag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1044,9 +1037,9 @@ CREATE TABLE `tag` (
   PRIMARY KEY (`tag_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `tag` */
+/* Data for the table `tag` */
 
-/*Table structure for table `user` */
+/* Table structure for table `user` */
 
 CREATE TABLE `user` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1084,12 +1077,12 @@ CREATE TABLE `user` (
   KEY `IDX_access_level` (`access_level`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1251 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `user` */
+/* Data for the table `user` */
 
 insert  into `user`(`user_id`,`site_id`,`user_name`,`email`,`password`,`access_level`,`can_change_password`,`is_test_user`,`last_name`,`first_name`,`is_demo`,`categories`,`session_cookie`,`pipeline_entries_per_page`,`column_preferences`,`force_logout`,`title`,`phone_work`,`phone_cell`,`phone_other`,`address`,`notes`,`company`,`city`,`state`,`zip_code`,`country`,`can_see_eeo_info`) values (1,1,'admin','admin@example.com',md5('cats'),500,1,0,'Administrator','CATS',0,NULL,NULL,15,NULL,0,'','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
 insert  into `user`(`user_id`,`site_id`,`user_name`,`email`,`password`,`access_level`,`can_change_password`,`is_test_user`,`last_name`,`first_name`,`is_demo`,`categories`,`session_cookie`,`pipeline_entries_per_page`,`column_preferences`,`force_logout`,`title`,`phone_work`,`phone_cell`,`phone_other`,`address`,`notes`,`company`,`city`,`state`,`zip_code`,`country`,`can_see_eeo_info`) values (1250,180,'cats@rootadmin','0','cantlogin',0,0,0,'Automated','CATS',0,NULL,NULL,15,NULL,0,'','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
 
-/*Table structure for table `user_login` */
+/* Table structure for table `user_login` */
 
 CREATE TABLE `user_login` (
   `user_login_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1110,9 +1103,9 @@ CREATE TABLE `user_login` (
   KEY `IDX_successful_site_id` (`successful`,`site_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `user_login` */
+/* Data for the table `user_login` */
 
-/*Table structure for table `word_verification` */
+/* Table structure for table `word_verification` */
 
 CREATE TABLE `word_verification` (
   `word_verification_ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -1120,9 +1113,9 @@ CREATE TABLE `word_verification` (
   PRIMARY KEY (`word_verification_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `word_verification` */
+/* Data for the table `word_verification` */
 
-/*Table structure for table `xml_feed_submits` */
+/* Table structure for table `xml_feed_submits` */
 
 CREATE TABLE `xml_feed_submits` (
   `feed_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1132,9 +1125,9 @@ CREATE TABLE `xml_feed_submits` (
   PRIMARY KEY (`feed_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*Data for the table `xml_feed_submits` */
+/* Data for the table `xml_feed_submits` */
 
-/*Table structure for table `xml_feeds` */
+/* Table structure for table `xml_feeds` */
 
 CREATE TABLE `xml_feeds` (
   `xml_feed_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1147,12 +1140,12 @@ CREATE TABLE `xml_feeds` (
   PRIMARY KEY (`xml_feed_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
-/*Data for the table `xml_feeds` */
+/* Data for the table `xml_feeds` */
 
 insert  into `xml_feeds`(`xml_feed_id`,`name`,`description`,`website`,`post_url`,`success_string`,`xml_template_name`) values (1,'Indeed','Indeed.com job search engine.','http://www.indeed.com','http://www.indeed.com/jsp/includejobs.jsp','Thank you for submitting your XML job feed','indeed');
 insert  into `xml_feeds`(`xml_feed_id`,`name`,`description`,`website`,`post_url`,`success_string`,`xml_template_name`) values (2,'SimplyHired','SimplyHired.com job search engine','http://www.simplyhired.com','http://www.simplyhired.com/confirmation.php','Thanks for Contacting Us','simplyhired');
 
-/*Table structure for table `zipcodes` */
+/* Table structure for table `zipcodes` */
 
 CREATE TABLE `zipcodes` (
   `zipcode` mediumint(9) NOT NULL DEFAULT '0',
@@ -1162,6 +1155,6 @@ CREATE TABLE `zipcodes` (
   PRIMARY KEY (`zipcode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Data for the table `zipcodes` */
+/* Data for the table `zipcodes` */
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
