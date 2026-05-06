@@ -1352,14 +1352,14 @@ class DataGrid
 
         if (count($selectSQL) > 0)
         {
-            $selectSQL = '' . implode($selectSQL, ','."\n");
+            $selectSQL = '' . implode(','."\n", $selectSQL);
         }
         else
         {
             $selectSQL = '0 as __nothing';
         }
 
-        $joinSQL = implode($joinSQL, "\n");
+        $joinSQL = implode("\n", $joinSQL);
         if ($this->_parameters['maxResults'] != -1)
         {
             if ($this->_parameters['rangeStart'] < 0)
@@ -1388,8 +1388,8 @@ class DataGrid
             $limitSQL = '';
         }
 
-        $whereSQL = implode($whereSQL, ' AND '."\n");
-        $havingSQL = implode($havingSQL, ' AND '."\n");
+        $whereSQL = implode(' AND '."\n", $whereSQL);
+        $havingSQL = implode(' AND '."\n", $havingSQL);
         $orderSQL = 'ORDER BY ' . $this->_parameters['sortBy'] . ' ' . $this->_parameters['sortDirection'];
 
         $sql = $this->getSQL($selectSQL, $joinSQL, $whereSQL, $havingSQL, $orderSQL, $limitSQL);
