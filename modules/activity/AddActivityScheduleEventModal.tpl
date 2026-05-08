@@ -242,7 +242,7 @@
         <?php if (!$this->onlyScheduleEvent): ?>
             <?php if ($this->activityAdded): ?>
                 <?php if (!empty($this->activityDescription)): ?>
-                    <p>An activity entry of type <span class="bold"><?php $this->_($this->activityType); ?></span> has been added with the following note: &quot;<?php echo($this->activityDescription); ?>&quot;.</p>
+                    <p>An activity entry of type <span class="bold"><?php $this->_($this->activityType); ?></span> has been added with the following note: &quot;<?php $this->_($this->activityDescription); ?>&quot;.</p>
                 <?php else: ?>
                     <p>An activity entry of type <span class="bold"><?php $this->_($this->activityType); ?></span> has been added with no notes.</p>
                 <?php endif; ?>

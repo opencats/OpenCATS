@@ -1522,6 +1522,24 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('candidateID', $candidateID);
         $this->_template->assign('pipelineData', $pipelineData);
         $this->_template->assign('selectedJobOrderID', $jobOrderID);
+        $this->_template->assign('activityParentModule', 'joborders');
+        $this->_template->assign('activityParentModuleLabel', 'Job Orders');
+        $this->_template->assign('activityParentIDName', 'candidateID');
+        $this->_template->assign('activityParentID', $candidateID);
+        $this->_template->assign('activitySubmitAction', 'addActivity');
+        $this->_template->assign('activityValidatorPath', 'modules/candidates/activityvalidator.js');
+        $this->_template->assign('activityRegardingIDHidden', true);
+        $this->_template->assign('activityRegardingTitle', $pipelineData['title']);
+        $this->_template->assign('activityTitleWidth', 180);
+        $this->_template->assign('activityDescriptionWidth', 180);
+        $this->_template->assign('activityDescriptionHeight', 60);
+        $this->_template->assign('activityShowEventDuration', true);
+        $this->_template->assign('activityReminderEmailLabel', 'E-Mail To:');
+        $this->_template->assign('activityFocusEventTitle', false);
+        $this->_template->assign('activityCancelURL', CATSUtility::getIndexName() . '?m=joborders&a=show&jobOrderID=' . $jobOrderID);
+        $this->_template->assign('activityCloseURL', CATSUtility::getIndexName() . '?m=joborders&a=show&jobOrderID=' . $jobOrderID);
+        $this->_template->assign('jobOrdersRS', array());
+        $this->_template->assign('regardingID', $jobOrderID);
         $this->_template->assign('calendarEventTypes', $calendarEventTypes);
         $this->_template->assign('allowEventReminders', $allowEventReminders);
         $this->_template->assign('userEmail', $_SESSION['CATS']->getEmail());
@@ -1532,7 +1550,7 @@ class JobOrdersUI extends UserInterface
         if (!eval(Hooks::get('JO_ADD_ACTIVITY_CHANGE_STATUS'))) return;
 
         $this->_template->display(
-            './modules/candidates/AddActivityScheduleEventModal.tpl'
+            './modules/activity/AddActivityScheduleEventModal.tpl'
         );
     }
 
