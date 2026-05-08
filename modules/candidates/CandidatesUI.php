@@ -1800,6 +1800,10 @@ class CandidatesUI extends UserInterface
 
         $pipelines = new Pipelines($this->_siteID);
         $pipelineRS = $pipelines->getNonClosedCandidatePipeline($candidateID);
+        foreach ($pipelineRS as $rowIndex => $pipelineData)
+        {
+            $pipelineRS[$rowIndex]['activityLabel'] = $pipelineData['title'] . ' (' . $pipelineData['companyName'] . ')';
+        }
 
         /* Are we in "Only Schedule Event" mode? */
         $onlyScheduleEvent = $this->isChecked('onlyScheduleEvent', $_GET);
@@ -1819,8 +1823,26 @@ class CandidatesUI extends UserInterface
         }
 
         $this->_template->assign('candidateID', $candidateID);
+        $this->_template->assign('activityParentModule', 'candidates');
+        $this->_template->assign('activityParentModuleLabel', 'Candidates');
+        $this->_template->assign('activityParentIDName', 'candidateID');
+        $this->_template->assign('activityParentID', $candidateID);
+        $this->_template->assign('activitySubmitAction', 'addActivity');
+        $this->_template->assign('activityValidatorPath', 'modules/candidates/activityvalidator.js');
+        $this->_template->assign('activityRegardingIDHidden', false);
+        $this->_template->assign('activityRegardingTitle', '');
+        $this->_template->assign('activityTitleWidth', 180);
+        $this->_template->assign('activityDescriptionWidth', 180);
+        $this->_template->assign('activityDescriptionHeight', 60);
+        $this->_template->assign('activityShowEventDuration', true);
+        $this->_template->assign('activityReminderEmailLabel', 'E-Mail To:');
+        $this->_template->assign('activityFocusEventTitle', false);
+        $this->_template->assign('activityCancelURL', CATSUtility::getIndexName() . '?m=candidates&a=show&candidateID=' . $candidateID);
+        $this->_template->assign('activityCloseURL', CATSUtility::getIndexName() . '?m=candidates&a=show&candidateID=' . $candidateID);
+        $this->_template->assign('jobOrdersRS', $pipelineRS);
         $this->_template->assign('pipelineRS', $pipelineRS);
         $this->_template->assign('selectedJobOrderID', $selectedJobOrderID);
+        $this->_template->assign('regardingID', $selectedJobOrderID);
         $this->_template->assign('allowEventReminders', $allowEventReminders);
         $this->_template->assign('userEmail', $_SESSION['CATS']->getEmail());
         $this->_template->assign('calendarEventTypes', $calendarEventTypes);
@@ -1828,7 +1850,7 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('isFinishedMode', false);
         $this->_template->assign('isJobOrdersMode', false);
         $this->_template->display(
-            './modules/candidates/AddActivityScheduleEventModal.tpl'
+            './modules/activity/AddActivityScheduleEventModal.tpl'
         );
     }
 
@@ -3399,6 +3421,31 @@ class CandidatesUI extends UserInterface
         if (!eval(Hooks::get('CANDIDATE_ON_ADD_ACTIVITY_CHANGE_STATUS_POST'))) return;
 
         $this->_template->assign('candidateID', $candidateID);
+        $this->_template->assign('activityParentModule', ($isJobOrdersMode ? 'joborders' : 'candidates'));
+        $this->_template->assign('activityParentModuleLabel', ($isJobOrdersMode ? 'Job Orders' : 'Candidates'));
+        $this->_template->assign('activityParentIDName', 'candidateID');
+        $this->_template->assign('activityParentID', $candidateID);
+        $this->_template->assign('activitySubmitAction', 'addActivity');
+        $this->_template->assign('activityValidatorPath', 'modules/candidates/activityvalidator.js');
+        $this->_template->assign('activityRegardingIDHidden', $isJobOrdersMode);
+        $this->_template->assign('activityRegardingTitle', ($isJobOrdersMode ? $pipelineData['title'] : ''));
+        $this->_template->assign('activityTitleWidth', 180);
+        $this->_template->assign('activityDescriptionWidth', 180);
+        $this->_template->assign('activityDescriptionHeight', 60);
+        $this->_template->assign('activityShowEventDuration', true);
+        $this->_template->assign('activityReminderEmailLabel', 'E-Mail To:');
+        $this->_template->assign('activityFocusEventTitle', false);
+        if ($isJobOrdersMode)
+        {
+            $this->_template->assign('activityCancelURL', CATSUtility::getIndexName() . '?m=joborders&a=show&jobOrderID=' . $selectedJobOrderID);
+            $this->_template->assign('activityCloseURL', CATSUtility::getIndexName() . '?m=joborders&a=show&jobOrderID=' . $regardingID);
+        }
+        else
+        {
+            $this->_template->assign('activityCancelURL', CATSUtility::getIndexName() . '?m=candidates&a=show&candidateID=' . $candidateID);
+            $this->_template->assign('activityCloseURL', CATSUtility::getIndexName() . '?m=candidates&a=show&candidateID=' . $candidateID);
+        }
+        $this->_template->assign('jobOrdersRS', array());
         $this->_template->assign('regardingID', $regardingID);
         $this->_template->assign('activityAdded', $activityAdded);
         $this->_template->assign('activityDescription', $activityNote);
@@ -3410,7 +3457,7 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('isFinishedMode', true);
         $this->_template->assign('isJobOrdersMode', $isJobOrdersMode);
         $this->_template->display(
-            './modules/candidates/AddActivityScheduleEventModal.tpl'
+            './modules/activity/AddActivityScheduleEventModal.tpl'
         );
     }
 
