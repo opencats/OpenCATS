@@ -1805,6 +1805,11 @@ class CATSSchema
                 ALTER TABLE `xml_feeds` MODIFY `description` VARCHAR(255);
                 ALTER TABLE `xml_feeds` MODIFY `website` VARCHAR(255);
             ',
+            '388' => '
+                ALTER TABLE `activity`
+                MODIFY COLUMN `data_item_type` int(11) NOT NULL DEFAULT \'0\'
+                AFTER `activity_id`;
+            ',
 
         );
     }
