@@ -27,8 +27,8 @@ INSERT INTO `access_level` (`access_level_id`, `short_description`, `long_descri
 
 CREATE TABLE `activity` (
   `activity_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `data_item_id` INT(11) NOT NULL DEFAULT '0',
   `data_item_type` INT(11) NOT NULL DEFAULT '0',
+  `data_item_id` INT(11) NOT NULL DEFAULT '0',
   `joborder_id` INT(11),
   `site_id` INT(11) NOT NULL DEFAULT '0',
   `entered_by` INT(11) NOT NULL DEFAULT '0',

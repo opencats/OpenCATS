@@ -49,10 +49,10 @@ VALUES
 (60001, 60001, 100, 20000, 1, '2016-08-10 14:51:51');
 
 INSERT INTO `activity`
-(`activity_id`, `data_item_id`, `data_item_type`, `joborder_id`, `site_id`, `entered_by`, `date_created`, `type`, `notes`, `date_modified`)
+(`activity_id`, `data_item_type`, `data_item_id`, `joborder_id`, `site_id`, `entered_by`, `date_created`, `type`, `notes`, `date_modified`)
 VALUES
-(70001, 20000, 100, 40001, 1, 1, '2016-08-10 14:48:57', 400, 'Added candidate to job order.', '2016-08-10 14:48:57'),
-(70002, 30001, 300, -1, 1, 1, '2016-08-10 15:04:48', 100, '', '2016-08-10 15:04:48');
+(70001, 100, 20000, 40001, 1, 1, '2016-08-10 14:48:57', 400, 'Added candidate to job order.', '2016-08-10 14:48:57'),
+(70002, 300, 30001, -1, 1, 1, '2016-08-10 15:04:48', 100, '', '2016-08-10 15:04:48');
 
 INSERT INTO `attachment`
 (`attachment_id`, `data_item_id`, `data_item_type`, `site_id`, `title`, `original_filename`, `stored_filename`, `content_type`, `resume`, `text`, `date_created`, `date_modified`, `profile_image`, `directory_name`, `md5_sum`, `file_size_kb`, `md5_sum_text`)
