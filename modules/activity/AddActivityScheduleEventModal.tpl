@@ -1,8 +1,8 @@
 <?php /* $Id: AddActivityScheduleEventModal.tpl $ */ ?>
 <?php if ($this->onlyScheduleEvent): ?>
-    <?php TemplateUtility::printModalHeader($this->activityParentModuleLabel, array($this->activityValidatorPath, 'js/activity.js'), $this->activityParentModuleLabel . ': Schedule Event'); ?>
+    <?php TemplateUtility::printModalHeader($this->activityModalTitle, array($this->activityValidatorPath, 'js/activity.js'), $this->activityModalTitle . ': Schedule Event'); ?>
 <?php else: ?>
-    <?php TemplateUtility::printModalHeader($this->activityParentModuleLabel, array($this->activityValidatorPath, 'js/activity.js'), $this->activityParentModuleLabel . ': Log Activity'); ?>
+    <?php TemplateUtility::printModalHeader($this->activityModalTitle, array($this->activityValidatorPath, 'js/activity.js'), $this->activityModalTitle . ': Log Activity'); ?>
 <?php endif; ?>
 
 <?php if (!$this->isFinishedMode): ?>

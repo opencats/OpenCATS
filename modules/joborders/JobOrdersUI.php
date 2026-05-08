@@ -1523,7 +1523,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('pipelineData', $pipelineData);
         $this->_template->assign('selectedJobOrderID', $jobOrderID);
         $this->_template->assign('activityParentModule', 'joborders');
-        $this->_template->assign('activityParentModuleLabel', 'Job Orders');
+        $this->_template->assign('activityModalTitle', 'Job Orders');
         $this->_template->assign('activityParentIDName', 'candidateID');
         $this->_template->assign('activityParentID', $candidateID);
         $this->_template->assign('activitySubmitAction', 'addActivity');

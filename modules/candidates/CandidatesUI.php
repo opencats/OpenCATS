@@ -1824,7 +1824,7 @@ class CandidatesUI extends UserInterface
 
         $this->_template->assign('candidateID', $candidateID);
         $this->_template->assign('activityParentModule', 'candidates');
-        $this->_template->assign('activityParentModuleLabel', 'Candidates');
+        $this->_template->assign('activityModalTitle', 'Candidates');
         $this->_template->assign('activityParentIDName', 'candidateID');
         $this->_template->assign('activityParentID', $candidateID);
         $this->_template->assign('activitySubmitAction', 'addActivity');
@@ -3130,7 +3130,7 @@ class CandidatesUI extends UserInterface
 
     /**
      * Processes an Add Activity form and displays
-     * candidates/AddActivityScheduleEventModal.tpl.
+     * activity/AddActivityScheduleEventModal.tpl.
      *
      * @param boolean from joborders module perspective
      * @param integer "regarding" job order ID or -1
@@ -3422,13 +3422,13 @@ class CandidatesUI extends UserInterface
 
         $this->_template->assign('candidateID', $candidateID);
         $this->_template->assign('activityParentModule', ($isJobOrdersMode ? 'joborders' : 'candidates'));
-        $this->_template->assign('activityParentModuleLabel', ($isJobOrdersMode ? 'Job Orders' : 'Candidates'));
+        $this->_template->assign('activityModalTitle', ($isJobOrdersMode ? 'Job Orders' : 'Candidates'));
         $this->_template->assign('activityParentIDName', 'candidateID');
         $this->_template->assign('activityParentID', $candidateID);
         $this->_template->assign('activitySubmitAction', 'addActivity');
         $this->_template->assign('activityValidatorPath', 'modules/candidates/activityvalidator.js');
         $this->_template->assign('activityRegardingIDHidden', $isJobOrdersMode);
-        $this->_template->assign('activityRegardingTitle', ($isJobOrdersMode ? $pipelineData['title'] : ''));
+        $this->_template->assign('activityRegardingTitle', '');
         $this->_template->assign('activityTitleWidth', 180);
         $this->_template->assign('activityDescriptionWidth', 180);
         $this->_template->assign('activityDescriptionHeight', 60);
@@ -3437,7 +3437,7 @@ class CandidatesUI extends UserInterface
         $this->_template->assign('activityFocusEventTitle', false);
         if ($isJobOrdersMode)
         {
-            $this->_template->assign('activityCancelURL', CATSUtility::getIndexName() . '?m=joborders&a=show&jobOrderID=' . $selectedJobOrderID);
+            $this->_template->assign('activityCancelURL', CATSUtility::getIndexName() . '?m=joborders&a=show&jobOrderID=' . $regardingID);
             $this->_template->assign('activityCloseURL', CATSUtility::getIndexName() . '?m=joborders&a=show&jobOrderID=' . $regardingID);
         }
         else

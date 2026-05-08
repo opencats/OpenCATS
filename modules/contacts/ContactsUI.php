@@ -1143,7 +1143,7 @@ class ContactsUI extends UserInterface
 
         $this->_template->assign('contactID', $contactID);
         $this->_template->assign('activityParentModule', 'contacts');
-        $this->_template->assign('activityParentModuleLabel', 'Contacts');
+        $this->_template->assign('activityModalTitle', 'Contacts');
         $this->_template->assign('activityParentIDName', 'contactID');
         $this->_template->assign('activityParentID', $contactID);
         $this->_template->assign('activitySubmitAction', 'addActivityScheduleEvent');
@@ -1348,7 +1348,7 @@ class ContactsUI extends UserInterface
 
     /**
      * Processes an Add Activity / Schedule Event form and displays
-     * contacts/AddActivityScheduleEventModal.tpl. This is factored out
+     * activity/AddActivityScheduleEventModal.tpl. This is factored out
      * for code clarity.
      *
      * @param boolean from joborders module perspective
@@ -1636,7 +1636,7 @@ class ContactsUI extends UserInterface
 
         $this->_template->assign('contactID', $contactID);
         $this->_template->assign('activityParentModule', 'contacts');
-        $this->_template->assign('activityParentModuleLabel', 'Contacts');
+        $this->_template->assign('activityModalTitle', 'Contacts');
         $this->_template->assign('activityParentIDName', 'contactID');
         $this->_template->assign('activityParentID', $contactID);
         $this->_template->assign('activitySubmitAction', 'addActivityScheduleEvent');
