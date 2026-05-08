@@ -1119,6 +1119,10 @@ class ContactsUI extends UserInterface
         $contactData = $contacts->get($contactID);
 
         $regardingRS = $contacts->getNonClosedJobOrdersArray($contactID);
+        foreach ($regardingRS as $rowIndex => $regardingData)
+        {
+            $regardingRS[$rowIndex]['activityLabel'] = $regardingData['title'];
+        }
 
         $calendar = new Calendar($this->_siteID);
         $calendarEventTypes = $calendar->getAllEventTypes();
@@ -1138,14 +1142,32 @@ class ContactsUI extends UserInterface
         }
 
         $this->_template->assign('contactID', $contactID);
+        $this->_template->assign('activityParentModule', 'contacts');
+        $this->_template->assign('activityParentModuleLabel', 'Contacts');
+        $this->_template->assign('activityParentIDName', 'contactID');
+        $this->_template->assign('activityParentID', $contactID);
+        $this->_template->assign('activitySubmitAction', 'addActivityScheduleEvent');
+        $this->_template->assign('activityValidatorPath', 'modules/contacts/activityvalidator.js');
+        $this->_template->assign('activityRegardingIDHidden', false);
+        $this->_template->assign('activityRegardingTitle', '');
+        $this->_template->assign('activityTitleWidth', 150);
+        $this->_template->assign('activityDescriptionWidth', 150);
+        $this->_template->assign('activityDescriptionHeight', 0);
+        $this->_template->assign('activityShowEventDuration', false);
+        $this->_template->assign('activityReminderEmailLabel', 'Email To:');
+        $this->_template->assign('activityFocusEventTitle', true);
+        $this->_template->assign('activityCancelURL', CATSUtility::getIndexName() . '?m=contacts&a=show&contactID=' . $contactID);
+        $this->_template->assign('activityCloseURL', CATSUtility::getIndexName() . '?m=contacts&a=show&contactID=' . $contactID);
         $this->_template->assign('regardingRS', $regardingRS);
+        $this->_template->assign('jobOrdersRS', $regardingRS);
+        $this->_template->assign('regardingID', -1);
         $this->_template->assign('allowEventReminders', $allowEventReminders);
         $this->_template->assign('userEmail', $_SESSION['CATS']->getEmail());
         $this->_template->assign('onlyScheduleEvent', $onlyScheduleEvent);
         $this->_template->assign('calendarEventTypes', $calendarEventTypes);
         $this->_template->assign('isFinishedMode', false);
         $this->_template->display(
-            './modules/contacts/AddActivityScheduleEventModal.tpl'
+            './modules/activity/AddActivityScheduleEventModal.tpl'
         );
     }
 
@@ -1613,6 +1635,23 @@ class ContactsUI extends UserInterface
         if (!eval(Hooks::get('CANDIDATE_ON_ADD_ACTIVITY_CHANGE_STATUS_POST'))) return;
 
         $this->_template->assign('contactID', $contactID);
+        $this->_template->assign('activityParentModule', 'contacts');
+        $this->_template->assign('activityParentModuleLabel', 'Contacts');
+        $this->_template->assign('activityParentIDName', 'contactID');
+        $this->_template->assign('activityParentID', $contactID);
+        $this->_template->assign('activitySubmitAction', 'addActivityScheduleEvent');
+        $this->_template->assign('activityValidatorPath', 'modules/contacts/activityvalidator.js');
+        $this->_template->assign('activityRegardingIDHidden', false);
+        $this->_template->assign('activityRegardingTitle', '');
+        $this->_template->assign('activityTitleWidth', 150);
+        $this->_template->assign('activityDescriptionWidth', 150);
+        $this->_template->assign('activityDescriptionHeight', 0);
+        $this->_template->assign('activityShowEventDuration', false);
+        $this->_template->assign('activityReminderEmailLabel', 'Email To:');
+        $this->_template->assign('activityFocusEventTitle', true);
+        $this->_template->assign('activityCancelURL', CATSUtility::getIndexName() . '?m=contacts&a=show&contactID=' . $contactID);
+        $this->_template->assign('activityCloseURL', CATSUtility::getIndexName() . '?m=contacts&a=show&contactID=' . $contactID);
+        $this->_template->assign('jobOrdersRS', array());
         $this->_template->assign('regardingID', $regardingID);
         $this->_template->assign('activityAdded', $activityAdded);
         $this->_template->assign('activityDescription', $activityNote);
@@ -1623,7 +1662,7 @@ class ContactsUI extends UserInterface
         $this->_template->assign('changesMade', $changesMade);
         $this->_template->assign('isFinishedMode', true);
         $this->_template->display(
-            './modules/contacts/AddActivityScheduleEventModal.tpl'
+            './modules/activity/AddActivityScheduleEventModal.tpl'
         );
     }
 
