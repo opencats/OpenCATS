@@ -696,6 +696,7 @@ class CareersUI extends UserInterface
             $template['Content'] = str_replace('<input-keySkills>', '<input name="keySkills" id="keySkills" class="inputBoxNormal" value="' . $keySkillsEscaped . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-source>', '<input name="source" id="source" class="inputBoxNormal" value="' . $sourceEscaped . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-employer>', '<input name="employer" id="employer" class="inputBoxNormal" value="' . $employerEscaped . '" />', $template['Content']);
+            $template['Content'] = str_replace(array('<input-captcha>', '<input-captcha req>'), '<img src="' . CATSUtility::getIndexName() . '?m=careers&amp;p=captcha&amp;t=' . time() . '" alt="Captcha" /><br />' . '<input type="text" name="captcha" id="captcha" class="inputBoxNormal" />', $template['Content']);
             $template['Content'] = str_replace('<input-resumeUpload>', '<input type="file" id="resume" name="file" class="inputBoxFile" />', $template['Content']);
             $template['Content'] = str_replace('<input-resumeUploadPreview>',
                 '<input type="hidden" id="applyToJobSubAction" name="applyToJobSubAction" value="" /> '
