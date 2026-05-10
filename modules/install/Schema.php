@@ -1810,6 +1810,61 @@ class CATSSchema
                 MODIFY COLUMN `data_item_type` int(11) NOT NULL DEFAULT \'0\'
                 AFTER `activity_id`;
             ',
+            '389' => 'PHP:
+                $rows = $db->getAllAssoc(
+                    "SELECT
+                        career_portal_template_id,
+                        value
+                     FROM
+                        career_portal_template
+                     WHERE
+                        career_portal_name = \'CATS 2.0\'
+                        AND setting = \'Content - Apply for Position\'"
+                );
+
+                $oldFragment = "<tr>\\r\\n                    <td>&nbsp;</td>\\r\\n                    <td><img src=\"images/careers_submit.gif\" onmouseover=\"buttonMouseOver(\'submitApplicationNow\',true)\" onmouseout=\"buttonMouseOver(\'submitApplicationNow\',false)\" style=\"cursor: pointer;\" id=\"submitApplicationNow\" alt=\"Submit Application Now\" onclick=\"if (applyValidate()) { document.applyToJobForm.submit(); }\" /></td>\\r\\n                </tr>";
+                $captchaFragment = "<tr>\\r\\n                    <td class=\"label\"><label id=\"captchaLabel\" for=\"captcha\">*Captcha:</label></td>\\r\\n                    <td><input-captcha req></td>\\r\\n                </tr>\\r\\n                ";
+
+                foreach ($rows as $row)
+                {
+                    $templateValue = $row[\'value\'];
+
+                    if (strpos($templateValue, \'<input-captcha req>\') !== false)
+                    {
+                        continue;
+                    }
+
+                    if (strpos($templateValue, \'<input-captcha>\') !== false)
+                    {
+                        continue;
+                    }
+
+                    if (strpos($templateValue, $oldFragment) === false)
+                    {
+                        continue;
+                    }
+
+                    $updatedValue = str_replace($oldFragment, $captchaFragment . $oldFragment, $templateValue);
+
+                    if ($updatedValue === $templateValue)
+                    {
+                        continue;
+                    }
+
+                    $db->query(
+                        sprintf(
+                            "UPDATE
+                                career_portal_template
+                             SET
+                                value = %s
+                             WHERE
+                                career_portal_template_id = %d",
+                            $db->makeQueryString($updatedValue),
+                            (int) $row[\'career_portal_template_id\']
+                        )
+                    );
+                }
+            ',
 
         );
     }
