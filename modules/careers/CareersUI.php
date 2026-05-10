@@ -155,7 +155,11 @@ class CareersUI extends UserInterface
                 break;
         }
 
-        if ($p == 'showAll')
+        if ($p == 'captcha')
+        {
+            $this->outputCareerPortalCaptcha();
+        }
+        else if ($p == 'showAll')
         {
             $template['Content'] = $template['Content - Search Results'];
 
@@ -1160,6 +1164,19 @@ class CareersUI extends UserInterface
         {
             $this->_template->display('./modules/careers/Blank.tpl');
         }
+    }
+
+    private function outputCareerPortalCaptcha()
+    {
+        $builder = new \Gregwar\Captcha\CaptchaBuilder();
+        $builder->build();
+
+        $_SESSION['careerPortalCaptcha'] = $builder->getPhrase();
+
+        header('Content-type: image/jpeg');
+        $builder->output();
+
+        die();
     }
 
 
