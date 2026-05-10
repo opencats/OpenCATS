@@ -823,6 +823,16 @@ class CareersUI extends UserInterface
                 die();
             }
 
+            if ($this->careerPortalTemplateRequiresCaptcha($template['Content - Apply for Position']))
+            {
+                $captchaValue = isset($_POST['captcha']) ? $_POST['captcha'] : '';
+                if (!$this->validateCareerPortalCaptcha($captchaValue))
+                {
+                    CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid CAPTCHA response. Please try again.');
+                    return;
+                }
+            }
+
             // Check if this is a returning candidate
             $candidateID = isset($_POST['candidateID']) ? intval($_POST['candidateID']) : -1;
             if ($candidateID == -1) $candidateID = false;
@@ -1177,6 +1187,31 @@ class CareersUI extends UserInterface
         $builder->output();
 
         die();
+    }
+
+    private function careerPortalTemplateRequiresCaptcha($templateContent)
+    {
+        return (strpos($templateContent, '<input-captcha req>') !== false);
+    }
+
+    private function validateCareerPortalCaptcha($captchaValue)
+    {
+        $expectedPhrase = isset($_SESSION['careerPortalCaptcha']) ? trim((string) $_SESSION['careerPortalCaptcha']) : '';
+        $submittedPhrase = trim((string) $captchaValue);
+
+        $this->clearCareerPortalCaptchaPhrase();
+
+        if ($expectedPhrase === '' || $submittedPhrase === '')
+        {
+            return false;
+        }
+
+        return (strcasecmp($submittedPhrase, $expectedPhrase) === 0);
+    }
+
+    private function clearCareerPortalCaptchaPhrase()
+    {
+        unset($_SESSION['careerPortalCaptcha']);
     }
 
 
