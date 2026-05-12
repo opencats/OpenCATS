@@ -63,7 +63,7 @@
                                         <label id="titleLabel" for="title">Title:</label>
                                     </td>
                                     <td class="tdData">
-                                        <input type="text" name="title" id="title" class="inputbox" style="width: 150px" />&nbsp;*
+                                        <input type="text" name="title" id="title" class="inputbox" style="width: 150px" />
                                     </td>
                                 </tr>
 
