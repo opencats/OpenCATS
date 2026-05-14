@@ -26,18 +26,18 @@ To mirror the CI environment on your machine:
 2. **Start the containers:**
    ```bash
    cd docker/
-   docker compose -f docker-compose-test.yml up -d
+   docker compose -f docker-compose-test.yml up -d --build
    ```
 
 3. **Install PHP dependencies (Composer):**
    ```bash
-   docker run --rm -v "$(pwd)/..":/app -w /app composer:2 composer install --no-interaction --prefer-dist --ignore-platform-reqs
+   docker compose -f docker-compose-test.yml exec -T --workdir /var/www/public php composer install --no-interaction --prefer-dist
    ```
 
 4. **Run the suites:**
-   * **PHPUnit Unit Tests:** `docker exec -it opencats_test_php ./vendor/bin/phpunit --testsuite UnitTests`
-   * **PHPUnit Integration Tests:** `docker exec -it opencats_test_php ./vendor/bin/phpunit --testsuite IntegrationTests`
-   * **Behat:** `docker exec -it opencats_test_php ./vendor/bin/behat -c ./test/behat.yml`
+   * **PHPUnit Unit Tests:** `docker compose -f docker-compose-test.yml exec php ./vendor/bin/phpunit --testsuite UnitTests`
+   * **PHPUnit Integration Tests:** `docker compose -f docker-compose-test.yml exec php ./vendor/bin/phpunit --testsuite IntegrationTests`
+   * **Behat:** `docker compose -f docker-compose-test.yml exec php ./vendor/bin/behat -c ./test/behat.yml`
 
 ---
 
