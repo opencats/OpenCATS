@@ -1363,7 +1363,7 @@ class ContactsUI extends UserInterface
 
             $activityNote = $this->getTrimmedInput('activityNote', $_POST);
 
-            $activityDateCreated = false;
+            $activityDateOccurred = false;
             $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
                 ? DATE_FORMAT_DDMMYY
                 : DATE_FORMAT_MMDDYY;
@@ -1388,7 +1388,7 @@ class ContactsUI extends UserInterface
                         $activityHour += 12;
                     }
 
-                    $activityDateCreated = sprintf(
+                    $activityDateOccurred = sprintf(
                         '%s %02d:%02d:00',
                         DateUtility::convert(
                             '-',
@@ -1410,7 +1410,7 @@ class ContactsUI extends UserInterface
                 $activityNote,
                 $this->_userID,
                 $regardingID,
-                $activityDateCreated
+                $activityDateOccurred
             );
             $activityTypeDescription = ResultSetUtility::getColumnValueByIDValue(
                 $activityTypes, 'typeID', $activityTypeID, 'type'
