@@ -223,18 +223,18 @@ class CallsDataGrid extends DataGrid
 
         if (isset($parameters['period']) && !empty($parameters['period']))
         {
-            $this->dateCriterion .= ' AND activity.date_created >= ' . $parameters['period'] . ' ';
+            $this->dateCriterion .= ' AND activity.date_occurred >= ' . $parameters['period'] . ' ';
         }
         else
         {
             if (isset($parameters['startDate']) && !empty($parameters['startDate']))
             {
-                $this->dateCriterion .= ' AND activity.date_created >= \'' .$parameters['startDate'].'\' ';
+                $this->dateCriterion .= ' AND activity.date_occurred >= \'' .$parameters['startDate'].'\' ';
             }
 
             if (isset($parameters['endDate']) && !empty($parameters['endDate']))
             {
-                $this->dateCriterion .= ' AND activity.date_created <= \''.$parameters['endDate'].'\' ';
+                $this->dateCriterion .= ' AND activity.date_occurred <= \''.$parameters['endDate'].'\' ';
             }
         }
 
@@ -300,9 +300,9 @@ class CallsDataGrid extends DataGrid
                 activity.notes AS notes,
                 activity_type.short_description AS typeDescription,
                 DATE_FORMAT(
-                    activity.date_created, '%%m-%%d-%%y %%h:%%i %%p'
+                    activity.date_occurred, '%%m-%%d-%%y %%h:%%i %%p'
                 ) AS dateCreated,
-                activity.date_created AS dateCreatedSort,
+                activity.date_occurred AS dateCreatedSort,
                 entered_by_user.first_name AS enteredByFirstName,
                 entered_by_user.last_name AS enteredByLastName,
                 CONCAT(entered_by_user.last_name, entered_by_user.first_name) AS enteredBySort,
@@ -354,9 +354,9 @@ class CallsDataGrid extends DataGrid
                 activity.notes AS notes,
                 activity_type.short_description AS typeDescription,
                 DATE_FORMAT(
-                    activity.date_created, '%%m-%%d-%%y %%h:%%i %%p'
+                    activity.date_occurred, '%%m-%%d-%%y %%h:%%i %%p'
                 ) AS dateCreated,
-                activity.date_created AS dateCreatedSort,
+                activity.date_occurred AS dateCreatedSort,
                 entered_by_user.first_name AS enteredByFirstName,
                 entered_by_user.last_name AS enteredByLastName,
                 CONCAT(entered_by_user.last_name, entered_by_user.first_name) AS enteredBySort,

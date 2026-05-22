@@ -430,7 +430,7 @@ class ActivityEntries
                 activity_type.short_description AS typeDescription,
                 activity.notes AS notes,
                 DATE_FORMAT(
-                    activity.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    activity.date_occurred, '%%m-%%d-%%y (%%h:%%i %%p)'
                 ) AS dateCreated,
                 entered_by_user.first_name AS enteredByFirstName,
                 entered_by_user.last_name AS enteredByLastName,
@@ -478,12 +478,11 @@ class ActivityEntries
                 activity.joborder_id AS jobOrderID,
                 activity.notes AS notes,
                 DATE_FORMAT(
-                    activity.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    activity.date_occurred, '%%m-%%d-%%y (%%h:%%i %%p)'
                 ) AS dateCreated,
-                activity.date_created AS dateCreatedSort,
+                activity.date_occurred AS dateCreatedSort,
                 activity.type AS type,
                 activity_type.short_description AS typeDescription,
-                activity.date_created AS dateCreatedSort,
                 entered_by_user.first_name AS enteredByFirstName,
                 entered_by_user.last_name AS enteredByLastName,
                 IF(
@@ -535,9 +534,9 @@ class ActivityEntries
                 activity.joborder_id AS jobOrderID,
                 activity.notes AS notes,
                 DATE_FORMAT(
-                    activity.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    activity.date_occurred, '%%m-%%d-%%y (%%h:%%i %%p)'
                 ) AS dateCreated,
-                activity.date_created AS dateCreatedSort,
+                activity.date_occurred AS dateCreatedSort,
                 activity.type AS type,
                 activity_type.short_description AS typeDescription,
                 entered_by_user.first_name AS enteredByFirstName,

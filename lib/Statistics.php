@@ -444,20 +444,20 @@ class Statistics
     public function getActivitiesByPeriod($period)
     {
         $criterion = $this->makePeriodCriterion(
-            'activity.date_created', $period
+            'activity.date_occurred', $period
         );
 
         $sql = sprintf(
             "SELECT
                 activity.activity_id AS activityID,
                 DATE_FORMAT(
-                    activity.date_created, '%%m'
+                    activity.date_occurred, '%%m'
                 ) AS month,
                 DATE_FORMAT(
-                    activity.date_created, '%%d'
+                    activity.date_occurred, '%%d'
                 ) AS day,
                 DATE_FORMAT(
-                    activity.date_created, '%%y'
+                    activity.date_occurred, '%%y'
                 ) AS year
             FROM
                 activity

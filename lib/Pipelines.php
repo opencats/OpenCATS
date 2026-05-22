@@ -635,7 +635,7 @@ class Pipelines
                     SELECT
                         CONCAT(
                             '<strong>',
-                            DATE_FORMAT(activity.date_created, '%%m-%%d-%%y'),
+                            DATE_FORMAT(activity.date_occurred, '%%m-%%d-%%y'),
                             ' (',
                             entered_by_user.first_name,
                             ' ',
@@ -660,7 +660,7 @@ class Pipelines
                     AND
                         activity.joborder_id = %s
                     ORDER BY
-                        activity.date_created DESC
+                        activity.date_occurred DESC
                     LIMIT 1
                 ) AS lastActivity,
                 IF((
