@@ -88,6 +88,19 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
             }
         });
     }
+
+    /**
+     * @Then I wait until I see :text
+     */
+    public function iWaitUntilISee($text)
+    {
+        $this->spins(function() use ($text) {
+            $pageText = $this->getSession()->getPage()->getText();
+            if (strpos($pageText, $text) === false) {
+                throw new Exception(sprintf('Could not see text "%s" yet.', $text));
+            }
+        });
+    }
     
     /**
      * @Then /^I wait for the activity note box to appear$/

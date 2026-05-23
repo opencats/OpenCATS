@@ -340,5 +340,5 @@ Feature: Job Orders
     And press "Add Candidate"
     And press "Close"
     And I switch to the iframe ""
-    Then I should see "John"
+    Then I wait until I see "John"
     And I should see "Doe"
