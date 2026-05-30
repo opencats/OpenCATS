@@ -3,19 +3,19 @@
     "description": "Free and open source candidate/applicant tracking system for recruiters.",
     "type": "project",
     "require": {
-        "php": "^7.4",
+        "php": "^8.5",
         "ckeditor/ckeditor": "^4.25.1",
         "neutron/sphinxsearch-api": "^2.0.8",
-        "phpmailer/phpmailer": "^7.0.2",
+        "phpmailer/phpmailer": "^7.1.1",
         "setasign/fpdf": "^1.9.0"
     },
     "require-dev": {
-        "behat/behat": "^3.15.0",
+        "behat/behat": "^3.31.0",
         "behat/mink": "^1.13.0",
         "friends-of-behat/mink-extension": "^2.7.5",
         "behat/mink-browserkit-driver": "^2.3.0",
         "behat/mink-selenium2-driver": "^1.7.0",
-        "phpunit/phpunit": "^9.6.34"
+        "phpunit/phpunit": "^13.1.11"
     },
     "autoload": {
         "psr-4": {
