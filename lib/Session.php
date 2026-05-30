@@ -873,7 +873,7 @@ class CATSSession
 
                 if (strlen($rs['columnPreferences']) > 0 && $this->_isDemo == false)
                 {
-                    $this->_ = unserialize($rs['columnPreferences']);
+                    $this->_dataGridColumnPreferences = unserialize($rs['columnPreferences']);
                 }
                 else
                 {
@@ -913,36 +913,6 @@ class CATSSession
                     );
                     $rs = $db->query($sql);
                 }
-                // Start output buffering to prevent "Headers Already Sent" errors
-                ob_start();
-
-                $cookieValue = $this->getCookie();
-                $expires = time() + 3600;  // Example expiration time, adjust as needed
-                $path = '/';
-                // $domain = 'example.com';   // Adjust as needed
-                $secure = true;            // Adjust based on your environment
-                $httponly = true;
-                $samesite = 'Lax';
-
-                // Fixed setcookie call - define domain variable and remove invalid path format
-                $domain = '';  // Use empty string for current domain
-                // TODO: Drop PHP < 7.3 fallback and always use setcookie() options array once legacy PHP is no longer supported.
-                if (PHP_VERSION_ID >= 70300)
-                {
-                    setcookie('session_cookie', $cookieValue, array(
-                        'expires' => $expires,
-                        'path' => $path,
-                        'domain' => $domain,
-                        'secure' => $secure,
-                        'httponly' => $httponly,
-                        'samesite' => $samesite
-                    ));
-                }
-                else
-                {
-                    setcookie('session_cookie', $cookieValue, $expires, $path, $domain, $secure, $httponly);
-                }
-
                 // Update the user session in the database
                 $sql = sprintf(
                     "UPDATE
@@ -956,11 +926,6 @@ class CATSSession
                         $db->makeQueryString($this->_userID),
                                $this->_siteID
                 );
-
-                // Flush the output buffer and send the output to the browser
-                ob_end_flush();
-
-
                 $rs = $db->query($sql);
 
                 break;
