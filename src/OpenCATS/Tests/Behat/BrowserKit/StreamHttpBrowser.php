@@ -13,7 +13,7 @@ class StreamHttpBrowser extends AbstractBrowser
         parent::__construct($serverParameters);
     }
 
-    protected function doRequest($request)
+    protected function doRequest(object $request): object
     {
         if (!$request instanceof Request) {
             throw new \InvalidArgumentException('Unsupported request object.');
