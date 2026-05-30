@@ -7,7 +7,7 @@ use OpenCATS\Entity\Company;
 include_once(LEGACY_ROOT . '/lib/History.php');
 include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
 
-class CompanyRepositoryTests extends TestCase
+class CompanyRepositoryTest extends TestCase
 {
     const COMPANY_NAME = "Test Company Name";
     const SITE_ID = -1;
