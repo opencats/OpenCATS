@@ -155,7 +155,7 @@ class InstallationTests
     /* Check PHP version. */
     public static function checkPHPVersion()
     {
-        if (!self::DEBUG_FAIL && version_compare(PHP_VERSION, '5.0.0', '>='))
+        if (!self::DEBUG_FAIL && version_compare(PHP_VERSION, '8.5.0', '>='))
         {
             echo sprintf(
                 '<tr class="pass"><td>PHP version is %s.</td></tr>',
@@ -166,7 +166,7 @@ class InstallationTests
         }
 
         echo sprintf(
-            '<tr class="fail"><td><strong>PHP 5.0.0 or greater is required to run OpenCATS.</strong><br />'
+            '<tr class="fail"><td><strong>PHP 8.5.0 or greater is required to run OpenCATS.</strong><br />'
             . 'Found version: %s.</td></tr>',
             PHP_VERSION
         );
