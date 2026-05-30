@@ -616,7 +616,7 @@ class Calendar
      */
     public function getUpcomingEventsByDataItem($dataItemType, $dataItemID)
     {
-        $currentDateForMySQL = strftime('%Y-%m-%d 00:00:00', time());
+        $currentDateForMySQL = date('Y-m-d 00:00:00', time());
 
         $sql = sprintf(
             "SELECT
