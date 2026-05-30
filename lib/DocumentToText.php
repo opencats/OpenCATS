@@ -421,7 +421,9 @@ class DocumentToText
                         array('<w:br/>', '</w:p>', '<text:line-break', '<text:p'),
                         array("\n<w:br/>", "\n</w:p>", "\n<text:line-break", "\n<text:p"), $raw_text);
                 // Return data without XML formatting tags
-                return utf8_encode(strip_tags($raw_text_patched));
+                return mb_convert_encoding(
+                    strip_tags($raw_text_patched), 'UTF-8', 'ISO-8859-1'
+                );
             }
             $zip->close();
         }
@@ -512,7 +514,7 @@ class DocumentToText
         }
         $ansa = str_replace('{', '', $ansa);
         $ansa = str_replace('}', '', $ansa);
-        return utf8_encode($ansa);
+        return mb_convert_encoding($ansa, 'UTF-8', 'ISO-8859-1');
     }
 
     private function getpgraph()

@@ -4,6 +4,7 @@
     "type": "project",
     "require": {
         "php": "^8.5",
+        "ext-mbstring": "*",
         "ckeditor/ckeditor": "^4.25.1",
         "neutron/sphinxsearch-api": "^2.0.8",
         "phpmailer/phpmailer": "^7.1.1",
