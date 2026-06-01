@@ -55,6 +55,7 @@ class SettingsUI extends UserInterface
 {
     /* Maximum number of login history entries to display on User Details. */
     const MAX_RECENT_LOGINS = 15;
+    private $_realAccessLevel = null;
 
 
     public function __construct()

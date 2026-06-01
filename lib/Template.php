@@ -35,6 +35,7 @@
  *	@package    CATS
  *	@subpackage Library
  */
+#[AllowDynamicProperties]
 class Template
 {
     private $_templateFile;
