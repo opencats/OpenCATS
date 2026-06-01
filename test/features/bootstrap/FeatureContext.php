@@ -191,7 +191,6 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     
         $wsendUser = curl_exec($curl);
-        curl_close($curl);
     
         return $wsendUser;
     }
