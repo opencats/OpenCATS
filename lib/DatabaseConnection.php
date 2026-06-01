@@ -533,7 +533,7 @@ class DatabaseConnection
             return 'NULL';
         }
 
-        return (integer) $value;
+        return (int) $value;
     }
 
     /**
@@ -546,7 +546,7 @@ class DatabaseConnection
      */
     public function makeQueryInteger($value)
     {
-        return (integer) $value;
+        return (int) $value;
     }
 
     /**

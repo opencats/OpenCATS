@@ -820,7 +820,7 @@ class CATSSession
                 $this->_userLicenses           = $rs['userLicenses'];
                 $this->_accessLevel            = $rs['accessLevel'];
                 $this->_realAccessLevel        = $rs['accessLevel'];
-                $this->_categories             = explode(',', $rs['categories']);
+                $this->_categories             = explode(',', (string) $rs['categories']);
                 $this->_isASP                  = ($rs['companyID'] != 0 ? true : false);
                 $this->_isHrMode               = ($rs['isHrMode'] != 0 ? true : false);
                 $this->_siteCompanyID          = ($rs['companyID'] != 0 ? $rs['companyID'] : -1);

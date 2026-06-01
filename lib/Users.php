@@ -187,7 +187,7 @@ class Users
                 $this->_siteID
                     );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     /**
@@ -213,7 +213,7 @@ class Users
                 $this->_siteID
                 );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     /**
@@ -239,7 +239,7 @@ class Users
                 $this->_siteID
                 );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     /**
@@ -436,7 +436,7 @@ class Users
                 $aspSiteRule
                     );
 
-        return (boolean) $this->_db->query($sql);
+        return (bool) $this->_db->query($sql);
     }
 
     /**

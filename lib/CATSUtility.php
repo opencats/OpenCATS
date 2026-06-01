@@ -127,7 +127,7 @@ class CATSUtility
             $data = substr($data, strpos($data, "dir\n") + 4);
             $data = substr($data, 0, strpos($data, "\n"));
 
-            return (integer) $data;
+            return (int) $data;
         }
     }
 
