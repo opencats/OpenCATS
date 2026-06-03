@@ -60,6 +60,15 @@ class ImportUI extends UserInterface
         $this->_subTabs = array();
     }
 
+    private function isValidImportFileID($fileID)
+    {
+        return $fileID != '' &&
+            $fileID === basename($fileID) &&
+            isset($_SESSION['CATS']->validImportFileIDs) &&
+            is_array($_SESSION['CATS']->validImportFileIDs) &&
+            in_array($fileID, $_SESSION['CATS']->validImportFileIDs, true);
+    }
+
 
     public function handleRequest()
     {
@@ -471,6 +480,19 @@ class ImportUI extends UserInterface
         /* If a file was submitted, then the user sent what colums he wanted to use already. */
         if (isset($_POST['fileName']))
         {
+            $fileName = $this->getTrimmedInput('fileName', $_POST);
+            if (!$this->isValidImportFileID($fileName))
+            {
+                $this->_template->assign(
+                    'errorMessage',
+                    'Invalid staged import file.'
+                );
+                $this->import();
+                return;
+            }
+
+            $_POST['fileName'] = $fileName;
+
             if ($_SESSION['CATS']->isDemo())
             {
                 CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Demo user can not import data.');
@@ -763,11 +785,20 @@ class ImportUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
 
-        $filePath = CATS_TEMP_DIR . '/' . $_POST['fileName'];
+        $fileName = $this->getTrimmedInput('fileName', $_POST);
+        if (!$this->isValidImportFileID($fileName))
+        {
+            $this->_template->assign('errorMessage', 'Invalid staged import file.');
+            $this->import();
+            return;
+        }
+
+        $filePath = CATS_TEMP_DIR . '/' . $fileName;
         if (!is_file($filePath))
         {
             $this->_template->assign('errorMessage', 'Invalid filename. (Internal error)');
             $this->import();
+            return;
         }
 
         $dataContaining = $this->getTrimmedInput('dataContaining', $_POST);
