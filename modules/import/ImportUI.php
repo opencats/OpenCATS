@@ -509,7 +509,6 @@ class ImportUI extends UserInterface
         }
 
         /* Get file metadata. */
-        $originalFilename = $_FILES['file']['name'];
         $tempFilename     = $_FILES['file']['tmp_name'];
         $contentType      = $_FILES['file']['type'];
         $fileSize         = $_FILES['file']['size'];
@@ -552,14 +551,7 @@ class ImportUI extends UserInterface
         @chmod(CATS_TEMP_DIR, 0777);
 
         /* Make a random file name for the file. */
-        if ($dataType != 'Resume')
-        {
-            $randomFile = FileUtility::makeRandomFilename($tempFilename) . '.tmp';
-        }
-        else
-        {
-            $randomFile = $originalFilename;
-        }
+        $randomFile = FileUtility::makeRandomFilename($tempFilename) . '.tmp';
 
         /* Build new path information for the file. */
         $newFileFullPath  = CATS_TEMP_DIR . '/' . $randomFile;
@@ -592,6 +584,16 @@ class ImportUI extends UserInterface
                 break;
 
             default:
+                @unlink($newFileFullPath);
+                $validFileIDKey = array_search(
+                    $randomFile,
+                    $_SESSION['CATS']->validImportFileIDs,
+                    true
+                );
+                if ($validFileIDKey !== false)
+                {
+                    unset($_SESSION['CATS']->validImportFileIDs[$validFileIDKey]);
+                }
                 $this->_template->assign(
                     'errorMessage',
                     'No parser exists for the specified data type.'
