@@ -764,20 +764,6 @@ class SettingsUI extends UserInterface
                 $this->wizard_deleteUser();
                 break;
 
-            case 'ajax_wizardCheckKey':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
-                    echo 'CATS has lost your session data!';
-                    return;
-                }
-                if ($this->getUserAccessLevel('settings.checkKey') < ACCESS_LEVEL_SA)
-                {
-                    echo 'You do not have access to set the key.';
-                    return;
-                }
-                $this->wizard_checkKey();
-                break;
-
             case 'ajax_wizardLocalization':
                 if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
                 {
@@ -804,20 +790,6 @@ class SettingsUI extends UserInterface
                     return;
                 }
                 $this->wizard_firstTimeSetup();
-                break;
-
-            case 'ajax_wizardLicense':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
-                    echo 'CATS has lost your session data!';
-                    return;
-                }
-                if ($this->getUserAccessLevel('settings.license') < ACCESS_LEVEL_SA)
-                {
-                    echo 'You do not have access to accept the license agreement.';
-                    return;
-                }
-                $this->wizard_license();
                 break;
 
             case 'ajax_wizardPassword':
@@ -3184,84 +3156,6 @@ class SettingsUI extends UserInterface
         echo 'Ok';
     }
 
-    private function wizard_checkKey()
-    {
-        $fileError = false;
-
-        if (isset($_GET[$id = 'key']) && $_GET[$id] != '')
-        {
-            $license = new License();
-            $key = strtoupper(trim($_GET[$id]));
-
-            $configWritten = false;
-
-            if ($license->setKey($key) !== false)
-            {
-                if ($license->isProfessional())
-                {
-                    if (!CATSUtility::isSOAPEnabled())
-                    {
-                        echo "CATS Professional requires the PHP SOAP library which isn't currently installed.\n\n"
-                            . "Installation Instructions:\n\n"
-                            . "WAMP/Windows Users:\n"
-                            . "1) Left click on the wamp icon.\n"
-                            . "2) Select \"PHP Settings\" from the drop-down list.\n"
-                            . "3) Select \"PHP Extensions\" from the drop-down list.\n"
-                            . "4) Check the \"php_soap\" option.\n"
-                            . "5) Restart WAMP.\n\n"
-                            . "Linux Users:\n"
-                            . "Re-install PHP with the --enable-soap configuration option.\n\n"
-                            . "Please visit http://www.catsone.com for more support options.";
-                        return;
-                    }
-                    else
-                    {
-                        if (!LicenseUtility::validateProfessionalKey($key))
-                        {
-                            echo "That is not a valid CATS Professional license key. Please visit "
-                                . "http://www.catsone.com/professional for more information about CATS Professional.\n\n"
-                                . "For a free open-source key, please visit http://www.catsone.com/ and "
-                                . "click on \"Downloads\".";
-                            return;
-                        }
-                    }
-                }
-
-                if (CATSUtility::changeConfigSetting('LICENSE_KEY', "'" . $key . "'"))
-                {
-                    $configWritten = true;
-                }
-            }
-
-            if ($configWritten)
-            {
-                echo 'Ok';
-                return;
-            }
-        }
-
-        // The key hasn't been written. But they may have manually inserted the key into their config.php, check
-        if (LicenseUtility::isLicenseValid())
-        {
-            echo 'Ok';
-            return;
-        }
-
-        if ($fileError)
-        {
-            echo 'You entered a valid key, but this wizard is unable to write to your config.php file! You have '
-                . 'two choices: ' . "\n\n"
-                . '1) Change the file permissions of your config.php file.'."\n".'If you\'re using unix, try:' . "\n" . 'chmod 777 config.php' . "\n\n"
-                . '2) Edit your config.php file manually and enter your valid key near this line: ' . "\n"
-                . 'define(\'LICENSE_KEY\', \'ENTER YOUR KEY HERE\');' . "\n" . 'Once you\'ve done this, refresh your browser.' . "\n\n"
-                . 'For more help, visit our website at http://www.catsone.com for support options.';
-        }
-
-        echo 'That is not a valid key. You can register for a free open source license key on our website '
-            . 'at http://www.catsone.com or a professional key to unlock all of the available features at '
-            . 'http://www.catsone.com/professional';
-    }
-
     private function wizard_localization()
     {
         if (!isset($_GET['timeZone']) || !isset($_GET['dateFormat']))
@@ -3284,14 +3178,6 @@ class SettingsUI extends UserInterface
         $site = new Site($this->_siteID);
         $site->setLocalization($timeZone, $isDMY);
         $site->setLocalizationConfigured();
-
-        echo 'Ok';
-    }
-
-    private function wizard_license()
-    {
-        $site = new Site($this->_siteID);
-        $site->setAgreedToLicense();
 
         echo 'Ok';
     }

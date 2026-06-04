@@ -305,32 +305,6 @@ class LoginUI extends UserInterface
             $wizard->addPage('Welcome!', './modules/login/wizard/Intro.tpl', '', false, true);
         }
 
-        if (!$_SESSION['CATS']->isAgreedToLicense())
-        {
-            $phpeval = '';
-            if (!eval(Hooks::get('LICENSE_TERMS'))) return;
-            $wizard->addPage('License', './modules/login/wizard/License.tpl', $phpeval, true, true);
-        }
-
-        if (defined('CATS_TEST_MODE') && CATS_TEST_MODE)
-        {
-            // On-site wizard pages
-            if (!LicenseUtility::isLicenseValid())
-            {
-                if (defined('LICENSE_KEY') && LICENSE_KEY == '')
-                {
-                    $template = 'Register.tpl';
-                    $templateName = 'Register';
-                }
-                else
-                {
-                    $template = 'Reregister.tpl';
-                    $templateName = 'License Expired';
-                }
-                $wizard->addPage($templateName, './modules/login/wizard/' . $template, '', false, true);
-            }
-        }
-
         // if logged in for the first time, change password
         if (strtolower($username) == 'admin' && $password === DEFAULT_ADMIN_PASSWORD)
         {

@@ -1466,17 +1466,11 @@ Scenario Outline: Reports module actions
   #When I do GET request "index.php?m=settings&a=ajax_wizardDeleteUser"
   #And the response should <FDeleteUser> contain "You don't have permission"
      
-  #When I do GET request "index.php?m=settings&a=ajax_wizardCheckKey"
-  #And the response should <FCheckKey> contain "You don't have permission"
-  
   #When I do GET request "index.php?m=settings&a=ajax_wizardLocalization"
   #And the response should <FLocalization> contain "You don't have permission"
   
   #When I do GET request "index.php?m=settings&a=ajax_wizardFirstTimeSetup"
   #And the response should <FFirstTimeSetup> contain "You don't have permission"
-    
-  #When I do GET request "index.php?m=settings&a=ajax_wizardLicense"
-  #And the response should <FLicense> contain "You don't have permission"
   
   #When I do GET request "index.php?m=settings&a=ajax_wizardPassword"
   #And the response should <FPasswd> contain "You don't have permission"
