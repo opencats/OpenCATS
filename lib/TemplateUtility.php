@@ -132,22 +132,11 @@ class TemplateUtility
             // Begin top-right action block
             if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_UPGRADE'))) return;
 
-            if (LicenseUtility::isProfessional() &&
-                $_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA)
+            if ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA)
             {
-                if (abs(LicenseUtility::getExpirationDate() - time()) < 60*60*24*30)
-                {
-                    $daysLeft = abs(LicenseUtility::getExpirationDate() - time())/60/60/24;
-                    echo '<a href="http://www.catsone.com/professional" target="_blank">';
-                    echo '<img src="images/tabs/small_upgrade.jpg" border="0" /> ';
-                    echo 'License expires in ' . number_format($daysLeft, 0) . ' days, Renew?</a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
-                }
-                else
-                {
-                    echo '<a href="http://www.opencats.org" target="_blank">';
-                    echo '<img src="images/tabs/small_upgrade.jpg" border="0" /> ';
-                    echo 'OpenCATS.org</a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
-                }
+                echo '<a href="http://www.opencats.org" target="_blank">';
+                echo '<img src="images/tabs/small_upgrade.jpg" border="0" /> ';
+                echo 'OpenCATS.org</a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
             }
 
             echo '<form id="logoutForm" name="logoutForm" method="post" action="', $indexName, '?m=logout" '
@@ -860,13 +849,6 @@ class TemplateUtility
         echo '</body>', "\n";
         echo '</html>', "\n";
 
-        if (LicenseUtility::isProfessional() && !rand(0,10))
-        {
-            if (!LicenseUtility::validateProfessionalKey(LICENSE_KEY))
-            {
-                CATSUtility::changeConfigSetting('LICENSE_KEY', "''");
-            }
-        }
     }
 
     /**
