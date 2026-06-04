@@ -580,7 +580,7 @@ class CandidatesUI extends UserInterface
         {
             $isPopup = true;
         }
-        else
+        else if (LicenseUtility::isParsingEnabled())
         {
             $isPopup = false;
         }
@@ -597,7 +597,7 @@ class CandidatesUI extends UserInterface
         {
             $candidateID = $_GET['candidateID'];
         }
-        else
+        else if (LicenseUtility::isParsingEnabled())
         {
             $candidateID = $candidates->getIDByEmail($_GET['email']);
         }
@@ -980,11 +980,7 @@ class CandidatesUI extends UserInterface
             $isParsingEnabled = false;
         }
 
-        if (is_array($parsingStatus = LicenseUtility::getParsingStatus()) &&
-            isset($parsingStatus['parseLimit']))
-        {
-            $parsingStatus['parseLimit'] = $parsingStatus['parseLimit'] - 1;
-        }
+        $parsingStatus = array();
 
         $this->_template->assign('parsingStatus', $parsingStatus);
         $this->_template->assign('isParsingEnabled', $isParsingEnabled);
@@ -3056,6 +3052,31 @@ class CandidatesUI extends UserInterface
                 $attachmentCreator = new AttachmentCreator($this->_siteID);
                 $attachmentCreator->createFromText(
                     DATA_ITEM_CANDIDATE, $candidateID, $_POST['documentText'], 'MyResume.txt', true
+                );
+
+                if ($attachmentCreator->isError())
+                {
+                    CommonErrors::fatal(COMMONERROR_FILEERROR, $this, $attachmentCreator->getError());
+                }
+
+                if ($attachmentCreator->duplicatesOccurred())
+                {
+                    $this->listByView(
+                        'This attachment has already been added to this candidate.'
+                    );
+                    return;
+                }
+
+                if (!eval(Hooks::get('CANDIDATE_ON_CREATE_ATTACHMENT_POST'))) return;
+            }
+            else if (!$attachmentCreated && !empty($textResumeBlock))
+            {
+                /* Create a text resume if the user posted one. (automated tool) */
+                if (!eval(Hooks::get('CANDIDATE_ON_CREATE_ATTACHMENT_PRE'))) return;
+
+                $attachmentCreator = new AttachmentCreator($this->_siteID);
+                $attachmentCreator->createFromText(
+                    DATA_ITEM_CANDIDATE, $candidateID, $textResumeBlock, $textResumeFilename, true
                 );
 
                 if ($attachmentCreator->isError())
