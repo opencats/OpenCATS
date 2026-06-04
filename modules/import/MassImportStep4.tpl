@@ -1,7 +1,6 @@
 <div class="stepContainer">
     <table cellpadding="0" cellspacing="0" width="100%">
         <tr>
-            <?php if (LicenseUtility::isParsingEnabled()): ?>
             <td width="45%" valign="top">
                 <span style="font-size: 18px; font-weight: bold;">
                 <font color="green"><?php echo count($this->importedCandidates); ?></font> Candidate<?php echo count($this->importedCandidates) != 1 ? 's' : ''; ?> Imported
@@ -37,10 +36,7 @@
                 <?php endif; ?>
             </td>
             <td width="10%">&nbsp;</td>
-            <?php else: ?>
-            <td colpan="2" width="1">&nbsp;</td>
-            <?php endif; ?>
-            <td <?php if (LicenseUtility::isParsingEnabled()): ?>width="45%" <?php endif; ?>valign="top">
+            <td width="45%" valign="top">
                 <span style="font-size: 18px; font-weight: bold;">
                 <font color="blue"><?php echo count($this->importedDocuments); ?></font> Resume Document<?php echo count($this->importedDocuments) != 1 ? 's' : ''; ?> Saved
                 </span>

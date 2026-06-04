@@ -38,7 +38,6 @@ include_once(LEGACY_ROOT . '/lib/ListEditor.php');
 include_once(LEGACY_ROOT . '/lib/SystemUtility.php');
 include_once(LEGACY_ROOT . '/lib/Mailer.php');
 include_once(LEGACY_ROOT . '/lib/EmailTemplates.php');
-include_once(LEGACY_ROOT . '/lib/License.php');
 include_once(LEGACY_ROOT . '/lib/History.php');
 include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 include_once(LEGACY_ROOT . '/lib/CareerPortal.php');

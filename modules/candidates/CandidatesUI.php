@@ -44,7 +44,6 @@ include_once(LEGACY_ROOT . '/lib/EmailTemplates.php');
 include_once(LEGACY_ROOT . '/lib/DocumentToText.php');
 include_once(LEGACY_ROOT . '/lib/DatabaseSearch.php');
 include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
-include_once(LEGACY_ROOT . '/lib/License.php');
 include_once(LEGACY_ROOT . '/lib/ParseUtility.php');
 include_once(LEGACY_ROOT . '/lib/Questionnaire.php');
 include_once(LEGACY_ROOT . '/lib/Tags.php');
@@ -580,7 +579,7 @@ class CandidatesUI extends UserInterface
         {
             $isPopup = true;
         }
-        else if (LicenseUtility::isParsingEnabled())
+        else
         {
             $isPopup = false;
         }
@@ -597,7 +596,7 @@ class CandidatesUI extends UserInterface
         {
             $candidateID = $_GET['candidateID'];
         }
-        else if (LicenseUtility::isParsingEnabled())
+        else
         {
             $candidateID = $candidates->getIDByEmail($_GET['email']);
         }
@@ -955,15 +954,10 @@ class CandidatesUI extends UserInterface
 
         if (!eval(Hooks::get('CANDIDATE_ADD'))) return;
 
-        /* If parsing is not enabled server-wide, say so. */
-        if (!LicenseUtility::isParsingEnabled())
-        {
-            $isParsingEnabled = false;
-        }
         /* If e-mail has been sent and it wasn't set by the parser, it needs
          * the old format.
          */
-        else if (!isset($preassignedFields['email']))
+        if (!isset($preassignedFields['email']))
         {
             $isParsingEnabled = true;
         }
@@ -1006,138 +1000,135 @@ class CandidatesUI extends UserInterface
 
     public function checkParsingFunctions()
     {
-        if (LicenseUtility::isParsingEnabled())
-        {
-            if (isset($_POST['documentText'])) $contents = $_POST['documentText'];
-            else $contents = '';
+        if (isset($_POST['documentText'])) $contents = $_POST['documentText'];
+        else $contents = '';
 
-            // Retain all field data since this isn't done over AJAX (yet)
-            $fields = array(
-                'firstName'       => $this->getTrimmedInput('firstName', $_POST),
-                'middleName'      => $this->getTrimmedInput('middleName', $_POST),
-                'lastName'        => $this->getTrimmedInput('lastName', $_POST),
-                'email1'          => $this->getTrimmedInput('email1', $_POST),
-                'email2'          => $this->getTrimmedInput('email2', $_POST),
-                'phoneHome'       => $this->getTrimmedInput('phoneHome', $_POST),
-                'phoneCell'       => $this->getTrimmedInput('phoneCell', $_POST),
-                'phoneWork'       => $this->getTrimmedInput('phoneWork', $_POST),
-                'address'         => $this->getTrimmedInput('address', $_POST),
-                'address2'        => $this->getTrimmedInput('address2', $_POST),
-                'city'            => $this->getTrimmedInput('city', $_POST),
-                'state'           => $this->getTrimmedInput('state', $_POST),
-                'zip'             => $this->getTrimmedInput('zip', $_POST),
-                'source'          => $this->getTrimmedInput('source', $_POST),
-                'keySkills'       => $this->getTrimmedInput('keySkills', $_POST),
-                'currentEmployer' => $this->getTrimmedInput('currentEmployer', $_POST),
-                'currentPay'      => $this->getTrimmedInput('currentPay', $_POST),
-                'desiredPay'      => $this->getTrimmedInput('desiredPay', $_POST),
-                'notes'           => $this->getTrimmedInput('notes', $_POST),
-                'canRelocate'     => $this->getTrimmedInput('canRelocate', $_POST),
-                'webSite'         => $this->getTrimmedInput('webSite', $_POST),
-                'bestTimeToCall'  => $this->getTrimmedInput('bestTimeToCall', $_POST),
-                'gender'          => $this->getTrimmedInput('gender', $_POST),
-                'race'            => $this->getTrimmedInput('race', $_POST),
-                'veteran'         => $this->getTrimmedInput('veteran', $_POST),
-                'disability'      => $this->getTrimmedInput('disability', $_POST),
-                'documentTempFile'=> $this->getTrimmedInput('documentTempFile', $_POST),
-                'isFromParser'    => true
+        // Retain all field data since this isn't done over AJAX (yet)
+        $fields = array(
+            'firstName'       => $this->getTrimmedInput('firstName', $_POST),
+            'middleName'      => $this->getTrimmedInput('middleName', $_POST),
+            'lastName'        => $this->getTrimmedInput('lastName', $_POST),
+            'email1'          => $this->getTrimmedInput('email1', $_POST),
+            'email2'          => $this->getTrimmedInput('email2', $_POST),
+            'phoneHome'       => $this->getTrimmedInput('phoneHome', $_POST),
+            'phoneCell'       => $this->getTrimmedInput('phoneCell', $_POST),
+            'phoneWork'       => $this->getTrimmedInput('phoneWork', $_POST),
+            'address'         => $this->getTrimmedInput('address', $_POST),
+            'address2'        => $this->getTrimmedInput('address2', $_POST),
+            'city'            => $this->getTrimmedInput('city', $_POST),
+            'state'           => $this->getTrimmedInput('state', $_POST),
+            'zip'             => $this->getTrimmedInput('zip', $_POST),
+            'source'          => $this->getTrimmedInput('source', $_POST),
+            'keySkills'       => $this->getTrimmedInput('keySkills', $_POST),
+            'currentEmployer' => $this->getTrimmedInput('currentEmployer', $_POST),
+            'currentPay'      => $this->getTrimmedInput('currentPay', $_POST),
+            'desiredPay'      => $this->getTrimmedInput('desiredPay', $_POST),
+            'notes'           => $this->getTrimmedInput('notes', $_POST),
+            'canRelocate'     => $this->getTrimmedInput('canRelocate', $_POST),
+            'webSite'         => $this->getTrimmedInput('webSite', $_POST),
+            'bestTimeToCall'  => $this->getTrimmedInput('bestTimeToCall', $_POST),
+            'gender'          => $this->getTrimmedInput('gender', $_POST),
+            'race'            => $this->getTrimmedInput('race', $_POST),
+            'veteran'         => $this->getTrimmedInput('veteran', $_POST),
+            'disability'      => $this->getTrimmedInput('disability', $_POST),
+            'documentTempFile'=> $this->getTrimmedInput('documentTempFile', $_POST),
+            'isFromParser'    => true
+        );
+
+        /**
+         * User is loading a resume from a document. Convert it to a string and paste the contents
+         * into the textarea field on the add candidate page after validating the form.
+         */
+        if (isset($_POST['loadDocument']) && $_POST['loadDocument'] == 'true')
+        {
+            // Get the upload file from the post data
+            $newFileName = FileUtility::getUploadFileFromPost(
+                $this->_siteID, // The site ID
+                'addcandidate', // Sub-directory of the site's upload folder
+                'documentFile'  // The DOM "name" from the <input> element
             );
 
-            /**
-             * User is loading a resume from a document. Convert it to a string and paste the contents
-             * into the textarea field on the add candidate page after validating the form.
-             */
-            if (isset($_POST['loadDocument']) && $_POST['loadDocument'] == 'true')
+            if ($newFileName !== false)
             {
-                // Get the upload file from the post data
-                $newFileName = FileUtility::getUploadFileFromPost(
+                // Get the relative path to the file (to perform operations on)
+                $newFilePath = FileUtility::getUploadFilePath(
                     $this->_siteID, // The site ID
-                    'addcandidate', // Sub-directory of the site's upload folder
-                    'documentFile'  // The DOM "name" from the <input> element
+                    'addcandidate', // The sub-directory
+                    $newFileName
                 );
 
-                if ($newFileName !== false)
+                $documentToText = new DocumentToText();
+                $doctype = $documentToText->getDocumentType($newFilePath);
+
+                if ($documentToText->convert($newFilePath, $doctype))
                 {
-                    // Get the relative path to the file (to perform operations on)
-                    $newFilePath = FileUtility::getUploadFilePath(
-                        $this->_siteID, // The site ID
-                        'addcandidate', // The sub-directory
-                        $newFileName
-                    );
-
-                    $documentToText = new DocumentToText();
-                    $doctype = $documentToText->getDocumentType($newFilePath);
-
-                    if ($documentToText->convert($newFilePath, $doctype))
+                    $contents = $documentToText->getString();
+                    if ($doctype == DOCUMENT_TYPE_DOC)
                     {
-                        $contents = $documentToText->getString();
-                        if ($doctype == DOCUMENT_TYPE_DOC)
-                        {
-                            $contents = str_replace('|', "\n", $contents);
-                        }
-
-                        // Remove things like _rDOTr for ., etc.
-                        $contents = DatabaseSearch::fulltextDecode($contents);
-                    }
-                    else
-                    {
-                        $contents = @file_get_contents($newFilePath);
-                        $fields['binaryData'] = true;
+                        $contents = str_replace('|', "\n", $contents);
                     }
 
-                    // Save the short (un-pathed) name
-                    $fields['documentTempFile'] = $newFileName;
-
-                    if (isset($_COOKIE['CATS_SP_TEMP_FILE']) && ($oldFile = $_COOKIE['CATS_SP_TEMP_FILE']) != '' &&
-                        strcasecmp($oldFile, $newFileName))
-                    {
-                        // Get the safe, old file they uploaded and didn't use (if exists) and delete
-                        $oldFilePath = FileUtility::getUploadFilePath($this->_siteID, 'addcandidate', $oldFile);
-
-                        if ($oldFilePath !== false)
-                        {
-                            @unlink($oldFilePath);
-                        }
-                    }
-
-                    // Prevent users from creating more than 1 temp file for single parsing (sp)
-                    setcookie('CATS_SP_TEMP_FILE', $newFileName, time() + (60*60*24*7));
-                }
-
-                if (isset($_POST['parseDocument']) && $_POST['parseDocument'] == 'true' && $contents != '')
-                {
-                    // ...
+                    // Remove things like _rDOTr for ., etc.
+                    $contents = DatabaseSearch::fulltextDecode($contents);
                 }
                 else
                 {
-                    return array($contents, $fields);
+                    $contents = @file_get_contents($newFilePath);
+                    $fields['binaryData'] = true;
                 }
+
+                // Save the short (un-pathed) name
+                $fields['documentTempFile'] = $newFileName;
+
+                if (isset($_COOKIE['CATS_SP_TEMP_FILE']) && ($oldFile = $_COOKIE['CATS_SP_TEMP_FILE']) != '' &&
+                    strcasecmp($oldFile, $newFileName))
+                {
+                    // Get the safe, old file they uploaded and didn't use (if exists) and delete
+                    $oldFilePath = FileUtility::getUploadFilePath($this->_siteID, 'addcandidate', $oldFile);
+
+                    if ($oldFilePath !== false)
+                    {
+                        @unlink($oldFilePath);
+                    }
+                }
+
+                // Prevent users from creating more than 1 temp file for single parsing (sp)
+                setcookie('CATS_SP_TEMP_FILE', $newFileName, time() + (60*60*24*7));
             }
 
-            /**
-             * User is parsing the contents of the textarea field on the add candidate page.
-             */
             if (isset($_POST['parseDocument']) && $_POST['parseDocument'] == 'true' && $contents != '')
             {
-                $pu = new ParseUtility();
-                if ($res = $pu->documentParse('untitled', strlen($contents), '', $contents))
-                {
-                    if (isset($res['first_name'])) $fields['firstName'] = $res['first_name']; else $fields['firstName'] = '';
-                    if (isset($res['last_name'])) $fields['lastName'] = $res['last_name']; else $fields['lastName'] = '';
-                    $fields['middleName'] = '';
-                    if (isset($res['email_address'])) $fields['email1'] = $res['email_address']; else $fields['email1'] = '';
-                    $fields['email2'] = '';
-                    if (isset($res['us_address'])) $fields['address'] = $res['us_address']; else $fields['address'] = '';
-                    if (isset($res['city'])) $fields['city'] = $res['city']; else $fields['city'] = '';
-                    if (isset($res['state'])) $fields['state'] = $res['state']; else $fields['state'] = '';
-                    if (isset($res['zip_code'])) $fields['zip'] = $res['zip_code']; else $fields['zip'] = '';
-                    if (isset($res['phone_number'])) $fields['phoneHome'] = $res['phone_number']; else $fields['phoneHome'] = '';
-                    $fields['phoneWork'] = $fields['phoneCell'] = '';
-                    if (isset($res['skills'])) $fields['keySkills'] = str_replace("\n", ' ', str_replace('"', '\'\'', $res['skills']));
-                }
-
+                // ...
+            }
+            else
+            {
                 return array($contents, $fields);
             }
+        }
+
+        /**
+         * User is parsing the contents of the textarea field on the add candidate page.
+         */
+        if (isset($_POST['parseDocument']) && $_POST['parseDocument'] == 'true' && $contents != '')
+        {
+            $pu = new ParseUtility();
+            if ($res = $pu->documentParse('untitled', strlen($contents), '', $contents))
+            {
+                if (isset($res['first_name'])) $fields['firstName'] = $res['first_name']; else $fields['firstName'] = '';
+                if (isset($res['last_name'])) $fields['lastName'] = $res['last_name']; else $fields['lastName'] = '';
+                $fields['middleName'] = '';
+                if (isset($res['email_address'])) $fields['email1'] = $res['email_address']; else $fields['email1'] = '';
+                $fields['email2'] = '';
+                if (isset($res['us_address'])) $fields['address'] = $res['us_address']; else $fields['address'] = '';
+                if (isset($res['city'])) $fields['city'] = $res['city']; else $fields['city'] = '';
+                if (isset($res['state'])) $fields['state'] = $res['state']; else $fields['state'] = '';
+                if (isset($res['zip_code'])) $fields['zip'] = $res['zip_code']; else $fields['zip'] = '';
+                if (isset($res['phone_number'])) $fields['phoneHome'] = $res['phone_number']; else $fields['phoneHome'] = '';
+                $fields['phoneWork'] = $fields['phoneCell'] = '';
+                if (isset($res['skills'])) $fields['keySkills'] = str_replace("\n", ' ', str_replace('"', '\'\'', $res['skills']));
+            }
+
+            return array($contents, $fields);
         }
 
         return false;
@@ -2970,7 +2961,7 @@ class CandidatesUI extends UserInterface
          * file already and just needs to be attached. The attachment has also successfully
          * been DocumentToText converted, so we know it's a good file.
          */
-        else if (LicenseUtility::isParsingEnabled())
+        else
         {
             /**
              * Description: User clicks "browse" and selects a resume file. User doesn't click
@@ -3094,26 +3085,6 @@ class CandidatesUI extends UserInterface
 
                 if (!eval(Hooks::get('CANDIDATE_ON_CREATE_ATTACHMENT_POST'))) return;
             }
-        }
-
-        /* Create a text resume if the user posted one. (automated tool) */
-        else if (!empty($textResumeBlock))
-        {
-            $attachmentCreator = new AttachmentCreator($this->_siteID);
-            $attachmentCreator->createFromText(
-                DATA_ITEM_CANDIDATE, $candidateID, $textResumeBlock, $textResumeFilename, true
-            );
-
-            if ($attachmentCreator->isError())
-            {
-                CommonErrors::fatal(COMMONERROR_FILEERROR, $this, $attachmentCreator->getError());
-                return;
-                //$this->fatal($attachmentCreator->getError());
-            }
-            $isTextExtractionError = $attachmentCreator->isTextExtractionError();
-            $textExtractionErrorMessage = $attachmentCreator->getTextExtractionError();
-
-            // FIXME: Show parse errors!
         }
 
         if (!eval(Hooks::get('CANDIDATE_ON_ADD_POST'))) return;

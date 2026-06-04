@@ -32,7 +32,6 @@ include_once(LEGACY_ROOT . '/lib/Mailer.php');
 include_once(LEGACY_ROOT . '/lib/Site.php');
 include_once(LEGACY_ROOT . '/lib/NewVersionCheck.php');
 include_once(LEGACY_ROOT . '/lib/Wizard.php');
-include_once(LEGACY_ROOT . '/lib/License.php');
 
 class LoginUI extends UserInterface
 {

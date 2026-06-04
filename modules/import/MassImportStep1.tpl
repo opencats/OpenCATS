@@ -56,7 +56,6 @@ You have <?php echo number_format(count($this->documents), 0); ?> document<?php 
 
 <?php endif; ?>
 
-<?php if (LicenseUtility::isParsingEnabled()): ?>
 <div style="padding: 10px; margin-top: 15px; text-align: left;">
     <table cellpadding="0" cellspacing="0" border="0">
         <tr>
@@ -79,6 +78,5 @@ You have <?php echo number_format(count($this->documents), 0); ?> document<?php 
         </tr>
     </table>
 </div>
-<?php endif; ?>
 
 </div>

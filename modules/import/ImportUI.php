@@ -1388,14 +1388,7 @@ class ImportUI extends UserInterface
 
         $doc2text = new DocumentToText();
         $pu = new ParseUtility();
-        if (LicenseUtility::isParsingEnabled())
-        {
-            $parsingEnabled = true;
-        }
-        else
-        {
-            $parsingEnabled = false;
-        }
+        $parsingEnabled = true;
 
         if ($doc2text->convert($name, $type) === false)
         {
