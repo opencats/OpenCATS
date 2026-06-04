@@ -68,7 +68,6 @@ class SettingsUI extends UserInterface
         $this->_moduleName = 'settings';
         $this->_moduleTabText = 'Settings';
 
-        /* Only CATS professional on site gets to make career portal customizer users. */
         if( class_exists('ACL_SETUP') && !empty(ACL_SETUP::$USER_ROLES) )
         {
             $this->_settingsUserCategories = ACL_SETUP::$USER_ROLES;
@@ -338,14 +337,6 @@ class SettingsUI extends UserInterface
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->manageUsers();
-                break;
-
-            case 'professional':
-                if ($this->getUserAccessLevel('settings.professional') < ACCESS_LEVEL_DEMO)
-                {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-                }
-                $this->manageProfessional();
                 break;
 
             case 'previewPage':
@@ -2534,17 +2525,7 @@ class SettingsUI extends UserInterface
 
         if (!eval(Hooks::get('SETTINGS_DISPLAY_ADMINISTRATION'))) return;
 
-        /* Check if careers website is enabled or can be enabled */
-        $careerPortalUnlock = false;
-        $careerPortalSettings = new CareerPortalSettings($this->_siteID);
-        $cpData = $careerPortalSettings->getAll();
-        if (intval($cpData['enabled']) || !$_SESSION['CATS']->isFree() ||
-            LicenseUtility::isProfessional())
-        {
-            $careerPortalUnlock = true;
-        }
-
-        $this->_template->assign('careerPortalUnlock', $careerPortalUnlock);
+        $this->_template->assign('careerPortalUnlock', true);
         $this->_template->assign('subActive', 'Administration');
         $this->_template->assign('systemAdministration', $systemAdministration);
         $this->_template->assign('active', $this);
@@ -2741,76 +2722,6 @@ class SettingsUI extends UserInterface
         $this->_template->assign('rs', $rs);
         $this->_template->assign('license', $license);
         $this->_template->display('./modules/settings/Users.tpl');
-    }
-
-    private function manageProfessional()
-    {
-        $wf = new WebForm();
-        $wf->addField('licenseKey', 'License Key', WFT_TEXT, true, 60, 30, 190, '', '/[A-Za-z0-9 ]+/',
-            'That is not a valid license key!');
-        $message = '';
-        $license = new License();
-
-        $upgradeStatus = false;
-
-        if (isset($_GET['webFormPostBack']))
-        {
-            list ($fields, $errors) = $wf->getValidatedFields();
-            if (count($errors) > 0) $message = 'Please enter a license key in order to continue.';
-
-            $key = trim($fields['licenseKey']);
-
-            $configWritten = false;
-
-            if ($license->setKey($key) === false)
-            {
-                $message = 'That is not a valid license key<br /><span style="font-size: 16px; color: #000000;">Please verify that you have the correct key and try again.</span>';
-            }
-            else if ($license->isProfessional())
-            {
-                if (!CATSUtility::isSOAPEnabled())
-                {
-                    $message = 'CATS Professional requires the PHP SOAP library which isn\'t currently installed.<br /><br />'
-                        . 'Installation Instructions:<br /><br />'
-                        . 'WAMP/Windows Users:<dl>'
-                        . '<li>Left click on the wamp icon.</li>'
-                        . '<li>Select "PHP Settings" from the drop-down list.</li>'
-                        . '<li>Select "PHP Extensions" from the drop-down list.</li>'
-                        . '<li>Check the "php_soap" option.</li>'
-                        . '<li>Restart WAMP.</li></dl>'
-                        . 'Linux Users:<br /><br />'
-                        . 'Re-install PHP with the --enable-soap configuration option.<br /><br />'
-                        . 'Please visit http://www.catsone.com for more support options.';
-                }
-                if (!LicenseUtility::validateProfessionalKey($key))
-                {
-                    $message = 'That is not a valid Professional membership key<br /><span style="font-size: 16px; color: #000000;">Please verify that you have the correct key and try again.</span>';
-                }
-                else if (!CATSUtility::changeConfigSetting('LICENSE_KEY', "'" . $key . "'"))
-                {
-                    $message = 'Internal Permissions Error<br /><span style="font-size: 12px; color: #000000;">CATS is unable '
-                        . 'to write changes to your <b>config.php</b> file. Please change the file permissions or contact us '
-                        . 'for support. Our support e-mail is <a href="mailto:support@catsone.com">support@catsone.com</a> '
-                        . 'and our office number if (952) 417-0067.</span>';
-                }
-                else
-                {
-                    $upgradeStatus = true;
-                }
-            }
-            else
-            {
-                $message = 'That is not a valid Professional membership key<br /><span style="font-size: 16px; color: #000000;">Please verify that you have the correct key and try again.</span>';
-            }
-        }
-
-        $this->_template->assign('active', $this);
-        $this->_template->assign('subActive', 'Professional Membership');
-        $this->_template->assign('message', $message);
-        $this->_template->assign('upgradeStatus', $upgradeStatus);
-        $this->_template->assign('webForm', $wf);
-        $this->_template->assign('license', $license);
-        $this->_template->display('./modules/settings/Professional.tpl');
     }
 
     /*

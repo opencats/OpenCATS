@@ -371,7 +371,6 @@ class ACL_SETUP {
             'settings.upgradeSiteName'
             'settings.newSiteName'
             'settings.manageUsers'
-            'settings.professional'
             'settings.previewPage'
             'settings.previewPageTop'
             'settings.showUser'
