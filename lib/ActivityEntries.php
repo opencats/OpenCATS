@@ -181,7 +181,7 @@ class ActivityEntries
      * @return boolean True if successful; false otherwise.
      */
     public function update($activityID, $activityType, $activityNotes,
-        $jobOrderID = false, $date = false, $timezoneOffset)
+        $jobOrderID, $date, $timezoneOffset)
     {
         /* Get some extra information about the activity entry that we'll
          * need later on.
