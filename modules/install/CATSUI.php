@@ -41,6 +41,34 @@ class CATSUI extends UserInterface
 
     public function handleRequest()
     {
+        if ($this->getAction() !== 'maint')
+        {
+            return;
+        }
+
+        if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn())
+        {
+            CATSUtility::transferRelativeURI('m=login');
+            die();
+        }
+
+        if ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) < ACCESS_LEVEL_SA)
+        {
+            header('HTTP/1.1 403 Forbidden');
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
+        }
+
+        if (!SchemaMigrationStatus::hasPendingInstallMigrations())
+        {
+            CATSUtility::transferRelativeURI('');
+            die();
+        }
+
+        $this->_template->assign(
+            'csrfToken',
+            $_SESSION['CATS']->getCSRFToken()
+        );
+        $this->_template->display('./modules/install/Maintenance.tpl');
     }
 }
 

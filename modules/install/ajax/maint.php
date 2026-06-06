@@ -29,25 +29,37 @@
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST')
 {
-    header('Content-Type: text/html; charset=UTF-8');
-
-    $actionURL = htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');
-
-    echo '<!DOCTYPE html>',
-         '<html><head><title>OpenCATS Maintenance</title></head><body>',
-         '<p>This maintenance action must be triggered via POST.</p>',
-         '<p>This page starts maintenance mode and related installer tasks.</p>',
-         '<form method="post" action="', $actionURL, '">',
-         '<input type="hidden" name="postback" value="postback" />',
-         '<button type="submit">Run maintenance now</button>',
-         '</form>',
-         '</body></html>';
+    header('HTTP/1.1 405 Method Not Allowed');
+    header('Allow: POST');
     die();
+}
+
+$installerActive = !file_exists('INSTALL_BLOCK');
+
+if (!$installerActive)
+{
+    /* This endpoint is reached through ajax.php, which loads the required
+     * dependencies, starts the session and validates the CSRF token. A fresh
+     * installation uses the installer's existing access model. An installed
+     * system additionally requires an authenticated site admin.
+     */
+    if (!isset($_SESSION['CATS']) ||
+        !$_SESSION['CATS']->isLoggedIn() ||
+        $_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) < ACCESS_LEVEL_SA)
+    {
+        header('HTTP/1.1 403 Forbidden');
+        die('Access denied.');
+    }
 }
 
 if (file_exists('./modules.cache'))
 {
     @unlink('./modules.cache');
+}
+
+if (isset($_SESSION['modules']))
+{
+    unset($_SESSION['modules']);
 }
 
 $maintPage = true;

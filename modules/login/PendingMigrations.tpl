@@ -21,7 +21,7 @@
 
                     <?php if ($this->isAdministrator): ?>
                         <p>Database migrations are pending. OpenCATS should be updated before normal use continues.</p>
-                        <p>Open the <a href="installwizard.php">Installation Wizard</a> to complete the upgrade.</p>
+                        <p><a href="index.php?m=install&amp;a=maint">Start Maintenance</a></p>
                     <?php else: ?>
                         <p>Database maintenance is required before OpenCATS can be used normally. Please contact your administrator.</p>
                     <?php endif; ?>

@@ -160,6 +160,8 @@ $isPublicRequest =
     (isset($rssPage) && $rssPage) ||
     (isset($xmlPage) && $xmlPage);
 $isMigrationGateExcluded =
+    (isset($_GET['m']) && $_GET['m'] === 'install' &&
+        isset($_GET['a']) && $_GET['a'] === 'maint') ||
     (isset($_GET['m']) && ($_GET['m'] === 'login' || $_GET['m'] === 'logout'));
 
 if ($_SESSION['CATS']->isLoggedIn() &&
