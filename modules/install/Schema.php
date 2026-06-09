@@ -1476,8 +1476,8 @@ class CATSSchema
                         $notes = $row[\'notes\'];
 
                         $cleanedNotes = preg_replace(
-                            "/<span\\b(?=[^>]*\\bstyle\\s*=\\s*([\\\"\\\'])[^\\\"\\\']*\\bcolor\\s*:\\s*#ff6c00\\b[^\\\"\\\']*\\1)[^>]*>(.*?)<\\/span>/is",
-                            "$2",
+                            \'/<span\\b(?=[^>]*\\bstyle\\s*=\\s*([\\\'"])[^\\\'"]*\\bcolor\\s*:\\s*#ff6c00\\b[^\\\'"]*\\1)[^>]*>(.*?)<\\/span>/is\',
+                            \'$2\',
                             $notes
                         );
 
