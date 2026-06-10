@@ -1052,6 +1052,7 @@ function MySQLConnect()
         return false;
     }
 
+    mysqli_set_charset($mySQLConnection, SQL_CHARACTER_SET);
 
     include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
     $db = getInstallerDatabaseConnection();
