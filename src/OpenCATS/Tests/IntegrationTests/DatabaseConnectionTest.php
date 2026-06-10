@@ -126,6 +126,38 @@ class DatabaseConnectionTest extends DatabaseTestCase
         }
     }
 
+    function testFourByteUnicodeRoundTrip()
+    {
+        $db = DatabaseConnection::getInstance();
+
+        $db->query(
+            'CREATE TEMPORARY TABLE `utf8mb4_regression_test` ('
+            . '`id` int(11) NOT NULL AUTO_INCREMENT,'
+            . '`value` text NOT NULL,'
+            . 'PRIMARY KEY (`id`)'
+            . ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci'
+        );
+
+        $fourByteString = "OpenCATS \u{1F600}";
+
+        $db->query(
+            'INSERT INTO `utf8mb4_regression_test` (`value`) VALUES ('
+            . $db->makeQueryString($fourByteString)
+            . ')'
+        );
+
+        $rows = $db->getAllAssoc('SELECT `value` FROM `utf8mb4_regression_test` LIMIT 1');
+
+        $db->query('DROP TEMPORARY TABLE `utf8mb4_regression_test`');
+
+        $this->assertCount(1, $rows, 'Expected one row back from utf8mb4 regression table');
+        $this->assertSame(
+            $fourByteString,
+            $rows[0]['value'],
+            'Four-byte Unicode string must survive a database round-trip unchanged'
+        );
+    }
+
     function testMakeQueryDouble()
     {
         $db = DatabaseConnection::getInstance();
