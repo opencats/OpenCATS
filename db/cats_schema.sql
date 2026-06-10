@@ -1,4 +1,4 @@
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 /*!40101 SET SQL_MODE=''*/;
 
@@ -8,11 +8,11 @@
 
 CREATE TABLE `access_level` (
   `access_level_id` INT(11) NOT NULL DEFAULT '0',
-  `short_description` VARCHAR(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `long_description` TEXT COLLATE utf8_unicode_ci NOT NULL,
+  `short_description` VARCHAR(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `long_description` TEXT COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`access_level_id`),
   KEY `IDX_access_level` (`short_description`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `access_level` */
 
@@ -35,7 +35,7 @@ CREATE TABLE `activity` (
   `date_occurred` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   `date_created` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   `type` INT(11) NOT NULL DEFAULT '0',
-  `notes` TEXT COLLATE utf8_unicode_ci,
+  `notes` TEXT COLLATE utf8mb4_unicode_ci,
   `date_modified` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   PRIMARY KEY (`activity_id`),
   KEY `IDX_entered_by` (`entered_by`),
@@ -52,7 +52,7 @@ CREATE TABLE `activity` (
   KEY `IDX_site_occurred` (`site_id`, `date_occurred`),
   KEY `IDX_activity_site_type_created_job` (`site_id`, `data_item_type`, `date_created`, `entered_by`, `joborder_id`),
   KEY `IDX_activity_site_type_occurred_job` (`site_id`, `data_item_type`, `date_occurred`, `entered_by`, `joborder_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `activity` */
 
@@ -60,10 +60,10 @@ CREATE TABLE `activity` (
 
 CREATE TABLE `activity_type` (
   `activity_type_id` INT(11) NOT NULL DEFAULT '0',
-  `short_description` VARCHAR(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `short_description` VARCHAR(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`activity_type_id`),
   KEY `IDX_activity_type1` (`short_description`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `activity_type` */
 
@@ -83,26 +83,26 @@ CREATE TABLE `attachment` (
   `data_item_id` INT(11) NOT NULL DEFAULT '0',
   `data_item_type` INT(11) NOT NULL DEFAULT '0',
   `site_id` INT(11) NOT NULL DEFAULT '0',
-  `title` VARCHAR(128) COLLATE utf8_unicode_ci,
-  `original_filename` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `stored_filename` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `content_type` VARCHAR(255) COLLATE utf8_unicode_ci,
+  `title` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
+  `original_filename` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `stored_filename` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `content_type` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
   `resume` INT(1) NOT NULL DEFAULT '0',
-  `text` TEXT COLLATE utf8_unicode_ci,
+  `text` TEXT COLLATE utf8mb4_unicode_ci,
   `date_created` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   `date_modified` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   `profile_image` INT(1) DEFAULT '0',
-  `directory_name` VARCHAR(64) COLLATE utf8_unicode_ci,
-  `md5_sum` VARCHAR(40) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `directory_name` VARCHAR(64) COLLATE utf8mb4_unicode_ci,
+  `md5_sum` VARCHAR(40) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `file_size_kb` INT(11) DEFAULT '0',
-  `md5_sum_text` VARCHAR(40) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `md5_sum_text` VARCHAR(40) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`attachment_id`),
   KEY `IDX_type_id` (`data_item_type`, `data_item_id`),
   KEY `IDX_data_item_id` (`data_item_id`),
   KEY `IDX_CANDIDATE_MD5_SUM` (`md5_sum`),
   KEY `IDX_site_file_size` (`site_id`, `file_size_kb`),
   KEY `IDX_site_file_size_created` (`site_id`, `file_size_kb`, `date_created`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `attachment` */
 
@@ -112,7 +112,7 @@ CREATE TABLE `calendar_event` (
   `calendar_event_id` INT(11) NOT NULL AUTO_INCREMENT,
   `type` INT(11) NOT NULL DEFAULT '0',
   `date` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
-  `title` TEXT COLLATE utf8_unicode_ci NOT NULL,
+  `title` TEXT COLLATE utf8mb4_unicode_ci NOT NULL,
   `all_day` INT(1) NOT NULL DEFAULT '0',
   `data_item_id` INT(11) NOT NULL DEFAULT '-1',
   `data_item_type` INT(11) NOT NULL DEFAULT '-1',
@@ -121,16 +121,16 @@ CREATE TABLE `calendar_event` (
   `date_modified` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   `site_id` INT(11) NOT NULL DEFAULT '0',
   `joborder_id` INT(11) DEFAULT NULL,
-  `description` TEXT COLLATE utf8_unicode_ci,
+  `description` TEXT COLLATE utf8mb4_unicode_ci,
   `duration` INT(11) NOT NULL DEFAULT '60',
   `reminder_enabled` INT(1) NOT NULL DEFAULT '0',
-  `reminder_email` TEXT COLLATE utf8_unicode_ci,
+  `reminder_email` TEXT COLLATE utf8mb4_unicode_ci,
   `reminder_time` INT(11) DEFAULT '0',
   `public` INT(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`calendar_event_id`),
   KEY `IDX_site_id_date` (`site_id`, `date`),
   KEY `IDX_site_data_item_type_id` (`site_id`, `data_item_type`, `data_item_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `calendar_event` */
 
@@ -138,11 +138,11 @@ CREATE TABLE `calendar_event` (
 
 CREATE TABLE `calendar_event_type` (
   `calendar_event_type_id` INT(11) NOT NULL DEFAULT '0',
-  `short_description` VARCHAR(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `icon_image` VARCHAR(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `short_description` VARCHAR(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `icon_image` VARCHAR(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`calendar_event_type_id`),
   KEY `IDX_short_description` (`short_description`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `calendar_event_type` */
 
@@ -158,42 +158,42 @@ INSERT INTO `calendar_event_type` (`calendar_event_type_id`, `short_description`
 CREATE TABLE `candidate` (
   `candidate_id` INT(11) NOT NULL AUTO_INCREMENT,
   `site_id` INT(11) NOT NULL DEFAULT '0',
-  `last_name` VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `first_name` VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `middle_name` VARCHAR(32) COLLATE utf8_unicode_ci,
-  `phone_home` VARCHAR(40) COLLATE utf8_unicode_ci,
-  `phone_cell` VARCHAR(40) COLLATE utf8_unicode_ci,
-  `phone_work` VARCHAR(40) COLLATE utf8_unicode_ci,
-  `address` TEXT COLLATE utf8_unicode_ci,
-  `address2` TEXT COLLATE utf8_unicode_ci,
-  `city` VARCHAR(64) COLLATE utf8_unicode_ci,
-  `state` VARCHAR(64) COLLATE utf8_unicode_ci,
-  `zip` VARCHAR(16) COLLATE utf8_unicode_ci,
-  `country` VARCHAR(2) COLLATE utf8_unicode_ci,
-  `source` VARCHAR(128) COLLATE utf8_unicode_ci,
+  `last_name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `first_name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `middle_name` VARCHAR(32) COLLATE utf8mb4_unicode_ci,
+  `phone_home` VARCHAR(40) COLLATE utf8mb4_unicode_ci,
+  `phone_cell` VARCHAR(40) COLLATE utf8mb4_unicode_ci,
+  `phone_work` VARCHAR(40) COLLATE utf8mb4_unicode_ci,
+  `address` TEXT COLLATE utf8mb4_unicode_ci,
+  `address2` TEXT COLLATE utf8mb4_unicode_ci,
+  `city` VARCHAR(64) COLLATE utf8mb4_unicode_ci,
+  `state` VARCHAR(64) COLLATE utf8mb4_unicode_ci,
+  `zip` VARCHAR(16) COLLATE utf8mb4_unicode_ci,
+  `country` VARCHAR(2) COLLATE utf8mb4_unicode_ci,
+  `source` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
   `date_available` DATETIME,
   `can_relocate` INT(1) NOT NULL DEFAULT '0',
-  `notes` TEXT COLLATE utf8_unicode_ci,
-  `key_skills` TEXT COLLATE utf8_unicode_ci,
-  `current_employer` VARCHAR(128) COLLATE utf8_unicode_ci,
+  `notes` TEXT COLLATE utf8mb4_unicode_ci,
+  `key_skills` TEXT COLLATE utf8mb4_unicode_ci,
+  `current_employer` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
   `entered_by` INT(11) NOT NULL DEFAULT '0' COMMENT 'Created-by user.',
   `owner` INT(11),
   `date_created` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   `date_modified` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
-  `email1` VARCHAR(128) COLLATE utf8_unicode_ci,
-  `email2` VARCHAR(128) COLLATE utf8_unicode_ci,
-  `web_site` VARCHAR(128) COLLATE utf8_unicode_ci,
+  `email1` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
+  `email2` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
+  `web_site` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
   `import_id` INT(11) NOT NULL DEFAULT '0',
   `is_hot` INT(1) NOT NULL DEFAULT '0',
   `eeo_ethnic_type_id` INT(11) DEFAULT '0',
   `eeo_veteran_type_id` INT(11) DEFAULT '0',
-  `eeo_disability_status` VARCHAR(5) COLLATE utf8_unicode_ci DEFAULT '',
-  `eeo_gender` VARCHAR(5) COLLATE utf8_unicode_ci DEFAULT '',
-  `desired_pay` VARCHAR(64) COLLATE utf8_unicode_ci,
-  `current_pay` VARCHAR(64) COLLATE utf8_unicode_ci,
+  `eeo_disability_status` VARCHAR(5) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `eeo_gender` VARCHAR(5) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `desired_pay` VARCHAR(64) COLLATE utf8mb4_unicode_ci,
+  `current_pay` VARCHAR(64) COLLATE utf8mb4_unicode_ci,
   `is_active` INT(1) DEFAULT '1',
   `is_admin_hidden` INT(1) DEFAULT '0',
-  `best_time_to_call` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `best_time_to_call` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`candidate_id`),
   KEY `IDX_first_name` (`first_name`),
   KEY `IDX_last_name` (`last_name`),
@@ -207,7 +207,7 @@ CREATE TABLE `candidate` (
   KEY `IDX_date_modified` (`date_modified`),
   KEY `IDX_site_first_last_modified` (`site_id`, `first_name`, `last_name`, `date_modified`),
   KEY `IDX_site_id_email_1_2` (`site_id`, `email1`(8), `email2`(8))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `candidate` */
 
@@ -220,7 +220,7 @@ CREATE TABLE `candidate_duplicates` (
   PRIMARY KEY (`old_candidate_id`, `new_candidate_id`),
   KEY `IDX_old_candidate_id` (`old_candidate_id`),
   KEY `IDX_new_candidate_id` (`new_candidate_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `candidate_duplicates` */
 
@@ -246,7 +246,7 @@ CREATE TABLE `candidate_joborder` (
   KEY `IDX_status_special` (`site_id`, `status`),
   KEY `IDX_site_joborder` (`site_id`, `joborder_id`),
   KEY `IDX_joborder_id` (`joborder_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `candidate_joborder` */
 
@@ -254,13 +254,13 @@ CREATE TABLE `candidate_joborder` (
 
 CREATE TABLE `candidate_joborder_status` (
   `candidate_joborder_status_id` INT(11) NOT NULL DEFAULT '0',
-  `short_description` VARCHAR(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `short_description` VARCHAR(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `can_be_scheduled` INT(1) NOT NULL DEFAULT '0',
   `triggers_email` INT(1) NOT NULL DEFAULT '1',
   `is_enabled` INT(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`candidate_joborder_status_id`),
   KEY `IDX_short_description` (`short_description`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `candidate_joborder_status` */
 
@@ -293,7 +293,7 @@ CREATE TABLE `candidate_joborder_status_history` (
   KEY `IDX_candidate_joborder_status_to_site` (`candidate_id`, `joborder_id`, `status_to`, `site_id`),
   KEY `IDX_joborder_site` (`joborder_id`, `site_id`),
   KEY `IDX_site_joborder_status_to` (`site_id`, `joborder_id`, `status_to`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `candidate_joborder_status_history` */
 
@@ -301,12 +301,12 @@ CREATE TABLE `candidate_joborder_status_history` (
 
 CREATE TABLE `candidate_source` (
   `source_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) COLLATE utf8_unicode_ci,
+  `name` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
   `site_id` INT(11),
   `date_created` DATETIME,
   PRIMARY KEY (`source_id`),
   KEY `siteID` (`site_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `candidate_source` */
 
@@ -318,7 +318,7 @@ CREATE TABLE `candidate_tag` (
   `candidate_id` INT(10) UNSIGNED NOT NULL,
   `tag_id` INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Table structure for table `career_portal_questionnaire` */
 
@@ -329,7 +329,7 @@ CREATE TABLE `career_portal_questionnaire` (
   `description` VARCHAR(255),
   `is_active` TINYINT(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`career_portal_questionnaire_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /* Data for the table `career_portal_questionnaire` */
 
@@ -349,7 +349,7 @@ CREATE TABLE `career_portal_questionnaire_answer` (
   `position` INT(4) NOT NULL DEFAULT '0',
   `site_id` INT(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`career_portal_questionnaire_answer_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /* Data for the table `career_portal_questionnaire_answer` */
 
@@ -365,7 +365,7 @@ CREATE TABLE `career_portal_questionnaire_history` (
   `questionnaire_description` VARCHAR(255) NOT NULL DEFAULT '',
   `date` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   PRIMARY KEY (`career_portal_questionnaire_history_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /* Data for the table `career_portal_questionnaire_history` */
 
@@ -382,7 +382,7 @@ CREATE TABLE `career_portal_questionnaire_question` (
   `site_id` INT(11) NOT NULL DEFAULT '0',
   `type` INT(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`career_portal_questionnaire_question_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /* Data for the table `career_portal_questionnaire_question` */
 
@@ -394,7 +394,7 @@ CREATE TABLE `career_portal_template` (
   `setting` VARCHAR(128) NOT NULL DEFAULT '',
   `value` TEXT,
   PRIMARY KEY (`career_portal_template_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4;
 
 /* Data for the table `career_portal_template` */
 
@@ -430,7 +430,7 @@ CREATE TABLE `career_portal_template_site` (
   `setting` VARCHAR(128) NOT NULL DEFAULT '',
   `value` TEXT,
   PRIMARY KEY (`career_portal_template_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /* Data for the table `career_portal_template_site` */
 
@@ -440,24 +440,24 @@ CREATE TABLE `company` (
   `company_id` INT(11) NOT NULL AUTO_INCREMENT,
   `site_id` INT(11) NOT NULL DEFAULT '0',
   `billing_contact` INT(11),
-  `name` VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `address` TEXT COLLATE utf8_unicode_ci,
-  `address2` TEXT COLLATE utf8_unicode_ci,
-  `city` VARCHAR(64) COLLATE utf8_unicode_ci,
-  `state` VARCHAR(64) COLLATE utf8_unicode_ci,
-  `zip` VARCHAR(16) COLLATE utf8_unicode_ci,
-  `country` VARCHAR(2) COLLATE utf8_unicode_ci,
-  `phone1` VARCHAR(40) COLLATE utf8_unicode_ci,
-  `phone2` VARCHAR(40) COLLATE utf8_unicode_ci,
-  `url` VARCHAR(128) COLLATE utf8_unicode_ci,
-  `key_technologies` TEXT COLLATE utf8_unicode_ci,
-  `notes` TEXT COLLATE utf8_unicode_ci,
+  `name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `address` TEXT COLLATE utf8mb4_unicode_ci,
+  `address2` TEXT COLLATE utf8mb4_unicode_ci,
+  `city` VARCHAR(64) COLLATE utf8mb4_unicode_ci,
+  `state` VARCHAR(64) COLLATE utf8mb4_unicode_ci,
+  `zip` VARCHAR(16) COLLATE utf8mb4_unicode_ci,
+  `country` VARCHAR(2) COLLATE utf8mb4_unicode_ci,
+  `phone1` VARCHAR(40) COLLATE utf8mb4_unicode_ci,
+  `phone2` VARCHAR(40) COLLATE utf8mb4_unicode_ci,
+  `url` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
+  `key_technologies` TEXT COLLATE utf8mb4_unicode_ci,
+  `notes` TEXT COLLATE utf8mb4_unicode_ci,
   `entered_by` INT(11),
   `owner` INT(11),
   `date_created` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   `date_modified` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   `is_hot` INT(1),
-  `fax_number` VARCHAR(40) COLLATE utf8_unicode_ci,
+  `fax_number` VARCHAR(40) COLLATE utf8mb4_unicode_ci,
   `import_id` INT(11),
   `default_company` INT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`company_id`),
@@ -469,7 +469,7 @@ CREATE TABLE `company` (
   KEY `IDX_date_created` (`date_created`),
   KEY `IDX_date_modified` (`date_modified`),
   KEY `IDX_is_hot` (`is_hot`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `company` */
 
@@ -479,13 +479,13 @@ INSERT INTO `company` (`company_id`, `site_id`, `billing_contact`, `name`, `addr
 
 CREATE TABLE `company_department` (
   `company_department_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(128) COLLATE utf8_unicode_ci,
+  `name` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
   `company_id` INT(11) NOT NULL,
   `site_id` INT(11) NOT NULL DEFAULT '0',
   `date_created` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   `created_by` INT(11),
   PRIMARY KEY (`company_department_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `company_department` */
 
@@ -495,22 +495,22 @@ CREATE TABLE `contact` (
   `contact_id` INT(11) NOT NULL AUTO_INCREMENT,
   `company_id` INT(11) NOT NULL,
   `site_id` INT(11) NOT NULL DEFAULT '0',
-  `last_name` VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `first_name` VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `title` VARCHAR(128) COLLATE utf8_unicode_ci,
-  `email1` VARCHAR(128) COLLATE utf8_unicode_ci,
-  `email2` VARCHAR(128) COLLATE utf8_unicode_ci,
-  `phone_work` VARCHAR(40) COLLATE utf8_unicode_ci,
-  `phone_cell` VARCHAR(40) COLLATE utf8_unicode_ci,
-  `phone_other` VARCHAR(40) COLLATE utf8_unicode_ci,
-  `address` TEXT COLLATE utf8_unicode_ci,
-  `address2` TEXT COLLATE utf8_unicode_ci,
-  `city` VARCHAR(64) COLLATE utf8_unicode_ci,
-  `state` VARCHAR(64) COLLATE utf8_unicode_ci,
-  `zip` VARCHAR(16) COLLATE utf8_unicode_ci,
-  `country` VARCHAR(2) COLLATE utf8_unicode_ci,
+  `last_name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `first_name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `title` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
+  `email1` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
+  `email2` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
+  `phone_work` VARCHAR(40) COLLATE utf8mb4_unicode_ci,
+  `phone_cell` VARCHAR(40) COLLATE utf8mb4_unicode_ci,
+  `phone_other` VARCHAR(40) COLLATE utf8mb4_unicode_ci,
+  `address` TEXT COLLATE utf8mb4_unicode_ci,
+  `address2` TEXT COLLATE utf8mb4_unicode_ci,
+  `city` VARCHAR(64) COLLATE utf8mb4_unicode_ci,
+  `state` VARCHAR(64) COLLATE utf8mb4_unicode_ci,
+  `zip` VARCHAR(16) COLLATE utf8mb4_unicode_ci,
+  `country` VARCHAR(2) COLLATE utf8mb4_unicode_ci,
   `is_hot` INT(1),
-  `notes` TEXT COLLATE utf8_unicode_ci,
+  `notes` TEXT COLLATE utf8mb4_unicode_ci,
   `entered_by` INT(11) NOT NULL DEFAULT '0',
   `owner` INT(11),
   `date_created` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
@@ -528,7 +528,7 @@ CREATE TABLE `contact` (
   KEY `IDX_owner` (`owner`),
   KEY `IDX_date_created` (`date_created`),
   KEY `IDX_date_modified` (`date_modified`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `contact` */
 
@@ -536,10 +536,10 @@ CREATE TABLE `contact` (
 
 CREATE TABLE `data_item_type` (
   `data_item_type_id` INT(11) NOT NULL DEFAULT '0',
-  `short_description` VARCHAR(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `short_description` VARCHAR(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`data_item_type_id`),
   KEY `IDX_short_description` (`short_description`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `data_item_type` */
 
@@ -554,7 +554,7 @@ CREATE TABLE `eeo_ethnic_type` (
   `eeo_ethnic_type_id` INT(11) NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(128) NOT NULL DEFAULT '',
   PRIMARY KEY (`eeo_ethnic_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
 
 /* Data for the table `eeo_ethnic_type` */
 
@@ -570,7 +570,7 @@ CREATE TABLE `eeo_veteran_type` (
   `eeo_veteran_type_id` INT(11) NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(128) NOT NULL DEFAULT '',
   PRIMARY KEY (`eeo_veteran_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 /* Data for the table `eeo_veteran_type` */
 
@@ -583,9 +583,9 @@ INSERT INTO `eeo_veteran_type` (`eeo_veteran_type_id`, `type`) VALUES (4, 'Eligi
 
 CREATE TABLE `email_history` (
   `email_history_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `from_address` VARCHAR(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `recipients` TEXT COLLATE utf8_unicode_ci NOT NULL,
-  `text` TEXT COLLATE utf8_unicode_ci,
+  `from_address` VARCHAR(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `recipients` TEXT COLLATE utf8mb4_unicode_ci NOT NULL,
+  `text` TEXT COLLATE utf8mb4_unicode_ci,
   `user_id` INT(11),
   `site_id` INT(11) NOT NULL DEFAULT '0',
   `date` DATETIME,
@@ -593,7 +593,7 @@ CREATE TABLE `email_history` (
   KEY `IDX_site_id` (`site_id`),
   KEY `IDX_date` (`date`),
   KEY `IDX_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `email_history` */
 
@@ -601,15 +601,15 @@ CREATE TABLE `email_history` (
 
 CREATE TABLE `email_template` (
   `email_template_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `text` TEXT COLLATE utf8_unicode_ci,
+  `text` TEXT COLLATE utf8mb4_unicode_ci,
   `allow_substitution` INT(1) NOT NULL DEFAULT '0',
   `site_id` INT(11) NOT NULL DEFAULT '0',
-  `tag` VARCHAR(255) COLLATE utf8_unicode_ci,
-  `title` VARCHAR(255) COLLATE utf8_unicode_ci,
-  `possible_variables` TEXT COLLATE utf8_unicode_ci,
+  `tag` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
+  `title` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
+  `possible_variables` TEXT COLLATE utf8mb4_unicode_ci,
   `disabled` INT(1) DEFAULT '0',
   PRIMARY KEY (`email_template_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `email_template` */
 
@@ -630,7 +630,7 @@ CREATE TABLE `extension_statistics` (
   `user` VARCHAR(128) NOT NULL DEFAULT '',
   `date` DATE,
   PRIMARY KEY (`extension_statistics_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /* Data for the table `extension_statistics` */
 
@@ -647,7 +647,7 @@ CREATE TABLE `extra_field` (
   PRIMARY KEY (`extra_field_id`),
   KEY `assoc_id` (`data_item_id`),
   KEY `IDX_site_id` (`site_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /* Data for the table `extra_field` */
 
@@ -655,16 +655,16 @@ CREATE TABLE `extra_field` (
 
 CREATE TABLE `extra_field_settings` (
   `extra_field_settings_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `field_name` VARCHAR(255) COLLATE utf8_unicode_ci,
+  `field_name` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
   `import_id` INT(11),
   `site_id` INT(11) NOT NULL DEFAULT '0',
   `date_created` DATETIME,
   `data_item_type` INT(11) DEFAULT '0',
   `extra_field_type` INT(11) NOT NULL DEFAULT '1',
-  `extra_field_options` TEXT COLLATE utf8_unicode_ci,
+  `extra_field_options` TEXT COLLATE utf8mb4_unicode_ci,
   `position` INT(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`extra_field_settings_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `extra_field_settings` */
 
@@ -680,13 +680,13 @@ CREATE TABLE `feedback` (
   `user_id` INT(11),
   `site_id` INT(11) NOT NULL DEFAULT '0',
   `date_created` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
-  `subject` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `reply_to_address` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `reply_to_name` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `feedback` TEXT COLLATE utf8_unicode_ci NOT NULL,
+  `subject` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `reply_to_address` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `reply_to_name` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `feedback` TEXT COLLATE utf8mb4_unicode_ci NOT NULL,
   `archived` INT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`feedback_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `feedback` */
 
@@ -696,17 +696,17 @@ CREATE TABLE `history` (
   `history_id` INT(11) NOT NULL AUTO_INCREMENT,
   `data_item_type` INT(11),
   `data_item_id` INT(11),
-  `the_field` VARCHAR(64) COLLATE utf8_unicode_ci,
-  `previous_value` TEXT COLLATE utf8_unicode_ci,
-  `new_value` TEXT COLLATE utf8_unicode_ci,
-  `description` VARCHAR(192) COLLATE utf8_unicode_ci,
+  `the_field` VARCHAR(64) COLLATE utf8mb4_unicode_ci,
+  `previous_value` TEXT COLLATE utf8mb4_unicode_ci,
+  `new_value` TEXT COLLATE utf8mb4_unicode_ci,
+  `description` VARCHAR(192) COLLATE utf8mb4_unicode_ci,
   `set_date` DATETIME,
   `entered_by` INT(11),
   `site_id` INT(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`history_id`),
   KEY `IDX_DATA_ENTERED_BY` (`entered_by`),
   KEY `IDX_data_item_id_type_site` (`data_item_id`, `data_item_type`, `site_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `history` */
 
@@ -725,7 +725,7 @@ CREATE TABLE `http_log` (
   `log_type` INT(11) NOT NULL,
   `date` DATETIME DEFAULT '1000-01-01 00:00:00',
   PRIMARY KEY (`log_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /* Data for the table `http_log` */
 
@@ -737,7 +737,7 @@ CREATE TABLE `http_log_types` (
   `description` VARCHAR(255),
   `default_log_type` TINYINT(1) UNSIGNED ZEROFILL NOT NULL DEFAULT '0',
   PRIMARY KEY (`log_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
 /* Data for the table `http_log_types` */
 
@@ -747,14 +747,14 @@ INSERT INTO `http_log_types` (`log_type_id`, `name`, `description`, `default_log
 
 CREATE TABLE `import` (
   `import_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `module_name` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `module_name` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `reverted` INT(1) NOT NULL DEFAULT '0',
   `site_id` INT(11) NOT NULL DEFAULT '0',
-  `import_errors` TEXT COLLATE utf8_unicode_ci,
+  `import_errors` TEXT COLLATE utf8mb4_unicode_ci,
   `added_lines` INT(11),
   `date_created` DATETIME,
   PRIMARY KEY (`import_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `import` */
 
@@ -763,7 +763,7 @@ CREATE TABLE `import` (
 CREATE TABLE `installtest` (
   `id` INT(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `installtest` */
 
@@ -777,20 +777,20 @@ CREATE TABLE `joborder` (
   `entered_by` INT(11) NOT NULL DEFAULT '0',
   `owner` INT(11),
   `site_id` INT(11) NOT NULL DEFAULT '0',
-  `client_job_id` VARCHAR(32) COLLATE utf8_unicode_ci,
-  `title` VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `description` TEXT COLLATE utf8_unicode_ci,
-  `notes` TEXT COLLATE utf8_unicode_ci,
-  `type` VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'C',
-  `duration` VARCHAR(64) COLLATE utf8_unicode_ci,
-  `rate_max` VARCHAR(255) COLLATE utf8_unicode_ci,
-  `salary` VARCHAR(64) COLLATE utf8_unicode_ci,
-  `status` VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Active',
+  `client_job_id` VARCHAR(32) COLLATE utf8mb4_unicode_ci,
+  `title` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `description` TEXT COLLATE utf8mb4_unicode_ci,
+  `notes` TEXT COLLATE utf8mb4_unicode_ci,
+  `type` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'C',
+  `duration` VARCHAR(64) COLLATE utf8mb4_unicode_ci,
+  `rate_max` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
+  `salary` VARCHAR(64) COLLATE utf8mb4_unicode_ci,
+  `status` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Active',
   `is_hot` INT(1) NOT NULL DEFAULT '0',
   `openings` INT(11),
-  `city` VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `state` VARCHAR(64) COLLATE utf8_unicode_ci,
-  `country` VARCHAR(2) COLLATE utf8_unicode_ci,
+  `city` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `state` VARCHAR(64) COLLATE utf8mb4_unicode_ci,
+  `country` VARCHAR(2) COLLATE utf8mb4_unicode_ci,
   `start_date` DATETIME,
   `date_created` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   `date_modified` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
@@ -813,7 +813,7 @@ CREATE TABLE `joborder` (
   KEY `IDX_date_created` (`date_created`),
   KEY `IDX_date_modified` (`date_modified`),
   KEY `IDX_site_id_status` (`site_id`, `status`(8))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `joborder` */
 
@@ -821,10 +821,10 @@ CREATE TABLE `joborder` (
 
 CREATE TABLE `module_schema` (
   `module_schema_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(64) COLLATE utf8_unicode_ci,
+  `name` VARCHAR(64) COLLATE utf8mb4_unicode_ci,
   `version` INT(11),
   PRIMARY KEY (`module_schema_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `module_schema` */
 
@@ -859,12 +859,12 @@ CREATE TABLE `mru` (
   `user_id` INT(11),
   `site_id` INT(11) NOT NULL DEFAULT '0',
   `data_item_type` INT(11) NOT NULL DEFAULT '0',
-  `data_item_text` VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `url` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `data_item_text` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `url` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `date_created` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   PRIMARY KEY (`mru_id`),
   KEY `IDX_user_site` (`user_id`, `site_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `mru` */
 
@@ -883,7 +883,7 @@ CREATE TABLE `queue` (
   `error` TINYINT(1) UNSIGNED DEFAULT '0',
   `response` VARCHAR(255),
   PRIMARY KEY (`queue_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /* Data for the table `queue` */
 
@@ -891,12 +891,12 @@ CREATE TABLE `queue` (
 
 CREATE TABLE `saved_list` (
   `saved_list_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `description` VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `description` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `data_item_type` INT(11) NOT NULL DEFAULT '0',
   `site_id` INT(11) NOT NULL DEFAULT '0',
   `is_dynamic` INT(1) DEFAULT '0',
-  `datagrid_instance` VARCHAR(64) COLLATE utf8_unicode_ci DEFAULT '',
-  `parameters` TEXT COLLATE utf8_unicode_ci,
+  `datagrid_instance` VARCHAR(64) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `parameters` TEXT COLLATE utf8mb4_unicode_ci,
   `created_by` INT(11) DEFAULT '0',
   `number_entries` INT(11) DEFAULT '0',
   `date_created` DATETIME,
@@ -905,7 +905,7 @@ CREATE TABLE `saved_list` (
   KEY `IDX_data_item_type` (`data_item_type`),
   KEY `IDX_description` (`description`),
   KEY `IDX_site_id` (`site_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `saved_list` */
 
@@ -923,7 +923,7 @@ CREATE TABLE `saved_list_entry` (
   KEY `IDX_data_item_type` (`data_item_type`),
   KEY `IDX_data_item_id` (`data_item_id`),
   KEY `IDX_hot_list_id` (`saved_list_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `saved_list_entry` */
 
@@ -931,15 +931,15 @@ CREATE TABLE `saved_list_entry` (
 
 CREATE TABLE `saved_search` (
   `search_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `data_item_text` TEXT COLLATE utf8_unicode_ci,
-  `url` TEXT COLLATE utf8_unicode_ci,
+  `data_item_text` TEXT COLLATE utf8mb4_unicode_ci,
+  `url` TEXT COLLATE utf8mb4_unicode_ci,
   `is_custom` INT(1),
   `data_item_type` INT(11),
   `user_id` INT(11),
   `site_id` INT(11),
   `date_created` DATETIME,
   PRIMARY KEY (`search_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `saved_search` */
 
@@ -947,12 +947,12 @@ CREATE TABLE `saved_search` (
 
 CREATE TABLE `settings` (
   `settings_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `setting` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `value` VARCHAR(255) COLLATE utf8_unicode_ci,
+  `setting` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `value` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
   `site_id` INT(11) NOT NULL DEFAULT '0',
   `settings_type` INT(11) DEFAULT '0',
   PRIMARY KEY (`settings_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `settings` */
 
@@ -965,22 +965,22 @@ INSERT INTO `settings` (`settings_id`, `setting`, `value`, `site_id`, `settings_
 
 CREATE TABLE `site` (
   `site_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `name` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `is_demo` INT(1) NOT NULL DEFAULT '0',
   `user_licenses` INT(11) NOT NULL DEFAULT '0',
   `entered_by` INT(11) NOT NULL DEFAULT '0',
   `date_created` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
-  `unix_name` VARCHAR(128) CHARACTER SET utf8,
+  `unix_name` VARCHAR(128) CHARACTER SET utf8mb4,
   `company_id` INT(11),
   `is_free` INT(1),
   `account_active` INT(1) NOT NULL DEFAULT '1',
   `account_deleted` INT(1) NOT NULL DEFAULT '0',
-  `reason_disabled` TEXT CHARACTER SET utf8,
+  `reason_disabled` TEXT CHARACTER SET utf8mb4,
   `time_zone` INT(5) DEFAULT '0',
-  `time_zone_iana` VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'UTC',
+  `time_zone_iana` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'UTC',
   `time_format_24` INT(1) DEFAULT '0',
   `date_format_ddmmyy` INT(1) DEFAULT '0',
-  `default_phone_country_code` VARCHAR(8) COLLATE utf8_unicode_ci NOT NULL DEFAULT '+1',
+  `default_phone_country_code` VARCHAR(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '+1',
   `is_hr_mode` INT(1) DEFAULT '0',
   `file_size_kb` INT(11) DEFAULT '0',
   `page_views` BIGINT(20) DEFAULT '0',
@@ -992,7 +992,7 @@ CREATE TABLE `site` (
   `limit_warning` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`site_id`),
   KEY `IDX_account_deleted` (`account_deleted`)
-) ENGINE=InnoDB AUTO_INCREMENT=181 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=181 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `site` */
 
@@ -1005,7 +1005,7 @@ CREATE TABLE `sph_counter` (
   `counter_id` INT(11) NOT NULL,
   `max_doc_id` INT(11) NOT NULL,
   PRIMARY KEY (`counter_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /* Data for the table `sph_counter` */
 
@@ -1016,10 +1016,10 @@ CREATE TABLE `system` (
   `uid` INT(20),
   `available_version` INT(11) DEFAULT '0',
   `date_version_checked` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
-  `available_version_description` TEXT COLLATE utf8_unicode_ci,
+  `available_version_description` TEXT COLLATE utf8mb4_unicode_ci,
   `disable_version_check` INT(1) DEFAULT '0',
   PRIMARY KEY (`system_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `system` */
 
@@ -1035,7 +1035,7 @@ CREATE TABLE `tag` (
   `site_id` INT(11) UNSIGNED,
   `date_created` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`tag_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `tag` */
 
@@ -1044,38 +1044,38 @@ CREATE TABLE `tag` (
 CREATE TABLE `user` (
   `user_id` INT(11) NOT NULL AUTO_INCREMENT,
   `site_id` INT(11) NOT NULL DEFAULT '0',
-  `user_name` VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `email` VARCHAR(128) COLLATE utf8_unicode_ci,
-  `password` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `user_name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `email` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
+  `password` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `access_level` INT(11) NOT NULL DEFAULT '100',
   `can_change_password` INT(1) NOT NULL DEFAULT '1',
   `is_test_user` INT(1) NOT NULL DEFAULT '0',
-  `last_name` VARCHAR(40) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `first_name` VARCHAR(40) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `last_name` VARCHAR(40) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `first_name` VARCHAR(40) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `is_demo` INT(1) DEFAULT '0',
-  `categories` VARCHAR(192) COLLATE utf8_unicode_ci,
-  `session_cookie` VARCHAR(256) COLLATE utf8_unicode_ci,
+  `categories` VARCHAR(192) COLLATE utf8mb4_unicode_ci,
+  `session_cookie` VARCHAR(256) COLLATE utf8mb4_unicode_ci,
   `pipeline_entries_per_page` INT(8) DEFAULT '15',
-  `column_preferences` LONGTEXT COLLATE utf8_unicode_ci,
+  `column_preferences` LONGTEXT COLLATE utf8mb4_unicode_ci,
   `force_logout` INT(1) DEFAULT '0',
-  `title` VARCHAR(64) COLLATE utf8_unicode_ci DEFAULT '',
-  `phone_work` VARCHAR(64) COLLATE utf8_unicode_ci DEFAULT '',
-  `phone_cell` VARCHAR(64) COLLATE utf8_unicode_ci DEFAULT '',
-  `phone_other` VARCHAR(64) COLLATE utf8_unicode_ci DEFAULT '',
-  `address` TEXT COLLATE utf8_unicode_ci,
-  `notes` TEXT COLLATE utf8_unicode_ci,
-  `company` VARCHAR(255) COLLATE utf8_unicode_ci,
-  `city` VARCHAR(64) COLLATE utf8_unicode_ci,
-  `state` VARCHAR(64) COLLATE utf8_unicode_ci,
-  `zip_code` VARCHAR(16) COLLATE utf8_unicode_ci,
-  `country` VARCHAR(128) COLLATE utf8_unicode_ci,
+  `title` VARCHAR(64) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `phone_work` VARCHAR(64) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `phone_cell` VARCHAR(64) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `phone_other` VARCHAR(64) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `address` TEXT COLLATE utf8mb4_unicode_ci,
+  `notes` TEXT COLLATE utf8mb4_unicode_ci,
+  `company` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
+  `city` VARCHAR(64) COLLATE utf8mb4_unicode_ci,
+  `state` VARCHAR(64) COLLATE utf8mb4_unicode_ci,
+  `zip_code` VARCHAR(16) COLLATE utf8mb4_unicode_ci,
+  `country` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
   `can_see_eeo_info` INT(1) DEFAULT '0',
   PRIMARY KEY (`user_id`),
   KEY `IDX_site_id` (`site_id`),
   KEY `IDX_first_name` (`first_name`),
   KEY `IDX_last_name` (`last_name`),
   KEY `IDX_access_level` (`access_level`)
-) ENGINE=InnoDB AUTO_INCREMENT=1251 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1251 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `user` */
 
@@ -1088,11 +1088,11 @@ CREATE TABLE `user_login` (
   `user_login_id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11),
   `site_id` INT(11) NOT NULL DEFAULT '0',
-  `ip` VARCHAR(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `user_agent` VARCHAR(255) COLLATE utf8_unicode_ci,
+  `ip` VARCHAR(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `user_agent` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
   `date` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   `successful` INT(1) NOT NULL DEFAULT '0',
-  `host` VARCHAR(255) COLLATE utf8_unicode_ci,
+  `host` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
   `date_refreshed` DATETIME,
   PRIMARY KEY (`user_login_id`),
   KEY `IDX_user_id` (`user_id`),
@@ -1101,7 +1101,7 @@ CREATE TABLE `user_login` (
   KEY `IDX_date_refreshed` (`date_refreshed`),
   KEY `IDX_site_id_date` (`site_id`, `date`),
   KEY `IDX_successful_site_id` (`successful`, `site_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `user_login` */
 
@@ -1109,9 +1109,9 @@ CREATE TABLE `user_login` (
 
 CREATE TABLE `word_verification` (
   `word_verification_ID` INT(11) NOT NULL AUTO_INCREMENT,
-  `word` VARCHAR(28) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `word` VARCHAR(28) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`word_verification_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `word_verification` */
 
@@ -1123,7 +1123,7 @@ CREATE TABLE `xml_feed_submits` (
   `feed_url` VARCHAR(255) NOT NULL,
   `date_last_post` DATE NOT NULL,
   PRIMARY KEY (`feed_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /* Data for the table `xml_feed_submits` */
 
@@ -1138,7 +1138,7 @@ CREATE TABLE `xml_feeds` (
   `success_string` VARCHAR(255) NOT NULL,
   `xml_template_name` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`xml_feed_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 /* Data for the table `xml_feeds` */
 
@@ -1149,11 +1149,11 @@ INSERT INTO `xml_feeds` (`xml_feed_id`, `name`, `description`, `website`, `post_
 
 CREATE TABLE `zipcodes` (
   `zipcode` MEDIUMINT(9) NOT NULL DEFAULT '0',
-  `city` TINYTEXT COLLATE utf8_unicode_ci NOT NULL,
-  `state` VARCHAR(2) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `city` TINYTEXT COLLATE utf8mb4_unicode_ci NOT NULL,
+  `state` VARCHAR(2) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `areacode` SMALLINT(6) NOT NULL DEFAULT '0',
   PRIMARY KEY (`zipcode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `zipcodes` */
 
