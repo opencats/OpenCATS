@@ -546,7 +546,7 @@ class ContactsUI extends UserInterface
         $departmentsCSV = $this->getTrimmedInput('departmentsCSV', $_POST);
 
         /* Bail out if any of the required fields are empty. */
-        if (empty($firstName) || empty($lastName) || empty($title))
+        if (empty($firstName) || empty($lastName))
         {
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
         }
@@ -835,7 +835,7 @@ class ContactsUI extends UserInterface
         $departmentsCSV = $this->getTrimmedInput('departmentsCSV', $_POST);
 
         /* Bail out if any of the required fields are empty. */
-        if (empty($firstName) || empty($lastName) || empty($title))
+        if (empty($firstName) || empty($lastName))
         {
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
         }
