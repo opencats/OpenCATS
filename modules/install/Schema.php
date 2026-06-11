@@ -1892,6 +1892,144 @@ class CATSSchema
                 DELETE FROM `user` WHERE `site_id` = 180;
                 DELETE FROM `site` WHERE `site_id` = 180;
             ',
+            '392' => '
+                ALTER TABLE `activity`
+                    DROP INDEX `IDX_site_id`,
+                    DROP INDEX `IDX_data_item_id_type_site`,
+                    DROP INDEX `IDX_site_created`,
+                    DROP INDEX `IDX_site_occurred`,
+                    DROP INDEX `IDX_activity_site_type_created_job`,
+                    DROP INDEX `IDX_activity_site_type_occurred_job`,
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `attachment`
+                    DROP INDEX `IDX_site_file_size`,
+                    DROP INDEX `IDX_site_file_size_created`,
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `calendar_event`
+                    DROP INDEX `IDX_site_id_date`,
+                    DROP INDEX `IDX_site_data_item_type_id`,
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `candidate`
+                    DROP INDEX `IDX_site_first_last_modified`,
+                    DROP INDEX `IDX_site_id_email_1_2`,
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `candidate_duplicates`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `candidate_joborder`
+                    DROP INDEX `IDX_site_id`,
+                    DROP INDEX `IDX_status_special`,
+                    DROP INDEX `IDX_site_joborder`,
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `candidate_joborder_status_history`
+                    DROP INDEX `IDX_site_id`,
+                    DROP INDEX `IDX_status_to_site_id`,
+                    DROP INDEX `IDX_candidate_joborder_status_to_site`,
+                    DROP INDEX `IDX_joborder_site`,
+                    DROP INDEX `IDX_site_joborder_status_to`,
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `candidate_source`
+                    DROP INDEX `siteID`,
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `candidate_tag`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `career_portal_questionnaire`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `career_portal_questionnaire_answer`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `career_portal_questionnaire_history`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `career_portal_questionnaire_question`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `career_portal_template_site`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `company`
+                    DROP INDEX `IDX_site_id`,
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `company_department`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `contact`
+                    DROP INDEX `IDX_site_id`,
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `email_history`
+                    DROP INDEX `IDX_site_id`,
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `email_template`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `extra_field`
+                    DROP INDEX `IDX_site_id`,
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `extra_field_settings`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `feedback`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `history`
+                    DROP INDEX `IDX_data_item_id_type_site`,
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `http_log`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `import`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `joborder`
+                    DROP INDEX `IDX_site_id_status`,
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `mru`
+                    DROP INDEX `IDX_user_site`,
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `queue`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `saved_list`
+                    DROP INDEX `IDX_site_id`,
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `saved_list_entry`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `saved_search`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `settings`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `tag`
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `user`
+                    DROP INDEX `IDX_site_id`,
+                    DROP COLUMN `site_id`;
+
+                ALTER TABLE `user_login`
+                    DROP INDEX `IDX_site_id_date`,
+                    DROP INDEX `IDX_successful_site_id`,
+                    DROP COLUMN `site_id`;
+            ',
 
         );
     }

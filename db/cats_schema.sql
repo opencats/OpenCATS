@@ -30,7 +30,6 @@ CREATE TABLE `activity` (
   `data_item_type` INT(11) NOT NULL DEFAULT '0',
   `data_item_id` INT(11) NOT NULL DEFAULT '0',
   `joborder_id` INT(11),
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `entered_by` INT(11) NOT NULL DEFAULT '0',
   `date_occurred` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   `date_created` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
@@ -39,19 +38,13 @@ CREATE TABLE `activity` (
   `date_modified` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   PRIMARY KEY (`activity_id`),
   KEY `IDX_entered_by` (`entered_by`),
-  KEY `IDX_site_id` (`site_id`),
   KEY `IDX_type` (`type`),
   KEY `IDX_data_item_type` (`data_item_type`),
   KEY `IDX_type_id` (`data_item_type`, `data_item_id`),
   KEY `IDX_joborder_id` (`joborder_id`),
   KEY `IDX_date_created` (`date_created`),
   KEY `IDX_date_occurred` (`date_occurred`),
-  KEY `IDX_date_modified` (`date_modified`),
-  KEY `IDX_data_item_id_type_site` (`site_id`, `data_item_id`, `data_item_type`),
-  KEY `IDX_site_created` (`site_id`, `date_created`),
-  KEY `IDX_site_occurred` (`site_id`, `date_occurred`),
-  KEY `IDX_activity_site_type_created_job` (`site_id`, `data_item_type`, `date_created`, `entered_by`, `joborder_id`),
-  KEY `IDX_activity_site_type_occurred_job` (`site_id`, `data_item_type`, `date_occurred`, `entered_by`, `joborder_id`)
+  KEY `IDX_date_modified` (`date_modified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `activity` */
@@ -82,7 +75,6 @@ CREATE TABLE `attachment` (
   `attachment_id` INT(11) NOT NULL AUTO_INCREMENT,
   `data_item_id` INT(11) NOT NULL DEFAULT '0',
   `data_item_type` INT(11) NOT NULL DEFAULT '0',
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `title` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
   `original_filename` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `stored_filename` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -99,9 +91,7 @@ CREATE TABLE `attachment` (
   PRIMARY KEY (`attachment_id`),
   KEY `IDX_type_id` (`data_item_type`, `data_item_id`),
   KEY `IDX_data_item_id` (`data_item_id`),
-  KEY `IDX_CANDIDATE_MD5_SUM` (`md5_sum`),
-  KEY `IDX_site_file_size` (`site_id`, `file_size_kb`),
-  KEY `IDX_site_file_size_created` (`site_id`, `file_size_kb`, `date_created`)
+  KEY `IDX_CANDIDATE_MD5_SUM` (`md5_sum`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `attachment` */
@@ -119,7 +109,6 @@ CREATE TABLE `calendar_event` (
   `entered_by` INT(11) NOT NULL DEFAULT '0',
   `date_created` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   `date_modified` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `joborder_id` INT(11) DEFAULT NULL,
   `description` TEXT COLLATE utf8mb4_unicode_ci,
   `duration` INT(11) NOT NULL DEFAULT '60',
@@ -127,9 +116,7 @@ CREATE TABLE `calendar_event` (
   `reminder_email` TEXT COLLATE utf8mb4_unicode_ci,
   `reminder_time` INT(11) DEFAULT '0',
   `public` INT(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`calendar_event_id`),
-  KEY `IDX_site_id_date` (`site_id`, `date`),
-  KEY `IDX_site_data_item_type_id` (`site_id`, `data_item_type`, `data_item_id`)
+  PRIMARY KEY (`calendar_event_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `calendar_event` */
@@ -157,7 +144,6 @@ INSERT INTO `calendar_event_type` (`calendar_event_type_id`, `short_description`
 
 CREATE TABLE `candidate` (
   `candidate_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `last_name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `first_name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `middle_name` VARCHAR(32) COLLATE utf8mb4_unicode_ci,
@@ -204,9 +190,7 @@ CREATE TABLE `candidate` (
   KEY `IDX_entered_by` (`entered_by`),
   KEY `IDX_owner` (`owner`),
   KEY `IDX_date_created` (`date_created`),
-  KEY `IDX_date_modified` (`date_modified`),
-  KEY `IDX_site_first_last_modified` (`site_id`, `first_name`, `last_name`, `date_modified`),
-  KEY `IDX_site_id_email_1_2` (`site_id`, `email1`(8), `email2`(8))
+  KEY `IDX_date_modified` (`date_modified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `candidate` */
@@ -216,7 +200,6 @@ CREATE TABLE `candidate` (
 CREATE TABLE `candidate_duplicates` (
   `old_candidate_id` INT(11) NOT NULL,
   `new_candidate_id` INT(11) NOT NULL,
-  `site_id` INT(11) NOT NULL,
   PRIMARY KEY (`old_candidate_id`, `new_candidate_id`),
   KEY `IDX_old_candidate_id` (`old_candidate_id`),
   KEY `IDX_new_candidate_id` (`new_candidate_id`)
@@ -230,7 +213,6 @@ CREATE TABLE `candidate_joborder` (
   `candidate_joborder_id` INT(11) NOT NULL AUTO_INCREMENT,
   `candidate_id` INT(11) NOT NULL DEFAULT '0',
   `joborder_id` INT(11) NOT NULL DEFAULT '0',
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `status` INT(11) NOT NULL DEFAULT '0',
   `date_submitted` DATETIME,
   `date_created` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
@@ -239,12 +221,9 @@ CREATE TABLE `candidate_joborder` (
   `added_by` INT(11),
   PRIMARY KEY (`candidate_joborder_id`),
   KEY `IDX_candidate_id` (`candidate_id`),
-  KEY `IDX_site_id` (`site_id`),
   KEY `IDX_date_submitted` (`date_submitted`),
   KEY `IDX_date_created` (`date_created`),
   KEY `IDX_date_modified` (`date_modified`),
-  KEY `IDX_status_special` (`site_id`, `status`),
-  KEY `IDX_site_joborder` (`site_id`, `joborder_id`),
   KEY `IDX_joborder_id` (`joborder_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -285,14 +264,8 @@ CREATE TABLE `candidate_joborder_status_history` (
   `date` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   `status_from` INT(11) NOT NULL DEFAULT '0',
   `status_to` INT(11) NOT NULL DEFAULT '0',
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`candidate_joborder_status_history_id`),
-  KEY `IDX_site_id` (`site_id`),
-  KEY `IDX_status_to` (`status_to`),
-  KEY `IDX_status_to_site_id` (`status_to`, `site_id`),
-  KEY `IDX_candidate_joborder_status_to_site` (`candidate_id`, `joborder_id`, `status_to`, `site_id`),
-  KEY `IDX_joborder_site` (`joborder_id`, `site_id`),
-  KEY `IDX_site_joborder_status_to` (`site_id`, `joborder_id`, `status_to`)
+  KEY `IDX_status_to` (`status_to`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `candidate_joborder_status_history` */
@@ -302,10 +275,8 @@ CREATE TABLE `candidate_joborder_status_history` (
 CREATE TABLE `candidate_source` (
   `source_id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
-  `site_id` INT(11),
   `date_created` DATETIME,
-  PRIMARY KEY (`source_id`),
-  KEY `siteID` (`site_id`)
+  PRIMARY KEY (`source_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `candidate_source` */
@@ -314,7 +285,6 @@ CREATE TABLE `candidate_source` (
 
 CREATE TABLE `candidate_tag` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `site_id` INT(10) UNSIGNED,
   `candidate_id` INT(10) UNSIGNED NOT NULL,
   `tag_id` INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`)
@@ -325,7 +295,6 @@ CREATE TABLE `candidate_tag` (
 CREATE TABLE `career_portal_questionnaire` (
   `career_portal_questionnaire_id` INT(11) NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(255) NOT NULL DEFAULT '',
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `description` VARCHAR(255),
   `is_active` TINYINT(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`career_portal_questionnaire_id`)
@@ -347,7 +316,6 @@ CREATE TABLE `career_portal_questionnaire_answer` (
   `action_can_relocate` TINYINT(1) DEFAULT '0',
   `action_key_skills` VARCHAR(255),
   `position` INT(4) NOT NULL DEFAULT '0',
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`career_portal_questionnaire_answer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -357,7 +325,6 @@ CREATE TABLE `career_portal_questionnaire_answer` (
 
 CREATE TABLE `career_portal_questionnaire_history` (
   `career_portal_questionnaire_history_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `candidate_id` INT(11) NOT NULL DEFAULT '0',
   `question` VARCHAR(255) NOT NULL DEFAULT '',
   `answer` VARCHAR(255) NOT NULL DEFAULT '',
@@ -379,7 +346,6 @@ CREATE TABLE `career_portal_questionnaire_question` (
   `maximum_length` INT(11),
   `required` TINYINT(1) NOT NULL DEFAULT '0',
   `position` INT(4) NOT NULL DEFAULT '0',
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `type` INT(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`career_portal_questionnaire_question_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -426,7 +392,6 @@ INSERT INTO `career_portal_template` (`career_portal_template_id`, `career_porta
 CREATE TABLE `career_portal_template_site` (
   `career_portal_template_id` INT(11) NOT NULL AUTO_INCREMENT,
   `career_portal_name` VARCHAR(255),
-  `site_id` INT(11) NOT NULL,
   `setting` VARCHAR(128) NOT NULL DEFAULT '',
   `value` TEXT,
   PRIMARY KEY (`career_portal_template_id`)
@@ -438,7 +403,6 @@ CREATE TABLE `career_portal_template_site` (
 
 CREATE TABLE `company` (
   `company_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `billing_contact` INT(11),
   `name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `address` TEXT COLLATE utf8mb4_unicode_ci,
@@ -461,7 +425,6 @@ CREATE TABLE `company` (
   `import_id` INT(11),
   `default_company` INT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`company_id`),
-  KEY `IDX_site_id` (`site_id`),
   KEY `IDX_name` (`name`),
   KEY `IDX_key_technologies` (`key_technologies`(255)),
   KEY `IDX_entered_by` (`entered_by`),
@@ -473,7 +436,7 @@ CREATE TABLE `company` (
 
 /* Data for the table `company` */
 
-INSERT INTO `company` (`company_id`, `site_id`, `billing_contact`, `name`, `address`, `city`, `state`, `zip`, `country`, `phone1`, `phone2`, `url`, `key_technologies`, `notes`, `entered_by`, `owner`, `date_created`, `date_modified`, `is_hot`, `fax_number`, `import_id`, `default_company`) VALUES (1, 1, NULL, 'Internal Postings', '', '', '', '', NULL, '', '', '', '', '', 0, 0, '1000-01-01 00:00:00', '1000-01-01 00:00:00', 0, '', NULL, 1);
+INSERT INTO `company` (`company_id`, `billing_contact`, `name`, `address`, `city`, `state`, `zip`, `country`, `phone1`, `phone2`, `url`, `key_technologies`, `notes`, `entered_by`, `owner`, `date_created`, `date_modified`, `is_hot`, `fax_number`, `import_id`, `default_company`) VALUES (1, NULL, 'Internal Postings', '', '', '', '', NULL, '', '', '', '', '', 0, 0, '1000-01-01 00:00:00', '1000-01-01 00:00:00', 0, '', NULL, 1);
 
 /* Table structure for table `company_department` */
 
@@ -481,7 +444,6 @@ CREATE TABLE `company_department` (
   `company_department_id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
   `company_id` INT(11) NOT NULL,
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `date_created` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   `created_by` INT(11),
   PRIMARY KEY (`company_department_id`)
@@ -494,7 +456,6 @@ CREATE TABLE `company_department` (
 CREATE TABLE `contact` (
   `contact_id` INT(11) NOT NULL AUTO_INCREMENT,
   `company_id` INT(11) NOT NULL,
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `last_name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `first_name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `title` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
@@ -520,7 +481,6 @@ CREATE TABLE `contact` (
   `company_department_id` INT(11) NOT NULL,
   `reports_to` INT(11) DEFAULT '-1',
   PRIMARY KEY (`contact_id`),
-  KEY `IDX_site_id` (`site_id`),
   KEY `IDX_first_name` (`first_name`),
   KEY `IDX_last_name` (`last_name`),
   KEY `IDX_client_id` (`company_id`),
@@ -587,10 +547,8 @@ CREATE TABLE `email_history` (
   `recipients` TEXT COLLATE utf8mb4_unicode_ci NOT NULL,
   `text` TEXT COLLATE utf8mb4_unicode_ci,
   `user_id` INT(11),
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `date` DATETIME,
   PRIMARY KEY (`email_history_id`),
-  KEY `IDX_site_id` (`site_id`),
   KEY `IDX_date` (`date`),
   KEY `IDX_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -603,7 +561,6 @@ CREATE TABLE `email_template` (
   `email_template_id` INT(11) NOT NULL AUTO_INCREMENT,
   `text` TEXT COLLATE utf8mb4_unicode_ci,
   `allow_substitution` INT(1) NOT NULL DEFAULT '0',
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `tag` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
   `title` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
   `possible_variables` TEXT COLLATE utf8mb4_unicode_ci,
@@ -613,13 +570,13 @@ CREATE TABLE `email_template` (
 
 /* Data for the table `email_template` */
 
-INSERT INTO `email_template` (`email_template_id`, `text`, `allow_substitution`, `site_id`, `tag`, `title`, `possible_variables`, `disabled`) VALUES (1, '* Auto generated message. Please DO NOT reply *\r\n%DATETIME%\r\n\r\nDear %CANDFULLNAME%,\r\n\r\nThis E-Mail is a notification that your status in our database has been changed for the position %JBODTITLE% (%JBODCLIENT%).\r\n\r\nYour previous status was <B>%CANDPREVSTATUS%</B>.\r\nYour new status is <B>%CANDSTATUS%</B>.\r\n\r\nTake care,\r\n%USERFULLNAME%\r\n%SITENAME%', 1, 1, 'EMAIL_TEMPLATE_STATUSCHANGE', 'Status Changed (Sent to Candidate)', '%CANDSTATUS%%CANDOWNER%%CANDFIRSTNAME%%CANDFULLNAME%%CANDPREVSTATUS%%JBODCLIENT%%JBODTITLE%', 0);
-INSERT INTO `email_template` (`email_template_id`, `text`, `allow_substitution`, `site_id`, `tag`, `title`, `possible_variables`, `disabled`) VALUES (2, '%DATETIME%\r\n\r\nDear %CANDOWNER%,\r\n\r\nThis E-Mail is a notification that a Candidate has been assigned to you.\r\n\r\nCandidate Name: %CANDFULLNAME%\r\nCandidate URL: %CANDCATSURL%\r\n\r\nTake care,\r\nCATS \r\n%SITENAME%', 1, 1, 'EMAIL_TEMPLATE_OWNERSHIPASSIGNCANDIDATE', 'Candidate Assigned (Sent to Assigned Recruiter)', '%CANDOWNER%%CANDFIRSTNAME%%CANDFULLNAME%%CANDCATSURL%', 0);
-INSERT INTO `email_template` (`email_template_id`, `text`, `allow_substitution`, `site_id`, `tag`, `title`, `possible_variables`, `disabled`) VALUES (3, '%DATETIME%\r\n\r\nDear %JBODOWNER%,\r\n\r\nThis E-Mail is a notification that a Job Order has been assigned to you.\r\n\r\nJob Order Title: %JBODTITLE%\r\nJob Order Client: %JBODCLIENT%\r\nJob Order ID: %JBODID%\r\nJob Order URL: %JBODCATSURL%\r\n\r\nTake care,\r\nCATS \r\n%SITENAME%', 1, 1, 'EMAIL_TEMPLATE_OWNERSHIPASSIGNJOBORDER', 'Job Order Assigned (Sent to Assigned Recruiter)', '%JBODOWNER%%JBODTITLE%%JBODCLIENT%%JBODCATSURL%%JBODID%', 0);
-INSERT INTO `email_template` (`email_template_id`, `text`, `allow_substitution`, `site_id`, `tag`, `title`, `possible_variables`, `disabled`) VALUES (4, '%DATETIME%\r\n\r\nDear %CONTOWNER%,\r\n\r\nThis E-Mail is a notification that a Contact has been assigned to you.\r\n\r\nContact Name: %CONTFULLNAME%\r\nContact Client: %CONTCLIENTNAME%\r\nContact URL: %CONTCATSURL%\r\n\r\nTake care,\r\nCATS \r\n%SITENAME%', 1, 1, 'EMAIL_TEMPLATE_OWNERSHIPASSIGNCONTACT', 'Contact Assigned (Sent to Assigned Recruiter)', '%CONTOWNER%%CONTFIRSTNAME%%CONTFULLNAME%%CONTCLIENTNAME%%CONTCATSURL%', 0);
-INSERT INTO `email_template` (`email_template_id`, `text`, `allow_substitution`, `site_id`, `tag`, `title`, `possible_variables`, `disabled`) VALUES (5, '%DATETIME%\r\n\r\nDear %CLNTOWNER%,\r\n\r\nThis E-Mail is a notification that a Client has been assigned to you.\r\n\r\nClient Name: %CLNTNAME%\r\nClient URL %CLNTCATSURL%\r\n\r\nTake care,\r\nCATS \r\n%SITENAME%', 1, 1, 'EMAIL_TEMPLATE_OWNERSHIPASSIGNCLIENT', 'Client Assigned (Sent to Assigned Recruiter)', '%CLNTOWNER%%CLNTNAME%%CLNTCATSURL%', 0);
-INSERT INTO `email_template` (`email_template_id`, `text`, `allow_substitution`, `site_id`, `tag`, `title`, `possible_variables`, `disabled`) VALUES (6, '* This is an auto-generated message. Please do not reply. *\r\n%DATETIME%\r\n\r\nDear %CANDFULLNAME%,\r\n\r\nThank you for applying to the %JBODTITLE% position with our online career portal! Your application has been entered into our system and someone will review it shortly.\r\n\r\n--\r\n%SITENAME%', 1, 1, 'EMAIL_TEMPLATE_CANDIDATEAPPLY', 'Candidate Application Received (Sent to Candidate using Career Portal)', '%CANDFIRSTNAME%%CANDFULLNAME%%JBODCLIENT%%JBODTITLE%%JBODOWNER%', 0);
-INSERT INTO `email_template` (`email_template_id`, `text`, `allow_substitution`, `site_id`, `tag`, `title`, `possible_variables`, `disabled`) VALUES (7, '%DATETIME%\r\n\r\nDear %JBODOWNER%,\r\n\r\nThis e-mail is a notification that a candidate has applied to your job order through the online candidate portal.\r\n\r\nJob Order: %JBODTITLE%\r\nCandidate Name: %CANDFULLNAME%\r\nCandidate URL: %CANDCATSURL%\r\nJob Order URL: %JBODCATSURL%\r\n\r\n--\r\nCATS\r\n%SITENAME%', 1, 1, 'EMAIL_TEMPLATE_CANDIDATEPORTALNEW', 'Candidate Application Received (Sent to Owner of Job Order from Career Portal)', '%CANDFIRSTNAME%%CANDFULLNAME%%JBODOWNER%%JBODTITLE%%JBODCLIENT%%JBODCATSURL%%JBODID%%CANDCATSURL%', 0);
+INSERT INTO `email_template` (`email_template_id`, `text`, `allow_substitution`, `tag`, `title`, `possible_variables`, `disabled`) VALUES (1, '* Auto generated message. Please DO NOT reply *\r\n%DATETIME%\r\n\r\nDear %CANDFULLNAME%,\r\n\r\nThis E-Mail is a notification that your status in our database has been changed for the position %JBODTITLE% (%JBODCLIENT%).\r\n\r\nYour previous status was <B>%CANDPREVSTATUS%</B>.\r\nYour new status is <B>%CANDSTATUS%</B>.\r\n\r\nTake care,\r\n%USERFULLNAME%\r\n%SITENAME%', 1, 'EMAIL_TEMPLATE_STATUSCHANGE', 'Status Changed (Sent to Candidate)', '%CANDSTATUS%%CANDOWNER%%CANDFIRSTNAME%%CANDFULLNAME%%CANDPREVSTATUS%%JBODCLIENT%%JBODTITLE%', 0);
+INSERT INTO `email_template` (`email_template_id`, `text`, `allow_substitution`, `tag`, `title`, `possible_variables`, `disabled`) VALUES (2, '%DATETIME%\r\n\r\nDear %CANDOWNER%,\r\n\r\nThis E-Mail is a notification that a Candidate has been assigned to you.\r\n\r\nCandidate Name: %CANDFULLNAME%\r\nCandidate URL: %CANDCATSURL%\r\n\r\nTake care,\r\nCATS \r\n%SITENAME%', 1, 'EMAIL_TEMPLATE_OWNERSHIPASSIGNCANDIDATE', 'Candidate Assigned (Sent to Assigned Recruiter)', '%CANDOWNER%%CANDFIRSTNAME%%CANDFULLNAME%%CANDCATSURL%', 0);
+INSERT INTO `email_template` (`email_template_id`, `text`, `allow_substitution`, `tag`, `title`, `possible_variables`, `disabled`) VALUES (3, '%DATETIME%\r\n\r\nDear %JBODOWNER%,\r\n\r\nThis E-Mail is a notification that a Job Order has been assigned to you.\r\n\r\nJob Order Title: %JBODTITLE%\r\nJob Order Client: %JBODCLIENT%\r\nJob Order ID: %JBODID%\r\nJob Order URL: %JBODCATSURL%\r\n\r\nTake care,\r\nCATS \r\n%SITENAME%', 1, 'EMAIL_TEMPLATE_OWNERSHIPASSIGNJOBORDER', 'Job Order Assigned (Sent to Assigned Recruiter)', '%JBODOWNER%%JBODTITLE%%JBODCLIENT%%JBODCATSURL%%JBODID%', 0);
+INSERT INTO `email_template` (`email_template_id`, `text`, `allow_substitution`, `tag`, `title`, `possible_variables`, `disabled`) VALUES (4, '%DATETIME%\r\n\r\nDear %CONTOWNER%,\r\n\r\nThis E-Mail is a notification that a Contact has been assigned to you.\r\n\r\nContact Name: %CONTFULLNAME%\r\nContact Client: %CONTCLIENTNAME%\r\nContact URL: %CONTCATSURL%\r\n\r\nTake care,\r\nCATS \r\n%SITENAME%', 1, 'EMAIL_TEMPLATE_OWNERSHIPASSIGNCONTACT', 'Contact Assigned (Sent to Assigned Recruiter)', '%CONTOWNER%%CONTFIRSTNAME%%CONTFULLNAME%%CONTCLIENTNAME%%CONTCATSURL%', 0);
+INSERT INTO `email_template` (`email_template_id`, `text`, `allow_substitution`, `tag`, `title`, `possible_variables`, `disabled`) VALUES (5, '%DATETIME%\r\n\r\nDear %CLNTOWNER%,\r\n\r\nThis E-Mail is a notification that a Client has been assigned to you.\r\n\r\nClient Name: %CLNTNAME%\r\nClient URL %CLNTCATSURL%\r\n\r\nTake care,\r\nCATS \r\n%SITENAME%', 1, 'EMAIL_TEMPLATE_OWNERSHIPASSIGNCLIENT', 'Client Assigned (Sent to Assigned Recruiter)', '%CLNTOWNER%%CLNTNAME%%CLNTCATSURL%', 0);
+INSERT INTO `email_template` (`email_template_id`, `text`, `allow_substitution`, `tag`, `title`, `possible_variables`, `disabled`) VALUES (6, '* This is an auto-generated message. Please do not reply. *\r\n%DATETIME%\r\n\r\nDear %CANDFULLNAME%,\r\n\r\nThank you for applying to the %JBODTITLE% position with our online career portal! Your application has been entered into our system and someone will review it shortly.\r\n\r\n--\r\n%SITENAME%', 1, 'EMAIL_TEMPLATE_CANDIDATEAPPLY', 'Candidate Application Received (Sent to Candidate using Career Portal)', '%CANDFIRSTNAME%%CANDFULLNAME%%JBODCLIENT%%JBODTITLE%%JBODOWNER%', 0);
+INSERT INTO `email_template` (`email_template_id`, `text`, `allow_substitution`, `tag`, `title`, `possible_variables`, `disabled`) VALUES (7, '%DATETIME%\r\n\r\nDear %JBODOWNER%,\r\n\r\nThis e-mail is a notification that a candidate has applied to your job order through the online candidate portal.\r\n\r\nJob Order: %JBODTITLE%\r\nCandidate Name: %CANDFULLNAME%\r\nCandidate URL: %CANDCATSURL%\r\nJob Order URL: %JBODCATSURL%\r\n\r\n--\r\nCATS\r\n%SITENAME%', 1, 'EMAIL_TEMPLATE_CANDIDATEPORTALNEW', 'Candidate Application Received (Sent to Owner of Job Order from Career Portal)', '%CANDFIRSTNAME%%CANDFULLNAME%%JBODOWNER%%JBODTITLE%%JBODCLIENT%%JBODCATSURL%%JBODID%%CANDCATSURL%', 0);
 
 /* Table structure for table `extension_statistics` */
 
@@ -642,11 +599,9 @@ CREATE TABLE `extra_field` (
   `field_name` VARCHAR(255),
   `value` TEXT,
   `import_id` INT(11),
-  `site_id` INT(11) DEFAULT '0',
   `data_item_type` INT(11) DEFAULT '0',
   PRIMARY KEY (`extra_field_id`),
-  KEY `assoc_id` (`data_item_id`),
-  KEY `IDX_site_id` (`site_id`)
+  KEY `assoc_id` (`data_item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /* Data for the table `extra_field` */
@@ -657,7 +612,6 @@ CREATE TABLE `extra_field_settings` (
   `extra_field_settings_id` INT(11) NOT NULL AUTO_INCREMENT,
   `field_name` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
   `import_id` INT(11),
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `date_created` DATETIME,
   `data_item_type` INT(11) DEFAULT '0',
   `extra_field_type` INT(11) NOT NULL DEFAULT '1',
@@ -673,7 +627,6 @@ CREATE TABLE `extra_field_settings` (
 CREATE TABLE `feedback` (
   `feedback_id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11),
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `date_created` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
   `subject` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `reply_to_address` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -697,10 +650,8 @@ CREATE TABLE `history` (
   `description` VARCHAR(192) COLLATE utf8mb4_unicode_ci,
   `set_date` DATETIME,
   `entered_by` INT(11),
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`history_id`),
-  KEY `IDX_DATA_ENTERED_BY` (`entered_by`),
-  KEY `IDX_data_item_id_type_site` (`data_item_id`, `data_item_type`, `site_id`)
+  KEY `IDX_DATA_ENTERED_BY` (`entered_by`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `history` */
@@ -709,7 +660,6 @@ CREATE TABLE `history` (
 
 CREATE TABLE `http_log` (
   `log_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `site_id` INT(11) NOT NULL,
   `remote_addr` CHAR(16) NOT NULL,
   `http_user_agent` VARCHAR(255),
   `script_filename` VARCHAR(255),
@@ -744,7 +694,6 @@ CREATE TABLE `import` (
   `import_id` INT(11) NOT NULL AUTO_INCREMENT,
   `module_name` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `reverted` INT(1) NOT NULL DEFAULT '0',
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `import_errors` TEXT COLLATE utf8mb4_unicode_ci,
   `added_lines` INT(11),
   `date_created` DATETIME,
@@ -771,7 +720,6 @@ CREATE TABLE `joborder` (
   `company_id` INT(11),
   `entered_by` INT(11) NOT NULL DEFAULT '0',
   `owner` INT(11),
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `client_job_id` VARCHAR(32) COLLATE utf8mb4_unicode_ci,
   `title` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `description` TEXT COLLATE utf8mb4_unicode_ci,
@@ -806,8 +754,7 @@ CREATE TABLE `joborder` (
   KEY `IDX_owner` (`owner`),
   KEY `IDX_entered_by` (`entered_by`),
   KEY `IDX_date_created` (`date_created`),
-  KEY `IDX_date_modified` (`date_modified`),
-  KEY `IDX_site_id_status` (`site_id`, `status`(8))
+  KEY `IDX_date_modified` (`date_modified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `joborder` */
@@ -852,13 +799,11 @@ INSERT INTO `module_schema` (`module_schema_id`, `name`, `version`) VALUES (23, 
 CREATE TABLE `mru` (
   `mru_id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11),
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `data_item_type` INT(11) NOT NULL DEFAULT '0',
   `data_item_text` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `url` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `date_created` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
-  PRIMARY KEY (`mru_id`),
-  KEY `IDX_user_site` (`user_id`, `site_id`)
+  PRIMARY KEY (`mru_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `mru` */
@@ -867,7 +812,6 @@ CREATE TABLE `mru` (
 
 CREATE TABLE `queue` (
   `queue_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `site_id` INT(11) NOT NULL,
   `task` VARCHAR(125) NOT NULL,
   `args` TEXT,
   `priority` TINYINT(2) NOT NULL DEFAULT '5' COMMENT '1-5, 1 is highest priority',
@@ -888,7 +832,6 @@ CREATE TABLE `saved_list` (
   `saved_list_id` INT(11) NOT NULL AUTO_INCREMENT,
   `description` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `data_item_type` INT(11) NOT NULL DEFAULT '0',
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `is_dynamic` INT(1) DEFAULT '0',
   `datagrid_instance` VARCHAR(64) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `parameters` TEXT COLLATE utf8mb4_unicode_ci,
@@ -898,8 +841,7 @@ CREATE TABLE `saved_list` (
   `date_modified` DATETIME,
   PRIMARY KEY (`saved_list_id`),
   KEY `IDX_data_item_type` (`data_item_type`),
-  KEY `IDX_description` (`description`),
-  KEY `IDX_site_id` (`site_id`)
+  KEY `IDX_description` (`description`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `saved_list` */
@@ -911,7 +853,6 @@ CREATE TABLE `saved_list_entry` (
   `saved_list_id` INT(11) NOT NULL,
   `data_item_type` INT(11) NOT NULL DEFAULT '0',
   `data_item_id` INT(11) NOT NULL DEFAULT '0',
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `date_created` DATETIME,
   PRIMARY KEY (`saved_list_entry_id`),
   KEY `IDX_type_id` (`data_item_type`, `data_item_id`),
@@ -931,7 +872,6 @@ CREATE TABLE `saved_search` (
   `is_custom` INT(1),
   `data_item_type` INT(11),
   `user_id` INT(11),
-  `site_id` INT(11),
   `date_created` DATETIME,
   PRIMARY KEY (`search_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -944,15 +884,14 @@ CREATE TABLE `settings` (
   `settings_id` INT(11) NOT NULL AUTO_INCREMENT,
   `setting` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `value` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `settings_type` INT(11) DEFAULT '0',
   PRIMARY KEY (`settings_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `settings` */
 
-INSERT INTO `settings` (`settings_id`, `setting`, `value`, `site_id`, `settings_type`) VALUES (1, 'fromAddress', 'admin@example.com', 1, 1);
-INSERT INTO `settings` (`settings_id`, `setting`, `value`, `site_id`, `settings_type`) VALUES (3, 'configured', '1', 1, 1);
+INSERT INTO `settings` (`settings_id`, `setting`, `value`, `settings_type`) VALUES (1, 'fromAddress', 'admin@example.com', 1);
+INSERT INTO `settings` (`settings_id`, `setting`, `value`, `settings_type`) VALUES (3, 'configured', '1', 1);
 
 /* Table structure for table `site` */
 
@@ -1024,7 +963,6 @@ CREATE TABLE `tag` (
   `tag_parent_id` INT(10) UNSIGNED,
   `title` VARCHAR(255),
   `description` VARCHAR(500),
-  `site_id` INT(11) UNSIGNED,
   `date_created` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`tag_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1035,7 +973,6 @@ CREATE TABLE `tag` (
 
 CREATE TABLE `user` (
   `user_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `user_name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `email` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
   `password` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -1063,7 +1000,6 @@ CREATE TABLE `user` (
   `country` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
   `can_see_eeo_info` INT(1) DEFAULT '0',
   PRIMARY KEY (`user_id`),
-  KEY `IDX_site_id` (`site_id`),
   KEY `IDX_first_name` (`first_name`),
   KEY `IDX_last_name` (`last_name`),
   KEY `IDX_access_level` (`access_level`)
@@ -1071,14 +1007,13 @@ CREATE TABLE `user` (
 
 /* Data for the table `user` */
 
-INSERT INTO `user` (`user_id`, `site_id`, `user_name`, `email`, `password`, `access_level`, `can_change_password`, `is_test_user`, `last_name`, `first_name`, `is_demo`, `categories`, `session_cookie`, `pipeline_entries_per_page`, `column_preferences`, `force_logout`, `title`, `phone_work`, `phone_cell`, `phone_other`, `address`, `notes`, `company`, `city`, `state`, `zip_code`, `country`, `can_see_eeo_info`) VALUES (1, 1, 'admin', 'admin@example.com', md5('cats'), 500, 1, 0, 'Administrator', 'CATS', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
+INSERT INTO `user` (`user_id`, `user_name`, `email`, `password`, `access_level`, `can_change_password`, `is_test_user`, `last_name`, `first_name`, `is_demo`, `categories`, `session_cookie`, `pipeline_entries_per_page`, `column_preferences`, `force_logout`, `title`, `phone_work`, `phone_cell`, `phone_other`, `address`, `notes`, `company`, `city`, `state`, `zip_code`, `country`, `can_see_eeo_info`) VALUES (1, 'admin', 'admin@example.com', md5('cats'), 500, 1, 0, 'Administrator', 'CATS', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
 
 /* Table structure for table `user_login` */
 
 CREATE TABLE `user_login` (
   `user_login_id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11),
-  `site_id` INT(11) NOT NULL DEFAULT '0',
   `ip` VARCHAR(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `user_agent` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
   `date` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00',
@@ -1089,9 +1024,7 @@ CREATE TABLE `user_login` (
   KEY `IDX_user_id` (`user_id`),
   KEY `IDX_ip` (`ip`),
   KEY `IDX_date` (`date`),
-  KEY `IDX_date_refreshed` (`date_refreshed`),
-  KEY `IDX_site_id_date` (`site_id`, `date`),
-  KEY `IDX_successful_site_id` (`successful`, `site_id`)
+  KEY `IDX_date_refreshed` (`date_refreshed`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `user_login` */
