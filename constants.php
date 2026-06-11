@@ -78,7 +78,6 @@ define('ACCESS_LEVEL_EDIT',     200);
 define('ACCESS_LEVEL_DELETE',   300);
 define('ACCESS_LEVEL_DEMO',     350);
 define('ACCESS_LEVEL_SA',       400);
-define('ACCESS_LEVEL_MULTI_SA', 450);
 define('ACCESS_LEVEL_ROOT',     500);
 
 /* Calendar constants. */
@@ -143,7 +142,7 @@ define('DATE_FORMAT_DDMMYY',   0x2);
 define('DATE_FORMAT_YYYYMMDD', 0x4);
 define('DATE_FORMAT_SECONDS',  0x8);
 
-/* Automated backup types (ASP). */
+/* Automated backup types. */
 define('BACKUP_TAR', 1);
 define('BACKUP_ZIP', 2);
 define('BACKUP_CATS', 3);
@@ -183,8 +182,8 @@ define('MODULE_SETTINGS_ENTRIES', 3);
 define('MODULE_SETTINGS_ENTRIES_USER_LEVEL', 2);
 define('MODULE_SETTINGS_USER_CATEGORIES', 4);
 
-/* Site ID under which to store CATS system administrative data, etc. */
-define('CATS_ADMIN_SITE', 180);
+/* Site ID for this installation. */
+define('CATS_INSTALLATION_SITE', 1);
 
 /* Location of the XML export templates directory */
 define('XML_EXPORT_TEMPLATES_DIR', './modules/xml/xml_templates');

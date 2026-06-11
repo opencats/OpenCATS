@@ -111,7 +111,7 @@ $_SESSION['CATS']->checkForcedUpdate();
 // FIXME: This is slow!
 if ($_SESSION['CATS']->isLoggedIn())
 {
-    $users = new Users($_SESSION['CATS']->getSiteID());
+    $users = new Users();
     $forceLogoutData = $users->getForceLogoutData($_SESSION['CATS']->getUserID());
 
     if (!empty($forceLogoutData) && ($forceLogoutData['forceLogout'] == 1 ||
@@ -123,20 +123,11 @@ if ($_SESSION['CATS']->isLoggedIn())
             $forceLogoutData['forceLogout'] == 1)
         {
             /* Log the user out. */
-            $unixName = $_SESSION['CATS']->getUnixName();
-
             $_SESSION['CATS']->logout();
             unset($_SESSION['CATS']);
             unset($_SESSION['modules']);
 
-            $URI = 'm=login';
-
-            if (!empty($unixName) && $unixName != 'demo')
-            {
-                $URI .= '&s=' . $unixName;
-            }
-
-            CATSUtility::transferRelativeURI($URI);
+            CATSUtility::transferRelativeURI('m=login');
             die();
         }
     }
@@ -215,18 +206,11 @@ else
         }
 
         /* There isn't really a logout module. It's just a few lines. */
-        $unixName = $_SESSION['CATS']->getUnixName();
-
         $_SESSION['CATS']->logout();
         unset($_SESSION['CATS']);
         unset($_SESSION['modules']);
 
         $URI = 'm=login';
-                                 /* Local demo account doesn't relogin. */
-        if (!empty($unixName) && $unixName != 'demo')
-        {
-            $URI .= '&s=' . $unixName;
-        }
 
         if (isset($_POST['message']))
         {

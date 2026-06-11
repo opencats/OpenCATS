@@ -46,7 +46,6 @@ class UserInterface
     protected $_template;
     protected $_moduleDirectory = '';
     protected $_userID = -1;
-    protected $_siteID = -1;
     protected $_authenticationRequired = true;
     protected $_hooks = array();
     protected $_schema = array();
@@ -59,9 +58,6 @@ class UserInterface
         {
             /* Get the current user's user ID. */
             $this->_userID = $_SESSION['CATS']->getUserID();
-
-            /* Get the current user's site ID. */
-            $this->_siteID = $_SESSION['CATS']->getSiteID();
 
         }
     }

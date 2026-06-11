@@ -232,9 +232,6 @@ class CommonErrors
             /* Get the current user's user ID. */
             $userID = $_SESSION['CATS']->getUserID();
 
-            /* Get the current user's site ID. */
-            $siteID = $_SESSION['CATS']->getSiteID();
-
             /* Get the current user's access level. */
             $accessLevel = $_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT);
 
@@ -244,19 +241,17 @@ class CommonErrors
             // Save log if a session is present and it's not a demo, and exceptions are logged
             if (!$isDemo && self::isExceptionLoggingEnabled())
             {
-                self::saveLog($siteID, $userID, $accessLevel, $internalErrorTitle, $customMessage);
+                self::saveLog($userID, $accessLevel, $internalErrorTitle, $customMessage);
             }
 
             /* All templates have an access level if we have a session. */
             $template->assign('accessLevel', $accessLevel);
-            $template->assign('siteID', $siteID);
             $template->assign('userID', $userID);
             $template->assign('isDemo', $isDemo);
         }
         else
         {
             $template->assign('isDemo', true); // no session might as well be a demo
-            $template->assign('siteID', -1);
             $template->assign('userID', -1);
             $template->assign('accessLevel', 0);
         }
@@ -288,13 +283,13 @@ class CommonErrors
         return $backtrace;
     }
 
-    private static function saveLog($siteID, $userID, $accessLevel, $internalErrorTitle, $customMessage)
+    private static function saveLog($userID, $accessLevel, $internalErrorTitle, $customMessage)
     {
         $db = DatabaseConnection::getInstance();
 
-        $sql = sprintf('INSERT INTO exceptions (site_id, user_id, title, message, access_level, script, '
-            . 'domain, request, backtrace, date) VALUES (%d, %d, "%s", "%s", %d, "%s", "%s", "%s", "%s", NOW())',
-            $siteID, $userID, addslashes($internalErrorTitle), addslashes($customMessage),
+        $sql = sprintf('INSERT INTO exceptions (user_id, title, message, access_level, script, '
+            . 'domain, request, backtrace, date) VALUES (%d, "%s", "%s", %d, "%s", "%s", "%s", "%s", NOW())',
+            $userID, addslashes($internalErrorTitle), addslashes($customMessage),
             $accessLevel, addslashes($_SERVER['SCRIPT_NAME']), addslashes($_SERVER['SERVER_NAME']),
             addslashes($_SERVER['QUERY_STRING']), addslashes(self::getBacktrace())
         );

@@ -55,11 +55,9 @@ if (!isset($_POST['savedListID']) || !ctype_digit((string) $_POST['savedListID']
     die();
 }
 
-$siteID = $interface->getSiteID();
-
 $savedListID = $_POST['savedListID'];
 
-$savedLists = new SavedLists($siteID);
+$savedLists = new SavedLists();
 
 /* Write changes. */
 $savedLists->delete($savedListID);

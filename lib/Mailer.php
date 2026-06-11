@@ -60,20 +60,17 @@ class Mailer
     private $_mailer;
     private $_errorMessage = '';
     private $_settings;
-    private $_siteID;
     private $_userID;
     private $_db;
 
 
-    public function __construct($siteID, $userID = -1)
+    public function __construct($userID = -1)
     {
-        $this->_siteID = $siteID;
-
         // Instantiation and passing `true` enables exceptions
         $this->_mailer = new PHPMailer(true);
 
         /* Load mailer configuration settings. */
-        $settings = new MailerSettings($this->_siteID);
+        $settings = new MailerSettings();
         $this->_settings = $settings->getAll();
 
         /* Configure PHPMailer based on CATS configuration settings. */
@@ -367,11 +364,9 @@ class Mailer
                 recipients,
                 text,
                 user_id,
-                site_id,
                 date
             )
             VALUES (
-                %s,
                 %s,
                 %s,
                 %s,
@@ -381,8 +376,7 @@ class Mailer
             $this->_db->makeQueryString($from),
             $this->_db->makeQueryString($to),
             $this->_db->makeQueryString($messageText),
-            $this->_userID,
-            $this->_siteID
+            $this->_userID
          );
 
          $this->_db->query($sql);
@@ -397,12 +391,10 @@ class Mailer
 class MailerSettings
 {
     private $_db;
-    private $_siteID;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
 
@@ -416,7 +408,7 @@ class MailerSettings
         // FIXME: This is violating just about every OO design principal I can come up with :)
 
         /* Default values. */
-        $pipelines = new Pipelines($this->_siteID);
+        $pipelines = new Pipelines();
         $statuses = $pipelines->getStatuses();
 
         $candidateJoborderStatusSendsMessage = array();
@@ -435,15 +427,11 @@ class MailerSettings
         $sql = sprintf(
             "SELECT
                 settings.setting AS setting,
-                settings.value AS value,
-                settings.site_id AS siteID
+                settings.value AS value
             FROM
                 settings
             WHERE
-                settings.site_id = %s
-            AND
                 settings.settings_type = %s",
-            $this->_siteID,
             SETTINGS_MAILER
         );
         $rs = $this->_db->getAllAssoc($sql);
@@ -479,11 +467,8 @@ class MailerSettings
             WHERE
                 settings.setting = %s
             AND
-                site_id = %s
-            AND
-                settings_type",
+                settings_type = %s",
             $this->_db->makeQueryStringOrNULL($setting),
-            $this->_siteID,
             SETTINGS_MAILER
         );
         $this->_db->query($sql);
@@ -493,18 +478,15 @@ class MailerSettings
             "INSERT INTO settings (
                 setting,
                 value,
-                site_id,
                 settings_type
             )
             VALUES (
-                %s,
                 %s,
                 %s,
                 %s
             )",
             $this->_db->makeQueryStringOrNULL($setting),
             $this->_db->makeQueryStringOrNULL($value),
-            $this->_siteID,
             SETTINGS_MAILER
          );
          $this->_db->query($sql);

@@ -166,7 +166,7 @@ class ListsUI extends UserInterface
 
         $savedListID = $_GET['savedListID'];
 
-        $savedLists = new SavedLists($this->_siteID);
+        $savedLists = new SavedLists();
 
         $listRS = $savedLists->get($savedListID);
 
@@ -245,7 +245,7 @@ class ListsUI extends UserInterface
         $dataItemID = $_GET['dataItemID'];
         $dataItemIDArray = array($dataItemID);
 
-        $savedLists = new SavedLists($this->_siteID);
+        $savedLists = new SavedLists();
 
         $savedListsRS = $savedLists->getAll($dataItemType, STATIC_LISTS);
 
@@ -288,7 +288,7 @@ class ListsUI extends UserInterface
 
         $dataItemType = $_GET['dataItemType'];
 
-        $savedLists = new SavedLists($this->_siteID);
+        $savedLists = new SavedLists();
 
         $savedListsRS = $savedLists->getAll($dataItemType, STATIC_LISTS);
 
@@ -342,7 +342,7 @@ class ListsUI extends UserInterface
         $savedListID = $_POST['savedListID'];
 
         /* Remove the items */
-        $savedLists = new SavedLists($this->_siteID);
+        $savedLists = new SavedLists();
 
         $dataItemIDArrayTemp = array();
         foreach ($dataItemIDArray as $dataItemID)
@@ -379,7 +379,7 @@ class ListsUI extends UserInterface
 
         $savedListID = $_POST['savedListID'];
 
-        $savedLists = new SavedLists($this->_siteID);
+        $savedLists = new SavedLists();
 
         /* Write changes. */
         $savedLists->delete($savedListID);

@@ -44,12 +44,10 @@ include_once(LEGACY_ROOT . '/lib/Hooks.php');
 class Attachments
 {
     private $_db;
-    private $_siteID;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
 
@@ -106,7 +104,6 @@ class Attachments
                 resume,
                 text,
                 profile_image,
-                site_id,
                 date_created,
                 date_modified,
                 directory_name,
@@ -141,7 +138,6 @@ class Attachments
             ($isResume ? '1' : '0'),
             $this->_db->makeQueryStringOrNULL($resumeText),
             ($isProfileImage ? '1' : '0'),
-            $this->_siteID,
             $this->_db->makeQueryString($directoryName),
             $this->_db->makeQueryString($md5sum),
             $this->_db->makeQueryString($md5sumText),
@@ -220,13 +216,10 @@ class Attachments
                 file_size_kb = %s,
                 md5_sum = %s
             WHERE
-                attachment_id = %s
-            AND
-                site_id = %s",
+                attachment_id = %s",
             $this->_db->makeQueryInteger($fileSize),
             $this->_db->makeQueryString($md5sum),
-            $this->_db->makeQueryInteger($attachmentID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($attachmentID)
         );
 
         $queryResult = (boolean) $this->_db->query($sql);
@@ -243,7 +236,7 @@ class Attachments
      */
     public function updateSiteSize()
     {
-        $sql = sprintf(
+        $sql =
             "UPDATE
                 site
             SET
@@ -252,14 +245,7 @@ class Attachments
                         SUM(file_size_kb)
                     FROM
                         attachment
-                    WHERE
-                        site_id = %s
-                )
-            WHERE
-                site_id = %s",
-            $this->_siteID,
-            $this->_siteID
-        );
+                )";
 
         $this->_db->query($sql);
     }
@@ -281,13 +267,10 @@ class Attachments
                 data_item_type = %s,
                 data_item_id = %s
             WHERE
-                attachment_id = %s
-            AND
-                site_id = %s",
+                attachment_id = %s",
             $this->_db->makeQueryInteger($dataItemType),
             $this->_db->makeQueryInteger($dataItemID),
-            $this->_db->makeQueryInteger($attachmentID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($attachmentID)
         );
 
         return (boolean) $this->_db->query($sql);
@@ -306,33 +289,23 @@ class Attachments
         $sql = sprintf(
             "SELECT
                 directory_name AS directoryName,
-                stored_filename AS storedFileName,
-                site_id AS siteId
+                stored_filename AS storedFileName
             FROM
                 attachment
             WHERE
-                attachment_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($attachmentID),
-            $this->_siteID
+                attachment_id = %s",
+            $this->_db->makeQueryInteger($attachmentID)
         );
         $rs = $this->_db->getAssoc($sql);
 
-        if (isset($rs['siteID']))
-        {
-            $this->forceRemoteDeleteAttachment($attachmentID);
-        }
+        $this->forceRemoteDeleteAttachment($attachmentID);
 
         $sql = sprintf(
             "DELETE FROM
                 attachment
             WHERE
-                attachment_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($attachmentID),
-            $this->_siteID
+                attachment_id = %s",
+            $this->_db->makeQueryInteger($attachmentID)
         );
         $queryResult = $this->_db->query($sql);
 
@@ -387,12 +360,9 @@ class Attachments
                 data_item_id = %s
             AND
                 data_item_type = %s
-            AND
-                site_id = %s
             %s",
             $this->_db->makeQueryInteger($dataItemID),
             $this->_db->makeQueryInteger($dataItemType),
-            $this->_siteID,
             $criteria
         );
         $rs = $this->_db->getAllAssoc($sql);
@@ -428,12 +398,9 @@ class Attachments
                 data_item_id = %s
             AND
                 data_item_type = %s
-            AND
-                site_id = %s
             %s",
             $this->_db->makeQueryInteger($dataItemID),
             $this->_db->makeQueryInteger($dataItemType),
-            $this->_siteID,
             $criteria
         );
         $this->_db->query($sql);
@@ -458,12 +425,9 @@ class Attachments
             AND
                 data_item_id = %s
             AND
-                profile_image = 1
-            AND
-                site_id = %s",
+                profile_image = 1",
             $this->_db->makeQueryInteger($dataItemType),
-            $this->_db->makeQueryInteger($dataItemID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($dataItemID)
         );
         $rs = $this->_db->getAllAssoc($sql);
 
@@ -491,12 +455,9 @@ class Attachments
             SET
                 directory_name = %s
             WHERE
-                attachment_id = %s
-            AND
-                site_id = %s",
+                attachment_id = %s",
             $this->_db->makeQueryString($directoryName),
-            $this->_db->makeQueryInteger($attachmentID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($attachmentID)
         );
 
         return (boolean) $this->_db->query($sql);
@@ -532,12 +493,9 @@ class Attachments
             WHERE
                 data_item_id = %s
             AND
-                data_item_type = %s
-            AND
-                site_id = %s",
+                data_item_type = %s",
             $this->_db->makeQueryInteger($dataItemID),
-            $this->_db->makeQueryInteger($dataItemType),
-            $this->_siteID
+            $this->_db->makeQueryInteger($dataItemType)
         );
         $rs = $this->_db->getAllAssoc($sql);
 
@@ -576,7 +534,7 @@ class Attachments
      * @return array Associative array of attachments data, or array() if no
      *               records are present.
      */
-    public function get($attachmentID, $verifySiteID = true)
+    public function get($attachmentID)
     {
         $sql = sprintf(
             "SELECT
@@ -596,12 +554,8 @@ class Attachments
             FROM
                 attachment
             WHERE
-                attachment_id = %s
-            AND
-                (site_id = %s || content_type = 'catsbackup' || %s)",
-            $this->_db->makeQueryInteger($attachmentID),
-            $this->_siteID,
-            ($verifySiteID ? 'false' : 'true')
+                attachment_id = %s",
+            $this->_db->makeQueryInteger($attachmentID)
         );
         $rs = $this->_db->getAssoc($sql);
 
@@ -671,13 +625,10 @@ class Attachments
                 file_size_kb = %s
             AND
                 file_size_kb > 0
-            AND
-                site_id = %s
             %s",
             $this->_db->makeQueryInteger($dataItemID),
             $this->_db->makeQueryInteger($dataItemType),
             $this->_db->makeQueryInteger($fileSize),
-            $this->_siteID,
             $md5Criterion
         );
 
@@ -738,26 +689,21 @@ class Attachments
                 attachment
             WHERE
                 data_item_type = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger(DATA_ITEM_BULKRESUME),
-            $this->_siteID
+",
+            $this->_db->makeQueryInteger(DATA_ITEM_BULKRESUME)
         );
 
         return $this->_db->getAssoc($sql);
     }
 
     /**
-     * Get information about bulk attachments that have been saved to the
-     * site attached to this class by siteID.
-     *
+     * Get information about saved bulk attachments.
      */
     public function getBulkAttachments()
     {
         $sql = sprintf(
             "SELECT
                 attachment_id as attachmentID,
-                site_id as siteID,
                 title,
                 original_filename as originalFileName,
                 stored_filename as storedFileName,
@@ -773,11 +719,8 @@ class Attachments
             FROM
                 attachment
             WHERE
-                data_item_type = %s
-            AND
-                site_id = %d",
-            $this->_db->makeQueryInteger(DATA_ITEM_BULKRESUME),
-            $this->_siteID
+                data_item_type = %s",
+            $this->_db->makeQueryInteger(DATA_ITEM_BULKRESUME)
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -797,7 +740,6 @@ class AttachmentCreator
     private $_isTextExtractionError = false;
     private $_textExtractionError = '';
     private $_extractedText = '';
-    private $_siteID = -1;
     private $_duplicatesOccurred = false;
     private $_newFilePath = '';
     private $_containingDirectory = '';
@@ -805,9 +747,8 @@ class AttachmentCreator
 
 
     // FIXME: Document me.
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
     }
 
 
@@ -1134,7 +1075,7 @@ class AttachmentCreator
             }
         }
 
-        $attachments = new Attachments($this->_siteID);
+        $attachments = new Attachments();
 
         /* We can only check for duplicates right now if the file actually
          * exists. We'll do it again later below.
@@ -1301,8 +1242,8 @@ class AttachmentCreator
             @touch('./attachments/index.php');
         }
 
-        /* Attachments are first grouped under a directory for each site ID. */
-        $siteDirectory = './attachments/site_' . $this->_siteID;
+        /* Attachments are stored under a single installation directory. */
+        $siteDirectory = './attachments/site_1';
 
         /* Make sure the site directory exists. */
         if (!is_dir($siteDirectory))

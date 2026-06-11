@@ -190,7 +190,7 @@ class CalendarUI extends UserInterface
         $startingWeekday = DateUtility::getStartingWeekday($month, $year);
         $daysInMonth     = DateUtility::getDaysInMonth($month, $year);
 
-        $calendar = new Calendar($this->_siteID);
+        $calendar = new Calendar();
 
         $monthBefore = $month - 1;
         $monthAfter  = $month + 1;
@@ -248,7 +248,7 @@ class CalendarUI extends UserInterface
 
         $calendarEventTypes = $calendar->getAllEventTypes();
 
-        $calendarSettings = new CalendarSettings($this->_siteID);
+        $calendarSettings = new CalendarSettings();
         $calendarSettingsRS = $calendarSettings->getAll();
 
         if ($view == 'DEFAULT_VIEW')
@@ -331,7 +331,7 @@ class CalendarUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid date.');
         }
 
-        $calendar = new Calendar($this->_siteID);
+        $calendar = new Calendar();
 
         $eventsString = $calendar->makeEventString(
             $calendar->getEventArray($month, $year),
@@ -470,7 +470,7 @@ class CalendarUI extends UserInterface
 
         if (!eval(Hooks::get('CALENDAR_ADD_PRE'))) return;
 
-        $calendar = new Calendar($this->_siteID);
+        $calendar = new Calendar();
         $eventID = $calendar->addEvent(
             $type, $date, $description, $allDay, $this->_userID, -1, -1, null,
             $title, $duration, $reminderEnabled, $reminderEmail, $reminderTime,
@@ -582,7 +582,7 @@ class CalendarUI extends UserInterface
 
         $eventID  = $_POST['eventID'];
         $type     = $_POST['type'];
-        $calendar = new Calendar($this->_siteID);
+        $calendar = new Calendar();
         $eventRS = $calendar->get($eventID);
 
         if (empty($eventRS))
@@ -723,7 +723,7 @@ class CalendarUI extends UserInterface
         }
 
         $eventID = $_POST['eventID'];
-        $calendar = new Calendar($this->_siteID);
+        $calendar = new Calendar();
         $eventRS = $calendar->get($eventID);
 
         if (empty($eventRS))

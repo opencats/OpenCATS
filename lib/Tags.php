@@ -40,12 +40,10 @@ include_once(LEGACY_ROOT . '/lib/Site.php');
 class Tags
 {
     private $_db;
-    private $_siteID;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
 
@@ -66,13 +64,10 @@ class Tags
                 title = %s,
                 description = %s
             WHERE
-                tag_id = %s
-            AND
-                site_id = %s",
+                tag_id = %s",
             $this->_db->makeQueryStringOrNULL($title),
             $this->_db->makeQueryStringOrNULL($description),
-            $this->_db->makeQueryString($tagID),
-            $this->_siteID
+            $this->_db->makeQueryString($tagID)
         );
 
         $queryResult = $this->_db->query($sql);
@@ -91,12 +86,9 @@ class Tags
             "DELETE FROM
                 tag
             WHERE
-                (tag_id = %s OR tag_parent_id = %s)
-            AND
-                site_id = %s",
+                (tag_id = %s OR tag_parent_id = %s)",
             $this->_db->makeQueryString($tagID), 
-	    $this->_db->makeQueryString($tagID),
-            $this->_siteID
+	    $this->_db->makeQueryString($tagID)
         );
 
         $queryResult = $this->_db->query($sql);
@@ -117,18 +109,15 @@ class Tags
             (
                 tag_parent_id,
                 title ,
-                description,
-                site_id
+                description
             ) VALUES (
-                %s,
                 %s,
                 %s,
                 %s
             )",
             $this->_db->makeQueryStringOrNULL($parent_tag_id),
             $this->_db->makeQueryStringOrNULL($title),
-            $this->_db->makeQueryStringOrNULL($description),
-            $this->_siteID
+            $this->_db->makeQueryStringOrNULL($description)
         );
 
         $queryResult = $this->_db->query($sql);
@@ -148,8 +137,7 @@ class Tags
      */
     public function getAll()
     {
-        $sql = sprintf(
-			"SELECT
+        $sql = "SELECT
 				t1.tag_id,
 				t1.tag_parent_id,
 				t2.title AS tag_parent_title,
@@ -158,10 +146,7 @@ class Tags
 				tag t1
 			LEFT JOIN
 				tag t2 ON t2.tag_id = t1.tag_parent_id
-			WHERE t1.site_id = %d  
-			ORDER BY IFNULL(t1.tag_parent_id, t1.tag_id), t1.tag_id",
-			$this->_siteID
-		);
+			ORDER BY IFNULL(t1.tag_parent_id, t1.tag_id), t1.tag_id";
 
 		return $this->_db->getAllAssoc($sql);
 	}
@@ -185,10 +170,10 @@ class Tags
 				tag t1
 			LEFT JOIN
 				tag t2 ON t2.tag_id = t1.tag_parent_id
-			WHERE t1.site_id = %d AND 
-				  t1.tag_id IN (SELECT tag_id FROM candidate_tag WHERE candidate_id = %d) 
+			WHERE
+				  t1.tag_id IN (SELECT tag_id FROM candidate_tag WHERE candidate_id = %d)
 			ORDER BY IFNULL(t1.tag_parent_id, t1.tag_id), t1.tag_id",
-			$this->_siteID, $candidateID
+			$candidateID
 		);
 		return $this->_db->getAllAssoc($sql);
 	}
@@ -225,12 +210,10 @@ class Tags
 			foreach($tagIDs as $t){
 				$values[] = sprintf(" (
 	                %s,
-	                %s,
 	                %s
 	            )",
 	            $this->_db->makeQueryStringOrNULL($candidateID),
-	            $this->_db->makeQueryStringOrNULL($t),
-	            $this->_siteID);
+	            $this->_db->makeQueryStringOrNULL($t));
 			}
 
 		}
@@ -238,12 +221,10 @@ class Tags
 		{
 			$values = sprintf(" (
                 %s,
-                %s,
                 %s
             )",
             $this->_db->makeQueryStringOrNULL($candidateID),
-            $this->_db->makeQueryStringOrNULL($tagIDs),
-            $this->_siteID);
+            $this->_db->makeQueryStringOrNULL($tagIDs));
 			
 		}
 
@@ -251,9 +232,8 @@ class Tags
         $sql = sprintf(
             "DELETE FROM 
                 candidate_tag 
-            WHERE candidate_id = %s AND site_id = %s ",
-        $this->_db->makeQueryStringOrNULL($candidateID),
-        $this->_siteID);
+            WHERE candidate_id = %s",
+        $this->_db->makeQueryStringOrNULL($candidateID));
         
 		if ($this->_db->query($sql)){
 			// Add current selected tag ids to the candidate
@@ -262,8 +242,7 @@ class Tags
 	                candidate_tag
 	            (
 	                candidate_id,
-	                tag_id,
-	                site_id
+	                tag_id
 	            ) VALUES " . (is_array($values) ? implode(", ", $values) : $values );
 	        
 	        $queryResult = $this->_db->query($sql);

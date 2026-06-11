@@ -61,12 +61,10 @@ if (!isset($_POST['description']))
     die();
 }
 
-$siteID = $interface->getSiteID();
-
 $savedListName = $_POST['description'];
 $dataItemType = $_POST['dataItemType'];
 
-$savedLists = new SavedLists($siteID);
+$savedLists = new SavedLists();
 
 /* Validate the lists - if name is in use or name is blank, fail. */
 if ($savedLists->getIDByDescription($savedListName) != -1)

@@ -29,11 +29,9 @@ class JobOrder
     private $owner;
     private $departmentId;
     private $questionnaire;
-    private $siteId;
     private $status;
-    
+
     function __construct(
-        $siteId,
         $title,
         $type,
         $status,
@@ -42,7 +40,6 @@ class JobOrder
         $enteredBy,
         $isPublic
     ) {
-        $this->siteId = $siteId;
         $this->title = $title;
         $this->type = $type;
         $this->status = $status;
@@ -251,11 +248,6 @@ class JobOrder
         $this->owner = $value;
     }
     
-    function getSiteId()
-    {
-        return $this->siteId;
-    }
-    
     function getQuestionnaire()
     {
         return $this->questionnaire;
@@ -272,7 +264,6 @@ class JobOrder
     }
     
     static function create(
-        $siteId,
         $title,
         $companyId,
         $contactID,
@@ -297,7 +288,6 @@ class JobOrder
         $questionnaire
     ) {
         $instance = new JobOrder(
-            $siteId,
             $title,
             $type,
             $status = \JobOrderStatuses::getDefaultStatus(),

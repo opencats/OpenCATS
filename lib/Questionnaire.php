@@ -45,12 +45,10 @@ define('QUESTIONNAIRE_QUESTION_TYPE_RADIO', 4);
  */
 class Questionnaire
 {
-    private $_siteID;
     private $_db;
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
 
@@ -71,9 +69,8 @@ class Questionnaire
              FROM
                 career_portal_questionnaire
              WHERE
-                career_portal_questionnaire.site_id = %d
+                1=1
              %s",
-            $this->_siteID,
             $activeCritereon
         );
 
@@ -97,10 +94,7 @@ class Questionnaire
              FROM
                 career_portal_questionnaire
              WHERE
-                career_portal_questionnaire.site_id = %s
-             AND
                 career_portal_questionnaire.career_portal_questionnaire_id = %s",
-            $this->_siteID,
             $this->_db->makeQueryInteger($id)
         );
 
@@ -114,14 +108,12 @@ class Questionnaire
                 career_portal_questionnaire (
                     title,
                     description,
-                    is_active,
-                    site_id
+                    is_active
                 )
-             VALUES( %s, %s, %s, %d )",
+             VALUES( %s, %s, %s )",
             $this->_db->makeQueryString($title),
             $this->_db->makeQueryString($description),
-            $this->_db->makeQueryInteger($isActive),
-            $this->_siteID
+            $this->_db->makeQueryInteger($isActive)
         );
 
         if ($this->_db->query($sql))
@@ -140,11 +132,8 @@ class Questionnaire
             "DELETE FROM
                 career_portal_questionnaire
              WHERE
-                career_portal_questionnaire_id = %s
-             AND
-                site_id = %d",
-            $this->_db->makeQueryInteger($id),
-            $this->_siteID
+                career_portal_questionnaire_id = %s",
+            $this->_db->makeQueryInteger($id)
         );
 
         return $this->_db->query($sql);
@@ -180,12 +169,9 @@ class Questionnaire
             ON
                 a.career_portal_questionnaire_question_id = b.career_portal_questionnaire_question_id
             WHERE
-                a.site_id = %s
-            AND
                 a.career_portal_questionnaire_id = %s
             ORDER BY
                 a.position, b.position ASC",
-            $this->_siteID,
             $this->_db->makeQueryInteger($id)
         );
 
@@ -238,22 +224,16 @@ class Questionnaire
             "DELETE FROM
                 career_portal_questionnaire_question
              WHERE
-                career_portal_questionnaire_id = %s
-             AND
-                site_id = %d",
-            $this->_db->makeQueryInteger($id),
-            $this->_siteID
+                career_portal_questionnaire_id = %s",
+            $this->_db->makeQueryInteger($id)
         );
 
         $sql = sprintf(
             "DELETE FROM
                 career_portal_questionnaire_answer
              WHERE
-                career_portal_questionnaire_id = %s
-             AND
-                site_id = %d",
-            $this->_db->makeQueryInteger($id),
-            $this->_siteID
+                career_portal_questionnaire_id = %s",
+            $this->_db->makeQueryInteger($id)
         );
 
         return $this->_db->query($sql);
@@ -269,14 +249,11 @@ class Questionnaire
                 description = %s,
                 is_active = %s
              WHERE
-                career_portal_questionnaire_id = %s
-             AND
-                site_id = %d",
+                career_portal_questionnaire_id = %s",
             $this->_db->makeQueryString($title),
             $this->_db->makeQueryString($description),
             $this->_db->makeQueryInteger($isActive),
-            $this->_db->makeQueryInteger($id),
-            $this->_siteID
+            $this->_db->makeQueryInteger($id)
         );
 
         return $this->_db->query($sql);
@@ -358,11 +335,10 @@ class Questionnaire
                     maximum_length,
                     required,
                     position,
-                    site_id,
                     type
                 )
              VALUES (
-                %s, %s, %s, %s, %s, %s, %s, %s
+                %s, %s, %s, %s, %s, %s, %s
              )",
             $this->_db->makeQueryInteger($id),
             $this->_db->makeQueryString($text),
@@ -370,7 +346,6 @@ class Questionnaire
             $this->_db->makeQueryString($maximumLength),
             $this->_db->makeQueryString($required),
             $this->_db->makeQueryInteger($position),
-            $this->_siteID,
             $this->_db->makeQueryInteger($type)
         );
 
@@ -397,7 +372,6 @@ class Questionnaire
      * @param integer $actionCanRelocate
      * @param string $actionKeySkills
      * @param integer $position
-     * @param integer $siteID
      * @return boolean
      */
     public function addAnswer(
@@ -425,11 +399,10 @@ class Questionnaire
                     action_is_active,
                     action_can_relocate,
                     action_key_skills,
-                    position,
-                    site_id
+                    position
                 )
              VALUES (
-                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
              )",
             $this->_db->makeQueryInteger($questionnaireID),
             $this->_db->makeQueryInteger($questionID),
@@ -440,8 +413,7 @@ class Questionnaire
             $this->_db->makeQueryInteger($actionIsActive),
             $this->_db->makeQueryInteger($actionCanRelocate),
             $this->_db->makeQueryString($actionKeySkills),
-            $this->_db->makeQueryInteger($position),
-            $this->_siteID
+            $this->_db->makeQueryInteger($position)
         );
 
         if ($this->_db->query($sql))
@@ -483,16 +455,12 @@ class Questionnaire
                 questionnaire_title as questionnaireTitle,
                 questionnaire_description as questionnaireDescription,
                 date as questionnaireDate,
-                site_id as siteID,
                 candidate_id as candidateID,
                 career_portal_questionnaire_history_id as historyID
              FROM
                 career_portal_questionnaire_history
              WHERE
-                site_id = %d
-             AND
                 candidate_id = %s",
-            $this->_siteID,
             $this->_db->makeQueryInteger($candidateID)
         );
 
@@ -524,7 +492,6 @@ class Questionnaire
             "SELECT
                 career_portal_questionnaire_history_id as historyID,
                 candidate_id as candidateID,
-                site_id as siteID,
                 questionnaire_title as questionnaireTitle,
                 questionnaire_description as questionnaireDescription,
                 date as questionnaireDate,
@@ -535,12 +502,9 @@ class Questionnaire
              WHERE
                 questionnaire_title = %s
              AND
-                candidate_id = %s
-             AND
-                site_id = %d",
+                candidate_id = %s",
             $this->_db->makeQueryString($questionnaireTitle),
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($candidateID)
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -551,7 +515,6 @@ class Questionnaire
         $sql = sprintf(
             "INSERT INTO
                 career_portal_questionnaire_history (
-                    site_id,
                     candidate_id,
                     questionnaire_title,
                     questionnaire_description,
@@ -559,8 +522,7 @@ class Questionnaire
                     answer,
                     date
                 )
-             VALUES ( %d, %s, %s, %s, %s, %s, NOW() )",
-            $this->_siteID,
+             VALUES ( %s, %s, %s, %s, %s, NOW() )",
             $this->_db->makeQueryInteger($candidateID),
             $this->_db->makeQueryString($title),
             $this->_db->makeQueryString($description),
@@ -583,7 +545,7 @@ class Questionnaire
     public function doActions($questionnaireID, $candidateID, $postData)
     {
         // Get the candidate (if exists)
-        $candidate = new Candidates($this->_siteID);
+        $candidate = new Candidates();
         if (!count($cData = $candidate->get($candidateID))) return false;
 
         // Default values (which may be changed by actions)
@@ -711,7 +673,6 @@ class Questionnaire
         );
     }
 }
-
 
 
 

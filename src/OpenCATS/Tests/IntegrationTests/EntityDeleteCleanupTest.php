@@ -64,20 +64,20 @@ class EntityDeleteCleanupTest extends DatabaseTestCase
     {
         $db = DatabaseConnection::getInstance();
 
-        $db->query("INSERT INTO joborder (site_id, title, entered_by) VALUES (1, 'Job Delete Cleanup', 1)");
+        $db->query("INSERT INTO joborder (title, entered_by) VALUES ('Job Delete Cleanup', 1)");
         $jobOrderID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO activity (data_item_id, data_item_type, joborder_id, site_id, entered_by, type, notes)
-             VALUES (1, %d, %d, 1, 1, 100, 'activity reference')",
+            "INSERT INTO activity (data_item_id, data_item_type, joborder_id, entered_by, type, notes)
+             VALUES (1, %d, %d, 1, 100, 'activity reference')",
             DATA_ITEM_BULKRESUME,
             $jobOrderID
         ));
         $activityID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO calendar_event (type, date, title, data_item_id, data_item_type, entered_by, site_id, joborder_id)
-             VALUES (100, NOW(), 'calendar reference', 1, %d, 1, 1, %d)",
+            "INSERT INTO calendar_event (type, date, title, data_item_id, data_item_type, entered_by, joborder_id)
+             VALUES (100, NOW(), 'calendar reference', 1, %d, 1, %d)",
             DATA_ITEM_BULKRESUME,
             $jobOrderID
         ));
@@ -111,70 +111,70 @@ class EntityDeleteCleanupTest extends DatabaseTestCase
     {
         $db = DatabaseConnection::getInstance();
 
-        $db->query("INSERT INTO candidate (site_id, first_name, last_name, entered_by, owner) VALUES (1, 'Delete', 'Candidate', 1, 1)");
+        $db->query("INSERT INTO candidate (first_name, last_name, entered_by, owner) VALUES ('Delete', 'Candidate', 1, 1)");
         $candidateID = (int) $db->getLastInsertID();
 
-        $db->query("INSERT INTO joborder (site_id, title, entered_by) VALUES (1, 'Candidate Cleanup Job', 1)");
+        $db->query("INSERT INTO joborder (title, entered_by) VALUES ('Candidate Cleanup Job', 1)");
         $jobOrderID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO candidate_joborder (candidate_id, joborder_id, site_id, status, date_created, date_modified)
-             VALUES (%d, %d, 1, 100, NOW(), NOW())",
+            "INSERT INTO candidate_joborder (candidate_id, joborder_id, status, date_created, date_modified)
+             VALUES (%d, %d, 100, NOW(), NOW())",
             $candidateID,
             $jobOrderID
         ));
         $candidateJoborderID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO candidate_joborder_status_history (candidate_id, joborder_id, date, status_from, status_to, site_id)
-             VALUES (%d, %d, NOW(), 0, 100, 1)",
+            "INSERT INTO candidate_joborder_status_history (candidate_id, joborder_id, date, status_from, status_to)
+             VALUES (%d, %d, NOW(), 0, 100)",
             $candidateID,
             $jobOrderID
         ));
         $candidateHistoryID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO activity (data_item_id, data_item_type, site_id, entered_by, type, notes)
-             VALUES (%d, %d, 1, 1, 100, 'candidate cleanup activity')",
+            "INSERT INTO activity (data_item_id, data_item_type, entered_by, type, notes)
+             VALUES (%d, %d, 1, 100, 'candidate cleanup activity')",
             $candidateID,
             DATA_ITEM_CANDIDATE
         ));
         $activityID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO calendar_event (type, date, title, data_item_id, data_item_type, entered_by, site_id)
-             VALUES (100, NOW(), 'candidate cleanup event', %d, %d, 1, 1)",
+            "INSERT INTO calendar_event (type, date, title, data_item_id, data_item_type, entered_by)
+             VALUES (100, NOW(), 'candidate cleanup event', %d, %d, 1)",
             $candidateID,
             DATA_ITEM_CANDIDATE
         ));
         $calendarEventID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO saved_list_entry (saved_list_id, data_item_type, data_item_id, site_id, date_created)
-             VALUES (1, %d, %d, 1, NOW())",
+            "INSERT INTO saved_list_entry (saved_list_id, data_item_type, data_item_id, date_created)
+             VALUES (1, %d, %d, NOW())",
             DATA_ITEM_CANDIDATE,
             $candidateID
         ));
         $savedListEntryID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO extra_field (data_item_id, field_name, value, site_id, data_item_type)
-             VALUES (%d, 'candidate_cleanup_field', 'candidate cleanup value', 1, %d)",
+            "INSERT INTO extra_field (data_item_id, field_name, value, data_item_type)
+             VALUES (%d, 'candidate_cleanup_field', 'candidate cleanup value', %d)",
             $candidateID,
             DATA_ITEM_CANDIDATE
         ));
         $extraFieldID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO candidate_tag (site_id, candidate_id, tag_id)
-             VALUES (1, %d, 1001)",
+            "INSERT INTO candidate_tag (candidate_id, tag_id)
+             VALUES (%d, 1001)",
             $candidateID
         ));
         $candidateTagID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO career_portal_questionnaire_history (site_id, candidate_id, question, answer, questionnaire_title, questionnaire_description, date)
-             VALUES (1, %d, 'candidate cleanup question', 'candidate cleanup answer', 'candidate cleanup title', 'candidate cleanup description', NOW())",
+            "INSERT INTO career_portal_questionnaire_history (candidate_id, question, answer, questionnaire_title, questionnaire_description, date)
+             VALUES (%d, 'candidate cleanup question', 'candidate cleanup answer', 'candidate cleanup title', 'candidate cleanup description', NOW())",
             $candidateID
         ));
         $questionnaireHistoryID = (int) $db->getLastInsertID();
@@ -197,44 +197,44 @@ class EntityDeleteCleanupTest extends DatabaseTestCase
     {
         $db = DatabaseConnection::getInstance();
 
-        $db->query("INSERT INTO company (site_id, name, entered_by, owner) VALUES (1, 'Delete Cleanup Company', 1, 1)");
+        $db->query("INSERT INTO company (name, entered_by, owner) VALUES ('Delete Cleanup Company', 1, 1)");
         $companyID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO activity (data_item_id, data_item_type, site_id, entered_by, type, notes)
-             VALUES (%d, %d, 1, 1, 100, 'company cleanup activity')",
+            "INSERT INTO activity (data_item_id, data_item_type, entered_by, type, notes)
+             VALUES (%d, %d, 1, 100, 'company cleanup activity')",
             $companyID,
             DATA_ITEM_COMPANY
         ));
         $activityID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO calendar_event (type, date, title, data_item_id, data_item_type, entered_by, site_id)
-             VALUES (100, NOW(), 'company cleanup event', %d, %d, 1, 1)",
+            "INSERT INTO calendar_event (type, date, title, data_item_id, data_item_type, entered_by)
+             VALUES (100, NOW(), 'company cleanup event', %d, %d, 1)",
             $companyID,
             DATA_ITEM_COMPANY
         ));
         $calendarEventID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO saved_list_entry (saved_list_id, data_item_type, data_item_id, site_id, date_created)
-             VALUES (1, %d, %d, 1, NOW())",
+            "INSERT INTO saved_list_entry (saved_list_id, data_item_type, data_item_id, date_created)
+             VALUES (1, %d, %d, NOW())",
             DATA_ITEM_COMPANY,
             $companyID
         ));
         $savedListEntryID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO extra_field (data_item_id, field_name, value, site_id, data_item_type)
-             VALUES (%d, 'company_cleanup_field', 'company cleanup value', 1, %d)",
+            "INSERT INTO extra_field (data_item_id, field_name, value, data_item_type)
+             VALUES (%d, 'company_cleanup_field', 'company cleanup value', %d)",
             $companyID,
             DATA_ITEM_COMPANY
         ));
         $extraFieldID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO company_department (name, company_id, site_id)
-             VALUES ('Delete Cleanup Department', %d, 1)",
+            "INSERT INTO company_department (name, company_id)
+             VALUES ('Delete Cleanup Department', %d)",
             $companyID
         ));
         $companyDepartmentID = (int) $db->getLastInsertID();
@@ -254,73 +254,73 @@ class EntityDeleteCleanupTest extends DatabaseTestCase
     {
         $db = DatabaseConnection::getInstance();
 
-        $db->query("INSERT INTO company (site_id, name, entered_by, owner) VALUES (1, 'Delete Cleanup Contact Company', 1, 1)");
+        $db->query("INSERT INTO company (name, entered_by, owner) VALUES ('Delete Cleanup Contact Company', 1, 1)");
         $companyID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO contact (company_id, site_id, last_name, first_name, entered_by, owner, company_department_id)
-             VALUES (%d, 1, 'Parent', 'Delete', 1, 1, 1)",
+            "INSERT INTO contact (company_id, last_name, first_name, entered_by, owner, company_department_id)
+             VALUES (%d, 'Parent', 'Delete', 1, 1, 1)",
             $companyID
         ));
         $contactID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "UPDATE company SET billing_contact = %d WHERE company_id = %d AND site_id = 1",
+            "UPDATE company SET billing_contact = %d WHERE company_id = %d",
             $contactID,
             $companyID
         ));
 
         $db->query(sprintf(
-            "INSERT INTO contact (company_id, site_id, last_name, first_name, entered_by, owner, company_department_id, reports_to)
-             VALUES (%d, 1, 'Child', 'Delete', 1, 1, 1, %d)",
+            "INSERT INTO contact (company_id, last_name, first_name, entered_by, owner, company_department_id, reports_to)
+             VALUES (%d, 'Child', 'Delete', 1, 1, 1, %d)",
             $companyID,
             $contactID
         ));
         $childContactID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO joborder (site_id, title, entered_by, contact_id, company_id)
-             VALUES (1, 'Delete Cleanup Contact Job', 1, %d, %d)",
+            "INSERT INTO joborder (title, entered_by, contact_id, company_id)
+             VALUES ('Delete Cleanup Contact Job', 1, %d, %d)",
             $contactID,
             $companyID
         ));
         $jobOrderID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO activity (data_item_id, data_item_type, site_id, entered_by, type, notes)
-             VALUES (%d, %d, 1, 1, 100, 'contact cleanup activity')",
+            "INSERT INTO activity (data_item_id, data_item_type, entered_by, type, notes)
+             VALUES (%d, %d, 1, 100, 'contact cleanup activity')",
             $contactID,
             DATA_ITEM_CONTACT
         ));
         $activityID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO calendar_event (type, date, title, data_item_id, data_item_type, entered_by, site_id)
-             VALUES (100, NOW(), 'contact cleanup event', %d, %d, 1, 1)",
+            "INSERT INTO calendar_event (type, date, title, data_item_id, data_item_type, entered_by)
+             VALUES (100, NOW(), 'contact cleanup event', %d, %d, 1)",
             $contactID,
             DATA_ITEM_CONTACT
         ));
         $calendarEventID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO saved_list_entry (saved_list_id, data_item_type, data_item_id, site_id, date_created)
-             VALUES (1, %d, %d, 1, NOW())",
+            "INSERT INTO saved_list_entry (saved_list_id, data_item_type, data_item_id, date_created)
+             VALUES (1, %d, %d, NOW())",
             DATA_ITEM_CONTACT,
             $contactID
         ));
         $savedListEntryID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO extra_field (data_item_id, field_name, value, site_id, data_item_type)
-             VALUES (%d, 'contact_cleanup_field', 'contact cleanup value', 1, %d)",
+            "INSERT INTO extra_field (data_item_id, field_name, value, data_item_type)
+             VALUES (%d, 'contact_cleanup_field', 'contact cleanup value', %d)",
             $contactID,
             DATA_ITEM_CONTACT
         ));
         $extraFieldID = (int) $db->getLastInsertID();
 
         $db->query(sprintf(
-            "INSERT INTO attachment (data_item_id, data_item_type, site_id, title)
-             VALUES (%d, %d, 1, 'contact cleanup attachment')",
+            "INSERT INTO attachment (data_item_id, data_item_type, title)
+             VALUES (%d, %d, 'contact cleanup attachment')",
             $contactID,
             DATA_ITEM_CONTACT
         ));

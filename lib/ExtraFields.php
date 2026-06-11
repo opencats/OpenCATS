@@ -39,12 +39,10 @@ include_once(LEGACY_ROOT . '/lib/DateUtility.php');
 class ExtraFields 
 {
     private $_db;
-    private $_siteID;
     private $_dataItemType;
 
-    public function __construct($siteID, $dataItemType)
+    public function __construct($dataItemType)
     {
-        $this->_siteID = $siteID;
         $this->_dataItemType = $dataItemType;
         $this->_db = DatabaseConnection::getInstance();
     }
@@ -61,17 +59,13 @@ class ExtraFields
                 extra_field_settings.field_name AS fieldName,
                 extra_field_settings.extra_field_settings_id AS extraFieldSettingsID,
                 extra_field_settings.extra_field_type as extraFieldType,
-                extra_field_settings.extra_field_options as extraFieldOptions,
-                extra_field_settings.site_id AS siteID
+                extra_field_settings.extra_field_options as extraFieldOptions
             FROM
                 extra_field_settings
             WHERE
-                extra_field_settings.site_id = %s
-            AND
                 extra_field_settings.data_item_type = %s
             ORDER BY
                 extra_field_settings.position ASC",
-            $this->_siteID,
             $this->_dataItemType
         );
 
@@ -90,38 +84,32 @@ class ExtraFields
         $sql = sprintf(
             "INSERT INTO extra_field_settings (
                 field_name,
-                site_id,
                 date_created,
                 data_item_type,
                 extra_field_type
              )
              VALUES (
                 %s,
-                %s,
                 NOW(),
                 %s,
                 %s
              )",
              $this->_db->makeQueryString($fieldName),
-             $this->_siteID,
              $this->_dataItemType,
              $this->_db->makeQueryInteger($fieldType)
         );
         $this->_db->query($sql);
-        
+
         /* Force this new extra field to have a position. */
         $sql = sprintf(
-            "UPDATE 
+            "UPDATE
                 extra_field_settings
              SET
                 position = %s
              WHERE
-                extra_field_settings_id = %s
-             AND
-                site_id = %s",
+                extra_field_settings_id = %s",
              $this->_db->getLastInsertID(),
-             $this->_db->getLastInsertID(),
-             $this->_siteID
+             $this->_db->getLastInsertID()
         );
         $this->_db->query($sql);
     }
@@ -140,11 +128,8 @@ class ExtraFields
              WHERE
                 field_name = %s
              AND
-                site_id = %s
-             AND
                 data_item_type = %s",
              $this->_db->makeQueryString($fieldName),
-             $this->_siteID,
              $this->_dataItemType
         );
         $this->_db->query($sql);
@@ -155,11 +140,8 @@ class ExtraFields
              WHERE
                 field_name = %s
              AND
-                site_id = %s
-             AND
                 data_item_type = %s",
              $this->_db->makeQueryString($fieldName),
-             $this->_siteID,
              $this->_dataItemType
         );
         $this->_db->query($sql);
@@ -181,20 +163,17 @@ class ExtraFields
             FROM
                 extra_field_settings
             WHERE
-                extra_field_settings.site_id = %s
-            AND
                 extra_field_settings.data_item_type = %s
             AND
                 extra_field_settings.field_name = %s",
-            $this->_siteID,
             $this->_dataItemType,
             $this->_db->makeQueryString($fieldName)
         );
 
         $rs = $this->_db->getAssoc($sql);
-       
+
         $options = explode(',', $rs['extraFieldOptions']);
-       
+
         /* First delete it if it is already an option... */
         foreach ($options as $index => $data)
         {
@@ -203,23 +182,20 @@ class ExtraFields
               unset($options[$index]);
            }
         }
-        
+
         $options[] = urlencode($optionName);
-       
+
         $sql = sprintf(
             "UPDATE
                extra_field_settings
              SET
                extra_field_options = %s
              WHERE
-               extra_field_settings.site_id = %s
-             AND
                extra_field_settings.data_item_type = %s
              AND
                extra_field_settings.field_name = %s
              ",
              $this->_db->makeQueryString(implode(',', $options)),
-             $this->_siteID,
              $this->_dataItemType,
              $this->_db->makeQueryString($fieldName)
         );
@@ -242,20 +218,17 @@ class ExtraFields
             FROM
                 extra_field_settings
             WHERE
-                extra_field_settings.site_id = %s
-            AND
                 extra_field_settings.data_item_type = %s
             AND
                 extra_field_settings.field_name = %s",
-            $this->_siteID,
             $this->_dataItemType,
             $this->_db->makeQueryString($fieldName)
         );
 
         $rs = $this->_db->getAssoc($sql);
-       
+
         $options = explode(',', $rs['extraFieldOptions']);
-       
+
         foreach ($options as $index => $data)
         {
            if ($data == urlencode($optionName))
@@ -263,21 +236,18 @@ class ExtraFields
               unset($options[$index]);
            }
         }
-       
+
         $sql = sprintf(
             "UPDATE
                extra_field_settings
              SET
                extra_field_options = %s
              WHERE
-               extra_field_settings.site_id = %s
-             AND
                extra_field_settings.data_item_type = %s
              AND
                extra_field_settings.field_name = %s
              ",
              $this->_db->makeQueryString(implode(',', $options)),
-             $this->_siteID,
              $this->_dataItemType,
              $this->_db->makeQueryString($fieldName)
         );
@@ -300,18 +270,15 @@ class ExtraFields
             FROM
                 extra_field_settings
             WHERE
-                extra_field_settings.site_id = %s
-            AND
                 extra_field_settings.data_item_type = %s
             AND
                 extra_field_settings.field_name = %s",
-            $this->_siteID,
             $this->_dataItemType,
             $this->_db->makeQueryString($fieldName1)
         );
-        
+
         $rs = $this->_db->getAssoc($sql);
-        
+
         $fieldPosition1 = $rs['position'];
 
         $sql = sprintf(
@@ -320,52 +287,43 @@ class ExtraFields
             FROM
                 extra_field_settings
             WHERE
-                extra_field_settings.site_id = %s
-            AND
                 extra_field_settings.data_item_type = %s
             AND
                 extra_field_settings.field_name = %s",
-            $this->_siteID,
             $this->_dataItemType,
             $this->_db->makeQueryString($fieldName2)
         );
-        
+
         $rs = $this->_db->getAssoc($sql);
-        
+
         $fieldPosition2 = $rs['position'];
- 
+
         $sql = sprintf(
             "UPDATE
                 extra_field_settings
-            SET 
+            SET
                 extra_field_settings.position = %s
             WHERE
-                extra_field_settings.site_id = %s
-            AND
                 extra_field_settings.data_item_type = %s
             AND
                 extra_field_settings.field_name = %s",
             $fieldPosition2,
-            $this->_siteID,
             $this->_dataItemType,
             $this->_db->makeQueryString($fieldName1)
         );
-        
+
         $rs = $this->_db->query($sql);
-        
+
         $sql = sprintf(
             "UPDATE
                 extra_field_settings
-            SET 
+            SET
                 extra_field_settings.position = %s
             WHERE
-                extra_field_settings.site_id = %s
-            AND
                 extra_field_settings.data_item_type = %s
             AND
                 extra_field_settings.field_name = %s",
             $fieldPosition1,
-            $this->_siteID,
             $this->_dataItemType,
             $this->_db->makeQueryString($fieldName2)
         );
@@ -386,35 +344,29 @@ class ExtraFields
         $sql = sprintf(
             "UPDATE
                 extra_field_settings
-            SET 
+            SET
                 extra_field_settings.field_name = %s
             WHERE
-                extra_field_settings.site_id = %s
-            AND
                 extra_field_settings.data_item_type = %s
             AND
                 extra_field_settings.field_name = %s",
             $this->_db->makeQueryString($newName),
-            $this->_siteID,
             $this->_dataItemType,
             $this->_db->makeQueryString($oldName)
         );
-        
+
         $rs = $this->_db->query($sql);
-        
+
         $sql = sprintf(
             "UPDATE
                 extra_field
-            SET 
+            SET
                 extra_field.field_name = %s
             WHERE
-                extra_field.site_id = %s
-            AND
                 extra_field.data_item_type = %s
             AND
                 extra_field.field_name = %s",
             $this->_db->makeQueryString($newName),
-            $this->_siteID,
             $this->_dataItemType,
             $this->_db->makeQueryString($oldName)
         );
@@ -441,13 +393,9 @@ class ExtraFields
             WHERE
                 extra_field.data_item_id = %s
             AND
-                extra_field.data_item_type = %s
-            AND
-                extra_field.site_id = %s",
+                extra_field.data_item_type = %s",
             $this->_db->makeQueryInteger($candidateID),
-            $this->_dataItemType,
-            $this->_siteID
-            
+            $this->_dataItemType
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -472,12 +420,9 @@ class ExtraFields
             AND
                 extra_field.data_item_id = %s
             AND
-                extra_field.site_id = %s
-            AND
                 extra_field.data_item_type = %s",
             $this->_db->makeQueryString($field),
             $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID,
             $this->_dataItemType
         );
         $this->_db->query($sql);
@@ -494,7 +439,6 @@ class ExtraFields
                 field_name,
                 value,
                 import_id,
-                site_id,
                 data_item_type
             )
             VALUES (
@@ -502,13 +446,11 @@ class ExtraFields
                 %s,
                 %s,
                 0,
-                %s,
                 %s
             )",
             $this->_db->makeQueryInteger($candidateID),
             $this->_db->makeQueryString($field),
             $this->_db->makeQueryString($value),
-            $this->_siteID,
             $this->_dataItemType
         );
 
@@ -529,11 +471,8 @@ class ExtraFields
             WHERE
                 extra_field.data_item_id = %s
             AND
-                extra_field.site_id = %s
-            AND
                 extra_field.data_item_type = %s",
             $this->_db->makeQueryInteger($dataItemID),
-            $this->_siteID,
             $this->_dataItemType
         );
 
@@ -951,8 +890,8 @@ class ExtraFields
         }
 
         /* Careers portal / unauthenticated: fall back to site preference. */
-        $site = new Site($this->_siteID);
-        $siteRS = $site->getSiteBySiteID($this->_siteID);
+        $site = new Site();
+        $siteRS = $site->getFirstSite();
 
         return ($siteRS['dateFormatDDMMYY'] == 1);
     }

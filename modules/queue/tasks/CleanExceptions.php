@@ -53,7 +53,7 @@ class CleanExceptions extends Task
         return '* 3 * * *';
     }
 
-    public function run($siteID, $args)
+    public function run($args)
     {
         Task::setName('CleanExceptions');
         Task::setDescription('Clean up the exceptions log.');

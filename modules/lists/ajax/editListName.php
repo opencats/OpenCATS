@@ -61,12 +61,10 @@ if (!isset($_POST['savedListName']))
     die();
 }
 
-$siteID = $interface->getSiteID();
-
 $savedListID = $_POST['savedListID'];
 $savedListName = $_POST['savedListName'];
 
-$savedLists = new SavedLists($siteID);
+$savedLists = new SavedLists();
 
 /* Validate the lists - if name is in use or name is blank, fail. */
 if ($savedLists->getIDByDescription($savedListName) != -1 && $savedLists->getIDByDescription($savedListName) != $savedListID)

@@ -102,10 +102,8 @@ class XmlTemplate
      * Submits all applicable job feeds in all available formats to the
      * asynchronous queue processor which begins submitting them to the
      * appropriate websites.
-     *
-     * @param int ID of the site to submit
      */
-    public static function submitXMLFeeds($siteID)
+    public static function submitXMLFeeds()
     {
         if (!eval(Hooks::get('XML_SUBMIT_FEEDS_TO_QUEUE'))) return;
     }

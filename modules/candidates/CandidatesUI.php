@@ -548,13 +548,13 @@ class CandidatesUI extends UserInterface
         }
 
         //$newParameterArray = $this->_parameters;
-        $tags = new Tags($this->_siteID);
+        $tags = new Tags();
         $tagsRS = $tags->getAll();
         //foreach($tagsRS as $r) $r['link'] = DataGrid::_makeControlLink($newParameterArray);
 
         $dataGrid = DataGrid::get("candidates:candidatesListByViewDataGrid", $dataGridProperties);
 
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         $this->_template->assign('totalCandidates', $candidates->getCount());
 
         $this->_template->assign('active', $this);
@@ -590,7 +590,7 @@ class CandidatesUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
         }
 
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
 
         if (isset($_GET['candidateID']))
         {
@@ -664,7 +664,7 @@ class CandidatesUI extends UserInterface
             $data['titleClass'] = 'jobTitleCold';
         }
 
-        $attachments = new Attachments($this->_siteID);
+        $attachments = new Attachments();
         $attachmentsRS = $attachments->getAll(
             DATA_ITEM_CANDIDATE, $candidateID
         );
@@ -700,7 +700,7 @@ class CandidatesUI extends UserInterface
                 $attachmentsRS[$rowNumber]['previewLink'] = '&nbsp;';
             }
         }
-        $pipelines = new Pipelines($this->_siteID);
+        $pipelines = new Pipelines();
         $pipelinesRS = $pipelines->getCandidatePipeline($candidateID);
 
         $sessionCookie = $_SESSION['CATS']->getCookie();
@@ -741,7 +741,7 @@ class CandidatesUI extends UserInterface
             );
         }
 
-        $activityEntries = new ActivityEntries($this->_siteID);
+        $activityEntries = new ActivityEntries();
         $activityRS = $activityEntries->getAllByDataItem($candidateID, DATA_ITEM_CANDIDATE);
         if (!empty($activityRS))
         {
@@ -800,7 +800,7 @@ class CandidatesUI extends UserInterface
             $privledgedUser = true;
         }
 
-        $EEOSettings = new EEOSettings($this->_siteID);
+        $EEOSettings = new EEOSettings();
         $EEOSettingsRS = $EEOSettings->getAll();
         $EEOValues = array();
 
@@ -826,9 +826,9 @@ class CandidatesUI extends UserInterface
             }
         }
 
-        $tags = new Tags($this->_siteID);
+        $tags = new Tags();
 
-        $questionnaire = new Questionnaire($this->_siteID);
+        $questionnaire = new Questionnaire();
         $questionnaires = $questionnaire->getCandidateQuestionnaires($candidateID);
 
         $lists = $candidates->getListsForCandidate($candidateID);
@@ -869,7 +869,7 @@ class CandidatesUI extends UserInterface
      */
     private function add($contents = '', $fields = array())
     {
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
 
         /* Get possible sources. */
         $sourcesRS = $candidates->getPossibleSources();
@@ -890,7 +890,7 @@ class CandidatesUI extends UserInterface
         {
             $associatedAttachment = $_GET['attachmentID'];
 
-            $attachments = new Attachments($this->_siteID);
+            $attachments = new Attachments();
             $associatedAttachmentRS = $attachments->get($associatedAttachment);
 
             /* Show an attachment icon based on the document's file type. */
@@ -948,7 +948,7 @@ class CandidatesUI extends UserInterface
             $associatedFileResume = false;
         }
 
-        $EEOSettings = new EEOSettings($this->_siteID);
+        $EEOSettings = new EEOSettings();
         $EEOSettingsRS = $EEOSettings->getAll();
 
 
@@ -1044,7 +1044,6 @@ class CandidatesUI extends UserInterface
         {
             // Get the upload file from the post data
             $newFileName = FileUtility::getUploadFileFromPost(
-                $this->_siteID, // The site ID
                 'addcandidate', // Sub-directory of the site's upload folder
                 'documentFile'  // The DOM "name" from the <input> element
             );
@@ -1053,7 +1052,6 @@ class CandidatesUI extends UserInterface
             {
                 // Get the relative path to the file (to perform operations on)
                 $newFilePath = FileUtility::getUploadFilePath(
-                    $this->_siteID, // The site ID
                     'addcandidate', // The sub-directory
                     $newFileName
                 );
@@ -1085,7 +1083,7 @@ class CandidatesUI extends UserInterface
                     strcasecmp($oldFile, $newFileName))
                 {
                     // Get the safe, old file they uploaded and didn't use (if exists) and delete
-                    $oldFilePath = FileUtility::getUploadFilePath($this->_siteID, 'addcandidate', $oldFile);
+                    $oldFilePath = FileUtility::getUploadFilePath('addcandidate', $oldFile);
 
                     if ($oldFilePath !== false)
                     {
@@ -1152,7 +1150,7 @@ class CandidatesUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add candidate.');
         }
 
-        $activityEntries = new ActivityEntries($this->_siteID);
+        $activityEntries = new ActivityEntries();
         $activityID = $activityEntries->add(
             $candidateID,
             DATA_ITEM_CANDIDATE,
@@ -1179,7 +1177,7 @@ class CandidatesUI extends UserInterface
 
         $candidateID = $_GET['candidateID'];
 
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         $data = $candidates->getForEditing($candidateID);
 
         /* Bail out if we got an empty result set. */
@@ -1194,7 +1192,7 @@ class CandidatesUI extends UserInterface
             return;
         }
 
-        $users = new Users($this->_siteID);
+        $users = new Users();
         $usersRS = $users->getSelectList();
 
         /* Add an MRU entry. */
@@ -1230,7 +1228,7 @@ class CandidatesUI extends UserInterface
             $canEmail = true;
         }
 
-        $emailTemplates = new EmailTemplates($this->_siteID);
+        $emailTemplates = new EmailTemplates();
         $statusChangeTemplateRS = $emailTemplates->getByTag(
             'EMAIL_TEMPLATE_OWNERSHIPASSIGNCANDIDATE'
         );
@@ -1248,7 +1246,7 @@ class CandidatesUI extends UserInterface
 
         if (!eval(Hooks::get('CANDIDATE_EDIT'))) return;
 
-        $EEOSettings = new EEOSettings($this->_siteID);
+        $EEOSettings = new EEOSettings();
         $EEOSettingsRS = $EEOSettings->getAll();
 
         $this->_template->assign('active', $this);
@@ -1270,7 +1268,7 @@ class CandidatesUI extends UserInterface
      */
     private function onEdit()
     {
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
 
         /* Bail out if we don't have a valid candidate ID. */
         if (!$this->isRequiredIDValid('candidateID', $_POST))
@@ -1354,7 +1352,7 @@ class CandidatesUI extends UserInterface
         {
             $candidateDetails = $candidates->get($candidateID);
 
-            $users = new Users($this->_siteID);
+            $users = new Users();
             $ownerDetails = $users->get($owner);
 
             if (!empty($ownerDetails))
@@ -1362,7 +1360,7 @@ class CandidatesUI extends UserInterface
                 $emailAddress = $ownerDetails['email'];
 
                 /* Get the change status email template. */
-                $emailTemplates = new EmailTemplates($this->_siteID);
+                $emailTemplates = new EmailTemplates();
                 $statusChangeTemplateRS = $emailTemplates->getByTag(
                     'EMAIL_TEMPLATE_OWNERSHIPASSIGNCANDIDATE'
                 );
@@ -1525,7 +1523,7 @@ class CandidatesUI extends UserInterface
 
         if (!eval(Hooks::get('CANDIDATE_DELETE'))) return;
 
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         $candidates->delete($candidateID);
 
         /* Delete the MRU entry if present. */
@@ -1590,7 +1588,7 @@ class CandidatesUI extends UserInterface
         $mode  = $this->getTrimmedInput('mode', $_POST);
 
         /* Execute the search. */
-        $search = new SearchJobOrders($this->_siteID);
+        $search = new SearchJobOrders();
         switch ($mode)
         {
             case 'searchByJobTitle':
@@ -1609,7 +1607,7 @@ class CandidatesUI extends UserInterface
                 break;
         }
 
-        $pipelines = new Pipelines($this->_siteID);
+        $pipelines = new Pipelines();
         $pipelinesRS = $pipelines->getCandidatePipeline($candidateIDArray[0]);
 
         foreach ($rs as $rowIndex => $row)
@@ -1719,8 +1717,8 @@ class CandidatesUI extends UserInterface
 
         if (!eval(Hooks::get('CANDIDATE_ADD_TO_PIPELINE_PRE'))) return;
 
-        $pipelines = new Pipelines($this->_siteID);
-        $activityEntries = new ActivityEntries($this->_siteID);
+        $pipelines = new Pipelines();
+        $activityEntries = new ActivityEntries();
 
         /* Drop candidate ID's who are already in the pipeline */
         $pipelinesRS = $pipelines->getJobOrderPipeline($jobOrderID);
@@ -1788,7 +1786,7 @@ class CandidatesUI extends UserInterface
         }
         $candidateID = $_GET['candidateID'];
 
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         $candidateData = $candidates->get($candidateID);
 
         /* Bail out if we got an empty result set. */
@@ -1798,7 +1796,7 @@ class CandidatesUI extends UserInterface
             return;
         }
 
-        $pipelines = new Pipelines($this->_siteID);
+        $pipelines = new Pipelines();
         $pipelineRS = $pipelines->getNonClosedCandidatePipeline($candidateID);
         foreach ($pipelineRS as $rowIndex => $pipelineData)
         {
@@ -1808,7 +1806,7 @@ class CandidatesUI extends UserInterface
         /* Are we in "Only Schedule Event" mode? */
         $onlyScheduleEvent = $this->isChecked('onlyScheduleEvent', $_GET);
 
-        $calendar = new Calendar($this->_siteID);
+        $calendar = new Calendar();
         $calendarEventTypes = $calendar->getAllEventTypes();
 
         if (!eval(Hooks::get('CANDIDATE_ADD_ACTIVITY_CHANGE_STATUS'))) return;
@@ -1878,7 +1876,7 @@ class CandidatesUI extends UserInterface
         }
         $candidateID        = $_GET['candidateID'];
 
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         $candidateData = $candidates->get($candidateID);
 
         /* Bail out if we got an empty result set. */
@@ -1888,7 +1886,7 @@ class CandidatesUI extends UserInterface
             return;
         }
 
-        $pipelines = new Pipelines($this->_siteID);
+        $pipelines = new Pipelines();
         $pipelineRS = $pipelines->getCandidatePipeline($candidateID);
         if (empty($pipelineRS))
         {
@@ -1919,7 +1917,7 @@ class CandidatesUI extends UserInterface
         }
 
         /* Override default send email behavior with site specific send email behavior. */
-        $mailerSettings = new MailerSettings($this->_siteID);
+        $mailerSettings = new MailerSettings();
         $mailerSettingsRS = $mailerSettings->getAll();
         $candidateJoborderStatusSendsMessage = unserialize($mailerSettingsRS['candidateJoborderStatusSendsMessage']);
         foreach ($statusRS as $index => $status)
@@ -1928,7 +1926,7 @@ class CandidatesUI extends UserInterface
         }
 
         /* Get the change status email template. */
-        $emailTemplates = new EmailTemplates($this->_siteID);
+        $emailTemplates = new EmailTemplates();
         $statusChangeTemplateRS = $emailTemplates->getByTag(
             'EMAIL_TEMPLATE_STATUSCHANGE'
         );
@@ -1999,7 +1997,7 @@ class CandidatesUI extends UserInterface
         $candidateID	= $_POST['candidateID'];
         $tagIDs			= $_POST['candidate_tags'];
         
-        $tags = new Tags($this->_siteID);
+        $tags = new Tags();
         $tags->AddTagsToCandidate($candidateID, $tagIDs);
         
         $this->_template->assign('candidateID', $candidateID);
@@ -2021,7 +2019,7 @@ class CandidatesUI extends UserInterface
 
         $candidateID        = $_GET['candidateID'];
 
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         $candidateData = $candidates->get($candidateID);
 
         /* Bail out if we got an empty result set. */
@@ -2034,7 +2032,7 @@ class CandidatesUI extends UserInterface
             );*/
         }
         
-        $tags = new Tags($this->_siteID);
+        $tags = new Tags();
         $tagsRS = $tags->getAll();
         
         $this->_template->assign('candidateID', $candidateID);
@@ -2098,7 +2096,7 @@ class CandidatesUI extends UserInterface
 
         if (!eval(Hooks::get('CANDIDATE_REMOVE_FROM_PIPELINE_PRE'))) return;
 
-        $pipelines = new Pipelines($this->_siteID);
+        $pipelines = new Pipelines();
         $pipelines->remove($candidateID, $jobOrderID);
 
         if (!eval(Hooks::get('CANDIDATE_REMOVE_FROM_PIPELINE_POST'))) return;
@@ -2113,7 +2111,7 @@ class CandidatesUI extends UserInterface
      */
     private function search()
     {
-        $savedSearches = new SavedSearches($this->_siteID);
+        $savedSearches = new SavedSearches();
         $savedSearchRS = $savedSearches->get(DATA_ITEM_CANDIDATE);
 
         if (!eval(Hooks::get('CANDIDATE_SEARCH'))) return;
@@ -2167,7 +2165,7 @@ class CandidatesUI extends UserInterface
         }
 
         $searchPager = new SearchPager(
-            CANDIDATES_PER_PAGE, $currentPage, $this->_siteID
+            CANDIDATES_PER_PAGE, $currentPage
         );
 
         if ($searchPager->isSortByValid('sortBy', $_GET))
@@ -2193,13 +2191,13 @@ class CandidatesUI extends UserInterface
         );
         $searchPager->setSortByParameters($baseURL, $sortBy, $sortDirection);
 
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
 
         /* Get our current searching mode. */
         $mode = $this->getTrimmedInput('mode', $_GET);
 
         /* Execute the search. */
-        $search = new SearchCandidates($this->_siteID);
+        $search = new SearchCandidates();
         switch ($mode)
         {
             case 'searchByFullName':
@@ -2269,7 +2267,6 @@ class CandidatesUI extends UserInterface
                 $searchPager = new SearchByResumePager(
                     20,
                     $currentPage,
-                    $this->_siteID,
                     $query,
                     $sortBy,
                     $sortDirection
@@ -2408,7 +2405,7 @@ class CandidatesUI extends UserInterface
         if (!eval(Hooks::get('CANDIDATE_ON_SEARCH'))) return;
 
         /* Save the search. */
-        $savedSearches = new SavedSearches($this->_siteID);
+        $savedSearches = new SavedSearches();
         $savedSearches->add(
             DATA_ITEM_CANDIDATE,
             $query,
@@ -2451,7 +2448,7 @@ class CandidatesUI extends UserInterface
         $query = $this->getTrimmedInput('wildCardString', $_GET);
 
         /* Get resume text. */
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         $data = $candidates->getResume($attachmentID);
 
         if (!empty($data))
@@ -2477,7 +2474,7 @@ class CandidatesUI extends UserInterface
 
         $candidateID = $_GET['candidateID'];
 
-        $attachments = new Attachments($this->_siteID);
+        $attachments = new Attachments();
         $attachmentsRS = $attachments->getAll(
             DATA_ITEM_CANDIDATE, $candidateID
         );
@@ -2507,7 +2504,7 @@ class CandidatesUI extends UserInterface
 
         if (!eval(Hooks::get('CANDIDATE_ON_ADD_EDIT_IMAGE_PRE'))) return;
 
-        $attachmentCreator = new AttachmentCreator($this->_siteID);
+        $attachmentCreator = new AttachmentCreator();
         $attachmentCreator->createFromUpload(
             DATA_ITEM_CANDIDATE, $candidateID, 'file', true, false
         );
@@ -2582,7 +2579,7 @@ class CandidatesUI extends UserInterface
 
         if (!eval(Hooks::get('CANDIDATE_ON_CREATE_ATTACHMENT_PRE'))) return;
 
-        $attachmentCreator = new AttachmentCreator($this->_siteID);
+        $attachmentCreator = new AttachmentCreator();
         $attachmentCreator->createFromUpload(
             DATA_ITEM_CANDIDATE, $candidateID, 'file', false, $isResume
         );
@@ -2637,7 +2634,7 @@ class CandidatesUI extends UserInterface
 
         if (!eval(Hooks::get('CANDIDATE_ON_DELETE_ATTACHMENT_PRE'))) return;
 
-        $attachments = new Attachments($this->_siteID);
+        $attachments = new Attachments();
         $attachments->delete($attachmentID);
 
         if (!eval(Hooks::get('CANDIDATE_ON_DELETE_ATTACHMENT_POST'))) return;
@@ -2668,7 +2665,7 @@ class CandidatesUI extends UserInterface
         // FIXME: Checkbox?
         $state = (boolean) $_POST['state'];
 
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         $candidates->administrativeHideShow($candidateID, $state);
 
         CATSUtility::transferRelativeURI('m=candidates&a=show&candidateID='.$candidateID);
@@ -2891,7 +2888,7 @@ class CandidatesUI extends UserInterface
 
         if (!eval(Hooks::get('CANDIDATE_ON_ADD_PRE'))) return;
 
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         
         $duplicatesID = $candidates->checkDuplicity($firstName, $middleName, $lastName, $email1, $email2, $phoneHome, $phoneCell, $phoneWork, $address, $city);
         
@@ -2955,7 +2952,7 @@ class CandidatesUI extends UserInterface
         {
             $attachmentID = $_POST['associatedAttachment'];
 
-            $attachments = new Attachments($this->_siteID);
+            $attachments = new Attachments();
             $attachments->setDataItemID($attachmentID, $candidateID, DATA_ITEM_CANDIDATE);
         }
 
@@ -2965,7 +2962,7 @@ class CandidatesUI extends UserInterface
         {
             if (!eval(Hooks::get('CANDIDATE_ON_CREATE_ATTACHMENT_PRE'))) return;
 
-            $attachmentCreator = new AttachmentCreator($this->_siteID);
+            $attachmentCreator = new AttachmentCreator();
             $attachmentCreator->createFromUpload(
                 DATA_ITEM_CANDIDATE, $candidateID, 'file', false, true
             );
@@ -3008,11 +3005,11 @@ class CandidatesUI extends UserInterface
              * box over what's already uploaded method to avoid losing resumes on candidate
              * additions.
              */
-            $newFile = FileUtility::getUploadFileFromPost($this->_siteID, 'addcandidate', 'documentFile');
+            $newFile = FileUtility::getUploadFileFromPost('addcandidate', 'documentFile');
 
             if ($newFile !== false)
             {
-                $newFilePath = FileUtility::getUploadFilePath($this->_siteID, 'addcandidate', $newFile);
+                $newFilePath = FileUtility::getUploadFilePath('addcandidate', $newFile);
 
                 $tempFile = $newFile;
                 $tempFullPath = $newFilePath;
@@ -3028,8 +3025,7 @@ class CandidatesUI extends UserInterface
                 {
                     $tempFile = $_POST['documentTempFile'];
                     // Get the path of the file they uploaded already to attach
-                    $tempFullPath = FileUtility::getUploadFilePath(
-                        $this->_siteID,   // ID of the containing site
+                    $tempFullPath = FileUtility::getUploadFilePath(// ID of the containing site
                         'addcandidate',   // Sub-directory in their storage
                         $tempFile         // Name of the file (not pathed)
                     );
@@ -3040,7 +3036,7 @@ class CandidatesUI extends UserInterface
             {
                 if (!eval(Hooks::get('CANDIDATE_ON_CREATE_ATTACHMENT_PRE'))) return;
 
-                $attachmentCreator = new AttachmentCreator($this->_siteID);
+                $attachmentCreator = new AttachmentCreator();
                 $attachmentCreator->createFromFile(
                     DATA_ITEM_CANDIDATE, $candidateID, $tempFullPath, $tempFile, '', true, true
                 );
@@ -3076,7 +3072,7 @@ class CandidatesUI extends UserInterface
 
                 if (!eval(Hooks::get('CANDIDATE_ON_CREATE_ATTACHMENT_PRE'))) return;
 
-                $attachmentCreator = new AttachmentCreator($this->_siteID);
+                $attachmentCreator = new AttachmentCreator();
                 $attachmentCreator->createFromText(
                     DATA_ITEM_CANDIDATE, $candidateID, $_POST['documentText'], 'MyResume.txt', true
                 );
@@ -3101,7 +3097,7 @@ class CandidatesUI extends UserInterface
                 /* Create a text resume if the user posted one. (automated tool) */
                 if (!eval(Hooks::get('CANDIDATE_ON_CREATE_ATTACHMENT_PRE'))) return;
 
-                $attachmentCreator = new AttachmentCreator($this->_siteID);
+                $attachmentCreator = new AttachmentCreator();
                 $attachmentCreator->createFromText(
                     DATA_ITEM_CANDIDATE, $candidateID, $textResumeBlock, $textResumeFilename, true
                 );
@@ -3168,7 +3164,7 @@ class CandidatesUI extends UserInterface
             }
 
             $activityTypeID = (int) $_POST['activityTypeID'];
-            $activityEntries = new ActivityEntries($this->_siteID);
+            $activityEntries = new ActivityEntries();
             $activityTypes = $activityEntries->getTypes();
             if (ResultSetUtility::findRowByColumnValue(
                 $activityTypes, 'typeID', $activityTypeID
@@ -3360,7 +3356,7 @@ class CandidatesUI extends UserInterface
                 $eventJobOrderID = null;
             }
 
-            $calendar = new Calendar($this->_siteID);
+            $calendar = new Calendar();
             $eventID = $calendar->addEvent(
                 $eventTypeID, $date, $description, $allDay, $this->_userID,
                 $candidateID, DATA_ITEM_CANDIDATE, $eventJobOrderID, $title,
@@ -3379,7 +3375,7 @@ class CandidatesUI extends UserInterface
             $parsedDate = strtotime($date);
             $formattedDate = date('l, F jS, Y', $parsedDate);
 
-            $calendar = new Calendar($this->_siteID);
+            $calendar = new Calendar();
             $calendarEventTypes = $calendar->getAllEventTypes();
 
             $eventTypeDescription = ResultSetUtility::getColumnValueByIDValue(
@@ -3478,7 +3474,7 @@ class CandidatesUI extends UserInterface
         $activityNote = '';
         $activityTypeDescription = '';
 
-        $pipelines = new Pipelines($this->_siteID);
+        $pipelines = new Pipelines();
         $statusRS = $pipelines->getStatusesForPicking();
 
         /* Module directory override for fatal() calls. */
@@ -3520,7 +3516,7 @@ class CandidatesUI extends UserInterface
 
         if ($statusID == PIPELINE_STATUS_PLACED)
         {
-            $jobOrders = new JobOrders($this->_siteID);
+            $jobOrders = new JobOrders();
             $canBeHired = $jobOrders->checkOpenings($regardingID);
             if (!$canBeHired)
             {
@@ -3598,14 +3594,14 @@ class CandidatesUI extends UserInterface
             /* If status = placed, and open positions > 0, reduce number of open positions by one. */
             if ($statusID == PIPELINE_STATUS_PLACED && is_numeric($data['openingsAvailable']) && $data['openingsAvailable'] > 0)
             {
-                $jobOrders = new JobOrders($this->_siteID);
+                $jobOrders = new JobOrders();
                 $jobOrders->updateOpeningsAvailable($regardingID, $data['openingsAvailable'] - 1);
             }
 
             /* If status is changed from placed to something else, increase number of open positions by one. */
             if ($statusID != PIPELINE_STATUS_PLACED && $data['statusID'] == PIPELINE_STATUS_PLACED)
             {
-                $jobOrders = new JobOrders($this->_siteID);
+                $jobOrders = new JobOrders();
                 $jobOrders->updateOpeningsAvailable($regardingID, $data['openingsAvailable'] + 1);
             }
             /* addActivity defaults to enabled for compatibility with legacy callers. */
@@ -3621,7 +3617,7 @@ class CandidatesUI extends UserInterface
             if ($addActivity)
             {
                 /* Log status changes as activities in the dedicated status flow. */
-                $activityEntries = new ActivityEntries($this->_siteID);
+                $activityEntries = new ActivityEntries();
                 $activityNote = sprintf('Status change: %s', $newStatusDescription);
                 $activityEntries->add(
                     $candidateID,
@@ -3675,7 +3671,7 @@ class CandidatesUI extends UserInterface
                 $destination[] = array($emailDest, $emailDest);
             }
 
-            $mailer = new Mailer(CATS_ADMIN_SITE);
+            $mailer = new Mailer();
             
             if($_POST['emailTemplate'] == "-1")
             {
@@ -3690,8 +3686,8 @@ class CandidatesUI extends UserInterface
             }
             else
             {
-                $emailTemplates = new EmailTemplates($this->_siteID);
-                $candidates = new Candidates($this->_siteID);
+                $emailTemplates = new EmailTemplates();
+                $candidates = new Candidates();
                 
                 $emailsToIDs = $_POST['candidateID'];
                 $candidateIDs = array();
@@ -3761,7 +3757,7 @@ class CandidatesUI extends UserInterface
                 $db_str
             ));
 
-            $emailTemplates = new EmailTemplates($this->_siteID);
+            $emailTemplates = new EmailTemplates();
             $emailTemplatesRS = $emailTemplates->getAllCustom();
 
             //$this->_template->assign('privledgedUser', $privledgedUser);
@@ -3786,13 +3782,13 @@ class CandidatesUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Bad Server Information.');
         }
 
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         $cData = $candidates->get($candidateID);
 
-        $questionnaire = new Questionnaire($this->_siteID);
+        $questionnaire = new Questionnaire();
         $qData = $questionnaire->getCandidateQuestionnaire($candidateID, $title);
 
-        $attachment = new Attachments($this->_siteID);
+        $attachment = new Attachments();
         $attachments = $attachment->getAll(DATA_ITEM_CANDIDATE, $candidateID);
         if (!empty($attachments))
         {
@@ -3822,7 +3818,7 @@ class CandidatesUI extends UserInterface
         $mode  = $this->getSanitisedInput('mode', $_POST);
 
         /* Execute the search. */
-        $search = new SearchCandidates($this->_siteID);
+        $search = new SearchCandidates();
         switch ($mode)
         {
             case 'searchByCandidateName':
@@ -3836,7 +3832,7 @@ class CandidatesUI extends UserInterface
                 break;
         }
         
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         
         foreach ($rs as $rowIndex => $row)
         {
@@ -3880,7 +3876,7 @@ class CandidatesUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
         }
 
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         $oldCandidateID = $_GET['oldCandidateID'];
         $newCandidateID = $_GET['newCandidateID'];
         
@@ -3897,7 +3893,7 @@ class CandidatesUI extends UserInterface
     
     private function mergeDuplicatesInfo()
     {
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         if (!$this->isRequiredIDValid('oldCandidateID', $_POST))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
@@ -3935,7 +3931,7 @@ class CandidatesUI extends UserInterface
     
     private function removeDuplicity()
     {
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         if (!$this->isRequiredIDValid('oldCandidateID', $_POST))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
@@ -3955,7 +3951,7 @@ class CandidatesUI extends UserInterface
     
     private function addDuplicates()
     {
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         if (!$this->isRequiredIDValid('candidateID', $_POST))
         {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');

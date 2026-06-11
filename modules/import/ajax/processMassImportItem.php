@@ -66,7 +66,7 @@ for ($i = 0; $i < 50; ++$i)
 
     $fullFilename = $_SESSION['CATS']->massImportDirectory . '/' . $fileName;
 
-    $attachmentCreator = new AttachmentCreator($_SESSION['CATS']->getSiteID());
+    $attachmentCreator = new AttachmentCreator();
     $attachmentID = $attachmentCreator->createFromFile(
         DATA_ITEM_BULKRESUME, 0, $fullFilename, false, '', true, true
     );

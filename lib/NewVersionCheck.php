@@ -100,7 +100,7 @@ class NewVersionCheck
         $siteName = $_SESSION['CATS']->getSiteName();
         $catsVersion = CATSUtility::getVersionAsInteger();
 
-        $users = new Users(1);
+        $users = new Users();
         $numberOfActiveUsers = $users->getUsageData();
         
         /* Build POST data. */

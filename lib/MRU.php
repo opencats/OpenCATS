@@ -41,13 +41,11 @@
 class MRU
 {
     protected $_userID = -1;
-    protected $_siteID = -1;
 
 
-    public function __construct($userID, $siteID)
+    public function __construct($userID)
     {
         $this->_userID = $userID;
-        $this->_siteID = $siteID;
     }
 
 
@@ -73,7 +71,6 @@ class MRU
 
         $sql = sprintf(
             "INSERT INTO mru (
-                site_id,
                 user_id,
                 data_item_type,
                 data_item_text,
@@ -85,10 +82,8 @@ class MRU
                 %s,
                 %s,
                 %s,
-                %s,
                 NOW()
             )",
-            $this->_siteID,
             $this->_userID,
             $db->makeQueryInteger($dataItemType),
             $db->makeQueryString($dataItemText),
@@ -127,12 +122,9 @@ class MRU
             FROM
                 mru
             WHERE
-                site_id = %s
-            AND
                 user_id = %s
             ORDER BY
                 mru_id DESC",
-            $this->_siteID,
             $this->_userID
         );
         
@@ -183,12 +175,9 @@ class MRU
             WHERE
                 url = %s
             AND
-                user_id = %s
-            AND
-                site_id = %s",
+                user_id = %s",
             $db->makeQueryString($URL),
-            $this->_userID,
-            $this->_siteID
+            $this->_userID
         );
 
         $db->query($sql);
@@ -211,10 +200,7 @@ class MRU
             FROM
                 mru
             WHERE
-                site_id = %s
-            AND
                 user_id = %s",
-            $this->_siteID,
             $this->_userID
         );
         $rs = $db->getAssoc($sql);
@@ -233,13 +219,10 @@ class MRU
                 FROM
                     mru
                 WHERE
-                    site_id = %s
-                AND
                     user_id = %s
                 ORDER BY
                     mru_id ASC
                 LIMIT 1",
-                $this->_siteID,
                 $this->_userID
             );
             $rs = $db->getAssoc($sql);

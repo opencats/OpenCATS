@@ -424,13 +424,11 @@ class SearchUtility
 class SearchCandidates
 {
     private $_db;
-    private $_siteID;
     protected $_userID = -1;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
         //FIXME: Library code Session dependencies suck.
         $this->_userID = $_SESSION['CATS']->getUserID();
@@ -468,11 +466,8 @@ class SearchCandidates
                 candidate
             LEFT JOIN user AS owner_user
                 ON candidate.owner = owner_user.user_id
-            WHERE
-                candidate.site_id = %s
             ORDER BY
                 %s %s",
-            $this->_siteID,
             $sortBy,
             $sortDirection
         );
@@ -525,14 +520,11 @@ class SearchCandidates
             )
             AND
                 candidate.is_admin_hidden = 0
-            AND
-                candidate.site_id = %s
             ORDER BY
                 %s %s",
             $wildCardString,
             $wildCardString,
             $wildCardString,
-            $this->_siteID,
             $sortBy,
             $sortDirection
         );
@@ -580,13 +572,10 @@ class SearchCandidates
             AND
                 candidate.is_admin_hidden = 0
             AND
-                candidate.site_id = %s
-            AND
                 candidate.is_active = 1
             ORDER BY
                 %s %s",
             $WHERE,
-            $this->_siteID,
             $sortBy,
             $sortDirection
         );
@@ -632,12 +621,9 @@ class SearchCandidates
                 candidate.email1 LIKE %s
             AND
                 candidate.is_admin_hidden = 0
-            AND
-                candidate.site_id = %s
             ORDER BY
                 %s %s",
             $wildCardString,
-            $this->_siteID,
             $sortBy,
             $sortDirection
         );
@@ -702,13 +688,10 @@ class SearchCandidates
             )
             AND
                 candidate.is_admin_hidden = 0
-            AND
-                candidate.site_id = %s
             ORDER BY
                 %s %s",
             $wildCardString,
             $wildCardString,
-            $this->_siteID,
             $sortBy,
             $sortDirection
         );
@@ -759,14 +742,11 @@ class SearchCandidates
             AND
                 candidate.is_admin_hidden = 0
             AND
-                candidate.site_id = %s
-            AND
                 candidate.is_active = 1
             ORDER BY
                 %s %s",
             $where1,
             $where2,
-            $this->_siteID,
             $sortBy,
             $sortDirection
         );
@@ -784,13 +764,11 @@ class SearchCandidates
 class SearchCompanies
 {
     private $_db;
-    private $_siteID;
     protected $_userID = -1;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
         //FIXME: Library code Session dependencies suck.
         $this->_userID = $_SESSION['CATS']->getUserID();
@@ -832,12 +810,9 @@ class SearchCompanies
                 ON company.owner = owner_user.user_id
             WHERE
                 company.name LIKE %s
-            AND
-                company.site_id = %s
             ORDER BY
                 %s %s",
             $wildCardString,
-            $this->_siteID,
             $sortBy,
             $sortDirection
         );
@@ -881,12 +856,9 @@ class SearchCompanies
                 ON company.owner = owner_user.user_id
             WHERE
                 %s
-            AND
-                company.site_id = %s
             ORDER BY
                 company.name ASC",
-            $WHERE,
-            $this->_siteID
+            $WHERE
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -901,13 +873,11 @@ class SearchCompanies
 class SearchJobOrders
 {
     private $_db;
-    private $_siteID;
     protected $_userID = -1;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
         //FIXME: Library code Session dependencies suck.
         $this->_userID = $_SESSION['CATS']->getUserID();
@@ -976,13 +946,10 @@ class SearchJobOrders
             %s
             AND
                 joborder.is_admin_hidden = 0
-            AND
-                joborder.site_id = %s
             ORDER BY
                 %s %s",
             $WHERE,
             $activeCriterion,
-            $this->_siteID,
             $sortBy,
             $sortDirection
         );
@@ -1054,16 +1021,10 @@ class SearchJobOrders
             %s
             AND
                 joborder.is_admin_hidden = 0
-            AND
-                joborder.site_id = %s
-            AND
-                company.site_id = %s
             ORDER BY
                 %s %s",
             $wildCardString,
             $activeCriterion,
-            $this->_siteID,
-            $this->_siteID,
             $sortBy,
             $sortDirection
         );
@@ -1128,18 +1089,14 @@ class SearchJobOrders
             LEFT JOIN user AS owner_user
                 ON joborder.owner = owner_user.user_id
             WHERE
-                joborder.site_id = %s
+                1=1
                 %s
-            AND
-                company.site_id = %s
             AND
                 joborder.is_admin_hidden = 0
             ORDER BY
                 dateModifiedSort %s
             LIMIT 0, %s",
-            $this->_siteID,
             $activeCriterion,
-            $this->_siteID,
             $sortDirection,
             $limit
         );
@@ -1159,13 +1116,11 @@ class SearchJobOrders
 class ContactsSearch
 {
     private $_db;
-    private $_siteID;
     protected $_userID = -1;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
         //FIXME: Library code Session dependencies suck.
         $this->_userID = $_SESSION['CATS']->getUserID();
@@ -1219,17 +1174,11 @@ class ContactsSearch
                 OR CONCAT(contact.last_name, ' ', contact.first_name) LIKE %s
                 OR CONCAT(contact.last_name, ', ', contact.first_name) LIKE %s
             )
-            AND
-                contact.site_id = %s
-            AND
-                company.site_id = %s
             ORDER BY
                 %s %s",
             $wildCardString,
             $wildCardString,
             $wildCardString,
-            $this->_siteID,
-            $this->_siteID,
             $sortBy,
             $sortDirection
         );
@@ -1281,15 +1230,9 @@ class ContactsSearch
                 ON contact.owner = owner_user.user_id
             WHERE
                 company.name LIKE %s
-            AND
-                contact.site_id = %s
-            AND
-                company.site_id = %s
             ORDER BY
                 %s %s",
             $wildCardString,
-            $this->_siteID,
-            $this->_siteID,
             $sortBy,
             $sortDirection
         );
@@ -1340,15 +1283,9 @@ class ContactsSearch
                 ON contact.owner = owner_user.user_id
             WHERE
                 contact.title LIKE %s
-            AND
-                contact.site_id = %s
-            AND
-                company.site_id = %s
             ORDER BY
                 %s %s",
             $wildCardString,
-            $this->_siteID,
-            $this->_siteID,
             $sortBy,
             $sortDirection
         );
@@ -1366,13 +1303,11 @@ class ContactsSearch
 class QuickSearch
 {
     private $_db;
-    private $_siteID;
     protected $_userID = -1;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
         //FIXME: Library code Session dependencies suck.
         $this->_userID = $_SESSION['CATS']->getUserID();
@@ -1436,8 +1371,6 @@ class QuickSearch
                 '(', '') LIKE %s
             )
             AND
-                candidate.site_id = %s
-            AND
                 candidate.is_admin_hidden = 0
             ORDER BY
                 candidate.date_modified DESC,
@@ -1449,8 +1382,7 @@ class QuickSearch
             $wildCardString,
             $wildCardString,
             $wildCardString,
-            $wildCardString,
-            $this->_siteID
+            $wildCardString
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -1497,15 +1429,12 @@ class QuickSearch
                 OR company.phone2 LIKE %s
                 OR company.url LIKE %s
             )
-            AND
-                company.site_id = %s
             ORDER BY
                 company.name ASC",
             $wildCardString,
             $wildCardString,
             $wildCardString,
-            $wildCardString,
-            $this->_siteID
+            $wildCardString
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -1577,10 +1506,6 @@ class QuickSearch
                     ')', ''),
                 '(', '') LIKE %s
             )
-            AND
-                contact.site_id = %s
-            AND
-                company.site_id = %s
             ORDER BY
                 name ASC",
             $wildCardString,
@@ -1591,9 +1516,7 @@ class QuickSearch
             $wildCardString,
             $wildCardString,
             $wildCardString,
-            $wildCardString,
-            $this->_siteID,
-            $this->_siteID
+            $wildCardString
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -1653,16 +1576,10 @@ class QuickSearch
             )
             AND
                 joborder.is_admin_hidden = 0
-            AND
-                joborder.site_id = %s
-            AND
-                company.site_id = %s
             ORDER BY
                 name ASC",
             $wildCardString,
-            $wildCardString,
-            $this->_siteID,
-            $this->_siteID
+            $wildCardString
         );
 
         if (!eval(Hooks::get('JO_SEARCH_SQL'))) return;
@@ -1680,13 +1597,11 @@ class QuickSearch
 class SavedSearches
 {
     private $_db;
-    private $_siteID;
     protected $_userID = -1;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
         //FIXME: Library code Session dependencies suck.
         $this->_userID = $_SESSION['CATS']->getUserID();
@@ -1707,12 +1622,9 @@ class SavedSearches
             WHERE
                 search_id = %s
             AND
-                user_id = %s
-            AND
-                site_id = %s",
+                user_id = %s",
             $this->_db->makeQueryInteger($searchID),
-            $this->_userID,
-            $this->_siteID
+            $this->_userID
         );
         $this->_db->query($sql);
     }
@@ -1733,12 +1645,9 @@ class SavedSearches
             WHERE
                 search_id = %s
             AND
-                user_id = %s
-            AND
-                site_id = %s",
+                user_id = %s",
             $this->_db->makeQueryInteger($searchID),
-            $this->_userID,
-            $this->_siteID
+            $this->_userID
         );
 
         return (boolean) $this->_db->query($sql);
@@ -1757,13 +1666,10 @@ class SavedSearches
             AND
                 user_id = %s
             AND
-                is_custom = 0
-            AND
-                site_id = %s",
+                is_custom = 0",
             $this->_db->makeQueryString($text),
             $this->_db->makeQueryInteger($dataItemType),
-            $this->_userID,
-            $this->_siteID
+            $this->_userID
         );
         $this->_db->query($sql);
     }
@@ -1776,7 +1682,6 @@ class SavedSearches
 
         $sql = sprintf(
             "INSERT INTO saved_search (
-                site_id,
                 user_id,
                 data_item_type,
                 data_item_text,
@@ -1790,10 +1695,8 @@ class SavedSearches
                 %s,
                 %s,
                 %s,
-                %s,
                 NOW()
             )",
-            $this->_siteID,
             $this->_userID,
             $this->_db->makeQueryInteger($dataItemType),
             $this->_db->makeQueryString($text),
@@ -1817,14 +1720,11 @@ class SavedSearches
             FROM
                 saved_search
             WHERE
-                site_id = %s
-            AND
                 user_id = %s
             AND
                 data_item_type = %s
             ORDER BY
                 search_id DESC",
-            $this->_siteID,
             $this->_userID,
             $this->_db->makeQueryInteger($dataItemType)
         );
@@ -1845,12 +1745,9 @@ class SavedSearches
             FROM
                 saved_search
             WHERE
-                site_id = %s
-            AND
                 user_id = %s
             AND
                 is_custom = 0",
-            $this->_siteID,
             $this->_userID
         );
         $rs = $this->_db->getAssoc($sql);
@@ -1867,15 +1764,12 @@ class SavedSearches
                 FROM
                     saved_search
                 WHERE
-                    site_id = %s
-                AND
                     user_id = %s
                 AND
                     is_custom = 0
                 ORDER BY
                     search_id
                 ASC LIMIT 1",
-                $this->_siteID,
                 $this->_userID
             );
             $rs = $this->_db->getAssoc($sql);
@@ -1902,16 +1796,14 @@ class SavedSearches
  */
 class SearchByResumePager extends Pager
 {
-    private $_siteID;
     private $_db;
     private $_WHERE;
 
 
-    public function __construct($rowsPerPage, $currentPage, $siteID,
+    public function __construct($rowsPerPage, $currentPage,
         $wildCardString, $sortBy, $sortDirection)
     {
         $this->_db = DatabaseConnection::getInstance();
-        $this->_siteID = $siteID;
 
         $this->_sortByFields = array(
             'firstName',
@@ -1936,11 +1828,6 @@ class SearchByResumePager extends Pager
             $sphinx->SetMatchMode(SPH_MATCH_EXTENDED);
             $sphinx->SetLimits(0, 1000);
             $sphinx->SetSortMode(SPH_SORT_TIME_SEGMENTS, 'date_added');
-
-            // FIXME: This can be sped up a bit by actually grouping ranges of
-            //        site IDs into their own index's. Maybe every 500 or so at
-            //        least on the Hosted system.
-            $sphinx->SetFilter('site_id', array($this->_siteID));
 
             /* Create the Sphinx query string. */
             $wildCardString = DatabaseSearch::humanToSphinxBoolean($wildCardString);
@@ -2012,7 +1899,6 @@ class SearchByResumePager extends Pager
             LEFT JOIN candidate
                 ON attachment.data_item_id = candidate.candidate_id
                 AND attachment.data_item_type = %s
-                AND attachment.site_id = candidate.site_id
             LEFT JOIN user AS owner_user
                 ON candidate.owner = owner_user.user_id
             WHERE
@@ -2022,12 +1908,9 @@ class SearchByResumePager extends Pager
             AND
                 (ISNULL(candidate.is_admin_hidden) OR (candidate.is_admin_hidden = 0))
             AND
-                (ISNULL(candidate.is_active) OR (candidate.is_active = 1))
-            AND
-                attachment.site_id = %s",
+                (ISNULL(candidate.is_active) OR (candidate.is_active = 1))",
             DATA_ITEM_CANDIDATE,
-            $this->_WHERE,
-            $this->_siteID
+            $this->_WHERE
         );
         $rs = $this->_db->getAssoc($sql);
 
@@ -2064,7 +1947,6 @@ class SearchByResumePager extends Pager
                 attachment
             LEFT JOIN candidate
                 ON attachment.data_item_id = candidate.candidate_id
-                AND attachment.site_id = candidate.site_id
             LEFT JOIN user AS owner_user
                 ON candidate.owner = owner_user.user_id
             WHERE
@@ -2073,8 +1955,6 @@ class SearchByResumePager extends Pager
                 %s
             AND
                 (attachment.data_item_type = %s OR attachment.data_item_type = %s)
-            AND
-                attachment.site_id = %s
             AND
                 (ISNULL(candidate.is_admin_hidden) OR (candidate.is_admin_hidden = 0))
             AND
@@ -2086,7 +1966,6 @@ class SearchByResumePager extends Pager
             $this->_WHERE,
             DATA_ITEM_CANDIDATE,
             DATA_ITEM_BULKRESUME,
-            $this->_siteID,
             $this->_sortBy,
             $this->_sortDirection,
             $this->_thisPageStartRow,
@@ -2119,12 +1998,11 @@ class SearchByResumePager extends Pager
  */
 class SearchPager extends Pager
 {
-    private $_siteID;
     private $_db;
     private $_rs;
 
 
-    public function __construct($rowsPerPage, $currentPage, $siteID)
+    public function __construct($rowsPerPage, $currentPage)
     {
         $this->_sortByFields = array(
             'firstName',

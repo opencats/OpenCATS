@@ -47,27 +47,26 @@ class InfoString
      *
      * @param flag data item type
      * @param integer data item ID
-     * @param integer site ID
      * @return string info string or false
      */
-    public static function make($dataItemType, $dataItemID, $siteID)
+    public static function make($dataItemType, $dataItemID)
     {
         switch ($dataItemType)
         {
             case DATA_ITEM_CANDIDATE:
-                $infoString = self::_candidate($dataItemID, $siteID);
+                $infoString = self::_candidate($dataItemID);
                 break;
 
             case DATA_ITEM_CONTACT:
-                $infoString = self::_contact($dataItemID, $siteID);
+                $infoString = self::_contact($dataItemID);
                 break;
 
             case DATA_ITEM_JOBORDER:
-                $infoString = self::_joborder($dataItemID, $siteID);
+                $infoString = self::_joborder($dataItemID);
                 break;
 
             case DATA_ITEM_COMPANY:
-                $infoString = self::_company($dataItemID, $siteID);
+                $infoString = self::_company($dataItemID);
                 break;
 
             default:
@@ -82,12 +81,11 @@ class InfoString
      * Generates a string of contact info used for the popup tooltips.
      *
      * @param integer contact ID
-     * @param integer site ID
      * @return string info string
      */
-    private static function _contact($contactID, $siteID)
+    private static function _contact($contactID)
     {
-        $contacts = new Contacts($siteID);
+        $contacts = new Contacts();
         $infoRS = $contacts->get($contactID);
 
         if (empty($infoRS))
@@ -211,12 +209,11 @@ class InfoString
      * Generates a string of Candidate info used for the popup tooltips.
      *
      * @param integer candidate ID
-     * @param integer site ID
      * @return string info string
      */
-    private static function _candidate($candidateID, $siteID)
+    private static function _candidate($candidateID)
     {
-        $candidates = new Candidates($siteID);
+        $candidates = new Candidates();
         $infoRS = $candidates->get($candidateID);
 
         if (empty($infoRS))
@@ -325,12 +322,11 @@ class InfoString
      * Generates a string of Job Order info used for the popup tooltips.
      *
      * @param integer job order ID
-     * @param integer site ID
      * @return string info string
      */
-    private static function _joborder($jobOrderID, $siteID)
+    private static function _joborder($jobOrderID)
     {
-        $jobOrders = new JobOrders($siteID);
+        $jobOrders = new JobOrders();
         $infoRS = $jobOrders->get($jobOrderID);
 
         if (empty($infoRS))
@@ -400,12 +396,11 @@ class InfoString
      * Generates a string of Company info used for the popup tooltips.
      *
      * @param integer company ID
-     * @param integer site ID
      * @return string info string
      */
-    private static function _company($companyID, $siteID)
+    private static function _company($companyID)
     {
-        $companies = new Companies($siteID);
+        $companies = new Companies();
         $infoRS = $companies->get($companyID);
 
         if (empty($infoRS))

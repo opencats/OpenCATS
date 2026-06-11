@@ -63,15 +63,11 @@ function BackupDBErrorHandler ($errno, $errstr, $errfile, $errline, $errcontext)
     die();
 }
 
-function dumpDB($db, $file, $useStatus = false, $splitFiles = true, $siteID = -1)
+function dumpDB($db, $file, $useStatus = false, $splitFiles = true)
 {
     set_error_handler('BackupDBErrorHandler');
-    
-    if ($siteID == -1)
-    {
-        $siteID = $_SESSION['CATS']->getSiteID();
-    }
-    
+
+
     $len = 0;
     $fileNumber = 0;
 
@@ -121,25 +117,7 @@ function dumpDB($db, $file, $useStatus = false, $splitFiles = true, $siteID = -1
         // We do not need history records.
         if ($table == 'history') continue;
 
-        $isSiteIdColumn = false;
-        $sql = sprintf("SHOW COLUMNS FROM %s", $table);
-        $columnRecordSet = $db->getAllAssoc($sql);
-        foreach ($columnRecordSet as $recordSet)
-        {
-            if ($recordSet['Field'] == 'site_id')
-            {
-                $isSiteIdColumn = true;
-            }
-        }
-        
-        if ($isSiteIdColumn)
-        {
-            $sql = 'SELECT * FROM ' . $table . ' WHERE site_id = '.$siteID;
-        }
-        else
-        {
-            $sql = 'SELECT * FROM ' . $table . '';
-        }
+        $sql = 'SELECT * FROM ' . $table;
 
         $index = 0;
         $db->query($sql);
@@ -152,35 +130,6 @@ function dumpDB($db, $file, $useStatus = false, $splitFiles = true, $siteID = -1
             }
 
             $continue = true;
-
-            if (isset($recordSet['site_id']))
-            {
-                if ($recordSet['site_id'] != $siteID)
-                {
-                    if ($table == 'site' && $recordSet['site_id'] == CATS_ADMIN_SITE)
-                    {
-                        $continue = true;
-                    }
-                    /* Password cantlogin is the password for the automated user.  Automated
-                     * user has user level 0 (disabled) preventing a client from logging into
-                     * the user. */
-                    else if ($table == 'user' && $recordSet['password'] == 'cantlogin' &&
-                             $recordSet['site_id'] == CATS_ADMIN_SITE)
-                    {
-                        $continue = true;
-                    }
-                    else
-                    {
-                        $continue = false;
-                    }
-                }
-                if ($table == 'user' && $recordSet['user_name'] == 'brian' &&
-                    $recordSet['email'] == 'brian@catsone.com')
-                {
-                    $continue = false;
-                }
-
-            }
 
             if($table == 'user_login' || $table == 'zipcodes')
             {
@@ -202,10 +151,6 @@ function dumpDB($db, $file, $useStatus = false, $splitFiles = true, $siteID = -1
 
                 if ($table == 'user')
                 {
-                    if (strpos($recordSet['user_name'], '@' . $siteID) !== false && substr($recordSet['user_name'], strpos($recordSet['user_name'], '@'.$siteID)) == '@'.$siteID)
-                    {
-                       $recordSet['user_name'] = str_replace('@' . $siteID, '', $recordSet['user_name']);
-                    }
                     if (strtolower($recordSet['user_name']) == 'john@mycompany.net')
                     {
                         $recordSet['access_level'] = 500;

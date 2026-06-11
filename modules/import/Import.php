@@ -30,12 +30,10 @@
 class Import
 {
     private $_db;
-    private $_siteID;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
 
@@ -52,17 +50,14 @@ class Import
             "INSERT INTO import (
                 module_name,
                 reverted,
-                site_id,
 				date_created
             )
             VALUES (
                 '%s',
                 0,
-                %s,
 				NOW()
             )",
-            $table,
-            $this->_siteID
+            $table
         );
 
         $queryResult = $this->_db->query($sql);
@@ -92,13 +87,10 @@ class Import
                 import_errors = %s,
                 added_lines = %s
              WHERE
-                import_id = %s
-             AND
-                site_id = %s",
+                import_id = %s",
             $this->_db->makeQueryStringOrNULL($importErrors),
             $addedLines,
-            $importID,
-            $this->_siteID
+            $importID
         );
 
         $queryResult = $this->_db->query($sql);
@@ -119,11 +111,8 @@ class Import
             "DELETE FROM
                 import
              WHERE
-                import_id = %s
-             AND
-                site_id = %s",
-            $this->_db->makeQueryString($importID),
-            $this->_siteID
+                import_id = %s",
+            $this->_db->makeQueryString($importID)
         );
         $queryResult = $this->_db->query($sql);
 
@@ -151,11 +140,8 @@ class Import
             FROM
                 import
             WHERE
-                import.import_id = %s
-            AND
-                site_id = %s",
-            $importID,
-            $this->_siteID
+                import.import_id = %s",
+            $importID
         );
 
         $rs = $this->_db->getAssoc($sql);
@@ -175,7 +161,6 @@ class Import
                 import.module_name AS moduleName,
                 import.import_id AS importID,
                 import.added_lines AS addedLines,
-                import.site_id AS siteID,
                 import.import_errors AS importErrors,
 				DATE_FORMAT(
                     import.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
@@ -183,10 +168,7 @@ class Import
             FROM
                 import
             WHERE
-                import.site_id = %s
-			AND
-				TO_DAYS(date_created) > TO_DAYS(DATE_SUB(NOW(), INTERVAL 7 DAY))",
-            $this->_siteID
+				TO_DAYS(date_created) > TO_DAYS(DATE_SUB(NOW(), INTERVAL 7 DAY))"
         );
         $rs = $this->_db->getAllAssoc($sql);
 
@@ -206,11 +188,8 @@ class Import
             "DELETE FROM
                 extra_field_settings
             WHERE
-                import_id = %s
-            AND
-                site_id = %s",
-            $importID,
-            $this->_siteID
+                import_id = %s",
+            $importID
         );
         $this->_db->query($sql);
 
@@ -218,12 +197,9 @@ class Import
             "DELETE FROM
                 %s
             WHERE
-                import_id = %s
-            AND
-                site_id = %s",
+                import_id = %s",
             $this->_db->escapeString($tableName),
-            $importID,
-            $this->_siteID
+            $importID
         );
         $this->_db->query($sql);
 
@@ -231,11 +207,8 @@ class Import
             "DELETE FROM
                 extra_field
             WHERE
-                import_id = %s
-             AND
-                site_id = %s",
-            $importID,
-            $this->_siteID
+                import_id = %s",
+            $importID
         );
         $this->_db->query($sql);
 
@@ -245,11 +218,8 @@ class Import
                 "DELETE FROM
                     company
                 WHERE
-                    import_id = %s
-                AND
-                    site_id = %s",
-                $importID,
-                $this->_siteID
+                    import_id = %s",
+                $importID
             );
 
             $this->_db->query($sql);
@@ -272,12 +242,9 @@ class Import
             FROM
                 extra_field_settings
             WHERE
-                extra_field_settings.site_id = %s
-            AND
                 extra_field_settings.field_name = %s
             AND
                 extra_field_settings.data_item_type = %s",
-            $this->_siteID,
             $this->_db->makeQueryStringOrNULL($field),
             $type
         );
@@ -288,20 +255,17 @@ class Import
             $sql = sprintf(
                 "INSERT INTO extra_field_settings (
                     field_name,
-                    site_id,
                     date_created,
                     import_id,
                     data_item_type
                  )
                  VALUES (
                     %s,
-                    %s,
                     NOW(),
                     %s,
                     %s
                  )",
                  $this->_db->makeQueryStringOrNULL($field),
-                 $this->_siteID,
                  $importID,
                  $type
             );
@@ -334,7 +298,7 @@ class Import
                 $ar[] = '(' . $assocID . ', '
                     . $this->_db->makeQueryStringOrNULL($field) . ', '
                     . $this->_db->makeQueryStringOrNULL($value) . ', '
-                    .  $importID . ',' .$this->_siteID . ', ' . $type . ')';
+                    .  $importID . ', ' . $type . ')';
             }
         }
         $dataS = implode(',', $ar);
@@ -347,7 +311,6 @@ class Import
                     field_name,
                     value,
                     import_id,
-                    site_id,
                     data_item_type
                 )
                 VALUES %s",
@@ -368,12 +331,10 @@ class Import
 class JobOrdersImport
 {
     private $_db;
-    private $_siteID;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
 
@@ -394,10 +355,7 @@ class JobOrdersImport
             FROM
                 company
             WHERE
-                site_id = %s
-            AND
                 name = %s",
-            $this->_siteID,
             $this->_db->makeQueryString($dataNamed['company'])
         );
         
@@ -435,7 +393,6 @@ class JobOrdersImport
                 recruiter,
                 entered_by,
                 owner,
-                site_id,
                 status,
                 date_created,
                 date_modified,
@@ -446,7 +403,6 @@ class JobOrdersImport
                 import_id
             )
             VALUES (
-                %s,
                 %s,
                 %s,
                 %s,
@@ -465,7 +421,6 @@ class JobOrdersImport
             $userID,
             $userID,
             $userID,
-            $this->_siteID,
             $this->_db->makeQueryString('Draft'),
             $this->_db->makeQueryInteger($dataNamed['openings']),
             $this->_db->makeQueryInteger($companyID),

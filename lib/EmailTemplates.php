@@ -31,7 +31,6 @@
  */
 
 include_once(LEGACY_ROOT . '/lib/Mailer.php');
-include_once(LEGACY_ROOT . '/lib/Site.php');
 
 /**
  *	E-Mail Templates Library
@@ -41,26 +40,21 @@ include_once(LEGACY_ROOT . '/lib/Site.php');
 class EmailTemplates
 {
     private $_db;
-    private $_siteID;
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
-    
+
     public function delete($templateID)
     {
         $sql = sprintf(
             "DELETE FROM
                 email_template
-            WHERE 
-                site_id = %s
-            AND
+            WHERE
                 email_template_id = %s
             AND
                 tag = %s",
-            $this->_db->makeQueryInteger($this->_siteID),
             $this->_db->makeQueryInteger($templateID),
             $this->_db->makeQueryString("CUSTOM")
         );
@@ -68,16 +62,15 @@ class EmailTemplates
         $this->_db->query($sql);
     }
     
-    public function add($text, $title, $tag, $siteID, $possibleVariables)
+    public function add($text, $title, $tag, $possibleVariables)
     {
         $sql = sprintf(
             "INSERT INTO email_template(
-                text, 
-                allow_substitution, 
-                site_id, 
-                tag, 
-                title, 
-                possible_variables, 
+                text,
+                allow_substitution,
+                tag,
+                title,
+                possible_variables,
                 disabled
             )
             VALUES (
@@ -86,11 +79,9 @@ class EmailTemplates
                 %s,
                 %s,
                 %s,
-                %s,
                 0
             )",
             $this->_db->makeQueryStringOrNULL($text),
-            $this->_db->makeQueryInteger($siteID),
             $this->_db->makeQueryStringOrNULL($tag),
             $this->_db->makeQueryStringOrNULL($title),
             $this->_db->makeQueryStringOrNULL($possibleVariables)
@@ -125,17 +116,14 @@ class EmailTemplates
                     text = %s,
                     disabled = %s
                 WHERE
-                    email_template_id = %s
-                AND
-                    site_id = %s",
+                    email_template_id = %s",
                 $this->_db->makeQueryStringOrNULL($title),
                 $this->_db->makeQueryStringOrNULL($text),
                 $disabled,
-                $emailTemplateID,
-                $this->_siteID
+                $emailTemplateID
             );
         }
-        else 
+        else
         {
             $sql = sprintf(
                 "UPDATE
@@ -144,13 +132,10 @@ class EmailTemplates
                     text = %s,
                     disabled = %s
                 WHERE
-                    email_template_id = %s
-                AND
-                    site_id = %s",
+                    email_template_id = %s",
                 $this->_db->makeQueryStringOrNULL($text),
                 $disabled,
-                $emailTemplateID,
-                $this->_siteID
+                $emailTemplateID
             );
         }
         
@@ -178,12 +163,9 @@ class EmailTemplates
             SET
                 disabled = %s
             WHERE
-                email_template_id = %s
-            AND
-                site_id = %s",
+                email_template_id = %s",
             $disabled,
-            $emailTemplateID,
-            $this->_siteID
+            $emailTemplateID
         );
 
         $queryResult = $this->_db->query($sql);
@@ -215,17 +197,14 @@ class EmailTemplates
             FROM
                 email_template
             WHERE
-                email_template.email_template_id = %s
-            AND
-                email_template.site_id = %s",
-            $emailTemplateID,
-            $this->_siteID
+                email_template.email_template_id = %s",
+            $emailTemplateID
         );
         $rs = $this->_db->getAssoc($sql);
 
         if (!empty($rs))
         {
-            $mailerSettings = new MailerSettings($this->_siteID);
+            $mailerSettings = new MailerSettings();
             $mailerSettingsRS = $mailerSettings->getAll();
 
             if ($mailerSettingsRS['configured'] == '0' || $mailerSettingsRS['mode'] == 0)
@@ -289,14 +268,7 @@ class EmailTemplates
         }
         else
         {
-
-            $site = new Site(-1);
-
-            $siteID = $site->getFirstSiteID();
-
-            if (!eval(Hooks::get('CAREERS_SITEID'))) return;
-
-            $siteRS = $site->getSiteBySiteID($siteID);
+            $siteRS = $this->_db->getAssoc("SELECT name FROM site LIMIT 1");
 
             if (!isset($siteRS['name']))
             {
@@ -336,17 +308,14 @@ class EmailTemplates
             FROM
                 email_template
             WHERE
-                email_template.tag = %s
-            AND
-                email_template.site_id = %s",
-            $this->_db->makeQueryStringOrNULL($emailTemplateTag),
-            $this->_siteID
+                email_template.tag = %s",
+            $this->_db->makeQueryStringOrNULL($emailTemplateTag)
         );
         $rs = $this->_db->getAssoc($sql);
 
         if (!empty($rs))
         {
-            $mailerSettings = new MailerSettings($this->_siteID);
+            $mailerSettings = new MailerSettings();
             $mailerSettingsRS = $mailerSettings->getAll();
 
             if ($mailerSettingsRS['configured'] == '0' || 
@@ -373,7 +342,7 @@ class EmailTemplates
      */
     public function getAll()
     {
-        $sql = sprintf(
+        $sql =
             "SELECT
                 email_template.email_template_id AS emailTemplateID,
                 email_template.title AS emailTemplateTitle,
@@ -383,15 +352,11 @@ class EmailTemplates
                 email_template.allow_substitution AS allowSubstitution,
                 email_template.disabled AS disabled
             FROM
-                email_template
-            WHERE
-                email_template.site_id = %s",
-            $this->_siteID
-        );
+                email_template";
 
         return $this->_db->getAllAssoc($sql);
     }
-    
+
     public function getAllCustom()
     {
         $sql = sprintf(
@@ -406,10 +371,7 @@ class EmailTemplates
             FROM
                 email_template
             WHERE
-                email_template.site_id = %s
-            AND
                 email_template.tag = %s",
-            $this->_siteID,
             $this->_db->makeQueryString("CUSTOM")
         );
 

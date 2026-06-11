@@ -40,12 +40,10 @@ if (!$interface->isRequiredIDValid('companyID', false))
     die();
 }
 
-$siteID = $interface->getSiteID();
-
 $companyID = $_REQUEST['companyID'];
 
 /* Get an array of the company's location data. */
-$companies = new Companies($siteID);
+$companies = new Companies();
 
 $locationArray = $companies->getLocationArray($companyID);
 if (empty($locationArray))

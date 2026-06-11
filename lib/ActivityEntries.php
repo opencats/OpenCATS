@@ -63,12 +63,10 @@ include_once(LEGACY_ROOT . '/lib/JobOrders.php');
 class ActivityEntries
 {
     private $_db;
-    private $_siteID;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
 
@@ -111,13 +109,11 @@ class ActivityEntries
                 entered_by,
                 type,
                 notes,
-                site_id,
                 date_occurred,
                 date_created,
                 date_modified
             )
             VALUES (
-                %s,
                 %s,
                 %s,
                 %s,
@@ -134,7 +130,6 @@ class ActivityEntries
             $this->_db->makeQueryInteger($enteredBy),
             $this->_db->makeQueryInteger($activityType),
             $this->_db->makeQueryString($activityNotes),
-            $this->_siteID,
             $dateOccurredSQL
         );
 
@@ -146,7 +141,7 @@ class ActivityEntries
 
         $activityEntryID = $this->_db->getLastInsertID();
 
-        $history = new History($this->_siteID);
+        $history = new History();
         $history->storeHistoryData(
             $dataItemType,
             $dataItemID,
@@ -201,11 +196,8 @@ class ActivityEntries
             LEFT JOIN user AS user
                 ON activity.entered_by = user.user_id
             WHERE
-                activity.activity_id = %s
-            AND
-                activity.site_id = %s",
-            $this->_db->makeQueryInteger($activityID),
-            $this->_siteID
+                activity.activity_id = %s",
+            $this->_db->makeQueryInteger($activityID)
         );
         $activityIDRS = $this->_db->getAssoc($sql);
 
@@ -238,14 +230,11 @@ class ActivityEntries
                 joborder_id   = %s,
                 date_modified = NOW()
             WHERE
-                activity_id = %s
-            AND
-                site_id = %s",
+                activity_id = %s",
             $this->_db->makeQueryInteger($activityType),
             $this->_db->makeQueryString($activityNotes),
             $this->_db->makeQueryIntegerOrNULL($newJobOrderID),
-            $this->_db->makeQueryInteger($activityID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($activityID)
         );
         $queryResult = $this->_db->query($sql);
 
@@ -258,19 +247,16 @@ class ActivityEntries
                     date_occurred = DATE_SUB(%s, INTERVAL %s HOUR),
                     date_modified = NOW()
                 WHERE
-                    activity_id = %s
-                AND
-                    site_id = %s",
+                    activity_id = %s",
                 $this->_db->makeQueryString($date),
                 $this->_db->makeQueryInteger($timezoneOffset),
-                $this->_db->makeQueryInteger($activityID),
-                $this->_siteID
+                $this->_db->makeQueryInteger($activityID)
             );
 
             $queryResult = $this->_db->query($sql);
         }
 
-        $history = new History($this->_siteID);
+        $history = new History();
         $history->storeHistoryData(
             $activityIDRS['dataItemType'],
             $activityIDRS['dataItemID'],
@@ -334,11 +320,8 @@ class ActivityEntries
             LEFT JOIN user AS user
                 ON activity.entered_by = user.user_id
             WHERE
-                activity.activity_id = %s
-            AND
-                activity.site_id = %s",
-            $this->_db->makeQueryInteger($activityID),
-            $this->_siteID
+                activity.activity_id = %s",
+            $this->_db->makeQueryInteger($activityID)
         );
         $activityIDRS = $this->_db->getAssoc($sql);
 
@@ -351,11 +334,8 @@ class ActivityEntries
             "DELETE FROM
                 activity
             WHERE
-                activity_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($activityID),
-            $this->_siteID
+                activity_id = %s",
+            $this->_db->makeQueryInteger($activityID)
         );
         $queryResult = $this->_db->query($sql);
 
@@ -364,7 +344,7 @@ class ActivityEntries
             return false;
         }
 
-        $history = new History($this->_siteID);
+        $history = new History();
         $history->storeHistoryData(
             $activityIDRS['dataItemType'],
             $activityIDRS['dataItemID'],
@@ -400,15 +380,10 @@ class ActivityEntries
      */
     public function getCount()
     {
-        $sql = sprintf(
-            "SELECT
+        $sql = "SELECT
                 COUNT(*) AS totalActivities
             FROM
-                activity
-            WHERE
-                activity.site_id = %s",
-            $this->_siteID
-        );
+                activity";
 
         return $this->_db->getColumn($sql, 0, 0);
     }
@@ -452,11 +427,8 @@ class ActivityEntries
             LEFT JOIN company
                 ON joborder.company_id = company.company_id
             WHERE
-                activity.activity_id = %s
-            AND
-                activity.site_id = %s",
-            $this->_db->makeQueryInteger($activityID),
-            $this->_siteID
+                activity.activity_id = %s",
+            $this->_db->makeQueryInteger($activityID)
         );
 
         return $this->_db->getAssoc($sql);
@@ -506,14 +478,11 @@ class ActivityEntries
                 activity.data_item_id = %s
             AND
                 activity.data_item_type = %s
-            AND
-                activity.site_id = %s
             ORDER BY
                 dateCreatedSort DESC,
                 activity.activity_id DESC",
             $this->_db->makeQueryInteger($dataItemID),
-            $this->_db->makeQueryInteger($dataItemType),
-            $this->_siteID
+            $this->_db->makeQueryInteger($dataItemType)
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -567,17 +536,11 @@ class ActivityEntries
                 contact.company_id = %s
             AND
                 activity.data_item_type = %s
-            AND
-                activity.site_id = %s
-            AND
-                contact.site_id = %s
             ORDER BY
                 dateCreatedSort DESC,
                 activity.activity_id DESC",
             $this->_db->makeQueryInteger($companyID),
-            $this->_db->makeQueryInteger(DATA_ITEM_CONTACT),
-            $this->_db->makeQueryInteger($this->_siteID),
-            $this->_db->makeQueryInteger($this->_siteID)
+            $this->_db->makeQueryInteger(DATA_ITEM_CONTACT)
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -590,16 +553,13 @@ class ActivityEntries
      */
     public function getTypes()
     {
-        $sql = sprintf(
-            "SELECT
+        $sql = "SELECT
                 activity_type_id AS typeID,
                 short_description AS type
             FROM
                 activity_type
             ORDER BY
-                activity_type_id DESC",
-            $this->_siteID
-        );
+                activity_type_id DESC";
 
         return $this->_db->getAllAssoc($sql);
     }
@@ -617,19 +577,19 @@ class ActivityEntries
         switch ($dataItemType)
         {
             case DATA_ITEM_CANDIDATE:
-                $dataItem = new Candidates($this->_siteID);
+                $dataItem = new Candidates();
                 break;
 
             case DATA_ITEM_COMPANY:
-                $dataItem = new Companies($this->_siteID);
+                $dataItem = new Companies();
                 break;
 
             case DATA_ITEM_CONTACT:
-                $dataItem = new Contacts($this->_siteID);
+                $dataItem = new Contacts();
                 break;
 
             case DATA_ITEM_JOBORDER:
-                $dataItem = new JobOrders($this->_siteID);
+                $dataItem = new JobOrders();
                 break;
 
             default:

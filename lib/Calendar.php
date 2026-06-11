@@ -56,16 +56,14 @@ include_once(LEGACY_ROOT . '/lib/Mailer.php');
 class Calendar
 {
     private $_db;
-    private $_siteID;
     private $_userID;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
         // FIXME: Factor out Session dependency.
         $this->_userID = $_SESSION['CATS']->getUserID();
 
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
 
@@ -138,13 +136,10 @@ class Calendar
                 DATE_FORMAT(calendar_event.date, '%%c') = %s
             AND
                 DATE_FORMAT(calendar_event.date, '%%Y') = %s
-            AND
-                calendar_event.site_id = %s
             ORDER BY
                 dateSort ASC",
             $month,
-            $year,
-            $this->_siteID
+            $year
         );
 
         $rs = $this->_db->getAllAssoc($sql);
@@ -231,8 +226,7 @@ class Calendar
                 calendar_event_type.short_description AS eventTypeDescription,
                 entered_by_user.user_id AS userID,
                 entered_by_user.first_name AS enteredByFirstName,
-                entered_by_user.last_name AS enteredByLastName,
-                entered_by_user.site_id AS siteID
+                entered_by_user.last_name AS enteredByLastName
             FROM
                 calendar_event
             LEFT JOIN calendar_event_type
@@ -286,11 +280,8 @@ class Calendar
             FROM
                 calendar_event
             WHERE
-                calendar_event.calendar_event_id = %s
-            AND
-                calendar_event.site_id = %s",
-            $this->_db->makeQueryInteger($eventID),
-            $this->_siteID
+                calendar_event.calendar_event_id = %s",
+            $this->_db->makeQueryInteger($eventID)
         );
 
         return $this->_db->getAssoc($sql);
@@ -344,7 +335,6 @@ class Calendar
                 data_item_id,
                 data_item_type,
                 joborder_id,
-                site_id,
                 date_created,
                 date_modified,
                 title,
@@ -357,7 +347,6 @@ class Calendar
             VALUES (
                 %s,
                 DATE_SUB(%s, INTERVAL %s HOUR),
-                %s,
                 %s,
                 %s,
                 %s,
@@ -382,7 +371,6 @@ class Calendar
             $this->_db->makeQueryInteger($dataItemID),
             $this->_db->makeQueryInteger($dataItemType),
             $jobOrderIDSQL,
-            $this->_siteID,
             $this->_db->makeQueryString($title),
             $this->_db->makeQueryInteger($duration),
             ($reminderEnabled ? '1' : '0'),
@@ -457,9 +445,7 @@ class Calendar
                 reminder_time    = %s,
                 public           = %s
             WHERE
-                calendar_event_id = %s
-            AND
-                site_id = %s",
+                calendar_event_id = %s",
             $this->_db->makeQueryInteger($type),
             $this->_db->makeQueryString($date),
             $this->_db->makeQueryInteger($timeZoneOffset),
@@ -474,8 +460,7 @@ class Calendar
             $this->_db->makeQueryString($reminderEmail),
             $this->_db->makeQueryInteger($reminderTime),
             ($isPublic ? '1' : '0'),
-            $this->_db->makeQueryInteger($eventID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($eventID)
         );
 
         return (boolean) $this->_db->query($sql);
@@ -518,11 +503,8 @@ class Calendar
             "DELETE FROM
                 calendar_event
             WHERE
-                calendar_event_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($eventID),
-            $this->_siteID
+                calendar_event_id = %s",
+            $this->_db->makeQueryInteger($eventID)
         );
 
         return (boolean) $this->_db->query($sql);
@@ -650,8 +632,6 @@ class Calendar
             LEFT JOIN calendar_event_type
                 ON calendar_event.type = calendar_event_type.calendar_event_type_id
             WHERE
-                calendar_event.site_id = %s
-            AND
                 calendar_event.date >= %s
             AND
             (
@@ -664,7 +644,6 @@ class Calendar
                 calendar_event.data_item_id = %s
             ORDER BY
                 dateSort ASC",
-            $this->_siteID,
             $this->_db->makeQueryString($currentDateForMySQL),
             $this->_userID,
             $this->_db->makeQueryInteger($dataItemType),
@@ -739,8 +718,6 @@ class Calendar
             WHERE
                 TO_DAYS(NOW()) = TO_DAYS(calendar_event.date)
             AND
-                calendar_event.site_id = %s
-            AND
             (
                 %s
                 OR calendar_event.entered_by = %s
@@ -748,7 +725,6 @@ class Calendar
             %s
             ORDER BY
                 dateSort ASC",
-            $this->_siteID,
             ($flag == UPCOMING_FOR_CALENDAR ? 'calendar_event.public = 1' : 'false'),
             $this->_userID,
             $criteria
@@ -791,8 +767,6 @@ class Calendar
             AND
                 TO_DAYS(NOW()) != TO_DAYS(calendar_event.date)
             AND
-                calendar_event.site_id = %s
-            AND
             (
                 calendar_event.public = 1
                 OR calendar_event.entered_by = %s
@@ -802,7 +776,6 @@ class Calendar
                 dateSort ASC
             LIMIT
                 0, %s",
-            $this->_siteID,
             $this->_userID,
             $criteria,
             $limit
@@ -892,7 +865,7 @@ class Calendar
         switch ($dataItemType)
         {
             case DATA_ITEM_CANDIDATE:
-                $candidates = new Candidates($this->_siteID);
+                $candidates = new Candidates();
                 $string .= '?m=candidates&amp;a=show&amp;candidateID=' . $dataItemID . '">';
                 $string .= '<img src="images/mru/candidate.gif" alt="" style="border: none;" title="Candidate" />';
                 if ($showTitle)
@@ -911,7 +884,7 @@ class Calendar
                 break;
 
             case DATA_ITEM_COMPANY:
-                $companies = new Companies($this->_siteID);
+                $companies = new Companies();
                 $string .= '?m=companies&amp;a=show&amp;companyID=' . $dataItemID . '">';
                 $string .= '<img src="images/mru/company.gif" alt="" style="border: none;" title="Company" />';
                 if ($showTitle)
@@ -929,7 +902,7 @@ class Calendar
                 break;
 
             case DATA_ITEM_CONTACT:
-                $contacts = new Contacts($this->_siteID);
+                $contacts = new Contacts();
                 $string .= '?m=contacts&amp;a=show&amp;contactID=' . $dataItemID . '">';
                 $string .= '<img src="images/mru/contact.gif" alt="" style="border: none;" title="Contact" />';
                 if ($showTitle)
@@ -947,7 +920,7 @@ class Calendar
                 break;
 
             case DATA_ITEM_JOBORDER:
-                $jobOrders = new JobOrders($this->_siteID);
+                $jobOrders = new JobOrders();
                 $string .= '?m=joborders&amp;a=show&amp;jobOrderID=' . $dataItemID . '">';
                 $string .= '<img src="images/mru/job_order.gif" alt="" style="border: none;" title="Job Order" />';
                 if ($showTitle)
@@ -985,7 +958,7 @@ class Calendar
      * @param string E-mail body.
      * @return void
      */
-    public function sendEmail($siteID, $userID, $destination, $subject, $body)
+    public function sendEmail($userID, $destination, $subject, $body)
     {
         if (empty($destination))
         {
@@ -993,7 +966,7 @@ class Calendar
         }
 
         /* Send e-mail notification. */
-        $mailer = new Mailer($siteID, $userID);
+        $mailer = new Mailer($userID);
 
         $destination = str_replace(',', ';', $destination);
         $destinations = explode(';', $destination);
@@ -1018,13 +991,11 @@ class Calendar
 class CalendarSettings
 {
     private $_db;
-    private $_siteID;
     private $_userID;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         // FIXME: Factor out Session dependency.
         $this->_userID = $_SESSION['CATS']->getUserID();
         $this->_db = DatabaseConnection::getInstance();
@@ -1051,15 +1022,11 @@ class CalendarSettings
         $sql = sprintf(
             "SELECT
                 settings.setting AS setting,
-                settings.value AS value,
-                settings.site_id AS siteID
+                settings.value AS value
             FROM
                 settings
             WHERE
-                settings.site_id = %s
-            AND
                 settings.settings_type = %s",
-            $this->_siteID,
             SETTINGS_CALENDAR
         );
         $rs = $this->_db->getAllAssoc($sql);
@@ -1094,11 +1061,8 @@ class CalendarSettings
             WHERE
                 settings.setting = %s
             AND
-                site_id = %s
-            AND
                 settings_type = %s",
             $this->_db->makeQueryStringOrNULL($setting),
-            $this->_siteID,
             SETTINGS_CALENDAR
         );
         $this->_db->query($sql);
@@ -1107,18 +1071,15 @@ class CalendarSettings
             "INSERT INTO settings (
                 setting,
                 value,
-                site_id,
                 settings_type
             )
             VALUES (
-                %s,
                 %s,
                 %s,
                 %s
             )",
             $this->_db->makeQueryStringOrNULL($setting),
             $this->_db->makeQueryStringOrNULL($value),
-            $this->_siteID,
             SETTINGS_CALENDAR
          );
          $this->_db->query($sql);

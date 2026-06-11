@@ -4,9 +4,9 @@ include_once(LEGACY_ROOT . '/lib/ImportableEntity.php');
 
 class CandidatesImport extends ImportableEntity
 {
-    public function __construct($siteID)
+    public function __construct()
     {
-        parent::__construct($siteID);
+        parent::__construct();
     }
 
     /**
@@ -27,13 +27,11 @@ class CandidatesImport extends ImportableEntity
                 can_relocate,
                 entered_by,
                 owner,
-                site_id,
                 date_created,
                 date_modified,
                 import_id
             )
             VALUES (
-                %s,
                 %s,
                 %s,
                 %s,
@@ -47,7 +45,6 @@ class CandidatesImport extends ImportableEntity
             0,
             $userID,
             $userID,
-            $this->_siteID,
             $importID
         );
         $queryResult = $this->_db->query($sql);

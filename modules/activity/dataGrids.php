@@ -38,11 +38,8 @@ include_once(LEGACY_ROOT . '/lib/Width.php');
 
 class ActivityDataGrid extends DataGrid
 {
-    protected $_siteID;
-
-
     // FIXME: Fix ugly indenting - ~400 character lines = bad.
-    public function __construct($siteID, $parameters)
+    public function __construct($parameters, $misc)
     {   
         /* Pager configuration. */
         $this->_tableWidth = new Width(100, '%');
@@ -103,7 +100,6 @@ class ActivityDataGrid extends DataGrid
 
 
         $this->_db = DatabaseConnection::getInstance();
-        $this->_siteID = $siteID;
         $this->_assignedCriterion = "";
         $this->_dataItemIDColumn = 'company.company_id';
 
@@ -115,7 +111,7 @@ class ActivityDataGrid extends DataGrid
                                       'alphaNavigation'=> true,
                                       'filter' => 'activity.date_occurred'),
 
-            'First Name' =>     array('pagerRender'    => 'if ($rsData[\'dataItemType\']=='.DATA_ITEM_CANDIDATE.') {$ret = \'<img src="images/mru/candidate.gif" height="12" alt="" />\';} else if ($rsData[\'dataItemType\']=='.DATA_ITEM_CONTACT.') {$ret = \'<img src="images/mru/contact.gif" height="12">\';} else {$ret = \'<img src="images/mru/blank.gif">\';} if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; if ($rsData[\'dataItemType\']=='.DATA_ITEM_CANDIDATE.') {return $ret.\'&nbsp;<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.Template::escapeAttr(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'">\'.Template::escapeHtml($rsData[\'firstName\']).\'</a>\';} else {return  $ret.\'&nbsp;<a href="'.CATSUtility::getIndexName().'?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.Template::escapeAttr(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'">\'.Template::escapeHtml($rsData[\'firstName\']).\'</a>\';}', 
+            'First Name' =>     array('pagerRender'    => 'if ($rsData[\'dataItemType\']=='.DATA_ITEM_CANDIDATE.') {$ret = \'<img src="images/mru/candidate.gif" height="12" alt="" />\';} else if ($rsData[\'dataItemType\']=='.DATA_ITEM_CONTACT.') {$ret = \'<img src="images/mru/contact.gif" height="12">\';} else {$ret = \'<img src="images/mru/blank.gif">\';} if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; if ($rsData[\'dataItemType\']=='.DATA_ITEM_CANDIDATE.') {return $ret.\'&nbsp;<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.Template::escapeAttr(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'])).\'">\'.Template::escapeHtml($rsData[\'firstName\']).\'</a>\';} else {return  $ret.\'&nbsp;<a href="'.CATSUtility::getIndexName().'?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.Template::escapeAttr(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'])).\'">\'.Template::escapeHtml($rsData[\'firstName\']).\'</a>\';}',
                                      'sortableColumn'  => 'firstName',
                                      'pagerWidth'      => 85,
                                      'pagerOptional'   => false,
@@ -123,7 +119,7 @@ class ActivityDataGrid extends DataGrid
 									 'filterable' 	   => false,
                                      'filterHaving'    => 'firstName'),
 
-            'Last Name' =>      array('pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; if ($rsData[\'dataItemType\']=='.DATA_ITEM_CANDIDATE.') {return \'<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.Template::escapeAttr(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'"> \'.Template::escapeHtml($rsData[\'lastName\']).\'</a>\';} else {return \'<a href="'.CATSUtility::getIndexName().'?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.Template::escapeAttr(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'],$rsData[\'siteID\'])).\'"> \'.Template::escapeHtml($rsData[\'lastName\']).\'</a>\';}', 
+            'Last Name' =>      array('pagerRender'    => 'if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; if ($rsData[\'dataItemType\']=='.DATA_ITEM_CANDIDATE.') {return \'<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.Template::escapeAttr(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'])).\'"> \'.Template::escapeHtml($rsData[\'lastName\']).\'</a>\';} else {return \'<a href="'.CATSUtility::getIndexName().'?m=contacts&amp;a=show&amp;contactID=\'.$rsData[\'dataItemID\'].\'" class="\'.$className.\'" title="\'.Template::escapeAttr(InfoString::make($rsData[\'dataItemType\'],$rsData[\'dataItemID\'])).\'"> \'.Template::escapeHtml($rsData[\'lastName\']).\'</a>\';}',
                                      'sortableColumn'  => 'lastName',
                                      'pagerWidth'      => 75,
                                      'pagerOptional'   => false,
@@ -193,7 +189,6 @@ class ActivityDataGrid extends DataGrid
                 activity.activity_id AS activityID,
                 activity.data_item_id AS dataItemID,
                 activity.data_item_type AS dataItemType,
-                activity.site_id AS siteID,
                 data_item_type.short_description AS item,
                 candidate.first_name AS firstName,
                 candidate.last_name AS lastName,
@@ -233,8 +228,6 @@ class ActivityDataGrid extends DataGrid
                 ON activity.data_item_id = candidate.candidate_id
             WHERE
                 activity.data_item_type = %s
-            AND
-                activity.site_id = %s
                 %s
                 %s
             UNION
@@ -242,7 +235,6 @@ class ActivityDataGrid extends DataGrid
                 activity.activity_id AS activityID,
                 activity.data_item_id AS dataItemID,
                 activity.data_item_type AS dataItemType,
-                activity.site_id AS siteID,
                 data_item_type.short_description AS item,
                 contact.first_name AS firstName,
                 contact.last_name AS lastName,
@@ -282,8 +274,6 @@ class ActivityDataGrid extends DataGrid
                 ON activity.data_item_id = contact.contact_id
             WHERE
                 activity.data_item_type = %s
-            AND
-                activity.site_id = %s
                 %s
                 %s
             %s
@@ -291,12 +281,10 @@ class ActivityDataGrid extends DataGrid
             %s",
             $distinct,
             DATA_ITEM_CANDIDATE,
-            $this->_siteID,
             $this->dateCriterion,
             (strlen($whereSQL) > 0) ? ' AND ' . $whereSQL : '',
             $distinct,
             DATA_ITEM_CONTACT,
-            $this->_siteID,
             $this->dateCriterion,
             (strlen($whereSQL) > 0) ? ' AND ' . $whereSQL : '',
             (strlen($havingSQL) > 0) ? ' HAVING ' . $havingSQL : '',

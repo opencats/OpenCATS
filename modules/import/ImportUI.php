@@ -176,7 +176,7 @@ class ImportUI extends UserInterface
 
         $importID = $_POST['importID'];
 
-        $import = new Import($this->_siteID);
+        $import = new Import();
         $tableName = $import->get($importID);
         if (!$tableName)
         {
@@ -212,7 +212,7 @@ class ImportUI extends UserInterface
             return;
         }
     
-        $import = new Import($this->_siteID);
+        $import = new Import();
         $importData = $import->get($importID);
     
         if (!eval(Hooks::get('IMPORT_VIEW_ERRORS'))) return;
@@ -238,7 +238,7 @@ class ImportUI extends UserInterface
     */
     private function viewPending()
     {
-        $import = new Import($this->_siteID);
+        $import = new Import();
         $data = $import->getAll();
 
         if (count($data) == 0)
@@ -329,10 +329,10 @@ class ImportUI extends UserInterface
 
         if (!eval(Hooks::get('IMPORT_TYPES_2'))) return;
 
-        $companies = new Companies($this->_siteID);
-        $candidates = new Candidates($this->_siteID);
-        $contacts = new Contacts($this->_siteID);
-        $jobOrders = new JobOrders($this->_siteID);
+        $companies = new Companies();
+        $candidates = new Candidates();
+        $contacts = new Contacts();
+        $jobOrders = new JobOrders();
 
         $rs = $companies->extraFields->getSettings();
         foreach ($rs as $data)
@@ -368,10 +368,10 @@ class ImportUI extends UserInterface
     */
     private function import()
     {
-        $import = new Import($this->_siteID);
+        $import = new Import();
         $data = $import->getAll();
 
-        $attachments = new Attachments($this->_siteID);
+        $attachments = new Attachments();
         $bulk = $attachments->getBulkAttachmentsInfo();
 
         if (count($data) > 0)
@@ -855,7 +855,7 @@ class ImportUI extends UserInterface
         if (!eval(Hooks::get('IMPORT_ON_IMPORT_DELIMITED_6'))) return;
 
         /* Set up a new import record, and set table types. */
-        $import = new Import($this->_siteID);
+        $import = new Import();
         switch ($importInto)
         {
             case 'Candidates':
@@ -952,7 +952,7 @@ class ImportUI extends UserInterface
                     /* Before we do this, ensure that we have permision and the field is in the database. */
                     if ($this->getUserAccessLevel('import.import') >= ACCESS_LEVEL_SA)
                     {
-                        $import = new Import($this->_siteID);
+                        $import = new Import();
                         if ($theFieldPreferenceValue == 'foreign')
                         {
                             if (!eval(Hooks::get('IMPORT_ON_IMPORT_DELIMITED_8'))) return;
@@ -1097,7 +1097,7 @@ class ImportUI extends UserInterface
     {
         if (!eval(Hooks::get('IMPORT_ADD_FOREIGN'))) return;
 
-        $import = new Import($this->_siteID);
+        $import = new Import();
         $import->addForeign($dataTable, $data, $assocID, $importID);
     }
 
@@ -1127,7 +1127,7 @@ class ImportUI extends UserInterface
 
         if (!eval(Hooks::get('IMPORT_ADD_CANDIDATE'))) return;
 
-        $candidatesImport = new CandidatesImport($this->_siteID);
+        $candidatesImport = new CandidatesImport();
         $candidateID = $candidatesImport->add($dataNamed, $this->_userID, $importID);
 
         if ($candidateID <= 0)
@@ -1159,7 +1159,7 @@ class ImportUI extends UserInterface
 
         if (!eval(Hooks::get('IMPORT_ADD_JOBORDER'))) return;
 
-        $jobOrdersImport = new JobOrdersImport($this->_siteID);
+        $jobOrdersImport = new JobOrdersImport();
         $jobOrderID = $jobOrdersImport->add($dataNamed, $this->_userID, $importID);
 
         if ($jobOrderID <= 0)
@@ -1180,8 +1180,8 @@ class ImportUI extends UserInterface
     */
     private function addToCompanies($dataFields, $dataNamed, $dataForeign, $importID)
     {
-        $companiesImport = new CompaniesImport($this->_siteID);
-        $companies = new Companies($this->_siteID);
+        $companiesImport = new CompaniesImport();
+        $companies = new Companies();
 
         /* Bail out if any of the required fields are empty. */
 
@@ -1219,8 +1219,8 @@ class ImportUI extends UserInterface
     */
     private function addToContacts($dataFields, $dataNamed, $dataForeign, $importID)
     {
-        $contactImport = new ContactImport($this->_siteID);
-        $companies = new Companies($this->_siteID);
+        $contactImport = new ContactImport();
+        $companies = new Companies();
 
         /* Try to find the company. */
         if (!isset($dataNamed['company_id']))
@@ -1256,7 +1256,7 @@ class ImportUI extends UserInterface
 
                 if (!eval(Hooks::get('IMPORT_ADD_CONTACT_CLIENT'))) return;
 
-                $companiesImport = new CompaniesImport($this->_siteID);
+                $companiesImport = new CompaniesImport();
                 $companyID = $companiesImport->add($dataCompany, $this->_userID, $importID);
                 if ($companyID == -1)
                 {
@@ -1389,15 +1389,10 @@ class ImportUI extends UserInterface
      */
     public function massImportDocument()
     {
-        // Find the files the user has uploaded and put them in an array
-        if (isset($_SESSION['CATS']) && !empty($_SESSION['CATS']))
+        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
         {
-            $siteID = $_SESSION['CATS']->getSiteID();
-        }
-        else
-        {
-             echo 'Fail';
-             return;
+            echo 'Fail';
+            return;
         }
 
         if (isset($_GET['name'])) $name = $_GET['name']; else { echo 'Fail'; return; }
@@ -1538,11 +1533,7 @@ class ImportUI extends UserInterface
 
     public function massImport($step = 1)
     {
-        if (isset($_SESSION['CATS']) && !empty($_SESSION['CATS']))
-        {
-            $siteID = $_SESSION['CATS']->getSiteID();
-        }
-        else
+        if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
         {
             CommonErrors::fatal(COMMONERROR_NOTLOGGEDIN, $this);
         }
@@ -1562,7 +1553,7 @@ class ImportUI extends UserInterface
         if ($step == 1)
         {
             if (isset($_SESSION['CATS_PARSE_TEMP'])) unset($_SESSION['CATS_PARSE_TEMP']);
-            $uploadDir = FileUtility::getUploadPath($siteID, 'massimport');
+            $uploadDir = FileUtility::getUploadPath('massimport');
             $files = ImportUtility::getDirectoryFiles($uploadDir);
             if (is_array($files) && count($files))
             {
@@ -1574,7 +1565,7 @@ class ImportUI extends UserInterface
             $script = $_SERVER['SCRIPT_FILENAME'];
             $mp = explode('/', $script);
             $rootPath = implode('/', array_slice($mp, 0, count($mp) - 1));
-            $subPath = FileUtility::getUploadPath($siteID, 'massimport');
+            $subPath = FileUtility::getUploadPath('massimport');
             if ($subPath !== false)
             {
                 $uploadPath = $rootPath . '/' . $subPath . '/';
@@ -1593,7 +1584,7 @@ class ImportUI extends UserInterface
              * Step 1: Find any uploaded files and get them into an array.
              */
             if (isset($_SESSION['CATS_PARSE_TEMP'])) unset($_SESSION['CATS_PARSE_TEMP']);
-            $uploadDir = FileUtility::getUploadPath($siteID, 'massimport');
+            $uploadDir = FileUtility::getUploadPath('massimport');
             $files = ImportUtility::getDirectoryFiles($uploadDir);
             if ($files === -1 || !is_array($files) || !count($files))
             {
@@ -1668,7 +1659,7 @@ class ImportUI extends UserInterface
         else if ($step == 99)
         {
             // User wants to delete all files in their upload folder
-            $uploadDir = FileUtility::getUploadPath($siteID, 'massimport');
+            $uploadDir = FileUtility::getUploadPath('massimport');
             $files = ImportUtility::getDirectoryFiles($uploadDir);
             if (is_array($files) && count($files))
             {
@@ -1682,8 +1673,7 @@ class ImportUI extends UserInterface
         }
 
         $this->_template->assign('active', $this);
-        // ->isDemo() doesn't work here... oddly.
-        $this->_template->assign('isDemo', $_SESSION['CATS']->getSiteID() == 201);
+        $this->_template->assign('isDemo', $_SESSION['CATS']->isDemo());
 
         // Build the sub-template to pass to the container
         ob_start();
@@ -1703,7 +1693,6 @@ class ImportUI extends UserInterface
         // Find the files the user has uploaded and put them in an array
         if (isset($_SESSION['CATS']) && !empty($_SESSION['CATS']))
         {
-            $siteID = $_SESSION['CATS']->getSiteID();
             $userID = $_SESSION['CATS']->getUserID();
         }
         else
@@ -1753,11 +1742,9 @@ class ImportUI extends UserInterface
                     {
                         $sql = sprintf('SELECT count(*) '
                             . 'FROM candidate '
-                            . 'WHERE (candidate.email1 = %s OR candidate.email2 = %s) '
-                            . 'AND candidate.site_id = %d',
+                            . 'WHERE (candidate.email1 = %s OR candidate.email2 = %s) ',
                             $db->makeQueryString($doc['email']),
-                            $db->makeQueryString($doc['email']),
-                            $this->_siteID
+                            $db->makeQueryString($doc['email'])
                         );
                         if ($db->getColumn($sql, 0, 0) > 0)
                         {
@@ -1772,13 +1759,11 @@ class ImportUI extends UserInterface
                             . 'WHERE candidate.last_name = %s '
                             . 'AND (candidate.phone_home = %s '
                             . 'OR candidate.phone_work = "%s '
-                            . 'OR candidate.phone_cell = "%s) '
-                            . 'AND candidate.site_id = %d',
+                            . 'OR candidate.phone_cell = "%s) ',
                             $db->makeQueryString($doc['lastName']),
                             $db->makeQueryString($doc['phone']),
                             $db->makeQueryString($doc['phone']),
-                            $db->makeQueryString($doc['phone']),
-                            $this->_siteID
+                            $db->makeQueryString($doc['phone'])
                         );
                         if ($db->getColumn($sql, 0, 0) > 0)
                         {
@@ -1791,11 +1776,9 @@ class ImportUI extends UserInterface
                         $sql = sprintf('SELECT count(*) '
                             . 'FROM candidate '
                             . 'WHERE candidate.last_name = %s '
-                            . 'AND candidate.zip = %s '
-                            . 'AND candidate.site_id = %d',
+                            . 'AND candidate.zip = %s ',
                             $db->makeQueryString($doc['lastName']),
-                            $db->makeQueryString($doc['zipCode']),
-                            $this->_siteID
+                            $db->makeQueryString($doc['zipCode'])
                         );
                         if ($db->getColumn($sql, 0, 0) > 0)
                         {
@@ -1806,7 +1789,7 @@ class ImportUI extends UserInterface
                     if ($isCandidateUnique)
                     {
                         // This was parsed data
-                        $candidates = new Candidates($siteID);
+                        $candidates = new Candidates();
                         list($address1, $address2) = self::splitAddressForImport(
                             $doc['address'],
                             isset($doc['address2']) ? $doc['address2'] : ''
@@ -1851,12 +1834,12 @@ class ImportUI extends UserInterface
 
                             // set the date created to the file modification date
                             $db->query(sprintf('UPDATE candidate SET date_created = "%s", date_modified = "%s" '
-                                . 'WHERE candidate_id = %d AND site_id = %d',
-                                date('c', $doc['cTime']), date('c', $doc['cTime']), $candidateID, $siteID
+                                . 'WHERE candidate_id = %d',
+                                date('c', $doc['cTime']), date('c', $doc['cTime']), $candidateID
                             ));
 
                             // Success, attach resume to candidate as attachment
-                            $ac = new AttachmentCreator($siteID);
+                            $ac = new AttachmentCreator();
                             if ($ac->createFromFile(DATA_ITEM_CANDIDATE, $candidateID, $doc['name'], $doc['realName'],
                                 '', true, true))
                             {
@@ -1902,7 +1885,7 @@ class ImportUI extends UserInterface
                      */
                     if (preg_match('/^_BulkResume_(.*)\.txt$/', $doc['realName'], $matches))
                     {
-                        $attachments = new Attachments($this->_siteID);
+                        $attachments = new Attachments();
                         $bulkResumes = $attachments->getBulkAttachments();
                         foreach ($bulkResumes as $bulkResume)
                         {
@@ -1912,7 +1895,7 @@ class ImportUI extends UserInterface
                             if (!strcmp($fileName, $matches[1]))
                             {
                                 $brExists = true;
-                                if (FileUtility::isUploadFileSafe($siteID, 'massimport', $doc['name']))
+                                if (FileUtility::isUploadFileSafe('massimport', $doc['name']))
                                 {
                                     @unlink($doc['name']);
                                 }
@@ -1924,7 +1907,7 @@ class ImportUI extends UserInterface
                     if (!$brExists)
                     {
                         $error = false;
-                        $attachmentCreator = new AttachmentCreator($siteID);
+                        $attachmentCreator = new AttachmentCreator();
                         $attachmentCreator->createFromFile(
                             DATA_ITEM_BULKRESUME, 0, $doc['name'], $doc['realName'], '', true, true
                         );
@@ -1964,7 +1947,7 @@ class ImportUI extends UserInterface
                 {
                     if (preg_match('/^_BulkResume_(.*)\.txt$/', $doc['realName'], $matches))
                     {
-                        $attachments = new Attachments($this->_siteID);
+                        $attachments = new Attachments();
                         $bulkResumes = $attachments->getBulkAttachments();
                         foreach ($bulkResumes as $bulkResume)
                         {
@@ -1976,7 +1959,7 @@ class ImportUI extends UserInterface
                                 // Delete the permanent file
                                 $attachments->delete($bulkResume['attachmentID'], true);
                                 // Delete the temporary file
-                                if (FileUtility::isUploadFileSafe($siteID, 'massimport', $doc['name']))
+                                if (FileUtility::isUploadFileSafe('massimport', $doc['name']))
                                 {
                                     @unlink($doc['name']);
                                 }
@@ -1994,7 +1977,7 @@ class ImportUI extends UserInterface
                 );
 
                 // Make sure it's a safe filename to delete and located in the site's upload directory
-                if (FileUtility::isUploadFileSafe($siteID, 'massimport', $doc['name']))
+                if (FileUtility::isUploadFileSafe('massimport', $doc['name']))
                 {
                     @unlink($doc['name']);
                 }
@@ -2114,9 +2097,9 @@ class ImportUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
         }
 
-        $uploadPath = FileUtility::getUploadPath($this->_siteID, 'massimport');
+        $uploadPath = FileUtility::getUploadPath('massimport');
 
-        $attachments = new Attachments($this->_siteID);
+        $attachments = new Attachments();
         $bulkResumes = $attachments->getBulkAttachments();
 
         if (!count($bulkResumes))
@@ -2147,9 +2130,9 @@ class ImportUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this);
         }
 
-        $uploadPath = FileUtility::getUploadPath($this->_siteID, 'massimport');
+        $uploadPath = FileUtility::getUploadPath('massimport');
 
-        $attachments = new Attachments($this->_siteID);
+        $attachments = new Attachments();
         $bulkResumes = $attachments->getBulkAttachments();
 
         if (!count($bulkResumes))

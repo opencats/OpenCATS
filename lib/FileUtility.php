@@ -473,7 +473,7 @@ class FileUtility
      * @param string a subdirectory of their upload folder (if necessary)
      * @return string Upload directory path (relative to root directory).
      */
-    public static function getUploadPath($siteID, $subDirectory = '')
+    public static function getUploadPath($subDirectory = '')
     {
         $uploadPath = sprintf('upload%s',
             !empty($subDirectory) ? '/' . $subDirectory : ''
@@ -509,9 +509,9 @@ class FileUtility
      * @param string name of the file to be checked
      * @return boolean true or false
      */
-    public static function isUploadFileSafe($siteID, $subDirectory, $fileName)
+    public static function isUploadFileSafe($subDirectory, $fileName)
     {
-        if (($uploadPath = FileUtility::getUploadPath($siteID, $subDirectory)) === false)
+        if (($uploadPath = FileUtility::getUploadPath($subDirectory)) === false)
         {
             // site has no upload path, by definition it is not safe
             return false;
@@ -542,16 +542,16 @@ class FileUtility
      * @param string Optional sub-directory, use blank string for root
      * @param string Full filesystem path to the file or boolean false
      */
-    public static function getUploadFilePath($siteID, $subDirectory, $uploadFileName)
+    public static function getUploadFilePath($subDirectory, $uploadFileName)
     {
-        if (($uploadPath = self::getUploadPath($siteID, $subDirectory)) === false)
+        if (($uploadPath = self::getUploadPath($subDirectory)) === false)
         {
             return false;
         }
 
         $filePath = sprintf('%s/%s', $uploadPath, $uploadFileName);
 
-        if (!self::isUploadFileSafe($siteID, $subDirectory, $filePath))
+        if (!self::isUploadFileSafe($subDirectory, $filePath))
         {
             return false;
         }
@@ -568,7 +568,7 @@ class FileUtility
      * @param string Index of the $_FILES array (name from the <input> tag)
      * @return string Complete name of the file (not including path)
      */
-    public static function getUploadFileFromPost($siteID, $subDirectory, $id)
+    public static function getUploadFileFromPost($subDirectory, $id)
     {
         if (isset($_FILES[$id]))
         {
@@ -580,7 +580,7 @@ class FileUtility
 
             if (!eval(Hooks::get('FILE_UTILITY_SPACE_CHECK'))) return;
 
-            $uploadPath = FileUtility::getUploadPath($siteID, $subDirectory);
+            $uploadPath = FileUtility::getUploadPath($subDirectory);
             $newFileName = FileUtility::makeSafeFilename($_FILES[$id]['name']);
 
             // Could just while(file_exists) it, but I'm paranoid of infinate loops

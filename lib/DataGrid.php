@@ -79,7 +79,7 @@ class DataGrid
      *      - This function describes how to query the database to get the result set to display on the table.
      *        datagrid will provide all of the appropriate strings to optiomally retrieve what data should
      *        be retrieved to render the page - the primary purpose of the function is to define the table
-     *        and any important constraints (such as site id) that aren't mentioned elsewhere.  Make sure the
+     *        and any important constraints that aren't mentioned elsewhere.  Make sure the
      *        option SQL_CALC_FOUND_ROWS is specified immediantly after the SELECT keyword.  Here is an
      *        example framework for a candidates getSQL function:
      *
@@ -96,7 +96,7 @@ class DataGrid
      *                  candidate
      *              %s
      *              WHERE
-     *                  candidate.site_id = %s
+     *                  1=1
      *              %s
      *              %s
      *              GROUP BY candidate.candidate_id
@@ -106,7 +106,6 @@ class DataGrid
      *              $distinct,
      *              $selectSQL,
      *              $joinSQL,
-     *              $this->_siteID,
      *              (strlen($whereSQL) > 0) ? ' AND ' . $whereSQL : '',
      *              $this->_assignedCriterion,
      *              (strlen($havingSQL) > 0) ? ' HAVING ' . $havingSQL : '',
@@ -301,7 +300,7 @@ class DataGrid
 
         include_once (sprintf('modules/%s/dataGrids.php', $module));
 
-        $dg = new $class($_SESSION['CATS']->getSiteID(), $parameters, $misc);
+        $dg = new $class($parameters, $misc);
 
         return $dg;
     }

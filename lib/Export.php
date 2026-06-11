@@ -106,16 +106,14 @@ class ExportUtility
  */
 class Export
 {
-    private $_siteID;
     private $_dataItemType;
     private $_separator;
     private $_rs;
     private $_IDs;
 
 
-    public function __construct($dataItemType, $IDs, $separator, $siteID)
+    public function __construct($dataItemType, $IDs, $separator)
     {
-        $this->_siteID = $siteID;
         $this->_dataItemType = $dataItemType;
         $this->_separator = $separator;
         $this->_IDs = $IDs;
@@ -132,7 +130,7 @@ class Export
         switch ($this->_dataItemType)
         {
             case DATA_ITEM_CANDIDATE:
-                $dataItem = new Candidates($this->_siteID);
+                $dataItem = new Candidates();
                 break;
                 
             default:

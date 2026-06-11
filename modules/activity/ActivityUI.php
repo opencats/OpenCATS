@@ -115,7 +115,7 @@ class ActivityUI extends UserInterface
         $this->_template->assign('dataGrid', $dataGrid);
         $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
 
-        $activityEntries = new ActivityEntries($this->_siteID);
+        $activityEntries = new ActivityEntries();
         $this->_template->assign('numActivities', $activityEntries->getCount());
 
         $this->_template->display('./modules/activity/ActivityDataGrid.tpl');
@@ -260,7 +260,7 @@ class ActivityUI extends UserInterface
         $this->_template->assign('dataGrid', $dataGrid);
         $this->_template->assign('userID', $_SESSION['CATS']->getUserID());
         
-        $activityEntries = new ActivityEntries($this->_siteID);
+        $activityEntries = new ActivityEntries();
         $this->_template->assign('numActivities', $activityEntries->getCount());
 
         $this->_template->display('./modules/activity/ActivityDataGrid.tpl');

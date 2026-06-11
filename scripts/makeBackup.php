@@ -24,7 +24,7 @@
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
  *
- * Invoke with php scripts/makeBackup.php 1
+ * Invoke with php scripts/makeBackup.php
  *
  * THIS FILE REQIRES THE UNIX UTILITY ZIP AND CAN ONLY BE EXECUTED IN A UNIX ENVIRONMENT.
  *
@@ -49,7 +49,7 @@ else
     fwrite($stdout, "2007 Cognizo Technologies\n\n");
 
 
-if (isset($_SERVER['argv'][1]))
+if (php_sapi_name() == 'cli')
 {
     $CATSHome = realpath(dirname(__FILE__) . '/../');
     chdir($CATSHome);
@@ -59,12 +59,7 @@ if (isset($_SERVER['argv'][1]))
     include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
     include_once(LEGACY_ROOT . '/modules/install/backupDB.php');
 
-    makeBackup((int) $_SERVER['argv'][1], BACKUP_CATS);
-}
-else if(php_sapi_name() == 'cli')
-{
-    fwrite($stderr, "Usage:  php makeBackup.php [Site ID]\n\n");
-    fwrite($stderr, "Site ID is usually 1.\n");
+    makeBackup(BACKUP_CATS);
 }
 
 include_once('./config.php');
@@ -72,7 +67,7 @@ include_once(LEGACY_ROOT . '/constants.php');
 include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
 include_once(LEGACY_ROOT . '/modules/install/backupDB.php');
 
-function makeBackup($siteID, $backupType = BACKUP_TAR, $logFile = null)
+function makeBackup($backupType = BACKUP_TAR, $logFile = null)
 {
     global $stderr;
     global $stdout;
@@ -112,113 +107,90 @@ function makeBackup($siteID, $backupType = BACKUP_TAR, $logFile = null)
 
     fwrite($stdout, "Temporary directory is backup/".$random.". \n\n");
 
-    $primarySiteID = $siteID;
-    $siteIDStack = array($siteID);
+    $rsSite = $db->getAssoc('SELECT * FROM site LIMIT 1');
 
-    while($siteID = array_pop($siteIDStack))
+    fwrite($stdout, "Backing up '".$rsSite['name']."' (database)... ");
+
+    @mkdir('scripts/backup/'.$random.'/db');
+
+    dumpDB($db, 'scripts/backup/'.$random.'/db/catsbackup.sql', false, true);
+
+    fwrite($stdout, "(attachments)... ");
+
+    dumpAttachments($db, 'scripts/backup/'.$random.'/');
+
+    if ($backupType == BACKUP_TAR)
     {
-        $rsSite = $db->getAssoc('SELECT * FROM site WHERE site_id = '.$siteID);
+        fwrite($stdout, "(tar.bz2)... ");
 
-        fwrite($stdout, "Backing up '".$rsSite['name']."' (database)... ");
+        exec('tar -cjf scripts/backup/'.$random.'/catsbackup.tar.bz2 scripts/backup/'.$random.'/*');
+        exec('rm -rf scripts/backup/'.$random.'/db/');
 
-        @mkdir('scripts/backup/'.$random.'/'.$siteID);
-        @mkdir('scripts/backup/'.$random.'/'.$siteID.'/db');
+    }
+    else if ($backupType == BACKUP_ZIP)
+    {
+        fwrite($stdout, "(zip)... ");
 
-        dumpDB($db, 'scripts/backup/'.$random.'/'.$siteID.'/db/catsbackup.sql', false, true, $siteID);
-
-        fwrite($stdout, "(attachments)... ");
-
-        dumpAttachments($db, 'scripts/backup/'.$random.'/'.$siteID.'/', $siteID);
-
-        if ($backupType == BACKUP_TAR)
+        if (is_executable('/usr/local/bin/zip'))
         {
-            fwrite($stdout, "(tar.bz2)... ");
-
-            exec('tar -cjf scripts/backup/'.$random.'/'.$siteID.'.tar.bz2 scripts/backup/'.$random.'/'.$siteID.'/*');
-            exec('rm -rf scripts/backup/'.$random.'/'.$siteID.'/');
-
-            $rsSites = $db->getAllAssoc('SELECT * FROM site WHERE parent_site_id = '.$siteID);
-
-            foreach($rsSites as $index => $data)
-            {
-                array_push($siteIDStack, $data['site_id']);
-            }
-        }
-        else if ($backupType == BACKUP_ZIP)
-        {
-            //ZIP backup
-            fwrite($stdout, "(zip)... ");;
-
-            if (is_executable('/usr/local/bin/zip'))
-            {
-                exec('/usr/local/bin/zip -r scripts/backup/'.$random.'/'.$siteID.'.zip scripts/backup/'.$random.'/'.$siteID.'/*');
-            }
-            else
-            {
-                exec('zip -r scripts/backup/'.$random.'/'.$siteID.'.zip scripts/backup/'.$random.'/'.$siteID.'/*');
-            }
-            exec('rm -rf scripts/backup/'.$random.'/'.$siteID.'/');
-
-            $rsSites = $db->getAllAssoc('SELECT * FROM site WHERE parent_site_id = '.$siteID);
-
-            foreach($rsSites as $index => $data)
-            {
-                array_push($siteIDStack, $data['site_id']);
-            }
+            exec('/usr/local/bin/zip -r scripts/backup/'.$random.'/catsbackup.zip scripts/backup/'.$random.'/*');
         }
         else
         {
-            //CATS Format backup
-            fwrite($stdout, "(bak)... ");;
-
-            chdir('scripts/backup/'.$random.'/'.$siteID.'');
-
-            if (is_executable('/usr/local/bin/zip'))
-            {
-                exec('/usr/local/bin/zip -r ../'.$siteID.'.zip *');
-            }
-            else
-            {
-                exec('zip -r ../'.$siteID.'.zip *');
-            }
-            exec('rm -rf *');
-
-            chdir('../../../..');
+            exec('zip -r scripts/backup/'.$random.'/catsbackup.zip scripts/backup/'.$random.'/*');
         }
+        exec('rm -rf scripts/backup/'.$random.'/db/');
 
-        fwrite($stdout, ".\n\n");
     }
+    else
+    {
+        fwrite($stdout, "(bak)... ");
+
+        chdir('scripts/backup/'.$random.'');
+
+        if (is_executable('/usr/local/bin/zip'))
+        {
+            exec('/usr/local/bin/zip -r ../catsbackup.zip *');
+        }
+        else
+        {
+            exec('zip -r ../catsbackup.zip *');
+        }
+        exec('rm -rf *');
+
+        chdir('../../..');
+    }
+
+    fwrite($stdout, ".\n\n");
 
     if ($backupType == BACKUP_TAR)
     {
         fwrite($stdout, "Archiving master tar file... \n\n");
-        exec('tar -cf scripts/backup/'.$primarySiteID.'_full.tar scripts/backup/'.$random.'/');
+        exec('tar -cf scripts/backup/catsbackup_full.tar scripts/backup/'.$random.'/');
         exec('rm -rf scripts/backup/'.$random);
     }
     else if ($backupType == BACKUP_ZIP)
     {
         fwrite($stdout, "Archiving master zip file... \n\n");
-        if (file_exists('scripts/backup/'.$primarySiteID.'_full.zip'))
+        if (file_exists('scripts/backup/catsbackup_full.zip'))
         {
-            @unlink('scripts/backup/'.$primarySiteID.'_full.zip');
+            @unlink('scripts/backup/catsbackup_full.zip');
         }
 
         if (is_executable('/usr/local/bin/zip'))
         {
-            exec('/usr/local/bin/zip scripts/backup/'.$primarySiteID.'_full.zip scripts/backup/'.$random.'/*');
+            exec('/usr/local/bin/zip scripts/backup/catsbackup_full.zip scripts/backup/'.$random.'/*');
         }
         else
         {
-            exec('zip scripts/backup/'.$primarySiteID.'_full.zip scripts/backup/'.$random.'/*');
+            exec('zip scripts/backup/catsbackup_full.zip scripts/backup/'.$random.'/*');
         }
-        //exec('rm -rf scripts/backup/'.$random);
     }
     else
     {
-        fwrite($stdout, "Moving file to scripts\backup...  \n\n");
+        fwrite($stdout, "Moving file to scripts/backup...  \n\n");
 
-        //CATS Backup
-        exec('mv scripts/backup/'.$random.'/'.$primarySiteID.'.zip scripts/backup/catsbackup.bak');
+        exec('mv scripts/backup/'.$random.'/catsbackup.zip scripts/backup/catsbackup.bak');
         exec('rm -rf scripts/backup/'.$random);
     }
 
@@ -229,19 +201,15 @@ function makeBackup($siteID, $backupType = BACKUP_TAR, $logFile = null)
     }
 }
 
-function dumpAttachments($db, $directory, $siteID)
+function dumpAttachments($db, $directory)
 {
-    $sql = sprintf(
+    $sql =
         "SELECT
             directory_name,
             stored_filename,
             attachment_id
         FROM
-            attachment
-        WHERE
-            site_id = %s",
-        $siteID
-    );
+            attachment";
 
     $db->query($sql);
     $totalAttachments = $db->getNumRows();

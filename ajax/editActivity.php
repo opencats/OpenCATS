@@ -71,8 +71,6 @@ if (!isset($_POST['notes']))
     die();
 }
 
-$siteID = $interface->getSiteID();
-
 $activityID = $_POST['activityID'];
 $type       = $_POST['type'];
 $jobOrderID = isset($_POST['jobOrderID']) ? trim($_POST['jobOrderID']) : null;
@@ -116,7 +114,7 @@ $date = sprintf(
 );
 
 /* Save the new activity entry. */
-$activityEntries = new ActivityEntries($siteID);
+$activityEntries = new ActivityEntries();
 $activityEntries->update($activityID, $type, $activityNote, $jobOrderID, $date, $_SESSION['CATS']->getTimeZoneOffset());
 
 /* Grab the current activity entry. */

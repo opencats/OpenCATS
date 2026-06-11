@@ -12,7 +12,6 @@ use Behat\MinkExtension\Context\MinkContext;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ElementHtmlException;
 
-define('SITE_ID', 1);
 define('ADMIN_ID', 1);
 /**
  * Defines application features from the security context.

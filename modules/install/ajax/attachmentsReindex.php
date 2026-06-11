@@ -76,7 +76,7 @@ if (file_exists('INSTALL_BLOCK') && ($_SESSION['CATS']->getAccessLevel(ACL::SECO
 
 $db = DatabaseConnection::getInstance();
  
-$rs = $db->getAllAssoc('SELECT site_id, attachment_id, directory_name, stored_filename FROM attachment WHERE text = "" OR isnull(text) AND resume = 1');
+$rs = $db->getAllAssoc('SELECT attachment_id, directory_name, stored_filename FROM attachment WHERE text = "" OR isnull(text) AND resume = 1');
 
 foreach ($rs as $index => $data)
 {

@@ -40,15 +40,13 @@ include_once(LEGACY_ROOT . '/lib/BrowserDetection.php');
  */
 class LoginActivityPager extends Pager
 {
-    private $_siteID;
     private $_db;
     private $_successful;
 
 
-    public function __construct($rowsPerPage, $currentPage, $siteID, $successful = true)
+    public function __construct($rowsPerPage, $currentPage, $successful = true)
     {
         $this->_db = DatabaseConnection::getInstance();
-        $this->_siteID = $siteID;
         $this->_successful = $successful;
 
         $this->_sortByFields = array(
@@ -70,11 +68,8 @@ class LoginActivityPager extends Pager
             WHERE
                 user_login.successful = %s
             AND
-                user.is_test_user = 0
-            AND
-                user_login.site_id = %s",
-            ($this->_successful ? '1' : '0'),
-            $siteID
+                user.is_test_user = 0",
+            ($this->_successful ? '1' : '0')
         );
         $rs = $this->_db->getAssoc($sql);
 
@@ -100,12 +95,9 @@ class LoginActivityPager extends Pager
                 user_login.host = %s
              WHERE
                 user_login.user_login_id = %s
-             AND
-                user_login.site_id = %s
              ",
              $this->_db->makeQueryString($hostName),
-             $userLoginID,
-             $this->_siteID
+             $userLoginID
           );
 
           $this->_db->query($sql);
@@ -139,16 +131,10 @@ class LoginActivityPager extends Pager
                 user_login.successful = %s
             AND
                 user.is_test_user = 0
-            AND
-                user_login.site_id = %s
-            AND
-                user.site_id = %s
             ORDER BY
                 %s %s
             LIMIT %s, %s",
             ($this->_successful ? '1' : '0'),
-            $this->_siteID,
-            $this->_siteID,
             $this->_sortBy,
             $this->_sortDirection,
             $this->_thisPageStartRow,

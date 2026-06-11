@@ -40,12 +40,10 @@ if (!$interface->isRequiredIDValid('companyID', false))
     die();
 }
 
-$siteID = $interface->getSiteID();
-
 $companyID = $_REQUEST['companyID'];
 
 /* Get an array of the company's contacts data. */
-$companies = new Companies($siteID);
+$companies = new Companies();
 $contactsArray = $companies->getContactsArray($companyID);
 
 if (empty($contactsArray))

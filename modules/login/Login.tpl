@@ -33,7 +33,7 @@
                     </div>
                     <br />
 
-                    <?php if (ENABLE_DEMO_MODE && !($this->siteName != '' && $this->siteName != 'choose') || ($this->siteName == 'demo')): ?>
+                    <?php if (ENABLE_DEMO_MODE): ?>
                         <br /><br />
                         <a href="javascript:void(0);" onclick="demoLogin(); return false;">Login to Demo Account</a><br />
                     <?php endif; ?>
@@ -44,33 +44,16 @@
                     <br />
                     <form name="loginForm" id="loginForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=login&amp;a=attemptLogin<?php if ($this->reloginVars != ''): ?>&amp;reloginVars=<?php echo($this->reloginVars); ?><?php endif; ?>" method="post" onsubmit="return checkLoginForm(document.loginForm);" autocomplete="off">
                         <div id="subFormBlock">
-                            <?php if ($this->siteName != '' && $this->siteName != 'choose'): ?>
-                                <?php if ($this->siteNameFull == 'error'): ?>
-                                    <label>This site does not exist. Please check the URL and try again.</label>
-                                    <br />
-                                    <br />
-                                <?php else: ?>
-                                    <label><?php $this->_($this->siteNameFull); ?></label>
-                                    <br />
-                                    <br />
-                                <?php endif; ?>
-                            <?php endif; ?>
+                            <label id="usernameLabel" for="username">Username</label><br />
+                            <input name="username" id="username" class="login-input-box" value="<?php if (isset($this->username)) $this->_($this->username); ?>" />
+                            <br />
 
-                            <?php if ($this->siteNameFull != 'error'): ?>
-                                <label id="usernameLabel" for="username">Username</label><br />
-                                <input name="username" id="username" class="login-input-box" value="<?php if (isset($this->username)) $this->_($this->username); ?>" />
-                                <br />
+                            <label id="passwordLabel" for="password">Password</label><br />
+                            <input type="password" name="password" id="password" class="login-input-box" />
+                            <br />
 
-                                <label id="passwordLabel" for="password">Password</label><br />
-                                <input type="password" name="password" id="password" class="login-input-box" />
-                                <br />
-
-                                <input type="submit" class="button" value="Login" />
-                                <input type="reset"  id="reset" name="reset"  class="button" value="Reset" />
-                            <?php else: ?>
-                                <br />
-                                <a href="javascript:void(0);" onclick="demoLogin(); return false;">Login to Demo Account</a><br />
-                            <?php endif; ?>
+                            <input type="submit" class="button" value="Login" />
+                            <input type="reset"  id="reset" name="reset"  class="button" value="Reset" />
                             <br /><br />
                         </div>
                     </form>
@@ -82,22 +65,20 @@
             <br />
 
             <script type="text/javascript">
-                <?php if ($this->siteNameFull != 'error'): ?>
-                    document.loginForm.username.focus();
+                document.loginForm.username.focus();
 
-                    function demoLogin()
-                    {
-                        document.getElementById('username').value = '<?php echo(DEMO_LOGIN); ?>';
-                        document.getElementById('password').value = '<?php echo(DEMO_PASSWORD); ?>';
-                        document.getElementById('loginForm').submit();
-                    }
-                    function defaultLogin()
-                    {
-                        document.getElementById('username').value = 'admin';
-                        document.getElementById('password').value = 'cats';
-                        document.getElementById('loginForm').submit();
-                    }
-                <?php endif; ?>
+                function demoLogin()
+                {
+                    document.getElementById('username').value = '<?php echo(DEMO_LOGIN); ?>';
+                    document.getElementById('password').value = '<?php echo(DEMO_PASSWORD); ?>';
+                    document.getElementById('loginForm').submit();
+                }
+                function defaultLogin()
+                {
+                    document.getElementById('username').value = 'admin';
+                    document.getElementById('password').value = 'cats';
+                    document.getElementById('loginForm').submit();
+                }
                 <?php if (isset($_GET['defaultlogin'])): ?>
                     defaultLogin();
                 <?php endif; ?>

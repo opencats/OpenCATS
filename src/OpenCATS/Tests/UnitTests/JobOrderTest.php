@@ -28,7 +28,6 @@ class JobOrderTest extends TestCase
     const JOB_ORDER_OWNER = null;
     const DEPARTMENT = 'DepartmentOne';
     const DEPARTMENT_ID = 1234;
-    const SITE_ID = 1;
     const JOB_ORDER_QUESTIONNAIRE = 'How do you see yourself in 5 years?';
     
     function test_create_CreateAndGetJobOrderTitle_ReturnsName()
@@ -163,12 +162,6 @@ class JobOrderTest extends TestCase
         $this->assertEquals(self::JOB_ORDER_OWNER, $jobOrder->getOwner());
     }
     
-    function test_create_CreateAndGetSiteId_ReturnsSiteId()
-    {
-        $jobOrder = $this->createJobOrder();
-        $this->assertEquals(self::SITE_ID, $jobOrder->getSiteId());
-    }
-    
     function test_create_CreateAndGetQuestionnaireReturnsQuestionnaire()
     {
         $jobOrder = $this->createJobOrder();
@@ -178,7 +171,6 @@ class JobOrderTest extends TestCase
     private function createJobOrder()
     {
         return JobOrder::create(
-            self::SITE_ID,
             self::JOB_ORDER_TITLE,
             self::COMPANY_ID,
             self::CONTACT_ID,

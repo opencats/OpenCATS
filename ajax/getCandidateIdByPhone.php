@@ -38,11 +38,9 @@ include (LEGACY_ROOT . '/lib/Candidates.php');
         die ('Invalid E-Mail address.');
     }
     
-    $siteID = $interface->getSiteID();
-    
     $phone = $_REQUEST['phone'];
-    
-    $candidates = new Candidates($siteID);
+
+    $candidates = new Candidates();
     
     $output = "<data>\n";
     

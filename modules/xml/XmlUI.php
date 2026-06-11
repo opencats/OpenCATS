@@ -36,7 +36,6 @@ include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
 include_once(LEGACY_ROOT . '/lib/StringUtility.php');
 include_once(LEGACY_ROOT . '/lib/DateUtility.php');
 include_once(LEGACY_ROOT . '/lib/JobOrders.php');
-include_once(LEGACY_ROOT . '/lib/Site.php');
 include_once(LEGACY_ROOT . '/lib/XmlJobExport.php');
 include_once(LEGACY_ROOT . '/lib/HttpLogger.php');
 include_once(LEGACY_ROOT . '/lib/CareerPortal.php');
@@ -102,22 +101,13 @@ class XmlUI extends UserInterface
 
     private function displayPublicJobOrders()
     {
-        $site = new Site(-1);
-
-        $careerPortalSiteID = $site->getFirstSiteID();
-
-        if (!eval(Hooks::get('RSS_SITEID'))) return;
-
-        $jobOrders = new JobOrders($careerPortalSiteID);
+        $jobOrders = new JobOrders();
         $rs = $jobOrders->getAll(JOBORDERS_STATUS_SHARE, -1, -1, -1, false, true);
 
         // Log that this file was accessed
         // FIXME: Does this really need to involve two queries? Can we store
         //        the IDs in constants too?
-        HTTPLogger::addHTTPLog(
-            HTTPLogger::getHTTPLogTypeIDByName('xml'),
-            $careerPortalSiteID
-        );
+        HTTPLogger::addHTTPLog(HTTPLogger::getHTTPLogTypeIDByName('xml'));
 
         /* XML Headers */
         header('Content-type: text/xml');
@@ -178,7 +168,7 @@ class XmlUI extends UserInterface
 
         $tags = XmlTemplate::loadTemplateTags($templateJob);
 
-        $careerPortalSettings = new CareerPortalSettings($careerPortalSiteID);
+        $careerPortalSettings = new CareerPortalSettings();
         $settings = $careerPortalSettings->getAll();
 
         $url = CATSUtility::getAbsoluteURI();

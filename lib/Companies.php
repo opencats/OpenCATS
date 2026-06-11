@@ -51,16 +51,14 @@ include_once(LEGACY_ROOT . '/lib/Contacts.php');
 class Companies
 {
     private $_db;
-    private $_siteID;
 
     public $extraFields;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
-        $this->extraFields = new ExtraFields($siteID, DATA_ITEM_COMPANY);
+        $this->extraFields = new ExtraFields(DATA_ITEM_COMPANY);
     }
 
 
@@ -88,7 +86,6 @@ class Companies
                         $notes, $enteredBy, $owner, $country = '')
     {
         $company= Company::create(
-            $this->_siteID,
             $name,
             $address,
             $address2,
@@ -108,7 +105,7 @@ class Companies
         );
         $CompanyRepository = new CompanyRepository($this->_db);
         try {
-            $companyId = $CompanyRepository->persist($company, new History($this->_siteID));
+            $companyId = $CompanyRepository->persist($company, new History());
         } catch(CompanyRepositoryException $e) {
             return -1;
         }
@@ -173,9 +170,7 @@ class Companies
                 owner            = %s,
                 date_modified    = NOW()
             WHERE
-                company_id = %s
-            AND
-                site_id = %s",
+                company_id = %s",
             $this->_db->makeQueryString($name),
             $this->_db->makeQueryString($address),
             $this->_db->makeQueryString($address2),
@@ -192,8 +187,7 @@ class Companies
             $this->_db->makeQueryString($notes),
             $this->_db->makeQueryInteger($billingContact),
             $this->_db->makeQueryInteger($owner),
-            $this->_db->makeQueryInteger($companyID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($companyID)
         );
 
         $preHistory = $this->get($companyID);
@@ -205,14 +199,14 @@ class Companies
             return false;
         }
 
-        $history = new History($this->_siteID);
+        $history = new History();
         $history->storeHistoryChanges(DATA_ITEM_COMPANY, $companyID, $preHistory, $postHistory);
 
         if (!empty($emailAddress))
         {
             /* Send e-mail notification. */
             //FIXME: Make subject configurable.
-            $mailer = new Mailer($this->_siteID);
+            $mailer = new Mailer();
             $mailerStatus = $mailer->sendToOne(
                 array($emailAddress, ''),
                 'CATS Notification: Company Ownership Change',
@@ -239,11 +233,8 @@ class Companies
             FROM
                 contact
             WHERE
-                company_id = %s
-            AND
-                site_id = %s",
-            $companyID,
-            $this->_siteID
+                company_id = %s",
+            $companyID
         );
         $contactsRS = $this->_db->getAllAssoc($sql);
 
@@ -254,29 +245,26 @@ class Companies
             FROM
                 joborder
             WHERE
-                company_id = %s
-            AND
-                site_id = %s",
-            $companyID,
-            $this->_siteID
+                company_id = %s",
+            $companyID
         );
         $jobOrdersRS = $this->_db->getAllAssoc($sql);
 
         /* Find associated attachments. */
-        $attachments = new Attachments($this->_siteID);
+        $attachments = new Attachments();
         $attachmentsRS = $attachments->getAll(
             DATA_ITEM_COMPANY, $companyID
         );
 
         /* Delete associated contacts. */
-        $contacts = new Contacts($this->_siteID);
+        $contacts = new Contacts();
         foreach ($contactsRS as $rowIndex => $row)
         {
             $contacts->delete($row['contactID']);
         }
 
         /* Delete associated job orders. */
-        $jobOrders = new JobOrders($this->_siteID);
+        $jobOrders = new JobOrders();
         foreach ($jobOrdersRS as $rowIndex => $row)
         {
             $jobOrders->delete($row['jobOrderID']);
@@ -295,12 +283,9 @@ class Companies
             WHERE
                 data_item_type = %s
             AND
-                data_item_id = %s
-            AND
-                site_id = %s",
+                data_item_id = %s",
             DATA_ITEM_COMPANY,
-            $this->_db->makeQueryInteger($companyID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($companyID)
         );
         $this->_db->query($sql);
 
@@ -311,12 +296,9 @@ class Companies
             WHERE
                 data_item_type = %s
             AND
-                data_item_id = %s
-            AND
-                site_id = %s",
+                data_item_id = %s",
             DATA_ITEM_COMPANY,
-            $this->_db->makeQueryInteger($companyID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($companyID)
         );
         $this->_db->query($sql);
 
@@ -325,11 +307,8 @@ class Companies
             "DELETE FROM
                 company_department
             WHERE
-                company_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($companyID),
-            $this->_siteID
+                company_id = %s",
+            $this->_db->makeQueryInteger($companyID)
         );
         $this->_db->query($sql);
 
@@ -340,11 +319,8 @@ class Companies
             WHERE
                 data_item_id = %s
             AND
-                site_id = %s
-            AND
                 data_item_type = %s",
             $this->_db->makeQueryInteger($companyID),
-            $this->_siteID,
             DATA_ITEM_COMPANY
         );
         $this->_db->query($sql);
@@ -357,15 +333,12 @@ class Companies
             "DELETE FROM
                 company
             WHERE
-                company_id = %s
-            AND
-                site_id = %s",
-            $companyID,
-            $this->_siteID
+                company_id = %s",
+            $companyID
         );
         $this->_db->query($sql);
 
-        $history = new History($this->_siteID);
+        $history = new History();
         $history->storeHistoryDeleted(DATA_ITEM_COMPANY, $companyID);
     }
 
@@ -419,11 +392,8 @@ class Companies
             LEFT JOIN contact AS billing_contact
                 ON company.billing_contact = billing_contact.contact_id
             WHERE
-                company.company_id = %s
-            AND
-                company.site_id = %s",
-            $this->_db->makeQueryInteger($companyID),
-            $this->_siteID
+                company.company_id = %s",
+            $this->_db->makeQueryInteger($companyID)
         );
 
         return $this->_db->getAssoc($sql);
@@ -463,11 +433,8 @@ class Companies
             LEFT JOIN contact AS billing_contact
                 ON company.billing_contact = billing_contact.contact_id
             WHERE
-                company.company_id = %s
-            AND
-                company.site_id = %s",
-            $this->_db->makeQueryInteger($companyID),
-            $this->_siteID
+                company.company_id = %s",
+            $this->_db->makeQueryInteger($companyID)
         );
 
         return $this->_db->getAssoc($sql);
@@ -503,7 +470,7 @@ class Companies
             return false;
         }
 
-        $history = new History($this->_siteID);
+        $history = new History();
         $history->storeHistoryChanges(
             DATA_ITEM_COMPANY, $companyID, $preHistory, $postHistory
         );
@@ -525,10 +492,7 @@ class Companies
             FROM
                 company
             WHERE
-                company.default_company = 1
-            AND
-                company.site_id = %s",
-            $this->_siteID
+                company.default_company = 1"
         );
         $rs = $this->_db->getAssoc($sql);
 
@@ -554,11 +518,8 @@ class Companies
                 company.name AS name
             FROM
                 company
-            WHERE
-                company.site_id = %s
             ORDER BY
-                company.name ASC",
-            $this->_siteID
+                company.name ASC"
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -583,11 +544,8 @@ class Companies
             FROM
                 company
             WHERE
-                company.company_id = %s
-            AND
-                company.site_id = %s",
-            $this->_db->makeQueryInteger($companyID),
-            $this->_siteID
+                company.company_id = %s",
+            $this->_db->makeQueryInteger($companyID)
         );
 
         return $this->_db->getAssoc($sql);
@@ -611,13 +569,10 @@ class Companies
                 contact
             WHERE
                 contact.company_id = %s
-            AND
-                contact.site_id = %s
             ORDER BY
                 contact.last_name ASC,
                 contact.first_name ASC",
-            $this->_db->makeQueryInteger($companyID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($companyID)
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -643,12 +598,9 @@ class Companies
                 ON joborder.company_id = company.company_id
             WHERE
                 joborder.company_id = %s
-            AND
-                joborder.site_id = %s
             ORDER BY
                 title ASC",
-            $this->_db->makeQueryInteger($companyID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($companyID)
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -670,12 +622,9 @@ class Companies
             FROM
                 company_department
             WHERE
-                company_department.site_id = %s
-            AND
                 company_department.company_id = %s
             ORDER BY
                 company_department.name ASC",
-            $this->_siteID,
             $this->_db->makeQueryInteger($companyID)
         );
 
@@ -692,7 +641,7 @@ class Companies
      */
     public function updateDepartments($companyID, $updates)
     {
-        $history = new History($this->_siteID);
+        $history = new History();
 
         foreach ($updates as $update)
         {
@@ -703,18 +652,15 @@ class Companies
                         "INSERT INTO company_department (
                             name,
                             company_id,
-                            site_id,
                             date_created
                          )
                          VALUES (
                             %s,
                             %s,
-                            %s,
                             NOW()
                          )",
                          $this->_db->makeQueryString($update[0]),
-                         $this->_db->makeQueryInteger($companyID),
-                         $this->_siteID
+                         $this->_db->makeQueryInteger($companyID)
                     );
                     $this->_db->query($sql);
 
@@ -731,11 +677,8 @@ class Companies
                         "DELETE FROM
                             company_department
                          WHERE
-                            company_department_id = %s
-                         AND
-                            site_id = %s",
-                         $this->_db->makeQueryInteger($update[1]),
-                         $this->_siteID
+                            company_department_id = %s",
+                         $this->_db->makeQueryInteger($update[1])
                     );
                     $this->_db->query($sql);
 
@@ -754,12 +697,9 @@ class Companies
                          SET
                             name = %s
                          WHERE
-                            company_department_id = %s
-                         AND
-                            site_id = %s",
+                            company_department_id = %s",
                          $this->_db->makeQueryString($update[0]),
-                         $this->_db->makeQueryInteger($update[1]),
-                         $this->_siteID
+                         $this->_db->makeQueryInteger($update[1])
                     );
                     $this->_db->query($sql);
 
@@ -792,11 +732,8 @@ class Companies
             FROM
                 company
             WHERE
-                company.name = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryStringOrNULL($name),
-            $this->_siteID
+                company.name = %s",
+            $this->_db->makeQueryStringOrNULL($name)
         );
 
         $rs = $this->_db->getAssoc($sql);
@@ -811,14 +748,10 @@ class Companies
 
 class CompaniesDataGrid extends DataGrid
 {
-    protected $_siteID;
-
-
     // FIXME: Fix ugly indenting - ~400 character lines = bad.
-    public function __construct($instanceName, $siteID, $parameters, $misc)
+    public function __construct($instanceName, $parameters, $misc)
     {
         $this->_db = DatabaseConnection::getInstance();
-        $this->_siteID = $siteID;
         $this->_assignedCriterion = "";
         $this->_dataItemIDColumn = 'company.company_id';
 
@@ -859,8 +792,7 @@ class CompaniesDataGrid extends DataGrid
                                                                 joborder
                                                             WHERE
                                                                 company_id = company.company_id
-                                                            AND
-                                                                site_id = '.$this->_siteID.'
+
                                                         ) AS jobs',
                                      'pagerRender'      => 'if ($rsData[\'jobs\'] != 0) {return $rsData[\'jobs\'];} else {return \'\';}',
                                      'sortableColumn'     => 'jobs',
@@ -968,7 +900,7 @@ class CompaniesDataGrid extends DataGrid
         }
 
         /* Extra fields get added as columns here. */
-        $companies = new Companies($this->_siteID);
+        $companies = new Companies();
         $extraFieldsRS = $companies->extraFields->getSettings();
         foreach ($extraFieldsRS as $index => $data)
         {
@@ -1002,15 +934,13 @@ class CompaniesDataGrid extends DataGrid
             $joinSQL  .= ' INNER JOIN saved_list_entry
                                     ON saved_list_entry.data_item_type = '.DATA_ITEM_COMPANY.'
                                     AND saved_list_entry.data_item_id = company.company_id
-                                    AND saved_list_entry.site_id = '.$this->_siteID.'
                                     AND saved_list_entry.saved_list_id = '.$savedListID;
         }
         else
         {
             $joinSQL  .= ' LEFT JOIN saved_list_entry
                                     ON saved_list_entry.data_item_type = '.DATA_ITEM_COMPANY.'
-                                    AND saved_list_entry.data_item_id = company.company_id
-                                    AND saved_list_entry.site_id = '.$this->_siteID;
+                                    AND saved_list_entry.data_item_id = company.company_id';
         }
 
         $sql = sprintf(
@@ -1036,7 +966,7 @@ class CompaniesDataGrid extends DataGrid
                 AND attachment.data_item_type = %s
             %s
             WHERE
-                company.site_id = %s
+                1=1
             %s
             %s
             GROUP BY company.company_id
@@ -1047,7 +977,6 @@ class CompaniesDataGrid extends DataGrid
             $selectSQL,
             DATA_ITEM_COMPANY,
             $joinSQL,
-            $this->_siteID,
             (strlen($whereSQL) > 0) ? ' AND ' . $whereSQL : '',
             $this->_assignedCriterion,
             (strlen($havingSQL) > 0) ? ' HAVING ' . $havingSQL : '',

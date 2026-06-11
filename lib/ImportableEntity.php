@@ -3,13 +3,11 @@
 abstract class ImportableEntity
 {
     protected $_db;
-    protected $_siteID;
 
     abstract protected function add($dataNamed, $userID, $importID);
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
 

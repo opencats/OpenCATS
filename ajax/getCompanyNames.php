@@ -47,12 +47,10 @@ if (!$interface->isRequiredIDValid('maxResults'))
     die();
 }
 
-$siteID = $interface->getSiteID();
-
 $dataName   = trim($_REQUEST['dataName']);
 $maxResults = $_REQUEST['maxResults'];
 
-$search = new SearchCompanies($siteID);
+$search = new SearchCompanies();
 $companiesArray = $search->byName($dataName, 'company.name', 'ASC');
 
 if (empty($companiesArray))

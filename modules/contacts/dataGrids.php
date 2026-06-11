@@ -37,7 +37,7 @@ include_once(LEGACY_ROOT . '/lib/Width.php');
 
 class ContactsListByViewDataGrid extends ContactsDataGrid
 {
-    public function __construct($siteID, $parameters, $misc)
+    public function __construct($parameters, $misc)
     {
         /* Pager configuration. */
         $this->_tableWidth = new Width(100, '%');
@@ -64,7 +64,7 @@ class ContactsListByViewDataGrid extends ContactsDataGrid
         );
    
         parent::__construct("contacts:ContactsListByViewDataGrid", 
-                             $siteID, $parameters, $misc
+                             $parameters, $misc
                         );
     }
     
@@ -91,7 +91,7 @@ class ContactsListByViewDataGrid extends ContactsDataGrid
 
 class contactSavedListByViewDataGrid extends ContactsDataGrid
 {
-    public function __construct($siteID, $parameters, $misc)
+    public function __construct($parameters, $misc)
     {
         /* Pager configuration. */
         $this->_tableWidth = new Width(100, '%');
@@ -118,7 +118,7 @@ class contactSavedListByViewDataGrid extends ContactsDataGrid
         );
    
         parent::__construct("contacts:contactSavedListByViewDataGrid", 
-                             $siteID, $parameters, $misc
+                             $parameters, $misc
                         );
     }
     

@@ -75,7 +75,7 @@ class SampleRecurring extends Task
         return '52,53,54 * * * *';
     }
 
-    public function run($siteID, $args)
+    public function run($args)
     {
         Task::setName('Sample Recurring Task');
         Task::setDescription('This is the description of this sample task.');

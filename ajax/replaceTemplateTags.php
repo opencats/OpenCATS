@@ -13,15 +13,13 @@
         die();
     }
 
-    $siteID = $interface->getSiteID();
-
     $candidateID = $_REQUEST['candidateID'];
     $templateText = $_REQUEST['templateText'];
 
     /* Get an array of the company's location data. */
-    $candidates = new Candidates($siteID);
+    $candidates = new Candidates();
     $candidateData = $candidates->get($candidateID);
-    $emailTemplates = new EmailTemplates($siteID);
+    $emailTemplates = new EmailTemplates();
     $emailTemplateText = $emailTemplates->replaceVariables($templateText);
 
     if (empty($candidateData))

@@ -41,7 +41,6 @@ include_once(LEGACY_ROOT . '/modules/queue/lib/Task.php');
  *
  * Call your task by inheriting the QueueProcessor library (in /lib) and calling:
  * QueueProcessor::addAsynchronousTask(
- *      $siteID,        // CATS_ADMIN_SITE or site_id if applicable
  *      $taskPath,      // relative path to the task handler php file
  *                      //    (i.e.: ./modules/MODULE_NAME/tasks/TASKNAME.php)
  *      $args,          // Mixed variable type
@@ -51,7 +50,7 @@ include_once(LEGACY_ROOT . '/modules/queue/lib/Task.php');
 
 class SampleRecurring extends Task
 {
-    public function run($siteID, $args)
+    public function run($args)
     {
         Task::setName('Sample Non-Recurring Task');
         Task::setDescription('This is the description of this sample task.');

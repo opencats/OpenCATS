@@ -47,12 +47,12 @@ class Reminders extends Task
         return '* * * * *';
     }
 
-    public function run($siteID, $args)
+    public function run($args)
     {
         Task::setName('Calendar Reminders');
         Task::setDescription('Send out reminder e-mails from the CATS calendar.');
 
-        $calendar = new Calendar(0);
+        $calendar = new Calendar();
 
         //Check for reminders that need to be sent out.
         $dueEvents = $calendar->getAllDueReminders();
@@ -91,7 +91,6 @@ class Reminders extends Task
 
             // SEND E-Mail here
             $calendar->sendEmail(
-                $data['siteID'],
                 0,
                 $emailDestination,
                 $emailSubject,

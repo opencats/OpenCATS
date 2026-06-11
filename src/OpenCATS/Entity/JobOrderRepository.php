@@ -43,14 +43,12 @@ class JobOrderRepository
                 entered_by,
                 recruiter,
                 owner,
-                site_id,
                 date_created,
                 date_modified,
                 questionnaire_id,
                 status
             )
             VALUES (
-                %s,
                 %s,
                 %s,
                 %s,
@@ -100,7 +98,6 @@ class JobOrderRepository
             $this->databaseConnection->makeQueryInteger($jobOrder->getEnteredBy()),
             $this->databaseConnection->makeQueryInteger($jobOrder->getRecruiter()),
             $this->databaseConnection->makeQueryInteger($jobOrder->getOwner()),
-            $jobOrder->getSiteId(),
             // Questionnaire ID or NULL if none
             $jobOrder->getQuestionnaire() !== false ? $this->databaseConnection->makeQueryInteger($jobOrder->getQuestionnaire()) : 'NULL',
             $this->databaseConnection->makeQueryString($jobOrder->getStatus())

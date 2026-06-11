@@ -52,12 +52,10 @@ if (!$interface->isRequiredIDValid('activityID'))
     die();
 }
 
-$siteID = $interface->getSiteID();
-
 $activityID = $_POST['activityID'];
 
 /* Delete the activity entry. */
-$activityEntries = new ActivityEntries($siteID);
+$activityEntries = new ActivityEntries();
 $activityEntries->delete($activityID);
 
 /* Send back the XML data. */

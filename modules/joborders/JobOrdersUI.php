@@ -391,7 +391,7 @@ class JobOrdersUI extends UserInterface
 
         if (!eval(Hooks::get('JO_LIST_BY_VIEW'))) return;
 
-        $jl = new JobOrders($this->_siteID);
+        $jl = new JobOrders();
         $this->_template->assign('totalJobOrders', $jl->getCount());
 
         $this->_template->display('./modules/joborders/JobOrders.tpl');
@@ -422,7 +422,7 @@ class JobOrdersUI extends UserInterface
         $jobOrderID = $_GET['jobOrderID'];
 
 
-        $jobOrders = new JobOrders($this->_siteID);
+        $jobOrders = new JobOrders();
         $data = $jobOrders->get($jobOrderID);
 
         /* Bail out if we got an empty result set. */
@@ -475,7 +475,7 @@ class JobOrdersUI extends UserInterface
             $data['public'] = '';
         }
 
-        $attachments = new Attachments($this->_siteID);
+        $attachments = new Attachments();
         $attachmentsRS = $attachments->getAll(
             DATA_ITEM_JOBORDER, $jobOrderID
         );
@@ -492,7 +492,7 @@ class JobOrdersUI extends UserInterface
             $attachmentsRS[$rowNumber]['attachmentIcon'] = $attachmentIcon;
         }
 
-        $careerPortalSettings = new CareerPortalSettings($this->_siteID);
+        $careerPortalSettings = new CareerPortalSettings();
         $careerPortalSettingsRS = $careerPortalSettings->getAll();
 
         if ($careerPortalSettingsRS['enabled'] == 1)
@@ -542,7 +542,7 @@ class JobOrdersUI extends UserInterface
             $isPublic = true;
             if ($data['questionnaireID'])
             {
-                $questionnaire = new Questionnaire($this->_siteID);
+                $questionnaire = new Questionnaire();
                 $q = $questionnaire->get($data['questionnaireID']);
                 if (is_array($q) && !empty($q))
                 {
@@ -552,7 +552,7 @@ class JobOrdersUI extends UserInterface
             }
         }
 
-        $careerPortalSettings = new CareerPortalSettings($this->_siteID);
+        $careerPortalSettings = new CareerPortalSettings();
         $cpSettings = $careerPortalSettings->getAll();
         if (intval($cpSettings['enabled']))
         {
@@ -585,7 +585,7 @@ class JobOrdersUI extends UserInterface
      */
     private function addJobOrderPopup()
     {
-        $jobOrders = new JobOrders($this->_siteID);
+        $jobOrders = new JobOrders();
 
         $rs = $jobOrders->getAll(JOBORDERS_STATUS_ALL);
 
@@ -602,13 +602,13 @@ class JobOrdersUI extends UserInterface
      */
     private function add()
     {
-        $users = new Users($this->_siteID);
+        $users = new Users();
         $usersRS = $users->getSelectList();
 
-        $companies = new Companies($this->_siteID);
+        $companies = new Companies();
         $companiesRS = $companies->getSelectList();
 
-        $jobOrders = new JobOrders($this->_siteID);
+        $jobOrders = new JobOrders();
 
         /* Do we have any companies yet? */
         if (empty($companiesRS))
@@ -631,7 +631,7 @@ class JobOrdersUI extends UserInterface
 
         if ($_SESSION['CATS']->isHrMode())
         {
-            $companies = new Companies($this->_siteID);
+            $companies = new Companies();
             $selectedCompanyID = $companies->getDefaultCompany();
         }
 
@@ -697,10 +697,10 @@ class JobOrdersUI extends UserInterface
         $extraFieldRS = $jobOrders->extraFields->getValuesForAdd();
 
         /* Get questionnaires to attach (if public) */
-        $questionnaire = new Questionnaire($this->_siteID);
+        $questionnaire = new Questionnaire();
         $questionnaires = $questionnaire->getAll(false);
 
-        $careerPortalSettings = new CareerPortalSettings($this->_siteID);
+        $careerPortalSettings = new CareerPortalSettings();
         $careerPortalSettingsRS = $careerPortalSettings->getAll();
         $careerPortalEnabled = intval($careerPortalSettingsRS['enabled']) ? true : false;
 
@@ -837,7 +837,7 @@ class JobOrdersUI extends UserInterface
 
         if (!eval(Hooks::get('JO_ON_ADD'))) return;
 
-        $jobOrders = new JobOrders($this->_siteID);
+        $jobOrders = new JobOrders();
         $jobOrderID = $jobOrders->add(
             $title, $companyID, $contactID, $description, $notes, $duration,
             $maxRate, $type, $isHot, $isPublic, $openings, $companyJobID,
@@ -874,7 +874,7 @@ class JobOrdersUI extends UserInterface
         $jobOrderID = $_GET['jobOrderID'];
 
 
-        $jobOrders = new JobOrders($this->_siteID);
+        $jobOrders = new JobOrders();
         $data = $jobOrders->getForEditing($jobOrderID);
 
         /* Bail out if we got an empty result set. */
@@ -883,10 +883,10 @@ class JobOrdersUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified job order ID could not be found.');
         }
 
-        $users = new Users($this->_siteID);
+        $users = new Users();
         $usersRS = $users->getSelectList();
 
-        $companies = new Companies($this->_siteID);
+        $companies = new Companies();
         $companiesRS = $companies->getSelectList();
         $contactsRS = $companies->getContactsArray($data['companyID']);
 
@@ -895,7 +895,7 @@ class JobOrdersUI extends UserInterface
             DATA_ITEM_JOBORDER, $jobOrderID, $data['title']
         );
 
-        $emailTemplates = new EmailTemplates($this->_siteID);
+        $emailTemplates = new EmailTemplates();
         $statusChangeTemplateRS = $emailTemplates->getByTag(
             'EMAIL_TEMPLATE_OWNERSHIPASSIGNJOBORDER'
         );
@@ -917,7 +917,7 @@ class JobOrdersUI extends UserInterface
             $canEmail = true;
         }
 
-        $companies = new Companies($this->_siteID);
+        $companies = new Companies();
         $defaultCompanyID = $companies->getDefaultCompany();
         if ($defaultCompanyID !== false)
         {
@@ -939,7 +939,7 @@ class JobOrdersUI extends UserInterface
         $extraFieldRS = $jobOrders->extraFields->getValuesForEdit($jobOrderID);
 
         /* Check if career portal is enabled */
-        $careerPortalSettings = new CareerPortalSettings($this->_siteID);
+        $careerPortalSettings = new CareerPortalSettings();
         $careerPortalSettingsRS = $careerPortalSettings->getAll();
         $careerPortalEnabled = intval($careerPortalSettingsRS['enabled']) ? true : false;
 
@@ -947,7 +947,7 @@ class JobOrdersUI extends UserInterface
         $questionnaireID = false;
         $questionnaireData = false;
         $isPublic = false;
-        $questionnaire = new Questionnaire($this->_siteID);
+        $questionnaire = new Questionnaire();
 
         $questionnaires = $questionnaire->getAll(false);
 
@@ -956,7 +956,7 @@ class JobOrdersUI extends UserInterface
             $isPublic = true;
             if ($data['questionnaireID'])
             {
-                $questionnaire = new Questionnaire($this->_siteID);
+                $questionnaire = new Questionnaire();
                 $q = $questionnaire->get($data['questionnaireID']);
                 if (is_array($q) && !empty($q))
                 {
@@ -999,7 +999,7 @@ class JobOrdersUI extends UserInterface
      */
     private function onEdit()
     {
-        $jobOrders = new JobOrders($this->_siteID);
+        $jobOrders = new JobOrders();
 
         /* Bail out if we don't have a valid job order ID. */
         if (!$this->isRequiredIDValid('jobOrderID', $_POST))
@@ -1095,7 +1095,7 @@ class JobOrdersUI extends UserInterface
         {
             $jobOrderDetails = $jobOrders->get($jobOrderID);
 
-            $users = new Users($this->_siteID);
+            $users = new Users();
             $ownerDetails = $users->get($_POST['owner']);
 
             if (!empty($ownerDetails))
@@ -1103,7 +1103,7 @@ class JobOrdersUI extends UserInterface
                 $emailAddress = $ownerDetails['email'];
 
                 /* Get the change status email template. */
-                $emailTemplates = new EmailTemplates($this->_siteID);
+                $emailTemplates = new EmailTemplates();
                 $statusChangeTemplateRS = $emailTemplates->getByTag(
                     'EMAIL_TEMPLATE_OWNERSHIPASSIGNJOBORDER'
                 );
@@ -1214,7 +1214,7 @@ class JobOrdersUI extends UserInterface
 
         if (!eval(Hooks::get('JO_ON_DELETE_PRE'))) return;
 
-        $joborders = new JobOrders($this->_siteID);
+        $joborders = new JobOrders();
         $joborders->delete($jobOrderID);
 
         /* Delete the MRU entry if present. */
@@ -1278,7 +1278,7 @@ class JobOrdersUI extends UserInterface
         $mode = $this->getTrimmedInput('mode', $_POST);
 
         /* Execute the search. */
-        $search = new SearchCandidates($this->_siteID);
+        $search = new SearchCandidates();
         switch ($mode)
         {
             case 'searchByFullName':
@@ -1291,7 +1291,7 @@ class JobOrdersUI extends UserInterface
                 break;
         }
 
-        $pipelines = new Pipelines($this->_siteID);
+        $pipelines = new Pipelines();
         $pipelinesRS = $pipelines->getJobOrderPipeline($jobOrderID);
 
         foreach ($rs as $rowIndex => $row)
@@ -1347,13 +1347,13 @@ class JobOrdersUI extends UserInterface
 
         if (!eval(Hooks::get('JO_ON_ADD_PIPELINE'))) return;
 
-        $pipelines = new Pipelines($this->_siteID);
+        $pipelines = new Pipelines();
         if (!$pipelines->add($candidateID, $jobOrderID, $this->_userID))
         {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add candidate to job order.');
         }
 
-        $activityEntries = new ActivityEntries($this->_siteID);
+        $activityEntries = new ActivityEntries();
         $activityID = $activityEntries->add(
             $candidateID,
             DATA_ITEM_CANDIDATE,
@@ -1388,7 +1388,7 @@ class JobOrdersUI extends UserInterface
 
         $jobOrderID = $_GET['jobOrderID'];
 
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
 
         /* Get possible sources. */
         $sourcesRS = $candidates->getPossibleSources();
@@ -1400,17 +1400,17 @@ class JobOrdersUI extends UserInterface
         $associatedAttachment = 0;
         $associatedAttachmentRS = array();
 
-        $EEOSettings = new EEOSettings($this->_siteID);
+        $EEOSettings = new EEOSettings();
         $EEOSettingsRS = $EEOSettings->getAll();
 
         $parsingStatus = array();
 
-        $careerPortalSettings = new CareerPortalSettings($this->_siteID);
+        $careerPortalSettings = new CareerPortalSettings();
         $careerPortalSettingsRS = $careerPortalSettings->getAll();
         $careerPortalEnabled = intval($careerPortalSettingsRS['enabled']) ? true : false;
 
         /* Get questionnaires to attach (if public) */
-        $questionnaire = new Questionnaire($this->_siteID);
+        $questionnaire = new Questionnaire();
         $questionnaires = $questionnaire->getAll(false);
 
         $this->_template->assign('careerPortalEnabled', $careerPortalEnabled);
@@ -1489,7 +1489,7 @@ class JobOrdersUI extends UserInterface
         $candidateID = $_GET['candidateID'];
         $jobOrderID  = $_GET['jobOrderID'];
 
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         $candidateData = $candidates->get($candidateID);
 
         /* Bail out if we got an empty result set. */
@@ -1498,7 +1498,7 @@ class JobOrdersUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified candidate ID could not be found.');
         }
 
-        $pipelines = new Pipelines($this->_siteID);
+        $pipelines = new Pipelines();
         $pipelineData = $pipelines->get($candidateID, $jobOrderID);
 
         /* Bail out if we got an empty result set. */
@@ -1507,7 +1507,7 @@ class JobOrdersUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified pipeline entry could not be found.');
         }
 
-        $calendar = new Calendar($this->_siteID);
+        $calendar = new Calendar();
         $calendarEventTypes = $calendar->getAllEventTypes();
 
         if (SystemUtility::isSchedulerEnabled() && !$_SESSION['CATS']->isDemo())
@@ -1571,7 +1571,7 @@ class JobOrdersUI extends UserInterface
         $candidateID = $_GET['candidateID'];
         $jobOrderID  = $_GET['jobOrderID'];
 
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         $candidateData = $candidates->get($candidateID);
 
         /* Bail out if we got an empty result set. */
@@ -1580,7 +1580,7 @@ class JobOrdersUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified candidate ID could not be found.');
         }
 
-        $pipelines = new Pipelines($this->_siteID);
+        $pipelines = new Pipelines();
         $pipelineData = $pipelines->get($candidateID, $jobOrderID);
 
         /* Bail out if we got an empty result set. */
@@ -1594,7 +1594,7 @@ class JobOrdersUI extends UserInterface
         $selectedStatusID = $pipelineData['statusID'];
 
         /* Override default send email behavior with site specific send email behavior. */
-        $mailerSettings = new MailerSettings($this->_siteID);
+        $mailerSettings = new MailerSettings();
         $mailerSettingsRS = $mailerSettings->getAll();
 
         $candidateJoborderStatusSendsMessage = unserialize($mailerSettingsRS['candidateJoborderStatusSendsMessage']);
@@ -1605,7 +1605,7 @@ class JobOrdersUI extends UserInterface
         }
 
         /* Get the change status email template. */
-        $emailTemplates = new EmailTemplates($this->_siteID);
+        $emailTemplates = new EmailTemplates();
         $statusChangeTemplateRS = $emailTemplates->getByTag(
             'EMAIL_TEMPLATE_STATUSCHANGE'
         );
@@ -1719,7 +1719,7 @@ class JobOrdersUI extends UserInterface
 
         if (!eval(Hooks::get('JO_ON_REMOVE_PIPELINE'))) return;
 
-        $pipelines = new Pipelines($this->_siteID);
+        $pipelines = new Pipelines();
         $pipelines->remove($candidateID, $jobOrderID);
 
         if (!eval(Hooks::get('JO_ON_REMOVE_PIPELINE_POST'))) return;
@@ -1734,7 +1734,7 @@ class JobOrdersUI extends UserInterface
      */
     private function search()
     {
-        $savedSearches = new SavedSearches($this->_siteID);
+        $savedSearches = new SavedSearches();
         $savedSearchRS = $savedSearches->get(DATA_ITEM_JOBORDER);
 
         $this->_template->assign('savedSearchRS', $savedSearchRS);
@@ -1781,7 +1781,7 @@ class JobOrdersUI extends UserInterface
         }
 
         $searchPager = new SearchPager(
-            CANDIDATES_PER_PAGE, $currentPage, $this->_siteID, $_GET
+            CANDIDATES_PER_PAGE, $currentPage
         );
 
         if ($searchPager->isSortByValid('sortBy', $_GET))
@@ -1811,7 +1811,7 @@ class JobOrdersUI extends UserInterface
         $mode = $this->getTrimmedInput('mode', $_GET);
 
         /* Execute the search. */
-        $search = new SearchJobOrders($this->_siteID);
+        $search = new SearchJobOrders();
         switch ($mode)
         {
             case 'searchByJobTitle':
@@ -1862,7 +1862,7 @@ class JobOrdersUI extends UserInterface
         }
 
         /* Save the search. */
-        $savedSearches = new SavedSearches($this->_siteID);
+        $savedSearches = new SavedSearches();
         $savedSearches->add(
             DATA_ITEM_JOBORDER,
             $query,
@@ -1936,7 +1936,7 @@ class JobOrdersUI extends UserInterface
 
         if (!eval(Hooks::get('JO_ON_CREATE_ATTACHMENT_PRE'))) return;
 
-        $attachmentCreator = new AttachmentCreator($this->_siteID);
+        $attachmentCreator = new AttachmentCreator();
         $attachmentCreator->createFromUpload(
             DATA_ITEM_JOBORDER, $jobOrderID, 'file', false, false
         );
@@ -1978,7 +1978,7 @@ class JobOrdersUI extends UserInterface
 
         if (!eval(Hooks::get('JO_ON_DELETE_ATTACHMENT_PRE'))) return;
 
-        $attachments = new Attachments($this->_siteID);
+        $attachments = new Attachments();
         $attachments->delete($attachmentID);
 
         if (!eval(Hooks::get('JO_ON_DELETE_ATTACHMENT_POST'))) return;
@@ -2009,7 +2009,7 @@ class JobOrdersUI extends UserInterface
         // FIXME: Checkbox?
         $state = (boolean) $_POST['state'];
 
-        $joborders = new JobOrders($this->_siteID);
+        $joborders = new JobOrders();
         $joborders->administrativeHideShow($jobOrderID, $state);
 
         CATSUtility::transferRelativeURI('m=joborders&a=show&jobOrderID='.$jobOrderID);
@@ -2034,13 +2034,11 @@ class JobOrdersUI extends UserInterface
             /* Get info strings for popup titles */
             $resultSet[$rowIndex]['jobOrderInfo'] = InfoString::make(
                 DATA_ITEM_JOBORDER,
-                $resultSet[$rowIndex]['jobOrderID'],
-                $this->_siteID
+                $resultSet[$rowIndex]['jobOrderID']
             );
             $resultSet[$rowIndex]['companyInfo'] = InfoString::make(
                 DATA_ITEM_COMPANY,
-                $resultSet[$rowIndex]['companyID'],
-                $this->_siteID
+                $resultSet[$rowIndex]['companyID']
             );
 
             /* Truncate job order title. */

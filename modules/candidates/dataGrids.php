@@ -7,7 +7,7 @@ include_once(LEGACY_ROOT . '/lib/Width.php');
 
 class candidatesListByViewDataGrid extends CandidatesDataGrid
 {
-    public function __construct($siteID, $parameters, $misc)
+    public function __construct($parameters, $misc)
     {
         /* Pager configuration. */
         $this->_tableWidth = new Width(100, '%');
@@ -34,7 +34,7 @@ class candidatesListByViewDataGrid extends CandidatesDataGrid
         );
 
          parent::__construct("candidates:candidatesListByViewDataGrid",
-                             $siteID, $parameters, $misc
+                             $parameters, $misc
                         );
     }
 
@@ -74,7 +74,7 @@ class candidatesListByViewDataGrid extends CandidatesDataGrid
 
 class candidatesSavedListByViewDataGrid extends CandidatesDataGrid
 {
-    public function __construct($siteID, $parameters, $misc)
+    public function __construct($parameters, $misc)
     {
         $this->_tableWidth = new Width(100, '%');
         $this->_defaultAlphabeticalSortBy = 'lastName';
@@ -100,7 +100,7 @@ class candidatesSavedListByViewDataGrid extends CandidatesDataGrid
         );
 
          parent::__construct("candidates:candidatesSavedListByViewDataGrid",
-                             $siteID, $parameters, $misc
+                             $parameters, $misc
                         );
     }
 

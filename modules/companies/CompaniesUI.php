@@ -253,7 +253,7 @@ class CompaniesUI extends UserInterface
 
         $companyID = $_GET['companyID'];
 
-        $companies = new Companies($this->_siteID);
+        $companies = new Companies();
         $data = $companies->get($companyID);
 
         /* Bail out if we got an empty result set. */
@@ -326,7 +326,7 @@ class CompaniesUI extends UserInterface
         }
 
         /* Attachments */
-        $attachments = new Attachments($this->_siteID);
+        $attachments = new Attachments();
         $attachmentsRS = $attachments->getAll(
             DATA_ITEM_COMPANY, $companyID
         );
@@ -344,7 +344,7 @@ class CompaniesUI extends UserInterface
         }
 
         /* Job Orders for this company */
-        $jobOrders   = new JobOrders($this->_siteID);
+        $jobOrders   = new JobOrders();
         $jobOrdersRS = $jobOrders->getAll(
             JOBORDERS_STATUS_ALL, -1, $companyID, -1
         );
@@ -387,7 +387,7 @@ class CompaniesUI extends UserInterface
         }
 
         /* Contacts for this company */
-        $contacts   = new Contacts($this->_siteID);
+        $contacts   = new Contacts();
         $contactsRS = $contacts->getAll(-1, $companyID);
         $contactsRSWC = null;
 
@@ -431,7 +431,7 @@ class CompaniesUI extends UserInterface
             }
         }
 
-        $activityEntries = new ActivityEntries($this->_siteID);
+        $activityEntries = new ActivityEntries();
         $activityRS = $activityEntries->getAllByCompany($companyID);
         if (!empty($activityRS))
         {
@@ -512,7 +512,7 @@ class CompaniesUI extends UserInterface
      */
     private function internalPostings()
     {
-        $companies = new Companies($this->_siteID);
+        $companies = new Companies();
         $companyID = $companies->getDefaultCompany();
 
         CATSUtility::transferRelativeURI(
@@ -525,7 +525,7 @@ class CompaniesUI extends UserInterface
      */
     private function add()
     {
-        $companies = new Companies($this->_siteID);
+        $companies = new Companies();
 
         /* Get extra fields. */
         $extraFieldRS = $companies->extraFields->getValuesForAdd();
@@ -620,7 +620,7 @@ class CompaniesUI extends UserInterface
 
         if (!eval(Hooks::get('CLIENTS_ON_ADD_PRE'))) return;
 
-        $companies = new Companies($this->_siteID);
+        $companies = new Companies();
         $companyID = $companies->add(
             $name, $address, $address2, $city, $state, $zip, $phone1,
             $phone2, $faxNumber, $url, $keyTechnologies, $isHot,
@@ -664,7 +664,7 @@ class CompaniesUI extends UserInterface
 
         $companyID = $_GET['companyID'];
 
-        $companies = new Companies($this->_siteID);
+        $companies = new Companies();
         $data = $companies->getForEditing($companyID);
 
         /* Bail out if we got an empty result set. */
@@ -677,7 +677,7 @@ class CompaniesUI extends UserInterface
         /* Get the company's contacts data. */
         $contactsRS = $companies->getContactsArray($companyID);
 
-        $users = new Users($this->_siteID);
+        $users = new Users();
         $usersRS = $users->getSelectList();
 
         /* Add an MRU entry. */
@@ -692,7 +692,7 @@ class CompaniesUI extends UserInterface
         $departmentsRS = $companies->getDepartments($companyID);
         $departmentsString = ListEditor::getStringFromList($departmentsRS, 'name');
 
-        $emailTemplates = new EmailTemplates($this->_siteID);
+        $emailTemplates = new EmailTemplates();
         $statusChangeTemplateRS = $emailTemplates->getByTag(
             'EMAIL_TEMPLATE_OWNERSHIPASSIGNCLIENT'
         );
@@ -735,7 +735,7 @@ class CompaniesUI extends UserInterface
      */
     private function onEdit()
     {
-        $companies = new Companies($this->_siteID);
+        $companies = new Companies();
 
         /* Bail out if we don't have a valid company ID. */
         if (!$this->isRequiredIDValid('companyID', $_POST))
@@ -817,7 +817,7 @@ class CompaniesUI extends UserInterface
         {
             $companyDetails = $companies->get($companyID);
 
-            $users = new Users($this->_siteID);
+            $users = new Users();
             $ownerDetails = $users->get($_POST['owner']);
 
             if (!empty($ownerDetails))
@@ -825,7 +825,7 @@ class CompaniesUI extends UserInterface
                 $emailAddress = $ownerDetails['email'];
 
                 /* Get the change status email template. */
-                $emailTemplates = new EmailTemplates($this->_siteID);
+                $emailTemplates = new EmailTemplates();
                 $statusChangeTemplateRS = $emailTemplates->getByTag(
                     'EMAIL_TEMPLATE_OWNERSHIPASSIGNCLIENT'
                 );
@@ -922,7 +922,7 @@ class CompaniesUI extends UserInterface
         {
             if ($_POST['updateContacts'] == 'yes')
             {
-                $contacts = new Contacts($this->_siteID);
+                $contacts = new Contacts();
                 $contacts->updateByCompany(
                     $companyID,
                     $address,
@@ -955,7 +955,7 @@ class CompaniesUI extends UserInterface
 
         $companyID = $_POST['companyID'];
 
-        $companies = new Companies($this->_siteID);
+        $companies = new Companies();
         $rs = $companies->get($companyID);
 
         if (empty($rs))
@@ -989,7 +989,7 @@ class CompaniesUI extends UserInterface
      */
     private function search()
     {
-        $savedSearches = new SavedSearches($this->_siteID);
+        $savedSearches = new SavedSearches();
         $savedSearchRS = $savedSearches->get(DATA_ITEM_COMPANY);
 
         if (!eval(Hooks::get('CLIENTS_SEARCH'))) return;
@@ -1035,7 +1035,7 @@ class CompaniesUI extends UserInterface
         }
 
         $searchPager = new SearchPager(
-            CANDIDATES_PER_PAGE, $currentPage, $this->_siteID, $_GET
+            CANDIDATES_PER_PAGE, $currentPage
         );
 
         if ($searchPager->isSortByValid('sortBy', $_GET))
@@ -1067,7 +1067,7 @@ class CompaniesUI extends UserInterface
         $mode = $this->getSanitisedInput('mode', $_GET);
 
         /* Execute the search. */
-        $search = new SearchCompanies($this->_siteID);
+        $search = new SearchCompanies();
         switch ($mode)
         {
             case 'searchByName':
@@ -1118,7 +1118,7 @@ class CompaniesUI extends UserInterface
         );
 
         /* Save the search. */
-        $savedSearches = new SavedSearches($this->_siteID);
+        $savedSearches = new SavedSearches();
         $savedSearches->add(
             DATA_ITEM_COMPANY,
             $query,
@@ -1183,7 +1183,7 @@ class CompaniesUI extends UserInterface
 
         if (!eval(Hooks::get('CLIENTS_ON_CREATE_ATTACHMENT_PRE'))) return;
 
-        $attachmentCreator = new AttachmentCreator($this->_siteID);
+        $attachmentCreator = new AttachmentCreator();
         $attachmentCreator->createFromUpload(
             DATA_ITEM_COMPANY, $companyID, 'file', false, false
         );
@@ -1224,7 +1224,7 @@ class CompaniesUI extends UserInterface
 
         if (!eval(Hooks::get('CLIENTS_ON_DELETE_ATTACHMENT_PRE'))) return;
 
-        $attachments = new Attachments($this->_siteID);
+        $attachments = new Attachments();
         $attachments->delete($attachmentID);
 
         if (!eval(Hooks::get('CLIENTS_ON_DELETE_ATTACHMENT_POST'))) return;

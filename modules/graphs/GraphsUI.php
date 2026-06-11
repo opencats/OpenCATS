@@ -191,7 +191,7 @@ class GraphsUI extends UserInterface
     private function activity()
     {
         /* Grab an instance of Statistics. */
-        $statistics = new Statistics($this->_siteID);
+        $statistics = new Statistics();
         $RS = $statistics->getActivitiesByPeriod(TIME_PERIOD_LASTTWOWEEKS);
 
         // FIXME: Factor out these calculations? Common to most of these graphs.
@@ -248,7 +248,7 @@ class GraphsUI extends UserInterface
     private function newCandidates()
     {
         /* Grab an instance of Statistics. */
-        $statistics = new Statistics($this->_siteID);
+        $statistics = new Statistics();
         $RS = $statistics->getCandidatesByPeriod(TIME_PERIOD_LASTTWOWEEKS);
 
         // FIXME: Factor out these calculations? Common to most of these graphs.
@@ -303,7 +303,7 @@ class GraphsUI extends UserInterface
     private function newJobOrders()
     {
         /* Grab an instance of Statistics. */
-        $statistics = new Statistics($this->_siteID);
+        $statistics = new Statistics();
         $RS = $statistics->getJobOrdersByPeriod(TIME_PERIOD_LASTTWOWEEKS);
 
         // FIXME: Factor out these calculations? Common to most of these graphs.
@@ -413,7 +413,7 @@ class GraphsUI extends UserInterface
             $view = DASHBOARD_GRAPH_WEEKLY;
         }
         
-        $dashboard = new Dashboard($this->_siteID);
+        $dashboard = new Dashboard();
         $pipelineRS = $dashboard->getPipelineData($view);
         
         $noData = true;
@@ -464,7 +464,7 @@ class GraphsUI extends UserInterface
 
     private function miniJobOrderPipeline()
     {
-        $statistics = new Statistics($this->_siteID);
+        $statistics = new Statistics();
         if (!$this->isRequiredIDValid('params', $_GET))
         {
             die();
@@ -537,7 +537,7 @@ class GraphsUI extends UserInterface
     private function newSubmissions()
     {
         /* Grab an instance of Statistics. */
-        $statistics = new Statistics($this->_siteID);
+        $statistics = new Statistics();
         $RS = $statistics->getSubmissionsByPeriod(TIME_PERIOD_LASTTWOWEEKS);
 
         // FIXME: Factor out these calculations? Common to most of these graphs.

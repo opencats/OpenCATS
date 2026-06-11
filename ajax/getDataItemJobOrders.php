@@ -43,8 +43,6 @@ if (!$interface->isRequiredIDValid('dataItemType'))
     die();
 }
 
-$siteID = $interface->getSiteID();
-
 $dataItemType = $_REQUEST['dataItemType'];
 $dataItemID   = $_REQUEST['dataItemID'];
 
@@ -52,17 +50,17 @@ switch ($dataItemType)
 {
     case DATA_ITEM_CANDIDATE:
         include_once(LEGACY_ROOT . '/lib/Candidates.php');
-        $dataItem = new Candidates($siteID);
+        $dataItem = new Candidates();
         break;
 
     case DATA_ITEM_COMPANY:
         include_once(LEGACY_ROOT . '/lib/Companies.php');
-        $dataItem = new Companies($siteID);
+        $dataItem = new Companies();
         break;
 
     case DATA_ITEM_CONTACT:
         include_once(LEGACY_ROOT . '/lib/Contacts.php');
-        $dataItem = new Contacts($siteID);
+        $dataItem = new Contacts();
         break;
 
     default:

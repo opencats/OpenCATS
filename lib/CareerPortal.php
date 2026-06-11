@@ -53,12 +53,10 @@ class CareerPortalSettings
         'CSS'
     );
     private $_db;
-    private $_siteID;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
 
@@ -88,15 +86,11 @@ class CareerPortalSettings
         $sql = sprintf(
             "SELECT
                 settings.setting AS setting,
-                settings.value AS value,
-                settings.site_id AS siteID
+                settings.value AS value
             FROM
                 settings
             WHERE
-                settings.site_id = %s
-            AND
                 settings.settings_type = %s",
-            $this->_siteID,
             SETTINGS_CAREER_PORTAL
         );
         $rs = $this->_db->getAllAssoc($sql);
@@ -152,11 +146,8 @@ class CareerPortalSettings
             FROM
                 career_portal_template_site
             WHERE
-                career_portal_template_site.career_portal_name = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryString($template),
-            $this->_siteID
+                career_portal_template_site.career_portal_name = %s",
+            $this->_db->makeQueryString($template)
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -211,12 +202,9 @@ class CareerPortalSettings
             FROM
                 career_portal_template_site
             WHERE
-                career_portal_template_site.career_portal_name = %s
-            AND
-                site_id = %s",
+                career_portal_template_site.career_portal_name = %s",
             $this->_db->makeQueryString($template),
-            $this->_db->makeQueryString($template),
-            $this->_siteID
+            $this->_db->makeQueryString($template)
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -252,15 +240,10 @@ class CareerPortalSettings
      */
     public function getCustomTemplates()
     {
-        $sql = sprintf(
-            "SELECT
+        $sql = "SELECT
                 DISTINCT career_portal_name AS careerPortalName
             FROM
-                career_portal_template_site
-            WHERE
-                site_id = %s",
-            $this->_siteID
-        );
+                career_portal_template_site";
 
         return $this->_db->getAllAssoc($sql);
     }
@@ -285,11 +268,8 @@ class CareerPortalSettings
                 DISTINCT career_portal_name AS careerPortalName
             FROM
                 career_portal_template_site
-            WHERE
-                site_id = %s
             ORDER BY
-                careerPortalName ASC",
-            $this->_siteID
+                careerPortalName ASC"
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -337,10 +317,7 @@ class CareerPortalSettings
             "DELETE FROM
                 career_portal_template_site
             WHERE
-                site_id = %s
-            AND
                 career_portal_name = %s",
-            $this->_siteID,
             $this->_db->makeQueryString($template)
         );
 
@@ -363,12 +340,9 @@ class CareerPortalSettings
             WHERE
                 career_portal_template_site.setting = %s
             AND
-                career_portal_template_site.career_portal_name = %s
-            AND
-                site_id = %s",
+                career_portal_template_site.career_portal_name = %s",
             $this->_db->makeQueryString($setting),
-            $this->_db->makeQueryString($template),
-            $this->_siteID
+            $this->_db->makeQueryString($template)
         );
         $this->_db->query($sql);
 
@@ -376,18 +350,15 @@ class CareerPortalSettings
             "INSERT INTO career_portal_template_site (
                 setting,
                 value,
-                site_id,
                 career_portal_name
             )
             VALUES (
-                %s,
                 %s,
                 %s,
                 %s
             )",
             $this->_db->makeQueryString($setting),
             $this->_db->makeQueryString($value),
-            $this->_siteID,
             $this->_db->makeQueryString($template)
          );
          $this->_db->query($sql);
@@ -409,12 +380,9 @@ class CareerPortalSettings
             WHERE
                 settings.setting = '%s'
             AND
-                settings.settings_type = %s
-            AND
-                settings.site_id = %s",
+                settings.settings_type = %s",
             SETTINGS_CAREER_PORTAL,
-            $this->_db->makeQueryString($setting),
-            $this->_siteID
+            $this->_db->makeQueryString($setting)
         );
         $this->_db->query($sql);
 
@@ -423,19 +391,16 @@ class CareerPortalSettings
             "INSERT INTO settings (
                 settings_type,
                 setting,
-                value,
-                site_id
+                value
             )
             VALUES (
-                %s,
                 %s,
                 %s,
                 %s
             )",
             SETTINGS_CAREER_PORTAL,
             $this->_db->makeQueryString($setting),
-            $this->_db->makeQueryString($value),
-            $this->_siteID
+            $this->_db->makeQueryString($value)
          );
          $this->_db->query($sql);
     }
@@ -458,7 +423,7 @@ class CareerPortalSettings
 
         /* Send e-mail notification. */
         //FIXME: Make subject configurable.
-        $mailer = new Mailer($this->_siteID, $userID);
+        $mailer = new Mailer($userID);
         $mailerStatus = $mailer->sendToOne(
             array($destination, ''),
             $subject,

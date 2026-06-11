@@ -12,12 +12,10 @@
         die();
     }
 
-    $siteID = $interface->getSiteID();
-
     $templateID = $_REQUEST['templateID'];
 
     /* Get an array of the company's location data. */
-    $emailTemplates = new EmailTemplates($siteID);
+    $emailTemplates = new EmailTemplates();
     $emailTemplateText = $emailTemplates->get($templateID)['text'];
 
     if (empty($emailTemplateText))

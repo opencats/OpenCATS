@@ -15,7 +15,6 @@ use Behat\Mink\Exception\ElementHtmlException;
 include_once('./config.php');
 include_once(LEGACY_ROOT . '/constants.php');
 include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
-include_once(LEGACY_ROOT . '/lib/Site.php');
 include_once(LEGACY_ROOT . '/lib/History.php');
 include_once(LEGACY_ROOT . '/lib/Search.php');
 include_once(LEGACY_ROOT . '/lib/Users.php');
@@ -218,13 +217,9 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
      */
     public function thereIsACompanyCalled($companyName)
     {
-        $siteId = $this->getSiteId();
-        $company= new Company(
-            $siteId,
-            $companyName
-        );
+        $company = new Company($companyName);
         $CompanyRepository = new CompanyRepository(DatabaseConnection::getInstance());
-        $CompanyRepository->persist($company, new Dummy_History($siteId));
+        $CompanyRepository->persist($company, new Dummy_History());
     }
     
     /**
@@ -232,8 +227,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
      */
     public function thereIsAUserWithParams($userName, $fullName, $password) {
         list($firstName, $lastName) = explode(" ", $fullName);
-        $siteId = $this->getSiteId();
-        $users = new Users($siteId);
+        $users = new Users();
         $users->add(
             $lastName,
             $firstName,
@@ -400,23 +394,15 @@ JS;
         sleep(1);
     }
     
-    private function getSiteId()
-    {
-        $site = new Site(-1);
-        return $site->getFirstSiteID();
-    }
-    
     /**
      * @Given There is a job order for a :jobTitle for :companyName
      */
     public function thereIsAJobOrderForAFor($jobTitle, $companyName)
     {
-        $siteId = $this->getSiteId();
         $CompanyRepository = new CompanyRepository(DatabaseConnection::getInstance());
-        $companies = $CompanyRepository->findByName($siteId, $companyName);
+        $companies = $CompanyRepository->findByName($companyName);
         $companyId = $companies[0]['companyID'];
         $jobOrder = JobOrder::create(
-            $siteId,
             $jobTitle,
             $companyId,
             '',
@@ -441,7 +427,7 @@ JS;
             ''
         );
         $JobOrderRepository = new JobOrderRepository(DatabaseConnection::getInstance());
-        $JobOrderRepository->persist($jobOrder, new Dummy_History($siteId));
+        $JobOrderRepository->persist($jobOrder, new Dummy_History());
     }
     
     /**
@@ -524,6 +510,6 @@ class Role
 // FIXME: Should abstract session from history
 class Dummy_History extends History
 {
-    public function __construct($siteID) {}
+    public function __construct() {}
     public function storeHistoryNew($dataItemType, $dataItemID) {}
 }

@@ -41,12 +41,8 @@ include_once(LEGACY_ROOT . '/lib/JobOrderStatuses.php');
 class Pipelines
 {
     private $_db;
-    private $_siteID;
-
-
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
 
@@ -68,12 +64,9 @@ class Pipelines
             WHERE
                 candidate_id = %s
             AND
-                joborder_id = %s
-            AND
-                site_id = %s",
+                joborder_id = %s",
             $this->_db->makeQueryInteger($candidateID),
-            $this->_db->makeQueryInteger($jobOrderID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($jobOrderID)
         );
         $rs = $this->_db->getAssoc($sql);
 
@@ -96,7 +89,6 @@ class Pipelines
 
         $sql = sprintf(
             "INSERT INTO candidate_joborder (
-                site_id,
                 joborder_id,
                 candidate_id,
                 status,
@@ -107,14 +99,12 @@ class Pipelines
             VALUES (
                 %s,
                 %s,
-                %s,
                 100,
                 %s,
                 NOW(),
                 NOW()%s
             )",
             $extraFields,
-            $this->_siteID,
             $this->_db->makeQueryInteger($jobOrderID),
             $this->_db->makeQueryInteger($candidateID),
             $this->_db->makeQueryInteger($userID),
@@ -145,12 +135,9 @@ class Pipelines
             WHERE
                 joborder_id = %s
             AND
-                candidate_id = %s
-            AND
-                site_id = %s",
+                candidate_id = %s",
             $this->_db->makeQueryInteger($jobOrderID),
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($candidateID)
         );
         $this->_db->query($sql);
 
@@ -160,16 +147,13 @@ class Pipelines
             WHERE
                 joborder_id = %s
             AND
-                candidate_id = %s
-            AND
-                site_id = %s",
+                candidate_id = %s",
             $this->_db->makeQueryInteger($jobOrderID),
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($candidateID)
         );
         $this->_db->query($sql);
 
-        $history = new History($this->_siteID);
+        $history = new History();
         $history->storeHistoryData(
             DATA_ITEM_CANDIDATE,
             $candidateID,
@@ -240,17 +224,9 @@ class Pipelines
                 candidate.candidate_id = %s
             AND
                 joborder.joborder_id = %s
-            AND
-                candidate.site_id = %s
-            AND
-                joborder.site_id = %s
-            AND
-                company.site_id = %s",
+",
             $this->_db->makeQueryInteger($candidateID),
-            $this->_db->makeQueryInteger($jobOrderID),
-            $this->_siteID,
-            $this->_siteID,
-            $this->_siteID
+            $this->_db->makeQueryInteger($jobOrderID)
         );
 
         return $this->_db->getAssoc($sql);
@@ -274,12 +250,9 @@ class Pipelines
             WHERE
                 candidate_id = %s
             AND
-                joborder_id = %s
-            AND
-                site_id = %s",
+                joborder_id = %s",
             $this->_db->makeQueryInteger($candidateID),
-            $this->_db->makeQueryInteger($jobOrderID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($jobOrderID)
         );
         $rs = $this->_db->getAssoc($sql);
 
@@ -305,12 +278,9 @@ class Pipelines
             WHERE
                 joborder_id = %s
             AND
-                candidate_id = %s
-            AND
-                site_id = %s",
+                candidate_id = %s",
             $this->_db->makeQueryInteger($jobOrderID),
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($candidateID)
         );
         $rs = $this->_db->getAssoc($sql);
 
@@ -338,12 +308,9 @@ class Pipelines
                 status        = %s,
                 date_modified = NOW()
             WHERE
-                candidate_joborder_id = %s
-            AND
-                site_id = %s",
+                candidate_joborder_id = %s",
             $this->_db->makeQueryInteger($statusID),
-            $this->_db->makeQueryInteger($candidateJobOrderID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($candidateJobOrderID)
         );
         $this->_db->query($sql);
 
@@ -355,7 +322,7 @@ class Pipelines
         /* Add auditing history. */
         $historyDescription = '(USER) changed pipeline status of candidate '
             . $candidateID . ' for job order ' . $jobOrderID . '.';
-        $history = new History($this->_siteID);
+        $history = new History();
         $history->storeHistoryData(
             DATA_ITEM_PIPELINE,
             $candidateJobOrderID,
@@ -369,7 +336,7 @@ class Pipelines
         {
             /* Send e-mail notification. */
             //FIXME: Make subject configurable.
-            $mailer = new Mailer($this->_siteID);
+            $mailer = new Mailer();
             $mailerStatus = $mailer->sendToOne(
                 array($emailAddress, ''),
                 CANDIDATE_STATUSCHANGE_SUBJECT,
@@ -382,7 +349,7 @@ class Pipelines
     // FIXME: Document me.
     public function getStatuses()
     {
-        $sql = sprintf(
+        $sql =
             "SELECT
                 candidate_joborder_status_id AS statusID,
                 short_description AS status,
@@ -393,9 +360,7 @@ class Pipelines
             WHERE
                 is_enabled = 1
             ORDER BY
-                candidate_joborder_status_id ASC",
-            $this->_siteID
-        );
+                candidate_joborder_status_id ASC";
 
         return $this->_db->getAllAssoc($sql);
     }
@@ -404,7 +369,7 @@ class Pipelines
     // Throws out No Status.
     public function getStatusesForPicking()
     {
-        $sql = sprintf(
+        $sql =
             "SELECT
                 candidate_joborder_status_id AS statusID,
                 short_description AS status,
@@ -417,9 +382,7 @@ class Pipelines
             AND
                 candidate_joborder_status_id != 0
             ORDER BY
-                candidate_joborder_status_id ASC",
-            $this->_siteID
-        );
+                candidate_joborder_status_id ASC";
 
         return $this->_db->getAllAssoc($sql);
     }
@@ -432,13 +395,11 @@ class Pipelines
             "INSERT INTO candidate_joborder_status_history (
                 joborder_id,
                 candidate_id,
-                site_id,
                 date,
                 status_to,
                 status_from
             )
             VALUES (
-                %s,
                 %s,
                 %s,
                 NOW(),
@@ -447,7 +408,6 @@ class Pipelines
             )",
             $this->_db->makeQueryInteger($jobOrderID),
             $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID,
             $this->_db->makeQueryInteger($statusToID),
             $this->_db->makeQueryInteger($statusFromID)
         );
@@ -513,17 +473,8 @@ class Pipelines
             INNER JOIN candidate_joborder_status
                 ON candidate_joborder.status = candidate_joborder_status.candidate_joborder_status_id
             WHERE
-                candidate.candidate_id = %s
-            AND
-                candidate.site_id = %s
-            AND
-                joborder.site_id = %s
-            AND
-                company.site_id = %s",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID,
-            $this->_siteID,
-            $this->_siteID
+                candidate.candidate_id = %s",
+            $this->_db->makeQueryInteger($candidateID)
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -583,17 +534,8 @@ class Pipelines
             WHERE
                 candidate.candidate_id = %s
             AND
-                candidate.site_id = %s
-            AND
-                joborder.site_id = %s
-            AND
-                company.site_id = %s
-            AND
                 joborder.status NOT IN %s",
             $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID,
-            $this->_siteID,
-            $this->_siteID,
             JobOrderStatuses::getClosedStatusSQL()
         );
 
@@ -674,8 +616,6 @@ class Pipelines
                         candidate_id = candidate.candidate_id
                     AND
                         status_to = %s
-                    AND
-                        site_id = %s
                 ) >= 1, 1, 0) AS submitted,
                 added_user.first_name AS addedByFirstName,
                 added_user.last_name AS addedByLastName
@@ -695,10 +635,6 @@ class Pipelines
                 ON candidate_duplicates.new_candidate_id = candidate.candidate_id
             WHERE
                 candidate_joborder.joborder_id = %s
-            AND
-                candidate_joborder.site_id = %s
-            AND
-                candidate.site_id = %s
             GROUP BY
                 candidate_joborder.candidate_id
             %s",
@@ -706,10 +642,7 @@ class Pipelines
             $this->_db->makeQueryInteger($jobOrderID),
             $this->_db->makeQueryInteger($jobOrderID),
             PIPELINE_STATUS_SUBMITTED,
-            $this->_siteID,
             $this->_db->makeQueryInteger($jobOrderID),
-            $this->_siteID,
-            $this->_siteID,
             $orderBy
         );
 
@@ -725,12 +658,9 @@ class Pipelines
             SET
                 rating_value = %s
             WHERE
-                candidate_joborder.candidate_joborder_id = %s
-            AND
-                candidate_joborder.site_id = %s",
+                candidate_joborder.candidate_joborder_id = %s",
             $this->_db->makeQueryInteger($value),
-            $this->_db->makeQueryInteger($candidateJobOrderID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($candidateJobOrderID)
         );
 
         $queryResult = $this->_db->query($sql);
@@ -749,11 +679,8 @@ class Pipelines
             FROM
                 candidate_joborder
             WHERE
-                candidate_joborder_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($candidateJobOrderID),
-            $this->_siteID
+                candidate_joborder_id = %s",
+            $this->_db->makeQueryInteger($candidateJobOrderID)
         );
         $rs = $this->_db->getAssoc($sql);
 
@@ -797,12 +724,9 @@ class Pipelines
                 activity.data_item_type = %s
             AND
                 activity.data_item_id = candidate_joborder.candidate_id
-            AND
-                candidate_joborder.site_id = %s
             ",
             $this->_db->makeQueryInteger($candidateJobOrderID),
-            DATA_ITEM_CANDIDATE,
-            $this->_siteID
+            DATA_ITEM_CANDIDATE
         );
 
         return $this->_db->getAllAssoc($sql);

@@ -38,12 +38,10 @@
 class Site
 {
     private $_db;
-    private $_siteID;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
 
@@ -60,11 +58,8 @@ class Site
             "UPDATE
                 site
             SET
-                name = %s
-            WHERE
-                site_id = %s",
-            $this->_db->makeQueryString($name),
-            $this->_siteID
+                name = %s",
+            $this->_db->makeQueryString($name)
         );
 
         return (boolean) $this->_db->query($sql);
@@ -84,12 +79,9 @@ class Site
                 site
             SET
                 time_zone = %s,
-                date_format_ddmmyy = %s
-            WHERE
-                site_id = %s",
+                date_format_ddmmyy = %s",
             $this->_db->makeQueryInteger($timeZone),
-            ($isDMY ? 1 : 0),
-            $this->_siteID
+            ($isDMY ? 1 : 0)
         );
 
         return (boolean) $this->_db->query($sql);
@@ -107,55 +99,22 @@ class Site
             "UPDATE
                  site
              SET
-                 default_phone_country_code = %s
-             WHERE
-                 site_id = %s",
-            $this->_db->makeQueryString($countryCode),
-            $this->_siteID
+                 default_phone_country_code = %s",
+            $this->_db->makeQueryString($countryCode)
         );
 
         return (boolean) $this->_db->query($sql);
     }
 
     /**
-     * Get site information by unix name.
+     * Get site information.
      *
-     * @param integer site ID
      * @return array site data
      */
-    public function getSiteByUnixName($unixName)
+    public function getFirstSite()
     {
-        $sql = sprintf(
+        $sql =
             "SELECT
-                site_id AS siteID,
-                name AS name,
-                is_demo AS isDemo,
-                user_licenses AS userLicenses,
-                entered_by AS enteredBy,
-                unix_name AS unixName
-            FROM
-                site
-            WHERE
-                unix_name = %s
-            AND
-                account_deleted = 0",
-           $this->_db->makeQueryStringOrNULL($unixName)
-       );
-
-       return $this->_db->getAssoc($sql);
-    }
-
-    /**
-     * Get site information by site ID.
-     *
-     * @param integer site ID
-     * @return array site data
-     */
-    public function getSiteBySiteID($siteID)
-    {
-        $sql = sprintf(
-            "SELECT
-                site_id AS siteID,
                 name AS name,
                 is_demo AS isDemo,
                 user_licenses AS userLicenses,
@@ -165,55 +124,19 @@ class Site
             FROM
                 site
             WHERE
-                site_id = %s
-            AND
-                account_deleted = 0",
-           $this->_db->makeQueryInteger($siteID)
-       );
-
-       return $this->_db->getAssoc($sql);
-    }
-
-    /**
-     * Get site information by site ID.
-     *
-     * @param integer site ID
-     * @return array site data
-     */
-    public function getFirstSiteID()
-    {
-        $sql = sprintf("
-            SELECT
-                site_id AS siteID
-            FROM
-                site
-            WHERE
                 account_deleted = 0
-            AND
-                site_id != %s
-            ORDER BY
-                site_id ASC
-            LIMIT 1
-        ",
-            CATS_ADMIN_SITE
-       );
+            LIMIT 1";
 
-       $rs = $this->_db->getAssoc($sql);
-
-       return $rs['siteID'];
+        return $this->_db->getAssoc($sql);
     }
 
     public function setAgreedToLicense()
     {
-        $sql = sprintf(
+        $sql =
             "UPDATE
                 site
              SET
-                agreed_to_license = 1
-             WHERE
-                site.site_id = %d",
-            $this->_siteID
-        );
+                agreed_to_license = 1";
         if (!$this->_db->query($sql))
         {
             return false;
@@ -223,15 +146,11 @@ class Site
 
     public function setLocalizationConfigured()
     {
-        $sql = sprintf(
+        $sql =
             "UPDATE
                 site
              SET
-                localization_configured = 1
-             WHERE
-                site.site_id = %d",
-            $this->_siteID
-        );
+                localization_configured = 1";
         if (!$this->_db->query($sql))
         {
             return false;
@@ -241,16 +160,11 @@ class Site
 
     public function setFirstTimeSetup()
     {
-        $db =  DatabaseConnection::getInstance();
-        $sql = sprintf(
+        $sql =
             "UPDATE
                 site
              SET
-                first_time_setup = 0
-             WHERE
-                site.site_id = %d",
-            $this->_siteID
-        );
+                first_time_setup = 0";
         if (!$this->_db->query($sql))
         {
             return false;

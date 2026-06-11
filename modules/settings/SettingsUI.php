@@ -133,7 +133,7 @@ class SettingsUI extends UserInterface
             echo 'CATS has lost your session data!';
             return;
         }
-        $tags = new Tags($this->_siteID);
+        $tags = new Tags();
         $arr = $tags->add((isset($_POST['tag_parent_id'])?$_POST['tag_parent_id']:null),$_POST['tag_title'], "-");
         if (isset($_POST['tag_parent_id']))
         {
@@ -173,7 +173,7 @@ class SettingsUI extends UserInterface
             echo 'CATS has lost your session data!';
             return;
         }
-        $tags = new Tags($this->_siteID);
+        $tags = new Tags();
         $tags->delete($_POST['tag_id']);
         return; 
     }
@@ -185,7 +185,7 @@ class SettingsUI extends UserInterface
             echo 'CATS has lost your session data!';
             return;
         }
-        $tags = new Tags($this->_siteID);
+        $tags = new Tags();
         //$tags->update($_POST['tag_id'], $_POST['title'], $_POST['description']);
         $tags->update($_POST['tag_id'], $_POST['tag_title'], "-");
         echo htmlspecialchars($_POST['tag_title'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
@@ -209,7 +209,7 @@ class SettingsUI extends UserInterface
      */
     private function changeTags()
     {
-        $tags = new Tags($this->_siteID);
+        $tags = new Tags();
         $tagsRS = $tags->getAll();
 
         //if (!eval(Hooks::get('SETTINGS_EMAIL_TEMPLATES'))) return;
@@ -914,7 +914,7 @@ class SettingsUI extends UserInterface
             return;
         }
         
-        $emailTemplates = new EmailTemplates($this->_siteID);
+        $emailTemplates = new EmailTemplates();
         if (!$this->isRequiredIDValid('id', $_POST))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid template ID.');
@@ -935,8 +935,8 @@ class SettingsUI extends UserInterface
         }
         
         $possibleVariables = "%CANDSTATUS%%CANDOWNER%%CANDFIRSTNAME%%CANDFULLNAME%%CANDPREVSTATUS%";
-        $emailTemplates = new EmailTemplates($this->_siteID);
-        $emailTemplateID = $emailTemplates->add("", "New Email Template", "CUSTOM", $this->_siteID, $possibleVariables);
+        $emailTemplates = new EmailTemplates();
+        $emailTemplateID = $emailTemplates->add("", "New Email Template", "CUSTOM", $possibleVariables);
         if($emailTemplateID < 1)
         {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add template.');
@@ -1000,7 +1000,7 @@ class SettingsUI extends UserInterface
 
         $userID = $_GET['userID'];
 
-        $users = new Users($this->_siteID);
+        $users = new Users();
         $data = $users->get($userID);
 
         if (empty($data))
@@ -1041,17 +1041,6 @@ class SettingsUI extends UserInterface
             }
         }
 
-        $siteIDPosition = strpos($data['username'], '@' . $_SESSION['CATS']->getSiteID());
-
-        // FIXME: The last test here might be redundant.
-        if ($siteIDPosition !== false &&
-            substr($data['username'], $siteIDPosition) == '@' . $_SESSION['CATS']->getSiteID())
-        {
-           $data['username'] = str_replace(
-               '@' . $_SESSION['CATS']->getSiteID(), '', $data['username']
-           );
-        }
-
         /* Get user categories, if any. */
         $modules = ModuleUtility::getModules();
         $categories = array();
@@ -1068,7 +1057,7 @@ class SettingsUI extends UserInterface
             }
         }
 
-        $EEOSettings = new EEOSettings($this->_siteID);
+        $EEOSettings = new EEOSettings();
         $EEOSettingsRS = $EEOSettings->getAll();
 
         $this->_template->assign('privledged', $privledged);
@@ -1089,7 +1078,7 @@ class SettingsUI extends UserInterface
      */
     private function addUser()
     {
-        $users = new Users($this->_siteID);
+        $users = new Users();
         $accessLevels = $users->getAccessLevels();
 
         $rs = $users->getAll();
@@ -1115,7 +1104,7 @@ class SettingsUI extends UserInterface
             }
         }
 
-        $EEOSettings = new EEOSettings($this->_siteID);
+        $EEOSettings = new EEOSettings();
         $EEOSettingsRS = $EEOSettings->getAll();
 
         $this->_template->assign('active', $this);
@@ -1154,7 +1143,7 @@ class SettingsUI extends UserInterface
         $role           = $this->getTrimmedInput('role', $_POST);
         $eeoIsVisible   = $this->isChecked('eeoIsVisible', $_POST);
 
-        $users = new Users($this->_siteID);
+        $users = new Users();
         $license = $users->getLicenseData();
 
         if (!$license['canAdd'] && $accessLevel > ACCESS_LEVEL_READ)
@@ -1182,13 +1171,6 @@ class SettingsUI extends UserInterface
         if (strpos($username, '@') !== false && filter_var($username, FILTER_VALIDATE_EMAIL) === false)
         {
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Username is in improper format for an E-Mail address.');
-        }
-
-        /* Make it a multisite user name if the user is part of a hosted site. */
-        $unixName = $_SESSION['CATS']->getUnixName();
-        if (strpos($username, '@') === false && !empty($unixName))
-        {
-           $username .= '@' . $_SESSION['CATS']->getSiteID();
         }
 
         /* Bail out if the specified username already exists. */
@@ -1249,7 +1231,7 @@ class SettingsUI extends UserInterface
 
         $userID = $_GET['userID'];
 
-        $users = new Users($this->_siteID);
+        $users = new Users();
         $license = $users->getLicenseData();
         $accessLevels = $users->getAccessLevels();
         $data = $users->get($userID);
@@ -1275,19 +1257,6 @@ class SettingsUI extends UserInterface
             $cannotEnableMessage = false;
         }
 
-        /* Change multisite usernames into single site usernames. */
-        // FIXME: The last test here might be redundant.
-        // FIXME: Put this in a private method. It is duplicated twice so far.
-        $siteIDPosition = strpos($data['username'], '@' . $_SESSION['CATS']->getSiteID());
-
-        if ($siteIDPosition !== false &&
-            substr($data['username'], $siteIDPosition) == '@' . $_SESSION['CATS']->getSiteID())
-        {
-           $data['username'] = str_replace(
-               '@' . $_SESSION['CATS']->getSiteID(), '', $data['username']
-           );
-        }
-
         /* Get user categories, if any. */
         $modules = ModuleUtility::getModules();
         $categories = array();
@@ -1308,7 +1277,7 @@ class SettingsUI extends UserInterface
             }
         }
 
-        $EEOSettings = new EEOSettings($this->_siteID);
+        $EEOSettings = new EEOSettings();
         $EEOSettingsRS = $EEOSettings->getAll();
 
         $this->_template->assign('active', $this);
@@ -1391,14 +1360,7 @@ class SettingsUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Username is in improper format for an E-Mail address.');
         }
 
-        /* Make it a multisite user name if the user is part of a hosted site. */
-        $unixName = $_SESSION['CATS']->getUnixName();
-        if (strpos($username, '@') === false && !empty($unixName))
-        {
-           $username .= '@' . $_SESSION['CATS']->getSiteID();
-        }
-
-        $users = new Users($this->_siteID);
+        $users = new Users();
 
         if (!$users->update($userID, $lastName, $firstName, $email, $username,
             $accessLevel, $eeoIsVisible))
@@ -1471,7 +1433,7 @@ class SettingsUI extends UserInterface
 
         $userID = $_POST['userID'];
 
-        $users = new Users($this->_siteID);
+        $users = new Users();
         $users->delete($userID);
 
         CATSUtility::transferRelativeURI('m=settings&a=manageUsers');
@@ -1482,16 +1444,16 @@ class SettingsUI extends UserInterface
      */
     private function customizeExtraFields()
     {
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         $candidatesRS = $candidates->extraFields->getSettings();
 
-        $contacts = new Contacts($this->_siteID);
+        $contacts = new Contacts();
         $contactsRS = $contacts->extraFields->getSettings();
 
-        $companies = new Companies($this->_siteID);
+        $companies = new Companies();
         $companiesRS = $companies->extraFields->getSettings();
 
-        $jobOrders = new JobOrders($this->_siteID);
+        $jobOrders = new JobOrders();
         $jobOrdersRS = $jobOrders->extraFields->getSettings();
 
         $extraFieldTypes = $candidates->extraFields->getValuesTypes();
@@ -1527,13 +1489,13 @@ class SettingsUI extends UserInterface
             {
                 case 'ADDFIELD':
                     $args = explode(' ', $command, 4);
-                    $extraFields = new ExtraFields($this->_siteID, intval($args[1]));
+                    $extraFields = new ExtraFields(intval($args[1]));
                     $extraFields->define(urldecode($args[3]), intval($args[2]));
                     break;
 
                 case 'DELETEFIELD':
                     $args = explode(' ', $command, 3);
-                    $extraFields = new ExtraFields($this->_siteID, intval($args[1]));
+                    $extraFields = new ExtraFields(intval($args[1]));
                     $extraFields->remove(urldecode($args[2]));
                     break;
 
@@ -1541,7 +1503,7 @@ class SettingsUI extends UserInterface
                     $args = explode(' ', $command, 3);
                     $args2 = explode(':', $args[2]);
 
-                    $extraFields = new ExtraFields($this->_siteID, intval($args[1]));
+                    $extraFields = new ExtraFields(intval($args[1]));
                     $extraFields->addOptionToColumn(urldecode($args2[0]), urldecode($args2[1]));
                     break;
 
@@ -1549,7 +1511,7 @@ class SettingsUI extends UserInterface
                     $args = explode(' ', $command, 3);
                     $args2 = explode(':', $args[2]);
 
-                    $extraFields = new ExtraFields($this->_siteID, intval($args[1]));
+                    $extraFields = new ExtraFields(intval($args[1]));
                     $extraFields->deleteOptionFromColumn(urldecode($args2[0]), urldecode($args2[1]));
                     break;
 
@@ -1557,7 +1519,7 @@ class SettingsUI extends UserInterface
                     $args = explode(' ', $command, 3);
                     $args2 = explode(':', $args[2]);
 
-                    $extraFields = new ExtraFields($this->_siteID, intval($args[1]));
+                    $extraFields = new ExtraFields(intval($args[1]));
                     $extraFields->swapColumns(urldecode($args2[0]), urldecode($args2[1]));
                     break;
 
@@ -1565,7 +1527,7 @@ class SettingsUI extends UserInterface
                     $args = explode(' ', $command, 3);
                     $args2 = explode(':', $args[2]);
 
-                    $extraFields = new ExtraFields($this->_siteID, intval($args[1]));
+                    $extraFields = new ExtraFields(intval($args[1]));
                     $extraFields->renameColumn(urldecode($args2[0]), urldecode($args2[1]));
                     break;
             }
@@ -1577,7 +1539,7 @@ class SettingsUI extends UserInterface
     //FIXME: Document me.
     private function emailTemplates()
     {
-        $emailTemplates = new EmailTemplates($this->_siteID);
+        $emailTemplates = new EmailTemplates();
         $emailTemplatesRS = $emailTemplates->getAll();
 
         if (!eval(Hooks::get('SETTINGS_EMAIL_TEMPLATES'))) return;
@@ -1630,7 +1592,7 @@ class SettingsUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
         }
 
-        $emailTemplates = new EmailTemplates($this->_siteID);
+        $emailTemplates = new EmailTemplates();
         $emailTemplates->update($templateID, $templateTitle, $text, $disabled);
 
         CATSUtility::transferRelativeURI('m=settings&a=emailTemplates');
@@ -1671,7 +1633,7 @@ class SettingsUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_MISSINGFIELDS, $this, 'Required fields are missing.');
         }
 
-        $careerPortalSettings = new CareerPortalSettings($this->_siteID);
+        $careerPortalSettings = new CareerPortalSettings();
 
         $templateSource = $careerPortalSettings->getAllFromCustomTemplate($templateName);
         if (empty($templateSource))
@@ -1710,14 +1672,14 @@ class SettingsUI extends UserInterface
         }
 
         /* Get extra fields. */
-        $jobOrders = new JobOrders($this->_siteID);
+        $jobOrders = new JobOrders();
         $extraFieldsForJobOrders = $jobOrders->extraFields->getValuesForAdd();
 
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         $extraFieldsForCandidates = $candidates->extraFields->getValuesForAdd();
 
         /* Get EEO settings. */
-        $EEOSettings = new EEOSettings($this->_siteID);
+        $EEOSettings = new EEOSettings();
         $EEOSettingsRS = $EEOSettings->getAll();
 
         $this->_template->assign('active', $this);
@@ -1743,7 +1705,7 @@ class SettingsUI extends UserInterface
 
         $continueEdit = $_POST['continueEdit'];
 
-        $careerPortalSettings = new CareerPortalSettings($this->_siteID);
+        $careerPortalSettings = new CareerPortalSettings();
 
         $templateSource = $careerPortalSettings->getAllFromCustomTemplate($templateName);
 
@@ -1791,7 +1753,7 @@ class SettingsUI extends UserInterface
      */
     private function careerPortalSettings()
     {
-        $careerPortalSettings = new CareerPortalSettings($this->_siteID);
+        $careerPortalSettings = new CareerPortalSettings();
         $careerPortalSettingsRS = $careerPortalSettings->getAll();
         $careerPortalTemplateNames = $careerPortalSettings->getDefaultTemplates();
         $careerPortalTemplateCustomNames = $careerPortalSettings->getCustomTemplates();
@@ -1800,7 +1762,7 @@ class SettingsUI extends UserInterface
 
         if (!eval(Hooks::get('SETTINGS_CAREER_PORTAL'))) return;
 
-        $questionnaires = new Questionnaire($this->_siteID);
+        $questionnaires = new Questionnaire();
         $data = $questionnaires->getAll(true);
 
         $this->_template->assign('active', $this);
@@ -1817,7 +1779,7 @@ class SettingsUI extends UserInterface
     //FIXME: Document me.
     private function onCareerPortalSettings()
     {
-        $careerPortalSettings = new CareerPortalSettings($this->_siteID);
+        $careerPortalSettings = new CareerPortalSettings();
         $careerPortalSettingsRS = $careerPortalSettings->getAll();
 
         foreach ($careerPortalSettingsRS as $setting => $value)
@@ -1907,7 +1869,7 @@ class SettingsUI extends UserInterface
 
         $page = $_POST['p'];
 
-        $careerPortalSettings = new CareerPortalSettings($this->_siteID);
+        $careerPortalSettings = new CareerPortalSettings();
 
         switch ($page)
         {
@@ -1987,7 +1949,7 @@ class SettingsUI extends UserInterface
      */
     private function EEOEOCSettings()
     {
-        $EEOSettings = new EEOSettings($this->_siteID);
+        $EEOSettings = new EEOSettings();
         $EEOSettingsRS = $EEOSettings->getAll();
 
         $this->_template->assign('active', $this);
@@ -2000,7 +1962,7 @@ class SettingsUI extends UserInterface
     //FIXME: Document me.
     private function onEEOEOCSettings()
     {
-        $EEOSettings = new EEOSettings($this->_siteID);
+        $EEOSettings = new EEOSettings();
         $EEOSettingsRS = $EEOSettings->getAll();
 
         foreach ($EEOSettingsRS as $setting => $value)
@@ -2023,12 +1985,12 @@ class SettingsUI extends UserInterface
      */
     private function emailSettings()
     {
-        $mailerSettings = new MailerSettings($this->_siteID);
+        $mailerSettings = new MailerSettings();
         $mailerSettingsRS = $mailerSettings->getAll();
 
         $candidateJoborderStatusSendsMessage = unserialize($mailerSettingsRS['candidateJoborderStatusSendsMessage']);
 
-        $emailTemplates = new EmailTemplates($this->_siteID);
+        $emailTemplates = new EmailTemplates();
         $emailTemplatesRS = $emailTemplates->getAll();
 
         $this->_template->assign('emailTemplatesRS', $emailTemplatesRS);
@@ -2045,7 +2007,7 @@ class SettingsUI extends UserInterface
      */
     private function onEmailSettings()
     {
-        $mailerSettings = new MailerSettings($this->_siteID);
+        $mailerSettings = new MailerSettings();
         $mailerSettingsRS = $mailerSettings->getAll();
 
         foreach ($mailerSettingsRS as $setting => $value)
@@ -2069,7 +2031,7 @@ class SettingsUI extends UserInterface
 
         $mailerSettings->set('candidateJoborderStatusSendsMessage', serialize($candidateJoborderStatusSendsMessage));
 
-        $emailTemplates = new EmailTemplates($this->_siteID);
+        $emailTemplates = new EmailTemplates();
         $emailTemplatesRS = $emailTemplates->getAll();
 
         foreach ($emailTemplatesRS as $index => $data)
@@ -2086,7 +2048,7 @@ class SettingsUI extends UserInterface
      */
     private function customizeCalendar()
     {
-        $calendarSettings = new CalendarSettings($this->_siteID);
+        $calendarSettings = new CalendarSettings();
         $calendarSettingsRS = $calendarSettings->getAll();
 
         $this->_template->assign('calendarSettingsRS', $calendarSettingsRS);
@@ -2101,7 +2063,7 @@ class SettingsUI extends UserInterface
      */
     private function onCustomizeCalendar()
     {
-        $calendarSettings = new CalendarSettings($this->_siteID);
+        $calendarSettings = new CalendarSettings();
         $calendarSettingsRS = $calendarSettings->getAll();
 
         foreach ($calendarSettingsRS as $setting => $value)
@@ -2178,7 +2140,7 @@ class SettingsUI extends UserInterface
     private function createBackup()
     {
         /* Attachments */
-        $attachments = new Attachments(CATS_ADMIN_SITE);
+        $attachments = new Attachments();
         $attachmentsRS = $attachments->getAll(
             DATA_ITEM_COMPANY, $_SESSION['CATS']->getSiteCompanyID()
         );
@@ -2198,7 +2160,7 @@ class SettingsUI extends UserInterface
 
     private function deleteBackup()
     {
-        $attachments = new Attachments(CATS_ADMIN_SITE);
+        $attachments = new Attachments();
         $attachments->deleteAll(
             DATA_ITEM_COMPANY,
             $_SESSION['CATS']->getSiteCompanyID(),
@@ -2231,7 +2193,7 @@ class SettingsUI extends UserInterface
         }
         else
         {
-            $site = new Users($this->_siteID);
+            $site = new Users();
             $site->updateSelfEmail($this->_userID, $emailAddress);
 
             $this->_template->assign('inputType', 'conclusion');
@@ -2249,7 +2211,7 @@ class SettingsUI extends UserInterface
 
         $accessLevel = $_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT);
 
-        $mailerSettings = new MailerSettings($this->_siteID);
+        $mailerSettings = new MailerSettings();
         $mailerSettingsRS = $mailerSettings->getAll();
 
         $this->_template->assign('inputType', 'conclusion');
@@ -2301,7 +2263,7 @@ class SettingsUI extends UserInterface
         /* Attempt to change the user's password. */
         if (!$error)
         {
-            $users = new Users($this->_siteID);
+            $users = new Users();
             if ($users->changePassword($this->_userID, 'cats', $newPassword) != LOGIN_SUCCESS)
             {
                 $error = 'Unable to reset password.';
@@ -2332,10 +2294,10 @@ class SettingsUI extends UserInterface
         }
         else
         {
-            $site = new Site($this->_siteID);
+            $site = new Site();
             $site->setName($newSiteName);
 
-            $companies = new Companies($this->_siteID);
+            $companies = new Companies();
             $companyIDInternal = $companies->add(
                 'Internal Postings', '', '', '', '', '', '', '', '', '', '', 0,
                 'Internal postings.', $this->_userID, $this->_userID
@@ -2519,7 +2481,7 @@ class SettingsUI extends UserInterface
         if (!strcmp($templateFile, './modules/settings/Administration.tpl'))
         {
             // Highlight certain rows of importance based on criteria
-            $candidates = new Candidates($this->_siteID);
+            $candidates = new Candidates();
             $this->_template->assign('totalCandidates', $candidates->getCount());
         }
 
@@ -2594,7 +2556,7 @@ class SettingsUI extends UserInterface
                     $isDMY = true;
                 }
 
-                $site = new Site($this->_siteID);
+                $site = new Site();
                 $site->setLocalization($timeZone, $isDMY);
 
                 // Default phone country calling code (E.164) for the site.
@@ -2648,7 +2610,7 @@ class SettingsUI extends UserInterface
             $isDMY = true;
         }
 
-        $site = new Site($this->_siteID);
+        $site = new Site();
         $site->setLocalization($timeZone, $dateFormat);
 
         /* Reload the new data for the session. */
@@ -2667,7 +2629,7 @@ class SettingsUI extends UserInterface
      */
     private function changeSiteName($newSiteName)
     {
-        $site = new Site($this->_siteID);
+        $site = new Site();
         $site->setName($newSiteName);
 
         $_SESSION['CATS']->setSiteName($newSiteName);
@@ -2690,7 +2652,7 @@ class SettingsUI extends UserInterface
      */
     private function manageUsers()
     {
-        $users = new Users($this->_siteID);
+        $users = new Users();
         $rs = $users->getAll();
         $license = $users->getLicenseData();
 
@@ -2704,17 +2666,6 @@ class SettingsUI extends UserInterface
                 $rs[$rowIndex]['unsuccessfulDate'], 'Never'
             );
 
-            // FIXME: The last test here might be redundant.
-            // FIXME: Put this in a private method. It is duplicated twice so far.
-            $siteIDPosition = strpos($row['username'], '@' .  $_SESSION['CATS']->getSiteID());
-
-            if ($siteIDPosition !== false &&
-                substr($row['username'], $siteIDPosition) == '@' . $_SESSION['CATS']->getSiteID())
-            {
-               $rs[$rowIndex]['username'] = str_replace(
-                   '@' . $_SESSION['CATS']->getSiteID(), '', $row['username']
-               );
-            }
         }
 
         $this->_template->assign('active', $this);
@@ -2729,7 +2680,7 @@ class SettingsUI extends UserInterface
      */
     private function onChangePassword()
     {
-        $users = new Users($this->_siteID);
+        $users = new Users();
         if(AUTH_MODE == 'ldap' || AUTH_MODE == 'sql+ldap')
         {
             if($users->isUserLDAP($this->_userID)) {
@@ -2888,7 +2839,7 @@ class SettingsUI extends UserInterface
         }
 
         $loginActivityPager = new LoginActivityPager(
-            LOGIN_ENTRIES_PER_PAGE, $currentPage, $this->_siteID, $successful
+            LOGIN_ENTRIES_PER_PAGE, $currentPage, $successful
         );
 
         if ($loginActivityPager->isSortByValid('sortBy', $_GET))
@@ -2954,22 +2905,22 @@ class SettingsUI extends UserInterface
         switch ($dataItemType)
         {
             case DATA_ITEM_CANDIDATE:
-                $candidates = new Candidates($this->_siteID);
+                $candidates = new Candidates();
                 $data = $candidates->get($dataItemID);
                 break;
 
             case DATA_ITEM_JOBORDER:
-                $jobOrders = new JobOrders($this->_siteID);
+                $jobOrders = new JobOrders();
                 $data = $jobOrders->get($dataItemID);
                 break;
 
             case DATA_ITEM_COMPANY:
-                $companies = new Companies($this->_siteID);
+                $companies = new Companies();
                 $data = $companies->get($dataItemID);
                 break;
 
             case DATA_ITEM_CONTACT:
-                $contacts = new Contacts($this->_siteID);
+                $contacts = new Contacts();
                 $data = $contacts->get($dataItemID);
                 break;
 
@@ -2979,7 +2930,7 @@ class SettingsUI extends UserInterface
         }
 
         /* Get revision information. */
-        $history = new History($this->_siteID);
+        $history = new History();
         $revisionRS = $history->getAll($dataItemType, $dataItemID);
 
         $this->_template->assign('active', $this);
@@ -3005,20 +2956,13 @@ class SettingsUI extends UserInterface
             return;
         }
 
-        $users = new Users($this->_siteID);
+        $users = new Users();
 
         /* If adding an e-mail username, verify it is a valid e-mail. */
         if (strpos($loginName, '@') !== false && filter_var($loginName, FILTER_VALIDATE_EMAIL) === false)
         {
             echo 'That is not a valid login name.';
             return;
-        }
-
-        /* Make it a multisite user name if the user is part of a hosted site. */
-        $unixName = $_SESSION['CATS']->getUnixName();
-        if (strpos($loginName, '@') === false && !empty($unixName))
-        {
-           $loginName .= '@' . $_SESSION['CATS']->getSiteID();
         }
 
         /* Bail out if the specified username already exists. */
@@ -3062,7 +3006,7 @@ class SettingsUI extends UserInterface
             return;
         }
 
-        $users = new Users($this->_siteID);
+        $users = new Users();
         $users->delete($userID);
         echo 'Ok';
     }
@@ -3086,7 +3030,7 @@ class SettingsUI extends UserInterface
             $isDMY = true;
         }
 
-        $site = new Site($this->_siteID);
+        $site = new Site();
         $site->setLocalization($timeZone, $isDMY);
         $site->setLocalizationConfigured();
 
@@ -3095,7 +3039,7 @@ class SettingsUI extends UserInterface
 
     private function wizard_firstTimeSetup()
     {
-        $site = new Site($this->_siteID);
+        $site = new Site();
         $site->setFirstTimeSetup();
 
         echo 'Ok';
@@ -3112,7 +3056,7 @@ class SettingsUI extends UserInterface
             return;
         }
 
-        $users = new Users($this->_siteID);
+        $users = new Users();
         if ($users->changePassword($this->_userID, 'cats', $password) != LOGIN_SUCCESS)
         {
             echo 'Cannot change your site password!';
@@ -3133,7 +3077,7 @@ class SettingsUI extends UserInterface
             return;
         }
 
-        $site = new Users($this->_siteID);
+        $site = new Users();
         $site->updateSelfEmail($this->_userID, $email);
 
         echo 'Ok';
@@ -3150,10 +3094,10 @@ class SettingsUI extends UserInterface
             return;
         }
 
-        $site = new Site($this->_siteID);
+        $site = new Site();
         $site->setName($siteName);
 
-        $companies = new Companies($this->_siteID);
+        $companies = new Companies();
         $companyIDInternal = $companies->add(
             'Internal Postings', '', '', '', '', '', '', '', '', '', '', 0,
             'Internal postings.', $this->_userID, $this->_userID
@@ -3168,10 +3112,8 @@ class SettingsUI extends UserInterface
 
     private function wizard_import()
     {
-        $siteID = $_SESSION['CATS']->getSiteID();
-
         // Echos Ok to redirect to the import stage, or Fail to go to home module
-        $files = ImportUtility::getDirectoryFiles(FileUtility::getUploadPath($siteID, 'massimport'));
+        $files = ImportUtility::getDirectoryFiles(FileUtility::getUploadPath('massimport'));
 
         if (count($files)) echo 'Ok';
         else echo 'Fail';
@@ -3203,7 +3145,7 @@ class SettingsUI extends UserInterface
             // If questionairreID is provided, this is an edit
             if ($questionnaireID != '')
             {
-                $questionnaire = new Questionnaire($this->_siteID);
+                $questionnaire = new Questionnaire();
                 if (count($data = $questionnaire->get($questionnaireID)))
                 {
                     $questions = $questionnaire->getQuestions($questionnaireID);
@@ -3294,7 +3236,7 @@ class SettingsUI extends UserInterface
         $_SESSION['CATS_QUESTIONNAIRE']['description'] = $description;
         $_SESSION['CATS_QUESTIONNAIRE']['isActive'] = $active ? true : false;
 
-        $questionnaire = new Questionnaire($this->_siteID);
+        $questionnaire = new Questionnaire();
         $questions = $_SESSION['CATS_QUESTIONNAIRE']['questions'];
 
         /**
@@ -3699,7 +3641,7 @@ class SettingsUI extends UserInterface
 
     private function careerPortalQuestionnaireUpdate()
     {
-        $questionnaire = new Questionnaire($this->_siteID);
+        $questionnaire = new Questionnaire();
         $data = $questionnaire->getAll(true);
 
         for ($i = 0; $i < count($data); $i++)
@@ -3722,7 +3664,7 @@ class SettingsUI extends UserInterface
         }
 
         $questionnaireID = intval($_GET['questionnaireID']);
-        $questionnaire = new Questionnaire($this->_siteID);
+        $questionnaire = new Questionnaire();
         $data = $questionnaire->get($questionnaireID);
 
         if (empty($data))

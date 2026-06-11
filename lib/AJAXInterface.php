@@ -195,7 +195,6 @@ class AJAXInterface
  */
 class SecureAJAXInterface extends AJAXInterface
 {
-    private $_siteID;
     private $_userID;
 
 
@@ -234,23 +233,10 @@ class SecureAJAXInterface extends AJAXInterface
             }
         }
 
-        /* Grab the current user's site ID. */
-        $this->_siteID = $_SESSION['CATS']->getSiteID();
-
         /* Grab the current user's user ID. */
         $this->_userID = $_SESSION['CATS']->getUserID();
     }
 
-
-    /**
-     * Returns the current session's site ID.
-     *
-     * @return integer Site ID.
-     */
-    public function getSiteID()
-    {
-        return $this->_siteID;
-    }
 
     /**
      * Returns the current session's user ID.

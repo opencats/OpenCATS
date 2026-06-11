@@ -41,11 +41,9 @@ class Dashboard
 {
 
     private $_db;
-    private $_siteID;
-    
-    public function __construct($siteID)
+
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
 
@@ -83,13 +81,10 @@ class Dashboard
                 joborder.recruiter = user.user_id
             WHERE
                 status_to = 800
-            AND
-                candidate_joborder_status_history.site_id = %s
-            ORDER BY 
+            ORDER BY
                 datesort DESC
             LIMIT
-                10",
-            $this->_siteID
+                10"
         );
 
         $rs = $this->_db->getAllAssoc($sql);
@@ -108,7 +103,7 @@ class Dashboard
     {   
         $oneUnixDay = 86400;
         
-        $calendarSettings = new CalendarSettings($this->_siteID);
+        $calendarSettings = new CalendarSettings();
         $calendarSettingsRS = $calendarSettings->getAll();
 
         if ($calendarSettingsRS['firstDayMonday'] == 1)
@@ -160,8 +155,6 @@ class Dashboard
                 SUM(IF(candidate_joborder_status_history.status_to = %s, 1, 0)) AS placed
             FROM
                 candidate_joborder_status_history
-            WHERE
-                candidate_joborder_status_history.site_id = %s
             GROUP BY unixdate
             ORDER BY unixdate DESC
             LIMIT 20
@@ -169,8 +162,7 @@ class Dashboard
             $select,
             PIPELINE_STATUS_SUBMITTED,
             PIPELINE_STATUS_INTERVIEWING,
-            PIPELINE_STATUS_PLACED,
-            $this->_siteID
+            PIPELINE_STATUS_PLACED
         );
         
         $rs = $this->_db->getAllAssoc($sql);

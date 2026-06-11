@@ -48,8 +48,6 @@ if (!isset($_REQUEST['joborderID']) ||
     die();
 }
 
-$siteID = $interface->getSiteID();
-
 $jobOrderID     = trim(htmlspecialchars($_REQUEST['joborderID']));
 $page           = trim(htmlspecialchars($_REQUEST['page']));
 $entriesPerPage = trim(htmlspecialchars($_REQUEST['entriesPerPage']));
@@ -60,11 +58,11 @@ $isPopup        = $_REQUEST['isPopup'] == 1 ? true : false;
 
 $_SESSION['CATS']->setPipelineEntriesPerPage($entriesPerPage);
 
-$jobOrders = new JobOrders($siteID);
+$jobOrders = new JobOrders();
 $jobOrdersData = $jobOrders->get($jobOrderID);
 
 /* Get an array of the pipeline data. */
-$pipelines = new Pipelines($siteID);
+$pipelines = new Pipelines();
 $pipelinesRS = $pipelines->getJobOrderPipeline($jobOrderID);
 
 /* Format pipeline data. */

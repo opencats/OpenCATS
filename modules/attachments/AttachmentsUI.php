@@ -80,7 +80,7 @@ class AttachmentsUI extends UserInterface
 
         $attachmentID = $_GET['id'];
 
-        $attachments = new Attachments(-1);
+        $attachments = new Attachments();
         $rs = $attachments->get($attachmentID, false);
 
         if (empty($rs) || md5($rs['directoryName']) != $_GET['directoryNameHash'])

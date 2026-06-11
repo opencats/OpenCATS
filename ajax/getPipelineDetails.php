@@ -40,12 +40,10 @@ if (!$interface->isRequiredIDValid('candidateJobOrderID', false))
     die();
 }
 
-$siteID = $interface->getSiteID();
-
 $candidateJobOrderID = $_REQUEST['candidateJobOrderID'];
 
 /* Get an array of the company's contacts data. */
-$pipelines = new Pipelines($siteID);
+$pipelines = new Pipelines();
 $pipelineActivitiesRS = $pipelines->getPipelineDetails($candidateJobOrderID);
 
 foreach ($pipelineActivitiesRS as $rowIndex => $row)

@@ -5,7 +5,6 @@ use \OpenCATS\Entity\Company;
 class CompanyTest extends TestCase
 {
     const COMPANY_NAME = "Test Company Name";
-    const SITE_ID = -1;
     const ADDRESS = "O'Higgins 123";
     const ADDRESS2 = "Apt 4B";
     const CITY = "Colonia";
@@ -23,7 +22,7 @@ class CompanyTest extends TestCase
     
     protected function setUp(): void
     {
-        $this->company = new Company(self::SITE_ID, self::COMPANY_NAME);
+        $this->company = new Company(self::COMPANY_NAME);
     }
     
     protected function tearDown(): void
@@ -31,9 +30,8 @@ class CompanyTest extends TestCase
         $this->company = null;
     }
     
-    function test_Company_CreateWithNameAndSiteId_HasNameAndSiteIdSet()
+    function test_Company_CreateWithName_HasNameSet()
     {
-        $this->assertEquals(self::SITE_ID, $this->company->getSiteId());
         $this->assertEquals(self::COMPANY_NAME, $this->company->getName());
     }
     

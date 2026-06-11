@@ -54,7 +54,7 @@ class WizardUI extends UserInterface
         $this->addPage('License', './modules/wizard/WizardIntroLicense.tpl', '', true, true);
         $this->addPage('Register', './modules/wizard/WizardIntroProf.tpl', '', false, true);
         $this->addPage('Setup Users', './modules/wizard/WizardIntroUsers.tpl', '
-            $users = new Users($siteID);
+            $users = new Users();
             $mp = $users->getAll();
             $data = $users->getLicenseData();
 
@@ -167,7 +167,6 @@ class WizardUI extends UserInterface
             $session = $_SESSION['CATS'];
             $this->_template->assign('userID', $userID = $session->getUserID());
             $this->_template->assign('userName', $userName = $session->getUserName());
-            $this->_template->assign('siteID', $siteID = $session->getSiteID());
             $this->_template->assign('siteName', $siteName = $session->getSiteName());
         }
 

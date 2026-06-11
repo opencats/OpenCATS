@@ -114,15 +114,6 @@ class TemplateUtility
 
         if ($showTopRight)
         {
-            // FIXME: Use common functions.
-            // FIXME: Isn't the UNIX-name stuff ASP specific? Hook?
-            if (strpos($username, '@'.$_SESSION['CATS']->getSiteID()) !== false &&
-                substr($username, strpos($username, '@'.$_SESSION['CATS']->getSiteID())) ==
-                '@'.$_SESSION['CATS']->getSiteID() )
-            {
-               $username = str_replace('@'.$_SESSION['CATS']->getSiteID(), '', $username);
-            }
-
             if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_1'))) return;
 
             /* Top Right Corner */
@@ -343,19 +334,9 @@ class TemplateUtility
              '" method="get" onsubmit="return checkQuickSearchForm(document.quickSearchForm);">', "\n";
         echo '<div id="quickSearchBlock">', "\n";
 
-        //FIXME:  Abstract into a hook.
-        if ($_SESSION['CATS']->hasUserCategory('msa'))
-        {
-            echo '<input type="hidden" name="m" value="asp" />', "\n";
-            echo '<input type="hidden" name="a" value="aspSearch" />', "\n";
-            echo '<span class="quickSearchLabel" id="quickSearchLabel">ASP Search:</span>&nbsp;', "\n";
-        }
-        else
-        {
-            echo '<input type="hidden" name="m" value="home" />', "\n";
-            echo '<input type="hidden" name="a" value="quickSearch" />', "\n";
-            echo '<span class="quickSearchLabel" id="quickSearchLabel">Quick Search:</span>&nbsp;', "\n";
-        }
+        echo '<input type="hidden" name="m" value="home" />', "\n";
+        echo '<input type="hidden" name="a" value="quickSearch" />', "\n";
+        echo '<span class="quickSearchLabel" id="quickSearchLabel">Quick Search:</span>&nbsp;', "\n";
 
         echo '<input name="quickSearchFor" id="quickSearchFor" class="quickSearchBox" value="',
              $wildCardString, '" />&nbsp;', "\n";
@@ -823,7 +804,7 @@ class TemplateUtility
                         /* Default company subtab. */
                         include_once(LEGACY_ROOT . '/lib/Companies.php');
 
-                        $companies = new Companies($_SESSION['CATS']->getSiteID());
+                        $companies = new Companies();
                         $defaultCompanyID = $companies->getDefaultCompany();
                         if ($defaultCompanyID !== false)
                         {
@@ -841,7 +822,7 @@ class TemplateUtility
                     else if (strpos($link, 'a=customizeEEOReport') !== false)
                     {
                         /* EEO Report subtab.  Shouldn't be visible if EEO tracking is disabled. */
-                        $EEOSettings = new EEOSettings($_SESSION['CATS']->getSiteID());
+                        $EEOSettings = new EEOSettings();
                         $EEOSettingsRS = $EEOSettings->getAll();
 
                         if ($EEOSettingsRS['enabled'] == 1)
@@ -1327,8 +1308,6 @@ class TemplateUtility
         {
             $headIncludes = array($headIncludes);
         }
-
-        $siteID = $_SESSION['CATS']->getSiteID();
 
         echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"', "\n";
         echo '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">', "\n";

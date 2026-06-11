@@ -46,16 +46,14 @@ include_once(LEGACY_ROOT . '/lib/DataGrid.php');
 class Candidates
 {
     private $_db;
-    private $_siteID;
 
     public $extraFields;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
-        $this->extraFields = new ExtraFields($siteID, DATA_ITEM_CANDIDATE);
+        $this->extraFields = new ExtraFields(DATA_ITEM_CANDIDATE);
     }
 
     /**
@@ -128,7 +126,6 @@ class Candidates
                 entered_by,
                 is_hot,
                 owner,
-                site_id,
                 date_created,
                 date_modified,
                 eeo_ethnic_type_id,
@@ -164,7 +161,6 @@ class Candidates
                 %s,
                 0,
                 %s,
-                %s,
                 NOW(),
                 NOW(),
                 %s,
@@ -198,7 +194,6 @@ class Candidates
             $this->_db->makeQueryString($bestTimeToCall),
             $this->_db->makeQueryInteger($enteredBy),
             $this->_db->makeQueryInteger($owner),
-            $this->_siteID,
             $this->_db->makeQueryInteger($race),
             $this->_db->makeQueryInteger($veteran),
             $this->_db->makeQueryString($disability),
@@ -214,7 +209,7 @@ class Candidates
 
         if (!$skipHistory)
         {
-            $history = new History($this->_siteID);
+            $history = new History();
             $history->storeHistoryNew(DATA_ITEM_CANDIDATE, $candidateID);
         }
 
@@ -309,9 +304,7 @@ class Candidates
                 eeo_disability_status = %s,
                 eeo_gender            = %s
             WHERE
-                candidate_id = %s
-            AND
-                site_id = %s",
+                candidate_id = %s",
             ($isActive ? '1' : '0'),
             $this->_db->makeQueryString($firstName),
             $this->_db->makeQueryString($middleName),
@@ -343,15 +336,14 @@ class Candidates
             $this->_db->makeQueryInteger($veteran),
             $this->_db->makeQueryString($disability),
             $this->_db->makeQueryString($gender),
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($candidateID)
         );
 
         $preHistory = $this->get($candidateID);
         $queryResult = $this->_db->query($sql);
         $postHistory = $this->get($candidateID);
 
-        $history = new History($this->_siteID);
+        $history = new History();
         $history->storeHistoryChanges(
             DATA_ITEM_CANDIDATE, $candidateID, $preHistory, $postHistory
         );
@@ -365,7 +357,7 @@ class Candidates
         {
             /* Send e-mail notification. */
             //FIXME: Make subject configurable.
-            $mailer = new Mailer($this->_siteID);
+            $mailer = new Mailer();
             $mailerStatus = $mailer->sendToOne(
                 array($emailAddress, ''),
                 'CATS Notification: Candidate Ownership Change',
@@ -390,11 +382,8 @@ class Candidates
             "DELETE FROM
                 candidate_joborder
             WHERE
-                candidate_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+                candidate_id = %s",
+            $this->_db->makeQueryInteger($candidateID)
         );
         $this->_db->query($sql);
 
@@ -403,11 +392,8 @@ class Candidates
             "DELETE FROM
                 candidate_joborder_status_history
             WHERE
-                candidate_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+                candidate_id = %s",
+            $this->_db->makeQueryInteger($candidateID)
         );
         $this->_db->query($sql);
 
@@ -418,12 +404,9 @@ class Candidates
             WHERE
                 data_item_type = %s
             AND
-                data_item_id = %s
-            AND
-                site_id = %s",
+                data_item_id = %s",
             DATA_ITEM_CANDIDATE,
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($candidateID)
         );
         $this->_db->query($sql);
 
@@ -434,12 +417,9 @@ class Candidates
             WHERE
                 data_item_type = %s
             AND
-                data_item_id = %s
-            AND
-                site_id = %s",
+                data_item_id = %s",
             DATA_ITEM_CANDIDATE,
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($candidateID)
         );
         $this->_db->query($sql);
 
@@ -448,11 +428,8 @@ class Candidates
             "DELETE FROM
                 candidate_tag
             WHERE
-                candidate_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+                candidate_id = %s",
+            $this->_db->makeQueryInteger($candidateID)
         );
         $this->_db->query($sql);
 
@@ -461,11 +438,8 @@ class Candidates
             "DELETE FROM
                 career_portal_questionnaire_history
             WHERE
-                candidate_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+                candidate_id = %s",
+            $this->_db->makeQueryInteger($candidateID)
         );
         $this->_db->query($sql);
 
@@ -476,11 +450,8 @@ class Candidates
             WHERE
                 data_item_id = %s
             AND
-                site_id = %s
-            AND
                 data_item_type = %s",
             $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID,
             DATA_ITEM_CANDIDATE
         );
         $this->_db->query($sql);
@@ -499,7 +470,7 @@ class Candidates
         $this->_db->query($sql);
 
         /* Delete attachments. */
-        $attachments = new Attachments($this->_siteID);
+        $attachments = new Attachments();
         $attachmentsRS = $attachments->getAll(
             DATA_ITEM_CANDIDATE, $candidateID
         );
@@ -517,15 +488,12 @@ class Candidates
             "DELETE FROM
                 candidate
             WHERE
-                candidate_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+                candidate_id = %s",
+            $this->_db->makeQueryInteger($candidateID)
         );
         $this->_db->query($sql);
 
-        $history = new History($this->_siteID);
+        $history = new History();
         $history->storeHistoryDeleted(DATA_ITEM_CANDIDATE, $candidateID);
     }
 
@@ -586,8 +554,6 @@ class Candidates
                         candidate_id = %s
                     AND
                         status_to = %s
-                    AND
-                        site_id = %s
                 ) AS submitted,
                 CONCAT(
                     candidate.first_name, ' ', candidate.last_name
@@ -626,15 +592,11 @@ class Candidates
                 ON eeo_veteran_type.eeo_veteran_type_id = candidate.eeo_veteran_type_id
             WHERE
                 candidate.candidate_id = %s
-            AND
-                candidate.site_id = %s
             GROUP BY
                 candidate.candidate_id",
             $this->_db->makeQueryInteger($candidateID),
             PIPELINE_STATUS_SUBMITTED,
-            $this->_siteID,
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($candidateID)
         );
 
         return $this->_db->getAssoc($sql);
@@ -716,11 +678,8 @@ class Candidates
             FROM
                 candidate
             WHERE
-                candidate.candidate_id = %s
-            AND
-                candidate.site_id = %s",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+                candidate.candidate_id = %s",
+            $this->_db->makeQueryInteger($candidateID)
         );
 
         return $this->_db->getAssoc($sql);
@@ -757,12 +716,11 @@ class Candidates
             FROM
                 candidate
             WHERE
-                candidate.site_id = %s
+                1=1
                 %s
             ORDER BY
                 candidate.last_name ASC,
                 candidate.first_name ASC",
-            $this->_siteID,
             $criterion
         );
 
@@ -787,12 +745,9 @@ class Candidates
             (
                 candidate.email1 = %s
                 OR candidate.email2 = %s
-            )
-            AND
-                candidate.site_id = %s",
+            )",
             $this->_db->makeQueryString($email),
-            $this->_db->makeQueryString($email),
-            $this->_siteID
+            $this->_db->makeQueryString($email)
         );
         $rs = $this->_db->getAssoc($sql);
 
@@ -815,13 +770,10 @@ class Candidates
                 candidate.phone_home = %s
                 OR candidate.phone_cell = %s
                 OR candidate.phone_work = %s
-            )
-            AND
-                candidate.site_id = %s",
+            )",
             $this->_db->makeQueryString($phone),
             $this->_db->makeQueryString($phone),
-            $this->_db->makeQueryString($phone),
-            $this->_siteID
+            $this->_db->makeQueryString($phone)
         );
         $rs = $this->_db->getAssoc($sql);
          
@@ -859,9 +811,8 @@ class Candidates
             FROM
                 candidate
             WHERE
-                candidate.site_id = %s
+                1=1
             %s",
-            $this->_siteID,
             $adminHiddenCriterion
         );
 
@@ -910,12 +861,11 @@ class Candidates
             LEFT JOIN user AS owner_user
                 ON candidate.entered_by = user.user_id
             WHERE
-                candidate.site_id = %s
+                1=1
             %s
             ORDER BY
                 candidate.last_name ASC,
                 candidate.first_name ASC",
-            $this->_siteID,
             $adminHiddenCriterion
         );
 
@@ -946,11 +896,9 @@ class Candidates
                 attachment.data_item_type = %s
             AND
                 attachment.data_item_id = %s
-            AND
-                attachment.site_id = %s",
+            ",
             DATA_ITEM_CANDIDATE,
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($candidateID)
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -977,15 +925,11 @@ class Candidates
                 attachment
             LEFT JOIN candidate
                 ON attachment.data_item_id = candidate.candidate_id
-                AND attachment.site_id = candidate.site_id
             WHERE
                 attachment.resume = 1
             AND
-                attachment.attachment_id = %s
-            AND
-                attachment.site_id = %s",
-            $this->_db->makeQueryInteger($attachmentID),
-            $this->_siteID
+                attachment.attachment_id = %s",
+            $this->_db->makeQueryInteger($attachmentID)
         );
 
         return $this->_db->getAssoc($sql);
@@ -1014,12 +958,9 @@ class Candidates
                 ON joborder.joborder_id = candidate_joborder.joborder_id
             WHERE
                 candidate_joborder.candidate_id = %s
-            AND
-                joborder.site_id = %s
             ORDER BY
                 title ASC",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($candidateID)
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -1040,10 +981,8 @@ class Candidates
                 date_modified = NOW()
             WHERE
                 candidate_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+            ",
+            $this->_db->makeQueryInteger($candidateID)
         );
 
         return (boolean) $this->_db->query($sql);
@@ -1059,7 +998,7 @@ class Candidates
      */
     public function getUpcomingEvents($candidateID)
     {
-        $calendar = new Calendar($this->_siteID);
+        $calendar = new Calendar();
         return $calendar->getUpcomingEventsByDataItem(
             DATA_ITEM_CANDIDATE, $candidateID
         );
@@ -1079,11 +1018,8 @@ class Candidates
                 candidate_source.name AS name
             FROM
                 candidate_source
-            WHERE
-                candidate_source.site_id = %s
             ORDER BY
-                candidate_source.name ASC",
-            $this->_siteID
+                candidate_source.name ASC"
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -1098,7 +1034,7 @@ class Candidates
      */
     public function updatePossibleSources($updates)
     {
-        $history = new History($this->_siteID);
+        $history = new History();
 
         foreach ($updates as $update)
         {
@@ -1108,16 +1044,13 @@ class Candidates
                     $sql = sprintf(
                         "INSERT INTO candidate_source (
                             name,
-                            site_id,
                             date_created
                          )
                          VALUES (
                             %s,
-                            %s,
                             NOW()
                          )",
-                         $this->_db->makeQueryString($update[0]),
-                         $this->_siteID
+                         $this->_db->makeQueryString($update[0])
                     );
                     $this->_db->query($sql);
 
@@ -1128,11 +1061,8 @@ class Candidates
                         "DELETE FROM
                             candidate_source
                          WHERE
-                            source_id = %s
-                         AND
-                            site_id = %s",
-                         $update[1],
-                         $this->_siteID
+                            source_id = %s",
+                         $update[1]
                     );
                     $this->_db->query($sql);
 
@@ -1145,11 +1075,8 @@ class Candidates
                          FROM
                             candidate_source
                          WHERE
-                            source_id = %s
-                         AND
-                            site_id = %s",
-                         $this->_db->makeQueryInteger($update[1]),
-                         $this->_siteID
+                            source_id = %s",
+                         $this->_db->makeQueryInteger($update[1])
                     );
                     $firstSource = $this->_db->getAssoc($sql);
 
@@ -1159,12 +1086,9 @@ class Candidates
                          SET
                             source = %s
                          WHERE
-                            source = %s
-                         AND
-                            site_id = %s",
+                            source = %s",
                          $update[1],
-                         $this->_db->makeQueryString($firstSource['name']),
-                         $this->_siteID
+                         $this->_db->makeQueryString($firstSource['name'])
                     );
                     $this->_db->query($sql);
 
@@ -1174,12 +1098,9 @@ class Candidates
                          SET
                             name = %s
                          WHERE
-                            source_id = %s
-                         AND
-                            site_id = %s",
+                            source_id = %s",
                          $this->_db->makeQueryString($update[0]),
-                         $this->_db->makeQueryInteger($update[1]),
-                         $this->_siteID
+                         $this->_db->makeQueryInteger($update[1])
                     );
                     $this->_db->query($sql);
 
@@ -1207,12 +1128,9 @@ class Candidates
             SET
                 is_admin_hidden = %s
             WHERE
-                candidate_id = %s
-            AND
-                site_id = %s",
+                candidate_id = %s",
             ($state ? 1 : 0),
-            $this->_db->makeQueryInteger($candidateID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($candidateID)
         );
 
         return (boolean) $this->_db->query($sql);
@@ -1307,11 +1225,8 @@ class Candidates
             FROM 
                 (SELECT * 
                     FROM candidate_duplicates
-                WHERE
-                    candidate_duplicates.site_id = %s
                 GROUP BY
-                    candidate_duplicates.new_candidate_id) as innerQuery",
-            $this->_siteID
+                    candidate_duplicates.new_candidate_id) as innerQuery"
         );
         return $this->_db->getColumn($sql, 0, 0);
     }
@@ -1354,17 +1269,14 @@ class Candidates
                 $sql = sprintf(
                             "INSERT INTO candidate_duplicates (
                                 old_candidate_id,
-                                new_candidate_id,
-                                site_id
+                                new_candidate_id
                              )
                              VALUES (
-                                %s,
                                 %s,
                                 %s
                              )",
                              $this->_db->makeQueryString($duplicateID),
-                             $this->_db->makeQueryString($candidateID),
-                             $this->_siteID
+                             $this->_db->makeQueryString($candidateID)
                         );
                 $this->_db->query($sql);
             }
@@ -1374,17 +1286,14 @@ class Candidates
             $sql = sprintf(
                             "INSERT INTO candidate_duplicates (
                                 old_candidate_id,
-                                new_candidate_id,
-                                site_id
+                                new_candidate_id
                              )
                              VALUES (
-                                %s,
                                 %s,
                                 %s
                              )",
                              $this->_db->makeQueryString($duplicates),
-                             $this->_db->makeQueryString($candidateID),
-                             $this->_siteID
+                             $this->_db->makeQueryString($candidateID)
                         );
                 $this->_db->query($sql);
         }
@@ -1402,12 +1311,9 @@ class Candidates
             SET
                 data_item_id = %s
             WHERE
-                data_item_id = %s
-            AND
-                site_id = %s",
+                data_item_id = %s",
             $this->_db->makeQueryInteger($oldCandidateID),
-            $this->_db->makeQueryInteger($newCandidateID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($newCandidateID)
         );
 
         $this->_db->query($sql);
@@ -1418,12 +1324,9 @@ class Candidates
             SET
                 data_item_id = %s
             WHERE
-                data_item_id = %s
-            AND
-                site_id = %s",
+                data_item_id = %s",
             $this->_db->makeQueryInteger($oldCandidateID),
-            $this->_db->makeQueryInteger($newCandidateID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($newCandidateID)
         );
 
         $this->_db->query($sql);
@@ -1434,12 +1337,9 @@ class Candidates
             SET
                 data_item_id = %s
             WHERE
-                data_item_id = %s
-            AND
-                site_id = %s",
+                data_item_id = %s",
             $this->_db->makeQueryInteger($oldCandidateID),
-            $this->_db->makeQueryInteger($newCandidateID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($newCandidateID)
         );
 
         $this->_db->query($sql);
@@ -1484,12 +1384,11 @@ class Candidates
 
                 $sql = sprintf(
                     "INSERT IGNORE INTO
-                    candidate_duplicates(old_candidate_id, new_candidate_id, site_id)
+                    candidate_duplicates(old_candidate_id, new_candidate_id)
                 VALUES
-                    (%s, %s, %s)",
+                    (%s, %s)",
                     $this->_db->makeQueryInteger($oldCandidateID),
-                    $this->_db->makeQueryInteger($newID['newID']),
-                    $this->_siteID
+                    $this->_db->makeQueryInteger($newID['newID'])
                 );
 
                 $this->_db->query($sql);
@@ -1502,12 +1401,9 @@ class Candidates
             SET
                 candidate_id = %s
             WHERE
-                candidate_id = %s
-            AND
-                site_id = %s",
+                candidate_id = %s",
             $this->_db->makeQueryInteger($oldCandidateID),
-            $this->_db->makeQueryInteger($newCandidateID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($newCandidateID)
         );
 
         $this->_db->query($sql);
@@ -1650,12 +1546,9 @@ class Candidates
             SET
                 %s 
             WHERE
-                candidate_id = %s
-            AND
-                site_id = %s",
+                candidate_id = %s",
             $update,
-            $this->_db->makeQueryInteger($oldCandidateID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($oldCandidateID)
         );
         
         if($this->_db->query($sql))
@@ -1682,16 +1575,13 @@ class Candidates
                 data_item_id IN(%s, %s)
             AND 
                 data_item_type = %s 
-            AND
-                site_id = %s
             GROUP BY
                 saved_list_id
             HAVING COUNT(data_item_id) > 1
             ",
             $this->_db->makeQueryInteger($oldCandidateID),
             $this->_db->makeQueryInteger($newCandidateID),
-            DATA_ITEM_CANDIDATE,
-            $this->_db->makeQueryInteger($this->_siteID)
+            DATA_ITEM_CANDIDATE
 
         );
 
@@ -1716,13 +1606,10 @@ class Candidates
             WHERE
                 data_item_id = %s
             AND
-                saved_list_id NOT IN(%s)
-            AND 
-                site_id = %s",
+                saved_list_id NOT IN(%s)",
             $this->_db->makeQueryInteger($oldCandidateID),
             $this->_db->makeQueryInteger($newCandidateID),
-            $listIDs,
-            $this->_siteID
+            $listIDs
         );
 
         $this->_db->query($sql);
@@ -1735,12 +1622,9 @@ class Candidates
                 WHERE
                     data_item_id = %s 
                 AND 
-                    data_item_type = %s 
-                AND 
-                    site_id = %s",
+                    data_item_type = %s",
             $this->_db->makeQueryInteger($newCandidateID),
-            DATA_ITEM_CANDIDATE,
-            $this->_db->makeQueryInteger($this->_siteID)
+            DATA_ITEM_CANDIDATE
         );
         $this->_db->query($sql);
 
@@ -1751,12 +1635,9 @@ class Candidates
                 SET
                     number_entries = number_entries - 1
                 WHERE
-                    saved_list_id = %s
-                AND 
-                    site_id = %s",
+                    saved_list_id = %s",
 
-                $this->_db->makeQueryInteger($row['listID']),
-                $this->_db->makeQueryInteger($this->_siteID)
+                $this->_db->makeQueryInteger($row['listID'])
             );
             $this->_db->query($sql);
         }
@@ -1771,15 +1652,12 @@ class Candidates
                 candidate_joborder
             WHERE
                 candidate_id IN(%s, %s)
-            AND 
-                site_id = %s
             GROUP BY
                 joborder_id
             HAVING COUNT(candidate_id) > 1
             ",
             $this->_db->makeQueryInteger($oldCandidateID),
-            $this->_db->makeQueryInteger($newCandidateID),
-            $this->_db->makeQueryInteger($this->_siteID)
+            $this->_db->makeQueryInteger($newCandidateID)
         );
 
         $rsTmp = $this->_db->getAllAssoc($sql);
@@ -1804,13 +1682,10 @@ class Candidates
             WHERE
                 candidate_id = %s
             AND
-                joborder_id NOT IN(%s)
-            AND
-                site_id = %s",
+                joborder_id NOT IN(%s)",
             $this->_db->makeQueryInteger($oldCandidateID),
             $this->_db->makeQueryInteger($newCandidateID),
-            $jobOrderIDs,
-            $this->_siteID
+            $jobOrderIDs
         );
 
         $this->_db->query($sql);
@@ -1823,13 +1698,10 @@ class Candidates
             WHERE
                 candidate_id = %s
             AND
-                joborder_id NOT IN(%s)
-            AND
-                site_id = %s",
+                joborder_id NOT IN(%s)",
             $this->_db->makeQueryInteger($oldCandidateID),
             $this->_db->makeQueryInteger($newCandidateID),
-            $jobOrderIDs,
-            $this->_siteID
+            $jobOrderIDs
         );
 
         $this->_db->query($sql);
@@ -1848,14 +1720,11 @@ class Candidates
                     joborder_id = %s 
                 AND 
                     candidate_id IN (%s, %s)
-                AND 
-                    site_id = %s
                 ORDER BY
                     status DESC",
                 $this->_db->makeQueryInteger($row['jobOrderID']),
                 $this->_db->makeQueryInteger($oldCandidateID),
-                $this->_db->makeQueryInteger($newCandidateID),
-                $this->_db->makeQueryInteger($this->_siteID)
+                $this->_db->makeQueryInteger($newCandidateID)
             );
             $rs2 = $this->_db->getAllAssoc($sql);
 
@@ -1864,11 +1733,8 @@ class Candidates
                     DELETE FROM
                         candidate_joborder
                     WHERE
-                        candidate_joborder_id = %s
-                    AND 
-                        site_id = %s",
-                $this->_db->makeQueryInteger($rs2[1]['candidateJobOrderID']),
-                $this->_db->makeQueryInteger($this->_siteID)
+                        candidate_joborder_id = %s",
+                $this->_db->makeQueryInteger($rs2[1]['candidateJobOrderID'])
             );
             $this->_db->query($sql);
 
@@ -1879,11 +1745,8 @@ class Candidates
                     DELETE FROM
                         candidate_joborder_status_history
                     WHERE
-                        candidate_id = %s
-                    AND 
-                        site_id = %s",
-                    $this->_db->makeQueryInteger($newCandidateID),
-                    $this->_db->makeQueryInteger($this->_siteID)
+                        candidate_id = %s",
+                    $this->_db->makeQueryInteger($newCandidateID)
                 );
                 $this->_db->query($sql);
             }
@@ -1893,11 +1756,8 @@ class Candidates
                     DELETE FROM
                         candidate_joborder_status_history
                     WHERE
-                        candidate_id = %s
-                    AND 
-                        site_id = %s",
-                    $this->_db->makeQueryInteger($oldCandidateID),
-                    $this->_db->makeQueryInteger($this->_siteID)
+                        candidate_id = %s",
+                    $this->_db->makeQueryInteger($oldCandidateID)
                 );
                 $this->_db->query($sql);
 
@@ -1907,12 +1767,9 @@ class Candidates
                     SET
                         candidate_id = %s
                     WHERE
-                        candidate_id = %s
-                    AND
-                        site_id = %s",
+                        candidate_id = %s",
                     $this->_db->makeQueryInteger($oldCandidateID),
-                    $this->_db->makeQueryInteger($newCandidateID),
-                    $this->_siteID
+                    $this->_db->makeQueryInteger($newCandidateID)
                 );
                 $this->_db->query($sql);
 
@@ -1922,12 +1779,9 @@ class Candidates
                     SET
                         candidate_id = %s
                     WHERE
-                        candidate_id = %s
-                    AND
-                        site_id = %s",
+                        candidate_id = %s",
                     $this->_db->makeQueryInteger($oldCandidateID),
-                    $this->_db->makeQueryInteger($newCandidateID),
-                    $this->_siteID
+                    $this->_db->makeQueryInteger($newCandidateID)
                 );
                 $this->_db->query($sql);
             }
@@ -1983,23 +1837,17 @@ class Candidates
             WHERE 
                 data_item_type = %s 
             AND 
-                site_id = %s 
-            AND 
                 saved_list_id IN (
                   SELECT
                       saved_list_entry.saved_list_id
                   FROM
                       saved_list_entry
                   WHERE
-                      site_id = %s 
-                  AND
                       data_item_type = %s 
                   AND 
                       data_item_id = %s
                 )",
             DATA_ITEM_CANDIDATE,
-                $this->_siteID,
-                $this->_siteID,
                 DATA_ITEM_CANDIDATE,
                 $candidateID
             );
@@ -2010,13 +1858,10 @@ class Candidates
 
 class CandidatesDataGrid extends DataGrid
 {
-    protected $_siteID;
-
     // FIXME: Fix ugly indenting - ~400 character lines = bad.
-    public function __construct($instanceName, $siteID, $parameters, $misc = 0)
+    public function __construct($instanceName, $parameters, $misc = 0)
     {
         $this->_db = DatabaseConnection::getInstance();
-        $this->_siteID = $siteID;
         $this->_assignedCriterion = "";
         $this->_dataItemIDColumn = 'candidate.candidate_id';
 
@@ -2060,7 +1905,7 @@ class CandidatesDataGrid extends DataGrid
                                                     LEFT JOIN candidate_joborder AS candidate_joborder_submitted
                                                         ON candidate_joborder_submitted.candidate_id = candidate.candidate_id
                                                         AND candidate_joborder_submitted.status >= '.PIPELINE_STATUS_SUBMITTED.'
-                                                        AND candidate_joborder_submitted.site_id = '.$this->_siteID.'
+
                                                         AND candidate_joborder_submitted.status != '.PIPELINE_STATUS_NOTINCONSIDERATION.' LEFT JOIN candidate_duplicates 
                                                         ON candidate.candidate_id = 
                                                         candidate_duplicates.new_candidate_id'
@@ -2332,7 +2177,7 @@ class CandidatesDataGrid extends DataGrid
                                       return "candidate.candidate_id IN (
                                          SELECT t1.candidate_id tags FROM candidate t1
                                          LEFT JOIN candidate_tag t2 ON t1.candidate_id = t2.candidate_id
-                                         WHERE t2.site_id = 1 AND t2.tag_id IN (". implode(",",$arguments)."))";
+                                         WHERE t2.tag_id IN (". implode(",",$arguments)."))";
                                      ')
         );
         
@@ -2346,7 +2191,7 @@ class CandidatesDataGrid extends DataGrid
         }
 
         /* Extra fields get added as columns here. */
-        $candidates = new Candidates($this->_siteID);
+        $candidates = new Candidates();
         $extraFieldsRS = $candidates->extraFields->getSettings();
         foreach ($extraFieldsRS as $index => $data)
         {
@@ -2375,7 +2220,7 @@ class CandidatesDataGrid extends DataGrid
     public function getSQL($selectSQL, $joinSQL, $whereSQL, $havingSQL, $orderSQL, $limitSQL, $distinct = '')
     {
         // FIXME: Factor out Session dependency.
-        if ($_SESSION['CATS']->isLoggedIn() && $_SESSION['CATS']->getAccessLevel('candidates') < ACCESS_LEVEL_MULTI_SA)
+        if ($_SESSION['CATS']->isLoggedIn() && $_SESSION['CATS']->getAccessLevel('candidates') < ACCESS_LEVEL_SA)
         {
             $adminHiddenCriterion = 'AND candidate.is_admin_hidden = 0';
         }
@@ -2390,15 +2235,13 @@ class CandidatesDataGrid extends DataGrid
             $joinSQL  .= ' INNER JOIN saved_list_entry
                                     ON saved_list_entry.data_item_type = '.DATA_ITEM_CANDIDATE.'
                                     AND saved_list_entry.data_item_id = candidate.candidate_id
-                                    AND saved_list_entry.site_id = '.$this->_siteID.'
                                     AND saved_list_entry.saved_list_id = '.$savedListID;
         }
         else
         {
             $joinSQL  .= ' LEFT JOIN saved_list_entry
                                     ON saved_list_entry.data_item_type = '.DATA_ITEM_CANDIDATE.'
-                                    AND saved_list_entry.data_item_id = candidate.candidate_id
-                                    AND saved_list_entry.site_id = '.$this->_siteID;         
+                                    AND saved_list_entry.data_item_id = candidate.candidate_id';
         }
 
         $sql = sprintf(
@@ -2413,7 +2256,7 @@ class CandidatesDataGrid extends DataGrid
                 candidate
             %s
             WHERE
-                candidate.site_id = %s
+                1=1
             %s
             %s
             %s
@@ -2424,7 +2267,6 @@ class CandidatesDataGrid extends DataGrid
             $distinct,
             $selectSQL,
             $joinSQL,
-            $this->_siteID,
             $adminHiddenCriterion,
             (strlen($whereSQL) > 0) ? ' AND ' . $whereSQL : '',
             $this->_assignedCriterion,
@@ -2445,13 +2287,11 @@ class CandidatesDataGrid extends DataGrid
 class EEOSettings
 {
     private $_db;
-    private $_siteID;
     private $_userID;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         // FIXME: Factor out Session dependency.
         $this->_userID = $_SESSION['CATS']->getUserID();
         $this->_db = DatabaseConnection::getInstance();
@@ -2479,15 +2319,11 @@ class EEOSettings
         $sql = sprintf(
             "SELECT
                 settings.setting AS setting,
-                settings.value AS value,
-                settings.site_id AS siteID
+                settings.value AS value
             FROM
                 settings
             WHERE
-                settings.site_id = %s
-            AND
                 settings.settings_type = %s",
-            $this->_siteID,
             SETTINGS_EEO
         );
         $rs = $this->_db->getAllAssoc($sql);
@@ -2524,11 +2360,8 @@ class EEOSettings
             WHERE
                 settings.setting = %s
             AND
-                site_id = %s
-            AND
                 settings_type = %s",
             $this->_db->makeQueryStringOrNULL($setting),
-            $this->_siteID,
             SETTINGS_EEO
         );
         $this->_db->query($sql);
@@ -2537,18 +2370,15 @@ class EEOSettings
             "INSERT INTO settings (
                 setting,
                 value,
-                site_id,
                 settings_type
             )
             VALUES (
-                %s,
                 %s,
                 %s,
                 %s
             )",
             $this->_db->makeQueryStringOrNULL($setting),
             $this->_db->makeQueryStringOrNULL($value),
-            $this->_siteID,
             SETTINGS_EEO
          );
          $this->_db->query($sql);

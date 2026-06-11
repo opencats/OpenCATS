@@ -153,8 +153,8 @@ class QueueProcessor
             return;
         }
 
-        $taskID = self::addAsynchronousTask(CATS_ADMIN_SITE, $taskName, 0, 5);
-        self::startTask(CATS_ADMIN_SITE, $taskPath, 0, 5, $taskID);
+        $taskID = self::addAsynchronousTask($taskName, 0, 5);
+        self::startTask($taskPath, 0, 5, $taskID);
     }
 
     /**
@@ -191,7 +191,7 @@ class QueueProcessor
         else
         {
             // Process the same return value to the CLI
-            return self::startTask($rs['site_id'], $rs['task'], $rs['args'],
+            return self::startTask($rs['task'], $rs['args'],
                 $rs['priority'], $rs['queue_id']
             );
         }
@@ -226,7 +226,7 @@ class QueueProcessor
     }
 
     // FIXME: Document me.
-    public static function startTask($siteID, $taskPath, $args, $priority, $taskID)
+    public static function startTask($taskPath, $args, $priority, $taskID)
     {
         self::setTaskLock($taskID, 1);
 
@@ -244,7 +244,7 @@ class QueueProcessor
         }
 
         $curTask->setTaskID($taskID);
-        $retVal = $curTask->run($siteID, $args);
+        $retVal = $curTask->run($args);
 
         self::setTaskLock($taskID, 0);
 
@@ -275,7 +275,7 @@ class QueueProcessor
     }
 
     // FIXME: Document me.
-    public static function addAsynchronousTask($siteID, $taskPath, $args, $priority = 5)
+    public static function addAsynchronousTask($taskPath, $args, $priority = 5)
     {
         $db = DatabaseConnection::getInstance();
 
@@ -283,10 +283,9 @@ class QueueProcessor
 
         $sql = sprintf(
             "INSERT INTO
-                queue (site_id, task, args, priority, date_created, date_timeout)
+                queue (task, args, priority, date_created, date_timeout)
              VALUES
-                (%s, %s, %s, %s, %s, %s)",
-            $db->makeQueryString($siteID),
+                (%s, %s, %s, %s, %s)",
             $db->makeQueryString($taskPath),
             $db->makeQueryString(serialize($args)),
             $db->makeQueryInteger($priority),

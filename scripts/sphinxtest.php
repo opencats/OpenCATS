@@ -3,9 +3,6 @@
 /* Site for which to filter results. */
 define('TEST_QUERY', 'java');
 
-/* Site for which to filter results. */
-define('TEST_SITE_ID', 201);
-
 /* We want some error output. */
 error_reporting(E_ERROR);
 
@@ -58,8 +55,6 @@ $sphinx->SetWeights(array(0, 100, 0, 0, 50));
 $sphinx->SetMatchMode(SPH_MATCH_BOOLEAN);
 $sphinx->SetLimits(0, 10);
 $sphinx->SetSortMode(SPH_SORT_TIME_SEGMENTS, 'date_added');
-$sphinx->SetFilter('site_id', TEST_SITE_ID);
-
 /* Execute the Sphinx query. Sphinx can ask us to retry if its
  * maxed out. Retry up to 5 times.
  */

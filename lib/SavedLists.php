@@ -38,12 +38,10 @@
 class SavedLists
 {
     private $_db;
-    private $_siteID;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
 
@@ -69,10 +67,7 @@ class SavedLists
             FROM
                 saved_list
             WHERE
-                site_id = %s
-            AND
                 saved_list_id = %s",
-            $this->_siteID,
             $savedListID
         );
 
@@ -128,11 +123,10 @@ class SavedLists
             FROM
                 saved_list
             WHERE
-                site_id = %s
+                1=1
             %s
             ORDER BY
                 saved_list_id ASC",
-            $this->_siteID,
             $typeCriterion
         );
 
@@ -153,11 +147,8 @@ class SavedLists
             FROM
                 saved_list
             WHERE
-                description = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryString($description),
-            $this->_siteID
+                description = %s",
+            $this->_db->makeQueryString($description)
         );
         $rs = $this->_db->getAssoc($sql);
 
@@ -185,12 +176,9 @@ class SavedLists
                 description = %s,
                 date_modified = NOW()
              WHERE
-                saved_list_id = %s
-             AND
-                site_id = %s",
+                saved_list_id = %s",
             $this->_db->makeQueryString($description),
-            $savedListID,
-            $this->_siteID
+            $savedListID
         );
         $rs = $this->_db->query($sql);
     }     
@@ -210,14 +198,12 @@ class SavedLists
                 description = %s,
                 data_item_type = %s,
                 is_dynamic = 0,
-                site_id = %s,
                 number_entries = 0,
                 created_by = %s,
                 date_created = NOW(),
                 date_modified = NOW()",
             $this->_db->makeQueryString($description),
             $dataItemType,
-            $this->_siteID,
             $_SESSION['CATS']->getUserID()
         );
         $rs = $this->_db->query($sql);       
@@ -235,23 +221,17 @@ class SavedLists
             "DELETE FROM
                 saved_list
              WHERE
-                saved_list_id = %s
-             AND
-                site_id = %s",
-            $savedListID,
-            $this->_siteID
+                saved_list_id = %s",
+            $savedListID
         );
-        $rs = $this->_db->query($sql);       
-        
+        $rs = $this->_db->query($sql);
+
         $sql = sprintf(
             "DELETE FROM
                 saved_list_entry
              WHERE
-                saved_list_id = %s
-             AND
-                site_id = %s",
-            $savedListID,
-            $this->_siteID
+                saved_list_id = %s",
+            $savedListID
         );
         $rs = $this->_db->query($sql);    
     }
@@ -277,15 +257,9 @@ class SavedLists
             WHERE
                 saved_list_entry.data_item_id = %s
             AND
-                saved_list_entry.data_item_type = %s
-            AND
-                saved_list_entry.site_id = %s
-            AND
-                saved_list.site_id = %s",
+                saved_list_entry.data_item_type = %s",
             $this->_db->makeQueryInteger($dataItemID),
-            $this->_db->makeQueryInteger($dataItemType),
-            $this->_siteID,
-            $this->_siteID
+            $this->_db->makeQueryInteger($dataItemType)
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -308,7 +282,6 @@ class SavedLists
                     $sql = sprintf(
                         "INSERT INTO saved_list (
                             description,
-                            site_id,
                             data_item_type,
                             created_by,
                             date_created,
@@ -318,12 +291,10 @@ class SavedLists
                             %s,
                             %s,
                             %s,
-                            %s,
                             NOW(),
                             NOW()
                         )",
                         $this->_db->makeQueryString($update[0]),
-                        $this->_siteID,
                         $this->_db->makeQueryInteger($dataItemType),
                         $_SESSION['CATS']->getUserID()
                     );
@@ -336,11 +307,8 @@ class SavedLists
                         "DELETE FROM
                             saved_list_entry
                         WHERE
-                            saved_list_id = %s
-                        AND
-                            site_id = %s",
-                        $this->_db->makeQueryInteger($update[1]),
-                        $this->_siteID
+                            saved_list_id = %s",
+                        $this->_db->makeQueryInteger($update[1])
                     );
                     $this->_db->query($sql);
 
@@ -348,11 +316,8 @@ class SavedLists
                         "DELETE FROM
                             saved_list
                          WHERE
-                            saved_list_id = %s
-                         AND
-                            site_id = %s",
-                         $this->_db->makeQueryInteger($update[1]),
-                         $this->_siteID
+                            saved_list_id = %s",
+                         $this->_db->makeQueryInteger($update[1])
                     );
                     $this->_db->query($sql);
 
@@ -366,12 +331,9 @@ class SavedLists
                             description = %s,
                             date_modified = NOW()
                          WHERE
-                            saved_list_id = %s
-                         AND
-                            site_id = %s",
+                            saved_list_id = %s",
                          $this->_db->makeQueryString($update[0]),
-                         $this->_db->makeQueryInteger($update[1]),
-                         $this->_siteID
+                         $this->_db->makeQueryInteger($update[1])
                     );
                     $this->_db->query($sql);
 
@@ -396,39 +358,34 @@ class SavedLists
             FROM
                 saved_list_entry
             WHERE
-                site_id = %s
-            AND
                 saved_list_id = %s
             AND
                 data_item_id IN (%s)",
-            $this->_siteID,
             $savedListID,
             implode(',', $dataItemIDs)
         );
 
-        $rs = $this->_db->getAssoc($sql);     
-        
+        $rs = $this->_db->getAssoc($sql);
+
         if (isset($rs['savedListID']))
         {
             return;
-        }  
-        
+        }
+
         $valuesArray = array();
         foreach ($dataItemIDs as $dataItemID)
         {
             $valuesArray[] = '(' . $this->_db->makeQueryInteger($savedListID) . ',' .
                                   $this->_db->makeQueryInteger($dataItemType) . ',' .
                                   $this->_db->makeQueryInteger($dataItemID) . ',' .
-                                  $this->_siteID .','.
                                   'NOW())';
         }
-        
+
         $sql = sprintf(
             "INSERT INTO saved_list_entry (
                 saved_list_id,
                 data_item_type,
                 data_item_id,
-                site_id,
                 date_created
             )
             VALUES %s",
@@ -443,19 +400,16 @@ class SavedLists
      * TODO: Document Me!
      */ 
     function removeEntryMany($savedListID, $dataItemIDs)
-    {        
+    {
         $sql = sprintf(
             "DELETE FROM
-                saved_list_entry 
+                saved_list_entry
              WHERE
                 saved_list_id = %s
-             AND
-                site_id = %s
              AND
                 data_item_id IN (%s)
             ",
             $this->_db->makeQueryInteger($savedListID),
-            $this->_db->makeQueryInteger($this->_siteID),
             implode(',', $dataItemIDs)
         );
         $this->_db->query($sql);
@@ -496,18 +450,15 @@ class SavedLists
         $this->_db->query($sql);
         
         $sql = sprintf(
-            "UPDATE 
+            "UPDATE
                 saved_list
              SET
                 date_modified = NOW()
              WHERE
-                site_id = %s
-             AND
                 saved_list_id = %s",
-            $this->_siteID,
             $savedListID
         );
-        
+
         $this->_db->query($sql);
     }
 
@@ -540,11 +491,9 @@ class SavedLists
                             saved_list_id,
                             data_item_type,
                             data_item_id,
-                            site_id,
                             date_created
                         )
                         VALUES (
-                            %s,
                             %s,
                             %s,
                             %s,
@@ -552,8 +501,7 @@ class SavedLists
                         )",
                         $this->_db->makeQueryInteger($savedListID),
                         $this->_db->makeQueryInteger($dataItemType),
-                        $this->_db->makeQueryInteger($dataItemID),
-                        $this->_siteID
+                        $this->_db->makeQueryInteger($dataItemID)
                     );
                     $this->_db->query($sql);
                     
@@ -563,29 +511,23 @@ class SavedLists
 
                 case LIST_EDITOR_REMOVE:
                     $sql = sprintf(
-                        "SELECT 
+                        "SELECT
                             saved_list_id AS savedListID
                         FROM
                             saved_list_entry
                          WHERE
-                            saved_list_entry_id = %s
-                         AND
-                            site_id = %s",
-                         $this->_db->makeQueryInteger($update[1]),
-                         $this->_siteID
+                            saved_list_entry_id = %s",
+                         $this->_db->makeQueryInteger($update[1])
                     );
-                    
+
                     $rs = $this->_db->getAssoc($sql);
-                
+
                     $sql = sprintf(
                         "DELETE FROM
                             saved_list_entry
                          WHERE
-                            saved_list_entry_id = %s
-                         AND
-                            site_id = %s",
-                         $this->_db->makeQueryInteger($update[1]),
-                         $this->_siteID
+                            saved_list_entry_id = %s",
+                         $this->_db->makeQueryInteger($update[1])
                     );
 
                     $this->_db->query($sql);

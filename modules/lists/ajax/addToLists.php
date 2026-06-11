@@ -94,8 +94,6 @@ if (!isset($_POST['dataItemType']) || !ctype_digit((string) $_POST['dataItemType
     die();
 }
 
-$siteID = $interface->getSiteID();
-
 $listsToAdd = explode(',', $_POST['listsToAdd']);
 $itemsToAdd = explode(',', $_POST['itemsToAdd']);
 $dataItemType = $_POST['dataItemType'];
@@ -132,7 +130,7 @@ foreach ($itemsToAdd as $index => $data)
     }
 }
 
-$savedLists = new SavedLists($siteID);
+$savedLists = new SavedLists();
 
 /* Write changes. */
 foreach ($listsToAdd as $list)

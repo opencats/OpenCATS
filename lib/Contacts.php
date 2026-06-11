@@ -43,16 +43,14 @@ include_once(LEGACY_ROOT . '/lib/JobOrderStatuses.php');
 class Contacts
 {
     private $_db;
-    private $_siteID;
 
     public $extraFields;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
-        $this->extraFields = new ExtraFields($siteID, DATA_ITEM_CONTACT);
+        $this->extraFields = new ExtraFields(DATA_ITEM_CONTACT);
     }
 
 
@@ -113,7 +111,6 @@ class Contacts
                 notes,
                 entered_by,
                 owner,
-                site_id,
                 date_created,
                 date_modified
             )
@@ -140,7 +137,6 @@ class Contacts
                 %s,
                 %s,
                 %s,
-                %s,
                 NOW(),
                 NOW()
             )",
@@ -164,8 +160,7 @@ class Contacts
             ($isHot ? '1' : '0'),
             $this->_db->makeQueryString($notes),
             $this->_db->makeQueryInteger($enteredBy),
-            $this->_db->makeQueryInteger($owner),
-            $this->_siteID
+            $this->_db->makeQueryInteger($owner)
         );
 
         $queryResult = $this->_db->query($sql);
@@ -176,7 +171,7 @@ class Contacts
 
         $contactID = $this->_db->getLastInsertID();
 
-        $history = new History($this->_siteID);
+        $history = new History();
         $history->storeHistoryNew(DATA_ITEM_CONTACT, $contactID);
 
         return $contactID;
@@ -258,9 +253,7 @@ class Contacts
                 contact.owner         = %s,
                 contact.date_modified = NOW()
             WHERE
-                contact.contact_id = %s
-            AND
-                contact.site_id = %s",
+                contact.contact_id = %s",
             $this->_db->makeQueryInteger($companyID),
             $this->_db->makeQueryString($firstName),
             $this->_db->makeQueryString($lastName),
@@ -282,8 +275,7 @@ class Contacts
             ($leftCompany ? '1' : '0'),
             $this->_db->makeQueryString($notes),
             $this->_db->makeQueryInteger($owner),
-            $this->_db->makeQueryInteger($contactID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($contactID)
         );
 
         $preHistory = $this->get($contactID);
@@ -295,7 +287,7 @@ class Contacts
             return false;
         }
 
-        $history = new History($this->_siteID);
+        $history = new History();
         $history->storeHistoryChanges(
             DATA_ITEM_CONTACT, $contactID, $preHistory, $postHistory
         );
@@ -304,7 +296,7 @@ class Contacts
         {
             /* Send e-mail notification. */
             //FIXME: Make subject configurable.
-            $mailer = new Mailer($this->_siteID);
+            $mailer = new Mailer();
             $mailerStatus = $mailer->sendToOne(
                 array($emailAddress, ''),
                 'CATS Notification: Contact Ownership Change',
@@ -356,17 +348,14 @@ class Contacts
             WHERE
                 left_company != 1
             AND
-                company_id = %s
-            AND
-                site_id = %s",
+                company_id = %s",
             $this->_db->makeQueryString($address),
             $this->_db->makeQueryString($address2),
             $this->_db->makeQueryString($city),
             $this->_db->makeQueryString($state),
             $this->_db->makeQueryString($zip),
             $countrySQL,
-            $this->_db->makeQueryInteger($companyID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($companyID)
         );
 
         $queryResult = $this->_db->query($sql);
@@ -392,11 +381,8 @@ class Contacts
             SET
                 reports_to = -1
             WHERE
-                reports_to = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($contactID),
-            $this->_siteID
+                reports_to = %s",
+            $this->_db->makeQueryInteger($contactID)
         );
         $this->_db->query($sql);
 
@@ -406,11 +392,8 @@ class Contacts
             SET
                 contact_id = -1
             WHERE
-                contact_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($contactID),
-            $this->_siteID
+                contact_id = %s",
+            $this->_db->makeQueryInteger($contactID)
         );
         $this->_db->query($sql);
 
@@ -420,11 +403,8 @@ class Contacts
             SET
                 billing_contact = -1
             WHERE
-                billing_contact = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($contactID),
-            $this->_siteID
+                billing_contact = %s",
+            $this->_db->makeQueryInteger($contactID)
         );
         $this->_db->query($sql);
 
@@ -435,12 +415,9 @@ class Contacts
             WHERE
                 data_item_type = %s
             AND
-                data_item_id = %s
-            AND
-                site_id = %s",
+                data_item_id = %s",
             DATA_ITEM_CONTACT,
-            $this->_db->makeQueryInteger($contactID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($contactID)
         );
         $this->_db->query($sql);
 
@@ -451,17 +428,14 @@ class Contacts
             WHERE
                 data_item_type = %s
             AND
-                data_item_id = %s
-            AND
-                site_id = %s",
+                data_item_id = %s",
             DATA_ITEM_CONTACT,
-            $this->_db->makeQueryInteger($contactID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($contactID)
         );
         $this->_db->query($sql);
 
         /* Delete attachments. */
-        $attachments = new Attachments($this->_siteID);
+        $attachments = new Attachments();
         $attachmentsRS = $attachments->getAll(
             DATA_ITEM_CONTACT, $contactID
         );
@@ -478,11 +452,8 @@ class Contacts
             WHERE
                 data_item_id = %s
             AND
-                site_id = %s
-            AND
                 data_item_type = %s",
             $this->_db->makeQueryInteger($contactID),
-            $this->_siteID,
             DATA_ITEM_CONTACT
         );
         $this->_db->query($sql);
@@ -494,15 +465,12 @@ class Contacts
             "DELETE FROM
                 contact
             WHERE
-                contact_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($contactID),
-            $this->_siteID
+                contact_id = %s",
+            $this->_db->makeQueryInteger($contactID)
         );
         $this->_db->query($sql);
 
-        $history = new History($this->_siteID);
+        $history = new History();
         $history->storeHistoryDeleted(DATA_ITEM_CONTACT, $contactID);
     }
 
@@ -518,9 +486,7 @@ class Contacts
                 COUNT(*) AS totalContacts
             FROM
                 contact
-            WHERE
-                contact.site_id = %s",
-            $this->_siteID
+            "
         );
 
         return $this->_db->getColumn($sql, 0, 0);
@@ -589,14 +555,8 @@ class Contacts
             LEFT JOIN contact as reportsToContact
                 ON contact.reports_to  = reportsToContact.contact_id
             WHERE
-                contact.contact_id = %s
-            AND
-                contact.site_id = %s
-            AND
-                company.site_id = %s",
-            $this->_db->makeQueryInteger($contactID),
-            $this->_siteID,
-            $this->_siteID
+                contact.contact_id = %s",
+            $this->_db->makeQueryInteger($contactID)
         );
 
         return $this->_db->getAssoc($sql);
@@ -644,12 +604,8 @@ class Contacts
             LEFT JOIN company_department
                 ON contact.company_department_id = company_department.company_department_id
             WHERE
-                contact.contact_id = %s
-            AND
-                contact.site_id = %s",
-            $this->_db->makeQueryInteger($contactID),
-            $this->_siteID,
-            $this->_siteID
+                contact.contact_id = %s",
+            $this->_db->makeQueryInteger($contactID)
         );
 
         return $this->_db->getAssoc($sql);
@@ -717,13 +673,12 @@ class Contacts
             LEFT JOIN company_department
                 ON contact.company_department_id = company_department.company_department_id
             WHERE
-                contact.site_id = %s
+                1=1
             %s
             %s
             ORDER BY
                 contact.last_name ASC,
                 contact.first_name ASC",
-            $this->_siteID,
             $userCriterion,
             $companyCriterion
         );
@@ -739,7 +694,7 @@ class Contacts
      */
     public function getUpcomingEvents($contactID)
     {
-        $calendar = new Calendar($this->_siteID);
+        $calendar = new Calendar();
         return $calendar->getUpcomingEventsByDataItem(
             DATA_ITEM_CONTACT, $contactID
         );
@@ -759,11 +714,8 @@ class Contacts
             SET
                 date_modified = NOW()
             WHERE
-                contact_id = %s
-            AND
-                site_id = %s",
-            $this->_db->makeQueryInteger($contactID),
-            $this->_siteID
+                contact_id = %s",
+            $this->_db->makeQueryInteger($contactID)
         );
 
         return (boolean) $this->_db->query($sql);
@@ -792,14 +744,11 @@ class Contacts
                 ON company.company_id = contact.company_id
             WHERE
                 contact.contact_id = %s
-            AND
-                joborder.site_id = %s
             ORDER BY
                 isAssigned DESC,
                 title ASC",
             $this->_db->makeQueryInteger($contactID),
-            $this->_db->makeQueryInteger($contactID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($contactID)
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -829,15 +778,12 @@ class Contacts
             WHERE
                 contact.contact_id = %s
             AND
-                joborder.site_id = %s
-            AND
                 joborder.status NOT IN %s
             ORDER BY
                 isAssigned DESC,
                 title ASC",
             $this->_db->makeQueryInteger($contactID),
             $this->_db->makeQueryInteger($contactID),
-            $this->_siteID,
             JobOrderStatuses::getClosedStatusSQL()
         );
 
@@ -890,18 +836,12 @@ class Contacts
                 contact.phone_work != ''
             AND
                 contact.phone_work IS NOT NULL
-            AND
-                contact.site_id = %s
-            AND
-                company.site_id = %s
             %s
             %s
             ORDER BY
                 company.name ASC,
                 contact.first_name ASC,
                 contact.last_name ASC",
-            $this->_siteID,
-            $this->_siteID,
             $userCriterion,
             $companyCriterion
         );
@@ -936,12 +876,9 @@ class Contacts
              WHERE
                 name = %s
              AND
-                company_id = %s
-             AND
-                site_id = %s",
+                company_id = %s",
              $this->_db->makeQueryString($departmentName),
-             $companyID,
-             $this->_siteID
+             $companyID
         );
         $rs = $db->getAssoc($sql);
 
@@ -957,14 +894,10 @@ class Contacts
 
 class ContactsDataGrid extends DataGrid
 {
-    protected $_siteID;
-
-
     // FIXME: Fix ugly indenting - ~400 character lines = bad.
-    public function __construct($instanceName, $siteID, $parameters, $misc = 0)
+    public function __construct($instanceName, $parameters, $misc = 0)
     {
         $this->_db = DatabaseConnection::getInstance();
-        $this->_siteID = $siteID;
         $this->_assignedCriterion = "";
         $this->_dataItemIDColumn = 'contact.contact_id';
 
@@ -1115,7 +1048,7 @@ class ContactsDataGrid extends DataGrid
         }
 
         /* Extra fields get added as columns here. */
-        $contacts = new Contacts($this->_siteID);
+        $contacts = new Contacts();
         $extraFieldsRS = $contacts->extraFields->getSettings();
         foreach ($extraFieldsRS as $index => $data)
         {
@@ -1149,15 +1082,13 @@ class ContactsDataGrid extends DataGrid
             $joinSQL  .= ' INNER JOIN saved_list_entry
                                     ON saved_list_entry.data_item_type = '.DATA_ITEM_CONTACT.'
                                     AND saved_list_entry.data_item_id = contact.contact_id
-                                    AND saved_list_entry.site_id = '.$this->_siteID.'
                                     AND saved_list_entry.saved_list_id = '.$savedListID;
         }
         else
         {
             $joinSQL  .= ' LEFT JOIN saved_list_entry
                                     ON saved_list_entry.data_item_type = '.DATA_ITEM_CONTACT.'
-                                    AND saved_list_entry.data_item_id = contact.contact_id
-                                    AND saved_list_entry.site_id = '.$this->_siteID;
+                                    AND saved_list_entry.data_item_id = contact.contact_id';
         }
 
         $sql = sprintf(
@@ -1179,7 +1110,7 @@ class ContactsDataGrid extends DataGrid
                 ON contact.owner = owner_user.user_id
             %s
             WHERE
-                contact.site_id = %s
+                1=1
             %s
             %s
             GROUP BY contact.contact_id
@@ -1189,7 +1120,6 @@ class ContactsDataGrid extends DataGrid
             $distinct,
             $selectSQL,
             $joinSQL,
-            $this->_siteID,
             (strlen($whereSQL) > 0) ? ' AND ' . $whereSQL : '',
             $this->_assignedCriterion,
             (strlen($havingSQL) > 0) ? ' HAVING ' . $havingSQL : '',

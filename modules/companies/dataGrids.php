@@ -37,7 +37,7 @@ include_once(LEGACY_ROOT . '/lib/Width.php');
 
 class CompaniesListByViewDataGrid extends CompaniesDataGrid
 {
-    public function __construct($siteID, $parameters, $misc)
+    public function __construct($parameters, $misc)
     {
         /* Pager configuration. */
         $this->_tableWidth = new Width(100, '%');
@@ -64,7 +64,7 @@ class CompaniesListByViewDataGrid extends CompaniesDataGrid
         );
    
         parent::__construct("companies:CompaniesListByViewDataGrid", 
-                             $siteID, $parameters, $misc
+                             $parameters, $misc
                         );
     }
     
@@ -94,7 +94,7 @@ class CompaniesListByViewDataGrid extends CompaniesDataGrid
 
 class companiesSavedListByViewDataGrid extends CompaniesDataGrid
 {
-    public function __construct($siteID, $parameters, $misc)
+    public function __construct($parameters, $misc)
     {
         /* Pager configuration. */
         $this->_tableWidth = new Width(100, '%');
@@ -121,7 +121,7 @@ class companiesSavedListByViewDataGrid extends CompaniesDataGrid
         );
    
         parent::__construct("companies:companiesSavedListByViewDataGrid", 
-                             $siteID, $parameters, $misc
+                             $parameters, $misc
                         );
     }
     

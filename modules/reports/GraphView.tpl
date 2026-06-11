@@ -7,7 +7,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="<?php echo(CATSUtility::getIndexName()); ?>?m=rss&amp;siteID=<?php echo($_SESSION['CATS']->getSiteID()); ?>" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="<?php echo(CATSUtility::getIndexName()); ?>?m=rss" />
         <style type="text/css" media="all">@import "<?php echo TemplateUtility::getVersionedAssetURL('main.css'); ?>";</style>
         <script type="text/javascript" src="<?php echo TemplateUtility::getVersionedAssetURL('js/lib.js'); ?>"></script>
         <style type="text/css">

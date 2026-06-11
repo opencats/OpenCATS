@@ -41,13 +41,11 @@ include_once(LEGACY_ROOT . '/lib/JobOrderStatuses.php');
 class Statistics
 {
     private $_db;
-    private $_siteID;
     private $_timeZoneOffset;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
 
         // FIXME: Session coupling...
@@ -71,9 +69,8 @@ class Statistics
             FROM
                 candidate
             WHERE
-                site_id = %s
+                1=1
             %s",
-            $this->_siteID,
             $criterion
         );
         $rs = $this->_db->getAssoc($sql);
@@ -102,11 +99,8 @@ class Statistics
                 status_to = 400
             AND
                 joborder.status IN %s
-            AND
-                candidate_joborder_status_history.site_id = %s
             %s",
             JobOrderStatuses::getStatisticsStatusSQL(),
-            $this->_siteID,
             $criterion
         );
         $rs = $this->_db->getAssoc($sql);
@@ -131,10 +125,7 @@ class Statistics
                 candidate_joborder_status_history
             WHERE
                 status_to = 800
-            AND
-                site_id = %s
             %s",
-            $this->_siteID,
             $criterion
         );
         $rs = $this->_db->getAssoc($sql);
@@ -158,9 +149,8 @@ class Statistics
             FROM
                 company
             WHERE
-                site_id = %s
+                1=1
             %s",
-            $this->_siteID,
             $criterion
         );
         $rs = $this->_db->getAssoc($sql);
@@ -184,9 +174,8 @@ class Statistics
             FROM
                 contact
             WHERE
-                site_id = %s
+                1=1
             %s",
-            $this->_siteID,
             $criterion
         );
         $rs = $this->_db->getAssoc($sql);
@@ -210,9 +199,8 @@ class Statistics
             FROM
                 joborder
             WHERE
-                site_id = %s
+                1=1
             %s",
-            $this->_siteID,
             $criterion
         );
         $rs = $this->_db->getAssoc($sql);
@@ -255,15 +243,12 @@ class Statistics
                 ON owner_user.user_id = joborder.owner
             WHERE
                 joborder.status IN %s
-            AND
-                joborder.site_id = %s
             GROUP BY
                 jobOrderID
             HAVING
                 submittedCount > 0",
             $criterion,
-            JobOrderStatuses::getStatisticsStatusSQL(),
-            $this->_siteID
+            JobOrderStatuses::getStatisticsStatusSQL()
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -311,20 +296,11 @@ class Statistics
             AND
                 candidate_joborder_status_history.status_to = 400
             %s
-            AND
-                candidate.site_id = %s
-            AND
-                joborder.site_id = %s
-            AND
-                company.site_id = %s
             ORDER BY
                 candidate.last_name ASC,
                 candidate.first_name ASC",
             $jobOrderID,
-            $criterion,
-            $this->_siteID,
-            $this->_siteID,
-            $this->_siteID
+            $criterion
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -365,15 +341,12 @@ class Statistics
                 ON owner_user.user_id = joborder.owner
             WHERE
                 joborder.status IN %s
-            AND
-                joborder.site_id = %s
             GROUP BY
                 jobOrderID
             HAVING
                 submittedCount > 0",
             $criterion,
-            JobOrderStatuses::getStatisticsStatusSQL(),
-            $this->_siteID
+            JobOrderStatuses::getStatisticsStatusSQL()
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -421,20 +394,11 @@ class Statistics
             AND
                 candidate_joborder_status_history.status_to = 800
             %s
-            AND
-                candidate.site_id = %s
-            AND
-                joborder.site_id = %s
-            AND
-                company.site_id = %s
             ORDER BY
                 candidate.last_name ASC,
                 candidate.first_name ASC",
             $jobOrderID,
-            $criterion,
-            $this->_siteID,
-            $this->_siteID,
-            $this->_siteID
+            $criterion
         );
 
         return $this->_db->getAllAssoc($sql);
@@ -462,9 +426,8 @@ class Statistics
             FROM
                 activity
             WHERE
-                activity.site_id = %s
+                1=1
             %s",
-            $this->_siteID,
             $criterion
         );
 
@@ -493,9 +456,8 @@ class Statistics
             FROM
                 candidate
             WHERE
-                candidate.site_id = %s
+                1=1
             %s",
-            $this->_siteID,
             $criterion
         );
 
@@ -524,9 +486,8 @@ class Statistics
             FROM
                 joborder
             WHERE
-                joborder.site_id = %s
+                1=1
             %s",
-            $this->_siteID,
             $criterion
         );
 
@@ -554,11 +515,8 @@ class Statistics
             FROM
                 candidate_joborder_status_history
             WHERE
-                candidate_joborder_status_history.site_id = %s
-            AND
                 candidate_joborder_status_history.status_to = 400
             %s",
-            $this->_siteID,
             $criterion
         );
 
@@ -586,11 +544,8 @@ class Statistics
             FROM
                 candidate_joborder_status_history
             WHERE
-                candidate_joborder_status_history.site_id = %s
-            AND
                 candidate_joborder_status_history.status_to = 800
             %s",
-            $this->_siteID,
             $criterion
         );
 
@@ -630,8 +585,6 @@ class Statistics
                         joborder_id = %s
                     AND
                         status_to = %s
-                    AND
-                        site_id = %s
                 ) AS submitted,
                 (
                     SELECT
@@ -642,8 +595,6 @@ class Statistics
                         joborder_id = %s
                     AND
                         status_to = %s
-                    AND
-                        site_id = %s
                 ) AS pipelinePlaced,
                 (
                     SELECT
@@ -654,8 +605,6 @@ class Statistics
                         joborder_id = %s
                     AND
                         status_to = %s
-                    AND
-                        site_id = %s
                 ) AS pipelineInterving
             FROM
                 joborder
@@ -671,21 +620,15 @@ class Statistics
                 ON joborder.joborder_id = candidate_joborder.joborder_id
             WHERE
                 joborder.joborder_id = %s
-            AND
-                joborder.site_id = %s
             GROUP BY
                 joborder.joborder_id",
             $this->_db->makeQueryInteger($jobOrderID),
             PIPELINE_STATUS_SUBMITTED,
-            $this->_siteID,
             $this->_db->makeQueryInteger($jobOrderID),
             PIPELINE_STATUS_PLACED,
-            $this->_siteID,
             $this->_db->makeQueryInteger($jobOrderID),
             PIPELINE_STATUS_INTERVIEWING,
-            $this->_siteID,
-            $this->_db->makeQueryInteger($jobOrderID),
-            $this->_siteID
+            $this->_db->makeQueryInteger($jobOrderID)
         );
 
         return $this->_db->getAssoc($sql);
@@ -715,7 +658,6 @@ class Statistics
                 $join = 'LEFT JOIN candidate_joborder AS candidate_joborder_status
                             ON candidate_joborder_status.candidate_id = candidate.candidate_id
                             AND candidate_joborder_status.status >= '.PIPELINE_STATUS_PLACED.'
-                            AND candidate_joborder_status.site_id = '.$this->_siteID.'
                         ';
                 break;
                 
@@ -724,7 +666,6 @@ class Statistics
                 $join = 'LEFT JOIN candidate_joborder AS candidate_joborder_status
                             ON candidate_joborder_status.candidate_id = candidate.candidate_id
                             AND candidate_joborder_status.status = '.PIPELINE_STATUS_NOTINCONSIDERATION.'
-                            AND candidate_joborder_status.site_id = '.$this->_siteID.'
                         ';
                 break;
             
@@ -743,11 +684,10 @@ class Statistics
                 candidate
                 %s
              WHERE
-                candidate.site_id = %s
+                1=1
                 %s
             ",
             $join,
-            $this->_siteID,
             $chriterion
         );
         
@@ -763,8 +703,6 @@ class Statistics
                         %s
                     WHERE
                         candidate.eeo_ethnic_type_id = eeo_ethnic_type.eeo_ethnic_type_id
-                    AND
-                        candidate.site_id = %s
                         %s
                 ) AS numberOfCandidates,
                 eeo_ethnic_type.eeo_ethnic_type_id as EEOEthnicTypeID,
@@ -773,7 +711,6 @@ class Statistics
                 eeo_ethnic_type
             ",
             $join,
-            $this->_siteID,
             $chriterion
         );
              
@@ -789,8 +726,6 @@ class Statistics
                         %s
                     WHERE
                         candidate.eeo_veteran_type_id = eeo_veteran_type.eeo_veteran_type_id
-                    AND
-                        candidate.site_id = %s
                         %s
                 ) AS numberOfCandidates,
                 eeo_veteran_type.eeo_veteran_type_id as EEOVeteranTypeID,
@@ -799,7 +734,6 @@ class Statistics
                 eeo_veteran_type
             ",
             $join,
-            $this->_siteID,
             $chriterion
         );
              
@@ -815,8 +749,6 @@ class Statistics
                         %s
                     WHERE
                         candidate.eeo_disability_status = 'Yes'
-                    AND
-                        candidate.site_id = %s
                         %s
                 ) AS numberOfCandidatesDisabled,
                 (
@@ -827,18 +759,14 @@ class Statistics
                         %s
                     WHERE
                         candidate.eeo_disability_status = 'No'
-                    AND
-                        candidate.site_id = %s
                         %s
                 ) AS numberOfCandidatesNonDisabled
              FROM   
                 candidate
             ",
             $join,
-            $this->_siteID,
             $chriterion,
             $join,
-            $this->_siteID,
             $chriterion
         );
              
@@ -854,8 +782,6 @@ class Statistics
                         %s
                     WHERE
                         candidate.eeo_gender = 'm'
-                    AND
-                        candidate.site_id = %s
                         %s
                 ) AS numberOfCandidatesMale,
                 (
@@ -866,18 +792,14 @@ class Statistics
                         %s
                     WHERE
                         candidate.eeo_gender = 'f'
-                    AND
-                        candidate.site_id = %s
                         %s
                 ) AS numberOfCandidatesFemale
              FROM   
                 candidate
             ",
             $join,
-            $this->_siteID,
             $chriterion,
             $join,
-            $this->_siteID,
             $chriterion
         );
              
@@ -914,8 +836,6 @@ class Statistics
             LEFT JOIN joborder
                 ON joborder.joborder_id = candidate_joborder.joborder_id
             WHERE
-                candidate_joborder.site_id = %s
-            AND
                 joborder.status != 'Closed'
             %s",
             PIPELINE_STATUS_NOSTATUS,
@@ -929,7 +849,6 @@ class Statistics
             PIPELINE_STATUS_CLIENTDECLINED,
             PIPELINE_STATUS_PLACED,
             PIPELINE_STATUS_CANDIDATE_REPLIED,
-            $this->_siteID,
             ($jobOrderID != -1 ? "AND candidate_joborder.joborder_id = ".$jobOrderID : "")
         );
         $rs = $this->_db->getAssoc($sql);

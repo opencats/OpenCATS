@@ -108,13 +108,13 @@ class HomeUI extends UserInterface
         
         NewVersionCheck::getNews();
         
-        $dashboard = new Dashboard($this->_siteID);
+        $dashboard = new Dashboard();
         $placedRS = $dashboard->getPlacements();
         
-        $calendar = new Calendar($this->_siteID);
+        $calendar = new Calendar();
         $upcomingEventsHTML = $calendar->getUpcomingEventsHTML(7, UPCOMING_FOR_DASHBOARD);
         
-        $calendar = new Calendar($this->_siteID);
+        $calendar = new Calendar();
         $upcomingEventsFupHTML = $calendar->getUpcomingEventsHTML(7, UPCOMING_FOR_DASHBOARD_FUP);        
 
         /* Important cand datagrid */
@@ -169,7 +169,7 @@ class HomeUI extends UserInterface
 
         if (!eval(Hooks::get('HOME_DELETE_SAVED_SEARCH_PRE'))) return;
 
-        $savedSearches = new SavedSearches($this->_siteID);
+        $savedSearches = new SavedSearches();
         $savedSearches->remove($searchID);
 
         if (!eval(Hooks::get('HOME_DELETE_SAVED_SEARCH_POST'))) return;
@@ -194,7 +194,7 @@ class HomeUI extends UserInterface
 
         if (!eval(Hooks::get('HOME_ADD_SAVED_SEARCH_PRE'))) return;
 
-        $savedSearches = new SavedSearches($this->_siteID);
+        $savedSearches = new SavedSearches();
         $savedSearches->save($searchID);
 
         if (!eval(Hooks::get('HOME_ADD_SAVED_SEARCH_POST'))) return;
@@ -215,7 +215,7 @@ class HomeUI extends UserInterface
         $query = trim($_GET['quickSearchFor']);
         $wildCardQuickSearch = $query;
 
-        $search = new QuickSearch($this->_siteID);
+        $search = new QuickSearch();
         $candidatesRS = $search->candidates($query);
         $companiesRS  = $search->companies($query);
         $contactsRS   = $search->contacts($query);

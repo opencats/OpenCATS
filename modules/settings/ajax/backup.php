@@ -81,7 +81,7 @@ if ($action == 'start')
         $_POST['attachmentsOnly'] != 'false' && $_POST['attachmentsOnly'] != 'off');
 
     /* Delete any old backups. */
-    $attachments = new Attachments(CATS_ADMIN_SITE);
+    $attachments = new Attachments();
     $attachments->deleteAll(
         DATA_ITEM_COMPANY,
         $companyID,
@@ -98,7 +98,7 @@ if ($action == 'start')
         $title = 'CATS Backup';
     }
 
-    $attachmentCreator = new AttachmentCreator(CATS_ADMIN_SITE);
+    $attachmentCreator = new AttachmentCreator();
     $attachmentCreator->createFromFile(
         DATA_ITEM_COMPANY, $companyID, 'catsbackup.bak', $title, 'catsbackup',
         false, false
@@ -151,7 +151,6 @@ if ($action == 'backup')
     $attachmentsOnly = (isset($_POST['attachmentsOnly']) && !empty($_POST['attachmentsOnly']) &&
         $_POST['attachmentsOnly'] != 'false' && $_POST['attachmentsOnly'] != 'off');
     
-    $siteID = $_SESSION['CATS']->getSiteID();
     $db = DatabaseConnection::getInstance();
 
     /* Our "temp" path, as well as the path where the final zip file will be
@@ -235,18 +234,14 @@ if ($action == 'backup')
     /* Add all attachments to the archive. */
     // FIXME: SQL shouldn't be trickling up to this layer.
 
-    /* Get attachments metadata for this site. */
-    $sql = sprintf(
+    /* Get attachments metadata. */
+    $sql =
         "SELECT
             directory_name,
             stored_filename,
             attachment_id
         FROM
-            attachment
-        WHERE
-            site_id = %s",
-        $siteID
-    );
+            attachment";
     $db->query($sql);
     $totalAttachments = $db->getNumRows();
 
@@ -311,7 +306,7 @@ if ($action == 'backup')
     $md5sum   = @md5_file($zipFilePath);
     $fileSize = (int) @filesize($zipFilePath) / 1024;
 
-    $attachments = new Attachments(CATS_ADMIN_SITE);
+    $attachments = new Attachments();
     $attachments->setSizeMD5($attachmentID, $fileSize, $md5sum);
 
     echo '<html><head>',

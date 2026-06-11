@@ -127,7 +127,7 @@ class ReportsUI extends UserInterface
     private function reports()
     {
         /* Grab an instance of Statistics. */
-        $statistics = new Statistics($this->_siteID);
+        $statistics = new Statistics();
 
         /* Get company statistics. */
         $statisticsData['totalCompanies']     = $statistics->getCompanyCount(TIME_PERIOD_TODATE);
@@ -281,14 +281,14 @@ class ReportsUI extends UserInterface
                 break;
         }
 
-        $statistics = new Statistics($this->_siteID);
+        $statistics = new Statistics();
         $submissionJobOrdersRS = $statistics->getSubmissionJobOrders($period);
 
         foreach ($submissionJobOrdersRS as $rowIndex => $submissionJobOrdersData)
         {
             /* Querys inside loops are bad, but I don't think there is any avoiding this. */
             $submissionJobOrdersRS[$rowIndex]['submissionsRS'] = $statistics->getSubmissionsByJobOrder(
-                $period, $submissionJobOrdersData['jobOrderID'], $this->_siteID
+                $period, $submissionJobOrdersData['jobOrderID']
             );
         }
 
@@ -361,14 +361,14 @@ class ReportsUI extends UserInterface
                 break;
         }
 
-        $statistics = new Statistics($this->_siteID);
+        $statistics = new Statistics();
         $placementsJobOrdersRS = $statistics->getPlacementsJobOrders($period);
 
         foreach ($placementsJobOrdersRS as $rowIndex => $placementsJobOrdersData)
         {
             /* Querys inside loops are bad, but I don't think there is any avoiding this. */
             $placementsJobOrdersRS[$rowIndex]['placementsRS'] = $statistics->getPlacementsByJobOrder(
-                $period, $placementsJobOrdersData['jobOrderID'], $this->_siteID
+                $period, $placementsJobOrdersData['jobOrderID']
             );
         }
 
@@ -392,7 +392,7 @@ class ReportsUI extends UserInterface
         $siteName = $_SESSION['CATS']->getSiteName();
 
 
-        $statistics = new Statistics($this->_siteID);
+        $statistics = new Statistics();
         $data = $statistics->getJobOrderReport($jobOrderID);
 
         /* Bail out if we got an empty result set. */
@@ -444,11 +444,6 @@ class ReportsUI extends UserInterface
     {
         include_once(LEGACY_ROOT . '/vendor/autoload.php');
 
-        // FIXME: Hook?
-        $isASP = $_SESSION['CATS']->isASP();
-
-        $unixName = $_SESSION['CATS']->getUnixName();
-
         $siteName       = $this->getTrimmedInput('siteName', $_GET);
         $companyName    = $this->getTrimmedInput('companyName', $_GET);
         $jobOrderName   = $this->getTrimmedInput('jobOrderName', $_GET);
@@ -476,15 +471,6 @@ class ReportsUI extends UserInterface
         $pdf->AddPage();
 
         if (!eval(Hooks::get('REPORTS_CUSTOMIZE_JO_REPORT_PRE'))) return;
-
-        if ($isASP && $unixName == 'cognizo')
-        {
-            /* TODO: MAKE THIS CUSTOMIZABLE FOR EVERYONE. */
-            $pdf->SetFont($fontFace, 'B', 10);
-            $pdf->Image('images/cognizo-logo.jpg', 130, 10, 59, 20);
-            $pdf->SetXY(129,27);
-            $pdf->Write(5, 'Information Technology Consulting');
-        }
 
         $pdf->SetXY(25, 35);
         $pdf->SetFont($fontFace, 'BU', 14);
@@ -599,7 +585,7 @@ class ReportsUI extends UserInterface
         $modePeriod = $this->getTrimmedInput('period', $_GET);
         $modeStatus = $this->getTrimmedInput('status', $_GET);
 
-        $statistics = new Statistics($this->_siteID);
+        $statistics = new Statistics();
         $EEOReportStatistics = $statistics->getEEOReport($modePeriod, $modeStatus);
 
         //print_r($EEOReportStatistics);
@@ -735,7 +721,7 @@ class ReportsUI extends UserInterface
             $urlDisabilityGraph = "images/noDataByDisability.png";
         }
 
-        $EEOSettings = new EEOSettings($this->_siteID);
+        $EEOSettings = new EEOSettings();
         $EEOSettingsRS = $EEOSettings->getAll();
 
         $this->_template->assign('EEOReportStatistics', $EEOReportStatistics);

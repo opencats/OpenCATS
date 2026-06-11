@@ -61,13 +61,11 @@ define('LDAPUSER_PASSWORD',          '_LDAPUSER_');
 class Users
 {
     private $_db;
-    private $_siteID;
     private $_ldap;
 
 
-    public function __construct($siteID)
+    public function __construct()
     {
-        $this->_siteID = $siteID;
         $this->_db = DatabaseConnection::getInstance();
     }
 
@@ -85,11 +83,10 @@ class Users
      * @return new user ID, or -1 on failure.
      */
     public function add($lastName, $firstName, $email, $username, $password,
-            $accessLevel, $eeoIsVisible = false, $userSiteID = -1)
+            $accessLevel, $eeoIsVisible = false)
     {
 
         $hashedPassword = $password == LDAPUSER_PASSWORD ? $password : $this->hashPassword($password);
-        $userSiteID = $userSiteID < 0 ? $this->_siteID : $userSiteID;
         $sql = sprintf(
                 "INSERT INTO user (
             user_name,
@@ -100,7 +97,6 @@ class Users
         email,
         first_name,
         last_name,
-        site_id,
         can_see_eeo_info
             )
                 VALUES (
@@ -112,7 +108,6 @@ class Users
                     %s,
                     %s,
                     %s,
-                    %s,
                     %s
                     )",
         $this->_db->makeQueryString($username),
@@ -121,7 +116,6 @@ class Users
         $this->_db->makeQueryString($email),
         $this->_db->makeQueryString($firstName),
         $this->_db->makeQueryString($lastName),
-        $userSiteID,
         ($eeoIsVisible ? 1 : 0)
             );
 
@@ -174,17 +168,14 @@ class Users
                 can_see_eeo_info = %s
                 %s
                 WHERE
-                user_id = %s
-                AND
-                site_id = %s",
+                user_id = %s",
                 $this->_db->makeQueryString($lastName),
                 $this->_db->makeQueryString($firstName),
                 $this->_db->makeQueryString($email),
                 $this->_db->makeQueryString($username),
                 ($eeoIsVisible ? 1 : 0),
                 $accessLevelSQL,
-                $this->_db->makeQueryInteger($userID),
-                $this->_siteID
+                $this->_db->makeQueryInteger($userID)
                     );
 
         return (bool) $this->_db->query($sql);
@@ -205,12 +196,9 @@ class Users
                 SET
                 email = %s
                 WHERE
-                user_id = %s
-                AND
-                site_id = %s",
+                user_id = %s",
                 $this->_db->makeQueryString($email),
-                $this->_db->makeQueryInteger($userID),
-                $this->_siteID
+                $this->_db->makeQueryInteger($userID)
                 );
 
         return (bool) $this->_db->query($sql);
@@ -231,12 +219,9 @@ class Users
                 SET
                 categories = %s
                 WHERE
-                user_id = %s
-                AND
-                site_id = %s",
+                user_id = %s",
                 $this->_db->makeQueryString($categories),
-                $this->_db->makeQueryInteger($userID),
-                $this->_siteID
+                $this->_db->makeQueryInteger($userID)
                 );
 
         return (bool) $this->_db->query($sql);
@@ -258,11 +243,8 @@ class Users
                 "DELETE FROM
                 user
                 WHERE
-                user_id = %s
-                AND
-                site_id = %s",
-                $this->_db->makeQueryInteger($userID),
-                $this->_siteID
+                user_id = %s",
+                $this->_db->makeQueryInteger($userID)
                 );
         $this->_db->query($sql);
     }
@@ -319,12 +301,9 @@ class Users
                     LEFT JOIN user_login
                     ON user.user_id = user_login.user_id
                     WHERE
-                    user.site_id = %s
-                    AND
                     user.user_id = %s
                     GROUP BY
                     user.user_id",
-                $this->_siteID,
                 $this->_db->makeQueryInteger($userID)
                     );
 
@@ -364,9 +343,8 @@ class Users
                 user.password AS password,
                 user.categories AS categories,
                 user.session_cookie AS sessionCookie,
-                user.site_id AS siteID,
                 user.can_see_eeo_info AS canSeeEEOInfo,
-                site.name AS siteName,
+                (SELECT name FROM site LIMIT 1) AS siteName,
                 DATE_FORMAT(
                         MAX(
                             IF(user_login.successful = 1, user_login.date, NULL)
@@ -386,8 +364,6 @@ class Users
                     ON user.access_level = access_level.access_level_id
                     LEFT JOIN user_login
                     ON user.user_id = user_login.user_id
-                    LEFT JOIN site
-                    ON user.site_id = site.site_id
                     WHERE
                     %s
                     AND
@@ -432,7 +408,6 @@ class Users
                 $this->_db->makeQueryString($phone_other),
                 $this->_db->makeQueryString($notes),
                 $this->_db->makeQueryInteger($userID),
-                $this->_siteID,
                 $aspSiteRule
                     );
 
@@ -454,10 +429,7 @@ class Users
                 FROM
                 user
                 WHERE
-                user.site_id = %s
-                AND
                 user.user_id = %s",
-                $this->_siteID,
                 $this->_db->makeQueryInteger($userID)
                 );
 
@@ -506,15 +478,12 @@ class Users
                     ON user.access_level = access_level.access_level_id
                     LEFT JOIN user_login
                     ON user.user_id = user_login.user_id
-                    WHERE
-                    user.site_id = %s
                     GROUP BY
                     user.user_id
                     ORDER BY
                     user.access_level DESC,
                 user.last_name ASC,
-                user.first_name ASC",
-                $this->_siteID
+                user.first_name ASC"
                     );
 
         return $this->_db->getAllAssoc($sql);
@@ -535,11 +504,8 @@ class Users
                 FROM
                 user
                 WHERE
-                user_name = %s
-                AND
-                site_id = %s",
-                $this->_db->makeQueryString($username),
-                $this->_siteID
+                user_name = %s",
+                $this->_db->makeQueryString($username)
                 );
         $data = $this->_db->getAssoc($sql);
 
@@ -621,13 +587,10 @@ class Users
                 FROM
                 user
                 WHERE
-                user.site_id = %s
-                AND
                 user.access_level > %s
                 ORDER BY
                 user.last_name ASC,
                 user.first_name ASC",
-                $this->_siteID,
                 ACCESS_LEVEL_DISABLED
                 );
 
@@ -861,7 +824,7 @@ class Users
         if (!$existsInDB && $existsInLDAP) {
             /* ldap user not created in local db -> create one as disabled */
             $userInfo = $this->_ldap->getUserInfo($username);
-            $userID = $this->add($userInfo[0], $userInfo[1], $userInfo[2], $userInfo[3], LDAPUSER_PASSWORD, '0', false, LDAP_SITEID);            
+            $userID = $this->add($userInfo[0], $userInfo[1], $userInfo[2], $userInfo[3], LDAPUSER_PASSWORD, '0');
             return LOGIN_PENDING_APPROVAL;
         }
 
@@ -889,20 +852,14 @@ class Users
     {
         $sql = sprintf(
                 "SELECT
-                COUNT(user.site_id) AS totalUsers,
+                COUNT(user.user_id) AS totalUsers,
                 user.access_level,
                 site.user_licenses AS userLicenses
                 FROM
                 user
-                LEFT JOIN site
-                ON user.site_id = site.site_id
+                CROSS JOIN site
                 WHERE
-                user.site_id = %s
-                AND
-                user.access_level > %s
-                GROUP BY
-                user.site_id",
-                $this->_siteID,
+                user.access_level > %s",
                 ACCESS_LEVEL_READ
                 );
         $license = $this->_db->getAssoc($sql);
@@ -968,7 +925,7 @@ class Users
      * @param boolean Was the login successful?
      * @return integer This login's User Login ID.
      */
-    public function addLoginHistory($userID, $siteID, $ip, $userAgent,
+    public function addLoginHistory($userID, $ip, $userAgent,
             $wasSuccessful)
     {
         if (ENABLE_HOSTNAME_LOOKUP)
@@ -983,7 +940,6 @@ class Users
         $sql = sprintf(
                 "INSERT INTO user_login (
             user_id,
-            site_id,
             ip,
             user_agent,
             host,
@@ -996,13 +952,11 @@ class Users
                     %s,
                     %s,
                     %s,
-                    %s,
                     NOW(),
                     %s,
                     NOW()
                     )",
             $userID,
-            $siteID,
             $this->_db->makeQueryString($ip),
             $this->_db->makeQueryString($userAgent),
             $this->_db->makeQueryString($hostname),
@@ -1026,7 +980,7 @@ class Users
      * @param integer ID for the user login
      * @param integer ID for the site
      */
-    public function updateLastRefresh($userLoginID, $siteID)
+    public function updateLastRefresh($userLoginID)
     {
         $sql = sprintf(
                 "UPDATE
@@ -1034,27 +988,19 @@ class Users
                 SET
                 date_refreshed = NOW()
                 WHERE
-                user_login_id = %s
-                AND
-                site_id = %s",
-                $this->_db->makeQueryInteger($userLoginID),
-                $this->_db->makeQueryInteger($siteID)
+                user_login_id = %s",
+                $this->_db->makeQueryInteger($userLoginID)
                 );
 
         $this->_db->query($sql);
 
         // FIXME: Don't hit "site" on each request. Lets make a new table.
-        $sql = sprintf(
+        $this->_db->query(
                 "UPDATE
                 site
                 SET
-                page_views = page_views + 1
-                WHERE
-                site_id = %s",
-                $this->_db->makeQueryInteger($siteID)
+                page_views = page_views + 1"
                 );
-
-        $this->_db->query($sql);
     }
 
     /**
@@ -1134,7 +1080,7 @@ class Users
      * @param integer ID of the site making the request.
      * @return array
      */
-    public function getLoggedInUsers($limit, $siteID)
+    public function getLoggedInUsers($limit)
     {
         if ($limit > 0)
         {
@@ -1147,25 +1093,12 @@ class Users
             $limitSQL = '';
         }
 
-        if ($siteID > 0)
-        {
-            $siteCriterion = sprintf(
-                    'AND user.site_id = %s', $this->_db->makeQueryInteger($siteID)
-                    );
-        }
-        else
-        {
-            $siteCriterion = '';
-        }
-
         $sql = sprintf(
                 "SELECT
                 MAX(user_login.user_login_id) AS userLoginID,
                 user.user_id AS userID,
-                user.site_id AS siteID,
                 user.first_name AS firstName,
                 user.last_name AS lastName,
-                site.name AS siteName,
                 DATE_FORMAT(
                     user_login.date_refreshed, '%%h:%%i %%p'
                     ) AS lastRefresh,
@@ -1178,17 +1111,13 @@ class Users
                 user
                 LEFT JOIN user_login
                 ON user_login.user_id = user.user_id
-                LEFT JOIN site
-                ON site.site_id = user.site_id
                 WHERE
                 user_login.date_refreshed > DATE_SUB(NOW(), INTERVAL 10 MINUTE)
-                %s
                 GROUP BY
                 user_login.user_login_id
                 ORDER BY
                 user_login.date_refreshed DESC
                 %s",
-            $siteCriterion,
             $limitSQL
                 );
 
@@ -1203,22 +1132,18 @@ class Users
      */
     public function getAutomatedUser()
     {
-        $sql = sprintf(
+        $sql =
                 "SELECT
                 user.user_id AS userID
                 FROM
                 user
                 WHERE
-                user.site_id = %s
-                AND
-                user.user_name = 'cats@rootadmin'",
-                CATS_ADMIN_SITE
-                );
+                user.user_name = 'cats@rootadmin'";
         $rs = $this->_db->getAssoc($sql);
 
         if (!isset($rs['userID']))
         {
-            $sql = sprintf(
+            $sql =
                     "INSERT INTO user (
                 user_name,
                 password,
@@ -1227,8 +1152,7 @@ class Users
                 is_test_user,
                 email,
                 first_name,
-                last_name,
-                site_id
+                last_name
                     )
                     VALUES (
                         'cats@rootadmin',
@@ -1238,11 +1162,8 @@ class Users
                         0,
                         '',
                         'CATS',
-                        'Automated',
-                        %s
-                        )",
-                CATS_ADMIN_SITE
-                    );
+                        'Automated'
+                        )";
             $this->_db->query($sql);
 
             $rs = $this->getAutomatedUser();

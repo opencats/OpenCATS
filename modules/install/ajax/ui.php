@@ -939,19 +939,15 @@ switch ($action)
 
         // If this is an existing database, just set all the fromAddress settings to new
         $db->query(sprintf('UPDATE settings SET value = %s WHERE setting = "fromAddress"', $db->makeQueryString($fromAddress)));
-        // This is a new install, insert a settings value for each site in the database
+        // This is a new install, insert the default settings.
         if ($db->getAffectedRows() == 0)
         {
-            // Insert a "fromAddress" = $fromAddress for each site
             $db->query(sprintf(
-                'INSERT INTO settings (setting, value, site_id, settings_type) '
-                . 'SELECT "fromAddress", %s, site_id, 1 FROM site',
+                'INSERT INTO settings (setting, value, settings_type) VALUES ("fromAddress", %s, 1)',
                 $db->makeQueryString($fromAddress)
             ));
-            // Insert a "configured" = 1 setting for each site
             $db->query(
-                'INSERT INTO settings (setting, value, site_id, settings_type) '
-                . 'SELECT "configured", "1", site_id, 1 FROM site'
+                'INSERT INTO settings (setting, value, settings_type) VALUES ("configured", "1", 1)'
             );
         }
 

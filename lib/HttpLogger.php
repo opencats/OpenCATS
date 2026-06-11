@@ -47,10 +47,9 @@ class HTTPLogger
      * Adds an entry to the HTTP access log table.
      *
      * @param integer Request / log entry type ID.
-     * @param integer Site ID.
      * @return boolean Did the query execute successfully?
      */
-    public static function addHTTPLog($type, $siteID)
+    public static function addHTTPLog($type)
     {
         $db = DatabaseConnection::getInstance();
 
@@ -64,11 +63,9 @@ class HTTPLogger
                 request_uri,
                 script_name,
                 log_type,
-                site_id,
                 date
             )
             VALUES(
-                %s,
                 %s,
                 %s,
                 %s,
@@ -87,7 +84,6 @@ class HTTPLogger
             $db->makeQueryString(@$_SERVER['REQUEST_URI']),
             $db->makeQueryString(@$_SERVER['SCRIPT_NAME']),
             $db->makeQueryInteger($type),
-            $db->makeQueryInteger($siteID),
             $db->makeQueryString(date("Y-m-d H:i:s"))
         );
         

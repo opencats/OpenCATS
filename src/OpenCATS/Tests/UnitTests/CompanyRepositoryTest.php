@@ -10,7 +10,6 @@ include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
 class CompanyRepositoryTest extends TestCase
 {
     const COMPANY_NAME = "Test Company Name";
-    const SITE_ID = -1;
     const ADDRESS = "O'Higgins 123";
     const ADDRESS2 = "Apt O'Higgins 4B";
     const CITY = "Colonia";
@@ -136,7 +135,6 @@ class CompanyRepositoryTest extends TestCase
     private function createCompany()
     {
         return Company::create(
-            self::SITE_ID,
             self::COMPANY_NAME,
             self::ADDRESS,
             self::ADDRESS2,

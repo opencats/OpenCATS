@@ -38,7 +38,6 @@ include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
 include_once(LEGACY_ROOT . '/lib/StringUtility.php');
 include_once(LEGACY_ROOT . '/lib/DateUtility.php');
 include_once(LEGACY_ROOT . '/lib/JobOrders.php');
-include_once(LEGACY_ROOT . '/lib/Site.php');
 
 class RssUI extends UserInterface
 {
@@ -98,13 +97,7 @@ class RssUI extends UserInterface
 
     private function displayPublicJobOrders()
     {
-        $site = new Site(-1);
-
-        $careerPortalSiteID = $site->getFirstSiteID();
-
-        if (!eval(Hooks::get('RSS_SITEID'))) return;
-
-        $jobOrders = new JobOrders($careerPortalSiteID);
+        $jobOrders = new JobOrders();
         $rs = $jobOrders->getAll(JOBORDERS_STATUS_SHARE, -1, -1, -1, false, true);
 
         /* XML Headers */

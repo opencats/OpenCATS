@@ -37,7 +37,7 @@ include_once(LEGACY_ROOT . '/lib/Width.php');
 
 class JobOrdersListByViewDataGrid extends JobOrdersDataGrid
 {
-    public function __construct($siteID, $parameters, $misc)
+    public function __construct($parameters, $misc)
     {
         /* Pager configuration. */
         $this->_tableWidth = new Width(100, '%');
@@ -69,7 +69,7 @@ class JobOrdersListByViewDataGrid extends JobOrdersDataGrid
         if (!eval(Hooks::get('JOBORDERS_DATAGRID_DEFAULTS'))) return;
    
         parent::__construct("joborders:JobOrdersListByViewDataGrid", 
-                             $siteID, $parameters, $misc
+                             $parameters, $misc
                         );
     }
     
@@ -96,7 +96,7 @@ class JobOrdersListByViewDataGrid extends JobOrdersDataGrid
 
 class joborderSavedListByViewDataGrid extends JobOrdersDataGrid
 {
-    public function __construct($siteID, $parameters, $misc)
+    public function __construct($parameters, $misc)
     {
         /* Pager configuration. */
         $this->_tableWidth = new Width(100, '%');
@@ -128,7 +128,7 @@ class joborderSavedListByViewDataGrid extends JobOrdersDataGrid
         if (!eval(Hooks::get('JOBORDERS_DATAGRID_DEFAULTS'))) return;
    
         parent::__construct("joborders:joborderSavedListByViewDataGrid", 
-                             $siteID, $parameters, $misc
+                             $parameters, $misc
                         );
     }
     

@@ -114,7 +114,7 @@ class ExportUI extends UserInterface
             }
         }
 
-        $export = new Export($dataItemType, $IDs, ',', $this->_siteID);
+        $export = new Export($dataItemType, $IDs, ',');
         $output = $export->getFormattedOutput();
 
         if (!eval(Hooks::get('EXPORT'))) return;

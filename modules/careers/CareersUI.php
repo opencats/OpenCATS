@@ -75,13 +75,8 @@ class CareersUI extends UserInterface
 
         /* Get information on what site we are in, our environment, etc. */
 
-        $site = new Site(-1);
-
-        $siteID = $site->getFirstSiteID();
-
-        if (!eval(Hooks::get('CAREERS_SITEID'))) return;
-
-        $siteRS = $site->getSiteBySiteID($siteID);
+        $site = new Site();
+        $siteRS = $site->getFirstSite();
 
         if (!isset($siteRS['name']))
         {
@@ -93,7 +88,7 @@ class CareersUI extends UserInterface
 
         /* Get information on the current template. */
 
-        $careerPortalSettings = new CareerPortalSettings($siteID);
+        $careerPortalSettings = new CareerPortalSettings();
         $careerPortalSettingsRS = $careerPortalSettings->getAll();
 
         $templateName = $careerPortalSettingsRS['activeBoard'];
@@ -116,7 +111,7 @@ class CareersUI extends UserInterface
            template for the specific page. */
 
         /* Get all public job orders for this site. */
-        $jobOrders = new JobOrders($siteID);
+        $jobOrders = new JobOrders();
         $rs = $jobOrders->getAll(JOBORDERS_STATUS_SHARE, -1, -1, -1, false, true);
 
         $useCookie = true;
@@ -142,7 +137,7 @@ class CareersUI extends UserInterface
                 if ($isRegistrationEnabled)
                 {
                     // Remove the saved information cookie
-                    setcookie($this->getCareerPortalCookieName($siteID), '');
+                    setcookie($this->getCareerPortalCookieName(), '');
                     $useCookie = false;
                 }
                 break;
@@ -165,7 +160,7 @@ class CareersUI extends UserInterface
 
             $numberOfSearchResultsEscaped = htmlspecialchars((string) count($rs), ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $template['Content'] = str_replace('<numberOfSearchResults>', $numberOfSearchResultsEscaped, $template['Content']);
-            $template['Content'] = str_replace('<registeredCandidate>', $useCookie && $isRegistrationEnabled ? $this->getRegisteredCandidateBlock($siteID, $template['Content - Candidate Registration']) : '', $template['Content']);
+            $template['Content'] = str_replace('<registeredCandidate>', $useCookie && $isRegistrationEnabled ? $this->getRegisteredCandidateBlock($template['Content - Candidate Registration']) : '', $template['Content']);
 
             if ($careerPortalSettingsRS['allowBrowse'] == 1)
             {
@@ -197,8 +192,8 @@ class CareersUI extends UserInterface
             $content = $template['Content - Candidate Profile'];
 
             // Get information about the candidate from the cookie
-            $fields = $this->getCookieFields($siteID);
-            $candidate = $this->ProcessCandidateRegistration($siteID, $template['Content - Candidate Registration'], $fields);
+            $fields = $this->getCookieFields();
+            $candidate = $this->ProcessCandidateRegistration($template['Content - Candidate Registration'], $fields);
             if ($candidate === false)
             {
                 echo '<html><body>You have not registered yet.  Please wait while we direct you to the job list...<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
@@ -206,7 +201,7 @@ class CareersUI extends UserInterface
             }
 
             // Get the candidate's latest resume attachment (if exists)
-            $attachmentsLib = new Attachments($siteID);
+            $attachmentsLib = new Attachments();
             $attachments = $attachmentsLib->getAll(DATA_ITEM_CANDIDATE, $candidate['candidateID']);
 
             $latestDate = 0;
@@ -229,7 +224,7 @@ class CareersUI extends UserInterface
             // Get their latest resume
             if ($latestAttachment !== false)
             {
-                $candidatesLib = new Candidates($siteID);
+                $candidatesLib = new Candidates();
                 $myResume = $candidatesLib->getResume($latestAttachment);
             }
 
@@ -305,8 +300,8 @@ class CareersUI extends UserInterface
             }
 
             // Get information about the candidate from the cookie
-            $fields = $this->getCookieFields($siteID);
-            $candidate = $this->ProcessCandidateRegistration($siteID, $template['Content - Candidate Registration'], $fields, true);
+            $fields = $this->getCookieFields();
+            $candidate = $this->ProcessCandidateRegistration($template['Content - Candidate Registration'], $fields, true);
             if ($candidate === false)
             {
                 echo '<html><body>You have not registered yet.  Please wait while we direct you to the job list...<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
@@ -351,8 +346,8 @@ class CareersUI extends UserInterface
                 $attachmentID = $_POST['attachmentID'] != '-1' ? $_POST['attachmentID'] : false;
             }
 
-            $attachmentsLib = new Attachments($siteID);
-            $candidatesLib = new Candidates($siteID);
+            $attachmentsLib = new Attachments();
+            $candidatesLib = new Candidates();
 
             // Update the candidate's information
             $candidatesLib->update(
@@ -392,15 +387,15 @@ class CareersUI extends UserInterface
                 $country
             );
 
-            $uploadResume = FileUtility::getUploadFileFromPost($siteID, 'careerportaladd', 'file');
+            $uploadResume = FileUtility::getUploadFileFromPost('careerportaladd', 'file');
             if ($uploadResume !== false)
             {
-                $uploadPath = FileUtility::getUploadFilePath($siteID, 'careerportaladd', $uploadResume);
+                $uploadPath = FileUtility::getUploadFilePath('careerportaladd', $uploadResume);
                 if ($uploadPath !== false)
                 {
                     // Replace most current resume with new uploaded resume
                     $attachmentsLib->delete($attachmentID, true);
-                    $attachmentCreator = new AttachmentCreator($siteID);
+                    $attachmentCreator = new AttachmentCreator();
                     $attachmentCreator->createFromFile(DATA_ITEM_CANDIDATE, $candidate['candidateID'],
                         $uploadPath, false, '', true, true
                     );
@@ -413,7 +408,7 @@ class CareersUI extends UserInterface
             {
                 $storedVal .= sprintf('"%s"="%s"', urlencode($tag), urlencode($tagData));
             }
-            @setcookie($this->getCareerPortalCookieName($siteID), $storedVal, time()+60*60*24*7*2);
+            @setcookie($this->getCareerPortalCookieName(), $storedVal, time()+60*60*24*7*2);
 
             $template['Content'] = '<div id="careerContent"><br /><br /><h1>Please wait while you are redirected to your updated profile...</h1></div>';
             CATSUtility::transferRelativeURI('m=careers&p=showAll&pa=updateProfile&isPostBack=yes');
@@ -442,7 +437,7 @@ class CareersUI extends UserInterface
                 $content
             );
 
-            if (count($fields = $this->getCookieFields($siteID)))
+            if (count($fields = $this->getCookieFields()))
             {
                 $js = '<script language="javascript" type="text/javascript">' . "\n"
                     . 'function populateSavedFields() { var obj; obj = document.getElementById(\'isNewNo\'); '
@@ -502,8 +497,8 @@ class CareersUI extends UserInterface
             if ($isRegistrationEnabled)
             {
                 // Check if the user is registered and logged in
-                $cookieFields = $this->getCookieFields($siteID);
-                $candidate = $this->ProcessCandidateRegistration($siteID, $template['Content - Candidate Registration'], $cookieFields, true);
+                $cookieFields = $this->getCookieFields();
+                $candidate = $this->ProcessCandidateRegistration($template['Content - Candidate Registration'], $cookieFields, true);
                 if ($candidate !== false)
                 {
                     // The candidate is registered
@@ -542,7 +537,7 @@ class CareersUI extends UserInterface
                 if (!strcmp($subAction, 'processLogin') &&
                     isset($_POST['isNew']) && !strcmp($_POST['isNew'], 'no') && $isRegistrationEnabled)
                 {
-                    $candidate = $this->ProcessCandidateRegistration($siteID, $template['Content - Candidate Registration']);
+                    $candidate = $this->ProcessCandidateRegistration($template['Content - Candidate Registration']);
                     if ($candidate !== false)
                     {
                         // Rewrite here, I'll fix it later
@@ -570,9 +565,9 @@ class CareersUI extends UserInterface
                 }
 
                 // Check if a file has been uploaded, if so populate the contents textarea
-                if (($uploadFile = FileUtility::getUploadFileFromPost($siteID, 'careerportaladd', 'resumeFile')) !== false)
+                if (($uploadFile = FileUtility::getUploadFileFromPost('careerportaladd', 'resumeFile')) !== false)
                 {
-                    $uploadFilePath = FileUtility::getUploadFilePath($siteID, 'careerportaladd', $uploadFile);
+                    $uploadFilePath = FileUtility::getUploadFilePath('careerportaladd', $uploadFile);
 
                     if ($uploadFilePath !== false)
                     {
@@ -750,7 +745,7 @@ class CareersUI extends UserInterface
                                                                     </select>', $template['Content']);
 
             /* Extra field inputs. */
-            $candidates = new Candidates($siteID);
+            $candidates = new Candidates();
             $extraFieldsForCandidates = $candidates->extraFields->getValuesForAdd();
 
             foreach($extraFieldsForCandidates as $ef)
@@ -843,7 +838,7 @@ class CareersUI extends UserInterface
              */
             $jobID = intval($_POST['ID']);
             $jobOrderData = $jobOrders->get($jobID);
-            $questionnaireLib = new Questionnaire($siteID);
+            $questionnaireLib = new Questionnaire();
 
             $questionnaireID = $jobOrderData['questionnaireID'];
             if ($questionnaireID)
@@ -859,7 +854,7 @@ class CareersUI extends UserInterface
             if ((isset($_GET[$id='questionnairePostBack']) && $_GET[$id] == '1') || !$questionnaireID)
             {
                 // Continue on our merry way
-                $this->onApplyToJobOrder($siteID, $candidateID);
+                $this->onApplyToJobOrder($candidateID);
 
                 $jobOrderData = $jobOrders->get($jobID);
                 if (!isset($jobOrderData['public']) || $jobOrderData['public'] == 0)
@@ -907,7 +902,7 @@ class CareersUI extends UserInterface
                     . 'enctype="multipart/form-data" method="post" action="'
                     . CATSUtility::getIndexName() . '?m=careers&p=onApplyToJobOrder'
                     . '&questionnairePostBack=1">' . "\n"
-                    . $this->capturePostData($siteID);
+                    . $this->capturePostData();
 
                 // Collect all of the post data and resubmit it as hidden elements
                 $buffer = $formData . $buffer;
@@ -964,7 +959,7 @@ class CareersUI extends UserInterface
                 ENT_QUOTES | ENT_SUBSTITUTE,
                 HTML_ENCODING
             );
-            $template['Content'] = str_replace('<registeredCandidate>', $useCookie && $isRegistrationEnabled ? $this->getRegisteredCandidateBlock($siteID, $template['Content - Candidate Registration']) : '', $template['Content']);
+            $template['Content'] = str_replace('<registeredCandidate>', $useCookie && $isRegistrationEnabled ? $this->getRegisteredCandidateBlock($template['Content - Candidate Registration']) : '', $template['Content']);
             $template['Content'] = str_replace('<title>',        $jobTitleEscaped, $template['Content']);
             $template['Content'] = str_replace('<location>',     $jobLocationEscaped, $template['Content']);
             $template['Content'] = str_replace('<openings>',     $jobOpeningsEscaped, $template['Content']);
@@ -980,7 +975,7 @@ class CareersUI extends UserInterface
             $template['Content'] = str_replace('<salary>',       $jobSalaryEscaped, $template['Content']);
             $template['Content'] = str_replace('<daysOld>',      $jobDaysOldEscaped, $template['Content']);
 
-            $isRegistered = $this->isCandidateRegistered($siteID, $template['Content - Candidate Registration']);
+            $isRegistered = $this->isCandidateRegistered($template['Content - Candidate Registration']);
 
             // If candidate registration is enabled, ask them if they would like to log in first
             if ($isRegistrationEnabled && !$isRegistered)
@@ -1018,7 +1013,7 @@ class CareersUI extends UserInterface
                 $template['Content'] = str_replace('<a-applyToJob', '<a href="' . $applyToJobUrlEscaped . '"', $template['Content']);
             }
 
-            $jobOrders = new JobOrders($siteID);
+            $jobOrders = new JobOrders();
             $extraFieldsForJobOrders = $jobOrders->extraFields->getValuesForShow($jobID);
 
             foreach($extraFieldsForJobOrders as $ef)
@@ -1032,16 +1027,16 @@ class CareersUI extends UserInterface
         else
         {
             $template['Content'] = $template['Content - Main'];
-            $template['Content'] = str_replace('<registeredCandidate>', $useCookie && $isRegistrationEnabled ? $this->getRegisteredCandidateBlock($siteID, $template['Content - Candidate Registration']) : '', $template['Content']);
+            $template['Content'] = str_replace('<registeredCandidate>', $useCookie && $isRegistrationEnabled ? $this->getRegisteredCandidateBlock($template['Content - Candidate Registration']) : '', $template['Content']);
 
-            $isRegistered = $useCookie ? $this->isCandidateRegistered($siteID, $template['Content - Candidate Registration']) : false;
+            $isRegistered = $useCookie ? $this->isCandidateRegistered($template['Content - Candidate Registration']) : false;
 
             if ($isRegistrationEnabled)
             {
                 // postback
                 if (isset($_GET[$id='postback']) && !strcmp($_GET[$id], 'yes'))
                 {
-                    $candidate = $this->ProcessCandidateRegistration($siteID, $template['Content - Candidate Registration']);
+                    $candidate = $this->ProcessCandidateRegistration($template['Content - Candidate Registration']);
 
                     if ($candidate === false)
                     {
@@ -1615,10 +1610,10 @@ class CareersUI extends UserInterface
     }
 
     /* Called by Careers Page function to handle the processing of candidate input. */
-    private function onApplyToJobOrder($siteID, $candidateID = false)
+    private function onApplyToJobOrder($candidateID = false)
     {
-        $jobOrders = new JobOrders($siteID);
-        $careerPortalSettings = new CareerPortalSettings($siteID);
+        $jobOrders = new JobOrders();
+        $careerPortalSettings = new CareerPortalSettings();
 
         if (!$this->isRequiredIDValid('ID', $_POST))
         {
@@ -1690,13 +1685,13 @@ class CareersUI extends UserInterface
             $source = 'Online Careers Website';
         }
 
-        $users = new Users(CATS_ADMIN_SITE);
+        $users = new Users();
         $automatedUser = $users->getAutomatedUser();
 
         /* Find if another user with same e-mail exists. If so, update the user
          * to contain the new information.
          */
-        $candidates = new Candidates($siteID);
+        $candidates = new Candidates();
 
         /**
          * Save basic information in a cookie in case the site is using registration to
@@ -1713,7 +1708,7 @@ class CareersUI extends UserInterface
         }
         // Store their information for an hour only (about 1 session), if they return they can log in again and
         // specify "remember me" which stores it for 2 weeks.
-        @setcookie($this->getCareerPortalCookieName($siteID), $storedVal, time()+60*60);
+        @setcookie($this->getCareerPortalCookieName(), $storedVal, time()+60*60);
 
         if ($candidateID !== false)
         {
@@ -1782,7 +1777,7 @@ class CareersUI extends UserInterface
         // If the candidate was added and a questionnaire exists for the job order
         if ($candidateID > 0 && ($questionnaireID = $jobOrderData['questionnaireID']))
         {
-            $questionnaireLib = new Questionnaire($siteID);
+            $questionnaireLib = new Questionnaire();
             // Perform any actions specified by the questionnaire
             $questionnaireLib->doActions($questionnaireID, $candidateID, $_POST);
         }
@@ -1792,7 +1787,7 @@ class CareersUI extends UserInterface
         /* Upload resume (no questionnaire) */
         if (isset($_FILES['file']) && !empty($_FILES['file']['name']))
         {
-            $attachmentCreator = new AttachmentCreator($siteID);
+            $attachmentCreator = new AttachmentCreator();
             $attachmentCreator->createFromUpload(
                 DATA_ITEM_CANDIDATE, $candidateID, 'file', false, true
             );
@@ -1818,11 +1813,11 @@ class CareersUI extends UserInterface
         {
             $resumePath = '';
 
-            $newFilePath = FileUtility::getUploadFilePath($siteID, 'careerportaladd', $_POST['file']);
+            $newFilePath = FileUtility::getUploadFilePath('careerportaladd', $_POST['file']);
 
             if ($newFilePath !== false)
             {
-                $attachmentCreator = new AttachmentCreator($siteID);
+                $attachmentCreator = new AttachmentCreator();
                 $attachmentCreator->createFromFile(
                     DATA_ITEM_CANDIDATE, $candidateID, $newFilePath, false, '', true, true
                 );
@@ -1845,8 +1840,8 @@ class CareersUI extends UserInterface
             }
         }
 
-        $pipelines = new Pipelines($siteID);
-        $activityEntries = new ActivityEntries($siteID);
+        $pipelines = new Pipelines();
+        $activityEntries = new ActivityEntries();
 
         /* Is the candidate already in the pipeline for this job order? */
         $rs = $pipelines->get($candidateID, $jobOrderID);
@@ -1912,7 +1907,7 @@ class CareersUI extends UserInterface
         );
 
         /* Send an E-Mail describing what happened. */
-        $emailTemplates = new EmailTemplates($siteID);
+        $emailTemplates = new EmailTemplates();
         $candidatesEmailTemplateRS = $emailTemplates->getByTag(
             'EMAIL_TEMPLATE_CANDIDATEAPPLY'
         );
@@ -2044,7 +2039,7 @@ class CareersUI extends UserInterface
         }
     }
 
-    public function capturePostData($siteID, $ignore = array())
+    public function capturePostData($ignore = array())
     {
         $hiddenTags = '';
         $isValidName = function ($name)
@@ -2084,7 +2079,7 @@ class CareersUI extends UserInterface
             $appendHiddenTag($name, $value);
         }
 
-        if (($uploadFile = FileUtility::getUploadFileFromPost($siteID, 'careerportaladd', 'file')) !== false)
+        if (($uploadFile = FileUtility::getUploadFileFromPost('careerportaladd', 'file')) !== false)
         {
             $fileFieldName = 'file';
             if ($isValidName($fileFieldName))
@@ -2100,13 +2095,13 @@ class CareersUI extends UserInterface
         return $hiddenTags;
     }
 
-    private function isCandidateRegistered($siteID, $template)
+    private function isCandidateRegistered($template)
     {
-        $fields = $this->getCookieFields($siteID);
-        return $this->ProcessCandidateRegistration($siteID, $template, $fields, true) ? true : false;
+        $fields = $this->getCookieFields();
+        return $this->ProcessCandidateRegistration($template, $fields, true) ? true : false;
     }
 
-    private function ProcessCandidateRegistration($siteID, $template, $cookieFields = array(), $ignorePost = false)
+    private function ProcessCandidateRegistration($template, $cookieFields = array(), $ignorePost = false)
     {
         $db = DatabaseConnection::getInstance();
 
@@ -2178,8 +2173,7 @@ class CareersUI extends UserInterface
             return false;
         }
 
-        $sql .= sprintf('site_id = %d AND (LCASE(email1) = %s OR LCASE(email2) = %s) LIMIT 1',
-            $siteID,
+        $sql .= sprintf('(LCASE(email1) = %s OR LCASE(email2) = %s) LIMIT 1',
             $db->makeQueryString(strtolower($fields['email'])),
             $db->makeQueryString(strtolower($fields['email']))
         );
@@ -2188,7 +2182,7 @@ class CareersUI extends UserInterface
 
         if ($db->getNumRows())
         {
-            $candidates = new Candidates($siteID);
+            $candidates = new Candidates();
             $candidate = $candidates->get($rs['candidate_id']);
 
             // Setup a cookie to remember the user by for the next 2 weeks
@@ -2199,7 +2193,7 @@ class CareersUI extends UserInterface
                 {
                     $storedVal .= sprintf('"%s"="%s"', urlencode($tag), urlencode($tagData));
                 }
-                @setcookie($this->getCareerPortalCookieName($siteID), $storedVal, time()+60*60*24*7*2);
+                @setcookie($this->getCareerPortalCookieName(), $storedVal, time()+60*60*24*7*2);
             }
 
             return $candidate;
@@ -2208,17 +2202,17 @@ class CareersUI extends UserInterface
         return false;
     }
 
-    private function getCareerPortalCookieName($siteID)
+    private function getCareerPortalCookieName()
     {
-        return sprintf('cats%dcw', $siteID);
+        return sprintf('cats%dcw', CATS_INSTALLATION_SITE);
     }
 
-    private function getCookieFields($siteID)
+    private function getCookieFields()
     {
         $fields = array();
 
         // Check if there's a cookie to prefill the fields with
-        if (isset($_COOKIE[$id=$this->getCareerPortalCookieName($siteID)]))
+        if (isset($_COOKIE[$id=$this->getCareerPortalCookieName()]))
         {
             if (preg_match_all('/"([^"]+)"="([^"]*)"/', $_COOKIE[$id], $matches) > 0)
             {
@@ -2236,10 +2230,10 @@ class CareersUI extends UserInterface
         return $fields;
     }
 
-    private function getRegisteredCandidateBlock($siteID, $template)
+    private function getRegisteredCandidateBlock($template)
     {
-        $fields = $this->getCookieFields($siteID);
-        $candidate = $this->ProcessCandidateRegistration($siteID, $template, $fields);
+        $fields = $this->getCookieFields();
+        $candidate = $this->ProcessCandidateRegistration($template, $fields);
 
         if ($candidate !== false)
         {
@@ -2255,7 +2249,7 @@ class CareersUI extends UserInterface
                 . '</h3></div>',
                 CATSUtility::getIndexName(),
                 $_SERVER['QUERY_STRING'] != '' ? '?' . $_SERVER['QUERY_STRING'] : '',
-                $this->capturePostData($siteID, array('pa')),
+                $this->capturePostData(array('pa')),
                 $candidate['firstName'],
                 $candidate['firstName']
             );

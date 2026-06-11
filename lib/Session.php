@@ -39,7 +39,6 @@ include(LEGACY_ROOT . '/lib/ACL.php');
  */
 class CATSSession
 {
-    private $_siteID = -1;
     private $_userID = -1;
     private $_siteCompanyID = -1;
     private $_userLoginID = -1;
@@ -47,13 +46,11 @@ class CATSSession
     private $_realAccessLevel = -1;
     private $_isLoggedIn = false;
     private $_isDemo = false;
-    private $_isASP = false;
     private $_isFree = false;
     private $_isHrMode = false;
     private $_accountActive = true;
     private $_accountDeleted = false;
     private $_siteName = '';
-    private $_unixName = '';
     private $_username = '';
     private $_password = '';
     private $_firstName = '';
@@ -96,7 +93,7 @@ class CATSSession
     {
         if (!isset($this->_MRU) || $this->_MRU === null)
         {
-            $this->_MRU = new MRU($this->_userID, $this->_siteID);
+            $this->_MRU = new MRU($this->_userID);
         }
 
         return $this->_MRU;
@@ -183,39 +180,22 @@ class CATSSession
             return true;
         }
         
-        /* Sanity check. */
-        if ($this->getUnixName() == '')
-        {
-            return false;
-        }
-        
         /* Forced logouts can only occur if Single Session mode is enabled. */
         if (!ENABLE_SINGLE_SESSION)
         {
             return false;
         }
 
-        /* Don't force logout for certain kinds of accounts
-         * account.
-         */
+        /* Don't force logout for certain kinds of accounts. */
         if ($this->isDemo() ||
             $this->getAccessLevel(ACL::SECOBJ_ROOT) == ACCESS_LEVEL_READ ||
-            $this->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_ROOT ||
-            $this->_unixName == 'cognizo')
-        {
-            return false;
-        }
-
-        /* Don't force logout for site 200.
-         * TODO:  Remove me.
-         */
-        if ($this->getSiteID() == 200)
+            $this->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_ROOT)
         {
             return false;
         }
 
         /* Get the current user's session cookie from the database. */
-        $users = new Users($this->_siteID);
+        $users = new Users();
         $userRS = $users->get($this->_userID);
         if (empty($userRS) || !isset($userRS['sessionCookie']) ||
             empty($userRS['sessionCookie']))
@@ -268,12 +248,6 @@ class CATSSession
     }
 
     // FIXME: Document me!
-    public function isASP()
-    {
-        return $this->_isASP;
-    }
-
-    // FIXME: Document me!
     public function isFree()
     {
         return $this->_isFree;
@@ -309,23 +283,6 @@ class CATSSession
     public function isHrMode()
     {
         return $this->_isHrMode;
-    }
-
-    /**
-     * Returns the current user's site ID stored in the session. The database
-     * is not accessed. -1 will be returned if the site ID does not exist for
-     * any reason.
-     *
-     * @return integer Current user's site ID, or -1 if nonexistant.
-     */
-    public function getSiteID()
-    {
-        if (isset($this->_siteID) && !empty($this->_siteID))
-        {
-            return $this->_siteID;
-        }
-
-        return -1;
     }
 
     // FIXME: Document me!
@@ -449,17 +406,6 @@ class CATSSession
     public function getSiteName()
     {
         return $this->_siteName;
-    }
-
-    /**
-     * Gets the current site's short / unix name stored in the session. The
-     * database is not accessed.
-     *
-     * @return string Current site's short / unix name.
-     */
-    public function getUnixName()
-    {
-        return $this->_unixName;
     }
 
     /**
@@ -646,10 +592,9 @@ class CATSSession
             return;
         }
 
-        $users = new Users($this->_siteID);
+        $users = new Users();
         $userLoginID = $users->updateLastRefresh(
-            $this->_userLoginID,
-            $this->_siteID
+            $this->_userLoginID
         );
     }
 
@@ -668,7 +613,7 @@ class CATSSession
         $db = DatabaseConnection::getInstance();
 
         /* Is the login information supplied correct? Get the status flag. */
-        $users = new Users(-1);
+        $users = new Users();
         $loginStatus = $users->isCorrectLogin($username, $password);
 
         if ($loginStatus == LOGIN_INVALID_USER)
@@ -687,7 +632,6 @@ class CATSSession
                 user.first_name AS firstName,
                 user.last_name AS lastName,
                 user.access_level AS accessLevel,
-                user.site_id AS userSiteID,
                 user.is_demo AS isDemoUser,
                 user.email AS email,
                 user.categories AS categories,
@@ -712,8 +656,7 @@ class CATSSession
                 IF(site.last_viewed_day = CURDATE(), 1, 0) AS lastViewedDayIsToday
             FROM
                 user
-            LEFT JOIN site
-                ON site.site_id = user.site_id
+            CROSS JOIN site
             WHERE
                 user.user_name = %s",
             $db->makeQueryString($username)
@@ -757,7 +700,6 @@ class CATSSession
                 {
                     $users->addLoginHistory(
                         $rs['userID'],
-                        $rs['userSiteID'],
                         $ip,
                         $userAgent,
                         false
@@ -775,7 +717,6 @@ class CATSSession
                 {
                     $users->addLoginHistory(
                         $rs['userID'],
-                        $rs['userSiteID'],
                         $ip,
                         $userAgent,
                         false
@@ -793,7 +734,6 @@ class CATSSession
                 {
                     $users->addLoginHistory(
                         $rs['userID'],
-                        $rs['userSiteID'],
                         $ip,
                         $userAgent,
                         false
@@ -812,16 +752,13 @@ class CATSSession
                 $this->_username               = $rs['username'];
                 $this->_password               = $rs['password'];
                 $this->_userID                 = $rs['userID'];
-                $this->_siteID                 = $rs['userSiteID'];
                 $this->_firstName              = $rs['firstName'];
                 $this->_lastName               = $rs['lastName'];
                 $this->_siteName               = $rs['siteName'];
-                $this->_unixName               = $rs['unixName'];
                 $this->_userLicenses           = $rs['userLicenses'];
                 $this->_accessLevel            = $rs['accessLevel'];
                 $this->_realAccessLevel        = $rs['accessLevel'];
                 $this->_categories             = explode(',', (string) $rs['categories']);
-                $this->_isASP                  = ($rs['companyID'] != 0 ? true : false);
                 $this->_isHrMode               = ($rs['isHrMode'] != 0 ? true : false);
                 $this->_siteCompanyID          = ($rs['companyID'] != 0 ? $rs['companyID'] : -1);
                 $this->_isFree                 = ($rs['isFree'] == 0 ? false : true);
@@ -885,7 +822,6 @@ class CATSSession
                 {
                     $userLoginID = $users->addLoginHistory(
                         $this->_userID,
-                        $this->_siteID,
                         $this->_ip,
                         $this->_userAgent,
                         true
@@ -899,20 +835,36 @@ class CATSSession
                 $this->_userLoginID = $userLoginID;
                 $this->_isLoggedIn = true;
 
-                if ($rs['lastViewedDayIsToday'] == 0)
+                // Start output buffering to prevent "Headers Already Sent" errors
+                ob_start();
+
+                $cookieValue = $this->getCookie();
+                $expires = time() + 3600;  // Example expiration time, adjust as needed
+                $path = '/';
+                // $domain = 'example.com';   // Adjust as needed
+                $secure = true;            // Adjust based on your environment
+                $httponly = true;
+                $samesite = 'Lax';
+
+                // Fixed setcookie call - define domain variable and remove invalid path format
+                $domain = '';  // Use empty string for current domain
+                // TODO: Drop PHP < 7.3 fallback and always use setcookie() options array once legacy PHP is no longer supported.
+                if (PHP_VERSION_ID >= 70300)
                 {
-                    $sql = sprintf(
-                        "UPDATE
-                            site
-                         SET
-                            last_viewed_day = CURDATE(),
-                            page_view_days = page_view_days + 1
-                         WHERE
-                            site_id = %s",
-                        $this->_siteID
-                    );
-                    $rs = $db->query($sql);
+                    setcookie('session_cookie', $cookieValue, array(
+                        'expires' => $expires,
+                        'path' => $path,
+                        'domain' => $domain,
+                        'secure' => $secure,
+                        'httponly' => $httponly,
+                        'samesite' => $samesite
+                    ));
                 }
+                else
+                {
+                    setcookie('session_cookie', $cookieValue, $expires, $path, $domain, $secure, $httponly);
+                }
+
                 // Update the user session in the database
                 $sql = sprintf(
                     "UPDATE
@@ -920,115 +872,13 @@ class CATSSession
                     SET
                     force_logout = 0
                         WHERE
-                        user_id = %s
-                        AND
-                        site_id = %s",
-                        $db->makeQueryString($this->_userID),
-                               $this->_siteID
+                        user_id = %s",
+                        $db->makeQueryString($this->_userID)
                 );
                 $rs = $db->query($sql);
 
                 break;
         }
-    }
-
-    /**
-     * Forces the session to make the current user "transparently" login to
-     * another site. This is used only to support the CATS administrative
-     * console, but must remain part of Session.
-     *
-     * @param integer New Site ID to login to.
-     * @param integer User ID with which to login to the new site.
-     * @param integer Site ID associated with $asUserID
-     * @return void
-     */
-    public function transparentLogin($toSiteID, $asUserID, $asSiteID)
-    {
-         $db = DatabaseConnection::getInstance();
-
-         $sql = sprintf(
-            "SELECT
-                user.user_id AS userID,
-                user.user_name AS username,
-                user.first_name AS firstName,
-                user.last_name AS lastName,
-                user.access_level AS accessLevel,
-                user.site_id AS userSiteID,
-                user.is_demo AS isDemoUser,
-                user.email AS email,
-                user.categories AS categories,
-                site.name AS siteName,
-                site.unix_name AS unixName,
-                site.company_id AS companyID,
-                site.is_demo AS isDemo,
-                site.account_active AS accountActive,
-                site.account_deleted AS accountDeleted,
-                site.time_zone AS timeZone,
-                site.default_phone_country_code AS defaultPhoneCountryCode,
-                site.date_format_ddmmyy AS dateFormatDMY,
-                site.is_free AS isFree,
-                site.is_hr_mode AS isHrMode
-            FROM
-                user
-            LEFT JOIN site
-                ON site.site_id = %s
-            WHERE
-                user.user_id = %s
-                AND user.site_id = %s",
-            $toSiteID,
-            $asUserID,
-            $asSiteID
-        );
-        $rs = $db->getAssoc($sql);
-
-        $this->_username        = $rs['username'];
-        $this->_userID          = $rs['userID'];
-        $this->_siteID          = $toSiteID;
-        $this->_firstName       = $rs['firstName'];
-        $this->_lastName        = $rs['lastName'];
-        $this->_siteName        = $rs['siteName'];
-        $this->_unixName        = $rs['unixName'];
-        $this->_accessLevel     = $rs['accessLevel'];
-        $this->_realAccessLevel = $rs['accessLevel'];
-        $this->_categories      = array();
-        $this->_isASP           = ($rs['companyID'] != 0 ? true : false);
-        $this->_siteCompanyID   = ($rs['companyID'] != 0 ? $rs['companyID'] : -1);
-        $this->_isFree          = ($rs['isFree'] == 0 ? false : true);
-        $this->_isHrMode        = ($rs['isHrMode'] != 0 ? true : false);
-        $this->_accountActive   = ($rs['accountActive'] == 0 ? false : true);
-        $this->_accountDeleted  = ($rs['accountDeleted'] == 0 ? false : true);
-        $this->_email           = $rs['email'];
-        $this->_timeZone        = $rs['timeZone'];
-        $this->_defaultPhoneCountryCode = $rs['defaultPhoneCountryCode'];
-        $this->_dateDMY         = ($rs['dateFormatDMY'] == 0 ? false : true);
-        $this->_isFirstTimeSetup = true;
-        $this->_isAgreedToLicense = true;
-        $this->_isLocalizationConfigured = true;
-
-
-        /* Mark session as logged in. */
-        $this->_isLoggedIn = true;
-
-        /* Force a new MRU object to be created. */
-        $this->_MRU = null;
-
-        if (!eval(Hooks::get('TRANSPARENT_LOGIN_POST'))) return;
-
-        $cookie = $this->getCookie();
-        $sql = sprintf(
-            "UPDATE
-                user
-             SET
-                session_cookie = %s
-             WHERE
-                user_id = %s
-             AND
-                site_id = %s",
-            $db->makeQueryString($cookie),
-            $asUserID,
-            $asSiteID
-        );
-       $db->query($sql);
     }
 
     /**
@@ -1093,12 +943,9 @@ class CATSSession
              SET
                 pipeline_entries_per_page = %s
             WHERE
-                user_id = %s
-            AND
-                site_id = %s",
+                user_id = %s",
             $db->makeQueryString($entriesPerPage),
-            $this->_userID,
-            $this->_siteID
+            $this->_userID
         );
         $rs = $db->query($sql);
 
@@ -1269,11 +1116,8 @@ class CATSSession
              SET
                 column_preferences = %s
              WHERE
-                site_id = %s
-             AND
                 user.user_id = %s',
             $db->makeQueryString($columnString),
-            $this->getSiteID(),
             $this->getUserID()
         );
         $rs = $db->query($sql);

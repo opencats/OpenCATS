@@ -38,7 +38,7 @@ include_once(LEGACY_ROOT . '/lib/Width.php');
 class ListsDataGrid extends DataGrid
 {   
     // FIXME: Fix ugly indenting - ~400 character lines = bad.
-    public function __construct($siteID, $parameters, $misc)
+    public function __construct($parameters, $misc)
     {
         /* Pager configuration. */
         $this->_tableWidth = new Width(100, '%');
@@ -150,7 +150,7 @@ class ListsDataGrid extends DataGrid
                 ON user.user_id = saved_list.created_by
             %s
             WHERE
-                saved_list.site_id = %s
+                1=1
             %s
             GROUP BY saved_list.saved_list_id
             %s
@@ -159,7 +159,6 @@ class ListsDataGrid extends DataGrid
             $distinct,
             $selectSQL,
             $joinSQL,
-            $_SESSION['CATS']->getSiteID(),
             (strlen($whereSQL) > 0) ? ' AND ' . $whereSQL : '',
             (strlen($havingSQL) > 0) ? ' HAVING ' . $havingSQL : '',
             $orderSQL,

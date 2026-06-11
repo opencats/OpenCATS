@@ -266,7 +266,6 @@ define ('LDAP_ATTRIBUTE_LASTNAME', 'sn');
 define ('LDAP_ATTRIBUTE_FIRSTNAME', 'givenname');
 define ('LDAP_ATTRIBUTE_EMAIL', 'mail');
 
-define ('LDAP_SITEID', 1);
 define ('LDAP_AD', false); // use for AD and Samba LDAP servers
 
 /* Encodings available during Data Import */
