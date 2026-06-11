@@ -27,9 +27,6 @@
  * $Id: config.php 3826 2007-12-10 06:03:18Z will $
  */
 
-/* License key. */
-define('LICENSE_KEY','3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
-
 /* legacy root. */
 if( !defined('LEGACY_ROOT') )
 {
@@ -374,7 +371,6 @@ class ACL_SETUP {
             'settings.upgradeSiteName'
             'settings.newSiteName'
             'settings.manageUsers'
-            'settings.professional'
             'settings.previewPage'
             'settings.previewPageTop'
             'settings.showUser'

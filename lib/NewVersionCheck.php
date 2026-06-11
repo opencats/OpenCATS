@@ -47,7 +47,7 @@ class NewVersionCheck
 
     /**
      * Checks remote server for a new version of CATS.  Also submits
-     * usage information and license key for statistics tracking
+     * usage information for statistics tracking
      * purposes.
      *
      * @return void
@@ -103,8 +103,6 @@ class NewVersionCheck
         $users = new Users(1);
         $numberOfActiveUsers = $users->getUsageData();
         
-        $licenseKey = LICENSE_KEY;
-
         /* Build POST data. */
         $postData  = 'CatsVersion='     . urlencode($catsVersion);
         $postData .= '&CatsUID='        . urlencode($systemInfo['uid']);
@@ -113,7 +111,6 @@ class NewVersionCheck
         $postData .= '&UserAgent='      . urlencode($userAgent);
         $postData .= '&SiteName='       . urlencode($siteName);
         $postData .= '&activeUsers='    . urlencode($numberOfActiveUsers);
-        $postData .= '&licenseKey='     . urlencode($licenseKey);
  
         /* Hack for compatability with older CATS versions. */
         $postData .= '&CatsVersionAgain=' . urlencode($catsVersion);

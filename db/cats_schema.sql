@@ -39,6 +39,7 @@ CREATE TABLE `activity` (
   `joborder_id` int(11) DEFAULT NULL,
   `site_id` int(11) NOT NULL DEFAULT '0',
   `entered_by` int(11) NOT NULL DEFAULT '0',
+  `date_occurred` datetime NOT NULL DEFAULT '1000-01-01 00:00:00',
   `date_created` datetime NOT NULL DEFAULT '1000-01-01 00:00:00',
   `type` int(11) NOT NULL DEFAULT '0',
   `notes` text COLLATE utf8_unicode_ci,
@@ -51,10 +52,13 @@ CREATE TABLE `activity` (
   KEY `IDX_type_id` (`data_item_type`,`data_item_id`),
   KEY `IDX_joborder_id` (`joborder_id`),
   KEY `IDX_date_created` (`date_created`),
+  KEY `IDX_date_occurred` (`date_occurred`),
   KEY `IDX_date_modified` (`date_modified`),
   KEY `IDX_data_item_id_type_site` (`site_id`,`data_item_id`,`data_item_type`),
   KEY `IDX_site_created` (`site_id`,`date_created`),
-  KEY `IDX_activity_site_type_created_job` (`site_id`,`data_item_type`,`date_created`,`entered_by`,`joborder_id`)
+  KEY `IDX_site_occurred` (`site_id`,`date_occurred`),
+  KEY `IDX_activity_site_type_created_job` (`site_id`,`data_item_type`,`date_created`,`entered_by`,`joborder_id`),
+  KEY `IDX_activity_site_type_occurred_job` (`site_id`,`data_item_type`,`date_occurred`,`entered_by`,`joborder_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Data for the table `activity` */

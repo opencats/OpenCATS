@@ -122,12 +122,6 @@
                                     </tr>
                                 </table>
                             <?php else: ?>
-                                <?php if (PARSING_ENABLED &&
-                                    count($this->parsingStatus) &&
-                                    $this->parsingStatus['parseUsed'] >= $this->parsingStatus['parseLimit'] &&
-                                    $this->parsingStatus['parseLimit'] >= 0): ?>
-                                <a href="http://www.catsone.com/professional" target="_blank">All daily resume imports used. For more, upgrade to CATS professional</a>.
-                                <?php endif; ?>
                                 <?php $freeformTop = '<p class="freeformtop">Cut and paste freeform address here.</p>'; ?>
                                 <?php eval(Hooks::get('CANDIDATE_TEMPLATE_ABOVE_FREEFORM')); ?>
                                 <?php echo($freeformTop); ?>
@@ -193,12 +187,8 @@
                         <td class="tdData">
                             <input type="text" tabindex="6" name="phoneHome" id="phoneHome" class="inputbox" style="width: 150px;" value="<?php if (isset($this->preassignedFields['phoneHome'])) $this->_($this->preassignedFields['phoneHome']); ?>" onchange="checkPhoneAlreadyInSystem(this.value);"  />
                             <?php if ($this->isParsingEnabled): ?>
-                                <?php if ($this->parsingStatus['parseLimit'] >= 0 && $this->parsingStatus['parseUsed'] >= $this->parsingStatus['parseLimit']): ?>
-                                    &nbsp;
-                                <?php else: ?>
-                                    <?php if ($this->isModal): ?>&nbsp;&nbsp;<?php else: ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php endif; ?>
-                                    <img id="transfer" src="images/parser/transfer<?php echo ($this->contents != '' ? '' : '_grey'); ?>.gif" <?php echo ($this->contents != '' ? 'style="cursor: pointer;"' : ''); ?> border="0" alt="Import Resume" onclick="parseDocumentFileContents();" />
-                                <?php endif; ?>
+                                <?php if ($this->isModal): ?>&nbsp;&nbsp;<?php else: ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php endif; ?>
+                                <img id="transfer" src="images/parser/transfer<?php echo ($this->contents != '' ? '' : '_grey'); ?>.gif" <?php echo ($this->contents != '' ? 'style="cursor: pointer;"' : ''); ?> border="0" alt="Import Resume" onclick="parseDocumentFileContents();" />
                             <?php else: ?>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="arrowButton" tabindex="91" align="middle" type="button" value="&lt;--" class="arrowbutton" onclick="AddressParser_parse('addressBlock', 'person', 'addressParserIndicator', 'arrowButton'); document.addCandidateForm.firstName.focus();" />
                             <?php endif; ?>
@@ -293,7 +283,7 @@
                             <?php if ($this->associatedAttachment == 0): ?>
                                 <nobr> <?php /* FIXME:  remove nobr stuff */ ?>
                                     <?php if (isset($this->overAttachmentQuota)): ?>
-                                        <span style="font-size:10px;">(You have already reached your limit of <?php echo(FREE_ACCOUNT_SIZE/1024); ?> MB of attachments, and cannot add additional file attachments without upgrading to CATS Professional Hosted.)<br /></font>Copy and Paste Resume:&nbsp;
+                                        <span style="font-size:10px;">(You have already reached your limit of <?php echo(FREE_ACCOUNT_SIZE/1024); ?> MB of attachments, and cannot add additional file attachments.)<br /></font>Copy and Paste Resume:&nbsp;
                                     <?php else: ?>
                                         <input type="file" id="file" name="file" size="21" tabindex="<?php echo($tabIndex++); ?>" <?php if($this->associatedTextResume !== false): ?>disabled<?php endif; ?> /> &nbsp;
                                     <?php endif; ?>

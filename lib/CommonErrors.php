@@ -72,19 +72,9 @@ class CommonErrors
         switch ($code)
         {
             case COMMONERROR_RESTRICTEDEXTENSION:
-                $errorTitle = 'Upgrade to Professional for Plug-ins';
+                $errorTitle = 'Unavailable Plug-in';
                 $internalErrorTitle = 'Unauthorized Use of an Extension';
-                $errorMessage = '<b>' . $customMessage . '</b><p />CATS is free software and is available to anyone free '
-                    . 'of charge. To support the development of this software, we\'ve released several plug-ins and '
-                    . 'extensions which allow CATS to work with software like Outlook and websites like Monster.<p />Designed '
-                    . 'by recruiters, for recruits, they\'re purpose is to make recruiting faster and easier.<p />'
-                    . '<b>At this time, these plug-ins are only available to CATS Professional users.</b><p /><ul>';
-                $errorMessage .= '<li>For more information about the CATS Professional hosted version where we take care of '
-                    . 'backups and the hassles of running a web server and you have access to all of our plug-ins, '
-                    . '<a href="http://www.catsone.com/getcats.php" style="font-weight: bold;">click here</a>.<p /></li>';
-                $errorMessage .= '<li>For more information about CATS Professional services where you host CATS on your '
-                    . 'own server with our support and plug-ins, please visit '
-                    . '<a href="http://www.catsone.com/Professional">http://www.catsone.com/Professional</a>.</li></ul>';
+                $errorMessage = '<b>' . $customMessage . '</b><p />This plug-in or extension is not available in this OpenCATS installation.';
                 break;
 
             case COMMONERROR_BADFIELDS:

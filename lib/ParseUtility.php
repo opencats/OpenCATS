@@ -55,9 +55,12 @@ class ParseUtility
     }
 
 
-    public function startClient()
+    public function startClient($connectionTimeout = 5)
     {
-        $this->_client = new SoapClient($this->_wsdl);
+        $this->_client = new SoapClient($this->_wsdl, array(
+            'connection_timeout' => $connectionTimeout,
+            'exceptions' => true
+        ));
     }
 
     /**
@@ -84,21 +87,27 @@ class ParseUtility
      */
     public function documentParse($name, $size, $mimeType, $contents)
     {
-        if (!$this->_client) $this->startClient();
-        if (!defined('CATS_TEST_MODE') || !CATS_TEST_MODE)
+        if (!CATSUtility::isSOAPEnabled())
         {
-            try
-            {
-                $res = $this->_client->DocumentParse(LICENSE_KEY, $name, $size, $mimeType, self::cleanText($contents));
-            }
-            catch (SoapFault $exception)
-            {
-                return false;
-            }
+            return false;
         }
-        else
+
+        $parserTimeout = 5;
+        $previousSocketTimeout = ini_get('default_socket_timeout');
+        ini_set('default_socket_timeout', $parserTimeout);
+
+        try
         {
-            $res = $this->_client->DocumentParse(LICENSE_KEY, $name, $size, $mimeType, self::cleanText($contents));
+            if (!$this->_client) $this->startClient($parserTimeout);
+            $res = $this->_client->DocumentParse('', $name, $size, $mimeType, self::cleanText($contents));
+        }
+        catch (Exception $exception)
+        {
+            return false;
+        }
+        finally
+        {
+            ini_set('default_socket_timeout', $previousSocketTimeout);
         }
 
         switch($res->message)

@@ -66,7 +66,7 @@
                                         <label id="titleLabel" for="title">Title:</label>
                                     </td>
                                     <td class="tdData">
-                                        <input type="text" name="title" id="title" value="<?php $this->_($this->data['title']); ?>" class="inputbox" style="width: 150px" />&nbsp;*
+                                        <input type="text" name="title" id="title" value="<?php $this->_($this->data['title']); ?>" class="inputbox" style="width: 150px" />
                                     </td>
                                 </tr>
 

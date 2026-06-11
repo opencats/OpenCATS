@@ -15,7 +15,6 @@ function checkAddForm(form)
     errorMessage += checkFirstName();
     errorMessage += checkLastName();
     errorMessage += checkCompany();
-    errorMessage += checkTitle();
 
     if (errorMessage != "")
     {
@@ -33,7 +32,6 @@ function checkEditForm(form)
     errorMessage += checkFirstName();
     errorMessage += checkLastName();
     errorMessage += checkCompany();
-    errorMessage += checkTitle();
 
     if (errorMessage != "")
     {
@@ -124,26 +122,6 @@ function checkCompany()
     if (isNaN(fieldValue) || fieldValue <= 0)
     {
         errorMessage = "    - You must select a company.\n";
-
-        fieldLabel.style.color = "#ff0000";
-    }
-    else
-    {
-        fieldLabel.style.color = "#000";
-    }
-
-    return errorMessage;
-}
-
-function checkTitle()
-{
-    var errorMessage = "";
-
-    fieldValue = document.getElementById("title").value;
-    fieldLabel = document.getElementById("titleLabel");
-    if (fieldValue == "")
-    {
-        errorMessage = "    - You must enter a title.\n";
 
         fieldLabel.style.color = "#ff0000";
     }

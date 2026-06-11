@@ -1476,8 +1476,8 @@ class CATSSchema
                         $notes = $row[\'notes\'];
 
                         $cleanedNotes = preg_replace(
-                            "/<span\\b(?=[^>]*\\bstyle\\s*=\\s*([\\\"\\\'])[^\\\"\\\']*\\bcolor\\s*:\\s*#ff6c00\\b[^\\\"\\\']*\\1)[^>]*>(.*?)<\\/span>/is",
-                            "$2",
+                            \'/<span\\b(?=[^>]*\\bstyle\\s*=\\s*([\\\'"])[^\\\'"]*\\bcolor\\s*:\\s*#ff6c00\\b[^\\\'"]*\\1)[^>]*>(.*?)<\\/span>/is\',
+                            \'$2\',
                             $notes
                         );
 
@@ -1516,6 +1516,16 @@ class CATSSchema
                 WHERE
                     `ce`.`joborder_id` IS NOT NULL AND
                     `jo`.`joborder_id` IS NULL;
+            ',
+            '380' => '
+                ALTER TABLE `activity`
+                ADD COLUMN `date_occurred` datetime NOT NULL DEFAULT \'1000-01-01 00:00:00\'
+                BEFORE `date_created`;
+                UPDATE `activity`
+                SET `date_occurred` = `date_created`;
+                CREATE INDEX `IDX_date_occurred` ON `activity` (`date_occurred`);
+                CREATE INDEX `IDX_site_occurred` ON `activity` (`site_id`,`date_occurred`);
+                CREATE INDEX `IDX_activity_site_type_occurred_job` ON `activity` (`site_id`,`data_item_type`,`date_occurred`,`entered_by`,`joborder_id`);
             ',
 
         );

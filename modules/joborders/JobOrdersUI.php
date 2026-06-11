@@ -1392,11 +1392,7 @@ class JobOrdersUI extends UserInterface
         $EEOSettings = new EEOSettings($this->_siteID);
         $EEOSettingsRS = $EEOSettings->getAll();
 
-        if (is_array($parsingStatus = LicenseUtility::getParsingStatus()) &&
-            isset($parsingStatus['parseLimit']))
-        {
-            $parsingStatus['parseLimit'] = $parsingStatus['parseLimit'] - 1;
-        }
+        $parsingStatus = array();
 
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
         $careerPortalSettingsRS = $careerPortalSettings->getAll();
@@ -1409,7 +1405,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('careerPortalEnabled', $careerPortalEnabled);
         $this->_template->assign('questionnaires', $questionnaires);
         $this->_template->assign('contents', $contents);
-        $this->_template->assign('isParsingEnabled', $tmp = LicenseUtility::isParsingEnabled());
+        $this->_template->assign('isParsingEnabled', true);
         $this->_template->assign('parsingStatus', $parsingStatus);
         $this->_template->assign('extraFieldRS', $extraFieldRS);
         $this->_template->assign('sourcesRS', $sourcesRS);

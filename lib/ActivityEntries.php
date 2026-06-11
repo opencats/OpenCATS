@@ -82,25 +82,25 @@ class ActivityEntries
      * @param string Activity notes.
      * @param integer Entered-by user ID.
      * @param integer Job Order ID; -1 for general (stored as NULL).
-     * @param string Date created timestamp (YYYY-MM-DD HH:MM:SS); false for NOW().
+     * @param string Date occurred timestamp (YYYY-MM-DD HH:MM:SS); false for NOW().
      * @return integer New Activity ID; -1 on failure.
      */
     public function add($dataItemID, $dataItemType, $activityType,
-        $activityNotes, $enteredBy, $jobOrderID = -1, $dateCreated = false)
+        $activityNotes, $enteredBy, $jobOrderID = -1, $dateOccurred = false)
     {
         if (!ctype_digit((string) $jobOrderID) || (int) $jobOrderID <= 0)
         {
             $jobOrderID = -1;
         }
 
-        if (is_string($dateCreated) &&
-            preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $dateCreated))
+        if (is_string($dateOccurred) &&
+            preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $dateOccurred))
         {
-            $dateCreatedSQL = $this->_db->makeQueryString($dateCreated);
+            $dateOccurredSQL = $this->_db->makeQueryString($dateOccurred);
         }
         else
         {
-            $dateCreatedSQL = 'NOW()';
+            $dateOccurredSQL = 'NOW()';
         }
 
         $sql = sprintf(
@@ -112,6 +112,7 @@ class ActivityEntries
                 type,
                 notes,
                 site_id,
+                date_occurred,
                 date_created,
                 date_modified
             )
@@ -124,6 +125,7 @@ class ActivityEntries
                 %s,
                 %s,
                 %s,
+                NOW(),
                 NOW()
             )",
             $this->_db->makeQueryInteger($dataItemID),
@@ -133,7 +135,7 @@ class ActivityEntries
             $this->_db->makeQueryInteger($activityType),
             $this->_db->makeQueryString($activityNotes),
             $this->_siteID,
-            $dateCreatedSQL
+            $dateOccurredSQL
         );
 
         $queryResult = $this->_db->query($sql);
@@ -179,7 +181,7 @@ class ActivityEntries
      * @return boolean True if successful; false otherwise.
      */
     public function update($activityID, $activityType, $activityNotes,
-        $jobOrderID = false, $date = false, $timezoneOffset)
+        $jobOrderID, $date, $timezoneOffset)
     {
         /* Get some extra information about the activity entry that we'll
          * need later on.
@@ -253,7 +255,7 @@ class ActivityEntries
                 "UPDATE
                     activity
                 SET
-                    date_created  = DATE_SUB(%s, INTERVAL %s HOUR),
+                    date_occurred = DATE_SUB(%s, INTERVAL %s HOUR),
                     date_modified = NOW()
                 WHERE
                     activity_id = %s
@@ -428,7 +430,7 @@ class ActivityEntries
                 activity_type.short_description AS typeDescription,
                 activity.notes AS notes,
                 DATE_FORMAT(
-                    activity.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    activity.date_occurred, '%%m-%%d-%%y (%%h:%%i %%p)'
                 ) AS dateCreated,
                 entered_by_user.first_name AS enteredByFirstName,
                 entered_by_user.last_name AS enteredByLastName,
@@ -476,12 +478,11 @@ class ActivityEntries
                 activity.joborder_id AS jobOrderID,
                 activity.notes AS notes,
                 DATE_FORMAT(
-                    activity.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    activity.date_occurred, '%%m-%%d-%%y (%%h:%%i %%p)'
                 ) AS dateCreated,
-                activity.date_created AS dateCreatedSort,
+                activity.date_occurred AS dateCreatedSort,
                 activity.type AS type,
                 activity_type.short_description AS typeDescription,
-                activity.date_created AS dateCreatedSort,
                 entered_by_user.first_name AS enteredByFirstName,
                 entered_by_user.last_name AS enteredByLastName,
                 IF(
@@ -533,9 +534,9 @@ class ActivityEntries
                 activity.joborder_id AS jobOrderID,
                 activity.notes AS notes,
                 DATE_FORMAT(
-                    activity.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    activity.date_occurred, '%%m-%%d-%%y (%%h:%%i %%p)'
                 ) AS dateCreated,
-                activity.date_created AS dateCreatedSort,
+                activity.date_occurred AS dateCreatedSort,
                 activity.type AS type,
                 activity_type.short_description AS typeDescription,
                 entered_by_user.first_name AS enteredByFirstName,
