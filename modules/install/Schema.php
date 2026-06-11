@@ -1886,6 +1886,12 @@ class CATSSchema
                     );
                 }
             ',
+            '391' => '
+                DELETE FROM `extra_field_settings` WHERE `site_id` = 180;
+                DELETE FROM `settings` WHERE `site_id` = 180;
+                DELETE FROM `user` WHERE `site_id` = 180;
+                DELETE FROM `site` WHERE `site_id` = 180;
+            ',
 
         );
     }

@@ -664,14 +664,9 @@ CREATE TABLE `extra_field_settings` (
   `extra_field_options` TEXT COLLATE utf8mb4_unicode_ci,
   `position` INT(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`extra_field_settings_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `extra_field_settings` */
-
-INSERT INTO `extra_field_settings` (`extra_field_settings_id`, `field_name`, `import_id`, `site_id`, `date_created`, `data_item_type`, `extra_field_type`, `extra_field_options`, `position`) VALUES (1, 'AdminUser', NULL, 180, '1000-01-01 00:00:00', 200, 1, NULL, 1);
-INSERT INTO `extra_field_settings` (`extra_field_settings_id`, `field_name`, `import_id`, `site_id`, `date_created`, `data_item_type`, `extra_field_type`, `extra_field_options`, `position`) VALUES (2, 'UnixName', NULL, 180, '1000-01-01 00:00:00', 200, 1, NULL, 2);
-INSERT INTO `extra_field_settings` (`extra_field_settings_id`, `field_name`, `import_id`, `site_id`, `date_created`, `data_item_type`, `extra_field_type`, `extra_field_options`, `position`) VALUES (3, 'BillingNotes', NULL, 180, '1000-01-01 00:00:00', 200, 1, NULL, 3);
-INSERT INTO `extra_field_settings` (`extra_field_settings_id`, `field_name`, `import_id`, `site_id`, `date_created`, `data_item_type`, `extra_field_type`, `extra_field_options`, `position`) VALUES (4, 'IPAddress', NULL, 180, '1000-01-01 00:00:00', 300, 1, NULL, 4);
 
 /* Table structure for table `feedback` */
 
@@ -952,14 +947,12 @@ CREATE TABLE `settings` (
   `site_id` INT(11) NOT NULL DEFAULT '0',
   `settings_type` INT(11) DEFAULT '0',
   PRIMARY KEY (`settings_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `settings` */
 
 INSERT INTO `settings` (`settings_id`, `setting`, `value`, `site_id`, `settings_type`) VALUES (1, 'fromAddress', 'admin@example.com', 1, 1);
-INSERT INTO `settings` (`settings_id`, `setting`, `value`, `site_id`, `settings_type`) VALUES (2, 'fromAddress', 'admin@example.com', 180, 1);
 INSERT INTO `settings` (`settings_id`, `setting`, `value`, `site_id`, `settings_type`) VALUES (3, 'configured', '1', 1, 1);
-INSERT INTO `settings` (`settings_id`, `setting`, `value`, `site_id`, `settings_type`) VALUES (4, 'configured', '1', 180, 1);
 
 /* Table structure for table `site` */
 
@@ -992,12 +985,11 @@ CREATE TABLE `site` (
   `limit_warning` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`site_id`),
   KEY `IDX_account_deleted` (`account_deleted`)
-) ENGINE=InnoDB AUTO_INCREMENT=181 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `site` */
 
 INSERT INTO `site` (`site_id`, `name`, `is_demo`, `user_licenses`, `entered_by`, `date_created`, `unix_name`, `company_id`, `is_free`, `account_active`, `account_deleted`, `reason_disabled`, `time_zone`, `time_zone_iana`, `time_format_24`, `date_format_ddmmyy`, `is_hr_mode`, `file_size_kb`, `page_views`, `page_view_days`, `last_viewed_day`, `first_time_setup`, `localization_configured`, `agreed_to_license`, `limit_warning`) VALUES (1, 'example.com', 0, 0, 0, '1000-01-01 00:00:00', NULL, NULL, 0, 1, 0, NULL, 2, 'UTC', 0, 1, 0, 0, 574, 1, '1000-01-01', 0, 0, 1, 0);
-INSERT INTO `site` (`site_id`, `name`, `is_demo`, `user_licenses`, `entered_by`, `date_created`, `unix_name`, `company_id`, `is_free`, `account_active`, `account_deleted`, `reason_disabled`, `time_zone`, `time_zone_iana`, `time_format_24`, `date_format_ddmmyy`, `is_hr_mode`, `file_size_kb`, `page_views`, `page_view_days`, `last_viewed_day`, `first_time_setup`, `localization_configured`, `agreed_to_license`, `limit_warning`) VALUES (180, 'CATS_ADMIN', 0, 0, 0, '1000-01-01 00:00:00', 'catsadmin', NULL, 0, 1, 0, NULL, 2, 'UTC', 0, 1, 0, 0, 0, 0, '1000-01-01', 0, 0, 0, 0);
 
 /* Table structure for table `sph_counter` */
 
@@ -1075,12 +1067,11 @@ CREATE TABLE `user` (
   KEY `IDX_first_name` (`first_name`),
   KEY `IDX_last_name` (`last_name`),
   KEY `IDX_access_level` (`access_level`)
-) ENGINE=InnoDB AUTO_INCREMENT=1251 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `user` */
 
 INSERT INTO `user` (`user_id`, `site_id`, `user_name`, `email`, `password`, `access_level`, `can_change_password`, `is_test_user`, `last_name`, `first_name`, `is_demo`, `categories`, `session_cookie`, `pipeline_entries_per_page`, `column_preferences`, `force_logout`, `title`, `phone_work`, `phone_cell`, `phone_other`, `address`, `notes`, `company`, `city`, `state`, `zip_code`, `country`, `can_see_eeo_info`) VALUES (1, 1, 'admin', 'admin@example.com', md5('cats'), 500, 1, 0, 'Administrator', 'CATS', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
-INSERT INTO `user` (`user_id`, `site_id`, `user_name`, `email`, `password`, `access_level`, `can_change_password`, `is_test_user`, `last_name`, `first_name`, `is_demo`, `categories`, `session_cookie`, `pipeline_entries_per_page`, `column_preferences`, `force_logout`, `title`, `phone_work`, `phone_cell`, `phone_other`, `address`, `notes`, `company`, `city`, `state`, `zip_code`, `country`, `can_see_eeo_info`) VALUES (1250, 180, 'cats@rootadmin', '0', 'cantlogin', 0, 0, 0, 'Automated', 'CATS', 0, NULL, NULL, 15, NULL, 0, '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
 
 /* Table structure for table `user_login` */
 
