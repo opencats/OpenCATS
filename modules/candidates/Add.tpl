@@ -126,7 +126,7 @@
                                     count($this->parsingStatus) &&
                                     $this->parsingStatus['parseUsed'] >= $this->parsingStatus['parseLimit'] &&
                                     $this->parsingStatus['parseLimit'] >= 0): ?>
-                                <a href="http://www.catsone.com/professional" target="_blank">All daily resume imports used. For more, upgrade to CATS professional</a>.
+                                <a href="https://www.catsone.com/professional" target="_blank">All daily resume imports used. For more, upgrade to CATS professional</a>.
                                 <?php endif; ?>
                                 <?php $freeformTop = '<p class="freeformtop">Cut and paste freeform address here.</p>'; ?>
                                 <?php eval(Hooks::get('CANDIDATE_TEMPLATE_ABOVE_FREEFORM')); ?>
@@ -293,7 +293,7 @@
                             <?php if ($this->associatedAttachment == 0): ?>
                                 <nobr> <?php /* FIXME:  remove nobr stuff */ ?>
                                     <?php if (isset($this->overAttachmentQuota)): ?>
-                                        <span style="font-size:10px;">(You have already reached your limit of <?php echo(FREE_ACCOUNT_SIZE/1024); ?> MB of attachments, and cannot add additional file attachments without upgrading to CATS Professional Hosted.)<br /></font>Copy and Paste Resume:&nbsp;
+                                        <span style="font-size:10px;">(You have already reached your limit of <?php echo(FREE_ACCOUNT_SIZE/1024); ?> MB of attachments, and cannot add additional file attachments without upgrading to CATS Professional Hosted.)<br /></span>Copy and Paste Resume:&nbsp;
                                     <?php else: ?>
                                         <input type="file" id="file" name="file" size="21" tabindex="<?php echo($tabIndex++); ?>" <?php if($this->associatedTextResume !== false): ?>disabled<?php endif; ?> /> &nbsp;
                                     <?php endif; ?>

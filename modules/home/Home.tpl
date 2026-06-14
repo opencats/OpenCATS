@@ -46,7 +46,7 @@
                             <?php endforeach; ?>
                         </table>
 
-                        <?php if (!is_array($this->placedRS) || !count($this->placedRS)): ?>
+                        <?php if (!is_countable($this->placedRS) || !count($this->placedRS)): ?>
                             <div style="height: 207px; border: 1px solid #c0c0c0; background: #E7EEFF url(images/nodata/dashboardNoHiresWhite.jpg);">
                                 &nbsp;
                             </div>
