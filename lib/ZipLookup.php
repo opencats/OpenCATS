@@ -13,49 +13,49 @@ class ZipLookup
 
     public function lookupZip($zip)
     {
-        $aAddress = array();
-        $aAddress[0] = 0;
-        $aAddress[1] = '';
-        $aAddress[2] = '';
-        $aAddress[3] = '';
+        $aAddress = array(0, '', '', '');
 
-        $loc_level_1 = '';
-        $loc_level_2 = '';
-        $loc_level_3 = '';
-        $loc_level_4 = '';
+        if ($zip == '') {
+            $aAddress[0] = 2;
+            return $aAddress;
+        }
 
         $sUrl = 'https://maps.googleapis.com/maps/api/geocode/xml?sensor=false&address=';
+        $oXml = simplexml_load_file($sUrl . rawurlencode($zip));
 
-        if ($zip != '') {
-            $oXml = simplexml_load_file($sUrl . rawurlencode($zip));
-            if ($oXml !== false && isset($oXml->result) && isset($oXml->result->address_component)) {
-                foreach ($oXml->result->address_component as $value) {
-                    if ($value->type == 'route') {
-                        $aAddress[1] = (string) $value->long_name;
-                    }
-                    if (isset($value->type[0])) {
-                        if ($value->type[0] == 'postal_town')                 { $loc_level_1 = (string) $value->long_name; }
-                        if ($value->type[0] == 'locality')                    { $loc_level_1 = (string) $value->long_name; }
-                        if ($value->type[0] == 'administrative_area_level_1') { $loc_level_2 = (string) $value->long_name; }
-                        if ($value->type[0] == 'administrative_area_level_2') { $loc_level_3 = (string) $value->long_name; }
-                        if ($value->type[0] == 'country')                     { $loc_level_4 = (string) $value->long_name; }
-                    }
-                }
-            } else {
-                $aAddress[0] = 1;
-            }
-        } else {
-            $aAddress[0] = 2;
+        if ($oXml === false || !isset($oXml->result->address_component)) {
+            $aAddress[0] = 1;
+            return $aAddress;
         }
 
-        $aAddress[2] = $loc_level_1;
-        if ($loc_level_4 == 'United States') {
-            $aAddress[3] = $loc_level_3;
-        } else {
-            $aAddress[3] = $loc_level_2;
-        }
+        $levels = $this->parseAddressComponents($oXml->result->address_component, $aAddress);
+        $aAddress[2] = $levels['loc_level_1'];
+        $aAddress[3] = ($levels['loc_level_4'] == 'United States') ? $levels['loc_level_3'] : $levels['loc_level_2'];
 
         return $aAddress;
+    }
+
+    private function parseAddressComponents($components, &$aAddress)
+    {
+        $levels = array('loc_level_1' => '', 'loc_level_2' => '', 'loc_level_3' => '', 'loc_level_4' => '');
+        $typeMap = array(
+            'postal_town'                => 'loc_level_1',
+            'locality'                   => 'loc_level_1',
+            'administrative_area_level_1'=> 'loc_level_2',
+            'administrative_area_level_2'=> 'loc_level_3',
+            'country'                    => 'loc_level_4',
+        );
+
+        foreach ($components as $value) {
+            if ($value->type == 'route') {
+                $aAddress[1] = (string) $value->long_name;
+            }
+            if (isset($value->type[0]) && isset($typeMap[(string)$value->type[0]])) {
+                $levels[$typeMap[(string)$value->type[0]]] = (string) $value->long_name;
+            }
+        }
+
+        return $levels;
     }
 
     public function getDistanceFromPointQuery($zipcode, $zipcodeColumn)
