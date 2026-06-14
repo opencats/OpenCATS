@@ -467,7 +467,8 @@ class CareerPortalSettings
                 true
             );
         } catch (Exception $e) {
-            // Mail not configured - fail silently
+            // Mail not configured or failed - log error for debugging
+            error_log('OpenCATS Mailer error (site=' . $this->_siteID . '): ' . $e->getMessage());
         }
     }
 }

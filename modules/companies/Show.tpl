@@ -125,7 +125,7 @@ use OpenCATS\UI\QuickActionMenu;
 
                         <!-- CONTACT INFO -->
 
-                            <?php for ($i = (intval(count($this->extraFieldRS))/2); $i < (count((array)$this->extraFieldRS)); $i++): ?>
+                            <?php for ($i = (intval(count((array)$this->extraFieldRS))/2); $i < (count((array)$this->extraFieldRS)); $i++): ?>
                                 <tr>
                                     <td class="vertical"><?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:</td>
                                     <td class="data"><?php echo($this->extraFieldRS[$i]['display']); ?></td>                                </tr>
