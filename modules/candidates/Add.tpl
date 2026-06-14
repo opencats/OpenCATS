@@ -123,7 +123,7 @@
                                 </table>
                             <?php else: ?>
                                 <?php if (PARSING_ENABLED &&
-                                    count($this->parsingStatus) &&
+                                    is_countable($this->parsingStatus) && count($this->parsingStatus) &&
                                     $this->parsingStatus['parseUsed'] >= $this->parsingStatus['parseLimit'] &&
                                     $this->parsingStatus['parseLimit'] >= 0): ?>
                                 <a href="https://www.catsone.com/professional" target="_blank">All daily resume imports used. For more, upgrade to CATS professional</a>.

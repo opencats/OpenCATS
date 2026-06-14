@@ -27,7 +27,7 @@ class ZipLookup
         $sUrl = 'https://maps.googleapis.com/maps/api/geocode/xml?sensor=false&address=';
 
         if ($zip != '') {
-            $oXml = simplexml_load_file($sUrl . $zip);
+            $oXml = simplexml_load_file($sUrl . rawurlencode($zip));
             if ($oXml !== false && isset($oXml->result) && isset($oXml->result->address_component)) {
                 foreach ($oXml->result->address_component as $value) {
                     if ($value->type == 'route') {
@@ -60,8 +60,9 @@ class ZipLookup
 
     public function getDistanceFromPointQuery($zipcode, $zipcodeColumn)
     {
-        // Legacy method - distance calculation via Google Maps API
-        // API key required for production use
-        return array();
+        // Legacy wrapper - returns expected select/join keys for distance filtering
+        $select = "(3958*3.1415926*sqrt((zipcode_searching.lat-zipcode_record.lat)*(zipcode_searching.lat-zipcode_record.lat) + cos(zipcode_searching.lat/57.29578)*cos(zipcode_record.lat/57.29578)*(zipcode_searching.lng-zipcode_record.lng)*(zipcode_searching.lng-zipcode_record.lng))/180) as distance_km";
+        $join = "LEFT JOIN zipcodes as zipcode_searching ON zipcode_searching.zipcode = ".$zipcode." LEFT JOIN zipcodes as zipcode_record ON zipcode_record.zipcode = ".$zipcodeColumn;
+        return array("select" => $select, "join" => $join);
     }
 }
