@@ -109,6 +109,7 @@ class CareersUI extends UserInterface
             $templateName = $_GET['templateName'];
         }
 
+        $GLOBALS['activeBoard'] = $templateName;
         $template = $careerPortalSettings->getTemplate($templateName);
 
         /* At this point the entire template is loaded, we just need to add data to the
@@ -408,7 +409,8 @@ class CareersUI extends UserInterface
 
             $content = str_replace(array('<applyContent>','</applyContent>'), '', $content);
 
-            $content = str_replace('<input-submit>', '<input type="submit" id="submitButton" name="submitButton" value="Continue to Application" />', $content);
+            $btnLabel = (isset($GLOBALS['activeBoard']) && strpos($GLOBALS['activeBoard'], 'ES') !== false) ? 'Continuar a la solicitud' : 'Continue to Application';
+            $content = str_replace('<input-submit>', '<input type="submit" id="submitButton" name="submitButton" value="' . $btnLabel . '" />', $content);
             $content = str_replace('<input-new>', '<input type="radio" id="isNewYes" name="isNew" value="yes" onchange="isCandidateRegisteredChange();" checked />', $content);
             $content = str_replace('<input-registered>', '<input type="radio" id="isNewNo" name="isNew" value="no" onchange="isCandidateRegisteredChange();" />', $content);
             $content = str_replace('<input-rememberMe>', '<input type="checkbox" id="rememberMe" name="rememberMe" value="yes" checked />', $content);
@@ -1018,7 +1020,8 @@ class CareersUI extends UserInterface
                     $content = str_replace(array('<registeredLoginTitle>', '</registeredLoginTitle>'), '', $content);
                     $content = str_replace('<applyContent>', '<div style="display: none;">', $content);
                     $content = str_replace('</applyContent>', '</div>', $content);
-                    $content = str_replace('<input-submit>', '<input type="submit" id="submitButton" name="submitButton" value="Login" />', $content);
+                    $loginLabel = (isset($GLOBALS['activeBoard']) && strpos($GLOBALS['activeBoard'], 'ES') !== false) ? 'Iniciar sesión' : 'Login';
+                    $content = str_replace('<input-submit>', '<input type="submit" id="submitButton" name="submitButton" value="' . $loginLabel . '" />', $content);
                     $content = str_replace('<input-new>', '<input type="hidden" id="isNewNo" name="isNew" value="no" />', $content);
                     $content = str_replace('<input-registered>', '', $content);
                     $content = str_replace('<input-rememberMe>', '<input type="checkbox" id="rememberMe" name="rememberMe" value="yes" checked />', $content);
@@ -1427,16 +1430,26 @@ class CareersUI extends UserInterface
             $html  = '<table class="sortable" style="width:100%;">' . "\n";
         }
         $html .= '<tr class="rowHeading" align="left">'."\n";
+
+        // i18n: detect language based on active template name
+        $activeTemplate = isset($_GET['templateName']) ? $_GET['templateName'] : (isset($GLOBALS['activeBoard']) ? $GLOBALS['activeBoard'] : '');
+        $isSpanish = (strpos($activeTemplate, ' ES') !== false || strpos($activeTemplate, '_ES') !== false || strpos($activeTemplate, 'ES') !== false);
+
+        $labelCompany      = $isSpanish ? 'Empresa'   : 'Company';
+        $labelDepartment   = $isSpanish ? 'Departamento' : 'Department';
+        $labelPosition     = $isSpanish ? 'Puesto'    : 'Position Title';
+        $labelLocation     = $isSpanish ? 'Ubicación' : 'Location';
+
         if ($settings['showCompany'] == 1)
         {
-            $html .= '<th nowrap="nowrap">Company</th>';
+            $html .= '<th nowrap="nowrap">' . $labelCompany . '</th>';
         }
         if ($settings['showDepartment'] == 1)
         {
-            $html .= '<th nowrap="nowrap" align="left">Department</th>';
+            $html .= '<th nowrap="nowrap" align="left">' . $labelDepartment . '</th>';
         }
-        $html .= '<th nowrap="nowrap" align="left">Position Title</th>';
-        $html .= '<th nowrap="nowrap" align="left">Location</th>';
+        $html .= '<th nowrap="nowrap" align="left">' . $labelPosition . '</th>';
+        $html .= '<th nowrap="nowrap" align="left">' . $labelLocation . '</th>';
         $html .= '</tr>'."\n";
 
         $rowIsEven = false;
@@ -2112,11 +2125,17 @@ class CareersUI extends UserInterface
                 '<form style="padding:0;margin:0;border:0;" name="logout" id="logout" method="post" '
                 . 'action="%s%s"><input type="hidden" id="pa" name="pa" value="" />%s<div style="margin: 20px 0 20px 0; '
                 . 'line-height: 18px;"> '
-                . '<h3 style="font-weight: normal;"><b>Welcome back %s.</b>&nbsp;&nbsp;Not %s? '
-                . '<a href="javascript:void(0);" onclick="document.getElementById(\'pa\').value=\'logout\'; '
-                . 'document.logout.submit();">Log Out</a>.'
-                . '&nbsp;&nbsp;Need to update your information? <a href="javascript:void(0);" onclick="document.getElementById(\'pa\').value=\'updateProfile\'; '
-                . 'document.logout.submit();">Update Profile</a>.'
+                . (isset($GLOBALS['activeBoard']) && strpos($GLOBALS['activeBoard'], 'ES') !== false
+                    ? '<h3 style="font-weight: normal;"><b>Bienvenido de nuevo %s.</b>&nbsp;&nbsp;¿No eres %s? '
+                      . '<a href="javascript:void(0);" onclick="document.getElementById(\'pa\').value=\'logout\'; '
+                      . 'document.logout.submit();">Cerrar sesión</a>.'
+                      . '&nbsp;&nbsp;¿Necesitas actualizar tu información? <a href="javascript:void(0);" onclick="document.getElementById(\'pa\').value=\'updateProfile\'; '
+                      . 'document.logout.submit();">Actualizar perfil</a>.'
+                    : '<h3 style="font-weight: normal;"><b>Welcome back %s.</b>&nbsp;&nbsp;Not %s? '
+                      . '<a href="javascript:void(0);" onclick="document.getElementById(\'pa\').value=\'logout\'; '
+                      . 'document.logout.submit();">Log Out</a>.'
+                      . '&nbsp;&nbsp;Need to update your information? <a href="javascript:void(0);" onclick="document.getElementById(\'pa\').value=\'updateProfile\'; '
+                      . 'document.logout.submit();">Update Profile</a>.')
                 . '</h3></div>',
                 CATSUtility::getIndexName(),
                 $_SERVER['QUERY_STRING'] != '' ? '?' . $_SERVER['QUERY_STRING'] : '',
