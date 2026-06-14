@@ -61,8 +61,18 @@ class ZipLookup
     public function getDistanceFromPointQuery($zipcode, $zipcodeColumn)
     {
         // Legacy wrapper - returns expected select/join keys for distance filtering
-        $select = "(3958*3.1415926*sqrt((zipcode_searching.lat-zipcode_record.lat)*(zipcode_searching.lat-zipcode_record.lat) + cos(zipcode_searching.lat/57.29578)*cos(zipcode_record.lat/57.29578)*(zipcode_searching.lng-zipcode_record.lng)*(zipcode_searching.lng-zipcode_record.lng))/180) as distance_km";
-        $join = "LEFT JOIN zipcodes as zipcode_searching ON zipcode_searching.zipcode = ".$zipcode." LEFT JOIN zipcodes as zipcode_record ON zipcode_record.zipcode = ".$zipcodeColumn;
+        // Fix: use 6371 (km radius) to match distance_km alias
+        // Fix: cast $zipcode to int to prevent SQL injection
+        $safeZipcode = (int) $zipcode;
+
+        // $zipcodeColumn must be a known column name - validate against allowlist
+        $allowedColumns = array('candidate.zip', 'zipcode', 'zip');
+        if (!in_array($zipcodeColumn, $allowedColumns, true)) {
+            return array("select" => "0 as distance_km", "join" => "");
+        }
+
+        $select = "(6371*3.1415926*sqrt((zipcode_searching.lat-zipcode_record.lat)*(zipcode_searching.lat-zipcode_record.lat) + cos(zipcode_searching.lat/57.29578)*cos(zipcode_record.lat/57.29578)*(zipcode_searching.lng-zipcode_record.lng)*(zipcode_searching.lng-zipcode_record.lng))/180) as distance_km";
+        $join = "LEFT JOIN zipcodes as zipcode_searching ON zipcode_searching.zipcode = " . $safeZipcode . " LEFT JOIN zipcodes as zipcode_record ON zipcode_record.zipcode = " . $zipcodeColumn;
         return array("select" => $select, "join" => $join);
     }
 }
