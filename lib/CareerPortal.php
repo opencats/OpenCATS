@@ -458,13 +458,17 @@ class CareerPortalSettings
 
         /* Send e-mail notification. */
         //FIXME: Make subject configurable.
-        $mailer = new Mailer($this->_siteID, $userID);
-        $mailerStatus = $mailer->sendToOne(
-            array($destination, ''),
-            $subject,
-            $body,
-            true
-        );
+        try {
+            $mailer = new Mailer($this->_siteID, $userID);
+            $mailerStatus = $mailer->sendToOne(
+                array($destination, ''),
+                $subject,
+                $body,
+                true
+            );
+        } catch (Exception $e) {
+            // Mail not configured - fail silently
+        }
     }
 }
 

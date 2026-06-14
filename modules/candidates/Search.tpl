@@ -198,7 +198,7 @@
                                             <img src="images/resume_preview_inline.gif" class="abstop" alt="(Preview)" border="0" width="15" height="15" />
                                         </a>
                                     <?php endif; ?>
-                                    <?php $this->_($data['keySkills']); ?>&nbsp;
+                                    <?php $this->_(isset($data['keySkills']) ? $data['keySkills'] : ''); ?>&nbsp;
                                 </td>
                                 <td><?php $this->_($data['city']); ?>&nbsp;</td>
                                 <td><?php $this->_($data['state']); ?>&nbsp;</td>

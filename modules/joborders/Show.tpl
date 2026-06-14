@@ -52,7 +52,7 @@ use OpenCATS\UI\QuickActionMenu;
                 </table>
             <?php endif; ?>
 
-            <table class="detailsOutside" width="100%" height="<?php echo((count($this->extraFieldRS)/2 + 12) * 22); ?>">
+            <table class="detailsOutside" width="100%" height="<?php echo((count((array)$this->extraFieldRS)/2 + 12) * 22); ?>">
                 <tr style="vertical-align:top;">
                     <td width="50%" height="100%">
                         <table class="detailsInside" height="100%">

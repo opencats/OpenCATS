@@ -32,6 +32,7 @@
  */
 
 $rssPage = true;
+if (!defined("LEGACY_ROOT")) { define("LEGACY_ROOT", dirname(__FILE__) . "/.."); }
 
 chdir('..');
 include_once(LEGACY_ROOT . '/lib/CATSUtility.php');

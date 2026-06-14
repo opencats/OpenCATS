@@ -153,7 +153,7 @@
 
                 <table class="editTable">
                     
-                    <?php for ($i = 0; $i < count($this->extraFieldRS); $i++): ?>
+                    <?php for ($i = 0; $i < count((array)$this->extraFieldRS); $i++): ?>
                         <tr>
                             <td class="tdVertical" id="extraFieldTd<?php echo($i); ?>">
                                 <label id="extraFieldLbl<?php echo($i); ?>">

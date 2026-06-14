@@ -68,7 +68,7 @@ use OpenCATS\UI\QuickActionMenu;
                                 </td>
                             </tr>
 
-                            <?php for ($i = 0; $i < intval(count($this->extraFieldRS)/2); $i++): ?>
+                            <?php for ($i = 0; $i < intval(count((array)$this->extraFieldRS)/2); $i++): ?>
                                <tr>
                                     <td class="vertical"><?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:</td>
                                     <td class="data"><?php echo($this->extraFieldRS[$i]['display']); ?></td>
@@ -125,7 +125,7 @@ use OpenCATS\UI\QuickActionMenu;
 
                         <!-- CONTACT INFO -->
 
-                            <?php for ($i = (intval(count($this->extraFieldRS))/2); $i < (count($this->extraFieldRS)); $i++): ?>
+                            <?php for ($i = (intval(count($this->extraFieldRS))/2); $i < (count((array)$this->extraFieldRS)); $i++): ?>
                                 <tr>
                                     <td class="vertical"><?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:</td>
                                     <td class="data"><?php echo($this->extraFieldRS[$i]['display']); ?></td>                                </tr>
@@ -138,7 +138,7 @@ use OpenCATS\UI\QuickActionMenu;
             </table>
 
             <!-- CONTACT INFO -->
-            <?php if (count($this->departmentsRS) > 0): ?>
+            <?php if (is_array($this->departmentsRS) && count($this->departmentsRS) > 0): ?>
                 <table class="detailsOutside">
                     <tr>
                         <td>
@@ -320,7 +320,7 @@ use OpenCATS\UI\QuickActionMenu;
                     <th align="center">Action</th>
                 </tr>
 
-                <?php if (count($this->contactsRSWC) != 0): ?>
+                <?php if (is_array($this->contactsRSWC) && count($this->contactsRSWC) != 0): ?>
                  <?php foreach ($this->contactsRSWC as $rowNumber => $contactsData): ?>
                     <tr id="ContactsDefault<?php echo Template::escapeAttr($rowNumber); ?>" class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
                         <td valign="top" align="left">
@@ -358,7 +358,7 @@ use OpenCATS\UI\QuickActionMenu;
                <?php endif; ?>
 
                 <?php /* The following are hidden by default */ ?>
-                <?php if (count($this->contactsRSWC) != count($this->contactsRS) && count($this->contactsRS) != 0) : ?>
+                <?php if ((is_array($this->contactsRSWC) && is_array($this->contactsRS)) && count($this->contactsRSWC) != count($this->contactsRS) && count($this->contactsRS) != 0) : ?>
                  <?php foreach ($this->contactsRS as $rowNumber => $contactsData): ?>
                     <tr id="ContactsFull<?php echo Template::escapeAttr($rowNumber); ?>" class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>" style="display:none;">
                         <td valign="top" align="left">
@@ -402,7 +402,7 @@ use OpenCATS\UI\QuickActionMenu;
                     <img src="images/actions/add_contact.gif" width="16" height="16" class="absmiddle" alt="add contact" border="0" title="Add Contact"/>&nbsp;Add Contact
                 </a>
             <?php endif; ?>
-            <?php if (count($this->contactsRSWC) != count($this->contactsRS)) : ?>
+            <?php if (is_array($this->contactsRSWC) && is_array($this->contactsRS) && count($this->contactsRSWC) != count($this->contactsRS)) : ?>
                 &nbsp;
                 <a href="javascript:void(0)" id="linkShowAll" onclick="<?php echo Template::escapeAttr('javascript:for (i = 0; i< ' . count($this->contactsRSWC) . '; i++) document.getElementById(\'ContactsDefault\'+i).style.display=\'none\'; for (i = 0; i< ' . count($this->contactsRS) . '; i++) document.getElementById(\'ContactsFull\'+i).style.display=\'\'; document.getElementById(\'linkShowAll\').style.display=\'none\'; document.getElementById(\'linkHideSome\').style.display=\'\';'); ?>">
                     <img src="images/actions/add_contact.gif" width="16" height="16" class="absmiddle" alt="add contact" border="0" title="Show All"/>
@@ -423,10 +423,10 @@ use OpenCATS\UI\QuickActionMenu;
                 <tr>
                     <th align="left" width="125">Date</th>
                     <th align="left" width="90">Type</th>
-                    <th align="left" width="250">Regarding</th>
                     <th align="left" width="140">Contact</th>
-                    <th align="left">Notes</th>
                     <th align="left" width="90">Entered By</th>
+                    <th align="left" width="250">Regarding</th>
+                    <th align="left">Notes</th>
                     <th align="left" width="40">Action</th>
                 </tr>
 
@@ -434,7 +434,6 @@ use OpenCATS\UI\QuickActionMenu;
                     <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
                         <td align="left" valign="top" id="activityDate<?php echo Template::escapeAttr($activityData['activityID']); ?>"><?php $this->_($activityData['dateCreated']); ?></td>
                         <td align="left" valign="top" id="activityType<?php echo Template::escapeAttr($activityData['activityID']); ?>"><?php $this->_($activityData['typeDescription']); ?></td>
-                        <td align="left" valign="top" id="activityRegarding<?php echo Template::escapeAttr($activityData['activityID']); ?>" data-joborder-id="<?php echo Template::escapeAttr(isset($activityData['jobOrderID']) ? $activityData['jobOrderID'] : ''); ?>"><?php $this->_($activityData['regarding']); ?></td>
                         <td align="left" valign="top">
                             <?php if (!empty($activityData['contactID'])): ?>
                                 <a href="<?php echo Template::escapeUrl(CATSUtility::getIndexName() . '?m=contacts&a=show&contactID=' . $activityData['contactID']); ?>">
@@ -444,8 +443,9 @@ use OpenCATS\UI\QuickActionMenu;
                                 <?php $this->_($activityData['contactFullName']); ?>
                             <?php endif; ?>
                         </td>
-                        <td align="left" valign="top" id="activityNotes<?php echo Template::escapeAttr($activityData['activityID']); ?>"><?php echo nl2br(Template::escapeHtml($activityData['notes'])); ?></td>
                         <td align="left" valign="top"><?php $this->_($activityData['enteredByAbbrName']); ?></td>
+                        <td align="left" valign="top" id="activityRegarding<?php echo Template::escapeAttr($activityData['activityID']); ?>" data-joborder-id="<?php echo Template::escapeAttr(isset($activityData['jobOrderID']) ? $activityData['jobOrderID'] : ''); ?>"><?php $this->_($activityData['regarding']); ?></td>
+                        <td align="left" valign="top" id="activityNotes<?php echo Template::escapeAttr($activityData['activityID']); ?>"><?php echo nl2br(Template::escapeHtml($activityData['notes'])); ?></td>
                         <td align="center">
                             <?php if ($this->getUserAccessLevel('contacts.editActivity') >= ACCESS_LEVEL_EDIT): ?>
                                 <a href="#" id="editActivity<?php echo Template::escapeAttr($activityData['activityID']); ?>" onclick="Activity_editEntry(<?php echo (int) $activityData['activityID']; ?>, <?php echo (int) $activityData['contactID']; ?>, <?php echo (int) DATA_ITEM_CONTACT; ?>, <?php echo Template::escapeJsAttr($this->sessionCookie); ?>); return false;">

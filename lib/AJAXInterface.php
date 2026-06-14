@@ -204,7 +204,7 @@ class SecureAJAXInterface extends AJAXInterface
         /* Give the session a unique name to avoid conflicts and start the
          * session. */
         @session_name(CATS_SESSION_NAME);
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) { session_start(); }
 
         /* Validate the session. */
         if (!$this->isSessionLoggedIn())

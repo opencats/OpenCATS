@@ -149,7 +149,7 @@ function dumpDB($db, $file, $useStatus = false, $splitFiles = true, $siteID = -1
             $sql = 'SELECT * FROM ' . $table . '';
         }
 
-        $rs = mysqli_query($sql, $connection);
+        $rs = mysqli_query($connection, $sql);
         $index = 0;
         while ($recordSet = mysqli_fetch_assoc($rs))
         {

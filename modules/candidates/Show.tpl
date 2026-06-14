@@ -156,7 +156,7 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                                 <td class="data"><?php $this->_($this->data['source']); ?></td>
                             </tr>
 
-                            <?php for ($i = 0; $i < intval(count($this->extraFieldRS)/2); $i++): ?>
+                            <?php for ($i = 0; $i < intval(count((array)$this->extraFieldRS)/2); $i++): ?>
                                 <tr>
                                     <td class="vertical"><?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:</td>
                                     <td class="data"><?php echo($this->extraFieldRS[$i]['display']); ?></td>
@@ -226,7 +226,7 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                                 <td class="data"><?php $this->_($this->data['ownerFullName']); ?></td>
                             </tr>
 
-                            <?php for ($i = (intval(count($this->extraFieldRS))/2); $i < (count($this->extraFieldRS)); $i++): ?>
+                            <?php for ($i = (intval(count($this->extraFieldRS))/2); $i < (count((array)$this->extraFieldRS)); $i++): ?>
                                 <tr>
                                     <td class="vertical"><?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:</td>
                                     <td class="data"><?php echo($this->extraFieldRS[$i]['display']); ?></td>
@@ -626,9 +626,9 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                 <tr>
                     <th align="left" width="125">Date</th>
                     <th align="left" width="90">Type</th>
+                    <th align="left" width="90">Entered By</th>
                     <th align="left" width="250">Regarding</th>
                     <th align="left">Notes</th>
-                    <th align="left" width="90">Entered By</th>
 <?php if (!$this->isPopup): ?>
                     <th align="left" width="40">Action</th>
 <?php endif; ?>
@@ -638,9 +638,9 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                     <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
                         <td align="left" valign="top" id="activityDate<?php echo Template::escapeAttr($activityData['activityID']); ?>"><?php $this->_($activityData['dateCreated']) ?></td>
                         <td align="left" valign="top" id="activityType<?php echo Template::escapeAttr($activityData['activityID']); ?>"><?php $this->_($activityData['typeDescription']) ?></td>
+                        <td align="left" valign="top"><?php $this->_($activityData['enteredByAbbrName']) ?></td>
                         <td align="left" valign="top" id="activityRegarding<?php echo Template::escapeAttr($activityData['activityID']); ?>" data-joborder-id="<?php echo Template::escapeAttr(isset($activityData['jobOrderID']) ? $activityData['jobOrderID'] : ''); ?>"><?php $this->_($activityData['regarding']) ?></td>
                         <td align="left" valign="top" id="activityNotes<?php echo Template::escapeAttr($activityData['activityID']); ?>"><?php echo nl2br(TemplateUtility::highlightStatusChangeActivityNote($activityData['notes'])); ?></td>
-                        <td align="left" valign="top"><?php $this->_($activityData['enteredByAbbrName']) ?></td>
 <?php if (!$this->isPopup): ?>
                         <td align="center" >
                             <?php if ($this->getUserAccessLevel('candidates.edit') >= ACCESS_LEVEL_EDIT): ?>

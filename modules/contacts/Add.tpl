@@ -63,7 +63,7 @@
                                         <label id="titleLabel" for="title">Title:</label>
                                     </td>
                                     <td class="tdData">
-                                        <input type="text" name="title" id="title" class="inputbox" style="width: 150px" />
+                                        <input type="text" name="title" id="title" class="inputbox" style="width: 150px" />&nbsp;*
                                     </td>
                                 </tr>
 
@@ -219,7 +219,7 @@
 
                 <table class="editTable">
                     
-                    <?php for ($i = 0; $i < count($this->extraFieldRS); $i++): ?>
+                    <?php for ($i = 0; $i < count((array)$this->extraFieldRS); $i++): ?>
                         <tr>
                             <td class="tdVertical" id="extraFieldTd<?php echo($i); ?>">
                                 <label id="extraFieldLbl<?php echo($i); ?>">
