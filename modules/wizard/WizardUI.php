@@ -66,6 +66,7 @@ class WizardUI extends UserInterface
         $this->addPage('Localization', './modules/wizard/WizardIntroLocalization.tpl', '
             $this->_template->assign(\'timeZone\', $_SESSION[\'CATS\']->getTimeZone());
             $this->_template->assign(\'isDateDMY\', $_SESSION[\'CATS\']->isDateDMY());
+            $this->_template->assign(\'isTimeFormat24\', $_SESSION[\'CATS\']->isTimeFormat24());
         ');
 
         $this->addJsInclude('./js/wizardIntro.js');

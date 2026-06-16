@@ -80,6 +80,18 @@
                                     </select>
                                 </td>
                             </tr>
+
+                            <tr>
+                                <td>Please choose your preferred time format.</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <select id="timeFormat" name="timeFormat" style="width: 150px;">
+                                        <option value="12" selected="selected">12-hour (1:30 PM)</option>
+                                        <option value="24">24-hour (13:30)</option>
+                                    </select>
+                                </td>
+                            </tr>
                         </table>
                         <br />
 

@@ -91,10 +91,12 @@ function extendedNext()
         // This is the localization page
         var timeZone = document.getElementById("timeZone");
         var dateFormat = document.getElementById("dateFormat");
+        var timeFormatEl = document.getElementById("timeFormat");
+        var timeFormat = timeFormatEl ? timeFormatEl.value : "12";
         failAction = "alert(\"Unable to set your localization settings! Please try again.\");";
         userActionSuccess = "funcNext();";
         failAction = "";
-        userAction("Localization&timeZone=" + escape(timeZone.value) + "&dateFormat=" + escape(dateFormat.value));
+        userAction("Localization&timeZone=" + escape(timeZone.value) + "&dateFormat=" + escape(dateFormat.value) + "&timeFormat=" + escape(timeFormat));
         return false;
     }
 

@@ -3036,8 +3036,10 @@ class SettingsUI extends UserInterface
             $isDMY = true;
         }
 
+        $isTimeFormat24 = (isset($_GET['timeFormat']) && $_GET['timeFormat'] === '24');
+
         $site = new Site();
-        $site->setLocalization($timeZone, $isDMY);
+        $site->setLocalization($timeZone, $isDMY, $isTimeFormat24);
         $site->setLocalizationConfigured();
 
         echo 'Ok';

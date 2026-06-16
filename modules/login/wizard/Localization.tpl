@@ -16,6 +16,16 @@
             </select>
         </td>
     </tr>
+
+    <tr>
+        <td style="font-size: 14px;">Time Format</td>
+        <td style="font-size: 14px; padding-bottom: 5px;">
+            <select id="timeFormat" name="timeFormat" style="width: 150px;">
+                <option value="12"<?php if (!$this->isTimeFormat24): ?> selected<?php endif; ?>>12-hour (1:30 PM)</option>
+                <option value="24"<?php if ($this->isTimeFormat24): ?> selected<?php endif; ?>>24-hour (13:30)</option>
+            </select>
+        </td>
+    </tr>
 </table>
 <p />
 These settings will effect how you see dates and times in OpenCATS.
