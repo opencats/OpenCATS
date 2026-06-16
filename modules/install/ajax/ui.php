@@ -518,6 +518,7 @@ switch ($action)
         }
         $onClick .= '&timeZone=\' + encodeURIComponent(document.getElementById(\'timeZone\').value) + \'';
         $onClick .= '&dateFormat=\' + encodeURIComponent(document.getElementById(\'dateFormat\').value) + \'';
+        $onClick .= '&timeFormat=\' + encodeURIComponent(document.getElementById(\'timeFormat\').value) + \'';
         $onClick .= '&defaultPhoneCountryCodeDigits=\' + encodeURIComponent(document.getElementById(\'defaultPhoneCountryCodeDigits\').value));';
 
         echo '<script type="text/javascript">';
@@ -549,9 +550,11 @@ switch ($action)
         CATSUtility::changeConfigSetting('OFFSET_GMT', ($timeZone));
 
         $dateFormat = $_REQUEST['dateFormat'];
+        $timeFormat = isset($_REQUEST['timeFormat']) ? $_REQUEST['timeFormat'] : '12';
 
         $_SESSION['timeZoneInstaller'] = $timeZone;
         $_SESSION['dateFormatInstaller'] = $dateFormat;
+        $_SESSION['timeFormatInstaller'] = $timeFormat;
 
         // Default phone country calling code collected in the installer.
         if (isset($_REQUEST['defaultPhoneCountryCodeDigits']))
@@ -965,6 +968,9 @@ switch ($action)
         {
             MySQLQuery('UPDATE site SET date_format_ddmmyy = 1');
         }
+
+        $timeFormat = isset($_SESSION['timeFormatInstaller']) ? $_SESSION['timeFormatInstaller'] : '12';
+        MySQLQuery('UPDATE site SET time_format_24 = ' . ($timeFormat === '24' ? 1 : 0));
 
         $timeZone = $_SESSION['timeZoneInstaller'];
 
