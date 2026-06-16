@@ -387,7 +387,136 @@ class DateUtility
 
         return date($format, $unixTime);
     }
-    
+
+    /**
+     * Returns the PHP time format string for the configured time format.
+     * Pass an explicit boolean to override the session value (useful in tests).
+     *
+     * @param boolean|null $isTimeFormat24  true=24h, false=12h, null=read from session
+     * @return string 'H:i' for 24-hour or 'g:i A' for 12-hour
+     */
+    public static function getTimeFormat($isTimeFormat24 = null)
+    {
+        if ($isTimeFormat24 === null)
+        {
+            $isTimeFormat24 = (isset($_SESSION['CATS']) && $_SESSION['CATS']->isTimeFormat24());
+        }
+
+        return $isTimeFormat24 ? 'H:i' : 'g:i A';
+    }
+
+    /**
+     * Returns a combined date + time PHP format string for the configured formats.
+     *
+     * @param string       $dateFormat      A PHP date format string for the date portion.
+     * @param boolean|null $isTimeFormat24  true=24h, false=12h, null=read from session
+     * @return string combined format, e.g. 'm-d-Y g:i A' or 'm-d-Y H:i'
+     */
+    public static function getDateTimeFormat($dateFormat, $isTimeFormat24 = null)
+    {
+        return $dateFormat . ' ' . self::getTimeFormat($isTimeFormat24);
+    }
+
+    /**
+     * Returns the MySQL DATE_FORMAT time-only format string for use inside
+     * a PHP sprintf() call (% signs are already doubled).
+     * 24-hour: '%%H:%%i' becomes MySQL %H:%i (e.g. 13:30)
+     * 12-hour: '%%h:%%i %%p' becomes MySQL %h:%i %p (e.g. 01:30 PM)
+     *
+     * @param boolean|null $isTimeFormat24  true=24h, false=12h, null=session
+     * @return string sprintf-escaped MySQL time format string
+     */
+    public static function getMysqlTimeFormat($isTimeFormat24 = null)
+    {
+        if ($isTimeFormat24 === null)
+        {
+            $isTimeFormat24 = (isset($_SESSION['CATS']) && $_SESSION['CATS']->isTimeFormat24());
+        }
+        return $isTimeFormat24 ? '%%H:%%i' : '%%h:%%i %%p';
+    }
+
+    /**
+     * Returns the MySQL DATE_FORMAT date+time format string for use inside
+     * a PHP sprintf() call (% signs are already doubled).
+     * 24-hour: '%%m-%%d-%%y (%%H:%%i)'
+     * 12-hour: '%%m-%%d-%%y (%%h:%%i %%p)'
+     *
+     * @param boolean|null $isTimeFormat24  true=24h, false=12h, null=session
+     * @return string sprintf-escaped MySQL datetime format string
+     */
+    public static function getMysqlDateTimeFormat($isTimeFormat24 = null)
+    {
+        if ($isTimeFormat24 === null)
+        {
+            $isTimeFormat24 = (isset($_SESSION['CATS']) && $_SESSION['CATS']->isTimeFormat24());
+        }
+        return $isTimeFormat24 ? '%%m-%%d-%%y (%%H:%%i)' : '%%m-%%d-%%y (%%h:%%i %%p)';
+    }
+
+    /**
+     * Returns the MySQL DATE_FORMAT date+time+seconds format string for use
+     * inside a PHP sprintf() call (% signs are already doubled).
+     * 24-hour: '%%m-%%d-%%y (%%H:%%i:%%s)'
+     * 12-hour: '%%m-%%d-%%y (%%h:%%i:%%s %%p)'
+     *
+     * @param boolean|null $isTimeFormat24  true=24h, false=12h, null=session
+     * @return string sprintf-escaped MySQL datetime+seconds format string
+     */
+    public static function getMysqlDateTimeSecondsFormat($isTimeFormat24 = null)
+    {
+        if ($isTimeFormat24 === null)
+        {
+            $isTimeFormat24 = (isset($_SESSION['CATS']) && $_SESSION['CATS']->isTimeFormat24());
+        }
+        return $isTimeFormat24 ? '%%m-%%d-%%y (%%H:%%i:%%s)' : '%%m-%%d-%%y (%%h:%%i:%%s %%p)';
+    }
+
+    /**
+     * Normalizes activity form time inputs to a 'HH:MM:00' string suitable
+     * for storage.  Returns false when inputs are out of range.
+     *
+     * In 24-hour mode $hour must be 0-23; $meridiem is ignored.
+     * In 12-hour mode $hour must be 1-12 and $meridiem must be 'AM' or 'PM'.
+     *
+     * @param integer $hour      Hour from the form
+     * @param integer $minute    Minute from the form (0-59)
+     * @param string  $meridiem  'AM' or 'PM' (ignored in 24-hour mode)
+     * @param boolean $is24      true for 24-hour mode
+     * @return string|false 'HH:MM:00' on success, false on invalid input
+     */
+    public static function normalizeActivityTime($hour, $minute, $meridiem, $is24)
+    {
+        $hour   = (int) $hour;
+        $minute = (int) $minute;
+
+        if ($minute < 0 || $minute > 59)
+        {
+            return false;
+        }
+
+        if ($is24)
+        {
+            if ($hour < 0 || $hour > 23)
+            {
+                return false;
+            }
+            return sprintf('%02d:%02d:00', $hour, $minute);
+        }
+
+        if ($hour < 1 || $hour > 12 || ($meridiem !== 'AM' && $meridiem !== 'PM'))
+        {
+            return false;
+        }
+
+        $hour24 = $hour % 12;   /* 12 AM becomes 0; 1-11 AM stay 1-11. */
+        if ($meridiem === 'PM')
+        {
+            $hour24 += 12;       /* 12 PM stays 12; 1-11 PM become 13-23. */
+        }
+
+        return sprintf('%02d:%02d:00', $hour24, $minute);
+    }
+
     /**
      * Returns a human readable representation of a period of time in seconds.
      *
