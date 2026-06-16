@@ -71,6 +71,7 @@ class CATSSession
     private $_timeZone = 0;
     private $_defaultPhoneCountryCode = '+1';
     private $_dateDMY = false;
+    private $_timeFormat24 = false;
     private $_pipelineEntriesPerPage = 15;
     private $_storedData = array();
     private $_storedValues = array();
@@ -357,6 +358,17 @@ class CATSSession
         return $this->_dateDMY;
     }
 
+    /**
+     * Returns true if 24-hour time format is configured for the current site,
+     * false otherwise (12-hour format). The database is not accessed.
+     *
+     * @return boolean Is 24-hour time format in use?
+     */
+    public function isTimeFormat24()
+    {
+        return $this->_timeFormat24;
+    }
+
     // FIXME: Document me!
     public function getAccessLevel($securedObjectName)
     {
@@ -569,13 +581,14 @@ class CATSSession
      * @param boolean Display dates in D-M-Y format?
      * @return void
      */
-    public function setTimeDateLocalization($timeZone, $isDMY)
+    public function setTimeDateLocalization($timeZone, $isDMY, $isTimeFormat24 = false)
     {
         $timeZone = (integer) $timeZone;
 
         $this->_timeZone       = $timeZone;
         $this->_timeZoneOffset = $timeZone - OFFSET_GMT;
         $this->_dateDMY        = $isDMY;
+        $this->_timeFormat24   = (bool) $isTimeFormat24;
     }
 
     /**
@@ -648,6 +661,7 @@ class CATSSession
                 site.time_zone AS timeZone,
                 site.default_phone_country_code AS defaultPhoneCountryCode,
                 site.date_format_ddmmyy AS dateFormatDMY,
+                site.time_format_24 AS timeFormat24,
                 site.is_free AS isFree,
                 site.is_hr_mode AS isHrMode,
                 site.first_time_setup as isFirstTimeSetup,
@@ -774,6 +788,7 @@ class CATSSession
                 $this->_timeZone               = $rs['timeZone'];
                 $this->_defaultPhoneCountryCode = $rs['defaultPhoneCountryCode'];
                 $this->_dateDMY                = ($rs['dateFormatDMY'] == 0 ? false : true);
+                $this->_timeFormat24           = ($rs['timeFormat24'] == 0 ? false : true);
                 $this->_canSeeEEOInfo          = ($rs['canSeeEEOInfo'] == 0 ? false : true);
                 $this->_pipelineEntriesPerPage = $rs['pipelineEntriesPerPage'];
                 $this->_loggedInScript         = CATSUtility::getDirectoryName(); 

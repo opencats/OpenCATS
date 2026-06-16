@@ -70,18 +70,21 @@ class Site
      *
      * @param integer time zone offset
      * @param boolean use D-M-Y format dates
+     * @param boolean use 24-hour time format
      * @return boolean True if successful; false otherwise.
      */
-    public function setLocalization($timeZone, $isDMY)
+    public function setLocalization($timeZone, $isDMY, $isTimeFormat24 = false)
     {
         $sql = sprintf(
             "UPDATE
                 site
             SET
                 time_zone = %s,
-                date_format_ddmmyy = %s",
+                date_format_ddmmyy = %s,
+                time_format_24 = %s",
             $this->_db->makeQueryInteger($timeZone),
-            ($isDMY ? 1 : 0)
+            ($isDMY ? 1 : 0),
+            ($isTimeFormat24 ? 1 : 0)
         );
 
         return (boolean) $this->_db->query($sql);
