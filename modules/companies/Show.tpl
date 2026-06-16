@@ -5,6 +5,10 @@ use OpenCATS\UI\QuickActionMenu;
 <?php TemplateUtility::printHeader('Company - ' . $this->data['name'], array( 'js/activity.js', 'js/sorttable.js', 'js/attachment.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
+    <script type="text/javascript">
+        window.CATSUserDateFormat  = <?php echo Template::escapeJs($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>;
+        window.CATSTimeFormat24    = <?php echo $_SESSION['CATS']->isTimeFormat24() ? 'true' : 'false'; ?>;
+    </script>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
 

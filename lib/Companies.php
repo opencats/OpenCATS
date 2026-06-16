@@ -374,7 +374,7 @@ class Companies
                     billing_contact.first_name, ' ', billing_contact.last_name
                 ) AS billingContactFullName,
                 DATE_FORMAT(
-                    company.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    company.date_created, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS dateCreated,
                 CONCAT(
                     entered_by_user.first_name, ' ', entered_by_user.last_name

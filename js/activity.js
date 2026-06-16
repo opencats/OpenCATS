@@ -296,31 +296,46 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
         var userDateFormat = (typeof window.CATSUserDateFormat !== "undefined" ? window.CATSUserDateFormat : "MM-DD-YY");
         dateSpan.innerHTML = DateInputForDOM("dateEditActivity" + activityID, true, userDateFormat, dateAndTime.substr(0,dateAndTime.indexOf(" ")), -1);
 
-        var timeString = dateAndTime.substr(dateAndTime.indexOf(" ")+2);
-        var hourString = timeString.substr(0,timeString.indexOf(":"));
-        var timeString = timeString.substr(timeString.indexOf(":")+1);
-        var minuteString = timeString.substr(0,timeString.indexOf(" "));
-        var timeString = timeString.substr(timeString.indexOf(" ")+1);
-        var amPmString = timeString.substr(0,timeString.indexOf(")"));
-        
-        /* Time editor. */
+        /* Parse time from display string: strip date prefix and the opening "(". */
+        var timeSection = dateAndTime.substr(dateAndTime.indexOf("(") + 1);
+        var hourString, minuteString, amPmString;
+        if (window.CATSTimeFormat24)
+        {
+            /* 24-hour display: "(HH:MM)" */
+            hourString   = timeSection.substr(0, timeSection.indexOf(":"));
+            minuteString = timeSection.substr(timeSection.indexOf(":") + 1, 2);
+            amPmString   = "";
+        }
+        else
+        {
+            /* 12-hour display: "(H:MM AM)" or "(H:MM PM)" */
+            hourString   = timeSection.substr(0, timeSection.indexOf(":"));
+            var rest     = timeSection.substr(timeSection.indexOf(":") + 1);
+            minuteString = rest.substr(0, rest.indexOf(" "));
+            amPmString   = rest.substr(rest.indexOf(" ") + 1, 2);
+        }
+
+        /* Time editor — hour select. */
         var hourSelect = document.createElement("select");
         hourSelect.setAttribute("id", "hourEditActivity" + activityID);
-        for (var i = 1; i<= 12; ++i)
+        var hourMin = window.CATSTimeFormat24 ? 0 : 1;
+        var hourMax = window.CATSTimeFormat24 ? 23 : 12;
+        for (var i = hourMin; i <= hourMax; ++i)
         {
             var hourSelectOption = document.createElement("option");
             hourSelectOption.value = i;
-            hourSelectOption.innerHTML = i;
+            hourSelectOption.innerHTML = window.CATSTimeFormat24 ? (i < 10 ? '0' + i : '' + i) : i;
             if (hourString * 1 == i)
             {
                 hourSelectOption.selected = true;
             }
             hourSelect.appendChild(hourSelectOption);
         }
-        
+
+        /* Time editor — minute select. */
         var minuteSelect = document.createElement("select");
         minuteSelect.setAttribute("id", "minuteEditActivity" + activityID);
-        for (var i = 0; i<= 59; ++i)
+        for (var i = 0; i <= 59; ++i)
         {
             var minuteSelectOption = document.createElement("option");
             minuteSelectOption.value = i;
@@ -331,37 +346,45 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
             }
             minuteSelect.appendChild(minuteSelectOption);
         }
-        
-        var AMPMSelect = document.createElement("select");
-        AMPMSelect.setAttribute("id", "ampmEditActivity" + activityID);
-        
-        var AMPMSelectOptionAM = document.createElement("option");
-        AMPMSelectOptionAM.value = "AM";
-        AMPMSelectOptionAM.innerHTML = "AM";
-        if (amPmString == "AM")
+
+        /* Time editor — AM/PM select (12-hour mode only). */
+        var AMPMSelect = null;
+        if (!window.CATSTimeFormat24)
         {
-            AMPMSelectOptionAM.selected = true;
+            AMPMSelect = document.createElement("select");
+            AMPMSelect.setAttribute("id", "ampmEditActivity" + activityID);
+
+            var AMPMSelectOptionAM = document.createElement("option");
+            AMPMSelectOptionAM.value = "AM";
+            AMPMSelectOptionAM.innerHTML = "AM";
+            if (amPmString == "AM")
+            {
+                AMPMSelectOptionAM.selected = true;
+            }
+            AMPMSelect.appendChild(AMPMSelectOptionAM);
+
+            var AMPMSelectOptionPM = document.createElement("option");
+            AMPMSelectOptionPM.value = "PM";
+            AMPMSelectOptionPM.innerHTML = "PM";
+            if (amPmString == "PM")
+            {
+                AMPMSelectOptionPM.selected = true;
+            }
+            AMPMSelect.appendChild(AMPMSelectOptionPM);
         }
-        AMPMSelect.appendChild(AMPMSelectOptionAM);
-        
-        var AMPMSelectOptionPM = document.createElement("option");
-        AMPMSelectOptionPM.value = "PM";
-        AMPMSelectOptionPM.innerHTML = "PM";
-        if (amPmString == "PM")
-        {
-            AMPMSelectOptionPM.selected = true;
-        }
-        AMPMSelect.appendChild(AMPMSelectOptionPM);
-        
+
         var dateTimeTable = document.createElement("table");
         var dateTimeTableTr = document.createElement("tr");
         var dateTimeTableTdLeft = document.createElement("td");
         var dateTimeTableTdRight = document.createElement("td");
-        
-        dateTimeTableTdLeft.appendChild(dateSpan);    
-        dateTimeTableTdRight.appendChild(hourSelect);    
-        dateTimeTableTdRight.appendChild(minuteSelect); 
-        dateTimeTableTdRight.appendChild(AMPMSelect);    
+
+        dateTimeTableTdLeft.appendChild(dateSpan);
+        dateTimeTableTdRight.appendChild(hourSelect);
+        dateTimeTableTdRight.appendChild(minuteSelect);
+        if (AMPMSelect)
+        {
+            dateTimeTableTdRight.appendChild(AMPMSelect);
+        }
         dateTimeTableTr.appendChild(dateTimeTableTdLeft);
         dateTimeTableTr.appendChild(dateTimeTableTdRight);
         dateTimeTable.appendChild(dateTimeTableTr);
@@ -390,7 +413,7 @@ function Activity_editEntry(activityID, dataItemID, dataItemType, sessionCookie)
                 document.getElementById("dateEditActivity" + activityID).value,
                 document.getElementById("hourEditActivity" + activityID).value,
                 document.getElementById("minuteEditActivity" + activityID).value,
-                document.getElementById("ampmEditActivity" + activityID).value,
+                AMPMSelect ? AMPMSelect.value : "",
                 oldEditRow,
                 newEditRow,
                 activityID,
@@ -861,6 +884,10 @@ function AS_onEventAllDayChange(allDayRadioID)
 
     document.getElementById("hour").disabled = disableTime;
     document.getElementById("minute").disabled = disableTime;
-    document.getElementById("meridiem").disabled = disableTime;
+    var meridiem = document.getElementById("meridiem");
+    if (meridiem)
+    {
+        meridiem.disabled = disableTime;
+    }
     document.getElementById("duration").disabled = disableTime;
 }

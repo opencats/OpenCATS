@@ -199,24 +199,31 @@ function calendarEditEvent(entry)
         setCheckedValue(document.getElementById("editEventForm").elements["allDay"], "0");
         setEditAllDayEnabled();
 
-        if (entry.hour > 12)
+        if (window.CATSTimeFormat24)
         {
-            document.getElementById("hourEdit").value = entry.hour - 12;
+            document.getElementById("hourEdit").value = entry.hour;
         }
         else
         {
-            if (entry.hour == 0)
+            if (entry.hour > 12)
             {
-                document.getElementById("hourEdit").value = 12;
+                document.getElementById("hourEdit").value = entry.hour - 12;
             }
             else
             {
-                document.getElementById("hourEdit").value = entry.hour * 1;
+                if (entry.hour == 0)
+                {
+                    document.getElementById("hourEdit").value = 12;
+                }
+                else
+                {
+                    document.getElementById("hourEdit").value = entry.hour * 1;
+                }
             }
-        }
-        if (entry.hour >= 12)
-        {
-            document.getElementById("meridiemEdit").value = "PM";
+            if (entry.hour >= 12)
+            {
+                document.getElementById("meridiemEdit").value = "PM";
+            }
         }
 
         var string = "" + entry.minute;
@@ -388,25 +395,31 @@ function addEventByDay(year, month, day, hour)
 
     document.getElementById("publicEntry").checked = defaultPublic;
 
-    if (hour > 12)
+    if (window.CATSTimeFormat24)
     {
-        document.getElementById("hour").value = hour - 12;
+        document.getElementById("hour").value = hour;
     }
     else
     {
-        if (hour == 0)
+        if (hour > 12)
         {
-            document.getElementById("hour").value = 12;
+            document.getElementById("hour").value = hour - 12;
         }
         else
         {
-            document.getElementById("hour").value = hour;
+            if (hour == 0)
+            {
+                document.getElementById("hour").value = 12;
+            }
+            else
+            {
+                document.getElementById("hour").value = hour;
+            }
         }
-    }
-
-    if (hour >= 12)
-    {
-        document.getElementById("meridiem").value = "PM";
+        if (hour >= 12)
+        {
+            document.getElementById("meridiem").value = "PM";
+        }
     }
 
     //cleanUpUI();
@@ -514,7 +527,8 @@ function setAddAllDayEnabled()
 
     document.getElementById("hour").disabled = state;
     document.getElementById("minute").disabled = state;
-    document.getElementById("meridiem").disabled = state;
+    var mer = document.getElementById("meridiem");
+    if (mer) { mer.disabled = state; }
     document.getElementById("duration").disabled = state;
 }
 
@@ -529,7 +543,8 @@ function setEditAllDayEnabled()
 
     document.getElementById("hourEdit").disabled = state;
     document.getElementById("minuteEdit").disabled = state;
-    document.getElementById("meridiemEdit").disabled = state;
+    var merEdit = document.getElementById("meridiemEdit");
+    if (merEdit) { merEdit.disabled = state; }
     document.getElementById("durationEdit").disabled = state;
 }
 

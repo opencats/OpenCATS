@@ -109,7 +109,7 @@ class Calendar
                     calendar_event.date, '%%m-%%d-%%y'
                 ) AS date,
                 DATE_FORMAT(
-                    calendar_event.date, '%%h:%%i %%p'
+                    calendar_event.date, '" . DateUtility::getMysqlTimeFormat() . "'
                 ) AS time,
                 DATE_FORMAT(
                     calendar_event.date, '%%H'
@@ -119,7 +119,7 @@ class Calendar
                 ) AS minute,
                 calendar_event.date AS dateSort,
                 DATE_FORMAT(
-                    calendar_event.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    calendar_event.date_created, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS dateCreated,
                 calendar_event_type.calendar_event_type_id AS eventType,
                 calendar_event_type.short_description AS eventTypeDescription,
@@ -608,7 +608,7 @@ class Calendar
                 calendar_event.description AS description,
                 calendar_event.public AS public,
                 DATE_FORMAT(
-                    calendar_event.date, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    calendar_event.date, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS dateShow,
                 DATE_FORMAT(
                     calendar_event.date, '%%d'
@@ -705,7 +705,7 @@ class Calendar
                     calendar_event.date, '%%m-%%d-%%y'
                 ) AS date,
                 DATE_FORMAT(
-                    calendar_event.date, '%%h:%%i %%p'
+                    calendar_event.date, '" . DateUtility::getMysqlTimeFormat() . "'
                 ) AS time,
                 calendar_event.date AS dateSort,
                 entered_by_user.user_id AS userID,
@@ -752,7 +752,7 @@ class Calendar
                     calendar_event.date, '%%m-%%d-%%y'
                 ) AS date,
                 DATE_FORMAT(
-                    calendar_event.date, '%%h:%%i %%p'
+                    calendar_event.date, '" . DateUtility::getMysqlTimeFormat() . "'
                 ) AS time,
                 calendar_event.date AS dateSort,
                 entered_by_user.user_id AS userID,

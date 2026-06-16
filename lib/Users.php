@@ -285,13 +285,13 @@ class Users
                         MAX(
                             IF(user_login.successful = 1, user_login.date, NULL)
                            ),
-                        '%%m-%%d-%%y (%%h:%%i %%p)'
+                        '" . DateUtility::getMysqlDateTimeFormat() . "'
                         ) AS successfulDate,
                 DATE_FORMAT(
                         MAX(
                             IF(user_login.successful = 0, user_login.date, NULL)
                            ),
-                        '%%m-%%d-%%y (%%h:%%i %%p)'
+                        '" . DateUtility::getMysqlDateTimeFormat() . "'
                         ) AS unsuccessfulDate,
                 force_logout as forceLogout
                     FROM
@@ -349,13 +349,13 @@ class Users
                         MAX(
                             IF(user_login.successful = 1, user_login.date, NULL)
                            ),
-                        '%%m-%%d-%%y (%%h:%%i %%p)'
+                        '" . DateUtility::getMysqlDateTimeFormat() . "'
                         ) AS successfulDate,
                 DATE_FORMAT(
                         MAX(
                             IF(user_login.successful = 0, user_login.date, NULL)
                            ),
-                        '%%m-%%d-%%y (%%h:%%i %%p)'
+                        '" . DateUtility::getMysqlDateTimeFormat() . "'
                         ) AS unsuccessfulDate,
                 force_logout as forceLogout
                     FROM
@@ -464,13 +464,13 @@ class Users
                     MAX(
                         IF(user_login.successful = 1, user_login.date, NULL)
                        ),
-                    '%%m-%%d-%%y (%%h:%%i %%p)'
+                    '" . DateUtility::getMysqlDateTimeFormat() . "'
                     ) AS successfulDate,
                 DATE_FORMAT(
                         MAX(
                             IF(user_login.successful = 0, user_login.date, NULL)
                            ),
-                        '%%m-%%d-%%y (%%h:%%i %%p)'
+                        '" . DateUtility::getMysqlDateTimeFormat() . "'
                         ) AS unsuccessfulDate
                     FROM
                     user
@@ -1100,7 +1100,7 @@ class Users
                 user.first_name AS firstName,
                 user.last_name AS lastName,
                 DATE_FORMAT(
-                    user_login.date_refreshed, '%%h:%%i %%p'
+                    user_login.date_refreshed, '" . DateUtility::getMysqlTimeFormat() . "'
                     ) AS lastRefresh,
                 IF(
                     user_login.date_refreshed > DATE_SUB(NOW(), INTERVAL 20 SECOND),

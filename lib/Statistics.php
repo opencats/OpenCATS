@@ -279,7 +279,7 @@ class Statistics
                     owner_user.first_name, ' ', owner_user.last_name
                 ) AS ownerFullName,
                 DATE_FORMAT(
-                    candidate_joborder_status_history.date, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    candidate_joborder_status_history.date, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS dateSubmitted
             FROM
                 candidate_joborder_status_history
@@ -377,7 +377,7 @@ class Statistics
                     owner_user.first_name, ' ', owner_user.last_name
                 ) AS ownerFullName,
                 DATE_FORMAT(
-                    candidate_joborder_status_history.date, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    candidate_joborder_status_history.date, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS dateSubmitted
             FROM
                 candidate_joborder_status_history
@@ -571,7 +571,7 @@ class Statistics
                     owner_user.first_name, ' ', owner_user.last_name
                 ) AS ownerFullName,
                 DATE_FORMAT(
-                    joborder.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    joborder.date_created, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS dateCreated,
                 COUNT(
                     candidate_joborder.joborder_id

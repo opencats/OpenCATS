@@ -72,6 +72,9 @@ class ImportantPipelineDashboard extends DataGrid
         $this->_assignedCriterion = "";
         $this->_candidateIDColumn = 'company.company_id';
 
+        $rawTimeFormat = (isset($_SESSION['CATS']) && $_SESSION['CATS']->isTimeFormat24())
+            ? '%H:%i' : '%h:%i %p';
+
         $this->_classColumns = array(
 
             'First Name' =>     array('pagerRender'    => '$ret = \'<img src="images/mru/candidate.gif" height="12" alt="" />\'; if ($rsData[\'isHot\'] == 1) $className =  \'jobLinkHot\'; else $className = \'jobLinkCold\'; return $ret.\'&nbsp;<a href="'.CATSUtility::getIndexName().'?m=candidates&amp;a=show&amp;candidateID=\'.$rsData[\'candidateID\'].\'" style="font-size:11px;" class="\'.$className.\'" title="\'.htmlspecialchars(InfoString::make(DATA_ITEM_CANDIDATE,$rsData[\'candidateID\'])).\'">\'.htmlspecialchars($rsData[\'firstName\']).\'</a>\';',
@@ -110,7 +113,7 @@ class ImportantPipelineDashboard extends DataGrid
                                      'sortableColumn'  => 'dateModifiedSort',
                                      'pagerWidth'      => 70,
                                      'pagerOptional'   => true,
-                                     'filterHaving'    => 'DATE_FORMAT(candidate_joborder.date_modified, \'%m-%d-%y (%%h:%%i %%p)\')'),
+                                     'filterHaving'    => 'DATE_FORMAT(candidate_joborder.date_modified, \'%m-%d-%y (' . $rawTimeFormat . ')\')'),
          );
 
         parent::__construct("home:ImportantPipelineDashboard", $parameters);
@@ -315,7 +318,7 @@ class CallsDataGrid extends DataGrid
                 activity.notes AS notes,
                 activity_type.short_description AS typeDescription,
                 DATE_FORMAT(
-                    activity.date_occurred, '%%m-%%d-%%y %%h:%%i %%p'
+                    activity.date_occurred, '" . (isset($_SESSION['CATS']) && $_SESSION['CATS']->isTimeFormat24() ? '%%m-%%d-%%y %%H:%%i' : '%%m-%%d-%%y %%h:%%i %%p') . "'
                 ) AS dateCreated,
                 activity.date_occurred AS dateCreatedSort,
                 entered_by_user.first_name AS enteredByFirstName,
@@ -366,7 +369,7 @@ class CallsDataGrid extends DataGrid
                 activity.notes AS notes,
                 activity_type.short_description AS typeDescription,
                 DATE_FORMAT(
-                    activity.date_occurred, '%%m-%%d-%%y %%h:%%i %%p'
+                    activity.date_occurred, '" . (isset($_SESSION['CATS']) && $_SESSION['CATS']->isTimeFormat24() ? '%%m-%%d-%%y %%H:%%i' : '%%m-%%d-%%y %%h:%%i %%p') . "'
                 ) AS dateCreated,
                 activity.date_occurred AS dateCreatedSort,
                 entered_by_user.first_name AS enteredByFirstName,

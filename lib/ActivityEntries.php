@@ -63,11 +63,15 @@ include_once(LEGACY_ROOT . '/lib/JobOrders.php');
 class ActivityEntries
 {
     private $_db;
+    private $_mysqlDateTimeFormat;
 
 
     public function __construct()
     {
         $this->_db = DatabaseConnection::getInstance();
+
+        $is24 = (isset($_SESSION['CATS']) && $_SESSION['CATS']->isTimeFormat24());
+        $this->_mysqlDateTimeFormat = DateUtility::getMysqlDateTimeFormat($is24);
     }
 
 
@@ -405,7 +409,7 @@ class ActivityEntries
                 activity_type.short_description AS typeDescription,
                 activity.notes AS notes,
                 DATE_FORMAT(
-                    activity.date_occurred, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    activity.date_occurred, '" . $this->_mysqlDateTimeFormat . "'
                 ) AS dateCreated,
                 entered_by_user.first_name AS enteredByFirstName,
                 entered_by_user.last_name AS enteredByLastName,
@@ -450,7 +454,7 @@ class ActivityEntries
                 activity.joborder_id AS jobOrderID,
                 activity.notes AS notes,
                 DATE_FORMAT(
-                    activity.date_occurred, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    activity.date_occurred, '" . $this->_mysqlDateTimeFormat . "'
                 ) AS dateCreated,
                 activity.date_occurred AS dateCreatedSort,
                 activity.type AS type,
@@ -503,7 +507,7 @@ class ActivityEntries
                 activity.joborder_id AS jobOrderID,
                 activity.notes AS notes,
                 DATE_FORMAT(
-                    activity.date_occurred, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    activity.date_occurred, '" . $this->_mysqlDateTimeFormat . "'
                 ) AS dateCreated,
                 activity.date_occurred AS dateCreatedSort,
                 activity.type AS type,

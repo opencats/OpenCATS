@@ -4,6 +4,7 @@
 <?php TemplateUtility::printTabs($this->active); ?>
     <script type="text/javascript">
         window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
+        window.CATSTimeFormat24 = <?php echo($_SESSION['CATS']->isTimeFormat24() ? 'true' : 'false'); ?>;
     </script>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>
@@ -98,9 +99,15 @@
                                                 <td class="tdData">
                                                     <input type="radio" name="allDay" id="allDay0" value="0" checked onchange="setAddAllDayEnabled();" />
                                                     <select id="hour" name="hour" class="inputbox" style="width: 40px;">
-                                                        <?php for ($i = 1; $i <= 12; ++$i): ?>
-                                                            <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
-                                                        <?php endfor; ?>
+                                                        <?php if ($_SESSION['CATS']->isTimeFormat24()): ?>
+                                                            <?php for ($i = 0; $i <= 23; ++$i): ?>
+                                                                <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
+                                                            <?php endfor; ?>
+                                                        <?php else: ?>
+                                                            <?php for ($i = 1; $i <= 12; ++$i): ?>
+                                                                <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
+                                                            <?php endfor; ?>
+                                                        <?php endif; ?>
                                                     </select>&nbsp;
                                                     <select id="minute" name="minute" class="inputbox" style="width: 40px;">
                                                         <?php for ($i = 0; $i <= 45; $i = $i + 15): ?>
@@ -109,10 +116,12 @@
                                                             </option>
                                                         <?php endfor; ?>
                                                     </select>&nbsp;
+                                                    <?php if (!$_SESSION['CATS']->isTimeFormat24()): ?>
                                                     <select id="meridiem" name="meridiem" class="inputbox" style="width: 45px;">
                                                         <option value="AM">AM</option>
                                                         <option value="PM">PM</option>
                                                     </select>
+                                                    <?php endif; ?>
                                                     <br />
 
                                                     <input type="radio" name="allDay" id="allDay1" value="1" onchange="setAddAllDayEnabled();" />All Day / No Specific Time<br />
@@ -248,9 +257,15 @@
                                                 <td class="tdData">
                                                     <input type="radio" name="allDay" id="allDayEdit0" value="0" checked onchange="setEditAllDayEnabled();" />
                                                     <select id="hourEdit" name="hour" class="inputbox" style="width: 40px;">
-                                                        <?php for ($i = 1; $i <= 12; ++$i): ?>
-                                                            <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
-                                                        <?php endfor; ?>
+                                                        <?php if ($_SESSION['CATS']->isTimeFormat24()): ?>
+                                                            <?php for ($i = 0; $i <= 23; ++$i): ?>
+                                                                <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
+                                                            <?php endfor; ?>
+                                                        <?php else: ?>
+                                                            <?php for ($i = 1; $i <= 12; ++$i): ?>
+                                                                <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
+                                                            <?php endfor; ?>
+                                                        <?php endif; ?>
                                                     </select>&nbsp;
                                                     <select id="minuteEdit" name="minute" class="inputbox" style="width: 40px;">
                                                         <?php for ($i = 0; $i <= 45; $i = $i + 15): ?>
@@ -259,10 +274,12 @@
                                                             </option>
                                                         <?php endfor; ?>
                                                     </select>&nbsp;
+                                                    <?php if (!$_SESSION['CATS']->isTimeFormat24()): ?>
                                                     <select id="meridiemEdit" name="meridiem" class="inputbox" style="width: 45px;">
                                                         <option value="AM">AM</option>
                                                         <option value="PM">PM</option>
                                                     </select>
+                                                    <?php endif; ?>
                                                     <br />
 
                                                     <input type="radio" name="allDay" id="allDayEdit1" value="1" onchange="setEditAllDayEnabled();" />All Day / No Specific Time<br />

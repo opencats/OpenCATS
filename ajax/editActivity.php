@@ -80,7 +80,6 @@ $activityNote = trim(urldecode($_POST['notes']));
 $activityDate = trim(urldecode($_POST['date']));
 $activityHour = trim(urldecode($_POST['hour']));
 $activityMinute = trim(urldecode($_POST['minute']));
-$activityAMPM = trim(urldecode($_POST['ampm']));
 
 $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
     ? DATE_FORMAT_DDMMYY
@@ -99,19 +98,17 @@ if ($jobOrderID === null || $jobOrderID === '' || $jobOrderID === 'NULL' ||
     $jobOrderID = -1;
 }
 
-/* Convert formatted time to UNIX timestamp. */
-$time = strtotime(
-    sprintf('%02d:%02d %s', $activityHour, $activityMinute, $activityAMPM)
-);
+/* Convert time fields to a 'HH:MM:SS' string. */
+$is24 = $_SESSION['CATS']->isTimeFormat24();
+$activityAMPM = $is24 ? '' : trim(urldecode($_POST['ampm']));
+$timeStr = DateUtility::normalizeActivityTime($activityHour, $activityMinute, $activityAMPM, $is24);
+if ($timeStr === false)
+{
+    die('Invalid time.');
+}
 
 /* Create MySQL date string w/ 24hr time (YYYY-MM-DD HH:MM:SS). */
-$date = sprintf(
-    '%s %s',
-    DateUtility::convert(
-        '-', $activityDate, $dateFormatFlag, DATE_FORMAT_YYYYMMDD
-    ),
-    date('H:i:00', $time)
-);
+$date = DateUtility::convert('-', $activityDate, $dateFormatFlag, DATE_FORMAT_YYYYMMDD) . ' ' . $timeStr;
 
 /* Save the new activity entry. */
 $activityEntries = new ActivityEntries();

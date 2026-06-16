@@ -1398,41 +1398,30 @@ class ContactsUI extends UserInterface
             $activityNote = $this->getTrimmedInput('activityNote', $_POST);
 
             $activityDateOccurred = false;
+            $isTimeFormat24 = $_SESSION['CATS']->isTimeFormat24();
             $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
                 ? DATE_FORMAT_DDMMYY
                 : DATE_FORMAT_MMDDYY;
             $activityDate = $this->getTrimmedInput('activityDate', $_POST);
+            $activityHourSet = isset($_POST['activityHour']) && isset($_POST['activityMinute']) &&
+                ctype_digit((string) $_POST['activityHour']) &&
+                ctype_digit((string) $_POST['activityMinute']);
+            $activityMeridiemOk = $isTimeFormat24 ||
+                (isset($_POST['activityMeridiem']) &&
+                 ($_POST['activityMeridiem'] == 'AM' || $_POST['activityMeridiem'] == 'PM'));
             if (!empty($activityDate) &&
                 DateUtility::validate('-', $activityDate, $dateFormatFlag) &&
-                isset($_POST['activityHour']) && isset($_POST['activityMinute']) &&
-                isset($_POST['activityMeridiem']) &&
-                ctype_digit((string) $_POST['activityHour']) &&
-                ctype_digit((string) $_POST['activityMinute']) &&
-                ($_POST['activityMeridiem'] == 'AM' || $_POST['activityMeridiem'] == 'PM'))
+                $activityHourSet && $activityMeridiemOk)
             {
-                $activityHour = (int) $_POST['activityHour'];
-                $activityMinute = (int) $_POST['activityMinute'];
-
-                if ($activityHour >= 1 && $activityHour <= 12 &&
-                    $activityMinute >= 0 && $activityMinute <= 59)
+                $activityMeridiem = $isTimeFormat24 ? '' : (isset($_POST['activityMeridiem']) ? $_POST['activityMeridiem'] : '');
+                $timeStr = DateUtility::normalizeActivityTime(
+                    $_POST['activityHour'], $_POST['activityMinute'], $activityMeridiem, $isTimeFormat24
+                );
+                if ($timeStr !== false)
                 {
-                    $activityHour = $activityHour % 12;
-                    if ($_POST['activityMeridiem'] == 'PM')
-                    {
-                        $activityHour += 12;
-                    }
-
-                    $activityDateOccurred = sprintf(
-                        '%s %02d:%02d:00',
-                        DateUtility::convert(
-                            '-',
-                            $activityDate,
-                            $dateFormatFlag,
-                            DATE_FORMAT_YYYYMMDD
-                        ),
-                        $activityHour,
-                        $activityMinute
-                    );
+                    $activityDateOccurred = DateUtility::convert(
+                        '-', $activityDate, $dateFormatFlag, DATE_FORMAT_YYYYMMDD
+                    ) . ' ' . $timeStr;
                 }
             }
 
@@ -1529,21 +1518,29 @@ class ContactsUI extends UserInterface
                     CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid minute.');
                 }
 
-                /* Bail out if we don't have a valid meridiem value. */
-                if (!isset($_POST['meridiem']) ||
-                    ($_POST['meridiem'] != 'AM' && $_POST['meridiem'] != 'PM'))
+                $hour   = $_POST['hour'];
+                $minute = $_POST['minute'];
+
+                if ($_SESSION['CATS']->isTimeFormat24())
                 {
-                    CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid meridiem value.');
+                    $time = strtotime(sprintf('%02d:%02d', $hour, $minute));
                 }
+                else
+                {
+                    /* Bail out if we don't have a valid meridiem value. */
+                    if (!isset($_POST['meridiem']) ||
+                        ($_POST['meridiem'] != 'AM' && $_POST['meridiem'] != 'PM'))
+                    {
+                        CommonErrors::fatalModal(COMMONERROR_MISSINGFIELDS, $this, 'Invalid meridiem value.');
+                    }
 
-                $hour     = $_POST['hour'];
-                $minute   = $_POST['minute'];
-                $meridiem = $_POST['meridiem'];
+                    $meridiem = $_POST['meridiem'];
 
-                /* Convert formatted time to UNIX timestamp. */
-                $time = strtotime(
-                    sprintf('%s:%s %s', $hour, $minute, $meridiem)
-                );
+                    /* Convert formatted time to UNIX timestamp. */
+                    $time = strtotime(
+                        sprintf('%s:%s %s', $hour, $minute, $meridiem)
+                    );
+                }
 
                 /* Create MySQL date string w/ 24hr time (YYYY-MM-DD HH:MM:SS). */
                 $date = sprintf(

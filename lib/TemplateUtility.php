@@ -907,8 +907,9 @@ class TemplateUtility
     {
         $build = $_SESSION['CATS']->getCachedBuild();
 
-        // FIXME: LOCAL TIME ZONE!
-        $date  = date('l, F jS, Y \a\t h:i:s A T');
+        $isTimeFormat24 = isset($_SESSION['CATS']) && $_SESSION['CATS']->isTimeFormat24();
+        $timeFormat = $isTimeFormat24 ? 'H:i:s' : 'g:i:s A';
+        $date = DateUtility::getAdjustedDate('l, F jS, Y \a\t ' . $timeFormat . ' T');
 
         if ($build > 0)
         {

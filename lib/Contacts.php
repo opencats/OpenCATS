@@ -528,10 +528,10 @@ class Contacts
                 reportsToContact.title as reportsToTitle,
                 company_department.name AS department,
                 DATE_FORMAT(
-                    contact.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    contact.date_created, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    contact.date_modified, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    contact.date_modified, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS dateModified,
                 company.name AS companyName,
                 company.is_hot AS isHotCompany,
@@ -659,7 +659,7 @@ class Contacts
                     contact.date_created, '%%m-%%d-%%y'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    contact.date_modified, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    contact.date_modified, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS dateModified,
                 owner_user.first_name AS ownerFirstName,
                 owner_user.last_name AS ownerLastName,

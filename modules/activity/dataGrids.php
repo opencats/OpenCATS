@@ -200,7 +200,7 @@ class ActivityDataGrid extends DataGrid
                 activity.notes AS notes,
                 activity_type.short_description AS typeDescription,
                 DATE_FORMAT(
-                    activity.date_occurred, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    activity.date_occurred, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS dateCreated,
                 activity.date_occurred AS dateCreatedSort,
                 entered_by_user.first_name AS enteredByFirstName,
@@ -246,7 +246,7 @@ class ActivityDataGrid extends DataGrid
                 activity.notes AS notes,
                 activity_type.short_description AS typeDescription,
                 DATE_FORMAT(
-                    activity.date_occurred, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    activity.date_occurred, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS dateCreated,
                 activity.date_occurred AS dateCreatedSort,
                 entered_by_user.first_name AS enteredByFirstName,

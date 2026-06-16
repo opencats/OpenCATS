@@ -709,7 +709,7 @@ class Pipelines
                 candidate_joborder.rating_value AS ratingValue,
                 entered_by_user.first_name AS enteredByFirstName,
                 entered_by_user.last_name AS enteredByLastName,
-                DATE_FORMAT(activity.date_modified, '%%m-%%d-%%y (%%h:%%i:%%s %%p)') AS dateModified
+                DATE_FORMAT(activity.date_modified, '" . DateUtility::getMysqlDateTimeSecondsFormat() . "') AS dateModified
             FROM
                 candidate_joborder
             LEFT JOIN candidate

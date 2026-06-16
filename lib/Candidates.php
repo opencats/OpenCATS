@@ -537,10 +537,10 @@ class Candidates
                 candidate.is_hot AS isHot,
                 candidate.is_admin_hidden AS isAdminHidden,
                 DATE_FORMAT(
-                    candidate.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    candidate.date_created, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    candidate.date_modified, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    candidate.date_modified, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS dateModified,
                 COUNT(
                     candidate_joborder.joborder_id

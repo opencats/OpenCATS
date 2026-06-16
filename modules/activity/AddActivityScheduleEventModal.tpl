@@ -35,9 +35,15 @@
                 </td>
                 <td class="tdData">
                     <select id="activityHour" name="activityHour" class="inputbox" style="width: 40px;">
-                        <?php for ($i = 1; $i <= 12; ++$i): ?>
-                            <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
-                        <?php endfor; ?>
+                        <?php if ($_SESSION['CATS']->isTimeFormat24()): ?>
+                            <?php for ($i = 0; $i <= 23; ++$i): ?>
+                                <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
+                            <?php endfor; ?>
+                        <?php else: ?>
+                            <?php for ($i = 1; $i <= 12; ++$i): ?>
+                                <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
+                            <?php endfor; ?>
+                        <?php endif; ?>
                     </select>&nbsp;
                     <select id="activityMinute" name="activityMinute" class="inputbox" style="width: 40px;">
                         <?php for ($i = 0; $i <= 59; ++$i): ?>
@@ -46,10 +52,12 @@
                             </option>
                         <?php endfor; ?>
                     </select>&nbsp;
+                    <?php if (!$_SESSION['CATS']->isTimeFormat24()): ?>
                     <select id="activityMeridiem" name="activityMeridiem" class="inputbox" style="width: 45px;">
                         <option value="AM">AM</option>
                         <option value="PM">PM</option>
                     </select>
+                    <?php endif; ?>
                 </td>
             </tr>
 <?php endif; ?>
@@ -125,9 +133,15 @@
                                     <div style="margin-bottom: 4px;">
                                         <input type="radio" name="allDay" id="allDay0" value="0" style="margin-left: 0px" checked="checked" onchange="AS_onEventAllDayChange('allDay1');" />
                                         <select id="hour" name="hour" class="inputbox" style="width: 40px;">
-                                            <?php for ($i = 1; $i <= 12; ++$i): ?>
-                                                <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
-                                            <?php endfor; ?>
+                                            <?php if ($_SESSION['CATS']->isTimeFormat24()): ?>
+                                                <?php for ($i = 0; $i <= 23; ++$i): ?>
+                                                    <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
+                                                <?php endfor; ?>
+                                            <?php else: ?>
+                                                <?php for ($i = 1; $i <= 12; ++$i): ?>
+                                                    <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
+                                                <?php endfor; ?>
+                                            <?php endif; ?>
                                         </select>&nbsp;
                                         <select id="minute" name="minute" class="inputbox" style="width: 40px;">
                                             <?php for ($i = 0; $i <= 45; $i = $i + 15): ?>
@@ -136,10 +150,12 @@
                                                 </option>
                                             <?php endfor; ?>
                                         </select>&nbsp;
+                                        <?php if (!$_SESSION['CATS']->isTimeFormat24()): ?>
                                         <select id="meridiem" name="meridiem" class="inputbox" style="width: 45px;">
                                             <option value="AM">AM</option>
                                             <option value="PM">PM</option>
                                         </select>
+                                        <?php endif; ?>
                                     </div>
 
                                     <div style="margin-bottom: 4px;">
@@ -217,14 +233,15 @@
         if (!<?php echo($this->onlyScheduleEvent ? 'true' : 'false'); ?>)
         {
             var now = new Date();
+            <?php if ($_SESSION['CATS']->isTimeFormat24()): ?>
+            document.getElementById('activityHour').value = now.getHours().toString();
+            <?php else: ?>
             var currentHour = now.getHours() % 12;
-            if (currentHour == 0)
-            {
-                currentHour = 12;
-            }
+            if (currentHour == 0) { currentHour = 12; }
             document.getElementById('activityHour').value = currentHour.toString();
-            document.getElementById('activityMinute').value = (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
             document.getElementById('activityMeridiem').value = (now.getHours() >= 12 ? 'PM' : 'AM');
+            <?php endif; ?>
+            document.getElementById('activityMinute').value = (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
             document.logActivityForm.activityNote.focus();
         }
 <?php if ($this->onlyScheduleEvent && $this->activityFocusEventTitle): ?>

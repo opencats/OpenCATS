@@ -117,7 +117,7 @@ class LoginActivityPager extends Pager
                 user_login.ip AS ip,
                 user_login.user_agent AS shortUserAgent,
                 DATE_FORMAT(
-                    user_login.date, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    user_login.date, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS date,
                 user_login.date AS dateSort,
                 user_login.host AS hostname,

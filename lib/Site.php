@@ -123,7 +123,8 @@ class Site
                 user_licenses AS userLicenses,
                 entered_by AS enteredBy,
                 unix_name AS unixName,
-                date_format_ddmmyy as dateFormatDDMMYY
+                date_format_ddmmyy as dateFormatDDMMYY,
+                time_format_24 AS timeFormat24
             FROM
                 site
             WHERE

@@ -266,7 +266,7 @@ class History
                     entered_by_user.first_name, ' ', entered_by_user.last_name
                 ) AS enteredByFullName,
                 DATE_FORMAT(
-                    set_date, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    set_date, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS dateModified
             FROM
                 history

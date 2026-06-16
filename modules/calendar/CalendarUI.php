@@ -421,10 +421,6 @@ class CalendarUI extends UserInterface
             $date = DateUtility::convert(
                 '-', $trimmedDate, $dateFormatFlag, DATE_FORMAT_YYYYMMDD
             );
-
-            $hour = 12;
-            $minute = 0;
-            $meridiem = 'AM';
         }
         else
         {
@@ -440,21 +436,29 @@ class CalendarUI extends UserInterface
                 CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid minute.');
             }
 
-            /* Bail out if we don't have a valid meridiem value. */
-            if (!isset($_POST['meridiem']) ||
-                ($_POST['meridiem'] != 'AM' && $_POST['meridiem'] != 'PM'))
+            $hour   = $_POST['hour'];
+            $minute = $_POST['minute'];
+
+            if ($_SESSION['CATS']->isTimeFormat24())
             {
-                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid meridiem value.');
+                $time = strtotime(sprintf('%02d:%02d', $hour, $minute));
             }
+            else
+            {
+                /* Bail out if we don't have a valid meridiem value. */
+                if (!isset($_POST['meridiem']) ||
+                    ($_POST['meridiem'] != 'AM' && $_POST['meridiem'] != 'PM'))
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid meridiem value.');
+                }
 
-            $hour     = $_POST['hour'];
-            $minute   = $_POST['minute'];
-            $meridiem = $_POST['meridiem'];
+                $meridiem = $_POST['meridiem'];
 
-            /* Convert formatted time to UNIX timestamp. */
-            $time = strtotime(
-                sprintf('%s:%s %s', $hour, $minute, $meridiem)
-            );
+                /* Convert formatted time to UNIX timestamp. */
+                $time = strtotime(
+                    sprintf('%s:%s %s', $hour, $minute, $meridiem)
+                );
+            }
 
             /* Create MySQL date string w/ 24hr time (YYYY-MM-DD HH:MM:SS). */
             $date = sprintf(
@@ -627,10 +631,6 @@ class CalendarUI extends UserInterface
             $date = DateUtility::convert(
                 '-', $trimmedDate, $dateFormatFlag, DATE_FORMAT_YYYYMMDD
             );
-
-            $hour = 12;
-            $minute = 0;
-            $meridiem = 'AM';
         }
         else
         {
@@ -646,21 +646,29 @@ class CalendarUI extends UserInterface
                 CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid minute.');
             }
 
-            /* Bail out if we don't have a valid meridiem value. */
-            if (!isset($_POST['meridiem']) ||
-                ($_POST['meridiem'] != 'AM' && $_POST['meridiem'] != 'PM'))
+            $hour   = $_POST['hour'];
+            $minute = $_POST['minute'];
+
+            if ($_SESSION['CATS']->isTimeFormat24())
             {
-                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid meridiem value.');
+                $time = strtotime(sprintf('%02d:%02d', $hour, $minute));
             }
+            else
+            {
+                /* Bail out if we don't have a valid meridiem value. */
+                if (!isset($_POST['meridiem']) ||
+                    ($_POST['meridiem'] != 'AM' && $_POST['meridiem'] != 'PM'))
+                {
+                    CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid meridiem value.');
+                }
 
-            $hour     = $_POST['hour'];
-            $minute   = $_POST['minute'];
-            $meridiem = $_POST['meridiem'];
+                $meridiem = $_POST['meridiem'];
 
-            /* Convert formatted time to UNIX timestamp. */
-            $time = strtotime(
-                sprintf('%s:%s %s', $hour, $minute, $meridiem)
-            );
+                /* Convert formatted time to UNIX timestamp. */
+                $time = strtotime(
+                    sprintf('%s:%s %s', $hour, $minute, $meridiem)
+                );
+            }
 
             /* Create MySQL date string w/ 24hr time (YYYY-MM-DD HH:MM:SS). */
             $date = sprintf(

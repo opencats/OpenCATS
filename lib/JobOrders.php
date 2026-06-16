@@ -461,10 +461,10 @@ class JobOrders
                     NOW(), joborder.date_created
                 ) AS daysOld,
                 DATE_FORMAT(
-                    joborder.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    joborder.date_created, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS dateCreated,
                 DATE_FORMAT(
-                    joborder.date_modified, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    joborder.date_modified, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS dateModified,
                 COUNT(
                     candidate_joborder.joborder_id

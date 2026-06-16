@@ -163,7 +163,7 @@ class Import
                 import.added_lines AS addedLines,
                 import.import_errors AS importErrors,
 				DATE_FORMAT(
-                    import.date_created, '%%m-%%d-%%y (%%h:%%i %%p)'
+                    import.date_created, '" . DateUtility::getMysqlDateTimeFormat() . "'
                 ) AS dateCreated
             FROM
                 import
