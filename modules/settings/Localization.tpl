@@ -47,6 +47,18 @@
                                 </tr>
 
                                 <tr>
+                                    <td>Please choose your preferred time format.</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-bottom: 5px;">
+                                        <select id="timeFormat" name="timeFormat" style="width: 150px;">
+                                            <option value="12"<?php if (!$this->isTimeFormat24): ?> selected<?php endif; ?>>12-hour (1:30 PM)</option>
+                                            <option value="24"<?php if ($this->isTimeFormat24): ?> selected<?php endif; ?>>24-hour (13:30)</option>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr>
                                     <td>Please enter your default phone country calling code.</td>
                                 </tr>
                                 <tr>

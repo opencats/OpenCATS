@@ -2052,6 +2052,7 @@ class SettingsUI extends UserInterface
         $calendarSettingsRS = $calendarSettings->getAll();
 
         $this->_template->assign('calendarSettingsRS', $calendarSettingsRS);
+        $this->_template->assign('isTimeFormat24', $_SESSION['CATS']->isTimeFormat24());
         $this->_template->assign('active', $this);
         $this->_template->assign('subActive', 'Administration');
         $this->_template->display('./modules/settings/CustomizeCalendar.tpl');
@@ -2398,6 +2399,7 @@ class SettingsUI extends UserInterface
 
                     $this->_template->assign('timeZone', $_SESSION['CATS']->getTimeZone());
                     $this->_template->assign('isDateDMY', $_SESSION['CATS']->isDateDMY());
+                    $this->_template->assign('isTimeFormat24', $_SESSION['CATS']->isTimeFormat24());
 
                     // Default phone country calling code for the localization settings page.
                     $defaultPhoneCountryCode = $_SESSION['CATS']->getDefaultPhoneCountryCode();
@@ -2556,8 +2558,10 @@ class SettingsUI extends UserInterface
                     $isDMY = true;
                 }
 
+                $isTimeFormat24 = (isset($_POST['timeFormat']) && $_POST['timeFormat'] === '24');
+
                 $site = new Site();
-                $site->setLocalization($timeZone, $isDMY);
+                $site->setLocalization($timeZone, $isDMY, $isTimeFormat24);
 
                 // Default phone country calling code (E.164) for the site.
                 if (isset($_POST['defaultPhoneCountryCodeDigits']))
@@ -2610,11 +2614,13 @@ class SettingsUI extends UserInterface
             $isDMY = true;
         }
 
+        $isTimeFormat24 = (isset($_POST['timeFormat']) && $_POST['timeFormat'] === '24');
+
         $site = new Site();
-        $site->setLocalization($timeZone, $dateFormat);
+        $site->setLocalization($timeZone, $isDMY, $isTimeFormat24);
 
         /* Reload the new data for the session. */
-        $_SESSION['CATS']->setTimeDateLocalization($timeZone, $isDMY);
+        $_SESSION['CATS']->setTimeDateLocalization($timeZone, $isDMY, $isTimeFormat24);
 
         $this->_template->assign('inputType', 'conclusion');
         $this->_template->assign('title', 'Localization Settings Saved!');
