@@ -225,6 +225,71 @@ class DateUtilityTest extends TestCase
                 );
         }
     }
+
+    /* Tests for getMysqlTimeFormat(). */
+    function testGetMysqlTimeFormat()
+    {
+        $this->assertSame('%%h:%%i %%p', DateUtility::getMysqlTimeFormat(false));
+        $this->assertSame('%%H:%%i',     DateUtility::getMysqlTimeFormat(true));
+    }
+
+    /* Tests for getMysqlDateTimeFormat(). */
+    function testGetMysqlDateTimeFormat()
+    {
+        $this->assertSame('%%m-%%d-%%y (%%h:%%i %%p)', DateUtility::getMysqlDateTimeFormat(false));
+        $this->assertSame('%%m-%%d-%%y (%%H:%%i)',     DateUtility::getMysqlDateTimeFormat(true));
+    }
+
+    /* Tests for getMysqlDateTimeSecondsFormat(). */
+    function testGetMysqlDateTimeSecondsFormat()
+    {
+        $this->assertSame('%%m-%%d-%%y (%%h:%%i:%%s %%p)', DateUtility::getMysqlDateTimeSecondsFormat(false));
+        $this->assertSame('%%m-%%d-%%y (%%H:%%i:%%s)',     DateUtility::getMysqlDateTimeSecondsFormat(true));
+    }
+
+    /* Tests for getTimeFormat(). */
+    function testGetTimeFormat()
+    {
+        $this->assertSame('g:i A', DateUtility::getTimeFormat(false));
+        $this->assertSame('H:i',   DateUtility::getTimeFormat(true));
+    }
+
+    /* Tests for getDateTimeFormat(). */
+    function testGetDateTimeFormat()
+    {
+        $this->assertSame('m-d-Y g:i A', DateUtility::getDateTimeFormat('m-d-Y', false));
+        $this->assertSame('m-d-Y H:i',   DateUtility::getDateTimeFormat('m-d-Y', true));
+        $this->assertSame('d-m-Y g:i A', DateUtility::getDateTimeFormat('d-m-Y', false));
+        $this->assertSame('d-m-Y H:i',   DateUtility::getDateTimeFormat('d-m-Y', true));
+    }
+
+    /* Tests for normalizeActivityTime(). */
+    function testNormalizeActivityTime()
+    {
+        /* 12-hour mode standard cases. */
+        $this->assertSame('01:30:00', DateUtility::normalizeActivityTime(1,  30, 'AM', false));
+        $this->assertSame('13:30:00', DateUtility::normalizeActivityTime(1,  30, 'PM', false));
+        $this->assertSame('11:59:00', DateUtility::normalizeActivityTime(11, 59, 'AM', false));
+        $this->assertSame('23:59:00', DateUtility::normalizeActivityTime(11, 59, 'PM', false));
+
+        /* Midnight: 12:00 AM must become 00:00:00. */
+        $this->assertSame('00:00:00', DateUtility::normalizeActivityTime(12, 0, 'AM', false));
+
+        /* Noon: 12:00 PM must become 12:00:00. */
+        $this->assertSame('12:00:00', DateUtility::normalizeActivityTime(12, 0, 'PM', false));
+
+        /* 24-hour mode stored directly. */
+        $this->assertSame('00:00:00', DateUtility::normalizeActivityTime(0,  0,  '', true));
+        $this->assertSame('13:30:00', DateUtility::normalizeActivityTime(13, 30, '', true));
+        $this->assertSame('23:59:00', DateUtility::normalizeActivityTime(23, 59, '', true));
+
+        /* Invalid inputs must return false. */
+        $this->assertFalse(DateUtility::normalizeActivityTime(0,  0,  'AM', false)); /* hour 0 invalid in 12h */
+        $this->assertFalse(DateUtility::normalizeActivityTime(13, 0,  'AM', false)); /* hour 13 invalid in 12h */
+        $this->assertFalse(DateUtility::normalizeActivityTime(24, 0,  '',   true));  /* hour 24 invalid in 24h */
+        $this->assertFalse(DateUtility::normalizeActivityTime(1,  60, 'AM', false)); /* minute 60 invalid */
+        $this->assertFalse(DateUtility::normalizeActivityTime(1,  0,  '',   false)); /* missing meridiem in 12h */
+    }
 }
 
 ?>
