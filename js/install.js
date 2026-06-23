@@ -28,6 +28,7 @@
 
 var response;
 var maxSteps;
+var installMaintNextAction = "a=reindexResumes";
 
 
 function setActiveStep(step)
@@ -121,7 +122,8 @@ function Installpage_maint()
 
         if (response.indexOf("setProgressUpdating") == -1)
  		{	
-	        Installpage_populate("a=reindexResumes");
+	        Installpage_populate(installMaintNextAction);
+	        installMaintNextAction = "a=reindexResumes";
         }
         else
         {
@@ -139,6 +141,18 @@ function Installpage_maint()
         false,
         false
     );
+}
+
+function Installpage_upgradeExisting()
+{
+    Installpage_populate("a=upgradeExisting");
+}
+
+function Installpage_upgradeExistingMaint()
+{
+    /* Existing installations must run schema maintenance before later installer questions. */
+    installMaintNextAction = "a=upgradeExistingMaintComplete";
+    Installpage_maint();
 }
 
 function Installpage_append(postData, message)
