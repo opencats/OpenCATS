@@ -393,7 +393,7 @@
                                             If you choose to use the existing OpenCATS installation, you can always run<br />
                                             the installer again later and choose a different option.<br />
                                             <br />
-                                            <input style="float: right;" type="button" class="button" value="Next -->" onclick="if (getCheckedValue(document.getElementsByName('installgroupexists')) == 'current') Installpage_populate('a=resumeParsing'); else {document.getElementById('catsUpToDate').style.display='none';showTextBlock('queryResetDatabase');}" />
+                                            <input style="float: right;" type="button" class="button" value="Next -->" onclick="if (getCheckedValue(document.getElementsByName('installgroupexists')) == 'current') Installpage_upgradeExisting(); else {document.getElementById('catsUpToDate').style.display='none';showTextBlock('queryResetDatabase');}" />
                                         </div>
                                         <div id="queryInstallBackup" style="display: none;">
                                             <span style="font-weight:bold;">Loading Data - Restore from Backup</span><br />
