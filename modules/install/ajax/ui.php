@@ -651,6 +651,12 @@ switch ($action)
         break;
 
     case 'resetDatabase':
+        @session_name(CATS_SESSION_NAME);
+        session_start();
+
+        unset($_SESSION['existingUpgradeMaintStarted']);
+        unset($_SESSION['existingUpgradeMaintComplete']);
+
         MySQLConnect();
 
         foreach ($tables as $table => $data)
@@ -839,6 +845,15 @@ switch ($action)
         @session_name(CATS_SESSION_NAME);
         session_start();
 
+        if (isset($_SESSION['existingUpgradeMaintComplete']))
+        {
+            unset($_SESSION['existingUpgradeMaintStarted']);
+            unset($_SESSION['existingUpgradeMaintComplete']);
+
+            echo '<script type="text/javascript">Installpage_populate(\'a=reindexResumes\');</script>';
+            break;
+        }
+
         if (isset($_SESSION['CATS']))
         {
             unset($_SESSION['CATS']);
@@ -853,6 +868,42 @@ switch ($action)
                   showTextBlock(\'installingComponentsMaint\');
                   setTimeout("Installpage_maint();", 2000);
               </script>';
+        break;
+
+    case 'upgradeExisting':
+        @session_name(CATS_SESSION_NAME);
+        session_start();
+
+        $_SESSION['existingUpgradeMaintStarted'] = true;
+        unset($_SESSION['existingUpgradeMaintComplete']);
+
+        if (isset($_SESSION['CATS']))
+        {
+            unset($_SESSION['CATS']);
+        }
+
+        if (isset($_SESSION['modules']))
+        {
+            unset($_SESSION['modules']);
+        }
+
+        echo '<script type="text/javascript">
+                  showTextBlock(\'installingComponentsMaint\');
+                  setTimeout("Installpage_upgradeExistingMaint();", 2000);
+              </script>';
+        break;
+
+    case 'upgradeExistingMaintComplete':
+        @session_name(CATS_SESSION_NAME);
+        session_start();
+
+        if (isset($_SESSION['existingUpgradeMaintStarted']))
+        {
+            $_SESSION['existingUpgradeMaintComplete'] = true;
+            unset($_SESSION['existingUpgradeMaintStarted']);
+        }
+
+        echo '<script type="text/javascript">Installpage_populate(\'a=resumeParsing\');</script>';
         break;
 
     case 'reindexResumes':
