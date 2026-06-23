@@ -54,20 +54,37 @@ class ActivityDataGrid extends DataGrid
         $this->allowResizing = true;
         $this->dateCriterion = '';
         
-        if (isset($parameters['period']) && !empty($parameters['period']))
+        $periods = array(
+            'DATE_SUB(CURDATE(), INTERVAL 1 WEEK)',
+            'DATE_SUB(CURDATE(), INTERVAL 1 MONTH)',
+            'DATE_SUB(CURDATE(), INTERVAL 6 MONTH)',
+            'DATE_SUB(CURDATE(), INTERVAL 1 YEAR)'
+        );
+        $period = isset($parameters['period'])
+            ? array_search($parameters['period'], $periods, true)
+            : false;
+
+        if ($period !== false)
         {
-            $this->dateCriterion .= ' AND activity.date_occurred >= ' . $parameters['period'] . ' ';
+            $this->dateCriterion .= ' AND activity.date_occurred >= ' .
+                $periods[$period] . ' ';
         }
         else
         {
-            if (isset($parameters['startDate']) && !empty($parameters['startDate']))
+            $db = DatabaseConnection::getInstance();
+
+            if (isset($parameters['startDate']) &&
+                self::isValidDate($parameters['startDate']))
             {
-                $this->dateCriterion .= ' AND activity.date_occurred >= \'' .$parameters['startDate'].'\' ';
+                $this->dateCriterion .= ' AND activity.date_occurred >= ' .
+                    $db->makeQueryString($parameters['startDate']) . ' ';
             }
-            
-            if (isset($parameters['endDate']) && !empty($parameters['endDate']))
+
+            if (isset($parameters['endDate']) &&
+                self::isValidDate($parameters['endDate']))
             {
-                $this->dateCriterion .= ' AND activity.date_occurred <= \''.$parameters['endDate'].'\' ';
+                $this->dateCriterion .= ' AND activity.date_occurred <= ' .
+                    $db->makeQueryString($parameters['endDate']) . ' ';
             }
         }
 
@@ -145,6 +162,17 @@ class ActivityDataGrid extends DataGrid
         );
         
         parent::__construct("activity:ActivityDataGrid", $parameters);
+    }
+
+    private static function isValidDate($date)
+    {
+        if (!is_string($date) ||
+            !preg_match('/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/D', $date, $matches))
+        {
+            return false;
+        }
+
+        return checkdate((int) $matches[2], (int) $matches[3], (int) $matches[1]);
     }
         
     /**

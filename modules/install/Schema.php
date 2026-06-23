@@ -1520,12 +1520,17 @@ class CATSSchema
             '380' => '
                 ALTER TABLE `activity`
                 ADD COLUMN `date_occurred` datetime NOT NULL DEFAULT \'1000-01-01 00:00:00\'
-                BEFORE `date_created`;
+                AFTER `entered_by`;
                 UPDATE `activity`
                 SET `date_occurred` = `date_created`;
                 CREATE INDEX `IDX_date_occurred` ON `activity` (`date_occurred`);
                 CREATE INDEX `IDX_site_occurred` ON `activity` (`site_id`,`date_occurred`);
                 CREATE INDEX `IDX_activity_site_type_occurred_job` ON `activity` (`site_id`,`data_item_type`,`date_occurred`,`entered_by`,`joborder_id`);
+            ',
+            '381' => 'PHP:
+                $db->query("ALTER IGNORE TABLE `site`
+                    ADD COLUMN `time_zone_iana` varchar(64) NOT NULL DEFAULT \'UTC\'
+                    AFTER `time_zone`", true);
             ',
 
         );
