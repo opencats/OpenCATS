@@ -13,6 +13,8 @@ services:
       build:
         context: ..
         dockerfile: docker/php/Dockerfile
+        args:
+          PHP_VERSION: ${PHP_VERSION:-7.4}
       working_dir: /var/www/public
       volumes_from:
         - opencatsdata

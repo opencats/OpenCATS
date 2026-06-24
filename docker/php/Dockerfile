@@ -1,4 +1,5 @@
-FROM php:7.4-fpm-alpine
+ARG PHP_VERSION=7.4
+FROM php:${PHP_VERSION}-fpm-alpine
 
 # Runtime/system packages required by OpenCATS and helper tools.
 RUN apk add --no-cache \
