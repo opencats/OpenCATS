@@ -121,9 +121,12 @@ function Installpage_maint()
         response = http.responseText;
 
         if (response.indexOf("setProgressUpdating") == -1)
- 		{	
-	        Installpage_populate(installMaintNextAction);
-	        installMaintNextAction = "a=reindexResumes";
+ 		{
+	        if (http.status == 200)
+	        {
+	            Installpage_populate(installMaintNextAction);
+	            installMaintNextAction = "a=reindexResumes";
+	        }
         }
         else
         {
