@@ -35,8 +35,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.composer/cache
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-php-
+          key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-${{ matrix.php-version }}-
+            ${{ runner.os }}-php-
 
       - name: Install Dependencies
         run: composer install --no-progress --prefer-dist
@@ -61,7 +63,7 @@ jobs:
           touch ./INSTALL_BLOCK
 
           cd docker/
-          docker compose -f docker-compose-test.yml up -d
+          PHP_VERSION=${{ matrix.php-version }} docker compose -f docker-compose-test.yml up -d --build
 
           echo "Waiting for BOTH databases..."
           opencatsdb_container="$(docker compose -f docker-compose-test.yml ps -q opencatsdb)"
