@@ -1,10 +1,9 @@
 <?php
 /**
-* Google API Zip Code Lookup library
+* OpenStreetMap (Nominatim) Zip Code Lookup library
 */
 class ZipLookup
 {
-
      public static function makeSearchableUSZip($zipString)
      {
 
@@ -20,45 +19,58 @@ class ZipLookup
 	$aAddress[2] = '';
 	$aAddress[3] = '';
 
-	$sUrl = 'http://maps.googleapis.com/maps/api/geocode/xml?sensor=false&address=';
-
-	if ($zip != '') {
-		if (($oXml = simplexml_load_file($sUrl . $zip))) {
-			foreach($oXml->result->address_component as $value) {
-				if ($value->type == 'route') {
-					$aAddress[1] = (string) $value->long_name;
-				}
-				if ($value->type[0] == 'postal_town') {
-					$loc_level_1 = (string) $value->long_name;
-				}
-				if ($value->type[0] == 'locality') {
-					$loc_level_1 = (string) $value->long_name;
-				}
-				if ($value->type[0] == 'administrative_area_level_1') {
-					$loc_level_2 = (string) $value->long_name;
-				}
-				if ($value->type[0] == 'administrative_area_level_2') {
-					$loc_level_3 = (string) $value->long_name;
-				}
-				if ($value->type[0] == 'country') {
-					$loc_level_4 = (string) $value->short_name;
-				}
-			}
-		} else {
-			$aAddress[0] = 1;
-		}
-	} else {
+	if ($zip == '') {
 		$aAddress[0] = 2;
+		return $aAddress;
 	}
 
-	// Set the state based on US or non-US location
-	$aAddress[2] = $loc_level_1;
-	if ($loc_level_4 == 'US') {
-		$aAddress[3] = $loc_level_3;
-	} else {
-		$aAddress[3] = $loc_level_2;
+	$sUrl = 'https://nominatim.openstreetmap.org/search?format=jsonv2'
+	      . '&addressdetails=1&limit=1&postalcode='
+	      . rawurlencode($zip);
+
+	/* Nominatim's usage policy requires a User-Agent that identifies the
+	 * calling application; use the site's host so each install is distinct. */
+	$sHost = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'unknown-host';
+	$context = stream_context_create(array(
+		'http' => array(
+			'method'  => 'GET',
+			'header'  => 'User-Agent: OpenCATS-ZipLookup (' . $sHost . ")\r\n",
+			'timeout' => 10,
+		),
+	));
+
+	$sResponse = @file_get_contents($sUrl, false, $context);
+	if ($sResponse === false) {
+		$aAddress[0] = 1;
+		return $aAddress;
 	}
-	    
+
+	$aResults = json_decode($sResponse, true);
+	if (!is_array($aResults) || empty($aResults) || empty($aResults[0]['address'])) {
+		$aAddress[0] = 1;
+		return $aAddress;
+	}
+
+	$aParts = $aResults[0]['address'];
+
+	if (isset($aParts['road'])) {
+		$aAddress[1] = (string) $aParts['road'];
+	}
+
+	// Nominatim spreads the locality across several keys depending on place size.
+	foreach (array('city', 'town', 'village', 'hamlet', 'municipality') as $sKey) {
+		if (isset($aParts[$sKey])) {
+			$aAddress[2] = (string) $aParts[$sKey];
+			break;
+		}
+	}
+
+	if (isset($aParts['state'])) {
+		$aAddress[3] = (string) $aParts['state'];
+	} else if (isset($aParts['county'])) {
+		$aAddress[3] = (string) $aParts['county'];
+	}
+
 	return $aAddress;
 
     }
