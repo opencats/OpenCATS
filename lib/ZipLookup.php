@@ -10,7 +10,7 @@ class ZipLookup
 	return str_replace(' ', '', $zipString);
      }
 
-    public function getCityStateByZip($zip)
+    public function getCityStateByZip($zip, $country = '')
     {
 
 
@@ -27,6 +27,14 @@ class ZipLookup
 	$sUrl = 'https://nominatim.openstreetmap.org/search?format=jsonv2'
 	      . '&addressdetails=1&limit=1&postalcode='
 	      . rawurlencode($zip);
+
+	/* Postal codes are not globally unique, so without a country the first
+	 * match can land in the wrong one. Scope by the ISO country code when the
+	 * form supplies it. */
+	$sCountry = strtolower(preg_replace('/[^A-Za-z]/', '', $country));
+	if (strlen($sCountry) == 2) {
+		$sUrl .= '&countrycodes=' . $sCountry;
+	}
 
 	/* Nominatim's usage policy requires a User-Agent that identifies the
 	 * calling application; use the site's host so each install is distinct. */

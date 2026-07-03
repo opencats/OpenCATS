@@ -17,12 +17,13 @@ if (!isset($_REQUEST['zip']))
 }
 
 $zip = $_REQUEST['zip'];
+$country = isset($_REQUEST['country']) ? $_REQUEST['country'] : '';
 
 $zipLookup = new ZipLookup();
 
 $searchableZip = $zipLookup->makeSearchableUSZip($zip);
 
-$data = $zipLookup->getCityStateByZip($searchableZip);
+$data = $zipLookup->getCityStateByZip($searchableZip, $country);
 
 $street = $data[1];
 $city  = $data[2];

@@ -526,8 +526,15 @@ function CityState_populate(zipEditID, indicatorID)
 
     indicator.style.visibility = "visible";
 
-     /* Build HTTP POST data. */
+     /* Build HTTP POST data. Include the country so postal-code lookups are
+      * scoped to the right one (postal codes are not globally unique). */
     var POSTData = "&zip=" + urlEncode(zip);
+
+    var countryElement = document.getElementById("country");
+    if (countryElement)
+    {
+        POSTData += "&country=" + urlEncode(countryElement.value);
+    }
 
     /* Anonymous callback function triggered when HTTP response is received. */
     var callBack = function ()
