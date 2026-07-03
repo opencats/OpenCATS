@@ -30,8 +30,6 @@
  * @version    $Id: Users.php 3593 2007-11-13 17:36:57Z andrew $
  */
 
-include_once(LEGACY_ROOT . '/lib/License.php');
-
 if (AUTH_MODE == "ldap" || AUTH_MODE == "sql+ldap") 
 {
     require_once(LEGACY_ROOT . '/lib/LDAP.php');

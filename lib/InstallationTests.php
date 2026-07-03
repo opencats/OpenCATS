@@ -334,7 +334,7 @@ class InstallationTests
         echo '<tr class="warning"><td><strong>PHP SOAP extension (soap) is not loaded.</strong><br />'
             . 'Check your settings in php.ini.<br /><br />'
             . 'OpenCATS will function without SOAP, but '
-            . 'CATS Professional functionality will not be supported.<br /><br />'
+            . 'SOAP-based resume parsing services will not be available.<br /><br />'
             . 'Under certain Linux / BSD distributions, the PHP SOAP extension is a separate package.<br /><br />'
             . '<strong>Ubuntu:</strong> Run "apt-get install php-soap" and restart your webserver.<br /><br />'
             . '<strong>Debian:</strong> Run "apt-get install php7-soap" and restart your webserver.<br /><br />'

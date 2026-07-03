@@ -23,6 +23,7 @@ class CompanyRepository
                 city,
                 state,
                 zip,
+                country,
                 phone1,
                 phone2,
                 fax_number,
@@ -53,6 +54,7 @@ class CompanyRepository
                 %s,
                 %s,
                 %s,
+                %s,
                 NOW(),
                 NOW()
             )",
@@ -62,6 +64,7 @@ class CompanyRepository
             $this->databaseConnection->makeQueryString($company->getCity()),
             $this->databaseConnection->makeQueryString($company->getState()),
             $this->databaseConnection->makeQueryString($company->getZipCode()),
+            $this->databaseConnection->makeQueryStringOrNULL($company->getCountry()),
             $this->databaseConnection->makeQueryString($company->getPhoneNumberOne()),
             $this->databaseConnection->makeQueryString($company->getPhoneNumberTwo()),
             $this->databaseConnection->makeQueryString($company->getFaxNumber()),

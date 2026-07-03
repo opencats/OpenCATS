@@ -24,11 +24,7 @@ You have <?php echo number_format(count($this->documents), 0); ?> document<?php 
 
         <br /><br />
 
-        <?php if (LicenseUtility::isProfessional()): ?>
-        If you need any assistance, please contact the CATS support team.</br >
-        <?php else: ?>
         If you need assistance in uploading files to your web server, contact your system administrator.<br />
-        <?php endif; ?>
     <?php else: ?>
         In order to import resume documents into CATS, you need to create a directory named "<b>upload</b>" on the computer
         that hosts cats. This directory needs to have its permissions set to allow files to be created by your
@@ -60,7 +56,6 @@ You have <?php echo number_format(count($this->documents), 0); ?> document<?php 
 
 <?php endif; ?>
 
-<?php if (LicenseUtility::isParsingEnabled()): ?>
 <div style="padding: 10px; margin-top: 15px; text-align: left;">
     <table cellpadding="0" cellspacing="0" border="0">
         <tr>
@@ -71,35 +66,17 @@ You have <?php echo number_format(count($this->documents), 0); ?> document<?php 
             </td>
             <td align="left" valign="top">
                 <span style="font-size: 16px;">
-                <?php if (LicenseUtility::isProfessional()): ?>
-                You are a registered CATS Professional user <b><?php echo LicenseUtility::getName(); ?></b>.
-                <?php elseif (LicenseUtility::isOpenSource()): ?>
-                <b>You are a registered open source user of CATS.</b>
-                <?php endif; ?>
+                <b>Resume parsing is enabled.</b>
                 </span>
 
                 <p />
-                <?php if ((is_array($status = LicenseUtility::getParsingStatus()) && $status['parseLimit'] == -1)): ?>
-                    <span style="font-size: 14px; color: #333333;">
-                    You have unlimited use of the Resfly parsing service, which searches your resume files for contact
-                    and resume information. CATS will import all applicable resume documents as candidates.
-                    </span>
-                <?php else: ?>
-                    <span style="font-size: 14px; color: #333333;">
-                    Your resume documents will be imported as searchable documents but <b>not</b> as candidates unless
-                    you manually complete the required fields for each document (first and last names).
-                    <br /><br />
-                    With the
-                    Resfly parsing service, much of the candidate's information can be imported automatically.
-                    <br />
-                    Consider <a href="http://www.catsone.com/?a=getcats" style="font-size: 14px;" target="_blank">upgrading to CATS Professional</a>
-                    for unlimited use of this service.
-                    </span>
-                <?php endif; ?>
+                <span style="font-size: 14px; color: #333333;">
+                The Resfly parsing service searches your resume files for contact
+                and resume information. CATS will import all applicable resume documents as candidates.
+                </span>
             </td>
         </tr>
     </table>
 </div>
-<?php endif; ?>
 
 </div>

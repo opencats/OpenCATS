@@ -60,6 +60,15 @@ class ImportUI extends UserInterface
         $this->_subTabs = array();
     }
 
+    private function isValidImportFileID($fileID)
+    {
+        return $fileID != '' &&
+            $fileID === basename($fileID) &&
+            isset($_SESSION['CATS']->validImportFileIDs) &&
+            is_array($_SESSION['CATS']->validImportFileIDs) &&
+            in_array($fileID, $_SESSION['CATS']->validImportFileIDs, true);
+    }
+
 
     public function handleRequest()
     {
@@ -471,6 +480,19 @@ class ImportUI extends UserInterface
         /* If a file was submitted, then the user sent what colums he wanted to use already. */
         if (isset($_POST['fileName']))
         {
+            $fileName = $this->getTrimmedInput('fileName', $_POST);
+            if (!$this->isValidImportFileID($fileName))
+            {
+                $this->_template->assign(
+                    'errorMessage',
+                    'Invalid staged import file.'
+                );
+                $this->import();
+                return;
+            }
+
+            $_POST['fileName'] = $fileName;
+
             if ($_SESSION['CATS']->isDemo())
             {
                 CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Demo user can not import data.');
@@ -509,7 +531,6 @@ class ImportUI extends UserInterface
         }
 
         /* Get file metadata. */
-        $originalFilename = $_FILES['file']['name'];
         $tempFilename     = $_FILES['file']['tmp_name'];
         $contentType      = $_FILES['file']['type'];
         $fileSize         = $_FILES['file']['size'];
@@ -552,14 +573,7 @@ class ImportUI extends UserInterface
         @chmod(CATS_TEMP_DIR, 0777);
 
         /* Make a random file name for the file. */
-        if ($dataType != 'Resume')
-        {
-            $randomFile = FileUtility::makeRandomFilename($tempFilename) . '.tmp';
-        }
-        else
-        {
-            $randomFile = $originalFilename;
-        }
+        $randomFile = FileUtility::makeRandomFilename($tempFilename) . '.tmp';
 
         /* Build new path information for the file. */
         $newFileFullPath  = CATS_TEMP_DIR . '/' . $randomFile;
@@ -592,6 +606,16 @@ class ImportUI extends UserInterface
                 break;
 
             default:
+                @unlink($newFileFullPath);
+                $validFileIDKey = array_search(
+                    $randomFile,
+                    $_SESSION['CATS']->validImportFileIDs,
+                    true
+                );
+                if ($validFileIDKey !== false)
+                {
+                    unset($_SESSION['CATS']->validImportFileIDs[$validFileIDKey]);
+                }
                 $this->_template->assign(
                     'errorMessage',
                     'No parser exists for the specified data type.'
@@ -761,11 +785,20 @@ class ImportUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
         }
 
-        $filePath = CATS_TEMP_DIR . '/' . $_POST['fileName'];
+        $fileName = $this->getTrimmedInput('fileName', $_POST);
+        if (!$this->isValidImportFileID($fileName))
+        {
+            $this->_template->assign('errorMessage', 'Invalid staged import file.');
+            $this->import();
+            return;
+        }
+
+        $filePath = CATS_TEMP_DIR . '/' . $fileName;
         if (!is_file($filePath))
         {
             $this->_template->assign('errorMessage', 'Invalid filename. (Internal error)');
             $this->import();
+            return;
         }
 
         $dataContaining = $this->getTrimmedInput('dataContaining', $_POST);
@@ -1388,14 +1421,7 @@ class ImportUI extends UserInterface
 
         $doc2text = new DocumentToText();
         $pu = new ParseUtility();
-        if (LicenseUtility::isParsingEnabled())
-        {
-            $parsingEnabled = true;
-        }
-        else
-        {
-            $parsingEnabled = false;
-        }
+        $parsingEnabled = true;
 
         if ($doc2text->convert($name, $type) === false)
         {

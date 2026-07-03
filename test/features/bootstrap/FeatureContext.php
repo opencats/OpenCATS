@@ -406,6 +406,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
             '',
             '',
             '',
+            '',
             ''
         );
         $JobOrderRepository = new JobOrderRepository(DatabaseConnection::getInstance());

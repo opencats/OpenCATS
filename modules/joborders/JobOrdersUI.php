@@ -817,6 +817,11 @@ class JobOrdersUI extends UserInterface
         $type        = $this->getTrimmedInput('type', $_POST);
         $city        = $this->getTrimmedInput('city', $_POST);
         $state       = $this->getTrimmedInput('state', $_POST);
+        $country     = strtoupper($this->getTrimmedInput('country', $_POST));
+        if ($country != '' && !isset($GLOBALS['countries'][$country]))
+        {
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid country.');
+        }
         $duration    = $this->getTrimmedInput('duration', $_POST);
         $department  = $this->getTrimmedInput('department', $_POST);
         $maxRate     = $this->getTrimmedInput('maxRate', $_POST);
@@ -837,7 +842,7 @@ class JobOrdersUI extends UserInterface
             $title, $companyID, $contactID, $description, $notes, $duration,
             $maxRate, $type, $isHot, $isPublic, $openings, $companyJobID,
             $salary, $city, $state, $startDate, $this->_userID, $recruiter,
-            $owner, $department, $questionnaireID
+            $owner, $department, $questionnaireID, $country
         );
 
         if ($jobOrderID <= 0)
@@ -1154,6 +1159,11 @@ class JobOrdersUI extends UserInterface
         $type        = $this->getTrimmedInput('type', $_POST);
         $city        = $this->getTrimmedInput('city', $_POST);
         $state       = $this->getTrimmedInput('state', $_POST);
+        $country     = strtoupper($this->getTrimmedInput('country', $_POST));
+        if ($country != '' && !isset($GLOBALS['countries'][$country]))
+        {
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid country.');
+        }
         $status      = $this->getTrimmedInput('status', $_POST);
         $duration    = $this->getTrimmedInput('duration', $_POST);
         $department  = $this->getTrimmedInput('department', $_POST);
@@ -1173,7 +1183,8 @@ class JobOrdersUI extends UserInterface
         if (!$jobOrders->update($jobOrderID, $title, $companyJobID, $companyID, $contactID,
             $description, $notes, $duration, $maxRate, $type, $isHot,
             $openings, $openingsAvailable, $salary, $city, $state, $startDate, $status, $recruiter,
-            $owner, $public, $email, $emailAddress, $department, $questionnaireID))
+            $owner, $public, $email, $emailAddress, $department, $questionnaireID,
+            $country))
         {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update job order.');
         }
@@ -1392,11 +1403,7 @@ class JobOrdersUI extends UserInterface
         $EEOSettings = new EEOSettings($this->_siteID);
         $EEOSettingsRS = $EEOSettings->getAll();
 
-        if (is_array($parsingStatus = LicenseUtility::getParsingStatus()) &&
-            isset($parsingStatus['parseLimit']))
-        {
-            $parsingStatus['parseLimit'] = $parsingStatus['parseLimit'] - 1;
-        }
+        $parsingStatus = array();
 
         $careerPortalSettings = new CareerPortalSettings($this->_siteID);
         $careerPortalSettingsRS = $careerPortalSettings->getAll();
@@ -1409,7 +1416,7 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('careerPortalEnabled', $careerPortalEnabled);
         $this->_template->assign('questionnaires', $questionnaires);
         $this->_template->assign('contents', $contents);
-        $this->_template->assign('isParsingEnabled', $tmp = LicenseUtility::isParsingEnabled());
+        $this->_template->assign('isParsingEnabled', true);
         $this->_template->assign('parsingStatus', $parsingStatus);
         $this->_template->assign('extraFieldRS', $extraFieldRS);
         $this->_template->assign('sourcesRS', $sourcesRS);
@@ -2083,6 +2090,7 @@ class JobOrdersUI extends UserInterface
 
         return $resultSet;
     }
+
 }
 
 ?>

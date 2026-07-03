@@ -259,7 +259,7 @@ class DatabaseConnection
      * @param integer Column number.
      * @return array Multi-dimensional associative result set array, or array()
      */
-    public function getColumn($query = null, $row, $column)
+    public function getColumn($query, $row, $column)
     {
         if ($query != null)
         {

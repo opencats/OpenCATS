@@ -1040,7 +1040,6 @@ Scenario Outline: Reports module actions
   | DISABLED    | GET  | index.php?m=settings&a=tags                | not  |
   | DISABLED    | POST | index.php?m=settings&a=changePassword      | not  |   
   | DISABLED    | POST | index.php?m=settings&a=manageUsers         | not  |
-  | DISABLED    | POST | index.php?m=settings&a=professional        | not  |
   | DISABLED    | POST | index.php?m=settings&a=previewPage         | not  |
   | DISABLED    | POST | index.php?m=settings&a=previewPageTop      | not  |
   | DISABLED    | POST | index.php?m=settings&a=showUser            | not  |
@@ -1081,7 +1080,6 @@ Scenario Outline: Reports module actions
   | READONLY    | GET  | index.php?m=settings&a=tags                | not  |
   | READONLY    | POST | index.php?m=settings&a=changePassword      |      |
   | READONLY    | POST | index.php?m=settings&a=manageUsers         | not  |
-  | READONLY    | POST | index.php?m=settings&a=professional        | not  |
   | READONLY    | POST | index.php?m=settings&a=previewPage         |      |
   | READONLY    | POST | index.php?m=settings&a=previewPageTop      |      |
   | READONLY    | POST | index.php?m=settings&a=showUser            | not  |
@@ -1122,7 +1120,6 @@ Scenario Outline: Reports module actions
   | EDIT        | GET  | index.php?m=settings&a=tags                | not  |
   | EDIT        | POST | index.php?m=settings&a=changePassword      |      |
   | EDIT        | POST | index.php?m=settings&a=manageUsers         | not  |
-  | EDIT        | POST | index.php?m=settings&a=professional        | not  |
   | EDIT        | POST | index.php?m=settings&a=previewPage         |      |
   | EDIT        | POST | index.php?m=settings&a=previewPageTop      |      |
   | EDIT        | POST | index.php?m=settings&a=showUser            | not  |
@@ -1163,7 +1160,6 @@ Scenario Outline: Reports module actions
   | DELETE      | GET  | index.php?m=settings&a=tags                | not  |
   | DELETE      | POST | index.php?m=settings&a=changePassword      |      |
   | DELETE      | POST | index.php?m=settings&a=manageUsers         | not  |
-  | DELETE      | POST | index.php?m=settings&a=professional        | not  |
   | DELETE      | POST | index.php?m=settings&a=previewPage         |      |
   | DELETE      | POST | index.php?m=settings&a=previewPageTop      |      |
   | DELETE      | POST | index.php?m=settings&a=showUser            | not  |
@@ -1204,7 +1200,6 @@ Scenario Outline: Reports module actions
   | DEMO        | GET  | index.php?m=settings&a=tags                | not  |
   | DEMO        | POST | index.php?m=settings&a=changePassword      | not  |
   | DEMO        | POST | index.php?m=settings&a=manageUsers         |      |
-  | DEMO        | POST | index.php?m=settings&a=professional        |      |
   | DEMO        | POST | index.php?m=settings&a=previewPage         |      |
   | DEMO        | POST | index.php?m=settings&a=previewPageTop      |      |
   | DEMO        | POST | index.php?m=settings&a=showUser            |      |
@@ -1245,7 +1240,6 @@ Scenario Outline: Reports module actions
   | ADMIN       | GET  | index.php?m=settings&a=tags                |      |
   | ADMIN       | POST | index.php?m=settings&a=changePassword      |      |
   | ADMIN       | POST | index.php?m=settings&a=manageUsers         |      |
-  | ADMIN       | POST | index.php?m=settings&a=professional        |      |
   | ADMIN       | POST | index.php?m=settings&a=previewPage         |      |
   | ADMIN       | POST | index.php?m=settings&a=previewPageTop      |      |
   | ADMIN       | POST | index.php?m=settings&a=showUser            |      |
@@ -1287,7 +1281,6 @@ Scenario Outline: Reports module actions
   | MULTI_ADMIN | GET  | index.php?m=settings&a=tags                |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=changePassword      |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=manageUsers         |      |
-  | MULTI_ADMIN | POST | index.php?m=settings&a=professional        |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=previewPage         |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=previewPageTop      |      |
   | MULTI_ADMIN | POST | index.php?m=settings&a=showUser            |      |
@@ -1329,7 +1322,6 @@ Scenario Outline: Reports module actions
   | ROOT        | GET  | index.php?m=settings&a=tags                |      |
   | ROOT        | POST | index.php?m=settings&a=changePassword      |      |
   | ROOT        | POST | index.php?m=settings&a=manageUsers         |      |
-  | ROOT        | POST | index.php?m=settings&a=professional        |      |
   | ROOT        | POST | index.php?m=settings&a=previewPage         |      |
   | ROOT        | POST | index.php?m=settings&a=previewPageTop      |      |
   | ROOT        | POST | index.php?m=settings&a=showUser            |      |
@@ -1466,17 +1458,11 @@ Scenario Outline: Reports module actions
   #When I do GET request "index.php?m=settings&a=ajax_wizardDeleteUser"
   #And the response should <FDeleteUser> contain "You don't have permission"
      
-  #When I do GET request "index.php?m=settings&a=ajax_wizardCheckKey"
-  #And the response should <FCheckKey> contain "You don't have permission"
-  
   #When I do GET request "index.php?m=settings&a=ajax_wizardLocalization"
   #And the response should <FLocalization> contain "You don't have permission"
   
   #When I do GET request "index.php?m=settings&a=ajax_wizardFirstTimeSetup"
   #And the response should <FFirstTimeSetup> contain "You don't have permission"
-    
-  #When I do GET request "index.php?m=settings&a=ajax_wizardLicense"
-  #And the response should <FLicense> contain "You don't have permission"
   
   #When I do GET request "index.php?m=settings&a=ajax_wizardPassword"
   #And the response should <FPasswd> contain "You don't have permission"

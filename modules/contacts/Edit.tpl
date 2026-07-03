@@ -66,7 +66,7 @@
                                         <label id="titleLabel" for="title">Title:</label>
                                     </td>
                                     <td class="tdData">
-                                        <input type="text" name="title" id="title" value="<?php $this->_($this->data['title']); ?>" class="inputbox" style="width: 150px" />&nbsp;*
+                                        <input type="text" name="title" id="title" value="<?php $this->_($this->data['title']); ?>" class="inputbox" style="width: 150px" />
                                     </td>
                                 </tr>
 
@@ -227,6 +227,15 @@
                                         <input type="text" name="zip" id="zip" value="<?php $this->_($this->data['zip']); ?>" class="inputbox" style="width: 150px" />
                                         <input type="button" class="button" onclick="CityState_populate('zip', 'ajaxIndicator');" value="Lookup" />
                                         <img src="images/indicator2.gif" alt="AJAX" id="ajaxIndicator" style="vertical-align: middle; visibility: hidden; margin-left: 5px;" />
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="tdVertical">
+                                        <label id="countryLabel" for="country">Country:</label>
+                                    </td>
+                                    <td class="tdData">
+                                        <?php TemplateUtility::printCountrySelect('country', $this->data['country'], true); ?>
                                     </td>
                                 </tr>
                             </table>

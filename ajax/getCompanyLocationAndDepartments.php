@@ -69,6 +69,7 @@ $interface->outputXMLPage(
     "    <city>"        . $locationArray['city'] . "</city>\n" .
     "    <state>"       . $locationArray['state'] . "</state>\n" .
     "    <zip>"         . $locationArray['zip'] . "</zip>\n" .
+    "    <country>"     . $locationArray['country'] . "</country>\n" .
     "    <departments>" . $departmentsString . "</departments>\n" .
     "</data>\n"
 );

@@ -38,7 +38,6 @@ include_once(LEGACY_ROOT . '/lib/ListEditor.php');
 include_once(LEGACY_ROOT . '/lib/SystemUtility.php');
 include_once(LEGACY_ROOT . '/lib/Mailer.php');
 include_once(LEGACY_ROOT . '/lib/EmailTemplates.php');
-include_once(LEGACY_ROOT . '/lib/License.php');
 include_once(LEGACY_ROOT . '/lib/History.php');
 include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 include_once(LEGACY_ROOT . '/lib/CareerPortal.php');
@@ -68,7 +67,6 @@ class SettingsUI extends UserInterface
         $this->_moduleName = 'settings';
         $this->_moduleTabText = 'Settings';
 
-        /* Only CATS professional on site gets to make career portal customizer users. */
         if( class_exists('ACL_SETUP') && !empty(ACL_SETUP::$USER_ROLES) )
         {
             $this->_settingsUserCategories = ACL_SETUP::$USER_ROLES;
@@ -338,14 +336,6 @@ class SettingsUI extends UserInterface
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
                 }
                 $this->manageUsers();
-                break;
-
-            case 'professional':
-                if ($this->getUserAccessLevel('settings.professional') < ACCESS_LEVEL_DEMO)
-                {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
-                }
-                $this->manageProfessional();
                 break;
 
             case 'previewPage':
@@ -764,20 +754,6 @@ class SettingsUI extends UserInterface
                 $this->wizard_deleteUser();
                 break;
 
-            case 'ajax_wizardCheckKey':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
-                    echo 'CATS has lost your session data!';
-                    return;
-                }
-                if ($this->getUserAccessLevel('settings.checkKey') < ACCESS_LEVEL_SA)
-                {
-                    echo 'You do not have access to set the key.';
-                    return;
-                }
-                $this->wizard_checkKey();
-                break;
-
             case 'ajax_wizardLocalization':
                 if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
                 {
@@ -804,20 +780,6 @@ class SettingsUI extends UserInterface
                     return;
                 }
                 $this->wizard_firstTimeSetup();
-                break;
-
-            case 'ajax_wizardLicense':
-                if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
-                {
-                    echo 'CATS has lost your session data!';
-                    return;
-                }
-                if ($this->getUserAccessLevel('settings.license') < ACCESS_LEVEL_SA)
-                {
-                    echo 'You do not have access to accept the license agreement.';
-                    return;
-                }
-                $this->wizard_license();
                 break;
 
             case 'ajax_wizardPassword':
@@ -2562,17 +2524,7 @@ class SettingsUI extends UserInterface
 
         if (!eval(Hooks::get('SETTINGS_DISPLAY_ADMINISTRATION'))) return;
 
-        /* Check if careers website is enabled or can be enabled */
-        $careerPortalUnlock = false;
-        $careerPortalSettings = new CareerPortalSettings($this->_siteID);
-        $cpData = $careerPortalSettings->getAll();
-        if (intval($cpData['enabled']) || !$_SESSION['CATS']->isFree() ||
-            LicenseUtility::isProfessional())
-        {
-            $careerPortalUnlock = true;
-        }
-
-        $this->_template->assign('careerPortalUnlock', $careerPortalUnlock);
+        $this->_template->assign('careerPortalUnlock', true);
         $this->_template->assign('subActive', 'Administration');
         $this->_template->assign('systemAdministration', $systemAdministration);
         $this->_template->assign('active', $this);
@@ -2769,76 +2721,6 @@ class SettingsUI extends UserInterface
         $this->_template->assign('rs', $rs);
         $this->_template->assign('license', $license);
         $this->_template->display('./modules/settings/Users.tpl');
-    }
-
-    private function manageProfessional()
-    {
-        $wf = new WebForm();
-        $wf->addField('licenseKey', 'License Key', WFT_TEXT, true, 60, 30, 190, '', '/[A-Za-z0-9 ]+/',
-            'That is not a valid license key!');
-        $message = '';
-        $license = new License();
-
-        $upgradeStatus = false;
-
-        if (isset($_GET['webFormPostBack']))
-        {
-            list ($fields, $errors) = $wf->getValidatedFields();
-            if (count($errors) > 0) $message = 'Please enter a license key in order to continue.';
-
-            $key = trim($fields['licenseKey']);
-
-            $configWritten = false;
-
-            if ($license->setKey($key) === false)
-            {
-                $message = 'That is not a valid license key<br /><span style="font-size: 16px; color: #000000;">Please verify that you have the correct key and try again.</span>';
-            }
-            else if ($license->isProfessional())
-            {
-                if (!CATSUtility::isSOAPEnabled())
-                {
-                    $message = 'CATS Professional requires the PHP SOAP library which isn\'t currently installed.<br /><br />'
-                        . 'Installation Instructions:<br /><br />'
-                        . 'WAMP/Windows Users:<dl>'
-                        . '<li>Left click on the wamp icon.</li>'
-                        . '<li>Select "PHP Settings" from the drop-down list.</li>'
-                        . '<li>Select "PHP Extensions" from the drop-down list.</li>'
-                        . '<li>Check the "php_soap" option.</li>'
-                        . '<li>Restart WAMP.</li></dl>'
-                        . 'Linux Users:<br /><br />'
-                        . 'Re-install PHP with the --enable-soap configuration option.<br /><br />'
-                        . 'Please visit http://www.catsone.com for more support options.';
-                }
-                if (!LicenseUtility::validateProfessionalKey($key))
-                {
-                    $message = 'That is not a valid Professional membership key<br /><span style="font-size: 16px; color: #000000;">Please verify that you have the correct key and try again.</span>';
-                }
-                else if (!CATSUtility::changeConfigSetting('LICENSE_KEY', "'" . $key . "'"))
-                {
-                    $message = 'Internal Permissions Error<br /><span style="font-size: 12px; color: #000000;">CATS is unable '
-                        . 'to write changes to your <b>config.php</b> file. Please change the file permissions or contact us '
-                        . 'for support. Our support e-mail is <a href="mailto:support@catsone.com">support@catsone.com</a> '
-                        . 'and our office number if (952) 417-0067.</span>';
-                }
-                else
-                {
-                    $upgradeStatus = true;
-                }
-            }
-            else
-            {
-                $message = 'That is not a valid Professional membership key<br /><span style="font-size: 16px; color: #000000;">Please verify that you have the correct key and try again.</span>';
-            }
-        }
-
-        $this->_template->assign('active', $this);
-        $this->_template->assign('subActive', 'Professional Membership');
-        $this->_template->assign('message', $message);
-        $this->_template->assign('upgradeStatus', $upgradeStatus);
-        $this->_template->assign('webForm', $wf);
-        $this->_template->assign('license', $license);
-        $this->_template->display('./modules/settings/Professional.tpl');
     }
 
     /*
@@ -3184,84 +3066,6 @@ class SettingsUI extends UserInterface
         echo 'Ok';
     }
 
-    private function wizard_checkKey()
-    {
-        $fileError = false;
-
-        if (isset($_GET[$id = 'key']) && $_GET[$id] != '')
-        {
-            $license = new License();
-            $key = strtoupper(trim($_GET[$id]));
-
-            $configWritten = false;
-
-            if ($license->setKey($key) !== false)
-            {
-                if ($license->isProfessional())
-                {
-                    if (!CATSUtility::isSOAPEnabled())
-                    {
-                        echo "CATS Professional requires the PHP SOAP library which isn't currently installed.\n\n"
-                            . "Installation Instructions:\n\n"
-                            . "WAMP/Windows Users:\n"
-                            . "1) Left click on the wamp icon.\n"
-                            . "2) Select \"PHP Settings\" from the drop-down list.\n"
-                            . "3) Select \"PHP Extensions\" from the drop-down list.\n"
-                            . "4) Check the \"php_soap\" option.\n"
-                            . "5) Restart WAMP.\n\n"
-                            . "Linux Users:\n"
-                            . "Re-install PHP with the --enable-soap configuration option.\n\n"
-                            . "Please visit http://www.catsone.com for more support options.";
-                        return;
-                    }
-                    else
-                    {
-                        if (!LicenseUtility::validateProfessionalKey($key))
-                        {
-                            echo "That is not a valid CATS Professional license key. Please visit "
-                                . "http://www.catsone.com/professional for more information about CATS Professional.\n\n"
-                                . "For a free open-source key, please visit http://www.catsone.com/ and "
-                                . "click on \"Downloads\".";
-                            return;
-                        }
-                    }
-                }
-
-                if (CATSUtility::changeConfigSetting('LICENSE_KEY', "'" . $key . "'"))
-                {
-                    $configWritten = true;
-                }
-            }
-
-            if ($configWritten)
-            {
-                echo 'Ok';
-                return;
-            }
-        }
-
-        // The key hasn't been written. But they may have manually inserted the key into their config.php, check
-        if (LicenseUtility::isLicenseValid())
-        {
-            echo 'Ok';
-            return;
-        }
-
-        if ($fileError)
-        {
-            echo 'You entered a valid key, but this wizard is unable to write to your config.php file! You have '
-                . 'two choices: ' . "\n\n"
-                . '1) Change the file permissions of your config.php file.'."\n".'If you\'re using unix, try:' . "\n" . 'chmod 777 config.php' . "\n\n"
-                . '2) Edit your config.php file manually and enter your valid key near this line: ' . "\n"
-                . 'define(\'LICENSE_KEY\', \'ENTER YOUR KEY HERE\');' . "\n" . 'Once you\'ve done this, refresh your browser.' . "\n\n"
-                . 'For more help, visit our website at http://www.catsone.com for support options.';
-        }
-
-        echo 'That is not a valid key. You can register for a free open source license key on our website '
-            . 'at http://www.catsone.com or a professional key to unlock all of the available features at '
-            . 'http://www.catsone.com/professional';
-    }
-
     private function wizard_localization()
     {
         if (!isset($_GET['timeZone']) || !isset($_GET['dateFormat']))
@@ -3284,14 +3088,6 @@ class SettingsUI extends UserInterface
         $site = new Site($this->_siteID);
         $site->setLocalization($timeZone, $isDMY);
         $site->setLocalizationConfigured();
-
-        echo 'Ok';
-    }
-
-    private function wizard_license()
-    {
-        $site = new Site($this->_siteID);
-        $site->setAgreedToLicense();
 
         echo 'Ok';
     }

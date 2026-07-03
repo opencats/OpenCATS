@@ -494,6 +494,23 @@ switch ($action)
             echo 'document.getElementById(\'dateFormat\').value = \'dmy\';';
         }
 
+        /* Detect default phone country calling code. */
+        $defaultPhoneCountryCodeDigits = '';
+        $rsPhoneCountryCode = MySQLQuery('SELECT default_phone_country_code FROM site', true);
+        if ($rsPhoneCountryCode)
+        {
+            $phoneCountryCodeRecord = mysqli_fetch_assoc($rsPhoneCountryCode);
+            if (isset($phoneCountryCodeRecord['default_phone_country_code']))
+            {
+                $defaultPhoneCountryCodeDigits = preg_replace(
+                    '/[^0-9]/',
+                    '',
+                    trim($phoneCountryCodeRecord['default_phone_country_code'])
+                );
+            }
+        }
+        echo 'document.getElementById(\'defaultPhoneCountryCodeDigits\').value = \'' . addslashes($defaultPhoneCountryCodeDigits) . '\';';
+
         echo 'setActiveStep(6);';
         echo 'showTextBlock(\'pickOptionalComponents\');';
         echo '</script>';

@@ -50,9 +50,6 @@ define('MAILER_MODE_PHP',      1);
 define('MAILER_MODE_SENDMAIL', 2);
 define('MAILER_MODE_SMTP',     3);
 
-$errorReporting = error_reporting();
-error_reporting($errorReporting & ~ E_STRICT);
-
 /**
  *	E-Mail Abstraction Layer
  *	@package    CATS
