@@ -578,40 +578,21 @@ function CityState_populate(zipEditID, indicatorID)
         var cityNode  = http.responseXML.getElementsByTagName("city").item(0);
         var stateNode = http.responseXML.getElementsByTagName("state").item(0);
 
-	if (document.getElementById("address"))
+        /* Only fill fields the lookup actually resolved; leave anything the
+         * user already typed (e.g. a street the zip lookup can't return). */
+        if (document.getElementById("address") && addressNode.firstChild)
         {
-            if (addressNode.firstChild)
-            {
-                document.getElementById("address").value = addressNode.firstChild.nodeValue;
-            }
-            else
-            {
-                document.getElementById("address").value = "";
-            }
+            document.getElementById("address").value = addressNode.firstChild.nodeValue;
         }
 
-        if (document.getElementById("city"))
+        if (document.getElementById("city") && cityNode.firstChild)
         {
-            if (cityNode.firstChild)
-            {
-                document.getElementById("city").value = cityNode.firstChild.nodeValue;
-            }
-            else
-            {
-                document.getElementById("city").value = "";
-            }
+            document.getElementById("city").value = cityNode.firstChild.nodeValue;
         }
 
-        if (document.getElementById("state"))
+        if (document.getElementById("state") && stateNode.firstChild)
         {
-            if (stateNode.firstChild)
-            {
-                document.getElementById("state").value = stateNode.firstChild.nodeValue;
-            }
-            else
-            {
-                document.getElementById("state").value = "";
-            }
+            document.getElementById("state").value = stateNode.firstChild.nodeValue;
         }
         indicator.style.visibility = "hidden";
     }
