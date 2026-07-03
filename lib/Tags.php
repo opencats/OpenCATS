@@ -109,7 +109,7 @@ class Tags
     }
 
 
-    public function add($parent_tag_id=null, $title, $description)
+    public function add($parent_tag_id, $title, $description)
     {
         $sql = sprintf(
             "INSERT INTO
