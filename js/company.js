@@ -41,6 +41,10 @@ function CompanyLocation_populate(companySelectID, sessionCookie)
     {
         document.getElementById("city").value  = "";
         document.getElementById("state").value = "";
+        if (document.getElementById("country"))
+        {
+            document.getElementById("country").value = "";
+        }
         return;
     }
 
@@ -92,6 +96,10 @@ function CompanyLocation_populate(companySelectID, sessionCookie)
 
             document.getElementById("city").value  = "";
             document.getElementById("state").value = "";
+            if (document.getElementById("country"))
+            {
+                document.getElementById("country").value = "";
+            }
 
             if (document.getElementById("zip"))
             {
@@ -105,6 +113,7 @@ function CompanyLocation_populate(companySelectID, sessionCookie)
         var cityNode      = http.responseXML.getElementsByTagName("city").item(0);
         var stateNode     = http.responseXML.getElementsByTagName("state").item(0);
         var zipNode       = http.responseXML.getElementsByTagName("zip").item(0);
+        var countryNode   = http.responseXML.getElementsByTagName("country").item(0);
 
         if (document.getElementById("address"))
         {
@@ -145,6 +154,18 @@ function CompanyLocation_populate(companySelectID, sessionCookie)
             else
             {
                 document.getElementById("zip").value = "";
+            }
+        }
+
+        if (document.getElementById("country"))
+        {
+            if (countryNode.firstChild)
+            {
+                document.getElementById("country").value = countryNode.firstChild.nodeValue;
+            }
+            else
+            {
+                document.getElementById("country").value = "";
             }
         }
     }

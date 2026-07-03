@@ -118,6 +118,15 @@
 
                     <tr>
                         <td class="tdVertical">
+                            <label id="countryLabel" for="country">Country:</label>
+                        </td>
+                        <td class="tdData">
+                            <?php TemplateUtility::printCountrySelect('country', '', true); ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="tdVertical">
                             <label id="urlLabel" for="url">Web Site:</label>
                         </td>
                         <td class="tdData">

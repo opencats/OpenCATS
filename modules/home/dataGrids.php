@@ -3,7 +3,7 @@
  * CATS
  * Home Datagrid
  *
- * CATS Version: 0.9.7.4
+ * CATS Version: 0.10.0
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
@@ -221,20 +221,37 @@ class CallsDataGrid extends DataGrid
         $this->listStyle = true;
         $this->ignoreSavedColumnLayouts = true;
 
-        if (isset($parameters['period']) && !empty($parameters['period']))
+        $periods = array(
+            'DATE_SUB(CURDATE(), INTERVAL 1 WEEK)',
+            'DATE_SUB(CURDATE(), INTERVAL 1 MONTH)',
+            'DATE_SUB(CURDATE(), INTERVAL 6 MONTH)',
+            'DATE_SUB(CURDATE(), INTERVAL 1 YEAR)'
+        );
+        $period = isset($parameters['period'])
+            ? array_search($parameters['period'], $periods, true)
+            : false;
+
+        if ($period !== false)
         {
-            $this->dateCriterion .= ' AND activity.date_created >= ' . $parameters['period'] . ' ';
+            $this->dateCriterion .= ' AND activity.date_occurred >= ' .
+                $periods[$period] . ' ';
         }
         else
         {
-            if (isset($parameters['startDate']) && !empty($parameters['startDate']))
+            $db = DatabaseConnection::getInstance();
+
+            if (isset($parameters['startDate']) &&
+                self::isValidDate($parameters['startDate']))
             {
-                $this->dateCriterion .= ' AND activity.date_created >= \'' .$parameters['startDate'].'\' ';
+                $this->dateCriterion .= ' AND activity.date_occurred >= ' .
+                    $db->makeQueryString($parameters['startDate']) . ' ';
             }
 
-            if (isset($parameters['endDate']) && !empty($parameters['endDate']))
+            if (isset($parameters['endDate']) &&
+                self::isValidDate($parameters['endDate']))
             {
-                $this->dateCriterion .= ' AND activity.date_created <= \''.$parameters['endDate'].'\' ';
+                $this->dateCriterion .= ' AND activity.date_occurred <= ' .
+                    $db->makeQueryString($parameters['endDate']) . ' ';
             }
         }
 
@@ -273,6 +290,17 @@ class CallsDataGrid extends DataGrid
         parent::__construct("home:CallsDataGrid", $parameters);
     }
 
+    private static function isValidDate($date)
+    {
+        if (!is_string($date) ||
+            !preg_match('/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/D', $date, $matches))
+        {
+            return false;
+        }
+
+        return checkdate((int) $matches[2], (int) $matches[3], (int) $matches[1]);
+    }
+
     /**
      * Returns the sql statment for the pager.
      *
@@ -300,9 +328,9 @@ class CallsDataGrid extends DataGrid
                 activity.notes AS notes,
                 activity_type.short_description AS typeDescription,
                 DATE_FORMAT(
-                    activity.date_created, '%%m-%%d-%%y %%h:%%i %%p'
+                    activity.date_occurred, '%%m-%%d-%%y %%h:%%i %%p'
                 ) AS dateCreated,
-                activity.date_created AS dateCreatedSort,
+                activity.date_occurred AS dateCreatedSort,
                 entered_by_user.first_name AS enteredByFirstName,
                 entered_by_user.last_name AS enteredByLastName,
                 CONCAT(entered_by_user.last_name, entered_by_user.first_name) AS enteredBySort,
@@ -354,9 +382,9 @@ class CallsDataGrid extends DataGrid
                 activity.notes AS notes,
                 activity_type.short_description AS typeDescription,
                 DATE_FORMAT(
-                    activity.date_created, '%%m-%%d-%%y %%h:%%i %%p'
+                    activity.date_occurred, '%%m-%%d-%%y %%h:%%i %%p'
                 ) AS dateCreated,
-                activity.date_created AS dateCreatedSort,
+                activity.date_occurred AS dateCreatedSort,
                 entered_by_user.first_name AS enteredByFirstName,
                 entered_by_user.last_name AS enteredByLastName,
                 CONCAT(entered_by_user.last_name, entered_by_user.first_name) AS enteredBySort,

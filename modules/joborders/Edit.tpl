@@ -178,7 +178,7 @@
                             <label id="stateLabel" for="state">State:</label>
                         </td>
                         <td class="tdData">
-                            <input type="text" tabindex="5" class="inputbox" id="state" name="state" value="<?php $this->_($this->data['state']); ?>" style="width: 150px;" />&nbsp;*
+                            <input type="text" tabindex="5" class="inputbox" id="state" name="state" value="<?php $this->_($this->data['state']); ?>" style="width: 150px;" />
                         </td>
 
                         <td class="tdVertical">
@@ -187,6 +187,17 @@
                         <td class="tdData">
                             <input type="text" tabindex="16" class="inputbox" id="openingsAvailable" name="openingsAvailable" value="<?php $this->_($this->data['openingsAvailable']); ?>" style="width: 150px;" />&nbsp;*
                         </td>
+                    </tr>
+
+                    <tr>
+                        <td class="tdVertical">
+                            <label id="countryLabel" for="country">Country:</label>
+                        </td>
+                        <td class="tdData">
+                            <?php TemplateUtility::printCountrySelect('country', $this->data['country'], true); ?>
+                        </td>
+                        <td class="tdVertical">&nbsp;</td>
+                        <td class="tdData">&nbsp;</td>
                     </tr>
 
                     <tr>

@@ -167,9 +167,9 @@
                             </td>
                             <td class="tdData">
                                 <?php if ($this->selectedCompanyID !== false): ?>
-                                    <input type="text" tabindex="5" class="inputbox" id="state" name="state" value="<?php $this->_($this->selectedCompanyLocation['state']); ?>" style="width: 150px;" />&nbsp;*
+                                    <input type="text" tabindex="5" class="inputbox" id="state" name="state" value="<?php $this->_($this->selectedCompanyLocation['state']); ?>" style="width: 150px;" />
                                 <?php else: ?>
-                                    <input type="text" tabindex="5" class="inputbox" id="state" name="state" style="width: 150px;" />&nbsp;*
+                                    <input type="text" tabindex="5" class="inputbox" id="state" name="state" style="width: 150px;" />
                                 <?php endif; ?>
                             </td>
 
@@ -179,6 +179,28 @@
                             <td class="tdData">
                                 <input type="text" tabindex="14" class="inputbox" id="openings" name="openings" style="width: 150px;" <?php if(isset($this->jobOrderSourceRS['openings'])): ?>value="<?php $this->_($this->jobOrderSourceRS['openings']); ?>"<?php else: ?>value="1"<?php endif; ?>/>&nbsp;*
                             </td>
+                        </tr>
+
+                        <tr>
+                            <td class="tdVertical">
+                                <label id="countryLabel" for="country">Country:</label>
+                            </td>
+                            <td class="tdData">
+                                <?php
+                                    $selectedCountry = '';
+                                    if ($this->selectedCompanyID !== false && isset($this->selectedCompanyLocation['country']))
+                                    {
+                                        $selectedCountry = $this->selectedCompanyLocation['country'];
+                                    }
+                                    else if (isset($this->jobOrderSourceRS['country']))
+                                    {
+                                        $selectedCountry = $this->jobOrderSourceRS['country'];
+                                    }
+                                    TemplateUtility::printCountrySelect('country', $selectedCountry, true);
+                                ?>
+                            </td>
+                            <td class="tdVertical">&nbsp;</td>
+                            <td class="tdData">&nbsp;</td>
                         </tr>
 
                         <tr>

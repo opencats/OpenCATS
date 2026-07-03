@@ -38,6 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST')
     die();
 }
 
+if ($_SESSION['CATS']->getAccessLevel('settings.emailSettings.POST') < ACCESS_LEVEL_SA)
+{
+    $interface->outputXMLErrorPage(-1, ERROR_NO_PERMISSION);
+    die();
+}
+
 $siteID = $interface->getSiteID();
 
 if (!isset($_POST['testEmailAddress']) ||

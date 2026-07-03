@@ -271,6 +271,32 @@ class Calendar
     }
 
     /**
+     * Returns a calendar event.
+     *
+     * @param integer Calendar Event ID.
+     * @return array Calendar event data array, or empty array if no record
+     *               is present.
+     */
+    public function get($eventID)
+    {
+        $sql = sprintf(
+            "SELECT
+                calendar_event.calendar_event_id AS eventID,
+                calendar_event.entered_by AS enteredBy
+            FROM
+                calendar_event
+            WHERE
+                calendar_event.calendar_event_id = %s
+            AND
+                calendar_event.site_id = %s",
+            $this->_db->makeQueryInteger($eventID),
+            $this->_siteID
+        );
+
+        return $this->_db->getAssoc($sql);
+    }
+
+    /**
      * Adds a calendar event to the database.
      *
      * @param flag Calendar event type flag.
@@ -282,8 +308,8 @@ class Calendar
      *                if none.
      * @param flag Data Item type flag corresponding with $dataItemID, or -1
      *             if none.
-     * @param integer Job Order ID with which to associate this event, or -1
-     *                if none.
+     * @param integer|null Job Order ID with which to associate this event, or
+     *                     NULL if none.
      * @param string Short event title.
      * @param integer Event duration in minutes.
      * @param boolean Enable reminders?
@@ -299,6 +325,15 @@ class Calendar
         $reminderEnabled, $reminderEmail, $reminderTime, $isPublic,
         $timeZoneOffset)
     {
+        if ($jobOrderID === null)
+        {
+            $jobOrderIDSQL = 'NULL';
+        }
+        else
+        {
+            $jobOrderIDSQL = $this->_db->makeQueryInteger($jobOrderID);
+        }
+
         $sql = sprintf(
             "INSERT INTO calendar_event (
                 type,
@@ -346,7 +381,7 @@ class Calendar
             $this->_db->makeQueryInteger($enteredBy),
             $this->_db->makeQueryInteger($dataItemID),
             $this->_db->makeQueryInteger($dataItemType),
-            $this->_db->makeQueryInteger($jobOrderID),
+            $jobOrderIDSQL,
             $this->_siteID,
             $this->_db->makeQueryString($title),
             $this->_db->makeQueryInteger($duration),
@@ -377,8 +412,8 @@ class Calendar
      *                if none.
      * @param flag Data Item type flag corresponding with $dataItemID, or -1
      *             if none.
-     * @param integer Job Order ID with which to associate this event, or -1
-     *                if none.
+     * @param integer|null Job Order ID with which to associate this event, or
+     *                     NULL if none.
      * @param string Short event title.
      * @param integer Event duration in minutes.
      * @param boolean Enable reminders?
@@ -394,6 +429,15 @@ class Calendar
         $reminderEnabled, $reminderEmail, $reminderTime, $isPublic,
         $timeZoneOffset)
     {
+        if ($jobOrderID === null)
+        {
+            $jobOrderIDSQL = 'NULL';
+        }
+        else
+        {
+            $jobOrderIDSQL = $this->_db->makeQueryInteger($jobOrderID);
+        }
+
         $sql = sprintf(
             "UPDATE
                 calendar_event
@@ -423,7 +467,7 @@ class Calendar
             ($allDay ? '1' : '0'),
             $this->_db->makeQueryInteger($dataItemID),
             $this->_db->makeQueryInteger($dataItemType),
-            $this->_db->makeQueryInteger($jobOrderID),
+            $jobOrderIDSQL,
             $this->_db->makeQueryString($title),
             $this->_db->makeQueryInteger($duration),
             ($reminderEnabled ? '1' : '0'),

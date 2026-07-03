@@ -38,14 +38,13 @@ if (!ENABLE_SPHINX)
     exit(0);
 }
 
-$SphinxAPI = realpath($CATSHome . '/' . SPHINX_API);
-if (!file_exists($SphinxAPI))
+if (!file_exists($CATSHome . '/vendor/autoload.php'))
 {
-    fwrite($stderr, "Config Error: SPHINX_API could not be found.\n");
+    fwrite($stderr, "Config Error: Composer autoload could not be found.\n");
     exit(1);
 }
 
-include($SphinxAPI);
+include($CATSHome . '/vendor/autoload.php');
 
 /* Sphinx API likes to throw PHP errors *AND* use it's own error
  * handling.

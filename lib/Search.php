@@ -36,7 +36,7 @@ include_once(LEGACY_ROOT . '/lib/JobOrderStatuses.php');
 
 if (ENABLE_SPHINX)
 {
-    include_once(SPHINX_API);
+    include_once(LEGACY_ROOT . '/vendor/autoload.php');
 }
 
 /**

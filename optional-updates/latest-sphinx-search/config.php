@@ -27,9 +27,6 @@
  * $Id: config.php 3826 2007-12-10 06:03:18Z will $
  */
 
-/* License key. */
-define('LICENSE_KEY','3163GQ-54ISGW-14E4SHD-ES9ICL-X02DTG-GYRSQ6');
-
 /* Database configuration. */
 define('DATABASE_USER', 'cats');
 define('DATABASE_PASS', 'yourpass');
@@ -87,10 +84,6 @@ define('ENABLE_HOSTNAME_LOOKUP', false);
  * Install Sphinx and set ENABLE_SPHINX (below) to true to enable Sphinx.
  */
 define('ENABLE_SPHINX', true);
-define('SPHINX_API', '/var/www/cats/lib/sphinx_latest/sphinxapi.php');
-#define('SPHINX_API', '/usr/share/sphinxsearch/api/ruby/spec/fixtures/sphinxapi.php');
-#define('SPHINX_API', '/usr/share/sphinxsearch/api/sphinxapi.php');
-#define('SPHINX_API', '/var/www/cats/sphinx/etc/sphinxapi.php');
 define('SPHINX_HOST', 'localhost');
 define('SPHINX_PORT', 9312);
 define('SPHINX_INDEX', 'cats catsdelta');

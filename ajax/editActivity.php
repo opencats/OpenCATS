@@ -28,9 +28,7 @@
  */
 
 
-include_once(LEGACY_ROOT . '/lib/StringUtility.php');
 include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
-include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 
 
 $interface = new SecureAJAXInterface();
@@ -38,6 +36,12 @@ $interface = new SecureAJAXInterface();
 if ($_SERVER['REQUEST_METHOD'] !== 'POST')
 {
     $interface->outputXMLErrorPage(-1, 'Invalid request.');
+    die();
+}
+
+if ($_SESSION['CATS']->getAccessLevel('contacts.editActivity') < ACCESS_LEVEL_EDIT)
+{
+    $interface->outputXMLErrorPage(-1, ERROR_NO_PERMISSION);
     die();
 }
 
@@ -108,22 +112,6 @@ $date = sprintf(
     ),
     date('H:i:00', $time)
 );
-
-/* Highlight what needs highlighting. */
-if (strpos($activityNote, 'Status change: ') === 0)
-{
-    $pipelines = new Pipelines($siteID);
-
-    $statusRS = $pipelines->getStatusesForPicking();
-    foreach ($statusRS as $data)
-    {
-        $activityNote = StringUtility::replaceOnce(
-            $data['status'],
-            '<span style="color: #ff6c00;">' . $data['status'] . '</span>',
-            $activityNote
-        );
-    }
-}
 
 /* Save the new activity entry. */
 $activityEntries = new ActivityEntries($siteID);

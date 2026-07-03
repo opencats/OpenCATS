@@ -472,7 +472,7 @@ class CalendarUI extends UserInterface
 
         $calendar = new Calendar($this->_siteID);
         $eventID = $calendar->addEvent(
-            $type, $date, $description, $allDay, $this->_userID, -1, -1, -1,
+            $type, $date, $description, $allDay, $this->_userID, -1, -1, null,
             $title, $duration, $reminderEnabled, $reminderEmail, $reminderTime,
             $publicEntry, $timeZoneOffset
         );
@@ -559,7 +559,7 @@ class CalendarUI extends UserInterface
         }
         else
         {
-            $jobOrderID   = 'NULL';
+            $jobOrderID   = null;
         }
 
         /* Bail out if we received an invalid date. */
@@ -582,6 +582,19 @@ class CalendarUI extends UserInterface
 
         $eventID  = $_POST['eventID'];
         $type     = $_POST['type'];
+        $calendar = new Calendar($this->_siteID);
+        $eventRS = $calendar->get($eventID);
+
+        if (empty($eventRS))
+        {
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid event ID.');
+        }
+
+        if ($eventRS['enteredBy'] != $this->_userID &&
+            $this->getUserAccessLevel('calendar.show') < ACCESS_LEVEL_SA)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
 
         if ($_POST['allDay'] == 1)
         {
@@ -662,9 +675,8 @@ class CalendarUI extends UserInterface
         if (!eval(Hooks::get('CALENDAR_EDIT_PRE'))) return;
 
         /* Update the event. */
-        $calendar = new Calendar($this->_siteID);
         if (!$calendar->updateEvent($eventID, $type, $date, $description,
-            $allDay, $dataItemID, $dataItemType, 'NULL', $title, $duration,
+            $allDay, $dataItemID, $dataItemType, $jobOrderID, $title, $duration,
             $reminderEnabled, $reminderEmail, $reminderTime, $publicEntry,
             $_SESSION['CATS']->getTimeZoneOffset()))
         {
@@ -711,10 +723,22 @@ class CalendarUI extends UserInterface
         }
 
         $eventID = $_POST['eventID'];
+        $calendar = new Calendar($this->_siteID);
+        $eventRS = $calendar->get($eventID);
+
+        if (empty($eventRS))
+        {
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid event ID.');
+        }
+
+        if ($eventRS['enteredBy'] != $this->_userID &&
+            $this->getUserAccessLevel('calendar.show') < ACCESS_LEVEL_SA)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
 
         if (!eval(Hooks::get('CALENDAR_DELETE_PRE'))) return;
 
-        $calendar = new Calendar($this->_siteID);
         $calendar->deleteEvent($eventID);
 
         if (!eval(Hooks::get('CALENDAR_DELETE_POST'))) return;

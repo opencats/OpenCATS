@@ -1,11 +1,6 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-if( !defined('LEGACY_ROOT') )
-{
-    define('LEGACY_ROOT', '.');
-}
-
 include_once(LEGACY_ROOT . '/lib/StringUtility.php');
 
 class StringUtilityTest extends TestCase
@@ -553,6 +548,44 @@ class StringUtilityTest extends TestCase
         $this->assertSame(
             StringUtility::makeInitialName('Michael', 'Zimmermann',  true, 1),
             'Z, M.'
+            );
+    }
+
+    function testMakeCityStateString()
+    {
+        $this->assertSame(
+            'Chicago, IL',
+            StringUtility::makeCityStateString('Chicago', 'IL')
+            );
+
+        $this->assertSame(
+            'Chicago',
+            StringUtility::makeCityStateString('Chicago', '')
+            );
+
+        $this->assertSame(
+            'IL',
+            StringUtility::makeCityStateString('', 'IL')
+            );
+
+        $this->assertSame(
+            '',
+            StringUtility::makeCityStateString('', '')
+            );
+
+        $this->assertSame(
+            'Chicago',
+            StringUtility::makeCityStateString('Chicago', null)
+            );
+
+        $this->assertSame(
+            'IL',
+            StringUtility::makeCityStateString(null, 'IL')
+            );
+
+        $this->assertSame(
+            '',
+            StringUtility::makeCityStateString(null, null)
             );
     }
 

@@ -14,7 +14,7 @@ else
     CATS_PATH="/usr/local/www/catsone.com/data"
     PHP_PATH="/usr/local/bin/php"
     SPHINX_BIN="/usr/local/bin"
-    SPHINX_CONFIG="/usr/local/www/catsone.net/data/lib/sphinx/sphinx-www.conf"
+    SPHINX_CONFIG="${CATS_PATH}/config/sphinx/sphinx.conf"
 fi
 
 if [ ! -f "${SPHINX_BIN}/indexer" ];
@@ -23,13 +23,12 @@ then
     exit 1
 fi
 
-if [ ! -f $SPHINX_CONFIG ];
+if [ ! -f "${SPHINX_CONFIG}" ];
 then
-    echo "$SPHINX_CONFIG does not exist."
+    echo "${SPHINX_CONFIG} does not exist."
     exit 1
 fi
 
-${SPHINX_BIN}/indexer --all --rotate --config ${SPHINX_CONFIG}
+${SPHINX_BIN}/indexer --all --rotate --config "${SPHINX_CONFIG}"
 
 exit 0
-

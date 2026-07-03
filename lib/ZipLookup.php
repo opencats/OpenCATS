@@ -41,7 +41,7 @@ class ZipLookup
 					$loc_level_3 = (string) $value->long_name;
 				}
 				if ($value->type[0] == 'country') {
-					$loc_level_4 = (string) $value->long_name;	
+					$loc_level_4 = (string) $value->short_name;
 				}
 			}
 		} else {
@@ -53,7 +53,7 @@ class ZipLookup
 
 	// Set the state based on US or non-US location
 	$aAddress[2] = $loc_level_1;
-	if ($loc_level_4 == 'United States') {
+	if ($loc_level_4 == 'US') {
 		$aAddress[3] = $loc_level_3;
 	} else {
 		$aAddress[3] = $loc_level_2;

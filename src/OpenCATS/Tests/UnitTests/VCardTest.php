@@ -1,15 +1,22 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-if( !defined('LEGACY_ROOT') )
-{
-    define('LEGACY_ROOT', '.');
-}
-
 include_once(LEGACY_ROOT . '/lib/VCard.php');
 
 class VCardTest extends TestCase
 {
+    private function assertRegexCompat($pattern, $value)
+    {
+        if( method_exists($this, 'assertMatchesRegularExpression') )
+        {
+            $this->assertMatchesRegularExpression($pattern, $value);
+        }
+        else
+        {
+            $this->assertSame(1, preg_match($pattern, $value));
+        }
+    }
+
     function testVersion()
     {
         $this->assertSame(VCard::VCARD_VERSION, '2.1');
@@ -31,10 +38,7 @@ class VCardTest extends TestCase
         $this->assertSame($outputLines[3], 'FN:John Smith');
 
         /* Test revision timestamp. */
-        $this->assertRegExp(
-            '/^REV:\d{8}T\d{6}$/',
-            $outputLines[4]
-            );
+        $this->assertRegexCompat('/^REV:\d{8}T\d{6}$/', $outputLines[4]);
         $currentREVNumeric = date('YmdHis');
 
         $vCardREVNumeric = preg_replace('/REV:|T/', '', $outputLines[4]);
@@ -91,10 +95,7 @@ class VCardTest extends TestCase
         $this->assertSame($outputLines[10], 'URL:http://www.slashdot.org');
 
         /* Test revision timestamp. */
-        $this->assertRegExp(
-            '/^REV:\d{8}T\d{6}$/',
-            $outputLines[11]
-            );
+        $this->assertRegexCompat('/^REV:\d{8}T\d{6}$/', $outputLines[11]);
         $currentREVNumeric = date('YmdHis');
 
         $vCardREVNumeric = preg_replace('/REV:|T/', '', $outputLines[11]);

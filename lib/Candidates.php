@@ -97,7 +97,7 @@ class Candidates
         $source, $keySkills, $dateAvailable, $currentEmployer, $canRelocate,
         $currentPay, $desiredPay, $notes, $webSite, $bestTimeToCall, $enteredBy, $owner,
         $gender = '', $race = '', $veteran = '', $disability = '',
-        $skipHistory = false)
+        $skipHistory = false, $country = '')
     {
         $sql = sprintf(
             "INSERT INTO candidate (
@@ -114,6 +114,7 @@ class Candidates
                 city,
                 state,
                 zip,
+                country,
                 source,
                 key_skills,
                 date_available,
@@ -136,6 +137,7 @@ class Candidates
                 eeo_gender
             )
             VALUES (
+                %s,
                 %s,
                 %s,
                 %s,
@@ -183,6 +185,7 @@ class Candidates
             $this->_db->makeQueryString($city),
             $this->_db->makeQueryString($state),
             $this->_db->makeQueryString($zip),
+            $this->_db->makeQueryStringOrNULL($country),
             $this->_db->makeQueryString($source),
             $this->_db->makeQueryString($keySkills),
             $this->_db->makeQueryStringOrNULL($dateAvailable),
@@ -256,8 +259,20 @@ class Candidates
         $city, $state, $zip, $source, $keySkills, $dateAvailable,
         $currentEmployer, $canRelocate, $currentPay, $desiredPay,
         $notes, $webSite, $bestTimeToCall, $owner, $isHot, $email, $emailAddress,
-        $gender = '', $race = '', $veteran = '', $disability = '')
+        $gender = '', $race = '', $veteran = '', $disability = '', $country = false)
     {
+        if ($country === false)
+        {
+            $countrySQL = ",\n";
+        }
+        else
+        {
+            $countrySQL = sprintf(
+                ",\n                country               = %s,\n",
+                $this->_db->makeQueryStringOrNULL($country)
+            );
+        }
+
         $sql = sprintf(
             "UPDATE
                 candidate
@@ -275,7 +290,7 @@ class Candidates
                 address2              = %s,
                 city                  = %s,
                 state                 = %s,
-                zip                   = %s,
+                zip                   = %s%s
                 source                = %s,
                 key_skills            = %s,
                 date_available        = %s,
@@ -311,6 +326,7 @@ class Candidates
             $this->_db->makeQueryString($city),
             $this->_db->makeQueryString($state),
             $this->_db->makeQueryString($zip),
+            $countrySQL,
             $this->_db->makeQueryString($source),
             $this->_db->makeQueryString($keySkills),
             $this->_db->makeQueryStringOrNULL($dateAvailable),
@@ -481,6 +497,7 @@ class Candidates
                 candidate.city AS city,
                 candidate.state AS state,
                 candidate.zip AS zip,
+                candidate.country AS country,
                 candidate.source AS source,
                 candidate.key_skills AS keySkills,
                 candidate.current_employer AS currentEmployer,
@@ -618,6 +635,7 @@ class Candidates
                 candidate.city AS city,
                 candidate.state AS state,
                 candidate.zip AS zip,
+                candidate.country AS country,
                 candidate.source AS source,
                 candidate.key_skills AS keySkills,
                 candidate.current_employer AS currentEmployer,

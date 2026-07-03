@@ -55,20 +55,6 @@ include_once(LEGACY_ROOT . '/modules/queue/constants.php');
 @session_name(CATS_SESSION_NAME);
 session_start();
 
-/* Make sure we aren't getting screwed over by magic quotes. */
-if (get_magic_quotes_runtime())
-{
-    if (function_exists('set_magic_quotes_runtime')) {
-        set_magic_quotes_runtime(0);
-    }
-}
-if (get_magic_quotes_gpc())
-{
-    $_GET     = array_map('stripslashes', $_GET);
-    $_POST    = array_map('stripslashes', $_POST);
-    $_REQUEST = array_map('stripslashes', $_REQUEST);
-}
-
 if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
 {
     $_SESSION['CATS'] = new CATSSession();

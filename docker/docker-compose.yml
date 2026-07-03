@@ -10,7 +10,9 @@ services:
 
     php:
       container_name: opencats_php
-      image: opencats/php-base:7.2-fpm-alpine
+      build:
+        context: ..
+        dockerfile: docker/php/Dockerfile
       volumes_from:
         - opencatsdata
 

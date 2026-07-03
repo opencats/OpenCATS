@@ -94,7 +94,7 @@ class JobOrders
     public function add($title, $companyId, $contactId, $description, $notes,
         $duration, $maxRate, $type, $isHot, $public, $openings, $companyJobId,
         $salary, $city, $state, $startDate, $enteredBy, $recruiter, $owner,
-        $department, $questionnaire = false)
+        $department, $questionnaire = false, $country = '')
     {
         /* Get the department ID of the selected department. */
         // FIXME: Move this up to the UserInterface level. I don't like this
@@ -120,6 +120,7 @@ class JobOrders
             $salary,
             $city,
             $state,
+            $country,
             $startDate,
             $enteredBy,
             $recruiter,
@@ -163,7 +164,7 @@ class JobOrders
     public function update($jobOrderID, $title, $companyJobID, $companyID,
         $contactID, $description, $notes, $duration, $maxRate, $type, $isHot,
         $openings, $openingsAvailable, $salary, $city, $state, $startDate, $status, $recruiter,
-        $owner, $public, $email, $emailAddress, $department, $questionnaire = false)
+        $owner, $public, $email, $emailAddress, $department, $questionnaire = false, $country = false)
     {
         /* Get the department ID of the selected department. */
         // FIXME: Move this up to the UserInterface level. I don't like this
@@ -172,6 +173,18 @@ class JobOrders
         $departmentID = (new Contacts($this->_siteID))->getDepartmentIDByName(
             $department, $companyID, $this->_db
         );
+
+        if ($country === false)
+        {
+            $countrySQL = ",\n";
+        }
+        else
+        {
+            $countrySQL = sprintf(
+                ",\n                country            = %s,\n",
+                $this->_db->makeQueryStringOrNULL($country)
+            );
+        }
 
         // FIXME: Is the OrNULL usage below correct? Can these fields be NULL?
         $sql = sprintf(
@@ -194,7 +207,7 @@ class JobOrders
                 status             = %s,
                 salary             = %s,
                 city               = %s,
-                state              = %s,
+                state              = %s%s
                 company_department_id = %s,
                 recruiter          = %s,
                 owner              = %s,
@@ -221,7 +234,8 @@ class JobOrders
             $this->_db->makeQueryString($status),
             $this->_db->makeQueryString($salary),
             $this->_db->makeQueryString($city),
-            $this->_db->makeQueryString($state),
+            $this->_db->makeQueryStringOrNULL($state),
+            $countrySQL,
             $this->_db->makeQueryInteger($departmentID),
             $this->_db->makeQueryInteger($recruiter),
             $this->_db->makeQueryInteger($owner),
@@ -287,6 +301,21 @@ class JobOrders
         /* Store history. */
         $history = new History($this->_siteID);
         $history->storeHistoryDeleted(DATA_ITEM_JOBORDER, $jobOrderID);
+
+        /* Clear calendar event associations for this job order. */
+        $sql = sprintf(
+            "UPDATE
+                calendar_event
+            SET
+                joborder_id = NULL
+            WHERE
+                joborder_id = %s
+            AND
+                site_id = %s",
+            $this->_db->makeQueryInteger($jobOrderID),
+            $this->_siteID
+        );
+        $this->_db->query($sql);
 
         /* Delete pipeline entries from candidate_joborder. */
         $sql = sprintf(
@@ -392,6 +421,7 @@ class JobOrders
                 joborder.status AS status,
                 joborder.city AS city,
                 joborder.state AS state,
+                joborder.country AS country,
                 joborder.recruiter AS recruiter,
                 joborder.owner AS owner,
                 joborder.public AS public,
@@ -506,6 +536,7 @@ class JobOrders
                 joborder.status AS status,
                 joborder.city AS city,
                 joborder.state AS state,
+                joborder.country AS country,
                 joborder.recruiter AS recruiter,
                 joborder.owner AS owner,
                 joborder.public AS public,
@@ -638,6 +669,7 @@ class JobOrders
                 joborder.duration AS duration,
                 joborder.city AS city,
                 joborder.state AS state,
+                joborder.country AS country,
                 joborder.status AS status,
                 joborder.company_department_id AS departmentID,
                 joborder.questionnaire_id as questionnaireID,

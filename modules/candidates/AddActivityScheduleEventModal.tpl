@@ -23,6 +23,41 @@
 <?php endif; ?>
 
         <table class="editTable" width="560">
+<?php if (!$this->onlyScheduleEvent): ?>
+            <tr id="activityDateTR">
+                <td class="tdVertical">
+                    <label id="activityDateLabel" for="activityDate_Month_ID">Date:</label>
+                </td>
+                <td class="tdData">
+                    <script type="text/javascript">DateInput('activityDate', true, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '', -1);</script>
+                </td>
+            </tr>
+
+            <tr id="activityTimeTR">
+                <td class="tdVertical">
+                    <label id="activityTimeLabel" for="activityHour">Time:</label>
+                </td>
+                <td class="tdData">
+                    <select id="activityHour" name="activityHour" class="inputbox" style="width: 40px;">
+                        <?php for ($i = 1; $i <= 12; ++$i): ?>
+                            <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
+                        <?php endfor; ?>
+                    </select>&nbsp;
+                    <select id="activityMinute" name="activityMinute" class="inputbox" style="width: 40px;">
+                        <?php for ($i = 0; $i <= 59; ++$i): ?>
+                            <option value="<?php echo(sprintf('%02d', $i)); ?>">
+                                <?php echo(sprintf('%02d', $i)); ?>
+                            </option>
+                        <?php endfor; ?>
+                    </select>&nbsp;
+                    <select id="activityMeridiem" name="activityMeridiem" class="inputbox" style="width: 45px;">
+                        <option value="AM">AM</option>
+                        <option value="PM">PM</option>
+                    </select>
+                </td>
+            </tr>
+<?php endif; ?>
+
             <tr id="visibleTR" <?php if ($this->onlyScheduleEvent): ?>style="display:none;"<?php endif; ?>>
                 <td class="tdVertical">
                     <label id="regardingIDLabel" for="regardingID">Regarding:</label>
@@ -187,6 +222,15 @@
     <script type="text/javascript">
         if (!<?php echo($this->onlyScheduleEvent ? 'true' : 'false'); ?>)
         {
+            var now = new Date();
+            var currentHour = now.getHours() % 12;
+            if (currentHour == 0)
+            {
+                currentHour = 12;
+            }
+            document.getElementById('activityHour').value = currentHour.toString();
+            document.getElementById('activityMinute').value = (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+            document.getElementById('activityMeridiem').value = (now.getHours() >= 12 ? 'PM' : 'AM');
             document.logActivityForm.activityNote.focus();
         }
     </script>
@@ -198,7 +242,7 @@
          <?php if (!$this->onlyScheduleEvent): ?>
             <?php if ($this->activityAdded): ?>
                 <?php if (!empty($this->activityDescription)): ?>
-                    <p>An activity entry of type <span class="bold"><?php $this->_($this->activityType); ?></span> has been added with the following note: &quot;<?php echo($this->activityDescription); ?>&quot;.</p>
+                    <p>An activity entry of type <span class="bold"><?php $this->_($this->activityType); ?></span> has been added with the following note: &quot;<?php $this->_($this->activityDescription); ?>&quot;.</p>
                 <?php else: ?>
                     <p>An activity entry of type <span class="bold"><?php $this->_($this->activityType); ?></span> has been added with no notes.</p>
                 <?php endif; ?>

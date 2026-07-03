@@ -1,19 +1,18 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <?php
     include_once('constants.php');
     include_once('config.php');
 
-    /* We aren't using any TemplateUtility methods that require us to pull in
-     * any of its dependencies.
-     */
     /* Version check before we include this. */
-   
     $phpVersion = phpversion();
     $phpVersionParts = explode('.', $phpVersion);
     if ($phpVersionParts[0] >= 5)
     {
+        include_once(LEGACY_ROOT . '/lib/Template.php');
+        include_once(LEGACY_ROOT . '/lib/Session.php');
         include_once(LEGACY_ROOT . '/lib/TemplateUtility.php');
+
+        @session_name(CATS_SESSION_NAME);
+        session_start();
     }
     else
     {
@@ -32,9 +31,18 @@
         $installCSSURL = call_user_func(array('TemplateUtility', 'getVersionedAssetURL'), $installCSSURL);
     }
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
     <head>
         <title>OpenCATS - Installation Wizard Script</title>
+        <?php
+            if (!isset($php4) && isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn())
+            {
+                echo '<script type="text/javascript">CATSCsrfToken = ',
+                     Template::escapeJs($_SESSION['CATS']->getCSRFToken()), ';</script>', "\n";
+            }
+        ?>
         <script type="text/javascript" src="<?php echo $installLibURL; ?>"></script>
         <script type="text/javascript" src="<?php echo $installScriptURL; ?>"></script>
         <script type="text/javascript" src="<?php echo $subModalScriptURL; ?>"></script>

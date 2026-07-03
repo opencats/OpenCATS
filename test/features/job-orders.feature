@@ -49,7 +49,6 @@ Feature: Job Orders
     Then I should see "Form Error" in alert popup
     And I should see "You must select a company" in alert popup
     And I should see "You must enter a city" in alert popup
-    And I should see "You must enter a state" in alert popup
     And I confirm the popup
     
   @javascript
@@ -341,5 +340,5 @@ Feature: Job Orders
     And press "Add Candidate"
     And press "Close"
     And I switch to the iframe ""
-    Then I should see "John"
+    Then I wait until I see "John"
     And I should see "Doe"

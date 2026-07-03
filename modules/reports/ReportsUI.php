@@ -56,35 +56,69 @@ class ReportsUI extends UserInterface
         switch ($action)
         {
             case 'graphView':
+                if ($this->getUserAccessLevel('reports.show') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->graphView();
                 break;
 
             case 'generateJobOrderReportPDF':
+                if ($this->getUserAccessLevel('reports.show') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->generateJobOrderReportPDF();
                 break;
 
             case 'showSubmissionReport':
+                if ($this->getUserAccessLevel('reports.show') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->showSubmissionReport();
                 break;
 
             case 'showPlacementReport':
+                if ($this->getUserAccessLevel('reports.show') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->showPlacementReport();
                 break;
 
             case 'customizeJobOrderReport':
+                if ($this->getUserAccessLevel('reports.show') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->customizeJobOrderReport();
                 break;
 
             case 'customizeEEOReport':
+                if ($this->getUserAccessLevel('reports.show') < ACCESS_LEVEL_READ ||
+                    !$_SESSION['CATS']->canSeeEEOInfo())
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->customizeEEOReport();
                 break;
 
             case 'generateEEOReportPreview':
+                if ($this->getUserAccessLevel('reports.show') < ACCESS_LEVEL_READ ||
+                    !$_SESSION['CATS']->canSeeEEOInfo())
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->generateEEOReportPreview();
                 break;
 
             case 'reports':
             default:
+                if ($this->getUserAccessLevel('reports.show') < ACCESS_LEVEL_READ)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+                }
                 $this->reports();
                 break;
         }
@@ -408,11 +442,7 @@ class ReportsUI extends UserInterface
 
     private function generateJobOrderReportPDF()
     {
-        /* E_STRICT doesn't like FPDF. */
-        $errorReporting = error_reporting();
-        error_reporting($errorReporting & ~ E_STRICT);
-        include_once(LEGACY_ROOT . '/lib/fpdf/fpdf.php');
-        error_reporting($errorReporting);
+        include_once(LEGACY_ROOT . '/vendor/autoload.php');
 
         // FIXME: Hook?
         $isASP = $_SESSION['CATS']->isASP();
@@ -489,8 +519,8 @@ class ReportsUI extends UserInterface
          */
         // FIXME: Pass session cookie in URL? Use cURL and send a cookie? I
         //        really don't like this... There has to be a way.
-        // FIXME: "could not make seekable" - http://demo.catsone.net/index.php?m=graphs&a=jobOrderReportGraph&data=%2C%2C%2C
-        //        in /usr/local/www/catsone.net/data/lib/fpdf/fpdf.php on line 1500
+        // FIXME: In some environments this graph URL can trigger an FPDF
+        //        "could not make seekable" warning.
         $URI = CATSUtility::getAbsoluteURI(
             CATSUtility::getIndexName()
             . '?m=graphs&a=jobOrderReportGraph&data='

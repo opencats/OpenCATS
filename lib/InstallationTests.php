@@ -50,7 +50,6 @@ class InstallationTests
 
         $proceed = $proceed && self::printCATSVersion();
         $proceed = $proceed && self::checkPHPVersion();
-        $proceed = $proceed && self::checkMagicQuotes();
         $proceed = $proceed && self::checkRegisterGlobals();
         $proceed = $proceed && self::checkSessionAutoStart();
         $proceed = $proceed && self::checkMySQLExtension();
@@ -75,11 +74,6 @@ class InstallationTests
         }
 
         if (!InstallationTests::checkPHPVersion())
-        {
-            $result = false;
-        }
-
-        if (!InstallationTests::checkMagicQuotes())
         {
             $result = false;
         }
@@ -176,20 +170,6 @@ class InstallationTests
             . 'Found version: %s.</td></tr>',
             PHP_VERSION
         );
-        return false;
-    }
-
-    /* magic_quotes_runtime cannot be enabled. */
-    public static function checkMagicQuotes()
-    {
-        if (!self::DEBUG_FAIL && !get_magic_quotes_runtime())
-        {
-            echo '<tr class="pass"><td>PHP.ini: magic_quotes_runtime is disabled.</td></tr>';
-            return true;
-        }
-
-        echo '<tr class="fail"><td><strong>PHP.ini: magic_quotes_runtime must be set to Off in php.ini.</strong><br />'
-            . 'Check your settings in php.ini.</td></tr>';
         return false;
     }
 
@@ -354,7 +334,7 @@ class InstallationTests
         echo '<tr class="warning"><td><strong>PHP SOAP extension (soap) is not loaded.</strong><br />'
             . 'Check your settings in php.ini.<br /><br />'
             . 'OpenCATS will function without SOAP, but '
-            . 'CATS Professional functionality will not be supported.<br /><br />'
+            . 'SOAP-based resume parsing services will not be available.<br /><br />'
             . 'Under certain Linux / BSD distributions, the PHP SOAP extension is a separate package.<br /><br />'
             . '<strong>Ubuntu:</strong> Run "apt-get install php-soap" and restart your webserver.<br /><br />'
             . '<strong>Debian:</strong> Run "apt-get install php7-soap" and restart your webserver.<br /><br />'

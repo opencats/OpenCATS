@@ -14,7 +14,7 @@ else
     CATS_PATH="/usr/local/www/catsone.com/data"
     PHP_PATH="/usr/local/bin/php"
     SPHINX_BIN="/usr/local/bin"
-    SPHINX_CONFIG="/usr/local/www/catsone.net/data/lib/sphinx/sphinx-www.conf"
+    SPHINX_CONFIG="${CATS_PATH}/config/sphinx/sphinx.conf"
 fi
 
 if [ ! -f "${SPHINX_BIN}/searchd" ];
@@ -23,9 +23,9 @@ then
     exit 1
 fi
 
-if [ ! -f $SPHINX_CONFIG ];
+if [ ! -f "${SPHINX_CONFIG}" ];
 then
-    echo "$SPHINX_CONFIG does not exist." >2
+    echo "${SPHINX_CONFIG} does not exist." >2
     exit 1
 fi
 
@@ -33,7 +33,6 @@ if ps auxww | grep 'sear[c]hd' >/dev/null; then
     # Sphinx running.
     exit 0
 else
-    ${SPHINX_BIN}/searchd --config ${SPHINX_CONFIG}
+    ${SPHINX_BIN}/searchd --config "${SPHINX_CONFIG}"
     echo "Sphinx not running; restarted." >2
 fi
-

@@ -41,6 +41,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST')
     die();
 }
 
+if ($_SESSION['CATS']->getAccessLevel('lists') < ACCESS_LEVEL_EDIT)
+{
+    $interface->outputXMLErrorPage(-1, ERROR_NO_PERMISSION);
+    die();
+}
+
 if (!isset($_POST['savedListID']) || !ctype_digit((string) $_POST['savedListID']))
 {
     $interface->outputXMLErrorPage(-1, 'Invalid saved list ID.');

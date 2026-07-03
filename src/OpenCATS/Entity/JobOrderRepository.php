@@ -37,6 +37,7 @@ class JobOrderRepository
                 salary,
                 city,
                 state,
+                country,
                 company_department_id,
                 start_date,
                 entered_by,
@@ -49,6 +50,7 @@ class JobOrderRepository
                 status
             )
             VALUES (
+                %s,
                 %s,
                 %s,
                 %s,
@@ -91,7 +93,8 @@ class JobOrderRepository
             $this->databaseConnection->makeQueryInteger($jobOrder->getAvailableOpenings()),
             $this->databaseConnection->makeQueryString($jobOrder->getSalary()),
             $this->databaseConnection->makeQueryString($jobOrder->getCity()),
-            $this->databaseConnection->makeQueryString($jobOrder->getState()),
+            $this->databaseConnection->makeQueryStringOrNULL($jobOrder->getState()),
+            $this->databaseConnection->makeQueryStringOrNULL($jobOrder->getCountry()),
             $this->databaseConnection->makeQueryInteger($jobOrder->getDepartmentId()),
             $this->databaseConnection->makeQueryStringOrNULL($jobOrder->getStartDate()),
             $this->databaseConnection->makeQueryInteger($jobOrder->getEnteredBy()),

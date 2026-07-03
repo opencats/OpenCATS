@@ -16,7 +16,6 @@ function checkAddForm(form)
     errorMessage += checkCompany();
     errorMessage += checkRecruiter();
     errorMessage += checkCity();
-    errorMessage += checkState();
     errorMessage += checkOpenings();
 
     if (errorMessage != "")
@@ -36,7 +35,6 @@ function checkEditForm(form)
     errorMessage += checkCompany();
     errorMessage += checkRecruiter();
     errorMessage += checkCity();
-    errorMessage += checkState();
     errorMessage += checkOpenings();
     errorMessage += checkOpeningsAvailable();
     errorMessage += checkOwner();
@@ -124,26 +122,6 @@ function checkCity()
     if (fieldValue == "")
     {
         errorMessage = "    - You must enter a city.\n";
-
-        fieldLabel.style.color = "#ff0000";
-    }
-    else
-    {
-        fieldLabel.style.color = "#000";
-    }
-
-    return errorMessage;
-}
-
-function checkState()
-{
-    var errorMessage = "";
-
-    fieldValue = document.getElementById("state").value;
-    fieldLabel = document.getElementById("stateLabel");
-    if (fieldValue == "")
-    {
-        errorMessage = "    - You must enter a state.\n";
 
         fieldLabel.style.color = "#ff0000";
     }
@@ -336,6 +314,3 @@ function checkFilename()
 
     return errorMessage;
 }
-
-
-

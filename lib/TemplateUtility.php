@@ -132,22 +132,11 @@ class TemplateUtility
             // Begin top-right action block
             if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_UPGRADE'))) return;
 
-            if (LicenseUtility::isProfessional() &&
-                $_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA)
+            if ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA)
             {
-                if (abs(LicenseUtility::getExpirationDate() - time()) < 60*60*24*30)
-                {
-                    $daysLeft = abs(LicenseUtility::getExpirationDate() - time())/60/60/24;
-                    echo '<a href="http://www.catsone.com/professional" target="_blank">';
-                    echo '<img src="images/tabs/small_upgrade.jpg" border="0" /> ';
-                    echo 'License expires in ' . number_format($daysLeft, 0) . ' days, Renew?</a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
-                }
-                else
-                {
-                    echo '<a href="http://www.opencats.org" target="_blank">';
-                    echo '<img src="images/tabs/small_upgrade.jpg" border="0" /> ';
-                    echo 'OpenCATS.org</a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
-                }
+                echo '<a href="http://www.opencats.org" target="_blank">';
+                echo '<img src="images/tabs/small_upgrade.jpg" border="0" /> ';
+                echo 'OpenCATS.org</a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
             }
 
             echo '<form id="logoutForm" name="logoutForm" method="post" action="', $indexName, '?m=logout" '
@@ -255,6 +244,72 @@ class TemplateUtility
         }
 
         echo '</select>';
+    }
+
+    /**
+     * Returns a country selection dropdown list as HTML.
+     *
+     * @param string ID and name attributes of the country select input
+     * @param string selected country code
+     * @param boolean include blank option
+     * @param string CSS class name for the select element
+     * @param string inline style for the select element
+     * @return string
+     */
+    public static function getCountrySelectHTML(
+        $selectID,
+        $selectedCode,
+        $includeBlank = true,
+        $className = 'inputbox',
+        $style = 'width: 150px;'
+    )
+    {
+        $selectedCode = strtoupper(trim($selectedCode));
+        if (strlen($selectedCode) != 2 || !isset($GLOBALS['countries'][$selectedCode]))
+        {
+            $selectedCode = '';
+        }
+
+        $selectHTML = '<select id="' . Template::escapeAttr($selectID)
+            . '" name="' . Template::escapeAttr($selectID)
+            . '" class="' . Template::escapeAttr($className) . '"';
+        if ($style !== '')
+        {
+            $selectHTML .= ' style="' . Template::escapeAttr($style) . '"';
+        }
+        $selectHTML .= '>';
+
+        if ($includeBlank)
+        {
+            $selectHTML .= '<option value=""></option>';
+        }
+
+        foreach ($GLOBALS['countries'] as $countryCode => $countryName)
+        {
+            $selectHTML .= '<option value="' . Template::escapeAttr($countryCode) . '"';
+            if ($countryCode == $selectedCode)
+            {
+                $selectHTML .= ' selected="selected"';
+            }
+            $selectHTML .= '>' . Template::escapeHtml($countryName) . '</option>';
+        }
+
+        $selectHTML .= '</select>';
+
+        return $selectHTML;
+    }
+
+    /**
+     * Prints a country selection dropdown list.
+     *
+     * @param string ID and name attributes of the country select input
+     * @param string selected country code
+     * @param boolean include blank option
+     * @return void
+     */
+    public static function printCountrySelect($selectID, $selectedCode, $includeBlank = true)
+    {
+        echo self::getCountrySelectHTML($selectID, $selectedCode, $includeBlank);
     }
 
     /**
@@ -860,13 +915,6 @@ class TemplateUtility
         echo '</body>', "\n";
         echo '</html>', "\n";
 
-        if (LicenseUtility::isProfessional() && !rand(0,10))
-        {
-            if (!LicenseUtility::validateProfessionalKey(LICENSE_KEY))
-            {
-                CATSUtility::changeConfigSetting('LICENSE_KEY', "''");
-            }
-        }
     }
 
     /**
@@ -1077,6 +1125,32 @@ class TemplateUtility
         {
             return 'oddTableRow';
         }
+    }
+
+    /**
+     * Escapes activity notes and highlights status change text at render time.
+     *
+     * @param string activity note text
+     * @return string escaped notes with optional status text highlight
+     */
+    public static function highlightStatusChangeActivityNote($notes)
+    {
+        $statusPrefix = 'Status change: ';
+        if (strpos($notes, $statusPrefix) !== 0)
+        {
+            return Template::escapeHtml($notes);
+        }
+
+        $statusText = substr($notes, strlen($statusPrefix));
+        if ($statusText === '')
+        {
+            return Template::escapeHtml($notes);
+        }
+
+        return Template::escapeHtml($statusPrefix)
+            . '<span class="statusChangeHighlight">'
+            . Template::escapeHtml($statusText)
+            . '</span>';
     }
 
     /**

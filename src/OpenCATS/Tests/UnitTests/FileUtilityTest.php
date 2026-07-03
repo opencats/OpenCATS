@@ -1,11 +1,6 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-if( !defined('LEGACY_ROOT') )
-{
-    define('LEGACY_ROOT', '.');
-}
-
 include_once(LEGACY_ROOT . '/lib/FileUtility.php');
 
 class FileUtilityTest extends TestCase
@@ -57,56 +52,56 @@ class FileUtilityTest extends TestCase
         $directoryD = FileUtility::getUniqueDirectory('attachments');
 
         /* Make sure all directory names look like md5 strings. */
-        $this->assertEquals(
-            strlen($directoryA),
+        $this->assertSame(
             32,
+            strlen($directoryA),
             sprintf("'%s' should be 32 characters long", $directoryA)
             );
-        $this->assertEquals(
+        $this->assertSame(
+            32,
             strlen($directoryB),
-            32,
             sprintf("'%s' should be 32 characters long", $directoryB)
             );
-        $this->assertEquals(
+        $this->assertSame(
+            32,
             strlen($directoryC),
-            32,
             sprintf("'%s' should be 32 characters long", $directoryB)
             );
-        $this->assertEquals(
-            strlen($directoryD),
+        $this->assertSame(
             32,
+            strlen($directoryD),
             sprintf("'%s' should be 32 characters long", $directoryB)
             );
 
         /* Make sure extra data is actually being added (directory names
          * should not be identical).
          */
-        $this->assertNotEquals(
+        $this->assertNotSame(
             $directoryA,
             $directoryB,
             sprintf("'%s' should not equal '%s'", $directoryA, $directoryB)
             );
-        $this->assertNotEquals(
+        $this->assertNotSame(
             $directoryA,
             $directoryC,
             sprintf("'%s' should not equal '%s'", $directoryA, $directoryC)
             );
-        $this->assertNotEquals(
+        $this->assertNotSame(
             $directoryA,
             $directoryD,
             sprintf("'%s' should not equal '%s'", $directoryA, $directoryD)
             );
-        $this->assertNotEquals(
+        $this->assertNotSame(
             $directoryB,
             $directoryC,
             sprintf("'%s' should not equal '%s'", $directoryB, $directoryC)
             );
-        $this->assertNotEquals(
+        $this->assertNotSame(
             $directoryB,
             $directoryD,
             sprintf("'%s' should not equal '%s'", $directoryB, $directoryD)
             );
-        $this->assertNotEquals(
+        $this->assertNotSame(
             $directoryC,
             $directoryD,
             sprintf("'%s' should not equal '%s'", $directoryC, $directoryD)

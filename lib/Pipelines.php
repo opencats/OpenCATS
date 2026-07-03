@@ -31,6 +31,7 @@
  */
 
 include_once(LEGACY_ROOT . '/lib/History.php');
+include_once(LEGACY_ROOT . '/lib/JobOrderStatuses.php');
 
 /**
  *	Pipelines Library
@@ -529,6 +530,77 @@ class Pipelines
     }
 
     /**
+     * Returns a candidate's non-closed pipeline.
+     *
+     * @param integer candidate ID
+     * @return array pipeline data
+     */
+    public function getNonClosedCandidatePipeline($candidateID)
+    {
+        $sql = sprintf(
+            "SELECT
+                company.company_id AS companyID,
+                company.name AS companyName,
+                joborder.joborder_id AS jobOrderID,
+                joborder.title AS title,
+                joborder.type AS type,
+                joborder.duration AS duration,
+                joborder.rate_max AS maxRate,
+                joborder.status AS jobOrderStatus,
+                joborder.salary AS salary,
+                joborder.is_hot AS isHot,
+                joborder.client_job_id AS clientJobID,
+                DATE_FORMAT(
+                    joborder.start_date, '%%m-%%d-%%y'
+                ) AS start_date,
+                DATE_FORMAT(
+                    joborder.date_created, '%%m-%%d-%%y'
+                ) AS dateCreated,
+                candidate.candidate_id AS candidateID,
+                candidate.email1 AS candidateEmail,
+                candidate_joborder_status.candidate_joborder_status_id AS statusID,
+                candidate_joborder_status.short_description AS status,
+                candidate_joborder.candidate_joborder_id AS candidateJobOrderID,
+                candidate_joborder.rating_value AS ratingValue,
+                owner_user.first_name AS ownerFirstName,
+                owner_user.last_name AS ownerLastName,
+                added_user.first_name AS addedByFirstName,
+                added_user.last_name AS addedByLastName
+            FROM
+                candidate_joborder
+            INNER JOIN candidate
+                ON candidate_joborder.candidate_id = candidate.candidate_id
+            INNER JOIN joborder
+                ON candidate_joborder.joborder_id = joborder.joborder_id
+            INNER JOIN company
+                ON company.company_id = joborder.company_id
+            LEFT JOIN user AS owner_user
+                ON joborder.owner = owner_user.user_id
+            LEFT JOIN user AS added_user
+                ON candidate_joborder.added_by = added_user.user_id
+            INNER JOIN candidate_joborder_status
+                ON candidate_joborder.status = candidate_joborder_status.candidate_joborder_status_id
+            WHERE
+                candidate.candidate_id = %s
+            AND
+                candidate.site_id = %s
+            AND
+                joborder.site_id = %s
+            AND
+                company.site_id = %s
+            AND
+                joborder.status NOT IN %s",
+            $this->_db->makeQueryInteger($candidateID),
+            $this->_siteID,
+            $this->_siteID,
+            $this->_siteID,
+            JobOrderStatuses::getClosedStatusSQL()
+        );
+
+        return $this->_db->getAllAssoc($sql);
+    }
+
+    /**
      * Returns a job order's pipeline.
      *
      * @param integer job order ID
@@ -563,7 +635,7 @@ class Pipelines
                     SELECT
                         CONCAT(
                             '<strong>',
-                            DATE_FORMAT(activity.date_created, '%%m-%%d-%%y'),
+                            DATE_FORMAT(activity.date_occurred, '%%m-%%d-%%y'),
                             ' (',
                             entered_by_user.first_name,
                             ' ',
@@ -588,7 +660,7 @@ class Pipelines
                     AND
                         activity.joborder_id = %s
                     ORDER BY
-                        activity.date_created DESC
+                        activity.date_occurred DESC
                     LIMIT 1
                 ) AS lastActivity,
                 IF((

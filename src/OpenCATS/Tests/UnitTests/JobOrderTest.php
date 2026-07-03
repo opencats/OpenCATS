@@ -21,6 +21,7 @@ class JobOrderTest extends TestCase
     const JOB_ORDER_SALARY = 30000;
     const CITY = 'Colonia';
     const STATE = 'MALDONADO';
+    const COUNTRY = 'US';
     const JOB_ORDER_START_DATE = '2016-05-02';
     const JOB_ORDER_ENTERED_BY = 31337;
     const JOB_ORDER_RECRUITER = 31337;
@@ -125,6 +126,12 @@ class JobOrderTest extends TestCase
         $jobOrder = $this->createJobOrder();
         $this->assertEquals(self::STATE, $jobOrder->getState());
     }
+
+    function test_create_CreateAndGetCountry_ReturnsCountry()
+    {
+        $jobOrder = $this->createJobOrder();
+        $this->assertEquals(self::COUNTRY, $jobOrder->getCountry());
+    }
     
     function test_create_CreateAndGetDepartmentId_ReturnsDepartmentId()
     {
@@ -187,6 +194,7 @@ class JobOrderTest extends TestCase
             self::JOB_ORDER_SALARY,
             self::CITY,
             self::STATE,
+            self::COUNTRY,
             self::JOB_ORDER_START_DATE,
             self::JOB_ORDER_ENTERED_BY,
             self::JOB_ORDER_RECRUITER,
