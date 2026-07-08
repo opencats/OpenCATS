@@ -6,7 +6,7 @@
         "php": "^8.4.1",
         "ext-mbstring": "*",
         "ckeditor/ckeditor": "^4.25.1",
-        "gregwar/captcha": "1.3.0",
+        "gregwar/captcha": "2.1.0",
         "neutron/sphinxsearch-api": "^2.0.8",
         "phpmailer/phpmailer": "^7.1.1",
         "setasign/fpdf": "^1.9.0"
