@@ -1538,7 +1538,7 @@ class CATSSchema
                 ALTER TABLE `contact` ADD COLUMN `country` VARCHAR(2) DEFAULT NULL AFTER `zip`;
                 ALTER TABLE `joborder` ADD COLUMN `country` VARCHAR(2) DEFAULT NULL AFTER `state`;
             ',
-            '382' => '
+            '383' => '
                 UPDATE
                     career_portal_template
                 SET
@@ -1591,7 +1591,7 @@ class CATSSchema
                     AND value LIKE \'%<label id="zipPostalLabel" for="zipPostal">*Zip/Postal Code:</label>%\'
                     AND value LIKE \'%<td><input-state></td>%\';
             ',
-            '383' => '
+            '384' => '
                 UPDATE
                     career_portal_template
                 SET
@@ -1657,11 +1657,11 @@ class CATSSchema
                         )
                     );
             ',
-            '384' => 'PHP:
-                include_once(\'modules/install/scripts/384.php\');
-                update_384($db);
+            '385' => 'PHP:
+                include_once(\'modules/install/scripts/385.php\');
+                update_385($db);
             ',
-            '385' => '
+            '386' => '
                 DROP TABLE IF EXISTS `candidate_jobordrer_status_type`;
                 DROP TABLE IF EXISTS `candidate_joborder_status_type`;
             ',

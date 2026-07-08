@@ -1,10 +1,10 @@
 <?php
 /*
  * CATS
- * Update 384 - cleanup orphaned entity records and references
+ * Update 385 - cleanup orphaned entity records and references
  */
 
-function update_384($db)
+function update_385($db)
 {
     /* Collect orphaned attachment directories before deleting metadata rows. */
     $orphanAttachmentDirectories = array();
