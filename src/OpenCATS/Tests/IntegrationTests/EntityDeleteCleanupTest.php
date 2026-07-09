@@ -42,6 +42,11 @@ class EntityDeleteCleanupTest extends DatabaseTestCase
             {
                 return false;
             }
+
+            public function isTimeFormat24()
+            {
+                return false;
+            }
         };
 
         include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
