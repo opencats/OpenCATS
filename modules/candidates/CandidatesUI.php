@@ -32,6 +32,7 @@ include_once(LEGACY_ROOT . '/lib/StringUtility.php');
 include_once(LEGACY_ROOT . '/lib/ResultSetUtility.php');
 include_once(LEGACY_ROOT . '/lib/DateUtility.php'); /* Depends on StringUtility. */
 include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/CandidateAuthorization.php');
 include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 include_once(LEGACY_ROOT . '/lib/Attachments.php');
 include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
@@ -890,8 +891,7 @@ class CandidatesUI extends UserInterface
         {
             $associatedAttachment = $_GET['attachmentID'];
 
-            $attachments = new Attachments();
-            $associatedAttachmentRS = $attachments->get($associatedAttachment);
+            $associatedAttachmentRS = $this->enforceAttachmentCandidateHiddenAccess($associatedAttachment);
 
             /* Show an attachment icon based on the document's file type. */
             $attachmentIcon = strtolower(
@@ -1277,6 +1277,9 @@ class CandidatesUI extends UserInterface
             return;
         }
 
+        $candidateID = $_POST['candidateID'];
+        $this->enforceCandidateHiddenAccess($candidateID);
+
         /* Bail out if we don't have a valid owner user ID. */
         if (!$this->isOptionalIDValid('owner', $_POST))
         {
@@ -1339,7 +1342,6 @@ class CandidatesUI extends UserInterface
             $phoneWork = $this->getTrimmedInput('phoneWork', $_POST);
         }
 
-        $candidateID = $_POST['candidateID'];
         $owner       = $_POST['owner'];
 
         /* Can Relocate */
@@ -1520,6 +1522,7 @@ class CandidatesUI extends UserInterface
         }
 
         $candidateID = $_POST['candidateID'];
+        $this->enforceCandidateHiddenAccess($candidateID);
 
         if (!eval(Hooks::get('CANDIDATE_DELETE'))) return;
 
@@ -1574,6 +1577,8 @@ class CandidatesUI extends UserInterface
                 CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid candidate ID.');
                 return;
             }
+
+            $this->enforceCandidateHiddenAccess($candidateID);
         }
 
         /* Bail out to prevent an error if the POST string doesn't even contain
@@ -1713,6 +1718,11 @@ class CandidatesUI extends UserInterface
         }
 
 
+        foreach ($candidateIDArray as $candidateID)
+        {
+            $this->enforceCandidateHiddenAccess($candidateID);
+        }
+
         $jobOrderID  = $_POST['jobOrderID'];
 
         if (!eval(Hooks::get('CANDIDATE_ADD_TO_PIPELINE_PRE'))) return;
@@ -1785,16 +1795,7 @@ class CandidatesUI extends UserInterface
             $selectedJobOrderID = -1;
         }
         $candidateID = $_GET['candidateID'];
-
-        $candidates = new Candidates();
-        $candidateData = $candidates->get($candidateID);
-
-        /* Bail out if we got an empty result set. */
-        if (empty($candidateData))
-        {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);
-            return;
-        }
+        $candidateData = $this->enforceCandidateHiddenAccess($candidateID);
 
         $pipelines = new Pipelines();
         $pipelineRS = $pipelines->getNonClosedCandidatePipeline($candidateID);
@@ -1875,16 +1876,7 @@ class CandidatesUI extends UserInterface
             $selectedJobOrderID = -1;
         }
         $candidateID        = $_GET['candidateID'];
-
-        $candidates = new Candidates();
-        $candidateData = $candidates->get($candidateID);
-
-        /* Bail out if we got an empty result set. */
-        if (empty($candidateData))
-        {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);
-            return;
-        }
+        $candidateData = $this->enforceCandidateHiddenAccess($candidateID);
 
         $pipelines = new Pipelines();
         $pipelineRS = $pipelines->getCandidatePipeline($candidateID);
@@ -2002,6 +1994,7 @@ class CandidatesUI extends UserInterface
         }
 
         $candidateID	= $_POST['candidateID'];
+        $this->enforceCandidateHiddenAccess($candidateID);
         $tagIDs			= $_POST['candidate_tags'];
         
         $tags = new Tags();
@@ -2025,19 +2018,7 @@ class CandidatesUI extends UserInterface
         }
 
         $candidateID        = $_GET['candidateID'];
-
-        $candidates = new Candidates();
-        $candidateData = $candidates->get($candidateID);
-
-        /* Bail out if we got an empty result set. */
-        if (empty($candidateData))
-        {
-            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);
-            return;
-            /*$this->fatalModal(
-                'The specified candidate ID could not be found.'
-            );*/
-        }
+        $this->enforceCandidateHiddenAccess($candidateID);
         
         $tags = new Tags();
         $tagsRS = $tags->getAll();
@@ -2099,6 +2080,7 @@ class CandidatesUI extends UserInterface
         }
 
         $candidateID = $_POST['candidateID'];
+        $this->enforceCandidateHiddenAccess($candidateID);
         $jobOrderID  = $_POST['jobOrderID'];
 
         if (!eval(Hooks::get('CANDIDATE_REMOVE_FROM_PIPELINE_PRE'))) return;
@@ -2460,6 +2442,8 @@ class CandidatesUI extends UserInterface
 
         if (!empty($data))
         {
+            $this->enforceCandidateHiddenAccess($data['candidateID']);
+
             /* Keyword highlighting. */
             $data['text'] = SearchUtility::makePreview($query, $data['text']);
         }
@@ -2471,6 +2455,28 @@ class CandidatesUI extends UserInterface
         $this->_template->display('./modules/candidates/ResumeView.tpl');
     }
 
+    private function enforceCandidateHiddenAccess($candidateID)
+    {
+        $candidate = null;
+        if (!CandidateAuthorization::canAccessCandidate($candidateID, $candidate))
+        {
+            CommonErrors::fatalModal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+
+        return $candidate;
+    }
+
+    private function enforceAttachmentCandidateHiddenAccess($attachmentID)
+    {
+        $attachment = null;
+        if (!CandidateAuthorization::canAccessCandidateAttachment($attachmentID, $attachment))
+        {
+            CommonErrors::fatalModal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+
+        return $attachment;
+    }
+
     private function addEditImage()
     {
         /* Bail out if we don't have a valid candidate ID. */
@@ -2480,6 +2486,7 @@ class CandidatesUI extends UserInterface
         }
 
         $candidateID = $_GET['candidateID'];
+        $this->enforceCandidateHiddenAccess($candidateID);
 
         $attachments = new Attachments();
         $attachmentsRS = $attachments->getAll(
@@ -2508,6 +2515,7 @@ class CandidatesUI extends UserInterface
         }
 
         $candidateID = $_POST['candidateID'];
+        $this->enforceCandidateHiddenAccess($candidateID);
 
         if (!eval(Hooks::get('CANDIDATE_ON_ADD_EDIT_IMAGE_PRE'))) return;
 
@@ -2545,6 +2553,7 @@ class CandidatesUI extends UserInterface
         }
 
         $candidateID = $_GET['candidateID'];
+        $this->enforceCandidateHiddenAccess($candidateID);
 
         if (!eval(Hooks::get('CANDIDATE_CREATE_ATTACHMENT'))) return;
 
@@ -2574,6 +2583,7 @@ class CandidatesUI extends UserInterface
         }
 
         $candidateID = $_POST['candidateID'];
+        $this->enforceCandidateHiddenAccess($candidateID);
 
         if ($_POST['resume'] == '1')
         {
@@ -2638,6 +2648,15 @@ class CandidatesUI extends UserInterface
 
         $candidateID  = $_POST['candidateID'];
         $attachmentID = $_POST['attachmentID'];
+
+        $attachment = $this->enforceAttachmentCandidateHiddenAccess($attachmentID);
+        if ($attachment['dataItemType'] != DATA_ITEM_CANDIDATE ||
+            $attachment['dataItemID'] != $candidateID)
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid attachment ID.');
+        }
+
+        $this->enforceCandidateHiddenAccess($attachment['dataItemID']);
 
         if (!eval(Hooks::get('CANDIDATE_ON_DELETE_ATTACHMENT_PRE'))) return;
 
@@ -2958,6 +2977,7 @@ class CandidatesUI extends UserInterface
         if (isset($_POST['associatedAttachment']))
         {
             $attachmentID = $_POST['associatedAttachment'];
+            $this->enforceAttachmentCandidateHiddenAccess($attachmentID);
 
             $attachments = new Attachments();
             $attachments->setDataItemID($attachmentID, $candidateID, DATA_ITEM_CANDIDATE);
@@ -3160,6 +3180,7 @@ class CandidatesUI extends UserInterface
         }
 
         $candidateID = $_POST['candidateID'];
+        $this->enforceCandidateHiddenAccess($candidateID);
 
         if (!eval(Hooks::get('CANDIDATE_ON_ADD_ACTIVITY_CHANGE_STATUS_PRE'))) return;
 
@@ -3531,6 +3552,7 @@ class CandidatesUI extends UserInterface
         }
 
         $candidateID = $_POST['candidateID'];
+        $this->enforceCandidateHiddenAccess($candidateID);
 
         if (!eval(Hooks::get('CANDIDATE_ON_ADD_ACTIVITY_CHANGE_STATUS_PRE'))) return;
 
@@ -3786,8 +3808,8 @@ class CandidatesUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Bad Server Information.');
         }
 
+        $cData = $this->enforceCandidateHiddenAccess($candidateID);
         $candidates = new Candidates();
-        $cData = $candidates->get($candidateID);
 
         $questionnaire = new Questionnaire();
         $qData = $questionnaire->getCandidateQuestionnaire($candidateID, $title);
