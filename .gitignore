@@ -16,3 +16,4 @@ test/screenshots/
 .phpunit.result.cache
 *.diff
 *.rej
+config/api.php

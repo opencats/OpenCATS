@@ -1,0 +1,12 @@
+<?php
+/*
+ * API key for the modules/api module.
+ *
+ * SETUP:
+ *   1. cp config/api.php.example config/api.php
+ *   2. Generate a real random key:  php -r "echo bin2hex(random_bytes(32));"
+ *   3. Paste it below.
+ *   4. Add config/api.php to .gitignore - do NOT commit your real key.
+ */
+
+$API_KEY = 'REPLACE_WITH_A_LONG_RANDOM_STRING';
