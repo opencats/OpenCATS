@@ -441,6 +441,13 @@ class ModuleUtility
      */
     private static function processModuleSchema($moduleName, $schema)
     {
+        global $maintPage;
+        if ($moduleName === 'install' &&
+            (!isset($maintPage) || $maintPage !== true))
+        {
+            return;
+        }
+
         if( ini_get('safe_mode') )
         {
 			//don't do anything in safe mode
@@ -532,7 +539,6 @@ class ModuleUtility
             }
 
 			/* if maintPage, execute 1 query, output the next query and progress, and terminate. */
-			global $maintPage;
 			if ((isset($maintPage) && $maintPage === true))
 			{
 				if ($executedQuery == false)
