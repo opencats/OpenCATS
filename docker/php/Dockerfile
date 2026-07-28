@@ -6,7 +6,6 @@ RUN apk add --no-cache \
   antiword \
   coreutils \
   html2text \
-  libltdl \
   poppler-utils \
   wget
 
@@ -17,7 +16,6 @@ RUN apk add --no-cache \
   automake \
   freetype-dev \
   libjpeg-turbo-dev \
-  libmcrypt-dev \
   oniguruma-dev \
   libpng-dev \
   libxml2-dev \
@@ -36,7 +34,6 @@ RUN cd /tmp && \
   make install
 
 # PHP extensions expected by OpenCATS.
-RUN pecl install mcrypt-1.0.9 && docker-php-ext-enable mcrypt
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j"$(nproc)" mysqli gd soap zip ldap mbstring
 
