@@ -68,6 +68,7 @@ include_once(LEGACY_ROOT . '/lib/Session.php'); /* Depends: MRU, Users, Database
 include_once(LEGACY_ROOT . '/lib/UserInterface.php'); /* Depends: Template, Session. */
 include_once(LEGACY_ROOT . '/lib/ModuleUtility.php'); /* Depends: UserInterface */
 include_once(LEGACY_ROOT . '/lib/TemplateUtility.php'); /* Depends: ModuleUtility, Hooks */
+include_once(LEGACY_ROOT . '/lib/SchemaMigrationStatus.php');
 
 
 /* Give the session a unique name to avoid conflicts and start the session. */
@@ -153,10 +154,44 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
     }
 }
 
+$isPublicRequest =
+    (isset($careerPage) && $careerPage) ||
+    (isset($_GET['showCareerPortal']) && $_GET['showCareerPortal'] == '1') ||
+    (isset($rssPage) && $rssPage) ||
+    (isset($xmlPage) && $xmlPage);
+$isMigrationGateExcluded =
+    (isset($_GET['m']) && ($_GET['m'] === 'login' || $_GET['m'] === 'logout'));
+
+if ($_SESSION['CATS']->isLoggedIn() &&
+    !$isPublicRequest &&
+    !$isMigrationGateExcluded &&
+    SchemaMigrationStatus::hasPendingInstallMigrations())
+{
+    $template = new Template();
+    $template->assign(
+        'isAdministrator',
+        $_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA
+    );
+    $template->display('./modules/login/PendingMigrations.tpl');
+    die();
+}
+
 /* Check to see if we are supposed to display the career page. */
 if (((isset($careerPage) && $careerPage) ||
     (isset($_GET['showCareerPortal']) && $_GET['showCareerPortal'] == '1')))
 {
+    if (SchemaMigrationStatus::hasPendingInstallMigrations())
+    {
+        header('HTTP/1.1 503 Service Unavailable');
+        header('Content-Type: text/html; charset=UTF-8');
+
+        echo '<!DOCTYPE html>',
+             '<html><head><title>Career Portal Maintenance</title></head><body>',
+             '<p>The career portal is temporarily unavailable while system maintenance is in progress. Please try again later.</p>',
+             '</body></html>';
+        die();
+    }
+
     ModuleUtility::loadModule('careers');
 }
 

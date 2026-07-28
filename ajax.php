@@ -41,6 +41,7 @@ include_once(LEGACY_ROOT . '/lib/DatabaseConnection.php');
 include_once(LEGACY_ROOT . '/lib/Session.php'); /* Depends: MRU, Users, DatabaseConnection. */
 include_once(LEGACY_ROOT . '/lib/AJAXInterface.php');
 include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
+include_once(LEGACY_ROOT . '/lib/SchemaMigrationStatus.php');
 
 
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
@@ -117,6 +118,8 @@ if ($installerActive)
     }
 }
 
+$module = '';
+
 if (strpos($_REQUEST['f'], ':') === false)
 {
     $function = preg_replace("/[^A-Za-z0-9]/", "", $_REQUEST['f']);
@@ -132,6 +135,30 @@ else
     $function = preg_replace("/[^A-Za-z0-9]/", "", $parameters[1]);
     
     $filename = sprintf('modules/%s/ajax/%s.php', $module, $function);
+}
+
+/* Fresh installer AJAX remains available. On installed systems, only the
+ * existing maintenance action may pass the pending-migration AJAX gate.
+ */
+$maintenanceAJAXAllowed =
+    $installerActive ||
+    ($module === 'install' && $function === 'maint');
+
+if (isset($_SESSION['CATS']) &&
+    $_SESSION['CATS']->isLoggedIn() &&
+    !$maintenanceAJAXAllowed &&
+    SchemaMigrationStatus::hasPendingInstallMigrations())
+{
+    header('Content-type: text/xml; charset=' . AJAX_ENCODING);
+    echo '<?xml version="1.0" encoding="', AJAX_ENCODING, '"?>', "\n";
+    echo(
+        "<data>\n" .
+        "    <errorcode>-1</errorcode>\n" .
+        "    <errormessage>Database maintenance is required.</errormessage>\n" .
+        "</data>\n"
+    );
+
+    die();
 }
 
 if (!is_readable($filename))
