@@ -29,6 +29,7 @@
 
 include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
 include_once(LEGACY_ROOT . '/lib/Attachments.php');
+include_once(LEGACY_ROOT . '/lib/CandidateAuthorization.php');
 
 class AttachmentsUI extends UserInterface
 {
@@ -83,12 +84,21 @@ class AttachmentsUI extends UserInterface
         $attachments = new Attachments();
         $rs = $attachments->get($attachmentID, false);
 
-        if (empty($rs) || md5($rs['directoryName']) != $_GET['directoryNameHash'])
+        if (!isset($rs['attachmentID']) || md5($rs['directoryName']) != $_GET['directoryNameHash'])
         {
             CommonErrors::fatal(
                 COMMONERROR_BADFIELDS,
                 $this,
                 'Invalid id / directory / filename, or you do not have permission to access this attachment.'
+            );
+        }
+
+        if (!CandidateAuthorization::canAccessCandidateAttachment($attachmentID, $rs))
+        {
+            CommonErrors::fatal(
+                COMMONERROR_PERMISSION,
+                $this,
+                'Invalid user level for action.'
             );
         }
         

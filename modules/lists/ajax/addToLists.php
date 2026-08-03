@@ -32,6 +32,7 @@ include_once(dirname(__DIR__, 3) . '/ajax/bootstrap.php');
 include_once(LEGACY_ROOT . '/lib/StringUtility.php');
 include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
 include_once(LEGACY_ROOT . '/lib/SavedLists.php');
+include_once(LEGACY_ROOT . '/lib/CandidateAuthorization.php');
 
 function isRequiredValueValid($value)
 {
@@ -126,6 +127,19 @@ foreach ($itemsToAdd as $index => $data)
         {
             $interface->outputXMLErrorPage(-1, 'Invalid items value.');
             die;
+        }
+    }
+}
+
+if ((int) $dataItemType === DATA_ITEM_CANDIDATE)
+{
+    foreach ($itemsToAdd as $item)
+    {
+        $candidate = null;
+        if (!CandidateAuthorization::canAccessCandidate($item, $candidate))
+        {
+            $interface->outputXMLErrorPage(-1, ERROR_NO_PERMISSION);
+            die();
         }
     }
 }

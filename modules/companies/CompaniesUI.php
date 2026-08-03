@@ -1145,6 +1145,32 @@ class CompaniesUI extends UserInterface
         $this->_template->display('./modules/companies/Search.tpl');
     }
 
+    private function getCompanyForAction($companyID)
+    {
+        $companies = new Companies();
+        $company = $companies->get($companyID);
+        if (empty($company))
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'The specified company ID could not be found.');
+        }
+
+        return $company;
+    }
+
+    private function getCompanyAttachmentForAction($attachmentID, $companyID)
+    {
+        $attachments = new Attachments();
+        $attachment = $attachments->get($attachmentID);
+        if (!isset($attachment['attachmentID']) ||
+            $attachment['dataItemType'] != DATA_ITEM_COMPANY ||
+            $attachment['dataItemID'] != $companyID)
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid attachment ID.');
+        }
+
+        return $attachment;
+    }
+
     /*
      * Called by handleRequest() to process loading the create attachment
      * modal dialog.
@@ -1158,6 +1184,7 @@ class CompaniesUI extends UserInterface
         }
 
         $companyID = $_GET['companyID'];
+        $this->getCompanyForAction($companyID);
 
         if (!eval(Hooks::get('CLIENTS_CREATE_ATTACHMENT'))) return;
 
@@ -1180,6 +1207,7 @@ class CompaniesUI extends UserInterface
         }
 
         $companyID = $_POST['companyID'];
+        $this->getCompanyForAction($companyID);
 
         if (!eval(Hooks::get('CLIENTS_ON_CREATE_ATTACHMENT_PRE'))) return;
 
@@ -1221,6 +1249,8 @@ class CompaniesUI extends UserInterface
 
         $companyID  = $_POST['companyID'];
         $attachmentID = $_POST['attachmentID'];
+        $this->getCompanyForAction($companyID);
+        $this->getCompanyAttachmentForAction($attachmentID, $companyID);
 
         if (!eval(Hooks::get('CLIENTS_ON_DELETE_ATTACHMENT_PRE'))) return;
 
