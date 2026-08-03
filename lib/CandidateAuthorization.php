@@ -17,6 +17,11 @@ class CandidateAuthorization
     public static function canAccessCandidate($candidateID, &$candidate = null)
     {
         $candidate = self::getCandidate($candidateID);
+        return self::canAccessCandidateRecord($candidate);
+    }
+
+    public static function canAccessCandidateRecord($candidate)
+    {
         if (empty($candidate))
         {
             return false;

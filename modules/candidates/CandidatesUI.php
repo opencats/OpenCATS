@@ -611,7 +611,7 @@ class CandidatesUI extends UserInterface
             return;
         }
 
-        if ($data['isAdminHidden'] == 1 && $this->getUserAccessLevel('candidates.hidden') < ACCESS_LEVEL_SA)
+        if (!CandidateAuthorization::canAccessCandidateRecord($data))
         {
             $this->listByView('This candidate is hidden - only a Site Administrator can unlock the candidate.');
             return;
@@ -1186,7 +1186,7 @@ class CandidatesUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified candidate ID could not be found.');
         }
 
-        if ($data['isAdminHidden'] == 1 && $this->getUserAccessLevel('candidates.hidden') < ACCESS_LEVEL_SA)
+        if (!CandidateAuthorization::canAccessCandidateRecord($data))
         {
             $this->listByView('This candidate is hidden - only a Site Administrator can unlock the candidate.');
             return;
@@ -2432,6 +2432,11 @@ class CandidatesUI extends UserInterface
         }
 
         $attachmentID = $_GET['attachmentID'];
+        $attachment = $this->enforceAttachmentCandidateHiddenAccess($attachmentID);
+        if ($attachment['dataItemType'] != DATA_ITEM_CANDIDATE)
+        {
+            CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid attachment ID.');
+        }
 
         /* Get the search string. */
         $query = $this->getTrimmedInput('wildCardString', $_GET);
@@ -2442,8 +2447,6 @@ class CandidatesUI extends UserInterface
 
         if (!empty($data))
         {
-            $this->enforceCandidateHiddenAccess($data['candidateID']);
-
             /* Keyword highlighting. */
             $data['text'] = SearchUtility::makePreview($query, $data['text']);
         }
