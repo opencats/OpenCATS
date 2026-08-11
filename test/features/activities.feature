@@ -44,6 +44,7 @@ Feature: Activities
     And press "Close"
     And I switch to the iframe ""
     And I follow "Activities"
+    And I follow "All"
     Then I should see "Samwise"
     And I should see "Manual timestamp note"
     And I should see "07-07-26 (04:37 PM)"
