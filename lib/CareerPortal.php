@@ -423,13 +423,24 @@ class CareerPortalSettings
 
         /* Send e-mail notification. */
         //FIXME: Make subject configurable.
-        $mailer = new Mailer($userID);
-        $mailerStatus = $mailer->sendToOne(
-            array($destination, ''),
-            $subject,
-            $body,
-            true
-        );
+        try
+        {
+            $mailer = new Mailer($userID);
+            $mailer->sendToOne(
+                array($destination, ''),
+                $subject,
+                $body,
+                true
+            );
+        }
+        catch (\PHPMailer\PHPMailer\Exception $e)
+        {
+            // Mail not configured or unavailable - log and continue
+            error_log(
+                'OpenCATS CareerPortal mail error: '
+                . get_class($e) . ' [' . $e->getCode() . ']'
+            );
+        }
     }
 }
 
