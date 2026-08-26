@@ -18,9 +18,15 @@
         </div>
 
         <div id="contents">
-            <div id="login">
-                <p>Your PHP version is <?php echo phpversion(); ?>  OpenCATS Requires PHP 5 or better.</p>
-                <p>Please get a newer version of PHP and try again.</p>
+        <div id="login">
+        <p>
+        Your PHP version is
+        <?php echo htmlspecialchars(PHP_VERSION, ENT_QUOTES, 'UTF-8'); ?>.
+        OpenCATS requires PHP
+        <?php echo htmlspecialchars($minimumPHPVersion, ENT_QUOTES, 'UTF-8'); ?>
+        or newer.
+        </p>
+        <p>Please install a supported PHP version and try again.</p>
             </div>
         </div>
     </body>

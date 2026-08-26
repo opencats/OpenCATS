@@ -124,34 +124,41 @@ switch ($action)
          */
         if (isset($_REQUEST['user']))
         {
-            if (isset($_REQUEST['user']) && !empty($_REQUEST['user']))
-            {
-                CATSUtility::changeConfigSetting('DATABASE_USER', var_export($_REQUEST['user'], true));
-            }
+            $databaseUser = trim($_REQUEST['user']);
+            $databaseHost = trim($_REQUEST['host'] ?? '');
+            $databaseName = trim($_REQUEST['name'] ?? '');
 
+            /* A blank password means keep the existing configured password. */
             if (isset($_REQUEST['pass']) && $_REQUEST['pass'] !== '')
             {
-                CATSUtility::changeConfigSetting('DATABASE_PASS', var_export($_REQUEST['pass'], true));
+                $databasePass = $_REQUEST['pass'];
+            }
+            else
+            {
+                $databasePass = DATABASE_PASS;
             }
 
-            if (isset($_REQUEST['host']) && !empty($_REQUEST['host']))
-            {
-                CATSUtility::changeConfigSetting('DATABASE_HOST', var_export($_REQUEST['host'], true));
-            }
-
-            if (isset($_REQUEST['name']) && !empty($_REQUEST['name']))
-            {
-                CATSUtility::changeConfigSetting('DATABASE_NAME', var_export($_REQUEST['name'], true));
-            }
+            $testRequest = http_build_query(
+                array(
+                    'a'    => 'testDatabaseConnectivity',
+                    'user' => $databaseUser,
+                    'pass' => $databasePass,
+                    'host' => $databaseHost,
+                    'name' => $databaseName
+                ),
+                '',
+                '&',
+                PHP_QUERY_RFC3986
+            );
 
             echo '
-                <script type="text/javascript">
-                    setActiveStep(2);
-                    showTextBlock(\'databaseConnectivity\');
-                    document.getElementById(\'testDatabaseConnectivity\').disabled = true;
-                    document.getElementById(\'testDatabaseConnectivityIndicator\').style.visibility = \'visible\';
-                    Installpage_append(\'a=testDatabaseConnectivity\', \'Please wait while your connection is tested...\');
-                </script>';
+            <script type="text/javascript">
+            setActiveStep(2);
+            showTextBlock(\'databaseConnectivity\');
+            document.getElementById(\'testDatabaseConnectivity\').disabled = true;
+            document.getElementById(\'testDatabaseConnectivityIndicator\').style.visibility = \'visible\';
+            Installpage_append(' . json_encode($testRequest) . ', \'Please wait while your connection is tested...\');
+            </script>';
             die();
         }
 
@@ -162,15 +169,15 @@ switch ($action)
         }
 
         echo '
-            <script type="text/javascript">
-                setActiveStep(2);
-                showTextBlock(\'databaseConnectivity\');
-                document.getElementById(\'dbname\').value = \'' . htmlspecialchars(DATABASE_NAME) . '\';
-                document.getElementById(\'dbuser\').value = \'' . htmlspecialchars(DATABASE_USER) . '\';
-                document.getElementById(\'dbpass\').value = \'\';
-                document.getElementById(\'dbpass\').placeholder = \'' . $dbPassPlaceholder . '\';
-                document.getElementById(\'dbhost\').value = \'' . htmlspecialchars(DATABASE_HOST) . '\';
-            </script>';
+        <script type="text/javascript">
+        setActiveStep(2);
+        showTextBlock(\'databaseConnectivity\');
+        document.getElementById(\'dbname\').value = ' . json_encode(DATABASE_NAME) . ';
+        document.getElementById(\'dbuser\').value = ' . json_encode(DATABASE_USER) . ';
+        document.getElementById(\'dbpass\').value = \'\';
+        document.getElementById(\'dbpass\').placeholder = ' . json_encode($dbPassPlaceholder) . ';
+        document.getElementById(\'dbhost\').value = ' . json_encode(DATABASE_HOST) . ';
+        </script>';
         break;
 
     case 'mailSettings':
@@ -267,28 +274,68 @@ switch ($action)
         }
         break;
 
-    case 'testDatabaseConnectivity':
-        echo '<br /><span style="font-weight: bold;">Test Results</span>';
+        case 'testDatabaseConnectivity':
+            $databaseUser = trim($_REQUEST['user'] ?? '');
+            $databasePass = $_REQUEST['pass'] ?? '';
+            $databaseHost = trim($_REQUEST['host'] ?? '');
+            $databaseName = trim($_REQUEST['name'] ?? '');
 
-        echo '<table class="test_output">';
+            echo '<br /><span style="font-weight: bold;">Test Results</span>';
+            echo '<table class="test_output">';
 
-        if (InstallationTests::checkMySQL(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME))
-        {
-            echo '<script type="text/javascript">showTextBlock(\'MySQLTestPassed\');</script>';
-        }
-        else
-        {
-            echo '<script type="text/javascript">showTextBlock(\'MySQLTestFailed\');</script>';
-        }
+            if ($databaseUser === '' || $databaseHost === '' || $databaseName === '')
+            {
+                echo '<tr class="fail"><td>Database name, user and host are required.</td></tr>';
+                $connectionPassed = false;
+            }
+            else
+            {
+                $connectionPassed = InstallationTests::checkMySQL(
+                    $databaseHost,
+                    $databaseUser,
+                    $databasePass,
+                    $databaseName
+                );
+            }
 
-        echo '</table>';
+            if ($connectionPassed)
+            {
+                /*
+                 * Only persist the database settings after they have been
+                 * successfully tested.
+                 */
+                CATSUtility::changeConfigSetting(
+                    'DATABASE_USER',
+                    var_export($databaseUser, true)
+                );
+                CATSUtility::changeConfigSetting(
+                    'DATABASE_PASS',
+                    var_export($databasePass, true)
+                );
+                CATSUtility::changeConfigSetting(
+                    'DATABASE_HOST',
+                    var_export($databaseHost, true)
+                );
+                CATSUtility::changeConfigSetting(
+                    'DATABASE_NAME',
+                    var_export($databaseName, true)
+                );
 
-        echo '
+                echo '<script type="text/javascript">showTextBlock(\'MySQLTestPassed\');</script>';
+            }
+            else
+            {
+                echo '<script type="text/javascript">showTextBlock(\'MySQLTestFailed\');</script>';
+            }
+
+            echo '</table>';
+
+            echo '
             <script type="text/javascript">
-                document.getElementById(\'testDatabaseConnectivity\').disabled = false;
-                document.getElementById(\'testDatabaseConnectivityIndicator\').style.visibility = \'hidden\';
+            document.getElementById(\'testDatabaseConnectivity\').disabled = false;
+            document.getElementById(\'testDatabaseConnectivityIndicator\').style.visibility = \'hidden\';
             </script>';
-        break;
+            break;
 
     case 'resumeParsing':
         echo '<script type="text/javascript">setActiveStep(4);</script>';
