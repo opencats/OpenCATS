@@ -168,12 +168,28 @@ class CATSUtility
         }
 
         $result = @file_put_contents(
-            'config.php', implode("\n", $newconfig) . "\n"
+            'config.php',
+            implode("\n", $newconfig) . "\n"
         );
+
         if (!$result)
         {
             /* We either completely failed or wrote 0 bytes. */
             return false;
+        }
+
+        /*
+         * Ensure subsequent requests see the updated configuration immediately
+         * when PHP OPcache is enabled.
+         */
+        if (function_exists('opcache_invalidate'))
+        {
+            $configPath = realpath('config.php');
+
+            if ($configPath !== false)
+            {
+                opcache_invalidate($configPath, true);
+            }
         }
 
         return true;

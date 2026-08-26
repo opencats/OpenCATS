@@ -367,125 +367,260 @@ class InstallationTests
     public static function checkMySQL($host, $user, $pass, $name)
     {
         /* Check MySQL connection. */
-		$db = @mysqli_connect($host, $user, $pass);
-        if (self::DEBUG_FAIL || !$db)
+        try
+        {
+            $db = mysqli_connect($host, $user, $pass);
+        }
+        catch (mysqli_sql_exception $exception)
         {
             echo sprintf(
                 '<tr class="fail"><td>Cannot connect to database.<pre class="fail">%s</pre></td></tr>',
-                mysqli_connect_error()
+                htmlspecialchars($exception->getMessage(), ENT_QUOTES, 'UTF-8')
             );
+
+            return false;
+        }
+
+        if (self::DEBUG_FAIL || $db === false)
+        {
+            echo sprintf(
+                '<tr class="fail"><td>Cannot connect to database.<pre class="fail">%s</pre></td></tr>',
+                htmlspecialchars(mysqli_connect_error(), ENT_QUOTES, 'UTF-8')
+            );
+
             return false;
         }
 
         echo '<tr class="pass"><td>MySQL connection was successful.</td></tr>';
 
         /* Check MySQL version number. */
-        if (!self::_checkMySQLVersion($db))
+        try
         {
+            $versionPassed = self::_checkMySQLVersion($db);
+        }
+        catch (mysqli_sql_exception $exception)
+        {
+            echo sprintf(
+                '<tr class="fail"><td>Cannot retrieve MySQL version number.<pre class="fail">%s</pre></td></tr>',
+                htmlspecialchars($exception->getMessage(), ENT_QUOTES, 'UTF-8')
+            );
+
+            mysqli_close($db);
+            return false;
+        }
+
+        if (!$versionPassed)
+        {
+            mysqli_close($db);
             return false;
         }
 
         /* Try to switch to the CATS database. */
-        if (!@mysqli_select_db($db, $name))
+        try
+        {
+            $databaseSelected = mysqli_select_db($db, $name);
+        }
+        catch (mysqli_sql_exception $exception)
         {
             echo sprintf(
                 '<tr class="fail"><td>Failed to select database \'%s\'.<pre class="fail">%s</pre></td></tr>',
-                $name,
-                mysqli_connect_error()
+                htmlspecialchars($name, ENT_QUOTES, 'UTF-8'),
+                         htmlspecialchars($exception->getMessage(), ENT_QUOTES, 'UTF-8')
             );
+
+            mysqli_close($db);
+            return false;
+        }
+
+        if (!$databaseSelected)
+        {
+            echo sprintf(
+                '<tr class="fail"><td>Failed to select database \'%s\'.<pre class="fail">%s</pre></td></tr>',
+                htmlspecialchars($name, ENT_QUOTES, 'UTF-8'),
+                         htmlspecialchars(mysqli_error($db), ENT_QUOTES, 'UTF-8')
+            );
+
+            mysqli_close($db);
             return false;
         }
 
         echo sprintf(
             '<tr class="pass"><td>Database \'%s\' selected.</td></tr>',
-            $name
+            htmlspecialchars($name, ENT_QUOTES, 'UTF-8')
         );
 
         /* Check CREATE TABLE permissions. */
-        $queryResult = @mysqli_query($db, 'CREATE TABLE `testtable` (`id` int(11) NOT NULL default \'0\') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;');
+        try
+        {
+            $queryResult = mysqli_query(
+                $db,
+                'CREATE TABLE `testtable` (`id` int(11) NOT NULL default \'0\') '
+                . 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;'
+            );
+        }
+        catch (mysqli_sql_exception $exception)
+        {
+            $queryResult = false;
+        }
+
         if (!$queryResult)
         {
-            mysqli_query($db, 'DROP TABLE testtable');
-            $queryResult = @mysqli_query($db, 'CREATE TABLE `testtable` (`id` int(11) NOT NULL default \'0\') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;');
+            try
+            {
+                mysqli_query($db, 'DROP TABLE testtable');
+            }
+            catch (mysqli_sql_exception $exception)
+            {
+                /* Ignore cleanup failure and retry CREATE below. */
+            }
+
+            try
+            {
+                $queryResult = mysqli_query(
+                    $db,
+                    'CREATE TABLE `testtable` (`id` int(11) NOT NULL default \'0\') '
+                    . 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;'
+                );
+            }
+            catch (mysqli_sql_exception $exception)
+            {
+                $queryResult = false;
+            }
         }
+
         if (!$queryResult)
         {
             echo sprintf(
                 '<tr class="fail"><td>Cannot create table \'testtable\'. Please verify that '
                 . '\'ALL PERMISSIONS\' were granted to the \'%s\' user for the \'%s\' database. '
                 . 'You may also have to recreate the database before trying again.',
-                $user,
-                $name
+                htmlspecialchars($user, ENT_QUOTES, 'UTF-8'),
+                         htmlspecialchars($name, ENT_QUOTES, 'UTF-8')
             );
+
+            mysqli_close($db);
             return false;
         }
 
-        echo sprintf(
-            '<tr class="pass"><td>Can create \'testtable\' table.</td></tr>'
-        );
+        echo '<tr class="pass"><td>Can create \'testtable\' table.</td></tr>';
 
         /* Check INSERT permissions. */
-        if (!@mysqli_query($db, 'INSERT INTO testtable (id) VALUES (1)'))
+        try
+        {
+            $queryResult = mysqli_query(
+                $db,
+                'INSERT INTO testtable (id) VALUES (1)'
+            );
+        }
+        catch (mysqli_sql_exception $exception)
+        {
+            $queryResult = false;
+        }
+
+        if (!$queryResult)
         {
             echo sprintf(
                 '<tr class="fail"><td>Cannot insert into \'testtable\' table. Please verify that '
                 . '\'ALL PERMISSIONS\' were granted to the \'%s\' user for the \'%s\' database. '
                 . 'You may also have to recreate the database before trying again.',
-                $user,
-                $name
+                htmlspecialchars($user, ENT_QUOTES, 'UTF-8'),
+                         htmlspecialchars($name, ENT_QUOTES, 'UTF-8')
             );
+
+            mysqli_close($db);
             return false;
         }
 
         echo '<tr class="pass"><td>Can insert into \'testtable\' table.</td></tr>';
 
         /* Check UPDATE permissions. */
-        if (!@mysqli_query($db, 'UPDATE testtable SET id = 5 WHERE id = 1'))
+        try
+        {
+            $queryResult = mysqli_query(
+                $db,
+                'UPDATE testtable SET id = 5 WHERE id = 1'
+            );
+        }
+        catch (mysqli_sql_exception $exception)
+        {
+            $queryResult = false;
+        }
+
+        if (!$queryResult)
         {
             echo sprintf(
                 '<tr class="fail"><td>Cannot update \'testtable\' table. Please verify that '
                 . '\'ALL PERMISSIONS\' were granted to the \'%s\' user for the \'%s\' database. '
                 . 'You will also need to re-import the database schema.',
-                $user,
-                $name
+                htmlspecialchars($user, ENT_QUOTES, 'UTF-8'),
+                         htmlspecialchars($name, ENT_QUOTES, 'UTF-8')
             );
+
+            mysqli_close($db);
             return false;
         }
 
         echo '<tr class="pass"><td>Can update \'testtable\' table.</td></tr>';
 
         /* Check DELETE permissions. */
-        if (!@mysqli_query($db, 'DELETE FROM testtable WHERE id = 5'))
+        try
+        {
+            $queryResult = mysqli_query(
+                $db,
+                'DELETE FROM testtable WHERE id = 5'
+            );
+        }
+        catch (mysqli_sql_exception $exception)
+        {
+            $queryResult = false;
+        }
+
+        if (!$queryResult)
         {
             echo sprintf(
                 '<tr class="fail"><td>Cannot delete from \'testtable\' table. Please verify that '
                 . '\'ALL PERMISSIONS\' were granted to the \'%s\' user for the \'%s\' database. '
                 . 'You will also need to re-import the database schema.',
-                $user,
-                $name
+                htmlspecialchars($user, ENT_QUOTES, 'UTF-8'),
+                         htmlspecialchars($name, ENT_QUOTES, 'UTF-8')
             );
+
+            mysqli_close($db);
             return false;
         }
 
         echo '<tr class="pass"><td>Can delete from \'testtable\' table.</td></tr>';
 
-        /* Check DROP TABLES permissions. */
-        if (!@mysqli_query($db, 'DROP TABLE testtable'))
+        /* Check DROP TABLE permissions. */
+        try
+        {
+            $queryResult = mysqli_query($db, 'DROP TABLE testtable');
+        }
+        catch (mysqli_sql_exception $exception)
+        {
+            $queryResult = false;
+        }
+
+        if (!$queryResult)
         {
             echo sprintf(
                 '<tr class="fail"><td>Cannot drop table \'testtable\'. Please verify that '
                 . '\'ALL PERMISSIONS\' were granted to the \'%s\' user for the \'%s\' database. '
                 . 'You will also need to re-import the database schema.',
-                $user,
-                $name
+                htmlspecialchars($user, ENT_QUOTES, 'UTF-8'),
+                         htmlspecialchars($name, ENT_QUOTES, 'UTF-8')
             );
+
+            mysqli_close($db);
             return false;
         }
 
         echo '<tr class="pass"><td>Can drop table \'testtable\'.</td></tr>';
 
+        mysqli_close($db);
         return true;
     }
+
 
     public static function checkAttachmentsDir()
     {
