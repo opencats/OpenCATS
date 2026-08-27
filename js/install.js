@@ -100,6 +100,31 @@ function Installpage_populate(postData, message)
     );
 }
 
+function Installpage_showMaintenanceRetry(http)
+{
+    var htmlObjectID = "subFormBlock";
+    var statusMessage = "";
+
+    if (http.status != 0)
+    {
+        statusMessage =
+        "<p>HTTP status: " + parseInt(http.status, 10) + "</p>";
+    }
+
+    document.getElementById(htmlObjectID).innerHTML =
+    "<p><strong>The database upgrade response was interrupted.</strong></p>" +
+    "<p>The web server stopped waiting for this upgrade step. " +
+    "The database update may still be completing in the background.</p>" +
+    "<p>Please wait briefly, then click <strong>Continue Upgrade</strong>. " +
+    "OpenCATS will continue from the database schema version that was " +
+    "successfully recorded.</p>" +
+    statusMessage +
+    "<p>" +
+    "<input type=\"button\" value=\"Continue Upgrade\" " +
+    "onclick=\"this.disabled = true; Installpage_maint(); return false;\" />" +
+    "</p>";
+}
+
 function Installpage_maint()
 {
     var htmlObjectID = "subFormBlock";
@@ -120,17 +145,27 @@ function Installpage_maint()
 
         response = http.responseText;
 
-        if (response.indexOf("setProgressUpdating") == -1)
- 		{
-	        if (http.status == 200)
-	        {
-	            Installpage_populate(installMaintNextAction);
-	            installMaintNextAction = "a=reindexResumes";
-	        }
+        if (http.status == 200)
+        {
+            if (response.indexOf("setProgressUpdating") == -1)
+            {
+                Installpage_populate(installMaintNextAction);
+                installMaintNextAction = "a=reindexResumes";
+            }
+            else
+            {
+                execJS(response);
+            }
         }
         else
         {
-            execJS(response);
+            /*
+             * A web server or proxy can stop waiting for a long-running
+             * maintenance request even though PHP / MariaDB continues
+             * processing it. Allow the installer to resume once the
+             * database operation has completed.
+             */
+            Installpage_showMaintenanceRetry(http);
         }
     }
 
@@ -236,22 +271,22 @@ var totalProgressInstall = 0;
 
 function setProgressUpdating(progress, currentVersion, maxVersion, module)
 {
-	document.getElementById("upToDateSqlQuery").innerHTML = progress;
-	document.getElementById("upToDateModuleName").innerHTML = "Processing Module:  " + module + " (" + currentVersion + ")";
-	
-	if (totalProgressInstall != maxVersion)
-	{
-	    totalProgressInstall = maxVersion;
-	    firstProgressInstall = currentVersion;
-	}
-	
+    document.getElementById("upToDateSqlQuery").innerHTML = progress;
+    document.getElementById("upToDateModuleName").innerHTML = "Processing Module:  " + module + " (" + currentVersion + ")";
+
+    if (totalProgressInstall != maxVersion)
+    {
+        totalProgressInstall = maxVersion;
+        firstProgressInstall = currentVersion;
+    }
+
     theProgress = Math.round(((currentVersion - firstProgressInstall) * 100) / (totalProgressInstall - firstProgressInstall));
 
     if (theProgress > 100)
     {
         return;
     }
-    
+
     document.getElementById("d1").style.display = "";
     document.getElementById("d2").style.display = "";
     document.getElementById("d3").style.display = "";
@@ -272,4 +307,3 @@ function setProgressUpdating(progress, currentVersion, maxVersion, module)
         document.getElementById("d2").style.width = (theProgress * 3) + "px";
     }
 }
-

@@ -52,36 +52,76 @@ function update_150($db)
 {
     global $badFileExtensions;
 
-    $attachments = $db->query('SELECT * FROM attachment');
-    while ($attachment = mysqli_fetch_assoc($attachments))
+    $lastAttachmentID = 0;
+    $batchSize = 100;
+
+    while (true)
     {
-        $fileExtension = substr(
-            $attachment['stored_filename'],
-            strrpos($attachment['stored_filename'], '.') + 1
+        $attachments = $db->getAllAssoc(
+            'SELECT
+            attachment_id,
+            directory_name,
+            stored_filename
+            FROM
+            attachment
+            WHERE
+            attachment_id > '
+            . $db->makeQueryInteger($lastAttachmentID)
+            . '
+            ORDER BY
+            attachment_id ASC
+            LIMIT '
+            . (int) $batchSize
         );
 
-        if (!in_array($fileExtension, $badFileExtensions))
+        if (empty($attachments))
         {
-            continue;
+            break;
         }
 
-        $oldFilename = $attachment['stored_filename'];
-        $newFilename = $attachment['stored_filename'] . '.txt';
-
-        $status = @rename(
-            'attachments/' . $attachment['directory_name'] . '/' . $oldFilename,
-            'attachments/' . $attachment['directory_name'] . '/' . $newFilename
-        );
-        if ($status)
+        foreach ($attachments as $attachment)
         {
-            $db->query(
-                'UPDATE attachment SET stored_filename = '
-                . $db->makeQueryString($newFilename)
-                . ' WHERE attachment_id = ' . $attachment['attachment_id']
+            /*
+             * Always advance the keyset position, including when no rename
+             * is required or the filesystem rename fails.
+             */
+            $lastAttachmentID = (int) $attachment['attachment_id'];
+
+            $fileExtension = substr(
+                $attachment['stored_filename'],
+                strrpos($attachment['stored_filename'], '.') + 1
             );
+
+            if (!in_array($fileExtension, $badFileExtensions))
+            {
+                continue;
+            }
+
+            $oldFilename = $attachment['stored_filename'];
+            $newFilename = $attachment['stored_filename'] . '.txt';
+
+            $status = @rename(
+                'attachments/'
+                . $attachment['directory_name']
+                . '/'
+                . $oldFilename,
+                'attachments/'
+                . $attachment['directory_name']
+                . '/'
+                . $newFilename
+            );
+
+            if ($status)
+            {
+                $db->query(
+                    'UPDATE attachment SET stored_filename = '
+                    . $db->makeQueryString($newFilename)
+                    . ' WHERE attachment_id = '
+                    . $db->makeQueryInteger($attachment['attachment_id'])
+                );
+            }
         }
     }
 }
-
 
 ?>
