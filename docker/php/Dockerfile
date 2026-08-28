@@ -24,7 +24,11 @@ RUN apk add --no-cache \
 
 # External tools.
 RUN cd /tmp && \
-  wget https://ftp.gnu.org/gnu/unrtf/unrtf-0.21.10.tar.gz && \
+  (wget -O unrtf-0.21.10.tar.gz \
+    https://ftpmirror.gnu.org/unrtf/unrtf-0.21.10.tar.gz || \
+   wget -O unrtf-0.21.10.tar.gz \
+    https://mirrors.kernel.org/gnu/unrtf/unrtf-0.21.10.tar.gz) && \
+  echo "b49f20211fa69fff97d42d6e782a62d7e2da670b064951f14bbff968c93734ae  unrtf-0.21.10.tar.gz" | sha256sum -c - && \
   tar xzvf unrtf-0.21.10.tar.gz && \
   cd unrtf-0.21.10/ && \
   export CFLAGS="-D_GNU_SOURCE -std=gnu89 -Wno-error=implicit-int -Wno-error=implicit-function-declaration" && \
