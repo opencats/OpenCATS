@@ -293,6 +293,8 @@ switch ($action)
     case 'resumeParsing':
         echo '<script type="text/javascript">setActiveStep(4);</script>';
 
+        include_once(LEGACY_ROOT . '/lib/SystemUtility.php');
+
         if (ANTIWORD_PATH == '')
         {
             echo '
@@ -307,7 +309,6 @@ switch ($action)
         {
             $antiwordWithSlashes = str_replace('\\', '\\\\', ANTIWORD_PATH);
 
-            include_once ('lib/SystemUtility.php');
             /* Change Windows default command to UNIX default command hack. */
             if (strpos(strtolower($antiwordWithSlashes), "c:\\") === 0 && !SystemUtility::isWindows())
             {
@@ -337,7 +338,6 @@ switch ($action)
         {
             $pdftotextWithSlashes = str_replace('\\', '\\\\', PDFTOTEXT_PATH);
 
-            include_once ('lib/SystemUtility.php');
             /* Change Windows default command to UNIX default command hack. */
             if (strpos(strtolower($pdftotextWithSlashes), "c:\\") === 0 && !SystemUtility::isWindows())
             {
@@ -367,7 +367,6 @@ switch ($action)
         {
             $html2textWithSlashes = str_replace('\\', '\\\\', HTML2TEXT_PATH);
 
-            include_once ('lib/SystemUtility.php');
             /* Change Windows default command to UNIX default command hack. */
             if (strpos(strtolower($html2textWithSlashes), "c:\\") === 0 && !SystemUtility::isWindows())
             {
@@ -397,7 +396,6 @@ switch ($action)
         {
             $unrtfWithSlashes = str_replace('\\', '\\\\', UNRTF_PATH);
 
-            include_once ('lib/SystemUtility.php');
             /* Change Windows default command to UNIX default command hack. */
             if (strpos(strtolower($unrtfWithSlashes), "c:\\") === 0 && !SystemUtility::isWindows())
             {
