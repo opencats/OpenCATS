@@ -121,7 +121,6 @@ class Attachments
                 %s,
                 %s,
                 %s,
-                %s,
                 NOW(),
                 NOW(),
                 %s,
