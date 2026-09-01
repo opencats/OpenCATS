@@ -126,13 +126,44 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Create Release Archive
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4.1'
+          tools: composer:v2
+          extensions: gd, mbstring, zip, zlib
+
+      - name: Install Production Dependencies
+        run: composer install --no-dev --no-interaction --no-progress --prefer-dist
+
+      - name: Create Release Archives
         run: |
-          zip -r opencats-${{ github.ref_name }}.zip . -x "*.git*" "docker/*" "test/*" "reports/*" ".github/*" "phpunit.xml"
+          tar \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='docker' \
+            --exclude='test' \
+            --exclude='reports' \
+            --exclude='phpunit.xml' \
+            --exclude='INSTALL_BLOCK' \
+            -czf /tmp/opencats-${{ github.ref_name }}-full.tar.gz .
+
+          zip -r /tmp/opencats-${{ github.ref_name }}-full.zip . \
+            -x ".git/*" \
+               ".github/*" \
+               "docker/*" \
+               "test/*" \
+               "reports/*" \
+               "phpunit.xml" \
+               "INSTALL_BLOCK"
+
+          mv /tmp/opencats-${{ github.ref_name }}-full.tar.gz .
+          mv /tmp/opencats-${{ github.ref_name }}-full.zip .
 
       - name: Create GitHub Release
         env:
@@ -141,4 +172,5 @@ jobs:
           gh release create ${{ github.ref_name }} \
             --title "OpenCATS ${{ github.ref_name }}" \
             --notes "Automated release for version ${{ github.ref_name }}" \
-            opencats-${{ github.ref_name }}.zip
+            opencats-${{ github.ref_name }}-full.tar.gz \
+            opencats-${{ github.ref_name }}-full.zip
