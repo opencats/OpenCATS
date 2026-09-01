@@ -119,55 +119,59 @@ jobs:
         if: always()
         run: cd docker && docker compose -f docker-compose-test.yml down
 
-  release:
-  name: Create GitHub Release
-  needs: tests
-  if: startsWith(github.ref, 'refs/tags/v')
-  runs-on: ubuntu-latest
-  permissions:
-    contents: write
+    ${{ github.ref_name }}-full.zip
+      release:
+        name: Create GitHub Release
+        needs: tests
+        if: startsWith(github.ref, 'refs/tags/v')
+        runs-on: ubuntu-latest
+        permissions:
+        contents: write
 
-  steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+        steps:
+        - name: Checkout Code
+            uses: actions/checkout@v4
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.4.1'
-        tools: composer:v2
-        extensions: gd, mbstring, zip, zlib
+        - name: Setup PHP
+            uses: shivammathur/setup-php@v2
+            with:
+            php-version: '8.4.1'
+            tools: composer:v2
+            extensions: gd, mbstring, zip, zlib
 
-    - name: Install Production Dependencies
-      run: composer install --no-dev --no-interaction --no-progress --prefer-dist
+        - name: Install Production Dependencies
+            run: composer install --no-dev --no-interaction --no-progress --prefer-dist
 
-    - name: Create Release Archives
-      run: |
-        tar \
-          --exclude='.git' \
-          --exclude='.github' \
-          --exclude='docker' \
-          --exclude='test' \
-          --exclude='reports' \
-          --exclude='phpunit.xml' \
-          --exclude='INSTALL_BLOCK' \
-          -czf opencats-${{ github.ref_name }}-full.tar.gz .
+        - name: Create Release Archives
+            run: |
+            tar \
+                --exclude='.git' \
+                --exclude='.github' \
+                --exclude='docker' \
+                --exclude='test' \
+                --exclude='reports' \
+                --exclude='phpunit.xml' \
+                --exclude='INSTALL_BLOCK' \
+                -czf /tmp/opencats-${{ github.ref_name }}-full.tar.gz .
 
-        zip -r opencats-${{ github.ref_name }}-full.zip . \
-          -x ".git/*" \
-             ".github/*" \
-             "docker/*" \
-             "test/*" \
-             "reports/*" \
-             "phpunit.xml" \
-             "INSTALL_BLOCK"
+            zip -r /tmp/opencats-${{ github.ref_name }}-full.zip . \
+                -x ".git/*" \
+                ".github/*" \
+                "docker/*" \
+                "test/*" \
+                "reports/*" \
+                "phpunit.xml" \
+                "INSTALL_BLOCK"
 
-    - name: Create GitHub Release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        gh release create ${{ github.ref_name }} \
-          --title "OpenCATS ${{ github.ref_name }}" \
-          --notes "Automated release for version ${{ github.ref_name }}" \
-          opencats-${{ github.ref_name }}-full.tar.gz \
-          opencats-${{ github.ref_name }}-full.zip
+            mv /tmp/opencats-${{ github.ref_name }}-full.tar.gz .
+            mv /tmp/opencats-${{ github.ref_name }}-full.zip .
+
+        - name: Create GitHub Release
+            env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            run: |
+            gh release create ${{ github.ref_name }} \
+                --title "OpenCATS ${{ github.ref_name }}" \
+                --notes "Automated release for version ${{ github.ref_name }}" \
+                opencats-${{ github.ref_name }}-full.tar.gz \
+                opencats-${{ github.ref_name }}-full.zip
