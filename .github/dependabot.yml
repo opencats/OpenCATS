@@ -11,6 +11,8 @@ updates:
     - 9.5.1
     - 9.5.2
     - 9.5.3
-  - dependency-name: ckeditor/ckeditor
+   - dependency-name: ckeditor/ckeditor
+    # CKEditor 4.23+ is commercial/LTS and requires a licence.
+    # Keep 4.22.1 pinned until CKEditor is replaced; see issue #846.
     versions:
-    - 4.15.1
+    - ">=4.23.0"
