@@ -124,8 +124,7 @@ class Mailer
             $isHTML,
             $logMessage,
             $replyTo,
-            $wrapLinesAt,
-            true
+            $wrapLinesAt
         );
     }
 
@@ -159,8 +158,7 @@ class Mailer
             $isHTML,
             $logMessage,
             $replyTo,
-            $wrapLinesAt,
-            true
+            $wrapLinesAt
         );
     }
 
@@ -181,7 +179,7 @@ class Mailer
      * @param boolean Log message in the message log?
      * @param array Reply-to address (0 => address, 1 => name).
      * @param integer Wrap lines at X characters.
-     * @param boolean Include CATS e-mail signature?
+     * @param boolean $signature deprecated. Retained for backwards compatibility.
      * @return boolean Was the message successfully sent to all recipients?
      */
     public function send($from, $recipients, $subject, $body, $isHTML = false,
@@ -204,12 +202,6 @@ class Mailer
         {
             $this->_mailer->isHTML(true);
 
-            if ($signature)
-            {
-                $body .= '\n<br />\n<br /><span style=\"font-size: 10pt;\">Powered by <a href=\"http://www.opencats.org" alt=\"OpenCATS "
-                    . "Applicant Tracking System\">OpenCATS</a> (Free ATS)</span>';
-            }
-
             $this->_mailer->Body = '<div style="font: normal normal 12px Arial, Tahoma, sans-serif">'
                 . str_replace('<br>', "<br />\n", str_replace('<br />', '<br>', str_replace("\n", "<br>", $body))) . '</div>';
 
@@ -217,11 +209,6 @@ class Mailer
         }
         else
         {
-            if ($signature)
-            {
-                $body .= "\n\nPowered by OpenCATS (http://www.opencats.org) Free ATS";
-            }
-
             $this->_mailer->isHTML(false);
             $this->_mailer->Body = $body;
         }
