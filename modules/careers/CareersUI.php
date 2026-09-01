@@ -946,7 +946,6 @@ class CareersUI extends UserInterface
             $jobContactNameEscaped = htmlspecialchars((string) $jobOrderData['contactFullName'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $jobContactPhoneEscaped = htmlspecialchars((string) $jobOrderData['contactWorkPhone'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $jobContactEmailEscaped = htmlspecialchars((string) $jobOrderData['contactEmail'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
-            $jobDescriptionEscaped = htmlspecialchars((string) $jobOrderData['description'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $jobRateEscaped = nl2br(htmlspecialchars((string) $jobOrderData['maxRate'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING));
             $jobSalaryEscaped = nl2br(htmlspecialchars((string) $jobOrderData['salary'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING));
             $jobDaysOldEscaped = nl2br(htmlspecialchars((string) $jobOrderData['daysOld'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING));
@@ -970,7 +969,7 @@ class CareersUI extends UserInterface
             $template['Content'] = str_replace('<contactName>',  $jobContactNameEscaped, $template['Content']);
             $template['Content'] = str_replace('<contactPhone>', $jobContactPhoneEscaped, $template['Content']);
             $template['Content'] = str_replace('<contactEmail>', $jobContactEmailEscaped, $template['Content']);
-            $template['Content'] = str_replace('<description>',  $jobDescriptionEscaped, $template['Content']);
+            $template['Content'] = str_replace('<description>',  (string) $jobOrderData['description'], $template['Content']);
             $template['Content'] = str_replace('<rate>',         $jobRateEscaped, $template['Content']);
             $template['Content'] = str_replace('<salary>',       $jobSalaryEscaped, $template['Content']);
             $template['Content'] = str_replace('<daysOld>',      $jobDaysOldEscaped, $template['Content']);

@@ -21,3 +21,9 @@ Feature: Career Portal
     When I click on the element "input[type='checkbox']"
     And press "Continue"
     Then I should see "Application Submitted For: Career Portal CI Job"
+
+  Scenario: Rich-text job description is rendered
+    Given There is a public career portal job "Career Portal Description Job" with questionnaire "Description Test Questionnaire"
+    And I am on "/index.php?m=careers&p=showAll"
+    When I follow "Career Portal Description Job"
+    Then the "body" element should contain "<strong>Career Portal formatted description</strong>"

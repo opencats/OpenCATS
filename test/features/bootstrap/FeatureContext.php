@@ -520,7 +520,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
             $jobTitle,
             $companyId,
             '',
-            '',
+            '<strong>Career Portal formatted description</strong>',
             '',
             '',
             '',
