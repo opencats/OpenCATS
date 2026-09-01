@@ -202,13 +202,13 @@ define('MAIL_SENDMAIL_PATH', "/usr/sbin/sendmail");
  * set to 3. If your server requires authentication, set MAIL_SMTP_AUTH to
  * true and configure MAIL_SMTP_USER and MAIL_SMTP_PASS.
  */
-define('MAIL_SMTP_HOST', "localhost");
-define('MAIL_SMTP_PORT', 587);
-define('MAIL_SMTP_AUTH', true);
-define('MAIL_SMTP_USER', "user");
-define('MAIL_SMTP_PASS', "password");
+define('MAIL_SMTP_HOST', "mailpit");
+define('MAIL_SMTP_PORT', 1025);
+define('MAIL_SMTP_AUTH', false);
+define('MAIL_SMTP_USER', "");
+define('MAIL_SMTP_PASS', "");
 //Options: '', 'ssl' or 'tls'
-define('MAIL_SMTP_SECURE', "tls");
+define('MAIL_SMTP_SECURE', "");
 
 /* Event reminder E-Mail Template. */
 $GLOBALS['eventReminderEmail'] = <<<EOF
