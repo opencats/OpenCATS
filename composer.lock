@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f5a7505b3bbc98bb1603c028c63ae4e8",
+    "content-hash": "3907aec11790c20f8e3de61a6fb7bff1",
     "packages": [
         {
             "name": "ckeditor/ckeditor",
@@ -56,16 +56,16 @@
         },
         {
             "name": "gregwar/captcha",
-            "version": "v2.1.0",
+            "version": "v2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Gregwar/Captcha.git",
-                "reference": "3c2f6f0c301b94d9ec18ba769015a8a32b95765c"
+                "reference": "c1e67b3d7ac4f873f785daa366051d7c73d19ca0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Gregwar/Captcha/zipball/3c2f6f0c301b94d9ec18ba769015a8a32b95765c",
-                "reference": "3c2f6f0c301b94d9ec18ba769015a8a32b95765c",
+                "url": "https://api.github.com/repos/Gregwar/Captcha/zipball/c1e67b3d7ac4f873f785daa366051d7c73d19ca0",
+                "reference": "c1e67b3d7ac4f873f785daa366051d7c73d19ca0",
                 "shasum": ""
             },
             "require": {
@@ -76,10 +76,11 @@
                 "symfony/finder": "*"
             },
             "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.49",
                 "phpstan/phpstan": "2.1.17",
                 "phpstan/phpstan-phpunit": "2.0.6",
                 "phpunit/phpunit": "^9.6",
-                "squizlabs/php_codesniffer": "4.0.1"
+                "squizlabs/php_codesniffer": "4.0.4"
             },
             "type": "library",
             "autoload": {
@@ -111,9 +112,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Gregwar/Captcha/issues",
-                "source": "https://github.com/Gregwar/Captcha/tree/v2.1.0"
+                "source": "https://github.com/Gregwar/Captcha/tree/v2.1.1"
             },
-            "time": "2026-06-16T13:04:08+00:00"
+            "time": "2026-08-27T10:37:12+00:00"
         },
         {
             "name": "neutron/sphinxsearch-api",
@@ -291,16 +292,16 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v8.1.1",
+            "version": "v8.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "e2989e762c70f9490fa3a00a0ac0fae5aa97a531"
+                "reference": "8d7acede2b2ae07605783d1c43e49b5767036474"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/e2989e762c70f9490fa3a00a0ac0fae5aa97a531",
-                "reference": "e2989e762c70f9490fa3a00a0ac0fae5aa97a531",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/8d7acede2b2ae07605783d1c43e49b5767036474",
+                "reference": "8d7acede2b2ae07605783d1c43e49b5767036474",
                 "shasum": ""
             },
             "require": {
@@ -335,7 +336,7 @@
             "description": "Finds files and directories via an intuitive fluent interface",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/finder/tree/v8.1.1"
+                "source": "https://github.com/symfony/finder/tree/v8.1.5"
             },
             "funding": [
                 {
@@ -355,7 +356,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-06-27T09:05:56+00:00"
+            "time": "2026-08-21T12:16:08+00:00"
         }
     ],
     "packages-dev": [
