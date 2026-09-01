@@ -188,6 +188,10 @@ class Mailer
         $logMessage = true, $replyTo = array(), $wrapLinesAt = 78,
         $signature = false)
     {
+        if (MAIL_MAILER == MAILER_MODE_DISABLED)
+        {
+            return true;
+        }
 
         $this->_mailer->From     = $from[0];
         $this->_mailer->FromName = $from[1];

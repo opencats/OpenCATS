@@ -191,7 +191,7 @@ define('DEMO_PASSWORD',  'john99');
  * 2: Sendmail
  * 3: SMTP
  */
-define('MAIL_MAILER', 3);
+define('MAIL_MAILER', 0);
 
 /* Sendmail Settings. You don't need to worry about this unless MAIL_MAILER
  * is set to 2.
