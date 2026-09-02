@@ -101,7 +101,7 @@ switch($retVal)
     case TASKRET_SUCCESS:
         echo "SUCCESS";
         break;
-    case TASKRET_SUCCESS:
+    case TASKRET_SUCCESS_NOLOG:
         echo "SUCCESS (NO LOG)";
         break;
 }
