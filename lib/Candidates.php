@@ -1262,133 +1262,142 @@ class Candidates
     
     public function addDuplicates($candidateID, $duplicates)
     {
-        if(is_array($duplicates))
+        if (is_array($duplicates))
         {
-            foreach($duplicates as $duplicateID)
+            foreach ($duplicates as $duplicateID)
             {
                 $sql = sprintf(
-                            "INSERT INTO candidate_duplicates (
-                                old_candidate_id,
-                                new_candidate_id
-                             )
-                             VALUES (
-                                %s,
-                                %s
-                             )",
-                             $this->_db->makeQueryString($duplicateID),
-                             $this->_db->makeQueryString($candidateID)
-                        );
+                    "INSERT INTO candidate_duplicates (
+                        old_candidate_id,
+                        new_candidate_id
+                )
+                VALUES (
+                    %s,
+                    %s
+                )",
+                $this->_db->makeQueryInteger($duplicateID),
+                               $this->_db->makeQueryInteger($candidateID)
+                );
+
                 $this->_db->query($sql);
             }
         }
-        else if($duplicates != "")
+        else if ($duplicates != "")
         {
             $sql = sprintf(
-                            "INSERT INTO candidate_duplicates (
-                                old_candidate_id,
-                                new_candidate_id
-                             )
-                             VALUES (
-                                %s,
-                                %s
-                             )",
-                             $this->_db->makeQueryString($duplicates),
-                             $this->_db->makeQueryString($candidateID)
-                        );
-                $this->_db->query($sql);
+                "INSERT INTO candidate_duplicates (
+                    old_candidate_id,
+                    new_candidate_id
+            )
+            VALUES (
+                %s,
+                %s
+            )",
+            $this->_db->makeQueryInteger($duplicates),
+                           $this->_db->makeQueryInteger($candidateID)
+            );
+
+            $this->_db->query($sql);
         }
     }
-    
-    
-    
+
+
+
     public function mergeDuplicates($params, $rs)
     {
         $oldCandidateID = $params['oldCandidateID'];
-        $newCandidateID = $params['newCandidateID']; 
-         $sql = sprintf(
-            "UPDATE
-                activity
-            SET
-                data_item_id = %s
-            WHERE
-                data_item_id = %s",
-            $this->_db->makeQueryInteger($oldCandidateID),
-            $this->_db->makeQueryInteger($newCandidateID)
-        );
+        $newCandidateID = $params['newCandidateID'];
 
-        $this->_db->query($sql);
-        
         $sql = sprintf(
             "UPDATE
-                attachment
+            activity
             SET
-                data_item_id = %s
+            data_item_id = %s
             WHERE
-                data_item_id = %s",
+            data_item_id = %s",
             $this->_db->makeQueryInteger($oldCandidateID),
-            $this->_db->makeQueryInteger($newCandidateID)
+                       $this->_db->makeQueryInteger($newCandidateID)
         );
 
         $this->_db->query($sql);
-        
+
         $sql = sprintf(
             "UPDATE
-                calendar_event
+            attachment
             SET
-                data_item_id = %s
+            data_item_id = %s
             WHERE
-                data_item_id = %s",
+            data_item_id = %s",
             $this->_db->makeQueryInteger($oldCandidateID),
-            $this->_db->makeQueryInteger($newCandidateID)
+                       $this->_db->makeQueryInteger($newCandidateID)
         );
 
         $this->_db->query($sql);
-        
+
+        $sql = sprintf(
+            "UPDATE
+            calendar_event
+            SET
+            data_item_id = %s
+            WHERE
+            data_item_id = %s",
+            $this->_db->makeQueryInteger($oldCandidateID),
+                       $this->_db->makeQueryInteger($newCandidateID)
+        );
+
+        $this->_db->query($sql);
+
         $sql = sprintf(
             "DELETE FROM
-                candidate_duplicates
+            candidate_duplicates
             WHERE
-                new_candidate_id = %s",
+            new_candidate_id = %s",
             $this->_db->makeQueryInteger($newCandidateID)
         );
 
         $this->_db->query($sql);
 
         $sql = sprintf(
-            "SELECT 
-                new_candidate_id AS newID
-            FROM 
-                candidate_duplicates
+            "SELECT
+            new_candidate_id AS newID
+            FROM
+            candidate_duplicates
             WHERE
-                old_candidate_id = %s
-            ",
+            old_candidate_id = %s",
             $this->_db->makeQueryInteger($newCandidateID)
         );
 
         $rsTmp = $this->_db->getAllAssoc($sql);
 
-        if($rsTmp || count($rsTmp) > 0){
-            foreach($rsTmp AS $index => $newID){
+        if ($rsTmp && count($rsTmp) > 0)
+        {
+            foreach ($rsTmp as $newID)
+            {
                 $sql = sprintf(
                     "DELETE FROM
                     candidate_duplicates
-                WHERE
+                    WHERE
                     new_candidate_id = %s
-                AND
+                    AND
                     old_candidate_id = %s",
-                $this->_db->makeQueryInteger($newID['newID']),
-                $this->_db->makeQueryInteger($newCandidateID)
+                    $this->_db->makeQueryInteger($newID['newID']),
+                               $this->_db->makeQueryInteger($newCandidateID)
                 );
 
                 $this->_db->query($sql);
 
                 $sql = sprintf(
                     "INSERT IGNORE INTO
-                    candidate_duplicates(old_candidate_id, new_candidate_id)
-                VALUES
-                    (%s, %s)",
-                    $this->_db->makeQueryInteger($oldCandidateID),
-                    $this->_db->makeQueryInteger($newID['newID'])
+                    candidate_duplicates (
+                        old_candidate_id,
+                        new_candidate_id
+                )
+                VALUES (
+                    %s,
+                    %s
+                )",
+                $this->_db->makeQueryInteger($oldCandidateID),
+                               $this->_db->makeQueryInteger($newID['newID'])
                 );
 
                 $this->_db->query($sql);
@@ -1397,13 +1406,13 @@ class Candidates
 
         $sql = sprintf(
             "UPDATE
-                candidate_tag
+            candidate_tag
             SET
-                candidate_id = %s
+            candidate_id = %s
             WHERE
-                candidate_id = %s",
+            candidate_id = %s",
             $this->_db->makeQueryInteger($oldCandidateID),
-            $this->_db->makeQueryInteger($newCandidateID)
+                       $this->_db->makeQueryInteger($newCandidateID)
         );
 
         $this->_db->query($sql);
@@ -1411,155 +1420,171 @@ class Candidates
         $this->mergePipelines($oldCandidateID, $newCandidateID);
         $this->mergeLists($oldCandidateID, $newCandidateID);
 
-        $update = " ";
-        $comma = false;
-        
-        if($params['firstName'] == "1")
+        /*
+         * Build the candidate UPDATE from individually escaped values.
+         * Values read from the database must be escaped again before being
+         * incorporated into a new SQL statement.
+         */
+        $updates = array();
+
+        if ($params['firstName'] == "1")
         {
-            $update .= "first_name = '" . $rs['firstName']."'";
-            $comma = true;
+            $updates[] = 'first_name = ' .
+            $this->_db->makeQueryString($rs['firstName']);
         }
-        if($params['middleName'] == "1")
+
+        if ($params['middleName'] == "1")
         {
-            if($comma)
+            $updates[] = 'middle_name = ' .
+            $this->_db->makeQueryString($rs['middleName']);
+        }
+
+        if ($params['lastName'] == "1")
+        {
+            $updates[] = 'last_name = ' .
+            $this->_db->makeQueryString($rs['lastName']);
+        }
+
+        if ($params['phoneCell'] == "1")
+        {
+            $updates[] = 'phone_cell = ' .
+            $this->_db->makeQueryString($rs['phoneCell']);
+        }
+
+        if ($params['phoneWork'] == "1")
+        {
+            $updates[] = 'phone_work = ' .
+            $this->_db->makeQueryString($rs['phoneWork']);
+        }
+
+        if ($params['phoneHome'] == "1")
+        {
+            $updates[] = 'phone_home = ' .
+            $this->_db->makeQueryString($rs['phoneHome']);
+        }
+
+        if ($params['address'] == "1")
+        {
+            $updates[] = 'address = ' .
+            $this->_db->makeQueryString($rs['address']);
+            $updates[] = 'address2 = ' .
+            $this->_db->makeQueryString($rs['address2']);
+            $updates[] = 'city = ' .
+            $this->_db->makeQueryString($rs['city']);
+            $updates[] = 'zip = ' .
+            $this->_db->makeQueryString($rs['zip']);
+            $updates[] = 'state = ' .
+            $this->_db->makeQueryString($rs['state']);
+        }
+
+        if ($params['website'] == "1")
+        {
+            $updates[] = 'web_site = ' .
+            $this->_db->makeQueryString($rs['webSite']);
+        }
+
+        /*
+         * Email values originate from the merge POST request rather than
+         * $rs, so they must also be escaped before being added to the query.
+         */
+        if (count($params['emails']) == 1)
+        {
+            $updates[] = 'email1 = ' .
+            $this->_db->makeQueryString($params['emails'][0]);
+        }
+        else if (count($params['emails']) == 2)
+        {
+            $updates[] = 'email1 = ' .
+            $this->_db->makeQueryString($params['emails'][0]);
+            $updates[] = 'email2 = ' .
+            $this->_db->makeQueryString($params['emails'][1]);
+        }
+
+        $updates[] = 'is_active = ' .
+        $this->_db->makeQueryInteger($rs['isActive']);
+
+        $updates[] = 'current_employer = ' .
+        $this->_db->makeQueryString($rs['currentEmployer']);
+
+        $updates[] = 'current_pay = ' .
+        $this->_db->makeQueryString($rs['currentPay']);
+
+        $updates[] = 'desired_pay = ' .
+        $this->_db->makeQueryString($rs['desiredPay']);
+
+        $updates[] = 'can_relocate = ' .
+        $this->_db->makeQueryInteger($rs['canRelocate']);
+
+        $updates[] = 'best_time_to_call = ' .
+        $this->_db->makeQueryString($rs['bestTimeToCall']);
+
+        $updates[] = 'is_hot = ' .
+        $this->_db->makeQueryInteger($rs['isHot']);
+
+        $updates[] = 'date_modified = NOW()';
+
+        if ($rs['source'] != "" && $rs['source'] != "(none)")
+        {
+            $updates[] = sprintf(
+                "source = IFNULL(CONCAT(source, %s), %s)",
+                                 $this->_db->makeQueryString(', ' . $rs['source']),
+                                 $this->_db->makeQueryString($rs['source'])
+            );
+        }
+
+        if ($rs['keySkills'] != "")
+        {
+            $updates[] = sprintf(
+                "key_skills = IFNULL(CONCAT(key_skills, %s), %s)",
+                                 $this->_db->makeQueryString(', ' . $rs['keySkills']),
+                                 $this->_db->makeQueryString($rs['keySkills'])
+            );
+        }
+
+        if ($rs['notes'] != "")
+        {
+            $updates[] = sprintf(
+                "notes = IFNULL(CONCAT(notes, %s), %s)",
+                                 $this->_db->makeQueryString(', ' . $rs['notes']),
+                                 $this->_db->makeQueryString($rs['notes'])
+            );
+        }
+
+        if (!empty($rs['dateAvailable']))
+        {
+            $dateParts = explode('-', $rs['dateAvailable']);
+
+            if (count($dateParts) == 3)
             {
-                $update .= ", ";
+                $dateAvailable = '20' . $dateParts[2] . '-' .
+                $dateParts[0] . '-' . $dateParts[1] . ' 00:00:00';
+
+                $updates[] = 'date_available = ' .
+                $this->_db->makeQueryString($dateAvailable);
             }
-            $update .= "middle_name = '" . $rs['middleName']."'";
-            $comma = true;
         }
-        if($params['lastName'] == "1")
-        {
-            if($comma)
-            {
-                $update .= ", ";
-            }
-            $update .= "last_name = '" . $rs['lastName']."'";
-            $comma = true;
-        }
-        if($params['phoneCell'] == "1")
-        {
-            if($comma)
-            {
-                $update .= ", ";
-            }
-            $update .= "phone_cell = '" . $rs['phoneCell']."'";
-            $comma = true;
-        }
-        if($params['phoneWork'] == "1")
-        {
-            if($comma)
-            {
-                $update .= ", ";
-            }
-            $update .= "phone_work = '" . $rs['phoneWork']."'";
-            $comma = true;
-        }
-        if($params['phoneHome'] == "1")
-        {
-            if($comma)
-            {
-                $update .= ", ";
-            }
-            $update .= "phone_home = '" . $rs['phoneHome']."'";
-            $comma = true;
-        }
-        if($params['address'] == "1")
-        {
-            if($comma)
-            {
-                $update .= ", ";
-            }
-            $update .= "address = '" . $rs['address'] . "', address2 = '" . $rs['address2'] . "', city = '" . $rs['city'] . "', zip = '" . $rs['zip'] . "', state = '" . $rs['state'] . "'";
-            $comma = true;
-        }
-        if($params['website'] == "1")
-        {
-            if($comma)
-            {
-                $update .= ", ";
-            }
-            $update .= "web_site = '" . $rs['webSite'] . "'";
-            $comma = true;
-        }
-        if(sizeof($params['emails']) == 1)
-        {
-            if($comma)
-            {
-                $update .= ", ";
-            }
-            $update .= "email1 = '" . $params['emails'][0]."'";
-            $comma = true;
-        }else if(sizeof($params['emails']) == 2)
-        {
-            if($comma)
-            {
-                $update .= ", ";
-                $comma = false;
-            }
-            $update .= "email1 = '" . $params['emails'][0] . "', ";
-            $update .= "email2 = '" . $params['emails'][1] . "', ";
-            $comma = false;
-        }
-        if($comma){
-           $update .= ", "; 
-        }
-        $dateAvailable = $rs['dateAvailable'];
-        $dateParts = explode("-", $dateAvailable);
-        $dateAvailable = "20" . $dateParts[2] . "-" . $dateParts[0] . "-" . $dateParts[1] . " 00:00:00";
-        $update .= "is_active = " . $rs['isActive'] . ", " .
-                    "current_employer = '" . $rs['currentEmployer'] . "', " .
-                    "current_pay = '" . $rs['currentPay'] . "', " .     
-                    "desired_pay = '" . $rs['desiredPay'] . "', " .  
-                    "can_relocate = " . $rs['canRelocate'] . ", " .  
-                    "best_time_to_call = '" . $rs['bestTimeToCall'] . "', " .
-                    "is_hot = " . $rs['isHot'] . ", " . 
-                    "date_modified = NOW()";
-        $comma = true;
-        if($rs['source'] != "" && $rs['source'] != "(none)")
-        {
-            if($comma){$update .= ", ";}
-            $update.= "source = IFNULL(CONCAT(source, ', ".$rs['source'] . "'), '" . $rs['source'] . "')";
-            $comma = true;
-        }
-        if($rs['keySkills'] != "")
-        {   
-            if($comma){$update .= ", ";}    
-            $update .= "key_skills = IFNULL(CONCAT(key_skills, ', ".$rs['keySkills']."'), '" . $rs['keySkills'] . "')";
-            $comma = true;
-        }
-        if($rs['notes'] != "")
-        { 
-            if($comma){$update .= ", ";}  
-            $update .= "notes = IFNULL(CONCAT(notes, ', ".$rs['notes']."'), '" . $rs['notes'] . "')";
-            $comma = true;
-        }
-        if($rs['date_available'] != "")
-        { 
-            if($comma){$update .= ", ";}  
-            $update .= "date_available = '".$dateAvailable."' ";
-        }
-        
+
         $sql = sprintf(
             "UPDATE
-                candidate
+            candidate
             SET
-                %s 
+            %s
             WHERE
-                candidate_id = %s",
-            $update,
-            $this->_db->makeQueryInteger($oldCandidateID)
+            candidate_id = %s",
+            implode(",\n                ", $updates),
+                       $this->_db->makeQueryInteger($oldCandidateID)
         );
-        
-        if($this->_db->query($sql))
+
+        if ($this->_db->query($sql))
         {
             $sql = sprintf(
                 "DELETE FROM
-                    candidate
+                candidate
                 WHERE
-                    candidate_id = %s",
+                candidate_id = %s",
                 $this->_db->makeQueryInteger($newCandidateID)
             );
+
             $this->_db->query($sql);
         }
     }
