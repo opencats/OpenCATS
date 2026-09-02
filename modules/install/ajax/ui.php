@@ -590,9 +590,14 @@ switch ($action)
         @session_name(CATS_SESSION_NAME);
         session_start();
 
-        // FIXME: Input validation.
-        $timeZone = $_REQUEST['timeZone'];
-        CATSUtility::changeConfigSetting('OFFSET_GMT', ($timeZone));
+        $timeZone = filter_var($_REQUEST['timeZone'], FILTER_VALIDATE_INT);
+
+        if ($timeZone === false || $timeZone < -12 || $timeZone > 12)
+        {
+            die('Invalid time zone.');
+        }
+
+        CATSUtility::changeConfigSetting('OFFSET_GMT', sprintf('%d', $timeZone));
 
         $dateFormat = $_REQUEST['dateFormat'];
         $timeFormat = isset($_REQUEST['timeFormat']) ? $_REQUEST['timeFormat'] : '12';
@@ -973,7 +978,10 @@ switch ($action)
 
         $timeZone = $_SESSION['timeZoneInstaller'];
 
-        MySQLQuery(sprintf("UPDATE site SET time_zone = %s", $timeZone));
+        MySQLQuery(sprintf(
+            'UPDATE site SET time_zone = %s',
+            $db->makeQueryInteger($timeZone)
+        ));
 
         if (isset($_SESSION['defaultPhoneCountryCodeInstaller'])
             && $_SESSION['defaultPhoneCountryCodeInstaller'] !== '')
