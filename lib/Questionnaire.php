@@ -653,6 +653,7 @@ class Questionnaire
             $cData['phoneCell'],
             $cData['phoneWork'],
             $cData['address'],
+            $cData['address2'],
             $cData['city'],
             $cData['state'],
             $cData['zip'],

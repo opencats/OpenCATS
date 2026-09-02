@@ -2,28 +2,29 @@
     include_once('constants.php');
     include_once('config.php');
 
-    /* Version check before we include this. */
-    $phpVersion = phpversion();
-    $phpVersionParts = explode('.', $phpVersion);
-    if ($phpVersionParts[0] >= 5)
+    $minimumPHPVersion = '8.4.1';
+    $isSupportedPHPVersion = version_compare(
+        PHP_VERSION,
+        $minimumPHPVersion,
+        '>='
+    );
+
+    if ($isSupportedPHPVersion)
     {
         include_once(LEGACY_ROOT . '/lib/Template.php');
         include_once(LEGACY_ROOT . '/lib/Session.php');
         include_once(LEGACY_ROOT . '/lib/TemplateUtility.php');
 
-        @session_name(CATS_SESSION_NAME);
+        session_name(CATS_SESSION_NAME);
         session_start();
     }
-    else
-    {
-        $php4 = true;
-    }
+
 
     $installLibURL = 'js/lib.js';
     $installScriptURL = 'js/install.js';
     $subModalScriptURL = 'js/submodal/subModal.js';
     $installCSSURL = 'modules/install/install.css';
-    if (!isset($php4))
+    if ($isSupportedPHPVersion)
     {
         $installLibURL = call_user_func(array('TemplateUtility', 'getVersionedAssetURL'), $installLibURL);
         $installScriptURL = call_user_func(array('TemplateUtility', 'getVersionedAssetURL'), $installScriptURL);
@@ -37,7 +38,7 @@
     <head>
         <title>OpenCATS - Installation Wizard Script</title>
         <?php
-            if (!isset($php4) && isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn())
+            if ($isSupportedPHPVersion && isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn())
             {
                 echo '<script type="text/javascript">CATSCsrfToken = ',
                      Template::escapeJs($_SESSION['CATS']->getCSRFToken()), ';</script>', "\n";
@@ -122,7 +123,14 @@
                                             <br />
                                             <span style="font-weight: bold;">Test Results</span>
                                             <table class="test_output">
-                                            <tr class="fail"><td>PHP 5.0.0 or greater is required to run OpenCATS. Found version: <?php echo(phpversion()); ?>.</td></tr>
+                                            <tr class="fail">
+                                            <td>
+                                            OpenCATS requires PHP
+                                            <?php echo htmlspecialchars($minimumPHPVersion, ENT_QUOTES, 'UTF-8'); ?>
+                                            or newer. Found PHP
+                                            <?php echo htmlspecialchars(PHP_VERSION, ENT_QUOTES, 'UTF-8'); ?>.
+                                            </td>
+                                            </tr>
                                             </table>
                                         </div>
                                         <div id="databaseConnectivity" style="display: none;">
@@ -466,7 +474,7 @@
                                                     <td>Please choose your time zone.</td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="padding-bottom: 10px;"><?php if (!isset($php4)) TemplateUtility::printTimeZoneSelect('timeZone', 'width: 420px;', '', OFFSET_GMT); ?></td>
+                                                    <td style="padding-bottom: 10px;"><?php if ($isSupportedPHPVersion) TemplateUtility::printTimeZoneSelect('timeZone', 'width: 420px;', '', OFFSET_GMT); ?></td>
                                                 </tr>
 
                                                 <tr>
@@ -567,7 +575,7 @@
                             </table>
 
                             <script type="text/javascript">
-                                <?php if (!isset($php4)): ?>
+                                <?php if ($isSupportedPHPVersion): ?>
                                     Installpage_populate('a=startInstall');
                                 <?php else: ?>
                                     setActiveStep(1);

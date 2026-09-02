@@ -65,6 +65,12 @@ services:
         retries: 30
         start_period: 20s
 
+    mailpit:
+      container_name: opencats_test_mailpit
+      image: axllent/mailpit
+      ports:
+        - 8025:8025
+
     selenium:
       container_name: selenium_test
       image: mlespiau/standalone-chrome:2.53.1-cd2.23

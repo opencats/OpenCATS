@@ -45,20 +45,56 @@ class CATSSchema
             ',
             /* Upgrade directory names to prevent iteration through attachments folder. */
             '4' => 'PHP:
-                include_once(\'lib/FileUtility.php\');
-                $rs = $db->getAllAssoc(\'SELECT * FROM attachment\');
-                foreach ($rs as $index => $data)
-                {
-                    if (strlen($data[\'directory_name\']) < 25)
-                    {
-                        $dir = FileUtility::getUniqueDirectory();
-                        if (rename(\'attachments/\' . $data[\'directory_name\'], \'attachments/\' . $dir))
-                        {
-                            $db->query("UPDATE attachment SET directory_name = \'" . $dir . "\' WHERE attachment_id = " . $data[\'attachment_id\']);
-                        }
-                    }
-                }
-            ',
+            include_once(\'lib/FileUtility.php\');
+
+        $lastAttachmentID = 0;
+        $batchSize = 100;
+
+        while (true)
+        {
+        $rs = $db->getAllAssoc(
+            "SELECT
+            attachment_id,
+            directory_name
+            FROM
+            attachment
+            WHERE
+            attachment_id > " . $db->makeQueryInteger($lastAttachmentID) . "
+            ORDER BY
+            attachment_id ASC
+            LIMIT " . (int) $batchSize
+        );
+
+        if (empty($rs))
+        {
+        break;
+    }
+
+    foreach ($rs as $data)
+        {
+        $lastAttachmentID = (int) $data[\'attachment_id\'];
+
+    if (strlen((string) $data[\'directory_name\']) < 25)
+        {
+        $dir = FileUtility::getUniqueDirectory();
+
+    if (rename(
+        \'attachments/\' . $data[\'directory_name\'],
+        \'attachments/\' . $dir
+        ))
+        {
+        $db->query(
+            "UPDATE attachment
+            SET directory_name = "
+            . $db->makeQueryString($dir)
+        . " WHERE attachment_id = "
+        . $db->makeQueryInteger($data[\'attachment_id\'])
+        );
+    }
+    }
+    }
+    }
+    ',
             '5' => '
                 UPDATE client SET name = \'Internal Postings\' WHERE default_client = 1;
             ',
@@ -277,16 +313,68 @@ class CATSSchema
                 ALTER IGNORE TABLE `attachment` ADD COLUMN `file_size_kb` INT(11) DEFAULT 0;
             ',
             '60' => 'PHP:
-                include_once(\'lib/Attachments.php\');
-                $rs = $db->getAllAssoc(\'SELECT * FROM attachment\');
-                foreach ($rs as $index => $data)
-                {
-                    $md5sum = @md5_file(\'attachments/\' . $data[\'directory_name\'] . \'/\' . $data[\'stored_filename\']);
-                    $fileSize = @filesize(\'attachments/\' . $data[\'directory_name\'] . \'/\' . $data[\'stored_filename\']);
-                    $fileSize = (int) $fileSize / 1024;
-                    $db->query("UPDATE attachment SET md5_sum = \'" . $md5sum . "\', file_size_kb = " . $fileSize . " WHERE attachment_id = " . $data[\'attachment_id\']);
-                }
-            ',
+            include_once(\'lib/Attachments.php\');
+
+        $lastAttachmentID = 0;
+        $batchSize = 100;
+
+        while (true)
+        {
+        $rs = $db->getAllAssoc(
+            "SELECT
+            attachment_id,
+            directory_name,
+            stored_filename
+            FROM
+            attachment
+            WHERE
+            attachment_id > "
+            . $db->makeQueryInteger($lastAttachmentID) . "
+            ORDER BY
+            attachment_id ASC
+            LIMIT " . (int) $batchSize
+        );
+
+        if (empty($rs))
+        {
+        break;
+    }
+
+    foreach ($rs as $data)
+        {
+        $lastAttachmentID = (int) $data[\'attachment_id\'];
+
+    $filePath = \'attachments/\'
+    . $data[\'directory_name\']
+    . \'/\'
+    . $data[\'stored_filename\'];
+
+    $md5sum = @md5_file($filePath);
+        if ($md5sum === false)
+        {
+        $md5sum = \'\';
+    }
+
+    $fileSize = @filesize($filePath);
+        if ($fileSize === false)
+        {
+        $fileSize = 0;
+    }
+
+    $fileSizeKB = (int) ($fileSize / 1024);
+
+        $db->query(
+            "UPDATE attachment
+            SET md5_sum = "
+            . $db->makeQueryString($md5sum)
+        . ", file_size_kb = "
+        . $db->makeQueryInteger($fileSizeKB)
+        . " WHERE attachment_id = "
+        . $db->makeQueryInteger($data[\'attachment_id\'])
+        );
+    }
+    }
+    ',
             '61' => '
                 ALTER IGNORE TABLE `mailer_settings` DROP COLUMN `entered_by`;
                 ALTER IGNORE TABLE `job_board_settings` DROP COLUMN `entered_by`;
@@ -1538,125 +1626,261 @@ class CATSSchema
                 ALTER TABLE `contact` ADD COLUMN `country` VARCHAR(2) DEFAULT NULL AFTER `zip`;
                 ALTER TABLE `joborder` ADD COLUMN `country` VARCHAR(2) DEFAULT NULL AFTER `state`;
             ',
-            '383' => '
-                UPDATE
-                    career_portal_template
-                SET
-                    value = REPLACE(value, \'<td><input-state></td>\', \'<td><input-state><br /><input-country></td>\')
-                WHERE
-                    career_portal_name = \'CATS 2.0\'
-                    AND setting = \'Content - Apply for Position\'
-                    AND value NOT LIKE \'%<input-country>%\'
-                    AND value LIKE \'%<h1>Applying to: <title></h1>%\'
-                    AND value LIKE \'%<label id="stateCountryLabel" for="stateCountry">*State/Country:</label>%\'
-                    AND value LIKE \'%<label id="zipPostalLabel" for="zipPostal">*Zip/Postal Code:</label>%\'
-                    AND value LIKE \'%<td><input-state></td>%\';
+            '383' => 'PHP:
+            $tables = array(
+                "career_portal_template",
+                "career_portal_template_site"
+        );
 
-                UPDATE
-                    career_portal_template_site
-                SET
-                    value = REPLACE(value, \'<td><input-state></td>\', \'<td><input-state><br /><input-country></td>\')
-                WHERE
-                    career_portal_name = \'CATS 2.0\'
-                    AND setting = \'Content - Apply for Position\'
-                    AND value NOT LIKE \'%<input-country>%\'
-                    AND value LIKE \'%<h1>Applying to: <title></h1>%\'
-                    AND value LIKE \'%<label id="stateCountryLabel" for="stateCountry">*State/Country:</label>%\'
-                    AND value LIKE \'%<label id="zipPostalLabel" for="zipPostal">*Zip/Postal Code:</label>%\'
-                    AND value LIKE \'%<td><input-state></td>%\';
+        $templateUpdates = array(
+            array(
+                "setting" => "Content - Apply for Position",
+                "marker" => "<h1>Applying to: <title></h1>"
+        ),
+        array(
+            "setting" => "Content - Candidate Profile",
+            "marker" => "<h1 style=\"padding: 0; margin: 0; border: 0;\">My Profile</h1>"
+        )
+        );
 
-                UPDATE
-                    career_portal_template
-                SET
-                    value = REPLACE(value, \'<td><input-state></td>\', \'<td><input-state><br /><input-country></td>\')
-                WHERE
-                    career_portal_name = \'CATS 2.0\'
-                    AND setting = \'Content - Candidate Profile\'
-                    AND value NOT LIKE \'%<input-country>%\'
-                    AND value LIKE \'%<h1 style="padding: 0; margin: 0; border: 0;">My Profile</h1>%\'
-                    AND value LIKE \'%<label id="stateCountryLabel" for="stateCountry">*State/Country:</label>%\'
-                    AND value LIKE \'%<label id="zipPostalLabel" for="zipPostal">*Zip/Postal Code:</label>%\'
-                    AND value LIKE \'%<td><input-state></td>%\';
+        $oldStateInput = "<td><input-state></td>";
+        $newStateInput = "<td><input-state><br /><input-country></td>";
 
-                UPDATE
-                    career_portal_template_site
-                SET
-                    value = REPLACE(value, \'<td><input-state></td>\', \'<td><input-state><br /><input-country></td>\')
-                WHERE
-                    career_portal_name = \'CATS 2.0\'
-                    AND setting = \'Content - Candidate Profile\'
-                    AND value NOT LIKE \'%<input-country>%\'
-                    AND value LIKE \'%<h1 style="padding: 0; margin: 0; border: 0;">My Profile</h1>%\'
-                    AND value LIKE \'%<label id="stateCountryLabel" for="stateCountry">*State/Country:</label>%\'
-                    AND value LIKE \'%<label id="zipPostalLabel" for="zipPostal">*Zip/Postal Code:</label>%\'
-                    AND value LIKE \'%<td><input-state></td>%\';
-            ',
-            '384' => '
-                UPDATE
-                    career_portal_template
-                SET
-                    value = REPLACE(
-                        REPLACE(
-                            REPLACE(value, \'<td><city>, <state></td>\', \'<td><location></td>\'),
-                            \'<city>, <state>\',
-                            \'<location>\'
-                        ),
-                        \'<city>,<state>\',
-                        \'<location>\'
-                    )
-                WHERE
-                    setting = \'Content - Job Details\'
-                    AND value NOT LIKE \'%<location>%\'
-                    AND
-                    (
-                        (
-                            career_portal_name = \'CATS 2.0\'
-                            AND value LIKE \'%<h1>Position Details: <title></h1>%\'
-                            AND value LIKE \'%<td class="detailsHeader"><strong>Location:</strong></td>%\'
-                            AND value LIKE \'%<td class="detailsHeader"><strong>Openings:</strong></td>%\'
-                            AND value LIKE \'%<td class="detailsHeader"><strong>Salary Range:</strong></td>%\'
-                            AND value LIKE \'%<a-applyToJob onmouseover="buttonMouseOver(\'\'applyToPosition\'\',true);" onmouseout="buttonMouseOver(\'\'applyToPosition\'\',false);"><img src="images/careers_apply.gif" id="applyToPosition" alt="IMAGE: Apply to Position" /></a>%\'
-                        )
-                        OR
-                        (
-                            value LIKE \'%<p class="noteUnsized">Job Details</p>%\'
-                            AND value LIKE \'%Date Created:%\'
-                            AND value LIKE \'%Location:%\'
-                        )
-                    );
+        $stateCountryLabel =
+        "<label id=\"stateCountryLabel\" for=\"stateCountry\">*State/Country:</label>";
 
-                UPDATE
-                    career_portal_template_site
-                SET
-                    value = REPLACE(
-                        REPLACE(
-                            REPLACE(value, \'<td><city>, <state></td>\', \'<td><location></td>\'),
-                            \'<city>, <state>\',
-                            \'<location>\'
-                        ),
-                        \'<city>,<state>\',
-                        \'<location>\'
-                    )
-                WHERE
-                    setting = \'Content - Job Details\'
-                    AND value NOT LIKE \'%<location>%\'
-                    AND
-                    (
-                        (
-                            value LIKE \'%<h1>Position Details: <title></h1>%\'
-                            AND value LIKE \'%<td class="detailsHeader"><strong>Location:</strong></td>%\'
-                            AND value LIKE \'%<td class="detailsHeader"><strong>Openings:</strong></td>%\'
-                            AND value LIKE \'%<td class="detailsHeader"><strong>Salary Range:</strong></td>%\'
-                            AND value LIKE \'%<a-applyToJob onmouseover="buttonMouseOver(\'\'applyToPosition\'\',true);" onmouseout="buttonMouseOver(\'\'applyToPosition\'\',false);"><img src="images/careers_apply.gif" id="applyToPosition" alt="IMAGE: Apply to Position" /></a>%\'
-                        )
-                        OR
-                        (
-                            value LIKE \'%<p class="noteUnsized">Job Details</p>%\'
-                            AND value LIKE \'%Date Created:%\'
-                            AND value LIKE \'%Location:%\'
-                        )
-                    );
-            ',
+        $zipPostalLabel =
+        "<label id=\"zipPostalLabel\" for=\"zipPostal\">*Zip/Postal Code:</label>";
+
+        foreach ($tables as $tableName)
+        {
+        foreach ($templateUpdates as $templateUpdate)
+        {
+        $db->query(
+            "UPDATE `" . $tableName . "`
+            SET value = REPLACE(
+                value,
+                " . $db->makeQueryString($oldStateInput) . ",
+                     " . $db->makeQueryString($newStateInput) . "
+        )
+        WHERE career_portal_name = "
+        . $db->makeQueryString("CATS 2.0")
+        . "
+        AND setting = "
+        . $db->makeQueryString($templateUpdate["setting"])
+        . "
+        AND value NOT LIKE "
+        . $db->makeQueryString("%<input-country>%")
+        . "
+        AND value LIKE "
+        . $db->makeQueryString(
+            "%" . $templateUpdate["marker"] . "%"
+        )
+        . "
+        AND value LIKE "
+        . $db->makeQueryString(
+            "%" . $stateCountryLabel . "%"
+        )
+        . "
+        AND value LIKE "
+        . $db->makeQueryString(
+            "%" . $zipPostalLabel . "%"
+        )
+        . "
+        AND value LIKE "
+        . $db->makeQueryString(
+            "%" . $oldStateInput . "%"
+        )
+        );
+    }
+    }
+    ',
+    '384' => 'PHP:
+    $oldTableLocation = "<td><city>, <state></td>";
+    $newTableLocation = "<td><location></td>";
+    $oldSpacedLocation = "<city>, <state>";
+    $oldCompactLocation = "<city>,<state>";
+    $newLocation = "<location>";
+
+    $positionDetailsHeading =
+    "<h1>Position Details: <title></h1>";
+
+    $locationHeader =
+    "<td class=\"detailsHeader\"><strong>Location:</strong></td>";
+
+    $openingsHeader =
+    "<td class=\"detailsHeader\"><strong>Openings:</strong></td>";
+
+    $salaryHeader =
+    "<td class=\"detailsHeader\"><strong>Salary Range:</strong></td>";
+
+    /*
+     * Build the historical CATS 2.0 Apply button marker without embedding
+     * literal single quotes in this Schema.php PHP migration string.
+     */
+    $applyButtonMarker =
+    "<a-applyToJob onmouseover=\"buttonMouseOver("
+    . chr(39)
+        . "applyToPosition"
+        . chr(39)
+        . ",true);\" onmouseout=\"buttonMouseOver("
+        . chr(39)
+        . "applyToPosition"
+        . chr(39)
+        . ",false);\"><img src=\"images/careers_apply.gif\" "
+        . "id=\"applyToPosition\" alt=\"IMAGE: Apply to Position\" /></a>";
+
+        $legacyJobDetailsHeading =
+        "<p class=\"noteUnsized\">Job Details</p>";
+
+        /*
+         * Preserve the original nested replacement order exactly.
+         */
+        $replaceExpression =
+        "REPLACE("
+        . "REPLACE("
+        . "REPLACE(value, "
+        . $db->makeQueryString($oldTableLocation)
+        . ", "
+        . $db->makeQueryString($newTableLocation)
+        . "), "
+        . $db->makeQueryString($oldSpacedLocation)
+        . ", "
+        . $db->makeQueryString($newLocation)
+        . "), "
+        . $db->makeQueryString($oldCompactLocation)
+        . ", "
+        . $db->makeQueryString($newLocation)
+        . ")";
+
+        /*
+         * Update the shipped CATS 2.0 template, or an older recognised
+         * Job Details template, while leaving custom templates alone.
+         */
+        $db->query(
+            "UPDATE
+            career_portal_template
+            SET
+            value = " . $replaceExpression . "
+            WHERE
+            setting = "
+            . $db->makeQueryString("Content - Job Details")
+        . "
+        AND value NOT LIKE "
+        . $db->makeQueryString("%<location>%")
+        . "
+        AND
+        (
+            (
+                career_portal_name = "
+                . $db->makeQueryString("CATS 2.0")
+        . "
+        AND value LIKE "
+        . $db->makeQueryString(
+            "%" . $positionDetailsHeading . "%"
+        )
+        . "
+        AND value LIKE "
+        . $db->makeQueryString(
+            "%" . $locationHeader . "%"
+        )
+        . "
+        AND value LIKE "
+        . $db->makeQueryString(
+            "%" . $openingsHeader . "%"
+        )
+        . "
+        AND value LIKE "
+        . $db->makeQueryString(
+            "%" . $salaryHeader . "%"
+        )
+        . "
+        AND value LIKE "
+        . $db->makeQueryString(
+            "%" . $applyButtonMarker . "%"
+        )
+        . "
+        )
+        OR
+        (
+            value LIKE "
+            . $db->makeQueryString(
+                "%" . $legacyJobDetailsHeading . "%"
+        )
+        . "
+        AND value LIKE "
+        . $db->makeQueryString("%Date Created:%")
+        . "
+        AND value LIKE "
+        . $db->makeQueryString("%Location:%")
+        . "
+        )
+        )"
+        );
+
+        /*
+         * Preserve the original matching behaviour for site-specific
+         * templates. In particular, do not introduce a new
+         * career_portal_name restriction here.
+         */
+        $db->query(
+            "UPDATE
+            career_portal_template_site
+            SET
+            value = " . $replaceExpression . "
+            WHERE
+            setting = "
+            . $db->makeQueryString("Content - Job Details")
+        . "
+        AND value NOT LIKE "
+        . $db->makeQueryString("%<location>%")
+        . "
+        AND
+        (
+            (
+                value LIKE "
+                . $db->makeQueryString(
+                    "%" . $positionDetailsHeading . "%"
+        )
+        . "
+        AND value LIKE "
+        . $db->makeQueryString(
+            "%" . $locationHeader . "%"
+        )
+        . "
+        AND value LIKE "
+        . $db->makeQueryString(
+            "%" . $openingsHeader . "%"
+        )
+        . "
+        AND value LIKE "
+        . $db->makeQueryString(
+            "%" . $salaryHeader . "%"
+        )
+        . "
+        AND value LIKE "
+        . $db->makeQueryString(
+            "%" . $applyButtonMarker . "%"
+        )
+        . "
+        )
+        OR
+        (
+            value LIKE "
+            . $db->makeQueryString(
+                "%" . $legacyJobDetailsHeading . "%"
+        )
+        . "
+        AND value LIKE "
+        . $db->makeQueryString("%Date Created:%")
+        . "
+        AND value LIKE "
+        . $db->makeQueryString("%Location:%")
+        . "
+        )
+        )"
+        );
+        ',
             '385' => 'PHP:
                 include_once(\'modules/install/scripts/385.php\');
                 update_385($db);
@@ -1892,144 +2116,202 @@ class CATSSchema
                 DELETE FROM `user` WHERE `site_id` = 180;
                 DELETE FROM `site` WHERE `site_id` = 180;
             ',
-            '392' => '
-                ALTER TABLE `activity`
-                    DROP INDEX `IDX_site_id`,
-                    DROP INDEX `IDX_data_item_id_type_site`,
-                    DROP INDEX `IDX_site_created`,
-                    DROP INDEX `IDX_site_occurred`,
-                    DROP INDEX `IDX_activity_site_type_created_job`,
-                    DROP INDEX `IDX_activity_site_type_occurred_job`,
-                    DROP COLUMN `site_id`;
+            '392' => 'PHP:
+            $migrationTables = array(
+                "activity" => array(
+                    "IDX_site_id",
+                     "IDX_data_item_id_type_site",
+                     "IDX_site_created",
+                     "IDX_site_occurred",
+                     "IDX_activity_site_type_created_job",
+                     "IDX_activity_site_type_occurred_job"
+        ),
+        "attachment" => array(
+            "IDX_site_file_size",
+            "IDX_site_file_size_created"
+        ),
+        "calendar_event" => array(
+            "IDX_site_id_date",
+            "IDX_site_data_item_type_id"
+        ),
+        "candidate" => array(
+            "IDX_site_first_last_modified",
+            "IDX_site_id_email_1_2"
+        ),
+        "candidate_duplicates" => array(),
+                     "candidate_joborder" => array(
+                         "IDX_site_id",
+                     "IDX_status_special",
+                     "IDX_site_joborder"
+        ),
+        "candidate_joborder_status_history" => array(
+            "IDX_site_id",
+            "IDX_status_to_site_id",
+            "IDX_candidate_joborder_status_to_site",
+            "IDX_joborder_site",
+            "IDX_site_joborder_status_to"
+        ),
+        "candidate_source" => array(
+            "siteID"
+        ),
+        "candidate_tag" => array(),
+                     "career_portal_questionnaire" => array(),
+                     "career_portal_questionnaire_answer" => array(),
+                     "career_portal_questionnaire_history" => array(),
+                     "career_portal_questionnaire_question" => array(),
+                     "career_portal_template_site" => array(),
+                     "company" => array(
+                         "IDX_site_id"
+        ),
+        "company_department" => array(),
+                     "contact" => array(
+                         "IDX_site_id"
+        ),
+        "email_history" => array(
+            "IDX_site_id"
+        ),
+        "email_template" => array(),
+                     "extra_field" => array(
+                         "IDX_site_id"
+        ),
+        "extra_field_settings" => array(),
+                     "feedback" => array(),
+                     "history" => array(
+                         "IDX_data_item_id_type_site"
+        ),
+        "http_log" => array(),
+                     "import" => array(),
+                     "joborder" => array(
+                         "IDX_site_id_status"
+        ),
+        "mru" => array(
+            "IDX_user_site"
+        ),
+        "queue" => array(),
+                     "saved_list" => array(
+                         "IDX_site_id"
+        ),
+        "saved_list_entry" => array(),
+                     "saved_search" => array(),
+                     "settings" => array(),
+                     "tag" => array(),
+                     "user" => array(
+                         "IDX_site_id"
+        ),
+        "user_login" => array(
+            "IDX_site_id_date",
+            "IDX_successful_site_id"
+        )
+        );
 
-                ALTER TABLE `attachment`
-                    DROP INDEX `IDX_site_file_size`,
-                    DROP INDEX `IDX_site_file_size_created`,
-                    DROP COLUMN `site_id`;
+        $quoteIdentifier = function($identifier)
+        {
+        return "`" . str_replace("`", "``", $identifier) . "`";
+    };
 
-                ALTER TABLE `calendar_event`
-                    DROP INDEX `IDX_site_id_date`,
-                    DROP INDEX `IDX_site_data_item_type_id`,
-                    DROP COLUMN `site_id`;
+    foreach ($migrationTables as $tableName => $indexNames)
+        {
+        /*
+         * A missing table is not an expected partial-migration state.
+         * Stop rather than silently marking migration 392 complete.
+         */
+        $tableRows = $db->getAllAssoc(
+            "SELECT
+            TABLE_NAME
+            FROM
+            information_schema.TABLES
+            WHERE
+            TABLE_SCHEMA = DATABASE()
+        AND TABLE_NAME = "
+        . $db->makeQueryString($tableName)
+        . "
+        LIMIT 1"
+        );
 
-                ALTER TABLE `candidate`
-                    DROP INDEX `IDX_site_first_last_modified`,
-                    DROP INDEX `IDX_site_id_email_1_2`,
-                    DROP COLUMN `site_id`;
+        if (empty($tableRows))
+        {
+        throw new RuntimeException(
+            "Migration 392 expected table "
+            . $tableName
+            . " but it does not exist."
+        );
+    }
 
-                ALTER TABLE `candidate_duplicates`
-                    DROP COLUMN `site_id`;
+    $alterParts = array();
 
-                ALTER TABLE `candidate_joborder`
-                    DROP INDEX `IDX_site_id`,
-                    DROP INDEX `IDX_status_special`,
-                    DROP INDEX `IDX_site_joborder`,
-                    DROP COLUMN `site_id`;
+        /*
+         * Only drop indexes that still exist. This makes the migration
+         * safe to retry if an earlier request stopped after processing
+         * some tables.
+         */
+        foreach ($indexNames as $indexName)
+        {
+        $indexRows = $db->getAllAssoc(
+            "SELECT
+            INDEX_NAME
+            FROM
+            information_schema.STATISTICS
+            WHERE
+            TABLE_SCHEMA = DATABASE()
+        AND TABLE_NAME = "
+        . $db->makeQueryString($tableName)
+        . "
+        AND INDEX_NAME = "
+        . $db->makeQueryString($indexName)
+        . "
+        LIMIT 1"
+        );
 
-                ALTER TABLE `candidate_joborder_status_history`
-                    DROP INDEX `IDX_site_id`,
-                    DROP INDEX `IDX_status_to_site_id`,
-                    DROP INDEX `IDX_candidate_joborder_status_to_site`,
-                    DROP INDEX `IDX_joborder_site`,
-                    DROP INDEX `IDX_site_joborder_status_to`,
-                    DROP COLUMN `site_id`;
+        if (!empty($indexRows))
+        {
+        $alterParts[] =
+        "DROP INDEX " . $quoteIdentifier($indexName);
+    }
+    }
 
-                ALTER TABLE `candidate_source`
-                    DROP INDEX `siteID`,
-                    DROP COLUMN `site_id`;
+    /*
+     * site_id may already have been removed by an earlier partial
+     * run. Only request the drop when the column still exists.
+     */
+    $columnRows = $db->getAllAssoc(
+        "SELECT
+        COLUMN_NAME
+        FROM
+        information_schema.COLUMNS
+        WHERE
+        TABLE_SCHEMA = DATABASE()
+        AND TABLE_NAME = "
+        . $db->makeQueryString($tableName)
+        . "
+        AND COLUMN_NAME = "
+        . $db->makeQueryString("site_id")
+        . "
+        LIMIT 1"
+        );
 
-                ALTER TABLE `candidate_tag`
-                    DROP COLUMN `site_id`;
+        if (!empty($columnRows))
+        {
+        $alterParts[] =
+        "DROP COLUMN " . $quoteIdentifier("site_id");
+    }
 
-                ALTER TABLE `career_portal_questionnaire`
-                    DROP COLUMN `site_id`;
+    /*
+     * If this table was already completed by a previous attempt,
+     * there is nothing left to do.
+     */
+    if (empty($alterParts))
+        {
+        continue;
+    }
 
-                ALTER TABLE `career_portal_questionnaire_answer`
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `career_portal_questionnaire_history`
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `career_portal_questionnaire_question`
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `career_portal_template_site`
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `company`
-                    DROP INDEX `IDX_site_id`,
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `company_department`
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `contact`
-                    DROP INDEX `IDX_site_id`,
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `email_history`
-                    DROP INDEX `IDX_site_id`,
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `email_template`
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `extra_field`
-                    DROP INDEX `IDX_site_id`,
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `extra_field_settings`
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `feedback`
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `history`
-                    DROP INDEX `IDX_data_item_id_type_site`,
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `http_log`
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `import`
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `joborder`
-                    DROP INDEX `IDX_site_id_status`,
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `mru`
-                    DROP INDEX `IDX_user_site`,
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `queue`
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `saved_list`
-                    DROP INDEX `IDX_site_id`,
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `saved_list_entry`
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `saved_search`
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `settings`
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `tag`
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `user`
-                    DROP INDEX `IDX_site_id`,
-                    DROP COLUMN `site_id`;
-
-                ALTER TABLE `user_login`
-                    DROP INDEX `IDX_site_id_date`,
-                    DROP INDEX `IDX_successful_site_id`,
-                    DROP COLUMN `site_id`;
-            ',
+    $db->query(
+        "ALTER TABLE "
+        . $quoteIdentifier($tableName)
+        . " "
+        . implode(", ", $alterParts)
+        );
+    }
+    ',
             '393' => '
                 INSERT INTO candidate_joborder_status
                     (candidate_joborder_status_id, short_description, can_be_scheduled, triggers_email, is_enabled)
