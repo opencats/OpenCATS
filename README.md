@@ -4,6 +4,19 @@
 
 OpenCATS is a Free and Open Source Candidate/Applicant Tracking System designed for Recruiters to manage recruiting process from job posting, candidate application, through to candidate selection and submission.
 
+## Contributing
+
+Contributions to OpenCATS are very welcome.
+
+If you're looking for something useful to work on, see the
+[OpenCATS Modernisation & Contributor Roadmap](https://github.com/orgs/opencats/projects/2).
+
+The roadmap includes work ranging from small PHP 8.4/8.5 and code-quality fixes,
+through database and UI improvements, to larger recruitment, search, API and
+integration features.
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) before starting substantial work.
+
 More details: 
 
 <http://www.opencats.org>
