@@ -495,15 +495,9 @@ class ExtraFields
             switch ($data['extraFieldType'])
             {
                 case EXTRA_FIELD_CHECKBOX:
-                    if ($extraFields[$index]['value'] == '')
-                    {
-                        $extraFields[$index]['display'] = 'No';
-                    }
-                    else
-                    {
-                        $extraFields[$index]['display'] = $extraFields[$index]['value'];
-                    }
-                break;
+                    $extraFields[$index]['display'] =
+                    ($extraFields[$index]['value'] === 'Yes') ? 'Yes' : 'No';
+                    break;
                 
                 case EXTRA_FIELD_TEXTAREA:
                     $extraFields[$index]['display'] = nl2br(htmlspecialchars($extraFields[$index]['value']));
@@ -851,6 +845,14 @@ class ExtraFields
 
             $newValue = $_POST['extraField' . $i];
 
+            if ($extraFields[$i]['extraFieldType'] == EXTRA_FIELD_CHECKBOX)
+            {
+                if ($newValue !== 'Yes' && $newValue !== 'No')
+                {
+                    continue;
+                }
+            }
+
             if ($extraFields[$i]['extraFieldType'] == EXTRA_FIELD_DATE)
             {
                 $newValue = trim($newValue);
@@ -871,7 +873,11 @@ class ExtraFields
 
             if ($extraFields[$i]['value'] != $newValue)
             {
-               $this->setValue($extraFields[$i]['fieldName'], $newValue, $dataItemID);
+                $this->setValue(
+                    $extraFields[$i]['fieldName'],
+                    $newValue,
+                    $dataItemID
+                );
             }
         }
     }
