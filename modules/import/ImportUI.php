@@ -1886,7 +1886,10 @@ class ImportUI extends UserInterface
                             'name' => trim($doc['firstName'] . ' ' . $doc['lastName']),
                             'resume' => $doc['realName']
                         );
-                        @unlink($doc['name']);
+                        if (FileUtility::isUploadFileSafe('massimport', $doc['name']))
+                        {
+                            @unlink($doc['name']);
+                        }
                         $candidateAdded = true;
                     }
                 }
