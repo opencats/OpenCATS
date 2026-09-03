@@ -886,6 +886,15 @@ class ImportUI extends UserInterface
                 return;
         }
 
+        /* Build a whitelist of valid destination fields from the import
+         * type definitions used to populate the mapping interface.
+         */
+        $allowedImportFields = array();
+        for ($typeIndex = 1; $typeIndex < count($types); $typeIndex += 2)
+        {
+            $allowedImportFields[] = $types[$typeIndex];
+        }
+
         /* Get user preference for what do to with each field and convert each field into UTF-8*/
         foreach ($theFields AS $fieldID => $theField)
         {
@@ -936,15 +945,28 @@ class ImportUI extends UserInterface
 
                 if ($theFieldPreferenceValue == 'cats')
                 {
-                    if (substr($_POST['importIntoField' . $fieldID], 0, 1) == '#')
+                    $importFieldName = 'importIntoField' . $fieldID;
+
+                    if (!isset($_POST[$importFieldName]) ||
+                        !in_array($_POST[$importFieldName], $allowedImportFields, true))
                     {
-                        /* This is an extra field. */
-                        $foreignEntries[substr($_POST['importIntoField' . $fieldID], 1)] = $theData[$fieldID];
+                        CommonErrors::fatal(
+                            COMMONERROR_BADFIELDS,
+                            $this,
+                            'Invalid import field mapping.'
+                        );
+                    }
+
+                    $importField = $_POST[$importFieldName];
+
+                    if (substr($importField, 0, 1) == '#')
+                    {
+                        $foreignEntries[substr($importField, 1)] = $theData[$fieldID];
                     }
                     else
                     {
-                        $catsEntriesRows[] = $_POST['importIntoField' .$fieldID];
-                        $catsEntriesValuesNamed[$_POST['importIntoField' . $fieldID]] = trim($theData[$fieldID]);
+                        $catsEntriesRows[] = $importField;
+                        $catsEntriesValuesNamed[$importField] = trim($theData[$fieldID]);
                     }
                 }
                 else if ($theFieldPreferenceValue == 'foreign' || $theFieldPreferenceValue == 'foreignAdded')
