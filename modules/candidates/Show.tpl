@@ -1,3 +1,4 @@
+<?php
 include_once(LEGACY_ROOT . '/vendor/autoload.php');
 use OpenCATS\UI\CandidateQuickActionMenu;
 use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
