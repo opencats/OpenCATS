@@ -1,4 +1,3 @@
-<?php /* $Id: ImportResumesBulk.tpl 3093 2007-09-24 21:09:45Z brian $ */ ?>
 <?php TemplateUtility::printHeader('Import', array('modules/import/import.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, ''); ?>

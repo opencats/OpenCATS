@@ -1,4 +1,3 @@
-<?php /* $Id: Error.tpl 770 2006-09-06 19:04:57Z will $ */ ?>
 <?php TemplateUtility::printHeader('Fatal Error'); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 

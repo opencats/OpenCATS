@@ -1,4 +1,3 @@
-<?php /* $Id: Edit.tpl 3093 2007-09-24 21:09:45Z brian $ */ ?>
 <?php TemplateUtility::printHeader('Contacts', array('modules/contacts/validator.js', 'js/sweetTitles.js', 'js/suggest.js', 'js/listEditor.js',  'js/contact.js', 'js/company.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>

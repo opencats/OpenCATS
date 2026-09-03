@@ -2,7 +2,6 @@
 #
 # Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
 #
-# $Id: newversion.sh 1510 2007-01-18 20:17:05Z will $
 
 show_usage() {
 	echo "Usage: `basename $0` [-hs] [version]"

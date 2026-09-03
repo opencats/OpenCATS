@@ -1,4 +1,4 @@
-<?php /* $Id: Show.tpl 3814 2007-12-06 17:54:28Z brian $ */
+<?php
 include_once(LEGACY_ROOT . '/vendor/autoload.php');
 use OpenCATS\UI\QuickActionMenu;
 ?>

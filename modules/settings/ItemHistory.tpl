@@ -1,4 +1,3 @@
-<?php /* $Id: ItemHistory.tpl 1528 2007-01-22 00:51:45Z will $ */ ?>
 <?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>

@@ -1,4 +1,3 @@
-<?php /* $Id: AddActivityScheduleEventModal.tpl $ */ ?>
 <?php if ($this->onlyScheduleEvent): ?>
     <?php TemplateUtility::printModalHeader($this->activityModalTitle, array($this->activityValidatorPath, 'js/activity.js'), $this->activityModalTitle . ': Schedule Event'); ?>
 <?php else: ?>

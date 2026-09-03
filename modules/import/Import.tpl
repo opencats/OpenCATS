@@ -1,4 +1,3 @@
-<?php /* $Id: Import.tpl 3370 2007-11-01 16:43:07Z andrew $ */ ?>
 <?php TemplateUtility::printHeader('Import', array('modules/import/import.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, '', 'settings'); ?>

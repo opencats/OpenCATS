@@ -1,4 +1,3 @@
-<?php /* $Id: CareerPortalQuestionnaireShow.tpl 3816 2007-12-06 18:55:00Z andrew $ */ ?>
 <?php if (!$this->isModal): ?>
 <?php TemplateUtility::printHeader('Settings', array('js/questionnaire.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>

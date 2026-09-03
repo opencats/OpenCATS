@@ -1,4 +1,3 @@
-<?php /* $Id: ChangeStatusModal.tpl $ */ ?>
 <?php if ($this->isJobOrdersMode): ?>
     <?php TemplateUtility::printModalHeader('Job Orders', array(), 'Job Orders: Change Status'); ?>
 <?php else: ?>

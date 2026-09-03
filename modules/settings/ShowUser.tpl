@@ -1,4 +1,3 @@
-<?php /* $Id: ShowUser.tpl 2881 2007-08-14 07:47:26Z brian $ */ ?>
 <?php TemplateUtility::printHeader('Settings', 'js/sorttable.js'); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>

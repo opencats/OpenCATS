@@ -2,7 +2,6 @@
 #
 # Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
 #
-# $Id: killwhitespace.sh 2306 2007-04-04 23:40:59Z will $
 
 find_whitespace_files() {
 	grep -rE '[[:space:]]+$' . | sed 's/:.*//' | \

@@ -1,4 +1,3 @@
-<?php /* $Id: Error.tpl 1889 2007-02-20 05:21:54Z will $ */ ?>
 <?php TemplateUtility::printHeader('Companies'); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>

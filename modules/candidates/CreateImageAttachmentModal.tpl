@@ -1,4 +1,3 @@
-<?php /* $Id: CreateImageAttachmentModal.tpl 2026 2007-02-27 22:34:05Z brian $ */ ?>
 <?php TemplateUtility::printModalHeader('Candidates', array('modules/candidates/validator.js')); ?>
     <p class="noteUnsized">Edit Profile Image</p>
 

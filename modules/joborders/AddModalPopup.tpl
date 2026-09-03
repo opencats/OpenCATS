@@ -1,4 +1,3 @@
-<?php /* $Id: AddModalPopup.tpl 3321 2007-10-25 22:03:10Z brian $ */ ?>
 <?php TemplateUtility::printModalHeader('Job Order', array('modules/joborders/validator.js')); ?>
     <table>
         <tr>

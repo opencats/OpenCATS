@@ -5,7 +5,6 @@
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  * All rights reserved.
  *
- * $Id: validator.js 1479 2007-01-17 00:22:21Z will $
  */
 
 var MODE_ADD = 0;
