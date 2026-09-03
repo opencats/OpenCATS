@@ -1,38 +1,12 @@
 <?php
-/**
- * CATS
- * Template Utility Library
+/*
+ * OpenCATS
  *
- * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
+ * Portions Copyright (C) 2005-2007 Cognizo Technologies, Inc.
+ * Originally released as part of CATS Standard Edition under the
+ * CATS Public License 1.1a.
  *
- *
- * The contents of this file are subject to the CATS Public License
- * Version 1.1a (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://www.catsone.com/.
- *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * The Original Code is "CATS Standard Edition".
- *
- * The Initial Developer of the Original Code is Cognizo Technologies, Inc.
- * Portions created by the Initial Developer are Copyright (C) 2005 - 2007
- * (or from the year in which this file was created to the year 2007) by
- * Cognizo Technologies, Inc. All Rights Reserved.
- *
- * In the interest of readability and performance, this file is not wrapped
- * at 80 characters per line, as it contains quite a bit of long HTML strings.
- * Lines should, however, be wrapped at around 120 characters per line to
- * ensure readability on a 1280 x 1024 resolution monitor.
- *
- *
- * @package    CATS
- * @subpackage Library
- * @copyright  Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
- * @version    $Id: TemplateUtility.php 3835 2007-12-12 19:08:38Z brian $
+ * See LICENSE.md.
  */
 
 include_once(LEGACY_ROOT . '/vendor/autoload.php');

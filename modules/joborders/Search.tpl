@@ -1,4 +1,3 @@
-<?php /* $Id: Search.tpl 3676 2007-11-21 21:02:15Z brian $ */ ?>
 <?php TemplateUtility::printHeader('Job Orders', array('modules/joborders/validator.js', 'js/sweetTitles.js',  'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js', 'js/searchSaved.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>

@@ -2,7 +2,6 @@
 #
 # Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
 #
-# $Id: countcode.sh 3052 2007-09-19 20:48:36Z andrew $
 CATS_ROOT_PATH_CHECK="modules/login/LoginUI.php"
 SYM_LINKS_EXIST=1
 REMOVE_SYM_LINKS_SCRIPT="./scripts/removeWebsiteSymLinks.sh"

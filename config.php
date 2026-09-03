@@ -1,30 +1,12 @@
 <?php
 /*
- * CATS
- * Configuration File
+ * OpenCATS
  *
- * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
+ * Portions Copyright (C) 2005-2007 Cognizo Technologies, Inc.
+ * Originally released as part of CATS Standard Edition under the
+ * CATS Public License 1.1a.
  *
- *
- * The contents of this file are subject to the CATS Public License
- * Version 1.1a (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://www.catsone.com/.
- *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * The Original Code is "CATS Standard Edition".
- *
- * The Initial Developer of the Original Code is Cognizo Technologies, Inc.
- * Portions created by the Initial Developer are Copyright (C) 2005 - 2007
- * (or from the year in which this file was created to the year 2007) by
- * Cognizo Technologies, Inc. All Rights Reserved.
- *
- *
- * $Id: config.php 3826 2007-12-10 06:03:18Z will $
+ * See LICENSE.md.
  */
 
 /* legacy root. */
@@ -34,13 +16,13 @@ if( !defined('LEGACY_ROOT') )
 }
 
 /* Database configuration. */
-define('DATABASE_USER', 'cats');
-define('DATABASE_PASS', 'password');
-define('DATABASE_HOST', 'localhost');
-define('DATABASE_NAME', 'cats_dev');
+define('DATABASE_USER', 'dev');
+define('DATABASE_PASS', 'dev');
+define('DATABASE_HOST', 'opencatsdb');
+define('DATABASE_NAME', 'cats_test');
 
 /* Authentication Configuration
- * Options are sql, ldap, sql+ldap
+ * Options are sql and ldap
  */
 define ('AUTH_MODE', 'sql');
 
@@ -245,241 +227,25 @@ define('CACHE_MODULES', false);
  * by distance from a zipcode.
  */
 
-define('US_ZIPS_ENABLED', false);
+define('US_ZIPS_ENABLED', true);
 
 /* LDAP Configuration
  */
 define ('LDAP_HOST', 'ldap.forumsys.com');
 define ('LDAP_PORT', '389');
-define ('LDAP_PROTOCOL_VERSION', 3);
-
 define ('LDAP_BASEDN', 'dc=example,dc=com');
-
+define ('LDAP_UID', 'uid');
 define ('LDAP_BIND_DN', 'cn=read-only-admin,dc=example,dc=com');
 define ('LDAP_BIND_PASSWORD', 'password');
+define ('LDAP_PROTOCOL_VERSION', 3);
 
-define ('LDAP_ACCOUNT', 'cn={$username},dc=example,dc=com'); // '{$username}' cannot be changed, else can
-
-define ('LDAP_ATTRIBUTE_UID', 'uid');
-define ('LDAP_ATTRIBUTE_DN', 'dn');
-define ('LDAP_ATTRIBUTE_LASTNAME', 'sn');
-define ('LDAP_ATTRIBUTE_FIRSTNAME', 'givenname');
-define ('LDAP_ATTRIBUTE_EMAIL', 'mail');
-
-define ('LDAP_AD', false); // use for AD and Samba LDAP servers
-
-/* Encodings available during Data Import */
-/*const IMPORT_FILE_ENCODING = array(
-    'ISO-8859-1', 'GB2312', 'Windows-1251', 'Windows-1252', 'Shift JIS',
-'GBK', 'Windows-1256', 'ISO-8859-2', 'EUC-JP', 'ISO-8859-15', 'ISO-8859-9', 'Windows-1250',
-'Windows-1254', 'EUC-KR', 'Big5', 'Windows-874', 'US-ASCII', 'TIS-620', 'ISO-8859-7', 'Windows-1255'
-);*/
-
-/* Job Order statuses (not pipeline statuses) defined in groups */
-/* Uncomment and correct bellow if you want different statuses */
-/*const JOB_ORDER_STATUS_GROUP = array(
-    'Open' => array ('Active', 'On Hold', 'Full'),
-    'Closed' => array('Closed', 'Canceled'),
-    'Pre-Open' => array('Upcoming', 'Lead')
-);*/
-
-/* Job order status(es) used for XML, RSS and Careers portal */
-/* Uncomment and correct bellow if you want different statuses to be included */
-/*const JOB_ORDER_STATUS_SHARING = array(
-    'Active'
-);*/
-
-/* Filters that can be used on main job order grid, the first one will be default selected */
-/* Uncomment and correct bellow if you want different combination of statuses */
-/*const JOB_ORDER_STATUS_FILTERING = array(
-    'Active / On Hold / Full',
-    'Active',
-    'On Hold / Full',
-    'Closed / Canceled',
-    'Upcoming / Lead'
-);*/
-
-/* Job order status(es) used for submission/placement statistics */
-/* Uncomment and correct bellow if you want different combination of statistics */
-/*const JOB_ORDER_STATUS_STATISTICS = array(
-    'Active', 'On Hold', 'Full', 'Closed'
-);*/
-
-/* Job Order Default status after creation */
-/* Uncomment and correct bellow if you want different default status */
-/*const JOB_ORDER_STATUS_DEFAULT = 'Active';*/
-
-/* Job Types mapping
- *
- * Uncomment bellow if you want custom mapping */
-
- /*
 class JOB_TYPES {
     public static $LIST = array(
-        'PT' => 'Part-Time',
-        'FT' => 'Full-Time',
-        'ST' => 'Student',
-        'FL' => 'Freelance'
+        'H' => 'Hire',
+        'C' => 'Contract',
+        'C2H' => 'Contract To Hire',
+        'FL' => 'Freelance'       
     );
 };
-*/
-
-
-/*
-require_once(LEGACY_ROOT . '/constants.php');
-
-class ACL_SETUP {
-
-    // defining user roles
-    public static $USER_ROLES = array(
-        'candidate' => array('Candidate', 'candidate', 'This is a candidate.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ),
-        'demo' => array('Demo', 'demo', 'This is a demo user.', ACCESS_LEVEL_SA, ACCESS_LEVEL_READ)
-    );
-   
-    // defining access levels different from the default access level    
-    public static $ACCESS_LEVEL_MAP = array(
-        'candidate' => array(
-        ),
-        'demo' => array(
-            'candidates' => ACCESS_LEVEL_DELETE,
-            'candidates.emailCandidates' => ACCESS_LEVEL_DISABLED,
-            'candidates.history' => ACCESS_LEVEL_DEMO,
-            'joborders' => ACCESS_LEVEL_DELETE,
-            'joborders.show' => ACCESS_LEVEL_DEMO,
-            'joborders.email' => ACCESS_LEVEL_DISABLED,
-        )
-    );
-};
-*/
-
-/* All possible secure object names 
-            'candidates.history'
-            'settings.administration'
-            'joborders.editRating'
-            'pipelines.screening'
-            'pipelines.editActivity'
-            'pipelines.removeFromPipeline'
-            'pipelines.addActivity'
-            'pipelines.changeStatus'
-            'pipelines.addToPipeline'
-            'settings.tags'
-            'settings.changePassword'
-            'settings.newInstallPassword'
-            'settings.forceEmail'
-            'settings.newSiteName'
-            'settings.upgradeSiteName'
-            'settings.newSiteName'
-            'settings.manageUsers'
-            'settings.previewPage'
-            'settings.previewPageTop'
-            'settings.showUser'
-            'settings.addUser'
-            'settings.editUser'
-            'settings.createBackup'
-            'settings.deleteBackup'
-            'settings.customizeExtraFields'
-            'settings.customizeCalendar'
-            'settings.reports'
-            'settings.careerPortalQuestionnairePreview'
-            'settings.careerPortalQuestionnaire'
-            'settings.careerPortalQuestionnaireUpdate'
-            'settings.careerPortalTemplateEdit'
-            'settings.careerPortalSettings'
-            'settings.eeo'
-            'settings.careerPortalTweak'
-            'settings.deleteUser'
-            'settings.aspLocalization'
-            'settings.loginActivity'
-            'settings.viewItemHistory'
-            'settings.addUser'
-            'settings.deleteUser'
-            'settings.checkKey'
-            'settings.localization'
-            'settings.firstTimeSetup'
-            'settings.license'
-            'settings.password'
-            'settings.siteName'
-            'settings.setEmail'
-            'settings.import'
-            'settings.website'
-            'settings.administration'
-            'settings.myProfile'
-            'settings.administration.localization'
-            'settings.administration.systemInformation'
-            'settings.administration.changeSiteName'
-            'settings.administration.changeVersionName'
-            'settings.addUser'
-            'joborders.edit'
-            'joborders.careerPortalUrl'
-            'joborders.deleteAttachment'
-            'joborders.createAttachement'
-            'joborders.delete'
-            'joborders.hidden'
-            'joborders.considerCandidateSearch'
-            'joborders.show'
-            'joborders.add'
-            'joborders.search'
-            'joborders.administrativeHideShow'
-            'joborders.list'
-            'joborders.email'
-            'candidates.add'
-            'import.import'
-            'import.massImport'
-            'import.bulkResumes'
-            'contacts.addActivityScheduleEvent'
-            'contacts.edit'
-            'contacts.delete'
-            'contacts.editActivity'
-            'contacts.deleteActivity'
-            'contacts.logActivityScheduleEvent'
-            'contacts.show'
-            'contacts.add'
-            'contacts.edit'
-            'contacts.delete'
-            'contacts.search'
-            'contacts.addActivityScheduleEvent'
-            'contacts.showColdCallList'
-            'contacts.downloadVCard'
-            'contacts.list'
-            'contacts.emailContact'
-            'companies.deleteAttachment'
-            'companies.createAttachment'
-            'companies.edit'
-            'companies.delete'
-            'companies.show'
-            'companies.internalPostings'
-            'companies.add'
-            'companies.edit'
-            'companies.delete'
-            'companies.search'
-            'companies.createAttachment'
-            'companies.deleteAttachment'
-            'companies.list'
-            'companies.email'
-            'candidates.deleteAttachment'
-            'candidates.addActivity'
-            'candidates.deleteAttachment'
-            'candidates.createAttachment'
-            'candidates.addCandidateTags'
-            'candidates.edit'
-            'candidates.delete'
-            'candidates.administrativeHideShow'
-            'candidates.considerForJobSearch'
-            'candidates.manageHotLists'
-            'candidates.show'
-            'candidates.add'
-            'candidates.search'
-            'candidates.viewResume'
-            'candidates.search'
-            'candidates.hidden'
-            'candidates.emailCandidates'
-            'candidates.show_questionnaire'
-            'candidates.list'
-            'candidates.duplicates'
-            'calendar.show'
-            'calendar.addEvent'
-            'calendar.editEvent'
-            'calendar.deleteEvent'
-            */
 
 ?>

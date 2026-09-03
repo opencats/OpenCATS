@@ -1,4 +1,3 @@
-<?php /* $Id: Error.tpl 3078 2007-09-21 20:25:28Z will $ */ ?>
 <?php TemplateUtility::printHeader('Home'); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>

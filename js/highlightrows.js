@@ -1,13 +1,11 @@
-/* CATS
- * JavaScript Library
- * Portions Copyright (C) 2006 - 2007 Cognizo Technologies Inc.
+/*
+ * OpenCATS
  *
- * The Contents of this file are subject to the CATS Public Licence
- * A copy of the licence can be found at www.catsone.com
+ * Portions Copyright (C) 2006-2007 Cognizo Technologies, Inc.
+ * Originally released as part of CATS Standard Edition under the
+ * CATS Public License 1.1a.
  *
- * This file contains functions to highlight rows of a table and preserve the
- * orginal style of the table, includeing table cells which may be differnt
- * then the style of the rows in which they are contianed.
+ * See LICENSE.md.
  */
 
 var savedStates = new Array();

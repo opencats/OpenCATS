@@ -5,7 +5,6 @@
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  * All rights reserved.
  *
- * $Id: validator.js 3634 2007-11-16 16:41:47Z brian $
  */
 
 function checkAddForm(form)

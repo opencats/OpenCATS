@@ -1,56 +1,11 @@
 /*
- * CATS
- * Contacts JavaScript Library
+ * OpenCATS
  *
- * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
+ * Portions Copyright (C) 2005-2007 Cognizo Technologies, Inc.
+ * Originally released as part of CATS Standard Edition under the
+ * CATS Public License 1.1a.
  *
- *
- * The contents of this file are subject to the CATS Public License
- * Version 1.1a (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://www.catsone.com/.
- *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * The Original Code is "CATS Standard Edition".
- *
- * The Initial Developer of the Original Code is Cognizo Technologies, Inc.
- * Portions created by the Initial Developer are Copyright (C) 2005 - 2007
- * (or from the year in which this file was created to the year 2007) by
- * Cognizo Technologies, Inc. All Rights Reserved.
- *
- *
- * onFocus = "suggestListActivate(AJAX Lookup function,
- *                                textbox for user input,
- *                                DIV tag with output,
- *                                Hidden element to set ID number,
- *                                Class for highlighted text,
- *                                ID of object we are pulling data for,
- *                                PHP session cookie);"
- * Example:
- *   <input type="hidden" name="companyID" id="companyID" />
- *   <input type="text" name="companyName" id="companyName" class="inputbox"
- *          onFocus="suggestListActivate('getCompanyNames', 'companyName',
- *          'CompanyResults', 'companyID', 'ajaxTextEntryHover', 0,
- *          '<?php echo($this->sessionCookie); ?>');" />
- *  <br />
- *  <div id="CompanyResults" class="ajaxSearchResults"></div>
- *
- * Behaviors:
- *
- * 1. If typed in a option, and it is the only option in the list accept that entry and move on.
- * 2. If clicked on an option, accept that entry
- * 3. If keying up/down and tabbing away, accept that option
- * 4. If clicked on (more results), load more results
- * 5. If keyed down to (more results), load more results and put the highlight on the next option
- * 6. If more options than defined by the constant maxInitialResults, say (more results)
- * 7. Never show more results than maxTotalResults
- *
- *
- * $Id: suggest.js 3554 2007-11-11 22:17:26Z will $
+ * See LICENSE.md.
  */
 
 var maxInitialResults = 10;

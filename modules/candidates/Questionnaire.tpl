@@ -1,4 +1,3 @@
-<?php /* $Id: Questionnaire.tpl 3668 2007-11-21 00:38:50Z brian $ */ ?>
 <?php TemplateUtility::printHeader('Candidate - '.$this->cData['firstName'].' '.$this->cData['lastName'] . ' Questionnaire', array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js')); ?>
 <?php if (!$this->print): ?>
 <?php TemplateUtility::printHeaderBlock(); ?>

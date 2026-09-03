@@ -1,4 +1,3 @@
-<?php /* $Id: CustomizeExtraFields.tpl 3660 2007-11-19 18:26:19Z brian $ */ ?>
 <?php TemplateUtility::printHeader('Settings', array('js/highlightrows.js', 'modules/settings/validator.js', 'js/listEditor.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, ''); ?>

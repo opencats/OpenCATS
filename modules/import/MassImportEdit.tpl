@@ -1,4 +1,3 @@
-<?php /* $Id: MassImportEdit.tpl 3781 2007-12-03 21:30:23Z andrew $ */ ?>
 <?php TemplateUtility::printHeader('Settings', array('js/massImport.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>

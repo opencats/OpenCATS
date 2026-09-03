@@ -2,7 +2,6 @@
 #
 # CATS Sphinx Full Index Updater
 #
-# $Id: sphinx_reindex.sh 2987 2007-08-31 20:42:15Z will $
 
 if [ -f ~/ENVIRONMENT.conf ];
 then

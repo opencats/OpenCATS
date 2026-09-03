@@ -1,4 +1,3 @@
-<?php /* $Id: CreateAttachmentModal.tpl 3093 2007-09-24 21:09:45Z brian $ */ ?>
 <?php TemplateUtility::printModalHeader('Companies', array('modules/companies/validator.js'), 'Create Company Attachment'); ?>
 
     <?php if (!$this->isFinishedMode): ?>

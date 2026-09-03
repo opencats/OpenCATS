@@ -1,4 +1,3 @@
-<?php /* $Id: CareerPortalTemplateEdit.tpl 3626 2007-11-16 00:49:03Z andrew $ */ ?>
 <?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'modules/settings/Settings.js', 'js/careerportal.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>

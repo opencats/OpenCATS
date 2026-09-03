@@ -1,4 +1,3 @@
-<?php /* $Id: SubmissionReport.tpl 1948 2007-02-23 09:49:27Z will $ */ ?>
 <?php TemplateUtility::printHeader($this->reportTitle); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
     <table>

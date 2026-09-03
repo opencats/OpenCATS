@@ -1,4 +1,3 @@
-<?php /* $Id: Administration.tpl 3722 2007-11-27 21:49:36Z andrew $ */ ?>
 <?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <style>

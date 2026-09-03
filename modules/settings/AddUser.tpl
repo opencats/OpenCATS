@@ -1,4 +1,3 @@
-<?php /* $Id: AddUser.tpl 3810 2007-12-05 19:13:25Z brian $ */ ?>
 <?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'js/sorttable.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>

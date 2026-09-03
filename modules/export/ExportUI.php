@@ -1,37 +1,12 @@
 <?php
 /*
- * CATS
- * RSS Feed module
+ * OpenCATS
  *
- * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
+ * Portions Copyright (C) 2005-2007 Cognizo Technologies, Inc.
+ * Originally released as part of CATS Standard Edition under the
+ * CATS Public License 1.1a.
  *
- *
- * The contents of this file are subject to the CATS Public License
- * Version 1.1a (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://www.catsone.com/.
- *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * The Original Code is "CATS Standard Edition".
- *
- * The Initial Developer of the Original Code is Cognizo Technologies, Inc.
- * Portions created by the Initial Developer are Copyright (C) 2005 - 2007
- * (or from the year in which this file was created to the year 2007) by
- * Cognizo Technologies, Inc. All Rights Reserved.
- *
- *
- * This example module is meant as a very BASIC guide to the CATS module API.
- * It does not demonstrate every feature, but it should help you get started.
- * This example is also intended for programmers with a working knowledge of
- * PHP, so only aspects of the code specific to the CATS module API are
- * explained.
- *
- *
- * $Id: ExportUI.php 2996 2007-09-06 21:41:18Z brian $
+ * See LICENSE.md.
  */
 
 include_once(LEGACY_ROOT . '/lib/Export.php');

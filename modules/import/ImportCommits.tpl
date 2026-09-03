@@ -1,4 +1,3 @@
-<?php /* $Id: ImportCommits.tpl 1543 2007-01-22 23:23:24Z will $ */ ?>
 <?php TemplateUtility::printHeader('Import', array('modules/import/import.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>

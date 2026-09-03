@@ -1,4 +1,3 @@
-<?php /* $Id: EmailSettings.tpl 3310 2007-10-25 21:24:20Z brian $ */ ?>
 <?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'modules/settings/Settings.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
