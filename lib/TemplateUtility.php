@@ -363,7 +363,7 @@ class TemplateUtility
         {
             /* Output an active advanced search. */
             echo '<input type="hidden" id="advancedSearchOn" name="advancedSearchOn" value="',
-                  $_GET['advancedSearchOn'], '" />', "\n";
+                Template::escapeAttr($_GET['advancedSearchOn']), '" />', "\n";
             echo '<span id="advancedSearchField" style="display:block;">', "\n";
             echo '</span>', "\n";
 
@@ -376,8 +376,8 @@ class TemplateUtility
             {
                 $innerStuff = explode('[|]', $stuff[$i]);
 
-                echo '    data[',  $i, '] = "', $innerStuff[0], '";', "\n";
-                echo '    nodes[', $i, '] = "', $innerStuff[1], '";', "\n";
+                echo '    data[',  $i, '] = ', Template::escapeJs($innerStuff[0]), ';', "\n";
+                echo '    nodes[', $i, '] = ', Template::escapeJs($innerStuff[1]), ';', "\n";
             }
             echo '    data[', sizeof($stuff), '] = "";', "\n";
             echo '    advancedSearchDraw();', "\n";
