@@ -9,7 +9,8 @@
         "gregwar/captcha": "2.1.1",
         "neutron/sphinxsearch-api": "^2.0.8",
         "phpmailer/phpmailer": "^7.1.1",
-        "setasign/fpdf": "^1.9.0"
+        "setasign/fpdf": "^1.9.0",
+        "twbs/bootstrap": "^5.3.8"
     },
     "require-dev": {
         "behat/behat": "^3.31.0",
