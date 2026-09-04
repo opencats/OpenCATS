@@ -144,27 +144,26 @@ jobs:
       - name: Create Release Archives
         run: |
           tar \
-            --exclude='.git' \
-            --exclude='.github' \
-            --exclude='docker' \
-            --exclude='test' \
-            --exclude='reports' \
-            --exclude='phpunit.xml' \
-            --exclude='INSTALL_BLOCK' \
+            --exclude='./.git' \
+            --exclude='./.github' \
+            --exclude='./docker' \
+            --exclude='./test' \
+            --exclude='./reports' \
+            --exclude='./phpunit.xml' \
+            --exclude='./INSTALL_BLOCK' \
             -czf /tmp/opencats-${{ github.ref_name }}-full.tar.gz .
 
           zip -r /tmp/opencats-${{ github.ref_name }}-full.zip . \
-            -x ".git/*" \
-               ".github/*" \
-               "docker/*" \
-               "test/*" \
-               "reports/*" \
-               "phpunit.xml" \
-               "INSTALL_BLOCK"
+            -x "./.git/*" \
+               "./.github/*" \
+               "./docker/*" \
+               "./test/*" \
+               "./reports/*" \
+               "./phpunit.xml" \
+               "./INSTALL_BLOCK"
 
           mv /tmp/opencats-${{ github.ref_name }}-full.tar.gz .
           mv /tmp/opencats-${{ github.ref_name }}-full.zip .
-
       - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
