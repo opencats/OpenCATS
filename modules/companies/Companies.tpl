@@ -1,84 +1,160 @@
-<?php TemplateUtility::printHeader('Companies', array('js/highlightrows.js', 'js/export.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
+<?php
+TemplateUtility::printHeader(
+    'Companies',
+    array(
+        'js/highlightrows.js',
+        'js/export.js',
+        'js/dataGrid.js',
+        'js/dataGridFilters.js'
+    )
+);
+?>
+
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
-    <style type="text/css">
-    div.addCompaniesButton { background: #4172E3 url(images/nodata/companiesButton.jpg); cursor: pointer; width: 337px; height: 67px; }
-    div.addCompaniesButton:hover { background: #4172E3 url(images/nodata/companiesButton-o.jpg); cursor: pointer; width: 337px; height: 67px; }
-    </style>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+<?php TemplateUtility::printQuickSearch(); ?>
 
-        <div id="contents">
-            <table width="100%">
-                <tr>
-                    <td width="3%">
-                        <img src="images/companies.gif" width="24" height="24" border="0" alt="Companies" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Companies: Home</h2></td>
-                    <td align="right">
-                        <form name="companiesViewSelectorForm" id="companiesViewSelectorForm" action="<?php echo(CATSUtility::getIndexName()); ?>" method="get">
-                            <input type="hidden" name="m" value="companies" />
-                            <input type="hidden" name="a" value="listByView" />
-                            <table class="viewSelector">
-                                <tr>
-                                    <td valign="top" align="right" nowrap="nowrap">
-                                        <?php $this->dataGrid->printNavigation(false); ?>
-                                    </td>
-                                    <td valign="top" align="right" nowrap="nowrap">
-                                        <input type="checkbox" name="onlyMyCompanies" id="onlyMyCompanies" <?php if ($this->dataGrid->getFilterValue('OwnerID') ==  $this->userID): ?>checked<?php endif; ?> onclick="<?php echo $this->dataGrid->getJSAddRemoveFilterFromCheckbox('OwnerID', '==',  $this->userID); ?>" />
-                                        <label for="onlyMyCompanies">Only My Companies</label>&nbsp;
-                                    </td>
-                                    <td valign="top" align="right" nowrap="nowrap">
-                                        <input type="checkbox" name="onlyHotCompanies" id="onlyHotCompanies" <?php if ($this->dataGrid->getFilterValue('IsHot') == '1'): ?>checked<?php endif; ?> onclick="<?php echo $this->dataGrid->getJSAddRemoveFilterFromCheckbox('IsHot', '==', '\'1\''); ?>" />
-                                        <label for="onlyHotCompanies">Only Hot Companies</label>&nbsp;
-                                    </td>
-                                </tr>
-                            </table>
-                        </form>
-                    </td>
-                </tr>
-            </table>
+<main class="container-fluid py-2 oc-companies-page">
+<div class="oc-companies-content">
 
-            <?php if ($this->errMessage != ''): ?>
-            <div id="errorMessage" style="padding: 25px 0px 25px 0px; border-top: 1px solid #800000; border-bottom: 1px solid #800000; background-color: #f7f7f7;margin-bottom: 15px;">
-            <table>
-                <tr>
-                    <td align="left" valign="center" style="padding-right: 5px;">
-                        <img src="images/large_error.gif" align="left">
-                    </td>
-                    <td align="left" valign="center">
-                        <span style="font-size: 12pt; font-weight: bold; color: #800000; line-height: 12pt;">There was a problem with your request:</span>
-                        <div style="font-size: 10pt; font-weight: bold; padding: 3px 0px 0px 0px;"><?php echo $this->errMessage; ?></div>
-                    </td>
-                </tr>
-            </table>
-            </div>
-            <?php endif; ?>
+<section
+class="oc-page-header d-flex flex-wrap align-items-center gap-2 mb-2"
+>
+<div class="d-flex align-items-baseline gap-2 flex-shrink-0">
+<h1 class="h5 fw-semibold mb-0">Companies</h1>
 
-            <p class="note">
-                <span style="float:left;">Companies  -
-                    Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?>
-                    (<?php echo($this->dataGrid->getNumberOfRows()); ?> Items)
-                    <?php if ($this->dataGrid->getFilterValue('OwnerID') ==  $this->userID): ?>(Only My Companies)<?php endif; ?>
-                    <?php if ($this->dataGrid->getFilterValue('IsHot') == '1'): ?>(Only Hot Companies)<?php endif; ?>
-                </span>
-                <span style="float:right;">
-                    <?php $this->dataGrid->drawRowsPerPageSelector(); ?>
-                    <?php $this->dataGrid->drawShowFilterControl(); ?>
-                </span>&nbsp;
-            </p>
+<span class="small text-body-secondary">
+<?php echo number_format(
+    $this->dataGrid->getNumberOfRows()
+); ?> items
+</span>
+</div>
 
-            <?php $this->dataGrid->drawFilterArea(); ?>
-            <?php $this->dataGrid->draw();  ?>
+<form
+name="companiesViewSelectorForm"
+id="companiesViewSelectorForm"
+action="<?php echo Template::escapeAttr(
+    CATSUtility::getIndexName()
+); ?>"
+method="get"
+class="d-flex flex-wrap flex-xl-nowrap align-items-center justify-content-end gap-2 small ms-auto"
+>
+<input type="hidden" name="m" value="companies">
+<input type="hidden" name="a" value="listByView">
 
-            <div style="display:block;">
-                <span style="float:left;">
-                    <?php $this->dataGrid->printActionArea(); ?>&nbsp;
-                </span>
-                <span style="float:right;">
-                    <?php $this->dataGrid->printNavigation(true); ?>
-                </span>&nbsp;
-            </div>
-        </div>
+<div class="oc-datagrid-navigation flex-shrink-0">
+<?php $this->dataGrid->printNavigation(false); ?>
+</div>
+
+<div class="form-check form-check-inline mb-0 me-0 flex-shrink-0">
+<input
+class="form-check-input"
+type="checkbox"
+name="onlyMyCompanies"
+id="onlyMyCompanies"
+<?php
+if ($this->dataGrid->getFilterValue('OwnerID') !== '')
+{
+    echo 'checked';
+}
+?>
+onclick="<?php echo $this->dataGrid
+->getJSAddRemoveFilterFromCheckbox(
+    'OwnerID',
+    '==',
+    $this->userID
+); ?>"
+>
+
+<label
+class="form-check-label text-nowrap"
+for="onlyMyCompanies"
+    >
+    Only My Companies
+    </label>
     </div>
-<?php TemplateUtility::printFooter(); ?>
+
+    <div class="form-check form-check-inline mb-0 me-0 flex-shrink-0">
+    <input
+    class="form-check-input"
+    type="checkbox"
+    name="onlyHotCompanies"
+    id="onlyHotCompanies"
+    <?php
+    if ($this->dataGrid->getFilterValue('IsHot') !== '')
+    {
+        echo 'checked';
+    }
+    ?>
+    onclick="<?php echo $this->dataGrid
+    ->getJSAddRemoveFilterFromCheckbox(
+        'IsHot',
+        '==',
+        '\'1\''
+    ); ?>"
+    >
+
+    <label
+    class="form-check-label text-nowrap"
+    for="onlyHotCompanies"
+        >
+        Only Hot Companies
+        </label>
+        </div>
+
+        <div class="oc-datagrid-rows-per-page flex-shrink-0">
+        <?php $this->dataGrid->drawRowsPerPageSelector(); ?>
+        </div>
+
+        <div class="oc-datagrid-filter-control flex-shrink-0">
+        <?php $this->dataGrid->drawShowFilterControl(); ?>
+        </div>
+        </form>
+        </section>
+
+        <?php if ($this->errMessage != ''): ?>
+        <div
+        id="errorMessage"
+        class="alert alert-danger py-2"
+        role="alert"
+        >
+        <div class="fw-semibold">
+        There was a problem with your request:
+        </div>
+
+        <div>
+        <?php echo $this->errMessage; ?>
+        </div>
+        </div>
+        <?php endif; ?>
+
+        <section class="card oc-companies-list">
+        <div class="card-body p-2">
+        <div class="oc-companies-filters">
+        <?php $this->dataGrid->drawFilterArea(); ?>
+        </div>
+
+        <div class="oc-companies-datagrid">
+        <?php $this->dataGrid->draw(); ?>
+        </div>
+        </div>
+
+        <div class="card-footer bg-body py-1 px-2">
+        <div
+        class="d-flex flex-wrap align-items-center justify-content-between gap-2 small"
+        >
+        <div class="oc-companies-actions">
+        <?php $this->dataGrid->printActionArea(); ?>
+        </div>
+
+        <div class="oc-companies-pagination">
+        <?php $this->dataGrid->printNavigation(true); ?>
+        </div>
+        </div>
+        </div>
+        </section>
+
+        </div>
+        </main>
+
+        <?php TemplateUtility::printFooter(); ?>

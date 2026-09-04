@@ -38,7 +38,7 @@ class TemplateUtility
     public static function printHeader($pageTitle, $headIncludes = array())
     {
         self::_printCommonHeader($pageTitle, $headIncludes);
-        echo '<body style="background: #fff">', "\n";
+        echo '<body class="bg-body">', "\n";
         self::_printQuickActionMenuHolder();
         self::printPopupContainer();
     }
@@ -53,11 +53,14 @@ class TemplateUtility
     public static function printModalHeader($pageTitle, $headIncludes = array(), $title = '')
     {
         self::_printCommonHeader($pageTitle, $headIncludes);
-        echo '<body style="background: #eee;">', "\n";
+
+        echo '<body class="bg-body-tertiary">', "\n";
+
         if ($title != '')
         {
-            echo '<script type="text/javascript">parentSetPopTitle(', Template::escapeJs($title), ');</script>';
+            echo '<script>parentSetPopTitle(', Template::escapeJs($title), ');</script>', "\n";
         }
+
         self::_printQuickActionMenuHolder();
     }
 
@@ -68,69 +71,43 @@ class TemplateUtility
      */
     public static function printHeaderBlock($showTopRight = true)
     {
-        $username     = $_SESSION['CATS']->getUsername();
-        $siteName     = $_SESSION['CATS']->getSiteName();
-        $fullName     = $_SESSION['CATS']->getFullName();
-        $indexName    = CATSUtility::getIndexName();
+        $siteName  = $_SESSION['CATS']->getSiteName();
+        $indexName = CATSUtility::getIndexName();
 
-        echo '<div id="headerBlock">', "\n";
+        $logoURL = self::getVersionedAssetURL(
+            'images/logo_and_project_name.svg'
+        );
 
-        /* CATS Logo */
-        echo '<table cellspacing="0" cellpadding="0" style="margin: 0px; padding: 0px; float: left;">', "\n";
-        echo '<tr>', "\n";
-        echo '<td rowspan="2"><img src="images/applicationLogo.jpg" border="0" alt="CATS Applicant Tracking System" /></td>', "\n";
-        echo '</tr>', "\n";
-        echo '</table>', "\n";
+        echo '<header id="headerBlock" class="bg-white border-bottom">', "\n";
+        echo '<div class="container-fluid d-flex justify-content-between align-items-center gap-3 py-1">', "\n";
+
+        echo '<a href="', Template::escapeAttr($indexName),
+        '" class="d-flex align-items-center text-decoration-none">', "\n";
+        echo '<img src="', Template::escapeAttr($logoURL),
+        '" alt="OpenCATS" height="40">', "\n";
+        echo '</a>', "\n";
 
         if (!eval(Hooks::get('TEMPLATE_LIVE_CHAT'))) return;
-
         if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_PRE_TOP_RIGHT'))) return;
 
         if ($showTopRight)
         {
             if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_1'))) return;
-
-            /* Top Right Corner */
-            echo '<div id="topRight">', "\n";
-
-            echo '<div style="padding-bottom: 8px;">';
-            // Begin top-right action block
             if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_UPGRADE'))) return;
-
-            if ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA)
-            {
-                echo '<a href="http://www.opencats.org" target="_blank">';
-                echo '<img src="images/tabs/small_upgrade.jpg" border="0" /> ';
-                echo 'OpenCATS.org</a>&nbsp;&nbsp;&nbsp;&nbsp;', "\n";
-            }
-
-            echo '<form id="logoutForm" name="logoutForm" method="post" action="', $indexName, '?m=logout" '
-                . 'style="display: inline; padding: 0; margin: 0; border: 0;">';
-            if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn())
-            {
-                $csrfToken = Template::escapeAttr($_SESSION['CATS']->getCSRFToken());
-                echo '<input type="hidden" name="csrfToken" value="', $csrfToken, '" />';
-            }
-            echo '<button type="submit" class="linkButton">';
-            echo '<img src="images/tabs/small_logout.jpg" border="0" /> ';
-            echo 'Logout</button>', "\n";
-            echo '</form>', "\n";
-            echo '</div>', "\n";
-            // End top-right action block
-
             if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_EXTENDED_SITE_NAME'))) return;
 
-            $fullNameEscaped = Template::escapeHtml($fullName);
-            $usernameEscaped = Template::escapeHtml($username);
             $siteNameEscaped = Template::escapeHtml($siteName);
-            echo '<span>', $fullNameEscaped, '&nbsp;&lt;', $usernameEscaped, '&gt;&nbsp;(', $siteNameEscaped, ')</span>', "\n";
+
+            echo '<div id="topRight" class="d-flex align-items-center gap-2 ms-auto small text-body-secondary">', "\n";
+
+            echo '<span class="d-none d-md-inline">',
+            $siteNameEscaped,
+            '</span>', "\n";
 
             if ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA)
             {
-                echo '&nbsp;<span style="font-weight:bold;">Administrator</span>', "\n";
+                echo '<span class="badge text-bg-secondary">Administrator</span>', "\n";
             }
-
-            echo '<br />';
 
             $systemInfo = new SystemInfo();
             $systemInfoData = $systemInfo->getSystemInfo();
@@ -141,27 +118,45 @@ class TemplateUtility
                 !$systemInfoData['disable_version_check'] &&
                 $_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) >= ACCESS_LEVEL_SA)
             {
-                echo '<a href="http://www.catsone.com/download.php" target="catsdl">A new CATS version is available!</a><br />';
+                echo '<a href="http://www.catsone.com/download.php"',
+                ' target="catsdl"',
+                ' class="badge text-bg-warning text-decoration-none">',
+                'Update available</a>', "\n";
             }
 
-            /* Disabled notice */
             if (!$_SESSION['CATS']->accountActive())
             {
-                echo '<span style="font-weight:bold;">Account Inactive</span><br />', "\n";
+                echo '<span class="badge text-bg-danger">Account Inactive</span>', "\n";
             }
             else if ($_SESSION['CATS']->getAccessLevel(ACL::SECOBJ_ROOT) == ACCESS_LEVEL_READ)
             {
-                echo '<span>Read Only Access</span><br />', "\n";
+                echo '<span class="badge text-bg-warning">Read Only</span>', "\n";
             }
             else
             {
                 if (!eval(Hooks::get('TEMPLATE_LOGIN_INFO_TOP_RIGHT_2_ELSE'))) return;
             }
 
+            echo '<form id="logoutForm" name="logoutForm" method="post" action="',
+            Template::escapeAttr($indexName),
+            '?m=logout" class="d-inline">', "\n";
+
+            if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn())
+            {
+                echo '<input type="hidden" name="csrfToken" value="',
+                Template::escapeAttr($_SESSION['CATS']->getCSRFToken()),
+                '">', "\n";
+            }
+
+            echo '<button type="submit" class="btn btn-sm btn-outline-secondary">',
+            'Logout</button>', "\n";
+
+            echo '</form>', "\n";
             echo '</div>', "\n";
         }
 
         echo '</div>', "\n";
+        echo '</header>', "\n";
     }
 
     /**
@@ -174,7 +169,7 @@ class TemplateUtility
      * @return void
      */
     public static function printTimeZoneSelect($selectID, $selectStyle,
-        $selectClass, $selectedTimeZone)
+                                               $selectClass, $selectedTimeZone)
     {
         echo '<select id="', $selectID, '" name="', $selectID, '"';
 
@@ -236,8 +231,8 @@ class TemplateUtility
         }
 
         $selectHTML = '<select id="' . Template::escapeAttr($selectID)
-            . '" name="' . Template::escapeAttr($selectID)
-            . '" class="' . Template::escapeAttr($className) . '"';
+        . '" name="' . Template::escapeAttr($selectID)
+        . '" class="' . Template::escapeAttr($className) . '"';
         if ($style !== '')
         {
             $selectHTML .= ' style="' . Template::escapeAttr($style) . '"';
@@ -284,39 +279,50 @@ class TemplateUtility
      */
     public static function printQuickSearch($wildCardString = '')
     {
-        /* Get the formatted MRU list from Session. */
         $MRU = $_SESSION['CATS']->getMRU()->getFormatted();
         $indexName = CATSUtility::getIndexName();
 
-        /* MRU List */
-        echo '<div id="MRUPanel">', "\n";
-        echo '<div id="MRUBlock">', "\n";
+        echo '<div id="MRUPanel" class="container-fluid py-1 border-bottom bg-body-tertiary">', "\n";
+        echo '<div class="d-flex flex-wrap align-items-center justify-content-between gap-2">', "\n";
+
+        echo '<div id="MRUBlock" class="text-body-secondary text-truncate flex-grow-1">', "\n";
 
         if (!empty($MRU))
         {
-            echo '<span class="MRUTitle">Recent:&nbsp;</span>&nbsp;', $MRU, "\n";
-        }
-        else
-        {
-            echo '<span class="MRUTitle"></span>&nbsp;', "\n";
+            echo '<span class="fw-semibold">Recent:</span> ', $MRU, "\n";
         }
 
-        echo '</div>', "\n\n";
+        echo '</div>', "\n";
 
-        /* Quick Search */
-        echo '<form id="quickSearchForm" action="', $indexName,
-             '" method="get" onsubmit="return checkQuickSearchForm(document.quickSearchForm);">', "\n";
-        echo '<div id="quickSearchBlock">', "\n";
+        echo '<form id="quickSearchForm" action="',
+        Template::escapeAttr($indexName),
+        '" method="get"',
+        ' onsubmit="return checkQuickSearchForm(document.quickSearchForm);"',
+        ' class="d-flex align-items-center">', "\n";
 
-        echo '<input type="hidden" name="m" value="home" />', "\n";
-        echo '<input type="hidden" name="a" value="quickSearch" />', "\n";
-        echo '<span class="quickSearchLabel" id="quickSearchLabel">Quick Search:</span>&nbsp;', "\n";
+        echo '<input type="hidden" name="m" value="home">', "\n";
+        echo '<input type="hidden" name="a" value="quickSearch">', "\n";
 
-        echo '<input name="quickSearchFor" id="quickSearchFor" class="quickSearchBox" value="',
-             $wildCardString, '" />&nbsp;', "\n";
-        echo '<input type="submit" name="quickSearch" class="button" value="Go" />&nbsp;', "\n";
+        echo '<label id="quickSearchLabel" for="quickSearchFor" class="visually-hidden">',
+        'Quick Search</label>', "\n";
+
+        echo '<div class="input-group input-group-sm">', "\n";
+
+        echo '<input type="search"',
+        ' name="quickSearchFor"',
+        ' id="quickSearchFor"',
+        ' class="form-control"',
+        ' value="', Template::escapeAttr($wildCardString), '"',
+        ' placeholder="Quick search"',
+        ' aria-label="Quick search">', "\n";
+
+        echo '<button type="submit" name="quickSearch"',
+        ' class="btn btn-outline-secondary">Go</button>', "\n";
+
         echo '</div>', "\n";
         echo '</form>', "\n";
+
+        echo '</div>', "\n";
         echo '</div>', "\n";
     }
 
@@ -328,8 +334,8 @@ class TemplateUtility
     public static function printAdvancedSearch($considerFields)
     {
         echo '<input type="button" class="button" name="advancedSearch" id="advancedSearch" value="Advanced"',
-             ' onclick="document.getElementById(\'advancedSearchField\').style.display=\'block\'; ',
-             'advancedSearchReset();" style="display:none;">', "\n";
+        ' onclick="document.getElementById(\'advancedSearchField\').style.display=\'block\'; ',
+        'advancedSearchReset();" style="display:none;">', "\n";
         echo '<input type="hidden" id="advancedSearchParser" name="advancedSearchParser" value="">', "\n";
 
         if (isset($_GET['advancedSearchOn']) && isset($_GET['advancedSearchParser']) &&
@@ -337,7 +343,7 @@ class TemplateUtility
         {
             /* Output an active advanced search. */
             echo '<input type="hidden" id="advancedSearchOn" name="advancedSearchOn" value="',
-                Template::escapeAttr($_GET['advancedSearchOn']), '" />', "\n";
+            Template::escapeAttr($_GET['advancedSearchOn']), '" />', "\n";
             echo '<span id="advancedSearchField" style="display:block;">', "\n";
             echo '</span>', "\n";
 
@@ -417,14 +423,14 @@ class TemplateUtility
 
         echo 'Recent Searches&nbsp;&nbsp;';
         echo '<img title="To save a recent search, press the + button below."',
-             ' src="images/information.gif" alt="" width="16" height="16" />';
+        ' src="images/information.gif" alt="" width="16" height="16" />';
 
         echo '<div id="searchRecent" class="recentSearchResultsHidden">';
 
         /* Recent Search Results */
         if (count($savedSearchRecent) == 0)
         {
-           echo '(None)';
+            echo '(None)';
         }
         else
         {
@@ -438,23 +444,23 @@ class TemplateUtility
                 if (count($savedSearchSaved) >= RECENT_SEARCH_MAX_ITEMS)
                 {
                     $openTag = '<a href="javascript:void(0);" onclick="alert(\'The maximum amount of saved searches is ' .
-                               RECENT_SEARCH_MAX_ITEMS . '. To save this search, delete another saved search.\');">';
+                    RECENT_SEARCH_MAX_ITEMS . '. To save this search, delete another saved search.\');">';
                     $closeTag = '</a>';
                 }
                 else
                 {
                     $openTag = '<form method="post" action="' . $indexName . '?m=home&amp;a=addSavedSearch" style="display:inline;">'
-                             . '<input type="hidden" name="postback" value="postback" />'
-                             . '<input type="hidden" name="searchID" value="' . $savedSearchRow['searchID'] . '" />'
-                             . '<input type="hidden" name="currentURL" value="' . $currentUrlGETString . '" />'
-                             . '<button type="submit" class="linkButton">';
+                    . '<input type="hidden" name="postback" value="postback" />'
+                    . '<input type="hidden" name="searchID" value="' . $savedSearchRow['searchID'] . '" />'
+                    . '<input type="hidden" name="currentURL" value="' . $currentUrlGETString . '" />'
+                    . '<button type="submit" class="linkButton">';
                     $closeTag = '</button></form>';
                 }
 
                 echo $openTag,
-                     '<img src="images/actions/add_small.gif" alt="" style="border: none;" title="Save This Search" />',
-                     $closeTag,
-                     '&nbsp;', "\n";
+                '<img src="images/actions/add_small.gif" alt="" style="border: none;" title="Save This Search" />',
+                $closeTag,
+                '&nbsp;', "\n";
 
                 $escapedURL  = htmlspecialchars($savedSearchRow['URL']);
 
@@ -469,10 +475,10 @@ class TemplateUtility
                 $escapedText = htmlspecialchars($savedSearchRow['dataItemText']);
 
                 echo '<a href="', $escapedURL,
-                     '" onclick="gotoSearch(\'', $escapedText, "', '", $escapedURL, '\');"',
-                     ' onmouseover="this.className += \'recentSearchResultsHighlight\';" ',
-                     ' onmouseout="this.className = this.className.replace(\'recentSearchResultsHighlight\', \'\');">',
-                     $escapedText, '</a>', '<br />', "\n";
+                '" onclick="gotoSearch(\'', $escapedText, "', '", $escapedURL, '\');"',
+                ' onmouseover="this.className += \'recentSearchResultsHighlight\';" ',
+                ' onmouseout="this.className = this.className.replace(\'recentSearchResultsHighlight\', \'\');">',
+                $escapedText, '</a>', '<br />', "\n";
             }
         }
 
@@ -481,14 +487,14 @@ class TemplateUtility
 
         echo 'Saved Searches&nbsp;&nbsp;';
         echo '<img title="To delete a recent search, press the - button."',
-             ' src="images/information.gif" alt="" width="16" height="16" />';
+        ' src="images/information.gif" alt="" width="16" height="16" />';
 
         echo '<div id="searchSaved" class="savedSearchResultsHidden">';
 
         /* Saved Search Results */
         if (count($savedSearchSaved) == 0)
         {
-           echo '(None)';
+            echo '(None)';
         }
         else
         {
@@ -510,18 +516,18 @@ class TemplateUtility
                 $escapedURL = '/'.$escapedURL;
 
                 echo '<form method="post" action="', $indexName, '?m=home&amp;a=deleteSavedSearch" style="display:inline;">',
-                     '<input type="hidden" name="postback" value="postback" />',
-                     '<input type="hidden" name="searchID" value="', $savedSearchRow['searchID'], '" />',
-                     '<input type="hidden" name="currentURL" value="', $currentUrlGETString, '" />',
-                     '<button type="submit" class="linkButton">',
-                     '<img src="images/actions/delete_small.gif" style="border: none;" title="Delete This Search" /></button></form>&nbsp;';
+                '<input type="hidden" name="postback" value="postback" />',
+                '<input type="hidden" name="searchID" value="', $savedSearchRow['searchID'], '" />',
+                '<input type="hidden" name="currentURL" value="', $currentUrlGETString, '" />',
+                '<button type="submit" class="linkButton">',
+                '<img src="images/actions/delete_small.gif" style="border: none;" title="Delete This Search" /></button></form>&nbsp;';
 
                 echo '<a href="', $escapedURL, '&amp;savedSearchID=', $savedSearchRow['searchID'],
-                     '" onclick="gotoSearch(\'', $escapedText, "', '", $escapedURL,
-                     '&amp;savedSearchID=', $savedSearchRow['searchID'], '\');"',
-                     ' onmouseover="this.className += \'recentSearchResultsHighlight\';" ',
-                     ' onmouseout="this.className = this.className.replace(\'recentSearchResultsHighlight\', \'\');">',
-                     $escapedText,'</a><br />', "\n";
+                '" onclick="gotoSearch(\'', $escapedText, "', '", $escapedURL,
+                '&amp;savedSearchID=', $savedSearchRow['searchID'], '\');"',
+                ' onmouseover="this.className += \'recentSearchResultsHighlight\';" ',
+                ' onmouseout="this.className = this.className.replace(\'recentSearchResultsHighlight\', \'\');">',
+                $escapedText,'</a><br />', "\n";
             }
         }
 
@@ -543,26 +549,26 @@ class TemplateUtility
         $indexName = CATSUtility::getIndexName();
 
         echo '<script type="text/javascript">
-            if (navigator.cookieEnabled)
-            {
-                var cookieEnabled = true;
-            }
-            else
-            {
-                var cookieEnabled = false;
-            }
+        if (navigator.cookieEnabled)
+        {
+        var cookieEnabled = true;
+    }
+    else
+    {
+    var cookieEnabled = false;
+    }
 
-            if (typeof(navigator.cookieEnabled) == "undefined" && !cookieEnabled)
-            {
-                document.cookie = \'testcookie\';
-                cookieEnabled = (document.cookie.indexOf(\'testcookie\') != -1) ? true : false;
-            }
+    if (typeof(navigator.cookieEnabled) == "undefined" && !cookieEnabled)
+    {
+    document.cookie = \'testcookie\';
+        cookieEnabled = (document.cookie.indexOf(\'testcookie\') != -1) ? true : false;
+    }
 
-            if (!cookieEnabled)
-            {
-                showPopWin(\'' . $indexName . '?m=login&amp;a=noCookiesModal\', 400, 225, null);
-            }
-            </script>';
+    if (!cookieEnabled)
+    {
+    showPopWin(\'' . $indexName . '?m=login&amp;a=noCookiesModal\', 400, 225, null);
+    }
+    </script>';
     }
 
     /**
@@ -574,18 +580,18 @@ class TemplateUtility
     public static function printPopupContainer()
     {
         echo '<div id="popupMask">&nbsp;</div><div id="popupContainer">',
-             '<div id="popupInner"><div id="popupTitleBar">',
-             '<div id="popupTitle"></div><div id="popupControls">',
-             '<img src="js/submodal/close.gif" alt="X" width="16" height="16"',
-             ' onclick="hidePopWin(false);" /></div></div>';
+        '<div id="popupInner"><div id="popupTitleBar">',
+        '<div id="popupTitle"></div><div id="popupControls">',
+        '<img src="js/submodal/close.gif" alt="X" width="16" height="16"',
+        ' onclick="hidePopWin(false);" /></div></div>';
 
         echo '<div style="width: 100%; height: 100%; background-color:',
-             ' transparent; display: none;" id="popupFrameDiv"></div>';
+        ' transparent; display: none;" id="popupFrameDiv"></div>';
 
         echo '<iframe src="js/submodal/loading.html" style="width: 100%; height: 100%;',
-             ' background-color: transparent; display: none;" scrolling="auto"',
-             ' frameborder="0" allowtransparency="true" id="popupFrameIFrame"',
-             ' width="100%" height="100%"></iframe>';
+        ' background-color: transparent; display: none;" scrolling="auto"',
+        ' frameborder="0" allowtransparency="true" id="popupFrameIFrame"',
+        ' width="100%" height="100%"></iframe>';
 
         echo '</div></div>';
     }
@@ -600,31 +606,26 @@ class TemplateUtility
      */
     public static function printTabs($active, $subActive = '', $forceHighlight = '')
     {
-        /* Special tab behaviors:
+        /*
+         * Special tab behaviours:
          *
-         * Tab text = 'something*al=somenumber' where somenumber is an access level -
-         *      Only display tab if current user userlevel >= somenumber.
-         * Tab text = 'something*al=somenumber@somesecuredobject' where somenumber is an access level and somesecuredobject is secured objec name -
-         *      Only display tab if current user userlevel_for_securedobject >= somenumber.
+         * Tab text = 'something*al=somenumber'
+         * Tab text = 'something*al=somenumber@somesecuredobject'
          *
-         * Subtab url = 'url*al=somenumber' where somenumber is an access level -
-         *      Only display subtab if current user userlevel >= somenumber.
-         * Subtab url = 'url*al=somenumber@somesecuredobject' where somenumber is an access level and somesecuredobject is secured objec name -
-         *      Only display subtab if current user userlevel_for_securedobject >= somenumber.
-         *
-         * Subtab url = 'url*js=javascript code' where javascript code is JS commands -
-         *      JS code to execute for button OnClick event.
+         * Subtab URL = 'url*al=somenumber'
+         * Subtab URL = 'url*al=somenumber@somesecuredobject'
+         * Subtab URL = 'url*js=javascript code'
          */
 
-         /* FIXME:  There is too much logic going on here, there should be something that loads settings or evaluates what tabs
-                    shouldn't be drawn. */
-
-        echo '<div id="header">', "\n";
-        echo '<ul id="primary">', "\n";
-
         $indexName = CATSUtility::getIndexName();
-
         $modules = ModuleUtility::getModules();
+        $renderSubTabs = false;
+
+        echo '<nav id="header" class="border-bottom" aria-label="Application navigation">', "\n";
+        echo '<div class="container-fluid px-0">', "\n";
+        echo '<ul id="primary" class="nav flex-nowrap gap-1 overflow-x-auto" ',
+        'aria-label="Primary navigation">', "\n";
+
         foreach ($modules as $moduleName => $parameters)
         {
             $tabText = $parameters[1];
@@ -651,85 +652,103 @@ class TemplateUtility
                 continue;
             }
 
-            /* Inactive Tab? */
+            /*
+             * Inactive tab.
+             */
             if ($active === null || $moduleName != $active->getModuleName())
             {
-                if ($moduleName == $forceHighlight)
-                {
-                    $className = 'active';
-                }
-                else
-                {
-                    $className = 'inactive';
-                }
+                $className = ($moduleName == $forceHighlight)
+                ? 'nav-link active'
+                : 'nav-link';
 
-                $alPosition = strpos($tabText, "*al=");
+                $alPosition = strpos($tabText, '*al=');
+
                 if ($alPosition === false)
                 {
-                    echo '<li><a class="', $className, '" href="', $indexName,
-                         '?m=', $moduleName, '">', $tabText, '</a></li>', "\n";
+                    echo '<li class="nav-item">', "\n";
+                    echo '<a class="', $className, '" href="',
+                    $indexName, '?m=', $moduleName, '">',
+                    $tabText, '</a>', "\n";
+                    echo '</li>', "\n";
                 }
                 else
                 {
-                     $al = substr($tabText, $alPosition + 4);
-                     $soPosition = strpos($al, "@");
-                     $soName = '';
-                     if( $soPosition !== false )		
-                     {		
-                         $soName = substr($al, $soPosition + 1);		
-                         $al = substr($al, 0, $soPosition);		
-                     }		
-                     if ($_SESSION['CATS']->getAccessLevel($soName) >= $al ||
-                         $_SESSION['CATS']->isDemo())
-                     {
-                        echo '<li><a class="', $className, '" href="', $indexName, '?m=', $moduleName, '">',
-                             substr($tabText, 0, $alPosition), '</a></li>', "\n";
+                    $al = substr($tabText, $alPosition + 4);
+                    $soPosition = strpos($al, '@');
+                    $soName = '';
+
+                    if ($soPosition !== false)
+                    {
+                        $soName = substr($al, $soPosition + 1);
+                        $al = substr($al, 0, $soPosition);
+                    }
+
+                    if ($_SESSION['CATS']->getAccessLevel($soName) >= $al ||
+                        $_SESSION['CATS']->isDemo())
+                    {
+                        echo '<li class="nav-item">', "\n";
+                        echo '<a class="', $className, '" href="',
+                        $indexName, '?m=', $moduleName, '">',
+                        substr($tabText, 0, $alPosition), '</a>', "\n";
+                        echo '</li>', "\n";
                     }
                 }
 
                 continue;
             }
 
-            $alPosition = strpos($tabText, "*al=");
+            /*
+             * Active tab.
+             */
+            $alPosition = strpos($tabText, '*al=');
+
             if ($alPosition !== false)
             {
                 $tabText = substr($tabText, 0, $alPosition);
             }
 
-            /* Start the <li> block for the active tab. The secondary <ul>
-             * for subtabs MUST be contained within this block. It is
-             * closed after subtabs are printed. */
-            echo '<li>';
+            echo '<li class="nav-item">', "\n";
+            echo '<a class="nav-link active" aria-current="page" href="',
+            $indexName, '?m=', $moduleName, '">',
+            $tabText, '</a>', "\n";
+            echo '</li>', "\n";
 
-            echo '<a class="active" href="', $indexName, '?m=', $moduleName,
-                 '">', $tabText, '</a>', "\n";
+            $renderSubTabs = true;
+        }
 
+        echo '</ul>', "\n";
+
+        /*
+         * Render secondary navigation separately from the primary tab.
+         */
+        if ($renderSubTabs)
+        {
             $subTabs = $active->getSubTabs($modules);
+
             if ($subTabs)
             {
-                echo '<ul id="secondary">';
+                echo '<ul id="secondary" class="nav nav-underline flex-nowrap gap-3 overflow-x-auto" ',
+                'aria-label="Secondary navigation">', "\n";
 
                 foreach ($subTabs as $subTabText => $link)
                 {
-                    if ($subTabText == $subActive)
-                    {
-                        $style = "color:#cccccc;";
-                    }
-                    else
-                    {
-                        $style = "";
-                    }
+                    $className = ($subTabText == $subActive)
+                    ? 'nav-link active'
+                    : 'nav-link';
 
-                    /* Check HR mode for displaying tab. */
-                    $hrmodePosition = strpos($link, "*hrmode=");
+                    /*
+                     * Check HR mode.
+                     */
+                    $hrmodePosition = strpos($link, '*hrmode=');
+
                     if ($hrmodePosition !== false)
                     {
-                        /* Access level restricted subtab. */
                         $hrmode = substr($link, $hrmodePosition + 8);
+
                         if ((!$_SESSION['CATS']->isHrMode() && $hrmode == 0) ||
                             ($_SESSION['CATS']->isHrMode() && $hrmode == 1))
                         {
-                            $link =  substr($link, 0, $hrmodePosition);
+                            $link = substr($link, 0, $hrmodePosition);
                         }
                         else
                         {
@@ -737,23 +756,27 @@ class TemplateUtility
                         }
                     }
 
-                    /* Check access level for displaying tab. */
-                    $alPosition = strpos($link, "*al=");
+                    /*
+                     * Check access level.
+                     */
+                    $alPosition = strpos($link, '*al=');
+
                     if ($alPosition !== false)
                     {
-                        /* Access level restricted subtab. */
                         $al = substr($link, $alPosition + 4);
-                        $soPosition = strpos($al, "@");
+                        $soPosition = strpos($al, '@');
                         $soName = '';
-                        if( $soPosition !== false )		
-                        {		
-                            $soName = substr($al, $soPosition + 1);		
-                            $al = substr($al, 0, $soPosition);		
-                        }		
+
+                        if ($soPosition !== false)
+                        {
+                            $soName = substr($al, $soPosition + 1);
+                            $al = substr($al, 0, $soPosition);
+                        }
+
                         if ($_SESSION['CATS']->getAccessLevel($soName) >= $al ||
                             $_SESSION['CATS']->isDemo())
                         {
-                            $link =  substr($link, 0, $alPosition);
+                            $link = substr($link, 0, $alPosition);
                         }
                         else
                         {
@@ -761,72 +784,105 @@ class TemplateUtility
                         }
                     }
 
-                    $jsPosition = strpos($link, "*js=");
+                    /*
+                     * JavaScript subtab.
+                     */
+                    $jsPosition = strpos($link, '*js=');
+
                     if ($jsPosition !== false)
                     {
-                        /* Javascript subtab. */
-                        echo '<li><a href="', substr($link, 0, $jsPosition), '" onclick="',
-                             substr($link, $jsPosition + 4), '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
+                        echo '<li class="nav-item">', "\n";
+                        echo '<a class="', $className, '" href="',
+                        substr($link, 0, $jsPosition),
+                        '" onclick="',
+                        substr($link, $jsPosition + 4),
+                        '">',
+                        $subTabText,
+                        '</a>', "\n";
+                        echo '</li>', "\n";
                     }
 
-                    /* A few subtabs have special logic to decide if they display or not. */
-                    /* FIXME:  Put the logic for these somewhere else.  Perhaps the definitions of the subtabs
-                               themselves should have an eval()uatable rule?
-                               Brian 6-14-07:  Second.  */
+                    /*
+                     * Default company subtab.
+                     */
                     else if (strpos($link, 'a=internalPostings') !== false)
                     {
-                        /* Default company subtab. */
                         include_once(LEGACY_ROOT . '/lib/Companies.php');
 
                         $companies = new Companies();
                         $defaultCompanyID = $companies->getDefaultCompany();
+
                         if ($defaultCompanyID !== false)
                         {
-                            echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
+                            echo '<li class="nav-item">', "\n";
+                            echo '<a class="', $className, '" href="',
+                            $link, '">',
+                            $subTabText, '</a>', "\n";
+                            echo '</li>', "\n";
                         }
                     }
+
+                    /*
+                     * Administration subtab.
+                     */
                     else if (strpos($link, 'a=administration') !== false)
                     {
-                        /* Administration subtab. */
-                        if ($_SESSION['CATS']->getAccessLevel('settings.administration') >= ACCESS_LEVEL_DEMO)
+                        if ($_SESSION['CATS']->getAccessLevel(
+                            'settings.administration'
+                        ) >= ACCESS_LEVEL_DEMO)
                         {
-                            echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
+                            echo '<li class="nav-item">', "\n";
+                            echo '<a class="', $className, '" href="',
+                            $link, '">',
+                            $subTabText, '</a>', "\n";
+                            echo '</li>', "\n";
                         }
                     }
+
+                    /*
+                     * EEO Report subtab.
+                     */
                     else if (strpos($link, 'a=customizeEEOReport') !== false)
                     {
-                        /* EEO Report subtab.  Shouldn't be visible if EEO tracking is disabled. */
                         $EEOSettings = new EEOSettings();
                         $EEOSettingsRS = $EEOSettings->getAll();
 
                         if ($EEOSettingsRS['enabled'] == 1)
                         {
-                            echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
+                            echo '<li class="nav-item">', "\n";
+                            echo '<a class="', $className, '" href="',
+                            $link, '">',
+                            $subTabText, '</a>', "\n";
+                            echo '</li>', "\n";
                         }
                     }
 
-
-                    /* Tab is ok to draw. */
+                    /*
+                     * Normal subtab.
+                     */
                     else if ($link != '')
                     {
-                        /* Normal subtab. */
-                        echo '<li><a href="', $link, '" style="'.$style.'">', $subTabText, '</a></li>', "\n";
+                        echo '<li class="nav-item">', "\n";
+                        echo '<a class="', $className, '" href="',
+                        $link, '">',
+                        $subTabText, '</a>', "\n";
+                        echo '</li>', "\n";
                     }
                 }
 
                 if (!eval(Hooks::get('TEMPLATE_UTILITY_DRAW_SUBTABS'))) return;
 
-                echo '</ul>';
+                echo '</ul>', "\n";
             }
-
-            echo '</li>';
         }
-        echo '</ul>', "\n";
+
         echo '</div>', "\n";
+        echo '</nav>', "\n";
     }
 
+
     /**
-     * Prints footer HTML for non-report pages.
+     * Prints footer HTML for application  pages.
      *
      * @return void
      */
@@ -835,71 +891,36 @@ class TemplateUtility
         $build    = $_SESSION['CATS']->getCachedBuild();
         $loadTime = $_SESSION['CATS']->getExecutionTime();
 
-        if ($build > 0)
-        {
-            $buildString = ' build ' . $build;
-        }
-        else
-        {
-            $buildString = '';
-        }
+        $buildString = ($build > 0)
+        ? ' build ' . $build
+        : '';
 
-        /* THE MODIFICATION OF THE COPYRIGHT AND 'Powered by OpenCATS' LINES IS NOT ALLOWED
-           BY THE TERMS OF THE CPL FOR OpenCATS OPEN SOURCE EDITION.
+        echo '<footer class="footerBlock container-fluid py-1 border-top text-body-secondary">', "\n";
 
-             II) The following copyright notice must be retained and clearly legible
-             at the bottom of every rendered HTML document: Copyright (C) 2007-2023
-             OpenCATs All rights reserved.
+        echo '<div class="d-flex flex-wrap align-items-center justify-content-between gap-2">', "\n";
 
-             III) The "Powered by OpenCATS" text or logo must be retained and clearly
-             legible on every rendered HTML document. The logo, or the text
-             "OpenCATS", must be a hyperlink to the CATS Project website, currently
-             http://www.opencats.org/.
-       */
+        echo '<span id="footerText">',
+        'OpenCATS ', CATS_VERSION, $buildString,
+        ' &middot; Powered by ',
+        '<a href="http://www.opencats.org/" class="text-body-secondary">',
+        'OpenCATS</a>',
+        '</span>', "\n";
 
-        echo '<div class="footerBlock">', "\n";
-        echo '<p id="footerText">OpenCATS Version ', CATS_VERSION, $buildString,
-             '. Powered by <a href="http://www.opencats.org/"><strong>OpenCATS</strong></a>.</p>', "\n";
-        echo '<span id="footerResponse">Server Response Time: ', $loadTime, ' seconds.</span><br />';
-        echo '<span id="footerCopyright">', COPYRIGHT_HTML, '</span>', "\n";
-        if (!eval(Hooks::get('TEMPLATEUTILITY_SHOWPRIVACYPOLICY'))) return;
+        echo '<span id="footerResponse">',
+        'Response: ', $loadTime, 's',
+        '</span>', "\n";
+
         echo '</div>', "\n";
+
+        echo '<div id="footerCopyright">',
+        COPYRIGHT_HTML,
+        '</div>', "\n";
+
+        if (!eval(Hooks::get('TEMPLATEUTILITY_SHOWPRIVACYPOLICY'))) return;
+
+        echo '</footer>', "\n";
 
         eval(Hooks::get('TEMPLATE_UTILITY_PRINT_FOOTER'));
-
-        echo '</body>', "\n";
-        echo '</html>', "\n";
-
-    }
-
-    /**
-     * Prints footer HTML for report pages.
-     *
-     * @return void
-     */
-    public static function printReportFooter()
-    {
-        $build = $_SESSION['CATS']->getCachedBuild();
-
-        $isTimeFormat24 = isset($_SESSION['CATS']) && $_SESSION['CATS']->isTimeFormat24();
-        $timeFormat = $isTimeFormat24 ? 'H:i:s' : 'g:i:s A';
-        $date = DateUtility::getAdjustedDate('l, F jS, Y \a\t ' . $timeFormat . ' T');
-
-        if ($build > 0)
-        {
-            $buildString = ' build ' . $build;
-        }
-        else
-        {
-            $buildString = '';
-        }
-
-        echo '<div class="footerBlock">', "\n";
-        echo '<p id="footerText">Report generated on ', $date, '.<br />', "\n";
-        echo 'CATS Version ', CATS_VERSION, $buildString,
-             '. Powered by <a href="http://www.catsone.com/"><strong>CATS</strong></a>.</p>', "\n";
-        echo '<span id="footerCopyright">', COPYRIGHT_HTML, '</span>', "\n";
-        echo '</div>', "\n";
 
         echo '</body>', "\n";
         echo '</html>', "\n";
@@ -1104,9 +1125,9 @@ class TemplateUtility
         }
 
         return Template::escapeHtml($statusPrefix)
-            . '<span class="statusChangeHighlight">'
-            . Template::escapeHtml($statusText)
-            . '</span>';
+        . '<span class="statusChangeHighlight">'
+        . Template::escapeHtml($statusText)
+        . '</span>';
     }
 
     /**
@@ -1284,16 +1305,16 @@ class TemplateUtility
             $headIncludes = array($headIncludes);
         }
 
-        echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"', "\n";
-        echo '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">', "\n";
-        echo '<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">', "\n";
+        echo '<!DOCTYPE html>', "\n";
+        echo '<html lang="en">', "\n";
         echo '<head>', "\n";
+        echo '<meta charset="', HTML_ENCODING, '">', "\n";
+        echo '<meta name="viewport" content="width=device-width, initial-scale=1">', "\n";
         echo '<title>OpenCATS - ', Template::escapeHtml($pageTitle), '</title>', "\n";
-        echo '<meta http-equiv="Content-Type" content="text/html; charset=', HTML_ENCODING, '" />', "\n";
-        echo '<link rel="icon" href="images/favicon.ico" type="image/x-icon" />', "\n";
-        echo '<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />', "\n";
+        echo '<link rel="icon" href="images/favicon.ico" type="image/x-icon">', "\n";
+        echo '<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">', "\n";
         echo '<link rel="alternate" type="application/rss+xml" title="RSS" href="',
-             CATSUtility::getIndexName(), '?m=rss" />', "\n";
+        CATSUtility::getIndexName(), '?m=rss">', "\n";
 
         /* Core JS files */
         $coreJavaScriptFiles = array(
@@ -1313,7 +1334,7 @@ class TemplateUtility
         {
             $csrfToken = $_SESSION['CATS']->getCSRFToken();
             echo '<script type="text/javascript">CATSCsrfToken = ',
-                 Template::escapeJs($csrfToken), ';</script>', "\n";
+            Template::escapeJs($csrfToken), ';</script>', "\n";
             echo '<script type="text/javascript">', "\n";
             echo 'function catsInjectCSRFToken()', "\n";
             echo '{', "\n";
@@ -1375,7 +1396,13 @@ class TemplateUtility
             echo '</script>', "\n";
         }
 
-       $headIncludes[] = 'main.css';
+        $headIncludes = array_merge(
+            array(
+                'vendor/twbs/bootstrap/dist/css/bootstrap.min.css',
+                'main.css'
+            ),
+            $headIncludes
+        );
 
         foreach ($headIncludes as $key => $filename)
         {
@@ -1399,11 +1426,11 @@ class TemplateUtility
         }
 
         echo '<!--[if IE]><link rel="stylesheet" type="text/css" href="',
-             self::getVersionedAssetURL('ie.css'),
-             '" /><![endif]-->', "\n";
+        self::getVersionedAssetURL('ie.css'),
+        '" /><![endif]-->', "\n";
         echo '<![if !IE]><link rel="stylesheet" type="text/css" href="',
-             self::getVersionedAssetURL('not-ie.css'),
-             '" /><![endif]>', "\n";
+        self::getVersionedAssetURL('not-ie.css'),
+        '" /><![endif]>', "\n";
         echo '</head>', "\n\n";
     }
 
