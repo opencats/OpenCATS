@@ -11,6 +11,7 @@
 var response;
 var maxSteps;
 var installMaintNextAction = "a=reindexResumes";
+var maintenanceOnly = false;
 
 
 function setActiveStep(step)
@@ -127,19 +128,7 @@ function Installpage_maint()
 
         response = http.responseText;
 
-        if (http.status == 200)
-        {
-            if (response.indexOf("setProgressUpdating") == -1)
-            {
-                Installpage_populate(installMaintNextAction);
-                installMaintNextAction = "a=reindexResumes";
-            }
-            else
-            {
-                execJS(response);
-            }
-        }
-        else
+        if (http.status < 200 || http.status >= 300)
         {
             /*
              * A web server or proxy can stop waiting for a long-running
@@ -147,7 +136,42 @@ function Installpage_maint()
              * processing it. Allow the installer to resume once the
              * database operation has completed.
              */
+            if (maintenanceOnly)
+            {
+                document.getElementById("maintenanceProgress").style.display = "none";
+            }
+
             Installpage_showMaintenanceRetry(http);
+            return;
+        }
+
+        if (maintenanceOnly &&
+            (AJAX_isPHPError(response) ||
+             response.indexOf("<errorcode>-1</errorcode>") != -1 ||
+             response.indexOf("Query Error") != -1 ||
+             response.indexOf("Access denied.") != -1))
+        {
+            document.getElementById("maintenanceProgress").style.display = "none";
+            document.getElementById("maintenanceError").style.display = "";
+            document.getElementById("startMaintenance").disabled = false;
+            return;
+        }
+
+        if (response.indexOf("setProgressUpdating") == -1)
+        {
+            if (maintenanceOnly)
+            {
+                window.location = "index.php";
+            }
+            else
+            {
+                Installpage_populate(installMaintNextAction);
+                installMaintNextAction = "a=reindexResumes";
+            }
+        }
+        else
+        {
+            execJS(response);
         }
     }
 
