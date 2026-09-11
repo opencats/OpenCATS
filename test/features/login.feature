@@ -31,14 +31,22 @@ Feature: Login
     When I press "Login"
     Then I should see "Invalid username or password"
 
-  Scenario: Login as administrator
-    Given I am on "/"
-    And I fill in "Username" with "admin"
-    And I fill in "Password" with "cats"
-    When I press "Login"
-    Then I should not see "Invalid username or password"
-    And I should see "Administrator"
-    And I should see "Logout"
+  Scenario: Login as administrator with default password
+  Given the administrator is using the default password
+  And I am on "/"
+  And I fill in "Username" with "admin"
+  And I fill in "Password" with "cats"
+  When I press "Login"
+  Then I should not see "Invalid username or password"
+  And I should see "Create Administrator Password"
+  And I should see "New Password"
+  And I should see "Confirm New Password"
+
+  When I fill in "New Password" with "opencats-test-admin"
+  And I fill in "Confirm New Password" with "opencats-test-admin"
+  And I press "Submit"
+  Then I should see "Site Name"
+  And I should see "Your administrator password has been changed."
     
   Scenario: Logout
     Given I am authenticated as "Administrator"
