@@ -439,9 +439,7 @@
                                             Password: cats<br />
                                             <br />
                                             <br />
-                                            OpenCATS will periodically check for new versions of the software from catsone.com, and will send non confidential information about your
-                                            installation including operating system version and web browser configuration back to catsone.com in order for us to improve OpenCATS.  To see what information is sent, view
-                                            lib/NewVersionCheck.php.<br />
+                                            You will be required to change this password when you first log in.<br />
                                             <br />
                                             <input type="button" class="button" value="Start OpenCATS" onclick="window.location.href='index.php';" />
                                         </div>
