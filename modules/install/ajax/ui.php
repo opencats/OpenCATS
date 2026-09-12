@@ -999,23 +999,11 @@ switch ($action)
         }
         break;
 
-    case 'loginCATS':
-        MySQLConnect();
-
-        /* Determine if a default user is set. */
-        $record = MySQLGetAssoc(
-            "SELECT user_id FROM user WHERE user_name = 'admin' AND password = md5('cats') LIMIT 1"
-        );
-        if (!empty($record))
-        {
-            //Default user set
-            echo '<script type="text/javascript">document.location.href="index.php?defaultlogin=true";</script>';
-        }
-        else
-        {
-            echo '<script type="text/javascript">document.location.href="index.php";</script>';
-        }
-        break;
+        case 'loginCATS':
+            echo '<script type="text/javascript">
+            document.location.href = "index.php";
+            </script>';
+            break;
 
     default:
         die('Invalid action.');

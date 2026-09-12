@@ -253,9 +253,8 @@ class LoginUI extends UserInterface
         /* LOGGED_IN_MESSAGES hooks are only for messages which show up on initial login (warnings, etc) */
         if (!eval(Hooks::get('LOGGED_IN_MESSAGES'))) return;
 
-        // TODO: Decide whether to remove the first-login wizard entirely, or re-enable it and update the Behat tests accordingly.
         /* If logged in for the first time, make user change password. */
-        if (false && strtolower($username) == 'admin' &&
+        if (strtolower($username) == 'admin' &&
             $password === DEFAULT_ADMIN_PASSWORD)
         {
             CATSUtility::transferRelativeURI('m=settings&a=newInstallPassword');

@@ -38,6 +38,10 @@
                 <div id="subFormBlock" style="text-align: left;">
                     <form name="configurationForm" id="configurationForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=<?php echo($this->action); ?>" method="post" autocomplete="off">
                         <input type="hidden" name="postback" value="postback" />
+                        <?php if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn()): ?>
+                            <input type="hidden" name="csrfToken" value="<?php echo Template::escapeAttr($_SESSION['CATS']->getCSRFToken()); ?>" />
+                        <?php endif; ?>
+
                         <label id="passwordLabel1" for="password1">New Password</label><br />
                         <input type="password" name="password1" id="password1" class="input-box" />
                         <br />
@@ -59,6 +63,9 @@
                 <div id="subFormBlock" style="text-align: left;">
                     <form name="configurationForm" id="configurationForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=<?php echo($this->action); ?>" method="post" autocomplete="off">
                         <input type="hidden" name="postback" value="postback" />
+                        <?php if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn()): ?>
+                            <input type="hidden" name="csrfToken" value="<?php echo Template::escapeAttr($_SESSION['CATS']->getCSRFToken()); ?>" />
+                        <?php endif; ?>
 
                         <table>
                             <tr>
@@ -106,6 +113,9 @@
                 <div id="subFormBlock" style="text-align: left;">
                     <form name="configurationForm" id="configurationForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=<?php echo($this->action); ?>" method="post" autocomplete="off">
                         <input type="hidden" name="postback" value="postback" />
+                        <?php if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn()): ?>
+                            <input type="hidden" name="csrfToken" value="<?php echo Template::escapeAttr($_SESSION['CATS']->getCSRFToken()); ?>" />
+                        <?php endif; ?>
 
                         <label id="siteNameLabel" for="siteName"><?php echo($this->inputTypeTextParam); ?></label><br />
                         <input type="text" name="siteName" id="siteName" class="input-box" style="width: 200px;" />
@@ -124,6 +134,10 @@
                 <div id="subFormBlock" style="text-align: left;">
                     <form name="configurationForm" id="configurationForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=<?php echo($this->action); ?>" method="post" autocomplete="off">
                         <input type="hidden" name="postback" value="postback" />
+                        <?php if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn()): ?>
+                            <input type="hidden" name="csrfToken" value="<?php echo Template::escapeAttr($_SESSION['CATS']->getCSRFToken()); ?>" />
+                        <?php endif; ?>
+
                         <label id="text1Label" for="text1"><?php echo($this->inputTypeTextParam); ?></label><br />
                         <input name="text1" id="text1" class="input-box" />
                         <br />
@@ -138,6 +152,10 @@
            <?php if ($this->inputType == 'conclusion'): ?>
                 <div id="subFormBlock" style="text-align: center;">
                     <form name="configurationForm" id="configurationForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=<?php echo($this->home); ?>" method="post" autocomplete="off">
+                        <?php if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn()): ?>
+                            <input type="hidden" name="csrfToken" value="<?php echo Template::escapeAttr($_SESSION['CATS']->getCSRFToken()); ?>" />
+                        <?php endif; ?>
+
                         <input type="submit" id="submit" name="submit" class="button" value="Continue Using OpenCATS" />
                     </form>
                 </div>

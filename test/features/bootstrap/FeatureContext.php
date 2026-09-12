@@ -39,7 +39,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     public function __construct()
     {
         $this->roleData = array(
-            'Administrator' => new Role('admin', 'cats'),
+            'Administrator' => new Role('admin', 'opencats-test-admin'),
                                 'User' => new Role('john@mycompany.net', 'john99')
         );
     }
@@ -50,12 +50,46 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     public function iAmAuthenticatedAs($role)
     {
         $roleData = empty($this->roleData[$role]) ? null : $this->roleData[$role];
-        if (!$roleData) {
+
+        if (!$roleData)
+        {
             throw new PendingException();
         }
+
+        if ($role === 'Administrator')
+        {
+            $this->setAdministratorPassword($roleData->getPassword());
+        }
+
         $this->iLoginAs($roleData->getUserName(), $roleData->getPassword());
     }
 
+    /**
+     * @Given the administrator is using the default password
+     */
+    public function theAdministratorIsUsingTheDefaultPassword()
+    {
+        $this->setAdministratorPassword(DEFAULT_ADMIN_PASSWORD);
+    }
+
+    /**
+     * Set the administrator password for test setup.
+     */
+    private function setAdministratorPassword($password)
+    {
+        $users = new Users();
+        $userID = $users->getIDByUsername('admin');
+
+        if ($userID === false)
+        {
+            throw new \RuntimeException('Administrator user does not exist.');
+        }
+
+        if (!$users->resetPassword($userID, $password))
+        {
+            throw new \RuntimeException('Unable to reset administrator password.');
+        }
+    }
     /**
      * @Given There is a person called :fullName with :property
      */
