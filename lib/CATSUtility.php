@@ -242,7 +242,8 @@ class CATSUtility
 
         $dom = new DOMDocument();
         $previousUseInternal = libxml_use_internal_errors(true);
-        $wrappedHtml = '<div>' . $html . '</div>';
+        /* Ensure DOMDocument parses the HTML fragment as UTF-8. */
+        $wrappedHtml = '<?xml encoding="UTF-8"><div>' . $html . '</div>';
         $flags = 0;
         if (defined('LIBXML_HTML_NOIMPLIED'))
         {
