@@ -138,17 +138,6 @@
             document.getElementById('loginForm').submit();
         }
 
-        function defaultLogin()
-        {
-            document.getElementById('username').value = 'admin';
-            document.getElementById('password').value = 'cats';
-            document.getElementById('loginForm').submit();
-        }
-
-        <?php if (isset($_GET['defaultlogin'])): ?>
-            defaultLogin();
-        <?php endif; ?>
-
         initPopUp();
     </script>
 

@@ -21,7 +21,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
     And the page should <quickSearch> contain "Quick Search"
     And the page should <quickSearch> contain "quickSearchFor"
     And the page should <quickSearch> contain "quickSearch"
-    And the page should <actionMenu> contain "showHideSingleQuickActionMenu"
+    And I should <actionMenu> a "a[aria-label='Quick actions']" element
     And I should <addAttachment> "Add Attachment"
     And I should <generateReport> "Generate Report"
     And I should <viewHistory> "View History"
@@ -39,14 +39,14 @@ Feature: Access Level to objects check - sub pages (show, ...)
      
   Examples:
      | accessLevel | addJobOrder | searchJobOrder | quickSearch | actionMenu  | addAttachment | generateReport | viewHistory | editJobOrder  | deleteJobOrder  | administrativeHideShow | addToPipeline | export | logAnActivity | removeFromPipeline | setMatchingRating | details | deleteAttachment |
-     | DISABLED    | not see     | not see        | not         | not         | not see       | not see        | not see     | not see       | not see         | not see                | not see       | not see|not            | not                | not               | not see | not              | 
-     | READONLY    | not see     | see            |             |             | not see       | see            | not see     | not see       | not see         | not see                | not see       | see    |not            | not                | not               | see     | not              |
-     | EDIT        | see         | see            |             |             | see           | see            | not see     | see           | not see         | not see                | see           | see    |               | not                |                   | see     | not              |
-     | DELETE      | see         | see            |             |             | see           | see            | not see     | see           | see             | not see                | see           | see    |               |                    |                   | see     |                  |
-     | DEMO        | see         | see            |             |             | see           | see            | see         | see           | see             | not see                | see           | see    |               |                    |                   | see     |                  |
-     | ADMIN       | see         | see            |             |             | see           | see            | see         | see           | see             | see                    | see           | see    |               |                    |                   | see     |                  |
-     | MULTI_ADMIN | see         | see            |             |             | see           | see            | see         | see           | see             | see                    | see           | see    |               |                    |                   | see     |                  |
-     | ROOT        | see         | see            |             |             | see           | see            | see         | see           | see             | see                    | see           | see    |               |                    |                   | see     |                  |
+     | DISABLED    | not see     | not see        | not         | not see     | not see       | not see        | not see     | not see       | not see         | not see                | not see       | not see|not            | not                | not               | not see | not              |
+     | READONLY    | not see     | see            |             | see         | not see       | see            | not see     | not see       | not see         | not see                | not see       | see    |not            | not                | not               | see     | not              |
+     | EDIT        | see         | see            |             | see         | see           | see            | not see     | see           | not see         | not see                | see           | see    |               | not                |                   | see     | not              |
+     | DELETE      | see         | see            |             | see         | see           | see            | not see     | see           | see             | not see                | see           | see    |               |                    |                   | see     |                  |
+     | DEMO        | see         | see            |             | see         | see           | see            | see         | see           | see             | not see                | see           | see    |               |                    |                   | see     |                  |
+     | ADMIN       | see         | see            |             | see         | see           | see            | see         | see           | see             | see                    | see           | see    |               |                    |                   | see     |                  |
+     | MULTI_ADMIN | see         | see            |             | see         | see           | see            | see         | see           | see             | see                    | see           | see    |               |                    |                   | see     |                  |
+     | ROOT        | see         | see            |             | see         | see           | see            | see         | see           | see             | see                    | see           | see    |               |                    |                   | see     |                  |
   
   ####### CANDIDATES #######
   
@@ -60,7 +60,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
      And the page should <quickSearch> contain "Quick Search"
      And the page should <quickSearch> contain "quickSearchFor"
      And the page should <quickSearch> contain "quickSearch"
-     And the page should <actionMenu> contain "showHideSingleQuickActionMenu"
+     And I should <actionMenu> a "a[aria-label='Quick actions']" element
      And I should <details> "Candidate Details"
      And I should <scheduleEvent> "Schedule Event"
      And I should <addAttachment> "Add Attachment"
@@ -82,14 +82,14 @@ Feature: Access Level to objects check - sub pages (show, ...)
      
    Examples:
      | accessLevel | addCandidate | searchCandidate | quickSearch | actionMenu | addToList | details | scheduleEvent | addAttachment | editCandidate | deleteCandidate | viewHistory | administrativeHideShow | addToPipeline | logAnActivity2 | logAnActivity | removeFromPipeline | editActivity | deleteActivity | setMatchingRating | deleteAttachment |
-     | DISABLED    | not see      | not see         | not         | not        | not       | not see | not see       | not see       | not see       | not see         | not see     | not see                | not           | not            | not see       | not                | not          | not            | not                     | not              |
-     | READONLY    | not see      | see             |             |            |           | see     | not see       | not see       | not see       | not see         | not see     | not see                | not           | not            | not see       | not                | not          | not            | not                     | not              |
-     | EDIT        | see          | see             |             |            |           | see     | see           | see           | see           | not see         | not see     | not see                |               |                | see           | not                |              | not            |                         | not              |
-     | DELETE      | see          | see             |             |            |           | see     | see           | see           | see           | see             | not see     | not see                |               |                | see           |                    |              |                |                         |                  |
-     | DEMO        | see          | see             |             |            |           | see     | see           | see           | see           | see             | see         | not see                |               |                | see           |                    |              |                |                         |                  |
-     | ADMIN       | see          | see             |             |            |           | see     | see           | see           | see           | see             | see         | see                    |               |                | see           |                    |              |                |                         |                  |
-     | MULTI_ADMIN | see          | see             |             |            |           | see     | see           | see           | see           | see             | see         | see                    |               |                | see           |                    |              |                |                         |                  |
-     | ROOT        | see          | see             |             |            |           | see     | see           | see           | see           | see             | see         | see                    |               |                | see           |                    |              |                |                         |                  |
+     | DISABLED    | not see      | not see         | not         | not see    | not       | not see | not see       | not see       | not see       | not see         | not see     | not see                | not           | not            | not see       | not                | not          | not            | not                     | not              |
+     | READONLY    | not see      | see             |             | see        |           | see     | not see       | not see       | not see       | not see         | not see     | not see                | not           | not            | not see       | not                | not          | not            | not                     | not              |
+     | EDIT        | see          | see             |             | see        |           | see     | see           | see           | see           | not see         | not see     | not see                |               |                | see           | not                |              | not            |                         | not              |
+     | DELETE      | see          | see             |             | see        |           | see     | see           | see           | see           | see             | not see     | not see                |               |                | see           |                    |              |                |                         |                  |
+     | DEMO        | see          | see             |             | see        |           | see     | see           | see           | see           | see             | see         | not see                |               |                | see           |                    |              |                |                         |                  |
+     | ADMIN       | see          | see             |             | see        |           | see     | see           | see           | see           | see             | see         | see                    |               |                | see           |                    |              |                |                         |                  |
+     | MULTI_ADMIN | see          | see             |             | see        |           | see     | see           | see           | see           | see             | see         | see                    |               |                | see           |                    |              |                |                         |                  |
+     | ROOT        | see          | see             |             | see        |           | see     | see           | see           | see           | see             | see         | see                    |               |                | see           |                    |              |                |                         |                  |
      
     ####### COMPANIES #######
 
@@ -103,7 +103,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
      And the page should <quickSearch> contain "Quick Search"
      And the page should <quickSearch> contain "quickSearchFor"
      And the page should <quickSearch> contain "quickSearch"
-     And the page should <actionMenu> contain "showHideSingleQuickActionMenu"
+     And I should <actionMenu> a "a[aria-label='Quick actions']" element
      And I should <addAttachment> "Add Attachment"
      And I should <viewHistory> "View History"
      And I should <editCompany> "Edit"
@@ -117,7 +117,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
      
      Examples:
      | accessLevel | addCompany  | searchCompany  | quickSearch | actionMenu | addAttachment | viewHistory | editCompany   | deleteCompany   | addJobOrder | addContact | editJobOrder | editContact | deleteAttachment | sendEmail |
-     | DISABLED    | not see     | not see        | not         | not        | not see       | not see     | not see       | not see         | not see     | not see    | not          | not         | not              | not       |
+     | DISABLED    | not see     | not see        | not         | not see    | not see       | not see     | not see       | not see         | not see     | not see    | not          | not         | not              | not       |
    
     @companies
     Scenario Outline: Company Show page visibility
@@ -129,7 +129,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
      And the page should <quickSearch> contain "Quick Search"
      And the page should <quickSearch> contain "quickSearchFor"
      And the page should <quickSearch> contain "quickSearch"
-     And the page should <actionMenu> contain "showHideSingleQuickActionMenu"
+     And I should <actionMenu> a "a[aria-label='Quick actions']" element
      And I should <addAttachment> "Add Attachment"
      And I should <viewHistory> "View History"
      And I should <editCompany> "Edit"
@@ -143,13 +143,13 @@ Feature: Access Level to objects check - sub pages (show, ...)
      
      Examples:
      | accessLevel | addCompany  | searchCompany  | quickSearch | actionMenu | addAttachment | viewHistory | editCompany   | deleteCompany   | addJobOrder | addContact | editJobOrder | editContact | deleteAttachment | sendEmail |
-     | READONLY    | not see     | see            |             |            | not see       | not see     | not see       | not see         | not see     | not see    | not          | not         | not              |           |
-     | EDIT        | see         | see            |             |            | see           | not see     | see           | not see         | see         | see        |              |             | not              |           | 
-     | DELETE      | see         | see            |             |            | see           | not see     | see           | see             | see         | see        |              |             |                  |           |
-     | DEMO        | see         | see            |             |            | see           | see         | see           | see             | see         | see        |              |             |                  |           |
-     | ADMIN       | see         | see            |             |            | see           | see         | see           | see             | see         | see        |              |             |                  |           |
-     | MULTI_ADMIN | see         | see            |             |            | see           | see         | see           | see             | see         | see        |              |             |                  |           |
-     | ROOT        | see         | see            |             |            | see           | see         | see           | see             | see         | see        |              |             |                  |           |
+     | READONLY    | not see     | see            |             | see        | not see       | not see     | not see       | not see         | not see     | not see    | not          | not         | not              |           |
+     | EDIT        | see         | see            |             | see        | see           | not see     | see           | not see         | see         | see        |              |             | not              |           |
+     | DELETE      | see         | see            |             | see        | see           | not see     | see           | see             | see         | see        |              |             |                  |           |
+     | DEMO        | see         | see            |             | see        | see           | see         | see           | see             | see         | see        |              |             |                  |           |
+     | ADMIN       | see         | see            |             | see        | see           | see         | see           | see             | see         | see        |              |             |                  |           |
+     | MULTI_ADMIN | see         | see            |             | see        | see           | see         | see           | see             | see         | see        |              |             |                  |           |
+     | ROOT        | see         | see            |             | see        | see           | see         | see           | see             | see         | see        |              |             |                  |           |
      
   ####### CONTACTS #######
   
@@ -163,7 +163,7 @@ Feature: Access Level to objects check - sub pages (show, ...)
      And the page should <quickSearch> contain "Quick Search"
      And the page should <quickSearch> contain "quickSearchFor"
      And the page should <quickSearch> contain "quickSearch"
-     And the page should <actionMenu> contain "showHideSingleQuickActionMenu"
+     And I should <actionMenu> a "a[aria-label='Quick actions']" element
      And I should <coldCallList> "Cold Call List"
      And I should <scheduleEvent> "Schedule Event"
      And I should <viewHistory> "View History"
@@ -175,14 +175,14 @@ Feature: Access Level to objects check - sub pages (show, ...)
      
      Examples:
      | accessLevel | addContact   | searchContact   | actionMenu | quickSearch | coldCallList | scheduleEvent | viewHistory | editContact | deleteContact | logAnActivity | editActivity | deleteActivity |
-     | DISABLED    | not see      | not see         | not        | not         | not see      | not see       | not see     | not see     | not see       | not see       | not          | not            |
-     | READONLY    | not see      | see             |            |             | see          | not see       | not see     | not see     | not see       | not see       | not          | not            |
-     | EDIT        | see          | see             |            |             | see          | see           | not see     | see         | not see       | see           |              |                |
-     | DELETE      | see          | see             |            |             | see          | see           | not see     | see         | see           | see           |              |                |
-     | DEMO        | see          | see             |            |             | see          | see           | see         | see         | see           | see           |              |                |
-     | ADMIN       | see          | see             |            |             | see          | see           | see         | see         | see           | see           |              |                |
-     | MULTI_ADMIN | see          | see             |            |             | see          | see           | see         | see         | see           | see           |              |                |
-     | ROOT        | see          | see             |            |             | see          | see           | see         | see         | see           | see           |              |                |
+     | DISABLED    | not see      | not see         | not see    | not         | not see      | not see       | not see     | not see     | not see       | not see       | not          | not            |
+     | READONLY    | not see      | see             | see        |             | see          | not see       | not see     | not see     | not see       | not see       | not          | not            |
+     | EDIT        | see          | see             | see        |             | see          | see           | not see     | see         | not see       | see           |              |                |
+     | DELETE      | see          | see             | see        |             | see          | see           | not see     | see         | see           | see           |              |                |
+     | DEMO        | see          | see             | see        |             | see          | see           | see         | see         | see           | see           |              |                |
+     | ADMIN       | see          | see             | see        |             | see          | see           | see         | see         | see           | see           |              |                |
+     | MULTI_ADMIN | see          | see             | see        |             | see          | see           | see         | see         | see           | see           |              |                |
+     | ROOT        | see          | see             | see        |             | see          | see           | see         | see         | see           | see           |              |                |
      
      
    ####### LISTS #######
@@ -198,8 +198,8 @@ Feature: Access Level to objects check - sub pages (show, ...)
      And the page should <quickSearch> contain "quickSearch"
      And I should <deleteList> "Delete List"
      And I should <listsHome> "Lists:"
-     And I should <filter> "Filter"
-     And I should <rowsPerPage> "Rows Per Page"
+     And I should <filter> "More filters"
+     And I should <rowsPerPage> a "select[aria-label='Rows per page']" element
      And I should <action> "Action"
      And I should <lists> "- Page"
      And I should <alphabetFilter> "ALL"

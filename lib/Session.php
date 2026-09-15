@@ -802,7 +802,8 @@ class CATSSession
                     $this->_accessLevel = ACCESS_LEVEL_DISABLED;
                 }
 
-                if (strlen($rs['columnPreferences']) > 0 && $this->_isDemo == false)
+                if (isset($rs['columnPreferences']) &&
+                    strlen($rs['columnPreferences']) > 0 && $this->_isDemo == false)
                 {
                     $this->_dataGridColumnPreferences = unserialize($rs['columnPreferences']);
                 }

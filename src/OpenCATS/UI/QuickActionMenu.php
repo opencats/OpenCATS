@@ -19,7 +19,7 @@ class QuickActionMenu
             $onClick = 'showHideSingleQuickActionMenu(';
             $onClick .= 'new ' . $this->getMenuType() . '('. implode(', ',  $this->getParameters()) .')';
             $onClick .= ');';
-            echo '<a href="javascript:void(0);" onclick="'. $onClick . '"><img src="images/downward.gif" border="0"></a>';
+            echo '<a href="javascript:void(0);" aria-label="Quick actions" onclick="'. $onClick . '"><img src="images/downward.gif" border="0"></a>';
         }
     }
 

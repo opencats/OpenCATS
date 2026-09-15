@@ -11,6 +11,7 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ElementHtmlException;
+use Behat\Mink\Selector\Xpath\Escaper;
 
 define('ADMIN_ID', 1);
 /**
@@ -234,7 +235,7 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
     {
         $this->theResponseShouldNotContain("You don't have permission");
         $this->theResponseShouldNotContain("Invalid user level for action");      
-        $this->theResponseShouldNotContain("opencats - Login");      
+        $this->theResponseShouldNotContain("OpenCATS - Login");
     }
 
     /**
@@ -245,7 +246,7 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
         
         if($this->accessLevel == "DISABLED")
         {
-            $this->theResponseShouldContain("opencats - Login");
+            $this->theResponseShouldContain("OpenCATS - Login");
             return;
         }
         $expectedTexts = array("You don't have permission", "Invalid user level for action", "You are not allowed to change your password.", "Invalid request.");
@@ -268,9 +269,28 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
     public function iFollowLink($name)
     {
         $link = $this->getSession()->getPage()->findLink($name);
-        if($link !== null)
+        if ($link === null && $this->accessLevel === 'DISABLED')
         {
-            $link->click();
+            return;
+        }
+        $this->clickLink($name);
+    }
+
+    /**
+     * @Then /^I should (see|not see) the page heading "([^"]*)"$/
+     */
+    public function assertPageHeading($visibility, $heading)
+    {
+        $escaper = new Escaper();
+        $xpath = '//h1[normalize-space(.) = ' . $escaper->escapeLiteral($heading) . ']';
+
+        if ($visibility === 'see')
+        {
+            $this->assertSession()->elementExists('xpath', $xpath);
+        }
+        else
+        {
+            $this->assertSession()->elementNotExists('xpath', $xpath);
         }
     }
 
@@ -295,7 +315,7 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
      */
     public function iWillLogOut()
     {
-        $this->clickLink('Logout');
+        $this->pressButton('Logout');
     }
 
 }

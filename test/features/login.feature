@@ -17,6 +17,21 @@ Feature: Login
     And I should see "Password"
     And I should see "Login"
 
+  @javascript
+  Scenario: Legacy default-login parameter does not authenticate
+    Given the administrator is using the default password
+    And I am on "/index.php?defaultlogin=true"
+    Then I should be on "/index.php?defaultlogin=true"
+    And the "username" field should contain ""
+    And the "password" field should contain ""
+    And I should not see "Administrator"
+    And I should not see "Logout"
+    When I am on "/index.php?m=joborders"
+    Then I should see "Username"
+    And I should see "Password"
+    And I should not see "Search Job Orders"
+    And I should not see "Add Job Orders"
+
   Scenario: Login with non-existing user
     Given I am on "/"
     And I fill in "Username" with "invalid@username.com"
@@ -31,12 +46,27 @@ Feature: Login
     When I press "Login"
     Then I should see "Invalid username or password"
 
-  Scenario: Login as administrator
-    Given I am on "/"
-    And I fill in "Username" with "admin"
-    And I fill in "Password" with "cats"
-    When I press "Login"
-    Then I should not see "Invalid username or password"
+  Scenario: Login as administrator with default password
+  Given the administrator is using the default password
+  And I am on "/"
+  And I fill in "Username" with "admin"
+  And I fill in "Password" with "cats"
+  When I press "Login"
+  Then I should not see "Invalid username or password"
+  And I should see "Create Administrator Password"
+  And I should see "New Password"
+  And I should see "Confirm New Password"
+
+  When I fill in "New Password" with "opencats-test-admin"
+  And I fill in "Confirm New Password" with "opencats-test-admin"
+  And I press "Submit"
+  Then I should see "Site Name"
+  And I should see "Your administrator password has been changed."
+
+  Scenario: Login as administrator with a changed password
+    Given I am authenticated as "Administrator"
+    Then I should be on "/index.php?m=home"
+    And I should not see "Invalid username or password"
     And I should see "Administrator"
     And I should see "Logout"
     

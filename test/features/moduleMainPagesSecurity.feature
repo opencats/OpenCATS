@@ -45,8 +45,8 @@ Feature: Access Level to objects check - main pages
     And I should <timeFilter> "Last Month"
     And I should <timeFilter> "Last 6 Months"
     And I should <timeFilter> "All"
-    And I should <filter> "Filter"
-    And I should <rowsPerPage> "Rows Per Page"
+    And I should <filter> "More filters"
+    And I should <rowsPerPage> a "select[aria-label='Rows per page']" element
     And I should <action> "Action"
     And I should <activities> "Activities - Page"
     And I should <alphabetFilter> "ALL"
@@ -74,11 +74,11 @@ Feature: Access Level to objects check - main pages
     And the page should <quickSearch> contain "quickSearchFor"
     And the page should <quickSearch> contain "quickSearch"
     And I should <jobOrdersHome> "Job Orders: Home"
-    And the page should <selectView> contain "view"
+    And I should <selectView> a "select#view" element
     And the page should <onlyMyJobOrders> contain "onlyMyJobOrders"
     And the page should <onlyHotJobOrders> contain "onlyHotJobOrders"
-    And I should <filter> "Filter"
-    And I should <rowsPerPage> "Rows Per Page"
+    And I should <filter> "More filters"
+    And I should <rowsPerPage> a "select[aria-label='Rows per page']" element
     And I should <action> "Action"
     And I should <jobOrders> "Job Orders - Page"
     And the page should <addToList> contain "Add To List"
@@ -87,14 +87,14 @@ Feature: Access Level to objects check - main pages
      
   Examples:
      | accessLevel | addJobOrder  | searchJobOrder  | quickSearch | jobOrdersHome | selectView | onlyMyJobOrders | onlyHotJobOrders | filter | rowsPerPage | action | jobOrders | addToList | export | alphabetFilter |
-     | DISABLED    | not see      | not see         | not         | not see       | not        | not             | not              | not see| not see     | not see| not see   | not       | not    | not see        |
-     | READONLY    | not see      | see             |             | see           |            |                 |                  | see    | see         | see    | see       |           |        | see            |
-     | EDIT        | see          | see             |             | see           |            |                 |                  | see    | see         | see    | see       |           |        | see            |
-     | DELETE      | see          | see             |             | see           |            |                 |                  | see    | see         | see    | see       |           |        | see            |
-     | DEMO        | see          | see             |             | see           |            |                 |                  | see    | see         | see    | see       |           |        | see            |
-     | ADMIN       | see          | see             |             | see           |            |                 |                  | see    | see         | see    | see       |           |        | see            |
-     | MULTI_ADMIN | see          | see             |             | see           |            |                 |                  | see    | see         | see    | see       |           |        | see            |
-     | ROOT        | see          | see             |             | see           |            |                 |                  | see    | see         | see    | see       |           |        | see            | 
+     | DISABLED    | not see      | not see         | not         | not see       | not see    | not             | not              | not see| not see     | not see| not see   | not       | not    | not see        |
+     | READONLY    | not see      | see             |             | see           | see        |                 |                  | see    | see         | see    | see       |           |        | see            |
+     | EDIT        | see          | see             |             | see           | see        |                 |                  | see    | see         | see    | see       |           |        | see            |
+     | DELETE      | see          | see             |             | see           | see        |                 |                  | see    | see         | see    | see       |           |        | see            |
+     | DEMO        | see          | see             |             | see           | see        |                 |                  | see    | see         | see    | see       |           |        | see            |
+     | ADMIN       | see          | see             |             | see           | see        |                 |                  | see    | see         | see    | see       |           |        | see            |
+     | MULTI_ADMIN | see          | see             |             | see           | see        |                 |                  | see    | see         | see    | see       |           |        | see            |
+     | ROOT        | see          | see             |             | see           | see        |                 |                  | see    | see         | see    | see       |           |        | see            |
      
   ####### CANDIDATES #######
      
@@ -111,8 +111,8 @@ Feature: Access Level to objects check - main pages
     And I should <filterByTag> "Filter by tag"
     And the page should <onlyMyCandidates> contain "onlyMyCandidates"
     And the page should <onlyHotCandidates> contain "onlyHotCandidates"
-    And I should <filter> "Filter"
-    And I should <rowsPerPage> "Rows Per Page"
+    And I should <filter> "More filters"
+    And I should <rowsPerPage> a "select[aria-label='Rows per page']" element
     And I should <action> "Action"
     And I should <candidates> "Candidates - Page"
     And the page should <addToList> contain "Add To List"
@@ -143,13 +143,13 @@ Feature: Access Level to objects check - main pages
      And the page should <quickSearch> contain "Quick Search"
      And the page should <quickSearch> contain "quickSearchFor"
      And the page should <quickSearch> contain "quickSearch"
-     And I should <companiesHome> "Companies: Home"
+     And I should <companiesHome> the page heading "Companies"
      And the page should <onlyMyCompanies> contain "onlyMyCompanies"
      And the page should <onlyHotCompanies> contain "onlyHotCompanies"
-     And I should <filter> "Filter"
-     And I should <rowsPerPage> "Rows Per Page"
+     And I should <filter> "More filters"
+     And I should <rowsPerPage> a "select[aria-label='Rows per page']" element
      And I should <action> "Action"
-     And I should <companies> "Companies - Page"
+     And I should <companies> a "main.oc-companies-page table" element
      And the page should <addToList> contain "Add To List"
      And the page should <export> contain "Export"
      And I should <alphabetFilter> "ALL"
@@ -180,8 +180,8 @@ Feature: Access Level to objects check - main pages
      And I should <contactsHome> "Contacts: Home"
      And the page should <onlyMyContacts> contain "onlyMyContacts"
      And the page should <onlyHotContacts> contain "onlyHotContacts"
-     And I should <filter> "Filter"
-     And I should <rowsPerPage> "Rows Per Page"
+     And I should <filter> "More filters"
+     And I should <rowsPerPage> a "select[aria-label='Rows per page']" element
      And I should <action> "Action"
      And I should <contacts> "Contacts - Page"
      And the page should <addToList> contain "Add To List"
@@ -210,7 +210,7 @@ Feature: Access Level to objects check - main pages
      And the page should <quickSearch> contain "quickSearchFor"
      And the page should <quickSearch> contain "quickSearch"
      And I should <listsHome> "Lists: Home"
-     And I should <rowsPerPage> "Rows Per Page"
+     And I should <rowsPerPage> a "select[aria-label='Rows per page']" element
      And I should <lists> "Lists - Page"
      And I should <alphabetFilter> "ALL"
     
