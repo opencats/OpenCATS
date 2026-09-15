@@ -177,13 +177,13 @@ Feature: Access Level to objects check - main pages
      And the page should <quickSearch> contain "Quick Search"
      And the page should <quickSearch> contain "quickSearchFor"
      And the page should <quickSearch> contain "quickSearch"
-     And I should <contactsHome> "Contacts: Home"
+     And I should <contactsHome> a "main.oc-contacts-page h1" element
      And the page should <onlyMyContacts> contain "onlyMyContacts"
      And the page should <onlyHotContacts> contain "onlyHotContacts"
      And I should <filter> "More filters"
      And I should <rowsPerPage> a "select[aria-label='Rows per page']" element
      And I should <action> "Action"
-     And I should <contacts> "Contacts - Page"
+     And I should <contacts> a ".oc-contacts-datagrid table" element
      And the page should <addToList> contain "Add To List"
      And the page should <export> contain "Export"
      And I should <alphabetFilter> "ALL"

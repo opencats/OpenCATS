@@ -1,114 +1,170 @@
-<?php TemplateUtility::printHeader('Contacts', array('js/highlightrows.js', 'js/export.js', 'js/dataGrid.js', 'js/dataGridFilters.js')); ?>
+<?php
+TemplateUtility::printHeader(
+    'Contacts',
+    array(
+        'js/highlightrows.js',
+        'js/export.js',
+        'js/dataGrid.js',
+        'js/dataGridFilters.js'
+    )
+);
+?>
+
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
-    <style type="text/css">
-    div.addContactsButton { background: #4172E3 url(images/nodata/contactsButton.jpg); cursor: pointer; width: 337px; height: 67px; }
-    div.addContactsButton:hover { background: #4172E3 url(images/nodata/contactsButton-o.jpg); cursor: pointer; width: 337px; height: 67px; }
-    </style>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+<?php TemplateUtility::printQuickSearch(); ?>
 
-        <div id="contents"<?php echo !$this->totalContacts ? ' style="background-color: #E6EEFF; padding: 0px;"' : ''; ?>>
-            <?php if ($this->totalContacts): ?>
-            <table width="100%">
-                <tr>
-                    <td width="3%">
-                        <img src="images/contact.gif" width="24" height="24" border="0" alt="Contacts" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Contacts: Home</h2></td>
-                    <td align="right">
-                        <form name="contactsViewSelectorForm" id="contactsViewSelectorForm" action="<?php echo(CATSUtility::getIndexName()); ?>" method="get">
-                            <input type="hidden" name="m" value="contacts" />
-                            <input type="hidden" name="a" value="listByView" />
+<main id="main" class="container-fluid py-2 oc-contacts-page">
+    <div id="contents" class="oc-contacts-content">
+        <?php if ($this->totalContacts): ?>
 
-                            <table class="viewSelector">
-                                <tr>
-                                    <td valign="top" align="right" nowrap="nowrap">
-                                        <?php $this->dataGrid->printNavigation(false); ?>
-                                    </td>
-                                    <td valign="top" align="right" nowrap="nowrap">
-                                        <input type="checkbox" name="onlyMyCompanies" id="onlyMyContacts" <?php if ($this->dataGrid->getFilterValue('OwnerID') ==  $this->userID): ?>checked<?php endif; ?> onclick="<?php echo $this->dataGrid->getJSAddRemoveFilterFromCheckbox('OwnerID', '==',  $this->userID); ?>" />
-                                        <label for="onlyMyContacts">Only My Contacts</label>&nbsp;
-                                    </td>
-                                    <td valign="top" align="right" nowrap="nowrap">
-                                        <input type="checkbox" name="onlyHotCompanies" id="onlyHotContacts" <?php if ($this->dataGrid->getFilterValue('IsHot') == '1'): ?>checked<?php endif; ?> onclick="<?php echo $this->dataGrid->getJSAddRemoveFilterFromCheckbox('IsHot', '==', '\'1\''); ?>" />
-                                        <label for="onlyHotContacts">Only Hot Contacts</label>&nbsp;
-                                    </td>
-                                </tr>
-                            </table>
-                        </form>
-                    </td>
-                </tr>
-            </table>
+        <section
+            class="oc-page-header d-flex flex-wrap align-items-center gap-2 mb-2"
+            >
+            <div class="d-flex align-items-baseline gap-2 flex-shrink-0">
+                <h1 class="h5 fw-semibold mb-0">Contacts</h1>
 
-            <?php if ($this->errMessage != ''): ?>
-            <div id="errorMessage" style="padding: 25px 0px 25px 0px; border-top: 1px solid #800000; border-bottom: 1px solid #800000; background-color: #f7f7f7;margin-bottom: 15px;">
-            <table>
-                <tr>
-                    <td align="left" valign="center" style="padding-right: 5px;">
-                        <img src="images/large_error.gif" align="left">
-                    </td>
-                    <td align="left" valign="center">
-                        <span style="font-size: 12pt; font-weight: bold; color: #800000; line-height: 12pt;">There was a problem with your request:</span>
-                        <div style="font-size: 10pt; font-weight: bold; padding: 3px 0px 0px 0px;"><?php echo $this->errMessage; ?></div>
-                    </td>
-                </tr>
-            </table>
-            </div>
-            <?php endif; ?>
-
-            <p class="note">
-                <span style="float:left;">
-                    Contacts - Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?>
-                    (<?php echo($this->dataGrid->getNumberOfRows()); ?> Items)
-                    <?php if ($this->dataGrid->getFilterValue('OwnerID') ==  $this->userID): ?>(Only My Contacts)<?php endif; ?>
-                    <?php if ($this->dataGrid->getFilterValue('IsHot') == '1'): ?>(Only Hot Contacts)<?php endif; ?>
+                <span class="small text-body-secondary">
+                <?php echo number_format(
+    $this->dataGrid->getNumberOfRows()
+); ?> items
                 </span>
-                <span style="float:right;">
+            </div>
+
+            <form
+                name="contactsViewSelectorForm"
+                id="contactsViewSelectorForm"
+                action="<?php echo Template::escapeAttr(
+    CATSUtility::getIndexName()
+); ?>"
+                method="get"
+                class="d-flex flex-wrap flex-xl-nowrap align-items-center justify-content-end gap-2 small ms-auto"
+                >
+                <input type="hidden" name="m" value="contacts">
+                <input type="hidden" name="a" value="listByView">
+
+                <div class="oc-datagrid-navigation flex-shrink-0">
+                    <?php $this->dataGrid->printNavigation(false); ?>
+                </div>
+
+                <div class="form-check form-check-inline mb-0 me-0 flex-shrink-0">
+                    <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="onlyMyCompanies"
+                    id="onlyMyContacts"
+                    <?php
+if ($this->dataGrid->getFilterValue('OwnerID') == $this->userID)
+{
+    echo 'checked';
+}
+?>
+                    onclick="<?php echo $this->dataGrid
+->getJSAddRemoveFilterFromCheckbox(
+    'OwnerID',
+    '==',
+    $this->userID
+); ?>"
+                    >
+
+                    <label
+                        class="form-check-label text-nowrap"
+                        for="onlyMyContacts"
+                        >
+                        Only My Contacts
+                    </label>
+                </div>
+
+                <div class="form-check form-check-inline mb-0 me-0 flex-shrink-0">
+                    <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="onlyHotCompanies"
+                    id="onlyHotContacts"
+                    <?php
+    if ($this->dataGrid->getFilterValue('IsHot') == '1')
+    {
+        echo 'checked';
+    }
+    ?>
+                    onclick="<?php echo $this->dataGrid
+    ->getJSAddRemoveFilterFromCheckbox(
+        'IsHot',
+        '==',
+        '\'1\''
+    ); ?>"
+                    >
+
+                    <label
+                        class="form-check-label text-nowrap"
+                        for="onlyHotContacts"
+                        >
+                        Only Hot Contacts
+                    </label>
+                </div>
+
+                <div class="oc-datagrid-rows-per-page flex-shrink-0">
                     <?php $this->dataGrid->drawRowsPerPageSelector(); ?>
+                </div>
+
+                <div class="oc-datagrid-filter-control flex-shrink-0">
                     <?php $this->dataGrid->drawShowFilterControl(); ?>
-                </span>&nbsp;
-            </p>
+                </div>
+            </form>
+        </section>
 
-            <?php $this->dataGrid->drawFilterArea(); ?>
-            <?php $this->dataGrid->draw();  ?>
-
-            <div style="display:block;">
-                <span style="float:left;">
-                    <?php $this->dataGrid->printActionArea(); ?>
-                </span>
-                <span style="float:right;">
-                    <?php $this->dataGrid->printNavigation(true); ?>
-                </span>&nbsp;
+        <?php if ($this->errMessage != ''): ?>
+        <div
+            id="errorMessage"
+            class="alert alert-danger py-2"
+            role="alert"
+            >
+            <div class="fw-semibold">
+                There was a problem with your request:
             </div>
 
-            <?php else: ?>
-
-            <br /><br /><br /><br />
-            <div style="height: 95px; background: #E6EEFF url(images/nodata/contactsTop.jpg);">
-                &nbsp;
+            <div>
+                <?php echo $this->errMessage; ?>
             </div>
-            <br /><br />
-                <?php if ($this->getUserAccessLevel('contacts.add') >= ACCESS_LEVEL_EDIT): ?>
-            <table cellpadding="0" cellspacing="0" border="0" width="956">
-                <tr>
-                <td style="padding-left: 62px;" align="center" valign="center">
+        </div>
+        <?php endif; ?>
 
-                    <div style="text-align: center; width: 600px; line-height: 22px; font-size: 18px; font-weight: bold; color: #666666; padding-bottom: 20px;">
-                    Add contacts to keep track of people you work with.
+        <section class="card oc-contacts-list">
+            <div class="card-body p-2">
+                <div class="oc-contacts-filters">
+                    <?php $this->dataGrid->drawFilterArea(); ?>
+                </div>
+
+                <div class="oc-contacts-datagrid">
+                    <?php $this->dataGrid->draw(); ?>
+                </div>
+            </div>
+
+            <div class="card-footer bg-body py-1 px-2">
+                <div
+                    class="d-flex flex-wrap align-items-center justify-content-between gap-2 small"
+                    >
+                    <div class="oc-contacts-actions">
+                        <?php $this->dataGrid->printActionArea(); ?>
                     </div>
 
-                    <a href="<?php echo CATSUtility::getIndexName(); ?>?m=contacts&amp;a=add">
-                    <div class="addContactsButton">&nbsp;</div>
-                    </a>
-                </td>
+                    <div class="oc-contacts-pagination">
+                        <?php $this->dataGrid->printNavigation(true); ?>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-                </tr>
-            </table>
+        <?php else: ?>
+        <section class="oc-page-header mb-2"><h1 class="h5 fw-semibold mb-0">Contacts</h1></section>
+        <section class="card"><div class="card-body p-3">
+                <p class="text-body-secondary">Add contacts to keep track of people you work with.</p>
+                <?php if ($this->getUserAccessLevel('contacts.add') >= ACCESS_LEVEL_EDIT): ?>
+                <a class="btn btn-sm btn-primary" href="<?php echo Template::escapeAttr(CATSUtility::getIndexName()); ?>?m=contacts&amp;a=add">Add Contact</a>
                 <?php endif; ?>
-
-            <?php endif; ?>
-
-        </div>
+            </div></section>
+        <?php endif; ?>
     </div>
+</main>
+
 <?php TemplateUtility::printFooter(); ?>
