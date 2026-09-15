@@ -118,12 +118,18 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     public function iWaitFor($element)
     {
         $this->spins(function() use ($element) {
-            if ($element === '#CompanyResults div#suggest0') {
+            if ($element === '#CompanyResults div#suggest0')
+            {
                 $this->activateCompanySuggestionLookup();
             }
+
             $field = $this->getSession()->getPage()->find('css', $element);
-            if (null === $field) {
-                throw new Exception('form field ' . $element . 'id|name|label|value|placeholder');
+
+            if (null === $field || ! $field->isVisible())
+            {
+                throw new Exception(
+                    'Element not visible yet: ' . $element
+                );
             }
         });
     }

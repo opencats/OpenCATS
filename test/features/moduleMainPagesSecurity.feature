@@ -107,14 +107,14 @@ Feature: Access Level to objects check - main pages
     And the page should <quickSearch> contain "Quick Search"
     And the page should <quickSearch> contain "quickSearchFor"
     And the page should <quickSearch> contain "quickSearch"
-    And I should <candidatesHome> "Candidates: Home"
+    And I should <candidatesHome> a "main.oc-candidates-page h1" element
     And I should <filterByTag> "Filter by tag"
     And the page should <onlyMyCandidates> contain "onlyMyCandidates"
     And the page should <onlyHotCandidates> contain "onlyHotCandidates"
     And I should <filter> "More filters"
     And I should <rowsPerPage> a "select[aria-label='Rows per page']" element
     And I should <action> "Action"
-    And I should <candidates> "Candidates - Page"
+    And I should <candidates> a ".oc-candidates-datagrid table" element
     And the page should <addToList> contain "Add To List"
     And the page should <export> contain "Export"
     And the page should <addToPipeline> contain "Add To Job Order"
