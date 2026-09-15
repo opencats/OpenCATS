@@ -1,4 +1,15 @@
 <?php
+/*
+ * OpenCATS
+ *
+ * Portions Copyright (C) 2005-2007 Cognizo Technologies, Inc.
+ * Originally released as part of CATS Standard Edition under the
+ * CATS Public License 1.1a.
+ *
+ * See LICENSE.md.
+ */
+?>
+<?php
 include_once(LEGACY_ROOT . '/vendor/autoload.php');
 use OpenCATS\UI\CandidateQuickActionMenu;
 use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
@@ -7,28 +18,23 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
     <?php TemplateUtility::printHeader('Candidate - ' . $this->data['firstName'] . ' ' . $this->data['lastName'], array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js', 'js/attachment.js', 'modules/candidates/quickAction-candidates.js')); ?>
 <?php else: ?>
     <?php TemplateUtility::printHeader('Candidate - ' . $this->data['firstName'] . ' ' . $this->data['lastName'], array( 'js/activity.js', 'js/sorttable.js', 'js/match.js', 'js/lib.js', 'js/pipeline.js', 'js/attachment.js', 'modules/candidates/quickAction-candidates.js', 'modules/candidates/quickAction-duplicates.js')); ?>
-    
+
     <?php TemplateUtility::printHeaderBlock(); ?>
     <?php TemplateUtility::printTabs($this->active); ?>
-        <div id="main">
             <?php TemplateUtility::printQuickSearch(); ?>
 <?php endif; ?>
 
-        <script type="text/javascript">
+        <script>
             window.CATSUserDateFormat  = <?php echo Template::escapeJs($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>;
             window.CATSTimeFormat24    = <?php echo $_SESSION['CATS']->isTimeFormat24() ? 'true' : 'false'; ?>;
         </script>
 
+<main id="main" class="container-fluid py-2 oc-candidate-show-page">
         <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/candidate.gif" width="24" height="24" border="0" alt="Candidates" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Candidates: Candidate Details
-                        <?php if($_SESSION['CATS']->getAccessLevel('candidates.duplicates') >= ACCESS_LEVEL_SA): ?>    
+            <header class="oc-page-header mb-2"><h1 class="h5 fw-semibold mb-0">Candidates: Candidate Details
+                        <?php if($_SESSION['CATS']->getAccessLevel('candidates.duplicates') >= ACCESS_LEVEL_SA): ?>
                             <?php if(!empty($this->data['isDuplicate'])): ?>
-                                <img src="images/wf_error.gif" alt="duplicate_warning" width="20" height="20" border="0" title="Possible duplicate" />
+                                <img src="images/wf_error.gif" alt="duplicate_warning" width="20" height="20" title="Possible duplicate">
                                 <?php foreach($this->data['isDuplicate'] as $item): ?>
                                     <a href="<?php echo Template::escapeUrl(CATSUtility::getIndexName() . '?m=candidates&a=show&candidateID=' . $item['duplicateTo']); ?>" target="_blank">Duplicate</a>
                                     <?php TemplateUtility::printSingleQuickActionMenu(new CandidateDuplicateQuickActionMenu(
@@ -41,26 +47,24 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         <?php endif; ?>
-                    </h2></td>
-               </tr>
-            </table>
+                    </h1></header>
 
-            <p class="note">Candidate Details</p>
+            <h2 class="h6 card-header bg-secondary-subtle py-1 px-2 fw-semibold mb-2">Candidate Details</h2>
 
             <?php if ($this->data['isAdminHidden'] == 1): ?>
-                <div class="warning">
+                <div class="alert alert-warning py-2">
                     This Candidate is hidden.  Only Site Administrators can view it or search for it.  To make it visible by the site users, click
                     <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=administrativeHideShow" style="display:inline;">
-                        <input type="hidden" name="postback" value="postback" />
-                        <input type="hidden" name="candidateID" value="<?php echo Template::escapeAttr($this->candidateID); ?>" />
-                        <input type="hidden" name="state" value="0" />
-                        <button type="submit" class="linkButton">Here.</button>
+                        <input type="hidden" name="postback" value="postback">
+                        <input type="hidden" name="candidateID" value="<?php echo Template::escapeAttr($this->candidateID); ?>">
+                        <input type="hidden" name="state" value="0">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">Here.</button>
                     </form>
                 </div>
             <?php endif; ?>
 
-            <table class="detailsOutside">
-                <tr style="vertical-align:top;">
+            <div class="row g-3 mb-2">
+
                     <?php $profileImage = false; ?>
                     <?php foreach ($this->attachmentsRS as $rowNumber => $attachmentsData): ?>
                          <?php if ($attachmentsData['isProfileImage'] == '1'): ?>
@@ -68,276 +72,275 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                          <?php endif; ?>
                     <?php endforeach; ?>
                     <?php if ($profileImage): ?>
-                        <td width="390" height="100%">
+                        <div class="col-12 col-lg">
                     <?php else: ?>
-                        </td><td width="50%" height="100%">
+                        <div class="col-12 col-lg">
                     <?php endif; ?>
-                        <table class="detailsInside" height="100%">
-                            <tr>
-                                <td class="vertical">Name:</td>
-                                <td class="data">
-                                    <span style="font-weight: bold;" class="<?php echo Template::escapeAttr($this->data['titleClass']); ?>">
+                        <dl class="card card-body p-2 mb-2">
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Name:</dt>
+                                <dd class="col-sm-8 mb-0">
+                                    <span class="<?php echo Template::escapeAttr($this->data['titleClass']); ?>">
                                         <?php $this->_($this->data['firstName']); ?>
                                         <?php $this->_($this->data['middleName']); ?>
                                         <?php $this->_($this->data['lastName']); ?>
                                         <?php if ($this->data['isActive'] != 1): ?>
-                                            &nbsp;<span style="color:orange;">(INACTIVE)</span>
+                                            &nbsp;<span>(INACTIVE)</span>
                                         <?php endif; ?>
                                         <?php TemplateUtility::printSingleQuickActionMenu(new CandidateQuickActionMenu(DATA_ITEM_CANDIDATE, $this->data['candidateID'], $_SESSION['CATS']->getAccessLevel('candidates.edit'))); ?>
                                     </span>
-                                </td>
-                            </tr>
+                                </dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">E-Mail:</td>
-                                <td class="data">
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">E-Mail:</dt>
+                                <dd class="col-sm-8 mb-0">
                                     <a href="<?php echo Template::escapeUrl('mailto:' . $this->data['email1']); ?>">
                                         <?php $this->_($this->data['email1']); ?>
                                     </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="vertical">2nd E-Mail:</td>
-                                <td class="data">
+                                </dd>
+                            </div>
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">2nd E-Mail:</dt>
+                                <dd class="col-sm-8 mb-0">
                                     <a href="<?php echo Template::escapeUrl('mailto:' . $this->data['email2']); ?>">
                                         <?php $this->_($this->data['email2']); ?>
                                     </a>
-                                </td>
-                            </tr>
+                                </dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">Home Phone:</td>
-                                <td class="data"><?php $this->_($this->data['phoneHome']); ?></td>
-                            </tr>
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Home Phone:</dt>
+                                <dd class="col-sm-8 mb-0"><?php $this->_($this->data['phoneHome']); ?></dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">Cell Phone:</td>
-                                <td class="data"><?php $this->_($this->data['phoneCell']); ?></td>
-                            </tr>
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Cell Phone:</dt>
+                                <dd class="col-sm-8 mb-0"><?php $this->_($this->data['phoneCell']); ?></dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">Work Phone:</td>
-                                <td class="data"><?php $this->_($this->data['phoneWork']); ?></td>
-                            </tr>
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Work Phone:</dt>
+                                <dd class="col-sm-8 mb-0"><?php $this->_($this->data['phoneWork']); ?></dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">Best Time To Call:</td>
-                                <td class="data"><?php $this->_($this->data['bestTimeToCall']); ?></td>
-                            </tr>
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Best Time To Call:</dt>
+                                <dd class="col-sm-8 mb-0"><?php $this->_($this->data['bestTimeToCall']); ?></dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">Address:</td>
-                                <td class="data">
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Address:</dt>
+                                <dd class="col-sm-8 mb-0">
                                     <?php echo nl2br(Template::escapeHtml($this->data['address'])); ?>
                                     <?php if (!empty($this->data['address2'])): ?>
-                                        <br /><?php $this->_($this->data['address2']); ?>
+                                        <br><?php $this->_($this->data['address2']); ?>
                                     <?php endif; ?>
-                                </td>
-                            </tr>
+                                </dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">&nbsp;</td>
-                                <td class="data">
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">&nbsp;</dt>
+                                <dd class="col-sm-8 mb-0">
                                     <?php $this->_($this->data['cityAndState']); ?>
                                     <?php $this->_($this->data['zip']); ?>
-                                </td>
-                            </tr>
+                                </dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">Web Site:</td>
-                                <td class="data">
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Web Site:</dt>
+                                <dd class="col-sm-8 mb-0">
                                     <?php if (!empty($this->data['webSite'])): ?>
                                         <a href="<?php echo Template::escapeUrl($this->data['webSite']); ?>" target="_blank"><?php $this->_($this->data['webSite']); ?></a>
                                     <?php endif; ?>
-                                </td>
-                            </tr>
+                                </dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">Source:</td>
-                                <td class="data"><?php $this->_($this->data['source']); ?></td>
-                            </tr>
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Source:</dt>
+                                <dd class="col-sm-8 mb-0"><?php $this->_($this->data['source']); ?></dd>
+                            </div>
 
                             <?php for ($i = 0; $i < intval(count($this->extraFieldRS)/2); $i++): ?>
-                                <tr>
-                                    <td class="vertical"><?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:</td>
-                                    <td class="data"><?php echo($this->extraFieldRS[$i]['display']); ?></td>
-                                </tr>
+                                <div class="row g-2 mb-1">
+                                    <dt class="col-sm-4 small fw-semibold"><?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:</dt>
+                                    <dd class="col-sm-8 mb-0"><?php echo($this->extraFieldRS[$i]['display']); ?></dd>
+                                </div>
                             <?php endfor; ?>
 
-                            <tr>
-                                <td class="vertical"></td>
-                                <td class="data"></td>
-                            </tr>
-                        </table>
-                    </td>
+                            <div class="row g-2 mb-1">
+
+                            </div>
+                        </dl>
+                    </div>
 
                     <?php if ($profileImage): ?>
-                        <td width="390" height="100%" valign="top">
+                        <div class="col-12 col-lg">
                     <?php else: ?>
-                        </td><td width="50%" height="100%" valign="top">
+                        <div class="col-12 col-lg">
                     <?php endif; ?>
-                        <table class="detailsInside" height="100%">
-                            <tr>
-                                <td class="vertical">Date Available:</td>
-                                <td class="data"><?php $this->_($this->data['dateAvailable']); ?></td>
-                            </tr>
+                        <dl class="card card-body p-2 mb-2">
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Date Available:</dt>
+                                <dd class="col-sm-8 mb-0"><?php $this->_($this->data['dateAvailable']); ?></dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">Current Employer:</td>
-                                <td class="data"><?php $this->_($this->data['currentEmployer']); ?></td>
-                            </tr>
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Current Employer:</dt>
+                                <dd class="col-sm-8 mb-0"><?php $this->_($this->data['currentEmployer']); ?></dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">Key Skills:</td>
-                                <td class="data"><?php $this->_($this->data['keySkills']); ?></td>
-                            </tr>
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Key Skills:</dt>
+                                <dd class="col-sm-8 mb-0"><?php $this->_($this->data['keySkills']); ?></dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">Can Relocate:</td>
-                                <td class="data"><?php $this->_($this->data['canRelocate']); ?></td>
-                            </tr>
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Can Relocate:</dt>
+                                <dd class="col-sm-8 mb-0"><?php $this->_($this->data['canRelocate']); ?></dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">Current Pay:</td>
-                                <td class="data"><?php $this->_($this->data['currentPay']); ?></td>
-                            </tr>
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Current Pay:</dt>
+                                <dd class="col-sm-8 mb-0"><?php $this->_($this->data['currentPay']); ?></dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">Desired Pay:</td>
-                                <td class="data"><?php $this->_($this->data['desiredPay']); ?></td>
-                            </tr>
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Desired Pay:</dt>
+                                <dd class="col-sm-8 mb-0"><?php $this->_($this->data['desiredPay']); ?></dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">Pipeline:</td>
-                                <td class="data"><?php $this->_($this->data['pipeline']); ?></td>
-                            </tr>
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Pipeline:</dt>
+                                <dd class="col-sm-8 mb-0"><?php $this->_($this->data['pipeline']); ?></dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">Submitted:</td>
-                                <td class="data"><?php $this->_($this->data['submitted']); ?></td>
-                            </tr>
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Submitted:</dt>
+                                <dd class="col-sm-8 mb-0"><?php $this->_($this->data['submitted']); ?></dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">Created:</td>
-                                <td class="data"><?php $this->_($this->data['dateCreated']); ?> (<?php $this->_($this->data['enteredByFullName']); ?>)</td>
-                            </tr>
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Created:</dt>
+                                <dd class="col-sm-8 mb-0"><?php $this->_($this->data['dateCreated']); ?> (<?php $this->_($this->data['enteredByFullName']); ?>)</dd>
+                            </div>
 
-                            <tr>
-                                <td class="vertical">Owner:</td>
-                                <td class="data"><?php $this->_($this->data['ownerFullName']); ?></td>
-                            </tr>
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Owner:</dt>
+                                <dd class="col-sm-8 mb-0"><?php $this->_($this->data['ownerFullName']); ?></dd>
+                            </div>
 
                             <?php for ($i = (intval(count($this->extraFieldRS))/2); $i < (count($this->extraFieldRS)); $i++): ?>
-                                <tr>
-                                    <td class="vertical"><?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:</td>
-                                    <td class="data"><?php echo($this->extraFieldRS[$i]['display']); ?></td>
-                                </tr>
+                                <div class="row g-2 mb-1">
+                                    <dt class="col-sm-4 small fw-semibold"><?php $this->_($this->extraFieldRS[$i]['fieldName']); ?>:</dt>
+                                    <dd class="col-sm-8 mb-0"><?php echo($this->extraFieldRS[$i]['display']); ?></dd>
+                                </div>
                             <?php endfor; ?>
-                        </table>
-                    </td>
+                        </dl>
+                    </div>
                     <?php foreach ($this->attachmentsRS as $rowNumber => $attachmentsData): ?>
                          <?php if ($attachmentsData['isProfileImage'] == '1'): ?>
-                            <td width="135" height="100%"  valign="top">
-                                <table class="detailsInside">
-                                    <tr>
-                                        <td style="text-align:center;" class="vertical">
+                            <div class="col-12 col-lg">
+                                <dl class="card card-body p-2 mb-2">
+                                    <div class="row g-2 mb-1">
+                                        <dt class="col-sm-4 small fw-semibold">
                                             <?php if (!$this->isPopup): ?>
                                                 <?php if ($this->getUserAccessLevel('candidates.deleteAttachment') >= ACCESS_LEVEL_DELETE): ?>
                                                     <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=deleteAttachment" style="display:inline;" onsubmit="return confirm('Delete this attachment?');">
-                                                        <input type="hidden" name="postback" value="postback" />
-                                                        <input type="hidden" name="candidateID" value="<?php echo Template::escapeAttr($this->candidateID); ?>" />
-                                                        <input type="hidden" name="attachmentID" value="<?php $this->_($attachmentsData['attachmentID']) ?>" />
-                                                        <input type="image" src="images/actions/delete.gif" alt="" width="16" height="16" border="0" title="Delete" />
+                                                        <input type="hidden" name="postback" value="postback">
+                                                        <input type="hidden" name="candidateID" value="<?php echo Template::escapeAttr($this->candidateID); ?>">
+                                                        <input type="hidden" name="attachmentID" value="<?php $this->_($attachmentsData['attachmentID']) ?>">
+                                                        <input type="image" src="images/actions/delete.gif" alt="Delete attachment" width="16" height="16" title="Delete">
                                                     </form>
                                                 <?php endif; ?>
                                             <?php else: ?>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;
-                                            <?php endif; ?>&nbsp;&nbsp;
-                                            Picture:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="data">
+
+                                            <?php endif; ?>
+                                            Picture:
+                                        </dt>
+                                    </div>
+                                    <div class="row g-2 mb-1">
+                                        <dd class="col-sm-8 mb-0">
                                             <a href="<?php echo Template::escapeUrl($attachmentsData['retrievalURL']); ?>">
-                                                <img src="<?php echo Template::escapeUrl($attachmentsData['retrievalURL']); ?>" border="0" alt="" width="125" />
+                                                <img src="<?php echo Template::escapeUrl($attachmentsData['retrievalURL']); ?>" alt="" width="125">
                                             </a>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
+                                        </dd>
+                                    </div>
+                                </dl>
+                            </div>
                          <?php endif; ?>
                     <?php endforeach; ?>
-                </tr>
-            </table>
+
+            </div>
 
             <?php if($this->EEOSettingsRS['enabled'] == 1): ?>
-                <table class="detailsOutside">
-                    <tr>
-                        <td>
-                            <table class="detailsInside">
+                <div class="row g-3 mb-2">
+
+                        <div class="col-12 col-lg">
+                            <dl class="card card-body p-2 mb-2">
                                 <?php for ($i = 0; $i < intval(count($this->EEOValues)/2); $i++): ?>
-                                    <tr>
-                                        <td class="vertical"><?php $this->_($this->EEOValues[$i]['fieldName']); ?>:</td>
+                                    <div class="row g-2 mb-1">
+                                        <dt class="col-sm-4 small fw-semibold"><?php $this->_($this->EEOValues[$i]['fieldName']); ?>:</dt>
                                         <?php if($this->EEOSettingsRS['canSeeEEOInfo']): ?>
-                                            <td class="data"><?php $this->_($this->EEOValues[$i]['fieldValue']); ?></td>
+                                            <dd class="col-sm-8 mb-0"><?php $this->_($this->EEOValues[$i]['fieldValue']); ?></dd>
                                         <?php else: ?>
-                                            <td class="data"><i><a href="javascript:void(0);" title="Ask an administrator to see the EEO info, or have permission granted to see it.">(Hidden)</a></i></td>
+                                            <dd class="col-sm-8 mb-0"><i><a href="javascript:void(0);" title="Ask an administrator to see the EEO info, or have permission granted to see it.">(Hidden)</a></i></dd>
                                         <?php endif; ?>
-                                    </tr>
+                                    </div>
                                 <?php endfor; ?>
-                            </table>
-                        </td>
+                            </dl>
+                        </div>
                         <?php if ($profileImage): ?>
-                            <td width="390" height="100%" valign="top">
+                            <div class="col-12 col-lg">
                         <?php else: ?>
-                            </td><td width="50%" height="100%" valign="top">
+                            <div class="col-12 col-lg">
                         <?php endif; ?>
-                            <table class="detailsInside">
+                            <dl class="card card-body p-2 mb-2">
                                 <?php for ($i = (intval(count($this->EEOValues))/2); $i < intval(count($this->EEOValues)); $i++): ?>
-                                    <tr>
-                                        <td class="vertical"><?php $this->_($this->EEOValues[$i]['fieldName']); ?>:</td>
+                                    <div class="row g-2 mb-1">
+                                        <dt class="col-sm-4 small fw-semibold"><?php $this->_($this->EEOValues[$i]['fieldName']); ?>:</dt>
                                         <?php if($this->EEOSettingsRS['canSeeEEOInfo']): ?>
-                                            <td class="data"><?php $this->_($this->EEOValues[$i]['fieldValue']); ?></td>
+                                            <dd class="col-sm-8 mb-0"><?php $this->_($this->EEOValues[$i]['fieldValue']); ?></dd>
                                         <?php else: ?>
-                                            <td class="data"><i><a href="javascript:void(0);" title="Ask an administrator to see the EEO info, or have permission  granted to see it.">(Hidden)</a></i></td>
+                                            <dd class="col-sm-8 mb-0"><i><a href="javascript:void(0);" title="Ask an administrator to see the EEO info, or have permission  granted to see it.">(Hidden)</a></i></dd>
                                         <?php endif; ?>
-                                    </tr>
+                                    </div>
                                 <?php endfor; ?>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
+                            </dl>
+                        </div>
+
+                </div>
             <?php endif; ?>
 
-            <table class="detailsOutside">
-                <tr>
-                    <td>
-                        <table class="detailsInside">
-                            <tr>
-                                <td valign="top" class="vertical">Misc. Notes:</td>
+            <div class="row g-3 mb-2">
+
+                    <div class="col-12 col-lg">
+                        <dl class="card card-body p-2 mb-2">
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Misc. Notes:</dt>
                                 <?php if ($this->isShortNotes): ?>
-                                    <td id="shortNotes" style="display:block;" class="data">
+                                    <dd id="shortNotes" style="display:block;" class="col-sm-8 mb-0">
                                         <?php echo($this->data['shortNotes']); ?><span class="moreText">...</span>&nbsp;
                                         <p><a href="#" class="moreText" onclick="toggleNotes(); return false;">[More]</a></p>
-                                    </td>
-                                    <td id="fullNotes" style="display:none;" class="data">
+                                    </dd>
+                                    <dd id="fullNotes" style="display:none;" class="col-sm-8 mb-0">
                                         <?php echo($this->data['notes']); ?>&nbsp;
                                         <p><a href="#" class="moreText" onclick="toggleNotes(); return false;">[Less]</a></p>
-                                    </td>
+                                    </dd>
                                 <?php else: ?>
-                                    <td id="shortNotes" style="display:block;" class="data">
+                                    <dd id="shortNotes" style="display:block;" class="col-sm-8 mb-0">
                                         <?php echo($this->data['notes']); ?>
-                                    </td>
+                                    </dd>
                                 <?php endif; ?>
-                            </tr>
+                            </div>
 
-                            <tr>
-                                <td valign="top" class="vertical">Upcoming Events:</td>
-                                <td id="shortNotes" style="display:block;" class="data">
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Upcoming Events:</dt>
+                                <dd class="col-sm-8 mb-0">
                                 <?php foreach ($this->calendarRS as $rowNumber => $calendarData): ?>
                                     <div>
                                         <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=calendar&amp;view=DAYVIEW&amp;month=<?php echo($calendarData['month']); ?>&amp;year=20<?php echo($calendarData['year']); ?>&amp;day=<?php echo($calendarData['day']); ?>&amp;showEvent=<?php echo($calendarData['eventID']); ?>">
-                                            <img src="<?php $this->_($calendarData['typeImage']) ?>" alt="" border="0" />
+                                            <img src="<?php $this->_($calendarData['typeImage']) ?>" alt="">
                                             <?php $this->_($calendarData['dateShow']) ?>:
                                             <?php $this->_($calendarData['title']); ?>
                                         </a>
@@ -345,53 +348,53 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                                 <?php endforeach; ?>
                                 <?php if ($this->getUserAccessLevel('pipelines.addActivity') >= ACCESS_LEVEL_EDIT): ?>
                                     <a href="#" onclick="showPopWin(<?php echo Template::escapeJsAttr(CATSUtility::getIndexName() . '?m=candidates&a=addActivity&candidateID=' . $this->candidateID . '&jobOrderID=-1&onlyScheduleEvent=true'); ?>, 600, 350, null); return false;">
-                                        <img src="images/calendar_add.gif" width="16" height="16" border="0" alt="Schedule Event" class="absmiddle" />&nbsp;Schedule Event
+                                        <img src="images/calendar_add.gif" width="16" height="16" alt="Schedule Event" class="absmiddle">&nbsp;Schedule Event
                                     </a>
                                 <?php endif; ?>
-                                </td>
-                            </tr>
+                                </dd>
+                            </div>
 
                             <?php if (isset($this->questionnaires) && !empty($this->questionnaires)): ?>
-                            <tr>
-                                <td valign="top" class="vertical" valign="top" align="left">Questionnaires:</td>
-                                <td valign="top" class="data" valign="top" align="left">
-                                    <table cellpadding="0" cellspacing="0" border="0">
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Questionnaires:</dt>
+                                <dd class="col-sm-8 mb-0">
+                                    <div class="table-responsive"><table class="table table-sm table-striped table-hover align-middle mb-0"><tbody>
                                     <tr>
-                                        <td style="border-bottom: 1px solid #c0c0c0; font-weight: bold; padding-right: 10px;">Title (Internal)</td>
-                                        <td style="border-bottom: 1px solid #c0c0c0; font-weight: bold; padding-right: 10px;">Completed</td>
-                                        <td style="border-bottom: 1px solid #c0c0c0; font-weight: bold; padding-right: 10px;">Description (Public)</td>
+                                        <td>Title (Internal)</td>
+                                        <td>Completed</td>
+                                        <td>Description (Public)</td>
                                     </tr>
                                     <?php foreach ($this->questionnaires as $questionnaire): ?>
                                     <tr>
-                                        <td style="padding-right: 10px;" nowrap="nowrap"><a href="<?php echo Template::escapeUrl(CATSUtility::getIndexName() . '?m=candidates&a=show_questionnaire&candidateID=' . $this->candidateID . '&questionnaireTitle=' . urlencode($questionnaire['questionnaireTitle']) . '&print=no'); ?>"><?php echo Template::escapeHtml($questionnaire['questionnaireTitle']); ?></a></td>
-                                        <td style="padding-right: 10px;" nowrap="nowrap"><?php echo date('F j. Y', strtotime($questionnaire['questionnaireDate'])); ?></td>
-                                        <td style="padding-right: 10px;" nowrap="nowrap"><?php echo Template::escapeHtml($questionnaire['questionnaireDescription']); ?></td>
-                                        <td style="padding-right: 10px;" nowrap="nowrap">
-                                            <a id="edit_link" href="<?php echo Template::escapeUrl(CATSUtility::getIndexName() . '?m=candidates&a=show_questionnaire&candidateID=' . $this->candidateID . '&questionnaireTitle=' . urlencode($questionnaire['questionnaireTitle']) . '&print=no'); ?>">
-                                                <img src="images/actions/view.gif" width="16" height="16" class="absmiddle" alt="view" border="0" />&nbsp;View
+                                        <td><a href="<?php echo Template::escapeUrl(CATSUtility::getIndexName() . '?m=candidates&a=show_questionnaire&candidateID=' . $this->candidateID . '&questionnaireTitle=' . urlencode($questionnaire['questionnaireTitle']) . '&print=no'); ?>"><?php echo Template::escapeHtml($questionnaire['questionnaireTitle']); ?></a></td>
+                                        <td><?php echo date('F j. Y', strtotime($questionnaire['questionnaireDate'])); ?></td>
+                                        <td><?php echo Template::escapeHtml($questionnaire['questionnaireDescription']); ?></td>
+                                        <td>
+                                            <a class="btn btn-sm btn-outline-secondary" href="<?php echo Template::escapeUrl(CATSUtility::getIndexName() . '?m=candidates&a=show_questionnaire&candidateID=' . $this->candidateID . '&questionnaireTitle=' . urlencode($questionnaire['questionnaireTitle']) . '&print=no'); ?>">
+                                                <img src="images/actions/view.gif" width="16" height="16" class="absmiddle" alt="view">&nbsp;View
                                             </a>
                                             &nbsp;
-                                            <a id="edit_link" href="<?php echo Template::escapeUrl(CATSUtility::getIndexName() . '?m=candidates&a=show_questionnaire&candidateID=' . $this->candidateID . '&questionnaireTitle=' . urlencode($questionnaire['questionnaireTitle']) . '&print=yes'); ?>">
-                                                <img src="images/actions/print.gif" width="16" height="16" class="absmiddle" alt="print" border="0" />&nbsp;Print
+                                            <a class="btn btn-sm btn-outline-secondary" href="<?php echo Template::escapeUrl(CATSUtility::getIndexName() . '?m=candidates&a=show_questionnaire&candidateID=' . $this->candidateID . '&questionnaireTitle=' . urlencode($questionnaire['questionnaireTitle']) . '&print=yes'); ?>">
+                                                <img src="images/actions/print.gif" width="16" height="16" class="absmiddle" alt="print">&nbsp;Print
                                             </a>
                                         </td>
                                     </tr>
                                     <?php endforeach; ?>
-                                    </table>
-                                </td>
-                            </tr>
+                                    </tbody></table></div>
+                                </dd>
+                            </div>
                             <?php endif; ?>
 
-                            <tr>
-                                <td valign="top" class="vertical">Attachments:</td>
-                                <td valign="top" class="data">
-                                    <table class="attachmentsTable">
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Attachments:</dt>
+                                <dd class="col-sm-8 mb-0">
+                                    <div class="table-responsive"><table class="table table-sm table-striped table-hover align-middle mb-0 attachmentsTable"><tbody>
                                         <?php foreach ($this->attachmentsRS as $rowNumber => $attachmentsData): ?>
                                             <?php if ($attachmentsData['isProfileImage'] != '1'): ?>
                                                 <tr>
                                                     <td>
                                                         <?php echo $attachmentsData['retrievalLink']; ?>
-                                                            <img src="<?php $this->_($attachmentsData['attachmentIcon']) ?>" alt="" width="16" height="16" border="0" />
+                                                            <img src="<?php $this->_($attachmentsData['attachmentIcon']) ?>" alt="" width="16" height="16">
                                                             &nbsp;
                                                             <?php $this->_($attachmentsData['originalFilename']) ?>
                                                         </a>
@@ -402,10 +405,10 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                                                         <?php if (!$this->isPopup): ?>
                                                             <?php if ($this->getUserAccessLevel('candidates.deleteAttachment') >= ACCESS_LEVEL_DELETE): ?>
                                                                 <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=deleteAttachment" style="display:inline;" onsubmit="return confirm('Delete this attachment?');">
-                                                                    <input type="hidden" name="postback" value="postback" />
-                                                                    <input type="hidden" name="candidateID" value="<?php echo Template::escapeAttr($this->candidateID); ?>" />
-                                                                    <input type="hidden" name="attachmentID" value="<?php $this->_($attachmentsData['attachmentID']) ?>" />
-                                                                    <input type="image" src="images/actions/delete.gif" alt="" width="16" height="16" border="0" title="Delete" />
+                                                                    <input type="hidden" name="postback" value="postback">
+                                                                    <input type="hidden" name="candidateID" value="<?php echo Template::escapeAttr($this->candidateID); ?>">
+                                                                    <input type="hidden" name="attachmentID" value="<?php $this->_($attachmentsData['attachmentID']) ?>">
+                                                                    <input type="image" src="images/actions/delete.gif" alt="Delete attachment" width="16" height="16" title="Delete">
                                                                 </form>
                                                             <?php endif; ?>
                                                         <?php endif; ?>
@@ -413,7 +416,7 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                                                 </tr>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
-                                    </table>
+                                    </tbody></table></div>
                                     <?php if (!$this->isPopup): ?>
                                         <?php if ($this->getUserAccessLevel('candidates.createAttachment') >= ACCESS_LEVEL_EDIT): ?>
                                             <?php if (isset($this->attachmentLinkHTML)): ?>
@@ -421,14 +424,14 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                                             <?php else: ?>
                                                 <a href="#" onclick="showPopWin(<?php echo Template::escapeJsAttr(CATSUtility::getIndexName() . '?m=candidates&a=createAttachment&candidateID=' . $this->candidateID); ?>, 400, 125, null); return false;">
                                             <?php endif; ?>
-                                                <img src="images/paperclip_add.gif" width="16" height="16" border="0" alt="Add Attachment" class="absmiddle" />&nbsp;Add Attachment
+                                                <img src="images/paperclip_add.gif" width="16" height="16" alt="Add Attachment" class="absmiddle">&nbsp;Add Attachment
                                             </a>
                                         <?php endif; ?>
                                     <?php endif; ?>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td valign="top" class="vertical">Tags:
+                                </dd>
+                            </div>
+                            <div class="row g-2 mb-1">
+                                <dt class="col-sm-4 small fw-semibold">Tags:
                                     <?php if (!$this->isPopup){ ?>
                                         <?php if ($this->getUserAccessLevel('candidates.addCandidateTags') >= ACCESS_LEVEL_EDIT){ ?>
                                                 <a href="#" onclick="showPopWin(<?php echo Template::escapeJsAttr(CATSUtility::getIndexName() . '?m=candidates&a=addCandidateTags&candidateID=' . $this->candidateID); ?>, 400, 125, null); return false;">
@@ -437,181 +440,181 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                                         <?php } ?>
                                     <?php } ?>
 
-                                </td>
-                                <td valign="top" class="data"><?php echo implode(', ', array_map(array('Template', 'escapeHtml'), $this->assignedTags)); ?>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
+                                </dt>
+                                <dd class="col-sm-8 mb-0"><?php echo implode(', ', array_map(array('Template', 'escapeHtml'), $this->assignedTags)); ?>
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+
+            </div>
 <?php if (!$this->isPopup): ?>
             <?php if ($this->getUserAccessLevel('candidates.edit') >= ACCESS_LEVEL_EDIT): ?>
-                <a id="edit_link" href="<?php echo Template::escapeUrl(CATSUtility::getIndexName() . '?m=candidates&a=edit&candidateID=' . $this->candidateID); ?>">
-                    <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="edit" border="0" />&nbsp;Edit
+                <a class="btn btn-sm btn-primary" id="edit_link" href="<?php echo Template::escapeUrl(CATSUtility::getIndexName() . '?m=candidates&a=edit&candidateID=' . $this->candidateID); ?>">
+                    <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="edit">&nbsp;Edit
                 </a>
-                &nbsp;&nbsp;&nbsp;&nbsp;
+
             <?php endif; ?>
             <?php if ($this->getUserAccessLevel('candidates.delete') >= ACCESS_LEVEL_DELETE): ?>
                 <form id="delete_link" method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=delete" style="display:inline;" onsubmit="return confirm('Delete this candidate?');">
-                    <input type="hidden" name="postback" value="postback" />
-                    <input type="hidden" name="candidateID" value="<?php echo Template::escapeAttr($this->candidateID); ?>" />
-                    <button type="submit" class="linkButton">
-                        <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;Delete
+                    <input type="hidden" name="postback" value="postback">
+                    <input type="hidden" name="candidateID" value="<?php echo Template::escapeAttr($this->candidateID); ?>">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                        <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="delete">&nbsp;Delete
                     </button>
                 </form>
-                &nbsp;&nbsp;&nbsp;&nbsp;
+
             <?php endif; ?>
             <?php if ($this->privledgedUser): ?>
-                <a id="history_link" href="<?php echo Template::escapeUrl(CATSUtility::getIndexName() . '?m=settings&a=viewItemHistory&dataItemType=100&dataItemID=' . $this->candidateID); ?>">
-                    <img src="images/icon_clock.gif" width="16" height="16" class="absmiddle"  border="0" />&nbsp;View History
+                <a class="btn btn-sm btn-outline-secondary" id="history_link" href="<?php echo Template::escapeUrl(CATSUtility::getIndexName() . '?m=settings&a=viewItemHistory&dataItemType=100&dataItemID=' . $this->candidateID); ?>">
+                    <img src="images/icon_clock.gif" width="16" height="16" class="absmiddle">&nbsp;View History
                 </a>
-                &nbsp;&nbsp;&nbsp;&nbsp;
+
             <?php endif; ?>
             <?php if ($this->getUserAccessLevel('candidates.administrativeHideShow') >= ACCESS_LEVEL_SA): ?>
                 <?php if ($this->data['isAdminHidden'] == 1): ?>
                     <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=administrativeHideShow" style="display:inline;">
-                        <input type="hidden" name="postback" value="postback" />
-                        <input type="hidden" name="candidateID" value="<?php echo Template::escapeAttr($this->candidateID); ?>" />
-                        <input type="hidden" name="state" value="0" />
-                        <button type="submit" class="linkButton">
-                            <img src="images/resume_preview_inline.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;Administrative Show
+                        <input type="hidden" name="postback" value="postback">
+                        <input type="hidden" name="candidateID" value="<?php echo Template::escapeAttr($this->candidateID); ?>">
+                        <input type="hidden" name="state" value="0">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                            <img src="images/resume_preview_inline.gif" width="16" height="16" class="absmiddle" alt="delete">&nbsp;Administrative Show
                         </button>
                     </form>
                     <?php else: ?>
                     <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=administrativeHideShow" style="display:inline;">
-                        <input type="hidden" name="postback" value="postback" />
-                        <input type="hidden" name="candidateID" value="<?php echo Template::escapeAttr($this->candidateID); ?>" />
-                        <input type="hidden" name="state" value="1" />
-                        <button type="submit" class="linkButton">
-                            <img src="images/resume_preview_inline.gif" width="16" height="16" class="absmiddle" alt="delete" border="0" />&nbsp;Administrative Hide
+                        <input type="hidden" name="postback" value="postback">
+                        <input type="hidden" name="candidateID" value="<?php echo Template::escapeAttr($this->candidateID); ?>">
+                        <input type="hidden" name="state" value="1">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                            <img src="images/resume_preview_inline.gif" width="16" height="16" class="absmiddle" alt="delete">&nbsp;Administrative Hide
                         </button>
                     </form>
                 <?php endif; ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;
+
             <?php endif; ?>
             <?php if ($this->getUserAccessLevel('candidates.duplicates') >= ACCESS_LEVEL_SA): ?>
-                <a href="#" onclick="showPopWin(<?php echo Template::escapeJsAttr(CATSUtility::getIndexName() . '?m=candidates&a=linkDuplicate&candidateID=' . $this->candidateID); ?>, 750, 390, null); return false;">
-                    <img src="images/actions/duplicates.png" width="16" height="16" class="absmiddle" alt="add duplicate" border="0" />&nbsp;Link duplicate
+                <a class="btn btn-sm btn-outline-secondary" href="#" onclick="showPopWin(<?php echo Template::escapeJsAttr(CATSUtility::getIndexName() . '?m=candidates&a=linkDuplicate&candidateID=' . $this->candidateID); ?>, 750, 390, null); return false;">
+                    <img src="images/actions/duplicates.png" width="16" height="16" class="absmiddle" alt="add duplicate">&nbsp;Link duplicate
                 </a>
-                &nbsp;&nbsp;&nbsp;&nbsp;
+
             <?php endif; ?>
 <?php endif; ?>
-            <br clear="all" />
-            <br />
+            <br>
+            <br>
 
-            <p class="note">Job Orders for Candidates</p>
-            <table class="sortablepair">
-                <tr>
-                    <th></th>
-                    <th align="left">Match</th>
-                    <th align="left">Ref. Number</th>
-                    <th align="left">Title</th>
-                    <th align="left">Company</th>
-                    <th align="left">Owner</th>
-                    <th align="left">Added</th>
-                    <th align="left">Entered By</th>
-                    <th align="left">Status</th>
+            <h2 class="h6 card-header bg-secondary-subtle py-1 px-2 fw-semibold mb-2">Job Orders for Candidates</h2>
+            <div class="table-responsive"><table class="table table-sm table-striped table-hover align-middle mb-0 sortablepair">
+                <thead><tr>
+                    <th scope="col"></th>
+                    <th scope="col">Match</th>
+                    <th scope="col">Ref. Number</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Company</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">Added</th>
+                    <th scope="col">Entered By</th>
+                    <th scope="col">Status</th>
 <?php if (!$this->isPopup): ?>
-                    <th align="center">Action</th>
+                    <th scope="col">Action</th>
 <?php endif; ?>
-                </tr>
+                </tr></thead><tbody>
 
                 <?php foreach ($this->pipelinesRS as $rowNumber => $pipelinesData): ?>
                     <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>" id="pipelineRow<?php echo($rowNumber); ?>">
-                        <td valign="top">
+                        <td>
                             <span id="pipelineOpen<?php echo($rowNumber); ?>">
                                 <a href="javascript:void(0);" onclick="document.getElementById('pipelineDetails<?php echo($rowNumber); ?>').style.display=''; document.getElementById('pipelineClose<?php echo($rowNumber); ?>').style.display = ''; document.getElementById('pipelineOpen<?php echo($rowNumber); ?>').style.display = 'none'; PipelineDetails_populate(<?php echo($pipelinesData['candidateJobOrderID']); ?>, 'pipelineInner<?php echo($rowNumber); ?>', <?php echo Template::escapeJsAttr($this->sessionCookie); ?>);">
-                                    <img src="images/arrow_next.png" alt="" border="0" title="Show History" />
+                                    <img src="images/arrow_next.png" alt="Show History" title="Show History">
                                 </a>
                             </span>
                             <span id="pipelineClose<?php echo($rowNumber); ?>" style="display: none;">
                                 <a href="javascript:void(0);" onclick="document.getElementById('pipelineDetails<?php echo($rowNumber); ?>').style.display = 'none'; document.getElementById('pipelineClose<?php echo($rowNumber); ?>').style.display = 'none'; document.getElementById('pipelineOpen<?php echo($rowNumber); ?>').style.display = '';">
-                                    <img src="images/arrow_down.png" alt="" border="0" title="Hide History" />
+                                    <img src="images/arrow_down.png" alt="Hide History" title="Hide History">
                                 </a>
                             </span>
                         </td>
-                        <td valign="top">
+                        <td>
                             <?php echo($pipelinesData['ratingLine']); ?>
                         </td>
-                        <td valign="top">
+                        <td>
                             <?php $this->_($pipelinesData['clientJobID']) ?>
                         </td>
-                        <td valign="top">
+                        <td>
                             <a href="<?php echo Template::escapeUrl(CATSUtility::getIndexName() . '?m=joborders&a=show&jobOrderID=' . $pipelinesData['jobOrderID']); ?>" class="<?php echo Template::escapeAttr($pipelinesData['linkClass']); ?>">
                                 <?php $this->_($pipelinesData['title']) ?>
                             </a>
                         </td>
-                        <td valign="top">
+                        <td>
                             <a href="<?php echo Template::escapeUrl(CATSUtility::getIndexName() . '?m=companies&companyID=' . $pipelinesData['companyID'] . '&a=show'); ?>">
                                 <?php $this->_($pipelinesData['companyName']) ?>
                             </a>
                         </td>
-                        <td valign="top"><?php $this->_($pipelinesData['ownerAbbrName']) ?></td>
-                        <td valign="top"><?php $this->_($pipelinesData['dateCreated']) ?></td>
-                        <td valign="top"><?php $this->_($pipelinesData['addedByAbbrName']) ?></td>
-                        <td valign="top" nowrap="nowrap"><?php $this->_($pipelinesData['status']) ?></td>
+                        <td><?php $this->_($pipelinesData['ownerAbbrName']) ?></td>
+                        <td><?php $this->_($pipelinesData['dateCreated']) ?></td>
+                        <td><?php $this->_($pipelinesData['addedByAbbrName']) ?></td>
+                        <td><?php $this->_($pipelinesData['status']) ?></td>
 <?php if (!$this->isPopup): ?>
-                        <td align="center" nowrap="nowrap">
+                        <td>
                             <?php eval(Hooks::get('CANDIDATE_TEMPLATE_SHOW_PIPELINE_ACTION')); ?>
                             <?php if ($this->getUserAccessLevel('pipelines.screening') >= ACCESS_LEVEL_EDIT && !$_SESSION['CATS']->hasUserCategory('sourcer')): ?>
                                 <?php if ($pipelinesData['ratingValue'] < 0): ?>
                                 <a href="#" id="screenLink<?php echo($pipelinesData['candidateJobOrderID']); ?>" onclick="moImageValue<?php echo($pipelinesData['candidateJobOrderID']); ?> = 0; setRating(<?php echo($pipelinesData['candidateJobOrderID']); ?>, 0, 'moImage<?php echo($pipelinesData['candidateJobOrderID']); ?>', <?php echo Template::escapeJsAttr($_SESSION['CATS']->getCookie() . ' '); ?>); return false;">
-                                    <img id="screenImage<?php echo($pipelinesData['candidateJobOrderID']); ?>" src="images/actions/screen.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Mark as Screened" />
+                                    <img id="screenImage<?php echo($pipelinesData['candidateJobOrderID']); ?>" src="images/actions/screen.gif" width="16" height="16" class="absmiddle" alt="" title="Mark as Screened">
                                 </a>
                                 <?php else: ?>
-                                    <img src="images/actions/blank.gif" width="16" height="16" class="absmiddle" alt="" border="0" />
+                                    <img src="images/actions/blank.gif" width="16" height="16" class="absmiddle" alt="">
                                 <?php endif; ?>
                             <?php endif; ?>
                             <?php if ($this->getUserAccessLevel('pipelines.changeStatus') >= ACCESS_LEVEL_EDIT): ?>
                                 <a href="#" onclick="showPopWin(<?php echo Template::escapeJsAttr(CATSUtility::getIndexName() . '?m=candidates&a=changeStatus&candidateID=' . $this->candidateID . '&jobOrderID=' . $pipelinesData['jobOrderID']); ?>, 600, 430, null); return false;" >
-                                    <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Change Status"/>
+                                    <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="" title="Change Status">
                                 </a>
                             <?php endif; ?>
                             <?php if ($this->getUserAccessLevel('pipelines.removeFromPipeline') >= ACCESS_LEVEL_DELETE): ?>
                                 <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=removeFromPipeline" style="display:inline;" onsubmit="return confirm('Delete from ' + <?php echo Template::escapeJsAttr($pipelinesData['title']); ?> + ' (' + <?php echo Template::escapeJsAttr($pipelinesData['companyName']); ?> + ') pipeline?')">
-                                    <input type="hidden" name="postback" value="postback" />
-                                    <input type="hidden" name="candidateID" value="<?php echo Template::escapeAttr($this->candidateID); ?>" />
-                                    <input type="hidden" name="jobOrderID" value="<?php echo($pipelinesData['jobOrderID']); ?>" />
-                                    <input type="image" src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Remove from Job Order"/>
+                                    <input type="hidden" name="postback" value="postback">
+                                    <input type="hidden" name="candidateID" value="<?php echo Template::escapeAttr($this->candidateID); ?>">
+                                    <input type="hidden" name="jobOrderID" value="<?php echo($pipelinesData['jobOrderID']); ?>">
+                                    <input type="image" src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="" title="Remove from Job Order">
                                 </form>
                             <?php endif; ?>
                         </td>
 <?php endif; ?>
                     </tr>
                     <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>" id="pipelineDetails<?php echo($rowNumber); ?>" style="display:none;">
-                        <td colspan="11" align="center">
-                            <table width="98%" border="1" class="detailsOutside" style="margin: 5px;">
-                                <tr>
-                                    <td align="left" style="padding: 6px 6px 6px 6px; background-color: white; clear: both;">
-                                        <div style="overflow: auto; height: 200px;" id="pipelineInner<?php echo($rowNumber); ?>">
-                                            <img src="images/indicator.gif" alt="" />&nbsp;&nbsp;Loading pipeline details...
+                        <td colspan="11">
+                            <div class="row g-3 mb-2">
+
+                                    <div class="col-12 col-lg">
+                                        <div id="pipelineInner<?php echo($rowNumber); ?>">
+                                            <img src="images/indicator.gif" alt=""> Loading pipeline details...
                                         </div>
-                                    </td>
-                                </tr>
-                            </table>
+                                    </div>
+
+                            </div>
                         </td>
                     </tr>
 
                 <?php endforeach; ?>
-            </table>
+            </tbody></table></div>
 
 <?php if (!$this->isPopup): ?>
             <?php if ($this->getUserAccessLevel('candidates.considerForJobSearch') >= ACCESS_LEVEL_EDIT): ?>
                 <a href="#" onclick="showPopWin(<?php echo Template::escapeJsAttr(CATSUtility::getIndexName() . '?m=candidates&a=considerForJobSearch&candidateID=' . $this->candidateID); ?>, 750, 390, null); return false;">
-                    <img src="images/consider.gif" width="16" height="16" class="absmiddle" alt="Add to Job Order" border="0" />&nbsp;Add This Candidate to Job Order
+                    <img src="images/consider.gif" width="16" height="16" class="absmiddle" alt="Add to Job Order">&nbsp;Add This Candidate to Job Order
                 </a>
             <?php endif; ?>
 <?php endif; ?>
-            <br clear="all" />
-            <br />
+            <br>
+            <br>
 
-            <p class="note">Lists</p>
+            <h2 class="h6 card-header bg-secondary-subtle py-1 px-2 fw-semibold mb-2">Lists</h2>
 
-            <table id="listsTable" class="sortable">
-                <tr>
-                    <th align="left" width="250">Name</th>
-                </tr>
+            <div class="table-responsive"><table id="listsTable" class="table table-sm table-striped table-hover align-middle mb-0 sortable">
+                <thead><tr>
+                    <th scope="col">Name</th>
+                </tr></thead><tbody>
                 <?php foreach($this->lists as $rowNumber => $list): ?>
                     <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
                         <td>
@@ -619,58 +622,57 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                         </td>
                     </tr>
                 <?php endforeach; ?>
-            </table>
+            </tbody></table></div>
 
-            <p class="note">Activity</p>
+            <h2 class="h6 card-header bg-secondary-subtle py-1 px-2 fw-semibold mb-2">Activity</h2>
 
-            <table id="activityTable" class="sortable">
-                <tr>
-                    <th align="left" width="125">Date</th>
-                    <th align="left" width="90">Type</th>
-                    <th align="left" width="250">Regarding</th>
-                    <th align="left">Notes</th>
-                    <th align="left" width="90">Entered By</th>
+            <div class="table-responsive"><table id="activityTable" class="table table-sm table-striped table-hover align-middle mb-0 sortable">
+                <thead><tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Regarding</th>
+                    <th scope="col">Notes</th>
+                    <th scope="col">Entered By</th>
 <?php if (!$this->isPopup): ?>
-                    <th align="left" width="40">Action</th>
+                    <th scope="col">Action</th>
 <?php endif; ?>
-                </tr>
+                </tr></thead><tbody>
 
                 <?php foreach ($this->activityRS as $rowNumber => $activityData): ?>
                     <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
-                        <td align="left" valign="top" id="activityDate<?php echo Template::escapeAttr($activityData['activityID']); ?>"><?php $this->_($activityData['dateCreated']) ?></td>
-                        <td align="left" valign="top" id="activityType<?php echo Template::escapeAttr($activityData['activityID']); ?>"><?php $this->_($activityData['typeDescription']) ?></td>
-                        <td align="left" valign="top" id="activityRegarding<?php echo Template::escapeAttr($activityData['activityID']); ?>" data-joborder-id="<?php echo Template::escapeAttr(isset($activityData['jobOrderID']) ? $activityData['jobOrderID'] : ''); ?>"><?php $this->_($activityData['regarding']) ?></td>
-                        <td align="left" valign="top" id="activityNotes<?php echo Template::escapeAttr($activityData['activityID']); ?>"><?php echo nl2br(TemplateUtility::highlightStatusChangeActivityNote($activityData['notes'])); ?></td>
-                        <td align="left" valign="top"><?php $this->_($activityData['enteredByAbbrName']) ?></td>
+                        <td id="activityDate<?php echo Template::escapeAttr($activityData['activityID']); ?>"><?php $this->_($activityData['dateCreated']) ?></td>
+                        <td id="activityType<?php echo Template::escapeAttr($activityData['activityID']); ?>"><?php $this->_($activityData['typeDescription']) ?></td>
+                        <td id="activityRegarding<?php echo Template::escapeAttr($activityData['activityID']); ?>" data-joborder-id="<?php echo Template::escapeAttr(isset($activityData['jobOrderID']) ? $activityData['jobOrderID'] : ''); ?>"><?php $this->_($activityData['regarding']) ?></td>
+                        <td id="activityNotes<?php echo Template::escapeAttr($activityData['activityID']); ?>"><?php echo nl2br(TemplateUtility::highlightStatusChangeActivityNote($activityData['notes'])); ?></td>
+                        <td><?php $this->_($activityData['enteredByAbbrName']) ?></td>
 <?php if (!$this->isPopup): ?>
-                        <td align="center" >
+                        <td >
                             <?php if ($this->getUserAccessLevel('candidates.edit') >= ACCESS_LEVEL_EDIT): ?>
                                 <a href="#" id="editActivity<?php echo Template::escapeAttr($activityData['activityID']); ?>" onclick="Activity_editEntry(<?php echo (int) $activityData['activityID']; ?>, <?php echo (int) $this->candidateID; ?>, <?php echo (int) DATA_ITEM_CANDIDATE; ?>, <?php echo Template::escapeJsAttr($this->sessionCookie); ?>); return false;">
-                                    <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Edit" />
+                                    <img src="images/actions/edit.gif" width="16" height="16" class="absmiddle" alt="" title="Edit">
                                 </a>
                             <?php endif; ?>
                             <?php if ($this->getUserAccessLevel('candidates.delete') >= ACCESS_LEVEL_DELETE): ?>
                                 <a href="#" id="deleteActivity<?php echo Template::escapeAttr($activityData['activityID']); ?>" onclick="Activity_deleteEntry(<?php echo (int) $activityData['activityID']; ?>, <?php echo Template::escapeJsAttr($this->sessionCookie); ?>); return false;">
-                                    <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="" border="0" title="Delete" />
+                                    <img src="images/actions/delete.gif" width="16" height="16" class="absmiddle" alt="" title="Delete">
                                 </a>
                             <?php endif; ?>
                         </td>
 <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
-            </table>
+            </tbody></table></div>
 <?php if (!$this->isPopup): ?>
             <div id="addActivityDiv">
                 <?php if ($this->getUserAccessLevel('pipelines.addActivity') >= ACCESS_LEVEL_EDIT): ?>
                     <a href="#" id="addActivityLink" onclick="showPopWin(<?php echo Template::escapeJsAttr(CATSUtility::getIndexName() . '?m=candidates&a=addActivity&candidateID=' . $this->candidateID . '&jobOrderID=-1'); ?>, 600, 480, null); return false;">
-                        <img src="images/new_activity_inline.gif" width="16" height="16" class="absmiddle" title="Log an Activity" alt="Log an Activity" border="0" />&nbsp;Log an Activity
+                        <img src="images/new_activity_inline.gif" width="16" height="16" class="absmiddle" title="Log an Activity" alt="Log an Activity">&nbsp;Log an Activity
                     </a>
                 <?php endif; ?>
-                <img src="images/indicator2.gif" id="addActivityIndicator" alt="" style="visibility: hidden; margin-left: 5px;" height="16" width="16" />
+                <img src="images/indicator2.gif" id="addActivityIndicator" alt="" style="visibility: hidden;" height="16" width="16">
             </div>
-        </div>
-    </div>
-
 <?php endif; ?>
-	
+        </div>
+</main>
+
 <?php TemplateUtility::printFooter(); ?>

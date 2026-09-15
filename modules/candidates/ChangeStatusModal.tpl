@@ -4,9 +4,11 @@
     <?php TemplateUtility::printModalHeader('Candidates', array(), 'Candidates: Change Status'); ?>
 <?php endif; ?>
 
+
+<main class="container-fluid p-2 oc-candidate-changestatusmodal">
 <?php if (!$this->isFinishedMode): ?>
 
-<script type="text/javascript">
+<script>
     var statusByJobOrderID = {};
     var statusDescriptionByJobOrderID = {};
     var jobOrderTitleByID = {};
@@ -155,77 +157,77 @@
 </script>
 
 <form name="changeStatusForm" id="changeStatusForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=<?php if ($this->isJobOrdersMode): ?>joborders<?php else: ?>candidates<?php endif; ?>&amp;a=changeStatus" method="post" onsubmit="return CS_checkForm();" autocomplete="off">
-    <input type="hidden" name="postback" id="postback" value="postback" />
-    <input type="hidden" id="candidateID" name="candidateID" value="<?php echo($this->candidateID); ?>" />
-    <input type="hidden" id="addActivityProvided" name="addActivityProvided" value="1" />
+    <input type="hidden" name="postback" id="postback" value="postback">
+    <input type="hidden" id="candidateID" name="candidateID" value="<?php echo($this->candidateID); ?>">
+    <input type="hidden" id="addActivityProvided" name="addActivityProvided" value="1">
 <?php if ($this->isJobOrdersMode): ?>
-    <input type="hidden" id="regardingIDHidden" name="regardingID" value="<?php echo($this->selectedJobOrderID); ?>" />
+    <input type="hidden" id="regardingIDHidden" name="regardingID" value="<?php echo($this->selectedJobOrderID); ?>">
 <?php endif; ?>
 
-    <table class="editTable" width="560">
-        <tr>
-            <td class="tdVertical">
-                <label id="regardingIDLabel" for="regardingID">Regarding:</label>
-            </td>
-            <td class="tdData">
+    <div class="card card-body p-2 mb-2">
+        <div class="row g-2 align-items-start mb-2">
+            <div class="col-sm-4">
+                <label id="regardingIDLabel" for="regardingID" class="form-label small mb-1">Regarding:</label>
+            </div>
+            <div class="col-12 col-sm">
 <?php if ($this->isJobOrdersMode): ?>
                 <span><?php $this->_($this->pipelineData['title']); ?></span> (<?php $this->_($this->pipelineData['companyName']); ?>)
 <?php else: ?>
-                <select id="regardingID" name="regardingID" class="inputbox" style="width: 220px;" onchange="CS_onRegardingChange();">
+                <select id="regardingID" name="regardingID" class="form-select form-select-sm" onchange="CS_onRegardingChange();">
                     <?php foreach ($this->pipelineRS as $pipelinesData): ?>
                         <option <?php if ($this->selectedJobOrderID == $pipelinesData['jobOrderID']): ?>selected="selected" <?php endif; ?>value="<?php $this->_($pipelinesData['jobOrderID']) ?>"><?php $this->_($pipelinesData['title']) ?> (<?php $this->_($pipelinesData['companyName']) ?>)</option>
                     <?php endforeach; ?>
                 </select>
 <?php endif; ?>
-            </td>
-        </tr>
+            </div>
+        </div>
 
-        <tr>
-            <td class="tdVertical">
-                <label id="statusIDLabel" for="statusID">Status:</label>
-            </td>
-            <td class="tdData">
-                <select id="statusID" name="statusID" class="inputbox" style="width: 180px;" onchange="CS_onStatusChange();"<?php if (!$this->isJobOrdersMode && $this->selectedJobOrderID == -1): ?> disabled<?php endif; ?>>
+        <div class="row g-2 align-items-start mb-2">
+            <div class="col-sm-4">
+                <label id="statusIDLabel" for="statusID" class="form-label small mb-1">Status:</label>
+            </div>
+            <div class="col-12 col-sm">
+                <select id="statusID" name="statusID" class="form-select form-select-sm" onchange="CS_onStatusChange();"<?php if (!$this->isJobOrdersMode && $this->selectedJobOrderID == -1): ?> disabled<?php endif; ?>>
                     <?php foreach ($this->statusRS as $statusData): ?>
                         <option<?php if ($this->selectedStatusID == $statusData['statusID']): ?> selected="selected"<?php endif; ?> value="<?php $this->_($statusData['statusID']) ?>"><?php $this->_($statusData['status']) ?></option>
                     <?php endforeach; ?>
                 </select>
-                &nbsp;&nbsp;
-                <span id="triggerEmailSpan" style="display: none;"><input type="checkbox" name="triggerEmail" id="triggerEmail" onclick="CS_onSendEmailChange();" />Send E-Mail Notification to Candidate</span>
-            </td>
-        </tr>
 
-        <tr id="sendEmailCheckTR" style="display: none;">
-            <td class="tdVertical">
-                <label id="triggerEmailLabel" for="triggerEmail">E-Mail:</label>
-            </td>
-            <td class="tdData">
-                Custom Message<br />
-                <input type="hidden" id="origionalCustomMessage" value="<?php $this->_($this->statusChangeTemplate); ?>" />
-                <input type="hidden" id="emailIsDisabled" value="<?php echo($this->emailDisabled); ?>" />
-                <textarea style="height:135px; width:375px;" name="customMessage" id="customMessage" cols="50" class="inputbox"></textarea>
-            </td>
-        </tr>
+                <span id="triggerEmailSpan" style="display: none;"><input type="checkbox" name="triggerEmail" id="triggerEmail" onclick="CS_onSendEmailChange();" class="form-check-input"><label for="triggerEmail">Send E-Mail Notification to Candidate</label></span>
+            </div>
+        </div>
 
-        <tr id="addActivityTR">
-            <td class="tdVertical">
-                <label id="addActivityLabel" for="addActivity">Activity:</label>
-            </td>
-            <td class="tdData">
-                <input type="checkbox" name="addActivity" id="addActivity" style="margin-left: 0px;" checked="checked" />Log an Activity
-            </td>
-        </tr>
-    </table>
+        <div id="sendEmailCheckTR" style="display: none;" class="row g-2 align-items-start mb-2">
+            <div class="col-sm-4">
+                <label id="triggerEmailLabel" for="triggerEmail" class="form-label small mb-1">E-Mail:</label>
+            </div>
+            <div class="col-12 col-sm">
+                Custom Message<br>
+                <input type="hidden" id="origionalCustomMessage" value="<?php $this->_($this->statusChangeTemplate); ?>">
+                <input type="hidden" id="emailIsDisabled" value="<?php echo($this->emailDisabled); ?>">
+                <textarea name="customMessage" id="customMessage" cols="50" class="form-control form-control-sm"></textarea>
+            </div>
+        </div>
 
-    <input type="submit" class="button" name="submit" id="submit" value="Save" />&nbsp;
+        <div id="addActivityTR" class="row g-2 align-items-start mb-2">
+            <div class="col-sm-4">
+                <label id="addActivityLabel" for="addActivity" class="form-label small mb-1">Activity:</label>
+            </div>
+            <div class="col-12 col-sm">
+                <input type="checkbox" name="addActivity" id="addActivity" checked="checked" class="form-check-input"><label for="addActivity">Log an Activity</label>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-sm btn-primary" name="submit" id="submit" value="Save">Save</button>&nbsp;
 <?php if ($this->isJobOrdersMode): ?>
-    <input type="button" class="button" name="close" value="Cancel" onclick="parentGoToURL(<?php echo Template::escapeJsAttr(CATSUtility::getIndexName() . '?m=joborders&a=show&jobOrderID=' . $this->selectedJobOrderID); ?>);" />
+    <button type="button" class="btn btn-sm btn-outline-secondary" name="close" value="Cancel" onclick="parentGoToURL(<?php echo Template::escapeJsAttr(CATSUtility::getIndexName() . '?m=joborders&a=show&jobOrderID=' . $this->selectedJobOrderID); ?>);">Cancel</button>
 <?php else: ?>
-    <input type="button" class="button" name="close" value="Cancel" onclick="parentGoToURL(<?php echo Template::escapeJsAttr(CATSUtility::getIndexName() . '?m=candidates&a=show&candidateID=' . $this->candidateID); ?>);" />
+    <button type="button" class="btn btn-sm btn-outline-secondary" name="close" value="Cancel" onclick="parentGoToURL(<?php echo Template::escapeJsAttr(CATSUtility::getIndexName() . '?m=candidates&a=show&candidateID=' . $this->candidateID); ?>);">Cancel</button>
 <?php endif; ?>
 </form>
 
-<script type="text/javascript">
+<script>
 <?php if ($this->isJobOrdersMode): ?>
     CS_onStatusChange();
 <?php else: ?>
@@ -258,12 +260,13 @@
 
     <form>
 <?php if ($this->isJobOrdersMode): ?>
-        <input type="button" name="close" class="button" value="Close" onclick="parentGoToURL(<?php echo Template::escapeJsAttr(CATSUtility::getIndexName() . '?m=joborders&a=show&jobOrderID=' . $this->regardingID); ?>);" />
+        <button type="button" name="close" class="btn btn-sm btn-outline-secondary" value="Close" onclick="parentGoToURL(<?php echo Template::escapeJsAttr(CATSUtility::getIndexName() . '?m=joborders&a=show&jobOrderID=' . $this->regardingID); ?>);">Close</button>
 <?php else: ?>
-        <input type="button" name="close" class="button" value="Close" onclick="parentGoToURL(<?php echo Template::escapeJsAttr(CATSUtility::getIndexName() . '?m=candidates&a=show&candidateID=' . $this->candidateID); ?>);" />
+        <button type="button" name="close" class="btn btn-sm btn-outline-secondary" value="Close" onclick="parentGoToURL(<?php echo Template::escapeJsAttr(CATSUtility::getIndexName() . '?m=candidates&a=show&candidateID=' . $this->candidateID); ?>);">Close</button>
 <?php endif; ?>
     </form>
 <?php endif; ?>
 
+</main>
     </body>
 </html>
