@@ -118,37 +118,14 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     public function iWaitFor($element)
     {
         $this->spins(function() use ($element) {
+            if ($element === '#CompanyResults div#suggest0') {
+                $this->activateCompanySuggestionLookup();
+            }
             $field = $this->getSession()->getPage()->find('css', $element);
-
-            if (null === $field || ! $field->isVisible())
-            {
-                throw new Exception(
-                    'Element not visible yet: ' . $element
-                );
+            if (null === $field) {
+                throw new Exception('form field ' . $element . 'id|name|label|value|placeholder');
             }
         });
-    }
-
-    /**
-     * @Given I wait for a company suggestion
-     */
-    public function iWaitForACompanySuggestion()
-    {
-        $this->activateCompanySuggestionLookup();
-
-        $this->spins(function() {
-            $field = $this->getSession()->getPage()->find(
-                'css',
-                '#CompanyResults div#suggest0'
-            );
-
-            if (null === $field || ! $field->isVisible())
-            {
-                throw new Exception(
-                    'Company suggestion not visible yet.'
-                );
-            }
-        }, 20);
     }
 
     /**
@@ -371,6 +348,12 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     private function clickOnTheElement($locator, $retries = 15)
     {
         $element = $this->getSession()->getPage()->find('css', $locator); // runs the actual query and returns the element
+        if (null === $element && $locator === '#CompanyResults div#suggest0') {
+            $this->activateCompanySuggestionLookup();
+            sleep(1);
+            $element = $this->getSession()->getPage()->find('css', $locator);
+        }
+
         if (null === $element) {
             throw new \InvalidArgumentException(sprintf('Could not evaluate CSS selector: "%s"', $locator));
         }
@@ -393,37 +376,43 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         $script = <<<'JS'
         (function () {
         var field = document.getElementById('companyName');
-
-        if (!field ||
-            typeof suggestListActivate !== 'function' ||
-            typeof suggestListPopulate !== 'function' ||
-            typeof sessionCookie === 'undefined')
-            {
+        if (!field) {
             return false;
     }
 
     field.focus();
 
-    suggestListActivate(
-        'getCompanyNames',
-        'companyName',
-        'CompanyResults',
-        'companyID',
-        'ajaxTextEntryHover',
-        0,
-        sessionCookie,
-        'helpShim'
-        );
-
-        suggestListPopulate(
+    if (typeof suggestListActivate === 'function' && typeof sessionCookie !== 'undefined') {
+        suggestListActivate(
+            'getCompanyNames',
+            'companyName',
+            'CompanyResults',
+            'companyID',
+            'ajaxTextEntryHover',
             0,
             sessionCookie,
-            field.value,
-            maxInitialResults,
-            -1
+            'helpShim'
             );
+    }
 
-            return true;
+    if (typeof Event === 'function') {
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+        field.dispatchEvent(new Event('keyup', { bubbles: true }));
+    } else {
+        var inputEvent = document.createEvent('Event');
+        inputEvent.initEvent('input', true, true);
+        field.dispatchEvent(inputEvent);
+
+        var keyupEvent = document.createEvent('Event');
+        keyupEvent.initEvent('keyup', true, true);
+        field.dispatchEvent(keyupEvent);
+    }
+
+    if (typeof suggestListPopulate === 'function' && typeof sessionCookie !== 'undefined') {
+        suggestListPopulate(0, sessionCookie, field.value, maxInitialResults, -1);
+    }
+
+    return true;
     }());
     JS;
 
