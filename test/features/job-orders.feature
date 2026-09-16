@@ -194,10 +194,10 @@ Feature: Job Orders
     And I select "Company Name" in the "#searchMode" select
     And I fill in "searchText" with "Test Company BigJump"
     And press "Search" 
-    Then I should see "PHP developer"
-    And I should see "Test Company BigJump"
-    And I should not see "Test Company ATxyz"
-    And I should not see "Javascript developer"
+    Then I should see "PHP developer" in the ".oc-joborder-search-results" element
+    And I should see "Test Company BigJump" in the ".oc-joborder-search-results" element
+    And I should not see "Test Company ATxyz" in the ".oc-joborder-search-results" element
+    And I should not see "Javascript developer" in the ".oc-joborder-search-results" element
     
   @javascript
   Scenario: Search job order by job title
@@ -211,10 +211,10 @@ Feature: Job Orders
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "PHP developer"
     And press "Search" 
-    Then I should see "PHP developer"
-    And I should see "Test Company BigJump"
-    And I should not see "Test Company ATxyz"
-    And I should not see "Javascript developer"
+    Then I should see "PHP developer" in the ".oc-joborder-search-results" element
+    And I should see "Test Company BigJump" in the ".oc-joborder-search-results" element
+    And I should not see "Test Company ATxyz" in the ".oc-joborder-search-results" element
+    And I should not see "Javascript developer" in the ".oc-joborder-search-results" element
     
   @javascript
   Scenario: Open job order from search result list
@@ -342,3 +342,41 @@ Feature: Job Orders
     And I switch to the iframe ""
     Then I wait until I see "John"
     And I should see "Doe"
+
+  @javascript
+  Scenario: Copy job order modal preserves the selected source
+    Given I am authenticated as "Administrator"
+    And There is a company called "Job Order Copy UI Company"
+    And There is a job order for a "Job Order Copy UI Source" for "Job Order Copy UI Company"
+    And I am on "/index.php?m=joborders"
+    And I follow "Add Job Order"
+    And I switch to the iframe "popupInner"
+    Then I should see a "#copyFrom[disabled]" element
+    When I click on the element "input[name='typeOfAddElement']:not(:checked)"
+    And I select "Job Order Copy UI Source (Job Order Copy UI Company)" in the "#copyFrom" select
+    And I press "Create Job Order"
+    And I switch to the iframe ""
+    Then I should see a "#addJobOrderForm" element
+    And the "title" field should contain "Job Order Copy UI Source"
+    And the "companyName" field should contain "Job Order Copy UI Company"
+
+  @javascript
+  Scenario: Attachment modal retains file validation and cancel navigation
+    Given I am authenticated as "Administrator"
+    And There is a company called "Job Order Attachment UI Company"
+    And There is a job order for a "Job Order Attachment UI Source" for "Job Order Attachment UI Company"
+    And I am on "/index.php?m=joborders&a=search"
+    And I select "Job Title" in the "#searchMode" select
+    And I fill in "searchText" with "Job Order Attachment UI Source"
+    And I press "Search"
+    And I click on "Job Order Attachment UI Source" on the row containing "Active"
+    And I follow "Add Attachment"
+    And I switch to the iframe "popupInner"
+    Then I should see a "#createAttachmentForm #file" element
+    When I press "Create Attachment"
+    Then I should see "You must enter a file to upload" in alert popup
+    When I confirm the popup
+    And I press "Cancel"
+    And I switch to the iframe ""
+    Then I should see a ".oc-joborder-show-page #ajaxPipelineTable" element
+    And I should see "Job Order Attachment UI Source"
