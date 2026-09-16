@@ -9,7 +9,7 @@ Feature: Contacts
     And I am on "/index.php?m=contacts&a=add"
     Then I should see a "main #addContactForm" element
     When I fill in "Company" with "Contacts UI Company"
-    And I wait for "#CompanyResults div#suggest0"
+    And I wait for a company suggestion
     And I click on the element "#CompanyResults div#suggest0"
     And I fill in "First Name" with "BootstrapContact"
     And I fill in "Last Name" with "Migration"
