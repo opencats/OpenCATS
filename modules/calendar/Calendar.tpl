@@ -1,590 +1,421 @@
 <?php TemplateUtility::printHeader('Calendar', array('modules/calendar/Calendar.css', 'js/highlightrows.js', 'modules/calendar/Calendar.js', 'modules/calendar/CalendarUI.js', 'modules/calendar/validator.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
-    <script type="text/javascript">
+    <script>
         window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
         window.CATSTimeFormat24 = <?php echo($_SESSION['CATS']->isTimeFormat24() ? 'true' : 'false'); ?>;
     </script>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
-
-        <div id="contents">
-            <table width="100%">
-                <tr>
-                    <td width="3%">
-                        <img src="images/calendar.gif" width="24" height="24"alt="Calendar" style="border: none; margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Calendar</h2></td>
-                    <td align="right" nowrap="nowrap">
-                        <?php if ($this->userIsSuperUser == 1): ?>
-                            <input type="checkbox" name="hideNonPublic" id="hideNonPublic" onclick="refreshView();" <?php if ($this->superUserActive): ?>checked<?php endif; ?>/>Show Entries from Other Users
-                        <?php else: ?>
-                            <input type="checkbox" style="display:none;" name="hideNonPublic" id="hideNonPublic" onclick="" />
-                        <?php endif; ?>
-                    </td>
-                </tr>
-            </table>
-
-            <p class="note" id="calendarTitle">Calendar</p>
-
-            <table style="border-collapse: collapse;">
-                <tr style="vertical-align: top;">
-                    <td style="padding: 0px;">
-                        <table style="width: 240px; border: none; vertical-align:top; border-collapse: collapse;" id="tableNav">
-                            <tr style="vertical-align:top;">
-                            </tr>
-
-                            <tr style="vertical-align:top;">
-                                <td style="text-align: center;">
-                                    <!-- FIXME: Mini calendar -->
-                                </td>
-                            </tr>
-
-                            <tr style="vertical-align: top;">
-                                <td id="upcomingEventsTD" style="padding: 0px;">
-                                    <?php echo($this->summaryHTML); ?>
-                                </td>
-                                <td id="addEventTD" style="display:none;">
-                                    <p class="noteUnsized">Add Event</p>
-                                    <form name="addEventForm" id="addEventForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=calendar&amp;a=addEvent" method="post" onsubmit="return checkAddForm(document.addEventForm);" autocomplete="off">
-                                        <input type="hidden" name="postback" id="postbackA" value="postback" />
-
-                                        <table class="editTableMini" width="235">
-                                            <tr>
-                                                <td class="tdVertical">
-                                                    <label id="titleLabel" for="title">Title:</label>
-                                                </td>
-                                                <td class="tdData">
-                                                    <input type="text" class="inputbox" name="title" id="title" style="width: 150px" />&nbsp;*
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="tdVertical">
-                                                    <label id="eventTypeLabel" for="type">Type:</label>
-                                                </td>
-                                                <td class="tdData">
-                                                    <select id="type" name="type" class="inputbox" style="width: 150px;">
-                                                        <option value="">(Select a Type)</option>
-                                                        <?php foreach ($this->calendarEventTypes as $type): ?>
-                                                            <option value="<?php echo($type['typeID']); ?>"><?php $this->_($type['description']); ?></option>
-                                                        <?php endforeach; ?>
-                                                    </select>&nbsp;*
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="tdVertical">
-                                                    <label id="dateLabel" for="date">Public:</label>
-                                                </td>
-                                                <td class="tdData">
-                                                    <input type="checkBox" name="publicEntry" id="publicEntry" <?php if ($this->defaultPublic == 'true'): ?>checked<?php endif; ?> />Public Entry
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="tdVertical">
-                                                    <label id="dateLabel" for="date">Date:</label>
-                                                </td>
-                                                <td nowrap="nowrap" class="tdData">
-                                                    <script type="text/javascript">DateInput('dateAdd', true, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '<?php echo($_SESSION['CATS']->isDateDMY() ? DateUtility::getAdjustedDate('d-m-y') : $this->currentDateMDY); ?>', -1);</script>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="tdVertical">
-                                                    <label id="timeLabel" for="time">Time:</label>
-                                                </td>
-                                                <td class="tdData">
-                                                    <input type="radio" name="allDay" id="allDay0" value="0" checked onchange="setAddAllDayEnabled();" />
-                                                    <select id="hour" name="hour" class="inputbox" style="width: 40px;">
-                                                        <?php if ($_SESSION['CATS']->isTimeFormat24()): ?>
-                                                            <?php for ($i = 0; $i <= 23; ++$i): ?>
-                                                                <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
-                                                            <?php endfor; ?>
-                                                        <?php else: ?>
-                                                            <?php for ($i = 1; $i <= 12; ++$i): ?>
-                                                                <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
-                                                            <?php endfor; ?>
-                                                        <?php endif; ?>
-                                                    </select>&nbsp;
-                                                    <select id="minute" name="minute" class="inputbox" style="width: 40px;">
-                                                        <?php for ($i = 0; $i <= 45; $i = $i + 15): ?>
-                                                            <option value="<?php echo(sprintf('%02d', $i)); ?>">
-                                                                <?php echo(sprintf('%02d', $i)); ?>
-                                                            </option>
-                                                        <?php endfor; ?>
-                                                    </select>&nbsp;
-                                                    <?php if (!$_SESSION['CATS']->isTimeFormat24()): ?>
-                                                    <select id="meridiem" name="meridiem" class="inputbox" style="width: 45px;">
-                                                        <option value="AM">AM</option>
-                                                        <option value="PM">PM</option>
-                                                    </select>
-                                                    <?php endif; ?>
-                                                    <br />
-
-                                                    <input type="radio" name="allDay" id="allDay1" value="1" onchange="setAddAllDayEnabled();" />All Day / No Specific Time<br />
-                                                    <!-- FIXME: Remove hide style. -->
-                                                    <span style="<?php if(!$this->allowEventReminders): ?>display:none;<?php endif; ?>">
-                                                        <input type="checkBox" name="reminderToggle" id="reminderToggle" onclick="considerCheckBox('reminderToggle', 'sendEmailTD');">Send e-mail reminder
-                                                    </span>
-                                                </td>
-                                            </tr>
-
-                                             <tr id="sendEmailTD" style="display:none;">
-                                                <td class="tdVertical">
-                                                    E-Mail:
-                                                </td>
-                                                <td class="tdData">
-                                                    <table style="border-collapse: collapse;">
-                                                        <tr>
-                                                            <td>
-                                                                To:
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" id="sendEmail" name="sendEmail" class="inputbox" style="width:115px;" value="<?php $this->_($this->userEmail); ?>" />
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>
-                                                                Time:
-                                                            </td>
-                                                            <td>
-                                                                <select id="reminderTime" name="reminderTime" style="width:115px;">
-                                                                    <option value="15">15 min early</option>
-                                                                    <option value="30">30 min early</option>
-                                                                    <option value="45">45 min early</option>
-                                                                    <option value="60">1 hour early</option>
-                                                                    <option value="120">2 hours early</option>
-                                                                    <option value="1440">1 day early</option>
-                                                                </select>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="tdVertical">
-                                                    <label id="durationLabel" for="duration">Length:</label>
-                                                </td>
-                                                <td class="tdData">
-                                                    <select id="duration" name="duration" class="inputbox" style="width: 150px;">
-                                                        <option value="15">15 minutes</option>
-                                                        <option value="30">30 minutes</option>
-                                                        <option value="45">45 minutes</option>
-                                                        <option value="60" selected="selected">1 hour</option>
-                                                        <option value="90">1.5 hours</option>
-                                                        <option value="120">2 hours</option>
-                                                        <option value="180">3 hours</option>
-                                                        <option value="240">4 hours</option>
-                                                        <option value="300">More than 4 hours</option>
-                                                    </select>
-                                                </td>
-                                             </tr>
-
-                                            <tr>
-                                                <td class="tdVertical">
-                                                    <label id="descriptionLabel" for="description">Desc:</label>
-                                                </td>
-                                                <td class="tdData">
-                                                    <textarea id="description" name="description" style="width:150px; height:180px;"></textarea>
-                                                </td>
-                                             </tr>
-
-                                        </table>
-                                        <div style="text-align: center;">
-                                            <input type="submit" class="button" name="submit" value="Add Event" />
-                                        </div>
-                                    </form>
-                                </td>
-                                <td style="display:none" id="editEventTD">
-                                    <p class="noteUnsized">Edit Event</p>
-                                    <form name="editEventForm" id="editEventForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=calendar&amp;a=editEvent" method="post" onsubmit="return checkEditForm(document.editEventForm);" autocomplete="off">
-                                        <input type="hidden" name="postback" id="postbackB" value="postback" />
-                                        <input type="hidden" name="eventID" id="eventIDEdit" />
-                                        <input type="hidden" name="dataItemType" id="dataItemTypeEdit" />
-                                        <input type="hidden" name="dataItemID" id="dataItemIDEdit" />
-                                        <input type="hidden" name="jobOrderID" id="jobOrderIDEdit" />
-
-                                        <table class="editTableMini" width="235">
-                                            <tr>
-                                                <td class="tdVertical">
-                                                    <label id="titleLabelEdit" for="title">Title:</label>
-                                                </td>
-                                                <td class="tdData">
-                                                    <input type="text" class="inputbox" name="title" id="titleEdit" style="width: 150px" />&nbsp;*
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="tdVertical">
-                                                    <label id="eventTypeLabelEdit" for="type">Type:</label>
-                                                </td>
-                                                <td class="tdData">
-                                                    <select id="typeEdit" name="type" class="inputbox" style="width: 150px;">
-                                                        <option value="">(Select a Type)</option>
-                                                        <?php foreach ($this->calendarEventTypes as $type): ?>
-                                                            <option value="<?php echo($type['typeID']); ?>"><?php $this->_($type['description']); ?></option>
-                                                        <?php endforeach; ?>
-                                                    </select>&nbsp;*
-                                                </td>
-                                            </tr>
-
-                                             <tr>
-                                                <td class="tdVertical">
-                                                    <label id="dateLabel" for="date">Public:</label>
-                                                </td>
-                                                <td class="tdData">
-                                                    <input type="checkBox" name="publicEntry" id="publicEntryEdit" />Public Entry
-                                                </td>
-                                            </tr>
-
-                                           <tr>
-                                                <td class="tdVertical">
-                                                    <label id="dateLabel" for="date">Date:</label>
-                                                </td>
-                                                <td nowrap="nowrap" class="tdData">
-                                                    <script type="text/javascript">DateInput('dateEdit', true, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '<?php echo($_SESSION['CATS']->isDateDMY() ? DateUtility::getAdjustedDate('d-m-y') : $this->currentDateMDY); ?>', -1);</script>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="tdVertical">
-                                                    <label id="timeLabel" for="time">Time:</label>
-                                                </td>
-                                                <td class="tdData">
-                                                    <input type="radio" name="allDay" id="allDayEdit0" value="0" checked onchange="setEditAllDayEnabled();" />
-                                                    <select id="hourEdit" name="hour" class="inputbox" style="width: 40px;">
-                                                        <?php if ($_SESSION['CATS']->isTimeFormat24()): ?>
-                                                            <?php for ($i = 0; $i <= 23; ++$i): ?>
-                                                                <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
-                                                            <?php endfor; ?>
-                                                        <?php else: ?>
-                                                            <?php for ($i = 1; $i <= 12; ++$i): ?>
-                                                                <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
-                                                            <?php endfor; ?>
-                                                        <?php endif; ?>
-                                                    </select>&nbsp;
-                                                    <select id="minuteEdit" name="minute" class="inputbox" style="width: 40px;">
-                                                        <?php for ($i = 0; $i <= 45; $i = $i + 15): ?>
-                                                            <option value="<?php echo(sprintf('%02d', $i)); ?>">
-                                                                <?php echo(sprintf('%02d', $i)); ?>
-                                                            </option>
-                                                        <?php endfor; ?>
-                                                    </select>&nbsp;
-                                                    <?php if (!$_SESSION['CATS']->isTimeFormat24()): ?>
-                                                    <select id="meridiemEdit" name="meridiem" class="inputbox" style="width: 45px;">
-                                                        <option value="AM">AM</option>
-                                                        <option value="PM">PM</option>
-                                                    </select>
-                                                    <?php endif; ?>
-                                                    <br />
-
-                                                    <input type="radio" name="allDay" id="allDayEdit1" value="1" onchange="setEditAllDayEnabled();" />All Day / No Specific Time<br />
-                                                     <!-- FIXME: Remove hide style. -->
-                                                    <span style="<?php if(!$this->allowEventReminders): ?>display:none;<?php endif; ?>">
-                                                       <input type="checkBox" name="reminderToggle" id="reminderToggleEdit" onclick="considerCheckBox('reminderToggleEdit', 'sendEmailTDEdit');">Send e-mail reminder
-                                                    </span>
-                                                </td>
-                                            </tr>
-
-                                            <tr id="sendEmailTDEdit" style="display: none;">
-                                                <td class="tdVertical">
-                                                    E-Mail:
-                                                </td>
-                                                <td class="tdData">
-                                                    <table style="border-collapse: collapse;">
-                                                        <tr>
-                                                            <td>
-                                                                To:
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" id="sendEmailEdit" name="sendEmail" class="inputbox" style="width:115px;" value="<?php $this->_($this->userEmail); ?>" />
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>
-                                                                Time:
-                                                            </td>
-                                                            <td>
-                                                                <select id="reminderTimeEdit" name="reminderTime" style="width:115px;">
-                                                                    <option value="15">15 min early</option>
-                                                                    <option value="30">30 min early</option>
-                                                                    <option value="45">45 min early</option>
-                                                                    <option value="60">1 hour early</option>
-                                                                    <option value="120">2 hours early</option>
-                                                                    <option value="1440">1 day early</option>
-                                                                </select>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="tdVertical">
-                                                    <label id="durationLabel" for="durationEdit">Length:</label>
-                                                </td>
-                                                <td class="tdData">
-                                                    <select id="durationEdit" name="duration" class="inputbox" style="width: 150px;">
-                                                        <option value="15">15 minutes</option>
-                                                        <option value="30">30 minutes</option>
-                                                        <option value="45">45 minutes</option>
-                                                        <option value="60" selected="selected">1 hour</option>
-                                                        <option value="90">1.5 hours</option>
-                                                        <option value="120">2 hours</option>
-                                                        <option value="180">3 hours</option>
-                                                        <option value="240">4 hours</option>
-                                                        <option value="300">More than 4 hours</option>
-                                                    </select>
-                                                </td>
-                                             </tr>
-
-                                            <tr>
-                                                <td class="tdVertical">
-                                                    <label id="descriptionLabel" for="descriptionEdit">Desc:</label>
-                                                </td>
-                                                <td class="tdData">
-                                                    <textarea id="descriptionEdit" name="description" style="width: 150px; height: 180px;"></textarea>
-                                                </td>
-                                             </tr>
-
-                                        </table>
-                                        <div style="text-align: center;">
-                                            <input type="submit" class="button" name="submit" value="Save" />
-                                            <?php if ($this->getUserAccessLevel('calendar.deleteEvent') >= ACCESS_LEVEL_DELETE): ?>
-                                                <input type="button" class="button" name="delete" value="Delete" onclick="confirmDeleteEntry();" />
-                                            <?php endif; ?>
-                                        </div>
-                                    </form>
-                                </td>
-                                <td style="display:none" id="viewEventTD">
-                                    <table width="235">
-                                    <tr>
-                                    <td>
-                                    <p class="noteUnsized">View Event</p>
-                                    <span id="viewEventTitle" style="font-weight:bold"></span><br />
-                                    Entered By: <span id="viewEventOwner"></span><br />
-                                    Event Type: <span id="viewEventType"></span><br />
-                                    <span id="viewEventLink"></span><br />
-                                    <br />
-                                    Date: <span id="viewEventDate"></span><br />
-                                    Time: <span id="viewEventTime"></span><br />
-                                    Duration: <span id="viewEventDuration"></span><br />
-                                    Reminder: <span id="viewEventReminder"></span><br />
-                                    <br />
-                                    Description:<br />
-                                    <span id="viewEventDescription"></span><br />
-                                    <br />
-                                    <?php if ($this->getUserAccessLevel('calendar.editEvent') >= ACCESS_LEVEL_EDIT): ?>
-                                        <input type="button" class="button" name="Edit" value="Edit Event" onclick="calendarEditEvent(currentViewedEntry);" />
-                                    <?php endif; ?>
-                                    </td>
-                                    </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td style="padding-left: 8px;">
-                        <table id="calendarMonthParent" style="display:none;border-collapse: collapse;">
-                            <tr>
-                                <td>
-                                    <table style="border-collapse: collapse;">
-                                        <tr>
-                                            <td>
-                                                <input type="button" class="buttonCalendar" value="Day" onclick="userCalendarViewDay()" />&nbsp;
-                                                <input type="button" class="buttonCalendar" value="Week" onclick="userCalendarViewWeek()" />&nbsp;
-                                                <input type="button" class="buttonDownCalendar" value="Month" onclick="userCalendarViewMonth()" />
-                                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                            </td>
-                                            <td style="width:30px;">
-                                                <span id="linkMonthBack"></span>
-                                            </td>
-                                            <td style="width:300px;text-align:center;">
-                                                <span id="monthNotice"></span>
-                                            </td>
-                                            <td>
-                                                <span id="linkMonthForeward"></span>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                 </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <table id="calendarMonth" style="width:675px;" onmouseup="javascript:trackTableSelect(event);">
-                                        <tr >
-                                            <?php if ($this->firstDayMonday != '1'): ?><th height="1%">Sunday</th><?php endif; ?>
-                                            <th height="1%">Monday</th>
-                                            <th height="1%">Tuesday</th>
-                                            <th height="1%">Wednesday</th>
-                                            <th height="1%">Thursday</th>
-                                            <th height="1%">Friday</th>
-                                            <th height="1%">Saturday</th>
-                                            <?php if ($this->firstDayMonday == '1'): ?><th height="1%">Sunday</th><?php endif; ?>
-                                        </tr>
-
-                                        <?php $calendarPosition = 0; ?>
-                                        <?php for ($calendarRow = 1; $calendarRow <= 6; ++$calendarRow): ?>
-                                            <tr id="calendarRow<?php echo($calendarRow); ?>">
-                                                <?php $weekPosition = 1; ?>
-                                                <?php for ($weekday = 1; $weekday <= 7; ++$weekday): ?>
-                                                    <td class="empty" id="calendarMonthCell<?php echo($calendarPosition++); ?>" height="17%">&nbsp;</td>
+<?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2 oc-calendar-page">
+    <div id="contents">
+        <header class="d-flex flex-wrap align-items-center gap-2 mb-2">
+            <h1 class="h5 fw-semibold mb-0" id="calendarTitle">Calendar</h1>
+            <?php if ($this->userIsSuperUser == 1): ?>
+                <div class="form-check ms-auto">
+                    <input class="form-check-input" type="checkbox" name="hideNonPublic" id="hideNonPublic" onclick="refreshView();" <?php if ($this->superUserActive): ?>checked<?php endif; ?>>
+                    <label class="form-check-label" for="hideNonPublic">Show Entries from Other Users</label>
+                </div>
+            <?php else: ?>
+                <input type="checkbox" style="display:none;" name="hideNonPublic" id="hideNonPublic">
+            <?php endif; ?>
+        </header>
+        <div class="row g-2">
+            <aside id="tableNav" class="col-12 col-xl-4" aria-label="Calendar events">
+                <section id="upcomingEventsTD" class="card card-body p-2 text-break oc-calendar-upcoming">
+                    <?php echo($this->summaryHTML); ?>
+                </section>
+                <section id="addEventTD" class="card" style="display:none;" aria-labelledby="addEventHeading">
+                    <h2 id="addEventHeading" class="card-header bg-secondary-subtle h6 py-1 px-2 fw-semibold">Add Event</h2>
+                    <div class="card-body p-2">
+                        <form name="addEventForm" id="addEventForm" action="<?php echo Template::escapeAttr(CATSUtility::getIndexName()); ?>?m=calendar&amp;a=addEvent" method="post" onsubmit="return checkAddForm(document.addEventForm);" autocomplete="off" class="oc-calendar-event-form">
+                            <input type="hidden" name="postback" id="postbackA" value="postback" />
+                            <div>
+                                <div class="mb-2">
+                                    <label class="form-label mb-1" id="titleLabel" for="title">Title:</label>
+                                    <input type="text" class="form-control form-control-sm" name="title" id="title" aria-required="true" /><span class="small text-body-secondary">Required</span>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label mb-1" id="eventTypeLabel" for="type">Type:</label>
+                                    <select id="type" aria-required="true" name="type" class="form-select form-select-sm">
+                                        <option value="">(Select a Type)</option>
+                                        <?php foreach ($this->calendarEventTypes as $type): ?>
+                                            <option value="<?php echo($type['typeID']); ?>"><?php $this->_($type['description']); ?></option>
+                                        <?php endforeach; ?>
+                                    </select><span class="small text-body-secondary">Required</span>
+                                </div>
+                                <div class="mb-2">
+                                    <input class="form-check-input" type="checkbox" name="publicEntry" id="publicEntry" <?php if ($this->defaultPublic == 'true'): ?>checked<?php endif; ?> /><label class="form-check-label ms-1" for="publicEntry">Public Entry</label>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label mb-1" id="dateLabel" for="dateAdd_Month_ID">Date:</label>
+                                    <script>DateInput('dateAdd', true, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '<?php echo($_SESSION['CATS']->isDateDMY() ? DateUtility::getAdjustedDate('d-m-y') : $this->currentDateMDY); ?>', -1);</script>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label mb-1" id="timeLabel" for="hour">Time:</label>
+                                    <div class="d-flex flex-wrap align-items-center gap-1 mb-2"><input aria-label="Specific time" class="form-check-input" type="radio" name="allDay" id="allDay0" value="0" checked onchange="setAddAllDayEnabled();" />
+                                        <select aria-label="Hour" id="hour" name="hour" class="form-select form-select-sm w-auto">
+                                            <?php if ($_SESSION['CATS']->isTimeFormat24()): ?>
+                                                <?php for ($i = 0; $i <= 23; ++$i): ?>
+                                                    <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
                                                 <?php endfor; ?>
-                                            </tr>
-                                        <?php endfor; ?>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-
-                        <table id="calendarWeekParent" style="display:none;">
-                            <tr>
-                                <td>
-                                     <table style="border-collapse: collapse;">
-                                        <tr>
-                                            <td>
-                                                <input type="button" class="buttonCalendar" value="Day" onclick="userCalendarViewDay()" />&nbsp;
-                                                <input type="button" class="buttonDownCalendar" value="Week" onclick="userCalendarViewWeek()" />&nbsp;
-                                                <input type="button" class="buttonCalendar" value="Month" onclick="userCalendarViewMonth()" />
-                                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                            </td>
-                                            <td style="width:30px;">
-                                                <span id="linkWeekBack"></span>
-                                            </td>
-                                            <td style="width:300px;text-align:center;">
-                                                <span id="weekNotice"></span>
-                                            </td>
-                                            <td>
-                                                <span id="linkWeekForeward"></span>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                 </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <table id="calendarWeek" style="width:675px;" onmouseup="javascript:trackTableSelect(event, '#e9e9e9');">
-                                        <?php if ($this->firstDayMonday != '1'): ?>
-                                            <tr>
-                                                <th>Sunday <br /><span id="weekDay0"></span></th>
-                                                <td class="empty" id="calendarWeekCell0"></td>
-                                            </tr>
-                                            <?php if ($this->firstDayMonday == '1'): ?></span><?php endif; ?>
-                                            <tr>
-                                                <th>Monday <br /><span id="weekDay1"></span></th>
-                                                <td class="empty" id="calendarWeekCell1"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Tuesday <br /><span id="weekDay2"></span></th>
-                                                <td class="empty" id="calendarWeekCell2"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Wednesday <br /><span id="weekDay3"></span></th>
-                                                <td class="empty" id="calendarWeekCell3"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Thursday <br /><span id="weekDay4"></span></th>
-                                                <td class="empty" id="calendarWeekCell4"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Friday <br /><span id="weekDay5"></span></th>
-                                                <td class="empty" id="calendarWeekCell5"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Saturday <br /><span id="weekDay6"></span></th>
-                                                <td class="empty" id="calendarWeekCell6"></td>
-                                            </tr>
-                                        <?php else: ?>
-                                            <tr>
-                                                <th>Monday <br /><span id="weekDay0"></span></th>
-                                                <td class="empty" id="calendarWeekCell0"></td>
-                                            </tr>
-                                            <?php if ($this->firstDayMonday == '1'): ?></span><?php endif; ?>
-                                            <tr>
-                                                <th>Tuesday <br /><span id="weekDay1"></span></th>
-                                                <td class="empty" id="calendarWeekCell1"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Wednesday <br /><span id="weekDay2"></span></th>
-                                                <td class="empty" id="calendarWeekCell2"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Thursday <br /><span id="weekDay3"></span></th>
-                                                <td class="empty" id="calendarWeekCell3"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Friday <br /><span id="weekDay4"></span></th>
-                                                <td class="empty" id="calendarWeekCell4"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Saturday <br /><span id="weekDay5"></span></th>
-                                                <td class="empty" id="calendarWeekCell5"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Sunday <br /><span id="weekDay6"></span></th>
-                                                <td class="empty" id="calendarWeekCell6"></td>
-                                            </tr>
-                                        <?php endif; ?>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-
-                        <table id="calendarDayParent" style="display:none;">
-                            <tr>
-                                <td>
-                                    <table style="border-collapse: collapse;">
-                                        <tr>
-                                            <td>
-                                                <input type="button" class="buttonDownCalendar" value="Day" onclick="userCalendarViewDay()" />&nbsp;
-                                                <input type="button" class="buttonCalendar" value="Week" onclick="userCalendarViewWeek()" />&nbsp;
-                                                <input type="button" class="buttonCalendar" value="Month" onclick="userCalendarViewMonth()" />
-                                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                            </td>
-                                            <td style="width:30px;">
-                                                <span id="linkDayBack"></span>
-                                            </td>
-                                            <td style="width:300px;text-align:center;">
-                                                <span id="dayNotice"></span>
-                                            </td>
-                                            <td>
-                                                <span id="linkDayForeward"></span>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                 </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <table id="calendarDay" style="width:675px;" onmouseup="javascript:trackTableSelect(event, '#e9e9e9');">
-                                        <tr>
-                                            <th>Morning</th>
-                                            <td class="empty" id="calendarDayCell0"></td>
-                                        </tr>
-                                            <?php for ($i = $this->dayHourStart; $i <= $this->dayHourEnd; $i++): ?>
-                                            <tr>
-                                                <th><?php if (!$this->militaryTime && $i>12):?><?php echo($i - 12); ?><?php else: ?><?php echo($i); ?><?php endif; ?>:00<br /><span id="weekDay1"></span></th>
-                                                <td class="empty" id="calendarDayCell<?php echo($i - $this->dayHourStart + 1); ?>"></td>
-                                            </tr>
+                                            <?php else: ?>
+                                                <?php for ($i = 1; $i <= 12; ++$i): ?>
+                                                    <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
+                                                <?php endfor; ?>
+                                            <?php endif; ?>
+                                        </select>
+                                        <select aria-label="Minute" id="minute" name="minute" class="form-select form-select-sm w-auto">
+                                            <?php for ($i = 0; $i <= 45; $i = $i + 15): ?>
+                                                <option value="<?php echo(sprintf('%02d', $i)); ?>">
+                                                <?php echo(sprintf('%02d', $i)); ?>
+                                                </option>
                                             <?php endfor; ?>
-                                        <tr>
-                                            <th>Evening<br /><span id="weekDay2"></span></th>
-                                            <td class="empty" id="calendarDayCell<?php echo($this->dayHourEnd - $this->dayHourStart + 2); ?>"></td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
+                                        </select>
+                                        <?php if (!$_SESSION['CATS']->isTimeFormat24()): ?>
+                                            <select aria-label="AM or PM" id="meridiem" name="meridiem" class="form-select form-select-sm w-auto">
+                                                <option value="AM">AM</option>
+                                                <option value="PM">PM</option>
+                                            </select>
+                                        <?php endif; ?>
+                                    </div>
+                                    <input class="form-check-input" type="radio" name="allDay" id="allDay1" value="1" onchange="setAddAllDayEnabled();" /><label class="form-check-label ms-1" for="allDay1">All Day / No Specific Time</label>
+                                    <div class="mt-2" style="<?php if(!$this->allowEventReminders): ?>display:none;<?php endif; ?>">
+                                        <input class="form-check-input" type="checkbox" name="reminderToggle" id="reminderToggle" onclick="considerCheckBox('reminderToggle', 'sendEmailTD');"><label class="form-check-label ms-1" for="reminderToggle">Send e-mail reminder</label>
+                                    </div>
+                                </div>
+                                <div class="mb-2" id="sendEmailTD" style="display:none;">
+                                    <div class="fw-semibold small mb-1">E-mail reminder</div>
+                                    <div>
+                                        <div class="mb-2">
+                                            <label class="form-label mb-1" for="sendEmail">To:</label>
+                                            <input type="text" id="sendEmail" name="sendEmail" class="form-control form-control-sm" value="<?php $this->_($this->userEmail); ?>" />
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label mb-1" for="reminderTime">Time:</label>
+                                            <select class="form-select form-select-sm" id="reminderTime" name="reminderTime">
+                                                <option value="15">15 min early</option>
+                                                <option value="30">30 min early</option>
+                                                <option value="45">45 min early</option>
+                                                <option value="60">1 hour early</option>
+                                                <option value="120">2 hours early</option>
+                                                <option value="1440">1 day early</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label mb-1" id="durationLabel" for="duration">Length:</label>
+                                    <select id="duration" name="duration" class="form-select form-select-sm">
+                                        <option value="15">15 minutes</option>
+                                        <option value="30">30 minutes</option>
+                                        <option value="45">45 minutes</option>
+                                        <option value="60" selected="selected">1 hour</option>
+                                        <option value="90">1.5 hours</option>
+                                        <option value="120">2 hours</option>
+                                        <option value="180">3 hours</option>
+                                        <option value="240">4 hours</option>
+                                        <option value="300">More than 4 hours</option>
+                                    </select>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label mb-1" id="descriptionLabel" for="description">Description:</label>
+                                    <textarea class="form-control form-control-sm" rows="4" id="description" name="description"></textarea>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <input type="submit" class="btn btn-sm btn-primary" name="submit" value="Add Event" />
+                            </div>
+                        </form>
+                    </div>
+                </section>
+                <section id="editEventTD" class="card" style="display:none;" aria-labelledby="editEventHeading">
+                    <h2 id="editEventHeading" class="card-header bg-secondary-subtle h6 py-1 px-2 fw-semibold">Edit Event</h2>
+                    <div class="card-body p-2">
+                        <form name="editEventForm" id="editEventForm" action="<?php echo Template::escapeAttr(CATSUtility::getIndexName()); ?>?m=calendar&amp;a=editEvent" method="post" onsubmit="return checkEditForm(document.editEventForm);" autocomplete="off" class="oc-calendar-event-form">
+                            <input type="hidden" name="postback" id="postbackB" value="postback" />
+                            <input type="hidden" name="eventID" id="eventIDEdit" />
+                            <input type="hidden" name="dataItemType" id="dataItemTypeEdit" />
+                            <input type="hidden" name="dataItemID" id="dataItemIDEdit" />
+                            <input type="hidden" name="jobOrderID" id="jobOrderIDEdit" />
+                            <div>
+                                <div class="mb-2">
+                                    <label class="form-label mb-1" id="titleLabelEdit" for="titleEdit">Title:</label>
+                                    <input type="text" class="form-control form-control-sm" name="title" id="titleEdit" aria-required="true" /><span class="small text-body-secondary">Required</span>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label mb-1" id="eventTypeLabelEdit" for="typeEdit">Type:</label>
+                                    <select id="typeEdit" aria-required="true" name="type" class="form-select form-select-sm">
+                                        <option value="">(Select a Type)</option>
+                                        <?php foreach ($this->calendarEventTypes as $type): ?>
+                                            <option value="<?php echo($type['typeID']); ?>"><?php $this->_($type['description']); ?></option>
+                                        <?php endforeach; ?>
+                                    </select><span class="small text-body-secondary">Required</span>
+                                </div>
+                                <div class="mb-2">
+                                    <input class="form-check-input" type="checkbox" name="publicEntry" id="publicEntryEdit" /><label class="form-check-label ms-1" for="publicEntryEdit">Public Entry</label>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label mb-1" id="dateLabelEdit" for="dateEdit_Month_ID">Date:</label>
+                                    <script>DateInput('dateEdit', true, (typeof window.CATSUserDateFormat !== 'undefined' ? window.CATSUserDateFormat : 'MM-DD-YY'), '<?php echo($_SESSION['CATS']->isDateDMY() ? DateUtility::getAdjustedDate('d-m-y') : $this->currentDateMDY); ?>', -1);</script>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label mb-1" id="timeLabelEdit" for="hourEdit">Time:</label>
+                                    <div class="d-flex flex-wrap align-items-center gap-1 mb-2"><input aria-label="Specific time" class="form-check-input" type="radio" name="allDay" id="allDayEdit0" value="0" checked onchange="setEditAllDayEnabled();" />
+                                        <select aria-label="Hour" id="hourEdit" name="hour" class="form-select form-select-sm w-auto">
+                                            <?php if ($_SESSION['CATS']->isTimeFormat24()): ?>
+                                                <?php for ($i = 0; $i <= 23; ++$i): ?>
+                                                    <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
+                                                <?php endfor; ?>
+                                            <?php else: ?>
+                                                <?php for ($i = 1; $i <= 12; ++$i): ?>
+                                                    <option value="<?php echo($i); ?>"><?php echo(sprintf('%02d', $i)); ?></option>
+                                                <?php endfor; ?>
+                                            <?php endif; ?>
+                                        </select>
+                                        <select aria-label="Minute" id="minuteEdit" name="minute" class="form-select form-select-sm w-auto">
+                                            <?php for ($i = 0; $i <= 45; $i = $i + 15): ?>
+                                                <option value="<?php echo(sprintf('%02d', $i)); ?>">
+                                                <?php echo(sprintf('%02d', $i)); ?>
+                                                </option>
+                                            <?php endfor; ?>
+                                        </select>
+                                        <?php if (!$_SESSION['CATS']->isTimeFormat24()): ?>
+                                            <select aria-label="AM or PM" id="meridiemEdit" name="meridiem" class="form-select form-select-sm w-auto">
+                                                <option value="AM">AM</option>
+                                                <option value="PM">PM</option>
+                                            </select>
+                                        <?php endif; ?>
+                                    </div>
+                                    <input class="form-check-input" type="radio" name="allDay" id="allDayEdit1" value="1" onchange="setEditAllDayEnabled();" /><label class="form-check-label ms-1" for="allDayEdit1">All Day / No Specific Time</label>
+                                    <div class="mt-2" style="<?php if(!$this->allowEventReminders): ?>display:none;<?php endif; ?>">
+                                        <input class="form-check-input" type="checkbox" name="reminderToggle" id="reminderToggleEdit" onclick="considerCheckBox('reminderToggleEdit', 'sendEmailTDEdit');"><label class="form-check-label ms-1" for="reminderToggleEdit">Send e-mail reminder</label>
+                                    </div>
+                                </div>
+                                <div class="mb-2" id="sendEmailTDEdit" style="display: none;">
+                                    <div class="fw-semibold small mb-1">E-mail reminder</div>
+                                    <div>
+                                        <div class="mb-2">
+                                            <label class="form-label mb-1" for="sendEmailEdit">To:</label>
+                                            <input type="text" id="sendEmailEdit" name="sendEmail" class="form-control form-control-sm" value="<?php $this->_($this->userEmail); ?>" />
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label mb-1" for="reminderTimeEdit">Time:</label>
+                                            <select class="form-select form-select-sm" id="reminderTimeEdit" name="reminderTime">
+                                                <option value="15">15 min early</option>
+                                                <option value="30">30 min early</option>
+                                                <option value="45">45 min early</option>
+                                                <option value="60">1 hour early</option>
+                                                <option value="120">2 hours early</option>
+                                                <option value="1440">1 day early</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label mb-1" id="durationLabelEdit" for="durationEdit">Length:</label>
+                                    <select id="durationEdit" name="duration" class="form-select form-select-sm">
+                                        <option value="15">15 minutes</option>
+                                        <option value="30">30 minutes</option>
+                                        <option value="45">45 minutes</option>
+                                        <option value="60" selected="selected">1 hour</option>
+                                        <option value="90">1.5 hours</option>
+                                        <option value="120">2 hours</option>
+                                        <option value="180">3 hours</option>
+                                        <option value="240">4 hours</option>
+                                        <option value="300">More than 4 hours</option>
+                                    </select>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label mb-1" id="descriptionLabelEdit" for="descriptionEdit">Description:</label>
+                                    <textarea class="form-control form-control-sm" rows="4" id="descriptionEdit" name="description"></textarea>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <input type="submit" class="btn btn-sm btn-primary" name="submit" value="Save" />
+                                <?php if ($this->getUserAccessLevel('calendar.deleteEvent') >= ACCESS_LEVEL_DELETE): ?>
+                                    <input type="button" class="btn btn-sm btn-outline-danger" name="delete" value="Delete" onclick="confirmDeleteEntry();" />
+                                <?php endif; ?>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+                <section id="viewEventTD" class="card oc-calendar-event-details" style="display:none;" aria-labelledby="viewEventHeading">
+                    <h2 id="viewEventHeading" class="card-header bg-secondary-subtle h6 py-1 px-2 fw-semibold">View Event</h2>
+                    <div class="card-body p-2 text-break">
+                        <h3 id="viewEventTitle" class="h6 fw-semibold"></h3>
+                        <dl class="mb-2">
+                            <dt>Entered By</dt><dd id="viewEventOwner"></dd>
+                            <dt>Event Type</dt><dd id="viewEventType"></dd>
+                            <dt>Related Record</dt><dd id="viewEventLink"></dd>
+                            <dt>Date</dt><dd id="viewEventDate"></dd>
+                            <dt>Time</dt><dd id="viewEventTime"></dd>
+                            <dt>Duration</dt><dd id="viewEventDuration"></dd>
+                            <dt>Reminder</dt><dd id="viewEventReminder"></dd>
+                            <dt>Description</dt><dd id="viewEventDescription"></dd>
+                        </dl>
+                        <?php if ($this->getUserAccessLevel('calendar.editEvent') >= ACCESS_LEVEL_EDIT): ?>
+                            <button type="button" class="btn btn-sm btn-primary" name="Edit" onclick="calendarEditEvent(currentViewedEntry);">Edit Event</button>
+                        <?php endif; ?>
+                    </div>
+                </section>
+            </aside>
+            <div class="col-12 col-xl-8 oc-calendar-view">
+                <section id="calendarMonthParent" class="card" style="display:none;" aria-label="Month calendar">
+                    <div class="card-body p-2">
+                        <nav class="d-flex flex-wrap align-items-center gap-2 mb-2 oc-calendar-toolbar" aria-label="Month view navigation">
+                            <div class="btn-group" role="group" aria-label="Calendar view">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" aria-pressed="false" data-calendar-view="day" onclick="userCalendarViewDay()">Day</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" aria-pressed="false" data-calendar-view="week" onclick="userCalendarViewWeek()">Week</button>
+                                <button type="button" class="btn btn-sm btn-primary" aria-pressed="true" data-calendar-view="month" onclick="userCalendarViewMonth()">Month</button>
+                            </div>
+                            <span id="linkMonthBack"></span>
+                            <span id="monthNotice" class="small flex-grow-1 text-center" aria-live="polite"></span>
+                            <span id="linkMonthForeward"></span>
+                        </nav>
+                        <div class="table-responsive" tabindex="0" role="region" aria-label="Month calendar grid">
+                            <table id="calendarMonth" class="oc-calendar-grid" onmouseup="trackTableSelect(event);">
+                                <tr >
+                                    <?php if ($this->firstDayMonday != '1'): ?><th>Sunday</th><?php endif; ?>
+                                    <th>Monday</th>
+                                    <th>Tuesday</th>
+                                    <th>Wednesday</th>
+                                    <th>Thursday</th>
+                                    <th>Friday</th>
+                                    <th>Saturday</th>
+                                    <?php if ($this->firstDayMonday == '1'): ?><th>Sunday</th><?php endif; ?>
+                                </tr>
+
+                                <?php $calendarPosition = 0; ?>
+                                <?php for ($calendarRow = 1; $calendarRow <= 6; ++$calendarRow): ?>
+                                    <tr id="calendarRow<?php echo($calendarRow); ?>">
+                                        <?php $weekPosition = 1; ?>
+                                        <?php for ($weekday = 1; $weekday <= 7; ++$weekday): ?>
+                                            <td class="empty" id="calendarMonthCell<?php echo($calendarPosition++); ?>">&nbsp;</td>
+                                        <?php endfor; ?>
+                                    </tr>
+                                <?php endfor; ?>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                <section id="calendarWeekParent" class="card" style="display:none;" aria-label="Week calendar">
+                    <div class="card-body p-2">
+                        <nav class="d-flex flex-wrap align-items-center gap-2 mb-2 oc-calendar-toolbar" aria-label="Week view navigation">
+                            <div class="btn-group" role="group" aria-label="Calendar view">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" aria-pressed="false" data-calendar-view="day" onclick="userCalendarViewDay()">Day</button>
+                                <button type="button" class="btn btn-sm btn-primary" aria-pressed="true" data-calendar-view="week" onclick="userCalendarViewWeek()">Week</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" aria-pressed="false" data-calendar-view="month" onclick="userCalendarViewMonth()">Month</button>
+                            </div>
+                            <span id="linkWeekBack"></span>
+                            <span id="weekNotice" class="small flex-grow-1 text-center" aria-live="polite"></span>
+                            <span id="linkWeekForeward"></span>
+                        </nav>
+                        <div class="table-responsive" tabindex="0" role="region" aria-label="Week calendar grid">
+                            <table id="calendarWeek" class="oc-calendar-grid" onmouseup="trackTableSelect(event, '#e9e9e9');">
+                                <?php if ($this->firstDayMonday != '1'): ?>
+                                    <tr>
+                                        <th>Sunday <br /><span id="weekDay0"></span></th>
+                                        <td class="empty" id="calendarWeekCell0"></td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Monday <br /><span id="weekDay1"></span></th>
+                                        <td class="empty" id="calendarWeekCell1"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tuesday <br /><span id="weekDay2"></span></th>
+                                        <td class="empty" id="calendarWeekCell2"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Wednesday <br /><span id="weekDay3"></span></th>
+                                        <td class="empty" id="calendarWeekCell3"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Thursday <br /><span id="weekDay4"></span></th>
+                                        <td class="empty" id="calendarWeekCell4"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Friday <br /><span id="weekDay5"></span></th>
+                                        <td class="empty" id="calendarWeekCell5"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Saturday <br /><span id="weekDay6"></span></th>
+                                        <td class="empty" id="calendarWeekCell6"></td>
+                                    </tr>
+                                <?php else: ?>
+                                    <tr>
+                                        <th>Monday <br /><span id="weekDay0"></span></th>
+                                        <td class="empty" id="calendarWeekCell0"></td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Tuesday <br /><span id="weekDay1"></span></th>
+                                        <td class="empty" id="calendarWeekCell1"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Wednesday <br /><span id="weekDay2"></span></th>
+                                        <td class="empty" id="calendarWeekCell2"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Thursday <br /><span id="weekDay3"></span></th>
+                                        <td class="empty" id="calendarWeekCell3"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Friday <br /><span id="weekDay4"></span></th>
+                                        <td class="empty" id="calendarWeekCell4"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Saturday <br /><span id="weekDay5"></span></th>
+                                        <td class="empty" id="calendarWeekCell5"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Sunday <br /><span id="weekDay6"></span></th>
+                                        <td class="empty" id="calendarWeekCell6"></td>
+                                    </tr>
+                                <?php endif; ?>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                <section id="calendarDayParent" class="card" style="display:none;" aria-label="Day calendar">
+                    <div class="card-body p-2">
+                        <nav class="d-flex flex-wrap align-items-center gap-2 mb-2 oc-calendar-toolbar" aria-label="Day view navigation">
+                            <div class="btn-group" role="group" aria-label="Calendar view">
+                                <button type="button" class="btn btn-sm btn-primary" aria-pressed="true" data-calendar-view="day" onclick="userCalendarViewDay()">Day</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" aria-pressed="false" data-calendar-view="week" onclick="userCalendarViewWeek()">Week</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" aria-pressed="false" data-calendar-view="month" onclick="userCalendarViewMonth()">Month</button>
+                            </div>
+                            <span id="linkDayBack"></span>
+                            <span id="dayNotice" class="small flex-grow-1 text-center" aria-live="polite"></span>
+                            <span id="linkDayForeward"></span>
+                        </nav>
+                        <div class="table-responsive" tabindex="0" role="region" aria-label="Day calendar grid">
+                            <table id="calendarDay" class="oc-calendar-grid" onmouseup="trackTableSelect(event, '#e9e9e9');">
+                                <tr>
+                                    <th>Morning</th>
+                                    <td class="empty" id="calendarDayCell0"></td>
+                                </tr>
+                                    <?php for ($i = $this->dayHourStart; $i <= $this->dayHourEnd; $i++): ?>
+                                    <tr>
+                                        <th><?php if (!$this->militaryTime && $i>12):?><?php echo($i - 12); ?><?php else: ?><?php echo($i); ?><?php endif; ?>:00</th>
+                                        <td class="empty" id="calendarDayCell<?php echo($i - $this->dayHourStart + 1); ?>"></td>
+                                    </tr>
+                                    <?php endfor; ?>
+                                <tr>
+                                    <th>Evening</th>
+                                    <td class="empty" id="calendarDayCell<?php echo($this->dayHourEnd - $this->dayHourStart + 2); ?>"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </div>
     </div>
+</main>
+    <script>
+        initializeCalendarUI();
 
-    <script type="text/javascript">
         /* Settings */
         indexName = '<?php echo(CATSUtility::getIndexName()); ?>';
         todayDay = <?php echo($this->currentDay); ?>;

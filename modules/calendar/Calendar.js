@@ -824,15 +824,15 @@ function updateCalendarViewMonth()
     document.getElementById("calendarTitle").innerHTML = "Calendar: "
         + monthNameWrap(currentMonth) + " " + currentYear;
 
-    document.getElementById("linkMonthBack").innerHTML = "<a href=\"javascript:setCalendarViewMonth("
+    document.getElementById("linkMonthBack").innerHTML = "<button type=\"button\" class=\"btn btn-sm btn-outline-secondary\" onclick=\"setCalendarViewMonth("
         + yearBackwardsByMonth(currentYear, currentMonth) + ", "
         + monthBackwardsByMonth(currentMonth)
-        + ");\"><img src=\"images/arrow_left_24.gif\" style=\"border:none;\" />&nbsp;</a>";
+        + ");\"><span aria-hidden=\"true\">&larr;</span><span class=\"visually-hidden\">Previous period</span></button>";
 
-    document.getElementById("linkMonthForeward").innerHTML = "<a href=\"javascript:setCalendarViewMonth("
+    document.getElementById("linkMonthForeward").innerHTML = "<button type=\"button\" class=\"btn btn-sm btn-outline-secondary\" onclick=\"setCalendarViewMonth("
         + yearForewardsByMonth(currentYear, currentMonth) + ", "
         + monthForewardsByMonth(currentMonth)
-        + ");\">&nbsp;<img src=\"images/arrow_right_24.gif\" style=\"border:none;\" /></a>";
+        + ");\"><span aria-hidden=\"true\">&rarr;</span><span class=\"visually-hidden\">Next period</span></button>";
 
     for (i = 0; i < calendarData.length; i++)
     {
@@ -916,8 +916,8 @@ function updateCalendarViewMonth()
 
 function updateCalendarViewMonthCell(year, month, day, cellID, monthData)
 {
-    var daylink = "<a class=\"dateLink\" href=\"javascript:void(0);\" onclick=\"setCalendarViewDay("
-        + year + ", " + month + ", " + day + ");\""
+    var daylink = "<a class=\"dateLink\" href=\"#\" onclick=\"event.stopPropagation(); setCalendarViewDay("
+        + year + ", " + month + ", " + day + "); return false;\"";
     var string = daylink + ">" + day + "</a><br />";
 
 
@@ -1008,17 +1008,17 @@ function updateCalendarViewWeek()
         + weekNames[currentWeek-1] + " week of " + monthNameWrap(currentMonth)
         + " " + currentYear;
 
-    document.getElementById("linkWeekBack").innerHTML = "<a href=\"javascript:setCalendarViewWeek("
+    document.getElementById("linkWeekBack").innerHTML = "<button type=\"button\" class=\"btn btn-sm btn-outline-secondary\" onclick=\"setCalendarViewWeek("
         + yearBackwardsByWeek(currentYear, currentMonth, currentWeek)
         + ", " + monthBackwardsByWeek(currentYear, currentMonth, currentWeek)
         + ", " + weekBackwardsByWeek(currentYear, currentMonth, currentWeek)
-        + ");\"><img src=\"images/arrow_left_24.gif\" style=\"border:none;\" />&nbsp;</a>";
+        + ");\"><span aria-hidden=\"true\">&larr;</span><span class=\"visually-hidden\">Previous period</span></button>";
 
-    document.getElementById("linkWeekForeward").innerHTML = "<a href=\"javascript:setCalendarViewWeek("
+    document.getElementById("linkWeekForeward").innerHTML = "<button type=\"button\" class=\"btn btn-sm btn-outline-secondary\" onclick=\"setCalendarViewWeek("
         + yearForewardsByWeek(currentYear, currentMonth, currentWeek)
         + ", " + monthForewardsByWeek(currentYear, currentMonth, currentWeek)
         + ", " + weekForewardsByWeek(currentYear, currentMonth, currentWeek)
-        + ");\">&nbsp;<img src=\"images/arrow_right_24.gif\" style=\"border:none;\" /></a>";
+        + ");\"><span aria-hidden=\"true\">&rarr;</span><span class=\"visually-hidden\">Next period</span></button>";
 
     for (i = 0; i < 7 ; i++)
     {
@@ -1152,8 +1152,8 @@ function updateCalendarViewDay()
 
     document.getElementById("calendarTitle").innerHTML = "Calendar: " + monthNameWrap(currentMonth) + " " + currentDay + ", " + currentYear;
 
-    document.getElementById("linkDayBack").innerHTML = "<a href=\"javascript:setCalendarViewDay(" + getYearByDay(currentYear, currentMonth, currentDay - 1) + ", " + getMonthByDay(currentYear, currentMonth, currentDay - 1) + ", " + getDayByDay(currentYear, currentMonth, currentDay - 1) + ");\"><img src=\"images/arrow_left_24.gif\" style=\"border:none;\" />&nbsp;</a>";
-    document.getElementById("linkDayForeward").innerHTML = "<a href=\"javascript:setCalendarViewDay(" + getYearByDay(currentYear, currentMonth, currentDay + 1) + ", " + getMonthByDay(currentYear, currentMonth, currentDay + 1) + ", " + getDayByDay(currentYear, currentMonth, currentDay + 1) + ");\">&nbsp;<img src=\"images/arrow_right_24.gif\" style=\"border:none;\" /></a>";
+    document.getElementById("linkDayBack").innerHTML = "<button type=\"button\" class=\"btn btn-sm btn-outline-secondary\" onclick=\"setCalendarViewDay(" + getYearByDay(currentYear, currentMonth, currentDay - 1) + ", " + getMonthByDay(currentYear, currentMonth, currentDay - 1) + ", " + getDayByDay(currentYear, currentMonth, currentDay - 1) + ");\"><span aria-hidden=\"true\">&larr;</span><span class=\"visually-hidden\">Previous period</span></button>";
+    document.getElementById("linkDayForeward").innerHTML = "<button type=\"button\" class=\"btn btn-sm btn-outline-secondary\" onclick=\"setCalendarViewDay(" + getYearByDay(currentYear, currentMonth, currentDay + 1) + ", " + getMonthByDay(currentYear, currentMonth, currentDay + 1) + ", " + getDayByDay(currentYear, currentMonth, currentDay + 1) + ");\"><span aria-hidden=\"true\">&rarr;</span><span class=\"visually-hidden\">Next period</span></button>";
 
     /* Reset view */
     for (i = 0; i < dayTotalCells; i++)
@@ -1220,7 +1220,7 @@ function updateCalendarViewDayCell(cell, entry)
 
     string = "";
 
-    var idEntry = "dayCell" + dayPositionData.length;
+    var idEntry = "dayCell" + visibleEntries.length;
 
     string += generateCalendarEntryDayView(
         entry.getData("time"),
