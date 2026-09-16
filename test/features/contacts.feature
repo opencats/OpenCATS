@@ -8,7 +8,7 @@ Feature: Contacts
     And There is a company called "Contacts UI Company"
     And I am on "/index.php?m=contacts&a=add"
     Then I should see a "main #addContactForm" element
-    When I fill in "Company" with "Contacts UI Company"
+    When I fill in "Company" with "Contacts UI"
     And I wait for "#CompanyResults div#suggest0"
     And I click on the element "#CompanyResults div#suggest0"
     And I fill in "First Name" with "BootstrapContact"
