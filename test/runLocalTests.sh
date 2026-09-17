@@ -5,8 +5,8 @@
 #
 # Creates a clean Docker test environment, temporarily installs the
 # OpenCATS test configuration, invokes the canonical runAllTests.sh
-# inside the PHP container, and restores the developer configuration
-# on exit.
+# inside the PHP container, captures the complete test output, and
+# restores the developer configuration on exit.
 #
 
 set -Eeuo pipefail
@@ -19,6 +19,9 @@ CONFIG_FILE="${ROOT_DIR}/config.php"
 TEST_CONFIG_FILE="${ROOT_DIR}/test/config.php"
 INSTALL_BLOCK="${ROOT_DIR}/INSTALL_BLOCK"
 COMPOSE_FILE="${DOCKER_DIR}/docker-compose-test.yml"
+
+REPORT_DIR="${ROOT_DIR}/reports/local"
+LOCAL_LOG="${REPORT_DIR}/local-test.log"
 
 BACKUP_DIR="$(mktemp -d)"
 
@@ -58,6 +61,9 @@ cleanup()
         echo "Local OpenCATS test run failed with exit status ${exit_status}."
     fi
 
+    echo "Complete local test log:"
+    echo "  ${LOCAL_LOG}"
+    echo
     echo "Docker test containers have been left running for inspection."
 
     exit "${exit_status}"
@@ -122,6 +128,12 @@ then
     touch "${INSTALL_BLOCK}"
 fi
 
+#
+# Prepare persistent local test logs.
+#
+mkdir -p "${REPORT_DIR}"
+rm -f "${LOCAL_LOG}"
+
 cd "${DOCKER_DIR}"
 
 #
@@ -137,19 +149,34 @@ docker compose -f "${COMPOSE_FILE}" \
     down --volumes --remove-orphans
 
 #
-# Rebuild and start the complete test stack.
+# Start the complete test stack using the configured test images.
 #
 echo
-echo "Building and starting Docker test environment..."
+echo "Starting Docker test environment..."
 
 docker compose -f "${COMPOSE_FILE}" \
-    up -d --build
+    up -d
 
 echo
 docker compose -f "${COMPOSE_FILE}" ps
 
+echo
+echo "PHP test container:"
+docker compose -f "${COMPOSE_FILE}" exec -T php php -v
+
+echo
+echo "PHP runtime details:"
+docker compose -f "${COMPOSE_FILE}" exec -T php php -r '
+echo "PHP_VERSION=" . PHP_VERSION . PHP_EOL;
+echo "PHP_VERSION_ID=" . PHP_VERSION_ID . PHP_EOL;
+echo "SAPI=" . PHP_SAPI . PHP_EOL;
+echo "error_reporting=" . error_reporting() . PHP_EOL;
+echo "display_errors=" . ini_get("display_errors") . PHP_EOL;
+'
+
 #
-# Use the existing canonical OpenCATS test runner inside the PHP container.
+# Use the canonical OpenCATS test runner inside the PHP container.
+# Capture the complete output while preserving runAllTests.sh exit status.
 #
 echo
 echo "Running OpenCATS test suite..."
@@ -160,9 +187,10 @@ set +e
 docker compose -f "${COMPOSE_FILE}" exec -T \
     --workdir /var/www/public \
     php \
-    sh ./test/runAllTests.sh
+    sh ./test/runAllTests.sh \
+    2>&1 | tee "${LOCAL_LOG}"
 
-TEST_STATUS=$?
+TEST_STATUS=${PIPESTATUS[0]}
 
 set -e
 
