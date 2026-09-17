@@ -1,37 +1,31 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<!doctype html>
+<html lang="en">
     <head>
         <title>CATS - Reports</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
         <link rel="alternate" type="application/rss+xml" title="RSS" href="<?php echo(CATSUtility::getIndexName()); ?>?m=rss" />
         <style type="text/css" media="all">@import "<?php echo TemplateUtility::getVersionedAssetURL('main.css'); ?>";</style>
         <script type="text/javascript" src="<?php echo TemplateUtility::getVersionedAssetURL('js/lib.js'); ?>"></script>
         <style type="text/css">
-        div.outer
-        {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            width: 1024px;
-            height: 768px;
-            margin-left: -512px; /* half of width */
-            margin-top: -384px;  /* half of height */
-        }
+        body { background: #fff; }
+        .outer { max-width: 1024px; margin: 2rem auto; padding: 0 1rem; text-align: center; }
+        .outer h1 { font-size: 2.25rem; font-weight: normal; }
+        .graph-image { overflow: auto; }
         </style>
     </head>
 
-    <body style="background: #fff;">
-        <div class="outer">
-            <p align="center" style="font-size:36px;"><?php echo($_SESSION['CATS']->getSiteName()); ?></p>
+    <body>
+        <main class="outer">
+            <h1><?php echo($_SESSION['CATS']->getSiteName()); ?></h1>
 
-            <p align="center">Graph refreshes every 5 minutes. Press F11 to toggle fullscreen mode in most browsers.</p>
+            <p>Graph refreshes every 5 minutes. Press F11 to toggle fullscreen mode in most browsers.</p>
 
-            <p align="center"><img src="<?php $this->_($this->theImage); ?>" alt="Graph" /></p>
+            <p class="graph-image"><img src="<?php $this->_($this->theImage); ?>" alt="Graph" /></p>
 
-            <p align="center"><a href="#" onclick="window.close('fs'); return false;">Close Window</a></p>
+            <p><a href="#" onclick="window.close('fs'); return false;">Close Window</a></p>
 
             <script type="text/javascript">
             if (document.images)
@@ -44,8 +38,8 @@
             }
             </script>
 
-            <p id="footerText" align="center">CATS Version <?php echo(CATSUtility::getVersion()); ?> build <?php echo(CATSUtility::getBuild()); ?>. Powered by <a href="http://www.opencats.org" target="_blank"><strong>OpenCATS</strong></a>.<br />
+            <p id="footerText">CATS Version <?php echo(CATSUtility::getVersion()); ?> build <?php echo(CATSUtility::getBuild()); ?>. Powered by <a href="http://www.opencats.org" target="_blank"><strong>OpenCATS</strong></a>.<br />
             <span id="footerCopyright">&copy;2007-2023 OpenCATS All rights reserved.</span></p>
-        </div>
+        </main>
     </body>
 </html>
