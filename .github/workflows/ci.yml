@@ -63,7 +63,7 @@ jobs:
           touch ./INSTALL_BLOCK
 
           cd docker/
-          PHP_VERSION=${{ matrix.php-version }} docker compose -f docker-compose-test.yml up -d --build
+          PHP_VERSION=${{ matrix.php-version }} docker compose -f docker-compose-test.yml up -d
 
           echo "Waiting for BOTH databases..."
           opencatsdb_container="$(docker compose -f docker-compose-test.yml ps -q opencatsdb)"

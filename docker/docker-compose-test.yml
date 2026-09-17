@@ -3,18 +3,14 @@ services:
       container_name: opencats_test_web
       image: prooph/nginx:www
       ports:
-          - "80:80"
-          - "443:443"
+        - "80:80"
+        - "443:443"
       volumes_from:
         - opencatsdata
 
     php:
       container_name: opencats_test_php
-      build:
-        context: ..
-        dockerfile: docker/php/Dockerfile
-        args:
-          PHP_VERSION: ${PHP_VERSION:-8.4.1}
+      image: opencats/php-base:${PHP_VERSION:-8.4.1}
       working_dir: /var/www/public
       volumes_from:
         - opencatsdata
@@ -76,7 +72,7 @@ services:
       image: mlespiau/standalone-chrome:2.53.1-cd2.23
       environment:
         # Required to avoid container startup hanging sometimes in
-        # some environments
+        # some environments.
         JAVA_OPTS: -Djava.security.egd=file:/dev/./urandom
       ports:
         - 4444
