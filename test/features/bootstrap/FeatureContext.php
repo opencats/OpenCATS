@@ -30,6 +30,228 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     private $roleData;
 
     /**
+     * Keep Calendar workflow fixtures isolated, including after a failed scenario.
+     * @BeforeScenario @calendar
+     * @AfterScenario @calendar
+     */
+    public function cleanCalendarWorkflowEvents()
+    {
+        $users = new Users();
+        $adminID = (int) $users->getIDByUsername('admin');
+        DatabaseConnection::getInstance()->query(
+            "DELETE FROM calendar_event WHERE entered_by = " . $adminID
+            . " AND title IN ('Calendar workflow event', 'Calendar workflow updated')"
+            . " AND date >= '2030-06-01' AND date < '2030-07-01'"
+        );
+    }
+
+    private $calendarSiteFormats = null;
+    private $calendarQueueTime = null;
+
+    private $calendarFixtureRecords = array();
+    private $calendarFixtureEvents = array();
+
+    private $calendarAjaxSettings = null;
+
+    /** @Given Calendar AJAX is :enabled */
+    public function calendarAjaxSetting($enabled)
+    {
+        $db = DatabaseConnection::getInstance();
+        $this->calendarAjaxSettings = $db->getAllAssoc(
+            "SELECT value FROM settings WHERE settings_type = " . SETTINGS_CALENDAR . " AND setting = 'noAjax'"
+        );
+        $db->query("DELETE FROM settings WHERE settings_type = " . SETTINGS_CALENDAR . " AND setting = 'noAjax'");
+        $db->query("INSERT INTO settings (settings_type, setting, value) VALUES (" . SETTINGS_CALENDAR . ", 'noAjax', '"
+            . ($enabled === 'enabled' ? '0' : '1') . "')");
+    }
+
+    /** @Given Calendar has another user's private event */
+    public function calendarPrivateEvent()
+    {
+        $db = DatabaseConnection::getInstance();
+        $ownerID = (int) (new Users())->getIDByUsername('testerRead');
+        $db->query("INSERT INTO calendar_event (type, date, title, entered_by, public) VALUES"
+            . " (300, '2030-06-12 10:00:00', 'Calendar private fixture', " . $ownerID . ", 0)");
+        $this->calendarFixtureEvents[] = (int) $db->getLastInsertID();
+    }
+
+    /** @Given Calendar has grouped events linked to a :kind */
+    public function calendarLinkedEvents($kind)
+    {
+        $db = DatabaseConnection::getInstance();
+        $adminID = (int) (new Users())->getIDByUsername('admin');
+        $db->query("INSERT INTO company (name) VALUES ('Calendar workflow company')");
+        $companyID = (int) $db->getLastInsertID();
+        $this->calendarFixtureRecords['company'] = $companyID;
+        $types = array(
+            'company' => DATA_ITEM_COMPANY,
+            'candidate' => DATA_ITEM_CANDIDATE,
+            'contact' => DATA_ITEM_CONTACT,
+            'joborder' => DATA_ITEM_JOBORDER
+        );
+        if (!isset($types[$kind]))
+        {
+            throw new \InvalidArgumentException('Unsupported Calendar association');
+        }
+        if ($kind === 'candidate')
+        {
+            $db->query("INSERT INTO candidate (first_name, last_name) VALUES ('Calendar', 'workflow candidate')");
+        }
+        elseif ($kind === 'contact')
+        {
+            $db->query("INSERT INTO contact (company_id, company_department_id, first_name, last_name) VALUES ("
+                . $companyID . ", 0, 'Calendar', 'workflow contact')");
+        }
+        elseif ($kind === 'joborder')
+        {
+            $db->query("INSERT INTO joborder (company_id, title) VALUES (" . $companyID . ", 'Calendar workflow joborder')");
+        }
+        $recordID = $kind === 'company' ? $companyID : (int) $db->getLastInsertID();
+        $this->calendarFixtureRecords[$kind] = $recordID;
+        for ($i = 0; $i < 2; ++$i)
+        {
+            $db->query(sprintf(
+                "INSERT INTO calendar_event (type, date, title, description, entered_by, data_item_id, data_item_type, public)"
+                . " VALUES (300, '2030-06-12 09:15:00', 'Calendar workflow event', 'Linked calendar details', %d, %d, %d, 1)",
+                $adminID, $recordID, $types[$kind]
+            ));
+            $this->calendarFixtureEvents[] = (int) $db->getLastInsertID();
+        }
+    }
+
+    /** @Then the Calendar event association should still link to :kind */
+    public function calendarAssociationPersists($kind)
+    {
+        $recordID = $this->calendarFixtureRecords[$kind];
+        $link = $this->getSession()->getPage()->find('css', '#viewEventLink a');
+        $parameters = array('company' => 'companyID', 'candidate' => 'candidateID',
+            'contact' => 'contactID', 'joborder' => 'jobOrderID');
+        if (!$link || strpos($link->getAttribute('href'), $parameters[$kind] . '=' . $recordID) === false)
+        {
+            throw new \RuntimeException('Calendar association was lost or changed');
+        }
+    }
+
+    /** @Given Calendar uses :dateFormat dates and :timeFormat hour time */
+    public function calendarUsesFormats($dateFormat, $timeFormat)
+    {
+        $db = DatabaseConnection::getInstance();
+        $this->calendarSiteFormats = $db->getAllAssoc(
+            'SELECT site_id, date_format_ddmmyy, time_format_24 FROM site'
+        );
+        $db->query('UPDATE site SET date_format_ddmmyy = ' . ($dateFormat === 'DMY' ? 1 : 0)
+            . ', time_format_24 = ' . ($timeFormat === '24' ? 1 : 0));
+    }
+
+    /** @Given Calendar reminder controls are available */
+    public function calendarRemindersAvailable()
+    {
+        $file = LEGACY_ROOT . '/queue.time';
+        $this->calendarQueueTime = file_exists($file) ? filemtime($file) : false;
+        touch($file);
+    }
+
+    /** @AfterScenario @calendar */
+    public function restoreCalendarEnvironment()
+    {
+        $db = DatabaseConnection::getInstance();
+        foreach ($this->calendarFixtureEvents as $eventID)
+        {
+            $db->query('DELETE FROM calendar_event WHERE calendar_event_id = ' . $eventID);
+        }
+        foreach (array_reverse($this->calendarFixtureRecords, true) as $table => $id)
+        {
+            $db->query('DELETE FROM ' . $table . ' WHERE ' . $table . '_id = ' . $id);
+        }
+        if ($this->calendarAjaxSettings !== null)
+        {
+            $db->query("DELETE FROM settings WHERE settings_type = " . SETTINGS_CALENDAR . " AND setting = 'noAjax'");
+            foreach ($this->calendarAjaxSettings as $setting)
+            {
+                $db->query("INSERT INTO settings (settings_type, setting, value) VALUES (" . SETTINGS_CALENDAR . ", 'noAjax', "
+                    . $db->makeQueryString($setting['value']) . ")");
+            }
+        }
+        if ($this->calendarSiteFormats !== null)
+        {
+            foreach ($this->calendarSiteFormats as $site)
+            {
+                DatabaseConnection::getInstance()->query(sprintf(
+                    'UPDATE site SET date_format_ddmmyy = %d, time_format_24 = %d WHERE site_id = %d',
+                    $site['date_format_ddmmyy'], $site['time_format_24'], $site['site_id']
+                ));
+            }
+        }
+        if ($this->calendarQueueTime !== null)
+        {
+            $file = LEGACY_ROOT . '/queue.time';
+            if ($this->calendarQueueTime === false)
+            {
+                if (file_exists($file))
+                {
+                    unlink($file);
+                }
+            }
+            else
+            {
+                touch($file, $this->calendarQueueTime);
+            }
+        }
+    }
+
+    /** @Then Calendar field :id should be :state */
+    public function calendarFieldState($id, $state)
+    {
+        $field = $this->getSession()->getPage()->findById($id);
+        if (!$field || $field->hasAttribute('disabled') !== ($state === 'disabled'))
+        {
+            throw new \RuntimeException('Unexpected enabled state for Calendar field ' . $id);
+        }
+    }
+
+    /** @Then Calendar panel :id should be :state */
+    public function calendarPanelState($id, $state)
+    {
+        $this->spins(function () use ($id, $state) {
+            $panel = $this->getSession()->getPage()->findById($id);
+            if (!$panel || $panel->isVisible() !== ($state === 'visible'))
+            {
+                throw new \RuntimeException('Unexpected visibility for Calendar panel ' . $id);
+            }
+        });
+    }
+
+    /** @Then Calendar view :id should have :count events */
+    public function calendarEventCount($id, $count)
+    {
+        $this->spins(function () use ($id, $count) {
+            $events = $this->getSession()->getPage()->findAll('css', '#' . $id . ' .calendarEntry');
+            if (count($events) !== (int) $count)
+            {
+                throw new \RuntimeException('Unexpected Calendar event count in ' . $id);
+            }
+        });
+    }
+
+    /** @Then the Calendar heading should be :heading */
+    public function calendarHeading($heading)
+    {
+        $actual = $this->getSession()->getPage()->findById('calendarTitle')->getText();
+        if (preg_replace('/\\s+/', ' ', trim($actual)) !== $heading)
+        {
+            throw new \RuntimeException('Unexpected Calendar heading: ' . $actual);
+        }
+    }
+
+
+
+    /** @When I cancel the Calendar dialog */
+    public function cancelCalendarDialog()
+    {
+        $this->getSession()->getDriver()->getWebDriverSession()->dismiss_alert();
+    }
+
+    /**
      * Initializes context.
      *
      * Every scenario gets its own context instance.

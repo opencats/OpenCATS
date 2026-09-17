@@ -7,8 +7,8 @@ Feature: Calendar
     And I am on "/index.php?m=calendar"
     When I follow "Add Event"
     And I press "Add Event"
-    Then the Calendar dialog should contain "You must select an Event Type"
-    And the Calendar dialog should contain "You must enter a Description"
+    Then I should see "You must select an Event Type" in alert popup
+    And I should see "You must enter a Description" in alert popup
     And I confirm the popup
     And I should see a "#addEventForm" element
 
@@ -69,7 +69,7 @@ Feature: Calendar
     And the "#viewEventTime" element should contain "All Day / No Specific Time"
     When I press "Edit Event"
     And I press "Delete"
-    Then the Calendar dialog should contain "Are you sure you want to delete this entry?"
+    Then I should see "Are you sure you want to delete this entry?" in alert popup
     When I cancel the Calendar dialog
     Then Calendar panel "editEventTD" should be "visible"
     When I press "Delete"
