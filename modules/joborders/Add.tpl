@@ -2,7 +2,7 @@
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <script type="text/javascript">
-        window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
+        window.CATSUserDateFormat = '<?php echo(DateUtility::getJsDateFormat()); ?>';
     </script>
     <div id="main">
         <?php TemplateUtility::printQuickSearch(); ?>

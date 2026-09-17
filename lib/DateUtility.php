@@ -397,6 +397,108 @@ class DateUtility
     }
 
     /**
+     * Returns the date format flag for a site.date_format_ddmmyy value
+     * (0 = M-D-Y, 1 = D-M-Y, 2 = Y-M-D).
+     *
+     * @param integer $siteValue  site.date_format_ddmmyy value
+     * @return integer DATE_FORMAT_MMDDYY, DATE_FORMAT_DDMMYY or DATE_FORMAT_YYYYMMDD
+     */
+    public static function getDateFormatFromSiteValue($siteValue)
+    {
+        return match ((int) $siteValue)
+        {
+            1       => DATE_FORMAT_DDMMYY,
+            2       => DATE_FORMAT_YYYYMMDD,
+            default => DATE_FORMAT_MMDDYY,
+        };
+    }
+
+    /**
+     * Returns the site.date_format_ddmmyy value for a date format flag.
+     *
+     * @param integer $dateFormat  date format flag
+     * @return integer site.date_format_ddmmyy value
+     */
+    public static function getSiteValueFromDateFormat($dateFormat)
+    {
+        return match ($dateFormat)
+        {
+            DATE_FORMAT_DDMMYY   => 1,
+            DATE_FORMAT_YYYYMMDD => 2,
+            default              => 0,
+        };
+    }
+
+    /**
+     * Returns the date format flag for a localization form value
+     * ('mdy', 'dmy' or 'ymd').
+     *
+     * @param string $formValue  localization form value
+     * @return integer date format flag
+     */
+    public static function getDateFormatFromFormValue($formValue)
+    {
+        return match ($formValue)
+        {
+            'dmy'   => DATE_FORMAT_DDMMYY,
+            'ymd'   => DATE_FORMAT_YYYYMMDD,
+            default => DATE_FORMAT_MMDDYY,
+        };
+    }
+
+    /**
+     * Returns the calendarDateInput.js format string for a date format flag.
+     *
+     * @param integer|null $dateFormat  date format flag, null=read from session
+     * @return string 'MM-DD-YY', 'DD-MM-YY' or 'YYYY-MM-DD'
+     */
+    public static function getJsDateFormat($dateFormat = null)
+    {
+        return match ($dateFormat ?? self::_getSessionDateFormat())
+        {
+            DATE_FORMAT_DDMMYY   => 'DD-MM-YY',
+            DATE_FORMAT_YYYYMMDD => 'YYYY-MM-DD',
+            default              => 'MM-DD-YY',
+        };
+    }
+
+    /**
+     * Returns the PHP date() format string for a date format flag.
+     *
+     * @param integer|null $dateFormat  date format flag, null=read from session
+     * @return string 'm-d-y', 'd-m-y' or 'Y-m-d'
+     */
+    public static function getPhpDateFormat($dateFormat = null)
+    {
+        return match ($dateFormat ?? self::_getSessionDateFormat())
+        {
+            DATE_FORMAT_DDMMYY   => 'd-m-y',
+            DATE_FORMAT_YYYYMMDD => 'Y-m-d',
+            default              => 'm-d-y',
+        };
+    }
+
+    /**
+     * Converts a date stored as MM-DD-YY (e.g. extra field values) to the
+     * specified date format. Values that are not valid MM-DD-YY dates are
+     * returned unchanged.
+     *
+     * @param string  $date        MM-DD-YY date
+     * @param integer $dateFormat  date format flag
+     * @return string date in $dateFormat format
+     */
+    public static function formatStoredDate($date, $dateFormat)
+    {
+        if ($dateFormat == DATE_FORMAT_MMDDYY ||
+            !self::validate('-', (string) $date, DATE_FORMAT_MMDDYY))
+        {
+            return $date;
+        }
+
+        return self::convert('-', $date, DATE_FORMAT_MMDDYY, $dateFormat);
+    }
+
+    /**
      * Returns the MySQL DATE_FORMAT time-only format string for use inside
      * a PHP sprintf() call (% signs are already doubled).
      * 24-hour: '%%H:%%i' becomes MySQL %H:%i (e.g. 13:30)
@@ -836,6 +938,13 @@ class DateUtility
             'startDate' => $startDate,
             'endDate'   => $endDate
         );
+    }
+
+    private static function _getSessionDateFormat()
+    {
+        return isset($_SESSION['CATS'])
+            ? $_SESSION['CATS']->getDateFormat()
+            : DATE_FORMAT_MMDDYY;
     }
 
     private static function _removeLeadingZeros($array)

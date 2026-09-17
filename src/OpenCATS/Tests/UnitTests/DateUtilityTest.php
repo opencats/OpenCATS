@@ -242,6 +242,42 @@ class DateUtilityTest extends TestCase
         $this->assertSame('d-m-Y H:i',   DateUtility::getDateTimeFormat('d-m-Y', true));
     }
 
+    /* Tests for date format flag mapping. */
+    function testDateFormatMapping()
+    {
+        $formats = array(
+            /* site value, form value, flag, JS format, PHP format */
+            array(0, 'mdy', DATE_FORMAT_MMDDYY,   'MM-DD-YY',   'm-d-y'),
+            array(1, 'dmy', DATE_FORMAT_DDMMYY,   'DD-MM-YY',   'd-m-y'),
+            array(2, 'ymd', DATE_FORMAT_YYYYMMDD, 'YYYY-MM-DD', 'Y-m-d'),
+        );
+
+        foreach ($formats as $value)
+        {
+            $this->assertSame($value[2], DateUtility::getDateFormatFromSiteValue($value[0]));
+            $this->assertSame($value[0], DateUtility::getSiteValueFromDateFormat($value[2]));
+            $this->assertSame($value[2], DateUtility::getDateFormatFromFormValue($value[1]));
+            $this->assertSame($value[3], DateUtility::getJsDateFormat($value[2]));
+            $this->assertSame($value[4], DateUtility::getPhpDateFormat($value[2]));
+        }
+
+        /* Unknown values fall back to M-D-Y. */
+        $this->assertSame(DATE_FORMAT_MMDDYY, DateUtility::getDateFormatFromSiteValue(null));
+        $this->assertSame(DATE_FORMAT_MMDDYY, DateUtility::getDateFormatFromFormValue('invalid'));
+    }
+
+    /* Tests for formatStoredDate(). */
+    function testFormatStoredDate()
+    {
+        $this->assertSame('12-31-05',   DateUtility::formatStoredDate('12-31-05', DATE_FORMAT_MMDDYY));
+        $this->assertSame('31-12-05',   DateUtility::formatStoredDate('12-31-05', DATE_FORMAT_DDMMYY));
+        $this->assertSame('2005-12-31', DateUtility::formatStoredDate('12-31-05', DATE_FORMAT_YYYYMMDD));
+
+        /* Empty and invalid values are returned unchanged. */
+        $this->assertSame('',        DateUtility::formatStoredDate('', DATE_FORMAT_YYYYMMDD));
+        $this->assertSame('invalid', DateUtility::formatStoredDate('invalid', DATE_FORMAT_DDMMYY));
+    }
+
     /* Tests for normalizeActivityTime(). */
     function testNormalizeActivityTime()
     {

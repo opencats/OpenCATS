@@ -22,7 +22,7 @@
 <?php endif; ?>
 
 <script type="text/javascript">
-    window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
+    window.CATSUserDateFormat = '<?php echo(DateUtility::getJsDateFormat()); ?>';
 </script>
 
             <p class="note<?php if ($this->isModal): ?>Unsized<?php endif; ?>">Basic Information</p>

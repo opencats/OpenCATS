@@ -483,6 +483,7 @@
                                                         <select id="dateFormat" name="dateFormat" style="width: 150px;" class="selectBox">
                                                             <option value="mdy" selected="selected">MM-DD-YYYY (US)</option>
                                                             <option value="dmy">DD-MM-YYYY (UK)</option>
+                                                            <option value="ymd">YYYY-MM-DD (ISO)</option>
                                                         </select>
                                                     </td>
                                                 </tr>

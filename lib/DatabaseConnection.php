@@ -20,7 +20,7 @@ class DatabaseConnection
     private $_connection = null;
     private $_queryResult = null;
     private $_timeZone;
-    private $_dateDMY;
+    private $_dateFormat;
     private $_inTransaction;
 
 
@@ -42,12 +42,12 @@ class DatabaseConnection
         if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn())
         {
             self::$_instance->_timeZone = $_SESSION['CATS']->getTimeZoneOffset();
-            self::$_instance->_dateDMY = $_SESSION['CATS']->isDateDMY();
+            self::$_instance->_dateFormat = $_SESSION['CATS']->getDateFormat();
         }
         else
         {
             self::$_instance->_timeZone = OFFSET_GMT * -1;
-            self::$_instance->_dateDMY = false;
+            self::$_instance->_dateFormat = DATE_FORMAT_MMDDYY;
         }
 
         return self::$_instance;
@@ -679,13 +679,20 @@ class DatabaseConnection
 
         $query = $newQuery;
 
-        /* Replace m-d-y dates with d-m-y dates if we're in dmy mode. */
-        if ($this->_dateDMY)
+        /* Replace m-d-y dates with d-m-y or Y-m-d dates if we're in dmy or
+         * ymd mode.
+         */
+        if ($this->_dateFormat == DATE_FORMAT_DDMMYY)
         {
             $query = str_replace('%m-%d-%y', '%d-%m-%y', $query);
             $query = str_replace('%m-%d-%Y', '%d-%m-%Y', $query);
             $query = str_replace('%m/%d/%Y', '%d/%m/%Y', $query);
             $query = str_replace('%m/%d/%y', '%d/%m/%y', $query);
+        }
+        else if ($this->_dateFormat == DATE_FORMAT_YYYYMMDD)
+        {
+            $query = str_replace(array('%m-%d-%y', '%m-%d-%Y'), '%Y-%m-%d', $query);
+            $query = str_replace(array('%m/%d/%y', '%m/%d/%Y'), '%Y/%m/%d', $query);
         }
 
         return $query;

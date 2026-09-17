@@ -7,7 +7,7 @@
 <?php if (!$this->isFinishedMode): ?>
 
 <script type="text/javascript">
-    window.CATSUserDateFormat = '<?php echo($_SESSION['CATS']->isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY'); ?>';
+    window.CATSUserDateFormat = '<?php echo(DateUtility::getJsDateFormat()); ?>';
 </script>
 
     <form name="logActivityForm" id="logActivityForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=<?php echo($this->activityParentModule); ?>&amp;a=<?php echo($this->activitySubmitAction); ?><?php if ($this->onlyScheduleEvent): ?>&amp;onlyScheduleEvent=true<?php endif; ?>" method="post" onsubmit="return checkActivityForm(document.logActivityForm);" autocomplete="off">
