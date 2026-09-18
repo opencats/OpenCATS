@@ -1,87 +1,93 @@
 <?php TemplateUtility::printHeader('Home', array('js/sweetTitles.js', 'js/dataGrid.js', 'js/dataGridFilters.js', 'js/home.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
-    <div id="main" class="home">
-        <?php TemplateUtility::printQuickSearch(); ?>
-
-        <div id="contents" style="padding-top: 10px;">
-
-            <table>
-                <tr>
-                    <td align="left" valign="top" style="text-align: left; height:50px;">
-                        <div class="noteUnsizedSpan">My Recent Calls</div>
-                        <?php $this->dataGrid2->drawHTML();  ?>
-                    </td>
-
-                    <td align="center" valign="top" style="text-align: left; font-size:11px; height:50px;">
+<?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="home container-fluid py-2">
+    <div id="contents">
+        <header class="oc-page-header mb-2">
+            <h1 class="h5 fw-semibold mb-0">Dashboard</h1>
+        </header>
+        <div class="row g-2">
+            <div class="col-12 col-lg-4">
+                <section class="card h-100" aria-labelledby="recentCallsHeading">
+                    <h2 id="recentCallsHeading" class="card-header bg-secondary-subtle h6 py-1 px-2 fw-semibold mb-0">My Recent Calls</h2>
+                    <div class="card-body p-2 overflow-auto">
+                        <?php $this->dataGrid2->drawHTML(); ?>
+                    </div>
+                </section>
+            </div>
+            <div class="col-12 col-lg-4">
+                <section class="card h-100" aria-label="My Upcoming Calls">
+                    <div class="card-body p-2">
                         <?php echo($this->upcomingEventsFupHTML); ?>
-                    </td>
-
-                    <td align="center" valign="top" style="text-align: left;font-size:11px; height:50px;">
+                    </div>
+                </section>
+            </div>
+            <div class="col-12 col-lg-4">
+                <section class="card h-100" aria-label="My Upcoming Events">
+                    <div class="card-body p-2">
                         <?php echo($this->upcomingEventsHTML); ?>
-                    </td>
-                </tr>
-            </table>
-
-            <table>
-                <tr>
-                    <td align="left" valign="top" style="text-align: left; width: 50%; height: 240px;">
-                        <div class="noteUnsizedSpan">Recent Hires</div>
-
-                        <table class="sortable" style="margin: 0 0 4px 0;">
-                            <tr>
-                                <th align="left" style="font-size:11px;">Name</th>
-                                <th align="left" style="font-size:11px;">Company</th>
-                                <th align="left" style="font-size:11px;">Recruiter</th>
-                                <th align="left" style="font-size:11px;">Date</th>
-                            </tr>
-                            <?php foreach($this->placedRS as $index => $data): ?>
-                            <tr class="<?php TemplateUtility::printAlternatingRowClass($index); ?>">
-                                <td style="font-size:11px;"><a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=show&amp;candidateID=<?php echo($data['candidateID']); ?>"style="font-size:11px;" class="<?php echo($data['candidateClassName']); ?>"><?php $this->_($data['firstName']); ?> <?php $this->_($data['lastName']); ?></a></td>
-                                <td style="font-size:11px;"><a href="<?php echo(CATSUtility::getIndexName()); ?>?m=companies&amp;a=show&amp;companyID=<?php echo($data['companyID']); ?>"  style="font-size:11px;" class="<?php echo($data['companyClassName']); ?>"><?php $this->_($data['companyName']); ?></td>
-                                <td style="font-size:11px;"><?php $this->_(StringUtility::makeInitialName($data['userFirstName'], $data['userLastName'], false, LAST_NAME_MAXLEN)); ?></td>
-                                <td style="font-size:11px;"><?php $this->_($data['date']); ?></td>
-                            </tr>
-                            <?php endforeach; ?>
+                    </div>
+                </section>
+            </div>
+            <div class="col-12 col-xl-6">
+                <section class="card h-100" aria-labelledby="recentHiresHeading">
+                    <h2 id="recentHiresHeading" class="card-header bg-secondary-subtle h6 py-1 px-2 fw-semibold mb-0">Recent Hires</h2>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped sortable mb-0" aria-label="Recent Hires">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Company</th>
+                                    <th scope="col">Recruiter</th>
+                                    <th scope="col">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach($this->placedRS as $index => $data): ?>
+                                <tr class="<?php TemplateUtility::printAlternatingRowClass($index); ?>">
+                                    <td><a href="<?php echo(CATSUtility::getIndexName()); ?>?m=candidates&amp;a=show&amp;candidateID=<?php echo($data['candidateID']); ?>" class="<?php echo($data['candidateClassName']); ?>"><?php $this->_($data['firstName']); ?> <?php $this->_($data['lastName']); ?></a></td>
+                                    <td><a href="<?php echo(CATSUtility::getIndexName()); ?>?m=companies&amp;a=show&amp;companyID=<?php echo($data['companyID']); ?>" class="<?php echo($data['companyClassName']); ?>"><?php $this->_($data['companyName']); ?></a></td>
+                                    <td><?php $this->_(StringUtility::makeInitialName($data['userFirstName'], $data['userLastName'], false, LAST_NAME_MAXLEN)); ?></td>
+                                    <td><?php $this->_($data['date']); ?></td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
                         </table>
+                    </div>
 
-                        <?php if (!count($this->placedRS)): ?>
-                            <div style="height: 207px; border: 1px solid #c0c0c0; background: #E7EEFF url(images/nodata/dashboardNoHiresWhite.jpg);">
-                                &nbsp;
-                            </div>
-                        <?php endif; ?>
-                    </td>
-
-                    <td align="center" valign="top" style="text-align: left; width: 50%; height: 240px;">
-                        <div class="noteUnsizedSpan">Hiring Overview</div>
-                        <map name="dashboardmap" id="dashboardmap">
-                           <area href="#" alt="Weekly" title="Weekly"
-                                 shape="rect" coords="398,0,461,24" onclick="swapHomeGraph(<?php echo(DASHBOARD_GRAPH_WEEKLY); ?>);" />
-                           <area href="#" alt="Monthly" title="Monthly"
-                                 shape="rect" coords="398,25,461,48" onclick="swapHomeGraph(<?php echo(DASHBOARD_GRAPH_MONTHLY); ?>);" />
-                            <area href="#" alt="Yearly" title="Yearly"
-                                 shape="rect" coords="398,49,461,74" onclick="swapHomeGraph(<?php echo(DASHBOARD_GRAPH_YEARLY); ?>);" />
-                        </map>
-                        <img src="<?php echo(CATSUtility::getIndexName()); ?>?m=graphs&amp;a=miniPlacementStatistics&amp;width=495&amp;height=230" id="homeGraph" onclick="" alt="Hiring Overview" usemap="#dashboardmap" border="0" />
-                    </td>
-                </tr>
-            </table>
-
-            <table>
-                <tr>
-                    <td align="left" valign="top" style="text-align: left; width: 50%; height: 260px;">
-                        <div class="noteUnsizedSpan">Important Candidates (Submitted, Interviewing, Offered in Active Job Orders) - Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?> (<?php echo($this->dataGrid->getNumberOfRows()); ?> Items)</div>
-                        <?php $this->dataGrid->draw(); ?>
-                        <div style="float:right;"><?php $this->dataGrid->printNavigation(false); ?>&nbsp;&nbsp;&nbsp;&nbsp;<?php $this->dataGrid->printShowAll(); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-
-                        <?php if (!$this->dataGrid->getNumberOfRows()): ?>
-                        <div style="height: 208px; border: 1px solid #c0c0c0; background: #E7EEFF url(images/nodata/dashboardNoCandidatesWhite.jpg);">
-                            &nbsp;
+                    <?php if (!count($this->placedRS)): ?>
+                        <div class="card-body p-2 small text-body-secondary">No recent hires.</div>
+                    <?php endif; ?>
+                </section>
+            </div>
+            <div class="col-12 col-xl-6">
+                <section class="card h-100" aria-labelledby="hiringOverviewHeading">
+                    <h2 id="hiringOverviewHeading" class="card-header bg-secondary-subtle h6 py-1 px-2 fw-semibold mb-0">Hiring Overview</h2>
+                    <div class="card-body p-2">
+                        <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Hiring Overview period">
+                            <button type="button" class="btn btn-outline-secondary" onclick="swapHomeGraph(<?php echo(DASHBOARD_GRAPH_WEEKLY); ?>);">Weekly</button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="swapHomeGraph(<?php echo(DASHBOARD_GRAPH_MONTHLY); ?>);">Monthly</button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="swapHomeGraph(<?php echo(DASHBOARD_GRAPH_YEARLY); ?>);">Yearly</button>
                         </div>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-            </table>
+                        <div>
+                            <img src="<?php echo(CATSUtility::getIndexName()); ?>?m=graphs&amp;a=miniPlacementStatistics&amp;width=495&amp;height=230" id="homeGraph" class="img-fluid" alt="Hiring Overview" />
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="col-12">
+                <section class="card h-100" aria-labelledby="importantCandidatesHeading">
+                    <h2 id="importantCandidatesHeading" class="card-header bg-secondary-subtle h6 py-1 px-2 fw-semibold mb-0">Important Candidates (Submitted, Interviewing, Offered in Active Job Orders) - Page <?php echo($this->dataGrid->getCurrentPageHTML()); ?> (<?php echo($this->dataGrid->getNumberOfRows()); ?> Items)</h2>
+                    <?php $this->dataGrid->draw(); ?>
+                    <div class="d-flex flex-wrap justify-content-end align-items-center gap-2 p-2"><?php $this->dataGrid->printNavigation(false); ?> <?php $this->dataGrid->printShowAll(); ?></div>
+
+                    <?php if (!$this->dataGrid->getNumberOfRows()): ?>
+                        <div class="card-body p-2 small text-body-secondary">No important candidates.</div>
+                    <?php endif; ?>
+                </section>
+            </div>
         </div>
     </div>
+</main>
 <?php TemplateUtility::printFooter(); ?>
