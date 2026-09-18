@@ -927,6 +927,39 @@ class TemplateUtility
     }
 
     /**
+     * Prints footer HTML for report pages.
+     *
+     * @return void
+     */
+    public static function printReportFooter()
+    {
+        $build = $_SESSION['CATS']->getCachedBuild();
+
+        $isTimeFormat24 = isset($_SESSION['CATS']) && $_SESSION['CATS']->isTimeFormat24();
+        $timeFormat = $isTimeFormat24 ? 'H:i:s' : 'g:i:s A';
+        $date = DateUtility::getAdjustedDate('l, F jS, Y \a\t ' . $timeFormat . ' T');
+
+        if ($build > 0)
+        {
+            $buildString = ' build ' . $build;
+        }
+        else
+        {
+            $buildString = '';
+        }
+
+        echo '<div class="footerBlock">', "\n";
+        echo '<p id="footerText">Report generated on ', $date, '.<br />', "\n";
+        echo 'CATS Version ', CATS_VERSION, $buildString,
+        '. Powered by <a href="https://opencats.org/"><strong>OpenCATS</strong></a>.</p>', "\n";
+        echo '<span id="footerCopyright">', COPYRIGHT_HTML, '</span>', "\n";
+        echo '</div>', "\n";
+
+        echo '</body>', "\n";
+        echo '</html>', "\n";
+    }
+
+    /**
      * Prints HTML for pipeline candidate-joborder match rating stars.
      *
      * @param integer rating (0-5)
