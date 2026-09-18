@@ -264,6 +264,11 @@ class DateUtilityTest extends TestCase
         /* Unknown values fall back to M-D-Y. */
         $this->assertSame(DATE_FORMAT_MMDDYY, DateUtility::getDateFormatFromSiteValue(null));
         $this->assertSame(DATE_FORMAT_MMDDYY, DateUtility::getDateFormatFromFormValue('invalid'));
+
+        /* Legacy boolean D-M-Y values are accepted. */
+        $this->assertSame(DATE_FORMAT_DDMMYY, DateUtility::normalizeDateFormat(true));
+        $this->assertSame(DATE_FORMAT_MMDDYY, DateUtility::normalizeDateFormat(false));
+        $this->assertSame(DATE_FORMAT_YYYYMMDD, DateUtility::normalizeDateFormat(DATE_FORMAT_YYYYMMDD));
     }
 
     /* Tests for formatStoredDate(). */

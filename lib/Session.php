@@ -570,7 +570,7 @@ class CATSSession
      * is not modified.
      *
      * @param integer Time zone offset from GMT.
-     * @param integer Date format flag.
+     * @param integer|boolean Date format flag, or legacy boolean D-M-Y value.
      * @return void
      */
     public function setTimeDateLocalization($timeZone, $dateFormat, $isTimeFormat24 = false)
@@ -579,7 +579,7 @@ class CATSSession
 
         $this->_timeZone       = $timeZone;
         $this->_timeZoneOffset = $timeZone - OFFSET_GMT;
-        $this->_dateFormat     = $dateFormat;
+        $this->_dateFormat     = DateUtility::normalizeDateFormat($dateFormat);
         $this->_timeFormat24   = (bool) $isTimeFormat24;
     }
 

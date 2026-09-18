@@ -397,6 +397,23 @@ class DateUtility
     }
 
     /**
+     * Returns the date format flag for a date format flag or a legacy
+     * boolean "use D-M-Y" value (true = D-M-Y, false = M-D-Y).
+     *
+     * @param integer|boolean $dateFormat  date format flag or legacy boolean
+     * @return integer date format flag
+     */
+    public static function normalizeDateFormat($dateFormat)
+    {
+        if (is_bool($dateFormat))
+        {
+            return $dateFormat ? DATE_FORMAT_DDMMYY : DATE_FORMAT_MMDDYY;
+        }
+
+        return $dateFormat;
+    }
+
+    /**
      * Returns the date format flag for a site.date_format_ddmmyy value
      * (0 = M-D-Y, 1 = D-M-Y, 2 = Y-M-D).
      *

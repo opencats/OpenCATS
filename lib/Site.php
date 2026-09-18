@@ -50,12 +50,14 @@ class Site
      * Sets the site name for the current site.
      *
      * @param integer time zone offset
-     * @param integer date format flag
+     * @param integer|boolean date format flag, or legacy boolean D-M-Y value
      * @param boolean use 24-hour time format
      * @return boolean True if successful; false otherwise.
      */
     public function setLocalization($timeZone, $dateFormat, $isTimeFormat24 = false)
     {
+        $dateFormat = DateUtility::normalizeDateFormat($dateFormat);
+
         $sql = sprintf(
             "UPDATE
                 site
