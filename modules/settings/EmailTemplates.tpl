@@ -1,20 +1,15 @@
 <?php TemplateUtility::printHeader('Settings', array()); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+    <?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2">
 
         <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Administration: E-Mail Templates</h2></td>
-                </tr>
-            </table>
+            <header class="oc-page-header mb-2">
+                <h1 class="h5 fw-semibold mb-0">Administration: E-Mail Templates</h1>
+            </header>
 
-            <p class="note">E-Mail Templates</p>
+            <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">E-Mail Templates</p>
 
             <script type="text/javascript">
                 $(document).ready(function() { 
@@ -59,7 +54,7 @@
                 }
                 <?php function generateInsertAtCursorLink($data, $description, $value)
                 {
-                    echo('<input type="button" class="button" style="width:235px;" value="'.$description.'" onclick="insertAtCursor(document.getElementById(\'messageText'.$data['emailTemplateID'].'\'),  \''.$value.'\');"><br />');
+                    echo('<input type="button" class="btn btn-outline-secondary btn-sm mb-1 w-100" value="'.$description.'" onclick="insertAtCursor(document.getElementById(\'messageText'.$data['emailTemplateID'].'\'),  \''.$value.'\');"><br />');
                 } ?>
                 <?php function generateInsertAtCursorLinkConditional($data, $description, $value)
                 {
@@ -70,27 +65,27 @@
                 } ?>
             </script>
 
-            <table style="width:850px;" class="searchTable">
-                <tr>
-                    <td>
+            <div class="card card-body p-2 mb-2">
+                <div class="row g-2 mb-2">
+                    <div class="col-12 col-sm">
                         <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=addEmailTemplate" style="display:inline;">
                             <input type="hidden" name="postback" value="postback" />
-                            <input type="submit" class="button" value="Add a Template" />
+                            <input type="submit" value="Add a Template"  class="btn btn-sm btn-primary" />
                         </form>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <table>
-                            <tr>
-                                <td style="width:210px;">
-                                    <div style="font-weight:bold;">
+                    </div>
+                </div>
+                <div class="row g-2 mb-2">
+                    <div class="col-12 col-sm">
+                        <div class="card card-body p-2 mb-2">
+                            <div class="row g-2 mb-2">
+                                <div class="col-12 col-sm">
+                                    <div class="fw-semibold">
                                         Template:
                                     </div>
-                                </td>
-                                <td>
+                                </div>
+                                <div class="col-12 col-sm">
                                     <span id="selectorSpan">
-                                        <select id="titleSelect" style="width:550px;" onclick="showTemplate(this.value);">
+                                        <select id="titleSelect" onclick="showTemplate(this.value);" class="form-select form-select-sm">
                                             <?php foreach ($this->emailTemplatesRS as $data): ?>
                                                 <option value="<?php echo($data['emailTemplateID']); ?>"><?php echo($data['emailTemplateTitle']); ?></option>
                                             <?php endforeach; ?>
@@ -103,57 +98,57 @@
                                     <?php endforeach; ?>
                                     <!--&nbsp;&nbsp;&nbsp;&nbsp;
                                     <input type="button" class="button" value="New">-->
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-2 mb-2">
+                    <div class="col-12 col-sm">
 
                         <?php foreach ($this->emailTemplatesRS as $index => $data): ?>
                             <form action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=emailTemplates" method="post">
                                 <input type="hidden" name="postback" value="postback" />
                                 <input type="hidden" name="templateID"  value="<?php echo($data['emailTemplateID']); ?>" />
-                                <table id="editTable<?php echo($data['emailTemplateID']); ?>" class="editTable" width="850" <?php if ($index != 0): ?>style="display:none;"<?php endif; ?>>
-                                    <tr>
+                                <div id="editTable<?php echo($data['emailTemplateID']); ?>" <?php if ($index != 0): ?>style="display:none;"<?php endif; ?> class="card card-body p-2 mb-2">
+                                    <div class="row g-2 mb-2">
                                         <!--<td class="tdVertical" style="width:150px;">
                                             Email Tag:
                                         </td>
                                         <td class="tdData">
                                             <?php echo($data['emailTemplateTag']); ?>
                                         </td>-->
-                                    </tr>
-                                    <tr>
-                                        <td class="tdVertical" style="width:150px;">
+                                    </div>
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-sm-4 col-lg-3">
                                             Message:
-                                        </td>
-                                        <td class="tdData">
-                                            <table>
+                                        </div>
+                                        <div class="col-12 col-sm">
+                                            <div class="card card-body p-2 mb-2">
                                                 <?php if(strpos($data['emailTemplateTag'], "CUSTOM") === 0): ?>
-                                                <tr>
-                                                    <td>
-                                                        <input type="text" name="emailTemplateTitle" value="<?php echo($data['emailTemplateTitle']); ?>"/>
+                                                <div class="row g-2 mb-2">
+                                                    <div class="col-12 col-sm">
+                                                        <input type="text" name="emailTemplateTitle" value="<?php echo($data['emailTemplateTitle']); ?>" class="form-control form-control-sm" />
                                                         <input type="hidden" name="id" value="<?php echo $data['emailTemplateID']?>"/>
-                                                        <input type="submit" value="Delete Template" onclick="if (!confirm('Delete this template?')) { return false; } this.form.action='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=deleteEmailTemplate';" />
-                                                    </td>
-                                                </tr>
+                                                        <input type="submit" value="Delete Template" onclick="if (!confirm('Delete this template?')) { return false; } this.form.action='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=deleteEmailTemplate';"  class="btn btn-sm btn-outline-danger" />
+                                                    </div>
+                                                </div>
                                                 <?php endif; ?>
                                                 
-                                                <tr style="vertical-align:top;">
-                                                    <td>
-                                                        <textarea class="inputbox" name="messageText" <?php if ($data['disabled'] == 1) echo('disabled'); ?> id="messageText<?php echo($data['emailTemplateID']); ?>" style="width:450px; height:280px;" onclick="document.getElementById('selectorSpan').style.display='none'; document.getElementById('templateTitleSpan<?php echo($data['emailTemplateID']); ?>').style.display='';" ><?php echo($this->_($data['text'])); ?></textarea>
+                                                <div class="row g-2 mb-2" style="vertical-align:top;">
+                                                    <div class="col-12 col-sm">
+                                                        <textarea name="messageText" <?php if ($data['disabled'] == 1) echo('disabled'); ?> id="messageText<?php echo($data['emailTemplateID']); ?>" rows="12" onclick="document.getElementById('selectorSpan').style.display='none'; document.getElementById('templateTitleSpan<?php echo($data['emailTemplateID']); ?>').style.display='';"  class="form-control form-control-sm"><?php echo($this->_($data['text'])); ?></textarea>
                                                         <input type="hidden" name="messageTextOrigional" id="messageTextOrigional<?php echo($data['emailTemplateID']); ?>" value="<?php echo($this->_($data['text'])); ?>">
                                                         <br /><br />
-                                                        <input type="checkbox" name="useThisTemplate" id="useThisTemplate<?php echo($data['emailTemplateID']); ?>" <?php if ($data['disabled'] == 0) echo('checked'); ?> onclick="if (this.checked) {document.getElementById('messageText<?php echo($data['emailTemplateID']); ?>').disabled=false;} else {document.getElementById('messageText<?php echo($data['emailTemplateID']); ?>').disabled=true;} document.getElementById('selectorSpan').style.display='none'; document.getElementById('templateTitleSpan<?php echo($data['emailTemplateID']); ?>').style.display='';"> Use this Template / Feature<br />
-                                                    </td>
-                                                    <td style="text-align: center;">
-                                                    <div style="font-weight:bold;">Insert Formatting:</div>
+                                                        <input type="checkbox" name="useThisTemplate" id="useThisTemplate<?php echo($data['emailTemplateID']); ?>" <?php if ($data['disabled'] == 0) echo('checked'); ?> onclick="if (this.checked) {document.getElementById('messageText<?php echo($data['emailTemplateID']); ?>').disabled=false;} else {document.getElementById('messageText<?php echo($data['emailTemplateID']); ?>').disabled=true;} document.getElementById('selectorSpan').style.display='none'; document.getElementById('templateTitleSpan<?php echo($data['emailTemplateID']); ?>').style.display='';" class="form-check-input"> Use this Template / Feature<br />
+                                                    </div>
+                                                    <div class="col-12 col-sm">
+                                                    <div class="fw-semibold">Insert Formatting:</div>
                                                         <?php generateInsertAtCursorLink($data, 'Bold', '<B></B>'); ?>
                                                         <?php generateInsertAtCursorLink($data, 'Italics', '<I></I>'); ?>
                                                         <?php generateInsertAtCursorLink($data, 'Underline', '<U></U>'); ?>
                                                         <br />
-                                                        <div style="font-weight:bold;">Insert Mail Merge Fields:</div>
+                                                        <div class="fw-semibold">Insert Mail Merge Fields:</div>
                                                         <?php /* Global vars */ ?>
                                                         <?php if(!isset($this->noGlobalTemplates)): ?>
                                                             <?php generateInsertAtCursorLink($data, 'Current Date/Time', '%DATETIME%'); ?>
@@ -185,25 +180,25 @@
                                                         <?php generateInsertAtCursorLinkConditional($data, 'Job Order Company', '%JBODCLIENT%'); ?>
                                                         <?php generateInsertAtCursorLinkConditional($data, 'Job Order ID', '%JBODID%'); ?>
                                                         <?php generateInsertAtCursorLinkConditional($data, 'CATS Job Order URL', '%JBODCATSURL%'); ?>
-                                                    </td>
-                                                 </tr>
-                                             </table>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="tdVertical" style="width:150px;">
-                                        </td>
-                                        <td>
-                                            <input type="submit" class="button" value="Save Template">
-                                            <input type="reset" class="button" value="Reset Template" onclick="document.getElementById('selectorSpan').style.display=''; document.getElementById('templateTitleSpan<?php echo($data['emailTemplateID']); ?>').style.display='none'; document.getElementById('messageText<?php echo($data['emailTemplateID']); ?>').disabled=<?php if ($data['disabled'] == 0) {echo('false'); } else {echo('true'); } ?>;">
-                                        </td>
-                                    </tr>
-                                </table>
+                                                    </div>
+                                                 </div>
+                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-sm-4 col-lg-3">
+                                        </div>
+                                        <div class="col-12 col-sm">
+                                            <input type="submit" value="Save Template" class="btn btn-sm btn-primary">
+                                            <input type="reset" value="Reset Template" onclick="document.getElementById('selectorSpan').style.display=''; document.getElementById('templateTitleSpan<?php echo($data['emailTemplateID']); ?>').style.display='none'; document.getElementById('messageText<?php echo($data['emailTemplateID']); ?>').disabled=<?php if ($data['disabled'] == 0) {echo('false'); } else {echo('true'); } ?>;" class="btn btn-sm btn-outline-secondary">
+                                        </div>
+                                    </div>
+                                </div>
                             </form>
                         <?php endforeach; ?>
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </main>
 <?php TemplateUtility::printFooter(); ?>

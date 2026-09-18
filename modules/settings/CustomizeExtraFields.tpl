@@ -1,26 +1,21 @@
 <?php TemplateUtility::printHeader('Settings', array('js/highlightrows.js', 'modules/settings/validator.js', 'js/listEditor.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, ''); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+    <?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2">
 
         <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Settings: Customization</h2></td>
-                </tr>
-            </table>
+            <header class="oc-page-header mb-2">
+                <h1 class="h5 fw-semibold mb-0">Settings: Customization</h1>
+            </header>
 
-            <p class="note">Customize Extra Fields</p>
+            <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">Customize Extra Fields</p>
 
             <form name="editSettingsForm" id="editSettingsForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=customizeExtraFields" method="post">
               <input type="hidden" name="postback" value="postback" />
-              <table class="sortable" width="920">
+              <div class="table-responsive"><table class="sortable table table-sm align-middle">
                 <div id="changedDiv" style="display:none;">
-                  <div style="font-weight:bold; border: 1px solid #000; background-color: #ff0000; padding:5px;">
+                  <div class="alert alert-warning">
                      You have made changes, to apply them press 'Save' at the bottom of the page.
                   </div>
                   <br />
@@ -443,15 +438,15 @@
                                     }
                                 </script>
                                 
-                                <table class="sortable" width="560" id="extraFieldsTable<?php echo($index); ?>">
+                                <table class="sortable" id="extraFieldsTable<?php echo($index); ?>">
                                     <thead>
                                         <tr>
-                                            <th width="75">
+                                            <th>
                                             </th>
-                                            <th align="left" width="325" nowrap="nowrap">
+                                            <th>
                                                 Field Name
                                             </th>
-                                            <th align="left">
+                                            <th>
                                                 Field Type
                                             </th>
                                         </tr>
@@ -460,22 +455,22 @@
                                         <tr class="<?php TemplateUtility::printAlternatingRowClass($rsIndex); ?>" id="table<?php echo($index); ?>row<?php echo($rsIndex); ?>">
                                             <td>
                                                 <a href="javascript:void(0);" onclick="deleteRow<?php echo($index); ?>(<?php echo($rsIndex); ?>, urlDecode('<?php echo(urlencode($rsData['fieldName'])); ?>'));"  style="padding:0px;">
-                                                    <img src="images/actions/delete.gif" border="0" style="padding:0px;"/>
+                                                    <img src="images/actions/delete.gif" style="padding:0px;"/>
                                                 </a>
                                                 <a href="javascript:void(0);" onclick="swapRows<?php echo($index); ?>(<?php echo($rsIndex); ?>, <?php echo($rsIndex-1); ?>);"  style="padding:0px;">
-                                                    <img src="images/scrollTop.jpg" border="0"  style="padding:0px;"/>
+                                                    <img src="images/scrollTop.jpg"  style="padding:0px;"/>
                                                 </a>                                                 
                                                 <a href="javascript:void(0);" onclick="swapRows<?php echo($index); ?>(<?php echo($rsIndex); ?>, <?php echo($rsIndex+1); ?>);"  style="padding:0px;">
-                                                    <img src="images/scrollBottom.jpg" border="0"  style="padding:0px;"/>
+                                                    <img src="images/scrollBottom.jpg"  style="padding:0px;"/>
                                                 </a>
                                                 <a href="javascript:void(0);" onclick="editRow<?php echo($index); ?>(<?php echo($rsIndex); ?>);"  style="padding:0px;">
-                                                    <img src="images/edit.gif" border="0"  style="padding:0px;"/>
+                                                    <img src="images/edit.gif"  style="padding:0px;"/>
                                                 </a>
                                             </td>
-                                            <td align="left">
+                                            <td>
                                                 <?php $this->_($rsData['fieldName']); ?>
                                             </td>
-                                            <td align="left">
+                                            <td>
                                                 <?php $this->_($this->extraFieldTypes[$rsData['extraFieldType']]['name']); ?>
                                             </td>
                                         </tr>
@@ -502,13 +497,13 @@
                                                 Name:
                                             </td>
                                             <td>
-                                                <input id="addFieldName<?php echo($index); ?>" style="width:240px;" value="" class="inputbox" />
+                                                <input id="addFieldName<?php echo($index); ?>" value=""  class="form-control form-control-sm" />
                                             </td>
                                             <td>
                                                 Type:
                                             </td>
                                             <td>
-                                                <select id="addFieldSelect<?php echo($index); ?>">
+                                                <select id="addFieldSelect<?php echo($index); ?>" class="form-select form-select-sm">
                                                   <?php foreach($this->extraFieldTypes as $extraFieldTypeIndex => $extraFieldTypeData): ?>
                                                     <option value="<?php echo($extraFieldTypeIndex); ?>"><?php $this->_($extraFieldTypeData['name']); ?></option>
                                                   <?php endforeach; ?>
@@ -516,12 +511,12 @@
                                             </td>
                                         </tr>
                                     </table>                                    
-                                    <input type="button" class="button" value="Add Field" onclick="onAddField<?php echo($index); ?>();" />&nbsp;
-                                    <input type="button" class="button" value="Cancel" onclick="onHideAddArea<?php echo($index); ?>();" />
+                                    <input type="button" value="Add Field" onclick="onAddField<?php echo($index); ?>();"  class="btn btn-sm btn-outline-secondary" />&nbsp;
+                                    <input type="button" value="Cancel" onclick="onHideAddArea<?php echo($index); ?>();"  class="btn btn-sm btn-outline-secondary" />
                                 </div>
                                 <div id="addFieldOption<?php echo($index); ?>">
                                     <a href="javascript:void(0);" onclick="document.getElementById('addField<?php echo($index); ?>').style.display=''; document.getElementById('addFieldOption<?php echo($index); ?>').style.display='none'; document.getElementById('addFieldName<?php echo($index); ?>').value=''; document.getElementById('addFieldName<?php echo($index); ?>').focus();">
-                                        <img src="images/actions/add_small.gif" border="0" />&nbsp;Add field to <?php echo($data['name']); ?>
+                                        <img src="images/actions/add_small.gif" />&nbsp;Add field to <?php echo($data['name']); ?>
                                     </a>
                                 </div>
                                 <br />
@@ -530,10 +525,10 @@
                         </tr>
                     <?php endforeach; ?>
                     
-                </table>
-                <input type="submit" class="button" value="Save" style="display:none;" id="buttonSave" />
-                <input type="button" name="back" class = "button" value="Done" id="buttonDone"  onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=administration';" />
+                </table></div>
+                <input type="submit" value="Save" style="display:none;" id="buttonSave"  class="btn btn-sm btn-primary" />
+                <input type="button" name="back" value="Done" id="buttonDone"  onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=administration';"  class="btn btn-sm btn-outline-secondary" />
             </form>
         </div>
-    </div>
+    </main>
 <?php TemplateUtility::printFooter(); ?>
