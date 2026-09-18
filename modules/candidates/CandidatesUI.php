@@ -1540,6 +1540,12 @@ class CandidatesUI extends UserInterface
         {
             $dataGrid = DataGrid::getFromRequest();
 
+            if ($dataGrid === null)
+            {
+                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);
+                return;
+            }
+
             $candidateIDArray = $dataGrid->getExportIDs();
         }
 
@@ -3744,6 +3750,12 @@ class CandidatesUI extends UserInterface
         else
         {
             $dataGrid = DataGrid::getFromRequest();
+
+            if ($dataGrid === null)
+            {
+                CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);
+                return;
+            }
 
             $candidateIDs = $dataGrid->getExportIDs();
 
