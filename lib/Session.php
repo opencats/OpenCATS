@@ -51,6 +51,9 @@ class CATSSession
     private $_timeZone = 0;
     private $_defaultPhoneCountryCode = '+1';
     private $_dateFormat = DATE_FORMAT_MMDDYY;
+    /* Deprecated: only set in sessions serialized before _dateFormat was
+     * added; migrated to _dateFormat by __wakeup(). */
+    private $_dateDMY = null;
     private $_timeFormat24 = false;
     private $_pipelineEntriesPerPage = 15;
     private $_storedData = array();
@@ -348,6 +351,21 @@ class CATSSession
     public function getDateFormat()
     {
         return $this->_dateFormat;
+    }
+
+    /**
+     * Migrates the date format of sessions serialized before _dateFormat was
+     * added, so users logged in during an upgrade keep their date format.
+     *
+     * @return void
+     */
+    public function __wakeup()
+    {
+        if ($this->_dateDMY !== null)
+        {
+            $this->_dateFormat = DateUtility::normalizeDateFormat((bool) $this->_dateDMY);
+            $this->_dateDMY = null;
+        }
     }
 
     /**
