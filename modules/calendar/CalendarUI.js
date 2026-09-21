@@ -173,6 +173,8 @@ function calendarEditEvent(entry)
     var userDateFormat = (typeof window.CATSUserDateFormat !== "undefined" ? window.CATSUserDateFormat : "MM-DD-YY");
     var dateString = (userDateFormat == "DD-MM-YY"
         ? dayString + "-" + monthString + "-" + yearString
+        : userDateFormat == "YYYY-MM-DD"
+        ? entry.year + "-" + monthString + "-" + dayString
         : monthString + "-" + dayString + "-" + yearString);
     SetDateInputDate("dateEdit", userDateFormat, dateString);
 
@@ -372,6 +374,8 @@ function addEventByDay(year, month, day, hour)
     var userDateFormat = (typeof window.CATSUserDateFormat !== "undefined" ? window.CATSUserDateFormat : "MM-DD-YY");
     var dateString = (userDateFormat == "DD-MM-YY"
         ? dayString + "-" + monthString + "-" + yearString
+        : userDateFormat == "YYYY-MM-DD"
+        ? year + "-" + monthString + "-" + dayString
         : monthString + "-" + dayString + "-" + yearString);
     SetDateInputDate("dateAdd", userDateFormat, dateString);
 

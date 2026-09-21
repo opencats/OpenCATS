@@ -506,14 +506,13 @@ switch ($action)
         /* Detect date format preferences. */
         $record = MySQLGetAssoc('SELECT date_format_ddmmyy FROM site LIMIT 1', true);
 
-        if (!isset($record['date_format_ddmmyy']) || $record['date_format_ddmmyy'] == 0)
-        {
-            echo 'document.getElementById(\'dateFormat\').value = \'mdy\';';
-        }
-        else
-        {
-            echo 'document.getElementById(\'dateFormat\').value = \'dmy\';';
-        }
+        $dateFormatValues = array(
+            DATE_FORMAT_MMDDYY   => 'mdy',
+            DATE_FORMAT_DDMMYY   => 'dmy',
+            DATE_FORMAT_YYYYMMDD => 'ymd'
+        );
+        $dateFormat = DateUtility::getDateFormatFromSiteValue($record['date_format_ddmmyy'] ?? 0);
+        echo 'document.getElementById(\'dateFormat\').value = \'' . $dateFormatValues[$dateFormat] . '\';';
 
         /* Detect default phone country calling code. */
         $defaultPhoneCountryCodeDigits = '';
@@ -944,16 +943,12 @@ switch ($action)
          * (rows don't exist in schema till now.)
          */
 
-        $dateFormat = $_SESSION['dateFormatInstaller'];
+        $dateFormat = DateUtility::getDateFormatFromFormValue($_SESSION['dateFormatInstaller']);
 
-        if ($dateFormat == 'mdy')
-        {
-            MySQLQuery('UPDATE site SET date_format_ddmmyy = 0');
-        }
-        else
-        {
-            MySQLQuery('UPDATE site SET date_format_ddmmyy = 1');
-        }
+        MySQLQuery(sprintf(
+            'UPDATE site SET date_format_ddmmyy = %d',
+            DateUtility::getSiteValueFromDateFormat($dateFormat)
+        ));
 
         $timeFormat = isset($_SESSION['timeFormatInstaller']) ? $_SESSION['timeFormatInstaller'] : '12';
         MySQLQuery('UPDATE site SET time_format_24 = ' . ($timeFormat === '24' ? 1 : 0));
