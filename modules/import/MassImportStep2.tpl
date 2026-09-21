@@ -4,26 +4,20 @@
 <?php else: ?>
     <?php $currentDocument = 0; ?>
 <?php endif; ?>
-<div style="font-size: 22px; font-weight: bold; text-align: center; margin: 60px 0 60px 0; color: #666666;">
+<div class="text-center my-4 fw-semibold" role="status">
 Please wait whilst OpenCATS processes your resume documents...
 <br />
-<span style="font-size: 14px; color: #666666;" id="timeWait">&nbsp;</span>
+<span class="small text-body-secondary" id="timeWait">&nbsp;</span>
 </div>
 
-<div id="statusBarContainer">
-    <div id="statusBar">&nbsp;</div>
+<div id="statusBarContainer" class="progress" role="progressbar" aria-label="Resume processing" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <div id="statusBar" class="progress-bar" style="width: 0%;">&nbsp;</div>
 </div>
 <br />
 
-<div>
-    <table cellpadding="0" cellspacing="0">
-        <tr>
-            <td style="color: #666666;" width="409" align="right">Processing: &nbsp;</td>
-            <td id="fileName" style="color: #163C90; font-weight: bold;">"<?php echo (isset($this->files) && isset($this->files[$currentDocument])) ? $this->files[$currentDocument]['realName'] : ''; ?>"</td>
-            <td><span style="color: #666666;">...</span></td>
-        </tr>
-    </table>
-</div>
+<p class="text-center text-break">Processing:
+    <span id="fileName" class="fw-semibold">"<?php echo (isset($this->files) && isset($this->files[$currentDocument])) ? $this->files[$currentDocument]['realName'] : ''; ?>"</span>...
+</p>
 
 <script type="text/javascript">
     var currentDocument = <?php echo $currentDocument; ?>;

@@ -1,43 +1,37 @@
-<div class="stepContainer">
-    <div class="infoBar">
-        <table cellpadding="0" cellspacing="0" border="0" width="100%">
-            <tr>
-                <td align="left" valign="middle" class="infoBarText">
-                    Review
-                </td>
-                <td align="right" valign="middle" class="infoFileText">
-                    <b>Parsed and Ready to Import</b> <?php echo number_format($cnt = count($this->documents), 0); ?>
-                    resume document<?php echo $cnt != 1 ? 's' : ''; ?>
-                </td>
-            </tr>
-        </table>
+<div class="mt-3">
+    <div class="d-flex flex-wrap justify-content-between gap-2 bg-body-tertiary rounded p-2">
+        <h2 class="h6 mb-0">Review</h2>
+        <span><b>Parsed and Ready to Import</b> <?php echo number_format($cnt = count($this->documents), 0); ?>
+        resume document<?php echo $cnt != 1 ? 's' : ''; ?></span>
     </div>
 
-    <div class="resultsScroller">
-        <table cellpadding="0" cellspacing="0" border="0" width="100%">
-            <tr>
-                <td class="dataColumnTitle" width="30%">File</td>
-                <td class="dataColumnTitle" width="20%">Name</td>
-                <td class="dataColumnTitle" width="23%">Location</td>
-                <td class="dataColumnTitle" width="27%">E-mail</td>
-                <td align="middle" width="16" style="background-color: #DDECFE;"><img src="images/scrollTop.jpg" border="0" width="16" height="16" onmousedown="startGridScrollUp();" onmouseup="endScrolling();" style="cursor: pointer;" /></td>
-            </tr>
+    <div class="table-responsive my-3">
+        <table class="table table-sm table-striped align-middle">
+            <thead><tr>
+                <th scope="col">File</th>
+                <th scope="col">Name</th>
+                <th scope="col">Location</th>
+                <th scope="col">E-mail</th>
+                <th scope="col"><button type="button" class="btn btn-sm btn-outline-secondary" aria-label="Scroll review up" onmousedown="startGridScrollUp();" onmouseup="endScrolling();" onmouseleave="endScrolling();" onkeydown="if (event.key === 'Enter' || event.key === ' ') startGridScrollUp();" onkeyup="endScrolling();">&uarr;</button></th>
+            </tr></thead>
+            <tbody>
         <?php for($row=0; $row<8; $row++): ?>
             <tr>
                 <?php for($col=0; $col<4; $col++): ?>
                 <td id="grid_row_<?php echo $row; ?>_column_<?php echo $col; ?>" class="dataColumnEven">&nbsp;</td>
                 <?php endfor; ?>
                 <?php if ($row == 7): ?>
-                <td width="16" align="middle" style="background-color: #DDECFE;"><img src="images/scrollBottom.jpg" border="0" width="16" height="16" onmousedown="startGridScrollDown();" style="cursor: pointer;" onmouseup="endScrolling();" /></td>
+                <td><button type="button" class="btn btn-sm btn-outline-secondary" aria-label="Scroll review down" onmousedown="startGridScrollDown();" onmouseup="endScrolling();" onmouseleave="endScrolling();" onkeydown="if (event.key === 'Enter' || event.key === ' ') startGridScrollDown();" onkeyup="endScrolling();">&darr;</button></td>
                 <?php else: ?>
-                <td width="16" style="background-color: #DDECFE;">&nbsp;</td>
+                <td>&nbsp;</td>
                 <?php endif; ?>
             </tr>
         <?php endfor; ?>
+            </tbody>
         </table>
     </div>
 
-    <div style="font-size: 14px;">
+    <div class="alert alert-warning">
         CATS has attempted to extract relevant information like contact data, education and skill sets automatically.
         This process is <b>not</b> an exact science and can sometimes guess incorrectly (or not at all). Click on a
         row above to find out more information.
@@ -45,8 +39,8 @@
         <b>Please review these results carefully and make any necessary changes before importing them!</b>
     </div>
 
-    <div style="text-align: right; margin-top: 20px;">
-        <input type="button" name="nextStep" id="nextStep" onclick="goStep4();" value="Import Candidates ->" style="cursor: pointer;" />
+    <div class="text-end mt-3">
+        <input type="button" name="nextStep" id="nextStep" onclick="goStep4();" value="Import Candidates ->" class="btn btn-sm btn-primary" />
     </div>
 
     <?php
@@ -56,7 +50,7 @@
         ?>
         <span id="data_<?php echo $i; ?>_column_0" class="hiddenDataColumn">
             <a href="?m=import&a=massImportEdit&documentID=<?php echo $doc['id']; ?>">
-            <i><?php echo strlimit($doc['realName'], 25); ?></i> <font style="font-size: 11px;">(<?php echo number_format(@filesize($doc['name'])/1024); ?> KB)</font>
+            <i><?php echo strlimit($doc['realName'], 25); ?></i> <span class="small text-body-secondary">(<?php echo number_format(@filesize($doc['name'])/1024); ?> KB)</span>
             </a>
         </span>
         <span id="data_<?php echo $i; ?>_column_1" class="hiddenDataColumn"><?php echo isset($doc['firstName']) ? strlimit($doc['firstName'], 10) : ''; ?> <?php echo isset($doc['lastName']) ? strlimit($doc['lastName'], 10) : '&nbsp;'; ?>&nbsp;</span>

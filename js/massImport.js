@@ -1,6 +1,5 @@
 var documentOk = 0;
 var documentFail = 0;
-var progressBarWidth = 868;
 var parsingBlock = false;
 var parseURL = "?m=import&a=massImportDocument";
 var parseSent = 0;
@@ -25,10 +24,11 @@ function setProgressBar(x, fileName)
 {
     var barObj = document.getElementById("statusBar");
     var fileNameObj = document.getElementById("fileName");
-    var width = Math.floor(progressBarWidth * x / 100);
+    var width = Math.max(0, Math.min(100, isFinite(x) ? x : 0));
 
     fileNameObj.innerHTML = fileName;
-    barObj.style.width = width + "px";
+    barObj.style.width = width + "%";
+    document.getElementById("statusBarContainer").setAttribute("aria-valuenow", width);
 }
 
 function addDocument(name, realName, ext, type, cTime)

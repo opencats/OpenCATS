@@ -1,24 +1,17 @@
 <?php TemplateUtility::printHeader('Import'); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+    <?php TemplateUtility::printQuickSearch(); ?>
+    <main id="main" class="container-fluid py-2">
 
         <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/reports.gif" width="24" height="24" border="0" alt="Import" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Import: Error</h2></td>
-                </tr>
-            </table>
+            <header class="oc-page-header mb-3"><h1 class="h5 fw-semibold mb-0">Import: Error</h1></header>
 
-            <p class="fatalError">
-                A fatal error has occurred.<br />
+            <p class="alert alert-danger" role="alert">
+                A fatal error has occurred.
                 <br />
                 <?php echo($this->errorMessage); ?>
             </p>
         </div>
-    </div>
+    </main>
 <?php TemplateUtility::printFooter(); ?>
