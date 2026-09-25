@@ -69,8 +69,8 @@ switch ($action)
         $warningsOccurred = false;
 
         echo '<br />',
-             '<span style="font-weight: bold;">Test Results</span>',
-             '<table class="test_output">';
+             '<h2 class="h5 mt-3">Test Results</h2>',
+             '<table class="table test_output">';
 
 
         InstallationTests::runInstallerTests();
@@ -262,8 +262,8 @@ switch ($action)
             $databaseHost = trim($_REQUEST['host'] ?? '');
             $databaseName = trim($_REQUEST['name'] ?? '');
 
-            echo '<br /><span style="font-weight: bold;">Test Results</span>';
-            echo '<table class="test_output">';
+            echo '<br /><h2 class="h5 mt-3">Test Results</h2>';
+            echo '<table class="table test_output">';
 
             if ($databaseUser === '' || $databaseHost === '' || $databaseName === '')
             {
@@ -470,8 +470,8 @@ switch ($action)
         $result = true;
 
         echo '<br />',
-             '<span style="font-weight: bold;">Test Results</span>',
-             '<table class="test_output">';
+             '<h2 class="h5 mt-3">Test Results</h2>',
+             '<table class="table test_output">';
 
         $antiwordResults = !(ANTIWORD_PATH != '' && !InstallationTests::checkAntiword());
         $pdftotextResults = !(PDFTOTEXT_PATH != '' && !InstallationTests::checkPdftotext());
@@ -485,6 +485,8 @@ switch ($action)
         {
             $unrtfResults = !(UNRTF_PATH != '' && !InstallationTests::checkUnrtf());
         }
+
+        echo '</table>';
 
         if (!$antiwordResults || !$pdftotextResults)
         {
@@ -550,19 +552,19 @@ switch ($action)
 
         echo '<script type="text/javascript">';
         echo 'var onClick = \'' . addslashes($onClick) . '\';';
-        echo 'document.getElementById(\'extrasList\').innerHTML = \'<table style="width: 450px;"><tr><td style="font-weight: bold;">Feature Name</td><td style="width: 85px; font-weight: bold">Install</td><td style="width: 85px; font-weight: bold">Do Not Install</td></tr>';
+        echo 'document.getElementById(\'extrasList\').innerHTML = \'<table class="table align-middle"><thead><tr><th scope="col">Feature Name</th><th scope="col">Install</th><th scope="col">Do Not Install</th></tr></thead><tbody>';
         foreach ($optionalComponents as $index => $component)
         {
             echo '<tr>';
             echo '<td><a href="javascript:void(0);" onclick="function HTML' . htmlspecialchars($index) . '() { return \\\'<p style=\\\' + String.fromCharCode(34) + \\\'font-weight: bold; padding-left: 8px; padding-right: 8px;\\\' + String.fromCharCode(34) + \\\'>' . htmlspecialchars($component['name']) . '</p><p style=\\\' + String.fromCharCode(34) + \\\'padding-left: 8px; padding-right: 8px;\\\' + String.fromCharCode(34) + \\\'>' . htmlspecialchars($component['description']) . '</p>\\\'; } showPopWinHTML(HTML' . htmlspecialchars($index) . '(), 400, 100, null); return false;">' . htmlspecialchars($component['name']) . '</a>&nbsp;&nbsp;&nbsp;</td>';
-            echo '<td><input type="radio" name="' . htmlspecialchars($index) . '" value="true"' . ($component['componentExists'] ? ' checked' : '') . '></td>';
-            echo '<td><input type="radio" name="' . htmlspecialchars($index) . '" value="false"' . ($component['componentExists'] ? '' : ' checked') . '></td>';
+            echo '<td><input class="form-check-input" type="radio" name="' . htmlspecialchars($index) . '" value="true"' . ($component['componentExists'] ? ' checked' : '') . '></td>';
+            echo '<td><input class="form-check-input" type="radio" name="' . htmlspecialchars($index) . '" value="false"' . ($component['componentExists'] ? '' : ' checked') . '></td>';
             echo '</tr>';
         }
 
-        echo '</table><br /><br />';
+        echo '</tbody></table>';
 
-        echo '<input type="button" style="float: right;" class="button" value="Next -->" onclick="\' + onClick + \'">\';</script>';
+        echo '<input type="button" class="btn btn-primary" value="Next -->" onclick="\' + onClick + \'">\';</script>';
         break;
 
     case 'setupOptional':
@@ -1024,8 +1026,7 @@ function MySQLConnect()
 				$error .= "error: " . mysqli_connect_error();
 
         die(
-            '<p style="background: #ec3737; padding: 4px; margin-top: 0; font:'
-            . ' normal normal bold 12px/130% Arial, Tahoma, sans-serif;">Error '
+            '<p class="alert alert-danger">Error '
             . " Connecting to Database</p><pre>\n\n" . $error . "</pre>\n\n"
         );
         return false;
@@ -1053,8 +1054,7 @@ function MySQLConnect()
 				$error .= "error: " . mysqli_connect_error();
 
         die(
-            '<p style="background: #ec3737; padding: 4px; margin-top: 0; font:'
-            . ' normal normal bold 12px/130% Arial, Tahoma, sans-serif;">Error'
+            '<p class="alert alert-danger">Error'
             . " Selecting Database</p><pre>\n\n" . $error . "</pre>\n\n"
         );
         return false;
@@ -1085,8 +1085,7 @@ function MySQLQuery($query, $ignoreErrors = false)
 		$error .= "error: " . mysqli_connect_error();
 
         die (
-            '<p style="background: #ec3737; padding: 4px; margin-top: 0; font:'
-            . ' normal normal bold 12px/130% Arial, Tahoma, sans-serif;">Query'
+            '<p class="alert alert-danger">Query'
             . " Error -- Please Report This Bug!</p><pre>\n\nMySQL Query "
             . "Failed: " . $error . "\n\n" . $query . "</pre>\n\n"
         );
