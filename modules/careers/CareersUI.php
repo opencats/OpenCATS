@@ -30,6 +30,8 @@ include_once(LEGACY_ROOT . '/lib/StringUtility.php');
 
 class CareersUI extends UserInterface
 {
+    private $_bootstrapPortal = false;
+
     public function __construct()
     {
         parent::__construct();
@@ -89,6 +91,9 @@ class CareersUI extends UserInterface
         }
 
         $template = $careerPortalSettings->getTemplate($templateName);
+        // Only templates explicitly opting into the new presentation use Bootstrap.
+        $this->_bootstrapPortal = strpos($template['CSS'], '/* OpenCATS Bootstrap 5.3 */') === 0
+            && $careerPortalSettingsRS['useCATSTemplate'] === '';
 
         /* At this point the entire template is loaded, we just need to add data to the
            template for the specific page. */
@@ -230,39 +235,39 @@ class CareersUI extends UserInterface
             $resumeTextEscaped = $latestAttachment !== false
                 ? htmlspecialchars((string) DatabaseSearch::fulltextDecode($myResume['text']), ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING)
                 : '';
-            $content = str_replace('<input-firstName>', '<input name="firstName" id="firstName" class="inputBoxName" value="' . $firstNameEscaped . '" />', $content);
-            $content = str_replace('<input-lastName>', '<input name="lastName" id="lastName" class="inputBoxName" value="' . $lastNameEscaped . '" />', $content);
-            $content = str_replace('<input-address>', '<input name="address" id="address" class="inputBoxNormal" value="' . $addressEscaped . '" />', $content);
-            $content = str_replace('<input-address2>', '<input name="address2" id="address2" class="inputBoxNormal" value="' . $address2Escaped . '" />', $content);
-            $content = str_replace('<input-city>', '<input name="city" id="city" class="inputBoxNormal" value="' . $cityEscaped . '" />', $content);
-            $content = str_replace('<input-state>', '<input name="state" id="state" class="inputBoxNormal" value="' . $stateEscaped . '" />', $content);
-            $content = str_replace('<input-zip>', '<input name="zip" id="zip" class="inputBoxNormal" value="' . $zipEscaped . '" />', $content);
+            $content = str_replace('<input-firstName>', '<input name="firstName" id="firstName" class="inputBoxName' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $firstNameEscaped . '" />', $content);
+            $content = str_replace('<input-lastName>', '<input name="lastName" id="lastName" class="inputBoxName' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $lastNameEscaped . '" />', $content);
+            $content = str_replace('<input-address>', '<input name="address" id="address" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $addressEscaped . '" />', $content);
+            $content = str_replace('<input-address2>', '<input name="address2" id="address2" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $address2Escaped . '" />', $content);
+            $content = str_replace('<input-city>', '<input name="city" id="city" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $cityEscaped . '" />', $content);
+            $content = str_replace('<input-state>', '<input name="state" id="state" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $stateEscaped . '" />', $content);
+            $content = str_replace('<input-zip>', '<input name="zip" id="zip" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $zipEscaped . '" />', $content);
             $countrySelectHTML = TemplateUtility::getCountrySelectHTML(
                 'country',
                 (string) $candidate['country'],
                 true,
-                'inputBoxNormal',
+                ($this->_bootstrapPortal ? 'form-select' : 'inputBoxNormal'),
                 ''
             );
             $content = str_replace('<input-country>', $countrySelectHTML, $content);
             $content = str_replace('<input-country req>', $countrySelectHTML, $content);
-            $content = str_replace('<input-phoneWork>', '<input name="phoneWork" id="phoneWork" class="inputBoxNormal" value="' . $phoneWorkEscaped . '" />', $content);
-            $content = str_replace('<input-email1>', '<input name="email1" id="email1" class="inputBoxNormal" value="' . $email1Escaped . '" />', $content);
-            $content = str_replace('<input-phoneHome>', '<input name="phoneHome" id="phoneHome" class="inputBoxNormal" value="' . $phoneHomeEscaped . '" />', $content);
-            $content = str_replace('<input-phoneCell>', '<input name="phoneCell" id="phoneCell" class="inputBoxNormal" value="' . $phoneCellEscaped . '" />', $content);
-            $content = str_replace('<input-bestTimeToCall>', '<input name="bestTimeToCall" id="bestTimeToCall" class="inputBoxNormal" value="' . $bestTimeToCallEscaped . '" />', $content);
-            $content = str_replace('<input-keySkills>', '<input name="keySkills" id="keySkills" class="inputBoxNormal" value="' . $keySkillsEscaped . '" />', $content);
-            $content = str_replace('<input-source>', '<input name="source" id="source" class="inputBoxNormal" value="' . $sourceEscaped . '" />', $content);
-            $content = str_replace('<input-currentEmployer>', '<input name="currentEmployer" id="currentEmployer" class="inputBoxNormal" value="' . $currentEmployerEscaped . '" />', $content);
+            $content = str_replace('<input-phoneWork>', '<input name="phoneWork" id="phoneWork" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $phoneWorkEscaped . '" />', $content);
+            $content = str_replace('<input-email1>', '<input name="email1" id="email1" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $email1Escaped . '" />', $content);
+            $content = str_replace('<input-phoneHome>', '<input name="phoneHome" id="phoneHome" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $phoneHomeEscaped . '" />', $content);
+            $content = str_replace('<input-phoneCell>', '<input name="phoneCell" id="phoneCell" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $phoneCellEscaped . '" />', $content);
+            $content = str_replace('<input-bestTimeToCall>', '<input name="bestTimeToCall" id="bestTimeToCall" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $bestTimeToCallEscaped . '" />', $content);
+            $content = str_replace('<input-keySkills>', '<input name="keySkills" id="keySkills" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $keySkillsEscaped . '" />', $content);
+            $content = str_replace('<input-source>', '<input name="source" id="source" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $sourceEscaped . '" />', $content);
+            $content = str_replace('<input-currentEmployer>', '<input name="currentEmployer" id="currentEmployer" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $currentEmployerEscaped . '" />', $content);
             $content = str_replace('<input-resume>',
-                '<strong>My Resume</strong><br />'
-                . '<textarea name="resumeContents" class="inputBoxArea" style="width: 400px; height: 200px;" readonly>'
+                ($this->_bootstrapPortal ? '<label class="form-label d-block">My Resume' : '<strong>My Resume</strong><br />')
+                . '<textarea name="resumeContents" class="inputBoxArea' . ($this->_bootstrapPortal ? ' form-control' : '') . '" ' . ($this->_bootstrapPortal ? '' : 'style="width: 400px; height: 200px;"') . ' readonly>'
                 . $resumeTextEscaped .'</textarea>'
-                . '<br /><br /><strong>Upload new resume:</strong><br /> '
-                . '<input type="file" name="file" id="file" type="file" class="inputBoxFile" size="45" />',
+                . ($this->_bootstrapPortal ? '</label><label class="form-label d-block mt-3" for="file">Upload new resume:</label>' : '<br /><br /><strong>Upload new resume:</strong><br /> ')
+                . '<input type="file" name="file" id="file" type="file" class="inputBoxFile' . ($this->_bootstrapPortal ? ' form-control' : '') . '" size="45" />',
                 $content
             );
-            $content = str_replace('<input-submit>', '<input type="submit" name="submitButton" id="submitButton" class="submitButton" onclick="document.getElementById(\'submitButton\').disabled=true;" value="Save Profile" style="width: 150px;" />', $content);
+            $content = str_replace('<input-submit>', '<input type="submit" name="submitButton" id="submitButton" class="submitButton' . ($this->_bootstrapPortal ? ' btn btn-primary' : '') . '" onclick="document.getElementById(\'submitButton\').disabled=true;" value="Save Profile" ' . ($this->_bootstrapPortal ? '' : 'style="width: 150px;"') . ' />', $content);
 
             $attachmentIDValue = $latestAttachment ? $latestAttachment : -1;
             $content = sprintf(
@@ -407,16 +412,16 @@ class CareersUI extends UserInterface
 
             $content = str_replace(array('<applyContent>','</applyContent>'), '', $content);
 
-            $content = str_replace('<input-submit>', '<input type="submit" id="submitButton" name="submitButton" value="Continue to Application" />', $content);
-            $content = str_replace('<input-new>', '<input type="radio" id="isNewYes" name="isNew" value="yes" onchange="isCandidateRegisteredChange();" checked />', $content);
-            $content = str_replace('<input-registered>', '<input type="radio" id="isNewNo" name="isNew" value="no" onchange="isCandidateRegisteredChange();" />', $content);
-            $content = str_replace('<input-rememberMe>', '<input type="checkbox" id="rememberMe" name="rememberMe" value="yes" checked />', $content);
+            $content = str_replace('<input-submit>', '<input type="submit"' . ($this->_bootstrapPortal ? ' class="btn btn-primary"' : '') . ' id="submitButton" name="submitButton" value="Continue to Application" />', $content);
+            $content = str_replace('<input-new>', '<input type="radio"' . ($this->_bootstrapPortal ? ' class="form-check-input"' : '') . ' id="isNewYes" name="isNew" value="yes" onchange="isCandidateRegisteredChange();" checked />', $content);
+            $content = str_replace('<input-registered>', '<input type="radio"' . ($this->_bootstrapPortal ? ' class="form-check-input"' : '') . ' id="isNewNo" name="isNew" value="no" onchange="isCandidateRegisteredChange();" />', $content);
+            $content = str_replace('<input-rememberMe>', '<input type="checkbox"' . ($this->_bootstrapPortal ? ' class="form-check-input"' : '') . ' id="rememberMe" name="rememberMe" value="yes" checked />', $content);
             $content = str_replace('<title>', $jobTitleEscaped, $content);
 
             // Process html-ish fields like <input-firstName> into the proper form
             $content = preg_replace(
                 '/\<input\-([A-Za-z0-9]+)\>/',
-                '<input type="text" class="inputBoxNormal" style="width: 270px;" name="$1" id="$1" onfocus="onFocusFormField(this)" />',
+                '<input type="text" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" ' . ($this->_bootstrapPortal ? '' : 'style="width: 270px;"') . ' name="$1" id="$1" onfocus="onFocusFormField(this)" />',
                 $content
             );
 
@@ -652,50 +657,53 @@ class CareersUI extends UserInterface
             $extraNotesEscaped = htmlspecialchars((string) (isset($_POST[$id='extraNotes']) ? $_POST[$id] : ''), ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $jobTitleEscaped = htmlspecialchars((string) $jobOrderData['title'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $template['Content'] = str_replace('<title>', $jobTitleEscaped, $template['Content']);
-            $template['Content'] = str_replace('<input-firstName>', '<input name="firstName" id="firstName" class="inputBoxName" value="' . $firstNameEscaped . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-lastName>', '<input name="lastName" id="lastName" class="inputBoxName" value="' . $lastNameEscaped . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-address>', '<input name="address" id="address" class="inputBoxNormal" value="' . $addressEscaped . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-address2>', '<input name="address2" id="address2" class="inputBoxNormal" value="' . $address2Escaped . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-city>', '<input name="city" id="city" class="inputBoxNormal" value="' . $cityEscaped . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-state>', '<input name="state" id="state" class="inputBoxNormal" value="' . $stateEscaped . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-zip>', '<input name="zip" id="zip" class="inputBoxNormal" value="' . $zipEscaped . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-firstName>', '<input name="firstName" id="firstName" class="inputBoxName' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $firstNameEscaped . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-lastName>', '<input name="lastName" id="lastName" class="inputBoxName' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $lastNameEscaped . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-address>', '<input name="address" id="address" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $addressEscaped . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-address2>', '<input name="address2" id="address2" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $address2Escaped . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-city>', '<input name="city" id="city" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $cityEscaped . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-state>', '<input name="state" id="state" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $stateEscaped . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-zip>', '<input name="zip" id="zip" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $zipEscaped . '" />', $template['Content']);
             $countrySelectHTML = TemplateUtility::getCountrySelectHTML(
                 'country',
                 (string) $country,
                 true,
-                'inputBoxNormal',
+                ($this->_bootstrapPortal ? 'form-select' : 'inputBoxNormal'),
                 ''
             );
             $template['Content'] = str_replace('<input-country>', $countrySelectHTML, $template['Content']);
             $template['Content'] = str_replace('<input-country req>', $countrySelectHTML, $template['Content']);
-            $template['Content'] = str_replace('<input-phone>', '<input name="phone" id="phone" class="inputBoxNormal" value="' . $phoneEscaped . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-email>', '<input name="email" id="email" class="inputBoxNormal" value="' . $emailEscaped . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-phone-home>', '<input name="phoneHome" id="phoneHome" class="inputBoxNormal" value="' . $phoneHomeEscaped . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-phone-cell>', '<input name="phoneCell" id="phoneCell" class="inputBoxNormal" value="' . $phoneCellEscaped . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-best-time-to-call>', '<input name="bestTimeToCall" id="bestTimeToCall" class="inputBoxNormal" value="' . $bestTimeToCallEscaped . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-email2>', '<input name="email2" id="email2" class="inputBoxNormal" value="' . $email2Escaped . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-emailconfirm>', '<input name="emailconfirm" id="emailconfirm" class="inputBoxNormal" value="' . $emailconfirmEscaped . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-keySkills>', '<input name="keySkills" id="keySkills" class="inputBoxNormal" value="' . $keySkillsEscaped . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-source>', '<input name="source" id="source" class="inputBoxNormal" value="' . $sourceEscaped . '" />', $template['Content']);
-            $template['Content'] = str_replace('<input-employer>', '<input name="employer" id="employer" class="inputBoxNormal" value="' . $employerEscaped . '" />', $template['Content']);
-            $template['Content'] = str_replace(array('<input-captcha>', '<input-captcha req>'), '<img src="' . CATSUtility::getIndexName() . '?m=careers&amp;p=captcha&amp;t=' . time() . '" alt="Captcha" /><br />' . '<input type="text" name="captcha" id="captcha" class="inputBoxNormal" />', $template['Content']);
-            $template['Content'] = str_replace('<input-resumeUpload>', '<input type="file" id="resume" name="file" class="inputBoxFile" />', $template['Content']);
+            $template['Content'] = str_replace('<input-phone>', '<input name="phone" id="phone" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $phoneEscaped . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-email>', '<input name="email" id="email" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $emailEscaped . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-phone-home>', '<input name="phoneHome" id="phoneHome" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $phoneHomeEscaped . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-phone-cell>', '<input name="phoneCell" id="phoneCell" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $phoneCellEscaped . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-best-time-to-call>', '<input name="bestTimeToCall" id="bestTimeToCall" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $bestTimeToCallEscaped . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-email2>', '<input name="email2" id="email2" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $email2Escaped . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-emailconfirm>', '<input name="emailconfirm" id="emailconfirm" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $emailconfirmEscaped . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-keySkills>', '<input name="keySkills" id="keySkills" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $keySkillsEscaped . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-source>', '<input name="source" id="source" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $sourceEscaped . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-employer>', '<input name="employer" id="employer" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $employerEscaped . '" />', $template['Content']);
+            $template['Content'] = str_replace(array('<input-captcha>', '<input-captcha req>'), '<img src="' . CATSUtility::getIndexName() . '?m=careers&amp;p=captcha&amp;t=' . time() . '" alt="Captcha" /><br />' . '<input type="text" name="captcha" id="captcha" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" />', $template['Content']);
+            $template['Content'] = str_replace('<input-resumeUpload>', '<input type="file" id="resume" name="file" class="inputBoxFile' . ($this->_bootstrapPortal ? ' form-control' : '') . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-resumeUploadPreview>',
                 '<input type="hidden" id="applyToJobSubAction" name="applyToJobSubAction" value="" /> '
                 . '<input type="hidden" id="file" name="file" value="' . $resumeFileLocationEscaped . '" /> '
-                . '<input type="file" id="resumeFile" name="resumeFile" class="inputBoxFile" size="30" onchange="resumeLoadCheck();" /> '
-                . '<input type="button" id="resumeLoad" name="resumeLoad" value="Upload" onclick="resumeLoadFile();" disabled /><br /> '
+                . ($this->_bootstrapPortal ? '<label for="resumeFile" class="form-label">Upload resume</label>' : '')
+                . '<input type="file" id="resumeFile" name="resumeFile" class="inputBoxFile' . ($this->_bootstrapPortal ? ' form-control' : '') . '" size="30" onchange="resumeLoadCheck();" /> '
+                . '<input type="button"' . ($this->_bootstrapPortal ? ' class="btn btn-outline-secondary mt-2"' : '') . ' id="resumeLoad" name="resumeLoad" value="Upload" onclick="resumeLoadFile();" disabled />' . ($this->_bootstrapPortal ? '' : '<br /> ')
                 . $attachmentHTML
-                . '<textarea id="resumeContents" name="resumeContents" class="inputBoxArea" onmousemove="resumeContentsChange(this);" '
+                . ($this->_bootstrapPortal ? '<label for="resumeContents" class="form-label d-block mt-3">Resume text</label>' : '')
+                . '<textarea id="resumeContents" name="resumeContents" class="inputBoxArea' . ($this->_bootstrapPortal ? ' form-control' : '') . '" onmousemove="resumeContentsChange(this);" '
                 . 'onchange="resumeContentsChange(this);" onmousedown="resumeContentsChange(this);" '
-                . 'style="width: 410px; height: 150px;">' . $resumeContentsEscaped . '</textarea><br /> '
+                . ($this->_bootstrapPortal ? '' : 'style="width: 410px; height: 150px;"') . '>' . $resumeContentsEscaped . '</textarea>' . ($this->_bootstrapPortal ? '' : '<br /> ')
                 . (
-                '<br /><div style="text-align: right;">'
-                . '<input type="button" value="Populate Fields ->" id="resumePopulate" onclick="resumeParse();" '.(strlen($resumeContents)?'':'disabled').' />'
+                ($this->_bootstrapPortal ? '<div class="text-end mt-3">' : '<br /><div style="text-align: right;">')
+                . '<input type="button"' . ($this->_bootstrapPortal ? ' class="btn btn-outline-secondary"' : '') . ' value="Populate Fields ->" id="resumePopulate" onclick="resumeParse();" '.(strlen($resumeContents)?'':'disabled').' />'
+                . ($this->_bootstrapPortal ? '</div>' : '')
                 ),
                 $template['Content']);
-            $template['Content'] = str_replace('<input-extraNotes>', '<textarea name="extraNotes" id="extraNotes" class="inputBoxArea" maxlength="450" onkeyup="mlength=this.getAttribute ? parseInt(this.getAttribute(\'maxlength\')) : \'\'; if (this.getAttribute && this.value.length>(mlength+7)) { alert(\'Sorry, you may only enter \'+mlength+\' characters into the extra notes.\');} if (this.getAttribute && this.value.length>mlength) {this.value=this.value.substring(0,mlength); this.scrollTop = this.scrollHeight;}">'.$extraNotesEscaped.'</textarea>', $template['Content']);
-            $template['Content'] = str_replace('<submit', '<input type="submit" class="submitButton"', $template['Content']);
+            $template['Content'] = str_replace('<input-extraNotes>', '<textarea name="extraNotes" id="extraNotes" class="inputBoxArea' . ($this->_bootstrapPortal ? ' form-control' : '') . '" maxlength="450" onkeyup="mlength=this.getAttribute ? parseInt(this.getAttribute(\'maxlength\')) : \'\'; if (this.getAttribute && this.value.length>(mlength+7)) { alert(\'Sorry, you may only enter \'+mlength+\' characters into the extra notes.\');} if (this.getAttribute && this.value.length>mlength) {this.value=this.value.substring(0,mlength); this.scrollTop = this.scrollHeight;}">'.$extraNotesEscaped.'</textarea>', $template['Content']);
+            $template['Content'] = str_replace('<submit', '<input type="submit" class="submitButton' . ($this->_bootstrapPortal ? ' btn btn-primary' : '') . '"', $template['Content']);
 
             /* EEO inputs. */
             $template['Content'] = str_replace('<input-eeo-race>', '<select name="eeorace" id="eeorace" class="inputBoxNormal" />
@@ -876,7 +884,9 @@ class CareersUI extends UserInterface
                 $this->_template->assign('questionnaireID', $questionnaireID);
                 $this->_template->assign('data', $questionnaire);
                 $this->_template->assign('questions', $questions);
-                $this->_template->display('./modules/settings/CareerPortalQuestionnaireShow.tpl');
+                $this->_template->display($this->_bootstrapPortal
+                    ? './modules/careers/Questionnaire.tpl'
+                    : './modules/settings/CareerPortalQuestionnaireShow.tpl');
 
                 $buffer = ob_get_contents();
                 ob_end_clean();
@@ -891,7 +901,7 @@ class CareersUI extends UserInterface
                 $buffer = $formData . $buffer;
 
                 $template['Content'] = str_replace('<questionnaire>', $buffer, $template['Content - Questionnaire']);
-                $template['Content'] = str_replace('<submit', '<input type="submit" class="submitButton"', $template['Content']) . '</form>';
+                $template['Content'] = str_replace('<submit', '<input type="submit" class="submitButton' . ($this->_bootstrapPortal ? ' btn btn-primary' : '') . '"', $template['Content']) . '</form>';
             }
         }
         else if ($p == 'showJob')
@@ -1044,16 +1054,16 @@ class CareersUI extends UserInterface
                     $content = str_replace(array('<registeredLoginTitle>', '</registeredLoginTitle>'), '', $content);
                     $content = str_replace('<applyContent>', '<div style="display: none;">', $content);
                     $content = str_replace('</applyContent>', '</div>', $content);
-                    $content = str_replace('<input-submit>', '<input type="submit" id="submitButton" name="submitButton" value="Login" />', $content);
+                    $content = str_replace('<input-submit>', '<input type="submit"' . ($this->_bootstrapPortal ? ' class="btn btn-primary"' : '') . ' id="submitButton" name="submitButton" value="Login" />', $content);
                     $content = str_replace('<input-new>', '<input type="hidden" id="isNewNo" name="isNew" value="no" />', $content);
                     $content = str_replace('<input-registered>', '', $content);
-                    $content = str_replace('<input-rememberMe>', '<input type="checkbox" id="rememberMe" name="rememberMe" value="yes" checked />', $content);
+                    $content = str_replace('<input-rememberMe>', '<input type="checkbox"' . ($this->_bootstrapPortal ? ' class="form-check-input"' : '') . ' id="rememberMe" name="rememberMe" value="yes" checked />', $content);
                     $content = str_replace('<title>', '', $content);
 
                     // Process html-ish fields like <input-firstName> into the proper form
                     $content = preg_replace(
                         '/\<input\-([A-Za-z0-9]+)\>/',
-                        '<input type="text" class="inputBoxNormal" style="width: 270px;" name="$1" id="$1" onfocus="onFocusFormField(this)" />',
+                        '<input type="text" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" ' . ($this->_bootstrapPortal ? '' : 'style="width: 270px;"') . ' name="$1" id="$1" onfocus="onFocusFormField(this)" />',
                         $content
                     );
 
@@ -1149,7 +1159,8 @@ class CareersUI extends UserInterface
         }
         else
         {
-            $this->_template->display('./modules/careers/Blank.tpl');
+            $this->_template->display($this->_bootstrapPortal
+                ? './modules/careers/Bootstrap.tpl' : './modules/careers/Blank.tpl');
         }
     }
 
@@ -1500,6 +1511,10 @@ class CareersUI extends UserInterface
         else
         {
             $html  = '<table class="sortable" style="width:100%;">' . "\n";
+        }
+        if ($this->_bootstrapPortal)
+        {
+            $html = '<table class="sortable table table-striped align-middle">' . "\n";
         }
         $html .= '<tr class="rowHeading" align="left">'."\n";
         if ($settings['showCompany'] == 1)

@@ -31,6 +31,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     use SettingsSteps;
     use HomeSteps;
     use ListsSteps;
+    use CareersSteps;
     use ImportExportSteps;
     protected $scenarioTitle = null;
     private $roleData;
@@ -705,17 +706,17 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     )
     {
         /*
-         * The standard test database already contains the CATS 2.0 Career
+         * The standard test database already contains the OpenCATS Bootstrap 5.3 Career
          * Portal template. Enable the portal for this scenario.
          */
         $careerPortalSettings = new CareerPortalSettings();
-        $careerPortalSettings->set('enabled', '1');
+        // The @careers hook isolates and enables the public portal settings.
 
         /*
          * CAPTCHA is unrelated to this regression test. Override the standard
-         * CATS 2.0 application template for this scenario without requiring it.
+         * OpenCATS Bootstrap 5.3 application template for this scenario without requiring it.
          */
-        $template = $careerPortalSettings->getTemplate('CATS 2.0');
+        $template = $careerPortalSettings->getTemplate('OpenCATS Bootstrap 5.3');
 
         $careerPortalSettings->setForTemplate(
             'Content - Apply for Position',
@@ -724,7 +725,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
                 '',
                 $template['Content - Apply for Position']
             ),
-            'CATS 2.0'
+            'OpenCATS Bootstrap 5.3'
         );
 
         /*
