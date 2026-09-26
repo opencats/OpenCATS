@@ -9,7 +9,6 @@
  * See LICENSE.md.
  */
 
-include_once(LEGACY_ROOT . '/lib/Graphs.php');
 
 define('WFT_TEXT',                  1);
 define('WFT_PASSWORD',              2);
@@ -19,7 +18,6 @@ define('WFT_EMAIL',                 5);
 define('WFT_CC_NUMBER',             6);
 define('WFT_CC_EXPIRATION',         7);
 define('WFT_CC_TYPE',               8);
-define('WFT_ANTI_SPAM_IMAGE',       9);
 define('WFT_DATE',                  10);
 define('WFT_BOOLEAN',               11);
 define('WFT_CURRENCY',              12);
@@ -190,10 +188,6 @@ class WebForm
                 // expiration has two select boxes
                 $this->_tabIndex++;
                 break;
-            case WFT_ANTI_SPAM_IMAGE:
-                $minlen = 6;
-                $maxlen = 6;
-                break;
         }
         $this->_fields[] = array(
             'id' => $id,
@@ -318,23 +312,6 @@ class WebForm
                 $value = str_replace('$', '', $value);
                 $cur = floatval($value);
                 $value = strval($cur);
-            }
-            else if($field['type'] == WFT_ANTI_SPAM_IMAGE)
-            {
-                $antiSpamInput = $this->getPostValue($field['id']);
-                $wordVerifyID = $this->getPostValue('wordVerifyID');
-                $graphs = new Graphs();
-                $wordVerifyText = $graphs->getVerificationImageText($wordVerifyID);
-                if (strtoupper($antiSpamInput) != $wordVerifyText || $antiSpamInput == '')
-                {
-                    $errors[] = 'The text you entered did not correspond with the text in the security image';
-                    $value = 0;
-                }
-                else
-                {
-                    $value = 1;
-                }
-                $graphs->clearVerificationImageText($wordVerifyID);
             }
             else if($field['type'] == WFT_SELECT || $field['type'] == WFT_CC_TYPE || $field['type'] == WFT_BOOLEAN)
             {
@@ -839,28 +816,7 @@ class WebForm
                 $input .= "</select>\n";
                 break;
 
-            case WFT_ANTI_SPAM_IMAGE:
-                $graphs = new Graphs();
-                $verificationImage = $graphs->verificationImage();
 
-                // If there's a relative path, convert the image URL
-                if ($this->_relPath != '')
-                {
-                    $verificationImage = str_replace('<img src="', sprintf('<img src="%s', $this->_relPath), $verificationImage);
-                }
-
-                $input = sprintf(
-                    "<div style=\"padding: 0px 0px 0px 0px; text-align: left;\">\n"
-                    . "Please type the characters in the image below (case-insensitive)\n"
-                    . "<p>\n%s\n<p>\n<input type=\"text\" name=\"%s\" id=\"%s\" size=\"8\" "
-                    . "maxlength=\"10\" tabindex=\"%d\" %s %s>\n"
-                    . "<div id=\"%sCaption\" class=\"webFormCaption\"></div>\n"
-                    . "</div>\n",
-                    $verificationImage, $field['id'], $field['id'], $field['tabIndex'],
-                    (strlen($options) > 0 ? ' ' . $options : ''),
-                    $extendedJavaScript, $field['id']
-                );
-                break;
         }
         return $input;
     }

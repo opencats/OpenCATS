@@ -1,4 +1,4 @@
-<?php TemplateUtility::printHeader('EEO Reports', array('modules/joborders/validator.js', 'js/company.js', 'js/sweetTitles.js')); ?>
+<?php TemplateUtility::printHeader('EEO Reports', array('modules/joborders/validator.js', 'js/company.js', 'js/sweetTitles.js', 'js/chartjs/chart.umd.min.js', 'js/charts.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
 <?php TemplateUtility::printQuickSearch(); ?>
@@ -61,7 +61,7 @@
                                             <h3 class="h6">Candidates by Ethnic Types:</h3>
                                             <div class="row g-2">
                                                 <div class="col-12 col-xl-7 overflow-auto">
-                                                    <img src="<?php echo($this->urlEthnicGraph); ?>" alt="Candidates by Ethnic Types:">
+                                                    <?php echo($this->charts['Ethnic']); ?>
                                                 </div>
                                                 <div class="col-12 col-xl-5">
                                                     <div class="table-responsive">
@@ -85,7 +85,7 @@
                                             <h3 class="h6">Candidates by Veteran Status:</h3>
                                             <div class="row g-2">
                                                 <div class="col-12 col-xl-7 overflow-auto">
-                                                    <img src="<?php echo($this->urlVeteranGraph); ?>" alt="Candidates by Veteran Status:">
+                                                    <?php echo($this->charts['Veteran']); ?>
                                                 </div>
                                                 <div class="col-12 col-xl-5">
                                                     <div class="table-responsive">
@@ -106,13 +106,15 @@
                                     <?php endif; ?>
                                     <div class="row g-2">
                                         <?php if ($this->EEOSettingsRS['genderTracking'] == 1): ?>
-                                            <div class="col-12 col-xl-6 overflow-auto">
-                                                <img src="<?php echo($this->urlGenderGraph); ?>" alt="Candidates by Gender">
+                                            <div class="col-12 col-xl-6">
+                                                <h3 class="h6">Candidates by Gender</h3>
+                                                <?php echo($this->charts['Gender']); ?>
                                             </div>
                                         <?php endif; ?>
                                         <?php if ($this->EEOSettingsRS['genderTracking'] == 1): ?>
-                                            <div class="col-12 col-xl-6 overflow-auto">
-                                                <img src="<?php echo($this->urlDisabilityGraph); ?>" alt="Candidates by Disability Status">
+                                            <div class="col-12 col-xl-6">
+                                                <h3 class="h6">Candidates by Disability Status</h3>
+                                                <?php echo($this->charts['Disability']); ?>
                                             </div>
                                         <?php endif; ?>
                                     </div>

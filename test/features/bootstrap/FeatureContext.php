@@ -30,6 +30,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     use ReportsSteps;
     use SettingsSteps;
     use HomeSteps;
+    use ChartsSteps;
     use ListsSteps;
     use CareersSteps;
     use ImportExportSteps;

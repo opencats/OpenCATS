@@ -1,4 +1,4 @@
-<?php TemplateUtility::printHeader('Home', array('js/sweetTitles.js', 'js/dataGrid.js', 'js/dataGridFilters.js', 'js/home.js')); ?>
+<?php TemplateUtility::printHeader('Home', array('js/sweetTitles.js', 'js/dataGrid.js', 'js/dataGridFilters.js', 'js/home.js', 'js/chartjs/chart.umd.min.js', 'js/charts.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
 <?php TemplateUtility::printQuickSearch(); ?>
@@ -66,12 +66,16 @@
                     <h2 id="hiringOverviewHeading" class="card-header bg-secondary-subtle h6 py-1 px-2 fw-semibold mb-0">Hiring Overview</h2>
                     <div class="card-body p-2">
                         <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Hiring Overview period">
-                            <button type="button" class="btn btn-outline-secondary" onclick="swapHomeGraph(<?php echo(DASHBOARD_GRAPH_WEEKLY); ?>);">Weekly</button>
-                            <button type="button" class="btn btn-outline-secondary" onclick="swapHomeGraph(<?php echo(DASHBOARD_GRAPH_MONTHLY); ?>);">Monthly</button>
-                            <button type="button" class="btn btn-outline-secondary" onclick="swapHomeGraph(<?php echo(DASHBOARD_GRAPH_YEARLY); ?>);">Yearly</button>
+                            <?php foreach (array(DASHBOARD_GRAPH_WEEKLY => 'Weekly', DASHBOARD_GRAPH_MONTHLY => 'Monthly', DASHBOARD_GRAPH_YEARLY => 'Yearly') as $view => $label): ?>
+                                <a class="btn btn-outline-secondary<?php if ($this->chartView === $view): ?> active<?php endif; ?>" href="<?php echo(CATSUtility::getIndexName()); ?>?m=home&amp;view=<?php echo($view); ?>" data-chart-range="<?php echo($view); ?>" data-chart-url="<?php echo(CATSUtility::getIndexName()); ?>?m=home&amp;a=hiringOverview&amp;view=<?php echo($view); ?>" aria-current="<?php echo($this->chartView === $view ? 'true' : 'false'); ?>"><?php echo($label); ?></a>
+                            <?php endforeach; ?>
                         </div>
-                        <div>
-                            <img src="<?php echo(CATSUtility::getIndexName()); ?>?m=graphs&amp;a=miniPlacementStatistics&amp;width=495&amp;height=230" id="homeGraph" class="img-fluid" alt="Hiring Overview" />
+                        <div id="homeGraph" data-view="<?php echo($this->chartView); ?>" aria-live="polite">
+                            <?php foreach ($this->hiringCharts as $view => $chart): ?>
+                                <div data-chart-period="<?php echo($view); ?>" <?php if ($view !== $this->chartView): ?>hidden<?php endif; ?>>
+                                    <?php echo(Charts::render('hiring-' . $view, $chart)); ?>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                 </section>

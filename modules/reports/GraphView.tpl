@@ -7,13 +7,15 @@
         <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
         <link rel="alternate" type="application/rss+xml" title="RSS" href="<?php echo(CATSUtility::getIndexName()); ?>?m=rss" />
+        <link rel="stylesheet" href="<?php echo TemplateUtility::getVersionedAssetURL('vendor/twbs/bootstrap/dist/css/bootstrap.min.css'); ?>">
         <style type="text/css" media="all">@import "<?php echo TemplateUtility::getVersionedAssetURL('main.css'); ?>";</style>
         <script type="text/javascript" src="<?php echo TemplateUtility::getVersionedAssetURL('js/lib.js'); ?>"></script>
+        <script src="<?php echo TemplateUtility::getVersionedAssetURL('js/chartjs/chart.umd.min.js'); ?>"></script>
+        <script src="<?php echo TemplateUtility::getVersionedAssetURL('js/charts.js'); ?>"></script>
         <style type="text/css">
         body { background: #fff; }
         .outer { max-width: 1024px; margin: 2rem auto; padding: 0 1rem; text-align: center; }
         .outer h1 { font-size: 2.25rem; font-weight: normal; }
-        .graph-image { overflow: auto; }
         </style>
     </head>
 
@@ -23,7 +25,7 @@
 
             <p>Graph refreshes every 5 minutes. Press F11 to toggle fullscreen mode in most browsers.</p>
 
-            <p class="graph-image"><img src="<?php $this->_($this->theImage); ?>" alt="Graph" /></p>
+            <section class="card card-body text-start"><h2 class="h5">Status of Candidates</h2><?php echo($this->pipelineGraph); ?></section>
 
             <p><a href="#" onclick="window.close('fs'); return false;">Close Window</a></p>
 

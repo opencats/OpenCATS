@@ -44,12 +44,13 @@ Feature: Home dashboard and global Quick Search
 
   @javascript @home_graph
   Scenario: Hiring Overview keeps period switching
+    Given Home has recent calls, upcoming calendar entries and a hire
     When I am on "/index.php?m=home"
-    When I press "Monthly"
+    When I follow "Monthly"
     Then the Home graph view is "1"
-    When I press "Yearly"
+    When I follow "Yearly"
     Then the Home graph view is "2"
-    When I press "Weekly"
+    When I follow "Weekly"
     Then the Home graph view is "0"
 
   @javascript @home_grid
@@ -68,10 +69,9 @@ Feature: Home dashboard and global Quick Search
     Then Home shows "16" fixture rows starting with "HomeFixture16"
     And Home candidate links reach their records
 
-  # Existing backend failure: https://github.com/opencats/OpenCATS/issues/895
-  # Keep the image assertion active; period controls are checked independently.
-  @javascript @home_graph_image
-  Scenario: Hiring Overview server image loads
+  @javascript @home_graph_render
+  Scenario: Hiring Overview chart or empty state loads
+    Given Home has recent calls, upcoming calendar entries and a hire
     When I am on "/index.php?m=home"
     Then the Home graph is loaded
 

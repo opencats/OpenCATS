@@ -57,11 +57,12 @@ Feature: Reports presentation and existing output workflows
     And the response status code should be 200
 
   @reports_graph
-  Scenario: Standalone graph retains image and close control
-    When I am on "/index.php?m=reports&a=graphView&theImage=images/noDataByGender.png"
+  Scenario: Standalone pipeline retains values and close control
+    When I am on "/index.php?m=reports&a=graphView&jobOrderID=40001"
     Then I should see "Graph refreshes every 5 minutes"
     And I should see "Close Window"
-    And I should see a "img[src='images/noDataByGender.png']" element
+    And I should see "Status of Candidates"
+    And I should see "Total Pipeline"
 
   @reports_error
   Scenario: Invalid job order report retains error handling

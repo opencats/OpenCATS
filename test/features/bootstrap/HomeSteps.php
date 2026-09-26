@@ -62,19 +62,25 @@ trait HomeSteps
     /** @Then the Home graph is loaded */
     public function homeGraphLoaded()
     {
-        if (!$this->getSession()->wait(5000, "document.getElementById('homeGraph').complete && document.getElementById('homeGraph').naturalWidth === 495"))
+        if (!$this->getSession()->wait(5000, "['ready', 'empty'].indexOf(document.querySelector('#homeGraph [data-chart-period]:not([hidden]) .oc-chart').dataset.chartState) !== -1"))
         {
-            throw new \RuntimeException('Existing Hiring Overview image did not load.');
+            throw new \RuntimeException('Hiring Overview did not load.');
         }
     }
 
     /** @Then the Home graph view is :view */
     public function homeGraphView($view)
     {
-        $src = $this->getSession()->getPage()->find('css', '#homeGraph')->getAttribute('src');
-        if (strpos($src, '&view=' . $view) === false || strpos($src, 'width=495&height=230') === false)
+        $this->getSession()->wait(5000, "document.getElementById('homeGraph').dataset.view === '" . $view . "'");
+        $graph = $this->getSession()->getPage()->find('css', '#homeGraph');
+        if ($graph->getAttribute('data-view') !== $view)
         {
-            throw new \RuntimeException('Graph URL contract changed: ' . $src);
+            throw new \RuntimeException('Incorrect Hiring Overview range.');
+        }
+        $panel = $graph->find('css', '[data-chart-period="' . $view . '"]');
+        if (!$panel->isVisible() || count($panel->findAll('css', 'tbody tr')) !== 4)
+        {
+            throw new \RuntimeException('Hiring Overview must retain four periods.');
         }
     }
 
