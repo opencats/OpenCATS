@@ -88,7 +88,7 @@ Feature: Home dashboard and global Quick Search
     Given Home has 16 important candidates
     When I am on "/index.php?m=home"
     And I fill in "quickSearchFor" with "HomeFixture*"
-    And I press "Go"
+    And I press "Go" and wait for navigation
     Then I should see "Candidates Results"
     And I should see "HomeFixture01"
     And I should see "HomeFixture16"

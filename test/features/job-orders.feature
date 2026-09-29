@@ -69,7 +69,7 @@ Feature: Job Orders
     And I select "Gomez, Marcus" in the "#recruiter" select
     And fill in "city" with "Minneapolis"
     And fill in "state" with "MN"
-    And press "Add Job Order" 
+    And I press "Add Job Order" and wait for navigation
     Then I should see "Title"
     And I should see "Company Name"
     And I should see "Recruiter"
@@ -176,7 +176,7 @@ Feature: Job Orders
     And fill in "companyName" with "Test Company ATxyz"
     And I wait for "#CompanyResults div#suggest0"
     And I click on the element "#CompanyResults div#suggest0"
-    And press "Save"
+    And I press "Save" and wait for navigation
     Then I should see "Frontend developer"
     And I should see "CATS Administrator"
     And I should see "Marcus Gomez"
@@ -193,7 +193,7 @@ Feature: Job Orders
     And I am on "/index.php?m=joborders&a=search" 
     And I select "Company Name" in the "#searchMode" select
     And I fill in "searchText" with "Test Company BigJump"
-    And press "Search" 
+    And I press "Search" and wait for navigation
     Then I should see "PHP developer" in the ".oc-joborder-search-results" element
     And I should see "Test Company BigJump" in the ".oc-joborder-search-results" element
     And I should not see "Test Company ATxyz" in the ".oc-joborder-search-results" element
@@ -210,7 +210,7 @@ Feature: Job Orders
     And I am on "/index.php?m=joborders&a=search" 
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "PHP developer"
-    And press "Search" 
+    And I press "Search" and wait for navigation
     Then I should see "PHP developer" in the ".oc-joborder-search-results" element
     And I should see "Test Company BigJump" in the ".oc-joborder-search-results" element
     And I should not see "Test Company ATxyz" in the ".oc-joborder-search-results" element
@@ -227,7 +227,7 @@ Feature: Job Orders
     And I am on "/index.php?m=joborders&a=search" 
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "PHP developer"
-    And press "Search" 
+    And I press "Search" and wait for navigation
     When I click on "PHP developer" on the row containing "Active"
     Then I should see "PHP developer"
     And I should see "Job Order Details"
@@ -244,7 +244,7 @@ Feature: Job Orders
     And I am on "/index.php?m=joborders&a=search" 
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "PHP developer"
-    And press "Search" 
+    And I press "Search" and wait for navigation
     When I click on "PHP developer" on the row containing "Active"
     And press "Delete"
     And I should see "Delete this job order?" in alert popup
@@ -260,7 +260,7 @@ Feature: Job Orders
     And I am on "/index.php?m=joborders&a=search" 
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "Javascript developer"
-    And press "Search" 
+    And I press "Search" and wait for navigation
     And I click on "Javascript developer" on the row containing "Active"
     And follow "Add Candidate to This Job Order"
     And I switch to the iframe "popupInner"
@@ -292,7 +292,7 @@ Feature: Job Orders
     And I am on "/index.php?m=joborders&a=search" 
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "Javascript developer"
-    And press "Search" 
+    And I press "Search" and wait for navigation
     And I click on "Javascript developer" on the row containing "Active"
     And follow "Add Candidate to This Job Order"
     And I switch to the iframe "popupInner"
@@ -311,7 +311,7 @@ Feature: Job Orders
     And I am on "/index.php?m=joborders&a=search" 
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "Javascript developer"
-    And press "Search" 
+    And I press "Search" and wait for navigation
     And I click on "Javascript developer" on the row containing "Active"
     And follow "Add Candidate to This Job Order"
     And I switch to the iframe "popupInner"
@@ -330,7 +330,7 @@ Feature: Job Orders
     And I am on "/index.php?m=joborders&a=search" 
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "Javascript developer"
-    And press "Search" 
+    And I press "Search" and wait for navigation
     And I click on "Javascript developer" on the row containing "Active"
     And follow "Add Candidate to This Job Order"
     And I switch to the iframe "popupInner"
@@ -368,7 +368,7 @@ Feature: Job Orders
     And I am on "/index.php?m=joborders&a=search"
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "Job Order Attachment UI Source"
-    And I press "Search"
+    And I press "Search" and wait for navigation
     And I click on "Job Order Attachment UI Source" on the row containing "Active"
     And I follow "Add Attachment"
     And I switch to the iframe "popupInner"

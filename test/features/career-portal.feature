@@ -14,12 +14,12 @@ Feature: Career Portal
     And fill in "lastName" with "Applicant"
     And fill in "email" with "career.portal@example.com"
     And fill in "emailconfirm" with "career.portal@example.com"
-    And I click on the element "#submitApplicationNow"
+    And I press "Submit Application Now" and wait for navigation
     Then I should see "CI Questionnaire"
     And I should see "First test question"
     And I should see "Second test question"
     When I click on the element "input[type='checkbox']"
-    And press "Continue"
+    And I press "Continue" and wait for navigation
     Then I should see "Application Submitted For: Career Portal CI Job"
 
   Scenario: Rich-text job description is rendered
@@ -54,11 +54,11 @@ Feature: Career Portal
     And I fill in "Last Name:" with "Applicant"
     And I fill in "Email Address:" with "career.portal.responsive@example.com"
     And I fill in "Confirm Email:" with "career.portal.responsive@example.com"
-    And I press "Submit Application Now"
+    And I press "Submit Application Now" and wait for navigation
     Then I should see "Portal UI Questionnaire"
     And the public portal fits the viewport
     When I check "First test answer"
-    And I press "Continue"
+    And I press "Continue" and wait for navigation
     Then I should see "Application Submitted For: Career Portal Responsive Job"
     And the public portal fits the viewport
     And the public portal attribution is visible
@@ -75,9 +75,9 @@ Feature: Career Portal
     When I fill in "Enter your e-mail address:" with "career.portal.profile@example.com"
     And I fill in "Last name:" with "Profile"
     And I fill in "Zip code:" with "12345"
-    And I press "Login"
+    And I press "Login" and wait for navigation
     Then I should see "Welcome back Career"
-    When I follow "Update Profile"
+    When I follow "Update Profile" and wait for navigation
     Then I should see "My Profile"
     And the "firstName" field should contain "Career"
     And the "email1" field should contain "career.portal.profile@example.com"
@@ -121,7 +121,7 @@ Feature: Career Portal
     And I follow "Apply to Position"
     Then I should see "I have not registered on this website."
     When I fill in "Enter your e-mail address:" with "career.portal.new@example.com"
-    And I press "Continue to Application"
+    And I press "Continue to Application" and wait for navigation
     Then I should see "Applying to: Career Portal Registration Job"
     And the "email" field should contain "career.portal.new@example.com"
     And the application retains its multipart resume controls

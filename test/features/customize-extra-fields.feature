@@ -11,6 +11,6 @@ Feature: Customize extra fields
     When I follow "Add field to Job Orders"
     And I enter a unique Settings extra field name
     And press "Add Field"
-    And press "Save"
+    And I press "Save" and wait for navigation
     Then the new Settings extra field is visible
     And I should see "Text Box"

@@ -168,7 +168,7 @@ Feature: Activities
     And the Activities panel "scheduleEventDiv" is "visible"
     When I fill in "title" with "Activities scheduled fixture"
     And I click on the element "#allDay1"
-    And I press "Save"
+    And I press "Save" and wait for navigation
     Then I should see "has been scheduled"
     And the Activities event is saved as "private" with duration "0"
 

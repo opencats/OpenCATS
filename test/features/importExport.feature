@@ -28,7 +28,7 @@ Feature: Import presentation and Export download contracts
   @javascript
   Scenario: Missing upload displays the existing error
     When I am on "/index.php?m=import&a=importSelectType&typeOfImport=Companies"
-    And I press "Next"
+    And I press "Next" and wait for navigation
     Then I should see "No file was uploaded."
 
   @javascript
@@ -37,7 +37,7 @@ Feature: Import presentation and Export download contracts
     When I open the disposable Import errors
     Then I should see "Line 2: focused import error"
     And the Import revert contract is intact
-    When I press "Revert Import"
+    When I press "Revert Import" and wait for navigation
     Then I should see "The revert was successful."
     And the disposable Import history entry is gone
 

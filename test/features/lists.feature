@@ -102,7 +102,7 @@ Feature: Saved Lists presentation and shared workflows
     And I remove the candidate from the disposable list
     Then I should see "(0 Items)"
     And the disposable list has no members and the candidate still exists
-    When I press "Delete List"
+    When I press "Delete List" and wait for navigation
     Then I should see "Lists: Home"
     And the disposable list is deleted and the candidate still exists
 

@@ -5,7 +5,7 @@ trait SettingsSteps
     /** @Then the Settings validation alert contains :message */
     public function settingsValidationAlert($message)
     {
-        $actual = $this->getSession()->getDriver()->getWebDriverSession()->getAlert_text();
+        $actual = $this->getSession()->getDriver()->getWebDriverSession()->alert()->getText();
         if (strpos($actual, $message) === false)
         {
             throw new \RuntimeException('Unexpected Settings validation alert: ' . $actual);

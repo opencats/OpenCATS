@@ -118,7 +118,7 @@ trait ListsSteps
         }
         $page->clickLink('Action');
         $page->find('css', 'a[onclick*="addToListFromDatagridModal"][onclick*="serializeArray"]')->click();
-        $this->getSession()->switchToIFrame('popupFrameIFrame');
+        $this->iSwitchToIframe('popupInner');
         $this->iWaitUntilISee('Add To Lists');
     }
 

@@ -26,6 +26,7 @@ include_once(LEGACY_ROOT . '/lib/Questionnaire.php');
  */
 class FeatureContext extends MinkContext implements Context, SnippetAcceptingContext
 {
+    use \OpenCATS\Tests\Behat\NavigationSteps;
     use ActivitiesSteps;
     use ReportsSteps;
     use SettingsSteps;
@@ -256,7 +257,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     /** @When I cancel the Calendar dialog */
     public function cancelCalendarDialog()
     {
-        $this->getSession()->getDriver()->getWebDriverSession()->dismiss_alert();
+        $this->getSession()->getDriver()->getWebDriverSession()->alert()->dismiss();
     }
 
     /**
@@ -331,7 +332,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         $this->fillField('lastName', $lastName);
         list($key, $value) = explode("=", $property);
         $this->fillField($key, $value);
-        $this->pressButton('Add Candidate');
+        $this->pressButtonAndWaitForNavigation('Add Candidate');
     }
 
     /**
@@ -473,6 +474,8 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
                 var iframes = elem.getElementsByTagName('iframe');
                 var f = iframes[0];
                 f.id = \"no_name_iframe\";
+                // The W3C Mink driver selects an iframe by name.
+                f.name = \"no_name_iframe\";
             })()";
             $this->getSession()->executeScript($javascript);
             }
@@ -516,7 +519,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
     public function assertPopupMessage($message)
     {
         return strpos(
-            $this->getSession()->getDriver()->getWebDriverSession()->getAlert_text(),
+            $this->getSession()->getDriver()->getWebDriverSession()->alert()->getText(),
                       $message
         ) != -1;
     }
@@ -526,7 +529,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
      */
     public function confirmPopup()
     {
-        $this->getSession()->getDriver()->getWebDriverSession()->accept_alert();
+        $this->getSession()->getDriver()->getWebDriverSession()->alert()->accept();
     }
 
     /**
@@ -817,7 +820,7 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
         $this->visitPath('/index.php?m=login');
         $this->fillField('username', $username);
         $this->fillField('password', $password);
-        $this->pressButton('Login');
+        $this->pressButtonAndWaitForNavigation('Login');
 
     }
 
