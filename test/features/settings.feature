@@ -131,7 +131,7 @@ Feature: Settings presentation and existing workflows
     And I select "0" from "dayStart"
     And I press "Reset"
     Then the Settings field "dayStart" retains its value
-    When I press "Save"
+    When I press "Save" and wait for navigation
     And I am on "/index.php?m=settings&a=customizeCalendar"
     Then the Settings field "dayStart" retains its value
 
@@ -149,7 +149,7 @@ Feature: Settings presentation and existing workflows
     When I am on "/index.php?m=settings&a=careerPortalQuestionnaire"
     And I follow "(add question)"
     And I fill in "questionText" with "Settings presentation question"
-    And I press "Add Question"
+    And I press "Add Question" and wait for navigation
     Then I should see "Settings presentation question"
     And I should see "(add answer)"
 

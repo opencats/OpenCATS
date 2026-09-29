@@ -169,7 +169,7 @@ trait ActivitiesSteps
     /** @Then the Activities validation alert contains :message */
     public function activitiesAlert($message)
     {
-        $actual = $this->getSession()->getDriver()->getWebDriverSession()->getAlert_text();
+        $actual = $this->getSession()->getDriver()->getWebDriverSession()->alert()->getText();
         if (strpos($actual, $message) === false)
         {
             throw new \RuntimeException('Unexpected validation alert: ' . $actual);
@@ -189,14 +189,32 @@ trait ActivitiesSteps
     {
         $session = $this->getSession()->getDriver()->getWebDriverSession();
         $hash = md5('activity:ActivityDataGrid');
-        $source = $session->element('id', 'cell' . $hash . '0');
-        $target = $session->element('id', 'cell' . $hash . '2');
-        $session->moveto(array('element' => $source->getID()));
-        $session->buttondown();
-        // The existing column mover starts only after its 450ms hold threshold.
-        usleep(600000);
-        $session->moveto(array('element' => $target->getID()));
-        $session->buttonup();
+        $source = $session->element('css selector', '#cell' . $hash . '0');
+        $target = $session->element('css selector', '#cell' . $hash . '2');
+        try
+        {
+            $session->postActions(array('actions' => array(array(
+                'type' => 'pointer',
+                'id' => 'activities-column-mouse',
+                'parameters' => array('pointerType' => 'mouse'),
+                'actions' => array(
+                    array('type' => 'pointerMove', 'duration' => 0,
+                        'origin' => array(\WebDriver\Element::WEB_ELEMENT_ID => $source->getID()),
+                        'x' => 0, 'y' => 0),
+                    array('type' => 'pointerDown', 'button' => 0),
+                    // The column mover starts only after its 450ms hold threshold.
+                    array('type' => 'pause', 'duration' => 600),
+                    array('type' => 'pointerMove', 'duration' => 0,
+                        'origin' => array(\WebDriver\Element::WEB_ELEMENT_ID => $target->getID()),
+                        'x' => 0, 'y' => 0),
+                    array('type' => 'pointerUp', 'button' => 0),
+                ),
+            ))));
+        }
+        finally
+        {
+            $session->deleteActions();
+        }
     }
 
     /** @Then Activities starts with the :column column */

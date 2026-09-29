@@ -17,7 +17,7 @@
         "behat/mink": "^1.13.0",
         "friends-of-behat/mink-extension": "^2.7.5",
         "behat/mink-browserkit-driver": "^2.3.0",
-        "behat/mink-selenium2-driver": "^1.7.0",
+        "lullabot/mink-selenium2-driver": "^1.7.4",
         "phpunit/phpunit": "^13.1.11"
     },
     "autoload": {

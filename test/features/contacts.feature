@@ -21,12 +21,12 @@ Feature: Contacts
     When I follow "edit_link"
     Then I should see a "main #editContactForm" element
     When I fill in "Title" with "Updated contact title"
-    And I press "Save"
+    And I press "Save" and wait for navigation
     Then I should see "Updated contact title"
     When I follow "Search Contacts"
     And I select "Contact Name" from "Search By"
     And I fill in "Search Text" with "BootstrapContact"
-    And I press "searchContacts"
+    And I press "searchContacts" and wait for navigation
     Then I should see "BootstrapContact"
     And I should see a ".oc-contact-search-results table tbody a" element
     When I follow "Cold Call List"

@@ -145,7 +145,7 @@ Feature: Calendar
     When I uncheck "hideNonPublic"
     Then Calendar view "calendarDay" should have "2" events
     When I press "Logout"
-    And I login as "testerRead" "tester"
+    And I login as "testerRead" "opencats-test-security-903"
     And I am on "/index.php?m=calendar&view=DAYVIEW&year=2030&month=6&day=12"
     Then Calendar view "calendarDay" should have "3" events
     When I click on the element "#calendarDay .calendarEntry"

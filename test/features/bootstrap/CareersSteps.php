@@ -153,7 +153,7 @@ trait CareersSteps
     /** @Then the career portal validation alert contains :message */
     public function assertCareersValidationAlert($message)
     {
-        $actual = $this->getSession()->getDriver()->getWebDriverSession()->getAlert_text();
+        $actual = $this->getSession()->getDriver()->getWebDriverSession()->alert()->getText();
         if (strpos($actual, $message) === false)
         {
             throw new \RuntimeException('Unexpected Career Portal validation alert: ' . $actual);

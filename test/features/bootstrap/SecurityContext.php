@@ -19,6 +19,8 @@ define('ADMIN_ID', 1);
  */
 class SecurityContext extends MinkContext implements Context, SnippetAcceptingContext
 {
+    use \OpenCATS\Tests\Behat\NavigationSteps;
+
     private $result;
     private $accessLevel;
     private $csrfToken;
@@ -90,37 +92,37 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
         {
             case 'DISABLED':
                 $username = "testerDisabled";
-                $password = "tester";
+                $password = "opencats-test-security-903";
                 break;
             case 'READONLY':
                 $username = "testerRead";
-                $password = "tester";
+                $password = "opencats-test-security-903";
                 break;
             case 'EDIT':
                 $username = "testerEdit";
-                $password = "tester";
+                $password = "opencats-test-security-903";
                 break;
             case 'DELETE':
                 $username = "testerDelete";
-                $password = "tester";
+                $password = "opencats-test-security-903";
                 break;
             case 'DEMO':
                 $username = "testerDemo";
-                $password = "tester";
+                $password = "opencats-test-security-903";
                 break;
             case 'ADMIN':
                 $username = "testerSA";
-                $password = "tester";
+                $password = "opencats-test-security-903";
                 break;
             case 'MULTI_ADMIN':
                 /* Legacy multi-site administration was removed. Keep the
                  * existing security matrix label mapped to site-admin access. */
                 $username = "testerSA";
-                $password = "tester";
+                $password = "opencats-test-security-903";
                 break;
             case 'ROOT':
                 $username = "testerRoot";
-                $password = "tester";
+                $password = "opencats-test-security-903";
                 break;
             default:
                 throw new PendingException();
@@ -130,7 +132,7 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
         $this->visitPath('/index.php?m=login');
         $this->fillField('username', $username);
         $this->fillField('password', $password);
-        $this->pressButton('Login');
+        $this->pressButtonAndWaitForNavigation('Login');
         $this->visitPath('/index.php');
         $this->refreshCSRFTokenFromCurrentPage();
     }

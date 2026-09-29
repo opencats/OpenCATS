@@ -8,16 +8,16 @@ Feature: Candidate workflows
     And I am on "/index.php?m=candidates&a=add"
     When I fill in "firstName" with "BootstrapCandidate"
     And I fill in "lastName" with "Migration"
-    And I press "Add Candidate"
+    And I press "Add Candidate" and wait for navigation
     Then I should see "BootstrapCandidate"
     When I follow "edit_link"
     And I fill in "keySkills" with "Candidate workflow verification"
-    And I press "Save"
+    And I press "Save" and wait for navigation
     Then I should see "Candidate workflow verification"
     When I am on "/index.php?m=candidates&a=search"
     And I select "Candidate Name" from "searchMode"
     And I fill in "searchText" with "BootstrapCandidate"
-    And I press "searchCandidates"
+    And I press "searchCandidates" and wait for navigation
     Then I should see "BootstrapCandidate"
     When I follow "BootstrapCandidate"
     Then I should see "Candidate workflow verification"
