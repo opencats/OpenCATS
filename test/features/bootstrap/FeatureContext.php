@@ -26,6 +26,8 @@ include_once(LEGACY_ROOT . '/lib/Questionnaire.php');
  */
 class FeatureContext extends MinkContext implements Context, SnippetAcceptingContext
 {
+    use CareerPortalAuthenticationSteps;
+
     protected $scenarioTitle = null;
     private $roleData;
 
