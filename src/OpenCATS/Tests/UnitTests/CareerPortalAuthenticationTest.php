@@ -40,36 +40,45 @@ class CareerPortalAuthenticationTest extends TestCase
         $this->db->method('makeQueryString')->willReturnCallback(fn($value) => "'" . $value . "'");
         $this->db->method('makeQueryInteger')->willReturnCallback(fn($value) => (string) $value);
         $this->db->method('getNumRows')->willReturnCallback(fn() => $this->match ? 1 : 0);
-        $this->db->method('getAssoc')->willReturnCallback(function ($sql) {
-            $this->queries[] = $sql;
-            if (str_contains($sql, 'SELECT candidate_id FROM candidate')) return $this->match ? array('candidate_id' => 7) : array();
-            if (str_contains($sql, 'candidate.candidate_id AS candidateID')) return $this->candidate();
-            if (preg_match('/FROM\s+user\b/', $sql)) return array('userID' => 1);
-            if (str_contains($sql, 'FROM site')) return array('name' => 'Test site');
-            if (preg_match('/FROM\s+site\b/', $sql)) return array('name' => 'Test site');
-            if (preg_match('/FROM\s+joborder\b/', $sql)) return array('public' => 1, 'title' => 'Test job', 'questionnaireID' => 0);
-            return array();
-        });
-        $this->db->method('getAllAssoc')->willReturnCallback(function ($sql) {
-            $this->queries[] = $sql;
-            if (str_starts_with($sql, 'SHOW COLUMNS')) return array(array('Field' => 'last_name'), array('Field' => 'zip'));
-            if (preg_match('/FROM\s+settings\b/', $sql)) return array(array('setting' => 'enabled', 'value' => '1'), array('setting' => 'candidateRegistration', 'value' => '1'));
-            if (str_contains($sql, 'career_portal_template')) {
-                $values = array('Content - Candidate Registration' => $this->registration,
-                    'Content - Candidate Profile' => '<input-firstName><input-email1><input-submit>',
-                    'Content - Apply for Position' => '<input-firstName><input-email><input-captcha req>',
-                    'Content - Main' => '<registeredCandidate><registeredLogin>',
-                    'Content - Search Results' => '<registeredCandidate>',
-                    'Header' => '', 'Footer' => '', 'CSS' => '');
-                return array_map(fn($key, $value) => array('setting' => $key, 'value' => $value), array_keys($values), array_values($values));
-            }
-            if (preg_match('/FROM\s+joborder\b/', $sql)) return array(array('jobOrderID' => 42, 'departmentID' => 0, 'title' => 'Test job', 'city' => '', 'state' => '', 'country' => ''));
-            return array();
-        });
+        $this->db->method('getAssoc')->willReturnCallback($this->candidateQueryResult(...));
+        $this->db->method('getAllAssoc')->willReturnCallback($this->portalQueryRows(...));
         $this->jobs = $this->createStub(JobOrders::class);
         $this->ui = (new ReflectionClass(CareersUI::class))->newInstanceWithoutConstructor();
-        $this->template = new class extends Template { public function display($file) {} };
-        (new ReflectionProperty(UserInterface::class, '_template'))->setValue($this->ui, $this->template);
+        // Keep real template assignment for content assertions, without rendering files.
+        $this->template = new Template();
+        $renderer = $this->createStub(Template::class);
+        $renderer->method('assign')->willReturnCallback($this->template->assign(...));
+        (new ReflectionProperty(UserInterface::class, '_template'))->setValue($this->ui, $renderer);
+    }
+
+    private function candidateQueryResult($sql): array
+    {
+        $this->queries[] = $sql;
+        if (str_contains($sql, 'SELECT candidate_id FROM candidate')) return $this->match ? array('candidate_id' => 7) : array();
+        if (str_contains($sql, 'candidate.candidate_id AS candidateID')) return $this->candidate();
+        if (preg_match('/FROM\s+user\b/', $sql)) return array('userID' => 1);
+        if (str_contains($sql, 'FROM site')) return array('name' => 'Test site');
+        if (preg_match('/FROM\s+site\b/', $sql)) return array('name' => 'Test site');
+        if (preg_match('/FROM\s+joborder\b/', $sql)) return array('public' => 1, 'title' => 'Test job', 'questionnaireID' => 0);
+        return array();
+    }
+
+    private function portalQueryRows($sql): array
+    {
+        $this->queries[] = $sql;
+        if (str_starts_with($sql, 'SHOW COLUMNS')) return array(array('Field' => 'last_name'), array('Field' => 'zip'));
+        if (preg_match('/FROM\s+settings\b/', $sql)) return array(array('setting' => 'enabled', 'value' => '1'), array('setting' => 'candidateRegistration', 'value' => '1'));
+        if (str_contains($sql, 'career_portal_template')) {
+            $values = array('Content - Candidate Registration' => $this->registration,
+                'Content - Candidate Profile' => '<input-firstName><input-email1><input-submit>',
+                'Content - Apply for Position' => '<input-firstName><input-email><input-captcha req>',
+                'Content - Main' => '<registeredCandidate><registeredLogin>',
+                'Content - Search Results' => '<registeredCandidate>',
+                'Header' => '', 'Footer' => '', 'CSS' => '');
+            return array_map(fn($key, $value) => array('setting' => $key, 'value' => $value), array_keys($values), array_values($values));
+        }
+        if (preg_match('/FROM\s+joborder\b/', $sql)) return array(array('jobOrderID' => 42, 'departmentID' => 0, 'title' => 'Test job', 'city' => '', 'state' => '', 'country' => ''));
+        return array();
     }
 
     protected function tearDown(): void
