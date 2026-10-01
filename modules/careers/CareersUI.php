@@ -102,8 +102,6 @@ class CareersUI extends UserInterface
         $jobOrders = new JobOrders();
         $rs = $jobOrders->getAll(JOBORDERS_STATUS_SHARE, -1, -1, -1, false, true);
 
-        $useCookie = true;
-
         // Get the get or post page request
         $p = isset($_GET['p']) ? $_GET['p'] : '';
         $p = isset($_POST['p']) ? $_POST['p'] : $p;
@@ -113,6 +111,18 @@ class CareersUI extends UserInterface
         $pa = isset($_POST['pa']) ? $_POST['pa'] : $pa;
 
         $isRegistrationEnabled = $careerPortalSettingsRS['candidateRegistration'];
+
+        if ($p == 'candidateLogin')
+        {
+            if (!$isRegistrationEnabled || $_SERVER['REQUEST_METHOD'] !== 'POST'
+                || !$this->candidateLogin($template['Content - Candidate Registration'], $jobOrders, $rs))
+            {
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this,
+                    'The information supplied could not be verified. Please check your details and try again.');
+                return;
+            }
+            $p = 'applyToJob';
+        }
 
         switch ($pa)
         {
@@ -124,9 +134,8 @@ class CareersUI extends UserInterface
 
                 if ($isRegistrationEnabled)
                 {
-                    // Remove the saved information cookie
-                    setcookie($this->getCareerPortalCookieName(), '');
-                    $useCookie = false;
+                    unset($_SESSION['careerPortalCandidateID']);
+                    session_regenerate_id(true);
                 }
                 break;
 
@@ -148,7 +157,7 @@ class CareersUI extends UserInterface
 
             $numberOfSearchResultsEscaped = htmlspecialchars((string) count($rs), ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
             $template['Content'] = str_replace('<numberOfSearchResults>', $numberOfSearchResultsEscaped, $template['Content']);
-            $template['Content'] = str_replace('<registeredCandidate>', $useCookie && $isRegistrationEnabled ? $this->getRegisteredCandidateBlock($template['Content - Candidate Registration']) : '', $template['Content']);
+            $template['Content'] = str_replace('<registeredCandidate>', $isRegistrationEnabled ? $this->getRegisteredCandidateBlock($template['Content - Candidate Registration']) : '', $template['Content']);
 
             if ($careerPortalSettingsRS['allowBrowse'] == 1)
             {
@@ -179,9 +188,7 @@ class CareersUI extends UserInterface
         {
             $content = $template['Content - Candidate Profile'];
 
-            // Get information about the candidate from the cookie
-            $fields = $this->getCookieFields();
-            $candidate = $this->ProcessCandidateRegistration($template['Content - Candidate Registration'], $fields);
+            $candidate = $this->getCareerPortalCandidate();
             if ($candidate === false)
             {
                 echo '<html><body>You have not registered yet.  Please wait while we direct you to the job list...<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
@@ -287,9 +294,7 @@ class CareersUI extends UserInterface
                 CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid request.');
             }
 
-            // Get information about the candidate from the cookie
-            $fields = $this->getCookieFields();
-            $candidate = $this->ProcessCandidateRegistration($template['Content - Candidate Registration'], $fields, true);
+            $candidate = $this->getCareerPortalCandidate();
             if ($candidate === false)
             {
                 echo '<html><body>You have not registered yet.  Please wait while we direct you to the job list...<script>setTimeout("document.location.href=\'?m=careers&&p=showAll\';", 1500);</script></body></html>';
@@ -390,14 +395,6 @@ class CareersUI extends UserInterface
                 }
             }
 
-            // Set the cookie again, since some information used to verify may be changed
-            $storedVal = '';
-            foreach ($fieldValues as $tag => $tagData)
-            {
-                $storedVal .= sprintf('"%s"="%s"', urlencode($tag), urlencode($tagData));
-            }
-            @setcookie($this->getCareerPortalCookieName(), $storedVal, time()+60*60*24*7*2);
-
             $template['Content'] = '<div id="careerContent"><br /><br /><h1>Please wait while you are redirected to your updated profile...</h1></div>';
             CATSUtility::transferRelativeURI('m=careers&p=showAll&pa=updateProfile&isPostBack=yes');
         }
@@ -407,15 +404,40 @@ class CareersUI extends UserInterface
 
             $jobID = intval($_GET['ID']);
             $jobOrderData = $jobOrders->get($jobID);
-            $js = '';
             $jobTitleEscaped = htmlspecialchars((string) $jobOrderData['title'], ENT_QUOTES | ENT_SUBSTITUTE, HTML_ENCODING);
 
             $content = str_replace(array('<applyContent>','</applyContent>'), '', $content);
 
-            $content = str_replace('<input-submit>', '<input type="submit"' . ($this->_bootstrapPortal ? ' class="btn btn-primary"' : '') . ' id="submitButton" name="submitButton" value="Continue to Application" />', $content);
-            $content = str_replace('<input-new>', '<input type="radio"' . ($this->_bootstrapPortal ? ' class="form-check-input"' : '') . ' id="isNewYes" name="isNew" value="yes" onchange="isCandidateRegisteredChange();" checked />', $content);
-            $content = str_replace('<input-registered>', '<input type="radio"' . ($this->_bootstrapPortal ? ' class="form-check-input"' : '') . ' id="isNewNo" name="isNew" value="no" onchange="isCandidateRegisteredChange();" />', $content);
-            $content = str_replace('<input-rememberMe>', '<input type="checkbox"' . ($this->_bootstrapPortal ? ' class="form-check-input"' : '') . ' id="rememberMe" name="rememberMe" value="yes" checked />', $content);
+            $content = str_replace(array('<input-captcha>', '<input-captcha req>'), '', $content);
+            $content = str_replace('<input-submit>', $this->getCareerPortalCaptchaInput() . '<input-submit>', $content);
+
+            $content = str_replace(
+                '<input-submit>',
+                '<input type="submit"' . ($this->_bootstrapPortal ? ' class="btn btn-primary"' : '')
+                . ' id="submitButton" name="submitButton" value="Continue to Application" />',
+                $content
+            );
+
+            $content = str_replace(
+                '<input-new>',
+                '<input type="radio"' . ($this->_bootstrapPortal ? ' class="form-check-input"' : '')
+                . ' id="isNewYes" name="isNew" value="yes" onchange="isCandidateRegisteredChange();" checked />',
+                                   $content
+            );
+
+            $content = str_replace(
+                '<input-registered>',
+                '<input type="radio"' . ($this->_bootstrapPortal ? ' class="form-check-input"' : '')
+                . ' id="isNewNo" name="isNew" value="no" onchange="isCandidateRegisteredChange();" />',
+                                   $content
+            );
+
+            // Also remove the legacy label in templates already stored in the database.
+            $content = str_replace(
+                array('<input-rememberMe>', 'Remember my information for future visits'),
+                                   '',
+                                   $content
+            );
             $content = str_replace('<title>', $jobTitleEscaped, $content);
 
             // Process html-ish fields like <input-firstName> into the proper form
@@ -425,33 +447,13 @@ class CareersUI extends UserInterface
                 $content
             );
 
-            if (count($fields = $this->getCookieFields()))
-            {
-                $js = '<script language="javascript" type="text/javascript">' . "\n"
-                    . 'function populateSavedFields() { var obj; obj = document.getElementById(\'isNewNo\'); '
-                    . 'if (obj) { obj.checked = true; enableFormFields(true); } ' . "\n";
-                foreach ($fields as $tagName => $tagValue)
-                {
-                    $js .= sprintf(
-                        'if (obj = document.getElementById(%s)) obj.value = %s;%s',
-                        json_encode((string) urldecode($tagName), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
-                        json_encode((string) urldecode($tagValue), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
-                        "\n"
-                    );
-                }
-                $js .= "}\n</script>\n";
-            }
-
             // Insert the form block
             $content = sprintf(
-                '%s<form name="register" id="register" method="post" onsubmit="return validateCandidateRegistration()" '
-                . 'action="%s?m=careers&p=applyToJob&ID=%d">'
-                . '<input type="hidden" name="applyToJobSubAction" value="processLogin" />',
-                $js,
+                '<form name="register" id="register" method="post" onsubmit="return validateCandidateRegistration()" '
+                . 'action="%s?m=careers&amp;p=candidateLogin&amp;ID=%d">',
                 CATSUtility::getIndexName(),
                 $jobID
-            ) . $content . '<script>enableFormFields(false); ' . ($js != '' ? 'populateSavedFields();' : '')
-            . '</script></form>';
+            ) . $content . '<script>enableFormFields(false);</script></form>';
 
             $template['Content'] = $content;
         }
@@ -485,8 +487,7 @@ class CareersUI extends UserInterface
             if ($isRegistrationEnabled)
             {
                 // Check if the user is registered and logged in
-                $cookieFields = $this->getCookieFields();
-                $candidate = $this->ProcessCandidateRegistration($template['Content - Candidate Registration'], $cookieFields, true);
+                $candidate = $this->getCareerPortalCandidate();
                 if ($candidate !== false)
                 {
                     // The candidate is registered
@@ -521,37 +522,6 @@ class CareersUI extends UserInterface
              */
             if (isset($_POST[$id='applyToJobSubAction']) && strlen($subAction = $_POST[$id]))
             {
-                // Check if a candidate has registered and has indicated it
-                if (!strcmp($subAction, 'processLogin') &&
-                    isset($_POST['isNew']) && !strcmp($_POST['isNew'], 'no') && $isRegistrationEnabled)
-                {
-                    $candidate = $this->ProcessCandidateRegistration($template['Content - Candidate Registration']);
-                    if ($candidate !== false)
-                    {
-                        // Rewrite here, I'll fix it later
-                        $firstName = $candidate['firstName']; $lastName = $candidate['lastName'];
-                        $address = $candidate['address'];
-                        $address2 = $candidate['address2'];
-                        $city = $candidate['city'];
-                        $state = $candidate['state'];
-                        $zip = $candidate['zip'];
-                        if (!isset($_POST['country']))
-                        {
-                            $country = $candidate['country'];
-                        }
-                        $phone = $candidate['phoneWork'];
-                        $phoneHome = $candidate['phoneHome'];
-                        $phoneCell = $candidate['phoneCell'];
-                        $email = $candidate['email1'];
-                        $email2 = $candidate['email2'];
-                        $emailconfirm = $email;
-                        $keySkills = $candidate['keySkills'];
-                        $source = $candidate['source'];
-                        $employer = $candidate['currentEmployer'];
-                        $candidateID = $candidate['candidateID'];
-                    }
-                }
-
                 // Check if a file has been uploaded, if so populate the contents textarea
                 if (($uploadFile = FileUtility::getUploadFileFromPost('careerportaladd', 'resumeFile')) !== false)
                 {
@@ -683,7 +653,7 @@ class CareersUI extends UserInterface
             $template['Content'] = str_replace('<input-keySkills>', '<input name="keySkills" id="keySkills" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $keySkillsEscaped . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-source>', '<input name="source" id="source" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $sourceEscaped . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-employer>', '<input name="employer" id="employer" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" value="' . $employerEscaped . '" />', $template['Content']);
-            $template['Content'] = str_replace(array('<input-captcha>', '<input-captcha req>'), '<img src="' . CATSUtility::getIndexName() . '?m=careers&amp;p=captcha&amp;t=' . time() . '" alt="Captcha" /><br />' . '<input type="text" name="captcha" id="captcha" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" />', $template['Content']);
+            $template['Content'] = str_replace(array('<input-captcha>', '<input-captcha req>'), $this->getCareerPortalCaptchaInput(), $template['Content']);
             $template['Content'] = str_replace('<input-resumeUpload>', '<input type="file" id="resume" name="file" class="inputBoxFile' . ($this->_bootstrapPortal ? ' form-control' : '') . '" />', $template['Content']);
             $template['Content'] = str_replace('<input-resumeUploadPreview>',
                 '<input type="hidden" id="applyToJobSubAction" name="applyToJobSubAction" value="" /> '
@@ -820,8 +790,8 @@ class CareersUI extends UserInterface
             }
 
             // Check if this is a returning candidate
-            $candidateID = isset($_POST['candidateID']) ? intval($_POST['candidateID']) : -1;
-            if ($candidateID == -1) $candidateID = false;
+            $candidate = $isRegistrationEnabled ? $this->getCareerPortalCandidate() : false;
+            $candidateID = $candidate !== false ? $candidate['candidateID'] : false;
 
             /**
              * Applicant has completed their application, check to see if a questionnaire
@@ -951,7 +921,7 @@ class CareersUI extends UserInterface
                 ENT_QUOTES | ENT_SUBSTITUTE,
                 HTML_ENCODING
             );
-            $template['Content'] = str_replace('<registeredCandidate>', $useCookie && $isRegistrationEnabled ? $this->getRegisteredCandidateBlock($template['Content - Candidate Registration']) : '', $template['Content']);
+            $template['Content'] = str_replace('<registeredCandidate>', $isRegistrationEnabled ? $this->getRegisteredCandidateBlock($template['Content - Candidate Registration']) : '', $template['Content']);
             $template['Content'] = str_replace('<title>',        $jobTitleEscaped, $template['Content']);
             $template['Content'] = str_replace('<location>',     $jobLocationEscaped, $template['Content']);
             $template['Content'] = str_replace('<openings>',     $jobOpeningsEscaped, $template['Content']);
@@ -967,7 +937,7 @@ class CareersUI extends UserInterface
             $template['Content'] = str_replace('<salary>',       $jobSalaryEscaped, $template['Content']);
             $template['Content'] = str_replace('<daysOld>',      $jobDaysOldEscaped, $template['Content']);
 
-            $isRegistered = $this->isCandidateRegistered($template['Content - Candidate Registration']);
+            $isRegistered = $isRegistrationEnabled && $this->getCareerPortalCandidate() !== false;
 
             // If candidate registration is enabled, ask them if they would like to log in first
             if ($isRegistrationEnabled && !$isRegistered)
@@ -1019,76 +989,17 @@ class CareersUI extends UserInterface
         else
         {
             $template['Content'] = $template['Content - Main'];
-            $template['Content'] = str_replace('<registeredCandidate>', $useCookie && $isRegistrationEnabled ? $this->getRegisteredCandidateBlock($template['Content - Candidate Registration']) : '', $template['Content']);
+            $template['Content'] = str_replace('<registeredCandidate>', $isRegistrationEnabled ? $this->getRegisteredCandidateBlock($template['Content - Candidate Registration']) : '', $template['Content']);
 
-            $isRegistered = $useCookie ? $this->isCandidateRegistered($template['Content - Candidate Registration']) : false;
-
-            if ($isRegistrationEnabled)
-            {
-                // postback
-                if (isset($_GET[$id='postback']) && !strcmp($_GET[$id], 'yes'))
-                {
-                    $candidate = $this->ProcessCandidateRegistration($template['Content - Candidate Registration']);
-
-                    if ($candidate === false)
-                    {
-                        $isRegistered = false;
-                        // Error Message
-                        $template['Content'] = str_replace('<registeredLoginTitle>', '<h1 style="color: #800000;">No applicants were '
-                            . 'found matching your criteria.</h1><h3>Once you apply to any of our positions, you will automatically '
-                            . 'be registered.<br /><br />', $template['Content']
-                        );
-                    }
-                    else
-                    {
-                        $isRegistered = true;
-                    }
-                }
-
-                if (!$isRegistered)
-                {
-                    // If they're not logged on but registration is enabled, give them the opportunity to
-                    $content = $template['Content - Candidate Registration'];
-                    $js = '';
-
-                    $content = str_replace(array('<registeredLoginTitle>', '</registeredLoginTitle>'), '', $content);
-                    $content = str_replace('<applyContent>', '<div style="display: none;">', $content);
-                    $content = str_replace('</applyContent>', '</div>', $content);
-                    $content = str_replace('<input-submit>', '<input type="submit"' . ($this->_bootstrapPortal ? ' class="btn btn-primary"' : '') . ' id="submitButton" name="submitButton" value="Login" />', $content);
-                    $content = str_replace('<input-new>', '<input type="hidden" id="isNewNo" name="isNew" value="no" />', $content);
-                    $content = str_replace('<input-registered>', '', $content);
-                    $content = str_replace('<input-rememberMe>', '<input type="checkbox"' . ($this->_bootstrapPortal ? ' class="form-check-input"' : '') . ' id="rememberMe" name="rememberMe" value="yes" checked />', $content);
-                    $content = str_replace('<title>', '', $content);
-
-                    // Process html-ish fields like <input-firstName> into the proper form
-                    $content = preg_replace(
-                        '/\<input\-([A-Za-z0-9]+)\>/',
-                        '<input type="text" class="inputBoxNormal' . ($this->_bootstrapPortal ? ' form-control' : '') . '" ' . ($this->_bootstrapPortal ? '' : 'style="width: 270px;"') . ' name="$1" id="$1" onfocus="onFocusFormField(this)" />',
-                        $content
-                    );
-
-                    // Insert the form block
-                    $content = sprintf(
-                        '<form name="login" id="login" method="post" onsubmit="return validateCandidateRegistration()" '
-                        . 'action="%s?postback=yes">',
-                        CATSUtility::getIndexName()
-                    ) . $content . '<script>enableFormFields(true);</script></form>';
-
-                    $template['Content'] = str_replace('<registeredLogin>', $content, $template['Content']);
-                }
-                else
-                {
-                    $template['Content'] = str_replace('<registeredLoginTitle>', '<div style="display: none;">', $template['Content']);
-                    $template['Content'] = str_replace('</registeredLoginTitle>', '</div>', $template['Content']);
-                    $template['Content'] = str_replace(array('<registeredCandidate>', '<registeredLogin>'), '', $template['Content']);
-                }
-            }
-            else
-            {
-                $template['Content'] = str_replace('<registeredLoginTitle>', '<div style="display: none;">', $template['Content']);
-                $template['Content'] = str_replace('</registeredLoginTitle>', '</div>', $template['Content']);
-                $template['Content'] = str_replace(array('<registeredCandidate>', '<registeredLogin>'), '', $template['Content']);
-            }
+            $template['Content'] = str_replace('<registeredLoginTitle>', '<div style="display: none;">', $template['Content']);
+            $template['Content'] = str_replace('</registeredLoginTitle>', '</div>', $template['Content']);
+            $template['Content'] = str_replace(
+                '<registeredLogin>',
+                $isRegistrationEnabled && $this->getCareerPortalCandidate() === false
+                ? '<p>To sign in, select a current vacancy and choose to apply as a returning candidate.</p>'
+                : '',
+                $template['Content']
+            );
 
         }
 
@@ -1164,6 +1075,71 @@ class CareersUI extends UserInterface
         }
     }
 
+    private function getCareerPortalCandidate()
+    {
+        $candidateID = $_SESSION['careerPortalCandidateID'] ?? null;
+        if (!is_int($candidateID) || $candidateID <= 0)
+        {
+            return false;
+        }
+
+        $candidates = new Candidates();
+        $candidate = $candidates->get($candidateID);
+        if (empty($candidate['candidateID']))
+        {
+            unset($_SESSION['careerPortalCandidateID']);
+            return false;
+        }
+        return $candidate;
+    }
+
+    private function candidateLogin($template, $jobOrders, $publicJobOrders)
+    {
+        $jobID = $_GET['ID'] ?? null;
+        if ((!is_string($jobID) && !is_int($jobID)) || filter_var($jobID, FILTER_VALIDATE_INT, array('options' => array('min_range' => 1))) === false)
+        {
+            return false;
+        }
+        $jobID = (int) $jobID;
+        $jobOrder = $jobOrders->get($jobID);
+        // Reuse the exact visibility rules used for the portal's vacancy listing.
+        if (empty($jobOrder['public']) || !in_array($jobID, array_column($publicJobOrders, 'jobOrderID')))
+        {
+            return false;
+        }
+
+        // New applicants continue to the existing application form without authentication.
+        if (isset($_POST['isNew']) && $_POST['isNew'] === 'yes')
+        {
+            return true;
+        }
+        if (!$this->validateCareerPortalCaptcha($_POST['captcha'] ?? ''))
+        {
+            return false;
+        }
+        if ($this->getCareerPortalCandidate() !== false)
+        {
+            return true;
+        }
+        $candidate = $this->ProcessCandidateRegistration($template);
+        if ($candidate === false || empty($candidate['candidateID']))
+        {
+            return false;
+        }
+
+        session_regenerate_id(true);
+        $_SESSION['careerPortalCandidateID'] = (int) $candidate['candidateID'];
+        return true;
+    }
+
+    private function getCareerPortalCaptchaInput()
+    {
+        return '<img src="' . CATSUtility::getIndexName() . '?m=careers&amp;p=captcha&amp;t=' . time()
+        . '" alt="Captcha" /><br /><label for="captcha">Enter the code shown above:</label> '
+        . '<input type="text" name="captcha" id="captcha" class="inputBoxNormal'
+        . ($this->_bootstrapPortal ? ' form-control' : '') . '" />';
+    }
+
     private function outputCareerPortalCaptcha()
     {
         $builder = new \Gregwar\Captcha\CaptchaBuilder();
@@ -1185,7 +1161,7 @@ class CareersUI extends UserInterface
     private function validateCareerPortalCaptcha($captchaValue)
     {
         $expectedPhrase = isset($_SESSION['careerPortalCaptcha']) ? trim((string) $_SESSION['careerPortalCaptcha']) : '';
-        $submittedPhrase = trim((string) $captchaValue);
+        $submittedPhrase = is_string($captchaValue) ? trim($captchaValue) : '';
 
         $this->clearCareerPortalCaptchaPhrase();
 
@@ -1690,23 +1666,6 @@ class CareersUI extends UserInterface
          */
         $candidates = new Candidates();
 
-        /**
-         * Save basic information in a cookie in case the site is using registration to
-         * process repeated postings, etc.
-         */
-        $fields = array('firstName', 'lastName', 'email', 'address', 'address2', 'city', 'state', 'zip', 'country', 'phone',
-            'phoneHome', 'phoneCell'
-        );
-        $storedVal = '';
-        foreach ($fields as $field)
-        {
-            eval('$tmp = sprintf(\'"%s"="%s"\', $field, urlencode($' . $field . '));');
-            $storedVal .= $tmp;
-        }
-        // Store their information for an hour only (about 1 session), if they return they can log in again and
-        // specify "remember me" which stores it for 2 weeks.
-        @setcookie($this->getCareerPortalCookieName(), $storedVal, time()+60*60);
-
         if ($candidateID !== false)
         {
             $candidate = $candidates->get($candidateID);
@@ -2092,13 +2051,7 @@ class CareersUI extends UserInterface
         return $hiddenTags;
     }
 
-    private function isCandidateRegistered($template)
-    {
-        $fields = $this->getCookieFields();
-        return $this->ProcessCandidateRegistration($template, $fields, true) ? true : false;
-    }
-
-    private function ProcessCandidateRegistration($template, $cookieFields = array(), $ignorePost = false)
+    private function ProcessCandidateRegistration($template)
     {
         $db = DatabaseConnection::getInstance();
 
@@ -2110,32 +2063,21 @@ class CareersUI extends UserInterface
         {
             // Default tags, NOT verification fields
             if (!strcasecmp('submit', $tag) || !strcasecmp('new', $tag) || !strcasecmp('registered', $tag) ||
-                !strcasecmp('rememberMe', $tag))
+                !strcasecmp('rememberMe', $tag) || !strcasecmp('captcha', $tag))
             {
                 continue;
             }
 
-            // All verification tags MUST exist and be completed (javascript validates this)
-            if (!isset($_POST[$tag]) || empty($_POST[$tag]) || $ignorePost)
+            if (!isset($_POST[$tag]) || !is_string($_POST[$tag]) || trim($_POST[$tag]) === '')
             {
-                // There is no post, but this call might be coming from saved cookie data
-                if (!isset($cookieFields[$tag]))
-                {
-                    // Some fields may have different naming
-                    if (!strcmp($tag, 'email') && isset($cookieFields[$id='email1'])) $fields[$tag] = $cookieFields[$id];
-                    else if (!strcmp($tag, 'employer') && isset($cookieFields[$id='currentEmployer'])) $fields[$tag] = $cookieFields[$id];
-                    else if (!strcmp($tag, 'phone') && isset($cookieFields[$id='phoneWork'])) $fields[$tag] = $cookieFields[$id];
-                    else return false;
-                }
-                else
-                {
-                    $fields[$tag] = $cookieFields[$tag];
-                }
+                return false;
             }
-            else
-            {
-                $fields[$tag] = trim($_POST[$tag]);
-            }
+            $fields[$tag] = trim($_POST[$tag]);
+        }
+
+        if (empty($fields['email']))
+        {
+            return false;
         }
 
         // Get a list of candidate fields to compare against
@@ -2182,55 +2124,15 @@ class CareersUI extends UserInterface
             $candidates = new Candidates();
             $candidate = $candidates->get($rs['candidate_id']);
 
-            // Setup a cookie to remember the user by for the next 2 weeks
-            if (isset($_POST['rememberMe']) && !strcasecmp($_POST['rememberMe'], 'yes'))
-            {
-                $storedVal = '';
-                foreach ($fields as $tag => $tagData)
-                {
-                    $storedVal .= sprintf('"%s"="%s"', urlencode($tag), urlencode($tagData));
-                }
-                @setcookie($this->getCareerPortalCookieName(), $storedVal, time()+60*60*24*7*2);
-            }
-
             return $candidate;
         }
 
         return false;
     }
 
-    private function getCareerPortalCookieName()
-    {
-        return sprintf('cats%dcw', CATS_INSTALLATION_SITE);
-    }
-
-    private function getCookieFields()
-    {
-        $fields = array();
-
-        // Check if there's a cookie to prefill the fields with
-        if (isset($_COOKIE[$id=$this->getCareerPortalCookieName()]))
-        {
-            if (preg_match_all('/"([^"]+)"="([^"]*)"/', $_COOKIE[$id], $matches) > 0)
-            {
-                for ($i = 0; $i < count($matches[1]); $i++)
-                {
-                    $fields[urldecode($matches[1][$i])] = urldecode($matches[2][$i]);
-                    // Some fields have multiple meanings:
-                    if (!strcmp($matches[1][$i], 'email1')) $fields['email'] = urldecode($matches[2][$i]);
-                    else if (!strcmp($matches[1][$i], 'currentEmployer')) $fields['employer'] = urldecode($matches[2][$i]);
-                    else if (!strcmp($matches[1][$i], 'phoneWork')) $fields['phone'] = urldecode($matches[2][$i]);
-                }
-            }
-        }
-
-        return $fields;
-    }
-
     private function getRegisteredCandidateBlock($template)
     {
-        $fields = $this->getCookieFields();
-        $candidate = $this->ProcessCandidateRegistration($template, $fields);
+        $candidate = $this->getCareerPortalCandidate();
 
         if ($candidate !== false)
         {

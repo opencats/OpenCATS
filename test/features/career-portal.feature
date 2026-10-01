@@ -64,26 +64,40 @@ Feature: Career Portal
     And the public portal attribution is visible
 
     Examples:
-      | width | entry                |
-      | 1280  | /index.php?m=careers  |
-      | 390   | /careers/            |
+      | width | entry                 |
+      | 1280  | /index.php?m=careers |
+      | 390   | /careers/             |
 
-  @javascript
-  Scenario: Returning candidate logs in and views their profile
-    Given candidate registration is enabled on the public portal
-    And I am on "/careers/"
-    When I fill in "Enter your e-mail address:" with "career.portal.profile@example.com"
-    And I fill in "Last name:" with "Profile"
-    And I fill in "Zip code:" with "12345"
-    And I press "Login" and wait for navigation
-    Then I should see "Welcome back Career"
-    When I follow "Update Profile" and wait for navigation
-    Then I should see "My Profile"
-    And the "firstName" field should contain "Career"
-    And the "email1" field should contain "career.portal.profile@example.com"
-    When I view the career portal at "390" pixels wide
-    Then the public portal fits the viewport
-    And the public portal attribution is visible
+  @javascript @returning-career-candidate
+  Scenario: Returning candidate authenticates and applies using session identity
+    Given There is a public career portal job "Career Portal Returning Job" with questionnaire "CI Questionnaire"
+    And a returning Career Portal candidate exists
+    And I am on "/index.php?m=careers&p=showAll"
+    When I follow "Career Portal Returning Job"
+    And I click on the element "#applyToPosition"
+    And I choose to apply as a returning candidate
+    Then the returning candidate CAPTCHA is visible and usable
+    When I fill in "email" with "career.portal.returning@example.com"
+    And I fill in "lastName" with "Applicant"
+    And I fill in "zip" with "12345"
+    And I correctly complete the Career Portal CAPTCHA
+    And I press "Continue to Application"
+    Then the "firstName" field should contain "Returning"
+    And the "email" field should contain "career.portal.returning@example.com"
+    And the returning candidate is authenticated without a remembered-candidate cookie
+    When I click on the element "#submitApplicationNow" and wait for navigation
+    Then I should see "CI Questionnaire"
+    When I press "Continue"
+    Then I should see "Application Submitted For: Career Portal Returning Job"
+    And the application belongs to the returning candidate
+    When I am on "/index.php?m=careers&p=showAll"
+    Then I should see "Welcome back Returning"
+    And the returning candidate is authenticated without a remembered-candidate cookie
+    When I follow "Update Profile"
+    Then the "firstName" field should contain "Returning"
+    When I am on "/index.php?m=careers&p=showAll"
+    And I follow "Log Out"
+    Then the returning candidate is logged out
 
   Scenario: Existing legacy template selection keeps its presentation
     Given There is a public career portal job "Career Portal Custom Job" with questionnaire "Portal UI Questionnaire"
