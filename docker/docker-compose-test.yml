@@ -70,6 +70,7 @@ services:
     selenium:
       container_name: selenium_test
       image: selenium/standalone-chrome:4.49.0-20260909
+      shm_size: 2gb
       environment:
         # Required to avoid container startup hanging sometimes in
         # some environments.
