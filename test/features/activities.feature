@@ -15,7 +15,7 @@ Feature: Activities
     And I switch to the iframe "popupInner"
     And I select "Not reached" from "activityTypeID"
     And fill in "activityNote" with "Call Gandalf"
-    And press "Save"
+    And I press "Save" and wait for navigation
     And press "Close"
     And I switch to the iframe ""
     And I follow "Activities"
@@ -41,7 +41,7 @@ Feature: Activities
     And I select "4" from "activityHour"
     And I select "37" from "activityMinute"
     And I select "PM" from "activityMeridiem"
-    And press "Save"
+    And I press "Save" and wait for navigation
     And press "Close"
     And I switch to the iframe ""
     And I follow "Activities"
@@ -143,7 +143,7 @@ Feature: Activities
     Then the Activities panel "reminderArea" is "visible"
     When I fill in "sendEmail" with "activities@example.invalid"
     And I select "30" from "reminderTime"
-    And I press "Save"
+    And I press "Save" and wait for navigation
     Then I should see "Activities combined fixture"
     And I should see "has been scheduled"
     And the Activities event is saved as "public" with duration "90"

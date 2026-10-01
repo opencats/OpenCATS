@@ -121,7 +121,7 @@ Feature: Saved Lists presentation and shared workflows
     And I press "More filters"
     And I filter the saved list by first name "NoSuchListsMember"
     Then I should see "(0 Items)"
-    When I press "Remove All"
+    When I press "Remove All" and wait for navigation
     Then I should see "Tuk"
 
   @javascript

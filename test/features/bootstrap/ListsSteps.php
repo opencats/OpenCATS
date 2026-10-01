@@ -150,7 +150,10 @@ trait ListsSteps
         $page = $this->getSession()->getPage();
         $page->findById('checked_20000')->check();
         $page->clickLink('Action');
-        $page->find('css', 'a[onclick*="removeFromListDatagrid"]')->click();
+        // The action submits a POST form and redirects back to the saved list.
+        $this->performDocumentReplacement(function () use ($page) {
+            $page->find('css', 'a[onclick*="removeFromListDatagrid"]')->click();
+        }, 'removing the candidate from the disposable list');
     }
 
     /** @Then the disposable list has no members and the candidate still exists */
@@ -219,7 +222,7 @@ trait ListsSteps
         $page = $this->getSession()->getPage();
         $page->find('css', 'select[id$="columnName"]')->selectOption('First Name');
         $page->find('css', 'input[id$="1value"]')->setValue($name);
-        $page->pressButton('Apply');
+        $this->pressButtonAndWaitForNavigation('Apply');
     }
 
     /** @AfterScenario @lists */

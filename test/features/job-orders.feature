@@ -100,7 +100,7 @@ Feature: Job Orders
     And I select "Gomez, Marcus" in the "#recruiter" select
     And fill in "city" with "Minneapolis"
     And fill in "state" with "MN"
-    And press "Add Job Order"
+    And I press "Add Job Order" and wait for navigation
     And I follow "Edit"
     Then I should see "Title"
     And I should see "Company"
@@ -140,7 +140,7 @@ Feature: Job Orders
     And I select "Gomez, Marcus" in the "#recruiter" select
     And fill in "city" with "Minneapolis"
     And fill in "state" with "MN"
-    And press "Add Job Order"
+    And I press "Add Job Order" and wait for navigation
     And I follow "Edit"
     And fill in "title" with ""
     And press "Save"
@@ -167,7 +167,7 @@ Feature: Job Orders
     And I select "Gomez, Marcus" in the "#recruiter" select
     And fill in "city" with "Minneapolis"
     And fill in "state" with "MN"
-    And press "Add Job Order"
+    And I press "Add Job Order" and wait for navigation
     And I follow "Edit"
     And fill in "title" with "Frontend developer"
     And I select "Administrator, CATS" in the "#recruiter" select
@@ -264,7 +264,7 @@ Feature: Job Orders
     And I click on "Javascript developer" on the row containing "Active"
     And follow "Add Candidate to This Job Order"
     And I switch to the iframe "popupInner"
-    And follow "Add Candidate"
+    And I follow "Add Candidate" and wait for navigation
     Then I should see "First Name"
     And I should see "Middle Name"
     And I should see "Last Name"
@@ -296,7 +296,7 @@ Feature: Job Orders
     And I click on "Javascript developer" on the row containing "Active"
     And follow "Add Candidate to This Job Order"
     And I switch to the iframe "popupInner"
-    And follow "Add Candidate"
+    And I follow "Add Candidate" and wait for navigation
     And I fill in "firstName" with "John"
     And press "Add Candidate"
     Then I should see "You must enter last name" in alert popup
@@ -315,10 +315,10 @@ Feature: Job Orders
     And I click on "Javascript developer" on the row containing "Active"
     And follow "Add Candidate to This Job Order"
     And I switch to the iframe "popupInner"
-    And follow "Add Candidate"
+    And I follow "Add Candidate" and wait for navigation
     And I fill in "firstName" with "John"
     And I fill in "lastName" with "John"
-    And press "Add Candidate"
+    And I press "Add Candidate" and wait for navigation
     Then I should see "The candidate has been successfully added to the pipeline for the selected job order."
     
   @javascript
@@ -334,10 +334,10 @@ Feature: Job Orders
     And I click on "Javascript developer" on the row containing "Active"
     And follow "Add Candidate to This Job Order"
     And I switch to the iframe "popupInner"
-    And follow "Add Candidate"
+    And I follow "Add Candidate" and wait for navigation
     And I fill in "firstName" with "John"
     And I fill in "lastName" with "Doe"
-    And press "Add Candidate"
+    And I press "Add Candidate" and wait for navigation
     And press "Close"
     And I switch to the iframe ""
     Then I wait until I see "John"

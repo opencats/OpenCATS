@@ -174,7 +174,7 @@ Feature: Settings presentation and existing workflows
     And I select "First Name *" from "jobapplyselect6"
     And I press "Insert job application field"
     Then the "edittext6" field should contain "<input-firstName>"
-    When I press "Save and Continue Editing"
+    When I press "Save and Continue Editing" and wait for navigation
     Then the Settings fixture template content is unchanged
 
   @settings_career

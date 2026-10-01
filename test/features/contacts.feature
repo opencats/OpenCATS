@@ -14,7 +14,7 @@ Feature: Contacts
     And I fill in "First Name" with "BootstrapContact"
     And I fill in "Last Name" with "Migration"
     And I fill in "Work Phone" with "01234567890"
-    And I press "Add Contact"
+    And I press "Add Contact" and wait for navigation
     Then I should see "BootstrapContact"
     And I should see "Contacts UI Company"
     And I should see a "main.oc-contact-show-page" element
