@@ -2327,6 +2327,11 @@ class CATSSchema
                 }
             ',
 
+            '395' => '
+                CREATE INDEX `idx_cjosh_candidate_status` ON `candidate_joborder_status_history` (`candidate_id`,`status_to`);
+                CREATE INDEX `idx_cjosh_joborder_status` ON `candidate_joborder_status_history` (`joborder_id`,`status_to`);
+            ',
+
         );
     }
 }

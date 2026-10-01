@@ -266,7 +266,9 @@ CREATE TABLE `candidate_joborder_status_history` (
   `status_from` INT(11) NOT NULL DEFAULT '0',
   `status_to` INT(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`candidate_joborder_status_history_id`),
-  KEY `IDX_status_to` (`status_to`)
+  KEY `IDX_status_to` (`status_to`),
+  KEY `idx_cjosh_candidate_status` (`candidate_id`,`status_to`),
+  KEY `idx_cjosh_joborder_status` (`joborder_id`,`status_to`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Data for the table `candidate_joborder_status_history` */
