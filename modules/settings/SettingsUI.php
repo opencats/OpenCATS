@@ -14,7 +14,6 @@ include_once(LEGACY_ROOT . '/lib/NewVersionCheck.php');
 include_once(LEGACY_ROOT . '/lib/Candidates.php');
 include_once(LEGACY_ROOT . '/lib/Companies.php');
 include_once(LEGACY_ROOT . '/lib/Contacts.php');
-include_once(LEGACY_ROOT . '/lib/Graphs.php');
 include_once(LEGACY_ROOT . '/lib/Site.php');
 include_once(LEGACY_ROOT . '/lib/ListEditor.php');
 include_once(LEGACY_ROOT . '/lib/SystemUtility.php');

@@ -12,6 +12,7 @@
 include_once(LEGACY_ROOT . '/lib/NewVersionCheck.php');
 include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
 include_once(LEGACY_ROOT . '/lib/Dashboard.php');
+include_once(LEGACY_ROOT . '/lib/Charts.php');
 
 class HomeUI extends UserInterface
 {
@@ -35,6 +36,14 @@ class HomeUI extends UserInterface
 
         switch ($action)
         {
+            case 'hiringOverview':
+                $dashboard = new Dashboard();
+                $view = $this->getHiringOverviewView();
+                header('Content-Type: text/html; charset=UTF-8');
+                header('Cache-Control: no-store');
+                echo(Charts::render('hiring-' . $view, Charts::hiring($dashboard->getPipelineData($view))));
+                return;
+
             case 'quickSearch':
                 include_once(LEGACY_ROOT . '/lib/Search.php');
                 include_once(LEGACY_ROOT . '/lib/StringUtility.php');
@@ -92,6 +101,10 @@ class HomeUI extends UserInterface
         
         $dashboard = new Dashboard();
         $placedRS = $dashboard->getPlacements();
+        $chartView = $this->getHiringOverviewView();
+        $hiringCharts = array($chartView => Charts::hiring($dashboard->getPipelineData($chartView)));
+        $this->_template->assign('chartView', $chartView);
+        $this->_template->assign('hiringCharts', $hiringCharts);
         
         $calendar = new Calendar();
         $upcomingEventsHTML = $calendar->getUpcomingEventsHTML(7, UPCOMING_FOR_DASHBOARD);
@@ -132,6 +145,13 @@ class HomeUI extends UserInterface
         $this->_template->assign('upcomingEventsFupHTML', $upcomingEventsFupHTML);
         $this->_template->assign('wildCardQuickSearch', '');
         $this->_template->display('./modules/home/Home.tpl');
+    }
+
+    private function getHiringOverviewView()
+    {
+        $view = isset($_GET['view']) ? (int) $_GET['view'] : DASHBOARD_GRAPH_WEEKLY;
+        return in_array($view, array(DASHBOARD_GRAPH_WEEKLY, DASHBOARD_GRAPH_MONTHLY, DASHBOARD_GRAPH_YEARLY), true)
+            ? $view : DASHBOARD_GRAPH_WEEKLY;
     }
 
     private function deleteSavedSearch()

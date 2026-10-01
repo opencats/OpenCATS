@@ -507,3 +507,12 @@ table.sortable td
     border-radius: var(--bs-border-radius);
     box-shadow: var(--bs-box-shadow);
 }
+
+/* Shared responsive charts; dimensions belong to the container, not the canvas. */
+.oc-chart { min-width: 0; }
+.oc-chart-plot { position: relative; width: 100%; }
+.oc-chart-values th { white-space: normal; }
+@media print {
+    .oc-chart-plot { break-inside: avoid; }
+    .oc-chart-values > div { display: block !important; }
+}

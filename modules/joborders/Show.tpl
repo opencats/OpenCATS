@@ -3,9 +3,9 @@ include_once(LEGACY_ROOT . '/vendor/autoload.php');
 use OpenCATS\UI\QuickActionMenu;
 ?>
 <?php if ($this->isPopup): ?>
-<?php TemplateUtility::printHeader('Job Order - ' . $this->data['title'], array('js/sorttable.js', 'js/match.js', 'js/pipeline.js', 'js/attachment.js')); ?>
+<?php TemplateUtility::printHeader('Job Order - ' . $this->data['title'], array('js/sorttable.js', 'js/match.js', 'js/pipeline.js', 'js/attachment.js', 'js/chartjs/chart.umd.min.js', 'js/charts.js')); ?>
 <?php else: ?>
-<?php TemplateUtility::printHeader('Job Order - ' . $this->data['title'], array( 'js/sorttable.js', 'js/match.js', 'js/pipeline.js', 'js/attachment.js')); ?>
+<?php TemplateUtility::printHeader('Job Order - ' . $this->data['title'], array( 'js/sorttable.js', 'js/match.js', 'js/pipeline.js', 'js/attachment.js', 'js/chartjs/chart.umd.min.js', 'js/charts.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
 <?php TemplateUtility::printQuickSearch(); ?>
@@ -312,7 +312,9 @@ use OpenCATS\UI\QuickActionMenu;
                                 </div>
 
                                 <div class="col-12 oc-joborder-pipeline-graph">
-                                    <?php echo($this->pipelineGraph);  ?>
+                                    <h3 class="h6">Status of Candidates</h3>
+                                    <?php echo($this->pipelineGraph); ?>
+                                    <a class="small" href="<?php echo(CATSUtility::getIndexName()); ?>?m=reports&amp;a=graphView&amp;jobOrderID=<?php echo($this->data['jobOrderID']); ?>" target="_blank" rel="noopener">Expand chart</a>
                                 </div>
 
                             </div>
