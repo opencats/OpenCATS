@@ -72,8 +72,7 @@ Feature: Calendar
     Then I should see "Are you sure you want to delete this entry?" in alert popup
     When I cancel the Calendar dialog
     Then Calendar panel "editEventTD" should be "visible"
-    When I press "Delete"
-    And I confirm the popup
+    When I delete the Calendar event and wait for navigation
     Then I should not see "Calendar workflow updated"
     When I follow "Goto Today"
     And I follow "My Upcoming Events"

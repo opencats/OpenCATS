@@ -107,7 +107,7 @@ Feature: Career Portal
     And I upload the public portal resume fixture
     Then the "firstName" field should contain "Career"
     And the "#resumeContents" element should contain "Public portal resume fixture"
-    When I press "Populate Fields ->"
+    When I press "Populate Fields ->" and wait for navigation
     Then the "firstName" field should contain "Career"
     And the "#resumeContents" element should contain "Public portal resume fixture"
     And the application retains its multipart resume controls

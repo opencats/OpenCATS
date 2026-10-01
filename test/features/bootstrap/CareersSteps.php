@@ -135,7 +135,7 @@ trait CareersSteps
         try
         {
             $this->getSession()->getPage()->attachFileToField('resumeFile', $path);
-            $this->getSession()->getPage()->pressButton('Upload');
+            $this->pressButtonAndWaitForNavigation('Upload');
         }
         finally
         {

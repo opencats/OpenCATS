@@ -254,6 +254,16 @@ class FeatureContext extends MinkContext implements Context, SnippetAcceptingCon
 
 
 
+    /** @When I delete the Calendar event and wait for navigation */
+    public function deleteCalendarEventAndWaitForNavigation()
+    {
+        // Mark the document before opening the blocking confirmation dialog.
+        $this->performDocumentReplacement(function () {
+            $this->pressButton('Delete');
+            $this->confirmPopup();
+        }, 'confirming Calendar event deletion');
+    }
+
     /** @When I cancel the Calendar dialog */
     public function cancelCalendarDialog()
     {
