@@ -392,7 +392,7 @@ class ReportsUI extends UserInterface
         $reportParameters['periodLine'] = sprintf(
             '%s - %s',
             strtok($data['dateCreated'], ' '),
-            DateUtility::getAdjustedDate('m-d-y')
+            DateUtility::getAdjustedDate(DateUtility::getPhpDateFormat())
         );
 
         $reportParameters['dataSet1'] = $data['pipeline'];

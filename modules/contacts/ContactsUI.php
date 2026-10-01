@@ -1381,9 +1381,7 @@ class ContactsUI extends UserInterface
 
             $activityDateOccurred = false;
             $isTimeFormat24 = $_SESSION['CATS']->isTimeFormat24();
-            $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
-                ? DATE_FORMAT_DDMMYY
-                : DATE_FORMAT_MMDDYY;
+            $dateFormatFlag = $_SESSION['CATS']->getDateFormat();
             $activityDate = $this->getTrimmedInput('activityDate', $_POST);
             $activityHourSet = isset($_POST['activityHour']) && isset($_POST['activityMinute']) &&
                 ctype_digit((string) $_POST['activityHour']) &&
@@ -1434,9 +1432,7 @@ class ContactsUI extends UserInterface
         {
             /* Bail out if we received an invalid date. */
             $trimmedDate = $this->getTrimmedInput('dateAdd', $_POST);
-            $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
-                ? DATE_FORMAT_DDMMYY
-                : DATE_FORMAT_MMDDYY;
+            $dateFormatFlag = $_SESSION['CATS']->getDateFormat();
             if (empty($trimmedDate) ||
                 !DateUtility::validate('-', $trimmedDate, $dateFormatFlag))
             {

@@ -2413,7 +2413,7 @@ class SettingsUI extends UserInterface
                     }
 
                     $this->_template->assign('timeZone', $_SESSION['CATS']->getTimeZone());
-                    $this->_template->assign('isDateDMY', $_SESSION['CATS']->isDateDMY());
+                    $this->_template->assign('dateFormat', $_SESSION['CATS']->getDateFormat());
                     $this->_template->assign('isTimeFormat24', $_SESSION['CATS']->isTimeFormat24());
 
                     // Default phone country calling code for the localization settings page.
@@ -2563,20 +2563,12 @@ class SettingsUI extends UserInterface
                 }
                 //FIXME: Validation (escaped at lib level anyway)
                 $timeZone = $_POST['timeZone'];
-                $dateFormat = $_POST['dateFormat'];
-                if ($dateFormat == 'mdy')
-                {
-                    $isDMY = false;
-                }
-                else
-                {
-                    $isDMY = true;
-                }
+                $dateFormat = DateUtility::getDateFormatFromFormValue($_POST['dateFormat']);
 
                 $isTimeFormat24 = (isset($_POST['timeFormat']) && $_POST['timeFormat'] === '24');
 
                 $site = new Site();
-                $site->setLocalization($timeZone, $isDMY, $isTimeFormat24);
+                $site->setLocalization($timeZone, $dateFormat, $isTimeFormat24);
 
                 // Default phone country calling code (E.164) for the site.
                 if (isset($_POST['defaultPhoneCountryCodeDigits']))
@@ -2619,23 +2611,15 @@ class SettingsUI extends UserInterface
         // FIXME: Input validation!
 
         $timeZone = $_POST['timeZone'];
-        $dateFormat = $_POST['dateFormat'];
-        if ($dateFormat == 'mdy')
-        {
-            $isDMY = false;
-        }
-        else
-        {
-            $isDMY = true;
-        }
+        $dateFormat = DateUtility::getDateFormatFromFormValue($_POST['dateFormat']);
 
         $isTimeFormat24 = (isset($_POST['timeFormat']) && $_POST['timeFormat'] === '24');
 
         $site = new Site();
-        $site->setLocalization($timeZone, $isDMY, $isTimeFormat24);
+        $site->setLocalization($timeZone, $dateFormat, $isTimeFormat24);
 
         /* Reload the new data for the session. */
-        $_SESSION['CATS']->setTimeDateLocalization($timeZone, $isDMY, $isTimeFormat24);
+        $_SESSION['CATS']->setTimeDateLocalization($timeZone, $dateFormat, $isTimeFormat24);
 
         $this->_template->assign('inputType', 'conclusion');
         $this->_template->assign('title', 'Localization Settings Saved!');
@@ -3041,20 +3025,12 @@ class SettingsUI extends UserInterface
         }
 
         $timeZone = $_GET['timeZone'];
-        $dateFormat = $_GET['dateFormat'];
-        if ($dateFormat == 'mdy')
-        {
-            $isDMY = false;
-        }
-        else
-        {
-            $isDMY = true;
-        }
+        $dateFormat = DateUtility::getDateFormatFromFormValue($_GET['dateFormat']);
 
         $isTimeFormat24 = (isset($_GET['timeFormat']) && $_GET['timeFormat'] === '24');
 
         $site = new Site();
-        $site->setLocalization($timeZone, $isDMY, $isTimeFormat24);
+        $site->setLocalization($timeZone, $dateFormat, $isTimeFormat24);
         $site->setLocalizationConfigured();
 
         echo 'Ok';

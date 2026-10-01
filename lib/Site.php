@@ -9,6 +9,8 @@
  * See LICENSE.md.
  */
 
+include_once(LEGACY_ROOT . '/lib/DateUtility.php');
+
 /**
  *	Site Library
  *	@package    CATS
@@ -48,12 +50,14 @@ class Site
      * Sets the site name for the current site.
      *
      * @param integer time zone offset
-     * @param boolean use D-M-Y format dates
+     * @param integer|boolean date format flag, or legacy boolean D-M-Y value
      * @param boolean use 24-hour time format
      * @return boolean True if successful; false otherwise.
      */
-    public function setLocalization($timeZone, $isDMY, $isTimeFormat24 = false)
+    public function setLocalization($timeZone, $dateFormat, $isTimeFormat24 = false)
     {
+        $dateFormat = DateUtility::normalizeDateFormat($dateFormat);
+
         $sql = sprintf(
             "UPDATE
                 site
@@ -62,7 +66,7 @@ class Site
                 date_format_ddmmyy = %s,
                 time_format_24 = %s",
             $this->_db->makeQueryInteger($timeZone),
-            ($isDMY ? 1 : 0),
+            DateUtility::getSiteValueFromDateFormat($dateFormat),
             ($isTimeFormat24 ? 1 : 0)
         );
 

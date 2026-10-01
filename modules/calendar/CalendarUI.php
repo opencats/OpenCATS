@@ -86,7 +86,6 @@ class CalendarUI extends UserInterface
         $currentMonth    = DateUtility::getAdjustedDate('n');
         $currentYear     = DateUtility::getAdjustedDate('Y');
         $currentUnixTime = DateUtility::getAdjustedDate();
-        $currentDateMDY  = DateUtility::getAdjustedDate('m-d-y');
 
         $currentWeek  = DateUtility::getWeekNumber($currentUnixTime) - DateUtility::getWeekNumber(
             mktime(0, 0, 0, $currentMonth, 1, $currentYear)
@@ -260,7 +259,6 @@ class CalendarUI extends UserInterface
         $this->_template->assign('militaryTime', false);
 
         $this->_template->assign('active', $this);
-        $this->_template->assign('currentDateMDY', $currentDateMDY);
         $this->_template->assign('startingWeekday', $startingWeekday);
         $this->_template->assign('daysInMonth', $daysInMonth);
         $this->_template->assign('currentHour', $currentHour);
@@ -338,9 +336,7 @@ class CalendarUI extends UserInterface
 
         /* Bail out if we received an invalid date. */
         $trimmedDate = $this->getTrimmedInput('dateAdd', $_POST);
-        $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
-            ? DATE_FORMAT_DDMMYY
-            : DATE_FORMAT_MMDDYY;
+        $dateFormatFlag = $_SESSION['CATS']->getDateFormat();
         if (empty($trimmedDate) ||
             !DateUtility::validate('-', $trimmedDate, $dateFormatFlag))
         {
@@ -550,9 +546,7 @@ class CalendarUI extends UserInterface
 
         /* Bail out if we received an invalid date. */
         $trimmedDate = $this->getTrimmedInput('dateEdit', $_POST);
-        $dateFormatFlag = $_SESSION['CATS']->isDateDMY()
-            ? DATE_FORMAT_DDMMYY
-            : DATE_FORMAT_MMDDYY;
+        $dateFormatFlag = $_SESSION['CATS']->getDateFormat();
         if (empty($trimmedDate) ||
             !DateUtility::validate('-', $trimmedDate, $dateFormatFlag))
         {

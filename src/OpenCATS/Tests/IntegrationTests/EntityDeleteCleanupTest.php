@@ -43,6 +43,11 @@ class EntityDeleteCleanupTest extends DatabaseTestCase
                 return false;
             }
 
+            public function getDateFormat()
+            {
+                return DATE_FORMAT_MMDDYY;
+            }
+
             public function isTimeFormat24()
             {
                 return false;

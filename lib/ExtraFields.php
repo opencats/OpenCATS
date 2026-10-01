@@ -486,25 +486,9 @@ class ExtraFields
                 break;
                 
                 case EXTRA_FIELD_DATE:
-                    $dmy = $this->_isDateDMY();
-                    
-                    if ($dmy)
-                    {
-                        $dateParts = explode('-', $extraFields[$index]['value']);
-                        if (count($dateParts) > 2)
-                        {
-                            $t = $dateParts[0];
-                            $dateParts[0] = $dateParts[1];
-                            $dateParts[1] = $t;
-                        }
-                        $date = implode('-', $dateParts);
-                        
-                        $extraFields[$index]['display'] = htmlspecialchars($date);
-                    }
-                    else
-                    {
-                        $extraFields[$index]['display'] = htmlspecialchars($extraFields[$index]['value']);
-                    }
+                    $extraFields[$index]['display'] = htmlspecialchars(DateUtility::formatStoredDate(
+                        $extraFields[$index]['value'], $this->_getDateFormat()
+                    ));
                 break;
                 
                 case EXTRA_FIELD_TEXT:
@@ -589,7 +573,7 @@ class ExtraFields
                 break;
                 
                 case EXTRA_FIELD_DATE:
-                    $dateFormat = $this->_isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY';
+                    $dateFormat = DateUtility::getJsDateFormat($this->_getDateFormat());
                     $extraFields[$index]['addHTML'] = '<script type="text/javascript">DateInput(\'extraField'.$index.'\', false, \''.$dateFormat.'\', \'\');</script>';
                 break;
                 
@@ -661,33 +645,17 @@ class ExtraFields
                                        'ON '.$column.' = extra_field' . $uniqueIndex . '.data_item_id '.
                                        'AND extra_field' . $uniqueIndex . '.field_name = ' . $db->makeQueryString($data['fieldName']) . ' '.
                                        'AND extra_field' . $uniqueIndex . '.data_item_type = ' . $this->_dataItemType,
-                          'pagerRender'     => 'if (isset($_SESSION[\'CATS\']) && $_SESSION[\'CATS\']->isLoggedIn() && $_SESSION[\'CATS\']->isDateDMY())
+                          'pagerRender'     => 'if (isset($_SESSION[\'CATS\']) && $_SESSION[\'CATS\']->isLoggedIn())
                                         {
-                                              $dateParts = explode(\'-\',  $rsData[\'extra_field_value' . $uniqueIndex . '\']);
-                                              if (count($dateParts) > 2)
-                                              {
-                                                    $t = $dateParts[0];
-                                                    $dateParts[0] = $dateParts[1];
-                                                    $dateParts[1] = $t;
-                                              }
-                                              $date = implode(\'-\', $dateParts);
-                                              return $date;
+                                              return DateUtility::formatStoredDate($rsData[\'extra_field_value' . $uniqueIndex . '\'], $_SESSION[\'CATS\']->getDateFormat());
                                         }
                                         else
                                         {
                                              return $rsData[\'extra_field_value' . $uniqueIndex . '\'];
                                         }',
-                          'exportRender'     => 'if (isset($_SESSION[\'CATS\']) && $_SESSION[\'CATS\']->isLoggedIn() && $_SESSION[\'CATS\']->isDateDMY())
+                          'exportRender'     => 'if (isset($_SESSION[\'CATS\']) && $_SESSION[\'CATS\']->isLoggedIn())
                                         {
-                                              $dateParts = explode(\'-\',  $rsData[\'extra_field_value' . $uniqueIndex . '\']);
-                                              if (count($dateParts) > 2)
-                                              {
-                                                    $t = $dateParts[0];
-                                                    $dateParts[0] = $dateParts[1];
-                                                    $dateParts[1] = $t;
-                                              }
-                                              $date = implode(\'-\', $dateParts);
-                                              return $date;
+                                              return DateUtility::formatStoredDate($rsData[\'extra_field_value' . $uniqueIndex . '\'], $_SESSION[\'CATS\']->getDateFormat());
                                         }
                                         else
                                         {
@@ -780,14 +748,9 @@ class ExtraFields
                 break;
                 
                 case EXTRA_FIELD_DATE:
-                    $userDateFormat = $this->_isDateDMY() ? 'DD-MM-YY' : 'MM-DD-YY';
-                    $userDateValue = $data['value'];
-                    if (!empty($userDateValue) && $userDateFormat == 'DD-MM-YY')
-                    {
-                        $userDateValue = DateUtility::convert(
-                            '-', $userDateValue, DATE_FORMAT_MMDDYY, DATE_FORMAT_DDMMYY
-                        );
-                    }
+                    $dateFormatFlag = $this->_getDateFormat();
+                    $userDateFormat = DateUtility::getJsDateFormat($dateFormatFlag);
+                    $userDateValue = DateUtility::formatStoredDate($data['value'], $dateFormatFlag);
                     $extraFields[$index]['editHTML'] = '<script type="text/javascript">DateInput(\'extraField'.$index.'\', false, \''.$userDateFormat.'\', \''.htmlspecialchars($userDateValue, ENT_QUOTES).'\');</script>';
                 break;
                                     
@@ -814,9 +777,7 @@ class ExtraFields
     {
         $extraFields = $this->_getValuesWithSettings($dataItemID);
 
-        $dateFormatFlag = $this->_isDateDMY()
-            ? DATE_FORMAT_DDMMYY
-            : DATE_FORMAT_MMDDYY;
+        $dateFormatFlag = $this->_getDateFormat();
 
         for ($i = 0; $i < count($extraFields); $i++)
         {
@@ -870,18 +831,18 @@ class ExtraFields
      *
      * @return array extra fields
      */
-    private function _isDateDMY()
+    private function _getDateFormat()
     {
         if (isset($_SESSION['CATS']) && $_SESSION['CATS']->isLoggedIn())
         {
-            return $_SESSION['CATS']->isDateDMY();
+            return $_SESSION['CATS']->getDateFormat();
         }
 
         /* Careers portal / unauthenticated: fall back to site preference. */
         $site = new Site();
         $siteRS = $site->getFirstSite();
 
-        return ($siteRS['dateFormatDDMMYY'] == 1);
+        return DateUtility::getDateFormatFromSiteValue($siteRS['dateFormatDDMMYY']);
     }
 
     public static function getValuesTypes()

@@ -63,9 +63,7 @@ $activityDate = trim(urldecode($_POST['date']));
 $activityHour = trim(urldecode($_POST['hour']));
 $activityMinute = trim(urldecode($_POST['minute']));
 
-$dateFormatFlag = $_SESSION['CATS']->isDateDMY()
-    ? DATE_FORMAT_DDMMYY
-    : DATE_FORMAT_MMDDYY;
+$dateFormatFlag = $_SESSION['CATS']->getDateFormat();
 
 if (!DateUtility::validate('-', $activityDate, $dateFormatFlag))
 {

@@ -39,8 +39,9 @@
                                 <tr>
                                     <td style="padding-bottom: 5px;">
                                         <select id="dateFormat" name="dateFormat" style="width: 150px;">
-                                            <option value="mdy"<?php if (!$this->isDateDMY): ?> selected<?php endif; ?>>MM-DD-YYYY (US)</option>
-                                            <option value="dmy"<?php if ($this->isDateDMY): ?> selected<?php endif; ?>>DD-MM-YYYY (UK)</option>
+                                            <option value="mdy"<?php if ($this->dateFormat == DATE_FORMAT_MMDDYY): ?> selected<?php endif; ?>>MM-DD-YYYY (US)</option>
+                                            <option value="dmy"<?php if ($this->dateFormat == DATE_FORMAT_DDMMYY): ?> selected<?php endif; ?>>DD-MM-YYYY (UK)</option>
+                                            <option value="ymd"<?php if ($this->dateFormat == DATE_FORMAT_YYYYMMDD): ?> selected<?php endif; ?>>YYYY-MM-DD (ISO)</option>
                                         </select>
                                     </td>
                                 </tr>
