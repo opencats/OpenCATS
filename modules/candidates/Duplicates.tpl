@@ -114,16 +114,48 @@ if ($this->dataGrid->getFilterValue('OwnerID') == $this->userID)
                     </label>
                 </div>
 
-                <div class="position-relative"><a href="javascript:void(0);" id="exportBoxLink<?= $md5InstanceName ?>" onclick="toggleHideShowControls('<?= $md5InstanceName ?>-tags'); return false;">Filter by tag</a>
-                                        <div id="tagsContainer">
-                                        <div class="card card-body p-2 position-absolute end-0 z-3 text-nowrap" id="ColumnBox<?= $md5InstanceName ?>-tags"  style="<?= isset($this->globalStyle)?$this->globalStyle:"" ?>">
-                                            <div><div class="row g-2 align-items-start mb-2"><div class="col-12 col-sm">Tag list</div>
-                                            <div class="col-12 col-sm">
-                                                <button type="button" onclick="applyTagFilter()" value="Save&amp;Close" class="btn btn-sm btn-outline-secondary">Save&amp;Close</button>
-                                                <button type="button" onclick="document.getElementById('ColumnBox<?= $md5InstanceName?>').style.display='none';" value="Close" class="btn btn-sm btn-outline-secondary">Close</button>
-                                            </div>
-                                            </div></div>
+                <div class="position-relative">
+                <a
+                href="javascript:void(0);"
+                id="exportBoxLink<?= $md5InstanceName ?>"
+                onclick="toggleHideShowControls('<?= $md5InstanceName ?>-tags'); return false;"
+                >
+                Filter by tag
+                </a>
 
+                <div id="tagsContainer">
+                <div
+                class="ajaxSearchResults card card-body p-2 position-absolute end-0 z-3 text-nowrap"
+                id="ColumnBox<?= $md5InstanceName ?>-tags"
+                style="<?= isset($this->globalStyle) ? $this->globalStyle : '' ?>"
+                >
+                <div>
+                <div class="row g-2 align-items-start mb-2">
+                <div class="col-12 col-sm">
+                Tag list
+                </div>
+
+                <div class="col-12 col-sm">
+                <button
+                type="button"
+                onclick="applyTagFilter()"
+                value="Save&amp;Close"
+                class="btn btn-sm btn-outline-secondary"
+                >
+                Save&amp;Close
+                </button>
+
+                <button
+                type="button"
+                onclick="toggleHideShowControls('<?= $md5InstanceName ?>-tags');"
+                value="Close"
+                class="btn btn-sm btn-outline-secondary"
+                >
+                Close
+                </button>
+                </div>
+                </div>
+                </div>
 
                                             <ul>
                                             <script>
