@@ -107,10 +107,10 @@ class HomeUI extends UserInterface
         $this->_template->assign('hiringCharts', $hiringCharts);
         
         $calendar = new Calendar();
-        $upcomingEventsHTML = $calendar->getUpcomingEventsHTML(7, UPCOMING_FOR_DASHBOARD);
+        $upcomingEventsHTML = $calendar->getUpcomingEventsHTML(7, UPCOMING_FOR_DASHBOARD, false);
         
         $calendar = new Calendar();
-        $upcomingEventsFupHTML = $calendar->getUpcomingEventsHTML(7, UPCOMING_FOR_DASHBOARD_FUP);        
+        $upcomingEventsFupHTML = $calendar->getUpcomingEventsHTML(7, UPCOMING_FOR_DASHBOARD_FUP, false);
 
         /* Important cand datagrid */
 
