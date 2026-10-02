@@ -85,7 +85,7 @@ Feature: Career Portal
     Then the "firstName" field should contain "Returning"
     And the "email" field should contain "career.portal.returning@example.com"
     And the returning candidate is authenticated without a remembered-candidate cookie
-    When I click on the element "#submitApplicationNow" and wait for navigation
+    When I press "Submit Application Now" and wait for navigation
     Then I should see "CI Questionnaire"
     When I press "Continue"
     Then I should see "Application Submitted For: Career Portal Returning Job"
