@@ -8,8 +8,8 @@ Feature: Career Portal
   Scenario: Applicant submits a partially completed questionnaire
     Given There is a public career portal job "Career Portal CI Job" with questionnaire "CI Questionnaire"
     And I am on "/index.php?m=careers&p=showAll"
-    When I follow "Career Portal CI Job"
-    And I click on the element "#applyToPosition"
+    When I follow "Career Portal CI Job" and wait for navigation
+    And I follow "Apply to Position" and wait for navigation
     And fill in "firstName" with "Career"
     And fill in "lastName" with "Applicant"
     And fill in "email" with "career.portal@example.com"
@@ -36,13 +36,13 @@ Feature: Career Portal
     Then I should see "Available Openings at"
     And the public portal attribution is visible
     And the public portal fits the viewport
-    When I follow "Show All Jobs"
+    When I follow "Show All Jobs" and wait for navigation
     Then I should see "Career Portal Responsive Job"
     And the public portal fits the viewport
-    When I follow "Career Portal Responsive Job"
+    When I follow "Career Portal Responsive Job" and wait for navigation
     Then I should see "Career Portal formatted description"
     And the public portal fits the viewport
-    When I follow "Apply to Position"
+    When I follow "Apply to Position" and wait for navigation
     Then I should see "Applying to: Career Portal Responsive Job"
     And the application retains its multipart resume controls
     And the public portal fits the viewport
@@ -73,15 +73,15 @@ Feature: Career Portal
     Given There is a public career portal job "Career Portal Returning Job" with questionnaire "CI Questionnaire"
     And a returning Career Portal candidate exists
     And I am on "/index.php?m=careers&p=showAll"
-    When I follow "Career Portal Returning Job"
-    And I click on the element "#applyToPosition"
+    When I follow "Career Portal Returning Job" and wait for navigation
+    And I follow "Apply to Position" and wait for navigation
     And I choose to apply as a returning candidate
     Then the returning candidate CAPTCHA is visible and usable
     When I fill in "email" with "career.portal.returning@example.com"
     And I fill in "lastName" with "Applicant"
     And I fill in "zip" with "12345"
     And I correctly complete the Career Portal CAPTCHA
-    And I press "Continue to Application"
+    And I press "Continue to Application" and wait for navigation
     Then the "firstName" field should contain "Returning"
     And the "email" field should contain "career.portal.returning@example.com"
     And the returning candidate is authenticated without a remembered-candidate cookie
@@ -93,10 +93,10 @@ Feature: Career Portal
     When I am on "/index.php?m=careers&p=showAll"
     Then I should see "Welcome back Returning"
     And the returning candidate is authenticated without a remembered-candidate cookie
-    When I follow "Update Profile"
+    When I follow "Update Profile" and wait for navigation
     Then the "firstName" field should contain "Returning"
     When I am on "/index.php?m=careers&p=showAll"
-    And I follow "Log Out"
+    And I follow "Log Out" and wait for navigation
     Then the returning candidate is logged out
 
   Scenario: Existing legacy template selection keeps its presentation
@@ -115,8 +115,8 @@ Feature: Career Portal
   Scenario: Resume upload and populate retain application fields
     Given There is a public career portal job "Career Portal Resume Job" with questionnaire "Portal UI Questionnaire"
     And I am on "/careers/index.php?p=showAll"
-    When I follow "Career Portal Resume Job"
-    And I follow "Apply to Position"
+    When I follow "Career Portal Resume Job" and wait for navigation
+    And I follow "Apply to Position" and wait for navigation
     And I fill in "First Name:" with "Career"
     And I upload the public portal resume fixture
     Then the "firstName" field should contain "Career"
@@ -131,8 +131,8 @@ Feature: Career Portal
     Given There is a public career portal job "Career Portal Registration Job" with questionnaire "Portal UI Questionnaire"
     And candidate registration is enabled on the public portal
     And I am on "/careers/index.php?p=showAll"
-    When I follow "Career Portal Registration Job"
-    And I follow "Apply to Position"
+    When I follow "Career Portal Registration Job" and wait for navigation
+    And I follow "Apply to Position" and wait for navigation
     Then I should see "I have not registered on this website."
     When I fill in "Enter your e-mail address:" with "career.portal.new@example.com"
     And I press "Continue to Application" and wait for navigation
