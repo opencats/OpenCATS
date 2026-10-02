@@ -87,7 +87,7 @@ Feature: Career Portal
     And the returning candidate is authenticated without a remembered-candidate cookie
     When I press "Submit Application Now" and wait for navigation
     Then I should see "CI Questionnaire"
-    When I press "Continue"
+    When I press "Continue" and wait for navigation
     Then I should see "Application Submitted For: Career Portal Returning Job"
     And the application belongs to the returning candidate
     When I am on "/index.php?m=careers&p=showAll"
