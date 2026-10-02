@@ -13,6 +13,23 @@ trait NavigationSteps
     public function pressButtonAndWaitForNavigation($button)
     {
         $this->performDocumentReplacement(function () use ($button) {
+            if ($this->getSession()->getDriver() instanceof \Behat\Mink\Driver\Selenium2Driver)
+            {
+                $element = $this->getSession()->getPage()->findButton($button);
+
+                if ($element)
+                {
+                    $xpath = json_encode($element->getXpath());
+
+                    $this->getSession()->executeScript(
+                        'var element = document.evaluate('
+                        . $xpath
+                        . ', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;'
+                        . 'if (element) { element.scrollIntoView({block: "center", inline: "nearest"}); }'
+                    );
+                }
+            }
+
             $this->pressButton($button);
         }, 'pressing ' . $button);
     }
