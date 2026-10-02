@@ -17,15 +17,17 @@
                 </section>
             </div>
             <div class="col-12 col-lg-4">
-                <section class="card h-100" aria-label="My Upcoming Calls">
-                    <div class="card-body p-2">
+                <section class="card h-100" aria-labelledby="My Upcoming Calls">
+                    <h2 id="myUpcomingCalls" class="card-header bg-secondary-subtle h6 py-1 px-2 fw-semibold mb-0">My Upcoming Calls</h2>
+                    <div class="card-body p-2 overflow-auto">
                         <?php echo($this->upcomingEventsFupHTML); ?>
                     </div>
                 </section>
             </div>
             <div class="col-12 col-lg-4">
-                <section class="card h-100" aria-label="My Upcoming Events">
-                    <div class="card-body p-2">
+                <section class="card h-100" aria-labelledby="My Upcoming Events">
+                <h2 id="myUpcomingEvents" class="card-header bg-secondary-subtle h6 py-1 px-2 fw-semibold mb-0">My Upcoming Events</h2>
+                <div class="card-body p-2 overflow-auto">
                         <?php echo($this->upcomingEventsHTML); ?>
                     </div>
                 </section>
