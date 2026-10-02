@@ -2,82 +2,77 @@
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
 <?php $careerPortalEnabledId = 0; ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+    <?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2">
 
         <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Settings: Administration</h2></td>
-                </tr>
-            </table>
+            <header class="oc-page-header mb-2">
+                <h1 class="h5 fw-semibold mb-0">Settings: Administration</h1>
+            </header>
 
-            <p class="note">Career Portal Settings</p>
+            <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">Career Portal Settings</p>
 
-            <table width="100%">
-                <tr>
-                    <td>
+            <div class="card card-body p-2 mb-2">
+                <div class="row g-2 mb-2">
+                    <div class="col-12 col-sm">
                         <form name="careerPortalSettingsForm" id="careerPortalSettingsForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=careerPortalSettings" method="post">
                             <input type="hidden" name="postback" value="postback" />
                             <input type="hidden" name="configured" value="1" />
 
-                            <table class="editTable" width="100%">
-                                <tr>
-                                    <td class="tdVertical" style="width: 425px;">
+                            <div class="card card-body p-2 mb-2">
+                                <div class="row g-2 mb-2">
+                                    <div class="col-sm-4 col-lg-3">
                                         Enable Public Career Portal:
-                                    </td>
-                                    <td class="tdData">
-                                        <input type="checkbox" name="enabled"<?php if ($this->careerPortalSettingsRS['enabled'] == '1'): ?> checked<?php endif; ?> onclick="document.getElementById('careerPortalSettingsForm').submit();">
-                                    </td>
-                                </tr>
+                                    </div>
+                                    <div class="col-12 col-sm">
+                                        <input type="checkbox" name="enabled"<?php if ($this->careerPortalSettingsRS['enabled'] == '1'): ?> checked<?php endif; ?> onclick="document.getElementById('careerPortalSettingsForm').submit();" class="form-check-input">
+                                    </div>
+                                </div>
 
-                                <tr id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>">
-                                    <td class="tdVertical">
+                                <div class="row g-2 mb-2" id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>">
+                                    <div class="col-sm-4 col-lg-3">
                                         Allow Browsing of All Public Job Orders:
-                                    </td>
-                                    <td class="tdData">
-                                        <input type="checkbox" name="allowBrowse"<?php if ($this->careerPortalSettingsRS['allowBrowse'] == '1'): ?> checked<?php endif; ?>>
-                                    </td>
-                                </tr>
+                                    </div>
+                                    <div class="col-12 col-sm">
+                                        <input type="checkbox" name="allowBrowse"<?php if ($this->careerPortalSettingsRS['allowBrowse'] == '1'): ?> checked<?php endif; ?> class="form-check-input">
+                                    </div>
+                                </div>
 
-                                <tr id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>">
-                                    <td class="tdVertical">
+                                <div class="row g-2 mb-2" id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>">
+                                    <div class="col-sm-4 col-lg-3">
                                         Allow candidates to register and update their contact information
-                                    </td>
-                                    <td class="tdData">
-                                        <input type="checkbox" name="candidateRegistration"<?php if ($this->careerPortalSettingsRS['candidateRegistration'] == '1'): ?> checked<?php endif; ?>>
-                                    </td>
-                                </tr>
+                                    </div>
+                                    <div class="col-12 col-sm">
+                                        <input type="checkbox" name="candidateRegistration"<?php if ($this->careerPortalSettingsRS['candidateRegistration'] == '1'): ?> checked<?php endif; ?> class="form-check-input">
+                                    </div>
+                                </div>
 
-                                <tr id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>">
-                                    <td class="tdVertical">
+                                <div class="row g-2 mb-2" id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>">
+                                    <div class="col-sm-4 col-lg-3">
                                         Show Company Column in Job Order List:
-                                    </td>
-                                    <td class="tdData">
-                                        <input type="checkbox" name="showCompany"<?php if ($this->careerPortalSettingsRS['showCompany'] == '1'): ?> checked<?php endif; ?>>
-                                    </td>
-                                </tr>
-                                <tr id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>">
-                                    <td class="tdVertical">
+                                    </div>
+                                    <div class="col-12 col-sm">
+                                        <input type="checkbox" name="showCompany"<?php if ($this->careerPortalSettingsRS['showCompany'] == '1'): ?> checked<?php endif; ?> class="form-check-input">
+                                    </div>
+                                </div>
+                                <div class="row g-2 mb-2" id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>">
+                                    <div class="col-sm-4 col-lg-3">
                                         Show Department Column in Job Order List:
-                                    </td>
-                                    <td class="tdData">
-                                        <input type="checkbox" name="showDepartment"<?php if ($this->careerPortalSettingsRS['showDepartment'] == '1'): ?> checked<?php endif; ?>>
-                                    </td>
-                                </tr>
+                                    </div>
+                                    <div class="col-12 col-sm">
+                                        <input type="checkbox" name="showDepartment"<?php if ($this->careerPortalSettingsRS['showDepartment'] == '1'): ?> checked<?php endif; ?> class="form-check-input">
+                                    </div>
+                                </div>
                                 <?php eval(Hooks::get('CAREER_PORTAL_SUBMIT_XML_FEEDS')); ?>
-                                <tr id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>">
-                                    <td class="tdVertical">
+                                <div class="row g-2 mb-2" id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>">
+                                    <div class="col-sm-4 col-lg-3">
                                         Career Portal URL:
-                                    </td>
-                                    <td class="tdData">
+                                    </div>
+                                    <div class="col-12 col-sm">
                                         <a href="<?php $this->_($this->careerPortalURL); ?>"><?php $this->_($this->careerPortalURL); ?></a>
-                                    </td>
-                                </tr>
-                            </table>
+                                    </div>
+                                </div>
+                            </div>
                             <script type="text/javascript">
                                 function setVisibility(visibility)
                                 {
@@ -109,16 +104,16 @@
                                 indexURL = '<?php echo(CATSUtility::getIndexName()); ?>';
                                 usingID = '<?php $this->_($data['careerPortalName']); ?>';
                             </script>
-                            <input type="submit" class="button" value="Save Settings" id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>" />&nbsp;
+                            <input type="submit" value="Save Settings" id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>"  class="btn btn-sm btn-primary" />&nbsp;
                             <br />
                             <br />
                         </form>
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                </div>
+            </div>
 
             <div id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>">
-                <p class="note">Questionnaires</p>
+                <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">Questionnaires</p>
 
                 <form method="post" action="<?php echo CATSUtility::getIndexName(); ?>?m=settings&a=careerPortalQuestionnaireUpdate" name="questionnaireUpdateForm">
 
@@ -128,44 +123,44 @@
                     <br /><br />
 
                     <?php if (isset($this->questionnaires) && !empty($this->questionnaires)): ?>
-                        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border: 1px solid #c0c0c0; padding: 2px;">
+                        <div class="table-responsive"><table class="table table-sm table-striped align-middle">
                         <tr>
-                            <td width="30%" style="font-weight: bold; padding-right: 10px; border-bottom: 1px solid black;">Title</td>
-                            <td width="50%" style="font-weight: bold; padding-right: 10px; border-bottom: 1px solid black;">Description</td>
-                            <td width="10%" style="font-weight: bold; padding-right: 10px; border-bottom: 1px solid black;">Status</td>
-                            <td width="10%" style="font-weight: bold; padding-right: 10px; border-bottom: 1px solid black;">Remove</td>
+                            <th scope="col">Title</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Remove</th>
                         </tr>
                         <?php $highlight = 0; ?>
                         <?php for ($i = 0; $i < count($this->questionnaires); $i++): ?>
                             <?php $questionnaire = $this->questionnaires[$i]; ?>
                             <?php $col = ($highlight = !$highlight) ? 'f0f0f0' : 'ffffff'; ?>
                             <tr>
-                                <td style="background-color: #<?php echo $col; ?>;">
+                                <td>
                                     <a href="<?php echo CATSUtility::getIndexName(); ?>?m=settings&a=careerPortalQuestionnaire&questionnaireID=<?php echo $questionnaire['questionnaireID']; ?>">
                                     <?php echo $questionnaire['title']; ?>
                                     </a>
                                 </td>
-                                <td style="background-color: #<?php echo $col; ?>;"><?php echo $questionnaire['description']; ?></td>
-                                <td style="background-color: #<?php echo $col; ?>;"><?php echo $questionnaire['isActive'] ? 'Active' : 'Inactive'; ?></td>
-                                <td style="background-color: #<?php echo $col; ?>;" align="center"><input type="checkbox" name="removeQuestionnaire<?php echo $i; ?>" value="yes" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td><?php echo $questionnaire['description']; ?></td>
+                                <td><?php echo $questionnaire['isActive'] ? 'Active' : 'Inactive'; ?></td>
+                                <td><input type="checkbox" name="removeQuestionnaire<?php echo $i; ?>" value="yes"  class="form-check-input" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                             </tr>
                         <?php endfor; ?>
-                        </table>
+                        </table></div>
                     <?php else: ?>
                         <span style="color: ##00008b;">You have no questionnaires. Click <b>Add Questionnaire</b> to create one.</span><br />
                     <?php endif; ?>
 
                     <br />
-                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                        <tr>
-                            <td align="left">
-                                <input type="button" class="button" value="Add Questionnaire" onclick="document.location.href='<?php echo CATSUtility::getIndexName(); ?>?m=settings&a=careerPortalQuestionnaire';" />
-                            </td>
-                            <td align="right">
-                                <input type="submit" class="button" value="Update" />
-                            </td>
-                        </tr>
-                    </table>
+                    <div class="card card-body p-2 mb-2">
+                        <div class="row g-2 mb-2">
+                            <div class="col-12 col-sm">
+                                <input type="button" value="Add Questionnaire" onclick="document.location.href='<?php echo CATSUtility::getIndexName(); ?>?m=settings&a=careerPortalQuestionnaire';"  class="btn btn-sm btn-outline-secondary" />
+                            </div>
+                            <div class="col-12 col-sm">
+                                <input type="submit" value="Update"  class="btn btn-sm btn-primary" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 </form>
@@ -173,9 +168,9 @@
             </div>
 
             <br /><br />
-            <p class="note" id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>">Templates</p>
+            <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold" id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>">Templates</p>
 
-            <div id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>" style="width:700px;">
+            <div id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>">
                 You can choose a style for your Career Portal by clicking a template below and pressing "Set as Active".<br />
                 <br />
                 You may also duplicate an existing template to make a custom template, allowing you make the Career Portal
@@ -184,18 +179,14 @@
                 <br />
             </div>
 
-            <table id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>" width="100%">
-                <tr>
-                    <td valign="top">
-                        <table class="editTable" width="100%">
-                            <tr>
-                                <td class="tdVertical" style="width: 350px;" height="330">
-                                    <table width="100%">
-                                        <tr>
-                                            <td valign="top" nowrap="nowrap">
+            <section id="careerPortalEnabled<?php echo ++$careerPortalEnabledId; ?>" class="mb-2">
+                <div class="row g-2">
+                    <div class="col-12 col-lg-4">
+                        <div class="card card-body p-2"><div class="row g-2 mb-2">
+                                            <div class="col-12 col-sm">
                                                 Built in Templates:
-                                            </td>
-                                            <td valign="top">
+                                            </div>
+                                            <div class="col-12 col-sm">
                                                 <?php foreach ($this->careerPortalTemplateNames as $name => $data): ?>
                                                     <a href="javascript:void(0);" onclick="setModifyingJobDefault('<?php echo($data['careerPortalName']); ?>','<?php echo(CATSUtility::getIndexName()); ?>?m=careers&amp;templateName=<?php echo(urlencode($data['careerPortalName'])); ?>');" >
                                                         <?php $this->_($data['careerPortalName']); ?>
@@ -203,21 +194,21 @@
                                                         <br />
                                                     </a>
                                                 <?php endforeach; ?>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td valign="top" nowrap="nowrap">
+                                            </div>
+                                        </div>
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-12 col-sm">
                                                 Custom Templates:<br /><br />
-                                                <input type="button" class="button" value="New" onclick="showNewInput();" />
-                                            </td>
-                                            <td valign="top" nowrap="nowrap">
+                                                <input type="button" value="New" onclick="showNewInput();"  class="btn btn-sm btn-outline-secondary" />
+                                            </div>
+                                            <div class="col-12 col-sm">
                                                 <div id="confirmNew" style="display: none;">
                                                     <form name="careerPortalSettingsForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=onCareerPortalTweak" method="post" onsubmit="if (detectInputIsValid(document.getElementById('templateName').value)) {alert('This template name is already in use, please use another.'); return false;}" >
                                                         <input name="p" type="hidden" value="new" />
                                                         New Template Name:<br />
-                                                        <input name="newName" id="templateName" value="Unnamed" style="width: 160px;" />&nbsp;
-                                                        <input type="submit" class="button" value="OK" />
-                                                        <input type="button" class="button" value="Cancel" onclick="hideAllEditingFields();" />
+                                                        <input name="newName" id="templateName" value="Unnamed"  class="form-control form-control-sm" />&nbsp;
+                                                        <input type="submit" value="OK"  class="btn btn-sm btn-primary" />
+                                                        <input type="button" value="Cancel" onclick="hideAllEditingFields();"  class="btn btn-sm btn-outline-secondary" />
                                                         <br />
                                                         <br />
                                                     </form>
@@ -229,30 +220,25 @@
                                                         <br />
                                                     </a>
                                                 <?php endforeach; ?>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
+                                            </div>
+                                        </div>
 
-                    <td class="tdVertical" valign="top" width="100%" height="330" nowrap="nowrap">
-                        <table class="editTable" width="100%">
-                            <tr>
-                                <td valign="top" align="center" nowrap="nowrap">
-                                    <span id="textTemplateName" style="font-weight: bold; font-size: 18px;"></span>
-                                    <br />
-                                    <input type="button" class="button" value="Full Screen Preview" onclick="fullScreenPreview();" />
-                                    <input type="button" class="button" value="Edit" id="buttonEdit" onclick="window.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=careerPortalTemplateEdit&amp;templateName='+encodeURI(usingID);" />
-                                    <input type="button" class="button" value="Edit" id="buttonEditDefault" onclick="showEditDefaultInput();" style="display: none;" />
-                                    <input type="button" class="button" value="Delete" id="buttonDelete" onclick="showDeleteInput();" />
-                                    <input type="button" class="button" value="Duplicate" onclick="showDuplicateInput();" />
-                                    <input type="button" class="button" value="Set as Active" onclick="setAsActive();" />
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-8">
+                        <div class="card card-body p-2"><span id="textTemplateName" class="h6 fw-semibold"></span>
+                                    <div class="d-flex flex-wrap gap-1 mb-2">
+                                    <input type="button" value="Full Screen Preview" onclick="fullScreenPreview();"  class="btn btn-sm btn-outline-secondary" />
+                                    <input type="button" value="Edit" id="buttonEdit" onclick="window.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=careerPortalTemplateEdit&amp;templateName='+encodeURI(usingID);"  class="btn btn-sm btn-outline-secondary" />
+                                    <input type="button" value="Edit" id="buttonEditDefault" onclick="showEditDefaultInput();" style="display: none;"  class="btn btn-sm btn-outline-secondary" />
+                                    <input type="button" value="Delete" id="buttonDelete" onclick="showDeleteInput();"  class="btn btn-sm btn-outline-danger" />
+                                    <input type="button" value="Duplicate" onclick="showDuplicateInput();"  class="btn btn-sm btn-outline-secondary" />
+                                    <input type="button" value="Set as Active" onclick="setAsActive();"  class="btn btn-sm btn-outline-secondary" />
+                                    </div>
                                     <form name="setAsActiveForm" id="setAsActiveForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=onCareerPortalTweak" method="post">
                                         <input name="p" type="hidden" value="setAsActive" />
                                         <input name="activeName" id="activeName" type="hidden" value="" />
-                                        <input type="submit" class="button" value="OK" style="display: none;" />
+                                        <input type="submit" value="OK" style="display: none;"  class="btn btn-sm btn-primary" />
                                     </form>
                                     <br />
                                     <div id="confirmDuplicate" style="display: none; text-align: left;">
@@ -261,9 +247,9 @@
                                         <form name="careerPortalSettingsForm" id="careerPortalSettingsForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=onCareerPortalTweak" method="post" onsubmit="if (detectInputIsValid(document.getElementById('duplicateName').value)) {alert('This template name is already in use, please use another.'); return false;}" >
                                             <input name="p" type="hidden" value="duplicate" />
                                             <input name="origName" id="origName" type="hidden" value="" />
-                                            <input name="duplicateName" id="duplicateName" style="width: 200px;" />&nbsp;
-                                            <input type="submit" class="button" value="OK" />
-                                            <input type="button" class="button" value="Cancel" onclick="hideAllEditingFields();" />
+                                            <input name="duplicateName" id="duplicateName"  class="form-control form-control-sm" />&nbsp;
+                                            <input type="submit" value="OK"  class="btn btn-sm btn-primary" />
+                                            <input type="button" value="Cancel" onclick="hideAllEditingFields();"  class="btn btn-sm btn-outline-secondary" />
                                         </form>
                                         <br />
                                     </div>
@@ -273,27 +259,25 @@
                                         <form name="careerPortalSettingsForm" id="careerPortalSettingsForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=onCareerPortalTweak" method="post">
                                             <input name="p" type="hidden" value="delete" />
                                             <input name="delName" id="delName" type="hidden" value="">
-                                            <input type="submit" class="button" value="OK">
-                                            <input type="button" class="button" value="Cancel" onclick="hideAllEditingFields();">
+                                            <input type="submit" value="OK" class="btn btn-sm btn-primary">
+                                            <input type="button" value="Cancel" onclick="hideAllEditingFields();" class="btn btn-sm btn-outline-secondary">
                                         </form>
                                         <br />
                                     </div>
                                     <div id="confirmEditDefault" style="display: none;">
                                         <br />
                                         To edit this template, you must first make a duplication of it.
-                                        <input type="button" class="button" value="Duplicate" onclick="showDuplicateInput();">
+                                        <input type="button" value="Duplicate" onclick="showDuplicateInput();" class="btn btn-sm btn-outline-secondary">
                                         <br />
                                     </div>
                                     <br />
-                                    <iframe id="previewBox" width="500" height="250"></iframe>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
+                                    <iframe id="previewBox" class="w-100 border rounded" height="250" title="Career Portal template preview"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
-    </div>
+    </main>
 
     <script type="text/javascript">
         setVisibility(<?php if ($this->careerPortalSettingsRS['enabled'] == '1'): ?>''<?php else: ?>'none'<?php endif; ?>);

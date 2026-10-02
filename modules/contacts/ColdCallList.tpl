@@ -1,42 +1,47 @@
 <?php TemplateUtility::printHeader('Contacts', array('js/sorttable.js', 'js/highlightrows.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
-        
-        <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/contact.gif" width="24" height="24" border="0" alt="Contacts" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Contacts: Cold Call List</h2></td>
-                </tr>
-            </table>
-        
-            <p class="note">Cold Call List (Only Contacts with Phone Numbers)</p>
-        
+<?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2 oc-contact-cold-call-page">
+
+    <div id="contents">
+        <section class="oc-page-header mb-2">
+            <h1 class="h5 fw-semibold mb-0">Cold Call List</h1>
+        </section>
+
+        <section class="card">
+            <div class="card-header bg-secondary-subtle py-1 px-2 fw-semibold">Cold Call List (Only Contacts with Phone Numbers)</div>
+
             <?php if (!empty($this->rs)): ?>
-                <table class="sortable" rules="all" onmouseover="javascript:trackTableHighlight(event)">
-                    <tr>
-                        <th align="left">Company</th>
-                        <th align="left" nowrap="nowrap">First Name</th>
-                        <th align="left" nowrap="nowrap">Last Name</th>
-                        <th align="left">Title</th>
-                        <th align="left" nowrap="nowrap">Work Phone</th>
-                    </tr>
-        
-                    <?php foreach ($this->rs as $rowNumber => $data): ?>
-                        <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
-                            <td valign="top" align="left"><?php $this->_($data['companyName']); ?></td>
-                            <td valign="top" align="left"><?php $this->_($data['firstName']); ?></td>
-                            <td valign="top" align="left"><?php $this->_($data['lastName']); ?></td>
-                            <td valign="top" align="left"><?php $this->_($data['title']); ?></td>
-                            <td valign="top" align="left"><?php $this->_($data['phoneWork']); ?></td>
+            <div class="table-responsive">
+                <table class="sortable table table-sm table-striped table-hover align-middle mb-0" onmouseover="javascript:trackTableHighlight(event)">
+                    <thead>
+                        <tr>
+                            <th scope="col">Company</th>
+                            <th scope="col">First Name</th>
+                            <th scope="col">Last Name</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Work Phone</th>
                         </tr>
-                    <?php endforeach; ?>
+                    </thead>
+                    <tbody>
+
+                        <?php foreach ($this->rs as $rowNumber => $data): ?>
+                        <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
+                            <td><?php $this->_($data['companyName']); ?></td>
+                            <td><?php $this->_($data['firstName']); ?></td>
+                            <td><?php $this->_($data['lastName']); ?></td>
+                            <td><?php $this->_($data['title']); ?></td>
+                            <td><?php $this->_($data['phoneWork']); ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
                 </table>
+            </div>
+            <?php else: ?>
+            <div class="card-body p-2 small text-body-secondary">No contacts with phone numbers found.</div>
             <?php endif; ?>
-        </div>
+        </section>
     </div>
+</main>
 <?php TemplateUtility::printFooter(); ?>

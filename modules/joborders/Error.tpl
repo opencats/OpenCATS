@@ -2,24 +2,17 @@
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
 
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+<?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2 oc-joborder-error-page">
 
-        <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/job_orders.gif" width="24" height="24" border="0" alt="Job Orders" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Job Orders: Error</h2></td>
-                </tr>
-            </table>
+    <div id="contents">
+        <section class="oc-page-header mb-2"><h1 class="h5 fw-semibold mb-0">Job Orders: Error</h1></section>
 
-            <p class="fatalError">
-                A fatal error has occurred.<br />
-                <br />
-                <?php echo($this->errorMessage); ?>
-            </p>
+        <div class="alert alert-danger" role="alert">
+            A fatal error has occurred.<br>
+            <br>
+            <?php echo($this->errorMessage); ?>
         </div>
     </div>
+</main>
 <?php TemplateUtility::printFooter(); ?>

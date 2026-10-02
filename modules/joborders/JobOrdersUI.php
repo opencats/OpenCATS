@@ -24,7 +24,8 @@ include_once(LEGACY_ROOT . '/lib/EmailTemplates.php');
 include_once(LEGACY_ROOT . '/lib/FileUtility.php');
 include_once(LEGACY_ROOT . '/lib/CareerPortal.php');
 include_once(LEGACY_ROOT . '/lib/ExtraFields.php');
-include_once(LEGACY_ROOT . '/lib/Graphs.php');
+include_once(LEGACY_ROOT . '/lib/Charts.php');
+include_once(LEGACY_ROOT . '/lib/Statistics.php');
 include_once(LEGACY_ROOT . '/lib/Questionnaire.php');
 include_once(LEGACY_ROOT . '/lib/CommonErrors.php');
 include_once(LEGACY_ROOT . '/lib/JobOrderTypes.php');
@@ -508,8 +509,13 @@ class JobOrdersUI extends UserInterface
         $sessionCookie = $_SESSION['CATS']->getCookie();
 
         /* Get pipeline graph. */
-        $graphs = new graphs();
-        $pipelineGraph = $graphs->miniJobOrderPipeline(450, 250, array($jobOrderID));
+        $statistics = new Statistics();
+        $graph = Charts::pipeline($statistics->getPipelineData($jobOrderID));
+        $pipelineGraph = '';
+        if (eval(Hooks::get('GRAPH_MINI_PIPELINE')))
+        {
+            $pipelineGraph = Charts::render('joborder-pipeline', $graph);
+        }
 
         /* Get questionnaire information (if exists) */
         $questionnaireID = false;

@@ -1,18 +1,13 @@
 <?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'modules/settings/Settings.js', 'js/careerportal.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+    <?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2">
 
         <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Settings: Administration</h2></td>
-                </tr>
-            </table>
+            <header class="oc-page-header mb-2">
+                <h1 class="h5 fw-semibold mb-0">Settings: Administration</h1>
+            </header>
 
             <script type="text/javascript">
                 function insertAtCursor(myField, myValue)
@@ -39,7 +34,7 @@
                 }
             </script>
 
-            <p class="note">Edit Template: <?php $this->_($this->templateName); ?></p>
+            <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">Edit Template: <?php $this->_($this->templateName); ?></p>
             Top, Left, and Footer is HTML code used in the body of every page, and CSS is the CSS code
             included in every page.<br /><br />
             Some fields have special keywords which are used to position some kind of content. For example,
@@ -52,13 +47,13 @@
                 <input type="hidden" name="templateName" value="<?php $this->_($this->templateName); ?>" />
                 <input type="hidden" name="continueEdit" id="continueEdit" value="0" />
                 <p>
-                    <input type="submit" class="button" value="Save">
-                    <input type="submit" class="button" value="Save and Continue Editing" onclick="document.getElementById('continueEdit').value='1';">
+                    <input type="submit" value="Save" class="btn btn-sm btn-primary">
+                    <input type="submit" value="Save and Continue Editing" onclick="document.getElementById('continueEdit').value='1';" class="btn btn-sm btn-primary">
                 </p>
 
                 <?php $index = 0; ?>
                 <?php foreach ($this->template as $setting => $value): ?>
-                    <p class="note">
+                    <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">
                         <a href="javascript:void(0);" id="expand<?php echo($index); ?>" onclick="document.getElementById('expand<?php echo($index); ?>').style.display='none';document.getElementById('shrink<?php echo($index); ?>').style.display='';document.getElementById('editarea<?php echo($index); ?>').style.display=''; document.getElementById('editareacommand<?php echo($index); ?>').style.display='';">
                             <img src="images/next.gif" border=0>
                         </a>
@@ -72,21 +67,21 @@
                     </p>
                     <p id="editareacommand<?php echo($index); ?>" style="display:none;">
                         <?php if($setting != 'CSS'): ?>
-                            <input type="button" class="button" value="Insert Site Name" onclick="insertAtCursor(insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), &quot;<siteName>&quot;);">
+                            <input type="button" value="Insert Site Name" onclick="insertAtCursor(insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), &quot;<siteName>&quot;);" class="btn btn-sm btn-outline-secondary">
                             &nbsp;&nbsp;&nbsp;
                         <?php endif; ?>
                         <?php if($setting == 'Header'): ?>
-                            <input type="button" class="button" value="Insert Menu Options" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), &quot;<a-LinkMain>Main Page</a><br />\n<a-ListAll>List All Jobs</a><br />&quot;);">
+                            <input type="button" value="Insert Menu Options" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), &quot;<a-LinkMain>Main Page</a><br />\n<a-ListAll>List All Jobs</a><br />&quot;);" class="btn btn-sm btn-outline-secondary">
                             &nbsp;&nbsp;&nbsp;
                         <?php endif; ?>
                         <?php if($setting == 'Content - Main'): ?>
-                            <input type="button" class="button" value="Insert number of Open Positions" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), &quot;<numberOfOpenPositions>&quot;);">
+                            <input type="button" value="Insert number of Open Positions" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), &quot;<numberOfOpenPositions>&quot;);" class="btn btn-sm btn-outline-secondary">
                             &nbsp;&nbsp;&nbsp;
                         <?php endif; ?>
                         <?php if($setting == 'Content - Apply for Position'): ?>
-                            <input type="button" class="button" value="Insert Job Title" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), &quot;<title>&quot;);">
+                            <input type="button" value="Insert Job Title" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), &quot;<title>&quot;);" class="btn btn-sm btn-outline-secondary">
                             &nbsp;&nbsp;&nbsp;
-                            <select id="jobapplyselect<?php echo($index); ?>">
+                            <select id="jobapplyselect<?php echo($index); ?>" class="form-select form-select-sm">
                                 <option value="<input-firstName>">First Name *</option>
                                 <option value="<input-lastName>">Last Name *</option>
                                 <option value="<input-address>">Address Line</option>
@@ -123,18 +118,18 @@
                                 <?php endforeach; ?>
                                 <option value="<submit value=&quot;Apply for Position&quot;>">Submit Button</option>
                             </select>
-                            <input type="button" class="button" value="Insert job application field" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), document.getElementById('jobapplyselect<?php echo($index); ?>').value);">
+                            <input type="button" value="Insert job application field" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), document.getElementById('jobapplyselect<?php echo($index); ?>').value);" class="btn btn-sm btn-outline-secondary">
                             &nbsp;&nbsp;&nbsp;
                         <?php endif; ?>
                         <?php if($setting == 'Content - Questionnaire'): ?>
                             <!-- Insert special buttons -->
                         <?php endif; ?>
                         <?php if($setting == 'Content - Thanks for your Submission'): ?>
-                            <input type="button" class="button" value="Insert back to job details link" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), &quot;<a-jobDetails>Job Details</a>&quot;);">
+                            <input type="button" value="Insert back to job details link" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), &quot;<a-jobDetails>Job Details</a>&quot;);" class="btn btn-sm btn-outline-secondary">
                             &nbsp;&nbsp;&nbsp;
                         <?php endif; ?>
                         <?php if($setting == 'CSS'): ?>
-                            <select id="jobdetailcsssselect<?php echo($index); ?>">
+                            <select id="jobdetailcsssselect<?php echo($index); ?>" class="form-select form-select-sm">
                                 <option value="body\n{\n}">Page Body</option>
                                 <option value=".inputBoxName\n{\n}">First Name, Last Name input boxes</option>
                                 <option value=".inputBoxArea\n{\n}">Large input boxes (notes)</option>
@@ -142,13 +137,13 @@
                                 <option value=".inputBoxNormal\n{\n}">All other input boxes (E-Mail)</option>
                                 <option value="table.sortable\n{\nborder-collapse: collapse;\nempty-cells: show;\n}\ntr.rowHeading\n{\n}\ntr.oddTableRow\n{\n}\ntr.evenTableRow\n{\n}\na.sortheader:hover,\na.sortheader:link,\na.sortheader:visited\n{\n}">Search Results Table</option>
                             </select>
-                            <input type="button" class="button" value="Insert CSS class definition" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), document.getElementById('jobdetailcsssselect<?php echo($index); ?>').value);">
+                            <input type="button" value="Insert CSS class definition" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), document.getElementById('jobdetailcsssselect<?php echo($index); ?>').value);" class="btn btn-sm btn-outline-secondary">
                             &nbsp;&nbsp;&nbsp;
                         <?php endif; ?>
                         <?php if($setting == 'Content - Job Details'): ?>
-                            <input type="button" class="button" value="Insert Apply to Job Link" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), &quot;<a-applyToJob>Apply to Job</a>&quot;);">
+                            <input type="button" value="Insert Apply to Job Link" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), &quot;<a-applyToJob>Apply to Job</a>&quot;);" class="btn btn-sm btn-outline-secondary">
                             &nbsp;&nbsp;&nbsp;
-                            <select id="jobdetailsselect<?php echo($index); ?>">
+                            <select id="jobdetailsselect<?php echo($index); ?>" class="form-select form-select-sm">
                                 <option value="<title>">Job Title</option>
                                 <option value="<type>">Type</option>
                                 <option value="<city>">City</option>
@@ -168,27 +163,27 @@
                                     <option value="<extraField-<?php echo(urlencode($ef['fieldName'])); ?>>"><?php $this->_($ef['fieldName']); ?></option>
                                 <?php endforeach; ?>
                             </select>
-                            <input type="button" class="button" value="Insert job details element" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), document.getElementById('jobdetailsselect<?php echo($index); ?>').value);">
+                            <input type="button" value="Insert job details element" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), document.getElementById('jobdetailsselect<?php echo($index); ?>').value);" class="btn btn-sm btn-outline-secondary">
                             &nbsp;&nbsp;&nbsp;
                         <?php endif; ?>
                         <?php if($setting == 'Content - Search Results'): ?>
-                            <input type="button" class="button" value="Insert Number of Search Results" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), &quot;<numberOfSearchResults>&quot;);">
+                            <input type="button" value="Insert Number of Search Results" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), &quot;<numberOfSearchResults>&quot;);" class="btn btn-sm btn-outline-secondary">
                             &nbsp;&nbsp;&nbsp;
-                            <input type="button" class="button" value="Insert Search Results Table" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), &quot;<searchResultsTable>&quot;);">
+                            <input type="button" value="Insert Search Results Table" onclick="insertAtCursor(document.getElementById('edittext<?php echo($index); ?>'), &quot;<searchResultsTable>&quot;);" class="btn btn-sm btn-outline-secondary">
                             &nbsp;&nbsp;&nbsp;
                         <?php endif; ?>
                     </p>
                     <div id="editarea<?php echo($index); ?>" style="display:none;">
-                        <textarea name="<?php $this->_(md5($setting)); ?>" id="edittext<?php echo($index); ?>" style="width:920px; height:150px;"><?php $this->_($value); ?></textarea>
+                        <textarea name="<?php $this->_(md5($setting)); ?>" id="edittext<?php echo($index); ?>" rows="8" class="form-control form-control-sm"><?php $this->_($value); ?></textarea>
                         <br /><br />
                     </div>
 
                     <?php $index++; ?>
                 <?php endforeach; ?>
                 <br />
-                <input type="submit" class="button" value="Save">
-                <input type="submit" class="button" value="Save and Continue Editing" onmousedown="document.getElementById('continueEdit').value='1';">
+                <input type="submit" value="Save" class="btn btn-sm btn-primary">
+                <input type="submit" value="Save and Continue Editing" onmousedown="document.getElementById('continueEdit').value='1';" class="btn btn-sm btn-primary">
             </form>
         </div>
-    </div>
+    </main>
 <?php TemplateUtility::printFooter(); ?>

@@ -1,18 +1,13 @@
 <?php TemplateUtility::printModalHeader('Job Orders'); ?>
-    <table>
-        <tr>
-            <td width="3%">
-                <img src="images/job_orders.gif" width="24" height="24" border="0" alt="Job Orders" style="margin-top: 3px;" />&nbsp;
-            </td>
-            <td><h2>Job Orders: Error</h2></td>
-       </tr>
-    </table>
+<main class="container-fluid p-2 oc-joborder-errormodal">
+    <section class="oc-page-header mb-2"><h1 class="h5 fw-semibold mb-0">Job Orders: Error</h1></section>
 
-    <p class="fatalError">
-        A fatal error has occurred.<br />
-        <br />
+    <div class="alert alert-danger" role="alert">
+        A fatal error has occurred.<br>
+        <br>
         <?php echo($this->errorMessage); ?>
-    </p>
-    </body>
+    </div>
+</main>
+</body>
 </html>
 

@@ -1,64 +1,50 @@
 <?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js', 'js/sorttable.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+    <?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2">
 
         <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Settings: My Profile</h2></td>
-                </tr>
-            </table>
+            <header class="oc-page-header mb-2">
+                <h1 class="h5 fw-semibold mb-0">Settings: My Profile</h1>
+            </header>
 
-            <p class="note">Profile</p>
+            <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">Profile</p>
 
             <?php if ($this->isDemoUser): ?>
                 Note that as a demo user, you do not have privileges to modify any settings.
                 <br /><br />
             <?php endif; ?>
 
-            <table width="100%">
-                <tr>
-                    <td width="100%">
-                        <table class="searchTable" width="100%">
-                            <tr>
-                                <td width="230">
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=showUser&amp;userID=<?php echo($this->userID); ?>&amp;privledged=false">
-                                        <img src="images/bullet_black.gif" alt="" border="0" />View Profile
+            <div class="list-group mb-3">
+                            <div class="list-group-item"><div class="row g-2">
+                                <div class="col-sm-4 col-lg-3 fw-semibold">
+                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=showUser&amp;userID=<?php echo($this->userID); ?>&amp;privledged=false">View Profile
                                     </a>
-                                </td>
-                                <td>
+                                </div>
+                                <div class="col-sm-8 col-lg-9">
                                     View your current profile to verify your information is correct.
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=myProfile&amp;s=changePassword">
-                                        <img src="images/bullet_black.gif" alt="" border="0" />Change Password
+                                </div>
+                            </div></div>
+                            <div class="list-group-item"><div class="row g-2">
+                                <div class="col-sm-4 col-lg-3 fw-semibold">
+                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=myProfile&amp;s=changePassword">Change Password
                                     </a>
-                                </td>
-                                <td>
+                                </div>
+                                <div class="col-sm-8 col-lg-9">
                                     Change your CATS login password.
-                                </td>
-                            </tr>
-                            <!--<tr>
-                                <td>
-                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=myProfile&amp;s=notificationOptions">
-                                        <img src="images/bullet_black.gif" alt="" border="0" />Change Notification Options
+                                </div>
+                            </div></div>
+                            <!--<div class="list-group-item"><div class="row g-2">
+                                <div class="col-sm-4 col-lg-3 fw-semibold">
+                                    <a href="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=myProfile&amp;s=notificationOptions">Change Notification Options
                                     </a>
-                                </td>
-                                <td>
+                                </div>
+                                <div class="col-sm-8 col-lg-9">
                                     Change how CATS notifies you of new events.
-                                </td>
-                            </tr>-->
-                        </table>
-                    </td>
-                </tr>
-            </table>
+                                </div>
+                            </div></div>-->
+                        </div>
         </div>
-    </div>
+    </main>
 <?php TemplateUtility::printFooter(); ?>

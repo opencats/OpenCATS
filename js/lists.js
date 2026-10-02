@@ -272,7 +272,6 @@ function deleteListRow(savedListID, sessionCookie, numberEntries)
                 document.getElementById("savedListRowAjaxing"+savedListID).style.display = "none";
                 document.getElementById("savedListRowEditing"+savedListID).style.display = "none";
                 document.getElementById("savedListRow"+savedListID).style.display = "none";
-                relabelEvenOdd();
                 break;
         }
     }

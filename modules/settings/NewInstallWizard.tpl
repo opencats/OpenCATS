@@ -1,35 +1,35 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <title>CATS - Initial Configuration Wizard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/html; charset=<?php echo(HTML_ENCODING); ?>">
-        <style type="text/css" media="all">@import "<?php echo TemplateUtility::getVersionedAssetURL('modules/install/install.css'); ?>";</style>
+        <link rel="stylesheet" href="<?php echo TemplateUtility::getVersionedAssetURL('vendor/twbs/bootstrap/dist/css/bootstrap.min.css'); ?>">
         <script type="text/javascript" src="<?php echo TemplateUtility::getVersionedAssetURL('js/lib.js'); ?>"></script>
         <script type="text/javascript" src="<?php echo TemplateUtility::getVersionedAssetURL('modules/settings/validator.js'); ?>"></script>
     </head>
 
-    <body>
+    <body class="bg-body-tertiary">
 
-    <div id="headerBlock">
-        <span id="mainLogo">OpenCATS</span><br />
+    <div id="headerBlock" class="container text-center py-3">
+        <span id="mainLogo" class="h3">OpenCATS</span><br />
         <span id="subMainLogo">Applicant Tracking System</span>
     </div>
 
-    <div id="contents">
-        <div id="login" style="width: 500px;">
+    <div id="contents" class="container pb-4">
+        <div id="login" class="card card-body mx-auto col-12 col-md-8 col-lg-6">
             <?php if (!empty($this->message)): ?>
                 <div>
                     <?php if ($this->messageSuccess): ?>
-                        <p class="success"><?php $this->_($this->message); ?><br /></p>
+                        <p class="alert alert-success"><?php $this->_($this->message); ?><br /></p>
                     <?php else: ?>
-                        <p class="failure"><?php $this->_($this->message); ?><br /></p>
+                        <p class="alert alert-danger"><?php $this->_($this->message); ?><br /></p>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
 
             <div style="text-align: left;">
-                <span style="font-weight: bold;"><?php echo ($this->title); ?></span>
+                <span class="fw-semibold"><?php echo ($this->title); ?></span>
 
                 <p><?php echo ($this->prompt); ?></p>
             </div>
@@ -42,16 +42,16 @@
                             <input type="hidden" name="csrfToken" value="<?php echo Template::escapeAttr($_SESSION['CATS']->getCSRFToken()); ?>" />
                         <?php endif; ?>
 
-                        <label id="passwordLabel1" for="password1">New Password</label><br />
-                        <input type="password" name="password1" id="password1" class="input-box" />
+                        <label id="passwordLabel1" for="password1" class="form-label small mb-0">New Password</label><br />
+                        <input type="password" name="password1" id="password1"  class="form-control form-control-sm" />
                         <br />
 
-                        <label id="passwordLabel2" for="password2">Confirm New Password</label><br />
-                        <input type="password" name="password2" id="password2" class="input-box" />
+                        <label id="passwordLabel2" for="password2" class="form-label small mb-0">Confirm New Password</label><br />
+                        <input type="password" name="password2" id="password2"  class="form-control form-control-sm" />
                         <br />
 
-                        <input type="submit" id="submit" name="submit" class="button" value="Submit" />
-                        <input type="reset"  id="reset" name="reset"  class="button" value="Reset" />
+                        <input type="submit" id="submit" name="submit" value="Submit"  class="btn btn-sm btn-primary" />
+                        <input type="reset"  id="reset" name="reset"  value="Reset"  class="btn btn-sm btn-outline-secondary" />
                     </form>
                 </div>
                 <script type="text/javascript">
@@ -67,42 +67,42 @@
                             <input type="hidden" name="csrfToken" value="<?php echo Template::escapeAttr($_SESSION['CATS']->getCSRFToken()); ?>" />
                         <?php endif; ?>
 
-                        <table>
-                            <tr>
-                                <td>Please choose your time zone.</td>
-                            </tr>
-                            <tr>
-                                <td style="padding-bottom: 10px;"><?php TemplateUtility::printTimeZoneSelect('timeZone', 'width: 420px;', '', OFFSET_GMT); ?></td>
-                            </tr>
+                        <div class="card card-body p-2 mb-2">
+                            <div class="row g-2 mb-2">
+                                <div class="col-12 col-sm">Please choose your time zone.</div>
+                            </div>
+                            <div class="row g-2 mb-2">
+                                <div class="col-12 col-sm"><?php TemplateUtility::printTimeZoneSelect('timeZone', '', 'form-select form-select-sm', OFFSET_GMT); ?></div>
+                            </div>
 
-                            <tr>
-                                <td>Please choose your preferred date format.</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <select id="dateFormat" name="dateFormat" style="width: 150px;">
+                            <div class="row g-2 mb-2">
+                                <div class="col-12 col-sm">Please choose your preferred date format.</div>
+                            </div>
+                            <div class="row g-2 mb-2">
+                                <div class="col-12 col-sm">
+                                    <select id="dateFormat" name="dateFormat" class="form-select form-select-sm">
                                         <option value="mdy" selected="selected">MM-DD-YYYY (US)</option>
                                         <option value="dmy">DD-MM-YYYY (UK)</option>
                                     </select>
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
 
-                            <tr>
-                                <td>Please choose your preferred time format.</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <select id="timeFormat" name="timeFormat" style="width: 150px;">
+                            <div class="row g-2 mb-2">
+                                <div class="col-12 col-sm">Please choose your preferred time format.</div>
+                            </div>
+                            <div class="row g-2 mb-2">
+                                <div class="col-12 col-sm">
+                                    <select id="timeFormat" name="timeFormat" class="form-select form-select-sm">
                                         <option value="12" selected="selected">12-hour (1:30 PM)</option>
                                         <option value="24">24-hour (13:30)</option>
                                     </select>
-                                </td>
-                            </tr>
-                        </table>
+                                </div>
+                            </div>
+                        </div>
                         <br />
 
-                        <input type="submit" id="submit" name="submit" class="button" value="Submit" />
-                        <input type="reset"  id="reset" name="reset"  class="button" value="Reset" />
+                        <input type="submit" id="submit" name="submit" value="Submit"  class="btn btn-sm btn-primary" />
+                        <input type="reset"  id="reset" name="reset"  value="Reset"  class="btn btn-sm btn-outline-secondary" />
                     </form>
                 </div>
             <?php endif; ?>
@@ -117,12 +117,12 @@
                             <input type="hidden" name="csrfToken" value="<?php echo Template::escapeAttr($_SESSION['CATS']->getCSRFToken()); ?>" />
                         <?php endif; ?>
 
-                        <label id="siteNameLabel" for="siteName"><?php echo($this->inputTypeTextParam); ?></label><br />
-                        <input type="text" name="siteName" id="siteName" class="input-box" style="width: 200px;" />
+                        <label id="siteNameLabel" for="siteName" class="form-label small mb-0"><?php echo($this->inputTypeTextParam); ?></label><br />
+                        <input type="text" name="siteName" id="siteName"  class="form-control form-control-sm" />
                         <br />
 
-                        <input type="submit" id="submit" name="submit" class="button" value="Submit" />
-                        <input type="reset"  id="reset" name="reset"  class="button" value="Reset" />
+                        <input type="submit" id="submit" name="submit" value="Submit"  class="btn btn-sm btn-primary" />
+                        <input type="reset"  id="reset" name="reset"  value="Reset"  class="btn btn-sm btn-outline-secondary" />
                     </form>
                 </div>
                 <script type="text/javascript">
@@ -138,12 +138,12 @@
                             <input type="hidden" name="csrfToken" value="<?php echo Template::escapeAttr($_SESSION['CATS']->getCSRFToken()); ?>" />
                         <?php endif; ?>
 
-                        <label id="text1Label" for="text1"><?php echo($this->inputTypeTextParam); ?></label><br />
-                        <input name="text1" id="text1" class="input-box" />
+                        <label id="text1Label" for="text1" class="form-label small mb-0"><?php echo($this->inputTypeTextParam); ?></label><br />
+                        <input name="text1" id="text1"  class="form-control form-control-sm" />
                         <br />
 
-                        <input type="submit" id="submit" name="submit" class="button" value="Submit" />
-                        <input type="reset"  id="reset" name="reset"  class="button" value="Reset" />
+                        <input type="submit" id="submit" name="submit" value="Submit"  class="btn btn-sm btn-primary" />
+                        <input type="reset"  id="reset" name="reset"  value="Reset"  class="btn btn-sm btn-outline-secondary" />
                         <br /><br />
                     </form>
                 </div>
@@ -156,7 +156,7 @@
                             <input type="hidden" name="csrfToken" value="<?php echo Template::escapeAttr($_SESSION['CATS']->getCSRFToken()); ?>" />
                         <?php endif; ?>
 
-                        <input type="submit" id="submit" name="submit" class="button" value="Continue Using OpenCATS" />
+                        <input type="submit" id="submit" name="submit" value="Continue Using OpenCATS"  class="btn btn-sm btn-primary" />
                     </form>
                 </div>
            <?php endif; ?>
@@ -165,7 +165,7 @@
         <div style="clear: both;"></div>
         <br />
 
-        <div id="footerBlock">
+        <div id="footerBlock" class="text-center small text-body-secondary">
             <span class="footerCopyright"><?php echo(COPYRIGHT_HTML); ?></span>
         </div>
     </div>

@@ -1,31 +1,27 @@
 <?php TemplateUtility::printHeader('Settings', array('js/backup.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+    <?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2">
 
         <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Settings: Site Backup</h2></td>
-                </tr>
-            </table>
+            <header class="oc-page-header mb-2">
+                <h1 class="h5 fw-semibold mb-0">Settings: Site Backup</h1>
+            </header>
 
-            <p class="note">Create Site Backup</p>
+            <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">Create Site Backup</p>
 
-            <table class="searchTable" width="100%">
-                <tr>
-                    <td>
+            <div class="card card-body p-2 mb-2">
+                <div class="row g-2 mb-2">
+                    <div class="col">
                         Create a backup of your entire CATS database (including all of your attachments).<br />
                         Note: Only one backup of your database can be stored on the server at a time.  Creating a new backup will
                         delete the previous backup.<br />
                         <br />
-                    </td>
-                </tr>
-                    <td>
+                    </div>
+                </div>
+                <div class="row g-2 mb-2">
+                    <div class="col">
                     <span id="backupRunning" style="display:none;">
                         Backing up database, please wait... (Now would be a good time to take a coffee break!)
                         <br /><br />
@@ -35,7 +31,7 @@
                     </span>
                     <span id="progress">
                         Last backup:
-                        <table class="attachmentsTable">
+                        <div class="table-responsive"><table class="attachmentsTable table table-sm align-middle">
                             <?php foreach ($this->attachmentsRS as $rowNumber => $attachmentsData): ?>
                                 <tr>
                                     <td>
@@ -58,7 +54,7 @@
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
-                        </table>
+                        </table></div>
                         <?php if (empty($this->attachmentsRS)): ?>
                             None<br />
                         <?php else: ?>
@@ -66,8 +62,8 @@
                         <?php endif; ?>
 
                     <br />
-                    <input type="button" class="button" value="Create Full System Backup" onclick="startBackup('settings:backup', '');" style="margin:3px; width:200px;"><br />
-                    <input type="button" class="button" value="Create Attachments Backup" onclick="startBackup('settings:backup', '&attachmentsOnly=true');" style="margin:3px; width:200px;">
+                    <input type="button" value="Create Full System Backup" onclick="startBackup('settings:backup', '');"  class="btn btn-sm btn-outline-secondary mb-2"><br />
+                    <input type="button" value="Create Attachments Backup" onclick="startBackup('settings:backup', '&attachmentsOnly=true');"  class="btn btn-sm btn-outline-secondary mb-2">
                     </span>
                     <span id="progressBar" style="display:none;">
                     <br /><br />
@@ -78,12 +74,12 @@
                         </div>
                     </div>
                     </span>
-                    </td>
+                    </div>
                     <span id="tempJs" style="display:none;"></span>
                     <iframe id="progressIFrame" style="display:none;"></iframe>
-                </tr>
-            </table>
+                </div>
+            </div>
 
         </div>
-    </div>
+    </main>
 <?php TemplateUtility::printFooter(); ?>

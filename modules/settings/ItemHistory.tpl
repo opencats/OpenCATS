@@ -3,31 +3,26 @@
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
     <?php $longFields = array('description', 'notes'); ?>
 
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+    <?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2">
 
         <div id="contents">
-            <table width="100%">
-                <tr>
-                    <td width="3%">
-                        <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td align="left"><h2>Item History (Administrator View)</h2></td>
-                </tr>
-            </table>
+            <header class="oc-page-header mb-2">
+                <h1 class="h5 fw-semibold mb-0">Item History (Administrator View)</h1>
+            </header>
 
-            <p class="note">Item History</p>
+            <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">Item History</p>
 
-            <table>
-                <tr>
-                    <td>
-                        <table class="editTable" id="historyTable" width="600">
+            <div class="card card-body p-2 mb-2">
+                <div class="row g-2 mb-2">
+                    <div class="col-12 col-sm">
+                        <div class="table-responsive"><table class="table table-sm align-middle" id="historyTable">
                             <?php $counter=0; ?>
                             <?php foreach ($this->data as $field => $value): ?>
                               <?php if (!in_array($field, $longFields)): ?>
                                 <?php $counter++; if ($counter == 2): ?>
                                     <?php $counter = 0; ?>
-                                        <td class="tdVertical" style="width:130px;">
+                                        <td class="tdVertical">
                                             <?php $this->_($field); ?>
                                         </td>
                                         <td class="tdData">
@@ -36,7 +31,7 @@
                                     </tr>
                                 <?php else: ?>
                                     <tr>
-                                        <td class="tdVertical" style="width:130px;">
+                                        <td class="tdVertical">
                                             <?php $this->_($field); ?>
                                         </td>
                                         <td class="tdData">
@@ -46,11 +41,11 @@
                               <?php endif; ?>
                             <?php endforeach; ?>
                             <?php if ($counter == 1) echo('</td>'); ?>
-                        </table>
-                    </td>
-                    <td>
+                        </table></div>
+                    </div>
+                    <div class="col-12 col-sm">
                         <!-- revisions go here -->
-                        <div id="selectHistoryDiv" style="clear:both; border: 1px solid #963; height: 300px; overflow: auto; width: 310px;">
+                        <div id="selectHistoryDiv" class="border rounded p-2 overflow-auto" style="height:300px;">
                             <!--<a href="javascript:void(0);" onclick="gotoRevision(-10);">
                                 <span style="font-size:10px;">--Newest revision--</span><br /><br />
                             </a>-->
@@ -66,16 +61,16 @@
                                 <span style="font-size:10px;">--Oldest revision--</span><br /><br />
                             </a>-->
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <table class="editTable" id="historyTable" width="600">
+                    </div>
+                </div>
+                <div class="row g-2 mb-2">
+                    <div class="col-12 col-sm">
+                        <div class="table-responsive"><table class="table table-sm align-middle" id="historyTable">
                             <tr>
                                 <?php foreach ($this->data as $field => $value): ?>
                                   <?php if (in_array($field, $longFields)): ?>
                                     <?php $counter=0; ?>
-                                        <td class="tdVertical" style="width:130px;">
+                                        <td class="tdVertical">
                                             <?php $this->_($field); ?>
                                         </td>
                                         <td class="tdData">
@@ -85,10 +80,10 @@
                                   <?php endif; ?>
                                 <?php endforeach; ?>
                             </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
+                        </table></div>
+                    </div>
+                </div>
+            </div>
 
             <script type="text/javascript">
                 var currentRevision = -1;
@@ -148,17 +143,17 @@
                 document.getElementById('selectHistoryDiv').style.height = document.getElementById('historyTable').offsetHeight + 'px';
             </script>
 
-            <p class="note">Other History</p>
+            <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">Other History</p>
 
-            <table>
+            <div class="card card-body p-2 mb-2">
                 <?php foreach ($this->revisionRS as $revisionID => $revision): ?>
                     <?php if ($revision['description'] != '' && $revision['theField'] == strtoupper($revision['theField'])): ?>
                         <?php $description = str_replace('(USER)', $revision['enteredByFullName'], $revision['description']); ?>
-                        <tr>
-                            <td style="vertical-align:top;">
+                        <div class="row g-2 mb-2">
+                            <div class="col-12 col-sm">
                                 <span style="font-size:10px;"><?php $this->_($revision['dateModified'].': '.$description); ?></span>
-                            </td>
-                            <td style="vertical-align:top;">
+                            </div>
+                            <div class="col-12 col-sm">
                                     <?php if ($revision['previousValue'] != '' && $revision['previousValue'] != '(NEW)' && $revision['previousValue'] != '(ADD)'): ?>
                                                 <span style="font-size:10px;">
                                                     <?php if ($revision['theField'] == 'ACTIVITY'): ?>
@@ -177,11 +172,11 @@
                                                     <?php endif; ?>
                                                 </span>
                                     <?php endif; ?>
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
                     <?php endif; ?>
                 <?php endforeach; ?>
-            </table>
+            </div>
         </div>
-    </div>
+    </main>
 <?php TemplateUtility::printFooter(); ?>

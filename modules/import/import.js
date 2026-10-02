@@ -254,6 +254,7 @@ function setProgress(theProgress)
 
     if (theProgress > 0)
     {
-        document.getElementById("d2").style.width = (theProgress * 3) + "px";
+        document.getElementById("d2").style.width = theProgress + "%";
+        document.getElementById("empty").setAttribute("aria-valuenow", theProgress);
     }
 }

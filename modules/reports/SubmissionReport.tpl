@@ -1,35 +1,37 @@
 <?php TemplateUtility::printHeader($this->reportTitle); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
-    <table>
-        <tr>
-            <td width="3%">
-                <img src="images/reports.gif" width="24" height="24" border="0" alt="Reports" style="margin-top: 3px;" />&nbsp;
-            </td>
-            <td><h2><?php $this->_($this->reportTitle); ?></h2></td>
-        </tr>
-    </table>
-
-    <p class="note">Submissions</p>
+<main class="container-fluid py-2">
+    <header class="oc-page-header mb-2">
+        <h1 class="h5 fw-semibold mb-1"><?php $this->_($this->reportTitle); ?></h1>
+        <p class="mb-0 text-body-secondary">Submissions</p>
+    </header>
 
     <?php foreach ($this->submissionJobOrdersRS as $rowNumber => $submissionJobOrdersData): ?>
-        <span style="font: normal normal bold 13px/130% Arial, Tahoma, sans-serif;"><?php $this->_($submissionJobOrdersData['title']) ?> at <?php $this->_($submissionJobOrdersData['companyName']) ?> (<?php $this->_($submissionJobOrdersData['ownerFullName']) ?>)</span>
-        <br />
-        <table class="sortable" width="925">
-            <tr>
-                <th align="left" nowrap="nowrap">First Name</th>
-                <th align="left" nowrap="nowrap">Last Name</th>
-                <th align="left" nowrap="nowrap">Candidate Owner</th>
-                <th align="left" nowrap="nowrap">Date Submitted</th>
-            </tr>
-
-            <?php foreach ($submissionJobOrdersData['submissionsRS'] as $rowNumber => $submissionsData): ?>
-                <tr class="<?php TemplateUtility::printAlternatingRowClass($rowNumber); ?>">
-                    <td valign="top" align="left"><?php $this->_($submissionsData['firstName']) ?>&nbsp;</td>
-                    <td valign="top" align="left"><?php $this->_($submissionsData['lastName']) ?>&nbsp;</td>
-                    <td valign="top" align="left"><?php $this->_($submissionsData['ownerFullName']) ?>&nbsp;</td>
-                    <td valign="top" align="left"><?php $this->_($submissionsData['dateSubmitted']) ?>&nbsp;</td>
-                </tr>
-            <?php endforeach; ?>
-        </table>
+        <section class="card mb-2">
+            <h2 class="card-header bg-secondary-subtle h6 py-1 px-2 fw-semibold mb-0"><?php $this->_($submissionJobOrdersData['title']) ?> at <?php $this->_($submissionJobOrdersData['companyName']) ?> (<?php $this->_($submissionJobOrdersData['ownerFullName']) ?>)</h2>
+            <div class="table-responsive">
+                <table class="sortable table table-sm table-striped align-top mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-nowrap">First Name</th>
+                            <th scope="col" class="text-nowrap">Last Name</th>
+                            <th scope="col" class="text-nowrap">Candidate Owner</th>
+                            <th scope="col" class="text-nowrap">Date Submitted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($submissionJobOrdersData['submissionsRS'] as $rowNumber => $submissionsData): ?>
+                        <tr>
+                            <td><?php $this->_($submissionsData['firstName']) ?></td>
+                            <td><?php $this->_($submissionsData['lastName']) ?></td>
+                            <td><?php $this->_($submissionsData['ownerFullName']) ?></td>
+                            <td><?php $this->_($submissionsData['dateSubmitted']) ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </section>
     <?php endforeach; ?>
+</main>
 <?php TemplateUtility::printReportFooter(); ?>

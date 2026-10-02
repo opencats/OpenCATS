@@ -1,74 +1,60 @@
 <?php TemplateUtility::printHeader('Import', array('modules/import/import.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+    <?php TemplateUtility::printQuickSearch(); ?>
+    <main id="main" class="container-fluid py-2">
 
         <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/reports.gif" width="24" height="24" border="0" alt="Import" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Import Data</h2></td>
-                </tr>
-            </table>
+            <header class="oc-page-header mb-3"><h1 class="h5 fw-semibold mb-0">Import Data</h1></header>
 
             <?php if (isset($this->successMessage)): ?>
 
-                <p class="note">Success</p>
-
-                <table class="searchTable">
-                    <tr>
-                        <td>
-                            <?php echo($this->successMessage); ?>
-                        </td>
-                    </tr>
-                </table>
-
-                <br />
+                <div class="alert alert-success" role="status">
+                    <h2 class="h6">Success</h2>
+                    <?php echo($this->successMessage); ?>
+                </div>
 
             <?php endif; ?>
 
-            <p class="note">Recent Commits</p>
+            <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">Recent Commits</p>
 
-            <table class="searchTable">
-                <tr>
-                    <td>
+            <div class="card card-body p-2 mb-3">
+                <div class="row g-2 mb-2">
+                    <div class="col">
                         <?php foreach ($this->data as $data): ?>
+                            <article class="border-bottom pb-3 mb-3">
                             Import #<?php echo($data['importID']); ?> <?php echo($data['dateCreated']); ?> - <?php echo($data['addedLines']); ?> entries added to database.<br />
-                            <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=revert" style="display:inline;">
+                            <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=revert" class="d-inline">
                                 <input type="hidden" name="postback" value="postback" />
                                 <input type="hidden" name="importID" value="<?php echo($data['importID']) ?>" />
-                                <input type="submit" value="Revert Import" class="button">
+                                <input type="submit" value="Revert Import" class="btn btn-sm btn-outline-danger">
                             </form>
-                            <input type="button" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=viewerrors&amp;importID=<?php echo($data['importID']) ?>';" value="View Errors" class="button">
-                            <br /><br />
+                            <input type="button" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=viewerrors&amp;importID=<?php echo($data['importID']) ?>';" value="View Errors" class="btn btn-sm btn-outline-secondary">
+                            </article>
                         <?php endforeach; ?>
-                    </td>
-                </tr>
-            </table>
-            <br />
+                    </div>
+                </div>
+            </div>
 
             <?php if (isset($this->importErrors)): ?>
 
-                <p class="note">Errors Reported by Import</p>
+                <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">Errors Reported by Import</p>
 
-                <table class="searchTable" width="740">
-                    <tr>
-                        <td>
-                            <?php echo($this->importErrors) ?>
-                        </td>
-                    </tr>
-                </table>
-                <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=revert" style="display:inline;">
+                <div class="alert alert-danger" role="alert">
+                    <div class="row g-2">
+                        <div class="col">
+                            <pre class="text-wrap text-break mb-0"><?php echo($this->importErrors) ?></pre>
+                        </div>
+                    </div>
+                </div>
+                <form method="post" action="<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=revert" class="d-inline">
                     <input type="hidden" name="postback" value="postback" />
                     <input type="hidden" name="importID" value="<?php echo($this->importID); ?>" />
-                    <input type="submit" value="Revert Import" class="button">
+                    <input type="submit" value="Revert Import" class="btn btn-sm btn-outline-danger">
                 </form>
 
             <?php endif; ?>
 
         </div>
-    </div>
+    </main>
 <?php TemplateUtility::printFooter(); ?>

@@ -1,67 +1,62 @@
 <?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+    <?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2">
 
         <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Settings: Administration</h2></td>
-                </tr>
-            </table>
+            <header class="oc-page-header mb-2">
+                <h1 class="h5 fw-semibold mb-0">Settings: Administration</h1>
+            </header>
 
-            <p class="note">Localization</p>
+            <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">Localization</p>
 
-            <table class="searchTable" width="100%">
-                <tr>
-                    <td>
-                        <div style="width: 700px;">These options affect how CATS formats numbers, dates, and time. <span style="font-weight:bold;">You (and your other site users) will need to log out and log back in for these settings to take effect.</span></div>
+            <div class="card card-body p-2 mb-2">
+                <div class="row g-2 mb-2">
+                    <div class="col-12 col-sm">
+                        <div class="mb-2">These options affect how CATS formats numbers, dates, and time. <span class="fw-semibold">You (and your other site users) will need to log out and log back in for these settings to take effect.</span></div>
                         <br />
                         <form action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=administration" id="localizationForm" method="post">
                             <input type="hidden" name="postback" value="postback" />
                             <input type="hidden" name="administrationMode" value="localization" />
 
-                            <table class="editTable" width="700">
-                                <tr>
-                                    <td>Please choose your time zone.</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-bottom: 10px;"><?php TemplateUtility::printTimeZoneSelect('timeZone', 'width: 420px;', '', $this->timeZone); ?></td>
-                                </tr>
+                            <div class="card card-body p-2 mb-2">
+                                <div class="row g-2 mb-2">
+                                    <div class="col-12 col-sm"><label class="form-label small mb-0" for="timeZone">Please choose your time zone.</label></div>
+                                </div>
+                                <div class="row g-2 mb-2">
+                                    <div class="col-12 col-sm"><?php TemplateUtility::printTimeZoneSelect('timeZone', '', 'form-select form-select-sm', $this->timeZone); ?></div>
+                                </div>
 
-                                <tr>
-                                    <td>Please choose your preferred date format.</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-bottom: 5px;">
-                                        <select id="dateFormat" name="dateFormat" style="width: 150px;">
+                                <div class="row g-2 mb-2">
+                                    <div class="col-12 col-sm"><label class="form-label small mb-0" for="dateFormat">Please choose your preferred date format.</label></div>
+                                </div>
+                                <div class="row g-2 mb-2">
+                                    <div class="col-12 col-sm">
+                                        <select id="dateFormat" name="dateFormat" class="form-select form-select-sm">
                                             <option value="mdy"<?php if (!$this->isDateDMY): ?> selected<?php endif; ?>>MM-DD-YYYY (US)</option>
                                             <option value="dmy"<?php if ($this->isDateDMY): ?> selected<?php endif; ?>>DD-MM-YYYY (UK)</option>
                                         </select>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
 
-                                <tr>
-                                    <td>Please choose your preferred time format.</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-bottom: 5px;">
-                                        <select id="timeFormat" name="timeFormat" style="width: 150px;">
+                                <div class="row g-2 mb-2">
+                                    <div class="col-12 col-sm"><label class="form-label small mb-0" for="timeFormat">Please choose your preferred time format.</label></div>
+                                </div>
+                                <div class="row g-2 mb-2">
+                                    <div class="col-12 col-sm">
+                                        <select id="timeFormat" name="timeFormat" class="form-select form-select-sm">
                                             <option value="12"<?php if (!$this->isTimeFormat24): ?> selected<?php endif; ?>>12-hour (1:30 PM)</option>
                                             <option value="24"<?php if ($this->isTimeFormat24): ?> selected<?php endif; ?>>24-hour (13:30)</option>
                                         </select>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
 
-                                <tr>
-                                    <td>Please enter your default phone country calling code.</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-bottom: 5px;">
+                                <div class="row g-2 mb-2">
+                                    <div class="col-12 col-sm"><label class="form-label small mb-0" for="defaultPhoneCountryCodeDigits">Please enter your default phone country calling code.</label></div>
+                                </div>
+                                <div class="row g-2 mb-2">
+                                    <div class="col-12 col-sm">
                                         <span>+</span>
                                         <input
                                             type="text"
@@ -71,16 +66,16 @@
                                             size="5"
                                             maxlength="5"
                                             oninput="this.value = this.value.replace(/[^0-9]/g, '');"
-                                        />
-                                    </td>
-                                </tr>
-                            </table>
-                        <input type="submit" class="button" value="Save (And Logout)" />&nbsp;
-                        <input type="button" name="back" class="button" value="Back" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=administration';" />
+                                         class="form-control form-control-sm" />
+                                    </div>
+                                </div>
+                            </div>
+                        <input type="submit" value="Save (And Logout)"  class="btn btn-sm btn-primary" />&nbsp;
+                        <input type="button" name="back" value="Back" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=administration';"  class="btn btn-sm btn-outline-secondary" />
                         </form>
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </main>
 <?php TemplateUtility::printFooter(); ?>

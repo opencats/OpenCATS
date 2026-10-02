@@ -1,16 +1,16 @@
-<div class="stepContainer">
+<div class="mt-3">
 
 <?php if (isset($this->documents)): ?>
-<div id="uploadQueue" style="background-color: #f0f0f0; color: #800000; border: 1px solid #800000; text-align: center; font-size: 14px; padding: 10px; margin: 0 0 15px 0; font-weight: bold;">
+<div id="uploadQueue" class="alert alert-warning">
 You have <?php echo number_format(count($this->documents), 0); ?> document<?php echo count($this->documents) != 1 ? 's' : ''; ?> in your upload queue.
 <br /><br />
-<input type="button" value="Delete File<?php echo count($this->documents) != 1 ? 's' : ''; ?>" onclick="deleteUploadFiles();" class="button" />
-<input type="button" class="button" value="Import File<?php echo count($this->documents) != 1 ? 's' : ''; ?>" onclick="document.location.href='<?php echo CATSUtility::getIndexName(); ?>?m=import&a=massImport&step=2';" />
+<input type="button" value="Delete File<?php echo count($this->documents) != 1 ? 's' : ''; ?>" onclick="deleteUploadFiles();" class="btn btn-sm btn-outline-danger" />
+<input type="button" class="btn btn-sm btn-primary" value="Import File<?php echo count($this->documents) != 1 ? 's' : ''; ?>" onclick="document.location.href='<?php echo CATSUtility::getIndexName(); ?>?m=import&a=massImport&step=2';" />
 </div>
 <?php endif; ?>
 
 <?php if ($this->multipleFilesEnabled): ?>
-    <span style="font-size: 16px;">
+    <span>
     <?php if ($this->uploadPath !== false): ?>
         To import multiple files, move or copy your resume documents to the following directory on the computer
         that hosts CATS:
@@ -33,19 +33,18 @@ You have <?php echo number_format(count($this->documents), 0); ?> document<?php 
         <b>Linux Instructions:</b>
         <br />
         <blockquote>
-        <span style="color: #c0c0c0;">&gt;</span> mkdir /PATH/TO/CATS/upload<br />
-        <span style="color: #c0c0c0;">&gt;</span> chmod -R 777 /PATH/TO/CATS/upload
+        <span class="text-body-secondary">&gt;</span> mkdir /PATH/TO/CATS/upload<br />
+        <span class="text-body-secondary">&gt;</span> chmod -R 777 /PATH/TO/CATS/upload
         </blockquote>
         <br />
         <b>Windows Instructions:</b>
         <blockquote>
-        <span style="color: #c0c0c0;">&gt;</span> Create a folder named <b>upload</b> in the directory you installed CATS.<br />
-        <span style="color: #c0c0c0;">&gt;</span> Set the appropriate permissions by right clicking the file and selecting <b>Properties</b>, then <b>Security</b>.<br />
-        <span style="color: #c0c0c0;">&gt;</span> Make sure all users have access to read, write and delete files and directories.
+        <span class="text-body-secondary">&gt;</span> Create a folder named <b>upload</b> in the directory you installed CATS.<br />
+        <span class="text-body-secondary">&gt;</span> Set the appropriate permissions by right clicking the file and selecting <b>Properties</b>, then <b>Security</b>.<br />
+        <span class="text-body-secondary">&gt;</span> Make sure all users have access to read, write and delete files and directories.
         </blockquote>
     <?php endif; ?>
     </span>
-
 
 <?php else: ?>
     The automated bulk resume import feature has been temporarily disabled.<br /><br />
@@ -53,30 +52,18 @@ You have <?php echo number_format(count($this->documents), 0); ?> document<?php 
     for assistance from the CATS team.
     <br />
 
-
 <?php endif; ?>
 
-<div style="padding: 10px; margin-top: 15px; text-align: left;">
-    <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-            <td align="left" valign="top" style="padding-right: 20px;">
-                <a href="http://www.resfly.com" target="_blank">
-                    <img src="images/poweredByResfly.jpg" border="0" style="border: 1px solid #c0c0c0;" />
-                </a>
-            </td>
-            <td align="left" valign="top">
-                <span style="font-size: 16px;">
-                <b>Resume parsing is enabled.</b>
-                </span>
-
-                <p />
-                <span style="font-size: 14px; color: #333333;">
-                The Resfly parsing service searches your resume files for contact
-                and resume information. CATS will import all applicable resume documents as candidates.
-                </span>
-            </td>
-        </tr>
-    </table>
+<div class="card card-body bg-body-tertiary mt-3">
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <a href="http://www.resfly.com" target="_blank"><img src="images/poweredByResfly.jpg" class="img-fluid" alt="Resfly" /></a>
+        </div>
+        <div class="col">
+            <p class="fw-semibold mb-2">Resume parsing is enabled.</p>
+            <p class="mb-0">The Resfly parsing service searches your resume files for contact
+            and resume information. CATS will import all applicable resume documents as candidates.</p>
+        </div>
+    </div>
 </div>
-
 </div>

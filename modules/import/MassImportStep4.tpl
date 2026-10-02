@@ -1,92 +1,76 @@
-<div class="stepContainer">
-    <table cellpadding="0" cellspacing="0" width="100%">
-        <tr>
-            <td width="45%" valign="top">
-                <span style="font-size: 18px; font-weight: bold;">
-                <font color="green"><?php echo count($this->importedCandidates); ?></font> Candidate<?php echo count($this->importedCandidates) != 1 ? 's' : ''; ?> Imported
+<div class="mt-3">
+    <div class="row g-3">
+        <div class="col-12 col-lg-6">
+                <span class="h6 d-block">
+                <span class="text-success"><?php echo count($this->importedCandidates); ?></span> Candidate<?php echo count($this->importedCandidates) != 1 ? 's' : ''; ?> Imported
                 </span>
-                <p />
+                <div class="mb-2"></div>
                 A candidate has all applicable information (such as name, address, skill set) on file
                 and can be added to job orders and included in reports and actions. The uploaded resume
                 documents are attached to the candidate record for later viewing and searches.
-                <p />
+                <div class="mb-2"></div>
                 <b>Imported Candidates:</b>
-                <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #F8FAFF; padding: 10px; border: 1px solid #A5BAE9;">
+                <ul class="list-group mb-3">
                     <?php $col = false; for ($i=0; $i<count($this->importedCandidates) && $i<=10; $i++): $candidate = $this->importedCandidates[$i]; ?>
-                    <tr>
-                        <td nowrap="nowrap"<?php echo (($col = !$col) ? ' style="background-color: #EDF3FF;"' : ''); ?>>
-                            <a href="<?php echo $candidate['url']; ?>"><?php echo $candidate['name']; ?></a> -
+                    <li class="list-group-item text-break"><a href="<?php echo $candidate['url']; ?>"><?php echo $candidate['name']; ?></a> -
                             <?php echo $candidate['location']; ?>
-                        </td>
-                    </tr>
+                        </li>
                     <?php if ($i == 10 && count($this->importedCandidates) > 10): ?>
-                    <tr>
-                        <td nowrap="nowrap"<?php echo (($col = !$col) ? ' style="background-color: #EDF3FF;"' : ''); ?>>
-                            ... <span style="color: #666666; font-style: italic;"><?php echo number_format(count($this->importedCandidates)-10,0); ?> candidates not shown</span>
-                        </td>
-                    </tr>
+                    <li class="list-group-item text-break">
+                            ... <span class="text-body-secondary fst-italic"><?php echo number_format(count($this->importedCandidates)-10,0); ?> candidates not shown</span>
+                        </li>
                     <?php endif; ?>
                     <?php endfor; ?>
-                </table>
+                </ul>
                 <?php if (count($this->importedDuplicates)): ?>
                 <br />
-                <span style="font-weight: bold; color: #800000;">
+                <span class="alert alert-warning d-block">
                 <?php echo number_format(count($this->importedDuplicates), 0); ?> candidates were duplicates and not added.
                 </span>
                 <?php endif; ?>
-            </td>
-            <td width="10%">&nbsp;</td>
-            <td width="45%" valign="top">
-                <span style="font-size: 18px; font-weight: bold;">
-                <font color="blue"><?php echo count($this->importedDocuments); ?></font> Resume Document<?php echo count($this->importedDocuments) != 1 ? 's' : ''; ?> Saved
+            </div>
+            <div class="col-12 col-lg-6">
+                <span class="h6 d-block">
+                <span class="text-primary"><?php echo count($this->importedDocuments); ?></span> Resume Document<?php echo count($this->importedDocuments) != 1 ? 's' : ''; ?> Saved
                 </span>
-                <p />
+                <div class="mb-2"></div>
                 A resume document is a file that cannot be converted into a candidate because it's missing key
                 information (like the candidate's name). These files have been saved and are full-text searchable. They
                 must be converted into candidates manually.
-                <p />
+                <div class="mb-2"></div>
                 <b>Resume Documents:</b>
-                <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #F8FAFF; padding: 10px; border: 1px solid #A5BAE9;">
+                <ul class="list-group mb-3">
                     <?php $col = false; for ($i=0; $i<count($this->importedDocuments) && $i<=10; $i++): $document = $this->importedDocuments[$i]; ?>
-                    <tr>
-                        <td nowrap="nowrap"<?php echo (($col = !$col) ? ' style="background-color: #EDF3FF;"' : ''); ?>>
+                    <li class="list-group-item text-break">
                             <?php echo $document['name']; ?>
-                        </td>
-                    </tr>
+                        </li>
                     <?php if ($i == 10 && count($this->importedDocuments) > 10): ?>
-                    <tr>
-                        <td nowrap="nowrap"<?php echo (($col = !$col) ? ' style="background-color: #EDF3FF;"' : ''); ?>>
-                            ... <span style="color: #666666; font-style: italic;"><?php echo number_format(count($this->importedDocuments)-10,0); ?> documents not shown</span>
-                        </td>
-                    </tr>
+                    <li class="list-group-item text-break">
+                            ... <span class="text-body-secondary fst-italic"><?php echo number_format(count($this->importedDocuments)-10,0); ?> documents not shown</span>
+                        </li>
                     <?php endif; ?>
                     <?php endfor; ?>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="3" valign="top" style="padding-top: 20px;">
+                </ul>
+            </div>
+            <div class="col-12">
                 <br /><br />
-                <span style="font-size: 18px; font-weight: bold;">
-                <font color="red"><?php echo count($this->importedFailed); ?></font> Document<?php echo count($this->importedFailed) != 1 ? 's' : ''; ?> Failed to be Imported
+                <span class="h6 d-block">
+                <span class="text-danger"><?php echo count($this->importedFailed); ?></span> Document<?php echo count($this->importedFailed) != 1 ? 's' : ''; ?> Failed to be Imported
                 </span>
-                <p />
+                <div class="mb-2"></div>
                 A document fails to import because it's either corrupt or CATS doesn't know how to open it. You
                 could try to convert these files to CATS-friendly formats like Microsoft Word, Adobe PDF or as
                 plain text files using the appropriate application.
-                <p />
+                <div class="mb-2"></div>
                 <b>Failed Documents:</b>
-                <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #F8FAFF; padding: 10px; border: 1px solid #A5BAE9;">
+                <ul class="list-group mb-3">
                     <?php $col = false; for ($i=0; $i<count($this->importedFailed); $i++): $failed = $this->importedFailed[$i]; ?>
-                    <tr>
-                        <td nowrap="nowrap"<?php echo (($col = !$col) ? ' style="background-color: #EDF3FF;"' : ''); ?>>
+                    <li class="list-group-item text-break">
                             <?php echo $failed['name']; ?>
-                        </td>
-                    </tr>
+                        </li>
                     <?php endfor; ?>
-                </table>
-            </td>
-        </tr>
-    </table>
+                </ul>
+            </div>
+    </div>
 
 </div>

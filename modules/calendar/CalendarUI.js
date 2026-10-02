@@ -19,7 +19,7 @@ function generateCalendarEntrySmall(time, title, separator, entry)
     var visibleEntryID = visibleEntries.length;
     visibleEntries = visibleEntries.concat(entry);
 
-    var iconSet   = "<span nowrap=\"nowrap\"><nobr>";
+    var iconSet   = "<span class=\"text-nowrap\">";
     var typeImage = getImageByType(entry.getData("eventType"));
     var string = "";
 
@@ -42,15 +42,15 @@ function generateCalendarEntrySmall(time, title, separator, entry)
         iconSet += "<img class=\"absmiddle\" src=\"images/public.gif\" title=\"Public Entry\" /> ";
     }
 
-    iconSet += "</nobr></nowrap>";
+    iconSet += "</span>";
 
-    string += "<table><tr><td class=\"calendarEntry\" onclick=\"handleClickEntry(visibleEntries["
+    string += "<table role=\"presentation\" class=\"w-100 mb-1 oc-calendar-entry-table\"><tr><td class=\"calendarEntry p-1\" tabindex=\"0\" onclick=\"event.stopPropagation(); handleClickEntry(visibleEntries["
         + visibleEntryID
         + "]);\" onmouseover=\"noAddEvent = true;\" onmouseout=\"noAddEvent = false;\">";
 
     if (entry.getData("allDay") != "1")
     {
-        string += "<span class=\"bold\">"+ time + "</span> "
+        string += "<span class=\"fw-semibold\">"+ time + "</span> "
             + iconSet + separator + "&nbsp;";
     }
     else
@@ -69,7 +69,7 @@ function generateCalendarEntryDayView(time, title, position, idDiv, idEntry, sep
     var visibleEntryID = visibleEntries.length;
     visibleEntries = visibleEntries.concat(entry);
 
-    var iconSet = "<span nowrap=\"nowrap\"><nobr>";
+    var iconSet = "<span class=\"text-nowrap\">";
     var typeImage = getImageByType(entry.getData("eventType"));
     var string = "";
 
@@ -91,19 +91,19 @@ function generateCalendarEntryDayView(time, title, position, idDiv, idEntry, sep
         iconSet += "<img class=\"absmiddle\" src=\"images/public.gif\" title=\"Public Entry\" /> ";
     }
 
-    iconSet += "</nobr></nowrap>";
+    iconSet += "</span>";
 
     if (entry.getData("allDay") != "1")
     {
-        string += "<table><tr><td class=\"calendarEntry\" id=\""
-            + idEntry + "\" onclick=\"handleClickEntry(visibleEntries["
+        string += "<table role=\"presentation\" class=\"w-100 mb-1 oc-calendar-entry-table\"><tr><td class=\"calendarEntry p-1\" tabindex=\"0\" id=\""
+            + idEntry + "\" onclick=\"event.stopPropagation(); handleClickEntry(visibleEntries["
             + visibleEntryID
             + "]);\" onmouseover=\"noAddEvent = true;\" onmouseout=\"noAddEvent = false;\">";
     }
     else
     {
-        string += "<table><tr><td class=\"calendarEntry\" id=\""
-            + idEntry + "\" onclick=\"handleClickEntry(visibleEntries["
+        string += "<table role=\"presentation\" class=\"w-100 mb-1 oc-calendar-entry-table\"><tr><td class=\"calendarEntry p-1\" tabindex=\"0\" id=\""
+            + idEntry + "\" onclick=\"event.stopPropagation(); handleClickEntry(visibleEntries["
             + visibleEntryID
             + "]);\" onmouseover=\"noAddEvent = true;\" onmouseout=\"noAddEvent = false;\">";
     }
@@ -112,7 +112,7 @@ function generateCalendarEntryDayView(time, title, position, idDiv, idEntry, sep
     {
         var durationText = getDurationString(entry.getData("duration"));
 
-        string += "<span class=\"bold\">" + time + "</span> "
+        string += "<span class=\"fw-semibold\">" + time + "</span> "
             + iconSet + "("
             + durationText + ") " + separator + "&nbsp;";
     }
@@ -130,7 +130,7 @@ function generateCalendarEntryDayView(time, title, position, idDiv, idEntry, sep
 
 function generateCalendarEntryGrouped(text)
 {
-    return "<table><tr><td class=\"calendarEntryMultiple\" style=\"font-weight: bold;\">"
+    return "<table role=\"presentation\" class=\"w-100 mb-1 oc-calendar-entry-table\"><tr><td class=\"calendarEntryMultiple p-1 fw-semibold\">"
         + text + "</td></tr></table>";
 }
 
@@ -594,4 +594,40 @@ function getReminderTimeString(reminderTime)
     }
 
 	return string;
+}
+
+/* Adapt shared date/summary output locally without changing other modules. */
+function initializeCalendarUI()
+{
+    document.querySelector('.oc-calendar-view').addEventListener('keydown', function (event) {
+        if (event.target.classList.contains('calendarEntry') &&
+            (event.key === 'Enter' || event.key === ' '))
+        {
+            event.preventDefault();
+            event.target.click();
+        }
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.oc-calendar-event-form select.calendarDateInput'), function (field) {
+        field.classList.add('form-select', 'form-select-sm', 'w-auto');
+        field.setAttribute('aria-label', field.id.indexOf('_Month_') !== -1 ? 'Month' : 'Day');
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.oc-calendar-event-form input.calendarDateInput'), function (field) {
+        field.classList.add('form-control', 'form-control-sm');
+    });
+    var upcoming = document.getElementById('upcomingEventsTD');
+    var oldHeading = upcoming.querySelector('.noteUnsizedSpan');
+    if (oldHeading)
+    {
+        var heading = document.createElement('h2');
+        heading.className = 'h6 fw-semibold mb-2';
+        heading.textContent = oldHeading.textContent;
+        oldHeading.parentNode.replaceChild(heading, oldHeading);
+    }
+    if (!upcoming.querySelector('a'))
+    {
+        var empty = document.createElement('p');
+        empty.className = 'small text-body-secondary mb-0';
+        empty.textContent = 'No upcoming events.';
+        upcoming.appendChild(empty);
+    }
 }

@@ -1,127 +1,103 @@
 <?php TemplateUtility::printHeader('Import', array('modules/import/import.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, '', 'settings'); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+    <?php TemplateUtility::printQuickSearch(); ?>
+    <main id="main" class="container-fluid py-2">
 
         <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/reports.gif" width="24" height="24" border="0" alt="Import" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Import Data</h2></td>
-                </tr>
-            </table>
+            <header class="oc-page-header mb-3"><h1 class="h5 fw-semibold mb-0">Import Data</h1></header>
 
             <?php if (isset($this->errorMessage)): ?>
 
-                <p class="warning" id="importHide0">Error!</p>
-
-                <table class="searchTable" id="importHide1" width="100%">
-                    <tr>
-                        <td>
-                            <?php echo($this->errorMessage); ?>
-                        </td>
-                    </tr>
-                </table>
-
-                <br />
+                <div id="importHide1" class="alert alert-danger" role="alert">
+                    <h2 id="importHide0" class="h6">Error!</h2>
+                    <?php echo($this->errorMessage); ?>
+                </div>
 
             <?php elseif (isset($this->successMessage)): ?>
 
-                <p class="note" id="importHide0">Success</p>
-
-                <table class="searchTable" id="importHide1" width="100%">
-                    <tr>
-                        <td>
-                            <?php echo($this->successMessage); ?>
-                        </td>
-                    </tr>
-                </table>
-
-                <br />
+                <div id="importHide1" class="alert alert-success" role="status">
+                    <h2 id="importHide0" class="h6">Success</h2>
+                    <?php echo($this->successMessage); ?>
+                </div>
 
             <?php elseif (isset($this->pendingCommits)): ?>
 
-                <p class="warning" id="importHide0">Notice</p>
+                <p class="alert alert-warning" role="alert" id="importHide0">Notice</p>
 
-                <table class="searchTable" id="importHide1">
-                    <tr>
-                        <td>
+                <div id="importHide1" class="alert alert-info">
+                    <div class="row g-2 mb-2">
+                        <div class="col-12 col-md text-break">
                             You have recently imported CSV data.  You can click here to review or delete the imported data.<br />
-                            <input type="button" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=viewpending';" value="View Recent Imports" class="button" />
-                        </td>
-                    </tr>
-                </table>
-
-                <br />
+                            <input type="button" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=import&amp;a=viewpending';" value="View Recent Imports" class="btn btn-sm btn-outline-secondary" />
+                        </div>
+                    </div>
+                </div>
 
             <?php endif; ?>
 
-            <p class="note">Import Data</p>
+            <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">Import Data</p>
 
-            <table class="searchTable" id="importTable1" width="100%">
-                <tr>
-                    <td>CATS may discard or fail to read some of the submitted data which it does not
+            <div id="importTable1" class="alert alert-warning">
+                <div class="row g-2 mb-2">
+                    <div class="col-12 col-md text-break">CATS may discard or fail to read some of the submitted data which it does not
                     understand how to use. Do not discard the original data!
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                </div>
+            </div>
 
-            <br />
-
-            <table class="searchTable" id="importTable2" width="100%">
-                <tr>
-                    <td>What would you like to import?<br />
-                    <br />
+            <div id="importTable2" class="card card-body p-2 mb-3">
+                <div class="row g-2 mb-2">
+                    <div class="col-12">
                     <form name="importDataForm" id="importDataForm" action="<?php echo(CATSUtility::getIndexName()); ?>" method="get" autocomplete="off">
                         <input type="hidden" name="m" value="import">
                         <input type="hidden" name="a" value="importSelectType">
+                        <fieldset class="mb-3"><legend class="h6">What would you like to import?</legend>
 
-                        <input type="radio" name="typeOfImport" value="resume" checked>&nbsp;<img src="images/file/doc.gif">&nbsp;Resumes<br />
-                        <input type="radio" name="typeOfImport" value="Candidates">&nbsp;<img src="images/candidate_inline.gif">&nbsp;Candidates<br />
-                        <input type="radio" name="typeOfImport" value="JobOrders">&nbsp;<img src="images/joborder.gif">&nbsp;Job Orders<br />
-                        <input type="radio" name="typeOfImport" value="Companies" >&nbsp;<img src="images/mru/company.gif">&nbsp;Companies<br />
-                        <input type="radio" name="typeOfImport" value="Contacts" >&nbsp;<img src="images/mru/contact.gif">&nbsp;Contacts<br />
-                        <br />
-                        <input class="button" type="submit" value="Next">
-                        </td>
+                        <div class="form-check"><label class="form-check-label"><input class="form-check-input" type="radio" name="typeOfImport" value="resume" checked>Resumes</label></div>
+                        <div class="form-check"><label class="form-check-label"><input class="form-check-input" type="radio" name="typeOfImport" value="Candidates">Candidates</label></div>
+                        <div class="form-check"><label class="form-check-label"><input class="form-check-input" type="radio" name="typeOfImport" value="JobOrders">Job Orders</label></div>
+                        <div class="form-check"><label class="form-check-label"><input class="form-check-input" type="radio" name="typeOfImport" value="Companies" >Companies</label></div>
+                        <div class="form-check"><label class="form-check-label"><input class="form-check-input" type="radio" name="typeOfImport" value="Contacts" >Contacts</label></div>
+
+                        </fieldset>
+                        <input class="btn btn-sm btn-primary" type="submit" value="Next">
                     </form>
-                </tr>
-            </table>
+                    </div>
+                </div>
+            </div>
 
             <?php if ($this->bulk['numBulkAttachments'] > 0 && $this->getUserAccessLevel('import.import') >= ACCESS_LEVEL_SA): ?>
             <br />
-            <div style="background-color: #f0f0f0; color: #000000; border: 1px solid #000000; text-align: left; font-size: 14px; padding: 10px; margin: 0 0 15px 0; font-weight: normal;">
+            <div class="alert alert-warning mt-3">
                 You have uploaded <b><?php echo number_format($this->bulk['numBulkAttachments'], 0); ?></b>
                 unclassified resume documents. You can search these documents; but, they are not attached to
                 candidates because candidate information (like their name, address, etc.) was not available when they were uploaded.
-                <br /><br />
+                <br />
                 Rescan the documents to try to automatically detect candidate information. Enter it manually if necessary.
-                <br /><br />
-                <table cellpadding="0" cellspacing="0" border="0">
-                    <tr>
-                        <td style="padding-right: 10px;">
-                            <form method="post" action="<?php echo CATSUtility::getIndexName(); ?>?m=import&amp;a=importBulkResumes" style="display:inline;">
+                <br />
+                <div class="mt-3">
+                    <div class="row g-2 mb-2">
+                        <div class="col-auto">
+                            <form method="post" action="<?php echo CATSUtility::getIndexName(); ?>?m=import&amp;a=importBulkResumes" class="d-inline">
                                 <input type="hidden" name="postback" value="postback" />
-                                <input type="submit" value="Rescan Documents" name="rescan" id="rescanButton" class="button" />
+                                <input type="submit" value="Rescan Documents" name="rescan" id="rescanButton" class="btn btn-sm btn-primary" />
                             </form>
-                        </td>
-                        <td>
-                            <form method="post" action="<?php echo CATSUtility::getIndexName(); ?>?m=import&amp;a=deleteBulkResumes" style="display:inline;" onsubmit="return confirm('This will delete all searchable attachments that have not been associated with candidates. This action cannot be undone. Are you sure you want to continue?');">
+                        </div>
+                        <div class="col-12 col-md text-break">
+                            <form method="post" action="<?php echo CATSUtility::getIndexName(); ?>?m=import&amp;a=deleteBulkResumes" class="d-inline" onsubmit="return confirm('This will delete all searchable attachments that have not been associated with candidates. This action cannot be undone. Are you sure you want to continue?');">
                                 <input type="hidden" name="postback" value="postback" />
-                                <input type="submit" value="Delete Documents" name="delete" id="deleteButton" class="button" />
+                                <input type="submit" value="Delete Documents" name="delete" id="deleteButton" class="btn btn-sm btn-outline-danger" />
                             </form>
-                        </td>
-                    </tr>
-                </table>
+                        </div>
+                    </div>
+                </div>
             </div>
             <?php endif; ?>
 
             <br />
 
         </div>
-    </div>
+    </main>
 
 <?php TemplateUtility::printFooter(); ?>

@@ -69,7 +69,7 @@ Feature: Job Orders
     And I select "Gomez, Marcus" in the "#recruiter" select
     And fill in "city" with "Minneapolis"
     And fill in "state" with "MN"
-    And press "Add Job Order" 
+    And I press "Add Job Order" and wait for navigation
     Then I should see "Title"
     And I should see "Company Name"
     And I should see "Recruiter"
@@ -100,7 +100,7 @@ Feature: Job Orders
     And I select "Gomez, Marcus" in the "#recruiter" select
     And fill in "city" with "Minneapolis"
     And fill in "state" with "MN"
-    And press "Add Job Order"
+    And I press "Add Job Order" and wait for navigation
     And I follow "Edit"
     Then I should see "Title"
     And I should see "Company"
@@ -140,7 +140,7 @@ Feature: Job Orders
     And I select "Gomez, Marcus" in the "#recruiter" select
     And fill in "city" with "Minneapolis"
     And fill in "state" with "MN"
-    And press "Add Job Order"
+    And I press "Add Job Order" and wait for navigation
     And I follow "Edit"
     And fill in "title" with ""
     And press "Save"
@@ -167,7 +167,7 @@ Feature: Job Orders
     And I select "Gomez, Marcus" in the "#recruiter" select
     And fill in "city" with "Minneapolis"
     And fill in "state" with "MN"
-    And press "Add Job Order"
+    And I press "Add Job Order" and wait for navigation
     And I follow "Edit"
     And fill in "title" with "Frontend developer"
     And I select "Administrator, CATS" in the "#recruiter" select
@@ -176,7 +176,7 @@ Feature: Job Orders
     And fill in "companyName" with "Test Company ATxyz"
     And I wait for "#CompanyResults div#suggest0"
     And I click on the element "#CompanyResults div#suggest0"
-    And press "Save"
+    And I press "Save" and wait for navigation
     Then I should see "Frontend developer"
     And I should see "CATS Administrator"
     And I should see "Marcus Gomez"
@@ -193,11 +193,11 @@ Feature: Job Orders
     And I am on "/index.php?m=joborders&a=search" 
     And I select "Company Name" in the "#searchMode" select
     And I fill in "searchText" with "Test Company BigJump"
-    And press "Search" 
-    Then I should see "PHP developer"
-    And I should see "Test Company BigJump"
-    And I should not see "Test Company ATxyz"
-    And I should not see "Javascript developer"
+    And I press "Search" and wait for navigation
+    Then I should see "PHP developer" in the ".oc-joborder-search-results" element
+    And I should see "Test Company BigJump" in the ".oc-joborder-search-results" element
+    And I should not see "Test Company ATxyz" in the ".oc-joborder-search-results" element
+    And I should not see "Javascript developer" in the ".oc-joborder-search-results" element
     
   @javascript
   Scenario: Search job order by job title
@@ -210,11 +210,11 @@ Feature: Job Orders
     And I am on "/index.php?m=joborders&a=search" 
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "PHP developer"
-    And press "Search" 
-    Then I should see "PHP developer"
-    And I should see "Test Company BigJump"
-    And I should not see "Test Company ATxyz"
-    And I should not see "Javascript developer"
+    And I press "Search" and wait for navigation
+    Then I should see "PHP developer" in the ".oc-joborder-search-results" element
+    And I should see "Test Company BigJump" in the ".oc-joborder-search-results" element
+    And I should not see "Test Company ATxyz" in the ".oc-joborder-search-results" element
+    And I should not see "Javascript developer" in the ".oc-joborder-search-results" element
     
   @javascript
   Scenario: Open job order from search result list
@@ -227,7 +227,7 @@ Feature: Job Orders
     And I am on "/index.php?m=joborders&a=search" 
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "PHP developer"
-    And press "Search" 
+    And I press "Search" and wait for navigation
     When I click on "PHP developer" on the row containing "Active"
     Then I should see "PHP developer"
     And I should see "Job Order Details"
@@ -244,7 +244,7 @@ Feature: Job Orders
     And I am on "/index.php?m=joborders&a=search" 
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "PHP developer"
-    And press "Search" 
+    And I press "Search" and wait for navigation
     When I click on "PHP developer" on the row containing "Active"
     And press "Delete"
     And I should see "Delete this job order?" in alert popup
@@ -260,11 +260,11 @@ Feature: Job Orders
     And I am on "/index.php?m=joborders&a=search" 
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "Javascript developer"
-    And press "Search" 
+    And I press "Search" and wait for navigation
     And I click on "Javascript developer" on the row containing "Active"
     And follow "Add Candidate to This Job Order"
     And I switch to the iframe "popupInner"
-    And follow "Add Candidate"
+    And I follow "Add Candidate" and wait for navigation
     Then I should see "First Name"
     And I should see "Middle Name"
     And I should see "Last Name"
@@ -292,11 +292,11 @@ Feature: Job Orders
     And I am on "/index.php?m=joborders&a=search" 
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "Javascript developer"
-    And press "Search" 
+    And I press "Search" and wait for navigation
     And I click on "Javascript developer" on the row containing "Active"
     And follow "Add Candidate to This Job Order"
     And I switch to the iframe "popupInner"
-    And follow "Add Candidate"
+    And I follow "Add Candidate" and wait for navigation
     And I fill in "firstName" with "John"
     And press "Add Candidate"
     Then I should see "You must enter last name" in alert popup
@@ -311,14 +311,14 @@ Feature: Job Orders
     And I am on "/index.php?m=joborders&a=search" 
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "Javascript developer"
-    And press "Search" 
+    And I press "Search" and wait for navigation
     And I click on "Javascript developer" on the row containing "Active"
     And follow "Add Candidate to This Job Order"
     And I switch to the iframe "popupInner"
-    And follow "Add Candidate"
+    And I follow "Add Candidate" and wait for navigation
     And I fill in "firstName" with "John"
     And I fill in "lastName" with "John"
-    And press "Add Candidate"
+    And I press "Add Candidate" and wait for navigation
     Then I should see "The candidate has been successfully added to the pipeline for the selected job order."
     
   @javascript
@@ -330,15 +330,53 @@ Feature: Job Orders
     And I am on "/index.php?m=joborders&a=search" 
     And I select "Job Title" in the "#searchMode" select
     And I fill in "searchText" with "Javascript developer"
-    And press "Search" 
+    And I press "Search" and wait for navigation
     And I click on "Javascript developer" on the row containing "Active"
     And follow "Add Candidate to This Job Order"
     And I switch to the iframe "popupInner"
-    And follow "Add Candidate"
+    And I follow "Add Candidate" and wait for navigation
     And I fill in "firstName" with "John"
     And I fill in "lastName" with "Doe"
-    And press "Add Candidate"
+    And I press "Add Candidate" and wait for navigation
     And press "Close"
     And I switch to the iframe ""
     Then I wait until I see "John"
     And I should see "Doe"
+
+  @javascript
+  Scenario: Copy job order modal preserves the selected source
+    Given I am authenticated as "Administrator"
+    And There is a company called "Job Order Copy UI Company"
+    And There is a job order for a "Job Order Copy UI Source" for "Job Order Copy UI Company"
+    And I am on "/index.php?m=joborders"
+    And I follow "Add Job Order"
+    And I switch to the iframe "popupInner"
+    Then I should see a "#copyFrom[disabled]" element
+    When I click on the element "input[name='typeOfAddElement']:not(:checked)"
+    And I select "Job Order Copy UI Source (Job Order Copy UI Company)" in the "#copyFrom" select
+    And I press "Create Job Order"
+    And I switch to the iframe ""
+    Then I should see a "#addJobOrderForm" element
+    And the "title" field should contain "Job Order Copy UI Source"
+    And the "companyName" field should contain "Job Order Copy UI Company"
+
+  @javascript
+  Scenario: Attachment modal retains file validation and cancel navigation
+    Given I am authenticated as "Administrator"
+    And There is a company called "Job Order Attachment UI Company"
+    And There is a job order for a "Job Order Attachment UI Source" for "Job Order Attachment UI Company"
+    And I am on "/index.php?m=joborders&a=search"
+    And I select "Job Title" in the "#searchMode" select
+    And I fill in "searchText" with "Job Order Attachment UI Source"
+    And I press "Search" and wait for navigation
+    And I click on "Job Order Attachment UI Source" on the row containing "Active"
+    And I follow "Add Attachment"
+    And I switch to the iframe "popupInner"
+    Then I should see a "#createAttachmentForm #file" element
+    When I press "Create Attachment"
+    Then I should see "You must enter a file to upload" in alert popup
+    When I confirm the popup
+    And I press "Cancel"
+    And I switch to the iframe ""
+    Then I should see a ".oc-joborder-show-page #ajaxPipelineTable" element
+    And I should see "Job Order Attachment UI Source"

@@ -1,38 +1,33 @@
 <?php TemplateUtility::printHeader('Settings', array('modules/settings/validator.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active, $this->subActive); ?>
-    <div id="main">
-        <?php TemplateUtility::printQuickSearch(); ?>
+    <?php TemplateUtility::printQuickSearch(); ?>
+<main id="main" class="container-fluid py-2">
 
         <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/settings.gif" width="24" height="24" border="0" alt="Settings" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Settings: Administration</h2></td>
-                </tr>
-            </table>
+            <header class="oc-page-header mb-2">
+                <h1 class="h5 fw-semibold mb-0">Settings: Administration</h1>
+            </header>
 
-            <p class="note">Passwords</p>
+            <p class="bg-secondary-subtle rounded p-2 mb-2 fw-semibold">Passwords</p>
 
-            <table class="searchTable" width="100%">
-                <tr>
-                    <td>
-                        <table class="editTable" width="700">
-                            <tr>
-                                <td class="tdVertical" style="width:320px;">
+            <div class="card card-body p-2 mb-2">
+                <div class="row g-2 mb-2">
+                    <div class="col-12 col-sm">
+                        <div class="card card-body p-2 mb-2">
+                            <div class="row g-2 mb-2">
+                                <div class="col-sm-4 col-lg-3">
                                     Allow retrieval of forgotten passwords through email:
-                                </td>
-                                <td class="tdData">
-                                    <input type="checkbox" name="ForgottenPasswords">
-                                </td>
-                            </tr>
-                        </table>
-                        <input type="button" name="back" class="button" value="Back" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=administration';" />
-                    </td>
-                </tr>
-            </table>
+                                </div>
+                                <div class="col-12 col-sm">
+                                    <input type="checkbox" name="ForgottenPasswords" class="form-check-input">
+                                </div>
+                            </div>
+                        </div>
+                        <input type="button" name="back" value="Back" onclick="document.location.href='<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=administration';"  class="btn btn-sm btn-outline-secondary" />
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </main>
 <?php TemplateUtility::printFooter(); ?>

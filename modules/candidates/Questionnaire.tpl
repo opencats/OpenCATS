@@ -2,99 +2,96 @@
 <?php if (!$this->print): ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
-    <div id="main">
+
         <?php TemplateUtility::printQuickSearch(); ?>
+<?php endif; ?>
+<main id="main" class="container-fluid py-2 oc-candidate-questionnaire-page"><div id="contents">
+<?php if (!$this->print): ?>
 
-        <div id="contents">
-            <table>
-                <tr>
-                    <td width="3%">
-                        <img src="images/candidate.gif" width="24" height="24" border="0" alt="Candidates" style="margin-top: 3px;" />&nbsp;
-                    </td>
-                    <td><h2>Candidates: Questionnaire Results</h2></td>
-               </tr>
-            </table>
 
-            <p class="note"><?php echo $this->title; ?></p>
+            <header class="oc-page-header mb-2"><h1 class="h5 fw-semibold mb-0">Candidates: Questionnaire Results</h1></header>
 
-            <table cellpadding="0" cellspacing="0" width="100%" border="0">
-                <tr>
-                    <td align="left" valign="top">
-                        <input type="button" class="button" value="<- Back to Candidate Profile" onclick="document.location.href='<?php echo CATSUtility::getIndexName(); ?>?m=candidates&a=show&candidateID=<?php echo $this->candidateID; ?>';" />
-                    </td>
-                    <td align="right">
+            <h2 class="h6 card-header bg-secondary-subtle py-1 px-2 fw-semibold mb-2"><?php echo $this->title; ?></h2>
+
+            <div>
+                <div class="row g-2 align-items-start mb-2">
+                    <div class="col-12 col-sm">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" value="<- Back to Candidate Profile" onclick="document.location.href='<?php echo CATSUtility::getIndexName(); ?>?m=candidates&a=show&candidateID=<?php echo $this->candidateID; ?>';"><- Back to Candidate Profile</button>
+                    </div>
+                    <div class="col-12 col-sm">
                         <a href="<?php echo CATSUtility::getIndexName() . '?' . str_replace('print=no', 'print=yes', $_SERVER['QUERY_STRING']); ?>">
-                        <img src="images/actions/print.gif" border="0" />
+                        <img src="images/actions/print.gif">
                         Printer Friendly
                         </a>
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                </div>
+            </div>
 
-            <br /><br />
+            <div class="mb-2"></div>
 
 <?php endif; ?>
 
-            <table cellpadding="0" cellspacing="0" width="100%" border="0">
-                <tr>
-                    <td width="40%" align="left" valign="top">
-                        <span style="font-size: 16px;">
-                        <b>Candidate Information:</b><br />
-                        <?php echo $this->cData['lastName'] . ', ' . $this->cData['firstName']; ?><br />
-                        <?php echo $this->cData['address']; ?><br />
+            <div>
+                <div class="row g-2 align-items-start mb-2">
+                    <div class="col-12 col-sm">
+                        <span>
+                        <b>Candidate Information:</b><br>
+                        <?php echo $this->cData['lastName'] . ', ' . $this->cData['firstName']; ?><br>
+                        <?php echo $this->cData['address']; ?><br>
                         <?php if (!empty($this->cData['address2'])): ?>
-                            <?php echo $this->cData['address2']; ?><br />
+                            <?php echo $this->cData['address2']; ?><br>
                         <?php endif; ?>
                         <?php echo ($str = $this->cData['city'] . ' ' . $this->cData['state'] . ' ' . $this->cData['zip']) . strlen($str) > 2 ? '<br />' : ''; ?>
                         <?php echo ($str = $this->cData['phoneHome'] . ' ' . $this->cData['phoneWork'] . ' ' . $this->cData['phoneCell']) . strlen($str) > 2 ? '<br />' : ''; ?>
-                        <a style="font-size: 16px;" href="mailto:<?php echo ($str = $this->cData['email1']); ?>"><?php echo $this->cData['email1']; ?></a><?php echo strlen($str) > 0 ? '<br />' : ''; ?>
-                        <br />
+                        <a href="mailto:<?php echo ($str = $this->cData['email1']); ?>"><?php echo $this->cData['email1']; ?></a><?php echo strlen($str) > 0 ? '<br />' : ''; ?>
+                        <br>
                         </span>
-                    </td>
-                    <td align="left" valign="top" width="60%" style="padding-left: 10px;">
-                        <span style="font-size: 14px;">
+                    </div>
+                    <div class="col-12 col-sm">
+                        <span>
                         <b>Notes:</b>
-                        <br />
+                        <br>
                         <?php echo $this->cData['notes']; ?>
-                        <br /><br />
-                        <b>Will Relocate:</b><br />
+                        <div class="mb-2"></div>
+                        <b>Will Relocate:</b><br>
                         <?php echo $this->cData['canRelocate'] ? 'Yes' : 'No'; ?>
                         </span>
-                    </td>
-                </tr>
-            </table>
-            <br /><br />
+                    </div>
+                </div>
+            </div>
+            <div class="mb-2"></div>
 
-            <span style="font-size: 22px; font-weight: bold;">
+            <h2 class="h5">
             <?php echo $this->qData[0]['questionnaireDescription']; ?>
-            </span>
+            </h2>
 
-            <br /><br />
+            <div class="mb-2"></div>
 
-            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border: 1px solid #c0c0c0;">
+            <div class="table-responsive"><table class="table table-sm table-striped table-hover align-middle mb-0"><thead><tr><th scope="col">Question</th><th scope="col">Answer</th></tr></thead><tbody>
             <?php $highlight = true; ?>
             <?php foreach ($this->qData as $question): ?>
                 <?php $highlight = !$highlight; ?>
                 <tr>
-                    <td valign="top" align="left" style="font-size: 14px; background-color: <?php echo $highlight ? '#f0f0f0' : '#f9f9f9'; ?>; padding: 10px;" width="60%"><?php echo $question['questionText']; ?></td>
-                    <td valign="top" align="left" style="font-size: 14px; background-color: <?php echo $highlight ? '#f0f0f0' : '#f9f9f9'; ?>; padding: 10px; font-weight: bold;" width="40%"><?php echo $question['answerText']; ?></td>
+                    <td><?php echo $question['questionText']; ?></td>
+                    <td><?php echo $question['answerText']; ?></td>
                 </tr>
 
             <?php endforeach; ?>
-            </table>
+            </tbody></table></div>
 
             <?php if (isset($this->resumeText) && !empty($this->resumeText)): ?>
-            <br /><br />
-            <span style="font-size: 14px;">
+            <div class="mb-2"></div>
+            <div>
             <b><?php echo $this->cData['firstName'] . ' ' . $this->cData['lastName']; ?>'s Resume:</b>
-            <br />
+            <br>
             <div>
             <?php echo $this->resumeText; ?>
             </div>
+            </div>
             <?php endif; ?>
+</div></main>
 <?php if (!$this->print): ?>
-        </div>
-    </div>
-
 <?php TemplateUtility::printFooter(); ?>
 <?php endif; ?>
+
+<?php if ($this->print): ?></body></html><?php endif; ?>
