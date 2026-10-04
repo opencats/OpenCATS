@@ -23,12 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST')
     die();
 }
 
-if ($_SESSION['CATS']->getAccessLevel('contacts.editActivity') < ACCESS_LEVEL_EDIT)
-{
-    $interface->outputXMLErrorPage(-1, ERROR_NO_PERMISSION);
-    die();
-}
-
 if (!$interface->isRequiredIDValid('activityID'))
 {
     $interface->outputXMLErrorPage(-1, 'Invalid activity ID.');
@@ -54,6 +48,14 @@ if (!isset($_POST['notes']))
 }
 
 $activityID = $_POST['activityID'];
+$activityEntries = new ActivityEntries();
+$activityEntry = $activityEntries->get($activityID);
+if (!$activityEntries->canModify($activityEntry, false))
+{
+    $interface->outputXMLErrorPage(-1, ERROR_NO_PERMISSION);
+    die();
+}
+
 $type       = $_POST['type'];
 $jobOrderID = isset($_POST['jobOrderID']) ? trim($_POST['jobOrderID']) : null;
 
@@ -93,7 +95,6 @@ if ($timeStr === false)
 $date = DateUtility::convert('-', $activityDate, $dateFormatFlag, DATE_FORMAT_YYYYMMDD) . ' ' . $timeStr;
 
 /* Save the new activity entry. */
-$activityEntries = new ActivityEntries();
 $activityEntries->update($activityID, $type, $activityNote, $jobOrderID, $date, $_SESSION['CATS']->getTimeZoneOffset());
 
 /* Grab the current activity entry. */

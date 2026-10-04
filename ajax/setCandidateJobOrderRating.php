@@ -45,6 +45,12 @@ $candidateJobOrderID = $_POST['candidateJobOrderID'];
 $rating              = $_POST['rating'];
 
 $pipelines = new Pipelines();
+if (!$pipelines->canAccess($candidateJobOrderID))
+{
+    $interface->outputXMLErrorPage(-1, ERROR_NO_PERMISSION);
+    die();
+}
+
 $pipelines->updateRatingValue($candidateJobOrderID, $rating);
 
 $newRating = $pipelines->getRatingValue($candidateJobOrderID);

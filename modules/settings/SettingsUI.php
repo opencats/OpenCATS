@@ -207,14 +207,16 @@ class SettingsUI extends UserInterface
 
         if (!eval(Hooks::get('SETTINGS_HANDLE_REQUEST'))) return;
 
+        if (in_array($action, array('tags', 'ajax_tags_add', 'ajax_tags_del', 'ajax_tags_upd'), true) &&
+            $this->getUserAccessLevel('settings.tags') < ACCESS_LEVEL_SA &&
+            !$_SESSION['CATS']->hasUserCategory('careerportal'))
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You are not allowed to edit tags.');
+        }
+
         switch ($action)
         {
             case 'tags':
-                /* Bail out if the user is demo. */
-                if ($this->getUserAccessLevel('settings.tags') < ACCESS_LEVEL_SA && !$_SESSION['CATS']->hasUserCategory('careerportal'))
-                {
-                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'You are not allowed to edit tags.');
-                }
                 if ($this->isPostBack())
                 {
                     $this->onChangeTags();

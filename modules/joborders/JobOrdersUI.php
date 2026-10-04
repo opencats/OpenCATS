@@ -17,6 +17,7 @@ include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 include_once(LEGACY_ROOT . '/lib/Attachments.php');
 include_once(LEGACY_ROOT . '/lib/Companies.php');
 include_once(LEGACY_ROOT . '/lib/Candidates.php');
+include_once(LEGACY_ROOT . '/lib/CandidateAuthorization.php');
 include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
 include_once(LEGACY_ROOT . '/lib/Export.php');
 include_once(LEGACY_ROOT . '/lib/InfoString.php');
@@ -1333,6 +1334,11 @@ class JobOrdersUI extends UserInterface
         $jobOrderID  = $_POST['jobOrderID'];
         $candidateID = $_POST['candidateID'];
 
+        if (!CandidateAuthorization::canAccessCandidate($candidateID))
+        {
+            CommonErrors::fatalModal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+
         if (!eval(Hooks::get('JO_ON_ADD_PIPELINE'))) return;
 
         $pipelines = new Pipelines();
@@ -1971,9 +1977,17 @@ class JobOrdersUI extends UserInterface
         $jobOrderID  = $_POST['jobOrderID'];
         $attachmentID = $_POST['attachmentID'];
 
+        $attachments = new Attachments();
+        $attachment = $attachments->get($attachmentID);
+        if (!isset($attachment['attachmentID']) ||
+            (int) $attachment['dataItemType'] !== DATA_ITEM_JOBORDER ||
+            (int) $attachment['dataItemID'] !== (int) $jobOrderID)
+        {
+            CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this, 'Invalid attachment ID.');
+        }
+
         if (!eval(Hooks::get('JO_ON_DELETE_ATTACHMENT_PRE'))) return;
 
-        $attachments = new Attachments();
         $attachments->delete($attachmentID);
 
         if (!eval(Hooks::get('JO_ON_DELETE_ATTACHMENT_POST'))) return;

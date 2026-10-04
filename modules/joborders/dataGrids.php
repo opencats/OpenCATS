@@ -63,7 +63,10 @@ class JobOrdersListByViewDataGrid extends JobOrdersDataGrid
         $html = '';
 
         $html .= $this->getInnerActionAreaItemPopup('Add To List', CATSUtility::getIndexName().'?m=lists&amp;a=addToListFromDatagridModal&amp;dataItemType='.DATA_ITEM_JOBORDER, 450, 350);
-        $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
+        if ($_SESSION['CATS']->getAccessLevel('export') >= ACCESS_LEVEL_SA)
+        {
+            $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
+        }
 
         $html .= parent::getInnerActionArea();
 
@@ -122,7 +125,10 @@ class joborderSavedListByViewDataGrid extends JobOrdersDataGrid
         $html = '';
 
         $html .= $this->getInnerActionAreaItemPost('Remove From This List', CATSUtility::getIndexName().'?m=lists&amp;a=removeFromListDatagrid&amp;dataItemType='.DATA_ITEM_JOBORDER.'&amp;savedListID='.$this->getMiscArgument(), false);
-        $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
+        if ($_SESSION['CATS']->getAccessLevel('export') >= ACCESS_LEVEL_SA)
+        {
+            $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
+        }
 
         $html .= parent::getInnerActionArea();
 

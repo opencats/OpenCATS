@@ -22,12 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST')
     die();
 }
 
-if ($_SESSION['CATS']->getAccessLevel('contacts.deleteActivity') < ACCESS_LEVEL_EDIT)
-{
-    $interface->outputXMLErrorPage(-1, ERROR_NO_PERMISSION);
-    die();
-}
-
 if (!$interface->isRequiredIDValid('activityID'))
 {
     $interface->outputXMLErrorPage(-1, 'Invalid activity ID.');
@@ -35,9 +29,15 @@ if (!$interface->isRequiredIDValid('activityID'))
 }
 
 $activityID = $_POST['activityID'];
+$activityEntries = new ActivityEntries();
+$activityEntry = $activityEntries->get($activityID);
+if (!$activityEntries->canModify($activityEntry, true))
+{
+    $interface->outputXMLErrorPage(-1, ERROR_NO_PERMISSION);
+    die();
+}
 
 /* Delete the activity entry. */
-$activityEntries = new ActivityEntries();
 $activityEntries->delete($activityID);
 
 /* Send back the XML data. */

@@ -31,6 +31,11 @@ class ExportUtility
      */
     public static function getForm($dataItemType, $IDs, $popUpOffset = 35, $linkOffset = 5)
     {
+        if ($_SESSION['CATS']->getAccessLevel('export') < ACCESS_LEVEL_SA)
+        {
+            return array('header' => '', 'footer' => '', 'menu' => '');
+        }
+
         $indexName = CATSUtility::getIndexName();
 
         /* Build form header. */

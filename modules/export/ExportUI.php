@@ -28,6 +28,11 @@ class ExportUI extends UserInterface
 
     public function handleRequest()
     {
+        if ($this->getUserAccessLevel('export') < ACCESS_LEVEL_SA)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid user level for action.');
+        }
+
         $action = $this->getAction();
 
         switch ($action)

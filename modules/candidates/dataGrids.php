@@ -71,7 +71,10 @@ class candidatesListByViewDataGrid extends CandidatesDataGrid
         {
             $html .= $this->getInnerActionAreaItem('Send E-Mail', CATSUtility::getIndexName().'?m=candidates&amp;a=emailCandidates');
         }
-        $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
+        if ($_SESSION['CATS']->getAccessLevel('export') >= ACCESS_LEVEL_SA)
+        {
+            $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
+        }
 
         $html .= parent::getInnerActionArea();
 
@@ -131,7 +134,10 @@ class candidatesSavedListByViewDataGrid extends CandidatesDataGrid
         {
             $html .= $this->getInnerActionAreaItem('Send E-Mail', CATSUtility::getIndexName().'?m=candidates&amp;a=emailCandidates');
         }
-        $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
+        if ($_SESSION['CATS']->getAccessLevel('export') >= ACCESS_LEVEL_SA)
+        {
+            $html .= $this->getInnerActionAreaItem('Export', CATSUtility::getIndexName().'?m=export&amp;a=exportByDataGrid');
+        }
 
         $html .= parent::getInnerActionArea();
 

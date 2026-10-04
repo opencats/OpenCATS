@@ -407,6 +407,7 @@ use OpenCATS\UI\QuickActionMenu;
 
                 <div id="ajaxPipelineTable" class="table-responsive">
                 </div>
+                <?php if ($this->getUserAccessLevel('export') >= ACCESS_LEVEL_SA): ?>
                 <input class="form-check-input" type="checkbox" aria-label="Select all candidates" name="select_all" onclick="selectAll_candidates(this)" title="Select all candidates"> <button type="button" class="btn btn-sm btn-outline-secondary" onclick="exportFromPipeline()" title="Export selected candidates">Export</button>
                 <script>
             	function exportFromPipeline(){
@@ -433,6 +434,7 @@ use OpenCATS\UI\QuickActionMenu;
 
 
             </script>
+                <?php endif; ?>
                 <script>
                 PipelineJobOrder_populate(<?php $this->_($this->data['jobOrderID']); ?>, 0, <?php $this->_($this->pipelineEntriesPerPage); ?>, 'dateCreatedInt', 'desc', <?php if ($this->isPopup) echo(1); else echo(0); ?>, 'ajaxPipelineTable', <?php echo Template::escapeJs($this->sessionCookie); ?>, 'ajaxPipelineTableIndicator', <?php echo Template::escapeJs(CATSUtility::getIndexName()); ?>);
             </script>
