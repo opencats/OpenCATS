@@ -120,7 +120,7 @@ class MRU
             $HTML[] = sprintf(
                 '<a href="%s" style="text-decoration: none;">%s</a>',
                 $row['URL'],
-                $rs[$rowIndex]['dataItemText']
+                Template::escapeHtml($rs[$rowIndex]['dataItemText'])
             );
         }
 
