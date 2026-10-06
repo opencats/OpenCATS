@@ -121,7 +121,7 @@ function checkEmailForm(form)
 
     errorMessage += checkEmailSubject();
     
-    /* this check sometimes returns empty even if there is text in ckeditor */
+    /* Body validation remains intentionally disabled for rich-text email. */
     //errorMessage += checkEmailBody();
 
     if (errorMessage != "")
