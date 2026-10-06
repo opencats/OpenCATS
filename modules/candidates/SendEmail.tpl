@@ -1,4 +1,4 @@
-<?php TemplateUtility::printHeader('Candidates', array('vendor/ckeditor/ckeditor/ckeditor.js', 'js/ckeditor-manager.js', 'modules/candidates/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js', 'js/emailHandler.js')); ?>
+<?php TemplateUtility::printHeader('Candidates', array('js/suneditor/suneditor.min.css', 'js/suneditor/suneditor.min.js', 'js/suneditor-manager.js', 'modules/candidates/validator.js', 'js/searchSaved.js', 'js/sweetTitles.js', 'js/searchAdvanced.js', 'js/highlightrows.js', 'js/export.js', 'js/emailHandler.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
     <?php TemplateUtility::printQuickSearch(); ?>
@@ -124,9 +124,7 @@
 
             <script>
                         document.emailForm.emailSubject.focus();
-                        //added the code below for the ckeditor html box - Jamin 2-19-2010
-                        //adjusted code to remove or prevent extra breaks in email - Jamin 2-23-2010
-                        placeCkEditorIn('emailBody');
+                        OpenCATSEditor.create('emailBody');
                     </script>
 
                     </div>

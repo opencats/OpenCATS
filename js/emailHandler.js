@@ -137,11 +137,11 @@ function getTemplateTextAJAX(templateId, sessionCookie)
         {
             var text = templateText.firstChild.nodeValue;
             text = text.replace(/(?:\r\n|\r|\n)/g, "<br />");
-            CKEDITOR.instances["emailBody"].setData(text);
+            OpenCATSEditor.setHTML("emailBody", text);
         }
         else
         {
-            CKEDITOR.instances["emailBody"].setData("");
+            OpenCATSEditor.setHTML("emailBody", "");
         }
     }
 
@@ -166,7 +166,7 @@ function showTemplate(sessionCookie)
     if(templateId < 1)
     {
         document.getElementById("emailBody").value = "";
-        CKEDITOR.instances["emailBody"].setData(" ");
+        OpenCATSEditor.setHTML("emailBody", " ");
         return;
     }
     else
@@ -178,7 +178,7 @@ function showTemplate(sessionCookie)
 function replaceTemplateTags(sessionCookie)
 {
     var candidateId = $("#candidateName").children(":selected").attr("value");
-    var templateText = CKEDITOR.instances["emailBody"].getData();
+    var templateText = OpenCATSEditor.getHTML("emailBody");
 
     if(candidateId < 1)
     {

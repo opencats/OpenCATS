@@ -1,4 +1,4 @@
-<?php TemplateUtility::printHeader('Job Orders', array('modules/joborders/validator.js', 'js/company.js', 'js/sweetTitles.js',  'js/suggest.js', 'js/joborder.js', 'js/lib.js', 'js/listEditor.js', 'vendor/ckeditor/ckeditor/ckeditor.js', 'js/ckeditor-manager.js')); ?>
+<?php TemplateUtility::printHeader('Job Orders', array('modules/joborders/validator.js', 'js/company.js', 'js/sweetTitles.js',  'js/suggest.js', 'js/joborder.js', 'js/lib.js', 'js/listEditor.js', 'js/suneditor/suneditor.min.css', 'js/suneditor/suneditor.min.js', 'js/suneditor-manager.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
 <script>
@@ -305,7 +305,7 @@
                             <label class="form-label small mb-1" id="descriptionLabel" for="description">Description:</label>
                         </div>
                         <div class="col-sm-8 ">
-                            <textarea tabindex="20" class="form-control form-control-sm ckEditor" name="description" id="description" rows="15"><?php $this->_($this->data['description']); ?></textarea>
+                            <textarea tabindex="20" class="form-control form-control-sm" name="description" id="description" rows="15"><?php $this->_($this->data['description']); ?></textarea>
                         </div>
                     </div>
 
@@ -314,7 +314,7 @@
                             <label class="form-label small mb-1" id="notesLabel" for="notes">Internal Notes:</label>
                         </div>
                         <div class="col-sm-8 ">
-                            <textarea tabindex="21" class="form-control form-control-sm ckEditor" name="notes" id="notes" rows="5"><?php $this->_($this->data['notes']); ?></textarea>
+                            <textarea tabindex="21" class="form-control form-control-sm" name="notes" id="notes" rows="5"><?php $this->_($this->data['notes']); ?></textarea>
                         </div>
                     </div>
 
@@ -350,7 +350,7 @@
         </form>
 
         <script>
-                placeCkEditorIn('description');
+                OpenCATSEditor.create('description');
             </script>
 
         <script>
