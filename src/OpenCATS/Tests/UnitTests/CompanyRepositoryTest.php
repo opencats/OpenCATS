@@ -57,11 +57,12 @@ class CompanyRepositoryTest extends TestCase
             self::OWNER
         ];
         $integerCallIndex = 0;
-        $databaseConnectionMock->expects($this->exactly(1))
+        $nullableCallIndex = 0;
+        $databaseConnectionMock->expects($this->exactly(3))
             ->method('makeQueryStringOrNULL')
-            ->willReturnCallback(function($value) {
-                $this->assertSame(self::COUNTRY, $value);
-                return "'" . $value . "'";
+            ->willReturnCallback(function($value) use (&$nullableCallIndex) {
+                $this->assertSame($nullableCallIndex++ === 0 ? self::COUNTRY : null, $value);
+                return $value === null ? 'NULL' : "'" . $value . "'";
             });
         $databaseConnectionMock->expects($this->exactly(2))
             ->method('makeQueryInteger')

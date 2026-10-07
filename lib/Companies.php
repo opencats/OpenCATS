@@ -15,6 +15,7 @@ use OpenCATS\Entity\CompanyRepository;
  */
 
 include_once(LEGACY_ROOT . '/lib/Pager.php');
+include_once(LEGACY_ROOT . '/lib/CompanySettings.php');
 include_once(LEGACY_ROOT . '/lib/ListEditor.php');
 include_once(LEGACY_ROOT . '/lib/EmailTemplates.php');
 include_once(LEGACY_ROOT . '/lib/Attachments.php');
@@ -58,11 +59,14 @@ class Companies
      * @param string Company notes
      * @param integer Entered-by user
      * @param integer Owner user
+     * @param string $commercialTier A/B/C/D or null for Unclassified
+     * @param string $relationshipStatus Accepted lifecycle value or null
      * @return new Company ID, or -1 on failure.
      */
     public function add($name, $address, $address2, $city, $state, $zip, $phone1,
                         $phone2, $faxNumber, $url, $keyTechnologies, $isHot,
-                        $notes, $enteredBy, $owner, $country = '')
+                        $notes, $enteredBy, $owner, $country = '',
+                        $commercialTier = null, $relationshipStatus = null)
     {
         $company= Company::create(
             $name,
@@ -80,7 +84,9 @@ class Companies
             $isHot,
             $notes,
             $enteredBy,
-            $owner
+            $owner,
+            $commercialTier,
+            $relationshipStatus
         );
         $CompanyRepository = new CompanyRepository($this->_db);
         try {
@@ -109,13 +115,41 @@ class Companies
      * @param string Company notes
      * @param integer Owner user
      * @param integer Billing contact ID
+     * @param string|false|null $commercialTier false preserves the current value; null clears it
+     * @param string|false|null $relationshipStatus false preserves the current value; null clears it
      * @return boolean True if successful; false otherwise.
      */
     public function update($companyID, $name, $address, $address2, $city, $state,
                            $zip, $phone1, $phone2, $faxNumber, $url,
                            $keyTechnologies, $isHot, $notes, $owner,
-                           $billingContact, $email, $emailAddress, $country = false)
+                           $billingContact, $email, $emailAddress, $country = false,
+                           $commercialTier = false, $relationshipStatus = false)
     {
+        /* false means omitted by an existing caller; null explicitly clears. */
+        $classificationSQL = '';
+        foreach (array('commercial_tier' => $commercialTier,
+                       'relationship_status' => $relationshipStatus) as $column => $value)
+        {
+            if ($value === false)
+            {
+                continue;
+            }
+            $allowed = $column === 'commercial_tier'
+                ? Company::getCommercialTiers() : Company::getRelationshipStatuses();
+            $value = Company::normalizeClassification($value, $allowed);
+            $classificationSQL .= $column . ' = ' . $this->_db->makeQueryStringOrNULL($value) . ', ';
+        }
+        if ((!is_int($companyID) && !is_string($companyID)) ||
+            !ctype_digit((string) $companyID) || (int) $companyID <= 0)
+        {
+            return false;
+        }
+        $preHistory = $this->get($companyID);
+        if (empty($preHistory))
+        {
+            return false;
+        }
+
         if ($country === false)
         {
             $countrySQL = ",\n";
@@ -147,7 +181,7 @@ class Companies
                 notes            = %s,
                 billing_contact  = %s,
                 owner            = %s,
-                date_modified    = NOW()
+                %sdate_modified    = NOW()
             WHERE
                 company_id = %s",
             $this->_db->makeQueryString($name),
@@ -166,10 +200,10 @@ class Companies
             $this->_db->makeQueryString($notes),
             $this->_db->makeQueryInteger($billingContact),
             $this->_db->makeQueryInteger($owner),
+            $classificationSQL,
             $this->_db->makeQueryInteger($companyID)
         );
 
-        $preHistory = $this->get($companyID);
         $queryResult = $this->_db->query($sql);
         $postHistory = $this->get($companyID);
 
@@ -335,6 +369,8 @@ class Companies
                 company.owner AS owner,
                 company.name AS name,
                 company.is_hot AS isHot,
+                company.commercial_tier AS commercialTier,
+                company.relationship_status AS relationshipStatus,
                 company.address AS address,
                 company.address2 AS address2,
                 company.city AS city,
@@ -393,6 +429,8 @@ class Companies
                 company.owner AS owner,
                 company.name AS name,
                 company.is_hot AS isHot,
+                company.commercial_tier AS commercialTier,
+                company.relationship_status AS relationshipStatus,
                 company.address AS address,
                 company.address2 AS address2,
                 company.city AS city,
@@ -727,6 +765,7 @@ class Companies
 
 class CompaniesDataGrid extends DataGrid
 {
+    protected $_commercialTierLabels;
     // FIXME: Fix ugly indenting - ~400 character lines = bad.
     public function __construct($instanceName, $parameters, $misc)
     {
@@ -734,7 +773,24 @@ class CompaniesDataGrid extends DataGrid
         $this->_assignedCriterion = "";
         $this->_dataItemIDColumn = 'company.company_id';
 
+        $this->_commercialTierLabels = (new CompanySettings())->getAll();
         $this->_classColumns = array(
+            'Commercial Tier' => array(
+                'select' => 'company.commercial_tier AS commercialTier',
+                'pagerRender' => 'return htmlspecialchars(CompanySettings::formatTier($rsData[\'commercialTier\'], $this->_commercialTierLabels));',
+                'sortableColumn' => 'commercialTier',
+                'filter' => "COALESCE(company.commercial_tier, 'Unclassified')",
+                'filterTypes' => '==',
+                'exportable' => false,
+                'pagerWidth' => 120),
+            'Relationship Lifecycle' => array(
+                'select' => 'company.relationship_status AS relationshipStatus',
+                'pagerRender' => 'return htmlspecialchars($rsData[\'relationshipStatus\'] ?? \'Unclassified\');',
+                'sortableColumn' => 'relationshipStatus',
+                'filter' => "COALESCE(company.relationship_status, 'Unclassified')",
+                'filterTypes' => '==',
+                'exportable' => false,
+                'pagerWidth' => 130),
             'Attachments' => array(  'select'   => 'IF(attachment_id, 1, 0) AS attachmentPresent',
                                      'pagerRender' => '
                                                     if ($rsData[\'attachmentPresent\'] == 1)

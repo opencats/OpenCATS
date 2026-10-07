@@ -31,6 +31,7 @@ onsubmit="return checkAddForm(document.addCompanyForm);"
 autocomplete="off"
 >
 <input type="hidden" name="postback" id="postback" value="postback">
+<?php include LEGACY_ROOT . '/modules/companies/ClassificationFields.tpl'; ?>
 
 <section class="card mb-2 oc-company-basic-information">
 <div class="card-header bg-secondary-subtle py-1 px-2 fw-semibold">

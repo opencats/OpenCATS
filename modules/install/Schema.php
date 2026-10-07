@@ -2332,6 +2332,20 @@ class CATSSchema
                 CREATE INDEX `idx_cjosh_joborder_status` ON `candidate_joborder_status_history` (`joborder_id`,`status_to`);
             ',
 
+            '396' => 'PHP:
+                foreach (array("commercial_tier" => "VARCHAR(1)", "relationship_status" => "VARCHAR(32)") as $column => $type)
+                {
+                    $existing = $db->getAllAssoc("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = \'company\' AND COLUMN_NAME = " . $db->makeQueryString($column));
+                    if (empty($existing))
+                    {
+                        if (!$db->query("ALTER TABLE company ADD COLUMN `" . $column . "` " . $type . " COLLATE utf8mb4_unicode_ci DEFAULT NULL"))
+                        {
+                            throw new RuntimeException("Unable to add Company classification column " . $column);
+                        }
+                    }
+                }
+            ',
+
         );
     }
 }

@@ -418,6 +418,8 @@ CREATE TABLE `career_portal_template_site` (
 /* Table structure for table `company` */
 
 CREATE TABLE `company` (
+  `commercial_tier` VARCHAR(1) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `relationship_status` VARCHAR(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `company_id` INT(11) NOT NULL AUTO_INCREMENT,
   `billing_contact` INT(11),
   `name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',

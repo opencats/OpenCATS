@@ -19,6 +19,8 @@ class Company
     private $notes;
     private $enteredBy;
     private $owner;
+    private $commercialTier = null;
+    private $relationshipStatus = null;
     
     function __construct($name)
     {
@@ -184,6 +186,49 @@ class Company
         return $this->owner;
     }
     
+    public static function getCommercialTiers()
+    {
+        return array('A', 'B', 'C', 'D');
+    }
+
+    public static function getRelationshipStatuses()
+    {
+        return array('Fresh Prospect', 'Prospect', 'Engaged', 'Client', 'Dormant', 'Lost');
+    }
+
+    public static function normalizeClassification($value, $allowed)
+    {
+        if ($value === null || $value === '')
+        {
+            return null;
+        }
+        if (!is_string($value) || !in_array($value, $allowed, true))
+        {
+            throw new \InvalidArgumentException('Invalid Company classification.');
+        }
+        return $value;
+    }
+
+    public function setCommercialTier($value)
+    {
+        $this->commercialTier = self::normalizeClassification($value, self::getCommercialTiers());
+    }
+
+    public function getCommercialTier()
+    {
+        return $this->commercialTier;
+    }
+
+    public function setRelationshipStatus($value)
+    {
+        $this->relationshipStatus = self::normalizeClassification($value, self::getRelationshipStatuses());
+    }
+
+    public function getRelationshipStatus()
+    {
+        return $this->relationshipStatus;
+    }
+
     static function create(
         $name,
         $address,
@@ -200,7 +245,9 @@ class Company
         $isHot,
         $notes,
         $enteredBy,
-        $owner
+        $owner,
+        $commercialTier = null,
+        $relationshipStatus = null
     )
     {
         $company = new Company($name);
@@ -219,6 +266,8 @@ class Company
         $company->setNotes($notes);
         $company->setEnteredBy($enteredBy);
         $company->setOwner($owner);
+        $company->setCommercialTier($commercialTier);
+        $company->setRelationshipStatus($relationshipStatus);
         return $company;
     }
 }

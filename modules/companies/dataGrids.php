@@ -37,6 +37,8 @@ class CompaniesListByViewDataGrid extends CompaniesDataGrid
             array('name' => 'State', 'width' => 50),
             array('name' => 'Phone', 'width' => 85),
             array('name' => 'Owner', 'width' => 65),
+            array('name' => 'Commercial Tier', 'width' => 120),
+            array('name' => 'Relationship Lifecycle', 'width' => 130),
             array('name' => 'Created', 'width' => 60),
             array('name' => 'Modified', 'width' => 60),
         );
@@ -97,6 +99,8 @@ class companiesSavedListByViewDataGrid extends CompaniesDataGrid
             array('name' => 'State', 'width' => 50),
             array('name' => 'Phone', 'width' => 85),
             array('name' => 'Owner', 'width' => 65),
+            array('name' => 'Commercial Tier', 'width' => 120),
+            array('name' => 'Relationship Lifecycle', 'width' => 130),
             array('name' => 'Created', 'width' => 60),
             array('name' => 'Modified', 'width' => 60),
         );

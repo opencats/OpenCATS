@@ -33,10 +33,14 @@ class CompanyRepository
                 notes,
                 entered_by,
                 owner,
+                commercial_tier,
+                relationship_status,
                 date_created,
                 date_modified
             )
             VALUES (
+                %s,
+                %s,
                 %s,
                 %s,
                 %s,
@@ -71,7 +75,9 @@ class CompanyRepository
             ($company->isHot() ? '1' : '0'),
             $this->databaseConnection->makeQueryString($company->getNotes()),
             $this->databaseConnection->makeQueryInteger($company->getEnteredBy()),
-            $this->databaseConnection->makeQueryInteger($company->getOwner())
+            $this->databaseConnection->makeQueryInteger($company->getOwner()),
+            $this->databaseConnection->makeQueryStringOrNULL($company->getCommercialTier()),
+            $this->databaseConnection->makeQueryStringOrNULL($company->getRelationshipStatus())
         );
         if ($result = $this->databaseConnection->query($sql)) {
             $companyId = $this->databaseConnection->getLastInsertID();

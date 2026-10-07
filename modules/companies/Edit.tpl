@@ -28,6 +28,7 @@ onsubmit="return checkEditForm(document.editCompanyForm);"
 autocomplete="off">
 
 <input type="hidden" name="postback" id="postback" value="postback">
+<?php include LEGACY_ROOT . '/modules/companies/ClassificationFields.tpl'; ?>
 <input type="hidden" id="companyID" name="companyID"
 value="<?php echo Template::escapeAttr($this->companyID); ?>">
 

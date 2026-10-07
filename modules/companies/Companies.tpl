@@ -16,6 +16,7 @@ TemplateUtility::printHeader(
 
 <main class="container-fluid py-2 oc-companies-page">
 <div class="oc-companies-content">
+<p class="small text-body-secondary mb-2">Commercial tier filters use A, B, C or D, regardless of label. Use Unclassified to filter blank tier or lifecycle values. Add classification columns with Columns if they are not shown.</p>
 
 <section
 class="oc-page-header d-flex flex-wrap align-items-center gap-2 mb-2"

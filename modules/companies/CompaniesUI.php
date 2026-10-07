@@ -1,4 +1,5 @@
 <?php
+use OpenCATS\Entity\Company;
 /*
  * OpenCATS
  *
@@ -227,7 +228,7 @@ class CompaniesUI extends UserInterface
     private function show()
     {
         /* Bail out if we don't have a valid company ID. */
-        if (!$this->isRequiredIDValid('companyID', $_GET))
+        if (!isset($_GET['companyID']) || !is_scalar($_GET['companyID']) || !$this->isRequiredIDValid('companyID', $_GET))
         {
             $this->listByView('Invalid company ID.');
             return;
@@ -525,6 +526,7 @@ class CompaniesUI extends UserInterface
      */
     private function onAdd()
     {
+        $classification = $this->getClassificationInput();
         $formattedPhone1 = StringUtility::extractPhoneNumber(
             $this->getTrimmedInput('phone1', $_POST)
         );
@@ -606,7 +608,8 @@ class CompaniesUI extends UserInterface
         $companyID = $companies->add(
             $name, $address, $address2, $city, $state, $zip, $phone1,
             $phone2, $faxNumber, $url, $keyTechnologies, $isHot,
-            $notes, $this->_userID, $this->_userID, $country
+            $notes, $this->_userID, $this->_userID, $country,
+            $classification[0], $classification[1]
         );
 
         if ($companyID <= 0)
@@ -638,7 +641,7 @@ class CompaniesUI extends UserInterface
     private function edit()
     {
         /* Bail out if we don't have a valid company ID. */
-        if (!$this->isRequiredIDValid('companyID', $_GET))
+        if (!isset($_GET['companyID']) || !is_scalar($_GET['companyID']) || !$this->isRequiredIDValid('companyID', $_GET))
         {
             $this->listByView('Invalid company ID.');
             return;
@@ -717,10 +720,11 @@ class CompaniesUI extends UserInterface
      */
     private function onEdit()
     {
+        $classification = $this->getClassificationInput(true);
         $companies = new Companies();
 
         /* Bail out if we don't have a valid company ID. */
-        if (!$this->isRequiredIDValid('companyID', $_POST))
+        if (!isset($_POST['companyID']) || !is_scalar($_POST['companyID']) || !$this->isRequiredIDValid('companyID', $_POST))
         {
             $this->listByView('Invalid company ID.');
             return;
@@ -791,6 +795,7 @@ class CompaniesUI extends UserInterface
         $isHot = $this->isChecked('isHot', $_POST);
 
         $companyID       = $_POST['companyID'];
+        $this->getCompanyForAction($companyID);
         $owner           = $_POST['owner'];
         $billingContact  = $_POST['billingContact'];
 
@@ -889,7 +894,7 @@ class CompaniesUI extends UserInterface
         if (!$companies->update($companyID, $name, $address, $address2, $city, $state,
             $zip, $phone1, $phone2, $faxNumber, $url, $keyTechnologies,
             $isHot, $notes, $owner, $billingContact, $email, $emailAddress,
-            $country))
+            $country, $classification[0], $classification[1]))
         {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update company.');
         }
@@ -1125,6 +1130,29 @@ class CompaniesUI extends UserInterface
         $this->_template->assign('wildCardKeyTechnologies', $wildCardKeyTechnologies);
         $this->_template->assign('mode', $mode);
         $this->_template->display('./modules/companies/Search.tpl');
+    }
+
+    private function getClassificationInput($editing = false)
+    {
+        $values = array();
+        foreach (array('commercialTier' => Company::getCommercialTiers(),
+                       'relationshipStatus' => Company::getRelationshipStatuses()) as $field => $allowed)
+        {
+            if (!array_key_exists($field, $_POST))
+            {
+                $values[] = $editing ? false : null;
+                continue;
+            }
+            try
+            {
+                $values[] = Company::normalizeClassification($_POST[$field], $allowed);
+            }
+            catch (InvalidArgumentException $e)
+            {
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid Company classification.');
+            }
+        }
+        return $values;
     }
 
     private function getCompanyForAction($companyID)

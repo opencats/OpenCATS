@@ -103,6 +103,13 @@ View History
 </div>
 </section>
 
+<dl class="row mb-2">
+<dt class="col-sm-3">Commercial tier</dt>
+<dd class="col-sm-9"><?php echo Template::escapeHtml(CompanySettings::formatTier($this->data['commercialTier'], (new CompanySettings())->getAll())); ?></dd>
+<dt class="col-sm-3">Relationship lifecycle</dt>
+<dd class="col-sm-9"><?php echo Template::escapeHtml($this->data['relationshipStatus'] ?? 'Unclassified'); ?></dd>
+</dl>
+
 <section class="card mb-2 oc-company-details">
 <div class="card-header bg-body-subtle py-1 px-2 fw-semibold">
 Company Details

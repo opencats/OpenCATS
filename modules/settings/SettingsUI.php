@@ -107,6 +107,29 @@ class SettingsUI extends UserInterface
         );
     }
     
+    private function companyClassification()
+    {
+        $settings = new CompanySettings();
+        $message = '';
+        if ($this->isPostBack())
+        {
+            try
+            {
+                $settings->setAll($_POST['tierLabels'] ?? null);
+                $message = 'Commercial tier labels saved.';
+            }
+            catch (InvalidArgumentException $e)
+            {
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, $e->getMessage());
+            }
+        }
+        $this->_template->assign('tierLabels', $settings->getAll());
+        $this->_template->assign('message', $message);
+        $this->_template->assign('active', $this);
+        $this->_template->assign('subActive', 'Administration');
+        $this->_template->display('./modules/settings/CompanyClassification.tpl');
+    }
+
     private function onAddNewTag()
     {
         if (!isset($_SESSION['CATS']) || empty($_SESSION['CATS']))
@@ -216,6 +239,15 @@ class SettingsUI extends UserInterface
 
         switch ($action)
         {
+            case 'companyClassification':
+                if ($this->_realAccessLevel < ACCESS_LEVEL_SA ||
+                    $this->getUserAccessLevel('settings.companyClassification') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Administrator access required.');
+                }
+                $this->companyClassification();
+                break;
+
             case 'tags':
                 if ($this->isPostBack())
                 {
