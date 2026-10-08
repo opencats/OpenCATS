@@ -17,15 +17,7 @@
             <form name="editUserForm" id="editUserForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=editUser" method="post" onsubmit="return checkEditUserForm(document.editUserForm);" autocomplete="off">
                 <input type="hidden" name="postback" id="postback" value="postback" />
 
-<div class="mb-2">
-<label class="form-label small" for="deskID">Desk</label>
-<select class="form-select form-select-sm" name="deskID" id="deskID">
-<option value="">Unassigned</option>
-<?php foreach ($this->desks as $desk): ?>
-<option value="<?php echo Template::escapeAttr($desk['deskID']); ?>"<?php if ((string) $this->deskID === (string) $desk['deskID']): ?> selected<?php endif; ?>><?php echo Template::escapeHtml($desk['name'] . ($desk['isActive'] ? '' : ' (inactive)')); ?></option>
-<?php endforeach; ?>
-</select>
-</div>
+
                 <input type="hidden" id="userID" name="userID" value="<?php $this->_($this->data['userID']); ?>" />
 
                 <div class="card card-body p-2 mb-2">
@@ -62,6 +54,20 @@
                         </div>
                         <div class="col-12 col-sm">
                             <div class="d-flex align-items-center gap-1"><input type="text" id="username" name="username" value="<?php $this->_($this->data['username']); ?>"  class="form-control form-control-sm" /><span class="text-danger" title="Required">*</span></div>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-2">
+                        <div class="col-sm-4 col-lg-3">
+                            <label for="deskID" class="form-label small mb-0">Desk:</label>
+                        </div>
+                        <div class="col-12 col-sm">
+                            <select class="form-select form-select-sm" name="deskID" id="deskID">
+                            <option value="">Unassigned</option>
+                            <?php foreach ($this->desks as $desk): ?>
+                            <option value="<?php echo Template::escapeAttr($desk['deskID']); ?>"<?php if ((string) $this->deskID === (string) $desk['deskID']): ?> selected<?php endif; ?>><?php echo Template::escapeHtml($desk['name'] . ($desk['isActive'] ? '' : ' (inactive)')); ?></option>
+                            <?php endforeach; ?>
+                            </select>
                         </div>
                     </div>
 

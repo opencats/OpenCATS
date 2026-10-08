@@ -741,8 +741,20 @@ CREATE TABLE `desk` (
 
 INSERT INTO `desk` (`desk_id`, `name`) VALUES (1, 'Commercial'), (2, 'Industrial'), (3, 'Engineering');
 
+CREATE TABLE `sector` (
+  `sector_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_active` INT(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`sector_id`),
+  UNIQUE KEY `uq_sector_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Proposed Sector defaults: maintainer review required before merge.
+INSERT INTO `sector` (`sector_id`, `name`) VALUES (1, 'Distribution and Logistics'), (2, 'Information Technology'), (3, 'Catering'), (4, 'Insurance'), (5, 'Driving'), (6, 'Sales'), (7, 'Finance'), (8, 'Financial Services'), (9, 'Technology');
+
 CREATE TABLE `joborder` (
   KEY `idx_joborder_desk` (`desk_id`),
+  KEY `idx_joborder_sector` (`sector_id`),
   `joborder_id` INT(11) NOT NULL AUTO_INCREMENT,
   `recruiter` INT(11),
   `contact_id` INT(11),
@@ -773,6 +785,7 @@ CREATE TABLE `joborder` (
   `questionnaire_id` INT(11),
   `import_id` INT(11) NOT NULL DEFAULT '0',
   `desk_id` INT(11) DEFAULT NULL,
+  `sector_id` INT(11) DEFAULT NULL,
   PRIMARY KEY (`joborder_id`),
   KEY `IDX_recruiter` (`recruiter`),
   KEY `IDX_title` (`title`),

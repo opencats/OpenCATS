@@ -15,15 +15,7 @@
         <form name="editJobOrderForm" id="editJobOrderForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=edit" method="post" onsubmit="return checkEditForm(document.editJobOrderForm);" autocomplete="off">
             <input type="hidden" name="postback" id="postback" value="postback">
 
-<div class="mb-2">
-<label class="form-label small" for="deskID">Desk</label>
-<select class="form-select form-select-sm" name="deskID" id="deskID">
-<option value="">Unassigned</option>
-<?php foreach ($this->desks as $desk): ?>
-<option value="<?php echo Template::escapeAttr($desk['deskID']); ?>"<?php if ((string) $this->deskID === (string) $desk['deskID']): ?> selected<?php endif; ?>><?php echo Template::escapeHtml($desk['name'] . ($desk['isActive'] ? '' : ' (inactive)')); ?></option>
-<?php endforeach; ?>
-</select>
-</div>
+
             <input type="hidden" id="jobOrderID" name="jobOrderID" value="<?php echo($this->jobOrderID); ?>">
 
             <section class="card mb-2 oc-joborder-basic-information">
@@ -201,6 +193,31 @@
                         </div>
                         <div class="col-sm-4 col-lg-2 fw-semibold">&nbsp;</div>
                         <div class="col-sm-8 col-lg-4">&nbsp;</div>
+                    </div>
+
+                    <div class="row g-2 align-items-start mb-2">
+                        <div class="col-sm-4 col-lg-2 fw-semibold">
+                            <label class="form-label small mb-1" for="deskID">Desk:</label>
+                        </div>
+                        <div class="col-sm-8 col-lg-4">
+                            <select class="form-select form-select-sm" name="deskID" id="deskID">
+                            <option value="">Unassigned</option>
+                            <?php foreach ($this->desks as $desk): ?>
+                            <option value="<?php echo Template::escapeAttr($desk['deskID']); ?>"<?php if ((string) $this->deskID === (string) $desk['deskID']): ?> selected<?php endif; ?>><?php echo Template::escapeHtml($desk['name'] . ($desk['isActive'] ? '' : ' (inactive)')); ?></option>
+                            <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-sm-4 col-lg-2 fw-semibold">
+                            <label class="form-label small mb-1" for="sectorID">Sector:</label>
+                        </div>
+                        <div class="col-sm-8 col-lg-4">
+                            <select class="form-select form-select-sm" name="sectorID" id="sectorID">
+                            <option value="">Unclassified</option>
+                            <?php foreach ($this->sectors as $sector): ?>
+                            <option value="<?php echo Template::escapeAttr($sector['sectorID']); ?>"<?php if ((string) $this->sectorID === (string) $sector['sectorID']): ?> selected<?php endif; ?>><?php echo Template::escapeHtml($sector['name'] . ($sector['isActive'] ? '' : ' (inactive)')); ?></option>
+                            <?php endforeach; ?>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="row g-2 align-items-start mb-2">

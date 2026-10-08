@@ -20,6 +20,7 @@ define('JOBORDERS_STATUS_SHARE',         100);
 define('JOBORDERS_STATUS_ALL',           10100);
 
 include_once(LEGACY_ROOT . '/lib/Desks.php');
+include_once(LEGACY_ROOT . '/lib/Sectors.php');
 include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 include_once(LEGACY_ROOT . '/lib/Calendar.php');
 include_once(LEGACY_ROOT . '/lib/Pager.php');
@@ -72,7 +73,7 @@ class JobOrders
     public function add($title, $companyId, $contactId, $description, $notes,
         $duration, $maxRate, $type, $isHot, $public, $openings, $companyJobId,
         $salary, $city, $state, $startDate, $enteredBy, $recruiter, $owner,
-        $department, $questionnaire = false, $country = '', $deskID = false)
+        $department, $questionnaire = false, $country = '', $deskID = false, $sectorID = null)
     {
         /* Get the department ID of the selected department. */
         // FIXME: Move this up to the UserInterface level. I don't like this
@@ -104,7 +105,8 @@ class JobOrders
             $owner,
             $departmentId,
             $questionnaire,
-            $deskID
+            $deskID,
+            $sectorID
         );
         $JobOrderRepository = new JobOrderRepository($this->_db);
         try {
@@ -142,7 +144,7 @@ class JobOrders
     public function update($jobOrderID, $title, $companyJobID, $companyID,
         $contactID, $description, $notes, $duration, $maxRate, $type, $isHot,
         $openings, $openingsAvailable, $salary, $city, $state, $startDate, $status, $recruiter,
-        $owner, $public, $email, $emailAddress, $department, $questionnaire = false, $country = false, $deskID = false)
+        $owner, $public, $email, $emailAddress, $department, $questionnaire = false, $country = false, $deskID = false, $sectorID = false)
     {
         $deskSQL = '';
         if ($deskID !== false)
@@ -151,6 +153,14 @@ class JobOrders
             if (empty($current)) return false;
             $deskID = (new Desks())->validateAssignment($deskID, $current['deskID']);
             $deskSQL = 'desk_id = ' . $this->_db->makeQueryIntegerOrNULL($deskID ?? -1) . ', ';
+        }
+        $sectorSQL = '';
+        if ($sectorID !== false)
+        {
+            $current = $this->get($jobOrderID);
+            if (empty($current)) return false;
+            $sectorID = (new Sectors())->validateAssignment($sectorID, $current['sectorID']);
+            $sectorSQL = 'sector_id = ' . $this->_db->makeQueryIntegerOrNULL($sectorID ?? -1) . ', ';
         }
         /* Get the department ID of the selected department. */
         // FIXME: Move this up to the UserInterface level. I don't like this
@@ -202,7 +212,7 @@ class JobOrders
                 questionnaire_id   = %s
             WHERE
                 joborder_id = %s",
-            $deskSQL,
+            $deskSQL . $sectorSQL,
             $this->_db->makeQueryString($title),
             $this->_db->makeQueryString($companyJobID),
             $this->_db->makeQueryInteger($companyID),
@@ -405,7 +415,9 @@ class JobOrders
         $sql = sprintf(
             "SELECT
                 joborder.desk_id AS deskID,
+                joborder.sector_id AS sectorID,
                 (SELECT name FROM desk WHERE desk.desk_id = joborder.desk_id) AS deskName,
+                (SELECT name FROM sector WHERE sector.sector_id = joborder.sector_id) AS sectorName,
                 joborder.joborder_id AS jobOrderID,
                 joborder.company_id AS companyID,
                 joborder.contact_id AS contactID,
@@ -514,7 +526,9 @@ class JobOrders
         $sql = sprintf(
             "SELECT
                 joborder.desk_id AS deskID,
+                joborder.sector_id AS sectorID,
                 (SELECT name FROM desk WHERE desk.desk_id = joborder.desk_id) AS deskName,
+                (SELECT name FROM sector WHERE sector.sector_id = joborder.sector_id) AS sectorName,
                 joborder.joborder_id AS jobOrderID,
                 joborder.company_id AS companyID,
                 company.name AS companyName,
@@ -887,6 +901,15 @@ class JobOrdersDataGrid extends DataGrid
                 'pagerRender' => 'return Template::escapeHtml($rsData[\'deskName\'] ?? \'Unassigned\');',
                 'sortableColumn' => 'deskName',
                 'filter' => "COALESCE(desk.name, 'Unassigned')",
+                'filterTypes' => '==',
+                'exportable' => false,
+                'pagerWidth' => 100),
+            'Sector' => array(
+                'select' => 'sector.name AS sectorName',
+                'join' => 'LEFT JOIN sector ON sector.sector_id = joborder.sector_id',
+                'pagerRender' => 'return Template::escapeHtml($rsData[\'sectorName\'] ?? \'Unclassified\');',
+                'sortableColumn' => 'sectorName',
+                'filter' => "COALESCE(sector.name, 'Unclassified')",
                 'filterTypes' => '==',
                 'exportable' => false,
                 'pagerWidth' => 100),

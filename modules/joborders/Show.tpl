@@ -183,6 +183,10 @@ use OpenCATS\UI\QuickActionMenu;
                                 <div class="col-sm-8"><?php echo Template::escapeHtml($this->data['deskName'] ?? 'Unassigned'); ?></div>
                             </div>
                             <div class="row g-2 mb-2">
+                                <div class="col-sm-4 fw-semibold small">Sector:</div>
+                                <div class="col-sm-8"><?php echo Template::escapeHtml($this->data['sectorName'] ?? 'Unclassified'); ?></div>
+                            </div>
+                            <div class="row g-2 mb-2">
                                 <div class="col-sm-4 fw-semibold small">Recruiter:</div>
                                 <div class="col-sm-8"><?php $this->_($this->data['recruiterFullName']); ?></div>
                             </div>

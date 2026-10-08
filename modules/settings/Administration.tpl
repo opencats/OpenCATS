@@ -13,10 +13,34 @@
 
                         <div class="list-group mb-3">
                             <?php if ($_SESSION['CATS']->getRealAccessLevel() >= ACCESS_LEVEL_SA && $this->getUserAccessLevel('settings.desks') >= ACCESS_LEVEL_SA): ?>
-                            <a class="list-group-item list-group-item-action" href="<?php echo Template::escapeAttr(CATSUtility::getIndexName()); ?>?m=settings&amp;a=desks">Recruitment Desks</a>
+                            <div class="list-group-item"><div class="row g-2">
+                                <div class="col-sm-4 col-lg-3 fw-semibold">
+                                    <a href="<?php echo Template::escapeAttr(CATSUtility::getIndexName()); ?>?m=settings&amp;a=desks">Recruitment Desks</a>
+                                </div>
+                                <div class="col-sm-8 col-lg-9">
+                                    Manage the recruitment desks used to classify recruiters and job orders.
+                                </div>
+                            </div></div>
+                            <?php endif; ?>
+                            <?php if ($_SESSION['CATS']->getRealAccessLevel() >= ACCESS_LEVEL_SA && $this->getUserAccessLevel('settings.sectors') >= ACCESS_LEVEL_SA): ?>
+                            <div class="list-group-item"><div class="row g-2">
+                                <div class="col-sm-4 col-lg-3 fw-semibold">
+                                    <a href="<?php echo Template::escapeAttr(CATSUtility::getIndexName()); ?>?m=settings&amp;a=sectors">Job Order Sectors</a>
+                                </div>
+                                <div class="col-sm-8 col-lg-9">
+                                    Add, rename and deactivate sectors used to classify job orders.
+                                </div>
+                            </div></div>
                             <?php endif; ?>
                             <?php if ($_SESSION['CATS']->getRealAccessLevel() >= ACCESS_LEVEL_SA && $this->getUserAccessLevel('settings.companyClassification') >= ACCESS_LEVEL_SA): ?>
-                            <a class="list-group-item list-group-item-action" href="<?php echo Template::escapeAttr(CATSUtility::getIndexName()); ?>?m=settings&amp;a=companyClassification">Company commercial tier labels</a>
+                            <div class="list-group-item"><div class="row g-2">
+                                <div class="col-sm-4 col-lg-3 fw-semibold">
+                                    <a href="<?php echo Template::escapeAttr(CATSUtility::getIndexName()); ?>?m=settings&amp;a=companyClassification">Company commercial tier labels</a>
+                                </div>
+                                <div class="col-sm-8 col-lg-9">
+                                    Configure the display labels for company commercial tiers A, B, C and D.
+                                </div>
+                            </div></div>
                             <?php endif; ?>
                             <div class="list-group-item"><div class="row g-2">
                                 <div class="col-sm-4 col-lg-3 fw-semibold">

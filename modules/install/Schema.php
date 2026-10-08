@@ -2364,6 +2364,25 @@ class CATSSchema
                 }
             ',
 
+            /* Proposed Sector defaults require maintainer review before merge. */
+            '398' => 'PHP:
+                $runSectorSQL = function ($sql) use ($db) {
+                    if (!$db->query($sql)) throw new RuntimeException("Unable to apply Sector schema migration.");
+                };
+                $runSectorSQL("CREATE TABLE IF NOT EXISTS `sector` (   `sector_id` INT(11) NOT NULL AUTO_INCREMENT,   `name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL,   `is_active` INT(1) NOT NULL DEFAULT \'1\',   PRIMARY KEY (`sector_id`),   UNIQUE KEY `uq_sector_name` (`name`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+                foreach (array(1 => "Distribution and Logistics", 2 => "Information Technology", 3 => "Catering", 4 => "Insurance", 5 => "Driving", 6 => "Sales", 7 => "Finance", 8 => "Financial Services", 9 => "Technology") as $id => $name)
+                {
+                    $runSectorSQL("INSERT INTO sector (sector_id, name) SELECT " . $id . ", " . $db->makeQueryString($name) . " WHERE NOT EXISTS (SELECT 1 FROM sector WHERE sector_id = " . $id . ")");
+                }
+                foreach (array("joborder") as $table)
+                {
+                    $columns = $db->getAllAssoc("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . $db->makeQueryString($table) . " AND COLUMN_NAME = \'sector_id\'");
+                    if (empty($columns)) $runSectorSQL("ALTER TABLE `" . $table . "` ADD COLUMN sector_id INT(11) DEFAULT NULL");
+                    $keys = $db->getAllAssoc("SELECT INDEX_NAME FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . $db->makeQueryString($table) . " AND INDEX_NAME = " . $db->makeQueryString("idx_" . $table . "_sector"));
+                    if (empty($keys)) $runSectorSQL("ALTER TABLE `" . $table . "` ADD INDEX `idx_" . $table . "_sector` (sector_id)");
+                }
+            ',
+
         );
     }
 }

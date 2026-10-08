@@ -107,9 +107,12 @@ class SettingsUI extends UserInterface
         );
     }
     
-    private function desks()
+    private function desks($sector = false)
     {
-        $desks = new Desks();
+        include_once(LEGACY_ROOT . '/lib/Sectors.php');
+        $desks = $sector ? new Sectors() : new Desks();
+        $label = $sector ? 'Sector' : 'Desk';
+        $idField = $sector ? 'sectorID' : 'deskID';
         $message = '';
         if ($this->isPostBack())
         {
@@ -117,16 +120,17 @@ class SettingsUI extends UserInterface
             {
                 if (!isset($_POST['isActive']) || !in_array($_POST['isActive'], array('0', '1'), true))
                 {
-                    throw new InvalidArgumentException('Invalid Desk availability.');
+                    throw new InvalidArgumentException('Invalid ' . $label . ' availability.');
                 }
-                $desks->save($_POST['deskID'] ?? null, $_POST['name'] ?? null, $_POST['isActive'] === '1');
-                $message = 'Desk saved.';
+                $desks->save($_POST[$idField] ?? null, $_POST['name'] ?? null, $_POST['isActive'] === '1');
+                $message = $label . ' saved.';
             }
             catch (InvalidArgumentException $e)
             {
                 CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, $e->getMessage());
             }
         }
+        $this->_template->assign('sectorMaintenance', $sector);
         $this->_template->assign('desks', $desks->getAll(true));
         $this->_template->assign('message', $message);
         $this->_template->assign('active', $this);
@@ -279,12 +283,13 @@ class SettingsUI extends UserInterface
 
         switch ($action)
         {
+            case 'sectors':
             case 'desks':
-                if ($this->_realAccessLevel < ACCESS_LEVEL_SA || $this->getUserAccessLevel('settings.desks') < ACCESS_LEVEL_SA)
+                if ($this->_realAccessLevel < ACCESS_LEVEL_SA || $this->getUserAccessLevel('settings.' . $action) < ACCESS_LEVEL_SA)
                 {
                     CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Administrator access required.');
                 }
-                $this->desks();
+                $this->desks($action === 'sectors');
                 break;
 
             case 'companyClassification':

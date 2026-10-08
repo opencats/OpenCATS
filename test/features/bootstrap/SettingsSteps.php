@@ -2,6 +2,65 @@
 
 trait SettingsSteps
 {
+    private $sectorFixtureRows = array();
+    private $sectorFixtureJobIDs = array();
+
+    /** @BeforeScenario @sectors */
+    public function rememberSectorFixtures()
+    {
+        $db = DatabaseConnection::getInstance();
+        $this->sectorFixtureRows = $db->getAllAssoc('SELECT * FROM sector');
+        $this->sectorFixtureJobIDs = array_column($db->getAllAssoc('SELECT joborder_id FROM joborder'), 'joborder_id');
+    }
+
+    /** @AfterScenario @sectors */
+    public function restoreSectorFixtures()
+    {
+        $db = DatabaseConnection::getInstance();
+        foreach ($db->getAllAssoc("SELECT joborder_id FROM joborder WHERE title = 'Sector browser job'") as $row)
+        {
+            if (!in_array($row['joborder_id'], $this->sectorFixtureJobIDs))
+            {
+                $id = (int) $row['joborder_id'];
+                $db->query('DELETE FROM history WHERE data_item_type = 400 AND data_item_id = ' . $id);
+                $db->query('DELETE FROM joborder WHERE joborder_id = ' . $id);
+            }
+        }
+        foreach ($this->sectorFixtureRows as $row)
+        {
+            $db->query('UPDATE sector SET name = ' . $db->makeQueryString($row['name'])
+                . ', is_active = ' . (int) $row['is_active'] . ' WHERE sector_id = ' . (int) $row['sector_id']);
+        }
+        $ids = array_map('intval', array_column($this->sectorFixtureRows, 'sector_id'));
+        if ($ids) $db->query("DELETE FROM sector WHERE name = 'Browser custom Sector' AND sector_id NOT IN (" . implode(',', $ids) . ')');
+    }
+
+    /** @When I save Sector :id */
+    public function saveSector($id)
+    {
+        $form = $this->getSession()->getPage()->find('xpath', '//form[input[@name="sectorID" and @value="' . (int) $id . '"]]');
+        if (!$form) throw new \RuntimeException('Sector form missing.');
+        $this->performDocumentReplacement(fn() => $form->pressButton('Save Sector'), 'saving Sector');
+    }
+
+    /** @When I filter Job Orders by Desk :desk, Sector :sector and Recruiter :recruiter */
+    public function filterJobClassifications($desk, $sector, $recruiter)
+    {
+        $page = $this->getSession()->getPage();
+        $hash = md5('joborders:JobOrdersListByViewDataGrid');
+        $area = $page->findById('filterResultsArea' . $hash);
+        if (!$area->isVisible()) $page->pressButton('More filters');
+        foreach (array('Desk' => $desk, 'Sector' => $sector, 'Recruiter' => $recruiter) as $column => $value)
+        {
+            if (!$page->findById('filterResultsAreaTable' . $hash . '1columnName')) $page->pressButton('Add New');
+            $prefix = 'filterResultsAreaTable' . $hash . '1';
+            $page->findById($prefix . 'columnName')->selectOption($column);
+            $page->findById($prefix . 'value')->setValue($value);
+            $page->findById($prefix . 'value')->blur();
+            $this->pressButtonAndWaitForNavigation('Apply');
+        }
+    }
+
     /** @Then the Settings validation alert contains :message */
     public function settingsValidationAlert($message)
     {

@@ -37,6 +37,24 @@ class SecurityContext extends MinkContext implements Context, SnippetAcceptingCo
         $this->csrfToken = '';
     }
 
+    /** @When I submit Sector maintenance with an invalid CSRF token */
+    public function submitSectorWithInvalidToken()
+    {
+        require_once './config.php';
+        $this->iDoPOSTRequest('index.php?m=settings&a=sectors', array(
+            'postback' => 'postback', 'sectorID' => '1', 'name' => 'CSRF must not rename',
+            'isActive' => '1', 'csrfToken' => 'invalid-token'
+        ));
+        $row = DatabaseConnection::getInstance()->getAssoc('SELECT name FROM sector WHERE sector_id = 1');
+        if ($row['name'] === 'CSRF must not rename') throw new \RuntimeException('CSRF mutation accepted.');
+    }
+
+    /** @Then the Sector request is rejected for an invalid CSRF token */
+    public function sectorInvalidTokenResponse()
+    {
+        $this->theResponseShouldContain('Invalid request.');
+    }
+
     private function extractCSRFTokenFromHTML($html)
     {
         $matchResult = preg_match(

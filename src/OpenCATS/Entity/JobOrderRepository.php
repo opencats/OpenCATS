@@ -5,6 +5,7 @@ use OpenCATS\Entity\JobOrderRepositoryException;
 
 include_once(LEGACY_ROOT . '/lib/History.php');
 include_once(LEGACY_ROOT . '/lib/Desks.php');
+include_once(LEGACY_ROOT . '/lib/Sectors.php');
 
 // FIXME: It's way too similar to CompanyRepository
 // Remove duplicated code 
@@ -23,9 +24,11 @@ class JobOrderRepository
         $deskID = $jobOrder->getDeskID() === false
             ? $desks->getDefaultForUser($jobOrder->getEnteredBy())
             : $desks->validateAssignment($jobOrder->getDeskID());
+        $sectorID = (new \Sectors())->validateAssignment($jobOrder->getSectorID());
         // FIXME: Is the OrNULL usage below correct? Can these fields be NULL?
         $sql = sprintf(
             "INSERT INTO joborder (
+                sector_id,
                 desk_id,
                 title,
                 client_job_id,
@@ -78,11 +81,13 @@ class JobOrderRepository
                 %s,
                 %s,
                 %s,
+                %s,
                 NOW(),
                 NOW(),
                 %s,
                 %s
             )",
+            $this->databaseConnection->makeQueryIntegerOrNULL($sectorID ?? -1),
             $this->databaseConnection->makeQueryIntegerOrNULL($deskID ?? -1),
             $this->databaseConnection->makeQueryString($jobOrder->getTitle()),
             $this->databaseConnection->makeQueryString($jobOrder->getCompanyJobId()),

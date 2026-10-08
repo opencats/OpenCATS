@@ -154,7 +154,7 @@ function dumpDB($db, $file, $useStatus = false, $splitFiles = true)
                 $i = 0;
                 foreach ($recordSet as $field)
                 {
-                    $text .= $db->makeQueryString($field);
+                    $text .= $field === null ? 'NULL' : $db->makeQueryString($field);
                     $i++;
                     if ($i != count($recordSet))
                     {

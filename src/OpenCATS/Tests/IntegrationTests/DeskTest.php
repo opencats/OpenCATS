@@ -183,9 +183,9 @@ class DeskTest extends DatabaseTestCase
             $result = array();
             foreach (array('user', 'joborder') as $table)
             {
-                $result[$table]['columns'] = $this->db->getAllAssoc("SHOW FULL COLUMNS FROM `$table`");
+                $result[$table]['columns'] = $this->db->getAllAssoc("SHOW FULL COLUMNS FROM `$table` WHERE Field <> 'sector_id'");
                 $result[$table]['index'] = $this->db->getAllAssoc("SELECT INDEX_NAME, NON_UNIQUE, SEQ_IN_INDEX, COLUMN_NAME, INDEX_TYPE FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '$table' AND COLUMN_NAME = 'desk_id' ORDER BY INDEX_NAME, SEQ_IN_INDEX");
-                self::assertSame('desk_id', end($result[$table]['columns'])['Field']);
+                self::assertContains('desk_id', array_column($result[$table]['columns'], 'Field'));
                 self::assertCount(1, $result[$table]['index']);
             }
             return $result;

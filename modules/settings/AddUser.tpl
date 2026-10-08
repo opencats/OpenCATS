@@ -17,16 +17,6 @@
             <form name="addUserForm" id="addUserForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=settings&amp;a=addUser" method="post" onsubmit="return checkAddUserForm(document.addUserForm);" autocomplete="off">
                 <input type="hidden" name="postback" id="postback" value="postback" />
 
-<div class="mb-2">
-<label class="form-label small" for="deskID">Desk</label>
-<select class="form-select form-select-sm" name="deskID" id="deskID">
-<option value="">Unassigned</option>
-<?php foreach ($this->desks as $desk): ?>
-<option value="<?php echo Template::escapeAttr($desk['deskID']); ?>"<?php if ((string) $this->deskID === (string) $desk['deskID']): ?> selected<?php endif; ?>><?php echo Template::escapeHtml($desk['name'] . ($desk['isActive'] ? '' : ' (inactive)')); ?></option>
-<?php endforeach; ?>
-</select>
-</div>
-
                 <div class="mb-2">
                     <div class="row g-2 mb-2">
                         <div class="col-12 col-sm">
@@ -91,6 +81,20 @@
                              		<?php else: ?>
                                         <div class="d-flex align-items-center gap-1"><input type="password" id="retypePassword" name="retypePassword"  class="form-control form-control-sm" /><span class="text-danger" title="Required">*</span></div>
 					<?php endif; ?>
+                                    </div>
+                                </div>
+
+                                <div class="row g-2 mb-2">
+                                    <div class="col-sm-4 col-lg-3">
+                                        <label for="deskID" class="form-label small mb-0">Desk:</label>
+                                    </div>
+                                    <div class="col-12 col-sm">
+                                        <select class="form-select form-select-sm" name="deskID" id="deskID">
+                                        <option value="">Unassigned</option>
+                                        <?php foreach ($this->desks as $desk): ?>
+                                        <option value="<?php echo Template::escapeAttr($desk['deskID']); ?>"<?php if ((string) $this->deskID === (string) $desk['deskID']): ?> selected<?php endif; ?>><?php echo Template::escapeHtml($desk['name'] . ($desk['isActive'] ? '' : ' (inactive)')); ?></option>
+                                        <?php endforeach; ?>
+                                        </select>
                                     </div>
                                 </div>
 

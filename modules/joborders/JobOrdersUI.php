@@ -718,6 +718,8 @@ class JobOrdersUI extends UserInterface
         $deskID = (new Desks())->getDefaultForUser($this->_userID);
         $this->_template->assign('deskID', $deskID);
         $this->_template->assign('desks', (new Desks())->getAll());
+        $this->_template->assign('sectorID', null);
+        $this->_template->assign('sectors', (new Sectors())->getAll());
         $this->_template->display('./modules/joborders/Add.tpl');
     }
 
@@ -727,6 +729,8 @@ class JobOrdersUI extends UserInterface
     private function onAdd()
     {
         $deskID = $this->getDeskInput();
+        $sectorID = $this->getSectorInput();
+        if ($sectorID === false) $sectorID = null;
         /* Bail out if we don't have a valid company ID. */
         if (!$this->isRequiredIDValid('companyID', $_POST))
         {
@@ -835,7 +839,7 @@ class JobOrdersUI extends UserInterface
             $title, $companyID, $contactID, $description, $notes, $duration,
             $maxRate, $type, $isHot, $isPublic, $openings, $companyJobID,
             $salary, $city, $state, $startDate, $this->_userID, $recruiter,
-            $owner, $department, $questionnaireID, $country, $deskID
+            $owner, $department, $questionnaireID, $country, $deskID, $sectorID
         );
 
         if ($jobOrderID <= 0)
@@ -986,6 +990,8 @@ class JobOrdersUI extends UserInterface
 
         $this->_template->assign('deskID', $data['deskID']);
         $this->_template->assign('desks', (new Desks())->getAll(false, $data['deskID']));
+        $this->_template->assign('sectorID', $data['sectorID']);
+        $this->_template->assign('sectors', (new Sectors())->getAll(false, $data['sectorID']));
         $this->_template->display('./modules/joborders/Edit.tpl');
     }
 
@@ -998,6 +1004,19 @@ class JobOrdersUI extends UserInterface
         try
         {
             return (new Desks())->validateAssignment($_POST['deskID'], $currentID);
+        }
+        catch (InvalidArgumentException $e)
+        {
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, $e->getMessage());
+        }
+    }
+
+    private function getSectorInput($currentID = null)
+    {
+        if (!array_key_exists('sectorID', $_POST)) return false;
+        try
+        {
+            return (new Sectors())->validateAssignment($_POST['sectorID'], $currentID);
         }
         catch (InvalidArgumentException $e)
         {
@@ -1019,6 +1038,7 @@ class JobOrdersUI extends UserInterface
         $currentJob = $jobOrders->get($jobOrderID);
         if (empty($currentJob)) CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Job Order not found.');
         $deskID = $this->getDeskInput($currentJob['deskID']);
+        $sectorID = $this->getSectorInput($currentJob['sectorID']);
 
         /* Bail out if we don't have a valid company ID. */
         if (!$this->isRequiredIDValid('companyID', $_POST))
@@ -1195,7 +1215,7 @@ class JobOrdersUI extends UserInterface
             $description, $notes, $duration, $maxRate, $type, $isHot,
             $openings, $openingsAvailable, $salary, $city, $state, $startDate, $status, $recruiter,
             $owner, $public, $email, $emailAddress, $department, $questionnaireID,
-            $country, $deskID))
+            $country, $deskID, $sectorID))
         {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update job order.');
         }
