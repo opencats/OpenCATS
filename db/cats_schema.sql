@@ -742,7 +742,6 @@ CREATE TABLE `desk` (
 INSERT INTO `desk` (`desk_id`, `name`) VALUES (1, 'Commercial'), (2, 'Industrial'), (3, 'Engineering');
 
 CREATE TABLE `joborder` (
-  `desk_id` INT(11) DEFAULT NULL,
   KEY `idx_joborder_desk` (`desk_id`),
   `joborder_id` INT(11) NOT NULL AUTO_INCREMENT,
   `recruiter` INT(11),
@@ -773,6 +772,7 @@ CREATE TABLE `joborder` (
   `openings_available` INT(11) DEFAULT '0',
   `questionnaire_id` INT(11),
   `import_id` INT(11) NOT NULL DEFAULT '0',
+  `desk_id` INT(11) DEFAULT NULL,
   PRIMARY KEY (`joborder_id`),
   KEY `IDX_recruiter` (`recruiter`),
   KEY `IDX_title` (`title`),
@@ -1004,7 +1004,6 @@ CREATE TABLE `tag` (
 /* Table structure for table `user` */
 
 CREATE TABLE `user` (
-  `desk_id` INT(11) DEFAULT NULL,
   KEY `idx_user_desk` (`desk_id`),
   `user_id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -1033,6 +1032,7 @@ CREATE TABLE `user` (
   `zip_code` VARCHAR(16) COLLATE utf8mb4_unicode_ci,
   `country` VARCHAR(128) COLLATE utf8mb4_unicode_ci,
   `can_see_eeo_info` INT(1) DEFAULT '0',
+  `desk_id` INT(11) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `IDX_first_name` (`first_name`),
   KEY `IDX_last_name` (`last_name`),

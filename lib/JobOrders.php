@@ -884,7 +884,7 @@ class JobOrdersDataGrid extends DataGrid
             'Desk' => array(
                 'select' => 'desk.name AS deskName',
                 'join' => 'LEFT JOIN desk ON desk.desk_id = joborder.desk_id',
-                'pagerRender' => 'return htmlspecialchars($rsData[\'deskName\'] ?? \'Unassigned\');',
+                'pagerRender' => 'return Template::escapeHtml($rsData[\'deskName\'] ?? \'Unassigned\');',
                 'sortableColumn' => 'deskName',
                 'filter' => "COALESCE(desk.name, 'Unassigned')",
                 'filterTypes' => '==',

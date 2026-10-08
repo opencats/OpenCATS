@@ -61,6 +61,10 @@ class DeskTest extends DatabaseTestCase
         self::assertNull((new \JobOrders())->get($unassigned)['deskID']);
         self::assertTrue($this->userDesk(1, 1));
         self::assertSame('1', (string) (new \Users())->get(1)['deskID']);
+        require_once LEGACY_ROOT . '/modules/import/Import.php';
+        $imported = (new \JobOrdersImport())->add(array('company' => '', 'title' => 'Imported Desk fixture', 'openings' => 1), 1, 1);
+        self::assertGreaterThan(0, $imported);
+        self::assertNull((new \JobOrders())->get($imported)['deskID']);
         $automatic = $this->addJob();
         $manual = $this->addJob(2);
         $cleared = $this->addJob(null);
@@ -148,6 +152,19 @@ class DeskTest extends DatabaseTestCase
         $rows = (new \ReflectionProperty(\DataGrid::class, '_rs'))->getValue($grid);
         self::assertCount(1, $rows);
         self::assertSame((string) $a, (string) $rows[0]['jobOrderID']);
+        require_once LEGACY_ROOT . '/lib/Template.php';
+        (new \Desks())->save(1, 'Commercial & <Recruitment> "Desk"', true);
+        $renderGrid = new \JobOrdersListByViewDataGrid(array(), 0);
+        ob_start();
+        try
+        {
+            $renderGrid->drawHTML();
+            $html = ob_get_contents();
+        }
+        finally { ob_end_clean(); }
+        self::assertStringContainsString('Commercial &amp; &lt;Recruitment&gt; &quot;Desk&quot;', $html);
+        self::assertStringContainsString('Unassigned', $html);
+        self::assertStringNotContainsString('<Recruitment>', $html);
         $this->db->query('UPDATE joborder SET is_admin_hidden = 1 WHERE joborder_id = ' . $b);
         $this->userDesk(1, 2);
         $this->access = ACCESS_LEVEL_READ;
@@ -162,7 +179,18 @@ class DeskTest extends DatabaseTestCase
         require_once LEGACY_ROOT . '/modules/install/Schema.php';
         require_once LEGACY_ROOT . '/lib/ModuleUtility.php';
         $job = $this->addJob(null);
-        $freshColumns = $this->db->getAllAssoc("SHOW FULL COLUMNS FROM joborder WHERE Field = 'desk_id'");
+        $schema = function () {
+            $result = array();
+            foreach (array('user', 'joborder') as $table)
+            {
+                $result[$table]['columns'] = $this->db->getAllAssoc("SHOW FULL COLUMNS FROM `$table`");
+                $result[$table]['index'] = $this->db->getAllAssoc("SELECT INDEX_NAME, NON_UNIQUE, SEQ_IN_INDEX, COLUMN_NAME, INDEX_TYPE FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '$table' AND COLUMN_NAME = 'desk_id' ORDER BY INDEX_NAME, SEQ_IN_INDEX");
+                self::assertSame('desk_id', end($result[$table]['columns'])['Field']);
+                self::assertCount(1, $result[$table]['index']);
+            }
+            return $result;
+        };
+        $freshSchema = $schema();
         $this->db->query('ALTER TABLE user DROP COLUMN desk_id');
         $this->db->query('ALTER TABLE joborder DROP COLUMN desk_id');
         $this->db->query('DROP TABLE desk');
@@ -175,7 +203,7 @@ class DeskTest extends DatabaseTestCase
         }
         finally { $maintPage = false; }
         self::assertSame('397', (string) $this->db->getAssoc("SELECT version FROM module_schema WHERE name = 'install'")['version']);
-        self::assertSame($freshColumns, $this->db->getAllAssoc("SHOW FULL COLUMNS FROM joborder WHERE Field = 'desk_id'"));
+        self::assertSame($freshSchema, $schema());
         self::assertNull((new \Users())->get(1)['deskID']);
         self::assertNull((new \JobOrders())->get($job)['deskID']);
         self::assertCount(3, (new \Desks())->getAll());
@@ -185,6 +213,7 @@ class DeskTest extends DatabaseTestCase
         $db = $this->db;
         eval(substr(\CATSSchema::get()[397], 4));
         eval(substr(\CATSSchema::get()[397], 4));
+        self::assertSame($freshSchema, $schema());
         self::assertSame('1', (string) (new \Users())->get(1)['deskID']);
         self::assertSame('Renamed', (new \Desks())->get(1)['name']);
         self::assertSame('0', (string) (new \Desks())->get(1)['isActive']);
