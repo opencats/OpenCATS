@@ -731,7 +731,19 @@ CREATE TABLE `installtest` (
 
 /* Table structure for table `joborder` */
 
+CREATE TABLE `desk` (
+  `desk_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_active` INT(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`desk_id`),
+  UNIQUE KEY `uq_desk_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `desk` (`desk_id`, `name`) VALUES (1, 'Commercial'), (2, 'Industrial'), (3, 'Engineering');
+
 CREATE TABLE `joborder` (
+  `desk_id` INT(11) DEFAULT NULL,
+  KEY `idx_joborder_desk` (`desk_id`),
   `joborder_id` INT(11) NOT NULL AUTO_INCREMENT,
   `recruiter` INT(11),
   `contact_id` INT(11),
@@ -992,6 +1004,8 @@ CREATE TABLE `tag` (
 /* Table structure for table `user` */
 
 CREATE TABLE `user` (
+  `desk_id` INT(11) DEFAULT NULL,
+  KEY `idx_user_desk` (`desk_id`),
   `user_id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `email` VARCHAR(128) COLLATE utf8mb4_unicode_ci,

@@ -6,6 +6,7 @@ include_once('./lib/JobOrderStatuses.php');
 class JobOrder
 {
     private $id;
+    private $deskID = false; // Omitted: copy the creating user's current Desk on persistence.
     private $title;
     private $companyId;
     private $contactId;
@@ -263,6 +264,16 @@ class JobOrder
         return $this->status;
     }
     
+    public function setDeskID($value)
+    {
+        $this->deskID = $value;
+    }
+
+    public function getDeskID()
+    {
+        return $this->deskID;
+    }
+
     static function create(
         $title,
         $companyId,
@@ -285,7 +296,8 @@ class JobOrder
         $recruiter,
         $owner,
         $departmentId,
-        $questionnaire
+        $questionnaire,
+        $deskID = false
     ) {
         $instance = new JobOrder(
             $title,
@@ -313,6 +325,7 @@ class JobOrder
         $instance->setRecruiter($recruiter);
         $instance->setOwner($owner);
         $instance->setQuestionnaire($questionnaire);
+        $instance->setDeskID($deskID);
         return $instance;
     }
 }

@@ -2346,6 +2346,24 @@ class CATSSchema
                 }
             ',
 
+            '397' => 'PHP:
+                $runDeskSQL = function ($sql) use ($db) {
+                    if (!$db->query($sql)) throw new RuntimeException("Unable to apply Desk schema migration.");
+                };
+                $runDeskSQL("CREATE TABLE IF NOT EXISTS `desk` (   `desk_id` INT(11) NOT NULL AUTO_INCREMENT,   `name` VARCHAR(64) COLLATE utf8mb4_unicode_ci NOT NULL,   `is_active` INT(1) NOT NULL DEFAULT \'1\',   PRIMARY KEY (`desk_id`),   UNIQUE KEY `uq_desk_name` (`name`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+                foreach (array(1 => "Commercial", 2 => "Industrial", 3 => "Engineering") as $id => $name)
+                {
+                    $runDeskSQL("INSERT INTO desk (desk_id, name) SELECT " . $id . ", " . $db->makeQueryString($name) . " WHERE NOT EXISTS (SELECT 1 FROM desk WHERE desk_id = " . $id . ")");
+                }
+                foreach (array("user", "joborder") as $table)
+                {
+                    $columns = $db->getAllAssoc("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . $db->makeQueryString($table) . " AND COLUMN_NAME = \'desk_id\'");
+                    if (empty($columns)) $runDeskSQL("ALTER TABLE `" . $table . "` ADD COLUMN desk_id INT(11) DEFAULT NULL");
+                    $keys = $db->getAllAssoc("SELECT INDEX_NAME FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . $db->makeQueryString($table) . " AND INDEX_NAME = " . $db->makeQueryString("idx_" . $table . "_desk"));
+                    if (empty($keys)) $runDeskSQL("ALTER TABLE `" . $table . "` ADD INDEX `idx_" . $table . "_desk` (desk_id)");
+                }
+            ',
+
         );
     }
 }

@@ -107,6 +107,46 @@ class SettingsUI extends UserInterface
         );
     }
     
+    private function desks()
+    {
+        $desks = new Desks();
+        $message = '';
+        if ($this->isPostBack())
+        {
+            try
+            {
+                if (!isset($_POST['isActive']) || !in_array($_POST['isActive'], array('0', '1'), true))
+                {
+                    throw new InvalidArgumentException('Invalid Desk availability.');
+                }
+                $desks->save($_POST['deskID'] ?? null, $_POST['name'] ?? null, $_POST['isActive'] === '1');
+                $message = 'Desk saved.';
+            }
+            catch (InvalidArgumentException $e)
+            {
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, $e->getMessage());
+            }
+        }
+        $this->_template->assign('desks', $desks->getAll(true));
+        $this->_template->assign('message', $message);
+        $this->_template->assign('active', $this);
+        $this->_template->assign('subActive', 'Administration');
+        $this->_template->display('./modules/settings/Desks.tpl');
+    }
+
+    private function getDeskInput($currentID = null)
+    {
+        if (!array_key_exists('deskID', $_POST)) return false;
+        try
+        {
+            return (new Desks())->validateAssignment($_POST['deskID'], $currentID);
+        }
+        catch (InvalidArgumentException $e)
+        {
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, $e->getMessage());
+        }
+    }
+
     private function companyClassification()
     {
         $settings = new CompanySettings();
@@ -239,6 +279,14 @@ class SettingsUI extends UserInterface
 
         switch ($action)
         {
+            case 'desks':
+                if ($this->_realAccessLevel < ACCESS_LEVEL_SA || $this->getUserAccessLevel('settings.desks') < ACCESS_LEVEL_SA)
+                {
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Administrator access required.');
+                }
+                $this->desks();
+                break;
+
             case 'companyClassification':
                 if ($this->_realAccessLevel < ACCESS_LEVEL_SA ||
                     $this->getUserAccessLevel('settings.companyClassification') < ACCESS_LEVEL_SA)
@@ -1134,6 +1182,8 @@ class SettingsUI extends UserInterface
 
         if (!eval(Hooks::get('SETTINGS_ADD_USER'))) return;
 
+        $this->_template->assign('deskID', null);
+        $this->_template->assign('desks', (new Desks())->getAll(false, null));
         $this->_template->display('./modules/settings/AddUser.tpl');
     }
 
@@ -1142,6 +1192,7 @@ class SettingsUI extends UserInterface
      */
     private function onAddUser()
     {
+        $deskID = array_key_exists('deskID', $_POST) ? $this->getDeskInput() : null;
         if (AUTH_MODE == "ldap")
         {
             /* LDAP users are not allowed to be created in DB manualy */
@@ -1195,7 +1246,7 @@ class SettingsUI extends UserInterface
         }
 
         $userID = $users->add(
-            $lastName, $firstName, $email, $username, $password, $accessLevel, $eeoIsVisible
+            $lastName, $firstName, $email, $username, $password, $accessLevel, $eeoIsVisible, $deskID
         );
 
         /* Check role (category) to make sure that the role is allowed to be set. */
@@ -1307,6 +1358,8 @@ class SettingsUI extends UserInterface
         $this->_template->assign('cannotEnableMessage', $cannotEnableMessage);
         $this->_template->assign('disableAccessChange', $disableAccessChange);
         $this->_template->assign('auth_mode', AUTH_MODE);
+        $this->_template->assign('deskID', $data['deskID']);
+        $this->_template->assign('desks', (new Desks())->getAll(false, $data['deskID']));
         $this->_template->display('./modules/settings/EditUser.tpl');
     }
 
@@ -1316,7 +1369,7 @@ class SettingsUI extends UserInterface
     private function onEditUser()
     {
         /* Bail out if we don't have a valid user ID. */
-        if (!$this->isRequiredIDValid('userID', $_POST))
+        if (!isset($_POST['userID']) || !is_scalar($_POST['userID']) || !$this->isRequiredIDValid('userID', $_POST))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid user ID.');
         }
@@ -1377,8 +1430,11 @@ class SettingsUI extends UserInterface
 
         $users = new Users();
 
+        $currentUser = $users->get($userID);
+        if (empty($currentUser)) CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'User not found.');
+        $deskID = $this->getDeskInput($currentUser['deskID']);
         if (!$users->update($userID, $lastName, $firstName, $email, $username,
-            $accessLevel, $eeoIsVisible))
+            $accessLevel, $eeoIsVisible, $deskID))
         {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update user.');
         }

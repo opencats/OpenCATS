@@ -23,6 +23,7 @@
                 <p>Contact your site administrator to change these settings.</p>
             <?php endif; ?>
 
+            <p><strong>Desk:</strong> <?php echo Template::escapeHtml($this->data['deskName'] ?? 'Unassigned'); ?></p>
             <div class="card card-body p-2 mb-2">
                 <div class="row g-2 mb-2">
                     <div class="col-12 col-sm">

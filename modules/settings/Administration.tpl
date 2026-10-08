@@ -12,6 +12,9 @@
                         <p class="h6 bg-secondary-subtle rounded p-2 mb-0">Site Management</p>
 
                         <div class="list-group mb-3">
+                            <?php if ($_SESSION['CATS']->getRealAccessLevel() >= ACCESS_LEVEL_SA && $this->getUserAccessLevel('settings.desks') >= ACCESS_LEVEL_SA): ?>
+                            <a class="list-group-item list-group-item-action" href="<?php echo Template::escapeAttr(CATSUtility::getIndexName()); ?>?m=settings&amp;a=desks">Recruitment Desks</a>
+                            <?php endif; ?>
                             <?php if ($_SESSION['CATS']->getRealAccessLevel() >= ACCESS_LEVEL_SA && $this->getUserAccessLevel('settings.companyClassification') >= ACCESS_LEVEL_SA): ?>
                             <a class="list-group-item list-group-item-action" href="<?php echo Template::escapeAttr(CATSUtility::getIndexName()); ?>?m=settings&amp;a=companyClassification">Company commercial tier labels</a>
                             <?php endif; ?>

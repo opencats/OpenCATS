@@ -715,6 +715,9 @@ class JobOrdersUI extends UserInterface
 
         if (!eval(Hooks::get('JO_ADD'))) return;
 
+        $deskID = (new Desks())->getDefaultForUser($this->_userID);
+        $this->_template->assign('deskID', $deskID);
+        $this->_template->assign('desks', (new Desks())->getAll());
         $this->_template->display('./modules/joborders/Add.tpl');
     }
 
@@ -723,6 +726,7 @@ class JobOrdersUI extends UserInterface
      */
     private function onAdd()
     {
+        $deskID = $this->getDeskInput();
         /* Bail out if we don't have a valid company ID. */
         if (!$this->isRequiredIDValid('companyID', $_POST))
         {
@@ -831,7 +835,7 @@ class JobOrdersUI extends UserInterface
             $title, $companyID, $contactID, $description, $notes, $duration,
             $maxRate, $type, $isHot, $isPublic, $openings, $companyJobID,
             $salary, $city, $state, $startDate, $this->_userID, $recruiter,
-            $owner, $department, $questionnaireID, $country
+            $owner, $department, $questionnaireID, $country, $deskID
         );
 
         if ($jobOrderID <= 0)
@@ -980,23 +984,41 @@ class JobOrdersUI extends UserInterface
 
         if (!eval(Hooks::get('JO_EDIT'))) return;
 
+        $this->_template->assign('deskID', $data['deskID']);
+        $this->_template->assign('desks', (new Desks())->getAll(false, $data['deskID']));
         $this->_template->display('./modules/joborders/Edit.tpl');
     }
 
     /*
      * Called by handleRequest() to process saving / submitting the edit page.
      */
+    private function getDeskInput($currentID = null)
+    {
+        if (!array_key_exists('deskID', $_POST)) return false;
+        try
+        {
+            return (new Desks())->validateAssignment($_POST['deskID'], $currentID);
+        }
+        catch (InvalidArgumentException $e)
+        {
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, $e->getMessage());
+        }
+    }
+
     private function onEdit()
     {
         $jobOrders = new JobOrders();
 
         /* Bail out if we don't have a valid job order ID. */
-        if (!$this->isRequiredIDValid('jobOrderID', $_POST))
+        if (!isset($_POST['jobOrderID']) || !is_scalar($_POST['jobOrderID']) || !$this->isRequiredIDValid('jobOrderID', $_POST))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');
         }
 
         $jobOrderID = $_POST['jobOrderID'];
+        $currentJob = $jobOrders->get($jobOrderID);
+        if (empty($currentJob)) CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Job Order not found.');
+        $deskID = $this->getDeskInput($currentJob['deskID']);
 
         /* Bail out if we don't have a valid company ID. */
         if (!$this->isRequiredIDValid('companyID', $_POST))
@@ -1173,7 +1195,7 @@ class JobOrdersUI extends UserInterface
             $description, $notes, $duration, $maxRate, $type, $isHot,
             $openings, $openingsAvailable, $salary, $city, $state, $startDate, $status, $recruiter,
             $owner, $public, $email, $emailAddress, $department, $questionnaireID,
-            $country))
+            $country, $deskID))
         {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update job order.');
         }

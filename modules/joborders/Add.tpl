@@ -22,6 +22,16 @@
         <form name="addJobOrderForm" id="addJobOrderForm" action="<?php echo(CATSUtility::getIndexName()); ?>?m=joborders&amp;a=add" method="post" onsubmit="return checkAddForm(document.addJobOrderForm);" autocomplete="off">
             <input type="hidden" name="postback" id="postback" value="postback">
 
+<div class="mb-2">
+<label class="form-label small" for="deskID">Desk</label>
+<select class="form-select form-select-sm" name="deskID" id="deskID">
+<option value="">Unassigned</option>
+<?php foreach ($this->desks as $desk): ?>
+<option value="<?php echo Template::escapeAttr($desk['deskID']); ?>"<?php if ((string) $this->deskID === (string) $desk['deskID']): ?> selected<?php endif; ?>><?php echo Template::escapeHtml($desk['name'] . ($desk['isActive'] ? '' : ' (inactive)')); ?></option>
+<?php endforeach; ?>
+</select>
+</div>
+
             <section class="card mb-2 oc-joborder-basic-information">
                 <div class="card-header bg-secondary-subtle py-1 px-2 fw-semibold">Basic Information</div>
                 <div class="card-body p-2">

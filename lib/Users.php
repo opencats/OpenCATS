@@ -37,6 +37,8 @@ define('LDAPUSER_PASSWORD',          '_LDAPUSER_');
  *	@package    CATS
  *	@subpackage Library
  */
+include_once(LEGACY_ROOT . '/lib/Desks.php');
+
 class Users
 {
     private $_db;
@@ -62,9 +64,10 @@ class Users
      * @return new user ID, or -1 on failure.
      */
     public function add($lastName, $firstName, $email, $username, $password,
-            $accessLevel, $eeoIsVisible = false)
+            $accessLevel, $eeoIsVisible = false, $deskID = null)
     {
 
+        $deskID = (new Desks())->validateAssignment($deskID);
         $hashedPassword = $password == LDAPUSER_PASSWORD ? $password : $this->hashPassword($password);
         $sql = sprintf(
                 "INSERT INTO user (
@@ -76,6 +79,7 @@ class Users
         email,
         first_name,
         last_name,
+        desk_id,
         can_see_eeo_info
             )
                 VALUES (
@@ -87,6 +91,7 @@ class Users
                     %s,
                     %s,
                     %s,
+                    %s,
                     %s
                     )",
         $this->_db->makeQueryString($username),
@@ -95,6 +100,7 @@ class Users
         $this->_db->makeQueryString($email),
         $this->_db->makeQueryString($firstName),
         $this->_db->makeQueryString($lastName),
+        $this->_db->makeQueryIntegerOrNULL($deskID ?? -1),
         ($eeoIsVisible ? 1 : 0)
             );
 
@@ -119,8 +125,16 @@ class Users
      * @return boolean True if successful; false otherwise.
      */
     public function update($userID, $lastName, $firstName, $email,
-            $username, $accessLevel = -1, $eeoIsVisible = false)
+            $username, $accessLevel = -1, $eeoIsVisible = false, $deskID = false)
     {
+        $deskSQL = '';
+        if ($deskID !== false)
+        {
+            $current = $this->get($userID);
+            if (empty($current)) return false;
+            $deskID = (new Desks())->validateAssignment($deskID, $current['deskID']);
+            $deskSQL = ', desk_id = ' . $this->_db->makeQueryIntegerOrNULL($deskID ?? -1);
+        }
         /* If an access level was specified, make sure the access level is
          * updated by the query.
          */
@@ -153,7 +167,7 @@ class Users
                 $this->_db->makeQueryString($email),
                 $this->_db->makeQueryString($username),
                 ($eeoIsVisible ? 1 : 0),
-                $accessLevelSQL,
+                $accessLevelSQL . $deskSQL,
                 $this->_db->makeQueryInteger($userID)
                     );
 
@@ -238,6 +252,8 @@ class Users
     {
         $sql = sprintf(
                 "SELECT
+                user.desk_id AS deskID,
+                (SELECT name FROM desk WHERE desk.desk_id = user.desk_id) AS deskName,
                 user.user_name AS username,
                 user.access_level AS accessLevel,
                 access_level.short_description AS accessLevelDescription,
@@ -297,6 +313,8 @@ class Users
     public function getForAdministration($userID, $aspSiteRule)
     {
         $sql = sprintf("SELECT
+                user.desk_id AS deskID,
+                (SELECT name FROM desk WHERE desk.desk_id = user.desk_id) AS deskName,
                 user.user_name AS username,
                 user.access_level AS accessLevel,
                 access_level.short_description AS accessLevelDescription,

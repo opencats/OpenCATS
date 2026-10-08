@@ -179,7 +179,7 @@ class CompanyClassificationTest extends DatabaseTestCase
             $maintPage = false;
         }
         $version = $this->db->getAssoc("SELECT version FROM module_schema WHERE name = 'install'");
-        self::assertSame(396, (int) $version['version']);
+        self::assertSame((int) max(array_keys(\CATSSchema::get())), (int) $version['version']);
         self::assertSame(array('A'=>'A','B'=>'B','C'=>'C','D'=>'D'), (new \CompanySettings())->getAll());
     }
 }

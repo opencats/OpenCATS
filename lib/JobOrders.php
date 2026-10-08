@@ -19,6 +19,7 @@ use OpenCATS\Entity\JobOrderRepositoryException;
 define('JOBORDERS_STATUS_SHARE',         100);
 define('JOBORDERS_STATUS_ALL',           10100);
 
+include_once(LEGACY_ROOT . '/lib/Desks.php');
 include_once(LEGACY_ROOT . '/lib/Pipelines.php');
 include_once(LEGACY_ROOT . '/lib/Calendar.php');
 include_once(LEGACY_ROOT . '/lib/Pager.php');
@@ -71,7 +72,7 @@ class JobOrders
     public function add($title, $companyId, $contactId, $description, $notes,
         $duration, $maxRate, $type, $isHot, $public, $openings, $companyJobId,
         $salary, $city, $state, $startDate, $enteredBy, $recruiter, $owner,
-        $department, $questionnaire = false, $country = '')
+        $department, $questionnaire = false, $country = '', $deskID = false)
     {
         /* Get the department ID of the selected department. */
         // FIXME: Move this up to the UserInterface level. I don't like this
@@ -102,7 +103,8 @@ class JobOrders
             $recruiter,
             $owner,
             $departmentId,
-            $questionnaire
+            $questionnaire,
+            $deskID
         );
         $JobOrderRepository = new JobOrderRepository($this->_db);
         try {
@@ -140,8 +142,16 @@ class JobOrders
     public function update($jobOrderID, $title, $companyJobID, $companyID,
         $contactID, $description, $notes, $duration, $maxRate, $type, $isHot,
         $openings, $openingsAvailable, $salary, $city, $state, $startDate, $status, $recruiter,
-        $owner, $public, $email, $emailAddress, $department, $questionnaire = false, $country = false)
+        $owner, $public, $email, $emailAddress, $department, $questionnaire = false, $country = false, $deskID = false)
     {
+        $deskSQL = '';
+        if ($deskID !== false)
+        {
+            $current = $this->get($jobOrderID);
+            if (empty($current)) return false;
+            $deskID = (new Desks())->validateAssignment($deskID, $current['deskID']);
+            $deskSQL = 'desk_id = ' . $this->_db->makeQueryIntegerOrNULL($deskID ?? -1) . ', ';
+        }
         /* Get the department ID of the selected department. */
         // FIXME: Move this up to the UserInterface level. I don't like this
         //        tight coupling, and calling Contacts methods as static is
@@ -167,7 +177,7 @@ class JobOrders
             "UPDATE
                 joborder
              SET
-                title              = %s,
+                %stitle              = %s,
                 client_job_id      = %s,
                 company_id         = %s,
                 contact_id         = %s,
@@ -192,6 +202,7 @@ class JobOrders
                 questionnaire_id   = %s
             WHERE
                 joborder_id = %s",
+            $deskSQL,
             $this->_db->makeQueryString($title),
             $this->_db->makeQueryString($companyJobID),
             $this->_db->makeQueryInteger($companyID),
@@ -393,6 +404,8 @@ class JobOrders
     {
         $sql = sprintf(
             "SELECT
+                joborder.desk_id AS deskID,
+                (SELECT name FROM desk WHERE desk.desk_id = joborder.desk_id) AS deskName,
                 joborder.joborder_id AS jobOrderID,
                 joborder.company_id AS companyID,
                 joborder.contact_id AS contactID,
@@ -500,6 +513,8 @@ class JobOrders
     {
         $sql = sprintf(
             "SELECT
+                joborder.desk_id AS deskID,
+                (SELECT name FROM desk WHERE desk.desk_id = joborder.desk_id) AS deskName,
                 joborder.joborder_id AS jobOrderID,
                 joborder.company_id AS companyID,
                 company.name AS companyName,
@@ -866,6 +881,15 @@ class JobOrdersDataGrid extends DataGrid
         $this->_dataItemIDColumn = 'joborder.joborder_id';
 
         $this->_classColumns = array(
+            'Desk' => array(
+                'select' => 'desk.name AS deskName',
+                'join' => 'LEFT JOIN desk ON desk.desk_id = joborder.desk_id',
+                'pagerRender' => 'return htmlspecialchars($rsData[\'deskName\'] ?? \'Unassigned\');',
+                'sortableColumn' => 'deskName',
+                'filter' => "COALESCE(desk.name, 'Unassigned')",
+                'filterTypes' => '==',
+                'exportable' => false,
+                'pagerWidth' => 100),
             'Attachments' => array(  'select'   => 'IF(attachment_id, 1, 0) AS attachmentPresent',
                                      'pagerRender' => '
                                                     if ($rsData[\'attachmentPresent\'] == 1)
