@@ -17,6 +17,14 @@ class Tasks
         $this->_db = DatabaseConnection::getInstance();
     }
 
+    public static function getDefaults()
+    {
+        return array('title' => '', 'description' => null, 'dueDate' => null,
+            'priority' => 'normal', 'status' => 'open', 'purpose' => 'general',
+            'assignedTo' => null, 'dataItemType' => null, 'dataItemID' => null,
+            'candidateJobOrderID' => null);
+    }
+
     public static function getStatuses()
     {
         return array('open' => 'Open', 'in_progress' => 'In Progress',
@@ -103,6 +111,97 @@ class Tasks
             (new Pipelines())->canAccess($record['candidateJobOrderID']);
     }
 
+    public static function getParentTypes()
+    {
+        return array(DATA_ITEM_CANDIDATE => 'Candidate', DATA_ITEM_CONTACT => 'Contact',
+            DATA_ITEM_COMPANY => 'Company', DATA_ITEM_JOBORDER => 'Job Order');
+    }
+
+    /** Existing pipeline selectors, narrowed by both records' current visibility. */
+    public function getPipelineChoices($type, $id)
+    {
+        $type = self::normalizeID($type);
+        $id = self::normalizeID($id);
+        if (!$this->hasAccess('tasks.show', ACCESS_LEVEL_READ) ||
+            !in_array($type, array(DATA_ITEM_CANDIDATE, DATA_ITEM_JOBORDER), true) ||
+            !$this->canAccessParent($type, $id)) return array();
+        $pipelines = new Pipelines();
+        $rows = $type === DATA_ITEM_CANDIDATE ? $pipelines->getCandidatePipeline($id) : $pipelines->getJobOrderPipeline($id);
+        $choices = array();
+        foreach ($rows as $row)
+        {
+            if (!$pipelines->canAccess($row['candidateJobOrderID'])) continue;
+            $choices[$row['candidateJobOrderID']] = $type === DATA_ITEM_CANDIDATE ?
+                $row['title'] . ' (' . $row['companyName'] . ')' : trim($row['firstName'] . ' ' . $row['lastName']);
+        }
+        return $choices;
+    }
+
+    /** Resolve a readable Task's exact Activity context without inventing an Activity. */
+    public function getActivityTarget($id)
+    {
+        $record = $this->get($id);
+        if (empty($record)) return array();
+        if ($record['candidateJobOrderID'] !== null)
+        {
+            // get() has already authorised both sides through Pipelines::canAccess().
+            return $this->_db->getAssoc('SELECT candidate_id AS candidateID, joborder_id AS jobOrderID
+                FROM candidate_joborder WHERE candidate_joborder_id = ' . (int) $record['candidateJobOrderID']);
+        }
+        if ($record['dataItemType'] == DATA_ITEM_CANDIDATE) return array('candidateID' => $record['dataItemID']);
+        if ($record['dataItemType'] == DATA_ITEM_CONTACT) return array('contactID' => $record['dataItemID']);
+        return array();
+    }
+
+    /** Context labels are returned only after the same parent/action checks used by add(). */
+    public function getParentContext($type, $id, $forCreation = false)
+    {
+        $type = self::normalizeID($type, false);
+        $id = self::normalizeID($id, false);
+        if (!$this->hasAccess('tasks.show', ACCESS_LEVEL_READ) ||
+            ($forCreation && !$this->hasAccess('tasks.add', ACCESS_LEVEL_EDIT)) ||
+            !$this->canAccessParent($type, $id, $forCreation))
+            throw new RuntimeException('Task association unavailable.');
+        switch ($type)
+        {
+            case DATA_ITEM_CANDIDATE: $record = (new Candidates())->get($id); break;
+            case DATA_ITEM_CONTACT: $record = (new Contacts())->get($id); break;
+            case DATA_ITEM_COMPANY: $record = (new Companies())->get($id); break;
+            case DATA_ITEM_JOBORDER: $record = (new JobOrders())->get($id); break;
+        }
+        if (empty($record)) throw new RuntimeException('Task association unavailable.');
+        $name = $type === DATA_ITEM_COMPANY ? $record['name'] : ($type === DATA_ITEM_JOBORDER ?
+            $record['title'] : trim($record['firstName'] . ' ' . $record['lastName']));
+        $companyName = '';
+        if (in_array($type, array(DATA_ITEM_CONTACT, DATA_ITEM_JOBORDER), true) &&
+            !empty($record['companyID']) && $this->canAccessParent(DATA_ITEM_COMPANY, $record['companyID']))
+            $companyName = $record['companyName'];
+        return array('type' => $type, 'id' => $id, 'name' => $name, 'companyName' => $companyName);
+    }
+
+    private function canManage($record)
+    {
+        return $this->isAdministrator() || ($record['createdBy'] == $_SESSION['CATS']->getUserID() &&
+            ($record['dataItemType'] === null || $this->canAccessParent($record['dataItemType'], $record['dataItemID'], true)));
+    }
+
+    /** Presentation hints only; update() rechecks the locked record on every write. */
+    public function getActionPermissions($id)
+    {
+        $record = $this->get($id);
+        $permissions = array_fill_keys(array('edit', 'manage', 'complete', 'cancel', 'reopen'), false);
+        if (empty($record)) return $permissions;
+        $manager = $this->canManage($record);
+        $permissions['edit'] = $this->hasAccess('tasks.edit', ACCESS_LEVEL_EDIT) &&
+            ($manager || $record['assignedTo'] == $_SESSION['CATS']->getUserID());
+        $permissions['manage'] = $permissions['edit'] && $manager;
+        $closed = in_array($record['status'], array('completed', 'cancelled'), true);
+        foreach (array('complete', 'cancel', 'reopen') as $action)
+            $permissions[$action] = $permissions['edit'] &&
+                ($action === 'reopen' ? $closed : !$closed) && $this->hasAccess('tasks.' . $action, ACCESS_LEVEL_EDIT);
+        return $permissions;
+    }
+
     private function selectSQL()
     {
         return 'SELECT task_id AS taskID, title, description, due_date AS dueDate,
@@ -175,10 +274,7 @@ class Tasks
 
     private function validate($values, $current = array())
     {
-        $defaults = array('title' => '', 'description' => null, 'dueDate' => null,
-            'priority' => 'normal', 'status' => 'open', 'purpose' => 'general',
-            'assignedTo' => null, 'dataItemType' => null, 'dataItemID' => null,
-            'candidateJobOrderID' => null);
+        $defaults = self::getDefaults();
         if (!is_array($values) || array_diff_key($values, $defaults)) throw new InvalidArgumentException('Unknown Task fields.');
         $record = array_replace($defaults, array_intersect_key($current, $defaults), $values);
         if (!is_string($record['title']) || !mb_check_encoding($record['title'], 'UTF-8') ||
@@ -283,8 +379,7 @@ class Tasks
             $before = $this->_db->getAssoc($this->selectSQL() . ' WHERE task_id = ' . $id . ' FOR UPDATE');
             if (!$this->canRead($before)) throw new RuntimeException('Task unavailable.');
             $actor = $_SESSION['CATS']->getUserID();
-            $manager = $this->isAdministrator() || ($before['createdBy'] == $actor &&
-                ($before['dataItemType'] === null || $this->canAccessParent($before['dataItemType'], $before['dataItemID'], true)));
+            $manager = $this->canManage($before);
             if (!$manager && $before['assignedTo'] != $actor) throw new RuntimeException('Task update denied.');
             $record = $this->validate($values, $before);
             foreach (array('assignedTo', 'dataItemType', 'dataItemID', 'candidateJobOrderID') as $field)

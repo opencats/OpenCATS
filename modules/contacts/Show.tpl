@@ -299,6 +299,10 @@ use OpenCATS\UI\QuickActionMenu;
                 <img src="images/indicator2.gif" id="addActivityIndicator" alt="" style="visibility: hidden; margin-left: 5px;" height="16" width="16">
             </div>
         </section>
+    <?php
+    include_once(LEGACY_ROOT . '/modules/tasks/TasksUI.php');
+    TasksUI::showForParent(DATA_ITEM_CONTACT, $this->contactID);
+    ?>
     </div>
 </main>
 <?php TemplateUtility::printFooter(); ?>

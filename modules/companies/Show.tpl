@@ -899,6 +899,10 @@ onclick="Activity_editEntry(
         </div>
         </section>
 
+        <?php
+        include_once(LEGACY_ROOT . '/modules/tasks/TasksUI.php');
+        TasksUI::showForParent(DATA_ITEM_COMPANY, $this->companyID);
+        ?>
         </div>
         </main>
 

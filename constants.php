@@ -12,6 +12,7 @@
 $coreModules = array(
     'home'       => '1',
     'activity'   => '2',
+    'tasks'      => '2.5',
     'joborders'  => '3',
     'candidates' => '4',  
     'companies'  => '5',

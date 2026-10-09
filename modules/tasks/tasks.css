@@ -1,0 +1,15 @@
+/* Bootstrap modal-lg supplies the standard 800px desktop width. */
+.oc-task-quick-add .modal-content
+{
+    max-height: 85vh;
+}
+
+.oc-task-quick-add .form-label
+{
+    font-size: 0.875rem;
+}
+
+.oc-task-quick-add textarea
+{
+    resize: vertical;
+}

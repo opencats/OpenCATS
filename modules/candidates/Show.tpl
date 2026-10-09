@@ -672,6 +672,10 @@ use OpenCATS\UI\CandidateDuplicateQuickActionMenu;
                 <img src="images/indicator2.gif" id="addActivityIndicator" alt="" style="visibility: hidden;" height="16" width="16">
             </div>
 <?php endif; ?>
+        <?php
+        include_once(LEGACY_ROOT . '/modules/tasks/TasksUI.php');
+        TasksUI::showForParent(DATA_ITEM_CANDIDATE, $this->candidateID);
+        ?>
         </div>
 </main>
 

@@ -456,6 +456,10 @@ use OpenCATS\UI\QuickActionMenu;
                 <?php endif; ?>
             </div>
         </section>
+    <?php
+    include_once(LEGACY_ROOT . '/modules/tasks/TasksUI.php');
+    TasksUI::showForParent(DATA_ITEM_JOBORDER, $this->jobOrderID);
+    ?>
     </div>
 </main>
 <?php TemplateUtility::printFooter(); ?>

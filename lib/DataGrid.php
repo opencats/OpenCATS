@@ -1415,11 +1415,16 @@ class DataGrid
 
         $sql = $this->getSQL($selectSQL, $joinSQL, $whereSQL, $havingSQL, $orderSQL, $limitSQL);
 
-        $this->_rs = $db->getAllAssoc($sql);
+        list($this->_rs, $this->_totalEntries) = $this->loadRows($sql);
+    }
 
-        /* Get total number of results before limit. */
-        $rs2 = $db->getAssoc("SELECT FOUND_ROWS() as rowCount");
-        $this->_totalEntries = $rs2['rowCount'];
+    /** Override for models that must authorise their collection before paging. */
+    protected function loadRows($sql)
+    {
+        $db = DatabaseConnection::getInstance();
+        $rows = $db->getAllAssoc($sql);
+        $count = $db->getAssoc("SELECT FOUND_ROWS() as rowCount");
+        return array($rows, $count['rowCount']);
     }
 
     /**
