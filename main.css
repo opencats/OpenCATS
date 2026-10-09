@@ -19,6 +19,13 @@
  * migrated.
  */
 
+/*** Form controls ***/
+
+/* Give enabled dropdowns the OpenCATS primary-blue outline. */
+select:not(:disabled)
+{
+    border-color: var(--bs-primary);
+}
 
 /*** Compact application chrome ***/
 
