@@ -63,7 +63,7 @@ class History
 
         if (!$causedHistory)
         {
-            return;
+            return true;
         }
 
         /* Make a description. */
@@ -92,7 +92,7 @@ class History
             "INSERT INTO history (data_item_type, data_item_id, the_field, previous_value, new_value, description, set_date, entered_by) VALUES %s",
             implode(',', $changedHistoryValues)
         );
-        $this->_db->query($sql);
+        return $this->_db->query($sql);
     }
 
     /**
@@ -100,11 +100,11 @@ class History
      * 
      * @param integer data item type
      * @param integer data item id
-     * @return void
+     * @return query response
      */
     public function storeHistoryNew($dataItemType, $dataItemID)
     {
-        $this->storeHistoryCatagorized(
+        return $this->storeHistoryCatagorized(
             $dataItemType, $dataItemID, '!newEntry!', '(USER) created entry.'
         );
     }
@@ -159,7 +159,7 @@ class History
             "INSERT INTO history (data_item_type, data_item_id, the_field, previous_value, new_value, description, set_date, entered_by) VALUES %s",
             implode(',', $changedHistoryValues)
         );
-        $this->_db->query($sql);
+        return $this->_db->query($sql);
     }
 
     /**

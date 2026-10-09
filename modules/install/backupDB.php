@@ -98,10 +98,9 @@ function dumpDB($db, $file, $useStatus = false, $splitFiles = true)
             );
         }
 
-        // We do not need history records.
-        if ($table == 'history') continue;
-
+        // Task reschedules, reassignment and transitions are required recovery data.
         $sql = 'SELECT * FROM ' . $table;
+        if ($table == 'history') $sql .= ' WHERE data_item_type = ' . DATA_ITEM_TASK;
 
         $index = 0;
         $db->query($sql);

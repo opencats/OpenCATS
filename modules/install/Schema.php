@@ -2383,6 +2383,67 @@ class CATSSchema
                 }
             ',
 
+            '399' => 'PHP:
+                $runTaskSQL = function ($sql) use ($db) {
+                    if (!$db->query($sql)) throw new RuntimeException("Unable to apply Task schema migration.");
+                };
+                $runTaskSQL("CREATE TABLE IF NOT EXISTS `task` (   `task_id` INT(11) NOT NULL AUTO_INCREMENT,   `title` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,   `description` TEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL,   `due_date` DATE DEFAULT NULL,   `priority` VARCHAR(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT \'normal\',   `status` VARCHAR(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT \'open\',   `purpose` VARCHAR(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT \'general\',   `assigned_to` INT(11) DEFAULT NULL,   `data_item_type` INT(11) DEFAULT NULL,   `data_item_id` INT(11) DEFAULT NULL,   `candidate_joborder_id` INT(11) DEFAULT NULL,   `created_by` INT(11) NOT NULL,   `date_created` DATETIME NOT NULL,   `date_modified` DATETIME NOT NULL,   `completed_by` INT(11) DEFAULT NULL,   `date_completed` DATETIME DEFAULT NULL,   PRIMARY KEY (`task_id`),   KEY `idx_task_assignee_status_due` (`assigned_to`, `status`, `due_date`),   KEY `idx_task_parent_status` (`data_item_type`, `data_item_id`, `status`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+                // An existing unrelated/partial table must never be mistaken for this schema.
+                $expected = array(
+                    "task_id" => array("int(11)", "NO", null),
+                    "title" => array("varchar(255)", "NO", null),
+                    "description" => array("text", "YES", null),
+                    "due_date" => array("date", "YES", null),
+                    "priority" => array("varchar(16)", "NO", "normal"),
+                    "status" => array("varchar(16)", "NO", "open"),
+                    "purpose" => array("varchar(32)", "NO", "general"),
+                    "assigned_to" => array("int(11)", "YES", null),
+                    "data_item_type" => array("int(11)", "YES", null),
+                    "data_item_id" => array("int(11)", "YES", null),
+                    "candidate_joborder_id" => array("int(11)", "YES", null),
+                    "created_by" => array("int(11)", "NO", null),
+                    "date_created" => array("datetime", "NO", null),
+                    "date_modified" => array("datetime", "NO", null),
+                    "completed_by" => array("int(11)", "YES", null),
+                    "date_completed" => array("datetime", "YES", null),
+                );
+                $found = array();
+                foreach ($db->getAllAssoc("SHOW FULL COLUMNS FROM task") as $column)
+                {
+                    // Newer MySQL omits the optional integer display width.
+                    if (strtolower($column["Type"]) === "int") $column["Type"] = "int(11)";
+                    $found[$column["Field"]] = $column;
+                }
+                foreach ($expected as $name => $definition)
+                {
+                    if (!isset($found[$name]) || strtolower($found[$name]["Type"]) !== $definition[0] ||
+                        $found[$name]["Null"] !== $definition[1] || $found[$name]["Default"] !== $definition[2])
+                        throw new RuntimeException("Existing Task column is incompatible: " . $name);
+                }
+                if (strpos($found["task_id"]["Extra"], "auto_increment") === false)
+                    throw new RuntimeException("Task identity must auto-increment.");
+                $table = $db->getAssoc("SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = \'task\'");
+                if (empty($table) || strcasecmp($table["ENGINE"], "InnoDB") !== 0)
+                    throw new RuntimeException("Task storage requires InnoDB.");
+                $expectedKeys = array(
+                    "PRIMARY" => "task_id",
+                    "idx_task_assignee_status_due" => "assigned_to,status,due_date",
+                    "idx_task_parent_status" => "data_item_type,data_item_id,status"
+                );
+                foreach ($expectedKeys as $name => $columns)
+                {
+                    $keys = $db->getAllAssoc("SELECT COLUMN_NAME, NON_UNIQUE FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = \'task\' AND INDEX_NAME = " . $db->makeQueryString($name) . " ORDER BY SEQ_IN_INDEX");
+                    if (empty($keys))
+                    {
+                        $definition = $name === "PRIMARY" ? "PRIMARY KEY" : "INDEX `" . $name . "`";
+                        $runTaskSQL("ALTER TABLE task ADD " . $definition . " (`" . str_replace(",", "`,`", $columns) . "`)");
+                    }
+                    elseif (implode(",", array_column($keys, "COLUMN_NAME")) !== $columns ||
+                        (int) $keys[0]["NON_UNIQUE"] !== ($name === "PRIMARY" ? 0 : 1))
+                        throw new RuntimeException("Existing Task index is incompatible: " . $name);
+                }
+            ',
+
         );
     }
 }

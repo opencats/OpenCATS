@@ -1014,6 +1014,30 @@ CREATE TABLE `tag` (
 
 /* Data for the table `tag` */
 
+/* Table structure for table `task` */
+
+CREATE TABLE `task` (
+  `task_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` TEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `due_date` DATE DEFAULT NULL,
+  `priority` VARCHAR(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'normal',
+  `status` VARCHAR(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'open',
+  `purpose` VARCHAR(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'general',
+  `assigned_to` INT(11) DEFAULT NULL,
+  `data_item_type` INT(11) DEFAULT NULL,
+  `data_item_id` INT(11) DEFAULT NULL,
+  `candidate_joborder_id` INT(11) DEFAULT NULL,
+  `created_by` INT(11) NOT NULL,
+  `date_created` DATETIME NOT NULL,
+  `date_modified` DATETIME NOT NULL,
+  `completed_by` INT(11) DEFAULT NULL,
+  `date_completed` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`task_id`),
+  KEY `idx_task_assignee_status_due` (`assigned_to`, `status`, `due_date`),
+  KEY `idx_task_parent_status` (`data_item_type`, `data_item_id`, `status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 /* Table structure for table `user` */
 
 CREATE TABLE `user` (
