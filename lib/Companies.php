@@ -41,6 +41,106 @@ class Companies
         $this->extraFields = new ExtraFields(DATA_ITEM_COMPANY);
     }
 
+    /**
+     * Current user's relationship responsibilities, independent of Task assignment.
+     * No cross-owner/unassigned queue is implied by this API. Results are derived
+     * on every call; callers must escape labels and date-format ISO values.
+     */
+    public function getRelationshipAttention()
+    {
+        if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() ||
+            $_SESSION['CATS']->getUserID() <= 0) return array();
+        // Do not turn an inaccessible source into a false "missing" warning.
+        foreach (array('companies.show', 'contacts.show', 'tasks.list', 'tasks.show',
+            'activity.listByViewDataGrid') as $action)
+            if ($_SESSION['CATS']->getAccessLevel($action) < ACCESS_LEVEL_READ) return array();
+
+        include_once(LEGACY_ROOT . '/lib/Tasks.php');
+        include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
+        $settings = new CompanySettings();
+        $policy = $settings->getAttention();
+        $labels = $settings->getAll();
+        $companies = $this->_db->getAllAssoc('SELECT company.company_id AS companyID,
+            company.name, company.owner, company.commercial_tier AS commercialTier,
+            company.relationship_status AS relationshipStatus FROM company
+            INNER JOIN user ON user.user_id = company.owner
+            WHERE company.owner = ' . (int) $_SESSION['CATS']->getUserID() .
+            ' AND user.access_level > ' . ACCESS_LEVEL_DISABLED);
+        $eligible = array();
+        foreach ($companies as $company)
+        {
+            $tier = $company['commercialTier'] ?? 'Unclassified';
+            $status = $company['relationshipStatus'] ?? 'Unclassified';
+            if (empty($policy['tiers'][$tier]['enabled']) || empty($policy['lifecycles'][$status])) continue;
+            $company['reviewDays'] = $policy['tiers'][$tier]['days'];
+            $company['tierLabel'] = CompanySettings::formatTier($company['commercialTier'], $labels);
+            $eligible[$company['companyID']] = $company;
+        }
+        if (!$eligible) return array();
+        $ids = array_keys($eligible);
+        $contacts = $this->_db->getAllAssoc('SELECT contact_id AS contactID, company_id AS companyID
+            FROM contact WHERE left_company = 0 AND company_id IN (' . implode(',', $ids) . ')');
+        $contactCompanies = array_column($contacts, 'companyID', 'contactID');
+        // One SQL-filtered collection; existing Tasks::canRead also checks pipeline context.
+        $tasks = (new Tasks())->getAll(array('relationshipCompanyIDs' => $ids,
+            'openOnly' => true, 'purpose' => 'relationship_follow_up'));
+        $byCompany = array();
+        foreach ($tasks as $task)
+        {
+            $companyID = $task['dataItemType'] == DATA_ITEM_COMPANY ? $task['dataItemID'] :
+                ($contactCompanies[$task['dataItemID']] ?? null);
+            if ($companyID !== null && isset($eligible[$companyID])) $byCompany[$companyID][] = $task;
+        }
+        $lastContacts = (new ActivityEntries())->getRelationshipContactDates($ids);
+        $today = DateUtility::getAdjustedDate('Y-m-d');
+        $todayDate = new DateTimeImmutable($today);
+        $results = array();
+        foreach ($eligible as $id => $company)
+        {
+            $end = $todayDate->modify('+' . $company['reviewDays'] . ' days')->format('Y-m-d');
+            $reasons = array();
+            $dueDates = array();
+            $commitments = array();
+            foreach ($byCompany[$id] ?? array() as $task)
+            {
+                $due = $task['dueDate'];
+                if (!is_string($due) || !preg_match('/^([1-9][0-9]{3})-([0-9]{2})-([0-9]{2})$/D', $due, $parts) ||
+                    !checkdate((int) $parts[2], (int) $parts[3], (int) $parts[1]) || $due > $end) continue;
+                $reason = $due < $today ? 'overdue_task' : ($due === $today ? 'due_today' : 'upcoming');
+                $reasons[$reason] = true;
+                if (!isset($dueDates[$reason]) || $due < $dueDates[$reason]) $dueDates[$reason] = $due;
+                $commitments[] = array('taskID' => $task['taskID'], 'title' => $task['title'],
+                    'dueDate' => $due, 'assignedTo' => $task['assignedTo']);
+            }
+            if (!$commitments) $reasons['no_next_action'] = true;
+            $lastContact = $lastContacts[$id] ?? null;
+            $contactDate = $lastContact === null ? null : DateUtility::getAdjustedDate('Y-m-d', strtotime($lastContact));
+            $age = $contactDate === null ? null : (int) (new DateTimeImmutable($contactDate))->diff($todayDate)->format('%r%a');
+            if ($age === null || $age > $company['reviewDays']) $reasons['stale_relationship'] = true;
+            $ordered = array();
+            foreach (array('overdue_task', 'due_today', 'no_next_action', 'stale_relationship', 'upcoming') as $reason)
+                if (isset($reasons[$reason])) $ordered[] = $reason;
+            if (!$ordered) continue;
+            $company['primaryReason'] = $ordered[0];
+            $company['reasons'] = $ordered;
+            $company['lastContact'] = $lastContact;
+            $company['contactAgeDays'] = $age;
+            $company['contactLabel'] = $lastContact === null ? 'No recorded contact' : 'Recorded conversation or meeting';
+            $company['contactEvidenceScope'] = 'Explicit Company-linked Activities only; Contact history attribution is unverified.';
+            $company['tasks'] = $commitments;
+            // Unknown contact age sorts before known dates; it is never assigned an age.
+            $company['sortDate'] = $dueDates[$ordered[0]] ?? $contactDate ?? '';
+            $results[] = $company;
+        }
+        $rank = array_flip(array('overdue_task', 'due_today', 'no_next_action', 'stale_relationship', 'upcoming'));
+        $tiers = array_flip(array('A', 'B', 'C', 'D', 'Unclassified'));
+        usort($results, function ($a, $b) use ($rank, $tiers) {
+            return array($rank[$a['primaryReason']], $tiers[$a['commercialTier'] ?? 'Unclassified'], $a['sortDate'], (int) $a['companyID']) <=>
+                array($rank[$b['primaryReason']], $tiers[$b['commercialTier'] ?? 'Unclassified'], $b['sortDate'], (int) $b['companyID']);
+        });
+        return $results;
+    }
+
 
     /**
      * Adds a company to the database and returns its company ID.

@@ -151,6 +151,32 @@ class SettingsUI extends UserInterface
         }
     }
 
+    private function relationshipAttention()
+    {
+        $settings = new CompanySettings();
+        $message = '';
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST')
+        {
+            if (!$_SESSION['CATS']->isCSRFTokenValid($_POST['csrfToken'] ?? null))
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid security token.');
+            try
+            {
+                $settings->setAttention($_POST['attention'] ?? null);
+                $message = 'Relationship attention settings saved.';
+            }
+            catch (InvalidArgumentException $e)
+            {
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, $e->getMessage());
+            }
+        }
+        $this->_template->assign('attention', $settings->getAttention());
+        $this->_template->assign('tierLabels', $settings->getAll());
+        $this->_template->assign('message', $message);
+        $this->_template->assign('active', $this);
+        $this->_template->assign('subActive', 'Administration');
+        $this->_template->display('./modules/settings/RelationshipAttention.tpl');
+    }
+
     private function companyClassification()
     {
         $settings = new CompanySettings();
@@ -283,6 +309,13 @@ class SettingsUI extends UserInterface
 
         switch ($action)
         {
+            case 'relationshipAttention':
+                if ($this->_realAccessLevel < ACCESS_LEVEL_SA ||
+                    $this->getUserAccessLevel('settings.relationshipAttention') < ACCESS_LEVEL_SA)
+                    CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Administrator access required.');
+                $this->relationshipAttention();
+                break;
+
             case 'sectors':
             case 'desks':
                 if ($this->_realAccessLevel < ACCESS_LEVEL_SA || $this->getUserAccessLevel('settings.' . $action) < ACCESS_LEVEL_SA)

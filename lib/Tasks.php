@@ -223,7 +223,8 @@ class Tasks
 
     /**
      * Filters: assignedTo (including NULL), dataItemType + dataItemID, status,
-     * priority, purpose and openOnly. Authorise before returning rows or counts;
+     * priority, purpose, openOnly and relationshipCompanyIDs (Company/current
+     * Contact parents). Authorise before returning rows or counts;
      * a future DataGrid must not paginate the unscoped intermediate result.
      */
     public function getAll($filters = array())
@@ -234,6 +235,15 @@ class Tasks
         {
             switch ($key)
             {
+                case 'relationshipCompanyIDs':
+                    if (!is_array($value) || !$value)
+                        throw new InvalidArgumentException('Supply Company IDs for relationship follow-up.');
+                    $ids = array_map(fn($id) => self::normalizeID($id, false), $value);
+                    $ids = implode(',', array_unique($ids));
+                    $where[] = '(data_item_type = ' . DATA_ITEM_COMPANY . ' AND data_item_id IN (' . $ids .
+                        ') OR data_item_type = ' . DATA_ITEM_CONTACT . ' AND data_item_id IN
+                        (SELECT contact_id FROM contact WHERE company_id IN (' . $ids . ') AND left_company = 0))';
+                    break;
                 case 'assignedTo':
                 case 'dataItemID':
                 case 'dataItemType':

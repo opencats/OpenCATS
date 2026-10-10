@@ -519,6 +519,40 @@ class ActivityEntries
     }
 
     /**
+     * Explicit Company attribution only. getAllByCompany() rolls Contact history
+     * through its current employer, which cannot establish historical attribution.
+     * Email has no direct/bulk or engagement outcome; it cannot prove contact.
+     */
+    public function getRelationshipContactDates($companyIDs)
+    {
+        if (!is_array($companyIDs)) throw new InvalidArgumentException('Invalid Company IDs.');
+        if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() ||
+            $_SESSION['CATS']->getUserID() <= 0 ||
+            $_SESSION['CATS']->getAccessLevel('companies.show') < ACCESS_LEVEL_READ ||
+            $_SESSION['CATS']->getAccessLevel('activity.listByViewDataGrid') < ACCESS_LEVEL_READ)
+            return array();
+        $ids = array();
+        foreach ($companyIDs as $id)
+        {
+            if ((!is_int($id) && !is_string($id)) || !preg_match('/^[1-9][0-9]{0,9}$/D', (string) $id) ||
+                (float) $id > 2147483647) throw new InvalidArgumentException('Invalid Company ID.');
+            $ids[] = (int) $id;
+        }
+        if (!$ids) return array();
+        $rows = $this->_db->getAllAssoc('SELECT activity.data_item_id AS companyID,
+            MAX(activity.date_occurred) AS lastContact FROM activity
+            INNER JOIN company ON company.company_id = activity.data_item_id
+            WHERE activity.data_item_type = ' . DATA_ITEM_COMPANY . '
+            AND activity.data_item_id IN (' . implode(',', array_unique($ids)) . ')
+            AND activity.type IN (' . ACTIVITY_CALL_TALKED . ', ' . ACTIVITY_MEETING . ')
+            AND activity.date_occurred >= company.date_created
+            AND activity.date_occurred > \'1000-01-01 00:00:00\'
+            AND activity.date_occurred <= NOW()
+            GROUP BY activity.data_item_id');
+        return array_column($rows, 'lastContact', 'companyID');
+    }
+
+    /**
      * Returns all activity entries for contacts belonging to a company.
      *
      * @param integer Company ID.

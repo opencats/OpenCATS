@@ -190,6 +190,13 @@ class Contacts
         $phoneOther, $address, $address2, $city, $state, $zip, $isHot,
         $leftCompany, $notes, $owner, $email, $emailAddress, $country = false)
     {
+        if ((!is_int($contactID) && !is_string($contactID)) || !ctype_digit((string) $contactID) ||
+            (int) $contactID <= 0 || (float) $contactID > 2147483647 ||
+            (!is_int($companyID) && !is_string($companyID) && $companyID !== null)) return false;
+        if (in_array($companyID, array(null, '', 0, '0', -1, '-1'), true)) $companyID = -1;
+        elseif (!ctype_digit((string) $companyID) || (float) $companyID > 2147483647 ||
+            !$this->_db->getAssoc('SELECT company_id FROM company WHERE company_id = ' . (int) $companyID)) return false;
+
         /* Get the department ID of the selected department. */
         $departmentID = $this->getDepartmentIDByName(
             $department, $companyID, $this->_db
@@ -258,19 +265,53 @@ class Contacts
             $this->_db->makeQueryInteger($contactID)
         );
 
-        $preHistory = $this->get($contactID);
-        $queryResult = $this->_db->query($sql);
-        $postHistory = $this->get($contactID);
-
-        if (!$queryResult)
+        if (!$this->_db->beginTransaction()) return false;
+        try
         {
-            return false;
-        }
+            // Lock before comparing Companies so a repeated save cannot log the same transfer twice.
+            $locked = $this->_db->getAssoc('SELECT contact_id FROM contact WHERE contact_id = ' .
+                $this->_db->makeQueryInteger($contactID) . ' FOR UPDATE');
+            if (!$locked)
+            {
+                $this->_db->rollbackTransaction();
+                return false;
+            }
+            $preHistory = $this->get($contactID);
+            if (!$this->_db->query($sql))
+            {
+                $this->_db->rollbackTransaction();
+                return false;
+            }
+            $postHistory = $this->get($contactID);
+            $history = new History();
+            if (!$history->storeHistoryChanges(DATA_ITEM_CONTACT, $contactID, $preHistory, $postHistory))
+                throw new RuntimeException('Unable to record Contact changes.');
 
-        $history = new History();
-        $history->storeHistoryChanges(
-            DATA_ITEM_CONTACT, $contactID, $preHistory, $postHistory
-        );
+            $previousCompanyID = max(0, (int) $preHistory['companyID']);
+            $newCompanyID = max(0, (int) $postHistory['companyID']);
+            if ($previousCompanyID !== $newCompanyID)
+            {
+                // Store the names as plain text so later Company renames do not rewrite the event.
+                $previousName = $preHistory['companyName'] ?? ('Company #' . $previousCompanyID);
+                $newName = $postHistory['companyName'] ?? ('Company #' . $newCompanyID);
+                if (!$previousCompanyID) $message = 'Contact assigned to "' . $newName . '".';
+                elseif (!$newCompanyID) $message = 'Contact removed from "' . $previousName . '" (now Unassigned).';
+                else $message = 'Contact transferred from "' . $previousName . '" to "' . $newName . '".';
+                include_once(LEGACY_ROOT . '/lib/ActivityEntries.php');
+                if ((new ActivityEntries())->add($contactID, DATA_ITEM_CONTACT, ACTIVITY_OTHER,
+                    $message, $_SESSION['CATS']->getUserID()) <= 0)
+                {
+                    $this->_db->rollbackTransaction();
+                    return false;
+                }
+            }
+            $this->_db->commitTransaction();
+        }
+        catch (Throwable $e)
+        {
+            $this->_db->rollbackTransaction();
+            throw $e;
+        }
 
         if (!empty($emailAddress))
         {

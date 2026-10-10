@@ -32,6 +32,14 @@
                                 </div>
                             </div></div>
                             <?php endif; ?>
+                            <?php if ($_SESSION['CATS']->getRealAccessLevel() >= ACCESS_LEVEL_SA && $this->getUserAccessLevel('settings.relationshipAttention') >= ACCESS_LEVEL_SA): ?>
+                            <div class="list-group-item"><div class="row g-2">
+                                <div class="col-sm-4 col-lg-3 fw-semibold">
+                                    <a href="<?php echo Template::escapeAttr(CATSUtility::getIndexName()); ?>?m=settings&amp;a=relationshipAttention">Relationship attention</a>
+                                </div>
+                                <div class="col-sm-8 col-lg-9">Configure Company monitoring eligibility and tier review intervals.</div>
+                            </div></div>
+                            <?php endif; ?>
                             <?php if ($_SESSION['CATS']->getRealAccessLevel() >= ACCESS_LEVEL_SA && $this->getUserAccessLevel('settings.companyClassification') >= ACCESS_LEVEL_SA): ?>
                             <div class="list-group-item"><div class="row g-2">
                                 <div class="col-sm-4 col-lg-3 fw-semibold">
