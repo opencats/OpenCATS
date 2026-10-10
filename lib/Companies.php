@@ -126,7 +126,7 @@ class Companies
             $company['lastContact'] = $lastContact;
             $company['contactAgeDays'] = $age;
             $company['contactLabel'] = $lastContact === null ? 'No recorded contact' : 'Recorded conversation or meeting';
-            $company['contactEvidenceScope'] = 'Explicit Company-linked Activities only; Contact history attribution is unverified.';
+            $company['contactEvidenceScope'] = 'Qualifying Company Activities and Activities with current Company Contacts; historical employer attribution is not retained.';
             $company['tasks'] = $commitments;
             // Unknown contact age sorts before known dates; it is never assigned an age.
             $company['sortDate'] = $dueDates[$ordered[0]] ?? $contactDate ?? '';

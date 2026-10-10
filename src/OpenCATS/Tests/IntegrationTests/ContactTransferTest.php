@@ -130,17 +130,19 @@ class ContactTransferTest extends DatabaseTestCase
         self::assertSame(array(), $this->activities());
     }
 
-    public function testTransferDoesNotChangeConservativeRelationshipEvidenceOrCreateTasks(): void
+    public function testTransferNoteIsExcludedWhileExistingContactEvidenceFollowsCurrentCompany(): void
     {
         $this->db->query('INSERT INTO activity (data_item_type, data_item_id, type, date_occurred) VALUES (' . DATA_ITEM_COMPANY .
             ', ' . $this->companyA . ', ' . ACTIVITY_CALL_TALKED . ', DATE_SUB(NOW(), INTERVAL 30 DAY))');
-        (new \ActivityEntries())->add($this->contact, DATA_ITEM_CONTACT, ACTIVITY_MEETING, 'Old Contact meeting', 1);
+        $this->db->query('INSERT INTO activity (data_item_type, data_item_id, type, date_occurred) VALUES (' . DATA_ITEM_CONTACT .
+            ', ' . $this->contact . ', ' . ACTIVITY_MEETING . ', DATE_SUB(NOW(), INTERVAL 2 DAY))');
         $companies = new \Companies();
         $before = array_column($companies->getRelationshipAttention(), null, 'companyID');
         self::assertTrue($this->updateContact($this->companyB));
         $after = array_column($companies->getRelationshipAttention(), null, 'companyID');
-        self::assertSame($before[$this->companyA]['lastContact'], $after[$this->companyA]['lastContact']);
-        self::assertNull($after[$this->companyB]['lastContact']);
+        self::assertSame(30, $after[$this->companyA]['contactAgeDays']);
+        self::assertSame($before[$this->companyA]['lastContact'], $after[$this->companyB]['lastContact']);
+        self::assertSame(2, $after[$this->companyB]['contactAgeDays'], 'The new transfer note is not contact evidence.');
         self::assertSame($before[$this->companyB]['contactEvidenceScope'], $after[$this->companyB]['contactEvidenceScope']);
         self::assertSame(array(), $this->db->getAllAssoc('SELECT * FROM task'));
         self::assertSame((string) ACTIVITY_OTHER, (string) $this->activities()[0]['type']);

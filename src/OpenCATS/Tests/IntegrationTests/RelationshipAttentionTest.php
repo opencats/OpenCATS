@@ -142,7 +142,6 @@ class RelationshipAttentionTest extends DatabaseTestCase
     {
         $company = $this->company();
         $contact = $this->contact($company);
-        $this->activity($contact, ACTIVITY_CALL_TALKED, -1, DATA_ITEM_CONTACT);
         foreach (array(ACTIVITY_CALL, ACTIVITY_EMAIL, ACTIVITY_OTHER, ACTIVITY_CALL_LVM, ACTIVITY_CALL_MISSED, ACTIVITY_STATUS_CHANGE) as $type)
             $this->activity($company, $type, -1);
         self::assertNull($this->rows()[$company]['lastContact']);
@@ -166,6 +165,59 @@ class RelationshipAttentionTest extends DatabaseTestCase
         self::assertSame(array('no_next_action', 'stale_relationship'), $this->rows()[$company]['reasons']);
     }
 
+
+    public function testCurrentContactsCombineWithCompanyEvidenceAndFollowReassignment(): void
+    {
+        $a = $this->company(); $b = $this->company(); $unknown = $this->company();
+        $contact = $this->contact($a); $second = $this->contact($a); $left = $this->contact($a, 1);
+        foreach (array(ACTIVITY_CALL, ACTIVITY_EMAIL, ACTIVITY_OTHER, ACTIVITY_CALL_LVM, ACTIVITY_CALL_MISSED, ACTIVITY_STATUS_CHANGE) as $type)
+            $this->activity($contact, $type, 0, DATA_ITEM_CONTACT);
+        $this->activity($left, ACTIVITY_MEETING, 0, DATA_ITEM_CONTACT);
+        self::assertNull($this->rows()[$a]['lastContact']);
+        self::assertNull($this->rows()[$a]['contactAgeDays']);
+        $this->activity($contact, ACTIVITY_CALL_TALKED, -15, DATA_ITEM_CONTACT);
+        self::assertSame(15, $this->rows()[$a]['contactAgeDays']);
+        self::assertContains('stale_relationship', $this->rows()[$a]['reasons']);
+        $this->activity($second, ACTIVITY_MEETING, -14, DATA_ITEM_CONTACT);
+        self::assertSame(14, $this->rows()[$a]['contactAgeDays']);
+        self::assertNotContains('stale_relationship', $this->rows()[$a]['reasons']);
+        $this->activity($a, ACTIVITY_MEETING, -10);
+        self::assertSame(10, $this->rows()[$a]['contactAgeDays']);
+        $this->activity($contact, ACTIVITY_MEETING, -2, DATA_ITEM_CONTACT);
+        self::assertSame(2, $this->rows()[$a]['contactAgeDays']);
+        self::assertNull($this->rows()[$b]['lastContact'], 'Unrelated Company must not receive evidence.');
+        $this->db->query("UPDATE contact SET company_id = $b WHERE contact_id = $contact");
+        $rows = (new \Companies())->getRelationshipAttention();
+        self::assertCount(3, $rows);
+        self::assertCount(3, array_unique(array_column($rows, 'companyID')));
+        self::assertSame(10, $this->rows()[$a]['contactAgeDays']);
+        self::assertSame(2, $this->rows()[$b]['contactAgeDays']);
+        self::assertNull($this->rows()[$unknown]['lastContact']);
+        self::assertStringContainsString('current Company Contacts', $this->rows()[$b]['contactEvidenceScope']);
+    }
+
+    public function testInvalidAndFutureDatesCannotSupplyEitherEvidenceSource(): void
+    {
+        $company = $this->company(); $contact = $this->contact($company);
+        $mode = $this->db->getAssoc('SELECT @@SESSION.sql_mode AS mode')['mode'];
+        $this->db->query("SET SESSION sql_mode = 'ALLOW_INVALID_DATES'");
+        try
+        {
+            foreach (array(DATA_ITEM_COMPANY => $company, DATA_ITEM_CONTACT => $contact) as $parent => $id)
+            {
+                foreach (array('0000-00-00 00:00:00', '1000-01-01 00:00:00', '2025-00-10 00:00:00',
+                    '2025-02-00 00:00:00', '2025-02-31 00:00:00', '2019-12-31 23:59:59', $this->date(1) . ' 00:00:00') as $date)
+                    $this->db->query("INSERT INTO activity (data_item_id, data_item_type, type, date_occurred) VALUES ($id, $parent, " .
+                        ACTIVITY_MEETING . ', ' . $this->db->makeQueryString($date) . ')');
+            }
+        }
+        finally { $this->db->query('SET SESSION sql_mode = ' . $this->db->makeQueryString($mode)); }
+        self::assertNull($this->rows()[$company]['lastContact']);
+        self::assertNull($this->rows()[$company]['contactAgeDays']);
+        $this->activity($contact, ACTIVITY_CALL_TALKED, -1, DATA_ITEM_CONTACT);
+        self::assertSame(1, $this->rows()[$company]['contactAgeDays']);
+    }
+
     public function testReasonTierDateAndStableIDOrderingWithoutDuplicates(): void
     {
         $b = $this->company('B'); $a = $this->company(); $aEarlier = $this->company();
@@ -185,12 +237,19 @@ class RelationshipAttentionTest extends DatabaseTestCase
         $own = $this->company(); $this->company('A', 'Client', -1);
         $this->db->query("INSERT INTO user (user_name, access_level) VALUES ('disabled-attention', 0)");
         $disabled = (int) $this->db->getLastInsertID();
+        $this->db->query("INSERT INTO user (user_name, access_level) VALUES ('other-attention', 400)");
+        $otherOwner = (int) $this->db->getLastInsertID();
+        $otherCompany = $this->company('A', 'Client', $otherOwner);
+        $this->activity($this->contact($otherCompany), ACTIVITY_MEETING, -1, DATA_ITEM_CONTACT);
+        self::assertSame(array(), (new \ActivityEntries())->getRelationshipContactDates(array($otherCompany)));
         $this->company('A', 'Client', $disabled);
         self::assertSame(array($own), array_map('intval', array_keys($this->rows())));
         foreach (array('companies.show', 'contacts.show', 'tasks.list', 'tasks.show', 'activity.listByViewDataGrid') as $key)
         {
             $this->overrides = array($key => 0);
             self::assertSame(array(), $this->rows());
+            if (in_array($key, array('companies.show', 'contacts.show', 'activity.listByViewDataGrid')))
+                self::assertSame(array(), (new \ActivityEntries())->getRelationshipContactDates(array($own)));
         }
         $this->overrides = array('settings.relationshipAttention' => 0);
         try { (new \CompanySettings())->setAttention(\CompanySettings::getAttentionDefaults()); self::fail('Denied action accepted'); }

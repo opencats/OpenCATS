@@ -20,13 +20,14 @@ are implemented. No dashboard, recruitment warnings, automatic Tasks,
 notifications, lifecycle changes, acknowledgement/snooze or persisted derived
 flags were added.
 
-**Normal Contact Activity logging cannot safely refresh Company recency with
-existing stored attribution.** The implementation excludes that unverified
-history. It can derive recency from existing explicitly Company-linked Activity
-records only. This is a material source limitation, not evidence that accounts
-have never been contacted. Do not present this slice as complete operational
-Company-contact capture or enable a dashboard without addressing/disclosing it.
-The exact unsupported path and safe boundary are recorded below.
+**Stage 4A-2 decision, 10 October 2026:** ordinary Contact Activities now supply
+Company recency through each Contact's current Company, following
+`ActivityEntries::getAllByCompany()`. The maintainer explicitly accepts that an
+employer transfer can move earlier interaction evidence to the new Company.
+Contacts marked `left_company = 1` are excluded from recency, although the broader
+Company Activity display includes them. Explicit Company-linked evidence remains
+supported. No historical employer reconstruction is attempted. Absence of a
+qualifying Activity does not prove a Company has never been contacted.
 
 ## Approved defaults and evaluation
 
@@ -84,42 +85,41 @@ current Contact parents before the existing authorization pass. No parallel
 Task collection, repository, ACL, paging, rule engine or Activity implementation
 was created. Existing Task filter callers retain their behaviour.
 
-## Actual Activity evidence and attribution blocker
+## Activity evidence and accepted current-employer attribution
 
-The source stores type 500 **Call (Talked)**, 300 **Meeting**, 200 **Email**,
-100 **Not reached**, 600 **Call (LVM)**, 700 **Call (Missed)**, 400 **Other** and
-800 **Status Change**. Only 500 and 300 qualify. Meeting means a recorded meeting,
-not independently verified attendance. Email has no structured direct/bulk,
-reply or genuine-engagement outcome, so it is excluded. Notes are never parsed
-for invented evidence, and Task state/history never counts as contact.
+Only Call (Talked), type 500, and Meeting, type 300, qualify. Email (200), Not
+reached (100), Other (400), voicemail (600), missed call (700) and Status Change
+(800) do not. Meeting means a recorded meeting, not independently verified
+attendance. Generic Email has no reliable engagement/bulk distinction. Notes,
+Tasks and Task completion never establish contact; transfer notes remain Other.
 
-`activity` has a typed parent and optional Job Order but no historical Company
-snapshot. `ActivityEntries::getAllByCompany()` joins `contact.company_id` at read
-time, so moving an employer rewrites the apparent historical roll-up. It remains
-unchanged for existing callers but is unsuitable for verified recency.
+`ActivityEntries::getRelationshipContactDates()` aggregates two sources in one
+query: explicit `DATA_ITEM_COMPANY` Activities and `DATA_ITEM_CONTACT` Activities
+joined through `contact.company_id`, with `contact.left_company = 0`. Each source
+returns a maximum per requested Company, then UNION ALL and an outer MAX select
+one latest date per Company. The same current-owner Company scope restricts both
+branches; no complete histories are loaded and no per-Company query is issued.
 
-`Contacts::update()` can log Company changes through generic History, but Contact
-creation does not capture an initial Company snapshot, and imports/direct updates
-and retained history cannot guarantee a complete employment timeline. Absence
-of a recorded move does not prove continuous association. Job Order's current
-Company is also not a substitute for historical relationship attribution.
+Both sources retain the Company creation-date lower bound and exclude sentinel,
+invalid calendar and future timestamps. Existing DateUtility timezone conversion,
+calendar-day ages and strict greater-than staleness boundaries are unchanged.
+Unknown contact has NULL date/age. `contactEvidenceScope` identifies both sources
+and explicitly states that historical employer attribution is not retained.
 
-`ActivityEntries::getRelationshipContactDates()` therefore only uses explicit
-`DATA_ITEM_COMPANY` parent records of qualifying types, joined to existing
-Companies. It ignores sentinel dates, future timestamps and evidence before
-Company creation. Normal UI supports Candidate/Contact Activities; moreover,
-`ActivityEntries::add()` with a Company reaches `_updateDataItemModified()` and
-calls nonexistent `Companies::updateModified()` **after the insert**. That existing
-unsupported write path was discovered by focused tests, not changed or endorsed.
-Tests seed explicit legacy/source Activity fixtures directly; they do not claim
-that native Company Activity creation works.
+The association follows the existing `getAllByCompany()` convention. That display
+query remains unchanged and still includes departed Contacts; recency deliberately
+requires current Contacts, just like Stage 4A's follow-up Task matching. Moving a
+Contact can cause older calls/meetings to contribute to the new Company (subject
+to the date safeguards). This is an intentional maintainer-approved trade-off,
+not a claim that the interaction happened during that employment. Transfer
+logging provides a human-readable record but does not set attribution boundaries.
 
-A separately reviewed factual-attribution change is needed for useful ongoing
-Company recency from normal Contact logging (including moved/backdated contacts).
-No schema snapshot, history reconstruction, backfill or new logging workflow was
-invented here. With ordinary Contact-only source data, `lastContact` stays NULL;
-results explicitly include `contactEvidenceScope` explaining the exclusion.
-Stage 5 consumers must retain that limitation beside No recorded contact.
+The existing direct Company Activity-add path still calls missing
+`Companies::updateModified()` after insertion and is not a supported capture
+workflow. Existing explicitly Company-linked records remain readable evidence;
+normal recruiter Contact logging now contributes without additional workflow.
+More sophisticated attribution requires a demonstrated business requirement and
+separate approval. No migration, snapshot, employment period or backfill is added.
 
 ## Permissions and result contract
 
@@ -146,7 +146,7 @@ configured date presentation. No rendered dashboard or count endpoint exists.
 
 - `lib/CompanySettings.php`: defaults, validation, native settings persistence.
 - `lib/Companies.php`: owned, authorised derived attention results.
-- `lib/ActivityEntries.php`: conservative explicit Company contact evidence query.
+- `lib/ActivityEntries.php`: grouped explicit Company and current-Contact evidence query.
 - `lib/Tasks.php`: SQL filter for eligible Company/current Contact parents.
 - `modules/settings/SettingsUI.php`, `Administration.tpl`,
   `RelationshipAttention.tpl`: administrator route, navigation and native form.
@@ -210,8 +210,8 @@ acceptance check. Existing Add/Edit/Show/list/ExtraFields pages were not changed
 ## Query costs and remaining verification
 
 For a nonempty owner scope: six collection queries (policy, labels, owned
-Companies, current Contacts, filtered open relationship Tasks, grouped explicit
-Company Activities), plus the existing Task backend's parent/pipeline authorization
+Companies, current Contacts, filtered open relationship Tasks, grouped Company/current-Contact
+Activities), plus the existing Task backend's parent/pipeline authorization
 queries. No per-Company Activity lookup, repeated full Task collection, or duplicate
 Company result. Task parent checks can still repeat for a shared parent; this is
 an existing backend cost, not a persistent authorization cache. Policy writes use
@@ -225,11 +225,11 @@ before Stage 5; no production-scale benchmark is claimed.
 
 Maintainer checks: live Settings navigation, valid save/validation recovery and
 expired-session behaviour; real ACL categories; configured timezone boundaries;
-large-owner performance; and the complete source-attribution limitation above.
+large-owner performance; and the accepted current-employer attribution limitation above.
 Full application/CI/runtime gates remain separate. Do not start Stage 4B or Stage 5
 as part of this change.
 
-## Stage 4A-1 revised scope — 10 October 2026
+## Stage 4A-1 checkpoint — superseded recency exclusion
 
 The maintainer superseded the proposed historical-attribution design with simple
 Contact transfer logging. The unfinished attribution columns/migration, employer
@@ -242,12 +242,16 @@ the Company actually changes. Its plain-text description snapshots the old/new
 Company names; assignment/removal have distinct wording. Normal Contact Activity
 history and the existing current-Company Activity query remain unchanged.
 
-This improves recruiter visibility only. It **does not resolve historical Company
-Activity attribution**: transfers, and all other Contact Activities, remain
-excluded by Stage 4A's conservative Company-recency query. Its evidence-scope
-metadata, configuration, Task matching and reason ordering are unchanged. No Task,
-notification, schema change, special timeline or new Activity retrieval path is
-introduced. Future attribution work requires separate scope approval.
+Transfer logging **does not resolve historical Company Activity attribution**.
+At the Stage 4A-1 checkpoint all Contact evidence was excluded; Stage 4A-2
+supersedes that exclusion with the accepted current-employer rule above.
+Transfer notes themselves still do not count. Configuration, Task matching and
+reason ordering remain unchanged. No Task, notification, schema change or
+special timeline is introduced. Future historical attribution work requires
+separate scope approval.
 
 See `docs/crm/stage-4a-1-contact-transfers.md` for the simplified implementation,
 dual-runtime focused verification, exact removals and remaining limitations.
+
+See `docs/crm/stage-4a-2-current-company-recency.md` for the revised query,
+combined verification and synthetic SQL performance evidence.

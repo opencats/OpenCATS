@@ -519,8 +519,8 @@ class ActivityEntries
     }
 
     /**
-     * Explicit Company attribution only. getAllByCompany() rolls Contact history
-     * through its current employer, which cannot establish historical attribution.
+     * Like getAllByCompany(), Contact evidence follows the current employer.
+     * Departed Contacts are excluded; historical employer attribution is not stored.
      * Email has no direct/bulk or engagement outcome; it cannot prove contact.
      */
     public function getRelationshipContactDates($companyIDs)
@@ -529,6 +529,7 @@ class ActivityEntries
         if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() ||
             $_SESSION['CATS']->getUserID() <= 0 ||
             $_SESSION['CATS']->getAccessLevel('companies.show') < ACCESS_LEVEL_READ ||
+            $_SESSION['CATS']->getAccessLevel('contacts.show') < ACCESS_LEVEL_READ ||
             $_SESSION['CATS']->getAccessLevel('activity.listByViewDataGrid') < ACCESS_LEVEL_READ)
             return array();
         $ids = array();
@@ -539,16 +540,27 @@ class ActivityEntries
             $ids[] = (int) $id;
         }
         if (!$ids) return array();
-        $rows = $this->_db->getAllAssoc('SELECT activity.data_item_id AS companyID,
-            MAX(activity.date_occurred) AS lastContact FROM activity
-            INNER JOIN company ON company.company_id = activity.data_item_id
-            WHERE activity.data_item_type = ' . DATA_ITEM_COMPANY . '
-            AND activity.data_item_id IN (' . implode(',', array_unique($ids)) . ')
+        $scope = 'company.company_id IN (' . implode(',', array_unique($ids)) . ')
+            AND company.owner = ' . (int) $_SESSION['CATS']->getUserID() . '
             AND activity.type IN (' . ACTIVITY_CALL_TALKED . ', ' . ACTIVITY_MEETING . ')
             AND activity.date_occurred >= company.date_created
             AND activity.date_occurred > \'1000-01-01 00:00:00\'
             AND activity.date_occurred <= NOW()
-            GROUP BY activity.data_item_id');
+            AND DAYOFMONTH(activity.date_occurred) BETWEEN 1 AND DAYOFMONTH(LAST_DAY(activity.date_occurred))';
+        $rows = $this->_db->getAllAssoc('SELECT companyID, MAX(lastContact) AS lastContact FROM (
+            SELECT company.company_id AS companyID, MAX(activity.date_occurred) AS lastContact
+            FROM company INNER JOIN activity ON activity.data_item_id = company.company_id
+                AND activity.data_item_type = ' . DATA_ITEM_COMPANY . '
+            WHERE ' . $scope . '
+            GROUP BY company.company_id
+            UNION ALL
+            SELECT company.company_id AS companyID, MAX(activity.date_occurred) AS lastContact
+            FROM company INNER JOIN contact ON contact.company_id = company.company_id AND contact.left_company = 0
+            INNER JOIN activity ON activity.data_item_id = contact.contact_id
+                AND activity.data_item_type = ' . DATA_ITEM_CONTACT . '
+            WHERE ' . $scope . '
+            GROUP BY company.company_id
+            ) AS contact_dates GROUP BY companyID');
         return array_column($rows, 'lastContact', 'companyID');
     }
 
