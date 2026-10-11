@@ -75,6 +75,27 @@ class RelationshipAttentionTest extends DatabaseTestCase
         return array_column((new \Companies())->getRelationshipAttention(), null, 'companyID');
     }
 
+    public function testRecruitmentWarningAdapterPreservesRelationshipEvidenceAndCoverage(): void
+    {
+        $company = $this->company();
+        $tasks = new \Tasks();
+        $get = fn() => array_values(array_filter($tasks->getRecruitmentWarnings()['warnings'], fn($row) => $row['code'] === 'W07'));
+        self::assertSame('uncovered', $get()[0]['coverage']);
+        $this->task($company, 1, array('purpose' => 'general'));
+        self::assertSame('uncovered', $get()[0]['coverage']);
+        $id = $this->task($company, 1);
+        self::assertSame('covered', $get()[0]['coverage']);
+        self::assertSame((new \Companies())->getRelationshipAttention()[0], $get()[0]['relationshipAttention']);
+        self::assertContains('stale_relationship', $get()[0]['relationshipAttention']['reasons']);
+        $tasks->update($id, array('dueDate' => $this->date(-1)));
+        self::assertSame('overdue_follow_up', $get()[0]['coverage']);
+        $tasks->update($id, array('status' => 'completed'));
+        self::assertSame('uncovered', $get()[0]['coverage']);
+        $this->overrides['companies.show'] = ACCESS_LEVEL_DISABLED;
+        self::assertSame(array(), $get());
+        self::assertSame(0, $tasks->getRecruitmentWarnings()['counts']['W07']);
+    }
+
     public function testEligibilitySettingsValidationAndImmediateRecalculation(): void
     {
         $settings = new \CompanySettings();

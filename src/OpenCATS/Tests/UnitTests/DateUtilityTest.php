@@ -23,6 +23,39 @@ include_once(LEGACY_ROOT . '/lib/DateUtility.php');   /* Depends on StringUtilit
 
 class DateUtilityTest extends TestCase
 {
+    public function testWarningCalendarAndWorkingDays(): void
+    {
+        foreach (array(
+            array('2026-10-09', '2026-10-12', 1), // Friday to Monday
+            array('2026-10-09', '2026-10-11', 0),
+            array('2026-10-10', '2026-10-12', 1),
+            array('2026-10-09', '2026-10-13', 2),
+            array('2026-10-09', '2026-10-14', 3),
+            array('2026-10-09', '2026-10-16', 5),
+            array('2026-10-09', '2026-10-19', 6),
+            array('2026-10-30', '2026-11-02', 1),
+            array('2026-12-31', '2027-01-04', 2), // No holiday calendar
+            array('2026-10-12', '2026-10-09', 0),
+            array('2026-10-09', '2026-10-09', 0),
+            array(null, '2026-10-09', null),
+            array('', '2026-10-09', null),
+            array('2026-02-30', '2026-10-09', null),
+            array('2026-10-09', '0000-00-00', null),
+            array(array(), '2026-10-09', null)
+        ) as $case)
+            self::assertSame($case[2], DateUtility::getWorkingDaysBetween($case[0], $case[1]));
+        self::assertSame(3, DateUtility::getCalendarDaysBetween('2026-10-09', '2026-10-12'));
+        self::assertSame(-3, DateUtility::getCalendarDaysBetween('2026-10-12', '2026-10-09'));
+        $timezone = date_default_timezone_get();
+        try
+        {
+            date_default_timezone_set('Europe/London');
+            self::assertSame(3, DateUtility::getCalendarDaysBetween('2026-03-27', '2026-03-30'));
+            self::assertSame(1, DateUtility::getWorkingDaysBetween('2026-03-27', '2026-03-30'));
+        }
+        finally { date_default_timezone_set($timezone); }
+    }
+
     /* Tests for getStartingWeekday(). */
     function testGetStartingWeekday()
     {

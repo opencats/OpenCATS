@@ -48,6 +48,51 @@ class JobOrders
     }
 
 
+    /** W08 uses existing administrator privileges and ordinary Job visibility. */
+    public function getUnassignedWorkWarnings()
+    {
+        if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() ||
+            $_SESSION['CATS']->getUserID() <= 0 ||
+            $_SESSION['CATS']->getRealAccessLevel() < ACCESS_LEVEL_SA ||
+            $_SESSION['CATS']->getAccessLevel('joborders.list') < ACCESS_LEVEL_READ ||
+            $_SESSION['CATS']->getAccessLevel('joborders.edit') < ACCESS_LEVEL_EDIT ||
+            $_SESSION['CATS']->getAccessLevel('joborders.show') < ACCESS_LEVEL_READ) return array();
+        // Job statuses are stored identifiers, not numeric pipeline statuses.
+        // Custom statuses have no authoritative actionable mapping. Fail closed.
+        if (!in_array('Active', JobOrderStatuses::getAll()['Open'] ?? array(), true)) return array();
+        $hidden = $_SESSION['CATS']->getAccessLevel('joborders.hidden') >= ACCESS_LEVEL_SA ? '' :
+            ' AND (j.is_admin_hidden IS NULL OR j.is_admin_hidden <> 1)';
+        $lastID = 0;
+        $result = array();
+        do
+        {
+            $rows = $this->_db->getAllAssoc('SELECT j.joborder_id AS jobOrderID, j.title, j.owner,
+                j.recruiter, j.is_hot AS isHot, owner_user.user_id AS activeOwner,
+                recruiter_user.user_id AS activeRecruiter FROM joborder j
+                LEFT JOIN user owner_user ON owner_user.user_id = j.owner AND owner_user.access_level > ' . ACCESS_LEVEL_DISABLED . '
+                LEFT JOIN user recruiter_user ON recruiter_user.user_id = j.recruiter AND recruiter_user.access_level > ' . ACCESS_LEVEL_DISABLED . '
+                WHERE j.status = ' . $this->_db->makeQueryString('Active') . $hidden . '
+                AND (owner_user.user_id IS NULL OR recruiter_user.user_id IS NULL)
+                AND j.joborder_id > ' . $lastID . ' ORDER BY j.joborder_id LIMIT 200');
+            foreach ($rows as $job)
+            {
+                $lastID = (int) $job['jobOrderID'];
+                foreach (array('owner' => 'activeOwner', 'recruiter' => 'activeRecruiter') as $role => $active)
+                {
+                    if ($job[$active] !== null) continue;
+                    $result[] = array('code' => 'W08', 'identity' => 'W08:joborder:' . $lastID . ':' . $role,
+                        'entityType' => DATA_ITEM_JOBORDER, 'entityID' => $lastID, 'title' => $job['title'],
+                        'reason' => 'invalid_' . $role, 'responsibility' => $role,
+                        'sourceDate' => null, 'ageDays' => null, 'responsibleUserID' => $job[$role],
+                        'routing' => 'joborders_administrator', 'taskID' => null, 'jobOrderID' => $lastID,
+                        'coverage' => 'uncovered', 'priority' => $job['isHot'] ? 'high' : 'normal',
+                        'sortGroup' => 1, 'evidence' => array('table' => 'joborder', 'id' => $lastID, 'field' => $role));
+                }
+            }
+        } while (count($rows) === 200);
+        return $result;
+    }
+
     /**
      * Adds a job order to the database and returns its job order ID.
      *

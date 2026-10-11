@@ -16,6 +16,30 @@
  */
 class DateUtility
 {
+    /** Strict date-only arithmetic; NULL means unavailable, never an invented age. */
+    public static function getCalendarDaysBetween($from, $to)
+    {
+        foreach (array($from, $to) as $date)
+            if (!is_string($date) || !preg_match('/^([1-9][0-9]{3})-([0-9]{2})-([0-9]{2})$/D', $date, $parts) ||
+                !checkdate((int) $parts[2], (int) $parts[3], (int) $parts[1])) return null;
+        return (int) (new DateTimeImmutable($from))->diff(new DateTimeImmutable($to))->format('%r%a');
+    }
+
+    /** Mon-Fri dates in (from, to]; weekends only. Future starts have age zero. */
+    public static function getWorkingDaysBetween($from, $to)
+    {
+        $days = self::getCalendarDaysBetween($from, $to);
+        if ($days === null) return null;
+        if ($days <= 0) return 0;
+        $weeks = intdiv($days, 7);
+        $working = $weeks * 5;
+        $weekday = (int) (new DateTimeImmutable($from))->format('N');
+        for ($offset = 1; $offset <= $days % 7; ++$offset)
+            if (($weekday + $offset - 1) % 7 < 5) ++$working;
+        return $working;
+    }
+
+
     /* Prevent this class from being instantiated. */
     private function __construct() {}
     private function __clone() {}

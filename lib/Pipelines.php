@@ -668,9 +668,37 @@ class Pipelines
         );
         $record = $this->_db->getAssoc($sql);
 
+        return $this->canAccessRecord($record);
+    }
+
+    private function canAccessRecord($record)
+    {
         return CandidateAuthorization::canAccessCandidateRecord($record) &&
             ($record['isJobOrderAdminHidden'] != 1 ||
              $_SESSION['CATS']->getAccessLevel('joborders.hidden') >= ACCESS_LEVEL_SA);
+    }
+
+    /** Batch form of canAccess for bounded model collections; no cached permissions. */
+    public function getAccessMap($ids)
+    {
+        if ($_SESSION['CATS']->getAccessLevel('candidates.show') < ACCESS_LEVEL_READ ||
+            $_SESSION['CATS']->getAccessLevel('joborders.show') < ACCESS_LEVEL_READ) return array();
+        include_once(LEGACY_ROOT . '/lib/CandidateAuthorization.php');
+        $ids = array_unique(array_map('intval', $ids));
+        $access = array();
+        foreach (array_chunk($ids, 200) as $chunk)
+        {
+            $rows = $this->_db->getAllAssoc('SELECT candidate_joborder.candidate_joborder_id AS id,
+                candidate.candidate_id AS candidateID, candidate.is_admin_hidden AS isAdminHidden,
+                joborder.is_admin_hidden AS isJobOrderAdminHidden
+                FROM candidate_joborder
+                INNER JOIN candidate ON candidate.candidate_id = candidate_joborder.candidate_id
+                INNER JOIN joborder ON joborder.joborder_id = candidate_joborder.joborder_id
+                WHERE candidate_joborder.candidate_joborder_id IN (' . implode(',', $chunk) . ')');
+            foreach ($rows as $record)
+                $access[$record['id']] = $this->canAccessRecord($record);
+        }
+        return $access;
     }
 
     // FIXME: Document me.

@@ -57,6 +57,163 @@ class TaskTest extends DatabaseTestCase
         parent::tearDown();
     }
 
+    private function warningRows($code)
+    {
+        return array_values(array_filter($this->tasks->getRecruitmentWarnings()['warnings'],
+            fn($row) => $row['code'] === $code));
+    }
+
+    public function testOverdueWarningUsesCalendarDueDatesAndCurrentState(): void
+    {
+        $today = \DateUtility::getAdjustedDate('Y-m-d');
+        $yesterday = (new \DateTimeImmutable($today))->modify('-1 day')->format('Y-m-d');
+        $id = $this->linked(DATA_ITEM_COMPANY, array('dueDate' => $yesterday, 'assignedTo' => $this->assignee));
+        $progress = $this->linked(DATA_ITEM_COMPANY, array('dueDate' => $yesterday, 'status' => 'in_progress'));
+        $this->linked(DATA_ITEM_COMPANY, array('dueDate' => $today));
+        $this->linked(DATA_ITEM_COMPANY);
+        foreach (array('completed', 'cancelled') as $status)
+            $this->linked(DATA_ITEM_COMPANY, array('dueDate' => $yesterday, 'status' => $status));
+        $invalid = $this->linked(DATA_ITEM_COMPANY);
+        $this->db->query("UPDATE task SET due_date = '0000-00-00' WHERE task_id = $invalid");
+        $rows = $this->warningRows('W01');
+        self::assertSame(array($id, $progress), array_column($rows, 'entityID'));
+        self::assertSame(1, $rows[0]['ageDays']);
+        self::assertSame($yesterday, $rows[0]['sourceDate']);
+        self::assertSame('overdue_follow_up', $rows[0]['coverage']);
+        $this->tasks->update($id, array('assignedTo' => 1));
+        self::assertEquals(1, $this->warningRows('W01')[0]['responsibleUserID']);
+        $this->tasks->update($id, array('dueDate' => $today));
+        self::assertCount(1, $this->warningRows('W01'));
+        $this->tasks->update($progress, array('status' => 'completed'));
+        self::assertSame(array(), $this->warningRows('W01'));
+        $result = $this->tasks->getRecruitmentWarnings();
+        self::assertSame(array('W02', 'W03'), array_keys($result['disabledRules']));
+        self::assertArrayNotHasKey('W02', $result['counts']);
+        self::assertArrayNotHasKey('W03', $result['counts']);
+    }
+
+    public function testUnassignedWarningSeparatesResponsibilitiesAndDeduplicatesJobs(): void
+    {
+        $job = $this->parents[DATA_ITEM_JOBORDER];
+        $this->db->query("UPDATE joborder SET status = 'Active', owner = -1, recruiter = 999999 WHERE joborder_id = $job");
+        $task = $this->linked(DATA_ITEM_JOBORDER, array('purpose' => 'job_follow_up'));
+        $rows = $this->warningRows('W08');
+        self::assertCount(3, $rows);
+        self::assertSame(array('invalid_owner', 'invalid_recruiter', 'invalid_assignee'), array_column($rows, 'reason'));
+        self::assertSame(1, $this->tasks->getRecruitmentWarnings()['jobsAtRisk']);
+        self::assertSame(array('uncovered'), array_values(array_unique(array_column($rows, 'coverage'))));
+        $this->tasks->update($task, array('status' => 'completed'));
+        self::assertCount(2, $this->warningRows('W08')); // Completion cannot repair the Job.
+        foreach (array('On Hold', 'Full', 'Closed', 'Canceled', 'Upcoming', 'Lead') as $status)
+        {
+            $this->db->query("UPDATE joborder SET status = '$status' WHERE joborder_id = $job");
+            self::assertSame(array(), $this->warningRows('W08'));
+        }
+        $this->db->query("UPDATE joborder SET status = 'Active', owner = 1, recruiter = {$this->assignee} WHERE joborder_id = $job");
+        self::assertSame(array(), $this->warningRows('W08'));
+        $this->db->query("UPDATE user SET access_level = 0 WHERE user_id = {$this->assignee}");
+        self::assertSame('invalid_recruiter', $this->warningRows('W08')[0]['reason']);
+        self::assertEquals($this->assignee, $this->scalar("SELECT recruiter FROM joborder WHERE joborder_id = $job"));
+        $this->db->query("UPDATE task SET status = 'open', assigned_to = {$this->assignee} WHERE task_id = $task");
+        self::assertCount(2, $this->warningRows('W08'));
+        $this->access = ACCESS_LEVEL_EDIT;
+        self::assertSame(array(), $this->warningRows('W08'));
+    }
+
+    public function testUnassignedJobWarningsRequireListPermission(): void
+    {
+        $job = $this->parents[DATA_ITEM_JOBORDER];
+        $this->db->query("UPDATE joborder SET status = 'Active', owner = -1, recruiter = -1 WHERE joborder_id = $job");
+        $jobs = new \JobOrders();
+        self::assertCount(2, $jobs->getUnassignedWorkWarnings());
+        $this->overrides['joborders.list'] = ACCESS_LEVEL_DISABLED;
+        self::assertGreaterThanOrEqual(ACCESS_LEVEL_READ, $_SESSION['CATS']->getAccessLevel('joborders.show'));
+        self::assertGreaterThanOrEqual(ACCESS_LEVEL_EDIT, $_SESSION['CATS']->getAccessLevel('joborders.edit'));
+        self::assertSame(array(), $jobs->getUnassignedWorkWarnings());
+        $result = $this->tasks->getRecruitmentWarnings();
+        self::assertSame(0, $result['counts']['W08']);
+        self::assertSame(0, $result['jobsAtRisk']);
+    }
+
+    public function testWarningRowsAndCountsRespectParentPipelineAndManagerPermissions(): void
+    {
+        $job = $this->parents[DATA_ITEM_JOBORDER];
+        $candidate = $this->parents[DATA_ITEM_CANDIDATE];
+        $due = (new \DateTimeImmutable(\DateUtility::getAdjustedDate('Y-m-d')))->modify('-2 days')->format('Y-m-d');
+        $id = $this->linked(DATA_ITEM_CANDIDATE, array('dueDate' => $due, 'assignedTo' => 1, 'candidateJobOrderID' => $this->pipeline));
+        self::assertSame(1, $this->tasks->getRecruitmentWarnings()['jobsAtRisk']);
+        $this->db->query("UPDATE joborder SET is_admin_hidden = 1, status = 'Active', recruiter = -1 WHERE joborder_id = $job");
+        $this->overrides['joborders.hidden'] = ACCESS_LEVEL_READ;
+        self::assertSame(array(), $this->warningRows('W01'));
+        self::assertSame(0, $this->tasks->getRecruitmentWarnings()['jobsAtRisk']);
+        self::assertSame(array(), (new \JobOrders())->getUnassignedWorkWarnings());
+        $this->overrides = array();
+        $this->db->query("UPDATE candidate SET is_admin_hidden = 1 WHERE candidate_id = $candidate");
+        $this->overrides['candidates.hidden'] = ACCESS_LEVEL_READ;
+        self::assertSame(array(), $this->warningRows('W01'));
+        $this->overrides = array('candidates.show' => ACCESS_LEVEL_DISABLED);
+        self::assertSame(array(), $this->warningRows('W01'));
+        $this->overrides = array('joborders.edit' => ACCESS_LEVEL_READ, 'tasks.edit' => ACCESS_LEVEL_READ);
+        self::assertSame(array(), $this->warningRows('W08'));
+        $this->overrides = array('tasks.show' => ACCESS_LEVEL_DISABLED);
+        self::assertSame(array(), $this->warningRows('W01'));
+        $this->overrides = array();
+        $this->db->query("DELETE FROM candidate_joborder WHERE candidate_joborder_id = {$this->pipeline}");
+        self::assertSame(array(), $this->warningRows('W01'));
+        $this->loggedIn = false;
+        self::assertSame(array('W01' => 0, 'W07' => 0, 'W08' => 0), $this->tasks->getRecruitmentWarnings()['counts']);
+        self::assertSame(array(), (new \JobOrders())->getUnassignedWorkWarnings());
+    }
+
+    public function testWarningBatchAuthorizationMatchesNativeTaskReads(): void
+    {
+        $due = (new \DateTimeImmutable(\DateUtility::getAdjustedDate('Y-m-d')))->modify('-1 day')->format('Y-m-d');
+        foreach ($this->parents as $type => $id)
+            $this->linked($type, array('dueDate' => $due, 'assignedTo' => 1));
+        $compare = function () {
+            $expected = array_map('intval', array_column($this->tasks->getAll(array('openOnly' => true)), 'taskID'));
+            $actual = array_column($this->warningRows('W01'), 'entityID');
+            sort($expected);
+            sort($actual);
+            self::assertSame($expected, $actual);
+        };
+        $compare();
+        $this->db->query('UPDATE candidate SET is_admin_hidden = 1');
+        $this->db->query('UPDATE joborder SET is_admin_hidden = 1');
+        $this->access = ACCESS_LEVEL_EDIT;
+        $compare();
+        $this->overrides['contacts.show'] = ACCESS_LEVEL_DISABLED;
+        $compare();
+        $this->db->query('DELETE FROM company WHERE company_id = ' . $this->parents[DATA_ITEM_COMPANY]);
+        $compare();
+        self::assertSame(array(), $this->warningRows('W01'));
+    }
+
+    public function testWarningBatchesPreserveStandalonePrivacyAndStableOrdering(): void
+    {
+        $due = (new \DateTimeImmutable(\DateUtility::getAdjustedDate('Y-m-d')))->modify('-3 days')->format('Y-m-d');
+        $private = $this->tasks->add(array('title' => 'Private', 'assignedTo' => $this->assignee, 'dueDate' => $due));
+        $this->db->query("UPDATE task SET created_by = {$this->assignee} WHERE task_id = $private");
+        $this->access = ACCESS_LEVEL_EDIT;
+        self::assertSame(array(), $this->warningRows('W01'));
+        $company = $this->parents[DATA_ITEM_COMPANY];
+        $values = array_fill(0, 205, "('Batch', '$due', 'open', 'normal', 'general', 1, $company, " . DATA_ITEM_COMPANY . ', 1, NOW(), NOW())');
+        $this->db->query('INSERT INTO task (title, due_date, status, priority, purpose, assigned_to, data_item_id, data_item_type, created_by, date_created, date_modified) VALUES ' . implode(',', $values));
+        $before = $this->db->getAssoc("SHOW SESSION STATUS LIKE 'Questions'")['Value'];
+        $rows = $this->warningRows('W01');
+        $after = $this->db->getAssoc("SHOW SESSION STATUS LIKE 'Questions'")['Value'];
+        self::assertLessThan(20, (int) $after - (int) $before);
+        self::assertCount(205, $rows);
+        self::assertCount(205, array_unique(array_column($rows, 'identity')));
+        $ids = array_column($rows, 'entityID');
+        $sorted = $ids;
+        sort($sorted);
+        self::assertSame($sorted, $ids);
+        $this->overrides['companies.show'] = ACCESS_LEVEL_DISABLED;
+        self::assertSame(array(), $this->warningRows('W01'));
+        self::assertSame(0, $this->tasks->getRecruitmentWarnings()['counts']['W01']);
+    }
+
     private function linked($type = DATA_ITEM_COMPANY, $values = array())
     {
         return $this->tasks->add(array_replace(array('title' => 'Follow up',

@@ -17,6 +17,127 @@ class Tasks
         $this->_db = DatabaseConnection::getInstance();
     }
 
+    /**
+     * Derived Stage 4B results for the signed-in actor. Counts use only returned
+     * authorised rows. W02/W03 deliberately have no implementation: see the
+     * source-evidence report. No request-supplied actor or scope is accepted.
+     */
+    public function getRecruitmentWarnings()
+    {
+        $result = array('warnings' => array(), 'counts' => array('W01' => 0, 'W07' => 0, 'W08' => 0),
+            'jobsAtRisk' => 0, 'disabledRules' => array(
+                'W02' => 'No verified actionable start or current recruitment-cycle boundary.',
+                'W03' => 'No verified cycle boundary or correction/replay identity for progress history.'));
+        if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() ||
+            $_SESSION['CATS']->getUserID() <= 0) return $result;
+        $today = DateUtility::getAdjustedDate('Y-m-d');
+        $rows = array();
+        $manager = $this->isAdministrator() && $this->hasAccess('tasks.edit', ACCESS_LEVEL_EDIT);
+        foreach ($this->getWarningTasks($today, $manager) as $task)
+        {
+            $due = $task['dueDate'];
+            $age = DateUtility::getCalendarDaysBetween($due, $today);
+            $jobID = $task['dataItemType'] == DATA_ITEM_JOBORDER ? (int) $task['dataItemID'] :
+                ($task['contextJobOrderID'] === null ? null : (int) $task['contextJobOrderID']);
+            $base = array('entityType' => DATA_ITEM_TASK, 'entityID' => (int) $task['taskID'],
+                'title' => $task['title'], 'responsibleUserID' => $task['assignedTo'],
+                'taskID' => (int) $task['taskID'], 'jobOrderID' => $jobID,
+                'parentType' => $task['dataItemType'], 'parentID' => $task['dataItemID'],
+                'candidateJobOrderID' => $task['candidateJobOrderID'],
+                'sourceDate' => null, 'ageDays' => null, 'coverage' => 'uncovered',
+                'priority' => $task['priority'], 'routing' => 'task_assignee',
+                'evidence' => array('table' => 'task', 'id' => (int) $task['taskID']));
+            if ($age !== null && $age > 0)
+            {
+                $rows[] = array_replace($base, array('code' => 'W01',
+                    'identity' => 'W01:task:' . $task['taskID'] . ':' . $due,
+                    'reason' => 'overdue_commitment', 'sourceDate' => $due, 'ageDays' => $age,
+                    'coverage' => 'overdue_follow_up', 'sortGroup' => 0));
+            }
+            if ($manager && $task['invalidAssignee'])
+            {
+                $rows[] = array_replace($base, array('code' => 'W08',
+                    'identity' => 'W08:task:' . $task['taskID'] . ':assignee',
+                    'reason' => 'invalid_assignee', 'routing' => 'tasks_administrator', 'sortGroup' => 1));
+            }
+        }
+        foreach ((new JobOrders())->getUnassignedWorkWarnings() as $warning) $rows[] = $warning;
+        // Preserve the authoritative Company results and their relative ordering.
+        foreach ((new Companies())->getRelationshipAttention() as $order => $company)
+        {
+            $coverage = !$company['tasks'] ? 'uncovered' :
+                (in_array('overdue_task', $company['reasons'], true) ? 'overdue_follow_up' : 'covered');
+            $rows[] = array('code' => 'W07', 'identity' => 'W07:company:' . $company['companyID'],
+                'entityType' => DATA_ITEM_COMPANY, 'entityID' => (int) $company['companyID'],
+                'title' => $company['name'], 'reason' => $company['primaryReason'],
+                'sourceDate' => $company['lastContact'], 'ageDays' => $company['contactAgeDays'],
+                'responsibleUserID' => $company['owner'], 'routing' => 'company_owner',
+                'taskID' => null, 'jobOrderID' => null, 'coverage' => $coverage,
+                'evidence' => array('table' => 'company', 'id' => (int) $company['companyID']),
+                'relationshipAttention' => $company, 'sortGroup' => 3, 'relationshipOrder' => $order);
+        }
+        $priority = array('high' => 0, 'normal' => 1, 'low' => 2);
+        usort($rows, function ($a, $b) use ($priority) {
+            if ($a['code'] === 'W07' && $b['code'] === 'W07')
+                return $a['relationshipOrder'] <=> $b['relationshipOrder'];
+            return array($a['sortGroup'], -($a['ageDays'] ?? 0), $priority[$a['priority'] ?? 'normal'],
+                $a['entityType'], $a['entityID'], $a['identity']) <=>
+                array($b['sortGroup'], -($b['ageDays'] ?? 0), $priority[$b['priority'] ?? 'normal'],
+                $b['entityType'], $b['entityID'], $b['identity']);
+        });
+        // W07 counts include covered attention records. W08 counts each invalid
+        // responsibility separately; jobsAtRisk counts distinct authorised Jobs.
+        $jobs = array();
+        foreach ($rows as $row)
+        {
+            ++$result['counts'][$row['code']];
+            if ($row['jobOrderID'] !== null) $jobs[$row['jobOrderID']] = true;
+        }
+        $result['warnings'] = $rows;
+        $result['jobsAtRisk'] = count($jobs);
+        return $result;
+    }
+
+    /** SQL-filtered chunks; reuse canRead with batch-loaded parent/pipeline evidence. */
+    private function getWarningTasks($today, $manager)
+    {
+        if (!$this->hasAccess('tasks.list', ACCESS_LEVEL_READ) || !$this->hasAccess('tasks.show', ACCESS_LEVEL_READ)) return array();
+        $invalid = '(assigned_to IS NULL OR NOT EXISTS (SELECT 1 FROM user
+            WHERE user.user_id = task.assigned_to AND user.access_level > ' . ACCESS_LEVEL_DISABLED . '))';
+        $where = " WHERE status IN ('open', 'in_progress') AND (due_date < " .
+            $this->_db->makeQueryString($today) . ($manager ? ' OR ' . $invalid : '') . ')';
+        $lastID = 0;
+        $result = array();
+        do
+        {
+            $sql = $this->selectSQL(', ' . $invalid . ' AS invalidAssignee,
+                (SELECT joborder_id FROM candidate_joborder WHERE candidate_joborder_id = task.candidate_joborder_id) AS contextJobOrderID');
+            $rows = $this->_db->getAllAssoc($sql . $where . ' AND task_id > ' . $lastID . ' ORDER BY task_id LIMIT 200');
+            $parents = array();
+            $ids = array();
+            $pipelineIDs = array();
+            foreach ($rows as $row)
+            {
+                $lastID = (int) $row['taskID'];
+                if ($row['dataItemType'] !== null) $ids[$row['dataItemType']][] = (int) $row['dataItemID'];
+                if ($row['candidateJobOrderID'] !== null) $pipelineIDs[] = (int) $row['candidateJobOrderID'];
+            }
+            foreach (array(DATA_ITEM_COMPANY => 'company', DATA_ITEM_CONTACT => 'contact',
+                DATA_ITEM_CANDIDATE => 'candidate', DATA_ITEM_JOBORDER => 'joborder') as $type => $table)
+            {
+                if (empty($ids[$type]) || !$this->hasAccess($this->parentModule($type) . '.show', ACCESS_LEVEL_READ)) continue;
+                $hidden = in_array($type, array(DATA_ITEM_CANDIDATE, DATA_ITEM_JOBORDER), true) ? ', is_admin_hidden AS isAdminHidden' : '';
+                $records = $this->_db->getAllAssoc('SELECT ' . $table . '_id AS id' . $hidden .
+                    ' FROM ' . $table . ' WHERE ' . $table . '_id IN (' . implode(',', array_unique($ids[$type])) . ')');
+                $parents[$type] = array_column($records, null, 'id');
+            }
+            $pipelines = (new Pipelines())->getAccessMap($pipelineIDs);
+            foreach ($rows as $row)
+                if ($this->canRead($row, $parents, $pipelines)) $result[] = $row;
+        } while (count($rows) === 200);
+        return $result;
+    }
+
     public static function getDefaults()
     {
         return array('title' => '', 'description' => null, 'dueDate' => null,
@@ -75,29 +196,37 @@ class Tasks
             DATA_ITEM_CANDIDATE => 'candidates', DATA_ITEM_JOBORDER => 'joborders')[$type] ?? null;
     }
 
-    private function canAccessParent($type, $id, $edit = false)
+    private function canAccessParent($type, $id, $edit = false, $record = false)
     {
         $module = $this->parentModule($type);
         if ($module === null || $id === null || !$this->hasAccess($module . '.show', ACCESS_LEVEL_READ) ||
             ($edit && !$this->hasAccess($module . '.edit', ACCESS_LEVEL_EDIT))) return false;
 
+        if ($record === false)
+        {
+            switch ($type)
+            {
+                case DATA_ITEM_CANDIDATE: $record = CandidateAuthorization::getCandidate($id); break;
+                case DATA_ITEM_JOBORDER: $record = (new JobOrders())->get($id); break;
+                case DATA_ITEM_COMPANY: $record = (new Companies())->get($id); break;
+                case DATA_ITEM_CONTACT: $record = (new Contacts())->get($id); break;
+            }
+        }
         switch ($type)
         {
             case DATA_ITEM_CANDIDATE:
-                return CandidateAuthorization::canAccessCandidate($id);
+                return CandidateAuthorization::canAccessCandidateRecord($record);
             case DATA_ITEM_JOBORDER:
-                $record = (new JobOrders())->get($id);
                 return !empty($record) && ($record['isAdminHidden'] != 1 ||
                     $this->hasAccess('joborders.hidden', ACCESS_LEVEL_SA));
             case DATA_ITEM_COMPANY:
-                return !empty((new Companies())->get($id));
             case DATA_ITEM_CONTACT:
-                return !empty((new Contacts())->get($id));
+                return !empty($record);
         }
         return false;
     }
 
-    private function canRead($record)
+    private function canRead($record, $parents = null, $pipelines = null)
     {
         if (empty($record) || !$this->hasAccess('tasks.show', ACCESS_LEVEL_READ)) return false;
         if ($record['dataItemType'] === null)
@@ -106,9 +235,11 @@ class Tasks
             if ($record['dataItemID'] !== null || ($record['createdBy'] != $actor &&
                 $record['assignedTo'] != $actor && !$this->isAdministrator())) return false;
         }
-        elseif (!$this->canAccessParent($record['dataItemType'], $record['dataItemID'])) return false;
+        elseif (!$this->canAccessParent($record['dataItemType'], $record['dataItemID'], false,
+            $parents === null ? false : ($parents[$record['dataItemType']][$record['dataItemID']] ?? array()))) return false;
         return $record['candidateJobOrderID'] === null ||
-            (new Pipelines())->canAccess($record['candidateJobOrderID']);
+            ($pipelines === null ? (new Pipelines())->canAccess($record['candidateJobOrderID']) :
+             !empty($pipelines[$record['candidateJobOrderID']]));
     }
 
     public static function getParentTypes()
@@ -202,14 +333,15 @@ class Tasks
         return $permissions;
     }
 
-    private function selectSQL()
+    /** Additional SELECT expressions are internal SQL, never request input. */
+    private function selectSQL($additionalColumns = '')
     {
         return 'SELECT task_id AS taskID, title, description, due_date AS dueDate,
             priority, status, purpose, assigned_to AS assignedTo,
             data_item_type AS dataItemType, data_item_id AS dataItemID,
             candidate_joborder_id AS candidateJobOrderID, created_by AS createdBy,
             date_created AS dateCreated, date_modified AS dateModified,
-            completed_by AS completedBy, date_completed AS dateCompleted FROM task';
+            completed_by AS completedBy, date_completed AS dateCompleted' . $additionalColumns . ' FROM task';
     }
 
     /** Missing and inaccessible IDs have the same result. */
