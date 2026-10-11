@@ -305,11 +305,23 @@ CODE;
 
     private function runMaintenanceStep(): array
     {
+        /* modules/install/ajax/maint.php only performs its access checks and
+         * then hands over to index.php. Those checks require an authenticated
+         * site admin session, which is not available here, so drive the
+         * maintenance run the same way that endpoint does.
+         */
         $code = <<<'CODE'
 $_SERVER['REQUEST_METHOD'] = 'POST';
 $_POST['performMaintenence'] = 'yes';
 
-include './modules/install/ajax/maint.php';
+if (file_exists('./modules.cache'))
+{
+    @unlink('./modules.cache');
+}
+
+$maintPage = true;
+
+include './index.php';
 CODE;
 
         return $this->runPHPCode($code);
