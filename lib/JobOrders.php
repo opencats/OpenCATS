@@ -118,7 +118,7 @@ class JobOrders
     public function add($title, $companyId, $contactId, $description, $notes,
         $duration, $maxRate, $type, $isHot, $public, $openings, $companyJobId,
         $salary, $city, $state, $startDate, $enteredBy, $recruiter, $owner,
-        $department, $questionnaire = false, $country = '', $deskID = false, $sectorID = null)
+        $department, $questionnaire = false, $country = '', $deskID = false, $sectorID = null, $isSpeculative = 0)
     {
         /* Get the department ID of the selected department. */
         // FIXME: Move this up to the UserInterface level. I don't like this
@@ -151,7 +151,8 @@ class JobOrders
             $departmentId,
             $questionnaire,
             $deskID,
-            $sectorID
+            $sectorID,
+            $isSpeculative
         );
         $JobOrderRepository = new JobOrderRepository($this->_db);
         try {
@@ -189,8 +190,20 @@ class JobOrders
     public function update($jobOrderID, $title, $companyJobID, $companyID,
         $contactID, $description, $notes, $duration, $maxRate, $type, $isHot,
         $openings, $openingsAvailable, $salary, $city, $state, $startDate, $status, $recruiter,
-        $owner, $public, $email, $emailAddress, $department, $questionnaire = false, $country = false, $deskID = false, $sectorID = false)
+        $owner, $public, $email, $emailAddress, $department, $questionnaire = false, $country = false, $deskID = false, $sectorID = false, $isSpeculative = null)
     {
+        // Evaluate the old row inside the same write, before status/classification assignments.
+        // NULL means an existing caller omitted classification; preserve the stored value.
+        $speculativeValue = $isSpeculative === null ? 'is_speculative' :
+            (string) JobOrder::validateSpeculative($isSpeculative);
+        $evidenceSQL = '';
+        if (JobOrderStatuses::isActionable($status))
+        {
+            $evidenceSQL = "first_actionable_at = IF(first_actionable_at IS NULL AND " .
+                $speculativeValue . " = 0 AND (NOT (status <=> 'Active') OR is_speculative = 1), " .
+                "NOW(), first_actionable_at), ";
+        }
+        if ($isSpeculative !== null) $evidenceSQL .= 'is_speculative = ' . $speculativeValue . ', ';
         $deskSQL = '';
         if ($deskID !== false)
         {
@@ -257,7 +270,7 @@ class JobOrders
                 questionnaire_id   = %s
             WHERE
                 joborder_id = %s",
-            $deskSQL . $sectorSQL,
+            $evidenceSQL . $deskSQL . $sectorSQL,
             $this->_db->makeQueryString($title),
             $this->_db->makeQueryString($companyJobID),
             $this->_db->makeQueryInteger($companyID),
@@ -461,6 +474,8 @@ class JobOrders
             "SELECT
                 joborder.desk_id AS deskID,
                 joborder.sector_id AS sectorID,
+                joborder.is_speculative AS isSpeculative,
+                joborder.first_actionable_at AS firstActionableAt,
                 (SELECT name FROM desk WHERE desk.desk_id = joborder.desk_id) AS deskName,
                 (SELECT name FROM sector WHERE sector.sector_id = joborder.sector_id) AS sectorName,
                 joborder.joborder_id AS jobOrderID,
@@ -572,6 +587,9 @@ class JobOrders
             "SELECT
                 joborder.desk_id AS deskID,
                 joborder.sector_id AS sectorID,
+                joborder.is_admin_hidden AS isAdminHidden,
+                joborder.is_speculative AS isSpeculative,
+                joborder.first_actionable_at AS firstActionableAt,
                 (SELECT name FROM desk WHERE desk.desk_id = joborder.desk_id) AS deskName,
                 (SELECT name FROM sector WHERE sector.sector_id = joborder.sector_id) AS sectorName,
                 joborder.joborder_id AS jobOrderID,

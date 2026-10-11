@@ -28,6 +28,8 @@ class JobOrderRepository
         // FIXME: Is the OrNULL usage below correct? Can these fields be NULL?
         $sql = sprintf(
             "INSERT INTO joborder (
+                is_speculative,
+                first_actionable_at,
                 sector_id,
                 desk_id,
                 title,
@@ -82,11 +84,15 @@ class JobOrderRepository
                 %s,
                 %s,
                 %s,
+                %s,
+                %s,
                 NOW(),
                 NOW(),
                 %s,
                 %s
             )",
+            $jobOrder->isSpeculative(),
+            (!$jobOrder->isSpeculative() && \JobOrderStatuses::isActionable($jobOrder->getStatus())) ? 'NOW()' : 'NULL',
             $this->databaseConnection->makeQueryIntegerOrNULL($sectorID ?? -1),
             $this->databaseConnection->makeQueryIntegerOrNULL($deskID ?? -1),
             $this->databaseConnection->makeQueryString($jobOrder->getTitle()),

@@ -159,6 +159,12 @@ class JobOrderStatuses
         return $result;
     }
 
+    /** Active is the established identifier; a default or custom status is not a mapping. */
+    public static function isActionable($status)
+    {
+        return $status === 'Active' && in_array('Active', self::getAll()['Open'] ?? array(), true);
+    }
+
     public static function getDefaultStatus(){
         if(defined('JOB_ORDER_STATUS_DEFAULT')){
             return JOB_ORDER_STATUS_DEFAULT;

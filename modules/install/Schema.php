@@ -2444,6 +2444,15 @@ class CATSSchema
                 }
             ',
 
+            '400' => 'PHP:
+                foreach (array("is_speculative" => "TINYINT(1) NOT NULL DEFAULT 0", "first_actionable_at" => "DATETIME DEFAULT NULL") as $name => $definition)
+                {
+                    $columns = $db->getAllAssoc("SHOW COLUMNS FROM joborder WHERE Field = " . $db->makeQueryString($name));
+                    if (empty($columns) && !$db->query("ALTER TABLE joborder ADD COLUMN `" . $name . "` " . $definition))
+                        throw new RuntimeException("Unable to apply Job Order evidence migration: " . $name);
+                }
+            ',
+
         );
     }
 }

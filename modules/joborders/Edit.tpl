@@ -278,6 +278,15 @@
 
                     <div class="row g-2 align-items-start mb-2">
                         <div class="col-sm-4 col-lg-2 fw-semibold">
+                            <label class="form-label small mb-1" for="isSpeculative">Speculative role</label>
+                        </div>
+                        <div class="col-sm-8 col-lg-4">
+                            <input class="form-check-input" type="checkbox" id="isSpeculative" name="isSpeculative" value="1"<?php if ($this->data['isSpeculative'] == 1): ?> checked<?php endif; ?>>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 align-items-start mb-2">
+                        <div class="col-sm-4 col-lg-2 fw-semibold">
                             <label class="form-label small mb-1" id="statusLabel" for="status">Status: <span class="text-danger" title="Required">*</span></label>
                         </div>
                         <div class="col-sm-8 col-lg-4">

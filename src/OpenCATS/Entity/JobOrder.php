@@ -6,6 +6,7 @@ include_once('./lib/JobOrderStatuses.php');
 class JobOrder
 {
     private $id;
+    private $isSpeculative = 0;
     private $sectorID = null;
     private $deskID = false; // Omitted: copy the creating user's current Desk on persistence.
     private $title;
@@ -285,6 +286,25 @@ class JobOrder
         return $this->sectorID;
     }
 
+    public static function validateSpeculative($value)
+    {
+        if (!in_array($value, array(0, 1, '0', '1', false, true), true))
+        {
+            throw new \InvalidArgumentException('Invalid speculative role value.');
+        }
+        return (int) $value;
+    }
+
+    public function setIsSpeculative($value)
+    {
+        $this->isSpeculative = self::validateSpeculative($value);
+    }
+
+    public function isSpeculative()
+    {
+        return $this->isSpeculative;
+    }
+
     static function create(
         $title,
         $companyId,
@@ -309,7 +329,8 @@ class JobOrder
         $departmentId,
         $questionnaire,
         $deskID = false,
-        $sectorID = null
+        $sectorID = null,
+        $isSpeculative = 0
     ) {
         $instance = new JobOrder(
             $title,
@@ -339,6 +360,7 @@ class JobOrder
         $instance->setQuestionnaire($questionnaire);
         $instance->setDeskID($deskID);
         $instance->setSectorID($sectorID);
+        $instance->setIsSpeculative($isSpeculative);
         return $instance;
     }
 }

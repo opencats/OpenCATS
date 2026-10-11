@@ -755,6 +755,8 @@ INSERT INTO `sector` (`sector_id`, `name`) VALUES (1, 'Distribution and Logistic
 CREATE TABLE `joborder` (
   KEY `idx_joborder_desk` (`desk_id`),
   KEY `idx_joborder_sector` (`sector_id`),
+  `is_speculative` TINYINT(1) NOT NULL DEFAULT '0',
+  `first_actionable_at` DATETIME DEFAULT NULL,
   `joborder_id` INT(11) NOT NULL AUTO_INCREMENT,
   `recruiter` INT(11),
   `contact_id` INT(11),

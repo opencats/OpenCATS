@@ -274,6 +274,15 @@
 
                     <div class="row g-2 align-items-start mb-2">
                         <div class="col-sm-4 col-lg-2 fw-semibold">
+                            <label class="form-label small mb-1" for="isSpeculative">Speculative role</label>
+                        </div>
+                        <div class="col-sm-8 col-lg-4">
+                            <input class="form-check-input" type="checkbox" id="isSpeculative" name="isSpeculative" value="1">
+                        </div>
+                    </div>
+
+                    <div class="row g-2 align-items-start mb-2">
+                        <div class="col-sm-4 col-lg-2 fw-semibold">
 
                         </div>
                         <div class="col-sm-8 col-lg-4">

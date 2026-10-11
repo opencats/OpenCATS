@@ -788,6 +788,7 @@ class JobOrdersUI extends UserInterface
         }
 
         /* Hot job? */
+        $isSpeculative = $this->getSpeculativeInput();
         $isHot = $this->isChecked('isHot', $_POST);
 
         /* Public Job? */
@@ -839,7 +840,7 @@ class JobOrdersUI extends UserInterface
             $title, $companyID, $contactID, $description, $notes, $duration,
             $maxRate, $type, $isHot, $isPublic, $openings, $companyJobID,
             $salary, $city, $state, $startDate, $this->_userID, $recruiter,
-            $owner, $department, $questionnaireID, $country, $deskID, $sectorID
+            $owner, $department, $questionnaireID, $country, $deskID, $sectorID, $isSpeculative
         );
 
         if ($jobOrderID <= 0)
@@ -878,6 +879,11 @@ class JobOrdersUI extends UserInterface
         if (empty($data))
         {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'The specified job order ID could not be found.');
+        }
+
+        if ($data['isAdminHidden'] == 1 && $this->getUserAccessLevel('joborders.hidden') < ACCESS_LEVEL_SA)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'This Job Order is hidden.');
         }
 
         $users = new Users();
@@ -1011,6 +1017,18 @@ class JobOrdersUI extends UserInterface
         }
     }
 
+    private function getSpeculativeInput()
+    {
+        try
+        {
+            return \OpenCATS\Entity\JobOrder::validateSpeculative(array_key_exists('isSpeculative', $_POST) ? $_POST['isSpeculative'] : 0);
+        }
+        catch (InvalidArgumentException $e)
+        {
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, $e->getMessage());
+        }
+    }
+
     private function getSectorInput($currentID = null)
     {
         if (!array_key_exists('sectorID', $_POST)) return false;
@@ -1037,6 +1055,10 @@ class JobOrdersUI extends UserInterface
         $jobOrderID = $_POST['jobOrderID'];
         $currentJob = $jobOrders->get($jobOrderID);
         if (empty($currentJob)) CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Job Order not found.');
+        if ($currentJob['isAdminHidden'] == 1 && $this->getUserAccessLevel('joborders.hidden') < ACCESS_LEVEL_SA)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'This Job Order is hidden.');
+        }
         $deskID = $this->getDeskInput($currentJob['deskID']);
         $sectorID = $this->getSectorInput($currentJob['sectorID']);
 
@@ -1099,6 +1121,7 @@ class JobOrdersUI extends UserInterface
         }
 
         /* Hot job? */
+        $isSpeculative = $this->getSpeculativeInput();
         $isHot = $this->isChecked('isHot', $_POST);
 
         /* Public Job? */
@@ -1215,7 +1238,7 @@ class JobOrdersUI extends UserInterface
             $description, $notes, $duration, $maxRate, $type, $isHot,
             $openings, $openingsAvailable, $salary, $city, $state, $startDate, $status, $recruiter,
             $owner, $public, $email, $emailAddress, $department, $questionnaireID,
-            $country, $deskID, $sectorID))
+            $country, $deskID, $sectorID, $isSpeculative))
         {
             CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to update job order.');
         }

@@ -159,6 +159,11 @@ use OpenCATS\UI\QuickActionMenu;
                             </div>
 
                             <div class="row g-2 mb-2">
+                                <div class="col-sm-4 fw-semibold small">Speculative role:</div>
+                                <div class="col-sm-8"><?php echo Template::escapeHtml($this->data['isSpeculative'] ? 'Yes' : 'No'); ?></div>
+                            </div>
+
+                            <div class="row g-2 mb-2">
                                 <div class="col-sm-4 fw-semibold small">Candidates:</div>
                                 <div class="col-sm-8"><?php $this->_($this->data['pipeline']) ?></div>
                             </div>

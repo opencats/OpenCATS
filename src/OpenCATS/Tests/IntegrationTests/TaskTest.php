@@ -95,7 +95,7 @@ class TaskTest extends DatabaseTestCase
     public function testUnassignedWarningSeparatesResponsibilitiesAndDeduplicatesJobs(): void
     {
         $job = $this->parents[DATA_ITEM_JOBORDER];
-        $this->db->query("UPDATE joborder SET status = 'Active', owner = -1, recruiter = 999999 WHERE joborder_id = $job");
+        $this->db->query("UPDATE joborder SET status = 'Active', is_speculative = 1, owner = -1, recruiter = 999999 WHERE joborder_id = $job");
         $task = $this->linked(DATA_ITEM_JOBORDER, array('purpose' => 'job_follow_up'));
         $rows = $this->warningRows('W08');
         self::assertCount(3, $rows);
