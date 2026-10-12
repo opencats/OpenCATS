@@ -2462,6 +2462,43 @@ class CATSSchema
                 }
             ',
 
+            '402' => 'PHP:
+                if (!$db->query("CREATE TABLE IF NOT EXISTS `warning_review` (   `reviewing_user` INT(11) NOT NULL,   `warning_rule` VARCHAR(3) NOT NULL,   `data_item_type` INT(11) NOT NULL,   `data_item_id` INT(11) NOT NULL,   `reason_key` VARCHAR(32) NOT NULL,   `reason_id` INT(11) NOT NULL,   `action` VARCHAR(16) NOT NULL,   `close_reason` VARCHAR(32) DEFAULT NULL,   `action_at` DATETIME NOT NULL,   `review_until` DATE DEFAULT NULL,   `evidence_hash` CHAR(64) NOT NULL,   `request_hash` CHAR(64) NOT NULL,   `version` INT(11) NOT NULL,   PRIMARY KEY (`reviewing_user`, `warning_rule`, `data_item_type`, `data_item_id`, `reason_key`, `reason_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"))
+                    throw new RuntimeException("Unable to create personal warning reviews.");
+                $expected = array(
+                    "reviewing_user" => array("int(11)", "NO", null),
+                    "warning_rule" => array("varchar(3)", "NO", null),
+                    "data_item_type" => array("int(11)", "NO", null),
+                    "data_item_id" => array("int(11)", "NO", null),
+                    "reason_key" => array("varchar(32)", "NO", null),
+                    "reason_id" => array("int(11)", "NO", null),
+                    "action" => array("varchar(16)", "NO", null),
+                    "close_reason" => array("varchar(32)", "YES", null),
+                    "action_at" => array("datetime", "NO", null),
+                    "review_until" => array("date", "YES", null),
+                    "evidence_hash" => array("char(64)", "NO", null),
+                    "request_hash" => array("char(64)", "NO", null),
+                    "version" => array("int(11)", "NO", null)
+                );
+                $found = $db->getAllAssoc("SHOW COLUMNS FROM warning_review");
+                if (count($found) !== count($expected)) throw new RuntimeException("Incompatible warning review columns.");
+                foreach ($found as $column)
+                {
+                    $type = strtolower($column["Type"]);
+                    if ($type === "int") $type = "int(11)";
+                    if (!isset($expected[$column["Field"]]) ||
+                        array($type, $column["Null"], $column["Default"]) !== $expected[$column["Field"]])
+                        throw new RuntimeException("Incompatible warning review column: " . $column["Field"]);
+                }
+                $table = $db->getAssoc("SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = \'warning_review\'");
+                if (!$table || strcasecmp($table["ENGINE"], "InnoDB") !== 0)
+                    throw new RuntimeException("Warning reviews require InnoDB.");
+                $keys = $db->getAllAssoc("SHOW INDEX FROM warning_review WHERE Key_name = \'PRIMARY\'");
+                if (implode(",", array_column($keys, "Column_name")) !== "reviewing_user,warning_rule,data_item_type,data_item_id,reason_key,reason_id" ||
+                    count(array_filter($keys, function ($key) { return $key["Non_unique"] != 0 || $key["Sub_part"] !== null; })))
+                    throw new RuntimeException("Incompatible warning review identity.");
+            ',
+
         );
     }
 }

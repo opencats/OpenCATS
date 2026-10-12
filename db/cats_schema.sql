@@ -1157,3 +1157,21 @@ CREATE TABLE `zipcodes` (
 /* Data for the table `zipcodes` */
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+
+-- Personal warning review state; no legacy review backfill.
+CREATE TABLE `warning_review` (
+  `reviewing_user` INT(11) NOT NULL,
+  `warning_rule` VARCHAR(3) NOT NULL,
+  `data_item_type` INT(11) NOT NULL,
+  `data_item_id` INT(11) NOT NULL,
+  `reason_key` VARCHAR(32) NOT NULL,
+  `reason_id` INT(11) NOT NULL,
+  `action` VARCHAR(16) NOT NULL,
+  `close_reason` VARCHAR(32) DEFAULT NULL,
+  `action_at` DATETIME NOT NULL,
+  `review_until` DATE DEFAULT NULL,
+  `evidence_hash` CHAR(64) NOT NULL,
+  `request_hash` CHAR(64) NOT NULL,
+  `version` INT(11) NOT NULL,
+  PRIMARY KEY (`reviewing_user`, `warning_rule`, `data_item_type`, `data_item_id`, `reason_key`, `reason_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

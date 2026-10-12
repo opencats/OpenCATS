@@ -98,9 +98,9 @@ function dumpDB($db, $file, $useStatus = false, $splitFiles = true)
             );
         }
 
-        // Task reschedules, reassignment and transitions are required recovery data.
+        // Task changes and cross-module personal warning reviews are recovery data.
         $sql = 'SELECT * FROM ' . $table;
-        if ($table == 'history') $sql .= ' WHERE data_item_type = ' . DATA_ITEM_TASK;
+        if ($table == 'history') $sql .= ' WHERE data_item_type = ' . DATA_ITEM_TASK . " OR the_field = 'warning_review'";
 
         $index = 0;
         $db->query($sql);
