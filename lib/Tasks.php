@@ -24,6 +24,8 @@ class Tasks
             'jobsAtRisk' => 0, 'disabledRules' => array());
         if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() ||
             $_SESSION['CATS']->getUserID() <= 0) return $result;
+        $actor = $this->_db->getAssoc('SELECT access_level FROM user WHERE user_id = ' . (int) $_SESSION['CATS']->getUserID());
+        if (!$actor || $actor['access_level'] <= ACCESS_LEVEL_DISABLED) return $result;
         $today = DateUtility::getAdjustedDate('Y-m-d');
         $rows = array();
         $manager = $this->isAdministrator() && $this->hasAccess('tasks.edit', ACCESS_LEVEL_EDIT);

@@ -8,6 +8,7 @@
             <h1 class="h5 fw-semibold mb-0">Dashboard</h1>
         </header>
         <div class="row g-2">
+            <?php include(LEGACY_ROOT . '/modules/home/RecruitmentWarnings.tpl'); ?>
             <div class="col-12 col-lg-4">
                 <section class="card h-100" aria-labelledby="recentCallsHeading">
                     <h2 id="recentCallsHeading" class="card-header bg-secondary-subtle h6 py-1 px-2 fw-semibold mb-0">My Recent Calls</h2>

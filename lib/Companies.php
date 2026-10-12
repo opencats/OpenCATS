@@ -128,17 +128,27 @@ class Companies
             $company['contactLabel'] = $lastContact === null ? 'No recorded contact' : 'Recorded conversation or meeting';
             $company['contactEvidenceScope'] = 'Qualifying Company Activities and Activities with current Company Contacts; historical employer attribution is not retained.';
             $company['tasks'] = $commitments;
+            // Stable review evidence includes open commitments outside today's
+            // attention window. Merely entering that window is not a material edit.
+            $company['reviewTasks'] = array();
+            foreach ($byCompany[$id] ?? array() as $task)
+                $company['reviewTasks'][] = array((int) $task['taskID'], $task['dueDate'], $task['assignedTo']);
+            sort($company['reviewTasks']);
             // Unknown contact age sorts before known dates; it is never assigned an age.
             $company['sortDate'] = $dueDates[$ordered[0]] ?? $contactDate ?? '';
             $results[] = $company;
         }
+        usort($results, array(self::class, 'compareRelationshipAttention'));
+        return $results;
+    }
+
+    /** Shared source/visible ordering: reason, tier, evidence date, then Company ID. */
+    public static function compareRelationshipAttention($a, $b)
+    {
         $rank = array_flip(array('overdue_task', 'due_today', 'no_next_action', 'stale_relationship', 'upcoming'));
         $tiers = array_flip(array('A', 'B', 'C', 'D', 'Unclassified'));
-        usort($results, function ($a, $b) use ($rank, $tiers) {
-            return array($rank[$a['primaryReason']], $tiers[$a['commercialTier'] ?? 'Unclassified'], $a['sortDate'], (int) $a['companyID']) <=>
-                array($rank[$b['primaryReason']], $tiers[$b['commercialTier'] ?? 'Unclassified'], $b['sortDate'], (int) $b['companyID']);
-        });
-        return $results;
+        return array($rank[$a['primaryReason']], $tiers[$a['commercialTier'] ?? 'Unclassified'], $a['sortDate'], (int) $a['companyID']) <=>
+            array($rank[$b['primaryReason']], $tiers[$b['commercialTier'] ?? 'Unclassified'], $b['sortDate'], (int) $b['companyID']);
     }
 
 

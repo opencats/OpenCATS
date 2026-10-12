@@ -99,6 +99,9 @@ class HomeUI extends UserInterface
         
         NewVersionCheck::getNews();
         
+        include_once(LEGACY_ROOT . '/lib/WarningReviews.php');
+        $this->_template->assign('recruitmentWarnings', (new WarningReviews())->getRecruitmentWarnings());
+
         $dashboard = new Dashboard();
         $placedRS = $dashboard->getPlacements();
         $chartView = $this->getHiringOverviewView();

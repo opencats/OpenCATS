@@ -1,5 +1,5 @@
 <?php
-/** Personal review persistence only. No warning query consumes this state in 4C-1. */
+/** Personal warning review persistence and visibility. */
 include_once(LEGACY_ROOT . '/lib/Tasks.php');
 
 class WarningReviews
@@ -56,37 +56,140 @@ class WarningReviews
         $this->actor();
         foreach ((new Tasks())->getRecruitmentWarnings()['warnings'] as $row)
         {
-            if ($row['code'] !== $identity['warning_rule'] || $row['entityType'] != $identity['data_item_type'] ||
-                $row['entityID'] != $identity['data_item_id']) continue;
-            if ($row['code'] === 'W07')
-            {
-                $company = $row['relationshipAttention'];
-                if (!in_array($identity['reason_key'], $company['reasons'], true)) continue;
-                $evidence = array($company['owner'], $company['commercialTier'], $company['relationshipStatus'], $company['reviewDays']);
-                if ($identity['reason_id'])
-                {
-                    $task = null;
-                    $today = DateUtility::getAdjustedDate('Y-m-d');
-                    foreach ($company['tasks'] as $candidate)
-                    {
-                        $reason = $candidate['dueDate'] < $today ? 'overdue_task' :
-                            ($candidate['dueDate'] === $today ? 'due_today' : 'upcoming');
-                        if ($candidate['taskID'] == $identity['reason_id'] && $reason === $identity['reason_key']) $task = $candidate;
-                    }
-                    if ($task === null) continue;
-                    $evidence[] = array($task['taskID'], $task['dueDate'], $task['assignedTo']);
-                }
-                elseif ($identity['reason_key'] === 'stale_relationship') $evidence[] = $company['lastContact'];
-                // no_next_action is the source query's authoritative absence of qualifying commitments.
-            }
-            else
-            {
-                if ($row['reason'] !== $identity['reason_key']) continue;
-                $evidence = array($row['sourceDate'], $row['responsibleUserID'], $row['evidence']);
-            }
-            return hash('sha256', json_encode(array($identity, $evidence), JSON_THROW_ON_ERROR));
+            $hash = $this->evidence($identity, $row);
+            if ($hash !== null) return $hash;
         }
         throw new RuntimeException('Warning source unavailable.');
+    }
+
+    /** Shared by writes and reads; never re-enumerates warning sources. */
+    private function evidence($identity, $row)
+    {
+        if ($row['code'] !== $identity['warning_rule'] || $row['entityType'] != $identity['data_item_type'] ||
+            $row['entityID'] != $identity['data_item_id']) return null;
+        if ($row['code'] === 'W07')
+        {
+            $company = $row['relationshipAttention'];
+            if (!in_array($identity['reason_key'], $company['reasons'], true)) return null;
+            $evidence = array($company['owner'], $company['commercialTier'], $company['relationshipStatus'], $company['reviewDays']);
+            if ($identity['reason_id'])
+            {
+                $task = null;
+                $today = DateUtility::getAdjustedDate('Y-m-d');
+                foreach ($company['tasks'] as $candidate)
+                {
+                    $reason = $candidate['dueDate'] < $today ? 'overdue_task' :
+                        ($candidate['dueDate'] === $today ? 'due_today' : 'upcoming');
+                    if ($candidate['taskID'] == $identity['reason_id'] && $reason === $identity['reason_key']) $task = $candidate;
+                }
+                if ($task === null) return null;
+                $evidence[] = array($task['taskID'], $task['dueDate'], $task['assignedTo']);
+            }
+            elseif ($identity['reason_key'] === 'stale_relationship') $evidence[] = $company['lastContact'];
+            else $evidence[] = $company['reviewTasks'];
+            // no_next_action is the source query's authoritative absence of qualifying commitments.
+        }
+        else
+        {
+            if ($row['reason'] !== $identity['reason_key']) return null;
+            $evidence = array($row['sourceDate'], $row['responsibleUserID'], $row['evidence']);
+        }
+        return hash('sha256', json_encode(array($identity, $evidence), JSON_THROW_ON_ERROR));
+    }
+
+    /**
+     * Obtain current authorised sources once. Original warnings/counts/jobsAtRisk
+     * remain intact; visibleWarnings/counts count Companies, suppressedReasonCount
+     * counts individual reasons. No caller-supplied actor or source collection.
+     */
+    public function getRecruitmentWarnings()
+    {
+        $result = (new Tasks())->getRecruitmentWarnings();
+        $result['visibleWarnings'] = array();
+        $result['visibleCounts'] = array_fill_keys(array_keys($result['counts']), 0);
+        $result['suppressedReasonCount'] = 0;
+        $ids = array();
+        foreach ($result['warnings'] as $row)
+            if ($row['code'] === 'W07') $ids[] = (int) $row['entityID'];
+        $states = array();
+        // Bounded batch reads, scoped to the session and already authorised Companies.
+        foreach (array_chunk($ids, 200) as $batch)
+            foreach ($this->_db->getAllAssoc("SELECT * FROM warning_review WHERE reviewing_user = " . $this->actor() .
+                " AND warning_rule = 'W07' AND data_item_type = " . DATA_ITEM_COMPANY .
+                ' AND reason_id = 0 AND data_item_id IN (' . implode(',', $batch) . ')') as $state)
+                $states[$state['data_item_id']][$state['reason_key']] = $state;
+        if (!$result['warnings']) return $result;
+        $today = DateUtility::getAdjustedDate('Y-m-d');
+        $companies = array();
+        $companyPositions = array();
+        foreach ($result['warnings'] as $row)
+        {
+            if ($row['code'] === 'W07')
+            {
+                $visible = array();
+                foreach ($row['relationshipAttention']['reasons'] as $reason)
+                {
+                    $state = $states[$row['entityID']][$reason] ?? null;
+                    $identity = in_array($reason, array('stale_relationship', 'no_next_action'), true) ?
+                        self::identity('W07', DATA_ITEM_COMPANY, $row['entityID'], $reason) : null;
+                    if ($identity !== null && $state && $this->suppresses($state, $today) &&
+                        hash_equals($this->evidence($identity, $row), $state['evidence_hash']))
+                    {
+                        ++$result['suppressedReasonCount'];
+                        continue;
+                    }
+                    $visible[] = $reason;
+                }
+                if (!$visible) continue;
+                $row['relationshipAttention']['reasons'] = $visible;
+                $row['relationshipAttention']['primaryReason'] = $visible[0];
+                $row['reason'] = $visible[0];
+                $company = &$row['relationshipAttention'];
+                $company['sortDate'] = $company['lastContact'] === null ? '' :
+                    DateUtility::getAdjustedDate('Y-m-d', strtotime($company['lastContact']));
+                $dates = array();
+                foreach ($company['tasks'] as $task)
+                {
+                    $reason = $task['dueDate'] < $today ? 'overdue_task' :
+                        ($task['dueDate'] === $today ? 'due_today' : 'upcoming');
+                    if ($reason === $visible[0]) $dates[] = $task['dueDate'];
+                }
+                if ($dates) $company['sortDate'] = min($dates);
+                unset($company);
+                $companyPositions[] = count($result['visibleWarnings']);
+                $companies[] = $row;
+            }
+            $result['visibleWarnings'][] = $row;
+            ++$result['visibleCounts'][$row['code']];
+        }
+        // Reorder only Company slots, using the source's priority and tie rules.
+        usort($companies, function ($a, $b) {
+            return Companies::compareRelationshipAttention($a['relationshipAttention'], $b['relationshipAttention']);
+        });
+        foreach ($companyPositions as $index => $position) $result['visibleWarnings'][$position] = $companies[$index];
+        return $result;
+    }
+
+    /** Corrupt/unsupported state must never hide a warning. Expiry is date-only. */
+    private function suppresses($state, $today)
+    {
+        if (!in_array($state['action'], array('close', 'remind_later'), true) ||
+            (int) $state['version'] < 1 || !is_string($state['evidence_hash']) ||
+            !preg_match('/^[a-f0-9]{64}$/D', $state['evidence_hash']) ||
+            !DateUtility::isValidDatabaseDateTime($state['action_at']) ||
+            !is_string($state['review_until']) ||
+            !preg_match('/^([1-9][0-9]{3})-([0-9]{2})-([0-9]{2})$/D', $state['review_until'], $parts) ||
+            !checkdate((int) $parts[2], (int) $parts[3], (int) $parts[1])) return false;
+        if ($state['review_until'] <= $today) return false;
+        // Presets were validated when saved. The original session offset is not
+        // persisted: re-deriving that date with today's offset breaks valid reviews.
+        if ($state['action'] === 'remind_later') return $state['close_reason'] === null;
+        $actionDate = DateUtility::getAdjustedDate('Y-m-d', strtotime($state['action_at']));
+        if ($actionDate > $today || $state['review_until'] <= $today || $state['review_until'] <= $actionDate) return false;
+        if ($state['action'] === 'close')
+            return in_array($state['close_reason'], array('already_handled', 'not_applicable', 'incorrect_warning', 'no_further_action'), true) &&
+                $state['review_until'] <= (new DateTimeImmutable($actionDate))->modify('+30 days')->format('Y-m-d');
+        return false;
     }
 
     /** Current actor only; source visibility is required even for stored state. */
