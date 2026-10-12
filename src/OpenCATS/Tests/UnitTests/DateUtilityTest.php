@@ -23,6 +23,32 @@ include_once(LEGACY_ROOT . '/lib/DateUtility.php');   /* Depends on StringUtilit
 
 class DateUtilityTest extends TestCase
 {
+    public function testRecruitmentWorkingDatetimeBoundaries(): void
+    {
+        $original = date_default_timezone_get();
+        try
+        {
+            foreach (array('UTC', 'Europe/London', 'America/New_York') as $zone)
+            {
+                date_default_timezone_set($zone);
+                foreach (array(
+                    array('2026-10-09 15:30:00', 2, '2026-10-13 15:30:00'),
+                    array('2026-10-09 15:30:00', 5, '2026-10-16 15:30:00'),
+                    array('2026-10-10 15:30:00', 2, '2026-10-13 15:30:00'),
+                    array('2026-10-11 15:30:00', 5, '2026-10-16 15:30:00'),
+                    array('2026-03-27 15:30:00', 2, '2026-03-31 15:30:00'),
+                    array('2026-10-23 15:30:00', 2, '2026-10-27 15:30:00'),
+                    array('2026-12-24 15:30:00', 2, '2026-12-28 15:30:00')) as [$start, $days, $end])
+                    self::assertSame($end, DateUtility::addWorkingDays($start, $days));
+            }
+            foreach (array(null, array(), '', '2026-02-30 12:00:00', '2026-01-01 24:00:00',
+                '0000-00-00 00:00:00', '2026-01-01') as $invalid)
+                self::assertNull(DateUtility::addWorkingDays($invalid, 2));
+            self::assertNull(DateUtility::addWorkingDays('2026-01-01 00:00:00', -1));
+        }
+        finally { date_default_timezone_set($original); }
+    }
+
     public function testWarningCalendarAndWorkingDays(): void
     {
         foreach (array(

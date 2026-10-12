@@ -192,7 +192,7 @@ class History
             "INSERT INTO history (data_item_type, data_item_id, the_field, previous_value, new_value, description, set_date, entered_by) VALUES %s",
             implode(',', $changedHistoryValues)
         );
-        $this->_db->query($sql);
+        return $this->_db->query($sql, true);
     }
 
     /**

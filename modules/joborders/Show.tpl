@@ -462,6 +462,7 @@ use OpenCATS\UI\QuickActionMenu;
             </div>
         </section>
     <?php
+    include(LEGACY_ROOT . '/modules/joborders/RecruitmentWarnings.tpl');
     include_once(LEGACY_ROOT . '/modules/tasks/TasksUI.php');
     TasksUI::showForParent(DATA_ITEM_JOBORDER, $this->jobOrderID);
     ?>

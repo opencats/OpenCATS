@@ -757,6 +757,8 @@ CREATE TABLE `joborder` (
   KEY `idx_joborder_sector` (`sector_id`),
   `is_speculative` TINYINT(1) NOT NULL DEFAULT '0',
   `first_actionable_at` DATETIME DEFAULT NULL,
+  `w02_reviewed_at` DATETIME DEFAULT NULL,
+  `w03_reviewed_at` DATETIME DEFAULT NULL,
   `joborder_id` INT(11) NOT NULL AUTO_INCREMENT,
   `recruiter` INT(11),
   `contact_id` INT(11),

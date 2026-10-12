@@ -17,17 +17,11 @@ class Tasks
         $this->_db = DatabaseConnection::getInstance();
     }
 
-    /**
-     * Derived Stage 4B results for the signed-in actor. Counts use only returned
-     * authorised rows. W02/W03 deliberately have no implementation: see the
-     * source-evidence report. No request-supplied actor or scope is accepted.
-     */
+    /** Derived warnings for the signed-in actor; counts contain only authorized rows. */
     public function getRecruitmentWarnings()
     {
-        $result = array('warnings' => array(), 'counts' => array('W01' => 0, 'W07' => 0, 'W08' => 0),
-            'jobsAtRisk' => 0, 'disabledRules' => array(
-                'W02' => 'No verified actionable start or current recruitment-cycle boundary.',
-                'W03' => 'No verified cycle boundary or correction/replay identity for progress history.'));
+        $result = array('warnings' => array(), 'counts' => array('W01' => 0, 'W02' => 0, 'W03' => 0, 'W07' => 0, 'W08' => 0),
+            'jobsAtRisk' => 0, 'disabledRules' => array());
         if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() ||
             $_SESSION['CATS']->getUserID() <= 0) return $result;
         $today = DateUtility::getAdjustedDate('Y-m-d');
@@ -61,6 +55,7 @@ class Tasks
                     'reason' => 'invalid_assignee', 'routing' => 'tasks_administrator', 'sortGroup' => 1));
             }
         }
+        foreach ($this->getJobRecruitmentWarnings() as $warning) $rows[] = $warning;
         foreach ((new JobOrders())->getUnassignedWorkWarnings() as $warning) $rows[] = $warning;
         // Preserve the authoritative Company results and their relative ordering.
         foreach ((new Companies())->getRelationshipAttention() as $order => $company)
@@ -95,6 +90,96 @@ class Tasks
         }
         $result['warnings'] = $rows;
         $result['jobsAtRisk'] = count($jobs);
+        return $result;
+    }
+
+    /** W02/W03 use recorded milestones, not inferred outcomes or lifecycle cycles. */
+    public function getJobRecruitmentWarnings($jobOrderID = null)
+    {
+        if ($jobOrderID !== null) $jobOrderID = self::normalizeID($jobOrderID, false);
+        if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() ||
+            $_SESSION['CATS']->getUserID() <= 0 || !$this->hasAccess('joborders.list', ACCESS_LEVEL_READ) ||
+            !$this->hasAccess('joborders.show', ACCESS_LEVEL_READ) ||
+            !$this->hasAccess('candidates.show', ACCESS_LEVEL_READ) || !JobOrderStatuses::isActionable('Active')) return array();
+        $now = $this->_db->getAssoc('SELECT NOW() AS clock')['clock'];
+        if (!DateUtility::isValidDatabaseDateTime($now)) return array();
+        $clock = $this->_db->makeQueryString($now);
+        $hiddenJob = $this->hasAccess('joborders.hidden', ACCESS_LEVEL_SA) ? '' : ' AND (j.is_admin_hidden IS NULL OR j.is_admin_hidden <> 1)';
+        $hiddenCandidate = $this->hasAccess('candidates.hidden', ACCESS_LEVEL_SA) ? '' : ' OR c.is_admin_hidden = 1';
+        $milestones = implode(',', array(PIPELINE_STATUS_SUBMITTED, PIPELINE_STATUS_INTERVIEWING, PIPELINE_STATUS_OFFERED, PIPELINE_STATUS_PLACED));
+        $lastID = 0;
+        $result = array();
+        do
+        {
+            $jobs = $this->_db->getAllAssoc('SELECT j.joborder_id AS jobOrderID, j.title, j.owner, j.recruiter,
+                j.is_hot AS isHot, j.is_admin_hidden AS isAdminHidden, j.first_actionable_at AS actionable,
+                j.w02_reviewed_at AS W02, j.w03_reviewed_at AS W03,
+                EXISTS(SELECT 1 FROM candidate_joborder_status_history h WHERE h.joborder_id = j.joborder_id
+                    AND h.status_to = ' . PIPELINE_STATUS_SUBMITTED . ' AND h.date >= j.first_actionable_at) AS submitted,
+                (SELECT MAX(h.date) FROM candidate_joborder_status_history h WHERE h.joborder_id = j.joborder_id
+                    AND h.status_to IN (' . $milestones . ') AND h.date >= j.first_actionable_at) AS progress
+                FROM joborder j WHERE j.status = \'Active\' AND j.is_speculative = 0
+                AND j.first_actionable_at IS NOT NULL AND j.first_actionable_at <= ' . $clock . $hiddenJob . '
+                AND NOT EXISTS(SELECT 1 FROM candidate_joborder p LEFT JOIN candidate c ON c.candidate_id = p.candidate_id
+                    WHERE p.joborder_id = j.joborder_id AND (c.candidate_id IS NULL' . $hiddenCandidate . '))
+                AND NOT EXISTS(SELECT 1 FROM candidate_joborder_status_history h LEFT JOIN candidate c ON c.candidate_id = h.candidate_id
+                    WHERE h.joborder_id = j.joborder_id AND h.status_to IN (' . $milestones . ')
+                    AND (h.date < \'1000-01-01 00:00:00\' OR MONTH(h.date) = 0 OR DAY(h.date) = 0
+                        OR LAST_DAY(h.date) IS NULL OR DAY(h.date) > DAY(LAST_DAY(h.date)) OR h.date > ' . $clock . '
+                        OR (h.date >= j.first_actionable_at AND (c.candidate_id IS NULL' . $hiddenCandidate . '))))
+                AND j.joborder_id > ' . $lastID . ($jobOrderID === null ? '' : ' AND j.joborder_id = ' . $jobOrderID) . '
+                ORDER BY j.joborder_id LIMIT 200');
+            if (!$jobs) break;
+            $parents = array(DATA_ITEM_JOBORDER => array_column($jobs, null, 'jobOrderID'));
+            $coverage = array();
+            if ($this->hasAccess('tasks.list', ACCESS_LEVEL_READ) && $this->hasAccess('tasks.show', ACCESS_LEVEL_READ))
+            {
+                $lastTaskID = 0;
+                do
+                {
+                    $tasks = $this->_db->getAllAssoc($this->selectSQL() . " WHERE data_item_type = " . DATA_ITEM_JOBORDER .
+                        " AND data_item_id IN (" . implode(',', array_keys($parents[DATA_ITEM_JOBORDER])) . ")
+                        AND status IN ('open', 'in_progress') AND purpose = 'job_follow_up' AND task_id > " . $lastTaskID . " ORDER BY task_id LIMIT 200");
+                    $access = (new Pipelines())->getAccessMap(array_filter(array_column($tasks, 'candidateJobOrderID'), fn($id) => $id !== null));
+                    foreach ($tasks as $task)
+                    {
+                        $lastTaskID = (int) $task['taskID'];
+                        if (!$this->canRead($task, $parents, $access)) continue;
+                        $job = (int) $task['dataItemID'];
+                        $overdue = DateUtility::getCalendarDaysBetween($task['dueDate'], DateUtility::getAdjustedDate('Y-m-d'));
+                        if (!isset($coverage[$job]) || $overdue > 0)
+                            $coverage[$job] = array('taskID' => (int) $task['taskID'], 'coverage' => $overdue > 0 ? 'overdue_follow_up' : 'covered');
+                    }
+                } while (count($tasks) === 200);
+            }
+            foreach ($jobs as $job)
+            {
+                $lastID = (int) $job['jobOrderID'];
+                if (!DateUtility::isValidDatabaseDateTime($job['actionable'])) continue;
+                foreach (array('W02' => 2, 'W03' => 5) as $code => $days)
+                {
+                    if ($code === 'W02' && $job['submitted']) continue;
+                    $source = $code === 'W03' && $job['progress'] !== null ? $job['progress'] : $job['actionable'];
+                    $deadline = DateUtility::addWorkingDays($source, $days);
+                    if ($deadline === null || $now <= $deadline) continue;
+                    if ($job[$code] !== null)
+                    {
+                        $until = DateUtility::addWorkingDays($job[$code], 5);
+                        // Malformed/future review evidence is uncertain, not permission to warn.
+                        if ($until === null || $job[$code] > $now || $now < $until) continue;
+                    }
+                    $result[] = array_merge(array('code' => $code, 'identity' => $code . ':joborder:' . $lastID,
+                        'entityType' => DATA_ITEM_JOBORDER, 'entityID' => $lastID, 'jobOrderID' => $lastID,
+                        'title' => $job['title'], 'reason' => $code === 'W02' ? 'no_recorded_submission' : 'no_recorded_candidate_progress',
+                        'sourceDate' => $source, 'deadline' => $deadline,
+                        'ageDays' => DateUtility::getWorkingDaysBetween(substr($source, 0, 10), substr($now, 0, 10)),
+                        'responsibleUserID' => $job['recruiter'], 'routing' => 'joborder_recruiter',
+                        'taskID' => null, 'coverage' => 'uncovered', 'priority' => $job['isHot'] ? 'high' : 'normal',
+                        'sortGroup' => 2, 'evidence' => array('table' => 'joborder', 'id' => $lastID)),
+                        $coverage[$lastID] ?? array());
+                }
+            }
+        } while (count($jobs) === 200);
         return $result;
     }
 

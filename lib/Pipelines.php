@@ -247,69 +247,84 @@ class Pipelines
     public function setStatus($candidateID, $jobOrderID, $statusID,
                               $emailAddress, $emailText)
     {
-        /* Get existing status. */
-        $sql = sprintf(
-            "SELECT
-                status AS oldStatusID,
-                candidate_joborder_id AS candidateJobOrderID
-            FROM
-                candidate_joborder
-            WHERE
-                joborder_id = %s
-            AND
-                candidate_id = %s",
-            $this->_db->makeQueryInteger($jobOrderID),
-            $this->_db->makeQueryInteger($candidateID)
-        );
-        $rs = $this->_db->getAssoc($sql);
-
-        if (empty($rs))
+        if (!$this->_db->beginTransaction()) throw new RuntimeException('Pipeline status requires its own transaction.');
+        try
         {
-            return;
+            /* Get existing status. */
+            $sql = sprintf(
+                "SELECT
+                    status AS oldStatusID,
+                    candidate_joborder_id AS candidateJobOrderID
+                FROM
+                    candidate_joborder
+                WHERE
+                    joborder_id = %s
+                AND
+                    candidate_id = %s FOR UPDATE",
+                $this->_db->makeQueryInteger($jobOrderID),
+                $this->_db->makeQueryInteger($candidateID)
+            );
+            $rs = $this->_db->getAssoc($sql);
+
+            if (empty($rs))
+            {
+                if (!$this->_db->commitTransaction()) throw new RuntimeException('Unable to commit pipeline status.');
+                return;
+            }
+
+            $candidateJobOrderID = $rs['candidateJobOrderID'];
+            $oldStatusID         = $rs['oldStatusID'];
+
+            if ($oldStatusID == $statusID)
+            {
+                /* No need to update the database and scew the history if there is
+                 * no actual change.
+                 */
+                if (!$this->_db->commitTransaction()) throw new RuntimeException('Unable to commit pipeline status.');
+                return;
+            }
+
+            /* Change status. */
+            $sql = sprintf(
+                "UPDATE
+                    candidate_joborder
+                SET
+                    status        = %s,
+                    date_modified = NOW()
+                WHERE
+                    candidate_joborder_id = %s",
+                $this->_db->makeQueryInteger($statusID),
+                $this->_db->makeQueryInteger($candidateJobOrderID)
+            );
+            if (!$this->_db->query($sql, true)) throw new RuntimeException('Unable to update pipeline status.');
+
+            /* Add history. */
+            $historyID = $this->addStatusHistory(
+                $candidateID, $jobOrderID, $statusID, $oldStatusID
+            );
+
+            if ($historyID < 0) throw new RuntimeException('Unable to record pipeline status history.');
+
+            /* Add auditing history. */
+            $historyDescription = '(USER) changed pipeline status of candidate '
+                . $candidateID . ' for job order ' . $jobOrderID . '.';
+            $history = new History();
+            if (!$history->storeHistoryData(
+                DATA_ITEM_PIPELINE,
+                $candidateJobOrderID,
+                'PIPELINE',
+                $oldStatusID,
+                $statusID,
+                $historyDescription
+            )) throw new RuntimeException('Unable to record pipeline audit history.');
+
+            if (!$this->_db->commitTransaction()) throw new RuntimeException('Unable to commit pipeline status.');
         }
-
-        $candidateJobOrderID = $rs['candidateJobOrderID'];
-        $oldStatusID         = $rs['oldStatusID'];
-
-        if ($oldStatusID == $statusID)
+        catch (Throwable $e)
         {
-            /* No need to update the database and scew the history if there is
-             * no actual change.
-             */
-            return;
+            $this->_db->rollbackTransaction();
+            throw $e;
         }
-
-        /* Change status. */
-        $sql = sprintf(
-            "UPDATE
-                candidate_joborder
-            SET
-                status        = %s,
-                date_modified = NOW()
-            WHERE
-                candidate_joborder_id = %s",
-            $this->_db->makeQueryInteger($statusID),
-            $this->_db->makeQueryInteger($candidateJobOrderID)
-        );
-        $this->_db->query($sql);
-
-        /* Add history. */
-        $historyID = $this->addStatusHistory(
-            $candidateID, $jobOrderID, $statusID, $oldStatusID
-        );
-
-        /* Add auditing history. */
-        $historyDescription = '(USER) changed pipeline status of candidate '
-            . $candidateID . ' for job order ' . $jobOrderID . '.';
-        $history = new History();
-        $history->storeHistoryData(
-            DATA_ITEM_PIPELINE,
-            $candidateJobOrderID,
-            'PIPELINE',
-            $oldStatusID,
-            $statusID,
-            $historyDescription
-        );
 
         if (!empty($emailAddress))
         {
@@ -391,7 +406,7 @@ class Pipelines
             $this->_db->makeQueryInteger($statusFromID)
         );
 
-        $queryResult = $this->_db->query($sql);
+        $queryResult = $this->_db->query($sql, true);
         if (!$queryResult)
         {
             return -1;

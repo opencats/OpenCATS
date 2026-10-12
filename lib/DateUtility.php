@@ -40,6 +40,27 @@ class DateUtility
     }
 
 
+    /** Strict database wall-clock datetime; never normalize invalid evidence. */
+    public static function isValidDatabaseDateTime($value)
+    {
+        if (!is_string($value) || !preg_match('/^[1-9][0-9]{3}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$/D', $value)) return false;
+        $date = DateTimeImmutable::createFromFormat('!Y-m-d H:i:s', $value, new DateTimeZone('UTC'));
+        return $date !== false && $date->format('Y-m-d H:i:s') === $value;
+    }
+
+    /** Mon-Fri calendar additions, retaining DB wall time (no holiday calendar). */
+    public static function addWorkingDays($value, $days)
+    {
+        if (!self::isValidDatabaseDateTime($value) || !is_int($days) || $days < 0) return null;
+        $date = new DateTimeImmutable($value, new DateTimeZone('UTC'));
+        while ($days > 0)
+        {
+            $date = $date->modify('+1 day');
+            if ((int) $date->format('N') <= 5) --$days;
+        }
+        return $date->format('Y-m-d H:i:s');
+    }
+
     /* Prevent this class from being instantiated. */
     private function __construct() {}
     private function __clone() {}

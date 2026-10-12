@@ -2453,6 +2453,15 @@ class CATSSchema
                 }
             ',
 
+            '401' => 'PHP:
+                foreach (array("w02_reviewed_at", "w03_reviewed_at") as $name)
+                {
+                    $columns = $db->getAllAssoc("SHOW COLUMNS FROM joborder WHERE Field = " . $db->makeQueryString($name));
+                    if (empty($columns) && !$db->query("ALTER TABLE joborder ADD COLUMN `" . $name . "` DATETIME DEFAULT NULL"))
+                        throw new RuntimeException("Unable to apply recruitment review migration: " . $name);
+                }
+            ',
+
         );
     }
 }

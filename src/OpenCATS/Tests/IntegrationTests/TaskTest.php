@@ -52,6 +52,7 @@ class TaskTest extends DatabaseTestCase
 
     protected function tearDown(): void
     {
+        $this->db->query('SET timestamp = DEFAULT');
         unset($_SESSION['CATS']);
         (new \ReflectionProperty(\DatabaseConnection::class, '_instance'))->setValue(null, null);
         parent::tearDown();
@@ -87,9 +88,294 @@ class TaskTest extends DatabaseTestCase
         $this->tasks->update($progress, array('status' => 'completed'));
         self::assertSame(array(), $this->warningRows('W01'));
         $result = $this->tasks->getRecruitmentWarnings();
-        self::assertSame(array('W02', 'W03'), array_keys($result['disabledRules']));
-        self::assertArrayNotHasKey('W02', $result['counts']);
-        self::assertArrayNotHasKey('W03', $result['counts']);
+        self::assertSame(array(), $result['disabledRules']);
+        self::assertSame(0, $result['counts']['W02']);
+        self::assertSame(0, $result['counts']['W03']);
+    }
+
+    private function warningJob($clock = '2026-10-19 15:30:01')
+    {
+        $job = $this->parents[DATA_ITEM_JOBORDER];
+        $this->db->query("SET timestamp = UNIX_TIMESTAMP('$clock')");
+        $this->db->query("UPDATE joborder SET status = 'Active', owner = 1, recruiter = 1,
+            first_actionable_at = '2026-10-09 15:30:00' WHERE joborder_id = $job");
+        return $job;
+    }
+
+    private function milestone($status, $date, $candidate = null)
+    {
+        $job = $this->parents[DATA_ITEM_JOBORDER];
+        $candidate = $candidate ?? $this->parents[DATA_ITEM_CANDIDATE];
+        $this->db->query("INSERT INTO candidate_joborder_status_history (joborder_id, candidate_id, status_from, status_to, date)
+            VALUES ($job, $candidate, 100, $status, '$date')");
+    }
+
+    public function testRecruitmentWarningBoundariesAndRecordedMilestones(): void
+    {
+        $job = $this->warningJob();
+        foreach (array('2026-10-10 15:30:00' => array(0, 0), '2026-10-12 15:30:00' => array(0, 0),
+            '2026-10-13 15:30:00' => array(0, 0), '2026-10-13 15:30:01' => array(1, 0),
+            '2026-10-16 15:30:00' => array(1, 0), '2026-10-16 15:30:01' => array(1, 1)) as $clock => $counts)
+        {
+            $this->db->query("SET timestamp = UNIX_TIMESTAMP('$clock')");
+            $result = $this->tasks->getRecruitmentWarnings();
+            self::assertSame($counts, array($result['counts']['W02'], $result['counts']['W03']), $clock);
+            self::assertSame($counts[0] ? 1 : 0, $result['jobsAtRisk']);
+        }
+        $this->milestone(400, '2026-10-09 15:29:59');
+        self::assertCount(1, $this->warningRows('W02'));
+        $this->milestone(400, '2026-10-09 15:30:00');
+        self::assertSame(array(), $this->warningRows('W02')); // Same-second evidence qualifies.
+        self::assertCount(1, $this->warningRows('W03'));
+        foreach (array(400, 500, 600, 800) as $status)
+        {
+            $this->db->query('DELETE FROM candidate_joborder_status_history');
+            $this->milestone($status, '2026-10-16 15:30:00');
+            self::assertSame(array(), $this->warningRows('W03'));
+            self::assertCount($status === 400 ? 0 : 1, $this->warningRows('W02'));
+        }
+        $this->db->query('DELETE FROM candidate_joborder_status_history');
+        foreach (array(100, 200, 300, 650, 675, 700) as $status) $this->milestone($status, '2026-10-16 15:30:00');
+        self::assertCount(1, $this->warningRows('W03'));
+        $pipeline = new \Pipelines();
+        $candidate = $this->parents[DATA_ITEM_CANDIDATE];
+        foreach (array(400, 100, 400) as $status) $pipeline->setStatus($candidate, $job, $status, '', '');
+        self::assertSame(array(), $this->warningRows('W03'));
+        self::assertSame(array(), $this->warningRows('W02'));
+        $pipeline->setStatus($candidate, $job, 700, '', '');
+        self::assertSame(array(), $this->warningRows('W02')); // Decline does not erase submission.
+    }
+
+    public function testRecruitmentWarningUnknownEligibilityAndAccess(): void
+    {
+        $job = $this->warningJob();
+        foreach (array('On Hold', 'Closed', 'Canceled', 'Full', 'Upcoming') as $status)
+        {
+            $this->db->query("UPDATE joborder SET status = '$status' WHERE joborder_id = $job");
+            self::assertSame(array(), $this->tasks->getJobRecruitmentWarnings());
+        }
+        $this->db->query("UPDATE joborder SET status = 'Active' WHERE joborder_id = $job");
+        self::assertCount(2, $this->tasks->getJobRecruitmentWarnings()); // Reopened, no reset.
+        foreach (array('NULL', "'2027-01-01 00:00:00'", "'0000-00-00 00:00:00'") as $value)
+        {
+            $this->db->query("UPDATE joborder SET first_actionable_at = $value WHERE joborder_id = $job");
+            self::assertSame(array(), $this->tasks->getJobRecruitmentWarnings());
+        }
+        $this->warningJob();
+        $this->db->query("UPDATE joborder SET is_speculative = 1 WHERE joborder_id = $job");
+        self::assertSame(array(), $this->tasks->getJobRecruitmentWarnings());
+        $this->db->query("UPDATE joborder SET is_speculative = 0 WHERE joborder_id = $job");
+        foreach (array('2027-01-01 00:00:00', '0000-00-00 00:00:00') as $date)
+        {
+            $this->milestone(500, $date);
+            self::assertSame(array(), $this->tasks->getJobRecruitmentWarnings());
+            $this->db->query('DELETE FROM candidate_joborder_status_history');
+        }
+        foreach (array('joborders.list', 'joborders.show', 'candidates.show') as $permission)
+        {
+            $this->overrides = array($permission => ACCESS_LEVEL_DISABLED);
+            self::assertSame(array(), $this->tasks->getJobRecruitmentWarnings());
+        }
+        $this->overrides = array('joborders.hidden' => ACCESS_LEVEL_READ);
+        $this->db->query("UPDATE joborder SET is_admin_hidden = 1 WHERE joborder_id = $job");
+        self::assertSame(array(), $this->tasks->getJobRecruitmentWarnings());
+        $this->overrides = array('candidates.hidden' => ACCESS_LEVEL_READ);
+        $candidate = $this->parents[DATA_ITEM_CANDIDATE];
+        $this->db->query("UPDATE candidate SET is_admin_hidden = 1 WHERE candidate_id = $candidate");
+        self::assertSame(array(), $this->tasks->getJobRecruitmentWarnings());
+        $this->db->query('DELETE FROM candidate_joborder');
+        $this->milestone(500, '2026-10-12 15:30:00');
+        self::assertSame(array(), $this->tasks->getJobRecruitmentWarnings()); // History-only hidden candidate.
+        $this->overrides = array();
+        self::assertCount(2, $this->tasks->getJobRecruitmentWarnings());
+    }
+
+    public function testRecruitmentReviewExpiryCoverageAndHistory(): void
+    {
+        $job = $this->warningJob();
+        $jobs = new \JobOrders();
+        $task = $this->linked(DATA_ITEM_JOBORDER, array('purpose' => 'general', 'assignedTo' => 1));
+        self::assertSame('uncovered', $this->warningRows('W02')[0]['coverage']);
+        $this->tasks->update($task, array('purpose' => 'job_follow_up'));
+        self::assertSame('covered', $this->warningRows('W02')[0]['coverage']);
+        $this->tasks->update($task, array('status' => 'completed'));
+        self::assertSame('uncovered', $this->warningRows('W03')[0]['coverage']);
+        $beforeJob = $jobs->get($job)['firstActionableAt'];
+        self::assertTrue($jobs->reviewRecruitmentWarning($job, 'W02', 'review'));
+        self::assertSame(array(), $this->warningRows('W02'));
+        self::assertCount(1, $this->warningRows('W03'));
+        self::assertSame(1, $this->tasks->getRecruitmentWarnings()['jobsAtRisk']);
+        $jobs->reviewRecruitmentWarning($job, 'W03', 'review');
+        self::assertSame(0, $this->tasks->getRecruitmentWarnings()['jobsAtRisk']);
+        $this->actor = $this->assignee;
+        self::assertSame(array(), $this->tasks->getJobRecruitmentWarnings()); // Shared across users.
+        $jobs->reviewRecruitmentWarning($job, 'W02', 'show');
+        self::assertCount(1, $this->warningRows('W02'));
+        $history = $this->db->getAssoc("SELECT entered_by, previous_value, new_value FROM history WHERE the_field = 'w02_reviewed_at' ORDER BY history_id DESC LIMIT 1");
+        self::assertEquals($this->assignee, $history['entered_by']);
+        self::assertNotNull($history['previous_value']);
+        self::assertNull($history['new_value']);
+        $jobs->reviewRecruitmentWarning($job, 'W02', 'review');
+        $this->db->query("UPDATE joborder SET status = 'On Hold' WHERE joborder_id = $job");
+        $this->db->query("UPDATE joborder SET status = 'Active' WHERE joborder_id = $job");
+        foreach (array('2026-10-26 15:30:00' => 0, '2026-10-26 15:30:01' => 2) as $clock => $count)
+        {
+            $this->db->query("SET timestamp = UNIX_TIMESTAMP('$clock')");
+            self::assertCount($count, $this->tasks->getJobRecruitmentWarnings());
+        }
+        self::assertSame($beforeJob, $jobs->get($job)['firstActionableAt']);
+        self::assertSame('completed', $this->tasks->get($task)['status']);
+        self::assertEquals(0, $this->scalar('SELECT COUNT(*) FROM candidate_joborder_status_history'));
+        $jobs->reviewRecruitmentWarning($job, 'W03', 'review');
+        $this->milestone(500, '2026-10-30 15:30:00');
+        $this->db->query("SET timestamp = UNIX_TIMESTAMP('2026-11-02 15:30:01')");
+        self::assertSame(array(), $this->warningRows('W03')); // Review expired, progress still recent.
+    }
+
+    public function testRecruitmentReviewMigrationAndDeniedWrites(): void
+    {
+        $job = $this->warningJob();
+        $jobs = new \JobOrders();
+        foreach (array(array('joborders.edit' => ACCESS_LEVEL_READ), array('joborders.show' => ACCESS_LEVEL_DISABLED)) as $acl)
+        {
+            $this->overrides = $acl;
+            try { $jobs->reviewRecruitmentWarning($job, 'W02', 'review'); self::fail('Denied'); }
+            catch (\RuntimeException $e) { self::assertSame('Job Order review denied.', $e->getMessage()); }
+        }
+        $this->overrides = array('joborders.hidden' => ACCESS_LEVEL_READ);
+        $this->db->query("UPDATE joborder SET is_admin_hidden = 1 WHERE joborder_id = $job");
+        try { $jobs->reviewRecruitmentWarning($job, 'W02', 'review'); self::fail('Hidden'); }
+        catch (\RuntimeException $e) { self::assertSame('Job Order review unavailable.', $e->getMessage()); }
+        $this->overrides = array();
+        foreach (array(array('W02'), 'W04', null) as $code)
+        {
+            try { $jobs->reviewRecruitmentWarning($job, $code, 'review'); self::fail('Invalid'); }
+            catch (\InvalidArgumentException $e) { self::assertNotEmpty($e->getMessage()); }
+        }
+        require_once LEGACY_ROOT . '/modules/install/Schema.php';
+        $db = $this->db;
+        $jobs->reviewRecruitmentWarning($job, 'W02', 'review');
+        $stamp = $jobs->get($job)['w02ReviewedAt'];
+        $fresh = $db->getAllAssoc("SHOW COLUMNS FROM joborder WHERE Field IN ('w02_reviewed_at', 'w03_reviewed_at')");
+        $db->query('ALTER TABLE joborder DROP COLUMN w03_reviewed_at');
+        eval(substr(\CATSSchema::get()[401], 4)); // Partial retry retains W02.
+        eval(substr(\CATSSchema::get()[401], 4));
+        self::assertSame($stamp, $jobs->get($job)['w02ReviewedAt']);
+        self::assertSame($fresh, $db->getAllAssoc("SHOW COLUMNS FROM joborder WHERE Field IN ('w02_reviewed_at', 'w03_reviewed_at')"));
+        $db->query('ALTER TABLE joborder DROP COLUMN w02_reviewed_at, DROP COLUMN w03_reviewed_at');
+        eval(substr(\CATSSchema::get()[401], 4));
+        self::assertSame($fresh, $db->getAllAssoc("SHOW COLUMNS FROM joborder WHERE Field IN ('w02_reviewed_at', 'w03_reviewed_at')"));
+        self::assertNull($jobs->get($job)['w02ReviewedAt']);
+    }
+
+    public function testRecruitmentReviewNativePostHandler(): void
+    {
+        $job = $this->warningJob();
+        // The native redirect terminates PHP, so exercise it in a child process.
+        $script = <<<'PHP'
+require './src/OpenCATS/Tests/bootstrap.php';
+define('DATABASE_NAME', 'cats_integrationtest');
+define('DATABASE_HOST', 'integrationtestdb');
+require './config.php';
+require './constants.php';
+require './lib/DatabaseConnection.php';
+require './lib/Session.php';
+require './lib/Hooks.php';
+require './lib/Template.php';
+require './lib/UserInterface.php';
+require './lib/CATSUtility.php';
+require './lib/DataGrid.php';
+require './modules/joborders/JobOrdersUI.php';
+$_SESSION['CATS'] = new class extends CATSSession {
+    public function __construct() {}
+    public function getUserID() { return 1; }
+    public function isLoggedIn() { return true; }
+    public function getAccessLevel($key = '') { return ACCESS_LEVEL_SA; }
+    public function getTimeZoneOffset() { return 0; }
+    public function isDateDMY() { return false; }
+    public function isCSRFTokenValid($token) { return $token === 'review-fixture'; }
+};
+$_GET = array('a' => 'reviewRecruitmentWarning');
+$_POST = json_decode(stream_get_contents(STDIN), true);
+$_SERVER['REQUEST_METHOD'] = 'POST';
+$_SERVER['PHP_SELF'] = '/index.php';
+$_SERVER['HTTP_HOST'] = 'localhost';
+(new JobOrdersUI())->handleRequest();
+PHP;
+        foreach (array('review', 'show') as $action)
+        {
+            $process = proc_open(array(PHP_BINARY, '-r', $script), array(0 => array('pipe', 'r'),
+                1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+            fwrite($pipes[0], json_encode(array('jobOrderID' => (string) $job, 'warningCode' => 'W02',
+                'reviewAction' => $action, 'csrfToken' => 'review-fixture')));
+            fclose($pipes[0]);
+            $stdout = stream_get_contents($pipes[1]);
+            $stderr = stream_get_contents($pipes[2]);
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+            self::assertSame(0, proc_close($process), $stdout . $stderr);
+            self::assertStringNotContainsString('Fatal error', $stdout . $stderr);
+            $stamp = (new \JobOrders())->get($job)['w02ReviewedAt'];
+            if ($action === 'review') self::assertNotNull($stamp);
+            else self::assertNull($stamp);
+        }
+    }
+
+    public function testRecruitmentReviewAuditFailureRollsBack(): void
+    {
+        $job = $this->warningJob();
+        $this->db->query("CREATE TRIGGER reject_review BEFORE INSERT ON history FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'fixture review failure'");
+        try
+        {
+            (new \JobOrders())->reviewRecruitmentWarning($job, 'W02', 'review');
+            self::fail('Audit failure must propagate.');
+        }
+        catch (\Throwable $e) { self::assertStringContainsString('fixture review failure', $e->getMessage()); }
+        finally { $this->db->query('DROP TRIGGER reject_review'); }
+        self::assertNull((new \JobOrders())->get($job)['w02ReviewedAt']);
+        self::assertCount(2, $this->tasks->getJobRecruitmentWarnings());
+    }
+
+    public function testRecruitmentWarningBatchesDeduplicateJobs(): void
+    {
+        $job = $this->warningJob();
+        $values = array_fill(0, 205, "('Batch Job', 'Active', 1, 1, '2026-10-09 15:30:00')");
+        $this->db->query('INSERT INTO joborder (title, status, owner, recruiter, first_actionable_at) VALUES ' . implode(',', $values));
+        $this->milestone(500, '2026-10-09 15:30:00');
+        $this->milestone(500, '2026-10-09 15:30:00');
+        $candidate = $this->parents[DATA_ITEM_CANDIDATE];
+        $this->db->query("INSERT INTO candidate (first_name, last_name, entered_by, owner) VALUES ('Second', 'Pipeline', 1, 1)");
+        $second = (int) $this->db->getLastInsertID();
+        $this->db->query("INSERT INTO candidate_joborder (joborder_id, candidate_id, status)
+            SELECT joborder_id, $second, 500 FROM joborder WHERE first_actionable_at IS NOT NULL");
+        $this->db->query("INSERT INTO candidate_joborder_status_history (joborder_id, candidate_id, status_from, status_to, date)
+            SELECT joborder_id, $second, 100, 500, first_actionable_at FROM joborder
+            CROSS JOIN (SELECT 1 AS n UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5) repeats
+            WHERE first_actionable_at IS NOT NULL");
+
+        $queries = array();
+        $proxy = $this->createStub(\DatabaseConnection::class);
+        $proxy->method('getAllAssoc')->willReturnCallback(function ($sql) use (&$queries) {
+            if (str_starts_with($sql, 'SELECT j.joborder_id')) $queries[] = $sql;
+            return $this->db->getAllAssoc($sql);
+        });
+        $proxy->method('getAssoc')->willReturnCallback(fn($sql) => $this->db->getAssoc($sql));
+        $proxy->method('makeQueryString')->willReturnCallback(fn($value) => $this->db->makeQueryString($value));
+        (new \ReflectionProperty(\Tasks::class, '_db'))->setValue($this->tasks, $proxy);
+        $before = $this->db->getAssoc("SHOW SESSION STATUS LIKE 'Questions'")['Value'];
+        $result = $this->tasks->getRecruitmentWarnings();
+        $after = $this->db->getAssoc("SHOW SESSION STATUS LIKE 'Questions'")['Value'];
+        self::assertLessThan(25, (int) $after - (int) $before);
+        self::assertSame(206, $result['counts']['W02']);
+        self::assertSame(206, $result['counts']['W03']);
+        self::assertSame(206, $result['jobsAtRisk']);
+        self::assertCount(412, array_unique(array_column($result['warnings'], 'identity')));
+        self::assertSame('W02:joborder:' . $job, $result['warnings'][0]['identity']);
+        self::assertCount(2, $queries);
+        $plan = $this->db->getAllAssoc('EXPLAIN ' . $queries[0]);
+        self::assertNotEmpty($plan);
+        file_put_contents('/tmp/stage4br-warning-explain-' . PHP_VERSION . '.json', json_encode(array('questions' => (int) $after - (int) $before, 'plan' => $plan), JSON_PRETTY_PRINT));
+
     }
 
     public function testUnassignedWarningSeparatesResponsibilitiesAndDeduplicatesJobs(): void
@@ -161,7 +447,7 @@ class TaskTest extends DatabaseTestCase
         $this->db->query("DELETE FROM candidate_joborder WHERE candidate_joborder_id = {$this->pipeline}");
         self::assertSame(array(), $this->warningRows('W01'));
         $this->loggedIn = false;
-        self::assertSame(array('W01' => 0, 'W07' => 0, 'W08' => 0), $this->tasks->getRecruitmentWarnings()['counts']);
+        self::assertSame(array('W01' => 0, 'W02' => 0, 'W03' => 0, 'W07' => 0, 'W08' => 0), $this->tasks->getRecruitmentWarnings()['counts']);
         self::assertSame(array(), (new \JobOrders())->getUnassignedWorkWarnings());
     }
 

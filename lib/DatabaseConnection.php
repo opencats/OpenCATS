@@ -699,8 +699,7 @@ class DatabaseConnection
     {
         if (!$this->_inTransaction)
         {
-            // Ignore errors (e.g., if transactions are not supported by the underlying storage engine)
-            $this->query('BEGIN', true);
+            if (!$this->query('BEGIN', true)) return false;
             return ($this->_inTransaction = true);
         }
         else
@@ -714,7 +713,7 @@ class DatabaseConnection
     {
         if ($this->_inTransaction)
         {
-            $this->query('COMMIT', true);
+            if (!$this->query('COMMIT', true)) return false;
             $this->_inTransaction = false;
             return true;
         }

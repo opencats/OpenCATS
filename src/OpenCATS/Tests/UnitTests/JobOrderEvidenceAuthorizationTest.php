@@ -15,6 +15,42 @@ class JobOrderEvidenceAuthorizationTest extends AuthorizationTestCase
         require_once './modules/joborders/JobOrdersUI.php';
     }
 
+    public function testRecruitmentReviewRejectsGetCsrfAndReadOnlyRequests(): void
+    {
+        $_GET['a'] = 'reviewRecruitmentWarning';
+        $_POST = array('jobOrderID' => '7', 'warningCode' => 'W02', 'reviewAction' => 'review');
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $this->assertCommonError(COMMONERROR_PERMISSION, fn() => $this->ui(JobOrdersUI::class)->handleRequest());
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        foreach (array(null, array('token'), 'invalid') as $token)
+        {
+            $_POST['csrfToken'] = $token;
+            $this->assertCommonError(COMMONERROR_PERMISSION, fn() => $this->ui(JobOrdersUI::class)->handleRequest());
+        }
+        $this->accessLevel = ACCESS_LEVEL_READ;
+        $this->assertCommonError(COMMONERROR_PERMISSION, fn() => $this->ui(JobOrdersUI::class)->handleRequest());
+        self::assertSame(array(), $this->queries);
+    }
+
+    public function testRecruitmentReviewValidCsrfStillChecksHiddenRecordAndInputs(): void
+    {
+        $this->loggedIn = true;
+        $this->session->method('isCSRFTokenValid')->willReturn(true);
+        $this->db->method('beginTransaction')->willReturn(true);
+        $this->db->method('getAssoc')->willReturn(array('is_admin_hidden' => 1));
+        $_GET['a'] = 'reviewRecruitmentWarning';
+        $_POST = array('jobOrderID' => '7', 'warningCode' => 'W02', 'reviewAction' => 'review', 'csrfToken' => 'valid');
+        $this->assertCommonError(COMMONERROR_PERMISSION, fn() => $this->ui(JobOrdersUI::class)->handleRequest());
+        foreach (array('jobOrderID', 'warningCode', 'reviewAction') as $field)
+        {
+            $old = $_POST[$field];
+            $_POST[$field] = array($old);
+            $this->assertCommonError(COMMONERROR_BADFIELDS, fn() => $this->ui(JobOrdersUI::class)->handleRequest());
+            $_POST[$field] = $old;
+        }
+        self::assertSame(array(), $this->queries);
+    }
+
     public function testCheckboxInputValidation(): void
     {
         $ui = $this->ui(JobOrdersUI::class);
