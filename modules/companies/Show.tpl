@@ -8,6 +8,8 @@ $extraFieldSplit = intdiv(count($this->extraFieldRS), 2);
 <?php TemplateUtility::printHeader(
     'Company - ' . $this->data['name'],
     array(
+        'vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js',
+        'js/warningReviews.js',
         'js/activity.js',
         'js/sorttable.js',
         'js/attachment.js'
@@ -901,6 +903,8 @@ onclick="Activity_editEntry(
 
         <?php
         include_once(LEGACY_ROOT . '/modules/tasks/TasksUI.php');
+        $reviewReturnTo = 'companies';
+        include(LEGACY_ROOT . '/modules/home/WarningReviewSource.tpl');
         TasksUI::showForParent(DATA_ITEM_COMPANY, $this->companyID);
         ?>
         </div>

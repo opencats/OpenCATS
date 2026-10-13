@@ -11,5 +11,5 @@
 </div>
 </section>
 <link rel="stylesheet" href="<?php echo Template::escapeAttr(TemplateUtility::getVersionedAssetURL('modules/tasks/tasks.css')); ?>">
-<script src="<?php echo Template::escapeAttr(TemplateUtility::getVersionedAssetURL('vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js')); ?>" defer></script>
+<?php TemplateUtility::printBootstrapBundle(); ?>
 <script src="<?php echo Template::escapeAttr(TemplateUtility::getVersionedAssetURL('js/tasks.js')); ?>" defer></script>

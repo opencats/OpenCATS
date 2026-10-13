@@ -3,9 +3,9 @@ include_once(LEGACY_ROOT . '/vendor/autoload.php');
 use OpenCATS\UI\QuickActionMenu;
 ?>
 <?php if ($this->isPopup): ?>
-<?php TemplateUtility::printHeader('Job Order - ' . $this->data['title'], array('js/sorttable.js', 'js/match.js', 'js/pipeline.js', 'js/attachment.js', 'js/chartjs/chart.umd.min.js', 'js/charts.js')); ?>
+<?php TemplateUtility::printHeader('Job Order - ' . $this->data['title'], array('vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js', 'js/warningReviews.js', 'js/sorttable.js', 'js/match.js', 'js/pipeline.js', 'js/attachment.js', 'js/chartjs/chart.umd.min.js', 'js/charts.js')); ?>
 <?php else: ?>
-<?php TemplateUtility::printHeader('Job Order - ' . $this->data['title'], array( 'js/sorttable.js', 'js/match.js', 'js/pipeline.js', 'js/attachment.js', 'js/chartjs/chart.umd.min.js', 'js/charts.js')); ?>
+<?php TemplateUtility::printHeader('Job Order - ' . $this->data['title'], array('vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js', 'js/warningReviews.js', 'js/sorttable.js', 'js/match.js', 'js/pipeline.js', 'js/attachment.js', 'js/chartjs/chart.umd.min.js', 'js/charts.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
 <?php TemplateUtility::printQuickSearch(); ?>

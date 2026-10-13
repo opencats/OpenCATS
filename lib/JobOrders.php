@@ -48,45 +48,6 @@ class JobOrders
     }
 
 
-    /** Shared temporary warning review; record permissions are rechecked under lock. */
-    public function reviewRecruitmentWarning($jobOrderID, $code, $action)
-    {
-        if ((!is_int($jobOrderID) && !is_string($jobOrderID)) ||
-            !preg_match('/^[1-9][0-9]*$/D', (string) $jobOrderID) ||
-            !is_string($code) || !in_array($code, array('W02', 'W03'), true) ||
-            !is_string($action) || !in_array($action, array('review', 'show'), true))
-            throw new InvalidArgumentException('Invalid recruitment review request.');
-        if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() || $_SESSION['CATS']->getUserID() <= 0 ||
-            $_SESSION['CATS']->getAccessLevel('joborders.show') < ACCESS_LEVEL_READ ||
-            $_SESSION['CATS']->getAccessLevel('joborders.edit') < ACCESS_LEVEL_EDIT)
-            throw new RuntimeException('Job Order review denied.');
-        $column = $code === 'W02' ? 'w02_reviewed_at' : 'w03_reviewed_at';
-        $id = $this->_db->makeQueryInteger($jobOrderID);
-        if (!$this->_db->beginTransaction()) throw new RuntimeException('Review requires its own transaction.');
-        try
-        {
-            $before = $this->_db->getAssoc('SELECT is_admin_hidden, ' . $column . ' AS reviewed, NOW() AS clock
-                FROM joborder WHERE joborder_id = ' . $id . ' FOR UPDATE');
-            if (!$before || ($before['is_admin_hidden'] == 1 &&
-                $_SESSION['CATS']->getAccessLevel('joborders.hidden') < ACCESS_LEVEL_SA))
-                throw new RuntimeException('Job Order review unavailable.');
-            $after = $action === 'review' ? $before['clock'] : null;
-            if (!$this->_db->query('UPDATE joborder SET ' . $column . ' = ' .
-                $this->_db->makeQueryStringOrNULL($after) . ' WHERE joborder_id = ' . $id, true))
-                throw new RuntimeException('Unable to save recruitment review.');
-            if (!(new History())->storeHistoryData(DATA_ITEM_JOBORDER, $jobOrderID, $column,
-                $before['reviewed'], $after, '(USER) ' . ($action === 'review' ? 'reviewed ' : 'cleared review for ') . $code . '.'))
-                throw new RuntimeException('Unable to record recruitment review history.');
-            if (!$this->_db->commitTransaction()) throw new RuntimeException('Unable to commit recruitment review.');
-        }
-        catch (Throwable $e)
-        {
-            $this->_db->rollbackTransaction();
-            throw $e;
-        }
-        return true;
-    }
-
     /** W08 uses existing administrator privileges and ordinary Job visibility. */
     public function getUnassignedWorkWarnings()
     {

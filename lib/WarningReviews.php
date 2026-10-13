@@ -1,6 +1,7 @@
 <?php
 /** Personal warning review persistence and visibility. */
 include_once(LEGACY_ROOT . '/lib/Tasks.php');
+include_once(LEGACY_ROOT . '/modules/tasks/TaskPresentation.php');
 
 class WarningReviews
 {
@@ -54,12 +55,49 @@ class WarningReviews
     private function source($identity)
     {
         $this->actor();
-        foreach ((new Tasks())->getRecruitmentWarnings()['warnings'] as $row)
+        foreach ($this->sourceRows($identity['data_item_type'], $identity['data_item_id']) as $row)
         {
             $hash = $this->evidence($identity, $row);
             if ($hash !== null) return $hash;
         }
         throw new RuntimeException('Warning source unavailable.');
+    }
+
+    private function sourceRows($type, $id)
+    {
+        $actor = $this->actor();
+        $user = $this->_db->getAssoc('SELECT access_level FROM user WHERE user_id = ' . $actor);
+        if (!$user || $user['access_level'] <= ACCESS_LEVEL_DISABLED) return array();
+        $tasks = new Tasks();
+        if ($type == DATA_ITEM_JOBORDER) return $tasks->getJobRecruitmentWarnings($id);
+        if ($type == DATA_ITEM_COMPANY) return $tasks->getCompanyRecruitmentWarnings($id);
+        return $tasks->getRecruitmentWarnings()['warnings'];
+    }
+
+    /** Only internally enumerated, authorised evidence enters presentation preparation. */
+    public function getForSource($type, $id)
+    {
+        if (!in_array($type, array(DATA_ITEM_JOBORDER, DATA_ITEM_COMPANY), true))
+            throw new InvalidArgumentException('Invalid review source.');
+        $rows = $this->sourceRows($type, $id);
+        $counts = array_fill_keys(array('W01', 'W02', 'W03', 'W07', 'W08'), 0);
+        foreach ($rows as $row) ++$counts[$row['code']];
+        return $this->prepare(array('warnings' => $rows, 'counts' => $counts,
+            'jobsAtRisk' => $type === DATA_ITEM_JOBORDER && $rows ? 1 : 0));
+    }
+
+    public static function reviewKey($row)
+    {
+        return $row['code'] . ':' . $row['entityType'] . ':' . $row['entityID'];
+    }
+
+    public static function reminderDates()
+    {
+        $dates = array();
+        $today = DateUtility::getAdjustedDate('Y-m-d');
+        foreach (array(1, 5, 10) as $days)
+            $dates[$days] = substr(DateUtility::addWorkingDays($today . ' 00:00:00', $days), 0, 10);
+        return $dates;
     }
 
     /** Shared by writes and reads; never re-enumerates warning sources. */
@@ -104,40 +142,71 @@ class WarningReviews
      */
     public function getRecruitmentWarnings()
     {
-        $result = (new Tasks())->getRecruitmentWarnings();
+        return $this->prepare((new Tasks())->getRecruitmentWarnings());
+    }
+
+    private function prepare($result)
+    {
         $result['visibleWarnings'] = array();
         $result['visibleCounts'] = array_fill_keys(array_keys($result['counts']), 0);
         $result['suppressedReasonCount'] = 0;
+        $result['reviews'] = array();
+        $result['suppressedWarnings'] = array();
         $ids = array();
         foreach ($result['warnings'] as $row)
-            if ($row['code'] === 'W07') $ids[] = (int) $row['entityID'];
+            if (in_array($row['code'], array('W02', 'W03', 'W07'), true))
+                $ids[$row['entityType']][$row['entityID']] = (int) $row['entityID'];
         $states = array();
-        // Bounded batch reads, scoped to the session and already authorised Companies.
-        foreach (array_chunk($ids, 200) as $batch)
-            foreach ($this->_db->getAllAssoc("SELECT * FROM warning_review WHERE reviewing_user = " . $this->actor() .
-                " AND warning_rule = 'W07' AND data_item_type = " . DATA_ITEM_COMPANY .
-                ' AND reason_id = 0 AND data_item_id IN (' . implode(',', $batch) . ')') as $state)
-                $states[$state['data_item_id']][$state['reason_key']] = $state;
+        // Bounded reads scoped to this actor and already authorised source IDs.
+        foreach ($ids as $type => $sourceIDs)
+            foreach (array_chunk($sourceIDs, 200) as $batch)
+                foreach ($this->_db->getAllAssoc('SELECT * FROM warning_review WHERE reviewing_user = ' . $this->actor() .
+                    " AND warning_rule IN ('W02', 'W03', 'W07') AND data_item_type = " . (int) $type .
+                    ' AND reason_id = 0 AND data_item_id IN (' . implode(',', $batch) . ')') as $state)
+                    $states[$state['warning_rule'] . ':' . $type . ':' . $state['data_item_id']][$state['reason_key']] = $state;
         if (!$result['warnings']) return $result;
         $today = DateUtility::getAdjustedDate('Y-m-d');
         $companies = array();
         $companyPositions = array();
         foreach ($result['warnings'] as $row)
         {
+            $key = self::reviewKey($row);
+            $reasons = $row['code'] === 'W07' ? $row['relationshipAttention']['reasons'] : array($row['reason']);
+            foreach ($reasons as $reason)
+            {
+                if (!in_array($row['code'], array('W02', 'W03'), true) &&
+                    !($row['code'] === 'W07' && in_array($reason, array('stale_relationship', 'no_next_action'), true))) continue;
+                $identity = self::identity($row['code'], $row['entityType'], $row['entityID'], $reason);
+                $state = $states[$key][$reason] ?? null;
+                $hash = $this->evidence($identity, $row);
+                $suppressed = $state && $this->suppresses($state, $today) &&
+                    ($row['code'] === 'W07' || $state['action'] === 'remind_later') && hash_equals($hash, $state['evidence_hash']);
+                $status = 'Active warning';
+                if ($suppressed) $status = $state['action'] === 'close' ? 'Temporarily closed' : 'Remind later';
+                elseif ($state && $state['action'] !== 'reset')
+                    $status = !hash_equals($hash, $state['evidence_hash']) ? 'Warning evidence changed' :
+                        ($state['review_until'] <= $today ? 'Review expired' : 'Review is invalid');
+                $module = $row['code'] === 'W07' ? 'companies' : 'joborders';
+                $review = array('identity' => $identity, 'evidence' => $hash,
+                    'version' => $state ? (int) $state['version'] : 0, 'state' => $state ?: null,
+                    'suppressed' => (bool) $suppressed, 'status' => $status,
+                    'canReview' => $_SESSION['CATS']->getAccessLevel($module . '.show') >= ACCESS_LEVEL_READ &&
+                        $_SESSION['CATS']->getAccessLevel($module . '.edit') >= ACCESS_LEVEL_EDIT);
+                $result['reviews'][$key][$reason] = $review;
+                if ($suppressed)
+                {
+                    ++$result['suppressedReasonCount'];
+                    $result['suppressedWarnings'][] = array('warning' => $row, 'review' => $review);
+                }
+            }
+            if (in_array($row['code'], array('W02', 'W03'), true) &&
+                $result['reviews'][$key][$row['reason']]['suppressed']) continue;
             if ($row['code'] === 'W07')
             {
                 $visible = array();
                 foreach ($row['relationshipAttention']['reasons'] as $reason)
                 {
-                    $state = $states[$row['entityID']][$reason] ?? null;
-                    $identity = in_array($reason, array('stale_relationship', 'no_next_action'), true) ?
-                        self::identity('W07', DATA_ITEM_COMPANY, $row['entityID'], $reason) : null;
-                    if ($identity !== null && $state && $this->suppresses($state, $today) &&
-                        hash_equals($this->evidence($identity, $row), $state['evidence_hash']))
-                    {
-                        ++$result['suppressedReasonCount'];
-                        continue;
-                    }
+                    if (!empty($result['reviews'][$key][$reason]['suppressed'])) continue;
                     $visible[] = $reason;
                 }
                 if (!$visible) continue;
@@ -215,8 +284,7 @@ class WarningReviews
     }
 
     /**
-     * Internal model API, intentionally not wired to a controller. Future HTTP callers
-     * must use the existing POST/CSRF guard. Version + request hash makes retries
+     * HTTP callers must use the existing POST/CSRF guard. Version + request hash makes retries
      * idempotent and prevents old requests from overwriting newer decisions.
      */
     public function save($rule, $type, $id, $reason, $reasonID, $action, $closeReason,
@@ -229,9 +297,10 @@ class WarningReviews
             !is_string($requestID) || !preg_match('/^[A-Za-z0-9_-]{16,64}$/D', $requestID) ||
             !is_string($action) || !in_array($action, array('close', 'remind_later', 'reset'), true))
             throw new InvalidArgumentException('Invalid warning review request.');
-        // Only ordinary W07 relationship policies are settled. Do not use W07 to
-        // bypass W01 restrictions for a Task, or invent W02/W03 cutover policy.
-        if ($rule !== 'W07' || !in_array($reason, array('stale_relationship', 'no_next_action'), true))
+        // Identity validation already constrains each rule's source and reason.
+        if ((!in_array($rule, array('W02', 'W03'), true) &&
+            !($rule === 'W07' && in_array($reason, array('stale_relationship', 'no_next_action'), true))) ||
+            ($rule !== 'W07' && $action === 'close'))
             throw new InvalidArgumentException('Warning review action is not approved.');
         if (($action === 'close' && (!is_string($closeReason) || !in_array($closeReason,
             array('already_handled', 'not_applicable', 'incorrect_warning', 'no_further_action'), true))) ||
@@ -273,8 +342,7 @@ class WarningReviews
                 throw new InvalidArgumentException('Close requires a future deadline within 30 calendar days.');
             if ($action === 'remind_later')
             {
-                $dates = array();
-                foreach (array(1, 5, 10) as $days) $dates[] = substr(DateUtility::addWorkingDays($today . ' 00:00:00', $days), 0, 10);
+                $dates = self::reminderDates();
                 if (!in_array($reviewUntil, $dates, true)) throw new InvalidArgumentException('Invalid reminder deadline.');
             }
             $after = array_merge(array('reviewing_user' => $actor), $identity, array('action' => $action,

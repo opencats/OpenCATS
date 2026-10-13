@@ -1,4 +1,4 @@
-<?php TemplateUtility::printHeader('Home', array('js/sweetTitles.js', 'js/dataGrid.js', 'js/dataGridFilters.js', 'js/home.js', 'js/chartjs/chart.umd.min.js', 'js/charts.js')); ?>
+<?php TemplateUtility::printHeader('Home', array('vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js', 'js/warningReviews.js', 'js/sweetTitles.js', 'js/dataGrid.js', 'js/dataGridFilters.js', 'js/home.js', 'js/chartjs/chart.umd.min.js', 'js/charts.js')); ?>
 <?php TemplateUtility::printHeaderBlock(); ?>
 <?php TemplateUtility::printTabs($this->active); ?>
 <?php TemplateUtility::printQuickSearch(); ?>

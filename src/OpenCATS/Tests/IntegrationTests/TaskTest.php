@@ -190,7 +190,7 @@ class TaskTest extends DatabaseTestCase
         self::assertCount(2, $this->tasks->getJobRecruitmentWarnings());
     }
 
-    public function testRecruitmentReviewExpiryCoverageAndHistory(): void
+    public function testRecruitmentCoverageAndLegacyReviewsDoNotSuppress(): void
     {
         $job = $this->warningJob();
         $jobs = new \JobOrders();
@@ -200,65 +200,25 @@ class TaskTest extends DatabaseTestCase
         self::assertSame('covered', $this->warningRows('W02')[0]['coverage']);
         $this->tasks->update($task, array('status' => 'completed'));
         self::assertSame('uncovered', $this->warningRows('W03')[0]['coverage']);
-        $beforeJob = $jobs->get($job)['firstActionableAt'];
-        self::assertTrue($jobs->reviewRecruitmentWarning($job, 'W02', 'review'));
-        self::assertSame(array(), $this->warningRows('W02'));
-        self::assertCount(1, $this->warningRows('W03'));
+        // Retained legacy columns must no longer influence authoritative eligibility.
+        $this->db->query("UPDATE joborder SET w02_reviewed_at = NOW(), w03_reviewed_at = NOW() WHERE joborder_id = $job");
+        self::assertCount(2, $this->tasks->getJobRecruitmentWarnings());
         self::assertSame(1, $this->tasks->getRecruitmentWarnings()['jobsAtRisk']);
-        $jobs->reviewRecruitmentWarning($job, 'W03', 'review');
-        self::assertSame(0, $this->tasks->getRecruitmentWarnings()['jobsAtRisk']);
-        $this->actor = $this->assignee;
-        self::assertSame(array(), $this->tasks->getJobRecruitmentWarnings()); // Shared across users.
-        $jobs->reviewRecruitmentWarning($job, 'W02', 'show');
-        self::assertCount(1, $this->warningRows('W02'));
-        $history = $this->db->getAssoc("SELECT entered_by, previous_value, new_value FROM history WHERE the_field = 'w02_reviewed_at' ORDER BY history_id DESC LIMIT 1");
-        self::assertEquals($this->assignee, $history['entered_by']);
-        self::assertNotNull($history['previous_value']);
-        self::assertNull($history['new_value']);
-        $jobs->reviewRecruitmentWarning($job, 'W02', 'review');
-        $this->db->query("UPDATE joborder SET status = 'On Hold' WHERE joborder_id = $job");
-        $this->db->query("UPDATE joborder SET status = 'Active' WHERE joborder_id = $job");
-        foreach (array('2026-10-26 15:30:00' => 0, '2026-10-26 15:30:01' => 2) as $clock => $count)
-        {
-            $this->db->query("SET timestamp = UNIX_TIMESTAMP('$clock')");
-            self::assertCount($count, $this->tasks->getJobRecruitmentWarnings());
-        }
-        self::assertSame($beforeJob, $jobs->get($job)['firstActionableAt']);
         self::assertSame('completed', $this->tasks->get($task)['status']);
         self::assertEquals(0, $this->scalar('SELECT COUNT(*) FROM candidate_joborder_status_history'));
-        $jobs->reviewRecruitmentWarning($job, 'W03', 'review');
-        $this->milestone(500, '2026-10-30 15:30:00');
-        $this->db->query("SET timestamp = UNIX_TIMESTAMP('2026-11-02 15:30:01')");
-        self::assertSame(array(), $this->warningRows('W03')); // Review expired, progress still recent.
     }
 
-    public function testRecruitmentReviewMigrationAndDeniedWrites(): void
+    public function testLegacyRecruitmentReviewMigrationRetainsColumnsAndData(): void
     {
         $job = $this->warningJob();
         $jobs = new \JobOrders();
-        foreach (array(array('joborders.edit' => ACCESS_LEVEL_READ), array('joborders.show' => ACCESS_LEVEL_DISABLED)) as $acl)
-        {
-            $this->overrides = $acl;
-            try { $jobs->reviewRecruitmentWarning($job, 'W02', 'review'); self::fail('Denied'); }
-            catch (\RuntimeException $e) { self::assertSame('Job Order review denied.', $e->getMessage()); }
-        }
-        $this->overrides = array('joborders.hidden' => ACCESS_LEVEL_READ);
-        $this->db->query("UPDATE joborder SET is_admin_hidden = 1 WHERE joborder_id = $job");
-        try { $jobs->reviewRecruitmentWarning($job, 'W02', 'review'); self::fail('Hidden'); }
-        catch (\RuntimeException $e) { self::assertSame('Job Order review unavailable.', $e->getMessage()); }
-        $this->overrides = array();
-        foreach (array(array('W02'), 'W04', null) as $code)
-        {
-            try { $jobs->reviewRecruitmentWarning($job, $code, 'review'); self::fail('Invalid'); }
-            catch (\InvalidArgumentException $e) { self::assertNotEmpty($e->getMessage()); }
-        }
         require_once LEGACY_ROOT . '/modules/install/Schema.php';
         $db = $this->db;
-        $jobs->reviewRecruitmentWarning($job, 'W02', 'review');
+        $db->query("UPDATE joborder SET w02_reviewed_at = NOW() WHERE joborder_id = $job");
         $stamp = $jobs->get($job)['w02ReviewedAt'];
         $fresh = $db->getAllAssoc("SHOW COLUMNS FROM joborder WHERE Field IN ('w02_reviewed_at', 'w03_reviewed_at')");
         $db->query('ALTER TABLE joborder DROP COLUMN w03_reviewed_at');
-        eval(substr(\CATSSchema::get()[401], 4)); // Partial retry retains W02.
+        eval(substr(\CATSSchema::get()[401], 4));
         eval(substr(\CATSSchema::get()[401], 4));
         self::assertSame($stamp, $jobs->get($job)['w02ReviewedAt']);
         self::assertSame($fresh, $db->getAllAssoc("SHOW COLUMNS FROM joborder WHERE Field IN ('w02_reviewed_at', 'w03_reviewed_at')"));
@@ -266,74 +226,6 @@ class TaskTest extends DatabaseTestCase
         eval(substr(\CATSSchema::get()[401], 4));
         self::assertSame($fresh, $db->getAllAssoc("SHOW COLUMNS FROM joborder WHERE Field IN ('w02_reviewed_at', 'w03_reviewed_at')"));
         self::assertNull($jobs->get($job)['w02ReviewedAt']);
-    }
-
-    public function testRecruitmentReviewNativePostHandler(): void
-    {
-        $job = $this->warningJob();
-        // The native redirect terminates PHP, so exercise it in a child process.
-        $script = <<<'PHP'
-require './src/OpenCATS/Tests/bootstrap.php';
-define('DATABASE_NAME', 'cats_integrationtest');
-define('DATABASE_HOST', 'integrationtestdb');
-require './config.php';
-require './constants.php';
-require './lib/DatabaseConnection.php';
-require './lib/Session.php';
-require './lib/Hooks.php';
-require './lib/Template.php';
-require './lib/UserInterface.php';
-require './lib/CATSUtility.php';
-require './lib/DataGrid.php';
-require './modules/joborders/JobOrdersUI.php';
-$_SESSION['CATS'] = new class extends CATSSession {
-    public function __construct() {}
-    public function getUserID() { return 1; }
-    public function isLoggedIn() { return true; }
-    public function getAccessLevel($key = '') { return ACCESS_LEVEL_SA; }
-    public function getTimeZoneOffset() { return 0; }
-    public function isDateDMY() { return false; }
-    public function isCSRFTokenValid($token) { return $token === 'review-fixture'; }
-};
-$_GET = array('a' => 'reviewRecruitmentWarning');
-$_POST = json_decode(stream_get_contents(STDIN), true);
-$_SERVER['REQUEST_METHOD'] = 'POST';
-$_SERVER['PHP_SELF'] = '/index.php';
-$_SERVER['HTTP_HOST'] = 'localhost';
-(new JobOrdersUI())->handleRequest();
-PHP;
-        foreach (array('review', 'show') as $action)
-        {
-            $process = proc_open(array(PHP_BINARY, '-r', $script), array(0 => array('pipe', 'r'),
-                1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
-            fwrite($pipes[0], json_encode(array('jobOrderID' => (string) $job, 'warningCode' => 'W02',
-                'reviewAction' => $action, 'csrfToken' => 'review-fixture')));
-            fclose($pipes[0]);
-            $stdout = stream_get_contents($pipes[1]);
-            $stderr = stream_get_contents($pipes[2]);
-            fclose($pipes[1]);
-            fclose($pipes[2]);
-            self::assertSame(0, proc_close($process), $stdout . $stderr);
-            self::assertStringNotContainsString('Fatal error', $stdout . $stderr);
-            $stamp = (new \JobOrders())->get($job)['w02ReviewedAt'];
-            if ($action === 'review') self::assertNotNull($stamp);
-            else self::assertNull($stamp);
-        }
-    }
-
-    public function testRecruitmentReviewAuditFailureRollsBack(): void
-    {
-        $job = $this->warningJob();
-        $this->db->query("CREATE TRIGGER reject_review BEFORE INSERT ON history FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'fixture review failure'");
-        try
-        {
-            (new \JobOrders())->reviewRecruitmentWarning($job, 'W02', 'review');
-            self::fail('Audit failure must propagate.');
-        }
-        catch (\Throwable $e) { self::assertStringContainsString('fixture review failure', $e->getMessage()); }
-        finally { $this->db->query('DROP TRIGGER reject_review'); }
-        self::assertNull((new \JobOrders())->get($job)['w02ReviewedAt']);
-        self::assertCount(2, $this->tasks->getJobRecruitmentWarnings());
     }
 
     public function testRecruitmentWarningBatchesDeduplicateJobs(): void

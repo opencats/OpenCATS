@@ -1,7 +1,9 @@
+<?php $reviewReturnTo = 'home'; ?>
 <div class="col-12">
     <section class="card" aria-labelledby="recruitmentWarningsHeading">
         <h2 id="recruitmentWarningsHeading" class="card-header bg-secondary-subtle h6 py-1 px-2 fw-semibold mb-0">My Recruitment Warnings</h2>
         <div class="card-body p-2">
+            <?php include(LEGACY_ROOT . '/modules/home/WarningReviewNotice.tpl'); ?>
             <ul class="list-inline mb-2">
                 <?php foreach ($this->recruitmentWarnings['visibleCounts'] as $code => $count): ?>
                     <li class="list-inline-item"><strong><?php echo Template::escapeHtml($code); ?></strong>: <?php echo (int) $count; ?></li>
@@ -23,6 +25,9 @@
                                 <span class="text-body-secondary">(Visible reasons: <?php echo Template::escapeHtml(implode(', ', array_map(function ($reason) { return str_replace('_', ' ', $reason); }, $warning['relationshipAttention']['reasons']))); ?><?php if ($warning['relationshipAttention']['tasks']): ?>;
                                     Tasks <?php echo Template::escapeHtml(implode(', ', array_column($warning['relationshipAttention']['tasks'], 'taskID'))); ?><?php endif; ?>)</span>
                             <?php endif; ?>
+                            <?php foreach ($this->recruitmentWarnings['reviews'][WarningReviews::reviewKey($warning)] ?? array() as $review): ?>
+                                <?php if (!$review['suppressed']) include(LEGACY_ROOT . '/modules/home/WarningReviewControls.tpl'); ?>
+                            <?php endforeach; ?>
                         </li>
                     <?php endforeach; ?>
                 </ul>
@@ -33,6 +38,25 @@
             <?php else: ?>
                 <p class="mb-0">No visible recruitment warnings.</p>
             <?php endif; ?>
+            <?php if ($this->recruitmentWarnings['suppressedWarnings']): ?>
+            <button type="button" class="btn btn-sm btn-outline-secondary mt-3" data-bs-toggle="collapse" data-bs-target="#suppressedWarnings" aria-expanded="false" aria-controls="suppressedWarnings">Personally Reviewed / Remind Later (<?php echo (int) $this->recruitmentWarnings['suppressedReasonCount']; ?>)</button>
+            <div class="collapse mt-2" id="suppressedWarnings">
+                <ul class="mb-0">
+                    <?php foreach ($this->recruitmentWarnings['suppressedWarnings'] as $suppressed):
+                        $warning = $suppressed['warning'];
+                        $review = $suppressed['review'];
+                        $source = $warning['code'] === 'W07' ? array('companies', 'companyID') : array('joborders', 'jobOrderID');
+                    ?>
+                    <li>
+                        <?php echo Template::escapeHtml($warning['code']); ?> —
+                        <a href="<?php echo Template::escapeAttr(CATSUtility::getIndexName() . '?m=' . $source[0] . '&a=show&' . $source[1] . '=' . (int) $warning['entityID']); ?>"><?php echo Template::escapeHtml($warning['title']); ?></a>
+                        <?php include(LEGACY_ROOT . '/modules/home/WarningReviewControls.tpl'); ?>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <?php endif; ?>
         </div>
     </section>
 </div>
+<?php include(LEGACY_ROOT . '/modules/home/WarningReviewModal.tpl'); ?>

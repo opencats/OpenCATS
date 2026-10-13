@@ -46,10 +46,13 @@ class Companies
      * No cross-owner/unassigned queue is implied by this API. Results are derived
      * on every call; callers must escape labels and date-format ISO values.
      */
-    public function getRelationshipAttention()
+    public function getRelationshipAttention($companyID = null)
     {
         if (!isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn() ||
             $_SESSION['CATS']->getUserID() <= 0) return array();
+        if ($companyID !== null && ((!is_int($companyID) && !is_string($companyID)) ||
+            !preg_match('/^[1-9][0-9]*$/D', (string) $companyID) || $companyID > 2147483647))
+            throw new InvalidArgumentException('Invalid Company ID.');
         // Do not turn an inaccessible source into a false "missing" warning.
         foreach (array('companies.show', 'contacts.show', 'tasks.list', 'tasks.show',
             'activity.listByViewDataGrid') as $action)
@@ -65,7 +68,8 @@ class Companies
             company.relationship_status AS relationshipStatus FROM company
             INNER JOIN user ON user.user_id = company.owner
             WHERE company.owner = ' . (int) $_SESSION['CATS']->getUserID() .
-            ' AND user.access_level > ' . ACCESS_LEVEL_DISABLED);
+            ' AND user.access_level > ' . ACCESS_LEVEL_DISABLED .
+            ($companyID === null ? '' : ' AND company.company_id = ' . (int) $companyID));
         $eligible = array();
         foreach ($companies as $company)
         {

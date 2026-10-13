@@ -36,6 +36,10 @@ class HomeUI extends UserInterface
 
         switch ($action)
         {
+            case 'reviewWarning':
+                $this->reviewWarning();
+                break;
+
             case 'hiringOverview':
                 $dashboard = new Dashboard();
                 $view = $this->getHiringOverviewView();
@@ -92,6 +96,65 @@ class HomeUI extends UserInterface
         }
     }
 
+
+    /** Shared personal-review endpoint for Home and both source pages. */
+    private function reviewWarning()
+    {
+        if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' ||
+            !isset($_SESSION['CATS']) || !$_SESSION['CATS']->isLoggedIn())
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Warning reviews require an authenticated POST.');
+        if (!isset($_POST['csrfToken']) || !is_string($_POST['csrfToken']) ||
+            !$_SESSION['CATS']->isCSRFTokenValid($_POST['csrfToken']))
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid request token. Refresh the warning and try again.');
+        include_once(LEGACY_ROOT . '/lib/WarningReviews.php');
+        try
+        {
+            $fields = array('warning_rule', 'data_item_type', 'data_item_id', 'reason_key', 'reason_id',
+                'reviewAction', 'expectedVersion', 'expectedEvidence', 'requestID', 'returnTo');
+            foreach ($fields as $field)
+                if (!isset($_POST[$field]) || !is_string($_POST[$field]))
+                    throw new InvalidArgumentException('Invalid warning review fields.');
+            foreach (array('reviewUntil', 'closeReason') as $field)
+                if (isset($_POST[$field]) && !is_string($_POST[$field]))
+                    throw new InvalidArgumentException('Invalid warning review fields.');
+            if (array_diff_key($_POST, array_flip(array_merge($fields, array('csrfToken', 'reviewUntil', 'closeReason')))) ||
+                !preg_match('/^(0|[1-9][0-9]*)$/D', $_POST['expectedVersion']) || $_POST['expectedVersion'] >= 2147483647)
+                throw new InvalidArgumentException('Invalid warning review fields.');
+            $identity = WarningReviews::identity($_POST['warning_rule'], $_POST['data_item_type'],
+                $_POST['data_item_id'], $_POST['reason_key'], $_POST['reason_id']);
+            $returnTo = $_POST['returnTo'];
+            if (!in_array($returnTo, array('home', 'companies', 'joborders'), true) ||
+                ($returnTo === 'companies' && $identity['data_item_type'] !== DATA_ITEM_COMPANY) ||
+                ($returnTo === 'joborders' && $identity['data_item_type'] !== DATA_ITEM_JOBORDER))
+                throw new InvalidArgumentException('Invalid review destination.');
+            (new WarningReviews())->save($_POST['warning_rule'], $_POST['data_item_type'], $_POST['data_item_id'],
+                $_POST['reason_key'], $_POST['reason_id'], $_POST['reviewAction'], $_POST['closeReason'] ?? null,
+                $_POST['reviewUntil'] ?? null, (int) $_POST['expectedVersion'], $_POST['expectedEvidence'], $_POST['requestID']);
+        }
+        catch (InvalidArgumentException $e)
+        {
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, $e->getMessage());
+        }
+        catch (RuntimeException $e)
+        {
+            $message = $e->getMessage() === 'Warning review is stale. Reload the source.' ?
+                'Warning evidence or personal review state changed. Refresh the current warning before trying again.' :
+                'Unable to review this warning. Check your permissions and refresh the current warning.';
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, $message);
+        }
+        catch (Throwable $e)
+        {
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Unable to save the warning review. Refresh and try again.');
+        }
+        $uri = 'm=' . $returnTo;
+        if ($returnTo !== 'home') $uri .= '&a=show&' . ($returnTo === 'companies' ? 'companyID' : 'jobOrderID') . '=' . $identity['data_item_id'];
+        $this->redirectWarningReview($uri . '&warningReview=' . ($_POST['reviewAction'] === 'reset' ? 'restored' : 'saved'));
+    }
+
+    protected function redirectWarningReview($uri)
+    {
+        CATSUtility::transferRelativeURI($uri);
+    }
 
     private function home()
     {        

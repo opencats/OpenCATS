@@ -82,7 +82,7 @@ class JobOrdersUI extends UserInterface
         switch ($action)
         {
             case 'reviewRecruitmentWarning':
-                $this->onReviewRecruitmentWarning();
+                CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Shared reviews are retired. Refresh the Job Order to use personal reviews.');
                 break;
 
             case 'show':
@@ -385,32 +385,6 @@ class JobOrdersUI extends UserInterface
         $this->_template->display('./modules/joborders/JobOrders.tpl');
     }
 
-    /** Native POST action for a shared temporary recruitment review. */
-    private function onReviewRecruitmentWarning()
-    {
-        if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' ||
-            $this->getUserAccessLevel('joborders.edit') < ACCESS_LEVEL_EDIT ||
-            $this->getUserAccessLevel('joborders.show') < ACCESS_LEVEL_READ)
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Review requires Job Order edit permission and POST.');
-        if (!isset($_POST['csrfToken']) || !is_string($_POST['csrfToken']) ||
-            !$_SESSION['CATS']->isCSRFTokenValid($_POST['csrfToken']))
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Invalid CSRF token.');
-        try
-        {
-            (new JobOrders())->reviewRecruitmentWarning($_POST['jobOrderID'] ?? null,
-                $_POST['warningCode'] ?? null, $_POST['reviewAction'] ?? null);
-        }
-        catch (InvalidArgumentException $e)
-        {
-            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid recruitment review request.');
-        }
-        catch (RuntimeException $e)
-        {
-            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Unable to review this Job Order.');
-        }
-        CATSUtility::transferRelativeURI('m=joborders&a=show&jobOrderID=' . (int) $_POST['jobOrderID']);
-    }
-
     /** Load the authorized Job Order details page. */
     private function show()
     {
@@ -583,8 +557,8 @@ class JobOrdersUI extends UserInterface
         $this->_template->assign('careerPortalURL', $careerPortalURL);
         include_once(LEGACY_ROOT . '/lib/Tasks.php');
         include_once(LEGACY_ROOT . '/modules/tasks/TaskPresentation.php');
-        $this->_template->assign('recruitmentWarnings', array_column((new Tasks())->getJobRecruitmentWarnings($jobOrderID), null, 'code'));
-        $this->_template->assign('reviewClock', DatabaseConnection::getInstance()->getAssoc('SELECT NOW() AS clock')['clock']);
+        include_once(LEGACY_ROOT . '/lib/WarningReviews.php');
+        $this->_template->assign('recruitmentWarnings', (new WarningReviews())->getForSource(DATA_ITEM_JOBORDER, $jobOrderID));
         $this->_template->assign('data', $data);
         $this->_template->assign('extraFieldRS', $extraFieldRS);
         $this->_template->assign('attachmentsRS', $attachmentsRS);

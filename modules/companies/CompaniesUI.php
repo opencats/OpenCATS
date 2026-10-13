@@ -472,6 +472,8 @@ class CompaniesUI extends UserInterface
         }
 
         $this->_template->assign('active', $this);
+        include_once(LEGACY_ROOT . '/lib/WarningReviews.php');
+        $this->_template->assign('recruitmentWarnings', (new WarningReviews())->getForSource(DATA_ITEM_COMPANY, $companyID));
         $this->_template->assign('data', $data);
         $this->_template->assign('attachmentsRS', $attachmentsRS);
         $this->_template->assign('departmentsRS', $departmentsRS);

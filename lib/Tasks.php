@@ -59,20 +59,7 @@ class Tasks
         }
         foreach ($this->getJobRecruitmentWarnings() as $warning) $rows[] = $warning;
         foreach ((new JobOrders())->getUnassignedWorkWarnings() as $warning) $rows[] = $warning;
-        // Preserve the authoritative Company results and their relative ordering.
-        foreach ((new Companies())->getRelationshipAttention() as $order => $company)
-        {
-            $coverage = !$company['tasks'] ? 'uncovered' :
-                (in_array('overdue_task', $company['reasons'], true) ? 'overdue_follow_up' : 'covered');
-            $rows[] = array('code' => 'W07', 'identity' => 'W07:company:' . $company['companyID'],
-                'entityType' => DATA_ITEM_COMPANY, 'entityID' => (int) $company['companyID'],
-                'title' => $company['name'], 'reason' => $company['primaryReason'],
-                'sourceDate' => $company['lastContact'], 'ageDays' => $company['contactAgeDays'],
-                'responsibleUserID' => $company['owner'], 'routing' => 'company_owner',
-                'taskID' => null, 'jobOrderID' => null, 'coverage' => $coverage,
-                'evidence' => array('table' => 'company', 'id' => (int) $company['companyID']),
-                'relationshipAttention' => $company, 'sortGroup' => 3, 'relationshipOrder' => $order);
-        }
+        foreach ($this->getCompanyRecruitmentWarnings() as $warning) $rows[] = $warning;
         $priority = array('high' => 0, 'normal' => 1, 'low' => 2);
         usort($rows, function ($a, $b) use ($priority) {
             if ($a['code'] === 'W07' && $b['code'] === 'W07')
@@ -95,6 +82,27 @@ class Tasks
         return $result;
     }
 
+    /** Reuse the same Company evidence for Home, record pages and review writes. */
+    public function getCompanyRecruitmentWarnings($companyID = null)
+    {
+        $rows = array();
+        // Preserve the authoritative Company results and their relative ordering.
+        foreach ((new Companies())->getRelationshipAttention($companyID) as $order => $company)
+        {
+            $coverage = !$company['tasks'] ? 'uncovered' :
+                (in_array('overdue_task', $company['reasons'], true) ? 'overdue_follow_up' : 'covered');
+            $rows[] = array('code' => 'W07', 'identity' => 'W07:company:' . $company['companyID'],
+                'entityType' => DATA_ITEM_COMPANY, 'entityID' => (int) $company['companyID'],
+                'title' => $company['name'], 'reason' => $company['primaryReason'],
+                'sourceDate' => $company['lastContact'], 'ageDays' => $company['contactAgeDays'],
+                'responsibleUserID' => $company['owner'], 'routing' => 'company_owner',
+                'taskID' => null, 'jobOrderID' => null, 'coverage' => $coverage,
+                'evidence' => array('table' => 'company', 'id' => (int) $company['companyID']),
+                'relationshipAttention' => $company, 'sortGroup' => 3, 'relationshipOrder' => $order);
+        }
+        return $rows;
+    }
+
     /** W02/W03 use recorded milestones, not inferred outcomes or lifecycle cycles. */
     public function getJobRecruitmentWarnings($jobOrderID = null)
     {
@@ -115,7 +123,6 @@ class Tasks
         {
             $jobs = $this->_db->getAllAssoc('SELECT j.joborder_id AS jobOrderID, j.title, j.owner, j.recruiter,
                 j.is_hot AS isHot, j.is_admin_hidden AS isAdminHidden, j.first_actionable_at AS actionable,
-                j.w02_reviewed_at AS W02, j.w03_reviewed_at AS W03,
                 EXISTS(SELECT 1 FROM candidate_joborder_status_history h WHERE h.joborder_id = j.joborder_id
                     AND h.status_to = ' . PIPELINE_STATUS_SUBMITTED . ' AND h.date >= j.first_actionable_at) AS submitted,
                 (SELECT MAX(h.date) FROM candidate_joborder_status_history h WHERE h.joborder_id = j.joborder_id
@@ -164,12 +171,6 @@ class Tasks
                     $source = $code === 'W03' && $job['progress'] !== null ? $job['progress'] : $job['actionable'];
                     $deadline = DateUtility::addWorkingDays($source, $days);
                     if ($deadline === null || $now <= $deadline) continue;
-                    if ($job[$code] !== null)
-                    {
-                        $until = DateUtility::addWorkingDays($job[$code], 5);
-                        // Malformed/future review evidence is uncertain, not permission to warn.
-                        if ($until === null || $job[$code] > $now || $now < $until) continue;
-                    }
                     $result[] = array_merge(array('code' => $code, 'identity' => $code . ':joborder:' . $lastID,
                         'entityType' => DATA_ITEM_JOBORDER, 'entityID' => $lastID, 'jobOrderID' => $lastID,
                         'title' => $job['title'], 'reason' => $code === 'W02' ? 'no_recorded_submission' : 'no_recorded_candidate_progress',

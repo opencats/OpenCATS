@@ -126,7 +126,7 @@ class WarningReviewTest extends DatabaseTestCase
     {
         foreach (array(array('W01', DATA_ITEM_TASK, 'overdue_commitment'),
             array('W08', DATA_ITEM_TASK, 'invalid_assignee'), array('W08', DATA_ITEM_JOBORDER, 'invalid_owner'),
-            array('W08', DATA_ITEM_JOBORDER, 'invalid_recruiter'), array('W02', DATA_ITEM_JOBORDER, 'no_recorded_submission')) as [$rule, $type, $reason])
+            array('W08', DATA_ITEM_JOBORDER, 'invalid_recruiter')) as [$rule, $type, $reason])
         {
             $i = \WarningReviews::identity($rule, $type, 1, $reason);
             self::assertSame($reason, $i['reason_key']);
@@ -271,7 +271,7 @@ class WarningReviewTest extends DatabaseTestCase
         self::assertSame(0, $this->filtered()['suppressedReasonCount']);
     }
 
-    public function testPersonalFilteringPreservesSharedJobWarningsAndRisk(): void
+    public function testPersonalFilteringPreservesOriginalJobWarningsAndRisk(): void
     {
         $this->db->query("INSERT INTO joborder (company_id, title, owner, recruiter, status, first_actionable_at)
             VALUES (" . $this->company . ", 'Risk fixture', 1, 1, 'Active', DATE_SUB(NOW(), INTERVAL 30 DAY))");
@@ -287,12 +287,15 @@ class WarningReviewTest extends DatabaseTestCase
         self::assertSame(1, $after['jobsAtRisk']);
         foreach (array('W02', 'W03', 'W01', 'W08') as $code)
             self::assertSame($after['counts'][$code], $after['visibleCounts'][$code]);
-        (new \JobOrders())->reviewRecruitmentWarning($job, 'W02', 'review');
-        self::assertSame(0, $this->filtered()['visibleCounts']['W02']);
+        foreach (array('W02' => 'no_recorded_submission', 'W03' => 'no_recorded_candidate_progress') as $code => $reason)
+        {
+            $snapshot = $this->reviews->get($code, DATA_ITEM_JOBORDER, $job, $reason);
+            $this->save($snapshot, 'request-job-' . $code . '-001', array(5 => 'remind_later', 6 => null,
+                7 => \WarningReviews::reminderDates()[5]));
+            self::assertSame(0, $this->filtered()['visibleCounts'][$code]);
+        }
+        self::assertSame($before['counts'], $this->filtered()['counts']);
         self::assertSame(1, $this->filtered()['jobsAtRisk']);
-        (new \JobOrders())->reviewRecruitmentWarning($job, 'W03', 'review');
-        self::assertSame(0, $this->filtered()['visibleCounts']['W03']);
-        self::assertSame(0, $this->filtered()['jobsAtRisk']);
     }
 
     public function testPolicyClassificationAndRecurringEvidence(): void
@@ -474,6 +477,242 @@ class WarningReviewTest extends DatabaseTestCase
         finally { ob_end_clean(); }
         self::assertSame(20, substr_count($html, '<a href='));
         self::assertStringNotContainsString('additional warnings', $html);
+    }
+
+    private function reviewJob()
+    {
+        $this->db->query("INSERT INTO joborder (company_id, title, owner, recruiter, status, first_actionable_at)
+            VALUES (" . $this->company . ", '<script>Job</script>', 1, 1, 'Active', DATE_SUB(NOW(), INTERVAL 30 DAY))");
+        return (int) $this->db->getLastInsertID();
+    }
+
+    public function testJobPersonalPresetsIsolationExpiryAndReset(): void
+    {
+        $job = $this->reviewJob();
+        $this->db->query("UPDATE joborder SET w02_reviewed_at = NOW(), w03_reviewed_at = NOW() WHERE joborder_id = " . $job);
+        $legacy = $this->db->getAssoc('SELECT w02_reviewed_at, w03_reviewed_at FROM joborder WHERE joborder_id = ' . $job);
+        $this->db->query("INSERT INTO user (user_name, access_level) VALUES ('second-reviewer', 400)");
+        $second = (int) $this->db->getLastInsertID();
+        foreach (array('W02' => 'no_recorded_submission', 'W03' => 'no_recorded_candidate_progress') as $code => $reason)
+        {
+            foreach (\WarningReviews::reminderDates() as $days => $until)
+            {
+                $this->actor = 1;
+                $s = $this->reviews->get($code, DATA_ITEM_JOBORDER, $job, $reason);
+                $this->rejected(fn() => $this->save($s)); // Temporary Close remains forbidden.
+                $changes = array(5 => 'remind_later', 6 => null, 7 => $until);
+                $this->save($s, 'request-preset-' . $code . '-' . $days, $changes);
+                $history = $this->countRows('history');
+                $this->save($s, 'request-preset-' . $code . '-' . $days, $changes);
+                self::assertSame($history, $this->countRows('history'));
+                $this->rejected(fn() => $this->save($s, 'request-stale-' . $code . '-' . $days, $changes));
+                $result = $this->reviews->getForSource(DATA_ITEM_JOBORDER, $job);
+                self::assertSame(1, $result['counts'][$code]);
+                self::assertSame(0, $result['visibleCounts'][$code]);
+                self::assertSame(1, $result['jobsAtRisk']);
+                $this->actor = $second;
+                self::assertSame(1, $this->reviews->getForSource(DATA_ITEM_JOBORDER, $job)['visibleCounts'][$code]);
+                if ($days === 1) self::assertSame(0, $this->reviews->get($code, DATA_ITEM_JOBORDER, $job, $reason)['version']);
+                $this->save($this->reviews->get($code, DATA_ITEM_JOBORDER, $job, $reason), 'request-second-' . $code . '-' . $days, $changes);
+                $this->actor = 1;
+                $saved = $this->reviews->get($code, DATA_ITEM_JOBORDER, $job, $reason);
+                $today = new \DateTimeImmutable(\DateUtility::getAdjustedDate('Y-m-d'));
+                $this->offset = 24 * (int) $today->diff(new \DateTimeImmutable($until))->days;
+                self::assertSame(1, $this->reviews->getForSource(DATA_ITEM_JOBORDER, $job)['visibleCounts'][$code]);
+                $this->offset = 0;
+                self::assertSame(0, $this->reviews->getForSource(DATA_ITEM_JOBORDER, $job)['visibleCounts'][$code]);
+                $this->save($saved, 'request-reset-' . $code . '-' . $days, array(5 => 'reset', 6 => null, 7 => null));
+                self::assertSame(1, $this->reviews->getForSource(DATA_ITEM_JOBORDER, $job)['visibleCounts'][$code]);
+                $this->actor = $second;
+                self::assertSame(0, $this->reviews->getForSource(DATA_ITEM_JOBORDER, $job)['visibleCounts'][$code]);
+                $this->save($this->reviews->get($code, DATA_ITEM_JOBORDER, $job, $reason), 'request-second-reset-' . $code . '-' . $days, array(5 => 'reset', 6 => null, 7 => null));
+            }
+        }
+        self::assertSame($legacy, $this->db->getAssoc('SELECT w02_reviewed_at, w03_reviewed_at FROM joborder WHERE joborder_id = ' . $job));
+        self::assertSame(0, (int) $this->db->getAssoc("SELECT COUNT(*) AS n FROM history WHERE the_field IN ('w02_reviewed_at', 'w03_reviewed_at')")['n']);
+    }
+
+    public function testJobAccessEvidenceAndHistoryRollback(): void
+    {
+        $job = $this->reviewJob();
+        $s = $this->reviews->get('W03', DATA_ITEM_JOBORDER, $job, 'no_recorded_candidate_progress');
+        $changes = array(5 => 'remind_later', 6 => null, 7 => \WarningReviews::reminderDates()[5]);
+        foreach (array('joborders.show', 'joborders.edit', 'candidates.show') as $permission)
+        {
+            $this->overrides[$permission] = ACCESS_LEVEL_DISABLED;
+            $this->rejected(fn() => $this->save($s, 'request-access-001', $changes));
+            $this->overrides = array();
+        }
+        $this->db->query("UPDATE joborder SET first_actionable_at = DATE_SUB(first_actionable_at, INTERVAL 1 DAY) WHERE joborder_id = " . $job);
+        $this->rejected(fn() => $this->save($s, 'request-evidence-001', $changes));
+        $s = $this->reviews->get('W03', DATA_ITEM_JOBORDER, $job, 'no_recorded_candidate_progress');
+        $this->db->query("CREATE TRIGGER reject_review_history BEFORE INSERT ON history FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Review audit test failure'");
+        $this->rejected(fn() => $this->save($s, 'request-audit-001', $changes));
+        self::assertSame(0, $this->countRows('warning_review'));
+        $this->db->query('DROP TRIGGER reject_review_history');
+        $this->save($s, 'request-audit-002', $changes);
+        $this->overrides['joborders.hidden'] = ACCESS_LEVEL_READ;
+        $this->db->query('UPDATE joborder SET is_admin_hidden = 1 WHERE joborder_id = ' . $job);
+        $this->rejected(fn() => $this->save($s, 'request-hidden-001', $changes));
+        $result = $this->reviews->getForSource(DATA_ITEM_JOBORDER, $job);
+        self::assertSame(array(), $result['reviews']);
+        self::assertSame(array(), $result['suppressedWarnings']);
+        $this->overrides = array();
+        $this->db->query("UPDATE joborder SET status = 'Closed' WHERE joborder_id = " . $job);
+        self::assertSame(array(), $this->reviews->getForSource(DATA_ITEM_JOBORDER, $job)['suppressedWarnings']);
+    }
+
+    public function testSourceAndHomeControlsExposeRecoverableReasonsOnly(): void
+    {
+        require_once LEGACY_ROOT . '/lib/Template.php';
+        $job = $this->reviewJob();
+        $this->save($this->snapshot());
+        $template = new \Template();
+        $template->assign('recruitmentWarnings', $this->reviews->getForSource(DATA_ITEM_COMPANY, $this->company));
+        ob_start();
+        try { $template->display('./modules/home/WarningReviewSource.tpl'); $html = ob_get_contents(); }
+        finally { ob_end_clean(); }
+        self::assertStringContainsString('Show Again', $html);
+        self::assertStringContainsString('Temporary Close', $html);
+        self::assertStringNotContainsString('Mark Reviewed', $html);
+        self::assertSame(1, substr_count($html, 'id="warningReviewModal"'));
+        $result = $this->reviews->getForSource(DATA_ITEM_JOBORDER, $job);
+        $template->assign('recruitmentWarnings', $result);
+        ob_start();
+        try { $template->display('./modules/joborders/RecruitmentWarnings.tpl'); $html = ob_get_contents(); }
+        finally { ob_end_clean(); }
+        self::assertStringContainsString('Mark Reviewed — 5 working days', $html);
+        self::assertStringNotContainsString('data-review-action="close"', $html);
+        self::assertStringContainsString('&lt;script&gt;Job&lt;/script&gt;', $html);
+        foreach ($result['reviews'] as $reasons)
+            foreach ($reasons as $review) self::assertStringContainsString($review['evidence'], $html);
+        $s = $this->reviews->get('W02', DATA_ITEM_JOBORDER, $job, 'no_recorded_submission');
+        $this->save($s, 'request-render-001', array(5 => 'remind_later', 6 => null, 7 => \WarningReviews::reminderDates()[5]));
+        $template->assign('recruitmentWarnings', $this->filtered());
+        ob_start();
+        try { $template->display('./modules/home/RecruitmentWarnings.tpl'); $html = ob_get_contents(); }
+        finally { ob_end_clean(); }
+        self::assertStringContainsString('data-bs-toggle="collapse"', $html);
+        self::assertStringContainsString('Personally Reviewed / Remind Later (2)', $html);
+        self::assertSame(2, substr_count($html, '>Show Again</button>'));
+        $this->overrides['joborders.edit'] = ACCESS_LEVEL_READ;
+        $template->assign('recruitmentWarnings', $this->reviews->getForSource(DATA_ITEM_JOBORDER, $job));
+        ob_start();
+        try { $template->display('./modules/joborders/RecruitmentWarnings.tpl'); $html = ob_get_contents(); }
+        finally { ob_end_clean(); }
+        self::assertStringNotContainsString('data-review-action=', $html);
+        self::assertStringNotContainsString('>Show Again</button>', $html);
+    }
+
+    public function testNativePostHandlerSavesAndRetriesWithFixedReturnDestinations(): void
+    {
+        require_once LEGACY_ROOT . '/lib/Template.php';
+        require_once LEGACY_ROOT . '/lib/UserInterface.php';
+        require_once LEGACY_ROOT . '/lib/Hooks.php';
+        require_once LEGACY_ROOT . '/modules/home/HomeUI.php';
+        $_SESSION['CATS']->method('isCSRFTokenValid')->willReturn(true);
+        $ui = new class extends \HomeUI {
+            public $destination;
+            public function __construct() {}
+            protected function redirectWarningReview($uri) { $this->destination = $uri; }
+        };
+        $job = $this->reviewJob();
+        foreach (array('home', 'companies', 'joborders') as $destination)
+        {
+            $snapshot = $destination === 'joborders' ? $this->reviews->get('W02', DATA_ITEM_JOBORDER, $job, 'no_recorded_submission') : $this->snapshot();
+            $_GET = array('a' => 'reviewWarning');
+            $_SERVER['REQUEST_METHOD'] = 'POST';
+            $_POST = array_map('strval', array_merge($snapshot['identity'], array('csrfToken' => 'valid',
+                'expectedVersion' => $snapshot['version'], 'expectedEvidence' => $snapshot['evidence'],
+                'requestID' => 'request-post-' . $destination, 'returnTo' => $destination,
+                'reviewAction' => 'remind_later', 'reviewUntil' => \WarningReviews::reminderDates()[5])));
+            $ui->handleRequest();
+            self::assertStringStartsWith('m=' . $destination, $ui->destination);
+            self::assertStringEndsWith('&warningReview=saved', $ui->destination);
+            $history = $this->countRows('history');
+            $ui->handleRequest();
+            self::assertSame($history, $this->countRows('history'));
+        }
+        $_GET = $_POST = array();
+    }
+
+    public function testApprovedCloseReasonsAndUnsupportedTaskActions(): void
+    {
+        foreach (array('already_handled', 'not_applicable', 'incorrect_warning', 'no_further_action') as $reason)
+        {
+            $until = (new \DateTimeImmutable(\DateUtility::getAdjustedDate('Y-m-d')))->modify('+30 days')->format('Y-m-d');
+            $this->save($this->snapshot(), 'request-close-' . $reason, array(6 => $reason, 7 => $until));
+            self::assertSame(1, $this->filtered()['suppressedReasonCount']);
+        }
+        $task = $this->commitment(-1);
+        $snapshot = $this->reviews->get('W07', DATA_ITEM_COMPANY, $this->company, 'overdue_task', $task);
+        foreach (array('close', 'remind_later', 'reset') as $action)
+            $this->rejected(fn() => $this->save($snapshot, 'request-task-' . $action,
+                array(5 => $action, 6 => $action === 'close' ? 'already_handled' : null,
+                    7 => $action === 'reset' ? null : \WarningReviews::reminderDates()[1])));
+        $job = $this->reviewJob();
+        $snapshot = $this->reviews->get('W02', DATA_ITEM_JOBORDER, $job, 'no_recorded_submission');
+        $this->save($snapshot, 'request-corrupt-job', array(5 => 'remind_later', 6 => null, 7 => \WarningReviews::reminderDates()[5]));
+        $this->db->query("UPDATE warning_review SET action = 'close', close_reason = 'already_handled' WHERE warning_rule = 'W02'");
+        self::assertSame(1, $this->reviews->getForSource(DATA_ITEM_JOBORDER, $job)['visibleCounts']['W02']);
+        $this->db->query('UPDATE user SET access_level = 0 WHERE user_id = 1');
+        self::assertSame(array(), $this->reviews->getForSource(DATA_ITEM_JOBORDER, $job)['reviews']);
+        self::assertSame(array(), $this->reviews->getForSource(DATA_ITEM_COMPANY, $this->company)['reviews']);
+    }
+
+    public function testCorrectiveDefaultsNativeLinksAndReadOnlyTaskOpening(): void
+    {
+        require_once LEGACY_ROOT . '/lib/Template.php';
+        require_once LEGACY_ROOT . '/lib/UserInterface.php';
+        require_once LEGACY_ROOT . '/modules/tasks/TasksUI.php';
+        $s = $this->snapshot();
+        foreach (array(null, '') as $reason)
+            $this->rejected(fn() => $this->save($s, 'request-missing-reason', array(6 => $reason)));
+        $this->save($s);
+        $states = $this->db->getAllAssoc('SELECT * FROM warning_review');
+        $history = $this->countRows('history');
+        $render = function ($type, $id) {
+            $template = new \Template();
+            $template->assign('recruitmentWarnings', $this->reviews->getForSource($type, $id));
+            ob_start();
+            try { $template->display($type === DATA_ITEM_COMPANY ? './modules/home/WarningReviewSource.tpl' : './modules/joborders/RecruitmentWarnings.tpl'); return ob_get_contents(); }
+            finally { ob_end_clean(); }
+        };
+        $html = $render(DATA_ITEM_COMPANY, $this->company);
+        self::assertStringContainsString('value="' . \WarningReviews::reminderDates()[5] . '" selected', $html);
+        self::assertStringContainsString('<option value="" selected disabled>Choose a reason...</option>', $html);
+        self::assertStringContainsString('m=tasks&amp;a=add&amp;dataItemType=' . DATA_ITEM_COMPANY . '&amp;dataItemID=' . $this->company, $html);
+        self::assertStringContainsString('Open Company to log Contact activity', $html);
+        self::assertStringContainsString('m=companies&amp;a=show&amp;companyID=' . $this->company, $html);
+        foreach (array('tasks.add', 'tasks.show') as $permission)
+        {
+            $this->overrides[$permission] = ACCESS_LEVEL_DISABLED;
+            self::assertStringNotContainsString('Add follow-up Task', $render(DATA_ITEM_COMPANY, $this->company));
+            $this->overrides = array();
+        }
+        foreach (array('contacts.addActivityScheduleEvent', 'contacts.logActivityScheduleEvent') as $permission)
+        {
+            $this->overrides[$permission] = ACCESS_LEVEL_READ;
+            self::assertStringNotContainsString('Open Company to log Contact activity', $render(DATA_ITEM_COMPANY, $this->company));
+            $this->overrides = array();
+        }
+        $job = $this->reviewJob();
+        self::assertStringContainsString('m=joborders&amp;a=show&amp;jobOrderID=' . $job, $render(DATA_ITEM_JOBORDER, $job));
+        $this->overrides['joborders.show'] = ACCESS_LEVEL_DISABLED;
+        self::assertStringNotContainsString('Open Job Order / Pipeline', $render(DATA_ITEM_JOBORDER, $job));
+        $this->overrides = array();
+        // Opening the existing linked Task Add form performs no review or History write.
+        $ui = (new \ReflectionClass(\TasksUI::class))->newInstanceWithoutConstructor();
+        (new \ReflectionProperty(\UserInterface::class, '_template'))->setValue($ui, $this->createStub(\Template::class));
+        (new \ReflectionProperty(\UserInterface::class, '_userID'))->setValue($ui, 1);
+        $_GET = array('a' => 'add', 'dataItemType' => (string) DATA_ITEM_COMPANY, 'dataItemID' => (string) $this->company);
+        $_POST = array();
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $ui->handleRequest();
+        $render(DATA_ITEM_COMPANY, $this->company); // Return without submitting the Task.
+        self::assertSame($states, $this->db->getAllAssoc('SELECT * FROM warning_review'));
+        self::assertSame($history, $this->countRows('history'));
+        $_GET = $_POST = array();
     }
 
     public function testConcurrentFirstRequestsHaveOneWinner(): void

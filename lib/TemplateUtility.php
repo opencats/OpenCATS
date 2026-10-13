@@ -23,6 +23,17 @@ use OpenCATS\UI\QuickActionMenu;
  */
 class TemplateUtility
 {
+    private static $_bootstrapBundleLoaded = false;
+
+    /** Header and embedded Task panels share one Bootstrap runtime per page. */
+    public static function printBootstrapBundle()
+    {
+        if (self::$_bootstrapBundleLoaded) return;
+        self::$_bootstrapBundleLoaded = true;
+        echo '<script src="', Template::escapeAttr(self::getVersionedAssetURL(
+            'vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js')), '"></script>', "\n";
+    }
+
     /* Prevent this class from being instantiated. */
     private function __construct() {}
     private function __clone() {}
@@ -1439,6 +1450,11 @@ class TemplateUtility
 
         foreach ($headIncludes as $key => $filename)
         {
+            if ($filename === 'vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js')
+            {
+                self::printBootstrapBundle();
+                continue;
+            }
             $path = parse_url($filename, PHP_URL_PATH);
             if ($path === false || $path === null)
             {
