@@ -52,10 +52,10 @@ class WarningReviews
     }
 
     /** Reuse the source query's ACL, eligibility and responsibility scope. */
-    private function source($identity)
+    private function source($identity, $companyOversight = false)
     {
         $this->actor();
-        foreach ($this->sourceRows($identity['data_item_type'], $identity['data_item_id']) as $row)
+        foreach ($this->sourceRows($identity['data_item_type'], $identity['data_item_id'], $companyOversight) as $row)
         {
             $hash = $this->evidence($identity, $row);
             if ($hash !== null) return $hash;
@@ -63,14 +63,14 @@ class WarningReviews
         throw new RuntimeException('Warning source unavailable.');
     }
 
-    private function sourceRows($type, $id)
+    private function sourceRows($type, $id, $companyOversight = false)
     {
         $actor = $this->actor();
         $user = $this->_db->getAssoc('SELECT access_level FROM user WHERE user_id = ' . $actor);
         if (!$user || $user['access_level'] <= ACCESS_LEVEL_DISABLED) return array();
         $tasks = new Tasks();
         if ($type == DATA_ITEM_JOBORDER) return $tasks->getJobRecruitmentWarnings($id);
-        if ($type == DATA_ITEM_COMPANY) return $tasks->getCompanyRecruitmentWarnings($id);
+        if ($type == DATA_ITEM_COMPANY) return $tasks->getCompanyRecruitmentWarnings($id, $companyOversight);
         return $tasks->getRecruitmentWarnings()['warnings'];
     }
 
@@ -239,6 +239,153 @@ class WarningReviews
         return $result;
     }
 
+    /** Existing Reports action permission is the explicit oversight gate. */
+    public function authorizeOversight()
+    {
+        $actor = $this->actor();
+        if ($_SESSION['CATS']->getAccessLevel('reports.show') < ACCESS_LEVEL_SA)
+            throw new RuntimeException('Warning oversight denied.');
+        $user = $this->_db->getAssoc('SELECT access_level FROM user WHERE user_id = ' . $actor);
+        if (!$user || $user['access_level'] <= ACCESS_LEVEL_DISABLED)
+            throw new RuntimeException('Warning oversight denied.');
+    }
+
+    private static function identityKey($identity)
+    {
+        return implode(':', array_values($identity));
+    }
+
+    /** Raw source conditions remain visible regardless of any personal suppression.
+     * Default scope stays owner-only for W07. An explicit Company uses native
+     * record-read permissions through the same source query; never impersonate users.
+     * Counts are distinct rule/subject/reasons, not reviewer rows or History events.
+     */
+    public function getOversight($rule = '', $status = '', $reviewer = 0, $companyID = null)
+    {
+        $this->authorizeOversight();
+        if (!is_string($rule) || !in_array($rule, array('', 'W01', 'W02', 'W03', 'W07', 'W08'), true) ||
+            !is_string($status) || !in_array($status, array('', 'outstanding', 'remind_later', 'close', 'reappeared'), true) ||
+            !is_int($reviewer) || $reviewer < 0 || $reviewer > 2147483647)
+            throw new InvalidArgumentException('Invalid oversight filter.');
+        if ($companyID !== null && (!is_int($companyID) || $companyID <= 0 || $companyID > 2147483647))
+            throw new InvalidArgumentException('Invalid oversight Company.');
+        $sources = array();
+        $ids = array();
+        $tasks = new Tasks();
+        $warnings = $companyID === null ? $tasks->getRecruitmentWarnings()['warnings'] :
+            $tasks->getCompanyRecruitmentWarnings($companyID, true);
+        foreach ($warnings as $warning)
+        {
+            $reasons = $warning['code'] === 'W07' ? $warning['relationshipAttention']['reasons'] : array($warning['reason']);
+            foreach ($reasons as $reason)
+            {
+                $reasonIDs = array(0);
+                if ($warning['code'] === 'W07' && in_array($reason, array('overdue_task', 'due_today', 'upcoming'), true))
+                {
+                    $reasonIDs = array();
+                    $today = DateUtility::getAdjustedDate('Y-m-d');
+                    foreach ($warning['relationshipAttention']['tasks'] as $task)
+                        if (($task['dueDate'] < $today ? 'overdue_task' : ($task['dueDate'] === $today ? 'due_today' : 'upcoming')) === $reason)
+                            $reasonIDs[] = (int) $task['taskID'];
+                }
+                foreach ($reasonIDs as $reasonID)
+                {
+                    $identity = self::identity($warning['code'], $warning['entityType'], $warning['entityID'], $reason, $reasonID);
+                    $sources[self::identityKey($identity)] = array('warning' => $warning, 'identity' => $identity,
+                        'evidence' => $this->evidence($identity, $warning));
+                    $ids[$warning['entityType']][$warning['entityID']] = (int) $warning['entityID'];
+                }
+            }
+        }
+        $states = array();
+        $events = array();
+        $since = DateUtility::getAdjustedDate('Y-m-d', strtotime('-30 days'));
+        foreach ($ids as $type => $sourceIDs)
+            foreach (array_chunk($sourceIDs, 200) as $batch)
+            {
+                $scope = 'data_item_type = ' . (int) $type . ' AND data_item_id IN (' . implode(',', $batch) . ')';
+                foreach ($this->_db->getAllAssoc('SELECT * FROM warning_review WHERE ' . $scope) as $state)
+                {
+                    try { $identity = self::identity($state['warning_rule'], $state['data_item_type'], $state['data_item_id'], $state['reason_key'], $state['reason_id']); }
+                    catch (InvalidArgumentException $e) { continue; }
+                    $key = self::identityKey($identity);
+                    if (isset($sources[$key]) && (int) $state['reviewing_user'] > 0)
+                        $states[$key][] = $state;
+                }
+                foreach ($this->_db->getAllAssoc("SELECT new_value FROM history WHERE the_field = 'warning_review' AND " . $scope .
+                    ' AND set_date >= ' . $this->_db->makeQueryString($since . ' 00:00:00') . ' AND set_date <= NOW()') as $event)
+                {
+                    $state = json_decode($event['new_value'], true);
+                    if (!is_array($state)) continue;
+                    try { $identity = self::identity($state['warning_rule'] ?? null, $state['data_item_type'] ?? null,
+                        $state['data_item_id'] ?? null, $state['reason_key'] ?? null, $state['reason_id'] ?? null); }
+                    catch (InvalidArgumentException $e) { continue; }
+                    $key = self::identityKey($identity);
+                    if (isset($sources[$key]) && (int) ($state['reviewing_user'] ?? 0) > 0)
+                        $events[] = array('identity' => $identity, 'reviewer' => (int) $state['reviewing_user']);
+                }
+            }
+        $counts = array('outstanding' => array(), 'remind_later' => array(), 'close' => array(), 'reappeared' => array());
+        $rows = array();
+        $users = array();
+        $today = DateUtility::getAdjustedDate('Y-m-d');
+        foreach ($sources as $key => $source)
+        {
+            if ($rule !== '' && $source['identity']['warning_rule'] !== $rule) continue;
+            $personal = $states[$key] ?? array(null);
+            foreach ($personal as $state)
+            {
+                if ($reviewer && (!$state || (int) $state['reviewing_user'] !== $reviewer)) continue;
+                $suppressed = $state && $this->suppresses($state, $today) &&
+                    is_string($state['evidence_hash']) && hash_equals($source['evidence'], $state['evidence_hash']);
+                $reappeared = $state && $state['action'] !== 'reset' &&
+                    ((is_string($state['evidence_hash']) && preg_match('/^[a-f0-9]{64}$/D', $state['evidence_hash']) &&
+                        !hash_equals($source['evidence'], $state['evidence_hash'])) ||
+                    (DateUtility::getCalendarDaysBetween($state['review_until'], $today) !== null && $state['review_until'] <= $today));
+                $category = $suppressed ? $state['action'] : ($reappeared ? 'reappeared' : 'outstanding');
+                $counts['outstanding'][$key] = true; // All sources still have their underlying condition.
+                if ($category !== 'outstanding') $counts[$category][$key] = true;
+                if ($status !== '' && $status !== 'outstanding' && $status !== $category) continue;
+                $rows[] = array_merge($source, array('state' => $state, 'status' => $category));
+                if ($state) $users[(int) $state['reviewing_user']] = true;
+                if ($source['warning']['responsibleUserID']) $users[(int) $source['warning']['responsibleUserID']] = true;
+            }
+        }
+        $names = array();
+        foreach (array_chunk(array_keys($users), 200) as $batch)
+            foreach ($this->_db->getAllAssoc("SELECT user_id, CONCAT(first_name, ' ', last_name) AS name FROM user WHERE user_id IN (" . implode(',', $batch) . ')') as $user)
+                $names[$user['user_id']] = $user['name'];
+        $eventCount = 0;
+        foreach ($events as $event)
+            if (($rule === '' || $event['identity']['warning_rule'] === $rule) && (!$reviewer || $event['reviewer'] === $reviewer)) ++$eventCount;
+        return array('rows' => $rows, 'counts' => array_map('count', $counts), 'events' => $eventCount,
+            'since' => $since, 'names' => $names);
+    }
+
+    /** Available native audit for an enumerated, still-authorised source/reviewer. */
+    public function getOversightHistory($identity, $reviewer)
+    {
+        $result = $this->getOversight($identity['warning_rule'], '', $reviewer,
+            $identity['data_item_type'] === DATA_ITEM_COMPANY ? $identity['data_item_id'] : null);
+        foreach ($result['rows'] as $row)
+            if ($row['identity'] === $identity)
+            {
+                $events = array();
+                foreach ((new History())->getAll($identity['data_item_type'], $identity['data_item_id']) as $event)
+                {
+                    if ($event['theField'] !== 'warning_review') continue;
+                    $state = json_decode($event['newValue'], true);
+                    if (!is_array($state) || (int) ($state['reviewing_user'] ?? 0) !== $reviewer) continue;
+                    foreach ($identity as $field => $value)
+                        if (($state[$field] ?? null) != $value) continue 2;
+                    $events[] = array('action' => $state['action'], 'closeReason' => $state['close_reason'],
+                        'reviewUntil' => $state['review_until'], 'date' => $event['dateModified'], 'actor' => $event['enteredByFullName']);
+                }
+                return $events;
+            }
+        throw new RuntimeException('Warning source unavailable.');
+    }
+
     /** Corrupt/unsupported state must never hide a warning. Expiry is date-only. */
     private function suppresses($state, $today)
     {
@@ -250,15 +397,10 @@ class WarningReviews
             !preg_match('/^([1-9][0-9]{3})-([0-9]{2})-([0-9]{2})$/D', $state['review_until'], $parts) ||
             !checkdate((int) $parts[2], (int) $parts[3], (int) $parts[1])) return false;
         if ($state['review_until'] <= $today) return false;
-        // Presets were validated when saved. The original session offset is not
-        // persisted: re-deriving that date with today's offset breaks valid reviews.
+        // Both deadlines were validated by save(). Close is an approximate-month
+        // pause: a later session offset must not reconstruct or change its limit.
         if ($state['action'] === 'remind_later') return $state['close_reason'] === null;
-        $actionDate = DateUtility::getAdjustedDate('Y-m-d', strtotime($state['action_at']));
-        if ($actionDate > $today || $state['review_until'] <= $today || $state['review_until'] <= $actionDate) return false;
-        if ($state['action'] === 'close')
-            return in_array($state['close_reason'], array('already_handled', 'not_applicable', 'incorrect_warning', 'no_further_action'), true) &&
-                $state['review_until'] <= (new DateTimeImmutable($actionDate))->modify('+30 days')->format('Y-m-d');
-        return false;
+        return in_array($state['close_reason'], array('already_handled', 'not_applicable', 'incorrect_warning', 'no_further_action'), true);
     }
 
     /** Current actor only; source visibility is required even for stored state. */
@@ -288,10 +430,18 @@ class WarningReviews
      * idempotent and prevents old requests from overwriting newer decisions.
      */
     public function save($rule, $type, $id, $reason, $reasonID, $action, $closeReason,
-        $reviewUntil, $expectedVersion, $expectedEvidence, $requestID)
+        $reviewUntil, $expectedVersion, $expectedEvidence, $requestID, $reviewingUser = null)
     {
         $identity = self::identity($rule, $type, $id, $reason, $reasonID);
         $actor = $this->actor();
+        if ($reviewingUser !== null)
+        {
+            $this->authorizeOversight();
+            if (!is_int($reviewingUser) || $reviewingUser <= 0 || $reviewingUser > 2147483647 ||
+                $action !== 'reset' || $_SESSION['CATS']->getRealAccessLevel() < ACCESS_LEVEL_SA)
+                throw new RuntimeException('Warning review reset denied.');
+            $actor = $reviewingUser;
+        }
         if (!is_int($expectedVersion) || $expectedVersion < 0 || $expectedVersion >= 2147483647 ||
             !is_string($expectedEvidence) || !preg_match('/^[a-f0-9]{64}$/D', $expectedEvidence) ||
             !is_string($requestID) || !preg_match('/^[A-Za-z0-9_-]{16,64}$/D', $requestID) ||
@@ -326,7 +476,7 @@ class WarningReviews
             if (!$this->_db->getAssoc('SELECT ' . $table . '_id FROM ' . $table . ' WHERE ' . $table . '_id = ' . $identity['data_item_id'] . ' FOR UPDATE'))
                 throw new RuntimeException('Warning source unavailable.');
             $this->authorizeWrite($identity);
-            $evidence = $this->source($identity);
+            $evidence = $this->source($identity, $reviewingUser !== null);
             $where = $this->where($identity, $actor);
             $before = $this->_db->getAssoc('SELECT * FROM warning_review WHERE ' . $where . ' FOR UPDATE');
             if ($before && (int) $before['version'] === $expectedVersion + 1 && hash_equals($before['request_hash'], $requestHash))

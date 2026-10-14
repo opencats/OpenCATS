@@ -242,14 +242,14 @@ class WarningReviewTest extends DatabaseTestCase
     {
         $this->save($this->snapshot());
         $hash = $this->snapshot()['evidence'];
-        // Older action/age without changed source evidence retains suppression.
-        $this->db->query("UPDATE warning_review SET action_at = DATE_SUB(NOW(), INTERVAL 1 DAY)");
+        // The validated saved deadline is authoritative; reads do not reconstruct
+        // a maximum Close duration from an older action timestamp.
+        $this->db->query("UPDATE warning_review SET action_at = DATE_SUB(NOW(), INTERVAL 40 DAY)");
         self::assertSame($hash, $this->snapshot()['evidence']);
         self::assertSame(1, $this->filtered()['suppressedReasonCount']);
         $this->db->query("UPDATE warning_review SET review_until = CURDATE()");
         self::assertSame(0, $this->filtered()['suppressedReasonCount']);
-        foreach (array("evidence_hash = 'bad'", "action = 'unknown'", "version = 0", "close_reason = NULL",
-            "review_until = DATE_ADD(CURDATE(), INTERVAL 40 DAY)") as $change)
+        foreach (array("evidence_hash = 'bad'", "action = 'unknown'", "version = 0", "close_reason = NULL") as $change)
         {
             $this->db->query("UPDATE warning_review SET evidence_hash = '" . $hash . "', action = 'close', version = 1,
                 close_reason = 'already_handled', review_until = DATE_ADD(CURDATE(), INTERVAL 5 DAY)");

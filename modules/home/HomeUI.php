@@ -114,22 +114,30 @@ class HomeUI extends UserInterface
             foreach ($fields as $field)
                 if (!isset($_POST[$field]) || !is_string($_POST[$field]))
                     throw new InvalidArgumentException('Invalid warning review fields.');
-            foreach (array('reviewUntil', 'closeReason') as $field)
+            foreach (array('reviewUntil', 'closeReason', 'reviewing_user') as $field)
                 if (isset($_POST[$field]) && !is_string($_POST[$field]))
                     throw new InvalidArgumentException('Invalid warning review fields.');
-            if (array_diff_key($_POST, array_flip(array_merge($fields, array('csrfToken', 'reviewUntil', 'closeReason')))) ||
+            if (array_diff_key($_POST, array_flip(array_merge($fields, array('csrfToken', 'reviewUntil', 'closeReason', 'reviewing_user')))) ||
                 !preg_match('/^(0|[1-9][0-9]*)$/D', $_POST['expectedVersion']) || $_POST['expectedVersion'] >= 2147483647)
                 throw new InvalidArgumentException('Invalid warning review fields.');
             $identity = WarningReviews::identity($_POST['warning_rule'], $_POST['data_item_type'],
                 $_POST['data_item_id'], $_POST['reason_key'], $_POST['reason_id']);
             $returnTo = $_POST['returnTo'];
-            if (!in_array($returnTo, array('home', 'companies', 'joborders'), true) ||
+            if (!in_array($returnTo, array('home', 'companies', 'joborders', 'reports'), true) ||
                 ($returnTo === 'companies' && $identity['data_item_type'] !== DATA_ITEM_COMPANY) ||
                 ($returnTo === 'joborders' && $identity['data_item_type'] !== DATA_ITEM_JOBORDER))
                 throw new InvalidArgumentException('Invalid review destination.');
+            $reviewer = null;
+            if (isset($_POST['reviewing_user']))
+            {
+                if ($returnTo !== 'reports' || $_POST['reviewAction'] !== 'reset' ||
+                    !preg_match('/^[1-9][0-9]*$/D', $_POST['reviewing_user']) || $_POST['reviewing_user'] > 2147483647)
+                    throw new InvalidArgumentException('Invalid review target.');
+                $reviewer = (int) $_POST['reviewing_user'];
+            }
             (new WarningReviews())->save($_POST['warning_rule'], $_POST['data_item_type'], $_POST['data_item_id'],
                 $_POST['reason_key'], $_POST['reason_id'], $_POST['reviewAction'], $_POST['closeReason'] ?? null,
-                $_POST['reviewUntil'] ?? null, (int) $_POST['expectedVersion'], $_POST['expectedEvidence'], $_POST['requestID']);
+                $_POST['reviewUntil'] ?? null, (int) $_POST['expectedVersion'], $_POST['expectedEvidence'], $_POST['requestID'], $reviewer);
         }
         catch (InvalidArgumentException $e)
         {
@@ -147,7 +155,12 @@ class HomeUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Unable to save the warning review. Refresh and try again.');
         }
         $uri = 'm=' . $returnTo;
-        if ($returnTo !== 'home') $uri .= '&a=show&' . ($returnTo === 'companies' ? 'companyID' : 'jobOrderID') . '=' . $identity['data_item_id'];
+        if ($returnTo === 'reports')
+        {
+            $uri .= '&a=warningOversight';
+            if ($identity['data_item_type'] === DATA_ITEM_COMPANY) $uri .= '&companyID=' . $identity['data_item_id'];
+        }
+        elseif ($returnTo !== 'home') $uri .= '&a=show&' . ($returnTo === 'companies' ? 'companyID' : 'jobOrderID') . '=' . $identity['data_item_id'];
         $this->redirectWarningReview($uri . '&warningReview=' . ($_POST['reviewAction'] === 'reset' ? 'restored' : 'saved'));
     }
 

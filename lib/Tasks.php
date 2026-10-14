@@ -83,11 +83,11 @@ class Tasks
     }
 
     /** Reuse the same Company evidence for Home, record pages and review writes. */
-    public function getCompanyRecruitmentWarnings($companyID = null)
+    public function getCompanyRecruitmentWarnings($companyID = null, $oversight = false)
     {
         $rows = array();
         // Preserve the authoritative Company results and their relative ordering.
-        foreach ((new Companies())->getRelationshipAttention($companyID) as $order => $company)
+        foreach ((new Companies())->getRelationshipAttention($companyID, $oversight) as $order => $company)
         {
             $coverage = !$company['tasks'] ? 'uncovered' :
                 (in_array('overdue_task', $company['reasons'], true) ? 'overdue_follow_up' : 'covered');

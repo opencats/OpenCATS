@@ -9,6 +9,9 @@
                 <h1 class="h5 fw-semibold mb-0">Reports</h1>
             </header>
 
+            <?php if ($_SESSION['CATS']->getAccessLevel('reports.show') >= ACCESS_LEVEL_SA): ?>
+            <p><a href="<?php echo Template::escapeAttr(CATSUtility::getIndexName() . '?m=reports&a=warningOversight'); ?>">Warning oversight</a></p>
+            <?php endif; ?>
             <div class="row g-2">
                 <div class="col-12 col-md-6 col-xl-4">
                     <section class="card h-100">

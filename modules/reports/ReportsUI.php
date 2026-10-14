@@ -38,6 +38,10 @@ class ReportsUI extends UserInterface
         $action = $this->getAction();
         switch ($action)
         {
+            case 'warningOversight':
+                $this->warningOversight();
+                break;
+
             case 'graphView':
                 if ($this->getUserAccessLevel('reports.show') < ACCESS_LEVEL_READ)
                 {
@@ -105,6 +109,65 @@ class ReportsUI extends UserInterface
                 $this->reports();
                 break;
         }
+    }
+
+    private function warningOversight()
+    {
+        include_once(LEGACY_ROOT . '/lib/WarningReviews.php');
+        include_once(LEGACY_ROOT . '/lib/Pager.php');
+        try
+        {
+            $reviews = new WarningReviews();
+            $reviews->authorizeOversight();
+            foreach (array('rule', 'state', 'reviewer', 'page', 'sort', 'sourceType', 'sourceID', 'reason', 'reasonID', 'companyID') as $field)
+                if (isset($_GET[$field]) && !is_string($_GET[$field]))
+                    throw new InvalidArgumentException('Invalid oversight filter.');
+            foreach (array('reviewer', 'page', 'companyID') as $field)
+                if (isset($_GET[$field]) && (!preg_match('/^(0|[1-9][0-9]*)$/D', $_GET[$field]) || $_GET[$field] > 2147483647))
+                    throw new InvalidArgumentException('Invalid oversight filter.');
+            $rule = $_GET['rule'] ?? '';
+            $state = $_GET['state'] ?? '';
+            $reviewer = (int) ($_GET['reviewer'] ?? 0);
+            $companyID = empty($_GET['companyID']) ? null : (int) $_GET['companyID'];
+            $sort = $_GET['sort'] ?? 'source';
+            if (!in_array($sort, array('source', 'action'), true)) throw new InvalidArgumentException('Invalid oversight sort.');
+            $result = $reviews->getOversight($rule, $state, $reviewer, $companyID);
+            usort($result['rows'], function ($a, $b) use ($sort) {
+                if ($sort === 'action')
+                {
+                    $order = strcmp($b['state']['action_at'] ?? '', $a['state']['action_at'] ?? '');
+                    if ($order) return $order;
+                }
+                return array_values($a['identity']) <=> array_values($b['identity']) ?:
+                    (($a['state']['reviewing_user'] ?? 0) <=> ($b['state']['reviewing_user'] ?? 0));
+            });
+            $pager = new Pager(count($result['rows']), 25, (int) ($_GET['page'] ?? 1));
+            $result['rows'] = array_slice($result['rows'], $pager->getThisPageStartRow(), 25);
+            $history = array();
+            if (isset($_GET['sourceID']))
+            {
+                $identity = WarningReviews::identity($rule, $_GET['sourceType'] ?? null, $_GET['sourceID'],
+                    $_GET['reason'] ?? null, $_GET['reasonID'] ?? '0');
+                if (!$reviewer) throw new InvalidArgumentException('A reviewer is required for history.');
+                $history = $reviews->getOversightHistory($identity, $reviewer);
+            }
+        }
+        catch (InvalidArgumentException $e)
+        {
+            CommonErrors::fatal(COMMONERROR_BADFIELDS, $this, 'Invalid warning oversight request.');
+        }
+        catch (RuntimeException $e)
+        {
+            CommonErrors::fatal(COMMONERROR_PERMISSION, $this, 'Warning oversight unavailable.');
+        }
+        $this->_template->assign('active', $this);
+        $this->_template->assign('oversight', $result);
+        $this->_template->assign('oversightHistory', $history);
+        $this->_template->assign('historyLabel', isset($identity) ? $identity['warning_rule'] . ' / record #' . $identity['data_item_id'] .
+            ' / ' . str_replace('_', ' ', $identity['reason_key']) . ' / reviewer #' . $reviewer : '');
+        $this->_template->assign('pager', $pager);
+        $this->_template->assign('filters', array('rule' => $rule, 'state' => $state, 'reviewer' => $reviewer, 'sort' => $sort, 'companyID' => $companyID ?? 0));
+        $this->_template->display('./modules/reports/WarningOversight.tpl');
     }
 
     private function reports()
